@@ -57,77 +57,78 @@ class QToolButton;
     allowing to filter the displayed files using a name filter.
 */
 
-namespace FileBrowser {
+namespace FileBrowser
+{
 
-  class ToolBar: public KToolBar
-  {
-      Q_OBJECT
+class ToolBar: public KToolBar
+{
+    Q_OBJECT
 
-    public:
-      ToolBar(QWidget *parent);
-      virtual ~ToolBar();
-  };
+public:
+    ToolBar( QWidget *parent );
+    virtual ~ToolBar();
+};
 
-  class Widget : public KVBox
-  {
-      Q_OBJECT
+class Widget : public KVBox
+{
+    Q_OBJECT
 
-    public:
-      explicit Widget( const char * name, QWidget *parent );
-      ~Widget();
+public:
+    explicit Widget( const char * name, QWidget *parent );
+    ~Widget();
 
-      virtual void readSessionConfig( KConfigBase *, const QString & );
-      virtual void writeSessionConfig( KConfigBase *, const QString & );
-      void readConfig();
-      void writeConfig();
-      void setupToolbar( QStringList actions );
-      void setView( KFile::FileView );
-      KDirOperator *dirOperator()
-      {
+    virtual void readSessionConfig( KConfigBase *, const QString & );
+    virtual void writeSessionConfig( KConfigBase *, const QString & );
+    void readConfig();
+    void writeConfig();
+    void setupToolbar( QStringList actions );
+    void setView( KFile::FileView );
+    KDirOperator *dirOperator()
+    {
         return m_dir;
-      }
-      KActionCollection *actionCollection()
-      {
+    }
+    KActionCollection *actionCollection()
+    {
         return m_actionCollection;
-      }
+    }
 
-    public Q_SLOTS:
-      void slotFilterChange(const QString&);
-      void setDir(KUrl);
-      void setDir( const QString& url )
-      {
+public Q_SLOTS:
+    void slotFilterChange( const QString& );
+    void setDir( KUrl );
+    void setDir( const QString& url )
+    {
         setDir( KUrl( url ) );
-      }
-      void selectorViewChanged( QAbstractItemView * );
+    }
+    void selectorViewChanged( QAbstractItemView * );
 
-    private Q_SLOTS:
-      void cmbPathActivated( const KUrl& u );
-      void cmbPathReturnPressed( const QString& u );
-      void dirUrlEntered( const KUrl& u );
-      void dirFinishedLoading();
-      void btnFilterClick();
+private Q_SLOTS:
+    void cmbPathActivated( const KUrl& u );
+    void cmbPathReturnPressed( const QString& u );
+    void dirUrlEntered( const KUrl& u );
+    void dirFinishedLoading();
+    void btnFilterClick();
 
-    protected:
-      void focusInEvent( QFocusEvent * );
-      bool eventFilter( QObject *, QEvent * );
-      void initialDirChangeHack();
+protected:
+    void focusInEvent( QFocusEvent * );
+    bool eventFilter( QObject *, QEvent * );
+    void initialDirChangeHack();
 
-    private:
-      ToolBar *m_toolbar;
-      KActionCollection *m_actionCollection;
-      KBookmarkHandler *m_bookmarkHandler;
-      KUrlNavigator *m_urlNav;
-      KFilePlacesModel *m_filePlacesModel;
+private:
+    ToolBar *m_toolbar;
+    KActionCollection *m_actionCollection;
+    KBookmarkHandler *m_bookmarkHandler;
+    KUrlNavigator *m_urlNav;
+    KFilePlacesModel *m_filePlacesModel;
 //       KUrlComboBox *m_cmbPath;
-      KDirOperator * m_dir;
-      QAction *m_acSyncDir;
-      KHistoryComboBox * m_filter;
-      QToolButton *m_btnFilter;
+    KDirOperator * m_dir;
+    QAction *m_acSyncDir;
+    KHistoryComboBox * m_filter;
+    QToolButton *m_btnFilter;
 
-      QString lastFilter;
-      QString waitingUrl; // maybe display when we gets visible
-      QString waitingDir;
-  };
+    QString lastFilter;
+    QString waitingUrl; // maybe display when we gets visible
+    QString waitingDir;
+};
 
 }
 
