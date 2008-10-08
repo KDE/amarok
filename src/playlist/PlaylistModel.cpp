@@ -519,9 +519,9 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
 
     // actually do the insertion
-    beginInsertRows( QModelIndex(), min, min + cmds.size() - 1 );
     foreach( InsertCmd ic, cmds )
     {
+        beginInsertRows( QModelIndex(), ic.second, ic.second );
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
         subscribeTo( track );
@@ -532,8 +532,8 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_items.insert( ic.second, newitem );
         m_itemIds.insert( newitem->id(), newitem );
         newIds.append( newitem->id() );
+        endInsertRows();
     }
-    endInsertRows();
     emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
     emit insertedIds( newIds );
 
@@ -570,7 +570,26 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         }
     }
 
-    beginRemoveRows( QModelIndex(), min, min + cmds.size() - 1 );
+    /* This next bit is probably more complicated that you expected it to be.
+     * The reason for the complexity comes from the following:
+     *
+     * 1. Qt's Model/View architecture can handle removal of only consecutive rows
+     * 2. The "remove rows" command from the Controller must handle
+     *    non-consecutive rows, and the removal command probably isn't sorted
+     *
+     * So each item has to be removed individually, and you can't just iterate
+     * over the commands, calling "m_items.removeAt(index)" as you go, because
+     * the indices of m_items will change with every removeAt().  Thus the
+     * following strategy of copying m_item, and removing the items from the
+     * copy, and then replacing m_items with the newly modified list.
+     *
+     * As a safety measure, the items themselves are not deleted until after m_items
+     * has been replaced.  If you delete as you go, then m_items will be holding
+     * dangling pointers, and the program will probably crash if the model is
+     * accessed in this state.   -- stharward */
+
+    QList<Item*> newlist(m_items); // copy the current item list
+    QList<Item*> delitems;
     foreach( RemoveCmd rc, cmds )
     {
         Meta::TrackPtr track = rc.first;
@@ -579,40 +598,24 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         if ( track->album() )
             unsubscribeFrom( track->album() );
 
-        Item* delitem = m_items.at( rc.second );
-        delIds.append( delitem->id() );
-        m_itemIds.remove( delitem->id() );
-        delete delitem;
-        m_items[rc.second] = 0;
+        Item* item = m_items.at(rc.second);
+        int idx = newlist.indexOf(item);
+        if (idx != -1) {
+            beginRemoveRows(QModelIndex(), idx, idx);
+            delitems.append(newlist.takeAt(idx));
+            endRemoveRows();
+        } else {
+            error() << "tried to delete a non-existent item:" << rc.first->prettyName() << rc.second;
+        }
     }
+    m_items = newlist;
+    qDeleteAll(delitems);
+    delitems.clear();
 
-    QMutableListIterator<Item*> i( m_items );
-    while ( i.hasNext() )
-    {
-        i.next();
-        if ( i.value() == 0 )
-            i.remove();
-    }
-    endRemoveRows();
     if ( m_items.size() > 0 )
     {
         max = ( max < m_items.size() ) ? max : m_items.size() - 1;
         emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() ) );
-    }
-    else
-    {
-
-        /* As of version 4.4.2, Qt's ItemViews are really unhappy when all rows
-         * are removed from the model, even if you call beginRemoveRows and
-         * endRemoveRows properly (like above).  The Views and SelectionModel
-         * try to access invalid indexes and the whole program crashes pretty
-         * soon thereafter.  Resetting the model after all rows are removed
-         * works around this problem.  I'm filing a bug about this with
-         * TrollTech, so hopefully the workaround won't be needed in the
-         * future. -- stharward */
-
-        debug() << "empty model; calling reset";
-        reset();
     }
     emit removedIds( delIds );
 
@@ -647,12 +650,6 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
         max = qMax( max, rc.first );
         max = qMax( max, rc.second );
         debug() << "moving" << rc.first << "to" << rc.second;
-        //FIXME
-        if ( rc.second < 0 )
-        {
-            debug() << "FIXME: Target out of range. Aborting.";
-            return;
-        }
     }
 
     int newActiveRow = m_activeRow;
@@ -676,7 +673,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
         }
     }
     m_activeRow = newActiveRow;
-    emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() ) );
+    emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
 
     //update the active row
 }

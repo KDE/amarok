@@ -76,15 +76,6 @@ Playlist::PrettyItemDelegate::~PrettyItemDelegate() { }
 QSize
 Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem&, const QModelIndex& index ) const
 {
-
-    /* Qt's ItemViews are horrible about calling sizeHint() and paint() for
-     * invalid indexes when the model has been reset.  Ideally, this safety
-     * check shouldn't be necessary, but without it this function will crash
-     * when handed an invalid index. -- stharward */
-
-    if ( !Model::instance()->rowExists( index.row() ) )
-        return QSize();
-
     int height = 0;
 
     int groupMode = index.data( GroupRole ).toInt();
@@ -111,12 +102,6 @@ Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem&, const QMode
 void
 Playlist::PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
-
-    /* see note in sizeHint() about this safety check */
-
-    if ( !Model::instance()->rowExists( index.row() ) )
-        return;
-
     painter->save();
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
     painter->translate( option.rect.topLeft() );

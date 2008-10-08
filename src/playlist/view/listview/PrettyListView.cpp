@@ -125,11 +125,13 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
     DEBUG_BLOCK
     if ( dynamic_cast<PrettyListView*>( event->source() ) == this )
     {
+        QAbstractItemModel* plModel = model();
         int targetRow = indexAt( event->pos() ).row();
+        targetRow = ( targetRow < 0 ) ? plModel->rowCount() - 1 : targetRow; // target of < 0 means we dropped on the end of the playlist
         QList<int> sr = selectedRows();
         Controller::instance()->moveRows( sr, targetRow );
+        // FIXME: this doesn't work when stuff is dragged to end of the playlist
         QItemSelection selItems;
-        QAbstractItemModel* plModel = model();
         foreach( int row, sr )
         {
             Q_UNUSED( row )
@@ -156,6 +158,7 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
     else if ( event->key() == Qt::Key_Return )
     {
         trackActivated( currentIndex() );
+        event->accept();
     }
     else if ( event->matches( QKeySequence::SelectAll ) )
     {

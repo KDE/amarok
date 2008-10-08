@@ -236,21 +236,23 @@ Playlist::GroupingProxy::modelDataChanged( const QModelIndex& start, const QMode
 void
 Playlist::GroupingProxy::modelRowsInserted( const QModelIndex& idx, int start, int end )
 {
+    beginInsertRows( idx, start, end );
     for ( int i = start; i <= end; i++ )
     {
         m_rowGroupMode.insert( i, None );
     }
-    emit rowsInserted( mapToSource( idx ), start, end );
+    endInsertRows();
 }
 
 void
 Playlist::GroupingProxy::modelRowsRemoved( const QModelIndex& idx, int start, int end )
 {
+    beginRemoveRows( idx, start, end );
     for ( int i = start; i <= end; i++ )
     {
         m_rowGroupMode.removeAt( start );
     }
-    emit rowsRemoved( mapToSource( idx ), start, end );
+    endRemoveRows();
 }
 
 void

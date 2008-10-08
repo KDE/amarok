@@ -331,6 +331,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     if ( from.size() <= 0 )
         return;
 
+    to = qBound(0, to, m_model->rowCount() - 1);
+
     int min = to;
     int max = to;
     foreach( int i, from )
