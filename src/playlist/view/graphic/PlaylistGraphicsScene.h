@@ -29,41 +29,41 @@
 
 namespace Playlist
 {
-    class GraphicsItem;
-    class GraphicsView;
-    class GraphicsScene : public QGraphicsScene
-    {
-        Q_OBJECT
+class GraphicsItem;
+class GraphicsView;
+class GraphicsScene : public QGraphicsScene
+{
+    Q_OBJECT
 
-        public:
-            GraphicsScene( GraphicsView* parent = 0 );
+public:
+    GraphicsScene( GraphicsView* parent = 0 );
 
-        protected:
-            virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
-            virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
-            virtual void keyPressEvent( QKeyEvent *event );
-            virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
-            virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
+protected:
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+    virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+    virtual void keyPressEvent( QKeyEvent *event );
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
 
-        private slots:
-            void axisDeleted();
+private slots:
+    void axisDeleted();
 
-        private:
-            void showItemImage();
-            void fetchItemImage();
-            void unsetItemImage();
-            void editTrackInformation();
+private:
+    void showItemImage();
+    void fetchItemImage();
+    void unsetItemImage();
+    void editTrackInformation();
 
-            GraphicsView* m_playlistView;
+    GraphicsView* m_playlistView;
 
-            // what item shift-click selections are centered around
-            QPointer<GraphicsItem> m_selectionAxis;
+    // what item shift-click selections are centered around
+    QPointer<GraphicsItem> m_selectionAxis;
 
-            // Keeps track of selected items to help with keyboard selection
-            QStack<Playlist::GraphicsItem*> m_selectionStack;
+    // Keeps track of selected items to help with keyboard selection
+    QStack<Playlist::GraphicsItem*> m_selectionStack;
 
-            GraphicsItem* m_contextMenuItem;
-    };
+    GraphicsItem* m_contextMenuItem;
+};
 }
 
 #endif

@@ -31,22 +31,24 @@ A 'simple' classical playlist view for the purists out there
 
 	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-namespace Playlist {
+namespace Playlist
+{
 
-    class Model;
-    
-    class ClassicView : public QWidget {
+class Model;
+
+class ClassicView : public QWidget
+{
     Q_OBJECT
-    public:
-        ClassicView( QWidget * parent );
-    
-        ~ClassicView();
-    
+public:
+    ClassicView( QWidget * parent );
+
+    ~ClassicView();
+
 private:
 
-        QTreeView *m_treeView;
-        QVBoxLayout *m_layout;
-        KLineEdit *m_lineEdit;
+    QTreeView *m_treeView;
+    QVBoxLayout *m_layout;
+    KLineEdit *m_lineEdit;
 
     Playlist::Model * m_model;
     QSortFilterProxyModel *m_proxyModel;
@@ -56,15 +58,15 @@ private:
 private slots:
 
     void playTrack( );
-    void playTrack( const QModelIndex &);
+    void playTrack( const QModelIndex & );
     void removeSelection();
     void editTrackInformation();
 
 
 protected:
-virtual void contextMenuEvent( QContextMenuEvent *event );
-    
-    };
+    virtual void contextMenuEvent( QContextMenuEvent *event );
+
+};
 
 
 }

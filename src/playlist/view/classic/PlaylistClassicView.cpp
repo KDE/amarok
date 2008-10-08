@@ -35,38 +35,38 @@
 
 
 
-Playlist::ClassicView::ClassicView(QWidget * parent)
-    : QWidget( parent ), 
-    m_treeView( new QTreeView( this )),
-    m_layout( new QVBoxLayout( this )),
-    m_lineEdit( new KLineEdit( this )),
-    m_proxyModel( new QSortFilterProxyModel )
+Playlist::ClassicView::ClassicView( QWidget * parent )
+        : QWidget( parent ),
+        m_treeView( new QTreeView( this ) ),
+        m_layout( new QVBoxLayout( this ) ),
+        m_lineEdit( new KLineEdit( this ) ),
+        m_proxyModel( new QSortFilterProxyModel )
 {
     DEBUG_BLOCK
-    setLayout(m_layout);
+    setLayout( m_layout );
 
-    m_treeView->setUniformRowHeights(true);
-    m_treeView->setSortingEnabled(true);
-    m_treeView->header()->setMovable(true);
-    m_treeView->header()->setClickable(true);
-    m_treeView->setDragEnabled(true);
-    m_treeView->setDropIndicatorShown(true);
-    m_treeView->setDragDropMode(QAbstractItemView::InternalMove);
+    m_treeView->setUniformRowHeights( true );
+    m_treeView->setSortingEnabled( true );
+    m_treeView->header()->setMovable( true );
+    m_treeView->header()->setClickable( true );
+    m_treeView->setDragEnabled( true );
+    m_treeView->setDropIndicatorShown( true );
+    m_treeView->setDragDropMode( QAbstractItemView::InternalMove );
     m_treeView->setRootIsDecorated( false );
-    m_treeView->setAlternatingRowColors ( true );
+    m_treeView->setAlternatingRowColors( true );
     m_treeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     //just for fun
 
     m_model = The::playlistModel();
     //Might need to adjust this for the proxy model
-    connect ( m_treeView, SIGNAL( activated ( const QModelIndex & ) ), this , SLOT( playTrack(const QModelIndex & ) ) );   
+    connect( m_treeView, SIGNAL( activated( const QModelIndex & ) ), this , SLOT( playTrack( const QModelIndex & ) ) );
 
     m_proxyModel->setSourceModel( m_model );
     m_treeView->setModel( m_proxyModel );
 
 
-    connect(m_lineEdit, SIGNAL(textChanged(const QString &)),
-            m_proxyModel, SLOT(setFilterRegExp(const QString &)));
+    connect( m_lineEdit, SIGNAL( textChanged( const QString & ) ),
+             m_proxyModel, SLOT( setFilterRegExp( const QString & ) ) );
     m_proxyModel->setFilterKeyColumn( -1 );
     m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     m_proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -75,9 +75,9 @@ Playlist::ClassicView::ClassicView(QWidget * parent)
     m_layout->addWidget( m_lineEdit );
     m_layout->addWidget( m_treeView );
 
-    m_treeView->header()->hideSection(0);
-    m_treeView->header()->hideSection(1);
-    m_treeView->header()->hideSection(2);
+    m_treeView->header()->hideSection( 0 );
+    m_treeView->header()->hideSection( 1 );
+    m_treeView->header()->hideSection( 2 );
 
 }
 
@@ -85,7 +85,7 @@ Playlist::ClassicView::~ ClassicView()
 {
 }
 
-void Playlist::ClassicView::playTrack(const QModelIndex &index)
+void Playlist::ClassicView::playTrack( const QModelIndex &index )
 {
     The::playlistActions()->play( m_proxyModel->mapToSource( index ).row() );
 }
@@ -94,8 +94,8 @@ void Playlist::ClassicView::playTrack()
 {
     DEBUG_BLOCK
 
-        if(!m_contextIndex)
-            return;
+    if ( !m_contextIndex )
+        return;
 
     The::playlistActions()->play( m_proxyModel->mapToSource( *m_contextIndex ).row() );
     m_contextIndex = 0;
@@ -105,15 +105,15 @@ void Playlist::ClassicView::playTrack()
 void Playlist::ClassicView::contextMenuEvent( QContextMenuEvent *event )
 {
     DEBUG_BLOCK
-    QModelIndex index = m_treeView->indexAt(event->pos());
-    if( !index.isValid() )
+    QModelIndex index = m_treeView->indexAt( event->pos() );
+    if ( !index.isValid() )
         return;
 
-    m_contextIndex = new QPersistentModelIndex(index);
+    m_contextIndex = new QPersistentModelIndex( index );
     //item->setSelected( true );
     event->accept();
 
-    ViewCommon::trackMenu(this, &index, event->globalPos());
+    ViewCommon::trackMenu( this, &index, event->globalPos() );
 
 }
 
@@ -122,11 +122,12 @@ void Playlist::ClassicView::removeSelection()
     DEBUG_BLOCK
 
     QModelIndexList indexes = m_treeView->selectionModel()->selectedRows() ;
-    while ( indexes.size() > 0 ) {
+    while ( indexes.size() > 0 )
+    {
 
         QModelIndex i = indexes.takeFirst();
         int count = 1;
-        while (!indexes.isEmpty() && indexes.takeFirst().row() == i.row() + count)
+        while ( !indexes.isEmpty() && indexes.takeFirst().row() == i.row() + count )
             ++count;
         m_treeView->model()->removeRows( i.row(), count, i.parent() );
         indexes = m_treeView->selectionModel()->selectedRows() ;
@@ -136,12 +137,12 @@ void Playlist::ClassicView::removeSelection()
 void Playlist::ClassicView::editTrackInformation()
 {
     DEBUG_BLOCK
-        /*
+    /*
     QModelIndexList selected = m_treeView->selectedIndexes();
     Meta::TrackList tracks;
     foreach(QModelIndex i, selected)
     {
-        tracks << m_model->data(i, TrackRole).value< Meta::TrackPtr >();
+    tracks << m_model->data(i, TrackRole).value< Meta::TrackPtr >();
     }
 
     TagDialog *dialog = new TagDialog( tracks, this );

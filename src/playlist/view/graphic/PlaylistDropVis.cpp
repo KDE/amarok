@@ -34,7 +34,7 @@ QHash<GraphicsView*, DropVis*> Playlist::DropVis::s_instanceHash;
 
 Playlist::DropVis::DropVis( GraphicsView *parent ) : QGraphicsLineItem( 0 )
 {
-    debug() << "Creating Playlist Drop Indicator with parent at" << (void*)parent;
+    debug() << "Creating Playlist Drop Indicator with parent at" << ( void* )parent;
 
     QPalette p = KApplication::palette();
     QColor color = p.color( QPalette::Highlight );
@@ -48,20 +48,21 @@ Playlist::DropVis::DropVis( GraphicsView *parent ) : QGraphicsLineItem( 0 )
 }
 
 DropVis*
-Playlist::DropVis::instance(GraphicsView* parent)
+Playlist::DropVis::instance( GraphicsView* parent )
 {
-    if (!parent)
+    if ( !parent )
         return 0;
-    if (!s_instanceHash.contains(parent))
-        s_instanceHash.insert(parent, new DropVis(parent));
-    return s_instanceHash.value(parent);
+    if ( !s_instanceHash.contains( parent ) )
+        s_instanceHash.insert( parent, new DropVis( parent ) );
+    return s_instanceHash.value( parent );
 }
 
 void
-Playlist::DropVis::destroy(GraphicsView* parent)
+Playlist::DropVis::destroy( GraphicsView* parent )
 {
-    if (s_instanceHash.contains(parent)) {
-        delete s_instanceHash.take(parent);
+    if ( s_instanceHash.contains( parent ) )
+    {
+        delete s_instanceHash.take( parent );
     }
 }
 
@@ -77,27 +78,27 @@ Playlist::DropVis::show( qreal yPosition )
 void
 Playlist::DropVis::show( GraphicsItem *item, bool showBelow )
 {
-    if( !scene() )
+    if ( !scene() )
         return;
-    
+
     qreal yPosition = 0;
     // if we have an item to place it above, then move the indicator,
     // otherwise use the top of the scene
-    if( item )
+    if ( item )
     {
         yPosition = item->pos().y();
-        if( showBelow )
+        if ( showBelow )
             yPosition += item->boundingRect().height();
     }
     else // place indicator at end of track listing
     {
         const QList<GraphicsItem*> tracks = m_playlistView->tracks();
         GraphicsItem *below = 0;
-        if( !tracks.isEmpty() && ( below = tracks.last() ) )
+        if ( !tracks.isEmpty() && ( below = tracks.last() ) )
         {
             yPosition = below->pos().y() + below->boundingRect().height();
         }
     }
-    show( yPosition );    
+    show( yPosition );
 }
 

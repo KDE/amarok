@@ -1,19 +1,19 @@
 /***************************************************************************
- * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu> 
- * 
+ * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License or (at your option) version 3 or any later version
  * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
+ * by the membership of KDE e.V.), which shall act as a proxy
  * defined in Section 14 of version 3 of the license.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
@@ -32,52 +32,55 @@ class QModelIndex;
 
 namespace Playlist
 {
-    class GraphicsItem;
-    class SelectionHelper; // private
-    class GraphicsView : public QGraphicsView
+class GraphicsItem;
+class SelectionHelper; // private
+class GraphicsView : public QGraphicsView
+{
+    Q_OBJECT
+
+    // TODO: remove these
+public:
+    GraphicsView( QWidget *parent = 0 );
+    ~GraphicsView();
+    void setModel();
+
+    const QList<GraphicsItem*> tracks() const
     {
-        Q_OBJECT
+        return m_tracks;
+    }
+    void moveItem( Playlist::GraphicsItem *oldAbove, Playlist::GraphicsItem *newAbove );
 
-        // TODO: remove these
-        public:
-            GraphicsView( QWidget *parent = 0 );
-            ~GraphicsView();
-            void setModel();
+    void shuffleTracks( int startPosition, int stopPosition = -1, bool animate = true ); // -1: end of playlist
 
-            const QList<GraphicsItem*> tracks() const { return m_tracks; }
-            void moveItem( Playlist::GraphicsItem *oldAbove, Playlist::GraphicsItem *newAbove );
+public slots:
+    virtual void dropEvent( QDropEvent *event );
+    void removeSelection();
 
-            void shuffleTracks( int startPosition, int stopPosition = -1, bool animate = true ); // -1: end of playlist
+protected:
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+    virtual void dragMoveEvent( QDragMoveEvent *event );
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+    virtual void paletteChange( const QPalette & oldPalette );
 
-        public slots:
-            virtual void dropEvent( QDropEvent *event );
-            void removeSelection();
+private slots:
+    void modelReset();
+    void rowsInserted( const QModelIndex & parent, int start, int end );
+    void rowsRemoved( const QModelIndex & parent, int start, int end );
+    void dataChanged( const QModelIndex & index );
+    void groupingChanged();
 
-        protected:
-            virtual void dragEnterEvent( QDragEnterEvent *event );
-            virtual void dragMoveEvent( QDragMoveEvent *event );
-            virtual void dragLeaveEvent( QDragLeaveEvent *event );
-            virtual void paletteChange( const QPalette & oldPalette );
+    void playTrack();
 
-        private slots:
-            void modelReset();
-            void rowsInserted( const QModelIndex & parent, int start, int end );
-            void rowsRemoved( const QModelIndex & parent, int start, int end );
-            void dataChanged( const QModelIndex & index );
-            void groupingChanged();
+    void animationComplete();
 
-            void playTrack();
-            
-            void animationComplete();
-        
-        private:
-            void showDropVisEvent( QPoint pos );
+private:
+    void showDropVisEvent( QPoint pos );
 
-            QList<GraphicsItem*>  m_tracks;
+    QList<GraphicsItem*>  m_tracks;
 
-            QMultiHash< QTimeLine*, QGraphicsItemAnimation* > m_animatorsByTimeline;
-            QHash< QGraphicsItem*, QGraphicsItemAnimation* > m_animatorsByItem;
-    };
+    QMultiHash< QTimeLine*, QGraphicsItemAnimation* > m_animatorsByTimeline;
+    QHash< QGraphicsItem*, QGraphicsItemAnimation* > m_animatorsByItem;
+};
 
 }
 

@@ -43,9 +43,9 @@
 
 
 Playlist::GraphicsScene::GraphicsScene( GraphicsView* parent )
-    : QGraphicsScene( parent )
-    , m_playlistView(parent)
-    , m_contextMenuItem(0)
+        : QGraphicsScene( parent )
+        , m_playlistView( parent )
+        , m_contextMenuItem( 0 )
 {
 }
 
@@ -57,7 +57,7 @@ Playlist::GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
     QGraphicsScene::mousePressEvent( event );
 
-    if( clickedItems.isEmpty() )
+    if ( clickedItems.isEmpty() )
         return;
 
     Qt::KeyboardModifiers modifiers = event->modifiers();
@@ -65,16 +65,16 @@ Playlist::GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
     const bool controlKeyPressed = modifiers & Qt::ControlModifier;
 
     // we assume that playlist items are never overlapping
-    GraphicsItem* clicked = 
+    GraphicsItem* clicked =
         dynamic_cast<GraphicsItem*>( clickedItems.last() );
 
-    if( !clicked )
+    if ( !clicked )
         return;
 
     // are we clicking an album header?
     bool headerClick = false;
-    if( clicked->groupMode() == Head ||
-        clicked->groupMode() == Head_Collapsed )
+    if ( clicked->groupMode() == Head ||
+            clicked->groupMode() == Head_Collapsed )
     {
         QPointF itemClickPos = clicked->mapFromScene( event->scenePos() );
         QRectF headerRect;
@@ -86,10 +86,10 @@ Playlist::GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
     }
 
 
-    if( !(shiftKeyPressed || controlKeyPressed) )
+    if ( !( shiftKeyPressed || controlKeyPressed ) )
     {
         m_selectionAxis = clicked;
-        connect( clicked, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
+        connect( clicked, SIGNAL( destroyed( QObject* ) ), SLOT( axisDeleted() ) );
 
         m_selectionStack.clear();
         prevSelected.clear();
@@ -98,20 +98,20 @@ Playlist::GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
     const bool clickedAlreadySelected = prevSelected.contains( clicked );
 
-    if( shiftKeyPressed )
+    if ( shiftKeyPressed )
     {
         QRectF boundingRect;
 
         QRectF clickedArea = clicked->boundingRect();
         clickedArea.moveTo( clicked->pos() );
 
-        if( m_selectionAxis )
+        if ( m_selectionAxis )
         {
             QRectF axisArea = m_selectionAxis->boundingRect();
             axisArea.moveTo( m_selectionAxis->pos() );
 
             // is clicked above or below ?
-            if( clickedArea.top() >= axisArea.top() )
+            if ( clickedArea.top() >= axisArea.top() )
             {
                 boundingRect.setTopLeft( axisArea.topLeft() );
                 boundingRect.setBottomRight( clickedArea.bottomRight() );
@@ -138,13 +138,13 @@ Playlist::GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
     }
     else
     {
-        if( headerClick )
+        if ( headerClick )
         {
             int row = m_playlistView->tracks().indexOf( clicked );
             QModelIndex index = GroupingProxy::instance()->index( row, 0 );
             int span = index.data( GroupedTracksRole ).toInt();
 
-            while( span-- )
+            while ( span-- )
                 prevSelected.append( m_playlistView->tracks()[row + span] );
         }
         else
@@ -154,13 +154,13 @@ Playlist::GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
         QRectF rect;
         foreach( QGraphicsItem* item, prevSelected )
         {
-            if( item == clicked && clickedAlreadySelected && !headerClick )
+            if ( item == clicked && clickedAlreadySelected && !headerClick )
                 continue;
             rect = item->boundingRect();
             rect.moveTo( item->pos() );
             rect.adjust( 1, 1, -1, -1 );
             path.addRect( rect );
-            m_selectionStack.push( static_cast<GraphicsItem*>(item) );
+            m_selectionStack.push( static_cast<GraphicsItem*>( item ) );
         }
 
         setSelectionArea( path, Qt::IntersectsItemBoundingRect );
@@ -170,7 +170,7 @@ Playlist::GraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
 void
 Playlist::GraphicsScene::mouseReleaseEvent( QGraphicsSceneMouseEvent* event )
 {
-    if( event->button() == Qt::MidButton )
+    if ( event->button() == Qt::MidButton )
     {
         QList<KUrl> urls;
         urls << KUrl( kapp->clipboard()->text() );
@@ -190,18 +190,18 @@ Playlist::GraphicsScene::axisDeleted()
     QGraphicsItem* newAxis = 0;
     foreach( QGraphicsItem* item, selected )
     {
-        if( item != m_selectionAxis &&
-            (newAxis == 0 || item->pos().y() < newAxis->pos().y() ) )
+        if ( item != m_selectionAxis &&
+                ( newAxis == 0 || item->pos().y() < newAxis->pos().y() ) )
         {
             newAxis = item;
         }
     }
 
     GraphicsItem* axis = dynamic_cast<GraphicsItem*>( newAxis );
-    if( axis )
+    if ( axis )
     {
         m_selectionAxis = axis;
-        connect( axis, SIGNAL(destroyed(QObject*)), SLOT(axisDeleted()) );
+        connect( axis, SIGNAL( destroyed( QObject* ) ), SLOT( axisDeleted() ) );
     }
 }
 
@@ -210,22 +210,22 @@ Playlist::GraphicsScene::contextMenuEvent( QGraphicsSceneContextMenuEvent *event
 {
     DEBUG_BLOCK
     QGraphicsItem *topItem = itemAt( event->scenePos() );
-    if( !topItem )
+    if ( !topItem )
         return;
 
     GraphicsItem *item = dynamic_cast<GraphicsItem*>( topItem );
-    if( !item )
+    if ( !item )
         item = dynamic_cast<GraphicsItem*>( topItem->parentItem() );
-    if( !item ) // we've clicked on empty space
+    if ( !item ) // we've clicked on empty space
         return;
 
     item->setSelected( true );
     m_contextMenuItem = item;
 
-    QPointF itemPos = item->mapFromScene(event->scenePos());
-    int row = m_playlistView->tracks().indexOf( static_cast<GraphicsItem*>(item) );
+    QPointF itemPos = item->mapFromScene( event->scenePos() );
+    int row = m_playlistView->tracks().indexOf( static_cast<GraphicsItem*>( item ) );
     const QModelIndex index = GroupingProxy::instance()->index( row, 0 );
-    ViewCommon::trackMenu(m_playlistView, &index, event->screenPos(), item->groupMode() < Body && item->imageLocation().contains( itemPos ));
+    ViewCommon::trackMenu( m_playlistView, &index, event->screenPos(), item->groupMode() < Body && item->imageLocation().contains( itemPos ) );
 
     event->accept();
 }
@@ -236,7 +236,7 @@ Playlist::GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
     DEBUG_BLOCK
     QGraphicsScene::dropEvent( event );
 
-    if( itemAt( event->pos() ) )
+    if ( itemAt( event->pos() ) )
     {
         event->ignore();
         QGraphicsScene::dropEvent( event );
@@ -245,7 +245,7 @@ Playlist::GraphicsScene::dropEvent( QGraphicsSceneDragDropEvent *event )
     {
         event->accept();
         The::playlistModel()->dropMimeData( event->mimeData(), Qt::CopyAction, -1, 0, QModelIndex() );
-        DropVis::instance(m_playlistView)->hide();
+        DropVis::instance( m_playlistView )->hide();
     }
 }
 void
@@ -263,7 +263,7 @@ Playlist::GraphicsScene::keyPressEvent( QKeyEvent* event )
     const bool prevLine = event->matches( QKeySequence::MoveToPreviousLine ) ||
                           event->matches( QKeySequence::SelectPreviousLine );
 
-    if( moveLine || selectLine )
+    if ( moveLine || selectLine )
     {
         event->accept();
 
@@ -273,16 +273,16 @@ Playlist::GraphicsScene::keyPressEvent( QKeyEvent* event )
 
         // if we've previously selected an item we need to continue the selection from there
         // we can't rely on selectedItems() since the list order is not specified
-        if( !m_selectionStack.isEmpty() && m_selectionStack.top() )
+        if ( !m_selectionStack.isEmpty() && m_selectionStack.top() )
             focused = m_selectionStack.top();
-        else if( selectedCount > 0 )
+        else if ( selectedCount > 0 )
             focused = static_cast<GraphicsItem*>( selectedItems().last() );
 
-        if( focused )
+        if ( focused )
             row = m_playlistView->tracks().indexOf( focused );
 
         // clear any other selected items if we aren't extending the selection
-        if( moveLine )
+        if ( moveLine )
         {
             clearSelection();
             m_selectionStack.clear();
@@ -292,26 +292,26 @@ Playlist::GraphicsScene::keyPressEvent( QKeyEvent* event )
         // If we're extending the selection, then we don't want to change the
         // item which we're updating the focus/selection for if we've switched
         // directions.
-        if( nextLine )
+        if ( nextLine )
         {
-            if( row == m_playlistView->tracks().size() - 1 )
+            if ( row == m_playlistView->tracks().size() - 1 )
                 row = -1; // loop back to the first item
 
             focused = m_playlistView->tracks().at( ++row );
         }
-        else if( prevLine ) // previous line
+        else if ( prevLine ) // previous line
         {
-            if( row <= 0 )
+            if ( row <= 0 )
                 row = m_playlistView->tracks().size(); // loop to the last item
 
             focused = m_playlistView->tracks().at( --row );
         }
 
-        if( focused )
+        if ( focused )
         {
-            if( selectLine )
+            if ( selectLine )
             {
-                if( m_selectionStack.contains( focused ) )
+                if ( m_selectionStack.contains( focused ) )
                 {
                     m_selectionStack.pop()->setSelected( false );
                 }
@@ -323,7 +323,7 @@ Playlist::GraphicsScene::keyPressEvent( QKeyEvent* event )
                     focused->ensureVisible();
                 }
             }
-            else if( moveLine )
+            else if ( moveLine )
             {
                 m_selectionStack.push( focused );
                 focused->setSelected( true );
@@ -333,19 +333,20 @@ Playlist::GraphicsScene::keyPressEvent( QKeyEvent* event )
         }
         return;
     }
-    else if( event->key() == Qt::Key_Return )
+    else if ( event->key() == Qt::Key_Return )
     {
-        if( !m_selectionStack.isEmpty() && m_selectionStack.top() )
+        if ( !m_selectionStack.isEmpty() && m_selectionStack.top() )
         {
             GraphicsItem *item = m_selectionStack.top();
-            if( item )
+            if ( item )
                 The::playlistActions()->play( m_playlistView->tracks().indexOf( item ) );
         }
         event->accept();
         return;
-    } else if( event->matches( QKeySequence::Delete ) )
+    }
+    else if ( event->matches( QKeySequence::Delete ) )
     {
-        if( !QGraphicsScene::selectedItems().isEmpty() )
+        if ( !QGraphicsScene::selectedItems().isEmpty() )
         {
             event->accept();
             m_playlistView->removeSelection();
@@ -358,7 +359,7 @@ Playlist::GraphicsScene::keyPressEvent( QKeyEvent* event )
 void
 Playlist::GraphicsScene::showItemImage()
 {
-    if( !m_contextMenuItem )
+    if ( !m_contextMenuItem )
         return;
     m_contextMenuItem->showImage();
     m_contextMenuItem = 0;
@@ -367,7 +368,7 @@ Playlist::GraphicsScene::showItemImage()
 void
 Playlist::GraphicsScene::fetchItemImage()
 {
-    if( !m_contextMenuItem )
+    if ( !m_contextMenuItem )
         return;
     m_contextMenuItem->fetchImage();
     m_contextMenuItem = 0;
@@ -376,7 +377,7 @@ Playlist::GraphicsScene::fetchItemImage()
 void
 Playlist::GraphicsScene::unsetItemImage()
 {
-    if( !m_contextMenuItem )
+    if ( !m_contextMenuItem )
         return;
     m_contextMenuItem->unsetImage();
     m_contextMenuItem = 0;
@@ -388,18 +389,20 @@ Playlist::GraphicsScene::editTrackInformation()
     DEBUG_BLOCK
     QList<QGraphicsItem*> selection = QGraphicsScene::selectedItems();
 
-    if( selection.isEmpty() )
+    if ( selection.isEmpty() )
         return; // our job here is done.
 
     Meta::TrackList selected;
-    foreach (QGraphicsItem* item, selection) {
-        GraphicsItem* pli = dynamic_cast<GraphicsItem*>(item);
-        if (pli) {
-            selected.append(pli->internalTrack());
+    foreach( QGraphicsItem* item, selection )
+    {
+        GraphicsItem* pli = dynamic_cast<GraphicsItem*>( item );
+        if ( pli )
+        {
+            selected.append( pli->internalTrack() );
             debug() << pli->internalTrack()->prettyName() << "will be edited";
         }
     }
     debug() << "total of" << selected.size() << "tracks to edit";
-    TagDialog *dialog = new TagDialog(selected, m_playlistView);
+    TagDialog *dialog = new TagDialog( selected, m_playlistView );
     dialog->show();
 }

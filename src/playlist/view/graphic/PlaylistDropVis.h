@@ -27,26 +27,26 @@
 
 namespace Playlist
 {
-    class GraphicsView;
+class GraphicsView;
 
-    class DropVis : public QGraphicsLineItem
-    {
-        // quasi-singleton; there should be only one visualizer per GraphicsView
-        public:
-            static DropVis* instance(GraphicsView*);
-            static void destroy(GraphicsView*);
+class DropVis : public QGraphicsLineItem
+{
+    // quasi-singleton; there should be only one visualizer per GraphicsView
+public:
+    static DropVis* instance( GraphicsView* );
+    static void destroy( GraphicsView* );
 
-            void show( qreal yPosition );
-            void show( Playlist::GraphicsItem *item = 0, bool showBelow = false );
+    void show( qreal yPosition );
+    void show( Playlist::GraphicsItem *item = 0, bool showBelow = false );
 
-        private:
-            DropVis( GraphicsView *parent = 0 );
-            ~DropVis() { }
+private:
+    DropVis( GraphicsView *parent = 0 );
+    ~DropVis() { }
 
-            GraphicsView* m_playlistView;
+    GraphicsView* m_playlistView;
 
-            static QHash<GraphicsView*, DropVis*> s_instanceHash;
-    };
+    static QHash<GraphicsView*, DropVis*> s_instanceHash;
+};
 }
 
 #endif

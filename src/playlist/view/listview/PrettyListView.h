@@ -28,38 +28,40 @@ class QDropEvent;
 class QKeyEvent;
 class QMouseEvent;
 
-namespace Playlist {
-    class PrettyListView : public QListView {
-        Q_OBJECT
+namespace Playlist
+{
+class PrettyListView : public QListView
+{
+    Q_OBJECT
 
-        public:
-            PrettyListView(QWidget* parent = 0);
-            ~PrettyListView();
+public:
+    PrettyListView( QWidget* parent = 0 );
+    ~PrettyListView();
 
-        // these slots are used by the ContextMenu
-        public slots:
-            void editTrackInformation();
-            void playTrack();
-            void removeSelection();
+    // these slots are used by the ContextMenu
+public slots:
+    void editTrackInformation();
+    void playTrack();
+    void removeSelection();
 
-        private slots:
-            void trackActivated(const QModelIndex&) const;
+private slots:
+    void trackActivated( const QModelIndex& ) const;
 
-        private:
-            void contextMenuEvent(QContextMenuEvent*);
-            void dragLeaveEvent(QDragLeaveEvent*);
-            void dropEvent(QDropEvent*);
-            void keyPressEvent(QKeyEvent*);
-            void mousePressEvent(QMouseEvent*);
-            void mouseReleaseEvent(QMouseEvent*);
+private:
+    void contextMenuEvent( QContextMenuEvent* );
+    void dragLeaveEvent( QDragLeaveEvent* );
+    void dropEvent( QDropEvent* );
+    void keyPressEvent( QKeyEvent* );
+    void mousePressEvent( QMouseEvent* );
+    void mouseReleaseEvent( QMouseEvent* );
 
-            bool mouseEventInHeader(const QMouseEvent*) const;
-            QItemSelectionModel::SelectionFlags headerPressSelectionCommand(const QModelIndex&, const QMouseEvent*) const;
-            QItemSelectionModel::SelectionFlags headerReleaseSelectionCommand(const QModelIndex&, const QMouseEvent*) const;
+    bool mouseEventInHeader( const QMouseEvent* ) const;
+    QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
+    QItemSelectionModel::SelectionFlags headerReleaseSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
 
-            QList<int> selectedRows() const;
+    QList<int> selectedRows() const;
 
-            bool m_mousePressInHeader;
-            QPersistentModelIndex m_headerPressIndex;
-    };
+    bool m_mousePressInHeader;
+    QPersistentModelIndex m_headerPressIndex;
+};
 }

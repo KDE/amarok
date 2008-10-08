@@ -42,204 +42,241 @@
 #include <QPalette>
 #include <QPersistentModelIndex>
 
-Playlist::PrettyListView::PrettyListView(QWidget* parent)
-    : QListView(parent)
-    , m_mousePressInHeader(false)
-    , m_headerPressIndex(QModelIndex())
+Playlist::PrettyListView::PrettyListView( QWidget* parent )
+        : QListView( parent )
+        , m_mousePressInHeader( false )
+        , m_headerPressIndex( QModelIndex() )
 {
-    setModel(GroupingProxy::instance());
-    setItemDelegate(new PrettyItemDelegate(this));
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
-    setDragDropMode(QAbstractItemView::DragDrop);
-    setDropIndicatorShown(true);
+    setModel( GroupingProxy::instance() );
+    setItemDelegate( new PrettyItemDelegate( this ) );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setDragDropMode( QAbstractItemView::DragDrop );
+    setDropIndicatorShown( true );
 
     // rendering adjustments
-    setFrameShape(QFrame::NoFrame);
+    setFrameShape( QFrame::NoFrame );
     //setAlternatingRowColors(true);
 
     // transparent background
     QPalette p = palette();
-    QColor c = p.color(QPalette::Base);
-    c.setAlpha(0);
-    p.setColor(QPalette::Base, c);
-    p.setColor(QPalette::Window, c);
-    setPalette(p);
-    setAutoFillBackground(false);
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    p.setColor( QPalette::Window, c );
+    setPalette( p );
+    setAutoFillBackground( false );
 
     // signal connections
-    connect(this, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(trackActivated(const QModelIndex&)));
+    connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
 
 void
-Playlist::PrettyListView::editTrackInformation() {
+Playlist::PrettyListView::editTrackInformation()
+{
     Meta::TrackList tl;
-    foreach(QModelIndex index, selectedIndexes()) {
-        tl.append(index.data(TrackRole).value<Meta::TrackPtr>());
+    foreach( QModelIndex index, selectedIndexes() )
+    {
+        tl.append( index.data( TrackRole ).value<Meta::TrackPtr>() );
     }
-    TagDialog *dialog = new TagDialog(tl, this);
+    TagDialog *dialog = new TagDialog( tl, this );
     dialog->show();
 }
 
 void
-Playlist::PrettyListView::playTrack() {
-    trackActivated(currentIndex());
+Playlist::PrettyListView::playTrack()
+{
+    trackActivated( currentIndex() );
 }
 
 void
-Playlist::PrettyListView::removeSelection() {
+Playlist::PrettyListView::removeSelection()
+{
     QList<int> sr = selectedRows();
-    Controller::instance()->removeRows(sr);
+    Controller::instance()->removeRows( sr );
     selectionModel()->clearSelection();
 }
 
 void
-Playlist::PrettyListView::trackActivated(const QModelIndex& idx) const {
-    Actions::instance()->play(idx.row());
+Playlist::PrettyListView::trackActivated( const QModelIndex& idx ) const
+{
+    Actions::instance()->play( idx.row() );
 }
 
 void
-Playlist::PrettyListView::contextMenuEvent(QContextMenuEvent* event) {
+Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
+{
     QModelIndex index = currentIndex();
-    ViewCommon::trackMenu(this, &index, event->globalPos(), true);
+    ViewCommon::trackMenu( this, &index, event->globalPos(), true );
     event->accept();
 }
 
 void
-Playlist::PrettyListView::dragLeaveEvent(QDragLeaveEvent* event) {
+Playlist::PrettyListView::dragLeaveEvent( QDragLeaveEvent* event )
+{
     m_mousePressInHeader = false;
-    QListView::dragLeaveEvent(event);
+    QListView::dragLeaveEvent( event );
 }
 
 void
-Playlist::PrettyListView::dropEvent(QDropEvent* event) {
+Playlist::PrettyListView::dropEvent( QDropEvent* event )
+{
     DEBUG_BLOCK
-    if (dynamic_cast<PrettyListView*>(event->source()) == this) {
-        int targetRow = indexAt(event->pos()).row();
+    if ( dynamic_cast<PrettyListView*>( event->source() ) == this )
+    {
+        int targetRow = indexAt( event->pos() ).row();
         QList<int> sr = selectedRows();
-        Controller::instance()->moveRows(sr, targetRow);
+        Controller::instance()->moveRows( sr, targetRow );
         QItemSelection selItems;
         QAbstractItemModel* plModel = model();
-        foreach (int row, sr) {
-            Q_UNUSED(row)
-            selItems.select(plModel->index(targetRow,0), plModel->index(targetRow,0));
+        foreach( int row, sr )
+        {
+            Q_UNUSED( row )
+            selItems.select( plModel->index( targetRow, 0 ), plModel->index( targetRow, 0 ) );
             targetRow++;
         }
-        selectionModel()->select(selItems, QItemSelectionModel::ClearAndSelect);
+        selectionModel()->select( selItems, QItemSelectionModel::ClearAndSelect );
         event->accept();
-    } else {
-        QListView::dropEvent(event);
+    }
+    else
+    {
+        QListView::dropEvent( event );
     }
 }
 
 void
-Playlist::PrettyListView::keyPressEvent(QKeyEvent* event) {
-    if (event->matches(QKeySequence::Delete)) {
+Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
+{
+    if ( event->matches( QKeySequence::Delete ) )
+    {
         removeSelection();
         event->accept();
-    } else if (event->key() == Qt::Key_Return) {
-        trackActivated(currentIndex());
-    } else if (event->matches(QKeySequence::SelectAll)) {
-        QModelIndex topIndex = model()->index(0, 0);
-        QModelIndex bottomIndex = model()->index(model()->rowCount() - 1, 0);
-        QItemSelection selItems(topIndex,bottomIndex);
-        selectionModel()->select(selItems, QItemSelectionModel::ClearAndSelect);
+    }
+    else if ( event->key() == Qt::Key_Return )
+    {
+        trackActivated( currentIndex() );
+    }
+    else if ( event->matches( QKeySequence::SelectAll ) )
+    {
+        QModelIndex topIndex = model()->index( 0, 0 );
+        QModelIndex bottomIndex = model()->index( model()->rowCount() - 1, 0 );
+        QItemSelection selItems( topIndex, bottomIndex );
+        selectionModel()->select( selItems, QItemSelectionModel::ClearAndSelect );
         event->accept();
-    } else {
-        QListView::keyPressEvent(event);
+    }
+    else
+    {
+        QListView::keyPressEvent( event );
     }
 }
 
 void
-Playlist::PrettyListView::mousePressEvent(QMouseEvent* event) {
-    if (mouseEventInHeader(event) && !(event->button() == Qt::MidButton)) {
+Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
+{
+    if ( mouseEventInHeader( event ) && !( event->button() == Qt::MidButton ) )
+    {
         m_mousePressInHeader = true;
-        QModelIndex index = indexAt(event->pos());
-        m_headerPressIndex = QPersistentModelIndex(index);
-        int rows = index.data(GroupedTracksRole).toInt();
-        QModelIndex bottomIndex = model()->index(index.row() + rows - 1, 0);
-        QItemSelection selItems(index,bottomIndex);
-        QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand(index, event);
-        selectionModel()->select(selItems, command);
+        QModelIndex index = indexAt( event->pos() );
+        m_headerPressIndex = QPersistentModelIndex( index );
+        int rows = index.data( GroupedTracksRole ).toInt();
+        QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
+        QItemSelection selItems( index, bottomIndex );
+        QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
+        selectionModel()->select( selItems, command );
         // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
-        selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
+        selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
         event->accept();
-    } else {
+    }
+    else
+    {
         m_mousePressInHeader = false;
-        QListView::mousePressEvent(event);
+        QListView::mousePressEvent( event );
     }
 }
 
 void
-Playlist::PrettyListView::mouseReleaseEvent(QMouseEvent* event) {
-    if (mouseEventInHeader(event) && (event->button() == Qt::LeftButton) && m_mousePressInHeader && m_headerPressIndex.isValid()) {
-        QModelIndex index = indexAt(event->pos());
-        if (index == m_headerPressIndex) {
-            int rows = index.data(GroupedTracksRole).toInt();
-            QModelIndex bottomIndex = model()->index(index.row() + rows - 1, 0);
-            QItemSelection selItems(index,bottomIndex);
-            QItemSelectionModel::SelectionFlags command = headerReleaseSelectionCommand(index, event);
-            selectionModel()->select(selItems, command);
+Playlist::PrettyListView::mouseReleaseEvent( QMouseEvent* event )
+{
+    if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) && m_mousePressInHeader && m_headerPressIndex.isValid() )
+    {
+        QModelIndex index = indexAt( event->pos() );
+        if ( index == m_headerPressIndex )
+        {
+            int rows = index.data( GroupedTracksRole ).toInt();
+            QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
+            QItemSelection selItems( index, bottomIndex );
+            QItemSelectionModel::SelectionFlags command = headerReleaseSelectionCommand( index, event );
+            selectionModel()->select( selItems, command );
         }
         event->accept();
-    } else {
-        QListView::mouseReleaseEvent(event);
+    }
+    else
+    {
+        QListView::mouseReleaseEvent( event );
     }
     m_mousePressInHeader = false;
 }
 
 bool
-Playlist::PrettyListView::mouseEventInHeader(const QMouseEvent* event) const {
-    QModelIndex index = indexAt(event->pos());
-    if (index.data(GroupRole).toInt() == Head) {
+Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
+{
+    QModelIndex index = indexAt( event->pos() );
+    if ( index.data( GroupRole ).toInt() == Head )
+    {
         QPoint mousePressPos = event->pos();
         mousePressPos.rx() += horizontalOffset();
         mousePressPos.ry() += verticalOffset();
-        return PrettyItemDelegate::insideItemHeader(mousePressPos, rectForIndex(index));
-    } else {
+        return PrettyItemDelegate::insideItemHeader( mousePressPos, rectForIndex( index ) );
+    }
+    else
+    {
         return false;
     }
 }
 
 QItemSelectionModel::SelectionFlags
-Playlist::PrettyListView::headerPressSelectionCommand(const QModelIndex& index, const QMouseEvent* event) const {
-    if (!index.isValid())
+Playlist::PrettyListView::headerPressSelectionCommand( const QModelIndex& index, const QMouseEvent* event ) const
+{
+    if ( !index.isValid() )
         return QItemSelectionModel::NoUpdate;
 
     const bool shiftKeyPressed = event->modifiers() & Qt::ShiftModifier;
     //const bool controlKeyPressed = event->modifiers() & Qt::ControlModifier;
-    const bool indexIsSelected = selectionModel()->isSelected(index);
+    const bool indexIsSelected = selectionModel()->isSelected( index );
 
-    if (!shiftKeyPressed && indexIsSelected)
+    if ( !shiftKeyPressed && indexIsSelected )
         return QItemSelectionModel::Deselect;
-    else if (!shiftKeyPressed && !indexIsSelected)
+    else if ( !shiftKeyPressed && !indexIsSelected )
         return QItemSelectionModel::Select;
-    else if (shiftKeyPressed)
+    else if ( shiftKeyPressed )
         return QItemSelectionModel::SelectCurrent;
 
     return QItemSelectionModel::NoUpdate;
 }
 
 QItemSelectionModel::SelectionFlags
-Playlist::PrettyListView::headerReleaseSelectionCommand(const QModelIndex& index, const QMouseEvent* event) const {
-    if (!index.isValid())
+Playlist::PrettyListView::headerReleaseSelectionCommand( const QModelIndex& index, const QMouseEvent* event ) const
+{
+    if ( !index.isValid() )
         return QItemSelectionModel::NoUpdate;
 
     const bool shiftKeyPressed = event->modifiers() & Qt::ShiftModifier;
     const bool controlKeyPressed = event->modifiers() & Qt::ControlModifier;
 
-    if (!controlKeyPressed && !shiftKeyPressed)
+    if ( !controlKeyPressed && !shiftKeyPressed )
         return QItemSelectionModel::ClearAndSelect;
     else
         return QItemSelectionModel::NoUpdate;
 }
 
 QList<int>
-Playlist::PrettyListView::selectedRows() const {
+Playlist::PrettyListView::selectedRows() const
+{
     QList<int> rows;
-    foreach(QModelIndex idx, selectedIndexes()) {
-        rows.append(idx.row());
+    foreach( QModelIndex idx, selectedIndexes() )
+    {
+        rows.append( idx.row() );
     }
     return rows;
 }

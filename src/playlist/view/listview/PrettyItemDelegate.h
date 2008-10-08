@@ -24,39 +24,47 @@
 
 class QPainter;
 
-namespace Playlist {
-    class PrettyItemDelegate : public QStyledItemDelegate {
-        public:
-            PrettyItemDelegate(QObject* parent = 0);
-            ~PrettyItemDelegate();
+namespace Playlist
+{
+class PrettyItemDelegate : public QStyledItemDelegate
+{
+public:
+    PrettyItemDelegate( QObject* parent = 0 );
+    ~PrettyItemDelegate();
 
-            QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const;
-            void paint(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+    QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const;
+    void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
 
-            // helper function for view which lets us determine if a click is within an album group's header
-            static bool insideItemHeader(const QPoint&, const QRect&);
+    // helper function for view which lets us determine if a click is within an album group's header
+    static bool insideItemHeader( const QPoint&, const QRect& );
 
-        private:
-            void paintSingleTrack(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-            void paintHead(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-            //void paintCollapsedHead(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-            void paintBody(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-            void paintTail(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-            //void paintCollapsed() const;
+private:
+    void paintSingleTrack( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
+    void paintHead( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
+    //void paintCollapsedHead(QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+    void paintBody( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
+    void paintTail( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
+    //void paintCollapsed() const;
 
-            QPointF centerImage(const QPixmap&, const QRectF&) const;
-            const QRectF imageLocation() const { return QRectF(MARGINH, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH); }
-            const QRectF imageLocationSingleTrack() const { return QRectF(MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH); }
-            //void setTextColor(const QModelIndex&) const;
+    QPointF centerImage( const QPixmap&, const QRectF& ) const;
+    const QRectF imageLocation() const
+    {
+        return QRectF( MARGINH, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH );
+    }
+    const QRectF imageLocationSingleTrack() const
+    {
+        return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
+    }
+    //void setTextColor(const QModelIndex&) const;
 
-            static const qreal ALBUM_WIDTH;
-            static const qreal SINGLE_TRACK_ALBUM_WIDTH;
-            static const qreal MARGIN;
-            static const qreal MARGINH;
-            static const qreal MARGINBODY;
-            static const qreal PADDING;
-            static QFontMetricsF* s_nfm; //normal
-            static QFontMetricsF* s_ifm; //italic
-            static QFontMetricsF* s_bfm; //bold
-    };
+    static const qreal ALBUM_WIDTH;
+    static const qreal SINGLE_TRACK_ALBUM_WIDTH;
+    static const qreal MARGIN;
+    static const qreal MARGINH;
+    static const qreal MARGINBODY;
+    static const qreal PADDING;
+    static QFontMetricsF* s_nfm; //normal
+    static QFontMetricsF* s_ifm; //italic
+    static QFontMetricsF* s_bfm; //bold
+};
 }
