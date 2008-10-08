@@ -29,9 +29,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="16.000001"
-     inkscape:cx="61.701675"
-     inkscape:cy="1295.4169"
+     inkscape:zoom="1.0000001"
+     inkscape:cx="1467.1429"
+     inkscape:cy="513.16298"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -3391,15 +3391,6 @@
        rx="10"
        height="316.06656"
        width="344.83713" />
-    <rect
-       style="opacity:0.4;fill:#66ffff;fill-opacity:1;stroke:#ffffff;stroke-width:1.03376365;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="selection"
-       y="603.03497"
-       x="-76.33918"
-       ry="1.8704189"
-       rx="2.1752841"
-       height="18.412405"
-       width="319.76678" />
     <g
        id="g4419"
        transform="translate(-216.19276,-201.41195)" />
@@ -3479,17 +3470,6 @@
          id="tspan10202"
          y="459.11115"
          x="711.91571">collapsed_head</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       style="font-size:17.20758438px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:FreeSans"
-       xml:space="preserve"
-       id="text10786"
-       transform="scale(1.0283625,0.9724197)"
-       y="635.8504"
-       x="263.6413"><tspan
-         id="tspan10788"
-         y="635.8504"
-         x="263.6413">selection</tspan></text>
     <text
        sodipodi:linespacing="125%"
        style="font-size:17.20758438px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:FreeSans"
