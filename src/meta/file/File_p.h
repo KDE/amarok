@@ -137,9 +137,6 @@ void Track::Private::readMetaData()
         res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
         chardet_destroy( det );
 
-        debug() << "Data:" << buf <<endl;
-        debug() << "Charset: " << encoding <<endl;
-
         m_data.title = strip( tag->title() );
         m_data.artist = strip( tag->artist() );
         m_data.album = strip( tag->album() );
@@ -245,7 +242,7 @@ void Track::Private::readMetaData()
             m_data.discNumber = disc.toInt();
     }
 #undef strip
-    m_data.fileSize = QFile( url.url() ).size();
+    m_data.fileSize = QFile( url.path() ).size();
 }
 
 // internal helper classes
