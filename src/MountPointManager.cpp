@@ -528,7 +528,8 @@ MountPointManager::updateStatisticsURLs( bool changed )
 void
 MountPointManager::startStatisticsUpdateJob()
 {
-    ThreadWeaver::Weaver::instance()->enqueue( new UrlUpdateJob( this ) );
+    AMAROK_NOTIMPLEMENTED
+    //ThreadWeaver::Weaver::instance()->enqueue( new UrlUpdateJob( this ) );
 }
 
 void
@@ -575,6 +576,8 @@ UrlUpdateJob::run( )
 
 void UrlUpdateJob::updateStatistics( )
 {
+    AMAROK_NOTIMPLEMENTED
+#if 0
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
     MountPointManager *mpm = MountPointManager::instance();
     QStringList urls = db->query( "SELECT s.deviceid,s.url "
@@ -607,10 +610,14 @@ void UrlUpdateJob::updateStatistics( )
             db->query( sql );
         }
     }
+#endif
 }
 
 void UrlUpdateJob::updateLabels( )
 {
+    AMAROK_NOTIMPLEMENTED
+
+#if 0
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
     MountPointManager *mpm = MountPointManager::instance();
     QStringList labels = db->query( "SELECT l.deviceid,l.url "
@@ -655,6 +662,7 @@ void UrlUpdateJob::updateLabels( )
             db->query( sql );
         }
     }
+#endif
 }
 
 #include "MountPointManager.moc"
