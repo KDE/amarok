@@ -443,6 +443,12 @@ EngineController::volume() const
     return static_cast<int>( m_audio->volume() * 100.0 );
 }
 
+bool
+EngineController::isMuted() const
+{
+    return m_audio->isMuted();
+}
+
 void
 EngineController::mute() //SLOT
 {
