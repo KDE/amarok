@@ -44,6 +44,17 @@ Example:
  |         debug() << "Current string is " << string << endl;
  | }
 
+
+Using "astyle" for auto formatting
+----------------------------------
+The program astyle can be used to automatically format source code, which can
+be useful for badly formatted 3rd party patches.
+
+Use it like this to get (approximately) Amarok formatting style:
+
+    "astyle -s4 -b -p -P -o source.cpp"
+
+
 Class, Function & Variable Naming
 ---------------------------------
 *Use CamelCase for everything.
