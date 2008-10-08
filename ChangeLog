@@ -15,7 +15,6 @@ VERSION 2.0-beta3
       action to be added without hardcoding it in the core. The immidiate 
       effect of this is that the last.fm action is now available for any 
       artist in any collection.
-    * Major restructuring of the directory layout of the service framework
     * New "playground" directory added for plugins and applets that are not 
       yet ready for prime time.
     * Major overhaul of playlist subsystem, including a completely new view
