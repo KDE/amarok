@@ -259,7 +259,7 @@ void FileBrowser::Widget::setupToolbar( QStringList actions )
         // reasonable collection for default toolbar
         actions << "up" << "back" << "forward" << "home" <<
         "short view" << "detailed view" <<
-        "bookmarks" << "sync_dir";
+        "bookmarks";
     }
     QAction *ac;
     for ( QStringList::Iterator it = actions.begin(); it != actions.end(); ++it )
