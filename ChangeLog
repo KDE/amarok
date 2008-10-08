@@ -20,6 +20,8 @@ VERSION 2.0-beta3
     * Major overhaul of playlist subsystem, including a completely new view
       (even though it looks a lot like to old one).  Programmers should
       review the SVN commit notes to learn about other changes.
+	* Selecting "Move to Collection" in the filebrowser's context menu
+	  will now recursively include all directories within the selected items.
 
   BUGFIXES:
     * File sizes for non-collection local tracks are now determined properly.

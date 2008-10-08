@@ -18,6 +18,7 @@
 
 #include "MyDirOperator.h"
 
+#include "Amarok.h"
 #include "MainWindow.h"
 #include "collection/Collection.h"
 #include "collection/CollectionLocation.h"
@@ -156,15 +157,16 @@ MyDirOperator::slotMoveTracks()
     if( list.isEmpty() )
         return;
 
+    KUrl::List expanded = Amarok::recursiveUrlExpand( list.urlList() );
+
     CollectionLocation *source      = new CollectionLocation();
     CollectionLocation *destination = action->collection()->location();
 
     CollectionManager *cm = CollectionManager::instance();
-    Meta::TrackList tracks = cm->tracksForUrls( list.urlList() );
+    Meta::TrackList tracks = cm->tracksForUrls( expanded );
 
     source->prepareMove( tracks, destination );
 }
-
 
 #include "MyDirOperator.moc"
 
