@@ -62,8 +62,9 @@ Playlist::PrettyListView::PrettyListView(QWidget* parent)
     QColor c = p.color(QPalette::Base);
     c.setAlpha(0);
     p.setColor(QPalette::Base, c);
+    p.setColor(QPalette::Window, c);
     setPalette(p);
-    setAutoFillBackground(true);
+    setAutoFillBackground(false);
 
     // signal connections
     connect(this, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(trackActivated(const QModelIndex&)));
