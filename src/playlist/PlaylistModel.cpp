@@ -586,6 +586,11 @@ Playlist::Model::moveTracksCommand(const MoveCmdList& cmds, bool reverse) {
         max = qMax(max, rc.first);
         max = qMax(max, rc.second);
         debug() << "moving" << rc.first << "to" << rc.second;
+        //FIXME 
+        if( rc.second < 0 ) {
+            debug() << "FIXME: Target out of range. Aborting.";
+            return;
+        }
     }
 
     int newActiveRow = m_activeRow;
