@@ -38,172 +38,229 @@ class AmarokMimeData;
 class QMimeData;
 class QModelIndex;
 
-namespace Playlist {
-    class Model;
+namespace Playlist
+{
+class Model;
 }
 
-namespace The {
-    AMAROK_EXPORT Playlist::Model* playlistModel();
+namespace The
+{
+AMAROK_EXPORT Playlist::Model* playlistModel();
 }
 
-namespace Playlist {
-    enum Column {
-        Album  = 1,
-        AlbumArtist,
-        Artist,
-        Bitrate,
-        Bpm,
-        Comment,
-        Composer,
-        CoverImage,
-        Directory,
-        DiscNumber,
-        Filename,
-        Filesize,
-        Genre,
-        LastPlayed,
-        Length,
-        Mood,
-        PlayCount,
-        Rating,
-        SampleRate,
-        Score,
-        Title,
-        TrackNumber,
-        Type,
-        Year,
-        NUM_COLUMNS
-    };
+namespace Playlist
+{
+enum Column
+{
+    Album  = 1,
+    AlbumArtist,
+    Artist,
+    Bitrate,
+    Bpm,
+    Comment,
+    Composer,
+    CoverImage,
+    Directory,
+    DiscNumber,
+    Filename,
+    Filesize,
+    Genre,
+    LastPlayed,
+    Length,
+    Mood,
+    PlayCount,
+    Rating,
+    SampleRate,
+    Score,
+    Title,
+    TrackNumber,
+    Type,
+    Year,
+    NUM_COLUMNS
+};
 
-    enum DataRoles {
-        TrackRole = Qt::UserRole,
-        StateRole,
-        ItemRole,
-        ActiveTrackRole
-    };
-    
-    class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer {
-        friend class InsertTracksCmd;
-        friend class RemoveTracksCmd;
-        friend class MoveTracksCmd;
+enum DataRoles
+{
+    TrackRole = Qt::UserRole,
+    StateRole,
+    ItemRole,
+    ActiveTrackRole
+};
 
-        Q_OBJECT
+class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
+{
+    friend class InsertTracksCmd;
+    friend class RemoveTracksCmd;
+    friend class MoveTracksCmd;
 
-        public:
-            static Model* instance();
-            static void destroy();
+    Q_OBJECT
 
-            // inherited from QAbstractListModel
-            int rowCount(const QModelIndex& parent = QModelIndex()) const { Q_UNUSED(parent); return m_items.size(); }
-            int columnCount(const QModelIndex& parent = QModelIndex()) const { Q_UNUSED(parent); return 4; }
-            QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-            QVariant data(const QModelIndex& index, int role) const;
-            Qt::DropActions supportedDropActions() const;
-            Qt::ItemFlags flags(const QModelIndex &index) const;
-            QStringList mimeTypes() const;
-            QMimeData* mimeData(const QModelIndexList &indexes) const;
-            bool dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
+public:
+    static Model* instance();
+    static void destroy();
 
-            // inherited from Meta::Observer
-            using Observer::metadataChanged;
-            void metadataChanged( Meta::Track *track );
-            void metadataChanged( Meta::Album *album );
+    // inherited from QAbstractListModel
+    int rowCount( const QModelIndex& parent = QModelIndex() ) const
+    {
+        Q_UNUSED( parent ); return m_items.size();
+    }
+    int columnCount( const QModelIndex& parent = QModelIndex() ) const
+    {
+        Q_UNUSED( parent ); return 4;
+    }
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+    QVariant data( const QModelIndex& index, int role ) const;
+    Qt::DropActions supportedDropActions() const;
+    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    QStringList mimeTypes() const;
+    QMimeData* mimeData( const QModelIndexList &indexes ) const;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
 
-            int totalLength() const { return m_totalLength; }
+    // inherited from Meta::Observer
+    using Observer::metadataChanged;
+    void metadataChanged( Meta::Track *track );
+    void metadataChanged( Meta::Album *album );
 
-            // convenience access methods
-            bool rowExists(int row) const { return ((row >= 0) && (row < m_items.size())); }
-            int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
-            void setActiveRow(int row);
-            Item::State stateOfRow(int row) const;
+    int totalLength() const
+    {
+        return m_totalLength;
+    }
 
-            bool containsTrack(const Meta::TrackPtr track) const;
-            int rowForTrack(const Meta::TrackPtr track) const;
-            Meta::TrackPtr trackAt(int row) const;
-            Meta::TrackPtr activeTrack() const;
+    // convenience access methods
+    bool rowExists( int row ) const
+    {
+        return (( row >= 0 ) && ( row < m_items.size() ) );
+    }
+    int activeRow() const
+    {
+        return m_activeRow;
+    } // returns -1 if there is no active row
+    void setActiveRow( int row );
+    Item::State stateOfRow( int row ) const;
 
-            // position-independent access methods
-            // these are useful when you care what tracks are in the playlist, but not what order they're in (eg, the Random Track navigator)
-            bool containsId(const quint64 id) const { return m_itemIds.contains(id); }
-            int rowForId(const quint64 id) const; // returns -1 if the id is invalid
-            Meta::TrackPtr trackForId(const quint64 id) const;
-            quint64 idAt(const int row) const;
-            quint64 activeId() const; // returns 0 for "no active row"
-            void setActiveId(const quint64 id) { setActiveRow(rowForId(id)); }
-            Item::State stateOfId(quint64 id) const;
+    bool containsTrack( const Meta::TrackPtr track ) const;
+    int rowForTrack( const Meta::TrackPtr track ) const;
+    Meta::TrackPtr trackAt( int row ) const;
+    Meta::TrackPtr activeTrack() const;
 
-            // methods to save playlist to file
-            bool exportPlaylist( const QString &path ) const; // FIXME: why are there two methods for this?
-            bool savePlaylist( const QString &path ) const;
-            void setPlaylistName( const QString &name, bool proposeOverwriting = false ) { m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
-            void proposePlaylistName( const QString &name, bool proposeOverwriting = false ) { if( ( rowCount() == 0 ) || m_playlistName==i18n("Untitled") ) m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
-            const QString& playlistName() const { return m_playlistName; }
-            bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
-            inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
+    // position-independent access methods
+    // these are useful when you care what tracks are in the playlist, but not what order they're in (eg, the Random Track navigator)
+    bool containsId( const quint64 id ) const
+    {
+        return m_itemIds.contains( id );
+    }
+    int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
+    Meta::TrackPtr trackForId( const quint64 id ) const;
+    quint64 idAt( const int row ) const;
+    quint64 activeId() const; // returns 0 for "no active row"
+    void setActiveId( const quint64 id )
+    {
+        setActiveRow( rowForId( id ) );
+    }
+    Item::State stateOfId( quint64 id ) const;
 
-            // static member functions
-            static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
+    // methods to save playlist to file
+    bool exportPlaylist( const QString &path ) const; // FIXME: why are there two methods for this?
+    bool savePlaylist( const QString &path ) const;
+    void setPlaylistName( const QString &name, bool proposeOverwriting = false )
+    {
+        m_playlistName = name; m_proposeOverwriting = proposeOverwriting;
+    }
+    void proposePlaylistName( const QString &name, bool proposeOverwriting = false )
+    {
+        if (( rowCount() == 0 ) || m_playlistName == i18n( "Untitled" ) ) m_playlistName = name; m_proposeOverwriting = proposeOverwriting;
+    }
+    const QString& playlistName() const
+    {
+        return m_playlistName;
+    }
+    bool proposeOverwriteOnSave() const
+    {
+        return m_proposeOverwriting;
+    }
+    inline const QString defaultPlaylistPath() const
+    {
+        return Amarok::saveLocation() + "current.xspf";
+    }
 
-        signals:
+    // static member functions
+    static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
-            /* PlaylistModel also emits rowsInserted and rowsRemoved, though
-             * the behavior of these signals is a little different than you
-             * might expect.  PlaylistModel allows insertion and removal of
-             * non-consecutive rows in a single operation, but
-             * QAbstractItemModel does not.  When the PlaylistModel inserts
-             * rows, it emits
-             *
-             *      rowsInserted(QModelIndex parent, int [first row], int [number of rows])
-             *
-             * The insertion starts at [first row], and inserts [number of rows],
-             * but those inserted rows could be anywhere at or after the
-             * first row.  To compensate for this, PlaylistModel then emits
-             *
-             *      dataChanged(QModelIndex [first row changed], QModelIndex [last row changed])
-             *
-             * which indicate the boundaries of where the items were inserted.
-             * If you refresh all the items between the [first row changed] and
-             * [last row changed], you will get all the inserted items, even
-             * though they weren't added consecutively.  You should be handling
-             * dataChanged in this manner anyway.  Removals are signalled in a
-             * similar fashion.
-             *
-             * So just expect that any insertion or removal will also emit a
-             * dataChanged signal, and that you should completely refresh all
-             * items between the first and last rows.  -- stharward */
+signals:
 
-            void insertedIds(const QList<quint64>&);
-            void removedIds(const QList<quint64>&);
-            void activeTrackChanged(quint64);
-            void activeRowChanged(int);
+    /* PlaylistModel also emits rowsInserted and rowsRemoved, though
+     * the behavior of these signals is a little different than you
+     * might expect.  PlaylistModel allows insertion and removal of
+     * non-consecutive rows in a single operation, but
+     * QAbstractItemModel does not.  When the PlaylistModel inserts
+     * rows, it emits
+     *
+     *      rowsInserted(QModelIndex parent, int [first row], int [number of rows])
+     *
+     * The insertion starts at [first row], and inserts [number of rows],
+     * but those inserted rows could be anywhere at or after the
+     * first row.  To compensate for this, PlaylistModel then emits
+     *
+     *      dataChanged(QModelIndex [first row changed], QModelIndex [last row changed])
+     *
+     * which indicate the boundaries of where the items were inserted.
+     * If you refresh all the items between the [first row changed] and
+     * [last row changed], you will get all the inserted items, even
+     * though they weren't added consecutively.  You should be handling
+     * dataChanged in this manner anyway.  Removals are signalled in a
+     * similar fashion.
+     *
+     * So just expect that any insertion or removal will also emit a
+     * dataChanged signal, and that you should completely refresh all
+     * items between the first and last rows.  -- stharward */
 
-        private:
-            Model();
-            ~Model();
+    void insertedIds( const QList<quint64>& );
+    void removedIds( const QList<quint64>& );
+    void activeTrackChanged( quint64 );
+    void activeRowChanged( int );
 
-            // inherit from QAbstractListModel, and make private so that nobody uses them
-            bool insertRow(int, const QModelIndex& parent = QModelIndex()) { Q_UNUSED(parent); return false; }
-            bool insertRows(int, int, const QModelIndex& parent = QModelIndex()) { Q_UNUSED(parent); return false; }
-            bool removeRow(int, const QModelIndex& parent = QModelIndex()) { Q_UNUSED(parent); return false; }
-            bool removeRows(int, int, const QModelIndex& parent = QModelIndex()) { Q_UNUSED(parent); return false; }
+private:
+    Model();
+    ~Model();
 
-            // these functions do the real work of modifying the playlist, and should be called ONLY by UndoCommands
-            void insertTracksCommand(const InsertCmdList&);
-            void removeTracksCommand(const RemoveCmdList&);
-            void moveTracksCommand(const MoveCmdList&, bool reverse = false);
-            void setStateOfRow(int row, Item::State state) { m_items.at(row)->setState(state); }
+    // inherit from QAbstractListModel, and make private so that nobody uses them
+    bool insertRow( int, const QModelIndex& parent = QModelIndex() )
+    {
+        Q_UNUSED( parent ); return false;
+    }
+    bool insertRows( int, int, const QModelIndex& parent = QModelIndex() )
+    {
+        Q_UNUSED( parent ); return false;
+    }
+    bool removeRow( int, const QModelIndex& parent = QModelIndex() )
+    {
+        Q_UNUSED( parent ); return false;
+    }
+    bool removeRows( int, int, const QModelIndex& parent = QModelIndex() )
+    {
+        Q_UNUSED( parent ); return false;
+    }
 
-            QList<Item*> m_items;            //! list of tracks in order currently in the playlist
-            QHash<quint64, Item*> m_itemIds; //! maps track id's to items
-            int m_activeRow;                 //! the row being played
+    // these functions do the real work of modifying the playlist, and should be called ONLY by UndoCommands
+    void insertTracksCommand( const InsertCmdList& );
+    void removeTracksCommand( const RemoveCmdList& );
+    void moveTracksCommand( const MoveCmdList&, bool reverse = false );
+    void setStateOfRow( int row, Item::State state )
+    {
+        m_items.at( row )->setState( state );
+    }
 
-            int m_totalLength;
+    QList<Item*> m_items;            //! list of tracks in order currently in the playlist
+    QHash<quint64, Item*> m_itemIds; //! maps track id's to items
+    int m_activeRow;                 //! the row being played
 
-            QString m_playlistName;
-            bool m_proposeOverwriting;
+    int m_totalLength;
 
-            static Model* s_instance;      //! instance variable
-    };
+    QString m_playlistName;
+    bool m_proposeOverwriting;
+
+    static Model* s_instance;      //! instance variable
+};
 } // namespace Playlist
 
 #endif

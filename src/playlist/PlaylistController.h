@@ -31,86 +31,91 @@
 
 class QUndoStack;
 
-namespace Playlist {
-    class Controller;
-    class Model;
+namespace Playlist
+{
+class Controller;
+class Model;
 }
 
-namespace The {
-    AMAROK_EXPORT Playlist::Controller* playlistController();
+namespace The
+{
+AMAROK_EXPORT Playlist::Controller* playlistController();
 }
 
-namespace Playlist {
-    enum AddOptions {
-        Append     = 1,     /// inserts media after the last item in the playlist
-        Queue      = 2,     /// inserts media after the currentTrack
-        Replace    = 4,     /// clears the playlist first
-        DirectPlay = 8,     /// start playback of the first item in the list
-        Unique     = 16,    /// don't insert anything already in the playlist
-        StartPlay  = 32,    /// start playback of the first item in the list if nothing else playing
-        AppendAndPlay = Append | StartPlay
-    };
+namespace Playlist
+{
+enum AddOptions
+{
+    Append     = 1,     /// inserts media after the last item in the playlist
+    Queue      = 2,     /// inserts media after the currentTrack
+    Replace    = 4,     /// clears the playlist first
+    DirectPlay = 8,     /// start playback of the first item in the list
+    Unique     = 16,    /// don't insert anything already in the playlist
+    StartPlay  = 32,    /// start playback of the first item in the list if nothing else playing
+    AppendAndPlay = Append | StartPlay
+};
 
-    class AMAROK_EXPORT Controller : public QObject {
-        Q_OBJECT
+class AMAROK_EXPORT Controller : public QObject
+{
+    Q_OBJECT
 
-        public:
-            static Controller* instance();
-            static void destroy();
+public:
+    static Controller* instance();
+    static void destroy();
 
-        public slots:
-            void insertOptioned(Meta::TrackPtr track, int options);
-            void insertOptioned(Meta::TrackList list, int options);
-            void insertOptioned(Meta::PlaylistPtr playlist, int options);
-            void insertOptioned(Meta::PlaylistList list, int options);
-            void insertOptioned(QueryMaker *qm, int options);
-            void insertOptioned(QList<KUrl>& urls, int options);
+public slots:
+    void insertOptioned( Meta::TrackPtr track, int options );
+    void insertOptioned( Meta::TrackList list, int options );
+    void insertOptioned( Meta::PlaylistPtr playlist, int options );
+    void insertOptioned( Meta::PlaylistList list, int options );
+    void insertOptioned( QueryMaker *qm, int options );
+    void insertOptioned( QList<KUrl>& urls, int options );
 
-            void insertTrack(int row, Meta::TrackPtr track);
-            void insertTracks(int row, Meta::TrackList list);
-            void insertPlaylist(int row, Meta::PlaylistPtr playlist);
-            void insertPlaylists(int row, Meta::PlaylistList playlists);
-            void insertTracks(int row, QueryMaker *qm);
-            void insertUrls(int row, const QList<KUrl>& urls);
+    void insertTrack( int row, Meta::TrackPtr track );
+    void insertTracks( int row, Meta::TrackList list );
+    void insertPlaylist( int row, Meta::PlaylistPtr playlist );
+    void insertPlaylists( int row, Meta::PlaylistList playlists );
+    void insertTracks( int row, QueryMaker *qm );
+    void insertUrls( int row, const QList<KUrl>& urls );
 
-            void removeRow(int row);
-            void removeRows(int row, int count);
-            void removeRows(QList<int>& rows);
+    void removeRow( int row );
+    void removeRows( int row, int count );
+    void removeRows( QList<int>& rows );
 
-            void moveRow(int from, int to);
-            void moveRows(QList<int>& from, int to);
-            void moveRows(QList<int>& from, QList<int>& to);
+    void moveRow( int from, int to );
+    void moveRows( QList<int>& from, int to );
+    void moveRows( QList<int>& from, QList<int>& to );
 
-            void undo();
-            void redo();
-            void clear();
+    void undo();
+    void redo();
+    void clear();
 
-        signals:
-            void canRedoChanged(bool);
-            void canUndoChanged(bool);
+signals:
+    void canRedoChanged( bool );
+    void canUndoChanged( bool );
 
-        private slots:
-            void newResultReady(const QString&, const Meta::TrackList&);
-            void queryDone();
-            void slotFinishDirectoryLoader(const Meta::TrackList&);
+private slots:
+    void newResultReady( const QString&, const Meta::TrackList& );
+    void queryDone();
+    void slotFinishDirectoryLoader( const Meta::TrackList& );
 
-        private:
-            Controller(QObject* parent = 0);
-            ~Controller();
+private:
+    Controller( QObject* parent = 0 );
+    ~Controller();
 
-            Meta::TrackList filterEmpties(Meta::TrackList&) const;
-            void insertionHelper(int row, Meta::TrackList&);
+    Meta::TrackList filterEmpties( Meta::TrackList& ) const;
+    void insertionHelper( int row, Meta::TrackList& );
 
-            Model* m_model;
+    Model* m_model;
 
-            QUndoStack* m_undoStack;
+    QUndoStack* m_undoStack;
 
-            QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
-            QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
-            QHash<QueryMaker*, Meta::TrackList> m_queryMakerTrackResults;
+    QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
+    QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
+    QHash<QueryMaker*, Meta::TrackList> m_queryMakerTrackResults;
 
-            static Controller* s_instance;
-    };
+    static Controller* s_instance;
+};
 }
 
 #endif

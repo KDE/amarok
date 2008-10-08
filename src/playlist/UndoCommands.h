@@ -29,39 +29,43 @@
 #include <QPair>
 #include <QUndoCommand>
 
-namespace Playlist {
-    typedef QPair<Meta::TrackPtr,int> InsertCmd;
-    typedef QList<InsertCmd> InsertCmdList;
-    class InsertTracksCmd : public QUndoCommand {
-        public:
-            InsertTracksCmd( QUndoCommand* parent, const InsertCmdList& );
-            void undo();
-            void redo();
-        private:
-            const InsertCmdList m_cmdlist;
-    };
+namespace Playlist
+{
+typedef QPair<Meta::TrackPtr, int> InsertCmd;
+typedef QList<InsertCmd> InsertCmdList;
+class InsertTracksCmd : public QUndoCommand
+{
+public:
+    InsertTracksCmd( QUndoCommand* parent, const InsertCmdList& );
+    void undo();
+    void redo();
+private:
+    const InsertCmdList m_cmdlist;
+};
 
-    typedef QPair<Meta::TrackPtr,int> RemoveCmd;
-    typedef QList<RemoveCmd> RemoveCmdList;
-    class RemoveTracksCmd: public QUndoCommand {
-        public:
-            RemoveTracksCmd( QUndoCommand* parent, const RemoveCmdList& );
-            void undo();
-            void redo();
-        private:
-            const RemoveCmdList m_cmdlist;
-    };
+typedef QPair<Meta::TrackPtr, int> RemoveCmd;
+typedef QList<RemoveCmd> RemoveCmdList;
+class RemoveTracksCmd: public QUndoCommand
+{
+public:
+    RemoveTracksCmd( QUndoCommand* parent, const RemoveCmdList& );
+    void undo();
+    void redo();
+private:
+    const RemoveCmdList m_cmdlist;
+};
 
-    typedef QPair<int,int> MoveCmd;
-    typedef QList<MoveCmd> MoveCmdList;
-    class MoveTracksCmd: public QUndoCommand {
-        public:
-            MoveTracksCmd( QUndoCommand* parent, const MoveCmdList& );
-            void undo();
-            void redo();
-        private:
-            const MoveCmdList m_cmdlist;
-    };
+typedef QPair<int, int> MoveCmd;
+typedef QList<MoveCmd> MoveCmdList;
+class MoveTracksCmd: public QUndoCommand
+{
+public:
+    MoveTracksCmd( QUndoCommand* parent, const MoveCmdList& );
+    void undo();
+    void redo();
+private:
+    const MoveCmdList m_cmdlist;
+};
 }
 
 #endif

@@ -30,99 +30,119 @@
 #include "PlaylistModel.h"
 
 
-namespace Playlist {
-    class Actions;
+namespace Playlist
+{
+class Actions;
 }
 
-namespace The {
-    AMAROK_EXPORT Playlist::Actions* playlistActions();
+namespace The
+{
+AMAROK_EXPORT Playlist::Actions* playlistActions();
 }
 
 namespace Playlist
 {
-    class TrackNavigator;
+class TrackNavigator;
 
-    enum PlaybackMode {
-        StandardPlayback  = 0,
-        TrackPlayback     = 1,
-        AlbumPlayback     = 2,
-        PlaylistPlayback  = 4,
-        RandomPlayback    = 8,
-        RepeatPlayback    = 16
-    };
+enum PlaybackMode
+{
+    StandardPlayback  = 0,
+    TrackPlayback     = 1,
+    AlbumPlayback     = 2,
+    PlaylistPlayback  = 4,
+    RandomPlayback    = 8,
+    RepeatPlayback    = 16
+};
 
-    enum StopAfterMode {
-        StopNever = 0,
-        StopAfterCurrent,
-        StopAfterQueue
-    };
+enum StopAfterMode
+{
+    StopNever = 0,
+    StopAfterCurrent,
+    StopAfterQueue
+};
 
 
-    class AMAROK_EXPORT Actions : public QObject , public EngineObserver {
-        Q_OBJECT
+class AMAROK_EXPORT Actions : public QObject , public EngineObserver
+{
+    Q_OBJECT
 
-        public:
-            static Actions* instance();
-            static void destroy();
+public:
+    static Actions* instance();
+    static void destroy();
 
-            /**
-             * This is called by the engine before the current track ends. It
-             * will figure out the next track and enqueue it. This won't
-             * actually change the track. That happens in the engine when the
-             * current track ends.
-             */
-            void requestNextTrack();
-            
-            /**
-             * Figure out the next track, and start playing it immediately.
-             */
-            void requestUserNextTrack();
+    /**
+     * This is called by the engine before the current track ends. It
+     * will figure out the next track and enqueue it. This won't
+     * actually change the track. That happens in the engine when the
+     * current track ends.
+     */
+    void requestNextTrack();
 
-            /**
-             * Figure out the previous track and start playing it immediately.
-             */
-            void requestPrevTrack();
+    /**
+     * Figure out the next track, and start playing it immediately.
+     */
+    void requestUserNextTrack();
 
-            /*
-             * When request[X]Track functions are called, they will call back to one
-             * these functions so the controller knows which track to send to the engine
-             */
-            void setNextRow(int row) { setNextTrack(Model::instance()->idAt(row)); }
-            void setUserNextRow(int row) { setUserNextTrack(Model::instance()->idAt(row)); }
-            void setPrevRow(int row) { setUserNextTrack(Model::instance()->idAt(row)); }
+    /**
+     * Figure out the previous track and start playing it immediately.
+     */
+    void requestPrevTrack();
 
-            void setNextTrack(quint64 trackid);
-            void setUserNextTrack(quint64 trackid);
-            void setPrevTrack(quint64 trackid);
+    /*
+     * When request[X]Track functions are called, they will call back to one
+     * these functions so the controller knows which track to send to the engine
+     */
+    void setNextRow( int row )
+    {
+        setNextTrack( Model::instance()->idAt( row ) );
+    }
+    void setUserNextRow( int row )
+    {
+        setUserNextTrack( Model::instance()->idAt( row ) );
+    }
+    void setPrevRow( int row )
+    {
+        setUserNextTrack( Model::instance()->idAt( row ) );
+    }
 
-            StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
-            void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; } 
+    void setNextTrack( quint64 trackid );
+    void setUserNextTrack( quint64 trackid );
+    void setPrevTrack( quint64 trackid );
 
-        public slots:
-            void play();
-            void play( int );
-            void play( const QModelIndex& index );
-            void play( quint64, bool now = true );
-            void next();
-            void back();
-            void playlistModeChanged(); //! Changes the tracknavigator
-            void repopulateDynamicPlaylist();
+    StopAfterMode stopAfterMode() const
+    {
+        return m_stopAfterMode;
+    }
+    void setStopAfterMode( StopAfterMode m )
+    {
+        m_stopAfterMode = m;
+    }
 
-        private:
-            Actions( QObject* parent = 0 );
-            ~Actions();
+public slots:
+    void play();
+    void play( int );
+    void play( const QModelIndex& index );
+    void play( quint64, bool now = true );
+    void next();
+    void back();
+    void playlistModeChanged(); //! Changes the tracknavigator
+    void repopulateDynamicPlaylist();
 
-            void engineStateChanged( Phonon::State currentState, Phonon::State oldState); //from EngineObserver
-            void engineNewTrackPlaying(); //from EngineObserver
+private:
+    Actions( QObject* parent = 0 );
+    ~Actions();
 
-            quint64 m_nextTrackCandidate;
-            TrackNavigator* m_navigator;                //! the strategy of what to do when a track finishes playing
-            Playlist::StopAfterMode m_stopAfterMode;
-            bool m_trackError;
-            bool m_waitingForNextTrack;
+    void engineStateChanged( Phonon::State currentState, Phonon::State oldState ); //from EngineObserver
+    void engineNewTrackPlaying(); //from EngineObserver
 
-            static Actions* s_instance; //! instance variable
-    };
+    quint64 m_nextTrackCandidate;
+    TrackNavigator* m_navigator;                //! the strategy of what to do when a track finishes playing
+    Playlist::StopAfterMode m_stopAfterMode;
+    bool m_trackError;
+    bool m_waitingForNextTrack;
+
+    static Actions* s_instance; //! instance variable
+};
 } // namespace Playlist
 
 #endif

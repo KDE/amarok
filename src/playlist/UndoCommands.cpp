@@ -28,17 +28,19 @@
  * Insert
  ************************/
 Playlist::InsertTracksCmd::InsertTracksCmd( QUndoCommand* parent, const InsertCmdList& cmds )
-    : QUndoCommand( i18n("Tracks Added"), parent )
-    , m_cmdlist( cmds )
+        : QUndoCommand( i18n( "Tracks Added" ), parent )
+        , m_cmdlist( cmds )
 { }
 
 void
-Playlist::InsertTracksCmd::redo() {
+Playlist::InsertTracksCmd::redo()
+{
     Model::instance()->insertTracksCommand( m_cmdlist );
 }
 
 void
-Playlist::InsertTracksCmd::undo() {
+Playlist::InsertTracksCmd::undo()
+{
     Model::instance()->removeTracksCommand( m_cmdlist );
 }
 
@@ -46,17 +48,19 @@ Playlist::InsertTracksCmd::undo() {
  * Remove
  ************************/
 Playlist::RemoveTracksCmd::RemoveTracksCmd( QUndoCommand* parent, const RemoveCmdList& cmds )
-    : QUndoCommand( i18n("Tracks Removed"), parent )
-    , m_cmdlist( cmds )
+        : QUndoCommand( i18n( "Tracks Removed" ), parent )
+        , m_cmdlist( cmds )
 { }
 
 void
-Playlist::RemoveTracksCmd::redo() {
+Playlist::RemoveTracksCmd::redo()
+{
     Model::instance()->removeTracksCommand( m_cmdlist );
 }
 
 void
-Playlist::RemoveTracksCmd::undo() {
+Playlist::RemoveTracksCmd::undo()
+{
     Model::instance()->insertTracksCommand( m_cmdlist );
 }
 
@@ -64,16 +68,18 @@ Playlist::RemoveTracksCmd::undo() {
  * Move
  ************************/
 Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand* parent, const MoveCmdList& cmds )
-    : QUndoCommand( i18n("Track moved"), parent ) // FIXME: better translation after string freeze
-    , m_cmdlist( cmds )
+        : QUndoCommand( i18n( "Track moved" ), parent ) // FIXME: better translation after string freeze
+        , m_cmdlist( cmds )
 { }
 
 void
-Playlist::MoveTracksCmd::redo() {
+Playlist::MoveTracksCmd::redo()
+{
     Model::instance()->moveTracksCommand( m_cmdlist, false );
 }
 
 void
-Playlist::MoveTracksCmd::undo() {
+Playlist::MoveTracksCmd::undo()
+{
     Model::instance()->moveTracksCommand( m_cmdlist, true );
 }

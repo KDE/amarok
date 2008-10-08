@@ -37,75 +37,79 @@ class QMimeData;
  * all of its functions automatically, so we have to proxy a lot of
  * them manually.  -- stharward */
 
-namespace Playlist {
-    enum GroupDataRoles {
-        GroupRole = 256,
-        GroupedTracksRole, // deprecated
-        GroupedAlternateRole // deprecated
-    };
+namespace Playlist
+{
+enum GroupDataRoles
+{
+    GroupRole = 256,
+    GroupedTracksRole, // deprecated
+    GroupedAlternateRole // deprecated
+};
 
-    enum GroupMode {
-        None = 1,
-        Head,
-        Head_Collapsed, // deprecated
-        Body,
-        Tail,
-        Collapsed // deprecated
-    };
+enum GroupMode
+{
+    None = 1,
+    Head,
+    Head_Collapsed, // deprecated
+    Body,
+    Tail,
+    Collapsed // deprecated
+};
 
-    class GroupingProxy : public QAbstractProxyModel {
+class GroupingProxy : public QAbstractProxyModel
+{
 
-        Q_OBJECT
+    Q_OBJECT
 
-        public:
-            static GroupingProxy* instance();
-            static void destroy();
+public:
+    static GroupingProxy* instance();
+    static void destroy();
 
-            // functions from QAbstractProxyModel
-            QModelIndex index(int, int c = 0, const QModelIndex& parent = QModelIndex()) const;
-            QModelIndex parent(const QModelIndex&) const;
-            int rowCount(const QModelIndex& idx = QModelIndex()) const;
-            int columnCount(const QModelIndex&) const;
-            QModelIndex mapToSource(const QModelIndex&) const;
-            QModelIndex mapFromSource(const QModelIndex&) const;
-            QVariant data(const QModelIndex &index, int role) const;
+    // functions from QAbstractProxyModel
+    QModelIndex index( int, int c = 0, const QModelIndex& parent = QModelIndex() ) const;
+    QModelIndex parent( const QModelIndex& ) const;
+    int rowCount( const QModelIndex& idx = QModelIndex() ) const;
+    int columnCount( const QModelIndex& ) const;
+    QModelIndex mapToSource( const QModelIndex& ) const;
+    QModelIndex mapFromSource( const QModelIndex& ) const;
+    QVariant data( const QModelIndex &index, int role ) const;
 
-            // wrapped functions from PlaylistModel
-            void setActiveRow(int) const;
-            Meta::TrackPtr trackAt(int) const;
-            Qt::DropActions supportedDropActions() const;
-            Qt::ItemFlags flags(const QModelIndex&) const;
-            QStringList mimeTypes() const;
-            QMimeData* mimeData(const QModelIndexList&) const;
-            bool dropMimeData(const QMimeData*, Qt::DropAction, int, int, const QModelIndex&);
+    // wrapped functions from PlaylistModel
+    void setActiveRow( int ) const;
+    Meta::TrackPtr trackAt( int ) const;
+    Qt::DropActions supportedDropActions() const;
+    Qt::ItemFlags flags( const QModelIndex& ) const;
+    QStringList mimeTypes() const;
+    QMimeData* mimeData( const QModelIndexList& ) const;
+    bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
-            // grouping-related functions
-            void setCollapsed(int, bool) const;
-            int firstInGroup(int) const;
-            int lastInGroup(int) const;
+    // grouping-related functions
+    void setCollapsed( int, bool ) const;
+    int firstInGroup( int ) const;
+    int lastInGroup( int ) const;
 
-        signals:
-            void rowsInserted(const QModelIndex&, int, int);
-            void rowsRemoved(const QModelIndex&, int, int);
+signals:
+    void rowsInserted( const QModelIndex&, int, int );
+    void rowsRemoved( const QModelIndex&, int, int );
 
-        private slots:
-            void modelDataChanged(const QModelIndex&, const QModelIndex&);
-            void modelRowsInserted(const QModelIndex&, int, int);
-            void modelRowsRemoved(const QModelIndex&, int, int);
-            void regroupAll();
+private slots:
+    void modelDataChanged( const QModelIndex&, const QModelIndex& );
+    void modelRowsInserted( const QModelIndex&, int, int );
+    void modelRowsRemoved( const QModelIndex&, int, int );
+    void regroupAll();
 
-        private:
-            GroupingProxy();
-            ~GroupingProxy();
+private:
+    GroupingProxy();
+    ~GroupingProxy();
 
-            void regroupRows(int firstRow, int lastRow);
-            QList<GroupMode> m_rowGroupMode;
+    void regroupRows( int firstRow, int lastRow );
+    QList<GroupMode> m_rowGroupMode;
 
-            // grouping auxiliary functions -- deprecated, but used by GraphicsView
-            int groupRowCount(int row) const;
+    // grouping auxiliary functions -- deprecated, but used by GraphicsView
+    int groupRowCount( int row ) const;
 
-            Model* m_model;
+    Model* m_model;
 
-            static GroupingProxy* s_instance;
-    };
+    static GroupingProxy* s_instance;
+};
 } // namespace Playlist
