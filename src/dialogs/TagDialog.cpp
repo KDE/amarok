@@ -910,7 +910,6 @@ void TagDialog::readTags()
     enableOrDisable( kComboBox_album );
     enableOrDisable( kComboBox_genre );
 #undef enableOrDisable
-    ui->ratingWidget->setEnabled( editable );
     ui->qSpinBox_track->setEnabled( editable );
     ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
