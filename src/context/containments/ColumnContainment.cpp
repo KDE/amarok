@@ -290,7 +290,7 @@ ColumnContainment::contextualActions()
 void
 ColumnContainment::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect)
 {
-    Q_UNUSED( option );
+    Q_UNUSED( option ); Q_UNUSED( contentsRect );
     painter->save();
 
     if( m_paintTitle )
