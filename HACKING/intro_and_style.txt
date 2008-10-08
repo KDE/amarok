@@ -52,7 +52,7 @@ be useful for badly formatted 3rd party patches.
 
 Use it like this to get (approximately) Amarok formatting style:
 
-    "astyle -s4 -b -p -P -o source.cpp"
+    "astyle -s4 -b -p -U -D -o source.cpp"
 
 
 Class, Function & Variable Naming
