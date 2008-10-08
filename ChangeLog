@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
-    * Track count an total play time is now shown below the playlist
+    * Track count an total play time is now shown below the playlist.
       (BR 171652)
 
   CHANGES:
@@ -23,9 +23,10 @@ VERSION 2.0-beta3
       review the SVN commit notes to learn about other changes.
 
   BUGFIXES:
+    * File sizes for non-collection local tracks are now determined properly.
     * Track rating is now enabled for read-only files too.
     * Play option from playlist context menu works now. (BR 172141)
-    * Cloud applet moved to playground as it still needs a lot of work 
+    * Cloud applet moved to playground as it still needs a lot of work.
       (BR 170613)
     * Playlist overhaul fixes a couple of bugs. (BR 167861) (BR 171048)
 
