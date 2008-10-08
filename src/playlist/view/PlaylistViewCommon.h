@@ -27,12 +27,11 @@
 
 namespace Playlist
 {
-namespace ViewCommon
-{
-
-void editTrackInformation();
-void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
-}
+    namespace ViewCommon
+    {
+        void editTrackInformation();
+        void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
+    }
 }
 
 #endif
