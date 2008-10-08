@@ -113,8 +113,10 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
 
-    if( ui->customschemeCheck->isChecked())
+    if( ui->customschemeCheck->isChecked()) {
+        filenameLayoutDialog->show();
         setDetailsWidgetVisible(true);
+    }
     else
         toggleDetails();
 
