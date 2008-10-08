@@ -42,7 +42,7 @@ macro_push_required_vars()
 set( CMAKE_REQUIRED_INCLUDES ${MYSQL_INCLUDE_DIR} )
 set( CMAKE_REQUIRED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} )
 include_directories( ${MYSQL_INCLUDE_DIR} )
-check_cxx_source_compiles( "#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_OPT_EMBEDDED_CONNECTION )
+check_cxx_source_compiles( "#if (defined(_WIN32) || defined(_WIN64))\n#define __LCC__\n#endif\n#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_OPT_EMBEDDED_CONNECTION )
 macro_pop_required_vars()
 
 if(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
