@@ -1,24 +1,24 @@
 /***************************************************************************
  * copyright   : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  *             : (C) 2008 Soren Harward <stharward@gmail.com>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License or (at your option) version 3 or any later version
  * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
+ * by the membership of KDE e.V.), which shall act as a proxy
  * defined in Section 14 of version 3 of the license.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
- 
+
 #ifndef REPEATALBUMNAVIGATOR_H
 #define REPEATALBUMNAVIGATOR_H
 
@@ -29,37 +29,39 @@
 #include <QHash>
 #include <QList>
 
-namespace Playlist {
-    /**
-    Navigator which repeats one album over and over
+namespace Playlist
+{
+/**
+Navigator which repeats one album over and over
 
-        @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-    */
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+*/
 
-    class RepeatAlbumNavigator : public SimpleTrackNavigator {
-        Q_OBJECT
+class RepeatAlbumNavigator : public SimpleTrackNavigator
+{
+    Q_OBJECT
 
-        public:
-            RepeatAlbumNavigator();
+public:
+    RepeatAlbumNavigator();
 
-        private slots:
-            void recvInsertedIds(const QList<quint64>&);
-            void recvRemovedIds(const QList<quint64>&);
-            void recvActiveTrackChanged(const quint64);
+private slots:
+    void recvInsertedIds( const QList<quint64>& );
+    void recvRemovedIds( const QList<quint64>& );
+    void recvActiveTrackChanged( const quint64 );
 
-        private:
-            int nextRow();
-            int lastRow();
+private:
+    int nextRow();
+    int lastRow();
 
-            static bool idLessThan(const quint64 left, const quint64 right);
-            void sortTheseAlbums(const Meta::AlbumList);
+    static bool idLessThan( const quint64 left, const quint64 right );
+    void sortTheseAlbums( const Meta::AlbumList );
 
-            void dump();
+    void dump();
 
-            QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
+    QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
 
-            Meta::AlbumPtr m_currentAlbum;
-            quint64 m_currentTrack;
-    };
+    Meta::AlbumPtr m_currentAlbum;
+    quint64 m_currentTrack;
+};
 }
 #endif

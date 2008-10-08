@@ -24,7 +24,7 @@
 #include "playlist/PlaylistActions.h"
 
 Playlist::SimpleTrackNavigator::SimpleTrackNavigator() { }
-    
+
 int
 Playlist::SimpleTrackNavigator::lastRow()
 {

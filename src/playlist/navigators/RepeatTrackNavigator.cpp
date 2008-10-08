@@ -28,7 +28,7 @@ int
 Playlist::RepeatTrackNavigator::userNextRow()
 {
     int updateRow = The::playlistModel()->activeRow() + 1;
-    if( Model::instance()->rowExists( updateRow ) ) setCurrentTrack( updateRow );
+    if ( Model::instance()->rowExists( updateRow ) ) setCurrentTrack( updateRow );
     return -1;
 }
 

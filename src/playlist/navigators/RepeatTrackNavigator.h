@@ -22,20 +22,21 @@
 #include "playlist/PlaylistModel.h"
 #include "SimpleTrackNavigator.h"
 
-namespace Playlist {
+namespace Playlist
+{
 /**
  * Simply plays the next track and stops playing when the playlist is finished.
  */
-    class RepeatTrackNavigator : public SimpleTrackNavigator
-    {
-        public:
-            RepeatTrackNavigator() : SimpleTrackNavigator() {}
+class RepeatTrackNavigator : public SimpleTrackNavigator
+{
+public:
+    RepeatTrackNavigator() : SimpleTrackNavigator() {}
 
-        private:
-            int nextRow();
-            int userNextRow();
-    };
+private:
+    int nextRow();
+    int userNextRow();
+};
 
- }
+}
 
 #endif

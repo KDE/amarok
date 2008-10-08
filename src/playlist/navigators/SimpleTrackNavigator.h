@@ -25,30 +25,33 @@
 
 namespace Playlist
 {
-    /** A abstract class that provides a simpler interface to implement for
-     * navigators that don't need to do any extra work or require any kind of
-     * threading (which is really every navigator except DynamicTrackNavigator).
-     */
+/** A abstract class that provides a simpler interface to implement for
+ * navigators that don't need to do any extra work or require any kind of
+ * threading (which is really every navigator except DynamicTrackNavigator).
+ */
 
-    typedef QList<quint64> AlbumTrackList; // used in RandomAlbum and RepeatAlbum
+typedef QList<quint64> AlbumTrackList; // used in RandomAlbum and RepeatAlbum
 
-    class SimpleTrackNavigator : public TrackNavigator
+class SimpleTrackNavigator : public TrackNavigator
+{
+public:
+    SimpleTrackNavigator();
+    virtual ~SimpleTrackNavigator() {}
+
+    void requestNextTrack();
+    void requestUserNextTrack();
+    void requestLastTrack();
+
+protected:
+    virtual int nextRow() = 0;
+    virtual int userNextRow()
     {
-        public:
-            SimpleTrackNavigator();
-            virtual ~SimpleTrackNavigator() {}
-
-            void requestNextTrack();
-            void requestUserNextTrack();
-            void requestLastTrack();
-
-        protected:
-            virtual int nextRow() = 0;
-            virtual int userNextRow() { return nextRow(); }
-            virtual int lastRow();
-    };
+        return nextRow();
+    }
+    virtual int lastRow();
+};
 }
- 
+
 
 
 #endif
