@@ -38,23 +38,26 @@
  */
 class CollectionAction : public QAction
 {
-    public:
-        CollectionAction( Collection *coll, QObject *parent = 0 )
+public:
+    CollectionAction( Collection *coll, QObject *parent = 0 )
             : QAction( parent )
             , m_collection( coll )
-        {
-           setText( m_collection->prettyName() );
-        }
+    {
+        setText( m_collection->prettyName() );
+    }
 
-        Collection *collection() const { return m_collection; }
+    Collection *collection() const
+    {
+        return m_collection;
+    }
 
-    private:
-        Collection *m_collection;
+private:
+    Collection *m_collection;
 };
 
 
 MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
-    : KDirOperator( url, parent )
+        : KDirOperator( url, parent )
 {
     MyDirLister* dirlister = new MyDirLister( true );
     dirlister->setMainWindow( The::mainWindow() );
@@ -62,13 +65,13 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
     setDirLister( dirlister );
     setView( KFile::Simple );
 
-    view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    view()->setContentsMargins(0,0,0,0);
+    view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    view()->setContentsMargins( 0, 0, 0, 0 );
     view()->setFrameShape( QFrame::NoFrame );
 
     connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
              this,   SLOT( fileSelected( const KFileItem& ) ) );
-    
+
     //FIXME: This signal is only available under KDE4.2 libraries, so remove the ActionCollection hack
     //when we bump kdelibs dep.
     //connect( this, SIGNAL( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ),
@@ -76,7 +79,7 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
 
     //HACK: crafty method to hijack the context menu
     KActionMenu *actionMenu = static_cast<KActionMenu*>( actionCollection()->action( "popupMenu" ) );
-    if( actionMenu )
+    if ( actionMenu )
     {
         KMenu *menu = actionMenu->menu();
         connect( menu, SIGNAL( aboutToShowContextMenu( KMenu *menu, QAction *menuAction, QMenu *ctxMenu ) ),
@@ -108,7 +111,7 @@ void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
 void MyDirOperator::aboutToShowContextMenu()
 {
     QMenu *menu = dynamic_cast<QMenu*>( sender() );
-    if( !menu )
+    if ( !menu )
         return;
 
     PopupDropperActionList actions = createBasicActions();
@@ -120,16 +123,16 @@ void MyDirOperator::aboutToShowContextMenu()
     QList<Collection*> writableCollections;
     QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
     QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
-    while( it != hash.constEnd() )
+    while ( it != hash.constEnd() )
     {
         Collection *coll = it.key();
-        if( coll && coll->isWritable() )
+        if ( coll && coll->isWritable() )
         {
             writableCollections.append( coll );
         }
         ++it;
     }
-    if( !writableCollections.isEmpty() )
+    if ( !writableCollections.isEmpty() )
     {
         QMenu *copyMenu = new QMenu( i18n( "Move to Collection" ), this );
         foreach( Collection *coll, writableCollections )
@@ -146,11 +149,11 @@ void
 MyDirOperator::slotMoveTracks()
 {
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
-    if( !action )
+    if ( !action )
         return;
 
     const KFileItemList list = selectedItems();
-    if( list.isEmpty() )
+    if ( list.isEmpty() )
         return;
 
     KUrl::List expanded = Amarok::recursiveUrlExpand( list.urlList() );
@@ -161,7 +164,7 @@ MyDirOperator::slotMoveTracks()
     CollectionManager *cm = CollectionManager::instance();
     Meta::TrackList tracks = cm->tracksForUrls( expanded );
 
-    if( tracks.size() <= 0 )
+    if ( tracks.size() <= 0 )
         return;
 
     source->prepareMove( tracks, destination );
@@ -170,7 +173,7 @@ MyDirOperator::slotMoveTracks()
 void MyDirOperator::slotAppendChildTracks()
 {
     const KFileItemList list = selectedItems();
-    if( list.isEmpty() )
+    if ( list.isEmpty() )
         return;
     playChildTracks( list, Playlist::AppendAndPlay );
 }
@@ -178,7 +181,7 @@ void MyDirOperator::slotAppendChildTracks()
 void MyDirOperator::slotPlayChildTracks()
 {
     const KFileItemList list = selectedItems();
-    if( list.isEmpty() )
+    if ( list.isEmpty() )
         return;
     playChildTracks( list, Playlist::Replace );
 }

@@ -40,21 +40,21 @@ class MyDirOperator : public KDirOperator
 {
     Q_OBJECT
 
-    public:
-        MyDirOperator( const KUrl &url, QWidget *parent );
-        ~MyDirOperator();
+public:
+    MyDirOperator( const KUrl &url, QWidget *parent );
+    ~MyDirOperator();
 
-    private slots:
-        void aboutToShowContextMenu();
-        void fileSelected( const KFileItem & /*file*/ );
+private slots:
+    void aboutToShowContextMenu();
+    void fileSelected( const KFileItem & /*file*/ );
 
-        void slotMoveTracks();
-        void slotPlayChildTracks();
-        void slotAppendChildTracks();
-        
-    private:
-        PopupDropperActionList createBasicActions();
-        void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
+    void slotMoveTracks();
+    void slotPlayChildTracks();
+    void slotAppendChildTracks();
+
+private:
+    PopupDropperActionList createBasicActions();
+    void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
 };
 
 #endif
