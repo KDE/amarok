@@ -19,6 +19,7 @@
 
 #include "ServiceListDelegate.h"
 
+#include "App.h"
 #include "Debug.h"
 #include "services/ServiceBase.h"
 #include "ServiceListModel.h"
@@ -58,6 +59,11 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     painter->save();
 
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
+
+    if ( option.state & QStyle::State_Selected )
+        painter->setPen( App::instance()->palette().highlightedText().color() );
+    else
+        painter->setPen( App::instance()->palette().text().color() );
     
     painter->setRenderHint ( QPainter::Antialiasing );
 
