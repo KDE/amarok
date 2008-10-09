@@ -20,6 +20,7 @@
 
 #include "DynamicBiasDelegate.h"
 
+#include "App.h"
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicBiasModel.h"
@@ -33,7 +34,9 @@ PlaylistBrowserNS::DynamicBiasDelegate::DynamicBiasDelegate( QWidget* parent )
 void
 PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    Q_UNUSED(painter)
+    //Q_UNUSED(painter)
+
+    QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
 
     QRect rect( option.rect );
 
