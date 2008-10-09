@@ -215,6 +215,7 @@ set(collection_SRCS
     collection/support/MemoryQueryMaker.cpp
     collection/support/XmlQueryReader.cpp
     collection/support/XmlQueryWriter.cpp
+    collection/support/FileCollectionLocation.cpp
 )
 
 #####################################################################

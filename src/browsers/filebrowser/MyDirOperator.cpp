@@ -22,7 +22,7 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "collection/Collection.h"
-#include "collection/CollectionLocation.h"
+#include "collection/support/FileCollectionLocation.h"
 #include "collection/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
@@ -149,7 +149,7 @@ MyDirOperator::slotMoveTracks()
 
     KUrl::List expanded = Amarok::recursiveUrlExpand( list.urlList() );
 
-    CollectionLocation *source      = new CollectionLocation();
+    CollectionLocation *source      = new FileCollectionLocation();
     CollectionLocation *destination = action->collection()->location();
 
     CollectionManager *cm = CollectionManager::instance();
