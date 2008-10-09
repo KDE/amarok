@@ -276,17 +276,11 @@ OrganizeCollectionDialog::buildFormatString() const
         format += "{%track - }%title.%filetype";
     }
 
-    if( ui->customschemeCheck->isChecked() )    //get from scheme
-        //format = QDir::fromNativeSeparators( ui->formatEdit->text() );      //fromNativeSeparators handles \\ under windows
+
+    format = QDir::fromNativeSeparators( format );      //fromNativeSeparators handles \\ under windows
     return format;
 }
 
-
-void
-OrganizeCollectionDialog::setPreviewTrack( const Meta::TrackPtr track )     //UNUSED!! I don't know what's this thing doing here but it might be the cause of BR169684
-{
-   m_previewTrack = track;
-}
 
 
 void

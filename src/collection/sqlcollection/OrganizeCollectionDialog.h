@@ -66,7 +66,6 @@ class OrganizeCollectionDialog : public KDialog
         QString buildFormatTip() const;
         QString buildFormatString() const;
         void toggleDetails();
-        void setPreviewTrack( const Meta::TrackPtr track );
         void preview( const QString &format );
         void update( int dummy );
         void update( const QString & dummy );
