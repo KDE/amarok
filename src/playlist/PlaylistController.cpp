@@ -38,6 +38,8 @@
 
 #include <QAction>
 
+#include <algorithm> // STL
+
 Playlist::Controller* Playlist::Controller::s_instance = 0;
 
 Playlist::Controller* Playlist::Controller::instance()
@@ -288,7 +290,9 @@ Playlist::Controller::removeRows( QList<int>& rows )
         else
             warning() << "received command to remove non-existent row" << r;
     }
-    m_undoStack->push( new RemoveTracksCmd( 0, cmds ) );
+
+    if ( cmds.size() > 0 )
+        m_undoStack->push( new RemoveTracksCmd( 0, cmds ) );
 }
 
 void
@@ -324,53 +328,64 @@ Playlist::Controller::moveRow( int from, int to )
     moveRows( source, target );
 }
 
-void
+/* This function returns the real starting location where the rows ended up.
+ * For example, if you start with the following playlist:
+ *
+ *   1 Alpha
+ *   2 Bravo
+ *   2 Charlie
+ *   4 Delta
+ *   5 Echo
+ *   6 Foxtrot
+ *
+ * and you call moveRows( [1,2,3], 5 ) then the playlist will end up with
+ *
+ *   1 Delta
+ *   2 Echo
+ *   3 Alpha
+ *   4 Bravo
+ *   5 Charlie
+ *   6 Foxtrot
+ *
+ * and the function will return 3, because that's where the rows really
+ * ended up. */
+
+int
 Playlist::Controller::moveRows( QList<int>& from, int to )
 {
     DEBUG_BLOCK
     if ( from.size() <= 0 )
-        return;
+        return to;
 
-    to = qBound(0, to, m_model->rowCount() - 1);
-
-    int min = to;
-    int max = to;
-    foreach( int i, from )
-    {
-        min = qMin( min, i );
-        max = qMax( max, i );
-    }
+    to = ( to == qBound( 0, to, m_model->rowCount() ) ) ? to : m_model->rowCount();
 
     qSort( from.begin(), from.end() );
+    from.erase( std::unique( from.begin(), from.end() ), from.end() );
+    int min = qMin( to, from.first() );
+    int max = qMax( to, from.last() );
 
-    foreach( int f, from )
-    {
+    QList<int> source;
+    QList<int> target;
+    for ( int i = min; i <= max; i++ ) {
+        source.append( i );
+        target.append( i );
+    }
+
+    foreach ( int f, from ) {
         if ( f < to )
             to--;
+        source.removeOne( f );
     }
 
-    QList<int> sourceSlots;
-    QList<int> targetSlots;
-    for ( int i = min; i <= max; i++ )
-    {
-        sourceSlots.append( i );
-        targetSlots.append( i );
+    QList<int>::const_iterator f_iter = from.end();
+    while (f_iter != from.begin()) {
+        --f_iter;
+        source.insert( ( to - min ), *f_iter );
     }
 
-    QList<int> sourceMoves;
-    QList<int> targetMoves;
-    foreach( int r, from )
-    {
-        if ( !( sourceSlots.removeOne( r ) && targetSlots.removeOne( to ) ) )
-            return;
-        sourceMoves.append( r );
-        targetMoves.append( to++ );
-    }
+    moveRows( source, target );
 
-    sourceMoves += sourceSlots;
-    targetMoves += targetSlots;
-
-    moveRows( sourceMoves, targetMoves );
+    return to;
 }
 
 void
@@ -396,10 +411,13 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
     for ( int i = 0; i < from.size(); i++ )
     {
         debug() << "moving rows:" << from.at( i ) << to.at( i );
-        if (( from.at( i ) >= 0 ) && ( from.at( i ) < m_model->rowCount() ) )
-            cmds.append( MoveCmd( from.at( i ), to.at( i ) ) );
+        if ( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_model->rowCount() ) )
+            if ( from.at( i ) != to.at( i ) )
+                cmds.append( MoveCmd( from.at( i ), to.at( i ) ) );
     }
-    m_undoStack->push( new MoveTracksCmd( 0, cmds ) );
+
+    if ( cmds.size() > 0 )
+        m_undoStack->push( new MoveTracksCmd( 0, cmds ) );
 }
 
 void
@@ -492,7 +510,9 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tracks )
     {
         cmds.append( InsertCmd( t, row++ ) );
     }
-    m_undoStack->push( new InsertTracksCmd( 0, cmds ) );
+
+    if ( cmds.size() > 0 )
+        m_undoStack->push( new InsertTracksCmd( 0, cmds ) );
 }
 
 namespace The

@@ -83,7 +83,7 @@ public slots:
     void removeRows( QList<int>& rows );
 
     void moveRow( int from, int to );
-    void moveRows( QList<int>& from, int to );
+    int  moveRows( QList<int>& from, int to ); // see function definition for info abt return value
     void moveRows( QList<int>& from, QList<int>& to );
 
     void undo();

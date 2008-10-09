@@ -21,12 +21,15 @@
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
+#include <QRect>
 
 class QContextMenuEvent;
 class QDragLeaveEvent;
+class QDragMoveEvent;
 class QDropEvent;
 class QKeyEvent;
 class QMouseEvent;
+class QPaintEvent;
 
 namespace Playlist
 {
@@ -51,10 +54,12 @@ private slots:
 private:
     void contextMenuEvent( QContextMenuEvent* );
     void dragLeaveEvent( QDragLeaveEvent* );
+    void dragMoveEvent( QDragMoveEvent* );
     void dropEvent( QDropEvent* );
     void keyPressEvent( QKeyEvent* );
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
+    void paintEvent( QPaintEvent* );
 
     bool mouseEventInHeader( const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
@@ -62,7 +67,8 @@ private:
 
     QList<int> selectedRows() const;
 
-    bool m_mousePressInHeader;
+    QRect m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;
+    bool m_mousePressInHeader;
 };
 }

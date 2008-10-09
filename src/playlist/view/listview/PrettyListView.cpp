@@ -31,6 +31,8 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
 
+#include <KApplication>
+
 #include <QColor>
 #include <QContextMenuEvent>
 #include <QDropEvent>
@@ -39,19 +41,20 @@
 #include <QListView>
 #include <QModelIndex>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QPalette>
 #include <QPersistentModelIndex>
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
-        , m_mousePressInHeader( false )
         , m_headerPressIndex( QModelIndex() )
+        , m_mousePressInHeader( false )
 {
     setModel( GroupingProxy::instance() );
     setItemDelegate( new PrettyItemDelegate( this ) );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setDragDropMode( QAbstractItemView::DragDrop );
-    setDropIndicatorShown( true );
+    setDropIndicatorShown( false ); // we draw our own drop indicator
 
     // rendering adjustments
     setFrameShape( QFrame::NoFrame );
@@ -102,7 +105,7 @@ void
 Playlist::PrettyListView::scrollToActiveTrack()
 {
     QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
-    if (activeIndex.isValid())
+    if ( activeIndex.isValid() )
         scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
 }
 
@@ -124,27 +127,44 @@ void
 Playlist::PrettyListView::dragLeaveEvent( QDragLeaveEvent* event )
 {
     m_mousePressInHeader = false;
+    m_dropIndicator = QRect( 0, 0, 0, 0 );
     QListView::dragLeaveEvent( event );
+}
+
+void
+Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
+{
+    QPoint mousept = event->pos() + QPoint( horizontalOffset(), verticalOffset() );
+    QModelIndex index = indexAt( event->pos() );
+    if ( index.isValid() ) {
+        m_dropIndicator = visualRect( index );
+    } else {
+        // draw it on the bottom of the last item
+        index = model()->index( GroupingProxy::instance()->rowCount() - 1, 0, QModelIndex() );
+        m_dropIndicator = visualRect( index );
+        m_dropIndicator = m_dropIndicator.translated( 0, m_dropIndicator.height() );
+    }
+    QListView::dragMoveEvent( event );
 }
 
 void
 Playlist::PrettyListView::dropEvent( QDropEvent* event )
 {
     DEBUG_BLOCK
+    m_dropIndicator = QRect( 0, 0, 0, 0 );
     if ( dynamic_cast<PrettyListView*>( event->source() ) == this )
     {
         QAbstractItemModel* plModel = model();
         int targetRow = indexAt( event->pos() ).row();
-        targetRow = ( targetRow < 0 ) ? plModel->rowCount() - 1 : targetRow; // target of < 0 means we dropped on the end of the playlist
+        targetRow = ( targetRow < 0 ) ? plModel->rowCount() : targetRow; // target of < 0 means we dropped on the end of the playlist
         QList<int> sr = selectedRows();
-        Controller::instance()->moveRows( sr, targetRow );
-        // FIXME: this doesn't work when stuff is dragged to end of the playlist
+        int realtarget = Controller::instance()->moveRows( sr, targetRow );
         QItemSelection selItems;
         foreach( int row, sr )
         {
             Q_UNUSED( row )
-            selItems.select( plModel->index( targetRow, 0 ), plModel->index( targetRow, 0 ) );
-            targetRow++;
+            selItems.select( plModel->index( realtarget, 0 ), plModel->index( realtarget, 0 ) );
+            realtarget++;
         }
         selectionModel()->select( selItems, QItemSelectionModel::ClearAndSelect );
         event->accept();
@@ -244,6 +264,20 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
     {
         return false;
     }
+}
+
+void
+Playlist::PrettyListView::paintEvent( QPaintEvent* event )
+{
+    QPoint offset( 6, 0 );
+    if ( !m_dropIndicator.size().isEmpty() ) {
+        QPalette p = KApplication::palette();
+        QPen pen( p.color( QPalette::Highlight ), 6, Qt::SolidLine, Qt::RoundCap );
+        QPainter painter( viewport() );
+        painter.setPen( pen );
+        painter.drawLine( m_dropIndicator.topLeft() + offset, m_dropIndicator.topRight() - offset );
+    }
+    QListView::paintEvent( event );
 }
 
 QItemSelectionModel::SelectionFlags
