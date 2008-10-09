@@ -75,6 +75,7 @@ public:
     QVariant data( const QModelIndex &index, int role ) const;
 
     // wrapped functions from PlaylistModel
+    int activeRow() const;
     void setActiveRow( int ) const;
     Meta::TrackPtr trackAt( int ) const;
     Qt::DropActions supportedDropActions() const;

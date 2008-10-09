@@ -144,6 +144,12 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
     }
 }
 
+int
+Playlist::GroupingProxy::activeRow() const
+{
+    return m_model->activeRow();
+}
+
 void
 Playlist::GroupingProxy::setActiveRow( int row ) const
 {

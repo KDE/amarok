@@ -99,6 +99,14 @@ Playlist::PrettyListView::removeSelection()
 }
 
 void
+Playlist::PrettyListView::scrollToActiveTrack()
+{
+    QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
+    if (activeIndex.isValid())
+        scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
+}
+
+void
 Playlist::PrettyListView::trackActivated( const QModelIndex& idx ) const
 {
     Actions::instance()->play( idx.row() );

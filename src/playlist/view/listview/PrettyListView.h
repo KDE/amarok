@@ -43,6 +43,7 @@ public slots:
     void editTrackInformation();
     void playTrack();
     void removeSelection();
+    void scrollToActiveTrack();
 
 private slots:
     void trackActivated( const QModelIndex& ) const;
