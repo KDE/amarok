@@ -22,7 +22,7 @@
 
 #include "SvgHandler.h"
 
-#include <QItemDelegate>
+#include <QAbstractItemDelegate>
 #include <QListView>
 
 
@@ -31,7 +31,7 @@ A delegate for displaying a nice overview of a service
 
     @author
 */
-class ServiceListDelegate : public QItemDelegate
+class ServiceListDelegate : public QAbstractItemDelegate
 {
 public:
     ServiceListDelegate( QListView *view );

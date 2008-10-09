@@ -31,7 +31,7 @@
 
 
 ServiceListDelegate::ServiceListDelegate( QListView *view )
- : QItemDelegate()
+ : QAbstractItemDelegate()
  , m_view( view )
 {
     DEBUG_BLOCK
@@ -46,6 +46,8 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 {
     //DEBUG_BLOCK
 
+
+    
     const int width = m_view->viewport()->size().width() - 4;
     const int height = 72;
     const int iconWidth = 32;
@@ -54,6 +56,9 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     const int iconPadY = 4;
 
     painter->save();
+
+    QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
+    
     painter->setRenderHint ( QPainter::Antialiasing );
 
     QPixmap background;
