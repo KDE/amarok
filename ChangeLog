@@ -7,9 +7,11 @@ VERSION 2.0-beta3
   FEATURES:
     * Track count an total play time is now shown below the playlist.
       (BR 171652)
+	* You can now Copy To a collection, Append, and Load tracks
+	  from the file browser's context menu.
 
   CHANGES:
-    * Add propper mousr over visuals to some places where this was missing.
+    * Added proper mouse over visuals to some places where it was missing.
     * All services ( or any other part of Amarok ) can now add context 
       actions to any item in any collection. This is only used for the "play 
       similar artists from last.fm" currently, but it allows this kind of 
@@ -21,8 +23,10 @@ VERSION 2.0-beta3
     * Major overhaul of playlist subsystem, including a completely new view
       (even though it looks a lot like to old one).  Programmers should
       review the SVN commit notes to learn about other changes.
-	* Selecting "Move to Collection" in the filebrowser's context menu
+	* Selecting "Move to Collection" in the file browser's context menu
 	  will now recursively include all directories within the selected items.
+	* Selecting "Move to Collection" in the file browser's context menu
+	  will now delete the original source files as expected.
 
   BUGFIXES:
     * Do no try to run 2 different lyrics script per default.
