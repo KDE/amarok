@@ -19,6 +19,7 @@
 #include "MyDirOperator.h"
 
 #include "Amarok.h"
+#include "Debug.h"
 #include "MainWindow.h"
 #include "collection/Collection.h"
 #include "collection/CollectionLocation.h"
@@ -110,15 +111,10 @@ void MyDirOperator::aboutToShowContextMenu()
     if( !menu )
         return;
 
-    const KFileItemList list = selectedItems();
-
-    if( list.isEmpty() ) // or not file?
-        return;
-
-    KUrl::List urlList;
-    foreach( const KFileItem &item, list )
+    PopupDropperActionList actions = createBasicActions();
+    foreach( PopupDropperAction * action, actions )
     {
-        urlList << item.url();
+        menu->addAction( action );
     }
 
     QList<Collection*> writableCollections;
@@ -169,6 +165,56 @@ MyDirOperator::slotMoveTracks()
         return;
 
     source->prepareMove( tracks, destination );
+}
+
+void MyDirOperator::slotAppendChildTracks()
+{
+    const KFileItemList list = selectedItems();
+    if( list.isEmpty() )
+        return;
+    playChildTracks( list, Playlist::AppendAndPlay );
+}
+
+void MyDirOperator::slotPlayChildTracks()
+{
+    const KFileItemList list = selectedItems();
+    if( list.isEmpty() )
+        return;
+    playChildTracks( list, Playlist::Replace );
+}
+
+void
+MyDirOperator::playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode )
+{
+    QList<KUrl> list;
+    foreach( KFileItem item, items )
+    {
+        list.append( item.url() );
+    }
+
+    The::playlistController()->insertOptioned( list, insertMode );
+}
+
+PopupDropperActionList MyDirOperator::createBasicActions( )
+{
+
+    PopupDropperActionList actions;
+
+    PopupDropperAction* appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+
+    connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
+
+    actions.append( appendAction );
+
+    PopupDropperAction* loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+
+    connect( loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
+
+    actions.append( loadAction );
+
+
+    return actions;
+
 }
 
 #include "MyDirOperator.moc"

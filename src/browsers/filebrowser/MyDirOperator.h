@@ -21,11 +21,20 @@
 
 #include "MyDirLister.h"
 
+#include "playlist/PlaylistController.h"
+#include "PopupDropperFactory.h"
+#include "context/popupdropper/PopupDropper.h"
+#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/PopupDropperItem.h"
+#include "SvgHandler.h"
+
 #include <KAction>
 #include <KDirOperator>
 #include <KFileItem>
 #include <KMenu>
 #include <KUrl>
+
+typedef QList<PopupDropperAction *> PopupDropperActionList;
 
 class MyDirOperator : public KDirOperator
 {
@@ -40,6 +49,12 @@ class MyDirOperator : public KDirOperator
         void fileSelected( const KFileItem & /*file*/ );
 
         void slotMoveTracks();
+        void slotPlayChildTracks();
+        void slotAppendChildTracks();
+        
+    private:
+        PopupDropperActionList createBasicActions();
+        void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
 };
 
 #endif
