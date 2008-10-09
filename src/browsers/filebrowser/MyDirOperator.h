@@ -49,10 +49,12 @@ private slots:
     void fileSelected( const KFileItem & /*file*/ );
 
     void slotMoveTracks();
+    void slotCopyTracks();
     void slotPlayChildTracks();
     void slotAppendChildTracks();
 
 private:
+    Meta::TrackList prepareTracks();
     PopupDropperActionList createBasicActions();
     void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
 };

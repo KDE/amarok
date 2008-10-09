@@ -125,12 +125,21 @@ void MyDirOperator::aboutToShowContextMenu()
     }
     if ( !writableCollections.isEmpty() )
     {
-        QMenu *copyMenu = new QMenu( i18n( "Move to Collection" ), this );
+        QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), this );
         foreach( Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, this );
             connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
-            copyMenu->addAction( moveAction );
+            moveMenu->addAction( moveAction );
+        }
+        menu->addMenu( moveMenu );
+
+        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), this );
+        foreach( Collection *coll, writableCollections )
+        {
+            CollectionAction *copyAction = new CollectionAction( coll, this );
+            connect( copyAction, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
+            copyMenu->addAction( copyAction );
         }
         menu->addMenu( copyMenu );
     }
@@ -143,22 +152,40 @@ MyDirOperator::slotMoveTracks()
     if ( !action )
         return;
 
-    const KFileItemList list = selectedItems();
-    if ( list.isEmpty() )
-        return;
+    CollectionLocation *source      = new FileCollectionLocation();
+    CollectionLocation *destination = action->collection()->location();
+    
+    Meta::TrackList tracks = prepareTracks();
+    source->prepareMove( tracks, destination );
+}
 
-    KUrl::List expanded = Amarok::recursiveUrlExpand( list.urlList() );
+void
+MyDirOperator::slotCopyTracks()
+{
+    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
+    if ( !action )
+        return;
 
     CollectionLocation *source      = new FileCollectionLocation();
     CollectionLocation *destination = action->collection()->location();
 
+    Meta::TrackList tracks = prepareTracks();
+    source->prepareCopy( tracks, destination );
+}
+
+Meta::TrackList MyDirOperator::prepareTracks()
+{
+    Meta::TrackList tracks;
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return tracks;
+
+    KUrl::List expanded = Amarok::recursiveUrlExpand( list.urlList() );
+
     CollectionManager *cm = CollectionManager::instance();
-    Meta::TrackList tracks = cm->tracksForUrls( expanded );
+    tracks = cm->tracksForUrls( expanded );
 
-    if ( tracks.size() <= 0 )
-        return;
-
-    source->prepareMove( tracks, destination );
+    return tracks;
 }
 
 void MyDirOperator::slotAppendChildTracks()
