@@ -149,11 +149,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     acmBookmarks->setDelayed( false );
     m_bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->menu() );
 
-    // kaction for the dir sync method
-    m_acSyncDir = m_actionCollection->addAction( "sync_dir" );
-    m_acSyncDir->setIcon( KIcon( "curfiledir" ) );
-    m_acSyncDir->setText( i18n( "Current Document Folder" ) );
-    connect( m_acSyncDir, SIGNAL( triggered() ), this, SLOT( setActiveDocumentDir() ) );
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_toolbar->setIconDimensions( 16 );
     m_toolbar->setContextMenuPolicy( Qt::NoContextMenu );
@@ -264,7 +259,7 @@ void FileBrowser::Widget::setupToolbar( QStringList actions )
     QAction *ac;
     for ( QStringList::Iterator it = actions.begin(); it != actions.end(); ++it )
     {
-        if ( *it == "bookmarks" || *it == "sync_dir" )
+        if ( *it == "bookmarks" )
             ac = m_actionCollection->action(( *it ).toLatin1().constData() );
         else
             ac = m_dir->actionCollection()->action(( *it ).toLatin1().constData() );
