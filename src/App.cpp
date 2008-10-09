@@ -478,7 +478,13 @@ void App::applySettings( bool firstTime )
 
     { //<Engine>
         if( The::engineController()->volume() != AmarokConfig::masterVolume() )
+        {
+            // block signals to make sure that the OSD isn't shown
+            const bool osdEnabled = Amarok::OSD::instance()->isEnabled();
+            Amarok::OSD::instance()->setEnabled( false );
             The::engineController()->setVolume( AmarokConfig::masterVolume() );
+            Amarok::OSD::instance()->setEnabled( osdEnabled );
+        }
 
 #if 0
         EngineBase *engine = EngineController::engine();
