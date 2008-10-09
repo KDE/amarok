@@ -95,16 +95,7 @@ MyDirOperator::~MyDirOperator()
 
 void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
 {
-    const KFileItemList list = selectedItems();
-
-    KUrl::List urlList;
-    foreach( const KFileItem& item, list )
-    {
-        urlList << item.url();
-    }
-
-    Meta::TrackList trackList = CollectionManager::instance()->tracksForUrls( urlList );
-    The::playlistController()->insertOptioned( trackList, Playlist::AppendAndPlay );
+    slotAppendChildTracks();
     view()->selectionModel()->clear();
 }
 
