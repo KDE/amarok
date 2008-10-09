@@ -134,8 +134,6 @@ OSDWidget::ratingChanged( const short rating )
 void
 OSDWidget::volChanged( unsigned char volume )
 {
-    DEBUG_BLOCK
-
     if ( isEnabled() )
     {
         m_volume = true;
@@ -149,8 +147,6 @@ OSDWidget::volChanged( unsigned char volume )
 void
 OSDWidget::show() //virtual
 {
-    DEBUG_BLOCK
-
     if ( !isEnabled() || m_text.isEmpty() )
         return;
 
@@ -594,8 +590,6 @@ Amarok::OSD::~OSD()
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
-    DEBUG_BLOCK
-
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setOffset( AmarokConfig::osdYOffset() );
 
