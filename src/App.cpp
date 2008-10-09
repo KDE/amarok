@@ -584,7 +584,7 @@ App::continueInit()
     if( AmarokConfig::monitorChanges() )
         CollectionManager::instance()->checkCollectionChanges();
 
-    handleCliArgs();
+    //handleCliArgs();
 
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
