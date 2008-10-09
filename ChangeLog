@@ -24,6 +24,7 @@ VERSION 2.0-beta3
 	  will now recursively include all directories within the selected items.
 
   BUGFIXES:
+    * Do no try to run 2 different lyrics script per default
     * File sizes for non-collection local tracks are now determined properly.
     * Track rating and score are now enabled for read-only files too.
     * Play option from playlist context menu works now. (BR 172141)
