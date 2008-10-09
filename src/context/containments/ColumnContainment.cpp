@@ -527,7 +527,6 @@ ColumnContainment::addCurrentTrack()
 Plasma::Icon*
 ColumnContainment::addAction( QAction *action )
 {
-    DEBUG_BLOCK
     if ( !action ) {
         debug() << "ERROR!!! PASSED INVALID ACTION";
         return 0;
@@ -544,7 +543,6 @@ ColumnContainment::addAction( QAction *action )
     tool->setMinimumSize( iconSize );
     tool->setMaximumSize( iconSize );
     tool->resize( iconSize );
-
 
     tool->hide();
     tool->setZValue( zValue() + 1 );
