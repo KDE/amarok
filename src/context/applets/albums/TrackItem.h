@@ -24,8 +24,7 @@
 class TrackItem : public QStandardItem, public Meta::Observer
 {
     public:
-        TrackItem() : QStandardItem() { }
-
+        TrackItem();
         ~TrackItem() { }
 
         /**

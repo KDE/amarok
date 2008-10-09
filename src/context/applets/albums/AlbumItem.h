@@ -24,8 +24,7 @@
 class AlbumItem : public QStandardItem, public Meta::Observer
 {
     public:
-        AlbumItem() : QStandardItem() { }
-
+        AlbumItem();
         ~AlbumItem() { }
 
         /**

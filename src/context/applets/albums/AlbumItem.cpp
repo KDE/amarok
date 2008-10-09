@@ -19,6 +19,12 @@
 #include <QIcon>
 #include <QPixmap>
 
+AlbumItem::AlbumItem()
+    : QStandardItem()
+{
+    setEditable( false );
+}
+
 void
 AlbumItem::setAlbum( Meta::AlbumPtr albumPtr )
 {

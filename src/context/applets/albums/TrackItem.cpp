@@ -16,6 +16,12 @@
 
 #include <QFont>
 
+TrackItem::TrackItem()
+    : QStandardItem()
+{
+    setEditable( false );
+}
+
 void
 TrackItem::setTrack( Meta::TrackPtr trackPtr )
 {
