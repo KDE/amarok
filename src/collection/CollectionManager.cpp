@@ -450,6 +450,9 @@ CollectionManager::slotContinueRelatedArtists() //SLOT
         m_resultEmitted = true;
         emit( foundRelatedArtists( m_resultArtistList ) );
     }
+    QObject *s = sender();
+    if( s )
+        s->deleteLater();
 }
 
 void
