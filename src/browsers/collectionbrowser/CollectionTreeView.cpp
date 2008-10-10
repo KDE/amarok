@@ -67,7 +67,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_dragMutex()
     , m_ongoingDrag( false )
 {
-    setRootIsDecorated( true );
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
