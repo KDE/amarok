@@ -12,6 +12,10 @@
  *                                                                         *
  ***************************************************************************/
 
+ // NOTE: code for % free space bar referenced from:
+ // kdebase/workspace/plasma/applets/kickoff
+ // kdelibs/kio/kfile/kpropertiesdialog.cpp
+
 #include "MediaDevicesApplet.h"
 
 #include "MediaDeviceMonitor.h"
@@ -31,13 +35,121 @@
 
 #include <KStandardDirs>
 
-IpodInfo::IpodInfo( QObject *parent, const QString &mountpoint, const QString &udi )
-    : QObject( parent ),
+DeviceInfo::DeviceInfo()
+    : QObject()
+{
+    m_connected = false;
+}
+
+DeviceInfo::~DeviceInfo()
+{
+}
+
+QGraphicsLinearLayout*
+DeviceInfo::layout()
+{
+    return m_layout;
+}
+
+void
+DeviceInfo::connectClicked()
+{
+}
+
+void
+DeviceInfo::disconnectClicked()
+{
+}
+
+IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QString &udi )
+    : DeviceInfo(),
     m_mountpoint( mountpoint ),
     m_udi( udi )
 {
+    debug() << "Creating layout";
+
+    m_layout = new QGraphicsLinearLayout( Qt::Horizontal );
+    m_layout->setSpacing( 0 );
+
+    // set up icons
+
+    // get path where we pull svg's from
+
+    debug() << "Getting svg path";
+
+    QString svgPath = KStandardDirs::locate( "data", "amarok/images/pud_items.svg" );
+
+    // iPod (device) icon
+
+    debug() << "Icon stuff";
+
+    Plasma::Icon *ipodIcon = new Plasma::Icon( applet );
+    ipodIcon->setSvg( svgPath, "device" );
+
+    // NOTE: at some point connect/disconnect icon should be merged somehow
+
+    // Connect Icon
+
+    Plasma::Icon *connectIcon = new Plasma::Icon( applet );
+    connectIcon->setSvg( svgPath, "append" );
+
+    QAction *connectAction = new QAction( this );
+    connect( connectAction, SIGNAL( activated() ),
+             SLOT( connectClicked() ) );
+
+    connectIcon->setAction( connectAction );
+
+    // Disconnect Icon
+
+    Plasma::Icon *disconnectIcon = new Plasma::Icon( applet );
+    disconnectIcon->setSvg( svgPath, "delete" );
+
+    QAction *disconnectAction = new QAction( this );
+    connect( disconnectAction, SIGNAL( activated() ),
+             SLOT( disconnectClicked() ) );
+
+    disconnectIcon->setAction( disconnectAction );
+
+    // Text label
+
+    debug() << "Label";
+
+    Plasma::Label *deviceLabel = new Plasma::Label( applet );
+    deviceLabel->setText( mountpoint );
+
+    // set icons sizes
+
+    debug() << "Set sizes";
+
+    QSizeF iconSize = ipodIcon->sizeFromIconSize(32);
+    
+    ipodIcon->setMinimumSize( iconSize );
+    ipodIcon->setMaximumSize( iconSize );
+
+    connectIcon->setMinimumSize( iconSize );
+    connectIcon->setMaximumSize( iconSize );
+
+    disconnectIcon->setMinimumSize( iconSize );
+    disconnectIcon->setMaximumSize( iconSize );
+
+//    deviceLabel->setMinimumSize( iconSize );
+//    deviceLabel->setMaximumSize( iconSize );
+
+    // put icons into layout
+
+    debug() << "Add icons to layout";
+
+    m_layout->addItem( ipodIcon );
+    m_layout->addItem( connectIcon );
+    m_layout->addItem( disconnectIcon );
+    m_layout->addItem( deviceLabel );
+
+    // add the new layout to the main layout
+    
     connect( this, SIGNAL( readyToConnect( const QString &, const QString &) ),
              MediaDeviceMonitor::instance(), SLOT( connectIpod( const QString &, const QString & ) ) );
+    connect( this, SIGNAL( readyToDisconnect( const QString & ) ),
+             MediaDeviceMonitor::instance(), SLOT( disconnectIpod( const QString & ) ) );
 }
 
 
@@ -49,6 +161,12 @@ void
 IpodInfo::connectClicked()
 {
     emit readyToConnect( m_mountpoint, m_udi );
+}
+
+void
+IpodInfo::disconnectClicked()
+{
+    emit readyToDisconnect( m_udi );
 }
  
 MediaDevicesApplet::MediaDevicesApplet(QObject *parent, const QVariantList &args)
@@ -153,74 +271,11 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
     IpodInfo *ipodInfo = new IpodInfo( this, mountPoint, udi );
     //m_ipodInfoList.insert( m_ipodInfoList.size(), *ipodInfo );
 
-    // set up new layout
-
-    debug() << "Creating layout";
-
-    QGraphicsLinearLayout *ipodLayout = new QGraphicsLinearLayout( Qt::Horizontal );
-    ipodLayout->setSpacing( 0 );
-
-    // set up icons
-
-    // get path where we pull svg's from
-
-    debug() << "Getting svg path";
-
-    QString svgPath = KStandardDirs::locate( "data", "amarok/images/pud_items.svg" );
-
-    // iPod (device) icon
-
-    debug() << "Icon stuff";
-
-    Plasma::Icon *ipodIcon = new Plasma::Icon( this );
-    ipodIcon->setSvg( svgPath, "device" );
-
-    // Connect Icon
-
-    Plasma::Icon *connectIcon = new Plasma::Icon( this );
-    connectIcon->setSvg( svgPath, "append" );
-
-    QAction *connectAction = new QAction( this );
-    connect( connectAction, SIGNAL( activated() ),
-             ipodInfo, SLOT( connectClicked() ) );
-
-    connectIcon->setAction( connectAction );
-
-    debug() << "Label";
-
-    // Text label
-
-    Plasma::Label *deviceLabel = new Plasma::Label( this );
-    deviceLabel->setText( mountPoint );
-
-    // set icons sizes
-
-    debug() << "Set sizes";
-
-    QSizeF iconSize = ipodIcon->sizeFromIconSize(32);
-    
-    ipodIcon->setMinimumSize( iconSize );
-    ipodIcon->setMaximumSize( iconSize );
-
-    connectIcon->setMinimumSize( iconSize );
-    connectIcon->setMaximumSize( iconSize );
-
-//    deviceLabel->setMinimumSize( iconSize );
-//    deviceLabel->setMaximumSize( iconSize );
-
-    // put icons into layout
-
-    debug() << "Add icons to layout";
-
-    ipodLayout->addItem( ipodIcon );
-    ipodLayout->addItem( connectIcon );
-    ipodLayout->addItem( deviceLabel );
-
     // add the new layout to the main layout
 
     debug() << "Add to main layout";
 
-    m_layout->addItem( ipodLayout );
+    m_layout->addItem( ipodInfo->layout() );
 
     debug() << "Successfully added ipodLayout to layout";
 }

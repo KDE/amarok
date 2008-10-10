@@ -33,18 +33,42 @@ class QSizeF;
 class QGraphicsLinearLayout;
 
 // A convenience class to store and send connection information
-class IpodInfo : public QObject
+class DeviceInfo : public QObject
 {
     Q_OBJECT
     public:
-        IpodInfo( QObject *parent, const QString &mountpoint, const QString &udi );
-        ~IpodInfo();
+        DeviceInfo();
+        virtual ~DeviceInfo();
+
+        virtual QGraphicsLinearLayout* layout();
+
+    public slots:
+        virtual void connectClicked();
+        virtual void disconnectClicked();
+
+    protected:
+        bool m_connected;
+
+        QGraphicsLinearLayout *m_layout;
+
+
+};
+
+
+class IpodInfo : public DeviceInfo
+{
+    Q_OBJECT
+    public:
+        IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QString &udi );
+        virtual ~IpodInfo();
 
     signals:
         void readyToConnect( const QString &mountpoint, const QString &udi );
+        void readyToDisconnect( const QString &udi );
 
     public slots:
-        void connectClicked();
+        virtual void connectClicked();
+        virtual void disconnectClicked();
 
     private:
         QString m_mountpoint;
@@ -78,6 +102,7 @@ class MediaDevicesApplet : public Context::Applet
         QGraphicsLinearLayout *m_layout;
 
         QList<IpodInfo> m_ipodInfoList;
+        //QList<QGraphicsLinearLayout> m_layoutList;
         QStringList m_udiList;
 
     private slots:
