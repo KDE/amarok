@@ -24,7 +24,7 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "../../../statusbar/StatusBar.h"
+#include "../../../statusbar_ng/StatusBar.h"
 
 //#include "MediaDeviceCache.h"
 #include "MediaDeviceMonitor.h"
