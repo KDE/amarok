@@ -35,7 +35,9 @@ class AlbumsTreeView : public QTreeView
             setFrameStyle( QFrame::NoFrame );
             setHeaderHidden( true );
             setIconSize( QSize(60,60) );
-
+            setDragDropMode( QAbstractItemView::DragOnly );
+            setSelectionMode( QAbstractItemView::ExtendedSelection );
+             setSelectionBehavior( QAbstractItemView::SelectItems );
             // setAnimated( true ); // looks TERRIBLE
 
             setRootIsDecorated( false );
@@ -86,6 +88,15 @@ class AlbumsTreeView : public QTreeView
     
             QTreeView::drawRow( painter, option, index ); 
         }
+
+
+        void startDrag(Qt::DropActions supportedActions)
+        {
+            DEBUG_BLOCK
+            QTreeView::startDrag( supportedActions );
+            debug() << "After the drag!";
+        }
+        
 };
 
 AlbumsView::AlbumsView( QGraphicsWidget *parent )

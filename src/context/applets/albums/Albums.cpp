@@ -15,6 +15,7 @@
 #include "AlbumItem.h"
 #include "Albums.h"
 #include "AlbumsView.h"
+#include "AlbumsModel.h"
 #include "Amarok.h"
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
@@ -67,7 +68,7 @@ void Albums::init()
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
     
-    m_model = new QStandardItemModel();
+    m_model = new AlbumsModel();
     m_model->setColumnCount( 1 );
     m_albumsView->setModel( m_model );
     m_albumsView->resize( size().width() - 28, size().height() - 28 );

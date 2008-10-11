@@ -23,8 +23,9 @@
 
 
 #include "Playlist.h"
-
-#include "SqlPlaylistViewItem.h"
+//Changed to fix a strange build error in AlbumModel.cpp
+//#include "SqlPlaylistViewItem.h"
+#include <browsers/playlistbrowser/SqlPlaylistViewItem.h>
 
 
 namespace Meta {

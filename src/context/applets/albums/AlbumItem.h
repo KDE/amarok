@@ -53,6 +53,13 @@ class AlbumItem : public QStandardItem, public Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::Album *album );
 
+        
+        // HACK ALERT! this is needed to build a vtable for this class, so that it can be dynamic_casted from QStandardItem
+        // (Overriding any other virtual function would also be ok.)
+        virtual int type() const {
+            return QStandardItem::type();
+        }
+
     private:
         Meta::AlbumPtr m_album;
         int            m_iconSize;
