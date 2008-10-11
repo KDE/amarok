@@ -23,7 +23,7 @@
 #include "AmpacheConfig.h"
 #include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 
 #include <KMessageBox>

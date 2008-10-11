@@ -39,7 +39,7 @@
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
 #include "PlaylistModel.h"
-#include "statusbar/StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <QAction>
 
@@ -296,7 +296,7 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
         warning() << "Failure count: " << failures;
         if ( failures >= maxFailures )
         {
-            The::statusBar()->longMessageThreadSafe( i18n( "Too many errors encountered in playlist. Playback stopped." ), KDE::StatusBar::Warning );
+            The::statusBarNG()->longMessageThreadSafe( i18n( "Too many errors encountered in playlist. Playback stopped." ), StatusBarNG::Warning );
             error() << "Stopping playlist.";
             failures = 0;
             m_trackError = true;

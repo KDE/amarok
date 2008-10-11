@@ -18,7 +18,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "amarokconfig.h"
 #include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"

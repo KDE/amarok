@@ -31,7 +31,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "statusbar/StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "statusbar/progressBar.h"
 
 #include <QFileInfo>
@@ -409,17 +409,16 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_isIncremental( false )
 {
     DEBUG_BLOCK
-    The::statusBar()->newProgressOperation( this )
-            .setDescription( i18n( "Scanning music" ) )
-            .setAbortSlot( parent, SLOT( deleteLater() ) );
+    The::statusBarNG()->newProgressOperation( this, i18n( "Scanning music" ) )
+        ->setAbortSlot( parent, SLOT( deleteLater() ) );
 
-    connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+    connect( this, SIGNAL( incrementProgress() ), The::statusBarNG(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }
 
 XmlParseJob::~XmlParseJob()
 {
     DEBUG_BLOCK
-    The::statusBar()->endProgressOperation( this );
+    The::statusBarNG()->endProgressOperation( this );
 }
 
 void
@@ -477,7 +476,7 @@ XmlParseJob::run()
                 }
                 if( localname == "itemcount" )
                 {
-                    The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
+                    The::statusBarNG()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {

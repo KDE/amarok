@@ -39,7 +39,7 @@ email                : markey@web.de
 #include "refreshimages.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "Systray.h"
 #include "TracklistDBusHandler.h"
 
@@ -675,7 +675,7 @@ void App::slotConfigToolBars()
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
-    The::statusBar()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
+    The::statusBarNG()->newProgressOperation( job, i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
     return job;
 }

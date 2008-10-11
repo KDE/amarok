@@ -20,7 +20,7 @@
 #include "progressBar.h"
 
 #include "Debug.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <KGuiItem>
 #include <KLocale>
@@ -90,7 +90,7 @@ ProgressBar&
 ProgressBar::setProgressSignal( QObject *sender, const char *signal )
 {
     setMaximum( 100 );
-    connect( sender, signal, The::statusBar(), SLOT( setProgress ( const QObject*, int ) ) );
+    connect( sender, signal, The::statusBarNG(), SLOT( setProgress ( const QObject*, int ) ) );
     return *this;
 }
 

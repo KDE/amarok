@@ -22,7 +22,7 @@
 #ifndef STATUSBARMESSAGELABEL_H
 #define STATUSBARMESSAGELABEL_H
 
-#include <StatusBarBase.h>
+#include "StatusBarBase.h"
 
 #include <QList>
 #include <QPixmap>

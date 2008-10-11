@@ -22,7 +22,7 @@
 
 #include "IpodCollection.h"
 #include "IpodMeta.h"
-#include "../../../statusbar/StatusBar.h"
+#include "../../../statusbar_ng/StatusBar.h"
 #include "Debug.h"
 
 extern "C" {
@@ -829,7 +829,7 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Transferring Tracks to iPod" )  );
+    The::statusBarNG()->newProgressOperation( job, i18n( "Transferring Tracks to iPod" )  );
     job->start();
 
     return true;
@@ -860,7 +860,7 @@ IpodHandler::deleteFile( const KUrl &url )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Deleting Tracks from iPod" ) );
+    The::statusBarNG()->newProgressOperation( job, i18n( "Deleting Tracks from iPod" ) );
     job->start();
 
     return;

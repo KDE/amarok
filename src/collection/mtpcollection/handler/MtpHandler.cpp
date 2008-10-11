@@ -28,7 +28,7 @@
 
 #include "MtpCollection.h"
 #include "MtpMeta.h"
-#include "../../../statusbar/StatusBar.h"
+#include "../../../statusbar_ng/StatusBar.h"
 #include "Debug.h"
 
 #include "File.h" // for KIO file handling
@@ -256,7 +256,7 @@ MtpHandler::terminate()
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
         will uncomment when fixed */
-        //The::statusBar()->longMessage(
+        //The::statusBarNG()->longMessage(
 //                       i18n( "The MTP device %1 has been disconnected", prettyName() ), KDE::StatusBar::Information );
         debug() << "Device released";
     }
@@ -321,7 +321,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         else
         {
             debug() << "We do not support the extension ." << extension;
-         /*   The::statusBar()->shortLongMessage(
+         /*   The::statusBarNG()->shortLongMessage(
                            genericError,
                            i18n( "Cannot determine a valid file type" ),
                                  KDE::StatusBar::Error
@@ -403,7 +403,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         if( parent_id == 0 )
         {
             debug() << "Could not create new parent (" << m_folderStructure << ")";
-            /*The::statusBar()->shortLongMessage(
+            /*The::statusBarNG()->shortLongMessage(
                            genericError,
                            i18n( "Cannot create parent folder. Check your structure." ),
                                  KDE::StatusBar::Error
@@ -438,7 +438,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     if( ret < 0 )
     {
         debug() << "Could not write file " << ret;
-        /*The::statusBar()->shortLongMessage(
+        /*The::statusBarNG()->shortLongMessage(
                        genericError,
                        i18n( "File write failed" ),
                              KDE::StatusBar::Error
@@ -649,7 +649,7 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     if( status != 0 )
     {
         debug() << "delete object failed";
-        The::statusBar()->shortLongMessage(
+        The::statusBarNG()->shortLongMessage(
                        genericError,
                        i18n( "Delete failed" ),
                              KDE::StatusBar::Error
@@ -902,7 +902,7 @@ MtpHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job ).setDescription(  i18n(  "Transferring Tracks to MTP Device" )  );
+    The::statusBarNG()->newProgressOperation( job, i18n(  "Transferring Tracks to MTP Device" )  );
     job->start();
 
     return true;

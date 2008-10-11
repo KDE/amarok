@@ -24,7 +24,7 @@
 #include "Debug.h"
 #include "Mp3tunesConfig.h"
 
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <KMenuBar>
 #include <KMessageBox>
@@ -214,7 +214,7 @@ void Mp3tunesService::enableHarmony()
 
     debug() << "Daemon running";
     m_harmonyEnabled = true;
-    The::statusBar()->shortMessage( i18n( "MP3tunes AutoSync Enabled"  ) );
+    The::statusBarNG()->shortMessage( i18n( "MP3tunes AutoSync Enabled"  ) );
     polish();
  }
 
@@ -230,7 +230,7 @@ void Mp3tunesService::enableHarmony()
     m_harmonyEnabled = false;
     polish();
 
-    The::statusBar()->shortMessage( i18n( "MP3tunes AutoSync Disabled"  ) );
+    The::statusBarNG()->shortMessage( i18n( "MP3tunes AutoSync Disabled"  ) );
  }
 
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
@@ -250,7 +250,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
     //debug() << "LoginWorker queue";
-    The::statusBar()->shortMessage( i18n( "Authenticating"  ) );
+    The::statusBarNG()->shortMessage( i18n( "Authenticating"  ) );
 
 }
 
@@ -267,7 +267,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         {
             error = m_locker->errorMessage(); // Not sure how to i18n this
         }
-        The::statusBar()->longMessage( error );
+        The::statusBarNG()->longMessage( error );
 
         m_serviceready = false;
         m_authenticationFailed = true;
@@ -295,14 +295,14 @@ void Mp3tunesService::harmonyDisconnected()
 {
     DEBUG_BLOCK
     debug() << "Harmony Disconnected!";
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Disconnected"  ) );
+    The::statusBarNG()->shortMessage( i18n( "MP3tunes Harmony: Disconnected"  ) );
 }
 
 void Mp3tunesService::harmonyWaitingForEmail( const QString &pin )
 {
     DEBUG_BLOCK
     debug() << "Waiting for user to input PIN: " << pin;
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
+    The::statusBarNG()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
                               "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
@@ -315,7 +315,7 @@ void Mp3tunesService::harmonyWaitingForPin()
     DEBUG_BLOCK
     QString pin = m_harmony->pin();
     debug() << "Waiting for user to input PIN: " << pin;
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
+    The::statusBarNG()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
                               "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
@@ -327,7 +327,7 @@ void Mp3tunesService::harmonyConnected()
 {
     DEBUG_BLOCK
     debug() << "Harmony Connected!";
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Successfully Connected"  ) );
+    The::statusBarNG()->shortMessage( i18n( "MP3tunes Harmony: Successfully Connected"  ) );
     /* at this point since the user has input the pin, we will save the info
        for later authentication*/
     Mp3tunesConfig config;
@@ -342,7 +342,7 @@ void Mp3tunesService::harmonyError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Harmony Error: " << error;
-    The::statusBar()->longMessage( i18n( "Mp3tunes Harmony Error\n%1", error ) );
+    The::statusBarNG()->longMessage( i18n( "Mp3tunes Harmony Error\n%1", error ) );
 }
 
 void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )

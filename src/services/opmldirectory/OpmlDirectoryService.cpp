@@ -145,9 +145,8 @@ void OpmlDirectoryService::updateButtonClicked()
 
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://www.digitalpodcast.com/opml/digitalpodcastnoadult.opml" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    The::statusBar() ->newProgressOperation( m_listDownloadJob )
-    .setDescription( i18n( "Downloading OpmlDirectory Database" ) )
-    .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+    The::statusBarNG() ->newProgressOperation( m_listDownloadJob, i18n( "Downloading OpmlDirectory Database" ) )
+    ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
@@ -175,7 +174,7 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
     }
 
 
-    The::statusBar()->shortMessage( i18n( "Updating the local OPML database."  ) );
+    The::statusBarNG()->shortMessage( i18n( "Updating the local OPML database."  ) );
     debug() << "OpmlDirectoryService: create xml parser";
     OpmlDirectoryXmlParser * parser = new OpmlDirectoryXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -189,7 +188,7 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
 void OpmlDirectoryService::listDownloadCancelled()
 {
 
-    The::statusBar()->endProgressOperation( m_listDownloadJob );
+    The::statusBarNG()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;

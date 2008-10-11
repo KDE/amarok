@@ -32,7 +32,7 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "Osd.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "amarokconfig.h"
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"

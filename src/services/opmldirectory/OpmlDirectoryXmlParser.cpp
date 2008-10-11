@@ -21,7 +21,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -60,9 +60,9 @@ OpmlDirectoryXmlParser::run()
 void
 OpmlDirectoryXmlParser::completeJob( )
 {
-    The::statusBar()->longMessage(
+    The::statusBarNG()->longMessage(
         i18n( "OpmlDirectory update complete. Added %1 feeds in %2 categories", m_nNumberOfFeeds, m_nNumberOfCategories ),
-        KDE::StatusBar::Information );
+        StatusBarNG::Information );
 
 
     debug() << "OpmlDirectoryXmlParser: total number of albums: " << m_nNumberOfCategories;

@@ -97,6 +97,12 @@ public:
     virtual QString messages();
     virtual QString sendMessage( const QString &message );
 
+public slots:
+    /**
+    * Slot for catching cancelled list downloads
+    */
+    void listDownloadCancelled();
+    
 private slots:
     /**
      * Slot called when the purchase album button is clicked. Starts a purchase
@@ -118,10 +124,6 @@ private slots:
      */
     void listDownloadComplete( KJob* downLoadJob);
 
-    /**
-     * Slot for catching cancelled list downloads
-     */
-    void listDownloadCancelled();
 
     /**
      * Slot called when the parsing of the Magnatuin xml file is completed.

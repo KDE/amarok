@@ -18,7 +18,7 @@
 #include "AmarokStatusbarScript.h"
 
 #include "App.h"
-#include "statusbar/StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <QtScript>
 
@@ -35,39 +35,39 @@ namespace AmarokScript
 
     }
 
-    void AmarokStatusbarScript::setMainText( const QString &text )
+   /* void AmarokStatusbarScript::setMainText( const QString &text )
     {
-        Amarok::StatusBar::instance()->setMainText( text );
+        The::statusBarNG()->setMainText( text );
     }
 
     void AmarokStatusbarScript::setMainTextIcon( QPixmap icon )
     {
-        Amarok::StatusBar::instance()->setMainTextIcon( icon );
+        The::statusBarNG()->setMainTextIcon( icon );
     }
 
     void AmarokStatusbarScript::hideMainTextIcon()
     {
-        Amarok::StatusBar::instance()->hideMainTextIcon();
+        The::statusBarNG()->hideMainTextIcon();
     }
 
     void AmarokStatusbarScript::resetMainText()
     {
-        Amarok::StatusBar::instance()->resetMainText();
-    }
+        The::statusBarNG()->resetMainText();
+    }*/
 
     void AmarokStatusbarScript::longMessage( const QString &text )
     {
-        Amarok::StatusBar::instance()->longMessage( text );
+        The::statusBarNG()->longMessage( text );
     }
 
-    void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long )
+   /* void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long )
     {
-        Amarok::StatusBar::instance()->shortLongMessage( _short, _long );
-    }
+        The::statusBarNG()->shortLongMessage( _short, _long );
+    }*/
 
-    void AmarokStatusbarScript::shortMessage( const QString &text, bool longShort )
+    void AmarokStatusbarScript::shortMessage( const QString &text )
     {
-        Amarok::StatusBar::instance()->shortMessage( text, longShort );
+        The::statusBarNG()->shortMessage( text );
     }
 }
 

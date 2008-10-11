@@ -20,7 +20,7 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "CollectionManager.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
@@ -183,8 +183,7 @@ PlaylistManager::downloadPlaylist( const KUrl & path, Meta::PlaylistPtr playlist
     connect( downloadJob, SIGNAL( result( KJob * ) ),
              this, SLOT( downloadComplete( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( downloadJob )
-            .setDescription( i18n( "Downloading Playlist" ) );
+    The::statusBarNG()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
 }
 
 void

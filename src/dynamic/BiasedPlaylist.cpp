@@ -27,7 +27,7 @@
 #include "DynamicModel.h"
 #include "MetaQueryMaker.h"
 #include "playlist/PlaylistModel.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <threadweaver/ThreadWeaver.h>
 
@@ -117,8 +117,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 
         if( withStatusBar )
         {
-            The::statusBar()->newProgressOperation( m_solver );
-            The::statusBar()->shortMessage( i18n("Generating playlist...") );
+            The::statusBarNG()->newProgressOperation( m_solver,  i18n("Generating playlist...") );
 
             connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
@@ -139,7 +138,7 @@ Dynamic::BiasedPlaylist::solverReady()
 void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
 {
-    The::statusBar()->setProgress( m_solver, progress );
+    The::statusBarNG()->setProgress( m_solver, progress );
 }
 
 
@@ -227,7 +226,7 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
     DEBUG_BLOCK
 
     bool success;
-    The::statusBar()->endProgressOperation( m_solver );
+    The::statusBarNG()->endProgressOperation( m_solver );
     m_backbufferMutex.lock();
     m_backbuffer = m_solver->solution();
     m_backbufferMutex.unlock();

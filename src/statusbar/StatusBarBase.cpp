@@ -127,7 +127,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainProgressBarBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     mainProgressBarBox->setObjectName( "progressBox" );
 
-    QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
+    QPushButton *b1 = new QPushButton( mainProgressBarBox ); //cancelbutton
     b1->setObjectName( "cancelButton" );
     m_mainProgressBar  = new QProgressBar( mainProgressBarBox);
 

@@ -162,19 +162,14 @@ JamendoService::updateButtonClicked()
         return; //error
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    The::statusBar()->newProgressOperation( m_listDownloadJob )
-        .setDescription( i18n( "Downloading Jamendo.com Database" ) )
-        .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+
+    The::statusBarNG()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com Database" ) )
+            ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
 
-  /* KIO::StoredTransferJob * job =  KIO::storedGet(  KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ) );
-    The::statusBar() ->newProgressOperation( job )
-    .setDescription( i18n( "Downloading Jamendo.com Database" ) )
-    .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
-*/
-    //return true;
+
 }
 
 void
@@ -191,7 +186,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
         return;
     }
 
-    The::statusBar()->shortMessage( i18n( "Updating the local Jamendo database."  ) );
+    The::statusBarNG()->shortMessage( i18n( "Updating the local Jamendo database."  ) );
     debug() << "JamendoService: create xml parser";
     JamendoXmlParser * parser = new JamendoXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -204,7 +199,8 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 void
 JamendoService::listDownloadCancelled()
 {
-    The::statusBar()->endProgressOperation( m_listDownloadJob );
+    DEBUG_BLOCK
+    //The::statusBarNg()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;

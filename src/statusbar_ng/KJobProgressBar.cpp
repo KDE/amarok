@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,61 +14,26 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "overlayWidget.h"
-#include "statusbar_ng/StatusBar.h"
+#include "KJobProgressBar.h"
 
-#include <QPoint>
-#include <QEvent>
-
-#include "Debug.h"
-
-
-namespace KDE {
-
-
-OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name )
-        : QFrame( parent->parentWidget() )
-        , m_anchor( anchor )
-        , m_parent( parent )
+KJobProgressBar::KJobProgressBar( QWidget *parent, KJob * job )
+        : ProgressBarNG( parent )
 {
-    parent->installEventFilter( this );
-    setObjectName( name );
-
-    hide();
+    connect( job, SIGNAL( percent( KJob*, unsigned long ) ),  SLOT( updateJobStatus( KJob *, unsigned long ) ) );
 }
 
-void
-OverlayWidget::reposition()
+
+KJobProgressBar::~KJobProgressBar()
 {
-    adjustSize();
-
-    // p is in the alignWidget's coordinates
-    QPoint p;
-
-   // p.setX( m_anchor->width() - width() );
-    p.setX( m_anchor->x() );
-    p.setY( m_anchor->y() - height() );
-
-    debug() << "p before: " << p;
-
-    p = m_anchor->mapToGlobal( p );
-
-    debug() << "p after: " << p;
-
-    move( p );
 }
 
-
-bool
-OverlayWidget::event( QEvent *e )
+void KJobProgressBar::updateJobStatus( KJob * job, unsigned long value )
 {
-    if ( e->type() == QEvent::ChildAdded )
-        adjustSize();
-
-    return QFrame::event( e );
+    setValue( value );
+    emit( percentageChanged( percentage() ) );
 }
 
-}
+#include "KJobProgressBar.moc"

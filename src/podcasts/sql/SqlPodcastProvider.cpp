@@ -20,7 +20,7 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "Debug.h"
 #include "PodcastReader.h"
 #include "SqlStorage.h"
@@ -208,11 +208,9 @@ SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
     m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
     debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
-    The::statusBar()->newProgressOperation( storedTransferJob )
-            .setDescription( sqlEpisode->title().isEmpty()
-                ? i18n("Downloading Podcast Media")
-                : i18n("Downloading Podcast \"%1\"", episode->title()) )
-            .setAbortSlot( this, SLOT( abortDownload()) );
+    The::statusBarNG()->newProgressOperation( storedTransferJob, sqlEpisode->title().isEmpty()
+            ? i18n("Downloading Podcast Media") : i18n("Downloading Podcast \"%1\"", episode->title()) )
+            ->setAbortSlot( this, SLOT( abortDownload()) );
 
     connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
     connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ), SLOT( redirected( KIO::Job *,const KUrl& ) ) );
@@ -265,7 +263,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
     DEBUG_BLOCK
     if( job->error() )
     {
-        The::statusBar()->longMessage( job->errorText() );
+        The::statusBarNG()->longMessage( job->errorText() );
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
     }
     else if( ! m_jobMap.contains( job ) )
@@ -301,7 +299,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
         }
         else
         {
-            The::statusBar()->longMessage( i18n("Unable to save podcast episode file to %1",
+            The::statusBarNG()->longMessage( i18n("Unable to save podcast episode file to %1",
                             localUrl.prettyUrl()) );
         }
         localFile->close();

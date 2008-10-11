@@ -18,7 +18,7 @@
 #include "LastFmSettings.h"
 #include "libUnicorn/WebService.h"
 
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 RadioAdapter::RadioAdapter( QObject *parent, const QString &username, const QString &password )
     : QObject( parent ), m_radio( new Radio( this ) )
@@ -77,7 +77,7 @@ RadioAdapter::stop()
 void
 RadioAdapter::error( RadioError errorCode, const QString& message )
 {
-    The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2 Error code: %3", "Last.fm", message, errorCode), KDE::StatusBar::Error );
+    The::statusBarNG()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2 Error code: %3", "Last.fm", message, errorCode), StatusBarNG::Error );
     stop();
 }
 

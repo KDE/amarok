@@ -19,7 +19,7 @@
 
 #include "OpmlDirectoryInfoParser.h"
 
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "Debug.h"
 #include "OpmlDirectoryMeta.h"
 
@@ -62,7 +62,7 @@ void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
     debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->uidUrl();
 
     m_rssDownloadJob = KIO::storedGet( feed->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_rssDownloadJob ).setDescription( i18n( "Fetching Podcast Info" ) );
+    The::statusBarNG()->newProgressOperation( m_rssDownloadJob, i18n( "Fetching Podcast Info" ) );
     connect( m_rssDownloadJob, SIGNAL(result(KJob *)), SLOT( rssDownloadComplete( KJob*) ) );
 }
 

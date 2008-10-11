@@ -18,7 +18,7 @@
 #include "Mp3tunesServiceCollectionLocation.h"
 
 #include "Mp3tunesWorkers.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -80,7 +80,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         }
     }
     if( error != QString() )
-        The::statusBar()->longMessage( error );
+        The::statusBarNG()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader(
         m_collection->locker(), urls );
     connect( uploadWorker, SIGNAL( uploadComplete() ),

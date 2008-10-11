@@ -21,7 +21,9 @@
 #include "MagnatuneStore.h"
 
 #include "Amarok.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
+#include "statusbar_ng/ProgressBar.h"
 #include "EngineController.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
@@ -242,9 +244,9 @@ bool MagnatuneStore::updateMagnatuneList()
     m_tempFileName = tempFile.fileName();
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    The::statusBar()->newProgressOperation( m_listDownloadJob )
-    .setDescription( i18n( "Downloading Magnatune.com Database" ) )
-    .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+    The::statusBarNG()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com Database" ) )
+    ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+            
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
@@ -269,7 +271,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
 
-    The::statusBar()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
+    The::statusBarNG()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
     debug() << "MagnatuneStore: create xml parser";
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
@@ -281,7 +283,9 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
 
 void MagnatuneStore::listDownloadCancelled( )
 {
-    The::statusBar() ->endProgressOperation( m_listDownloadJob );
+    DEBUG_BLOCK
+    
+    //The::statusBarNG()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;

@@ -21,7 +21,7 @@
 #include "PlaylistFileSupport.h"
 #include "Debug.h"
 #include "collection/CollectionManager.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "meta/XSPFPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/M3UPlaylist.h"
@@ -71,7 +71,7 @@ loadPlaylist( const KUrl &url )
         if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
             debug() << "could not read file " << url.path();
-            The::statusBar()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
+            The::statusBarNG()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
             return playlist;
         }
     } else {

@@ -26,7 +26,7 @@
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
 #include "SvgHandler.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "UserPlaylistModel.h"
 
 
@@ -124,7 +124,7 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
     }
     else
     {
-        The::statusBar()->longMessage( i18n("The stream URL provided was not valid.") );
+        The::statusBarNG()->longMessage( i18n("The stream URL provided was not valid.") );
     }
 }
 

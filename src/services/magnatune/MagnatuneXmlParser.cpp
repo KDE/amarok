@@ -22,7 +22,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <KFilterDev>
 #include <KLocale>
@@ -59,8 +59,8 @@ MagnatuneXmlParser::run()
 void
 MagnatuneXmlParser::completeJob( )
 {
-    The::statusBar() ->longMessage(
-        i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists", m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), KDE::StatusBar::Information );
+    The::statusBarNG() ->longMessage(
+        i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists", m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), StatusBarNG::Information );
 
     emit doneParsing();
     deleteLater();
@@ -394,7 +394,6 @@ void MagnatuneXmlParser::parseMoods( const QDomElement &e )
 
             if ( sElementName == "mood" )
             {
-                debug() << "mood: " <<  childElement.text();
                 m_currentTrackMoodList.append( childElement.text() );
             }
             else

@@ -24,7 +24,7 @@
 #include "Debug.h"
 #include "MagnatuneDatabaseHandler.h"
 #include "MagnatuneConfig.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <KMessageBox>
 #include <ktempdir.h>
@@ -83,7 +83,7 @@ void MagnatunePurchaseHandler::membershipDownload( const QString &membershipType
     m_membershipDownload = true;
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
-    The::statusBar() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing download" ) );
+    The::statusBarNG() ->newProgressOperation( m_resultDownloadJob, i18n( "Processing download" ) );
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 
     
@@ -131,7 +131,7 @@ void MagnatunePurchaseHandler::processPayment( const QString &ccNumber, const QS
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
 
-    The::statusBar() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
+    The::statusBarNG()->newProgressOperation( m_resultDownloadJob, i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 
@@ -153,7 +153,7 @@ void MagnatunePurchaseHandler::processGiftCardPayment(const QString & giftCardCo
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
 
-    The::statusBar() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
+    The::statusBarNG() ->newProgressOperation( m_resultDownloadJob, i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 

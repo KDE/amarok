@@ -26,7 +26,7 @@
 #include "MediaDeviceCache.h"
 #include "plugin/pluginconfig.h"
 #include "PluginManager.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <KApplication>
 #include <KComboBox>
@@ -285,7 +285,7 @@ MediaDevicePluginManager::slotNewDevice()
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?
-            The::statusBar()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
+            The::statusBarNG()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
                                                                        "with the same name and mountpoint!") );
         }
         else
@@ -377,7 +377,7 @@ ManualDeviceAdder::slotButtonClicked( int button )
     }
     else
     {
-        The::statusBar()->longMessageThreadSafe( i18n("Sorry, every device must have a name and\n"
+        The::statusBarNG()->longMessageThreadSafe( i18n("Sorry, every device must have a name and\n"
                                                                    "you cannot define two devices with the\n"
                                                                    "same name. These names must be unique\n"
                                                                    "across autodetected devices as well.\n") );
@@ -436,7 +436,7 @@ ManualDeviceAdder::getId( bool recreate )
     }
     if( m_mdaName->text().count( '|' ) )
     {
-        The::statusBar()->longMessageThreadSafe( i18n( "The device name cannot contain the '|' character" ) );
+        The::statusBarNG()->longMessageThreadSafe( i18n( "The device name cannot contain the '|' character" ) );
         return QString();
     }
     m_newId = "manual|" + m_mdaName->text() + '|' +

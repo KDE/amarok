@@ -31,7 +31,7 @@
 #include "SearchWidget.h"
 #include "Sidebar.h"
 #include "Sidebar.moc"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "amarokconfig.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
@@ -216,7 +216,7 @@ MainWindow::init()
     m_splitter->addWidget( playlistWidget );
 
     //make room for a full width statusbar at the bottom of everything
-    KHBox *m_statusbarArea = new KHBox( this );
+    KVBox *m_statusbarArea = new KVBox( this );
     //figure out the needed height based on system font settings
     //do make sure that it is at least 26 pixels tall though
     //or progress bars will not fit...
@@ -226,7 +226,8 @@ MainWindow::init()
     int fontHeight = qMax( 26, fm.height() );
     m_statusbarArea->setMinimumHeight( fontHeight );
     m_statusbarArea->setMaximumHeight( fontHeight );
-    new Amarok::StatusBar( m_statusbarArea );
+    //new Amarok::StatusBar( m_statusbarArea );
+    new StatusBarNG( m_statusbarArea );
 
     mainLayout->addLayout( toolbarSpacer );
     mainLayout->addWidget( m_splitter );
@@ -294,7 +295,7 @@ MainWindow::init()
     //</Browsers>
 
     TrackToolTip::instance(); //Instantiate
-    Amarok::MessageQueue::instance()->sendMessages();
+    //Amarok::MessageQueue::instance()->sendMessages();
 }
 
 void

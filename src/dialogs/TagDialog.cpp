@@ -33,7 +33,7 @@
 #include "MetaQueryMaker.h"
 #include "MetaUtility.h"
 #include "QueryMaker.h"
-#include "StatusBar.h"       //for status messages
+#include "statusbar_ng/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "trackpickerdialog.h"
 #include "ui_tagdialogbase.h"
@@ -1734,7 +1734,7 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
     TagLib::FileName path = TagLibEncodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
-        The::statusBar()->longMessage( i18n(
+        The::statusBarNG()->longMessage( i18n(
            "The file %1 is not writable.", mb.url().fileName() ), KDE::StatusBar::Error );
         return false;
     }
@@ -1789,7 +1789,7 @@ TagDialogWriter::doJob()
 //     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
 //         TagLib::FileName path = reinterpret_cast<const wchar_t *>( m_tags[i]->playableUrl().path().utf16() );
 //         if ( !TagLib::File::isWritable( path ) ) {
-//             The::statusBar()->longMessageThreadSafe( i18n(
+//             The::statusBarNG()->longMessageThreadSafe( i18n(
 //                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), KDE::StatusBar::Error );
 //             m_failed += true;
 //             continue;
@@ -1824,7 +1824,7 @@ TagDialogWriter::completeJob()
 //PORT 2.0     if ( m_successCount )
 //PORT 2.0        CollectionView::instance()->databaseChanged();
      if ( m_failCount )
-        The::statusBar()->longMessage( i18n(
+        The::statusBarNG()->longMessage( i18n(
                         "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
 }*/
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,61 +14,57 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "overlayWidget.h"
-#include "statusbar_ng/StatusBar.h"
-
-#include <QPoint>
-#include <QEvent>
+#include "PopupWidget.h"
+#include "MainWindow.h"
 
 #include "Debug.h"
 
+#include <QToolTip>
 
-namespace KDE {
-
-
-OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name )
-        : QFrame( parent->parentWidget() )
+PopupWidget::PopupWidget( QWidget * anchor, const QString &name )
+        : KVBox( The::mainWindow() )
         , m_anchor( anchor )
-        , m_parent( parent )
 {
-    parent->installEventFilter( this );
-    setObjectName( name );
 
-    hide();
+    setBackgroundRole( QPalette::Window );
+    setAutoFillBackground( true );
+
+    setFrameStyle( QFrame::Box );
+
+    setMinimumWidth( 26 );
+    setMinimumHeight( 26 );
+
+    setContentsMargins( 4, 4, 4, 4 );
+    setSpacing( 0 );
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+    reposition();
+
 }
 
-void
-OverlayWidget::reposition()
+
+PopupWidget::~PopupWidget()
+{
+}
+
+void PopupWidget::reposition()
 {
     adjustSize();
 
-    // p is in the alignWidget's coordinates
+    // p is in the anchor's coordinates
     QPoint p;
 
-   // p.setX( m_anchor->width() - width() );
     p.setX( m_anchor->x() );
-    p.setY( m_anchor->y() - height() );
-
+    p.setY( m_anchor->y() - ( height() + 4 ) );
     debug() << "p before: " << p;
-
-    p = m_anchor->mapToGlobal( p );
-
+    p = m_anchor->mapTo( The::mainWindow(), p );
     debug() << "p after: " << p;
 
     move( p );
-}
-
-
-bool
-OverlayWidget::event( QEvent *e )
-{
-    if ( e->type() == QEvent::ChildAdded )
-        adjustSize();
-
-    return QFrame::event( e );
-}
 
 }
+
+

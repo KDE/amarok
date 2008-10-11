@@ -44,7 +44,7 @@ include_directories(
     playlistmanager
     plugin
     podcasts
-    statusbar
+    statusbar_ng
     widgets
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
@@ -172,6 +172,17 @@ set(libstatusbar_SRCS
     statusbar/popupMessage.cpp
     statusbar/progressBar.cpp
     statusbar/selectLabel.cpp
+)
+
+#####################################################################
+# STATUSBAR NG
+#####################################################################
+set(libstatusbarNG_SRCS
+    statusbar_ng/StatusBar.cpp
+    statusbar_ng/ProgressBar.cpp
+    statusbar_ng/KJobProgressBar.cpp
+    statusbar_ng/CompoundProgressBar.cpp
+    statusbar_ng/PopupWidget.cpp
 )
 
 #####################################################################
@@ -420,6 +431,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistmanager_SRCS}
     ${dbus_SRCS}
     ${scriptengine_SRCS}
+    ${libstatusbarNG_SRCS}
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp

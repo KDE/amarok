@@ -27,7 +27,7 @@
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
-#include "../../statusbar/StatusBar.h"
+#include "../../statusbar_ng/StatusBar.h"
 
 #include <QDir>
 #include <QFile>
@@ -239,7 +239,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
         if( job )   //just to be safe
         {
             connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
-            The::statusBar()->newProgressOperation( job ).setDescription( i18n( "Transferring Tracks" ) );
+            The::statusBarNG()->newProgressOperation( job, i18n( "Transferring Tracks" ) );
             m_jobs.insert( job );
             job->start();
         }

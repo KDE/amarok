@@ -18,7 +18,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 #include "Debug.h"
 #include "MainWindow.h"
 //#include "mediabrowser.h"
@@ -166,10 +166,10 @@ EngineController::canDecode( const KUrl &url ) //static
 
     //we special case this as otherwise users hate us
     if ( !valid && ext.toLower() == "mp3" && !installDistroCodec() )
-        The::statusBar()->longMessageThreadSafe(
+        The::statusBarNG()->longMessageThreadSafe(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                     "the installation of the backend that phonon uses.</p>"
-                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), KDE::StatusBar::Error );
+                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBarNG::Error );
 
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )

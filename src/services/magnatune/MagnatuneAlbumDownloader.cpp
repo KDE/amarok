@@ -23,7 +23,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "MagnatuneMeta.h"
-#include "StatusBar.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <KLocale>
 #include <kshell.h>
@@ -66,9 +66,8 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( albumDownloadComplete( KJob* ) ) );
 
-    The::statusBar() ->newProgressOperation( m_albumDownloadJob )
-    .setDescription( i18n( "Downloading album" ) )
-    .setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+    The::statusBarNG()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading album" ) )
+    ->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
 }
 
 
@@ -114,9 +113,8 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
         connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverAddComplete( KJob* ) ) );
 
-        The::statusBar() ->newProgressOperation( m_albumDownloadJob )
-        .setDescription( i18n( "Adding album cover to collection" ) )
-        .setAbortSlot( this, SLOT( coverAddAborted() ) );
+        The::statusBarNG()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ) )
+        ->setAbortSlot( this, SLOT( coverAddAborted() ) );
 
         emit( downloadComplete( true ) );
 
@@ -131,7 +129,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
 void MagnatuneAlbumDownloader::albumDownloadAborted( )
 {
-    The::statusBar()->endProgressOperation( m_albumDownloadJob );
+    The::statusBarNG()->endProgressOperation( m_albumDownloadJob );
     m_albumDownloadJob->kill();
     delete m_albumDownloadJob;
     m_albumDownloadJob = 0;
