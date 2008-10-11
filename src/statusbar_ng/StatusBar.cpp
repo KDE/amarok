@@ -22,6 +22,7 @@
 
 #include "Debug.h"
 #include "EngineController.h"
+#include "LongMessageWidget.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
 
@@ -287,10 +288,17 @@ void StatusBarNG::updateInfo( Meta::TrackPtr track )
 
 void StatusBarNG::longMessage( const QString & text, MessageType type )
 {
+    LongMessageWidget * message = new LongMessageWidget( this, text, type );
+    connect( message, SIGNAL( closed() ), this, SLOT( hideLongMessage() ) );
 }
 
 void StatusBarNG::longMessageThreadSafe( const QString & text, MessageType type )
 {
+}
+
+void StatusBarNG::hideLongMessage()
+{
+    sender()->deleteLater();
 }
 
 

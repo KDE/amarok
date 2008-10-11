@@ -150,6 +150,7 @@ protected slots:
 
     void hideProgress();
     void nextShortMessage();
+    void hideLongMessage();
 
 private:
 
