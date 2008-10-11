@@ -649,8 +649,7 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     if( status != 0 )
     {
         debug() << "delete object failed";
-        The::statusBarNG()->shortLongMessage(
-                       genericError,
+        The::statusBarNG()->longMessage(
                        i18n( "Delete failed" ),
                              StatusBarNG::Error
                                           );

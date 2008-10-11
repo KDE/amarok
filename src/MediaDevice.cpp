@@ -953,7 +953,7 @@ MediaDevice::transferFiles()
         {
             longMsg += "<br>" + (*it).prettyUrl();
         }
-        The::statusBarNG()->shortLongMessage( msg, longMsg, StatusBarNG::Sorry );
+        The::statusBarNG()->longMessage( longMsg, StatusBarNG::Sorry );
     }
     else if( !msg.isEmpty() )
     {
