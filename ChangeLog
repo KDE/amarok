@@ -12,6 +12,7 @@ VERSION 2.0-beta3
 	  from the file browser's context menu.
 
   CHANGES:
+    * Allow multiple items to be selected in the user playlist category.
     * Statusbar rewrite: Messages are no longer shown as top-level windows.
     * Added proper mouse over visuals to some places where it was missing.
     * All services ( or any other part of Amarok ) can now add context 
@@ -33,6 +34,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Only add one new folder when selecting "Add Folder" from the context 
+      menu in the user playlist category (BR 169666).
     * Statusbar rewrite: Bring back the detailed progres operations view. 
       It is now possible again to get a list of all running operations and 
       to cancel each one individually (BR 168380).
