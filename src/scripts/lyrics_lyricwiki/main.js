@@ -4,6 +4,7 @@
 *   Copyright                                                             *
 *   (C) 2008 Aaron Reichman <reldruh@gmail.com>                           *
 *   (C) 2008 Leo Franchi <lfranchi@kde.org>                               *
+*   (C) 2008 Mark Kretschmann <kretschmann@kde.org>
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -30,13 +31,13 @@ function onFinished( dat )
 {
     try
     {
-        //Amarok.alert("reply.finished was emitted!");
         dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
         //print( "got result: " + dat );
         Amarok.Lyrics.showLyricsHtml(dat);
-    } catch( err )
+    }
+    catch( err )
     {
-        print( "got error: " + err );
+        print( "error: " + err );
     }
 }
 
@@ -45,12 +46,11 @@ function getLyrics( artist, title, url )
     try
     {
         var url = new QUrl( "http://lyricwiki.org/api.php?func=getSong&artist=" + artist + "&song=" + title + "&fmt=html" );
-
-        //Amarok.alert( "fetching: " + (new QUrl( url )).toString() );
         new Downloader( url, onFinished );
-    } catch( err )
+    }
+    catch( err )
     {
-        print( "error!: " + err );
+        print( "error: " + err );
     }
 }
 
