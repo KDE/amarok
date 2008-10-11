@@ -92,8 +92,6 @@ SearchWidget::slotShowFilterEditor()
     connect( fd, SIGNAL( filterChanged( const QString & ) ), m_sw,  SLOT( setText( const QString & ) ) );
 
     fd->exec();
-        //m_searchWidget->lineEdit()->setText( fd->filter() );
-    //delete fd;
 }
 
 #include "SearchWidget.moc"
