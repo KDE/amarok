@@ -173,32 +173,6 @@ public:
 
 signals:
 
-    /* PlaylistModel also emits rowsInserted and rowsRemoved, though
-     * the behavior of these signals is a little different than you
-     * might expect.  PlaylistModel allows insertion and removal of
-     * non-consecutive rows in a single operation, but
-     * QAbstractItemModel does not.  When the PlaylistModel inserts
-     * rows, it emits
-     *
-     *      rowsInserted(QModelIndex parent, int [first row], int [number of rows])
-     *
-     * The insertion starts at [first row], and inserts [number of rows],
-     * but those inserted rows could be anywhere at or after the
-     * first row.  To compensate for this, PlaylistModel then emits
-     *
-     *      dataChanged(QModelIndex [first row changed], QModelIndex [last row changed])
-     *
-     * which indicate the boundaries of where the items were inserted.
-     * If you refresh all the items between the [first row changed] and
-     * [last row changed], you will get all the inserted items, even
-     * though they weren't added consecutively.  You should be handling
-     * dataChanged in this manner anyway.  Removals are signalled in a
-     * similar fashion.
-     *
-     * So just expect that any insertion or removal will also emit a
-     * dataChanged signal, and that you should completely refresh all
-     * items between the first and last rows.  -- stharward */
-
     void insertedIds( const QList<quint64>& );
     void removedIds( const QList<quint64>& );
     void activeTrackChanged( quint64 );
