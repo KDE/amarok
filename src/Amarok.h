@@ -89,7 +89,7 @@ namespace Amarok
      */
     inline double computeScore( double oldScore, int playCount, double playedFraction )
     {
-        const int percentage = playedFraction * 100; 
+        const int percentage = static_cast<int>(playedFraction * 100); 
         double newScore;
 
         if( playCount == 0 )
