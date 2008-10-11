@@ -85,6 +85,22 @@ namespace Amarok
     bool invokeBrowser( const QString& url ); //defined in app.cpp
 
     /**
+     * Compute score for a track that has finished playing.
+     */
+    inline double computeScore( double oldScore, int playCount, double playedFraction )
+    {
+        const int percentage = playedFraction * 100; 
+        double newScore;
+
+        if( playCount == 0 )
+            newScore = ( oldScore + percentage ) / 2;
+        else
+            newScore = ( ( oldScore * playCount ) + percentage ) / ( playCount + 1 );
+
+        return newScore;
+    }
+
+    /**
      * The mainWindow is the playlistWindow
      */
     AMAROK_EXPORT QWidget *mainWindow(); //defined in app.cpp

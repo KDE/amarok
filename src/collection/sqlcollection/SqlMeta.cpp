@@ -34,7 +34,6 @@
 #include "meta/OrganiseCapability.h"
 #include "meta/UpdateCapability.h"
 #include "MountPointManager.h"
-//#include "ScriptManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 
 #include <QDateTime>
@@ -684,7 +683,8 @@ SqlTrack::finishedPlaying( double playedFraction )
             m_firstPlayed = m_lastPlayed;
         }
     }
-    //    ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
+
+    setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
     updateStatisticsInDb();
     notifyObservers();
 }
