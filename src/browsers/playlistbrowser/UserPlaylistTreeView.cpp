@@ -242,11 +242,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 
 
     KAction* result = dynamic_cast< KAction* > ( menu.exec( mapToGlobal( event->pos() ) ) );
-    if ( result == 0 ) return;
-    else if( result == m_addGroupAction )
-    {
-        PlaylistBrowserNS::UserModel::instance()->createNewGroup();
-    }
+
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
