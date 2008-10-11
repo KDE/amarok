@@ -45,7 +45,18 @@ function getLyrics( artist, title, url )
 {
     try
     {
-        var url = new QUrl( "http://lyricwiki.org/api.php?func=getSong&artist=" + artist + "&song=" + title + "&fmt=html" );
+        var encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
+        var encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" );
+        var encodedTitleKey = Amarok.Lyrics.fromUtf8( "song", "ISO 8859-1" );
+        var encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
+       
+        var url = new QUrl( "http://lyricwiki.org/api.php" );
+        url.addQueryItem( "func", "getSong" );
+        url.addQueryItem( "fmt", "html" );
+        url.addEncodedQueryItem( encodedArtistKey, encodedArtist ); 
+        url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
+        print( "Using request URL: " + url.toString() );
+
         new Downloader( url, onFinished );
     }
     catch( err )
