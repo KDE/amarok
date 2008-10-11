@@ -20,6 +20,7 @@
 
 #define DEBUG_PREFIX "BiasedPlaylist"
 
+#include "amarokconfig.h"
 #include "BiasedPlaylist.h"
 #include "Collection.h"
 #include "CollectionManager.h"
@@ -167,11 +168,13 @@ Dynamic::BiasedPlaylist::requestTracks( int n )
 void
 Dynamic::BiasedPlaylist::recalculate()
 {
-    m_buffer.clear();
-    m_backbuffer.clear();
+    if ( AmarokConfig::dynamicMode() ) {
+        m_buffer.clear();
+        m_backbuffer.clear();
 
-    getContext();
-    startSolver( true );
+        getContext();
+        startSolver( true );
+    }
 }
 
 
