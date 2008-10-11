@@ -30,6 +30,8 @@ VERSION 2.0-beta3
 	  will now delete the original source files as expected.
 
   BUGFIXES:
+    * When searching in the collection, give keyboard focus to the results
+      after pressing Enter. (BR 172379)
     * Do no try to run 2 different lyrics script per default.
     * File sizes for non-collection local tracks are now determined properly.
     * Track rating and score are now enabled for read-only files too.
