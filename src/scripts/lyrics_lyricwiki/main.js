@@ -21,18 +21,18 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 **************************************************************************/
 
+Importer.loadQtBinding( "qt.core" );
+Importer.loadQtBinding( "qt.gui" );
+Importer.loadQtBinding( "qt.network" );
 
-Importer.loadQtBinding("qt.core");
-Importer.loadQtBinding("qt.gui");
-Importer.loadQtBinding("qt.network");
 
 function onFinished( dat )
 {
     try
     {
         //Amarok.alert("reply.finished was emitted!");
-        dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
-        //print( "got result: " + dat );
+        //dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
+        print( "got result: " + dat );
         Amarok.Lyrics.showLyricsHtml(dat);
     } catch( err )
     {
@@ -40,11 +40,11 @@ function onFinished( dat )
     }
 }
 
-function openconnection(artist, title)
+function getLyrics( artist, title, url )
 {
     try
     {
-        var url ="http://lyricwiki.org/api.php?func=getSong&artist=" + artist +"&song=" + title +"&fmt=html";
+        var url = new QUrl( "http://lyricwiki.org/api.php?func=getSong&artist=" + artist + "&song=" + title + "&fmt=html" );
 
         //Amarok.alert( "fetching: " + (new QUrl( url )).toString() );
         new Downloader( url, onFinished );
@@ -55,12 +55,5 @@ function openconnection(artist, title)
 }
 
 
-function getLyrics(artist, title, url)
-{
-	//Amarok.alert("test");
-	var currentartist = artist;
-	var currenttitle = title;
-	openconnection(currentartist, currenttitle);
-}
-
 Amarok.Lyrics.fetchLyrics.connect( getLyrics );
+
