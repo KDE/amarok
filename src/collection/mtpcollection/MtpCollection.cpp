@@ -411,7 +411,7 @@ MtpCollection::handlerSucceeded()
 {
     m_handler->parseTracks();
     The::statusBarNG()->longMessage(
-                   i18n( "The MTP device %1 is connected", m_handler->prettyName() ), KDE::StatusBar::Information );
+                   i18n( "The MTP device %1 is connected", m_handler->prettyName() ), StatusBarNG::Information );
     emit collectionSucceeded( this );
 }
 

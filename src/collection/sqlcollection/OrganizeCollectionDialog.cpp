@@ -439,7 +439,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     if( m_organizingFileCancelled )
     {
         QString shortMsg = i18n( "Cannot start organize operation until jobs are aborted." );
-        The::statusBarNG()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
+        The::statusBarNG()->shortMessage( shortMsg, StatusBarNG::Sorry );
         return;
     }
 
@@ -448,7 +448,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         if( copy != m_organizeCopyMode )
         {
             QString shortMsg = i18n( "Cannot start organize operation of different kind while another is in progress." );
-            The::statusBarNG()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
+            The::statusBarNG()->shortMessage( shortMsg, StatusBarNG::Sorry );
             return;
         }
         else
@@ -463,7 +463,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     if( folders.isEmpty() )
     {
         QString longMsg = i18n( "You need to configure at least one folder for your collection for organizing your files." );
-        The::statusBarNG()->longMessage( longMsg, KDE::StatusBar::Sorry );
+        The::statusBarNG()->longMessage( longMsg, StatusBarNG::Sorry );
         return;
     }
 
@@ -543,7 +543,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
             QString shortMsg = i18n( "Sorry, one file could not be organized.",
                     "Sorry, %1 files could not be organized.", skipped.count() );
-            The::statusBarNG()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
+            The::statusBarNG()->shortLongMessage( shortMsg, longMsg, StatusBarNG::Sorry );
         }
         else if ( m_organizingFileCancelled )
         {

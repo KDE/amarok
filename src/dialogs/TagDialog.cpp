@@ -1735,7 +1735,7 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
     TagLib::FileName path = TagLibEncodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         The::statusBarNG()->longMessage( i18n(
-           "The file %1 is not writable.", mb.url().fileName() ), KDE::StatusBar::Error );
+           "The file %1 is not writable.", mb.url().fileName() ), StatusBarNG::Error );
         return false;
     }
 
@@ -1790,7 +1790,7 @@ TagDialogWriter::doJob()
 //         TagLib::FileName path = reinterpret_cast<const wchar_t *>( m_tags[i]->playableUrl().path().utf16() );
 //         if ( !TagLib::File::isWritable( path ) ) {
 //             The::statusBarNG()->longMessageThreadSafe( i18n(
-//                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), KDE::StatusBar::Error );
+//                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), StatusBarNG::Error );
 //             m_failed += true;
 //             continue;
 //         }
@@ -1825,7 +1825,7 @@ TagDialogWriter::completeJob()
 //PORT 2.0        CollectionView::instance()->databaseChanged();
      if ( m_failCount )
         The::statusBarNG()->longMessage( i18n(
-                        "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
+                        "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), StatusBarNG::Error );
 }*/
 
 

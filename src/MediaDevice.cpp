@@ -402,7 +402,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
                           src.prettyUrl(),
                           dst.prettyUrl()
                         ),
-                    KDE::StatusBar::Error );
+                    StatusBarNG::Error );
         }
         else
         {
@@ -413,7 +413,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
                 // probably s.th. went wrong
                 The::statusBarNG()->longMessage(
                         i18n( "Media Device: Reading tags from %1 failed", dst.prettyUrl() ),
-                        KDE::StatusBar::Error );
+                        StatusBarNG::Error );
             }
         }
     }
@@ -493,7 +493,7 @@ MediaDevice::connectDevice( bool silent )
             {
                 The::statusBarNG()->longMessage(
                         i18n( "Failed to purge podcasts already played" ),
-                        KDE::StatusBar::Sorry );
+                        StatusBarNG::Sorry );
             }
             else if( numDeleted > 0 )
             {
@@ -560,7 +560,7 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
     {
         The::statusBarNG()->longMessage(
                 i18n( "Post-disconnect command failed, before removing device, please make sure that it is safe to do so." ),
-                KDE::StatusBar::Information );
+                StatusBarNG::Information );
         result = false;
     }
     else
@@ -786,7 +786,7 @@ MediaDevice::transferFiles()
             {
                 The::statusBarNG()->shortMessage( i18n( "Track already on media device: %1",
                                                                            track->prettyUrl() ),
-                        KDE::StatusBar::Sorry );
+                        StatusBarNG::Sorry );
                 existing += track->url();
                 setProgress( progress() + 1 );
                 continue;
@@ -831,7 +831,7 @@ MediaDevice::transferFiles()
                 if( !isPlayable( track ) )
                 {
                     The::statusBarNG()->shortMessage( i18n( "Track not playable on media device: %1", track->prettyUrl() ),
-                            KDE::StatusBar::Sorry );
+                            StatusBarNG::Sorry );
                     unplayable += (*it)->url();
                     transferredItem->setFailed();
                     setProgress( progress() + 1 );
@@ -846,7 +846,7 @@ MediaDevice::transferFiles()
                 {
                     The::statusBarNG()->longMessage(
                             i18n( "Failed to copy track to media device: %1", track->url() ),
-                            KDE::StatusBar::Sorry );
+                            StatusBarNG::Sorry );
                     transferredItem->setFailed();
                 }
             }
@@ -953,11 +953,11 @@ MediaDevice::transferFiles()
         {
             longMsg += "<br>" + (*it).prettyUrl();
         }
-        The::statusBarNG()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
+        The::statusBarNG()->shortLongMessage( msg, longMsg, StatusBarNG::Sorry );
     }
     else if( !msg.isEmpty() )
     {
-        The::statusBarNG()->shortMessage( msg, KDE::StatusBar::Sorry );
+        The::statusBarNG()->shortMessage( msg, StatusBarNG::Sorry );
     }
 
     m_parent->updateButtons();

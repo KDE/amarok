@@ -257,7 +257,7 @@ MtpHandler::terminate()
         /* possible race condition with statusbar destructor,
         will uncomment when fixed */
         //The::statusBarNG()->longMessage(
-//                       i18n( "The MTP device %1 has been disconnected", prettyName() ), KDE::StatusBar::Information );
+//                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBarNG::Information );
         debug() << "Device released";
     }
 }
@@ -324,7 +324,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
          /*   The::statusBarNG()->shortLongMessage(
                            genericError,
                            i18n( "Cannot determine a valid file type" ),
-                                 KDE::StatusBar::Error
+                                 StatusBarNG::Error
                                               );*/
             return;
         }
@@ -406,7 +406,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
             /*The::statusBarNG()->shortLongMessage(
                            genericError,
                            i18n( "Cannot create parent folder. Check your structure." ),
-                                 KDE::StatusBar::Error
+                                 StatusBarNG::Error
                                               );*/
             return;
         }
@@ -441,7 +441,7 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         /*The::statusBarNG()->shortLongMessage(
                        genericError,
                        i18n( "File write failed" ),
-                             KDE::StatusBar::Error
+                             StatusBarNG::Error
                                           );*/
         return;
     }
@@ -652,7 +652,7 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
         The::statusBarNG()->shortLongMessage(
                        genericError,
                        i18n( "Delete failed" ),
-                             KDE::StatusBar::Error
+                             StatusBarNG::Error
                                           );
         return false;
     }

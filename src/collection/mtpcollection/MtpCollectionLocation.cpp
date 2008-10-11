@@ -154,7 +154,7 @@ MtpCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
                 /*The::statusBarNG()->shortLongMessage(
                                genericError,
                                i18n( "Could not copy track from device." ),
-                                     KDE::StatusBar::Error
+                                     StatusBarNG::Error
                                                   );*/
             }
             else
