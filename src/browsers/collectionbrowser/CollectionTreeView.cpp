@@ -29,7 +29,6 @@
 #include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "GlobalCollectionActions.h"
-//#include "mediabrowser.h"
 #include "Meta.h"
 #include "MetaQueryMaker.h"
 #include "meta/CustomActionsCapability.h"
