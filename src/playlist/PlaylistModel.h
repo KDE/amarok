@@ -162,26 +162,11 @@ public:
     // methods to save playlist to file
     bool exportPlaylist( const QString &path ) const; // FIXME: why are there two methods for this?
     bool savePlaylist( const QString &path ) const;
-    void setPlaylistName( const QString &name, bool proposeOverwriting = false )
-    {
-        m_playlistName = name; m_proposeOverwriting = proposeOverwriting;
-    }
-    void proposePlaylistName( const QString &name, bool proposeOverwriting = false )
-    {
-        if (( rowCount() == 0 ) || m_playlistName == i18n( "Untitled" ) ) m_playlistName = name; m_proposeOverwriting = proposeOverwriting;
-    }
-    const QString& playlistName() const
-    {
-        return m_playlistName;
-    }
-    bool proposeOverwriteOnSave() const
-    {
-        return m_proposeOverwriting;
-    }
-    inline const QString defaultPlaylistPath() const
-    {
-        return Amarok::saveLocation() + "current.xspf";
-    }
+    void setPlaylistName( const QString &name, bool proposeOverwriting = false );
+    void proposePlaylistName( const QString &name, bool proposeOverwriting = false );
+    const QString& playlistName() const { return m_playlistName; }
+    bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
+    inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
 
     // static member functions
     static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name

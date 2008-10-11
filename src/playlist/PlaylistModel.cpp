@@ -453,7 +453,7 @@ Playlist::Model::exportPlaylist( const QString &path ) const
 {
     Meta::TrackList tl;
     foreach( Item* item, m_items )
-    tl << item->track();
+        tl << item->track();
 
     return The::playlistManager()->exportPlaylist( tl, path );
 }
@@ -465,9 +465,25 @@ Playlist::Model::savePlaylist( const QString & name ) const
 
     Meta::TrackList tl;
     foreach( Item* item, m_items )
-    tl << item->track();
+        tl << item->track();
 
     return The::playlistManager()->save( tl, name, true );
+}
+
+void
+Playlist::Model::setPlaylistName( const QString &name, bool proposeOverwriting )
+{
+    m_playlistName = name;
+    m_proposeOverwriting = proposeOverwriting;
+}
+
+void
+Playlist::Model::proposePlaylistName( const QString &name, bool proposeOverwriting )
+{
+    if (( rowCount() == 0 ) || m_playlistName == i18n( "Untitled" ) ) {
+        m_playlistName = name;
+    }
+    m_proposeOverwriting = proposeOverwriting;
 }
 
 QString
