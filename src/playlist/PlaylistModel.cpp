@@ -74,9 +74,27 @@ Playlist::Model::Model()
 
     if ( QFile::exists( defaultPlaylistPath() ) )
     {
+
+
         Meta::TrackList tracks = Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) )->tracks();
-        foreach( Meta::TrackPtr track, tracks )
-        {
+
+        QMutableListIterator<Meta::TrackPtr> i( tracks );
+        while ( i.hasNext() ) {
+            i.next();
+            Meta::TrackPtr track = i.value();
+            if ( track == Meta::TrackPtr() ) {
+                i.remove();
+            } else if ( The::playlistManager()->canExpand( track ) ) {
+                i.remove();
+                Meta::TrackList newtracks = The::playlistManager()->expand( track )->tracks();
+                foreach( Meta::TrackPtr t, newtracks ) {
+                    if ( t != Meta::TrackPtr() )
+                        i.insert( t );
+                }
+            }
+        }
+
+        foreach( Meta::TrackPtr track, tracks ) {
             m_totalLength += track->length();
             subscribeTo( track );
             if ( track->album() )
