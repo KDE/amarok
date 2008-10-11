@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
+    * Automatic track score computation works now.
     * Track count an total play time is now shown below the playlist.
       (BR 171652)
 	* You can now Copy To a collection, Append, and Load tracks
