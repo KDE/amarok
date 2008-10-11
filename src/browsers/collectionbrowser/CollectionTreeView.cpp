@@ -582,6 +582,7 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 void CollectionTreeView::slotFilterNow()
 {
     m_treeModel->slotFilter();
+    setFocus( Qt::OtherFocusReason );
 }
 
 PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndexList & indices )

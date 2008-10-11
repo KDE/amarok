@@ -44,8 +44,8 @@ SearchWidget::setup( QObject* caller )
     connect( m_sw, SIGNAL( textChanged( const QString & ) ), caller,
              SLOT( slotSetFilterTimeout() ) );
     connect( this, SIGNAL( filterNow() ), caller,
-             SLOT( filterNow() ) );
-
+             SLOT( slotFilterNow() ) );
+    connect( m_sw, SIGNAL( returnPressed() ), caller, SLOT( slotFilterNow() ) );
 }
 
 ///Private
