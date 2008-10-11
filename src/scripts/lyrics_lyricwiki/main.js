@@ -52,7 +52,6 @@ function getLyrics( artist, title, url )
        
         var url = new QUrl( "http://lyricwiki.org/api.php" );
         url.addQueryItem( "func", "getSong" );
-        url.addQueryItem( "fmt", "html" );
         url.addEncodedQueryItem( encodedArtistKey, encodedArtist ); 
         url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
         print( "Using request URL: " + url.toString() );
