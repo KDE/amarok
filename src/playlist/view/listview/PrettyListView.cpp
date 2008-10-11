@@ -83,8 +83,12 @@ Playlist::PrettyListView::editTrackInformation()
     {
         tl.append( index.data( TrackRole ).value<Meta::TrackPtr>() );
     }
-    TagDialog *dialog = new TagDialog( tl, this );
-    dialog->show();
+
+    if( !tl.isEmpty() )
+    {
+        TagDialog *dialog = new TagDialog( tl, this );
+        dialog->show();
+    }
 }
 
 void
