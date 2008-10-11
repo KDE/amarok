@@ -73,6 +73,7 @@ public:
     AMAROK_EXPORT void longMessage( const QString &text, MessageType type = Information );
     void longMessageThreadSafe( const QString &text, MessageType type = Information );
 
+    using Observer::metadataChanged;
     void metadataChanged( Meta::Track *track );
 
 public slots:
