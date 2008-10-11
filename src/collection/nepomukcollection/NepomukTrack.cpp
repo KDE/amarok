@@ -26,9 +26,9 @@
 #include "NepomukRegistry.h"
 #include "NepomukYear.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 #include "Meta.h"
-#include "ScriptManager.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -312,7 +312,8 @@ NepomukTrack::finishedPlaying( double playedFraction )
         }
         m_playCount++;
     }
-    //ScriptManager::instance()->requestNewScore( url(), score(), playCount(), length(), playedFraction * 100 /*scripts expect it as a percent, not a fraction*/, QString() );
+
+    setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
     writeStatistics();
     notifyObservers();
 }
