@@ -170,7 +170,10 @@ Dynamic::BiasedPlaylist::recalculate()
 {
     if ( AmarokConfig::dynamicMode() ) {
         m_buffer.clear();
-        m_backbuffer.clear();
+        if ( m_backbufferMutex.tryLock() ) {
+            m_backbuffer.clear();
+            m_backbufferMutex.unlock();
+        }
 
         getContext();
         startSolver( true );
