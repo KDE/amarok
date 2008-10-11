@@ -12,9 +12,6 @@ VERSION 2.0-beta3
 	  from the file browser's context menu.
 
   CHANGES:
-    * Statusbar rewrite: Bring back the detailed progres operations view. 
-      It is now possible again to get a list of all running operations and 
-      to cancel each one individually.
     * Statusbar rewrite: Messages are no longer shown as top-level windows.
     * Added proper mouse over visuals to some places where it was missing.
     * All services ( or any other part of Amarok ) can now add context 
@@ -36,6 +33,9 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Statusbar rewrite: Bring back the detailed progres operations view. 
+      It is now possible again to get a list of all running operations and 
+      to cancel each one individually (BR 168380).
     * Statusbar rewrite: The "cancel all" button now works.
     * Statusbar rewrite: Don't hang on exit (BR 171665).
     * When searching in the collection, give keyboard focus to the results
