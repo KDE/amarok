@@ -103,7 +103,6 @@ private:
     Controller( QObject* parent = 0 );
     ~Controller();
 
-    Meta::TrackList filterEmpties( Meta::TrackList& ) const;
     void insertionHelper( int row, Meta::TrackList& );
 
     Model* m_model;

@@ -194,23 +194,6 @@ Playlist::Controller::insertTracks( int row, Meta::TrackList tl )
 {
     DEBUG_BLOCK
 
-    // expand any tracks that are actually playlists
-    QMutableListIterator<Meta::TrackPtr> i( tl );
-    while ( i.hasNext() )
-    {
-        i.next();
-        Meta::TrackPtr track = i.value();
-        if ( The::playlistManager()->canExpand( track ) )
-        {
-            i.remove();
-            Meta::TrackList newtracks = The::playlistManager()->expand( track )->tracks();
-            foreach( Meta::TrackPtr t, newtracks )
-            {
-                i.insert( t );
-            }
-        }
-    }
-
     insertionHelper( row, tl );
 }
 
@@ -485,29 +468,30 @@ Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
     }
 }
 
-Meta::TrackList
-Playlist::Controller::filterEmpties( Meta::TrackList& list ) const
-{
-    QMutableListIterator<Meta::TrackPtr> i( list );
-    while ( i.hasNext() )
-    {
-        i.next();
-        if ( i.value() == Meta::TrackPtr() )
-            i.remove();
-    }
-    return list;
-}
-
 void
-Playlist::Controller::insertionHelper( int row, Meta::TrackList& tracks )
+Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 {
-    InsertCmdList cmds;
-    if ( row < 0 || row > Model::instance()->rowCount() )
-    {
-        row = Model::instance()->rowCount();
+    // expand any tracks that are actually playlists
+    QMutableListIterator<Meta::TrackPtr> i( tl );
+    while ( i.hasNext() ) {
+        i.next();
+        Meta::TrackPtr track = i.value();
+        if ( track == Meta::TrackPtr() ) {
+            i.remove();
+        } else if ( The::playlistManager()->canExpand( track ) ) {
+            i.remove();
+            Meta::TrackList newtracks = The::playlistManager()->expand( track )->tracks();
+            foreach( Meta::TrackPtr t, newtracks ) {
+                if ( t != Meta::TrackPtr() )
+                    i.insert( t );
+            }
+        }
     }
-    foreach( Meta::TrackPtr t, filterEmpties( tracks ) )
-    {
+
+    InsertCmdList cmds;
+    row = qBound(0, Model::instance()->rowCount(), row);
+
+    foreach( Meta::TrackPtr t, tl ) {
         cmds.append( InsertCmd( t, row++ ) );
     }
 
