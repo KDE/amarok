@@ -18,12 +18,12 @@
 /**
  * This Model is used to get the right mime type/data for entries in the albums treeview
  */
-class AlbumsModel : public  QStandardItemModel {
+class AlbumsModel : public  QStandardItemModel
+{
      public:
          virtual QMimeData* mimeData(const QModelIndexList & indices) const;
          virtual QMimeData* mimeData(const QList<QStandardItem*> & items) const;
          virtual QStringList mimeTypes() const;
-
 };
  
 #endif

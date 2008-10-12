@@ -42,12 +42,18 @@ class AlbumItem : public QStandardItem, public Meta::Observer
         /**
          * Sets the size of the album art to display
          */
-        void setIconSize( int iconSize );
+        void setIconSize( const int iconSize );
 
         /**
          * @return the size of the album art
          */
         int iconSize() const { return m_iconSize; }
+
+        /**
+         * Setter to determine whether the item should show the Artist as well as the
+         * album name. Used for 'recent albums' listing.
+         */
+        void setShowArtist( const bool showArtist );
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
@@ -63,6 +69,7 @@ class AlbumItem : public QStandardItem, public Meta::Observer
     private:
         Meta::AlbumPtr m_album;
         int            m_iconSize;
+        bool           m_showArtist;
 };
 
 #endif // multiple inclusion guard

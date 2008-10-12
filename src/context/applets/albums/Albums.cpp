@@ -150,11 +150,14 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         m_albums = map.values();
     }
 
+    const bool showArtist = !currentTrack;
+
     foreach( Meta::AlbumPtr albumPtr, m_albums )
     {
         AlbumItem *albumItem = new AlbumItem();
         albumItem->setIconSize( m_albumWidth );
         albumItem->setAlbum( albumPtr );
+        albumItem->setShowArtist( showArtist );
         
         int childRow = 0;
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )

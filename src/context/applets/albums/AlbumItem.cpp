@@ -21,6 +21,8 @@
 
 AlbumItem::AlbumItem()
     : QStandardItem()
+    , m_iconSize( 50 )
+    , m_showArtist( false )
 {
     setEditable( false );
 }
@@ -37,7 +39,7 @@ AlbumItem::setAlbum( Meta::AlbumPtr albumPtr )
 }
 
 void
-AlbumItem::setIconSize( int iconSize )
+AlbumItem::setIconSize( const int iconSize )
 {
     static const int padding = 10;
 
@@ -46,6 +48,16 @@ AlbumItem::setIconSize( int iconSize )
     QSize size = sizeHint();
     size.setHeight( iconSize + padding*2 );
     setSizeHint( size );
+}
+
+void
+AlbumItem::setShowArtist( const bool showArtist )
+{
+    if( showArtist != m_showArtist )
+    {
+        m_showArtist = showArtist;
+        metadataChanged( m_album.data() );
+    }
 }
 
 void
@@ -69,6 +81,9 @@ AlbumItem::metadataChanged( Meta::Album *album )
 
     if( !year.isEmpty() )
         displayText += QString( " (%1)" ).arg( year );
+
+    if( m_showArtist )
+        displayText = QString( "%1 - %2" ).arg( album->albumArtist()->name(), displayText );
 
     QString trackCount = i18np( "%1 track", "%1 tracks", album->tracks().size() );
     displayText += "\n" + trackCount;
