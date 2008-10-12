@@ -383,6 +383,10 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
                 } else {
                     GenrePtr genrePtr = m_collection->genreMap()[ "Results for: " + m_filter ];
                     ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+
+                    if ( genre == 0 )  // sanity check as this has been reported to cause crashes
+                        return;
+                    
                     genre->addTrack( trackPtr );
                     track->setGenre( genrePtr );
                 }
