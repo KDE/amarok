@@ -97,7 +97,13 @@ loadPlaylist( const KUrl &url )
         // using KTemporary.close() is not enough here
         tempFile.remove();
 #endif
-        KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite );
+        KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
+
+        //FIXME!! Re-enable after end of string freeze
+        //The::statusBarNG()->newProgressOperation( job, i18n( "Fetching remote playlist" ) );
+        
+
+        
 
         if ( !job->exec() )
         {
