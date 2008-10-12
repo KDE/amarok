@@ -219,14 +219,14 @@ void TrackToolTip::setTrack()
         const QFontMetrics fontMetrics( font() );
         const int elideWidth = 200;
        
-        m_title = "<center><b>" + fontMetrics.elidedText( m_track->prettyName(), Qt::ElideRight, elideWidth ) + "</b>";
+        m_title = "<center><b>" + fontMetrics.elidedText( Qt::escape(m_track->prettyName()), Qt::ElideRight, elideWidth ) + "</b>";
         if( m_track->artist() ) {
-            const QString artist = fontMetrics.elidedText( m_track->artist()->prettyName(), Qt::ElideRight, elideWidth );
+            const QString artist = fontMetrics.elidedText( Qt::escape(m_track->artist()->prettyName()), Qt::ElideRight, elideWidth );
             if( !artist.isEmpty() )
                 m_title += i18n( " by <b>%1</b>", artist );
         }
         if( m_track->album() ) {
-            const QString album = fontMetrics.elidedText( m_track->album()->prettyName(), Qt::ElideRight, elideWidth );
+            const QString album = fontMetrics.elidedText( Qt::escape(m_track->album()->prettyName()), Qt::ElideRight, elideWidth );
             if( !album.isEmpty() )
                 m_title += i18n( " on <b>%1</b></center>", album );
         }
