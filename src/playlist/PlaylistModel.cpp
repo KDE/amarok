@@ -74,8 +74,6 @@ Playlist::Model::Model()
 
     if ( QFile::exists( defaultPlaylistPath() ) )
     {
-
-
         Meta::TrackList tracks = Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) )->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
@@ -85,11 +83,14 @@ Playlist::Model::Model()
             if ( track == Meta::TrackPtr() ) {
                 i.remove();
             } else if ( The::playlistManager()->canExpand( track ) ) {
-                i.remove();
-                Meta::TrackList newtracks = The::playlistManager()->expand( track )->tracks();
-                foreach( Meta::TrackPtr t, newtracks ) {
-                    if ( t != Meta::TrackPtr() )
-                        i.insert( t );
+                Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job errors out
+                if ( playlist ) {
+                    i.remove();
+                    Meta::TrackList newtracks = playlist->tracks();
+                    foreach( Meta::TrackPtr t, newtracks ) {
+                        if ( t != Meta::TrackPtr() )
+                            i.insert( t );
+                    }
                 }
             }
         }
