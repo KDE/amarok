@@ -99,7 +99,7 @@ private:
     QToolButton *m_cancelButton;
     QProgressBar *m_progresBar;
     QLabel *m_descriptionLabel;
-    KHBox *m_extraButtonSpace;;
+    KHBox *m_extraButtonSpace;
 
 };
 
