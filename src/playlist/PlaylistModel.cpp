@@ -542,13 +542,11 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
 
     int min = m_items.size() + cmds.size();
     int max = 0;
-    int activeShift = 0;
     QList<quint64> newIds;
     foreach( InsertCmd ic, cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );
-        activeShift += ( ic.second < m_activeRow ) ? 1 : 0;
         debug() << "inserting" << ic.first->prettyName() << "at" << ic.second;
     }
 
@@ -571,8 +569,17 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
     emit insertedIds( newIds );
 
-    // update the active row
-    m_activeRow = ( m_activeRow >= 0 ) ? m_activeRow + activeShift : -1;
+    const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
+
+    if ( currentTrackPtr )
+    {
+        //Check if one of the tracks in the playlist is the currently playing one, and if so make it active
+        for ( int i = 0; i < m_items.size(); i++ )
+        {
+            if ( m_items.at( i )->track()->uidUrl() == currentTrackPtr->uidUrl() )
+                m_activeRow = i;            
+        }
+    }
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
