@@ -479,11 +479,14 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
         if ( track == Meta::TrackPtr() ) {
             i.remove();
         } else if ( The::playlistManager()->canExpand( track ) ) {
-            i.remove();
-            Meta::TrackList newtracks = The::playlistManager()->expand( track )->tracks();
-            foreach( Meta::TrackPtr t, newtracks ) {
-                if ( t != Meta::TrackPtr() )
-                    i.insert( t );
+            Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job times out
+            if ( playlist ) {
+                Meta::TrackList newtracks = playlist->tracks();
+                i.remove();
+                foreach( Meta::TrackPtr t, newtracks ) {
+                    if ( t != Meta::TrackPtr() )
+                        i.insert( t );
+                }
             }
         }
     }
