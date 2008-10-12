@@ -34,13 +34,15 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Escape HTML characters from track metadata when showing the system tray
+      tooltip. Patch by Andrey Esin <gmlastik@gmail.com>. (BR 172623)
     * Only add one new folder when selecting "Add Folder" from the context 
-      menu in the user playlist category (BR 169666).
+      menu in the user playlist category. (BR 169666)
     * Statusbar rewrite: Bring back the detailed progres operations view. 
       It is now possible again to get a list of all running operations and 
-      to cancel each one individually (BR 168380).
+      to cancel each one individually. (BR 168380)
     * Statusbar rewrite: The "cancel all" button now works.
-    * Statusbar rewrite: Don't hang on exit (BR 171665).
+    * Statusbar rewrite: Don't hang on exit. (BR 171665)
     * When searching in the collection, give keyboard focus to the results
       after pressing Enter. (BR 172379)
     * Do no try to run 2 different lyrics script per default.
