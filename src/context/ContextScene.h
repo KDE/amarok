@@ -37,14 +37,11 @@ signals:
     void appletRemoved( QObject *object );
 
 protected slots:
+    // TODO: Port to Containment
 //     void appletDestroyed(QObject* object);
 
 protected:
     void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
-//     void mousePressEvent( QGraphicsSceneMouseEvent *event );
-    /*void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
-    void dropEvent(QGraphicsSceneDragDropEvent* event);
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent); */
 };
 
 } // Context namespace
