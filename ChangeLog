@@ -8,10 +8,11 @@ VERSION 2.0-beta3
     * Automatic track score computation works now.
     * Track count an total play time is now shown below the playlist.
       (BR 171652)
-	* You can now Copy To a collection, Append, and Load tracks
-	  from the file browser's context menu.
+    * You can now Copy To a collection, Append, and Load tracks from 
+      the file browser's context menu.
 
   CHANGES:
+    * Some new and updated icons.
     * Allow multiple items to be selected in the user playlist category.
     * Statusbar rewrite: Messages are no longer shown as top-level windows.
     * Added proper mouse over visuals to some places where it was missing.
@@ -34,6 +35,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Fix crash when searching in the shoutcast service. (BR 170681)
+    * Fix crash when adding multiple shoutcast stations. (BR 170247)
     * Escape HTML characters from track metadata when showing the system tray
       tooltip. Patch by Andrey Esin <gmlastik@gmail.com>. (BR 172623)
     * Only add one new folder when selecting "Add Folder" from the context 
