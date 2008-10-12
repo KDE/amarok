@@ -20,44 +20,26 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "DirectoryLoader.h"
 #include "MainWindow.h"
-#include "collection/Collection.h"
 #include "collection/support/FileCollectionLocation.h"
 #include "collection/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
-#include <KActionCollection>
 #include <KActionMenu>
 #include <KLocale>
-
+#include <KActionCollection>
+#include <KAction>
 #include <QAbstractItemView>
 #include <QMenu>
-
-/**
- * Stores a collection associated with an action for move/copy to collection
- */
-class CollectionAction : public QAction
-{
-public:
-    CollectionAction( Collection *coll, QObject *parent = 0 )
-            : QAction( parent )
-            , m_collection( coll )
-    {
-        setText( m_collection->prettyName() );
-    }
-
-    Collection *collection() const
-    {
-        return m_collection;
-    }
-
-private:
-    Collection *m_collection;
-};
 
 
 MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
         : KDirOperator( url, parent )
+        , mCopyActivated ( false )
+        , mMoveActivated ( false )
+        , mCopyAction( 0 )
+        , mMoveAction( 0 )
 {
     MyDirLister* dirlister = new MyDirLister( true );
     dirlister->setMainWindow( The::mainWindow() );
@@ -129,7 +111,7 @@ void MyDirOperator::aboutToShowContextMenu()
         foreach( Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, this );
-            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
+            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotPrepareMoveTracks() ) );
             moveMenu->addAction( moveAction );
         }
         menu->addMenu( moveMenu );
@@ -138,7 +120,7 @@ void MyDirOperator::aboutToShowContextMenu()
         foreach( Collection *coll, writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, this );
-            connect( copyAction, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
+            connect( copyAction, SIGNAL( triggered() ), this, SLOT( slotPrepareCopyTracks() ) );
             copyMenu->addAction( copyAction );
         }
         menu->addMenu( copyMenu );
@@ -146,46 +128,81 @@ void MyDirOperator::aboutToShowContextMenu()
 }
 
 void
-MyDirOperator::slotMoveTracks()
+MyDirOperator::slotCopyTracks( const Meta::TrackList& tracks )
 {
-    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
-    if ( !action )
+//     CollectionManager *cm = CollectionManager::instance();
+//     Meta::TrackList thetracks = cm->tracksForUrls( tracks );
+
+    if( !mCopyAction ||  !mCopyActivated  )
         return;
 
     CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = action->collection()->location();
-    
-    Meta::TrackList tracks = prepareTracks();
-    source->prepareMove( tracks, destination );
+    CollectionLocation *destination = mCopyAction->collection()->location();
+
+    source->prepareCopy( tracks, destination );
+    mCopyActivated = false;
+    mCopyAction = 0;
 }
 
 void
-MyDirOperator::slotCopyTracks()
+MyDirOperator::slotMoveTracks( const Meta::TrackList& tracks )
 {
+//     CollectionManager *cm = CollectionManager::instance();
+//     Meta::TrackList thetracks = cm->tracksForUrls( tracks );
+
+    if( !mMoveAction ||  !mMoveActivated )
+        return;
+
+    CollectionLocation *source      = new FileCollectionLocation();
+    CollectionLocation *destination = mMoveAction->collection()->location();
+
+    source->prepareMove( tracks, destination );
+    mMoveActivated = false;
+    mMoveAction = 0;
+}
+
+void
+MyDirOperator::slotPrepareMoveTracks()
+{
+    if( mMoveActivated )
+        return;
+
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
     if ( !action )
         return;
 
-    CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = action->collection()->location();
-
-    Meta::TrackList tracks = prepareTracks();
-    source->prepareCopy( tracks, destination );
-}
-
-Meta::TrackList MyDirOperator::prepareTracks()
-{
-    Meta::TrackList tracks;
+    mMoveActivated = true;
+    mMoveAction = action;
+    
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
-        return tracks;
+        return;
+    
+    DirectoryLoader* dl = new DirectoryLoader();
+    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotMoveTracks( const Meta::TrackList& ) ) );
+    dl->init( list.urlList() );
+}
 
-    KUrl::List expanded = Amarok::recursiveUrlExpand( list.urlList() );
+void
+MyDirOperator::slotPrepareCopyTracks()
+{
+    if( mCopyActivated )
+        return;
 
-    CollectionManager *cm = CollectionManager::instance();
-    tracks = cm->tracksForUrls( expanded );
+    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
+    if ( !action )
+        return;
 
-    return tracks;
+    mCopyActivated = true;
+    mCopyAction = action;
+    
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return;
+    
+    DirectoryLoader* dl = new DirectoryLoader();
+    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotCopyTracks( const Meta::TrackList& ) ) );
+    dl->init( list.urlList() );
 }
 
 void MyDirOperator::slotAppendChildTracks()

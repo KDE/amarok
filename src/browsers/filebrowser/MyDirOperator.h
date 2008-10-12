@@ -21,6 +21,7 @@
 
 #include "MyDirLister.h"
 
+#include "collection/Collection.h"
 #include "playlist/PlaylistController.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/PopupDropper.h"
@@ -28,13 +29,35 @@
 #include "context/popupdropper/PopupDropperItem.h"
 #include "SvgHandler.h"
 
-#include <KAction>
+
 #include <KDirOperator>
 #include <KFileItem>
 #include <KMenu>
 #include <KUrl>
 
 typedef QList<PopupDropperAction *> PopupDropperActionList;
+
+/**
+ * Stores a collection associated with an action for move/copy to collection
+ */
+class CollectionAction : public QAction
+{
+public:
+    CollectionAction( Collection *coll, QObject *parent = 0 )
+            : QAction( parent )
+            , m_collection( coll )
+    {
+        setText( m_collection->prettyName() );
+    }
+
+    Collection *collection() const
+    {
+        return m_collection;
+    }
+
+private:
+    Collection *m_collection;
+};
 
 class MyDirOperator : public KDirOperator
 {
@@ -48,15 +71,21 @@ private slots:
     void aboutToShowContextMenu();
     void fileSelected( const KFileItem & /*file*/ );
 
-    void slotMoveTracks();
-    void slotCopyTracks();
+    void slotPrepareMoveTracks();
+    void slotPrepareCopyTracks();
+    void slotMoveTracks( const Meta::TrackList& tracks );
+    void slotCopyTracks( const Meta::TrackList& tracks );
     void slotPlayChildTracks();
     void slotAppendChildTracks();
 
 private:
-    Meta::TrackList prepareTracks();
     PopupDropperActionList createBasicActions();
     void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
+
+    bool mCopyActivated;
+    bool mMoveActivated;
+    CollectionAction* mCopyAction;
+    CollectionAction* mMoveAction;
 };
 
 #endif
