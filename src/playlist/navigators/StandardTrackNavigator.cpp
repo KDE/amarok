@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *                      : (C) 2008 Soren Harward <stharward@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,23 +21,28 @@
 
 #include "StandardTrackNavigator.h"
 
-#include "Debug.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistActions.h"
 
-int
-Playlist::StandardTrackNavigator::nextRow()
+quint64
+Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    int updateRow = The::playlistModel()->activeRow() + 1;
-    if ( Model::instance()->rowExists( updateRow ) &&
-            Actions::instance()->stopAfterMode() != StopAfterCurrent )
-    {
-        return updateRow;
-    }
-    else
-    {
-        // out of tracks to play or stopAfterMode == Current.
-        return -1;
-    }
+    Model* model = Model::instance();
+    int updateRow = model->activeRow() + 1;
+
+    if ( m_repeatPlaylist )
+        updateRow = ( updateRow >= model->rowCount() ) ? 0 : updateRow;
+
+    return model->idAt( updateRow );
 }
 
+quint64
+Playlist::StandardTrackNavigator::requestLastTrack()
+{
+    Model* model = Model::instance();
+    int updateRow = model->activeRow() - 1;
+
+    if ( m_repeatPlaylist )
+        updateRow = ( updateRow >= model->rowCount() ) ? 0 : updateRow;
+
+    return model->idAt( updateRow );
+}

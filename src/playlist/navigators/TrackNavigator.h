@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *                      : (C) 2008 Soren Harward <stharward@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,76 +21,49 @@
 #ifndef TRACKNAVIGATOR_H
 #define TRACKNAVIGATOR_H
 
-#include "meta/Meta.h"
-#include "Debug.h"
-
 #include <QObject>
 
 namespace Playlist
 {
 
-class Controller;
-class Model;
-
-/**
- * An abstract class which defines what should be done after a track finishes playing.
- * The Playlist::Model will have an object of the currently active strategy.
- * It is the "strategy" pattern from the Design Patterns book. In Amarok 1.x, the Playlist
- * became very confusing due to random mode and dynamic playlists requiring complicated
- * nested if statements. This should prevent that.
- */
-class TrackNavigator : public QObject
-{
-    Q_OBJECT
-
-public:
-    TrackNavigator();
-    virtual ~TrackNavigator() { }
-
-    /**
-     * The next row that the engine should play.  This is called a few
-     * seconds before the track actually ends.  This must result in a
-     * call to Playlist::Model::setNextRow
+    /** An abstract class which defines what should be done after a track
+     * finishes playing.  The Playlist::Model will have an object of the
+     * currently active strategy.  It is the "strategy" pattern from the Design
+     * Patterns book. In Amarok 1.x, the Playlist became very confusing due to
+     * random mode and dynamic playlists requiring complicated nested if
+     * statements. This should prevent that.
      */
-    virtual void requestNextTrack() = 0;
 
-    /**
-     * The user clicks next. This must result in a call to
-     * Playlist::Model::setUserNextRow
-     */
-    virtual void requestUserNextTrack() = 0;
+    typedef QList<quint64> AlbumTrackList; // used by the RandomAlbum and RepeatAlbum navigators
 
-    /**
-     * The user clicks previous. By default it just go to the previous
-     * item in the playlist.  This must result in a call to
-     * Playlist::Model::setPrevRow
-     */
-    virtual void requestLastTrack() = 0;
-
-public slots:
-    void setPlaylistChanged()
+    class TrackNavigator : public QObject
     {
-        m_playlistChanged = true;
-    }
+        Q_OBJECT
 
-protected:
-    ///Convenience function, set the current track in the playlistmodel and play it.
-    ///@param position position in Model of track to start playing
-    void setCurrentTrack( int position );
+        public:
+            TrackNavigator();
+            virtual ~TrackNavigator() { }
 
-    bool playlistChanged() const
-    {
-        return m_playlistChanged;
-    }
-    void playlistChangeHandled()
-    {
-        m_playlistChanged = false;
-    }
+            /**
+             * The engine will finish the current track in a couple of seconds,
+             * and would like to know what the next track should be.
+             */
+            virtual quint64 requestNextTrack() = 0;
 
-private:
-    // a flag which indicates that the playlist has somehow changed since last advance (eg insertion/removal of items)
-    bool m_playlistChanged;
-};
+            /**
+             * The user triggers the next-track action.
+             */
+            virtual quint64 requestUserNextTrack() = 0;
+
+            /**
+             * The user triggers the previous-track action.
+             */
+            virtual quint64 requestLastTrack() = 0;
+
+        protected:
+            // repeat the entire playlist when we've reached the end
+            bool m_repeatPlaylist;
+    };
 }
 
 #endif

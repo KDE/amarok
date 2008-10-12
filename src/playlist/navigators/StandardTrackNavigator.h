@@ -21,22 +21,22 @@
 #ifndef STANDARDTRACKNAVIGATOR_H
 #define STANDARDTRACKNAVIGATOR_H
 
-#include "SimpleTrackNavigator.h"
+#include "TrackNavigator.h"
 
 namespace Playlist
 {
-class Model;
-/**
- * Simply plays the next track and stops playing when the playlist is finished.
- */
-class StandardTrackNavigator : public SimpleTrackNavigator
-{
-public:
-    StandardTrackNavigator() { }
+    /**
+     * Simply plays the next track and stops playing when the playlist is finished.
+     */
+    class StandardTrackNavigator : public TrackNavigator
+    {
+        public:
+            StandardTrackNavigator() { }
 
-private:
-    int nextRow();
-};
+            quint64 requestNextTrack();
+            quint64 requestUserNextTrack() { return requestNextTrack(); }
+            quint64 requestLastTrack();
+    };
 
 }
 

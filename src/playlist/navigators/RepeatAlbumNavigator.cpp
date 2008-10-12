@@ -125,8 +125,8 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     dump();
 }
 
-int
-Playlist::RepeatAlbumNavigator::nextRow()
+quint64
+Playlist::RepeatAlbumNavigator::requestNextTrack()
 {
     DEBUG_BLOCK
     if ( m_currentAlbum != Meta::AlbumPtr() )
@@ -135,16 +135,16 @@ Playlist::RepeatAlbumNavigator::nextRow()
         int row = atl.indexOf( m_currentTrack ) + 1;
         row = ( row < atl.size() ) ? row : 0;
         m_currentTrack = atl.at( row );
-        return Model::instance()->rowForId( m_currentTrack );
+        return m_currentTrack;
     }
     else
     {
-        return -1;
+        return 0;
     }
 }
 
-int
-Playlist::RepeatAlbumNavigator::lastRow()
+quint64
+Playlist::RepeatAlbumNavigator::requestLastTrack()
 {
     DEBUG_BLOCK
     if ( m_currentAlbum != Meta::AlbumPtr() )
@@ -153,11 +153,11 @@ Playlist::RepeatAlbumNavigator::lastRow()
         int row = atl.indexOf( m_currentTrack ) - 1;
         row = ( row > 0 ) ? row : atl.size() - 1;
         m_currentTrack = atl.at( row );
-        return Model::instance()->rowForId( m_currentTrack );
+        return m_currentTrack;
     }
     else
     {
-        return -1;
+        return 0;
     }
 }
 

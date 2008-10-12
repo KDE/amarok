@@ -155,12 +155,18 @@ Playlist::RandomAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     }
     m_currentTrack = id;
 
-    dump();
+    //dump();
 }
 
-int
-Playlist::RandomAlbumNavigator::nextRow()
+quint64
+Playlist::RandomAlbumNavigator::requestNextTrack()
 {
+    if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
+    {
+        m_unplayedAlbums = m_playedAlbums;
+        m_playedAlbums.clear();
+    }
+
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
         AlbumTrackList atl = m_albumGroups.value( m_currentAlbum );
@@ -192,12 +198,18 @@ Playlist::RandomAlbumNavigator::nextRow()
             m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
         }
     }
-    return Model::instance()->rowForId( m_currentTrack );
+    return m_currentTrack;
 }
 
-int
-Playlist::RandomAlbumNavigator::lastRow()
+quint64
+Playlist::RandomAlbumNavigator::requestLastTrack()
 {
+    if ( m_playedAlbums.isEmpty() && m_repeatPlaylist )
+    {
+        m_playedAlbums = m_unplayedAlbums;
+        m_unplayedAlbums.clear();
+    }
+
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
         AlbumTrackList atl = m_albumGroups.value( m_currentAlbum );
@@ -229,7 +241,7 @@ Playlist::RandomAlbumNavigator::lastRow()
             m_currentTrack = m_albumGroups.value( m_currentAlbum ).last();
         }
     }
-    return Model::instance()->rowForId( m_currentTrack );
+    return m_currentTrack;
 }
 
 bool

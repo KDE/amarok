@@ -23,8 +23,7 @@
 #define DYNAMICTRACKNAVIGATOR_H
 
 #include "dynamic/DynamicPlaylist.h"
-#include "playlist/PlaylistModel.h"
-#include "SimpleTrackNavigator.h"
+#include "StandardTrackNavigator.h"
 
 #include <QMutex>
 
@@ -32,46 +31,38 @@
 namespace Playlist
 {
 
-class Model;
+    /**
+     * A navigator that implements 'dynamic mode', which is a never-ending queue of tracks.
+     */
+    class DynamicTrackNavigator : public StandardTrackNavigator
+    {
+        Q_OBJECT
 
-/**
- * A navigator that implements 'dynamic mode', which is a sort of never
- * ending queue of tracks.
- */
-class DynamicTrackNavigator : public TrackNavigator
-{
-    Q_OBJECT
+        public:
+            DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p ) ;
+            ~DynamicTrackNavigator();
 
-public:
-    DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p ) ;
-    ~DynamicTrackNavigator();
+        public slots:
+            void repopulate();
 
-    void requestNextTrack();
-    void requestUserNextTrack();
-    void requestLastTrack();
+        private slots:
+            void activePlaylistChanged();
+            void receiveTracks( Meta::TrackList );
+            void trackChanged();
 
-    void appendUpcoming();
+        private:
+            void appendUpcoming();
+            void removePlayed();
 
-public slots:
-    void repopulate();
+            bool m_waitingForNext;
+            bool m_waitingForUserNext;
 
-private slots:
-    void activePlaylistChanged();
-    void trackChanged();
-    void receiveTracks( Meta::TrackList );
+            bool m_abortRequested;
 
-private:
-    void removePlayed();
+            Dynamic::DynamicPlaylistPtr m_playlist;
 
-    bool m_waitingForNext;
-    bool m_waitingForUserNext;
-
-    bool m_abortRequested;
-
-    Dynamic::DynamicPlaylistPtr m_playlist;
-
-    QMutex m_mutex;
-};
+            QMutex m_mutex;
+    };
 }
 
 #endif

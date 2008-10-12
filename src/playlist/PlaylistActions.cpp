@@ -35,7 +35,6 @@
 #include "navigators/RandomAlbumNavigator.h"
 #include "navigators/RandomTrackNavigator.h"
 #include "navigators/RepeatAlbumNavigator.h"
-#include "navigators/RepeatPlaylistNavigator.h"
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
 #include "PlaylistModel.h"
@@ -74,6 +73,7 @@ Playlist::Actions::Actions( QObject* parent )
     DEBUG_BLOCK
     s_instance = this;
     playlistModeChanged(); // sets m_navigator.
+    m_nextTrackCandidate = m_navigator->requestNextTrack();
 }
 
 Playlist::Actions::~Actions()
@@ -86,74 +86,38 @@ Playlist::Actions::~Actions()
 void
 Playlist::Actions::requestNextTrack()
 {
-    if ( !m_waitingForNextTrack )
-    {
-        m_waitingForNextTrack = true;
-        m_navigator->requestNextTrack();
-    }
+    m_trackError = false;
+    m_nextTrackCandidate = m_navigator->requestNextTrack();
+    play( m_nextTrackCandidate, false );
 }
 
 void
 Playlist::Actions::requestUserNextTrack()
 {
-    if ( !m_waitingForNextTrack )
-    {
-        m_waitingForNextTrack = true;
-        m_navigator->requestUserNextTrack();
-    }
+    m_trackError = false;
+    m_nextTrackCandidate = m_navigator->requestUserNextTrack();
+    play( m_nextTrackCandidate );
 }
 
 void
 Playlist::Actions::requestPrevTrack()
 {
-    if ( !m_waitingForNextTrack )
-    {
-        m_waitingForNextTrack = true;
-        m_navigator->requestLastTrack();
-    }
-}
-
-
-void
-Playlist::Actions::setNextTrack( quint64 trackid )
-{
     m_trackError = false;
-    m_waitingForNextTrack = false;
-    play( trackid, false );
+    m_nextTrackCandidate = m_navigator->requestLastTrack();
+    play( m_nextTrackCandidate );
 }
 
-void
-Playlist::Actions::setUserNextTrack( quint64 trackid )
-{
-    m_trackError = false;
-    m_waitingForNextTrack = false;
-    play( trackid );
-}
-
-void
-Playlist::Actions::setPrevTrack( quint64 trackid )
-{
-    m_trackError = false;
-    m_waitingForNextTrack = false;
-    play( trackid );
-}
 
 void
 Playlist::Actions::play()
 {
-    if ( m_waitingForNextTrack )
-        return;
-
-    if ( m_nextTrackCandidate == 0 )
-        requestUserNextTrack();
-
     play( m_nextTrackCandidate );
 }
 
 void
 Playlist::Actions::play( const QModelIndex& index )
 {
-    play( index.row() );
+    play( index.data( UniqueIdRole ).value<quint64>() );
 }
 
 void
@@ -168,11 +132,10 @@ Playlist::Actions::play( quint64 trackid, bool now )
     if ( m_trackError )
         return;
 
-    Model* model = The::playlistModel();
+    Model* model = Model::instance();
 
     if ( model->containsId( trackid ) )
     {
-        m_nextTrackCandidate = trackid;
         if ( now )
         {
             The::engineController()->play( model->trackForId( trackid ) );
@@ -187,6 +150,7 @@ Playlist::Actions::play( quint64 trackid, bool now )
         m_trackError = true;
         warning() << "Invalid trackid" << trackid;
     }
+    m_nextTrackCandidate = 0;
 }
 
 void
@@ -207,14 +171,11 @@ Playlist::Actions::playlistModeChanged()
     if ( m_navigator )
         m_navigator->deleteLater();
 
-    int options = Playlist::StandardPlayback;
-
+    debug() << "Dynamic mode:   " << AmarokConfig::dynamicMode();
     debug() << "Repeat enabled: " << Amarok::repeatEnabled();
     debug() << "Random enabled: " << Amarok::randomEnabled();
     debug() << "Track mode:     " << ( Amarok::repeatTrack() || Amarok::randomTracks() );
     debug() << "Album mode:     " << ( Amarok::repeatAlbum() || Amarok::randomAlbums() );
-    debug() << "Playlist mode:  " << Amarok::repeatPlaylist();
-    debug() << "Dynamic mode:   " << AmarokConfig::dynamicMode();
 
     if ( AmarokConfig::dynamicMode() )
     {
@@ -232,46 +193,23 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator = 0;
 
-    if ( Amarok::repeatEnabled() )
-        options |= Playlist::RepeatPlayback;
-    if ( Amarok::randomEnabled() )
-        options |= Playlist::RandomPlayback;
-    if ( Amarok::repeatTrack() || Amarok::randomTracks() )
-        options |= Playlist::TrackPlayback;
-    if ( Amarok::repeatAlbum() || Amarok::randomAlbums() )
-        options |= Playlist::AlbumPlayback;
-    if ( Amarok::repeatPlaylist() )
-        options |= Playlist::PlaylistPlayback;
-
-    if ( options == Playlist::StandardPlayback )
-    {
-        m_navigator = new StandardTrackNavigator();
-    }
-    else if ( options & Playlist::RepeatPlayback )
-    {
-        if ( options & Playlist::TrackPlayback )
-            m_navigator = new RepeatTrackNavigator();
-        else if ( options & Playlist::PlaylistPlayback )
-            m_navigator = new RepeatPlaylistNavigator();
-        else if ( options & Playlist::AlbumPlayback )
-            m_navigator = new RepeatAlbumNavigator();
-    }
-    else if ( options & Playlist::RandomPlayback )
-    {
-        if ( options & Playlist::TrackPlayback )
+    if ( Amarok::randomEnabled() ) {
+        if ( Amarok::randomTracks() )
             m_navigator = new RandomTrackNavigator();
-        else if ( options & Playlist::AlbumPlayback )
+        else if ( Amarok::randomAlbums() )
             m_navigator = new RandomAlbumNavigator();
-    }
-
-    if ( m_navigator == 0 )
-    {
-        debug() << "Play mode not implemented, defaulting to Standard Playback";
+        else
+            m_navigator = new StandardTrackNavigator(); // crap -- something went wrong
+    } else if ( Amarok::repeatEnabled() ) {
+        if ( Amarok::repeatTrack() )
+            m_navigator = new RepeatTrackNavigator();
+        else if ( Amarok::repeatAlbum() )
+            m_navigator = new RepeatAlbumNavigator();
+        else
+            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
+    } else {
         m_navigator = new StandardTrackNavigator();
     }
-
-    connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), m_navigator, SLOT( setPlaylistChanged() ) );
-    connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), m_navigator, SLOT( setPlaylistChanged() ) );
 }
 
 void
@@ -317,7 +255,7 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
 void
 Playlist::Actions::engineNewTrackPlaying()
 {
-    Model* model = The::playlistModel();
+    Model* model = Model::instance();
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if ( track )
     {
@@ -341,8 +279,5 @@ Playlist::Actions::engineNewTrackPlaying()
 
 namespace The
 {
-AMAROK_EXPORT Playlist::Actions* playlistActions()
-{
-    return Playlist::Actions::instance();
-}
+    AMAROK_EXPORT Playlist::Actions* playlistActions() { return Playlist::Actions::instance(); }
 }

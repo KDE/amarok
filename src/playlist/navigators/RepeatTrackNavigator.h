@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright       : (C) 2007 Dan Meltzer <hydrogen@notyetimplemented.com> *
+ *                 : (C) 2008 Soren Harward <stharward@gmail.com>          *
  *                                                                         *
  * This program is free software; you can redistribute it and/or           *
  * modify it under the terms of the GNU General Public License as          *
@@ -18,24 +19,28 @@
 #ifndef REPEATTRACKNAVIGATOR_H
 #define REPEATTRACKNAVIGATOR_H
 
-#include "meta/Meta.h"
-#include "playlist/PlaylistModel.h"
-#include "SimpleTrackNavigator.h"
+#include "StandardTrackNavigator.h"
 
 namespace Playlist
 {
-/**
- * Simply plays the next track and stops playing when the playlist is finished.
- */
-class RepeatTrackNavigator : public SimpleTrackNavigator
-{
-public:
-    RepeatTrackNavigator() : SimpleTrackNavigator() {}
+    /**
+     * Repeats the selected track over and over, unless the user intervenes
+     */
+    class RepeatTrackNavigator : public StandardTrackNavigator
+    {
+        Q_OBJECT
 
-private:
-    int nextRow();
-    int userNextRow();
-};
+        public:
+            RepeatTrackNavigator();
+
+            quint64 requestNextTrack() { return m_trackid; }
+
+        private slots:
+            void recvActiveTrackChanged( const quint64 id ) { m_trackid = id; }
+
+        private:
+            quint64 m_trackid;
+    };
 
 }
 

@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright     : (C) 2007 Dan Meltzer <hydrogen@notyetimplemented.com>   *
+ *               : (C) 2008 Soren Harward <stharward@gmail.com>            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License version 2 of     *
@@ -18,18 +19,6 @@
 
 #include "playlist/PlaylistModel.h"
 
-int
-Playlist::RepeatTrackNavigator::nextRow()
-{
-    return Model::instance()->activeRow();
+Playlist::RepeatTrackNavigator::RepeatTrackNavigator() {
+    connect( Model::instance(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 }
-
-int
-Playlist::RepeatTrackNavigator::userNextRow()
-{
-    int updateRow = The::playlistModel()->activeRow() + 1;
-    if ( Model::instance()->rowExists( updateRow ) ) setCurrentTrack( updateRow );
-    return -1;
-}
-
-

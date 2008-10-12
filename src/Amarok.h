@@ -184,14 +184,12 @@ namespace Amarok
     bool randomOff();
     bool randomTracks();
     bool randomAlbums();
+    bool repeatEnabled();
+    bool randomEnabled();
     bool favorNone();
     bool favorScores();
     bool favorRatings();
     bool favorLastPlay();
-    bool entireAlbums(); //repeatAlbum() || randomAlbums()
-    bool repeatEnabled();
-    bool randomEnabled();
-
 
     void setDynamicPlaylist( const QString& title );  // defined in dynamicmodel.cpp
     void enableDynamicMode( bool enable );

@@ -22,7 +22,7 @@
 #ifndef REPEATALBUMNAVIGATOR_H
 #define REPEATALBUMNAVIGATOR_H
 
-#include "SimpleTrackNavigator.h"
+#include "TrackNavigator.h"
 
 #include "Meta.h"
 
@@ -35,14 +35,19 @@ namespace Playlist
 Navigator which repeats one album over and over
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Soren Harward <stharward@gmail.com>
 */
 
-class RepeatAlbumNavigator : public SimpleTrackNavigator
+class RepeatAlbumNavigator : public TrackNavigator
 {
     Q_OBJECT
 
 public:
     RepeatAlbumNavigator();
+
+    quint64 requestNextTrack();
+    quint64 requestUserNextTrack() { return requestNextTrack(); }
+    quint64 requestLastTrack();
 
 private slots:
     void recvInsertedIds( const QList<quint64>& );
@@ -50,9 +55,6 @@ private slots:
     void recvActiveTrackChanged( const quint64 );
 
 private:
-    int nextRow();
-    int lastRow();
-
     static bool idLessThan( const quint64 left, const quint64 right );
     void sortTheseAlbums( const Meta::AlbumList );
 

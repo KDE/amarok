@@ -83,7 +83,7 @@ enum DataRoles
 {
     TrackRole = Qt::UserRole,
     StateRole,
-    ItemRole,
+    UniqueIdRole,
     ActiveTrackRole
 };
 
@@ -127,14 +127,8 @@ public:
     }
 
     // convenience access methods
-    bool rowExists( int row ) const
-    {
-        return (( row >= 0 ) && ( row < m_items.size() ) );
-    }
-    int activeRow() const
-    {
-        return m_activeRow;
-    } // returns -1 if there is no active row
+    bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
+    int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
     void setActiveRow( int row );
     Item::State stateOfRow( int row ) const;
 
@@ -145,18 +139,12 @@ public:
 
     // position-independent access methods
     // these are useful when you care what tracks are in the playlist, but not what order they're in (eg, the Random Track navigator)
-    bool containsId( const quint64 id ) const
-    {
-        return m_itemIds.contains( id );
-    }
+    bool containsId( const quint64 id ) const { return m_itemIds.contains( id ); }
     int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
     Meta::TrackPtr trackForId( const quint64 id ) const;
     quint64 idAt( const int row ) const;
     quint64 activeId() const; // returns 0 for "no active row"
-    void setActiveId( const quint64 id )
-    {
-        setActiveRow( rowForId( id ) );
-    }
+    void setActiveId( const quint64 id ) { setActiveRow( rowForId( id ) ); }
     Item::State stateOfId( quint64 id ) const;
 
     // methods to save playlist to file

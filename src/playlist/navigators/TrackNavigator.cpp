@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *                      : (C) 2008 Soren Harward <stharward@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,15 +21,8 @@
 
 #include "TrackNavigator.h"
 
-#include "Debug.h"
-#include "playlist/PlaylistActions.h"
+#include "Amarok.h"
 
-Playlist::TrackNavigator::TrackNavigator() : m_playlistChanged( true ) {}
-
-void
-Playlist::TrackNavigator::setCurrentTrack( int position )
-{
-    DEBUG_BLOCK
-    Actions::instance()->play( position );
+Playlist::TrackNavigator::TrackNavigator() {
+    m_repeatPlaylist = Amarok::repeatPlaylist();
 }
-

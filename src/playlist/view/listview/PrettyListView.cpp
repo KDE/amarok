@@ -116,7 +116,7 @@ Playlist::PrettyListView::scrollToActiveTrack()
 void
 Playlist::PrettyListView::trackActivated( const QModelIndex& idx ) const
 {
-    Actions::instance()->play( idx.row() );
+    Actions::instance()->play( idx );
 }
 
 void

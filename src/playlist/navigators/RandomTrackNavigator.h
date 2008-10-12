@@ -22,34 +22,33 @@
 #ifndef AMAROK_RANDOMTRACKNAVIGATOR_H
 #define AMAROK_RANDOMTRACKNAVIGATOR_H
 
-#include "SimpleTrackNavigator.h"
+#include "TrackNavigator.h"
 
 namespace Playlist
 {
-class Model;
-/**
- * Plays a random track in the playlist
- */
-class RandomTrackNavigator : public SimpleTrackNavigator
-{
-    Q_OBJECT
+    /**
+     * Plays a random track in the playlist
+     */
+    class RandomTrackNavigator : public TrackNavigator
+    {
+        Q_OBJECT
 
-public:
-    RandomTrackNavigator();
+    public:
+        RandomTrackNavigator();
+        quint64 requestNextTrack();
+        quint64 requestUserNextTrack() { return requestNextTrack(); }
+        quint64 requestLastTrack();
 
-private slots:
-    void recvInsertedIds( const QList<quint64>& );
-    void recvRemovedIds( const QList<quint64>& );
-    void recvActiveTrackChanged( const quint64 );
+    private slots:
+        void recvInsertedIds( const QList<quint64>& );
+        void recvRemovedIds( const QList<quint64>& );
+        void recvActiveTrackChanged( const quint64 );
 
-private:
-    int nextRow();
-    int lastRow();
+    private:
+        QList<quint64> m_playedRows;
+        QList<quint64> m_unplayedRows;
 
-    QList<quint64> m_playedRows;
-    QList<quint64> m_unplayedRows;
-
-};
+    };
 }
 
 #endif

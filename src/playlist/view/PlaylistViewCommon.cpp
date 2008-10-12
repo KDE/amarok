@@ -39,7 +39,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = index->data( Playlist::ItemRole ).value< Playlist::Item* >()->track();
+    Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     KMenu *menu = new KMenu( parent );
 

@@ -146,24 +146,24 @@ Playlist::Model::headerData( int section, Qt::Orientation orientation, int role 
 QVariant
 Playlist::Model::data( const QModelIndex& index, int role ) const
 {
-    if ( !index.isValid() )
-        return QVariant();
-
     int row = index.row();
 
-    if ( role == ItemRole && ( row != -1 ) )
-        return QVariant::fromValue( m_items.at( row ) );
+    if ( !index.isValid() || !rowExists( row ) )
+        return QVariant();
+
+    if ( role == UniqueIdRole )
+        return QVariant( idAt( row ) );
 
     else if ( role == ActiveTrackRole )
         return ( row == m_activeRow );
 
-    else if ( role == TrackRole && ( row != -1 ) && m_items.at( row )->track() )
+    else if ( role == TrackRole && m_items.at( row )->track() )
         return QVariant::fromValue( m_items.at( row )->track() );
 
-    else if ( role == StateRole && ( row != -1 ) )
+    else if ( role == StateRole )
         return m_items.at( row )->state();
 
-    else if ( role == Qt::DisplayRole && row != -1 )
+    else if ( role == Qt::DisplayRole )
     {
         switch ( index.column() )
         {

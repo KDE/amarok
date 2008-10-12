@@ -22,7 +22,7 @@
 #ifndef RANDOMALBUMNAVIGATOR_H
 #define RANDOMALBUMNAVIGATOR_H
 
-#include "SimpleTrackNavigator.h"
+#include "TrackNavigator.h"
 
 #include "Meta.h"
 
@@ -30,40 +30,42 @@
 
 namespace Playlist
 {
-/**
-Navigator for playing back albums in random order
+    /**
+    Navigator for playing back albums in random order
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+        @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+        @author Soren Harward <stharward@gmail.com>
+    */
 
-class RandomAlbumNavigator : public SimpleTrackNavigator
-{
-    Q_OBJECT
+    class RandomAlbumNavigator : public TrackNavigator
+    {
+        Q_OBJECT
 
-public:
-    RandomAlbumNavigator();
+        public:
+            RandomAlbumNavigator();
 
-private slots:
-    void recvInsertedIds( const QList<quint64>& );
-    void recvRemovedIds( const QList<quint64>& );
-    void recvActiveTrackChanged( const quint64 );
+            quint64 requestNextTrack();
+            quint64 requestUserNextTrack() { return requestNextTrack(); }
+            quint64 requestLastTrack();
 
-private:
-    int nextRow();
-    int lastRow();
+        private slots:
+            void recvInsertedIds( const QList<quint64>& );
+            void recvRemovedIds( const QList<quint64>& );
+            void recvActiveTrackChanged( const quint64 );
 
-    static bool idLessThan( const quint64 left, const quint64 right );
-    void sortTheseAlbums( const Meta::AlbumList );
+        private:
+            static bool idLessThan( const quint64 left, const quint64 right );
+            void sortTheseAlbums( const Meta::AlbumList );
 
-    void dump();
+            void dump();
 
-    QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
+            QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
 
-    QList<Meta::AlbumPtr> m_playedAlbums;
-    QList<Meta::AlbumPtr> m_unplayedAlbums;
+            QList<Meta::AlbumPtr> m_playedAlbums;
+            QList<Meta::AlbumPtr> m_unplayedAlbums;
 
-    Meta::AlbumPtr m_currentAlbum;
-    quint64 m_currentTrack;
-};
+            Meta::AlbumPtr m_currentAlbum;
+            quint64 m_currentTrack;
+    };
 }
 #endif

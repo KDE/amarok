@@ -31,7 +31,7 @@
 
 #include <algorithm> // STL
 
-Playlist::RandomTrackNavigator::RandomTrackNavigator() : SimpleTrackNavigator()
+Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
     Model* model = Model::instance();
     connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
@@ -66,6 +66,7 @@ Playlist::RandomTrackNavigator::recvInsertedIds( const QList<quint64>& list )
         }
         else
         {
+            // insert a new, but played, track at a random position
             int pos = KRandom::random() % m_playedRows.size();
             m_playedRows.insert( pos, t );
         }
@@ -93,32 +94,44 @@ Playlist::RandomTrackNavigator::recvActiveTrackChanged( const quint64 id )
     }
 }
 
-int
-Playlist::RandomTrackNavigator::nextRow()
+quint64
+Playlist::RandomTrackNavigator::requestNextTrack()
 {
-    if ( m_unplayedRows.isEmpty() )
+    if ( m_unplayedRows.isEmpty() && !m_repeatPlaylist )
     {
-        return -1;
+        return 0;
     }
     else
     {
+        if ( m_unplayedRows.isEmpty() )
+        {
+            m_unplayedRows = m_playedRows;
+            m_playedRows.clear();
+        }
+
         quint64 t = m_unplayedRows.takeFirst();
         m_playedRows.prepend( t );
-        return Model::instance()->rowForId( t );
+        return t;
     }
 }
 
-int
-Playlist::RandomTrackNavigator::lastRow()
+quint64
+Playlist::RandomTrackNavigator::requestLastTrack()
 {
-    if ( m_playedRows.isEmpty() )
+    if ( m_playedRows.isEmpty() && !m_repeatPlaylist )
     {
-        return -1;
+        return 0;
     }
     else
     {
+        if ( m_playedRows.isEmpty() )
+        {
+            m_playedRows = m_unplayedRows;
+            m_unplayedRows.clear();
+        }
+
         quint64 t = m_playedRows.takeFirst();
         m_unplayedRows.prepend( t );
-        return Model::instance()->rowForId( t );
+        return t;
     }
 }

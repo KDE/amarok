@@ -307,15 +307,13 @@ set(libplaylist_SRCS
     playlist/PlaylistModel.cpp
     playlist/PlaylistWidget.cpp
     playlist/UndoCommands.cpp
+    playlist/navigators/DynamicTrackNavigator.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp
     playlist/navigators/RepeatAlbumNavigator.cpp
-    playlist/navigators/RepeatPlaylistNavigator.cpp
     playlist/navigators/RepeatTrackNavigator.cpp
     playlist/navigators/StandardTrackNavigator.cpp
     playlist/navigators/TrackNavigator.cpp
-    playlist/navigators/SimpleTrackNavigator.cpp
-    playlist/navigators/DynamicTrackNavigator.cpp
     playlist/view/PlaylistViewCommon.cpp
     playlist/view/classic/PlaylistClassicView.cpp
     playlist/view/listview/PrettyItemDelegate.cpp
