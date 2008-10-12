@@ -44,6 +44,7 @@
 #include <QPixmap>
 #include <QPoint>
 #include <QRect>
+#include <QTextDocument> // Qt::escape
 #include <QTimer>
 #include <QToolTip>
 
