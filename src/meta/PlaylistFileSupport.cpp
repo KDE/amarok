@@ -101,24 +101,18 @@ loadPlaylist( const KUrl &url )
 
         //FIXME!! Re-enable after end of string freeze
         //The::statusBarNG()->newProgressOperation( job, i18n( "Fetching remote playlist" ) );
-        
 
-        
-
-        if ( !job->exec() )
+        if ( !job->exec() ) //Job deletes itself after execution
         {
             debug() << "error";
-            job->deleteLater();
             return playlist;
         }
         else
         {
             debug() << "gotcha: " << tempFileName;
-            job->deleteLater();
             file.setFileName( tempFileName );
             file.open( QFile::ReadOnly );
         }
-
     }
 
     Format format = getFormat( file.fileName() );
