@@ -256,7 +256,7 @@ MainWindow::init()
         PERF_LOG( "Creating ServiceBrowser" )
         ServiceBrowser *internetContentServiceBrowser = ServiceBrowser::instance();
         internetContentServiceBrowser->setParent( this );
-        m_browsers->addWidget( KIcon( "services-amarok" ), i18n("Internet"), internetContentServiceBrowser );
+        m_browsers->addWidget( KIcon( "applications-internet" ), i18n("Internet"), internetContentServiceBrowser );
         m_browserNames.append( "Internet" );
         PERF_LOG( "Created ServiceBrowser" )
 
