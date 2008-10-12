@@ -30,6 +30,7 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     , m_wikiLocale( "en" )
     , m_requested( true )
     , m_sources( "current" )
+    , m_triedRefinedSearch( false )
 {
     update();
 }
@@ -66,6 +67,8 @@ void WikipediaEngine::message( const ContextState& state )
 void WikipediaEngine::update()
 {
     DEBUG_BLOCK
+
+    m_triedRefinedSearch = false;
     
     QString tmpWikiStr;
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -180,6 +183,16 @@ WikipediaEngine::wikiResult( KJob* job )
 
     if( m_wiki.contains( "var wgArticleId = 0" ) )
     {
+
+        if ( m_triedRefinedSearch ) {
+            debug() << "We already tried a refined search. Lets end this madness...";
+            //FIXME: Re-enable after string freeze
+            //setData( "wikipedia", "message", i18n( "No information found..." ) );
+            m_wikiJob = 0;
+            return;
+        }
+
+        m_triedRefinedSearch = true;
         QString entry;
         debug() << "Article not found. Retrying with refinements.";
 

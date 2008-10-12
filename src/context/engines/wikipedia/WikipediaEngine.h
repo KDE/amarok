@@ -76,6 +76,7 @@ private:
     // stores what features are enabled
     bool m_requested;
     QStringList m_sources;
+    bool m_triedRefinedSearch;
 };
 
 K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )
