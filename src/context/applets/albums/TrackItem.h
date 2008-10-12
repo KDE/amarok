@@ -49,11 +49,7 @@ class TrackItem : public QStandardItem, public Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::Track *track );
 
-        // HACK ALERT! this is needed to build a vtable for this class, so that it can be dynamic_casted from QStandardItem
-        // (Overriding any other virtual function would also be ok.)
-        virtual int type() const {
-            return QStandardItem::type();
-        }
+        virtual int type() const { return QStandardItem::UserType + 1; }
 
     private:
         Meta::TrackPtr m_track;

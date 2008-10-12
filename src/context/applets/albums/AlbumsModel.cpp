@@ -50,18 +50,25 @@ AlbumsModel::mimeData(const QList<QStandardItem*> & items) const
     {
         TrackItem* track = dynamic_cast<TrackItem*>(item);
         AlbumItem* album = dynamic_cast<AlbumItem*>(item);
-        if( track ){
+        if( track )
+        {
             tracks << track->track();
             debug() << "Requested mimedata for track" << item->text();
         }
-        else if( album ){
+        else if( album )
+        {
             tracks << album->album()->tracks();
             debug() << "Requested mimedata for album" << item->text();
         }
-        else {
-            debug() << "Requested mimedata for something else" << item->text();
-        }
+        else
+            warning() << "Requested mimedata for something else" << item->text();
     }
+
+    // http://doc.trolltech.com/4.4/qabstractitemmodel.html#mimeData
+    // If the list of indexes is empty, or there are no supported MIME types, 
+    // 0 is returned rather than a serialized empty list.
+    if( tracks.isEmpty() )
+        return 0;
 
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );
