@@ -444,7 +444,6 @@ set(amaroklib_LIB_SRCS
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
 #    MediaDevicePluginManager.cpp
-    Osd.cpp
     PluginManager.cpp
     Sidebar.h
     StarManager.cpp
@@ -484,14 +483,16 @@ set(amaroklib_LIB_SRCS
     services/lastfm/SimilarArtistsAction.cpp
     Systray.cpp
 #    widgets/AnalyzerWidget.cpp
+    widgets/hintlineedit.cpp
+    widgets/kdatecombo.cpp
+    widgets/kratingpainter.cpp
+    widgets/kratingwidget.cpp
     widgets/FilenameLayoutWidget.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
     widgets/MainToolbar.cpp
+    widgets/Osd.cpp
     widgets/ProgressSlider.cpp
-    widgets/kdatecombo.cpp
-    widgets/kratingpainter.cpp
-    widgets/kratingwidget.cpp
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp
@@ -499,9 +500,7 @@ set(amaroklib_LIB_SRCS
     widgets/Token.cpp
     widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
-    widgets/hintlineedit.cpp
     widgets/Splitter.cpp
-    WidgetBackgroundPainter.cpp
 #    SmartPlaylistEditor.cpp
     GlobalCollectionActions.cpp
 )
