@@ -70,10 +70,6 @@ target_link_libraries(amarok_collection-sqlcollection
     ${MYSQL_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )
-if(APPLE)
-    # Remove if the change above is permanent. OS X must have this.
-    target_link_libraries(amarok_collection-sqlcollection ${MYSQL_LIBRARIES})
-endif(APPLE)
 
 if(NOT WIN32)
     target_link_libraries(amarok_collection-sqlcollection crypto ssl)
