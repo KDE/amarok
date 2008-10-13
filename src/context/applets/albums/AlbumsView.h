@@ -19,8 +19,11 @@
 
 #include <QGraphicsProxyWidget>
 
+#include "meta/Meta.h"
+
 class QTreeView;
 class QAbstractItemModel;
+class QGraphicsSceneContextMenuEvent;
 class QModelIndex;
 
 class AlbumsView : public QGraphicsProxyWidget
@@ -51,16 +54,16 @@ public:
     QTreeView* nativeWidget() const;
 
 protected:
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
     void resizeEvent( QGraphicsSceneResizeEvent *event );
     
 private slots:
     void itemClicked( const QModelIndex &index );
-    //void itemDoubleClicked( const QModelIndex &index );
+    void slotAppendSelected();
+    void slotPlaySelected();
 
-signals:
-    //TODO: enqueue a MetaPtr not a QString which isn't unique.
-    //void enqueueAlbum( const QString &name );
-    //void enqueueTrack( const QString &albumName, const QString &trackName );
+private:
+    Meta::TrackList getSelectedTracks() const;
     
 };
 

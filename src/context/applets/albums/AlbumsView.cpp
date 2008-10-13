@@ -15,14 +15,18 @@
 
 #include "AlbumsView.h"
 #include "Debug.h"
+#include "context/popupdropper/PopupDropperAction.h"
 #include "SvgHandler.h"
 
+#include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
 #include <QPainter>
 #include <QStyleOptionViewItem>
 #include <QTreeView>
 
+#include <KIcon>
 #include <KIconLoader>
+#include <KMenu>
 
 class AlbumsTreeView : public QTreeView
 {
@@ -136,23 +140,43 @@ AlbumsView::itemClicked( const QModelIndex &index )
     nativeWidget()->setExpanded( index, !expanded );
 }
 
-/*
- * Disabled until we can reference an album/track by their internal id instead of their names.
 void
-AlbumsView::itemDoubleClicked( const QModelIndex &index )
+AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
-    DEBUG_BLOCK
-    if( index.data( AlbumRoles::AlbumName ) != QVariant() )
-    {
-        emit enqueueAlbum( index.data( AlbumRoles::AlbumName ).toString() );
-    }
-    else
-    {
-        emit enqueueTrack( index.parent().data( AlbumRoles::AlbumName ).toString(),
-                           index.data( AlbumRoles::TrackName ).toString() );
-    }
+    PopupDropperAction *appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
+                                           "append", KIcon( "media-track-add-amarok" ),  i18n( "&Append to Playlist" ), this );
+
+    PopupDropperAction *loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
+                                           "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+    
+    connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendSelected() ) );
+    connect( loadAction  , SIGNAL( triggered() ), this, SLOT( slotPlaySelected() ) );
+
+    KMenu menu;
+    menu.addAction( appendAction );
+    menu.addAction( loadAction );
+
+    menu.exec( event->screenPos() );
 }
-*/
+
+void
+AlbumsView::slotAppendSelected()
+{
+    Meta::TrackList selected = getSelectedTracks();
+}
+
+void
+AlbumsView::slotPlaySelected()
+{
+    Meta::TrackList selected = getSelectedTracks();
+}
+
+Meta::TrackList
+AlbumsView::getSelectedTracks() const
+{
+    Meta::TrackList selected;
+    return selected;
+}
 
 void
 AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
