@@ -586,33 +586,28 @@ void CollectionTreeView::slotFilterNow()
 
 PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndexList & indices )
 {
-    
     PopupDropperActionList actions;
 
     if( !indices.isEmpty() )
     {
-
-        
-        if ( m_appendAction == 0 ) {
+        if( m_appendAction == 0 )
+        {
             m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
-
             connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
         }
 
         actions.append( m_appendAction );
 
-        if ( m_loadAction == 0 ) {
+        if( m_loadAction == 0 )
+        {
             m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
-
             connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
         }
 
         actions.append( m_loadAction );
-
     }
 
     return actions;
-
 }
 
 PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIndexList & indices )
@@ -621,9 +616,8 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
 
     if( !indices.isEmpty() )
     {
-
-
-        if ( m_editAction == 0 ) {
+        if ( m_editAction == 0 )
+        {
             m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
             connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
         }
@@ -655,7 +649,8 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
 
                 if( onlyOneCollection )
                 {
-                    if ( m_organizeAction == 0 ) {
+                    if ( m_organizeAction == 0 )
+                    {
                         m_organizeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "organize", KIcon("folder-open" ), i18nc( "Organize Files", "Organize Files" ), this );
                         connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
                     }
@@ -669,7 +664,6 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
 
         if ( indices.size() == 1 )
         {
-
             debug() << "checking for global actions";
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
 
@@ -715,7 +709,6 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
         debug() << "invalid index or null internalPointer";
 
     return actions;
-
 }
 
 
