@@ -29,7 +29,7 @@
 namespace AmarokScript
 {
     AmarokCollectionScript::AmarokCollectionScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
+        : QObject( kapp )
     {
         Q_UNUSED( ScriptEngine );
     }
@@ -42,16 +42,16 @@ namespace AmarokScript
     {
         SqlStorage *s = CollectionManager::instance()->sqlStorage();
         Q_ASSERT(s);
-        QStringList albums = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM albums;" );
+        QStringList albums = query( "SELECT COUNT( id ) FROM albums;" );
         if( albums.size() < 1 )
             return 0;
         QString total = albums[0];
-            return total.toInt();
+        return total.toInt();
     }
 
     int AmarokCollectionScript::totalArtists() const
     {
-        QStringList artists = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM artists;" );
+        QStringList artists = query( "SELECT COUNT( id ) FROM artists;" );
         if( artists.size() < 1 )
             return 0;
         QString total = artists[0];
@@ -60,7 +60,7 @@ namespace AmarokScript
 
     int AmarokCollectionScript::totalComposers() const
     {
-        QStringList composers = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM composers;" );
+        QStringList composers = query( "SELECT COUNT( id ) FROM composers;" );
         if( composers.size() < 1 )
             return 0;
         QString total = composers[0];
@@ -69,7 +69,7 @@ namespace AmarokScript
 
     int AmarokCollectionScript::totalGenres() const
     {
-        QStringList genres = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( id ) FROM genres;" );
+        QStringList genres = query( "SELECT COUNT( id ) FROM genres;" );
         if( genres.size() < 1 )
             return 0;
         QString total = genres[0];
@@ -78,7 +78,7 @@ namespace AmarokScript
 
     int AmarokCollectionScript::totalTracks() const
     {
-        QStringList tracks = CollectionManager::instance()->sqlStorage()->query( "SELECT COUNT( url ) FROM tracks;" );
+        QStringList tracks = query( "SELECT COUNT( url ) FROM tracks;" );
         if( tracks.size() < 0 )
             return 0;
         QString total = tracks[0];
