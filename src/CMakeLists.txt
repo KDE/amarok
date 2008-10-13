@@ -444,7 +444,6 @@ set(amaroklib_LIB_SRCS
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
 #    MediaDevicePluginManager.cpp
-#    MediaItem.cpp
     Osd.cpp
     PluginManager.cpp
     Sidebar.h
