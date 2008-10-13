@@ -1119,7 +1119,7 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
     if(gpixbuf != NULL)
     {
         // temporarily save to file
-        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0, 0 );
+        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0, (const char*) 0 );
 
         // pull temporary file's image out as QImage
         QImage image( tempImagePath );
