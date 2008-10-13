@@ -229,7 +229,13 @@ Mp3tunesLockerPlaylist::Mp3tunesLockerPlaylist(  mp3tunes_locker_playlist_t *pla
     strcpy( m_playlist->fileName, playlist->fileName );
 }
 Mp3tunesLockerPlaylist::~Mp3tunesLockerPlaylist()
-{}
+{
+    free(m_playlist->fileName);
+    free(m_playlist->title);
+    free(m_playlist->playlistTitle);
+    free(m_playlist->playlistId);
+    free(m_playlist);
+}
 
 QString Mp3tunesLockerPlaylist::playlistId() const
 {
