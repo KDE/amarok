@@ -23,7 +23,6 @@
 
 namespace AmarokScript
 {
-
     class AmarokCollectionScript : public QObject
     {
         Q_OBJECT
@@ -40,11 +39,13 @@ namespace AmarokScript
             int totalTracks() const;
             QStringList collectionLocation() const;
             QStringList query( const QString& sql ) const;
+            QString escape( const QString& sql ) const;
             void scanCollection() const;
             void scanCollectionChanges() const;
             bool isDirInCollection( const QString& path ) const;
-       //TODO: make this a more object oriented way, could make a wrapper class for both the Collection and Collection Manager class.
-       //TODO: probably leave this to Amarok 2.1
+
+           //TODO: make this a more object oriented way, could make a wrapper class for both the Collection and Collection Manager class.
+           //TODO: probably leave this to Amarok 2.1
         signals:
             void newFileAdded();  //TODO: implement me
     };

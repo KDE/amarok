@@ -99,6 +99,11 @@ namespace AmarokScript
         return CollectionManager::instance()->sqlStorage()->query( sql );
     }
 
+    QString AmarokCollectionScript::escape( const QString& sql ) const
+    {
+        return CollectionManager::instance()->sqlStorage()->escape( sql );
+    }
+
     void AmarokCollectionScript::scanCollection() const
     {
         CollectionManager::instance()->startFullScan();

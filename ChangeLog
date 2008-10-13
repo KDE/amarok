@@ -12,6 +12,8 @@ VERSION 2.0-beta3
       the file browser's context menu.
 
   CHANGES:
+    * Add script API function: Amarok.Collection.escape which escapes strings
+      for SQL statements.
     * Some new and updated icons.
     * Allow multiple items to be selected in the user playlist category.
     * Statusbar rewrite: Messages are no longer shown as top-level windows.
