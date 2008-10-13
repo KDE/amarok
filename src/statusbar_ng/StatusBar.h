@@ -69,8 +69,8 @@ public:
         return s_instance;
     }
 
-    AMAROK_EXPORT void shortMessage( const QString &text );
-    AMAROK_EXPORT void longMessage( const QString &text, MessageType type = Information );
+    void shortMessage( const QString &text );
+    void longMessage( const QString &text, MessageType type = Information );
     void longMessageThreadSafe( const QString &text, MessageType type = Information );
 
     using Observer::metadataChanged;
