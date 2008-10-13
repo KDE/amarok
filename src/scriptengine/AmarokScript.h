@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
+ * Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>                  *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -37,6 +38,12 @@ namespace AmarokScript
         public slots:
             /** Shuts down Amarok completely. */
             void        quitAmarok();
+
+            /** 
+             * Print debug output to the shell. Only printed if amarok is started with --debug.
+             * @text The text to print.
+             */
+            void        debug( const QString& text ) const;
 
             /**
               * Show an information dialog in Amarok.

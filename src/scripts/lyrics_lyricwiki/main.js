@@ -31,13 +31,13 @@ function onFinished( dat )
 {
     try
     {
+        Amarok.debug( "got result: " + dat );
         dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
-        //print( "got result: " + dat );
         Amarok.Lyrics.showLyricsHtml( dat );
     }
     catch( err )
     {
-        print( "error: " + err );
+        Amarok.debug( "error: " + err );
     }
 }
 
@@ -54,13 +54,13 @@ function getLyrics( artist, title, url )
         url.addQueryItem( "func", "getSong" );
         url.addEncodedQueryItem( encodedArtistKey, encodedArtist ); 
         url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-        print( "Using request URL: " + url.toString() );
+        Amarok.debug( "Using request URL: " + url.toString() );
 
         new Downloader( url, onFinished );
     }
     catch( err )
     {
-        print( "error: " + err );
+        Amarok.debug( "error: " + err );
     }
 }
 

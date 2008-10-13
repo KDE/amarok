@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
+ * Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>                  *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -39,7 +40,12 @@ namespace AmarokScript
         kapp->quit();
     }
 
-    int AmarokScript::alert(  const QString& text, const QString& type ) const
+    void AmarokScript::debug( const QString& text ) const
+    {
+        ::debug() << "SCRIPT" << m_name << ": " << text;
+    }
+
+    int AmarokScript::alert( const QString& text, const QString& type ) const
     {
         //Ok = 1, Cancel = 2, Yes = 3, No = 4, Continue = 5
         if ( type == "error" )
