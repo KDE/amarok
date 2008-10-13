@@ -31,7 +31,7 @@ function onFinished( dat )
 {
     try
     {
-        Amarok.debug( "got result: " + dat );
+        //Amarok.debug( "got result: " + dat );
         dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
         Amarok.Lyrics.showLyricsHtml( dat );
     }
