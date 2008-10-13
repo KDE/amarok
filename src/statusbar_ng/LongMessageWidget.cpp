@@ -35,7 +35,6 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
         , m_counter( 0 )
         , m_timeout( 6000 )
 {
-
     setFrameStyle( QFrame::Panel | QFrame::Sunken );
     setFrameShape( QFrame::StyledPanel );
 
@@ -50,8 +49,6 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
 
     KHBox *hbox;
     QLabel *alabel;
-
-
 
     hbox = new KHBox( this );
     layout()->addWidget( hbox );
@@ -82,7 +79,6 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
 
     //m_layout->addWidget( alabel );
 
-
     hbox = new KHBox( this );
     layout()->addWidget( hbox );
 
@@ -111,10 +107,6 @@ void LongMessageWidget::close()
 
 void LongMessageWidget::timerEvent( QTimerEvent* )
 {
-    DEBUG_BLOCK
-
-    debug() << "counter: " << m_counter;
-
     if ( !m_timeout )
     {
         killTimer( m_timerId );
@@ -173,7 +165,5 @@ void CountdownFrame::paintEvent( QPaintEvent * e )
 }
 
 
-
 #include "LongMessageWidget.moc"
-
 
