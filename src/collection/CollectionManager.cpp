@@ -393,9 +393,9 @@ CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
         artistNames = Scrobbler::instance()->similarArtists( Qt::escape( artist->name() ) );
     }*/
     QueryMaker *qm = queryMaker();
-    foreach( const QString &artist, artistNames )
+    foreach( const QString &artistName, artistNames )
     {
-        qm->addFilter( Meta::valArtist, artist, true, true );
+        qm->addFilter( Meta::valArtist, artistName, true, true );
     }
     qm->setQueryType( QueryMaker::Artist );
     qm->limitMaxResultSize( maxArtists );

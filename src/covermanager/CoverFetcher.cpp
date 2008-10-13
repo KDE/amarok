@@ -113,9 +113,9 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
         if( !m_albums.isEmpty() )
         {
             m_isFetching = true;
-            Meta::AlbumPtr album = m_albums.takeFirst();
+            Meta::AlbumPtr firstAlbum = m_albums.takeFirst();
             m_albumsMutex.unlock();
-            buildQueries( album );
+            buildQueries( firstAlbum );
         }
         else
         {
