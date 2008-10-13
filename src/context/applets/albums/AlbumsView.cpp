@@ -15,7 +15,6 @@
 
 #include "AlbumsView.h"
 #include "Debug.h"
-#include "context/popupdropper/PopupDropperAction.h"
 #include "SvgHandler.h"
 
 #include <QGraphicsSceneContextMenuEvent>
@@ -24,6 +23,7 @@
 #include <QStyleOptionViewItem>
 #include <QTreeView>
 
+#include <KAction>
 #include <KIcon>
 #include <KIconLoader>
 #include <KMenu>
@@ -143,11 +143,8 @@ AlbumsView::itemClicked( const QModelIndex &index )
 void
 AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
-    PopupDropperAction *appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
-                                           "append", KIcon( "media-track-add-amarok" ),  i18n( "&Append to Playlist" ), this );
-
-    PopupDropperAction *loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
-                                           "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+    KAction *loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
     
     connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendSelected() ) );
     connect( loadAction  , SIGNAL( triggered() ), this, SLOT( slotPlaySelected() ) );
