@@ -139,9 +139,9 @@ FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeD
         return;
     }
     int index = layout->indexOf( childUnder );
-    debug()<< "I'm in insertOverChild";
+    debug()<< "I am in insertOverChild";
     debug()<< "Inserting at " << index;
-    debug()<< "Get outta here, it's gonna blow!";
+    debug()<< "Get outta here, it is gonna blow!";
     if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )     //I'm WTF-ing here
     {
         debug()<< "About to call addToken(..., index)";
@@ -185,7 +185,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
         }
         else                //if the bar is not empty and I'm still not dropping on an existing token
         {
-            debug() << ">>>>>>>>>>>>>> I'm picking up a drop at " << event->pos().x()<<", "<<event->pos().y();
+            debug() << ">>>>>>>>>>>>>> I am picking up a drop at " << event->pos().x()<<", "<<event->pos().y();
             QPoint fixedPos = QPoint( event->pos().x(), size().height() / 2 );      //first I lower the y coordinate of the drop, this should handle the drops higher and lower than the tokens
             debug()<<">>>>>>>>> CENTERING VERTICALLY";
             childUnder = qobject_cast< Token * >( childAt( fixedPos ) );            //and I look for a child (token) on these new coordinates
@@ -213,12 +213,12 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                     }
                     else
                     {
-                        debug()<<"There's something under fixedPos but it's not a Token";
+                        debug()<<"There is something under fixedPos but it's not a Token";
                         childUnder = qobject_cast< Token * >( childAt( fixedPos )->parent() );
                     }
                 }
                 delete fakeChild;
-                debug()<<"I'm looking for a child at "<<fixedPos.x()<<","<<fixedPos.y()<< "Why does it fail?";
+                debug()<<"I am looking for a child at "<<fixedPos.x()<<","<<fixedPos.y()<< "Why does it fail?";
                 if( childUnder == 0 ) debug()<<"ERROR: childUnder is null";     //FIXME: I need to pick up Token*, not a member of his
                 insertOverChild( childUnder, textFromMimeData, event );
                 debug()<<">>>>>>>>> \\called insertOverChild";
