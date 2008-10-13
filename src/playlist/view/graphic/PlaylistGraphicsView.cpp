@@ -32,7 +32,6 @@
 #include "PlaylistGraphicsItem.h"
 #include "PlaylistGraphicsScene.h"
 #include "SvgTinter.h"
-#include "WidgetBackgroundPainter.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "playlist/GroupingProxy.h"
 #include "playlist/PlaylistController.h"

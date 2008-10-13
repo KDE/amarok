@@ -29,7 +29,6 @@
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "VolumeWidget.h"
-#include "WidgetBackgroundPainter.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "ToolBar.h"

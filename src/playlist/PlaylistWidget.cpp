@@ -31,7 +31,6 @@
 #include "statusbar/selectLabel.h"
 #include "ToolBar.h"
 #include "PlaylistModel.h"
-#include "WidgetBackgroundPainter.h"
 #include "widgets/Widget.h"
 
 #include <KToolBarSpacerAction>
