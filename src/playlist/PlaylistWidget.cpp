@@ -40,8 +40,6 @@
 #include <QStackedWidget>
 #include <QTime>
 
-#include <cmath>
-
 Playlist::Widget::Widget( QWidget* parent )
         : KVBox( parent )
 {
@@ -88,20 +86,8 @@ Playlist::Widget::Widget( QWidget* parent )
     //barAndLength->addWidget( plBar );
     plBar->setObjectName( "PlaylistToolBar" );
 
-    //barAndLength->addStretch();
-
-    m_totalTime = new QLabel( "00:00:00", barBox );
-    m_totalTime->setAlignment( Qt::AlignCenter );
-    //barAndLength->addWidget( m_totalTime );
-    m_totalTime->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-
-    //barAndLength->addStretch();
 
     Model* playModel = Model::instance();
-    connect( playModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalLength() ) );
-    connect( playModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalLength() ) );
-    connect( playModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalLength() ) );
-    updateTotalLength();
 
     KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
@@ -156,16 +142,4 @@ Playlist::Widget::switchView()
     m_stackedWidget->setCurrentIndex(( m_stackedWidget->currentIndex() + 1 ) % 2 );
 }
 
-void
-Playlist::Widget::updateTotalLength() //SLOT
-{
-    int totalLength = The::playlistModel()->totalLength();
-    const int trackCount = The::playlistModel()->rowCount();
-    QTime *minsecTime = new QTime( 0, 0, 0 );
-    *minsecTime = minsecTime->addSecs( totalLength );
-    int hrsTime = floor( totalLength / 3600. );
-    QString totalTime = QString::number( hrsTime ) + ":" + minsecTime->toString( "mm:ss" ); //workaround for QTime limitations
-    //QTime keeps h between 0 and 23, I don't want that but I do want to use QTime's formatting without implementing my own so
-    //I use QTime for mm:ss and handle hours separately.
-    m_totalTime->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
-}
+

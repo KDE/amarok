@@ -25,11 +25,13 @@
 #include "LongMessageWidget.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
+#include "playlist/PlaylistModel.h"
 
 #include "KJobProgressBar.h"
 
 #include <QTextDocument>
 
+#include <cmath>
 
 StatusBarNG* StatusBarNG::s_instance = 0;
 
@@ -77,7 +79,18 @@ StatusBarNG::StatusBarNG( QWidget * parent )
     m_nowPlayingEmblem = new QLabel( m_nowPlayingWidget );
     m_nowPlayingEmblem->setFixedSize( 16, 16 );
 
+    m_playlistLengthLabel = new QLabel( m_nowPlayingWidget);
+    m_playlistLengthLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
     addPermanentWidget( m_nowPlayingWidget );
+
+    //Model* playModel = Model::instance();
+    
+    connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    updateTotalPlaylistLength();
+    
 
 }
 
@@ -299,6 +312,20 @@ void StatusBarNG::longMessageThreadSafe( const QString & text, MessageType type 
 void StatusBarNG::hideLongMessage()
 {
     sender()->deleteLater();
+}
+
+void
+StatusBarNG::updateTotalPlaylistLength() //SLOT
+{
+    int totalLength = The::playlistModel()->totalLength();
+    const int trackCount = The::playlistModel()->rowCount();
+    QTime *minsecTime = new QTime( 0, 0, 0 );
+    *minsecTime = minsecTime->addSecs( totalLength );
+    int hrsTime = floor( totalLength / 3600. );
+    QString totalTime = QString::number( hrsTime ) + ":" + minsecTime->toString( "mm:ss" ); //workaround for QTime limitations
+    //QTime keeps h between 0 and 23, I don't want that but I do want to use QTime's formatting without implementing my own so
+    //I use QTime for mm:ss and handle hours separately.
+    m_playlistLengthLabel->setText( "      " + i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
 }
 
 

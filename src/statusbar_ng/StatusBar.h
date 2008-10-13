@@ -163,6 +163,7 @@ private:
     KSqueezedTextLabel * m_nowPlayingLabel;
     QLabel * m_nowPlayingEmblem;
 
+    QLabel * m_playlistLengthLabel;
 
     QList<QString> m_shortMessageQue;
 
@@ -171,7 +172,9 @@ private:
 
     Meta::TrackPtr m_currentTrack;
 
-
+private slots:
+    void updateTotalPlaylistLength();
+    
 };
 
 

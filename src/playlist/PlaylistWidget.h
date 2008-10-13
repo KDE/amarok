@@ -46,14 +46,12 @@ public:
 
 public slots:
     void switchView();
-    void updateTotalLength();
 
 protected:
     QSize sizeHint() const;
 
 private:
     Amarok::StackedWidget *m_stackedWidget;
-    QLabel *m_totalTime;
     QWidget* m_playlistView;
 };
 }
