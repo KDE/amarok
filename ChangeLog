@@ -12,6 +12,8 @@ VERSION 2.0-beta3
       the file browser's context menu.
 
   CHANGES:
+    * The default lyrics script now uses the LyricWiki site, which is more
+      reliable and also faster than the old lyrics provider.
     * Add script API function: Amarok.Collection.escape which escapes strings
       for SQL statements.
     * Some new and updated icons.
