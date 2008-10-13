@@ -33,7 +33,7 @@ function onFinished( dat )
     {
         dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
         //print( "got result: " + dat );
-        Amarok.Lyrics.showLyricsHtml(dat);
+        Amarok.Lyrics.showLyricsHtml( dat );
     }
     catch( err )
     {
