@@ -47,7 +47,7 @@ class OSDWidget : public QWidget
 
       public slots:
         /** calls setText() then show(), after setting image if needed */
-        void show( const QString &text, QImage newImage = QImage::QImage() );
+        void show( const QString &text, QImage newImage = QImage() );
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
         void volChanged( unsigned char volume );
