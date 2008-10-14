@@ -78,7 +78,7 @@ void Albums::init()
     m_aspectRatio = m_width / m_height;
     resize( m_width, m_height );
 
-    dataEngine( "amarok-current" )->connectSource( "albums", this, 100 );
+    dataEngine( "amarok-current" )->connectSource( "albums", this );
 
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
              this, SLOT( connectSource( const QString& ) ) );
