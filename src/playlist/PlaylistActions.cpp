@@ -131,11 +131,6 @@ Playlist::Actions::play( quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 
-    if ( m_trackError ) {
-        warning() << "m_trackError == true. Aborting.";
-        return;
-    }
-
     Model* model = Model::instance();
 
     if ( model->containsId( trackid ) )
