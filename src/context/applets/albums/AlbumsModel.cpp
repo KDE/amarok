@@ -30,7 +30,7 @@ AlbumsModel::mimeData(const QModelIndexList & indices) const
     {
         if ( index.isValid() )
         {
-            items << static_cast<QStandardItem*>( index.internalPointer() );
+            items << itemFromIndex(index);
         }
     }
 
@@ -45,23 +45,25 @@ AlbumsModel::mimeData(const QList<QStandardItem*> & items) const
         return 0;
 
     Meta::TrackList tracks;
-    Meta::AlbumList albums;
+
     foreach( QStandardItem *item, items )
     {
-        TrackItem* track = dynamic_cast<TrackItem*>(item);
-        AlbumItem* album = dynamic_cast<AlbumItem*>(item);
-        if( track )
-        {
-            tracks << track->track();
-            debug() << "Requested mimedata for track" << item->text();
-        }
-        else if( album )
+
+        AlbumItem* album = dynamic_cast<AlbumItem*>( item );
+        if( album )
         {
             tracks << album->album()->tracks();
             debug() << "Requested mimedata for album" << item->text();
         }
-        else
-            warning() << "Requested mimedata for something else" << item->text();
+    }
+    foreach( QStandardItem *item, items )
+    {
+        TrackItem* track = dynamic_cast<TrackItem*>( item );
+        if( track && !tracks.contains( track->track() ) )
+        {
+            tracks << track->track();
+            debug() << "Requested mimedata for track" << item->text();
+        }
     }
 
     // http://doc.trolltech.com/4.4/qabstractitemmodel.html#mimeData
