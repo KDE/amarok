@@ -810,20 +810,20 @@ void TagDialog::readTags()
         if( !m_currentTrack->name().isEmpty() )
         {
             if( !m_currentTrack->artist()->name().isEmpty() )
-                niceTitle = i18n( "<b>%1</b> by <b>%2</b>", m_currentTrack->name(),  m_currentTrack->artist()->name() );
+                niceTitle = i18n( "<b>%1</b> by <b>%2</b>", Qt::escape( m_currentTrack->name() ),  Qt::escape( m_currentTrack->artist()->name() ) );
             else
-                niceTitle = QString( "<b>%1</b>").arg( m_currentTrack->name() );
+                niceTitle = QString( "<b>%1</b>").arg( Qt::escape( m_currentTrack->name() ) );
         }
         else
-            niceTitle = m_currentTrack->prettyName();
+            niceTitle = Qt::escape( m_currentTrack->prettyName() );
     }
     else if( m_currentTrack->album() )
     {
         niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" ,
-            m_currentTrack->name(), m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
+            Qt::escape( m_currentTrack->name() ), Qt::escape( m_currentTrack->artist()->name() ), Qt::escape( m_currentTrack->album()->name() ) );
     }
     else
-        niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , m_currentTrack->name(), m_currentTrack->artist()->name() );
+        niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , Qt::escape( m_currentTrack->name() ), Qt::escape( m_currentTrack->artist()->name() ) );
 
     debug() << "after album() stuff";
 
