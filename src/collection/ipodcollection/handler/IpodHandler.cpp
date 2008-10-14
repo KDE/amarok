@@ -1025,11 +1025,16 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
     QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
     QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
 
+#ifdef ITDB_THUMB_COVER_SMALL
     Itdb_Thumb *thumb = NULL;
+#endif
     GdkPixbuf *gpixbuf = NULL;
     QString thumbPath;
 
     // pull image out of ipod
+
+#ifdef ITDB_THUMB_COVER_SMALL
+    // we've got libgpod 0.6.0 here
 
     if( ipodtrack->has_artwork == 0x01 )
     {
@@ -1115,6 +1120,14 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
             }
         }
     }
+#else
+    // libgpod trunk changes
+
+    if( itdb_track_has_thumbnails ( ipodtrack ) )
+    {
+        gpixbuf = (GdkPixbuf*) itdb_track_get_thumbnail (ipodtrack, -1, -1 );
+    }
+#endif
 
     if(gpixbuf != NULL)
     {

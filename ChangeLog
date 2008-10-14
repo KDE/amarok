@@ -12,6 +12,7 @@ VERSION 2.0-beta3
       the file browser's context menu.
 
   CHANGES:
+    * Compiles with libgpod trunk.  Thanks to Frederic Van Assche for the fix.
     * Added drag and drop support for the albums applet.
     * The default lyrics script now uses the LyricWiki site, which is more
       reliable and also faster than the old lyrics provider.
