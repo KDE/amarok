@@ -129,8 +129,12 @@ Playlist::Actions::play( int row )
 void
 Playlist::Actions::play( quint64 trackid, bool now )
 {
-    if ( m_trackError )
+    DEBUG_BLOCK
+
+    if ( m_trackError ) {
+        warning() << "m_trackError == true. Aborting.";
         return;
+    }
 
     Model* model = Model::instance();
 

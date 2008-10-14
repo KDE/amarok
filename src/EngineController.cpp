@@ -363,8 +363,11 @@ EngineController::stop( bool forceInstant ) //SLOT
 void
 EngineController::playPause() //SLOT
 {
+    DEBUG_BLOCK
+
     //this is used by the TrayIcon, PlayPauseAction and DBus
     debug() << "PlayPause: phonon state" << m_media->state();
+
     if( m_media->state() == Phonon::PausedState || m_media->state() == Phonon::StoppedState )
         play();
     else
