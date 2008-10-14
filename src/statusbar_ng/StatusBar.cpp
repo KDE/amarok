@@ -79,6 +79,9 @@ StatusBarNG::StatusBarNG( QWidget * parent )
     m_nowPlayingEmblem = new QLabel( m_nowPlayingWidget );
     m_nowPlayingEmblem->setFixedSize( 16, 16 );
 
+    QFrame *separator = new QFrame( m_nowPlayingWidget );
+    separator->setFrameShape( QFrame::VLine );
+
     m_playlistLengthLabel = new QLabel( m_nowPlayingWidget);
     m_playlistLengthLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
@@ -325,7 +328,7 @@ StatusBarNG::updateTotalPlaylistLength() //SLOT
     QString totalTime = QString::number( hrsTime ) + ":" + minsecTime->toString( "mm:ss" ); //workaround for QTime limitations
     //QTime keeps h between 0 and 23, I don't want that but I do want to use QTime's formatting without implementing my own so
     //I use QTime for mm:ss and handle hours separately.
-    m_playlistLengthLabel->setText( "      " + i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
+    m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
 }
 
 
