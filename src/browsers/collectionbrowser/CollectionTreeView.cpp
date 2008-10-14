@@ -122,8 +122,6 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
     QTreeView::setModel( m_filterModel );
 
     connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex & ) ), SLOT( slotExpand( const QModelIndex & ) ) );
-    QKeyEvent event( QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier );
-    QApplication::sendEvent( m_filterModel, &event );
 }
 
 
