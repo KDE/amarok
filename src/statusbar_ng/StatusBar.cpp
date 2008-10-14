@@ -74,7 +74,7 @@ StatusBarNG::StatusBarNG( QWidget * parent )
 
     m_nowPlayingLabel = new KSqueezedTextLabel( m_nowPlayingWidget );
     m_nowPlayingLabel->setTextElideMode( Qt::ElideRight );
-    m_nowPlayingLabel->setAlignment( Qt::AlignRight );
+    m_nowPlayingLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
     m_nowPlayingEmblem = new QLabel( m_nowPlayingWidget );
     m_nowPlayingEmblem->setFixedSize( 16, 16 );
@@ -87,14 +87,10 @@ StatusBarNG::StatusBarNG( QWidget * parent )
 
     addPermanentWidget( m_nowPlayingWidget );
 
-    //Model* playModel = Model::instance();
-    
     connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     updateTotalPlaylistLength();
-    
-
 }
 
 
@@ -321,7 +317,9 @@ void
 StatusBarNG::updateTotalPlaylistLength() //SLOT
 {
     int totalLength = The::playlistModel()->totalLength();
-    const int trackCount = The::playlistModel()->rowCount();
+    int trackCount = The::playlistModel()->rowCount();
+    if( totalLength == 0 )
+        trackCount = 0;
     QTime *minsecTime = new QTime( 0, 0, 0 );
     *minsecTime = minsecTime->addSecs( totalLength );
     int hrsTime = floor( totalLength / 3600. );
