@@ -90,6 +90,7 @@ StatusBarNG::StatusBarNG( QWidget * parent )
     connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlistModel(), SIGNAL( removedIDs( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     updateTotalPlaylistLength();
 }
 
@@ -318,8 +319,6 @@ StatusBarNG::updateTotalPlaylistLength() //SLOT
 {
     int totalLength = The::playlistModel()->totalLength();
     int trackCount = The::playlistModel()->rowCount();
-    if( totalLength == 0 )
-        trackCount = 0;
     QTime *minsecTime = new QTime( 0, 0, 0 );
     *minsecTime = minsecTime->addSecs( totalLength );
     int hrsTime = floor( totalLength / 3600. );
@@ -327,11 +326,9 @@ StatusBarNG::updateTotalPlaylistLength() //SLOT
     //QTime keeps h between 0 and 23, I don't want that but I do want to use QTime's formatting without implementing my own so
     //I use QTime for mm:ss and handle hours separately.
     m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
+    if( ( totalLength == 0 ) && ( trackCount > 0 ) )
+            m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
 }
-
-
-
-
 
 #include "StatusBar.moc"
 
