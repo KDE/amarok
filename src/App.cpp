@@ -23,6 +23,7 @@ email                : markey@web.de
 #include "covermanager/CoverFetcher.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "firstruntutorial/FirstRunTutorial.h"
 //#include "equalizersetup.h"
 #include "MainWindow.h"
 //#include "mediabrowser.h"
@@ -218,6 +219,7 @@ App::~App()
 
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
+    AmarokConfig::self()->writeConfig();
 
     ScriptManager::destroy();
 
@@ -590,6 +592,15 @@ App::continueInit()
     delete m_splash;
     m_splash = 0;
     PERF_LOG( "App init done" )
+    KConfigGroup config = KGlobal::config()->group( "General" );
+    const bool firstruntut = config.readEntry( "FirstRunTutorial", false );
+    debug() << "Checking whether to run first run tutorial..." << firstruntut;
+    if( firstruntut )
+    {
+        debug() << "Starting first run tutorial";
+        FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
+        QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) ); 
+    }
 }
 
 void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
