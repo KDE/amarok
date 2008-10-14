@@ -159,9 +159,18 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         albumItem->setAlbum( albumPtr );
         albumItem->setShowArtist( showArtist );
         
+        int discNumber = 0;
+
         int childRow = 0;
         foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
         {
+            if( trackPtr->discNumber() != discNumber )
+            {
+                discNumber = trackPtr->discNumber();
+                QStandardItem *disc = new QStandardItem();
+                disc->setText( i18n( "Disc %1", discNumber ) );
+                albumItem->setChild( childRow++, disc );
+            }
             TrackItem *trackItem = new TrackItem();
             trackItem->setTrack( trackPtr );
             
@@ -169,8 +178,7 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             if( currentTrack == trackPtr )
                 trackItem->italicise();
 
-            albumItem->setChild( childRow, trackItem );
-            childRow++;
+            albumItem->setChild( childRow++, trackItem );
         }
         
         m_model->appendRow( albumItem );
