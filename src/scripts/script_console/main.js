@@ -96,7 +96,7 @@ ScriptConsoleMainWindow.prototype.backHistory = function()
   {
     this.inputLine.plainText = this.commandArray[ this.commandPos ];
   }
-  print( "back, " + this.commandArray[ this.commandPos ] );
+  Amarok.debug( "back, " + this.commandArray[ this.commandPos ] );
 }
 
 ScriptConsoleMainWindow.prototype.forwardHistory = function()
@@ -109,7 +109,7 @@ ScriptConsoleMainWindow.prototype.forwardHistory = function()
     }
     this.inputLine.plainText = this.commandArray[ this.commandPos ];
   }
-  print( "forward, " + this.commandPos + ": " + this.commandArray[ this.commandPos ] );
+  Amarok.debug( "forward, " + this.commandPos + ": " + this.commandArray[ this.commandPos ] );
 }
 
 scriptConsoleMainWindow = new ScriptConsoleMainWindow();

@@ -27,7 +27,7 @@ Importer.loadQtBinding( "qt.xml" );
 
 function parseLyrics( lyrics )
 {
-    //print( "parsing..." );
+    //Amarok.debug( "parsing..." );
 
     var lyricsReady = lyrics;
 
@@ -37,10 +37,10 @@ function parseLyrics( lyrics )
     var root = doc.createElement( "lyrics" );
 
     var titleStr = /(<b>)([^<]*)/.exec( lyrics )[ 2 ];
-    print( "got title: " + titleStr );
+    Amarok.debug( "got title: " + titleStr );
     root.setAttribute( "title", titleStr );
     var artistStr = /(<u>)([^<]*)/.exec( lyrics )[ 2 ];
-    //print( "got artist: " + artistStr );
+    //Amarok.debug( "got artist: " + artistStr );
     root.setAttribute( "artist", artistStr );
 
     try {
@@ -51,7 +51,7 @@ function parseLyrics( lyrics )
         //lyrics = lyrics.replace( "\n\n", "\n" ).replace( "\r", "" );
         lyrics = lyrics.replace( /<.*>/g, "" ); // erase everything after the lyric
         var lyricsStr = lyrics.replace( /\n\n[\n]+/g, "\n" );
-        //print( "got cleaned lyrics: " + lyrics );
+        //Amarok.debug( "got cleaned lyrics: " + lyrics );
 
         xml = xml.replace( "{artist}", artistStr );
         xml = xml.replace( "{title}", titleStr );
@@ -60,9 +60,9 @@ function parseLyrics( lyrics )
         text.setData( lyricsStr );
 
         //xml = doc.toString();
-        //print( "xml: " + xml );
+        //Amarok.debug( "xml: " + xml );
     } catch (err) {
-        print( "error!: " + err );
+        Amarok.debug( "error!: " + err );
     }
 
     Amarok.Lyrics.showLyrics( xml );
@@ -70,7 +70,7 @@ function parseLyrics( lyrics )
 
 function parseSuggestions( lyrics )
 {
-    print( "parsing suggestions!" );
+    Amarok.debug( "parsing suggestions!" );
     try
     {
         lyrics = lyrics.slice( lyrics.indexOf( "Suggestions : " ), lyrics.indexOf( "<br><br>" ) );
@@ -79,7 +79,7 @@ function parseSuggestions( lyrics )
         lyrics = lyrics.replace( "</font>", "" );
         lyrics = lyrics.replace( "<br /><br />", "" );
 
-        //print( "got cleaned suggestions: " + lyrics );
+        //Amarok.debug( "got cleaned suggestions: " + lyrics );
         
         var suggestions = lyrics.split( "<br>" );
 
@@ -89,7 +89,7 @@ function parseSuggestions( lyrics )
         {
             if( suggestions[ i ] == "" )
                 continue;
-            //print( "checking suggestion: " + suggestions[ i ] );
+            //Amarok.debug( "checking suggestion: " + suggestions[ i ] );
             if( ! /(<a href=")([^"]*)/.exec( suggestions[ i ] ) )
                 continue;
             url =  /(<a href=")([^"]*)/.exec( suggestions[ i ] )[ 2 ]
@@ -101,31 +101,31 @@ function parseSuggestions( lyrics )
             var title = artist_title.split( " - " )[ 1 ];
 
             body_xml += suggestions_body.replace( "{artist}", artist ).replace( "{title}", title ).replace( "{url}", url );
-            //print( "done checking suggestion: " + suggestions[ i ] );
+            //Amarok.debug( "done checking suggestion: " + suggestions[ i ] );
 
         }
 
         suggestions_xml = suggestions_xml.replace( "{suggestions}", body_xml );
     } catch( err )
     {
-        print( "got err in parsing suggestions: " )
-        print( err );
+        Amarok.debug( "got err in parsing suggestions: " )
+        Amarok.debug( err );
     }
-    //print( "got suggestions xml: " + suggestions_xml );
+    //Amarok.debug( "got suggestions xml: " + suggestions_xml );
     Amarok.Lyrics.showLyrics( suggestions_xml );
 }
 
 function lyricsFetchResult( reply )
 {
-    print( "got result from lyrics fetch:" + reply ); 
+    Amarok.debug( "got result from lyrics fetch:" + reply ); 
     try
     {
         lyrics = reply;
     } catch( err )
     {
-        print( "error converting lyrics: " + err );
+        Amarok.debug( "error converting lyrics: " + err );
     }
-    print( "result: " + lyrics );
+    Amarok.debug( "result: " + lyrics );
 
     // no need, just complicates regexp
     lyrics.replace( "\n", "" );
@@ -138,12 +138,12 @@ function lyricsFetchResult( reply )
     lyrics = lyrics.replace( /<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][tT][yY][lL][eE]>>/g, "");
     // remove leftover
     lyrics = lyrics.replace( /<table align="left"><tr><td>.*<\/td><\/tr><\/table>/g, "" );
-    //print( "result: " + lyrics );
+    //Amarok.debug( "result: " + lyrics );
 
     try {
         lyricsPos = lyrics.search( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*/ );
-        //print( "found lyrics at pos " + lyricsPos );
-        //print( "found suggestions pos: " + lyrics.indexOf( "Suggestions" ) );
+        //Amarok.debug( "found lyrics at pos " + lyricsPos );
+        //Amarok.debug( "found suggestions pos: " + lyrics.indexOf( "Suggestions" ) );
         if( lyricsPos > 0 )
         {
             parseLyrics( lyrics.slice( lyricsPos ) );
@@ -152,7 +152,7 @@ function lyricsFetchResult( reply )
             parseSuggestions( lyrics );
         }
     } catch( err ) {
-        print( "got err: " + err );
+        Amarok.debug( "got err: " + err );
     }
 }
 
@@ -174,12 +174,12 @@ function fetchLyrics( artist, title, url )
             qurl = new QUrl( path );
             qurl.addEncodedQueryItem( encodedArtistKey, encodedArtist );
             qurl.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-            //print( "fetching from: " + url.toString() );
+            //Amarok.debug( "fetching from: " + url.toString() );
         } else
         {   // we are told to fetch a specific url
             path = "http://lyrc.com.ar/en/" + url;
             qurl = new QUrl( path );
-            //print( "fetching from given url: " + url.toString() );
+            //Amarok.debug( "fetching from given url: " + url.toString() );
         }
         // TODO for now, ignoring proxy settings
         //page_url = QUrl.toPercentEncoding( page_url )
@@ -187,7 +187,7 @@ function fetchLyrics( artist, title, url )
     }
     catch( err )
     {
-        print( err );
+        Amarok.debug( err );
     }
 }
 

@@ -40,10 +40,10 @@ function HttpServer()
   } while( !connected && ((this.serverError() & QAbstractSocket.AddressInUseError) == 0 ) && portNumber < 9000 )
   if( !this.isListening() )
   {
-    print( "Unable to open a port for the web server" );
+    Amarok.debug( "Unable to open a port for the web server" );
     return;
   }
-  print("Web server started at port " + this.serverPort() );
+  Amarok.debug("Web server started at port " + this.serverPort() );
   this.newConnection.connect( this, this.newIncomingConnection );
   this.registry = new Object();
 }
@@ -64,7 +64,7 @@ HttpServer.prototype.newIncomingConnection = function()
        request = thisHttp.parseHeader( request, socket, endOfRequest + 4 );
        }
        catch( error ) {
-        print( error)
+        Amarok.debug( error)
        }
       }
   });
@@ -86,7 +86,7 @@ HttpServer.prototype.sendResponse = function( socket, path )
    var userResponse = null;
    for( var registeredPath in this.registry )
    {
-       print( path.indexOf( registeredPath ) + " for " + registeredPath + " in " + path );
+       Amarok.debug( path.indexOf( registeredPath ) + " for " + registeredPath + " in " + path );
        if( path.indexOf( registeredPath ) == 0 )
        {
            userResponse = this.registry[registeredPath]( path.substring( registeredPath.length )  );
@@ -94,7 +94,7 @@ HttpServer.prototype.sendResponse = function( socket, path )
        }
    }
 
-   print( "respondTo says::" + userResponse + "::");
+   Amarok.debug( "respondTo says::" + userResponse + "::");
    if( userResponse == null )
    {
         //var response404 = new QHttpResponseHeader( 404, "Not found", 1, 1 );
@@ -111,7 +111,7 @@ HttpServer.prototype.sendResponse = function( socket, path )
         //writeMe.append( response404.toString() )
         writeMe.append( content )
         socket.write( writeMe );
-        print("response:\n" + writeMe.toString() + " sent.");
+        Amarok.debug("response:\n" + writeMe.toString() + " sent.");
    }
    else
    {
@@ -123,11 +123,11 @@ HttpServer.prototype.sendResponse = function( socket, path )
         writeMe.append( content );
         writeMe.append( userResponse.content );
         socket.write( writeMe );
-        print("response:\n" + writeMe.toString() + " sent.");
+        Amarok.debug("response:\n" + writeMe.toString() + " sent.");
     }
     catch( e )
     {
-        print( e )
+        Amarok.debug( e )
     }
    }
 }
@@ -144,7 +144,7 @@ HttpServer.prototype.register = function( path, responseFn )
 
 function fileResponse( path )
 {
-    print( "requesting " + path );
+    Amarok.debug( "requesting " + path );
     var prefix = "/home/ian/.kde4/share/apps/amarok/scripts/script_console2/webrok/";
     if( path === "/" || path === "" )
     {
@@ -155,7 +155,7 @@ function fileResponse( path )
     var fi = new QFileInfo( prefix + url.path() );
     if( fi.absoluteFilePath().indexOf( prefix ) == 0 )
     {
-        print( "sending " + fi.absoluteFilePath() );
+        Amarok.debug( "sending " + fi.absoluteFilePath() );
         var file = new QFile( fi.absoluteFilePath() );
         if( file.open( QIODevice.ReadOnly ) )
         {
@@ -173,13 +173,13 @@ function fileResponse( path )
         }
         else
         {
-            print("file not found")
+            Amarok.debug("file not found")
             return null;
         }
     }
     else
     {
-        print( fi.absoluteFilePath() + " fails security check." );
+        Amarok.debug( fi.absoluteFilePath() + " fails security check." );
         return null; //send 404 error
     }
 }
@@ -193,13 +193,13 @@ function ajaxResponse( pathStr )
 {
     url = new QUrl( pathStr );
     command = url.path();
-    print( "the command is " + command );
+    Amarok.debug( "the command is " + command );
     switch( command ) 
     {
         case "/play":
             row = Number( url.queryItemValue( "row" ) );
             Amarok.Playlist.playByIndex( row );
-            print("playing file");
+            Amarok.debug("playing file");
             var ret = new Object();
             ret.mimeType = "text/plain";
             ret.content =  "Playing row " + row;

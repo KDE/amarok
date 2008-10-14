@@ -4,7 +4,7 @@ Importer.loadQtBinding( "qt.core" );
 //test engine:
 
 var version = Amarok.Info.version();
-print( "Amarok Version: " + version );
+Amarok.debug( "Amarok Version: " + version );
 
 /*
 var Engine;
@@ -18,12 +18,12 @@ Engine.Seek ( 60*1000 );
 
 function Menu1Clicked()
 {
-    print("hey, menu1!");
+    Amarok.debug("hey, menu1!");
 }
 
 function Menu2Clicked()
 {
-    print("hey, menu2!");
+    Amarok.debug("hey, menu2!");
 }
 
 Amarok.Window.addToolsSeparator();
@@ -31,12 +31,12 @@ Amarok.Window.addToolsSeparator();
 if ( Amarok.Window.addToolsMenu( "id1", "test Menu1" ) )
     Amarok.Window.ToolsMenu.id1.triggered.connect(Menu1Clicked);
 else
-    print( "Menu1 already exists!" );
+    Amarok.debug( "Menu1 already exists!" );
 
 if ( Amarok.Window.addToolsMenu( "id2", "test Menu2" ) )
     Amarok.Window.ToolsMenu.id2.triggered.connect(Menu2Clicked);
 else
-    print( "Menu2 already exists!" );
+    Amarok.debug( "Menu2 already exists!" );
 
 
 var TrackInfo = Amarok.Engine.currentTrack();
@@ -52,7 +52,7 @@ if ( TrackInfo.isValid )
 }
 else
 {
-    print(" Track is not valid! ");
+    Amarok.debug(" Track is not valid! ");
 }
 
 function onConfigure()
@@ -62,27 +62,27 @@ function onConfigure()
 
 function TrackChanged()
 {
-    print( "Track Changed!" );
+    Amarok.debug( "Track Changed!" );
 }
 
 function TrackSeeked()
 {
-    print( "Track Seeked!" );
+    Amarok.debug( "Track Seeked!" );
 }
 
 function TrackFinished()
 {
-    print( "Track Finished!" );
+    Amarok.debug( "Track Finished!" );
 }
 
 function PlaylistCountChanged( count )
 {
-    print( "Playlist Count Changed!" );
+    Amarok.debug( "Playlist Count Changed!" );
 }
 
 function VolumeChanged( volume )
 {
-    print( "Volume changed to: " + volume );
+    Amarok.debug( "Volume changed to: " + volume );
 }
 
 Amarok.configured.connect( onConfigure );
@@ -95,6 +95,6 @@ Amarok.Engine.volumeChanged.connect( VolumeChanged );
 location = Amarok.Collection.collectionLocation();
 for ( var x in location )
 {
-    print ( location[x] );
+    Amarok.debug ( location[x] );
 }
-print( Amarok.Collection.isDirInCollection( "/home/eagle/Music" ) );
+Amarok.debug( Amarok.Collection.isDirInCollection( "/home/eagle/Music" ) );

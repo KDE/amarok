@@ -47,10 +47,10 @@ function Librivox()
     html = html.replace( "_IMAGE_DIR_", currentDir );
 
 
-    print ("creating service...");
-    //print ("html: " + html );
+    Amarok.debug ("creating service...");
+    //Amarok.debug ("html: " + html );
     ScriptableServiceScript.call( this, "Librivox.org", 3, "Search for books from Librivox", html, true );
-    print ("done creating service!");
+    Amarok.debug ("done creating service!");
 }
 
 
@@ -70,7 +70,7 @@ function bookFetchResult( reply )
 
         bookElements = doc.elementsByTagName( "book" );
 
-        print ("got " + bookElements.length() + " books!");
+        Amarok.debug ("got " + bookElements.length() + " books!");
 
         var titles = new Array( bookElements.length() );
         var links = new Array( bookElements.length() );
@@ -113,7 +113,7 @@ function bookFetchResult( reply )
     }
     catch( err )
     {
-        print( err );
+        Amarok.debug( err );
     }
 
     script.donePopulating();
@@ -135,7 +135,7 @@ function episodeFetchResult( result )
         htmlPage = htmlPage.replace( "<em>", "" );
         htmlPage = htmlPage.replace( "</em>", "" );
 
-        //print( " Got reply from librivox: " +  html );
+        //Amarok.debug( " Got reply from librivox: " +  html );
 
         //get the book description. Unfortunately this will not work currently, as tracks do not have a description, and there is no easy way to apply this to the book level.
         //In the long term, I think we should add a "get info" callback instead of having to pass html info for each object at creation 
@@ -170,7 +170,7 @@ function episodeFetchResult( result )
     }
     catch( err )
     {
-        print( err );
+        Amarok.debug( err );
     }
 
     script.donePopulating();
@@ -208,7 +208,7 @@ function onPopulate( level, callback, filter )
     }
     else if ( level == 1 )
     {
-        print( " Populating book level..." );
+        Amarok.debug( " Populating book level..." );
 
         try
         {
@@ -219,14 +219,14 @@ function onPopulate( level, callback, filter )
         }
         catch( err )
         {
-            print( err );
+            Amarok.debug( err );
         }
 
     }
     else if ( level == 0 )
     {
-        print( " Populating episode level..." );
-        print( " url: " +  callback );
+        Amarok.debug( " Populating episode level..." );
+        Amarok.debug( " url: " +  callback );
 
         try{
 
@@ -236,7 +236,7 @@ function onPopulate( level, callback, filter )
         }
         catch( err )
         {
-            print( err );
+            Amarok.debug( err );
         }
 
     }

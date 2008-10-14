@@ -20,7 +20,7 @@ Debug.debug = function ( str )
     if ( this.debug_prefix != "" ) this.prefix = this.debug_prefix;
     else this.prefix = "";
     this.indent = " ";
-    print( this.app_name + ":" + this.indent + this.prefix + str );
+    Amarok.debug( this.app_name + ":" + this.indent + this.prefix + str );
 }
 
 Debug.warning = function ( str )
@@ -28,7 +28,7 @@ Debug.warning = function ( str )
     if ( this.debug_prefix != "" ) this.prefix = this.debug_prefix;
     else this.prefix = "";
     this.indent = " ";
-    print( this.app_name + ":" + this.indent + " WARNING:" + this.prefix + str );
+    Amarok.debug( this.app_name + ":" + this.indent + " WARNING:" + this.prefix + str );
 }
 
 Debug.error = function ( str )
@@ -36,7 +36,7 @@ Debug.error = function ( str )
     if ( this.debug_prefix != "" ) this.prefix = this.debug_prefix;
     else this.prefix = "";
     this.indent = " ";
-    print( this.app_name + ":" + this.indent + " ERROR:" + this.prefix + str );
+    Amarok.debug( this.app_name + ":" + this.indent + " ERROR:" + this.prefix + str );
 }
 
 Debug.fatal = function ( str )
@@ -44,7 +44,7 @@ Debug.fatal = function ( str )
     if ( this.debug_prefix != "" ) this.prefix = this.debug_prefix;
     else this.prefix = "";
     this.indent = " ";
-    print( this.app_name + ":" + this.indent + " FATAL:" + this.prefix + str );
+    Amarok.debug( this.app_name + ":" + this.indent + " FATAL:" + this.prefix + str );
 }
 
 

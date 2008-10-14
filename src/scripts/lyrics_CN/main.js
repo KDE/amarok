@@ -26,7 +26,7 @@ Importer.loadQtBinding( "qt.xml" );
 
 function parseLyrics( lyrics )
 {
-    print( "parsing..." );
+    Amarok.debug( "parsing..." );
 
     lyrics = lyrics.replace( /<tr><td rowspan="2" style="line-height:21px"><font class=mr>/, "" );
 
@@ -39,7 +39,7 @@ function parseLyrics( lyrics )
     xml = xml.replace( "{artist}", TrackInfo.artist );
     xml = xml.replace( "{title}", TrackInfo.title );
     xml = xml.replace( "{lyrics}", lyricsStr );
-    //print( xml );
+    //Amarok.debug( xml );
 
     Amarok.Lyrics.showLyrics( xml );
 } 
@@ -47,17 +47,17 @@ function parseLyrics( lyrics )
 function lyricsFetchResult( reply )
 {
     lyrics = reply;
-    //print( lyrics );
+    //Amarok.debug( lyrics );
     lyrics = lyrics.replace( /<[iI][mM][gG][^>]*>/g, "");
     lyrics = lyrics.replace( /<[aA][^>]*>[^<]*<\/[aA]>/g, "" );
     lyrics = lyrics.replace( /<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][cC][rR][iI][pP][tT]>/g, "" );
     
-    print( "searching..." );
+    Amarok.debug( "searching..." );
     lyricsPos = lyrics.search( /<tr><td rowspan="2" style="line-height:21px"><font class=mr>*/ );
 
     if( lyricsPos > 0 )
     {
-        print( "found lyrics at pos " + lyricsPos );
+        Amarok.debug( "found lyrics at pos " + lyricsPos );
         parseLyrics( lyrics.slice( lyricsPos ) );
     }
 }
@@ -71,12 +71,12 @@ function fetchLyrics( artist, title )
     encodedTitle = Amarok.Lyrics.fromUtf8( title + "+" + artist, "GB2312" );
     url = new QUrl( path );
     url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-    print( "url address:" + url.toString() );
+    Amarok.debug( "url address:" + url.toString() );
     d = new Downloader( url, lyricsFetchResult, "GB2312" );
     }
     catch( err )
     {
-        print (err);
+        Amarok.debug (err);
     }
 }
 

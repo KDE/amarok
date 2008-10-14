@@ -29,7 +29,7 @@ Importer.loadQtBinding( "qt.gui" );
 // Debug.initialize();
 // Debug.app_name = "Importer";
 
-print( "Starting importer" );
+Amarok.debug( "Starting importer" );
 
 var dlg        = new QDialog();
 var mainLayout = new QVBoxLayout();
@@ -108,19 +108,19 @@ dlg.show();
 
 if( dlg.exec() == QDialog.Rejected )
 {
-    print( "Cancelled" );
+    Amarok.debug( "Cancelled" );
     Amarok.end();
 }
 
-print( "Will proceed to convert stats" );
+Amarok.debug( "Will proceed to convert stats" );
 
 var db; // this will become the QSql database connection
 
-print( "Selected database connection:", sqlTypeCombo.currentText );
+Amarok.debug( "Selected database connection:", sqlTypeCombo.currentText );
 
 if( sqlTypeCombo.currentText == "SQLite" )
 {
-    print( "Location:", locationEdit.text );
+    Amarok.debug( "Location:", locationEdit.text );
     db = QSqlDatabase.addDatabase( "QSQLITE", "amarok1" /* just some identifier requried by QSql */ );
     db.setDatabaseName( locationEdit.text );
 }
@@ -143,8 +143,8 @@ else if( sqlTypeCombo.currentText == "PostgreSQL" )
 
 if( !db.open() )
 {
-    print( "[ERROR] could not open Amarok 1.4 database" );
-    print( "[ERROR]", db.lastError.text );
+    Amarok.debug( "[ERROR] could not open Amarok 1.4 database" );
+    Amarok.debug( "[ERROR]", db.lastError.text );
     return;
 }
 
@@ -153,8 +153,8 @@ a2db.setDatabaseName( QDir.homePath() + "/.kde4/share/apps/amarok/collection.db"
 
 if( !a2db.open() )
 {
-    print( "[ERROR] could not open Amarok 2 database" );
-    print( "[ERROR]", db.lastError.text );
+    Amarok.debug( "[ERROR] could not open Amarok 2 database" );
+    Amarok.debug( "[ERROR]", db.lastError.text );
     return;
 }
 
@@ -172,7 +172,7 @@ QByteArray.prototype.toString = function()
 
 function transfer()
 {
-    print( "Fetching tracks from Amarok 1.4" );
+    Amarok.debug( "Fetching tracks from Amarok 1.4" );
     var query = db.exec( "SELECT lastmountpoint, url, createdate, accessdate, percentage, rating, playcounter " +
                          "FROM statistics S, devices D where S.deviceid = D.id" );
 
@@ -214,23 +214,23 @@ function transfer()
         // then make it "relative" again, for Amarok 2 devices or something
         url = "." + url;
 
-        print( "retrieved url:" + url );
+        Amarok.debug( "retrieved url:" + url );
 
         a2_url.bindValue( ":rpath", url, QSql.In );
         result = a2_url.exec();
         if( !result )
         {
-            print( "URL lookup failed", a2_url.executedQuery() );
+            Amarok.debug( "URL lookup failed", a2_url.executedQuery() );
             continue;
         }
 
         if( !a2_url.next() ) // couldn't the url in the database
         {
-            print( "Stale entry:", url );
+            Amarok.debug( "Stale entry:", url );
             //staleValues.append( url );
             continue;
         }
-        print( "found in Amarok 2.0 database" );
+        Amarok.debug( "found in Amarok 2.0 database" );
 
         a2_insert.bindValue( ":urlid", url, QSql.In );
         a2_insert.bindValue( ":createdate", createdate, QSql.In );
@@ -242,10 +242,10 @@ function transfer()
 
         if( !result )
         {
-            print( "Insertion failed", a2_insert.executedQuery() );
+            Amarok.debug( "Insertion failed", a2_insert.executedQuery() );
             continue;
         }
-        print( "Updated", url );
+        Amarok.debug( "Updated", url );
     }
 }
 

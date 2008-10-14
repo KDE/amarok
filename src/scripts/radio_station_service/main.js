@@ -72,7 +72,7 @@ function onConfigure()
 
 function onPopulating( level, callbackData, filter )
 {
-    print( " Populating station level..." );
+    Amarok.debug( " Populating station level..." );
     //add the station streams as leaf nodes
     for ( i = 0; i < stationArray.length; i++ )
     {
