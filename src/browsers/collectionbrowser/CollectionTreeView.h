@@ -79,6 +79,7 @@ class CollectionTreeView: public QTreeView
         void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
+        void keyPressEvent( QKeyEvent * event );
         void startDrag( Qt::DropActions supportedActions );
         //void changeEvent ( QEvent * event );
         virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;

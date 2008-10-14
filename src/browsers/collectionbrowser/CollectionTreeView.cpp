@@ -122,6 +122,8 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
     QTreeView::setModel( m_filterModel );
 
     connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex & ) ), SLOT( slotExpand( const QModelIndex & ) ) );
+    QKeyEvent event( QEvent::KeyPress, Qt::Key_Down, Qt::NoModifier );
+    QApplication::sendEvent( m_filterModel, &event );
 }
 
 
@@ -269,6 +271,57 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 void CollectionTreeView::mousePressEvent( QMouseEvent *e )
 {
     QTreeView::mousePressEvent( e );
+}
+
+void CollectionTreeView::keyPressEvent( QKeyEvent * event )
+{
+    QModelIndexList indices = selectedIndexes();
+    if( m_filterModel )
+    {
+        QModelIndexList tmp;
+        foreach( const QModelIndex &idx, indices )
+        {
+            tmp.append( m_filterModel->mapToSource( idx ) );
+        }
+        indices = tmp;
+    }
+
+    m_currentItems.clear();
+    foreach( const QModelIndex &index, indices )
+    {
+        if( index.isValid() && index.internalPointer() )
+            m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
+    }
+
+    if( indices.isEmpty() ) 
+    {
+        QTreeView::keyPressEvent( event );
+        return;
+    }
+    QModelIndex current = currentIndex();
+    switch( event->key() ) 
+    {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+            slotAppendChildTracks();
+            return;
+        case Qt::Key_Up:
+        case Qt::Key_Down:
+            QAbstractItemView::keyPressEvent( event );
+            return;
+        // L and R should magically work when we get a patched version of qt
+        case Qt::Key_Right:
+        case Qt::Key_Direction_R:
+            expand( current );
+            break;
+        case Qt::Key_Left:
+        case Qt::Key_Direction_L:
+            collapse( current );
+            break;
+        default:
+            break;
+    }
+    QTreeView::keyPressEvent( event );
 }
 
 void
