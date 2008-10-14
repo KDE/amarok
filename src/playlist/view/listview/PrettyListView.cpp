@@ -124,7 +124,11 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx ) const
 void
 Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
-    QModelIndex index = currentIndex();
+    QModelIndex index = indexAt( event->pos() );
+    
+    if ( !index.isValid() )
+        return;
+
     ViewCommon::trackMenu( this, &index, event->globalPos(), true );
     event->accept();
 }
