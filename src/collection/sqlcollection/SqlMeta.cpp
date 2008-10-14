@@ -896,12 +896,6 @@ SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
     }
 }
 
-/*void
-SqlArtist::addToQueryResult( QueryBuilder &qb ) {
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
-}*/
-
 //---------------Album compilation management actions-----
 
 class CompilationAction : public PopupDropperAction
@@ -978,7 +972,9 @@ SqlAlbum::tracks()
         SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
         qm->setQueryType( QueryMaker::Track );
         addMatchTo( qm );
+        qm->orderBy( Meta::valDiscNr );
         qm->orderBy( Meta::valTrackNr );
+        qm->orderBy( Meta::valTitle );
         qm->setBlocking( true );
         qm->run();
         m_tracks = qm->tracks( m_collection->collectionId() );
