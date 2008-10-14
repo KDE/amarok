@@ -1137,6 +1137,9 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
         // pull temporary file's image out as QImage
         QImage image( tempImagePath );
         track->album()->setImage( image );
+
+        // fix memleak
+        gdk_pixbuf_unref ( gpixbuf );
     }
 
     return;
