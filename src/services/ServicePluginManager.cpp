@@ -20,6 +20,7 @@
 #include "ServicePluginManager.h"
 
 #include "Amarok.h"
+#include "ServiceBrowser.h"
 #include "PluginManager.h"
 
 #include <KService>
@@ -38,7 +39,7 @@ ServicePluginManager * ServicePluginManager::instance()
 
 ServicePluginManager::ServicePluginManager( )
     : QObject()
-    , m_serviceBrowser( 0 )
+    , m_serviceBrowser( ServiceBrowser::instance() )
 {
     collect();
 }
@@ -91,14 +92,16 @@ ServicePluginManager::init()
 {
     foreach( ServiceFactory* factory,  m_factories.values() ) {
 
-        //check if this service is enabled
-        QString pluginName = factory->info().pluginName();
+        if ( !factory->isInitialized() ) {
+            //check if this service is enabled
+            QString pluginName = factory->info().pluginName();
 
-        debug() << "PLUGIN CHECK: " << pluginName;
-        if ( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
-        {
-            factory->init();
-            m_loadedServices << pluginName;
+            debug() << "PLUGIN CHECK: " << pluginName;
+            if ( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
+            {
+                factory->init();
+                m_loadedServices << pluginName;
+            }
         }
     }
 }

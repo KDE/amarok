@@ -36,6 +36,7 @@
 #include "PlaylistFileSupport.h"
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "services/ServicePluginManager.h" // used in constructor
 
 #include <QAction>
 #include <QStringList>
@@ -71,6 +72,14 @@ Playlist::Model::Model()
 {
     DEBUG_BLOCK
     s_instance = this;
+
+    /* The ServicePluginManager needs to be loaded up so that it can handle
+     * any tracks in the saved playlist that are associated with services.
+     * Eg, if the playlist has a Magnatune track in it when Amarok is
+     * closed, then the Magnatune service needs to be initialized before the
+     * playlist is loaded here. */
+
+    ServicePluginManager::instance();
 
     if ( QFile::exists( defaultPlaylistPath() ) )
     {

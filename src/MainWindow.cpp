@@ -273,9 +273,6 @@ MainWindow::init()
 
         sideBar()->sideBarWidget()->restoreSession();
 
-
-        //get the plugin manager
-        ServicePluginManager::instance()->setBrowser( internetContentServiceBrowser );
         PERF_LOG( "Initialising ServicePluginManager" )
         ServicePluginManager::instance()->init();
         PERF_LOG( "Initialised ServicePluginManager" )

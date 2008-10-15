@@ -39,6 +39,7 @@ void AmpacheServiceFactory::init()
     //read config and create the needed number of services
     AmpacheConfig config;
     AmpacheServerList servers = config.servers();
+    m_initialized = true;
 
     for( int i = 0; i < servers.size(); i++ )
     {

@@ -41,6 +41,7 @@ void OpmlDirectoryServiceFactory::init()
 {
     ServiceBase* service = new OpmlDirectoryService( this, "OpmlDirectory" );
     m_activeServices << service;
+    m_initialized = true;
     emit newService( service );
 }
 

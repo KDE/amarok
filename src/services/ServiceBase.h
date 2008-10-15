@@ -62,10 +62,16 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
          */
         virtual ~ServiceFactory();
 
-        /**
-         * Initialize the service plugins of this type. Reimplemented by subclasses.
-         */
+        /** Initialize the service plugin of this type.  Reimplemented by subclasses, which
+         * must set m_initialized = true when the function has finished.
+         * @return
+         * */
         virtual void init() = 0;
+
+        /** Indicates whether or not the plugin has been initialized.
+         * @return Initialized or not
+         */
+        bool isInitialized() const { return m_initialized; }
 
         /**
          * Get the name of this service type. Reimplemented by subclasses.
@@ -117,13 +123,14 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
 
     signals:
         /**
-         * This signal is emmited whenever a new service has been loaded.
+         * This signal is emited whenever a new service has been loaded.
          * @param newService The service that has been loaded.
          */
         void newService( class ServiceBase *newService );
 
     protected:
         QList<ServiceBase *> m_activeServices;
+        bool m_initialized;
 
     private:
         QQueue<Meta::TrackPtr> m_tracksToLocate;

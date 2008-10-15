@@ -64,6 +64,7 @@ void MagnatuneServiceFactory::init()
     DEBUG_BLOCK
     MagnatuneStore* service = new MagnatuneStore( this, "Magnatune.com" );
     m_activeServices << service;
+    m_initialized = true;
 
     emit newService( service );
 }

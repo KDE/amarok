@@ -43,6 +43,7 @@ void JamendoServiceFactory::init()
 {
     ServiceBase* service = new JamendoService( this, "Jamendo.com" );
     m_activeServices << service;
+    m_initialized = true;
     emit newService( service );
 }
 

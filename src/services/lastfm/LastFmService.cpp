@@ -41,6 +41,7 @@ LastFmServiceFactory::init()
 
     ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
     m_activeServices << service;
+    m_initialized = true;
     connect( service, SIGNAL( ready() ), this, SLOT( serviceReady() ) );
     emit newService( service );
 }

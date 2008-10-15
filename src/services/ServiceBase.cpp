@@ -36,7 +36,7 @@
 
 #include <QDirModel>
 
-ServiceFactory::ServiceFactory()
+ServiceFactory::ServiceFactory() : m_initialized( false )
 {
     CollectionManager::instance()->addTrackProvider( this );
 }

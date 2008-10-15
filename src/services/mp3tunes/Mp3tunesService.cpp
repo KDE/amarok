@@ -42,6 +42,7 @@ void Mp3tunesServiceFactory::init()
 
     ServiceBase* service = new Mp3tunesService( this, "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
     m_activeServices << service;
+    m_initialized = true;
     connect( service, SIGNAL( ready() ), this, SLOT( serviceReady() ) );
     emit newService( service );
     

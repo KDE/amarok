@@ -32,6 +32,7 @@ void ShoutcastServiceFactory::init()
 {
     ServiceBase* service = new ShoutcastService( this, "Shoutcast.com" );
     m_activeServices << service;
+    m_initialized = true;
     emit newService( service );
 }
 
