@@ -87,7 +87,7 @@ Playlist::Widget::Widget( QWidget* parent )
     plBar->setObjectName( "PlaylistToolBar" );
 
 
-    Model* playModel = Model::instance();
+    Model::instance();
 
     KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
