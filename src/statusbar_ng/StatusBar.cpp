@@ -90,7 +90,7 @@ StatusBarNG::StatusBarNG( QWidget * parent )
     connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( removedIDs( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlistModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     updateTotalPlaylistLength();
 }
 
