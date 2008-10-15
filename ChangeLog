@@ -40,6 +40,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Script downloads using KNewStuff2 now correctly installs and uninstalls
+      scripts
     * Fix memleak in iPod handler.  Thanks to Christophe Fergeau.
     * Wikipedia applet: Fix infinite retry loop if no artist information is 
       found. (BR 171074)
