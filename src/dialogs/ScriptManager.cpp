@@ -373,9 +373,11 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 void
 ScriptManager::slotRetrieveScript()
 {
-    KNS::Engine engine(this);
+    KNS::Engine engine( this );
     engine.init( "amarok.knsrc" );
-    KNS::Entry::List entries = engine.downloadDialogModal(this);
+    KNS::Entry::List entries = engine.downloadDialogModal( this );
+
+    findScripts();  //reload script list
 /*
     debug() << "scripts status:" << endl;
     foreach ( KNS::Entry* entry, entries )
