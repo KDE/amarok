@@ -102,7 +102,7 @@ MediaDeviceMonitor::checkDevicesForIpod()
     /* poll udi list for supported devices */
     foreach(const QString &udi, udiList )
     {
-        /* if mtp device found, emit signal */
+        /* if ipod device found, emit signal */
         if( isIpod( udi ) )
         {
             emit ipodDetected( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
@@ -233,5 +233,11 @@ void
 MediaDeviceMonitor::connectIpod( const QString &mountpoint, const QString &udi )
 {
     emit ipodReadyToConnect( mountpoint, udi );
+}
+
+void
+MediaDeviceMonitor::disconnectIpod( const QString &udi )
+{
+    emit ipodReadyToDisconnect( udi );
 }
 

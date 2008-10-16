@@ -64,10 +64,12 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         void mtpDetected( const QString &udi, const QString &serial );
 
         void ipodReadyToConnect( const QString &mountpoint, const QString &udi );
+        void ipodReadyToDisconnect( const QString &udi );
 
     public slots:
 
         void connectIpod( const QString &mountpoint, const QString &udi );
+        void disconnectIpod( const QString &udi );
 
 
     private slots:
