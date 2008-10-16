@@ -216,16 +216,16 @@ Mp3tunesLockerPlaylist::Mp3tunesLockerPlaylist(  mp3tunes_locker_playlist_t *pla
     m_playlist = ( mp3tunes_locker_playlist_t * ) malloc( sizeof( *playlist ) );
     memcpy( m_playlist, playlist, sizeof( *playlist ) );
 
-    m_playlist->playlistId = ( char * ) malloc( strlen( playlist->playlistId ) );
+    m_playlist->playlistId = ( char * ) malloc( strlen( playlist->playlistId ) + 1 );
     strcpy( m_playlist->playlistId, playlist->playlistId );
 
-    m_playlist->playlistTitle = ( char * ) malloc( strlen( playlist->playlistTitle ) );
+    m_playlist->playlistTitle = ( char * ) malloc( strlen( playlist->playlistTitle ) + 1 );
     strcpy( m_playlist->playlistTitle, playlist->playlistTitle );
 
-    m_playlist->title = ( char * ) malloc( strlen( playlist->title ) );
+    m_playlist->title = ( char * ) malloc( strlen( playlist->title ) + 1 );
     strcpy( m_playlist->title, playlist->title );
 
-    m_playlist->fileName = ( char * ) malloc( strlen( playlist->fileName ) );
+    m_playlist->fileName = ( char * ) malloc( strlen( playlist->fileName ) + 1 );
     strcpy( m_playlist->fileName, playlist->fileName );
 }
 Mp3tunesLockerPlaylist::~Mp3tunesLockerPlaylist()
