@@ -174,9 +174,8 @@ MtpCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
 {
     // NOTE: MtpHandler doing this right now
     Q_UNUSED(trackMap);
-    return;
+#if 0
     DEBUG_BLOCK
-            /*
     QList<QVariantMap > metadata;
     QStringList urls;
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
@@ -221,7 +220,7 @@ MtpCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
         }
     }
     processor.commit();
-            */
+#endif
 }
 
 void
@@ -229,9 +228,8 @@ MtpCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
 {
     DEBUG_BLOCK
     Q_UNUSED(trackMap);
-    return;
+#if 0
     // NOTE: not sure if this is needed
-            /*
     MountPointManager *mpm = MountPointManager::instance();
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
     {
@@ -260,7 +258,7 @@ MtpCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         data = data.arg( QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
         m_collection->insert( insert.arg( data ), "statistics" );
     }
-            */
+#endif
 }
 
 // NOTE: probably unnecessary

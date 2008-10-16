@@ -108,26 +108,19 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
     {
         channel = static_cast<Meta::PodcastChannel *>(parent.internalPointer());
         if( !channel.isNull() )
-        {
             episode = channel->episodes()[row];
-        }
         else
-        {
             channel = 0;
-        }
     }
 
     if( !episode.isNull() )
-    {
         return createIndex( row, column, episode.data() );
-    }
     else if( !channel.isNull() )
-    {
         return createIndex( row, column, channel.data() );
-    }
     else
         return QModelIndex();
 
+#if 0
     if ( !parent.isValid() )
     {
         Meta::PodcastChannelPtr channel = m_channels[row];
@@ -153,6 +146,7 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
             return QModelIndex();
         }
     }
+#endif
 }
 
 QModelIndex
