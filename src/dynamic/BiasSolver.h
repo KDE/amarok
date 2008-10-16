@@ -176,7 +176,7 @@ namespace Dynamic
              * recalculating the energy.
              *
              * @param playlist The playlist to calculate the energy of.
-             * @param mutation The track being swaped into playlist.
+             * @param mutation The track being swapped into playlist.
              * @param mutationPos The proposed position in the playlist for
              * mutation.
              */

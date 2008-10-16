@@ -128,7 +128,7 @@ namespace AmarokScript
             parentUrl.setPath( dir );
             if ( !AmarokConfig::scanRecursively() )
             {
-                if ( ( dir == path ) || ( dir + "/" == path ) )
+                if ( ( dir == path ) || ( dir + '/' == path ) )
                     return true;
             }
             else //scan recursively

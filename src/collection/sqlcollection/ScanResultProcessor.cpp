@@ -91,7 +91,7 @@ void
 ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, QString> > covers )
 {
     QList< QPair<QString,QString> >::ConstIterator it = covers.begin();
-    for( ; it != covers.end(); it++ )
+    for( ; it != covers.end(); ++it )
     {
         QPair<QString,QString> key = (*it);
         if( key.first.isEmpty() || key.second.isEmpty() )

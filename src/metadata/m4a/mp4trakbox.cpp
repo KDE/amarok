@@ -49,7 +49,7 @@ MP4::Mp4TrakBox::~Mp4TrakBox()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->trakBoxes.begin();
        delIter != d->trakBoxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

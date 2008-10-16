@@ -31,7 +31,7 @@ TrackTagsRequest::TrackTagsRequest( QString artist, QString track )
 void
 TrackTagsRequest::start()
 {
-    get( "/1.0/track/" + UnicornUtils::urlEncodeItem( artist() ) + "/"+ UnicornUtils::urlEncodeItem( track() ) + "/toptags.xml" );
+    get( "/1.0/track/" + UnicornUtils::urlEncodeItem( artist() ) + '/' + UnicornUtils::urlEncodeItem( track() ) + "/toptags.xml" );
 }
 
 void

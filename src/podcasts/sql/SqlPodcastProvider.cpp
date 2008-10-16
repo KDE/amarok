@@ -371,7 +371,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     if( fromVersion == 1 && toVersion == 2 )
     {
         QString updateChannelQuery = QString( "ALTER TABLE podcastchannels"
-            " ADD subscribedate " + sqlStorage->textColumnType() + ";" );
+            " ADD subscribedate " + sqlStorage->textColumnType() + ';' );
 
         sqlStorage->query( updateChannelQuery );
 

@@ -104,7 +104,7 @@ BoomAnalyzer::transform( Scope &s )
 
     static const uint xscale[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,24,29,36,43,52,63,76,91,108,129,153,182,216,255 };
 
-    for( uint j, i = 0; i < 32; i++ )
+    for( uint j, i = 0; i < 32; ++i )
         for( j = xscale[i]; j < xscale[i + 1]; j++ )
             if ( s[j] > scope[i] )
                 scope[i] = s[j];

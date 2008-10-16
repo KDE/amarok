@@ -44,7 +44,7 @@ FrikkinNormanRequest::success( QByteArray data )
     qDebug() << "FrikkinNorman" << fpId() << ":\n" << data;
 
     QString s( data );
-    QStringList l = s.split( "\t" );
+    QStringList l = s.split( '\t' );
     if ( l.size() > 2 )
     {
         QString artist = l.at( 1 );

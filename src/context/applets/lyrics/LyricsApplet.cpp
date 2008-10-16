@@ -260,7 +260,7 @@ LyricsApplet::suggestionChosen( const QString& link )
 {
     DEBUG_BLOCK
     debug() << "got link selected:" << link;
-    QStringList pieces = link.split( "|" );
+    QStringList pieces = link.split( '|' );
     ScriptManager::instance()->notifyFetchLyricsByUrl( pieces[ 1 ], pieces[ 0 ], pieces[ 2 ] );
 }
 

@@ -41,7 +41,7 @@ RecentTracksRequest::RecentTracksRequest()
 void
 RecentTracksRequest::start()
 {
-    get( "/1.0/user/" + UnicornUtils::urlEncodeItem( The::webService()->currentUsername() ) + "/" + m_key + ".xml" );
+    get( "/1.0/user/" + UnicornUtils::urlEncodeItem( The::webService()->currentUsername() ) + '/' + m_key + ".xml" );
 }
 
 void

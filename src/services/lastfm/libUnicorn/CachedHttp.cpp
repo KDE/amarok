@@ -259,7 +259,7 @@ CachedHttp::headerReceived( const QHttpResponseHeader& resp )
     if ( !resp.value( "expires" ).isEmpty() )
     {
         QString expire = resp.value( "expires" );
-        QStringList datelist = expire.split( " " ); //Split the datestring
+        QStringList datelist = expire.split( ' ' ); //Split the datestring
 
         if ( datelist.count() == 6 ) // 6 items in a regular expire-date
         {
@@ -310,7 +310,7 @@ CachedHttp::userAgent()
 {
     if ( s_customUserAgent.isEmpty() )
     {
-        return QCoreApplication::organizationName() + " " +
+        return QCoreApplication::organizationName() + ' ' +
                QCoreApplication::applicationName();
     }
     else
@@ -325,7 +325,7 @@ CachedHttp::cachePath()
 {
     if ( s_customCachePath.isEmpty() )
     {
-        return UnicornUtils::appDataPath() + "/" + QCoreApplication::organizationName() + "/" +
+        return UnicornUtils::appDataPath() + '/' + QCoreApplication::organizationName() + '/' +
                QCoreApplication::applicationName() + "/cache";
     }
     else
@@ -342,7 +342,7 @@ CachedHttp::pathToCachedCopy( QString cacheKey )
 
     // The c in the front is because we use a different cacheformat now.
     // (The 10 first bytes are the expire timestamp);
-    return cachePath() + "c" + keyMd5; 
+    return cachePath() + 'c' + keyMd5;
 }
 
 

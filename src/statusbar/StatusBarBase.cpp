@@ -188,7 +188,7 @@ StatusBar::polish()
     int h = 0;
     QList<QWidget*> list = qFindChildren<QWidget *>( this );
 
-    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); it++ )
+    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); ++it )
     {
         QWidget *o = *it;
         int _h = o->minimumSizeHint().height();
@@ -201,7 +201,7 @@ StatusBar::polish()
 
     h -= 4; // it's too big usually
 
-    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); it++ )
+    for( QList<QWidget*>::iterator it = list.begin(); it != list.end(); ++it )
     {
         QWidget *o = *it;
         o->setFixedHeight( h );
@@ -666,7 +666,7 @@ StatusBar::writeLogFile( const QString &text )
 
     if( m_logCounter < 0 ) //find which log to write to
     {
-        for( ; c > 0; c-- )
+        for( ; c > 0; --c )
         {
             QString log = logBase + QString::number(c);
             file.setFileName( log );

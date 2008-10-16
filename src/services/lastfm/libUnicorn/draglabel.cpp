@@ -69,7 +69,7 @@ void
 DragLabel::append( const QString& text )
 {
     DragItem d;
-    QString t = m_commas ? text + "," : text + " ";
+    QString t = m_commas ? text + ',' : text + ' ';
     d.m_text = t;
     calcFontProperties( d );
     m_items << d;
@@ -155,7 +155,7 @@ DragLabel::setText( const QString& text )
     }
     else
     {
-        QString t = m_commas ? text + "," : text + " ";
+        QString t = m_commas ? text + ',' : text + ' ';
         m_items[0].m_text = t;
         calcFontProperties( m_items[0] );
         updateDragLabel();
@@ -238,7 +238,7 @@ DragLabel::setItemText( int index, const QString& text )
 {
     Q_ASSERT( index < ( m_items.count() - m_itemsStartAt ) );
 
-    QString t = m_commas ? text + "," : text + " ";
+    QString t = m_commas ? text + ',' : text + ' ';
     m_items[m_itemsStartAt + index].m_text = t;
 }
 
@@ -877,7 +877,7 @@ DragLabel::mouseMoveEvent( QMouseEvent *event )
     QString anchor = m_items[m_hoverIndex].m_text;
 
     anchor = anchor.trimmed();
-    if ( anchor.endsWith( "," ) )
+    if ( anchor.endsWith( ',' ) )
     {
         anchor.chop( 1 );
     }

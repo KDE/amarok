@@ -130,7 +130,7 @@ FingerprintQueryRequest::success( QByteArray data )
     qDebug() << data;
 
     QString response( data );
-    QStringList list = response.split( " " );
+    QStringList list = response.split( ' ' );
 
     if ( list.isEmpty() )
     {

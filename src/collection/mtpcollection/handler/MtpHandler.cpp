@@ -223,7 +223,7 @@ MtpHandler::getDeviceInfo()
     if( ret == 0 )
     {
         uint16_t i;
-        for( i = 0; i < filetypes_len; i++ )
+        for( i = 0; i < filetypes_len; ++i )
             m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
     }
     // find supported image types (for album art).

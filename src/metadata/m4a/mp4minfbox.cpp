@@ -52,7 +52,7 @@ MP4::Mp4MinfBox::~Mp4MinfBox()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->minfBoxes.begin();
        delIter != d->minfBoxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

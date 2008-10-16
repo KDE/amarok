@@ -303,7 +303,7 @@ Request::parameter( QString keyName, QString data )
 
     for ( int i = 0; i < list.size(); i++ )
     {
-        QStringList values = list[ i ].split( "=" );
+        QStringList values = list[ i ].split( '=' );
         if ( values[0] == keyName )
         {
             values.removeAt( 0 );

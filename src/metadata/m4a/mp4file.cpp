@@ -74,7 +74,7 @@ MP4::File::File(TagLib::FileName file, bool , TagLib::AudioProperties::ReadStyle
 
   for( TagLib::List<MP4::Mp4IsoBox*>::Iterator iter  = d->boxes.begin();
                                                iter != d->boxes.end();
-					       iter++ )
+					       ++iter )
   {
     if( (*iter)->fourcc() == MP4::Fourcc("moov") )
     {
@@ -97,7 +97,7 @@ MP4::File::~File()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->boxes.begin();
        delIter != d->boxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

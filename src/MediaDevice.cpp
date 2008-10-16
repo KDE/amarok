@@ -943,7 +943,7 @@ MediaDevice::transferFiles()
         QString longMsg = i18n( "The following tracks were not transferred: ");
         for( KUrl::List::ConstIterator it = existing.constBegin(), end = existing.constEnd();
                 it != end;
-                it++ )
+                ++it )
         {
             longMsg += "<br>" + (*it).prettyUrl();
         }

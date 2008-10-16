@@ -49,7 +49,7 @@ MP4::Mp4MoovBox::~Mp4MoovBox()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->moovBoxes.begin();
        delIter != d->moovBoxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

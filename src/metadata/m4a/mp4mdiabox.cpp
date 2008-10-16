@@ -51,7 +51,7 @@ MP4::Mp4MdiaBox::~Mp4MdiaBox()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->mdiaBoxes.begin();
        delIter != d->mdiaBoxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

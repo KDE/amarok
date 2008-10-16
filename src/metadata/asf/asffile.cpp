@@ -460,7 +460,7 @@ bool ASF::File::save()
   }
 
   ASF::AttributeListMap::ConstIterator it = d->tag->attributeListMap().begin();
-  for(; it != d->tag->attributeListMap().end(); it++) {
+  for(; it != d->tag->attributeListMap().end(); ++it) {
     const String &name = it->first;
     const AttributeList &attributes = it->second;
     bool inExtendedContentDescriptionObject = false;

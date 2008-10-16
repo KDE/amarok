@@ -86,7 +86,7 @@ AlbumItem::metadataChanged( Meta::Album *album )
         displayText = QString( "%1 - %2" ).arg( album->albumArtist()->name(), displayText );
 
     QString trackCount = i18np( "%1 track", "%1 tracks", album->tracks().size() );
-    displayText += "\n" + trackCount;
+    displayText += '\n' + trackCount;
 
     setText( displayText );
 

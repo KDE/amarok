@@ -49,7 +49,7 @@ MP4::Mp4MetaBox::~Mp4MetaBox()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->metaBoxes.begin();
        delIter != d->metaBoxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

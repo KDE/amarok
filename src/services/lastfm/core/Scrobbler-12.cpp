@@ -597,7 +597,7 @@ Scrobbler::submit( const ScrobbleCache& cache )
 
     // we need to put the tracks in chronological order or the Scrobbling Service
     // rejects the ones that are later than previously submitted tracks
-    // this is only relevent if the cache is greater than 50 in size as then
+    // this is only relevant if the cache is greater than 50 in size as then
     // submissions are done in batches, but better safe than sorry
     qSort( tracks.begin(), tracks.end(), trackInfoLessThan );
     tracks = tracks.mid( 0, 50 );

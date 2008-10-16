@@ -49,7 +49,7 @@ MP4::Mp4UdtaBox::~Mp4UdtaBox()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->udtaBoxes.begin();
        delIter != d->udtaBoxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

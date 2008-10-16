@@ -612,7 +612,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
             populateChildren( data, parent );
             endInsertRows();
 
-            for( int count = parent->childCount(), i = 0; i < count; i++ )
+            for( int count = parent->childCount(), i = 0; i < count; ++i )
             {
                 CollectionTreeItem *item = parent->child( i );
                 if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
@@ -740,17 +740,24 @@ CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 void
 CollectionTreeItemModelBase::slotFilter()
 {
+    DEBUG_BLOCK
     filterChildren();
     reset();
+    debug() << "m_expandedCollections.isEmpty() ? " << (m_expandedCollections.isEmpty() ? "true" : "false");
     if ( !m_expandedCollections.isEmpty() )
     {
         foreach( Collection *expanded, m_expandedCollections )
         {
+            debug() << "checking item...is item 0 ? " << (d->m_collections.value( expanded->collectionId() ).second == 0 ? "true" : "false" );
             CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
             if( expandedItem == 0 )
                 debug() << "ARRG! expandedItem is 0!!! id=" << expanded->collectionId() ;
             else
+            {
+                debug() << "urls = " << expandedItem->urls();
+                debug() << "row = " << expandedItem->row();
                 emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
+            }
         }
     }
 }

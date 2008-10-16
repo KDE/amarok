@@ -61,7 +61,7 @@ void DeleteWidget::setFiles(const KUrl::List &files)
 {
     ddFileList->clear();
 //    ddFileList->insertStringList(files);
-    for( KUrl::List::ConstIterator it = files.constBegin(), end = files.constEnd(); it != end; it++)
+    for( KUrl::List::ConstIterator it = files.constBegin(), end = files.constEnd(); it != end; ++it)
     {
         if( (*it).isLocalFile() ) //path is nil for non-local
             ddFileList->insertItem( (*it).path() );

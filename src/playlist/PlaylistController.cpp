@@ -254,7 +254,7 @@ Playlist::Controller::removeRows( int row, int count )
 {
     DEBUG_BLOCK
     QList<int> rl;
-    for ( int i = 0; i < count; i++ )
+    for ( int i = 0; i < count; ++i )
     {
         rl.append( row++ );
     }

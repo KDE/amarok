@@ -86,7 +86,7 @@ void UserLabelsRequest::success( QByteArray data )
         return;
     }
 
-    for ( QVariantList::iterator i = list.begin(); i != list.end(); i++ )
+    for ( QVariantList::iterator i = list.begin(); i != list.end(); ++i )
     {
         QMap<QString, QVariant> map = (*i).toMap();
         if ( map.count() != 2 )

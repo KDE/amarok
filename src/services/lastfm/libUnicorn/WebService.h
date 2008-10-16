@@ -97,8 +97,8 @@ class UNICORN_DLLEXPORT WebService : public QObject
          * Beware, if you connect to these functions, you get notified for every
          * single webservice-request, which can be useful of course.
          *
-         * You also get Requests relevent to other usernames and streams etc.
-         * so you should check the data is relevent to you before operating on
+         * You also get Requests relevant to other usernames and streams etc.
+         * so you should check the data is relevant to you before operating on
          * it.
          *
          * Really, don't use these unless you are error handling, instead connect

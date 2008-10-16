@@ -52,7 +52,7 @@ MP4::Mp4StblBox::~Mp4StblBox()
   TagLib::List<Mp4IsoBox*>::Iterator delIter;
   for( delIter  = d->stblBoxes.begin();
        delIter != d->stblBoxes.end();
-       delIter++ )
+       ++delIter )
   {
     delete *delIter;
   }

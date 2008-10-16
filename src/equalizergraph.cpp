@@ -94,7 +94,7 @@ EqualizerGraph::paintEvent( QPaintEvent* )
 
     init_spline( x, gains, NUM_BANDS, yf );
 
-    for ( i = 8; i < width(); i++ ) {
+    for ( i = 8; i < width(); ++i ) {
         y = (int) ( ( height() - 1 ) / 2 - eval_spline( x, gains, yf, NUM_BANDS, i ) );
 
         if ( y < 0 )
@@ -115,7 +115,7 @@ EqualizerGraph::paintEvent( QPaintEvent* )
         }
 
         py = y;
-        for ( y = ymin; y <= ymax; y++ ) {
+        for ( y = ymin; y <= ymax; ++y ) {
             // Absolute carthesian coordinate
             s = y - ( height() - 1 ) / 2;
             s = QABS(s);
@@ -166,7 +166,7 @@ EqualizerGraph::init_spline( float* x, float* y, int n, float* y2 )
 
     y2[ 0 ] = u[ 0 ] = 0.0;
 
-    for ( i = 1; i < n - 1; i++ ) {
+    for ( i = 1; i < n - 1; ++i ) {
         sig = ( (float)x[i] - x[i-1] ) / ( (float)x[i+1] - x[i-1] );
         p = sig * y2[i-1] + 2.0;
         y2[i] = ( sig - 1.0 ) / p;
@@ -176,7 +176,7 @@ EqualizerGraph::init_spline( float* x, float* y, int n, float* y2 )
     qn = un = 0.0;
 
     y2[n-1] = ( un - qn * u[n-2] ) / ( qn * y2[n-2] + 1.0 );
-    for ( k = n - 2; k >= 0; k-- )
+    for ( k = n - 2; k >= 0; --k )
         y2[k] = y2[k] * y2[k+1] + u[k];
 }
 

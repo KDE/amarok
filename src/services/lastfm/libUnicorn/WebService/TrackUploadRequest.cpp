@@ -34,7 +34,7 @@ TrackUploadRequest::TrackUploadRequest ()
 
 void TrackUploadRequest::start()
 {
-    QFile file(QDir::tempPath() + "lastfm-uploader/" + track().album() + "/" + track().track() + ".mp3");
+    QFile file(QDir::tempPath() + "lastfm-uploader/" + track().album() + '/' + track().track() + ".mp3");
     
     QByteArray data = file.readAll ();
     

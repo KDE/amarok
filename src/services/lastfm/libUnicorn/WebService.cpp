@@ -249,7 +249,7 @@ WebService::autoDetectProxy()
         if( m_isAutoDetectedProxy )
         {
             QString proxySettings = autoProxySettings.value( inetSettingPrefix + "ProxyServer", "" ).toString();
-            QStringList proxySettingList = proxySettings.split( ":" );
+            QStringList proxySettingList = proxySettings.split( ':' );
             m_proxyHost = proxySettingList[0];
             m_proxyPort = proxySettingList[1].toInt();
         }
