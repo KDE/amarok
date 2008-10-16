@@ -841,7 +841,7 @@ void TagDialog::readTags()
     ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
     ui->qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
-    ui->kTextEdit_comment->setText( m_currentTrack->comment() );
+    ui->kTextEdit_comment->setText( Qt::escape( m_currentTrack->comment() ) );
 
     QString summaryText, statisticsText;
     const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
