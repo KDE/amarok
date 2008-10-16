@@ -213,7 +213,8 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
 void SvgHandler::reTint()
 {
     The::svgTinter()->init();
-    d->loadSvg( d->themeFile );
+    if ( !d->loadSvg( d->themeFile ))
+        warning() << "Unable to load theme file: " << d->themeFile;
 }
 
 QString SvgHandler::themeFile()

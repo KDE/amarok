@@ -111,7 +111,11 @@ loadPlaylist( const KUrl &url )
         {
             debug() << "gotcha: " << tempFileName;
             file.setFileName( tempFileName );
-            file.open( QFile::ReadOnly );
+            if ( !file.open( QFile::ReadOnly ) )
+            {
+                debug() << "error opening file: " << tempFileName;
+                return playlist;
+            }
         }
     }
 

@@ -43,7 +43,12 @@ QString
 SvgTinter::tint(QString filename)
 {
     QFile file( filename );
-    file.open( QIODevice::ReadOnly );
+    if ( !file.open( QIODevice::ReadOnly ) )
+    {
+        error() << "Unable to open file: " << filename;
+        return QString();
+    }
+
     QByteArray svg_source( file.readAll() );
 
     // Copied from KSvgrenderer.cpp as we don't load it directly.

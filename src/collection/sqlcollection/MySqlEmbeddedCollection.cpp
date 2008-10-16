@@ -101,7 +101,10 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
     if( !QFile::exists( defaultsFile ) )
     {
         QFile df( defaultsFile );
-        df.open( QIODevice::WriteOnly );
+        if ( !df.open( QIODevice::WriteOnly ) ) {
+            error() << "Unable to open " << defaultsFile << " for writing.";
+            reportError( "init" );
+        }
     }
 
     if( !QFile::exists( databaseDir ) )
