@@ -18,6 +18,7 @@
 #include <KIcon>
 
 #include <QList>
+#include <QMap>
 #include <QStringList>
 
 #include <context/Applet.h>
@@ -49,6 +50,7 @@ class DeviceInfo : public QObject
     protected:
         bool m_connected;
 
+        
         QGraphicsLinearLayout *m_layout;
 
 
@@ -62,6 +64,8 @@ class IpodInfo : public DeviceInfo
         IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QString &udi );
         virtual ~IpodInfo();
 
+        virtual QGraphicsLinearLayout* layout();
+
     signals:
         void readyToConnect( const QString &mountpoint, const QString &udi );
         void readyToDisconnect( const QString &udi );
@@ -71,6 +75,7 @@ class IpodInfo : public DeviceInfo
         virtual void disconnectClicked();
 
     private:
+        QGraphicsWidget *m_applet;
         QString m_mountpoint;
         QString m_udi;
 };
@@ -96,17 +101,22 @@ class MediaDevicesApplet : public Context::Applet
         virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
     private:
+
+        void redraw();
+
         Plasma::Icon *m_icon;
         Plasma::Icon *m_connect;
         Plasma::Icon *m_disconnect;
         QGraphicsLinearLayout *m_layout;
 
-        QList<IpodInfo> m_ipodInfoList;
+        //QList<IpodInfo> m_ipodInfoList;
+        QMap<QString, DeviceInfo*> m_infoMap; // maps udi to DeviceInfo
         //QList<QGraphicsLinearLayout> m_layoutList;
         QStringList m_udiList;
 
     private slots:
         void ipodDetected( const QString &mountPoint, const QString &udi );
+        void deviceRemoved( const QString &udi );
 
 };
 

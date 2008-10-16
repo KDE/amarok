@@ -38,6 +38,7 @@
 DeviceInfo::DeviceInfo()
     : QObject()
 {
+    DEBUG_BLOCK
     m_connected = false;
 }
 
@@ -48,24 +49,47 @@ DeviceInfo::~DeviceInfo()
 QGraphicsLinearLayout*
 DeviceInfo::layout()
 {
+    DEBUG_BLOCK
     return m_layout;
 }
 
 void
 DeviceInfo::connectClicked()
 {
+    DEBUG_BLOCK
 }
 
 void
 DeviceInfo::disconnectClicked()
 {
+    DEBUG_BLOCK
 }
 
 IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QString &udi )
     : DeviceInfo(),
+    m_applet( applet ),
     m_mountpoint( mountpoint ),
     m_udi( udi )
 {
+    DEBUG_BLOCK
+
+
+    connect( this, SIGNAL( readyToConnect( const QString &, const QString &) ),
+             MediaDeviceMonitor::instance(), SLOT( connectIpod( const QString &, const QString & ) ) );
+    connect( this, SIGNAL( readyToDisconnect( const QString & ) ),
+             MediaDeviceMonitor::instance(), SLOT( disconnectIpod( const QString & ) ) );
+}
+
+
+IpodInfo::~IpodInfo()
+{
+}
+
+QGraphicsLinearLayout*
+IpodInfo::layout()
+{
+    DEBUG_BLOCK
+
     debug() << "Creating layout";
 
     m_layout = new QGraphicsLinearLayout( Qt::Horizontal );
@@ -83,14 +107,14 @@ IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QS
 
     debug() << "Icon stuff";
 
-    Plasma::Icon *ipodIcon = new Plasma::Icon( applet );
+    Plasma::Icon *ipodIcon = new Plasma::Icon( m_applet );
     ipodIcon->setSvg( svgPath, "device" );
 
     // NOTE: at some point connect/disconnect icon should be merged somehow
 
     // Connect Icon
 
-    Plasma::Icon *connectIcon = new Plasma::Icon( applet );
+    Plasma::Icon *connectIcon = new Plasma::Icon( m_applet );
     connectIcon->setSvg( svgPath, "append" );
 
     QAction *connectAction = new QAction( this );
@@ -101,7 +125,7 @@ IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QS
 
     // Disconnect Icon
 
-    Plasma::Icon *disconnectIcon = new Plasma::Icon( applet );
+    Plasma::Icon *disconnectIcon = new Plasma::Icon( m_applet );
     disconnectIcon->setSvg( svgPath, "delete" );
 
     QAction *disconnectAction = new QAction( this );
@@ -114,8 +138,8 @@ IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QS
 
     debug() << "Label";
 
-    Plasma::Label *deviceLabel = new Plasma::Label( applet );
-    deviceLabel->setText( mountpoint );
+    Plasma::Label *deviceLabel = new Plasma::Label( m_applet );
+    deviceLabel->setText( m_mountpoint );
 
     // set icons sizes
 
@@ -132,9 +156,6 @@ IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QS
     disconnectIcon->setMinimumSize( iconSize );
     disconnectIcon->setMaximumSize( iconSize );
 
-//    deviceLabel->setMinimumSize( iconSize );
-//    deviceLabel->setMaximumSize( iconSize );
-
     // put icons into layout
 
     debug() << "Add icons to layout";
@@ -144,28 +165,20 @@ IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QS
     m_layout->addItem( disconnectIcon );
     m_layout->addItem( deviceLabel );
 
-    // add the new layout to the main layout
-    
-    connect( this, SIGNAL( readyToConnect( const QString &, const QString &) ),
-             MediaDeviceMonitor::instance(), SLOT( connectIpod( const QString &, const QString & ) ) );
-    connect( this, SIGNAL( readyToDisconnect( const QString & ) ),
-             MediaDeviceMonitor::instance(), SLOT( disconnectIpod( const QString & ) ) );
-}
-
-
-IpodInfo::~IpodInfo()
-{
+    return m_layout;
 }
 
 void
 IpodInfo::connectClicked()
 {
+    DEBUG_BLOCK
     emit readyToConnect( m_mountpoint, m_udi );
 }
 
 void
 IpodInfo::disconnectClicked()
 {
+    DEBUG_BLOCK
     emit readyToDisconnect( m_udi );
 }
  
@@ -173,7 +186,8 @@ MediaDevicesApplet::MediaDevicesApplet(QObject *parent, const QVariantList &args
     : Context::Applet(parent, args),
     m_icon(0),
     m_connect(0),
-    m_disconnect(0)
+    m_disconnect(0),
+    m_infoMap()
 {
     // this will get us the standard applet background
     setBackgroundHints(DefaultBackground);
@@ -214,6 +228,8 @@ void MediaDevicesApplet::init()
 
     connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
     SLOT( ipodDetected( const QString &, const QString & ) ) );
+
+    connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
 
     MediaDeviceMonitor::instance()->checkDevicesForIpod();
 } 
@@ -259,6 +275,8 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
 
     DEBUG_BLOCK
 
+    debug() << "Ipod with udi: " << udi;
+
     // if already in list, do not add twice to applet
 
     if( m_udiList.contains( udi ) )
@@ -269,7 +287,8 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
     // set up info class
 
     IpodInfo *ipodInfo = new IpodInfo( this, mountPoint, udi );
-    //m_ipodInfoList.insert( m_ipodInfoList.size(), *ipodInfo );
+
+    m_infoMap.insert( udi, ipodInfo );
 
     // add the new layout to the main layout
 
@@ -278,6 +297,83 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
     m_layout->addItem( ipodInfo->layout() );
 
     debug() << "Successfully added ipodLayout to layout";
+}
+
+void
+MediaDevicesApplet::deviceRemoved( const QString &udi )
+{
+    DEBUG_BLOCK
+
+    debug() << "Device removed with udi: " << udi;
+
+    if( m_udiList.count() == 0 )
+    {
+        debug() << "Device removed, but no devices present, so do nothing";
+        return;
+    }
+
+    m_udiList.removeOne( udi );
+    m_infoMap.remove( udi );
+
+    redraw();
+}
+
+// a device has been removed or something, so the applet redraws itself with the leftover devices
+
+void
+MediaDevicesApplet::redraw()
+{
+    DEBUG_BLOCK
+
+    // clear out things in old layout
+
+            
+
+    debug() << "Clearing out old layout";
+
+    foreach( QGraphicsItem *item, childItems() )
+    {
+        delete item;
+    }
+/*
+    for( int i = 0; i < m_layout->count(); i++ )
+    {
+        QGraphicsLinearLayout *layout = m_layout->itemAt( i );
+        for( int j = 0; j < layout->count(); j++)
+        {
+            debug() << "Removing widget at: " << j;
+            layout->removeAt( j );
+        }
+        debug() << "Removing layout: " << i;
+        m_layout->removeAt( i );
+    }
+*/
+
+
+    // create new layout
+
+    QGraphicsLinearLayout *newLayout = new QGraphicsLinearLayout( Qt::Vertical );
+
+    // iterate over devices, add their layouts to main layout
+
+    foreach( QString udi, m_infoMap.keys() )
+    {
+        debug() << "Pulling out device";
+        DeviceInfo *device = m_infoMap[udi];
+        debug() << "Adding to layout";
+        m_layout->addItem( device->layout() );
+    }
+
+    debug() << "Deleting old layout";
+
+    m_layout = newLayout;
+
+    debug() << "Setting new layout";
+
+    setLayout( m_layout );
+    m_layout->setSpacing( 0 );
+
+    update();
 }
  
 #include "MediaDevicesApplet.moc"
