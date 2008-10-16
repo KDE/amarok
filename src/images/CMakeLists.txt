@@ -21,6 +21,7 @@ install(
         emblem-magnatune.png
         emblem-mp3tunes.png
         emblem-ampache.png
+        emblem-scripted.png
         icons/svg/sources.svgz
         lastfm-default-cover.png
         loading1.png

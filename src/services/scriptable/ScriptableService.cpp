@@ -25,6 +25,8 @@
 #include "Debug.h"
 #include "SearchWidget.h"
 
+#include <KStandardDirs>
+
 using namespace Meta;
 
 ScriptableService::ScriptableService( const QString & name )
@@ -90,6 +92,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             track->setAlbumId( parentId );
             track->setUidUrl( playableUrl );
             track->setServiceName( m_name );
+            track->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
             return addTrack( track );
             break;
             
