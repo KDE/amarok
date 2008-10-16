@@ -59,9 +59,12 @@ class MemoryCollection
         void addComposer( Meta::ComposerPtr composerPtr ) { m_composerMap.insert( composerPtr->name(), composerPtr ); }
         void setYearMap( const YearMap &map ) { m_yearMap = map; }
         void addYear( Meta::YearPtr yearPtr ) { m_yearMap.insert( yearPtr->name(), yearPtr ); }
+        void setCollectionId( const QString& collectionId ) { m_collectionId = collectionId; }
+        QString collectionId( ) { return m_collectionId; }
 
     protected:
         QReadWriteLock m_readWriteLock;
+        QString m_collectionId;
         TrackMap m_trackMap;
         ArtistMap m_artistMap;
         AlbumMap m_albumMap;

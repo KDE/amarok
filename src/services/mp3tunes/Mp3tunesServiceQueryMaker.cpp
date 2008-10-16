@@ -182,29 +182,19 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     return this;
 }
 
+template<class PointerType, class ListType>
+void Mp3tunesServiceQueryMaker::emitProperResult( const ListType& list )
+{
+    if ( d->returnDataPtrs ) {
+        DataList data;
+        foreach( PointerType p, list )
+            data << DataPtr::staticCast( p );
 
-
-
-
-// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
-// signal that takes the list of the specific class.
-// (copied from sqlquerybuilder.cpp with a few minor tweaks)
-
-#define emitProperResult( PointerType, list ) { \
-            if ( d->returnDataPtrs ) { \
-                DataList data; \
-                foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
-} \
-                emit newResultReady( m_collection->collectionId(), data ); \
-} \
-            else { \
-                emit newResultReady( m_collection->collectionId(), list ); \
-} \
+        emit newResultReady( m_collection->collectionId(), data );
+    }
+    else
+        emit newResultReady( m_collection->collectionId(), list );
 }
-
 
 void Mp3tunesServiceQueryMaker::handleResult()
 {
@@ -216,9 +206,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const ArtistList & artists )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && artists.count() > d->maxsize ) {
-        emitProperResult( ArtistPtr, artists.mid( 0, d->maxsize ) );
+        emitProperResult<ArtistPtr, ArtistList>( artists.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult( ArtistPtr, artists );
+        emitProperResult<ArtistPtr, ArtistList>( artists );
     }
 }
 
@@ -227,9 +217,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const AlbumList &albums )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && albums.count() > d->maxsize ) {
-        emitProperResult( AlbumPtr, albums.mid( 0, d->maxsize ) );
+        emitProperResult<AlbumPtr, AlbumList>( albums.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult( AlbumPtr, albums );
+        emitProperResult<AlbumPtr, AlbumList>( albums );
     }
 }
 
@@ -238,9 +228,9 @@ void Mp3tunesServiceQueryMaker::handleResult(const TrackList & tracks)
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
-        emitProperResult( TrackPtr, tracks.mid( 0, d->maxsize ) );
+        emitProperResult<TrackPtr, TrackList>( tracks.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult( TrackPtr, tracks );
+        emitProperResult<TrackPtr, TrackList>( tracks );
     }
 }
 

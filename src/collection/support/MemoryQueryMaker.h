@@ -83,8 +83,10 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         void done( ThreadWeaver::Job * job );
 
     protected:
-        MemoryCollection *m_memCollection;
-        QString m_collectionId;
+        template <class PointerType, class ListType>
+        void emitProperResult( ListType& list ); 
+
+        MemoryCollection *m_collection;
         struct Private;
         Private * const d;
 };

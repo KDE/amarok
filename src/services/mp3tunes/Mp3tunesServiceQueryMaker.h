@@ -78,6 +78,9 @@ public:
     void fetchTracks();
 
 protected:
+    template<class PointerType, class ListType>
+    void emitProperResult( const ListType& list );
+
     Mp3tunesServiceCollection * m_collection;
     Mp3tunesLocker * m_locker;
     KIO::StoredTransferJob * m_storedTransferJob;

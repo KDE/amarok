@@ -166,24 +166,19 @@ AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     return this;
 }
 
-// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
-// signal that takes the list of the specific class.
-// (copied from sqlquerybuilder.cpp with a few minor tweaks)
+template<class PointerType, class ListType>
+void AmpacheServiceQueryMaker::emitProperResult( const ListType& list )
+{
+    if ( d->returnDataPtrs ) {
+        DataList data;
+        foreach( PointerType p, list )
+            data << DataPtr::staticCast( p );
 
-#define emitProperResult( PointerType, list ) { \
-            if ( d->returnDataPtrs ) { \
-                DataList data; \
-                foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
-                } \
-                emit newResultReady( m_collection->collectionId(), data ); \
-            } \
-            else { \
-                emit newResultReady( m_collection->collectionId(), list ); \
-            } \
-        }
+        emit newResultReady( m_collection->collectionId(), data );
+    }
+    else
+        emit newResultReady( m_collection->collectionId(), list );
+}
 
 void AmpacheServiceQueryMaker::handleResult()
 {
@@ -194,7 +189,7 @@ void AmpacheServiceQueryMaker::handleResult( const ArtistList & artists )
 {
     DEBUG_BLOCK
 
-    emitProperResult( ArtistPtr, artists );
+    emitProperResult<ArtistPtr, ArtistList>( artists );
 }
 
 void
@@ -202,7 +197,7 @@ AmpacheServiceQueryMaker::handleResult( const AlbumList &albums )
 {
     DEBUG_BLOCK
 
-    emitProperResult( AlbumPtr, albums );
+    emitProperResult<AlbumPtr, AlbumList>( albums );
 }
 
 void
@@ -210,7 +205,7 @@ AmpacheServiceQueryMaker::handleResult(const TrackList & tracks)
 {
     DEBUG_BLOCK
 
-    emitProperResult( TrackPtr, tracks );
+    emitProperResult<TrackPtr, TrackList>( tracks );
 }
 
 void

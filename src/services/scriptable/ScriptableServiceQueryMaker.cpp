@@ -184,28 +184,19 @@ QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::AlbumPtr & album
     return this;
 }
 
+template<class PointerType, class ListType>
+void ScriptableServiceQueryMaker::emitProperResult( const ListType& list )
+{
+    if ( d->returnDataPtrs ) {
+        DataList data;
+        foreach( PointerType p, list )
+            data << DataPtr::staticCast( p );
 
-
-
-// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
-// signal that takes the list of the specific class.
-// (copied from sqlquerybuilder.cpp with a few minor tweaks)
-
-#define emitProperResult( PointerType, list ) { \
-            if ( d->returnDataPtrs ) { \
-                DataList data; \
-                foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
-                } \
-                emit newResultReady( m_collection->collectionId(), data ); \
-            } \
-            else { \
-                emit newResultReady( m_collection->collectionId(), list ); \
-            } \
-        }
-
+        emit newResultReady( m_collection->collectionId(), data );
+    }
+    else
+        emit newResultReady( m_collection->collectionId(), list );
+}
 
 void ScriptableServiceQueryMaker::handleResult()
 {
@@ -215,25 +206,25 @@ void ScriptableServiceQueryMaker::handleResult()
 void ScriptableServiceQueryMaker::handleResult( const Meta::GenreList & genres )
 {
     if ( d->maxsize >= 0 && genres.count() > d->maxsize )
-        emitProperResult( GenrePtr, genres.mid( 0, d->maxsize ) )
+        emitProperResult<GenrePtr, Meta::GenreList>( genres.mid( 0, d->maxsize ) );
     else
-        emitProperResult( GenrePtr, genres );
+        emitProperResult<GenrePtr, Meta::GenreList>( genres );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::AlbumList & albums )
 {
     if ( d->maxsize >= 0 && albums.count() > d->maxsize )
-        emitProperResult( AlbumPtr, albums.mid( 0, d->maxsize ) )
+        emitProperResult<AlbumPtr, Meta::AlbumList>( albums.mid( 0, d->maxsize ) );
     else
-        emitProperResult( AlbumPtr, albums );
+        emitProperResult<AlbumPtr, Meta::AlbumList>( albums );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
 {
     if ( d->maxsize >= 0 && artists.count() > d->maxsize )
-        emitProperResult( ArtistPtr, artists.mid( 0, d->maxsize ) )
+        emitProperResult<ArtistPtr, Meta::ArtistList>( artists.mid( 0, d->maxsize ) );
     else
-        emitProperResult( ArtistPtr, artists );
+        emitProperResult<ArtistPtr, Meta::ArtistList>( artists );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
@@ -241,12 +232,12 @@ void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
     {
         debug() << "Emitting " << tracks.count() << " tracks";
-        emitProperResult( TrackPtr, tracks.mid( 0, d->maxsize ) );
+        emitProperResult<TrackPtr, Meta::TrackList>( tracks.mid( 0, d->maxsize ) );
     }
     else
     {
         debug() << "Emitting " << tracks.count() << " tracks";
-        emitProperResult( TrackPtr, tracks );
+        emitProperResult<TrackPtr, Meta::TrackList>( tracks );
     }
 }
 

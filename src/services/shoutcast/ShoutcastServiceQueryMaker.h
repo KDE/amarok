@@ -72,6 +72,9 @@ signals:
     void dynamicQueryComplete();
 
 protected:
+    template<class PointerType, class ListType>
+    void emitProperResult( const ListType& list );
+
     ShoutcastServiceCollection * m_collection;
     KIO::StoredTransferJob * m_storedTransferJob;
 

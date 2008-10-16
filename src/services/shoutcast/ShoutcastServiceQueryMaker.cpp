@@ -150,26 +150,19 @@ QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
     return this;
 }
 
+template<class PointerType, class ListType>
+void ShoutcastServiceQueryMaker::emitProperResult( const ListType& list )
+{
+    if ( d->returnDataPtrs ) {
+        DataList data;
+        foreach( PointerType p, list )
+            data << DataPtr::staticCast( p );
 
-// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
-// signal that takes the list of the specific class.
-// (copied from sqlquerybuilder.cpp with a few minor tweaks)
-
-#define emitProperResult( PointerType, list ) { \
-            if ( d->returnDataPtrs ) { \
-                DataList data; \
-                foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
-                } \
-                emit newResultReady( m_collection->collectionId(), data ); \
-            } \
-            else { \
-                emit newResultReady( m_collection->collectionId(), list ); \
-            } \
-        }
-
+        emit newResultReady( m_collection->collectionId(), data );
+    }
+    else
+        emit newResultReady( m_collection->collectionId(), list );
+}
 
 void ShoutcastServiceQueryMaker::handleResult()
 {
@@ -181,7 +174,7 @@ void ShoutcastServiceQueryMaker::handleResult()
             GenreList genres = m_collection->genreMap().values();
             if ( d->maxsize >= 0 && genres.count() > d->maxsize )
                 genres = genres.mid( 0, d->maxsize );
-            emitProperResult( GenrePtr, genres );
+            emitProperResult<GenrePtr, GenreList>( genres );
             break;
         }
         case Private::TRACK :
@@ -189,7 +182,7 @@ void ShoutcastServiceQueryMaker::handleResult()
             TrackList tracks = m_currentTrackQueryResults;
             if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
                 tracks = tracks.mid( 0, d->maxsize );
-            emitProperResult( TrackPtr, tracks );
+            emitProperResult<TrackPtr, TrackList>( tracks );
             break;
         }
         default:

@@ -98,6 +98,8 @@ private:
     AmpacheServiceQueryMaker( const AmpacheServiceQueryMaker& );
     AmpacheServiceQueryMaker& operator= ( const AmpacheServiceQueryMaker& );
 
+    template<class PointerType, class ListType>
+    void emitProperResult(const ListType& list);
 };
 
 #endif

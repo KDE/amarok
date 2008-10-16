@@ -86,6 +86,8 @@ class ServiceSqlQueryMaker : public QueryMaker
         void done( ThreadWeaver::Job * job );
 
     private:
+        template<class PointerType, class ListType>
+        void emitProperResult( const ListType& list );
 
         void linkTables();
         void buildQuery();

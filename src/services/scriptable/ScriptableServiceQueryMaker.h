@@ -97,6 +97,9 @@ protected:
 */
 
 private:
+    template<class PointerType, class ListType>
+    void emitProperResult( const ListType& list );
+
     QString m_name;
  
 };

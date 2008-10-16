@@ -69,10 +69,10 @@ struct MemoryQueryMaker::Private {
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
     : QueryMaker()
-    , m_memCollection( mc )
-    , m_collectionId( collectionId )
-    ,d( new Private )
+    , m_collection( mc )
+    , d( new Private )
 {
+    m_collection->setCollectionId( collectionId );
     d->matcher = 0;
     d->job = 0;
     reset();
@@ -130,11 +130,11 @@ MemoryQueryMaker::abortQuery()
 void
 MemoryQueryMaker::runQuery()
 {
-    m_memCollection->acquireReadLock();
+    m_collection->acquireReadLock();
     //naive implementation, fix this
     if ( d->matcher )
     {
-        TrackList result = d->matcher->match( m_memCollection );
+        TrackList result = d->matcher->match( m_collection );
         if ( d->usingFilters )
         {
             TrackList filtered;
@@ -148,7 +148,7 @@ MemoryQueryMaker::runQuery()
     }
     else if ( d->usingFilters )
     {
-        TrackList tracks = m_memCollection->trackMap().values();
+        TrackList tracks = m_collection->trackMap().values();
         TrackList filtered;
         foreach( const TrackPtr &track, tracks )
         {
@@ -161,30 +161,25 @@ MemoryQueryMaker::runQuery()
     }
     else
         handleResult();
-    m_memCollection->releaseLock();
+    m_collection->releaseLock();
 }
 
-// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
-// signal that takes the list of the specific class.
-// (copied from sqlquerybuilder.cpp with a few minor tweaks)
+template <class PointerType, class ListType>
+void MemoryQueryMaker::emitProperResult( ListType& list )
+{
+    if( d->randomize )
+        d->sequence.randomize<PointerType>( list );
 
-#define emitProperResult( PointerType, list ) { \
-            if( d->randomize ) { \
-                d->sequence.randomize<PointerType >( list ); \
-            } \
-            if ( d->returnDataPtrs ) { \
-                DataList data; \
-                foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
-                } \
-                emit newResultReady( m_collectionId, data ); \
-            } \
-            else { \
-                emit newResultReady( m_collectionId, list ); \
-            } \
-        }
+    if ( d->returnDataPtrs ) {
+        DataList data;
+        foreach( PointerType p, list )
+            data << DataPtr::staticCast( p );
+
+        emit newResultReady( m_collection->collectionId(), data );
+    }
+    else
+        emit newResultReady( m_collection->collectionId(), list );
+}
 
 void
 MemoryQueryMaker::handleResult()
@@ -194,50 +189,50 @@ MemoryQueryMaker::handleResult()
     {
         case QueryMaker::Track :
         {
-            TrackList tracks = m_memCollection->trackMap().values();
+            TrackList tracks = m_collection->trackMap().values();
             if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
                 tracks = tracks.mid( 0, d->maxsize );
-            emitProperResult( TrackPtr, tracks );
+            emitProperResult<TrackPtr, TrackList>( tracks );
             break;
         }
         case QueryMaker::Album :
         {
-            AlbumList albums = m_memCollection->albumMap().values();
+            AlbumList albums = m_collection->albumMap().values();
             if ( d->maxsize >= 0 && albums.count() > d->maxsize )
                 albums = albums.mid( 0, d->maxsize );
-            emitProperResult( AlbumPtr, albums );
+            emitProperResult<AlbumPtr, AlbumList>( albums );
             break;
         }
         case QueryMaker::Artist :
         {
-            ArtistList artists = m_memCollection->artistMap().values();
+            ArtistList artists = m_collection->artistMap().values();
             if ( d->maxsize >= 0 && artists.count() > d->maxsize )
                 artists = artists.mid( 0, d->maxsize );
-            emitProperResult( ArtistPtr, artists );
+            emitProperResult<ArtistPtr, ArtistList>( artists );
             break;
         }
         case QueryMaker::Composer :
         {
-            ComposerList composers = m_memCollection->composerMap().values();
+            ComposerList composers = m_collection->composerMap().values();
             if ( d->maxsize >= 0 && composers.count() > d->maxsize )
                 composers = composers.mid( 0, d->maxsize );
-            emitProperResult( ComposerPtr, composers );
+            emitProperResult<ComposerPtr, ComposerList>( composers );
             break;
         }
         case QueryMaker::Genre :
         {
-            GenreList genres = m_memCollection->genreMap().values();
+            GenreList genres = m_collection->genreMap().values();
             if ( d->maxsize >= 0 && genres.count() > d->maxsize )
                 genres = genres.mid( 0, d->maxsize );
-            emitProperResult( GenrePtr, genres );
+            emitProperResult<GenrePtr, GenreList>( genres );
             break;
         }
         case QueryMaker::Year :
         {
-            YearList years = m_memCollection->yearMap().values();
+            YearList years = m_collection->yearMap().values();
             if ( d->maxsize >= 0 && years.count() > d->maxsize )
                 years = years.mid( 0, d->maxsize );
-            emitProperResult( YearPtr, years );
+            emitProperResult<YearPtr, YearList>( years );
             break;
         }
         case QueryMaker::Custom :
@@ -256,16 +251,13 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
     {
         case QueryMaker::Track :
         {
-                TrackList newResult;
+            TrackList newResult;
             if ( d->maxsize < 0 || tracks.count() <= d->maxsize )
-            {
                 newResult = tracks;
-            }
             else
-            {
                 newResult = tracks.mid( 0, d->maxsize );
-            }
-            emitProperResult( TrackPtr, newResult );
+
+            emitProperResult<TrackPtr, TrackList>( newResult );
             break;
         }
         case QueryMaker::Album :
@@ -278,7 +270,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 albumSet.insert( track->album() );
             }
             AlbumList albumList = albumSet.toList();
-            emitProperResult( AlbumPtr, albumList );
+            emitProperResult<AlbumPtr, AlbumList>( albumList );
             break;
         }
         case QueryMaker::Artist :
@@ -291,7 +283,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 artistSet.insert( track->artist() );
             }
             ArtistList list = artistSet.toList();
-            emitProperResult( ArtistPtr, list );
+            emitProperResult<ArtistPtr, ArtistList>( list );
             break;
         }
         case QueryMaker::Genre :
@@ -304,7 +296,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 genreSet.insert( track->genre() );
             }
             GenreList list = genreSet.toList();
-            emitProperResult( GenrePtr, list );
+            emitProperResult<GenrePtr, GenreList>( list );
             break;
         }
         case QueryMaker::Composer :
@@ -317,7 +309,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 composerSet.insert( track->composer() );
             }
             ComposerList list = composerSet.toList();
-            emitProperResult( ComposerPtr, list );
+            emitProperResult<ComposerPtr, ComposerList>( list );
             break;
         }
         case QueryMaker::Year :
@@ -330,7 +322,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 yearSet.insert( track->year() );
             }
             YearList list = yearSet.toList();
-            emitProperResult( YearPtr, list );
+            emitProperResult<YearPtr, YearList>( list );
             break;
         }
         case QueryMaker::Custom :

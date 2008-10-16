@@ -79,7 +79,7 @@ struct ServiceSqlQueryMaker::Private
     //bool includedBuilder;
     //bool collectionRestriction;
     AlbumQueryMode albumMode;
-    bool resultAsDataPtrs;
+    bool returnDataPtrs;
     bool withoutDuplicates;
     int maxResultSize;
     ServiceSqlWorkerThread *worker;
@@ -117,7 +117,7 @@ ServiceSqlQueryMaker::reset()
     d->linkedTables = 0;
     if( d->worker && d->worker->isFinished() )
         delete d->worker;   //TODO error handling
-    d->resultAsDataPtrs = false;
+    d->returnDataPtrs = false;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
     d->andStack.clear();
@@ -133,9 +133,9 @@ ServiceSqlQueryMaker::abortQuery()
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
+ServiceSqlQueryMaker::setReturnResultAsDataPtrs( bool returnDataPtrs )
 {
-    d->resultAsDataPtrs = resultAsDataPtrs;
+    d->returnDataPtrs = returnDataPtrs;
     return this;
 }
 
@@ -620,23 +620,19 @@ ServiceSqlQueryMaker::nameForValue(qint64 value)
     }
 }
 
-// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
-// signal that takes the list of the specific class.
+template<class PointerType, class ListType>
+void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
+{
+    if ( d->returnDataPtrs ) {
+        DataList data;
+        foreach( PointerType p, list )
+            data << DataPtr::staticCast( p );
 
-#define emitProperResult( PointerType, list ) { \
-            if ( d->resultAsDataPtrs ) { \
-                DataList data; \
-                foreach( PointerType p, list ) { \
-                    data << DataPtr::staticCast( p ); \
-                } \
-                emit newResultReady( m_collection->collectionId(), data ); \
-            } \
-            else { \
-                emit newResultReady( m_collection->collectionId(), list ); \
-            } \
-        }
+        emit newResultReady( m_collection->collectionId(), data );
+    }
+    else
+        emit newResultReady( m_collection->collectionId(), list );
+}
 
 void
 ServiceSqlQueryMaker::handleTracks( const QStringList &result )
@@ -662,7 +658,7 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
         tracks.append( trackptr );
     }
 
-    emitProperResult( TrackPtr, tracks );
+    emitProperResult<TrackPtr, TrackList>( tracks );
 }
 
 void
@@ -678,7 +674,7 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         artists.append( m_registry->getArtist( row ) );
     }
-    emitProperResult( ArtistPtr, artists );
+    emitProperResult<ArtistPtr, ArtistList>( artists );
 }
 
 void
@@ -701,7 +697,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
         albums.append( m_registry->getAlbum( row ) );
         //debug() << "got one!";
     }
-    emitProperResult( AlbumPtr, albums );
+    emitProperResult<AlbumPtr, AlbumList>( albums );
 }
 
 void
@@ -717,7 +713,7 @@ ServiceSqlQueryMaker::handleGenres( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         genres.append( m_registry->getGenre( row ) );
     }
-    emitProperResult( GenrePtr, genres );
+    emitProperResult<GenrePtr, GenreList>( genres );
 }
 
 /*void
@@ -731,7 +727,7 @@ ServiceSqlQueryMaker::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emitProperResult( ComposerPtr, composers );
+    emitProperResult<ComposerPtr, ComposerList>( composers );
 }
 
 void
@@ -745,7 +741,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emitProperResult( YearPtr, years );
+    emitProperResult<YearPtr, YearList>( years );
 }*/
 
 QString
