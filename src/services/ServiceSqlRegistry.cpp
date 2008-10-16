@@ -132,7 +132,9 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         ServiceGenre * genre = dynamic_cast<ServiceGenre *> ( genrePtr.data() );
         Q_ASSERT( genre );
 
-        genre->addTrack( trackPtr );
+        if (genre)
+            genre->addTrack( trackPtr );
+
         track->setGenre( genrePtr );
 
         m_genreMap.insert( genreId, genrePtr );

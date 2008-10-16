@@ -100,7 +100,9 @@ namespace FilterFactory
                 break;
         }
         Q_ASSERT_X( result, "FilterFactory::numberFilter", "called numberFilter with an illegal value, value was " + value );
-        result->setFilter( filter, compare );
+        if (result)
+            result->setFilter( filter, compare );
+
         return result;
     }
 }
