@@ -114,7 +114,7 @@ namespace Amarok
 
     void PlayerDBusHandler::Pause()
     {
-        The::engineController()->pause();
+        The::engineController()->playPause();
     }
 
     void PlayerDBusHandler::Play()
