@@ -13,9 +13,12 @@
 *                                                                              *
 ********************************************************************************/
 
+#include "AlbumItem.h"
 #include "AlbumsView.h"
 #include "Debug.h"
 #include "SvgHandler.h"
+#include "TrackItem.h"
+#include "playlist/PlaylistController.h"
 
 #include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
@@ -65,6 +68,10 @@ class AlbumsTreeView : public QTreeView
             setPalette( p );
         }
 
+        // The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.
+        // Used for context menu methods.
+        friend class AlbumsView;
+
     protected:
         void drawRow( QPainter *painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
         {
@@ -112,7 +119,7 @@ AlbumsView::setModel( QAbstractItemModel *model )
     nativeWidget()->setModel( model );                                                                                               
 }
 
-QAbstractItemModel *
+QAbstractItemModel*
 AlbumsView::model()
 {
     return nativeWidget()->model();
@@ -151,18 +158,41 @@ void
 AlbumsView::slotAppendSelected()
 {
     Meta::TrackList selected = getSelectedTracks();
+    The::playlistController()->insertOptioned( selected, Playlist::Append );
 }
 
 void
 AlbumsView::slotPlaySelected()
 {
     Meta::TrackList selected = getSelectedTracks();
+    The::playlistController()->insertOptioned( selected, Playlist::Replace );
 }
 
 Meta::TrackList
 AlbumsView::getSelectedTracks() const
 {
     Meta::TrackList selected;
+
+    const QStandardItemModel *itemModel = static_cast<QStandardItemModel*>( const_cast<AlbumsView*>(this)->model());
+    QModelIndexList indexes = static_cast<AlbumsTreeView*>(nativeWidget())->selectedIndexes();
+
+    foreach( const QModelIndex &index, indexes )
+    {
+        if( index.isValid() )
+        {
+            QStandardItem *item = itemModel->itemFromIndex( index );
+            AlbumItem *album = dynamic_cast<AlbumItem*>(item);
+            if( album )
+            {
+                selected << album->album()->tracks();
+                continue;
+            }
+            TrackItem *track = dynamic_cast<TrackItem*>(item);
+            if( track )
+                selected << track->track();
+        }
+    }
+
     return selected;
 }
 

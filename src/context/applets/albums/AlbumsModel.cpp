@@ -48,7 +48,6 @@ AlbumsModel::mimeData(const QList<QStandardItem*> & items) const
 
     foreach( QStandardItem *item, items )
     {
-
         AlbumItem* album = dynamic_cast<AlbumItem*>( item );
         if( album )
         {
