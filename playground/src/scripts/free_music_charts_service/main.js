@@ -30,7 +30,6 @@
 * icon (not yet possible, missing api)
 * cover for each item (not yet possible, missing api)
 * give Amarok hints to correct artist/track (preparations done but not yet possible, interface will be done by nhnFreespirit)
-* make the infoHtml for tracks actually appear
 * stop script problem
 */
 
@@ -111,6 +110,8 @@ function onPopulate( level, callbackData, filter ) {
     item.callbackData = "";
 
     elt = shows.at( callbackData ); // jump to the correct show
+    elt2 = elt.firstChildElement( "title" );
+    var heading = elt2.text();
     var i = elt.firstChildElement( "songcount" ).text(); // get songcount
     Amarok.debug( i );
     elt = elt.firstChildElement( "songs" ); // ascend to songs
@@ -131,10 +132,11 @@ function onPopulate( level, callbackData, filter ) {
       Amarok.debug( songArtistTitle[1] );
 
       // create beautiful infoHtml
-      item.infoHtml = "Song: " + elt2.text() + "<br/>";
-      item.infoHtml = item.infoHtml + "Rank: ";
+      item.infoHtml = "<center><b>" + heading + "</center></b><br/>";
+      item.infoHtml = item.infoHtml + "<b>Song:</b> " + elt2.text() + "<br/>";
+      item.infoHtml = item.infoHtml + "<b>Rank:</b> ";
       item.infoHtml = item.infoHtml + elt.firstChildElement( "rank" ).text() + "<br/>";
-      item.infoHtml = item.infoHtml + "Votes: ";
+      item.infoHtml = item.infoHtml + "<b>Votes:</b> ";
       item.infoHtml = item.infoHtml + elt.firstChildElement( "votes" ).text();
 
       elt2 = elt.firstChildElement( "url" );
