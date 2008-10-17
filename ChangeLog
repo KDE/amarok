@@ -44,6 +44,7 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Fixed giant font in the Internet tab on some machines. (BR 172954)
     * MPRIS Dbus interface Pause function conforms is a Play/Pause action.
       (BR 173007)
     * Script downloads using KNewStuff2 now correctly installs and uninstalls
