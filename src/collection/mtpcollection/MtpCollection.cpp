@@ -58,8 +58,8 @@ MtpCollectionFactory::init()
              SLOT( deviceRemoved( const QString & ) ) );
 
     connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
-
-    */
+*/
+    
 
     // NOTE: temporary hack to force connect since applet not enabled in trunk
 
@@ -69,6 +69,8 @@ MtpCollectionFactory::init()
 
 
     MediaDeviceMonitor::instance()->checkDevicesForMtp();
+
+
 
 
     // force refresh to scan for mtp, begin signal/slot process for connection of mtp devices
@@ -104,7 +106,7 @@ MtpCollectionFactory::slotCollectionFailed( MtpCollection *coll )
 /* Private Slots */
 
 void
-MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
+MtpCollectionFactory::mtpDetected( const QString & serial, const QString &udi )
 {
     MtpCollection* coll = 0;
 
@@ -114,7 +116,7 @@ MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
      if( !m_collectionMap.contains( udi ) )
         {
             // create new collection
-               coll = new MtpCollection( udi, serial );
+               coll = new MtpCollection( serial, udi );
             // connect appropriate signals
                connect( coll, SIGNAL( collectionSucceeded( MtpCollection * ) ),
                         this, SLOT( slotCollectionSucceeded( MtpCollection * ) ) );
@@ -169,11 +171,11 @@ MtpCollectionFactory::slotCollectionDisconnected( const QString & udi)
 
 //MtpCollection
 
-MtpCollection::MtpCollection( const QString &udi, const QString &serial )
+MtpCollection::MtpCollection( const QString &serial, const QString &udi )
     : Collection()
     , MemoryCollection()
-    , m_udi( udi )
     , m_serial( serial )
+    , m_udi( udi )
     , m_handler( 0 )
 {
     DEBUG_BLOCK

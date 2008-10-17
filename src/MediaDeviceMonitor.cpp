@@ -123,7 +123,7 @@ MediaDeviceMonitor::checkDevicesForMtp()
             Solid::PortableMediaPlayer* pmp = Solid::Device( udi ).as<Solid::PortableMediaPlayer>();
             QString serial = pmp->driverHandle( "mtp" ).toString();
             debug() << "Serial is: " << serial;
-            emit mtpDetected( udi, serial );
+            emit mtpDetected( serial, udi );
         }
     }
 }

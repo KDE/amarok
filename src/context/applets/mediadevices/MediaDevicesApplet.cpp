@@ -449,8 +449,6 @@ MediaDevicesApplet::deviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
 
-    debug() << "Device removed with udi: " << udi;
-
     if( m_udiList.count() == 0 )
     {
         debug() << "Device removed, but no devices present, so do nothing";
@@ -458,6 +456,7 @@ MediaDevicesApplet::deviceRemoved( const QString &udi )
     }
 
     m_udiList.removeOne( udi );
+    debug() << "Removing udi: " << udi;
     m_infoMap.remove( udi );
 
     redraw();
@@ -506,7 +505,7 @@ MediaDevicesApplet::redraw()
         debug() << "Pulling out device";
         DeviceInfo *device = m_infoMap[udi];
         debug() << "Adding to layout";
-        m_layout->addItem( device->layout() );
+        newLayout->addItem( device->layout() );
     }
 
     debug() << "Deleting old layout";

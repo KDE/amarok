@@ -48,7 +48,7 @@ class MtpCollectionFactory : public CollectionFactory
 
     private slots:
 
-    void mtpDetected( const QString &udi, const QString &serial );
+    void mtpDetected( const QString &serial, const QString &udi );
     void deviceRemoved( const QString &udi );
     void slotCollectionReady();
     void slotCollectionDisconnected( const QString & udi );
@@ -64,7 +64,7 @@ class MtpCollection : public Collection, public MemoryCollection
     Q_OBJECT
 	public:
 
-    MtpCollection( const QString &udi, const QString &serial );
+    MtpCollection( const QString &serial, const QString &udi );
     virtual ~MtpCollection();
 
     void init(); // called by factory

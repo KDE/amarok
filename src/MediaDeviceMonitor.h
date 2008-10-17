@@ -61,7 +61,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     signals:
         void deviceRemoved( const QString &udi );
         void ipodDetected( const QString &mountPoint, const QString &udi );
-        void mtpDetected( const QString &udi, const QString &serial );
+        void mtpDetected( const QString &serial, const QString &udi );
 
         void ipodReadyToConnect( const QString &mountpoint, const QString &udi );
         void ipodReadyToDisconnect( const QString &udi );
