@@ -131,7 +131,10 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent )
     QLabel * nameLabel = new QLabel( commonPanel );
     nameLabel->setMinimumSize( 230 , 28 );
     nameLabel->setText( m_name );
-    nameLabel->setFont(QFont("Arial", 12, QFont::Bold));
+    QFont nameLabelFont = nameLabel->font();
+    nameLabelFont.setBold( true );
+    nameLabelFont.setPointSize( nameLabelFont.pointSize() + 2 );
+    nameLabel->setFont( nameLabelFont );
     nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
 
     m_contentView = new ServiceCollectionTreeView( this );
