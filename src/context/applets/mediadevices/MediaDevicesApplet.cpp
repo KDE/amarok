@@ -346,6 +346,7 @@ void MediaDevicesApplet::init()
     // check for devices, to initialize display of connected devices
 
     MediaDeviceMonitor::instance()->checkDevicesForIpod();
+    MediaDeviceMonitor::instance()->checkDevicesForMtp();
 } 
  
  
