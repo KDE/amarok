@@ -181,6 +181,127 @@ IpodInfo::disconnectClicked()
     DEBUG_BLOCK
     emit readyToDisconnect( m_udi );
 }
+
+// Begin MtpInfo
+
+MtpInfo::MtpInfo( QGraphicsWidget *applet, const QString &serial, const QString &udi )
+    : DeviceInfo(),
+    m_applet( applet ),
+    m_serial( serial ),
+    m_udi( udi )
+{
+    DEBUG_BLOCK
+
+
+    connect( this, SIGNAL( readyToConnect( const QString &, const QString &) ),
+                     MediaDeviceMonitor::instance(), SLOT( connectMtp( const QString &, const QString & ) ) );
+    connect( this, SIGNAL( readyToDisconnect( const QString & ) ),
+             MediaDeviceMonitor::instance(), SLOT( disconnectMtp( const QString & ) ) );
+}
+
+
+MtpInfo::~MtpInfo()
+{
+}
+
+QGraphicsLinearLayout*
+MtpInfo::layout()
+{
+    DEBUG_BLOCK
+
+    debug() << "Creating layout";
+
+    m_layout = new QGraphicsLinearLayout( Qt::Horizontal );
+    m_layout->setSpacing( 0 );
+
+    // set up icons
+
+    // get path where we pull svg's from
+
+    debug() << "Getting svg path";
+
+    QString svgPath = KStandardDirs::locate( "data", "amarok/images/pud_items.svg" );
+
+    // MTP (device) icon
+
+    debug() << "Icon stuff";
+
+    Plasma::Icon *mtpIcon = new Plasma::Icon( m_applet );
+    mtpIcon->setSvg( svgPath, "device" );
+
+    // NOTE: at some point connect/disconnect icon should be merged somehow
+
+    // Connect Icon
+
+    Plasma::Icon *connectIcon = new Plasma::Icon( m_applet );
+    connectIcon->setSvg( svgPath, "append" );
+
+    QAction *connectAction = new QAction( this );
+    connect( connectAction, SIGNAL( activated() ),
+             SLOT( connectClicked() ) );
+
+    connectIcon->setAction( connectAction );
+
+    // Disconnect Icon
+
+    Plasma::Icon *disconnectIcon = new Plasma::Icon( m_applet );
+    disconnectIcon->setSvg( svgPath, "delete" );
+
+    QAction *disconnectAction = new QAction( this );
+    connect( disconnectAction, SIGNAL( activated() ),
+             SLOT( disconnectClicked() ) );
+
+    disconnectIcon->setAction( disconnectAction );
+
+    // Text label
+
+    debug() << "Label";
+
+    Plasma::Label *deviceLabel = new Plasma::Label( m_applet );
+    deviceLabel->setText( m_serial );
+
+    // set icons sizes
+
+    debug() << "Set sizes";
+
+    QSizeF iconSize = mtpIcon->sizeFromIconSize(32);
+    
+    mtpIcon->setMinimumSize( iconSize );
+    mtpIcon->setMaximumSize( iconSize );
+
+    connectIcon->setMinimumSize( iconSize );
+    connectIcon->setMaximumSize( iconSize );
+
+    disconnectIcon->setMinimumSize( iconSize );
+    disconnectIcon->setMaximumSize( iconSize );
+
+    // put icons into layout
+
+    debug() << "Add icons to layout";
+
+    m_layout->addItem( mtpIcon );
+    m_layout->addItem( connectIcon );
+    m_layout->addItem( disconnectIcon );
+    m_layout->addItem( deviceLabel );
+
+    return m_layout;
+}
+
+void
+MtpInfo::connectClicked()
+{
+    DEBUG_BLOCK
+    emit readyToConnect( m_serial, m_udi );
+}
+
+void
+MtpInfo::disconnectClicked()
+{
+    DEBUG_BLOCK
+    emit readyToDisconnect( m_udi );
+}
+
+// Media Devices Applet
  
 MediaDevicesApplet::MediaDevicesApplet(QObject *parent, const QVariantList &args)
     : Context::Applet(parent, args),
@@ -215,21 +336,14 @@ void MediaDevicesApplet::init()
     setLayout( m_layout );
     m_layout->setSpacing( 0 );
 
-    // add items to layout
-/*
-    m_layout->addItem( m_icon );
-    m_layout->addItem( m_connect );
-    m_layout->addItem( m_disconnect );
-*/
-
-    // init list that stores info
-
     // connect to the monitor
 
     connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
     SLOT( ipodDetected( const QString &, const QString & ) ) );
-
+    connect( MediaDeviceMonitor::instance(), SIGNAL( mtpDetected( const QString &, const QString & ) ),
+             SLOT( mtpDetected( const QString &, const QString & ) ) );
     connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
+    // check for devices, to initialize display of connected devices
 
     MediaDeviceMonitor::instance()->checkDevicesForIpod();
 } 
@@ -297,6 +411,36 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
     m_layout->addItem( ipodInfo->layout() );
 
     debug() << "Successfully added ipodLayout to layout";
+}
+
+void
+MediaDevicesApplet::mtpDetected( const QString &serial, const QString &udi )
+{
+
+    DEBUG_BLOCK
+
+    debug() << "Mtp with udi: " << udi;
+
+    // if already in list, do not add twice to applet
+
+    if( m_udiList.contains( udi ) )
+        return;
+    else
+        m_udiList << udi;
+
+    // set up info class
+
+    MtpInfo *mtpInfo = new MtpInfo( this, serial, udi );
+
+    m_infoMap.insert( udi, mtpInfo );
+
+    // add the new layout to the main layout
+
+    debug() << "Add to main layout";
+
+    m_layout->addItem( mtpInfo->layout() );
+
+    debug() << "Successfully added mtpLayout to layout";
 }
 
 void

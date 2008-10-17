@@ -50,7 +50,7 @@ class DeviceInfo : public QObject
     protected:
         bool m_connected;
 
-        
+
         QGraphicsLinearLayout *m_layout;
 
 
@@ -80,7 +80,28 @@ class IpodInfo : public DeviceInfo
         QString m_udi;
 };
 
-//class QList<IpodInfo>;
+class MtpInfo : public DeviceInfo
+{
+    Q_OBJECT
+    public:
+        MtpInfo( QGraphicsWidget *applet, const QString &serial, const QString &udi );
+        virtual ~MtpInfo();
+
+        virtual QGraphicsLinearLayout* layout();
+
+    signals:
+        void readyToConnect( const QString &serial, const QString &udi );
+        void readyToDisconnect( const QString &udi );
+
+    public slots:
+        virtual void connectClicked();
+        virtual void disconnectClicked();
+
+    private:
+        QGraphicsWidget *m_applet;
+        QString m_serial;
+        QString m_udi;
+};
 
 
 // Define our plasma Applet
@@ -116,6 +137,7 @@ class MediaDevicesApplet : public Context::Applet
 
     private slots:
         void ipodDetected( const QString &mountPoint, const QString &udi );
+        void mtpDetected( const QString &serial, const QString &udi );
         void deviceRemoved( const QString &udi );
 
 };
