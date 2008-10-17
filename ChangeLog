@@ -7,7 +7,7 @@ VERSION 2.0-beta3
   FEATURES:
     * Collection browser can be listed by Year - Album grouping.
     * Albums applet shows disc number separators.
-    * Added drag and drop support for the albums applet.
+    * Context menu and drag & drop support for the albums applet.
     * Automatic track score computation works now.
     * Added tracks count and total playlist time to the status bar.
       (BR 171652)
