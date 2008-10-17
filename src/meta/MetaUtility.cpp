@@ -231,7 +231,7 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     }
     if( changes.contains( Meta::Field::TRACKNUMBER ) )
     {
-        const unsigned int trackNumber = changes.value( Meta::Field::YEAR ).toUInt();
+        const unsigned int trackNumber = changes.value( Meta::Field::TRACKNUMBER ).toUInt();
         tag->setTrack( trackNumber );
     }
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
