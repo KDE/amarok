@@ -21,11 +21,11 @@
 
 #include <libmtp.h>
 
-#include "Debug.h"
+#include "MtpHandler.h"
 
+#include "Debug.h"
 #include "Collection.h"
 #include "MemoryCollection.h"
-#include "MtpHandler.h"
 
 #include <QtGlobal>
 #include <QMap>
@@ -52,13 +52,10 @@ class MtpCollectionFactory : public CollectionFactory
     void deviceRemoved( const QString &udi );
     void slotCollectionReady();
     void slotCollectionDisconnected( const QString & udi );
-    
+
     private:
 
-        
-        
     QMap<QString, MtpCollection*> m_collectionMap;
-    
 
 };
 
@@ -79,7 +76,7 @@ class MtpCollection : public Collection, public MemoryCollection
     QString getTempFileName( const Meta::MtpTrackPtr track, const QString &tempDir );
     int getTrackToFile( const Meta::MtpTrackPtr track, const QString & filename );
 
-    void setTrackToDelete( const Meta::MtpTrackPtr &track );
+    void setTrackToDelete( const Meta::MtpTrackPtr &track ); // hackish function used since a list of tracks to be deleted can't be passed by a custom capability
 
     void copyTracksCompleted();
 
@@ -90,7 +87,7 @@ class MtpCollection : public Collection, public MemoryCollection
 
     QString udi() const;
     QString serial() const { return m_serial; }
-    
+
     virtual CollectionLocation* location() const;
 
     virtual QString collectionId() const;
@@ -102,33 +99,29 @@ class MtpCollection : public Collection, public MemoryCollection
 
     void updateTags( Meta::MtpTrack *track);
     void writeDatabase();
-    
+
  signals:
     void collectionSucceeded( MtpCollection *coll );
     void collectionFailed( MtpCollection *coll );
     void collectionReady();
     void collectionDisconnected( const QString &udi );
-    
-    public slots:
-	void deleteTrackToDelete();
-	void deleteTrackSlot( Meta::MtpTrackPtr track);
 
-	void slotDisconnect();
-	
+    public slots:
+    void deleteTrackToDelete();
+    void deleteTrackSlot( Meta::MtpTrackPtr track);
+
+    void slotDisconnect();
+
     private slots:
         void handlerSucceeded();
         void handlerFailed();
-	
+
  private:
 
     Meta::MtpTrackPtr m_trackToDelete;
-//    QString           m_mountPoint;
     QString           m_udi;
     QString           m_serial;
     Mtp::MtpHandler *m_handler;
-
-
-    
 
 };
 

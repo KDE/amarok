@@ -52,7 +52,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     void init(); // connect to MediaDeviceCache
 
-    
+
     QStringList getDevices(); // get list of devices
     void checkDevices(); // scans for supported devices
     void checkDevicesForMtp();
@@ -65,11 +65,15 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
         void ipodReadyToConnect( const QString &mountpoint, const QString &udi );
         void ipodReadyToDisconnect( const QString &udi );
+        void mtpReadyToConnect( const QString &serial, const QString &udi );
+        void mtpReadyToDisconnect( const QString &udi );
 
     public slots:
 
         void connectIpod( const QString &mountpoint, const QString &udi );
         void disconnectIpod( const QString &udi );
+        void connectMtp( const QString &serial, const QString &udi );
+        void disconnectMtp( const QString &udi );
 
 
     private slots:

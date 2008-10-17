@@ -22,37 +22,27 @@
 #include "MtpCollectionLocation.h"
 #include "MtpMeta.h"
 
+#include "../../../statusbar_ng/StatusBar.h"
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "../../../statusbar_ng/StatusBar.h"
-
-//#include "MediaDeviceCache.h"
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 
-//solid specific includes
-//#include <solid/devicenotifier.h>
-//#include <solid/device.h>
-//#include <solid/storageaccess.h>
-//#include <solid/storagedrive.h>
-
 #include <KUrl>
 
-
 #include <QStringList>
-
 
 AMAROK_EXPORT_PLUGIN( MtpCollectionFactory )
 
 MtpCollectionFactory::MtpCollectionFactory()
     : CollectionFactory()
 {
-    //nothing to do
+    // nothing to do
 }
 
 MtpCollectionFactory::~MtpCollectionFactory()
 {
-
+    // nothing to do
 }
 
 void
@@ -61,18 +51,57 @@ MtpCollectionFactory::init()
     DEBUG_BLOCK
 
             // connect to the monitor
+    /*
+    connect( MediaDeviceMonitor::instance(), SIGNAL( mtpReadyToConnect( const QString &, const QString & ) ),
+                     SLOT( mtpDetected( const QString &, const QString & ) ) );
+    connect( MediaDeviceMonitor::instance(), SIGNAL( mtpReadyToDisconnect( const QString & ) ),
+             SLOT( deviceRemoved( const QString & ) ) );
 
-        connect( MediaDeviceMonitor::instance(), SIGNAL( mtpDetected( const QString &, const QString & ) ),
-                 SLOT( mtpDetected( const QString &, const QString & ) ) );
-        connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
+    connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
 
-    // force refresh to scan for mtp, begin signal/slot process
+    */
+
+    // NOTE: temporary hack to force connect since applet not enabled in trunk
+
+    connect( MediaDeviceMonitor::instance(), SIGNAL( mtpDetected( const QString &, const QString & ) ),
+                     SLOT( mtpDetected( const QString &, const QString & ) ) );
+    connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
+
 
     MediaDeviceMonitor::instance()->checkDevicesForMtp();
 
 
+    // force refresh to scan for mtp, begin signal/slot process for connection of mtp devices
+
+    
+
+
     return;
 }
+
+/* Public Slots */
+
+void
+MtpCollectionFactory::slotCollectionSucceeded( MtpCollection *coll )
+{
+    DEBUG_BLOCK
+            connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
+                     SLOT( slotCollectionDisconnected( const QString & ) ) );
+    m_collectionMap.insert( coll->udi(), coll );
+    debug() << "Inserted into the collectionMap: " << coll->udi();
+    emit newCollection( coll );
+    debug() << "emitting new mtp collection";
+}
+
+void
+MtpCollectionFactory::slotCollectionFailed( MtpCollection *coll )
+{
+    Q_UNUSED( coll );
+    // TODO: deal with failure by triggering appropriate removal
+    
+}
+
+/* Private Slots */
 
 void
 MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
@@ -80,7 +109,6 @@ MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
     MtpCollection* coll = 0;
 
     debug() << "Udi is: " << udi;
-
     debug() << "Udi is in map: " << (m_collectionMap.contains( udi ) ? "true" : "false" );
 
      if( !m_collectionMap.contains( udi ) )
@@ -98,43 +126,22 @@ MtpCollectionFactory::mtpDetected( const QString & udi, const QString &serial )
         }
         else
             debug() << "MTP Collection for this device is already made: " << udi;
-
-}
-
-void
-MtpCollectionFactory::slotCollectionSucceeded( MtpCollection *coll )
-{
-    DEBUG_BLOCK
-    connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-             SLOT( slotCollectionDisconnected( const QString & ) ) );
-    m_collectionMap.insert( coll->udi(), coll );
-    debug() << "Inserted into the collectionMap: " << coll->udi();
-    emit newCollection( coll );
-    debug() << "emitting new mtp collection";
-}
-
-void
-MtpCollectionFactory::slotCollectionFailed( MtpCollection *coll )
-{
-    Q_UNUSED( coll );
-    // TODO: deal with failure by triggering appropriate removal
-    
 }
 
 void
 MtpCollectionFactory::deviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
-    if (  m_collectionMap.contains( udi ) )
+            if (  m_collectionMap.contains( udi ) )
     {
         MtpCollection* coll = m_collectionMap[ udi ];
-                if (  coll )
-                {
-                    m_collectionMap.remove( udi ); // remove from map
-                    coll->deviceRemoved();  //collection will be deleted by collectionmanager
-                }
-                else
-                    warning() << "collection already null";
+        if (  coll )
+        {
+            m_collectionMap.remove( udi ); // remove from map
+            coll->deviceRemoved();  //collection will be deleted by collectionmanager
+        }
+        else
+            warning() << "collection already null";
     }
     else
         warning() << "removing non-existent device";
@@ -143,16 +150,10 @@ MtpCollectionFactory::deviceRemoved( const QString &udi )
 }
 
 void
-MtpCollectionFactory::slotCollectionDisconnected( const QString & udi)
-{
-    deviceRemoved( udi );
-}
-
-void
 MtpCollectionFactory::slotCollectionReady()
 {
     DEBUG_BLOCK
-        MtpCollection *collection = dynamic_cast<MtpCollection*>(  sender() );
+            MtpCollection *collection = dynamic_cast<MtpCollection*>(  sender() );
     if (  collection )
     {
         debug() << "emitting mtp collection newcollection";
@@ -160,7 +161,11 @@ MtpCollectionFactory::slotCollectionReady()
     }
 }
 
-
+void
+MtpCollectionFactory::slotCollectionDisconnected( const QString & udi)
+{
+    deviceRemoved( udi );
+}
 
 //MtpCollection
 
@@ -172,7 +177,7 @@ MtpCollection::MtpCollection( const QString &udi, const QString &serial )
     , m_handler( 0 )
 {
     DEBUG_BLOCK
-// nothing to do
+    // nothing to do
 }
 
 MtpCollection::~MtpCollection()

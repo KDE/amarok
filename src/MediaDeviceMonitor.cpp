@@ -241,3 +241,15 @@ MediaDeviceMonitor::disconnectIpod( const QString &udi )
     emit ipodReadyToDisconnect( udi );
 }
 
+void
+MediaDeviceMonitor::connectMtp( const QString &serial, const QString &udi )
+{
+    emit mtpReadyToConnect( serial, udi );
+}
+
+void
+MediaDeviceMonitor::disconnectMtp( const QString &udi )
+{
+    emit mtpReadyToDisconnect( udi );
+}
+
