@@ -76,7 +76,11 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y(), background );
 
-    painter->setFont(QFont("Arial", 14));
+    const QFont defaultFont = painter->font();
+
+    QFont bigFont = defaultFont;
+    bigFont.setPointSize( defaultFont.pointSize() + 4 );
+    painter->setFont( bigFont );
 
     painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
@@ -89,7 +93,9 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     /*painter->setPen( QPen ( Qt::white ) );*/
     painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
 
-    painter->setFont(QFont("Arial", 9));
+    QFont smallFont = defaultFont;
+    smallFont.setPointSize( defaultFont.pointSize() - 1 );
+    painter->setFont( smallFont );
 
     QRectF textRect;
     textRect.setLeft( option.rect.topLeft().x() + iconPadX );
