@@ -92,15 +92,6 @@ class AlbumsTreeView : public QTreeView
     
             QTreeView::drawRow( painter, option, index ); 
         }
-
-
-        void startDrag(Qt::DropActions supportedActions)
-        {
-            DEBUG_BLOCK
-            QTreeView::startDrag( supportedActions );
-            debug() << "After the drag!";
-        }
-        
 };
 
 AlbumsView::AlbumsView( QGraphicsWidget *parent )
