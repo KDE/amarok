@@ -265,7 +265,7 @@ MtpInfo::layout()
     debug() << "Set sizes";
 
     QSizeF iconSize = mtpIcon->sizeFromIconSize(32);
-    
+
     mtpIcon->setMinimumSize( iconSize );
     mtpIcon->setMaximumSize( iconSize );
 
@@ -354,6 +354,8 @@ void
 MediaDevicesApplet::paintInterface(QPainter *p,
         const QStyleOptionGraphicsItem *option, const QRect &contentsRect)
 {
+    Q_UNUSED( option );
+    Q_UNUSED( contentsRect );
     p->setRenderHint(QPainter::SmoothPixmapTransform);
     p->setRenderHint(QPainter::Antialiasing);
  
@@ -479,24 +481,17 @@ MediaDevicesApplet::redraw()
     {
         delete item;
     }
-/*
-    for( int i = 0; i < m_layout->count(); i++ )
-    {
-        QGraphicsLinearLayout *layout = m_layout->itemAt( i );
-        for( int j = 0; j < layout->count(); j++)
-        {
-            debug() << "Removing widget at: " << j;
-            layout->removeAt( j );
-        }
-        debug() << "Removing layout: " << i;
-        m_layout->removeAt( i );
-    }
-*/
-
 
     // create new layout
 
     QGraphicsLinearLayout *newLayout = new QGraphicsLinearLayout( Qt::Vertical );
+
+    if( m_infoMap.size() == 0 )
+    {
+
+    }
+
+
 
     // iterate over devices, add their layouts to main layout
 

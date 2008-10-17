@@ -5,5 +5,4 @@ add_subdirectory( lyrics )
 add_subdirectory( serviceinfo )
 add_subdirectory( wikipedia )
 add_subdirectory( video )
-# commented out until later version of Amarok for tagging purposes
-#add_subdirectory( mediadevices )
+add_subdirectory( mediadevices )
