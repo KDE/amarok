@@ -85,9 +85,9 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
     QRectF titleRect;
-    titleRect.setLeft( option.rect.topLeft().x() + iconWidth + iconPadX );
+    titleRect.setLeft( option.rect.topLeft().x() );
     titleRect.setTop( option.rect.top() );
-    titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 ) );
+    titleRect.setWidth( width );
     titleRect.setHeight( iconHeight + iconPadY );
 
     /*painter->setPen( QPen ( Qt::white ) );*/
@@ -99,7 +99,7 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
 
     QRectF textRect;
     textRect.setLeft( option.rect.topLeft().x() + iconPadX );
-    textRect.setTop( option.rect.top() + iconHeight + iconPadY );
+    textRect.setTop( option.rect.top() + iconHeight + iconPadY * 2 );
     textRect.setWidth( width - iconPadX * 2 );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
