@@ -162,6 +162,8 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
             mysql_query(m_db, "CREATE DATABASE IF NOT EXISTS amarok");
             mysql_query(m_db, "CREATE DATABASE IF NOT EXISTS mysql");
             mysql_query(m_db, "USE amarok");
+
+            debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
         }
     
         ThreadInitializer::init();
