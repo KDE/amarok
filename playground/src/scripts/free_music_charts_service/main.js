@@ -29,7 +29,7 @@
 * sometimes Umlauts in Song names are broken
 * icon (not yet possible, missing api)
 * cover for each item (not yet possible, missing api)
-* give Amarok hints to correct artist/track (preparations done but not yet possible, interface will be done by nhnFreespirit)
+* give Amarok hints to correct track name (ideas needed)
 * stop script problem
 */
 
@@ -136,10 +136,11 @@ function onPopulate( level, callbackData, filter ) {
       item.itemName = item.itemName + ": " + elt2.text();
 
       // split name into artist/title
-      // XXX: use the new api to feed that to Amarok
+      // XXX: find a way to set the title correctly without messing with the item order in the browser
       songArtistTitle = elt2.text().split(" - ");
       Amarok.debug( songArtistTitle[0] );
       Amarok.debug( songArtistTitle[1] );
+      item.artist = songArtistTitle[0];
 
       // create beautiful infoHtml
       item.infoHtml = "<center><b>" + heading + "</center></b><br/>";
