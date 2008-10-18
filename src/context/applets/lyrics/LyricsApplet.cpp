@@ -65,9 +65,8 @@ void LyricsApplet::init()
     bigger.setPointSize( bigger.pointSize() + 4 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
-    
-    // TODO add i18n when possible
-    QAction* reloadAction = new QAction( "Reload Lyrics", this );
+
+    QAction* reloadAction = new QAction( i18n( "Reload Lyrics" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
