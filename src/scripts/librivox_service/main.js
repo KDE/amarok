@@ -141,11 +141,12 @@ function episodeFetchResult( result )
         
         //authorRx = new RegExp( "<p>by\\s<a\\shref=\\\"http:\\/\\/librivox\\.org\\/newcatalog\\/search\\.php\\?title=&author=.*action=Search\\\">([^\\n]*)<\\/a>" );
         authorRx = new RegExp( "<li><a href=\\\"http:\\/\\/en.wikipedia.org\\/wiki\\/Jules_Verne\\\">Wikipedia\\s-\\s([^\\n]*)<\\/a><\\/li>\\n" );
-
         author = htmlPage.match( authorRx )[1];
-
         print( "Librivox -- Got author: " +  author );
-        
+
+        albumRx = new RegExp( "<h2><a([^\\n]*)>([^\\n]*)<\\/a><\\/h2>" );
+        album = htmlPage.match( albumRx )[2];
+        print( "Librivox -- Got album: " +  album );
 
         //get the book description. Unfortunately this will not work currently, as tracks do not have a description, and there is no easy way to apply this to the book level.
         //In the long term, I think we should add a "get info" callback instead of having to pass html info for each object at creation 
@@ -174,6 +175,7 @@ function episodeFetchResult( result )
             item.playableUrl = url;
             item.infoHtml = html;
             item.artist = author;
+            item.album = album;
 
             script.insertItem( item );
         }
