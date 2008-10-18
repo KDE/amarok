@@ -209,8 +209,8 @@ ColumnContainment::setupControlButtons()
     connect( listAdd, SIGNAL( triggered() ), this, SLOT( showAddAppletsMenu() ) );
     connect( listRemove, SIGNAL( triggered() ), this, SLOT( showRemoveAppletsMenu() ) );
     
-    connect( m_zoomInIcon, SIGNAL( activated() ), this, SLOT( zoomInRequested() ) );
-    connect( m_zoomOutIcon, SIGNAL( activated() ), this, SLOT( zoomOutRequested() ) );
+    connect( m_zoomInIcon, SIGNAL( clicked() ), this, SLOT( zoomInRequested() ) );
+    connect( m_zoomOutIcon, SIGNAL( clicked() ), this, SLOT( zoomOutRequested() ) );
     
 }
 
@@ -786,8 +786,8 @@ ColumnContainment::setView( ContextView *newView )
     connect( m_removeAppletsMenu, SIGNAL( changeContainment( Plasma::Containment * ) ),
                  m_view, SLOT( setContainment( Plasma::Containment * ) ) );
 
-    connect( m_switchRightIcon, SIGNAL( activated() ), m_view, SLOT( nextContainment() ) );
-    connect( m_switchLeftIcon, SIGNAL( activated() ), m_view, SLOT( previousContainment() ) );
+    connect( m_switchRightIcon, SIGNAL( clicked() ), m_view, SLOT( nextContainment() ) );
+    connect( m_switchLeftIcon, SIGNAL( clicked() ), m_view, SLOT( previousContainment() ) );
 
 }
 
