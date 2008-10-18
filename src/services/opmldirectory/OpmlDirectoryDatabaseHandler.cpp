@@ -54,8 +54,8 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
 
     QStringList result = db->query( queryString );
 
-    db->query( "CREATE INDEX opmldirectory_tracks_id ON jamendo_tracks(id);" );
-    db->query( "CREATE INDEX opmldirectory_tracks_album_id ON jamendo_tracks(album_id);" );
+    db->query( "CREATE INDEX opmldirectory_tracks_id ON opmldirectory_tracks(id);" );
+    db->query( "CREATE INDEX opmldirectory_tracks_album_id ON opmldirectory_tracks(album_id);" );
 
     // create table containing categories
     queryString = "CREATE TABLE opmldirectory_albums ("
@@ -67,7 +67,7 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
    // debug() << "Creating opmldirectory_albums: " << queryString;
 
     result = db->query( queryString );
-    db->query( "CREATE INDEX opmldirectory_albums_name ON jamendo_albums(name);" );
+    db->query( "CREATE INDEX opmldirectory_albums_name ON opmldirectory_albums(name);" );
 
 
     //HACK!! monster hack actually! We really need a default dummy artist or the service query maker screws up big time-
