@@ -118,7 +118,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
     server_options[0] = const_cast<char*>( "amarokmysqld" );
     server_options[1] = defaultsLine;
     server_options[2] = databaseLine;
-    server_options[3] = const_cast<char*>( "--default-storage-engine=MYISAM" );
+    server_options[3] = const_cast<char*>( "--default-table-type=MYISAM" );
     server_options[4] = const_cast<char*>( "--loose-skip-innodb" );
     server_options[5] = const_cast<char*>("--skip-grant-tables");
     server_options[num_elements] = 0;
