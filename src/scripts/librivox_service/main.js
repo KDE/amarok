@@ -138,12 +138,14 @@ function episodeFetchResult( result )
 
         //get author name ( as whatever we searched for might not be the actual author )
 
-        
+        print( "getting author...");
         //authorRx = new RegExp( "<p>by\\s<a\\shref=\\\"http:\\/\\/librivox\\.org\\/newcatalog\\/search\\.php\\?title=&author=.*action=Search\\\">([^\\n]*)<\\/a>" );
-        authorRx = new RegExp( "<li><a href=\\\"http:\\/\\/en.wikipedia.org\\/wiki\\/Jules_Verne\\\">Wikipedia\\s-\\s([^\\n]*)<\\/a><\\/li>\\n" );
+        authorRx = new RegExp( "<li><a href=\\\"[^\\n]*\\\">[^\\n]*-\\s([^\\n]*)<\\/a>[^\\n]*<\\/li>\\n" );
         author = htmlPage.match( authorRx )[1];
         print( "Librivox -- Got author: " +  author );
 
+
+        print( "getting album...");
         albumRx = new RegExp( "<h2><a([^\\n]*)>([^\\n]*)<\\/a><\\/h2>" );
         album = htmlPage.match( albumRx )[2];
         print( "Librivox -- Got album: " +  album );
@@ -156,12 +158,12 @@ function episodeFetchResult( result )
 
         //Apparently we cannot do both multiple matches and multiple capture groups as well in qt-script, so use the same regexp twice, one for getting each book, and once for getting
         //book, and once for getting the two parts of the book element that we are interested in, the title and the url.
-        rx = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n[^\\n]*\\n?[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis", "g" );
+        rx = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n+[^\\n]*\\n*[^\\n]*\\n[^\\n]*\\n+[^\\n]*href=\\\"([^\\n]*\\.ogg)\\\">ogg\\svorbis", "g" );
         list = htmlPage.match( rx );
 
 
 
-        rx2 = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n[^\\n]*\\n?[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis" );
+        rx2 = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n+[^\\n]*\\n*[^\\n]*\\n+[^\\n]*\\n+[^\\n]*href=\\\"([^\\n]*\\.ogg)\\\">ogg\\svorbis" );
         for ( i = 0; i < list.length; i++ )
 
         {
