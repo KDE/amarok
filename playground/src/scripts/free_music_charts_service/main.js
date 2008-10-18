@@ -118,10 +118,20 @@ function onPopulate( level, callbackData, filter ) {
     elt = elt.firstChildElement( "song" );  // ascent to first song
 
     var songArtistTitle = new Array( 2 );
+    var rank;
+    var votes;
 
     for ( ; i != 0; i-- ) {
+      // beautify rank and votes for newcomers
       elt2 = elt.firstChildElement( "rank" );
-      item.itemName = elt2.text();
+      if( elt2.text() == "99") rank = "New";
+      else rank = elt2.text();
+
+      elt2 = elt.firstChildElement( "votes" );
+      if( elt2.text() == "-1") votes = "none";
+      else votes = elt2.text();
+
+      item.itemName = rank;
       elt2 = elt.firstChildElement( "name" );
       item.itemName = item.itemName + ": " + elt2.text();
 
@@ -135,9 +145,8 @@ function onPopulate( level, callbackData, filter ) {
       item.infoHtml = "<center><b>" + heading + "</center></b><br/>";
       item.infoHtml = item.infoHtml + "<b>Song:</b> " + elt2.text() + "<br/>";
       item.infoHtml = item.infoHtml + "<b>Rank:</b> ";
-      item.infoHtml = item.infoHtml + elt.firstChildElement( "rank" ).text() + "<br/>";
-      item.infoHtml = item.infoHtml + "<b>Votes:</b> ";
-      item.infoHtml = item.infoHtml + elt.firstChildElement( "votes" ).text();
+      item.infoHtml = item.infoHtml + rank + "<br/>";
+      item.infoHtml = item.infoHtml + "<b>Votes:</b> " + votes;
 
       elt2 = elt.firstChildElement( "url" );
       item.playableUrl = elt2.text();
