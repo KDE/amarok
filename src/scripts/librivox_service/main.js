@@ -118,8 +118,6 @@ function bookFetchResult( reply )
 
     script.donePopulating();
 
-
-
 }
 
 function episodeFetchResult( result )
@@ -137,12 +135,25 @@ function episodeFetchResult( result )
 
         //Amarok.debug( " Got reply from librivox: " +  html );
 
+
+        //get author name ( as whatever we searched for might not be the actual author )
+
+        
+        //authorRx = new RegExp( "<p>by\\s<a\\shref=\\\"http:\\/\\/librivox\\.org\\/newcatalog\\/search\\.php\\?title=&author=.*action=Search\\\">([^\\n]*)<\\/a>" );
+        authorRx = new RegExp( "<li><a href=\\\"http:\\/\\/en.wikipedia.org\\/wiki\\/Jules_Verne\\\">Wikipedia\\s-\\s([^\\n]*)<\\/a><\\/li>\\n" );
+
+        author = htmlPage.match( authorRx )[1];
+
+        print( "Librivox -- Got author: " +  author );
+        
+
         //get the book description. Unfortunately this will not work currently, as tracks do not have a description, and there is no easy way to apply this to the book level.
         //In the long term, I think we should add a "get info" callback instead of having to pass html info for each object at creation 
         //descriptionRx = new RegExp( "<blockquote>(.*)<\\/blockquote>" );
         //description = htmlPage.match( descriptionRx );
 
-        //Apparently we cannot bot do multiple matches and multiple capture groups as well in qt-script, so use the same regexp twice, one for getting each book, and once for getting
+
+        //Apparently we cannot do both multiple matches and multiple capture groups as well in qt-script, so use the same regexp twice, one for getting each book, and once for getting
         //book, and once for getting the two parts of the book element that we are interested in, the title and the url.
         rx = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n[^\\n]*\\n?[^\\n]*\\n[^\\n]*\\n[^\\n]*href=\\\"([\\.a-zA-Z0-9_:\\/]*\\.ogg)\\\">ogg\\svorbis", "g" );
         list = htmlPage.match( rx );
@@ -162,6 +173,7 @@ function episodeFetchResult( result )
             item.itemName = title;
             item.playableUrl = url;
             item.infoHtml = html;
+            item.artist = author;
 
             script.insertItem( item );
         }
