@@ -140,13 +140,13 @@ Track::year() const
 void
 Track::setAlbum( const QString &newAlbum )
 {
-    Q_UNUSED( newAlbum )
+    d->album = newAlbum;
 }
 
 void
 Track::setArtist( const QString& newArtist )
 {
-    Q_UNUSED( newArtist )
+    d->artist = newArtist;
 }
 
 void

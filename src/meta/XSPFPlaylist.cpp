@@ -26,6 +26,8 @@
 #include "meta/proxy/MetaProxy.h"
 #include "meta/MetaUtility.h"
 #include "meta/StreamInfoCapability.h"
+#include "meta/stream/Stream.h"
+#include "meta/file/File.h"
 #include "PlaylistManager.h"
 
 #include <kurl.h>
@@ -35,6 +37,8 @@
 #include <QDomElement>
 #include <QFile>
 #include <QString>
+
+#include <typeinfo>
 
 namespace Meta
 {
@@ -148,6 +152,7 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 TrackList
 XSPFPlaylist::tracks()
 {
+    DEBUG_BLOCK
     XSPFTrackList xspfTracks = trackList();
     TrackList tracks;
 
@@ -159,12 +164,27 @@ XSPFPlaylist::tracks()
             if( !trackPtr->isPlayable() )
             {
                 trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
-                if( trackPtr )
-                    tracks << trackPtr;
             }
-            else
-                tracks << trackPtr;
         }
+
+        if ( trackPtr ) {
+
+            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )  {
+
+                debug() << "got stream from trackForUrl, setting album to " << track.album;
+
+                MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
+
+                streamTrack->setTitle( track.title );
+                streamTrack->setAlbum( track.album );
+                streamTrack->setArtist( track.creator );
+
+            } 
+
+            tracks << trackPtr;
+        }
+
+        
         // why do we need this? sqlplaylist is not doing this
         // we don't want (probably) unplayable tracks
         // and it causes problems for me (DanielW) as long
@@ -464,9 +484,10 @@ XSPFPlaylist::trackList()
                     track.duration = subSubNode.firstChild().nodeValue().toInt();
                 else if ( subSubNode.nodeName() == "annotation" )
                     track.annotation = subSubNode.firstChild().nodeValue();
-                else if ( subSubNode.nodeName() == "album" )
+                else if ( subSubNode.nodeName() == "album" ) {
                     track.album = subSubNode.firstChild().nodeValue();
-                else if ( subSubNode.nodeName() == "trackNum" )
+                    debug() << "loaded album name from xspf: " << subSubNode.firstChild().nodeValue();
+                } else if ( subSubNode.nodeName() == "trackNum" )
                     track.trackNum = (uint)subSubNode.firstChild().nodeValue().toInt();
                 else if ( subSubNode.nodeName() == "identifier" )
                     track.identifier = subSubNode.firstChild().nodeValue();

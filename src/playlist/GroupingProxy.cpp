@@ -301,13 +301,13 @@ Playlist::GroupingProxy::regroupRows( int first, int last )
         bool matchBefore = false;
         Meta::TrackPtr beforeTrack = m_model->trackAt( beforeRow );
         if ( beforeTrack != Meta::TrackPtr() )
-            matchBefore = ( beforeTrack->album() == thisTrack->album() );
+            matchBefore = ( beforeTrack->album()->name() == thisTrack->album()->name() );
 
         int afterRow = row + 1;
         bool matchAfter = false;
         Meta::TrackPtr afterTrack = m_model->trackAt( afterRow );
         if ( afterTrack != Meta::TrackPtr() )
-            matchAfter = ( afterTrack->album() == thisTrack->album() );
+            matchAfter = ( afterTrack->album()->name() == thisTrack->album()->name() );
 
         if ( matchBefore && matchAfter )
             m_rowGroupMode[row] = Body;
