@@ -92,7 +92,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             track->setAlbumId( parentId );
             track->setUidUrl( playableUrl );
             track->setServiceName( m_name );
-            track->setServiceDescription( infoHtml );
+            track->setDescription( infoHtml );
             track->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
             return addTrack( track );
             break;

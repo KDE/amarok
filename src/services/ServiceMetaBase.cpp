@@ -413,6 +413,18 @@ ServiceTrack::setComment( const QString &newComment )
     Q_UNUSED( newComment )
 }
 
+QString
+ServiceTrack::description() const
+{
+    return m_description;
+}
+
+void
+ServiceTrack::setDescription( const QString &newDescription )
+{
+    m_description = newDescription;
+}
+
 double
 ServiceTrack::score() const
 {

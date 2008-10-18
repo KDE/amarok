@@ -174,6 +174,9 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         virtual QString comment() const;
         virtual void setComment( const QString &newComment );
 
+        virtual QString description() const;
+        virtual void setDescription( const QString &newDescription );
+
         virtual double score() const;
         virtual void setScore( double newScore );
 
@@ -252,6 +255,7 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         int     m_id;
         int     m_trackNumber;
         int     m_length;
+        QString m_description;
         QString m_displayUrl;
         QString m_playableUrl;
         QString m_downloadableUrl;

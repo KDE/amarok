@@ -53,7 +53,7 @@ void ScriptableServiceInfoParser::getInfo(TrackPtr track)
     DEBUG_BLOCK
     ServiceTrack * serviceTrack = dynamic_cast< ServiceTrack * >( track.data() );
     if (serviceTrack == 0) return;
-    emit( info( serviceTrack->sourceDescription() ) );
+    emit( info( serviceTrack->description() ) );
 }
 
 
