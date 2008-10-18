@@ -853,7 +853,7 @@ ScrobblerPostRequest::request()
     header.setValue( "Host", m_host );
     header.setContentType( "application/x-www-form-urlencoded" );
 
-    qDebug() << "POST:" << m_data;
+    //qDebug() << "POST:" << m_data;
 
     m_id = CachedHttp::request( header, m_data );
 }
