@@ -64,7 +64,9 @@ public:
 
     ServiceCollection * collection();
 
-    int insertItem( int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl);
+    int insertItem( int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl,
+                    const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
+                    const QString & composerOverride, int yearOverride );
 
 
 

@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
+ * Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>         *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -31,6 +32,13 @@ class StreamItem : public QObject
     Q_PROPERTY( QString callbackData WRITE setCallbackData READ callbackData )
     Q_PROPERTY( int level WRITE setLevel READ level )
 
+    Q_PROPERTY( QString album WRITE setAlbum READ album )
+    Q_PROPERTY( QString artist WRITE setArtist READ artist )
+    Q_PROPERTY( QString genre WRITE setGenre READ genre )
+    Q_PROPERTY( QString composer WRITE setComposer READ composer )
+    Q_PROPERTY( int year WRITE setYear READ year )
+            
+
     public:
         StreamItem( QScriptEngine *engine );
         ~StreamItem();
@@ -40,17 +48,40 @@ class StreamItem : public QObject
         QString playableUrl() const;
         QString callbackData() const;
         int level() const;
+
+        QString album() const;
+        QString artist() const;
+        QString genre() const;
+        QString composer() const;
+        int year() const;
+
         void setItemName( QString name );
         void setInfoHtml( QString infoHtml );
         void setPlayableUrl( QString playableUrl );
         void setCallbackData( QString callbackData );
         void setLevel( int level );
+
+        void setAlbum( QString album );
+        void setArtist( QString artist );
+        void setGenre( QString genre );
+        void setComposer( QString composer );
+        void setYear( int year );
+  
+        
     private:
         QString m_name;
         QString m_infoHtml;
         QString m_playableUrl;
         QString m_callbackData;
         int m_level;
+
+        //these are not required but can be used to override what is shown in the playlist and elsewhere.
+        QString m_album;
+        QString m_artist;
+        QString m_genre;
+        QString m_composer;
+        int m_year;
+
 };
 
 class ScriptableServiceScript : public QObject, public QScriptable

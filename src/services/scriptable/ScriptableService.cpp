@@ -66,7 +66,9 @@ ServiceCollection * ScriptableService::collection()
 }
 
 
-int ScriptableService::insertItem( int level, int parentId, const QString & name, const QString & infoHtml, const QString & callbackData, const QString & playableUrl )
+int ScriptableService::insertItem( int level, int parentId, const QString & name, const QString & infoHtml, const QString & callbackData, const QString & playableUrl,
+                                   const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
+                                   const QString & composerOverride, int yearOverride )
 {
     DEBUG_BLOCK
 
@@ -76,6 +78,9 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
     debug() << "infoHtml: " << infoHtml;
     debug() << "callbackData: " << callbackData;
     debug() << "playableUrl: " << playableUrl;
+
+    debug() << "albumOverride: " << albumOverride;
+    debug() << "artistOverride: " << artistOverride;
 
     if ( ( level +1 > m_levels ) || level < 0 )
         return -1;
@@ -94,6 +99,19 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             track->setServiceName( m_name );
             track->setDescription( infoHtml );
             track->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+
+            if ( !albumOverride.isEmpty() )
+                track->setAlbumName( albumOverride );
+            if ( !artistOverride.isEmpty() )
+                track->setArtistName( artistOverride );
+            if ( !genreOverride.isEmpty() )
+                track->setGenreName( genreOverride );
+            if ( !composerOverride.isEmpty() )
+                track->setComposerName( composerOverride );
+            if ( yearOverride != 0 )
+                track->setYearNumber( yearOverride );
+
+
             return addTrack( track );
             break;
             

@@ -70,6 +70,23 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         virtual QString sourceDescription();
         virtual QPixmap emblem();
 
+
+        virtual Meta::AlbumPtr album() const;
+        virtual Meta::ArtistPtr artist() const;
+        virtual Meta::GenrePtr genre() const;
+        virtual Meta::ComposerPtr composer() const;
+        virtual Meta::YearPtr year() const;
+        
+        void setAlbumName( const QString  &newAlbum );
+        void setArtistName( const QString  &newArtist );
+        void setGenreName( const QString  &newGenre );
+        void setComposerName(  const QString  &newComposer );
+        void setYearNumber( int newYear );
+
+        class Private;
+    private:
+        Private * const d;
+
 };
 
 class ScriptableServiceAlbum : public Meta::ServiceAlbum, public ScriptableServiceMetaItem

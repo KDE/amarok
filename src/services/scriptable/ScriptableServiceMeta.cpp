@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "ScriptableServiceMeta.h"
+#include "ScriptableServiceMeta_p.h"
 
 using namespace Meta;
 
@@ -66,12 +67,95 @@ void Meta::ScriptableServiceMetaItem::setServiceEmblem( const QPixmap & emblem )
 ScriptableServiceTrack::ScriptableServiceTrack( const QString & name, const QString & url )
     : ServiceTrack( name, url )
     , ScriptableServiceMetaItem( 0 )
+     , d( new ScriptableServiceTrack::Private( this ) )
 {}
 
 ScriptableServiceTrack::ScriptableServiceTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
     , ScriptableServiceMetaItem( 0 )
+    , d( new ScriptableServiceTrack::Private( this ) )
 {}
+
+
+Meta::AlbumPtr Meta::ScriptableServiceTrack::album() const
+{
+    DEBUG_BLOCK
+    if ( d->album ){
+        debug() << "got a custom album named " << d->album->name();
+        return d->album;
+    } else
+        return ServiceTrack::album();
+}
+
+Meta::ArtistPtr Meta::ScriptableServiceTrack::artist() const
+{
+    DEBUG_BLOCK
+            
+    if ( d->artist ) {
+        debug() << "got a custom artist named " << d->artist->name();
+        return d->artist;
+    } else
+        return ServiceTrack::artist();
+}
+
+Meta::GenrePtr Meta::ScriptableServiceTrack::genre() const
+{
+    if ( d->genre )
+        return d->genre;
+    else
+        return ServiceTrack::genre();
+}
+
+Meta::ComposerPtr Meta::ScriptableServiceTrack::composer() const
+{
+    if ( d->composer )
+        return d->composer;
+    else
+        return ServiceTrack::composer();
+}
+
+Meta::YearPtr Meta::ScriptableServiceTrack::year() const
+{
+    if ( d->year )
+        return d->year;
+    else
+        return ServiceTrack::year();
+}
+
+
+
+
+void Meta::ScriptableServiceTrack::setAlbumName( const QString &newAlbum )
+{
+    d->m_data.album = newAlbum;
+    d->album = Meta::AlbumPtr( new ScriptableServiceInternalAlbum( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+}
+
+void Meta::ScriptableServiceTrack::setArtistName( const QString &newArtist )
+{
+    d->m_data.artist = newArtist;
+    d->artist = Meta::ArtistPtr( new ScriptableServiceInternalArtist( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+}
+
+void Meta::ScriptableServiceTrack::setGenreName( const QString &newGenre )
+{
+    d->m_data.genre = newGenre;
+    d->genre = Meta::GenrePtr( new ScriptableServiceInternalGenre( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+}
+
+void Meta::ScriptableServiceTrack::setComposerName( const QString &newComposer )
+{
+    d->m_data.composer = newComposer;
+    d->composer = Meta::ComposerPtr( new ScriptableServiceInternalComposer( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+}
+
+void Meta::ScriptableServiceTrack::setYearNumber( int newYear )
+{
+    d->m_data.year = newYear;
+    d->year = Meta::YearPtr( new ScriptableServiceInternalYear( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+}
+
+
 
 QString Meta::ScriptableServiceTrack::sourceName()
 {
@@ -147,6 +231,7 @@ QString Meta::ScriptableServiceGenre::description()
 {
     return m_description;
 }
+
 
 
 

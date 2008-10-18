@@ -71,7 +71,9 @@ class ScriptableServiceManager : public QObject
          * @param playableUrl The url to play if added to the playlist ( Empty string if not leaf node )
          * @return the id of the created item ( or -1 on failure )
          */
-        int insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl );
+        int insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl,
+                    const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
+                    const QString & composerOverride, int yearOverride );
 
         
         /**

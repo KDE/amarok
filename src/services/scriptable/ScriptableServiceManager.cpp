@@ -65,7 +65,9 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
 }
 
 
-int ScriptableServiceManager::insertItem(const QString & serviceName, int level, int parentId, const QString & name, const QString & infoHtml, const QString & callbackData, const QString & playableUrl)
+int ScriptableServiceManager::insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl,
+                                          const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
+                                          const QString & composerOverride, int yearOverride )
 {
     DEBUG_BLOCK
     if ( !m_serviceMap.contains( serviceName ) ) {
@@ -73,7 +75,7 @@ int ScriptableServiceManager::insertItem(const QString & serviceName, int level,
         return -1;
     }
 
-    return m_serviceMap[serviceName]->insertItem( level, parentId, name, infoHtml, callbackData, playableUrl );
+    return m_serviceMap[serviceName]->insertItem( level, parentId, name, infoHtml, callbackData, playableUrl, albumOverride, artistOverride, genreOverride, composerOverride, yearOverride );
 
     //return -1; // FIXME: what should this return?
 }

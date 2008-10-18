@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
+ * Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>         *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -25,6 +26,7 @@
 #include <QtScript>
 
 StreamItem::StreamItem( QScriptEngine *engine )
+    : m_year( 0 )
 {
     Q_UNUSED( engine );
 }
@@ -58,6 +60,34 @@ int StreamItem::level() const
     return m_level;
 }
 
+
+QString StreamItem::album() const
+{
+    return m_album;
+}
+
+QString StreamItem::artist() const
+{
+    DEBUG_BLOCK
+    return m_artist;
+}
+
+QString StreamItem::genre() const
+{
+    return m_genre;
+}
+
+QString StreamItem::composer() const
+{
+    return m_composer;
+}
+
+int StreamItem::year() const
+{
+    return m_year;
+}
+
+
 void StreamItem::setItemName( QString name )
 {
     m_name = name;
@@ -81,6 +111,31 @@ void StreamItem::setCallbackData( QString callbackData )
 void StreamItem::setLevel( int level )
 {
     m_level = level;
+}
+
+void StreamItem::setAlbum( QString album )
+{
+    m_album = album;
+}
+
+void StreamItem::setArtist( QString artist )
+{
+    m_artist = artist;
+}
+
+void StreamItem::setGenre( QString genre )
+{
+    m_genre = genre;
+}
+
+void StreamItem::setComposer( QString composer )
+{
+    m_composer = composer;
+}
+
+void StreamItem::setYear( int year )
+{
+    m_year = year;
 }
 
 ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
@@ -126,7 +181,9 @@ QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_populate
 int ScriptableServiceScript::insertItem( StreamItem* item )
 {
     DEBUG_BLOCK
-    return The::scriptableServiceManager()->insertItem( m_serviceName, item->level(), m_currentId, item->itemName(), item->infoHtml(), item->callbackData(), item->playableUrl() );
+            debug() << "artistOverride: item->artist()";
+    return The::scriptableServiceManager()->insertItem( m_serviceName, item->level(), m_currentId, item->itemName(), item->infoHtml(), item->callbackData(), item->playableUrl(),
+                                                        item->album(), item->artist(), item->genre(), item->composer(), item->year() );
 }
 
 int ScriptableServiceScript::donePopulating() const
@@ -152,5 +209,9 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
     The::scriptableServiceManager()->donePopulating( name, parent_id );
 */
 }
+
+
+
+
 
 #include "AmarokScriptableServiceScript.moc"
