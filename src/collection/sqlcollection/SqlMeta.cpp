@@ -998,7 +998,9 @@ SqlAlbum::image( int size )
     // which may have been saved on a previous lookup
     QString cachedImage = findCachedImage( size );
     if( !cachedImage.isEmpty() )
+    {
         result = cachedImage;
+    }
 
     // findImage will lookup the original cover and create a scaled version
     // of the cover if required (returning the path of that scaled image)
@@ -1013,6 +1015,14 @@ SqlAlbum::image( int size )
 
         if( !image.isEmpty() && size < 1000 )
             result = image;
+        else
+        {
+            // After a rescan we seem to lose all image information, so we need
+            // to check that we haven't already downloaded this image before.
+            QString large = findLargeCachedImage();
+            if( !large.isEmpty() )
+                result = createScaledImage( large, size );
+        }
     }
 
     if( !result.isEmpty() )
@@ -1196,21 +1206,46 @@ SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& fi
 }
 
 QString
-SqlAlbum::findCachedImage( int size ) const
+SqlAlbum::imageKey() const
 {
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
     QString album = m_name;
     QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
 
     if ( artist.isEmpty() && album.isEmpty() )
         return QString();
 
-    QByteArray key = md5sum( artist, album, QString() );
+    return md5sum( artist, album, QString() );
+}
+
+QString
+SqlAlbum::findCachedImage( int size ) const
+{
+    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
+    const QString key = imageKey();
+
+    if( key.isEmpty() )
+        return QString();
 
     QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     // check cache for existing cover
     if ( cacheCoverDir.exists( widthKey + key ) )
         return cacheCoverDir.filePath( widthKey + key );
+
+    return QString();
+}
+
+QString
+SqlAlbum::findLargeCachedImage() const
+{
+    const QString key = imageKey();
+
+    QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
+    if( largeCoverDir.exists( key ) )
+    {
+        const QString filePath = largeCoverDir.filePath( key );
+        updateImage( filePath ); // We found a previously downloaded large image, let's keep it for future reference.
+        return filePath; 
+    }
     return QString();
 }
 
