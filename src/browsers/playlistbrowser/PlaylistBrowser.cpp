@@ -85,7 +85,6 @@ PlaylistBrowser::addCategory( int category )
     DEBUG_BLOCK
 
     QString typeName = The::playlistManager()->typeName( category );
-    debug() << typeName;
 
     QWidget *widget = 0;
 
