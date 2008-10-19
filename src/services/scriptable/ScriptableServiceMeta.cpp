@@ -83,8 +83,8 @@ Meta::AlbumPtr Meta::ScriptableServiceTrack::album() const
     if ( d->album ){
         debug() << "got a custom album named " << d->album->name();
         return d->album;
-    } else
-        return ServiceTrack::album();
+    }
+    return ServiceTrack::album();
 }
 
 Meta::ArtistPtr Meta::ScriptableServiceTrack::artist() const
@@ -94,32 +94,29 @@ Meta::ArtistPtr Meta::ScriptableServiceTrack::artist() const
     if ( d->artist ) {
         debug() << "got a custom artist named " << d->artist->name();
         return d->artist;
-    } else
-        return ServiceTrack::artist();
+    }
+    return ServiceTrack::artist();
 }
 
 Meta::GenrePtr Meta::ScriptableServiceTrack::genre() const
 {
     if ( d->genre )
         return d->genre;
-    else
-        return ServiceTrack::genre();
+    return ServiceTrack::genre();
 }
 
 Meta::ComposerPtr Meta::ScriptableServiceTrack::composer() const
 {
     if ( d->composer )
         return d->composer;
-    else
-        return ServiceTrack::composer();
+    return ServiceTrack::composer();
 }
 
 Meta::YearPtr Meta::ScriptableServiceTrack::year() const
 {
     if ( d->year )
         return d->year;
-    else
-        return ServiceTrack::year();
+    return ServiceTrack::year();
 }
 
 
@@ -231,8 +228,5 @@ QString Meta::ScriptableServiceGenre::description()
 {
     return m_description;
 }
-
-
-
 
 
