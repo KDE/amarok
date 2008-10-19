@@ -231,6 +231,7 @@ Playlist::Controller::insertTracks( int row, QueryMaker *qm )
 void
 Playlist::Controller::insertUrls( int row, const QList<KUrl>& urls )
 {
+    Q_UNUSED( row );
     // FIXME: figure out some way to have this insert at the appropriate row, rather than always at end
     const int options = Append | DirectPlay;
     DirectoryLoader* dl = new DirectoryLoader(); //dl handles memory management
