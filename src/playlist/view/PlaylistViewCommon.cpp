@@ -43,6 +43,23 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
 
     KMenu *menu = new KMenu( parent );
 
+    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
+    if ( index->data( Playlist::ActiveTrackRole ).toBool() )
+    {
+        if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        {
+            Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
+            if ( cac )
+            {
+                QList<PopupDropperAction *> actions = cac->customActions();
+
+                foreach( PopupDropperAction *action, actions )
+                menu->addAction( action );
+            }
+        }
+    }
+    menu->addSeparator();
+
     KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
     playAction->setData( index->row() );
     QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
@@ -58,23 +75,6 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     ( menu->addAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
     menu->addSeparator();
     menu->addAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent, SLOT( editTrackInformation() ) );
-
-    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-    if ( index->data( Playlist::ActiveTrackRole ).toBool() )
-    {
-        if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
-        {
-            Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
-            if ( cac )
-            {
-                QList<PopupDropperAction *> actions = cac->customActions();
-
-                menu->addSeparator();
-                foreach( PopupDropperAction *action, actions )
-                menu->addAction( action );
-            }
-        }
-    }
 
     if ( coverActions )
     {
