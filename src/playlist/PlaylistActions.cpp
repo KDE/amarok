@@ -111,6 +111,13 @@ Playlist::Actions::requestPrevTrack()
 void
 Playlist::Actions::play()
 {
+    if( 0 == m_nextTrackCandidate )
+    {
+        m_nextTrackCandidate = Model::instance()->activeId();
+        if( 0 == m_nextTrackCandidate )
+            m_nextTrackCandidate = m_navigator->requestNextTrack();
+    }
+
     play( m_nextTrackCandidate );
 }
 
