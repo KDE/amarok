@@ -32,7 +32,6 @@ class OpmlDirectoryService;
 
 class OpmlDirectoryMetaFactory : public ServiceMetaFactory
 {
-
     public:
         OpmlDirectoryMetaFactory( const QString &dbPrefix, OpmlDirectoryService *service );
         virtual ~OpmlDirectoryMetaFactory() {}
@@ -47,8 +46,13 @@ class OpmlDirectoryMetaFactory : public ServiceMetaFactory
 
 namespace Meta
 {
+class OpmlDirectoryFeed;
+class OpmlDirectoryCategory;
 
-class OpmlDirectoryFeed  : public ServiceTrack
+typedef KSharedPtr<OpmlDirectoryFeed> OpmlDirectoryFeedPtr;
+typedef KSharedPtr<OpmlDirectoryCategory> OpmlDirectoryCategoryPtr;
+
+class OpmlDirectoryFeed : public ServiceTrack
 {
     public:
         OpmlDirectoryFeed( const QString &name, const QString &url );
@@ -57,12 +61,11 @@ class OpmlDirectoryFeed  : public ServiceTrack
         virtual QList< PopupDropperAction *> customActions();
 };
 
-class OpmlDirectoryCategory  : public ServiceAlbum
+class OpmlDirectoryCategory : public ServiceAlbum
 {
     public:
         OpmlDirectoryCategory( const QString &name );
         OpmlDirectoryCategory( const QStringList &resultRow );
-
 };
 
 }

@@ -28,12 +28,11 @@ using namespace Meta;
 OpmlDirectoryDatabaseHandler::OpmlDirectoryDatabaseHandler()
 {}
 
-
 OpmlDirectoryDatabaseHandler::~OpmlDirectoryDatabaseHandler()
 {}
 
 void
-OpmlDirectoryDatabaseHandler::createDatabase( )
+OpmlDirectoryDatabaseHandler::createDatabase()
 {
     //Get database instance
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
@@ -64,8 +63,6 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
                   "description " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER );";
 
-   // debug() << "Creating opmldirectory_albums: " << queryString;
-
     result = db->query( queryString );
     db->query( "CREATE INDEX opmldirectory_albums_name ON opmldirectory_albums(name);" );
 
@@ -78,7 +75,6 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
             "name " + db->textColumnType() + ',' +
             "description " + db->exactTextColumnType() + ");";
 
-    //debug() << "Creating opmldirectory_artists: " << queryString;
     result = db->query( queryString );
 
     //now, insert a default artist
@@ -86,7 +82,6 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
     queryString = "INSERT INTO opmldirectory_artists ( id, name, description "
             ") VALUES ( 1, 'dummy', 'dummy' );";
 
-    //debug() << "Adding  opmldirectory artist " << queryString;
     sqlDb->insert( queryString, QString() );
 
     //create genre table
@@ -95,20 +90,12 @@ OpmlDirectoryDatabaseHandler::createDatabase( )
             "name " + db->textColumnType() + ',' +
             "album_id INTEGER );";
 
-    debug() << "Creating opmldirectory_genre: " << queryString;
-
     result = db->query( queryString );
-
-    
-
 }
 
 void
-OpmlDirectoryDatabaseHandler::destroyDatabase( )
+OpmlDirectoryDatabaseHandler::destroyDatabase()
 {
-
-    //debug() << "Destroy OpmlDirectory database ";
-
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
     QStringList result = db->query( "DROP TABLE opmldirectory_tracks;" );
     result = db->query( "DROP TABLE opmldirectory_albums;" );
@@ -118,14 +105,11 @@ OpmlDirectoryDatabaseHandler::destroyDatabase( )
     result = db->query( "DROP INDEX opmldirectory_tracks_id;");
     result = db->query( "DROP INDEX opmldirectory_tracks_artist_id;");
     result = db->query( "DROP INDEX opmldirectory_album_name;");
-
 }
 
 int
-OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrack *track )
+OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrackPtr track )
 {
-    QString numberString;
-
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     QString queryString = "INSERT INTO opmldirectory_tracks ( name, track_number, length, "
                           "album_id, artist_id, preview_url ) VALUES ( '"
@@ -136,42 +120,33 @@ OpmlDirectoryDatabaseHandler::insertTrack( ServiceTrack *track )
                           + QString::number( 1 ) + ", '"
                           + sqlDb->escape( track->uidUrl() ) + "' );";
 
-   // debug() << "Adding opmldirectory_track " << queryString;
     int trackId = sqlDb->insert( queryString, NULL );
 
     return trackId;
 }
 
 int
-OpmlDirectoryDatabaseHandler::insertAlbum( ServiceAlbum *album )
+OpmlDirectoryDatabaseHandler::insertAlbum( ServiceAlbumPtr album )
 {
-
     QString queryString;
     SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
     queryString = "INSERT INTO opmldirectory_albums ( name, description, "
                   "artist_id ) VALUES ( '"
-                  + sqlDb->escape(  album->name() ) + "', '"
+                  + sqlDb->escape( album->name() ) + "', '"
                   + sqlDb->escape( album->description() ) + "', "
                   + QString::number( 1 ) + ");";
 
-    //debug() << "Adding OpmlDirectory album " << queryString;
-
-    int newAlbumId =  sqlDb->insert( queryString, QString() );
-
+    int newAlbumId = sqlDb->insert( queryString, QString() );
 
     //create a dummy genre for this album
     queryString = "INSERT INTO opmldirectory_genre ( album_id, name "
-            ") VALUES ( "
-            + QString::number ( newAlbumId ) + ", 'dummy');";
-
-    //debug() << "Adding OpmlDirectory genre " << queryString;
+                  ") VALUES ( " + QString::number ( newAlbumId ) + ", 'dummy');";
 
     return sqlDb->insert( queryString, 0 );
 }
 
-
 void
-OpmlDirectoryDatabaseHandler::begin( )
+OpmlDirectoryDatabaseHandler::begin()
 {
     CollectionManager *mgr = CollectionManager::instance();
     QString queryString = "BEGIN;";
@@ -179,19 +154,10 @@ OpmlDirectoryDatabaseHandler::begin( )
 }
 
 void
-OpmlDirectoryDatabaseHandler::commit( )
+OpmlDirectoryDatabaseHandler::commit()
 {
     CollectionManager *mgr = CollectionManager::instance();
     QString queryString = "COMMIT;";
     mgr->sqlStorage()->query( queryString );
 }
-
-
-
-
-
-
-
-
-
 

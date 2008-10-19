@@ -121,15 +121,15 @@ OpmlDirectoryXmlParser::parseElement( const  QDomElement &e )
 {
     QString sElementName = e.tagName();
 
-    if (sElementName == "outline" ) {
-
+    if( sElementName == "outline" )
+    {
         if ( e.hasChildNodes() )
             parseCategory( e );
         else
             parseFeed( e );
-    } else {
-        parseChildren( e );
     }
+    else
+        parseChildren( e );
 }
 
 void
@@ -149,51 +149,43 @@ OpmlDirectoryXmlParser::parseChildren( const  QDomElement &e )
 
 void OpmlDirectoryXmlParser::parseCategory( const  QDomElement &e)
 {
-    //debug() << "Found album: ";
     m_nNumberOfCategories++;
 
     QString name = e.attribute( "text", "Unknown" );
-    OpmlDirectoryCategory currentCategory( name );
+    ServiceAlbumPtr currentCategory = ServiceAlbumPtr( new OpmlDirectoryCategory( name ) );
 
-    m_currentCategoryId = m_dbHandler->insertAlbum( &currentCategory );
+    m_currentCategoryId = m_dbHandler->insertAlbum( currentCategory );
     countTransaction();
 
     parseChildren( e );
-
-
 }
 
-void OpmlDirectoryXmlParser::parseFeed( const  QDomElement &e)
+void OpmlDirectoryXmlParser::parseFeed( const QDomElement &e )
 {
-    //debug() << "Found track: ";
     m_nNumberOfFeeds++;
 
     QString name = e.attribute( "text", "Unknown" );
     QString url = e.attribute( "url", "" );
-    //debug() << "got url: " << url;
 
-    OpmlDirectoryFeed currentFeed ( name, url );
+    OpmlDirectoryFeedPtr currentFeed = OpmlDirectoryFeedPtr( new OpmlDirectoryFeed( name, url ) );
+    currentFeed->setAlbumId( m_currentCategoryId );
+    currentFeed->setUidUrl( url );
 
-    currentFeed.setAlbumId( m_currentCategoryId );
-    currentFeed.setUidUrl( url );
-
-    m_dbHandler->insertTrack( &currentFeed );
+    m_dbHandler->insertTrack( ServiceTrackPtr::dynamicCast( currentFeed ) );
     
     countTransaction();
-
 }
 
 
 void OpmlDirectoryXmlParser::countTransaction()
 {
-
     n_numberOfTransactions++;
-    if ( n_numberOfTransactions >= n_maxNumberOfTransactions ) {
+    if ( n_numberOfTransactions >= n_maxNumberOfTransactions )
+    {
         m_dbHandler->commit();
         m_dbHandler->begin();
         n_numberOfTransactions = 0;
     }
-
 }
 
 #include "OpmlDirectoryXmlParser.moc"

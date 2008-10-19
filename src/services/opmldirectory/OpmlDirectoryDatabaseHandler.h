@@ -27,23 +27,18 @@
 #include <QMap>
 
 
-
 /**
  * This class wraps the database operations needed by the OpmlDirectory
-*
-* @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ *
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class OpmlDirectoryDatabaseHandler {
 public:
-
-
     /**
      * Private constructor (singleton pattern)
      * @return Pointer to new object
      */
     OpmlDirectoryDatabaseHandler();
-
-
     ~OpmlDirectoryDatabaseHandler();
 
     /**
@@ -61,14 +56,14 @@ public:
      * @param track pointer to the track to insert
      * @return the database id of the newly inserted track
      */
-    int insertTrack( Meta::ServiceTrack *track );
+    int insertTrack( Meta::ServiceTrackPtr track );
 
     /**
      * inserts a new album into the OpmlDirectory database
      * @param album pointer to the album to insert
      * @return the database id of the newly inserted album
      */
-    int insertAlbum( Meta::ServiceAlbum *album );
+    int insertAlbum( Meta::ServiceAlbumPtr album );
 
     /**
      * Begins a database transaction. Must be followed by a later call to commit()
@@ -80,19 +75,12 @@ public:
      */
     void commit();
 
-
-    
-     /**
-      * Remove all genres that are applied to too few albums in an attempt to weed out the worst mistags and
-      * speed up queries a bit!
-      * @param minCount cutoff value...
-      */
-     void trimGenres( int minCount );
-
-
-
-protected:
-
+    /**
+     * Remove all genres that are applied to too few albums in an attempt to weed out the worst mistags and
+     * speed up queries a bit!
+     * @param minCount cutoff value...
+     */
+    void trimGenres( int minCount );
 };
 
 #endif
