@@ -21,6 +21,7 @@
 
 #include "PlaylistViewCommon.h"
 
+#include "EngineController.h"
 #include "Debug.h"
 #include "TagDialog.h"
 #include "playlist/PlaylistModel.h"
@@ -43,11 +44,27 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
 
     KMenu *menu = new KMenu( parent );
 
-    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
-    playAction->setData( index->row() );
-    QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
+    const bool isCurrentTrack = index->data( Playlist::ActiveTrackRole ).toBool();
+    
+    if( isCurrentTrack )
+    {
+        const bool isPaused = The::engineController()->isPaused();
+        const KIcon   icon = isPaused ? KIcon( "media-playback-start-amarok" ) : KIcon( "media-playback-pause-amarok" );
+        const QString text = isPaused ? i18n( "&Play" ) : i18n( "&Pause");
 
-    menu->addAction( playAction );
+        KAction *playPauseAction = new KAction( icon, text, parent );
+        QObject::connect( playPauseAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
+
+        menu->addAction( playPauseAction );
+    }
+    else
+    {
+        KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
+        playAction->setData( index->row() );
+        QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
+
+        menu->addAction( playAction );
+    }
     
     //menu->addSeparator();
     //menu->addAction( i18n( "Show active track" ), parent, SLOT( scrollToActiveTrack() ) ); // FIXME: enable this after string freeze
@@ -60,7 +77,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     menu->addAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent, SLOT( editTrackInformation() ) );
 
     //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-    if ( index->data( Playlist::ActiveTrackRole ).toBool() )
+    if( isCurrentTrack )
     {
         if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {
