@@ -245,9 +245,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
             m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
 
-
-    PopupDropperAction* result = dynamic_cast< PopupDropperAction* > ( menu.exec( event->globalPos() ) );
-    if ( result == 0 ) return;
+    menu.exec( event->globalPos() );
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
