@@ -26,13 +26,8 @@
 #include "context/popupdropper/PopupDropperAction.h"
 #include <QList>
 
-
-
-
-
 namespace Meta
 {
-
     /**
      * This capability allows different meta types to display custom actions in the right click menu in the tree view
      * or anywhere else where the actions are shown. This is useful for purchasing from stores, downloading from services

@@ -44,9 +44,9 @@
 #include <QPointer>
 
 #include <KAction>
-#include <kcodecs.h>
+#include <KCodecs>
 #include <KFileMetaInfo>
-#include <klocale.h>
+#include <KLocale>
 #include <KSharedPtr>
 
 using namespace Meta;
@@ -711,8 +711,7 @@ SqlTrack::cachedLyrics() const
     QStringList result = m_collection->query( query );
     if( result.isEmpty() )
         return QString();
-    else
-        return result[0];
+    return result[0];
 }
 
 void
@@ -746,12 +745,10 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     {
         case Meta::Capability::CustomActions:
         case Meta::Capability::Organisable:
-            return true;
         case Meta::Capability::Updatable:
             return true;
         case Meta::Capability::Editable:
             return QFile::permissions( playableUrl().path() ) & QFile::WriteUser;
-
         default:
             return false;
     }
@@ -828,8 +825,7 @@ SqlArtist::tracks()
         m_tracksLoaded = true;
         return m_tracks;
     }
-    else
-        return TrackList();
+    return TrackList();
 }
 
 AlbumList
@@ -852,10 +848,7 @@ SqlArtist::albums()
         m_albumsLoaded = true;
         return m_albums;
     }
-    else
-    {
-        return AlbumList();
-    }
+    return AlbumList();
 }
 
 QString
@@ -867,9 +860,8 @@ SqlArtist::sortableName() const
             m_modifiedName = QString( "%1, %2" ).arg( m_name, begin );
             m_modifiedName = m_modifiedName.mid( 4 );
         }
-        else {
+        else
             m_modifiedName = m_name;
-        }
     }
     return m_modifiedName;
 }
@@ -907,13 +899,9 @@ class CompilationAction : public PopupDropperAction
             {
                 connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
                 if( m_isCompilation )
-                {
                     setText( i18n( "Do not show under Various Artists" ) );
-                }
                 else
-                {
                     setText( i18n( "Show under Various Artists" ) );
-                }
             }
 
     private slots:
