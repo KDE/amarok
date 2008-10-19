@@ -22,7 +22,9 @@
 
 #include "Debug.h"
 #include "CollectionManager.h"
+#include "meta/PlaylistFileSupport.h"
 #include "playlist/PlaylistController.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KFileItem>
 #include <kio/job.h> // KIO::listRecursive
@@ -83,9 +85,18 @@ DirectoryLoader::init( const QList<KUrl>& urls )
         }
         else
         {
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( kurl );
-            if( track )
-                m_tracks << track;
+            if( PlaylistManager::isPlaylist( kurl ) )
+            {
+                Meta::PlaylistPtr playlist = Meta::loadPlaylist( kurl );
+                if( playlist )
+                    m_tracks << playlist->tracks();
+            }
+            else
+            {
+                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( kurl );
+                if( track )
+                    m_tracks << track;
+            }
         }
         //else TODO: notify user if can't decode, see also MyDirLister::matchesFilter       
     }
