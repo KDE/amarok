@@ -41,6 +41,8 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
         , mCopyAction( 0 )
         , mMoveAction( 0 )
 {
+    DEBUG_BLOCK
+
     MyDirLister* dirlister = new MyDirLister( true );
     dirlister->setMainWindow( The::mainWindow() );
 
@@ -79,6 +81,8 @@ void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
 
 void MyDirOperator::aboutToShowContextMenu()
 {
+    DEBUG_BLOCK
+
     QMenu *menu = dynamic_cast<QMenu*>( sender() );
     if ( !menu )
         return;
