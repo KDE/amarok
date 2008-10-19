@@ -36,8 +36,6 @@
 namespace Meta
 {
 
-class
-
 class ScriptableServiceMetaItem
 {
     public:
