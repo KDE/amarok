@@ -64,16 +64,12 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
     if ( actionMenu )
     {
         KMenu *menu = actionMenu->menu();
-        connect( menu, SIGNAL( aboutToShowContextMenu( KMenu *menu, QAction *menuAction, QMenu *ctxMenu ) ),
-                 this,   SLOT( aboutToShowContextMenu( KMenu *menu, QAction *menuAction, QMenu *ctxMenu ) ) );
-
         connect( menu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowContextMenu() ) );
     }
 }
 
 MyDirOperator::~MyDirOperator()
-{
-}
+{}
 
 void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
 {
