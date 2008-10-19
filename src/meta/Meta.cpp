@@ -238,10 +238,9 @@ Meta::MetaBase::asCapabilityInterface( Meta::Capability::Type type )
 QString
 Meta::Track::prettyName() const
 {
-    if ( !name().isEmpty() )
+    if( !name().isEmpty() )
         return name();
-    else
-        return prettyUrl();
+    return prettyUrl();
 }
 
 bool
@@ -326,8 +325,8 @@ Meta::Track::lessThan( const Meta::TrackPtr left, const Meta::TrackPtr right )
     }
     else if( left->artist()->name() == right->artist()->name() )
         return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
-    else // compare artists alphabetically
-        return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
+    // compare artists alphabetically
+    return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
 }
 
 //Meta::Artist
