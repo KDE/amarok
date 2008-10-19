@@ -21,6 +21,7 @@ Name[sv]=Album
 Name[tr]=Albümler
 Name[uk]=Альбоми
 Name[x-test]=xxAlbumsxx
+Name[zh_CN]=专辑
 Type=Service
 ServiceTypes=Plasma/Applet
 

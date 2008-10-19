@@ -20,6 +20,7 @@ Name[sv]=Mediaenheter
 Name[tr]=Medya Aygıtları
 Name[uk]=Медіа-пристрої
 Name[x-test]=xxMedia Devicesxx
+Name[zh_CN]=媒体设备
 Type=Service
 ServiceTypes=Plasma/Applet
 

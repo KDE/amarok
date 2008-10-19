@@ -21,6 +21,7 @@ Name[sv]=MTP-samling
 Name[tr]=MTP Koleksiyonu
 Name[uk]=Збірка MTP
 Name[x-test]=xxMTP Collectionxx
+Name[zh_CN]=MTP 收藏
 Comment=MTP collection plugin for Amarok
 Comment[be]=Утулка калекцыі MTP для Amarok
 Comment[ca]=Connector de col·leccions MTP per a l'Amarok
@@ -42,6 +43,7 @@ Comment[sv]=Insticksprogram med MTP-samling för Amarok
 Comment[tr]=Amarok için MTP koleksiyonu eklentisi
 Comment[uk]=Втулка збірки MTP для Amarok
 Comment[x-test]=xxMTP collection plugin for Amarokxx
+Comment[zh_CN]=Amarok 的 MTP 收藏插件
 
 ServiceTypes=Amarok/Plugin
 

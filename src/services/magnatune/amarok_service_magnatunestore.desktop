@@ -50,6 +50,7 @@ Comment[pt_BR]=Ouça e compre músicas da gravadora boazinha Magnatune
 Comment[sv]=Förhandsgranska och köp musik från det icke onda skivbolaget Magnatune
 Comment[uk]=Прослухайте і купіть музику з ненав’язливої агенції звукозапису Magnatune
 Comment[x-test]=xxPreview and buy music from the non-evil Magnatune record labelxx
+Comment[zh_CN]=预览并购买来自于非罪的 Magnatune 记录标签的音乐
 
 
 ServiceTypes=Amarok/Plugin

@@ -28,6 +28,7 @@ Name[th]=ชุดตกแต่งปริยายของตัวแส�
 Name[tr]=Öntanımlı İçerik Teması
 Name[uk]=Типова тема контексту
 Name[x-test]=xxDefault Context Themexx
+Name[zh_CN]=默认上下文主题
 Comment=Default Amarok Context Theme
 Comment[bg]=Контекстна тема по подразбиране
 Comment[ca]=Tema del Context de l'Amarok per omissió
@@ -57,6 +58,7 @@ Comment[th]=ชุดตกแต่งปริยายของรายล�
 Comment[tr]=Öntanımlı Amarok İçerik Teması
 Comment[uk]=Типова тема контексту Amarok
 Comment[x-test]=xxDefault Amarok Context Themexx
+Comment[zh_CN]=默认的 Amarok 上下文主题
 
 
 X-KDE-PluginInfo-Author=The Oxygen Project

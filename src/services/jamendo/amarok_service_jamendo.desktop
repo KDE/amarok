@@ -53,6 +53,7 @@ Comment[sv]=Lyssna på och ladda ner musik uppladdad av oberoende artister
 Comment[tr]=Bağımsız sanaçtılardan müzik dinleyin ve indirin
 Comment[uk]=Прослухайте і завантажте музику, записану незалежними виконавцями
 Comment[x-test]=xxListen to and download music uploaded by independent artistsxx
+Comment[zh_CN]=收听并下载由自由艺术家上传的音乐
 
 
 ServiceTypes=Amarok/Plugin

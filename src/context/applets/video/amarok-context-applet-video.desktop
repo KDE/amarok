@@ -15,6 +15,7 @@ Name[pt]=Vídeo
 Name[pt_BR]=Vídeo
 Name[uk]=Відео
 Name[x-test]=xxVideoxx
+Name[zh_CN]=视频
 Type=Service
 ServiceTypes=Plasma/Applet
 
