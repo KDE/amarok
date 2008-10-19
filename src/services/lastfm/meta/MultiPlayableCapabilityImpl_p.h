@@ -42,7 +42,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         virtual void fetchNext() { m_track->playNext(); }
 
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::Track *track )
+        virtual void metadataChanged( Meta::TrackPtr track )
         {
             KUrl url = track->playableUrl();
             if( url.isEmpty() || url != m_url ) // always should let empty url through, since otherwise we swallow an error getting first track

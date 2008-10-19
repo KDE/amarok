@@ -101,7 +101,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
 
         //Reimplemented from Meta::Observer
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::Track *track );
+        virtual void metadataChanged( Meta::TrackPtr track );
 
     private slots:
         void slotShrinkBrowsers( int index );

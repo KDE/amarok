@@ -112,8 +112,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
 
         // inherited from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::Track *track );
-        void metadataChanged( Meta::Album *album );
+        void metadataChanged( Meta::TrackPtr track );
+        void metadataChanged( Meta::AlbumPtr album );
 
         int totalLength() const { return m_totalLength; }
 

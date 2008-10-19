@@ -47,7 +47,7 @@ class TrackItem : public QStandardItem, public Meta::Observer
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::Track *track );
+        virtual void metadataChanged( Meta::TrackPtr track );
 
         virtual int type() const { return QStandardItem::UserType + 1; }
 

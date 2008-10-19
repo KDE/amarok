@@ -1078,7 +1078,7 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
     }
 }
 
-void MainWindow::metadataChanged( Meta::Track *track )
+void MainWindow::metadataChanged( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 

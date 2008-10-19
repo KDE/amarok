@@ -1384,7 +1384,7 @@ TagDialog::dataForTrack( const Meta::TrackPtr &track )
     if( storedTags.contains( track ) )
         return storedTags[ track ];
 
-    return Meta::Field::mapFromTrack( track.data() );
+    return Meta::Field::mapFromTrack( track );
 }
 
 double

@@ -82,7 +82,7 @@
 #define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
 QVariantMap
-Meta::Field::mapFromTrack( const Meta::Track *track )
+Meta::Field::mapFromTrack( const Meta::TrackPtr track )
 {
     //note: track does not support bpm, first_played yet
     QVariantMap map;
@@ -130,7 +130,7 @@ Meta::Field::mapFromTrack( const Meta::Track *track )
 
 
 void
-Meta::Field::updateTrack( Meta::Track *track, const QVariantMap &metadata )
+Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
 {
     if( !track || !track->hasCapabilityInterface( Meta::Capability::Editable ) )
         return;

@@ -391,7 +391,7 @@ QString CoverManager::amazonTld() //static
 }
 
 void
-CoverManager::metadataChanged( Meta::Album* album )
+CoverManager::metadataChanged( Meta::AlbumPtr album )
 {
     DEBUG_BLOCK
 

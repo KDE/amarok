@@ -54,7 +54,7 @@ namespace Amarok
 
              // reimplemented from Meta::Observer
             using Observer::metadataChanged;
-            void metadataChanged( Meta::Track *track );
+            void metadataChanged( Meta::TrackPtr track );
 
         protected:  /* reimpl from engineobserver */
             virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );

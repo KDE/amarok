@@ -20,12 +20,11 @@
 #define AMAROK_METAUTILITY_H
 
 #include "amarok_export.h"
+#include "Meta.h"
 
 #include <QMap>
 #include <QString>
 #include <QVariant>
-
-#include <KSharedPtr>
 
 // Taglib
 #include <taglib/fileref.h>
@@ -63,8 +62,8 @@ namespace Meta
         static const QString UNIQUEID       = "xesam:id";
 
 
-        AMAROK_EXPORT QVariantMap mapFromTrack( const Meta::Track *track );
-        AMAROK_EXPORT void updateTrack( Meta::Track *track, const QVariantMap &metadata );
+        AMAROK_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr track );
+        AMAROK_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
         AMAROK_EXPORT void writeFields( const QString &filename, const QVariantMap &changes );
         AMAROK_EXPORT void writeFields( TagLib::FileRef fileref, const QVariantMap &changes );
         AMAROK_EXPORT QString xesamPrettyToFullFieldName( const QString &name );

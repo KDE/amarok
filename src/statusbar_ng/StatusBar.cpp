@@ -179,8 +179,9 @@ void StatusBarNG::nextShortMessage()
 
 
 
-void StatusBarNG::metadataChanged( Meta::Track * track )
+void StatusBarNG::metadataChanged( Meta::TrackPtr track )
 {
+    Q_UNUSED( track );
     if ( m_currentTrack )
         updateInfo( m_currentTrack );
     else

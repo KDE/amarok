@@ -57,7 +57,7 @@ class AlbumItem : public QStandardItem, public Meta::Observer
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::Album *album );
+        virtual void metadataChanged( Meta::AlbumPtr album );
 
         virtual int type() const { return QStandardItem::UserType; }
 

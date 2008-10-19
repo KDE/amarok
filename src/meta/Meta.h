@@ -80,12 +80,12 @@ namespace Meta
 
             /** This method is called when the metadata of a track has changed.
                 The called class may not cache the pointer */
-            virtual void metadataChanged( Track *track );
-            virtual void metadataChanged( Artist *artist );
-            virtual void metadataChanged( Album *album );
-            virtual void metadataChanged( Genre *genre );
-            virtual void metadataChanged( Composer *composer );
-            virtual void metadataChanged( Year *year );
+            virtual void metadataChanged( TrackPtr track );
+            virtual void metadataChanged( ArtistPtr artist );
+            virtual void metadataChanged( AlbumPtr album );
+            virtual void metadataChanged( GenrePtr genre );
+            virtual void metadataChanged( ComposerPtr composer );
+            virtual void metadataChanged( YearPtr year );
             virtual ~Observer();
 
         private:

@@ -58,7 +58,7 @@ public:
    // void setCover( const QString &coverFile );
 
     using Observer::metadataChanged;
-    virtual void metadataChanged( Meta::Album *album ); //reimplemented from Observer
+    virtual void metadataChanged( Meta::AlbumPtr album ); //reimplemented from Observer
 
 signals:
     /**

@@ -437,13 +437,12 @@ Playlist::Model::stateOfId( quint64 id ) const
 }
 
 void
-Playlist::Model::metadataChanged( Meta::Track *track )
+Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
     const int size = m_items.size();
-    const Meta::TrackPtr needle =  Meta::TrackPtr( track );
     for ( int i = 0; i < size; i++ )
     {
-        if ( m_items.at( i )->track() == needle )
+        if ( m_items.at( i )->track() == track )
         {
             emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
             break;
@@ -452,12 +451,12 @@ Playlist::Model::metadataChanged( Meta::Track *track )
 }
 
 void
-Playlist::Model::metadataChanged( Meta::Album * album )
+Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 {
     Meta::TrackList tracks = album->tracks();
     foreach( Meta::TrackPtr track, tracks )
     {
-        metadataChanged( track.data() );
+        metadataChanged( track );
     }
 }
 

@@ -70,7 +70,7 @@ class CoverManager : public QSplitter, public Meta::Observer
 
         // Reimplemented from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::Album* album );
+        void metadataChanged( Meta::AlbumPtr album );
 
     public slots:
         void updateStatusBar();

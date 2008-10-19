@@ -141,7 +141,7 @@ IpodCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &track
         {
             continue;
         }
-        QVariantMap trackData = Meta::Field::mapFromTrack( track.data() );
+        QVariantMap trackData = Meta::Field::mapFromTrack( track );
         trackData.insert( Meta::Field::URL, trackMap[ track ] );  //store the new url of the file
         metadata.append( trackData );
         urls.append( trackMap[ track ] );

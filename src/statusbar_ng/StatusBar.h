@@ -74,7 +74,7 @@ public:
     void longMessageThreadSafe( const QString &text, MessageType type = Information );
 
     using Observer::metadataChanged;
-    void metadataChanged( Meta::Track *track );
+    void metadataChanged( Meta::TrackPtr track );
 
 public slots:
 

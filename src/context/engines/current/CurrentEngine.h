@@ -62,8 +62,8 @@ public:
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
-    void metadataChanged( Meta::Album* album );
-    void metadataChanged( Meta::Track *track );
+    void metadataChanged( Meta::AlbumPtr album );
+    void metadataChanged( Meta::TrackPtr track );
 
 protected:
     bool sourceRequested( const QString& name );

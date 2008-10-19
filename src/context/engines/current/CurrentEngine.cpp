@@ -128,14 +128,14 @@ CurrentEngine::stoppedState()
     m_qm->run();
 }
 
-void CurrentEngine::metadataChanged( Meta::Album* album )
+void CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
     DEBUG_BLOCK
     setData( "current", "albumart", album->image( coverWidth() ) );
 }
 
 void
-CurrentEngine::metadataChanged( Meta::Track *track )
+CurrentEngine::metadataChanged( Meta::TrackPtr track )
 {
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     setData( "current", "current", trackInfo );
@@ -165,7 +165,7 @@ void CurrentEngine::update()
 
     setData( "current", "notrack" , QString() );
 
-    QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack.data() );
+    QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack );
 
     int width = coverWidth();
     if( m_currentTrack->album() )

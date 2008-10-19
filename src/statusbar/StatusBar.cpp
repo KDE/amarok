@@ -155,7 +155,7 @@ MessageQueue::sendMessages()
      }
 }
 
-void Amarok::StatusBar::metadataChanged( Meta::Track * /*track*/ )
+void Amarok::StatusBar::metadataChanged( Meta::TrackPtr /*track*/ )
 {
     if ( m_currentTrack )
         updateInfo( m_currentTrack );

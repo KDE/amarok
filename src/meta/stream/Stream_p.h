@@ -36,21 +36,22 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
     Q_OBJECT
     public:
         Private( Track *t )
-        : EngineObserver( The::engineController() )
-        , track( t )
+            : EngineObserver( The::engineController() )
+            , track( t )
         {}
 
         void notify() const
         {
             foreach( Meta::Observer *observer, observers )
-            observer->metadataChanged( track );
+                observer->metadataChanged( Meta::TrackPtr( const_cast<MetaStream::Track*>(track) ) );
         }
 
         void engineNewMetaData( const QHash<qint64, QString> &metaData, bool trackChanged )
         {
             Q_UNUSED( trackChanged )
 
-            if( metaData.value( Meta::valUrl ) == url.url() ) {
+            if( metaData.value( Meta::valUrl ) == url.url() )
+            {
                 DEBUG_BLOCK
                 debug() << "Applying new Metadata.";
 
@@ -144,13 +145,8 @@ class StreamArtist : public Meta::Artist
         QString name() const
         {
             if( d )
-            {
                 return d->artist;
-            }
-            else
-            {
-                return QString();
-            }
+            return QString();
         }
 
         QString prettyName() const
@@ -193,8 +189,7 @@ public:
     {
         if( d )
             return d->album;
-        else
-            return QString();
+        return QString();
     }
 
     QString prettyName() const

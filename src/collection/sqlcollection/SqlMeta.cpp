@@ -904,8 +904,8 @@ class CompilationAction : public PopupDropperAction
     public:
         CompilationAction( QObject* parent, SqlAlbum *album )
             : PopupDropperAction( parent )
-            , m_album( album )
-            , m_isCompilation( album->isCompilation() )
+                , m_album( album )
+                , m_isCompilation( album->isCompilation() )
             {
                 connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
                 if( m_isCompilation )
@@ -1391,14 +1391,14 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
             actions.append( new CompilationAction( m_collection, this ) );
             
             PopupDropperAction *separator          = new PopupDropperAction( m_collection );
-            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
-            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, this );
+            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, Meta::AlbumPtr(this) );
+            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, Meta::AlbumPtr(this) );
 
             separator->setSeparator( true );
             actions.append( separator );
             actions.append( displayCoverAction );
-            actions.append( new FetchCoverAction( m_collection, this ) );
-            actions.append( new SetCustomCoverAction( m_collection, this ) );
+            actions.append( new FetchCoverAction( m_collection, Meta::AlbumPtr(this) ) );
+            actions.append( new SetCustomCoverAction( m_collection, Meta::AlbumPtr(this) ) );
             if( !hasImage() )
             {
                 displayCoverAction->setEnabled( false );

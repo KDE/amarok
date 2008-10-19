@@ -30,11 +30,11 @@ TrackItem::setTrack( Meta::TrackPtr trackPtr )
     m_track = trackPtr;
     subscribeTo( m_track );
 
-    metadataChanged( m_track.data() );
+    metadataChanged( m_track );
 }
 
 void
-TrackItem::metadataChanged( Meta::Track *track )
+TrackItem::metadataChanged( Meta::TrackPtr track )
 {
     int trackNumber = track->trackNumber();
     QString trackName = track->prettyName();

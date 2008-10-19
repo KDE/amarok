@@ -173,7 +173,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
     coverPixmapLabel->setPixmap( QPixmap( coverFile ) );
 }*/
 
-void MagnatunePurchaseDialog::metadataChanged(Album * album)
+void MagnatunePurchaseDialog::metadataChanged( AlbumPtr album )
 {
     coverPixmapLabel->setPixmap( album->image( 200 ) );
 }

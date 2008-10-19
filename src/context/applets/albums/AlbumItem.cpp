@@ -35,7 +35,7 @@ AlbumItem::setAlbum( Meta::AlbumPtr albumPtr )
     m_album = albumPtr;
     subscribeTo( m_album );
 
-    metadataChanged( m_album.data() );
+    metadataChanged( m_album );
 }
 
 void
@@ -56,12 +56,12 @@ AlbumItem::setShowArtist( const bool showArtist )
     if( showArtist != m_showArtist )
     {
         m_showArtist = showArtist;
-        metadataChanged( m_album.data() );
+        metadataChanged( m_album );
     }
 }
 
 void
-AlbumItem::metadataChanged( Meta::Album *album )
+AlbumItem::metadataChanged( Meta::AlbumPtr album )
 {
     QString albumName = album->name();
     albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;

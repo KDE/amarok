@@ -167,37 +167,37 @@ Meta::Observer::unsubscribeFrom( YearPtr ptr )
 }
 
 void
-Meta::Observer::metadataChanged( Track *track )
+Meta::Observer::metadataChanged( TrackPtr track )
 {
     Q_UNUSED( track );
 }
 
 void
-Meta::Observer::metadataChanged( Artist *artist )
+Meta::Observer::metadataChanged( ArtistPtr artist )
 {
     Q_UNUSED( artist );
 }
 
 void
-Meta::Observer::metadataChanged( Album *album )
+Meta::Observer::metadataChanged( AlbumPtr album )
 {
     Q_UNUSED( album );
 }
 
 void
-Meta::Observer::metadataChanged( Composer *composer )
+Meta::Observer::metadataChanged( ComposerPtr composer )
 {
     Q_UNUSED( composer );
 }
 
 void
-Meta::Observer::metadataChanged( Genre *genre )
+Meta::Observer::metadataChanged( GenrePtr genre )
 {
     Q_UNUSED( genre );
 }
 
 void
-Meta::Observer::metadataChanged( Year *year )
+Meta::Observer::metadataChanged( YearPtr year )
 {
     Q_UNUSED( year );
 }
@@ -290,7 +290,7 @@ Meta::Track::notifyObservers() const
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( const_cast<Meta::Track*>( this ) );
+            observer->metadataChanged( Meta::TrackPtr( const_cast<Meta::Track*>(this) ) );
     }
 }
 
@@ -346,7 +346,7 @@ Meta::Artist::notifyObservers() const
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( const_cast<Meta::Artist*>( this ) );
+            observer->metadataChanged( Meta::ArtistPtr( const_cast<Meta::Artist*>(this) ) );
     }
 }
 
@@ -372,7 +372,7 @@ Meta::Album::notifyObservers() const
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( const_cast<Meta::Album*>( this ) );
+            observer->metadataChanged( Meta::AlbumPtr( const_cast<Meta::Album*>(this) ));
     }
 }
 
@@ -443,14 +443,16 @@ Meta::Genre::notifyObservers() const
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( const_cast<Meta::Genre*>( this ) );
+        {
+            observer->metadataChanged( Meta::GenrePtr( const_cast<Meta::Genre*>(this) ) );
+        }
     }
 }
 
 bool
 Meta::Genre::operator==( const Meta::Genre &genre ) const
 {
-    return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &genre );
+    return dynamic_cast<const void*>( this ) == dynamic_cast<const void*>( &genre );
 }
 
 //Meta::Composer
@@ -467,7 +469,7 @@ Meta::Composer::notifyObservers() const
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( const_cast<Meta::Composer*>( this ) );
+            observer->metadataChanged( Meta::ComposerPtr( const_cast<Meta::Composer*>(this) ) );
     }
 }
 
@@ -491,7 +493,7 @@ Meta::Year::notifyObservers() const
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( const_cast<Meta::Year*>( this ) );
+            observer->metadataChanged( Meta::YearPtr( const_cast<Meta::Year *>(this) ) );
     }
 }
 

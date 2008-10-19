@@ -73,13 +73,15 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             DEBUG_BLOCK
             if( proxy )
             {
-                foreach( Meta::Observer *observer, observers ) {
-                    if( observer != this ) observer->metadataChanged( proxy );
+                foreach( Meta::Observer *observer, observers )
+                {
+                    if( observer != this )
+                        observer->metadataChanged( Meta::TrackPtr( const_cast<MetaProxy::Track*>(proxy) ) );
                 }
             }
         }
         using Observer::metadataChanged;
-        void metadataChanged( Meta::Track *track )
+        void metadataChanged( Meta::TrackPtr track )
         {
             Q_UNUSED( track )
             DEBUG_BLOCK
