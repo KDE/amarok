@@ -62,8 +62,8 @@ loadPlaylist( const KUrl &url )
     QFile file;
     PlaylistPtr playlist;
 
-    if ( url.isLocalFile() ){
-
+    if ( url.isLocalFile() )
+    {
         debug() << "local file";
 
         file.setFileName( url.path() );
@@ -74,21 +74,18 @@ loadPlaylist( const KUrl &url )
             The::statusBarNG()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
             return playlist;
         }
-    } else {
-
+    }
+    else
+    {
         debug() << "remote file: " << url;
-
         //FIXME: for now, just do a blocking download... Someone please come up with a better way...
 
-        
         KTemporaryFile tempFile;
 
         tempFile.setSuffix(  '.' + Amarok::extension( url.url() ) );
         tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
         if( !tempFile.open() )
-        {
             return playlist; //error
-        }
 
 
         QString tempFileName = tempFile.fileName();
@@ -104,12 +101,11 @@ loadPlaylist( const KUrl &url )
 
         if ( !job->exec() ) //Job deletes itself after execution
         {
-            debug() << "error";
+            error() << "error";
             return playlist;
         }
         else
         {
-            debug() << "gotcha: " << tempFileName;
             file.setFileName( tempFileName );
             if ( !file.open( QFile::ReadOnly ) )
             {
@@ -146,7 +142,6 @@ loadPlaylist( const KUrl &url )
     }
 
     return playlist;
-
 }
 
 }
