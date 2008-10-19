@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
+    * Service scripts can now specify custom info for artist, album and friends
+      that will be shown in the playlist and other places, independetly of
+      their actual parent item in the service. This value is ignored if item
+      is not a level 0 item. Specifying these values is completely optional.
     * Playlists can be added using the Add Media dialogs.
     * Collection browser can be listed by Year - Album grouping.
     * Albums applet shows disc number separators.
@@ -16,6 +20,9 @@ VERSION 2.0-beta3
       the file browser's context menu.
 
   CHANGES:
+    * XSPF playlists will now attempt to apply any stored metadata to items
+      not owned by a service when loading. This will make many streams stored 
+      on shutdown appear with correct metadata after a restart of Amarok.
     * Scripted services are now able to set the infoHtml used in the
       service info applet for individual tracks.
     * The default lyrics script now uses the LyricWiki site, which is more
