@@ -98,13 +98,13 @@ class OrganiseCapabilityImpl : public Meta::OrganiseCapability
         KSharedPtr<SqlTrack> m_track;
 };
 
-class UpdateCapabilitySql : public Meta::UpdateCapability
+class UpdateCapabilityImpl : public Meta::UpdateCapability
 {
     Q_OBJECT
     public:
-        UpdateCapabilitySql( SqlTrack *track )
-    : Meta::UpdateCapability()
-                , m_track( track ) {}
+        UpdateCapabilityImpl( SqlTrack *track )
+            : Meta::UpdateCapability()
+            , m_track( track ) {}
 
         virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
 
@@ -776,12 +776,10 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
         }
 
         case Meta::Capability::Organisable:
-        {
             return new OrganiseCapabilityImpl( this );
-        }
 
         case Meta::Capability::Updatable:
-            return new UpdateCapabilitySql( this );
+            return new UpdateCapabilityImpl( this );
 
         default:
             return 0;
