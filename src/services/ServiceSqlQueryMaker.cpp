@@ -334,7 +334,7 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
-    const ServiceAlbum * serviceAlbum = dynamic_cast<const ServiceAlbum *>( album.data() );
+    const ServiceAlbumPtr serviceAlbum = ServiceAlbumPtr::dynamicCast( album );
     if( !d || !serviceAlbum )
         return this;
 
