@@ -78,6 +78,7 @@ public:
     const Phonon::MediaObject* phononMediaObject() const { return m_media; } //!const so that it's only used by DBus for info
     int volume() const;
     bool isMuted() const;
+    bool isPaused() const;
     bool loaded() { return phononMediaObject()->state() != Phonon::StoppedState; }
     bool getAudioCDContents(const QString &device, KUrl::List &urls);
     bool isStream();

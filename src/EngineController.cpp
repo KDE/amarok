@@ -360,6 +360,12 @@ EngineController::stop( bool forceInstant ) //SLOT
     m_currentTrack = 0;
 }
 
+bool
+EngineController::isPaused() const
+{
+    return m_media->state() == Phonon::PausedState;
+}
+
 void
 EngineController::playPause() //SLOT
 {
