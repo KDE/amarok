@@ -50,16 +50,6 @@ MediaDeviceMonitor::init()
 {
     DEBUG_BLOCK
 
-
-    /* Refresh cache */
-//    MediaDeviceCache::instance()->refreshCache();
-//    QStringList udiList = MediaDeviceCache::instance()->getAll();
-
-    /* check cache for supported devices */
-
-//    checkDevices( udiList );
-
-
     // connect to device cache so new devices are tested too
     connect(  MediaDeviceCache::instance(),  SIGNAL(  deviceAdded( const QString& ) ),
               SLOT(  deviceAdded( const QString& ) ) );
@@ -135,16 +125,11 @@ MediaDeviceMonitor::deviceAdded(  const QString &udi )
 {
     DEBUG_BLOCK
 
-            debug() << "New device added, testing...";
-
-    // TODO: write convenience method that takes in 1 udi
-
     QStringList udiList;
 
+    debug() << "New device added, testing...";
+
     udiList.append( udi );
-
-    // send new udi for testing
-
     checkDevices();
 
     return;
@@ -162,8 +147,6 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 
     return;
 }
-
-// TODO: this logic isn't entirely right, fix it
 
 void
 MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & udi)
@@ -216,7 +199,7 @@ MediaDeviceMonitor::isMtp( const QString &udi )
         return false;
 
     Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
-    
+
     foreach( QString protocol, pmp->supportedProtocols() )
     {
         if( protocol == "mtp" )
