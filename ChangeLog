@@ -50,8 +50,8 @@ VERSION 2.0-beta3
     * MPRIS Dbus interface Pause function conforms is a Play/Pause action.
       (BR 173007)
     * Script downloads using KNewStuff2 now correctly installs and uninstalls
-      scripts
-    * Fix memleak in iPod handler.  Thanks to Christophe Fergeau.
+      scripts.
+    * Fix memleak in iPod handler. Thanks to Christophe Fergeau.
     * Wikipedia applet: Fix infinite retry loop if no artist information is 
       found. (BR 171074)
     * First track of an album in the playlist can now be dragged seperately
@@ -69,7 +69,7 @@ VERSION 2.0-beta3
     * Statusbar rewrite: Don't hang on exit. (BR 171665)
     * When searching in the collection, give keyboard focus to the results
       after pressing Enter. (BR 172379)
-    * Do no try to run 2 different lyrics script per default.
+    * Do not set two different lyrics scripts as default.
     * File sizes for non-collection local tracks are now determined properly.
     * Track rating and score are now enabled for read-only files too.
     * Play option from playlist context menu works now. (BR 172141)
