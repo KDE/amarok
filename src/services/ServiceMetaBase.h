@@ -119,7 +119,6 @@ typedef KSharedPtr<ServiceGenre> ServiceGenrePtr;
 typedef KSharedPtr<ServiceComposer> ServiceComposerPtr;
 typedef KSharedPtr<ServiceYear> ServiceYearPtr;
 
-
 typedef QList<ServiceTrackPtr > ServiceTrackList;
 typedef QList<ServiceArtistPtr > ServiceArtistList;
 typedef QList<ServiceAlbumPtr > ServiceAlbumList;

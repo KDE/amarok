@@ -152,7 +152,6 @@ ServiceSqlQueryMaker::run()
     }
     else
     {
-        debug() << "Query is " << query();
         d->worker = new ServiceSqlWorkerThread( this );
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
@@ -552,7 +551,6 @@ ServiceSqlQueryMaker::runQuery( const QString &query )
    if( d->albumMode == OnlyCompilations )
        return QStringList();
 
-    //debug() << "Query string: " << query;
     return m_collection->query( query );
 }
 
@@ -560,7 +558,6 @@ void
 ServiceSqlQueryMaker::handleResult( const QStringList &result )
 {
     DEBUG_BLOCK
-    //debug() << "Result length: " << result.count();
     if( !result.isEmpty() )
     {
         switch( d->queryType ) {
@@ -647,14 +644,11 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 
     int resultRows = result.count() / rowCount;
 
-    //debug() << "number of result rows: " << resultRows;
     for( int i = 0; i < resultRows; i++ )
     {
         QStringList row = result.mid( i*rowCount, rowCount );
 
         TrackPtr trackptr =  m_registry->getTrack( row );
-
-       // trackptr->setAlbum( );
         tracks.append( trackptr );
     }
 
@@ -682,20 +676,13 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
 {
     DEBUG_BLOCK
     AlbumList albums;
-    // SqlRegistry* reg = m_collection->registry();
     int rowCount = m_metaFactory->getAlbumSqlRowCount() +  m_metaFactory->getArtistSqlRowCount();
     int resultRows = result.size() / rowCount;
 
-    //debug() << "got " << result.size() << " rows";
-    //debug() << "at " << rowCount << "row per item";
-
     for( int i = 0; i < resultRows; i++ )
     {
-        debug() << i;
         QStringList row = result.mid( i*rowCount, rowCount );
-        //debug() << "row: " << row;
         albums.append( m_registry->getAlbum( row ) );
-        //debug() << "got one!";
     }
     emitProperResult<AlbumPtr, AlbumList>( albums );
 }
