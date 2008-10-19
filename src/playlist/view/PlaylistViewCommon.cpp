@@ -43,6 +43,22 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
 
     KMenu *menu = new KMenu( parent );
 
+    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
+    playAction->setData( index->row() );
+    QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
+
+    menu->addAction( playAction );
+    
+    //menu->addSeparator();
+    //menu->addAction( i18n( "Show active track" ), parent, SLOT( scrollToActiveTrack() ) ); // FIXME: enable this after string freeze
+    //( menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), parent, SLOT( queueItem() ) ) )->setEnabled( false );
+    //( menu->addAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After Track" ), parent, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
+    
+    menu->addSeparator();
+    ( menu->addAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
+    menu->addSeparator();
+    menu->addAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent, SLOT( editTrackInformation() ) );
+
     //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
     if ( index->data( Playlist::ActiveTrackRole ).toBool() )
     {
@@ -59,22 +75,6 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
         }
     }
     menu->addSeparator();
-
-    KAction *playAction = new KAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
-    playAction->setData( index->row() );
-    QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
-
-    menu->addAction( playAction );
-    
-    //menu->addSeparator();
-    //menu->addAction( i18n( "Show active track" ), parent, SLOT( scrollToActiveTrack() ) ); // FIXME: enable this after string freeze
-    //( menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), parent, SLOT( queueItem() ) ) )->setEnabled( false );
-    //( menu->addAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After Track" ), parent, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
-    
-    menu->addSeparator();
-    ( menu->addAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent, SLOT( removeSelection() ) ) )->setEnabled( true );
-    menu->addSeparator();
-    menu->addAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent, SLOT( editTrackInformation() ) );
 
     if ( coverActions )
     {
