@@ -72,8 +72,6 @@ class Meta::ScriptableServiceTrack::Private : public QObject
         , track( t )
         {}
 
-    public:
-
         Meta::AlbumPtr album;
         Meta::ArtistPtr artist;
         Meta::GenrePtr genre;
