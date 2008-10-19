@@ -275,7 +275,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     //try to detect these cases
     QString albumName = trackData.value( Field::ALBUM ).toString();
     int album = 0;
-    QFileInfo file( trackData.value( Field::URL ).toString() );
+    QString path = trackData.value( Field::URL ).toString();
+    QFileInfo file( path );
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
     //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
@@ -305,8 +306,11 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     QString uid = trackData.value( Field::UNIQUEID ).toString();
 
+    const int created  = file.created().toTime_t();
+    const int modified = file.lastModified().toTime_t();
+
     //urlId will take care of the urls table part of AFT
-    int url = urlId( trackData.value( Field::URL ).toString(), uid );
+    int url = urlId( path, uid );
 
     QString sql,sql2;
     sql = "REPLACE INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
@@ -327,7 +331,11 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                 , QString::number( trackData[Field::BITRATE].toInt() )
                 , QString::number( trackData[Field::LENGTH].toInt() )
                 , QString::number( trackData[Field::SAMPLERATE].toInt() )
-                , QString::number( trackData[Field::FILESIZE].toInt() ), "0", "0", "0", "0" ); //filetype,bpm, createdate, modifydate not implemented yet
+                , QString::number( trackData[Field::FILESIZE].toInt() )
+                , "0" // NYI: filetype
+                , "0" // NYI: bpm
+                , QString::number( created )
+                , QString::number( modified ) );
     sql += sql2;
 
     m_collection->query( sql );
