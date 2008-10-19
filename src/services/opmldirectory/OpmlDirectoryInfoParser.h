@@ -27,10 +27,8 @@
 
 
 /**
-Handles the fetching and processing of Jamendo specific information for meta items
-
-	@author
-*/
+ * Handles the fetching and processing of Jamendo specific information for meta items
+ */
 class OpmlDirectoryInfoParser : public InfoParserBase
 {
 Q_OBJECT
@@ -40,7 +38,6 @@ public:
 
     ~OpmlDirectoryInfoParser();
 
-
     virtual void getInfo( Meta::ArtistPtr artist );
     virtual void getInfo( Meta::AlbumPtr album );
     virtual void getInfo( Meta::TrackPtr track );
@@ -49,11 +46,9 @@ private:
     KJob * m_rssDownloadJob;
     
 private slots:
-
     void rssDownloadComplete( KJob *downLoadJob );
     
 signals:
-
     void info( QString );
 };
 
