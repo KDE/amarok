@@ -17,8 +17,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-
-
 #include "OpmlDirectoryMeta.h"
 
 #include "OpmlDirectoryService.h"
@@ -59,18 +57,9 @@ OpmlDirectoryFeed::OpmlDirectoryFeed( const QStringList & resultRow )
 
 QList< PopupDropperAction * > Meta::OpmlDirectoryFeed::customActions()
 {
-    DEBUG_BLOCK
     QList< PopupDropperAction * > actions;
-   /* QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
-
-    JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
-
-    QObject::connect( action, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
-
-    actions.append( action );*/
     return actions;
 }
-
 
 
 OpmlDirectoryCategory::OpmlDirectoryCategory( const QString & name )

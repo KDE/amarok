@@ -33,17 +33,15 @@ class OpmlDirectoryService;
 class OpmlDirectoryMetaFactory : public ServiceMetaFactory
 {
 
-public:
-    OpmlDirectoryMetaFactory( const QString &dbPrefix, OpmlDirectoryService * service );
-    virtual ~OpmlDirectoryMetaFactory() {}
+    public:
+        OpmlDirectoryMetaFactory( const QString &dbPrefix, OpmlDirectoryService *service );
+        virtual ~OpmlDirectoryMetaFactory() {}
 
-    virtual Meta::TrackPtr createTrack( const QStringList &rows );
-    virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
+        virtual Meta::TrackPtr createTrack( const QStringList &rows );
+        virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
 
-private:
-
-    OpmlDirectoryService * m_service;
-
+    private:
+        OpmlDirectoryService * m_service;
 };
 
 
@@ -52,14 +50,11 @@ namespace Meta
 
 class OpmlDirectoryFeed  : public ServiceTrack
 {
+    public:
+        OpmlDirectoryFeed( const QString &name, const QString &url );
+        OpmlDirectoryFeed( const QStringList &resultRow );
 
-
-public:
-    OpmlDirectoryFeed( const QString &name, const QString &url );
-    OpmlDirectoryFeed( const QStringList &resultRow );
-
-    virtual QList< PopupDropperAction *> customActions();
-
+        virtual QList< PopupDropperAction *> customActions();
 };
 
 class OpmlDirectoryCategory  : public ServiceAlbum
