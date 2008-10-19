@@ -67,9 +67,6 @@ public:
     MyDirOperator( const KUrl &url, QWidget *parent );
     ~MyDirOperator();
 
-protected:
-    virtual void showEvent( QShowEvent *event );
-
 private slots:
     void aboutToShowContextMenu();
     void fileSelected( const KFileItem & /*file*/ );

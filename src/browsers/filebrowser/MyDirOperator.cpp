@@ -43,9 +43,14 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
 {
     DEBUG_BLOCK
 
-    MyDirLister* dirlister = new MyDirLister( true );
+    MyDirLister *dirlister = new MyDirLister( true );
     dirlister->setMainWindow( The::mainWindow() );
     setDirLister( dirlister );
+
+    setView( KFile::Simple );
+    view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    view()->setContentsMargins( 0, 0, 0, 0 );
+    view()->setFrameShape( QFrame::NoFrame );
 
     connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
              this,   SLOT( fileSelected( const KFileItem& ) ) );
@@ -66,20 +71,6 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
 
 MyDirOperator::~MyDirOperator()
 {}
-
-// FIXME: workaround: this code has to be moved to the constructor once we know the real reason of
-//        why sometimes the itemview appears empty and sometimes with items. It seems to be some
-//        kind of race condition, but I need to find out why. On the meanwhile, make this work
-//        correctly (ereslibre).
-void MyDirOperator::showEvent( QShowEvent *event )
-{
-    setView( KFile::Simple );
-    view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    view()->setContentsMargins( 0, 0, 0, 0 );
-    view()->setFrameShape( QFrame::NoFrame );
-
-    KDirOperator::showEvent( event );
-}
 
 void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
 {
