@@ -24,18 +24,22 @@
 #include "../ServiceMetaBase.h"
 
 /**
-meta types for use in the dynamic scriptable service. Nearly identical to the ServiceMetaBse types, except for a field for storing data to pass to the script to fetch child items for Genres, Artists and Albums and a level specifier
+    Meta types for use in the dynamic scriptable service. Nearly identical to 
+    the ServiceMetaBse types, except for a field for storing data to 
+    pass to the script to fetch child items for Genres, Artists and Albums 
+    and a level specifier
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
 
 namespace Meta
 {
 
+class
+
 class ScriptableServiceMetaItem
 {
-
     public:
         ScriptableServiceMetaItem( int level );
     
@@ -43,15 +47,15 @@ class ScriptableServiceMetaItem
         QString callbackString() const;
         int level() const;
 
-        void setServiceName( const QString & name );
-        void setServiceDescription( const QString & description );
-        void setServiceEmblem( const QPixmap & emblem );
+        void setServiceName( const QString &name );
+        void setServiceDescription( const QString &description );
+        void setServiceEmblem( const QPixmap &emblem );
 
-    
     protected:
-    
-        /* this is arbitrary string data to pass back to the script. This can be whatever
-        information the script needs to fetch the children of this item... */
+        /*
+         * This is arbitrary string data to pass back to the script. This can be whatever
+         * information the script needs to fetch the children of this item...
+         */
         QString m_callbackString;
         int m_level;
         QString m_serviceName;
@@ -63,13 +67,12 @@ class ScriptableServiceMetaItem
 class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceTrack( const QString & name, const QString & url );
-        ScriptableServiceTrack( const QStringList & resultRow );
+        ScriptableServiceTrack( const QString &name, const QString &url );
+        ScriptableServiceTrack( const QStringList &resultRow );
 
         virtual QString sourceName();
         virtual QString sourceDescription();
         virtual QPixmap emblem();
-
 
         virtual Meta::AlbumPtr album() const;
         virtual Meta::ArtistPtr artist() const;
@@ -77,58 +80,51 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         virtual Meta::ComposerPtr composer() const;
         virtual Meta::YearPtr year() const;
         
-        void setAlbumName( const QString  &newAlbum );
-        void setArtistName( const QString  &newArtist );
-        void setGenreName( const QString  &newGenre );
-        void setComposerName(  const QString  &newComposer );
+        void setAlbumName( const QString &newAlbum );
+        void setArtistName( const QString &newArtist );
+        void setGenreName( const QString &newGenre );
+        void setComposerName( const QString &newComposer );
         void setYearNumber( int newYear );
 
-        class Private;
     private:
+        class Private;
         Private * const d;
-
 };
 
 class ScriptableServiceAlbum : public Meta::ServiceAlbum, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceAlbum( const QString & name );
-        ScriptableServiceAlbum( const QStringList & resultRow );
-
+        ScriptableServiceAlbum( const QString &name );
+        ScriptableServiceAlbum( const QStringList &resultRow );
 };
 
 class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceArtist( const QString & name );
-        ScriptableServiceArtist( const QStringList & resultRow );
+        ScriptableServiceArtist( const QString &name );
+        ScriptableServiceArtist( const QStringList &resultRow );
 
         void setGenreId( int artistId );
-        int genreId( ) const;
+        int genreId() const;
 
     private:
-
         int m_genreId;
-
 };
 
 
 class ScriptableServiceGenre : public Meta::ServiceGenre, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceGenre( const QString & name );
-        ScriptableServiceGenre( const QStringList & resultRow );
+        ScriptableServiceGenre( const QString &name );
+        ScriptableServiceGenre( const QStringList &resultRow );
 
         void setDescription( const QString &description );
         QString description();
 
     private:
         QString m_description;
-
 };
 
 }
-
-
 
 #endif
