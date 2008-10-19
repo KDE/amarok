@@ -18,6 +18,7 @@
 #include "Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
+#include "dialogs/TagDialog.h"
 #include "playlist/PlaylistController.h"
 
 #include <QGraphicsSceneContextMenuEvent>
@@ -143,13 +144,17 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
     KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
     KAction *loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+    KAction *editAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
     
     connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendSelected() ) );
     connect( loadAction  , SIGNAL( triggered() ), this, SLOT( slotPlaySelected() ) );
+    connect( editAction  , SIGNAL( triggered() ), this, SLOT( slotEditSelected() ) );
 
     KMenu menu;
     menu.addAction( appendAction );
     menu.addAction( loadAction );
+    menu.addSeparator();
+    menu.addAction( editAction );
 
     menu.exec( event->screenPos() );
 }
@@ -166,6 +171,17 @@ AlbumsView::slotPlaySelected()
 {
     Meta::TrackList selected = getSelectedTracks();
     The::playlistController()->insertOptioned( selected, Playlist::Replace );
+}
+
+void
+AlbumsView::slotEditSelected()
+{
+    Meta::TrackList selected = getSelectedTracks();
+    if( !selected.isEmpty() )
+    {
+        TagDialog *dialog = new TagDialog( selected );
+        dialog->show();
+    }
 }
 
 Meta::TrackList

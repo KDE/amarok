@@ -60,6 +60,7 @@ protected:
 private slots:
     void itemClicked( const QModelIndex &index );
     void slotAppendSelected();
+    void slotEditSelected();
     void slotPlaySelected();
 
 private:

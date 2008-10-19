@@ -22,6 +22,7 @@
 
 #include <config-amarok.h>
 
+#include "amarok_export.h"
 #include "ktrm.h"
 #include "playlist/PlaylistItem.h"
 
@@ -45,7 +46,7 @@ namespace Ui
 class QueryMaker;
 class QComboBox;
 
-class TagDialog : public KDialog
+class AMAROK_EXPORT TagDialog : public KDialog
 {
     Q_OBJECT
 
