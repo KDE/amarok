@@ -24,6 +24,7 @@
 #include <QPixmap>
 #include <QString>
 #include <KSvgRenderer>
+#include <KPixmapCache>
 
 #include "amarok_export.h"
 
@@ -80,6 +81,8 @@ class AMAROK_EXPORT SvgHandler : public QObject
     private:
         SvgHandler( QObject* parent );
         ~SvgHandler();
+
+        KPixmapCache * m_cache;
 
         class Private;
         Private * const d;

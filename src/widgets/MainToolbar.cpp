@@ -38,7 +38,7 @@
 #include <KVBox>
 
 #include <QPainter>
-#include <QPixmapCache>
+#include <KPixmapCache>
 #include <QResizeEvent>
 #include <QVBoxLayout>
 

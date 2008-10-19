@@ -60,7 +60,7 @@
 #include <QDesktopWidget>
 #include <QList>
 #include <QVBoxLayout>
-#include <QPixmapCache>
+#include <KPixmapCache>
 
 #include <kabstractfilewidget.h> //savePlaylist()
 #include <KAction>          //m_actionCollection
@@ -1008,7 +1008,8 @@ MainWindow::paletteChange(const QPalette & oldPalette)
 {
     Q_UNUSED( oldPalette )
 
-    QPixmapCache::clear();
+    KPixmapCache cache( "Amarok-pixmaps" );
+    cache.discard();
     The::paletteHandler()->setPalette( palette() );
 }
 

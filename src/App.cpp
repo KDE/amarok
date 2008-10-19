@@ -69,7 +69,7 @@ email                : markey@web.de
 #include <QDBusReply>
 #include <QEventLoop>                   //applySettings()
 #include <QFile>
-#include <QPixmapCache>
+#include <KPixmapCache>
 #include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QToolTip>                     //default tooltip for trayicon
@@ -135,7 +135,8 @@ App::App()
 
 
     //make sure we have enough cache space for all our crazy svg stuff
-    QPixmapCache::setCacheLimit ( 20 * 1024 );
+    KPixmapCache cache( "Amarok-pixmaps" );
+    cache.setCacheLimit ( 20 * 1024 );
 
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
