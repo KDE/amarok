@@ -487,10 +487,12 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     KUrl::List files;
     KFileDialog dlg( KUrl(QString()), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
-    dlg.setMode( KFile::Files | KFile::Directory );
+    dlg.setMode( KFile::Files /*| KFile::Directory */); // Directory mode is fucked up - selects the parent dir
     dlg.exec();
     files = dlg.selectedUrls();
-    if( files.isEmpty() ) return;
+    
+    if( files.isEmpty() )
+        return;
 
     The::playlistController()->insertOptioned( files , Playlist::Append );
 }
