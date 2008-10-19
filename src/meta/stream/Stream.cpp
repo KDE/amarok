@@ -52,9 +52,8 @@ QString
 Track::name() const
 {
     if( d->title.isEmpty() )
-        return i18n( "Stream (" ) + d->url.url() + ')';
-    else
-        return d->title;
+        return i18n( "Stream (%1)" ).arg( d->url.url() );
+    return d->title;
 }
 
 QString
