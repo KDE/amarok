@@ -89,7 +89,8 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
     }
     debug() << "filekey: " << filekey;
     
-    Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( QString(), url.url() );
+    Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( QString() );
+    serviceTrack->setUidUrl( url.url() );
     
     Mp3tunesTrackFromFileKeyFetcher* trackFetcher = new Mp3tunesTrackFromFileKeyFetcher( m_locker, filekey );
     m_tracksFetching[filekey] = serviceTrack;
@@ -148,7 +149,7 @@ void Mp3tunesServiceCollection::trackForUrlComplete( Mp3tunesLockerTrack &track 
     serviceTrack->setArtist( artistPtr );
     serviceAlbum->setArtistName( name );
     serviceAlbum->setAlbumArtist( artistPtr );
-    serviceTrack->update( Meta::TrackPtr( serviceTrack ) );
+//    serviceTrack->update( Meta::TrackPtr( serviceTrack ) );
 }
 
 Mp3tunesLocker* Mp3tunesServiceCollection::locker() const

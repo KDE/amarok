@@ -129,7 +129,7 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
 
     element = song.firstChildElement("url");
    
-    m_urlTrack = new AmpacheTrack( title, element.text(), service() );
+    m_urlTrack = new AmpacheTrack( title, service() );
     TrackPtr trackPtr( m_urlTrack );
     
     //debug() << "Adding track: " <<  title;

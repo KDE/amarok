@@ -41,7 +41,7 @@ class Mp3TunesTrack  : public ServiceTrack
 
     public:
 
-        Mp3TunesTrack( const QString& title, const QString& url );
+        Mp3TunesTrack( const QString& title );
 
         virtual QString sourceName();
         virtual QString sourceDescription();

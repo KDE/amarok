@@ -304,7 +304,7 @@ JamendoXmlParser::parseTrack( const  QDomElement &e)
     }
     int id = e.attribute( "id", "0" ).toInt();
     QString uidUrl = "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( id ) + "/?aue=ogg2";
-    JamendoTrack currentTrack ( name, uidUrl );
+    JamendoTrack currentTrack ( name );
     currentTrack.setId( id );
     currentTrack.setUidUrl( uidUrl );
     currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );

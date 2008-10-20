@@ -125,10 +125,8 @@ ServiceMetaFactory::createGenre(const QStringList & rows)
     return GenrePtr( new ServiceGenre ( rows ) );
 }
 
-
-
-ServiceTrack::ServiceTrack( const QString & name, const QString & url )
-    : MetaProxy::Track( KUrl( url ), true )
+ServiceTrack::ServiceTrack( const QString & name )
+    : Meta::Track()
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
@@ -137,7 +135,7 @@ ServiceTrack::ServiceTrack( const QString & name, const QString & url )
     , m_composer( 0 )
     , m_year( 0 )
     , m_id( 0 )
-    , m_trackNumber( 0 )
+    , m_trackNumber( 0 )    
     , m_length( 0 )
     , m_displayUrl( 0 )
     , m_playableUrl( 0 )
@@ -146,36 +144,12 @@ ServiceTrack::ServiceTrack( const QString & name, const QString & url )
     , m_albumName( 0 )
     , m_artistId( 0 )
     , m_artistName( 0 )
-    , m_forwardToProxy( true )
-{
-    setTitle( name );
-}
-
-ServiceTrack::ServiceTrack( const QString & url )
-    : MetaProxy::Track( KUrl( url ), true )
-    , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
-    , SourceInfoProvider()
-    , CurrentTrackActionsProvider()
-    , m_genre( 0 )
-    , m_composer( 0 )
-    , m_year( 0 )
-    , m_id( 0 )
-    , m_trackNumber( 0 )
-    , m_length( 0 )
-    , m_displayUrl( 0 )
-    , m_playableUrl( 0 )
-    , m_downloadableUrl( 0 )
-    , m_albumId( 0 )
-    , m_albumName( 0 )
-    , m_artistId( 0 )
-    , m_artistName( 0 )
-    , m_forwardToProxy( true )
+    , m_name( name )
 {
 }
 
 ServiceTrack::ServiceTrack( const QStringList & resultRow )
-    : MetaProxy::Track( resultRow[4], true )
+    : Meta::Track()
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
@@ -183,10 +157,9 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
-    , m_forwardToProxy( true )
 {
     m_id = resultRow[0].toInt();
-    setTitle( resultRow[1] );
+    m_name = resultRow[1];
     m_trackNumber = resultRow[2].toInt();
     m_length = resultRow[3].toInt();
     m_displayUrl = resultRow[4];
@@ -202,20 +175,6 @@ ServiceTrack::~ServiceTrack()
 {
     //nothing to do
 }
-
-void
-ServiceTrack::refresh( TrackProvider *provider )
-{
-    this->lookupTrack( provider );
-}
-
-void
-ServiceTrack::update( Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-    updateTrack( track );
-}
-
 
 void
 ServiceTrack::setId(int id)
@@ -256,9 +215,6 @@ ServiceTrack::artistId() const
 QString
 ServiceTrack::name() const
 {
-    if( m_forwardToProxy )
-        return MetaProxy::Track::name();
-
     return m_name;
 }
 
@@ -306,11 +262,6 @@ void
 ServiceTrack::setDownloadableUrl(const QString & url)
 {
     m_downloadableUrl = url;
-}
-
-void ServiceTrack::setForwardToProxy( bool forward )
-{
-    m_forwardToProxy = forward;
 }
 
 bool
@@ -550,7 +501,6 @@ void
 ServiceTrack::setTitle( const QString &title )
 {
     m_name = title;
-    setName( title );
 }
 
 void
@@ -871,12 +821,6 @@ QString
 ServiceGenre::prettyName() const
 {
     return m_name;
-}
-
-void
-ServiceGenre::setName(const QString & name)
-{
-    m_name = name;
 }
 
 int

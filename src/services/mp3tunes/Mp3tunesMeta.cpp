@@ -27,8 +27,8 @@
 #include <KLocale>
 using namespace Meta;
 
-Mp3TunesTrack::Mp3TunesTrack( const QString& title, const QString& url )
-    : ServiceTrack( title, url )
+Mp3TunesTrack::Mp3TunesTrack( const QString& title )
+    : ServiceTrack( title )
 {
     m_filetype = QString();
 }

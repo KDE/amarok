@@ -126,7 +126,7 @@ typedef QList<ServiceComposerPtr> ServiceComposerList;
 typedef QList<ServiceGenrePtr > ServiceGenreList;
 typedef QList<ServiceYearPtr > ServiceYearList;
 
-class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
+class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                                    public ServiceDisplayInfoProvider,
                                    public CustomActionsProvider,
                                    public SourceInfoProvider,
@@ -135,8 +135,7 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
     public:
         //Give this a displayable name as some services has terrible names for their streams
         //ServiceTrack( const QString & name );
-        ServiceTrack( const QString & name, const QString & url );
-        ServiceTrack( const QString & url );
+        ServiceTrack( const QString & name );
 
         //create track based on an sql query result
         ServiceTrack( const QStringList & resultRow );
@@ -148,7 +147,6 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
-        virtual void setForwardToProxy( bool forward );
 
         virtual bool isPlayable() const;
         virtual bool isEditable() const;
@@ -264,7 +262,6 @@ class AMAROK_EXPORT ServiceTrack : public MetaProxy::Track,
         QString m_artistName;
         QString m_name;
 
-        bool m_forwardToProxy;
 };
 
 class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
@@ -421,7 +418,6 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         int id() const;
 
         void addTrack( TrackPtr track );
-        void setName( const QString &name );
 
         int  albumId();
         void setAlbumId( int albumId );

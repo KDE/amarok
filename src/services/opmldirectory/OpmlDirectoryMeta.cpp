@@ -45,8 +45,8 @@ AlbumPtr OpmlDirectoryMetaFactory::createAlbum( const QStringList & rows )
 
 //// OpmlDirectoryFeed ////
 
-OpmlDirectoryFeed::OpmlDirectoryFeed( const QString &name, const QString &url )
-    : ServiceTrack( name, url )
+OpmlDirectoryFeed::OpmlDirectoryFeed( const QString &name )
+    : ServiceTrack( name )
 {
 }
 

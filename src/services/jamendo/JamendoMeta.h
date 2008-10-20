@@ -70,7 +70,7 @@ class JamendoTrack  : public ServiceTrack
 
 
 public:
-    JamendoTrack( const QString &name, const QString &url );
+    JamendoTrack( const QString &name );
     JamendoTrack( const QStringList &resultRow );
 
     void setService( JamendoService * service );

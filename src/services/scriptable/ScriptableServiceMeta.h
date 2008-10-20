@@ -65,8 +65,8 @@ class ScriptableServiceMetaItem
 class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceTrack( const QString &name, const QString &url );
-        ScriptableServiceTrack( const QStringList &resultRow );
+        ScriptableServiceTrack( const QString & name );
+        ScriptableServiceTrack( const QStringList & resultRow );
 
         virtual QString sourceName();
         virtual QString sourceDescription();

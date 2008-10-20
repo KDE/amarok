@@ -105,8 +105,8 @@ JamendoMetaFactory::createGenre( const QStringList & rows )
 
 //// JamendoTrack ////
 
-JamendoTrack::JamendoTrack( const QString &name, const QString &url )
-    : ServiceTrack( name, url )
+JamendoTrack::JamendoTrack( const QString &name )
+    : ServiceTrack( name )
     , m_service ( 0 )
     , m_downloadCustomAction( 0 )
     , m_downloadCurrentTrackAction( 0 )

@@ -51,12 +51,13 @@ class OpmlDirectoryCategory;
 
 typedef KSharedPtr<OpmlDirectoryFeed> OpmlDirectoryFeedPtr;
 typedef KSharedPtr<OpmlDirectoryCategory> OpmlDirectoryCategoryPtr;
-
-class OpmlDirectoryFeed : public ServiceTrack
+class OpmlDirectoryFeed  : public ServiceTrack
 {
-    public:
-        OpmlDirectoryFeed( const QString &name, const QString &url );
-        OpmlDirectoryFeed( const QStringList &resultRow );
+
+
+public:
+    OpmlDirectoryFeed( const QString &name );
+    OpmlDirectoryFeed( const QStringList &resultRow );
 
         virtual QList< PopupDropperAction *> customActions();
 };

@@ -323,7 +323,7 @@ MagnatuneXmlParser::parseTrack( const QDomElement &e )
     QString sElementName;
     QDomElement childElement;
 
-    MagnatuneTrack * pCurrentTrack = new MagnatuneTrack( QString(), QString() );
+    MagnatuneTrack * pCurrentTrack = new MagnatuneTrack( QString() );
 
     QDomNode n = e.firstChild();
 

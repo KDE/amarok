@@ -96,7 +96,6 @@ namespace MetaProxy
 
             virtual bool operator==( const Meta::Track &track ) const;
 		
-		protected:
 		/**
 		 * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
 		 * passed to lookupTrack(TrackProvider*) for the real track.

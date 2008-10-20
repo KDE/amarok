@@ -167,7 +167,7 @@ void OpmlDirectoryXmlParser::parseFeed( const QDomElement &e )
     QString name = e.attribute( "text", "Unknown" );
     QString url = e.attribute( "url", "" );
 
-    OpmlDirectoryFeedPtr currentFeed = OpmlDirectoryFeedPtr( new OpmlDirectoryFeed( name, url ) );
+    OpmlDirectoryFeedPtr currentFeed = OpmlDirectoryFeedPtr( new OpmlDirectoryFeed( name ) );
     currentFeed->setAlbumId( m_currentCategoryId );
     currentFeed->setUidUrl( url );
 

@@ -56,8 +56,10 @@ ServiceFactory::trackForUrl(const KUrl & url)
         init();
     }
 
-    Meta::ServiceTrack * serviceTrack = new Meta::ServiceTrack( url.url() );
-    Meta::TrackPtr track( serviceTrack );
+    /*Meta::ServiceTrack * serviceTrack = new Meta::ServiceTrack();
+    serviceTrack->setUidUrl( url.url() );
+    Meta::TrackPtr track( serviceTrack );*/
+    Meta::TrackPtr track;
 
     foreach( ServiceBase * service, m_activeServices )
     {
@@ -90,8 +92,8 @@ void ServiceFactory::serviceReady()
     while( !m_tracksToLocate.isEmpty() )
     {
         Meta::ServiceTrack* track = dynamic_cast< Meta::ServiceTrack* >( m_tracksToLocate.dequeue().data() );
-        if( track )
-            track->refresh( this );
+/*        if( track )
+            track->refresh( this );*/
     }
 }
 

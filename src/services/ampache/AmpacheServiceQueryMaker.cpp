@@ -498,7 +498,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         if ( title.isEmpty() )
             title = "Unknown";
         element = n.firstChildElement("url");
-        AmpacheTrack * track = new AmpacheTrack( title, element.text(), m_collection->service()  );
+        AmpacheTrack * track = new AmpacheTrack( title, m_collection->service()  );
         TrackPtr trackPtr( track );
 
         //debug() << "Adding track: " <<  title;

@@ -64,8 +64,8 @@ void Meta::ScriptableServiceMetaItem::setServiceEmblem( const QPixmap & emblem )
 
 
 /* ScriptableServiceTrack */
-ScriptableServiceTrack::ScriptableServiceTrack( const QString & name, const QString & url )
-    : ServiceTrack( name, url )
+ScriptableServiceTrack::ScriptableServiceTrack( const QString & name )
+    : ServiceTrack( name )
     , ScriptableServiceMetaItem( 0 )
      , d( new ScriptableServiceTrack::Private( this ) )
 {}

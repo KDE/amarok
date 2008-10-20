@@ -108,9 +108,7 @@ QString
 MetaProxy::Track::name() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         QString name = d->realTrack->name();
-        d->realTrack->setForwardToProxy( true );
         return name;
     } 
     return d->cachedName;
@@ -126,9 +124,7 @@ QString
 MetaProxy::Track::prettyName() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         QString prettyName = d->realTrack->prettyName();
-        d->realTrack->setForwardToProxy( true );
         return prettyName;
     } 
     return d->cachedName;   //TODO maybe change this?
@@ -138,9 +134,7 @@ QString
 MetaProxy::Track::fullPrettyName() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         QString fullPrettyName = d->realTrack->fullPrettyName();
-        d->realTrack->setForwardToProxy( true );
         return fullPrettyName;
     } 
     return d->cachedName;   //TODO maybe change this??
@@ -150,9 +144,7 @@ QString
 MetaProxy::Track::sortableName() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         QString sortableName = d->realTrack->sortableName();
-        d->realTrack->setForwardToProxy( true );
         return sortableName;
     }
     return d->cachedName;   //TODO maybe change this??
@@ -162,9 +154,7 @@ KUrl
 MetaProxy::Track::playableUrl() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         KUrl playableUrl = d->realTrack->playableUrl();
-        d->realTrack->setForwardToProxy( true );
         return playableUrl;
     }
     //return KUrl();
@@ -175,9 +165,7 @@ QString
 MetaProxy::Track::prettyUrl() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         QString prettyUrl = d->realTrack->prettyUrl();
-        d->realTrack->setForwardToProxy( true );
         return prettyUrl;
     }
     return d->url.url();
@@ -187,9 +175,7 @@ QString
 MetaProxy::Track::uidUrl() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         QString uidUrl = d->realTrack->uidUrl();
-        d->realTrack->setForwardToProxy( true );
         return uidUrl;
     }
     return d->url.url();
@@ -199,9 +185,7 @@ bool
 MetaProxy::Track::isPlayable() const
 {
     if( d->realTrack ) {
-        d->realTrack->setForwardToProxy( false );
         bool isPlayable = d->realTrack->isPlayable();
-        d->realTrack->setForwardToProxy( true );
         return isPlayable;
     }
     return false;

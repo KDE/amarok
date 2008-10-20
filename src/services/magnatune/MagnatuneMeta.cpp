@@ -164,8 +164,8 @@ GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 // class MagnatuneTrack
 ///////////////////////////////////////////////////////////////////////////////
 
-MagnatuneTrack::MagnatuneTrack( const QString &name, const QString &url )
-    : ServiceTrack( name, url )
+MagnatuneTrack::MagnatuneTrack( const QString &name )
+    : ServiceTrack( name )
     , m_downloadMembership ( false )
     , m_purchaseCustomAction( 0 )
     , m_purchaseCurrentTrackAction( 0 )
