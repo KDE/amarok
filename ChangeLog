@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
+    * Double clicking items in the Albums applet appends to playlist.
     * Service scripts can now specify custom info for artist, album and friends
       that will be shown in the playlist and other places, independetly of
       their actual parent item in the service. This value is ignored if item
@@ -33,7 +34,7 @@ VERSION 2.0-beta3
     * Allow multiple items to be selected in the user playlist category.
     * Statusbar rewrite: Messages are no longer shown as top-level windows.
     * Added proper mouse over visuals to some places where it was missing.
-    * All services ( or any other part of Amarok ) can now add context 
+    * All services (or any other part of Amarok) can now add context 
       actions to any item in any collection. This is only used for the "play 
       similar artists from last.fm" currently, but it allows this kind of 
       action to be added without hardcoding it in the core. The immidiate 
@@ -52,7 +53,7 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
-    * Albums Applet doesn't jumble up most recent albums listing.
+    * Albums applet doesn't jumble up most recent albums listing.
     * Don't forget about downloaded images after doing a collection rescan.
     * Fixed giant font in the Internet tab on some machines. (BR 172954)
     * MPRIS Dbus interface Pause function conforms is a Play/Pause action.
