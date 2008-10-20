@@ -19,9 +19,11 @@
  **************************************************************************/
 
 #include "CollectionWidget.h"
+
 #include "CollectionTreeView.h"
-#include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 #include "SearchWidget.h"
+#include "amarokconfig.h"
+#include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 
 #include <KConfigGroup>
 #include <KLineEdit>
@@ -87,42 +89,42 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
 void
 CollectionWidget::sortByArtist()
 {
-    m_treeView->setShowYears( false );
+    AmarokConfig::setShowYears( false );
     m_treeView->setLevels( QList<int>() << CategoryId::Artist );
 }
 
 void
 CollectionWidget::sortByArtistAlbum()
 {
-    m_treeView->setShowYears( false );
+    AmarokConfig::setShowYears( false );
     m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
 }
 
 void
 CollectionWidget::sortByArtistYearAlbum()
 {
-    m_treeView->setShowYears( true );
+    AmarokConfig::setShowYears( true );
     m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
 }
 
 void
 CollectionWidget::sortByAlbum()
 {
-    m_treeView->setShowYears( false );
+    AmarokConfig::setShowYears( false );
     m_treeView->setLevels( QList<int>() << CategoryId::Album );
 }
 
 void
 CollectionWidget::sortByGenreArtist()
 {
-    m_treeView->setShowYears( false );
+    AmarokConfig::setShowYears( false );
     m_treeView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
 }
 
 void
 CollectionWidget::sortByGenreArtistAlbum()
 {
-    m_treeView->setShowYears( false );
+    AmarokConfig::setShowYears( false );
     m_treeView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
 }
 

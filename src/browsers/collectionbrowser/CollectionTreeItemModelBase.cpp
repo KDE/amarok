@@ -20,25 +20,27 @@
 #define DEBUG_PREFIX "CollectionTreeItemModelBase"
 
 #include "CollectionTreeItemModelBase.h"
-#include "CollectionTreeView.h"
-#include "CollectionWidget.h"
 
 #include "Amarok.h"
 #include "AmarokMimeData.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "CollectionTreeItem.h"
+#include "CollectionTreeView.h"
+#include "CollectionWidget.h"
 #include "Debug.h"
 #include "Expression.h"
-#include "meta/EditCapability.h"
 #include "MetaConstants.h"
 #include "QueryMaker.h"
+#include "amarokconfig.h"
+#include "meta/EditCapability.h"
 
 #include <KIcon>
 #include <KIconLoader>
 #include <KLocale>
 #include <KStandardDirs>
 #include <QPixmap>
+#include <QTimeLine>
 #include <QTimer>
 
 using namespace Meta;
@@ -679,19 +681,12 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
 {
     switch( m_levelType[level] )
     {
-        //TODO: This shouldn't crash on startup, but not sure that it's actually the right thing
-        //to do.
-        case CategoryId::Album :
-	        if( CollectionWidget::instance() && CollectionWidget::instance()->view() )
-                return CollectionWidget::instance()->view()->showYears()
-                    ? i18n("Year - Album")
-                    : i18n("Album"); 	
-            return i18n( "Album" );
+        case CategoryId::Album      : return AmarokConfig::showYears() ? i18n( "Year - Album" ) : i18n( "Album" ); 	
+        case CategoryId::Artist     : return i18n( "Artist" );
+        case CategoryId::Composer   : return i18n( "Composer" );
+        case CategoryId::Genre      : return i18n( "Genre" );
+        case CategoryId::Year       : return i18n( "Year" );
 
-        case CategoryId::Artist : return i18n( "Artist" );
-        case CategoryId::Composer : return i18n( "Composer" );
-        case CategoryId::Genre : return i18n( "Genre" );
-        case CategoryId::Year : return i18n( "Year" );
         default: return QString();
     }
 }

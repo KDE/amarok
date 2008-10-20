@@ -113,7 +113,7 @@ CollectionTreeItem::data( int role ) const
                     }
                 }
             }
-            if ( CollectionWidget::instance()->view()->showYears() )
+            if ( AmarokConfig::showYears() )
             {
                 if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
                 {

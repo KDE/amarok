@@ -28,11 +28,12 @@
 #include <QMap>
 #include <QPair>
 #include <QSet>
-#include <QTimeLine>
 
-class CollectionTreeItem;
 class Collection;
+class CollectionTreeItem;
+class QTimeLine;
 class QueryMaker;
+
 typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
 namespace CategoryId

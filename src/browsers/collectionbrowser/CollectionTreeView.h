@@ -56,9 +56,6 @@ class CollectionTreeView: public QTreeView
         void setModel( QAbstractItemModel *model );
         void contextMenuEvent(QContextMenuEvent *event);
 
-        void setShowYears( bool show ) { m_showYears = show; }
-        bool showYears() const { return m_showYears; }
-
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
@@ -115,8 +112,6 @@ class CollectionTreeView: public QTreeView
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
-        bool m_showTrackNumbers;
-        bool m_showYears;
         PopupDropper* m_pd;
         PopupDropperAction* m_appendAction;
         PopupDropperAction* m_loadAction;
