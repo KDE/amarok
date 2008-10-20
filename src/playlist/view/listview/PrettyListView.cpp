@@ -161,6 +161,7 @@ void
 Playlist::PrettyListView::dropEvent( QDropEvent* event )
 {
     DEBUG_BLOCK
+    QRect oldDrop = m_dropIndicator;
     m_dropIndicator = QRect( 0, 0, 0, 0 );
     if ( dynamic_cast<PrettyListView*>( event->source() ) == this )
     {
@@ -183,6 +184,9 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
     {
         QListView::dropEvent( event );
     }
+    // add some padding around the old drop area which to repaint, as we add offsets when painting. See paintEvent().
+    oldDrop.adjust( -6, -6, 6, 6 );
+    repaint( oldDrop );
 }
 
 void
