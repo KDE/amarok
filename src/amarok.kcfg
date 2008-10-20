@@ -395,6 +395,10 @@
     <entry key="Collection Folders" type="PathList">
         <label>List of folders in the Collection</label>
     </entry>
+    <entry key="Show Track Numbers" type="Bool">
+        <label>Whether track numbers are shown in the collection browser.</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="MySQLe">

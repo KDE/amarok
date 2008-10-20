@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-
 #include "CollectionTreeItem.h"
+
 #include "CollectionTreeView.h"
 #include "CollectionWidget.h"
+#include "amarokconfig.h"
 
 #include <KLocale>
 
@@ -99,7 +100,7 @@ CollectionTreeItem::data( int role ) const
         if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
         {
             QString name = m_data->prettyName();
-            if( CollectionWidget::instance()->view()->showTrackNumbers() )
+            if( AmarokConfig::showTrackNumbers() )
             {
                 if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast(m_data ) )
                 {

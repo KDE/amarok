@@ -59,9 +59,6 @@ class CollectionTreeView: public QTreeView
         void setShowYears( bool show ) { m_showYears = show; }
         bool showYears() const { return m_showYears; }
 
-        void setShowTrackNumbers( bool show ) { m_showTrackNumbers = show; }
-        bool showTrackNumbers() const { return m_showTrackNumbers; }
-
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
