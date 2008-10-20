@@ -28,6 +28,8 @@ class TrackProvider;
 
 namespace MetaProxy
 {
+    class Track;
+    typedef KSharedPtr<Track> TrackPtr;
     class AMAROK_EXPORT Track : public Meta::Track
     {
         public:

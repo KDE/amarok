@@ -65,7 +65,6 @@ void MagnatuneServiceFactory::init()
     MagnatuneStore* service = new MagnatuneStore( this, "Magnatune.com" );
     m_activeServices << service;
     m_initialized = true;
-
     emit newService( service );
 }
 
@@ -131,7 +130,6 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     metaFactory->setStreamType( m_streamType );
     m_registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
-
     m_serviceready = true;
     emit( ready() );
 }

@@ -59,24 +59,24 @@ ServiceFactory::trackForUrl(const KUrl & url)
     /*Meta::ServiceTrack * serviceTrack = new Meta::ServiceTrack();
     serviceTrack->setUidUrl( url.url() );
     Meta::TrackPtr track( serviceTrack );*/
+    
     Meta::TrackPtr track;
-
     foreach( ServiceBase * service, m_activeServices )
     {
         if( !service->serviceReady() ){
-            debug() << "our service is not ready!";
-            m_tracksToLocate.enqueue( track );
-            return track;
-        }
-        if (  service->collection() ){
-            debug() << "Collection: " << service->collection();
+            debug() << "our service is not ready! queuing track and returning proxy";
+            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
+            MetaProxy::TrackPtr trackptr( ptrack );
+            m_tracksToLocate.enqueue( trackptr );
+            return Meta::TrackPtr::staticCast( trackptr );
+        } else if (  service->collection() ) {
+            debug() << "Service Ready. Collection is: " << service->collection();
             track = service->collection()->trackForUrl( url );
         }
-
+        
         if ( track )
             return track;
     }
-
     return track;
 }
 
@@ -85,18 +85,17 @@ void ServiceFactory::clearActiveServices()
     m_activeServices.clear();
 }
 
-void ServiceFactory::serviceReady()
+void ServiceFactory::slotServiceReady()
 {
     DEBUG_BLOCK
     debug() << "Found " << m_tracksToLocate.size() << " tracks to locate!";
     while( !m_tracksToLocate.isEmpty() )
     {
-        Meta::ServiceTrack* track = dynamic_cast< Meta::ServiceTrack* >( m_tracksToLocate.dequeue().data() );
-/*        if( track )
-            track->refresh( this );*/
+        MetaProxy::TrackPtr track = m_tracksToLocate.dequeue();
+        if( track ) 
+            track->lookupTrack( this );
     }
 }
-
 
 ServiceBase *ServiceBase::s_instance = 0;
 

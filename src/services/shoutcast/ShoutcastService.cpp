@@ -33,6 +33,7 @@ void ShoutcastServiceFactory::init()
     ServiceBase* service = new ShoutcastService( this, "Shoutcast.com" );
     m_activeServices << service;
     m_initialized = true;
+    connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
     emit newService( service );
 }
 

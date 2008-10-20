@@ -29,6 +29,7 @@
 #include "amarok_export.h"
 #include "CollectionManager.h"
 #include "plugin/plugin.h"
+#include "meta/proxy/MetaProxy.h"
 
 #include <KPluginInfo>
 #include <KVBox>
@@ -42,7 +43,6 @@
 class ServiceBase;
 class SearchWidget;
 class KMenuBar;
-
 /**
 A virtual base class for factories for creating and handling the different types of service plugins
 
@@ -119,7 +119,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
         /**
          * The service is ready!
          */
-        void serviceReady();
+        void slotServiceReady();
 
     signals:
         /**
@@ -133,7 +133,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
         bool m_initialized;
 
     private:
-        QQueue<Meta::TrackPtr> m_tracksToLocate;
+        QQueue<MetaProxy::TrackPtr> m_tracksToLocate;
 };
 
 
