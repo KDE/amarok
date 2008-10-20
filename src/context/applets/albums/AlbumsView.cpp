@@ -18,7 +18,9 @@
 #include "Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
+#include "context/popupdropper/PopupDropperAction.h"
 #include "dialogs/TagDialog.h"
+#include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistController.h"
 
 #include <QGraphicsSceneContextMenuEvent>
@@ -155,6 +157,26 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     menu.addAction( loadAction );
     menu.addSeparator();
     menu.addAction( editAction );
+
+    QModelIndex index = nativeWidget()->indexAt( event->pos().toPoint() );
+    if( index.isValid() )
+    {
+        QStandardItem *item = static_cast<QStandardItemModel*>( model() )->itemFromIndex( index );
+        AlbumItem *album = dynamic_cast<AlbumItem*>(item);
+        if( album )
+        {
+            Meta::AlbumPtr albumPtr = album->album();
+            Meta::CustomActionsCapability *cac = albumPtr->as<Meta::CustomActionsCapability>();
+            if( cac )
+            {
+                QList<PopupDropperAction *> actions = cac->customActions();
+
+                menu.addSeparator();
+                foreach( PopupDropperAction *action, actions )
+                    menu.addAction( action );
+            }
+        }
+    }
 
     menu.exec( event->screenPos() );
 }
