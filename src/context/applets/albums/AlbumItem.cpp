@@ -63,6 +63,9 @@ AlbumItem::setShowArtist( const bool showArtist )
 void
 AlbumItem::metadataChanged( Meta::AlbumPtr album )
 {
+    if( album == 0 )
+        return;
+
     QString albumName = album->name();
     albumName = albumName.isEmpty() ? i18n("Unknown") : albumName;
 
