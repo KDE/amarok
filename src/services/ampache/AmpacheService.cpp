@@ -47,6 +47,7 @@ void AmpacheServiceFactory::init()
         ServiceBase* service = new AmpacheService( this, "Ampache (" + server.name + ')', server.url, server. username, server.password );
         m_activeServices << service;
         debug() << "Emitting service!!!!!!";
+        connect( service, SIGNAL( ready() ), this, SLOT( serviceReady() ) );
         emit newService( service );
     }
 }
@@ -235,6 +236,7 @@ void AmpacheService::authenticationComplete(KJob * job)
         levels << CategoryId::Artist << CategoryId::Album;
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
         m_serviceready = true;
+        emit( ready() );
     }
     m_xmlDownloadJob->deleteLater();
 }

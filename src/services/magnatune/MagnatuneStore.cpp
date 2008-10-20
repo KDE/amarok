@@ -133,6 +133,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     m_collection = new MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
 
     m_serviceready = true;
+    emit( ready() );
 }
 
 

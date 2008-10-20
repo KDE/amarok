@@ -79,6 +79,7 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
 
     m_serviceready = true;
+    emit( ready() );
 }
 
 JamendoService::~JamendoService()

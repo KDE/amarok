@@ -60,6 +60,8 @@ ShoutcastService::ShoutcastService( ShoutcastServiceFactory* parent, const char 
     setObjectName( name );
     setShortDescription( i18n( "The biggest list of online radio stations on the Internet" ) );
     setIcon( KIcon( "network-wireless" ) );
+    m_serviceready = true;
+    emit( ready() );
 }
 
 ShoutcastService::~ShoutcastService()

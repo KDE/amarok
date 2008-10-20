@@ -72,7 +72,8 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
 
     setShortDescription(  i18n( "A large listing of podcasts" ) );
     setIcon( KIcon( "amarok_podcast" ) );
-
+    m_serviceready = true;
+    emit( ready() );
 }
 
 
