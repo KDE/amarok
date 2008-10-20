@@ -53,6 +53,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Immediately remove the playlist drop visualiser from the playlist after
+      dropping an item. (BR 171382)
     * Albums applet doesn't jumble up most recent albums listing.
     * Fix problems with Amarok stopping playback after each track in some
       cases. (BR 172897)
