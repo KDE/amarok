@@ -47,8 +47,8 @@ class AlbumsTreeView : public QTreeView
             setIconSize( QSize(60,60) );
             setDragDropMode( QAbstractItemView::DragOnly );
             setSelectionMode( QAbstractItemView::ExtendedSelection );
-             setSelectionBehavior( QAbstractItemView::SelectItems );
-            // setAnimated( true ); // looks TERRIBLE
+            setSelectionBehavior( QAbstractItemView::SelectItems );
+            //setAnimated( true ); // looks TERRIBLE
 
             setRootIsDecorated( false );
             setMouseTracking( true );
@@ -111,7 +111,7 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     setWidget( treeView );
     
     connect( treeView, SIGNAL(       clicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
-    connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
+    connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( slotAppendSelected() ) );
 
     treeView->show();
 }
