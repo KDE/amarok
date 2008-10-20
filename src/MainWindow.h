@@ -20,6 +20,7 @@
 #include "meta/Meta.h"
 #include "EngineObserver.h"
 
+#include <KVBox>
 #include <KXmlGuiWindow>
 
 class ContextWidget;
@@ -145,6 +146,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         SideBar       *m_browsers;
         QStringList    m_browserNames;
         KMenu         *m_searchMenu;
+
+        KVBox *m_statusbarArea;
 
         SearchWidget  *m_searchWidget;
         MainToolbar   *m_controlBar;
