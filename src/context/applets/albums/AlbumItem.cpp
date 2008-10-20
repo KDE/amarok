@@ -63,7 +63,7 @@ AlbumItem::setShowArtist( const bool showArtist )
 void
 AlbumItem::metadataChanged( Meta::AlbumPtr album )
 {
-    if( album == 0 )
+    if( !album )
         return;
 
     QString albumName = album->name();
