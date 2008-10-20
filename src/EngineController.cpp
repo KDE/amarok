@@ -213,12 +213,17 @@ EngineController::restoreSession()
     //here we restore the session
     //however, do note, this is always done, KDE session management is not involved
 
-    if( !AmarokConfig::resumeTrack().isEmpty() )
+    if( AmarokConfig::resumePlayback() )
     {
         const KUrl url = AmarokConfig::resumeTrack();
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-        if( track )
+
+        // Only resume local files, because resuming remote protocols can have weird side effects.
+        // See: http://bugs.kde.org/show_bug.cgi?id=172897
+        if( url.isLocalFile() )
+        {
+            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
             play( track, AmarokConfig::resumeTime() );
+        }
     }
 }
 
