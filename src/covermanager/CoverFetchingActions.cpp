@@ -62,6 +62,9 @@ void DisplayCoverAction::init()
     setText( i18n("Display Cover") );
     setIcon( KIcon("zoom-original") );
     setToolTip( i18n("Display artwork for this album") );
+    Meta::AlbumPtr album = m_albums.first();
+    if( album )
+        setEnabled( album->hasImage() );
 }
 
 void DisplayCoverAction::slotTriggered()
@@ -79,6 +82,12 @@ void UnsetCoverAction::init()
     setText( i18np("Unset Cover", "Unset Covers", m_albums.count()) );
     setIcon( KIcon("list-remove") );
     setToolTip( i18np("Remove artwork for this album", "Remove artwork for %1 albums", m_albums.count()) );
+
+    // this action is enabled if any one of the albums has an image and can be updated
+    bool enabled = false;
+    foreach( Meta::AlbumPtr album, m_albums )
+        enabled |= ( album->hasImage() && album->canUpdateImage() );
+    setEnabled( enabled );
 }
 
 void
@@ -111,6 +120,12 @@ void SetCustomCoverAction::init()
     setText( i18n("Set Custom Cover") );
     setIcon( KIcon("document-open") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
+    
+    // this action is enabled if any one of the albums can be updated
+    bool enabled = false;
+    foreach( Meta::AlbumPtr album, m_albums )
+        enabled |= album->canUpdateImage();
+    setEnabled( enabled );
 }
 
 void
@@ -123,7 +138,10 @@ SetCustomCoverAction::slotTriggered()
         QImage image( file.path() );
 
         foreach( Meta::AlbumPtr album, m_albums )
-            album->setImage( image );
+        {
+            if( album->canUpdateImage() )
+                album->setImage( image );
+        }
     }
 }
 
