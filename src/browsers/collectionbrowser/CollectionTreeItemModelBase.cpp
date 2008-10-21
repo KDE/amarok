@@ -103,9 +103,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             ec->setTitle( value.toString() );
             emit dataChanged( index, index );
+            delete ec;
             return true;
         }
-        delete ec;
     }
     /*else
     {
