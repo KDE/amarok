@@ -578,7 +578,7 @@ MainWindow::slotToggleFocus() //SLOT
 void
 MainWindow::toolsMenuAboutToShow() //SLOT
 {
-    Amarok::actionCollection()->action( "equalizer" )->setEnabled( false ); //TODO phonon
+    // Amarok::actionCollection()->action( "equalizer" )->setEnabled( false ); //TODO phonon
 }
 
 /**
@@ -726,13 +726,13 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon( "view-media-visualization-amarok" ), i18n("&Visualizations"), this );
+    // action = new KAction( KIcon( "view-media-visualization-amarok" ), i18n("&Visualizations"), this );
     // connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
-    ac->addAction( "visualizations", action );
+    // ac->addAction( "visualizations", action );
 
-    action = new KAction( KIcon( "view-media-equalizer-amarok" ), i18n( "E&qualizer"), this );
-    connect( action, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
-    ac->addAction( "equalizer", action );
+    // action = new KAction( KIcon( "view-media-equalizer-amarok" ), i18n( "E&qualizer"), this );
+    // connect( action, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
+    // ac->addAction( "equalizer", action );
 
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
@@ -978,11 +978,10 @@ MainWindow::createMenus()
 //     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
-    m_toolsMenu->addAction( actionCollection()->action("rescan_collection") );
 
-#ifndef HAVE_LIBVISUAL
-    actionCollection()->action( "visualizations" )->setEnabled( false );
-#endif
+//#ifndef HAVE_LIBVISUAL
+//    actionCollection()->action( "visualizations" )->setEnabled( false );
+//#endif
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
     connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
