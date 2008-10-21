@@ -161,6 +161,9 @@ Playlist::RandomAlbumNavigator::recvActiveTrackChanged( const quint64 id )
 quint64
 Playlist::RandomAlbumNavigator::requestNextTrack()
 {
+    if ( m_unplayedAlbums.isEmpty() && m_playedAlbums.isEmpty() )
+        return 0;
+
     if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
     {
         m_unplayedAlbums = m_playedAlbums;
@@ -204,6 +207,9 @@ Playlist::RandomAlbumNavigator::requestNextTrack()
 quint64
 Playlist::RandomAlbumNavigator::requestLastTrack()
 {
+    if ( m_unplayedAlbums.isEmpty() && m_playedAlbums.isEmpty() )
+        return 0;
+
     if ( m_playedAlbums.isEmpty() && m_repeatPlaylist )
     {
         m_playedAlbums = m_unplayedAlbums;

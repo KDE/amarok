@@ -97,14 +97,12 @@ Playlist::RandomTrackNavigator::recvActiveTrackChanged( const quint64 id )
 quint64
 Playlist::RandomTrackNavigator::requestNextTrack()
 {
-    if ( m_unplayedRows.isEmpty() && !m_repeatPlaylist )
-    {
+    if ( m_unplayedRows.isEmpty() && m_playedRows.isEmpty() ) {
         return 0;
-    }
-    else
-    {
-        if ( m_unplayedRows.isEmpty() )
-        {
+    } else if ( m_unplayedRows.isEmpty() && !m_repeatPlaylist ) {
+        return 0;
+    } else {
+        if ( m_unplayedRows.isEmpty() ) {
             m_unplayedRows = m_playedRows;
             m_playedRows.clear();
         }
@@ -118,14 +116,12 @@ Playlist::RandomTrackNavigator::requestNextTrack()
 quint64
 Playlist::RandomTrackNavigator::requestLastTrack()
 {
-    if ( m_playedRows.isEmpty() && !m_repeatPlaylist )
-    {
+     if ( m_unplayedRows.isEmpty() && m_playedRows.isEmpty() ) {
         return 0;
-    }
-    else
-    {
-        if ( m_playedRows.isEmpty() )
-        {
+    } else if ( m_playedRows.isEmpty() && !m_repeatPlaylist ) {
+        return 0;
+    } else {
+        if ( m_playedRows.isEmpty() ) {
             m_playedRows = m_unplayedRows;
             m_unplayedRows.clear();
         }
