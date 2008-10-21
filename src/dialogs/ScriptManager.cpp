@@ -463,7 +463,10 @@ ScriptManager::slotStopScript( QString name )
     if( m_scripts[name].info.category() == "Scriptable Service" )
         The::scriptableServiceManager()->removeRunningScript( name );
     if ( m_scripts[name].info.isPluginEnabled() )
+    {
         m_scripts[name].info.setPluginEnabled( false );
+        m_scripts[name].info.save();
+    }
 
     scriptFinished( name );
 }
@@ -477,15 +480,20 @@ ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QS
 void
 ScriptManager::slotConfigChanged( bool changed )
 {
+    DEBUG_BLOCK
     if ( changed )
     {
         m_scriptSelector->save();
         foreach( const QString &key, m_scripts.keys() )
         {
-            if( !m_scripts[key].running && m_scripts[key].info.isPluginEnabled() )
+            if( ( !m_scripts[key].running ) && ( m_scripts[key].info.isPluginEnabled() ) )
+            {
                 slotRunScript( m_scripts[key].info.name() );
-            if( m_scripts[key].running && !m_scripts[key].info.isPluginEnabled() )
+            }
+            if( ( m_scripts[key].running ) && ( !m_scripts[key].info.isPluginEnabled() ) )
+            {
                 slotStopScript( m_scripts[key].info.name() );
+            }
         }
     }
 }
@@ -517,7 +525,6 @@ ScriptManager::scriptFinished( QString name ) //SLOT
     qDeleteAll( m_scripts[name].wrapperList.begin(), m_scripts[name].wrapperList.end() );
     m_scripts[name].wrapperList.clear();
     m_scripts[name].log += time.currentTime().toString() + " Script ended!" + '\n';
-
     delete m_scripts[name].engine;
 }
 

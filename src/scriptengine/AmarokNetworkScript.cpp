@@ -74,7 +74,7 @@ Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* e
         debug() << "ERROR! Constructor not called with a QUrl and function!";
         return object;
     }
-    QString encoding;
+    QString encoding = "UTF-8";
     KUrl tmpUrl;
     QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
     if( context->argumentCount() == 3 ) // encoding specified

@@ -69,7 +69,7 @@ public:
     static AmarokDownloadHelper *instance();
     
     // called by the wrapper class to register a new download
-    void newDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString enc );
+    void newDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
 
 public slots:
     void result( KJob* job );

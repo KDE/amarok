@@ -20,6 +20,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "charset-detector/include/chardet.h"
 #include "CollectionScanner.h"
 
 #include "Amarok.h"
@@ -479,10 +480,57 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         if ( tag )
         {
 #define strip( x ) TStringToQString( x ).trimmed()
+            TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
+            const char* buf = metaData.toCString();
+            size_t len = strlen( buf );
+            int res = 0;
+            chardet_t det = NULL;
+            char encoding[CHARDET_MAX_ENCODING_NAME];
+            chardet_create( &det );
+            res = chardet_handle_data( det, buf, len );
+            chardet_data_end( det );
+            res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
+            chardet_destroy( det );
+
+            //debug() << "Data:" << buf <<endl;
+            //debug() << "Charset: " << encoding <<endl;
+
             attributes["title"] = strip( tag->title() );
             attributes["artist"] = strip( tag->artist() );
             attributes["album"] = strip( tag->album() );
             attributes["comment"] = strip( tag->comment() );
+
+            //Start to decode non-utf8 tags
+            QString track_encoding = encoding;
+            //  make sure that the tags in flac medias are decoded in utf8 charset.
+            //  This should avoid the unexpected question marks in these tags.
+            if ( res == CHARDET_RESULT_OK && Amarok::extension( path ) != "flac" )
+            {
+            //http://doc.trolltech.com/4.4/qtextcodec.html
+            //http://www.mozilla.org/projects/intl/chardet.html
+                if ( track_encoding == "x-euc-tw" ) track_encoding = ""; //no match
+                if ( track_encoding == "HZ-GB2312" ) track_encoding = ""; //no match
+                if ( track_encoding == "ISO-2022-CN" ) track_encoding = ""; //no match
+                if ( track_encoding == "ISO-2022-KR" ) track_encoding = ""; //no match
+                if ( track_encoding == "ISO-2022-JP" ) track_encoding = ""; //no match
+                if ( track_encoding == "x-mac-cyrillic" ) track_encoding = ""; //no match
+                if ( track_encoding == "IBM855" ) track_encoding =""; //no match
+                if ( track_encoding == "IBM866" ) track_encoding = "IBM 866";
+                if ( track_encoding == "TIS-620" ) track_encoding = ""; //ISO-8859-11, no match
+                if ( !track_encoding.isEmpty() )
+                {
+                //FIXME:about 10% tracks cannot be decoded well. It shows blank for now.
+                    //debug () << "Final Codec Name:" << track_encoding.toUtf8() <<endl;
+                    QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
+                    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
+                    QTextCodec::setCodecForCStrings( utf8codec );
+                    attributes["title"] = codec->toUnicode( strip( tag->title() ).toLatin1() );
+                    attributes["artist"] = codec->toUnicode( strip( tag->artist() ).toLatin1() );
+                    attributes["album"] = codec->toUnicode( strip( tag->album() ).toLatin1() );
+                    attributes["comment"] = codec->toUnicode( strip( tag->comment() ).toLatin1() );
+                }
+            }
+            
             attributes["genre"] = strip( tag->genre() );
             attributes["year"] = QString::number( tag->year() );
             attributes["track"]  = QString::number( tag->track() );

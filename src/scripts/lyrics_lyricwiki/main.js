@@ -4,7 +4,8 @@
 *   Copyright                                                             *
 *   (C) 2008 Aaron Reichman <reldruh@gmail.com>                           *
 *   (C) 2008 Leo Franchi <lfranchi@kde.org>                               *
-*   (C) 2008 Mark Kretschmann <kretschmann@kde.org>
+*   (C) 2008 Mark Kretschmann <kretschmann@kde.org>                       *
+*   (C) 2008 Peter ZHOU <peterzhoulei@gmail.org>                          *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -23,7 +24,6 @@
 **************************************************************************/
 
 Importer.loadQtBinding( "qt.core" );
-Importer.loadQtBinding( "qt.gui" );
 Importer.loadQtBinding( "qt.network" );
 
 
@@ -31,8 +31,6 @@ function onFinished( dat )
 {
     try
     {
-        //Amarok.debug( "got result: " + dat );
-        dat = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"artist name\" title=\"song title\" page_url=\"http://lyricwiki.org\">" + dat + "</lyric>"
         Amarok.Lyrics.showLyricsHtml( dat );
     }
     catch( err )
@@ -45,16 +43,11 @@ function getLyrics( artist, title, url )
 {
     try
     {
-        var encodedArtistKey = Amarok.Lyrics.fromUtf8( "artist", "ISO 8859-1" );
-        var encodedArtist = Amarok.Lyrics.fromUtf8( artist, "ISO 8859-1" );
-        var encodedTitleKey = Amarok.Lyrics.fromUtf8( "song", "ISO 8859-1" );
-        var encodedTitle = Amarok.Lyrics.fromUtf8( title, "ISO 8859-1" );
-       
         var url = new QUrl( "http://lyricwiki.org/api.php" );
         url.addQueryItem( "func", "getSong" );
-        url.addEncodedQueryItem( encodedArtistKey, encodedArtist ); 
-        url.addEncodedQueryItem( encodedTitleKey, encodedTitle );
-        Amarok.debug( "Using request URL: " + url.toString() );
+        url.addQueryItem( "artist", artist );
+        url.addQueryItem( "song", title );
+        Amarok.debug( "request URL: " + url.toString() );
 
         new Downloader( url, onFinished );
     }
