@@ -5,7 +5,7 @@ add_subdirectory( lyrics_lyricwiki )
 add_subdirectory( lyrics_CN )
 
 #add_subdirectory( qtscript_debug )
-#add_subdirectory( script_console )
+add_subdirectory( script_console )
 #add_subdirectory( seeqpod_service )
 #add_subdirectory( templates )
 #add_subdirectory( webcontrol)
