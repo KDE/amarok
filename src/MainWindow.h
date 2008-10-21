@@ -30,10 +30,8 @@ class PlaylistFileProvider;
 class SearchWidget;
 class SideBar;
 
-namespace Plasma
-{
-    class Containment;
-}
+namespace Plasma { class Containment; }
+namespace Playlist { class Widget; }
 
 namespace Context {
     class ContextScene;
@@ -149,12 +147,12 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
 
         KVBox *m_statusbarArea;
 
-        SearchWidget  *m_searchWidget;
-        MainToolbar   *m_controlBar;
-        QTimer        *m_timer;  //search filter timer
-        //MediaBrowser  *m_currMediaBrowser;
-        QSplitter     *m_splitter;
-        QByteArray     m_splitterState;
+        SearchWidget     *m_searchWidget;
+        MainToolbar      *m_controlBar;
+        Playlist::Widget *m_playlistWidget;
+        QTimer           *m_timer;  //search filter timer
+        QSplitter        *m_splitter;
+        QByteArray        m_splitterState;
 
         ContextWidget *m_contextWidget;
         Context::ContextScene *m_corona;

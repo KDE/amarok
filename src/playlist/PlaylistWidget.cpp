@@ -133,7 +133,12 @@ Playlist::Widget::Widget( QWidget* parent )
 QSize
 Playlist::Widget::sizeHint() const
 {
-    return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
+    const QString size = Amarok::config( "Panel_Sizes" ).readEntry( "playlist_width" );
+
+    if ( size.isNull() )
+        return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
+    else
+        return QSize( size.toInt(), 300 );
 }
 
 void

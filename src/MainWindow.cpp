@@ -88,7 +88,16 @@ class ContextWidget : public KVBox
     // Set a useful size default of the center tab.
     public:
         ContextWidget( QWidget *parent ) : KVBox( parent ) {}
-        QSize sizeHint() const { return QSize( static_cast<QWidget*>(parent())->size().width() / 3, 300 ); }
+
+        QSize sizeHint() const
+        {
+            const QString size = Amarok::config( "Panel_Sizes" ).readEntry( "context_width" );
+
+            if ( size.isNull() )
+                return QSize( static_cast<QWidget*>( parent() )->size().width() / 3, 300 );
+            else
+                return QSize( size.toInt(), 300 );
+        }
 };
 
 MainWindow *MainWindow::s_instance = 0;
@@ -147,6 +156,11 @@ MainWindow::~MainWindow()
     KConfigGroup config = Amarok::config();
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
+    
+    config = Amarok::config( "Panel_Sizes" );
+    config.writeEntry( "playlist_width", m_playlistWidget->width() );
+    config.writeEntry( "context_width", m_contextWidget->width() );
+    config.writeEntry( "sidebar_width", m_browsers->width() );
 
     delete m_playlistFiles;
     delete m_contextView;
@@ -186,9 +200,9 @@ MainWindow::init()
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
     PERF_LOG( "Create Playlist" )
-    Playlist::Widget *playlistWidget = new Playlist::Widget( this );
-    playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
-    playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
+    m_playlistWidget = new Playlist::Widget( this );
+    m_playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
     PERF_LOG( "Playlist created" )
 
     createMenus();
@@ -230,7 +244,7 @@ MainWindow::init()
     m_splitter->setHandleWidth( 0 );
     m_splitter->addWidget( m_browsers );
     m_splitter->addWidget( m_contextWidget );
-    m_splitter->addWidget( playlistWidget );
+    m_splitter->addWidget( m_playlistWidget );
 
 
     mainLayout->addLayout( toolbarSpacer );
