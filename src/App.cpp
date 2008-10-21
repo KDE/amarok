@@ -505,7 +505,11 @@ void App::applySettings( bool firstTime )
         if ( AmarokConfig::equalizerEnabled() )
             engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
 #endif
-        Amarok::actionCollection()->action("play_audiocd")->setEnabled( false );
+
+#if 0
+    // Audio CD is not currently supported
+    Amarok::actionCollection()->action( "play_audiocd" )->setEnabled( false );
+#endif
 
     } //</Engine>
 

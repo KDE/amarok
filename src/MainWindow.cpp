@@ -759,9 +759,12 @@ MainWindow::createActions()
     connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
     ac->addAction( "playlist_playmedia", action );
 
+#if 0
+    // Audio CD is not currently supported
     action = new KAction( KIcon( "media-optical-audio-amarok" ), i18n("Play Audio CD"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
     ac->addAction( "play_audiocd", action );
+#endif
 
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));

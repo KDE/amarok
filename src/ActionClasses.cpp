@@ -99,7 +99,10 @@ Menu::Menu( QWidget* parent )
     addSeparator();
 
     safePlug( ac, "playlist_playmedia", this );
+#if 0
+    // Audio CD is not currently supported
     safePlug( ac, "play_audiocd", this );
+#endif
 
     addSeparator();
 
