@@ -119,7 +119,6 @@ set(libconfigdialog_SRCS
     configdialog/ConfigDialogBase.cpp
     configdialog/dialogs/CollectionConfig.cpp
     configdialog/dialogs/GeneralConfig.cpp
-#    configdialog/dialogs/MediadeviceConfig.cpp
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/ServiceConfig.cpp
@@ -241,14 +240,13 @@ set( libcontextview_SRCS
     context/ContextObserver.cpp
     context/ContextScene.cpp
     context/ContextView.cpp
-#    context/CoverBling.cpp
     context/DataEngineManager.cpp
     context/LyricsManager.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/ToolBoxIcon.cpp
-	context/widgets/ContainmentArrow.cpp
+    context/widgets/ContainmentArrow.cpp
     context/widgets/ToolBoxMenu.cpp
 )
 
@@ -344,21 +342,21 @@ set(dbus_SRCS
 #####################################################################
 # SCRIPTING INTERFACE
 #####################################################################
-set (scriptengine_SRCS
-     scriptengine/AmarokScript.cpp
-     scriptengine/AmarokCollectionScript.cpp
-     scriptengine/AmarokInfoScript.cpp
-     scriptengine/AmarokNetworkScript.cpp
-     scriptengine/AmarokScriptableServiceScript.cpp
-     scriptengine/AmarokServicePluginManagerScript.cpp
-     scriptengine/AmarokEngineScript.cpp
-     scriptengine/AmarokOSDScript.cpp
-     scriptengine/AmarokPlaylistScript.cpp
-     scriptengine/AmarokStatusbarScript.cpp
-     scriptengine/AmarokWindowScript.cpp
-     scriptengine/AmarokLyricsScript.cpp
-     scriptengine/MetaTypeExporter.cpp
-     scriptengine/ScriptImporter.cpp
+set(scriptengine_SRCS
+    scriptengine/AmarokScript.cpp
+    scriptengine/AmarokCollectionScript.cpp
+    scriptengine/AmarokInfoScript.cpp
+    scriptengine/AmarokNetworkScript.cpp
+    scriptengine/AmarokScriptableServiceScript.cpp
+    scriptengine/AmarokServicePluginManagerScript.cpp
+    scriptengine/AmarokEngineScript.cpp
+    scriptengine/AmarokOSDScript.cpp
+    scriptengine/AmarokPlaylistScript.cpp
+    scriptengine/AmarokStatusbarScript.cpp
+    scriptengine/AmarokWindowScript.cpp
+    scriptengine/AmarokLyricsScript.cpp
+    scriptengine/MetaTypeExporter.cpp
+    scriptengine/ScriptImporter.cpp
 )
 
 #####################################################################
@@ -376,7 +374,7 @@ set(libdynamic_SRCS
 #####################################################################
 # Character Encoding Detector, imported from Mozilla
 #####################################################################
-set( libchardet_SRCS
+set(libchardet_SRCS
     charset-detector/src/impl.cpp
     charset-detector/src/CharDistribution.cpp
     charset-detector/src/JpCntx.cpp
@@ -440,10 +438,8 @@ set(amaroklib_LIB_SRCS
     EngineObserver.cpp
     Expression.cpp
     MainWindow.cpp
-#    MediaDevice.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-#    MediaDevicePluginManager.cpp
     PluginManager.cpp
     Sidebar.h
     StarManager.cpp
@@ -462,14 +458,7 @@ set(amaroklib_LIB_SRCS
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
-#    dialogs/deletedialog.cpp
-#    dialogs/deviceconfiguredialog.cpp
     dialogs/trackpickerdialog.cpp
-#    dialogs/transferdialog.cpp
-#    equalizergraph.cpp
-#    equalizerpresetmanager.cpp
-#    equalizersetup.cpp
-#    fht.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/MyDirLister.cpp
     browsers/filebrowser/MyDirOperator.cpp
@@ -483,7 +472,6 @@ set(amaroklib_LIB_SRCS
     refreshimages.cpp
     services/lastfm/SimilarArtistsAction.cpp
     Systray.cpp
-#    widgets/AnalyzerWidget.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
@@ -502,7 +490,6 @@ set(amaroklib_LIB_SRCS
     widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
     widgets/Splitter.cpp
-#    SmartPlaylistEditor.cpp
     GlobalCollectionActions.cpp
 )
 
