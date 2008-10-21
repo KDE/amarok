@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
+    * Amarok now remembers its panel sizes over restarts. Patch by Gary
+      Steinert <fatlardo@gmail.com>. (BR 172976)
     * Double clicking items in the Albums applet appends to playlist.
     * Service scripts can now specify custom info for artist, album and friends
       that will be shown in the playlist and other places, independetly of
