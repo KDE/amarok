@@ -822,8 +822,10 @@ void TagDialog::readTags()
         niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" ,
             Qt::escape( m_currentTrack->name() ), Qt::escape( m_currentTrack->artist()->name() ), Qt::escape( m_currentTrack->album()->name() ) );
     }
-    else
+    else if( m_currentTrack->artist() )
         niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , Qt::escape( m_currentTrack->name() ), Qt::escape( m_currentTrack->artist()->name() ) );
+    else
+        niceTitle = i18n( "<b>%1</b>" , Qt::escape( m_currentTrack->name() ) );
 
     debug() << "after album() stuff";
 
@@ -831,14 +833,19 @@ void TagDialog::readTags()
     ui->trackArtistAlbumLabel2->setText( niceTitle );
 
     ui->kLineEdit_title->setText( m_currentTrack->name() );
-    selectOrInsertText( m_currentTrack->artist()->name(), ui->kComboBox_artist );
-    selectOrInsertText( m_currentTrack->album()->name(), ui->kComboBox_album );
-    selectOrInsertText( m_currentTrack->genre()->name(), ui->kComboBox_genre );
-    selectOrInsertText( m_currentTrack->composer()->name(), ui->kComboBox_composer );
+    if( m_currentTrack->artist() )
+        selectOrInsertText( m_currentTrack->artist()->name(), ui->kComboBox_artist );
+    if( m_currentTrack->album() )
+        selectOrInsertText( m_currentTrack->album()->name(), ui->kComboBox_album );
+    if( m_currentTrack->genre() )
+        selectOrInsertText( m_currentTrack->genre()->name(), ui->kComboBox_genre );
+    if( m_currentTrack->composer() )
+        selectOrInsertText( m_currentTrack->composer()->name(), ui->kComboBox_composer );
     ui->ratingWidget->setRating( m_currentTrack->rating() );
     ui->ratingWidget->setMaxRating( 10 );
     ui->qSpinBox_track->setValue( m_currentTrack->trackNumber() );
-    ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
+    if( m_currentTrack->year() )
+        ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
     ui->qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
     ui->kTextEdit_comment->setText( Qt::escape( m_currentTrack->comment() ) );
@@ -889,8 +896,12 @@ void TagDialog::readTags()
     //lyrics
     ui->kTextEdit_lyrics->setText( m_lyrics );
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize() ) );
-    ui->pixmap_cover->setInformation( m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
+    if( m_currentTrack->album() )
+    {
+        ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize() ) );
+        if( m_currentTrack->artist() )
+            ui->pixmap_cover->setInformation( m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
+    }
     const int s = AmarokConfig::coverPreviewSize();
     ui->pixmap_cover->setMinimumSize( s, s );
     ui->pixmap_cover->setMaximumSize( s, s );
