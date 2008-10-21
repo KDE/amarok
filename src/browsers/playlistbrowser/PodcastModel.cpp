@@ -49,48 +49,48 @@ QVariant
 PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
 
-    if ( !index.isValid() )
-        return QVariant();
-
-    if ( role == Qt::DisplayRole || role == Qt::DecorationRole || role == ShortDescriptionRole )
+    if ( !index.isValid() ||
+         ( role != Qt::DisplayRole && role != Qt::DecorationRole &&
+           role != ShortDescriptionRole ) )
     {
-        Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
-
-        bool isChannel = false;
-        QString title;
-        QString description;
-        KIcon icon;
-        if ( pmc->podcastType() == Meta::ChannelType )
-        {
-            Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel *>(index.internalPointer());
-            title = channel->title();
-            description = channel->description();
-            isChannel = true;
-            icon = KIcon( "amarok_podcast" );
-        }
-        else if ( pmc->podcastType() == Meta::EpisodeType )
-        {
-            Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( index.internalPointer() );
-            title = episode->title();
-            description = episode->description();
-            isChannel = false;
-            icon = KIcon( "podcast_new" );
-        }
-        else
-        {
-            debug() << "Model index was neither Channel nor Episode";
-            return QVariant();
-        }
-
-        switch( role )
-        {
-            case Qt::DisplayRole: return title; break;
-            case Qt::DecorationRole: return QVariant( icon ); break;
-            case ShortDescriptionRole: return description ; break;
-            default: return QVariant(); break;
-        }
+        return QVariant();
     }
-    return QVariant();
+
+    Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+
+    bool isChannel = false;
+    QString title;
+    QString description;
+    KIcon icon;
+    if ( pmc->podcastType() == Meta::ChannelType )
+    {
+        Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel *>(index.internalPointer());
+        title = channel->title();
+        description = channel->description();
+        isChannel = true;
+        icon = KIcon( "amarok_podcast" );
+    }
+    else if ( pmc->podcastType() == Meta::EpisodeType )
+    {
+        Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( index.internalPointer() );
+        title = episode->title();
+        description = episode->description();
+        isChannel = false;
+        icon = KIcon( "podcast_new" );
+    }
+    else
+    {
+        debug() << "Model index was neither Channel nor Episode";
+        return QVariant();
+    }
+
+    if ( role == Qt::DisplayRole )
+        return title;
+    else if ( role == Qt::DecorationRole )
+        return QVariant( icon );
+
+    // At this point role can only be ShortDescriptionRole
+    return description;
 }
 
 QModelIndex
