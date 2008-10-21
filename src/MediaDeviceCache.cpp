@@ -219,7 +219,7 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
     emit accessibilityChanged( accessible, udi );
 }
 
-const MediaDeviceCache::DeviceType
+MediaDeviceCache::DeviceType
 MediaDeviceCache::deviceType( const QString &udi ) const
 {
     if( m_type.contains( udi ) )
