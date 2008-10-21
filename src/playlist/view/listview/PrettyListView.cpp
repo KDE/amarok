@@ -304,14 +304,12 @@ Playlist::PrettyListView::headerPressSelectionCommand( const QModelIndex& index,
     //const bool controlKeyPressed = event->modifiers() & Qt::ControlModifier;
     const bool indexIsSelected = selectionModel()->isSelected( index );
 
-    if ( !shiftKeyPressed && indexIsSelected )
-        return QItemSelectionModel::Deselect;
-    else if ( !shiftKeyPressed && !indexIsSelected )
-        return QItemSelectionModel::Select;
-    else if ( shiftKeyPressed )
+    if ( shiftKeyPressed )
         return QItemSelectionModel::SelectCurrent;
+    if ( indexIsSelected )
+        return QItemSelectionModel::Deselect;
 
-    return QItemSelectionModel::NoUpdate;
+    return QItemSelectionModel::Select;
 }
 
 QItemSelectionModel::SelectionFlags
