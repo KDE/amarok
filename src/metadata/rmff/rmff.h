@@ -254,8 +254,6 @@ namespace TagLib
          TagLib::ID3v1::Tag *m_id3tag;
       };
 
-      class TagLib::AudioProperties;
-
       class RealMediaFF
       {
       public:
