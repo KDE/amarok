@@ -583,9 +583,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     else
         ipodtrack = existingIpodTrack;
 
-    if( !ipodtrack )
-        return;
-
     QString type = pathname.section('.', -1).toLower();
 
     debug() << "Path before put in ipod_path: " << pathname;
