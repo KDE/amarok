@@ -119,8 +119,9 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
     {
         //Already subscribed to this Channel
         //notify the user.
-        //TODO: add statusbar message after the 2.0 string freeze
-        debug() << QString("Already subscribed to %1.").arg( dbResult.first() );
+        The::statusBarNG()->longMessage(
+            i18n("Already subscribed to %1.", dbResult.first())
+            , StatusBarNG::Error );
     }
     else
     {
@@ -192,6 +193,7 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 
     connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
              SLOT( slotReadResult( PodcastReader *, bool ) ) );
+    //PodcastReader will create a progress bar in The StatusBar.
 
     result = podcastReader->update( channel );
 }

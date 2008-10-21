@@ -315,6 +315,7 @@ PlaylistBrowserNS::PodcastView::PodcastView( PodcastModel *model, QWidget * pare
     , m_pd( 0 )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
+    , m_downloadAction( 0 )
     , m_deleteAction( 0 )
     , m_removeAction( 0 )
     , m_renameAction( 0 )
@@ -582,8 +583,19 @@ PlaylistBrowserNS::PodcastView::createEpisodeActions( QModelIndexList indices )
         );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
     }
-
     actions << m_deleteAction;
+    if ( m_downloadAction == 0 )
+    {
+        m_downloadAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "download",
+            KIcon( "go-down" ),
+            i18n( "&Download Episode" ),
+            this
+        );
+        connect( m_downloadAction, SIGNAL( triggered() ), this, SLOT( slotDownload() ) );
+    }
+    actions << m_downloadAction;
 
     return actions;
 }
@@ -667,6 +679,13 @@ void
 PlaylistBrowserNS::PodcastView::slotDelete()
 {
    DEBUG_BLOCK
+}
+
+void
+PlaylistBrowserNS::PodcastView::slotDownload()
+{
+    DEBUG_BLOCK
+    m_model->downloadItems( selectedIndexes() );
 }
 
 void

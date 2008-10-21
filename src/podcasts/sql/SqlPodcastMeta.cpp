@@ -84,16 +84,36 @@ Meta::SqlPodcastEpisode::updateInDb()
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
     #define escape(x) sqlStorage->escape(x)
-    QString insert = "INSERT INTO podcastepisodes(url,channel,localurl,guid,title,subtitle,sequencenumber,description,mimetype,pubdate,duration,filesize,isnew) VALUES ( %1 );";
-    QString data = "'%1','%2','%3','%4','%5','%6',%7,'%8','%9','%10',%11,%12,%13";
-    data = data.arg( escape(m_url.url())).arg( m_sqlChannel->dbId() );
-    data = data.arg( escape(m_localUrl.url()) ).arg( escape(m_guid) ).arg( escape(m_title) ).arg( escape(m_subtitle) );
-    data = data.arg( QString::number(m_sequenceNumber) ).arg( escape(m_description) ).arg( escape(m_mimeType) );
-    data = data.arg( escape(m_pubDate) ).arg( QString::number(m_duration) ).arg( QString::number(m_fileSize) );
-    data = data.arg( m_isNew ? boolTrue : boolFalse );
-    insert = insert.arg( data );
+    QString insert = "INSERT INTO podcastepisodes("
+    "url,channel,localurl,guid,title,subtitle,sequencenumber,description,"
+    "mimetype,pubdate,duration,filesize,isnew) "
+    "VALUES ( '%1','%2','%3','%4','%5','%6',%7,'%8','%9','%10',%11,%12,%13 );";
 
-    m_dbId = sqlStorage->insert( insert, "podcastepisodes" );
+    QString update = "UPDATE podcastepisodes "
+    "SET url='%1',channel=%2,localurl='%3',guid='%4',title='%5',subtitle='%6',"
+    "sequencenumber=%7,description='%8',mimetype='%9',pubdate='%10',"
+    "duration=%11,filesize=%12,isnew=%13 WHERE id=%14;";
+    //if we don't have a database ID yet we should insert
+    QString command = m_dbId ? update : insert;
+
+    command = command.arg( escape(m_url.url()) );
+    command = command.arg( m_sqlChannel->dbId() );
+    command = command.arg( escape(m_localUrl.url()) );
+    command = command.arg( escape(m_guid) );
+    command = command.arg( escape(m_title) );
+    command = command.arg( escape(m_subtitle) );
+    command = command.arg( QString::number(m_sequenceNumber) );
+    command = command.arg( escape(m_description) );
+    command = command.arg( escape(m_mimeType) );
+    command = command.arg( escape(m_pubDate) );
+    command = command.arg( QString::number(m_duration) );
+    command = command.arg( QString::number(m_fileSize) );
+    command = command.arg( m_isNew ? boolTrue : boolFalse );
+
+    if( m_dbId )
+        sqlStorage->query( command.arg( m_dbId ) );
+    else
+        m_dbId = sqlStorage->insert( command, "podcastepisodes" );
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )

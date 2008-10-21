@@ -19,6 +19,7 @@
 #include "PodcastReader.h"
 
 #include "Debug.h"
+#include "statusbar_ng/StatusBar.h"
 
 #include <kio/job.h>
 #include <kurl.h>
@@ -69,7 +70,24 @@ PodcastReader::read(const KUrl &url)
              SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
              const KUrl &) ) );
 
+    QString description = i18n("Importing Podcast channel from %1", url.url());
+    if( m_channel )
+    {
+        description = m_channel->title().isEmpty()
+            ? i18n("Updating Podcast channel")
+            : i18n("Updating \"%1\"", m_channel->title());
+    }
+
+    The::statusBarNG()->newProgressOperation( getJob, description )
+        ->setAbortSlot( this, SLOT( slotAbort() ) );
+
     return !getJob->isErrorPage();
+}
+
+void
+PodcastReader::slotAbort()
+{
+    DEBUG_BLOCK
 }
 
 bool

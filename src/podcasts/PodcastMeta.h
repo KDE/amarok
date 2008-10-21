@@ -112,7 +112,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
 
         //Track Methods
         virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
-        virtual QString prettyUrl() const { return m_url.prettyUrl(); }
+        virtual QString prettyUrl() const { return playableUrl().prettyUrl(); }
         virtual QString uidUrl() const { return m_url.url(); }
         virtual bool isPlayable() const { return true; }
         virtual bool isEditable() const { return false; }

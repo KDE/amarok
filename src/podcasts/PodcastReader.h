@@ -56,6 +56,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void slotRedirection( KIO::Job *job, const KUrl & url );
         void slotPermanentRedirection ( KIO::Job * job, const KUrl & fromUrl,
                 const KUrl & toUrl );
+        void slotAbort();
         void slotAddData( KIO::Job *, const QByteArray & data );
 
         //HACK: to make it work because of QXmlStreamReader bug.

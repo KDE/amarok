@@ -127,6 +127,7 @@ class PodcastView : public QTreeView
 
         PopupDropperAction * m_appendAction;
         PopupDropperAction * m_loadAction;
+        PopupDropperAction * m_downloadAction;
 
         PopupDropperAction * m_deleteAction; //delete a downloaded Episode
         PopupDropperAction * m_removeAction; //remove a subscription
@@ -143,6 +144,7 @@ class PodcastView : public QTreeView
         void slotAppend();
         void slotConfigure();
         void slotDelete();
+        void slotDownload();
         void slotLabel();
         void slotLoad();
         void slotRename();
