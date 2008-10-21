@@ -302,7 +302,7 @@ VERSION 2.0-beta1
     * Update album applet on track change. (BR 167256)
 
 
-VERSION 2.0-alpha2:
+VERSION 2.0-alpha2
   FEATURES:
     * New interface for extracting tags from filenames, now fully working.
     * Context view applet to view albums. (BR 164005)
@@ -350,7 +350,7 @@ VERSION 2.0-alpha2:
     * Make the rating widget on the current track hideable.
   
 
-VERSION 2.0
+VERSION 2.0-alpha1
   FEATURES:
     * Amarok defaults to using the standard music storage location of the
       desktop environment.
