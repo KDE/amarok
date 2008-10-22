@@ -26,11 +26,18 @@
 ########################################################################### */
 
 /* TODO:
-* sometimes Umlauts in Song names are broken
+==Solved? Needs verification==
+* sometimes Umlauts in Song names are broken (solved?)
+* stop script problem (solved?)
+
+==Ideas==
+* for each song: statistics from older months
+* artwork
+
+==problematic Ideas==
 * icon (not yet possible, missing api)
 * cover for each item (not yet possible, missing api)
 * give Amarok hints to correct track name (ideas needed)
-* stop script problem
 */
 
 Importer.loadQtBinding( "qt.core" );
@@ -46,10 +53,7 @@ function fmcShowsXmlParser( reply ) {
   try {
 
     doc.setContent( reply );
-    Amarok.debug( doc );
-
     shows = doc.elementsByTagName( "show" );
-
     Amarok.debug ("got " + shows.length() + " shows!");
 
     var showTitles = new Array( shows.length() );
