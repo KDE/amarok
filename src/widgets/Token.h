@@ -18,6 +18,8 @@
 #define TOKEN_H
 
 #include <QLabel>
+#include <QHBoxLayout>
+
 
 #include "FilenameLayoutWidget.h"
 
@@ -33,10 +35,13 @@ class Token
         void setString(const QString &string );
         
     private:
+        QHBoxLayout *hlayout;
         unsigned int m_myCount;
         QString m_tokenString;
         QPixmap *m_icon;
         QLabel *m_label;
+    protected:
+        void resizeEvent( QResizeEvent *event );
 };
 
 #endif //TOKEN_H

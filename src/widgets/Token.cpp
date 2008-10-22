@@ -31,7 +31,7 @@ Token::Token( const QString &string, QWidget *parent )
     
     //m_icon = new QPixmap( "placeholder.png"); //TODO: get icons from oxygen guys and handle loading
     m_label = new QLabel( this );
-    QHBoxLayout *hlayout = new QHBoxLayout( this );
+    hlayout = new QHBoxLayout( this );
     setLayout( hlayout );
     QLabel *iconContainer = new QLabel( this );
     //m_icon->something to get a pixmap here
@@ -43,6 +43,11 @@ Token::Token( const QString &string, QWidget *parent )
     m_label->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
     setStyleSheet( "Token {\
         color: palette( Base );\
+        border: 2px solid blue;\
+        border-radius: 4px;\
+        padding: 2px;\
+    }" );
+/*
         background-color: qlineargradient( x1: 0,\
                                            y1: 0,\
                                            x2: 1,\
@@ -50,11 +55,18 @@ Token::Token( const QString &string, QWidget *parent )
                                            stop: 0 white,\
                                            stop: 0.4 gray,\
                                            stop: 1 blue );\
-    }" );
 
+
+*/
     QFontMetrics metric( font() );
     QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
     m_label->setMinimumSize( size + QSize( 4, 0 ) );
+    m_label->setUpdatesEnabled( true ); //does this do any good?
+    QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_label->setSizePolicy( sizePolicy );
+    iconContainer->setSizePolicy( sizePolicy );
+    iconContainer->setUpdatesEnabled( true ); //does this do any good?
+    setUpdatesEnabled( true ); //does this do any good?
 }
 
 //Access for m_tokenString, private.
@@ -63,7 +75,7 @@ Token::setString( const QString &string )
 {
     m_label->setText( string );
     m_tokenString = string;
-    //TODO: code to set icon maybe
+    //TODO: code to set icon
 }
 
 //Access for m_tokenString.
@@ -73,4 +85,10 @@ Token::getString()
     return m_tokenString;
 }
 
+void //does this do any good?
+Token::resizeEvent( QResizeEvent *event )
+{
+    Q_UNUSED( event );
+    hlayout->update(); //does this do any good?
+}
 

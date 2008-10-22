@@ -139,17 +139,15 @@ FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeD
         return;
     }
     int index = layout->indexOf( childUnder );
-    debug()<< "I'm in insertOverChild";
-    debug()<< "Inserting at " << index;
-    debug()<< "Get outta here, it's gonna blow!";
-    if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )     //I'm WTF-ing here
+    debug()<< "I'm in insertOverChild, inserting at " << index << " !   Get outta here, it's gonna blow!";
+    if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
     {
-        debug()<< "About to call addToken(..., index)";
+        debug()<< "About to call addToken( "<< textFromMimeData << ", index )";
         addToken( textFromMimeData, index );
     }
     else
     {
-        debug()<< "About to call addToken(..., index + 1)";
+        debug()<< "About to call addToken( "<< textFromMimeData << ", index + 1)";
         addToken( textFromMimeData, index + 1 );
     }
     debug()<< "BOOM!";
