@@ -60,9 +60,7 @@ private:
     VolumeWidget       *m_volumeWidget;
     MainControlsWidget *m_mainControlsWidget;
 
-    bool m_renderAddControls;
     int m_addActionsOffsetX;
-
     bool m_ignoreCache;
 
     QList<PopupDropperAction *> m_additionalActions;

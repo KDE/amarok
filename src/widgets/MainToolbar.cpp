@@ -83,7 +83,6 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_volumeWidget = new VolumeWidget( topHBox );
     m_volumeWidget->setFixedSize( 160, 24 );
 
-    m_renderAddControls = false;
     kapp->installEventFilter( this );
 }
 
@@ -128,27 +127,13 @@ void MainToolbar::handleAddActions()
         m_addControlsToolbar->removeAction( action );
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( !track )
-    {
-        m_renderAddControls = false;
-        return;
-    }
 
-    if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
             m_additionalActions = cac->customActions();
-            const int numberOfActions = m_additionalActions.size();
-
-            if ( numberOfActions < 1 )
-            {
-                m_renderAddControls = false;
-                return;
-            }
-
-            m_renderAddControls = true;
 
             foreach( PopupDropperAction *action, m_additionalActions )
                 m_addControlsToolbar->addAction( action );
@@ -156,15 +141,13 @@ void MainToolbar::handleAddActions()
             m_addControlsToolbar->adjustSize();
 
             //centerAddActions();
-
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
-
         }
         else
-            m_renderAddControls = false;
+            m_additionalActions.clear();
     }
     else
-        m_renderAddControls = false;
+        m_additionalActions.clear();
 
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }
