@@ -32,7 +32,7 @@
 namespace Dynamic
 {
 
-    class TrackListEnergyPair;
+    struct TrackListEnergyPair;
 
     /**
      * A class to implement the optimization algorithm used to generate
