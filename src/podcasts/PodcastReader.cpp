@@ -70,11 +70,11 @@ PodcastReader::read(const KUrl &url)
              SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
              const KUrl &) ) );
 
-    QString description = i18n("Importing Podcast channel from %1", url.url());
+    QString description = i18n("Importing podcast channel from %1", url.url());
     if( m_channel )
     {
         description = m_channel->title().isEmpty()
-            ? i18n("Updating Podcast channel")
+            ? i18n("Updating podcast channel")
             : i18n("Updating \"%1\"", m_channel->title());
     }
 
