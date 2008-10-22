@@ -1,0 +1,13 @@
+==Solved? Needs verification==
+* sometimes umlauts in Song names are broken
+* stop script problem
+
+==Ideas==
+* for each song: statistics from older months
+* artwork
+
+==problematic Ideas==
+* icon (not yet possible, missing api)
+* cover for each item (not yet possible, missing api)
+* give Amarok hints to correct track name without messing with the order in the browser (ideas needed)
+* localization would be nice

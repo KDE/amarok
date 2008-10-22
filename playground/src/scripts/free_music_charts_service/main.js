@@ -25,21 +25,6 @@
 #   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         #
 ########################################################################### */
 
-/* TODO:
-==Solved? Needs verification==
-* sometimes Umlauts in Song names are broken (solved?)
-* stop script problem (solved?)
-
-==Ideas==
-* for each song: statistics from older months
-* artwork
-
-==problematic Ideas==
-* icon (not yet possible, missing api)
-* cover for each item (not yet possible, missing api)
-* give Amarok hints to correct track name (ideas needed)
-*/
-
 Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.xml" );
 Importer.loadQtBinding( "qt.network" );
