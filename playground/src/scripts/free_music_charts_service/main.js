@@ -44,6 +44,19 @@ Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.xml" );
 Importer.loadQtBinding( "qt.network" );
 
+service_name = "Free Music Charts";
+html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/pollsarchive/\">www.darkerradio.com/pollsarchive/</a>, support for voting from within Amarok might be added later.<br/><br/>Podcasts of the radio shows (in German) are located at <a href=\"http://www.darkerradio.com/category/podcast/\">www.darkerradio.com/category/podcast/</a>.";
+
+// temporary location for testing purposes, will very likely
+// be moved to darkerradio.com
+xmlUrl = new QUrl( "http://krohlas.de/fmc.xml" );
+http   = new QHttp;
+data   = new QIODevice;
+doc    = new QDomDocument("doc");
+elt    = new QDomElement;
+elt2   = new QDomElement;
+shows  = new QDomNodeList;
+
 function onConfigure() {
   Amarok.alert( "sorry", "This script does not require any configuration." );
 }
@@ -164,18 +177,6 @@ function onPopulate( level, callbackData, filter ) {
   }
 }
 
-service_name = "Free Music Charts";
-html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/pollsarchive/\">www.darkerradio.com/pollsarchive/</a>, support for voting from within Amarok might be added later.<br/><br/>Podcasts of the radio shows (in German) are located at <a href=\"http://www.darkerradio.com/category/podcast/\">www.darkerradio.com/category/podcast/</a>.";
-
-// temporary location for testing purposes, will very likely
-// be moved to darkerradio.com
-xmlUrl = new QUrl( "http://krohlas.de/fmc.xml" );
-http   = new QHttp;
-data   = new QIODevice;
-doc    = new QDomDocument("doc");
-elt    = new QDomElement;
-elt2   = new QDomElement;
-shows  = new QDomNodeList;
 Amarok.configured.connect( onConfigure );
 
 script = new FreeMusicCharts();
