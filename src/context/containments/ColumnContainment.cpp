@@ -26,6 +26,7 @@
 #include <limits.h>
 
 #define BORDER_PADDING 30
+#define OFFSET_Y 40
 
 namespace Context
 {
@@ -156,10 +157,10 @@ ColumnContainment::setupControlButtons()
 {
 
     m_addAppletsMenu = new AmarokToolBoxMenu( this, false );
-    m_addAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
+//     m_addAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
 
     m_removeAppletsMenu = new AmarokToolBoxMenu( this, true );
-    m_removeAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
+//     m_removeAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
 
     // TODO can't add text b/c of string freeze
     // add after 2.0
@@ -434,8 +435,9 @@ ColumnContainment::showAddAppletsMenu()
         m_addAppletsMenu->hide();
         return;
     }
-    qreal xpos = BORDER_PADDING;
-    qreal ypos = contentsRect().height() - m_addAppletsMenu->boundingRect().height();
+//     qreal xpos = BORDER_PADDING;
+    qreal xpos = contentsRect().width() / 2 - m_addAppletsMenu->boundingRect().width() / 2;
+    qreal ypos = contentsRect().height() - m_addAppletsMenu->boundingRect().height() + OFFSET_Y;
 
     m_addAppletsMenu->setPos( xpos, ypos );
     m_addAppletsMenu->show();
@@ -451,7 +453,8 @@ ColumnContainment::showRemoveAppletsMenu()
         m_removeAppletsMenu->hide();
         return;
     }
-    qreal xpos = BORDER_PADDING;
+//     qreal xpos = BORDER_PADDING;
+    qreal xpos = contentsRect().width() / 2 - m_addAppletsMenu->boundingRect().width() / 2;
     qreal ypos = contentsRect().height() - m_removeAppletsMenu->boundingRect().height();
 
     m_removeAppletsMenu->setPos( xpos, ypos );

@@ -150,10 +150,10 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    QSize lyricsSize( size().width() - 20, size().height() - 24 );
+    QSize lyricsSize( size().width() - 20, size().height() - 48 );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
-    m_lyricsProxy->setPos( 10, 14 );
+    m_lyricsProxy->setPos( 10, 42 );
     
 }
 

@@ -288,11 +288,11 @@ AmarokToolBoxMenu::show( bool refreshApplets )
     
     m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 54 );
     m_hideIcon->show();
+    setZValue( zValue() + 10000 );
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {
         ToolBoxIcon *entry = m_currentMenu[m_currentMenu.count() - i - 1];
-        entry->show();
-
+        entry->show();        
         const int height = static_cast<int>( entry->boundingRect().height() ) + 9;
 
         Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement, QPoint( 5, boundingRect().height() - height * i - 50 ) );
@@ -307,10 +307,13 @@ AmarokToolBoxMenu::hide()
     
     if( m_timer->isActive() )
         m_timer->stop();
-    
+
+    setZValue( zValue() - 10000 );
     m_showing = false;
     foreach( QGraphicsItem *c, QGraphicsItem::children() )
+    {
         c->hide();
+    }
 
     emit menuHidden();
 }
