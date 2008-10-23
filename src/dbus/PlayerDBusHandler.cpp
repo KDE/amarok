@@ -217,6 +217,7 @@ namespace Amarok
     {
         QVariantMap map;
         if( track ) {
+            map["location"] = track->playableUrl().url();
             //general meta info:
             map["title"] = track->prettyName();
             if( track->artist() )
