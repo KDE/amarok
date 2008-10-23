@@ -23,7 +23,7 @@
 #include "MtpCollection.h"
 #include "MtpHandler.h"
 #include "MtpMeta.h"
-#include "../../statusbar/StatusBar.h"
+#include "../../statusbar_ng/StatusBar.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
 #include <QDir>
