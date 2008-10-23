@@ -28,11 +28,11 @@
 #include "PlaylistController.h"
 #include "view/listview/PrettyListView.h"
 #include "PlaylistHeader.h"
-#include "statusbar/selectLabel.h"
 #include "ToolBar.h"
 #include "PlaylistModel.h"
 #include "widgets/Widget.h"
 
+#include <KConfigGroup>
 #include <KToolBarSpacerAction>
 
 #include <QHBoxLayout>
@@ -111,12 +111,6 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
-//TODO: Re add when these work...
-//         plBar->addSeparator();
-
-// //         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("repeat") ), plBar ) );
-// //         plBar->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::actionCollection()->action("random_mode") ), plBar ) );
-//         plBar->addSeparator();
 
         // Alternate playlist view disabled for 2.0
         //plBar->addSeparator();

@@ -161,19 +161,6 @@ set(libcollectionbrowser_SRCS
 #)
 
 #####################################################################
-# STATUSBAR
-#####################################################################
-#set(libstatusbar_SRCS
-#    statusbar/StatusBar.cpp
-#    statusbar/StatusBarBase.cpp
-#    statusbar/StatusBarMessageLabel.cpp
-#    statusbar/overlayWidget.cpp
-#    statusbar/popupMessage.cpp
-#    statusbar/progressBar.cpp
-#    statusbar/selectLabel.cpp
-#)
-
-#####################################################################
 # STATUSBAR NG
 #####################################################################
 set(libstatusbarNG_SRCS
@@ -418,7 +405,6 @@ set(amaroklib_LIB_SRCS
     ${libpodcasts_SRCS}
     ${libserviceframework_SRCS}
     ${libservicebrowser_SRCS}
-    #${libstatusbar_SRCS}
     ${libdynamic_SRCS}
     ${meta_SRCS}
     ${collection_SRCS}
