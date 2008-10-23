@@ -30,7 +30,7 @@ CollectionConfig::CollectionConfig( QWidget* parent )
 {
     setupUi( this );
 
-    m_collectionSetup = new CollectionSetup( collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
+    m_collectionSetup = new CollectionSetup( collectionFoldersBox );
     connect( m_collectionSetup, SIGNAL( changed() ), parent, SLOT( updateButtons() ) );
 
     QVBoxLayout *layout = new QVBoxLayout();
