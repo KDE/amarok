@@ -136,10 +136,6 @@ EngineController::canDecode( const KUrl &url ) //static
     if( PlaylistManager::isPlaylist( url ) )
         return false;
 
-    // Accept non-local files, since we can't test them for validity at this point
-    if( url.protocol() == "http" || url.protocol() == "https" )
-        return true;
- 
     KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
     // If file has 0 bytes, ignore it and return false
     if( !item.size() )
@@ -148,6 +144,10 @@ EngineController::canDecode( const KUrl &url ) //static
     // We can't play directories, reguardless of what the engine says.    
     if( item.isDir() )
         return false;
+        
+    // Accept non-local files, since we can't test them for validity at this point
+    if( !item.isLocalFile() )
+        return true;
         
     // Filter the available mime types to only include audio, as amarok does not intend to play photos or videos
     static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive );
