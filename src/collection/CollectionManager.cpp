@@ -369,11 +369,7 @@ CollectionManager::trackForUrl( const KUrl &url )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     if( url.protocol() == "file" && EngineController::canDecode( url ) )
-    {
-        KFileItem kitem( KFileItem::Unknown, KFileItem::Unknown, url, true );
-        if( !kitem.isDir() )
-            return Meta::TrackPtr( new MetaFile::Track( url ) );
-    }
+        return Meta::TrackPtr( new MetaFile::Track( url ) );
 
     return Meta::TrackPtr( 0 );
 }

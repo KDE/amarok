@@ -3,6 +3,7 @@
  *             (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
  *             (C) 2004-2008 Mark Kretschmann <kretschmann@kde.org>        *
  *             (C) 2006, 2008 Ian Monroe <ian@monroe.nu>                   *
+ *             (C) 2008 Jason A. Donenfeld <Jason@zx2c4.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -43,9 +44,6 @@
 #include <QByteArray>
 #include <QFile>
 #include <QTimer>
-
-
-EngineController::ExtensionCache EngineController::s_extensionCache;
 
 namespace The {
     EngineController* engineController() { return EngineController::instance(); }
@@ -134,46 +132,34 @@ EngineController::canDecode( const KUrl &url ) //static
 {
    //NOTE this function must be thread-safe
 
-    const QString fileName = url.fileName();
-    const QString ext = Amarok::extension( fileName );
-
     // We can't use playlists in the engine
-    if ( PlaylistManager::isPlaylist( url ) )
-        return false;
-
-    // Playing images is pretty stupid
-    if ( ext == "png" || ext == "jpg" )
-        return false;
-
-    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we don't really want them in the playlist :)
-    if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" )
+    if( PlaylistManager::isPlaylist( url ) )
         return false;
 
     // Accept non-local files, since we can't test them for validity at this point
-    if ( url.protocol() == "http" || url.protocol() == "https" )
+    if( url.protocol() == "http" || url.protocol() == "https" )
         return true;
-
-    // If extension is already in the cache, return cache result
-    if ( extensionCache().contains( ext ) )
-        return s_extensionCache[ext];
-
-    // If file has 0 bytes, ignore it and return false, so that we don't infect the cache with corrupt files
-    if ( !QFileInfo(url.path()).size() )
+ 
+    KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
+    // If file has 0 bytes, ignore it and return false
+    if( !item.size() )
         return false;
 
-    KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
-    const bool valid = Phonon::BackendCapabilities::isMimeTypeAvailable( item.mimetype() );
+    // We can't play directories, reguardless of what the engine says.    
+    if( item.isDir() )
+        return false;
+        
+    // Filter the available mime types to only include audio, as amarok does not intend to play photos or videos
+    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive );
+    const QString mimeType = item.mimetype();
+    const bool valid = mimeTable.contains( mimeType, Qt::CaseInsensitive );
 
     //we special case this as otherwise users hate us
-    if ( !valid && ext.toLower() == "mp3" && !installDistroCodec() )
+    if ( !valid && ( mimeType == "audio/mp3" || mimeType == "audio/x-mp3" ) && !installDistroCodec() )
         The::statusBarNG()->longMessageThreadSafe(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                     "the installation of the backend that phonon uses.</p>"
                     "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBarNG::Error );
-
-    // Cache this result for the next lookup
-    if ( !ext.isEmpty() )
-        extensionCache().insert( ext, valid );
 
     return valid;
 }

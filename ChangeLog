@@ -1,4 +1,4 @@
-Amarok ChangeLog
+\Amarok ChangeLog
 ================
 (C) 2002-2008 the Amarok authors.
 
@@ -55,6 +55,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Amarok would not show all files it could play in the files browser
+      (BR 173333)
     * Immediately remove the playlist drop visualiser from the playlist after
       dropping an item. (BR 171382)
     * Albums applet doesn't jumble up most recent albums listing.

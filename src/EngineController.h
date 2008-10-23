@@ -2,6 +2,7 @@
  *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
  *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
  *             (C) 2004-2008 Mark Kretschmann <kretschmann@kde.org>        *
+ *             (C) 2008 Jason A. Donenfeld <Jason@zx2c4.com>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -40,13 +41,10 @@ class AMAROK_EXPORT EngineController : public QObject, public EngineSubject
     Q_OBJECT
 
 public:
-    typedef QMap<QString, bool>  ExtensionCache;
-
     static EngineController* instance();
     static void destroy();
 
     static bool              canDecode( const KUrl& );
-    static ExtensionCache&   extensionCache() { return s_extensionCache; }
 
     /* returns track position (elapsed time) in seconds */
     int trackPosition() const;
@@ -135,8 +133,6 @@ private:
     static EngineController* s_instance;
     EngineController();
     ~EngineController();
-
-    static ExtensionCache s_extensionCache;
 
     Q_DISABLE_COPY( EngineController )
 
