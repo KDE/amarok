@@ -56,7 +56,6 @@ class AMAROK_EXPORT StatusBarNG : public KStatusBar, public EngineObserver, publ
     static StatusBarNG* s_instance;
 
 public:
-
     enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox, None, OperationCompleted };
 
     StatusBarNG( QWidget * parent );
@@ -69,10 +68,12 @@ public:
 
     void shortMessage( const QString &text );
     void longMessage( const QString &text, MessageType type = Information );
-    void longMessageThreadSafe( const QString &text, MessageType type = Information );
 
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
+
+signals:
+    void signalLongMessage( const QString & text, MessageType type );
 
 public slots:
     /**
@@ -167,9 +168,10 @@ private:
     Meta::TrackPtr m_currentTrack;
 
 private slots:
+    void slotLongMessage( const QString &text, MessageType type = Information );
     void updateTotalPlaylistLength();
-    
 };
 
+Q_DECLARE_METATYPE( StatusBarNG::MessageType );
 
 #endif

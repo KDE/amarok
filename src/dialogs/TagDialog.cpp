@@ -1784,7 +1784,7 @@ TagDialogWriter::doJob()
 //     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
 //         TagLib::FileName path = reinterpret_cast<const wchar_t *>( m_tags[i]->playableUrl().path().utf16() );
 //         if ( !TagLib::File::isWritable( path ) ) {
-//             The::statusBarNG()->longMessageThreadSafe( i18n(
+//             The::statusBarNG()->longMessage( i18n(
 //                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), StatusBarNG::Error );
 //             m_failed += true;
 //             continue;

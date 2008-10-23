@@ -132,7 +132,7 @@ namespace KDE
          */
         AMAROK_EXPORT void longMessage( const QString &text, MessageType type = Information );
 
-        void longMessageThreadSafe( const QString &text, MessageType type = Information );
+        void longMessage( const QString &text, MessageType type = Information );
 
 
         /**

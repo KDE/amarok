@@ -348,7 +348,7 @@ StatusBar::popupDeleted( )
 }
 
 void
-StatusBar::longMessageThreadSafe( const QString &text, MessageType /*type*/ )
+StatusBar::longMessage( const QString &text, MessageType /*type*/ )
 {
     LongMessageEvent* e = new LongMessageEvent( text );
     QApplication::postEvent( this, e );

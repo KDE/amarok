@@ -156,7 +156,7 @@ EngineController::canDecode( const KUrl &url ) //static
 
     //we special case this as otherwise users hate us
     if ( !valid && ( mimeType == "audio/mp3" || mimeType == "audio/x-mp3" ) && !installDistroCodec() )
-        The::statusBarNG()->longMessageThreadSafe(
+        The::statusBarNG()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                     "the installation of the backend that phonon uses.</p>"
                     "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBarNG::Error );

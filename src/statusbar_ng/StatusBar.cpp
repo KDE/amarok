@@ -29,6 +29,7 @@
 
 #include "KJobProgressBar.h"
 
+#include <QMetaType>
 #include <QTextDocument>
 
 #include <cmath>
@@ -83,10 +84,14 @@ StatusBarNG::StatusBarNG( QWidget * parent )
 
     addPermanentWidget( m_nowPlayingWidget );
 
+    qRegisterMetaType<MessageType>( "MessageType" );
+    connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
+
     connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlistModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+
     updateTotalPlaylistLength();
 }
 
@@ -292,12 +297,22 @@ void StatusBarNG::updateInfo( Meta::TrackPtr track )
 
 void StatusBarNG::longMessage( const QString & text, MessageType type )
 {
+    DEBUG_BLOCK
+
+    // The purpose of this emit is to make the operation thread safe. If this
+    // method is called from a non-GUI thread, the "emit" relays it over the
+    // event loop to the GUI thread, so that we can safely create widgets.
+
+    emit signalLongMessage( text, type );
+}
+
+void StatusBarNG::slotLongMessage( const QString & text, MessageType type ) //SLOT
+{
+    DEBUG_BLOCK
+
     LongMessageWidget * message = new LongMessageWidget( this, text, type );
     connect( message, SIGNAL( closed() ), this, SLOT( hideLongMessage() ) );
 }
-
-void StatusBarNG::longMessageThreadSafe( const QString & text, MessageType type )
-{}
 
 void StatusBarNG::hideLongMessage()
 {

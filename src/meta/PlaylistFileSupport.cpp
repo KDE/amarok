@@ -71,7 +71,7 @@ loadPlaylist( const KUrl &url )
         if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
             debug() << "could not read file " << url.path();
-            The::statusBarNG()->longMessageThreadSafe( i18n( "Cannot read playlist (%1).", url.url() ) );
+            The::statusBarNG()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
             return playlist;
         }
     }
