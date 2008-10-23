@@ -40,22 +40,15 @@ CompoundProgressBar::CompoundProgressBar( QWidget * parent )
     m_progressDetailsWidget->hide();
 
     //connect( m_progressDetailsWidget, SIGNAL( finished ( int ) ), this, SLOT( detailsWindowClosed() ) );
-
-
-
     connect( m_showDetailsButton, SIGNAL( clicked() ), this, SLOT( toggleDetails() ) );
-
 }
-
 
 CompoundProgressBar::~CompoundProgressBar()
-{
-}
+{}
 
 void CompoundProgressBar::addProgressBar( ProgressBarNG * childBar, QObject *owner )
 {
     DEBUG_BLOCK
-
 
     m_progressMap.insert( owner, childBar );
     m_progressDetailsWidget->layout()->addWidget( childBar );
@@ -91,10 +84,7 @@ void CompoundProgressBar::addProgressBar( ProgressBarNG * childBar, QObject *own
     cancelButton()->setEnabled( true );
 
     handleDetailsButton();
-
-
 }
-
 
 void CompoundProgressBar::endProgressOperation( const QObject * owner )
 {
@@ -112,7 +102,6 @@ void CompoundProgressBar::incrementProgress( const QObject * owner )
     m_progressMap.value( owner )->setValue( m_progressMap.value( owner )->value() + 1 );
 }
 
-
 void CompoundProgressBar::setProgress( const QObject * owner, int steps )
 {
     if ( !m_progressMap.contains( owner ) )
@@ -121,15 +110,12 @@ void CompoundProgressBar::setProgress( const QObject * owner, int steps )
     m_progressMap.value( owner )->setValue( steps );
 }
 
-
 void CompoundProgressBar::incrementProgressTotalSteps( const QObject * owner, int inc )
 {
     if ( !m_progressMap.contains( owner ) )
         return ;
 
     m_progressMap.value( owner )->setMaximum( m_progressMap.value( owner )->maximum() + inc );
-
-
 }
 
 void CompoundProgressBar::setProgressStatus( const QObject * owner, const QString & text )
@@ -139,10 +125,6 @@ void CompoundProgressBar::setProgressStatus( const QObject * owner, const QStrin
 
     m_progressMap.value( owner )->setDescription( text );
 }
-
-
-
-
 
 void CompoundProgressBar::childPercentageChanged()
 {
@@ -236,19 +218,14 @@ int CompoundProgressBar::calcCompoundPercentage()
 void CompoundProgressBar::cancelAll()
 {
     DEBUG_BLOCK
+
     foreach( ProgressBarNG * currentBar, m_progressMap.values() )
-    {
-
         currentBar->cancel();
-    }
-
 }
-
 
 void CompoundProgressBar::showDetails()
 {
     DEBUG_BLOCK
-
 
     //Hack to make sure it has the right heigh tforst time it is shown...
     m_progressDetailsWidget->setFixedHeight( m_progressMap.values().at( 0 )->height() * m_progressMap.count() + 8 );
@@ -279,10 +256,4 @@ void CompoundProgressBar::handleDetailsButton()
     else if ( !m_progressDetailsWidget->isVisible() )
         m_showDetailsButton->hide();
 }
-
-
-
-
-
-
 

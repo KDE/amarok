@@ -28,7 +28,6 @@ PopupWidget::PopupWidget( QWidget * anchor, const QString &name )
         : KVBox( The::mainWindow() )
         , m_anchor( anchor )
 {
-
     setBackgroundRole( QPalette::Window );
     setAutoFillBackground( true );
 
@@ -42,13 +41,10 @@ PopupWidget::PopupWidget( QWidget * anchor, const QString &name )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     reposition();
-
 }
-
 
 PopupWidget::~PopupWidget()
-{
-}
+{}
 
 void PopupWidget::reposition()
 {
@@ -64,7 +60,6 @@ void PopupWidget::reposition()
     debug() << "p after: " << p;
 
     move( p );
-
 }
 
 

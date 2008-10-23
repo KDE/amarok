@@ -47,25 +47,18 @@ public:
     void setProgressStatus( const QObject *owner, const QString &text );
     void setProgress( const QObject *owner, int steps );
 
-
-
-
 signals:
-
     void allDone();
 
 protected slots:
-
     void cancelAll();
     void toggleDetails();
-
 
     void childPercentageChanged( );
     void childBarCancelled( ProgressBarNG * progressBar );
     void childBarComplete( ProgressBarNG * progressBar );
 
 private:
-
     void showDetails();
     void hideDetails();
 
@@ -78,10 +71,6 @@ private:
     QToolButton * m_showDetailsButton;
 
     PopupWidget * m_progressDetailsWidget;
-
-
-
-
 };
 
 #endif

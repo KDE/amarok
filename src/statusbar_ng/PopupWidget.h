@@ -22,9 +22,7 @@
 
 #include <KVBox>
 
-/**
-	@author
-*/
+
 class PopupWidget : public KVBox
 {
 public:
@@ -34,8 +32,6 @@ public:
     void reposition();
 
     QWidget *m_anchor;
-
-
 };
 
 #endif

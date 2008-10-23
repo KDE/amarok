@@ -89,17 +89,14 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
     button->setObjectName( "closeButton" );
     connect( button, SIGNAL( clicked() ), SLOT( close() ) );
 
-
     reposition();
 
     show();
     m_timerId = startTimer( m_timeout / m_countdownFrame->height() );
 }
 
-
 LongMessageWidget::~LongMessageWidget()
-{
-}
+{}
 
 void LongMessageWidget::close()
 {
@@ -128,7 +125,6 @@ void LongMessageWidget::timerEvent( QTimerEvent* )
 
     if ( m_counter > h->height() )
     {
-
         killTimer( m_timerId );
         h->setFilledRatio( 1 );
         h->repaint();
@@ -142,12 +138,13 @@ void LongMessageWidget::timerEvent( QTimerEvent* )
 }
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// class CountdownFrame 
+//////////////////////////////////////////////////////////////////////////////
 
 CountdownFrame::CountdownFrame( QWidget * parent )
         : QFrame( parent )
-{
-}
+{}
 
 void CountdownFrame::setFilledRatio( float filled )
 {
