@@ -88,38 +88,34 @@ void
 Playlist::RandomAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
 {
     QList<quint64>::const_iterator id_iter;
-    for ( id_iter = list.begin(); id_iter != list.end(); ++id_iter )
-    {
+    for ( id_iter = list.begin(); id_iter != list.end(); ++id_iter ) {
         quint64 id = *id_iter;
         debug() << "removing" << id;
-        QHash<Meta::AlbumPtr, AlbumTrackList>::iterator alb_iter;
-        for ( alb_iter = m_albumGroups.begin(); alb_iter != m_albumGroups.end(); ++alb_iter )
-        {
-            if ( alb_iter->contains( id ) )
-            {
+        QHash<Meta::AlbumPtr, AlbumTrackList>::iterator alb_iter = m_albumGroups.begin();
+        while ( alb_iter != m_albumGroups.end() ) {
+            if ( alb_iter->contains( id ) ) {
                 debug() << "    from" << alb_iter.key()->prettyName();
                 Meta::AlbumPtr album = alb_iter.key();
                 AlbumTrackList atl = alb_iter.value();
-                if ( m_currentTrack == id )
-                {
+                if ( m_currentTrack == id ) {
                     int idx = atl.indexOf( id );
                     m_currentTrack = ( idx < ( atl.size() - 1 ) ) ? atl.at( idx + 1 ) : 0;
                 }
                 atl.removeAll( id );
-                if ( atl.isEmpty() )
-                {
+                if ( atl.isEmpty() ) {
                     debug() << album->prettyName() << "is now empty";
                     alb_iter = m_albumGroups.erase( alb_iter );
                     m_playedAlbums.removeAll( album );
                     m_unplayedAlbums.removeAll( album );
                     if ( album == m_currentAlbum )
                         m_currentAlbum = ( m_unplayedAlbums.isEmpty() ) ? Meta::AlbumPtr() : m_unplayedAlbums.takeFirst();
-                }
-                else
-                {
+                } else {
+                    ++alb_iter;
                     m_albumGroups.insert( album, atl );
                 }
                 break;
+            } else {
+                ++alb_iter;
             }
         }
     }

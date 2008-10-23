@@ -31,39 +31,39 @@
 
 namespace Playlist
 {
-/**
-Navigator which repeats one album over and over
+    /**
+    Navigator which repeats one album over and over
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-    @author Soren Harward <stharward@gmail.com>
-*/
+        @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+        @author Soren Harward <stharward@gmail.com>
+    */
 
-class RepeatAlbumNavigator : public TrackNavigator
-{
-    Q_OBJECT
+    class RepeatAlbumNavigator : public TrackNavigator
+    {
+        Q_OBJECT
 
-public:
-    RepeatAlbumNavigator();
+    public:
+        RepeatAlbumNavigator();
 
-    quint64 requestNextTrack();
-    quint64 requestUserNextTrack() { return requestNextTrack(); }
-    quint64 requestLastTrack();
+        quint64 requestNextTrack();
+        quint64 requestUserNextTrack() { return requestNextTrack(); }
+        quint64 requestLastTrack();
 
-private slots:
-    void recvInsertedIds( const QList<quint64>& );
-    void recvRemovedIds( const QList<quint64>& );
-    void recvActiveTrackChanged( const quint64 );
+    private slots:
+        void recvInsertedIds( const QList<quint64>& );
+        void recvRemovedIds( const QList<quint64>& );
+        void recvActiveTrackChanged( const quint64 );
 
-private:
-    static bool idLessThan( const quint64 left, const quint64 right );
-    void sortTheseAlbums( const Meta::AlbumList );
+    private:
+        static bool idLessThan( const quint64 left, const quint64 right );
+        void sortTheseAlbums( const Meta::AlbumList );
 
-    void dump();
+        void dump();
 
-    QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
+        QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
 
-    Meta::AlbumPtr m_currentAlbum;
-    quint64 m_currentTrack;
-};
+        Meta::AlbumPtr m_currentAlbum;
+        quint64 m_currentTrack;
+    };
 }
 #endif
