@@ -21,8 +21,6 @@ email                : markey@web.de
 #include <kconfigdialog.h>
 
 
-
-
 class Amarok2ConfigDialog : public KConfigDialog
 {
     Q_OBJECT
@@ -34,6 +32,12 @@ class Amarok2ConfigDialog : public KConfigDialog
         void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,
                       const QString &header = QString(), bool manage=true);
         void showPageByName( const QByteArray& page );
+
+    public slots:
+        /**
+         * Updates the state of the Apply button. Useful for widgets that are not managed by KConfigXT.
+         */
+        void updateButtons();
 
     protected slots:
         void updateSettings();

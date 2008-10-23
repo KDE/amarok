@@ -65,6 +65,13 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
     AmarokConfig::self()->writeConfig();
 }
 
+void Amarok2ConfigDialog::updateButtons() //SLOT
+{
+    DEBUG_BLOCK
+
+    enableButtonApply( hasChanged() );
+}
+
 
 /** Reimplemented from KConfigDialog */
 void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )

@@ -30,12 +30,11 @@ CollectionConfig::CollectionConfig( QWidget* parent )
 {
     setupUi( this );
 
-    QVBoxLayout *layout = new QVBoxLayout();
-
     m_collectionSetup = new CollectionSetup( collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
+    connect( m_collectionSetup, SIGNAL( changed() ), parent, SLOT( updateButtons() ) );
 
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( m_collectionSetup );
-    
     collectionFoldersBox->setLayout( layout );
 }
 
@@ -50,7 +49,9 @@ CollectionConfig::~CollectionConfig()
 bool
 CollectionConfig::hasChanged()
 {
-    return false;
+    DEBUG_BLOCK
+
+    return m_collectionSetup->hasChanged();
 }
 
 bool

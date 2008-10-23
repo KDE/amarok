@@ -33,17 +33,24 @@ namespace CollectionFolder { class Model; }
 
 class CollectionSetup : public KVBox
 {
+    Q_OBJECT
+
     friend class CollectionFolder::Model;
 
     public:
         static CollectionSetup* instance() { return s_instance; }
 
         CollectionSetup( QWidget* );
+        
         void writeConfig();
-    
+        bool hasChanged() const;
+         
         QStringList dirs() const { return m_dirs; }
         bool recursive() const { return m_recursive && m_recursive->isChecked(); }
         bool monitor() const { return m_monitor && m_monitor->isChecked(); }
+
+    signals:
+        void changed();
 
     private:
         static CollectionSetup* s_instance;

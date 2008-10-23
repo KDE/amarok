@@ -62,6 +62,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
+    connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
     m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
@@ -95,6 +97,17 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     }
 
     setSpacing( 6 );
+}
+
+bool
+CollectionSetup::hasChanged() const
+{
+    DEBUG_BLOCK
+
+    const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
+    const bool monitorChanged  = m_monitor->isChecked() != AmarokConfig::monitorChanges();
+
+    return recursiveChanged || monitorChanged;
 }
 
 void
