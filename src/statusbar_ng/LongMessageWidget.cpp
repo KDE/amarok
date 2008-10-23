@@ -35,6 +35,8 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
         , m_counter( 0 )
         , m_timeout( 6000 )
 {
+    Q_UNUSED( type )
+
     setFrameStyle( QFrame::Panel | QFrame::Sunken );
     setFrameShape( QFrame::StyledPanel );
 
@@ -160,7 +162,6 @@ void CountdownFrame::paintEvent( QPaintEvent * e )
     p.setCurrentColorGroup( QPalette::Active );
     //QPainter( this ).fillRect( 2, (int)m_filled * height(), width() - 4, static_cast<int>(height() - m_filled * height()), p.highlight() );
 
-    int notFilled = static_cast<int>( height() - m_filled * height() );
     QPainter( this ).fillRect( 2, m_filled * height() , width() - 4, height() - ( m_filled * height() ) , p.highlight() );
 }
 

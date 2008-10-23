@@ -180,6 +180,7 @@ void StatusBarNG::metadataChanged( Meta::TrackPtr track )
 
 void StatusBarNG::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
+    Q_UNUSED( oldState )
     DEBUG_BLOCK
 
     switch ( state )
