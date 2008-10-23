@@ -1,22 +1,19 @@
-\Amarok ChangeLog
+Amarok ChangeLog
 ================
 (C) 2002-2008 the Amarok authors.
 
 
 VERSION 2.0-beta3
   FEATURES:
-    * Amarok now remembers its panel sizes over restarts. Patch by Gary
-      Steinert <fatlardo@gmail.com>. (BR 172976)
     * Double clicking items in the Albums applet appends to playlist.
     * Service scripts can now specify custom info for artist, album and friends
       that will be shown in the playlist and other places, independetly of
       their actual parent item in the service. This value is ignored if item
       is not a level 0 item. Specifying these values is completely optional.
     * Playlists can be added using the Add Media dialogs.
-    * Collection browser can be listed by Year - Album grouping.
+    * Collection browser can once again sort by Year - Album.
     * Albums applet shows disc number separators.
     * Context menu and drag & drop support for the albums applet.
-    * Automatic track score computation works now.
     * Added tracks count and total playlist time to the status bar.
       (BR 171652)
     * You can now Copy To a collection, Append, and Load tracks from 
@@ -44,7 +41,7 @@ VERSION 2.0-beta3
       artist in any collection.
     * New "playground" directory added for plugins and applets that are not 
       yet ready for prime time.
-    * Multiple disjoint items can now be selected and dragged around in the
+    * Nonconsecutive items can now be selected and dragged around in the
       playlist.
     * Major overhaul of playlist subsystem, including a completely new view
       (even though it looks a lot like to old one).  Programmers should
@@ -57,6 +54,9 @@ VERSION 2.0-beta3
   BUGFIXES:
     * Amarok would not show all files it could play in the files browser
       (BR 173333)
+    * Amarok now remembers its panel sizes over restarts. Patch by Gary
+      Steinert <fatlardo@gmail.com>. (BR 172976)
+    * Automatic track score computation works now.
     * Immediately remove the playlist drop visualiser from the playlist after
       dropping an item. (BR 171382)
     * Albums applet doesn't jumble up most recent albums listing.
