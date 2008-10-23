@@ -124,13 +124,15 @@ Playlist::Actions::play()
 void
 Playlist::Actions::play( const QModelIndex& index )
 {
-    play( index.data( UniqueIdRole ).value<quint64>() );
+    m_nextTrackCandidate = index.data( UniqueIdRole ).value<quint64>();
+    play( m_nextTrackCandidate );
 }
 
 void
 Playlist::Actions::play( int row )
 {
-    play( Model::instance()->idAt( row ) );
+    m_nextTrackCandidate = Model::instance()->idAt( row );
+    play( m_nextTrackCandidate );
 }
 
 void
@@ -140,23 +142,16 @@ Playlist::Actions::play( quint64 trackid, bool now )
 
     Model* model = Model::instance();
 
-    if ( model->containsId( trackid ) )
-    {
-        if ( now )
-        {
+    if ( model->containsId( trackid ) ) {
+        if ( now ) {
             The::engineController()->play( model->trackForId( trackid ) );
-        }
-        else
-        {
+        } else {
             The::engineController()->setNextTrack( model->trackForId( trackid ) );
         }
-    }
-    else
-    {
+    } else {
         m_trackError = true;
         warning() << "Invalid trackid" << trackid;
     }
-    m_nextTrackCandidate = 0;
 }
 
 void
@@ -263,20 +258,15 @@ Playlist::Actions::engineNewTrackPlaying()
 {
     Model* model = Model::instance();
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if ( track )
-    {
-        if ( model->containsId( m_nextTrackCandidate ) && track == model->trackForId( m_nextTrackCandidate ) )
-        {
+    if ( track ) {
+        if ( model->containsId( m_nextTrackCandidate ) && track == model->trackForId( m_nextTrackCandidate ) ) {
             model->setActiveId( m_nextTrackCandidate );
-        }
-        else
-        {
+        } else {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
-            model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+            if ( model->activeTrack() != track )
+                model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
         }
-    }
-    else
-    {
+    } else {
         warning() << "engineNewTrackPlaying: not really a track";
     }
 

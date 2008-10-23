@@ -400,9 +400,6 @@ Playlist::Model::rowForId( const quint64 id ) const
 Meta::TrackPtr
 Playlist::Model::trackForId( const quint64 id ) const
 {
-    DEBUG_BLOCK
-    debug() << "got " << m_itemIds.count() << " ids";
-    debug() << "looking for id " << id;
     if ( containsId( id ) )
         return m_itemIds.value( id )->track();
     else
