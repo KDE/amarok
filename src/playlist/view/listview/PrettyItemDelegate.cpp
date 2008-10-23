@@ -41,58 +41,40 @@ const qreal Playlist::PrettyItemDelegate::MARGIN = 2.0;
 const qreal Playlist::PrettyItemDelegate::MARGINH = 6.0;
 const qreal Playlist::PrettyItemDelegate::MARGINBODY = 1.0;
 const qreal Playlist::PrettyItemDelegate::PADDING = 1.0;
-QFontMetricsF* Playlist::PrettyItemDelegate::s_nfm = 0; // normal font metric
-QFontMetricsF* Playlist::PrettyItemDelegate::s_bfm = 0; // bold font metric
-QFontMetricsF* Playlist::PrettyItemDelegate::s_ifm = 0; // italic font metric
 
 Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
         : QStyledItemDelegate( parent )
 {
     DEBUG_BLOCK
-
-    QFont font;
-
-    if ( !s_nfm )
-    {
-        s_nfm = new QFontMetricsF( font );
-
-        if ( !s_bfm )
-        {
-            font.setBold( true );
-            s_bfm = new QFontMetricsF( font );
-            font.setBold( false );
-        }
-        if ( !s_ifm )
-        {
-            font.setItalic( true );
-            s_ifm = new QFontMetricsF( font );
-            font.setItalic( false );
-        }
-    }
 }
 
 Playlist::PrettyItemDelegate::~PrettyItemDelegate() { }
 
 QSize
-Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem&, const QModelIndex& index ) const
+Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     int height = 0;
+
+    QFontMetricsF nfm( option.font );
+    QFont boldfont( option.font );
+    boldfont.setBold( true );
+    QFontMetricsF bfm( boldfont );
 
     int groupMode = index.data( GroupRole ).toInt();
     switch ( groupMode )
     {
     case Head:
-        height = static_cast<int>( MARGIN + qMax( ALBUM_WIDTH, s_bfm->height() * 2 + PADDING ) + 3 * PADDING + s_nfm->height() + MARGINBODY );
+        height = static_cast<int>( MARGIN + qMax( ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + 3 * PADDING + nfm.height() + MARGINBODY );
         break;
     case Body:
-        height = static_cast<int>( s_nfm->height() + 2 * PADDING + 2 * MARGINBODY );
+        height = static_cast<int>( nfm.height() + 2 * PADDING + 2 * MARGINBODY );
         break;
     case Tail:
-        height = static_cast<int>( MARGINBODY + s_nfm->height() + 2 * PADDING + MARGIN );
+        height = static_cast<int>( MARGINBODY + nfm.height() + 2 * PADDING + MARGIN );
         break;
     case None:
     default:
-        height = static_cast<int>( qMax( SINGLE_TRACK_ALBUM_WIDTH, s_nfm->height() * 2 + 4 * PADDING ) + 2 * MARGIN );
+        height = static_cast<int>( qMax( SINGLE_TRACK_ALBUM_WIDTH, nfm.height() * 2 + 4 * PADDING ) + 2 * MARGIN );
         break;
     }
 
@@ -110,8 +92,6 @@ Playlist::PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewIt
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", ( int )option.rect.width(), ( int )option.rect.height(), "track" ) );
     else
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "alt_track", ( int )option.rect.width(), ( int )option.rect.height(), "alt_track" ) );
-
-
 
     if ( option.state & QStyle::State_Selected )
         painter->setPen( App::instance()->palette().highlightedText().color() );
@@ -144,7 +124,8 @@ Playlist::PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& r
     QRect headerBounds = rect.adjusted(( int )MARGINH,
                                        ( int )MARGIN,
                                        ( int )( -MARGINH ),
-                                       ( int )( -MARGIN - 2 * PADDING - s_nfm->height() ) );
+                                       0 );
+    headerBounds.setHeight( static_cast<int>( 2 * MARGIN + ALBUM_WIDTH ) );
     return headerBounds.contains( pt );
 }
 
@@ -152,6 +133,7 @@ void
 Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QRectF trackRect( option.rect );
+    QFontMetricsF nfm( option.font );
 
     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
 
@@ -197,7 +179,7 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
         timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
     else
         timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( s_nfm->size( Qt::TextSingleLine, timeString ) );
+    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
     timeStringSize.setHeight( boxheight );
     QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, MARGIN );
     QRectF timeTextBox( textLoc, timeStringSize );
@@ -205,29 +187,24 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
 
     // top left: track name
     QRectF titleTextBox = topLine.adjusted( PADDING, PADDING, -2 * PADDING - timeStringSize.width(), -PADDING );
-    QString titleString = s_nfm->elidedText( track->prettyName(), Qt::ElideRight, ( int )titleTextBox.width() );
+    QString titleString = nfm.elidedText( track->prettyName(), Qt::ElideRight, ( int )titleTextBox.width() );
 
     QString rawArtistString = ( track->album() == Meta::ArtistPtr() ) ? QString() : track->artist()->prettyName();
     QString rawAlbumString = ( track->album() == Meta::AlbumPtr() ) ? QString() : track->album()->prettyName();
 
     // figure out widths for artist and album boxes
-    qreal artistNameWidth = s_nfm->size( Qt::TextSingleLine, rawArtistString ).width();
+    textwidth -= static_cast<qreal>( nfm.averageCharWidth() * 2.0 ); // make room for a space between artist & album
     qreal albumNameWidth;
-    if ( artistNameWidth <= ( textwidth - 5.0 ) / 2.0 )
-    {
-        albumNameWidth = textwidth - ( artistNameWidth + 5.0 );
-    }
-    else
-    {
-        albumNameWidth = s_nfm->size( Qt::TextSingleLine, rawAlbumString ).width();
-        if ( albumNameWidth <= ( textwidth - 5.0 ) / 2.0 )
-        {
-            artistNameWidth = textwidth - ( albumNameWidth + 5.0 );
-        }
-        else
-        {
-            artistNameWidth = ( textwidth - 5.0 ) / 2.0;
-            albumNameWidth = ( textwidth - 5.0 ) / 2.0;
+    qreal artistNameWidth = nfm.size( Qt::TextSingleLine, rawArtistString ).width();
+    if ( artistNameWidth <= textwidth / 2.0 ) {
+        albumNameWidth = textwidth - artistNameWidth;
+    } else {
+        albumNameWidth = nfm.size( Qt::TextSingleLine, rawAlbumString ).width();
+        if ( albumNameWidth <= textwidth / 2.0 ) {
+            artistNameWidth = textwidth - albumNameWidth;
+        } else {
+            artistNameWidth = textwidth / 2.0;
+            albumNameWidth = textwidth / 2.0;
         }
     }
 
@@ -235,15 +212,15 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
     QPointF artistLoc( bottomLine.topLeft() );
     artistLoc.rx() += PADDING;
     QRectF artistTextBox( artistLoc, QSizeF( artistNameWidth, boxheight ) );
-    artistTextBox = artistTextBox.adjusted( 0, PADDING, 0, -PADDING );
-    QString artistString = s_nfm->elidedText( rawArtistString, Qt::ElideRight, ( int )artistTextBox.width() );
+    artistTextBox.adjust( 0, PADDING, 0, -PADDING );
+    QString artistString = nfm.elidedText( rawArtistString, Qt::ElideRight, artistNameWidth );
 
     // bottom right: album name
-    QPointF albumLoc( bottomLine.topLeft() );
-    albumLoc.rx() += ( 3.0 + artistNameWidth );
+    QPointF albumLoc( bottomLine.topRight() );
+    albumLoc.rx() -= ( albumNameWidth + PADDING );
     QRectF albumTextBox( albumLoc, QSizeF( albumNameWidth, boxheight ) );
-    albumTextBox = albumTextBox.adjusted( 0, PADDING, 0, -PADDING );
-    QString albumString = s_nfm->elidedText( rawAlbumString, Qt::ElideRight, ( int )albumTextBox.width() );
+    albumTextBox.adjust( 0, PADDING, 0, -PADDING );
+    QString albumString = nfm.elidedText( rawAlbumString, Qt::ElideRight, albumNameWidth );
 
     // draw the "current track" highlight underneath the text
     if ( index.data( ActiveTrackRole ).toBool() )
@@ -260,7 +237,7 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
     // render text in here
     //setTextColor(index.data(ActiveTrackRole).toBool());
     painter->drawText( titleTextBox, Qt::AlignLeft | Qt::AlignVCenter, titleString );
-    painter->drawText( timeTextBox, Qt::AlignLeft | Qt::AlignVCenter, timeString );
+    painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
     painter->drawText( artistTextBox, Qt::AlignLeft | Qt::AlignVCenter, artistString );
     painter->drawText( albumTextBox, Qt::AlignRight | Qt::AlignVCenter, albumString );
 
@@ -280,6 +257,10 @@ void
 Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QRectF trackRect( option.rect );
+    QFontMetricsF nfm( option.font );
+    QFont boldfont( option.font );
+    boldfont.setBold( true );
+    QFontMetricsF bfm( boldfont );
 
     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
 
@@ -310,7 +291,7 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
         delete sic;
     }
 
-    qreal headheight = MARGIN + qMax( ALBUM_WIDTH, s_bfm->height() * 2 + PADDING ) + PADDING;
+    qreal headheight = MARGIN + qMax( ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + PADDING;
 
     // Set up the text areas
     qreal leftside = MARGINH + ALBUM_WIDTH + 3 * PADDING;
@@ -330,13 +311,13 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
     // top line: album
     QRectF albumTextBox = topLine.adjusted( PADDING, PADDING, -PADDING, -PADDING );
     QString rawAlbumString = ( track->album() == Meta::AlbumPtr() ) ? QString() : track->album()->prettyName();
-    QString albumString = s_bfm->elidedText( rawAlbumString, Qt::ElideRight, ( int )albumTextBox.width() );
+    QString albumString = bfm.elidedText( rawAlbumString, Qt::ElideRight, ( int )albumTextBox.width() );
     painter->drawText( albumTextBox, Qt::AlignCenter, albumString );
 
     // bottom line: artist
     QRectF artistTextBox = bottomLine.adjusted( PADDING, PADDING, -PADDING, -PADDING );
     QString rawArtistString = ( track->album() == Meta::ArtistPtr() ) ? QString() : track->artist()->prettyName();
-    QString artistString = s_bfm->elidedText( rawArtistString, Qt::ElideRight, ( int )artistTextBox.width() );
+    QString artistString = bfm.elidedText( rawArtistString, Qt::ElideRight, ( int )artistTextBox.width() );
     painter->drawText( artistTextBox, Qt::AlignCenter, artistString );
 
     painter->restore(); // change back from bold text
@@ -362,7 +343,7 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
         timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
     else
         timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( s_nfm->size( Qt::TextSingleLine, timeString ) );
+    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
     timeStringSize.setHeight( line.height() );
     QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, line.y() );
     QRectF timeTextBox( textLoc, timeStringSize );
@@ -371,16 +352,15 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
     // left: track number and name
     QRectF textBox = line.adjusted( PADDING, PADDING, -2 * PADDING - timeStringSize.width(), -PADDING );
 
-
     QString trackString;
     QString trackName = track->prettyName();
     if ( track->trackNumber() > 0 )
     {
         QString trackNumber = QString::number( track->trackNumber() );
-        trackString = s_nfm->elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
+        trackString = nfm.elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
     }
     else
-        trackString = s_nfm->elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
+        trackString = nfm.elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
 
     // render text in here
     //setTextColor(index.data(ActiveTrackRole).toBool());
@@ -391,8 +371,8 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
 void
 Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
-
     QRectF trackRect( option.rect );
+    QFontMetricsF nfm( option.font );
 
     QRectF line( MARGINH, MARGINBODY, trackRect.width() - ( 2*MARGINH ), trackRect.height() - ( 2*MARGINBODY ) );
 
@@ -416,7 +396,7 @@ Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionVi
         timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
     else
         timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( s_nfm->size( Qt::TextSingleLine, timeString ) );
+    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
     timeStringSize.setHeight( line.height() );
     QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, MARGIN );
     QRectF timeTextBox( textLoc, timeStringSize );
@@ -430,10 +410,10 @@ Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionVi
     if ( track->trackNumber() > 0 )
     {
         QString trackNumber = QString::number( track->trackNumber() );
-        trackString = s_nfm->elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
+        trackString = nfm.elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
     }
     else
-        trackString = s_nfm->elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
+        trackString = nfm.elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
 
     // render text in here
     //setTextColor(index.data(ActiveTrackRole).toBool());
@@ -446,6 +426,7 @@ void
 Playlist::PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QRectF trackRect( option.rect );
+    QFontMetricsF nfm( option.font );
 
     QRectF line( MARGINH, MARGINBODY, trackRect.width() - ( 2*MARGINH ), trackRect.height() - MARGINBODY - MARGIN );
 
@@ -469,7 +450,7 @@ Playlist::PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionVi
         timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
     else
         timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( s_nfm->size( Qt::TextSingleLine, timeString ) );
+    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
     timeStringSize.setHeight( line.height() );
     QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, MARGIN );
     QRectF timeTextBox( textLoc, timeStringSize );
@@ -483,10 +464,10 @@ Playlist::PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionVi
     if ( track->trackNumber() > 0 )
     {
         QString trackNumber = QString::number( track->trackNumber() );
-        trackString = s_nfm->elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
+        trackString = nfm.elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
     }
     else
-        trackString = s_nfm->elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
+        trackString = nfm.elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
 
     // render text in here
     //setTextColor(index.data(ActiveTrackRole).toBool());
