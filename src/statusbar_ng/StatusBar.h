@@ -21,18 +21,17 @@
 #ifndef STATUSBARNG_H
 #define STATUSBARNG_H
 
-#include "amarok_export.h"
-#include "MainWindow.h"
-#include "statusbar_ng/CompoundProgressBar.h"
 #include "EngineObserver.h"
+#include "MainWindow.h"
+#include "amarok_export.h"
 #include "meta/Meta.h"
+#include "statusbar_ng/CompoundProgressBar.h"
 
 #include <KJob>
 #include <KStatusBar>
 #include <KSqueezedTextLabel>
 
 #include <QTimer>
-
 
 #define SHORT_MESSAGE_DURATION 5000
 #define POPUP_MESSAGE_DURATION 5000
@@ -41,7 +40,7 @@ class StatusBarNG;
 
 namespace The
 {
-AMAROK_EXPORT StatusBarNG* statusBarNG();
+    AMAROK_EXPORT StatusBarNG* statusBarNG();
 }
 
 /**
@@ -51,7 +50,6 @@ A new, much simpler status bar as the old one really did not survive the porting
 */
 class AMAROK_EXPORT StatusBarNG : public KStatusBar, public EngineObserver, public Meta::Observer
 {
-
     Q_OBJECT
     //friend StatusBarNG* The::statusBarNG();
 
@@ -77,7 +75,6 @@ public:
     void metadataChanged( Meta::TrackPtr track );
 
 public slots:
-
     /**
      * Start a progress operation, if owner is 0, the return value is
      * undefined - the application will probably crash.
@@ -115,14 +112,17 @@ public slots:
     {
         m_progressBar->incrementProgress( sender() );
     }
+
     void setProgressStatus( const QObject *owner, const QString &text )
     {
         m_progressBar->setProgressStatus( owner, text );
     }
+
     void setProgress( int steps )
     {
         m_progressBar->setProgress( sender(), steps );
     }
+
     void setProgress( const QObject *owner, int steps )
     {
         m_progressBar->setProgress( owner, steps );
@@ -139,22 +139,16 @@ public slots:
         m_progressBar->endProgressOperation( owner );
     }
 
-
-
-
 protected:
-
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
 
 protected slots:
-
     void hideProgress();
     void nextShortMessage();
     void hideLongMessage();
 
 private:
-
     void updateInfo( Meta::TrackPtr track );
 
     CompoundProgressBar * m_progressBar;

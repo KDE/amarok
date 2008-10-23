@@ -37,11 +37,10 @@ StatusBarNG* StatusBarNG::s_instance = 0;
 
 namespace The
 {
-
-StatusBarNG* statusBarNG()
-{
-    return StatusBarNG::instance();
-}
+    StatusBarNG* statusBarNG()
+    {
+        return StatusBarNG::instance();
+    }
 }
 
 StatusBarNG::StatusBarNG( QWidget * parent )
@@ -51,7 +50,6 @@ StatusBarNG::StatusBarNG( QWidget * parent )
         , m_busy( false )
         , m_shortMessageTimer( new QTimer( this ) )
 {
-
     s_instance = this;
 
     addWidget( m_progressBar, 1 );
@@ -66,8 +64,6 @@ StatusBarNG::StatusBarNG( QWidget * parent )
 
     m_shortMessageTimer->setSingleShot( true );
     connect( m_shortMessageTimer, SIGNAL( timeout() ), this, SLOT( nextShortMessage() ) );
-
-
 
     m_nowPlayingWidget = new KHBox( 0 );
     m_nowPlayingWidget->setSpacing( 4 );
@@ -96,8 +92,7 @@ StatusBarNG::StatusBarNG( QWidget * parent )
 
 
 StatusBarNG::~StatusBarNG()
-{
-}
+{}
 
 ProgressBarNG * StatusBarNG::newProgressOperation( QObject * owner, const QString & description )
 {
@@ -114,12 +109,10 @@ ProgressBarNG * StatusBarNG::newProgressOperation( QObject * owner, const QStrin
     m_busy = true;
 
     return newBar;
-
 }
 
 ProgressBarNG * StatusBarNG::newProgressOperation( KJob * job, const QString & description )
 {
-
     //clear any short message currently being displayed and stop timer if running...
     clearMessage();
     m_shortMessageTimer->stop();
@@ -152,12 +145,11 @@ void StatusBarNG::shortMessage( const QString & text )
 void StatusBarNG::hideProgress()
 {
     DEBUG_BLOCK
+
     m_progressBar->hide();
     m_busy = false;
 
     nextShortMessage();
-
-
 }
 
 void StatusBarNG::nextShortMessage()
@@ -167,7 +159,6 @@ void StatusBarNG::nextShortMessage()
         m_busy = true;
         showMessage( m_shortMessageQue.takeFirst() );
         m_shortMessageTimer->start( SHORT_MESSAGE_DURATION );
-
     }
     else
     {
@@ -177,11 +168,10 @@ void StatusBarNG::nextShortMessage()
     }
 }
 
-
-
 void StatusBarNG::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track );
+
     if ( m_currentTrack )
         updateInfo( m_currentTrack );
     else
@@ -191,6 +181,7 @@ void StatusBarNG::metadataChanged( Meta::TrackPtr track )
 void StatusBarNG::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     DEBUG_BLOCK
+
     switch ( state )
     {
     case Phonon::StoppedState:
@@ -242,7 +233,6 @@ void StatusBarNG::engineNewTrackPlaying()
     updateInfo( m_currentTrack );
 }
 
-
 void StatusBarNG::updateInfo( Meta::TrackPtr track )
 {
     QString title       = Qt::escape( track->name() );
@@ -284,7 +274,6 @@ void StatusBarNG::updateInfo( Meta::TrackPtr track )
         else
             m_nowPlayingEmblem->hide();
         delete sic;
-
     }
     else
         m_nowPlayingEmblem->hide();
@@ -307,8 +296,7 @@ void StatusBarNG::longMessage( const QString & text, MessageType type )
 }
 
 void StatusBarNG::longMessageThreadSafe( const QString & text, MessageType type )
-{
-}
+{}
 
 void StatusBarNG::hideLongMessage()
 {
@@ -318,23 +306,22 @@ void StatusBarNG::hideLongMessage()
 void
 StatusBarNG::updateTotalPlaylistLength() //SLOT
 {
-    int totalLength = The::playlistModel()->totalLength();
-    int trackCount = The::playlistModel()->rowCount();
+    const int totalLength = The::playlistModel()->totalLength();
+    const int trackCount = The::playlistModel()->rowCount();
+
     QTime *minsecTime = new QTime( 0, 0, 0 );
     *minsecTime = minsecTime->addSecs( totalLength );
-    int hrsTime = floor( totalLength / 3600. );
-    QString totalTime = QString::number( hrsTime ) + ':' + minsecTime->toString( "mm:ss" ); //workaround for QTime limitations
+
+    const int hrsTime = floor( totalLength / 3600. );
+    const QString totalTime = QString::number( hrsTime ) + ':' + minsecTime->toString( "mm:ss" ); //workaround for QTime limitations
     //QTime keeps h between 0 and 23, I don't want that but I do want to use QTime's formatting without implementing my own so
     //I use QTime for mm:ss and handle hours separately.
+
     m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
+
     if( ( totalLength == 0 ) && ( trackCount > 0 ) )
             m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
 }
 
 #include "StatusBar.moc"
-
-
-
-
-
 
