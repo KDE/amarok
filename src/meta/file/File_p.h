@@ -125,6 +125,7 @@ void Track::Private::readMetaData()
     #define strip( x ) TStringToQString( x ).trimmed()
     if( tag )
     {
+        /*
         TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
         const char* buf = metaData.toCString();
         size_t len = strlen( buf );
@@ -136,7 +137,7 @@ void Track::Private::readMetaData()
         chardet_data_end( det );
         res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
         chardet_destroy( det );
-
+        */
         m_data.title = strip( tag->title() );
         m_data.artist = strip( tag->artist() );
         m_data.album = strip( tag->album() );
@@ -145,6 +146,7 @@ void Track::Private::readMetaData()
         m_data.year = tag->year();
 
         //Start to decode non-utf8 tags
+        /*
         QString track_encoding = encoding;
         if ( res == CHARDET_RESULT_OK )
         {
@@ -172,6 +174,7 @@ void Track::Private::readMetaData()
                 m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
             }
         }
+        */
     }
     if( !fileRef.isNull() )
     {

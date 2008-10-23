@@ -541,7 +541,9 @@ App::continueInit()
     const bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
-
+    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
+    QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right charecters.
+    
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )

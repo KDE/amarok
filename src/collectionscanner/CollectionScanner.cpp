@@ -20,10 +20,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "charset-detector/include/chardet.h"
 #include "CollectionScanner.h"
 
 #include "Amarok.h"
+#include "charset-detector/include/chardet.h"
 
 #include <cerrno>
 #include <iostream>
@@ -480,6 +480,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         if ( tag )
         {
 #define strip( x ) TStringToQString( x ).trimmed()
+/*
             TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
             const char* buf = metaData.toCString();
             size_t len = strlen( buf );
@@ -491,20 +492,18 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             chardet_data_end( det );
             res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
             chardet_destroy( det );
-
-            //debug() << "Data:" << buf <<endl;
-            //debug() << "Charset: " << encoding <<endl;
+*/
 
             attributes["title"] = strip( tag->title() );
             attributes["artist"] = strip( tag->artist() );
             attributes["album"] = strip( tag->album() );
             attributes["comment"] = strip( tag->comment() );
 
+            /*
             //Start to decode non-utf8 tags
             QString track_encoding = encoding;
-            //  make sure that the tags in flac medias are decoded in utf8 charset.
-            //  This should avoid the unexpected question marks in these tags.
-            if ( res == CHARDET_RESULT_OK && Amarok::extension( path ) != "flac" )
+
+            if ( ( res == CHARDET_RESULT_OK ) && ( Amarok::extension( path ) == "mp3" ) )
             {
             //http://doc.trolltech.com/4.4/qtextcodec.html
             //http://www.mozilla.org/projects/intl/chardet.html
@@ -530,7 +529,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     attributes["comment"] = codec->toUnicode( strip( tag->comment() ).toLatin1() );
                 }
             }
-            
+            */
             attributes["genre"] = strip( tag->genre() );
             attributes["year"] = QString::number( tag->year() );
             attributes["track"]  = QString::number( tag->track() );

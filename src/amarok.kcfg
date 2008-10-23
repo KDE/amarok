@@ -462,7 +462,6 @@
   <entry key="ManuallyAddedServers" type="StringList">
       <label>Manually added servers</label>
       <whatsthis>Music Sharing servers added by the user.</whatsthis>
-      <default/>
   </entry>
   <entry key="ServerPasswords" type="StringList">
     <label>Server passwords</label>
