@@ -298,10 +298,26 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
         
     if ( m_zoomLevel == Plasma::GroupZoom )
     {
-        connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
-                 this, SLOT( zoomInFinished( int ) ) );
-        Plasma::Animator::self()->customAnimation( 120, 800, Plasma::Animator::EaseInOutCurve,
-                                                    this, "animateZoomIn" );
+        m_zoomLevel = Plasma::DesktopZoom;
+        qreal factor = Plasma::scalingFactor( m_zoomLevel ) / matrix().m11();
+        scale( factor, factor );
+
+        int count = contextScene()->containments().size();
+        for( int i = 0; i < count; i++ )
+        {
+            Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
+            if( containment )
+            {
+                containment->hideTitle();
+            }
+        }
+        
+        updateContainmentsGeometry();
+        
+        qreal left, top, right, bottom;
+        containment->getContentsMargins( &left, &top, &right, &bottom );
+        setSceneRect( containment->geometry().adjusted( left, top, -right, -bottom )  );
+
     }
 
 }
@@ -309,6 +325,7 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
 void
 ContextView::zoomOut( Plasma::Containment* fromContainment )
 {
+    DEBUG_BLOCK
     Q_UNUSED( fromContainment )
     if ( m_zoomLevel == Plasma::DesktopZoom )
     {        
@@ -322,11 +339,17 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
                 containment->setZoomLevel( Plasma::GroupZoom);
             }
         }
-
-        connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
-                 this, SLOT( zoomOutFinished( int ) ) );
-        Plasma::Animator::self()->customAnimation( 120, 800, Plasma::Animator::EaseInOutCurve,
-                                                            this, "animateZoomOut" );                                                                    
+        m_zoomLevel = Plasma::GroupZoom;
+        debug() << "Scaling factor: " << Plasma::scalingFactor( m_zoomLevel );
+        qreal factor = Plasma::scalingFactor( m_zoomLevel ) - 0.05;
+        qreal s = factor / matrix().m11();
+        scale( s, s );
+//         setSceneRect( QRectF( 0, 0, scene()->sceneRect().right(), scene()->sceneRect().bottom() ) );
+// 
+//         ensureVisible( fromContainment->sceneBoundingRect() );
+        setSceneRect( QRectF() );
+        ensureVisible( rect(), 0, 0 );
+                                                           
     }
 
 }
