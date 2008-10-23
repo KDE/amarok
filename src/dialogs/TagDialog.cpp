@@ -66,22 +66,6 @@
 
 #include "metadata/tfile_helper.h" //TagLib::File::isWritable
 
-/*class TagDialogWriter : public ThreadManager::Job
-{
-public:
-    TagDialogWriter( const QMap<QString, Meta::TrackPtr> tagsToChange );
-    bool doJob();
-    void completeJob();
-private:
-    QList<bool> m_failed;
-    QList<Meta::TrackPtr> m_tags;
-    bool    m_updateView;
-    int     m_successCount;
-    int     m_failCount;
-    QStringList m_failedURLs;
-};*/
-
-
 TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     : KDialog( parent )
     , m_currentCover()
