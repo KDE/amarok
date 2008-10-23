@@ -93,6 +93,11 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
 
     protected:
         virtual QString escape( QString text ) const;
+
+        /** returns a pattern for LIKE operator that will match given text with given options
+         *
+         * @param text the text to match (should not be escape()'d, function does it itself)
+         */
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
     public slots:

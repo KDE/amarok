@@ -388,7 +388,7 @@ SqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    QString like = likeCondition( filter, !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
@@ -396,7 +396,7 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
 QueryMaker*
 SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    QString like = likeCondition( filter, !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
