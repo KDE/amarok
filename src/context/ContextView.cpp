@@ -344,9 +344,7 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
         qreal factor = Plasma::scalingFactor( m_zoomLevel ) - 0.05;
         qreal s = factor / matrix().m11();
         scale( s, s );
-//         setSceneRect( QRectF( 0, 0, scene()->sceneRect().right(), scene()->sceneRect().bottom() ) );
-// 
-//         ensureVisible( fromContainment->sceneBoundingRect() );
+
         setSceneRect( QRectF() );
         ensureVisible( rect(), 0, 0 );
                                                            
