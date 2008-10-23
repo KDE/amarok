@@ -28,44 +28,30 @@
 namespace Playlist
 {
 
-class Item
-{
-public:
-    enum State
-    {
-        Invalid,
-        NewlyAdded,
-        Unplayed,
-        Played
+    class Item {
+        public:
+            enum State {
+                Invalid,
+                NewlyAdded,
+                Unplayed,
+                Played
+            };
+
+            Item() { }
+            Item( Meta::TrackPtr track );
+            ~Item();
+            Meta::TrackPtr track() const { return m_track; }
+
+            State state() const { return m_state; }
+            void setState( State s ) { m_state = s; }
+
+            quint64 id() const { return m_id; }
+
+        private:
+            Meta::TrackPtr m_track;
+            State m_state;
+            quint64 m_id;
     };
-
-    Item() { }
-    Item( Meta::TrackPtr track );
-    ~Item();
-    Meta::TrackPtr track() const
-    {
-        return m_track;
-    }
-
-    State state() const
-    {
-        return m_state;
-    }
-    void setState( State s )
-    {
-        m_state = s;
-    }
-
-    qint64 id() const
-    {
-        return m_id;
-    }
-
-private:
-    Meta::TrackPtr m_track;
-    State m_state;
-    quint64 m_id;
-};
 
 }
 
