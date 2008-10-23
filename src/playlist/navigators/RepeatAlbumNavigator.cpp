@@ -60,8 +60,6 @@ Playlist::RepeatAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
     }
 
     sortTheseAlbums( modifiedAlbums );
-
-    dump();
 }
 
 void
@@ -86,8 +84,10 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
                 if ( atl.isEmpty() ) {
                     debug() << album->prettyName() << "is now empty";
                     alb_iter = m_albumGroups.erase( alb_iter );
-                    if ( album == m_currentAlbum )
+                    if ( album == m_currentAlbum ) {
                         m_currentAlbum = Meta::AlbumPtr();
+                        m_currentTrack = 0;
+                    }
                 } else {
                     ++alb_iter;
                     m_albumGroups.insert( album, atl );
@@ -98,7 +98,6 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
             }
         }
     }
-    dump();
 }
 
 void
@@ -117,8 +116,6 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
         m_currentAlbum = Meta::AlbumPtr();
     }
     m_currentTrack = id;
-
-    dump();
 }
 
 quint64

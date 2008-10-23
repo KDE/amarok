@@ -662,8 +662,8 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
     foreach( Item* item, delitems ) {
         m_itemIds.remove( item->id() );
+        delIds.append( item->id() );
     }
-
     
     qDeleteAll(delitems);
     delitems.clear();
