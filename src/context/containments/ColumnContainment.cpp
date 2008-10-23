@@ -45,6 +45,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     , m_addAppletsIcon( 0 )
     , m_removeAppletsIcon( 0 )
     , m_view( 0 )
+    , m_selectionLayer( 0 )
 {
     setContainmentType( CustomContainment );
     setDrawWallpaper( false );
@@ -90,6 +91,12 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     setupControlButtons();
     
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
+
+    m_selectionLayer = new ContainmentSelectionLayer( this );
+    m_selectionLayer->hide();
+    m_selectionLayer->setZValue( zValue() - 1000 ); //keep it down all elements
+    connect( m_selectionLayer, SIGNAL( focusRequested( Plasma::Containment * ) ),
+             this, SIGNAL( focusRequested( Plasma::Containment * ) ) );
 }
 
 ColumnContainment::~ColumnContainment()
@@ -806,8 +813,11 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
             m_zoomInIcon->hide();
             m_zoomOutIcon->show();
         }
-         m_switchRightIcon->show();
-         m_switchLeftIcon->show();
+        m_switchRightIcon->show();
+        m_switchLeftIcon->show();
+        
+        m_selectionLayer->hide();
+        m_selectionLayer->setZValue( zValue() - 10000 ); //move down to avoid dead zones
         
             
     } else if( level == Plasma::GroupZoom )
@@ -821,7 +831,10 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
          // don't show switching arrows
          m_switchRightIcon->hide();
          m_switchLeftIcon->hide();
-     }
+         
+        m_selectionLayer->show();
+        m_selectionLayer->setZValue( zValue() + 10000 ); //draw over applets  
+    }
 }
 
 } // Context namespace

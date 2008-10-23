@@ -16,6 +16,7 @@
 #ifndef COLUMN_CONTAINMENT_H
 #define COLUMN_CONTAINMENT_H
 
+#include "widgets/ContainmentSelectionLayer.h"
 #include "widgets/ToolBoxMenu.h"
 #include "Containment.h"
 #include "ContextView.h"
@@ -142,6 +143,9 @@ private:
     AmarokToolBoxMenu *m_removeAppletsMenu;
 
     ContextView *m_view;
+    
+    ContainmentSelectionLayer *m_selectionLayer;
+    
 //     bool m_gridFreePositions[MAX_ROWS][MAX_COLUMNS];
 };
 
