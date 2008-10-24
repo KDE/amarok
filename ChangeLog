@@ -20,6 +20,7 @@ VERSION 2.0-beta3
       the file browser's context menu.
 
   CHANGES:
+    * Improved usability for the collection configuration dialog.
     * XSPF playlists will now attempt to apply any stored metadata to items
       not owned by a service when loading. This will make many streams stored 
       on shutdown appear with correct metadata after a restart of Amarok.
