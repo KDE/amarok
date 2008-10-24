@@ -2,7 +2,7 @@
    begin                : Tue Feb 4 2003
    copyright            : (C) 2003 Scott Wheeler <wheeler@kde.org>
                         : (C) 2004 Max Howell <max.howell@methylblue.com>
-                        : (C) 2004 Mark Kretschmann <markey@web.de>
+                        : (C) 2004-2008 Mark Kretschmann <kretschmann@kde.org>
                         : (C) 2008 Seb Ruiz <ruiz@kde.org>
 ***************************************************************************/
 

@@ -2,7 +2,7 @@
    begin                : Tue Feb 4 2003
    copyright            : (C) 2003 Scott Wheeler <wheeler@kde.org>
                         : (C) 2004 Max Howell <max.howell@methylblue.com>
-                        : (C) 2004 Mark Kretschmann <markey@web.de>
+                        : (C) 2004-2008 Mark Kretschmann <kretschmann@kde.org>
                         : (C) 2008 Seb Ruiz <ruiz@kde.org>
                         : (C) 2008 Sebastian Trueg <trueg@kde.org>
 ***************************************************************************/
@@ -56,6 +56,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setRootIsDecorated( true );
     m_view->setAnimated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    connect( m_view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
 
     m_rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), this );
     connect( m_rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
@@ -104,10 +105,11 @@ CollectionSetup::hasChanged() const
 {
     DEBUG_BLOCK
 
+    const bool foldersChanged = m_model->directories() != MountPointManager::instance()->collectionFolders();
     const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
     const bool monitorChanged  = m_monitor->isChecked() != AmarokConfig::monitorChanges();
 
-    return recursiveChanged || monitorChanged;
+    return foldersChanged || recursiveChanged || monitorChanged;
 }
 
 void
