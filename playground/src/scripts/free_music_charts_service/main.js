@@ -91,6 +91,7 @@ function onPopulate( level, callbackData, filter ) {
 
   if ( level == 1 ) { // the shows
     Amarok.debug( "fetching fmc xml..." );
+    Amarok.Window.Statusbar.longMessage( "Free Music Charts: Fetching charts. This might take some seconds, depending on the speed of your internet connection..." );
     try {
       qurl = new QUrl( xmlUrl );
       a = new Downloader( qurl, fmcShowsXmlParser );

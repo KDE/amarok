@@ -1,3 +1,6 @@
+==1.0.2 (???)==
+* added statusbar hint when downloading charts
+
 ==1.0.1 (2008-10-22)==
 * make it run on Windows, too
 * beautify code
