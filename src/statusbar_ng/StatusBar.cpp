@@ -324,19 +324,21 @@ StatusBarNG::updateTotalPlaylistLength() //SLOT
 {
     const int totalLength = The::playlistModel()->totalLength();
     const int trackCount = The::playlistModel()->rowCount();
+    const QString totalTime = Meta::secToPrettyTime( totalLength );
 
-    QTime *minsecTime = new QTime( 0, 0, 0 );
-    *minsecTime = minsecTime->addSecs( totalLength );
-
-    const int hrsTime = floor( totalLength / 3600. );
-    const QString totalTime = QString::number( hrsTime ) + ':' + minsecTime->toString( "mm:ss" ); //workaround for QTime limitations
-    //QTime keeps h between 0 and 23, I don't want that but I do want to use QTime's formatting without implementing my own so
-    //I use QTime for mm:ss and handle hours separately.
-
-    m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
-
-    if( ( totalLength == 0 ) && ( trackCount > 0 ) )
-            m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
+    if( totalLength > 0 && trackCount > 0 )
+    {
+        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
+        m_playlistLengthLabel->show();
+    }
+    else if( ( totalLength == 0 ) && ( trackCount > 0 ) )
+    {
+        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
+        m_playlistLengthLabel->show();
+    }
+    //Total Length will not be > 0 if trackCount is 0, so we can ignore it
+    else // TotalLength = 0 and trackCount = 0;
+        m_playlistLengthLabel->hide();
 }
 
 #include "StatusBar.moc"
