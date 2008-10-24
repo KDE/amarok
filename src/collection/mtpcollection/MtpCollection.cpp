@@ -417,8 +417,8 @@ void
 MtpCollection::handlerSucceeded()
 {
     m_handler->parseTracks();
-    The::statusBarNG()->longMessage(
-                   i18n( "The MTP device %1 is connected", m_handler->prettyName() ), StatusBarNG::Information );
+    The::statusBar()->longMessage(
+                   i18n( "The MTP device %1 is connected", m_handler->prettyName() ), StatusBar::Information );
     emit collectionSucceeded( this );
 }
 

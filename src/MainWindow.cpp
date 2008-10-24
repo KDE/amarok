@@ -112,7 +112,6 @@ MainWindow::MainWindow()
     setObjectName( "MainWindow" );
     s_instance = this;
 
-
     //create this object now as we might run into issues if anyone tries to use it during initialization
     //make room for a full width statusbar at the bottom of everything
     m_statusbarArea = new KVBox( this );
@@ -125,9 +124,8 @@ MainWindow::MainWindow()
     int fontHeight = qMax( 26, fm.height() );
     m_statusbarArea->setMinimumHeight( fontHeight );
     m_statusbarArea->setMaximumHeight( fontHeight );
-    //new Amarok::StatusBar( m_statusbarArea );
-    new StatusBarNG( m_statusbarArea );
-    
+
+    new ::StatusBar( m_statusbarArea );
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );

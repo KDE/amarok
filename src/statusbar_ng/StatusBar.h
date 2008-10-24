@@ -37,11 +37,11 @@
 #define SHORT_MESSAGE_DURATION 5000
 #define POPUP_MESSAGE_DURATION 5000
 
-class StatusBarNG;
+class StatusBar;
 
 namespace The
 {
-    AMAROK_EXPORT StatusBarNG* statusBarNG();
+    AMAROK_EXPORT StatusBar* statusBar();
 }
 
 /**
@@ -49,23 +49,20 @@ A new, much simpler status bar as the old one really did not survive the porting
 
 	@author
 */
-class AMAROK_EXPORT StatusBarNG : public KStatusBar, public EngineObserver, public Meta::Observer
+class AMAROK_EXPORT StatusBar : public KStatusBar, public EngineObserver, public Meta::Observer
 {
     Q_OBJECT
-    //friend StatusBarNG* The::statusBarNG();
+    //friend StatusBar* The::statusBar();
 
-    static StatusBarNG* s_instance;
+    static StatusBar* s_instance;
 
 public:
     enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox, None, OperationCompleted };
 
-    StatusBarNG( QWidget * parent );
-    ~StatusBarNG();
+    StatusBar( QWidget * parent );
+    ~StatusBar();
 
-    static StatusBarNG* instance()
-    {
-        return s_instance;
-    }
+    static StatusBar* instance() { return s_instance; }
 
     void shortMessage( const QString &text );
     void longMessage( const QString &text, MessageType type = Information );
@@ -173,6 +170,6 @@ private slots:
     void updateTotalPlaylistLength();
 };
 
-Q_DECLARE_METATYPE( StatusBarNG::MessageType );
+Q_DECLARE_METATYPE( StatusBar::MessageType );
 
 #endif

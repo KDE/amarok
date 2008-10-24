@@ -159,7 +159,7 @@ bool DeleteDialog::showTrashDialog(QWidget* parent, const KUrl::List& files)
              ( job = Amarok::trashFiles( files )   ) )
         {
             if(shouldDelete) //amarok::trashFiles already does the progress operation
-                The::statusBarNG()->newProgressOperation( job, i18n("Deleting files") );
+                The::statusBar()->newProgressOperation( job, i18n("Deleting files") );
 
         }
 

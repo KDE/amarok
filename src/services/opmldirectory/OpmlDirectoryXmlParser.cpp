@@ -60,9 +60,9 @@ OpmlDirectoryXmlParser::run()
 void
 OpmlDirectoryXmlParser::completeJob( )
 {
-    The::statusBarNG()->longMessage(
+    The::statusBar()->longMessage(
         i18n( "OpmlDirectory update complete. Added %1 feeds in %2 categories", m_nNumberOfFeeds, m_nNumberOfCategories ),
-        StatusBarNG::Information );
+        StatusBar::Information );
 
 
     debug() << "OpmlDirectoryXmlParser: total number of albums: " << m_nNumberOfCategories;

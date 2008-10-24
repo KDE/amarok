@@ -439,7 +439,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     if( m_organizingFileCancelled )
     {
         QString shortMsg = i18n( "Cannot start organize operation until jobs are aborted." );
-        The::statusBarNG()->shortMessage( shortMsg, StatusBarNG::Sorry );
+        The::statusBar()->shortMessage( shortMsg, StatusBar::Sorry );
         return;
     }
 
@@ -448,13 +448,13 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         if( copy != m_organizeCopyMode )
         {
             QString shortMsg = i18n( "Cannot start organize operation of different kind while another is in progress." );
-            The::statusBarNG()->shortMessage( shortMsg, StatusBarNG::Sorry );
+            The::statusBar()->shortMessage( shortMsg, StatusBar::Sorry );
             return;
         }
         else
         {
             m_organizeURLs += Amarok::recursiveUrlExpand( urls );
-            The::statusBarNG()->incrementProgressTotalSteps( this, urls.count() );
+            The::statusBar()->incrementProgressTotalSteps( this, urls.count() );
             return;
         }
     }
@@ -463,7 +463,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     if( folders.isEmpty() )
     {
         QString longMsg = i18n( "You need to configure at least one folder for your collection for organizing your files." );
-        The::statusBarNG()->longMessage( longMsg, StatusBarNG::Sorry );
+        The::statusBar()->longMessage( longMsg, StatusBar::Sorry );
         return;
     }
 
@@ -497,7 +497,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         m_organizeURLs = Amarok::recursiveUrlExpand( urls );
         m_organizeCopyMode = copy;
         CollectionDB::instance()->createTables( true ); // create temp tables
-        The::statusBarNG()->newProgressOperation( this )
+        The::statusBar()->newProgressOperation( this )
             .setDescription( caption )
             .setAbortSlot( this, SLOT( cancelOrganizingFiles() ) )
             .setTotalSteps( m_organizeURLs.count() );
@@ -512,7 +512,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             }
 
             m_organizeURLs.pop_front();
-            The::statusBarNG()->incrementProgress( this );
+            The::statusBar()->incrementProgress( this );
 
             if( m_organizingFileCancelled ) m_organizeURLs.clear();
         }
@@ -543,17 +543,17 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
             QString shortMsg = i18n( "Sorry, one file could not be organized.",
                     "Sorry, %1 files could not be organized.", skipped.count() );
-            The::statusBarNG()->shortLongMessage( shortMsg, longMsg, StatusBarNG::Sorry );
+            The::statusBar()->shortLongMessage( shortMsg, longMsg, StatusBar::Sorry );
         }
         else if ( m_organizingFileCancelled )
         {
-            The::statusBarNG()->shortMessage( i18n( "Aborting jobs..." ) );
+            The::statusBar()->shortMessage( i18n( "Aborting jobs..." ) );
             m_organizingFileCancelled = false;
         }
 
         m_dirty = true;
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
-        The::statusBarNG()->endProgressOperation( this );
+        The::statusBar()->endProgressOperation( this );
     }
 }
  */

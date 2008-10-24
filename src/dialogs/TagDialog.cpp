@@ -1729,8 +1729,8 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
     TagLib::FileName path = TagLibEncodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
-        The::statusBarNG()->longMessage( i18n(
-           "The file %1 is not writable.", mb.url().fileName() ), StatusBarNG::Error );
+        The::statusBar()->longMessage( i18n(
+           "The file %1 is not writable.", mb.url().fileName() ), StatusBar::Error );
         return false;
     }
 
@@ -1784,8 +1784,8 @@ TagDialogWriter::doJob()
 //     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
 //         TagLib::FileName path = reinterpret_cast<const wchar_t *>( m_tags[i]->playableUrl().path().utf16() );
 //         if ( !TagLib::File::isWritable( path ) ) {
-//             The::statusBarNG()->longMessage( i18n(
-//                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), StatusBarNG::Error );
+//             The::statusBar()->longMessage( i18n(
+//                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), StatusBar::Error );
 //             m_failed += true;
 //             continue;
 //         }
@@ -1819,8 +1819,8 @@ TagDialogWriter::completeJob()
 //PORT 2.0     if ( m_successCount )
 //PORT 2.0        CollectionView::instance()->databaseChanged();
      if ( m_failCount )
-        The::statusBarNG()->longMessage( i18n(
-                        "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), StatusBarNG::Error );
+        The::statusBar()->longMessage( i18n(
+                        "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), StatusBar::Error );
 }*/
 
 

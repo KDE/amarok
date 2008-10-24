@@ -41,7 +41,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
     QString orgHtml;*/
 
     m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBarNG()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
+    The::statusBar()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
 }
@@ -155,7 +155,7 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 void MagnatuneInfoParser::getFrontPage()
 {
     m_frontPageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBarNG()->newProgressOperation( m_frontPageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
+    The::statusBar()->newProgressOperation( m_frontPageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
     connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );
 }
 

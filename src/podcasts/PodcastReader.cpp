@@ -78,7 +78,7 @@ PodcastReader::read(const KUrl &url)
             : i18n("Updating \"%1\"", m_channel->title());
     }
 
-    The::statusBarNG()->newProgressOperation( getJob, description )
+    The::statusBar()->newProgressOperation( getJob, description )
         ->setAbortSlot( this, SLOT( slotAbort() ) );
 
     return !getJob->isErrorPage();

@@ -281,7 +281,7 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
     
     if( m_userCanEditQuery )
-        The::statusBarNG()->newProgressOperation( job, i18n( "Fetching Cover" ) );
+        The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
 
 }
 
@@ -460,7 +460,7 @@ CoverFetcher::attemptAnotherFetch()
         KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(finishedImageFetch( KJob* )) );
 
-        The::statusBarNG()->newProgressOperation( job, i18n( "Fetching Cover" ) );
+        The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
 
         m_coverUrls.pop_front();
 
@@ -689,7 +689,7 @@ CoverFetcher::showCover()
 void
 CoverFetcher::finish()
 {
-    The::statusBarNG()->shortMessage( i18n( "Retrieved cover successfully" ) );
+    The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
     if( !m_userCanEditQuery /*manual fetch*/ && !m_albums.isEmpty() )

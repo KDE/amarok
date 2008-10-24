@@ -235,7 +235,7 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
         warning() << "Failure count: " << failures;
         if ( failures >= maxFailures )
         {
-            The::statusBarNG()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), StatusBarNG::Warning );
+            The::statusBar()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), StatusBar::Warning );
             error() << "Stopping playlist.";
             failures = 0;
             m_trackError = true;

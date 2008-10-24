@@ -826,7 +826,7 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    The::statusBarNG()->newProgressOperation( job, i18n( "Transferring Tracks to iPod" )  );
+    The::statusBar()->newProgressOperation( job, i18n( "Transferring Tracks to iPod" )  );
     job->start();
 
     return true;
@@ -857,7 +857,7 @@ IpodHandler::deleteFile( const KUrl &url )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
 
-    The::statusBarNG()->newProgressOperation( job, i18n( "Deleting Tracks from iPod" ) );
+    The::statusBar()->newProgressOperation( job, i18n( "Deleting Tracks from iPod" ) );
     job->start();
 
     return;

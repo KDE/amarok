@@ -124,7 +124,7 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
     }
     else
     {
-        The::statusBarNG()->longMessage( i18n("The stream URL provided was not valid.") );
+        The::statusBar()->longMessage( i18n("The stream URL provided was not valid.") );
     }
 }
 

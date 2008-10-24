@@ -80,7 +80,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         }
     }
     if( error != QString() )
-        The::statusBarNG()->longMessage( error );
+        The::statusBar()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader(
         m_collection->locker(), urls );
     connect( uploadWorker, SIGNAL( uploadComplete() ),

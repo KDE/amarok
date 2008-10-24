@@ -59,8 +59,8 @@ MagnatuneXmlParser::run()
 void
 MagnatuneXmlParser::completeJob( )
 {
-    The::statusBarNG() ->longMessage(
-        i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists", m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), StatusBarNG::Information );
+    The::statusBar() ->longMessage(
+        i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists", m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), StatusBar::Information );
 
     emit doneParsing();
     deleteLater();

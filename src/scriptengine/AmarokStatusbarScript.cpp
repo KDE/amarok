@@ -37,37 +37,37 @@ namespace AmarokScript
 
    /* void AmarokStatusbarScript::setMainText( const QString &text )
     {
-        The::statusBarNG()->setMainText( text );
+        The::statusBar()->setMainText( text );
     }
 
     void AmarokStatusbarScript::setMainTextIcon( QPixmap icon )
     {
-        The::statusBarNG()->setMainTextIcon( icon );
+        The::statusBar()->setMainTextIcon( icon );
     }
 
     void AmarokStatusbarScript::hideMainTextIcon()
     {
-        The::statusBarNG()->hideMainTextIcon();
+        The::statusBar()->hideMainTextIcon();
     }
 
     void AmarokStatusbarScript::resetMainText()
     {
-        The::statusBarNG()->resetMainText();
+        The::statusBar()->resetMainText();
     }*/
 
     void AmarokStatusbarScript::longMessage( const QString &text )
     {
-        The::statusBarNG()->longMessage( text );
+        The::statusBar()->longMessage( text );
     }
 
    /* void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long )
     {
-        The::statusBarNG()->shortLongMessage( _short, _long );
+        The::statusBar()->shortLongMessage( _short, _long );
     }*/
 
     void AmarokStatusbarScript::shortMessage( const QString &text )
     {
-        The::statusBarNG()->shortMessage( text );
+        The::statusBar()->shortMessage( text );
     }
 }
 

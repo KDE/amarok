@@ -30,7 +30,7 @@
 #include <QToolTip>
 
 
-LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message, StatusBarNG::MessageType type )
+LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message, StatusBar::MessageType type )
         : PopupWidget( anchor )
         , m_counter( 0 )
         , m_timeout( 6000 )

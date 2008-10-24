@@ -71,7 +71,7 @@ loadPlaylist( const KUrl &url )
         if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
             debug() << "could not read file " << url.path();
-            The::statusBarNG()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
+            The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
             return playlist;
         }
     }
@@ -97,7 +97,7 @@ loadPlaylist( const KUrl &url )
         KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
 
         //FIXME!! Re-enable after end of string freeze
-        //The::statusBarNG()->newProgressOperation( job, i18n( "Fetching remote playlist" ) );
+        //The::statusBar()->newProgressOperation( job, i18n( "Fetching remote playlist" ) );
 
         if ( !job->exec() ) //Job deletes itself after execution
         {

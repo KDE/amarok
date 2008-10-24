@@ -119,9 +119,9 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
     {
         //Already subscribed to this Channel
         //notify the user.
-        The::statusBarNG()->longMessage(
+        The::statusBar()->longMessage(
             i18n("Already subscribed to %1.", dbResult.first())
-            , StatusBarNG::Error );
+            , StatusBar::Error );
     }
     else
     {
@@ -210,7 +210,7 @@ SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
     m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
     debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
-    The::statusBarNG()->newProgressOperation( storedTransferJob, sqlEpisode->title().isEmpty()
+    The::statusBar()->newProgressOperation( storedTransferJob, sqlEpisode->title().isEmpty()
             ? i18n("Downloading Podcast Media") : i18n("Downloading Podcast \"%1\"", episode->title()) )
             ->setAbortSlot( this, SLOT( abortDownload()) );
 
@@ -265,7 +265,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
     DEBUG_BLOCK
     if( job->error() )
     {
-        The::statusBarNG()->longMessage( job->errorText() );
+        The::statusBar()->longMessage( job->errorText() );
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
     }
     else if( ! m_jobMap.contains( job ) )
@@ -301,7 +301,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
         }
         else
         {
-            The::statusBarNG()->longMessage( i18n("Unable to save podcast episode file to %1",
+            The::statusBar()->longMessage( i18n("Unable to save podcast episode file to %1",
                             localUrl.prettyUrl()) );
         }
         localFile->close();

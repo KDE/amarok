@@ -183,7 +183,7 @@ PlaylistManager::downloadPlaylist( const KUrl & path, Meta::PlaylistPtr playlist
     connect( downloadJob, SIGNAL( result( KJob * ) ),
              this, SLOT( downloadComplete( KJob * ) ) );
 
-    The::statusBarNG()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
+    The::statusBar()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
 }
 
 void

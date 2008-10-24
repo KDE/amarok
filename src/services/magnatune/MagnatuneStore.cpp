@@ -244,7 +244,7 @@ bool MagnatuneStore::updateMagnatuneList()
     m_tempFileName = tempFile.fileName();
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    The::statusBarNG()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com Database" ) )
+    The::statusBar()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com Database" ) )
     ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
             
 
@@ -271,7 +271,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
 
-    The::statusBarNG()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
+    The::statusBar()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
     debug() << "MagnatuneStore: create xml parser";
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
@@ -285,7 +285,7 @@ void MagnatuneStore::listDownloadCancelled( )
 {
     DEBUG_BLOCK
     
-    //The::statusBarNG()->endProgressOperation( m_listDownloadJob );
+    //The::statusBar()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;

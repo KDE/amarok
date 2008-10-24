@@ -35,17 +35,17 @@
 
 #include <cmath>
 
-StatusBarNG* StatusBarNG::s_instance = 0;
+StatusBar* StatusBar::s_instance = 0;
 
 namespace The
 {
-    StatusBarNG* statusBarNG()
+    StatusBar* statusBar()
     {
-        return StatusBarNG::instance();
+        return StatusBar::instance();
     }
 }
 
-StatusBarNG::StatusBarNG( QWidget * parent )
+StatusBar::StatusBar( QWidget * parent )
         : KStatusBar( parent )
         , EngineObserver( The::engineController() )
         , m_progressBar( new CompoundProgressBar( this ) )
@@ -97,10 +97,10 @@ StatusBarNG::StatusBarNG( QWidget * parent )
 }
 
 
-StatusBarNG::~StatusBarNG()
+StatusBar::~StatusBar()
 {}
 
-ProgressBarNG * StatusBarNG::newProgressOperation( QObject * owner, const QString & description )
+ProgressBarNG * StatusBar::newProgressOperation( QObject * owner, const QString & description )
 {
     //clear any short message currently being displayed and stop timer if running...
     clearMessage();
@@ -117,7 +117,7 @@ ProgressBarNG * StatusBarNG::newProgressOperation( QObject * owner, const QStrin
     return newBar;
 }
 
-ProgressBarNG * StatusBarNG::newProgressOperation( KJob * job, const QString & description )
+ProgressBarNG * StatusBar::newProgressOperation( KJob * job, const QString & description )
 {
     //clear any short message currently being displayed and stop timer if running...
     clearMessage();
@@ -134,7 +134,7 @@ ProgressBarNG * StatusBarNG::newProgressOperation( KJob * job, const QString & d
     return newBar;
 }
 
-void StatusBarNG::shortMessage( const QString & text )
+void StatusBar::shortMessage( const QString & text )
 {
     if ( !m_busy )
     {
@@ -148,7 +148,7 @@ void StatusBarNG::shortMessage( const QString & text )
     }
 }
 
-void StatusBarNG::hideProgress()
+void StatusBar::hideProgress()
 {
     DEBUG_BLOCK
 
@@ -158,7 +158,7 @@ void StatusBarNG::hideProgress()
     nextShortMessage();
 }
 
-void StatusBarNG::nextShortMessage()
+void StatusBar::nextShortMessage()
 {
     if ( m_shortMessageQue.count() > 0 )
     {
@@ -174,7 +174,7 @@ void StatusBarNG::nextShortMessage()
     }
 }
 
-void StatusBarNG::metadataChanged( Meta::TrackPtr track )
+void StatusBar::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track );
 
@@ -184,7 +184,7 @@ void StatusBarNG::metadataChanged( Meta::TrackPtr track )
         engineNewTrackPlaying();
 }
 
-void StatusBarNG::engineStateChanged( Phonon::State state, Phonon::State oldState )
+void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState )
     DEBUG_BLOCK
@@ -224,7 +224,7 @@ void StatusBarNG::engineStateChanged( Phonon::State state, Phonon::State oldStat
     }
 }
 
-void StatusBarNG::engineNewTrackPlaying()
+void StatusBar::engineNewTrackPlaying()
 {
     if ( m_currentTrack )
         unsubscribeFrom( m_currentTrack );
@@ -240,7 +240,7 @@ void StatusBarNG::engineNewTrackPlaying()
     updateInfo( m_currentTrack );
 }
 
-void StatusBarNG::updateInfo( Meta::TrackPtr track )
+void StatusBar::updateInfo( Meta::TrackPtr track )
 {
     QString title       = Qt::escape( track->name() );
     QString prettyTitle = Qt::escape( track->prettyName() );
@@ -296,7 +296,7 @@ void StatusBarNG::updateInfo( Meta::TrackPtr track )
     m_nowPlayingLabel->setText( i18n( "Playing: %1", title ) );
 }
 
-void StatusBarNG::longMessage( const QString & text, MessageType type )
+void StatusBar::longMessage( const QString & text, MessageType type )
 {
     DEBUG_BLOCK
 
@@ -307,7 +307,7 @@ void StatusBarNG::longMessage( const QString & text, MessageType type )
     emit signalLongMessage( text, type );
 }
 
-void StatusBarNG::slotLongMessage( const QString & text, MessageType type ) //SLOT
+void StatusBar::slotLongMessage( const QString & text, MessageType type ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -315,13 +315,13 @@ void StatusBarNG::slotLongMessage( const QString & text, MessageType type ) //SL
     connect( message, SIGNAL( closed() ), this, SLOT( hideLongMessage() ) );
 }
 
-void StatusBarNG::hideLongMessage()
+void StatusBar::hideLongMessage()
 {
     sender()->deleteLater();
 }
 
 void
-StatusBarNG::updateTotalPlaylistLength() //SLOT
+StatusBar::updateTotalPlaylistLength() //SLOT
 {
     const int totalLength = The::playlistModel()->totalLength();
     const int trackCount = The::playlistModel()->rowCount();

@@ -256,8 +256,8 @@ MtpHandler::terminate()
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
         will uncomment when fixed */
-        //The::statusBarNG()->longMessage(
-//                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBarNG::Information );
+        //The::statusBar()->longMessage(
+//                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBar::Information );
         debug() << "Device released";
     }
 }
@@ -321,10 +321,10 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         else
         {
             debug() << "We do not support the extension ." << extension;
-         /*   The::statusBarNG()->shortLongMessage(
+         /*   The::statusBar()->shortLongMessage(
                            genericError,
                            i18n( "Cannot determine a valid file type" ),
-                                 StatusBarNG::Error
+                                 StatusBar::Error
                                               );*/
             return;
         }
@@ -403,10 +403,10 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
         if( parent_id == 0 )
         {
             debug() << "Could not create new parent (" << m_folderStructure << ")";
-            /*The::statusBarNG()->shortLongMessage(
+            /*The::statusBar()->shortLongMessage(
                            genericError,
                            i18n( "Cannot create parent folder. Check your structure." ),
-                                 StatusBarNG::Error
+                                 StatusBar::Error
                                               );*/
             return;
         }
@@ -438,10 +438,10 @@ MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     if( ret < 0 )
     {
         debug() << "Could not write file " << ret;
-        /*The::statusBarNG()->shortLongMessage(
+        /*The::statusBar()->shortLongMessage(
                        genericError,
                        i18n( "File write failed" ),
-                             StatusBarNG::Error
+                             StatusBar::Error
                                           );*/
         return;
     }
@@ -649,9 +649,9 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     if( status != 0 )
     {
         debug() << "delete object failed";
-        The::statusBarNG()->longMessage(
+        The::statusBar()->longMessage(
                        i18n( "Delete failed" ),
-                             StatusBarNG::Error
+                             StatusBar::Error
                                           );
         return false;
     }
@@ -901,7 +901,7 @@ MtpHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    The::statusBarNG()->newProgressOperation( job, i18n(  "Transferring Tracks to MTP Device" )  );
+    The::statusBar()->newProgressOperation( job, i18n(  "Transferring Tracks to MTP Device" )  );
     job->start();
 
     return true;

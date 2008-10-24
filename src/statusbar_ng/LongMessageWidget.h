@@ -50,7 +50,7 @@ class LongMessageWidget : public PopupWidget
 {
     Q_OBJECT
 public:
-    LongMessageWidget( QWidget * anchor, const QString & message, StatusBarNG::MessageType type );
+    LongMessageWidget( QWidget * anchor, const QString & message, StatusBar::MessageType type );
 
     ~LongMessageWidget();
 
