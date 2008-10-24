@@ -36,6 +36,9 @@
 
 StatusBarNG* StatusBarNG::s_instance = 0;
 
+static const int SHORT_MESSAGE_DURATION = 5000
+static const int POPUP_MESSAGE_DURATION = 5000
+
 namespace The
 {
     StatusBarNG* statusBarNG()
@@ -45,11 +48,11 @@ namespace The
 }
 
 StatusBarNG::StatusBarNG( QWidget * parent )
-        : KStatusBar( parent )
-        , EngineObserver( The::engineController() )
-        , m_progressBar( new CompoundProgressBar( this ) )
-        , m_busy( false )
-        , m_shortMessageTimer( new QTimer( this ) )
+    : KStatusBar( parent )
+    , EngineObserver( The::engineController() )
+    , m_progressBar( new CompoundProgressBar( this ) )
+    , m_busy( false )
+    , m_shortMessageTimer( new QTimer( this ) )
 {
     s_instance = this;
 
@@ -99,7 +102,7 @@ StatusBarNG::StatusBarNG( QWidget * parent )
 StatusBarNG::~StatusBarNG()
 {}
 
-ProgressBarNG * StatusBarNG::newProgressOperation( QObject * owner, const QString & description )
+ProgressBarNG * StatusBarNG::newProgressOperation( QObject *owner, const QString & description )
 {
     //clear any short message currently being displayed and stop timer if running...
     clearMessage();
@@ -135,7 +138,7 @@ ProgressBarNG * StatusBarNG::newProgressOperation( KJob * job, const QString & d
 
 void StatusBarNG::shortMessage( const QString & text )
 {
-    if ( !m_busy )
+    if( !m_busy )
     {
         //not busy, so show right away
         showMessage( text );
@@ -143,7 +146,7 @@ void StatusBarNG::shortMessage( const QString & text )
     }
     else
     {
-        m_shortMessageQue.append( text );
+        m_shortMessageQueue.append( text );
     }
 }
 
@@ -159,10 +162,10 @@ void StatusBarNG::hideProgress()
 
 void StatusBarNG::nextShortMessage()
 {
-    if ( m_shortMessageQue.count() > 0 )
+    if( m_shortMessageQueue.count() > 0 )
     {
         m_busy = true;
-        showMessage( m_shortMessageQue.takeFirst() );
+        showMessage( m_shortMessageQueue.takeFirst() );
         m_shortMessageTimer->start( SHORT_MESSAGE_DURATION );
     }
     else
@@ -177,7 +180,7 @@ void StatusBarNG::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track );
 
-    if ( m_currentTrack )
+    if( m_currentTrack )
         updateInfo( m_currentTrack );
     else
         engineNewTrackPlaying();
@@ -211,7 +214,7 @@ void StatusBarNG::engineStateChanged( Phonon::State state, Phonon::State oldStat
 
     case Phonon::PlayingState:
         debug() << "PlayingState: clear text";
-        if ( m_currentTrack )
+        if( m_currentTrack )
             updateInfo( m_currentTrack );
         //else
         //resetMainText(); // if we were paused, this is necessary
@@ -225,12 +228,12 @@ void StatusBarNG::engineStateChanged( Phonon::State state, Phonon::State oldStat
 
 void StatusBarNG::engineNewTrackPlaying()
 {
-    if ( m_currentTrack )
+    if( m_currentTrack )
         unsubscribeFrom( m_currentTrack );
 
     m_currentTrack = The::engineController()->currentTrack();
 
-    if ( !m_currentTrack )
+    if( !m_currentTrack )
     {
         m_currentTrack = Meta::TrackPtr();
         return;
@@ -242,36 +245,36 @@ void StatusBarNG::engineNewTrackPlaying()
 void StatusBarNG::updateInfo( Meta::TrackPtr track )
 {
     QString title       = Qt::escape( track->name() );
-    QString prettyTitle = Qt::escape( track->prettyName() );
-    QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
-    QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
-    QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
+    const QString prettyTitle = Qt::escape( track->prettyName() );
+    const QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
+    const QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
+    const QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
 
     // ugly because of translation requirements
-    if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
+    if( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
         title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
 
-    else if ( !title.isEmpty() && !artist.isEmpty() )
+    else if( !title.isEmpty() && !artist.isEmpty() )
         title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
 
-    else if ( !album.isEmpty() )
+    else if( !album.isEmpty() )
         // we try for pretty title as it may come out better
         title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
     else
         title = "<b>" + prettyTitle + "</b>";
 
-    if ( title.isEmpty() )
+    if( title.isEmpty() )
         title = i18n( "Unknown track" );
 
 
     // check if we have any source info:
 
     Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
-    if ( sic )
+    if( sic )
     {
         //is the source defined
-        QString source = sic->sourceName();
-        if ( !source.isEmpty() )
+        const QString source = sic->sourceName();
+        if( !source.isEmpty() )
         {
             title += ' ' + i18n( "from" ) + " <b>" + source + "</b>";
             m_nowPlayingEmblem->setPixmap( sic->emblem() );
@@ -285,7 +288,7 @@ void StatusBarNG::updateInfo( Meta::TrackPtr track )
         m_nowPlayingEmblem->hide();
 
     // don't show '-' or '?'
-    if ( length.length() > 1 )
+    if( length.length() > 1 )
     {
         title += " (";
         title += length;
