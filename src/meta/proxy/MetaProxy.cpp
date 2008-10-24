@@ -264,8 +264,7 @@ MetaProxy::Track::score() const
 {
     if( d->realTrack )
         return d->realTrack->score();
-    else
-        return 0.0;     //do we cache the score
+    return 0.0;     //do we cache the score
 }
 
 void
@@ -280,8 +279,7 @@ MetaProxy::Track::rating() const
 {
     if( d->realTrack )
         return d->realTrack->rating();
-    else
-        return 0;
+    return 0;
 }
 
 void
@@ -296,8 +294,7 @@ MetaProxy::Track::trackNumber() const
 {
     if( d->realTrack )
         return d->realTrack->trackNumber();
-    else
-        return d->cachedTrackNumber;
+    return d->cachedTrackNumber;
 }
 
 void
@@ -311,8 +308,7 @@ MetaProxy::Track::discNumber() const
 {
     if( d->realTrack )
         return d->realTrack->discNumber();
-    else
-        return d->cachedDiscNumber;
+    return d->cachedDiscNumber;
 }
 
 void
@@ -326,8 +322,7 @@ MetaProxy::Track::length() const
 {
     if( d->realTrack )
         return d->realTrack->length();
-    else
-        return d->cachedLength;
+    return d->cachedLength;
 }
 
 int
@@ -335,8 +330,7 @@ MetaProxy::Track::filesize() const
 {
     if( d->realTrack )
         return d->realTrack->filesize();
-    else
-        return 0;
+    return 0;
 }
 
 int
@@ -344,8 +338,7 @@ MetaProxy::Track::sampleRate() const
 {
     if( d->realTrack )
         return d->realTrack->sampleRate();
-    else
-        return 0;
+    return 0;
 }
 
 int
@@ -353,8 +346,7 @@ MetaProxy::Track::bitrate() const
 {
     if( d->realTrack )
         return d->realTrack->bitrate();
-    else
-        return 0;
+    return 0;
 }
 
 uint
@@ -362,8 +354,7 @@ MetaProxy::Track::lastPlayed() const
 {
     if( d->realTrack )
         return d->realTrack->lastPlayed();
-    else
-        return 0;
+    return 0;
 }
 
 int
@@ -371,8 +362,7 @@ MetaProxy::Track::playCount() const
 {
     if( d->realTrack )
         return d->realTrack->playCount();
-    else
-        return 0;
+    return 0;
 }
 
 QString
@@ -380,8 +370,7 @@ MetaProxy::Track::type() const
 {
     if( d->realTrack )
         return d->realTrack->type();
-    else
-        return QString();       //TODO cache type??
+    return QString();       //TODO cache type??
 }
 
 void
@@ -396,8 +385,7 @@ MetaProxy::Track::inCollection() const
 {
     if( d->realTrack )
         return d->realTrack->inCollection();
-    else
-        return false;
+    return false;
 }
 
 Collection*
@@ -463,15 +451,9 @@ MetaProxy::Track::operator==( const Meta::Track &track ) const
 {
     const MetaProxy::Track *proxy = dynamic_cast<const MetaProxy::Track*>( &track );
     if( proxy && d->realTrack )
-    {
         return d->realTrack == proxy->d->realTrack;
-    }
     else if( proxy )
-    {
         return d->url == proxy->d->url;
-    }
-    else
-    {
-        return d->realTrack && d->realTrack.data() == &track;
-    }
+    
+    return d->realTrack && d->realTrack.data() == &track;
 }
