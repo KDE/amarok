@@ -19,7 +19,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "Debug.h"
 #include "MainWindow.h"
 //#include "mediabrowser.h"

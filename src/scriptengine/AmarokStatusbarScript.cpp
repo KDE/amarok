@@ -18,7 +18,7 @@
 #include "AmarokStatusbarScript.h"
 
 #include "App.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <QtScript>
 

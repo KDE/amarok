@@ -22,7 +22,7 @@
 
 #include "Debug.h"
 #include "Amarok.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 using namespace Meta;
 

@@ -28,7 +28,7 @@
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
 #include "SvgHandler.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
 
 #include <KAction>

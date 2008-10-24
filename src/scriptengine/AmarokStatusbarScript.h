@@ -18,7 +18,7 @@
 #ifndef AMAROK_STATUSBAR_SCRIPT_H
 #define AMAROK_STATUSBAR_SCRIPT_H
 
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <QObject>
 #include <QtScript>

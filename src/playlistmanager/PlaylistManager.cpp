@@ -20,7 +20,7 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "CollectionManager.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"

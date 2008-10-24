@@ -20,7 +20,7 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "Debug.h"
 #include "PodcastReader.h"
 #include "SqlStorage.h"

@@ -18,7 +18,7 @@
 #include "Mp3tunesServiceCollectionLocation.h"
 
 #include "Mp3tunesWorkers.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>

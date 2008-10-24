@@ -24,7 +24,7 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "PluginManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "SqlStorage.h"
 
 //solid stuff

@@ -19,7 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include "Debug.h"
 #include "EngineController.h"

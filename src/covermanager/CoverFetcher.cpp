@@ -24,7 +24,7 @@
 #include "amarokconfig.h"
 #include "CoverManager.h"
 #include "Debug.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "ui_EditCoverSearchDialog.h"
 
 #include <KDialog>

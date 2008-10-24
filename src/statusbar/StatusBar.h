@@ -26,7 +26,7 @@
 #include "MainWindow.h"
 #include "amarok_export.h"
 #include "meta/Meta.h"
-#include "statusbar_ng/CompoundProgressBar.h"
+#include "statusbar/CompoundProgressBar.h"
 
 #include <KJob>
 #include <KStatusBar>

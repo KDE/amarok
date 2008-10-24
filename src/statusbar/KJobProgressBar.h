@@ -20,7 +20,7 @@
 #ifndef KJOBPROGRESSBAR_H
 #define KJOBPROGRESSBAR_H
 
-#include "statusbar_ng/ProgressBar.h"
+#include "statusbar/ProgressBar.h"
 
 #include <KJob>
 

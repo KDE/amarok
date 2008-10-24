@@ -33,7 +33,7 @@
 #include "MetaQueryMaker.h"
 #include "MetaUtility.h"
 #include "QueryMaker.h"
-#include "statusbar_ng/StatusBar.h"       //for status messages
+#include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
 #include "trackpickerdialog.h"
 #include "ui_tagdialogbase.h"

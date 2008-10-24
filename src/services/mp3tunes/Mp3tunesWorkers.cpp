@@ -21,7 +21,7 @@
 
 #include "Debug.h"
 #include "Mp3tunesMeta.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <QStringList>
 

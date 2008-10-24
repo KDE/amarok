@@ -24,7 +24,7 @@
 #include "Debug.h"
 #include "MagnatuneDatabaseHandler.h"
 #include "MagnatuneConfig.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <KMessageBox>
 #include <ktempdir.h>

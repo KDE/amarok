@@ -22,7 +22,7 @@
 
 #include "IpodCollection.h"
 #include "IpodMeta.h"
-#include "../../../statusbar_ng/StatusBar.h"
+#include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
 extern "C" {

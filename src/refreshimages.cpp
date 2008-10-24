@@ -25,7 +25,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <KIO/Job>
 #include <kio/jobclasses.h>

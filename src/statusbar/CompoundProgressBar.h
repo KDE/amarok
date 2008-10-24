@@ -20,8 +20,8 @@
 #ifndef COMPOUNDPROGRESSBAR_H
 #define COMPOUNDPROGRESSBAR_H
 
-#include "statusbar_ng/ProgressBar.h"
-#include "statusbar_ng/PopupWidget.h"
+#include "statusbar/ProgressBar.h"
+#include "statusbar/PopupWidget.h"
 
 #include <QList>
 #include <QMap>

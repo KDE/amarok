@@ -21,7 +21,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <QDomDocument>
 #include <QFile>

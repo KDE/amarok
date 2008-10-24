@@ -18,7 +18,7 @@
 #include "LastFmSettings.h"
 #include "libUnicorn/WebService.h"
 
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 RadioAdapter::RadioAdapter( QObject *parent, const QString &username, const QString &password )
     : QObject( parent ), m_radio( new Radio( this ) )

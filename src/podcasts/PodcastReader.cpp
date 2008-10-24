@@ -19,7 +19,7 @@
 #include "PodcastReader.h"
 
 #include "Debug.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <kio/job.h>
 #include <kurl.h>

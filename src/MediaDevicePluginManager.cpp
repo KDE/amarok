@@ -26,7 +26,7 @@
 #include "MediaDeviceCache.h"
 #include "plugin/pluginconfig.h"
 #include "PluginManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <KApplication>
 #include <KComboBox>

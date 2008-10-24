@@ -28,7 +28,7 @@
 #include "DynamicModel.h"
 #include "MetaQueryMaker.h"
 #include "playlist/PlaylistModel.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <threadweaver/ThreadWeaver.h>
 

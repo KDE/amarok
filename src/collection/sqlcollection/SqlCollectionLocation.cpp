@@ -27,7 +27,7 @@
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
-#include "../../statusbar_ng/StatusBar.h"
+#include "../../statusbar/StatusBar.h"
 
 #include <QDir>
 #include <QFile>

@@ -38,7 +38,7 @@
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
 #include "PlaylistModel.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <QAction>
 

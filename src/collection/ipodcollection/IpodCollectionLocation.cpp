@@ -23,7 +23,7 @@
 #include "IpodCollection.h"
 #include "IpodHandler.h"
 #include "IpodMeta.h"
-#include "../../statusbar_ng/StatusBar.h"
+#include "../../statusbar/StatusBar.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
 #include <QDir>

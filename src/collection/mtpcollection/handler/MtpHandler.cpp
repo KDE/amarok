@@ -28,7 +28,7 @@
 
 #include "MtpCollection.h"
 #include "MtpMeta.h"
-#include "../../../statusbar_ng/StatusBar.h"
+#include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
 #include "File.h" // for KIO file handling

@@ -21,7 +21,7 @@
 #include "PlaylistFileSupport.h"
 #include "Debug.h"
 #include "collection/CollectionManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "meta/XSPFPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/M3UPlaylist.h"

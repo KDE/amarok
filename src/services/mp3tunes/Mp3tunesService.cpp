@@ -24,7 +24,7 @@
 #include "Debug.h"
 #include "Mp3tunesConfig.h"
 
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <KMenuBar>
 #include <KMessageBox>

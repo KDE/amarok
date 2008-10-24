@@ -31,7 +31,7 @@
 #include "SearchWidget.h"
 #include "Sidebar.h"
 #include "Sidebar.moc"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "amarokconfig.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"

@@ -21,9 +21,9 @@
 #include "MagnatuneStore.h"
 
 #include "Amarok.h"
-#include "statusbar_ng/StatusBar.h"
-#include "statusbar_ng/StatusBar.h"
-#include "statusbar_ng/ProgressBar.h"
+#include "statusbar/StatusBar.h"
+#include "statusbar/StatusBar.h"
+#include "statusbar/ProgressBar.h"
 #include "EngineController.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"

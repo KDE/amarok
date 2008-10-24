@@ -22,7 +22,7 @@
 #include "MtpCollectionLocation.h"
 #include "MtpMeta.h"
 
-#include "../../../statusbar_ng/StatusBar.h"
+#include "../../../statusbar/StatusBar.h"
 #include "amarokconfig.h"
 #include "Debug.h"
 #include "MediaDeviceMonitor.h"

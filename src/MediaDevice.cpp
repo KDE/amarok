@@ -36,7 +36,7 @@
 #include "PluginManager.h"
 #include "AmarokProcess.h"
 #include "ScriptManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <KIO/Job>
 #include <KMessageBox>

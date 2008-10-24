@@ -40,7 +40,7 @@ email                : markey@web.de
 #include "refreshimages.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 #include "Systray.h"
 #include "TracklistDBusHandler.h"
 

@@ -31,7 +31,7 @@
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "statusbar_ng/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <QFileInfo>
 #include <QListIterator>
