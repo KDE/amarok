@@ -16,16 +16,14 @@
 #ifndef COLUMN_CONTAINMENT_H
 #define COLUMN_CONTAINMENT_H
 
-#include "widgets/ContainmentSelectionLayer.h"
-#include "widgets/ToolBoxMenu.h"
 #include "Containment.h"
 #include "ContextView.h"
-#include "plasma/widgets/icon.h"
+#include "widgets/ContainmentSelectionLayer.h"
+#include "widgets/ToolBoxMenu.h"
 
-#include <QObject>
-
-#include <plasma/containment.h>
 #include <plasma/animator.h>
+#include <plasma/containment.h>
+#include <plasma/widgets/icon.h>
 
 #include <KConfigGroup>
 
