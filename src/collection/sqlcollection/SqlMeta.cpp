@@ -94,10 +94,17 @@ class ImportCapabilityImpl : public Meta::ImportCapability
         {
             m_track->setWriteAllStatisticsFields( true );
             m_track->beginMetaDataUpdate();
+        }
+        virtual void endStatisticsUpdate()
+        {
+            m_track->endMetaDataUpdate();
             m_track->setWriteAllStatisticsFields( false );
         }
-        virtual void endStatisticsUpdate() { m_track->endMetaDataUpdate(); }
-        virtual void abortStatisticsUpdate() { m_track->abortMetaDataUpdate(); }
+        virtual void abortStatisticsUpdate()
+        {
+            m_track->abortMetaDataUpdate();
+            m_track->setWriteAllStatisticsFields( false );
+        }
 
     private:
         KSharedPtr<SqlTrack> m_track;
