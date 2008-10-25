@@ -1,6 +1,5 @@
 add_subdirectory( radio_station_service )
 add_subdirectory( librivox_service )
-#add_subdirectory( importer )
 add_subdirectory( lyrics_lyricwiki )
 
 #add_subdirectory( qtscript_debug )
