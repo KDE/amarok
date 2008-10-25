@@ -190,8 +190,7 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     DEBUG_BLOCK
     if( fileref.isNull() || changes.isEmpty() )
         return;
-    debug() << "CHANGES: " << changes;
-    DEBUG_LINE_INFO
+    
     TagLib::Tag *tag = fileref.tag();
     if( !tag )
         return;
