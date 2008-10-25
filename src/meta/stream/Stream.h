@@ -81,6 +81,7 @@ namespace MetaStream
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
+            
             virtual uint lastPlayed() const;
             virtual int playCount() const;
 

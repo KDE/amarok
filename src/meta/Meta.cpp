@@ -299,6 +299,24 @@ Meta::Track::firstPlayed() const
     return 0;
 }
 
+void
+Meta::Track::setFirstPlayed( const uint newTime )
+{
+    Q_UNUSED( newTime );
+}
+
+void
+Meta::Track::setLastPlayed( const uint newTime )
+{
+    Q_UNUSED( newTime );
+}
+
+void
+Meta::Track::setPlayCount( const int newCount )
+{
+    Q_UNUSED( newCount );
+}
+
 bool
 Meta::Track::operator==( const Meta::Track &track ) const
 {

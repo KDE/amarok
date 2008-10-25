@@ -483,6 +483,45 @@ SqlTrack::setTitle( const QString &newTitle )
 }
 
 void
+SqlTrack::setLastPlayed( const uint newTime )
+{
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::LAST_PLAYED, newTime );
+    else
+    {
+        m_lastPlayed = newTime;
+        updateStatisticsInDb();
+        notifyObservers();
+    }
+}
+
+void
+SqlTrack::setFirstPlayed( const uint newTime )
+{
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::FIRST_PLAYED, newTime );
+    else
+    {
+        m_lastPlayed = newTime;
+        updateStatisticsInDb();
+        notifyObservers();
+    }
+}
+
+void
+SqlTrack::setPlayCount( const int newCount )
+{
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::PLAYCOUNT, newCount );
+    else
+    {
+        m_playCount = newCount;
+        updateStatisticsInDb();
+        notifyObservers();
+    }
+}
+
+void
 SqlTrack::setUidUrl( const QString &uid )
 {
     if( m_batchUpdate )
@@ -498,18 +537,6 @@ void
 SqlTrack::beginMetaDataUpdate()
 {
     m_batchUpdate = true;
-    //init cache with current values
-    /*m_cache->title = m_title;
-    m_cache->artist = m_artist->name();
-    m_cache->album = m_album->name();
-    m_cache->composer = m_composer->name();
-    m_cache->genre = m_genre->name();
-    m_cache->year = m_year->name();
-    m_cache->comment = m_comment;
-    m_cache->score = m_score;
-    m_cache->rating = m_rating;
-    m_cache->trackNumber = m_trackNumber;
-    m_cache->discNumber = m_discNumber;*/
 }
 
 void
@@ -555,6 +582,12 @@ SqlTrack::commitMetaDataChanges()
             m_score = m_cache.value( Meta::Field::SCORE ).toDouble();
         if( m_cache.contains( Meta::Field::RATING ) )
             m_rating = m_cache.value( Meta::Field::RATING ).toInt();
+        if( m_cache.contains( Meta::Field::PLAYCOUNT ) )
+            m_firstPlayed = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
+        if( m_cache.contains( Meta::Field::FIRST_PLAYED ) )
+            m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toUInt();
+        if( m_cache.contains( Meta::Field::LAST_PLAYED ) )
+            m_firstPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
         if( m_cache.contains( Meta::Field::TRACKNUMBER ) )
             m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
         if( m_cache.contains( Meta::Field::DISCNUMBER ) )

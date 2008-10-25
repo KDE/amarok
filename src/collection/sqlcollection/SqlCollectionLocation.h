@@ -51,7 +51,6 @@ class SqlCollectionLocation : public CollectionLocation
         void slotJobFinished( KJob *job );
 
     private:
-
         void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
         QMap<QString, uint> updatedMtime( const QStringList &urls );
         void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );

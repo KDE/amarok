@@ -90,26 +90,39 @@ class SqlTrack : public Meta::Track
 
         virtual QString comment() const { return m_comment; }
         virtual void setComment( const QString &newComment );
+        
         virtual double score() const { return m_score; }
         virtual void setScore( double newScore );
+        
         virtual int rating() const { return m_rating; }
         virtual void setRating( int newRating );
+        
         virtual int length() const { return m_length; }
         virtual int filesize() const { return m_filesize; }
         virtual int sampleRate() const { return m_sampleRate; }
         virtual int bitrate() const { return m_bitrate; }
+        
         virtual int trackNumber() const { return m_trackNumber; }
         virtual void setTrackNumber( int newTrackNumber );
+        
         virtual int discNumber() const { return m_discNumber; }
         virtual void setDiscNumber( int newDiscNumber );
-        virtual uint lastPlayed() const { return m_lastPlayed; }
-        virtual int playCount() const { return m_playCount; }
+        
         virtual uint firstPlayed() const { return m_firstPlayed; }
+        virtual void setFirstPlayed( const uint newTime );
+        
+        virtual uint lastPlayed() const { return m_lastPlayed; }
+        virtual void setLastPlayed( const uint newTime );
+        
+        virtual int playCount() const { return m_playCount; }
+        virtual void setPlayCount( const int newCount );
+        
         virtual void setUidUrl( const QString &uid );
 
         virtual void beginMetaDataUpdate();
         virtual void endMetaDataUpdate();
         virtual void abortMetaDataUpdate();
+        //virtual void setFlushMetaDataUpdate(); // Informs updateStatisticsInDb() to overwrite all statistics fields
 
         virtual void finishedPlaying( double playedFraction );
 

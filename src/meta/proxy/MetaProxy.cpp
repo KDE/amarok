@@ -350,11 +350,33 @@ MetaProxy::Track::bitrate() const
 }
 
 uint
+MetaProxy::Track::firstPlayed() const
+{
+    if( d->realTrack )
+        return d->realTrack->firstPlayed();
+    return 0;
+}
+
+void
+MetaProxy::Track::setFirstPlayed( const uint newTime )
+{
+    if( d->realTrack )
+        d->realTrack->setFirstPlayed( newTime );
+}
+
+uint
 MetaProxy::Track::lastPlayed() const
 {
     if( d->realTrack )
         return d->realTrack->lastPlayed();
     return 0;
+}
+
+void
+MetaProxy::Track::setLastPlayed( const uint newTime )
+{
+    if( d->realTrack )
+        d->realTrack->setLastPlayed( newTime );
 }
 
 int
@@ -363,6 +385,13 @@ MetaProxy::Track::playCount() const
     if( d->realTrack )
         return d->realTrack->playCount();
     return 0;
+}
+
+void
+MetaProxy::Track::setPlayCount( const int newCount )
+{
+    if( d->realTrack )
+        d->realTrack->setPlayCount( newCount );
 }
 
 QString
