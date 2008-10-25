@@ -25,6 +25,7 @@
 
 #include <KFileItem>
 #include <KLocale>
+#include <KPushButton>
 #include <KVBox>
 
 #include <QDir>
@@ -56,6 +57,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setAnimated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     connect( m_view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
+
+    m_rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), this );
+    connect( m_rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
