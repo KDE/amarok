@@ -30,8 +30,11 @@ FastForwardImporter::FastForwardImporter( QObject *parent )
 FastForwardImporter::~FastForwardImporter()
 {
     DEBUG_BLOCK
-    m_worker->abort();
-    m_worker->deleteLater();
+    if( m_worker )
+    {
+        m_worker->abort();
+        m_worker->deleteLater();
+    }
 }
 
 DatabaseImporterConfig*
