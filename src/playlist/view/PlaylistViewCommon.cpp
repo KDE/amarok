@@ -66,8 +66,8 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
         menu->addAction( playAction );
     }
     
-    //menu->addSeparator();
-    //menu->addAction( i18n( "Show active track" ), parent, SLOT( scrollToActiveTrack() ) ); // FIXME: enable this after string freeze
+    menu->addSeparator();
+    menu->addAction( i18n( "Show active track" ), parent, SLOT( scrollToActiveTrack() ) );
     //( menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), parent, SLOT( queueItem() ) ) )->setEnabled( false );
     //( menu->addAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After Track" ), parent, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
     
