@@ -85,7 +85,7 @@ AlbumItem::metadataChanged( Meta::AlbumPtr album )
     if( !year.isEmpty() )
         displayText += QString( " (%1)" ).arg( year );
 
-    if( m_showArtist )
+    if( m_showArtist && album->hasAlbumArtist() )
         displayText = QString( "%1 - %2" ).arg( album->albumArtist()->name(), displayText );
 
     QString trackCount = i18np( "%1 track", "%1 tracks", album->tracks().size() );
