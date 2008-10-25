@@ -44,7 +44,7 @@ class QSplitter;
 class QTimer;
 
 namespace The {
-        AMAROK_EXPORT MainWindow* mainWindow();
+    AMAROK_EXPORT MainWindow* mainWindow();
 }
 
 /**
@@ -117,6 +117,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         void toolsMenuAboutToShow();
         void slotToggleFocus();
         void slotSetFilter( const QString &filter );
+        void importCollection();
 
     protected:
         virtual void closeEvent( QCloseEvent* );

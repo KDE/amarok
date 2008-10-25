@@ -436,7 +436,13 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverManager.cpp
     cuefile.cpp
+    databaseimporter/DatabaseImporter.cpp
+    databaseimporter/amarok14/FastForwardImporter.cpp
+    databaseimporter/amarok14/FastForwardImporterConfig.cpp
+    databaseimporter/amarok14/FastForwardWorker.cpp
+    databaseimporter/itunes/ITunesImporter.cpp
     dialogs/CollectionSetup.cpp
+    dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/PixmapViewer.cpp
@@ -515,6 +521,7 @@ target_link_libraries(amaroklib
     ${OPENGL_gl_LIBRARY}
     ${OPENGL_glu_LIBRARY}
     ${QT_QTSCRIPT_LIBRARY}
+    ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
     ${QT_QTOPENGL_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
