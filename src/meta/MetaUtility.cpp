@@ -187,7 +187,6 @@ Meta::Field::writeFields( const QString &filename, const QVariantMap &changes )
 void
 Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
 {
-    DEBUG_BLOCK
     if( fileref.isNull() || changes.isEmpty() )
         return;
     
