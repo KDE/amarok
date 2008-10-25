@@ -307,8 +307,7 @@ SqlTrack::prettyName() const
 {
     if ( !name().isEmpty() )
         return name();
-    else
-        return  prettyTitle( m_url.fileName() );
+    return  prettyTitle( m_url.fileName() );
 }
 
 void
@@ -610,11 +609,11 @@ SqlTrack::commitMetaDataChanges()
         if( m_cache.contains( Meta::Field::RATING ) )
             m_rating = m_cache.value( Meta::Field::RATING ).toInt();
         if( m_cache.contains( Meta::Field::PLAYCOUNT ) )
-            m_firstPlayed = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
+            m_playCount = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
         if( m_cache.contains( Meta::Field::FIRST_PLAYED ) )
             m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toUInt();
         if( m_cache.contains( Meta::Field::LAST_PLAYED ) )
-            m_firstPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
+            m_lastPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
         if( m_cache.contains( Meta::Field::TRACKNUMBER ) )
             m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
         if( m_cache.contains( Meta::Field::DISCNUMBER ) )
@@ -729,6 +728,7 @@ SqlTrack::updateStatisticsInDb()
             data += QString(",createdate=%1").arg( QString::number( m_firstPlayed ) );
 
         update = update.arg( data, QString::number( urlId ) );
+
         m_collection->query( update );
     }
 }
