@@ -194,42 +194,54 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     TagLib::Tag *tag = fileref.tag();
     if( !tag )
         return;
+
+    // We should avoid rewriting files to disk if there haven't been any changes to the actual data tags
+    // This method could be called when there are only non-tag attributes to change, like score and rating
+    bool shouldSave = false;
+
     if( changes.contains( Meta::Field::TITLE ) )
     {
+        shouldSave = true;
         const TagLib::String title = Qt4QStringToTString( changes.value( Meta::Field::TITLE ).toString() );
         tag->setTitle( title );
     }
 
     if( changes.contains( Meta::Field::ALBUM ) )
     {
+        shouldSave = true;
         const TagLib::String album = Qt4QStringToTString( changes.value( Meta::Field::ALBUM ).toString() );
         tag->setAlbum( album );
     }
 
     if( changes.contains( Meta::Field::ARTIST ) )
     {
+        shouldSave = true;
         const TagLib::String artist = Qt4QStringToTString( changes.value( Meta::Field::ARTIST ).toString() );
         tag->setArtist( artist );
     }
 
     if( changes.contains( Meta::Field::COMMENT ) )
     {
+        shouldSave = true;
         const TagLib::String comment = Qt4QStringToTString( changes.value( Meta::Field::COMMENT ).toString() );
         tag->setComment( comment );
     }
 
     if( changes.contains( Meta::Field::GENRE ) )
     {
+        shouldSave = true;
         const TagLib::String genre = Qt4QStringToTString( changes.value( Meta::Field::GENRE ).toString() );
         tag->setGenre( genre );
     }
     if( changes.contains( Meta::Field::YEAR ) )
     {
+        shouldSave = true;
         const unsigned int year = changes.value( Meta::Field::YEAR ).toUInt();
         tag->setYear( year );
     }
     if( changes.contains( Meta::Field::TRACKNUMBER ) )
     {
+        shouldSave = true;
         const unsigned int trackNumber = changes.value( Meta::Field::TRACKNUMBER ).toUInt();
         tag->setTrack( trackNumber );
     }
@@ -237,6 +249,7 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     {
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
+            shouldSave = true;
             if ( file->ID3v2Tag() )
             {
                 file->ID3v2Tag()->removeFrames( "TCOM" );
@@ -255,6 +268,7 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     {
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
+            shouldSave = true;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
             mp4tag->setComposer( composer );
@@ -264,11 +278,13 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     {
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
+            shouldSave = true;
             const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
             file->tag()->addField("COMPOSER", composer);
         }
         if( changes.contains( Meta::Field::DISCNUMBER ) )
         {
+            shouldSave = true;
             const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
             file->tag()->addField("DISCNUMBER", disc);
         }
@@ -277,11 +293,13 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     {
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
+            shouldSave = true;
             const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
             file->tag()->addField("COMPOSER", composer);
         }
         if( changes.contains( Meta::Field::DISCNUMBER ) )
         {
+            shouldSave = true;
             const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
             file->tag()->addField("DISCNUMBER", disc);
         }
@@ -290,16 +308,19 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
     {
         if( changes.contains( Meta::Field::COMPOSER ) )
         {
+            shouldSave = true;
             const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
             file->xiphComment()->addField("COMPOSER", composer);
         }
         if( changes.contains( Meta::Field::DISCNUMBER ) )
         {
+            shouldSave = true;
             const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
             file->xiphComment()->addField("DISCNUMBER", disc);
         }
     }
-    fileref.save();
+    if( shouldSave )
+        fileref.save();
 }
 
 #undef Qt4QStringToTString
