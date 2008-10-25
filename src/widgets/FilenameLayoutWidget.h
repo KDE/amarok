@@ -23,8 +23,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-class Token;    //forward decl for the tokens
-
 //Handles the graphical representation of the target filename as a bar that contains tokens.
 class FilenameLayoutWidget
     : public QFrame

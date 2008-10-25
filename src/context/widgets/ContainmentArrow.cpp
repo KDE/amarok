@@ -16,6 +16,8 @@
 #include "Debug.h"
 
 #include <KStandardDirs>
+#include <QPainter>
+#include <QGraphicsSceneMouseEvent>
 
 // by default this item just grabs the coords of its parents, and positions itself to maximise in the
 // direction that it is pointing to.

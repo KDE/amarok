@@ -35,6 +35,7 @@ email                : markey@web.de
 #include "PlayerDBusHandler.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
 #include "refreshimages.h"

@@ -20,7 +20,6 @@
 #define CONTEXT_VIEW_H
 
 #include "amarok_export.h"
-#include "Containment.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "ContextObserver.h"
@@ -29,6 +28,7 @@
 #include "widgets/ContainmentArrow.h"
 
 #include "plasma/appletbrowser.h"
+#include "plasma/containment.h"
 // #include "plasma/view.h"
 
 #include <QMouseEvent>

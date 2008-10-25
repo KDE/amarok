@@ -17,6 +17,8 @@
 #include "Debug.h"
 
 #include "plasma/applet.h"
+#include "plasma/corona.h"
+#include <kicon.h>
 
 namespace Context
 {

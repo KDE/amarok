@@ -23,7 +23,6 @@
 #define AMAROK_UNDOCOMMANDS_H
 
 #include "meta/Meta.h"
-#include "PlaylistController.h"
 
 #include <QList>
 #include <QPair>

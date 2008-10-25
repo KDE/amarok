@@ -21,6 +21,7 @@
 
 #include "PodcastMeta.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>

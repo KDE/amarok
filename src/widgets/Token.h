@@ -17,11 +17,13 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <QFrame>
+#include <QString>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QPixmap>
+#include <QResizeEvent>
 
-
-#include "FilenameLayoutWidget.h"
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
 class Token

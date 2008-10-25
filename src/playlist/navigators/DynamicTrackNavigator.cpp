@@ -25,6 +25,7 @@
 #include "DynamicPlaylist.h"
 #include "Meta.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 
 #include <QMutexLocker>
 

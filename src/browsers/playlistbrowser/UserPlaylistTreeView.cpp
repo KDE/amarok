@@ -20,6 +20,7 @@
 #include "UserPlaylistTreeView.h"
 
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistController.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/PopupDropperAction.h"
 #include "context/popupdropper/PopupDropperItem.h"

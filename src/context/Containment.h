@@ -15,7 +15,6 @@
 #define AMAROK_CONTAINMENT_H
 
 #include "amarok_export.h"
-#include "ContextView.h"
 
 #include "plasma/containment.h"
 

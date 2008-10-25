@@ -20,8 +20,6 @@
 #ifndef SCRIPTSELECTOR_H
 #define SCRIPTSELECTOR_H
 
-#include "ScriptSelector.h"
-
 #include <KCategorizedView>
 #include <KPluginSelector>
 #include <ksharedconfig.h>

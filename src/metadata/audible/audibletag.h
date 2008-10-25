@@ -29,7 +29,6 @@
 #include <config-amarok.h>  
 
 #include <tag.h>
-#include "taglib_audiblefile.h"
 
 namespace TagLib {
 

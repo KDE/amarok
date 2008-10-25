@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 #include "Token.h"
+#include "FilenameLayoutWidget.h"
 #include "Debug.h"
 
 // Token::Token( QWidget *parent )
