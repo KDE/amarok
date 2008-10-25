@@ -118,7 +118,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     if( amarokContainment )
     {
         amarokContainment->setView( this );
-        amarokContainment->setTitle( "Context #0" );
+        amarokContainment->setTitle( "Context #1" );
         amarokContainment->addCurrentTrack();
     }
 
@@ -558,14 +558,13 @@ ContextView::addContainment( const QVariantList& args )
         c->updateConstraints();
         connectContainment( c );
         Containment *amarokContainment = qobject_cast< Containment * >( c );
+
         if( amarokContainment )
         {
             amarokContainment->setView( this );
-            amarokContainment->setTitle( QString( "Context #%1" ).arg( size ) );
+            amarokContainment->setTitle( QString( "Context #%1" ).arg( size + 1 ) );
         }
-        
     }
-
 }
 
 void
