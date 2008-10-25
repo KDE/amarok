@@ -92,12 +92,7 @@ class ContextWidget : public KVBox
 
         QSize sizeHint() const
         {
-            const QString size = Amarok::config( "Panel_Sizes" ).readEntry( "context_width" );
-
-            if ( size.isNull() )
-                return QSize( static_cast<QWidget*>( parent() )->size().width() / 3, 300 );
-            else
-                return QSize( size.toInt(), 300 );
+            return QSize( static_cast<QWidget*>( parent() )->size().width() / 3, 300 );
         }
 };
 
@@ -155,7 +150,7 @@ MainWindow::~MainWindow()
     KConfigGroup config = Amarok::config();
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
-    
+
     config = Amarok::config( "Panel_Sizes" );
     config.writeEntry( "playlist_width", m_playlistWidget->width() );
     config.writeEntry( "context_width", m_contextWidget->width() );
@@ -251,6 +246,21 @@ MainWindow::init()
     mainLayout->addWidget( m_statusbarArea);
 
     setCentralWidget( centralWidget );
+
+    //Set panel sizes
+    const QString sSize = Amarok::config( "Panel_Sizes" ).readEntry( "sidebar_width" );
+    const QString pSize = Amarok::config( "Panel_Sizes" ).readEntry( "playlist_width" );
+    const QString cSize = Amarok::config( "Panel_Sizes" ).readEntry( "context_width" );
+
+    if ( !( sSize.isNull() || pSize.isNull() || cSize.isNull() ) )
+    {
+        QList <int> sizes;
+        sizes.append( sSize.toInt() );
+        sizes.append( cSize.toInt() );
+        sizes.append( pSize.toInt() );
+
+        m_splitter->setSizes( sizes );
+    }
 
     //<Browsers>
     {

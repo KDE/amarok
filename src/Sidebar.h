@@ -133,12 +133,7 @@ class SideBar: public KHBox
     protected:
         QSize sizeHint() const
         {
-            const QString size = Amarok::config( "Panel_Sizes" ).readEntry( "sidebar_width" );
-
-            if ( size.isNull() )
-                return QSize( static_cast<QWidget*>( parent() )->size().width() / 4, 400 );
-            else
-                return QSize( size.toInt(), 400 );
+            return QSize( static_cast<QWidget*>( parent() )->size().width() / 4, 400 );
         }
 
     private slots:

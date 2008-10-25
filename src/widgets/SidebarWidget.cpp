@@ -20,6 +20,7 @@
 
 #include "SidebarWidget.h"
 
+#include "Amarok.h"
 #include "App.h"
 #include "Debug.h"
 #include "amarokconfig.h"
