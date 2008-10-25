@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
+    * Import statistics from Amarok 1.4.
     * Double clicking items in the Albums applet appends to playlist.
     * Service scripts can now specify custom info for artist, album and friends
       that will be shown in the playlist and other places, independetly of
