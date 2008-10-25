@@ -21,6 +21,7 @@
 #include "SvgHandler.h"
 
 #include <QDesktopWidget>
+#include <QFontMetrics>
 #include <QPainter>
 
 #include <limits.h>
@@ -78,6 +79,12 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 5 );
     m_title->setFont( labelFont );
+
+    m_footer = new QGraphicsSimpleTextItem( this );
+    m_footer->setBrush( palette().brush( QPalette::Disabled, QPalette::Text ) );
+    QFont footerFont = m_footer->font();
+    footerFont.setWeight( 99 ); // Weight is on a scale from 0 (superlight) to 99 (superdark)
+    m_footer->setFont( footerFont );
 
     connect( this, SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ),
              this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
@@ -287,6 +294,12 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
     m_maxColumnWidth = rect().width();
 
     correctControlButtonPositions();
+
+    const QFontMetrics fm( m_footer->font() );
+    const QRect footerRect = fm.boundingRect( m_footer->text() );
+    const int footerX = rect().width() / 2 - footerRect.width() / 2; 
+    const int footerY = rect().height() - footerRect.height() - 2;
+    m_footer->setPos( footerX , footerY );
 }
 
 QList<QAction*>
@@ -419,6 +432,7 @@ void
 ColumnContainment::setTitle( QString title )
 {
     m_title->setText( title );
+    m_footer->setText( title );
 }
 
 void

@@ -120,6 +120,7 @@ private:
     qreal m_aspectRatio;
     
     QGraphicsSimpleTextItem *m_title;
+    QGraphicsSimpleTextItem *m_footer;
     Context::Svg *m_header;
     
     bool m_paintTitle;
