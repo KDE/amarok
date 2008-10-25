@@ -90,7 +90,12 @@ class ImportCapabilityImpl : public Meta::ImportCapability
         virtual void setFirstPlayed( const uint time ) { m_track->setFirstPlayed( time ); }
         virtual void setLastPlayed( const uint time ) { m_track->setLastPlayed( time ); }
         virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
-        virtual void beginStatisticsUpdate() { m_track->beginMetaDataUpdate(); }
+        virtual void beginStatisticsUpdate()
+        {
+            m_track->setWriteAllStatisticsFields( true );
+            m_track->beginMetaDataUpdate();
+            m_track->setWriteAllStatisticsFields( false );
+        }
         virtual void endStatisticsUpdate() { m_track->endMetaDataUpdate(); }
         virtual void abortStatisticsUpdate() { m_track->abortMetaDataUpdate(); }
 
@@ -197,6 +202,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     : Track()
     , m_collection( QPointer<SqlCollection>( collection ) )
     , m_batchUpdate( false )
+    , m_writeAllStatisticsFields( false )
 {
     QStringList::ConstIterator iter = result.constBegin();
     m_deviceid = (*(iter++)).toInt();
@@ -718,6 +724,10 @@ SqlTrack::updateStatisticsInDb()
                 , QString::number( m_score )
                 , QString::number( m_playCount )
                 , QString::number( m_lastPlayed ) );
+
+        if( m_writeAllStatisticsFields )
+            data += QString(",createdate=%1").arg( QString::number( m_firstPlayed ) );
+
         update = update.arg( data, QString::number( urlId ) );
         m_collection->query( update );
     }
