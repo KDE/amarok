@@ -357,13 +357,6 @@ MetaProxy::Track::firstPlayed() const
     return 0;
 }
 
-void
-MetaProxy::Track::setFirstPlayed( const uint newTime )
-{
-    if( d->realTrack )
-        d->realTrack->setFirstPlayed( newTime );
-}
-
 uint
 MetaProxy::Track::lastPlayed() const
 {
@@ -372,26 +365,12 @@ MetaProxy::Track::lastPlayed() const
     return 0;
 }
 
-void
-MetaProxy::Track::setLastPlayed( const uint newTime )
-{
-    if( d->realTrack )
-        d->realTrack->setLastPlayed( newTime );
-}
-
 int
 MetaProxy::Track::playCount() const
 {
     if( d->realTrack )
         return d->realTrack->playCount();
     return 0;
-}
-
-void
-MetaProxy::Track::setPlayCount( const int newCount )
-{
-    if( d->realTrack )
-        d->realTrack->setPlayCount( newCount );
 }
 
 QString

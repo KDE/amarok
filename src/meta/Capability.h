@@ -43,7 +43,9 @@ namespace Meta
                         , SourceInfo = 8
                         , CurrentTrackActions = 9
                         , StreamInfo = 10
-                        , Updatable = 11};
+                        , Updatable = 11
+                        , Importable = 12
+                      };
 
             virtual ~Capability();
 

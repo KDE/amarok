@@ -31,6 +31,7 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/CustomActionsCapability.h"
 #include "meta/EditCapability.h"
+#include "meta/ImportCapability.h"
 #include "meta/OrganiseCapability.h"
 #include "meta/UpdateCapability.h"
 #include "MountPointManager.h"
@@ -72,6 +73,26 @@ class EditCapabilityImpl : public Meta::EditCapability
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
         virtual void abortMetaDataUpdate() { m_track->abortMetaDataUpdate(); }
+
+    private:
+        KSharedPtr<SqlTrack> m_track;
+};
+
+class ImportCapabilityImpl : public Meta::ImportCapability
+{
+    public:
+        ImportCapabilityImpl( SqlTrack *track )
+            : Meta::ImportCapability()
+            , m_track( track ) {}
+
+        virtual void setScore( const int score ) { m_track->setScore( score ); }
+        virtual void setRating( const int rating ) { m_track->setRating( rating ); }
+        virtual void setFirstPlayed( const uint time ) { m_track->setFirstPlayed( time ); }
+        virtual void setLastPlayed( const uint time ) { m_track->setLastPlayed( time ); }
+        virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
+        virtual void beginStatisticsUpdate() { m_track->beginMetaDataUpdate(); }
+        virtual void endStatisticsUpdate() { m_track->endMetaDataUpdate(); }
+        virtual void abortStatisticsUpdate() { m_track->abortMetaDataUpdate(); }
 
     private:
         KSharedPtr<SqlTrack> m_track;
@@ -794,6 +815,9 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::Editable:
             return new EditCapabilityImpl( this );
+
+        case Meta::Capability::Importable:
+            return new ImportCapabilityImpl( this );
 
         case Meta::Capability::CustomActions:
         {

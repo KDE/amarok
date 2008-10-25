@@ -210,13 +210,10 @@ namespace Meta
             virtual int discNumber() const = 0;
             /** Returns the time the song was last played, or 0 if it has not been played yet */
             virtual uint lastPlayed() const = 0;
-            virtual void setLastPlayed( const uint newTime );
             /** Returns the time the song was first played, or 0 if it has not been played yet */
             virtual uint firstPlayed() const;
-            virtual void setFirstPlayed( const uint newTime );
             /** Returns the number of times the track was played (what about unknown?)*/
             virtual int playCount() const = 0;
-            virtual void setPlayCount( const int newCount );
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
             virtual QString type() const = 0;
