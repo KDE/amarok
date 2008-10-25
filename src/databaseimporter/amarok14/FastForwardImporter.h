@@ -27,7 +27,7 @@ class FastForwardImporter : public DatabaseImporter
     Q_OBJECT
 
     public:
-        FastForwardImporter();
+        FastForwardImporter( QObject *parent );
         virtual ~FastForwardImporter();
 
         virtual DatabaseImporterConfig *configWidget( QWidget *parent );

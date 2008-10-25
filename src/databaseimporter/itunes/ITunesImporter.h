@@ -29,7 +29,7 @@ class ITunesImporter : public DatabaseImporter
     Q_OBJECT
 
     public:
-        ITunesImporter();
+        ITunesImporter( QObject *parent );
         virtual ~ITunesImporter();
 
         static QString name() { return QString("itunes"); }

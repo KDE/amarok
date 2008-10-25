@@ -39,6 +39,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         void setPassword( const QString &pass ) { m_password = pass; }
 
         const bool failed() const { return m_failed; }
+        void abort() { m_aborted = true; }
 
         virtual void run();
 

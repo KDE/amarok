@@ -18,17 +18,18 @@
 #include "itunes/ITunesImporter.h"
 
 DatabaseImporter*
-DatabaseImporterFactory::createImporter( const QString &name )
+DatabaseImporterFactory::createImporter( const QString &name, QObject *parent )
 {
    if( name == FastForwardImporter::name() )
-       return new FastForwardImporter();
+       return new FastForwardImporter( parent );
    if( name == ITunesImporter::name() )
-       return new ITunesImporter();
+       return new ITunesImporter( parent );
    return 0;
 }
 
-DatabaseImporter::DatabaseImporter()
-    : m_importArtwork( false )
+DatabaseImporter::DatabaseImporter( QObject *parent )
+    : QObject( parent )
+    , m_importArtwork( false )
     , m_importing( false )
     , m_count( 0 )
 {

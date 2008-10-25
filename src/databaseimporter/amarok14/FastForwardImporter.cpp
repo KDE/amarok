@@ -20,8 +20,8 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-FastForwardImporter::FastForwardImporter()
-    : DatabaseImporter()
+FastForwardImporter::FastForwardImporter( QObject *parent )
+    : DatabaseImporter( parent )
     , m_config( 0 )
     , m_worker( 0 )
 {
@@ -29,6 +29,9 @@ FastForwardImporter::FastForwardImporter()
 
 FastForwardImporter::~FastForwardImporter()
 {
+    DEBUG_BLOCK
+    m_worker->abort();
+    m_worker->deleteLater();
 }
 
 DatabaseImporterConfig*

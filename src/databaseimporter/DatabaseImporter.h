@@ -24,7 +24,7 @@ class DatabaseImporter;
 class DatabaseImporterFactory
 {
     public:
-        static DatabaseImporter* createImporter( const QString &name );
+        static DatabaseImporter* createImporter( const QString &name, QObject *parent );
 };
 
 class DatabaseImporterConfig : public KVBox
@@ -39,7 +39,7 @@ class DatabaseImporter : public QObject
     Q_OBJECT
 
     public:
-        DatabaseImporter();
+        DatabaseImporter( QObject *parent=0 );
         virtual ~DatabaseImporter();
 
         virtual DatabaseImporterConfig *configWidget( QWidget *parent );

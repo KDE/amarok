@@ -32,6 +32,8 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     , m_importer( 0 )
     , m_importerConfig( 0 )
 {
+    setAttribute( Qt::WA_DeleteOnClose );
+
     KVBox *importerBox = new KVBox( this );
     importerBox->setSpacing( KDialog::spacingHint() );
 
@@ -124,7 +126,7 @@ DatabaseImporterDialog::selectImporter()
         return;
 
     delete m_importer;
-    m_importer = DatabaseImporterFactory::createImporter( name );
+    m_importer = DatabaseImporterFactory::createImporter( name, this );
     connect( m_importer, SIGNAL( importSucceeded() ), this, SLOT( importSucceeded() ), Qt::QueuedConnection );
     connect( m_importer, SIGNAL( importFailed() ), this, SLOT( importFailed() ), Qt::QueuedConnection );
     connect( m_importer, SIGNAL( trackAdded( Meta::TrackPtr ) ), this, SLOT( importedTrack( Meta::TrackPtr ) ), Qt::QueuedConnection );

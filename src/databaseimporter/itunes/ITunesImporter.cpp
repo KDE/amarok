@@ -22,8 +22,8 @@ ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )
     new QLabel( i18n("iTunes Library"), this );
 }
 
-ITunesImporter::ITunesImporter()
-    : DatabaseImporter()
+ITunesImporter::ITunesImporter( QObject *parent )
+    : DatabaseImporter( parent )
 {
 }
 

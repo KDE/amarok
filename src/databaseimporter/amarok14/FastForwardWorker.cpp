@@ -12,6 +12,8 @@
 ********************************************************************************/
 
 #include "FastForwardWorker.h"
+
+#include "Amarok.h"
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "ImportCapability.h"
@@ -80,6 +82,9 @@ FastForwardWorker::run()
 
     for( int c = 0; query.next(); c++ )
     {
+        if( m_aborted )
+            return;
+
         int index = 0;
         QString mount = query.value( index++ ).toString();
         QString url   = query.value( index++ ).toString();
@@ -131,6 +136,9 @@ FastForwardWorker::run()
             emit trackAdded( track );
     }
 
-    // TODO: copy downloaded artwor
+    // FIXME: determining the old cover art directory is a major hack, I admit.
+    // What's the best way of doing this?
+    QString newCoverDir = Amarok::saveLocation( "albumcovers/large/" );
+    QString oldCoverDir = newCoverDir.replace( "/.kde/", "/.kde4/" );
 }
 
