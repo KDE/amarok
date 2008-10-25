@@ -15,7 +15,6 @@ add_subdirectory( browsers/servicebrowser )
 add_subdirectory( collection )
 add_subdirectory( collectionscanner )
 add_subdirectory( context )
-add_subdirectory( data )
 add_subdirectory( images )
 add_subdirectory( metadata )
 add_subdirectory( services )
@@ -181,6 +180,7 @@ set(meta_SRCS
     meta/CustomActionsCapability.cpp
     meta/EditCapability.cpp
     meta/EditablePlaylistCapability.cpp
+    meta/ImportCapability.cpp
     meta/LastFmCapability.cpp
     meta/M3UPlaylist.cpp
     meta/Meta.cpp
