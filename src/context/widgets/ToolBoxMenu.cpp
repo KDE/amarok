@@ -20,6 +20,11 @@
 #include "plasma/corona.h"
 #include <kicon.h>
 
+#define ENTRY_HEIGHT  32
+#define ENTRY_WIDTH  180
+#define ENTRY_MARGIN   5
+#define OFFSET_Y      40
+
 namespace Context
 {
     
@@ -101,7 +106,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_hideIcon->setMaximumSize( iconSize );
     m_hideIcon->resize( m_hideIcon->size() );
 
-    m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 54 );
+    m_hideIcon->setPos( 5, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
     m_hideIcon->setZValue( zValue() + 1 );
     m_hideIcon->hide();
 
@@ -146,7 +151,7 @@ AmarokToolBoxMenu::containment() const
 QRectF
 AmarokToolBoxMenu::boundingRect() const
 {
-    return QRectF( QPointF( 0, 0 ), QSize( 185, 42 * ( m_menuSize + 2 ) ) );
+    return QRectF( QPointF( 0, 0 ), QSize( ENTRY_WIDTH + 5, ( ENTRY_HEIGHT +  ENTRY_MARGIN ) * ( m_menuSize + 2 ) ) );
 }
 
 void
@@ -196,7 +201,7 @@ AmarokToolBoxMenu::initRunningApplets()
     if( m_removeApplets )
     {
         m_menuSize = qMin( 4, containment()->applets().size() );
-        m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 54 );
+        m_hideIcon->setPos( 5, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
     }
 }
 
@@ -274,30 +279,30 @@ AmarokToolBoxMenu::show( bool refreshApplets )
     if( m_bottomMenu.count() > 0 )
     {
         m_downArrow->setPos( boundingRect().width() / 2 - m_downArrow->size().width()/2,
-                            boundingRect().height() - 20 );
+                            boundingRect().height() - 10 );
         m_downArrow->resetTransform();
         m_downArrow->show();
     }
 
     if( m_topMenu.count() > 0 )
     {
-        const int height = static_cast<int>( m_currentMenu.first()->boundingRect().height() ) + 9;
+        const int height = static_cast<int>( m_currentMenu.first()->boundingRect().height() ) + ENTRY_MARGIN;
         m_upArrow->resetTransform();
         m_upArrow->setPos( boundingRect().width()/2 - m_upArrow->size().width()/2,
-                            boundingRect().height() - m_menuSize * height - 50 );
+                            boundingRect().height() - m_menuSize * height - OFFSET_Y + ENTRY_MARGIN * 2 );
         m_upArrow->show();
     }
     
-    m_hideIcon->setPos( 5, boundingRect().height() - 32 * m_menuSize - 54 );
+    m_hideIcon->setPos( 5, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
     m_hideIcon->show();
     setZValue( zValue() + 10000 );
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {
         ToolBoxIcon *entry = m_currentMenu[m_currentMenu.count() - i - 1];
         entry->show();        
-        const int height = static_cast<int>( entry->boundingRect().height() ) + 9;
+        const int height = static_cast<int>( entry->boundingRect().height() ) + ENTRY_MARGIN;
 
-        Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement, QPoint( 5, boundingRect().height() - height * i - 50 ) );
+        Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement, QPoint( 5, boundingRect().height() - height * i - OFFSET_Y ) );
     }
 }
 
@@ -327,7 +332,7 @@ AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName
     entry->setOrientation( Qt::Horizontal );
     entry->setText( appletName );
 
-    const QSizeF size( 180, 24 );
+    const QSizeF size( ENTRY_WIDTH, ENTRY_HEIGHT );
     entry->setMinimumSize( size );
     entry->setMaximumSize( size );
     entry->resize( size );
@@ -436,14 +441,14 @@ AmarokToolBoxMenu::scrollDown()
         ToolBoxIcon *entryToRemove = m_currentMenu.first();
         m_currentMenu.removeFirst();
         int i = m_menuSize - 1;
-        const int height = static_cast<int>( entryToRemove->boundingRect().height() ) + 9;
+        const int height = static_cast<int>( entryToRemove->boundingRect().height() ) + ENTRY_MARGIN;
         m_topMenu.push( entryToRemove->text() );
         delete entryToRemove;
 
         foreach( ToolBoxIcon *entry, m_currentMenu )
         {
             Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement,
-                                            QPoint( 5, boundingRect().height() - height * i - 50 ) );
+                                            QPoint( 5, boundingRect().height() - height * i - OFFSET_Y ) );
             i--;
         }
 
@@ -451,7 +456,7 @@ AmarokToolBoxMenu::scrollDown()
         const QString appletName = m_bottomMenu.pop();
         setupMenuEntry( entryToAdd, appletName );
         m_currentMenu << entryToAdd;
-        entryToAdd->setPos( 5, boundingRect().height() - 50 );
+        entryToAdd->setPos( 5, boundingRect().height() - OFFSET_Y );
         Plasma::Animator::self()->animateItem( entryToAdd, Plasma::Animator::AppearAnimation );
 
         if( m_bottomMenu.isEmpty() )
@@ -461,7 +466,7 @@ AmarokToolBoxMenu::scrollDown()
         {
             m_upArrow->resetTransform();
             m_upArrow->setPos( boundingRect().width()/2 - m_upArrow->size().width()/2,
-                               boundingRect().height() - m_menuSize * height - 50 );
+                               boundingRect().height() - m_menuSize * height - OFFSET_Y + ENTRY_MARGIN * 2 );
             m_upArrow->show();
         }
     }
@@ -474,7 +479,7 @@ AmarokToolBoxMenu::scrollUp()
     {
         ToolBoxIcon *entryToRemove = m_currentMenu.last();
         m_currentMenu.removeLast();
-        const int height = static_cast<int>( entryToRemove->boundingRect().height() ) + 9;
+        const int height = static_cast<int>( entryToRemove->boundingRect().height() ) + ENTRY_MARGIN;
         m_bottomMenu.push( entryToRemove->text() );
         delete entryToRemove;
 
@@ -483,14 +488,14 @@ AmarokToolBoxMenu::scrollUp()
         {
             ToolBoxIcon *entry = m_currentMenu[i];
             Plasma::Animator::self()->moveItem( entry, Plasma::Animator::SlideInMovement,
-                                            QPoint( 5, boundingRect().height() - height * ( entries - i - 1 ) - 50 ) );
+                                            QPoint( 5, boundingRect().height() - height * ( entries - i - 1 ) - OFFSET_Y ) );
         }
 
         ToolBoxIcon *entryToAdd = new ToolBoxIcon( this );
         const QString appletName = m_topMenu.pop();
         setupMenuEntry( entryToAdd, appletName );
         m_currentMenu.prepend( entryToAdd );
-        entryToAdd->setPos( 5, boundingRect().height() - height * ( m_menuSize - 1 ) - 50 );
+        entryToAdd->setPos( 5, boundingRect().height() - height * ( m_menuSize - 1 ) - OFFSET_Y );
         Plasma::Animator::self()->animateItem( entryToAdd, Plasma::Animator::AppearAnimation );
 
         if( m_topMenu.isEmpty() )

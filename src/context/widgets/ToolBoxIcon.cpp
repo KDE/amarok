@@ -23,10 +23,12 @@
 
 #include <QFont>
 
+#define PADDING 15
+
 ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     : Plasma::Icon( parent )
     , m_hovering( 0 )
-    , m_animHighlightFrame( 0.5 )
+    , m_animHighlightFrame( 0.6 )
     , m_animHighlightId( 0 )
 {
     m_text = new QGraphicsSimpleTextItem( this );
@@ -83,20 +85,29 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     {
         if( m_text->text() == QString() )
             m_text->setText( Plasma::Icon::text() );
-        
-        m_text->setPos( 15, 0 );
+
+        QFontMetricsF fm( m_text->font() );
+        m_text->setPos( PADDING, size().height() / 2 - fm.boundingRect( m_text->text() ).height() / 2 );
     
         painter->save();
         
         QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,
                                Plasma::Theme::defaultTheme()->colorScheme() ).background().color();
-        color.setAlpha( 200 );
+        color.setAlpha( 255 );
 
         painter->setBrush( color );
         painter->setRenderHint( QPainter::Antialiasing );                        
         painter->setOpacity( m_animHighlightFrame );
         painter->setPen( QPen( Qt::gray, 1) );
         painter->drawPath( shape() );
+        painter->restore();
+
+        painter->save();
+        painter->setRenderHint( QPainter::Antialiasing );
+        painter->setPen( QPen( Qt::white, 2 ) );
+        QSize innerRectSize(  size().width() - 7, size().height() - 7 );
+        QPainterPath innerRect( Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 2.5, 2.5 ), innerRectSize ), 8 ) );
+        painter->drawPath( innerRect );
         painter->restore();
         
         m_text->show();        
@@ -139,7 +150,7 @@ void
 ToolBoxIcon::animateHighlight( qreal progress )
 {
     if( m_hovering )
-        m_animHighlightFrame = 0.5 + ( progress / 2 );
+        m_animHighlightFrame = 0.6 + ( progress / 2 );
     else
         m_animHighlightFrame = 1.0 - ( progress / 2 );
 
