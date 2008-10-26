@@ -20,6 +20,10 @@
 #include "ImportCapability.h"
 #include "meta/file/File.h"
 
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+
+#include <QDir>
 #include <QFileInfo>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -147,7 +151,29 @@ FastForwardWorker::run()
 
     // FIXME: determining the old cover art directory is a major hack, I admit.
     // What's the best way of doing this?
-    QString newCoverDir = Amarok::saveLocation( "albumcovers/large/" );
-    QString oldCoverDir = newCoverDir.replace( "/.kde/", "/.kde4/" );
+    QString newCoverPath = Amarok::saveLocation( "albumcovers/large/" );
+    QString oldCoverPath = QString( newCoverPath );
+    oldCoverPath = oldCoverPath.replace( ".kde4", ".kde" );
+    QDir newCoverDir( newCoverPath );
+    QDir oldCoverDir( oldCoverPath ); 
+    oldCoverDir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
+
+    debug() << "new covers:" << newCoverPath;
+    debug() << "old covers:" << oldCoverPath;
+
+    foreach( QFileInfo image, oldCoverDir.entryInfoList() )
+    {
+        debug() << "image copy:" << image.fileName() << " : " << image.absoluteFilePath();
+        QString newPath = newCoverDir.absoluteFilePath( image.fileName() );
+
+        KUrl src( image.absoluteFilePath() );
+        KUrl dst( newPath );
+
+        //TODO: should this be asynchronous?
+        KIO::FileCopyJob *job = KIO::file_copy( src, dst, -1 /*no special perms*/ , KIO::HideProgressInfo );
+        if( !job->exec() ) // job deletes itself
+            error() << "Couldn't copy image" << image.fileName();
+    }
+
 }
 
