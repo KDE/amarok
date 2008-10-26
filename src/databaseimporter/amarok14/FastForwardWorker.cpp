@@ -15,8 +15,10 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
+#include "CollectionLocation.h"
 #include "Debug.h"
 #include "ImportCapability.h"
+#include "meta/file/File.h"
 
 #include <QFileInfo>
 #include <QSqlError>
@@ -77,7 +79,7 @@ FastForwardWorker::run()
 
     QString sql;
     sql += "SELECT lastmountpoint, S.url, createdate, accessdate, percentage, rating, playcounter, lyrics ";
-    sql += "FROM statistics S, devices D, lyrics L "
+    sql += "FROM statistics S, devices D, lyrics L ";
     sql += "WHERE S.deviceid = D.id ";
     sql += "  AND L.deviceid = S.deviceid ";
     sql += "  AND L.url = S.url ";
@@ -103,43 +105,43 @@ FastForwardWorker::run()
         // make the url absolute
         url = mount + url.mid(1);
 
-        // Check whether we already have the track in a build collection
-        //SqlMeta::TrackPtr track = SqlMeta::TrackPtr::dynamicCast( CollectionManager::instance()->trackForUrl( KUrl( url ) ) );
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
         if( track )
         {
-            debug() << c << "  retrieved track:" << track->playableUrl();
-            Meta::ImportCapability *ec = track->as<Meta::ImportCapability>();
-            if( !ec )
-                continue;
-
-            ec->beginStatisticsUpdate();
-            ec->setScore( score );
-            ec->setRating( rating );
-            ec->setFirstPlayed( firstPlayed );
-            ec->setLastPlayed( lastPlayed );
-            ec->setPlayCount( playCount );
-            ec->endStatisticsUpdate();
-
-            if( !lyrics.isEmpty() )
-                track->setCachedLyrics( lyrics );
-        }
-        // We need to create a new track and have it inserted, if the URL exists
-        else
-        {
-            QFileInfo info( url );
-            if( !info.exists() )
+            if( !track->inCollection() )
             {
-                // Bail out if we can't find the track on the filesystem
-                debug() << c << "  couldn't find:" << url;
+                 // It's a Meta::FileTrack hopefully
+                KSharedPtr<MetaFile::Track> fileTrack = KSharedPtr<MetaFile::Track>::dynamicCast( track );
+                if( !fileTrack )
+                    continue;
+
+                debug() << c << "  inserting track:" << fileTrack->playableUrl();
                 continue;
             }
-            debug() << c << "  inserting track:" << url;
-            //TODO complete
-        }
+            else
+            {
+                debug() << c << "  track already in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
 
-        if( track )
+                Meta::ImportCapability *ec = track->as<Meta::ImportCapability>();
+                if( !ec )
+                    continue;
+
+                ec->beginStatisticsUpdate();
+                ec->setScore( score );
+                ec->setRating( rating );
+                ec->setFirstPlayed( firstPlayed );
+                ec->setLastPlayed( lastPlayed );
+                ec->setPlayCount( playCount );
+                ec->endStatisticsUpdate();
+
+                debug() << c << "   --> updating track:" << track->playableUrl();
+
+                if( !lyrics.isEmpty() )
+                    track->setCachedLyrics( lyrics );
+            }
+            
             emit trackAdded( track );
+        }
     }
 
     // FIXME: determining the old cover art directory is a major hack, I admit.
