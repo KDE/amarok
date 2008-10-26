@@ -36,10 +36,8 @@
 #include <QTimer>
 
 
-
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
-    :CollectionTreeItemModelBase()
-
+    : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
     connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ), Qt::QueuedConnection );
@@ -104,8 +102,9 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
 
 bool
-CollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
-     if (!parent.isValid())
+CollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const
+{
+     if( !parent.isValid() )
          return true; // must be root item!
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
@@ -115,23 +114,28 @@ CollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
 }
 
 void
-CollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const {
-    if ( !item->childrenLoaded() ) {
+CollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const
+{
+    if ( !item->childrenLoaded() )
+    {
         listForLevel( item->level() /* +1 -1 */, item->queryMaker(), item );
         item->setChildrenLoaded( true );
     }
 }
 
 bool
-CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
+CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const
+{
     if ( !parent.isValid() )
-        return false;       //children of the root item are the collections, and they are alwas known
+        return false;       //children of the root item are the collections, and they are always known
+
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     return item->level() <= m_levelType.count() && !item->childrenLoaded();
 }
 
 void
-CollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
+CollectionTreeItemModel::fetchMore( const QModelIndex &parent )
+{
     if ( !parent.isValid() )
         return;
 
@@ -140,30 +144,36 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
 }
 
 void
-CollectionTreeItemModel::collectionAdded( Collection *newCollection ) {
+CollectionTreeItemModel::collectionAdded( Collection *newCollection )
+{
     DEBUG_BLOCK
     if ( !newCollection )
         return;
 
-     connect( newCollection, SIGNAL( updated() ), this, SLOT( update() ) ) ;
+    connect( newCollection, SIGNAL( updated() ), this, SLOT( update() ) ) ;
 
     QString collectionId = newCollection->collectionId();
     if ( d->m_collections.contains( collectionId ) )
         return;
+
     //inserts new collection at the end. sort collection alphabetically?
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
     d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem ) ) );
     endInsertRows();
-    if ( d->m_collections.count() == 1 )
+    
+    if( d->m_collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
 void
-CollectionTreeItemModel::collectionRemoved( const QString &collectionId ) {
+CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
+{
     int count = m_rootItem->childCount();
-    for ( int i = 0; i < count; i++ ) {
+    for( int i = 0; i < count; i++ )
+    {
         CollectionTreeItem *item = m_rootItem->child( i );
-        if ( item && !item->isDataItem() && item->parentCollection()->collectionId() == collectionId ) {
+        if( item && !item->isDataItem() && item->parentCollection()->collectionId() == collectionId )
+        {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
             d->m_collections.remove( collectionId );
@@ -185,7 +195,8 @@ CollectionTreeItemModel::filterChildren()
 }
 
 void
-CollectionTreeItemModel::requestCollectionsExpansion() {
+CollectionTreeItemModel::requestCollectionsExpansion()
+{
     DEBUG_BLOCK
     for( int i = 0, count = m_rootItem->childCount(); i < count; i++ )
     {
