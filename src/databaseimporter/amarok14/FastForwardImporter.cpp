@@ -33,7 +33,7 @@ FastForwardImporter::~FastForwardImporter()
     if( m_worker )
     {
         m_worker->abort();
-        m_worker->deleteLater();
+        //m_worker->deleteLater();
     }
 }
 
