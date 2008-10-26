@@ -79,9 +79,11 @@ FastForwardWorker::run()
 
     QString sql;
     sql += "SELECT lastmountpoint, S.url, createdate, accessdate, percentage, rating, playcounter, lyrics ";
-    sql += "FROM statistics S, devices D, lyrics L ";
-    sql += "WHERE S.deviceid = D.id ";
-    sql += "  AND L.deviceid = S.deviceid ";
+    sql += "FROM statistics S ";
+    sql += "INNER JOIN devices D ";
+    sql += "  ON S.deviceid = D.id ";
+    sql += "LEFT OUTER JOIN lyrics L ";
+    sql += "  ON L.deviceid = S.deviceid ";
     sql += "  AND L.url = S.url ";
     sql += "ORDER BY lastmountpoint, S.url";
     QSqlQuery query = db.exec( sql );
@@ -116,7 +118,6 @@ FastForwardWorker::run()
                     continue;
 
                 debug() << c << "  inserting track:" << fileTrack->playableUrl();
-                continue;
             }
             else
             {
