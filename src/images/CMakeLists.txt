@@ -21,7 +21,6 @@ install(
         navigation_arrows.svg
         nocover.png
         pud_items.svg
-        shadow_albumcover.png
         smallstar.png
         splash_screen.jpg
         star.png

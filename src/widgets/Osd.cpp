@@ -237,14 +237,9 @@ OSDWidget::determineMetrics( const int M )
                               )
                                           ); //this will force us to be with our bounds
 
-        int shadowWidth = 0;
-        if( m_drawShadow && !m_scaledCover.hasAlpha() &&
-          ( m_scaledCover.width() > 22 || m_scaledCover.height() > 22 ) )
-            shadowWidth = static_cast<uint>( m_scaledCover.width() / 100.0 * 6.0 );
 
         const int widthIncludingImage = rect.width()
                 + m_scaledCover.width()
-                + shadowWidth
                 + M; //margin between text + image
 
         rect.setWidth( widthIncludingImage );
@@ -324,33 +319,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
         QRect r( rect );
         r.setTop( (size.height() - m_scaledCover.height()) / 2 );
         r.setSize( m_scaledCover.size() );
-
-        if( !m_scaledCover.hasAlpha() && m_drawShadow &&
-          ( m_scaledCover.width() > 22 || m_scaledCover.height() > 22 ) ) {
-            // don't draw a shadow for eg, the Amarok icon
-            QImage shadow;
-            const uint shadowSize = static_cast<uint>( m_scaledCover.width() / 100.0 * 6.0 );
-
-            const QString folder = Amarok::saveLocation( "covershadow-cache/" );
-            const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( m_scaledCover.width()  + shadowSize )
-                                                                        .arg( m_scaledCover.height() + shadowSize );
-            if ( QFile::exists( folder + file ) )
-                shadow.load( folder + file );
-            else {
-                shadow.load( KStandardDirs::locate( "data", "amarok/images/shadow_albumcover.png" ) );
-                shadow = shadow.scaled( m_scaledCover.width() + shadowSize, m_scaledCover.height() + shadowSize,
-                                                                Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-                shadow.save( folder + file, "PNG" );
-            }
-
-            QPixmap target = QPixmap::fromImage( shadow ); //FIXME slow
-            QPainter painter( &target );
-            painter.drawPixmap( 0, 0, m_scaledCover );
-            m_scaledCover = target;
-
-            r.setTop( (size.height() - m_scaledCover.height()) / 2 );
-            r.setSize( m_scaledCover.size() );
-        }
 
         p.drawPixmap( r.topLeft(), m_scaledCover );
 
