@@ -63,12 +63,15 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     //setAlternatingRowColors(true);
 
     // transparent background
-    QPalette p = palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-    p.setColor( QPalette::Window, c );
-    setPalette( p );
+    if( viewport() )
+    {
+        QPalette p = palette();
+        QColor c = p.color( QPalette::Base );
+        c.setAlpha( 0 );
+        p.setColor( QPalette::Base, c );
+        p.setColor( QPalette::Window, c );
+        viewport()->setPalette( p );
+    }
     setAutoFillBackground( false );
 
     // signal connections

@@ -54,6 +54,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Fix playlist scrollbar graphical errors with some styles. Patch by Huynh
+      Huu Long <long.upcase@googlemail.com>. (BR 173547)
     * DBus MPRIS call GetMetadata returns the location field. (BR 173324)
     * Amarok would not show all files it could play in the files browser
       (BR 173333)
