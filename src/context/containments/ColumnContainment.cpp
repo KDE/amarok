@@ -1,5 +1,5 @@
 /***************************************************************************
-* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>         *
+* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>    *
 * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>   *
 * copyright            : (C) 2008 William Viana Soares <vianasw@gmail.com> *
 ****************************************************************************/
@@ -26,11 +26,12 @@
 
 #include <limits.h>
 
-#define BORDER_PADDING 30
-#define OFFSET_Y 40
-
 namespace Context
 {
+
+static const int BORDER_PADDING = 30;
+static const int OFFSET_Y = 40;
+
 ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args )
     : Context::Containment( parent, args )
     , m_actions( 0 )
@@ -193,7 +194,6 @@ ColumnContainment::setupControlButtons()
     listAdd->setIcon( KIcon( "list-add" ) );
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
-
     
     QAction *listRemove = new QAction( "", this );
     listRemove->setIcon( KIcon( "list-remove" ) );
@@ -227,7 +227,6 @@ ColumnContainment::setupControlButtons()
     
     connect( m_zoomInIcon, SIGNAL( clicked() ), this, SLOT( zoomInRequested() ) );
     connect( m_zoomOutIcon, SIGNAL( clicked() ), this, SLOT( zoomOutRequested() ) );
-    
 }
 
 void
@@ -360,12 +359,14 @@ void
 ColumnContainment::saveToConfig( KConfigGroup &conf )
 {
     QStringList plugins;
+
     for( int i = 0; i < m_grid->count(); i++ )
     {
         Applet *applet = 0;
         QGraphicsLayoutItem *item = m_grid->itemAt( i );
         applet = dynamic_cast<Plasma::Applet*>( item );
         debug() << "trying to save an applet";
+
         if( applet != 0 && applet->pluginName() != "currenttrack" )
         {
             debug() << "saving applet" << applet->name();
@@ -373,7 +374,6 @@ ColumnContainment::saveToConfig( KConfigGroup &conf )
         }
         conf.writeEntry( "plugins", plugins );
     }
-    
 }
 
 
@@ -381,14 +381,17 @@ void
 ColumnContainment::loadConfig( const KConfigGroup &conf )
 {
     DEBUG_BLOCK
+
     if( m_manageCurrentTrack )
     {
         debug() << "adding current track";
         Plasma::Containment::addApplet( "currenttrack" );
     }
+
     QStringList plugins = conf.readEntry( "plugins", QStringList() );
     m_appletsFromConfigCount = 1 + plugins.size();
     debug() << "plugins.size(): " << plugins.size();
+
     foreach( const QString& plugin, plugins )
     {
         debug() << "Adding applet: " << plugin;
@@ -525,8 +528,8 @@ ColumnContainment::correctControlButtonPositions()
         // so put them in the same place
         // location is to the left of the switching arrows
         
-        qreal xpos = m_switchLeftIcon->pos().x() - m_zoomOutIcon->size().width();
-        qreal ypos = m_switchLeftIcon->pos().y();
+        const qreal xpos = m_switchLeftIcon->pos().x() - m_zoomOutIcon->size().width();
+        const qreal ypos = m_switchLeftIcon->pos().y();
 
         m_zoomOutIcon->setPos( xpos, ypos );
         m_zoomInIcon->setPos( xpos, ypos );
@@ -582,7 +585,6 @@ ColumnContainment::view()
 {
     return m_view;
 }
-
 
 bool
 ColumnContainment::insertInGrid( Plasma::Applet* applet )
@@ -653,8 +655,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
 
     if( positionFound )
     {
-
-        QRectF rect = geometry();
+        const QRectF rect = geometry();
         debug() << "applet height: " << height;
         debug() << "applet inserted at: " << row << col;
         debug() << "applet rowSpan :" << rowSpan;
@@ -709,6 +710,7 @@ ColumnContainment::addApplet( Plasma::Applet* applet, const QPointF & )
     }
     if( m_grid->count() == 1 )
         m_removeAppletsIcon->action()->setEnabled( true );
+
     return applet;
 }
 
@@ -716,19 +718,22 @@ void
 ColumnContainment::appletRemoved( Plasma::Applet* applet )
 {
     DEBUG_BLOCK
+
     if( m_appletsPositions.contains( applet ) )
     {
-        QList<int> pos = m_appletsPositions[applet];
-        int row = pos[0];
-        int col = pos[1];
-        int rowSpan = pos[2];
+        const QList<int> pos = m_appletsPositions[applet];
+        const int row = pos[0];
+        const int col = pos[1];
+        const int rowSpan = pos[2];
+
         for( int i = 0; i < rowSpan; i++ )
             m_gridFreePositions[row + i][col] = true;
+
         m_appletsPositions.remove( applet );
         m_appletsIndexes.remove( applet );
 
         //keep the indexes updated
-        int idx = m_appletsIndexes[applet];
+        const int idx = m_appletsIndexes[applet];
         foreach( Plasma::Applet *a, m_appletsIndexes.keys() )
             if( m_appletsIndexes[a] > idx )
                 m_appletsIndexes[a]--;
@@ -737,15 +742,14 @@ ColumnContainment::appletRemoved( Plasma::Applet* applet )
             rearrangeApplets( row + rowSpan, col );
         else
             m_removeAppletsIcon->action()->setEnabled( false );
-
     }
-
 }
 
 void
 ColumnContainment::rearrangeApplets( int startRow, int startColumn )
 {
     DEBUG_BLOCK
+
     int i = startRow;
 
     int lastColumn = m_grid->columnCount();
@@ -784,7 +788,6 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
         }
         i = 0;
     }
-
 }
 
 void
@@ -809,13 +812,12 @@ ColumnContainment::setView( ContextView *newView )
     connect( this, SIGNAL( zoomIn( Plasma::Containment* ) ), m_view, SLOT( zoomIn( Plasma::Containment* ) ) );
 
     connect( m_addAppletsMenu, SIGNAL( changeContainment( Plasma::Containment * ) ),
-                 m_view, SLOT( setContainment( Plasma::Containment * ) ) );
+             m_view, SLOT( setContainment( Plasma::Containment * ) ) );
     connect( m_removeAppletsMenu, SIGNAL( changeContainment( Plasma::Containment * ) ),
-                 m_view, SLOT( setContainment( Plasma::Containment * ) ) );
+             m_view, SLOT( setContainment( Plasma::Containment * ) ) );
 
     connect( m_switchRightIcon, SIGNAL( clicked() ), m_view, SLOT( nextContainment() ) );
     connect( m_switchLeftIcon, SIGNAL( clicked() ), m_view, SLOT( previousContainment() ) );
-
 }
 
 void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
@@ -855,7 +857,6 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
 }
 
 } // Context namespace
-
 
 
 #include "ColumnContainment.moc"

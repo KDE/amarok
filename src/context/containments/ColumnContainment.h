@@ -1,5 +1,5 @@
 /***************************************************************************
-* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>         *
+* copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>    *
 * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>   *
 * copyright            : (C) 2008 William Viana Soares <vianasw@gmail.com> *
 ****************************************************************************/
