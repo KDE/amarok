@@ -52,7 +52,7 @@ inline uint qHash( const Meta::DataPtr &data )
 
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
-    :QAbstractItemModel()
+    : QAbstractItemModel()
     , m_rootItem( 0 )
     , d( new Private )
     , m_animFrame( 0 )
@@ -261,9 +261,7 @@ CollectionTreeItemModelBase::rowCount(const QModelIndex & parent) const
 
     if( parentItem->childrenLoaded() )
         return parentItem->childCount();
-    else
-        return 0;
-
+    return 0;
 }
 
 int CollectionTreeItemModelBase::columnCount(const QModelIndex & parent) const
@@ -290,10 +288,8 @@ CollectionTreeItemModelBase::mimeData(const QModelIndexList & indices) const
 
     foreach( const QModelIndex &index, indices ) 
     {
-        if ( index.isValid() )
-        {
+        if( index.isValid() )
             items << static_cast<CollectionTreeItem*>( index.internalPointer() );
-        }
     }
 
     return mimeData( items );
@@ -431,10 +427,8 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
        //start animation
        if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
            m_timeLine->start();
-
     }
 }
-
 
 void
 CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const

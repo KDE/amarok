@@ -491,23 +491,6 @@ void App::applySettings( bool firstTime )
         }
 
 #if 0
-        EngineBase *engine = EngineController::engine();
-
-        if( firstTime || AmarokConfig::soundSystem() !=
-                         PluginManager::getService( engine )->property( "X-KDE-Amarok-name" ).toString() )
-        {
-            //will unload engine for us first if necessary
-            engine = The::engineController()->loadEngine();
-            PERF_LOG( "done loading engine" )
-        }
-
-        engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-        engine->setEqualizerEnabled( AmarokConfig::equalizerEnabled() );
-        if ( AmarokConfig::equalizerEnabled() )
-            engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
-#endif
-
-#if 0
     // Audio CD is not currently supported
     Amarok::actionCollection()->action( "play_audiocd" )->setEnabled( false );
 #endif
@@ -646,7 +629,6 @@ void App::slotConfigEqualizer() //SLOT
 
 void App::slotConfigAmarok( const QByteArray& page )
 {
-
     Amarok2ConfigDialog* dialog = static_cast<Amarok2ConfigDialog*>( KConfigDialog::exists( "settings" ) );
 
     if( !dialog )
