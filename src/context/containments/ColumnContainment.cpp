@@ -461,9 +461,8 @@ ColumnContainment::showAddAppletsMenu()
         m_addAppletsMenu->hide();
         return;
     }
-//     qreal xpos = BORDER_PADDING;
-    qreal xpos = contentsRect().width() / 2 - m_addAppletsMenu->boundingRect().width() / 2;
-    qreal ypos = contentsRect().height() - m_addAppletsMenu->boundingRect().height() + OFFSET_Y;
+    const qreal xpos = BORDER_PADDING;
+    const qreal ypos = contentsRect().height() - m_addAppletsMenu->boundingRect().height() + OFFSET_Y;
 
     m_addAppletsMenu->setPos( xpos, ypos );
     m_addAppletsMenu->show();
@@ -479,9 +478,8 @@ ColumnContainment::showRemoveAppletsMenu()
         m_removeAppletsMenu->hide();
         return;
     }
-//     qreal xpos = BORDER_PADDING;
-    qreal xpos = contentsRect().width() / 2 - m_addAppletsMenu->boundingRect().width() / 2;
-    qreal ypos = contentsRect().height() - m_removeAppletsMenu->boundingRect().height();
+    const qreal xpos = BORDER_PADDING;
+    const qreal ypos = contentsRect().height() - m_removeAppletsMenu->boundingRect().height();
 
     m_removeAppletsMenu->setPos( xpos, ypos );
     m_removeAppletsMenu->show();
