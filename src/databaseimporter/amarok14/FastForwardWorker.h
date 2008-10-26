@@ -37,6 +37,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         void setHostname( const QString &host ) { m_hostname = host; }
         void setUsername( const QString &user ) { m_username = user; }
         void setPassword( const QString &pass ) { m_password = pass; }
+        void setImportArtwork( const bool import ) { m_importArtwork = import; }
 
         bool failed() const { return m_failed; }
         void abort() { m_aborted = true; }
@@ -60,6 +61,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         QString m_hostname;
         QString m_username;
         QString m_password;
+        bool m_importArtwork;
 };
 
 #endif // multiple inclusion guard
