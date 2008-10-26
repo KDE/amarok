@@ -78,6 +78,7 @@ class DatabaseImporter : public QObject
         void importFailed();
         void importSucceeded();
         void importError( QString );
+        void showMessage( QString );
         void trackAdded( Meta::TrackPtr );
 
     protected slots:

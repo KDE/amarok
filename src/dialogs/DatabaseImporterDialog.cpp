@@ -127,10 +127,11 @@ DatabaseImporterDialog::selectImporter()
 
     delete m_importer;
     m_importer = DatabaseImporterFactory::createImporter( name, this );
-    connect( m_importer, SIGNAL( importSucceeded() ), this, SLOT( importSucceeded() ), Qt::QueuedConnection );
-    connect( m_importer, SIGNAL( importFailed() ), this, SLOT( importFailed() ), Qt::QueuedConnection );
-    connect( m_importer, SIGNAL( trackAdded( Meta::TrackPtr ) ), this, SLOT( importedTrack( Meta::TrackPtr ) ), Qt::QueuedConnection );
-    connect( m_importer, SIGNAL( importError( QString ) ), this, SLOT( importError( QString ) ), Qt::QueuedConnection );
+    connect( m_importer, SIGNAL( importSucceeded() ), this, SLOT( importSucceeded() ) );
+    connect( m_importer, SIGNAL( importFailed() ), this, SLOT( importFailed() ) );
+    connect( m_importer, SIGNAL( trackAdded( Meta::TrackPtr ) ), this, SLOT( importedTrack( Meta::TrackPtr ) ) );
+    connect( m_importer, SIGNAL( importError( QString ) ), this, SLOT( importError( QString ) ) );
+    connect( m_importer, SIGNAL( message( QString ) ), this, SLOT( showMessage( QString ) ) );
 
     delete m_importerConfig;
     m_importerConfig = m_importer->configWidget( m_configBox );
