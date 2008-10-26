@@ -106,7 +106,7 @@ CurrentEngine::stoppedState()
 {
     DEBUG_BLOCK
     m_timer->stop();
-    setData( "current", "notrack", "No track playing" );
+    setData( "current", "notrack", i18n( "No track playing") );
     removeAllData( "albums" );
     m_currentArtist = 0;
 
