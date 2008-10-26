@@ -16,7 +16,6 @@
 
 #include "Debug.h"
 
-#include <QCheckBox>
 #include <QComboBox>
 #include <QCompleter>
 #include <QDirModel>

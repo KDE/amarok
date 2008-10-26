@@ -17,9 +17,9 @@
 
 #include "databaseimporter/DatabaseImporter.h"
 
+#include <QCheckBox>
 #include <QLineEdit>
 
-class QCheckBox;
 class QComboBox;
 class QLabel;
 
@@ -37,6 +37,7 @@ class FastForwardImporterConfig : public DatabaseImporterConfig
         QString databaseHost() const { return m_hostnameInput->text(); }
         QString databaseUser() const { return m_usernameInput->text(); }
         QString databasePass() const { return m_passwordInput->text(); }
+        bool importArtwork() const { return m_importArtworkCheck->checkState() == Qt::Checked; }
 
     private slots:
         void connectionChanged( int index );
