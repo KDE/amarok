@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.0-beta3
   FEATURES:
+    * More intelligent sorting of items in the collection browser, using
+      locale aware sorting and natural sorting for numbers. Patch by Nicholas
+      Wilson <nicholas@nickcwilson.co.uk>. (BR 154408)
     * The playlist automatically scrolls when dragging tracks. (BR 171622)
     * Import statistics from Amarok 1.4.
     * Double clicking items in the Albums applet appends to playlist.
