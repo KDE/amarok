@@ -48,22 +48,22 @@ void
 SqlCollectionFactory::init()
 {
     Collection* collection;
-/*    switch( CollectionDB::instance()->getDbConnectionType() )
+    /*  
+    switch( CollectionDB::instance()->getDbConnectionType() )
     {
         case DbConnection::sqlite :
             collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
             break;
-//fix this later
         case DbConnection::mysql :
             collection = new MySqlCollection( "localCollection", i18n( "Local Collection" ) );
             break;
         default :
             collection = new SqlCollection( "localCollection", i18n( "Local Collection" ) );
             break;
-    }*/
-// uncomment next to test MySQLe (and comment the next to next)
+    }
+    */
+
     collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
-//    collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
     emit newCollection( collection );
 }
 
