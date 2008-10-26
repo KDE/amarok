@@ -75,6 +75,8 @@ FastForwardImporter::import()
              this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
     connect( m_worker, SIGNAL( done(ThreadWeaver::Job*) ), 
              this, SLOT( finishUp() ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL( showMessage( QString ) ),
+             this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
 
     ThreadWeaver::Weaver::instance()->enqueue( m_worker );
 }

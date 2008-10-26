@@ -153,7 +153,7 @@ FastForwardWorker::run()
     if( m_importArtwork )
     {
         QString message = i18n( "Importing downloaded album art" );
-        emit sendMessage( message );
+        emit showMessage( message );
 
         // FIXME: determining the old cover art directory is a major hack, I admit.
         // What's the best way of doing this?
