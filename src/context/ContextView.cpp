@@ -118,8 +118,8 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     if( amarokContainment )
     {
         amarokContainment->setView( this );
-        amarokContainment->setTitle( "Page #1" ); //FIXME i18n()
-        amarokContainment->setFooter( "1" ); //FIXME i18n()
+        amarokContainment->setTitle( i18n( "Page #1" ) );
+        amarokContainment->setFooter( "1" );
         amarokContainment->addCurrentTrack();
     }
 
@@ -563,8 +563,8 @@ ContextView::addContainment( const QVariantList& args )
         if( amarokContainment )
         {
             amarokContainment->setView( this );
-            amarokContainment->setTitle( QString( "Page #%1" ).arg( size + 1 ) ); //FIXME i18n()
-            amarokContainment->setFooter( QString( "%1" ).arg( size + 1 ) ); //FIXME i18n()
+            amarokContainment->setTitle( i18n( "Page #%1", size + 1 ) );
+            amarokContainment->setFooter( QString::number( size + 1 ) );
         }
     }
 }
