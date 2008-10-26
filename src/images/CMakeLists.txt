@@ -7,13 +7,6 @@ install(
         FILES
         FilenameLayoutDialogHint.png
         amarok_icon.svg
-        back_stars_grey.png
-        currenttrack_pause.png
-        currenttrack_play.png
-        currenttrack_repeat.png
-        currenttrack_repeat_small.png
-        currenttrack_stop.png
-        currenttrack_stop_small.png
         default-theme.svg
         emblem-default.png
         emblem-jamendo.png
@@ -22,20 +15,12 @@ install(
         emblem-mp3tunes.png
         emblem-ampache.png
         emblem-scripted.png
-        icons/svg/sources.svgz
         lastfm-default-cover.png
         loading1.png
         loading2.png
-        menu_sidepixmap.png
-        more_albums.png
-        musicbrainz.png
         navigation_arrows.svg
         nocover.png
         pud_items.svg
-        sbinner_stars.png
-        service_info_frontpage_bg.png
-        service_info_frontpage_logo.png
-        service_info_frontpage_shadow.png
         shadow_albumcover.png
         smallstar.png
         splash_screen.jpg
