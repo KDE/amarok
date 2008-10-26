@@ -30,9 +30,6 @@
 /* have TagLib */
 #define HAVE_TAGLIB 1
 
-/* have TunePimp */
-/* #undef HAVE_TUNEPIMP */
-
 /* MySql database support enabled */
 #cmakedefine USE_MYSQL 1
 

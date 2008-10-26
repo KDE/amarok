@@ -451,13 +451,11 @@ set(amaroklib_LIB_SRCS
     dialogs/ScriptManager.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
-    dialogs/trackpickerdialog.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/MyDirLister.cpp
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
-    ktrm.cpp
     medium.cpp
     MountPointManager.cpp
     PaletteHandler.cpp
@@ -501,7 +499,6 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/tagdialogbase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/PodcastSettingsBase.ui
-    dialogs/trackpickerdialogbase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 

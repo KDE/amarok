@@ -23,7 +23,6 @@
 #include <config-amarok.h>
 
 #include "amarok_export.h"
-#include "ktrm.h"
 #include "playlist/PlaylistItem.h"
 
 #include "meta/Meta.h"
@@ -81,11 +80,7 @@ class AMAROK_EXPORT TagDialog : public KDialog
 
         void loadCover();
 
-        void musicbrainzQuery();
         void guessFromFilename();
-        void queryDone( KTRMResultList results, QString error );
-        void fillSelected( KTRMResult selected );
-        void resetMusicbrainz();
 
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
@@ -140,7 +135,6 @@ class AMAROK_EXPORT TagDialog : public KDialog
         QMap<Meta::TrackPtr, QString> storedLyrics;
         QMap<Meta::TrackPtr, QStringList> newLabels;
         QMap<Meta::TrackPtr, QStringList> originalLabels;
-        QString m_buttonMbText;
         QString m_path;
         QString m_currentCover;
         QStringList m_labels;
@@ -148,7 +142,6 @@ class AMAROK_EXPORT TagDialog : public KDialog
         QStringList m_removedLabels;
         QString m_commaSeparatedLabels;
         KHTMLPart *m_labelCloud;
-        //HTMLView *m_labelCloud;
 
         //2.0 stuff
         Meta::TrackList m_tracks;

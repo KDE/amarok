@@ -35,7 +35,6 @@
 #include "QueryMaker.h"
 #include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
-#include "trackpickerdialog.h"
 #include "ui_tagdialogbase.h"
 #include "UpdateCapability.h"
 
@@ -469,86 +468,6 @@ TagDialog::guessFromFilename() //SLOT
     delete dialog;
 }
 
-void
-TagDialog::musicbrainzQuery() //SLOT
-{
-#ifdef HAVE_TUNEPIMP
-    kDebug() ;
-
-    m_mbTrack = m_currentTrack->playableUrl();
-    KTRMLookup* ktrm = new KTRMLookup( m_mbTrack.path(), true );
-    connect( ktrm, SIGNAL( sigResult( KTRMResultList, QString ) ), SLOT( queryDone( KTRMResultList, QString ) ) );
-    connect( ui->pushButton_cancel, SIGNAL( clicked() ), ktrm, SLOT( deleteLater() ) );
-
-    ui->pushButton_musicbrainz->setEnabled( false );
-    ui->pushButton_musicbrainz->setText( i18n( "Generating audio fingerprint..." ) );
-    QApplication::setOverrideCursor( Qt::BusyCursor );
-#endif
-}
-
-void
-TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
-{
-#ifdef HAVE_TUNEPIMP
-
-    if ( !error.isEmpty() ) {
-        KMessageBox::sorry( this, i18n( "Tunepimp (MusicBrainz tagging library) returned the following error: \"%1\".", error) );
-    }
-    else {
-        if ( !results.isEmpty() )
-        {
-            TrackPickerDialog* t = new TrackPickerDialog( m_mbTrack.fileName(), results, this );
-            t->show();
-            connect( t, SIGNAL( finished() ), SLOT( resetMusicbrainz() ) ); // clear m_mbTrack
-        }
-        else {
-            KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
-            resetMusicbrainz(); // clear m_mbTrack
-        }
-    }
-
-    QApplication::restoreOverrideCursor();
-    ui->pushButton_musicbrainz->setEnabled( true );
-    ui->pushButton_musicbrainz->setText( m_buttonMbText );
-#else
-    Q_UNUSED( results );
-    Q_UNUSED( error );
-#endif
-}
-
-void
-TagDialog::fillSelected( KTRMResult selected ) //SLOT
-{
-#ifdef HAVE_TUNEPIMP
-    if ( m_bundle.url() == m_mbTrack ) {
-        if ( !selected.title().isEmpty() )    kLineEdit_title->setText( selected.title() );
-        if ( !selected.artist().isEmpty() )   ui->kComboBox_artist->setCurrentText( selected.artist() );
-        if ( !selected.album().isEmpty() )    ui->kComboBox_album->setCurrentText( selected.album() );
-        if ( selected.track() != 0 )          ui->qSpinBox_track->setValue( selected.track() );
-        if ( selected.year() != 0 )           ui->qSpinBox_year->setValue( selected.year() );
-    } else {
-        MetaBundle mb;
-        mb.setPath( m_mbTrack.path() );
-        if ( !selected.title().isEmpty() )    mb.setTitle( selected.title() );
-        if ( !selected.artist().isEmpty() )   mb.setArtist( selected.artist() );
-        if ( !selected.album().isEmpty() )    mb.setAlbum( selected.album() );
-        if ( selected.track() != 0 )          mb.setTrack( selected.track() );
-        if ( selected.year() != 0 )           mb.setYear( selected.year() );
-
-        storedTags.replace( m_mbTrack.path(), mb );
-    }
-#else
-    Q_UNUSED(selected);
-#endif
-}
-
-void TagDialog::resetMusicbrainz() //SLOT
-{
-#ifdef HAVE_TUNEPIMP
-    m_mbTrack = "";
-#endif
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 ////////////////////////////////////////////////////////////////////////////////
@@ -627,9 +546,6 @@ void TagDialog::init()
     connect( ui->kTextEdit_selectedLabels, SIGNAL(textChanged()),                SLOT(checkModified()) );
     connect( ui->qSpinBox_discNumber, SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
 
-    // Remember original button text
-    m_buttonMbText = ui->pushButton_musicbrainz->text();
-
     connect( ui->pushButton_cancel,   SIGNAL(clicked()), SLOT(cancelPressed()) );
     connect( ui->pushButton_ok,       SIGNAL(clicked()), SLOT(accept()) );
     connect( ui->pushButton_open,     SIGNAL(clicked()), SLOT(openPressed()) );
@@ -647,13 +563,6 @@ void TagDialog::init()
 //     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
 //              this, SLOT( loadCover( const QString&, const QString& ) ) );
 
-
-
-#ifdef HAVE_TUNEPIMP
-    connect( ui->pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
-#else
-    ui->pushButton_musicbrainz->setToolTip( i18n("Please install MusicBrainz to enable this functionality") );
-#endif
 
     connect( ui->pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );
 
@@ -913,15 +822,9 @@ void TagDialog::readTags()
     m_labelCloud->view()->setEnabled( editable );
 
     if( local )
-    {
-        ui->pushButton_musicbrainz->show();
         ui->pushButton_guessTags->show();
-    }
     else
-    {
-       ui->pushButton_musicbrainz->hide();
        ui->pushButton_guessTags->hide();
-    }
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
     if ( local )
@@ -932,14 +835,6 @@ void TagDialog::readTags()
     ui->pushButton_ok->setEnabled( storedTags.count() > 0 || storedScores.count() > 0
                               || storedLyrics.count() > 0 || storedRatings.count() > 0
                               || newLabels.count() > 0 );
-
-#ifdef HAVE_TUNEPIMP
-
-    // Don't enable button if a query is in progress already (or if the file isn't local)
-    ui->pushButton_musicbrainz->setEnabled( m_bundle.url().isLocalFile() && m_mbTrack.isEmpty() );
-#else
-    ui->pushButton_musicbrainz->setEnabled( false );
-#endif
 
     //PORT 2.0
 //     if( m_playlistItem ) {
@@ -971,7 +866,6 @@ TagDialog::setMultipleTracksMode()
     ui->kLineEdit_title->setEnabled( false );
     ui->qSpinBox_track->setEnabled( false );
 
-    ui->pushButton_musicbrainz->hide();
     ui->pushButton_guessTags->hide();
 
     ui->locationLabel->hide();
@@ -990,7 +884,6 @@ TagDialog::setSingleTrackMode()
     ui->kLineEdit_title->setEnabled( true );
     ui->qSpinBox_track->setEnabled( true );
 
-    ui->pushButton_musicbrainz->show();
     ui->pushButton_guessTags->show();
 
     ui->locationLabel->show();
