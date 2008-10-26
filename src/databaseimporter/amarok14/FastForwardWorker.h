@@ -46,6 +46,7 @@ class FastForwardWorker : public ThreadWeaver::Job
 
     signals:
         void importError( QString ); 
+        void sendMessage( QString );
         void trackAdded( Meta::TrackPtr );
 
     private:
