@@ -190,8 +190,7 @@ SqlCollection::trackForUrl( const KUrl &url )
 {
     if( url.protocol() == uidUrlProtocol() )
         return m_registry->getTrackFromUid( url.url() );
-    else
-        return m_registry->getTrack( url.path() );
+    return m_registry->getTrack( url.path() );
 }
 
 CollectionLocation*
