@@ -38,8 +38,7 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 
     protected:
         virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-
-
+        virtual bool lessThanString( const QString &a, const QString &b ) const;
 };
 
 #endif

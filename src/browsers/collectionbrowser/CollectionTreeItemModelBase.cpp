@@ -424,9 +424,9 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         d->m_childQueries.insert( qm, parent );
         qm->run();
 
-       //start animation
-       if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
-           m_timeLine->start();
+        //start animation
+        if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
+            m_timeLine->start();
     }
 }
 
