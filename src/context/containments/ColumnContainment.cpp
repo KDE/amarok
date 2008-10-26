@@ -83,6 +83,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     m_footer = new QGraphicsSimpleTextItem( this );
     m_footer->setBrush( palette().brush( QPalette::Disabled, QPalette::Text ) );
     QFont footerFont = m_footer->font();
+    footerFont.setPointSize( footerFont.pointSize() + 2 );
     footerFont.setWeight( 99 ); // Weight is on a scale from 0 (superlight) to 99 (superdark)
     m_footer->setFont( footerFont );
 
@@ -429,10 +430,15 @@ ColumnContainment::hasPlaceForApplet( int rowSpan )
 }
 
 void
-ColumnContainment::setTitle( QString title )
+ColumnContainment::setTitle( const QString& text )
 {
-    m_title->setText( title );
-    m_footer->setText( title );
+    m_title->setText( text );
+}
+
+void
+ColumnContainment::setFooter( const QString& text )
+{
+    m_footer->setText( text );
 }
 
 void
@@ -444,7 +450,6 @@ ColumnContainment::showTitle()
     m_title->setPos( offSetX , offSetY );
     m_title->show();
 }
-
 
 void
 ColumnContainment::showAddAppletsMenu()

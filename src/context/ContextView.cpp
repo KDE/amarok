@@ -118,7 +118,8 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     if( amarokContainment )
     {
         amarokContainment->setView( this );
-        amarokContainment->setTitle( "Context #1" );
+        amarokContainment->setTitle( "Context #1" ); //FIXME i18n()
+        amarokContainment->setFooter( "1" ); //FIXME i18n()
         amarokContainment->addCurrentTrack();
     }
 
@@ -562,7 +563,8 @@ ContextView::addContainment( const QVariantList& args )
         if( amarokContainment )
         {
             amarokContainment->setView( this );
-            amarokContainment->setTitle( QString( "Context #%1" ).arg( size + 1 ) );
+            amarokContainment->setTitle( QString( "Context #%1" ).arg( size + 1 ) ); //FIXME i18n()
+            amarokContainment->setFooter( QString( "%1" ).arg( size + 1 ) ); //FIXME i18n()
         }
     }
 }

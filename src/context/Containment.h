@@ -43,7 +43,8 @@ public:
 
     virtual bool hasPlaceForApplet( int rowSpan ) = 0;
 
-    virtual void setTitle( QString title ) = 0;
+    virtual void setTitle( const QString& text ) = 0;
+    virtual void setFooter( const QString& text ) = 0;
     virtual void showTitle() = 0;
     virtual void hideTitle() = 0;
     virtual void addCurrentTrack() = 0;
