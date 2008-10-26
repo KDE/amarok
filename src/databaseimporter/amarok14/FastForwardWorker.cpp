@@ -76,8 +76,12 @@ FastForwardWorker::run()
     }
 
     QString sql;
-    sql += "SELECT lastmountpoint, url, createdate, accessdate, percentage, rating, playcounter FROM statistics S, devices D where S.deviceid = D.id ";
-    sql += "ORDER BY lastmountpoint, url";
+    sql += "SELECT lastmountpoint, S.url, createdate, accessdate, percentage, rating, playcounter, lyrics ";
+    sql += "FROM statistics S, devices D, lyrics L "
+    sql += "WHERE S.deviceid = D.id ";
+    sql += "  AND L.deviceid = S.deviceid ";
+    sql += "  AND L.url = S.url ";
+    sql += "ORDER BY lastmountpoint, S.url";
     QSqlQuery query = db.exec( sql );
 
     for( int c = 0; query.next(); c++ )
@@ -92,8 +96,9 @@ FastForwardWorker::run()
         uint firstPlayed = query.value( index++ ).toUInt();
         uint lastPlayed  = query.value( index++ ).toUInt();
         uint score       = query.value( index++ ).toInt();
-        int rating      = query.value( index++ ).toInt();
-        int playCount   = query.value( index++ ).toInt();
+        int rating       = query.value( index++ ).toInt();
+        int playCount    = query.value( index++ ).toInt();
+        QString lyrics   = query.value( index++ ).toString();
         
         // make the url absolute
         url = mount + url.mid(1);
@@ -116,7 +121,8 @@ FastForwardWorker::run()
             ec->setPlayCount( playCount );
             ec->endStatisticsUpdate();
 
-            //TODO: import lyrics
+            if( !lyrics.isEmpty() )
+                track->setCachedLyrics( lyrics );
         }
         // We need to create a new track and have it inserted, if the URL exists
         else
