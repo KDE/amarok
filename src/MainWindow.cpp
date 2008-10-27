@@ -1093,6 +1093,7 @@ QRect MainWindow::contextRectGlobal()
 void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState )
+    DEBUG_BLOCK
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     //track is 0 if the engien state is Empty. we check that in the switch
@@ -1103,12 +1104,14 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
         break;
 
     case Phonon::PlayingState:
-        if ( track && !track->prettyName().isEmpty() ) {
+        if( track ) {
             unsubscribeFrom( m_currentTrack );
             m_currentTrack = track;
             subscribeTo( track );
-            setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
+            metadataChanged( track );
         }
+        else
+            warning() << "currentTrack is 0. Can't subscribe to it!";
         break;
 
     case Phonon::PausedState:
