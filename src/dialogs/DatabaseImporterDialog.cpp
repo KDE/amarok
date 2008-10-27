@@ -176,9 +176,11 @@ DatabaseImporterDialog::importedTrack( Meta::TrackPtr track )
 
     QString text;
     if( !track->album() || track->album()->name().isEmpty() )
-        text = i18n( "Imported <b>%1 - %2</b>", track->artist()->name(), track->name() );
+        text = i18nc( "Track has been imported, format: Artist - Track", 
+                      "Imported <b>%1 - %2</b>", track->artist()->name(), track->name() );
     else
-        text = i18n( "Imported <b>%1 - %2 (%3)</b>", track->artist()->name(), track->name(), track->album()->name() );
+        text = i18nc( "Track has been imported, format: Artist - Track (Album)", 
+                      "Imported <b>%1 - %2 (%3)</b>", track->artist()->name(), track->name(), track->album()->name() );
     m_results->appendHtml( text );
 }
 
