@@ -18,6 +18,7 @@
 #include "FilenameLayoutWidget.h"
 #include "Debug.h"
 
+#include <KColorScheme>
 // Token::Token( QWidget *parent )
 //     :QFrame( parent )
 // {
@@ -42,12 +43,13 @@ Token::Token( const QString &string, QWidget *parent )
     //Token( parent );
     setString( string );
     m_label->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
+    unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
     setStyleSheet( "Token {\
         color: palette( Base );\
-        border: 2px solid blue;\
+        border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
         border-radius: 4px;\
         padding: 2px;\
-    }" );
+    }" );       //I use QString::remove(int start, int n) to remove the A channel from ARGB - first two characters
 /*
         background-color: qlineargradient( x1: 0,\
                                            y1: 0,\
