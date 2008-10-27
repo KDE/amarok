@@ -20,6 +20,7 @@
 
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "MainWindow.h"
 #include "MountPointManager.h"
 #include "amarokconfig.h"
 
@@ -60,6 +61,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), this );
     connect( m_rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
+
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Collection" ), this );
+    connect( import, SIGNAL( clicked() ), The::mainWindow(), SLOT( importCollection() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );

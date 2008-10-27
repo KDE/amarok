@@ -93,6 +93,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         void showHide();
         void loveTrack();
         void playAudioCD();
+        void importCollection();
 
     protected:
         //Reimplemented from EngineObserver
@@ -117,7 +118,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         void toolsMenuAboutToShow();
         void slotToggleFocus();
         void slotSetFilter( const QString &filter );
-        void importCollection();
 
     protected:
         virtual void closeEvent( QCloseEvent* );
