@@ -21,7 +21,7 @@
 
 AlbumItem::AlbumItem()
     : QStandardItem()
-    , m_iconSize( 50 )
+    , m_iconSize( 40 )
     , m_showArtist( false )
 {
     setEditable( false );
@@ -41,7 +41,7 @@ AlbumItem::setAlbum( Meta::AlbumPtr albumPtr )
 void
 AlbumItem::setIconSize( const int iconSize )
 {
-    static const int padding = 10;
+    static const int padding = 5;
 
     m_iconSize = iconSize;
 
