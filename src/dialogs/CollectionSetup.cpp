@@ -59,8 +59,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     connect( m_view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
 
-    m_rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), this );
-    connect( m_rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), this );
+    connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
     KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Collection" ), this );
     connect( import, SIGNAL( clicked() ), The::mainWindow(), SLOT( importCollection() ) );
