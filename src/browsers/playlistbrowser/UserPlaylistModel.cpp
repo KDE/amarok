@@ -96,7 +96,7 @@ QModelIndex
 PlaylistBrowserNS::UserModel::createIndex( int row, int column, SqlPlaylistViewItemPtr item ) const
 {
     quint32 index = qHash( item.data() );
-    bool debugIt = true;
+    bool debugIt = false;
     if( m_viewItems.contains( index ) )
         debugIt = false;
     else

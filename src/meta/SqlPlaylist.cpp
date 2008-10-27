@@ -52,7 +52,7 @@ SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr par
 
     //loadTracks();
 
-    debug() << m_name << " created with pointer " << this << " and parent " << this->parent();
+    //debug() << m_name << " created with pointer " << this << " and parent " << this->parent();
 }
 
 
