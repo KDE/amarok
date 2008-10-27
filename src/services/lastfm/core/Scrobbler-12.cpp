@@ -862,7 +862,7 @@ ScrobblerPostRequest::request()
 void
 ScrobblerPostRequest::request( const QByteArray& data )
 {
-    Q_DEBUG_BLOCK << "[id:" << m_id << ']' << data;
+    //Q_DEBUG_BLOCK << "[id:" << m_id << ']' << data;
 
     m_data = data;
     request();
