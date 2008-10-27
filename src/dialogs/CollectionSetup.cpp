@@ -59,10 +59,12 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     connect( m_view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), this );
+    KHBox* buttonBox = new KHBox( this );
+
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Rescan Collection" ), buttonBox );
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Collection" ), this );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Collection" ), buttonBox );
     connect( import, SIGNAL( clicked() ), The::mainWindow(), SLOT( importCollection() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
