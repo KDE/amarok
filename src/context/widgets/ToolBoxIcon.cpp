@@ -31,7 +31,7 @@ static const float TOOLBOX_OPACITY = 0.6;
 ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     : Plasma::Icon( parent )
     , m_hovering( 0 )
-    , m_animHighlightFrame( TOOLBOX_OPACITY )
+    , m_animOpacity( TOOLBOX_OPACITY )
     , m_animHighlightId( 0 )
 {
     m_text = new QGraphicsSimpleTextItem( this );
@@ -101,7 +101,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
         painter->setBrush( color );
         painter->setRenderHint( QPainter::Antialiasing );                        
-        painter->setOpacity( m_animHighlightFrame );
+        painter->setOpacity( m_animOpacity );
         painter->setPen( QPen( Qt::gray, 1 ) );
         painter->drawPath( shape() );
         painter->restore();
@@ -152,9 +152,9 @@ void
 ToolBoxIcon::animateHighlight( qreal progress )
 {
     if( m_hovering )
-        m_animHighlightFrame = TOOLBOX_OPACITY + ( progress / 2 );
+        m_animOpacity = TOOLBOX_OPACITY + ( ( 1.0 - TOOLBOX_OPACITY ) * progress );
     else
-        m_animHighlightFrame = 1.0 - ( progress / 2 );
+        m_animOpacity = 1.0 - ( ( 1.0 - TOOLBOX_OPACITY ) * progress );
 
     if( progress >= 1.0 )
         m_animHighlightId = 0;

@@ -63,7 +63,7 @@ private slots:
 private:
     bool m_hovering;
 
-    qreal m_animHighlightFrame;
+    qreal m_animOpacity;
     int m_animHighlightId;
 
     QGraphicsSimpleTextItem *m_text;
