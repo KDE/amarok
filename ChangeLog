@@ -58,6 +58,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Files moved or organized into themselves are no longer deleted.
+      (BR 173341)
     * Fix playlist scrollbar graphical errors with some styles. Patch by Huynh
       Huu Long <long.upcase@googlemail.com>. (BR 173547)
     * DBus MPRIS call GetMetadata returns the location field. (BR 173324)
@@ -103,7 +105,6 @@ VERSION 2.0-beta3
       (BR 170613)
     * Playlist overhaul fixes a couple of bugs. (BR 167861) (BR 171048)
     * Search queries with ' and \ now work fine. (BR 173330)
-    * Prevents files moved or organized into themselves from vanishing. (BR 173341)
 
 
 VERSION 2.0-beta2
