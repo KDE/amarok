@@ -98,7 +98,6 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         
         QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,
                                Plasma::Theme::defaultTheme()->colorScheme() ).background().color();
-        color.setAlpha( 255 );
 
         painter->setBrush( color );
         painter->setRenderHint( QPainter::Antialiasing );                        
