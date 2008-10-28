@@ -103,6 +103,7 @@ VERSION 2.0-beta3
       (BR 170613)
     * Playlist overhaul fixes a couple of bugs. (BR 167861) (BR 171048)
     * Search queries with ' and \ now work fine. (BR 173330)
+    * Prevents files moved or organized into themselves from vanishing. (BR 173341)
 
 
 VERSION 2.0-beta2
