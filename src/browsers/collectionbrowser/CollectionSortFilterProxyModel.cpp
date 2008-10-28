@@ -79,8 +79,8 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
     }
 
     // This should catch everything else
-    QVariant leftData = left.data();
-    QVariant rightData = right.data();
+    QVariant leftData = left.data( CustomRoles::SortRole );
+    QVariant rightData = right.data( CustomRoles::SortRole );
     if( leftData.canConvert( QVariant::String ) && rightData.canConvert( QVariant::String ) )
         return lessThanString( leftData.toString().toLower(), rightData.toString().toLower() );
    
