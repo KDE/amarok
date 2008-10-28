@@ -54,7 +54,7 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
         
     protected:
         virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
-        virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
+        virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
         
     private slots:
         /**

@@ -50,7 +50,7 @@ TrackWidget::hide()
 }
 
 void
-TrackWidget::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
+TrackWidget::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
     Q_UNUSED( event )
     The::playlistController()->insertOptioned( m_track, Playlist::Append );
