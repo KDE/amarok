@@ -1095,6 +1095,8 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
     Q_UNUSED( oldState )
     DEBUG_BLOCK
 
+    debug() << "Phonon state: " << state;
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     //track is 0 if the engien state is Empty. we check that in the switch
     switch( state )
