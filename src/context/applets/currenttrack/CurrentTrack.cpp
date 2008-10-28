@@ -250,8 +250,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         m_tracksToShow = qMin( m_tracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
         for( int i = 0; i < m_tracksToShow; i++ )
         {
-            m_lastTracks[i]->setPos( margin, textHeight * 1.2 * i + m_noTrack->boundingRect().height() + 10 );
             m_lastTracks[i]->resize( contentsRect().width() - margin * 2, textHeight * 1.2 );
+            m_lastTracks[i]->setPos( ( rect().width() - m_lastTracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + m_noTrack->boundingRect().height() + 10 );
         }
     }        
     else if( !m_noTrackText.isEmpty() )
