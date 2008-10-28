@@ -77,7 +77,7 @@ TrackWidget::setTrack( Meta::TrackPtr track )
 
     QString playedLast =  Amarok::verboseTimeSince( track->lastPlayed() );
     QFontMetricsF fm( textFont );
-    QString fullText( track->artist()->prettyName() + " - " + track->prettyName() + " ( " + playedLast + " ) " );
+    QString fullText( i18n( "%1 - %2 ( %3 )", track->artist()->prettyName(), track->prettyName(), playedLast ) );
     setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
 
 }
