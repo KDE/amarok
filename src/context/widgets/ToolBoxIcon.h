@@ -40,6 +40,13 @@ public:
 
     QRectF boundingRect() const;
 
+    /**
+     * reimplemented from Plasma::Icon
+     */
+    void setText( const QString &text );
+
+    QString text() const;
+    
 protected:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event );

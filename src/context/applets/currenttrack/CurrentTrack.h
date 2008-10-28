@@ -18,6 +18,8 @@
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 #include "context/Svg.h"
+#include <context/widgets/TrackWidget.h>
+#include <meta/Meta.h>
 
 #include <QAction>
 #include <QList>
@@ -31,6 +33,7 @@ class QSpinBox;
 
 namespace Plasma { class DataEngine; }
 
+static const int MAX_PLAYED_TRACKS = 5;
 
 class CurrentTrack : public Context::Applet
 {
@@ -103,6 +106,10 @@ private:
 
     //keep this safe as we might need it when resizing
     QVariantMap m_currentInfo;
+
+    TrackWidget *m_lastTracks[MAX_PLAYED_TRACKS];
+    Meta::TrackList m_tracks;
+    int m_tracksToShow;
 
 };
 

@@ -106,6 +106,7 @@ CurrentEngine::stoppedState()
 {
     DEBUG_BLOCK
     m_timer->stop();
+    removeAllData( "current" );
     setData( "current", "notrack", i18n( "No track playing") );
     removeAllData( "albums" );
     m_currentArtist = 0;
@@ -123,9 +124,25 @@ CurrentEngine::stoppedState()
     
     connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
             SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-    connect( m_qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    connect( m_qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
     
     m_qm->run();
+
+
+    // Get the latest tracks played
+
+    m_qmTracks = coll->queryMaker();
+    m_qmTracks->setQueryType( QueryMaker::Track );
+    m_qmTracks->excludeFilter( Meta::valTitle, QString(), true, true );
+    m_qmTracks->orderBy( Meta::valLastPlayed, true );
+    m_qmTracks->limitMaxResultSize( 5 );
+    
+    m_latestTracks.clear();
+
+    connect( m_qmTracks, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+             SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( m_qmTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
+    m_qmTracks->run();
 }
 
 void CurrentEngine::metadataChanged( Meta::AlbumPtr album )
@@ -219,7 +236,7 @@ void CurrentEngine::update()
 
             connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
                     SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-            connect( m_qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+            connect( m_qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
             m_qm->run();
 
         }
@@ -240,11 +257,13 @@ CurrentEngine::setupAlbumsData()
     setData( "albums", "albums", v );
 }
 
-
 void
-CurrentEngine::queryDone()
+CurrentEngine::setupTracksData()
 {
-    setupAlbumsData();
+    DEBUG_BLOCK
+    QVariant v;
+    v.setValue( m_latestTracks );
+    setData( "current", "tracks", v );
 }
 
 void
@@ -254,6 +273,15 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &
     Q_UNUSED( collectionId )
     m_albums.clear();
     m_albums << albums;
+}
+
+void
+CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( collectionId )
+    m_latestTracks.clear();
+    m_latestTracks << tracks;
 }
 
 

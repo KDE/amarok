@@ -236,6 +236,7 @@ set( libcontextview_SRCS
     context/widgets/ContainmentArrow.cpp
     context/widgets/ContainmentSelectionLayer.cpp
     context/widgets/ToolBoxMenu.cpp
+    context/widgets/TrackWidget.cpp
 )
 
 #####################################################################

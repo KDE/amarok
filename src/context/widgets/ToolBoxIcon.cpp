@@ -41,6 +41,7 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     
     m_text->setFont( font );
     m_text->setBrush( Qt::white );
+    m_text->show();
 }
 
 ToolBoxIcon::~ToolBoxIcon()
@@ -84,8 +85,8 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     if( Plasma::Icon::drawBackground() )
     {
         if( m_text->text() == QString() )
-            m_text->setText( Plasma::Icon::text() );
-
+            m_text->setText( text() );
+        
         QFontMetricsF fm( m_text->font() );
         m_text->setPos( PADDING, size().height() / 2 - fm.boundingRect( m_text->text() ).height() / 2 );
     
@@ -109,8 +110,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         QPainterPath innerRect( Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 2.5, 2.5 ), innerRectSize ), 8 ) );
         painter->drawPath( innerRect );
         painter->restore();
-        
-        m_text->show();        
+                
     }
     else
         Plasma::Icon::paint( painter, option, widget );
@@ -172,6 +172,20 @@ ToolBoxIcon::shape() const
 
     return Plasma::Icon::shape();
 }
+
+void
+ToolBoxIcon::setText( const QString &text )
+{
+    m_text->setText( text );
+    update();
+}
+
+QString
+ToolBoxIcon::text() const
+{
+    return m_text->text();
+}
+
 
 #include "ToolBoxIcon.moc"
 

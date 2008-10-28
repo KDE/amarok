@@ -69,8 +69,7 @@ protected:
     bool sourceRequested( const QString& name );
 
 private:
-    void update();
-    void setupAlbumsData();
+    void update();    
     
     int m_coverWidth;
     QStringList m_sources;
@@ -79,12 +78,16 @@ private:
     QTimer *m_timer;
     
     QueryMaker *m_qm;
+    QueryMaker *m_qmTracks;
     Meta::AlbumList m_albums;
     Meta::ArtistPtr m_currentArtist;
+    Meta::TrackList m_latestTracks;
     
 private slots:
-    void queryDone();
     void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
+    void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+    void setupAlbumsData();
+    void setupTracksData();
     void stoppedState();    
     
 };
