@@ -38,11 +38,6 @@ class FileCollectionLocation : public CollectionLocation
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
         virtual bool remove( const Meta::TrackPtr &track );
-
-    private:
-        bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
-        QStringList m_ignoredDestinations;  //these tracks were not copied/moved because source and destination url were the same
-        QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;    //used in the source when organizing the collection
 };
 
 #endif

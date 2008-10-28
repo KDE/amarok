@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,17 +55,11 @@ class SqlCollectionLocation : public CollectionLocation
         void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
         QMap<QString, uint> updatedMtime( const QStringList &urls );
         void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );
-        //called by the destination location if it detects that we are organizing the collection
-        //because the source does not need to remove the files, that was done by the destination
-        void movedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
 
         SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
-        bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
         bool m_overwriteFiles;
         QSet<KJob*> m_jobs;
-        QStringList m_ignoredDestinations;  //these tracks were not copied/moved because source and destination url were the same
-        QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;    //used in the source when organizing the collection
 };
 
 #endif

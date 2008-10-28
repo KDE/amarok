@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +26,8 @@ CollectionLocation::CollectionLocation()
     , m_destination( 0 )
     , m_source( 0 )
     , m_sourceTracks()
-    , m_removeSources( false )
     , m_parentCollection( 0 )
+    , m_removeSources( false )
 {
     //nothing to do
 }
@@ -36,8 +37,8 @@ CollectionLocation::CollectionLocation( const Collection* parentCollection)
     , m_destination( 0 )
     , m_source( 0 )
     , m_sourceTracks()
-    , m_removeSources( false )
     , m_parentCollection( parentCollection )
+    , m_removeSources( false )
 {
     //nothing to do
 }
@@ -343,5 +344,31 @@ CollectionLocation::setSource( CollectionLocation *source )
 {
     m_source = source;
 }
+bool
+CollectionLocation::movedByDestination( const Meta::TrackPtr &track ) const
+{
+    return m_tracksRemovedByDestination.contains( track ) && m_tracksRemovedByDestination[ track ];
+}
+bool
+CollectionLocation::consideredByDestination( const Meta::TrackPtr &track ) const
+{
+    return m_tracksRemovedByDestination.contains( track );
+}
+void
+CollectionLocation::setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase )
+{
+    m_tracksRemovedByDestination.insert( track, removeFromDatabase );
+}
+bool
+CollectionLocation::isGoingToRemoveSources() const
+{
+    return m_removeSources;
+}
+void
+CollectionLocation::setGoingToRemoveSources( bool removeSources )
+{
+    m_removeSources = removeSources;
+}
+    
 
 #include "CollectionLocation.moc"

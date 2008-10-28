@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2008 Casey Link <unnamedrambler@gmail.com>
+ *  Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +28,6 @@
 
 FileCollectionLocation::FileCollectionLocation() 
     : CollectionLocation()
-    , m_removeSources( false )
 {
     //nothing to do
 }
@@ -57,15 +57,15 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
     if( !track )
         return false;
     bool removed;
-    if( m_tracksRemovedByDestination.contains( track ) )
-    {
-        removed = true;
-    }
-    else
+    if( !consideredByDestination( track ) )
     {
         removed = QFile::remove( track->playableUrl().path() );
     }
-    if( removed ) 
+    else
+    {
+        removed = movedByDestination( track );
+    }
+    if( removed )
     {
         QFileInfo file( track->playableUrl().path() );
         QDir dir = file.dir();

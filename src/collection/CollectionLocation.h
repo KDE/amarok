@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -148,6 +149,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          */
         virtual bool remove( const Meta::TrackPtr &track );
 
+        
+        /**
+        * Sets or gets which files the source will potentially need to remove
+        */
+        virtual bool movedByDestination( const Meta::TrackPtr &track ) const;
+        virtual bool consideredByDestination( const Meta::TrackPtr &track ) const;
+        virtual void setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
+
     signals:
         void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
         void finishCopy();
@@ -196,6 +205,12 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          */
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
 
+        /**
+        * Sets or gets whether some source files may be removed
+        */
+        virtual bool isGoingToRemoveSources() const;
+        virtual void setGoingToRemoveSources( bool removeSources );
+
     protected slots:
         /**
          * this slot has to be called from getKIOCopyableUrls( Meta::TrackList )
@@ -229,10 +244,10 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         CollectionLocation *m_source;
         Meta::TrackList m_sourceTracks;
 
-        //used in both locations to remember whether to remove the sources
-        bool m_removeSources;
-
         const Collection* m_parentCollection;
+        
+        bool m_removeSources;
+        QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;
 };
 
 #endif
