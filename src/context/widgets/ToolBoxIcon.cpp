@@ -26,7 +26,7 @@
 #define PADDING 15
 
 
-static const float TOOLBOX_OPACITY = 0.6;
+static const float TOOLBOX_OPACITY = 0.4;
 
 ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     : Plasma::Icon( parent )
