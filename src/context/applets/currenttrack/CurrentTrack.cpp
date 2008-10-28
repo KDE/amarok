@@ -69,7 +69,6 @@ void CurrentTrack::init()
     labelFont.setPointSize( labelFont.pointSize() + 1  );
 
     m_ratingWidget = new RatingWidget( this );
-    m_ratingWidget->hide();
     m_ratingWidget->setSpacing( 2 );
 
     connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
@@ -261,9 +260,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
                        size().toSize().height() / 2  - 30 );
     }
-    else
-        m_ratingWidget->show();
-
 
     m_ratingWidget->setMinimumSize( contentsRect().width() / 5, textHeight );
     m_ratingWidget->setMaximumSize( contentsRect().width() / 5, textHeight );
