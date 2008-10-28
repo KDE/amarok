@@ -25,15 +25,18 @@
 
 #define PADDING 15
 
+
+static const float TOOLBOX_OPACITY = 0.6;
+
 ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     : Plasma::Icon( parent )
     , m_hovering( 0 )
-    , m_animHighlightFrame( 0.6 )
+    , m_animHighlightFrame( TOOLBOX_OPACITY )
     , m_animHighlightId( 0 )
 {
     m_text = new QGraphicsSimpleTextItem( this );
+
     QFont font;
-    
     font.setBold( true );
     font.setStyleHint( QFont::Times );
     font.setPointSize( font.pointSize() - 2 );
@@ -72,6 +75,7 @@ void
 ToolBoxIcon::mousePressed( bool pressed )
 {
     DEBUG_BLOCK
+    
     if( pressed && data( 0 ) != QVariant() )
     {
         debug() << data( 0 ).toString();
@@ -84,10 +88,10 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 {
     if( Plasma::Icon::drawBackground() )
     {
-        if( m_text->text() == QString() )
+        if( m_text->text().isEmpty() )
             m_text->setText( text() );
         
-        QFontMetricsF fm( m_text->font() );
+        const QFontMetricsF fm( m_text->font() );
         m_text->setPos( PADDING, size().height() / 2 - fm.boundingRect( m_text->text() ).height() / 2 );
     
         painter->save();
@@ -99,7 +103,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         painter->setBrush( color );
         painter->setRenderHint( QPainter::Antialiasing );                        
         painter->setOpacity( m_animHighlightFrame );
-        painter->setPen( QPen( Qt::gray, 1) );
+        painter->setPen( QPen( Qt::gray, 1 ) );
         painter->drawPath( shape() );
         painter->restore();
 
@@ -110,7 +114,6 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         QPainterPath innerRect( Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 2.5, 2.5 ), innerRectSize ), 8 ) );
         painter->drawPath( innerRect );
         painter->restore();
-                
     }
     else
         Plasma::Icon::paint( painter, option, widget );
@@ -150,7 +153,7 @@ void
 ToolBoxIcon::animateHighlight( qreal progress )
 {
     if( m_hovering )
-        m_animHighlightFrame = 0.6 + ( progress / 2 );
+        m_animHighlightFrame = TOOLBOX_OPACITY + ( progress / 2 );
     else
         m_animHighlightFrame = 1.0 - ( progress / 2 );
 
