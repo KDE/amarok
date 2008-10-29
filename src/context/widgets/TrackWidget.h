@@ -12,7 +12,6 @@
 *                                                                              *
 ********************************************************************************/
 
-
 #ifndef TRACK_WIDGET_H
 #define TRACK_WIDGET_H
 
@@ -32,7 +31,9 @@
 class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
 {
     Q_OBJECT
+
     static const int PADDING = 15;
+
     public:
         TrackWidget( QGraphicsItem *parent = 0 );
         ~TrackWidget();

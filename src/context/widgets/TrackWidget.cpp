@@ -12,22 +12,25 @@
 *                                                                              *
 ********************************************************************************/
 
+#include "TrackWidget.h"
+
 #include "Amarok.h"
 #include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "playlist/PlaylistController.h"
-#include "TrackWidget.h"
 
 #include <QFont>
 #include <QFontMetricsF>
 
+
 TrackWidget::TrackWidget( QGraphicsItem *parent )
     : ToolBoxIcon( parent )
     , m_track( 0 )
+    , m_rating( new RatingWidget( this ) )
 {
     setDrawBackground( true );
-    m_rating = new RatingWidget( this );
     m_rating->setSpacing( 2 );
+
     connect( m_rating, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
 }
 
@@ -61,8 +64,10 @@ TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 {
     m_rating->setMinimumSize( contentsRect().width() / 5, contentsRect().height() - PADDING );
     m_rating->setMaximumSize( contentsRect().width() / 5, contentsRect().height() - PADDING );
+
     m_rating->setPos( contentsRect().width() - PADDING - m_rating->size().width(),
-                            contentsRect().height() / 2 - m_rating->size().height() / 2 - 2 );
+                      contentsRect().height() / 2 - m_rating->size().height() / 2 - 2 );
+
     ToolBoxIcon::paint( painter, option, widget );
 }
 
@@ -70,18 +75,16 @@ void
 TrackWidget::setTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
+
     m_track = track;
     m_rating->setRating( track->rating() );
-    const QFont textFont;
-    setFont( textFont );
 
-    QString playedLast =  Amarok::verboseTimeSince( track->lastPlayed() );
-    QFontMetricsF fm( textFont );
-    QString fullText( i18n( "%1 - %2 ( %3 )", track->artist()->prettyName(), track->prettyName(), playedLast ) );
+    const QString playedLast =  Amarok::verboseTimeSince( track->lastPlayed() );
+    const QString fullText( i18n( "%1 - %2 ( %3 )", track->artist()->prettyName(), track->prettyName(), playedLast ) );
+    const QFontMetricsF fm( font() );
+
     setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
-
 }
-
 
 void
 TrackWidget::show()
@@ -89,11 +92,13 @@ TrackWidget::show()
     // As a consequence of the hide() HACK now we have to re-set the text to display.
     if( m_track )
     {
-        QString playedLast =  Amarok::verboseTimeSince( m_track->lastPlayed() );
-        QFontMetricsF fm( font() );
-        QString fullText( m_track->artist()->prettyName() + " - " + m_track->prettyName() + " ( " + playedLast + " ) " );
+        const QString playedLast =  Amarok::verboseTimeSince( m_track->lastPlayed() );
+        const QString fullText( m_track->artist()->prettyName() + " - " + m_track->prettyName() + " ( " + playedLast + " ) " );
+        const QFontMetricsF fm( font() );
+
         setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
     }
+
     ToolBoxIcon::show();
 }
 
@@ -104,3 +109,4 @@ TrackWidget::track() const
 }
 
 #include "TrackWidget.moc"
+
