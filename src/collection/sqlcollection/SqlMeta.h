@@ -243,6 +243,7 @@ class SqlAlbum : public Meta::Album
         virtual bool hasImage( int size = 1 ) const;
         virtual bool canUpdateImage() const { return true; }
         virtual QPixmap image( int size = 1 );
+        virtual QString imageLocation( int size = 1 );
         virtual void setImage( const QImage &image );
         virtual void removeImage();
 

@@ -1123,6 +1123,22 @@ SqlAlbum::image( int size )
     return Meta::Album::image( size );
 }
 
+QString
+SqlAlbum::imageLocation( int size )
+{
+    // If we already have the location, return it
+    if( m_images.contains( size ) )
+        return m_images.value( size );
+
+    // If we don't have the location, it's possible that we haven't tried to find the image yet
+    // So, let's look for it and just ignore the result
+    QPixmap i = image( size );
+    if( m_images.contains( size ) )
+        return m_images.value( size );
+    
+    return QString();
+}
+
 void
 SqlAlbum::setImage( const QImage &image )
 {
