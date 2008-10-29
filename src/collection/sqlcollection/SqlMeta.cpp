@@ -1123,7 +1123,7 @@ SqlAlbum::image( int size )
     return Meta::Album::image( size );
 }
 
-QString
+KUrl
 SqlAlbum::imageLocation( int size )
 {
     // If we already have the location, return it
@@ -1134,9 +1134,9 @@ SqlAlbum::imageLocation( int size )
     // So, let's look for it and just ignore the result
     QPixmap i = image( size );
     if( m_images.contains( size ) )
-        return m_images.value( size );
+        return KUrl( m_images.value( size ) );
     
-    return QString();
+    return KUrl();
 }
 
 void

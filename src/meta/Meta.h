@@ -299,7 +299,7 @@ namespace Meta
             /** returns the cover of the album */
             virtual QPixmap image( int size = 1 );
             /** returns the image location on disk */
-            virtual QString imageLocation( int size = 1 ) { Q_UNUSED( size ); return QString(); }
+            virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl(); }
             /** returns the cover of the album with a nice border around it*/
             virtual QPixmap imageWithBorder( int size = 1, int borderWidth = 5 );
             /** Returns true if it is possible to update the cover of the album */

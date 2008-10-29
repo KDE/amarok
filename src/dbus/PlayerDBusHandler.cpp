@@ -244,7 +244,7 @@ namespace Amarok
                 map["year"] = track->year()->name();
 
             if( track->album() )
-                map["arturl"] = track->album()->imageLocation();
+                map["arturl"] = track->album()->imageLocation().url();
 
             //TODO: external service meta info
 
