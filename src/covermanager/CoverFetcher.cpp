@@ -446,6 +446,8 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
     else
         //image loaded successfully yay!
         finish();
+
+    The::statusBar()->endProgressOperation( job ); //just to be safe...
 }
 
 
