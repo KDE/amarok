@@ -24,7 +24,6 @@
 #include "amarokconfig.h"
 #include "collection/Collection.h"
 #include "CollectionManager.h"
-#include "BrowserToolBar.h"
 #include "Debug.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
