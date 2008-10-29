@@ -170,6 +170,6 @@ private slots:
     void updateTotalPlaylistLength();
 };
 
-Q_DECLARE_METATYPE( StatusBar::MessageType );
+Q_DECLARE_METATYPE( StatusBar::MessageType )
 
 #endif
