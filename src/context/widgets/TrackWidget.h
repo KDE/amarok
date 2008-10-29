@@ -1,6 +1,5 @@
 /*******************************************************************************
 * copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
-* copyright              : (C) 2008 Mark Kretschmann <kretschmann@kde.org>     *
 *                                                                              *
 ********************************************************************************/
 
@@ -46,6 +45,8 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
         * @param track The track pointer to associate this widget with.
         */
         void setTrack( Meta::TrackPtr track );
+        
+        void show();
         
         /**
         * @return the track associated with this widget.

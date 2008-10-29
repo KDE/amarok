@@ -1,6 +1,5 @@
 /*******************************************************************************
 * copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
-* copyright              : (C) 2008 Mark Kretschmann <kretschmann@kde.org>     *
 *                                                                              *
 ********************************************************************************/
 
@@ -69,16 +68,6 @@ TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     m_rating->setPos( contentsRect().width() - PADDING - m_rating->size().width(),
                       contentsRect().height() / 2 - m_rating->size().height() / 2 - 2 );
 
-    // As a consequence of the hide() HACK now we have to re-set the text to display.
-    if( m_track )
-    {
-        const QString playedLast = Amarok::verboseTimeSince( m_track->lastPlayed() );
-        const QString fullText( i18n( "%1 - %2 ( %3 )", m_track->artist()->prettyName(), m_track->prettyName(), playedLast ) );
-        const QFontMetricsF fm( font() );
-
-        setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
-    }
-
     ToolBoxIcon::paint( painter, option, widget );
 }
 
@@ -89,6 +78,22 @@ TrackWidget::setTrack( Meta::TrackPtr track )
 
     m_track = track;
     m_rating->setRating( track->rating() );
+}
+
+void
+TrackWidget::show()
+{
+    // As a consequence of the hide() HACK now we have to re-set the text to display.
+    if( m_track )
+    {
+        const QString playedLast = Amarok::verboseTimeSince( m_track->lastPlayed() );
+        const QString fullText( i18n( "%1 - %2 ( %3 )", m_track->artist()->prettyName(), m_track->prettyName(), playedLast ) );
+        const QFontMetricsF fm( font() );
+
+        setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
+    }
+
+    ToolBoxIcon::show();
 }
 
 Meta::TrackPtr
