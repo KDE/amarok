@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=get-hot-new-stuff-amarok
+Icon=view-services-librivox-amarok
 Type=script
 ServiceTypes=KPluginInfo
 
