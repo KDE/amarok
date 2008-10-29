@@ -34,12 +34,11 @@ PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
     , m_isDragging( false )
     , m_pixmap( pixmap )
 {
-    resize( m_pixmap.width(), m_pixmap.height() );
-
     QLabel *imageLabel = new QLabel();
     imageLabel->setBackgroundRole( QPalette::Base );
     imageLabel->setScaledContents( true );
     imageLabel->setPixmap( pixmap );
+    imageLabel->adjustSize();
 
     setBackgroundRole( QPalette::Dark );
     setWidget( imageLabel );
@@ -76,7 +75,7 @@ void PixmapViewer::mouseMoveEvent(QMouseEvent *event)
 
 QSize PixmapViewer::sizeHint() const
 {
-    return size().boundedTo( KApplication::desktop()->size() ) + QSize( 3, 3 ) /* buffer zone */;
+    return QScrollArea::sizeHint().boundedTo( KApplication::desktop()->size() );
 }
 
 #include "PixmapViewer.moc"

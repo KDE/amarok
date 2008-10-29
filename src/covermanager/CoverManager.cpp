@@ -348,7 +348,6 @@ void CoverManager::init()
 CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     : QDialog( parent, Qt::Window )
 {
-    m_pixmap = album->image( 0 ); // full sized image
     setAttribute( Qt::WA_DeleteOnClose );
 
 #ifdef Q_WS_X11
@@ -360,11 +359,10 @@ CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
                     album->albumArtist()? album->albumArtist()->prettyName() : i18n( "Various Artists" ),
                     album->prettyName() ) ) );
 
-    m_pixmapViewer = new PixmapViewer( this, m_pixmap );
-
-    m_layout = new QHBoxLayout( this );
-    m_layout->addWidget( m_pixmapViewer );
-    m_layout->setSizeConstraint( QLayout::SetFixedSize );
+    PixmapViewer *pixmapViewer = new PixmapViewer( this, album->image( 0 ) /* full sized image */ );
+    QHBoxLayout *layout = new QHBoxLayout( this );
+    layout->addWidget( pixmapViewer );
+    layout->setSizeConstraint( QLayout::SetFixedSize );
 }
 
 

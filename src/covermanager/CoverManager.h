@@ -42,7 +42,6 @@ class CoverView;
 class KHBox;
 class QProgressBar;
 class QHBoxLayout;
-class PixmapViewer;
 class QColorGroup;
 class QProgressDialog;
 
@@ -210,12 +209,6 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
 
     public:
         CoverViewDialog(Meta::AlbumPtr album, QWidget *parent);
-
-    private:
-        QHBoxLayout *m_layout;
-        QPixmap m_pixmap;
-        PixmapViewer *m_pixmapViewer;
-        QLabel *m_label;
 };
 
 #endif

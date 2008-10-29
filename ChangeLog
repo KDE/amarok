@@ -58,6 +58,7 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Full size cover dialog no longer scrolls needlessly.
     * Files moved or organized into themselves are no longer deleted.
       (BR 173341)
     * Fix playlist scrollbar graphical errors with some styles. Patch by Huynh
