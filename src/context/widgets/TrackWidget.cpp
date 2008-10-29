@@ -78,12 +78,6 @@ TrackWidget::setTrack( Meta::TrackPtr track )
 
     m_track = track;
     m_rating->setRating( track->rating() );
-
-    const QString playedLast =  Amarok::verboseTimeSince( track->lastPlayed() );
-    const QString fullText( i18n( "%1 - %2 ( %3 )", track->artist()->prettyName(), track->prettyName(), playedLast ) );
-    const QFontMetricsF fm( font() );
-
-    setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
 }
 
 void
@@ -92,8 +86,8 @@ TrackWidget::show()
     // As a consequence of the hide() HACK now we have to re-set the text to display.
     if( m_track )
     {
-        const QString playedLast =  Amarok::verboseTimeSince( m_track->lastPlayed() );
-        const QString fullText( m_track->artist()->prettyName() + " - " + m_track->prettyName() + " ( " + playedLast + " ) " );
+        const QString playedLast = Amarok::verboseTimeSince( m_track->lastPlayed() );
+        const QString fullText( i18n( "%1 - %2 ( %3 )", m_track->artist()->prettyName(), m_track->prettyName(), playedLast ) );
         const QFontMetricsF fm( font() );
 
         setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
