@@ -1,5 +1,6 @@
 /*******************************************************************************
 * copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
+* copyright              : (C) 2008 Mark Kretschmann <kretschmann@kde.org>     *
 *                                                                              *
 ********************************************************************************/
 
@@ -68,21 +69,6 @@ TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     m_rating->setPos( contentsRect().width() - PADDING - m_rating->size().width(),
                       contentsRect().height() / 2 - m_rating->size().height() / 2 - 2 );
 
-    ToolBoxIcon::paint( painter, option, widget );
-}
-
-void
-TrackWidget::setTrack( Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-
-    m_track = track;
-    m_rating->setRating( track->rating() );
-}
-
-void
-TrackWidget::show()
-{
     // As a consequence of the hide() HACK now we have to re-set the text to display.
     if( m_track )
     {
@@ -93,7 +79,16 @@ TrackWidget::show()
         setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - m_rating->size().width() - PADDING ) );
     }
 
-    ToolBoxIcon::show();
+    ToolBoxIcon::paint( painter, option, widget );
+}
+
+void
+TrackWidget::setTrack( Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+
+    m_track = track;
+    m_rating->setRating( track->rating() );
 }
 
 Meta::TrackPtr
