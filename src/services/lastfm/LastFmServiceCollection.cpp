@@ -144,7 +144,7 @@ void LastFmServiceCollection::slotAddNeighboursLoved( WsReply* reply )
     foreach( CoreDomElement e, reply->lfm()[ "neighbours" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
-        debug() << "got neighbour!!! - " << name;
+        //debug() << "got neighbour!!! - " << name;
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
         Meta::TrackPtr trackPtr( track );
         m_neighborsLoved->addTrack( trackPtr );
@@ -159,7 +159,7 @@ void LastFmServiceCollection::slotAddNeighboursPersonal( WsReply* reply )
     foreach( CoreDomElement e, reply->lfm()[ "neighbours" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
-        debug() << "got neighbour!!! - " << name;
+        //debug() << "got neighbour!!! - " << name;
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_neighborsPersonal->addTrack( trackPtr );
@@ -174,7 +174,7 @@ void LastFmServiceCollection::slotAddFriendsLoved( WsReply* reply )
     foreach( CoreDomElement e, reply->lfm()[ "friends" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
-        debug() << "got friend!!! - " << name;
+        //debug() << "got friend!!! - " << name;
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
         Meta::TrackPtr trackPtr( track );
         m_friendsLoved->addTrack( trackPtr );
@@ -189,7 +189,7 @@ void LastFmServiceCollection::slotAddFriendsPersonal( WsReply* reply )
     foreach( CoreDomElement e, reply->lfm()[ "friends" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
-        debug() << "got neighbour!!! - " << name;
+        //debug() << "got neighbour!!! - " << name;
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_friendsPersonal->addTrack( trackPtr );

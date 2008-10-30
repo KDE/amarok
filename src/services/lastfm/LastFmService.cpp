@@ -95,11 +95,11 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     Q_UNUSED( fetchSimilar ); // TODO implement..
     
     // set the global static Lastfm::Ws stuff
-    //Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
-    //Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
+    Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     // testing w/ official keys
-    Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
-    Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
+    //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
+    //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     Ws::Username = qstrdup( m_userName.toLatin1().data() );
     
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
