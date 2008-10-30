@@ -65,8 +65,8 @@ public:
         LastFmRadio,
         Player,
         MediaDevice,
-		NonPersonalisedBroadcast, // eg Shoutcast, BBC Radio 1, etc.
-		PersonalisedRecommendation, // eg Pandora, but not Last.fm
+        NonPersonalisedBroadcast, // eg Shoutcast, BBC Radio 1, etc.
+        PersonalisedRecommendation // eg Pandora, but not Last.fm
     };
 
     Track();
@@ -185,6 +185,6 @@ inline QDebug operator<<( QDebug d, const Track& t )
 
 
 #include <QMetaType>
-Q_DECLARE_METATYPE( Track );
+Q_DECLARE_METATYPE( Track )
 
 #endif

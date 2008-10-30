@@ -149,6 +149,6 @@ inline QDebug operator<<( QDebug d, Phonon::State s )
 #undef CASE
 
 
-Q_DECLARE_METATYPE( Radio::State );
+Q_DECLARE_METATYPE( Radio::State )
 
 #endif //RADIO_H

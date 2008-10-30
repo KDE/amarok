@@ -56,7 +56,7 @@
 #else
 	class WsNetEventAdapter : public QObject
 	{
-		Q_OBJECT;
+		Q_OBJECT
 
 	public:
 		WsNetEventAdapter(QObject *parent)
