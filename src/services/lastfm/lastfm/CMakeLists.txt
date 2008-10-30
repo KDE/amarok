@@ -45,7 +45,6 @@ set( amarok_service_liblastfm_SRCS
         core/QMessageBoxBuilder.cpp
         core/UniqueApplication.cpp
         radio/Playlist.cpp
-        radio/Radio.cpp
         radio/Tuner.cpp
         scrobble/NowPlaying.cpp
         scrobble/ScrobbleCache.cpp

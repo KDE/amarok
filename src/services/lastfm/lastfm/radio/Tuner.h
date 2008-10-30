@@ -25,43 +25,61 @@
 #include <lastfm/types/Track.h>
 #include <lastfm/ws/WsError.h>
 #include <QList>
+class QNetworkAccessManager;
 
+
+namespace lastfm {
+namespace legacy {
 
 class LASTFM_RADIO_DLLEXPORT Tuner : public QObject
 {
 	Q_OBJECT
 	
 public:
-	/** you need to have assigned Ws::* for this to work, creating the tuner
+	/** You need to have assigned Ws::* for this to work, creating the tuner
 	  * automatically fetches the first 5 tracks for the station */
-    explicit Tuner( const RadioStation& );
+    explicit Tuner( const RadioStation&, const QString& password_md5 );
 
 	QString stationName() const { return m_stationName; }
 	
 public slots:
-    /** will emit 5 tracks from tracks(), they have to played within an hour
-	  * or the streamer will refuse to stream them */
+    /** Will emit 5 tracks from tracks(), they have to played within an hour
+	  * or the streamer will refuse to stream them. Also the previous five are
+      * invalidated apart from the one that is currently playing, so sorry, you
+      * can't build up big lists of tracks.
+      *
+      * I feel I must point out that asking the user which one they want to play
+      * is also not allowed according to our terms and conditions, which you
+      * already agreed to in order to get your API key. Sorry about that dude. 
+      */
     void fetchFiveMoreTracks();
 
 signals:
 	void stationName( const QString& );
 	void tracks( const QList<Track>& );
 	
-	/** we handle Ws::TryAgain up to 5 times, don't try again after that!
+	/** We handle Ws::TryAgain up to 5 times, don't try again after that!
 	  * Just tell the user to try again later */
 	void error( Ws::Error );
 
 private slots:
-	void onTuneReturn( WsReply* );
-	void onGetPlaylistReturn( WsReply* );
+	void onHandshakeReturn();
+    void onAdjustReturn();
+	void onGetPlaylistReturn();
 
 private:
-	/** tries again up to 5 times 
+	/** Tries again up to 5 times
 	  * @returns true if we tried again, otherwise you should emit error */
 	bool tryAgain();
-	
-	QString m_stationName;
+
+    QNetworkAccessManager* m_nam;
 	uint m_retry_counter;
+    QString m_stationUrl;
+	QString m_stationName;
+    QByteArray m_session;
 };
+
+} //namespace legacy
+} //namespace lastfm
 
 #endif

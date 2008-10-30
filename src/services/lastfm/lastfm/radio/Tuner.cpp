@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright 2005-2008 Last.fm Ltd                                       *
+ *   Copyright 2005-2008 Last.fm Ltd.                                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,56 +18,117 @@
  ***************************************************************************/
 
 #include "Tuner.h"
-#include "Playlist.h"
-#include <QBuffer>
-#include <QDebug>
-#include "../ws/WsRequestBuilder.h"
-#include "../ws/WsReply.h"
-#include <QtXml>
+#include "lastfm/core/CoreDomElement.h"
+#include "lastfm/core/CoreLocale.h"
+#include "lastfm/core/CoreSettings.h"
+#include "lastfm/ws/WsAccessManager.h"
+#include <QCoreApplication>
+#include <QtNetwork>
+
+namespace lastfm {
+namespace legacy {
 
 
-//TODO discovery mode
-//TODO skips left
-//TODO multiple locations for the same track
-//TODO set rtp flag in getPlaylist (whether user is scrobbling this radio session or not)
+Tuner::Tuner( const RadioStation& station, const QString& password_md5 )
+     : m_nam( new WsAccessManager( this ) ),
+       m_retry_counter( 0 ),
+       m_stationUrl( station.url() )
+{   
+#ifdef WIN32
+    static const char *PLATFORM = "win32";
+#elif defined Q_WS_X11
+    static const char *PLATFORM = "linux";
+#elif defined Q_WS_MAC
+    static const char *PLATFORM = "mac";
+#else
+    static const char *PLATFORM = "unknown";
+#endif
 
+    QUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/radio/handshake.php" );
+    url.addQueryItem( "version", QCoreApplication::applicationVersion() );
+    url.addQueryItem( "platform", PLATFORM );
+    url.addQueryItem( "username", Ws::Username );
+    url.addQueryItem( "passwordmd5", password_md5 );
+    url.addQueryItem( "language", CoreSettings().locale().code() );
 
-Tuner::Tuner( const RadioStation& station )
-     : m_retry_counter( 0 )
-{
-    qDebug() << "radio.tune:" << station.url();
+    QNetworkRequest request( url );
+    QNetworkReply* reply = m_nam->get( request );
+    connect( reply, SIGNAL(finished()), SLOT(onHandshakeReturn()) );
+}
+
     
-    WsReply* reply = WsRequestBuilder( "radio.tune" )
-			.add( "station", station.url() )
-			.post();
-	connect( reply, SIGNAL(finished( WsReply* )), SLOT(onTuneReturn( WsReply* )) );
+static QByteArray replyParameter( const QByteArray& data, const QByteArray& key )
+{
+    foreach (QByteArray key_value_pair, data.split( '\n' ))
+    {
+        QList<QByteArray> pair = key_value_pair.split( '=' );
+        if (pair.value( 0 ) == key)
+            return pair.value( 1 );
+    }
+
+    return "";
+}
+    
+
+void
+Tuner::onHandshakeReturn()
+{
+    QNetworkReply* reply = (QNetworkReply*)sender();
+    reply->deleteLater();
+    
+    QByteArray data = reply->readAll();
+    qDebug() << data;
+
+    m_session = replyParameter( data, "session" );
+    
+    QUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/radio/adjust.php" );
+    url.addEncodedQueryItem( "session", m_session );
+    url.addQueryItem( "url", m_stationUrl );
+    url.addQueryItem( "lang", CoreSettings().locale().code() );
+
+    qDebug() << url;
+    
+    QNetworkRequest request( url );
+    reply = m_nam->get( request );
+    connect( reply, SIGNAL(finished()), SLOT(onAdjustReturn()) );
 }
 
 
 void
-Tuner::onTuneReturn( WsReply* reply )
+Tuner::onAdjustReturn()
 {
-	if (reply->error() != Ws::NoError) {
-		emit error( reply->error() );
-		return;
-	}
+    QNetworkReply* reply = (QNetworkReply*)sender();
+    QByteArray data = reply->readAll();
+    qDebug() << data;
+    
+    m_stationName = QString::fromUtf8( replyParameter( data, "stationname" ) );
+    emit stationName( m_stationName );
+    
+    fetchFiveMoreTracks();
 
-	try {
-		m_stationName = reply->lfm()["station"]["name"].text();
-		emit stationName( m_stationName );
-	}
-	catch (CoreException&)
-	{}
-	
-	fetchFiveMoreTracks();
+    reply->deleteLater();
 }
 
 
 void
 Tuner::fetchFiveMoreTracks()
 {
-    WsReply* reply = WsRequestBuilder( "radio.getPlaylist" ).add( "rtp", "1" ).get();
-	connect( reply, SIGNAL(finished( WsReply* )), SLOT(onGetPlaylistReturn( WsReply* )) );
+    QUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/radio/xspf.php" );
+    url.addQueryItem( "sk", m_session );
+    url.addQueryItem( "desktop", "1.5.3" );
+    
+    QNetworkRequest request( url );
+    QNetworkReply* reply = m_nam->get( request );
+    connect( reply, SIGNAL(finished()), SLOT(onGetPlaylistReturn()) );
 }
 
 
@@ -81,39 +142,90 @@ Tuner::tryAgain()
 }
 
 
-void
-Tuner::onGetPlaylistReturn( WsReply* reply )
+class Xspf
 {
-	switch (reply->error())
-	{
-		case Ws::NoError:
-			break;
+    QList<Track> m_tracks;
+    QString m_title;
+    
+public:
+    Xspf( const QDomElement& playlist_node )
+    {
+        try
+        {
+            CoreDomElement e( playlist_node );
+            
+            m_title = e["title"].text();
+            
+            //FIXME should we use UnicornUtils::urlDecode()?
+            //The title is url encoded, has + instead of space characters 
+            //and has a + at the begining. So it needs cleaning up:
+            m_title.replace( '+', ' ' );
+            m_title = QUrl::fromPercentEncoding( m_title.toAscii());
+            m_title = m_title.trimmed();
+            
+            foreach (CoreDomElement e, e[ "trackList" ].children( "track" ))
+            {
+                MutableTrack t;
+                try
+                {
+                    //TODO we don't want to throw an exception for any of these really,
+                    //TODO only if we couldn't get any, but even then so what
+                    t.setUrl( e[ "location" ].text() ); //location first due to exception throwing
+                    t.setExtra( "trackauth", e[ "lastfm:trackauth" ].text() );
+                    t.setTitle( e[ "title" ].text() );
+                    t.setArtist( e[ "creator" ].text() );
+                    t.setAlbum( e[ "album" ].text() );
+                    t.setDuration( e[ "duration" ].text().toInt() / 1000 );
+                    t.setSource( Track::LastFmRadio );
+                }
+                catch (CoreDomElement::Exception& exception)
+                {
+                    qWarning() << exception << e;
+                }
+                
+                m_tracks += t; // outside try-catch since location is enough basically
+            }
+        }
+        catch (CoreDomElement::Exception& e)
+        {
+            qWarning() << e;        
+        }
+    }
+    
+    QList<Track> tracks() const { return m_tracks; }
+};
+    
+    
+void
+Tuner::onGetPlaylistReturn()
+{
+    QNetworkReply* reply = (QNetworkReply*)sender();
+    reply->deleteLater();
 
-		case Ws::TryAgainLater:
-			if (!tryAgain())
-				emit error( Ws::TryAgainLater );
-			return;
+    QByteArray data = reply->readAll();
+    qDebug() << data;
 
-		default:
-			emit error( reply->error() );
-			return;
-	}
-			
-	Playlist p( reply );
+    QDomDocument xml;
+    xml.setContent( data );
 
-	if (p.tracks().isEmpty())
-	{
-		// sometimes the recs service craps out and gives us a blank playlist
-		
-		if (!tryAgain())
-		{
-			// an empty playlist is a bug, if there is no content
-			// NotEnoughContent should have been returned with the WsReply
-			emit error( Ws::MalformedResponse );
-		}
-	}
-	else {
-		m_retry_counter = 0;
-		emit tracks( p.tracks() );
-	}
+    Xspf xspf( xml.documentElement() );
+
+    if (xspf.tracks().isEmpty())
+    {
+        // sometimes the recs service craps out and gives us a blank playlist
+
+        if (!tryAgain())
+        {
+            // an empty playlist is a bug, if there is no content
+            // NotEnoughContent should have been returned with the WsReply
+            emit error( Ws::MalformedResponse );
+        }
+    }
+    else {
+        m_retry_counter = 0;
+        emit tracks( xspf.tracks() );
+    }
 }
+
+} //namespace legacy
+} //namespace lastfm
