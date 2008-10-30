@@ -156,6 +156,13 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool movedByDestination( const Meta::TrackPtr &track ) const;
         virtual bool consideredByDestination( const Meta::TrackPtr &track ) const;
         virtual void setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
+        
+        /**
+         * Inserts a set of TrackPtrs directly into the database without needing to actuall move any files
+         * This is a hack required by the DatabaseImporter
+         */
+        virtual void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap ) { Q_UNUSED( trackMap ); }
+        virtual void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap ) { Q_UNUSED( trackMap ); }
 
     signals:
         void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );

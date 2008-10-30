@@ -115,6 +115,12 @@ public:
     QVariantMap changes;
     void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( fileRef, changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
+ 
+    int score;
+    int rating;
+    uint lastPlayed;
+    uint firstPlayed;
+    int playCount;
 
 private:
     Track *track;
@@ -395,15 +401,11 @@ public:
     {
         if( d && d->tag )
         {
-            AMAROK_NOTIMPLEMENTED
             const QString composer = d->m_data.composer;
             if( !composer.isEmpty() )
                 return composer;
-            else
-                return i18nc( "The value is not known", "Unknown" );
         }
-        else
-            return i18nc( "The value is not known", "Unknown" );
+        return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const
@@ -434,11 +436,8 @@ public:
             const QString year = QString::number( d->m_data.year );
             if( !year.isEmpty()  )
                 return year;
-            else
-                return i18nc( "The value is not known", "Unknown" );
         }
-        else
-            return i18nc( "The value is not known", "Unknown" );
+        return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const

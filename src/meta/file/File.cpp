@@ -21,6 +21,7 @@
 
 #include "Meta.h"
 #include "meta/EditCapability.h"
+#include "meta/ImportCapability.h"
 #include "MetaUtility.h"
 
 #include <QPointer>
@@ -50,6 +51,27 @@ class EditCapabilityImpl : public Meta::EditCapability
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
         virtual void abortMetaDataUpdate() { m_track->abortMetaDataUpdate(); }
+
+    private:
+        KSharedPtr<MetaFile::Track> m_track;
+};
+
+class ImportCapabilityImpl : public Meta::ImportCapability
+{
+    public:
+        ImportCapabilityImpl( MetaFile::Track *track )
+            : Meta::ImportCapability()
+            , m_track( track )
+        {}
+
+        virtual void setScore( const int score ) { m_track->setScore( score ); }
+        virtual void setRating( const int rating ) { m_track->setRating( rating ); }
+        virtual void setFirstPlayed( const uint time ) { m_track->setFirstPlayed( time ); }
+        virtual void setLastPlayed( const uint time ) { m_track->setLastPlayed( time ); }
+        virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
+        virtual void beginStatisticsUpdate() {};
+        virtual void endStatisticsUpdate() {};
+        virtual void abortStatisticsUpdate() {};
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
@@ -225,7 +247,6 @@ Track::setGenre( const QString& newGenre )
 void
 Track::setComposer( const QString& newComposer )
 {
-    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( newComposer );
     #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) ).setValue( newComposer );
@@ -269,8 +290,6 @@ Track::comment() const
         const QString commentName = d->m_data.comment;
         if( !commentName.isEmpty() )
             return commentName;
-        else
-            return QString();
     }
     return QString();
 }
@@ -296,7 +315,7 @@ Track::score() const
 void
 Track::setScore( double newScore )
 {
-    Q_UNUSED( newScore )
+    d->score = newScore; 
 }
 
 int
@@ -308,7 +327,7 @@ Track::rating() const
 void
 Track::setRating( int newRating )
 {
-    Q_UNUSED( newRating )
+    d->rating = newRating;
 }
 
 int
@@ -346,7 +365,6 @@ Track::discNumber() const
 void
 Track::setDiscNumber( int newDiscNumber )
 {
-    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( newDiscNumber );
     #if 0
     d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) ).setValue( newDiscNumber );
@@ -406,13 +424,37 @@ Track::bitrate() const
 uint
 Track::lastPlayed() const
 {
-    return 0;
+    return d->lastPlayed;
+}
+
+void
+Track::setLastPlayed( uint newTime )
+{
+    d->lastPlayed = newTime;
+}
+
+uint
+Track::firstPlayed() const
+{
+    return d->firstPlayed;
+}
+
+void
+Track::setFirstPlayed( uint newTime )
+{
+    d->firstPlayed = newTime;
 }
 
 int
 Track::playCount() const
 {
-    return 0;
+    return d->playCount;
+}
+
+void
+Track::setPlayCount( int newCount )
+{
+    d->playCount = newCount;
 }
 
 QString
@@ -466,7 +508,7 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::Editable;
+    return type == Meta::Capability::Editable || type == Meta::Capability::Importable;
 }
 
 Meta::Capability*
@@ -477,6 +519,8 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::Editable:
             return new EditCapabilityImpl( this );
             break;
+        case Meta::Capability::Importable:
+            return new ImportCapabilityImpl( this );
         default:
             return 0;
     }

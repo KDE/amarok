@@ -41,6 +41,8 @@ class SqlCollectionLocation : public CollectionLocation
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
         virtual bool remove( const Meta::TrackPtr &track );
+        virtual void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
+        virtual void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );
 
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
@@ -52,9 +54,7 @@ class SqlCollectionLocation : public CollectionLocation
         void slotJobFinished( KJob *job );
 
     private:
-        void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
         QMap<QString, uint> updatedMtime( const QStringList &urls );
-        void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );
 
         SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;

@@ -17,6 +17,7 @@
 #include "CollectionManager.h"
 #include "CollectionLocation.h"
 #include "Debug.h"
+#include "collection/support/FileCollectionLocation.h"
 #include "ImportCapability.h"
 #include "meta/file/File.h"
 
@@ -25,6 +26,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QMap>
 #include <QSqlError>
 #include <QSqlQuery>
 
@@ -82,6 +84,7 @@ FastForwardWorker::run()
         return;
     }
 
+
     QString sql;
     sql += "SELECT lastmountpoint, S.url, createdate, accessdate, percentage, rating, playcounter, lyrics ";
     sql += "FROM statistics S ";
@@ -93,6 +96,9 @@ FastForwardWorker::run()
     sql += "ORDER BY lastmountpoint, S.url";
     QSqlQuery query = db.exec( sql );
 
+    QMap<Meta::TrackPtr,QString> tracksForInsert;
+
+    uint i = 0;
     for( int c = 0; query.next(); c++ )
     {
         if( m_aborted )
@@ -115,42 +121,43 @@ FastForwardWorker::run()
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
         if( track )
         {
+            Meta::ImportCapability *ec = track->as<Meta::ImportCapability>();
+            if( !ec )
+                continue;
+
+            ec->beginStatisticsUpdate();
+            ec->setScore( score );
+            ec->setRating( rating );
+            ec->setFirstPlayed( firstPlayed );
+            ec->setLastPlayed( lastPlayed );
+            ec->setPlayCount( playCount );
+            ec->endStatisticsUpdate();
+            
+            if( !lyrics.isEmpty() )
+                track->setCachedLyrics( lyrics );
+
             if( !track->inCollection() )
             {
-                 // It's a Meta::FileTrack hopefully
-                KSharedPtr<MetaFile::Track> fileTrack = KSharedPtr<MetaFile::Track>::dynamicCast( track );
-                if( !fileTrack )
-                    continue;
-
-                debug() << c << "  inserting track:" << fileTrack->playableUrl();
+                tracksForInsert.insert( track, track->playableUrl().url() );
+                debug() << c << " inserting track:" << track->playableUrl();
             }
             else
-            {
-                debug() << c << "  track already in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
+                debug() << c << "  track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
 
-                Meta::ImportCapability *ec = track->as<Meta::ImportCapability>();
-                if( !ec )
-                    continue;
-
-                ec->beginStatisticsUpdate();
-                ec->setScore( score );
-                ec->setRating( rating );
-                ec->setFirstPlayed( firstPlayed );
-                ec->setLastPlayed( lastPlayed );
-                ec->setPlayCount( playCount );
-                ec->endStatisticsUpdate();
-
-                debug() << c << "   --> updating track:" << track->playableUrl();
-
-                if( !lyrics.isEmpty() )
-                    track->setCachedLyrics( lyrics );
-            }
-            
             emit trackAdded( track );
+            ++i;
         }
     }
 
-    if( m_importArtwork )
+    if( tracksForInsert.size() > 0 )
+    {
+        debug() << "__inserting tracks__";
+        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        location->insertTracks( tracksForInsert );
+        location->insertStatistics( tracksForInsert );
+    }
+
+    if( false && m_importArtwork )
     {
         QString message = i18n( "Importing downloaded album art" );
         emit showMessage( message );
@@ -169,6 +176,9 @@ FastForwardWorker::run()
 
         foreach( QFileInfo image, oldCoverDir.entryInfoList() )
         {
+            if( m_aborted )
+                return;
+
             debug() << "image copy:" << image.fileName() << " : " << image.absoluteFilePath();
             QString newPath = newCoverDir.absoluteFilePath( image.fileName() );
 

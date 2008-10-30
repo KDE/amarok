@@ -77,7 +77,11 @@ namespace MetaFile
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual uint lastPlayed() const;
+            virtual void setLastPlayed( uint newTime );
+            virtual uint firstPlayed() const;
+            virtual void setFirstPlayed( uint newTime );
             virtual int playCount() const;
+            virtual void setPlayCount( int newCount );
 
             virtual QString type() const;
 
@@ -94,6 +98,7 @@ namespace MetaFile
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
             class Private;
+
         private:
             Private * const d;
     };
