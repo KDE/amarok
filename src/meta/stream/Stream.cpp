@@ -20,8 +20,9 @@
 #include "Stream_p.h"
 #include "Stream_p.moc"
 
-#include "default/DefaultMetaTypes.h"
+#include "Debug.h"
 #include "Meta.h"
+#include "default/DefaultMetaTypes.h"
 
 #include <QPointer>
 #include <QSet>
@@ -317,12 +318,18 @@ Track::collection() const
 void
 Track::subscribe( Meta::Observer *observer )
 {
+    DEBUG_BLOCK
+
+    debug() << "Adding observer: " << observer;
     d->observers.insert( observer );
 }
 
 void
 Track::unsubscribe( Meta::Observer *observer )
 {
+    DEBUG_BLOCK
+
+    debug() << "Removing observer: " << observer;
     d->observers.remove( observer );
 }
 
