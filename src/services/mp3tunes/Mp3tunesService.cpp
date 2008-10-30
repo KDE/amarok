@@ -144,7 +144,9 @@ void Mp3tunesService::polish()
 void Mp3tunesService::initTopPanel()
 {
     m_menubar->clear();
-    QMenu * actionsMenu = m_menubar->addMenu( i18n( "AutoSync" ) );
+    //Disable this menu bar until liblastfm is improved, and this feature can
+    //be implemented correctly.
+    /*QMenu * actionsMenu = m_menubar->addMenu( i18n( "AutoSync" ) );
     if( m_harmonyEnabled )
     {
         QAction * action = new QAction( i18n( "Disable AutoSync" ), m_menubar );
@@ -156,7 +158,7 @@ void Mp3tunesService::initTopPanel()
         actionsMenu->addAction( action );
     }
 
-    m_menubar->show();
+    m_menubar->show();*/
 }
 
 void Mp3tunesService::initBottomPanel()
