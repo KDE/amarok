@@ -154,8 +154,6 @@ MutableTrack::love()
 	return WsRequestBuilder( "track.love" )
 		.add( "artist", d->artist )
 		.add( "track", d->title )
-		.add( "api_key", QString( Ws::ApiKey ) )
-		.add( "sk", QString( Ws::SessionKey ) )
 		.post();
 }
 
