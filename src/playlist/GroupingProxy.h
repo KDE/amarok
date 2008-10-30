@@ -109,6 +109,16 @@ private:
     // grouping auxiliary functions -- deprecated, but used by GraphicsView
     int groupRowCount( int row ) const;
 
+    /**
+     * This function is used to determine if 2 tracks belong in the same group.
+     * The current implementation is a bit of a hack, but is what gives the best
+     * user experience. 
+     * @param track1 The first track
+     * @param track2 The second track
+     * @return true if track should be grouped together, false otherwise
+     */
+    bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
+
     Model* m_model;
 
     static GroupingProxy* s_instance;

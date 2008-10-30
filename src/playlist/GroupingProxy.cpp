@@ -301,13 +301,13 @@ Playlist::GroupingProxy::regroupRows( int first, int last )
         bool matchBefore = false;
         Meta::TrackPtr beforeTrack = m_model->trackAt( beforeRow );
         if ( beforeTrack != Meta::TrackPtr() )
-            matchBefore = ( beforeTrack->album() == thisTrack->album() );
+            matchBefore = shouldBeGrouped( beforeTrack, thisTrack );
 
         int afterRow = row + 1;
         bool matchAfter = false;
         Meta::TrackPtr afterTrack = m_model->trackAt( afterRow );
         if ( afterTrack != Meta::TrackPtr() )
-            matchAfter = ( afterTrack->album() == thisTrack->album() );
+            matchAfter = shouldBeGrouped( afterTrack, thisTrack );
 
         if ( matchBefore && matchAfter )
             m_rowGroupMode[row] = Body;
@@ -327,4 +327,22 @@ Playlist::GroupingProxy::groupRowCount( int row ) const
 {
     AMAROK_DEPRECATED
     return lastInGroup( row ) - firstInGroup( row ) + 1;
+}
+
+bool
+Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
+{
+    //FIXME: Do this the propper way after 2.0.0
+
+    
+    bool albumMatch = false;
+    bool artistMatch = true;  // default to true if there is no artist:
+
+    if ( track1->artist() && track2->artist() )
+        artistMatch = ( track1->artist()->name() == track2->artist()->name() );
+
+    if ( track1->album() && track2->album() )
+        albumMatch = ( track1->album()->name() == track2->album()->name() );
+
+    return ( albumMatch && artistMatch );
 }
