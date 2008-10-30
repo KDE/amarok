@@ -331,12 +331,8 @@ EngineController::stop( bool forceInstant ) //SLOT
         emit trackChanged( Meta::TrackPtr( 0 ) );
     }
 
-    if( m_fader ){
+    if( m_fader )
         m_fader->deleteLater();
-        m_media->stop();
-        if(m_fadeoutTimer)
-        	m_fadeoutTimer->stop();
-    }
 
     if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant ) {
         stateChangedNotify( Phonon::StoppedState, Phonon::PlayingState ); //immediately disable Stop action
