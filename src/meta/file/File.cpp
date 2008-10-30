@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+                 2008 Seb Ruiz <ruiz@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -81,18 +82,7 @@ Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
-#else
-    QByteArray fileName = QFile::encodeName( url.path() );
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
     d->url = url;
-    d->fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-    if( !d->fileRef.isNull() )
-    {
-        d->tag = d->fileRef.tag();
-    }
     d->readMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
@@ -113,17 +103,11 @@ Track::name() const
     {
         const QString trackName = d->m_data.title;
         if( !trackName.isEmpty() )
-        {
             return trackName;
-        }
-        else
-        {
-            //lets use the filename, or it will look really dull in the playlist
-            return d->url.fileName();
-        }
+        //lets use the filename, or it will look really dull in the playlist
+        return d->url.fileName();
     }
-    else
-        return "This is a bug!";
+    return "This is a bug!";
 }
 
 QString
@@ -285,13 +269,9 @@ Track::setTitle( const QString &newTitle )
 QString
 Track::comment() const
 {
-    if( d && d->tag )
-    {
-        const QString commentName = d->m_data.comment;
-        if( !commentName.isEmpty() )
-            return commentName;
-    }
-    return QString();
+    const QString commentName = d->m_data.comment;
+    if( !commentName.isEmpty() )
+        return commentName;
 }
 
 void
@@ -333,11 +313,7 @@ Track::setRating( int newRating )
 int
 Track::trackNumber() const
 {
-    if( d && d->tag )
-    {
-        return d->m_data.trackNumber;
-    }
-    return 0;
+    return d->m_data.trackNumber;
 }
 
 void
@@ -355,11 +331,7 @@ Track::setTrackNumber( int newTrackNumber )
 int
 Track::discNumber() const
 {
-    if( d && d->tag )
-    {
-        return d->m_data.discNumber;
-    }
-    return 0;
+    return d->m_data.discNumber;
 }
 
 void
@@ -379,14 +351,10 @@ Track::setDiscNumber( int newDiscNumber )
 int
 Track::length() const
 {
-    if( d && !d->fileRef.isNull() )
-    {
-        int length = d->m_data.length;
-        if( length == -2 /*Undetermined*/ )
-            length = 0;
-        return length;
-    }
-    return 0;
+    int length = d->m_data.length;
+    if( length == -2 /*Undetermined*/ )
+        length = 0;
+    return length;
 }
 
 int
@@ -398,27 +366,19 @@ Track::filesize() const
 int
 Track::sampleRate() const
 {
-    if( d && !d->fileRef.isNull() )
-    {
-        int sampleRate = d->m_data.sampleRate;
-        if( sampleRate == -2 /*Undetermined*/ )
-            sampleRate = 0;
-        return sampleRate;
-    }
-    return 0;
+    int sampleRate = d->m_data.sampleRate;
+    if( sampleRate == -2 /*Undetermined*/ )
+        sampleRate = 0;
+    return sampleRate;
 }
 
 int
 Track::bitrate() const
 {
-    if( d && !d->fileRef.isNull() )
-    {
-        int bitrate = d->m_data.bitRate;
-        if( bitrate == -2 /*Undetermined*/ )
-            bitrate = 0;
-        return bitrate;
-    }
-    return 0;
+   int bitrate = d->m_data.bitRate;
+   if( bitrate == -2 /*Undetermined*/ )
+       bitrate = 0;
+   return bitrate;
 }
 
 uint

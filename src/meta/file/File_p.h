@@ -1,6 +1,7 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2008 Peter ZHOU         <peterzhoulei@gmail.com>
+   Copyright (C) 2008 Seb Ruiz           <ruiz@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -77,6 +78,7 @@ struct MetaData
     QString album;
     QString comment;
     QString composer;
+    QString genre;
     int discNumber;
     int trackNumber;
     int length;
@@ -92,7 +94,6 @@ class Track::Private : public QObject
 public:
     Private( Track *t )
         : QObject()
-        , tag( 0 )
         , url()
         , batchUpdate( false )
         , album()
@@ -101,8 +102,6 @@ public:
     {}
 
 public:
-    TagLib::FileRef fileRef;
-    TagLib::Tag *tag;
     KUrl url;
     bool batchUpdate;
     Meta::AlbumPtr album;
@@ -113,7 +112,7 @@ public:
 
     void readMetaData();
     QVariantMap changes;
-    void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( fileRef, changes ); changes.clear(); readMetaData(); }
+    void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( getFileRef(), changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
  
     int score;
@@ -123,18 +122,38 @@ public:
     int playCount;
 
 private:
+    TagLib::FileRef getFileRef();
     Track *track;
 };
 
+TagLib::FileRef
+Track::Private::getFileRef()
+{
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+#else
+    QByteArray fileName = QFile::encodeName( url.path() );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
+    return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
+}
+
 void Track::Private::readMetaData()
 {
-    #define strip( x ) TStringToQString( x ).trimmed()
+#define strip( x ) TStringToQString( x ).trimmed()
+    TagLib::FileRef fileRef = getFileRef();
+
+    TagLib::Tag *tag = 0;
+    if( !fileRef.isNull() )
+        tag = fileRef.tag();
+
     if( tag )
     {
         m_data.title = strip( tag->title() );
         m_data.artist = strip( tag->artist() );
         m_data.album = strip( tag->album() );
         m_data.comment = strip( tag->comment() );
+        m_data.genre = strip( tag->genre() );
         m_data.trackNumber = tag->track();
         m_data.year = tag->year();
     }
@@ -274,16 +293,10 @@ public:
 
     QString name() const
     {
-        if( d )
-        {
-            const QString artist = d->m_data.artist;
-            if( !artist.isEmpty() )
-                return artist;
-            else
-                return i18nc( "The value is not known", "Unknown" );
-        }
-        else
-            return i18nc( "The value is not known", "Unknown" );
+        const QString artist = d->m_data.artist;
+        if( !artist.isEmpty() )
+            return artist;
+        return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const
@@ -364,16 +377,10 @@ public:
 
     QString name() const
     {
-        if( d && d->tag )
-        {
-            const QString genreName = TStringToQString( d->tag->genre() ).trimmed();
-            if( !genreName.isEmpty() )
-                return genreName;
-            else
-                return i18nc( "The value is not known", "Unknown" );
-        }
-        else
-            return i18nc( "The value is not known", "Unknown" );
+        const QString genreName = d->m_data.genre;
+        if( !genreName.isEmpty() )
+            return genreName;
+        return i18nc( "The value is not known", "Unknown" );
     }
 
     QString prettyName() const
@@ -399,12 +406,9 @@ public:
 
     QString name() const
     {
-        if( d && d->tag )
-        {
-            const QString composer = d->m_data.composer;
-            if( !composer.isEmpty() )
-                return composer;
-        }
+        const QString composer = d->m_data.composer;
+        if( !composer.isEmpty() )
+            return composer;
         return i18nc( "The value is not known", "Unknown" );
     }
 
@@ -431,12 +435,9 @@ public:
 
     QString name() const
     {
-        if( d )
-        {
-            const QString year = QString::number( d->m_data.year );
-            if( !year.isEmpty()  )
-                return year;
-        }
+        const QString year = QString::number( d->m_data.year );
+        if( !year.isEmpty()  )
+            return year;
         return i18nc( "The value is not known", "Unknown" );
     }
 
