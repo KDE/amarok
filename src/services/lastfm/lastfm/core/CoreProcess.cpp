@@ -37,8 +37,7 @@ CoreProcess::isRunning( const QString& processName )
         return false;
     }
 
-    //uint const uid = ::getuid();
-    uint const uid = 0; // broken for now
+    uint const uid = ::getuid();
     
     for ( size_t processIndex = 0; processIndex < processCount; processIndex++ )
     {
