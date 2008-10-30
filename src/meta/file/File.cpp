@@ -272,6 +272,7 @@ Track::comment() const
     const QString commentName = d->m_data.comment;
     if( !commentName.isEmpty() )
         return commentName;
+    return QString();
 }
 
 void
