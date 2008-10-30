@@ -698,27 +698,34 @@ void TagDialog::readTags()
 
     debug() << "before album() stuff";
     QString niceTitle;
+
+    const QFontMetrics fnt =  ui->trackArtistAlbumLabel->fontMetrics();
+    const int len = ui->kTabWidget->width() - ui->pixmap_cover->width();
+    QString curTrackAlbName = fnt.elidedText( Qt::escape( m_currentTrack->album()->name() ), Qt::ElideRight, len );
+    QString curTrackName = fnt.elidedText( Qt::escape( m_currentTrack->name() ), Qt::ElideRight, len );
+    QString curArtistName = fnt.elidedText( Qt::escape( m_currentTrack->artist()->name() ), Qt::ElideRight, len );
+    QString curTrackPretName = fnt.elidedText( Qt::escape( m_currentTrack->prettyName() ), Qt::ElideRight, len );
+    
     if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
     {
         if( !m_currentTrack->name().isEmpty() )
         {
             if( !m_currentTrack->artist()->name().isEmpty() )
-                niceTitle = i18n( "<b>%1</b> by <b>%2</b>", Qt::escape( m_currentTrack->name() ),  Qt::escape( m_currentTrack->artist()->name() ) );
+                niceTitle = i18n( "<b>%1</b> by <b>%2</b>", curTrackName,  curArtistName );
             else
-                niceTitle = QString( "<b>%1</b>").arg( Qt::escape( m_currentTrack->name() ) );
+                niceTitle = QString( "<b>%1</b>").arg( curTrackName );
         }
         else
-            niceTitle = Qt::escape( m_currentTrack->prettyName() );
+                niceTitle = curTrackPretName;
     }
     else if( m_currentTrack->album() )
     {
-        niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" ,
-            Qt::escape( m_currentTrack->name() ), Qt::escape( m_currentTrack->artist()->name() ), Qt::escape( m_currentTrack->album()->name() ) );
+        niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" , curTrackName, curArtistName, curTrackAlbName );
     }
     else if( m_currentTrack->artist() )
-        niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , Qt::escape( m_currentTrack->name() ), Qt::escape( m_currentTrack->artist()->name() ) );
+        niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , curTrackName, curArtistName );
     else
-        niceTitle = i18n( "<b>%1</b>" , Qt::escape( m_currentTrack->name() ) );
+        niceTitle = i18n( "<b>%1</b>" , curTrackName );
 
     debug() << "after album() stuff";
 
