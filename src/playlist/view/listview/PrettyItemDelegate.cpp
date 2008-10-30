@@ -64,7 +64,7 @@ Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, cons
     switch ( groupMode )
     {
     case Head:
-        height = static_cast<int>( MARGIN + qMax( ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + 3 * PADDING + nfm.height() + MARGINBODY );
+        height = static_cast<int>( MARGIN + qMax( SINGLE_TRACK_ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + 3 * PADDING + nfm.height() + MARGINBODY );
         break;
     case Body:
         height = static_cast<int>( nfm.height() + 2 * PADDING + 2 * MARGINBODY );
@@ -125,7 +125,7 @@ Playlist::PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& r
                                        ( int )MARGIN,
                                        ( int )( -MARGINH ),
                                        0 );
-    headerBounds.setHeight( static_cast<int>( 2 * MARGIN + ALBUM_WIDTH ) );
+    headerBounds.setHeight( static_cast<int>( 2 * MARGIN + SINGLE_TRACK_ALBUM_WIDTH ) );
     return headerBounds.contains( pt );
 }
 
@@ -267,7 +267,7 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
     //paint cover
     QPixmap albumPixmap;
     if ( track->album() )
-        albumPixmap = track->album()->imageWithBorder( int( ALBUM_WIDTH ), 3 );
+        albumPixmap = track->album()->imageWithBorder( int( SINGLE_TRACK_ALBUM_WIDTH ), 3 );
 
     //offset cover if non square
     QPointF offset = centerImage( albumPixmap, imageLocation() );
@@ -291,10 +291,10 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
         delete sic;
     }
 
-    qreal headheight = MARGIN + qMax( ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + PADDING;
+    qreal headheight = MARGIN + qMax( SINGLE_TRACK_ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + PADDING;
 
     // Set up the text areas
-    qreal leftside = MARGINH + ALBUM_WIDTH + 3 * PADDING;
+    qreal leftside = MARGINH + SINGLE_TRACK_ALBUM_WIDTH + 3 * PADDING;
     qreal boxheight = ( headheight - PADDING ) / 2.0;
     qreal textwidth = trackRect.width() - leftside - MARGINH;
 

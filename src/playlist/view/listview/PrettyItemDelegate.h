@@ -49,7 +49,7 @@ private:
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
     const QRectF imageLocation() const
     {
-        return QRectF( MARGINH, MARGIN, ALBUM_WIDTH, ALBUM_WIDTH );
+        return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
     }
     const QRectF imageLocationSingleTrack() const
     {
