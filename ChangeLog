@@ -58,6 +58,8 @@ VERSION 2.0-beta3
       will now delete the original source files as expected.
 
   BUGFIXES:
+    * Correct scrobbling for all tracks, even last.fm streams and loved tracks
+      in Last.Fm streams. (BR 164156)
     * Files moved or organized into themselves are no longer deleted.
       (BR 173341)
     * Fix playlist scrollbar graphical errors with some styles. Patch by Huynh
