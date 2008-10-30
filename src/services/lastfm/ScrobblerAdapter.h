@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -15,8 +16,10 @@
 #define LASTFMSCROBBLERADAPTER_H
 
 #include "EngineObserver.h"
-#include "core/Scrobbler-12.h"
 #include "meta/Meta.h"
+
+#include <lastfm/Scrobbler.h>
+#include <lastfm/types/Track.h>
 
 #include <QVariant>
 
@@ -25,7 +28,7 @@ class ScrobblerAdapter : public QObject, public EngineObserver
     Q_OBJECT
 
 public:
-    ScrobblerAdapter( QObject *parent, const QString &username, const QString &password );
+    ScrobblerAdapter( QObject *parent, const QString &clientId );
     virtual ~ScrobblerAdapter();
 
     virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
@@ -46,11 +49,11 @@ private:
     void resetVariables();
     void checkScrobble();
 
-    ScrobblerManager *m_manager;
-    TrackInfo m_current;
+    Scrobbler *m_scrobbler;
+    MutableTrack m_current;
     long m_lastPosition;
     long m_totalPlayed;
-    QString m_username;
+    QString m_clientId;
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H

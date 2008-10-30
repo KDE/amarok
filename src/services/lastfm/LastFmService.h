@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -20,9 +21,10 @@
 #include <KLineEdit>
 
 class ScrobblerAdapter;
-class RadioAdapter;
 class LastFmService;
 class LastFmServiceCollection;
+
+class WsReply;
 
 class KHBox;
 
@@ -59,7 +61,6 @@ public:
 
     virtual void polish();
 
-    RadioAdapter *radio() { return m_radio; }
     ScrobblerAdapter *scrobbler() { return m_scrobbler; }
 
     virtual Collection * collection();
@@ -73,9 +74,11 @@ private slots:
 
     void setRadioButtons( bool hasRadio );
 
+    void onAuthenticated( WsReply* );
+    
 private:
+    bool m_scrobble;
     ScrobblerAdapter *m_scrobbler;
-    RadioAdapter *m_radio;
     LastFmServiceCollection *m_collection;
 
     void playLastFmStation( const KUrl &url );
@@ -92,6 +95,7 @@ private:
     QPushButton * m_customStationButton;
 
     const QString m_userName;
+    QString m_sessionKey;
     QString m_station;
 
     static LastFmService *ms_service;

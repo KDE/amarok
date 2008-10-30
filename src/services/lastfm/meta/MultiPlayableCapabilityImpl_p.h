@@ -19,8 +19,14 @@
 #ifndef AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
+#include "Debug.h"
 #include "Meta.h"
 #include "meta/MultiPlayableCapability.h"
+
+#include <lastfm/types/Track.h>
+#include <lastfm/radio/Tuner.h>
+
+#include <QQueue>
 
 class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public Meta::Observer
 {
@@ -28,23 +34,61 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
     public:
         MultiPlayableCapabilityImpl( LastFm::Track *track )
             : Meta::MultiPlayableCapability()
-            , m_url( track->playableUrl() )
+            , m_url( track->internalUrl() )
             , m_track( track )
+            , m_currentTrack( Track() )
         {
             Meta::TrackPtr trackptr( track );
             subscribeTo( trackptr );
+            
+            connect( track, SIGNAL( skipTrack() ), this, SLOT( skip() ) );
         }
 
         virtual ~MultiPlayableCapabilityImpl() 
         {}
 
-        virtual void fetchFirst() { m_track->playCurrent(); }
-        virtual void fetchNext() { m_track->playNext(); }
+        virtual void fetchFirst()
+        {
+            DEBUG_BLOCK
+            // first play, so we need to fetch tracks and start playing
+            m_tuner = new Tuner( RadioStation( m_track->uidUrl() ) );
+            
+            connect( m_tuner, SIGNAL( tracks( const QList< Track >& ) ), this, SLOT( slotNewTracks( const QList< Track >& ) ) );
 
+            //m_tuner->fetchFiveMoreTracks();
+        }
+        
+        virtual void fetchNext()
+        {
+            DEBUG_BLOCK
+            if( m_upcomingTracks.size() == 0 ) // out of tracks, stop
+            {
+                debug() << "OUT OF TRACKS, STOP ME HERE";
+                return;
+            } else if( m_upcomingTracks.size() == 1 ) // fetch more after we start playing
+            {
+                m_currentTrack = m_upcomingTracks.dequeue();
+                debug() << "getting more tracks, first playing this: " << m_currentTrack;
+                m_track->setTrackInfo( m_currentTrack );
+                m_tuner->fetchFiveMoreTracks();
+            } else
+            {
+                m_currentTrack = m_upcomingTracks.dequeue();
+                debug() << "i have" << m_upcomingTracks.size() << "more stored tracks, next up: " << m_currentTrack;
+                m_track->setTrackInfo( m_currentTrack );
+            }
+        }
+        
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track )
         {
-            KUrl url = track->playableUrl();
+            DEBUG_BLOCK
+            const LastFm::TrackPtr ltrack = LastFm::TrackPtr::dynamicCast( track );
+            
+            if( ltrack.isNull() )
+                return;
+                
+            KUrl url = ltrack->internalUrl();
             if( url.isEmpty() || url != m_url ) // always should let empty url through, since otherwise we swallow an error getting first track
             {
                 m_url = url;
@@ -52,9 +96,39 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             }
         }
 
+    public slots:
+        
+        void slotNewTracks( const QList< Track >& tracks )
+        {
+            DEBUG_BLOCK
+            foreach( Track track,  tracks )
+                m_upcomingTracks.enqueue( track );
+
+            if( m_currentTrack.isNull() ) // start playing
+            {
+                m_currentTrack = m_upcomingTracks.dequeue();
+                debug() << "first track starting:" << m_currentTrack.url();
+                m_track->setTrackInfo( m_currentTrack );
+            }
+        }
+        
+        virtual void skip()
+        {
+            fetchNext();
+            // now we force a new signal to be emitted to kick the enginecontroller to moving on
+            //KUrl url = m_track->playableUrl();
+            //emit playableUrlFetched( url );
+        }
+
+
     private:
         KUrl m_url;
         LastFm::TrackPtr m_track;
+
+        
+        Track m_currentTrack;
+        QQueue< Track > m_upcomingTracks;
+        Tuner* m_tuner;
 };
 
 #endif

@@ -14,9 +14,7 @@
 #ifndef LASTFMAUDIOCONTROLLER_H
 #define LASTFMAUDIOCONTROLLER_H
 
-#include "core/RadioPlaylist.h"
 #include "EngineObserver.h"
-#include "TrackInfo.h"
 
 #include <QStringList>
 
@@ -55,6 +53,10 @@ signals:
     void trackStarted( const TrackInfo & );
     void trackEnded( const TrackInfo &, int );
 
+private slots:
+    void slotStationName( const QString& name );
+    void slotNewTracks( const QList< Track >& tracks );
+        
 private:
     void playTrack( const TrackInfo &track );
 

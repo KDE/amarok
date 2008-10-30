@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2008 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2008 Shane King <kde@dontletsstart.com>      *
+*                        (C) 2008 Leo Franchi <lfranchi@gmail.com>        *
  **************************************************************************/
 
 /***************************************************************************
@@ -16,9 +17,7 @@
 
 #include <ServiceCollection.h>
 
-#include "WeightedStringList.h"
-
-class Request;
+class WsReply;
 
 namespace Meta
 {
@@ -41,13 +40,11 @@ public:
     virtual QueryMaker* queryMaker();
 
 private slots:
-    void slotAddNeighboursLoved( WeightedStringList list );
-    void slotAddNeighboursPersonal( WeightedStringList list );
-    void slotAddFriendsLoved( QStringList list );
-    void slotAddFriendsPersonal( QStringList list );
-    void slotRecentlyLovedTrackResult( Request* );
-    void slotRecentTrackResult( Request* );
-
+    void slotAddNeighboursLoved( WsReply* reply );
+    void slotAddNeighboursPersonal( WsReply* reply );
+    void slotAddFriendsLoved( WsReply* reply );
+    void slotAddFriendsPersonal( WsReply* reply );
+    
 private:
     QString m_userName;
     Meta::ServiceGenre *m_neighborsLoved;

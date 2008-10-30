@@ -14,8 +14,7 @@
 #ifndef LASTFMSETTINGS_H
 #define LASTFMSETTINGS_H
 
-#include "StationUrl.h"
-#include "MooseCommon.h"
+#include <lastfm/radio/RadioStation.h>
 
 #include <KConfigGroup>
 
@@ -32,16 +31,16 @@ public:
     void setDiscovery( bool discovery );
     bool isDiscovery() const;
 
-    void setResumeStation( StationUrl station );
-    StationUrl resumeStation() const;
+    void setResumeStation( RadioStation station );
+    RadioStation resumeStation() const;
 
-    void addRecentStation( const class Station& );
+    void addRecentStation( const class RadioStation& );
 
 protected:
     KConfigGroup m_config;
 
 private:
-    StationUrl m_resumeStation;
+    RadioStation m_resumeStation;
 };
 
 class LastFmSettings : public LastFmUserSettings

@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -21,25 +22,17 @@
 #include "MainWindow.h"
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"
-#include "libUnicorn/WebService/Request.h"
 
-
-ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &username, const QString &password )
+ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
       EngineObserver( The::engineController() ),
-      m_manager( new ScrobblerManager( this ) ),
-      m_username( username )
+      m_clientId( clientId ), 
+      m_scrobbler( new Scrobbler( clientId ) )
 {
     resetVariables();
 
-    connect( m_manager, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
+    connect( m_scrobbler, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
     connect( The::mainWindow(), SIGNAL( loveTrack(Meta::TrackPtr) ), SLOT( loveTrack(Meta::TrackPtr) ) );
-
-    Scrobbler::Init init;
-    init.username = username;
-    init.password = password;
-    init.client_version = APP_VERSION;
-    m_manager->handshake( init );
 }
 
 
@@ -55,13 +48,14 @@ ScrobblerAdapter::engineNewTrackPlaying()
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
+        debug() << "track type:" << track->type();
         const bool isRadio = ( track->type() == "stream/lastfm" );
-
+        
         checkScrobble();
 
-        m_current.timeStampMe();
-
-        m_current.setTrack( track->name() );
+        m_current.stamp();
+        
+        m_current.setTitle( track->name() );
         m_current.setDuration( track->length() );
         if( track->artist() )
             m_current.setArtist( track->artist()->name() );
@@ -71,18 +65,22 @@ ScrobblerAdapter::engineNewTrackPlaying()
         // TODO: need to get music brainz id from somewhere
         // m_current.setMbId( );
 
-        m_current.setSource( isRadio ? TrackInfo::Radio : TrackInfo::Player );
-        m_current.setUsername( m_username );
+        // TODO also set fingerprint... whatever that is :)
+        // m_current.setFingerprintId( qstring );
+        
+        m_current.setSource( isRadio ? Track::LastFmRadio : Track::Player );
+        
 
-        if( !m_current.isEmpty() )
+        if( !m_current.isNull() )
         {
-            debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
-            m_manager->nowPlaying( m_current );
+            debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
+            m_scrobbler->nowPlaying( m_current );
 
             // When playing Last.fm Radio, we need to submit twice, once in Radio mode and once in Player mode
+            // TODO check with mxcl if this is still required
             if( isRadio ) {
-                m_current.setSource( TrackInfo::Player );
-                m_manager->nowPlaying( m_current );
+                m_current.setSource( Track::Player );
+                m_scrobbler->nowPlaying( m_current );
             }
         }
     }
@@ -113,7 +111,8 @@ ScrobblerAdapter::skip()
 {
     DEBUG_BLOCK
 
-    m_current.setRatingFlag( TrackInfo::Skipped );
+    // NOTE doesn't exist in 1.2.1 lib... find replacement
+    //m_current.setRatingFlag( Track::Skipped );
 }
 
 
@@ -122,10 +121,8 @@ ScrobblerAdapter::love()
 {
     DEBUG_BLOCK
 
-    m_current.setRatingFlag( TrackInfo::Loved );
-
-    LoveRequest* request = new LoveRequest( m_current );
-    request->start();
+    m_current.love();
+    
 }
 
 void
@@ -133,15 +130,14 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    TrackInfo trackInfo;
-    trackInfo.setTrack( track->name() );
+    MutableTrack trackInfo;
+    trackInfo.setTitle( track->name() );
     if( track->artist() )
         trackInfo.setArtist( track->artist()->name() );
     if( track->album() )
         trackInfo.setAlbum( track->album()->name() );
 
-    LoveRequest* request = new LoveRequest( trackInfo );
-    request->start();
+    trackInfo.love();
 }
 
 
@@ -150,10 +146,7 @@ ScrobblerAdapter::ban()
 {
     DEBUG_BLOCK
 
-    m_current.setRatingFlag( TrackInfo::Banned );
-
-    BanRequest* request = new BanRequest( m_current );
-    request->start();
+    m_current.ban();
 }
 
 
@@ -167,7 +160,7 @@ ScrobblerAdapter::statusChanged( int statusCode, QVariant /*data*/ )
 void
 ScrobblerAdapter::resetVariables()
 {
-    m_current = TrackInfo();
+    m_current = MutableTrack();
     m_totalPlayed = m_lastPosition = 0;
 }
 
@@ -175,11 +168,13 @@ ScrobblerAdapter::resetVariables()
 void
 ScrobblerAdapter::checkScrobble()
 {
+    DEBUG_BLOCK
     // note: in the 1.2 protocol submits are always done at end of file
-    if( ( m_current.isSkippedLovedOrBanned() || m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isEmpty() && AmarokConfig::submitPlayedSongs() )
+    if( ( m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isNull() && AmarokConfig::submitPlayedSongs() )
     {
-        debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.track();
-        m_manager->scrobble( m_current );
+        debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
+        m_scrobbler->cache( m_current );
+        m_scrobbler->submit();
     }
     resetVariables();
 }

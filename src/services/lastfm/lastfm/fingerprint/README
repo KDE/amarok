@@ -1,0 +1,40 @@
+To compile libfingerprint you need to install libfftw3 with the --enable-float 
+and libsamplerate.
+
+Mac OS X
+--------
+It is recommended that you install the required libraries through macports
+(http://www.macports.org) the packages required are:
+ * fftw-3-single
+ * libsamplerate
+
+Linux
+-----
+These packages are most probably in your distribution's package manager.
+(On debian based distros inc. ubuntu: apt-get install libfftw3-dev
+libsamplerate0-dev should work.)
+
+Windows
+-------
+//FIXME: I haven't sorted anything out for this yet so you will most likely have
+// to compile it manually and then update this file with info on how to do it!
+To compile libfingerprint you need to install libfftw3 with the --enable-float 
+and libsamplerate.
+
+Mac OS X
+--------
+It is recommended that you install the required libraries through macports
+(http://www.macports.org) the packages required are:
+ * fftw-3-single
+ * libsamplerate
+
+Linux
+-----
+These packages are most probably in your distribution's package manager.
+(On debian based distros inc. ubuntu: apt-get install libfftw3-dev
+libsamplerate0-dev should work.)
+
+Windows
+-------
+//FIXME: I haven't sorted anything out for this yet so you will most likely have
+// to compile it manually and then update this file with info on how to do it!

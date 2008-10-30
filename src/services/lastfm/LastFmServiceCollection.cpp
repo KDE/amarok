@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (C) 2008 Shane King <kde@dontletsstart.com>      *
  *            (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>      *
+ *            (C) 2008 Leo Franchi <lfranchi@gmail.com>                    *
  **************************************************************************/
 
 /***************************************************************************
@@ -19,11 +20,11 @@
 #include "meta/LastFmMeta.h"
 #include "ServiceMetaBase.h"
 
-// libunicorn includes
-#include "libUnicorn/WebService/Request.h"
-#include "WebService.h"
-
 #include "collection/support/MemoryQueryMaker.h"
+
+#include <lastfm/ws/WsRequestBuilder.h>
+#include <lastfm/ws/WsReply.h>
+#include <lastfm/ws/WsKeys.h>
 
 #include <KLocale>
 
@@ -57,14 +58,6 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     Meta::GenrePtr friendsPersonalPtr( m_friendsPersonal );
     addGenre( friendsPersonalPtr );
 
-    m_recentlyLoved = new Meta::ServiceGenre( i18n( "Recently Loved Tracks" ) );
-    Meta::GenrePtr recentlyLovedPtr( m_recentlyLoved );
-    addGenre( recentlyLovedPtr );
-
-    m_recentlyPlayed = new Meta::ServiceGenre( i18n( "Recently Played Tracks" ) );
-    Meta::GenrePtr recentlyPlayedPtr( m_recentlyPlayed );
-    addGenre( recentlyPlayedPtr );
-
     // Only show these if the user is a subscriber.
     // Note: isSubscriber is a method we added locally to libUnicorn, if libUnicorn gets bumped we may need to readd if last.fm doesn't
     QStringList lastfmPersonal;
@@ -92,25 +85,22 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
         addTrack( trackPtr );
     }
 
-    connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighboursLoved( WeightedStringList ) ) );
-    connect( The::webService(), SIGNAL( neighbours( WeightedStringList ) ), SLOT( slotAddNeighboursPersonal( WeightedStringList ) ) );
-    connect( The::webService(), SIGNAL( friends( QStringList ) ), SLOT( slotAddFriendsLoved( QStringList ) ) );
-    connect( The::webService(), SIGNAL( friends( QStringList ) ), SLOT( slotAddFriendsPersonal( QStringList ) ) );
+    WsReply* reply = WsRequestBuilder( "user.getNeighbours" )
+                        .add( "user", userName )
+                        .add( "api_key", QString( Ws::ApiKey ) )
+                        .get();
 
-    NeighboursRequest *nr = new NeighboursRequest();
-    nr->start();
-
-    FriendsRequest *fr = new FriendsRequest();
-    fr->start();
-
-    RecentlyLovedTracksRequest *rlt = new RecentlyLovedTracksRequest;
-    connect( rlt, SIGNAL( result( Request* ) ), SLOT( slotRecentlyLovedTrackResult( Request* ) ) );
-    rlt->start();
-
-    RecentTracksRequest *rt = new RecentTracksRequest;
-    connect( rt, SIGNAL( result( Request* ) ), SLOT( slotRecentTrackResult( Request* ) ) );
-    rt->start();
-
+    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddNeighboursLoved( WsReply* ) ) );
+    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddNeighboursPersonal( WsReply* ) ) );
+    
+    reply = WsRequestBuilder( "user.getFriends" )
+    .add( "user", userName )
+    .add( "api_key", QString( Ws::ApiKey ) )
+    .get();
+    
+    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddFriendsLoved( WsReply* ) ) );
+    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddFriendsPersonal( WsReply* ) ) );
+    
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }
 
@@ -147,79 +137,66 @@ LastFmServiceCollection::prettyName() const
     return i18n( "last.fm" );
 }
 
-void LastFmServiceCollection::slotAddNeighboursLoved( WeightedStringList list )
+void LastFmServiceCollection::slotAddNeighboursLoved( WsReply* reply )
 {
-    QStringList realList = list;
-    foreach( const QString &string, realList )
+    DEBUG_BLOCK
+    // iterate through each neighbour
+    foreach( CoreDomElement e, reply->lfm()[ "neighbours" ].children( "user" ) )
     {
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/loved" );
+        QString name = e[ "name" ].text();
+        debug() << "got neighbour!!! - " << name;
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
         Meta::TrackPtr trackPtr( track );
         m_neighborsLoved->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 }
 
-void LastFmServiceCollection::slotAddNeighboursPersonal( WeightedStringList list )
+void LastFmServiceCollection::slotAddNeighboursPersonal( WsReply* reply )
 {
-    QStringList realList = list;
-    foreach( const QString &string, realList )
+    DEBUG_BLOCK
+    // iterate through each neighbour
+    foreach( CoreDomElement e, reply->lfm()[ "neighbours" ].children( "user" ) )
     {
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
+        QString name = e[ "name" ].text();
+        debug() << "got neighbour!!! - " << name;
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_neighborsPersonal->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 }
 
-void LastFmServiceCollection::slotAddFriendsLoved( QStringList list )
+void LastFmServiceCollection::slotAddFriendsLoved( WsReply* reply )
 {
-    foreach( const QString &string, list )
+    DEBUG_BLOCK
+    // iterate through each friend
+    foreach( CoreDomElement e, reply->lfm()[ "friends" ].children( "user" ) )
     {
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/loved" );
+        QString name = e[ "name" ].text();
+        debug() << "got friend!!! - " << name;
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
         Meta::TrackPtr trackPtr( track );
         m_friendsLoved->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 }
 
-void LastFmServiceCollection::slotAddFriendsPersonal( QStringList list )
+void LastFmServiceCollection::slotAddFriendsPersonal( WsReply* reply )
 {
-    foreach( const QString &string, list )
+    DEBUG_BLOCK
+    // iterate through each friend
+    foreach( CoreDomElement e, reply->lfm()[ "friends" ].children( "user" ) )
     {
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + string + "/personal" );
+        QString name = e[ "name" ].text();
+        debug() << "got neighbour!!! - " << name;
+        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_friendsPersonal->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 }
 
-void LastFmServiceCollection::slotRecentlyLovedTrackResult( Request* _r )
-{
-    RecentlyLovedTracksRequest *r = static_cast<RecentlyLovedTracksRequest*>( _r );
-
-    QList<Track> tracks = r->tracks();
-    foreach( Track track, tracks )
-    {
-        LastFm::Track *metaTrack = new LastFm::Track( track );
-        Meta::TrackPtr trackPtr( metaTrack );
-        m_recentlyLoved->addTrack( trackPtr );
-        addTrack( trackPtr );
-    }
-}
-
-void LastFmServiceCollection::slotRecentTrackResult( Request* _r )
-{
-    RecentTracksRequest *r = static_cast<RecentTracksRequest*>(_r);
-
-    QList<Track> tracks = r->tracks();
-    foreach( Track track, tracks )
-    {
-        LastFm::Track *metaTrack = new LastFm::Track( track );
-        Meta::TrackPtr trackPtr( metaTrack );
-        m_recentlyPlayed->addTrack( trackPtr );
-        addTrack( trackPtr );
-    }
-}
 QueryMaker*
 LastFmServiceCollection::queryMaker()
 {

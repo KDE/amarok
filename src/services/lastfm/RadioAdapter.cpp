@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -13,10 +14,8 @@
 
 #include "RadioAdapter.h"
 #include "Amarok.h"
-#include "core/Radio.h"
 #include "LastFmService.h"
 #include "LastFmSettings.h"
-#include "libUnicorn/WebService.h"
 
 #include "statusbar/StatusBar.h"
 
@@ -35,19 +34,41 @@ RadioAdapter::~RadioAdapter()
 {
 }
 
+void
+RadioAdapter::slotStationName( const QString& name )
+{
+    AMAROK_NOTIMPLEMENTED
+}
 
 void
-RadioAdapter::play( const LastFm::TrackPtr &track )
+RadioAdapter::slotNewTracks( const QList< Track >& tracks )
 {
+    foreach( Track track,  tracks )
+        m_upcomingTracks.enqueue( track );
+}
+
+void
+RadioAdapter::play( LastFm::Track *track )
+{
+    DEBUG_BLOCK
     if( track != m_currentTrack )
     {
-        bool newStation = The::currentUser().resumeStation() != track->uidUrl();
+        bool newStation = The::currentUser().resumeStation().url() != track->uidUrl();
         m_currentTrack = track;
         emit haveTrack( true );
-        if( newStation || The::radio().state() != State_Stopped && The::radio().state() != State_Handshaken )
-            The::radio().playStation( track->uidUrl() );
-        else
-            The::radio().resumeStation();
+        debug() << "ok, got a different track to play, newStation:" << newStation;
+        if( newStation  )
+        {
+            debug() < "new tuner with uidUrl:" << track->uidUrl();
+            m_tuner = new Tuner( RadioStation( track->uidUrl() ) );
+            
+            connect( m_tuner, SIGNAL( error( Ws::Error ) ), this, SLOT( error( Ws::Error ) ) );
+            connect( m_tuner, SIGNAL( stationName( const QString& ) ), this, SLOT( slotStationName( const QString& ) ) );
+            connect( m_tuner, SIGNAL( tracks( const QList< Track >& ) ), this, SLOT( slotNewTracks( const QList< Track >& ) ) );
+            
+        } //else
+            // TODO doesn't seem supported w/ new API.
+            //The::radio().resumeStation();
     }
 }
 
@@ -57,7 +78,16 @@ RadioAdapter::next()
 {
     if( m_currentTrack )
     {
-        The::audioController().loadNext();
+        if( m_upcomingTracks.size() == 0 ) // we fetched more and failed, so just stop
+            stop();
+        else if( m_upcomingTracks.size() == 1 ) // gotta fetch more
+        {
+            play( new LastFm::Track( m_upcomingTracks.dequeue() ) );
+            m_tuner->fetchFiveMoreTracks();
+        } else
+        {
+            play( new LastFm::Track( m_upcomingTracks.dequeue() ) );
+        }
     }
 }
 
@@ -67,7 +97,7 @@ RadioAdapter::stop()
 {
     if( m_currentTrack )
     {
-        m_currentTrack->setTrackInfo( TrackInfo() ); // will emit an empty playable url, thus moving to next track in playlist
+        m_currentTrack->setTrackInfo( Track() ); // will emit an empty playable url, thus moving to next track in playlist
         m_currentTrack = 0;
         emit haveTrack( false );
     }

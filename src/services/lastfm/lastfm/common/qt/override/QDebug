@@ -1,0 +1,120 @@
+/***************************************************************************
+ *   Copyright 2005-2008 Last.fm Ltd                                       *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *    This program is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ ***************************************************************************/
+
+#ifndef QT_OVERRIDE_QDEBUG
+#define QT_OVERRIDE_QDEBUG
+
+#include <QtCore/QDebug>
+#include <QTime>
+
+#ifdef WIN32
+    #define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+
+
+struct StampedDebug : QDebug
+{
+	StampedDebug( QtMsgType type, const QByteArray& file, uint line, QByteArray function ) : QDebug( type )
+	{
+		Q_UNUSED( line );
+        Q_UNUSED( file );
+
+		QByteArray out;
+		out += QTime::currentTime().toString( "[hh:mm:ss] " );
+
+//		QByteArray const filename = file.mid( file.lastIndexOf( '/' ) + 1 );
+//		out += filename + ":" + QString::number( line );
+
+		#if __GNUG__
+		int const m = function.indexOf( "::" ); // work with ctors and dtors
+		int const n = m == -1 ? 0 : function.lastIndexOf( ' ', m ) + 1;
+		function = function.mid( n, function.indexOf( '(' ) - n );
+		#endif
+
+		out += function + "()";
+        
+        *this << out.data();
+	}
+};
+
+#define qDebug() StampedDebug( QtDebugMsg, __FILE__, __LINE__, __PRETTY_FUNCTION__ )
+#define qWarning() StampedDebug( QtWarningMsg, __FILE__, __LINE__, __PRETTY_FUNCTION__ )
+#define qCritical() StampedDebug( QtCriticalMsg, __FILE__, __LINE__, __PRETTY_FUNCTION__ )
+
+#endif
+/***************************************************************************
+ *   Copyright 2005-2008 Last.fm Ltd                                       *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *    This program is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ ***************************************************************************/
+
+#ifndef QT_OVERRIDE_QDEBUG
+#define QT_OVERRIDE_QDEBUG
+
+#include <QtCore/QDebug>
+#include <QTime>
+
+#ifdef WIN32
+    #define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+
+
+struct StampedDebug : QDebug
+{
+	StampedDebug( QtMsgType type, const QByteArray& file, uint line, QByteArray function ) : QDebug( type )
+	{
+		Q_UNUSED( line );
+        Q_UNUSED( file );
+
+		QByteArray out;
+		out += QTime::currentTime().toString( "[hh:mm:ss] " );
+
+//		QByteArray const filename = file.mid( file.lastIndexOf( '/' ) + 1 );
+//		out += filename + ":" + QString::number( line );
+
+		#if __GNUG__
+		int const m = function.indexOf( "::" ); // work with ctors and dtors
+		int const n = m == -1 ? 0 : function.lastIndexOf( ' ', m ) + 1;
+		function = function.mid( n, function.indexOf( '(' ) - n );
+		#endif
+
+		out += function + "()";
+        
+        *this << out.data();
+	}
+};
+
+#define qDebug() StampedDebug( QtDebugMsg, __FILE__, __LINE__, __PRETTY_FUNCTION__ )
+#define qWarning() StampedDebug( QtWarningMsg, __FILE__, __LINE__, __PRETTY_FUNCTION__ )
+#define qCritical() StampedDebug( QtCriticalMsg, __FILE__, __LINE__, __PRETTY_FUNCTION__ )
+
+#endif

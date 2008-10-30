@@ -1,6 +1,7 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2008 Shane King <kde@dontletsstart.com>
+   Copyright (C) 2008 Leo Franchi <lfranchi@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -28,10 +29,8 @@
 #include "CurrentTrackActionsCapabilityImpl_p.moc"
 #include "ServiceSourceInfoCapability.h"
 
-#include "core/Radio.h"
 #include "LastFmService.h"
 #include "LastFmStreamInfoCapability.h"
-#include "RadioAdapter.h"
 #include "ScrobblerAdapter.h"
 
 #include "Debug.h"
@@ -40,6 +39,11 @@
 
 #include <KSharedPtr>
 #include <KStandardDirs>
+
+#include <lastfm/ws/WsKeys.h>
+#include <lastfm/ws/WsReply.h>
+#include <lastfm/ws/WsRequestBuilder.h>
+#include <lastfm/types/Track.h>
 
 namespace LastFm {
 
@@ -54,8 +58,9 @@ Track::Track( const QString &lastFmUri )
     , Meta::Track()
     , d( new Private() )
 {
-    d->lastFmUri = lastFmUri;
+    d->lastFmUri = QUrl( lastFmUri );
     d->t = this;
+    
 
     init();
 }
@@ -67,9 +72,14 @@ Track::Track( ::Track track )
 {
     d->t = this;
     d->track = track.title();
-    TrackToIdRequest *request = new TrackToIdRequest( track );
-    connect( request, SIGNAL( result( Request* ) ), SLOT( slotResultReady( Request* ) ) );
-    request->start();
+    d->lastFmTrack = track;
+    WsReply* reply = WsRequestBuilder( "track.getInfo" )
+      .add( "artist", track.artist() )
+      .add( "track", track.title() )
+      .add( "api_key", Ws::ApiKey )
+      .get();
+      
+      connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( slotResultReady( WsReply* ) ) );
 }
 
 
@@ -81,7 +91,7 @@ Track::~Track()
 void Track::init( int id /* = -1*/ )
 {
     if( id != -1 )
-        d->lastFmUri = "lastfm://play/tracks/" + QString::number( id );
+        d->lastFmUri = QUrl( "lastfm://play/tracks/" + QString::number( id ) );
     d->length = 0;
 
     d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( QPointer<Track::Private>( d ) ) );
@@ -158,19 +168,25 @@ QString LastFm::Track::fixedName() const
 KUrl
 Track::playableUrl() const
 {
+    return d->lastFmUri.toString();
+}
+
+KUrl
+Track::internalUrl() const
+{
     return KUrl( d->trackPath );
 }
 
 QString
 Track::prettyUrl() const
 {
-    return d->lastFmUri;
+    return d->lastFmUri.toString();
 }
 
 QString
 Track::uidUrl() const
 {
-    return d->lastFmUri;
+    return d->lastFmUri.toString();
 }
 
 bool
@@ -313,9 +329,9 @@ Track::collection() const
 }
 
 void 
-Track::setTrackInfo( const TrackInfo &trackInfo )
+Track::setTrackInfo( const ::Track &track )
 {
-    d->setTrackInfo( trackInfo );
+    d->setTrackInfo( track );
 }
 
 QString
@@ -323,7 +339,7 @@ Track::streamName() const
 {
     // parse the url to get a name if we don't have a track name (ie we're not playing the station)
     // do it as name rather than prettyname so it shows up nice in the playlist.
-    QStringList elements = d->lastFmUri.split( '/', QString::SkipEmptyParts );
+    QStringList elements = d->lastFmUri.toString().split( '/', QString::SkipEmptyParts );
     if( elements.size() >= 2 && elements[0] == "lastfm:" )
     {
         QString customPart = elements[2];
@@ -397,65 +413,64 @@ Track::streamName() const
         }
     }
 
-    return d->lastFmUri;
+    return d->lastFmUri.toString();
 }
 
 void
 Track::love()
 {
     DEBUG_BLOCK
-
-    if( The::lastFmService()->radio()->currentTrack() == this )
-    {
-        if( The::lastFmService()->scrobbler() )
-            The::lastFmService()->scrobbler()->love();
-    }
+    
+    debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
+    WsReply* reply = MutableTrack( d->lastFmTrack ).love();
+    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
 }
 
 void
 Track::ban()
 {
     DEBUG_BLOCK
-
-    if( The::lastFmService()->radio()->currentTrack() == this )
-    {
-        if( The::lastFmService()->scrobbler() )
-            The::lastFmService()->scrobbler()->ban();
-        The::radio().skip();
-    }
+    WsReply* reply = MutableTrack( d->lastFmTrack ).ban();
+    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
+    emit( skipTrack() );
+    
 }
 
 void
 Track::skip()
 {
     DEBUG_BLOCK
+    //MutableTrack( d->lastFmTrack ).skip();
+    emit( skipTrack() );
+}
 
-    if( The::lastFmService()->radio()->currentTrack() == this )
+void Track::slotResultReady( WsReply *reply )
+{
+    if( reply->error() == Ws::NoError )
     {
-        if( The::lastFmService()->scrobbler() )
-            The::lastFmService()->scrobbler()->skip();
-        The::radio().skip();
+        QString id = reply->lfm()[ "track" ][ "id" ].nonEmptyText();
+        QString streamable = reply->lfm()[ "track" ][ "streamable" ].nonEmptyText();
+        if( streamable.toInt() == 1 )
+            init( id.toInt() );
+        else
+            init();
+    } else
+    {
+        init();
     }
 }
 
-void Track::slotResultReady( Request *_r )
-{
-    TrackToIdRequest *r = (TrackToIdRequest*)_r;
-    if ( !r->failed() && r->isStreamable() )
-       init( r->id() );
-    else
-        init();
-}
-void
-Track::playCurrent()
-{
-    The::lastFmService()->radio()->play( TrackPtr( this ) );
-}
 
-void
-Track::playNext()
+void 
+Track::slotWsReply( WsReply *reply )
 {
-    The::lastFmService()->radio()->next();
+    if( reply->error() == Ws::NoError )
+    {   
+        //debug() << "successfully completed WS transaction";
+    } else
+    {
+        debug() << "ERROR in last.fm skip or ban!" << reply->error();
+    }
 }
 
 bool

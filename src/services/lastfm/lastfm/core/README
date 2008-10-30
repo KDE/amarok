@@ -1,0 +1,5 @@
+Files in lastfm-core are basically extensions to fundamental Qt classes.
+They may be useful to you, but mainly they are here because they are useful to
+liblastfm in general.
+
+<max@last.fm>

@@ -1,6 +1,7 @@
 /*
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2008 Shane King <kde@dontletsstart.com>
+   Copyright (C) 2008 Leo Franchi <lfranchi@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,12 +24,14 @@
 #include "meta/Meta.h"
 #include "meta/Capability.h"
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
-#include "Track.h"
+
+
+#include <lastfm/types/Track.h>
+
 
 #include <QObject>
 
-class Request;
-class TrackInfo;
+class WsReply;
 
 namespace LastFm
 {
@@ -91,7 +94,7 @@ namespace LastFm
 
             virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
-            void setTrackInfo( const TrackInfo &trackInfo );
+            void setTrackInfo( const ::Track &trackInfo );
 
             virtual QString sourceName();
             virtual QString sourceDescription();
@@ -101,18 +104,20 @@ namespace LastFm
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
+            KUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE, 
+                                   // if you are asking, it has already expired
             QString streamName() const; // A nice name for the stream..
         public slots:
             void love();
             void ban();
             void skip();
 
-        // MultiPlayableCapability methods
-            void playCurrent();
-            void playNext();
-
         private slots:
-            void slotResultReady( Request* );
+            void slotResultReady( WsReply* );
+            void slotWsReply( WsReply* );
+            
+        signals:
+            void skipTrack(); // needed for communication with multiplayablecapability
         private:
             void init( int id = -1 );
             //use a d-pointer because some code is going to work directly with LastFm::Track

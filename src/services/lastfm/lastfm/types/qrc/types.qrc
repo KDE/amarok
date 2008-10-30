@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="lastfm">
+    <file alias="no/cover.png">nocover.png</file>
+    <file alias="no/user.png">nouser.png</file>
+  </qresource>
+</RCC>

@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -14,34 +15,40 @@
 #ifndef LASTFMRADIOADAPTER_H
 #define LASTFMRADIOADAPTER_H
 
-#include "core/Radio.h"
 #include "meta/LastFmMeta.h"
+
+#include <lastfm/radio/Tuner.h>
+
+#include <QQueue>
 
 class RadioAdapter : public QObject
 {
     Q_OBJECT
 
 public:
-    RadioAdapter( QObject *parent, const QString &username, const QString &password );
+    RadioAdapter( QObject *parent );
     virtual ~RadioAdapter();
 
-    LastFm::TrackPtr currentTrack() const { return m_currentTrack; }
+    LastFm::Track* currentTrack() const { return m_currentTrack; }
 
-    void play( const LastFm::TrackPtr &track );
+    void play( LastFm::Track *track );
     void next();
     void stop();
+    void skip() { next(); } // for compatibility reasons
 
 signals:
     void haveTrack( bool track );
 
 private slots:
-    void error( RadioError errorCode, const QString& message );
+    void error( Ws::Error error );
+    void slotStationName( const QString& name );
+    void slotNewTracks( const QList< Track >& tracks );
 
 private:
-    Radio *m_radio;
-    LastFm::TrackPtr m_currentTrack;
+    Tuner *m_tuner;
+    LastFm::Track* m_currentTrack;
+    QQueue< Track > m_upcomingTracks;
 
-    friend Radio &The::radio();
 };
 
 #endif // LASTFMRADIOADAPTER_H

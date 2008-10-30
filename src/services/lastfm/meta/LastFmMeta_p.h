@@ -1,5 +1,6 @@
 /*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+    Copyright (C) 2008 Leo Franchi        <lfranchi@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,9 +25,13 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "LastFmSettings.h"
-#include "libUnicorn/TrackInfo.h"
-#include "libUnicorn/WebService/Request.h"
 #include "meta/Meta.h"
+
+#include <lastfm/ws/WsKeys.h>
+#include <lastfm/types/Track.h>
+#include <lastfm/ws/WsReply.h>
+#include <lastfm/ws/WsRequestBuilder.h>
+#include <lastfm/radio/Tuner.h>
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -49,8 +54,9 @@ class Track::Private : public QObject
 
     public:
         Track *t;
-        QString trackPath;
-        QString lastFmUri;
+        ::Track lastFmTrack; // this is how we love, ban, etc
+        QUrl trackPath;
+        QUrl lastFmUri;
 
         QPixmap albumArt;
         QString artist;
@@ -69,42 +75,28 @@ class Track::Private : public QObject
         Meta::ComposerPtr composerPtr;
         Meta::YearPtr yearPtr;
 
-        Request *m_webServiceRequest;
-
     public:
         Private()
-            : lastFmUri( 0 )
-            , m_webServiceRequest( 0 )
+            : lastFmUri( QUrl() )
         {
             artist = QString ( "Last.fm" );
         }
 
         ~Private()
         {
-            if( m_webServiceRequest )
-            {
-                m_webServiceRequest->abort();
-                m_webServiceRequest->deleteLater();
-            }
         }
 
         void notifyObservers();
 
-        void setTrackInfo( const TrackInfo &trackInfo )
+        void setTrackInfo( const ::Track &trackInfo )
         {
-            if( m_webServiceRequest )
-            {
-                m_webServiceRequest->abort();
-                m_webServiceRequest->deleteLater();
-                m_webServiceRequest = 0;
-            }
-
+            lastFmTrack = trackInfo;
             artist = trackInfo.artist();
             album = trackInfo.album();
-            track = trackInfo.track();
+            track = trackInfo.title();
             length = trackInfo.duration();
-            trackPath = trackInfo.path();
-
+            trackPath = trackInfo.url();
+            
             // need to reset other items
             albumUrl = "";
             trackUrl = "";
@@ -112,36 +104,33 @@ class Track::Private : public QObject
 
             notifyObservers();
 
-            if( !trackInfo.isEmpty() )
+            if( !trackInfo.isNull() )
             {
-                TrackMetaDataRequest *tmdr = new TrackMetaDataRequest();
-                m_webServiceRequest = tmdr;
-                connect( m_webServiceRequest, SIGNAL( result( Request * ) ), this, SLOT( requestResult( Request * ) ) );
-                m_webServiceRequest->setLanguage( The::settings().appLanguage() );
-                tmdr->setTrack( trackInfo );
-                m_webServiceRequest->start();
+                WsReply* reply = WsRequestBuilder( "track.getInfo" )
+                .add( "artist",artist)
+                .add( "track", track )
+                .add( "api_key", QString( Ws::ApiKey ) )
+                .get();
+                
+                connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( requestResult( WsReply* ) ) );
             }
         }
 
     public slots:
-        void requestResult( Request *request )
+        void requestResult( WsReply *reply )
         {
-            m_webServiceRequest->deleteLater();
-            m_webServiceRequest = 0;
 
-            TrackMetaDataRequest *tmdr = static_cast<TrackMetaDataRequest *>( request );
-            if( request->succeeded() )
+            if( reply->error() == Ws::NoError )
             {
-                albumUrl = tmdr->metaData().albumPageUrl();
-                trackUrl = tmdr->metaData().trackPageUrl();
-
-                // TODO: need a separate request to get artist url, it can wait until we're ready to do something with it
+                albumUrl = reply->lfm()[ "track" ][ "album" ][ "url" ].text();
+                trackUrl = reply->lfm()[ "track" ][ "url" ].text();
+                artistUrl = reply->lfm()[ "track" ][ "artist" ][ "url" ].text();
 
                 notifyObservers();
 
-                if( !tmdr->metaData().albumPicUrl().isEmpty() )
+                if( !reply->lfm()[ "track" ][ "album" ][ "image size=large" ].text().isEmpty() )
                 {
-                    KIO::Job* job = KIO::storedGet( KUrl( tmdr->metaData().albumPicUrl() ), KIO::Reload, KIO::HideProgressInfo );
+                    KIO::Job* job = KIO::storedGet( KUrl( reply->lfm()[ "track" ][ "album" ][ "image size=large" ].text() ), KIO::Reload, KIO::HideProgressInfo );
                     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
                 }
             }
@@ -169,6 +158,7 @@ class Track::Private : public QObject
             }
             notifyObservers();
         }
+
 };
 
 // internal helper classes

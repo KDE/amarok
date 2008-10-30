@@ -101,6 +101,9 @@ App::App()
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
 
+    // required for last.fm plugin to grab app version
+    setApplicationVersion( "2.0-SVN" );
+
     if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
         PERF_LOG( "Init KStandardDirs cache" )

@@ -13,8 +13,8 @@
 
 #include "LastFmSettings.h"
 #include "Amarok.h"
+#include "Debug.h"
 #include "LastFmServiceConfig.h"
-#include "UnicornCommon.h"
 
 #include <KGlobal>
 #include <KSharedConfig>
@@ -64,13 +64,13 @@ LastFmUserSettings::isDiscovery() const
 
 
 void 
-LastFmUserSettings::setResumeStation( StationUrl station )
+LastFmUserSettings::setResumeStation( RadioStation station )
 {
     m_resumeStation = station; // don't save across sessions
 }
 
 
-StationUrl 
+RadioStation 
 LastFmUserSettings::resumeStation() const
 {
      return m_resumeStation; // don't save across sessions
@@ -78,7 +78,7 @@ LastFmUserSettings::resumeStation() const
 
 
 void 
-LastFmUserSettings::addRecentStation( const class Station& )
+LastFmUserSettings::addRecentStation( const class RadioStation& )
 {
     // TODO
 }
@@ -93,9 +93,8 @@ LastFmSettings::currentUsername()
 QString
 LastFmSettings::appLanguage() const
 {
-    QLocale::Language qtLang = QLocale::system().language();
+    return QLocale::languageToString( QLocale::system().language() );
 
-    return UnicornUtils::qtLanguageToLfmLangCode( qtLang );
 }
 
 

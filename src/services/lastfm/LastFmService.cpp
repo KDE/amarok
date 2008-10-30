@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
  **************************************************************************/
 
 /***************************************************************************
@@ -16,20 +17,33 @@
 #include "EngineController.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
-#include "RadioAdapter.h"
-#include "ScrobblerAdapter.h"
 #include "SimilarArtistsAction.h"
+#include "ScrobblerAdapter.h"
+#include "StatusBar.h"
 
 #include "GlobalCollectionActions.h"
 
 #include "collection/CollectionManager.h"
 #include "meta/LastFmCapability.h"
+#include "meta/LastFmMeta.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
+#include <lastfm/Scrobbler.h> // from liblastfm
+#include <lastfm/ws/WsKeys.h>
+#include <lastfm/ws/WsReply.h>
+#include <lastfm/ws/WsRequestBuilder.h>
+
 #include <QComboBox>
+#include <QCryptographicHash>
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
+
+QString md5( const QByteArray& src )
+{
+    QByteArray const digest = QCryptographicHash::hash( src, QCryptographicHash::Md5 );
+    return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
+}
 
 void
 LastFmServiceFactory::init()
@@ -37,9 +51,9 @@ LastFmServiceFactory::init()
     LastFmServiceConfig config;
  
     //  The user activated the service, but didn't fill the username/password? Don't start it.
-    if ( config.username().isEmpty() || config.password().isEmpty() ) return; 
-
-    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), UnicornUtils::md5Digest( config.password().toUtf8() ), config.scrobble(), config.fetchSimilar() );
+    if ( config.username().isEmpty() || config.password().isEmpty() ) return;
+    
+    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.scrobble(), config.fetchSimilar() );
     m_activeServices << service;
     m_initialized = true;
     emit newService( service );
@@ -71,12 +85,38 @@ LastFmServiceFactory::config()
 
 LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar )
     : ServiceBase( name, parent ),
-      m_scrobbler( scrobble ? new ScrobblerAdapter( this, username, password ) : 0 ),
-      m_radio( new RadioAdapter( this, username, password ) ),
+      m_scrobble( scrobble ),
+      m_scrobbler( 0 ),
       m_polished( false ),
       m_userName( username )
 {
+    DEBUG_BLOCK
+    
     Q_UNUSED( fetchSimilar ); // TODO implement..
+    
+    // set the global static Lastfm::Ws stuff
+    //Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    //Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
+    // testing w/ official keys
+    Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
+    Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
+    Ws::Username = qstrdup( m_userName.toLatin1().data() );
+    
+    debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
+
+    QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
+    QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "authToken" + authToken + "methodauth.getMobileSession" + QString( Ws::SharedSecret ) ).toUtf8() );
+    
+    // now authenticate w/ last.fm and get our session key
+    WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
+    .add( "username", m_userName )
+    .add( "authToken", authToken )
+    .add( "api_key", Ws::ApiKey )
+    .add( "api_sig", sign_key )
+    .get();
+    
+    connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
+    
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
     setShortDescription( i18n( "Last.fm: The social music revolution." ) );
@@ -106,6 +146,32 @@ LastFmService::~LastFmService()
     delete m_collection;
 }
 
+void
+LastFmService::onAuthenticated( WsReply* reply )
+{
+    switch (reply->error())
+    {
+        case Ws::NoError:
+        {
+            m_sessionKey = reply->lfm()["session"]["key"].nonEmptyText();
+            Ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+            if( m_scrobble )
+                m_scrobbler = new ScrobblerAdapter( this, "ark" );
+            break;
+        } case Ws::AuthenticationFailed:
+            //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly." ), KDE::StatusBar::Error );
+            break;
+            
+        default:
+            //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later." ), KDE::StatusBar::Error );
+            break;
+            
+        case Ws::UrProxyIsFuckedLol:
+        case Ws::UrLocalNetworkIsFuckedLol:
+            //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings." ), KDE::StatusBar::Error );
+            break;
+    }
+}
 
 void
 LastFmService::polish()
@@ -135,9 +201,6 @@ LastFmService::polish()
         m_skipButton->setIcon( KIcon( "media-seek-forward-amarok" ) );
         connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
 
-        connect( m_radio, SIGNAL( haveTrack( bool ) ), this, SLOT( setRadioButtons( bool ) ) );
-        setRadioButtons( m_radio->currentTrack() );
-
         KHBox * customStationBox = new KHBox( m_bottomPanel );
         customStationBox->setSpacing( 3 );
         m_customStationEdit = new KLineEdit( customStationBox );
@@ -164,17 +227,13 @@ LastFmService::love()
 {
     DEBUG_BLOCK
 
-    LastFm::TrackPtr radioTrack = radio()->currentTrack();
-    if( radioTrack )
-        radioTrack->love();
-
-    // We're loving a track which isn't from radio
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
+    if( lastfmTrack )
+        lastfmTrack->love();
     else
-    {
-        Meta::TrackPtr track = The::engineController()->currentTrack();
-        if( track )
-            m_scrobbler->loveTrack( track );
-    }
+        m_scrobbler->loveTrack( track );
+
 }
 
 
@@ -182,10 +241,11 @@ void
 LastFmService::ban()
 {
     DEBUG_BLOCK
-
-    LastFm::TrackPtr track = radio()->currentTrack();
-    if( track )
-        track->ban();
+    
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
+    if( lastfmTrack )
+        lastfmTrack->ban();
 }
 
 
@@ -193,10 +253,11 @@ void
 LastFmService::skip()
 {
     DEBUG_BLOCK
-
-    LastFm::TrackPtr track = radio()->currentTrack();
-    if( track )
-        track->skip();
+    
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
+    if( lastfmTrack )
+        lastfmTrack->skip();
 }
 
 
