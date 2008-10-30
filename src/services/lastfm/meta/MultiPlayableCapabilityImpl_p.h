@@ -20,6 +20,7 @@
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
 #include "Debug.h"
+#include "LastFmServiceConfig.h"
 #include "Meta.h"
 #include "meta/MultiPlayableCapability.h"
 
@@ -27,6 +28,7 @@
 #include <lastfm/radio/Tuner.h>
 
 #include <QQueue>
+#include <QCryptographicHash>
 
 class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public Meta::Observer
 {
@@ -51,7 +53,14 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         {
             DEBUG_BLOCK
             // first play, so we need to fetch tracks and start playing
-            m_tuner = new Tuner( RadioStation( m_track->uidUrl() ) );
+            // tuner needs md5 hashed password...
+            LastFmServiceConfig config;
+            QString pw = config.password();
+            
+            QByteArray const digest = QCryptographicHash::hash( pw.toUtf8(), QCryptographicHash::Md5 );
+            pw = QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
+            
+            m_tuner = new lastfm::legacy::Tuner( RadioStation( m_track->uidUrl() ), pw );
             
             connect( m_tuner, SIGNAL( tracks( const QList< Track >& ) ), this, SLOT( slotNewTracks( const QList< Track >& ) ) );
 
@@ -128,7 +137,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         
         Track m_currentTrack;
         QQueue< Track > m_upcomingTracks;
-        Tuner* m_tuner;
+        lastfm::legacy::Tuner* m_tuner;
 };
 
 #endif
