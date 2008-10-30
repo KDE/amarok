@@ -42,8 +42,13 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
 
         void notify() const
         {
+            DEBUG_BLOCK
+
             foreach( Meta::Observer *observer, observers )
-                observer->metadataChanged( Meta::TrackPtr( const_cast<MetaStream::Track*>(track) ) );
+            {
+                debug() << "Notifying observer: " << observer;
+                observer->metadataChanged( Meta::TrackPtr( const_cast<MetaStream::Track*>( track ) ) );
+            }
         }
 
         void engineNewMetaData( const QHash<qint64, QString> &metaData, bool trackChanged )
