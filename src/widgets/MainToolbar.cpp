@@ -81,7 +81,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     pWidget->setContentsMargins( 0, 2, 0, 0 );
 
     m_volumeWidget = new VolumeWidget( topHBox );
-    m_volumeWidget->setFixedSize( 160, 24 );
+    m_volumeWidget->setFixedSize( 170, 24 );
 
     kapp->installEventFilter( this );
 }
