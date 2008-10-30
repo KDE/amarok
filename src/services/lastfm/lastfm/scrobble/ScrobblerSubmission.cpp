@@ -75,4 +75,4 @@ ScrobblerSubmission::submitNextBatch()
         m_data += "&portable=1";
 
     request();
-};
+}
