@@ -385,6 +385,7 @@ ColumnContainment::loadConfig( const KConfigGroup &conf )
     if( m_manageCurrentTrack )
     {
         debug() << "adding current track";
+        m_appletsFromConfigCount++;
         Plasma::Containment::addApplet( "currenttrack" );
     }
 
@@ -599,6 +600,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         DEBUG_LINE_INFO
         width = m_currentColumns ? m_width / m_currentColumns : m_width;
         m_appletsFromConfigCount--;
+        debug() << "using false width of" << width << "instead of real:" << m_currentColumns << m_maxColumnWidth / m_currentColumns << m_maxColumnWidth;
     }
     else
         width = m_currentColumns ? m_maxColumnWidth / m_currentColumns : m_maxColumnWidth;
@@ -609,20 +611,25 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
     qreal aspectRatio = height / (qreal)width;
     int rowSpan = aspectRatio / 0.3;
 
+    /*
+    debug() << "calculating rowspan, aspectratio = height / width";
+    debug() << aspectRatio << " = " << height << " / " << width;
+    debug() << "rowspan = aspectRatio / 0.3";
+    debug() << rowSpan << " = " << aspectRatio << " / 3"; */
     int colSpan = 1;
 
     if( rowSpan == 0 || aspectRatio * 100 > 30 && ( int )( aspectRatio * 100 ) % 30 > 15 )
         rowSpan += 1;
 
     rowSpan = qMin( rowSpan, m_currentRows );
-
+    /*
     debug() << "current columns: " << m_currentColumns;
     debug() << "current rows: " << m_currentRows;
     debug() << "applet: " << applet->pluginName();
     debug() << "width: " << width;
     debug() << "height: " << height;
     debug() << "rowspan: " << rowSpan;
-
+    */
     int col = 0;
     int row = 0;
     bool positionFound = false;

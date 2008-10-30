@@ -376,6 +376,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
+    debug() << "current track painting in rect:" << contentsRect;
     if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
     {
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
