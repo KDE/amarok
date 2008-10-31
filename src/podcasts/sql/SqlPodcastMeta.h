@@ -51,8 +51,9 @@ class SqlPodcastEpisode : public PodcastEpisode
         //SqlPodcastEpisode specific methods
         int dbId() const { return m_dbId; };
 
-    private:
         void updateInDb();
+
+    private:
 
         bool m_batchUpdate;
 
@@ -74,9 +75,11 @@ class SqlPodcastChannel : public PodcastChannel
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; };
         virtual void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; };
-        void addEpisode( PodcastEpisodePtr episode ) { debug() << "adding episode " << episode->title() << " to sqlchannel " << title();  m_episodes << episode; addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) ); }
+        void addEpisode( PodcastEpisodePtr episode ) { debug() << "adding episode " << episode->title() << " to sqlchannel " << title();  m_episodes << episode; addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) ); };
 
         void updateInDb();
+        const SqlPodcastEpisodeList sqlEpisodes() { return m_sqlEpisodes; };
+
     private:
         void loadEpisodes();
 
