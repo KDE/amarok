@@ -239,9 +239,9 @@ App::~App()
     mainWindow()->deleteBrowsers();
     delete mainWindow();
 
-    PlaylistManager::destroy();
     Playlist::Actions::destroy();
     Playlist::Model::destroy();
+    PlaylistManager::destroy();
     CollectionManager::destroy();
     MountPointManager::destroy();
     EngineController::destroy();
@@ -530,7 +530,7 @@ App::continueInit()
 
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right charecters.
-    
+
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
@@ -593,7 +593,7 @@ App::continueInit()
     {
         debug() << "Starting first run tutorial";
         FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
-        QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) ); 
+        QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) );
     }
 }
 
