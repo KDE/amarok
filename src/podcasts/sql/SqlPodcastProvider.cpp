@@ -59,16 +59,6 @@ SqlPodcastProvider::SqlPodcastProvider()
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {
-    DEBUG_BLOCK
-    foreach(Meta::SqlPodcastChannelPtr channel, m_channels)
-    {
-        channel->updateInDb();
-        foreach(Meta::SqlPodcastEpisodePtr episode, channel->sqlEpisodes())
-        {
-            episode->updateInDb();
-        }
-    }
-    m_channels.clear();
 }
 
 void
@@ -209,33 +199,23 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 }
 
 void
-SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
+SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
-    if( sqlEpisode.isNull() )
-    {
-        debug() << "Error: SqlPodcastProvider::downloadEpisode(  Meta::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
-        return;
-    }
+    SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
     KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
-    m_jobMap[storedTransferJob] = sqlEpisode.data();
+    m_jobMap[storedTransferJob] = sqlEpisode;
     m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
     debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
     The::statusBar()->newProgressOperation( storedTransferJob, sqlEpisode->title().isEmpty()
-            ? i18n("Downloading Podcast Media") : i18n("Downloading Podcast \"%1\"", sqlEpisode->title()) )
+            ? i18n("Downloading Podcast Media") : i18n("Downloading Podcast \"%1\"", episode->title()) )
             ->setAbortSlot( this, SLOT( abortDownload()) );
 
     connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
     connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ), SLOT( redirected( KIO::Job *,const KUrl& ) ) );
-}
-
-void
-SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
-{
-    downloadEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
 }
 
 void
@@ -267,6 +247,12 @@ SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
 }
 
 void
+SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr podcastEpisode )
+{
+    downloadEpisode( PodcastEpisodePtr::dynamicCast( podcastEpisode ) );
+}
+
+void
 SqlPodcastProvider::slotUpdated()
 {
     DEBUG_BLOCK
@@ -288,9 +274,8 @@ SqlPodcastProvider::downloadResult( KJob * job )
     }
     else
     {
-        Meta::SqlPodcastEpisode *sqlEpisode = m_jobMap.value( job );
-        debug() << "pointer: " << QString::number((unsigned int) sqlEpisode);
-        if( sqlEpisode == 0 )
+        Meta::SqlPodcastEpisodePtr sqlEpisode = m_jobMap.value( job );
+        if( sqlEpisode.isNull() )
         {
             debug() << "sqlEpisodePtr is NULL after download";
             return;
@@ -312,9 +297,6 @@ SqlPodcastProvider::downloadResult( KJob * job )
         if( localFile->open( QIODevice::WriteOnly ) &&
             localFile->write( (static_cast<KIO::StoredTransferJob *>(job))->data() ) != -1 )
         {
-            debug() << "successfully write Podcast Episode to " << localUrl.path();
-            debug() << "for episode: " << sqlEpisode->title();
-            debug() << "pointer: " << QString::number((unsigned int)sqlEpisode);
             sqlEpisode->setLocalUrl( localUrl );
         }
         else

@@ -83,7 +83,7 @@ class SqlPodcastProvider : public PodcastProvider
 
         Meta::SqlPodcastChannelList m_channels;
 
-        QHash<KJob *, Meta::SqlPodcastEpisode *> m_jobMap;
+        QHash<KJob *, Meta::SqlPodcastEpisodePtr> m_jobMap;
         QHash<KJob *, QString> m_fileNameMap;
 
 };
