@@ -45,15 +45,6 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     m_databaseLocationInput->setText( QDir::homePath() + "/.kde/share/apps/amarok/collection.db" );
     m_databaseLocationLabel->setBuddy( m_databaseLocationInput );
 
-    m_databaseLabel = new QLabel( "Database Name", gridHolder );
-    m_databaseInput = new QLineEdit( gridHolder );
-    m_databaseLabel->setBuddy( m_databaseInput );
-
-    m_hostnameLabel = new QLabel( "Hostname", gridHolder );
-    m_hostnameInput = new QLineEdit( gridHolder );
-    m_hostnameInput->setText( "localhost" );
-    m_hostnameLabel->setBuddy( m_hostnameInput );
-
     m_usernameLabel = new QLabel( "Username", gridHolder );
     m_usernameInput = new QLineEdit( gridHolder );
     m_usernameLabel->setBuddy( m_usernameInput );
@@ -62,6 +53,15 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     m_passwordInput = new QLineEdit( gridHolder );
     m_passwordInput->setEchoMode( QLineEdit::Password );
     m_passwordLabel->setBuddy( m_passwordInput );
+
+    m_databaseLabel = new QLabel( "Database Name", gridHolder );
+    m_databaseInput = new QLineEdit( gridHolder );
+    m_databaseLabel->setBuddy( m_databaseInput );
+
+    m_hostnameLabel = new QLabel( "Hostname", gridHolder );
+    m_hostnameInput = new QLineEdit( gridHolder );
+    m_hostnameInput->setText( "localhost" );
+    m_hostnameLabel->setBuddy( m_hostnameInput );
 
     databaseLayout->addWidget( connectionLabel, 0, 0 );
     databaseLayout->addWidget( m_connectionCombo, 0, 1 );
