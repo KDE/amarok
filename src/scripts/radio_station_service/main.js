@@ -47,7 +47,7 @@ var stationArray = new Array (
     new Station( "Kohina [Computer-Music]",                             "http://la.campus.ltu.se:8000/stream.ogg.m3u" ),
     new Station( "Mostly Classical [Classical]",                        "http://www.sky.fm/mp3/classical.pls" ),
     new Station( "MTH.House [House]",                                   "http://stream.mth-house.de:8500/listen.pls" ),
-    new Station( "Nectarine Demoscene Radio [Computer-Music]",          "http://nectarine.sik.fi:8002/live.mp3.m3u" ),
+    new Station( "Nectarine Demoscene Radio [Computer-Music]",          "http://nectarine.sik.fi:8002/necta.m3u" ),
     new Station( "Philosomatika [Psytrance]",                           "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2933&file=filename.pls" ),
     new Station( "Proton Radio [House/Dance]",                          "http://protonradio.com/proton.m3u" ),
     new Station( "Pure DJ [Trance]",                                    "http://www.puredj.com/etc/pls/128K.pls" ),
@@ -55,7 +55,7 @@ var stationArray = new Array (
     new Station( "Radio Paradise [Rock/Pop/Alternative]",               "http://www.radioparadise.com/musiclinks/rp_128.m3u" ),
     new Station( "Raggakings [Reggae]",                                 "http://www.raggakings.net/listen.m3u" ),
     new Station( "Secret Agent [Downtempo/Lounge]",                     "http://somafm.com/secretagent.pls" ),
-    new Station( "SLAY Radio [C64 Remixes]",                            "http://sc.slayradio.org:8000/listen.pls" ),
+    new Station( "SLAY Radio [C64 Remixes]",                            "http://www.slayradio.org/tune_in.php/128kbps/listen.m3u" ),
     new Station( "Virgin Radio [Rock/Pop]",                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb" ),
     new Station( "X T C Radio [Techno/Trance]",                         "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2882&file=filename.pls" )
 );
