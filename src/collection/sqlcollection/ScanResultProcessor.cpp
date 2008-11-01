@@ -58,6 +58,10 @@ ScanResultProcessor::setScanType( ScanType type )
 void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
+    if (dir.isEmpty()) {
+        debug() << "got directory with no path from the scanner, not adding";
+        return;
+    }
     setupDatabase();
     int deviceId = MountPointManager::instance()->getIdForUrl( dir );
     QString rdir = MountPointManager::instance()->getRelativePath( deviceId, dir );
