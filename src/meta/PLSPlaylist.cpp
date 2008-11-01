@@ -18,10 +18,10 @@
 
 #include "PLSPlaylist.h"
 
+#include "CollectionManager.h"
 #include "Debug.h"
-#include "Meta.h"
-#include "proxy/MetaProxy.h"
 #include "EditCapability.h"
+#include "Meta.h"
 #include "PlaylistManager.h"
 
 #include <KLocale>
@@ -166,7 +166,7 @@ PLSPlaylist::loadPls( QTextStream &stream )
             if (index > numberOfEntries || index == 0)
                 continue;
             tmp = (*i).section('=', 1).trimmed();
-            currentTrack = Meta::TrackPtr( new MetaProxy::Track( KUrl( tmp ) ) );
+            currentTrack = CollectionManager::instance()->trackForUrl( tmp );
             m_tracks.append( currentTrack );
             continue;
         }
