@@ -18,9 +18,9 @@
 
 #include "M3UPlaylist.h"
 
-#include "Debug.h"
 #include "Amarok.h"
-#include "proxy/MetaProxy.h"
+#include "CollectionManager.h"
+#include "Debug.h"
 #include "PlaylistManager.h"
 
 #include <KUrl>
@@ -108,11 +108,11 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
-                m_tracks.append( Meta::TrackPtr( new MetaProxy::Track( kurl ) ) );
+                m_tracks.append( CollectionManager::instance()->trackForUrl( url ) );
             }
             else
-             {
-                m_tracks.append( Meta::TrackPtr( new MetaProxy::Track( KUrl( line ) ) ) );
+            {
+                m_tracks.append( CollectionManager::instance()->trackForUrl( KUrl( line ) ) );
             }
 
             // Ensure that we always have a title: use the URL as fallback
