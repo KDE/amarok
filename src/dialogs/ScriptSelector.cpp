@@ -53,7 +53,8 @@ QString ScriptSelector::currentItem()
 {
     DEBUG_BLOCK
 
-    QModelIndex currentIndex = m_listView->currentIndex();
+    QItemSelectionModel *SelModel = m_listView->selectionModel();
+    QModelIndex currentIndex = SelModel->selectedIndexes().at(0);
     debug() << "row: " << currentIndex.row() + 1; //the index start from 1
     debug() << "name: "<< m_scripts[currentIndex.row() + 1];
     return m_scripts[currentIndex.row() + 1];

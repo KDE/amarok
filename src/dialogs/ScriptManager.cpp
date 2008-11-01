@@ -283,8 +283,8 @@ ScriptManager::findScripts() //SLOT
         else if ( m_scripts[key].info.category() == "Scriptable Service" )
             ServiceInfoList.append( m_scripts[key].info );
     }
-    m_scriptSelector->addScripts( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
     m_scriptSelector->addScripts( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
+    m_scriptSelector->addScripts( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
     m_scriptSelector->addScripts( ServiceInfoList, KPluginSelector::ReadConfigFile, "Scriptable Service" );
     // Handle auto-run:
     slotConfigChanged( true );
