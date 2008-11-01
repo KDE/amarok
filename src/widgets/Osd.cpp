@@ -25,7 +25,7 @@
 #include "amarokconfig.h"
 #include "meta/MetaUtility.h"
 
-#include <plasma/panelsvg.h>
+#include <plasma/framesvg.h>
 
 #include <KApplication>
 #include <KIcon>
