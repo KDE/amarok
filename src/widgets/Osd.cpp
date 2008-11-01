@@ -25,8 +25,6 @@
 #include "amarokconfig.h"
 #include "meta/MetaUtility.h"
 
-#include <plasma/framesvg.h>
-
 #include <KApplication>
 #include <KIcon>
 #include <KStandardDirs>   //locate
