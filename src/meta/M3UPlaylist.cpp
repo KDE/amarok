@@ -98,6 +98,10 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
+            line = line.replace( "\\", "/" );
+
+            debug() << "line: " << line;
+            
             // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
             if( url.startsWith( '/' ) )
@@ -105,10 +109,13 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             // Won't be relative if it begins with a /
             if( KUrl::isRelativeUrl( url ) )
             {
+                debug() << "relative url";
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
-                m_tracks.append( CollectionManager::instance()->trackForUrl( url ) );
+                Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( kurl );
+                        debug() << "track url: " << trackPtr->prettyUrl();
+                        m_tracks.append( trackPtr );
             }
             else
             {
