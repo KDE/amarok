@@ -51,7 +51,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 
     if ( !index.isValid() ||
          ( role != Qt::DisplayRole && role != Qt::DecorationRole &&
-           role != ShortDescriptionRole ) )
+           role != ShortDescriptionRole && role != OnDiskRole ) )
     {
         return QVariant();
     }
@@ -62,6 +62,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
     QString title;
     QString description;
     KIcon icon;
+    bool isOnDisk = false;
     if ( pmc->podcastType() == Meta::ChannelType )
     {
         Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel *>(index.internalPointer());
@@ -76,7 +77,11 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         title = episode->title();
         description = episode->description();
         isChannel = false;
-        icon = KIcon( "podcast_new" );
+        isOnDisk = !episode->localUrl().isEmpty();
+        if( isOnDisk )
+            icon = KIcon( "go-down" );
+        else
+            icon = KIcon( "amarok_podcast" );
     }
     else
     {
@@ -88,6 +93,8 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         return title;
     else if ( role == Qt::DecorationRole )
         return QVariant( icon );
+    else if ( role == OnDiskRole )
+        return QVariant( isOnDisk );
 
     // At this point role can only be ShortDescriptionRole
     return description;

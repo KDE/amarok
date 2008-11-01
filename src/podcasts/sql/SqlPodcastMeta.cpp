@@ -173,6 +173,8 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 
 Meta::SqlPodcastChannel::~SqlPodcastChannel()
 {
+    m_sqlEpisodes.clear();
+    m_episodes.clear();
     updateInDb();
 }
 
