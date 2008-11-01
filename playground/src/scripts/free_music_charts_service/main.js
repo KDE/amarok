@@ -42,14 +42,25 @@ elt    = new QDomElement;
 elt2   = new QDomElement;
 shows  = new QDomNodeList;
 
+
+/* Configuration */
 function onConfigure() {
   Amarok.alert( "sorry", "This script does not require any configuration." );
 }
 
-function fmcShowsXmlParser( reply ) {
-  Amarok.debug( "start fmc xml parsing..." );
-  try {
 
+/* Initialization of service */
+function FreeMusicCharts() {
+  Amarok.debug( "creating fmc service..." );
+  ScriptableServiceScript.call( this, "Free Music Charts", 2, "Free Music Charts from Darkerradio.com", html, false );
+  Amarok.debug( "done creating fmc service!" );
+}
+
+
+/* Get info for shows */
+function fmcShowsXmlParser( reply ) {
+  Amarok.debug( "start fmc shows xml parsing..." );
+  try {
     doc.setContent( reply );
     shows = doc.elementsByTagName( "show" );
     Amarok.debug ("got " + shows.length() + " shows!");
@@ -71,7 +82,6 @@ function fmcShowsXmlParser( reply ) {
       item.callbackData = i;
       script.insertItem( item );
     }
-
   }
   catch( err ) {
     Amarok.debug( err );
@@ -79,12 +89,44 @@ function fmcShowsXmlParser( reply ) {
   script.donePopulating();
 }
 
-function FreeMusicCharts() {
-  Amarok.debug( "creating fmc service..." );
-  ScriptableServiceScript.call( this, "Free Music Charts", 2, "Free Music Charts from Darkerradio.com", html, false );
-  Amarok.debug( "done creating fmc service!" );
+
+/* Get info for given track, identified by its playable url */
+function fmcTracksXmlParser( url ) {
+  Amarok.debug( "start fmc tracks xml parsing..." );
+  tempShow = new QDomNodeList;
+  songs    = new QDomElement;
+  var html = '', rank, votes, title;
+  var i = 0, j = 0;
+
+  // for each show...
+  for ( ; i < shows.length(); i++ ) {
+    Amarok.debug( "found a show..." );
+    tempShow = shows.at( i );
+    j = tempShow.firstChildElement( "songcount" ).text();
+    title = tempShow.firstChildElement( "title" ).text();
+    tempShow = tempShow.firstChildElement( "songs" );
+    songs    = tempShow.firstChildElement( "song" );
+
+    // ...try to find the track
+    for ( ; j != 0; j-- ) {
+      if ( songs.firstChildElement( "url" ).text() == url ) { // found song
+        rank = songs.firstChildElement( "rank" ).text();
+        if( rank == "99") rank = "New";
+
+        votes = songs.firstChildElement( "votes" ).text();
+        if( votes == "-1") votes = "none";
+
+        html = html + "<br/><b>" + title;
+        html = html + ":</b> Rank: " + rank + ", Votes: " + votes;
+      }
+      songs = songs.nextSiblingElement( "song" );
+    }
+  }
+  return html;
 }
 
+
+/* Fill tree view in Amarok */
 function onPopulate( level, callbackData, filter ) {
   var i = 0;
   Amarok.debug( "populating fmc level: " + level );
@@ -113,47 +155,34 @@ function onPopulate( level, callbackData, filter ) {
     item.callbackData = "";
 
     elt = shows.at( callbackData ); // jump to the correct show
-    elt2 = elt.firstChildElement( "title" );
-    var heading = elt2.text();
     var i = elt.firstChildElement( "songcount" ).text(); // get songcount
     Amarok.debug( i );
     elt = elt.firstChildElement( "songs" ); // ascend to songs
     elt = elt.firstChildElement( "song" );  // ascent to first song
 
     var songArtistTitle = new Array( 2 );
-    var rank;
-    var votes;
 
     for ( ; i != 0; i-- ) {
       // beautify rank and votes for newcomers
       elt2 = elt.firstChildElement( "rank" );
-      if( elt2.text() == "99") rank = "New";
-      else rank = elt2.text();
+      if( elt2.text() == "99") item.itemName = "New";
+      else item.itemName = elt2.text();
 
-      elt2 = elt.firstChildElement( "votes" );
-      if( elt2.text() == "-1") votes = "none";
-      else votes = elt2.text();
-
-      item.itemName = rank;
-      elt2 = elt.firstChildElement( "name" );
-      item.itemName = item.itemName + ": " + elt2.text();
+      item.itemName = item.itemName + ": " + elt.firstChildElement( "name" ).text();
 
       // split name into artist/title
       // XXX: find a way to set the title correctly without messing with the item order in the browser
-      songArtistTitle = elt2.text().split(" - ");
+      songArtistTitle = elt.firstChildElement( "name" ).text().split(" - ");
       Amarok.debug( songArtistTitle[0] );
       Amarok.debug( songArtistTitle[1] );
       item.artist = songArtistTitle[0];
 
-      // create beautiful infoHtml
-      item.infoHtml = "<center><b>" + heading + "</center></b><br/>";
-      item.infoHtml = item.infoHtml + "<b>Song:</b> " + elt2.text() + "<br/>";
-      item.infoHtml = item.infoHtml + "<b>Rank:</b> ";
-      item.infoHtml = item.infoHtml + rank + "<br/>";
-      item.infoHtml = item.infoHtml + "<b>Votes:</b> " + votes;
-
       elt2 = elt.firstChildElement( "url" );
       item.playableUrl = elt2.text();
+      item.infoHtml = "<center><b>Chart positions of<br/>";
+      item.infoHtml = item.infoHtml + elt.firstChildElement( "name" ).text();
+      item.infoHtml = item.infoHtml + "</b></center><br/>";
+      item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() );
       elt = elt.nextSiblingElement( "song" );
       script.insertItem( item );
     }
@@ -162,6 +191,7 @@ function onPopulate( level, callbackData, filter ) {
     script.donePopulating();
   }
 }
+
 
 Amarok.configured.connect( onConfigure );
 
