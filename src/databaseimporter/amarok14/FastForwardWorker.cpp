@@ -151,13 +151,12 @@ FastForwardWorker::run()
 
     if( tracksForInsert.size() > 0 )
     {
-        debug() << "__inserting tracks__";
         CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         location->insertTracks( tracksForInsert );
         location->insertStatistics( tracksForInsert );
     }
 
-    if( false && m_importArtwork )
+    if( m_importArtwork )
     {
         QString message = i18n( "Importing downloaded album art" );
         emit showMessage( message );
