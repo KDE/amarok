@@ -377,6 +377,9 @@ CollectionManager::trackForUrl( const KUrl &url )
 void
 CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
 {
+    if( !artist )
+        return;
+
     m_maxArtists = maxArtists;
     SqlStorage *sql = sqlStorage();
     QString query = QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
