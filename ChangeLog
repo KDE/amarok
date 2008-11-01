@@ -9,7 +9,7 @@ VERSION 2.0-rc1
   CHANGES:
 
   BUGFIXES:
-
+    * Fixed metadata updating for Shoutcast streams.
 
 
 VERSION 2.0-beta3
