@@ -114,8 +114,11 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
                 Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( kurl );
-                        debug() << "track url: " << trackPtr->prettyUrl();
-                        m_tracks.append( trackPtr );
+
+                if ( trackPtr ) {
+                    debug() << "track url: " << trackPtr->prettyUrl();
+                    m_tracks.append( trackPtr );
+                }
             }
             else
             {
