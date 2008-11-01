@@ -220,7 +220,6 @@ App::~App()
     }
 
     The::engineController()->endSession(); //records final statistics
-    The::engineController()->detach( this );
 
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
@@ -561,12 +560,6 @@ App::continueInit()
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
-    //do after applySettings(), or the OSD will flicker and other wierdness!
-    //do before restoreSession()!
-    The::engineController()->attach( this );
-    //set a default interface
-    engineStateChanged( Phonon::StoppedState );
-    PERF_LOG( "Engine state changed" )
     if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
@@ -594,32 +587,6 @@ App::continueInit()
         debug() << "Starting first run tutorial";
         FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
         QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) );
-    }
-}
-
-void App::engineStateChanged( Phonon::State state, Phonon::State oldState )
-{
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    //track is 0 if the engien state is Empty. we check that in the switch
-    switch( state )
-    {
-    case Phonon::StoppedState:
-    case Phonon::LoadingState:
-        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-        break;
-
-    case Phonon::PlayingState:
-        if ( oldState == Phonon::PausedState )
-            Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
-        break;
-
-    case Phonon::PausedState:
-        Amarok::OSD::instance()->OSDWidget::show( i18n("Paused") );
-        break;
-
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
     }
 }
 

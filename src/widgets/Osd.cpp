@@ -625,21 +625,6 @@ Amarok::OSD::forceToggleOSD()
 }
 
 void
-Amarok::OSD::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
-{
-    if (!trackChanged && !isMetaDataSpam( newMetaData ))// metadata spam protection from streams
-        show( The::engineController()->currentTrack() );
-    else
-        show( The::engineController()->currentTrack() );
-}
-
-void
-Amarok::OSD::engineNewTrackPlaying()
-{
-    show( The::engineController()->currentTrack() );
-}
-
-void
 Amarok::OSD::engineVolumeChanged( int newVolume )
 {
     volChanged( newVolume );
@@ -665,6 +650,43 @@ Amarok::OSD::isMetaDataSpam( const QHash<qint64, QString> &newMetaData )
     m_metaDataHistory.insert( 0, newMetaData);
     return false;
 }
+
+void
+Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
+{
+    Q_UNUSED( oldState )
+    DEBUG_BLOCK
+
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+
+    switch( state )
+    {
+    case Phonon::PlayingState:
+        unsubscribeFrom( m_currentTrack );
+        m_currentTrack = track;
+        subscribeTo( track );
+        metadataChanged( track );
+        break;
+
+    case Phonon::PausedState:
+        setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+        OSDWidget::show( i18n( "Paused" ) );
+        break;
+
+    default:
+        break;
+    }
+}
+
+void
+Amarok::OSD::metadataChanged( Meta::TrackPtr track )
+{
+    Q_UNUSED( track )
+    DEBUG_BLOCK
+
+    show( m_currentTrack );
+}
+
 
 /* Code copied from kshadowengine.cpp
  *

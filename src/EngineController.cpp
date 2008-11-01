@@ -324,8 +324,8 @@ EngineController::stop( bool forceInstant ) //SLOT
     //let Amarok know that the previous track is no longer playing
     if( m_currentTrack ) {
         debug() << "m_currentTrack != 0";
-        int pos = trackPosition();
-        int length = m_currentTrack->length();
+        const int pos = trackPosition();
+        const int length = m_currentTrack->length();
         m_currentTrack->finishedPlaying( double(pos)/double(length) );
         playbackEnded( pos, length, "stop" );
         emit trackChanged( Meta::TrackPtr( 0 ) );

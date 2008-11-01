@@ -83,7 +83,7 @@ class OSDWidget : public QWidget
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );
 
-        /** reimplemented */
+        // Reimplemented from QWidget
         virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
         void resizeEvent( QResizeEvent *e );
@@ -152,7 +152,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget, public EngineObserver
+    class OSD : public OSDWidget, public EngineObserver, public Meta::Observer
     {
         Q_OBJECT
 
@@ -163,13 +163,17 @@ namespace Amarok
         void applySettings();
         virtual void show( Meta::TrackPtr track );
 
-        //Reimplemented from EngineObserver
-        virtual void engineNewMetaData( const QHash<qint64, QString>&, bool );
-        virtual void engineNewTrackPlaying();
-        virtual void engineVolumeChanged(int);
-
         // Don't hide baseclass methods - prevent compiler warnings
         virtual void show() { OSDWidget::show(); }
+
+    protected:
+        // Reimplemented from EngineObserver
+        virtual void engineVolumeChanged( int );
+        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
+
+        // Reimplemented from Meta::Observer
+        using Observer::metadataChanged;
+        virtual void metadataChanged( Meta::TrackPtr track );
 
     public slots:
         /**
@@ -181,9 +185,11 @@ namespace Amarok
     private:
         OSD();
         ~OSD();
+
         static OSD* s_instance;
         bool isMetaDataSpam( const QHash<qint64, QString>& );
         QList<QHash<qint64, QString> > m_metaDataHistory;
+        Meta::TrackPtr m_currentTrack;
     };
 }
 

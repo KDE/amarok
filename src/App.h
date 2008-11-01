@@ -21,7 +21,6 @@
 #include <config-amarok.h>  
 
 #include "amarok_export.h"
-#include "EngineObserver.h" //baseclass
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 
@@ -41,7 +40,7 @@ class MainWindow;
 class MediaDeviceManager;
 class KSplashScreen;
 
-class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
+class AMAROK_EXPORT App : public KUniqueApplication
 {
     Q_OBJECT
 
@@ -67,9 +66,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
     signals:
         void prepareToQuit();
 
-    protected: /* for OSD, tray, and dcop */
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-
     private slots:
         void continueInit();
 
@@ -91,7 +87,6 @@ class AMAROK_EXPORT App : public KUniqueApplication, public EngineObserver
         Amarok::TrayIcon    *m_tray;
         MediaDeviceManager  *m_mediaDeviceManager;
         KSplashScreen       *m_splash;
-
 };
 
 #define pApp static_cast<App*>(kapp)
