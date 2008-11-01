@@ -19,17 +19,15 @@
 #ifndef CONTEXT_VIEW_H
 #define CONTEXT_VIEW_H
 
-#include "amarok_export.h"
 #include "Context.h"
-#include "ContextScene.h"
 #include "ContextObserver.h"
+#include "ContextScene.h"
 #include "EngineController.h"
 #include "Svg.h"
+#include "amarok_export.h"
 #include "widgets/ContainmentArrow.h"
 
-//#include "plasma/appletbrowser.h"
 #include "plasma/containment.h"
-// #include "plasma/view.h"
 
 #include <QMouseEvent>
 
@@ -82,7 +80,6 @@ public slots:
     void zoomOut( Plasma::Containment* containment );
 
     Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
-    void showAppletBrowser();
 
     void setContainment( Plasma::Containment* containment );
     void setContainment( Plasma::Containment* fromCont, int toDirection );
@@ -144,8 +141,6 @@ private:
     // holds what is currently being shown
     ContextState m_curState;
     
-    //Plasma::AppletBrowser *m_appletBrowser;
-    
     Plasma::ZoomLevel m_zoomLevel;
 
     bool m_startupFinished;
@@ -161,13 +156,11 @@ private:
     //ControlBox* m_controlBox;
 
 private slots:
-    void appletBrowserDestroyed();    
     void animateZoomIn( qreal progress, int id );
     void animateZoomOut( qreal progress, int id );
     void zoomInFinished( int id );
     void zoomOutFinished( int id );
     void animateContainmentChange( qreal progress, int id );
-
 };
 
 } // Context namespace

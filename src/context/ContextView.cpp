@@ -19,13 +19,13 @@
 #include "ContextView.h"
 
 #include "Amarok.h"
-#include "amarokconfig.h"
 #include "Context.h"
 #include "ContextScene.h"
 #include "DataEngineManager.h"
 #include "Debug.h"
 #include "Svg.h"
 #include "Theme.h"
+#include "amarokconfig.h"
 
 #include <QFile>
 #include <QWheelEvent>
@@ -47,7 +47,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     : QGraphicsView( corona, parent )
     , EngineObserver( The::engineController() )
     , m_curState( Home )
-    //, m_appletBrowser( 0 )
     , m_zoomLevel( Plasma::DesktopZoom )
     , m_startupFinished( false )
     , m_numContainments( 4 )
@@ -148,7 +147,6 @@ ContextView::~ContextView()
     }
      
     clear( m_curState );
-    //delete m_appletBrowser;
     //this should be done to prevent a crash on exit
     clearFocus();
 }
@@ -576,8 +574,6 @@ ContextView::connectContainment( Plasma::Containment* containment )
     {
         connect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
                 this, SLOT( zoom( Plasma::Containment*, Plasma::ZoomDirection ) ) );
-        connect( containment, SIGNAL( showAddWidgetsInterface( QPointF ) ),
-                this, SLOT( showAppletBrowser() ) );
         connect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
                  this, SLOT( zoomIn( Plasma::Containment * ) ) );
         Containment* amarokContainment = qobject_cast<Containment*>( containment );
@@ -596,8 +592,6 @@ ContextView::disconnectContainment( Plasma::Containment* containment )
     {
         disconnect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
                 this, SLOT( zoom( Plasma::Containment*, Plasma::ZoomDirection ) ) );
-        disconnect( containment, SIGNAL( showAddWidgetsInterface( QPointF ) ),
-                this, SLOT( showAppletBrowser() ) );
         disconnect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
                  this, SLOT( setContainment( Plasma::Containment * ) ) );
         Containment* amarokContainment = qobject_cast<Containment*>( containment );
@@ -644,11 +638,6 @@ ContextView::setContainment( Plasma::Containment* containment )
                 setSceneRect( correctRect );
                 debug() << "setSceneRect: " <<  mapToScene( rect() ).boundingRect() ;
             }
-
-#if 0
-            if( m_appletBrowser )
-                m_appletBrowser->setContainment( containment );
-#endif
             
             if( m_startupFinished && m_zoomLevel == Plasma::DesktopZoom )
             {                
@@ -659,14 +648,13 @@ ContextView::setContainment( Plasma::Containment* containment )
                     amarokContainment->setZoomLevel( Plasma::DesktopZoom );
                 
                 Plasma::Animator::self()->customAnimation( m_startPos.width() / 8, 250,
-                                                            Plasma::Animator::EaseInOutCurve,                                                           
-                                                            this, "animateContainmentChange" );
+                                                           Plasma::Animator::EaseInOutCurve,                                                           
+                                                           this, "animateContainmentChange" );
                 debug() << "startPos: " << m_startPos;
                 debug() << "destinationPos: " << m_destinationPos;
             }
         }
     }
-    
 }
 
 
@@ -827,39 +815,6 @@ ContextView::findContainmentForApplet( QString pluginName, int rowSpan )
         }
 
     }
-}
-
-void
-ContextView::showAppletBrowser()
-{
-    DEBUG_BLOCK
-#if 0
-    if( !containment() )
-        return;
-
-    if( !m_appletBrowser )
-    {
-        m_appletBrowser = new Plasma::AppletBrowser();
-        m_appletBrowser->setContainment( containment() );
-        m_appletBrowser->setApplication( "amarok" );
-        m_appletBrowser->setAttribute( Qt::WA_DeleteOnClose );
-        m_appletBrowser->setWindowTitle( i18n( "Add Applets" ) );
-        connect( m_appletBrowser, SIGNAL( destroyed() ), this, SLOT( appletBrowserDestroyed() ) );
-        m_appletBrowser->show();
-    }
-    else
-    {
-        m_appletBrowser->setContainment( containment() );
-        m_appletBrowser->activateWindow();
-        m_appletBrowser->raise();
-    }    
-#endif
-}
-
-void
-ContextView::appletBrowserDestroyed()
-{
-    //m_appletBrowser = 0;
 }
 
 Plasma::Containment *
