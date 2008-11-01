@@ -58,6 +58,10 @@ class PodcastModel : public QAbstractItemModel
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+        virtual QStringList mimeTypes() const;
+        QMimeData* mimeData( const QModelIndexList &indexes ) const;
+        bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
+
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
         void downloadItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );

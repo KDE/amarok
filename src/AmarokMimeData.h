@@ -22,6 +22,7 @@
 #include "amarok_export.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
+#include "podcasts/PodcastMeta.h"
 #include "collection/QueryMaker.h"
 #include "browsers/playlistbrowser/SqlPlaylistGroup.h"
 
@@ -37,6 +38,9 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         static const QString PLAYLIST_MIME;
 
         static const QString PLAYLISTBROWSERGROUP_MIME;
+
+        static const QString PODCASTCHANNEL_MIME;
+        static const QString PODCASTEPISODE_MIME;
 
         AmarokMimeData();
         virtual ~AmarokMimeData();
@@ -56,6 +60,13 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void setPlaylistGroups( const SqlPlaylistGroupList &groups );
         void addPlaylistGroups( const SqlPlaylistGroupList &groups );
 
+        Meta::PodcastChannelList podcastChannels() const;
+        void setPodcastChannels( const Meta::PodcastChannelList &channels );
+        void addPodcastChannels( const Meta::PodcastChannelList &channels );
+
+        Meta::PodcastEpisodeList podcastEpisodes() const;
+        void setPodcastEpisodes( const Meta::PodcastEpisodeList &episodes );
+        void addPodcastEpisodes( const Meta::PodcastEpisodeList &episodes );
 
         QList<QueryMaker*> queryMakers();
         void addQueryMaker( QueryMaker *queryMaker );

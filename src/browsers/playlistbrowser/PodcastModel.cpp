@@ -18,6 +18,7 @@
 
 #include "PodcastModel.h"
 
+#include "AmarokMimeData.h"
 #include "Debug.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PodcastProvider.h"
@@ -247,6 +248,92 @@ PlaylistBrowserNS::PodcastModel::headerData(int section, Qt::Orientation orienta
     }
 
     return QVariant();
+}
+
+QStringList
+PlaylistBrowserNS::PodcastModel::mimeTypes() const
+{
+    QStringList ret;
+    ret << AmarokMimeData::PODCASTCHANNEL_MIME;
+    ret << AmarokMimeData::PODCASTEPISODE_MIME;
+    ret << "text/uri-list";
+    return ret;
+}
+
+QMimeData*
+PlaylistBrowserNS::PodcastModel::mimeData( const QModelIndexList &indexes ) const
+{
+    DEBUG_BLOCK
+    AmarokMimeData* mime = new AmarokMimeData();
+
+    Meta::PodcastChannelList channels;
+    Meta::PodcastEpisodeList episodes;
+
+    foreach( const QModelIndex &index, indexes )
+    {
+        Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+
+        if ( pmc->podcastType() == Meta::ChannelType )
+        {
+            Meta::PodcastChannel *channel = static_cast<Meta::PodcastChannel *>(index.internalPointer());
+            channels << Meta::PodcastChannelPtr( channel );
+        }
+        else if ( pmc->podcastType() == Meta::EpisodeType )
+        {
+            Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>(index.internalPointer());
+            episodes << Meta::PodcastEpisodePtr( episode );
+        }
+    }
+
+    mime->setPodcastChannels( channels );
+    mime->setPodcastEpisodes( episodes );
+
+    return mime;
+}
+
+bool
+PlaylistBrowserNS::PodcastModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
+{
+    Q_UNUSED( column );
+    Q_UNUSED( row );
+    Q_UNUSED( parent );
+//     DEBUG_BLOCK
+
+    if( action == Qt::IgnoreAction )
+        return true;
+
+//     PlaylistGroupPtr parentGroup;
+
+    if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
+    {
+        debug() << "Found podcastchannel mime type";
+
+        const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
+        if( amarokMime )
+        {
+            Meta::PodcastChannelList channels = amarokMime->podcastChannels();
+
+            foreach( Meta::PodcastChannelPtr channel, channels )
+            {
+                if( !m_channels.contains( channel ) )
+                {
+                    debug() << "unknown podcast channel dragged in: " << channel->title();
+                    debug() << "TODO: start synchronization";
+                }
+                //else if( parent.contains(channel) )
+                //TODO: reparent this channel
+            }
+
+            return true;
+        }
+    }
+    else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
+    {
+        debug() << "Found podcast episode mime type";
+        debug() << "We don't support podcast episode drags yet.";
+    }
+
+    return false;
 }
 
 void

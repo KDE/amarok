@@ -28,7 +28,8 @@
 const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
 const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlists";
 const QString AmarokMimeData::PLAYLISTBROWSERGROUP_MIME = "application/x-amarok-playlistbrowsergroup";
-
+const QString AmarokMimeData::PODCASTCHANNEL_MIME = "application/x-amarok-podcastchannel";
+const QString AmarokMimeData::PODCASTEPISODE_MIME = "application/x-amarok-podcastepisode";
 
 
 class AmarokMimeData::Private
@@ -46,6 +47,8 @@ public:
     Meta::TrackList tracks;
     Meta::PlaylistList playlists;
     SqlPlaylistGroupList playlistGroups;
+    Meta::PodcastChannelList m_podcastChannels;
+    Meta::PodcastEpisodeList m_podcastEpisodes;
     QList<QueryMaker*> queryMakers;
     QMap<QueryMaker*, Meta::TrackList> trackMap;
     QMap<QueryMaker*, Meta::PlaylistList> playlistMap;
@@ -75,7 +78,9 @@ AmarokMimeData::formats() const
         formats.append( TRACK_MIME );
         formats.append( PLAYLIST_MIME );
         formats.append( PLAYLISTBROWSERGROUP_MIME );
-        
+        formats.append( PODCASTCHANNEL_MIME );
+        formats.append( PODCASTEPISODE_MIME );
+
         if( !formats.contains( "text/uri-list" ) )
             formats.append( "text/uri-list" );
         if( !formats.contains( "text/plain" ) )
@@ -93,8 +98,14 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
         return !d->playlists.isEmpty() || !d->queryMakers.isEmpty();
     else if( mimeType == PLAYLISTBROWSERGROUP_MIME )
         return !d->playlistGroups.isEmpty();
+    else if( mimeType == PODCASTCHANNEL_MIME )
+        return !d->m_podcastChannels.isEmpty();
+    else if( mimeType == PODCASTEPISODE_MIME )
+        return !d->m_podcastEpisodes.isEmpty();
     else if( mimeType == "text/uri-list" || mimeType == "text/plain" )
-        return !d->tracks.isEmpty() || !d->playlists.isEmpty() || !d->queryMakers.isEmpty();
+        return !d->tracks.isEmpty() || !d->playlists.isEmpty()
+            || !d->m_podcastChannels.isEmpty() || !d->m_podcastEpisodes.isEmpty()
+            || !d->queryMakers.isEmpty();
     else
         return QMimeData::hasFormat( mimeType );
 }
@@ -175,7 +186,6 @@ AmarokMimeData::addPlaylists( const Meta::PlaylistList &playlists )
     d->playlists << playlists;
 }
 
-
 SqlPlaylistGroupList AmarokMimeData::sqlPlaylistsGroups() const
 {
     return d->playlistGroups;
@@ -191,7 +201,41 @@ void AmarokMimeData::addPlaylistGroups(const SqlPlaylistGroupList & groups)
     d->playlistGroups << groups;
 }
 
+Meta::PodcastChannelList
+AmarokMimeData::podcastChannels() const
+{
+    return d->m_podcastChannels;
+}
 
+void
+AmarokMimeData::setPodcastChannels( const Meta::PodcastChannelList &channels )
+{
+    d->m_podcastChannels = channels;
+}
+
+void
+AmarokMimeData::addPodcastChannels( const Meta::PodcastChannelList &channels )
+{
+    d->m_podcastChannels << channels;
+}
+
+Meta::PodcastEpisodeList
+AmarokMimeData::podcastEpisodes() const
+{
+    return d->m_podcastEpisodes;
+}
+
+void
+AmarokMimeData::setPodcastEpisodes( const Meta::PodcastEpisodeList &episodes )
+{
+    d->m_podcastEpisodes = episodes;
+}
+
+void
+AmarokMimeData::addPodcastEpisodes( const Meta::PodcastEpisodeList &episodes )
+{
+    d->m_podcastEpisodes << episodes;
+}
 
 QList<QueryMaker*>
 AmarokMimeData::queryMakers()
@@ -217,6 +261,8 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
 {
     Meta::TrackList tracks = this->tracks();
     Meta::PlaylistList playlists = this->playlists();
+    Meta::PodcastChannelList channels = this->podcastChannels();
+    Meta::PodcastEpisodeList episodes = this->podcastEpisodes();
     if( !tracks.isEmpty() )
     {
         if( mimeType == "text/uri-list" && type == QVariant::List )
@@ -226,9 +272,17 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             {
                 list.append( QVariant( QUrl( track->playableUrl().url() ) ) );
             }
+            foreach( Meta::PodcastEpisodePtr episode, episodes )
+            {
+                list.append( QVariant( QUrl( episode->playableUrl().url() ) ) );
+            }
             foreach( Meta::PlaylistPtr playlist, playlists )
             {
                 list.append( QVariant( QUrl( playlist->retrievableUrl().url() ) ) );
+            }
+            foreach( Meta::PodcastChannelPtr channel, channels )
+            {
+                list.append( QVariant( QUrl( channel->url() ) ) );
             }
             return QVariant( list );
         }
@@ -243,11 +297,25 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 result += " - ";
                 result += track->prettyName();
             }
+            foreach( Meta::PodcastEpisodePtr episode, episodes )
+            {
+                if( !result.isEmpty() )
+                    result += '\n';
+                result += episode->prettyName();
+                result += " - ";
+                result += episode->channel()->prettyName();
+            }
             foreach( Meta::PlaylistPtr playlist, playlists )
             {
                 if( !result.isEmpty() )
                     result += '\n';
                 result += playlist->prettyName();
+            }
+            foreach( Meta::PodcastChannelPtr channel, channels )
+            {
+                if( !result.isEmpty() )
+                    result += '\n';
+                result += channel->prettyName();
             }
             return QVariant( result );
         }
@@ -287,7 +355,4 @@ AmarokMimeData::queryDone()
     d->completedQueries++;
 }
 
-
-
 #include "AmarokMimeData.moc"
-

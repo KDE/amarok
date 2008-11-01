@@ -20,8 +20,8 @@
 #define PODCASTMETA_H
 
 #include "Debug.h"
-#include "Meta.h"
-#include "Playlist.h"
+#include "meta/Meta.h"
+#include "meta/Playlist.h"
 
 #include <kurl.h>
 #include <KLocale>
