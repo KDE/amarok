@@ -421,13 +421,6 @@
            <item row="8" column="1" >
             <layout class="QHBoxLayout" >
              <item>
-              <widget class="QPushButton" name="pushButton_musicbrainz" >
-               <property name="text" >
-                <string>Fill-In Tags Using MusicBrain&amp;z</string>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QPushButton" name="pushButton_guessTags" >
                <property name="text" >
                 <string>Guess Tags From &amp;Filename</string>
