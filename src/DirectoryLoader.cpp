@@ -140,7 +140,8 @@ DirectoryLoader::finishUrlList()
 {
     if( !m_tracks.isEmpty() )
     {
-        qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan );
+        //qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan ); //this will screw up if we add multiple dirs at once, or a playlist containing stuff from multiple
+        //                                                                          albums as it will sort across all track numbers, regardless of dir/album of the track
         emit finished( m_tracks );
     }
     if( !m_localConnection )
