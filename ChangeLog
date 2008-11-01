@@ -3,6 +3,15 @@ Amarok ChangeLog
 (C) 2002-2008 the Amarok authors.
 
 
+VERSION 2.0-rc1
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+
+
 VERSION 2.0-beta3
   FEATURES:
     * More intelligent sorting of items in the collection browser, using
