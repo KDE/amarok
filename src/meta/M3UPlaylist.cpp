@@ -122,7 +122,10 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             }
             else
             {
-                m_tracks.append( CollectionManager::instance()->trackForUrl( KUrl( line ) ) );
+                Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
+                if ( trackPtr ) {
+                    m_tracks.append( trackPtr );
+                }
             }
 
             // Ensure that we always have a title: use the URL as fallback
