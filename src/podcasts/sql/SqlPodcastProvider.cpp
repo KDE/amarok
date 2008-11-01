@@ -289,7 +289,6 @@ SqlPodcastProvider::downloadResult( KJob * job )
     else
     {
         Meta::SqlPodcastEpisode *sqlEpisode = m_jobMap.value( job );
-        debug() << "pointer: " << QString::number((unsigned int) sqlEpisode);
         if( sqlEpisode == 0 )
         {
             debug() << "sqlEpisodePtr is NULL after download";
