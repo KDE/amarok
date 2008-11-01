@@ -51,14 +51,14 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
-    m_theme = new Plasma::PanelSvg( this );
+    m_theme = new Plasma::FrameSvg( this );
     QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
 
     kDebug() << "Loading theme file: " << imagePath;
 
     m_theme->setImagePath( imagePath );
     m_theme->setContainsMultipleImages( true );
-    m_theme->setEnabledBorders( Plasma::PanelSvg::AllBorders );
+    m_theme->setEnabledBorders( Plasma::FrameSvg::AllBorders );
     
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
@@ -93,7 +93,7 @@ void LyricsApplet::init()
     connectSource( "lyrics" );
 }
 
-Plasma::Icon*
+Plasma::IconWidget*
 LyricsApplet::addAction( QAction *action )
 {
     DEBUG_BLOCK
@@ -102,7 +102,7 @@ LyricsApplet::addAction( QAction *action )
         return 0;
     }
 
-    Plasma::Icon *tool = new Plasma::Icon( this );
+    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
 
     tool->setAction( action );
     tool->setText( "" );
@@ -142,7 +142,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
-    m_theme->resizePanel( size().toSize() );
+    m_theme->resizeFrame( size().toSize() );
 
     m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 5 );
     
@@ -236,9 +236,9 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
 
-    m_theme->resizePanel( size().toSize() );
+    m_theme->resizeFrame( size().toSize() );
 
-    m_theme->paintPanel( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
+    m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
 
 }
 

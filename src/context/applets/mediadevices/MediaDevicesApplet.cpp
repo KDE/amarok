@@ -28,7 +28,7 @@
  
 #include <plasma/svg.h>
 #include <plasma/theme.h>
-#include <plasma/widgets/icon.h>
+#include <plasma/widgets/iconwidget.h>
 #include <plasma/widgets/label.h>
 
 #include "Debug.h"
@@ -107,14 +107,14 @@ IpodInfo::layout()
 
     debug() << "Icon stuff";
 
-    Plasma::Icon *ipodIcon = new Plasma::Icon( m_applet );
+    Plasma::IconWidget *ipodIcon = new Plasma::IconWidget( m_applet );
     ipodIcon->setSvg( svgPath, "device" );
 
     // NOTE: at some point connect/disconnect icon should be merged somehow
 
     // Connect Icon
 
-    Plasma::Icon *connectIcon = new Plasma::Icon( m_applet );
+    Plasma::IconWidget *connectIcon = new Plasma::IconWidget( m_applet );
     connectIcon->setSvg( svgPath, "append" );
 
     QAction *connectAction = new QAction( this );
@@ -125,7 +125,7 @@ IpodInfo::layout()
 
     // Disconnect Icon
 
-    Plasma::Icon *disconnectIcon = new Plasma::Icon( m_applet );
+    Plasma::IconWidget *disconnectIcon = new Plasma::IconWidget( m_applet );
     disconnectIcon->setSvg( svgPath, "delete" );
 
     QAction *disconnectAction = new QAction( this );
@@ -226,14 +226,14 @@ MtpInfo::layout()
 
     debug() << "Icon stuff";
 
-    Plasma::Icon *mtpIcon = new Plasma::Icon( m_applet );
+    Plasma::IconWidget *mtpIcon = new Plasma::IconWidget( m_applet );
     mtpIcon->setSvg( svgPath, "device" );
 
     // NOTE: at some point connect/disconnect icon should be merged somehow
 
     // Connect Icon
 
-    Plasma::Icon *connectIcon = new Plasma::Icon( m_applet );
+    Plasma::IconWidget *connectIcon = new Plasma::IconWidget( m_applet );
     connectIcon->setSvg( svgPath, "append" );
 
     QAction *connectAction = new QAction( this );
@@ -244,7 +244,7 @@ MtpInfo::layout()
 
     // Disconnect Icon
 
-    Plasma::Icon *disconnectIcon = new Plasma::Icon( m_applet );
+    Plasma::IconWidget *disconnectIcon = new Plasma::IconWidget( m_applet );
     disconnectIcon->setSvg( svgPath, "delete" );
 
     QAction *disconnectAction = new QAction( this );

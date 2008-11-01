@@ -17,7 +17,7 @@
 
 #include "amarok_export.h"
 
-#include <plasma/widgets/icon.h>
+#include <plasma/widgets/iconwidget.h>
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -25,7 +25,7 @@
 
 class QPainterPath;
 
-class AMAROK_EXPORT ToolBoxIcon: public Plasma::Icon
+class AMAROK_EXPORT ToolBoxIcon: public Plasma::IconWidget
 {
     Q_OBJECT
 

@@ -77,7 +77,7 @@ ContainmentSelectionLayer::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     m_mouseHover = false;
     m_zoomInText->hide();
-    emit focusRequested( m_containment );
+    emit zoomRequested( m_containment, Plasma::ZoomIn );
 }
 
 void

@@ -27,7 +27,7 @@
 #include "Svg.h"
 #include "widgets/ContainmentArrow.h"
 
-#include "plasma/appletbrowser.h"
+//#include "plasma/appletbrowser.h"
 #include "plasma/containment.h"
 // #include "plasma/view.h"
 
@@ -144,7 +144,7 @@ private:
     // holds what is currently being shown
     ContextState m_curState;
     
-    Plasma::AppletBrowser *m_appletBrowser;
+    //Plasma::AppletBrowser *m_appletBrowser;
     
     Plasma::ZoomLevel m_zoomLevel;
 

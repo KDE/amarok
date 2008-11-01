@@ -16,13 +16,13 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "context/plasma/panelsvg.h"
+#include "context/plasma/framesvg.h"
 #include "context/Svg.h"
 
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
 
-#include "context/plasma/widgets/webcontent.h"
+#include "context/plasma/widgets/webview.h"
 
 
 class QGraphicsSimpleTextItem;
@@ -50,7 +50,7 @@ public slots:
 
 private:
 
-    Plasma::PanelSvg* m_theme;
+    Plasma::FrameSvg* m_theme;
     Context::Svg* m_header;
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
@@ -61,7 +61,7 @@ private:
     //QGraphicsSimpleTextItem* m_currentTitle;
 
     //QGraphicsProxyWidget* m_wikiPage;
-    Plasma::WebContent * m_webView;
+    Plasma::WebView * m_webView;
 
     QString m_label;
     QString m_title;

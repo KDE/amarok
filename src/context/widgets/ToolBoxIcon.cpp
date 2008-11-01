@@ -29,7 +29,7 @@
 static const float TOOLBOX_OPACITY = 0.4;
 
 ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
-    : Plasma::Icon( parent )
+    : Plasma::IconWidget( parent )
     , m_hovering( 0 )
     , m_animOpacity( TOOLBOX_OPACITY )
     , m_animHighlightId( 0 )
@@ -55,7 +55,7 @@ ToolBoxIcon::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     if( event->button() != Qt::LeftButton )
     {
-        Plasma::Icon::mousePressEvent( event );
+        Plasma::IconWidget::mousePressEvent( event );
         return;
     }
     
@@ -67,7 +67,7 @@ ToolBoxIcon::mousePressEvent( QGraphicsSceneMouseEvent *event )
     }
     else
     {
-        Plasma::Icon::mousePressEvent( event );
+        Plasma::IconWidget::mousePressEvent( event );
     }
 }
 
@@ -86,7 +86,7 @@ ToolBoxIcon::mousePressed( bool pressed )
 void
 ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-    if( Plasma::Icon::drawBackground() )
+    if( Plasma::IconWidget::drawBackground() )
     {
         if( m_text->text().isEmpty() )
             m_text->setText( text() );
@@ -115,7 +115,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         painter->restore();
     }
     else
-        Plasma::Icon::paint( painter, option, widget );
+        Plasma::IconWidget::paint( painter, option, widget );
 }
 
 QRectF
@@ -133,7 +133,7 @@ ToolBoxIcon::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
     m_hovering = true;
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve, this, "animateHighlight" );
 
-    Plasma::Icon::hoverEnterEvent( event );
+    Plasma::IconWidget::hoverEnterEvent( event );
 }
 
 void
@@ -145,7 +145,7 @@ ToolBoxIcon::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     m_hovering = false;
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve, this, "animateHighlight" );
 
-    Plasma::Icon::hoverLeaveEvent( event );
+    Plasma::IconWidget::hoverLeaveEvent( event );
 }
 
 void
@@ -166,13 +166,13 @@ ToolBoxIcon::animateHighlight( qreal progress )
 QPainterPath
 ToolBoxIcon::shape() const
 {
-    if( Plasma::Icon::drawBackground() )
+    if( Plasma::IconWidget::drawBackground() )
     {
         QSize shapeSize( size().width() - 2, size().height() - 2 );
         return Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 0.0, 0.0 ), shapeSize ), 10.0 );
     }
 
-    return Plasma::Icon::shape();
+    return Plasma::IconWidget::shape();
 }
 
 void

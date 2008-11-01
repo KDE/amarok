@@ -47,7 +47,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     : QGraphicsView( corona, parent )
     , EngineObserver( The::engineController() )
     , m_curState( Home )
-    , m_appletBrowser( 0 )
+    //, m_appletBrowser( 0 )
     , m_zoomLevel( Plasma::DesktopZoom )
     , m_startupFinished( false )
     , m_numContainments( 4 )
@@ -148,7 +148,7 @@ ContextView::~ContextView()
     }
      
     clear( m_curState );
-    delete m_appletBrowser;
+    //delete m_appletBrowser;
     //this should be done to prevent a crash on exit
     clearFocus();
 }
@@ -578,7 +578,7 @@ ContextView::connectContainment( Plasma::Containment* containment )
                 this, SLOT( zoom( Plasma::Containment*, Plasma::ZoomDirection ) ) );
         connect( containment, SIGNAL( showAddWidgetsInterface( QPointF ) ),
                 this, SLOT( showAppletBrowser() ) );
-        connect( containment, SIGNAL( focusRequested( Plasma::Containment* ) ),
+        connect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
                  this, SLOT( zoomIn( Plasma::Containment * ) ) );
         Containment* amarokContainment = qobject_cast<Containment*>( containment );
         if( amarokContainment )
@@ -598,7 +598,7 @@ ContextView::disconnectContainment( Plasma::Containment* containment )
                 this, SLOT( zoom( Plasma::Containment*, Plasma::ZoomDirection ) ) );
         disconnect( containment, SIGNAL( showAddWidgetsInterface( QPointF ) ),
                 this, SLOT( showAppletBrowser() ) );
-        disconnect( containment, SIGNAL( focusRequested( Plasma::Containment* ) ),
+        disconnect( containment, SIGNAL( zoomRequested( Plasma::Containment*, Plasma::ZoomDirection ) ),
                  this, SLOT( setContainment( Plasma::Containment * ) ) );
         Containment* amarokContainment = qobject_cast<Containment*>( containment );
         if( amarokContainment )
@@ -645,8 +645,10 @@ ContextView::setContainment( Plasma::Containment* containment )
                 debug() << "setSceneRect: " <<  mapToScene( rect() ).boundingRect() ;
             }
 
+#if 0
             if( m_appletBrowser )
                 m_appletBrowser->setContainment( containment );
+#endif
             
             if( m_startupFinished && m_zoomLevel == Plasma::DesktopZoom )
             {                
@@ -831,6 +833,7 @@ void
 ContextView::showAppletBrowser()
 {
     DEBUG_BLOCK
+#if 0
     if( !containment() )
         return;
 
@@ -850,12 +853,13 @@ ContextView::showAppletBrowser()
         m_appletBrowser->activateWindow();
         m_appletBrowser->raise();
     }    
+#endif
 }
 
 void
 ContextView::appletBrowserDestroyed()
 {
-    m_appletBrowser = 0;
+    //m_appletBrowser = 0;
 }
 
 Plasma::Containment *

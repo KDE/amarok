@@ -55,14 +55,14 @@ WikipediaApplet::~ WikipediaApplet()
 void WikipediaApplet::init()
 {
 
-    m_theme = new Plasma::PanelSvg( this );
+    m_theme = new Plasma::FrameSvg( this );
     QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
 
     kDebug() << "Loading theme file: " << imagePath;
     
     m_theme->setImagePath( imagePath );
     m_theme->setContainsMultipleImages( true );
-    m_theme->setEnabledBorders( Plasma::PanelSvg::AllBorders );
+    m_theme->setEnabledBorders( Plasma::FrameSvg::AllBorders );
 
     m_header = new Context::Svg( this );
     m_header->setImagePath( "widgets/amarok-wikipedia" );
@@ -76,7 +76,7 @@ void WikipediaApplet::init()
 
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
-    m_webView = new Plasma::WebContent( this );
+    m_webView = new Plasma::WebView( this );
 
     m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
 
@@ -131,7 +131,7 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     if ( constraints & Plasma::SizeConstraint )
         m_header->resize( size().toSize() );
 
-    m_theme->resizePanel(size().toSize());
+    m_theme->resizeFrame(size().toSize());
 
     m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
 
@@ -195,11 +195,11 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     Q_UNUSED( option );
 
     m_header->resize(size().toSize());
-    m_theme->resizePanel(size().toSize());
+    m_theme->resizeFrame(size().toSize());
     p->save();
 
     kDebug() << "painting theme file " << m_theme->imagePath();
-    m_theme->paintPanel( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() )/*, "header" */);
+    m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() )/*, "header" */);
 
     p->restore();
 }

@@ -26,15 +26,8 @@ set(plasma_LIB_SRCS
     plasma/abstractrunner.cpp
     plasma/animationdriver.cpp
     plasma/animator.cpp
-    plasma/appletbrowser.cpp
-    plasma/appletbrowser/customdragtreeview.cpp
-    plasma/appletbrowser/kcategorizeditemsview.cpp
-    plasma/appletbrowser/kcategorizeditemsviewdelegate.cpp
-    plasma/appletbrowser/kcategorizeditemsviewmodels.cpp
-    plasma/appletbrowser/openwidgetassistant.cpp
-    plasma/appletbrowser/plasmaappletitemmodel.cpp
     plasma/applet.cpp
-    plasma/configxml.cpp
+    plasma/configloader.cpp
     plasma/containment.cpp
     plasma/context.cpp
     plasma/corona.cpp
@@ -45,8 +38,8 @@ set(plasma_LIB_SRCS
     plasma/dialog.cpp
     plasma/extender.cpp
     plasma/extenderitem.cpp
+    plasma/framesvg.cpp
     plasma/paintutils.cpp
-    plasma/panelsvg.cpp
     plasma/plasma.cpp
     plasma/plasma_export.h
     plasma/popupapplet.cpp
@@ -61,13 +54,13 @@ set(plasma_LIB_SRCS
     plasma/private/toolbox.cpp
     plasma/private/tooltip.cpp
     plasma/private/windowpreview.cpp
+    plasma/querymatch.cpp
+    plasma/runnercontext.cpp
+    plasma/runnermanager.cpp
     plasma/scripting/appletscript.cpp
     plasma/scripting/dataenginescript.cpp
     plasma/scripting/runnerscript.cpp
     plasma/scripting/scriptengine.cpp
-    plasma/querymatch.cpp
-    plasma/runnercontext.cpp
-    plasma/runnermanager.cpp
     plasma/service.cpp
     plasma/servicejob.cpp
     plasma/svg.cpp
@@ -79,10 +72,10 @@ set(plasma_LIB_SRCS
     plasma/wallpaper.cpp    
     plasma/widgets/checkbox.cpp
     plasma/widgets/combobox.cpp
-    plasma/widgets/flash.cpp
+    plasma/widgets/flashinglabel.cpp
     plasma/widgets/frame.cpp
     plasma/widgets/groupbox.cpp
-    plasma/widgets/icon.cpp
+    plasma/widgets/iconwidget.cpp
     plasma/widgets/label.cpp
     plasma/widgets/lineedit.cpp
     plasma/widgets/meter.cpp
@@ -93,12 +86,11 @@ set(plasma_LIB_SRCS
     plasma/widgets/slider.cpp
     plasma/widgets/tabbar.cpp
     plasma/widgets/textedit.cpp
-    plasma/widgets/webcontent.cpp
+    plasma/widgets/webview.cpp
 )
 
 kde4_add_ui_files (
-plasma_LIB_SRCS
-plasma/appletbrowser/kcategorizeditemsviewbase.ui
+    plasma_LIB_SRCS
 )
 
 if(QT_QTOPENGL_FOUND AND OPENGL_FOUND)

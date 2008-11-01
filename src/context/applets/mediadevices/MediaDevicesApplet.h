@@ -25,7 +25,7 @@
 #include <context/Svg.h>
 
 namespace Plasma {
-    class Icon;
+    class IconWidget;
     class Label;
 }
 
@@ -125,9 +125,9 @@ class MediaDevicesApplet : public Context::Applet
 
         void redraw();
 
-        Plasma::Icon *m_icon;
-        Plasma::Icon *m_connect;
-        Plasma::Icon *m_disconnect;
+        Plasma::IconWidget *m_icon;
+        Plasma::IconWidget *m_connect;
+        Plasma::IconWidget *m_disconnect;
         QGraphicsLinearLayout *m_layout;
 
         //QList<IpodInfo> m_ipodInfoList;

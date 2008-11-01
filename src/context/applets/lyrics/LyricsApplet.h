@@ -17,8 +17,8 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "context/Svg.h"
-#include "plasma/panelsvg.h"
-#include "plasma/widgets/icon.h"
+#include "plasma/framesvg.h"
+#include "plasma/widgets/iconwidget.h"
 
 
 class QGraphicsSimpleTextItem;
@@ -51,10 +51,10 @@ public slots:
 
 private:
     void calculateHeight();
-    Plasma::Icon* addAction( QAction *action );
+    Plasma::IconWidget* addAction( QAction *action );
 
     QGraphicsSimpleTextItem* m_titleLabel;
-    Plasma::Icon* m_reloadIcon;
+    Plasma::IconWidget* m_reloadIcon;
     
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
@@ -62,7 +62,7 @@ private:
     qreal m_aspectRatio;
     QGraphicsTextItem* m_suggested;
 
-    Plasma::PanelSvg* m_theme;
+    Plasma::FrameSvg* m_theme;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )

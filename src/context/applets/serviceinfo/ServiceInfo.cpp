@@ -50,14 +50,14 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
     dataEngine( "amarok-service" )->connectSource( "service", this );
 
-    m_theme = new Plasma::PanelSvg( this );
+    m_theme = new Plasma::FrameSvg( this );
     QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
 
     kDebug() << "Loading theme file: " << imagePath;
 
     m_theme->setImagePath( imagePath );
     m_theme->setContainsMultipleImages( true );
-    m_theme->setEnabledBorders( Plasma::PanelSvg::AllBorders );
+    m_theme->setEnabledBorders( Plasma::FrameSvg::AllBorders );
 
     m_header = new Context::Svg( this );
     m_header->setImagePath( "widgets/amarok-serviceinfo" );
@@ -71,7 +71,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     //m_serviceMainInfo = new QGraphicsProxyWidget( this );
     //m_webView = new QWebView( 0 );
 
-    m_webView = new Plasma::WebContent( this );
+    m_webView = new Plasma::WebView( this );
 
     QPalette p = m_webView->palette();
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
@@ -115,7 +115,7 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
     if( constraints & Plasma::SizeConstraint )
         m_header->resize( size().toSize() );
 
-    m_theme->resizePanel( size().toSize() );
+    m_theme->resizeFrame( size().toSize() );
 
     //make the text as large as possible:
     m_serviceName->setFont( shrinkTextSizeToFit( m_serviceName->text(), m_header->elementRect( "service_name" ) ) );
@@ -176,10 +176,10 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     }
     
     m_header->resize(size().toSize());
-    m_theme->resizePanel(size().toSize());
+    m_theme->resizeFrame(size().toSize());
     p->save();
 //     m_header->paint( p, contentsRect );
-    m_theme->paintPanel( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
+    m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
     p->restore();
 
     //m_serviceName->setPos( m_header->elementRect( "service_name" ).topLeft() );

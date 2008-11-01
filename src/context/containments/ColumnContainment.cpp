@@ -104,8 +104,9 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     m_selectionLayer = new ContainmentSelectionLayer( this );
     m_selectionLayer->hide();
     m_selectionLayer->setZValue( zValue() - 1000 ); //keep it down all elements
-    connect( m_selectionLayer, SIGNAL( focusRequested( Plasma::Containment * ) ),
-             this, SIGNAL( focusRequested( Plasma::Containment * ) ) );
+
+    connect( m_selectionLayer, SIGNAL( zoomRequested( Plasma::Containment *, Plasma::ZoomDirection ) ),
+             this, SIGNAL( zoomRequested( Plasma::Containment *, Plasma::ZoomDirection ) ) );
 }
 
 ColumnContainment::~ColumnContainment()
@@ -346,7 +347,7 @@ ColumnContainment::mousePressEvent( QGraphicsSceneMouseEvent *event )
     {
         debug() << "Focus requested by containment";
         if( m_zoomLevel == Plasma::GroupZoom )
-            emit focusRequested( this ); //only zoom in when zoomed out
+            emit zoomRequested( this, Plasma::ZoomIn ); //only zoom in when zoomed out
     }
 
     m_addAppletsMenu->hide();
@@ -555,7 +556,7 @@ ColumnContainment::addCurrentTrack()
     m_manageCurrentTrack = true;
 }
 
-Plasma::Icon*
+Plasma::IconWidget*
 ColumnContainment::addAction( QAction *action )
 {
     if ( !action ) {
@@ -563,7 +564,7 @@ ColumnContainment::addAction( QAction *action )
         return 0;
     }
 
-    Plasma::Icon *tool = new Plasma::Icon( this );
+    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
 
     tool->setAction( action );
     tool->setText( "" );

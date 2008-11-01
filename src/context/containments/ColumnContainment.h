@@ -23,7 +23,7 @@
 
 #include <plasma/animator.h>
 #include <plasma/containment.h>
-#include <plasma/widgets/icon.h>
+#include <plasma/widgets/iconwidget.h>
 
 #include <KConfigGroup>
 
@@ -95,7 +95,7 @@ private:
     void setupControlButtons();
     void correctControlButtonPositions();
     
-    Plasma::Icon* addAction( QAction* );
+    Plasma::IconWidget* addAction( QAction* );
     
     QList<QAction*> *m_actions;
     
@@ -132,12 +132,12 @@ private:
 
     Plasma::ZoomLevel m_zoomLevel;
     
-    Plasma::Icon *m_zoomInIcon;
-    Plasma::Icon *m_zoomOutIcon;
-    Plasma::Icon *m_addAppletsIcon;
-    Plasma::Icon *m_removeAppletsIcon;
-    Plasma::Icon *m_switchRightIcon;
-    Plasma::Icon *m_switchLeftIcon;
+    Plasma::IconWidget *m_zoomInIcon;
+    Plasma::IconWidget *m_zoomOutIcon;
+    Plasma::IconWidget *m_addAppletsIcon;
+    Plasma::IconWidget *m_removeAppletsIcon;
+    Plasma::IconWidget *m_switchRightIcon;
+    Plasma::IconWidget *m_switchLeftIcon;
 
     AmarokToolBoxMenu *m_addAppletsMenu;
     AmarokToolBoxMenu *m_removeAppletsMenu;

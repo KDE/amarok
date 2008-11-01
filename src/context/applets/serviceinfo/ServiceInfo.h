@@ -21,14 +21,14 @@
 #include "meta/XSPFPlaylist.h"
 #include "meta/Playlist.h"
 
-#include <plasma/panelsvg.h>
+#include <plasma/framesvg.h>
 
 #include <KDialog>
 
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
 
-#include "context/plasma/widgets/webcontent.h"
+#include "context/plasma/widgets/webview.h"
 
 class QGraphicsPixmapItem;
 class QLabel;
@@ -73,7 +73,7 @@ private:
     qreal m_aspectRatio;
 
     Context::Svg* m_header;
-    Plasma::PanelSvg *m_theme;
+    Plasma::FrameSvg *m_theme;
     QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_serviceName;
@@ -81,7 +81,7 @@ private:
 
     //QWebView * m_webView;
 
-    Plasma::WebContent * m_webView;
+    Plasma::WebView * m_webView;
 
     bool m_initialized;
 

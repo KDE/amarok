@@ -49,7 +49,7 @@ class AMAROK_EXPORT ContainmentSelectionLayer: public QObject, public QGraphicsI
         QGraphicsSimpleTextItem *m_zoomInText;
         KIcon *m_zoomInIcon;
     Q_SIGNALS:
-        void focusRequested( Plasma::Containment *containment );
+        void zoomRequested( Plasma::Containment *containment, Plasma::ZoomDirection direction );
 
 };
 
