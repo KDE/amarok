@@ -42,7 +42,10 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
 {
     setObjectName( name );
     debug() << "ServiceBrowser starting...";
+
     m_serviceListView = new QListView( this );
+    m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+    m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 
     //make background transparent
     QPalette p = m_serviceListView->palette();
