@@ -192,7 +192,8 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
 void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
-    Q_UNUSED( option );
+    Q_UNUSED( option )
+    Q_UNUSED( contentsRect )
 
     m_header->resize(size().toSize());
     m_theme->resizeFrame(size().toSize());
@@ -210,6 +211,8 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
 QSizeF WikipediaApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
 {
+    Q_UNUSED( which )
+
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {
         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
