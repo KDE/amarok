@@ -86,6 +86,11 @@ void MyDirOperator::aboutToShowContextMenu()
     if ( !menu )
         return;
 
+    // Remove the "File Properties" action as it makes no sense to us. We'll show our own tag dialog instead.
+    foreach( QAction *a, menu->actions() )
+        if( a->objectName() == "properties" )
+            a->setVisible( false );
+
     QList<QAction*> actions = createBasicActions();
     foreach( QAction *action, actions )
         menu->addAction( action );
