@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-rc1
   FEATURES:
+    * Track information can be edited from the file browser. (BR 172812)
 
   CHANGES:
 
