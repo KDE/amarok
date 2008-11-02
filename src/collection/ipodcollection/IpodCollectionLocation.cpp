@@ -78,7 +78,6 @@ IpodCollectionLocation::remove( const Meta::TrackPtr &track )
         return m_collection->deleteTrackFromDevice( ipodTrack );
 
     return false;
-    
 }
 
 void
@@ -86,23 +85,6 @@ IpodCollectionLocation::slotJobFinished( KJob *job )
 {
     DEBUG_BLOCK
     Q_UNUSED(job);
-    // TODO: NYI
-            /*
-    m_jobs.remove( job );
-    if( job->error() )
-    {
-        //TODO: proper error handling
-        warning() << "An error occurred when copying a file: " << job->errorString();
-    }
-    job->deleteLater();
-    if( m_jobs.isEmpty() )
-    {
-        insertTracks( m_destinations );
-        insertStatistics( m_destinations );
-        //m_collection->scanManager()->setBlockScan( false );
-        slotCopyOperationFinished();
-    }
-            */
 }
 
 void
@@ -113,10 +95,8 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
     // iterate through source tracks
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
-
         debug() << "copying from " << sources[ track ];
         m_collection->copyTrackToDevice( track );
-
     }
 
     m_collection->copyTracksCompleted();
@@ -131,53 +111,6 @@ IpodCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &track
 {
     // NOTE: IpodHandler doing this right now
     Q_UNUSED(trackMap);
-#if 0
-    DEBUG_BLOCK
-    QList<QVariantMap > metadata;
-    QStringList urls;
-    foreach( const Meta::TrackPtr &track, trackMap.keys() )
-    {
-        if( m_ignoredDestinations.contains( trackMap[ track ], Qt::CaseSensitive ) )
-        {
-            continue;
-        }
-        QVariantMap trackData = Meta::Field::mapFromTrack( track );
-        trackData.insert( Meta::Field::URL, trackMap[ track ] );  //store the new url of the file
-        metadata.append( trackData );
-        urls.append( trackMap[ track ] );
-    }
-    ScanResultProcessor processor( m_collection );
-    processor.setScanType( ScanResultProcessor::IncrementalScan );
-    QMap<QString, uint> mtime = updatedMtime( urls );
-    foreach( const QString &dir, mtime.keys() )
-    {
-        processor.addDirectory( dir, mtime[ dir ] );
-    }
-    if( !metadata.isEmpty() )
-    {
-        QFileInfo info( metadata.first().value( Meta::Field::URL ).toString() );
-        QString currentDir = info.dir().absolutePath();
-        QList<QVariantMap > currentMetadata;
-        foreach( const QVariantMap &map, metadata )
-        {
-            debug() << "processing file " << map.value( Meta::Field::URL );
-            QFileInfo info( map.value( Meta::Field::URL ).toString() );
-            QString dir = info.dir().absolutePath();
-            if( dir != currentDir )
-            {
-                processor.processDirectory( currentMetadata );
-                currentDir = dir;
-                currentMetadata.clear();
-            }
-            currentMetadata.append( map );
-        }
-        if( !currentMetadata.isEmpty() )
-        {
-            processor.processDirectory( currentMetadata );
-        }
-    }
-    processor.commit();
-#endif
 }
 
 void
@@ -185,45 +118,6 @@ IpodCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &t
 {
     DEBUG_BLOCK
     Q_UNUSED(trackMap);
-#if 0
-    // NOTE: not sure if this is needed
-    MountPointManager *mpm = MountPointManager::instance();
-    foreach( const Meta::TrackPtr &track, trackMap.keys() )
-    {
-        if( m_ignoredDestinations.contains( trackMap[ track ], Qt::CaseSensitive ) )
-        {
-            continue;
-        }
-        QString url = trackMap[ track ];
-        int deviceid = mpm->getIdForUrl( url );
-        QString rpath = mpm->getRelativePath( deviceid, url );
-        QString ipod = QString( "SELECT COUNT(*) FROM statistics LEFT JOIN urls ON statistics.url = urls.id "
-                               "WHERE urls.deviceid = %1 AND urls.rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
-        QStringList count = m_collection->query( ipod );
-        if( count.first().toInt() != 0 )    //crash if the ipod is bad
-        {
-            continue;   //a statistics row already exists for that url, and we cannot merge the statistics
-        }
-        //the row will exist because this method is called after insertTracks
-        QString select = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
-        QStringList result = m_collection->query( select );
-        QString id = result.first();    //if result is empty something is going very wrong
-        //the following ipod was copied from IpodMeta.cpp
-        QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
-        QString data = "%1,%2,%3,%4,%5,%6";
-        data = data.arg( id, QString::number( track->rating() ), QString::number( track->score() ) );
-        data = data.arg( QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
-        m_collection->insert( insert.arg( data ), "statistics" );
-    }
-#endif
 }
 
-// NOTE: probably unnecessary
-/*
-void
-IpodCollectionLocation::movedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase )
-{
-    m_tracksRemovedByDestination.insert( track, removeFromDatabase );
-}
-*/
 #include "IpodCollectionLocation.moc"
