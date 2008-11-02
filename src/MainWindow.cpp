@@ -44,7 +44,6 @@
 #include "context/ContextView.h"
 #include "context/plasma/plasma.h"
 #include "covermanager/CoverManager.h" // for actions
-#include "dialogs/DatabaseImporterDialog.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
@@ -591,13 +590,6 @@ MainWindow::showStatistics() //SLOT
 }
 
 void
-MainWindow::importCollection() //SLOT
-{
-    DatabaseImporterDialog *dlg = new DatabaseImporterDialog( this );
-    dlg->exec();
-}
-
-void
 MainWindow::slotToggleFocus() //SLOT
 {
     //Port 2.0
@@ -811,10 +803,6 @@ MainWindow::createActions()
     connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
     ac->addAction( "update_collection", action );
 
-    action = new KAction( KIcon("tools-wizard"), i18n( "Import Collection" ), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(importCollection()));
-    ac->addAction( "import_collection", action );
-
     action = new KAction( this );
     ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
@@ -1015,7 +1003,6 @@ MainWindow::createMenus()
 //     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
-    m_toolsMenu->addAction( actionCollection()->action("import_collection") );
 
 //#ifndef HAVE_LIBVISUAL
 //    actionCollection()->action( "visualizations" )->setEnabled( false );

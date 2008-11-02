@@ -51,6 +51,9 @@ class CollectionSetup : public KVBox
     signals:
         void changed();
 
+    private slots:
+        void importCollection();
+
     private:
         static CollectionSetup* s_instance;
 

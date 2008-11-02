@@ -23,6 +23,7 @@
 #include "MainWindow.h"
 #include "MountPointManager.h"
 #include "amarokconfig.h"
+#include "dialogs/DatabaseImporterDialog.h"
 
 #include <KFileItem>
 #include <KLocale>
@@ -65,7 +66,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
     KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Collection" ), buttonBox );
-    connect( import, SIGNAL( clicked() ), The::mainWindow(), SLOT( importCollection() ) );
+    connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
@@ -134,6 +135,13 @@ CollectionSetup::writeConfig()
         debug() << "MountPointManager collection folders: " << MountPointManager::instance()->collectionFolders();
         CollectionManager::instance()->startFullScan();
     }
+}
+
+void
+CollectionSetup::importCollection()
+{
+    DatabaseImporterDialog *dlg = new DatabaseImporterDialog( this );
+    dlg->exec(); // be modal to avoid messing about by the user in the application
 }
 
 
