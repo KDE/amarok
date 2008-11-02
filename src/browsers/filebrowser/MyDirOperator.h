@@ -23,10 +23,6 @@
 
 #include "collection/Collection.h"
 #include "playlist/PlaylistController.h"
-#include "PopupDropperFactory.h"
-#include "context/popupdropper/PopupDropper.h"
-#include "context/popupdropper/PopupDropperAction.h"
-#include "context/popupdropper/PopupDropperItem.h"
 #include "SvgHandler.h"
 
 
@@ -34,8 +30,6 @@
 #include <KFileItem>
 #include <KMenu>
 #include <KUrl>
-
-typedef QList<PopupDropperAction *> PopupDropperActionList;
 
 /**
  * Stores a collection associated with an action for move/copy to collection
@@ -79,7 +73,7 @@ private slots:
     void slotAppendChildTracks();
 
 private:
-    PopupDropperActionList createBasicActions();
+    QList<QAction*> createBasicActions();
     void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
 
     bool mCopyActivated;

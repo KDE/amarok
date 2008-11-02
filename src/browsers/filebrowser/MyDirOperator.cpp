@@ -86,11 +86,9 @@ void MyDirOperator::aboutToShowContextMenu()
     if ( !menu )
         return;
 
-    PopupDropperActionList actions = createBasicActions();
-    foreach( PopupDropperAction * action, actions )
-    {
+    QList<QAction*> actions = createBasicActions();
+    foreach( QAction *action, actions )
         menu->addAction( action );
-    }
 
     QList<Collection*> writableCollections;
     QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
@@ -129,9 +127,6 @@ void MyDirOperator::aboutToShowContextMenu()
 void
 MyDirOperator::slotCopyTracks( const Meta::TrackList& tracks )
 {
-//     CollectionManager *cm = CollectionManager::instance();
-//     Meta::TrackList thetracks = cm->tracksForUrls( tracks );
-
     if( !mCopyAction ||  !mCopyActivated  )
         return;
 
@@ -146,9 +141,6 @@ MyDirOperator::slotCopyTracks( const Meta::TrackList& tracks )
 void
 MyDirOperator::slotMoveTracks( const Meta::TrackList& tracks )
 {
-//     CollectionManager *cm = CollectionManager::instance();
-//     Meta::TrackList thetracks = cm->tracksForUrls( tracks );
-
     if( !mMoveAction ||  !mMoveActivated )
         return;
 
@@ -232,26 +224,21 @@ MyDirOperator::playChildTracks( const KFileItemList &items, Playlist::AddOptions
     The::playlistController()->insertOptioned( list, insertMode );
 }
 
-PopupDropperActionList MyDirOperator::createBasicActions( )
+QList<QAction*>
+MyDirOperator::createBasicActions()
 {
+    QList<QAction*> actions;
 
-    PopupDropperActionList actions;
-
-    PopupDropperAction* appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+    QAction* appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+    QAction* loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
 
     connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
-
-    actions.append( appendAction );
-
-    PopupDropperAction* loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
-
     connect( loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
 
+    actions.append( appendAction );
     actions.append( loadAction );
 
-
     return actions;
-
 }
 
 #include "MyDirOperator.moc"
