@@ -59,27 +59,20 @@ IpodCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-            // connect to the monitor
+    // connect to the monitor
 
     // TODO: the connection to this slot needs to be redone elsewhere
+    connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToConnect( const QString &, const QString & ) ),
+             SLOT( ipodDetected( const QString &, const QString & ) ) );
+    connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToDisconnect( const QString & ) ),
+             SLOT( deviceRemoved( const QString & ) ) );
 
-        connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToConnect( const QString &, const QString & ) ),
-                 SLOT( ipodDetected( const QString &, const QString & ) ) );
-        connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToDisconnect( const QString & ) ),
-                 SLOT( deviceRemoved( const QString & ) ) );
-
-        connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
-
-            /*
-        connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
-                 SLOT( ipodDetected( const QString &, const QString & ) ) );
-            */
+    connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
+    //connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
+    //         SLOT( ipodDetected( const QString &, const QString & ) ) );
     // scan for ipods
 
     //MediaDeviceMonitor::instance()->checkDevicesForIpod();
-
-
-    return;
 }
 
 void
@@ -87,21 +80,18 @@ IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &u
 {
     IpodCollection* coll = 0;
     if( !m_collectionMap.contains( udi ) )
-
+    {
+        coll = new IpodCollection( mountPoint, udi );
+        if( coll )
         {
-            coll = new IpodCollection( mountPoint, udi );
-            if ( coll )
-            {
-
             // TODO: connect to MediaDeviceMonitor signals
             connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-                     SLOT( slotCollectionDisconnected( const QString & ) ) );
-                m_collectionMap.insert( udi, coll );
+                     this, SLOT( slotCollectionDisconnected( const QString & ) ) );
+            m_collectionMap.insert( udi, coll );
             emit newCollection( coll );
             debug() << "emitting new ipod collection";
-            }
         }
-
+    }
 }
 
 void
@@ -111,13 +101,13 @@ IpodCollectionFactory::deviceRemoved( const QString &udi )
     if (  m_collectionMap.contains( udi ) )
     {
         IpodCollection* coll = m_collectionMap[ udi ];
-                if (  coll )
-                {
-                    m_collectionMap.remove( udi ); // remove from map
-                    coll->deviceRemoved();  //collection will be deleted by collectionmanager
-                }
-                else
-                    warning() << "collection already null";
+        if (  coll )
+        {
+            m_collectionMap.remove( udi ); // remove from map
+            coll->deviceRemoved();  //collection will be deleted by collectionmanager
+        }
+        else
+            warning() << "collection already null";
     }
     else
         warning() << "removing non-existent device";
@@ -135,14 +125,13 @@ void
 IpodCollectionFactory::slotCollectionReady()
 {
     DEBUG_BLOCK
-        IpodCollection *collection = dynamic_cast<IpodCollection*>(  sender() );
-    if (  collection )
+    IpodCollection *collection = dynamic_cast<IpodCollection*>(  sender() );
+    if( collection )
     {
         debug() << "emitting ipod collection newcollection";
         emit newCollection(  collection );
     }
 }
-
 
 
 //IpodCollection
@@ -156,15 +145,9 @@ IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
 {
     DEBUG_BLOCK
 
-//    debug() << "This collection is: " << QString::fromUtf8( className() );
-
-        // NOTE: cheap hack, remove after applet works
-
-        connectDevice();
-
+    // NOTE: cheap hack, remove after applet works
+    connectDevice();
 }
-
-
 
 void
 IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
@@ -178,12 +161,12 @@ IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 {
     DEBUG_BLOCK
 
-        // remove the track from the device
-    if ( !m_handler->deleteTrackFromDevice( track ) )
+    // remove the track from the device
+    if( !m_handler->deleteTrackFromDevice( track ) )
         return false;
 
     // remove the track from the collection maps too
-    removeTrack ( track );
+    removeTrack( track );
 
     // inform treeview collection has updated
     emit updated();
@@ -197,7 +180,6 @@ IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
     DEBUG_BLOCK
 
     // get pointers
-
     Meta::IpodArtistPtr artist = Meta::IpodArtistPtr::dynamicCast( track->artist() );
     Meta::IpodAlbumPtr album = Meta::IpodAlbumPtr::dynamicCast( track->album() );
     Meta::IpodGenrePtr genre = Meta::IpodGenrePtr::dynamicCast( track->genre() );
@@ -254,7 +236,6 @@ IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
     }
 
     // remove from trackmap
-
     m_trackMap.remove( track->name() );
 }
 
@@ -268,7 +249,6 @@ IpodCollection::updateTags( Meta::IpodTrack *track)
     debug() << "Running updateTrackInDB...";
 
     m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
-
 }
 
 void
@@ -353,11 +333,8 @@ void
 IpodCollection::copyTracksCompleted()
 {
     DEBUG_BLOCK
-        debug() << "Trying to write iTunes database";
+    debug() << "Trying to write iTunes database";
     m_handler->writeITunesDB( false ); // false, since not threaded, implement later
-
-
-
 }
 
 void
@@ -368,7 +345,6 @@ IpodCollection::connectDevice()
     if( m_handler->succeeded() )
     {
         m_handler->parseTracks();
-
         emit collectionReady();
     }
 }

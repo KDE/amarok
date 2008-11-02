@@ -43,89 +43,71 @@ class IpodCollectionFactory : public CollectionFactory
 
         virtual void init();
 
-    private:
-
     public slots:
         // convenience slot
         void removeIpod( const QString &udi ) { deviceRemoved( udi ); }
 
     private slots:
-
-    void ipodDetected( const QString &mountPoint, const QString &udi );
-    void deviceRemoved( const QString &udi );
-    void slotCollectionReady();
-    void slotCollectionDisconnected( const QString & udi );
+        void ipodDetected( const QString &mountPoint, const QString &udi );
+        void deviceRemoved( const QString &udi );
+        void slotCollectionReady();
+        void slotCollectionDisconnected( const QString & udi );
     
     private:
-
-        
-        
-    QMap<QString, IpodCollection*> m_collectionMap;
-    
-
+        QMap<QString, IpodCollection*> m_collectionMap;
 };
 
 class IpodCollection : public Collection, public MemoryCollection
 {
     Q_OBJECT
-	public:
+    public:
+        IpodCollection( const QString &mountPoint, const QString &udi );
+        virtual ~IpodCollection();
 
-    IpodCollection( const QString &mountPoint, const QString &udi );
-    virtual ~IpodCollection();
+        void copyTrackToDevice( const Meta::TrackPtr &track );
+        bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
+        void removeTrack( const Meta::IpodTrackPtr &track );
 
-    void copyTrackToDevice( const Meta::TrackPtr &track );
-    bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
-    void removeTrack( const Meta::IpodTrackPtr &track );
+        void setTrackToDelete( const Meta::IpodTrackPtr &track );
 
-    void setTrackToDelete( const Meta::IpodTrackPtr &track );
+        void copyTracksCompleted();
 
-    void copyTracksCompleted();
+        void deviceRemoved();
 
-    void deviceRemoved();
+        virtual void startFullScan();
+        virtual QueryMaker* queryMaker();
 
-    virtual void startFullScan();
-    virtual QueryMaker* queryMaker();
-
-    QString udi() const;
+        QString udi() const;
     
-    virtual CollectionLocation* location() const;
+        virtual CollectionLocation* location() const;
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
+        virtual QString collectionId() const;
+        virtual QString prettyName() const;
 
-    virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
+        virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
 
-    Ipod::IpodHandler* handler() { return m_handler; }
+        Ipod::IpodHandler* handler() { return m_handler; }
 
-    void updateTags( Meta::IpodTrack *track);
-    void writeDatabase();
+        void updateTags( Meta::IpodTrack *track);
+        void writeDatabase();
     
- signals:
-    void collectionReady();
-    void collectionDisconnected( const QString &udi );
+    signals:
+        void collectionReady();
+        void collectionDisconnected( const QString &udi );
     
     public slots:
-
-    void connectDevice();
-    void disconnectDevice();
-
+        void connectDevice();
+        void disconnectDevice();
 	void deleteTrackToDelete();
 	void deleteTrackSlot( Meta::IpodTrackPtr track);
 
 	void slotDisconnect();
 	
-//    private slots:
-	
- private:
-
-    Meta::IpodTrackPtr m_trackToDelete;
-    QString           m_mountPoint;
-    QString           m_udi;
-    Ipod::IpodHandler *m_handler;
-
-
-    
-
+    private:
+        Meta::IpodTrackPtr m_trackToDelete;
+        QString            m_mountPoint;
+        QString            m_udi;
+        Ipod::IpodHandler *m_handler;
 };
 
 #endif
