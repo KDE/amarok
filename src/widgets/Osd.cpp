@@ -212,10 +212,9 @@ OSDWidget::determineMetrics( const int M )
             m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
         else
             m_cover = KIcon( "audio-volume-muted-amarok" ).pixmap( 100, 100 ).toImage();
-
     }
-
-    if( m_rating )
+    // Don't show both volume and rating
+    else if( m_rating )
     {
         QPixmap* star = StarManager::instance()->getStar( 1 );
         if( rect.width() < star->width() * 5 )
@@ -300,15 +299,11 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
-
-    p.setClipRect(e->rect());
-
+    p.setClipRect( e->rect() );
 
     QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width(), height(), "service_list_item" );
     p.drawPixmap( 0, 0, background );
 
-    
-//     p.setPen( palette().color( QPalette::Active, QPalette::HighlightedText ) );
     p.setPen( Qt::white ); // Revert this when the background can be colorized again.
     rect.adjust( M, M, -M, -M );
 
@@ -323,11 +318,11 @@ OSDWidget::paintEvent( QPaintEvent *e )
         rect.setLeft( rect.left() + m_scaledCover.width() + M );
     }
 
-    QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
     int graphicsHeight = 0;
 
-    if( m_rating > 0 )
+    if( !m_volume && m_rating > 0 )
     {
+        QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
         QRect r( rect );
 
         //Align to center...
@@ -348,7 +343,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
         {
             p.drawPixmap( r.left() + i * star->width(), r.top(), *star );
         }
-
     }
 
     rect.setBottom( rect.bottom() - graphicsHeight );
