@@ -19,8 +19,8 @@
 #include "EngineController.h"
 #include <plasma/theme.h>
 
-#include <KRun>
 #include <KStandardDirs>
+#include <KToolInvocation>
 
 #include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
@@ -112,7 +112,8 @@ WikipediaApplet::linkClicked( const QUrl &url )
 {
     DEBUG_BLOCK
     debug() << "URL: " << url;
-    KRun::runUrl( url, "text/html", 0  );    
+
+    KToolInvocation::invokeBrowser( url.toString() );
 }
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
