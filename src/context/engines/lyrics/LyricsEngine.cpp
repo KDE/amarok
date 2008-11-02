@@ -101,15 +101,14 @@ void LyricsEngine::update()
         }
     }
 
-    if( ( !cached ) && !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
+    if( cached )
+        LyricsManager::self()->lyricsResult( lyrics.toUtf8(), true );
+    else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         return;
     }
-
-    if( cached )
-        LyricsManager::self()->lyricsResult( lyrics.toUtf8(), true );
     else
     {
         // fetch by lyrics script
