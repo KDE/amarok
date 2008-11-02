@@ -320,7 +320,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     int graphicsHeight = 0;
 
-    if( !m_volume && m_rating > 0 )
+    if( !m_volume && m_rating > 0 && !m_paused )
     {
         QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
         QRect r( rect );
@@ -658,11 +658,13 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
         m_currentTrack = track;
         subscribeTo( track );
         metadataChanged( track );
+        m_paused = false;
         break;
 
     case Phonon::PausedState:
         setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         OSDWidget::show( i18n( "Paused" ) );
+        m_paused = true;
         break;
 
     default:
