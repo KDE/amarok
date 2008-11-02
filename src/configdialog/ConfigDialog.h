@@ -31,7 +31,7 @@ class Amarok2ConfigDialog : public KConfigDialog
 
         void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,
                       const QString &header = QString(), bool manage=true);
-        void showPageByName( const QByteArray& page );
+        void showPageByName( const QString& page );
 
     public slots:
         /**

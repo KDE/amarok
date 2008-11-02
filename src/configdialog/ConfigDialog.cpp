@@ -85,10 +85,13 @@ void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemNa
 }
 
 /** Show page by object name */
-void Amarok2ConfigDialog::showPageByName( const QByteArray& page )
+void Amarok2ConfigDialog::showPageByName( const QString& page )
 {
-    for( int index = 0; index < m_pageList.count(); index++ ) {
-        if ( m_pageList[index]->objectName() == page ) {
+    DEBUG_BLOCK
+    for( int index = 0; index < m_pageList.count(); index++ )
+    {
+        if( m_pageList[index]->objectName() == page )
+        {
             KConfigDialog::setCurrentPage( qobject_cast<KPageWidgetItem*>( m_pageList[index] ) );
             return;
         }
