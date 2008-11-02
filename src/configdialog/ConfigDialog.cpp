@@ -80,19 +80,19 @@ void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemNa
 
     // Add the widget pointer to our list, for later reference
     m_pageList << page;
-
-    KConfigDialog::addPage( page, itemName, pixmapName, header, manage );
+    KPageWidgetItem *pageWidget = KConfigDialog::addPage( page, itemName, pixmapName, header, manage );
+    m_pageMap.insert( page, pageWidget );
 }
 
 /** Show page by object name */
 void Amarok2ConfigDialog::showPageByName( const QString& page )
 {
-    DEBUG_BLOCK
-    for( int index = 0; index < m_pageList.count(); index++ )
+    foreach( ConfigDialogBase *configPage, m_pageList )
     {
-        if( m_pageList[index]->objectName() == page )
+        if( configPage->objectName() == page )
         {
-            KConfigDialog::setCurrentPage( qobject_cast<KPageWidgetItem*>( m_pageList[index] ) );
+            KPageWidgetItem *pageItem = m_pageMap.value( configPage );
+            KConfigDialog::setCurrentPage( pageItem );
             return;
         }
     }

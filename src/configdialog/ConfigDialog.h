@@ -52,6 +52,7 @@ class Amarok2ConfigDialog : public KConfigDialog
 
     private:
         QList<ConfigDialogBase*> m_pageList;
+        QMap<ConfigDialogBase*,KPageWidgetItem*> m_pageMap;
 };
 
 
