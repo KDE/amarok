@@ -36,10 +36,8 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , m_wikipediaLabel( 0 )
     , m_webView( 0 )
 {
-
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
-
 }
 
 WikipediaApplet::~ WikipediaApplet()
@@ -49,16 +47,16 @@ WikipediaApplet::~ WikipediaApplet()
     delete m_wikiPage;
     m_wikiPage = 0;
     delete m_webView;*/
+
     delete m_webView;
 }
 
 void WikipediaApplet::init()
 {
-
     m_theme = new Plasma::FrameSvg( this );
     QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
 
-    kDebug() << "Loading theme file: " << imagePath;
+    debug() << "Loading theme file: " << imagePath;
     
     m_theme->setImagePath( imagePath );
     m_theme->setContainsMultipleImages( true );
@@ -69,17 +67,14 @@ void WikipediaApplet::init()
     m_header->setContainsMultipleImages( false );
     
     m_header->resize();
-    m_aspectRatio = (qreal)m_header->size().height()
-                / (qreal)m_header->size().width();
+    m_aspectRatio = (qreal)m_header->size().height() / (qreal)m_header->size().width();
     m_size = m_header->size();
-
 
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
     m_webView = new Plasma::WebView( this );
 
     m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
-
 
     //make background transparent
 
@@ -100,12 +95,10 @@ void WikipediaApplet::init()
 
     connectSource( "wikipedia" );
     connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
-            this, SLOT( connectSource( const QString & ) ) );
+             this, SLOT( connectSource( const QString & ) ) );
             
     constraintsEvent();
-
 }
-
 
 void
 WikipediaApplet::connectSource( const QString &source )
@@ -159,12 +152,10 @@ qreal WikipediaApplet::heightForWidth( qreal width ) const
     return width * m_aspectRatio;;
 }
 
-
 void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-    
-    kDebug() << "WikipediaApplet::dataUpdated: " << name;
     Q_UNUSED( name )
+    debug() << "WikipediaApplet::dataUpdated: " << name;
 
     if( data.size() == 0 ) return;
 
@@ -205,20 +196,18 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 }
 
 
-
 #include "WikipediaApplet.moc"
 
 
-QSizeF WikipediaApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
+QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     Q_UNUSED( which )
 
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {
         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    } else
-    {
-        return constraint;
     }
+        
+    return constraint;
 }
 
