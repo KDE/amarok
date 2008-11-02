@@ -198,7 +198,6 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     m_theme->resizeFrame(size().toSize());
     p->save();
 
-    kDebug() << "painting theme file " << m_theme->imagePath();
     m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() )/*, "header" */);
 
     p->restore();
