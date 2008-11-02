@@ -71,10 +71,12 @@ private slots:
     void slotCopyTracks( const Meta::TrackList& tracks );
     void slotPlayChildTracks();
     void slotAppendChildTracks();
+    void slotEditTracks();
 
 private:
     QList<QAction*> createBasicActions();
     void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
+    Meta::TrackList tracksForEdit() const;
 
     bool mCopyActivated;
     bool mMoveActivated;

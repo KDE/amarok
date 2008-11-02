@@ -24,6 +24,7 @@
 #include "MainWindow.h"
 #include "collection/support/FileCollectionLocation.h"
 #include "collection/CollectionManager.h"
+#include "dialogs/TagDialog.h"
 #include "playlist/PlaylistController.h"
 
 #include <KActionMenu>
@@ -229,6 +230,35 @@ MyDirOperator::playChildTracks( const KFileItemList &items, Playlist::AddOptions
     The::playlistController()->insertOptioned( list, insertMode );
 }
 
+Meta::TrackList
+MyDirOperator::tracksForEdit() const
+{
+    Meta::TrackList tracks;
+
+    const KFileItemList list = selectedItems();
+    if( list.isEmpty() )
+        return tracks;
+
+    foreach( KFileItem item, list )
+    {
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
+        if( track )
+            tracks << track;
+    }
+    return tracks;
+}
+
+void
+MyDirOperator::slotEditTracks()
+{
+    Meta::TrackList tracks = tracksForEdit();
+    if( !tracks.isEmpty() )
+    {
+        TagDialog *dialog = new TagDialog( tracks, this );
+        dialog->show();
+    }
+}
+
 QList<QAction*>
 MyDirOperator::createBasicActions()
 {
@@ -236,12 +266,18 @@ MyDirOperator::createBasicActions()
 
     QAction* appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
     QAction* loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+    QAction* editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
 
     connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
     connect( loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
+    connect( editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+
+    Meta::TrackList tracks = tracksForEdit();
+    editAction->setEnabled( !tracks.isEmpty() );
 
     actions.append( appendAction );
     actions.append( loadAction );
+    actions.append( editAction );
 
     return actions;
 }
