@@ -50,7 +50,7 @@ class OSDWidget : public QWidget
         void show( const QString &text, QImage newImage = QImage() );
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
-        void volChanged( unsigned char volume );
+        void volChanged( int volume );
 
         /** reimplemented, shows the OSD */
         virtual void show();
@@ -101,7 +101,7 @@ class OSDWidget : public QWidget
         uint        m_y;
         bool        m_drawShadow;
         short       m_rating;
-        unsigned char m_newvolume;
+        int         m_newvolume;
         bool        m_volume;
         QString     m_text;
         QImage      m_cover;

@@ -130,7 +130,7 @@ OSDWidget::ratingChanged( const short rating )
 }
 
 void
-OSDWidget::volChanged( unsigned char volume )
+OSDWidget::volChanged( int volume )
 {
     if ( isEnabled() )
     {
