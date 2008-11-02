@@ -171,17 +171,20 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         m_suggested->hide();
         m_lyrics->show();m_lyrics->setPlainText( i18n( "No lyrics script is running!" ) );
-    } else if( data.contains( "fetching" ) )
+    }
+    else if( data.contains( "fetching" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
-    } else if( data.contains( "error" ) )
+    }
+    else if( data.contains( "error" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "Lyrics were not able to be downloaded. Please check your internet connection." ) );
-    } else if( data.contains( "suggested" ) )
+    }
+    else if( data.contains( "suggested" ) )
     {
         m_lyrics->hide();
         QVariantList suggested = data[ "suggested" ].toList();
@@ -199,7 +202,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         //debug() << "setting html: " << html;
         m_suggested->setHtml( html );
         m_suggested->show();
-    } else if( data.contains( "html" ) )
+    }
+    else if( data.contains( "html" ) )
     {
         // show pure html in the text area
         m_suggested->hide();
@@ -207,7 +211,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_titleLabel->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
-    } else if( data.contains( "lyrics" ) )
+    }
+    else if( data.contains( "lyrics" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
@@ -239,12 +244,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     m_theme->resizeFrame( size().toSize() );
 
     m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
-
 }
-
-
-#include "LyricsApplet.moc"
-
 
 QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
 {
@@ -272,3 +272,5 @@ LyricsApplet::refreshLyrics()
         return;
     ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
 }
+
+#include "LyricsApplet.moc"
