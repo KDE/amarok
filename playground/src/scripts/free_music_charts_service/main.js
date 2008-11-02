@@ -155,6 +155,21 @@ function onPopulate( level, callbackData, filter ) {
     item.callbackData = "";
 
     elt = shows.at( callbackData ); // jump to the correct show
+
+    /* The podcasts */
+    item.itemName    = "Podcast (MP3)";
+    item.artist      = "Free Music Charts";
+    item.infoHtml    = html;
+    item.playableUrl = elt.firstChildElement( "podcastmp3" ).text();
+    if (item.playableUrl != "not yet available" )
+      script.insertItem( item );
+
+    item.itemName    = "Podcast (OGG)";
+    item.playableUrl = elt.firstChildElement( "podcastogg" ).text();
+    if (item.playableUrl != "not yet available" )
+      script.insertItem( item );
+
+    /* The songs */
     var i = elt.firstChildElement( "songcount" ).text(); // get songcount
     Amarok.debug( i );
     elt = elt.firstChildElement( "songs" ); // ascend to songs
@@ -171,7 +186,6 @@ function onPopulate( level, callbackData, filter ) {
       item.itemName = item.itemName + ": " + elt.firstChildElement( "name" ).text();
 
       // split name into artist/title
-      // XXX: find a way to set the title correctly without messing with the item order in the browser
       songArtistTitle = elt.firstChildElement( "name" ).text().split(" - ");
       Amarok.debug( songArtistTitle[0] );
       Amarok.debug( songArtistTitle[1] );
