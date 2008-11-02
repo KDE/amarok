@@ -57,7 +57,7 @@ var stationArray = new Array (
     new Station( "Secret Agent [Downtempo/Lounge]",                     "http://somafm.com/secretagent.pls" ),
     new Station( "SLAY Radio [C64 Remixes]",                            "http://www.slayradio.org/tune_in.php/128kbps/listen.m3u" ),
     new Station( "Virgin Radio [Rock/Pop]",                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb" ),
-    new Station( "X T C Radio [Techno/Trance]",                         "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2882&file=filename.pls" )
+    new Station( "X T C Radio [Techno/Trance]",                         "http://206.19.69.69:443/listen.pls" )
 );
 
 function CoolStream()
