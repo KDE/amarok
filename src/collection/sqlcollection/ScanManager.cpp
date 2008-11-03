@@ -254,6 +254,9 @@ void
 ScanManager::slotError( QProcess::ProcessError error )
 {
     DEBUG_BLOCK
+
+    debug() << "Error: " << error;
+
     if( error == QProcess::Crashed )
     {
         handleRestart();
