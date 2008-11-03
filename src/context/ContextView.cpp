@@ -49,6 +49,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , m_curState( Home )
     , m_zoomLevel( Plasma::DesktopZoom )
     , m_startupFinished( false )
+    , m_containment( 0 )
     , m_numContainments( 4 )
     , m_placementHack( 0 )
 {
