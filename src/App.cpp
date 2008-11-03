@@ -505,8 +505,10 @@ void App::applySettings( bool firstTime )
         const QDir cacheDir = Amarok::saveLocation( "albumcovers/cache/" );
         const QStringList obsoleteCovers = cacheDir.entryList( QStringList("*") );
         foreach( const QString &it, obsoleteCovers )
-            if ( !it.startsWith( size  ) && !it.startsWith( "50@" ) && !it.startsWith( "32@" ) )
+            //34@ is for playlist album cover images
+            if ( !it.startsWith( size  ) && !it.startsWith( "50@" ) && !it.startsWith( "32@" ) && !it.startsWith( "34@" ) )
                 QFile( cacheDir.filePath( it ) ).remove();
+
         PERF_LOG( "done cover handling" )
     }
 
