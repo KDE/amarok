@@ -42,15 +42,16 @@ elt2   = new QDomElement;
 shows  = new QDomNodeList;
 
 episodes = new Object();
+urls = new Object();
 
 
 function trimKey( key ) {
 
     newKey = key.replace("http://open.bbc.co.uk/rad/uriplay/content/", "" );
-    index = newKey.indexOf( "/" );
+    /*index = newKey.indexOf( "/" );
     newKey = newKey.substring(index);
     newKey = newKey.replace( "/", "" );
-    newKey = newKey.replace( "-", "_" );
+    newKey = newKey.replace( "-", "_" );*/
 
     return newKey;
 }
@@ -102,10 +103,10 @@ function xmlDownloadResult( reply ) {
 
 
     Amarok.debug ("building episode map..." );
+
+
     //build a map of all episodes keyed by their unique url
     var episodeNodes = doc.elementsByTagName( "po:Episode" );
-
-
 
     var j = 0;
     for ( ; j < episodeNodes.length(); j++ ) {
@@ -135,9 +136,30 @@ function xmlDownloadResult( reply ) {
       //episodes[key] = item2;
       episodes[key] = data;
       Amarok.debug ("item " + data + " inserted with key: " + key);
-      
 
     }
+
+    //build a map of download urls as these are in some cass spread out all over the place
+    var playNodes = doc.elementsByTagName( "play:Location" );
+
+    var k = 0;
+    for ( ; k < playNodes.length(); k++ ) {
+
+      elt = playNodes.at( k );
+
+      var ulrKey = trimKey( elt.toElement().attribute("rdf:about", "failed" ) );
+
+      elt2 = elt.lastChildElement( "play:uri" );
+      var url = elt2.attribute( "rdf:resource", "" );
+
+      //Amarok.debug ("url: " + item.playableUrl);
+
+      //episodes[key] = item2;
+      urls[ulrKey] = url;
+      Amarok.debug ("url " + url + " inserted with key: " + ulrKey);
+
+    }
+
 
 for(att in episodes){
  Amarok.debug ("att: " + att + ", " + episodes[att])
@@ -218,7 +240,8 @@ function onPopulate( level, callbackData, filter ) {
 
             item2.itemName = item_array[0];
             item2.infoHtml = item_array[1];
-            item2.playableUrl = item_array[2];
+
+            item2.playableUrl = urls[key + "main/main/main/"];
 
             item2.artist = "BBC";
 

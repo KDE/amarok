@@ -13,5 +13,5 @@ X-KDE-PluginInfo-Version=1.0.0
 X-KDE-PluginInfo-Category=Scriptable Service
 X-KDE-PluginInfo-Website=http://amarok.kde.org/
 X-KDE-PluginInfo-Depends=Amarok2.0
-X-KDE-PluginInfo-License=LGPL
+X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=false
