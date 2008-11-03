@@ -394,7 +394,7 @@ ScriptManager::slotUninstallScript()
     DEBUG_BLOCK
 
     const QString name = m_scriptSelector->currentItem();
-    if ( name == "")
+    if( name.isEmpty() )
         return;
 
     if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
@@ -413,6 +413,7 @@ ScriptManager::slotUninstallScript()
     {
         if ( m_scripts[name].running )
             slotStopScript( name );
+
         m_scripts.remove( name );
         KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
         "<p>Please restart Amarok to totally remove the script!</p>" ) );

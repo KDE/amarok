@@ -29,8 +29,10 @@ ScriptSelector::ScriptSelector( QWidget * parent )
 {
     KLineEdit* lineEdit;
     lineEdit = this->findChild<KLineEdit*>();
-    if ( lineEdit != 0 )
-        lineEdit->setClickMessage( i18n("Search Scripts") );
+
+    if( lineEdit )
+        lineEdit->setClickMessage( i18n( "Search Scripts" ) );
+
     m_listView = this->findChild<KCategorizedView*>();
     scriptCount = 0;
 }
@@ -41,6 +43,7 @@ ScriptSelector::~ScriptSelector()
 void ScriptSelector::addScripts( const QList<KPluginInfo> &pluginInfoList, PluginLoadMethod pluginLoadMethod, const QString &categoryName, const QString &categoryKey, const KSharedConfig::Ptr &config )
 {
     DEBUG_BLOCK
+
     addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
     foreach( const KPluginInfo &plugin, pluginInfoList )
     {
@@ -54,17 +57,20 @@ QString ScriptSelector::currentItem()
     DEBUG_BLOCK
 
     QItemSelectionModel *SelModel = m_listView->selectionModel();
-    QModelIndexList SelIndexes = SelModel->selectedIndexes();
-    if ( SelIndexes.size() > 0)
+    const QModelIndexList SelIndexes = SelModel->selectedIndexes();
+
+    if( !SelIndexes.isEmpty() )
     {
-        QModelIndex currentIndex = SelIndexes.at(0);
-        if ( currentIndex.isValid() ){
+        QModelIndex currentIndex = SelIndexes[0];
+        if( currentIndex.isValid() )
+        {
             debug() << "row: " << currentIndex.row() + 1; //the index start from 1
             debug() << "name: "<< m_scripts[currentIndex.row() + 1];
             return m_scripts[currentIndex.row() + 1];
         }
     }
-    return "";
+
+    return QString();
 }
 
 #include "ScriptSelector.moc"
