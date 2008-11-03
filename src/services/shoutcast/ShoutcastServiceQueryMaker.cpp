@@ -185,10 +185,10 @@ void ShoutcastServiceQueryMaker::handleResult()
             emitProperResult<TrackPtr, TrackList>( tracks );
             break;
         }
-        default:
-            break;
-    }
 
+        default:
+            warning() << "Query type not handled.";
+    }
 }
 
 void ShoutcastServiceQueryMaker::fetchGenres()
