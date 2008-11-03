@@ -394,6 +394,8 @@ ScriptManager::slotUninstallScript()
     DEBUG_BLOCK
 
     const QString name = m_scriptSelector->currentItem();
+    if ( name == "")
+        return;
 
     if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
         return;
