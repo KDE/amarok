@@ -98,7 +98,7 @@ ScanManager::startFullScan()
     }
     cleanTables();
     m_scanner = new AmarokProcess( this );
-    *m_scanner << amarokCollectionScanDir << "amarokcollectionscanner" << "--nocrashhandler" << "-p";
+    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
@@ -148,7 +148,7 @@ void ScanManager::startIncrementalScan()
         m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
     }
     m_scanner = new AmarokProcess( this );
-    *m_scanner << amarokCollectionScanDir << "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
+    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
@@ -378,7 +378,7 @@ ScanManager::restartScanner()
 {
     DEBUG_BLOCK
     m_scanner = new AmarokProcess( this );
-    *m_scanner << amarokCollectionScanDir << "amarokcollectionscanner" << "--nocrashhandler";
+    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
