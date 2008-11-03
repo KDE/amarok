@@ -220,6 +220,8 @@ function onPopulate( level, callbackData, filter ) {
             item2.infoHtml = item_array[1];
             item2.playableUrl = item_array[2];
 
+            item2.artist = "BBC";
+
 
             script.insertItem( item2 );
 
