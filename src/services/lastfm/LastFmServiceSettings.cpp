@@ -18,6 +18,7 @@
 #include "Debug.h"
 
 #include <QVBoxLayout>
+#include <QRegExpValidator>
 
 #include <KPluginFactory>
 
@@ -35,6 +36,10 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     m_configDialog = new Ui::LastFmConfigWidget;
     m_configDialog->setupUi( w );
     l->addWidget( w );
+    
+    QRegExp rx( "[A-Za-z][A-Za-z0-9]{1,14}" );
+    QValidator *validator = new QRegExpValidator( rx, this );
+    m_configDialog->kcfg_ScrobblerUsername->setValidator( validator );
 
     connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
