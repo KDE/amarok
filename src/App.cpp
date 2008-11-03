@@ -603,7 +603,7 @@ void App::slotConfigEqualizer() //SLOT
 //    EqualizerSetup::instance()->raise();
 }
 
-void App::slotConfigAmarok( const QByteArray& page )
+void App::slotConfigAmarok( const QString& page )
 {
     Amarok2ConfigDialog* dialog = static_cast<Amarok2ConfigDialog*>( KConfigDialog::exists( "settings" ) );
 

@@ -71,7 +71,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     public slots:
         void applySettings( bool firstTime = false );
-        void slotConfigAmarok( const QByteArray& page = QByteArray() );
+        void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
         void slotConfigToolBars();
         void slotConfigEqualizer();
