@@ -612,21 +612,10 @@ void App::slotConfigAmarok( const QString& page )
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
         dialog = new Amarok2ConfigDialog( mainWindow(), "settings", AmarokConfig::self() );
 
-        connect( dialog, SIGNAL(settingsChanged(const QString&)), SLOT(applySettings()) );
+        connect( dialog, SIGNAL( settingsChanged( const QString& ) ), SLOT( applySettings() ) );
     }
 
-    //FIXME it seems that if the dialog is on a different desktop it gets lost
-    //      what do to? detect and move it?
-
-//    if ( page.isNull() )
-          // FIXME
-//        dialog->showPage( AmarokConfigDialog::s_currentPage );
-//    else
-        dialog->showPageByName( page );
-
-    dialog->show();
-    dialog->raise();
-    dialog->activateWindow();
+    dialog->show( page );
 }
 
 void App::slotConfigShortcuts()

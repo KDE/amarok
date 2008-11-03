@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2008 by Mark Kretschmann <kretschmann@kde.org>     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,6 +32,9 @@
 
 #include <KLocale>
 
+
+QString Amarok2ConfigDialog::s_currentPage = "GeneralConfig";
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +65,17 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
 {
     DEBUG_FUNC_INFO
 
+    KPageWidgetItem* pageItem = currentPage();
+
+    foreach( ConfigDialogBase *configPage, m_pageList )
+    {
+        if( m_pageMap[configPage] == pageItem )
+        {
+            s_currentPage = configPage->metaObject()->className();
+            break;
+        }
+    }
+
     AmarokConfig::self()->writeConfig();
 }
 
@@ -84,18 +98,27 @@ void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemNa
     m_pageMap.insert( page, pageWidget );
 }
 
-/** Show page by object name */
-void Amarok2ConfigDialog::showPageByName( const QString& page )
+
+void Amarok2ConfigDialog::show( QString page )
 {
+    if( page.isNull() )
+    {
+        page = s_currentPage;
+    }
+
     foreach( ConfigDialogBase *configPage, m_pageList )
     {
-        if( configPage->objectName() == page )
+        if( configPage->metaObject()->className() == page )
         {
-            KPageWidgetItem *pageItem = m_pageMap.value( configPage );
+            KPageWidgetItem *pageItem = m_pageMap[configPage];
             KConfigDialog::setCurrentPage( pageItem );
-            return;
+            break;
         }
     }
+
+    KConfigDialog::show();
+    raise();
+    activateWindow();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

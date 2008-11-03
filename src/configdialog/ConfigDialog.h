@@ -1,16 +1,20 @@
 /***************************************************************************
-begin                : 2004/02/07
-copyright            : (C) Mark Kretschmann
-email                : markey@web.de
-***************************************************************************/
-
-/***************************************************************************
+ *   Copyright (C) 2004-2008 by Mark Kretschmann <kretschmann@kde.org>     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #ifndef AMAROK2CONFIGDIALOG_H
@@ -30,10 +34,14 @@ class Amarok2ConfigDialog : public KConfigDialog
         ~Amarok2ConfigDialog();
 
         void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,
-                      const QString &header = QString(), bool manage=true);
-        void showPageByName( const QString& page );
+                      const QString &header = QString(), bool manage = true );
 
     public slots:
+        /**
+         * Shows the config dialog and sets the current page to @page (class name of the dialog).
+         */
+        void show( QString page );
+
         /**
          * Updates the state of the Apply button. Useful for widgets that are not managed by KConfigXT.
          */
@@ -52,7 +60,9 @@ class Amarok2ConfigDialog : public KConfigDialog
 
     private:
         QList<ConfigDialogBase*> m_pageList;
-        QMap<ConfigDialogBase*,KPageWidgetItem*> m_pageMap;
+        QMap<ConfigDialogBase*, KPageWidgetItem*> m_pageMap;
+
+        static QString s_currentPage;
 };
 
 
