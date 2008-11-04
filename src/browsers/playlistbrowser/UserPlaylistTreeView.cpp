@@ -241,9 +241,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
             m_currentItems.insert( PlaylistBrowserNS::UserModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>() );
     }
 
-
-    KAction* result = dynamic_cast< KAction* > ( menu.exec( mapToGlobal( event->pos() ) ) );
-
+    menu.exec( mapToGlobal( event->pos() ) );
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
