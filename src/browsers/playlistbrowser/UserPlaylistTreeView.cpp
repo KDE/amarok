@@ -88,9 +88,8 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
 
         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
             Meta::SqlPlaylist * playlist = static_cast< Meta::SqlPlaylist* >( item );
-            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::Replace );
+            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
         }
-
     }
 }
 
@@ -182,7 +181,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad() {
     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
         Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::Replace );
+        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
     }
 }
 
@@ -192,7 +191,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotAppend()
     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
         Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::Append );
+        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
     }
 }
 
