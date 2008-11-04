@@ -60,6 +60,8 @@ class CollectionTreeItem
         int level() const;
 
         bool isDataItem() const;
+        bool isAlbumItem() const;
+        bool isTrackItem() const;
 
         QueryMaker* queryMaker() const;
 

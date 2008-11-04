@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *             (c) 2008  Seb Ruiz <ruiz@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #include "CollectionSortFilterProxyModel.h"
@@ -51,33 +52,102 @@ CollectionSortFilterProxyModel::hasChildren(const QModelIndex & parent) const
 bool
 CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-    CollectionTreeItem *leftItem = static_cast<CollectionTreeItem*>( left.internalPointer() );
-    CollectionTreeItem *rightItem = static_cast<CollectionTreeItem*>( right.internalPointer() );
+    CollectionTreeItem *leftItem = treeItem( left );
+    CollectionTreeItem *rightItem = treeItem( right );
 
-    //Here we catch the bottom 'track' level
     if( leftItem->level() == rightItem->level() )
     {
-        const Meta::TrackPtr leftTrack = Meta::TrackPtr::dynamicCast( leftItem->data() );
-        const Meta::TrackPtr rightTrack = Meta::TrackPtr::dynamicCast( rightItem->data() );
-        if( !leftTrack.isNull() && !rightTrack.isNull() )
-        {
+        if( leftItem->isTrackItem() && rightItem->isTrackItem() )
+            return lessThanTrack( left, right );
 
-            //First compare by disc number
-            if ( leftTrack->discNumber() < rightTrack->discNumber() )
-                return true;
-            else if( leftTrack->discNumber() == rightTrack->discNumber() )
-            {
-                //Disc #'s are equal, compare by track number
-                if( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
-                    return leftTrack->trackNumber() < rightTrack->trackNumber();
-                //fallback to name sorting
-                return QSortFilterProxyModel::lessThan( left, right );
-            }
-            else // Right discNum > left discNum
-                return false;
-        }
+        if( leftItem->isAlbumItem() && rightItem->isAlbumItem() )
+            return lessThanAlbum( left, right );
     }
 
+    return lessThanIndex( left, right );
+}
+
+bool
+CollectionSortFilterProxyModel::lessThanTrack( const QModelIndex &left, const QModelIndex &right ) const
+{
+    const Meta::TrackPtr leftTrack = Meta::TrackPtr::dynamicCast( treeItem(left)->data() );
+    const Meta::TrackPtr rightTrack = Meta::TrackPtr::dynamicCast( treeItem(right)->data() );
+    if( !leftTrack || !rightTrack )
+    {
+        DEBUG_BLOCK
+        error() << "Should never have compared these two indexes";
+        return lessThanIndex( left, right );
+    }
+
+    //First compare by disc number
+    if ( leftTrack->discNumber() < rightTrack->discNumber() )
+        return true;
+    else if( leftTrack->discNumber() == rightTrack->discNumber() )
+    {
+        //Disc #'s are equal, compare by track number
+        if( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
+            return leftTrack->trackNumber() < rightTrack->trackNumber();
+        
+        //fallback to name sorting
+        return lessThanIndex( left, right );
+    }
+    // Right discNum > left discNum
+    return false;
+}
+
+bool
+CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QModelIndex &right ) const
+{
+    Meta::AlbumPtr leftAlbum = Meta::AlbumPtr::dynamicCast( treeItem(left)->data() );
+    Meta::AlbumPtr rightAlbum = Meta::AlbumPtr::dynamicCast( treeItem(right)->data() );
+
+    if( !leftAlbum || !rightAlbum )
+    {
+        DEBUG_BLOCK
+        error() << "Should never have compared these two indexes";
+        return lessThanIndex( left, right );
+    }
+
+    //First compare by year
+    bool ok = true;
+    int leftYear = albumYear( leftAlbum, &ok );
+    int rightYear = 0;
+    if( ok )
+        rightYear = albumYear( rightAlbum, &ok );
+
+    // compare if the years are valid numbers
+    if( ok && leftYear < rightYear )
+        return false; // left album is newer
+
+    // if the year conversions failed or the years are the same, compare by name
+    if( !ok || leftYear == rightYear )
+        return lessThanIndex( left, right );
+
+    return true; // left album is older
+}
+
+inline CollectionTreeItem*
+CollectionSortFilterProxyModel::treeItem( const QModelIndex &index ) const
+{
+    return static_cast<CollectionTreeItem*>( index.internalPointer() );
+}
+
+int
+CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album, bool *ok ) const
+{
+    int year = 0;
+    if( !album->tracks().isEmpty() )
+    {
+        const Meta::TrackPtr track = album->tracks()[0];
+        if( track && track->year() )
+            year = track->year()->prettyName().toInt( ok );
+    }
+    return year;
+}
+
+bool
+CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QModelIndex &right ) const
+{
     // This should catch everything else
     QVariant leftData = left.data( CustomRoles::SortRole );
     QVariant rightData = right.data( CustomRoles::SortRole );

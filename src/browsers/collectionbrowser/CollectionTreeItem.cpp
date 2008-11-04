@@ -130,21 +130,21 @@ CollectionTreeItem::data( int role ) const
                     }
                 }
             }
+            
+            // Check empty after track logic and before album logic
+            if( name.isEmpty() )
+                name = i18nc( "The Name is not known", "Unknown" );
+            
             if( AmarokConfig::showYears() )
             {
                 QString year = albumYear();
                 if( !year.isEmpty() )
                     name = year + " - " + name;
             }
-            
-            if( name.isEmpty() )
-                return i18nc( "The Name is not known", "Unknown" );
             return name;
         }
         else if ( role == CustomRoles::SortRole )
-        {
             return m_data->sortableName();
-        }
 
         return QVariant();
     }
@@ -183,6 +183,18 @@ CollectionTreeItem::isDataItem() const
     //return !m_data.isNull();
     //note a various artists node is also a special data node!
     return !m_parentCollection;
+}
+
+bool
+CollectionTreeItem::isAlbumItem() const
+{
+    return isDataItem() && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
+}
+
+bool
+CollectionTreeItem::isTrackItem() const
+{
+    return isDataItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
 QueryMaker*

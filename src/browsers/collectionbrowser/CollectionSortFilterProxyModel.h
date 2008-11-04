@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                 2008  Seb Ruiz <ruiz@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #ifndef COLLECTIONSORTFILTERPROXYMODEL_H
@@ -22,11 +23,15 @@
 
 #include <QSortFilterProxyModel>
 
-/**
-This is a custom QSortFilterProxyModel that solves some issues with sorting a model that usses lazy loading
+#include "meta/Meta.h"
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+/**
+    This is a custom QSortFilterProxyModel that solves some issues with sorting a model that usses lazy loading
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
+
+class CollectionTreeItem;
+
 class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 {
     public:
@@ -38,7 +43,14 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 
     protected:
         virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-        virtual bool lessThanString( const QString &a, const QString &b ) const;
+
+    private:
+        int albumYear( Meta::AlbumPtr album, bool *ok = 0 ) const;
+        CollectionTreeItem* treeItem( const QModelIndex &index ) const;
+        bool lessThanTrack( const QModelIndex &left, const QModelIndex &right ) const;
+        bool lessThanAlbum( const QModelIndex &left, const QModelIndex &right ) const;
+        bool lessThanIndex( const QModelIndex &left, const QModelIndex &right ) const;
+        bool lessThanString( const QString &a, const QString &b ) const;
 };
 
 #endif
