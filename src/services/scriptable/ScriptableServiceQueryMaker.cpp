@@ -100,14 +100,23 @@ void ScriptableServiceQueryMaker::run()
         d->callbackString = "none";
 
 
-    if ( d->type == Private::GENRE )
+    if ( d->type == Private::GENRE ) {
+        if ( ( m_collection->levels() == 4 ) && (  m_collection->lastFilter() != d->filter ) )
+               m_collection->clear();
         fetchGenre();
-    if ( d->type == Private::ARTIST )
+    } else if ( d->type == Private::ARTIST ) {
+        if ( ( m_collection->levels() == 3 ) && (  m_collection->lastFilter() != d->filter ) )
+            m_collection->clear();
         fetchArtists();
-    else if ( d->type == Private::ALBUM )
+    } else if ( d->type == Private::ALBUM ) {
+        if ( ( m_collection->levels() == 2 ) && (  m_collection->lastFilter() != d->filter ) )
+            m_collection->clear();
         fetchAlbums();
-    else if ( d->type == Private::TRACK )
+    } else if ( d->type == Private::TRACK ) {
+        if ( ( m_collection->levels() == 1 ) && (  m_collection->lastFilter() != d->filter ) )
+            m_collection->clear();
         fetchTracks();
+    }
 
 }
 
@@ -460,21 +469,13 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
         //TODO: with KSharedPointers in use, does this leak!?
 
         debug() << "clear all!!!!!!!!!!!!!!";
-
-        m_collection->acquireWriteLock();
-        m_collection->genreMap().clear();
-        m_collection->setGenreMap( GenreMap() );
-        m_collection->artistMap().clear();
-        m_collection->setArtistMap( ArtistMap() );
-        m_collection->albumMap().clear();
-        m_collection->setAlbumMap( AlbumMap() );
-        m_collection->trackMap().clear();
-        m_collection->setTrackMap( TrackMap() );
-        m_collection->releaseLock();
-
-        d->lastFilter = d->filter;
+        m_collection->clear();
     }
+
+    d->lastFilter = d->filter;
+    m_collection->setLastFilter( d->filter );
     return this;
+
 }
 
 QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::DataPtr & data )

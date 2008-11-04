@@ -49,7 +49,11 @@ public:
     int levels() const {
         return m_levels;
     }
-    
+
+    void setLastFilter( const QString & filter ) { m_lastFilter = filter; }
+    QString lastFilter() { return m_lastFilter; }
+
+    void clear();
 
     signals:
         void updateComplete();
@@ -58,6 +62,7 @@ private:
 
     QString m_name;
     int m_levels;
+    QString m_lastFilter;
 
 };
 

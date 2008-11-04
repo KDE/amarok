@@ -25,6 +25,7 @@ ScriptableServiceCollection::ScriptableServiceCollection( const QString &name )
     : ServiceCollection( 0, name, name )
 {
     m_name = name;
+    m_lastFilter = QString();
 }
 
 
@@ -53,5 +54,19 @@ void ScriptableServiceCollection::donePopulating(int parentId)
     Q_UNUSED( parentId );
     emit updateComplete();
     //emitUpdated();
+}
+
+void ScriptableServiceCollection::clear()
+{
+    acquireWriteLock();
+    genreMap().clear();
+    setGenreMap( GenreMap() );
+    artistMap().clear();
+    setArtistMap( ArtistMap() );
+    albumMap().clear();
+    setAlbumMap( AlbumMap() );
+    trackMap().clear();
+    setTrackMap( TrackMap() );
+    releaseLock();
 }
 
