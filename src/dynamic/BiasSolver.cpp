@@ -137,6 +137,7 @@ void Dynamic::BiasSolver::prepareToRun()
     // nothing to update
     if( !m_pendingBiasUpdates && !s_universeOutdated )
     {
+        m_biasMutex.unlock();
         emit readyToRun();
         return;
     }

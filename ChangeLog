@@ -13,7 +13,9 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
-    * Correctly load m3u playlists (BR 171595)
+    * Dynamic playlist no longer locks up requiring a restart of the
+      application. (BR 173776)
+    * Correctly load m3u playlists. (BR 171595)
     * Fixed metadata updating for Shoutcast streams.
 
 
