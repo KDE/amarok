@@ -9,6 +9,8 @@ VERSION 2.0-rc1
     * Track information can be edited from the file browser. (BR 172812)
 
   CHANGES:
+    * "Show active track" has been moved from the playlist context menu to the
+      playlist toolbar.
 
   BUGFIXES:
     * Correctly load m3u playlists (BR 171595)
