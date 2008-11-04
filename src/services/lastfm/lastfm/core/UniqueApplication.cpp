@@ -183,6 +183,8 @@ UniqueApplication::forward( const QStringList& args )
                                        &result );
     return res != 0;
 #endif
+
+    return true;
 }
 
 
