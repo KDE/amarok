@@ -52,7 +52,8 @@ enum AddOptions
     DirectPlay = 8,     /// start playback of the first item in the list
     Unique     = 16,    /// don't insert anything already in the playlist
     StartPlay  = 32,    /// start playback of the first item in the list if nothing else playing
-    AppendAndPlay = Append | StartPlay
+    AppendAndPlay = Append | StartPlay,
+    LoadAndPlay = Replace | StartPlay
 };
 
 class AMAROK_EXPORT Controller : public QObject

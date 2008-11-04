@@ -128,8 +128,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     {
         Actions::instance()->play( firstItemAdded );
     }
-    else if (( options & StartPlay ) && ( m_model->rowCount() > 0 )
-             && (( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) ) )
+    else if ( ( options & StartPlay ) && ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) ) )
         Actions::instance()->play( firstItemAdded );
 }
 

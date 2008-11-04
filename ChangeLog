@@ -16,6 +16,8 @@ VERSION 2.0-rc1
     * Dynamic playlist no longer locks up requiring a restart of the
       application. (BR 173776)
     * Correctly load m3u playlists. (BR 171595)
+    * Made the Load action start playback correctly like the Append action.
+    * Correctly load m3u playlists (BR 171595)
     * Fixed metadata updating for Shoutcast streams.
 
 

@@ -215,7 +215,7 @@ void MyDirOperator::slotPlayChildTracks()
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
         return;
-    playChildTracks( list, Playlist::Replace );
+    playChildTracks( list, Playlist::LoadAndPlay );
 }
 
 void

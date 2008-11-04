@@ -830,7 +830,7 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
 
 void CollectionTreeView::slotPlayChildTracks()
 {
-    playChildTracks( m_currentItems, Playlist::Replace );
+    playChildTracks( m_currentItems, Playlist::LoadAndPlay );
 }
 
 void CollectionTreeView::slotAppendChildTracks()
