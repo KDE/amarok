@@ -1,8 +1,6 @@
 /*###########################################################################
-#   A script that shows you the Darkerradio.com Free Music Charts.          #
-#   You can:                                                                #
-#    * see the charts positions of each song                                #
-#    * listen and download each one                                         #
+#   A script that lets you browse and listen to free content                #
+#   From the BBC                                                            #
 #                                                                           #
 #   Copyright                                                               #
 #   (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                 #
