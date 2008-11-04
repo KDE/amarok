@@ -42,7 +42,7 @@ shows  = new QDomNodeList;
 episodes = new Object();
 urls = new Object();
 
-xmlFetched = false;
+xmlFetched = 0;
 
 
 function trimKey( key ) {
@@ -56,6 +56,11 @@ function trimKey( key ) {
     return newKey;
 }
 
+String.prototype.trim = function() {
+    a = this.replace(/^\s+/, '');
+    return a.replace(/\s+$/, '');
+}
+
 /* Configuration */
 function onConfigure() {
   Amarok.alert( "sorry", "This script does not require any configuration." );
@@ -65,7 +70,7 @@ function onConfigure() {
 /* Initialization of service */
 function BBCService() {
   Amarok.debug( "creating bbc service..." );
-  ScriptableServiceScript.call( this, "BBC", 2, "Freely available content from BBC", html, false );
+  ScriptableServiceScript.call( this, "BBC", 2, "Freely available content from BBC", html, true );
   Amarok.debug( "done creating bbc service!" );
 }
 
@@ -75,6 +80,9 @@ function xmlDownloadResult( reply ) {
   Amarok.debug( "start bbc shows xml parsing..." );
   try {
     doc.setContent( reply );
+
+    shows = doc.elementsByTagName( "po:Brand" );
+    Amarok.debug ("got " + shows.length() + " shows!");
 
 
     Amarok.debug ("building episode map..." );
@@ -141,17 +149,15 @@ function xmlDownloadResult( reply ) {
   catch( err ) {
     Amarok.debug( err );
   }
-  xmlFetched == true;
-  populateShows();
+  xmlFetched == 1;
+  populateShows( "" );
 }
 
 
-function populateShows() {
+function populateShows( filter ) {
 
   Amarok.debug ("in populateShows");
   try {
-    shows = doc.elementsByTagName( "po:Brand" );
-    Amarok.debug ("got " + shows.length() + " shows!");
 
     var showTitles = new Array( shows.length() );
 
@@ -161,17 +167,31 @@ function populateShows() {
 
     var i = 0;
     for ( ; i < shows.length(); i++ ) {
-      elt = shows.at( i );
-      elt2 = elt.firstChildElement( "dc:title" );
-      item.itemName = elt2.text();
 
-      elt2 = elt.firstChildElement( "dc:description" );
-      item.infoHtml = elt2.text();
+        elt = shows.at( i );
+        elt2 = elt.firstChildElement( "dc:title" );
+        item.itemName = elt2.text();
 
-      // this is needed to identify the item when we need to expand
-      // it in onPopulate( level, -->callbackData<--, filter )
-      item.callbackData = i;
-      script.insertItem( item );
+        var lowerCaseTitle = item.itemName.toLowerCase();
+        var lowerCaseFilter = filter.toLowerCase();
+
+          Amarok.debug ("searching for filter " + lowerCaseFilter + " in title " + lowerCaseTitle);
+
+
+        if ( lowerCaseFilter != "" && lowerCaseTitle.indexOf(lowerCaseFilter) == -1 ) {
+            continue;
+        }
+
+
+	elt2 = elt.firstChildElement( "dc:description" );
+	item.infoHtml = elt2.text();
+
+	// this is needed to identify the item when we need to expand
+	// it in onPopulate( level, -->callbackData<--, filter )
+	item.callbackData = i;
+	script.insertItem( item );
+
+        
     }
 
  } catch( err ) {
@@ -192,14 +212,16 @@ function onPopulate( level, callbackData, filter ) {
 
     try {
 
-        if ( xmlFetched == false ) {
+        if ( shows.length() == 0 ) {
             Amarok.debug( "fetching bbc xml..." );
             Amarok.Window.Statusbar.longMessage( "BBC: Fetching and parsing shows. This might take some seconds, depending on the speed of your internet connection..." );
 
             qurl = new QUrl( xmlUrl );
             a = new Downloader( qurl, xmlDownloadResult );
         } else {
-            populateShows();
+            filter = filter.replace( "%20", " " );
+            filter = filter.trim();
+            populateShows( filter );
         }
     } catch( err ) {
       Amarok.debug( err );
