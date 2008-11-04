@@ -223,7 +223,7 @@ Playlist::Actions::repopulateDynamicPlaylist()
 {
     if ( typeid( *m_navigator ) == typeid( DynamicTrackNavigator ) )
     {
-        (( DynamicTrackNavigator* )m_navigator )->repopulate();
+        static_cast<DynamicTrackNavigator*>(m_navigator)->repopulate();
     }
 }
 
