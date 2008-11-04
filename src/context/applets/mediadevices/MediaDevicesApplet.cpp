@@ -73,7 +73,6 @@ IpodInfo::IpodInfo( QGraphicsWidget *applet, const QString &mountpoint, const QS
 {
     DEBUG_BLOCK
 
-
     connect( this, SIGNAL( readyToConnect( const QString &, const QString &) ),
              MediaDeviceMonitor::instance(), SLOT( connectIpod( const QString &, const QString & ) ) );
     connect( this, SIGNAL( readyToDisconnect( const QString & ) ),
@@ -90,30 +89,21 @@ IpodInfo::layout()
 {
     DEBUG_BLOCK
 
-    debug() << "Creating layout";
-
     m_layout = new QGraphicsLinearLayout( Qt::Horizontal );
     m_layout->setSpacing( 0 );
 
     // set up icons
 
     // get path where we pull svg's from
-
-    debug() << "Getting svg path";
-
     QString svgPath = KStandardDirs::locate( "data", "amarok/images/pud_items.svg" );
 
     // iPod (device) icon
-
-    debug() << "Icon stuff";
-
     Plasma::IconWidget *ipodIcon = new Plasma::IconWidget( m_applet );
     ipodIcon->setSvg( svgPath, "device" );
 
     // NOTE: at some point connect/disconnect icon should be merged somehow
 
     // Connect Icon
-
     Plasma::IconWidget *connectIcon = new Plasma::IconWidget( m_applet );
     connectIcon->setSvg( svgPath, "append" );
 
