@@ -66,12 +66,12 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
             if ( leftTrack->discNumber() < rightTrack->discNumber() )
                 return true;
             else if( leftTrack->discNumber() == rightTrack->discNumber() )
-            { //Disc #'s are equal, compare by track number
-                if ( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
+            {
+                //Disc #'s are equal, compare by track number
+                if( leftTrack->trackNumber() != 0 && rightTrack->trackNumber() != 0 )
                     return leftTrack->trackNumber() < rightTrack->trackNumber();
-                else
-                    //fallback to name sorting
-                    return QSortFilterProxyModel::lessThan( left, right );
+                //fallback to name sorting
+                return QSortFilterProxyModel::lessThan( left, right );
             }
             else // Right discNum > left discNum
                 return false;

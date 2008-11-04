@@ -88,8 +88,25 @@ CollectionTreeItem::child( int row )
 {
     if ( row >= 0 && row < m_childItems.count() )
         return m_childItems.value(row);
-    else
-        return 0;
+    return 0;
+}
+
+QString
+CollectionTreeItem::albumYear() const
+{
+    QString year;
+    if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
+    {
+        if( !album->tracks().isEmpty() )
+        {   
+            Meta::TrackPtr track = album->tracks()[0];
+            if( track && track->year() )
+                year = track->year()->prettyName();
+        }
+    }
+    if( year == "0" )
+        year = QString();
+    return year;
 }
 
 QVariant
@@ -113,33 +130,21 @@ CollectionTreeItem::data( int role ) const
                     }
                 }
             }
-            if ( AmarokConfig::showYears() )
+            if( AmarokConfig::showYears() )
             {
-                if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
-                {
-                    if( !album->tracks().isEmpty() )
-                    {   
-                        Meta::TrackPtr track = album->tracks()[0];
-                        QString year;
-                        track ?
-                            year = track->year() ? track->year()->prettyName() : QString() :
-                            year = QString();
-
-                        QString albumName = album->prettyName();
-                        if( albumName.isEmpty() )
-                            albumName = i18nc( "The Name is not known", "Unknown" );
-                        name = ( (year.isEmpty() || year == "0" )? "" : year + " - " ) + albumName;
-                    }
-                    else
-                        name = album->prettyName();
-                }
+                QString year = albumYear();
+                if( !year.isEmpty() )
+                    name = year + " - " + name;
             }
+            
             if( name.isEmpty() )
                 return i18nc( "The Name is not known", "Unknown" );
             return name;
         }
         else if ( role == CustomRoles::SortRole )
+        {
             return m_data->sortableName();
+        }
 
         return QVariant();
     }

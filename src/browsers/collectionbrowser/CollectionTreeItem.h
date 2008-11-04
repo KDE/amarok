@@ -76,6 +76,8 @@ class CollectionTreeItem
         bool allDescendentTracksLoaded() const;
 
     private:
+        QString albumYear() const;
+
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
         Collection* m_parentCollection;
