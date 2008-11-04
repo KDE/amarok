@@ -117,6 +117,7 @@ function artistsDownloadResult( reply ) {
       elt = artists.at( i );
       elt2 = elt.firstChildElement( "title" );
       item.itemName = elt2.text();
+      item.infoHtml = "";
 
       var artistid = "";
       artistid = elt.toElement().attribute("id");
@@ -148,7 +149,7 @@ function storiesDownloadResult( reply ) {
 	elt2 = elt.firstChildElement( "title" );
 	var title = elt2.text();
 
-	elt2 = elt.firstChildElement( "teaser" ); // currently there is no way to display this data.
+	elt2 = elt.firstChildElement( "teaser" );
 	var teaser = elt2.text();
 
 	elt2 = elt.firstChildElement( "storyDate" );
@@ -171,7 +172,7 @@ function storiesDownloadResult( reply ) {
 	//Amarok.debug ("url: " + item.playableUrl);
 	
 	Amarok.debug("Adding " + title + " by " + writer + " @ "  + m3uurl);
-	var data = title + "\\" + m3uurl + "\\" +writer;
+	var data = title + "\\" + m3uurl + "\\" + writer + "\\" + teaser;
 	storiesNeedingUrls.push(data);
     }
     Amarok.debug( " fetching playable urls " + storiesNeedingUrls.length);
@@ -202,6 +203,7 @@ function playableUrlDownloadResult( reply ) {
       item.itemName = data[0];
       item.playableUrl = actualurl;
       item.artist = "NPR";
+      item.infoHtml = data[3];
       item.album = data[2];
       script.insertItem( item );
     }
@@ -233,30 +235,37 @@ function onPopulate( level, callbackData, filter ) {
 
     item.callbackData = "stories_topic";
     item.itemName = "Topics";
+    item.infoHtml = "Collection of NPR stories that represent a given topic or subject matter. (eg. Health Care, Interviews)";
     script.insertItem( item );
 
     item.callbackData = "artist_stories";
     item.itemName = "Music Artists";
+    item.infoHtml = "Collection of stories that are about music artists. Artists are sorted by letter. (eg. Bob Dylan, Death Cab For Cutie)";
     script.insertItem( item );
 
     item.callbackData = "genre_stories";
     item.itemName = "Music Genres";
+    item.infoHtml = "Collection of NPR stories that represent a given musical genre. (eg. Rock/Pop/Folk, Jazz)";
     script.insertItem( item );
 
     item.callbackData = "program_stories";
     item.itemName = "Programs";
+    item.infoHtml = "Collection of NPR stories that aired on an NPR program. (eg. All Things Considered, Tell Me More)";
     script.insertItem( item );
 
     item.callbackData = "bios_stories";
     item.itemName = "Bios";
+    item.infoHtml = "Collection of NPR stories as reported by an NPR personality. Personalities are sorted by letter. (eg. Nina Totenburg, Steve Inskeep)";
     script.insertItem( item );
 
     item.callbackData = "columns_stories";
     item.itemName = "Columns";
+    item.infoHtml = "Collection of stories containing opinions and perspectives of an NPR personality. (eg. Watching Washington, Song of the Day)";
     script.insertItem( item );
 
     item.callbackData = "series_stories";
     item.itemName = "Series";
+    item.infoHtml = "An ongoing collection of NPR stories on a topic. (eg. Climate Connections, Summer Books)";
     script.insertItem( item );
 
     script.donePopulating();
