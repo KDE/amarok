@@ -142,13 +142,15 @@ Playlist::Actions::play( quint64 trackid, bool now )
 
     Model* model = Model::instance();
 
-    if ( model->containsId( trackid ) ) {
-        if ( now ) {
+    if ( model->containsId( trackid ) )
+    {
+        if ( now )
             The::engineController()->play( model->trackForId( trackid ) );
-        } else {
+        else
             The::engineController()->setNextTrack( model->trackForId( trackid ) );
-        }
-    } else {
+    }
+    else
+    {
         m_trackError = true;
         warning() << "Invalid trackid" << trackid;
     }
@@ -194,23 +196,26 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator = 0;
 
-    if ( Amarok::randomEnabled() ) {
+    if ( Amarok::randomEnabled() )
+    {
         if ( Amarok::randomTracks() )
             m_navigator = new RandomTrackNavigator();
         else if ( Amarok::randomAlbums() )
             m_navigator = new RandomAlbumNavigator();
         else
             m_navigator = new StandardTrackNavigator(); // crap -- something went wrong
-    } else if ( Amarok::repeatEnabled() ) {
+    }
+    else if ( Amarok::repeatEnabled() )
+    {
         if ( Amarok::repeatTrack() )
             m_navigator = new RepeatTrackNavigator();
         else if ( Amarok::repeatAlbum() )
             m_navigator = new RepeatAlbumNavigator();
         else
             m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
-    } else {
-        m_navigator = new StandardTrackNavigator();
     }
+    else
+        m_navigator = new StandardTrackNavigator();
 }
 
 void
@@ -258,17 +263,18 @@ Playlist::Actions::engineNewTrackPlaying()
 {
     Model* model = Model::instance();
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if ( track ) {
-        if ( model->containsId( m_nextTrackCandidate ) && track == model->trackForId( m_nextTrackCandidate ) ) {
+    if ( track )
+    {
+        if ( model->containsId( m_nextTrackCandidate ) && track == model->trackForId( m_nextTrackCandidate ) )
             model->setActiveId( m_nextTrackCandidate );
-        } else {
+        else {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
             if ( model->activeTrack() != track )
                 model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
         }
-    } else {
-        warning() << "engineNewTrackPlaying: not really a track";
     }
+    else
+        warning() << "engineNewTrackPlaying: not really a track";
 
     m_nextTrackCandidate = 0;
 }
