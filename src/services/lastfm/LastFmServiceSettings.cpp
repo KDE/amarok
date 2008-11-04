@@ -36,10 +36,6 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     m_configDialog = new Ui::LastFmConfigWidget;
     m_configDialog->setupUi( w );
     l->addWidget( w );
-    
-    QRegExp rx( "[A-Za-z][A-Za-z0-9]{1,14}" );
-    QValidator *validator = new QRegExpValidator( rx, this );
-    m_configDialog->kcfg_ScrobblerUsername->setValidator( validator );
 
     connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
@@ -85,12 +81,18 @@ void
 LastFmServiceSettings::defaults()
 {
     m_config.reset();
-    load();
+
+    // By default this checkboxes is:
+    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( true );
+    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( false );
 }
 
 
 void
 LastFmServiceSettings::settingsChanged()
 {
+    //TODO: Make pretty validation for username and password
+    //with error reporting
+
     emit changed( true );
 }
