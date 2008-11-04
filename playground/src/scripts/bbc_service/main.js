@@ -44,6 +44,8 @@ shows  = new QDomNodeList;
 episodes = new Object();
 urls = new Object();
 
+xmlFetched = false;
+
 
 function trimKey( key ) {
 
@@ -75,31 +77,6 @@ function xmlDownloadResult( reply ) {
   Amarok.debug( "start bbc shows xml parsing..." );
   try {
     doc.setContent( reply );
-
-
-    shows = doc.elementsByTagName( "po:Brand" );
-    Amarok.debug ("got " + shows.length() + " shows!");
-
-    var showTitles = new Array( shows.length() );
-
-    var item = Amarok.StreamItem;
-    item.level = 1;
-    item.playableUrl = "";
-
-    var i = 0;
-    for ( ; i < shows.length(); i++ ) {
-      elt = shows.at( i );
-      elt2 = elt.firstChildElement( "dc:title" );
-      item.itemName = elt2.text();
-
-      elt2 = elt.firstChildElement( "dc:description" );
-      item.infoHtml = elt2.text();
-
-      // this is needed to identify the item when we need to expand
-      // it in onPopulate( level, -->callbackData<--, filter )
-      item.callbackData = i;
-      script.insertItem( item );
-    }
 
 
     Amarok.debug ("building episode map..." );
@@ -160,17 +137,51 @@ function xmlDownloadResult( reply ) {
 
     }
 
-
-for(att in episodes){
- Amarok.debug ("att: " + att + ", " + episodes[att])
-}
     Amarok.debug ("got " + episodeNodes.length() + " episodes!");
 
   }
   catch( err ) {
     Amarok.debug( err );
   }
+  xmlFetched == true;
+  populateShows();
+}
+
+
+function populateShows() {
+
+  Amarok.debug ("in populateShows");
+  try {
+    shows = doc.elementsByTagName( "po:Brand" );
+    Amarok.debug ("got " + shows.length() + " shows!");
+
+    var showTitles = new Array( shows.length() );
+
+    var item = Amarok.StreamItem;
+    item.level = 1;
+    item.playableUrl = "";
+
+    var i = 0;
+    for ( ; i < shows.length(); i++ ) {
+      elt = shows.at( i );
+      elt2 = elt.firstChildElement( "dc:title" );
+      item.itemName = elt2.text();
+
+      elt2 = elt.firstChildElement( "dc:description" );
+      item.infoHtml = elt2.text();
+
+      // this is needed to identify the item when we need to expand
+      // it in onPopulate( level, -->callbackData<--, filter )
+      item.callbackData = i;
+      script.insertItem( item );
+    }
+
+ } catch( err ) {
+    Amarok.debug( err );
+  }
+
   script.donePopulating()
+
 }
 
 
@@ -180,13 +191,19 @@ function onPopulate( level, callbackData, filter ) {
   Amarok.debug( "populating bbc level: " + level );
 
   if ( level == 1 ) { // the shows
-    Amarok.debug( "fetching bbc xml..." );
-    Amarok.Window.Statusbar.longMessage( "BBC: Fetching and parsing shows. This might take some seconds, depending on the speed of your internet connection..." );
+
     try {
-      qurl = new QUrl( xmlUrl );
-      a = new Downloader( qurl, xmlDownloadResult );
-    }
-    catch( err ) {
+
+        if ( xmlFetched == false ) {
+            Amarok.debug( "fetching bbc xml..." );
+            Amarok.Window.Statusbar.longMessage( "BBC: Fetching and parsing shows. This might take some seconds, depending on the speed of your internet connection..." );
+
+            qurl = new QUrl( xmlUrl );
+            a = new Downloader( qurl, xmlDownloadResult );
+        } else {
+            populateShows();
+        }
+    } catch( err ) {
       Amarok.debug( err );
     }
 
@@ -195,7 +212,6 @@ function onPopulate( level, callbackData, filter ) {
   else if ( level == 0 ) { // the tracks from each show
 
     var show = new QDomElement;
-
     Amarok.debug ("got " + shows.length() + " shows! ( only need one right now... )");
 
     try {
