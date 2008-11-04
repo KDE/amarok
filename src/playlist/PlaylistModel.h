@@ -151,7 +151,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
     signals:
-
         void insertedIds( const QList<quint64>& );
         void removedIds( const QList<quint64>& );
         void activeTrackChanged( quint64 );

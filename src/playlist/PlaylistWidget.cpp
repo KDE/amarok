@@ -50,46 +50,31 @@ Playlist::Widget::Widget( QWidget* parent )
     layoutHolder->setMinimumWidth( 100 );
     layoutHolder->setMinimumHeight( 200 );
 
-
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
 
-    //Playlist::HeaderWidget* header = new Playlist::HeaderWidget( layoutHolder );
-
-    QWidget* playView = new PrettyListView( this );
-    //playView->setFrameShape( QFrame::NoFrame );  // Get rid of the redundant border
-    //playView->setModel();
+    PrettyListView* playView = new PrettyListView( this );
     playView->show();
-    m_playlistView = playView;
-
-    // Classic View disabled for 2.0
-    //Playlist::ClassicView * clasicalPlaylistView = new Playlist::ClassicView( this );
+    m_playlistView = qobject_cast<QWidget*>( playView );
 
     mainPlaylistlayout->setSpacing( 0 );
-    //mainPlaylistlayout->addWidget( header );
     mainPlaylistlayout->addWidget( playView );
 
     m_stackedWidget = new Amarok::StackedWidget( this );
 
     m_stackedWidget->addWidget( layoutHolder );
-    //m_stackedWidget->addWidget( clasicalPlaylistView );
 
     m_stackedWidget->setCurrentIndex( 0 );
 
     KHBox *barBox = new KHBox( this );
     barBox->setMargin( 6 );
-    //QHBoxLayout *barAndLength = new QHBoxLayout( barBox );
-
-    //barAndLength->addStretch();
 
     KToolBar *plBar = new Amarok::ToolBar( barBox );
-    //barAndLength->addWidget( plBar );
     plBar->setObjectName( "PlaylistToolBar" );
-
 
     Model::instance();
 
-    KAction * action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
+    KAction *action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
     Amarok::actionCollection()->addAction( "playlist_switch", action );
 
@@ -99,12 +84,18 @@ Playlist::Widget::Widget( QWidget* parent )
 
     {
         //START Playlist toolbar
-//         plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
         plBar->addAction( new KToolBarSpacerAction( this ) );
+
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
+        
+        //FIXME this action should go in ActionController, but we don't have any visibility to the view
+        KAction *action = new KAction( KIcon( "amarok_music" ), i18n("Show active track"), this );
+        connect( action, SIGNAL( triggered( bool ) ), playView, SLOT( scrollToActiveTrack() ) );
+        plBar->addAction( action );
+
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
@@ -121,7 +112,6 @@ Playlist::Widget::Widget( QWidget* parent )
 
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
-
 }
 
 QSize
