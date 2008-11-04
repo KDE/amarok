@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Context
 Name[bg]=Контекст
+Name[da]=Kontekst
 Name[de]=Kontext
 Name[el]=Σχετικό περιεχόμενο
 Name[eo]=Kunteksto
@@ -30,6 +31,7 @@ Name[zh_CN]=上下文
 Comment=A containment for the Amarok Context
 Comment[bg]=Контекст на Amarok
 Comment[ca]=Un contenidor per a l'Amarok Context
+Comment[da]=En beholder til Amarok-kontekst
 Comment[de]=Ein Behältnis für Amarok-Kontext
 Comment[el]=Ένας υποδοχέας για το περιεχόμενο Amarok
 Comment[eo]=Kuntekstujo por Amarok
