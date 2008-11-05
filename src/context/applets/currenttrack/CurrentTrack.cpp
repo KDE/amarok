@@ -82,9 +82,9 @@ void CurrentTrack::init()
     m_noTrack      = new QGraphicsSimpleTextItem( this );
     m_albumCover   = new QGraphicsPixmapItem    ( this );
 
-    m_score->setToolTip( i18n( "Score" ) );
-    m_numPlayed->setToolTip( i18n( "Play Count" ) );
-    m_playedLast->setToolTip( i18n( "Last Played" ) );
+    m_score->setToolTip( i18n( "Score:" ) );
+    m_numPlayed->setToolTip( i18n( "Playcount:" ) );
+    m_playedLast->setToolTip( i18nc("a single item (singular)", "Last Played:") );
     
 
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
@@ -339,9 +339,9 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     
     m_ratingWidget->setRating( m_rating );
 
-    m_score->setToolTip( i18n( "Score" ) + ' ' + score );
-    m_numPlayed->setToolTip( i18n( "Play Count" ) + ' ' + numPlayed );
-    m_playedLast->setToolTip( i18n( "Last Played" ) + ' ' + playedLastVerbose );
+    m_score->setToolTip( i18n( "Score:" ) + ' ' + score );
+    m_numPlayed->setToolTip( i18n( "Playcount:" ) + ' ' + numPlayed );
+    m_playedLast->setToolTip( i18nc("a single item (singular)", "Last Played:") + ' ' + playedLastVerbose );
 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
