@@ -559,11 +559,14 @@ EngineController::slotPrefinishMarkReached( qint32 msecToEnd )
 void
 EngineController::slotAboutToFinish()
 {
+    DEBUG_BLOCK
+    
     // For some reason, phonon emits this when it's done buffering.
     if( m_media->state() == Phonon::BufferingState )
+    {
+        debug() << "state() == Phonon::BufferingState. Aborting.";
         return;
-
-    DEBUG_BLOCK
+    }
 
     if( m_multi )
     {
