@@ -360,7 +360,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
 {
     debug() << "adding Podcast";
 
-    //TODO: allow adding of Podcast to other than the Local Podcasts
+    //HACK: since we only have one PodcastProvider implementation
     PlaylistProvider *provider = The::playlistManager()->playlistProvider(
             PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
@@ -415,11 +415,47 @@ PlaylistBrowserNS::PodcastModel::refreshItems( QModelIndexList list )
     foreach( QModelIndex index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-        if( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
+        if( pmc->podcastType() == Meta::ChannelType )
         {
             refreshPodcast( Meta::PodcastChannelPtr(
                             reinterpret_cast<Meta::PodcastChannel *>(pmc) ) );
         }
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::removeSubscription( QModelIndexList list )
+{
+    DEBUG_BLOCK
+    debug() << "number of items: " << list.count();
+    foreach( QModelIndex index, list )
+    {
+        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+        if( pmc->podcastType() == Meta::ChannelType )
+        {
+            beginRemoveRows( QModelIndex(), index.row(), index.row() );
+            removeSubscription( Meta::PodcastChannelPtr(
+                            reinterpret_cast<Meta::PodcastChannel *>(pmc) ) );
+            endRemoveRows();
+        }
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::removeSubscription( Meta::PodcastChannelPtr channel )
+{
+    debug() << "remove Podcast subscription for " << channel->title();
+    //HACK: since we only have one PodcastProvider implementation
+    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    if( provider )
+    {
+        PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
+        podcastProvider->removeSubscription( channel );
+    }
+    else
+    {
+        debug() << "PodcastChannel provider is null";
     }
 }
 
@@ -436,6 +472,7 @@ void
 PlaylistBrowserNS::PodcastModel::refreshPodcast( Meta::PodcastChannelPtr channel )
 {
     debug() << "refresh Podcast " << channel->title();
+    //HACK: since we only have one PodcastProvider implementation
     PlaylistProvider *provider = The::playlistManager()->playlistProvider(
             PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
@@ -473,7 +510,7 @@ PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episod
 {
     DEBUG_BLOCK
     debug() << "downloading " << episode->title();
-
+    //HACK: since we only have one PodcastProvider implementation
     PlaylistProvider *provider = The::playlistManager()->playlistProvider(
             PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
@@ -505,9 +542,5 @@ PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
     DEBUG_BLOCK
     emit( layoutChanged() );
 }
-
-
-
-
 
 #include "PodcastModel.moc"

@@ -47,6 +47,8 @@ class AMAROK_EXPORT PodcastProvider : public TrackProvider, public PlaylistProvi
 
         virtual Meta::PodcastChannelList channels()= 0;
 
+        virtual void removeSubscription( Meta::PodcastChannelPtr channel ) = 0;
+
         // PlaylistProvider methods
         virtual QString prettyName() const = 0;
         virtual int category() const = 0;

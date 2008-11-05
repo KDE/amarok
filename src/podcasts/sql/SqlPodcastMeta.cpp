@@ -56,10 +56,9 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 {
     m_url = KUrl( episode->uidUrl() );
     m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
-    setChannel( episode->channel() );
 
-    if ( !m_sqlChannel ) {
-        debug() << "invalid m_sqlChannel";
+    if ( !m_sqlChannel && episode->channel()) {
+        debug() << "BUG: creating SqlEpisode but not and sqlChannel!!!";
         debug() <<  episode->channel()->title();
     }
 
@@ -114,6 +113,14 @@ Meta::SqlPodcastEpisode::updateInDb()
         sqlStorage->query( command.arg( m_dbId ) );
     else
         m_dbId = sqlStorage->insert( command, "podcastepisodes" );
+}
+
+void
+Meta::SqlPodcastEpisode::deleteFromDb()
+{
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    sqlStorage->query(
+        QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
@@ -179,6 +186,15 @@ Meta::SqlPodcastChannel::~SqlPodcastChannel()
 }
 
 void
+Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
+{
+    DEBUG_BLOCK
+    debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
+    m_episodes << episode;
+    addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) );
+}
+
+void
 Meta::SqlPodcastChannel::updateInDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -219,6 +235,21 @@ Meta::SqlPodcastChannel::updateInDb()
         sqlStorage->query( command.arg( m_dbId ) );
     else
         m_dbId = sqlStorage->insert( command, "podcastchannels" );
+}
+
+void
+Meta::SqlPodcastChannel::deleteFromDb()
+{
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, m_sqlEpisodes )
+    {
+       sqlEpisode->deleteFromDb();
+       m_sqlEpisodes.removeOne( sqlEpisode );
+       m_episodes.removeOne( Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode ) );
+    }
+
+    sqlStorage->query(
+        QString( "DELETE FROM podcastchannels WHERE id = %1;" ).arg( dbId() ) );
 }
 
 void

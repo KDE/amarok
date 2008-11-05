@@ -172,6 +172,20 @@ SqlPodcastProvider::channels()
     return list;
 }
 
+void
+SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+    Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+    if( !sqlChannel )
+        return;
+
+    sqlChannel->deleteFromDb();
+
+    m_channels.removeOne( sqlChannel );
+    emit updated();
+}
+
 Meta::SqlPodcastChannelPtr
 SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
 {
@@ -206,6 +220,8 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
     //PodcastReader will create a progress bar in The StatusBar.
 
     result = podcastReader->update( channel );
+
+    emit updated();
 }
 
 void

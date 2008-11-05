@@ -239,8 +239,8 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         void addLabel( const QString &label ) { m_labels << label; }
         void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
-        void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; }
-        PodcastEpisodeList episodes() { return m_episodes; }
+        virtual void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; }
+        virtual PodcastEpisodeList episodes() { return m_episodes; }
 
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 

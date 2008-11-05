@@ -55,6 +55,8 @@ class SqlPodcastProvider : public PodcastProvider
 
         Meta::PodcastChannelList channels();
 
+        void removeSubscription( Meta::PodcastChannelPtr channel );
+
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 

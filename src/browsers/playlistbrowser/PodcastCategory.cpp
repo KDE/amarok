@@ -695,7 +695,8 @@ PlaylistBrowserNS::PodcastView::slotLabel()
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotLoad() {
+PlaylistBrowserNS::PodcastView::slotLoad()
+{
     DEBUG_BLOCK
 
     Meta::PodcastEpisodeList episodes = selectedEpisodes();
@@ -719,6 +720,7 @@ void
 PlaylistBrowserNS::PodcastView::slotRemove()
 {
     DEBUG_BLOCK
+    m_model->removeSubscription( selectedIndexes() );
 }
 
 #include "PodcastCategory.moc"
