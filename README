@@ -35,7 +35,7 @@ interface that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 4.1 + KDE-Base-runtime 4.1 (or newer)
+    * KDE-Libs 4.1 (or newer)
       http://www.kde.org
 
     * TagLib 1.5 (or newer)
@@ -94,10 +94,6 @@ and stutter!" please visit:
  INFORMATION FOR PACKAGERS
 ===========================
 
-For Amarok packages we suggest you build:
-
-                % ./configure --disable-debug
-
 It is possible to build Amarok to use MySQL as the database backend. Using
 MySQL makes the Amarok collection faster.
 
@@ -109,10 +105,7 @@ splitting Amarok into the following packages:
 
    1. Amarok + Phonon Engine
    2. ipod media device
-   3. ifp media device
-   4. njb media device
-   5. mtp media device
-   6. rio karma media device
+   3. mtp media device
 
 Amarok is modular and will be fully functional as long as one of 2 or 3 is
 also installed. Hence we suggest Amarok + one backend.
