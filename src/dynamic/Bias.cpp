@@ -369,7 +369,7 @@ Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
     m_property.clear();
     m_property.reserve( uids.size() );
     QByteArray uid;
-    foreach( QString uidString, uids )
+    foreach( const QString &uidString, uids )
     {
         uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
         m_property.insert( uid );

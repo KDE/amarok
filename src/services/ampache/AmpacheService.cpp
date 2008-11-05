@@ -76,7 +76,7 @@ bool
 AmpacheServiceFactory::possiblyContainsTrack(const KUrl & url) const
 {
     AmpacheConfig config;
-    foreach( AmpacheServerEntry server, config.servers() )
+    foreach( const AmpacheServerEntry &server, config.servers() )
     {
         if ( url.url().contains( server.url, Qt::CaseInsensitive ) )
             return true;

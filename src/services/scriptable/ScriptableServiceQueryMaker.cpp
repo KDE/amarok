@@ -70,11 +70,11 @@ QueryMaker * ScriptableServiceQueryMaker::reset()
     d->closestParent = Private::NONE;
     d->maxsize = -1;
     d->returnDataPtrs = false;
-    d->callbackString = QString();
+    d->callbackString.clear();
     d->parentId = -1;
     d->albumMode = AllAlbums;
-    d->filter = QString();
-    d->lastFilter = QString();
+    d->filter.clear();
+    d->lastFilter.clear();
 
     return this;
 }

@@ -123,7 +123,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
 
     signals:
         /**
-         * This signal is emited whenever a new service has been loaded.
+         * This signal is emitted whenever a new service has been loaded.
          * @param newService The service that has been loaded.
          */
         void newService( class ServiceBase *newService );

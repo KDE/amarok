@@ -57,7 +57,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
 {
     DEBUG_BLOCK
     QStringList urls;
-    QString error = QString();
+    QString error;
     debug() << "sources has " << sources.count();
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
@@ -79,11 +79,9 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
             debug() << "File type not supprted " << track->type();
         }
     }
-    if( error != QString() )
+    if( !error.isEmpty() )
         The::statusBar()->longMessage( error );
-    Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader(
-        m_collection->locker(), urls );
-    connect( uploadWorker, SIGNAL( uploadComplete() ),
-             this, SLOT( slotCopyOperationFinished() ) );
+    Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader( m_collection->locker(), urls );
+    connect( uploadWorker, SIGNAL( uploadComplete() ), this, SLOT( slotCopyOperationFinished() ) );
     ThreadWeaver::Weaver::instance()->enqueue( uploadWorker );
 }

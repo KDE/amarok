@@ -123,8 +123,8 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
         }
 
     } else {
-        m_userName  = QString();
-        m_password = QString();
+        m_userName.clear();
+        m_password.clear();
     }
 
 

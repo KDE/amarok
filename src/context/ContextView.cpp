@@ -137,7 +137,7 @@ ContextView::~ContextView()
 
     // Unload and destroy all Amarok plasma-engines
     const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines();
-    foreach( QString engine, engines ) {
+    foreach( const QString &engine, engines ) {
         if( engine.startsWith( "amarok-" ) ) {
             debug() << "Unloading plasma engine: " << engine;
 

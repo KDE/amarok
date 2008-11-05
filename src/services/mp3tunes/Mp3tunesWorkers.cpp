@@ -259,7 +259,7 @@ void Mp3tunesSimpleUploader::run()
 
     debug() << "Starting upload of " << m_tracklist.count() << " tracks.";
     int progress = 1;
-    foreach(QString track, m_tracklist) {
+    foreach(const QString &track, m_tracklist) {
         QString msg = i18n( "Uploading Track %1/%2", progress, m_tracklist.count() );
         debug() << msg;
         The::statusBar()->setProgressStatus( this, msg );

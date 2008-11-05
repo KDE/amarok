@@ -432,7 +432,7 @@ Dynamic::BiasSolver::generateMatingPopulation( const QList<TrackListEnergyPair>&
      */
 
     double sum = 0.0;
-    foreach( TrackListEnergyPair p, population )
+    foreach( const TrackListEnergyPair &p, population )
         sum += 1.0 - p.energy;
 
     double p = 
@@ -835,7 +835,7 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
     QMutexLocker locker( &s_universeMutex );
 
     QByteArray uid;
-    foreach( QString uidString, uids )
+    foreach( const QString &uidString, uids )
     {
         if ( uidString.isEmpty() )
             continue;

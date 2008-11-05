@@ -62,7 +62,7 @@ void ServiceConfig::updateSettings()
 {
     if ( m_configChanged ) {
         m_serviceSelector->save();
-        foreach ( QString name, m_changedServices ) {
+        foreach ( const QString &name, m_changedServices ) {
             ServicePluginManager::instance()->settingsChanged( name );
         }
 

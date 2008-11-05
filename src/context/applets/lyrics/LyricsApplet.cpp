@@ -191,7 +191,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         // build simple HTML to show
         // a list
         QString html = QString( "<br><br>" );
-        foreach( QVariant suggestion, suggested )
+        foreach( const QVariant &suggestion, suggested )
         {
                 QString sug = suggestion.toString();
                 //debug() << "parsing suggestion:" << sug;

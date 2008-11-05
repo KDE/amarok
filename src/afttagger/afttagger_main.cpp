@@ -150,7 +150,7 @@ void processPath( const QString &path )
         {
             if( verbose )
                 qDebug() << "INFO: Processing directory " << path;
-            foreach( QString pathEntry, QDir( path ).entryList() )
+            foreach( const QString &pathEntry, QDir( path ).entryList() )
             {
                 if( pathEntry != "." && pathEntry != ".." )
                     processPath( QDir( path ).canonicalPath() + '/' +  pathEntry );

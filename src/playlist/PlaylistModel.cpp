@@ -564,7 +564,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
 
     // actually do the insertion
-    foreach( InsertCmd ic, cmds )
+    foreach( const InsertCmd &ic, cmds )
     {
         beginInsertRows( QModelIndex(), ic.second, ic.second );
         Meta::TrackPtr track = ic.first;
@@ -611,7 +611,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     int activeShift = 0;
     bool activeDeleted = false;
     QList<quint64> delIds;
-    foreach( RemoveCmd rc, cmds )
+    foreach( const RemoveCmd &rc, cmds )
     {
         min = qMin( min, rc.second );
         max = qMax( max, rc.second );
@@ -644,7 +644,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
     QList<Item*> newlist(m_items); // copy the current item list
     QList<Item*> delitems;
-    foreach( RemoveCmd rc, cmds )
+    foreach( const RemoveCmd &rc, cmds )
     {
         Meta::TrackPtr track = rc.first;
         m_totalLength -= track->length();
@@ -703,7 +703,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 
     int min = m_items.size() + cmds.size();
     int max = 0;
-    foreach( MoveCmd rc, cmds )
+    foreach( const MoveCmd &rc, cmds )
     {
         min = qMin( min, rc.first );
         min = qMin( min, rc.second );
@@ -716,7 +716,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     QList<Item*> oldItems( m_items );
     if ( reverse )
     {
-        foreach( MoveCmd mc, cmds )
+        foreach( const MoveCmd &mc, cmds )
         {
             m_items[mc.first] = oldItems.at( mc.second );
             if ( m_activeRow == mc.second )
@@ -725,7 +725,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     }
     else
     {
-        foreach( MoveCmd mc, cmds )
+        foreach( const MoveCmd &mc, cmds )
         {
             m_items[mc.second] = oldItems.at( mc.first );
             if ( m_activeRow == mc.first )

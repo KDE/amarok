@@ -50,9 +50,9 @@ void Mp3tunesConfig::load()
     m_partnerToken = config.readEntry( "partnerToken", QString( "4895500420" ) );
     m_harmonyEnabled = config.readEntry( "harmonyEnabled", false );
 
-    if( m_identifier == QString() )
+    if( m_identifier.isEmpty() )
     {
-        foreach( QNetworkInterface iface, QNetworkInterface::allInterfaces() )
+        foreach( const QNetworkInterface &iface, QNetworkInterface::allInterfaces() )
         {
             QString addr = iface.hardwareAddress();
             if( addr != "00:00:00:00:00:00" ) {

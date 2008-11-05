@@ -266,7 +266,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     if ( sessionId.isEmpty() )
     {
         QString error = i18n("Mp3tunes failed to Authenticate.");
-        if ( m_locker->errorMessage() != QString() )
+        if ( !m_locker->errorMessage().isEmpty() )
         {
             error = m_locker->errorMessage(); // Not sure how to i18n this
         }

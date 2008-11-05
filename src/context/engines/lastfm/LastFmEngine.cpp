@@ -177,10 +177,10 @@ LastFmEngine::artistQueryResult( QString collectionId, Meta::TrackList tracks )
 void LastFmEngine::updateEvents()
 {
     DEBUG_BLOCK
-    if( m_user == QString() )
+    if( m_user.isEmpty() )
     {
         m_user = Amarok::config( "Service_LastFm" ).readEntry( "username" ); // try reloading one more time
-        if( m_user == QString() )
+        if( m_user.isEmpty() )
         {
             debug() << "Got no last.fm username or passwd, not getting events";
             setData( I18N_NOOP( "sysevents" ), I18N_NOOP( "username" ) );
@@ -196,7 +196,7 @@ void LastFmEngine::updateEvents()
        // do friends
        QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/friendevents.rss" ) );
         // TODO take care of refreshing cache after its too old... say a week?
-        if( cached == QString() ) // not cached, lets fetch it
+        if( cached.isEmpty() ) // not cached, lets fetch it
         {
             debug() << "got no cached friendevents";
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/friendevents.rss" ).arg( m_user ) );
@@ -222,7 +222,7 @@ void LastFmEngine::updateEvents()
         // do systems recs
         QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/eventsysrecs.rss" ) );
         // TODO take care of refreshing cache after its too old... say a week?
-        if( cached == QString() ) // not cached, lets fetch it
+        if( cached.isEmpty() ) // not cached, lets fetch it
         {
             debug() << "got no cached  sysevents";
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/eventsysrecs.rss" ).arg( m_user ) );
@@ -249,7 +249,7 @@ void LastFmEngine::updateEvents()
         // do user events
         QString cached = getCached( QString( Amarok::saveLocation() + "lastfm.events/events.rss" ) );
         // TODO take care of refreshing cache after its too old... say a week?
-        if( cached == QString() ) // not cached, lets fetch it
+        if( cached.isEmpty() ) // not cached, lets fetch it
         {
             debug() << "got no cached userevents";
             KUrl url( QString( "http://ws.audioscrobbler.com/1.0/user/%1/events.rss" ).arg( m_user ) );

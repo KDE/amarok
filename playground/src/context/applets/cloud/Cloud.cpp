@@ -327,7 +327,7 @@ void Cloud::drawCloud()
 
     if ( m_strings.size() == m_weights.size() ) {
         int index = 0;
-        foreach( QVariant stringVariant, m_strings ) {
+        foreach( const QVariant &stringVariant, m_strings ) {
             QString string = stringVariant.toString();
             int weight = m_weights.at( index ).toInt();
             index++;
@@ -344,7 +344,7 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
     int min = 100000;
     int max = 0;
 
-    foreach( QVariant weight, m_weights )
+    foreach( const QVariant &weight, m_weights )
     {
         if ( weight.toInt() < min )
             min = weight.toInt();
@@ -370,7 +370,7 @@ void Cloud::cropAndNormalize( int minCount, int maxCount )
     QList<QVariant> m_newStrings;
     QList<QVariant> m_newWeights;
 
-    foreach( QVariant stringVariant, m_strings ) {
+    foreach( const QVariant &stringVariant, m_strings ) {
         int weight = m_weights.at( index ).toInt();
         if ( ( weight >= minCount ) && ( weight < maxCount ) ) {
             m_newStrings.append( stringVariant.toString() );
@@ -403,7 +403,7 @@ void Cloud::cloudItemActivated( const QString & text )
 
     kDebug() << component << ", " << function << ", " << arg1 << ", " << arg2 << ", " << arg3 << ", " << arg4;
 
-    if( ( component != "" ) && ( function != "" ) )
+    if( ( !component.isEmpty() ) && ( !function.isEmpty() ) )
     {
         QDBusInterface interface( "org.kde.amarok", component );
 

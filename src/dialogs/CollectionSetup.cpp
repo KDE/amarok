@@ -98,7 +98,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_model->setDirectories( dirs );
     
     // make sure that the tree is expanded to show all selected items
-    foreach( QString dir, dirs )
+    foreach( const QString &dir, dirs )
     {
         QModelIndex index = m_model->index( dir );
         m_view->scrollTo( index, QAbstractItemView::EnsureVisible );
@@ -207,7 +207,7 @@ namespace CollectionFolder {
     Model::setDirectories( QStringList &dirs )
     {
         m_checked.clear();
-        foreach( QString dir, dirs )
+        foreach( const QString &dir, dirs )
         {
             m_checked.insert( dir );
         }
@@ -245,7 +245,7 @@ namespace CollectionFolder {
     bool
     Model::ancestorChecked( const QString &path ) const
     {
-        foreach( QString element, m_checked )
+        foreach( const QString &element, m_checked )
         {
             if( path.startsWith( element ) && element != path )
                 return true;

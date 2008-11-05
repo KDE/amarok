@@ -340,7 +340,7 @@ QList<Mp3tunesLockerTrack>
 Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
 {
     QString keys = QString();
-    foreach( QString key, filekeys )
+    foreach( const QString &key, filekeys )
     {
        keys.append(key);
        keys.append(",");

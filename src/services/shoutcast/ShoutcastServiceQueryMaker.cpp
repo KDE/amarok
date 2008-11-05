@@ -68,8 +68,8 @@ QueryMaker * ShoutcastServiceQueryMaker::reset()
     d->type = Private::NONE;
     d->maxsize = -1;
     d->returnDataPtrs = false;
-    m_genreMatch = QString();
-    m_filter = QString();
+    m_genreMatch.clear();
+    m_filter.clear();
 
     return this;
 }

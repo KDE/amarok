@@ -222,7 +222,7 @@ void
 MyDirOperator::playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode )
 {
     QList<KUrl> list;
-    foreach( KFileItem item, items )
+    foreach( const KFileItem &item, items )
     {
         list.append( item.url() );
     }

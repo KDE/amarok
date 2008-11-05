@@ -57,9 +57,6 @@ MediaDeviceMonitor::init()
               SLOT(  slotDeviceRemoved( const QString& ) ) );
     connect(  MediaDeviceCache::instance(), SIGNAL( accessibilityChanged( bool, const QString & ) ),
               SLOT(  slotAccessibilityChanged( bool, const QString & ) ) );
-
-
-    return;
 }
 
 QStringList
@@ -80,13 +77,11 @@ MediaDeviceMonitor::checkDevices()
 
     checkDevicesForMtp();
     checkDevicesForIpod();
-
 }
 
 void
 MediaDeviceMonitor::checkDevicesForIpod()
 {
-
     QStringList udiList = getDevices();
 
     /* poll udi list for supported devices */
@@ -131,8 +126,6 @@ MediaDeviceMonitor::deviceAdded(  const QString &udi )
 
     udiList.append( udi );
     checkDevices();
-
-    return;
 }
 
 void
@@ -140,12 +133,10 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
 
-            // NOTE: perhaps a simple forwarding of signals would do
-            // via a connect
+    // NOTE: perhaps a simple forwarding of signals would do
+    // via a connect
 
-            emit deviceRemoved( udi );
-
-    return;
+    emit deviceRemoved( udi );
 }
 
 void
@@ -157,7 +148,6 @@ MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & u
         deviceRemoved( udi );
     else
         deviceAdded( udi );
-
 }
 
 bool
@@ -183,8 +173,7 @@ MediaDeviceMonitor::isIpod( const QString &udi )
     }
 
     /* if iPod found, return true */
-    return (device.product() == "iPod");
-
+    return device.product() == "iPod";
 }
 
 bool

@@ -58,7 +58,7 @@ void
 DirectoryLoader::init( const QList<QUrl>& qurls )
 {
     QList<KUrl> kurls;
-    foreach( const QUrl qurl, qurls )
+    foreach( const QUrl &qurl, qurls )
         kurls << KUrl( qurl );
 
     init( kurls );

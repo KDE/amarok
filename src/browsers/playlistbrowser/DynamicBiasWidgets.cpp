@@ -473,12 +473,12 @@ PlaylistBrowserNS::BiasGlobalWidget::populateComboBox( QString collectionId, QSt
         return;
 
     QSet<QString> dataSet;
-    foreach( QString r, results )
+    foreach( const QString &r, results )
         dataSet += r;
 
     QStringList dataList = dataSet.toList();
     dataList.sort();
-    foreach( QString item, dataList )
+    foreach( const QString &item, dataList )
         combo->addItem( item );
 
     KCompletion* comp = combo->completionObject();

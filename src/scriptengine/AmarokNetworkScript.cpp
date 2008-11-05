@@ -119,7 +119,7 @@ AmarokDownloadHelper::result( KJob* job )
 
     QString data;
     
-    if( encoding == "" )
+    if( encoding.isEmpty() )
         data = QString( storedJob->data() );
     else
     {

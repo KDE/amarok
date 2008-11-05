@@ -88,7 +88,7 @@ Dynamic::TrackSet::addTracks( const QList<QByteArray>& uidList )
     const QList<QByteArray>& U =
         Dynamic::BiasSolver::universe();
 
-    foreach( QByteArray t, uidList )
+    foreach( const QByteArray &t, uidList )
     {
         int i = U.indexOf( t );
         if( i != -1 )
@@ -102,7 +102,7 @@ Dynamic::TrackSet::addTracks( const QSet<QByteArray>& uidSet )
     const QList<QByteArray>& U =
         Dynamic::BiasSolver::universe();
 
-    foreach( QByteArray t, uidSet )
+    foreach( const QByteArray &t, uidSet )
     {
         int i = U.indexOf( t );
         if( i != -1 )

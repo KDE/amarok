@@ -322,7 +322,7 @@ Reader::parseSongList( const QByteArray &data )
     QList<QVariant> songList;
     songList = songResults["adbs"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList();
     debug() << "songList.count() = " << songList.count();
-    foreach( QVariant var, songList )
+    foreach( const QVariant &var, songList )
     {
         //debug() << "begin iteration...";
         QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );

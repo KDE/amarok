@@ -85,7 +85,7 @@ void
 Playlist::PrettyListView::editTrackInformation()
 {
     Meta::TrackList tl;
-    foreach( QModelIndex index, selectedIndexes() )
+    foreach( const QModelIndex &index, selectedIndexes() )
     {
         tl.append( index.data( TrackRole ).value<Meta::TrackPtr>() );
     }
@@ -335,7 +335,7 @@ QList<int>
 Playlist::PrettyListView::selectedRows() const
 {
     QList<int> rows;
-    foreach( QModelIndex idx, selectedIndexes() )
+    foreach( const QModelIndex &idx, selectedIndexes() )
     {
         rows.append( idx.row() );
     }

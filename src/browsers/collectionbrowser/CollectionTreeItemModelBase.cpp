@@ -436,11 +436,11 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
     int validFilters = qm->validFilterMask();
     
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
-    foreach( or_list orList, parsed )
+    foreach( const or_list &orList, parsed )
     {
         qm->beginOr();
         
-        foreach ( expression_element elem, orList )
+        foreach ( const expression_element &elem, orList )
         {
             qm->beginOr();
 

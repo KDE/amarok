@@ -161,7 +161,7 @@ AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
     m_parentAlbumId = QString::number( serviceAlbum->id() );
     //debug() << "parent id set to: " << m_parentAlbumId;
-    m_parentArtistId = QString();
+    m_parentArtistId.clear();
 
     return this;
 }

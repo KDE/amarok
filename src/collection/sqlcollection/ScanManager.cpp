@@ -136,7 +136,7 @@ void ScanManager::startIncrementalScan()
     const QStringList dirs = getDirsToScan();
 
     debug() << "GOING TO SCAN:";
-    foreach( QString dir, dirs )
+    foreach( const QString &dir, dirs )
         debug() << "    " << dir;
 
     if( dirs.isEmpty() )

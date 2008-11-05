@@ -119,7 +119,7 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
             m_registry->factory()->getArtistSqlRowCount() +
             m_registry->factory()->getGenreSqlRowCount() );
 
-    foreach( QString idString, result ) {
+    foreach( const QString &idString, result ) {
 
         QString queryString = "SELECT DISTINCT ";
         

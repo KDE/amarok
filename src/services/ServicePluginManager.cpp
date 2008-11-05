@@ -131,7 +131,7 @@ ServicePluginManager::settingsChanged()
         factory->clearActiveServices();
     }
 
-    foreach( QString serviceName, names )
+    foreach( const QString &serviceName, names )
     {
         m_serviceBrowser->removeService( serviceName );
     }
