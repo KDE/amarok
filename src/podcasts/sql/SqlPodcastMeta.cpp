@@ -53,12 +53,13 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
 
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     : Meta::PodcastEpisode()
+    , m_dbId( 0 )
 {
     m_url = KUrl( episode->uidUrl() );
     m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
     if ( !m_sqlChannel && episode->channel()) {
-        debug() << "BUG: creating SqlEpisode but not and sqlChannel!!!";
+        debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
         debug() <<  episode->channel()->title();
     }
 
@@ -72,12 +73,12 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 
 Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 {
-    updateInDb();
 }
 
 void
 Meta::SqlPodcastEpisode::updateInDb()
 {
+    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
@@ -182,7 +183,6 @@ Meta::SqlPodcastChannel::~SqlPodcastChannel()
 {
     m_sqlEpisodes.clear();
     m_episodes.clear();
-    updateInDb();
 }
 
 void
@@ -257,7 +257,7 @@ Meta::SqlPodcastChannel::loadEpisodes()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1;").arg( m_dbId ) );
+    QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 ORDER BY id;").arg( m_dbId ) );
 
     int rowLength = 14;
     for(int i=0; i < results.size(); i+=rowLength)
