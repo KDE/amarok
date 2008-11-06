@@ -70,8 +70,8 @@ protected:
     void newTrackPlaying() const;
 
 private:
-    void AMAROK_EXPORT attach( EngineObserver *observer );
-    void AMAROK_EXPORT detach( EngineObserver *observer );
+    void attach( EngineObserver *observer );
+    void detach( EngineObserver *observer );
 
     QSet<EngineObserver*> Observers;
     Phonon::State m_realState; // To work around the buffering issue
