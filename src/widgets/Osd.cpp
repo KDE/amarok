@@ -539,13 +539,10 @@ Amarok::OSD::OSD()
     : OSDWidget( 0 )
 {
     s_instance = this;
-    The::engineController()->attach( this );
 }
 
 Amarok::OSD::~OSD()
-{
-    The::engineController()->detach( this );
-}
+{}
 
 void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
