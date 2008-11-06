@@ -76,13 +76,13 @@ void CurrentEngine::message( const ContextState& state )
     if( state == Current /*&& m_requested*/ )
     {
         m_currentTrack = The::engineController()->currentTrack();
-        debug() << "1";
+        //debug() << "1";
         if( m_timer->isActive() )
             m_timer->stop();
         
         if( m_currentTrack )
         {
-            debug() << "2";
+            //debug() << "2";
             unsubscribeFrom( m_currentTrack );
             if( m_currentTrack->album() )
                 unsubscribeFrom( m_currentTrack->album() );
