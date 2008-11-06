@@ -23,20 +23,16 @@ email                : fh@ez.no
 /// CLASS EngineObserver
 //////////////////////////////////////////////////////////////////////////////////////////
 
-EngineObserver::EngineObserver()
-    : m_subject( 0 )
-{}
-
 EngineObserver::EngineObserver( EngineSubject *s )
     : m_subject( s )
 {
-   m_subject->attach( this );
+    Q_ASSERT( m_subject );
+    m_subject->attach( this );
 }
 
 EngineObserver::~EngineObserver()
 {
-    if ( m_subject )
-        m_subject->detach( this );
+    m_subject->detach( this );
 }
 
 void

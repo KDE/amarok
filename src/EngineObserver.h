@@ -27,14 +27,12 @@ class EngineSubject;
 class QString;
 
 /**
- * if you want to observe the engine, inherit from this class and attach yourself to
- * the engine with attach
+ * If you want to observe the engine, inherit from this class.
  * Note that all positional information and times are in milliseconds
  */
 class AMAROK_EXPORT EngineObserver
 {
 public:
-    EngineObserver();
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
     virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
