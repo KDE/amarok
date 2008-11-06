@@ -33,7 +33,7 @@
      inkscape:cx="970.38537"
      inkscape:cy="920.06443"
      inkscape:document-units="px"
-     inkscape:current-layer="play_button"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1140"
@@ -2142,20 +2142,16 @@
        cx="58">
       <stop
          offset="0"
-         style="stop-color:#f0f0f0;stop-opacity:0.58823532;"
+         style="stop-color:#f0f0f0;stop-opacity:0.82352942;"
          id="stop26" />
       <stop
-         offset="0.53684211"
-         style="stop-color:#f0f0f0;stop-opacity:0.58823532;"
+         offset="0.89473683"
+         style="stop-color:#f0f0f0;stop-opacity:0.11764706;"
          id="stop32" />
       <stop
-         offset="0.89999998"
-         style="stop-color:#e0e0e0;stop-opacity:0.58823532;"
-         id="stop34" />
-      <stop
          offset="1"
-         style="stop-color:#e0e0e0;stop-opacity:0.58823532;"
-         id="stop36" />
+         style="stop-color:#f0f0f0;stop-opacity:0.3137255;"
+         id="stop34" />
     </radialGradient>
     <radialGradient
        r="48"
@@ -7108,7 +7104,7 @@
            id="path5391" />
       </g>
       <path
-         style="fill:url(#radialGradient17590);fill-opacity:1.0"
+         style="fill:url(#radialGradient17590);fill-opacity:1;opacity:0.99"
          id="path38"
          d="M -26.98988,140.8258 C -26.98988,169.49839 -3.66247,192.8258 25.010117,192.8258 C 53.682703,192.8258 77.010119,169.49839 77.010119,140.8258 C 77.010119,112.15322 53.682703,88.825805 25.010117,88.825805 C -3.66247,88.825805 -26.98988,112.15322 -26.98988,140.8258 z" />
       <polygon
