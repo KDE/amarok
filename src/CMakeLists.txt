@@ -436,7 +436,6 @@ set(amaroklib_LIB_SRCS
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverManager.cpp
-    cuefile.cpp
     databaseimporter/DatabaseImporter.cpp
     databaseimporter/amarok14/FastForwardImporter.cpp
     databaseimporter/amarok14/FastForwardImporterConfig.cpp
