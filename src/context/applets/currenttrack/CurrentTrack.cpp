@@ -511,7 +511,6 @@ void CurrentTrack::paletteChanged( const QPalette & palette )
     m_numPlayed->setBrush( palette.text() );
     m_playedLast->setBrush( palette.text() );
     m_noTrack->setBrush( palette.text() );
-    m_noTrack->setBrush( palette.text() );
 }
 
 #include "CurrentTrack.moc"
