@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
  **************************************************************************/
 
 /***************************************************************************
@@ -15,7 +16,6 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
 #include "ScriptManager.h"
@@ -60,6 +60,14 @@ void LyricsEngine::message( const ContextState& state )
         update();
 }
 
+void LyricsEngine::metadataChanged( Meta::TrackPtr track )
+{
+    Q_UNUSED( track )
+    DEBUG_BLOCK
+
+    update();
+}
+
 void LyricsEngine::update()
 {
     DEBUG_BLOCK
@@ -67,6 +75,10 @@ void LyricsEngine::update()
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack || !currentTrack->artist() )
         return;
+
+    unsubscribeFrom( m_currentTrack );
+    m_currentTrack = currentTrack;
+    subscribeTo( currentTrack );
 
     QString lyrics = currentTrack->cachedLyrics();
     

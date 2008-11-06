@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
  **************************************************************************/
 
 /***************************************************************************
@@ -15,9 +16,9 @@
 #define AMAROK_LYRICS_ENGINE
 
 #include "ContextObserver.h"
-
 #include "context/DataEngine.h"
 #include "context/LyricsManager.h"
+#include "meta/Meta.h"
 
 #include <kio/job.h>
 
@@ -31,7 +32,7 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver
+class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver, public Meta::Observer
 {
     Q_OBJECT
 
@@ -42,11 +43,16 @@ public:
     
     // reimplemented from Context::Observer
     virtual void message( const ContextState& state );
+    
     // reimplemented from LyricsObserver
     void newLyrics( QStringList& lyrics );
     void newLyricsHtml( QString& lyrics );
     void newSuggestions( QStringList& suggest );
     void lyricsMessage( QString& message );
+
+    // reimplemented from Meta::Observer
+    using Observer::metadataChanged;
+    void metadataChanged( Meta::TrackPtr track );
     
 protected:
     bool sourceRequested( const QString& name );
@@ -56,7 +62,8 @@ private:
     
     // stores is we have been disabled (disconnected)
     bool m_requested;
-    
+   
+    Meta::TrackPtr m_currentTrack; 
 };
 
 K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )
