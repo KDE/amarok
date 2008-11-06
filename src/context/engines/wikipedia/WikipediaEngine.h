@@ -16,6 +16,7 @@
 #define AMAROK_WIKIPEDIA_ENGINE
 
 #include "ContextObserver.h"
+#include "meta/Meta.h"
 
 #include <context/DataEngine.h>
 
@@ -31,7 +32,7 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class WikipediaEngine : public DataEngine, public ContextObserver
+class WikipediaEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT
     Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
@@ -44,6 +45,10 @@ public:
     
     // reimplemented from Context::Observer
     virtual void message( const ContextState& state );
+
+    // reimplemented from Meta::Observer
+    using Observer::metadataChanged;
+    void metadataChanged( Meta::TrackPtr track );
 
     void setSelection( const QString& selection ) { m_currentSelection = selection; }
     QString selection() { return m_currentSelection; }
@@ -66,6 +71,8 @@ private:
     void reloadWikipedia();
     
     KJob* m_wikiJob;
+
+    Meta::TrackPtr m_currentTrack;
         
     QString m_currentSelection;
     QString m_wiki;

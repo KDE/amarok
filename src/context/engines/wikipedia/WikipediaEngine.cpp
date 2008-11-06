@@ -64,6 +64,14 @@ void WikipediaEngine::message( const ContextState& state )
         update();
 }
 
+void WikipediaEngine::metadataChanged( Meta::TrackPtr track )
+{
+    Q_UNUSED( track )
+    DEBUG_BLOCK
+
+    update();
+}
+
 void WikipediaEngine::update()
 {
     DEBUG_BLOCK
@@ -71,7 +79,11 @@ void WikipediaEngine::update()
     m_triedRefinedSearch = false;
     
     QString tmpWikiStr;
+
+    unsubscribeFrom( m_currentTrack );
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    m_currentTrack = currentTrack;
+    subscribeTo( currentTrack );
 
     if ( !currentTrack ) {
         return;
