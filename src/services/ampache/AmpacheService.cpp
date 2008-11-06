@@ -237,8 +237,10 @@ void AmpacheService::authenticationComplete(KJob * job)
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
         m_serviceready = true;
         emit( ready() );
+
+        m_xmlDownloadJob->deleteLater();
     }
-    m_xmlDownloadJob->deleteLater();
+
 }
 
 #include "AmpacheService.moc"
