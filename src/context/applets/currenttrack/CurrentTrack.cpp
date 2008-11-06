@@ -83,7 +83,7 @@ void CurrentTrack::init()
     m_albumCover   = new QGraphicsPixmapItem    ( this );
 
     m_score->setToolTip( i18n( "Score:" ) );
-    m_numPlayed->setToolTip( i18n( "Playcount:" ) );
+    m_numPlayed->setToolTip( i18n( "Play Count:" ) );
     m_playedLast->setToolTip( i18nc("a single item (singular)", "Last Played:") );
     
 
