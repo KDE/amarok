@@ -560,13 +560,6 @@ void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
-    
-    // For some reason, phonon emits this when it's done buffering.
-    if( m_media->state() == Phonon::BufferingState )
-    {
-        debug() << "state() == Phonon::BufferingState. Aborting.";
-        return;
-    }
 
     if( m_multi )
     {
