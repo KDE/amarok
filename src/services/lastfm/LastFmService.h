@@ -84,7 +84,7 @@ private:
     void playLastFmStation( const KUrl &url );
 
     bool m_polished;
-    KHBox *m_buttonBox;
+    QWidget *m_buttonBox;
     QPushButton *m_loveButton;
     QPushButton *m_banButton;
     QPushButton *m_skipButton;

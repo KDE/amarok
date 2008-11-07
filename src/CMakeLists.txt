@@ -468,6 +468,7 @@ set(amaroklib_LIB_SRCS
     widgets/kratingpainter.cpp
     widgets/kratingwidget.cpp
     widgets/FilenameLayoutWidget.cpp
+    widgets/FlowLayout.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
     widgets/MainToolbar.cpp

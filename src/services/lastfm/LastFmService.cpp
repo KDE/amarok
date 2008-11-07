@@ -20,6 +20,7 @@
 #include "SimilarArtistsAction.h"
 #include "ScrobblerAdapter.h"
 #include "StatusBar.h"
+#include "widgets/FlowLayout.h"
 
 #include "GlobalCollectionActions.h"
 
@@ -178,28 +179,31 @@ LastFmService::polish()
 {
     if( !m_polished )
     {
-        m_bottomPanel->setMaximumHeight( 100 );
-
-        m_buttonBox = new KHBox(m_bottomPanel);
-        m_buttonBox->setSpacing( 3 );
-
-        m_loveButton = new QPushButton( m_buttonBox );
+        m_bottomPanel->setMaximumHeight( 150 );
+        m_buttonBox = new QWidget( m_bottomPanel );
+        FlowLayout * flowLayout= new FlowLayout( 3 );
+        m_buttonBox->setLayout( flowLayout );
+        
+        m_loveButton = new QPushButton( );
         m_loveButton->setText( i18n( "Love" ) );
         m_loveButton->setObjectName( "loveButton" );
         m_loveButton->setIcon( KIcon( "emblem-favorite-amarok" ) );
         connect( m_loveButton, SIGNAL( clicked() ), this, SLOT( love() ) );
+        flowLayout->addWidget( m_loveButton );
 
-        m_banButton = new QPushButton( m_buttonBox );
+        m_banButton = new QPushButton();
         m_banButton->setText( i18n( "Ban" ) );
         m_banButton->setObjectName( "banButton" );
         m_banButton->setIcon( KIcon( "amarok_remove" ) );
         connect( m_banButton, SIGNAL( clicked() ), this, SLOT( ban() ) );
+        flowLayout->addWidget( m_banButton );
 
-        m_skipButton = new QPushButton( m_buttonBox );
+        m_skipButton = new QPushButton();
         m_skipButton->setText( i18n( "Skip" ) );
         m_skipButton->setObjectName( "skipButton" );
         m_skipButton->setIcon( KIcon( "media-seek-forward-amarok" ) );
         connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
+        flowLayout->addWidget( m_skipButton );
 
         KHBox * customStationBox = new KHBox( m_bottomPanel );
         customStationBox->setSpacing( 3 );
