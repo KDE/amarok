@@ -98,6 +98,7 @@ public:
         , batchUpdate( false )
         , album()
         , artist()
+        , playCount(0)
         , track( t )
     {}
 
