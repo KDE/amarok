@@ -10,9 +10,11 @@ function onConfigure()
 
 function onPopulating( level, callbackData, filter )
 {
-    Amarok.debug( " Populating station level..." );
-    //add the station streams as leaf nodes
-    for ( i = 0; i < stationArray.length; i++ )
+    Amarok.debug( "populating level " + level );
+
+    var numberOfItems = 10;
+    
+    for ( i = 0; i < numberOfItems; i++ )
     {
         item = Amarok.StreamItem;
         item.level = ;
@@ -26,6 +28,5 @@ function onPopulating( level, callbackData, filter )
 }
 
 Amarok.configured.connect( onConfigure );
-
 script = new Service();
 script.populate.connect( onPopulating );
