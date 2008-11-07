@@ -36,7 +36,7 @@ SongkickEngine::SongkickEngine( QObject* parent, const QList<QVariant>& args )
     , m_datesJob( 0 )
     , m_currentTrack( 0 )
     , m_ontour( false )
-    , m_dates( false )
+    , m_dates( true )
 {
     Q_UNUSED( args )
     DEBUG_BLOCK
@@ -126,7 +126,7 @@ void SongkickEngine::updateData()
         */
 
             QString country = QLocale::system().name().right( 2 ).toLower();
-            KUrl url( QString( "http://api.songkick.com/api/V1/get_dates_extended?id=0&key=kJcAUmzi8AoAngzh&name=%1&country=%2&range=all" ).arg( currentTrack->artist()->prettyName(),  country ) );
+            KUrl url( QString( "http://api.songkick.com/api/V1/get_dates_extended?id=0&key=kJcAUmzi8AoAngzh&name=%1&country=%2&range=all" ).arg( QUrl::toPercentEncoding( currentTrack->artist()->prettyName() ), country ) );
             m_datesJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
             connect( m_datesJob, SIGNAL( result( KJob* ) ), this, SLOT( datesResult( KJob* ) ) );
         /*
