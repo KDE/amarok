@@ -9,6 +9,9 @@ find_package( KDE4 REQUIRED )
 include (KDE4Defaults)
 include (MacroLibrary)
 
+set(TAGLIB_MIN_VERSION "1.5")
+find_package(Taglib)
+
 include(CheckTypeSize)
 include(MacroBoolTo01)
 include(MacroLogFeature)
@@ -18,11 +21,11 @@ macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http
 set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
-
 include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 
 check_type_size("int" SIZEOF_INT)
 check_type_size("long" SIZEOF_LONG)
+
 
 add_subdirectory( src )
 

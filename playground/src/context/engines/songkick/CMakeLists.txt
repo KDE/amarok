@@ -1,8 +1,6 @@
-include_directories( ../../..
-                     ../../../context
-                     ../../../meta
-                     ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-)
+include_directories( ../../../../../src/
+                     ../../../../../src/context
+                   )
 
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 

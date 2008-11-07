@@ -2,8 +2,10 @@ project(context-songkick)
 
 set(songkick_SRCS Songkick.cpp )
 
-include_directories( ../..
-                    ../../.. )
+include_directories( ../../../../../src/
+                     ../../../../../src/context
+                     )
+
 
 kde4_add_plugin(amarok_context_applet_songkick ${songkick_SRCS})
 if(APPLE)

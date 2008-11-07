@@ -18,7 +18,6 @@
 #include "SongkickEngine.h"
 
 #include "Amarok.h"
-#include "amarokconfig.h"
 #include "Debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
@@ -27,6 +26,7 @@
 #include <KIO/Job>
 
 #include <QLocale>
+#include <QFile>
 
 using namespace Context;
 

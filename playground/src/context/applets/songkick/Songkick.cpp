@@ -15,11 +15,9 @@
 #include "Songkick.h"
 
 #include "Amarok.h"
-#include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/popupdropper/PopupDropperAction.h"
-#include "meta/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
