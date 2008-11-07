@@ -149,8 +149,10 @@ EngineController::canDecode( const KUrl &url ) //static
     if( !item.isLocalFile() )
         return true;
         
-    // Filter the available mime types to only include audio, as amarok does not intend to play photos or videos
-    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive );
+    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
+    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
+                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
+
     const QString mimeType = item.mimetype();
     const bool valid = mimeTable.contains( mimeType, Qt::CaseInsensitive );
 
