@@ -131,27 +131,30 @@ SET_TARGET_PROPERTIES(amarokplasma PROPERTIES DEFINE_SYMBOL MAKE_PLASMA_LIB )
 install(TARGETS amarokplasma ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 find_package(Plasma)
-if(NOT PLASMA_FOUND)
-install(FILES
-    plasma/servicetypes/plasma-animator.desktop
-    plasma/servicetypes/plasma-applet.desktop
-    plasma/servicetypes/plasma-dataengine.desktop
-    plasma/servicetypes/plasma-runner.desktop
-    plasma/servicetypes/plasma-scriptengine.desktop
-    plasma/servicetypes/plasma-containment.desktop
-    DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
-set(default_animator_SRCS
-    animators/default/defaultAnimator.cpp
-   )
+# The following "installation" breaks plasma installations which do not match Amarok's plasma version exactly.
+# Notable side effects include: no desktop background, failure to load data engines etc.
+#if(NOT PLASMA_FOUND)
+#install(FILES
+#    plasma/servicetypes/plasma-animator.desktop
+#    plasma/servicetypes/plasma-applet.desktop
+#    plasma/servicetypes/plasma-dataengine.desktop
+#    plasma/servicetypes/plasma-runner.desktop
+#    plasma/servicetypes/plasma-scriptengine.desktop
+#    plasma/servicetypes/plasma-containment.desktop
+#    DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
-kde4_add_plugin(plasma_animator_default ${default_animator_SRCS})
-target_link_libraries(plasma_animator_default ${KDE4_KDECORE_LIBS} amarokplasma)
+#set(default_animator_SRCS
+#    animators/default/defaultAnimator.cpp
+#   )
 
-install(TARGETS plasma_animator_default DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES animators/default/plasma-animator-default.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+#kde4_add_plugin(plasma_animator_default ${default_animator_SRCS})
+#target_link_libraries(plasma_animator_default ${KDE4_KDECORE_LIBS} amarokplasma)
 
-endif(NOT PLASMA_FOUND)
+#install(TARGETS plasma_animator_default DESTINATION ${PLUGIN_INSTALL_DIR})
+#install(FILES animators/default/plasma-animator-default.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+
+#endif(NOT PLASMA_FOUND)
 
 ########### next target ###############
 
