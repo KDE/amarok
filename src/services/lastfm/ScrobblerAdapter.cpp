@@ -26,8 +26,8 @@
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
       EngineObserver( The::engineController() ),
-      m_clientId( clientId ), 
-      m_scrobbler( new Scrobbler( clientId ) )
+      m_scrobbler( new Scrobbler( clientId ) ),
+      m_clientId( clientId )
 {
     resetVariables();
 
