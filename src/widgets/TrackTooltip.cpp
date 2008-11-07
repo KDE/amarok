@@ -263,7 +263,7 @@ void TrackToolTip::updateWidgets()
     m_otherInfoLabel->setText( tooltip() );
 }
 
-void TrackToolTip::metadataChanged( Meta::Track *track )
+void TrackToolTip::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
     DEBUG_BLOCK
@@ -271,12 +271,26 @@ void TrackToolTip::metadataChanged( Meta::Track *track )
     setTrack();
 }
 
+void TrackToolTip::metadataChanged( Meta::AlbumPtr album )
+{
+    DEBUG_BLOCK
+    setTrack();
+}
+
 void TrackToolTip::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
 
+    if ( m_track ) {
+        unsubscribeFrom( m_track );
+        if ( m_track->album() )
+            unsubscribeFrom( m_track->album() );
+    }
+
     m_track =  The::engineController()->currentTrack();
     subscribeTo( m_track );
+    if ( m_track->album() )
+        subscribeTo( m_track->album() );
 
     setTrack();
 }
@@ -290,6 +304,8 @@ void TrackToolTip::enginePlaybackEnded( int finalPosition, int trackLength, cons
     DEBUG_BLOCK
 
     unsubscribeFrom( m_track );
+    if ( m_track->album() )
+        unsubscribeFrom( m_track->album() );
 
     m_track = 0;
     clear();
@@ -334,6 +350,8 @@ void TrackToolTip::slotTimer()  // SLOT
         QTimer::singleShot( 500, this, SLOT( hide() ) );
     }        
 }
+
+
 
 #include "TrackTooltip.moc"
 

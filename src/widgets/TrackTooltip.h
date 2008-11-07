@@ -39,15 +39,17 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
         static TrackToolTip* instance();
     
         void show( const QPoint &bottomRight );
+
+        //Reimplemented from Meta::Observer
+        using Observer::metadataChanged;
+        void metadataChanged( Meta::TrackPtr track );
+        void metadataChanged( Meta::AlbumPtr album );
     
     public slots:
        void hide(); 
 
-    protected:
-        //Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::Track *track );
 
+    protected:
         //Reimplemented from EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
