@@ -59,6 +59,7 @@ QStringList SongkickEngine::sources() const
 bool SongkickEngine::sourceRequested( const QString& name )
 {
     DEBUG_BLOCK
+    debug() << "sourceRequested with name " << name;
     if( name == I18N_NOOP( "ontour" ) )
     {
         m_ontour = true;
@@ -112,6 +113,8 @@ void SongkickEngine::updateData()
         debug() << "No artist found!";
         return;
     }
+
+    setData( "artist", currentTrack->artist()->prettyName() );
 
     if( m_dates )
     {
@@ -170,7 +173,7 @@ void SongkickEngine::datesResult( KJob* job )
 */
 
     QVariantMap dates;
-    try{ dates = JsonQt::JsonToVariant::parse( data ); }
+    /*try{ dates = JsonQt::JsonToVariant::parse( data ); }
     catch( JsonQt::ParseException e )
     {
         debug() << "Parse exception (stopping parsing): " << e.what();
@@ -181,7 +184,8 @@ void SongkickEngine::datesResult( KJob* job )
     {
         iter.next();
         setData( "dates", iter.key(), iter.value() );
-    }
+    }*/
+    setData( "dates", data );
 }
 
 QString SongkickEngine::getCached( QString path )
