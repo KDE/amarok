@@ -767,7 +767,7 @@ void TagDialog::readTags()
     // TODO: this should say something pretty like "3½ stars", but that can't happen until after strings are unfrozen
     summaryText += body2cols.arg( i18n("Rating:"), QString::number( static_cast<double>(m_currentTrack->rating())/2.0) );
 
-    summaryText += body2cols.arg( i18n("Playcount:"), QString::number( m_currentTrack->playCount() ) );
+    summaryText += body2cols.arg( i18n("Play Count:"), QString::number( m_currentTrack->playCount() ) );
     QDate firstPlayed = QDateTime::fromTime_t( m_currentTrack->firstPlayed() ).date();
     QDate lastPlayed = QDateTime::fromTime_t( m_currentTrack->lastPlayed() ).date();
     summaryText += body2cols.arg( i18n("First Played:"),
