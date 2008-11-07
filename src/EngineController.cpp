@@ -96,8 +96,8 @@ EngineController::EngineController()
 
     // Get the next track when there is 2 seconds left on the current one.
     m_media->setPrefinishMark( 2000 );
-    connect( m_media, SIGNAL( prefinishMarkReached(qint32) ), SLOT( slotPrefinishMarkReached(qint32) ) );
-    connect( m_media, SIGNAL(aboutToFinish()), SLOT(slotAboutToFinish()) );
+    connect( m_media, SIGNAL( prefinishMarkReached(qint32) ), SLOT( slotPrefinishMarkReached( qint32 ) ) );
+    connect( m_media, SIGNAL( aboutToFinish()), SLOT( slotAboutToFinish() ) );
 
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
     connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
@@ -158,8 +158,8 @@ EngineController::canDecode( const KUrl &url ) //static
     if ( !valid && ( mimeType == "audio/mp3" || mimeType == "audio/x-mp3" ) && !installDistroCodec() )
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-                    "the installation of the backend that phonon uses.</p>"
-                    "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBar::Error );
+                      "the installation of the backend that phonon uses.</p>"
+                      "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBar::Error );
 
     return valid;
 }
@@ -168,7 +168,7 @@ bool
 EngineController::installDistroCodec()
 {
     KService::List services = KServiceTypeTrader::self()->query( "Amarok/CodecInstall"
-        , QString("[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == 'phonon-%1'").arg("xine") );
+        , QString( "[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == 'phonon-%1'").arg( "xine" ) );
     //todo - figure out how to query Phonon for the current backend loaded
     if( !services.isEmpty() )
     {
