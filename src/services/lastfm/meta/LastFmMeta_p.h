@@ -263,7 +263,7 @@ public:
         }
             
             
-        if( d->albumArt.width() != size )
+        if( d->albumArt.width() != size && size > 0 )
             return d->albumArt.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
         else
             return d->albumArt;
