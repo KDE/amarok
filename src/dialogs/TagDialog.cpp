@@ -35,7 +35,7 @@
 #include "QueryMaker.h"
 #include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
-#include "ui_tagdialogbase.h"
+#include "ui_TagDialogBase.h"
 #include "UpdateCapability.h"
 
 #include <KApplication>
