@@ -88,7 +88,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
     ui->initialCheck->setChecked( AmarokConfig::groupArtists() );
     ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() ); 
-    ui->coverCheck->setChecked( AmarokConfig::coverIcons() );
     ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
     ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
     ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
@@ -396,18 +395,17 @@ OrganizeCollectionDialog::slotUpdatePreview()
 void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
-        AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
-        AmarokConfig::setGroupByFiletype( ui->filetypeCheck->isChecked() );
-        AmarokConfig::setGroupArtists( ui->initialCheck->isChecked() );
-        AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
-        AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
-        AmarokConfig::setCoverIcons( ui->coverCheck->isChecked() );
-        AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
-        AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
-        AmarokConfig::setUseCustomScheme( ui->customschemeCheck->isChecked() );
-        //AmarokConfig::setCustomScheme( ui->formatEdit->text() );
-        AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
-        AmarokConfig::setReplacementString( ui->replaceEdit->text() );
+    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
+    AmarokConfig::setGroupByFiletype( ui->filetypeCheck->isChecked() );
+    AmarokConfig::setGroupArtists( ui->initialCheck->isChecked() );
+    AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
+    AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
+    AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
+    AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
+    AmarokConfig::setUseCustomScheme( ui->customschemeCheck->isChecked() );
+    //AmarokConfig::setCustomScheme( ui->formatEdit->text() );
+    AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
+    AmarokConfig::setReplacementString( ui->replaceEdit->text() );
 }
 
 
@@ -480,7 +478,6 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         AmarokConfig::setGroupArtists( dialog.initialCheck->isChecked() );
         AmarokConfig::setIgnoreThe( dialog.ignoreTheCheck->isChecked() );
         AmarokConfig::setReplaceSpace( dialog.spaceCheck->isChecked() );
-        AmarokConfig::setCoverIcons( dialog.coverCheck->isChecked() );
         AmarokConfig::setVfatCompatible( dialog.vfatCheck->isChecked() );
         AmarokConfig::setAsciiOnly( dialog.asciiCheck->isChecked() );
         AmarokConfig::setUseCustomScheme( dialog.customschemeCheck->isChecked() );

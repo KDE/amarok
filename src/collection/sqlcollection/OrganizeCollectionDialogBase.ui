@@ -65,13 +65,6 @@
    <item>
     <layout class="QVBoxLayout" >
      <item>
-      <widget class="QCheckBox" name="coverCheck" >
-       <property name="text" >
-        <string>&amp;Use Cover Art for Folder Icons</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QCheckBox" name="ignoreTheCheck" >
        <property name="toolTip" >
         <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
