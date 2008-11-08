@@ -1,5 +1,11 @@
 [Desktop Entry]
 Name=Songkick Data Engine
+Name[el]=Μηχανή δεδομένων Songkick
+Name[nds]=Songkick-Hanteerkarn
+Name[pt]=Motor de Dados do Songkick
+Name[pt_BR]=Motor de Dados do Songkick
+Name[sv]=Songkick datagränssnitt
+Name[uk]=Рушій даних Songkick
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=songkick
