@@ -552,6 +552,7 @@ ScriptManager::loadScript( const QString& path )
             item.info = KPluginInfo( specPath );
             if ( !item.info.isValid() ) return false;
             if ( ( item.info.name() == "" ) || ( item.info.version() == "" ) || ( item.info.category() == "" ) ) return false;
+            if ( m_scripts.contains( item.info.name() ) ) return false; //check if script is already loaded...
             debug() << "script info:" << item.info.name() << " " << item.info.version() << " " << item.info.category();
             item.url = url;
             item.running = false;
