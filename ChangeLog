@@ -14,6 +14,7 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Do not reload scripts that are already active. (BR 174601)
     * Pressing Stop while fade-out is running will no longer restart the
       fading. (BR 173528)
     * Fixed problem with Amarok sometimes not advancing to the next track.
