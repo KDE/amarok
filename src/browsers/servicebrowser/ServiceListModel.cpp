@@ -45,24 +45,34 @@ ServiceListModel::rowCount(const QModelIndex & parent) const
 QVariant
 ServiceListModel::data(const QModelIndex & index, int role) const
 {
-     //DEBUG_BLOCK
-     if ( (!index.isValid()) || ( m_services.count() <= index.row() ) )
-         return QVariant();
-
-    if ( role == Qt::DisplayRole )
-        return QVariant( m_services[index.row()]->name() );
-    else if ( role ==  Qt::DecorationRole )
-        return QVariant( m_services[index.row()]->icon() );
-   else if ( role == ShortDescriptionRole || role == Qt::UserRole )
-       return QVariant( m_services[index.row()]->shortDescription() );
-   else if ( role == LongDescriptionRole )
-       return QVariant( m_services[index.row()]->longDescription() );
-   else if ( role == ServiceRole )
-       return qVariantFromValue( m_services[index.row()] );
-   else if ( role == AlternateRowRole )
-       return ( index.row() % 2 == 1 );
-    else
+    //DEBUG_BLOCK
+    if( !index.isValid() || m_services.count() <= index.row() )
         return QVariant();
+
+    switch( role )
+    {
+        case Qt::DisplayRole:
+            return QVariant( m_services[index.row()]->name() );
+
+        case Qt::DecorationRole:
+            return QVariant( m_services[index.row()]->icon() );
+
+        case ShortDescriptionRole:
+        case Qt::UserRole:
+            return QVariant( m_services[index.row()]->shortDescription() );
+
+        case LongDescriptionRole:
+            return QVariant( m_services[index.row()]->longDescription() );
+    
+        case ServiceRole:
+            return qVariantFromValue( m_services[index.row()] );
+
+        case AlternateRowRole:
+            return ( index.row() % 2 == 1 );
+
+        default:
+            return QVariant();
+     }
 }
 
 void
