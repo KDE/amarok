@@ -14,6 +14,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Don't show transfer popups when copying tracks to a collection and
+      overwriting files. (BR 174533)
     * When organising files, "Ignore The" logic was inverted.
     * Do not reload scripts that are already active. (BR 174601)
     * Pressing Stop while fade-out is running will no longer restart the

@@ -202,7 +202,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
         KIO::JobFlags flags = KIO::HideProgressInfo;
         if( m_overwriteFiles )
         {
-            flags &= KIO::Overwrite;
+            flags |= KIO::Overwrite;
         }
         QFileInfo info( dest.pathOrUrl() );
         QDir dir = info.dir();
