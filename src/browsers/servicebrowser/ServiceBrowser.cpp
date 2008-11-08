@@ -97,6 +97,9 @@ ServiceBrowser::setScriptableServiceManager( ScriptableServiceManager * scriptab
 void
 ServiceBrowser::addService( ServiceBase * service )
 {
+    if( !service )
+        return;
+
     //insert service into service map
     m_services[service->name()] = service;
     m_serviceListModel->addService( service );

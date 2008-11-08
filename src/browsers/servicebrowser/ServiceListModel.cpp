@@ -35,10 +35,6 @@ int
 ServiceListModel::rowCount(const QModelIndex & parent) const
 {
     Q_UNUSED( parent );
-    // DEBUG_BLOCK
-    /*if ( !parent.isValid() )
-        return 0;*/
-
     return m_services.count();
 }
 
