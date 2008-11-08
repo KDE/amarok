@@ -498,7 +498,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EditCoverSearchDialog.ui
     #dialogs/deletedialogbase.ui
     dialogs/ScriptManagerBase.ui
-    dialogs/tagdialogbase.ui
+    dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/PodcastSettingsBase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
