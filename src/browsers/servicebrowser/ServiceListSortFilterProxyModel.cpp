@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,33 +17,43 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICELISTDELEGATE_H
-#define SERVICELISTDELEGATE_H
+#include "ServiceListSortFilterProxyModel.h"
 
-#include "SvgHandler.h"
+#include "Debug.h"
 
-#include <QAbstractItemDelegate>
-#include <QTreeView>
+#include <QVariant>
 
-
-/**
-A delegate for displaying a nice overview of a service
-
-    @author
-*/
-class ServiceListDelegate : public QAbstractItemDelegate
+ServiceListSortFilterProxyModel::ServiceListSortFilterProxyModel(  QObject * parent )
+    : QSortFilterProxyModel( parent )
 {
-public:
-    ServiceListDelegate( QTreeView *view );
-    ~ServiceListDelegate();
+    DEBUG_BLOCK
 
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    setSortLocaleAware( true );
+    setSortCaseSensitivity( Qt::CaseInsensitive );
 
-    void paletteChange();
+    setSortRole( Qt::UserRole );
 
-private:
-    QTreeView *m_view;
-};
+    setDynamicSortFilter( true );
+}
 
-#endif
+ServiceListSortFilterProxyModel::~ServiceListSortFilterProxyModel()
+{}
+
+bool
+ServiceListSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+    DEBUG_BLOCK
+
+    const QVariant leftData = sourceModel()->data( left );
+    const QVariant rightData = sourceModel()->data( right );
+
+    const QString leftString = leftData.toString();
+    const QString rightString = rightData.toString();
+
+    debug() << "left : " << leftString;
+    debug() << "right: " << rightString;
+
+    return leftString.compare( rightString ) > 0;
+}
+
+

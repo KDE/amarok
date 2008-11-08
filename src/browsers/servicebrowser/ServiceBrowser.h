@@ -27,7 +27,7 @@
 
 #include <KVBox>
 
-#include <QListView>
+#include <QTreeView>
 #include <QMap>
 
 class ServiceListDelegate;
@@ -112,7 +112,7 @@ private:
 
     static ServiceBrowser * s_instance;
 
-    QListView * m_serviceListView;
+    QTreeView * m_serviceListView;
 
     QMap<QString, ServiceBase *> m_services;
     ServiceBase * m_currentService;

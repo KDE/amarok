@@ -31,7 +31,7 @@
 #include <QPixmapCache>
 
 
-ServiceListDelegate::ServiceListDelegate( QListView *view )
+ServiceListDelegate::ServiceListDelegate( QTreeView *view )
  : QAbstractItemDelegate()
  , m_view( view )
 {

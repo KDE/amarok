@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,33 +17,23 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICELISTDELEGATE_H
-#define SERVICELISTDELEGATE_H
+#ifndef SERVICELISTSORTFILTERPROXYMODEL_H
+#define SERVICELISTSORTFILTERPROXYMODEL_H
 
-#include "SvgHandler.h"
+#include <QSortFilterProxyModel>
 
-#include <QAbstractItemDelegate>
-#include <QTreeView>
+#include "meta/Meta.h"
 
 
-/**
-A delegate for displaying a nice overview of a service
-
-    @author
-*/
-class ServiceListDelegate : public QAbstractItemDelegate
+class ServiceListSortFilterProxyModel : public QSortFilterProxyModel
 {
-public:
-    ServiceListDelegate( QTreeView *view );
-    ~ServiceListDelegate();
+    public:
+        ServiceListSortFilterProxyModel( QObject * parent = 0 );
 
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+        virtual ~ServiceListSortFilterProxyModel();
 
-    void paletteChange();
-
-private:
-    QTreeView *m_view;
+    protected:
+        virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
 #endif

@@ -19,9 +19,11 @@
 
 #include "ServiceBrowser.h"
 
-#include "context/ContextView.h"
 #include "Debug.h"
 #include "ServiceListDelegate.h"
+#include "ServiceListSortFilterProxyModel.h"
+#include "context/ContextView.h"
+
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;
 
@@ -43,7 +45,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     setObjectName( name );
     debug() << "ServiceBrowser starting...";
 
-    m_serviceListView = new QListView( this );
+    m_serviceListView = new QTreeView( this );
     m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
     m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 
@@ -56,10 +58,16 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
 
     m_serviceListView->setFrameShape( QFrame::NoFrame );
 
+    ServiceListSortFilterProxyModel* proxyModel = new ServiceListSortFilterProxyModel( this );
+    proxyModel->setSourceModel( m_serviceListModel );
+
     m_delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( m_delegate );
     m_serviceListView->setSelectionMode( QAbstractItemView::NoSelection );
-    m_serviceListView->setModel( m_serviceListModel );
+    m_serviceListView->setHeaderHidden( true );
+    m_serviceListView->setRootIsDecorated( false );
+    m_serviceListView->setSortingEnabled( true );
+    m_serviceListView->setModel( proxyModel );
     connect(m_serviceListView, SIGNAL( clicked ( const QModelIndex & ) ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
     m_scriptableServiceManager = 0;
 

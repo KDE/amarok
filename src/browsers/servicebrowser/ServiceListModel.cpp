@@ -53,7 +53,7 @@ ServiceListModel::data(const QModelIndex & index, int role) const
         return QVariant( m_services[index.row()]->name() );
     else if ( role ==  Qt::DecorationRole )
         return QVariant( m_services[index.row()]->icon() );
-   else if ( role == ShortDescriptionRole )
+   else if ( role == ShortDescriptionRole || role == Qt::UserRole )
        return QVariant( m_services[index.row()]->shortDescription() );
    else if ( role == LongDescriptionRole )
        return QVariant( m_services[index.row()]->longDescription() );

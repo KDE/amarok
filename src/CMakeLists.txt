@@ -95,6 +95,7 @@ set(libserviceframework_SRCS
     browsers/servicebrowser/ServiceBrowser.cpp
     browsers/servicebrowser/ServiceListDelegate.cpp
     browsers/servicebrowser/ServiceListModel.cpp
+    browsers/servicebrowser/ServiceListSortFilterProxyModel.cpp
 )
         
 
