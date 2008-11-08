@@ -14,6 +14,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Lyrics aren't refetched when irrelevant track metadata is changed.
+      (BR 174678)
     * Don't show transfer popups when copying tracks to a collection and
       overwriting files. (BR 174533)
     * When organising files, "Ignore The" logic was inverted.

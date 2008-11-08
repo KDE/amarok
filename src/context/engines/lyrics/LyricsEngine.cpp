@@ -62,10 +62,13 @@ void LyricsEngine::message( const ContextState& state )
 
 void LyricsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( track )
     DEBUG_BLOCK
 
-    update();
+    const bool hasChanged = track->name() != m_title || 
+                            track->artist()->name() != m_artist;
+    
+    if( hasChanged )
+        update();
 }
 
 void LyricsEngine::update()
@@ -85,15 +88,15 @@ void LyricsEngine::update()
     // don't rely on caching for streams
     const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
     
-    QString title  = currentTrack->name();
-    QString artist = currentTrack->artist()->name();
+    m_title = currentTrack->name();
+    m_artist = currentTrack->artist()->name();
 
-    if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-    if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+    if( m_title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+        m_title = m_title.remove(" (PREVIEW: buy it at www.magnatune.com)");
+    if( m_artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+        m_artist = m_artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
 
-    if ( title.isEmpty() )
+    if( m_title.isEmpty() )
     {
         /* If title is empty, try to use pretty title.
            The fact that it often (but not always) has "artist name" together, can be bad,
@@ -102,13 +105,13 @@ void LyricsEngine::update()
         int h = prettyTitle.indexOf( '-' );
         if ( h != -1 )
         {
-            title = prettyTitle.mid( h+1 ).trimmed();
-            if( title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-            if ( artist.isEmpty() ) {
-                artist = prettyTitle.mid( 0, h ).trimmed();
-                if( artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                    artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+            m_title = prettyTitle.mid( h+1 ).trimmed();
+            if( m_title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+                m_title = m_title.remove(" (PREVIEW: buy it at www.magnatune.com)");
+            if( m_artist.isEmpty() ) {
+                m_artist = prettyTitle.mid( 0, h ).trimmed();
+                if( m_artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
+                    m_artist = m_artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
             }
         }
     }
@@ -126,7 +129,7 @@ void LyricsEngine::update()
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        ScriptManager::instance()->notifyFetchLyrics( artist, title );
+        ScriptManager::instance()->notifyFetchLyrics( m_artist, m_title );
     }
 }
 

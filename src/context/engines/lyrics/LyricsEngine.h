@@ -63,7 +63,13 @@ private:
     // stores is we have been disabled (disconnected)
     bool m_requested;
    
-    Meta::TrackPtr m_currentTrack; 
+    Meta::TrackPtr m_currentTrack;
+    // Cache the title/artist of the current track so we can check against
+    // metadata updates. We only want to update the lyrics if either the
+    // title or the artist change (but not other attributes like rating, score,
+    // composer etc).
+    QString        m_title;
+    QString        m_artist;
 };
 
 K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )
