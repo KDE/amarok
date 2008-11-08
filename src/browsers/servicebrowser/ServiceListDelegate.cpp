@@ -65,11 +65,11 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     else
         painter->setPen( App::instance()->palette().text().color() );
     
-    painter->setRenderHint ( QPainter::Antialiasing );
+    painter->setRenderHint( QPainter::Antialiasing );
 
     QPixmap background;
 
-    if ( !index.data( AlternateRowRole ).toBool() )
+    if( !index.data( CustomServiceRoles::AlternateRowRole ).toBool() )
         background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
     else
         background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
@@ -90,7 +90,6 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     titleRect.setWidth( width );
     titleRect.setHeight( iconHeight + iconPadY );
 
-    /*painter->setPen( QPen ( Qt::white ) );*/
     painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
 
     QFont smallFont = defaultFont;
@@ -103,7 +102,7 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     textRect.setWidth( width - iconPadX * 2 );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
-    painter->drawText ( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( ShortDescriptionRole ).toString() );
+    painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( CustomServiceRoles::ShortDescriptionRole ).toString() );
 
     painter->restore();
 }

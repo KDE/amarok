@@ -57,17 +57,17 @@ ServiceListModel::data(const QModelIndex & index, int role) const
         case Qt::DecorationRole:
             return QVariant( m_services[index.row()]->icon() );
 
-        case ShortDescriptionRole:
-        case Qt::UserRole:
+        case CustomServiceRoles::ShortDescriptionRole:
+        case CustomServiceRoles::SortRole:
             return QVariant( m_services[index.row()]->shortDescription() );
 
-        case LongDescriptionRole:
+        case CustomServiceRoles::LongDescriptionRole:
             return QVariant( m_services[index.row()]->longDescription() );
     
-        case ServiceRole:
+        case CustomServiceRoles::ServiceRole:
             return qVariantFromValue( m_services[index.row()] );
 
-        case AlternateRowRole:
+        case CustomServiceRoles::AlternateRowRole:
             return ( index.row() % 2 == 1 );
 
         default:

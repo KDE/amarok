@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "ServiceListSortFilterProxyModel.h"
+#include "ServiceListModel.h"
 
 #include "Debug.h"
 
@@ -30,8 +31,7 @@ ServiceListSortFilterProxyModel::ServiceListSortFilterProxyModel(  QObject * par
 
     setSortLocaleAware( true );
     setSortCaseSensitivity( Qt::CaseInsensitive );
-
-    setSortRole( Qt::UserRole );
+    setSortRole( CustomServiceRoles::SortRole );
 
     setDynamicSortFilter( true );
 }

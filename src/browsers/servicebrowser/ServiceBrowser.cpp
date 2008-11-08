@@ -109,8 +109,8 @@ ServiceBrowser::serviceActivated( const QModelIndex & index )
     DEBUG_BLOCK
     ServiceBase * service = 0;
 
-    if ( index.data( ServiceRole ).canConvert<ServiceBase *>() )
-        service = index.data( ServiceRole ).value<ServiceBase *>();
+    if ( index.data( CustomServiceRoles::ServiceRole ).canConvert<ServiceBase *>() )
+        service = index.data( CustomServiceRoles::ServiceRole ).value<ServiceBase *>();
     else
         return;
 

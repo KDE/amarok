@@ -28,12 +28,16 @@
 
 Q_DECLARE_METATYPE(ServiceBase *)
 
-enum {
-    ShortDescriptionRole = Qt::UserRole + 1,
-    LongDescriptionRole,
-    ServiceRole,
-    AlternateRowRole
-};
+namespace CustomServiceRoles
+{
+    enum CustomServiceRolesId {
+        ShortDescriptionRole = Qt::UserRole + 1,
+        LongDescriptionRole = Qt::UserRole + 2,
+        ServiceRole = Qt::UserRole + 3,
+        AlternateRowRole = Qt::UserRole + 4,
+        SortRole = Qt::UserRole + 5
+    };
+}
 
 /**
 A very simple model to hold the available services
