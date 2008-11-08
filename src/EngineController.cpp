@@ -333,8 +333,11 @@ EngineController::stop( bool forceInstant ) //SLOT
         emit trackChanged( Meta::TrackPtr( 0 ) );
     }
 
-    if( m_fader )
-        m_fader->deleteLater();
+    // Stop instantly if fadeout is already running (i.e. pressing Stop twice)
+    if( m_fader ) 
+    {
+        forceInstant = true; 
+    }
 
     if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant ) {
         stateChangedNotify( Phonon::StoppedState, Phonon::PlayingState ); //immediately disable Stop action

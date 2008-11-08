@@ -14,6 +14,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Pressing Stop while fade-out is running will no longer restart the
+      fading. (BR 173528)
     * Fixed problem with Amarok sometimes not advancing to the next track.
     * Wikipedia and Lyrics applets now update with streams. (BR 172715)
     * Ampache Service: Do not crash if login is incorrect on startup.
