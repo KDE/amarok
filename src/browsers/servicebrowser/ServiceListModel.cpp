@@ -79,7 +79,7 @@ ServiceListModel::addService(ServiceBase * service)
         debug() << "Trying to add a nonexistent service to the ServiceListModel!";
         return;
     }
-    beginInsertRows ( QModelIndex(), m_services.count(), m_services.count() + 1 );
+    beginInsertRows ( QModelIndex(), m_services.count(), m_services.count() );
     m_services.push_back( service );
     endInsertRows();
 }
