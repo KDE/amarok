@@ -320,11 +320,6 @@ void
 OrganizeCollectionDialog::update( int dummy )   //why the dummy?
 {
     Q_UNUSED( dummy );
-    debug() << "###################################################################################################### I AM UPDATING THE PREVIEW ############################################################################################";
-
-    /*QString oldFormat = ui->formatEdit->text();
-    if( !ui->customschemeCheck->isChecked() )
-        ui->formatEdit->setText( buildFormatString() );*/
 
     if( ui->customschemeCheck->isChecked() )
         emit updatePreview( buildDestination( filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
