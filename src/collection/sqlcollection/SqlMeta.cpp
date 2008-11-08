@@ -250,7 +250,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     QString year = *(iter++);
     int yearId = (*(iter++)).toInt();
     m_year = registry->getYear( year, yearId );
-    Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
+    //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
 }
 
 bool
