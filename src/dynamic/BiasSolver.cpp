@@ -117,7 +117,7 @@ void Dynamic::BiasSolver::prepareToRun()
 
     // update biases
 
-    QMutexLocker locker( m_biasMutex );
+    QMutexLocker locker( &m_biasMutex );
 
     CollectionDependantBias* cb;
     foreach( Bias* b, m_biases )
