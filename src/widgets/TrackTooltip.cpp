@@ -259,6 +259,7 @@ QString TrackToolTip::tooltip() const
 void TrackToolTip::updateWidgets()
 {
     m_imageLabel->setPixmap( m_image );
+    m_titleLabel->setVisible( !m_title.isEmpty() );
     m_titleLabel->setText( m_title );
     m_otherInfoLabel->setText( tooltip() );
 }
@@ -269,6 +270,7 @@ void TrackToolTip::metadataChanged( Meta::TrackPtr track )
     DEBUG_BLOCK
 
     setTrack();
+    updateWidgets();
 }
 
 void TrackToolTip::metadataChanged( Meta::AlbumPtr album )
