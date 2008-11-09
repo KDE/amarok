@@ -31,7 +31,6 @@ class Token
 {
     Q_OBJECT
     public:
-//         explicit Token( QWidget *parent = 0 );
         explicit Token( const QString &string, QWidget *parent = 0 );
         QString getString();
         void setString(const QString &string );

@@ -25,7 +25,7 @@
 #include "widgets/TokenListWidget.h"
 
 #include <KDialog>
-#include <KVBox>    //this can be in the .cpp if widget and vbox weren't members. maybe they don't need to be but I first have to fix the layout when resizing
+#include <KVBox>
 
 #include <QtGui/QWidget>
 
@@ -56,7 +56,6 @@ class OrganizeCollectionDialog : public KDialog
         void updatePreview(QString);
 
     public slots:
-        //virtual void slotButtonClicked( int button );
         void slotUpdatePreview();
         void slotDialogAccepted();
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>507</width>
+    <width>536</width>
     <height>585</height>
    </rect>
   </property>
@@ -57,20 +57,6 @@
        </property>
        <property name="toolTip" >
         <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" >
-     <item>
-      <widget class="QCheckBox" name="ignoreTheCheck" >
-       <property name="toolTip" >
-        <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
-       </property>
-       <property name="text" >
-        <string>I&amp;gnore 'The' in Artist Names</string>
        </property>
       </widget>
      </item>
@@ -216,6 +202,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="ignoreTheCheck" >
+        <property name="toolTip" >
+         <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
+        </property>
+        <property name="text" >
+         <string>I&amp;gnore 'The' in Artist Names</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="vfatCheck" >
         <property name="toolTip" >
          <string>If checked, replace characters that are incompatible with MS-DOS/VFAT file systems.</string>
@@ -268,6 +264,7 @@
      <zorder>asciiCheck</zorder>
      <zorder>vfatCheck</zorder>
      <zorder></zorder>
+     <zorder>ignoreTheCheck</zorder>
     </widget>
    </item>
    <item>
@@ -342,6 +339,10 @@
     </spacer>
    </item>
   </layout>
+  <zorder>groupingGroup</zorder>
+  <zorder>replacementGroup</zorder>
+  <zorder>previewBox</zorder>
+  <zorder>ignoreTheCheck</zorder>
  </widget>
  <layoutdefault spacing="6" margin="0" />
  <customwidgets>

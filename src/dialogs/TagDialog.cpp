@@ -419,7 +419,7 @@ TagDialog::guessFromFilename() //SLOT
 
         //FIXME: remove this before release
 
-        QMessageBox::warning(this, i18n( "No filename scheme to extract tags from" ), i18n( "Please choose a filename scheme to describe the layout of the filename(s) to extract the tags." ));
+        debug()<<"No filename scheme to extract tags from. Please choose a filename scheme to describe the layout of the filename(s) to extract the tags.";
     }
     else
     {

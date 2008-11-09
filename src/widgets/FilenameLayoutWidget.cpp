@@ -39,7 +39,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     layout = new QHBoxLayout;
     layout->setSpacing( 0 );    //this should be coherent when using separators
     setLayout( layout );
-    backText = new QLabel;
+    backText = new QLabel( this );
     backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
     layout->addWidget( backText );
     tokenList = new QList< Token * >();
@@ -193,13 +193,11 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                 {
                     fixedPos = QPoint( fixedPos.x() + 10, fixedPos.y() );
                     debug()<<">>>>>>>>> SIMULATING DROP TO THE RIGHT";
-                    
                 }
                 else if( fixedPos.x() > childrenRect().topLeft().x() + childrenRect().size().width() )          //this covers if I'm dropping after all the tokens or in between
                 {
                     fixedPos = QPoint( fixedPos.x() - 10, fixedPos.y() );           //to self: why the f am I moving to the left as else? I should do that only if I'm on the end of the childrenRect
                     debug()<<">>>>>>>>> SIMULATING DROP TO THE LEFT";
-                    
                 }
                 childUnder = qobject_cast< Token * >( childAt( fixedPos ) );
                 QWidget * fakeChild = childAt( fixedPos );
@@ -220,7 +218,6 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                 if( childUnder == 0 ) debug()<<"ERROR: childUnder is null";     //FIXME: I need to pick up Token*, not a member of his
                 insertOverChild( childUnder, textFromMimeData, event );
                 debug()<<">>>>>>>>> \\called insertOverChild";
-                
             }
             else                                                                    //if I find a token, I'm done
             {
@@ -265,6 +262,29 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
 {
     if ( event->button() == Qt::LeftButton )
         m_startPos = event->pos();
+    if ( event->button() == Qt::MidButton )
+    {
+        Token *child = qobject_cast< Token * >( childAt( event->pos() ) );
+        if ( child == 0 )
+        {
+            debug()<<"no child here, fixing";
+            child = qobject_cast< Token * >( childAt( event->pos() )->parent() );
+            if ( child == 0 )
+                return;
+        }
+        debug()<<"a child has been cast here";
+        tokenList->removeAt( layout->indexOf( child ) - 1 );
+        delete child;
+        debug() << "I killed the damn token quit poking me!";
+        m_tokenCount--;
+
+        if( !m_tokenCount )
+        {
+            backText->show();
+        }
+        generateParsableScheme();
+        emit schemeChanged();
+    }
 }
 
 //Executed when a drag is initiated from the FilenameLayoutWidget. If valid, grabs a token and instances a QDrag for it. Calls generateParsableScheme() when done.
@@ -272,7 +292,7 @@ void
 FilenameLayoutWidget::performDrag( QMouseEvent *event )
 {
     //transfer of QByteData, not text --thank you Fridge Magnet example from Qt doc
-    Token *child = dynamic_cast< Token * >( childAt( event->pos() ) );
+    Token *child = qobject_cast< Token * >( childAt( event->pos() ) );
     if ( !child )
         return;
     QByteArray itemData;
@@ -286,7 +306,6 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     
     drag->setPixmap( QPixmap::grabWidget( child ) );       //need to get pixmap from widget
 
-    //child->close();
     tokenList->removeAt( layout->indexOf( child ) - 1 );
     debug() << "Deleting at " << layout->indexOf( child ) - 1;
     delete child;

@@ -19,18 +19,11 @@
 #include "Debug.h"
 
 #include <KColorScheme>
-// Token::Token( QWidget *parent )
-//     :QFrame( parent )
-// {
-// 
-//     
-// }
 
 Token::Token( const QString &string, QWidget *parent )
     : QFrame( parent )
 {
     m_myCount = qobject_cast< FilenameLayoutWidget * >( parent )->getTokenCount();
-    
     //m_icon = new QPixmap( "placeholder.png"); //TODO: get icons from oxygen guys and handle loading
     m_label = new QLabel( this );
     hlayout = new QHBoxLayout( this );
@@ -40,7 +33,6 @@ Token::Token( const QString &string, QWidget *parent )
     //iconContainer->setPixmap( *m_icon );
     hlayout->addWidget( iconContainer );
     hlayout->addWidget( m_label );
-    //Token( parent );
     setString( string );
     m_label->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
     unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
@@ -50,26 +42,17 @@ Token::Token( const QString &string, QWidget *parent )
         border-radius: 4px;\
         padding: 2px;\
     }" );       //I use QString::remove(int start, int n) to remove the A channel from ARGB - first two characters
-/*
-        background-color: qlineargradient( x1: 0,\
-                                           y1: 0,\
-                                           x2: 1,\
-                                           y2: 1,\
-                                           stop: 0 white,\
-                                           stop: 0.4 gray,\
-                                           stop: 1 blue );\
 
-
-*/
     QFontMetrics metric( font() );
     QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
     m_label->setMinimumSize( size + QSize( 4, 0 ) );
-    m_label->setUpdatesEnabled( true ); //does this do any good?
-    QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_label->setSizePolicy( sizePolicy );
-    iconContainer->setSizePolicy( sizePolicy );
-    iconContainer->setUpdatesEnabled( true ); //does this do any good?
-    setUpdatesEnabled( true ); //does this do any good?
+    //debug stuff, remove when done:
+    m_label->setAutoFillBackground(true);
+    m_label->setPalette(QPalette(QColor(0,0,0),QColor(255,0,0)));
+    
+    iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
 }
 
 //Access for m_tokenString, private.
@@ -94,4 +77,3 @@ Token::resizeEvent( QResizeEvent *event )
     Q_UNUSED( event );
     hlayout->update(); //does this do any good?
 }
-

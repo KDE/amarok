@@ -49,6 +49,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     connect( kpbAdvanced, SIGNAL( clicked() ),
              this, SLOT( toAdvancedMode() ) );
     connect( filenameLayout, SIGNAL( schemeChanged() ), this, SIGNAL( schemeChanged() ) );
+    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ), this, SIGNAL( schemeChanged() ) );
 
     //KConfig stuff:
     int caseOptions = Amarok::config( "TagGuesser" ).readEntry( "Case options" ).toInt();

@@ -78,7 +78,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
     ui->verticalLayout->insertWidget( 4, filenameLayoutDialog );
-    //filenameLayoutDialog->hide();
      filenameLayoutDialog->show();
         filenameLayoutDialog->setEnabled( false );
     ui->ignoreTheCheck->show();
@@ -114,13 +113,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setEnabled( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
-
-    //if( ui->customschemeCheck->isChecked()) {
-
-        //setDetailsWidgetVisible(true);
-//     }
-//     else
-//         toggleDetails();
 
     // These are old (from A1) and are being replaced by Teo's filenamelayout dialog
     ui->formatEdit->hide(); 
