@@ -307,11 +307,14 @@ void TrackToolTip::enginePlaybackEnded( int finalPosition, int trackLength, cons
 
     DEBUG_BLOCK
 
-    unsubscribeFrom( m_track );
-    if ( m_track->album() )
-        unsubscribeFrom( m_track->album() );
+    if ( m_track )
+    {
+        unsubscribeFrom( m_track );
+        if ( m_track->album() )
+            unsubscribeFrom( m_track->album() );
+        m_track = 0;
+    }
 
-    m_track = 0;
     clear();
 }
 
