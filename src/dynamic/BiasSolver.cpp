@@ -117,7 +117,7 @@ void Dynamic::BiasSolver::prepareToRun()
 
     // update biases
 
-    m_biasMutex.lock();
+    QMutexLocker locker( m_biasMutex );
 
     CollectionDependantBias* cb;
     foreach( Bias* b, m_biases )
@@ -137,7 +137,6 @@ void Dynamic::BiasSolver::prepareToRun()
     // nothing to update
     if( !m_pendingBiasUpdates && !s_universeOutdated )
     {
-        m_biasMutex.unlock();
         emit readyToRun();
         return;
     }
@@ -147,8 +146,6 @@ void Dynamic::BiasSolver::prepareToRun()
 
     if( s_universeOutdated )
         updateUniverse();
-
-    m_biasMutex.unlock();
 }
 
 void Dynamic::BiasSolver::run()
