@@ -275,7 +275,9 @@ void TrackToolTip::metadataChanged( Meta::TrackPtr track )
 
 void TrackToolTip::metadataChanged( Meta::AlbumPtr album )
 {
+    Q_UNUSED( album )
     DEBUG_BLOCK
+
     setTrack();
 }
 
