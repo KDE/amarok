@@ -118,10 +118,12 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
     server_options[0] = const_cast<char*>( "amarokmysqld" );
     server_options[1] = defaultsLine;
     server_options[2] = databaseLine;
+    // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific
+    // functions, such as FULLTEXT indexing.
     server_options[3] = const_cast<char*>( "--default-table-type=MYISAM" );
     server_options[4] = const_cast<char*>( "--default-storage-engine=MYISAM" );
     server_options[5] = const_cast<char*>( "--loose-skip-innodb" );
-    server_options[6] = const_cast<char*>("--skip-grant-tables");
+    server_options[6] = const_cast<char*>( "--skip-grant-tables" );
     server_options[num_elements] = 0;
 
     char **server_groups = new char* [ 3 ];
