@@ -104,10 +104,7 @@ OSDWidget::show( const QString &text, QImage newImage )
         m_cover = Amarok::icon();
 
     m_text = text;
-    if( !isVisible() )
-        show();
-
-    update(); // needed if e.g. cover image changed
+    show();
 }
 
 void
