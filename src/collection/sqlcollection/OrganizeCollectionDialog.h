@@ -41,11 +41,11 @@ class OrganizeCollectionDialog : public KDialog
     public:
         explicit OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent=0, const char *name=0, bool modal=true,
                                            const QString &caption=QString(),
-                                           QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel|Details );
+                                           QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel );
 
         explicit OrganizeCollectionDialog( const Meta::TrackList &tracks, QWidget *parent=0, const char *name=0,
                                            bool modal=true, const QString &caption=QString(),
-                                           QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel|Details );
+                                           QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel );
 
         ~OrganizeCollectionDialog();
 
@@ -56,7 +56,7 @@ class OrganizeCollectionDialog : public KDialog
         void updatePreview(QString);
 
     public slots:
-        virtual void slotButtonClicked( int button );
+        //virtual void slotButtonClicked( int button );
         void slotUpdatePreview();
         void slotDialogAccepted();
 

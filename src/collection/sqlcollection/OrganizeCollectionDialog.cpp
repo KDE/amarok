@@ -78,7 +78,10 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
     ui->verticalLayout->insertWidget( 4, filenameLayoutDialog );
-    filenameLayoutDialog->hide();
+    //filenameLayoutDialog->hide();
+     filenameLayoutDialog->show();
+        filenameLayoutDialog->setEnabled( false );
+    ui->ignoreTheCheck->show();
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
 
@@ -108,16 +111,16 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
-    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setVisible( bool ) ) );
+    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setEnabled( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
 
-    if( ui->customschemeCheck->isChecked()) {
-        filenameLayoutDialog->show();
-        setDetailsWidgetVisible(true);
-    }
-    else
-        toggleDetails();
+    //if( ui->customschemeCheck->isChecked()) {
+
+        //setDetailsWidgetVisible(true);
+//     }
+//     else
+//         toggleDetails();
 
     // These are old (from A1) and are being replaced by Teo's filenamelayout dialog
     ui->formatEdit->hide(); 
@@ -333,49 +336,6 @@ OrganizeCollectionDialog::update( const QString & dummy )
     Q_UNUSED( dummy );
 
     update( 0 );
-}
-
-void
-OrganizeCollectionDialog::slotButtonClicked( int button )
-{
-    DEBUG_BLOCK
-
-    if( button == KDialog::Details )
-        toggleDetails();
-    else
-        KDialog::slotButtonClicked( button );
-}
-
-void
-OrganizeCollectionDialog::toggleDetails()
-{
-    m_detailed = !m_detailed;
-
-    if( m_detailed )
-    {
-        ui->ignoreTheCheck->show();
-        ui->customschemeCheck->show();
-        ui->replacementGroup->show();
-//        ui->formatLabel->show(); These are being replaced by the filenamelayout dialog
-//        ui->formatEdit->show();
-//        ui->formatHelp->hide();
-
-        adjustSize();
-    }
-    else
-    {
-        ui->ignoreTheCheck->hide();
-        ui->customschemeCheck->hide();
-        ui->replacementGroup->hide();
-//        ui->formatLabel->hide();
-//        ui->formatEdit->hide();
-//        ui->formatHelp->hide();
-        filenameLayoutDialog->hide();
-
-        widget->resize( widget->minimumSize() );    //TODO: FIX THE LAYOUT WHEN RESIZING
-        vbox->resize( vbox->minimumSize() );
-        resize( minimumSize() );
-    }
 }
 
 void
