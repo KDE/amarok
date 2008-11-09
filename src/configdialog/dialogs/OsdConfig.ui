@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
-    <height>388</height>
+    <width>400</width>
+    <height>280</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" >
@@ -184,7 +184,7 @@
          <item>
           <widget class="KColorButton" name="kcfg_OsdTextColor" >
            <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
              <horstretch>2</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -213,31 +213,18 @@
            </property>
           </widget>
          </item>
-         <item>
-          <spacer name="horizontalSpacer" >
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0" >
-            <size>
-             <width>435</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
        </widget>
       </item>
       <item>
-       <spacer name="verticalSpacer_2" >
+       <spacer name="verticalSpacer" >
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0" >
          <size>
-          <width>17</width>
-          <height>155</height>
+          <width>20</width>
+          <height>0</height>
          </size>
         </property>
        </spacer>
