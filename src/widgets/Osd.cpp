@@ -43,7 +43,7 @@ namespace ShadowEngine
 
 namespace Amarok
 {
-    QImage icon() { return QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
+    inline QImage icon() { return QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
 }
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
@@ -73,11 +73,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     m_timer->setSingleShot( true );
 
-
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
-    //PORT 2.0
-//     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
-//              this, SLOT( ratingChanged( const QString&, int ) ) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
