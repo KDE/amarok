@@ -27,8 +27,6 @@
 ServiceListSortFilterProxyModel::ServiceListSortFilterProxyModel(  QObject * parent )
     : QSortFilterProxyModel( parent )
 {
-    DEBUG_BLOCK
-
     setSortLocaleAware( true );
     setSortCaseSensitivity( Qt::CaseInsensitive );
     setSortRole( CustomServiceRoles::SortRole );
@@ -42,18 +40,15 @@ ServiceListSortFilterProxyModel::~ServiceListSortFilterProxyModel()
 bool
 ServiceListSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-    DEBUG_BLOCK
-
     const QVariant leftData = sourceModel()->data( left );
     const QVariant rightData = sourceModel()->data( right );
 
     const QString leftString = leftData.toString();
     const QString rightString = rightData.toString();
 
-    debug() << "left : " << leftString;
-    debug() << "right: " << rightString;
+    //debug() << "left : " << leftString;
+    //debug() << "right: " << rightString;
 
     return leftString.compare( rightString ) > 0;
 }
-
 
