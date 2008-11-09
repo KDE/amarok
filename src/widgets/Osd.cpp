@@ -359,6 +359,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     //p.setPen( Qt::white ); // This too.
     p.setFont( font() );
     p.drawText( rect, align, m_text );
+    m_paused = false;
 }
 
 void
