@@ -74,8 +74,12 @@ int Audible::Properties::channels() const
 
 void Audible::Properties::readAudibleProperties( FILE *fp, int off )
 {
-    fseek(fp, off+LENGTH_OFF, SEEK_SET );
-    fread(&m_length, sizeof(m_length), 1, fp);
+    if ( fseek(fp, off+LENGTH_OFF, SEEK_SET ) != 0 )
+        return;
+
+    if (fread(&m_length, sizeof(m_length), 1, fp) != 1)
+        return;
+
     m_length = ntohl(m_length);
     //fprintf(stderr, "len (sec): %d\n", m_length);
     m_bitrate = 0;

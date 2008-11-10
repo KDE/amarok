@@ -72,8 +72,12 @@ void Audible::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) {
 void Audible::Tag::readTags( FILE *fp )
 {
     char buf[1023];
-    fseek(fp, OFF_PRODUCT_ID, SEEK_SET);
-    fread(buf, strlen("product_id"), 1, fp);
+    if ( fseek(fp, OFF_PRODUCT_ID, SEEK_SET) != 0 )
+        return;
+
+    if ( fread(buf, strlen("product_id"), 1, fp) != 1 )
+        return;
+
     if(memcmp(buf, "product_id", strlen("product_id")))
     {
         buf[20]='\0';
@@ -133,23 +137,46 @@ void Audible::Tag::readTags( FILE *fp )
 bool Audible::Tag::readTag( FILE *fp, char **name, char **value)
 {
     quint32 nlen;
-    fread(&nlen, sizeof(nlen), 1, fp);
+    if ( fread(&nlen, sizeof(nlen), 1, fp) != 1 )
+        return false;
+
     nlen = ntohl(nlen);
     //fprintf(stderr, "tagname len=%x\n", (unsigned)nlen);
     *name = new char[nlen+1];
     (*name)[nlen] = '\0';
 
     quint32 vlen;
-    fread(&vlen, sizeof(vlen), 1, fp);
+    if ( fread(&vlen, sizeof(vlen), 1, fp) != 1 )
+    {
+        delete [] *name;
+        *name = 0;
+        return false;
+    }
+
     vlen = ntohl(vlen);
     //fprintf(stderr, "tag len=%x\n", (unsigned)vlen);
+
+    if ( fread(*name, nlen, 1, fp) != 1 )
+    {
+        delete [] *name;
+        *name = 0;
+        return false;
+    }
+
     *value = new char[vlen+1];
     (*value)[vlen] = '\0';
 
-    fread(*name, nlen, 1, fp);
-    fread(*value, vlen, 1, fp);
+    if ( fread(*value, vlen, 1, fp) != 1 )
+    {
+        delete [] *value;
+        *value = 0;
+        return false;
+    }
+
     char lasttag;
-    fread(&lasttag, 1, 1, fp);
+    if ( fread(&lasttag, 1, 1, fp) != 1 )
+        return false;
+
     //fprintf(stderr, "%s: \"%s\"\n", *name, *value);
 
     m_tagsEndOffset += 2 * 4 + nlen + vlen + 1;
