@@ -22,7 +22,7 @@
 #define CONTAINMENT_P_H
 
 static const int INTER_CONTAINMENT_MARGIN = 6;
-static const int CONTAINMENT_COLUMNS = 4;
+static const int CONTAINMENT_COLUMNS = 2;
 static const int VERTICAL_STACKING_OFFSET = 10000;
 
 namespace Plasma
