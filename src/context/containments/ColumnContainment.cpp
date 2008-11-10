@@ -298,7 +298,7 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
 
     const QFontMetrics fm( m_footer->font() );
     const QRect footerRect = fm.boundingRect( m_footer->text() );
-    const int footerX = rect().width() / 2 - footerRect.width() / 2; 
+    const int footerX = rect().width() / 2 + footerRect.width() / 2; 
     const int footerY = rect().height() - footerRect.height() - 2;
     m_footer->setPos( footerX , footerY );
 }
@@ -493,7 +493,6 @@ ColumnContainment::showRemoveAppletsMenu()
 void
 ColumnContainment::correctControlButtonPositions()
 {
-    
     if( m_addAppletsIcon && m_removeAppletsIcon )
     {
         qreal xpos = BORDER_PADDING;
@@ -512,12 +511,12 @@ ColumnContainment::correctControlButtonPositions()
     {
         // we place these icons to the RIGHT of the zoom icon
         // rightmost corner
-        qreal xpos = boundingRect().width() - m_switchRightIcon->size().width();
+        qreal xpos = boundingRect().width() / 2 + m_switchRightIcon->size().width() / 2;
         qreal ypos = boundingRect().height() - m_switchRightIcon->size().height();
         m_switchRightIcon->setPos( xpos, ypos );
 
         // next to it on the left
-        xpos = m_switchRightIcon->pos().x() - m_switchLeftIcon->size().width();
+        xpos = boundingRect().width() / 2 - m_switchLeftIcon->size().width();
         m_switchLeftIcon->setPos( xpos, ypos );
 
         m_switchLeftIcon->show();
@@ -530,7 +529,7 @@ ColumnContainment::correctControlButtonPositions()
         // so put them in the same place
         // location is to the left of the switching arrows
         
-        const qreal xpos = m_switchLeftIcon->pos().x() - m_zoomOutIcon->size().width();
+        const qreal xpos = boundingRect().width() - m_zoomOutIcon->size().width();
         const qreal ypos = m_switchLeftIcon->pos().y();
 
         m_zoomOutIcon->setPos( xpos, ypos );
