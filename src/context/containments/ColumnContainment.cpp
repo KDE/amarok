@@ -82,6 +82,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     m_title->setFont( labelFont );
 
     m_footer = new QGraphicsSimpleTextItem( this );
+    m_footer->setZValue( zValue() + 1000 );
     m_footer->setBrush( palette().brush( QPalette::Disabled, QPalette::Text ) );
     QFont footerFont = m_footer->font();
     footerFont.setPointSize( footerFont.pointSize() + 2 );
@@ -295,12 +296,6 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
     m_maxColumnWidth = rect().width();
 
     correctControlButtonPositions();
-
-    const QFontMetrics fm( m_footer->font() );
-    const QRect footerRect = fm.boundingRect( m_footer->text() );
-    const int footerX = rect().width() / 2 + footerRect.width() / 2; 
-    const int footerY = rect().height() - footerRect.height() - 2;
-    m_footer->setPos( footerX , footerY );
 }
 
 QList<QAction*>
@@ -540,6 +535,12 @@ ColumnContainment::correctControlButtonPositions()
         else if( view()->zoomLevel() == Plasma::GroupZoom )
            m_zoomInIcon->show();
     }
+
+    const QFontMetrics fm( m_footer->font() );
+    const QRect footerRect = fm.boundingRect( m_footer->text() );
+    const int footerX = rect().width() / 2 + footerRect.width() / 2; 
+    const int footerY = rect().height() - footerRect.height() - 2;
+    m_footer->setPos( footerX , footerY );
 }
 
 void
