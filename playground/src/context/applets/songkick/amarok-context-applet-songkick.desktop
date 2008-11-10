@@ -1,5 +1,10 @@
 [Desktop Entry]
 Name=Songkick Concert Information
+Name[de]=Songkick-Konzertinformationen
+Name[el]=Πληροφορίες συναυλιών Songkick
+Name[pt]=Informação do Concerto Songkick
+Name[pt_BR]=Informação do Concerto Songkick
+Name[sv]=Konsertinformation från Songkick
 Type=Service
 ServiceTypes=Plasma/Applet
 
