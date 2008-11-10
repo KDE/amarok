@@ -26,7 +26,6 @@
 #include "context/popupdropper/PopupDropperItem.h"
 #include "context/popupdropper/PopupDropper.h"
 #include "Debug.h"
-#include "PodcastSettingsDialog.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
@@ -669,10 +668,7 @@ PlaylistBrowserNS::PodcastView::slotAppend()
 void
 PlaylistBrowserNS::PodcastView::slotConfigure()
 {
-    DEBUG_BLOCK
-    Meta::PodcastChannelPtr channel = selectedChannels().first();
-    PodcastSettingsDialog dialog( channel, this );
-    dialog.configure();
+    m_model->configureChannels( selectedIndexes() );
 }
 
 void

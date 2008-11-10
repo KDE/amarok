@@ -66,13 +66,12 @@ class PodcastModel : public QAbstractItemModel
         void downloadItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
         void removeSubscription( QModelIndexList list );
-
+        void configureChannels( QModelIndexList list );
 
     public slots:
         void slotUpdate();
         void addPodcast();
         void refreshPodcasts();
-        void configureChannels();
         void setPodcastsInterval();
         void emitLayoutChanged();
 
@@ -81,6 +80,7 @@ class PodcastModel : public QAbstractItemModel
         void refreshPodcast( Meta::PodcastChannelPtr channel );
         Meta::PodcastChannelList m_channels;
         void removeSubscription( Meta::PodcastChannelPtr channel );
+        void configureChannel( Meta::PodcastChannelPtr channel );
 };
 
 }

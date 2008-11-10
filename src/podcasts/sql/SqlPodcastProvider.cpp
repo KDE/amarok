@@ -23,9 +23,12 @@
 #include "statusbar/StatusBar.h"
 #include "Debug.h"
 #include "PodcastReader.h"
+#include "PodcastSettingsDialog.h"
 #include "SqlStorage.h"
 
 #include <KLocale>
+#include <KIO/CopyJob>
+#include <KIO/DeleteJob>
 #include <KIO/Job>
 #include <KUrl>
 
@@ -186,6 +189,75 @@ SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
 
     m_channels.removeOne( sqlChannel );
     emit updated();
+}
+
+void
+SqlPodcastProvider::configureProvider()
+{
+    DEBUG_BLOCK
+}
+
+void
+SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+    Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+    KUrl oldSaveLocation = sqlChannel->saveLocation();
+    int oldPurgeCount = sqlChannel->hasPurge() ? sqlChannel->purgeCount() : 0;
+
+    PodcastSettingsDialog dialog( channel, The::mainWindow() );
+    dialog.configure();
+
+    sqlChannel->updateInDb();
+
+    int toPurge = sqlChannel->hasPurge() ? sqlChannel->purgeCount() : 0;
+    if( oldPurgeCount != toPurge && toPurge > 0 )
+    {
+        debug() << "purge to " << toPurge <<" old episodes for " << sqlChannel->title();
+        foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+        {
+            if( --toPurge < 0 )
+                if( !episode->localUrl().isEmpty() )
+                    deleteDownloadedEpisode( episode );
+        }
+    }
+
+    if( oldSaveLocation != channel->saveLocation() )
+    {
+        debug() << QString("We need to move downloaded episodes of \"%1\" to %2")
+            .arg( sqlChannel->title())
+            .arg( sqlChannel->saveLocation().prettyUrl() );
+
+        KUrl::List filesToMove;
+        foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+        {
+            if( !episode->localUrl().isEmpty() )
+            {
+                KUrl newLocation = sqlChannel->saveLocation();
+                newLocation.addPath( episode->localUrl().fileName() );
+                debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
+
+                filesToMove << episode->localUrl();
+                episode->setLocalUrl( newLocation );
+                episode->updateInDb();
+            }
+        }
+        if( !filesToMove.isEmpty() )
+            KIO::move( filesToMove, sqlChannel->saveLocation(), KIO::HideProgressInfo );
+    }
+}
+
+void
+SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode )
+{
+    if( episode->localUrl().isEmpty() )
+        return;
+
+    debug() << "deleting " << episode->title();
+    KIO::del( episode->localUrl(), KIO::HideProgressInfo );
+
+    episode->setLocalUrl( KUrl() );
+    episode->updateInDb();
 }
 
 Meta::SqlPodcastChannelPtr

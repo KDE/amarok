@@ -20,9 +20,9 @@
 
 #include "AmarokMimeData.h"
 #include "Debug.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "PodcastProvider.h"
 #include "PodcastMeta.h"
+#include "PodcastProvider.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <QInputDialog>
 #include <KIcon>
@@ -525,9 +525,38 @@ PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episod
 }
 
 void
-PlaylistBrowserNS::PodcastModel::configureChannels()
+PlaylistBrowserNS::PodcastModel::configureChannels( QModelIndexList list )
 {
-    debug() << "configure Channels";
+    DEBUG_BLOCK
+    debug() << "number of items: " << list.count();
+    foreach( QModelIndex index, list )
+    {
+        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+        if( pmc->podcastType() ==  Meta::ChannelType )
+        {
+            configureChannel( Meta::PodcastChannelPtr( reinterpret_cast<Meta::PodcastChannel *>(pmc) ) );
+            return;
+        }
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::configureChannel( Meta::PodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+    debug() << "configuring " << channel->title();
+    //HACK: since we only have one PodcastProvider implementation
+    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    if( provider )
+    {
+        PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
+        podcastProvider->configureChannel( channel );
+    }
+    else
+    {
+        debug() << "PodcastChannel provider is null";
+    }
 }
 
 void

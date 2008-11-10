@@ -120,19 +120,9 @@ PodcastSettingsDialog::slotApply()       //slot
         Meta::PodcastChannel::DownloadWhenAvailable :
         Meta::PodcastChannel::StreamOrDownloadOnDemand
     );
-    //TODO: purging and save location is PodcastProvider specific, move it to implementation specific config dialog
-    bool moveFiles = m_ps->m_saveLocation->url() != m_channel->saveLocation();
     m_channel->setSaveLocation( m_ps->m_saveLocation->url() );
-    if( moveFiles )
-    {
-        debug() << QString("We need to move downloaded episodes of \"%1\" to %2")
-            .arg( m_channel->title())
-            .arg(m_channel->saveLocation().prettyUrl());
-        //TODO: move files
-    }
+
     m_channel->setPurge( m_ps->m_purgeCheck->isChecked() );
-    //TODO: Purge already downloaded episodes if new settings request that
-//     int to_purge = m_channel->hasPurge() ? m_channel->purgeCount() - pcb->m_purgeCountSpinBox.value() : 0;
     m_channel->setPurgeCount( m_ps->m_purgeCountSpinBox->value() );
 
     enableButtonApply( false );

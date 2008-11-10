@@ -57,6 +57,9 @@ class SqlPodcastProvider : public PodcastProvider
 
         void removeSubscription( Meta::PodcastChannelPtr channel );
 
+        void configureProvider();
+        void configureChannel( Meta::PodcastChannelPtr channel );
+
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
@@ -82,6 +85,8 @@ class SqlPodcastProvider : public PodcastProvider
         void createTables() const;
         void loadPodcasts();
         void updateDatabase( int fromVersion, int toVersion );
+
+        void deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode );
 
         Meta::SqlPodcastChannelList m_channels;
 
