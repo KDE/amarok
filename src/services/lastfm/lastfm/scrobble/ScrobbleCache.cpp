@@ -41,7 +41,9 @@ ScrobbleCache::read()
     m_tracks.clear();
 
     QFile file( m_path );
-    file.open( QFile::Text | QFile::ReadOnly );
+    if ( !file.open( QFile::Text | QFile::ReadOnly ))
+        return;
+
     QTextStream stream( &file );
     stream.setCodec( "UTF-8" );
 
@@ -73,7 +75,8 @@ ScrobbleCache::write()
         xml.appendChild( e );
 
         QFile file( m_path );
-        file.open( QIODevice::WriteOnly | QIODevice::Text );
+        if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ))
+            return;
 
         QTextStream stream( &file );
         stream.setCodec( "UTF-8" );
