@@ -46,13 +46,13 @@ SqlPodcastProvider::SqlPodcastProvider()
     {
         debug() << "creating Podcast Tables";
         createTables();
+        sqlStorage->query( "INSERT INTO admin(component,version) "
+                       "VALUES('" + key + "'," + QString::number( PODCAST_DB_VERSION ) + ");" );
     }
     else
     {
         int version = values.first().toInt();
-        if( version < 3 ) // Versions prior to 3 were broken
-            createTables();
-        else if( version == PODCAST_DB_VERSION )
+        if( version == PODCAST_DB_VERSION )
             loadPodcasts();
         else
             updateDatabase( version /*from*/, PODCAST_DB_VERSION /*to*/ );
@@ -390,9 +390,6 @@ SqlPodcastProvider::createTables() const
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
     sqlStorage->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );" );
-
-    sqlStorage->query( "INSERT INTO admin(component,version) "
-                       "VALUES('" + key + "'," + QString::number( PODCAST_DB_VERSION ) + ");" );
 }
 
 void
@@ -413,9 +410,58 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
         QString setDateQuery = QString( "UPDATE podcastchannels SET subscribedate='%1' WHERE subscribedate='';" ).arg( escape(QDate::currentDate().toString()) );
         sqlStorage->query( setDateQuery );
     }
+    else if ( fromVersion < 3 && toVersion == 3 )
+    {
+        sqlStorage->query( QString( "CREATE TABLE podcastchannels_temp ("
+                    "id " + sqlStorage->idType() +
+                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
+                    ",title " + sqlStorage->textColumnType() +
+                    ",weblink " + sqlStorage->exactTextColumnType() +
+                    ",image " + sqlStorage->exactTextColumnType() +
+                    ",description " + sqlStorage->longTextColumnType() +
+                    ",copyright "  + sqlStorage->textColumnType() +
+                    ",directory "  + sqlStorage->textColumnType() +
+                    ",labels " + sqlStorage->textColumnType() +
+                    ",subscribedate " + sqlStorage->textColumnType() +
+                    ",autoscan BOOL, fetchtype INTEGER"
+                    ",haspurge BOOL, purgecount INTEGER );" ) );
+
+        sqlStorage->query( QString( "CREATE TABLE podcastepisodes_temp ("
+                    "id " + sqlStorage->idType() +
+                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
+                    ",channel INTEGER"
+                    ",localurl " + sqlStorage->exactTextColumnType() +
+                    ",guid " + sqlStorage->exactTextColumnType() +
+                    ",title " + sqlStorage->textColumnType() +
+                    ",subtitle " + sqlStorage->textColumnType() +
+                    ",sequencenumber INTEGER" +
+                    ",description " + sqlStorage->longTextColumnType() +
+                    ",mimetype "  + sqlStorage->textColumnType() +
+                    ",pubdate "  + sqlStorage->textColumnType() +
+                    ",duration INTEGER"
+                    ",filesize INTEGER"
+                    ",isnew BOOL );" ));
+
+        sqlStorage->query( "INSERT INTO podcastchannels_temp SELECT * FROM podcastchannels;" );
+        sqlStorage->query( "INSERT INTO podcastepisodes_temp SELECT * FROM podcastepisodes;" );
+
+        sqlStorage->query( "DROP TABLE podcastchannels;" );
+        sqlStorage->query( "DROP TABLE podcastepisodes;" );
+
+        createTables();
+
+        sqlStorage->query( "INSERT INTO podcastchannels SELECT * FROM podcastchannels_temp;" );
+        sqlStorage->query( "INSERT INTO podcastepisodes SELECT * FROM podcastepisodes_temp;" );
+
+        sqlStorage->query( "DROP TABLE podcastchannels_temp;" );
+        sqlStorage->query( "DROP TABLE podcastepisodes_temp;" );
+    }
+
 
     QString updateAdmin = QString( "UPDATE admin SET version=%1 WHERE component='%2';" );
     sqlStorage->query( updateAdmin.arg( toVersion ).arg( escape(key) ) );
+
+    loadPodcasts();
 }
 
 #include "SqlPodcastProvider.moc"
