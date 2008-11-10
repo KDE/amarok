@@ -207,8 +207,10 @@ QVariant
 CollectionTreeItemModelBase::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+    {
         if (section == 0)
             return m_headerText;
+    }
     return QVariant();
 }
 
