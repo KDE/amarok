@@ -31,6 +31,8 @@ Token::Token( const QString &string, QWidget *parent )
     QLabel *iconContainer = new QLabel( this );
     //m_icon->something to get a pixmap here
     //iconContainer->setPixmap( *m_icon );
+    setContentsMargins( 0, 0, 0, 0 );
+    hlayout->setContentsMargins( 0, 0, 0, 0 );
     hlayout->addWidget( iconContainer );
     hlayout->addWidget( m_label );
     setString( string );
@@ -45,7 +47,6 @@ Token::Token( const QString &string, QWidget *parent )
 
     QFontMetrics metric( font() );
     QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
-    m_label->setMinimumSize( size + QSize( 4, 0 ) );
     QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_label->setSizePolicy( sizePolicy );
     //debug stuff, remove when done:
