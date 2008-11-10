@@ -342,16 +342,19 @@ PodcastReader::commitEpisode()
     DEBUG_BLOCK
     Q_ASSERT( m_current );
     PodcastEpisodePtr item = PodcastEpisodePtr( static_cast<PodcastEpisode *>(m_current) );
+//
+//     PodcastEpisodePtr episodeMatch = podcastEpisodeCheck( item );
+//     if( episodeMatch == item )
+//     {
+//         debug() << "commit episode " << item->title();
+//
+//         Q_ASSERT( m_channel );
+//         //make a copy of the pointer and add that to the channel
+//         m_channel->addEpisode( PodcastEpisodePtr( item ) );
+//     }
 
-    PodcastEpisodePtr episodeMatch = podcastEpisodeCheck( item );
-    if( episodeMatch == item )
-    {
-        debug() << "commit episode " << item->title();
-
-        Q_ASSERT( m_channel );
-        //make a copy of the pointer and add that to the channel
+    if( !m_podcastProvider->possiblyContainsTrack( item->uidUrl() ) )
         m_channel->addEpisode( PodcastEpisodePtr( item ) );
-    }
 
     m_current = static_cast<PodcastMetaCommon *>( m_channel.data() );
 }

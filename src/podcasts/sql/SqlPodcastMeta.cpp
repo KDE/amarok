@@ -255,9 +255,29 @@ Meta::SqlPodcastChannel::deleteFromDb()
 void
 Meta::SqlPodcastChannel::loadEpisodes()
 {
+    m_sqlEpisodes.clear();
+    m_episodes.clear();
+
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QStringList results = sqlStorage->query( QString("SELECT id, url, channel, localurl, guid, title, subtitle, sequencenumber, description, mimetype, pubdate, duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 ORDER BY id;").arg( m_dbId ) );
+    //if purge is enabled is true we limit the number of results
+    QString command;
+    if( hasPurge() )
+    {
+        command = QString( "SELECT id, url, channel, localurl, guid, "
+        "title, subtitle, sequencenumber, description, mimetype, pubdate, "
+        "duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 "
+        "ORDER BY id LIMIT " + QString::number( purgeCount() ) + ";" );
+    }
+    else
+    {
+        command = QString( "SELECT id, url, channel, localurl, guid, "
+            "title, subtitle, sequencenumber, description, mimetype, pubdate, "
+            "duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 "
+            "ORDER BY id;" );
+    }
+
+    QStringList results = sqlStorage->query( command.arg( m_dbId ) );
 
     int rowLength = 14;
     for(int i=0; i < results.size(); i+=rowLength)

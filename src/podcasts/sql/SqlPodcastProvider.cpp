@@ -95,8 +95,12 @@ SqlPodcastProvider::loadPodcasts()
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
-    Q_UNUSED( url );
-    return false;
+    QString command = "SELECT title FROM podcastepisodes WHERE url='%1';";
+    command = command.arg( url.url() );
+
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    QStringList dbResult = sqlStorage->query( command );
+    return !dbResult.isEmpty();
 }
 
 Meta::TrackPtr
@@ -203,23 +207,36 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     DEBUG_BLOCK
     Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
     KUrl oldSaveLocation = sqlChannel->saveLocation();
-    int oldPurgeCount = sqlChannel->hasPurge() ? sqlChannel->purgeCount() : 0;
+    bool oldHasPurge = sqlChannel->hasPurge();
+    int oldPurgeCount = sqlChannel->purgeCount();
 
     PodcastSettingsDialog dialog( channel, The::mainWindow() );
     dialog.configure();
 
     sqlChannel->updateInDb();
 
-    int toPurge = sqlChannel->hasPurge() ? sqlChannel->purgeCount() : 0;
-    if( oldPurgeCount != toPurge && toPurge > 0 )
+    if( sqlChannel->hasPurge() )
     {
-        debug() << "purge to " << toPurge <<" old episodes for " << sqlChannel->title();
-        foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+        int toPurge = sqlChannel->purgeCount();
+        if( !oldHasPurge || oldPurgeCount != toPurge && toPurge > 0 )
         {
-            if( --toPurge < 0 )
-                if( !episode->localUrl().isEmpty() )
-                    deleteDownloadedEpisode( episode );
+            debug() << "purge to " << toPurge <<" newest episodes for " << sqlChannel->title();
+            foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+            {
+                if( --toPurge < 0 )
+                    if( !episode->localUrl().isEmpty() )
+                        deleteDownloadedEpisode( episode );
+            }
+            sqlChannel->loadEpisodes();
+            emit( updated() );
         }
+    }
+    else if( oldHasPurge )
+    {
+        /* changed from purge to no-purge:
+        we need to reload all episodes from the database. */
+        sqlChannel->loadEpisodes();
+        emit( updated() );
     }
 
     if( oldSaveLocation != channel->saveLocation() )
@@ -258,6 +275,7 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode 
 
     episode->setLocalUrl( KUrl() );
     episode->updateInDb();
+    emit( updated() );
 }
 
 Meta::SqlPodcastChannelPtr
