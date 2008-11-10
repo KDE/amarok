@@ -1,0 +1,38 @@
+Type=Plasmoid
+
+[images]
+Path=images
+Name=Images
+Mimetypes=image/svg+xml,image/png,image/jpeg
+Directory=true
+
+[config]
+Path=config/xml
+Name=Configuration Definitions
+Mimetypes=text/xml
+Directory=true
+
+[configui]
+Path=config/ui
+Name=Configuration UI
+Mimetypes=text/xml
+Directory=true
+
+[scripts]
+Path=code
+Name=Executable Scripts
+Mimetypes=text/*
+Directory=true
+
+[mainconfiggui]
+Path=config/ui/main.ui
+Name=Main Config UI File
+
+[mainconfigxml]
+Path=config/ui/main.xml
+Name=Configuration XML File
+
+[mainscript]
+Path=code/main
+Name=Main Script File
+Required=true

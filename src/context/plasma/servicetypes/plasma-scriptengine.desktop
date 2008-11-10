@@ -1,0 +1,65 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=Plasma/ScriptEngine
+
+Comment=Scripting language extension for Plasma
+Comment[be@latin]=Skryptavaja mova dla pašyreńniaŭ „Plasma”
+Comment[bg]=Разширение за Plasma
+Comment[ca]=Extensió de llenguatge d'script pel Plasma
+Comment[cs]=Rozšíření pro skriptovací jazyky Plasma
+Comment[da]=Udvidelse til scripsprog til Plasma
+Comment[de]=Skriptsprachen-Erweiterung für Plasma
+Comment[el]=Επέκταση γλώσσας σεναρίων για το Plasma
+Comment[eo]=Skriptlingva kromprogramo por Plasma
+Comment[es]=Extensión de lenguaje de programación para Plasma
+Comment[et]=Plasma skriptikeele laiend
+Comment[fa]=پسوند زبان اسکریپتی برای پلاسما
+Comment[fi]=Komentojonolaajennus Plasmaa varten
+Comment[fr]=Langage de script pour étendre Plasma
+Comment[fy]=Skript taal taheaksel foar Plasma
+Comment[ga]=Eisínteacht teanga scriptithe le haghaidh Plasma
+Comment[gl]=Extensión de linguaxe de scripting para Plasma
+Comment[gu]=પ્લાઝમા માટે સ્ક્રિપ્ટીંગ ભાષા એક્સટેન્શન
+Comment[he]=הרחבת שפת תסריטים של Plasma
+Comment[hu]=Szkriptnyelv-kiterjesztés a Plasmához
+Comment[is]=Framlenging á skriftunarmál fyrir Plasma
+Comment[it]=Estensione per i linguaggi di script per Plasma
+Comment[ja]=Plasma のためのスクリプト言語拡張
+Comment[kk]=Plasma-ның скрипт тілі
+Comment[km]=ផ្នែក​បន្ថែម​​ភាសា​ស្គ្រីប​សម្រាប់​​ប្លាស្មា
+Comment[kn]=ಪ್ಲಾಸ್ಮಾ ಕ್ಕೆ  ವಿಧಿಗುಚ್ಛ (ಸ್ಕ್ರಿಪ್ಟ್) ರಚನಾ ಭಾಷೆ ಯ ವಿಸ್ತರಣೆ
+Comment[ko]=Plasma를 위한 스크립트 언어 확장
+Comment[lv]=Skriptošanas valodu Plasma paplašinājums
+Comment[ml]=പ്ലാസ്മയ്ക്കുള്ള സ്ക്രിപ്റ്റിങ്ങ് ഭാഷാ സംയോജകം
+Comment[mr]=प्लाज्मा करीता स्क्रिप्टींग भाषा विस्तार
+Comment[nb]=Skriptspråk-utvidelse for Plasma
+Comment[nds]=Skriptspraak-Verwiedern för Plasma
+Comment[ne]=प्लज्माको लागि स्क्रिप्ट भाषा विस्तार
+Comment[nl]=Scripttaalextensie voor Plasma
+Comment[nn]=Skriptspråkutviding for Plasma
+Comment[pa]=ਪਲਾਜ਼ਮਾ ਲਈ ਸਕ੍ਰਿਪਟਿੰਗ ਭਾਸ਼ਾ ਐਕਸ਼ਟੇਸ਼ਨ
+Comment[pl]=Rozszerzenia Plazmy dla języków skryptowych
+Comment[pt]=Extensão de linguagens de programação para o Plasma
+Comment[pt_BR]=Extensão de linguagem de script do Plasma
+Comment[ro]=Extensie limbaj de scriptare pentru Plasma
+Comment[ru]=Расширение языка сценариев для Plasma
+Comment[se]=Skriptagiellaviiddádus Plasmai
+Comment[sl]=Razširitev s skriptnim jezikom za Plasmo
+Comment[sr]=Проширење Плазме за скриптне језике
+Comment[sr@latin]=Proširenje Plasme za skriptne jezike
+Comment[sv]=Skriptspråksutökning för Plasma
+Comment[te]=ప్లాజ్మా కొరకు స్క్రిప్టింగ్ భాష పొడిగింపు
+Comment[th]=ส่วนขยายสำหรับใช้ระบบสคริปต์สำหรับพลาสมา
+Comment[tr]=Plasma için betik dili eklentisi
+Comment[uk]=Розширення скриптових мов для Плазми
+Comment[wa]=Lingaedje di scripe po Plasma
+Comment[x-test]=xxScripting language extension for Plasmaxx
+Comment[zh_CN]=Plasma 的脚本语言扩展
+Comment[zh_TW]=Plasma 文稿語言延伸
+
+[PropertyDef::X-Plasma-ComponentTypes]
+Type=QStringList
+
+[PropertyDef::X-Plasma-PackageFormat]
+Type=QString
+

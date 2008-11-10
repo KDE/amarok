@@ -1,0 +1,35 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=Plasma/Wallpaper
+
+Comment=Plasma wallpaper
+Comment[be@latin]=Špalery „Plasma”
+Comment[el]=Ταπετσαρία plasma
+Comment[et]=Plasma taustapilt
+Comment[ga]=Cúlbhrat Plasma
+Comment[gl]=Fondo de escritorio de Plasma
+Comment[gu]=પ્લાઝમા વોલપેપર
+Comment[he]=רקע של Plasma
+Comment[ja]=Plasma 壁紙
+Comment[kk]=Plasma тұсқағазы
+Comment[km]=ផ្ទាំង​រូបភាព​ប្លាស្មា​
+Comment[kn]=ಪ್ಲಾಸ್ಮಾ ಹಿನ್ನೆಲೆ ತೆರೆಚಿತ್ರ (ವಾಲ್ ಪೇಪರ್)
+Comment[nb]=Plasma tapet
+Comment[nds]=Plasma-Achtergrundbild
+Comment[nn]=Plasmabakgrunn
+Comment[pa]=ਪਲਾਜ਼ਮਾ ਵਾਲਪੇਪਰ
+Comment[pt]=Papel de parede do Plasma
+Comment[pt_BR]=Papel de parede do Plasma
+Comment[ro]=Fundal Plasma
+Comment[ru]=Обои Plasma
+Comment[sl]=Ozadje za Plazmo
+Comment[sv]=Plasma skrivbordsunderlägg
+Comment[te]=ప్లాజ్మా వాల్ పెపర్
+Comment[tr]=Plasma duvar kağıdı
+Comment[uk]=Тло стільниці Плазми
+Comment[x-test]=xxPlasma wallpaperxx
+Comment[zh_TW]=Plasma 桌布
+
+[PropertyDef::X-Plasma-FormFactors]
+Type=QStringList
+

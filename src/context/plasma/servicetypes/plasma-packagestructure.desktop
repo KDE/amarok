@@ -1,0 +1,59 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=Plasma/PackageStructure
+Comment=Plasma package structure definition
+Comment[ca]=Definició de l'estructura d'un paquet Plasma
+Comment[cs]=Definice struktury Plasma balíčku
+Comment[da]=Definition af Plasma-pakkers struktur
+Comment[de]=Plasma-Paket-Struktur-Definition
+Comment[el]=Ορισμός δομής πακέτου του Plasma
+Comment[eo]=Plasma-pakaĵa struktura difino
+Comment[es]=Definición de la estructura del paquete Plasma
+Comment[et]=Plasma paketi struktuuri definitsioon
+Comment[fi]=Plasma-paketin rakenteen määrittely
+Comment[fr]=Définition de la structure d'un paquetage Plasma
+Comment[fy]=Plasma pakket struktuer defenysje
+Comment[ga]=Sainmhíniú ar struchtúr pacáiste Plasma
+Comment[gl]=Definición da estrutura de paquete de Plasma
+Comment[gu]=પ્લાઝમા પેકેજ માળખાંની વ્યાખ્યા
+Comment[hu]=A Plasma csomagstruktúra leírása
+Comment[it]=Definizione della struttura del pacchetto di Plasma
+Comment[kk]=Plasma дестесінің құрамынын анықтауы
+Comment[km]=កា​រកំណត់​រចនាសម្ព័ន្ធ​កញ្ចប់​ប្លាស្មា
+Comment[kn]=ಪ್ಲಾಸ್ಮಾ  ಕಂತೆ (ಪ್ಯಾಕೇಜ್) ರಚನಾ ಲಕ್ಷಣ (ಡೆಫೆನಿಶನ್)
+Comment[ko]=Plasma 패키지 구조 정의
+Comment[lv]=Plasma pakotņu struktūras definīcija
+Comment[ml]=പ്ലാസ്മാ പാക്കേജിന്റെ ഘടനാനിര്‍വചനം
+Comment[mr]=प्लाज्मा संकुल रचना वर्णन
+Comment[nb]=Definisjon av Plasma pakkestruktur
+Comment[nds]=Paketstruktuur-Fastleggen vun Plasma
+Comment[nl]=Plasmapakket-structuurdefinitie
+Comment[nn]=Pakkestrukturdefinisjon for Plasma
+Comment[pa]=ਪਲਾਜ਼ਮਾ ਪੈਕੇਜ ਢਾਂਚਾ ਪਰਿਭਾਸ਼ਾ
+Comment[pl]=Definicja struktury pakietu Plasmy
+Comment[pt]=Definição da estrutura de pacotes do Plasma
+Comment[pt_BR]=Definição da estrutura do pacote Plasma
+Comment[ro]=Definiție de structură a pachetului Plasma
+Comment[ru]=Определение структуры пакета Plasma
+Comment[sl]=Definicija strukture paketa za Plasmo
+Comment[sr]=Дефиниција структуре плазма пакета
+Comment[sr@latin]=Definicija strukture plasma paketa
+Comment[sv]=Strukturdefinition av Plasma-paket
+Comment[te]=ప్లాజ్మా ప్యాకేజ్ ఆకృతి నిర్వచనం
+Comment[th]=ข้อกำหนดโครงสร้างแพ็กเกจของพลาสมา
+Comment[tr]=Plasma paketi yapı tanımlaması
+Comment[uk]=Визначення структури пакунків Плазми
+Comment[x-test]=xxPlasma package structure definitionxx
+Comment[zh_CN]=Plasma 包结构定义
+Comment[zh_TW]=Plasma 套件結構定義
+
+[PropertyDef::X-Plasma-PackageFileFilter]
+Type=QString
+
+[PropertyDef::X-Plasma-PackageFileMimetypes]
+Type=QStringList
+
+[PropertyDef::X-Plasma-ProvidesWidgetBrowser]
+Type=bool
+
+

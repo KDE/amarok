@@ -1,0 +1,32 @@
+This file enumerates which classes and methods needs test. Please feel free to
+add a specific test you'd like to see for a class/method.
+
+// Finished (as in has test for each method)
+package
+packagemetadata
+packagestructure
+
+// No tests written atm.
+abstractrunner
+animator
+appletbrowser
+applet
+configxml
+containment
+corona
+datacontainer
+datacontainer_p
+dataengine
+dataenginemanager
+glapplet
+packages_p
+phase
+plasma_export
+plasma
+scriptengine
+searchaction
+searchcontext
+shadowitem_p
+svg
+theme
+uiloader
