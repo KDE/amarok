@@ -76,6 +76,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     result = db->query( queryString );
 
+    db->query( "CREATE INDEX jamendo_albums_id ON jamendo_albums(id);" );
     db->query( "CREATE INDEX jamendo_albums_name ON jamendo_albums(name);" );
     db->query( "CREATE INDEX jamendo_albums_artist_id ON jamendo_albums(artist_id);" );
 
@@ -93,6 +94,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     result = db->query( queryString );
 
+    db->query( "CREATE INDEX jamendo_artists_id ON jamendo_artists(id);" );
     db->query( "CREATE INDEX jamendo_artists_name ON jamendo_artists(name);" );
 
     //create genre table
@@ -105,6 +107,7 @@ JamendoDatabaseHandler::createDatabase( )
 
     result = db->query( queryString );
 
+    db->query( "CREATE INDEX jamendo_genre_id ON jamendo_genre(id);" );
     db->query( "CREATE INDEX jamendo_genre_name ON jamendo_genre(name);" );
     db->query( "CREATE INDEX jamendo_genre_album_id ON jamendo_genre(album_id);" );
 }
@@ -115,27 +118,25 @@ JamendoDatabaseHandler::destroyDatabase( )
     debug() << "Destroy Jamendo database ";
 
     SqlStorage *db = CollectionManager::instance()->sqlStorage();
-    debug() << "here1";
-    QStringList result = db->query( "DROP TABLE jamendo_tracks;" );
-    debug() << "here1";
+
+    QStringList  result = db->query( "DROP INDEX jamendo_tracks_id ON jamendo_tracks;");
+    result = db->query( "DROP INDEX jamendo_tracks_artist_id ON jamendo_tracks;");
+    result = db->query( "DROP INDEX jamendo_tracks_album_id ON jamendo_tracks;");
+    result = db->query( "DROP INDEX jamendo_albums_id ON jamendo_albums;");
+    result = db->query( "DROP INDEX jamendo_albums_name ON jamendo_albums;");
+    result = db->query( "DROP INDEX jamendo_albums_artist_id ON jamendo_albums;");
+    result = db->query( "DROP INDEX jamendo_artists_id ON jamendo_artists;");
+    result = db->query( "DROP INDEX jamendo_artists_name ON jamendo_artists;");
+    result = db->query( "DROP INDEX jamendo_genre_id ON jamendo_genre;");
+    result = db->query( "DROP INDEX jamendo_genre_album_id ON jamendo_genre;");
+    result = db->query( "DROP INDEX jamendo_genre_name ON jamendo_genre;");
+
+
+    result = db->query( "DROP TABLE jamendo_tracks;" );
     result = db->query( "DROP TABLE jamendo_albums;" );
-    debug() << "here1";
     result = db->query( "DROP TABLE jamendo_artists;" );
-    debug() << "here1";
     result = db->query( "DROP TABLE jamendo_genre;" );
 
-    debug() << "here1";
-
-    result = db->query( "DROP INDEX jamendo_tracks_id;");
-    result = db->query( "DROP INDEX jamendo_tracks_artist_id;");
-    result = db->query( "DROP INDEX jamendo_tracks_album_id;");
-    result = db->query( "DROP INDEX jamendo_album_name;");
-    result = db->query( "DROP INDEX jamendo_album_artist_id;");
-    result = db->query( "DROP INDEX jamendo_artist_name;");
-    result = db->query( "DROP INDEX jamendo_genre_album_id;");
-    result = db->query( "DROP INDEX jamendo_genre_name;");
-
-    debug() << "here2";
     //FIXME: We only support sqlite currently.  DbConnection no longer exists.
 }
 
