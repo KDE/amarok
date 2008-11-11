@@ -130,7 +130,14 @@ set_target_properties(amarokplasma PROPERTIES VERSION 2.0.0 SOVERSION 2
 SET_TARGET_PROPERTIES(amarokplasma PROPERTIES DEFINE_SYMBOL MAKE_PLASMA_LIB )
 install(TARGETS amarokplasma ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
-find_package(Plasma)
+install(FILES
+	servicetypes/amarok_containment.desktop
+	servicetypes/amarok_context_applet.desktop
+	servicetypes/amarok_data_engine.desktop
+	DESTINATION ${SERVICETYPES_INSTALL_DIR}
+)
+
+#find_package(Plasma)
 
 # The following "installation" breaks plasma installations which do not match Amarok's plasma version exactly.
 # Notable side effects include: no desktop background, failure to load data engines etc.
