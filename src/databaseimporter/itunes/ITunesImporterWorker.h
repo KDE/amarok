@@ -1,5 +1,4 @@
 /*******************************************************************************
-* copyright              : (C) 2008 Seb Ruiz <ruiz@kde.org>                    *
 * copyright              : (C) 2008 Leo Franchi <lfranchi@kde.org>             *
 ********************************************************************************/
 
@@ -13,34 +12,47 @@
 ********************************************************************************/
 
 
-#ifndef AMAROK_ITUNES_IMPORTER_H
-#define AMAROK_ITUNES_IMPORTER_H
+#ifndef AMAROK_ITUNES_WORKER_H
+#define AMAROK_ITUNES_WORKER_H
 
 #include "databaseimporter/DatabaseImporter.h"
-#include "ITunesImporterConfig.h"
-#include "ITunesImporterWorker.h"
+#include "meta/Meta.h"
 
-class ITunesImporter : public DatabaseImporter
+#include <threadweaver/Job.h>
+#include <threadweaver/ThreadWeaver.h>
+
+#include <QSqlDatabase>
+#include <QXmlStreamReader>
+
+class ITunesImporterWorker : public ThreadWeaver::Job, public QXmlStreamReader
 {
     Q_OBJECT
-
+    
     public:
-        ITunesImporter( QObject *parent );
-        virtual ~ITunesImporter();
+        ITunesImporterWorker();
 
-        static QString name() { return QString("iTunes"); }
-        
-        virtual DatabaseImporterConfig *configWidget( QWidget *parent );
-        virtual bool canImportArtwork() const { return false; }
-    private slots:
-        void finishUp();
+        void setDatabaseLocation( const QString &location ) { m_databaseLocation = location; }
+      
+        bool failed() const { return m_failed; }
+        void abort() { m_aborted = true; }
 
-    protected:
-        virtual void import();
-        
+        virtual void run();
+
+    signals:
+        void importError( QString ); 
+        void showMessage( QString );
+        void trackAdded( Meta::TrackPtr );
+
     private:
-        ITunesImporterConfig *m_config;
-        ITunesImporterWorker *m_worker;
+        void readUnknownElement();
+        void readTrackElement();
+        
+        bool m_aborted;
+        bool m_failed;
+        
+        QMap<Meta::TrackPtr,QString> m_tracksForInsert;
+        
+        QString m_databaseLocation;
 };
 
 #endif // multiple inclusion guard

@@ -1,5 +1,6 @@
 /*******************************************************************************
 * copyright              : (C) 2008 Seb Ruiz <ruiz@kde.org>                    *
+* copyright              : (C) 2008 Leo Franchi <lfranchi@kde.org>             *
 ********************************************************************************/
 
 /*******************************************************************************
@@ -16,23 +17,77 @@
 
 #include <QLabel>
 
-ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )
-    : DatabaseImporterConfig( parent )
-{
-    new QLabel( i18n("iTunes Library"), this );
-}
-
 ITunesImporter::ITunesImporter( QObject *parent )
     : DatabaseImporter( parent )
+    , m_config( 0 )
+    , m_worker( 0 )
 {
+    DEBUG_BLOCK
 }
 
 ITunesImporter::~ITunesImporter()
+{    
+    DEBUG_BLOCK
+    if( m_worker )
+    {
+        m_worker->abort();
+        //m_worker->deleteLater();
+    }
+}
+
+
+DatabaseImporterConfig*
+ITunesImporter::configWidget( QWidget *parent )
 {
+    DEBUG_BLOCK
+    if( !m_config )
+        m_config = new ITunesImporterConfig( parent );
+    return m_config;
 }
 
 void
 ITunesImporter::import()
 {
     DEBUG_BLOCK
+    // We've already started
+    if( m_worker )
+        return;
+
+    Q_ASSERT( m_config );
+    if( !m_config )
+    {
+        error() << "No configuration exists, bailing out of import";
+        return;
+    }
+    
+    m_worker = new ITunesImporterWorker();
+    m_worker->setDatabaseLocation( m_config->databaseLocation() );
+
+    connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ), 
+             this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL( importError( QString ) ),
+             this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL( done(ThreadWeaver::Job*) ), 
+             this, SLOT( finishUp() ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL( showMessage( QString ) ),
+             this, SIGNAL( showMessage( QString ) ), Qt::QueuedConnection );
+
+    ThreadWeaver::Weaver::instance()->enqueue( m_worker );
+    
 }
+
+
+void
+ITunesImporter::finishUp()
+{
+    DEBUG_BLOCK
+    m_worker->failed() ?
+        emit( importFailed() ) :
+        emit( importSucceeded() );
+    
+    delete m_worker;
+}
+
+
+#include "ITunesImporter.moc"
+

@@ -12,35 +12,32 @@
 *                                                                              *
 ********************************************************************************/
 
+#ifndef AMAROK_ITUNES_IMPORTER_CONFIG_H
+#define AMAROK_ITUNES_IMPORTER_CONFIG_H
 
-#ifndef AMAROK_ITUNES_IMPORTER_H
-#define AMAROK_ITUNES_IMPORTER_H
 
 #include "databaseimporter/DatabaseImporter.h"
-#include "ITunesImporterConfig.h"
-#include "ITunesImporterWorker.h"
 
-class ITunesImporter : public DatabaseImporter
+#include <QCheckBox>
+#include <QLineEdit>
+
+class QComboBox;
+class QLabel;
+
+class ITunesImporterConfig : public DatabaseImporterConfig
 {
     Q_OBJECT
 
     public:
-        ITunesImporter( QObject *parent );
-        virtual ~ITunesImporter();
+        ITunesImporterConfig( QWidget *parent = 0 );
+        virtual ~ITunesImporterConfig() { };
 
-        static QString name() { return QString("iTunes"); }
-        
-        virtual DatabaseImporterConfig *configWidget( QWidget *parent );
-        virtual bool canImportArtwork() const { return false; }
-    private slots:
-        void finishUp();
-
-    protected:
-        virtual void import();
-        
+        QString databaseLocation() const { return m_databaseLocationInput->text(); }
     private:
-        ITunesImporterConfig *m_config;
-        ITunesImporterWorker *m_worker;
+        
+        QLabel    *m_databaseLocationLabel;
+
+        QLineEdit *m_databaseLocationInput;
 };
 
-#endif // multiple inclusion guard
+#endif
