@@ -159,12 +159,17 @@ ScriptableServiceScript::~ScriptableServiceScript()
 
 QScriptValue ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine )
 {
-
+    DEBUG_BLOCK
     QString serviceName = context->argument(0).toString();
     int levels = context->argument(1).toInt32();
     QString shortDescription = context->argument(2).toString();
     QString rootHtml = context->argument(3).toString();
     bool showSearchBar = context->argument(4).toBoolean();
+    if( !ScriptManager::instance()->m_scripts.contains( serviceName ) )
+    {
+        error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
+        return engine->undefinedValue();
+    }
     QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts[serviceName].servicePtr );
     engine->globalObject().setProperty( "ScriptableServiceScript", obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );

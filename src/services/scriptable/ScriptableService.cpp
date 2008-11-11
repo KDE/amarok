@@ -50,6 +50,7 @@ ScriptableService::~ ScriptableService()
 
 void ScriptableService::init( int levels, const QString & rootHtml, bool showSearchBar )
 {
+    DEBUG_BLOCK
     m_levels = levels;
     m_rootHtml = rootHtml;
     setInfoParser( new ScriptableServiceInfoParser() );

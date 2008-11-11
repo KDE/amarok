@@ -19,11 +19,13 @@
 
 #include "ScriptableServiceCollection.h"
 
+#include "Debug.h"
 #include "ScriptableServiceQueryMaker.h"
 
 ScriptableServiceCollection::ScriptableServiceCollection( const QString &name )
     : ServiceCollection( 0, name, name )
 {
+    DEBUG_BLOCK
     m_name = name;
     m_lastFilter = QString();
 }

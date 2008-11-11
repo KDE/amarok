@@ -470,7 +470,6 @@ ScriptManager::slotStopScript( QString name )
         m_scripts[name].info.setPluginEnabled( false );
         m_scripts[name].info.save();
     }
-
     scriptFinished( name );
 }
 
