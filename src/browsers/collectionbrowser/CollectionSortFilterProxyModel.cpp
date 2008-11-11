@@ -18,6 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "amarokconfig.h"
 #include "CollectionSortFilterProxyModel.h"
 #include "CollectionTreeItem.h"
 #include "Debug.h"
@@ -112,6 +113,10 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
     bool ok = true;
     int leftYear = albumYear( leftAlbum, &ok );
     int rightYear = 0;
+
+    if( !AmarokConfig::showYears() )
+        ok = false;
+    
     if( ok )
         rightYear = albumYear( rightAlbum, &ok );
 

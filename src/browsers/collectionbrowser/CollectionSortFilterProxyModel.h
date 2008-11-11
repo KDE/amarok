@@ -21,9 +21,9 @@
 #ifndef COLLECTIONSORTFILTERPROXYMODEL_H
 #define COLLECTIONSORTFILTERPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
-
 #include "meta/Meta.h"
+
+#include <QSortFilterProxyModel>
 
 /**
     This is a custom QSortFilterProxyModel that solves some issues with sorting a model that usses lazy loading
