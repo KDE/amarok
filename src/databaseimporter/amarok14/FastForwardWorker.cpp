@@ -88,7 +88,7 @@ FastForwardWorker::run()
     QString sql;
     sql += "SELECT lastmountpoint, S.url, createdate, accessdate, percentage, rating, playcounter, lyrics ";
     sql += "FROM statistics S ";
-    sql += "INNER JOIN devices D ";
+    sql += "LEFT OUTER JOIN devices D ";
     sql += "  ON S.deviceid = D.id ";
     sql += "LEFT OUTER JOIN lyrics L ";
     sql += "  ON L.deviceid = S.deviceid ";
@@ -115,7 +115,7 @@ FastForwardWorker::run()
         int playCount    = query.value( index++ ).toInt();
         QString lyrics   = query.value( index++ ).toString();
         
-        // make the url absolute
+        // remove the relative part of the url, and make the url absolute
         url = mount + url.mid(1);
 
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
