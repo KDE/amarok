@@ -5,10 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.0-rc1
   FEATURES:
-    * Apple iTunes media library importer.
+    * Importer for iTunes libraries now allows you to import your statistics
+      from iTunes.
     * The settings dialog now remembers the page that was last used.
     * Track information can be edited from the file browser. (BR 172812)
-    * Importer for iTunes libraries now allows you to import your statistics from iTunes.
 
   CHANGES:
     * Amarok now allows to open video files again. (BR 174267)
@@ -16,6 +16,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Amarok 1.4 database importer would skip tracks in some collections.
+      (BR 174329) (BR 174444)
     * OSD renders correctly on track changes.
     * Podcasts are correctly stored to the database. (BR 172688)
     * Lyrics aren't refetched when irrelevant track metadata is changed.
