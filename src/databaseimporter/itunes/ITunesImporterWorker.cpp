@@ -146,6 +146,9 @@ ITunesImporterWorker::run()
 
     while( !atEnd() )
     {
+        if( m_aborted )
+            return;
+
         readNext();
          
         if ( name() == "key" && readElementText() == "Tracks" ) // ok, we're at the start
@@ -156,6 +159,9 @@ ITunesImporterWorker::run()
             debug() << "got start of tracks";
             while( !atEnd() )
             {
+                if( m_aborted )
+                    return;
+
                 //debug() << "reading element name:" << name().toString();
                 if( isStartElement() && name() == "dict") // this is a track item!
                 {
