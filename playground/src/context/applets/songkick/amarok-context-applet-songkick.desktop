@@ -2,9 +2,11 @@
 Name=Songkick Concert Information
 Name[de]=Songkick-Konzertinformationen
 Name[el]=Πληροφορίες συναυλιών Songkick
+Name[nds]=Songkick-Konzertinformatschoon
 Name[pt]=Informação do Concerto Songkick
 Name[pt_BR]=Informação do Concerto Songkick
 Name[sv]=Konsertinformation från Songkick
+Name[uk]=Відомості про концерти з Songkick
 Type=Service
 ServiceTypes=Plasma/Applet
 
