@@ -125,7 +125,10 @@ JamendoService::polish()
 
     connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
-    QAction *action = new QAction( i18n("Artist"), m_menubar );
+
+    //disabling the first 3 options for now as they cause all sorts of havoc with the mysql db. (BR 174851)
+    
+    /*QAction *action = new QAction( i18n("Artist"), m_menubar );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
     m_filterMenu->addAction( action );
 
@@ -135,9 +138,9 @@ JamendoService::polish()
 
     action = new QAction( i18n( "Album" ), m_menubar );
     connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
-    m_filterMenu->addAction( action );
+    m_filterMenu->addAction( action );*/
 
-    action = new QAction( i18n( "Genre / Artist" ), m_menubar );
+    QAction *action = new QAction( i18n( "Genre / Artist" ), m_menubar );
     connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
     m_filterMenu->addAction( action );
 
