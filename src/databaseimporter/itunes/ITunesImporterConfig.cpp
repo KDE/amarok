@@ -25,6 +25,10 @@
 #include <QLineEdit>
 #include <QSqlDatabase>
 
+#ifdef Q_WS_WIN
+#include <shlobj.h>
+#endif
+
 ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )
     : DatabaseImporterConfig( parent )
 {
@@ -39,8 +43,10 @@ ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )
     m_databaseLocationInput->setCompleter( completer );
 #ifdef Q_WS_MAC
     m_databaseLocationInput->setText( QDir::homePath() + "/Music/iTunes/iTunes Music Library.xml" );
-#elif Q_WS_WIN
-    m_databaseLocationInput->setText( QString::toNativeSeparators( QDir::homePath() + "/My Documents/My Music/iTunes/iTunes Music Library.xml" ) );
+#elif defined(Q_WS_WIN)
+    TCHAR szPath[MAX_PATH];
+    SHGetFolderPath(NULL, CSIDL_MYMUSIC, NULL, 0, szPath);
+    m_databaseLocationInput->setText( QDir::toNativeSeparators( QString::fromLatin1(szPath) + "/iTunes/iTunes Music Library.xml" ) );
 #endif
     databaseLayout->addWidget( m_databaseLocationLabel, 5, 0 );
     databaseLayout->addWidget( m_databaseLocationInput, 5, 1 );
