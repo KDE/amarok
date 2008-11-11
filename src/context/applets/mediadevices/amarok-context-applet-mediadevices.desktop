@@ -24,7 +24,7 @@ Name[uk]=Медіа-пристрої
 Name[x-test]=xxMedia Devicesxx
 Name[zh_CN]=媒体设备
 Type=Service
-ServiceTypes=Plasma/Applet
+ServiceTypes=AmarokContext/Applet
 
 X-KDE-Library=amarok_context_applet_mediadevices
 X-KDE-PluginInfo-Author=Alejandro Wainzinger

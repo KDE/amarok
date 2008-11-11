@@ -823,7 +823,7 @@ KPluginInfo::List Containment::listContainments(const QString &category,
         }
     }
 
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Containment", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Containment", constraint);
     //kDebug() << "constraint was" << constraint << "which got us" << offers.count() << "matches";
     return KPluginInfo::fromServices(offers);
 }
@@ -832,7 +832,7 @@ KPluginInfo::List Containment::listContainmentsForMimetype(const QString &mimety
 {
     QString constraint = QString("'%1' in [X-Plasma-DropMimeTypes]").arg(mimetype);
     //kDebug() << mimetype << constraint;
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Containment", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Containment", constraint);
     return KPluginInfo::fromServices(offers);
 }
 

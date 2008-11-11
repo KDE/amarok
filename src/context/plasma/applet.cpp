@@ -606,7 +606,7 @@ QString Applet::category(const QString &appletName)
     }
 
     QString constraint = QString("[X-KDE-PluginInfo-Name] == '%1'").arg(appletName);
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Applet", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Applet", constraint);
 
     if (offers.isEmpty()) {
         return QString();
@@ -1371,7 +1371,7 @@ KPluginInfo::List Applet::listAppletInfo(const QString &category,
         }
     }
 
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Applet", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Applet", constraint);
     //kDebug() << "Applet::listAppletInfo constraint was '" << constraint
     //         << "' which got us " << offers.count() << " matches";
     return KPluginInfo::fromServices(offers);
@@ -1381,7 +1381,7 @@ KPluginInfo::List Applet::listAppletInfoForMimetype(const QString &mimetype)
 {
     QString constraint = QString("'%1' in [X-Plasma-DropMimeTypes]").arg(mimetype);
     //kDebug() << "listAppletInfoForMimetype with" << mimetype << constraint;
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Applet", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Applet", constraint);
     return KPluginInfo::fromServices(offers);
 }
 
@@ -1395,7 +1395,7 @@ QStringList Applet::listCategories(const QString &parentApp, bool visibleOnly)
         constraint.append(" and [X-KDE-ParentApp] == '").append(parentApp).append("'");
     }
 
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Applet", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Applet", constraint);
     QStringList categories;
     foreach (const KService::Ptr &applet, offers) {
         QString appletCategory = applet->property("X-KDE-PluginInfo-Category").toString();
@@ -1425,13 +1425,13 @@ Applet *Applet::load(const QString &appletName, uint appletId, const QVariantLis
     }
 
     QString constraint = QString("[X-KDE-PluginInfo-Name] == '%1'").arg(appletName);
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Applet", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Applet", constraint);
 
     bool isContainment = false;
     if (offers.isEmpty()) {
         //TODO: what would be -really- cool is offer to try and download the applet
         //      from the network at this point
-        offers = KServiceTypeTrader::self()->query("Plasma/Containment", constraint);
+        offers = KServiceTypeTrader::self()->query("AmarokContext/Containment", constraint);
         isContainment = true;
         if (offers.isEmpty()) {
             kDebug() << "offers is empty for " << appletName;

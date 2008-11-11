@@ -63,7 +63,7 @@ void PackageMetadataTest::read()
 
     QCOMPARE(pm->name(), QString("Package metadata test file"));
     QCOMPARE(pm->description(), QString("A test desktop file to test the PackageMetaData class."));
-    QCOMPARE(pm->serviceType(), QString("Plasma/Applet"));
+    QCOMPARE(pm->serviceType(), QString("AmarokContext/Applet"));
     QCOMPARE(pm->author(), QString("Bertjan Broeksema"));
     QCOMPARE(pm->email(), QString("b.broeksema@kdemail.net"));
     QCOMPARE(pm->version(), QString("pre0.1"));
@@ -78,7 +78,7 @@ void PackageMetadataTest::write()
 {
     pm->setName(QString("Package metadata test file copy"));
     pm->setDescription(QString("Some other fancy test description"));
-    pm->setServiceType(QString("Plasma/Applet"));
+    pm->setServiceType(QString("AmarokContext/Applet"));
     pm->setAuthor(QString("Bertjan Broeksema"));
     pm->setEmail(QString("b.broeksema@kdemail.net"));
     pm->setVersion(QString("pre0.1"));
@@ -94,7 +94,7 @@ void PackageMetadataTest::write()
 
     QCOMPARE(pm->name(), QString("Package metadata test file copy"));
     QCOMPARE(pm->description(), QString("Some other fancy test description"));
-    QCOMPARE(pm->serviceType(), QString("Plasma/Applet"));
+    QCOMPARE(pm->serviceType(), QString("AmarokContext/Applet"));
     QCOMPARE(pm->author(), QString("Bertjan Broeksema"));
     QCOMPARE(pm->email(), QString("b.broeksema@kdemail.net"));
     QCOMPARE(pm->version(), QString("pre0.1"));

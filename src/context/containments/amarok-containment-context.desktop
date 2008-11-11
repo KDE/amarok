@@ -58,7 +58,7 @@ Comment[x-test]=xxA containment for the Amarok Contextxx
 Comment[zh_CN]=Amarok 上下文容器
 Icon=
 Type=Service
-ServiceTypes=Plasma/Applet,Plasma/Containment
+ServiceTypes=AmarokContext/Applet,AmarokContext/Containment
 
 X-KDE-Library=amarok_containment_context
 X-KDE-PluginInfo-Author=Leo Franchi

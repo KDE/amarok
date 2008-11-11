@@ -33,7 +33,7 @@ Name[uk]=Події Last.Fm
 Name[x-test]=xxLast.Fm Eventsxx
 Name[zh_CN]=Last.Fm 事件
 Type=Service
-ServiceTypes=Plasma/Applet
+ServiceTypes=AmarokContext/Applet
 
 X-KDE-Library=amarok_context_applet_lastfmevents
 X-KDE-PluginInfo-Author=Leo Franchi

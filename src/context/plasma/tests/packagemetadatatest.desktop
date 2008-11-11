@@ -96,7 +96,7 @@ Comment[zh_TW]=測試 PackageMetaData 類別的桌面檔
 
 Icon=test
 Type=Service
-X-KDE-ServiceTypes=Plasma/Applet
+X-KDE-ServiceTypes=AmarokContext/Applet
 
 X-KDE-Screenshot=a_not_default_file.svg
 X-KDE-Library=some_test_library

@@ -30,7 +30,7 @@ Name[uk]=Інформація про список композицій
 Name[x-test]=xxPlaylist Informationxx
 Name[zh_CN]=播放列表信息
 Type=Service
-ServiceTypes=Plasma/Applet
+ServiceTypes=AmarokContext/Applet
 
 X-KDE-Library=amarok_context_applet_playlistinfo
 X-KDE-PluginInfo-Author=Jeff Mitchell

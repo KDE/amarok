@@ -701,7 +701,7 @@ void AnimatorPrivate::init(Animator *q)
 
     if (!pluginName.isEmpty()) {
         QString constraint = QString("[X-KDE-PluginInfo-Name] == '%1'").arg(pluginName);
-        KService::List offers = KServiceTypeTrader::self()->query("Plasma/Animator", constraint);
+        KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Animator", constraint);
 
         if (!offers.isEmpty()) {
             QString error;

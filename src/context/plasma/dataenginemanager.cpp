@@ -118,7 +118,7 @@ Plasma::DataEngine *DataEngineManager::loadEngine(const QString &name)
 
     // load the engine, add it to the engines
     QString constraint = QString("[X-KDE-PluginInfo-Name] == '%1'").arg(name);
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/DataEngine",
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/DataEngine",
                                                               constraint);
     QString error;
 
@@ -168,7 +168,7 @@ void DataEngineManager::unloadEngine(const QString &name)
 QStringList DataEngineManager::listAllEngines()
 {
     QStringList engines;
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/DataEngine");
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/DataEngine");
     foreach (const KService::Ptr &service, offers) {
         QString name = service->property("X-KDE-PluginInfo-Name").toString();
         if (!name.isEmpty()) {

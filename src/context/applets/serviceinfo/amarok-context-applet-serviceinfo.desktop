@@ -31,7 +31,7 @@ Name[uk]=Інформація про службу
 Name[x-test]=xxService Infoxx
 Name[zh_CN]=服务信息
 Type=Service
-ServiceTypes=Plasma/Applet
+ServiceTypes=AmarokContext/Applet
 
 X-KDE-Library=amarok_context_applet_serviceinfo
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
