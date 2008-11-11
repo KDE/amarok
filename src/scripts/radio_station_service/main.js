@@ -39,11 +39,8 @@ var stationArray = new Array (
     new Station( "Digitally Imported - Classic Techno [Techno]",        "http://di.fm/mp3/classictechno.pls" ),
     new Station( "Digitally Imported - Trance [Trance]",                "http://di.fm/mp3/trance.pls" ),
     new Station( "Electronic Culture [Minimal Techno]",                 "http://www.shouted.fm/tunein/electro-dsl.m3u" ),
+    new Station( "Evolved.fm [Techno/Trance]",                          "http://206.19.69.69:443/listen.pls" ),
     new Station( "Frequence 3 [Pop]",                                   "http://streams.frequence3.net/hd-mp3.m3u" ),
-    new Station( "Groove Salad [Chill-Out]",                            "http://www.somafm.com/groovesalad.pls" ),
-    new Station( "Drone Zone [Ambient]",                                "http://somafm.com/dronezone.pls" ),
-    new Station( "Tags Trance Trip [Trance]",                           "http://somafm.com/tagstrance.pls" ),
-    new Station( "Indie Pop Rocks [Indie]",                             "http://www.somafm.com/indiepop.pls" ),
     new Station( "Kohina [Computer-Music]",                             "http://la.campus.ltu.se:8000/stream.ogg.m3u" ),
     new Station( "Mostly Classical [Classical]",                        "http://www.sky.fm/mp3/classical.pls" ),
     new Station( "MTH.House [House]",                                   "http://stream.mth-house.de:8500/listen.pls" ),
@@ -54,10 +51,13 @@ var stationArray = new Array (
     new Station( "Radio.BMJ.net [Trance/Livesets]",                     "http://radio.bmj.net:8000/listen.pls" ),
     new Station( "Radio Paradise [Rock/Pop/Alternative]",               "http://www.radioparadise.com/musiclinks/rp_128.m3u" ),
     new Station( "Raggakings [Reggae]",                                 "http://www.raggakings.net/listen.m3u" ),
-    new Station( "Secret Agent [Downtempo/Lounge]",                     "http://somafm.com/secretagent.pls" ),
     new Station( "SLAY Radio [C64 Remixes]",                            "http://www.slayradio.org/tune_in.php/128kbps/listen.m3u" ),
-    new Station( "Virgin Radio [Rock/Pop]",                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb" ),
-    new Station( "X T C Radio [Techno/Trance]",                         "http://206.19.69.69:443/listen.pls" )
+    new Station( "SomaFM - Drone Zone [Ambient]",                       "http://somafm.com/dronezone.pls" ),
+    new Station( "SomaFM - Groove Salad [Chill-Out]",                   "http://somafm.com/groovesalad.pls" ),
+    new Station( "SomaFM - Indie Pop Rocks [Indie]",                    "http://somafm.com/indiepop.pls" ),
+    new Station( "SomaFM - Secret Agent [Downtempo/Lounge]",            "http://somafm.com/secretagent.pls" ),
+    new Station( "SomaFM - Tags Trance Trip [Trance]",                  "http://somafm.com/tagstrance.pls" ),
+    new Station( "Virgin Radio [Rock/Pop]",                             "http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb" )
 );
 
 function CoolStream()
