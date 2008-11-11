@@ -441,7 +441,9 @@ set(amaroklib_LIB_SRCS
     databaseimporter/amarok14/FastForwardImporter.cpp
     databaseimporter/amarok14/FastForwardImporterConfig.cpp
     databaseimporter/amarok14/FastForwardWorker.cpp
+    databaseimporter/itunes/ITunesImporterConfig.cpp
     databaseimporter/itunes/ITunesImporter.cpp
+    databaseimporter/itunes/ITunesImporterWorker.cpp
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
