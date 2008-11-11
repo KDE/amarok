@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-rc1
   FEATURES:
+    * Apple iTunes media library importer.
     * The settings dialog now remembers the page that was last used.
     * Track information can be edited from the file browser. (BR 172812)
     * Importer for iTunes libraries now allows you to import your statistics from iTunes.
