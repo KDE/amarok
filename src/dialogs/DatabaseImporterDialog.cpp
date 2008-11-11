@@ -53,7 +53,7 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     QRadioButton *rhythmbox = new QRadioButton( i18n("Rythmbox"), importerBox );
 
     amarok->setChecked( true );
-    itunes->setEnabled( false );
+    itunes->setEnabled( true );
     banshee->setEnabled( false );
     rhythmbox->setEnabled( false );
 
