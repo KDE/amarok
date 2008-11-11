@@ -142,39 +142,38 @@ ITunesImporterWorker::run()
     file->open( QIODevice::ReadOnly );
     setDevice( file );
   
-     //debug() << "got element:" << name().toString();
+    //debug() << "got element:" << name().toString();
 
-     while( !atEnd() )
-     {     
-         readNext();
+    while( !atEnd() )
+    {
+        readNext();
          
-         if ( name() == "key" && readElementText() == "Tracks" ) // ok, we're at the start
-         {  
-             readNext();
-             readNext();
-             readNext(); // this skips the first all-encompassing <dict> tag 
-             debug() << "got start of tracks";
-             while( !atEnd() )
-             {
-                 //debug() << "reading element name:" << name().toString();
-                 if( isStartElement() && name() == "dict") // this is a track item!
-                 {
-                     readTrackElement();
-                 }
-                 readNext();
-             }
-         }
-     }
+        if ( name() == "key" && readElementText() == "Tracks" ) // ok, we're at the start
+        {  
+            readNext();
+            readNext();
+            readNext(); // this skips the first all-encompassing <dict> tag 
+            debug() << "got start of tracks";
+            while( !atEnd() )
+            {
+                //debug() << "reading element name:" << name().toString();
+                if( isStartElement() && name() == "dict") // this is a track item!
+                {
+                    readTrackElement();
+                }
+                readNext();
+            }
+        }
+    }
 
-     if( m_tracksForInsert.size() > 0 )
-     {
-         CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
-         location->insertTracks( m_tracksForInsert );
-         location->insertStatistics( m_tracksForInsert );
-     }
+    if( m_tracksForInsert.size() > 0 )
+    {
+        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        location->insertTracks( m_tracksForInsert );
+        location->insertStatistics( m_tracksForInsert );
+    }
      
     debug() << "done importing xml file";
-    
 }
 
 
