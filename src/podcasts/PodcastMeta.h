@@ -25,12 +25,12 @@
 #include <kurl.h>
 #include <KLocale>
 
+#include <QDate>
 #include <QSharedData>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
 
-class QDate;
 
 namespace Meta
 {
