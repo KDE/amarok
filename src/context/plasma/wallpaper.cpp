@@ -76,7 +76,7 @@ KPluginInfo::List Wallpaper::listWallpaperInfo(const QString &formFactor)
         constraint.append("[X-Plasma-FormFactors] ~~ '").append(formFactor).append("'");
     }
 
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Wallpaper", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Wallpaper", constraint);
     return KPluginInfo::fromServices(offers);
 }
 
@@ -87,7 +87,7 @@ Wallpaper *Wallpaper::load(const QString &wallpaperName, const QVariantList &arg
     }
 
     QString constraint = QString("[X-KDE-PluginInfo-Name] == '%1'").arg(wallpaperName);
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Wallpaper", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query("AmarokContext/Wallpaper", constraint);
 
     if (offers.isEmpty()) {
         kDebug() << "offers is empty for " << wallpaperName;
