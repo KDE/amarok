@@ -56,9 +56,12 @@ class FilenameLayoutWidget
         QPoint m_startPos;              //needed for initiating the drag
         unsigned int m_tokenCount;
         QString m_parsableScheme;       //a string that TagGuesser will be able to use
+        void removeAllTokens();
 
     public slots:
         void addToken( QString text, int index = 0);    //this one needs to be a SLOT, connects to TokenListWidget::onDoubleClick.
+        void inferScheme( QString scheme );
+        
     signals:
         void schemeChanged();
 };

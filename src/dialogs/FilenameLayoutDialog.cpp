@@ -26,16 +26,18 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeCollection )
+FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOC )
     : QWidget( parent )
 {
     setupUi( this );
     optionsFrame->hide();
 
+    isOrganizeCollection = isOC;
     caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
+    syntaxLabel->setWordWrap( true );
     QString * hintImagePath = new QString( KStandardDirs::locate( "data", "amarok/images/FilenameLayoutDialogHint.png" ) );
     QPixmap * hintImage = new QPixmap( *hintImagePath );
     hintPicture->setPixmap( *hintImage );
@@ -47,9 +49,11 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     connect( tokenPool, SIGNAL( onDoubleClick( QString ) ),
              filenameLayout, SLOT( addToken( QString ) ) );
     connect( kpbAdvanced, SIGNAL( clicked() ),
-             this, SLOT( toAdvancedMode() ) );
-    connect( filenameLayout, SIGNAL( schemeChanged() ), this, SIGNAL( schemeChanged() ) );
-    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ), this, SIGNAL( schemeChanged() ) );
+             this, SLOT( toggleAdvancedMode() ) );
+    connect( filenameLayout, SIGNAL( schemeChanged() ),
+             this, SIGNAL( schemeChanged() ) );
+    connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
+             this, SIGNAL( schemeChanged() ) );
 
     //KConfig stuff:
     int caseOptions = Amarok::config( "TagGuesser" ).readEntry( "Case options" ).toInt();
@@ -85,13 +89,16 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Album" ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Comment" ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Genre" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( " _ ") ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( " - " ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "_") ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "-" ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "." ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), QString("<space>") ) );
     if( isOrganizeCollection == 0 )
     {
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Ignore field" ) ) );
+        syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
+                                    "The following tokens can be used to define a filename scheme: \
+                                     <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %ignore." ) );
     }
     else
     {
@@ -100,7 +107,38 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Collection root" ) ) );
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "File type" ) ) );
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Disc number" ) ) );
+        syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
+                                    "The following tokens can be used to define a filename scheme: \
+                                     <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
     }
+    if( isOrganizeCollection )
+    {
+        if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Advanced" )
+        {
+            toAdvancedMode();
+            filenameLayoutEdit->setText( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
+        }
+        else if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Basic" )
+        {
+            toBasicMode();
+            filenameLayout->inferScheme( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
+        }
+    }
+    else
+    {
+        if( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Mode" ) == "Advanced" )
+        {
+            toAdvancedMode();
+            filenameLayoutEdit->setText( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
+        }
+        else if( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Mode" ) == "Basic" )
+        {
+            toBasicMode();
+            filenameLayout->inferScheme( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
+        }
+
+    }
+
 }
 
 //Stores the configuration when the dialog is accepted.
@@ -116,10 +154,17 @@ FilenameLayoutDialog::onAccept()    //SLOT
 QString
 FilenameLayoutDialog::getParsableScheme()
 {
+    QString category;
+    if( isOrganizeCollection )
+        category = "OrganizeCollectionDialog";
+    else
+        category = "FilenameLayoutDialog";
     if( kpbAdvanced->text() == i18n( "&Basic..." ) )
     {
+        Amarok::config( category ).writeEntry( "Scheme", filenameLayoutEdit->text() );
         return filenameLayoutEdit->text();
     }
+    Amarok::config( category ).writeEntry( "Scheme", filenameLayout->getParsableScheme() );
     return filenameLayout->getParsableScheme();
 }
 
@@ -190,27 +235,50 @@ FilenameLayoutDialog::getUnderscoreOptions()
 
 //Handles the modifications to the dialog to toggle between advanced and basic editing mode.
 void
-FilenameLayoutDialog::toAdvancedMode()
+FilenameLayoutDialog::toggleAdvancedMode()
 {
+    debug()<<"pressed";
     if( kpbAdvanced->text() == i18n( "&Advanced..." ) )     //is this a good idea?
     {
-        kpbAdvanced->setText( i18n( "&Basic..." ) );
-        filenameLayout->hide();
-        filenameLayoutEdit->show();
-        filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
-        tokenPool->hide();
-        hintPicture->hide();
-        syntaxLabel->show();
+        toAdvancedMode();
     }
     else
     {
-        kpbAdvanced->setText( i18n( "&Advanced..." ) );
-        filenameLayoutEdit->hide();
-        syntaxLabel->hide();
-        filenameLayout->show();
-        tokenPool->show();
-        hintPicture->show();
+        toBasicMode();
     }
+}
+
+//handles switching between basic and advanced mode
+void
+FilenameLayoutDialog::toAdvancedMode()
+{
+    kpbAdvanced->setText( i18n( "&Basic..." ) );
+    filenameLayout->hide();
+    filenameLayoutEdit->show();
+    filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
+    tokenPool->hide();
+    hintPicture->hide();
+    syntaxLabel->show();
+    if( isOrganizeCollection )
+        Amarok::config( "OrganizeCollectionDialog").writeEntry( "Mode", "Advanced" );
+    else
+        Amarok::config( "FilenameLayoutDialog" ).writeEntry( "Mode", "Advanced" );
+}
+
+void
+FilenameLayoutDialog::toBasicMode()
+{
+    kpbAdvanced->setText( i18n( "&Advanced..." ) );
+    filenameLayoutEdit->hide();
+    syntaxLabel->hide();
+    filenameLayout->show();
+    filenameLayout->inferScheme( filenameLayoutEdit->text() );
+    tokenPool->show();
+    hintPicture->show();
+    if( isOrganizeCollection )
+        Amarok::config( "OrganizeCollectionDialog" ).writeEntry( "Mode", "Basic" );
+    else
+        Amarok::config( "FilenameLayoutDialog" ).writeEntry( "Mode", "Basic" );
 }
 
 

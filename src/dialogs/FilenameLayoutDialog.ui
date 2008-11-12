@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>642</width>
+    <width>692</width>
     <height>733</height>
    </rect>
   </property>
@@ -31,6 +31,12 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>682</width>
+         <height>100</height>
+        </size>
        </property>
        <property name="maximumSize" >
         <size>
@@ -89,7 +95,7 @@
        </property>
        <property name="minimumSize" >
         <size>
-         <width>0</width>
+         <width>682</width>
          <height>44</height>
         </size>
        </property>
@@ -107,15 +113,15 @@
      <item>
       <widget class="QLabel" name="syntaxLabel" >
        <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize" >
         <size>
-         <width>0</width>
-         <height>144</height>
+         <width>682</width>
+         <height>152</height>
         </size>
        </property>
        <property name="maximumSize" >
@@ -160,7 +166,11 @@
         </widget>
        </item>
        <item>
-        <widget class="KLineEdit" name="filenameLayoutEdit" />
+        <widget class="KLineEdit" name="filenameLayoutEdit" >
+         <property name="showClearButton" stdset="0" >
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="KPushButton" name="kpbAdvanced" >

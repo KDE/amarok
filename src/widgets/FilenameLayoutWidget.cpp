@@ -397,5 +397,71 @@ FilenameLayoutWidget::getParsableScheme()
     return m_parsableScheme;
 }
 
+//tries to populate the widget with tokens according to a string
+void
+FilenameLayoutWidget::inferScheme( const QString s ) //SLOT
+{
+    removeAllTokens();
+    for( int i(0); i < s.size(); )
+    {
+        if( s.at(i) == '%')
+        {
+            if( s.mid( i, 6 ) == "%title" )
+                addToken( "Title" );
+            if( s.mid( i, 6 ) == "%track" )
+                addToken( "Track" );
+            if( s.mid( i, 7 ) == "%artist" )
+                addToken( "Artist" );
+            if( s.mid( i, 9 ) == "%composer" )
+                addToken( "Composer" );
+            if( s.mid( i, 5 ) == "%year" )
+                addToken( "Year" );
+            if( s.mid( i, 6 ) == "%album" )
+                addToken( "Album" );
+            if( s.mid( i, 8 ) == "%comment" )
+                addToken( "Comment" );
+            if( s.mid( i, 6 ) == "%genre" )
+                addToken( "Genre" );
+            if( s.mid( i, 9 ) == "%filetype" )
+                addToken( "File type" );
+            if( s.mid( i, 7 ) == "%ignore" )
+                addToken( "Ignore" );
+            if( s.mid( i, 7 ) == "%folder" )
+                addToken( "Collection root" );
+            if( s.mid( i, 8 ) == "%initial" )
+                addToken( "Artist initial" );
+            if( s.mid( i, 11 ) == "%discnumber" )
+                addToken( "Disc number" );
+            i+=5;
+            
+        }
+        else
+        {
+            if( s.at(i) == '_' )
+                this->addToken( "_" );
+            else if( s.at(i) == '-' )
+                addToken( "-" );
+            else if( s.at(i) == '.' )
+                addToken( "." );
+            else if( s.at(i) == ' ' )
+                addToken( "<space>");
+            else
+                debug()<<"This can't be represented as FilenameLayoutWidget Token";
+            i++;
+        }
+    }
+}
 
+void
+FilenameLayoutWidget::removeAllTokens()
+{
+    m_tokenCount = 0;
+    foreach(Token *temp, *tokenList)
+    {
+        delete temp;
+    }
+    tokenList->clear();
+    backText->show();
+    emit schemeChanged();
+}
 
