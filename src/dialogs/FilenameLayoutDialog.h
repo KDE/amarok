@@ -30,7 +30,7 @@ class FilenameLayoutDialog
     Q_OBJECT
 
     public:
-        AMAROK_EXPORT FilenameLayoutDialog( QWidget *parent = 0, bool isOC = 0 );  //could I have exported the whole class? I don't see how
+        AMAROK_EXPORT FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 );  //could I have exported the whole class? I don't see how
         AMAROK_EXPORT QString getParsableScheme();
         int getCaseOptions();
         int getWhitespaceOptions();
@@ -40,7 +40,7 @@ class FilenameLayoutDialog
         QList< QRadioButton * > caseEditRadioButtons;
         void toBasicMode();
         void toAdvancedMode();
-        bool isOrganizeCollection;
+        bool m_isOrganizeCollection;
 
     private slots:
         void editStateEnable( bool checked );

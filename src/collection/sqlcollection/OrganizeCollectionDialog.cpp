@@ -79,7 +79,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
     ui->verticalLayout->insertWidget( 4, filenameLayoutDialog );
      filenameLayoutDialog->show();
-        filenameLayoutDialog->setEnabled( false );
+        filenameLayoutDialog->setVisible( false );
     ui->ignoreTheCheck->show();
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
@@ -110,7 +110,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
-    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setEnabled( bool ) ) );
+    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setVisible( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),

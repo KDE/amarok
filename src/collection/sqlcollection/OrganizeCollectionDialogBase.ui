@@ -81,6 +81,16 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout" >
       <item>
+       <widget class="QCheckBox" name="customschemeCheck" >
+        <property name="toolTip" >
+         <string>If checked, use a custom format string for naming the files in the collection</string>
+        </property>
+        <property name="text" >
+         <string>Custo&amp;m Format</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="filetypeCheck" >
         <property name="toolTip" >
          <string>If checked, create a directory hierarchy using the filename extension.</string>
@@ -97,16 +107,6 @@
         </property>
         <property name="text" >
          <string>Group &amp;by Artist's Initial</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="customschemeCheck" >
-        <property name="toolTip" >
-         <string>If checked, use a custom format string for naming the files in the collection</string>
-        </property>
-        <property name="text" >
-         <string>Custo&amp;m Format</string>
         </property>
        </widget>
       </item>
@@ -339,10 +339,6 @@
     </spacer>
    </item>
   </layout>
-  <zorder>groupingGroup</zorder>
-  <zorder>replacementGroup</zorder>
-  <zorder>previewBox</zorder>
-  <zorder>ignoreTheCheck</zorder>
  </widget>
  <layoutdefault spacing="6" margin="0" />
  <customwidgets>
@@ -399,7 +395,7 @@
    <sender>customschemeCheck</sender>
    <signal>toggled(bool)</signal>
    <receiver>filetypeCheck</receiver>
-   <slot>setDisabled(bool)</slot>
+   <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>
@@ -415,7 +411,7 @@
    <sender>customschemeCheck</sender>
    <signal>toggled(bool)</signal>
    <receiver>initialCheck</receiver>
-   <slot>setDisabled(bool)</slot>
+   <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>20</x>

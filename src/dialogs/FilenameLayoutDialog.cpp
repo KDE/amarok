@@ -26,13 +26,13 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOC )
+FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeCollection )
     : QWidget( parent )
 {
     setupUi( this );
     optionsFrame->hide();
 
-    isOrganizeCollection = isOC;
+    m_isOrganizeCollection = isOrganizeCollection;
     caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
     filenameLayoutEdit->hide();
@@ -77,7 +77,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOC )
     cbEliminateSpaces->setChecked( whitespaceOptions );
     int underscoreOptions = Amarok::config( "TagGuesser" ).readEntry( "Replace underscores" ).toInt();
     cbReplaceUnderscores->setChecked( underscoreOptions );
-    if( !isOrganizeCollection )
+    if( !m_isOrganizeCollection )
         optionsFrame->show();
 
     //INIT for tokenPool
@@ -93,7 +93,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOC )
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "-" ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "." ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), QString("<space>") ) );
-    if( isOrganizeCollection == 0 )
+    if( m_isOrganizeCollection == 0 )
     {
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Ignore field" ) ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
@@ -111,7 +111,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOC )
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
     }
-    if( isOrganizeCollection )
+    if( m_isOrganizeCollection )
     {
         if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Advanced" )
         {
@@ -155,7 +155,7 @@ QString
 FilenameLayoutDialog::getParsableScheme()
 {
     QString category;
-    if( isOrganizeCollection )
+    if( m_isOrganizeCollection )
         category = "OrganizeCollectionDialog";
     else
         category = "FilenameLayoutDialog";
@@ -259,7 +259,7 @@ FilenameLayoutDialog::toAdvancedMode()
     tokenPool->hide();
     hintPicture->hide();
     syntaxLabel->show();
-    if( isOrganizeCollection )
+    if( m_isOrganizeCollection )
         Amarok::config( "OrganizeCollectionDialog").writeEntry( "Mode", "Advanced" );
     else
         Amarok::config( "FilenameLayoutDialog" ).writeEntry( "Mode", "Advanced" );
@@ -275,7 +275,7 @@ FilenameLayoutDialog::toBasicMode()
     filenameLayout->inferScheme( filenameLayoutEdit->text() );
     tokenPool->show();
     hintPicture->show();
-    if( isOrganizeCollection )
+    if( m_isOrganizeCollection )
         Amarok::config( "OrganizeCollectionDialog" ).writeEntry( "Mode", "Basic" );
     else
         Amarok::config( "FilenameLayoutDialog" ).writeEntry( "Mode", "Basic" );
