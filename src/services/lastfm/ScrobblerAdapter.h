@@ -52,7 +52,7 @@ private:
     Scrobbler *m_scrobbler;
     MutableTrack m_current;
     long m_lastPosition;
-    long m_totalPlayed;
+    uint m_totalPlayed;
     QString m_clientId;
 };
 
