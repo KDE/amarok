@@ -19,10 +19,7 @@ This document explains how to install Amarok 2 from SVN in your home directory -
 
 * Check out Amarok from SVN:
     cd $HOME/kde/src
-    svn checkout https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok
- or svn checkout svn+ssh://USER@svn.kde.org/home/kde/trunk/extragear/multimedia/amarok
- or svn checkout svn://anonsvn.kde.org/home/kde/trunk/extragear/multimedia/amarok
- depending on your svn account setup
+    svn checkout svn://anonsvn.kde.org/home/kde/trunk/extragear/multimedia/amarok
 
 * Building:
     cd $HOME/kde/build/amarok
