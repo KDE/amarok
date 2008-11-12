@@ -12,6 +12,11 @@ This document explains how to install Amarok 2 from SVN in your home directory -
     export KDEDIR=$HOME/kde
     export KDEDIRS=$KDEDIR
 
+* Source your edited .bashrc
+    . ~/.bashrc
+
+NOTE: if you are not using the bash shell, edit your proper shell config file (~/.zshrc or ~/.tcshrc or whatever it may be)
+
 * Create folders:
     mkdir $HOME/kde
     mkdir $HOME/kde/src
