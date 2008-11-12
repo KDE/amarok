@@ -210,7 +210,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     if( sqlChannel->hasPurge() )
     {
         int toPurge = sqlChannel->purgeCount();
-        if( !oldHasPurge || oldPurgeCount != toPurge && toPurge > 0 )
+        if( !oldHasPurge || ( oldPurgeCount != toPurge && toPurge > 0 ) )
         {
             debug() << "purge to " << toPurge <<" newest episodes for " << sqlChannel->title();
             foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
