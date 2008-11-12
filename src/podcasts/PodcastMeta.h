@@ -19,7 +19,6 @@
 #ifndef PODCASTMETA_H
 #define PODCASTMETA_H
 
-#include "Debug.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 
@@ -208,7 +207,7 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
         PodcastChannel()
             : PodcastMetaCommon()
-            , Playlist() { DEBUG_BLOCK }
+            , Playlist() { }
 
         virtual ~PodcastChannel() {}
 

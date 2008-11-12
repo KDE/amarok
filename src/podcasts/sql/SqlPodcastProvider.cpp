@@ -64,7 +64,6 @@ SqlPodcastProvider::SqlPodcastProvider()
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {
-    DEBUG_BLOCK
     foreach(Meta::SqlPodcastChannelPtr channel, m_channels)
     {
         channel->updateInDb();
@@ -79,7 +78,6 @@ SqlPodcastProvider::~SqlPodcastProvider()
 void
 SqlPodcastProvider::loadPodcasts()
 {
-    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels, subscribedate, autoscan, fetchtype, haspurge, purgecount FROM podcastchannels;" );
@@ -126,8 +124,6 @@ SqlPodcastProvider::playlists()
 void
 SqlPodcastProvider::addPodcast(const KUrl & url)
 {
-    DEBUG_BLOCK
-
     KUrl kurl = KUrl( url );
 
     QString command = "SELECT title FROM podcastchannels WHERE url='%1';";
@@ -157,7 +153,6 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
 Meta::PodcastChannelPtr
 SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 {
-    DEBUG_BLOCK
     Meta::SqlPodcastChannel * sqlChannel = new Meta::SqlPodcastChannel( channel );
     m_channels << SqlPodcastChannelPtr( sqlChannel );
     return Meta::PodcastChannelPtr( sqlChannel );
@@ -184,7 +179,6 @@ SqlPodcastProvider::channels()
 void
 SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
 {
-    DEBUG_BLOCK
     Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
     if( !sqlChannel )
         return;
@@ -198,13 +192,11 @@ SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
 void
 SqlPodcastProvider::configureProvider()
 {
-    DEBUG_BLOCK
 }
 
 void
 SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
 {
-    DEBUG_BLOCK
     Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
     KUrl oldSaveLocation = sqlChannel->saveLocation();
     bool oldHasPurge = sqlChannel->hasPurge();
@@ -281,7 +273,6 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode 
 Meta::SqlPodcastChannelPtr
 SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
 {
-    DEBUG_BLOCK
     QListIterator<Meta::SqlPodcastChannelPtr> i( m_channels );
     while( i.hasNext() )
     {
@@ -319,7 +310,6 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 void
 SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
 {
-    DEBUG_BLOCK
     if( sqlEpisode.isNull() )
     {
         debug() << "Error: SqlPodcastProvider::downloadEpisode(  Meta::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
@@ -349,7 +339,6 @@ SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
 void
 SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
 {
-    DEBUG_BLOCK
     if ( !result )
     {
         debug() << "Parse error in podcast "
@@ -377,14 +366,12 @@ SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
 void
 SqlPodcastProvider::slotUpdated()
 {
-    DEBUG_BLOCK
     emit updated();
 }
 
 void
 SqlPodcastProvider::downloadResult( KJob * job )
 {
-    DEBUG_BLOCK
     if( job->error() )
     {
         The::statusBar()->longMessage( job->errorText() );

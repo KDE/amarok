@@ -78,7 +78,6 @@ Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 void
 Meta::SqlPodcastEpisode::updateInDb()
 {
-    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
