@@ -30,7 +30,7 @@ LastFmServiceConfig::load()
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     m_username = config.readEntry( "username", QString() );
     m_password = config.readEntry( "password", QString() );
-    m_scrobble = config.readEntry( "scrobble", false );
+    m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
 }
 
