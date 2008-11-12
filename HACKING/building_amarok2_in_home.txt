@@ -1,7 +1,7 @@
 This document explains how to install Amarok 2 from SVN in your home directory - in an easy way :)
 ==================================================================================================
 
-* If you already have Amarok installed from your distro, uninstall it.
+* If you already have Amarok installed from your distro, uninstall it to prevent setting conflicts and similar.
 
 * Install these packages:
     sudo aptitude install build-essential
@@ -20,6 +20,9 @@ This document explains how to install Amarok 2 from SVN in your home directory -
 * Check out Amarok from SVN:
     cd $HOME/kde/src
     svn checkout https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok
+ or svn checkout svn+ssh://USER@svn.kde.org/home/kde/trunk/extragear/multimedia/amarok
+ or svn checkout svn://anonsvn.kde.org/home/kde/trunk/extragear/multimedia/amarok
+ depending on your svn account setup
 
 * Building:
     cd $HOME/kde/build/amarok
