@@ -113,6 +113,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setEnabled( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
+    connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
+             this, SLOT( slotUpdatePreview() ) );
 
     // These are old (from A1) and are being replaced by Teo's filenamelayout dialog
     ui->formatEdit->hide(); 
