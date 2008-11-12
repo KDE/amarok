@@ -61,7 +61,11 @@ public:
 
     CoreDomElement( const QDomElement& x ) : e( x )
     {
-        if (e.isNull()) throw Exception::nullNode();
+        if (e.isNull()) 
+        {
+            qDebug() << "WARNING: GOT NULL NODE IN COPY CONSTRUCTOR!";
+            //throw Exception::nullNode();
+        }
     }
 
     /** returns a null element unless the node @p name exists */
