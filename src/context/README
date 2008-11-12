@@ -1,3 +1,5 @@
-now that we have plasma copied into our source tree, here is a list of local changes (to aid upgrading in the future):
+Now that we have libPlasma copied into our source tree, here is a list of local changes (to aid upgrading in the future):
 
-* changed Plasma/Applet Plasma/DataEngine and Plasma/Containment to AmarokContext/* respectively. you can find the diff in plasma.servicetypes.diff
+* Changed Plasma/Applet Plasma/DataEngine and Plasma/Containment to AmarokContext/* respectively.
+  Patch: patches/plasma.servicetypes.diff
+
