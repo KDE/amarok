@@ -279,30 +279,40 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     //try to detect these cases
     QString albumName = trackData.value( Field::ALBUM ).toString();
     int album = 0;
+
     QString path = trackData.value( Field::URL ).toString();
+    
     QFileInfo file( path );
+    
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
+    
     //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
     QStringList filters;
     filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma";
     dir.setNameFilters( filters );
+    
     int compilationId = 0;
+    
     //do not check existing albums if there is more than one file in the directory
     //see comments in checkExistingAlbums
+    
     //TODO: find a better way to ignore non-audio files than the extension matching above
     if( !m_filesInDirs.contains( dir.absolutePath() ) )
     {
         m_filesInDirs.insert( dir.absolutePath(), dir.count() );
     }
+
     if( dir.count() == 1 )
     {
         compilationId = checkExistingAlbums( albumName );
     }
+
     if( 0 == compilationId )
     {
         album = albumId( albumName, albumArtistId );
     }
+
     int artist = artistId( trackData.value( Field::ARTIST ).toString() );
     int genre = genreId( trackData.value( Field::GENRE ).toString() );
     int composer = composerId( trackData.value( Field::COMPOSER ).toString() );
