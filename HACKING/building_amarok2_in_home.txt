@@ -3,9 +3,20 @@ This document explains how to install Amarok 2 from SVN in your home directory -
 
 * If you already have Amarok installed from your distro, uninstall it to prevent setting conflicts and similar.
 
-* Install these packages:
+* Install g++ and KDE 4 development packages
+
+  In Ubuntu, Debian, and all their derivatives:
+
     sudo aptitude install build-essential
     sudo aptitude install kde-devel
+
+  In Archlinux:
+
+    sudo pacman -S base-devel kdelibs kdebase-workspace
+
+  In Gentoo:
+
+    sudo emerge kdelibs plasma-workspace
 
 * Append the following to $HOME/.bashrc, then close this shell and open it again:
     export PATH=$HOME/kde/bin:$PATH
