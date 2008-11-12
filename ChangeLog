@@ -17,6 +17,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Fix playlist behaviour when adding a track that is already playing
+      (BR 174634)
     * Jamendo Service: Remove some sorting modes that caused the database to 
       choke as the result sets became too large. Will be revisisted post 2.0.0
       (BR 174851)
