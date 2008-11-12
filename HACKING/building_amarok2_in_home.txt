@@ -1,0 +1,36 @@
+This document explains how to install Amarok 2 from SVN in your home directory - in an easy way :)
+==================================================================================================
+
+* If you already have Amarok installed from your distro, uninstall it.
+
+* Install these packages:
+    sudo aptitude install build-essential
+    sudo aptitude install kde-devel
+
+* Append the following to $HOME/.bashrc, then close this shell and open it again:
+    export PATH=$HOME/kde/bin:$PATH
+    export KDEDIR=$HOME/kde
+    export KDEDIRS=$KDEDIR
+
+* Create folders:
+    mkdir $HOME/kde
+    mkdir $HOME/kde/src
+    mkdir $HOME/kde/build/amarok
+
+* Check out Amarok from SVN:
+    cd $HOME/kde/src
+    svn checkout https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok
+
+* Building:
+    cd $HOME/kde/build/amarok
+    cmake -DCMAKE_INSTALL_PREFIX=$HOME/kde -DCMAKE_BUILD_TYPE=debugfull $HOME/kde/src/amarok
+    make install
+
+
+Now you are ready to run Amarok 2, by typing "amarok" in the shell.
+
+(Note: On the first startup it will show an error about missing plugins, but this will disappear on the next run.)
+
+
+Have fun :)
+
