@@ -17,6 +17,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Fixed possible crash with reading wav files. Patch by Peter van Fessem
+      <peter@f-is.eu>. (BR 174819)
     * Amarok 1.4 database importer would skip tracks in some collections.
       (BR 174329) (BR 174444)
     * OSD renders correctly on track changes.

@@ -31,6 +31,7 @@
 #include "wavfile.h"
 
 #include <netinet/in.h> // ntohl
+#include <iostream>
 
 using namespace TagLib;
 
@@ -103,5 +104,11 @@ void Wav::Properties::readWavProperties( FILE *fp )
     m_channels = ntohs(swap16(header.num_channels));
     m_sampleRate = ntohl(swap32(header.num_samples_per_sec));
     m_bitrate = ntohl(swap32(header.num_avg_bytes_per_sec)) * 8 / 1000;
-    m_length = ntohl(swap32(header.num_data_bytes))/ntohl(swap32(header.num_avg_bytes_per_sec));
+    
+    if( ntohl(swap32(header.num_avg_bytes_per_sec)) != 0 )
+    {
+        m_length = ntohl(swap32(header.num_data_bytes))/ntohl(swap32(header.num_avg_bytes_per_sec));
+    }else{
+        std::cerr << "Error in parsing WavHeader - num_avg_bytes_per_sec should not be 0 - file is corrupted!" << std::endl;
+    }
 }
