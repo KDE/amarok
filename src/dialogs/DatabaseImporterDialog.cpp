@@ -33,6 +33,7 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     , m_importerConfig( 0 )
 {
     setAttribute( Qt::WA_DeleteOnClose );
+    setCaption( i18n( "Import Collection" ) );
 
     KVBox *importerBox = new KVBox( this );
     importerBox->setSpacing( KDialog::spacingHint() );
