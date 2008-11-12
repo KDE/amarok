@@ -31,6 +31,8 @@ NOTE: if you are not using the bash shell, edit your proper shell config file (~
     cmake -DCMAKE_INSTALL_PREFIX=$HOME/kde -DCMAKE_BUILD_TYPE=debugfull $HOME/kde/src/amarok
     make install
 
+* Updating KDE Config
+    kbuildsycoca4 --noincremental
 
 Now you are ready to run Amarok 2, by typing "amarok" in the shell.
 
