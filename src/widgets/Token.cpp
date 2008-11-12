@@ -49,9 +49,9 @@ Token::Token( const QString &string, QWidget *parent )
     QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
     QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_label->setSizePolicy( sizePolicy );
-    //debug stuff, remove when done:
-    m_label->setAutoFillBackground(true);
-    m_label->setPalette(QPalette(QColor(0,0,0),QColor(255,0,0)));
+    //debug stuff, I'm not done with it yet:
+    //m_label->setAutoFillBackground(true);
+    //m_label->setPalette(QPalette(QColor(0,0,0),QColor(255,0,0)));
     
     iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
 }
