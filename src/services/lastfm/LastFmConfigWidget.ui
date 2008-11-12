@@ -133,6 +133,9 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="1" column="0" >
        <widget class="QCheckBox" name="kcfg_RetrieveSimilarArtists" >
+        <property name="checked">
+         <bool>true</bool>
+        </property>
         <property name="text" >
          <string>&amp;Retrieve similar artists</string>
         </property>
