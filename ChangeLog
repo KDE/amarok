@@ -17,6 +17,9 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Jamendo Service: Remove some sorting modes that caused the database to 
+      choke as the result sets became too large. Will be revisisted post 2.0.0
+      (BR 174851)
     * Fixed possible crash with reading wav files. Patch by Peter van Fessem
       <peter@f-is.eu>. (BR 174819)
     * Amarok 1.4 database importer would skip tracks in some collections.
