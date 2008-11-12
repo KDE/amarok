@@ -3,3 +3,6 @@ Now that we have libPlasma copied into our source tree, here is a list of local 
 * Changed Plasma/Applet Plasma/DataEngine and Plasma/Containment to AmarokContext/* respectively.
   Patch: patches/plasma.servicetypes.diff
 
+* Changed libplasma to fix containment positioning problem. Containments are shown in 2x2 grid now instead of in one row.
+  Patch: patches/plasma.containment_layout.diff
+
