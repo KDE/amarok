@@ -18,13 +18,13 @@ This document explains how to install Amarok 2 from SVN in your home directory -
 
     sudo emerge kdelibs plasma-workspace
 
-* Append the following to $HOME/.bashrc, then close this shell and open it again:
+* Append the following to $HOME/.bashrc:
     export PATH=$HOME/kde/bin:$PATH
     export KDEDIR=$HOME/kde
     export KDEDIRS=$KDEDIR
 
-* Source your edited .bashrc
-    . ~/.bashrc
+* Reload your edited .bashrc:
+    source $HOME/.bashrc
 
     NOTE: if you are not using the bash shell, edit your proper shell config file (~/.zshrc or ~/.tcshrc or whatever it may be)
 
