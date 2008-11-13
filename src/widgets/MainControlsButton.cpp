@@ -42,8 +42,16 @@ MainControlsButton::~MainControlsButton()
 void
 MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
-    if ( m_mouseOver && !m_mouseDown )
-        painter->drawPixmap( -2, -2, The::svgHandler()->renderSvg( m_prefix, option->rect.width() + 4, option->rect.height() + 4, m_prefix ) );
+    // we're hovering over the button
+    if( m_mouseOver )
+    {
+        // we're hovering over the button, and we're clicking
+        if( m_mouseDown )
+            painter->drawPixmap( 1, 1, The::svgHandler()->renderSvg( m_prefix, option->rect.width() - 2, option->rect.height() - 2, m_prefix ) );
+        // we're not clicking
+        else
+            painter->drawPixmap( -2, -2, The::svgHandler()->renderSvg( m_prefix, option->rect.width() + 4, option->rect.height() + 4, m_prefix ) );
+    }
     else
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( m_prefix, option->rect.width(), option->rect.height(), m_prefix ) );
 }
