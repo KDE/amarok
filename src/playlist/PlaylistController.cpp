@@ -337,9 +337,10 @@ int
 Playlist::Controller::moveRows( QList<int>& from, int to )
 {
     DEBUG_BLOCK
+    debug() << "Target row: " << to;
     if ( from.size() <= 0 )
         return to;
-
+    
     to = ( to == qBound( 0, to, m_model->rowCount() ) ) ? to : m_model->rowCount();
 
     qSort( from.begin(), from.end() );
@@ -350,15 +351,27 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     QList<int> source;
     QList<int> target;
     for ( int i = min; i <= max; i++ ) {
+        if ( i >=  m_model->rowCount() )
+            break; // we are likely moving below the last element, to an index that really does not exist, and thus should not be moved up.
         source.append( i );
         target.append( i );
     }
 
+    debug() << " there are " << source.count() << " elements in source";
+    debug() << " there are " << target.count() << " elements in target";
+
+    debug() << " original to: " << to;
+
+    int originalTo = to;
+    
     foreach ( int f, from ) {
-        if ( f < to )
+        debug() << ".";
+        if ( f < originalTo )
             to--;
         source.removeOne( f );
     }
+
+    debug() << " modified to: " << to;
 
     QList<int>::const_iterator f_iter = from.end();
     while (f_iter != from.begin()) {
