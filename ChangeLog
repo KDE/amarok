@@ -9,12 +9,15 @@ VERSION 2.0-rc1
       from iTunes.
     * The settings dialog now remembers the page that was last used.
     * Track information can be edited from the file browser. (BR 172812)
+    * Basic and Advanced view when editing a filename scheme are synchronized.
+    * Added delete button to Advanced view for defining a filename scheme.
 
   CHANGES:
     * Enabled Last.fm scrobbling by default when Last.fm login is supplied.
     * Amarok now allows to open video files again. (BR 174267)
     * "Show active track" has been moved from the playlist context menu to the
       playlist toolbar.
+    * Layout refactoring in the Organize Collection dialog.
 
   BUGFIXES:
     * Fix playlist behaviour when adding a track that is already playing
@@ -48,6 +51,8 @@ VERSION 2.0-rc1
     * Made the Load action start playback correctly like the Append action.
     * Correctly load m3u playlists (BR 171595)
     * Fixed metadata updating for Shoutcast streams.
+    * Fixed update of preview string in Organize Collection when switching
+      collections.
 
 
 VERSION 2.0-beta3
