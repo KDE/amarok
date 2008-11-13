@@ -360,10 +360,13 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     
     foreach ( int f, from ) {
         if ( f < originalTo )
-            to--;
+            to--; // since we are moving an item down in the list, this item will no longer count towards the target row
         source.removeOne( f );
     }
-    
+
+
+    //We itterate through the items in reverse order, as this allows us to keep the target row constant
+    //( remember that the item that was origianlly on the target row is pushed down )
     QList<int>::const_iterator f_iter = from.end();
     while (f_iter != from.begin()) {
         --f_iter;
