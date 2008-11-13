@@ -20,6 +20,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+
+    * Fix crash when dragging albums to the bottom of the playlist. (BR 174786)
     * Fixed update of preview string in Organize Collection when switching
       collections.
     * Fix playlist behaviour when adding a track that is already playing
