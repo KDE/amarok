@@ -110,7 +110,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
-    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), filenameLayoutDialog, SLOT( setVisible( bool ) ) );
+    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleCustomScheme( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
@@ -362,6 +362,23 @@ OrganizeCollectionDialog::slotDialogAccepted()
     AmarokConfig::setReplacementString( ui->replaceEdit->text() );
 }
 
+//Hides and shows the right elements in the interface in the right order to keep the layout sane
+void
+OrganizeCollectionDialog::toggleCustomScheme( bool state )  //SLOT
+{
+    if( state )
+    {
+        ui->initialCheck->hide();
+        ui->filetypeCheck->hide();
+        filenameLayoutDialog->setVisible( true );
+    }
+    else
+    {
+        filenameLayoutDialog->hide();
+        ui->initialCheck->show();
+        ui->filetypeCheck->show();
+    }
+}
 
 
 /* Code to port
