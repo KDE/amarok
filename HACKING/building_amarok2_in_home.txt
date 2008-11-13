@@ -12,7 +12,7 @@ This document explains how to install Amarok 2 from SVN in your home directory -
 
   In Archlinux:
 
-    sudo pacman -S base-devel kdelibs kdebase-workspace
+    sudo pacman -S base-devel kdelibs kdebase-runtime
 
   In Gentoo:
 
