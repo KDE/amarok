@@ -71,14 +71,7 @@ ScanManager::~ScanManager()
 {
     DEBUG_BLOCK
 
-    if( m_parser )
-    {
-        m_parser->requestAbort();
-        while( !m_parser->isFinished() )
-            usleep( 100000 ); // Sleep 100 msec
-
-        delete m_parser;
-    }
+    stopParser();
 }
 
 
@@ -108,10 +101,7 @@ ScanManager::startFullScan()
     m_scanner->start();
     if( m_parser )
     {
-        //TODO remove old parser, make sure this code actually works
-        m_parser->requestAbort();
-        ThreadWeaver::Weaver::instance()->dequeue( m_parser );
-        m_parser->deleteLater();
+        stopParser();
     }
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setIsIncremental( false );
@@ -158,10 +148,7 @@ void ScanManager::startIncrementalScan()
     m_scanner->start();
     if( m_parser )
     {
-        //TODO remove old parser, make sure this code actually works
-        m_parser->requestAbort();
-        ThreadWeaver::Weaver::instance()->dequeue( m_parser );
-        m_parser->deleteLater();
+        stopParser();
     }
     m_parser = new XmlParseJob( this, m_collection );
     m_parser->setIsIncremental( true );
@@ -358,11 +345,7 @@ ScanManager::handleRestart()
     {
         if( m_parser )
         {
-            //TODO remove old parser, make sure this code actually works
-            m_parser->requestAbort();
-            ThreadWeaver::Weaver::instance()->dequeue( m_parser );
-            m_parser->deleteLater();
-            m_parser = 0;
+            stopParser();
         }
         disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
         disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
@@ -408,7 +391,28 @@ ScanManager::cleanTables()
     m_collection->query( "DELETE FROM artists;" );
 }
 
-//XmlParseJob
+void
+ScanManager::stopParser()
+{
+    DEBUG_BLOCK
+
+    if( m_parser )
+    {
+        m_parser->requestAbort();
+        while( !m_parser->isFinished() )
+            usleep( 100000 ); // Sleep 100 msec
+
+        //ThreadWeaver::Weaver::instance()->dequeue( m_parser ); //FIXME is this needed?
+
+        delete m_parser;
+        m_parser = 0;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// class XmlParseJob
+///////////////////////////////////////////////////////////////////////////////
 
 XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     : ThreadWeaver::Job( parent )
