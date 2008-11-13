@@ -1471,7 +1471,16 @@ SqlAlbum::setCompilation( bool compilation )
         else
         {
             debug() << "User selected album as non-compilation";
-            //TODO find album artist
+            
+            QString select = "SELECT artist FROM tracks WHERE album = %1";
+            QStringList artistid = m_collection->query( select.arg( m_id ) );
+            
+            m_artistId = artistid[0].toInt();
+            m_artist = this->tracks()[0]->artist();
+            
+            QString update = "UPDATE albums SET artist = %1 WHERE id = %2;";
+            update = update.arg( m_artistId ).arg( m_id );
+            m_collection->query( update );
         }
         notifyObservers();
         m_collection->sendChangedSignal();
