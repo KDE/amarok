@@ -346,9 +346,10 @@ void
 ScanManager::handleRestart()
 {
     DEBUG_BLOCK
-    //TODO handle collection scanner crash
+
     m_restartCount++;
     debug() << "Collection scanner crashed, restart count is " << m_restartCount;
+
     if( m_restartCount >= MAX_RESTARTS )
     {
         //TODO:abort scan, inform user
@@ -357,7 +358,7 @@ ScanManager::handleRestart()
     {
         if( m_parser )
         {
-        //TODO remove old parser, make sure this code actually works
+            //TODO remove old parser, make sure this code actually works
             m_parser->requestAbort();
             ThreadWeaver::Weaver::instance()->dequeue( m_parser );
             m_parser->deleteLater();
@@ -377,6 +378,7 @@ void
 ScanManager::restartScanner()
 {
     DEBUG_BLOCK
+
     m_scanner = new AmarokProcess( this );
     *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
     if( m_isIncremental )
