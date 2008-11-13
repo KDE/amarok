@@ -535,11 +535,11 @@ ColumnContainment::correctControlButtonPositions()
         else if( view()->zoomLevel() == Plasma::GroupZoom )
            m_zoomInIcon->show();
     }
-
     const QFontMetrics fm( m_footer->font() );
     const QRect footerRect = fm.boundingRect( m_footer->text() );
+    
     const int footerX = rect().width() / 2 + footerRect.width() / 2; 
-    const int footerY = rect().height() - footerRect.height() - 2;
+    const int footerY = rect().height() - footerRect.height() - 6;
     m_footer->setPos( footerX , footerY );
 }
 

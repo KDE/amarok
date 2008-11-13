@@ -648,7 +648,7 @@ ContextView::setContainment( Plasma::Containment* containment )
                 if( amarokContainment )
                     amarokContainment->setZoomLevel( Plasma::DesktopZoom );
                 
-                Plasma::Animator::self()->customAnimation( m_startPos.width() / 8, 250,
+                Plasma::Animator::self()->customAnimation( m_startPos.width() / 30, 250,
                                                            Plasma::Animator::EaseInOutCurve,                                                           
                                                            this, "animateContainmentChange" );
                 debug() << "startPos: " << m_startPos;
