@@ -31,30 +31,28 @@
 class MainControlsButton : public QGraphicsItem
 {
 public:
-    MainControlsButton( QGraphicsItem * parent );
+    MainControlsButton( QGraphicsItem *parent );
     ~MainControlsButton();
     
     void setSvgPrefix( const QString &prefix );
-    void setAction( QAction * action );
+    void setAction( QAction *action );
 
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
     QRectF boundingRect() const;
     QPainterPath shape() const;
 
 protected:
-
-    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event );
-    virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
-    virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
-    virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+    virtual void mouseMoveEvent( QGraphicsSceneMouseEvent *event );
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
 
 private:
-
-    QString m_prefix;
-    QAction * m_action;
-    bool m_mouseOver;
-    bool m_mouseDown;
-
+    QString  m_prefix;
+    QAction *m_action;
+    bool     m_mouseOver;
+    bool     m_mouseDown;
 };
 
 #endif

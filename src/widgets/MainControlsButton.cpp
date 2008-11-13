@@ -22,6 +22,7 @@
 #include "Debug.h"
 #include "SvgHandler.h"
 
+#include <QGraphicsSceneMouseEvent>
 #include <QStyleOptionGraphicsItem>
 
 MainControlsButton::MainControlsButton( QGraphicsItem * parent )
@@ -41,11 +42,9 @@ MainControlsButton::~MainControlsButton()
 void
 MainControlsButton::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * /*widget*/)
 {
- //   DEBUG_BLOCK
-
     if ( m_mouseOver && !m_mouseDown )
         painter->drawPixmap( -2, -2, The::svgHandler()->renderSvg( m_prefix, option->rect.width() + 4, option->rect.height() + 4, m_prefix ) );
-     else
+    else
         painter->drawPixmap( 0, 0, The::svgHandler()->renderSvg( m_prefix, option->rect.width(), option->rect.height(), m_prefix ) );
 }
 
@@ -67,13 +66,6 @@ MainControlsButton::setAction(QAction * action)
     m_action = action;
 }
 
-void
-MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
-{
-    m_mouseDown = true;
-    update();
-}
-
 void 
 MainControlsButton::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
@@ -91,6 +83,21 @@ MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
     update();
 }
 
+void
+MainControlsButton::mousePressEvent(QGraphicsSceneMouseEvent * /*event*/)
+{
+    m_mouseDown = true;
+    update();
+}
+
+void
+MainControlsButton::mouseMoveEvent(QGraphicsSceneMouseEvent * event )
+{
+    const bool oldValue = m_mouseOver;
+    m_mouseOver = contains( event->pos() );
+    if( m_mouseOver != oldValue ) // Don't update needlessly
+        update();
+}
 
 void 
 MainControlsButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
@@ -98,7 +105,7 @@ MainControlsButton::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     Q_UNUSED( event );
     m_mouseDown = false;
     update();
-    if ( m_action != 0 )
+    if( m_action != 0 && m_mouseOver )
         m_action->trigger();
 }
 
