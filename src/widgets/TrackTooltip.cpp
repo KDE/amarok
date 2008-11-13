@@ -285,16 +285,21 @@ void TrackToolTip::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
 
-    if ( m_track ) {
+    if ( m_track )
+    {
         unsubscribeFrom( m_track );
         if ( m_track->album() )
             unsubscribeFrom( m_track->album() );
     }
 
     m_track =  The::engineController()->currentTrack();
-    subscribeTo( m_track );
-    if ( m_track->album() )
-        subscribeTo( m_track->album() );
+
+    if ( m_track )
+    {
+        subscribeTo( m_track );
+        if ( m_track->album() )
+            subscribeTo( m_track->album() );
+    }
 
     setTrack();
 }
