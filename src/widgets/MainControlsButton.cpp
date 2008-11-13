@@ -22,6 +22,7 @@
 #include "Debug.h"
 #include "SvgHandler.h"
 
+#include <QKeyEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QStyleOptionGraphicsItem>
 
@@ -89,6 +90,20 @@ MainControlsButton::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
     m_mouseOver = false;
     m_mouseDown = false;
     update();
+}
+
+void
+MainControlsButton::keyPressEvent( QKeyEvent *event )
+{
+    DEBUG_BLOCK
+    // Cancel the action if the escape key is pressed
+    if( event->key() == Qt::Key_Escape )
+    {
+        m_mouseDown = false;
+        update();
+    }
+    else
+        event->ignore();
 }
 
 void
