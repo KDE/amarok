@@ -71,9 +71,7 @@ class OrganizeCollectionDialog : public KDialog
         void init();
 
         Ui::OrganizeCollectionDialogBase *ui;
-        KVBox *vbox;
-        QWidget *widget;
-        FilenameLayoutDialog *filenameLayoutDialog;
+        FilenameLayoutDialog *m_filenameLayoutDialog;
         Meta::TrackPtr m_previewTrack;
         bool m_detailed;
         Meta::TrackList m_allTracks;

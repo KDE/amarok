@@ -70,16 +70,16 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
         m_allTracks = tracks;
     }
 
-    vbox = new KVBox( this );
-    setMainWidget( vbox );
-    widget = new QWidget( vbox );
+    KVBox *mainVBox = new KVBox( this );
+    setMainWidget( mainVBox );
+    QWidget *mainContainer = new QWidget( mainVBox );
 
-    ui->setupUi( widget );
+    ui->setupUi( mainContainer );
 
-    filenameLayoutDialog = new FilenameLayoutDialog( widget, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
-    ui->verticalLayout->insertWidget( 4, filenameLayoutDialog );
-     filenameLayoutDialog->show();
-        filenameLayoutDialog->setVisible( false );
+    m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
+    ui->verticalLayout->insertWidget( 4, m_filenameLayoutDialog );
+     m_filenameLayoutDialog->show();
+        m_filenameLayoutDialog->setVisible( false );
     ui->ignoreTheCheck->show();
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
@@ -109,7 +109,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     //connect( ui->formatEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
-    connect( filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
+    connect( m_filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
     connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleCustomScheme( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
@@ -251,9 +251,9 @@ OrganizeCollectionDialog::buildFormatTip() const
 QString
 OrganizeCollectionDialog::buildFormatString() const
 {
-    //TODO: this is where I need to query filenameLayoutDialog
+    //TODO: this is where I need to query m_filenameLayoutDialog
     if( ui->customschemeCheck->isChecked() )
-        return filenameLayoutDialog->getParsableScheme();
+        return m_filenameLayoutDialog->getParsableScheme();
     QString format = "%folder/";
     if( ui->filetypeCheck->isChecked() )
         format += "%filetype/";
@@ -318,7 +318,7 @@ OrganizeCollectionDialog::update( int dummy )   //why the dummy?
     Q_UNUSED( dummy );
 
     if( ui->customschemeCheck->isChecked() )
-        emit updatePreview( buildDestination( filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
+        emit updatePreview( buildDestination( m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
     else
         emit updatePreview( buildDestination( buildFormatString(), m_previewTrack ) );
 }
@@ -370,11 +370,11 @@ OrganizeCollectionDialog::toggleCustomScheme( bool state )  //SLOT
     {
         ui->initialCheck->hide();
         ui->filetypeCheck->hide();
-        filenameLayoutDialog->setVisible( true );
+        m_filenameLayoutDialog->setVisible( true );
     }
     else
     {
-        filenameLayoutDialog->hide();
+        m_filenameLayoutDialog->hide();
         ui->initialCheck->show();
         ui->filetypeCheck->show();
     }
