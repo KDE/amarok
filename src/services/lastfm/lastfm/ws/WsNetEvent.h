@@ -34,12 +34,12 @@
 		// WmiSink callbacks:
 		virtual void onConnectionUp(BSTR name)
 		{
-			emit connectionUp(QString::fromUtf16(name));
+			emit connectionUp(QString::fromUtf16((const ushort * )name));
 		}
 
 		virtual void onConnectionDown(BSTR name)
 		{
-			emit connectionDown(QString::fromUtf16(name));
+			emit connectionDown(QString::fromUtf16((const ushort * )name));
 		}
 
 	public:
