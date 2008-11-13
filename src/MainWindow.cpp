@@ -140,6 +140,7 @@ MainWindow::MainWindow()
     }
 
     The::paletteHandler()->setPalette( palette() );
+    setPlainCaption( i18n( AMAROK_CAPTION ) );
 }
 
 MainWindow::~MainWindow()
