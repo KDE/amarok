@@ -3,7 +3,7 @@ This document explains how to install Amarok 2 from SVN in your home directory -
 
 * If you already have Amarok installed from your distro, uninstall it to prevent setting conflicts and similar.
 
-* Install g++ and KDE 4 development packages
+* Install compiler and KDE 4 development packages:
 
   In Ubuntu, Debian, and all their derivatives:
 
@@ -26,7 +26,7 @@ This document explains how to install Amarok 2 from SVN in your home directory -
 * Source your edited .bashrc
     . ~/.bashrc
 
-NOTE: if you are not using the bash shell, edit your proper shell config file (~/.zshrc or ~/.tcshrc or whatever it may be)
+    NOTE: if you are not using the bash shell, edit your proper shell config file (~/.zshrc or ~/.tcshrc or whatever it may be)
 
 * Create folders:
     mkdir $HOME/kde
@@ -45,10 +45,11 @@ NOTE: if you are not using the bash shell, edit your proper shell config file (~
 * Updating KDE Config
     kbuildsycoca4 --noincremental
 
-Now you are ready to run Amarok 2, by typing "amarok" in the shell.
 
-(Note: On the first startup it will show an error about missing plugins, but this will disappear on the next run.)
+Now you are ready to run Amarok 2, by typing "amarok" in the shell :)
 
+
+NOTE:
 If you have installed MySQL Embedded in non-default location (i.e. $HOME/usr),
 Amarok may fail to start with error regarding libmysqlclient library. In this
 case, add the following string to your ~/.bashrc:
@@ -56,6 +57,7 @@ case, add the following string to your ~/.bashrc:
     export LD_LIBRARY_PATH=$HOME/usr/lib/mysql:$LD_LIBRARY_PATH
 
 where $HOME/usr is the path you've used in --prefix option.
+
 
 Have fun :)
 
