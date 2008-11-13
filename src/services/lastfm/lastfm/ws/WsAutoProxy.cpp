@@ -102,7 +102,7 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 		if (pacUrl.length()) 
 		{
 			opts.dwFlags = WINHTTP_AUTOPROXY_CONFIG_URL;
-			opts.lpszAutoConfigUrl = pacUrl.utf16();
+			opts.lpszAutoConfigUrl = CA2W( pacUrl.utf16() );
 		} 
 		else
 		{
@@ -111,11 +111,11 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 		}
 		opts.fAutoLogonIfChallenged = TRUE;
 		
-		if (WinHttpGetProxyForUrl(m_hSession, url.utf16(), &opts, &info))
+		if (WinHttpGetProxyForUrl(m_hSession, CA2W(url.utf16()), &opts, &info))
 		{
 			if (info.lpszProxy) 
 			{
-				QList<QNetworkProxy> proxies = parsePacResult(QString::fromUtf16(info.lpszProxy));
+				QList<QNetworkProxy> proxies = parsePacResult( CA2W(QString::fromUtf16(info.lpszProxy)));
 				if (!proxies.empty())
 				{
 					out = proxies.at(0);
