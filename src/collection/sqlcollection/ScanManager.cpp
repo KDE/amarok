@@ -396,11 +396,11 @@ ScanManager::stopParser()
 
     if( m_parser )
     {
+        ThreadWeaver::Weaver::instance()->dequeue( m_parser );
+
         m_parser->requestAbort();
         while( !m_parser->isFinished() )
             usleep( 100000 ); // Sleep 100 msec
-
-        //ThreadWeaver::Weaver::instance()->dequeue( m_parser ); //FIXME is this needed?
 
         delete m_parser;
         m_parser = 0;
