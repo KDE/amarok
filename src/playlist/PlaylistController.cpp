@@ -337,7 +337,6 @@ int
 Playlist::Controller::moveRows( QList<int>& from, int to )
 {
     DEBUG_BLOCK
-    debug() << "Target row: " << to;
     if ( from.size() <= 0 )
         return to;
     
@@ -357,22 +356,14 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
         target.append( i );
     }
 
-    debug() << " there are " << source.count() << " elements in source";
-    debug() << " there are " << target.count() << " elements in target";
-
-    debug() << " original to: " << to;
-
     int originalTo = to;
     
     foreach ( int f, from ) {
-        debug() << ".";
         if ( f < originalTo )
             to--;
         source.removeOne( f );
     }
-
-    debug() << " modified to: " << to;
-
+    
     QList<int>::const_iterator f_iter = from.end();
     while (f_iter != from.begin()) {
         --f_iter;
