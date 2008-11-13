@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright        : (C) 2007-2008 Ian Monroe <ian@monroe.nu>
- *                    (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *                    (C) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  *                    (C) 2008 Seb Ruiz <ruiz@kde.org>
  *                    (C) 2008 Soren Harward <stharward@gmail.com>
  *
