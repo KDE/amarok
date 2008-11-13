@@ -337,22 +337,20 @@ ScanManager::handleRestart()
     m_restartCount++;
     debug() << "Collection scanner crashed, restart count is " << m_restartCount;
 
+    stopParser();
+    disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+    disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
+    disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
+    m_scanner->kill();
+    m_scanner->deleteLater();
+    m_scanner = 0;
+
     if( m_restartCount >= MAX_RESTARTS )
     {
-        //TODO:abort scan, inform user
+        //TODO: Inform user
     }
     else
     {
-        if( m_parser )
-        {
-            stopParser();
-        }
-        disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-        disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
-        disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
-        m_scanner->kill();
-        m_scanner->deleteLater();
-        m_scanner = 0;
         QTimer::singleShot( 0, this, SLOT( restartScanner() ) );
     }
 }
