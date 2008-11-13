@@ -81,7 +81,7 @@
 #include <fixx11h.h>
 #endif
 
-#define AMAROK_CAPTION "Amarok 2 beta"
+#define AMAROK_CAPTION "Amarok 2"
 
 class ContextWidget : public KVBox
 {
