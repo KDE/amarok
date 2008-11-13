@@ -20,7 +20,7 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
-
+    * OSD timer resets when song changes. (BR 175030)
     * Fix crash when dragging albums to the bottom of the playlist. (BR 174786)
     * Fixed update of preview string in Organize Collection when switching
       collections.
