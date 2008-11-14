@@ -40,8 +40,8 @@ ServiceListSortFilterProxyModel::~ServiceListSortFilterProxyModel()
 bool
 ServiceListSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-    const QVariant leftData = sourceModel()->data( left );
-    const QVariant rightData = sourceModel()->data( right );
+    const QVariant leftData = sourceModel()->data( left, Qt::DisplayRole );
+    const QVariant rightData = sourceModel()->data( right, Qt::DisplayRole );
 
     const QString leftString = leftData.toString();
     const QString rightString = rightData.toString();
@@ -49,6 +49,6 @@ ServiceListSortFilterProxyModel::lessThan( const QModelIndex &left, const QModel
     //debug() << "left : " << leftString;
     //debug() << "right: " << rightString;
 
-    return leftString.compare( rightString ) > 0;
+    return leftString.compare( rightString, Qt::CaseInsensitive ) > 0;
 }
 
