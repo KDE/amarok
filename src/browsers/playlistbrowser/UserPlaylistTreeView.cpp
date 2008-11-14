@@ -176,12 +176,16 @@ QList< PopupDropperAction * > PlaylistBrowserNS::UserPlaylistTreeView::createCom
     return actions;
 }
 
-void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad() {
+void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad()
+{
     DEBUG_BLOCK
     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
-        if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
+    {
+        if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
+        {
+            Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
+            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
+        }
     }
 }
 
@@ -189,10 +193,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotAppend()
 {
     DEBUG_BLOCK
     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
-        if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
-    }
+    {
+        if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
+        {
+            Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
+            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
+        }
 }
 
 
@@ -216,7 +222,6 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotRename()
 
 void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEvent * event )
 {
-
     DEBUG_BLOCK
 
     QModelIndexList indices = selectionModel()->selectedIndexes();
@@ -225,13 +230,11 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 
     QList<PopupDropperAction *> actions = createCommonActions( indices );
 
-    foreach( PopupDropperAction * action, actions ) {
+    foreach( PopupDropperAction * action, actions )
         menu.addAction( action );
-    }
 
-    if ( indices.count() == 0 ) {
+    if ( indices.count() == 0 )
         menu.addAction( m_addGroupAction );
-    }
 
     m_currentItems.clear();
     foreach( const QModelIndex &index, indices )
