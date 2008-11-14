@@ -619,8 +619,8 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
     debug() << rowSpan << " = " << aspectRatio << " / 3"; */
     int colSpan = 1;
 
-    if( rowSpan == 0 || aspectRatio * 100 > 30 && ( int )( aspectRatio * 100 ) % 30 > 15 )
-        rowSpan += 1;
+    if( rowSpan == 0 || ( aspectRatio * 100 > 30 && ( int )( aspectRatio * 100 ) % 30 > 15 ) )
+        rowSpan++;
 
     rowSpan = qMin( rowSpan, m_currentRows );
     /*
