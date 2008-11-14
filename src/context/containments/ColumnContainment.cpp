@@ -539,7 +539,7 @@ ColumnContainment::correctControlButtonPositions()
     const QRect footerRect = fm.boundingRect( m_footer->text() );
     
     const int footerX = rect().width() / 2 + footerRect.width() / 2; 
-    const int footerY = rect().height() - footerRect.height() - 6;
+    const int footerY = m_switchLeftIcon->pos().y() + m_switchLeftIcon->size().height() / 2 - footerRect.height() / 2;
     m_footer->setPos( footerX , footerY );
 }
 
