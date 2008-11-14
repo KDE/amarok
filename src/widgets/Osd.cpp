@@ -73,7 +73,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     m_timer->setSingleShot( true );
 
-    connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
+    connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -129,7 +129,7 @@ OSDWidget::volChanged( int volume )
     {
         m_volume = true;
         m_newvolume = volume;
-        m_text = m_newvolume ? i18n("Volume: %1%", m_newvolume) : i18nc( "State, as in, The playback is silent", "Mute");
+        m_text = m_newvolume ? i18n("Volume: %1%", m_newvolume) : i18nc( "State, as in, The playback is silent", "Mute" );
 
         show();
     }
@@ -154,9 +154,7 @@ OSDWidget::show() //virtual
         QWidget::show();
 
         if( m_duration ) //duration 0 -> stay forever
-        {
             m_timer->start( m_duration ); //calls hide()
-        }
     }
     else
         warning() << "Attempted to make an invalid sized OSD\n";
@@ -168,17 +166,17 @@ QRect
 OSDWidget::determineMetrics( const int M )
 {
     // sometimes we only have a tiddly cover
-    const QSize minImageSize = m_cover.size().boundedTo( QSize(100,100) );
+    const QSize minImageSize = m_cover.size().boundedTo( QSize( 100, 100 ) );
 
     // determine a sensible maximum size, don't cover the whole desktop or cross the screen
-    const QSize margin( (M + MARGIN) * 2, (M + MARGIN) * 2 ); //margins
+    const QSize margin( ( M + MARGIN ) * 2, ( M + MARGIN ) * 2 ); //margins
     const QSize image = m_cover.isNull() ? QSize( 0, 0 ) : minImageSize;
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // If we don't do that, the boundingRect() might not be suitable for drawText() (Qt issue N67674)
-    m_text.replace( QRegExp(" +\n"), "\n" );
+    m_text.replace( QRegExp( " +\n" ), "\n" );
     // remove consecutive line breaks
-    m_text.replace( QRegExp("\n+"), "\n" );
+    m_text.replace( QRegExp( "\n+" ), "\n" );
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),
@@ -253,12 +251,12 @@ OSDWidget::determineMetrics( const int M )
             break;
 
         case Center:
-            newPos.ry() = (screen.height() - newSize.height()) / 2;
+            newPos.ry() = ( screen.height() - newSize.height() ) / 2;
 
             //FALL THROUGH
 
         case Middle:
-            newPos.rx() = (screen.width() - newSize.width()) / 2;
+            newPos.rx() = ( screen.width() - newSize.width() ) / 2;
             break;
     }
 
@@ -284,8 +282,8 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     QColor shadowColor;
     {
-        int h,s,v;
-        palette().color(QPalette::Normal, QPalette::Foreground ).getHsv( &h, &s, &v );
+        int h, s, v;
+        palette().color( QPalette::Normal, QPalette::Foreground ).getHsv( &h, &s, &v );
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
@@ -304,7 +302,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     if( !m_cover.isNull() )
     {
         QRect r( rect );
-        r.setTop( (size.height() - m_scaledCover.height()) / 2 );
+        r.setTop( ( size.height() - m_scaledCover.height() ) / 2 );
         r.setSize( m_scaledCover.size() );
 
         p.drawPixmap( r.topLeft(), m_scaledCover );
@@ -320,20 +318,20 @@ OSDWidget::paintEvent( QPaintEvent *e )
         QRect r( rect );
 
         //Align to center...
-        r.setLeft(( rect.left() + rect.width() / 2 ) - star->width() * m_rating / 4 );
+        r.setLeft( ( rect.left() + rect.width() / 2 ) - star->width() * m_rating / 4 );
         r.setTop( rect.bottom() - star->height() );
         graphicsHeight += star->height() + M;
 
-        bool half = m_rating%2;
+        bool half = m_rating % 2;
 
         if( half )
         {
-            QPixmap* halfStar = StarManager::instance()->getHalfStar( m_rating/2 + 1 );
+            QPixmap* halfStar = StarManager::instance()->getHalfStar( m_rating / 2 + 1 );
             p.drawPixmap( r.left() + star->width() * ( m_rating / 2 ), r.top(), *halfStar );
-            star = StarManager::instance()->getStar( m_rating/2 + 1 );
+            star = StarManager::instance()->getStar( m_rating / 2 + 1 );
         }
 
-        for( int i = 0; i < m_rating/2; i++ )
+        for( int i = 0; i < m_rating / 2; i++ )
         {
             p.drawPixmap( r.left() + i * star->width(), r.top(), *star );
         }
@@ -344,17 +342,17 @@ OSDWidget::paintEvent( QPaintEvent *e )
     // Draw "shadow" text effect (black outline)
     if( m_drawShadow )
     {
-        QPixmap pixmap( rect.size() + QSize(10,10) );
+        QPixmap pixmap( rect.size() + QSize( 10, 10 ) );
         pixmap.fill( Qt::black );
 
         QPainter p2( &pixmap );
         p2.setFont( font() );
         p2.setPen( Qt::white );
         p2.setBrush( Qt::white );
-        p2.drawText( QRect(QPoint(5,5), rect.size()), align , m_text );
+        p2.drawText( QRect( QPoint( 5, 5 ), rect.size() ), align, m_text );
         p2.end();
 
-        p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
+        p.drawImage( rect.topLeft() - QPoint( 5, 5 ), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
@@ -367,7 +365,7 @@ void
 OSDWidget::resizeEvent(QResizeEvent *e)
 {
     //setMask(m_background->mask());
-    QWidget::resizeEvent(e);
+    QWidget::resizeEvent( e );
 }
 
 bool
@@ -406,7 +404,7 @@ void
 OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
-    m_screen = (screen >= n) ? n-1 : screen;
+    m_screen = ( screen >= n ) ? n - 1 : screen;
 }
 
 
@@ -436,7 +434,8 @@ OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
     m_dragOffset = event->pos();
 
-    if( event->button() == Qt::LeftButton && !m_dragging ) {
+    if( event->button() == Qt::LeftButton && !m_dragging )
+    {
         grabMouse( Qt::SizeAllCursor );
         m_dragging = true;
     }
@@ -454,7 +453,8 @@ OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
         QDesktopWidget *desktop = QApplication::desktop();
         int currentScreen = desktop->screenNumber( pos() );
 
-        if( currentScreen != -1 ) {
+        if( currentScreen != -1 )
+        {
             // set new data
             m_screen = currentScreen;
             m_y      = QWidget::y();
@@ -478,27 +478,31 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
         QPoint destination = e->globalPos() - m_dragOffset - screen.topLeft();
         int maxY = screen.height() - height() - MARGIN;
-        if( destination.y() < MARGIN ) destination.ry() = MARGIN;
-        if( destination.y() > maxY ) destination.ry() = maxY;
+        if( destination.y() < MARGIN )
+            destination.ry() = MARGIN;
+        if( destination.y() > maxY )
+            destination.ry() = maxY;
 
-        if( eGlobalPosX < (hcenter-snapZone) ) {
+        if( eGlobalPosX < ( hcenter - snapZone ) )
+        {
             m_alignment = Left;
             destination.rx() = MARGIN;
         }
-        else if( eGlobalPosX > (hcenter+snapZone) ) {
+        else if( eGlobalPosX > ( hcenter + snapZone ) )
+        {
             m_alignment = Right;
             destination.rx() = screen.width() - MARGIN - width();
         }
         else {
             const uint eGlobalPosY = e->globalPos().y() - screen.top();
-            const uint vcenter     = screen.height()/2;
+            const uint vcenter     = screen.height() / 2;
 
-            destination.rx() = hcenter - width()/2;
+            destination.rx() = hcenter - width() / 2;
 
-            if( eGlobalPosY >= (vcenter-snapZone) && eGlobalPosY <= (vcenter+snapZone) )
+            if( eGlobalPosY >= ( vcenter - snapZone ) && eGlobalPosY <= ( vcenter + snapZone ) )
             {
                 m_alignment = Center;
-                destination.ry() = vcenter - height()/2;
+                destination.ry() = vcenter - height() / 2;
             }
             else m_alignment = Middle;
         }
@@ -523,8 +527,10 @@ Amarok::OSD::instance()
 }
 
 void
-Amarok::OSD::destroy() {
-    if (s_instance) {
+Amarok::OSD::destroy()
+{
+    if ( s_instance )
+    {
         delete s_instance;
         s_instance = 0;
     }
@@ -559,7 +565,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         if( track->album() && !track->album()->prettyName().isEmpty() )
             text += "\n (" + track->album()->prettyName() + ") ";
         else text += "\n";
-        if( track->length() > 0)
+        if( track->length() > 0 )
             text += Meta::secToPrettyTime( track->length() );
     }
 
@@ -600,7 +606,8 @@ Amarok::OSD::applySettings()
 void
 Amarok::OSD::forceToggleOSD()
 {
-    if ( !isVisible() ) {
+    if ( !isVisible() )
+    {
         const bool b = isEnabled();
         setEnabled( true );
         show( The::engineController()->currentTrack() );
@@ -633,7 +640,7 @@ Amarok::OSD::isMetaDataSpam( const QHash<qint64, QString> &newMetaData )
     if( m_metaDataHistory.size() == 12 )
         m_metaDataHistory.removeLast();
 
-    m_metaDataHistory.insert( 0, newMetaData);
+    m_metaDataHistory.insert( 0, newMetaData );
     return false;
 }
 
