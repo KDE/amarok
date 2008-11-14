@@ -93,10 +93,11 @@ SqlPodcastProvider::loadPodcasts()
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
-    QString command = "SELECT title FROM podcastepisodes WHERE url='%1';";
-    command = command.arg( url.url() );
-
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    QString command = "SELECT title FROM podcastepisodes WHERE url='%1';";
+    command = command.arg( sqlStorage->escape( url.url() ) );
+
     QStringList dbResult = sqlStorage->query( command );
     return !dbResult.isEmpty();
 }
@@ -125,10 +126,12 @@ void
 SqlPodcastProvider::addPodcast(const KUrl & url)
 {
     KUrl kurl = KUrl( url );
+    
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString command = "SELECT title FROM podcastchannels WHERE url='%1';";
-    command = command.arg( kurl.url() );
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    command = command.arg( sqlStorage->escape( kurl.url() ) );
+
     QStringList dbResult = sqlStorage->query( command );
     if( !dbResult.isEmpty() )
     {
