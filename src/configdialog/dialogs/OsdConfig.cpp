@@ -21,7 +21,7 @@
 #include "OsdConfig.h"
 #include "amarokconfig.h"
 #include "Osd.h"
-#include "qstringx.h"
+//#include "QStringx.h"
 
 #include <QDesktopWidget>
 
@@ -55,6 +55,7 @@ OsdConfig::OsdConfig( QWidget* parent )
     connect( kcfg_OsdUseTranslucency, SIGNAL( toggled( bool ) ),
              m_osdPreview,            SLOT( setTranslucent( bool ) ) );
 
+    /*
     Amarok::QStringx text = i18n(
             "<h3>Tags Displayed in OSD</h3>"
             "You can use the following tokens:"
@@ -80,6 +81,7 @@ OsdConfig::OsdConfig( QWidget* parent )
             "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
                 "<pre>%19</pre>"
             "Will not show <b>Score: <i>%score</i></b> if the track has no score." );
+    */
 }
 
 OsdConfig::~OsdConfig()

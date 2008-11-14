@@ -27,7 +27,7 @@
 #include "file/File.h"
 #include "MountPointManager.h"
 #include "QueryMaker.h"
-#include "qstringx.h"
+#include "QStringx.h"
 #include "SqlQueryMaker.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
