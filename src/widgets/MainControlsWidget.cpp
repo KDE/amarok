@@ -34,7 +34,6 @@
 MainControlsWidget::MainControlsWidget( QWidget * parent )
     : QGraphicsView( parent )
 {
-
     setFixedHeight( 67 );
     setFixedWidth( 180 );
     setContentsMargins( 0, 0, 0, 0 );
@@ -42,7 +41,6 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     setFrameStyle( QFrame::NoFrame );
 
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-
 
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -53,20 +51,13 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     p.setColor( QPalette::Base, c );
     setPalette( p );
 
-    QGraphicsScene * scene = new QGraphicsScene();
-
-    //QSvgRenderer *renderer = new QSvgRenderer( KStandardDirs::locate( "data", "amarok/images/default-theme.svg" ) );
-
-
+    QGraphicsScene   *scene  = new QGraphicsScene();
     QGraphicsSvgItem *shadow = new QGraphicsSvgItem( KStandardDirs::locate( "data", "amarok/images/default-theme.svg" ), 0 );
 
-    //shadow->setSharedRenderer( The::svgHandler()->getRenderer() );
-    //shadow->setSharedRenderer( renderer );
     shadow->setElementId( QLatin1String("main_button_shadows") );
     shadow->moveBy( 0.0, 4.0 );
     shadow->setZValue( 1 );
     scene->addItem( shadow );
-
 
     MainControlsButton * backButton = new MainControlsButton( 0 );
     backButton->setSvgPrefix( "back_button" );
@@ -81,7 +72,6 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     m_playPauseButton->moveBy( 43.0, 6.5 );
     m_playPauseButton->setZValue( 10 );
     scene->addItem( m_playPauseButton );
-
 
     MainControlsButton * stopButton = new MainControlsButton( 0 );
     stopButton->setSvgPrefix( "stop_button" );

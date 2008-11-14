@@ -30,12 +30,13 @@ class PopupDropperAction;
 class VolumeWidget;
 
 /**
-A KHBox based toolbar with a nice svg background and takes care of adding any additional controls needed by individual tracks
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    A KHBox based toolbar with a nice svg background and takes care of 
+    adding any additional controls needed by individual tracks
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class MainToolbar : public KHBox, public EngineObserver
 {
+
 public:
     MainToolbar( QWidget * parent );
 
@@ -52,7 +53,6 @@ protected:
       virtual bool eventFilter( QObject*, QEvent* );
       virtual void paletteChange( const QPalette & oldPalette );
       void handleAddActions();
-      //void centerAddActions();
 
 private:
     QWidget            *m_insideBox;
