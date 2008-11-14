@@ -21,13 +21,16 @@
 
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "meta/stream/Stream.h"
 #include "SqlStorage.h"
 
 #include "SqlPlaylistGroup.h"
 
+#include <typeinfo>
+
 using namespace Meta;
 
-SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList & tracks, SqlPlaylistGroupPtr parent )
+SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList & tracks, SqlPlaylistGroupPtr parent, const QString &urlId )
     : SqlPlaylistViewItem()
     , Playlist()
     , m_dbId( -1 )
@@ -35,7 +38,9 @@ SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList & tracks, 
     , m_tracks( tracks )
     , m_name( name )
     , m_description( QString() )
+    , m_urlId( urlId )
     , m_tracksLoaded( true )
+
 {
     saveToDb();
 }
@@ -49,6 +54,7 @@ SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr par
     m_dbId = resultRow[0].toInt();
     m_name = resultRow[2];
     m_description = resultRow[3];
+    m_urlId = resultRow[4];
 
     //loadTracks();
 
@@ -62,11 +68,33 @@ SqlPlaylist::~SqlPlaylist()
 
 bool SqlPlaylist::saveToDb( bool tracks )
 {
+    DEBUG_BLOCK
+            
     int parentId = -1;
     if ( m_parent )
         parentId = m_parent->id();
 
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+
+    //figure out if we have a urlId and if this id is already in the db, if so, update it instead of creating a new one.
+    if ( !m_urlId.isEmpty() ) {
+
+        debug() << "Checking " << m_urlId << " against db"; 
+
+        //check if urlId exists
+        QString query = "SELECT id from playlists WHERE urlid='%1'";
+        query = query.arg( sql->escape( m_urlId ) );
+        QStringList result = sql->query( query );
+        
+        if ( !result.isEmpty() ) {
+
+            //set this id to the already existing one
+            m_dbId =  result.at( 0 ).toInt();
+            debug() << "Got existing playlist with id " << m_dbId;
+            
+        }
+
+    }
 
     if( m_dbId != -1 )
     {
@@ -78,7 +106,8 @@ bool SqlPlaylist::saveToDb( bool tracks )
         if( tracks )
         {
             //delete existing tracks and insert all
-            query = "DELETE FROM TABLE playlist_tracks where playlist_id=%1;";
+            debug() << "Updating existing playlist";
+            query = "DELETE FROM playlist_tracks where playlist_id=%1;";
             query = query.arg( QString::number( m_dbId ) );
             CollectionManager::instance()->sqlStorage()->query( query );
             saveTracks();
@@ -87,12 +116,21 @@ bool SqlPlaylist::saveToDb( bool tracks )
     else
     {
         //insert new
-        QString query = "INSERT INTO playlists ( parent_id, name, description ) VALUES ( %1, '%2', '%3' );";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( m_description ) );
+        debug() << "Creating new playlist";
+        QString query = "INSERT INTO playlists ( parent_id, name, description, urlid ) VALUES ( %1, '%2', '%3', '%4' );";
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_urlId ) );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
         if ( tracks )
             saveTracks();
     }
+
+    //HACK! if this has just been added from the collection scanner, the list is full of "dirty" tracks that might not all have been
+    //properly trackForUrl'ed, so clear the track list so we reload if we ever need them!
+    if ( !m_urlId.isEmpty() ) {
+        m_tracks.clear();
+        m_tracksLoaded = false;
+    }
+    
     return true;
 }
 
@@ -146,9 +184,24 @@ void SqlPlaylist::loadTracks()
         Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
 
         if ( trackPtr ) {
+
+            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )  {
+
+                debug() << "got stream from trackForUrl, setting album to " << row[4];
+
+                MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
+
+                streamTrack->setTitle( row[3] );
+                streamTrack->setAlbum( row[4] );
+                streamTrack->setArtist( row[5] );
+
+            }
+
             m_tracks << trackPtr;
             debug() << "added track: " << trackPtr->name();
+
         }
+
     }
 
     m_tracksLoaded = true;

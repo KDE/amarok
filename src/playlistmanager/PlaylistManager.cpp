@@ -226,9 +226,9 @@ PlaylistManager::typeName( int playlistCategory )
 }
 
 bool
-PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow )
+PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
 {
-    Meta::SqlPlaylist playlist( name, tracks, SqlPlaylistGroupPtr() );
+    Meta::SqlPlaylist playlist( name, tracks, SqlPlaylistGroupPtr(), fromLocation );
     const int newId = playlist.id();
 
     if ( editNow )
@@ -282,7 +282,7 @@ PlaylistManager::save( const QString& fromLocation )
     if( tracks.isEmpty() )
         return false;
 
-    save( tracks, name );
+    save( tracks, name, false, fromLocation );
     return true;
 }
 

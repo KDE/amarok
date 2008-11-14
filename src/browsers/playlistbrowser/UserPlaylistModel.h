@@ -88,6 +88,7 @@ class UserModel : public QAbstractItemModel
 
         void checkTables();
         void createTables();
+        void deleteTables();
 
         static UserModel * s_instance;
 

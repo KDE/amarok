@@ -34,7 +34,7 @@
 
 #include <typeinfo>
 
-static const int USERPLAYLIST_DB_VERSION = 1;
+static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
 PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::s_instance = 0;
@@ -51,13 +51,7 @@ PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
 PlaylistBrowserNS::UserModel::UserModel()
  : QAbstractItemModel()
 {
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
-    if( values.isEmpty() )
-    {
-        //debug() << "creating Playlist Tables";
-        createTables();
-    }
+    checkTables();
 
     m_root = SqlPlaylistGroupPtr( new SqlPlaylistGroup( "root", SqlPlaylistGroupPtr() ) );
 }
@@ -352,7 +346,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
 
 void PlaylistBrowserNS::UserModel::createTables()
 {
-    DEBUG_BLOCK;
+    DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     sqlStorage->query( QString( "CREATE TABLE playlist_groups ("
@@ -367,7 +361,8 @@ void PlaylistBrowserNS::UserModel::createTables()
             " id " + sqlStorage->idType() +
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
-            ", description " + sqlStorage->textColumnType() + " );" ) );
+            ", description " + sqlStorage->textColumnType() +
+            ", urlid " + sqlStorage->exactTextColumnType() + " );" ) );
     sqlStorage->query( "CREATE INDEX parent_playlist ON playlists( parent_id );" );
 
     sqlStorage->query( QString( "CREATE TABLE playlist_tracks ("
@@ -384,8 +379,57 @@ void PlaylistBrowserNS::UserModel::createTables()
     sqlStorage->query( "CREATE INDEX parent_playlist_tracks ON playlist_tracks( playlist_id );" );
     sqlStorage->query( "CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );" );
 
-    sqlStorage->query( "INSERT INTO admin(component,version) "
-            "VALUES('" + key + "'," + QString::number( USERPLAYLIST_DB_VERSION ) + ");" );
+
+
+}
+
+void PlaylistBrowserNS::UserModel::deleteTables()
+{
+
+    DEBUG_BLOCK
+    
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    sqlStorage->query( "DROP INDEX parent_podchannel ON playlist_groups;" );
+    sqlStorage->query( "DROP INDEX parent_playlist ON playlists;" );
+    sqlStorage->query( "DROP INDEX parent_playlist_tracks ON playlist_tracks;" );
+    sqlStorage->query( "DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;" );
+
+    sqlStorage->query( "DROP TABLE playlist_groups;" );
+    sqlStorage->query( "DROP TABLE playlists;" );
+    sqlStorage->query( "DROP TABLE playlist_tracks;" );
+
+}
+
+void PlaylistBrowserNS::UserModel::checkTables()
+{
+
+    DEBUG_BLOCK
+            
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
+    if( values.isEmpty() )
+    {
+        //debug() << "creating Playlist Tables";
+        createTables();
+        
+        sqlStorage->query( "INSERT INTO admin(component,version) "
+                "VALUES('" + key + "'," + QString::number( USERPLAYLIST_DB_VERSION ) + ");" );
+    } else {
+
+        int dbVersion = values.at( 0 ).toInt();
+        if ( dbVersion != USERPLAYLIST_DB_VERSION ) {
+            //ah screw it, we do not have any stable releases of this out, so just redo the db. This wil also make sure that we do not
+            //get duplicate playlists from files due to one having a urlid and the other not having one
+            deleteTables();
+            createTables();
+
+            sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
+        }
+
+    }
+    
+
 
 }
 
@@ -444,5 +488,9 @@ PlaylistBrowserNS::UserModel::createNewStream( const QString& streamName, const 
     delete stream;
     reloadFromDb();
 }
+
+
+
+
 
 #include "UserPlaylistModel.moc"

@@ -116,16 +116,16 @@ Meta::SqlPlaylistList SqlPlaylistGroup::childPlaylists() const
     //DEBUG_BLOCK
     //debug() << "my name: " << m_name << " my pointer: " << this;
     if ( !m_hasFetchedChildPlaylists ) {
-        QString query = "SELECT id, parent_id, name, description FROM playlists where parent_id=%1 ORDER BY name;";
+        QString query = "SELECT id, parent_id, name, description, urlid FROM playlists where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
         //debug() << "Result: " << result;
-        int resultRows = result.count() / 4;
+        int resultRows = result.count() / 5;
 
         for( int i = 0; i < resultRows; i++ )
         {
-            QStringList row = result.mid( i*4, 4 );
+            QStringList row = result.mid( i*5, 5 );
             SqlPlaylistGroup* mutableThis = const_cast<SqlPlaylistGroup*>( this );
             m_childPlaylists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( row, SqlPlaylistGroupPtr( mutableThis ) ) );
         }

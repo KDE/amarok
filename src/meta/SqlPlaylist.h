@@ -44,7 +44,7 @@ class SqlPlaylist : public SqlPlaylistViewItem, public Playlist
 {
 public:
     //SqlPlaylist( int id );
-    SqlPlaylist( const QString & name, const TrackList& tracks, SqlPlaylistGroupPtr parent );
+    SqlPlaylist( const QString & name, const TrackList& tracks, SqlPlaylistGroupPtr parent, const QString &urlId = QString() );
     SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent );
 
     ~SqlPlaylist();
@@ -84,6 +84,7 @@ private:
     Meta::TrackList m_tracks;
     QString m_name;
     QString m_description;
+    QString m_urlId;
 
     bool m_tracksLoaded;
 
