@@ -42,7 +42,7 @@ This document explains how to install Amarok 2 from SVN in your home directory -
     cmake -DCMAKE_INSTALL_PREFIX=$HOME/kde -DCMAKE_BUILD_TYPE=debugfull $HOME/kde/src/amarok
     make install
 
-* Updating KDE Config
+* Updating KDE Config:
     kbuildsycoca4 --noincremental
 
 
