@@ -176,6 +176,8 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
 
 MySqlEmbeddedCollection::~MySqlEmbeddedCollection()
 {
+    DEBUG_BLOCK
+
     mysql_close(m_db);
 }
 
