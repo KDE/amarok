@@ -349,9 +349,7 @@ App::handleCliArgs() //static
         }
     }
 
-    //FIXME Debug output always enabled for now. MUST BE REVERTED BEFORE RELEASE.
-    Amarok::config().writeEntry( "Debug Enabled", true );
-    //Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
 
     static bool firstTime = true;
     if( !firstTime && !haveArgs )
