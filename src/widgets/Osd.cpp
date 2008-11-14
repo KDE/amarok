@@ -560,11 +560,12 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     {
         setRating( track->rating() );
         text = track->prettyName();
-        if( track->artist() )
+        if( track->artist() && !track->artist()->prettyName().isEmpty() )
             text = track->artist()->prettyName() + " - " + text;
         if( track->album() && !track->album()->prettyName().isEmpty() )
             text += "\n (" + track->album()->prettyName() + ") ";
-        else text += "\n";
+        else
+            text += "\n";
         if( track->length() > 0 )
             text += Meta::secToPrettyTime( track->length() );
     }
