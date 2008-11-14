@@ -140,8 +140,6 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
-    The::engineController()->stop( true ); //Needed to prevent libunicorn crashing when unloading
-
     CollectionManager::instance()->removeUnmanagedCollection( m_collection );
     ms_service = 0;
     delete m_collection;
