@@ -85,9 +85,8 @@ void WikipediaEngine::update()
     m_currentTrack = currentTrack;
     subscribeTo( currentTrack );
 
-    if ( !currentTrack ) {
+    if ( !currentTrack )
         return;
-    }
     
     DataEngine::Data data;
 
@@ -138,16 +137,17 @@ void WikipediaEngine::update()
 
     //Hack to make wiki searches work with magnatune preview tracks
 
-    if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) ) {
+    if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) )
+    {
         tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
 
         int index = tmpWikiStr.indexOf( '-' );
-        if ( index != -1 ) {
+        if ( index != -1 )
             tmpWikiStr = tmpWikiStr.left (index - 1);
-        }
     }
 
-    if( m_wikiCurrentEntry == tmpWikiStr ) {
+    if( m_wikiCurrentEntry == tmpWikiStr )
+    {
         debug() << "Same entry requested again. Ignoring.";
         return;
     }
@@ -189,14 +189,14 @@ WikipediaEngine::wikiResult( KJob* job )
     //debug() << "reply: " << m_wiki;
 
     // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
-    if ( m_wiki.contains( "charset=utf-8"  ) ) {
+    if ( m_wiki.contains( "charset=utf-8"  ) )
         m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
-    }
 
     if( m_wiki.contains( "var wgArticleId = 0" ) )
     {
 
-        if ( m_triedRefinedSearch ) {
+        if ( m_triedRefinedSearch )
+        {
             debug() << "We already tried a refined search. Lets end this madness...";
             //FIXME: Re-enable after string freeze
             //setData( "wikipedia", "message", i18n( "No information found..." ) );
@@ -333,53 +333,37 @@ WikipediaEngine::wikiResult( KJob* job )
     m_wikiJob = 0;
 }
 
-QString
+inline QString
 WikipediaEngine::wikiLocale() const
 {
-    if( m_wikiLocale.isEmpty() )
-        return QString( "en" );
-
-    return m_wikiLocale;
+    return !m_wikiLocale.isEmpty() ? m_wikiLocale : QString( "en" );
 }
 
-QString
+inline QString
 WikipediaEngine::wikiArtistPostfix()
 {
     if( wikiLocale() == "en" )
         return " (band)";
     else if( wikiLocale() == "de" )
         return " (Band)";
-    else
-        return "";
+    return QString();
 }
 
-QString
+inline QString
 WikipediaEngine::wikiAlbumPostfix()
 {
-    if( wikiLocale() == "en" )
-        return " (album)";
-
-    return QString();
+    return wikiLocale() == "en" ? " (album)" : QString();
 }
 
-QString
+inline QString
 WikipediaEngine::wikiTrackPostfix()
 {
-    if( wikiLocale() == "en" )
-        return " (song)";
-
-    return QString();
+    return wikiLocale() == "en" ? " (song)" : QString();
 }
 
-QString
+inline QString
 WikipediaEngine::wikiUrl( const QString &item ) const
 {
-    /*return QString( "http://www.google.com/search?q=site:%1.wikipedia.org " )
-            .arg( wikiLocale() )
-            + KUrl::toPercentEncoding( item, "/" )
-            + "&btnI=Lucky";*/
-
-
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" );
 }
 
