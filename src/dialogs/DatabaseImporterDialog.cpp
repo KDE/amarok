@@ -58,6 +58,9 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     banshee->setEnabled( false );
     rhythmbox->setEnabled( false );
 
+    banshee->setHidden( true );
+    rhythmbox->setHidden( true );
+
     m_buttons->addButton( amarok );
     m_buttons->addButton( itunes );
     m_buttons->addButton( banshee );
