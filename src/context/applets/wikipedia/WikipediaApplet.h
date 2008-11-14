@@ -49,7 +49,6 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
-
     Plasma::FrameSvg* m_theme;
     Context::Svg* m_header;
     qreal m_aspectRatio;

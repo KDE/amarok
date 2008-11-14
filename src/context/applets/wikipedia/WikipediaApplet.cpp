@@ -160,16 +160,13 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
     if( data.size() == 0 ) return;
 
-    if( data.contains( "page" ) ) {
+    if( data.contains( "page" ) )
         m_webView->setHtml( data[ "page" ].toString(), KUrl( QString() ) );
-    } else {
+    else
         m_webView->setHtml( data[ data.keys()[ 0 ] ].toString(), KUrl( QString() ) ); // set data
 
-    }
-
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
-
-    connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
+    connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
     if( data.contains( "label" ) )
         m_label = data[ "label" ].toString() + ':';
