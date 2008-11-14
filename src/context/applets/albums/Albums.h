@@ -16,7 +16,7 @@
 #define ALBUMS_APPLET_H
 
 #include "AlbumsView.h"
-#include <collection/QueryMaker.h>
+
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 #include <meta/Meta.h>
@@ -78,8 +78,6 @@ private:
 
     QGraphicsSimpleTextItem *m_headerText;
     QVariantList m_albumsTracks;
-    
-    QueryMaker *m_qm;
 };
 
 K_EXPORT_AMAROK_APPLET( albums, Albums )
