@@ -75,16 +75,14 @@ void WikipediaApplet::init()
     m_webView = new Plasma::WebView( this );
 
     m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+    m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
+    connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
     //make background transparent
-
     QPalette p = m_webView->palette();
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
     m_webView->setPalette( p );
-
-    //m_wikiPage = new QGraphicsProxyWidget( this );
-    //m_wikiPage->setWidget( m_webView );
 
     QFont labelFont;
     labelFont.setBold( true );
@@ -165,9 +163,6 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     else
         m_webView->setHtml( data[ data.keys()[ 0 ] ].toString(), KUrl( QString() ) ); // set data
 
-    m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
-    connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
-
     if( data.contains( "label" ) )
         m_label = data[ "label" ].toString() + ':';
     else
@@ -193,10 +188,6 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     p->restore();
 }
 
-
-#include "WikipediaApplet.moc"
-
-
 QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     Q_UNUSED( which )
@@ -209,3 +200,4 @@ QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint 
     return constraint;
 }
 
+#include "WikipediaApplet.moc"
