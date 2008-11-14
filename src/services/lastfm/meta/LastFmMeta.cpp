@@ -478,9 +478,9 @@ Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     return type == Meta::Capability::LastFm
                 || type == Meta::Capability::MultiPlayable
-                || Meta::Capability::SourceInfo
-                || Meta::Capability::CurrentTrackActions
-                || Meta::Capability::StreamInfo;
+                || type == Meta::Capability::SourceInfo
+                || type == Meta::Capability::CurrentTrackActions
+                || type == Meta::Capability::StreamInfo;
 }
 
 Meta::Capability*
