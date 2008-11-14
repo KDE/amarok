@@ -28,7 +28,7 @@ if( APPLE )
 endif( APPLE )
 
 if( WIN32 )
-    set( amarok_service_liblastfm_EXTRASRCS
+    set( amarok_service_liblastfm_core_EXTRASRCS
         core/win/Utils.cpp
         core/NdisEvents_win.cpp
         core/WmiSink_win.cpp
