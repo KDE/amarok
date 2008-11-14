@@ -35,6 +35,7 @@
 #include <KAction>
 #include <KMenu>
 
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
 #include <QPoint>
@@ -132,34 +133,54 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
     ongoingDrags = false;
 }
 
+void
+PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
+{
+    switch( event->key() )
+    {
+        case Qt::Key_Delete:
+            slotDelete();
+            return;
 
-QList< PopupDropperAction * > PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList indices )
+        case Qt::Key_F2:
+            slotRename();
+            return;
+    }
+    QTreeView::keyPressEvent( event );
+}
+
+QList<PopupDropperAction *>
+PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList indices )
 {
 
     QList< PopupDropperAction * > actions;
     
-    if ( m_appendAction == 0 ) {
+    if ( m_appendAction == 0 )
+    {
         m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
         connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
     }
     
-    if ( m_loadAction == 0 ) {
+    if ( m_loadAction == 0 )
+    {
         m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 
-
-    if ( m_deleteAction == 0 ) {
+    if ( m_deleteAction == 0 )
+    {
         m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
     }
 
-    if ( m_renameAction == 0 ) {
+    if ( m_renameAction == 0 )
+    {
         m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
     
-    if ( indices.count() > 0 ) {
+    if ( indices.count() > 0 )
+    {
         actions << m_appendAction;
         actions << m_loadAction;
         //menu.addSeparator();
@@ -168,10 +189,8 @@ QList< PopupDropperAction * > PlaylistBrowserNS::UserPlaylistTreeView::createCom
     if ( indices.count() == 1 )
         actions << m_renameAction;
 
-    if ( indices.count() > 0 ) {
+    if ( indices.count() > 0 )
         actions << m_deleteAction;
-    }
-
 
     return actions;
 }
@@ -199,12 +218,16 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotAppend()
             Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
         }
+    }
 }
 
 
 void PlaylistBrowserNS::UserPlaylistTreeView::slotDelete()
 {
     DEBUG_BLOCK
+
+    //TODO FIXME Confirmation of delete
+
     foreach( SqlPlaylistViewItemPtr item, m_currentItems )
     {
         debug() << "deleting " << item->name();

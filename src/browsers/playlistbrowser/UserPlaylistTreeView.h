@@ -36,7 +36,8 @@ namespace PlaylistBrowserNS {
 */
 class UserPlaylistTreeView : public QTreeView
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     UserPlaylistTreeView( QWidget *parent = 0 );
 
@@ -45,7 +46,7 @@ public:
     void setNewGroupAction( KAction * action );
 
 protected:
-
+    void keyPressEvent( QKeyEvent *event );
     void mousePressEvent( QMouseEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
     void mouseDoubleClickEvent( QMouseEvent *event );
@@ -54,32 +55,27 @@ protected:
     void contextMenuEvent( QContextMenuEvent* event );
 
 private slots:
-
-    //void itemActivated( const QModelIndex & index );
-
     void slotLoad();
     void slotAppend();
     void slotDelete();
     void slotRename();
 
 private:
-
     QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
 
     PopupDropper* m_pd;
 
-    PopupDropperAction * m_appendAction;
-    PopupDropperAction * m_loadAction;
+    PopupDropperAction *m_appendAction;
+    PopupDropperAction *m_loadAction;
 
-    PopupDropperAction * m_deleteAction;
-    PopupDropperAction * m_renameAction;
+    PopupDropperAction *m_deleteAction;
+    PopupDropperAction *m_renameAction;
 
-    KAction * m_addGroupAction;
+    KAction *m_addGroupAction;
 
     QSet<SqlPlaylistViewItemPtr> m_currentItems;
 
     QPoint m_dragStartPosition;
-
 };
 
 }
