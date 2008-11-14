@@ -61,6 +61,7 @@ private slots:
     void slotRename();
 
 private:
+    QSet<SqlPlaylistViewItemPtr> selectedItems() const;
     QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
 
     PopupDropper* m_pd;
@@ -72,8 +73,6 @@ private:
     PopupDropperAction *m_renameAction;
 
     KAction *m_addGroupAction;
-
-    QSet<SqlPlaylistViewItemPtr> m_currentItems;
 
     QPoint m_dragStartPosition;
 };

@@ -198,7 +198,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList in
 void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad()
 {
     DEBUG_BLOCK
-    foreach( SqlPlaylistViewItemPtr item, m_currentItems )
+    foreach( SqlPlaylistViewItemPtr item, selectedItems() )
     {
         if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
         {
@@ -211,7 +211,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad()
 void PlaylistBrowserNS::UserPlaylistTreeView::slotAppend()
 {
     DEBUG_BLOCK
-    foreach( SqlPlaylistViewItemPtr item, m_currentItems )
+    foreach( SqlPlaylistViewItemPtr item, selectedItems() )
     {
         if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
         {
@@ -228,7 +228,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotDelete()
 
     //TODO FIXME Confirmation of delete
 
-    foreach( SqlPlaylistViewItemPtr item, m_currentItems )
+    foreach( SqlPlaylistViewItemPtr item, selectedItems() )
     {
         debug() << "deleting " << item->name();
         item->removeFromDb();
@@ -256,17 +256,22 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
     foreach( PopupDropperAction * action, actions )
         menu.addAction( action );
 
-    if ( indices.count() == 0 )
+    if( indices.count() == 0 )
         menu.addAction( m_addGroupAction );
 
-    m_currentItems.clear();
-    foreach( const QModelIndex &index, indices )
+    menu.exec( mapToGlobal( event->pos() ) );
+}
+
+QSet<SqlPlaylistViewItemPtr>
+PlaylistBrowserNS::UserPlaylistTreeView::selectedItems() const
+{
+    QSet<SqlPlaylistViewItemPtr> selected;
+    foreach( const QModelIndex &index, selectionModel()->selectedIndexes() )
     {
         if( index.isValid() && index.internalPointer() )
-            m_currentItems.insert( PlaylistBrowserNS::UserModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>() );
-    }
-
-    menu.exec( mapToGlobal( event->pos() ) );
+            selected.insert( PlaylistBrowserNS::UserModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>() );
+    } 
+    return selected;
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
