@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0-rc1
   FEATURES:
+    * Playlist browser items can be deleted and renamed using the keyboard.
+      (BR 175116)
     * Basic and Advanced view when editing a filename scheme are synchronized.
     * Added delete button to Advanced view for defining a filename scheme.
     * Importer for iTunes libraries now allows you to import your statistics
