@@ -65,6 +65,7 @@ private:
     QString wikiArtistPostfix();
     QString wikiAlbumPostfix();
     QString wikiTrackPostfix();
+    QString wikiSiteUrl();
     QString wikiUrl( const QString& item ) const;
     QString wikiLocale() const;
     

@@ -289,9 +289,12 @@ WikipediaEngine::wikiResult( KJob* job )
 
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
-    //m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" +m_wikiBaseUrl );
     m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + '#' );
 
+    // Make sure that the relative links inside the wikipedia HTML is forcibly made into absolute links (yes, this is deep linking, but we're showing wikipedia data as wikipedia data, not stealing any credz here)
+    m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" + wikiSiteUrl() );
+    m_wiki.replace( QRegExp( "src= *\"/" ), "src=\"" + wikiSiteUrl() );
+    
     QString m_wikiHTMLSource = "<html><body>\n";
     m_wikiHTMLSource.append( m_wiki );
     if ( !m_wikiLanguages.isEmpty() )
@@ -366,6 +369,12 @@ inline QString
 WikipediaEngine::wikiUrl( const QString &item ) const
 {
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" );
+}
+
+inline QString
+WikipediaEngine::wikiSiteUrl()
+{
+    return QString( "http://%1.wikipedia.org/" ).arg( wikiLocale() );
 }
 
 void
