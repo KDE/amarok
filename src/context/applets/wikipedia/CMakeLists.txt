@@ -14,4 +14,4 @@ target_link_libraries(amarok_context_applet_wikipedia amaroklib amarokplasma ${Q
 install(TARGETS amarok_context_applet_wikipedia DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-wikipedia.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(FILES amarok-wikipedia.svg amarok-wikipediaheader.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
-install(FILES WikipediaCustomStyle.css DESTINATION ${DATA_INSTALL_DIR}/amarok/data )
+install(FILES WikipediaCustomStyle.css bullet.gif DESTINATION ${DATA_INSTALL_DIR}/amarok/data )
