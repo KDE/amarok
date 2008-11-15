@@ -82,7 +82,7 @@ namespace Amarok
      * @param url The URL to be opened in the browser.
      * @return True if the browser could be started.
      */
-    bool invokeBrowser( const QString& url ); //defined in app.cpp
+    AMAROK_EXPORT bool invokeBrowser( const QString& url ); //defined in app.cpp
 
     /**
      * Compute score for a track that has finished playing.

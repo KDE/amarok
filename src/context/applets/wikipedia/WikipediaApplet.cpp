@@ -20,7 +20,6 @@
 #include <plasma/theme.h>
 
 #include <KStandardDirs>
-#include <KToolInvocation>
 
 #include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
@@ -115,7 +114,7 @@ WikipediaApplet::linkClicked( const QUrl &url )
     DEBUG_BLOCK
     debug() << "URL: " << url;
 
-    KToolInvocation::invokeBrowser( url.toString() );
+    Amarok::invokeBrowser( url.toString() );
 }
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
