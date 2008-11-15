@@ -24,6 +24,7 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Multiple fixes and improvements for the Wikipedia applet.
     * Playback no longer stops when Last.Fm service config is closed. (BR 174943)
     * Fix issue with tracks from SQL playlists that were added from collection
       scanning not having proper metadata until after a restart.
