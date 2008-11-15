@@ -59,9 +59,8 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     addGenre( friendsPersonalPtr );
 
     // Only show these if the user is a subscriber.
-    // Note: isSubscriber is a method we added locally to libUnicorn, if libUnicorn gets bumped we may need to readd if last.fm doesn't
     QStringList lastfmPersonal;
-    lastfmPersonal << "personal" << "loved" << "neighbours";
+    lastfmPersonal << "personal" << "recommended" <<  "loved" << "neighbours";
 
     foreach( const QString &station, lastfmPersonal )
     {

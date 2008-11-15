@@ -387,6 +387,10 @@ Track::streamName() const
                 else if( elements[3] == "loved" )
                     return i18n( "%1's Loved Radio", elements[2] );
                     
+                // lastfm://user/<user>/recommended
+                else if( elements.size() < 5 && elements[3] == "recommended" )
+                    return i18n( "%1's Recommended Radio", elements[2] );    
+                
                 // lastfm://user/<user>/recommended/<popularity>
                 else if( elements.size() >= 5 && elements[3] == "recommended" )
                     return i18n( "%1's Recommended Radio (Popularity %2)", elements[2], elements[4] );
