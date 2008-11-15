@@ -276,7 +276,8 @@ WikipediaEngine::wikiResult( KJob* job )
 
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
     m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString() );
-    m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
+    // We need to leave the classes behind, otherwise styling it ourselves gets really nasty and tedious and roughly impossible to do in a sane maner
+    //m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
     // let's remove the form elements, we don't want them.
     m_wiki.replace( QRegExp( "<input[^>]*>" ), QString() );
     m_wiki.replace( QRegExp( "<select[^>]*>" ), QString() );
