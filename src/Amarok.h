@@ -41,7 +41,7 @@ namespace Amarok
     const int VOLUME_SENSITIVITY = 30; //for mouse wheels
     const int GUI_THREAD_ID = 0;
 
-    extern QMutex globalDirsMutex; // defined in app.cpp
+    extern QMutex globalDirsMutex; // defined in App.cpp
 
     namespace ColorScheme
     {
@@ -67,7 +67,7 @@ namespace Amarok
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
               While we don`t fix it properly, use it like this: amarok::config( Group )->readEntry( ... ) */
-    AMAROK_EXPORT KConfigGroup config( const QString &group = "General" ); //defined in app.cpp
+    AMAROK_EXPORT KConfigGroup config( const QString &group = "General" ); //defined in App.cpp
 
     /**
      * @return the KActionCollection used by Amarok
@@ -75,14 +75,14 @@ namespace Amarok
      * you don't try to use this before then, but we've taken steps to prevent
      * this eventuality - you should be safe.
      */
-    KActionCollection *actionCollection(); //defined in app.cpp
+    KActionCollection *actionCollection(); //defined in App.cpp
 
     /**
      * Invoke the external web browser set in Amarok's configuration.
      * @param url The URL to be opened in the browser.
      * @return True if the browser could be started.
      */
-    AMAROK_EXPORT bool invokeBrowser( const QString& url ); //defined in app.cpp
+    AMAROK_EXPORT bool invokeBrowser( const QString& url ); //defined in App.cpp
 
     /**
      * Compute score for a track that has finished playing.
@@ -103,13 +103,13 @@ namespace Amarok
     /**
      * The mainWindow is the playlistWindow
      */
-    AMAROK_EXPORT QWidget *mainWindow(); //defined in app.cpp
+    AMAROK_EXPORT QWidget *mainWindow(); //defined in App.cpp
 
     /**
      * Allocate one on the stack, and it'll set the busy cursor for you until it
      * is destroyed
      */
-    class OverrideCursor { //defined in app.cpp
+    class OverrideCursor { //defined in App.cpp
     public:
         OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
        ~OverrideCursor();
@@ -122,7 +122,7 @@ namespace Amarok
      */
     AMAROK_EXPORT QString saveLocation( const QString &directory = QString() ); //defined in collectionreader.cpp
 
-    KIO::Job *trashFiles( const KUrl::List &files ); //defined in app.cpp
+    KIO::Job *trashFiles( const KUrl::List &files ); //defined in App.cpp
 
     /**
      * For recursively expanding the contents of a directory into a KUrl::List
@@ -183,7 +183,7 @@ namespace Amarok
     */
     int databaseTypeCode( const QString type ); //defined in configdialog.cpp
 
-    void setUseScores( bool use ); //defined in app.cpp
+    void setUseScores( bool use ); //defined in App.cpp
     void setUseRatings( bool use );
 
     bool repeatNone(); //defined in actionclasses.cpp
@@ -211,21 +211,21 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString cleanPath( const QString &path ); //defined in app.cpp
+    AMAROK_EXPORT QString cleanPath( const QString &path ); //defined in App.cpp
 
     /**
      * Replaces all non-ASCII characters with '_'.
      * @param path The original path.
      * @return The ASCIIfied path.
      */
-    AMAROK_EXPORT QString asciiPath( const QString &path ); //defined in app.cpp
+    AMAROK_EXPORT QString asciiPath( const QString &path ); //defined in App.cpp
 
     /**
      * Transform path into one valid on VFAT file systems
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString vfatPath( const QString &path ); //defined in app.cpp
+    AMAROK_EXPORT QString vfatPath( const QString &path ); //defined in App.cpp
 
     /**
      * Compare both strings from left to right and remove the common part from input
