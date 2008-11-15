@@ -89,8 +89,8 @@ macro_log_feature( GOBJECT_FOUND "gobject" "Required by mp3tunes." "http://www.g
 macro_optional_find_package(Loudmouth)
 macro_log_feature( LOUDMOUTH_FOUND "loudmouth" "Loudmouth is the communication backend needed by mp3tunes for synching." "http://www.loudmouth-project.org" FALSE "" "" )
 
-find_package(KdeMultimedia)
-macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
+#find_package(KdeMultimedia)
+#macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
 
 macro_optional_find_package(Soprano)
 macro_log_feature( Soprano_FOUND "soprano" "Soprano is a RDF framework required by Nepomuk Collection" "http://soprano.sourceforge.net" FALSE "2.1.0" "")
