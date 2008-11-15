@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-rc1
   FEATURES:
+    * Users' Recommended radio is now shown in the Last.Fm Service
     * Playlist browser items can be deleted and renamed using the keyboard.
       (BR 175116)
     * Basic and Advanced view when editing a filename scheme are synchronized.
