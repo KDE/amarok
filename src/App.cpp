@@ -817,9 +817,10 @@ namespace Amarok
     bool invokeBrowser( const QString& url )
     {
         //URL can be in whatever forms KUrl understands - ie most.
-        const QString cmd = KShell::quoteArg(AmarokConfig::externalBrowser())
-            + ' ' + KShell::quoteArg(KUrl( url ).url());
-        return (KRun::runCommand( cmd, 0L ) > 0);
+        const QString cmd = KShell::quoteArg( AmarokConfig::externalBrowser() )
+                            + ' ' + KShell::quoteArg( KUrl( url ).url() );
+
+        return ( KRun::runCommand( cmd, 0L ) > 0 );
     }
 
     namespace ColorScheme
