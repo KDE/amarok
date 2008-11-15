@@ -75,10 +75,6 @@ void WikipediaApplet::init()
 
     m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
-
-    // Prevent Plasma from opening links in the WebView, since we only want to open links in an external browser:
-    disconnect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ), 0, 0 );
-
     connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
     //make background transparent
