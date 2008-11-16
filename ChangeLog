@@ -25,6 +25,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Podcast episodes and channels can be dragged directly from the
+      playlistbrowser onto the playlist. (BR 175162)
     * Multiple fixes and improvements for the Wikipedia applet.
     * Playback no longer stops when Last.Fm service config is closed. (BR 174943)
     * Fix issue with tracks from SQL playlists that were added from collection
