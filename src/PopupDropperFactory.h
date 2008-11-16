@@ -21,7 +21,7 @@
 #define POPUPDROPPERFACTORY_H
 
 #include "amarok_export.h"
-#include "context/popupdropper/PopupDropper.h"
+#include "context/popupdropper/popupdropper/PopupDropper.h"
 
 /**
 A central place for creating a Pud that matches system colors

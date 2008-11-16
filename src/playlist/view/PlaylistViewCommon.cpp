@@ -27,7 +27,7 @@
 #include "playlist/PlaylistModel.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/CurrentTrackActionsCapability.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 
 #include <QObject>
 #include <QModelIndex>

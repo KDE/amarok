@@ -22,7 +22,7 @@
 #include "CollectionManager.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
 #include "SvgHandler.h"

@@ -18,7 +18,7 @@
 #include "Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 #include "dialogs/TagDialog.h"
 #include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistController.h"

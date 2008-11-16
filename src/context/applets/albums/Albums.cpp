@@ -22,7 +22,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
