@@ -1,0 +1,12 @@
+Please see the LICENSE file for important license information.
+
+This is the PopupDropper, or PUD.  It is a Qt4-only library that can be added to almost any Qt4.4+ program to provide a neat drag 'n drop feature: when a drag is started, an overlay appears (runs on top of any QWidget) with sections that the dragged items can be dropped onto for various actions.  Both drop and hover actions are supported.  It is very highly customizable.
+
+The library name is pud.
+
+The first usage of the PUD is in the amazing Amarok project version 2.0 ( http://amarok.kde.org ), and it provides an excellent way to see many of the capabilities of the library, as well as how it can be integrated (both code and functionality-wise) into your own project.  Another good and very simple way is to build the modified Qt drag 'n drop robot example in the testapp directory, and play around in there.
+
+There is no official release of the PUD code yet, and neither binary nor API compatibility is guaranteed.  It is a good idea to give the author a buzz at mitchell@kde.org and let him know if you are using it, so that he can keep you informed of any major changes.
+
+Doxygen comments are in the works -- I promise.
+

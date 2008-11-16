@@ -140,17 +140,17 @@ install(FILES
 ########### next target ###############
 
 set(amarokpud_LIB_SRCS
-    popupdropper/PopupDropper.cpp
-    popupdropper/PopupDropperAction.cpp
-    popupdropper/PopupDropperItem.cpp
-    popupdropper/PopupDropperView.cpp
+    popupdropper/popupdropper/PopupDropper.cpp
+    popupdropper/popupdropper/PopupDropperAction.cpp
+    popupdropper/popupdropper/PopupDropperItem.cpp
+    popupdropper/popupdropper/PopupDropperView.cpp
 )
 
 QT4_AUTOMOC(
-    popupdropper/PopupDropper.cpp
-    popupdropper/PopupDropperAction.cpp
-    popupdropper/PopupDropperItem.cpp
-    popupdropper/PopupDropperView.cpp
+    popupdropper/popupdropper/PopupDropper.cpp
+    popupdropper/popupdropper/PopupDropperAction.cpp
+    popupdropper/popupdropper/PopupDropperItem.cpp
+    popupdropper/popupdropper/PopupDropperView.cpp
 )
 
 ADD_LIBRARY(amarokpud SHARED ${amarokpud_LIB_SRCS})
