@@ -22,8 +22,8 @@
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 
-#include <kurl.h>
 #include <KLocale>
+#include <KUrl>
 
 #include <QDate>
 #include <QSharedData>
@@ -60,7 +60,6 @@ enum Type
 class PodcastMetaCommon
 {
     public:
-
         PodcastMetaCommon() {};
         virtual ~PodcastMetaCommon() {}
 
@@ -192,7 +191,6 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         int m_fileSize; //the size tag from the enclosure
         int m_sequenceNumber; //number of the episode
         bool m_isNew; //listened to or not?
-
 };
 
 class PodcastChannel : public PodcastMetaCommon, public Playlist
@@ -279,8 +277,6 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
 }
 
-// Q_DECLARE_METATYPE( Meta::PodcastMetaCommonPtr )
-// Q_DECLARE_METATYPE( Meta::PodcastMetaCommonList )
 Q_DECLARE_METATYPE( Meta::PodcastEpisodePtr )
 Q_DECLARE_METATYPE( Meta::PodcastEpisodeList )
 Q_DECLARE_METATYPE( Meta::PodcastChannelPtr )
