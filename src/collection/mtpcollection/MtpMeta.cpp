@@ -30,7 +30,7 @@
 #include "meta/CustomActionsCapability.h"
 #include "meta/UpdateCapability.h"
 
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 
 #include <KIcon>
 #include <KTemporaryFile>
@@ -78,12 +78,12 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
             MtpCollection *coll = dynamic_cast<MtpCollection*>( m_track->collection() );
 
             // Setup the remove action
-            
+
             PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "amarok_remove" ), i18n( "&Remove from MTP Device" ), 0 );
 
             debug() << "Remove-action created";
 
-            
+
 
             // set track to be deleted
 
@@ -95,7 +95,7 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
                      coll, SLOT(deleteTrackToDelete()) );
 
             // Add the action to the list of custom actions
-            
+
             m_actions.append( removeAction );
 
 
@@ -104,7 +104,7 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
             // node of the tree, not every individual track
 
             // Setup the disconnect action
-            
+
             PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the MTP Device" ), 0 );
 
             debug() << "Disconnect-action created";
@@ -121,7 +121,7 @@ class CustomActionsCapabilityMtp : public Meta::CustomActionsCapability {
             debug() << "Disconnect action appended to local QList";
 
     }
-    
+
         virtual ~CustomActionsCapabilityMtp() {}
 
         virtual QList< PopupDropperAction *> customActions() const {
@@ -493,19 +493,19 @@ MtpTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     DEBUG_BLOCK
 // TODO: NYI
-            
-        
+
+
         switch(  type )
         {
-            
-            
+
+
         case Meta::Capability::Editable:
             return true;
         case Meta::Capability::CustomActions:
             return true;
         case Meta::Capability::Updatable:
             return true;
-            
+
 
         default:
             return false;
@@ -520,7 +520,7 @@ MtpTrack::asCapabilityInterface( Meta::Capability::Type type )
         {
         case Meta::Capability::Editable:
             return new EditCapabilityMtp( this );
-            
+
         case Meta::Capability::CustomActions:
             return new CustomActionsCapabilityMtp( this );
         case Meta::Capability::Updatable:
@@ -549,10 +549,10 @@ MtpTrack::setAlbum( const QString &newAlbum )
         albumMap.remove( albumPtr->name() );
 
     // change to a new album
-    
+
     // check for the existence of the album to be set to,
     // if album exists, reuse, else create
-    
+
     if (  albumMap.contains( newAlbum ) )
     {
         albumPtr = MtpAlbumPtr::staticCast( albumMap.value(  newAlbum ) );
@@ -593,10 +593,10 @@ MtpTrack::setArtist( const QString &newArtist )
         artistMap.remove( artistPtr->name() );
 
     // change to a new artist
-    
+
     // check for the existence of the artist to be set to,
     // if artist exists, reuse, else create
-    
+
     if (  artistMap.contains( newArtist ) )
     {
         artistPtr = MtpArtistPtr::staticCast( artistMap.value(  newArtist ) );
@@ -637,10 +637,10 @@ MtpTrack::setGenre( const QString &newGenre )
         genreMap.remove( genrePtr->name() );
 
     // change to a new genre
-    
+
     // check for the existence of the genre to be set to,
     // if genre exists, reuse, else create
-    
+
     if (  genreMap.contains( newGenre ) )
     {
         genrePtr = MtpGenrePtr::staticCast( genreMap.value(  newGenre ) );
@@ -681,10 +681,10 @@ MtpTrack::setComposer( const QString &newComposer )
         composerMap.remove( composerPtr->name() );
 
     // change to a new composer
-    
+
     // check for the existence of the composer to be set to,
     // if composer exists, reuse, else create
-    
+
     if (  composerMap.contains( newComposer ) )
     {
         composerPtr = MtpComposerPtr::staticCast( composerMap.value(  newComposer ) );
@@ -725,10 +725,10 @@ MtpTrack::setYear( const QString &newYear )
         yearMap.remove( yearPtr->name() );
 
     // change to a new year
-    
+
     // check for the existence of the year to be set to,
     // if year exists, reuse, else create
-    
+
     if (  yearMap.contains( newYear ) )
     {
         yearPtr = MtpYearPtr::staticCast( yearMap.value(  newYear ) );
@@ -804,7 +804,7 @@ MtpTrack::endMetaDataUpdate()
     // Update info in local mtp database struct
 
     m_collection->updateTags( this );
-    
+
 
     notifyObservers();
 }

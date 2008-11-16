@@ -30,7 +30,7 @@
 #include "meta/CustomActionsCapability.h"
 #include "meta/UpdateCapability.h"
 
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 
 #include <KIcon>
 #include <KUrl>
