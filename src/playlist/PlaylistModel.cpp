@@ -185,15 +185,13 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         {
             if ( m_items.at( row )->track()->album() )
                 return m_items.at( row )->track()->album()->name();
-            else
-                return QString();
+            return QString();
         }
         case 2:
         {
             if ( m_items.at( row )->track()->artist() )
                 return m_items.at( row )->track()->artist()->name();
-            else
-                return QString();
+            return QString();
         }
         case 3:
         {
@@ -203,7 +201,6 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
 
             if ( m_items.at( row )->track() )
             {
-
                 track = m_items.at( row )->track()->name();
                 if ( m_items.at( row )->track()->artist() )
                     artist = m_items.at( row )->track()->artist()->name();
@@ -211,10 +208,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     album = m_items.at( row )->track()->album()->name();
             }
 
-            return QString( "%1 - %2 - %3" )
-                   .arg( artist )
-                   .arg( album )
-                   .arg( track );
+            return QString( "%1 - %2 - %3" ).arg( artist, album, track );
         }
         }
     }
@@ -233,8 +227,7 @@ Playlist::Model::flags( const QModelIndex &index ) const
 {
     if ( index.isValid() )
         return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
-    else
-        return Qt::ItemIsDropEnabled;
+    return Qt::ItemIsDropEnabled;
 }
 
 QStringList
@@ -392,8 +385,7 @@ Playlist::Model::activeTrack() const
 {
     if ( rowExists( m_activeRow ) )
         return m_items.at( m_activeRow )->track();
-    else
-        return Meta::TrackPtr();
+    return Meta::TrackPtr();
 }
 
 int
@@ -401,8 +393,7 @@ Playlist::Model::rowForId( const quint64 id ) const
 {
     if ( containsId( id ) )
         return m_items.indexOf( m_itemIds.value( id ) );
-    else
-        return -1;
+    return -1;
 }
 
 Meta::TrackPtr
@@ -410,8 +401,7 @@ Playlist::Model::trackForId( const quint64 id ) const
 {
     if ( containsId( id ) )
         return m_itemIds.value( id )->track();
-    else
-        return Meta::TrackPtr();
+    return Meta::TrackPtr();
 }
 
 quint64
@@ -419,8 +409,7 @@ Playlist::Model::idAt( const int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->id();
-    else
-        return 0;
+    return 0;
 }
 
 quint64
@@ -428,8 +417,7 @@ Playlist::Model::activeId() const
 {
     if ( rowExists( m_activeRow ) )
         return m_items.at( m_activeRow )->id();
-    else
-        return 0;
+    return 0;
 }
 
 Playlist::Item::State
@@ -437,8 +425,7 @@ Playlist::Model::stateOfId( quint64 id ) const
 {
     if ( containsId( id ) )
         return m_itemIds.value( id )->state();
-    else
-        return Item::Invalid;
+    return Item::Invalid;
 }
 
 void
