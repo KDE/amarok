@@ -85,11 +85,15 @@ class CollectionTreeView: public QTreeView
 
         void slotPlayChildTracks();
         void slotAppendChildTracks();
+        void slotDeleteTracks();
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
         void slotOrganize();
         void newPalette( const QPalette & palette );
+
+        void deleteResultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void deleteQueryDone();
 
     private:
         // Utility function to play all items
@@ -101,6 +105,7 @@ class CollectionTreeView: public QTreeView
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const;
         PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
         PopupDropperActionList createExtendedActions( const QModelIndexList &indcies );
+        PopupDropperActionList createCollectionActions( const QModelIndexList & indices );
 
         bool onlyOneCollection( const QModelIndexList &indices );
         Collection *getCollection( const QModelIndex &index );

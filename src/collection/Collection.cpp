@@ -51,6 +51,24 @@ TrackProvider::trackForUrl( const KUrl &url )
     return Meta::TrackPtr();
 }
 
+// CollectionBase
+
+bool
+CollectionBase::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    Q_UNUSED( type );
+    return false;
+}
+
+Meta::Capability*
+CollectionBase::asCapabilityInterface( Meta::Capability::Type type )
+{
+    Q_UNUSED( type );
+    return 0;
+}
+
+// Collection
+
 Collection::Collection()
     : QObject()
     , TrackProvider()

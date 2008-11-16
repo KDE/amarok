@@ -52,7 +52,7 @@ class IpodCollectionFactory : public CollectionFactory
         void deviceRemoved( const QString &udi );
         void slotCollectionReady();
         void slotCollectionDisconnected( const QString & udi );
-    
+
     private:
         QMap<QString, IpodCollection*> m_collectionMap;
 };
@@ -78,11 +78,14 @@ class IpodCollection : public Collection, public MemoryCollection
         virtual QueryMaker* queryMaker();
 
         QString udi() const;
-    
+
         virtual CollectionLocation* location() const;
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
 
@@ -90,19 +93,20 @@ class IpodCollection : public Collection, public MemoryCollection
 
         void updateTags( Meta::IpodTrack *track);
         void writeDatabase();
-    
+
     signals:
         void collectionReady();
         void collectionDisconnected( const QString &udi );
-    
+
     public slots:
         void connectDevice();
         void disconnectDevice();
-	void deleteTrackToDelete();
-	void deleteTrackSlot( Meta::IpodTrackPtr track);
+    void deleteTrackToDelete();
+    void deleteTrackSlot( Meta::IpodTrackPtr track);
+    void deleteTracksSlot( Meta::TrackList tracklist );
 
-	void slotDisconnect();
-	
+    void slotDisconnect();
+
     private:
         Meta::IpodTrackPtr m_trackToDelete;
         QString            m_mountPoint;

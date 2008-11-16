@@ -467,6 +467,34 @@ IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 
 }
 
+bool
+IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        Itdb_Track *ipodtrack = Meta::IpodTrackPtr::staticCast(track)->getIpodTrack();
+
+        // delete file
+        KUrl url;
+        url.setPath( realPath( ipodtrack->ipod_path ) );
+        deleteFile( url );
+
+        // remove it from the ipod database, ipod playlists and all
+
+        if ( !removeDBTrack( ipodtrack ) )
+        {
+            debug() << "Error: failed to remove track from db";
+            return false;
+        }
+
+    }
+
+    return ( writeITunesDB( false ) );
+
+}
+
 void
 IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 {

@@ -31,6 +31,7 @@
 #include "GlobalCollectionActions.h"
 #include "Meta.h"
 #include "MetaQueryMaker.h"
+#include "meta/CollectionCapability.h"
 #include "meta/CustomActionsCapability.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistController.h"
@@ -50,6 +51,7 @@
 #include <KIcon>
 #include <KLineEdit>
 #include <KMenu>
+#include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
 #include <KSharedPtr>
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
@@ -167,6 +169,7 @@ CollectionTreeView::filterModel() const
 void
 CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 {
+
     KAction separator( this );
     separator.setSeparator( true );
 
@@ -184,9 +187,17 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     // Abort if nothing is selected
     if( indices.isEmpty() )
         return;
-        
+
+    m_currentItems.clear();
+    foreach( const QModelIndex &index, indices )
+    {
+        if( index.isValid() && index.internalPointer() )
+            m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
+    }
+
     PopupDropperActionList actions = createBasicActions( indices );
     actions += createExtendedActions( indices );
+    actions += createCollectionActions( indices );
 
     KMenu menu;
 
@@ -238,12 +249,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     }
 
 
-    m_currentItems.clear();
-    foreach( const QModelIndex &index, indices )
-    {
-        if( index.isValid() && index.internalPointer() )
-            m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
-    }
 
     menu.exec( event->globalPos() );
 }
@@ -715,6 +720,55 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
     return actions;
 }
 
+PopupDropperActionList
+CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
+{
+    DEBUG_BLOCK
+    PopupDropperActionList actions;
+
+    // Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
+    // This will fetch TrackList, pass TrackList to appropriate function with done signal
+
+    QueryMaker *qm = createMetaQueryFromItems( m_currentItems, true );
+
+    qm->setQueryType( QueryMaker::Track );
+
+
+    // Extract collection whose constituent was selected
+
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
+    while( item->isDataItem() )
+    {
+        item = item->parent();
+    }
+    Collection *collection = item->parentCollection();
+
+    // Generate CollectionCapability, test for existence
+
+    Meta::CollectionCapability *cc = collection->as<Meta::CollectionCapability>();
+
+    if( cc )
+    {
+        debug() << "Has Collection Capability!";
+        actions = cc->collectionActions( qm );
+    }
+    else
+        debug() << "Does not have collection capability!";
+
+// Sample delete action skeleton, will be replaced
+    /*
+
+    PopupDropperAction *deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "delete", KIcon( "amarok_remove" ), i18n( "&Delete Tracks" ), 0 );
+
+    connect( deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteTracks() ) );
+
+    actions.append( deleteAction );
+    */
+
+    return actions;
+}
+
 
 QHash<PopupDropperAction*, Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
 {
@@ -838,6 +892,17 @@ void CollectionTreeView::slotAppendChildTracks()
     playChildTracks( m_currentItems, Playlist::AppendAndPlay );
 }
 
+void CollectionTreeView::slotDeleteTracks()
+{
+    //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
+    QueryMaker *qm = createMetaQueryFromItems( m_currentItems, true );
+
+    qm->setQueryType( QueryMaker::Track );
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( deleteResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( deleteQueryDone() ), Qt::QueuedConnection );
+    qm->run();
+}
+
 void CollectionTreeView::slotEditTracks()
 {
     editTracks( m_currentItems );
@@ -874,6 +939,32 @@ void CollectionTreeView::newPalette( const QPalette & palette )
     Q_UNUSED( palette )
 
     The::paletteHandler()->updateTreeView( this );
+}
+
+void
+CollectionTreeView::deleteResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( collectionId )
+
+    foreach( Meta::TrackPtr d_track, tracks )
+    {
+        if ( d_track )
+            debug() << "Artist is: " << d_track->artist()->name();
+    }
+
+    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracks.count() ) );
+    const bool del = KMessageBox::warningContinueCancel(this,
+            text,
+            QString() ) == KMessageBox::Continue;
+
+    debug() << "Wants to delete: " << (del ? "Yes" : "No");
+}
+
+void
+CollectionTreeView::deleteQueryDone()
+{
+    DEBUG_BLOCK
 }
 
 void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const

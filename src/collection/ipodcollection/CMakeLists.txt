@@ -25,7 +25,8 @@ if (IPOD_FOUND AND GDK_FOUND)
 	IpodMeta.cpp
 	IpodCollection.cpp
 	IpodCollectionLocation.cpp
-	handler/IpodHandler.cpp)	
+	handler/IpodHandler.cpp
+	CollectionCapabilityIpod.cpp)
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
 	target_link_libraries(amarok_collection-ipodcollection

@@ -177,6 +177,7 @@ set(libstatusbar_SRCS
 #####################################################################
 set(meta_SRCS
     meta/Capability.cpp
+    meta/CollectionCapability.cpp
     meta/CurrentTrackActionsCapability.cpp
     meta/CustomActionsCapability.cpp
     meta/EditCapability.cpp

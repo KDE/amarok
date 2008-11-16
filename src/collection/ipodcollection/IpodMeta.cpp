@@ -75,7 +75,7 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
             DEBUG_BLOCK
 
             // Setup the remove action
-            
+
             PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
                                                                     "delete", KIcon( "amarok_remove" ), i18n( "&Remove from iPod" ), 0 );
             debug() << "Remove-action created";

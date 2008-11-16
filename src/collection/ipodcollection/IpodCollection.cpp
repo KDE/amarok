@@ -18,28 +18,24 @@
 
 #define DEBUG_PREFIX "IpodCollection"
 
+#include "meta/CollectionCapability.h"
 #include "IpodCollection.h"
 #include "IpodCollectionLocation.h"
 #include "IpodMeta.h"
+#include "CollectionCapabilityIpod.h"
+#include "SvgHandler.h"
 
 #include "amarokconfig.h"
 #include "Debug.h"
 
-//#include "MediaDeviceCache.h"
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 
-//solid specific includes
-//#include <solid/devicenotifier.h>
-//#include <solid/device.h>
-//#include <solid/storageaccess.h>
-//#include <solid/storagedrive.h>
-
+#include <KIcon>
+#include <KMessageBox>
 #include <KUrl>
 
-
 #include <QStringList>
-
 
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 
@@ -68,11 +64,6 @@ IpodCollectionFactory::init()
              SLOT( deviceRemoved( const QString & ) ) );
 
     connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
-    //connect( MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ),
-    //         SLOT( ipodDetected( const QString &, const QString & ) ) );
-    // scan for ipods
-
-    //MediaDeviceMonitor::instance()->checkDevicesForIpod();
 }
 
 void
@@ -133,7 +124,6 @@ IpodCollectionFactory::slotCollectionReady()
     }
 }
 
-
 //IpodCollection
 
 IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
@@ -147,6 +137,33 @@ IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
 
     // NOTE: cheap hack, remove after applet works
     connectDevice();
+}
+
+bool
+IpodCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    DEBUG_BLOCK
+            switch( type )
+    {
+        case Meta::Capability::Collection:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+IpodCollection::asCapabilityInterface( Meta::Capability::Type type )
+{
+    DEBUG_BLOCK
+            switch( type )
+    {
+        case Meta::Capability::Collection:
+            return new Meta::CollectionCapabilityIpod( this );
+        default:
+            return 0;
+    }
 }
 
 void
@@ -168,8 +185,6 @@ IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
     // remove the track from the collection maps too
     removeTrack( track );
 
-    // inform treeview collection has updated
-    emit updated();
     debug() << "deleteTrackFromDevice returning true";
     return true;
 }
@@ -320,6 +335,32 @@ void
 IpodCollection::deleteTrackSlot( Meta::IpodTrackPtr track)
 {
     deleteTrackFromDevice( track );
+}
+
+void
+IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+
+    // remove the tracks from the device
+    if( !m_handler->deleteTracksFromDevice( tracklist ) )
+            debug() << "Failed to delete tracks";
+
+    // remove the tracks from the collection maps too
+    foreach( Meta::TrackPtr track, tracklist )
+        removeTrack( Meta::IpodTrackPtr::staticCast( track ) );
+
+/*
+    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
+    const bool del = KMessageBox::warningContinueCancel(this,
+            text,
+            QString() ) == KMessageBox::Continue;
+*/
+
+    
+
+    // inform treeview collection has updated
+    emit updated();
 }
 
 void

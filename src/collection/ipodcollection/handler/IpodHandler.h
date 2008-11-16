@@ -90,6 +90,7 @@ struct PodcastInfo
 	   bool openDevice( bool silent=false );
        void copyTrackToDevice( const Meta::TrackPtr &track );
        bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
+       bool deleteTracksFromDevice( const Meta::TrackList &tracks );
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
        

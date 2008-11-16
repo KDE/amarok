@@ -45,6 +45,7 @@ namespace Meta
                         , StreamInfo = 10
                         , Updatable = 11
                         , Importable = 12
+                        , Collection = 13
                       };
 
             virtual ~Capability();
