@@ -324,7 +324,7 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         QString sql = QString( "SELECT COUNT(*) FROM statistics LEFT JOIN urls ON statistics.url = urls.id "
                                "WHERE urls.deviceid = %1 AND urls.rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
         QStringList count = m_collection->query( sql );
-        if( count.first().toInt() != 0 )    //crash if the sql is bad
+        if( count.isEmpty() || count.first().toInt() != 0 )    //crash if the sql is bad
         {
             continue;   //a statistics row already exists for that url, and we cannot merge the statistics
         }
