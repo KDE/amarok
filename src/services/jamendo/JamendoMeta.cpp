@@ -20,7 +20,7 @@
 #include "JamendoMeta.h"
 
 #include "JamendoService.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 #include "SvgHandler.h"
 
 #include "Debug.h"

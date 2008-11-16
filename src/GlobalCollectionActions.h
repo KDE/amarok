@@ -23,7 +23,7 @@
 
 #include "amarok_export.h"
 #include "Meta.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 
 
 

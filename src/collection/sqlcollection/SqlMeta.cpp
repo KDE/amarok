@@ -26,7 +26,7 @@
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
-#include "context/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/popupdropper/PopupDropperAction.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/CustomActionsCapability.h"
