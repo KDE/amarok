@@ -16,6 +16,7 @@ VERSION 2.0-rc1
     * Track information can be edited from the file browser. (BR 172812)
 
   CHANGES:
+    * Ipod Collections can now delete multiple tracks at once.	
     * User playlists added from files are now updated on collection rescans, so
       any changes in the file is reflected in the SQL playlist.
     * Layout refactoring in the Organize Collection dialog.
@@ -23,7 +24,6 @@ VERSION 2.0-rc1
     * Amarok now allows opening of video files again. (BR 174267)
     * "Show active track" has been moved from the playlist context menu to the
       playlist toolbar.
-    * Ipod Collections can now delete multiple tracks at once.
 
   BUGFIXES:
     * Podcast episodes and channels can be dragged directly from the
