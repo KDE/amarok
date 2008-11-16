@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Mark Kretschmann <kretschmann@kde.org>            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -23,14 +24,12 @@
 #include "SvgHandler.h"
 
 #include <QAbstractItemDelegate>
+#include <QFont>
 #include <QTreeView>
 
 
-/**
-A delegate for displaying a nice overview of a service
+/** A delegate for displaying a nice overview of a service */
 
-    @author
-*/
 class ServiceListDelegate : public QAbstractItemDelegate
 {
 public:
@@ -44,6 +43,8 @@ public:
 
 private:
     QTreeView *m_view;
+    QFont m_bigFont;
+    QFont m_smallFont;
 };
 
 #endif

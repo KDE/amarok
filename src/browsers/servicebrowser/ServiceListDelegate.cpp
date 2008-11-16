@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Mark Kretschmann <kretschmann@kde.org>            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,36 +22,37 @@
 
 #include "App.h"
 #include "Debug.h"
-#include "services/ServiceBase.h"
 #include "ServiceListModel.h"
 #include "SvgTinter.h"
+#include "services/ServiceBase.h"
 
 #include <QApplication>
+#include <QFontMetrics>
 #include <QIcon>
 #include <QPainter>
 #include <QPixmapCache>
 
 
 ServiceListDelegate::ServiceListDelegate( QTreeView *view )
- : QAbstractItemDelegate()
- , m_view( view )
+    : QAbstractItemDelegate()
+    , m_view( view )
 {
     DEBUG_BLOCK
+
+    m_bigFont.setPointSize( m_bigFont.pointSize() + 4 );
+    m_smallFont.setPointSize( m_smallFont.pointSize() - 1 );
 }
 
 ServiceListDelegate::~ServiceListDelegate()
-{
-}
+{}
 
 void
-ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+ServiceListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     //DEBUG_BLOCK
-
-
     
     const int width = m_view->viewport()->size().width() - 4;
-    const int height = 72;
+    const int height = sizeHint( option, index ).height();
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 8;
@@ -75,13 +77,6 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
         background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y(), background );
-
-    const QFont defaultFont = painter->font();
-
-    QFont bigFont = defaultFont;
-    bigFont.setPointSize( defaultFont.pointSize() + 4 );
-    painter->setFont( bigFont );
-
     painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
     QRectF titleRect;
@@ -90,11 +85,8 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     titleRect.setWidth( width );
     titleRect.setHeight( iconHeight + iconPadY );
 
+    painter->setFont( m_bigFont );
     painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
-
-    QFont smallFont = defaultFont;
-    smallFont.setPointSize( defaultFont.pointSize() - 1 );
-    painter->setFont( smallFont );
 
     QRectF textRect;
     textRect.setLeft( option.rect.topLeft().x() + iconPadX );
@@ -102,13 +94,14 @@ ServiceListDelegate::paint(QPainter * painter, const QStyleOptionViewItem & opti
     textRect.setWidth( width - iconPadX * 2 );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
+    painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( CustomServiceRoles::ShortDescriptionRole ).toString() );
 
     painter->restore();
 }
 
 QSize
-ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+ServiceListDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     Q_UNUSED( option );
     Q_UNUSED( index );
@@ -116,9 +109,16 @@ ServiceListDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelI
     //DEBUG_BLOCK
 
     int width = m_view->viewport()->size().width() - 4;
-    int height = 72;
+    int height;
 
-    return QSize ( width, height );
+    QFontMetrics bigFm( m_bigFont );
+    QFontMetrics smallFm( m_smallFont );
+    
+    height  =  bigFm.boundingRect( 0, 0, width, 50, Qt::AlignCenter, index.data( Qt::DisplayRole ).toString() ).height();
+    height +=  smallFm.boundingRect( 0, 0, width, 50, Qt::AlignCenter, index.data( CustomServiceRoles::ShortDescriptionRole ).toString() ).height(); 
+    height +=  40;
+
+    return QSize( width, height );
 }
 
 void
