@@ -297,6 +297,19 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         }
         return true;
     }
+    else if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
+    {
+        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        if( dragList )
+        {
+            Meta::TrackList tracks;
+            foreach( Meta::PodcastChannelPtr channel, dragList->podcastChannels() )
+                foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
+                    tracks << Meta::TrackPtr::staticCast( episode );
+            Controller::instance()->insertTracks( beginRow, tracks );
+        }
+        return true;
+    }
     else if( data->hasUrls() )
     {
         DirectoryLoader* dl = new DirectoryLoader(); //this deletes itself
