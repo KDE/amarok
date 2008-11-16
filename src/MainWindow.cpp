@@ -81,7 +81,11 @@
 #include <fixx11h.h>
 #endif
 
+#ifdef Q_WS_MAC // Let people know OS X version is still work-in-progress
+#define AMAROK_CAPTION "Amarok 2: Technology Preview"
+#else
 #define AMAROK_CAPTION "Amarok 2"
+#endif
 
 class ContextWidget : public KVBox
 {
