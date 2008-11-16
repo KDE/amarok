@@ -278,25 +278,33 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else
         beginRow = m_items.size();
 
-    if ( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
+    if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
-        if ( trackListDrag )
-        {
+        if( trackListDrag )
             Controller::instance()->insertTracks( beginRow, trackListDrag->tracks() );
-        }
         return true;
     }
-    else if ( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
-        if ( dragList )
-        {
+        if( dragList )
             Controller::instance()->insertPlaylists( beginRow, dragList->playlists() );
+        return true;
+    }
+    else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
+    {
+        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        if( dragList )
+        {
+            Meta::TrackList tracks;
+            foreach( Meta::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
+                tracks << Meta::TrackPtr::staticCast( episode );
+            Controller::instance()->insertTracks( beginRow, tracks );
         }
         return true;
     }
-    else if ( data->hasUrls() )
+    else if( data->hasUrls() )
     {
         DirectoryLoader* dl = new DirectoryLoader(); //this deletes itself
         dl->insertAtRow( beginRow );
