@@ -333,6 +333,7 @@ App::handleCliArgs() //static
         haveArgs = true;
         The::playlistActions()->back();
     }
+    /*
     else if (args->isSet("cdplay"))
     {
         haveArgs = true;
@@ -348,6 +349,7 @@ App::handleCliArgs() //static
             debug() << "Sorry, the engine does not support direct play from AudioCD...";
         }
     }
+    */
 
     Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
 
@@ -400,7 +402,7 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-    options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
+    //options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
