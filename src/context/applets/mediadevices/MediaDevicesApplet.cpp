@@ -404,6 +404,10 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
     m_layout->addItem( ipodInfo->layout() );
 
     debug() << "Successfully added ipodLayout to layout";
+
+    // HACK: Usability: Forcing auto-connection until connection from TreeView possible
+
+    MediaDeviceMonitor::instance()->connectIpod( mountPoint, udi );
 }
 
 void
@@ -434,6 +438,10 @@ MediaDevicesApplet::mtpDetected( const QString &serial, const QString &udi )
     m_layout->addItem( mtpInfo->layout() );
 
     debug() << "Successfully added mtpLayout to layout";
+
+    // HACK: Usability: Forcing auto-connection until connection from TreeView possible
+
+    MediaDeviceMonitor::instance()->connectMtp( serial, udi );
 }
 
 void
