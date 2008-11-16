@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0-rc1
   FEATURES:
-    * Users' Recommended radio is now shown in the Last.Fm Service
+    * Users' Recommended radio is now shown in the Last.Fm Service.
     * Playlist browser items can be deleted and renamed using the keyboard.
       (BR 175116)
     * Basic and Advanced view when editing a filename scheme are synchronized.
@@ -39,8 +39,8 @@ VERSION 2.0-rc1
     * Fix playlist behaviour when adding a track that is already playing
       (BR 174634)
     * Jamendo Service: Remove some sorting modes that caused the database to 
-      choke as the result sets became too large. Will be revisisted post 2.0.0
-      (BR 174851)
+      choke as the result sets became too large. Will be revisisted post
+      2.0.0. (BR 174851)
     * Fixed possible crash with reading wav files. Patch by Peter van Fessem
       <peter@f-is.eu>. (BR 174819)
     * Amarok 1.4 database importer would skip tracks in some collections.
@@ -65,7 +65,7 @@ VERSION 2.0-rc1
       application. (BR 173776)
     * Correctly load m3u playlists. (BR 171595)
     * Made the Load action start playback correctly like the Append action.
-    * Correctly load m3u playlists (BR 171595)
+    * Correctly load m3u playlists. (BR 171595)
     * Fixed metadata updating for Shoutcast streams.
 
 
