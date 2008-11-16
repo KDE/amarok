@@ -43,6 +43,9 @@ GeneralConfig::GeneralConfig( QWidget* parent )
             ++it;
     }
 #endif
+
+    // WARNING: if you change the strings here, remember to change them in Amarok::invokeBrowser
+    // as we need to hack around KConfigDialog saving translated text to the config file
 #ifdef Q_WS_MAC
     if ( !KStandardDirs::findExe( "open" ).isEmpty() )
         browsers.prepend( i18n( "Default Browser" ) );

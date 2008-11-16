@@ -819,7 +819,18 @@ namespace Amarok
     bool invokeBrowser( const QString& url )
     {
         //URL can be in whatever forms KUrl understands - ie most.
-        const QString cmd = KShell::quoteArg( AmarokConfig::externalBrowser() )
+        QString browser = AmarokConfig::externalBrowser();
+
+        // HACK to get around KConfigDialog. See configdialog/dialogs/GeneralConfig.cpp
+#ifdef Q_WS_MAC
+        if( browser == i18n( "Default Browser" ) )
+            browser = "open";
+#else
+        if( browser == i18n( "Default KDE Browser" ) )
+            browser = "xdg-open";
+#endif
+
+        const QString cmd = KShell::quoteArg( browser ) 
                             + ' ' + KShell::quoteArg( KUrl( url ).url() );
 
         return ( KRun::runCommand( cmd, 0L ) > 0 );
