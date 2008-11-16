@@ -23,6 +23,7 @@ VERSION 2.0-rc1
     * Amarok now allows opening of video files again. (BR 174267)
     * "Show active track" has been moved from the playlist context menu to the
       playlist toolbar.
+    * Ipod Collections can now delete multiple tracks at once.
 
   BUGFIXES:
     * Podcast episodes and channels can be dragged directly from the
