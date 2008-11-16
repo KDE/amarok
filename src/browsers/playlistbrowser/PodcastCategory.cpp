@@ -588,14 +588,12 @@ PodcastView::selectedChannels()
     Meta::PodcastChannelList channels;
     foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
     {
-            switch( pmc->podcastType() )
+        switch( pmc->podcastType() )
         {
             case Meta::EpisodeType:
                 break;
             case Meta::ChannelType:
-                channels << Meta::PodcastChannelPtr(
-                    static_cast<Meta::PodcastChannel *>(pmc)
-                );
+                channels << Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
                 break;
         }
     }
