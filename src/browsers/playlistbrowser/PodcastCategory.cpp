@@ -1,7 +1,7 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-   Copyright (c) 2007,2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-   Copyright (c) 2007  Henry de Valence <hdevalence@gmail.com>
+   Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+   Copyright (c) 2007 Henry de Valence <hdevalence@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -57,7 +57,9 @@
 
 #include <typeinfo>
 
-PlaylistBrowserNS::PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel )
+using namespace PlaylistBrowserNS;
+
+PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     : QWidget()
     , m_podcastModel( podcastModel )
 {
@@ -84,7 +86,7 @@ PlaylistBrowserNS::PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastM
                                             i18n("&Update All"), toolBar );
     toolBar->addAction( updateAllAction );
     connect( updateAllAction, SIGNAL(triggered( bool )),
-                                m_podcastModel, SLOT(refreshPodcasts()) );
+             m_podcastModel, SLOT(refreshPodcasts()) );
 
     vLayout->addWidget( toolBar );
 
@@ -113,8 +115,6 @@ PlaylistBrowserNS::PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastM
 
     m_podcastTreeView->setPalette( p );
 
-    //m_podcastTreeView->setItemDelegate( new PodcastCategoryDelegate(m_podcastTreeView) );
-
     QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
     sizePolicy1.setHorizontalStretch(0);
     sizePolicy1.setVerticalStretch(0);
@@ -125,17 +125,15 @@ PlaylistBrowserNS::PodcastCategory::PodcastCategory( PlaylistBrowserNS::PodcastM
 
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
-    //connect( podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), podcastModel, SLOT( emitLayoutChanged() ) );
-    //connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), m_viewKicker, SLOT( kickView() ) );
     connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( showInfo( const QModelIndex & ) ) );
 }
 
-PlaylistBrowserNS::PodcastCategory::~PodcastCategory()
+PodcastCategory::~PodcastCategory()
 {
 }
 
 void
-PlaylistBrowserNS::PodcastCategory::showInfo( const QModelIndex & index )
+PodcastCategory::showInfo( const QModelIndex & index )
 {
 
     QString description = index.data( ShortDescriptionRole ).toString();
@@ -148,38 +146,37 @@ PlaylistBrowserNS::PodcastCategory::showInfo( const QModelIndex & index )
     The::serviceInfoProxy()->setInfo( map );
 }
 
-PlaylistBrowserNS::ViewKicker::ViewKicker( QTreeView * treeView )
+ViewKicker::ViewKicker( QTreeView * treeView )
 {
     DEBUG_BLOCK
     m_treeView = treeView;
 }
 
 void
-PlaylistBrowserNS::ViewKicker::kickView()
+ViewKicker::kickView()
 {
     DEBUG_BLOCK
     m_treeView->setRootIndex( QModelIndex() );
 }
 
-PlaylistBrowserNS::PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView * view ) : QItemDelegate()
-        , m_view( view )
+PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView * view )
+    : QItemDelegate()
+    , m_view( view )
 {
     m_webPage = new QWebPage( view );
 }
 
-PlaylistBrowserNS::PodcastCategoryDelegate::~PodcastCategoryDelegate()
+PodcastCategoryDelegate::~PodcastCategoryDelegate()
 {
 }
 
 void
-PlaylistBrowserNS::PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
+PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
                                 const QModelIndex & index ) const
 {
     DEBUG_BLOCK
-    //debug() << "Option state = " << option.state;
 
     int width = m_view->viewport()->size().width() - 4;
-    //debug() << "width = " << width;
     int iconWidth = 16;
     int iconHeight = 16;
     int iconPadX = 8;
@@ -188,8 +185,6 @@ PlaylistBrowserNS::PodcastCategoryDelegate::paint( QPainter * painter, const QSt
 
     painter->save();
     painter->setRenderHint ( QPainter::Antialiasing );
-
-
 
     QPixmap background = The::svgHandler()->renderSvg( "service_list_item", width - 40, height - 4, "service_list_item" );
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
@@ -227,8 +222,6 @@ PlaylistBrowserNS::PodcastCategoryDelegate::paint( QPainter * painter, const QSt
     textRect.setWidth( width - ( iconPadX * 2 + m_view->indentation() + 16) );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
-
-
     QFontMetricsF fm( painter->font() );
     QRectF textBound;
 
@@ -261,7 +254,8 @@ PlaylistBrowserNS::PodcastCategoryDelegate::paint( QPainter * painter, const QSt
         painter->setPen(pen);
     }
 
-    if (option.state & QStyle::State_Selected) {
+    if (option.state & QStyle::State_Selected)
+    {
         //painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
         m_webPage->setViewportSize( QSize( textRect.width(), textRect.height() ) );
         m_webPage->mainFrame()->setHtml( description );
@@ -273,24 +267,17 @@ PlaylistBrowserNS::PodcastCategoryDelegate::paint( QPainter * painter, const QSt
 }
 
 QSize
-PlaylistBrowserNS::PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
     Q_UNUSED( option );
-
-//     DEBUG_BLOCK
-
-    //debug() << "Option state = " << option.state;
 
     int width = m_view->viewport()->size().width() - 4;
 
     //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
     //Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     int height = 24;
-    /* Why is this here anyways?
-    if ( typeid( * pmc ) == typeid( Meta::PodcastChannel ) )
-        height = 24;
-    */
-    if (/*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
+    
+    if( /*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
     {
         QString description = index.data( ShortDescriptionRole ).toString();
 
@@ -301,14 +288,11 @@ PlaylistBrowserNS::PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem 
 	    debug() << "Option is selected, height = " << height;*/
 
     }
-    //else
-	//debug() << "Option is not selected, height = " << height;
 
-    //m_lastHeight = height;
     return QSize ( width, height );
 }
 
-PlaylistBrowserNS::PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
+PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     : QTreeView( parent )
     , m_model( model )
     , m_pd( 0 )
@@ -323,12 +307,12 @@ PlaylistBrowserNS::PodcastView::PodcastView( PodcastModel *model, QWidget * pare
 {
 }
 
-PlaylistBrowserNS::PodcastView::~PodcastView()
+PodcastView::~PodcastView()
 {
 }
 
 void
-PlaylistBrowserNS::PodcastView::mousePressEvent( QMouseEvent * event )
+PodcastView::mousePressEvent( QMouseEvent * event )
 {
     if( event->button() == Qt::LeftButton )
         m_dragStartPosition = event->pos();
@@ -337,7 +321,7 @@ PlaylistBrowserNS::PodcastView::mousePressEvent( QMouseEvent * event )
 }
 
 void
-PlaylistBrowserNS::PodcastView::mouseReleaseEvent( QMouseEvent * event )
+PodcastView::mouseReleaseEvent( QMouseEvent * event )
 {
     Q_UNUSED( event )
 
@@ -350,7 +334,7 @@ PlaylistBrowserNS::PodcastView::mouseReleaseEvent( QMouseEvent * event )
 }
 
 void
-PlaylistBrowserNS::PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
+PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
 {
     QModelIndex index = indexAt( event->pos() );
 
@@ -369,12 +353,11 @@ PlaylistBrowserNS::PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
             list << index;
             m_model->refreshItems( list );
         }
-
     }
 }
 
 void
-PlaylistBrowserNS::PodcastView::startDrag( Qt::DropActions supportedActions )
+PodcastView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
 
@@ -414,7 +397,7 @@ PlaylistBrowserNS::PodcastView::startDrag( Qt::DropActions supportedActions )
 }
 
 void
-PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
+PodcastView::contextMenuEvent( QContextMenuEvent * event )
 {
     DEBUG_BLOCK
 
@@ -434,7 +417,7 @@ PlaylistBrowserNS::PodcastView::contextMenuEvent( QContextMenuEvent * event )
 }
 
 QList< PopupDropperAction * >
-PlaylistBrowserNS::PodcastView::actionsForIndices( QModelIndexList indices )
+PodcastView::actionsForIndices( QModelIndexList indices )
 {
     bool episodeSelected = false;
     bool channelSelected = false;
@@ -467,7 +450,7 @@ PlaylistBrowserNS::PodcastView::actionsForIndices( QModelIndexList indices )
 }
 
 QList< PopupDropperAction * >
-PlaylistBrowserNS::PodcastView::createCommonActions( QModelIndexList indices )
+PodcastView::createCommonActions( QModelIndexList indices )
 {
     Q_UNUSED( indices )
     QList< PopupDropperAction * > actions;
@@ -517,7 +500,7 @@ PlaylistBrowserNS::PodcastView::createCommonActions( QModelIndexList indices )
 }
 
 QList< PopupDropperAction * >
-PlaylistBrowserNS::PodcastView::createChannelActions( QModelIndexList indices )
+PodcastView::createChannelActions( QModelIndexList indices )
 {
     Q_UNUSED( indices )
     QList< PopupDropperAction * > actions;
@@ -566,7 +549,7 @@ PlaylistBrowserNS::PodcastView::createChannelActions( QModelIndexList indices )
 }
 
 QList< PopupDropperAction * >
-PlaylistBrowserNS::PodcastView::createEpisodeActions( QModelIndexList indices )
+PodcastView::createEpisodeActions( QModelIndexList indices )
 {
     Q_UNUSED( indices )
     QList< PopupDropperAction * > actions;
@@ -600,7 +583,7 @@ PlaylistBrowserNS::PodcastView::createEpisodeActions( QModelIndexList indices )
 }
 
 Meta::PodcastChannelList
-PlaylistBrowserNS::PodcastView::selectedChannels()
+PodcastView::selectedChannels()
 {
     Meta::PodcastChannelList channels;
     foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
@@ -620,7 +603,7 @@ PlaylistBrowserNS::PodcastView::selectedChannels()
 }
 
 Meta::PodcastEpisodeList
-PlaylistBrowserNS::PodcastView::selectedEpisodes()
+PodcastView::selectedEpisodes()
 {
     Meta::PodcastEpisodeList episodes;
     foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
@@ -628,9 +611,7 @@ PlaylistBrowserNS::PodcastView::selectedEpisodes()
         switch( pmc->podcastType() )
         {
             case Meta::EpisodeType:
-                episodes << Meta::PodcastEpisodePtr(
-                    static_cast<Meta::PodcastEpisode *>(pmc)
-                );
+                episodes << Meta::PodcastEpisodePtr( static_cast<Meta::PodcastEpisode *>(pmc) );
                 break;
             case Meta::ChannelType:
                 episodes << static_cast<Meta::PodcastChannel *>(pmc)->episodes();
@@ -641,9 +622,7 @@ PlaylistBrowserNS::PodcastView::selectedEpisodes()
 }
 
 Meta::TrackList
-PlaylistBrowserNS::PodcastView::podcastEpisodesToTracks(
-        Meta::PodcastEpisodeList episodes
-)
+PodcastView::podcastEpisodesToTracks( Meta::PodcastEpisodeList episodes )
 {
     Meta::TrackList tracks;
     foreach( Meta::PodcastEpisodePtr episode, episodes )
@@ -652,46 +631,44 @@ PlaylistBrowserNS::PodcastView::podcastEpisodesToTracks(
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotAppend()
+PodcastView::slotAppend()
 {
     DEBUG_BLOCK
 
     Meta::PodcastEpisodeList episodes = selectedEpisodes();
     if( !episodes.empty() )
     {
-        The::playlistController()->insertOptioned(
-            podcastEpisodesToTracks( episodes ),
-            Playlist::Append );
+        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Append );
     }
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotConfigure()
+PodcastView::slotConfigure()
 {
     m_model->configureChannels( selectedIndexes() );
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotDelete()
+PodcastView::slotDelete()
 {
    DEBUG_BLOCK
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotDownload()
+PodcastView::slotDownload()
 {
     DEBUG_BLOCK
     m_model->downloadItems( selectedIndexes() );
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotLabel()
+PodcastView::slotLabel()
 {
     DEBUG_BLOCK
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotLoad()
+PodcastView::slotLoad()
 {
     DEBUG_BLOCK
 
@@ -699,21 +676,18 @@ PlaylistBrowserNS::PodcastView::slotLoad()
 
     if( !episodes.empty() )
     {
-        The::playlistController()->insertOptioned(
-            podcastEpisodesToTracks( episodes ),
-            Playlist::Replace
-        );
+        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Replace );
     }
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotRename()
+PodcastView::slotRename()
 {
     DEBUG_BLOCK
 }
 
 void
-PlaylistBrowserNS::PodcastView::slotRemove()
+PodcastView::slotRemove()
 {
     DEBUG_BLOCK
     m_model->removeSubscription( selectedIndexes() );
