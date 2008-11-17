@@ -48,9 +48,13 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     debug() << "ServiceBrowser starting...";
 
     m_serviceListView = new PrettyTreeView( this );
+#ifdef Q_WS_MAC
+    m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
+    m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem ); // per-pixel scrolling is slower than per-item
+#else
     m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
     m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
-
+#endif
     
 
     m_serviceListView->setFrameShape( QFrame::NoFrame );
