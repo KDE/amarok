@@ -70,12 +70,12 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
     for ( id_iter = list.begin(); id_iter != list.end(); ++id_iter ) {
         quint64 id = *id_iter;
         debug() << "removing" << id;
-        QHash<Meta::AlbumPtr, AlbumTrackList>::iterator alb_iter = m_albumGroups.begin();
+        QHash<Meta::AlbumPtr, ItemList>::iterator alb_iter = m_albumGroups.begin();
         while ( alb_iter != m_albumGroups.end() ) {
             if ( alb_iter->contains( id ) ) {
                 debug() << "    from" << alb_iter.key()->prettyName();
                 Meta::AlbumPtr album = alb_iter.key();
-                AlbumTrackList atl = alb_iter.value();
+                ItemList atl = alb_iter.value();
                 if ( m_currentTrack == id ) {
                     int idx = atl.indexOf( id );
                     m_currentTrack = ( idx < ( atl.size() - 1 ) ) ? atl.at( idx + 1 ) : 0;
@@ -124,7 +124,7 @@ Playlist::RepeatAlbumNavigator::requestNextTrack()
     DEBUG_BLOCK
     if ( m_currentAlbum != Meta::AlbumPtr() )
     {
-        AlbumTrackList atl = m_albumGroups.value( m_currentAlbum );
+        ItemList atl = m_albumGroups.value( m_currentAlbum );
         int row = atl.indexOf( m_currentTrack ) + 1;
         row = ( row < atl.size() ) ? row : 0;
         m_currentTrack = atl.at( row );
@@ -142,7 +142,7 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
     DEBUG_BLOCK
     if ( m_currentAlbum != Meta::AlbumPtr() )
     {
-        AlbumTrackList atl = m_albumGroups.value( m_currentAlbum );
+        ItemList atl = m_albumGroups.value( m_currentAlbum );
         int row = atl.indexOf( m_currentTrack ) - 1;
         row = ( row > 0 ) ? row : atl.size() - 1;
         m_currentTrack = atl.at( row );
@@ -180,7 +180,7 @@ Playlist::RepeatAlbumNavigator::dump()
     foreach( Meta::AlbumPtr album, m_albumGroups.keys() )
     {
         debug() << "   in" << album->prettyName();
-        AlbumTrackList atl = m_albumGroups.value( album );
+        ItemList atl = m_albumGroups.value( album );
         foreach( quint64 id, atl )
         {
             Meta::TrackPtr track = model->trackForId( id );

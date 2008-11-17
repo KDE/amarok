@@ -32,7 +32,7 @@
 namespace Playlist
 {
     /**
-    Navigator which repeats one album over and over
+        Navigator which repeats one album over and over
 
         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
         @author Soren Harward <stharward@gmail.com>
@@ -60,7 +60,7 @@ namespace Playlist
 
         void dump();
 
-        QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
+        QHash<Meta::AlbumPtr, ItemList> m_albumGroups;
 
         Meta::AlbumPtr m_currentAlbum;
         quint64 m_currentTrack;

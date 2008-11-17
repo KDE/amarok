@@ -26,7 +26,8 @@
 namespace Playlist
 {
 
-    /** An abstract class which defines what should be done after a track
+    /** 
+     * An abstract class which defines what should be done after a track
      * finishes playing.  The Playlist::Model will have an object of the
      * currently active strategy.  It is the "strategy" pattern from the Design
      * Patterns book. In Amarok 1.x, the Playlist became very confusing due to
@@ -34,7 +35,7 @@ namespace Playlist
      * statements. This should prevent that.
      */
 
-    typedef QList<quint64> AlbumTrackList; // used by the RandomAlbum and RepeatAlbum navigators
+    typedef QList<quint64> ItemList; // A convenient typedef!
 
     class TrackNavigator : public QObject
     {

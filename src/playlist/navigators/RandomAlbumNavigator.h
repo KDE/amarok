@@ -59,7 +59,7 @@ namespace Playlist
 
             void dump();
 
-            QHash<Meta::AlbumPtr, AlbumTrackList> m_albumGroups;
+            QHash<Meta::AlbumPtr, ItemList> m_albumGroups;
 
             QList<Meta::AlbumPtr> m_playedAlbums;
             QList<Meta::AlbumPtr> m_unplayedAlbums;

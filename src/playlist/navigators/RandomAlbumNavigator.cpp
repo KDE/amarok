@@ -91,12 +91,12 @@ Playlist::RandomAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
     for ( id_iter = list.begin(); id_iter != list.end(); ++id_iter ) {
         quint64 id = *id_iter;
         debug() << "removing" << id;
-        QHash<Meta::AlbumPtr, AlbumTrackList>::iterator alb_iter = m_albumGroups.begin();
+        QHash<Meta::AlbumPtr, ItemList>::iterator alb_iter = m_albumGroups.begin();
         while ( alb_iter != m_albumGroups.end() ) {
             if ( alb_iter->contains( id ) ) {
                 debug() << "    from" << alb_iter.key()->prettyName();
                 Meta::AlbumPtr album = alb_iter.key();
-                AlbumTrackList atl = alb_iter.value();
+                ItemList atl = alb_iter.value();
                 if ( m_currentTrack == id ) {
                     int idx = atl.indexOf( id );
                     m_currentTrack = ( idx < ( atl.size() - 1 ) ) ? atl.at( idx + 1 ) : 0;
@@ -132,7 +132,7 @@ Playlist::RandomAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     {
         if ( m_currentAlbum != Meta::AlbumPtr() )
             m_playedAlbums.prepend( m_currentAlbum );
-        QHash<Meta::AlbumPtr, AlbumTrackList>::iterator alb_iter;
+        QHash<Meta::AlbumPtr, ItemList>::iterator alb_iter;
         for ( alb_iter = m_albumGroups.begin(); alb_iter != m_albumGroups.end(); ++alb_iter )
         {
             if ( alb_iter->contains( id ) )
@@ -168,7 +168,7 @@ Playlist::RandomAlbumNavigator::requestNextTrack()
 
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
-        AlbumTrackList atl = m_albumGroups.value( m_currentAlbum );
+        ItemList atl = m_albumGroups.value( m_currentAlbum );
         int idx = atl.indexOf( m_currentTrack );
         if ( idx < ( atl.size() - 1 ) )
         {
@@ -214,7 +214,7 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
 
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
-        AlbumTrackList atl = m_albumGroups.value( m_currentAlbum );
+        ItemList atl = m_albumGroups.value( m_currentAlbum );
         int idx = atl.indexOf( m_currentTrack );
         if ( idx > 0 )
         {
@@ -273,7 +273,7 @@ Playlist::RandomAlbumNavigator::dump()
     foreach( Meta::AlbumPtr album, m_unplayedAlbums )
     {
         debug() << "   in" << album->prettyName();
-        AlbumTrackList atl = m_albumGroups.value( album );
+        ItemList atl = m_albumGroups.value( album );
         foreach( quint64 id, atl )
         {
             Meta::TrackPtr track = model->trackForId( id );
@@ -284,7 +284,7 @@ Playlist::RandomAlbumNavigator::dump()
     {
         debug() << "current:";
         debug() << "   in" << m_currentAlbum->prettyName();
-        AlbumTrackList atl = m_albumGroups.value( m_currentAlbum );
+        ItemList atl = m_albumGroups.value( m_currentAlbum );
         foreach( quint64 id, atl )
         {
             Meta::TrackPtr track = model->trackForId( id );
@@ -295,7 +295,7 @@ Playlist::RandomAlbumNavigator::dump()
     foreach( Meta::AlbumPtr album, m_playedAlbums )
     {
         debug() << "   in" << album->prettyName();
-        AlbumTrackList atl = m_albumGroups.value( album );
+        ItemList atl = m_albumGroups.value( album );
         foreach( quint64 id, atl )
         {
             Meta::TrackPtr track = model->trackForId( id );
