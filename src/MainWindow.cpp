@@ -82,7 +82,7 @@
 #endif
 
 #ifdef Q_WS_MAC // Let people know OS X version is still work-in-progress
-#define AMAROK_CAPTION "Amarok 2: Technology Preview"
+#define AMAROK_CAPTION "Amarok 2 beta"
 #else
 #define AMAROK_CAPTION "Amarok 2"
 #endif
