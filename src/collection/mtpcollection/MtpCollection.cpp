@@ -50,8 +50,8 @@ MtpCollectionFactory::init()
 {
     DEBUG_BLOCK
 
-            // connect to the monitor
-    
+    // connect to the monitor
+
     connect( MediaDeviceMonitor::instance(), SIGNAL( mtpReadyToConnect( const QString &, const QString & ) ),
                      SLOT( mtpDetected( const QString &, const QString & ) ) );
     connect( MediaDeviceMonitor::instance(), SIGNAL( mtpReadyToDisconnect( const QString & ) ),
@@ -59,24 +59,8 @@ MtpCollectionFactory::init()
 
     connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
 
-    
-/*
-    // NOTE: temporary hack to force connect since applet not enabled in trunk
-
-    connect( MediaDeviceMonitor::instance(), SIGNAL( mtpDetected( const QString &, const QString & ) ),
-                     SLOT( mtpDetected( const QString &, const QString & ) ) );
-    connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
-
-
+    // HACK: Usability: Force auto-connection of device upon detection
     MediaDeviceMonitor::instance()->checkDevicesForMtp();
-
-*/
-
-
-    // force refresh to scan for mtp, begin signal/slot process for connection of mtp devices
-
-    
-
 
     return;
 }

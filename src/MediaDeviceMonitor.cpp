@@ -90,6 +90,8 @@ MediaDeviceMonitor::checkDevicesForIpod()
         /* if ipod device found, emit signal */
         if( isIpod( udi ) )
         {
+            // HACK: Usability: Force auto-connection of device upon detection
+            connectIpod( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
             emit ipodDetected( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
         }
     }
@@ -108,6 +110,8 @@ MediaDeviceMonitor::checkDevicesForMtp()
             Solid::PortableMediaPlayer* pmp = Solid::Device( udi ).as<Solid::PortableMediaPlayer>();
             QString serial = pmp->driverHandle( "mtp" ).toString();
             debug() << "Serial is: " << serial;
+            // HACK: Usability: Force auto-connection of device upon detection
+            connectMtp( serial, udi );
             emit mtpDetected( serial, udi );
         }
     }

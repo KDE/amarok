@@ -64,6 +64,9 @@ IpodCollectionFactory::init()
              SLOT( deviceRemoved( const QString & ) ) );
 
     connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
+
+    // HACK: Usability: Force auto-connection of device upon detection
+    MediaDeviceMonitor::instance()->checkDevicesForIpod();
 }
 
 void

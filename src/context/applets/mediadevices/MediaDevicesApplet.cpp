@@ -12,9 +12,6 @@
  *                                                                         *
  ***************************************************************************/
 
- // NOTE: code for % free space bar referenced from:
- // kdebase/workspace/plasma/applets/kickoff
- // kdelibs/kio/kfile/kpropertiesdialog.cpp
 
 #include "MediaDevicesApplet.h"
 
@@ -405,9 +402,6 @@ MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi 
 
     debug() << "Successfully added ipodLayout to layout";
 
-    // HACK: Usability: Forcing auto-connection until connection from TreeView possible
-
-    MediaDeviceMonitor::instance()->connectIpod( mountPoint, udi );
 }
 
 void
@@ -439,9 +433,6 @@ MediaDevicesApplet::mtpDetected( const QString &serial, const QString &udi )
 
     debug() << "Successfully added mtpLayout to layout";
 
-    // HACK: Usability: Forcing auto-connection until connection from TreeView possible
-
-    MediaDeviceMonitor::instance()->connectMtp( serial, udi );
 }
 
 void
