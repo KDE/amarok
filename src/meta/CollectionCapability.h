@@ -51,6 +51,8 @@ namespace Meta
 
             ~CollectionCapabilityHelper();
 
+            void setAction( PopupDropperAction *action, const QObject *receiver, const char *method );
+
         signals:
             void tracklistReady( Meta::TrackList tracklist);
 

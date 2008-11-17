@@ -49,11 +49,7 @@ CollectionCapabilityIpod::collectionActions( QueryMaker *qm ) {
 
             // Delete action triggered() goes to helper's run query
 
-            connect( deleteAction, SIGNAL( triggered() ), helper, SLOT( runQuery() ) );
-
-            connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), helper, SLOT( newResultReady ( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-            connect( helper, SIGNAL( tracklistReady( Meta::TrackList ) ), m_coll, SLOT( deleteTracksSlot( Meta::TrackList ) ), Qt::QueuedConnection );
-
+            helper->setAction( deleteAction, m_coll, SLOT( deleteTracksSlot( Meta::TrackList ) )  );
 
             actions.append( deleteAction );
 
