@@ -77,16 +77,6 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setAlternatingRowColors( true );
 
-    //transparency
-    QPalette p = The::paletteHandler()->palette();
-    QColor c = p.color( QPalette::Base );
-
-    //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
-    //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
-    m_playlistView->setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
-
-    The::paletteHandler()->updateItemView( m_playlistView );
-
     m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistBrowserNS::UserModel::instance(), SLOT( createNewGroup() ) );

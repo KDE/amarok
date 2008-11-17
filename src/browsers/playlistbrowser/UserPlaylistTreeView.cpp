@@ -25,6 +25,7 @@
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
+#include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
 #include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
@@ -52,6 +53,13 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QWidget *parent )
     , m_addGroupAction( 0 )
 {
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    The::paletteHandler()->updateItemView( this );
+
+    //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
+    //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
+    QPalette p = The::paletteHandler()->palette();
+    QColor c = p.color( QPalette::Base );
+    setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 }
 
 
@@ -280,3 +288,24 @@ void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * actio
 }
 
 #include "UserPlaylistTreeView.moc"
+
+
+void PlaylistBrowserNS::UserPlaylistTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+    QTreeView::drawRow( painter, option, index );
+
+    const int width = option.rect.width();
+    const int height = option.rect.height();
+
+    if( height > 0 )
+    {
+        painter->save();
+        QPixmap background;
+
+        background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
+
+        painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
+
+        painter->restore();
+    }
+}

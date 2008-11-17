@@ -54,6 +54,8 @@ protected:
 
     void contextMenuEvent( QContextMenuEvent* event );
 
+    virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
 private slots:
     void slotLoad();
     void slotAppend();
