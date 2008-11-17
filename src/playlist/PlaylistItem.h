@@ -27,10 +27,11 @@
 
 namespace Playlist
 {
-
-    class Item {
+    class Item
+    {
         public:
-            enum State {
+            enum State
+            {
                 Invalid,
                 NewlyAdded,
                 Unplayed,
@@ -45,12 +46,16 @@ namespace Playlist
             State state() const { return m_state; }
             void setState( State s ) { m_state = s; }
 
+            /**
+             * @return a random number which uniquely identifies this particular
+             * instance of a track in the playlist
+             */
             quint64 id() const { return m_id; }
 
         private:
             Meta::TrackPtr m_track;
-            State m_state;
-            quint64 m_id;
+            State          m_state;
+            quint64        m_id;
     };
 
 }

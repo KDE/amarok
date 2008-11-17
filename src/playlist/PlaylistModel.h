@@ -133,9 +133,29 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         bool containsId( const quint64 id ) const { return m_itemIds.contains( id ); }
         int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
         Meta::TrackPtr trackForId( const quint64 id ) const;
+
+        /**
+         * Returns the unique playlist id of the track at the requested row
+         * @param row the index in the playlist
+         * @return the id of the row specified, or 0 if the row does not exist
+         */
         quint64 idAt( const int row ) const;
+        
+        /**
+         * Returns the unique playlist item id of the active track
+         * @return the playlist item's id, or 0 if no active track
+         */
         quint64 activeId() const; // returns 0 for "no active row"
+        
+        /**
+         * Set the active track based on the playlist id given.
+         * @param id the unique playlist id
+         */
         void setActiveId( const quint64 id ) { setActiveRow( rowForId( id ) ); }
+
+        /**
+         * The Item state of the playlist track at the specified index
+         */
         Item::State stateOfId( quint64 id ) const;
 
         // methods to save playlist to file
