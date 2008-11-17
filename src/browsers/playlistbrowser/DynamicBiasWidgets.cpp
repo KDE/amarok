@@ -88,10 +88,7 @@ PlaylistBrowserNS::BiasBoxWidget::paintEvent( QPaintEvent* e )
 
     QPixmap body;
 
-    if( alternate() )
-        body = The::svgHandler()->renderSvgWithDividers( "alt_body", width(), height(), "alt_body" );
-    else
-        body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
+    body = The::svgHandler()->renderSvgWithDividers( "body", width(), height(), "body" );
 
     painter.drawPixmap( 0, 0, body );
 

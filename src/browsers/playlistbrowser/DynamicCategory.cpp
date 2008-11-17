@@ -24,6 +24,7 @@
 #include "amarokconfig.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
+#include "PaletteHandler.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -125,12 +126,9 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_biasListView = new QListView( this );
     m_biasListView->setFrameShape( QFrame::NoFrame );
 
-    // transparentcy
-    QPalette p = m_biasListView->palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-    m_biasListView->setPalette( p );
+
+    m_biasListView->setAlternatingRowColors( true );
+    The::paletteHandler()->updateItemView( m_biasListView );
 
     m_biasModel = new DynamicBiasModel( m_biasListView );
     m_biasListView->setModel( m_biasModel );
