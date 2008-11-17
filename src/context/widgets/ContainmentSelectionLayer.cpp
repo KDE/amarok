@@ -59,6 +59,8 @@ ContainmentSelectionLayer::boundingRect() const
 void
 ContainmentSelectionLayer::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
+    Q_UNUSED( event );
+    
     m_mouseHover = true;
     m_zoomInText->show();
     update();
@@ -67,6 +69,8 @@ ContainmentSelectionLayer::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 void
 ContainmentSelectionLayer::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
+    Q_UNUSED( event );
+    
     m_mouseHover = false;
     m_zoomInText->hide();
     update();
@@ -75,6 +79,8 @@ ContainmentSelectionLayer::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 void
 ContainmentSelectionLayer::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
+    Q_UNUSED( event );
+    
     m_mouseHover = false;
     m_zoomInText->hide();
     emit zoomRequested( m_containment, Plasma::ZoomIn );
@@ -83,6 +89,9 @@ ContainmentSelectionLayer::mousePressEvent( QGraphicsSceneMouseEvent *event )
 void
 ContainmentSelectionLayer::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
+    Q_UNUSED( option );
+    Q_UNUSED( widget );
+    
     QFontMetricsF fm( m_zoomInText->font() );
     m_zoomInText->setPos( boundingRect().width() / 2 - fm.boundingRect( m_zoomInText->text() ).width() / 2,
                           boundingRect().height() / 2 );
