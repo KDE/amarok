@@ -67,11 +67,6 @@ void WindowPreview::setWindowId(WId w)
     readWindowSize();
 }
 
-WId WindowPreview::windowId() const
-{
-    return id;
-}
-
 QSize WindowPreview::sizeHint() const
 {
     if (id == 0) {
@@ -91,7 +86,7 @@ void WindowPreview::readWindowSize() const
     Window r;
     int x, y;
     unsigned int w, h, b, d;
-    if (id > 0 && XGetGeometry(QX11Info::display(), id, &r, &x, &y, &w, &h, &b, &d)) {
+    if (XGetGeometry(QX11Info::display(), id, &r, &x, &y, &w, &h, &b, &d)) {
         windowSize = QSize(w, h);
     } else {
         windowSize = QSize();

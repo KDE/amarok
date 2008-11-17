@@ -29,7 +29,7 @@
 void PlasmoidPackageTest::init()
 {
     mPackage = QString("Package");
-    mPackageRoot = QDir::homePath() + "/.kde-unit-test/packageRoot";
+    mPackageRoot = QDir::homePath() + "/.kde-unit-test/packageRoot/";
     ps = Plasma::Applet::packageStructure();
 }
 
@@ -41,7 +41,7 @@ void PlasmoidPackageTest::cleanup()
     }
 
     // Clean things up.
-    QDir local = QDir::homePath() + QLatin1String("/.kde-unit-test/packageRoot");
+    QDir local = QDir::homePath() + QLatin1String("/.kde-unit-test/packageRoot/");
     foreach(const QString &dir, local.entryList(QDir::Dirs)) {
         removeDir(QLatin1String("packageRoot/" + dir.toLatin1() + "/contents/code"));
         removeDir(QLatin1String("packageRoot/" + dir.toLatin1() + "/contents/images"));
@@ -202,11 +202,11 @@ void PlasmoidPackageTest::filePath()
 
     // Two ways to get the same info.
     // 1. Give the file type which refers to a class of files (a directory) in
-    //    the package structure and the file name.
+    //    the package strucutre and the file name.
     // 2. Give the file type which refers to a file in the package structure.
     //
     // NOTE: scripts, main and mainscript are defined in packages.cpp and are
-    //       specific for a PlasmoidPackage.
+    //       specific for a PlasmoidPackag.
     QCOMPARE(p->filePath("scripts", "main"), path);
     QCOMPARE(p->filePath("mainscript"), path);
 }
@@ -286,9 +286,9 @@ void PlasmoidPackageTest::metadata()
 
     QString path = mPackageRoot + '/' + plasmoid + "/metadata.desktop";
     p = new Plasma::Package(mPackageRoot, plasmoid, ps);
-    const Plasma::PackageMetadata metadata = p->metadata();
-    QVERIFY(p->isValid());
-    QCOMPARE(metadata.name(), plasmoid);
+    const Plasma::PackageMetadata *metadata = p->metadata();
+    QVERIFY(metadata);
+    QCOMPARE(metadata->name(), plasmoid);
 }
 
 void PlasmoidPackageTest::createAndInstallPackage()

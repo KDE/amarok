@@ -66,7 +66,6 @@ set(plasma_LIB_SRCS
     plasma/svg.cpp
     plasma/theme.cpp
     plasma/tooltipmanager.cpp
-    plasma/tooltipcontent.cpp
     plasma/uiloader.cpp
     plasma/version.cpp
     plasma/view.cpp    

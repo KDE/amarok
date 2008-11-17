@@ -44,7 +44,7 @@ public:
 
     void start()
     {
-        setErrorText(i18nc("Error message, tried to start an invalid service", "Invalid (null) service, can not perform any operations."));
+        setErrorText(i18n("Invalid (null) service, can not perform any operations."));
         emitResult();
     }
 };

@@ -107,7 +107,7 @@ public:
     QString styleSheet() const;
 
     /**
-     * @return the native widget wrapped by this Frame
+     * @return the native widget wrapped by this Label
      */
     QWidget *nativeWidget() const;
 

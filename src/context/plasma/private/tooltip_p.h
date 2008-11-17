@@ -34,16 +34,16 @@ class ToolTip : public QWidget
     Q_OBJECT
 
 public:
-    ToolTip(QWidget *parent);
+    ToolTip(QObject *source);
     ~ToolTip();
 
-    void setContent(const ToolTipContent &data);
+    void updateTheme();
+    void setContent(const ToolTipManager::Content &data);
     void prepareShowing(bool cueUpdate);
-    void moveTo(const QPoint &to);
+    void setActivated(bool value);
     bool autohide() const;
 
 protected:
-    void checkSize();
     void showEvent(QShowEvent *);
     void hideEvent(QHideEvent *);
     void mouseReleaseEvent(QMouseEvent *);
@@ -52,8 +52,7 @@ protected:
     void paintEvent(QPaintEvent *);
 
 private Q_SLOTS:
-    void updateTheme();
-    void animateMove(qreal);
+    void sourceDestroyed();
 
 private:
     ToolTipPrivate * const d;

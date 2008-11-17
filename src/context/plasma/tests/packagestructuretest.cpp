@@ -123,7 +123,7 @@ void PackageStructureTest::read()
     // check some paths
     QCOMPARE(structure.path("images"), QString("images"));
     QCOMPARE(structure.path("mainscript"), QString("code/main"));
-
+    
     // compare files
     QList<const char *> files;
     files << "mainconfiggui" << "mainconfigxml" << "mainscript";
@@ -134,12 +134,12 @@ void PackageStructureTest::read()
     for (int i = 0; i < files.count(); ++i) {
         QCOMPARE(psFiles[i], files[i]);
     }
-
+    
     // compare required files
     QList<const char *> reqFiles = structure.requiredFiles();
     QCOMPARE(reqFiles.count(), 1);
     QCOMPARE(reqFiles[0], "mainscript");
-
+    
     // compare directories
     QList <const char *> dirs;
     dirs << "config" << "configui" << "images" << "scripts";
@@ -155,13 +155,13 @@ void PackageStructureTest::write()
 {
     QString file1 = QDir::homePath() + "/.kde-unit-test/packagerc";
     QString file2 = QString(KDESRCDIR) + "/plasmoidpackagerc";
-
+    
     KConfig config(file1, KConfig::SimpleConfig);
     ps->write(&config);
-
+    
     // check type
     QCOMPARE(config.group("").readEntry("Type", QString()), QString("Plasmoid"));
-
+    
     // check groups
     QStringList groups;
     groups << "images" << "config" << "scripts"

@@ -50,21 +50,23 @@ public:
     PackagePrivate(const PackageStructure::Ptr st, const QString &p)
         : structure(st),
           basePath(p),
-          valid(QFile::exists(basePath))
+          valid(QFile::exists(basePath)),
+          metadata(0)
     {
-        QFileInfo info(basePath);
-        if (valid && info.isDir() && basePath[basePath.length() - 1] != '/') {
+        if (valid && basePath[basePath.length() - 1] != '/') {
             basePath.append('/');
         }
     }
 
     ~PackagePrivate()
     {
+        delete metadata;
     }
 
     PackageStructure::Ptr structure;
     QString basePath;
     bool valid;
+    PackageMetadata *metadata;
 };
 
 Package::Package(const QString &packageRoot, const QString &package,
@@ -175,9 +177,13 @@ QStringList Package::entryList(const char *fileType) const
     return QStringList();
 }
 
-PackageMetadata Package::metadata() const
+const PackageMetadata *Package::metadata() const
 {
-    return d->structure->metadata();
+    //FIXME: this only works for native plasma packges; should fall back to... PackageStructure?
+    if (!d->metadata) {
+        d->metadata = new PackageMetadata(d->basePath + "metadata.desktop");
+    }
+    return d->metadata;
 }
 
 const QString Package::path() const

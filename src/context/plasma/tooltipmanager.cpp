@@ -56,7 +56,6 @@ public :
         : currentWidget(0),
           showTimer(0),
           hideTimer(0),
-          tipWidget(new ToolTip(0)),
           state(ToolTipManager::Activated),
           isShown(false),
           delayedHide(false)
@@ -67,12 +66,15 @@ public :
     ~ToolTipManagerPrivate()
     {
         clearTips();
-        delete tipWidget;
     }
 
     void showToolTip();
     void resetShownState();
 
+    /**
+      * called when the theme of plasma has change
+      */
+    void themeUpdated();
     /**
       * called when a widget inside the tooltip manager is deleted
       */
@@ -85,8 +87,7 @@ public :
     QGraphicsWidget *currentWidget;
     QTimer *showTimer;
     QTimer *hideTimer;
-    QHash<QGraphicsWidget *, ToolTipContent> tooltips;
-    ToolTip *tipWidget;
+    QHash<QGraphicsWidget *, ToolTip *> tooltips;
     ToolTipManager::State state;
     bool isShown : 1;
     bool delayedHide : 1;
@@ -108,10 +109,24 @@ ToolTipManager *ToolTipManager::self()
     return &privateInstance->self;
 }
 
+ToolTipManager::Content::Content()
+    : windowToPreview(0),
+      autohide(true)
+{
+}
+
+bool ToolTipManager::Content::isEmpty() const
+{
+    return mainText.isEmpty() && subText.isEmpty() && image.isNull() && windowToPreview == 0;
+}
+
 ToolTipManager::ToolTipManager(QObject *parent)
   : QObject(parent),
     d(new ToolTipManagerPrivate)
 {
+    connect(Plasma::Theme::defaultTheme(), SIGNAL(themeChanged()), this, SLOT(themeUpdated()));
+    d->themeUpdated();
+
     d->showTimer = new QTimer(this);
     d->showTimer->setSingleShot(true);
     d->hideTimer = new QTimer(this);
@@ -132,6 +147,10 @@ void ToolTipManager::show(QGraphicsWidget *widget)
         return;
     }
 
+    if (d->currentWidget) {
+        hide(d->currentWidget);
+    }
+
     d->hideTimer->stop();
     d->delayedHide = false;
     d->showTimer->stop();
@@ -148,7 +167,12 @@ void ToolTipManager::show(QGraphicsWidget *widget)
 
 bool ToolTipManager::isVisible(QGraphicsWidget *widget) const
 {
-    return d->currentWidget == widget && d->tipWidget->isVisible();
+    ToolTip *tooltip = d->tooltips.value(widget);
+    if (tooltip) {
+        return tooltip->isVisible();
+    } else {
+        return false;
+    }
 }
 
 void ToolTipManagerPrivate::doDelayedHide()
@@ -160,14 +184,13 @@ void ToolTipManagerPrivate::doDelayedHide()
 
 void ToolTipManager::hide(QGraphicsWidget *widget)
 {
-    if (d->currentWidget != widget) {
-        return;
+    ToolTip *tooltip = d->tooltips.value(widget);
+    if (tooltip) {
+        d->showTimer->stop();  // stop the timer to show the tooltip
+        d->delayedHide = false;
+        d->currentWidget = 0;
+        tooltip->hide();
     }
-
-    d->showTimer->stop();  // stop the timer to show the tooltip
-    d->delayedHide = false;
-    d->currentWidget = 0;
-    d->tipWidget->hide();
 }
 
 void ToolTipManager::registerWidget(QGraphicsWidget *widget)
@@ -177,7 +200,7 @@ void ToolTipManager::registerWidget(QGraphicsWidget *widget)
     }
 
     //the tooltip is not registered we add it in our map of tooltips
-    d->tooltips.insert(widget, ToolTipContent());
+    d->tooltips.insert(widget, 0);
     widget->installEventFilter(this);
     //connect to object destruction
     connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(onWidgetDestroyed(QObject*)));
@@ -190,30 +213,42 @@ void ToolTipManager::unregisterWidget(QGraphicsWidget *widget)
     }
 
     widget->removeEventFilter(this);
-    d->tooltips.remove(widget);
+    ToolTip *tooltip = d->tooltips.take(widget);
+    if (tooltip) {
+        tooltip->deleteLater();
+    }
 }
 
-void ToolTipManager::setContent(QGraphicsWidget *widget, const ToolTipContent &data)
+void ToolTipManager::setContent(QGraphicsWidget *widget, const Content &data)
 {
     if (d->state == Deactivated) {
         return;
     }
 
     registerWidget(widget);
-    d->tooltips[widget] = data;
 
-    if (d->currentWidget == widget) {
-        if (data.isEmpty()) {
-            hide(widget);
+    ToolTip *tooltip = d->tooltips.value(widget);
+
+    if (data.isEmpty()) {
+        if (tooltip) {
+            tooltip->deleteLater();
         }
-
-        d->tipWidget->setContent(data);
+        d->tooltips.insert(widget, 0);
+        return;
     }
+
+    if (!tooltip) {
+        tooltip = new ToolTip(widget);
+        d->tooltips.insert(widget, tooltip);
+    }
+
+    tooltip->setContent(data);
+    tooltip->updateTheme();
 }
 
 void ToolTipManager::clearContent(QGraphicsWidget *widget)
 {
-    setContent(widget, ToolTipContent());
+    setContent(widget, Content());
 }
 
 void ToolTipManager::setState(ToolTipManager::State state)
@@ -237,6 +272,17 @@ ToolTipManager::State ToolTipManager::state() const
     return d->state;
 }
 
+void ToolTipManagerPrivate::themeUpdated()
+{
+    QHashIterator<QGraphicsWidget*, ToolTip *> iterator(tooltips);
+    while (iterator.hasNext()) {
+        iterator.next();
+        if (iterator.value()) {
+            iterator.value()->updateTheme();
+        }
+    }
+}
+
 void ToolTipManagerPrivate::onWidgetDestroyed(QObject *object)
 {
     if (!object) {
@@ -258,22 +304,41 @@ void ToolTipManagerPrivate::onWidgetDestroyed(QObject *object)
         delayedHide = false;
     }
 
-    tooltips.remove(w);
+    QMutableHashIterator<QGraphicsWidget*, ToolTip *> iterator(tooltips);
+    while (iterator.hasNext()) {
+        iterator.next();
+        //kDebug() << (int)iterator.key() << (int)w;
+        if (iterator.key() == w) {
+            ToolTip *tooltip = iterator.value();
+            iterator.remove();
+            if (tooltip) {
+                //kDebug() << "deleting the tooltip!";
+                tooltip->hide();
+                tooltip->deleteLater();
+            }
+            return;
+        }
+    }
 }
 
 void ToolTipManagerPrivate::clearTips()
 {
+    foreach (ToolTip *tip, tooltips) {
+        delete tip;
+    }
+
     tooltips.clear();
 }
 
 void ToolTipManagerPrivate::resetShownState()
 {
     if (currentWidget) {
-        if (!tipWidget->isVisible() || delayedHide) {
+        ToolTip * tooltip = tooltips.value(currentWidget);
+        if (tooltip && (!tooltip->isVisible() || delayedHide)) {
             //One might have moused out and back in again
             delayedHide = false;
             isShown = false;
-            tipWidget->hide();
+            tooltip->hide();
             currentWidget = 0;
         }
     }
@@ -288,31 +353,30 @@ void ToolTipManagerPrivate::showToolTip()
         return;
     }
 
-    ToolTipContent tooltip = tooltips.value(currentWidget);
+    ToolTip *tooltip = tooltips.value(currentWidget);
     bool justCreated = false;
 
-    if (tooltip.isEmpty()) {
+    if (!tooltip) {
         // give the object a chance for delayed loading of the tip
         QMetaObject::invokeMethod(currentWidget, "toolTipAboutToShow");
         tooltip = tooltips.value(currentWidget);
-        //kDebug() << "attempt to make one ... we gots" << tooltip.isEmpty();
-
-        if (tooltip.isEmpty()) {
+        //kDebug() << "attempt to make one ... we gots" << tooltip;
+        if (tooltip) {
+            justCreated = true;
+        } else {
             currentWidget = 0;
             return;
         }
-
-        justCreated = true;
     }
 
+    tooltip->hide();
     //kDebug() << "about to show" << justCreated;
-    tipWidget->setContent(tooltip);
-    tipWidget->prepareShowing(!justCreated);
-    tipWidget->moveTo(ToolTipManager::self()->m_corona->popupPosition(currentWidget, tipWidget->size()));
-    tipWidget->show();
+    tooltip->prepareShowing(!justCreated);
+    tooltip->move(ToolTipManager::self()->m_corona->popupPosition(currentWidget, tooltip->size()));
     isShown = true;  //ToolTip is visible
+    tooltip->show();
 
-    delayedHide = tooltip.autohide();
+    delayedHide = tooltip->autohide();
     if (delayedHide) {
         //kDebug() << "starting authoide";
         hideTimer->start(3000);

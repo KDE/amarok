@@ -51,8 +51,8 @@ class PackageMetadataPrivate
         QString api;
 };
 
-PackageMetadata::PackageMetadata(const PackageMetadata &other)
-    : d(new PackageMetadataPrivate(*other.d))
+PackageMetadata::PackageMetadata()
+    : d(new PackageMetadataPrivate)
 {
 }
 
@@ -100,12 +100,8 @@ void PackageMetadata::write(const QString &filename) const
 
 void PackageMetadata::read(const QString &filename)
 {
-    if (filename.isEmpty()) {
-        return;
-    }
-
-    KDesktopFile cfg(filename);
-    KConfigGroup config = cfg.desktopGroup();
+    KConfig cfg(filename);
+    KConfigGroup config(&cfg, "Desktop Entry");
 
     d->name = config.readEntry("Name", d->name);
     d->description = config.readEntry("Comment", d->description);

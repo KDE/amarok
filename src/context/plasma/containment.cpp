@@ -511,7 +511,7 @@ bool ContainmentPrivate::showContextMenu(const QPointF &point,
             QMenu *containmentActionMenu = &desktopMenu;
 
             if (!actions.isEmpty() && containmentActions.count() > 2) {
-                containmentActionMenu = new KMenu(i18nc("%1 is the name of the containment", "%1 Options", q->name()), &desktopMenu);
+                containmentActionMenu = new KMenu(i18n("%1 Options", q->name()), &desktopMenu);
                 desktopMenu.addMenu(containmentActionMenu);
             }
 
@@ -530,7 +530,7 @@ bool ContainmentPrivate::showContextMenu(const QPointF &point,
             QAction *closeApplet = applet->d->actions.action("remove");
             if (!closeApplet) { //unlikely but not impossible
                 kDebug() << "no remove action!!!!!!!!";
-                closeApplet = new QAction(i18nc("%1 is the name of the applet", "Remove this %1", applet->name()), &desktopMenu);
+                closeApplet = new QAction(i18n("Remove this %1", applet->name()), &desktopMenu);
                 closeApplet->setIcon(KIcon("edit-delete"));
                 QObject::connect(closeApplet, SIGNAL(triggered(bool)), applet, SLOT(destroy()));
             }
@@ -1377,8 +1377,8 @@ void Containment::destroy(bool confirm)
         if (!confirm ||
             KMessageBox::warningContinueCancel(
                 view(),
-                i18nc("%1 is the name of the containment", "Do you really want to remove this %1?", name()),
-                i18nc("@title:window %1 is the name of the containment", "Remove %1", name()), KStandardGuiItem::remove()) == KMessageBox::Continue) {
+                i18n("Do you really want to remove this %1?", name()),
+                i18n("Remove %1", name()), KStandardGuiItem::remove()) == KMessageBox::Continue) {
             //clearApplets();
             Applet::destroy();
         }

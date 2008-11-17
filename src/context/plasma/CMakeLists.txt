@@ -1,3 +1,4 @@
+find_package(KDE4 REQUIRED)
 find_package(Nepomuk REQUIRED)
 include (KDE4Defaults)
 include(NepomukMacros)
@@ -61,7 +62,6 @@ set(plasma_LIB_SRCS
     servicejob.cpp
     svg.cpp
     theme.cpp
-    tooltipcontent.cpp
     tooltipmanager.cpp
     uiloader.cpp
     version.cpp
@@ -163,7 +163,6 @@ set(plasma_LIB_INCLUDES
     servicejob.h
     svg.h
     theme.h
-    tooltipcontent.h
     tooltipmanager.h
     uiloader.h
     tooltipmanager.h

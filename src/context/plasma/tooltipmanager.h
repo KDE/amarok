@@ -25,7 +25,6 @@
 //plasma
 #include <plasma/plasma.h>
 #include <plasma/plasma_export.h>
-#include <plasma/tooltipcontent.h>
 
 namespace Plasma
 {
@@ -44,7 +43,7 @@ class Corona;
  *
  * @code
  * // widget is a QGraphicsWidget*
- * Plasma::ToolTipContent data;
+ * Plasma::ToolTipManager::Content data;
  * data.mainText = i18n("My Title");
  * data.subText = i18n("This is a little tooltip");
  * data.image = KIcon("some-icon").pixmap(IconSize(KIconLoader::Desktop));
@@ -64,7 +63,6 @@ class Corona;
  * invoked if it exists. Similarly, when a tooltip is hidden, the widget's toolTipHidden() slot
  * will be invoked if it exists. This allows widgets to provide on-demand tooltip data.
  */
-
 class PLASMA_EXPORT ToolTipManager  : public QObject
 {
     Q_OBJECT
@@ -74,6 +72,34 @@ public:
         Activated = 0 /**<< Will accept tooltip data and show tooltips */,
         Inhibited /**<< Will accept tooltip data, but not show tooltips */,
         Deactivated /**<< Will discard tooltip data, and not attempt to show them */
+    };
+
+    /**
+     * @struct Content plasma/tooltipmanager.h <Plasma/ToolTipManager>
+     *
+     * This provides the content for a tooltip.
+     *
+     * Normally you will want to set at least the @p mainText and
+     * @p subText.
+     */
+    struct PLASMA_EXPORT Content
+    {
+        /** Creates an empty Content */
+        Content();
+
+        /** @return true if all the fields are empty */
+        bool isEmpty() const;
+
+        /** Important information, e.g. the title */
+        QString mainText;
+        /** Elaborates on the @p mainText */
+        QString subText;
+        /** An icon to display */
+        QPixmap image;
+        /** Id of a window if you want to show a preview */
+        WId windowToPreview;
+        /** Whether or not to autohide the tooltip, defaults to true */
+        bool autohide;
     };
 
     /**
@@ -144,7 +170,7 @@ public:
      *               is passed in, the tooltip content will be reset.
      */
     void setContent(QGraphicsWidget *widget,
-                    const ToolTipContent &data);
+                    const ToolTipManager::Content &data);
 
     /**
      * Clears the tooltip data associated with this widget, but keeps
@@ -184,10 +210,11 @@ private:
 
     ToolTipManagerPrivate *const d;
     Corona* m_corona;
-
+    
     Q_PRIVATE_SLOT(d, void showToolTip())
     Q_PRIVATE_SLOT(d, void resetShownState())
     Q_PRIVATE_SLOT(d, void onWidgetDestroyed(QObject*))
+    Q_PRIVATE_SLOT(d, void themeUpdated())
 };
 
 } // namespace Plasma
