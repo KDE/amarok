@@ -381,6 +381,10 @@
     <entry key="Active Browser" type="Int">
         <label>Number (from the top) of the last active browser.</label>
     </entry>
+    <entry key="LastPlaying" type="Int">
+        <label>Track playing on last exit. Value is -1 if no track was playing.</label>
+        <default>-1</default>
+    </entry>
 </group>
 
 <group name="Collection">
