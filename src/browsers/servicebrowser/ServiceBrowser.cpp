@@ -167,8 +167,10 @@ ServiceBrowser::paletteChange( const QPalette & oldPalette )
 {
     DEBUG_BLOCK
     Q_UNUSED( oldPalette );
+    The::paletteHandler()->updateItemView( m_serviceListView );
     m_delegate->paletteChange();
     m_serviceListView->reset();
+    
 }
 
 
