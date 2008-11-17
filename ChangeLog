@@ -16,6 +16,7 @@ VERSION 2.0-rc1
     * Track information can be edited from the file browser. (BR 172812)
 
   CHANGES:
+    * Ipods and MTP devices auto-connect again for usability.
     * Ipod Collections can now delete multiple tracks at once.	
     * User playlists added from files are now updated on collection rescans, so
       any changes in the file is reflected in the SQL playlist.
