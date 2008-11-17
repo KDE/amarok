@@ -227,13 +227,14 @@ qreal ServiceInfo::heightForWidth(qreal width) const
 QSizeF 
 ServiceInfo::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
+    Q_UNUSED( which )
+
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {
         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    } else
-    {
-        return constraint;
     }
+        
+    return constraint;
 }
 
 void ServiceInfo::linkClicked( const QUrl & url )
