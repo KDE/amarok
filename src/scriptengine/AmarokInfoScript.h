@@ -32,6 +32,7 @@ class InfoScript : public QObject
         InfoScript( const KUrl& scriptUrl );
     public slots:
         QString scriptPath() const;
+        QString scriptConfigPath( const QString& name ) const;
         QString iconPath( const QString& name, int size ) const;
         QString version() const;
 

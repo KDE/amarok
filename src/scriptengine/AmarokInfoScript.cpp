@@ -48,4 +48,9 @@ InfoScript::iconPath( const QString& name, int size ) const
     return KIconLoader::global()->iconPath( name, -size ); 
 }
 
+QString InfoScript::scriptConfigPath( const QString& name ) const
+{
+    return Amarok::saveLocation( "scripts/" + name );
+}
+
 #include "AmarokInfoScript.moc"
