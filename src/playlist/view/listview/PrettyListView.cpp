@@ -63,8 +63,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     // rendering adjustments
     setFrameShape( QFrame::NoFrame );
     setAlternatingRowColors( true) ;
-
     The::paletteHandler()->updateItemView( this );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
     
     setAutoFillBackground( false );
 
@@ -333,4 +333,11 @@ Playlist::PrettyListView::selectedRows() const
         rows.append( idx.row() );
     }
     return rows;
+}
+
+void Playlist::PrettyListView::newPalette( const QPalette & palette )
+{
+    Q_UNUSED( palette )
+    The::paletteHandler()->updateItemView( this );
+    reset();
 }

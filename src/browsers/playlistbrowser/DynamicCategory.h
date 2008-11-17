@@ -41,6 +41,9 @@ namespace PlaylistBrowserNS {
             DynamicCategory( QWidget* parent );
             ~DynamicCategory();
 
+        protected slots:
+            void newPalette( const QPalette & palette );
+
         private slots:
             void OnOff(bool);
             void enableDynamicMode( bool enable );

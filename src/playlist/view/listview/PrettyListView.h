@@ -48,6 +48,9 @@ public slots:
     void removeSelection();
     void scrollToActiveTrack();
 
+protected slots:
+    void newPalette( const QPalette & palette );
+
 private slots:
     void trackActivated( const QModelIndex& ) const;
 

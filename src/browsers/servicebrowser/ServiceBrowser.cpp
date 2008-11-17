@@ -24,6 +24,7 @@
 #include "ServiceListSortFilterProxyModel.h"
 #include "context/ContextView.h"
 #include "PaletteHandler.h"
+#include "widgets/PrettyTreeView.h"
 
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;
@@ -46,7 +47,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     setObjectName( name );
     debug() << "ServiceBrowser starting...";
 
-    m_serviceListView = new QTreeView( this );
+    m_serviceListView = new PrettyTreeView( this );
     m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
     m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 
@@ -160,17 +161,6 @@ ServiceBrowser::home()
         if ( m_usingContextView )
             Context::ContextView::self()->clear();
     }
-}
-
-void
-ServiceBrowser::paletteChange( const QPalette & oldPalette )
-{
-    DEBUG_BLOCK
-    Q_UNUSED( oldPalette );
-    The::paletteHandler()->updateItemView( m_serviceListView );
-    m_delegate->paletteChange();
-    m_serviceListView->reset();
-    
 }
 
 

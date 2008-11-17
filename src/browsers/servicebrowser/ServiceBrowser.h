@@ -91,13 +91,6 @@ class ServiceBrowser : public KVBox
          */
         void setScriptableServiceManager( ScriptableServiceManager *scriptableServiceManager );
 
-    protected:
-        /**
-         * Hanlde palette changes to ensure the service list is always tinted correctly.
-         * @param oldPalette The previously used palette.
-         */
-        virtual void paletteChange( const QPalette & oldPalette );
-
     private:
         /**
          * Private constructor ( Singleton pattern )

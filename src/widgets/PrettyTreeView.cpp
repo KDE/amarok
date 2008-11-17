@@ -63,6 +63,7 @@ void PrettyTreeView::newPalette( const QPalette & palette )
 {
     Q_UNUSED( palette )
     The::paletteHandler()->updateItemView( this );
+    reset(); // redraw all potential delegates
 }
 
 #include "PrettyTreeView.moc"

@@ -129,6 +129,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_biasListView->setAlternatingRowColors( true );
     The::paletteHandler()->updateItemView( m_biasListView );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
     m_biasModel = new DynamicBiasModel( m_biasListView );
     m_biasListView->setModel( m_biasModel );
@@ -262,6 +263,13 @@ DynamicCategory::save()
     DynamicModel::instance()->saveActive( title );
 }
 
+}
+
+void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
+{
+    Q_UNUSED( palette )
+    The::paletteHandler()->updateItemView( m_biasListView );
+    m_biasListView->reset();
 }
 
 
