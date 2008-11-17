@@ -20,7 +20,7 @@
 #ifndef PRETTYTREEVIEW_H
 #define PRETTYTREEVIEW_H
 
-#include <qtreeview.h>
+#include <QTreeView.h>
 
 /**
 A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes

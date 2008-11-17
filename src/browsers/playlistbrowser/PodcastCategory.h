@@ -21,12 +21,12 @@
 
 #include "playlist/PlaylistModel.h"
 #include "PodcastModel.h"
+#include "widgets/PrettyTreeView.h"
 
 #include <QContextMenuEvent>
 #include <QItemDelegate>
 #include <QListView>
 #include <QToolButton>
-#include <QTreeView>
 #include <QWebPage>
 
 class PopupDropper;
@@ -81,7 +81,7 @@ Q_OBJECT
 
 };
 
-class PodcastView : public QTreeView
+class PodcastView : public PrettyTreeView
 {
     Q_OBJECT
     public:
