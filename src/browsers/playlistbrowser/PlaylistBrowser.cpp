@@ -52,13 +52,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
     setMargin( 0 );
     setContentsMargins(0,0,0,0);
     setFrameShape( QFrame::NoFrame );
-
+    /*
     QPalette p = m_toolBox->palette();
     QColor c = p.color( QPalette::Window );
     c.setAlpha( 0 );
     p.setColor( QPalette::Window, c );
     m_toolBox->setPalette( p );
-
+*/
     addCategory( PlaylistManager::Dynamic );
 
     QList<int> categories = The::playlistManager()->availableCategories();
