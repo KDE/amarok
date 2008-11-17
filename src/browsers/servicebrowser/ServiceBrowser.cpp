@@ -23,6 +23,7 @@
 #include "ServiceListDelegate.h"
 #include "ServiceListSortFilterProxyModel.h"
 #include "context/ContextView.h"
+#include "PaletteHandler.h"
 
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;
@@ -49,12 +50,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
     m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 
-    //make background transparent
-    QPalette p = m_serviceListView->palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-    m_serviceListView->setPalette( p );
+    
 
     m_serviceListView->setFrameShape( QFrame::NoFrame );
 
@@ -67,9 +63,12 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     m_serviceListView->setHeaderHidden( true );
     m_serviceListView->setRootIsDecorated( false );
     m_serviceListView->setSortingEnabled( true );
+    m_serviceListView->setAlternatingRowColors( true );
     m_serviceListView->setModel( proxyModel );
     connect(m_serviceListView, SIGNAL( clicked ( const QModelIndex & ) ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
     m_scriptableServiceManager = 0;
+
+    The::paletteHandler()->updateItemView( m_serviceListView );
 
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );

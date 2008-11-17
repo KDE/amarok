@@ -54,7 +54,7 @@ void PaletteHandler::setPalette( const QPalette & palette )
     emit( newPalette( m_palette ) );
 }
 
-void PaletteHandler::updateTreeView( QTreeView * view )
+void PaletteHandler::updateItemView( QAbstractItemView * view )
 {
 
     QPalette p = m_palette;

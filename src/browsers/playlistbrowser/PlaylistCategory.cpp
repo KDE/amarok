@@ -85,7 +85,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
     m_playlistView->setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
-    The::paletteHandler()->updateTreeView( m_playlistView );
+    The::paletteHandler()->updateItemView( m_playlistView );
 
     m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
@@ -167,7 +167,7 @@ void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
 {
     Q_UNUSED( palette )
 
-    The::paletteHandler()->updateTreeView( m_playlistView );
+    The::paletteHandler()->updateItemView( m_playlistView );
 }
 
 void PlaylistBrowserNS::StreamEditor::slotTextChanged( const QString & text )

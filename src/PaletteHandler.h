@@ -47,7 +47,7 @@ public:
     QPalette palette();
 
     void setPalette( const QPalette & palette );
-    void updateTreeView( QTreeView * view );
+    void updateItemView( QAbstractItemView * view );
 
 signals:
     void newPalette( const QPalette & palette );

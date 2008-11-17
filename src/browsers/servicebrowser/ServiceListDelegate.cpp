@@ -71,10 +71,7 @@ ServiceListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & opt
 
     QPixmap background;
 
-    if( !index.data( CustomServiceRoles::AlternateRowRole ).toBool() )
-        background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-    else
-        background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
+    background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
 
     painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y(), background );
     painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );

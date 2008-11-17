@@ -83,24 +83,11 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     //for the option to tell us about it
     setAlternatingRowColors( true );
 
-    //transparency
-    QPalette p = palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-
-
-    //HACK ALERT, make a workaround, for now, for the alternating row color issue
-    /* c = p.color( QPalette::AlternateBase );*/
-    c = Qt::white;
-    c.setAlpha( 31 );
-    p.setColor( QPalette::AlternateBase, c );
-
-    setPalette( p );
-
+    The::paletteHandler()->updateItemView( this );
+    
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
-    //The::paletteHandler()->updateTreeView( this );
+
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
@@ -941,7 +928,7 @@ void CollectionTreeView::newPalette( const QPalette & palette )
 {
     Q_UNUSED( palette )
 
-    The::paletteHandler()->updateTreeView( this );
+    The::paletteHandler()->updateItemView( this );
 }
 
 void
