@@ -753,7 +753,10 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
         actions = cc->collectionActions( qm );
     }
     else
+    {
         debug() << "Does not have collection capability!";
+        qm->deleteLater();
+    }
 
 // Sample delete action skeleton, will be replaced
     /*
