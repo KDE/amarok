@@ -20,6 +20,8 @@
 #include "Utils.h"
 #include "../CoreDir.h"
 #include <QDebug>
+#include <vector>
+#include <string>
 #include <QFile>
 #include <QIODevice>
 #include <QSettings>

@@ -83,10 +83,10 @@ WsProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetworkPr
 #ifdef WIN32
 	IeSettings s;
 	if (s.fAutoDetect) {
-		return m_autoProxy.getProxyFor(url, userAgent, out, QString::fromUtf16(s.lpszAutoConfigUrl));
+		return m_autoProxy.getProxyFor(url, userAgent, out, QString::fromUtf16((const ushort *)s.lpszAutoConfigUrl));
 	} else if (s.lpszProxy) {
 		// manual proxy
-		QUrl url(QString::fromUtf16(s.lpszProxy));
+		QUrl url(QString::fromUtf16((const ushort *)s.lpszProxy));
 		out.setHostName(url.host());
 		out.setPort(url.port());
 		return true;

@@ -23,8 +23,10 @@
 #include "lastfm/DllExportMacro.h"
 #include <QObject>
 
-
+/*  change schroeder
+     disabling NdisEvents to let lastfm Compile with the Express Version of VC++
 #ifdef WIN32
+	
 	#include "NdisEvents_win.h"
 
 	class WsNetEventAdapter : public QObject, public NdisEvents
@@ -42,18 +44,21 @@
 			emit connectionDown(QString::fromUtf16((const ushort * )name));
 		}
 
+	
 	public:
 		WsNetEventAdapter(QObject *parent) : QObject(parent)
 		{
 			registerForNdisEvents();
 		}
-
+	
+		
 	signals:
 		void connectionUp(QString connectionName);
 		void connectionDown(QString connectionName);
 	};
+	*/
 
-#else
+// #else
 	class WsNetEventAdapter : public QObject
 	{
 		Q_OBJECT
@@ -67,7 +72,7 @@
 		void connectionUp(QString connectionName);
 		void connectionDown(QString connectionName);
 	};
-#endif
+// #endif
 
 
 class LASTFM_WS_DLLEXPORT WsNetEvent : public QObject

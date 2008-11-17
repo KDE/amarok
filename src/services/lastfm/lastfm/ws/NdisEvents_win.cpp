@@ -31,10 +31,14 @@
 
 #include "NdisEvents_win.h"
 #include "WmiSink_win.h"
-#include <atlcom.h>
+#include <windows.h>
+#include <atlbase.h>
 #include <objbase.h>
 #include <crtdbg.h>
 
+extern CComModule _Module;
+
+/* change schroeder
 NdisEvents::NdisEvents()
     : m_pSink(0)
 {}
@@ -48,7 +52,10 @@ NdisEvents::~NdisEvents()
 	// and reference counting will take care of the WmiSink object
 }
 
+
+
 HRESULT
+
 NdisEvents::registerForNdisEvents()
 {
 	HRESULT hr;
@@ -103,4 +110,4 @@ NdisEvents::registerForNdisEvents()
 
     return S_OK;
 }
-
+*/

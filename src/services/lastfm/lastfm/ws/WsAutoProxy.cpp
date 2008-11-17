@@ -80,7 +80,7 @@ WsAutoProxy::WsAutoProxy()
 WsAutoProxy::~WsAutoProxy()
 {
 #ifdef WIN32
-	if (m_hSession)
+	if (m_hSession) 
 		WinHttpCloseHandle(m_hSession);
 #endif
 }
@@ -90,9 +90,11 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 {
 	bool result = false;
 #ifdef WIN32
+	USES_CONVERSION;
 	if (!m_hSession)
 	{
-		m_hSession = WinHttpOpen(CA2W(userAgent), WINHTTP_ACCESS_TYPE_NO_PROXY, 0, 0, 0/*|WINHTTP_FLAG_ASYNC*/);
+		m_hSession = WinHttpOpen(A2W(userAgent), WINHTTP_ACCESS_TYPE_NO_PROXY, 0, 0, 0/*|WINHTTP_FLAG_ASYNC*/);
+
 	}
 	if (m_hSession)
 	{
@@ -102,7 +104,7 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 		if (pacUrl.length()) 
 		{
 			opts.dwFlags = WINHTTP_AUTOPROXY_CONFIG_URL;
-			opts.lpszAutoConfigUrl = CA2W( pacUrl.utf16() );
+			opts.lpszAutoConfigUrl =A2W((LPCSTR)pacUrl.utf16() );
 		} 
 		else
 		{
@@ -111,11 +113,11 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 		}
 		opts.fAutoLogonIfChallenged = TRUE;
 		
-		if (WinHttpGetProxyForUrl(m_hSession, CA2W(url.utf16()), &opts, &info))
+		if (WinHttpGetProxyForUrl(m_hSession, A2W((LPCSTR)url.utf16()), &opts, &info))
 		{
 			if (info.lpszProxy) 
 			{
-				QList<QNetworkProxy> proxies = parsePacResult( CA2W(QString::fromUtf16(info.lpszProxy)));
+				QList<QNetworkProxy> proxies = parsePacResult(QString::fromUtf16((const ushort *)info.lpszProxy));
 				if (!proxies.empty())
 				{
 					out = proxies.at(0);
