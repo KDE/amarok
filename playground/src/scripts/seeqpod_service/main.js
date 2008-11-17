@@ -35,12 +35,32 @@ QByteArray.prototype.toString = function()
 
 function onConfigure()
 {
-    
-    var currentDir = Amarok.Info.scriptPath();
+    print ("Seeqpod onConfigure");
+    uid = "";
 
-    uid = QInputDialog.getText( 0, "Test dialog", "test value" );
-    if ( uid != "" )
+    var configDir = Amarok.Info.scriptConfigPath( "seeqpod_service" );
+    /*var dialog = new QWidget( 0 );
+    dialog.show();*/
+
+    uid = QInputDialog.getText( 0, "Seeqpod Script", "Please enter your uid", QLineEdit.Normal, "", 0 );
+
+    if ( uid != "" ) {
         Amarok.debug ("got " + uid );
+        var file = new QFile( configDir + "seeqpodrc" );
+        if ( file.open( QIODevice.OpenMode( QIODevice.WriteOnly, QIODevice.Text ) ) ) {
+            Amarok.debug ("Open!" );
+            ba = new QByteArray();
+            ba.append( uid ); //if we dont do like this, the array is just empty...
+            file.write( ba );
+        } 
+        else 
+        {
+            Amarok.debug ("_NOT_ Open!" );
+        }
+
+        file.close();
+
+    }
     
 }
 
@@ -50,7 +70,13 @@ function Seeqpod()
     print ("Seeqpod Seeqpod");
     
     var currentDir = Amarok.Info.scriptPath();
-    currentDir = currentDir.slice(0, -7)
+    print( "got config dir: " + currentDir );
+
+
+    //get config file ( if it exists, otherwise, ask for uid )
+    readConfig();
+
+
 
     var file = new QFile( currentDir + "SeeqpodService.html" );
     file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) );
@@ -69,12 +95,27 @@ function Seeqpod()
 
 function readConfig()
 {
-    var currentDir = Amarok.Info.scriptPath();
-    var file = new QFile( currentDir + "seeqpodrc" );
-    file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) );
+    print ("Seeqpod readConfig");
 
-    while ( !file.atEnd() ) {
-        uid += file.readLine().toString();
+    uid = "";
+    var configDir = Amarok.Info.scriptConfigPath( "seeqpod_service" );
+    var file = new QFile( configDir + "seeqpodrc" );
+    if ( file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) ) ) 
+    {
+
+        while ( !file.atEnd() ) 
+        {
+            uid += file.readLine().toString();
+        }
+
+        Amarok.debug ("read " + uid + " from config!" );
+        file.close();
+
+    } 
+    else 
+    {
+
+	onConfigure();
     }
 
 }
@@ -212,7 +253,7 @@ function onPopulate( level, callback, filter )
 
             path = "http://www.seeqpod.com/api/v0.2/<UID>/music/search/<QUERY>/<OFFSET>/100";
 
-            path = path.replace( "<UID>", *insert your uid here or write a config dialog for it!!* )
+            path = path.replace( "<UID>", uid )
             path = path.replace( "<QUERY>", filter )
             path = path.replace( "<OFFSET>", offset );
             qurl = new QUrl( path );
