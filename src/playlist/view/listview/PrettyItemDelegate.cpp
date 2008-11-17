@@ -88,10 +88,7 @@ Playlist::PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewIt
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
     painter->translate( option.rect.topLeft() );
 
-    if (( index.row() % 2 ) == 0 )
-        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", ( int )option.rect.width(), ( int )option.rect.height(), "track" ) );
-    else
-        painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "alt_track", ( int )option.rect.width(), ( int )option.rect.height(), "alt_track" ) );
+    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", ( int )option.rect.width(), ( int )option.rect.height(), "track" ) );
 
     if ( option.state & QStyle::State_Selected )
         painter->setPen( App::instance()->palette().highlightedText().color() );

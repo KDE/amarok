@@ -26,6 +26,7 @@
 #include "PrettyItemDelegate.h"
 #include "dialogs/TagDialog.h"
 #include "meta/Meta.h"
+#include "PaletteHandler.h"
 #include "playlist/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -61,18 +62,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     // rendering adjustments
     setFrameShape( QFrame::NoFrame );
-    //setAlternatingRowColors(true);
+    setAlternatingRowColors( true) ;
 
-    // transparent background
-    if( viewport() )
-    {
-        QPalette p = palette();
-        QColor c = p.color( QPalette::Base );
-        c.setAlpha( 0 );
-        p.setColor( QPalette::Base, c );
-        p.setColor( QPalette::Window, c );
-        viewport()->setPalette( p );
-    }
+    The::paletteHandler()->updateItemView( this );
+    
     setAutoFillBackground( false );
 
     // signal connections
