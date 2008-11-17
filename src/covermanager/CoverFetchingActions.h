@@ -19,7 +19,7 @@
 #ifndef COVERFETCHINGACTIONS_H
 #define COVERFETCHINGACTIONS_H
 
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include "Meta.h"
 

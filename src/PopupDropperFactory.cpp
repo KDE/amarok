@@ -22,8 +22,8 @@
 #include "Debug.h"
 #include "ContextView.h"
 #include "PaletteHandler.h"
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
-#include "context/popupdropper/popupdropper/PopupDropperItem.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "MainWindow.h"
 #include "SvgHandler.h"
 

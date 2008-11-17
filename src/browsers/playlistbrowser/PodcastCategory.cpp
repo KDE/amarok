@@ -22,9 +22,9 @@
 
 #include "Amarok.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
-#include "context/popupdropper/popupdropper/PopupDropperItem.h"
-#include "context/popupdropper/popupdropper/PopupDropper.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"

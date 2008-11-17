@@ -23,7 +23,7 @@
 #include "amarok_export.h"
 #include "meta/Capability.h"
 
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include <QList>
 
 namespace Meta

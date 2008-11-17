@@ -21,7 +21,7 @@
 
 #include "Debug.h"
 #include "../meta/CustomActionsCapability.h"
-#include "../context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "../context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <KMenu>
 

@@ -22,7 +22,7 @@
 #include "ServiceBase.h"
 #include "ServiceMetaBase.h"
 
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 /**
 An action to let the user locate and show the artist or album of a track in the correct service

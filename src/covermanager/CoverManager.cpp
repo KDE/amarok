@@ -31,7 +31,7 @@
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistController.h"
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <KApplication>
 #include <KConfig>

@@ -30,7 +30,7 @@
 #include "SvgTinter.h"
 #include "VolumeWidget.h"
 #include "meta/CurrentTrackActionsCapability.h"
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "ToolBar.h"
 
 #include <KAction>

@@ -20,7 +20,7 @@
 #include "IpodCollection.h"
 
 #include "SvgHandler.h"
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include "MetaQueryMaker.h"
 

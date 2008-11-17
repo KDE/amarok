@@ -33,7 +33,7 @@ a context menu.
 #include "meta/Capability.h"
 #include "Meta.h"
 
-#include "context/popupdropper/popupdropper/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <QList>
 #include <QObject>
