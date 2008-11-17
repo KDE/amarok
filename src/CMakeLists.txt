@@ -477,6 +477,7 @@ set(amaroklib_LIB_SRCS
     widgets/MainControlsWidget.cpp
     widgets/MainToolbar.cpp
     widgets/Osd.cpp
+    widgets/PrettyTreeView.cpp
     widgets/ProgressSlider.cpp
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp

@@ -44,7 +44,7 @@
 #include <typeinfo>
 
 PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QWidget *parent )
-    : QTreeView( parent )
+    : PrettyTreeView( parent )
     , m_pd( 0 )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
@@ -289,23 +289,3 @@ void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * actio
 
 #include "UserPlaylistTreeView.moc"
 
-
-void PlaylistBrowserNS::UserPlaylistTreeView::drawRow(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
-{
-    QTreeView::drawRow( painter, option, index );
-
-    const int width = option.rect.width();
-    const int height = option.rect.height();
-
-    if( height > 0 )
-    {
-        painter->save();
-        QPixmap background;
-
-        background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-
-        painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
-
-        painter->restore();
-    }
-}

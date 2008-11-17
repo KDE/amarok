@@ -17,66 +17,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef USERPLAYLISTTREEVIEW_H
-#define USERPLAYLISTTREEVIEW_H
+#ifndef PRETTYTREEVIEW_H
+#define PRETTYTREEVIEW_H
 
-#include "SqlPlaylistViewItem.h"
-#include "widgets/PrettyTreeView.h"
-
-
-
-class PopupDropper;
-class PopupDropperAction;
-
-class KAction;
-
-namespace PlaylistBrowserNS {
+#include <qtreeview.h>
 
 /**
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
+
+	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class UserPlaylistTreeView : public PrettyTreeView
+class PrettyTreeView : public QTreeView
 {
     Q_OBJECT
-
 public:
-    UserPlaylistTreeView( QWidget *parent = 0 );
+    PrettyTreeView( QWidget *parent = 0 );
 
-    ~UserPlaylistTreeView();
+    ~PrettyTreeView();
 
-    void setNewGroupAction( KAction * action );
+    protected:
+        virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-protected:
-    void keyPressEvent( QKeyEvent *event );
-    void mousePressEvent( QMouseEvent *event );
-    void mouseReleaseEvent( QMouseEvent *event );
-    void mouseDoubleClickEvent( QMouseEvent *event );
-    void startDrag( Qt::DropActions supportedActions );
+    protected slots:
+        void newPalette( const QPalette & palette );
 
-    void contextMenuEvent( QContextMenuEvent* event );
-
-private slots:
-    void slotLoad();
-    void slotAppend();
-    void slotDelete();
-    void slotRename();
-
-private:
-    QSet<SqlPlaylistViewItemPtr> selectedItems() const;
-    QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
-
-    PopupDropper* m_pd;
-
-    PopupDropperAction *m_appendAction;
-    PopupDropperAction *m_loadAction;
-
-    PopupDropperAction *m_deleteAction;
-    PopupDropperAction *m_renameAction;
-
-    KAction *m_addGroupAction;
-
-    QPoint m_dragStartPosition;
 };
 
-}
 #endif

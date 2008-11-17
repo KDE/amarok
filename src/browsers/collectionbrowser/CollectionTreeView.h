@@ -22,12 +22,13 @@
 #include "CollectionTreeItem.h"
 #include "playlist/PlaylistController.h"
 #include "meta/Meta.h"
+#include "widgets/PrettyTreeView.h"
+
 
 #include <QMutex>
 #include <QSet>
 #include <QSortFilterProxyModel>
 #include <QTimer>
-#include <QTreeView>
 
 class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
@@ -40,7 +41,7 @@ class AmarokMimeData;
 
 typedef QList<PopupDropperAction *> PopupDropperActionList;
 
-class CollectionTreeView: public QTreeView
+class CollectionTreeView: public PrettyTreeView
 {
         Q_OBJECT
 
@@ -76,7 +77,6 @@ class CollectionTreeView: public QTreeView
         void keyPressEvent( QKeyEvent * event );
         void startDrag( Qt::DropActions supportedActions );
         //void changeEvent ( QEvent * event );
-        virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
     protected slots:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
@@ -90,7 +90,6 @@ class CollectionTreeView: public QTreeView
         void slotCopyTracks();
         void slotMoveTracks();
         void slotOrganize();
-        void newPalette( const QPalette & palette );
 
         void deleteResultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void deleteQueryDone();

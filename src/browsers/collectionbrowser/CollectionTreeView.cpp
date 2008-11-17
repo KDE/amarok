@@ -55,7 +55,7 @@
 #include <KSharedPtr>
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
-    : QTreeView( parent )
+    : PrettyTreeView( parent )
     , m_filterModel( 0 )
     , m_treeModel( 0 )
     , m_pd( 0 )
@@ -79,18 +79,10 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     //setAnimated( true );
 
-    //even though we paint the rows ourselves, we need this to be true
-    //for the option to tell us about it
-    setAlternatingRowColors( true );
-
-    The::paletteHandler()->updateItemView( this );
-    
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
-
-
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+
 }
 
 
@@ -924,13 +916,6 @@ void CollectionTreeView::slotOrganize()
 }
 
 
-void CollectionTreeView::newPalette( const QPalette & palette )
-{
-    Q_UNUSED( palette )
-
-    The::paletteHandler()->updateItemView( this );
-}
-
 void
 CollectionTreeView::deleteResultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
@@ -957,27 +942,6 @@ CollectionTreeView::deleteQueryDone()
     DEBUG_BLOCK
 }
 
-void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
-{
-    QTreeView::drawRow( painter, option, index ); 
-
-    const int width = option.rect.width();
-    const int height = option.rect.height();
-
-    if( height > 0 )
-    {
-        painter->save();
-        QPixmap background;
-
-        background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-
-        painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
-
-        painter->restore();
-    }
-    
-
-}
 
 QSet<CollectionTreeItem*>
 CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )

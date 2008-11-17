@@ -17,66 +17,54 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef USERPLAYLISTTREEVIEW_H
-#define USERPLAYLISTTREEVIEW_H
+#include "PrettyTreeView.h"
 
-#include "SqlPlaylistViewItem.h"
-#include "widgets/PrettyTreeView.h"
+#include "PaletteHandler.h"
+#include "SvgHandler.h"
 
+#include <QPainter>
 
-
-class PopupDropper;
-class PopupDropperAction;
-
-class KAction;
-
-namespace PlaylistBrowserNS {
-
-/**
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class UserPlaylistTreeView : public PrettyTreeView
+PrettyTreeView::PrettyTreeView( QWidget *parent )
+    : QTreeView( parent )
 {
-    Q_OBJECT
-
-public:
-    UserPlaylistTreeView( QWidget *parent = 0 );
-
-    ~UserPlaylistTreeView();
-
-    void setNewGroupAction( KAction * action );
-
-protected:
-    void keyPressEvent( QKeyEvent *event );
-    void mousePressEvent( QMouseEvent *event );
-    void mouseReleaseEvent( QMouseEvent *event );
-    void mouseDoubleClickEvent( QMouseEvent *event );
-    void startDrag( Qt::DropActions supportedActions );
-
-    void contextMenuEvent( QContextMenuEvent* event );
-
-private slots:
-    void slotLoad();
-    void slotAppend();
-    void slotDelete();
-    void slotRename();
-
-private:
-    QSet<SqlPlaylistViewItemPtr> selectedItems() const;
-    QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
-
-    PopupDropper* m_pd;
-
-    PopupDropperAction *m_appendAction;
-    PopupDropperAction *m_loadAction;
-
-    PopupDropperAction *m_deleteAction;
-    PopupDropperAction *m_renameAction;
-
-    KAction *m_addGroupAction;
-
-    QPoint m_dragStartPosition;
-};
+    setAlternatingRowColors( true );
+    
+    The::paletteHandler()->updateItemView( this );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
 }
-#endif
+
+
+PrettyTreeView::~PrettyTreeView()
+{
+}
+
+void PrettyTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QTreeView::drawRow( painter, option, index );
+
+    const int width = option.rect.width();
+    const int height = option.rect.height();
+
+    if( height > 0 )
+    {
+        painter->save();
+        QPixmap background;
+
+        background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
+
+        painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
+
+        painter->restore();
+    }
+}
+
+void PrettyTreeView::newPalette( const QPalette & palette )
+{
+    Q_UNUSED( palette )
+    The::paletteHandler()->updateItemView( this );
+}
+
+#include "PrettyTreeView.moc"
+
+
