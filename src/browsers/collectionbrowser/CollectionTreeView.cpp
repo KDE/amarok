@@ -959,9 +959,7 @@ CollectionTreeView::deleteQueryDone()
 
 void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-    const QStyleOptionViewItemV4 opt = option;
-
-    const bool alternate = opt.features & QStyleOptionViewItemV2::Alternate;
+    QTreeView::drawRow( painter, option, index ); 
 
     const int width = option.rect.width();
     const int height = option.rect.height();
@@ -971,19 +969,14 @@ void CollectionTreeView::drawRow( QPainter * painter, const QStyleOptionViewItem
         painter->save();
         QPixmap background;
 
-        //debug() << "features: " << opt.features;
-
-        if ( !alternate )
-            background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-        else
-            background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
+        background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
 
         painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
 
         painter->restore();
     }
     
-    QTreeView::drawRow( painter, option, index ); 
+
 }
 
 QSet<CollectionTreeItem*>
