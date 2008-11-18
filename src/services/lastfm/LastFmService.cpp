@@ -185,7 +185,7 @@ LastFmService::polish()
         m_loveButton = new QPushButton( );
         m_loveButton->setText( i18n( "Love" ) );
         m_loveButton->setObjectName( "loveButton" );
-        m_loveButton->setIcon( KIcon( "emblem-favorite-amarok" ) );
+        m_loveButton->setIcon( KIcon( "amarok_love" ) );
         connect( m_loveButton, SIGNAL( clicked() ), this, SLOT( love() ) );
         flowLayout->addWidget( m_loveButton );
 
