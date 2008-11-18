@@ -17,6 +17,7 @@
 
 #include "DynamicCategory.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "DynamicBiasDelegate.h"
@@ -61,8 +62,8 @@ DynamicCategory::DynamicCategory( QWidget* parent )
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_onoffButton, SIGNAL(toggled(bool)), this, SLOT(OnOff(bool)) );
 
-
-
+    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
+    
     m_repopulateButton = new QPushButton( this );
     m_repopulateButton->setText( i18n("Repopulate") );
     m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
@@ -214,6 +215,21 @@ DynamicCategory::Off()
     AmarokConfig::self()->writeConfig();
     m_repopulateButton->setEnabled( false );
     The::playlistActions()->playlistModeChanged();
+}
+
+void
+DynamicCategory::playlistCleared() // SLOT
+{
+    // we have a whole method here b/c we  don't want to do any extra work on each clear press
+    if( AmarokConfig::dynamicMode() ) // only do anything if dynamic mode was on
+    {
+        AmarokConfig::setDynamicMode( false );
+        // TODO: should we restore the state of other modes?
+        AmarokConfig::self()->writeConfig();
+        m_repopulateButton->setEnabled( false );
+        m_onoffButton->setChecked( false );
+        The::playlistActions()->playlistModeChanged();
+    }
 }
 
 void

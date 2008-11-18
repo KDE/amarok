@@ -49,7 +49,8 @@ namespace PlaylistBrowserNS {
             void enableDynamicMode( bool enable );
             void playlistSelectionChanged( int index );
             void save();
-
+            void playlistCleared();
+            
         private:
             void On();
             void Off();
