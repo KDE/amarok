@@ -504,9 +504,7 @@ ColumnContainment::correctControlButtonPositions()
     }
     if( m_switchRightIcon && m_switchLeftIcon )
     {
-        // we place these icons to the RIGHT of the zoom icon
-        // rightmost corner
-        qreal xpos = boundingRect().width() / 2 + m_switchRightIcon->size().width() / 2;
+        qreal xpos = boundingRect().width() / 2 + m_switchRightIcon->size().width();
         qreal ypos = boundingRect().height() - m_switchRightIcon->size().height();
         m_switchRightIcon->setPos( xpos, ypos );
 
@@ -538,7 +536,9 @@ ColumnContainment::correctControlButtonPositions()
     const QFontMetrics fm( m_footer->font() );
     const QRect footerRect = fm.boundingRect( m_footer->text() );
     
-    const int footerX = rect().width() / 2 + footerRect.width() / 2; 
+    const int footerX = m_switchRightIcon->pos().x() - ( ( m_switchRightIcon->pos().x() - ( m_switchLeftIcon->pos().x() + m_switchLeftIcon->size().width() ) ) / 2 )
+              - footerRect.width() / 2;
+    
     const int footerY = m_switchLeftIcon->pos().y() + m_switchLeftIcon->size().height() / 2 - footerRect.height() / 2;
     m_footer->setPos( footerX , footerY );
 }
