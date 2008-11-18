@@ -328,6 +328,7 @@ inline void
 TagDialog::perTrack()
 {
     m_perTrack = !m_perTrack;
+    m_fieldEdited.clear();
     if( m_perTrack )
     {
         // just switched to per track mode
@@ -344,6 +345,7 @@ TagDialog::perTrack()
     }
 
     enableItems();
+    m_fieldEdited.clear();
 }
 
 
@@ -355,6 +357,68 @@ TagDialog::enableItems()
     ui->pushButton_next->setEnabled( m_perTrack && m_trackIterator.hasNext() );
 }
 
+inline void 
+TagDialog::composerModified()
+{
+    m_fieldEdited[ "composer" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::artistModified()
+{
+    m_fieldEdited[ "artist" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::albumModified()
+{
+    m_fieldEdited[ "album" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::genreModified()
+{
+    m_fieldEdited[ "genre" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::ratingModified()
+{
+    m_fieldEdited[ "rating" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::yearModified()
+{
+    m_fieldEdited[ "year" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::scoreModified()
+{
+    m_fieldEdited[ "score" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::commentModified()
+{
+    m_fieldEdited[ "comment" ] = true;
+    checkModified();
+}
+
+inline void 
+TagDialog::discNumberModified()
+{
+    m_fieldEdited[ "discNumber" ] = true;
+    checkModified();
+}
 
 inline void
 TagDialog::checkModified() //SLOT
@@ -527,32 +591,6 @@ void TagDialog::init()
     ui->qSpinBox_score->setSpecialValueText( " " );
     ui->qSpinBox_discNumber->setSpecialValueText( " " );
 
-    // Connects for modification check
-    connect( ui->kLineEdit_title,     SIGNAL(textChanged( const QString& )),     SLOT(checkModified()) );
-    connect( ui->kComboBox_composer,  SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_composer,  SIGNAL(editTextChanged( const QString& )), SLOT(checkModified()) );
-    connect( ui->kComboBox_artist,    SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_artist,    SIGNAL(editTextChanged( const QString& )), SLOT(checkModified()) );
-    connect( ui->kComboBox_album,     SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_album,     SIGNAL(editTextChanged( const QString& )), SLOT(checkModified()) );
-    connect( ui->kComboBox_genre,     SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_genre,     SIGNAL(editTextChanged( const QString& )), SLOT(checkModified()) );
-    connect( ui->ratingWidget,        SIGNAL(ratingChanged( int )),              SLOT(checkModified()) );
-    connect( ui->qSpinBox_track,      SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
-    connect( ui->qSpinBox_year,       SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
-    connect( ui->qSpinBox_score,      SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
-    connect( ui->kTextEdit_comment,   SIGNAL(textChanged()),                     SLOT(checkModified()) );
-    connect( ui->kTextEdit_lyrics,    SIGNAL(textChanged()),                     SLOT(checkModified()) );
-    connect( ui->kTextEdit_selectedLabels, SIGNAL(textChanged()),                SLOT(checkModified()) );
-    connect( ui->qSpinBox_discNumber, SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
-
-    connect( ui->pushButton_cancel,   SIGNAL(clicked()), SLOT(cancelPressed()) );
-    connect( ui->pushButton_ok,       SIGNAL(clicked()), SLOT(accept()) );
-    connect( ui->pushButton_open,     SIGNAL(clicked()), SLOT(openPressed()) );
-    connect( ui->pushButton_previous, SIGNAL(clicked()), SLOT(previousTrack()) );
-    connect( ui->pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
-    connect( ui->checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
-
     // set an icon for the open-in-konqui button
     ui->pushButton_open->setIcon( KIcon( "folder-amarok" ) );
 
@@ -584,6 +622,34 @@ void TagDialog::init()
         loadLabels( m_currentTrack );
         readTags();
     }
+    
+    // Connects for modification check
+    // only set to overwrite-on-save if the text has changed
+    connect( ui->kLineEdit_title,     SIGNAL(textChanged( const QString& )),     SLOT(checkModified()) );
+    connect( ui->kComboBox_composer,  SIGNAL(activated( int )),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_composer,  SIGNAL(editTextChanged( const QString& )), SLOT(composerModified()) );
+    connect( ui->kComboBox_artist,    SIGNAL(activated( int )),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_artist,    SIGNAL(editTextChanged( const QString& )), SLOT(artistModified()) );
+    connect( ui->kComboBox_album,     SIGNAL(activated( int )),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_album,     SIGNAL(editTextChanged( const QString& )), SLOT(albumModified()) );
+    connect( ui->kComboBox_genre,     SIGNAL(activated( int )),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_genre,     SIGNAL(editTextChanged( const QString& )), SLOT(genreModified()) );
+    connect( ui->ratingWidget,        SIGNAL(ratingChanged( int )),              SLOT(ratingModified()) );
+    connect( ui->qSpinBox_track,      SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
+    connect( ui->qSpinBox_year,       SIGNAL(valueChanged( int )),               SLOT(yearModified()) );
+    connect( ui->qSpinBox_score,      SIGNAL(valueChanged( int )),               SLOT(scoreModified()) );
+    connect( ui->kTextEdit_comment,   SIGNAL(textChanged()),                     SLOT(commentModified()) );
+    connect( ui->kTextEdit_lyrics,    SIGNAL(textChanged()),                     SLOT(checkModified()) );
+    connect( ui->kTextEdit_selectedLabels, SIGNAL(textChanged()),                SLOT(checkModified()) );
+    connect( ui->qSpinBox_discNumber, SIGNAL(valueChanged( int )),               SLOT(discNumberModified()) );
+
+    connect( ui->pushButton_cancel,   SIGNAL(clicked()), SLOT(cancelPressed()) );
+    connect( ui->pushButton_ok,       SIGNAL(clicked()), SLOT(accept()) );
+    connect( ui->pushButton_open,     SIGNAL(clicked()), SLOT(openPressed()) );
+    connect( ui->pushButton_previous, SIGNAL(clicked()), SLOT(previousTrack()) );
+    connect( ui->pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
+    connect( ui->checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
+    
 }
 
 void
@@ -1426,94 +1492,66 @@ TagDialog::applyToAllTracks()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        /* we have to update the values if they changed, so:
-           1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != data.value( Meta::Field::field )
-           i.e.: The user wrote something on the field, and it's different from
-           what we have in the tag.
-           2) !data.value( Meta::Field::field ).isEmpty() && kLineEdit_field->text().isEmpty()
-           i.e.: The user was shown some value for the field (it was the same
-           for all selected tracks), and he deliberately emptied it.
-           TODO: All this mess is because the dialog uses "" to represent what the user
-                 doesn't want to change, maybe we can think of something better?
-         */
-
         //do not use Meta::Field::updateTrack() here!
         //that function removes metadata from the track if it cannot find a key in the map
 
         QVariantMap data = dataForTrack( track );
 
         int changed = 0;
-        QString artist = data.contains( Meta::Field::ARTIST ) ? data.value( Meta::Field::ARTIST ).toString() : QString();
-        if( (!ui->kComboBox_artist->currentText().isEmpty() && ui->kComboBox_artist->currentText() != artist )
-            || ( ui->kComboBox_artist->currentText().isEmpty() && !artist.isEmpty() ) )
+        if( m_fieldEdited.contains( "artist" ) && m_fieldEdited[ "artist" ] )
         {
             data.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-
-        QString album = data.contains( Meta::Field::ALBUM ) ? data.value( Meta::Field::ALBUM ).toString() : QString();
-        if( ( !ui->kComboBox_album->currentText().isEmpty() && ui->kComboBox_album->currentText() != album )
-            || ( ui->kComboBox_album->currentText().isEmpty() && !album.isEmpty() ) )
+        
+        if( m_fieldEdited.contains( "album" ) && m_fieldEdited[ "album" ] )
         {
             data.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-
-        QString genre = data.contains( Meta::Field::GENRE ) ? data.value( Meta::Field::GENRE ).toString() : QString();
-        if( ( !ui->kComboBox_genre->currentText().isEmpty() && ui->kComboBox_genre->currentText() != genre )
-            || ( ui->kComboBox_genre->currentText().isEmpty() && !genre.isEmpty() ) )
+        
+        if( m_fieldEdited.contains( "genre" ) && m_fieldEdited[ "genre" ] )
         {
             data.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-
-        QString comment = data.contains( Meta::Field::COMMENT ) ? data.value( Meta::Field::COMMENT ).toString() : QString();
-        if( ( !ui->kTextEdit_comment->toPlainText().isEmpty() && ui->kTextEdit_comment->toPlainText() != comment )
-            || ( ui->kTextEdit_comment->toPlainText().isEmpty() && !comment.isEmpty() ) )
+        
+        if( m_fieldEdited.contains( "comment" ) && m_fieldEdited[ "comment" ] )
         {
             data.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-
-        QString composer = data.contains( Meta::Field::COMPOSER ) ? data.value( Meta::Field::COMPOSER ).toString() : QString();
-        if( ( !ui->kComboBox_composer->currentText().isEmpty() && ui->kComboBox_composer->currentText() != composer )
-            || ( ui->kComboBox_composer->currentText().isEmpty() && !composer.isEmpty() ) )
+        
+        if( m_fieldEdited.contains( "composer" ) && m_fieldEdited[ "composer" ] )
         {
             data.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-
-        int year = data.contains( Meta::Field::YEAR ) ? data.value( Meta::Field::YEAR ).toInt() : 0;
-        if( ( ui->qSpinBox_year->value() && ui->qSpinBox_year->value() != year )
-            || ( ! ui->qSpinBox_year->value() && year ) )
+        
+        if( m_fieldEdited.contains( "year" ) && m_fieldEdited[ "year" ] )
         {
             data.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
-
-        int discnumber = data.contains( Meta::Field::DISCNUMBER ) ? data.value( Meta::Field::DISCNUMBER ).toInt() : 0;
-        if( ( ui->qSpinBox_discNumber->value() && ui->qSpinBox_discNumber->value() != discnumber )
-            || ( ! ui->qSpinBox_discNumber->value() && discnumber ) )
+        
+        if( m_fieldEdited.contains( "discNumber" ) && m_fieldEdited[ "discNumber" ] )
         {
             data.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
-
-        int score = data.contains( Meta::Field::SCORE ) ? data.value( Meta::Field::SCORE ).toInt() : 0;
-        if( ( ui->qSpinBox_score->value() && ui->qSpinBox_score->value() != score )
-            || ( ! ui->qSpinBox_score->value() && score ) )
+        
+        if( m_fieldEdited.contains( "score" ) && m_fieldEdited[ "score" ] )
         {
             data.insert( Meta::Field::SCORE, ui->qSpinBox_score->value() );
             changed |= TagDialog::SCORECHANGED;
         }
-
-        unsigned int rating = data.contains( Meta::Field::RATING ) ? data.value( Meta::Field::RATING ).toUInt() : 0;
-        if( ( ui->ratingWidget->rating() && ui->ratingWidget->rating() != rating )
-            || ( !ui->ratingWidget->rating() && rating ) )
+        
+        if( m_fieldEdited.contains( "rating" ) && m_fieldEdited[ "rating" ] )
         {
             data.insert( Meta::Field::RATING, ui->ratingWidget->rating() );
             changed |= TagDialog::RATINGCHANGED;
         }
+        
         storeTags( track, changed, data );
 
         QStringList tmpLabels = labelsForTrack( track );

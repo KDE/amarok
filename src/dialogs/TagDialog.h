@@ -90,7 +90,19 @@ class AMAROK_EXPORT TagDialog : public KDialog
         void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
         void resultReady( const QString &collectionId, const Meta::GenreList &genres );
         void dataQueryDone();
-
+        
+        //individual item-specific slots, so we know which have been changed by the user
+        // useful when editing multiple tracks and we can't compare against the tag itself
+        void composerModified();
+        void artistModified();
+        void albumModified();
+        void genreModified();
+        void ratingModified();
+        void yearModified();
+        void scoreModified();
+        void commentModified();
+        void discNumberModified();
+        
     private:
         void init();
         void startDataQuery();
@@ -147,6 +159,7 @@ class AMAROK_EXPORT TagDialog : public KDialog
         Meta::TrackList m_tracks;
         Meta::TrackPtr m_currentTrack;
         QListIterator<Meta::TrackPtr > m_trackIterator;
+        QMap< QString, bool > m_fieldEdited;
         QVariantMap m_currentData;
         QueryMaker *m_queryMaker;
         QueryMaker *m_dataQueryMaker;
