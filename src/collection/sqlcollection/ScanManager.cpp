@@ -337,7 +337,6 @@ ScanManager::handleRestart()
     m_restartCount++;
     debug() << "Collection scanner crashed, restart count is " << m_restartCount;
 
-    stopParser();
     disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
     disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
     disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
@@ -351,7 +350,7 @@ ScanManager::handleRestart()
     }
     else
     {
-        QTimer::singleShot( 0, this, SLOT( restartScanner() ) );
+        QTimer::singleShot( 1000, this, SLOT( restartScanner() ) );
     }
 }
 
@@ -359,6 +358,18 @@ void
 ScanManager::restartScanner()
 {
     DEBUG_BLOCK
+
+    if( m_parser )
+    {
+        ThreadWeaver::Weaver::instance()->dequeue( m_parser );
+
+        m_parser->requestFinish();
+        while( !m_parser->isFinished() )
+            usleep( 100000 ); // Sleep 100 msec
+
+        m_parser->deleteLater();
+        m_parser = 0;
+    }
 
     m_scanner = new AmarokProcess( this );
     *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
@@ -416,6 +427,7 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
     , m_abortRequested( false )
+    , m_finishRequested( false )
     , m_isIncremental( false )
 {
     DEBUG_BLOCK
@@ -460,10 +472,14 @@ XmlParseJob::run()
         m_abortMutex.lock();
         bool abort = m_abortRequested;
         m_abortMutex.unlock();
-        if( abort )
-        {
+
+        m_finishMutex.lock();
+        bool finish = m_finishRequested;
+        m_finishMutex.unlock();
+
+        if( abort || finish )
             break;
-        }
+        
         //get new xml data or wait till new xml data is available
         m_mutex.lock();
         if( m_nextData.isEmpty() )
@@ -569,7 +585,7 @@ XmlParseJob::run()
     }
     while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
 
-    if( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError )
+    if( !m_finishRequested && ( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError ) )
     {
         debug() << "do-while done with error";
         //the error cannot be PrematureEndOfDocumentError, so handle
@@ -603,6 +619,17 @@ XmlParseJob::requestAbort()
     m_abortMutex.lock();
     m_abortRequested = true;
     m_abortMutex.unlock();
+    m_wait.wakeOne();
+}
+
+void
+XmlParseJob::requestFinish()
+{
+    DEBUG_BLOCK
+
+    m_finishMutex.lock();
+    m_finishRequested = true;
+    m_finishMutex.unlock();
     m_wait.wakeOne();
 }
 
