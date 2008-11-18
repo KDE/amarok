@@ -2,13 +2,16 @@
 Name=Songkick Data Engine
 Name[de]=Datenmodul für Songkick
 Name[el]=Μηχανή δεδομένων Songkick
+Name[he]=מנוע מידע של Songkic
 Name[it]=Motore dati Songkick
 Name[lv]=Songkick datu dzinējs
 Name[nds]=Songkick-Hanteerkarn
+Name[pl]=Moduł danych Songkick
 Name[pt]=Motor de Dados do Songkick
 Name[pt_BR]=Mecanismo de Dados do Songkick
 Name[sv]=Songkick datagränssnitt
 Name[uk]=Рушій даних Songkick
+Name[x-test]=xxSongkick Data Enginexx
 X-KDE-ServiceTypes=AmarokContext/DataEngine
 Type=Service
 Icon=songkick
