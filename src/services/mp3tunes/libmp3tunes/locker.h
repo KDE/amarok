@@ -108,9 +108,9 @@ typedef struct {
     int playlistSize;
 } mp3tunes_locker_playlist_t;
 
-int mp3tunes_locker_init( mp3tunes_locker_object_t **obj, char *partner_token );
+int mp3tunes_locker_init( mp3tunes_locker_object_t **obj, const char *partner_token );
 int mp3tunes_locker_deinit( mp3tunes_locker_object_t **obj );
-int mp3tunes_locker_login( mp3tunes_locker_object_t *obj, char* username, char* password );
+int mp3tunes_locker_login( mp3tunes_locker_object_t *obj, const char* username, const char* password );
 int mp3tunes_locker_session_valid( mp3tunes_locker_object_t *obj );
 int mp3tunes_locker_artists( mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return);
 int mp3tunes_locker_artists_search( mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return, char *query);
@@ -118,15 +118,15 @@ int mp3tunes_locker_albums_with_artist_id( mp3tunes_locker_object_t *obj, mp3tun
 int mp3tunes_locker_albums( mp3tunes_locker_object_t *obj, mp3tunes_locker_album_list_t **albums_return);
 int mp3tunes_locker_albums_search(  mp3tunes_locker_object_t *obj, mp3tunes_locker_album_list_t **albums_return, char *query);
 int mp3tunes_locker_playlists(mp3tunes_locker_object_t *obj, mp3tunes_locker_playlist_list_t **playlist_return);
-int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return, mp3tunes_locker_album_list_t **albums_return, mp3tunes_locker_track_list_t **tracks_return, char *query);
+int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists_return, mp3tunes_locker_album_list_t **albums_return, mp3tunes_locker_track_list_t **tracks_return, const char *query);
 
 int mp3tunes_locker_tracks( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return);
 int mp3tunes_locker_tracks_search( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, char *query);
-int mp3tunes_locker_tracks_with_playlist_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, char* playlist_id);
+int mp3tunes_locker_tracks_with_playlist_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, const char* playlist_id);
 int mp3tunes_locker_tracks_with_album_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, int album_id);
 int mp3tunes_locker_tracks_with_artist_id( mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks_return, int artist_id);
-int mp3tunes_locker_tracks_with_file_key( mp3tunes_locker_object_t *obj, char *file_keys, mp3tunes_locker_track_list_t **tracks );
-int mp3tunes_locker_track_with_file_key( mp3tunes_locker_object_t *obj, char *file_key, mp3tunes_locker_track_t **track );
+int mp3tunes_locker_tracks_with_file_key( mp3tunes_locker_object_t *obj, const char *file_keys, mp3tunes_locker_track_list_t **tracks );
+int mp3tunes_locker_track_with_file_key( mp3tunes_locker_object_t *obj, const char *file_key, mp3tunes_locker_track_t **track );
 
 int mp3tunes_locker_track_list_deinit( mp3tunes_locker_track_list_t** list );
 int mp3tunes_locker_artist_list_deinit( mp3tunes_locker_track_list_t** list );
@@ -137,8 +137,8 @@ char* mp3tunes_locker_generate_download_url_from_file_key(mp3tunes_locker_object
 char* mp3tunes_locker_generate_download_url_from_file_key_and_bitrate(mp3tunes_locker_object_t *obj, char *file_key, char* bitrate);
 
 char* mp3tunes_locker_generate_filekey(const char *filename);
-int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path);
-int mp3tunes_locker_load_track(mp3tunes_locker_object_t *obj, char *url);
+int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path);
+int mp3tunes_locker_load_track(mp3tunes_locker_object_t *obj, const char *url);
 
 int mp3tunes_locker_sync_down(mp3tunes_locker_object_t *obj, char* type, char* bytes_local, char* files_local, char* keep_local_files, char* playlist_id);
 #endif

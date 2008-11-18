@@ -24,11 +24,11 @@
 
 G_DEFINE_TYPE(MP3tunesHarmony, mp3tunes_harmony, G_TYPE_OBJECT);
 
-char *str_replace(char *search, char *replace, char *subject);
+char *str_replace(const char *search, const char *replace, char *subject);
 gboolean harmony_format_email(char **email);
 
 void state_change_emit(MP3tunesHarmony *harmony, guint32 state);
-void error_emit(MP3tunesHarmony *harmony, gint code, gchar* message, GError* err);
+void error_emit(MP3tunesHarmony *harmony, gint code, const gchar* message, GError* err);
 
 LmHandlerResult harmony_download_callback(LmMessageHandler* handler, LmConnection *connection, LmMessage *message, gpointer void_harmony);
 
@@ -49,7 +49,7 @@ gboolean open_connection(MP3tunesHarmony *harmony);
 
 gboolean close_connection(MP3tunesHarmony *harmony);
 
-char *str_replace(char *search, char *replace, char *subject) {
+char *str_replace(const char *search, const char *replace, char *subject) {
     char *result, *tmp, *needle;
     int count, length;
 
@@ -103,7 +103,7 @@ void state_change_emit(MP3tunesHarmony *harmony, guint32 state) {
     g_signal_emit(harmony, MP3TUNES_HARMONY_GET_CLASS(harmony)->state_change_signal_id, 0, state);
 }
 
-void error_emit(MP3tunesHarmony *harmony, gint code, gchar* message, GError* err) {
+void error_emit(MP3tunesHarmony *harmony, gint code, const gchar* message, GError* err) {
     if (err) {
         g_propagate_error(&harmony->error, g_error_new(MP3TUNES_HARMONY_ERROR_DOMAIN, code, "%s: %s", message, err->message));
     } else {
@@ -707,7 +707,7 @@ void mp3tunes_harmony_set_identifier(MP3tunesHarmony *harmony, char *identifier)
     harmony->device_identifier = g_strdup(identifier);
 }
 
-void mp3tunes_harmony_set_pin(MP3tunesHarmony *harmony, char *pin) {
+void mp3tunes_harmony_set_pin(MP3tunesHarmony *harmony, const char *pin) {
     if (harmony->device_pin != NULL) {
         free(harmony->device_pin);
     }
@@ -724,7 +724,7 @@ void mp3tunes_harmony_set_email(MP3tunesHarmony *harmony, char *email) {
     harmony_format_email(&harmony->device_formatted_email);
 }
 
-void mp3tunes_harmony_set_device_attribute(MP3tunesHarmony *harmony, char *attribute, ...) {
+void mp3tunes_harmony_set_device_attribute(MP3tunesHarmony *harmony, const char *attribute, ...) {
     va_list argp;
     mp3tunes_harmony_device_attribute_t* da;
     da = (mp3tunes_harmony_device_attribute_t*)malloc(sizeof(mp3tunes_harmony_device_attribute_t));

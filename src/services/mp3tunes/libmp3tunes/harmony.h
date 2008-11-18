@@ -124,10 +124,10 @@ typedef struct {
 MP3tunesHarmony* mp3tunes_harmony_new(void);
 GType mp3tunes_harmony_get_type(void);
 
-void mp3tunes_harmony_set_pin(MP3tunesHarmony *harmony, char *pin);
+void mp3tunes_harmony_set_pin(MP3tunesHarmony *harmony, const char *pin);
 void mp3tunes_harmony_set_email(MP3tunesHarmony *harmony, char *email);
 void mp3tunes_harmony_set_identifier(MP3tunesHarmony *harmony, char *email);
-void mp3tunes_harmony_set_device_attribute(MP3tunesHarmony *harmony, char *attribute, ...);
+void mp3tunes_harmony_set_device_attribute(MP3tunesHarmony *harmony, const char *attribute, ...);
 
 char *mp3tunes_harmony_get_pin(MP3tunesHarmony *harmony);
 char *mp3tunes_harmony_get_email(MP3tunesHarmony *harmony);

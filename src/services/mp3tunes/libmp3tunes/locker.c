@@ -16,7 +16,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -114,7 +116,7 @@ void xml_xpath_deinit(xml_xpath_t* xml_xpath) {
     free(xml_xpath);
 }
 
-xmlXPathObjectPtr xml_xpath_query(xml_xpath_t *xml_xpath, char* xpath_expression) {
+xmlXPathObjectPtr xml_xpath_query(xml_xpath_t *xml_xpath, const char* xpath_expression) {
     xmlXPathObjectPtr xpath_obj;
 
     xpath_obj = xmlXPathEvalExpression((xmlChar*)xpath_expression, xml_xpath->xpath_ctx);
@@ -153,7 +155,7 @@ char* xml_get_text_from_nodeset(xmlNodeSetPtr nodeset) {
     return result;
 }
 
-char* xml_xpath_get_string(xml_xpath_t *xml_xpath, char* xpath_expression) {
+static char* xml_xpath_get_string(xml_xpath_t *xml_xpath, const char* xpath_expression) {
     xmlXPathObjectPtr xpath_obj;
     char* result = NULL;
 
@@ -166,7 +168,7 @@ char* xml_xpath_get_string(xml_xpath_t *xml_xpath, char* xpath_expression) {
     return result;
 }
 
-int xml_xpath_get_integer(xml_xpath_t *xml_xpath, char* xpath_expression) {
+int xml_xpath_get_integer(xml_xpath_t *xml_xpath, const char* xpath_expression) {
     int result = 0;
     char* str = xml_xpath_get_string(xml_xpath, xpath_expression);
     if (str != NULL) {
@@ -176,7 +178,7 @@ int xml_xpath_get_integer(xml_xpath_t *xml_xpath, char* xpath_expression) {
     return result;
 }
 
-float xml_xpath_get_float(xml_xpath_t *xml_xpath, char* xpath_expression) {
+float xml_xpath_get_float(xml_xpath_t *xml_xpath, const char* xpath_expression) {
     float result = 0.0;
     char* str = xml_xpath_get_string(xml_xpath, xpath_expression);
     if (str != NULL) {
@@ -186,7 +188,7 @@ float xml_xpath_get_float(xml_xpath_t *xml_xpath, char* xpath_expression) {
     return result;
 }
 
-int mp3tunes_locker_init( mp3tunes_locker_object_t **obj, char *partner_token ) {
+int mp3tunes_locker_init( mp3tunes_locker_object_t **obj, const char *partner_token ) {
     mp3tunes_locker_object_t *o = *obj = (mp3tunes_locker_object_t*)malloc(sizeof(mp3tunes_locker_object_t));
     memset(o, 0, sizeof(*o));
 
@@ -196,17 +198,17 @@ int mp3tunes_locker_init( mp3tunes_locker_object_t **obj, char *partner_token ) 
 
     o->server_api = getenv("MP3TUNES_SERVER_API");
     if(o->server_api == NULL) {
-        o->server_api = MP3TUNES_SERVER_API_URL;
+        o->server_api = strdup(MP3TUNES_SERVER_API_URL);
     }
 
     o->server_content = getenv("MP3TUNES_SERVER_CONTENT");
     if(o->server_content == NULL) {
-        o->server_content = MP3TUNES_SERVER_CONTENT_URL;
+        o->server_content = strdup(MP3TUNES_SERVER_CONTENT_URL);
     }
 
     o->server_login = getenv("MP3TUNES_SERVER_LOGIN");
     if(o->server_login == NULL) {
-        o->server_login = MP3TUNES_SERVER_LOGIN_URL;
+        o->server_login = strdup(MP3TUNES_SERVER_LOGIN_URL);
     }
 
     return TRUE;
@@ -234,7 +236,7 @@ void mp3tunes_request_deinit(request_t **request) {
     free(r);
 }
 
-static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_object_t *obj, int server, char* path, char* first_name, va_list argp) {
+static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_object_t *obj, int server, const char* path, const char* first_name, va_list argp) {
     request_t *request;
     char *server_url;
     char *name, *value;
@@ -303,7 +305,7 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
 
 }
 
-static request_t* mp3tunes_locker_api_generate_request(mp3tunes_locker_object_t *obj, int server, char* path, char* first_name, ...) {
+static request_t* mp3tunes_locker_api_generate_request(mp3tunes_locker_object_t *obj, int server, char* path, const char* first_name, ...) {
     va_list argp;
     request_t *request;
     va_start(argp, first_name);
@@ -312,7 +314,7 @@ static request_t* mp3tunes_locker_api_generate_request(mp3tunes_locker_object_t 
     return request;
 }
 
-static xml_xpath_t* mp3tunes_locker_api_simple_fetch(mp3tunes_locker_object_t *obj, int server, char* path, char* first_name, ...) {
+static xml_xpath_t* mp3tunes_locker_api_simple_fetch(mp3tunes_locker_object_t *obj, int server, const char* path, const char* first_name, ...) {
     request_t *request;
     CURLcode res;
     chunk_t *chunk;
@@ -357,7 +359,7 @@ static xml_xpath_t* mp3tunes_locker_api_simple_fetch(mp3tunes_locker_object_t *o
     return xml_xpath_init(document);
 }
 
-static xml_xpath_t* mp3tunes_locker_api_post_fetch(mp3tunes_locker_object_t *obj, int server, char* path, char* post_data) {
+static xml_xpath_t* mp3tunes_locker_api_post_fetch(mp3tunes_locker_object_t *obj, int server, const char* path, char* post_data) {
     request_t *request;
     CURLcode res;
     chunk_t *chunk;
@@ -423,7 +425,7 @@ char* mp3tunes_locker_generate_download_url_from_file_key_and_bitrate(mp3tunes_l
 }
 
 
-int mp3tunes_locker_login(mp3tunes_locker_object_t *obj, char* username, char* password) {
+int mp3tunes_locker_login(mp3tunes_locker_object_t *obj, const char* username, const char* password) {
     xml_xpath_t* xml_xpath;
     char *status, *session_id;
 
@@ -447,8 +449,8 @@ int mp3tunes_locker_login(mp3tunes_locker_object_t *obj, char* username, char* p
     free(status);
 
     session_id = xml_xpath_get_string(xml_xpath, "/mp3tunes/session_id");
-    obj->username = username;
-    obj->password = password;
+    obj->username = strdup(username);
+    obj->password = strdup(password);
     obj->session_id = session_id;
     xml_xpath_deinit(xml_xpath);
 
@@ -648,7 +650,7 @@ int mp3tunes_locker_playlist_list_deinit(mp3tunes_locker_playlist_list_t **playl
     return mp3tunes_locker_list_deinit((struct mp3tunes_locker_list_s**)playlist_list);
 }
 
-int _mp3tunes_locker_tracks(mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks, int artist_id, int album_id, char* playlist_id) {
+static int _mp3tunes_locker_tracks(mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks, int artist_id, int album_id, const char* playlist_id) {
     xml_xpath_t* xml_xpath;
     xmlXPathObjectPtr xpath_obj;
     xmlNodeSetPtr nodeset;
@@ -787,11 +789,11 @@ int mp3tunes_locker_tracks_with_artist_id_and_album_id(mp3tunes_locker_object_t 
     return _mp3tunes_locker_tracks(obj, tracks, artist_id, album_id, NULL);
 }
 
-int mp3tunes_locker_tracks_with_playlist_id(mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks, char* playlist_id) {
+int mp3tunes_locker_tracks_with_playlist_id(mp3tunes_locker_object_t *obj, mp3tunes_locker_track_list_t **tracks, const char* playlist_id) {
     return _mp3tunes_locker_tracks(obj, tracks, -1, -1, playlist_id);
 }
 
-int mp3tunes_locker_tracks_with_file_key( mp3tunes_locker_object_t *obj, char *file_keys, mp3tunes_locker_track_list_t **tracks ) {
+int mp3tunes_locker_tracks_with_file_key( mp3tunes_locker_object_t *obj, const char *file_keys, mp3tunes_locker_track_list_t **tracks ) {
     xml_xpath_t* xml_xpath;
     xmlXPathObjectPtr xpath_obj;
     xmlNodeSetPtr nodeset;
@@ -844,12 +846,11 @@ int mp3tunes_locker_tracks_with_file_key( mp3tunes_locker_object_t *obj, char *f
 
 }
 
-int mp3tunes_locker_track_with_file_key( mp3tunes_locker_object_t *obj, char *file_key, mp3tunes_locker_track_t **track ) {
+int mp3tunes_locker_track_with_file_key( mp3tunes_locker_object_t *obj, const char *file_key, mp3tunes_locker_track_t **track ) {
     xml_xpath_t* xml_xpath;
     xmlXPathObjectPtr xpath_obj;
     xmlNodeSetPtr nodeset;
     xmlNodePtr node;
-    int i;
 
     xml_xpath = mp3tunes_locker_api_simple_fetch(obj, MP3TUNES_SERVER_API, "api/v1/lockerData/", "type", "track", "key", file_key, NULL);
 
@@ -1126,7 +1127,7 @@ int mp3tunes_locker_playlists(mp3tunes_locker_object_t *obj, mp3tunes_locker_pla
     return 0;
 }
 
-int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists, mp3tunes_locker_album_list_t **albums, mp3tunes_locker_track_list_t **tracks, char *query) {
+int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist_list_t **artists, mp3tunes_locker_album_list_t **albums, mp3tunes_locker_track_list_t **tracks, const char *query) {
     xml_xpath_t* xml_xpath;
 
     char type[20] = "";
@@ -1425,7 +1426,7 @@ char* mp3tunes_locker_generate_filekey(const char *filename) {
   return md5_calc_file_signature(filename);
 }
 
-int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path) {
+int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path) {
     request_t *request;
     CURLcode res;
     FILE * hd_src ;
@@ -1463,7 +1464,7 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, char *path) {
     return 0;
 }
 
-int mp3tunes_locker_load_track(mp3tunes_locker_object_t *obj, char *url) {
+int mp3tunes_locker_load_track(mp3tunes_locker_object_t *obj, const char *url) {
     xml_xpath_t* xml_xpath;
     char *status;
     xml_xpath = mp3tunes_locker_api_simple_fetch(obj, MP3TUNES_SERVER_LOGIN, "api/v0/lockerLoad/", "email", obj->username, "url", url, "sid", obj->session_id, NULL);
