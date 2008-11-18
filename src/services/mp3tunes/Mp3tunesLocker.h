@@ -240,7 +240,6 @@ class Mp3tunesLocker {
         QString errorMessage() const;
         bool authenticated() const;
     private:
-        char *convertToChar( const QString &source ) const;
         mp3tunes_locker_object_t *m_locker;
 };
 #endif

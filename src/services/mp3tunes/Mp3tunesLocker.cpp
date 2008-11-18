@@ -22,23 +22,24 @@
 #include "Debug.h"
 
 #include <QByteArray>
+#include <memory>
 
 Mp3tunesLocker::Mp3tunesLocker ( const QString & partnerToken )
 {
     DEBUG_BLOCK
     m_locker = 0;
     debug() << "Creating New Locker";
-    char *c_tok = convertToChar ( partnerToken );
-    debug() << "Wrapper Token: " << c_tok;
-    mp3tunes_locker_init ( &m_locker, c_tok );
+    QByteArray partner_token = partnerToken.toLatin1();
+    debug() << "Wrapper Token: " << partnerToken;
+    mp3tunes_locker_init ( &m_locker, partner_token.constData() );
     debug() << "New Locker created";
 }
 
 Mp3tunesLocker::Mp3tunesLocker ( const QString & partnerToken, const QString & userName,
 const QString & password )
 {
-    char *c_tok = convertToChar ( partnerToken );
-    mp3tunes_locker_init ( &m_locker, c_tok );
+    QByteArray partner_token = partnerToken.toLatin1();
+    mp3tunes_locker_init ( &m_locker, partner_token.constData() );
 
     this->login ( userName, password );
 }
@@ -52,12 +53,12 @@ QString
 Mp3tunesLocker::login ( const QString &userName, const QString &password )
 {
     DEBUG_BLOCK
-    char *c_user = convertToChar ( userName );
-    char *c_pass = convertToChar ( password );
+    QByteArray user = userName.toLatin1();
+    QByteArray pw = password.toLatin1();
     //result = 0 Login successful
     //result != 0 Login failed
     debug() << "Wrapper Logging on with: " << userName << ":" << password;
-    int result = mp3tunes_locker_login ( m_locker, c_user, c_pass );
+    int result = mp3tunes_locker_login ( m_locker, user.constData(), pw.constData() );
 
     if ( result == 0 )
     {
@@ -259,7 +260,7 @@ Mp3tunesLocker::tracksSearch ( const QString &query ) const
 QList<Mp3tunesLockerTrack>
 Mp3tunesLocker::tracksWithPlaylistId ( const QString & playlistId ) const
 {
-    char *c_playlistid = convertToChar ( playlistId );
+    QByteArray playlistid = playlistId.toLatin1();
 
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned
 
@@ -267,7 +268,7 @@ Mp3tunesLocker::tracksWithPlaylistId ( const QString & playlistId ) const
     mp3tunes_locker_list_item_t  *track_item;
     mp3tunes_locker_track_t      *track;
 
-    mp3tunes_locker_tracks_with_playlist_id ( m_locker, &tracks_list, c_playlistid );
+    mp3tunes_locker_tracks_with_playlist_id ( m_locker, &tracks_list, playlistid.constData() );
 
     track_item = tracks_list->first;
     while ( track_item != 0 )
@@ -346,7 +347,7 @@ Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
        keys.append(",");
     }
     keys.chop(1);
-    char* c_keys = convertToChar ( keys );
+    QByteArray file_keys = keys.toLatin1();
 
     mp3tunes_locker_track_list_t* tracks_list = 0;
     mp3tunes_locker_list_item_t* track_item = 0;
@@ -354,7 +355,7 @@ Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
     QList<Mp3tunesLockerTrack> tracksQList; // to be returned, init'ed to null
     tracksQList.clear();
 
-    if ( mp3tunes_locker_tracks_with_file_key ( m_locker, c_keys, &tracks_list )
+    if ( mp3tunes_locker_tracks_with_file_key ( m_locker, file_keys, &tracks_list )
          || !tracks_list )
     {
         mp3tunes_locker_track_list_deinit ( &tracks_list );
@@ -379,12 +380,16 @@ Mp3tunesLockerTrack
 Mp3tunesLocker::trackWithFileKey( const QString &filekey ) const
 {
     DEBUG_BLOCK
-    char* c_key = convertToChar ( filekey );
+    QByteArray file_key = filekey.toLatin1();
 
-    mp3tunes_locker_track_t *track;
-    mp3tunes_locker_track_with_file_key ( m_locker, c_key, &track );
+    mp3tunes_locker_track_t *track = 0;
+    mp3tunes_locker_track_with_file_key ( m_locker, file_key.constData(), &track );
+    if ( !track )
+        return Mp3tunesLockerTrack( 0 );
+
     debug() << "Got track: " << track->trackTitle << "  from filekey: " << filekey;
     Mp3tunesLockerTrack trackWrapped ( track );
+    free( track );
     debug() << "returning";
     return trackWrapped;
 }
@@ -414,12 +419,49 @@ Mp3tunesLocker::search ( Mp3tunesSearchResult &container, const QString &query )
     if ( container.searchFor & Mp3tunesSearchResult::TrackQuery )
         tracks_list = 0;
 
-    char* c_query = convertToChar ( query );
+    QByteArray search_query = query.toLatin1();
 
     int res = mp3tunes_locker_search ( m_locker, &artists_list, &albums_list,
-                                       &tracks_list, c_query );
+                                       &tracks_list, search_query.constData() );
+
     if ( res != 0 )
+    {
+        if ( artists_list )
+            free( artists_list );
+        if ( albums_list )
+            free( albums_list );
+        if ( tracks_list )
+            free( tracks_list );
         return false;
+    }
+    if ( !artists_list && ( container.searchFor & Mp3tunesSearchResult::ArtistQuery ) )
+    {
+        if ( albums_list )
+            free( albums_list );
+        if ( tracks_list )
+            free( tracks_list );
+
+        return false;
+    }
+    if ( !albums_list && ( container.searchFor & Mp3tunesSearchResult::AlbumQuery ) )
+    {
+        if ( artists_list )
+            free( artists_list );
+        if ( tracks_list )
+            free( tracks_list );
+
+        return false;
+    }
+    if ( !tracks_list && ( container.searchFor & Mp3tunesSearchResult::TrackQuery ) )
+    {
+        if ( albums_list )
+            free( albums_list );
+        if ( artists_list )
+            free( artists_list );
+
+        return false;
+    }
+
     if ( container.searchFor & Mp3tunesSearchResult::ArtistQuery )
     {
         artist_item = artists_list->first;
@@ -470,21 +512,19 @@ Mp3tunesLocker::search ( Mp3tunesSearchResult &container, const QString &query )
 bool
 Mp3tunesLocker::uploadTrack ( const QString &path )
 {
-    char* c_path = convertToChar ( path );
+    QByteArray track_path = path.toLatin1();
 
-    int res = mp3tunes_locker_upload_track ( m_locker, c_path );
-    if ( res == 0 )
-        return true;
-    return false;
+    int res = mp3tunes_locker_upload_track ( m_locker, track_path.constData() );
+
+    return ( res == 0 );
 }
 
 QString
 Mp3tunesLocker::fileKey ( const QString &path )
 {
-    char* c_path = convertToChar ( path );
+    QByteArray fk_path = path.toLatin1();
 
-    char* file_key = ( char* ) malloc ( 4096 * sizeof ( char ) );
-    file_key = mp3tunes_locker_generate_filekey ( c_path );
+    char* file_key = mp3tunes_locker_generate_filekey ( fk_path.constData() );
 
     return QString ( file_key );
 }
@@ -492,12 +532,11 @@ Mp3tunesLocker::fileKey ( const QString &path )
 bool
 Mp3tunesLocker::lockerLoad( const QString &url )
 {
-    char* c_url = convertToChar( url );
+    QByteArray locker_url = url.toLatin1();
 
-    int res = mp3tunes_locker_load_track ( m_locker, c_url);
-    if ( res == 0)
-        return true;
-    return false;
+    int res = mp3tunes_locker_load_track ( m_locker, locker_url.constData() );
+
+    return ( res == 0);
 }
 
 QString
@@ -578,13 +617,4 @@ Mp3tunesLocker::authenticated() const
     else if( sessionValid() )
         return true;
     return false;
-}
-char *
-Mp3tunesLocker::convertToChar ( const QString &source ) const
-{
-    QByteArray b = source.toAscii();
-    const char *c_tok = b.constData();
-    char * ret = ( char * ) malloc ( strlen ( c_tok ) + 1 );
-    strcpy ( ret, c_tok );
-    return ret;
 }
