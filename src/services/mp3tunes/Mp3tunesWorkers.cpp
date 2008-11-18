@@ -25,13 +25,16 @@
 
 #include <QStringList>
 
-Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString & username, const QString & password ) : ThreadWeaver::Job()
+Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker,
+                                          const QString & username,
+                                          const QString & password )
+    : ThreadWeaver::Job()
+    , m_locker( locker )
+    , m_sessionId()
+    , m_username( username )
+    , m_password( password )
 {
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( completeJob() ) );
-    m_locker = locker;
-    m_username = username;
-    m_password = password;
-    m_sessionId = QString();
 }
 
 Mp3tunesLoginWorker::~Mp3tunesLoginWorker()

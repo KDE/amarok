@@ -97,7 +97,7 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     QString description = element.firstChildElement( "description" ).text();
     QString title = element.firstChildElement( "title" ).text();
     
-    QString imageUrl = QString();
+    QString imageUrl;
     QDomElement image = element.firstChildElement( "image" );
     
     if ( !image.isNull() )

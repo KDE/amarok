@@ -80,9 +80,9 @@ QueryMaker * Mp3tunesServiceQueryMaker::reset()
     d->type = Private::NONE;
     d->maxsize = -1;
     d->returnDataPtrs = false;
-    m_parentArtistId = QString();
-    m_parentAlbumId = QString();
-    m_artistFilter = QString();
+    m_parentArtistId.clear();
+    m_parentAlbumId.clear();
+    m_artistFilter.clear();
 
     return this;
 }
@@ -177,7 +177,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
     m_parentAlbumId = QString::number( serviceAlbum->id() );
     debug() << "album parent id set to: " << m_parentAlbumId;
-    m_parentArtistId = QString();
+    m_parentArtistId.clear();
 
     return this;
 }

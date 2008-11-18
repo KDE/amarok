@@ -33,7 +33,8 @@ Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *d
     if( download->album_title )
         m_albumTitle = download->album_title;
     else
-        m_albumTitle = QString();
+        m_albumTitle.clear();
+
     m_trackTitle = download->track_title;
     m_trackNumber = download->track_number;
     m_deviceBitrate = download->device_bitrate;
@@ -41,7 +42,7 @@ Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *d
     if( download->url )
         m_url = download->url;
     else
-        m_url = QString();
+        m_url.clear();
 }
 
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( const QVariantMap &map )

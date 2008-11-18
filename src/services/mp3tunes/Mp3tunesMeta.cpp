@@ -29,8 +29,8 @@ using namespace Meta;
 
 Mp3TunesTrack::Mp3TunesTrack( const QString& title )
     : ServiceTrack( title )
+    , m_filetype()
 {
-    m_filetype = QString();
 }
 
 QString Mp3TunesTrack::type() const
