@@ -19,11 +19,12 @@
 #ifndef AMAROK_COLLECTION_SQLCOLLECTION_H
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
-#include "amarok_export.h"
 #include "Collection.h"
+#include "CollectionManager.h"
 #include "DatabaseUpdater.h"
 #include "SqlRegistry.h"
 #include "SqlStorage.h"
+#include "amarok_export.h"
 
 class SqlCollectionFactory : public CollectionFactory
 {
@@ -97,7 +98,7 @@ class SqlCollection : public Collection, public SqlStorage
         virtual void vacuum() const;
 
     public slots:
-        void updateTrackUrls( QHash<QString,QString> changedUrls );
+        void updateTrackUrls( TrackUrls changedUrls );
 
     signals:
         void scanFinished();

@@ -19,7 +19,6 @@
 
 #include "ScanResultProcessor.h"
 
-#include "CollectionManager.h"
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
@@ -41,6 +40,7 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     , m_aftPermanentTablesUrlString()
 {
     DEBUG_BLOCK
+
     m_aftPermanentTablesUrlString << "playlist_tracks";
 }
 
@@ -138,10 +138,8 @@ ScanResultProcessor::commit()
     debug() << "Sending changed signal";
     m_collection->sendChangedSignal();
 
-    connect( this,
-             SIGNAL( changedTrackUrls(QHash<QString,QString>) ),
-             CollectionManager::instance()->primaryCollection(),
-             SLOT( updateTrackUrls(QHash<QString,QString>) ) );
+    connect( this, SIGNAL( changedTrackUrls( TrackUrls ) ), 
+             CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrls( TrackUrls ) ) );
 
     emit changedTrackUrls( m_changedUrls );
 }

@@ -21,12 +21,11 @@
 
 #include "DatabaseUpdater.h"
 #include "Debug.h"
+#include "MySqlEmbeddedCollection.h"
 #include "ScanManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqliteCollection.h"
-#include "MySqlEmbeddedCollection.h"
-//#include "mysqlcollection.h"
 
 #ifdef Q_OS_WIN32
 class XesamCollectionBuilder
@@ -285,8 +284,10 @@ SqlCollection::vacuum() const
 }
 
 void
-SqlCollection::updateTrackUrls( QHash<QString,QString> changedUrls ) //SLOT
+SqlCollection::updateTrackUrls( TrackUrls changedUrls ) //SLOT
 {
+    DEBUG_BLOCK
+
     foreach( const QString &key, changedUrls.keys() )
     {
         if( m_registry->checkUidExists( key ) )

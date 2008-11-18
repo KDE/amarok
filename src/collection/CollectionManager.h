@@ -26,6 +26,9 @@
 #include <QList>
 #include <QObject>
 
+
+typedef QHash<QString,QString> TrackUrls;
+
 class SqlStorage;
 class CollectionManagerSingleton;
 
@@ -162,5 +165,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         struct Private;
         Private * const d;
 };
+
+Q_DECLARE_METATYPE( TrackUrls )
 
 #endif /* AMAROK_COLLECTIONMANAGER_H */

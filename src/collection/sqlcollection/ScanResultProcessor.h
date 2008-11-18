@@ -20,6 +20,8 @@
 #ifndef AMAROK_SQL_SCANRESULTPROCESSOR_H
 #define AMAROK_SQL_SCANRESULTPROCESSOR_H
 
+#include "CollectionManager.h"
+
 #include <QHash>
 #include <QList>
 #include <QMap>
@@ -27,6 +29,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
+
 
 class SqlCollection;
 
@@ -52,7 +55,7 @@ class ScanResultProcessor : public QObject
         void rollback();
 
     signals:
-        void changedTrackUrls( QHash<QString,QString> );
+        void changedTrackUrls( TrackUrls );
 
     private:
         void addTrack( const QVariantMap &trackData, int albumArtistId );
@@ -90,7 +93,7 @@ class ScanResultProcessor : public QObject
 
         QHash<QString, uint> m_filesInDirs;
 
-        QHash<QString, QString> m_changedUrls;
+        TrackUrls m_changedUrls;
 
         ScanType m_type;
 
