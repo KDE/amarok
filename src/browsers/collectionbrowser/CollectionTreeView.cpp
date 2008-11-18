@@ -153,8 +153,7 @@ CollectionTreeView::filterModel() const
 void
 CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 {
-
-    KAction separator( this );
+    PopupDropperAction separator( this );
     separator.setSeparator( true );
 
     QModelIndexList indices = selectedIndexes();
@@ -180,21 +179,14 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     }
 
     PopupDropperActionList actions = createBasicActions( indices );
+    actions += &separator;
     actions += createExtendedActions( indices );
     actions += createCollectionActions( indices );
 
     KMenu menu;
 
-    int count = 0;
     foreach( PopupDropperAction * action, actions )
-    {
         menu.addAction( action );
-
-        //HACK this is a really ugly hack, find a better solution for the separator position
-        count++;
-        if( count == 2 )
-            menu.addAction( &separator );
-    }
 
     m_currentCopyDestination = getCopyActions( indices );
     m_currentMoveDestination = getMoveActions( indices );
