@@ -351,14 +351,18 @@ Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
     mp3tunes_locker_track_list_t* tracks_list = 0;
     mp3tunes_locker_list_item_t* track_item = 0;
     mp3tunes_locker_track_t *track = 0;
-    QList<Mp3tunesLockerTrack> tracksQList; // to be returned
+    QList<Mp3tunesLockerTrack> tracksQList; // to be returned, init'ed to null
+    tracksQList.clear();
 
-    mp3tunes_locker_tracks_with_file_key ( m_locker, c_keys, &tracks_list );
+    if ( mp3tunes_locker_tracks_with_file_key ( m_locker, c_keys, &tracks_list )
+         || !tracks_list )
+    {
+        mp3tunes_locker_track_list_deinit ( &tracks_list );
+        return tracksQList;
+    }
 
-#ifdef __GNUC__
-#warning This code seems to be dead track_item is always 0
-#endif
-    while ( track_item != 0 )
+    track_item = tracks_list->first;
+    while ( track_item )
     {
         track = ( mp3tunes_locker_track_t* ) track_item->value;
         Mp3tunesLockerTrack trackWrapped ( track );
@@ -366,6 +370,7 @@ Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
 
         track_item = track_item->next;
     }
+
     mp3tunes_locker_track_list_deinit ( &tracks_list );
     return tracksQList;
 }
