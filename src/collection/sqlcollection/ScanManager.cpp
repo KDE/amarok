@@ -568,6 +568,7 @@ XmlParseJob::run()
         }
     }
     while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
+
     if( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError )
     {
         debug() << "do-while done with error";
