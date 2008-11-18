@@ -221,9 +221,16 @@ App::~App()
 
     The::engineController()->endSession(); //records final statistics
 
+#ifndef Q_WS_MAC
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
     AmarokConfig::self()->writeConfig();
+#else
+    // for some reason on OS X the main window always reports being hidden
+    // this means if you have the tray icon enabled, amarok will always open minimized
+    Amarok::config().writeEntry( "HiddenOnExit", false );
+    AmarokConfig::self()->writeConfig();
+#endif
 
     ScriptManager::destroy();
 
@@ -478,13 +485,13 @@ void App::applySettings( bool firstTime )
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
-
+    
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
     {
         PERF_LOG( "showing main window again" )
         main_window->show();
         PERF_LOG( "after showing mainWindow" )
-    }
+    } 
 
     { //<Engine>
         if( The::engineController()->volume() != AmarokConfig::masterVolume() )
