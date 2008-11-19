@@ -61,6 +61,7 @@
 #include <QList>
 #include <QVBoxLayout>
 #include <KPixmapCache>
+#include <QSizeGrip>
 
 #include <kabstractfilewidget.h> //savePlaylist()
 #include <KAction>          //m_actionCollection
@@ -111,6 +112,9 @@ MainWindow::MainWindow()
     setObjectName( "MainWindow" );
     s_instance = this;
 
+#ifdef Q_WS_MAC
+    QSizeGrip* grip = new QSizeGrip( this );
+#endif
     //create this object now as we might run into issues if anyone tries to use it during initialization
     //make room for a full width statusbar at the bottom of everything
     m_statusbarArea = new KVBox( this );
