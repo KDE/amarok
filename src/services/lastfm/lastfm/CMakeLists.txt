@@ -92,4 +92,4 @@ if(APPLE)
     SET_TARGET_PROPERTIES(amarok_service_liblastfm PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-install(TARGETS amarok_service_liblastfm DESTINATION ${LIB_INSTALL_DIR} )
+install(TARGETS amarok_service_liblastfm ${INSTALL_TARGETS_DEFAULT_ARGS} )
