@@ -138,7 +138,7 @@ void ScanManager::startIncrementalScan()
         m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
     }
     m_scanner = new AmarokProcess( this );
-    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
+    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << QString::number( QApplication::applicationPid() ); 
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
