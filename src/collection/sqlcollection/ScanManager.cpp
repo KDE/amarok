@@ -171,6 +171,13 @@ ScanManager::isDirInCollection( QString path )
             m_collection->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
             .arg( QString::number( deviceid ), m_collection->escape( rpath ) ) );
 
+    debug() << "Path : " << path;
+    debug() << "rPath: " << rpath;
+    if( !values.isEmpty() )
+        debug() << "Yes, in collection.";
+    else
+        debug() << "No, not in collection.";
+
     return !values.isEmpty();
 }
 
