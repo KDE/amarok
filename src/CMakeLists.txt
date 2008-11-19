@@ -521,12 +521,9 @@ target_link_libraries(amaroklib
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_SOLID_LIBRARY}
     ${TAGLIB_LIBRARIES}
-    ${OPENGL_gl_LIBRARY}
-    ${OPENGL_glu_LIBRARY}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
-    ${QT_QTOPENGL_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     amarok_taglib
     amarokplasma

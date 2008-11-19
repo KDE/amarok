@@ -67,8 +67,8 @@ macro_log_feature( MP4V2_FOUND "libmp4v2" "Enable tagging of mp4 files from with
 macro_optional_find_package(Mtp)
 macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
 
-macro_optional_find_package(OpenGL)
-macro_log_feature( OPENGL_FOUND "opengl" "Support for gl-accellerated visualization rendering" "" FALSE "" "")
+#macro_optional_find_package(OpenGL)
+#macro_log_feature( OPENGL_FOUND "opengl" "Support for gl-accellerated visualization rendering" "" FALSE "" "")
 
 find_package(CURL)
 macro_log_feature( CURL_FOUND "curl" "cURL provides the necessary network libraries required by mp3tunes." "http://curl.haxx.se" FALSE "" "" )
