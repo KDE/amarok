@@ -97,6 +97,7 @@ EngineSubject::~EngineSubject()
 
 void EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
 {
+    DEBUG_BLOCK
     // We explicitly block notifications where newState == buffering in enginecontroller, so if the old state = buffering we can ignore the playing update.
     if( newState == m_realState && newState != Phonon::PlayingState )  // To prevent Playing->Buffering->Playing->buffering.
         return;
@@ -116,6 +117,7 @@ void EngineSubject::playbackEnded( int finalPosition, int trackLength, const QSt
 void
 EngineSubject::newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const
 {
+    DEBUG_BLOCK
     foreach( EngineObserver *observer, Observers )
         observer->engineNewMetaData( newMetaData, trackChanged );
 }

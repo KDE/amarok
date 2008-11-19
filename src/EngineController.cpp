@@ -641,6 +641,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
+    DEBUG_BLOCK
     // Sanity checks
     if( newState == oldState || newState == Phonon::BufferingState )
         return;
@@ -690,6 +691,7 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
 void
 EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
+    DEBUG_BLOCK
     if( milliseconds != 0 ) //don't notify for 0 seconds, it's probably just a stream
         trackLengthChangedNotify( static_cast<long>( milliseconds ) / 1000 );
 }
