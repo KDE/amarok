@@ -121,6 +121,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->formatLabel->hide();
     ui->formatHelp->hide();
 
+    toggleCustomScheme( ui->customschemeCheck->isChecked() );
+
     init();
 }
 
