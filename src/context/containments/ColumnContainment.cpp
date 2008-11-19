@@ -504,12 +504,13 @@ ColumnContainment::correctControlButtonPositions()
     }
     if( m_switchRightIcon && m_switchLeftIcon )
     {
-        qreal xpos = boundingRect().width() / 2 + m_switchRightIcon->size().width();
+        // icon for switching to right side
+        qreal xpos = boundingRect().width() / 2 + m_switchRightIcon->size().width() - 5;
         qreal ypos = boundingRect().height() - m_switchRightIcon->size().height();
         m_switchRightIcon->setPos( xpos, ypos );
 
-        // next to it on the left
-        xpos = boundingRect().width() / 2 - m_switchLeftIcon->size().width();
+        // icon for switching to left side
+        xpos = boundingRect().width() / 2 - m_switchLeftIcon->size().width() + 5;
         m_switchLeftIcon->setPos( xpos, ypos );
 
         m_switchLeftIcon->show();
