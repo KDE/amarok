@@ -292,16 +292,9 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( trackListDrag )
         {
 
- 
             Meta::TrackList tracks = trackListDrag->tracks();
             qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
-
-            debug() << "adding tracks from mime data:";
-            foreach ( Meta::TrackPtr track, tracks ){
-                debug() << "tracks: " << track->prettyName();
-            }
-            
             Controller::instance()->insertTracks( beginRow, tracks );
         }
         return true;

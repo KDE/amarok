@@ -309,10 +309,6 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
     foreach( CollectionTreeItem *item, items )
     {
         if( item->allDescendentTracksLoaded() ) {
-            debug() << "adding tracks to mime data:";
-            foreach ( TrackPtr track, item->descendentTracks() ){
-                debug() << "tracks: " << track->prettyName();
-            }
             tracks << item->descendentTracks();
         }
         else
