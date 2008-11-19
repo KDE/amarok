@@ -27,6 +27,7 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Resize handle now appears in OS X. (BR 170199)
     * Do not deselect album when right clicking on header. (BR 175527)
     * Correctly sort tracks when dragging and dropping directly to the
       playlist. (BR 175023)
