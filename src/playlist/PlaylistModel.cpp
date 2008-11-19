@@ -115,21 +115,6 @@ Playlist::Model::Model()
             m_itemIds.insert( i->id(), i );
         }
     }
-
-   //Select previously saved track
-   const int playingTrack = AmarokConfig::lastPlaying();
-
-   if ( playingTrack > -1 )
-       setActiveRow( playingTrack - 1 );
-
-   //Not the prettiest code, but it makes it work.
-   //Without this (and the -1 in setActiveRow() above), the correct track
-   //is highlighted, but when play is pressed, the following track is played
-   //This selects the wrong track, then plays and stops the player to bring
-   //it on to the right track.
-   The::engineController()->play();
-   The::engineController()->stop( true );
-       
 }
 
 Playlist::Model::~Model()
