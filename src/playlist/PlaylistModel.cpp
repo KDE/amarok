@@ -290,7 +290,20 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     {
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
-            Controller::instance()->insertTracks( beginRow, trackListDrag->tracks() );
+        {
+
+ 
+            Meta::TrackList tracks = trackListDrag->tracks();
+            qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
+
+
+            debug() << "adding tracks from mime data:";
+            foreach ( Meta::TrackPtr track, tracks ){
+                debug() << "tracks: " << track->prettyName();
+            }
+            
+            Controller::instance()->insertTracks( beginRow, tracks );
+        }
         return true;
     }
     else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )

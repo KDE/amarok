@@ -308,8 +308,13 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
 
     foreach( CollectionTreeItem *item, items )
     {
-        if( item->allDescendentTracksLoaded() )
+        if( item->allDescendentTracksLoaded() ) {
+            debug() << "adding tracks to mime data:";
+            foreach ( TrackPtr track, item->descendentTracks() ){
+                debug() << "tracks: " << track->prettyName();
+            }
             tracks << item->descendentTracks();
+        }
         else
         {
             QueryMaker *qm = item->queryMaker();
@@ -326,6 +331,8 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
             queries.append( qm );
         }
     }
+
+    qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );
