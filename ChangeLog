@@ -28,6 +28,7 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Do not deselect album when right clicking on header. (BR 175527)
     * Correctly sort tracks when dragging and dropping directly to the
       playlist. (BR 175023)
     * Clearing the playlist turns Dynamic Mode off. (BR 174514)
