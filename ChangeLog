@@ -28,8 +28,11 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * Correctly sort tracks when dragging and dropping directly to the
+      playlist. (BR 175023)
     * Clearing the playlist turns Dynamic Mode off. (BR 174514)
-    * Make sure user has edited a text field manually before overwriting that tag. (BR 174878)
+    * Make sure user has edited a text field manually before overwriting that
+      tag. (BR 174878)
     * Podcast episodes and channels can be dragged directly from the
       playlistbrowser onto the playlist. (BR 175162)
     * Multiple fixes and improvements for the Wikipedia applet.
