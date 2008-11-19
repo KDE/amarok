@@ -216,25 +216,29 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
-    if ( mouseEventInHeader( event ) && !( event->button() == Qt::MidButton ) )
+    if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
+        //event->accept();
         m_mousePressInHeader = true;
         QModelIndex index = indexAt( event->pos() );
-        m_headerPressIndex = QPersistentModelIndex( index );
-        int rows = index.data( GroupedTracksRole ).toInt();
-        QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
-        QItemSelection selItems( index, bottomIndex );
-        QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
-        selectionModel()->select( selItems, command );
-        // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
-        selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
-        event->accept();
+        //only do this dance if header is not already selected
+        if ( !selectionModel()->isSelected( index ) ) {
+            m_headerPressIndex = QPersistentModelIndex( index );
+            int rows = index.data( GroupedTracksRole ).toInt();
+            QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
+            QItemSelection selItems( index, bottomIndex );
+            QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
+            selectionModel()->select( selItems, command );
+            // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
+            selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
+        }
     }
     else
     {
         m_mousePressInHeader = false;
-        QListView::mousePressEvent( event );
     }
+    QListView::mousePressEvent( event ); //this should always be forwarded, as it is used to determine the offset
+    //relative to the mousr of the selection we are dragging!
 }
 
 void
@@ -300,12 +304,14 @@ Playlist::PrettyListView::headerPressSelectionCommand( const QModelIndex& index,
     const bool shiftKeyPressed = event->modifiers() & Qt::ShiftModifier;
     //const bool controlKeyPressed = event->modifiers() & Qt::ControlModifier;
     const bool indexIsSelected = selectionModel()->isSelected( index );
-
+    const bool controlKeyPressed = event->modifiers() & Qt::ControlModifier;
+    
     if ( shiftKeyPressed )
         return QItemSelectionModel::SelectCurrent;
-    if ( indexIsSelected )
-        return QItemSelectionModel::Deselect;
 
+    if ( indexIsSelected && controlKeyPressed ) //make this consistent with how single items work. This also makes it possible to drag the header
+        return QItemSelectionModel::Deselect;
+    
     return QItemSelectionModel::Select;
 }
 
