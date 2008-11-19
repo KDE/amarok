@@ -57,7 +57,7 @@ Comment[sv]=Bläddra igenom och lyssna på musik lagrad på ditt Mp3tunes-konto
 Comment[tr]=mp3tunes hesabınızdaki müziklere göz atın ve dinleyin
 Comment[uk]=Перегляньте і прослухайте музику, що зберігається на вашому рахунку у mp3tunes
 Comment[x-test]=xxBrowse and listen to the music stored in your mp3tunes accountxx
-Comment[zh_CN]=浏览并收听储存在您的 Mp3tunes 帐号中的音乐
+Comment[zh_CN]=浏览并收听储存在您的 Mp3tunes 账户中的音乐
 
 ServiceTypes=Amarok/Plugin
 
