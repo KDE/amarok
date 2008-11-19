@@ -27,6 +27,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
+    * In Organize Collection, the "Collection root" token is now fixed at the
+      beginning of the filename scheme. (BR 175376)       
     * Resize handle now appears in OS X. (BR 170199)
     * Do not deselect album when right clicking on header. (BR 175527)
       (BR 174584)
