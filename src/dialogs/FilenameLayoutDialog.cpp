@@ -22,6 +22,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <kstandarddirs.h>
+#include <KColorScheme>
 
 #include <QGridLayout>
 #include <QPushButton>
@@ -80,6 +81,43 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     if( !m_isOrganizeCollection )
         optionsFrame->show();
 
+    //INIT for collection root
+    unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
+        collectionRootFrame->setStyleSheet( "\
+            color: palette( Base );\
+            border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
+            border-radius: 4px;\
+            padding: 2px;\
+            " );
+        QHBoxLayout *collectionRootLayout = new QHBoxLayout( collectionRootFrame );
+        QLabel *collectionRootIconLabel = new QLabel( "", this );
+        QLabel *collectionRootLabel = new QLabel( i18n( "Collection root" ), this );
+        collectionRootLayout->addWidget( collectionRootIconLabel );
+        collectionRootLayout->addWidget( collectionRootLabel );
+        collectionRootLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        collectionRootIconLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        collectionRootLayout->setContentsMargins( 0, 0, 0, 0 );
+        collectionRootIconLabel->setContentsMargins( 0, 0, 0, 0 );
+        collectionRootLabel->setContentsMargins( 0, 0, 0, 0 );
+        collectionRootIconLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+        collectionRootIconLabel->setFixedSize( 16, 16 );
+        QPixmap * collectionIcon = new QPixmap( KIcon( "collection-amarok" ).pixmap(16, 16) );
+        collectionRootIconLabel->setPixmap( *collectionIcon );
+
+        collectionSlashFrame->setStyleSheet( "\
+            color: palette( Base );\
+            border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
+            border-radius: 4px;\
+            padding: 2px;\
+            " );
+        QHBoxLayout *collectionSlashLayout = new QHBoxLayout( collectionSlashFrame );
+        QLabel *collectionSlashLabel = new QLabel( "/", this );
+        collectionSlashLayout->addWidget(collectionSlashLabel);
+        collectionSlashLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        collectionSlashLayout->setContentsMargins( 0, 0, 0, 0 );
+        collectionSlashLabel->setContentsMargins( 0, 0, 0, 0 );
+        
+
     //INIT for tokenPool
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Track" ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Title" ) ) );
@@ -99,17 +137,20 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %ignore." ) );
+        collectionRootFrame->hide();
+        collectionSlashFrame->hide();
     }
     else
     {
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "/" ) ) );
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Artist initial" ) ) );
-        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Collection root" ) ) );
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "File type" ) ) );
         tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Disc number" ) ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
+        collectionRootFrame->show();
+        collectionSlashFrame->show();
     }
     if( m_isOrganizeCollection )
     {
@@ -155,17 +196,25 @@ QString
 FilenameLayoutDialog::getParsableScheme()
 {
     QString category;
+    QString scheme;
     if( m_isOrganizeCollection )
+    {
         category = "OrganizeCollectionDialog";
+    }
     else
+    {
         category = "FilenameLayoutDialog";
+    }
     if( kpbAdvanced->text() == i18n( "&Basic..." ) )
     {
-        Amarok::config( category ).writeEntry( "Scheme", filenameLayoutEdit->text() );
-        return filenameLayoutEdit->text();
+        scheme = filenameLayoutEdit->text();
     }
-    Amarok::config( category ).writeEntry( "Scheme", filenameLayout->getParsableScheme() );
-    return filenameLayout->getParsableScheme();
+    else
+    {
+        scheme = filenameLayout->getParsableScheme();
+    }
+    Amarok::config( category ).writeEntry( "Scheme", scheme );
+    return scheme;
 }
 
 //Handles the radiobuttons

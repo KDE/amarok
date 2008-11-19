@@ -43,6 +43,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
     layout->addWidget( backText );
     tokenList = new QList< Token * >();
+    layout->setContentsMargins( 3, 3, 3, 3 );
 }
 
 //Adds a token with caption text at the index-th place in the FilenameLayoutWidget bar and computes the parsable scheme currently defined by the FilenameLayoutWidget.

@@ -77,9 +77,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->setupUi( mainContainer );
 
     m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
+    m_filenameLayoutDialog->hide();
     ui->verticalLayout->insertWidget( 4, m_filenameLayoutDialog );
-     m_filenameLayoutDialog->show();
-        m_filenameLayoutDialog->setVisible( false );
     ui->ignoreTheCheck->show();
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
@@ -255,7 +254,7 @@ OrganizeCollectionDialog::buildFormatString() const
 {
     //TODO: this is where I need to query m_filenameLayoutDialog
     if( ui->customschemeCheck->isChecked() )
-        return m_filenameLayoutDialog->getParsableScheme();
+        return "%folder/" + m_filenameLayoutDialog->getParsableScheme();
     QString format = "%folder/";
     if( ui->filetypeCheck->isChecked() )
         format += "%filetype/";
@@ -320,7 +319,7 @@ OrganizeCollectionDialog::update( int dummy )   //why the dummy?
     Q_UNUSED( dummy );
 
     if( ui->customschemeCheck->isChecked() )
-        emit updatePreview( buildDestination( m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
+        emit updatePreview( buildDestination( "%folder/" + m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
     else
         emit updatePreview( buildDestination( buildFormatString(), m_previewTrack ) );
 }
