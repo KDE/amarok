@@ -160,6 +160,8 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
+    DEBUG_BLOCK
+
     if ( path.endsWith( '/' ) )
         path = path.left( path.length() - 1 );
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
