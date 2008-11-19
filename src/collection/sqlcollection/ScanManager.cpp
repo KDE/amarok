@@ -415,7 +415,7 @@ ScanManager::stopParser()
         while( !m_parser->isFinished() )
             usleep( 100000 ); // Sleep 100 msec
 
-        delete m_parser;
+        m_parser->deleteLater();
         m_parser = 0;
     }
 }
