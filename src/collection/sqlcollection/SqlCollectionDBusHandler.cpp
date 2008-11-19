@@ -25,6 +25,8 @@ SqlCollectionDBusHandler::SqlCollectionDBusHandler( SqlCollection *coll )
     : QObject( coll )
     , m_collection( coll )
 {
+    DEBUG_BLOCK
+
     setObjectName("SqlCollectionDBusHandler");
 
     new SqlCollectionAdaptor( this );
@@ -34,6 +36,8 @@ SqlCollectionDBusHandler::SqlCollectionDBusHandler( SqlCollection *coll )
 bool
 SqlCollectionDBusHandler::isDirInCollection( const QString& path )
 {
+    DEBUG_BLOCK
+
     return m_collection->isDirInCollection( path );
 }
 
