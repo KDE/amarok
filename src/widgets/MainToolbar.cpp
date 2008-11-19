@@ -77,11 +77,12 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     ProgressWidget *pWidget = new ProgressWidget( vBox );
     pWidget->setMinimumSize( 100, 17 );
-    //pWidget->setMaximumSize( 600000, 24 );
     pWidget->setContentsMargins( 0, 2, 0, 0 );
 
+    const int volumeRightMargin = 18;
     m_volumeWidget = new VolumeWidget( topHBox );
-    m_volumeWidget->setFixedSize( 170, 24 );
+    m_volumeWidget->setFixedSize( 170 + volumeRightMargin, 24 );
+    m_volumeWidget->setContentsMargins( 0, 0, volumeRightMargin, 0 );
 
     kapp->installEventFilter( this );
 }
