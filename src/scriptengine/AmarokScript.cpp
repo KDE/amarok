@@ -81,10 +81,9 @@ namespace AmarokScript
 
     void AmarokScript::end()
     {
-        // don't stop the script while in the script event handler. this crashes amarok.
-        // this is meant more as a notification method, "this script has ended". whats the proper
-        // functionality here?
-        //ScriptManager::instance()->stopScript( m_name );
+        //stopScript calls an associated slot via the event loop to handle cleanup,
+        //so this should be safe
+        ScriptManager::instance()->stopScript( m_name );
     }
 
     bool AmarokScript::runScript( const QString& name ) const

@@ -209,7 +209,7 @@ ScriptManager::stopScript( const QString& name )
 {
     if( !m_scripts.contains( name ) )
         return false;
-    slotStopScript( name );
+    QTimer::singleShot( 0, this, SLOT( slotStopScript( name ) ) );
 
     return true;
 }
