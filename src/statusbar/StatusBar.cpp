@@ -77,8 +77,8 @@ StatusBar::StatusBar( QWidget * parent )
     m_nowPlayingEmblem = new QLabel( m_nowPlayingWidget );
     m_nowPlayingEmblem->setFixedSize( 16, 16 );
 
-    QFrame *separator = new QFrame( m_nowPlayingWidget );
-    separator->setFrameShape( QFrame::VLine );
+    m_separator = new QFrame( m_nowPlayingWidget );
+    m_separator->setFrameShape( QFrame::VLine );
 
     m_playlistLengthLabel = new QLabel( m_nowPlayingWidget);
     m_playlistLengthLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -334,15 +334,19 @@ StatusBar::updateTotalPlaylistLength() //SLOT
     {
         m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
         m_playlistLengthLabel->show();
+        m_separator->show();
     }
     else if( ( totalLength == 0 ) && ( trackCount > 0 ) )
     {
         m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
         m_playlistLengthLabel->show();
+        m_separator->show();
     }
     //Total Length will not be > 0 if trackCount is 0, so we can ignore it
-    else // TotalLength = 0 and trackCount = 0;
+    else { // TotalLength = 0 and trackCount = 0;
         m_playlistLengthLabel->hide();
+        m_separator->hide();
+    }
 }
 
 #include "StatusBar.moc"

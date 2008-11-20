@@ -155,6 +155,7 @@ private:
     KHBox * m_nowPlayingWidget;
     KSqueezedTextLabel * m_nowPlayingLabel;
     QLabel * m_nowPlayingEmblem;
+    QFrame *m_separator;
 
     QLabel * m_playlistLengthLabel;
 
