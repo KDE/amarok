@@ -239,6 +239,10 @@ App::~App()
     // I asked Trolltech! *smug*
     Amarok::OSD::destroy();
 
+    //I tried this in the destructor for the Model but the object is destroyed after the
+    //Config is written. Go figure!
+    AmarokConfig::setLastPlaying( Playlist::Model::instance()->rowForTrack( Playlist::Model::instance()->activeTrack() ) );
+
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::self()->writeConfig();
 

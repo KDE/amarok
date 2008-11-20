@@ -107,6 +107,13 @@ Playlist::Actions::requestPrevTrack()
     play( m_nextTrackCandidate );
 }
 
+void
+Playlist::Actions::requestTrack( quint64 id )
+{
+    m_trackError = false;
+    m_nextTrackCandidate = id;
+}
+
 
 void
 Playlist::Actions::play()

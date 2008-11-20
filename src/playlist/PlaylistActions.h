@@ -77,6 +77,11 @@ namespace Playlist
              */
             void requestPrevTrack();
 
+            /**
+             * Set next track from track id, but don't start playing immediately
+             */
+            void requestTrack( quint64 id );
+
             StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
             void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
 

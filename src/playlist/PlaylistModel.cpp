@@ -31,6 +31,7 @@
 #include "Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
+#include "PlaylistActions.h"
 #include "PlaylistController.h"
 #include "PlaylistItem.h"
 #include "PlaylistFileSupport.h"
@@ -115,6 +116,17 @@ Playlist::Model::Model()
             m_itemIds.insert( i->id(), i );
         }
     }
+
+   //Select previously saved track
+   const int playingTrack = AmarokConfig::lastPlaying();
+
+   if ( playingTrack > -1 )
+       setActiveRow( playingTrack );
+
+   //Stop Amarok from advancing to the next track when play
+   //is pressed.
+   Playlist::Actions::instance()->requestTrack( idAt( playingTrack ) );
+
 }
 
 Playlist::Model::~Model()
