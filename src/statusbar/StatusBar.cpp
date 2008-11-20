@@ -83,6 +83,9 @@ StatusBar::StatusBar( QWidget * parent )
     m_playlistLengthLabel = new QLabel( m_nowPlayingWidget);
     m_playlistLengthLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
+    QWidget * spacer = new QWidget( m_nowPlayingWidget );
+    spacer->setFixedWidth( 3 );
+
     addPermanentWidget( m_nowPlayingWidget );
 
     qRegisterMetaType<MessageType>( "MessageType" );
