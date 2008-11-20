@@ -87,7 +87,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         QFile::remove( m_logfile );
 
     if( !collectionId.isEmpty() )
-        m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok-" + collectionId, "/SqlCollection/localCollection" );
+        m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + collectionId );
     else
         m_amarokCollectionInterface = 0;
 
