@@ -27,7 +27,8 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
-    * Update Collection works now correctly, only scanning necessary dirs. 
+    * Update Collection works now correctly, only scanning the necessary dirs.
+      (BR 169602)
     * In Organize Collection, the "Collection root" token is now fixed at the
       beginning of the filename scheme. (BR 175376)       
     * Resize handle now appears in OS X. (BR 170199)
