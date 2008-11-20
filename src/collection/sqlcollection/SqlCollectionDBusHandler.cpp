@@ -36,8 +36,6 @@ SqlCollectionDBusHandler::SqlCollectionDBusHandler( SqlCollection *coll )
 bool
 SqlCollectionDBusHandler::isDirInCollection( const QString& path )
 {
-    DEBUG_BLOCK
-
     return m_collection->isDirInCollection( path );
 }
 
