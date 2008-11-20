@@ -22,6 +22,7 @@
 #include "dialogs/TagDialog.h"
 #include "meta/CustomActionsCapability.h"
 #include "playlist/PlaylistController.h"
+#include "widgets/PrettyTreeView.h"
 
 #include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
@@ -34,74 +35,33 @@
 #include <KIconLoader>
 #include <KMenu>
 
-class AlbumsTreeView : public QTreeView
+// Subclassed to override the access level of some methods.
+// The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.
+class AlbumsTreeView : public PrettyTreeView
 {
     public:
-        AlbumsTreeView( QWidget * parent = 0 ) : QTreeView( parent )
+        AlbumsTreeView( QWidget *parent = 0 )
+            : PrettyTreeView( parent )
         {
             setAttribute( Qt::WA_NoSystemBackground );
             viewport()->setAutoFillBackground( false );
-    
-            setFrameStyle( QFrame::NoFrame );
+
             setHeaderHidden( true );
             setIconSize( QSize(60,60) );
             setDragDropMode( QAbstractItemView::DragOnly );
             setSelectionMode( QAbstractItemView::ExtendedSelection );
             setSelectionBehavior( QAbstractItemView::SelectItems );
             //setAnimated( true ); // looks TERRIBLE
-
+            
             setRootIsDecorated( false );
-            setMouseTracking( true );
-    
+
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
-            
-            setAlternatingRowColors( true );
-            //transparency
-            QPalette p = palette();
-            QColor c = p.color( QPalette::Base );
-            c.setAlpha( 0 );
-            p.setColor( QPalette::Base, c );
-            
-            //HACK ALERT, make a workaround, for now, for the alternating row color issue
-            c = Qt::white;
-            c.setAlpha( 31 );
-            p.setColor( QPalette::AlternateBase, c );
-            
-            setPalette( p );
         }
 
-        // The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.
+        // Override access level to make it public. Only visible to the AlbumsView.
         // Used for context menu methods.
-        friend class AlbumsView;
-
-    protected:
-        void drawRow( QPainter *painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
-        {
-            const QStyleOptionViewItemV4 opt = option;
-
-            const bool alternate = opt.features & QStyleOptionViewItemV2::Alternate;
-
-            const int width = option.rect.width();
-            const int height = option.rect.height();
-
-            if( height > 0 )
-            {
-                painter->save();
-                QPixmap background;
-
-                if ( !alternate )
-                    background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-                else
-                    background = The::svgHandler()->renderSvgWithDividers( "alt_service_list_item", width, height, "alt_service_list_item" );
-
-                painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
-
-                painter->restore();
-            }
-    
-            QTreeView::drawRow( painter, option, index ); 
-        }
+        QModelIndexList selectedIndexes() const { return PrettyTreeView::selectedIndexes(); }
 };
 
 AlbumsView::AlbumsView( QGraphicsWidget *parent )
