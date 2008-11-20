@@ -17,30 +17,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef PRETTYTREEVIEW_H
-#define PRETTYTREEVIEW_H
+#ifndef AMAROK_PRETTYTREEVIEW_H
+#define AMAROK_PRETTYTREEVIEW_H
+
+#include "amarok_export.h"
 
 #include <QTreeView>
 
 /**
-A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
-
-	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
+    @author: Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class PrettyTreeView : public QTreeView
+class AMAROK_EXPORT PrettyTreeView : public QTreeView
 {
     Q_OBJECT
-public:
-    PrettyTreeView( QWidget *parent = 0 );
 
-    ~PrettyTreeView();
+    public:
+        PrettyTreeView( QWidget *parent = 0 );
+        virtual ~PrettyTreeView();
 
     protected:
         virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
     protected slots:
-        void newPalette( const QPalette & palette );
-
+        virtual void newPalette( const QPalette & palette );
 };
 
 #endif

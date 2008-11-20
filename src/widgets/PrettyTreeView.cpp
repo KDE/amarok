@@ -31,7 +31,6 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
     
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
-
 }
 
 
@@ -67,5 +66,3 @@ void PrettyTreeView::newPalette( const QPalette & palette )
 }
 
 #include "PrettyTreeView.moc"
-
-
