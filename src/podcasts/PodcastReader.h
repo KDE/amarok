@@ -22,6 +22,7 @@
 #include "PodcastProvider.h"
 #include "PodcastMeta.h"
 
+#include <QDateTime>
 #include <QXmlStreamReader>
 #include <QObject>
 
@@ -59,7 +60,6 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void slotAbort();
         void slotAddData( KIO::Job *, const QByteArray & data );
 
-        //HACK: to make it work because of QXmlStreamReader bug.
         void downloadResult( KJob * );
 
     private:
@@ -79,6 +79,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void readUnknownElement();
     //     void readImage();
     //     void readCopyright();
+
+        QDateTime parsePubDate( const QString &datestring );
 
         /** podcastEpisodeCheck
         * Check if this PodcastEpisode has been fetched before. Uses a scoring algorithm.

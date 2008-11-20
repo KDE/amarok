@@ -43,7 +43,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
     m_sequenceNumber = (*(iter++)).toInt();
     m_description = *(iter++);
     m_mimeType = *(iter++);
-    m_pubDate = *(iter++);
+    m_pubDate = QDateTime::fromString( *(iter++), Qt::ISODate );
     m_duration = (*(iter++)).toInt();
     m_fileSize = (*(iter++)).toInt();
     m_isNew = sqlStorage->boolTrue() == (*(iter++));
@@ -66,6 +66,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     m_localUrl = episode->localUrl();
     m_title = episode->title();
     m_guid = episode->guid();
+    m_pubDate = episode->pubDate();
 
     //commit to the database
     updateInDb();
@@ -104,7 +105,7 @@ Meta::SqlPodcastEpisode::updateInDb()
     command = command.arg( QString::number(m_sequenceNumber) );
     command = command.arg( escape(m_description) );
     command = command.arg( escape(m_mimeType) );
-    command = command.arg( escape(m_pubDate) );
+    command = command.arg( escape(m_pubDate.toString(Qt::ISODate)) );
     command = command.arg( QString::number(m_duration) );
     command = command.arg( QString::number(m_fileSize) );
     command = command.arg( m_isNew ? boolTrue : boolFalse );
@@ -266,14 +267,14 @@ Meta::SqlPodcastChannel::loadEpisodes()
         command = QString( "SELECT id, url, channel, localurl, guid, "
         "title, subtitle, sequencenumber, description, mimetype, pubdate, "
         "duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 "
-        "ORDER BY id LIMIT " + QString::number( purgeCount() ) + ";" );
+        "ORDER BY pubdate DESC LIMIT " + QString::number( purgeCount() ) + ";" );
     }
     else
     {
         command = QString( "SELECT id, url, channel, localurl, guid, "
             "title, subtitle, sequencenumber, description, mimetype, pubdate, "
             "duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 "
-            "ORDER BY id;" );
+            "ORDER BY pubdate DESC;" );
     }
 
     QStringList results = sqlStorage->query( command.arg( m_dbId ) );

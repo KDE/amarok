@@ -27,6 +27,10 @@
 #include <QDate>
 #include <QDebug>
 #include <QMap>
+/* used as PubDate for Podcasts module RSS
+** Mon, 13 Mar 2006 23:37:46 +0000
+*/
+#define RFC822_DATE_FORMAT "ddd, d MMM yyyy HH:mm:ss"
 
 using namespace Meta;
 
@@ -242,6 +246,13 @@ PodcastReader::read()
                     m_channel->setWebLink( KUrl( m_linkString ) );
                     m_linkString.clear();
                 }
+                else if( QXmlStreamReader::name() == "pubDate")
+                {
+                    PodcastEpisode * episode = dynamic_cast<PodcastEpisode *>(m_current);
+                    if( episode )
+                        episode->setPubDate( parsePubDate( m_pubDateString ) );
+                    m_pubDateString.clear();
+                }
             }
             else if( isCharacters() && !isWhitespace() )
             {
@@ -263,14 +274,14 @@ PodcastReader::read()
     {
         if ( error() == QXmlStreamReader::PrematureEndOfDocumentError)
         {
-            qDebug() << "waiting for data at line " << lineNumber();
+            debug() << "waiting for data at line " << lineNumber();
         }
         else
         {
-            qDebug() << "XML ERROR: " << error() << " at line: " << lineNumber()
-                    << ": " << columnNumber ()
+            debug() << "XML ERROR: " << error() << " at line: " << lineNumber()
+                    << ": " << columnNumber()
                     << "\n\t" << errorString();
-            qDebug() << "\tname = " << QXmlStreamReader::name().toString()
+            debug() << "\tname = " << QXmlStreamReader::name().toString()
                     << " tokenType = " << tokenString();
 
             if( m_channel )
@@ -279,6 +290,18 @@ PodcastReader::read()
         }
     }
     return result;
+}
+
+QDateTime
+PodcastReader::parsePubDate( const QString &datestring )
+{
+    //slightly hackish: leftmost 25 characters should be everything minus the zone
+    //remove the whitespace with simplified() in case the date number was 1 long
+    QDateTime pubdate = QDateTime::fromString(datestring.left( 25 ).simplified(), RFC822_DATE_FORMAT);
+    if( pubdate.isValid() )
+        return pubdate;
+    else
+        return QDateTime::currentDateTime();
 }
 
 void

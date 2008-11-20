@@ -25,7 +25,7 @@
 #include <KLocale>
 #include <KUrl>
 
-#include <QDate>
+#include <QDateTime>
 #include <QSharedData>
 #include <QString>
 #include <QStringList>
@@ -163,12 +163,12 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         //PodcastEpisode methods
         KUrl localUrl() const { return m_localUrl; }
         void setLocalUrl( const KUrl &url ) { m_localUrl = url; }
-        QString pubDate() const { return m_pubDate; }
+        QDateTime pubDate() const { return m_pubDate; }
         int duration() const { return m_duration; }
         QString guid() const { return m_guid; }
 
         void setUidUrl( const KUrl &url ) { m_url = url; }
-        void setPubDate( const QString &pubDate ) { m_pubDate = pubDate; }
+        void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
         void setDuration( int duration ) { m_duration = duration; }
         void setGuid( const QString &guid ) { m_guid = guid; }
 
@@ -185,8 +185,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         KUrl m_url; //remote url of the file
         KUrl m_localUrl; //the localUrl, only valid if downloaded
         QString m_mimeType; //the mimetype of the enclosure
-        //TODO: convert to QDateTime from a RFC822 format
-        QString m_pubDate; //the pubDate from the feed
+        QDateTime m_pubDate; //the pubDate from the feed
         int m_duration; //the playlength in seconds
         int m_fileSize; //the size tag from the enclosure
         int m_sequenceNumber; //number of the episode
