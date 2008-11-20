@@ -23,8 +23,6 @@
 #include "SqlPlaylistViewItem.h"
 #include "widgets/PrettyTreeView.h"
 
-
-
 class PopupDropper;
 class PopupDropperAction;
 
@@ -32,16 +30,12 @@ class KAction;
 
 namespace PlaylistBrowserNS {
 
-/**
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class UserPlaylistTreeView : public PrettyTreeView
+class UserPlaylistTreeView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
 
 public:
     UserPlaylistTreeView( QWidget *parent = 0 );
-
     ~UserPlaylistTreeView();
 
     void setNewGroupAction( KAction * action );

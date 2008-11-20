@@ -293,7 +293,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
 }
 
 PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
-    : PrettyTreeView( parent )
+    : Amarok::PrettyTreeView( parent )
     , m_model( model )
     , m_pd( 0 )
     , m_appendAction( 0 )

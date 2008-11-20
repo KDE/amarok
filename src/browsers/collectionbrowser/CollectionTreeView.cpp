@@ -55,7 +55,7 @@
 #include <KSharedPtr>
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
-    : PrettyTreeView( parent )
+    : Amarok::PrettyTreeView( parent )
     , m_filterModel( 0 )
     , m_treeModel( 0 )
     , m_pd( 0 )

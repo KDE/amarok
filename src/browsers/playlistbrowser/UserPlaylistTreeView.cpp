@@ -44,7 +44,7 @@
 #include <typeinfo>
 
 PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QWidget *parent )
-    : PrettyTreeView( parent )
+    : Amarok::PrettyTreeView( parent )
     , m_pd( 0 )
     , m_appendAction( 0 )
     , m_loadAction( 0 )

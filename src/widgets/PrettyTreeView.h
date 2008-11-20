@@ -28,19 +28,23 @@
     A utility QTreeView subcass that handles drawing nice, svg themed, rows and palette changes
     @author: Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT PrettyTreeView : public QTreeView
+
+namespace Amarok
 {
-    Q_OBJECT
+    class AMAROK_EXPORT PrettyTreeView : public QTreeView
+    {
+        Q_OBJECT
 
-    public:
-        PrettyTreeView( QWidget *parent = 0 );
-        virtual ~PrettyTreeView();
+        public:
+            PrettyTreeView( QWidget *parent = 0 );
+            virtual ~PrettyTreeView();
 
-    protected:
-        virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+        protected:
+            virtual void drawRow( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-    protected slots:
-        virtual void newPalette( const QPalette & palette );
-};
+        protected slots:
+            virtual void newPalette( const QPalette & palette );
+    };
+}
 
 #endif

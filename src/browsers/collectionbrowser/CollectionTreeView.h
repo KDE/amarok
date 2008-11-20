@@ -41,7 +41,7 @@ class AmarokMimeData;
 
 typedef QList<PopupDropperAction *> PopupDropperActionList;
 
-class CollectionTreeView: public PrettyTreeView
+class CollectionTreeView: public Amarok::PrettyTreeView
 {
         Q_OBJECT
 

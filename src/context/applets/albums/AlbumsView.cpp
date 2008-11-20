@@ -37,11 +37,11 @@
 
 // Subclassed to override the access level of some methods.
 // The AlbumsTreeView and the AlbumsView are so highly coupled that this is acceptable, imo.
-class AlbumsTreeView : public PrettyTreeView
+class AlbumsTreeView : public Amarok::PrettyTreeView
 {
     public:
         AlbumsTreeView( QWidget *parent = 0 )
-            : PrettyTreeView( parent )
+            : Amarok::PrettyTreeView( parent )
         {
             setAttribute( Qt::WA_NoSystemBackground );
             viewport()->setAutoFillBackground( false );

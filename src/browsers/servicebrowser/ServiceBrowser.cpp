@@ -47,7 +47,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     setObjectName( name );
     debug() << "ServiceBrowser starting...";
 
-    m_serviceListView = new PrettyTreeView( this );
+    m_serviceListView = new Amarok::PrettyTreeView( this );
 #ifdef Q_WS_MAC
     m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
     m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem ); // per-pixel scrolling is slower than per-item

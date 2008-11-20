@@ -24,6 +24,8 @@
 
 #include <QPainter>
 
+using namespace Amarok;
+
 PrettyTreeView::PrettyTreeView( QWidget *parent )
     : QTreeView( parent )
 {

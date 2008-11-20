@@ -81,7 +81,7 @@ Q_OBJECT
 
 };
 
-class PodcastView : public PrettyTreeView
+class PodcastView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
     public:
