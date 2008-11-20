@@ -67,7 +67,7 @@ Playlist::Widget::Widget( QWidget* parent )
     m_stackedWidget->setCurrentIndex( 0 );
 
     KHBox *barBox = new KHBox( this );
-    barBox->setMargin( 6 );
+    barBox->setMargin( 0 );
 
     KToolBar *plBar = new Amarok::ToolBar( barBox );
     plBar->setObjectName( "PlaylistToolBar" );
