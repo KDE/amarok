@@ -296,7 +296,7 @@ void processPath( const QString &path )
         else
         {
             if( verbose )
-            qDebug() << "INFO: File not able to be parsed by TagLib, cleaning up temp file";
+            qDebug() << "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG files), cleaning up temp file";
             if( !sfs.cleanupSave() )
                 qWarning() << "WARNING: file at " << filePath << " could not be cleaned up; check for strays";
             return;
