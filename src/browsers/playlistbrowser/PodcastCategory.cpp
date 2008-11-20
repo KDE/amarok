@@ -276,7 +276,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
     //Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     int height = 24;
-    
+
     if( /*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
     {
         QString description = index.data( ShortDescriptionRole ).toString();
@@ -480,6 +480,7 @@ PodcastView::createCommonActions( QModelIndexList indices )
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 
+    /*TODO: rename episodes
     if( m_renameAction == 0 )
     {
         m_renameAction =  new PopupDropperAction(
@@ -491,10 +492,11 @@ PodcastView::createCommonActions( QModelIndexList indices )
         );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
+    */
 
     actions << m_appendAction;
     actions << m_loadAction;
-    actions << m_renameAction;
+//     actions << m_renameAction;
 
     return actions;
 }
@@ -517,6 +519,7 @@ PodcastView::createChannelActions( QModelIndexList indices )
         connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemove() ) );
     }
 
+    /* TODO: label channels
     if( m_labelAction == 0 )
     {
         m_labelAction = new PopupDropperAction(
@@ -528,6 +531,7 @@ PodcastView::createChannelActions( QModelIndexList indices )
         );
         connect( m_labelAction, SIGNAL( triggered() ), this, SLOT( slotLabel() ) );
     }
+    */
 
     if( m_configureAction == 0 )
     {
@@ -542,7 +546,7 @@ PodcastView::createChannelActions( QModelIndexList indices )
     }
 
     actions << m_removeAction;
-    actions << m_labelAction;
+//     actions << m_labelAction;
     actions << m_configureAction;
 
     return actions;
