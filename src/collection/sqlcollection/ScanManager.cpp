@@ -162,8 +162,10 @@ ScanManager::isDirInCollection( QString path )
 {
     DEBUG_BLOCK
 
-    if ( path.endsWith( '/' ) )
-        path = path.left( path.length() - 1 );
+    // In the database all directories have a trailing slash, so we must add that
+    if ( !path.endsWith( '/' ) )
+        path += '/';
+
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
