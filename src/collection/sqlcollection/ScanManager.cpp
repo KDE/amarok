@@ -160,8 +160,6 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
-    DEBUG_BLOCK
-
     // In the database all directories have a trailing slash, so we must add that
     if ( !path.endsWith( '/' ) )
         path += '/';
@@ -172,13 +170,6 @@ ScanManager::isDirInCollection( QString path )
     QStringList values =
             m_collection->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
             .arg( QString::number( deviceid ), m_collection->escape( rpath ) ) );
-
-    debug() << "Path : " << path;
-    debug() << "rPath: " << rpath;
-    if( !values.isEmpty() )
-        debug() << "Yes, in collection.";
-    else
-        debug() << "No, not in collection.";
 
     return !values.isEmpty();
 }
