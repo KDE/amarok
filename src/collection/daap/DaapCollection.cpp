@@ -39,6 +39,7 @@ AMAROK_EXPORT_PLUGIN( DaapCollectionFactory )
 
 DaapCollectionFactory::DaapCollectionFactory()
     : CollectionFactory()
+    , m_browser( 0 )
 {
     //nothing to do
 }
