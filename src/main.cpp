@@ -25,7 +25,7 @@
 
 //#define AMAROK_USE_DRKONQI
 
-extern AMAROK_EXPORT class KAboutData aboutData; //defined in app.cpp
+extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
 
 
 int main( int argc, char *argv[] )
@@ -125,6 +125,7 @@ int main( int argc, char *argv[] )
     }
 
     App app;
+    app.setUniqueInstance( startFlag != KUniqueApplication::NonUniqueInstance );
     return app.exec();
 }
 

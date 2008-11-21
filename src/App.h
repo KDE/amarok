@@ -50,6 +50,9 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
         static App *instance() { return static_cast<App*>( kapp ); }
 
+        void setUniqueInstance( bool isUnique ) { m_isUniqueInstance = isUnique; }
+        bool isUniqueInstance() const { return m_isUniqueInstance; }
+
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );
         static void initCliArgs();
@@ -83,6 +86,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     private:
         // ATTRIBUTES ------
+        bool                 m_isUniqueInstance;
         MainWindow          *m_mainWindow;
         Amarok::TrayIcon    *m_tray;
         MediaDeviceManager  *m_mediaDeviceManager;
