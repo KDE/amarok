@@ -21,13 +21,13 @@
 
 #include "ScanManager.h"
 
-#include "amarokconfig.h"
+#include "App.h"
 #include "Debug.h"
 #include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
-
+#include "amarokconfig.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -140,6 +140,7 @@ void ScanManager::startIncrementalScan()
     m_scanner = new AmarokProcess( this );
     *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+    if( pApp->isUniqueInstance() ) *m_scanner << QString::number( QApplication::applicationPid() );
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -378,6 +379,7 @@ ScanManager::restartScanner()
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
+        if( pApp->isUniqueInstance() ) *m_scanner << QString::number( QApplication::applicationPid() );
     }
     *m_scanner << "-s";
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );

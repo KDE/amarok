@@ -49,6 +49,8 @@ int main( int argc, char *argv[] )
     options.add("importplaylists", ki18n( "Import playlist" ));
     options.add("s");
     options.add("restart", ki18n( "Restart the scanner at last position, after a crash" ));
+    options.add("d");
+    options.add("pid", ki18n( "PID of Amarok instance" ));
     options.add("collectionid <argument>", ki18n( "The SqlCollection instance to connect to. Must be set for incremental scans" ));
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
 
@@ -63,9 +65,10 @@ int main( int argc, char *argv[] )
     const bool incremental      = args->isSet( "incremental" );
     const bool importplaylists  = args->isSet( "importplaylists" );
     const bool restart          = args->isSet( "restart" );
+    const QString pid           = args->getOption( "pid " );
     const QString collectionId  = args->getOption( "collectionid" );
 
-    CollectionScanner scanner( folders, collectionId, recursive, incremental, importplaylists, restart );
+    CollectionScanner scanner( folders, pid, collectionId, recursive, incremental, importplaylists, restart );
 
     registerTaglibPlugins();
 

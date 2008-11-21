@@ -69,7 +69,8 @@
 #include <xiphcomment.h>
 
 CollectionScanner::CollectionScanner( const QStringList& folders,
-                                      const QString &collectionId,
+                                      const QString& amarokPid,
+                                      const QString& collectionId,
                                       bool recursive,
                                       bool incremental,
                                       bool importPlaylists,
@@ -87,7 +88,12 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         QFile::remove( m_logfile );
 
     if( !collectionId.isEmpty() )
-        m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + collectionId );
+    {
+        if( amarokPid.isEmpty() )
+            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + collectionId );
+        else
+            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok-" + amarokPid, "/SqlCollection/" + collectionId );
+    }
     else
         m_amarokCollectionInterface = 0;
 
