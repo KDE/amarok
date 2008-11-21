@@ -694,12 +694,18 @@
          <property name="text" >
           <string>&amp;Previous</string>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_next" >
          <property name="text" >
           <string>&amp;Next</string>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::TabFocus</enum>
          </property>
         </widget>
        </item>
