@@ -88,7 +88,7 @@ void Audible::Tag::readTags( FILE *fp )
     // Now parse tag.
 
     fseek(fp, OFF_TAGS, SEEK_SET);
-    char *name, *value;
+    char *name = 0, *value = 0;
 
     m_tagsEndOffset = OFF_TAGS;
 
@@ -116,17 +116,20 @@ void Audible::Tag::readTags( FILE *fp )
         else if(!strcmp(name, "pubdate"))
         {
             m_year = 0;
-            char *p = strrchr(value, '-');
+            
+            char *p = value ? strrchr(value, '-') : 0;
             if(p)
                 m_year = strtol(p+1, NULL, 10);
         }
         else if(!strcmp(name, "user_id"))
         {
-            m_userID = strtol(value, NULL, 10);
+            m_userID = value ? strtol(value, NULL, 10) : -1;
         }
 
         delete[] name;
+        name = 0;
         delete[] value;
+        value = 0;
     }
 
     m_album  =  String("", String::Latin1);
