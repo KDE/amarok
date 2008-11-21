@@ -70,7 +70,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         title = channel->title();
         description = channel->description();
         isChannel = true;
-        icon = KIcon( "amarok_podcast" );
+        icon = KIcon( "podcast-amarok" );
     }
     else if ( pmc->podcastType() == Meta::EpisodeType )
     {
@@ -82,7 +82,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         if( isOnDisk )
             icon = KIcon( "go-down" );
         else
-            icon = KIcon( "amarok_podcast" );
+            icon = KIcon( "podcast-amarok" );
     }
     else
     {

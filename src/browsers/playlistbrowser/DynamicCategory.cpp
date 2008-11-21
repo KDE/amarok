@@ -54,7 +54,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
             //QSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored ) );
 
     m_onoffButton = new QPushButton( this );
-    m_onoffButton->setIcon( KIcon( "amarok_dynamic" ) );
+    m_onoffButton->setIcon( KIcon( "dynamic-amarok" ) );
     m_onoffButton->setText( i18n( "On" ) );
     m_onoffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
     m_onoffButton->setCheckable( true );

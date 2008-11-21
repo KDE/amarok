@@ -45,7 +45,7 @@ CollectionCapabilityIpod::collectionActions( QueryMaker *qm ) {
             // Create action
 
             PopupDropperAction *deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                    "delete", KIcon( "amarok_remove" ), i18n( "&Delete Tracks" ), 0 );
+                    "delete", KIcon( "remove-amarok" ), i18n( "&Delete Tracks" ), 0 );
 
             // Delete action triggered() goes to helper's run query
 

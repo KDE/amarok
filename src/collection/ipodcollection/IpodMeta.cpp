@@ -77,7 +77,7 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
             // Setup the remove action
 
             PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
-                                                                    "delete", KIcon( "amarok_remove" ), i18n( "&Remove from iPod" ), 0 );
+                                                                    "delete", KIcon( "remove-amarok" ), i18n( "&Remove from iPod" ), 0 );
             debug() << "Remove-action created";
 
             IpodCollection *coll = dynamic_cast<IpodCollection*>( m_track->collection() );

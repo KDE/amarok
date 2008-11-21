@@ -106,7 +106,7 @@ void Track::init( int id /* = -1*/ )
     connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );
     m_currentTrackActions.append( loveAction );
 
-    PopupDropperAction * banAction = new PopupDropperAction( KIcon( "amarok_remove" ), i18n( "Last.fm: &Ban" ), this );
+    PopupDropperAction * banAction = new PopupDropperAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );

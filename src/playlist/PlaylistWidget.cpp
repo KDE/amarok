@@ -92,7 +92,7 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
         
         //FIXME this action should go in ActionController, but we don't have any visibility to the view
-        KAction *action = new KAction( KIcon( "amarok_music" ), i18n("Show active track"), this );
+        KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
         connect( action, SIGNAL( triggered( bool ) ), playView, SLOT( scrollToActiveTrack() ) );
         plBar->addAction( action );
 

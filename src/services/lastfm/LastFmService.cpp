@@ -192,7 +192,7 @@ LastFmService::polish()
         m_banButton = new QPushButton();
         m_banButton->setText( i18n( "Ban" ) );
         m_banButton->setObjectName( "banButton" );
-        m_banButton->setIcon( KIcon( "amarok_remove" ) );
+        m_banButton->setIcon( KIcon( "remove-amarok" ) );
         connect( m_banButton, SIGNAL( clicked() ), this, SLOT( ban() ) );
         flowLayout->addWidget( m_banButton );
 
