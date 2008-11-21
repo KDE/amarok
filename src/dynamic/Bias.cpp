@@ -99,8 +99,8 @@ Dynamic::Bias::fromXml( QDomElement e )
         qint64 field = fieldElement.attribute( "value", "0" ).toLongLong();
 
         Dynamic::NormalBias* nbias = new Dynamic::NormalBias();
-        nbias->setField( field );
         nbias->setScale( scale );
+        nbias->setField( field );
         nbias->setValue( mean );
 
         return nbias;
@@ -391,7 +391,8 @@ Dynamic::GlobalBias::updateFinished()
 
 
 Dynamic::NormalBias::NormalBias()
-    : m_mu(0.0)
+    : m_scale(0.0)
+    , m_mu(0.0)
     , m_sigma(0.0)
     , m_field(0)
 {
