@@ -54,6 +54,17 @@ using namespace Meta;
 MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
     : QObject( parent )
     , m_memColl( mc )
+    , m_device( 0 )
+    , m_default_parent_folder( 0 )
+    , m_folders( 0 )
+    , m_folderStructure()
+    , m_format()
+    , m_name()
+    , m_success( false )
+    , m_trackCreated( false )
+    , m_copyFailed( false )
+    , m_isCanceled( false )
+    , m_wait( false )
 {
     DEBUG_BLOCK
 }
@@ -136,9 +147,9 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 {
     DEBUG_BLOCK
 
-    bool success;
+    bool success = false;
 
-    LIBMTP_mtpdevice_t *device;
+    LIBMTP_mtpdevice_t *device = 0;
             // test raw device for connectability
     for(int i = 0; i < numrawdevices; i++)
     {
