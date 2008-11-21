@@ -95,12 +95,28 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         PodcastEpisode()
             : PodcastMetaCommon()
             , Track()
+            , m_channel( 0 )
+            , m_guid()
+            , m_mimeType()
+            , m_pubDate()
+            , m_duration( 0 )
+            , m_fileSize( 0 )
+            , m_sequenceNumber( 0 )
+            , m_isNew( true )
         {}
 
         PodcastEpisode( PodcastChannelPtr channel )
             : PodcastMetaCommon()
             , Track()
-            , m_channel( channel ) {}
+            , m_channel( channel )
+            , m_guid()
+            , m_mimeType()
+            , m_pubDate()
+            , m_duration( 0 )
+            , m_fileSize( 0 )
+            , m_sequenceNumber( 0 )
+            , m_isNew( true )
+        {}
 
         virtual ~PodcastEpisode() {}
 
@@ -204,7 +220,15 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
         PodcastChannel()
             : PodcastMetaCommon()
-            , Playlist() { }
+            , Playlist()
+            , m_image()
+            , m_subscribeDate()
+            , m_copyright()
+            , m_autoScan( false )
+            , m_fetchType( DownloadWhenAvailable )
+            , m_purge( false )
+            , m_purgeCount( 0 )
+        { }
 
         virtual ~PodcastChannel() {}
 
