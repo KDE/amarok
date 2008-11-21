@@ -9,8 +9,9 @@ VERSION 2.0
   CHANGES:
 
   BUGFIXES:
-
-
+    * Focus of text fields no longer lost when changing tracks using the Next/
+      Previous buttons in tag dialog (BR 175524)
+    * Sort Podcasts in the right order.
 
 VERSION 2.0-rc1
   FEATURES:
@@ -37,8 +38,6 @@ VERSION 2.0-rc1
       playlist toolbar.
 
   BUGFIXES:
-    * Focus of text fields no longer lost when changing tracks using the Next/
-      Previous buttons in tag dialog (BR 175524)
     * Last playing track on exit now selected on startup. (BR 168789)
     * Update Collection works now correctly, only scanning the necessary dirs.
       (BR 169602)
