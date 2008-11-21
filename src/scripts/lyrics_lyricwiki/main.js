@@ -24,8 +24,6 @@
 **************************************************************************/
 
 Importer.loadQtBinding( "qt.core" );
-Importer.loadQtBinding( "qt.network" );
-
 
 function onFinished( dat )
 {
