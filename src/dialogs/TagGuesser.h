@@ -30,7 +30,18 @@ class FileNameScheme
     public:
         typedef QList<FileNameScheme> List;
 
-        FileNameScheme() { }
+        FileNameScheme()
+            : m_cod()
+            , m_titleField( 0 )
+            , m_artistField( 0 )
+            , m_albumField( 0 )
+            , m_trackField( 0 )
+            , m_commentField( 0 )
+            , m_yearField( 0 )
+            , m_composerField( 0 )
+            , m_genreField( 0 )
+        { }
+
         FileNameScheme( const QString &s );
 
         bool matches( const QString &s ) const;
