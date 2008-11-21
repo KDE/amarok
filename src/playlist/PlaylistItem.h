@@ -38,7 +38,7 @@ namespace Playlist
                 Played
             };
 
-            Item() { }
+            Item() : m_track( 0 ), m_state( Invalid ), m_id( 0 ) { }
             Item( Meta::TrackPtr track );
             ~Item();
             Meta::TrackPtr track() const { return m_track; }
@@ -57,7 +57,6 @@ namespace Playlist
             State          m_state;
             quint64        m_id;
     };
-
 }
 
 Q_DECLARE_METATYPE( Playlist::Item* )
