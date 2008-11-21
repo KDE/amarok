@@ -29,8 +29,11 @@ class ASF::Attribute::AttributePrivate : public RefCounter
 {
 public:
   AttributePrivate()
-    : stream(0),
-      language(0) {}
+    : type(UnicodeType)
+    , stringValue()
+    , byteVectorValue()
+    , stream(0)
+    , language(0) {}
   AttributeTypes type;
   String stringValue;
   ByteVector byteVectorValue;
