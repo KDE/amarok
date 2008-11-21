@@ -140,7 +140,7 @@ void ScanManager::startIncrementalScan()
     m_scanner = new AmarokProcess( this );
     *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-    if( pApp->isUniqueInstance() ) *m_scanner << QString::number( QApplication::applicationPid() );
+    if( pApp->isUniqueInstance() ) *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -161,8 +161,6 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
-    DEBUG_BLOCK
-
     // In the database all directories have a trailing slash, so we must add that
     if ( !path.endsWith( '/' ) )
         path += '/';
@@ -381,7 +379,7 @@ ScanManager::restartScanner()
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
-        if( pApp->isUniqueInstance() ) *m_scanner << QString::number( QApplication::applicationPid() );
+        if( pApp->isUniqueInstance() ) *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     }
     *m_scanner << "-s";
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );

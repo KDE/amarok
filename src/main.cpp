@@ -125,7 +125,7 @@ int main( int argc, char *argv[] )
     }
 
     App app;
-    app.setUniqueInstance( startFlag != KUniqueApplication::NonUniqueInstance );
+    app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );
     return app.exec();
 }
 
