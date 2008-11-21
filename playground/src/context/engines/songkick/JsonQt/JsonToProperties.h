@@ -16,9 +16,8 @@
 #ifndef _JSONQT_JSON_TO_PROPERTIES_H
 #define _JSONQT_JSON_TO_PROPERTIES_H
 
-#include "JsonQtExport.h"
-
 #include "ParseException.h"
+#include "JsonQtExport.h"
 
 #include <QObject>
 #include <QString>

@@ -32,7 +32,7 @@ namespace JsonQt
 			case QVariant::List:
 				return parseList(value.toList());
 			case QVariant::String:
-				return QString("\"%1\"").arg(value.toString().replace("\"", "\\\"")).replace("\n", "\\n").replace("\t", "\\t");
+				return QString("\"%1\"").arg(value.toString().replace("\\", "\\\\").replace("\"", "\\\""));
 			case QVariant::Invalid:
 				return "null";
 			default:

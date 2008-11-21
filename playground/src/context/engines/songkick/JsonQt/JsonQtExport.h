@@ -14,20 +14,11 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef JSONQT_EXPORT_H
-#define JSONQT_EXPORT_H
+#ifndef _JSONQT_EXPORT_H
+#define _JSONQT_EXPORT_H
 
-#include <qglobal.h>
+#include <QtGlobal>
 
-#ifdef Q_WS_WIN
-# if defined(MAKE_JSONQT_LIB)
-#  define JSONQT_EXPORT Q_DECL_EXPORT
-# else
-#  define JSONQT_EXPORT Q_DECL_IMPORT
-# endif
-#else
-# define JSONQT_EXPORT Q_DECL_EXPORT
-#endif
+#define JSONQT_EXPORT Q_DECL_EXPORT
 
 #endif
-
