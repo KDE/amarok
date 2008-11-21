@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <sys/time.h>
+#include <cerrno>
 
 #include "amarok_export.h"
 
@@ -206,10 +207,13 @@ namespace Debug
         Block( const char *label )
                 : m_label( label )
         {
+            if ( gettimeofday( &m_start, 0 ) == -1 )
+                dbgstream() << "amarok: Block - gettimeofday failed with "
+                            << strerror(errno);
+
             if( !debugEnabled() ) return;
 
             mutex.lock();
-            gettimeofday( &m_start, 0 );
 
             dbgstream() << "amarok: BEGIN:" << label;
             Debug::modifieableIndent() += "  ";
