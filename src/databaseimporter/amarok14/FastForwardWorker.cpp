@@ -34,6 +34,12 @@ FastForwardWorker::FastForwardWorker()
     : ThreadWeaver::Job()
     , m_aborted( false )
     , m_failed( false )
+    , m_driver( FastForwardImporter::SQLite )
+    , m_databaseLocation()
+    , m_database()
+    , m_hostname()
+    , m_username()
+    , m_password()
     , m_importArtwork( false )
 {
 }
