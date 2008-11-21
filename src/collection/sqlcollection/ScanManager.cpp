@@ -161,6 +161,8 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
+    DEBUG_BLOCK
+
     // In the database all directories have a trailing slash, so we must add that
     if ( !path.endsWith( '/' ) )
         path += '/';
