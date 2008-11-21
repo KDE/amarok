@@ -191,9 +191,11 @@ void SqlPlaylist::loadTracks()
 
                 MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
 
-                streamTrack->setTitle( row[3] );
-                streamTrack->setAlbum( row[4] );
-                streamTrack->setArtist( row[5] );
+                if ( streamTrack ) {
+                    streamTrack->setTitle( row[3] );
+                    streamTrack->setAlbum( row[4] );
+                    streamTrack->setArtist( row[5] );
+                }
 
             }
 
