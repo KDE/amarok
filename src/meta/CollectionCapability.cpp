@@ -25,13 +25,13 @@
 #include "QueryMaker.h"
 
 Meta::CollectionCapabilityHelper::CollectionCapabilityHelper( QueryMaker *qm )
-    :  QObject(), m_querymaker ( qm )
+    :  QObject(), m_tracklist( 0 ), m_querymaker ( qm )
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK
 }
 
 Meta::CollectionCapabilityHelper::CollectionCapabilityHelper( TrackList *tracklist )
-    : QObject(), m_tracklist ( tracklist ) {}
+    : QObject(), m_tracklist ( tracklist ), m_querymaker( 0 ) {}
 
 Meta::CollectionCapabilityHelper::~CollectionCapabilityHelper()
 {
