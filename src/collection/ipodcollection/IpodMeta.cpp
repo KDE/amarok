@@ -144,17 +144,23 @@ IpodTrack::IpodTrack( IpodCollection *collection )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
+    , m_ipodtrack( 0 )
+    , m_image()
+    , m_comment()
     , m_name()
-    , m_type( QString() )
+    , m_type()
+    , m_bitrate( 0 )
+    , m_filesize( 0 )
     , m_length( 0 )
+    , m_discNumber( 0 )
+    , m_samplerate( 0 )
     , m_trackNumber( 0 )
+    , m_bpm( 0 )
     , m_displayUrl()
     , m_playableUrl()
 {
   //QString url = QString( "ipod://%1:%2/%3/%4.%5" )
   //                .arg( host, QString::number( port ), dbId, itemId, format );
-    m_displayUrl = QString();
-    m_playableUrl = QString();
 }
 
 IpodTrack::~IpodTrack()
@@ -803,6 +809,8 @@ IpodAlbum::IpodAlbum( const QString &name )
     , m_name( name )
     , m_tracks()
     , m_isCompilation( false )
+    , m_hasCover( false )
+    , m_image()
     , m_albumArtist( 0 )
 {
     //nothing to do

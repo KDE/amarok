@@ -140,8 +140,9 @@ struct PodcastInfo
         bool             m_trackCreated;
         bool             m_success;
 
+        // XXX - Not currently implemented in the class
         // podcasts
-        Itdb_Playlist*    m_podcastPlaylist;
+//        Itdb_Playlist*    m_podcastPlaylist;
 
         bool              m_isShuffle;
         bool              m_isMobile;
@@ -158,7 +159,8 @@ struct PodcastInfo
 
         bool              m_dbChanged;
 
-        QFile            *m_lockFile;
+        // XXX - Not currently implemented in the class
+//        QFile            *m_lockFile;
 
         // KIO-related Vars
 

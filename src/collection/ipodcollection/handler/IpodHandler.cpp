@@ -54,7 +54,24 @@ using namespace Meta;
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject *parent )
     : QObject( parent )
     , m_memColl( mc )
+    , m_device( 0 )
+    , m_masterPlaylist( 0 )
+    , m_tempdir( new KTempDir() )
+    , m_trackCreated( false )
+    , m_isShuffle( false )
+    , m_isMobile( false )
+    , m_isIPhone( false )
+    , m_supportsArtwork( false )
+    , m_supportsVideo( false )
+    , m_rockboxFirmware( false )
+    , m_needsFirewireGuid( false )
+    , m_autoConnect( false )
     , m_mountPoint( mountPoint )
+    , m_name()
+    , m_dbChanged( false )
+    , m_copyFailed( false )
+    , m_isCanceled( false )
+    , m_wait( false )
 {
     DEBUG_BLOCK
 
@@ -87,7 +104,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
         detectModel(); // get relevant info about device
 
         // set tempdir up
-        m_tempdir = new KTempDir();
         m_tempdir->setAutoRemove( true );
         qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
@@ -98,6 +114,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 IpodHandler::~IpodHandler()
 {
     DEBUG_BLOCK
+    delete m_tempdir;
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
