@@ -642,12 +642,14 @@ ServiceAlbum::ServiceAlbum(const QStringList & resultRow)
     , ServiceDisplayInfoProvider()
     , CustomActionsProvider()
     , SourceInfoProvider()
+    , m_id( resultRow[0].toInt() )
+    , m_name( resultRow[1] )
+    , m_isCompilation( false )
+    , m_albumArtist( 0 )
+    , m_description( resultRow[2] )
+    , m_artistId( resultRow[3].toInt() )
+    , m_artistName()
 {
-    m_id = resultRow[0].toInt();
-    m_name = resultRow[1];
-    m_description = resultRow[2];
-    m_artistId = resultRow[3].toInt();
-    //m_artistName = resultRow[4];
 }
 
 ServiceAlbum::~ServiceAlbum()
@@ -777,6 +779,7 @@ ServiceGenre::ServiceGenre( const QString &name )
     , CustomActionsProvider()
     , SourceInfoProvider()
     , m_id( 0 )
+    , m_albumId( 0 )
     , m_name( name )
     , m_tracks()
 {
@@ -789,9 +792,10 @@ ServiceGenre::ServiceGenre(const QStringList & row)
     , CustomActionsProvider()
     , SourceInfoProvider()
     , m_id( 0 )
+    , m_albumId( 0 )
+    , m_name( row[1] )
     , m_tracks()
 {
-    m_name = row[1];
 }
 
 ServiceGenre::~ServiceGenre()
