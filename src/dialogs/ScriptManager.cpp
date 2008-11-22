@@ -452,7 +452,7 @@ ScriptManager::slotRunScript( QString name, bool silent )
         m_scripts[name].engine->clearExceptions();
         slotStopScript( name );
         if ( !silent )
-            KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) );
+            KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) + " (" + name + ")" );
         else
             return false;
     }
