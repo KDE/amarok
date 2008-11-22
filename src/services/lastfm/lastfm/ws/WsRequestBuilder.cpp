@@ -28,6 +28,7 @@ WsAccessManager* WsRequestBuilder::nam = 0;
 
 
 WsRequestBuilder::WsRequestBuilder( const QString& method )
+    : request_method( GET )
 {
     if (!nam) nam = new WsAccessManager( qApp );
     
