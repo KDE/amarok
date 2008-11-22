@@ -72,7 +72,6 @@ KConfigGroup Mp3tunesServiceFactory::config()
 bool
 Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
 {
-    DEBUG_BLOCK
     QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     int matches = rx.indexIn( url.url() );
     if( matches == -1 ) {

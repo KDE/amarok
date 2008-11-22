@@ -9,9 +9,12 @@ VERSION 2.0
   CHANGES:
 
   BUGFIXES:
+    * Fixed potential issues with malformed XML breaking the collection scan.
+      (BR 170408)
     * Focus of text fields no longer lost when changing tracks using the Next/
       Previous buttons in tag dialog (BR 175524)
     * Sort Podcasts in the right order.
+
 
 VERSION 2.0-rc1
   FEATURES:
