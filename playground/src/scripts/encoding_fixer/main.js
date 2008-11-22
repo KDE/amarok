@@ -1,6 +1,6 @@
 /**************************************************************************
 *   Encoding Fixer Script for Amarok 2.0                                  *
-*   Last Modified:  21/11/2008                                            *
+*   Last Modified:  22/11/2008                                            *
 *                                                                         *
 *   Copyright                                                             *
 *   (C) 2008 Peter ZHOU  <peterzhoulei@gmail.com>                         *
@@ -161,31 +161,102 @@ var urlInfo = new Array (
 
 function doubleChecker()
 {
-    //checking gb18030
     this.title = Amarok.Engine.currentTrack().title;
-    this.gb18030url = urlGenerator( this.title, this.urlInfo[0] );
-    this.gb18030d = new Downloader( this.gb18030url, checkGB18030, urlInfo[0].webencoding );
+    //checking gb18030
+    if ( simpleChinese_Module )
+    {
+        this.gb18030url = urlGenerator( this.title, this.urlInfo[0] );
+        this.gb18030d = new Downloader( this.gb18030url, checkGB18030, urlInfo[0].webencoding );
+    }
     //checking big5
-    this.big5url = urlGenerator( this.title, this.urlInfo[1] );
-    this.big5d = new Downloader( this.big5url, checkBig5, urlInfo[1].webencoding );
+    if ( triditionalChinese_Module )
+    {
+        this.big5url = urlGenerator( this.title, this.urlInfo[1] );
+        this.big5d = new Downloader( this.big5url, checkBig5, urlInfo[1].webencoding );
+    }
     //checking KOI8-R
-    this.koi8rurl = urlGenerator( this.title, this.urlInfo[2] );
-    this.koi8rd = new Downloader( this.koi8rurl, checkKOI8R, urlInfo[2].webencoding );
-
-//Amarok.Script.writeConfig( "test", "123" );
-//Amarok.debug( "configuation test: " + Amarok.Script.readConfig( "test", "no return" ) );
+    if ( Russian_Module )
+    {
+        this.koi8rurl = urlGenerator( this.title, this.urlInfo[2] );
+        this.koi8rd = new Downloader( this.koi8rurl, checkKOI8R, urlInfo[2].webencoding );
+    }
 }
 
-function onConfiguration()
+function saveConfiguration()
+{
+//Pretty messy :S
+    if ( mainWindow.children()[1].children()[1].checked )
+    {
+        Amarok.Script.writeConfig( "simple_Chinese", "true" );
+        simpleChinese_Module = true;
+    }
+    else
+    {
+        Amarok.Script.writeConfig( "simple_Chinese", "false" );
+        simpleChinese_Module = false;
+    }
+    if ( mainWindow.children()[1].children()[2].checked )
+    {
+        Amarok.Script.writeConfig( "triditional_Chinese", "true" );
+        triditionalChinese_Module = true;
+    }
+    else
+    {
+        Amarok.Script.writeConfig( "triditional_Chinese", "false" );
+        triditionalChinese_Module = false;
+    }
+    if ( mainWindow.children()[1].children()[3].checked )
+    {
+        Amarok.Script.writeConfig( "Russian", "true" );
+        Russian_Module = true;
+    }
+    else
+    {
+        Amarok.Script.writeConfig( "Russian", "false" );
+        Russian_Module = false;
+    }
+}
+
+function readConfiguration()
+{
+    if ( Amarok.Script.readConfig( "simple_Chinese", "false" ) == "false" )
+        mainWindow.children()[1].children()[1].checked = false;
+    else
+        mainWindow.children()[1].children()[1].checked = true;
+    if ( Amarok.Script.readConfig( "triditional_Chinese", "false" ) == "false" )
+        mainWindow.children()[1].children()[2].checked = false;
+    else
+        mainWindow.children()[1].children()[2].checked = true;
+    if ( Amarok.Script.readConfig( "Russian", "false" ) == "false" )
+        mainWindow.children()[1].children()[3].checked = false;
+    else
+        mainWindow.children()[1].children()[3].checked = true;
+}
+
+function onConfigure()
+{
+    mainWindow.show();
+}
+
+function init()
 {
     try
     {
         var UIloader = new QUiLoader( this );
         var uifile = new QFile ( Amarok.Info.scriptPath() + "/main.ui" );
         uifile.open( QIODevice.ReadOnly );
-        var myWidget = UIloader.load( uifile, this);
+        mainWindow = UIloader.load( uifile, this);
         uifile.close();
-        myWidget.show();
+        readConfiguration();
+        mainWindow.children()[0].accepted.connect( saveConfiguration );
+        mainWindow.children()[0].rejected.connect( readConfiguration );
+
+        Amarok.Window.addToolsSeparator();
+        Amarok.Window.addToolsMenu( "checkencoding", "Check Encodings" );
+        Amarok.Window.addSettingsSeparator();
+        Amarok.Window.addSettingsMenu( "configencoding", "Encoding Fixer Settings..." );
+        Amarok.Window.ToolsMenu.checkencoding.triggered.connect( doubleChecker );
+        Amarok.Window.SettingsMenu.configencoding.triggered.connect( onConfigure );
     }
     catch( err )
     {
@@ -193,9 +264,7 @@ function onConfiguration()
     }
 }
 
-Amarok.Window.addToolsSeparator();
-Amarok.Window.addToolsMenu( "checkencoding", "Check Encodings" );
-Amarok.Window.addSettingsSeparator();
-Amarok.Window.addSettingsMenu( "configencoding", "Encoding Fixer Settings..." );
-Amarok.Window.ToolsMenu.checkencoding.triggered.connect( doubleChecker );
-Amarok.Window.SettingsMenu.configencoding.triggered.connect( onConfiguration );
+var simpleChinese_Module = false;
+var triditionalChinese_Module = false;
+var Russian_Module = false;
+init();

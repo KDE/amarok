@@ -39,21 +39,21 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2" >
     <item>
-     <widget class="QCheckBox" name="checkBox" >
+     <widget class="QCheckBox" name="checkBox_SChineseModule" >
       <property name="text" >
        <string>Simple Chinese (GB18030, GB2312, GBK)</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="checkBox_2" >
+     <widget class="QCheckBox" name="checkBox_TChineseModule" >
       <property name="text" >
        <string>Triditional Chinese (Big5, BIG5-HKSCS)</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="checkBox_3" >
+     <widget class="QCheckBox" name="checkBox_RussianModule" >
       <property name="text" >
        <string>Russian (KOI8-R)</string>
       </property>
@@ -78,7 +78,7 @@
     </font>
    </property>
    <property name="text" >
-    <string>Please Enable the modules you need:</string>
+    <string>Please enable the modules you need:</string>
    </property>
   </widget>
  </widget>
