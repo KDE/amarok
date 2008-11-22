@@ -28,7 +28,8 @@ class KJob;
 class JobInfo
 {
   public:
-    JobInfo() { } //for QMap
+    JobInfo()
+      : m_asin(), m_locale(), m_detailUrl(), m_last( false ) { } //for QMap
     JobInfo(const QString& asin, const QString& locale, bool last) :
       m_asin(asin), m_locale(locale), m_last(last) { }
     QString m_asin;
