@@ -38,28 +38,12 @@ function configure()
     print ("Seeqpod onConfigure");
     uid = "";
 
-    var configDir = Amarok.Info.scriptConfigPath( "seeqpod_service" );
-    /*var dialog = new QWidget( 0 );
-    dialog.show();*/
 
     uid = QInputDialog.getText( 0, "Seeqpod Script", "Please enter your uid", QLineEdit.Normal, "", 0 );
 
     if ( uid != "" ) {
         Amarok.debug ("got " + uid );
-        var file = new QFile( configDir + "seeqpodrc" );
-        if ( file.open( QIODevice.OpenMode( QIODevice.WriteOnly, QIODevice.Text ) ) ) {
-            Amarok.debug ("Open!" );
-            ba = new QByteArray();
-            ba.append( uid ); //if we dont do like this, the array is just empty...
-            file.write( ba );
-        } 
-        else 
-        {
-            Amarok.debug ("_NOT_ Open!" );
-        }
-
-        file.close();
-
+        Amarok.Script.writeConfig( "uid", uid );
     }
     
 }
@@ -97,27 +81,9 @@ function readConfig()
 {
     print ("Seeqpod readConfig");
 
-    uid = "";
-    var configDir = Amarok.Info.scriptConfigPath( "seeqpod_service" );
-    var file = new QFile( configDir + "seeqpodrc" );
-    if ( file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) ) ) 
-    {
-
-        while ( !file.atEnd() ) 
-        {
-            uid += file.readLine().toString();
-        }
-
-        Amarok.debug ("read " + uid + " from config!" );
-        file.close();
-
-    } 
-    else 
-    {
-
+    uid = Amarok.Script.readConfig( "uid", "" );
+    if ( uid == "" )
 	configure();
-    }
-
 }
 
 
@@ -278,7 +244,6 @@ bookElements = new QDomNodeList;
 html = "";
 uid = "";
 
-Amarok.configured.connect( onConfigure );
 script = new Seeqpod();
 script.populate.connect( onPopulate );
 
