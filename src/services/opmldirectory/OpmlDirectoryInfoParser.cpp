@@ -31,6 +31,7 @@ using namespace Meta;
 
 OpmlDirectoryInfoParser::OpmlDirectoryInfoParser()
  : InfoParserBase()
+ , m_rssDownloadJob( 0 )
 {
 }
 
@@ -57,7 +58,7 @@ void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
 
     OpmlDirectoryFeed * feed = dynamic_cast<OpmlDirectoryFeed *>( track.data() );
 
-    if ( feed == 0) return;
+    if ( !feed ) return;
 
     debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->uidUrl();
 
@@ -69,7 +70,7 @@ void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
 void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
 {
 
-    if ( !downLoadJob->error() == 0 )
+    if ( downLoadJob->error() )
     {
         //TODO: error handling here
         return ;
