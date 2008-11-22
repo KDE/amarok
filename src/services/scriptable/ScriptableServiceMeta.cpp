@@ -188,12 +188,14 @@ ScriptableServiceAlbum::ScriptableServiceAlbum( const QStringList & resultRow )
 /* ScriptableServiceArtist */
 ScriptableServiceArtist::ScriptableServiceArtist( const QString & name )
     : ServiceArtist( name )
-        , ScriptableServiceMetaItem( 2 )
+    , ScriptableServiceMetaItem( 2 )
+    , m_genreId( 0 )
 {}
 
 ScriptableServiceArtist::ScriptableServiceArtist( const QStringList & resultRow )
     : ServiceArtist( resultRow )
     , ScriptableServiceMetaItem( 2 )
+    , m_genreId( 0 )
 {}
 
 void Meta::ScriptableServiceArtist::setGenreId(int genreId)
