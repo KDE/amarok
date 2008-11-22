@@ -35,6 +35,8 @@
 #include <tfile.h>
 #include <taglib/id3v1tag.h>
 
+#include <string.h>
+
 namespace TagLib
 {
    namespace RealMedia
@@ -85,6 +87,7 @@ namespace TagLib
 
       struct File_Header_Start
       {
+         File_Header_Start() : object_id(0), size(0) {}
          RealMedia::UINT32    object_id;
          RealMedia::UINT32    size;
       };
@@ -119,7 +122,9 @@ namespace TagLib
 
       struct NameValueProperty
       {
-         NameValueProperty() : name(0), value_data(0) {}
+         NameValueProperty()
+             : size(0), object_version(0), name_length(0), name(0), type(0)
+             , value_length(0), value_data(0) {}
          virtual ~NameValueProperty() { delete [] name; delete [] value_data; }
 
          RealMedia::UINT32   size;
@@ -135,7 +140,11 @@ namespace TagLib
 
       struct LogicalStream
       {
-         LogicalStream() : physical_stream_numbers(0), data_offsets(0), rule_to_physical_stream_number_map(0), properties(0) {}
+         LogicalStream()
+             : size(0), object_version(0), num_physical_streams(0)
+             , physical_stream_numbers(0), data_offsets(0), num_rules(0)
+             , rule_to_physical_stream_number_map(0), num_properties(0)
+             , properties(0) {}
          virtual ~LogicalStream()
             { delete [] physical_stream_numbers; delete [] data_offsets;
             delete [] rule_to_physical_stream_number_map; delete [] properties; }
@@ -154,7 +163,12 @@ namespace TagLib
 
       struct MediaProperties : public Collectable
       {
-         MediaProperties() : type_specific_data(0), lstr(0) {}
+         MediaProperties()
+             : object_version(0), stream_number(0), max_bit_rate(0)
+             , avg_bit_rate(0), max_packet_size(0), avg_packet_size(0)
+             , start_time(0), preroll(0), duration(0), stream_name_size(0)
+             , mime_type_size(0), type_specific_len(0), type_specific_data(0)
+             , lstr(0) { memset(stream_name, 0, 256); memset(mime_type, 0, 256); }
          virtual ~MediaProperties() { delete lstr; delete [] type_specific_data;  }
 
          File_Header_Start s;
@@ -181,7 +195,10 @@ namespace TagLib
 
       struct ContentDescription : public Collectable
       {
-         ContentDescription() : title(0), author(0), copyright(0), comment(0) {}
+         ContentDescription()
+             : object_version(0), title_len(0), title(0), author_len(0)
+             , author(0), copyright_len(0), copyright(0), comment_len(0)
+             , comment(0) {}
          virtual ~ContentDescription() { delete [] title; delete [] author; delete [] copyright; delete [] comment; }
 
          File_Header_Start s;
@@ -206,7 +223,10 @@ namespace TagLib
 
       struct MDProperties
       {
-         MDProperties() : name(0), value(0), subproperties(0) {}
+         MDProperties()
+             : size(0), type(0), flags(0), value_offset(0)
+             , subproperties_offset(0), num_subproperties(0), name_length(0)
+             , name(0), value_length(0), value(0), subproperties_list(0), subproperties(0) {}
          virtual ~MDProperties()
             { delete [] name; delete [] value; delete [] subproperties_list; delete [] subproperties; }
 
