@@ -25,8 +25,7 @@
 #include <QRadioButton>
 #include <QSpinBox>
 
-PodcastSettingsDialog::PodcastSettingsDialog(
-        Meta::PodcastChannelPtr channel, QWidget* parent )
+PodcastSettingsDialog::PodcastSettingsDialog( Meta::PodcastChannelPtr channel, QWidget* parent )
     : KDialog( parent )
     , m_ps( new Ui::PodcastSettingsBase() )
     , m_channel( channel )
@@ -90,10 +89,8 @@ PodcastSettingsDialog::hasChanged()
 {
     bool fetchTypeChanged = true;
 
-    if( m_ps->m_streamRadio->isChecked() && m_channel->fetchType() ==
-            Meta::PodcastChannel::StreamOrDownloadOnDemand ||
-        m_ps->m_downloadRadio->isChecked() && m_channel->fetchType() ==
-            Meta::PodcastChannel::DownloadWhenAvailable )
+    if( ( m_ps->m_streamRadio->isChecked() && m_channel->fetchType() == Meta::PodcastChannel::StreamOrDownloadOnDemand ) ||
+        ( m_ps->m_downloadRadio->isChecked() && m_channel->fetchType() == Meta::PodcastChannel::DownloadWhenAvailable ) )
     {
         fetchTypeChanged = false;
     }
