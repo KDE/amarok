@@ -34,8 +34,7 @@ QByteArray.prototype.toString = function()
 function Librivox()
 {
 
-    var currentDir = Amarok.Info.scriptPath();
-    currentDir = currentDir.slice(0, -7)
+    var currentDir = Amarok.Info.scriptPath() + "/";
 
     var file = new QFile( currentDir + "LibrivoxService.html" );
     file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) );
