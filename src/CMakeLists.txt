@@ -336,6 +336,7 @@ set(dbus_SRCS
 set(scriptengine_SRCS
     scriptengine/AmarokScript.cpp
     scriptengine/AmarokCollectionScript.cpp
+    scriptengine/AmarokScriptConfig.cpp
     scriptengine/AmarokInfoScript.cpp
     scriptengine/AmarokNetworkScript.cpp
     scriptengine/AmarokScriptableServiceScript.cpp

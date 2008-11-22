@@ -36,6 +36,7 @@
 #include "amarokconfig.h"
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
+#include "scriptengine/AmarokScriptConfig.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokInfoScript.h"
 #include "scriptengine/AmarokLyricsScript.h"
@@ -142,13 +143,14 @@ ScriptManager::ScriptManager( QWidget* parent )
     connect( gui.installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( gui.retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
     connect( gui.uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
+    connect( gui.okButton,        SIGNAL( clicked() ), SLOT( reject() ) );
     connect( m_scriptSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
     connect( m_scriptSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
 
     gui.installButton  ->setIcon( KIcon( "folder-amarok" ) );
     gui.retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     gui.uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
-
+    gui.okButton       ->setIcon( KIcon( "dialog-ok" ) );
     // Center the dialog in the middle of the mainwindow
     const int x = parentWidget()->width() / 2 - sizeHint().width() / 2;
     const int y = parentWidget()->height() / 2 - sizeHint().height() / 2;
@@ -286,6 +288,7 @@ ScriptManager::findScripts() //SLOT
     m_scriptSelector->addScripts( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
     m_scriptSelector->addScripts( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
     m_scriptSelector->addScripts( ServiceInfoList, KPluginSelector::ReadConfigFile, "Scriptable Service" );
+
     // Handle auto-run:
     slotConfigChanged( true );
 }
@@ -553,6 +556,7 @@ ScriptManager::loadScript( const QString& path )
             if ( ( item.info.name() == "" ) || ( item.info.version() == "" ) || ( item.info.category() == "" ) ) return false;
             if ( m_scripts.contains( item.info.name() ) ) return false; //check if script is already loaded...
             debug() << "script info:" << item.info.name() << " " << item.info.version() << " " << item.info.category();
+            item.info.setConfig( KGlobal::config()->group( item.info.name() ) );
             item.url = url;
             item.running = false;
             //FIXME: non english name will cause the crash
@@ -586,6 +590,10 @@ ScriptManager::startScriptEngine( QString name )
     scriptEngine->globalObject().setProperty( "Amarok", m_global );
     m_scripts[name].wrapperList.append( m_scripts[name].globalPtr );
 
+    objectPtr = new AmarokScript::AmarokScriptConfig( name );
+    scriptObject = scriptEngine->newQObject( objectPtr );
+    m_global.setProperty( "Script", scriptObject );
+    m_scripts[name].wrapperList.append( objectPtr );
     
     objectPtr = new InfoScript( m_scripts[name].url );
     QScriptValue infoContext = scriptEngine->newQObject( objectPtr );
@@ -639,7 +647,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Network", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
-
+    
     objectPtr = new Downloader( scriptEngine );
     m_scripts[name].wrapperList.append( objectPtr );
 
