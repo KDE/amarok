@@ -144,6 +144,7 @@ void LongMessageWidget::timerEvent( QTimerEvent* )
 
 CountdownFrame::CountdownFrame( QWidget * parent )
         : QFrame( parent )
+        , m_filled(0.0)
 {}
 
 void CountdownFrame::setFilledRatio( float filled )
