@@ -33,7 +33,7 @@ QByteArray.prototype.toString = function()
     return ts.readAll();
 }
 
-function onConfigure()
+function configure()
 {
     print ("Seeqpod onConfigure");
     uid = "";
@@ -115,7 +115,7 @@ function readConfig()
     else 
     {
 
-	onConfigure();
+	configure();
     }
 
 }
