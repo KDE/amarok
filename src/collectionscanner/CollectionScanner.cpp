@@ -701,7 +701,7 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )
         {
-            if( !data[i].isPrint() )
+            if( !data[i].isPrint() || ( data[i].category() == QChar::NoCategory ) )
             {
                 nonPrint = true;
                 break;
