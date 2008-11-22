@@ -68,7 +68,8 @@ private:
     Strigi::AnalysisResult* analysisResult;
     const AudibleThroughAnalyzerFactory* factory;
 public:
-    AudibleThroughAnalyzer(const AudibleThroughAnalyzerFactory* f) :factory(f) {}
+    AudibleThroughAnalyzer(const AudibleThroughAnalyzerFactory* f)
+        : analysisResult(0), factory(f) {}
     ~AudibleThroughAnalyzer() {}
     const char *name() const { return "Audible"; }
     void setIndexable(Strigi::AnalysisResult* i) {
