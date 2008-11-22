@@ -20,6 +20,17 @@
 #include "Mp3tunesHarmonyDownload.h"
 
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload()
+    : m_fileKey()
+    , m_fileName()
+    , m_fileFormat()
+    , m_fileSize( 0 )
+    , m_artistName()
+    , m_albumTitle()
+    , m_trackTitle()
+    , m_trackNumber( 0 )
+    , m_deviceBitrate()
+    , m_fileBitrate()
+    , m_url()
 {}
 
 Mp3tunesHarmonyDownload::Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download )

@@ -23,15 +23,19 @@
 ////////////////////////////////////////////////////////////////////////
 //ARTIST
 Mp3tunesLockerArtist::Mp3tunesLockerArtist(  mp3tunes_locker_artist_t *artist )
+    : m_artistId( 0 )
+    , m_artistName()
+    , m_artistSize( 0 )
+    , m_albumCount( 0 )
+    , m_trackCount( 0 )
 {
-    if(artist)
-    {
-        m_artistId = artist->artistId;
-        m_artistName = artist->artistName;
-        m_artistSize = artist->artistSize;
-        m_albumCount = artist->albumCount;
-        m_trackCount = artist->trackCount;
-    }
+    if( !artist ) return;
+
+    m_artistId = artist->artistId;
+    m_artistName = artist->artistName;
+    m_artistSize = artist->artistSize;
+    m_albumCount = artist->albumCount;
+    m_trackCount = artist->trackCount;
 }
 
 Mp3tunesLockerArtist::~Mp3tunesLockerArtist()
@@ -64,17 +68,23 @@ int Mp3tunesLockerArtist::trackCount() const
 ////////////////////////////////////////////////////////////////////////
 //ALBUM
 Mp3tunesLockerAlbum::Mp3tunesLockerAlbum(  mp3tunes_locker_album_t *album )
+    : m_albumId( 0 )
+    , m_albumTitle()
+    , m_artistId( 0 )
+    , m_artistName()
+    , m_trackCount( 0 )
+    , m_albumSize( 0 )
+    , m_hasArt( false )
 {
-    if(album)
-    {
-        m_albumId = album->albumId;
-        m_albumTitle = album->albumTitle;
-        m_artistId = album->artistId;
-        m_artistName = album->artistName;
-        m_trackCount = album->trackCount;
-        m_albumSize = album->albumSize;
-        m_hasArt = album->hasArt;
-    }
+    if( !album ) return;
+
+    m_albumId = album->albumId;
+    m_albumTitle = album->albumTitle;
+    m_artistId = album->artistId;
+    m_artistName = album->artistName;
+    m_trackCount = album->trackCount;
+    m_albumSize = album->albumSize;
+    m_hasArt = album->hasArt;
 }
 
 Mp3tunesLockerAlbum::~Mp3tunesLockerAlbum()
@@ -117,25 +127,37 @@ bool Mp3tunesLockerAlbum::hasArt() const
 ////////////////////////////////////////////////////////////////////////
 //TRACK
 Mp3tunesLockerTrack::Mp3tunesLockerTrack(  mp3tunes_locker_track_t *track )
+    : m_trackId( 0 )
+    , m_trackTitle()
+    , m_trackNumber( 0 )
+    , m_trackLength( 0.0 )
+    , m_trackFileName()
+    , m_trackFileKey()
+    , m_trackFileSize( 0 )
+    , m_downloadUrl()
+    , m_playUrl()
+    , m_albumId( 0 )
+    , m_albumTitle()
+    , m_albumYear( 0 )
+    , m_artistName()
+    , m_artistId( 0 )
 {
-//int m_trackId;
-         m_trackTitle = track->trackTitle;
-         m_trackNumber = track->trackNumber;
-         m_trackLength = track->trackLength;
-         m_trackFileName = track->trackFileName;
-         m_trackFileKey = track->trackFileKey;
-         m_trackFileSize = track->trackFileSize;
-         m_downloadUrl = track->downloadURL;
-         m_playUrl = track->playURL;
-         m_albumId = track->albumId;
-         m_albumTitle = track->albumTitle;
-         m_albumYear = track->albumYear;
-         m_artistName = track->artistName;
-         m_artistId = track->artistId;
-}
+    if ( !track ) return;
 
-Mp3tunesLockerTrack::Mp3tunesLockerTrack()
-{}
+    m_trackTitle = track->trackTitle;
+    m_trackNumber = track->trackNumber;
+    m_trackLength = track->trackLength;
+    m_trackFileName = track->trackFileName;
+    m_trackFileKey = track->trackFileKey;
+    m_trackFileSize = track->trackFileSize;
+    m_downloadUrl = track->downloadURL;
+    m_playUrl = track->playURL;
+    m_albumId = track->albumId;
+    m_albumTitle = track->albumTitle;
+    m_albumYear = track->albumYear;
+    m_artistName = track->artistName;
+    m_artistId = track->artistId;
+}
 
 Mp3tunesLockerTrack::~Mp3tunesLockerTrack()
 {}
