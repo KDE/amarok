@@ -19,8 +19,6 @@ function ScriptConsoleMainWindow()
 {
   QMainWindow.call( this, null );
 
-  Amarok.configured.connect( this, this.onConfigure );
-
   var mainWidget = new QWidget( this );
   this.historyList = new QListWidget( mainWidget );
   this.historyList.sizeHint = new QSize(900, 600);
@@ -64,11 +62,6 @@ function ScriptConsoleMainWindow()
 }
 
 ScriptConsoleMainWindow.prototype = new QMainWindow();
-
-ScriptConsoleMainWindow.prototype.onConfigure = function()
-{
-    Amarok.alert( "This script does not require any configuration." );
-}
 
 ScriptConsoleMainWindow.prototype.executeLine = function()
 {

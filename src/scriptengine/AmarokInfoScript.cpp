@@ -38,7 +38,7 @@ InfoScript::version() const
 QString
 InfoScript::scriptPath() const
 {
-    return m_scriptUrl.toLocalFile();
+    return m_scriptUrl.directory();
 }
 
 QString

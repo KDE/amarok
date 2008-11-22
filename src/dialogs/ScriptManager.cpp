@@ -507,10 +507,12 @@ void
 ScriptManager::slotConfigComitted( const QByteArray & name )
 {
     DEBUG_BLOCK
-
+/*
+TODO: to be implemented
     debug() << "config comitted for: " << name;
     m_configChanged = true;
     m_changedScripts << QString( name );
+*/
 }
 
 void

@@ -3,11 +3,6 @@ function Service()
     ScriptableServiceScript.call( this, "Template Name", 1, "Title", "Introduction", false );
 }
 
-function onConfigure()
-{
-    Amarok.alert( "This script does not require any configuration." );
-}
-
 function onPopulating( level, callbackData, filter )
 {
     Amarok.debug( "populating level " + level );
@@ -27,6 +22,5 @@ function onPopulating( level, callbackData, filter )
     script.donePopulating();
 }
 
-Amarok.configured.connect( onConfigure );
 script = new Service();
 script.populate.connect( onPopulating );

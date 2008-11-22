@@ -65,11 +65,6 @@ function CoolStream()
     ScriptableServiceScript.call( this, "Cool Streams", 1, "List of some high quality radio streams", "Some really cool radio streams, hand picked for your listening pleasure by your friendly Amarok developers", false );
 }
 
-function onConfigure()
-{
-    Amarok.alert( "This script does not require any configuration." );
-}
-
 function onPopulating( level, callbackData, filter )
 {
     Amarok.debug( " Populating station level..." );
@@ -86,8 +81,6 @@ function onPopulating( level, callbackData, filter )
     }
     script.donePopulating();
 }
-
-Amarok.configured.connect( onConfigure );
 
 script = new CoolStream();
 script.populate.connect( onPopulating );

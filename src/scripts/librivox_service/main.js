@@ -53,13 +53,6 @@ function Librivox()
     Amarok.debug ("done creating service!");
 }
 
-
-function onConfigure()
-{
-    Amarok.alert( "sorry", "This script does not require any configuration." );
-}
-
-
 function bookFetchResult( reply )
 {
 
@@ -267,6 +260,5 @@ elt2 = new QDomElement;
 bookElements = new QDomNodeList;
 html = "";
 
-Amarok.configured.connect( onConfigure );
 script = new Librivox();
 script.populate.connect( onPopulate );

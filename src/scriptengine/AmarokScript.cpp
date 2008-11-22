@@ -101,10 +101,12 @@ namespace AmarokScript
         return ScriptManager::instance()->listRunningScripts();
     }
 
+/*
     void AmarokScript::slotConfigured()
     {
         emit configured();
     }
+*/
 }
 
 #include "AmarokScript.moc"
