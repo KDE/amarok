@@ -35,6 +35,7 @@ namespace AmarokScript
         public slots:
             QVariant readConfig( QString name, QVariant defaultValue ) const;
             QString readConfig( QString name, QString defaultValue ) const;
+
             void writeConfig( QString name, QVariant content );
             void writeConfig( QString name, QString content );
 

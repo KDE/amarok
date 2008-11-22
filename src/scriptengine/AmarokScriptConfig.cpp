@@ -51,7 +51,6 @@ namespace AmarokScript
     {
         KGlobal::config()->group( m_name ).writeEntry( name, content );
     }
-    
 }
 
 #include "AmarokScriptConfig.moc"
