@@ -43,12 +43,6 @@ elt2   = new QDomElement;
 shows  = new QDomNodeList;
 
 
-/* Configuration */
-function onConfigure() {
-  Amarok.alert( "sorry", "This script does not require any configuration." );
-}
-
-
 /* Initialization of service */
 function FreeMusicCharts() {
   Amarok.debug( "creating fmc service..." );
@@ -205,9 +199,6 @@ function onPopulate( level, callbackData, filter ) {
     script.donePopulating();
   }
 }
-
-
-Amarok.configured.connect( onConfigure );
 
 script = new FreeMusicCharts();
 script.populate.connect( onPopulate );

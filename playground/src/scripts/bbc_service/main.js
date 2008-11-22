@@ -61,11 +61,6 @@ String.prototype.trim = function() {
     return a.replace(/\s+$/, '');
 }
 
-/* Configuration */
-function onConfigure() {
-  Amarok.alert( "sorry", "This script does not require any configuration." );
-}
-
 
 /* Initialization of service */
 function BBCService() {
@@ -297,9 +292,6 @@ function onPopulate( level, callbackData, filter ) {
     Amarok.debug( "done populating bbc track level..." );
   }
 }
-
-
-Amarok.configured.connect( onConfigure );
 
 script = new BBCService();
 script.populate.connect( onPopulate );

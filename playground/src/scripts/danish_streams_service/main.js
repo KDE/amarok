@@ -105,11 +105,6 @@ function DanishStreamsService()
     Amarok.debug( "done." );
 }
 
-function onConfigure()
-{
-    Amarok.alert( "This script does not require any configuration." );
-}
-
 function onPopulating( level, callbackData, filter )
 {
     if ( level == 1 ) 
@@ -151,8 +146,6 @@ function onPopulating( level, callbackData, filter )
 	script.donePopulating();
     }
 }
-
-Amarok.configured.connect( onConfigure );
 
 script = new DanishStreamsService();
 script.populate.connect( onPopulating );

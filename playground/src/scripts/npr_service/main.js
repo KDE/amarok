@@ -51,11 +51,6 @@ storyelements = new QDomNodeList;
 
 storiesNeedingUrls = new Array();
 
-/* Configuration */
-function onConfigure() {
-  Amarok.alert( "sorry", "This script does not require any configuration." );
-}
-
 /* Initialization of service */
 function NPRService() {
   Amarok.debug( "creating npr service..." );
@@ -305,8 +300,6 @@ function onPopulate( level, callbackData, filter ) {
     }
   }
 }
-
-Amarok.configured.connect( onConfigure );
 
 script = new NPRService();
 script.populate.connect( onPopulate );
