@@ -30,13 +30,14 @@
 #include <limits.h>    //PATH_MAX
 
 #include <QByteArray>
-#include <QDir>
 #include <QDBusReply>
+#include <QDir>
 #include <QDomDocument>
 #include <QFile>
+#include <QTextCodec>
+#include <QTextDocument>
 #include <QTextStream>
 #include <QTimer>
-#include <QTextCodec>
 
 #include <KGlobal>
 #include <KLocale>
@@ -696,7 +697,7 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
         // There are at least some characters that Qt cannot categorize which make the resulting
         // xml document ill-formed and prevent the parser from processing the remaining document.
         // Because of this we skip attributes containing characters not belonging to any category.
-        const QString data = it.value();
+        const QString data = Qt::escape( it.value() );
         const unsigned len = data.length();
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )
