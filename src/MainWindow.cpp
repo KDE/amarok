@@ -82,7 +82,8 @@
 #include <fixx11h.h>
 #endif
 
-#ifdef Q_WS_MAC // Let people know OS X version is still work-in-progress
+// Let people know OS X and Windows versions are still work-in-progress
+#if defined(Q_WS_MAC) || defined(Q_WS_WIN)
 #define AMAROK_CAPTION "Amarok 2 beta"
 #else
 #define AMAROK_CAPTION "Amarok 2"
