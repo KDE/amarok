@@ -163,12 +163,21 @@ void Dynamic::BiasSolver::run()
      * the population size is quite large, which is why we switch over to
      * simulated annealing when that happens.
      */
-    Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
+
+    /*
+     * NOTE: For now I am disabling the the ga phase, until I can do more
+     * experimentation.
+     */
+    //Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
+
+    bool optimal;
+    Meta::TrackList playlist = generateInitialPlaylist( optimal );
 
     if( playlist.isEmpty() )
         return;
 
-    sa_optimize( playlist, SA_ITERATION_LIMIT, true );
+    if( !optimal )
+        sa_optimize( playlist, SA_ITERATION_LIMIT, true );
 
     m_solution = playlist;
 }
@@ -587,7 +596,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     {
         int n = m_n;
         while( n-- )
-            playlist += getMutation();
+            playlist += getRandomTrack( m_domain );
 
         optimal = m_biases.isEmpty();
         return playlist;
@@ -722,7 +731,16 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
 Meta::TrackPtr
 Dynamic::BiasSolver::getMutation()
 {
-    return getRandomTrack( m_domain );
+    if( m_mutationPool.isEmpty() )
+    {
+        bool optimal; // (we don't actually care if its optimal here)
+        m_mutationPool = generateInitialPlaylist( optimal );
+    }
+
+    if( m_mutationPool.isEmpty() )
+        return Meta::TrackPtr();
+    else
+        return m_mutationPool.takeLast();
 }
 
 Meta::TrackPtr

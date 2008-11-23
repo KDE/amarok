@@ -228,6 +228,8 @@ namespace Dynamic
 
             Meta::TrackList m_solution;
 
+            Meta::TrackList m_mutationPool; //! a queue of tracks used by getMutation
+
             QList<Bias*>  m_biases;     //! current energy for the whole system
             QList<double> m_biasEnergy; //! current energy of each individual bias
             QList<double> m_biasMutationEnergy; //! individual bias energy for the mutation
