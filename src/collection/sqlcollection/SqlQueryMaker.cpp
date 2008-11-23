@@ -142,7 +142,7 @@ SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
     // we need the unchanged resulttype in the blocking result methods so prevent
     // reseting result type without reseting the QM
-    if ( d->used )
+    if ( d->blocking && d->used )
         return this;
     
     d->resultAsDataPtrs = resultAsDataPtrs;
@@ -152,7 +152,7 @@ SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 void
 SqlQueryMaker::run()
 {
-    if( d->queryType == QueryMaker::None || d->used )
+    if( d->queryType == QueryMaker::None || (d->blocking && d->used) )
     {
         debug() << "sql querymaker used without reset or initialization" << endl;
         return; //better error handling?
@@ -193,7 +193,7 @@ SqlQueryMaker::setQueryType( QueryType type )
 {
     // we need the unchanged m_queryType in the blocking result methods so prevent
     // reseting queryType without reseting the QM
-    if ( d->used )
+    if ( d->blocking && d->used )
         return this;
     
     switch( type ) {
