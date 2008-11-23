@@ -28,9 +28,10 @@ include_directories(
     browsers/playlistbrowser
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
+    charset-detector
     charset-detector/include
     charset-detector/src
-    charset-detector/src/tables/
+    charset-detector/src/tables
     collection
     configdialog
     configdialog/dialogs
@@ -364,9 +365,10 @@ set(libdynamic_SRCS
 )
 
 #####################################################################
-# Character Encoding Detector, imported from Mozilla
+# Character Encoding Detector
 #####################################################################
 set(libchardet_SRCS
+    charset-detector/EncodingDetector.cpp
     charset-detector/src/impl.cpp
     charset-detector/src/CharDistribution.cpp
     charset-detector/src/JpCntx.cpp
