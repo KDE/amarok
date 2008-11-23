@@ -68,11 +68,11 @@ namespace AmarokScript
             bool        stopScript( const QString& name ) const;
 
             QStringList listRunningScripts() const;
-/*
-TODO: implement the configured() signal
+
+        //TODO: actaully use this signal
         signals:
             void configured();
-*/
+
         private:
             QString m_name;
     };
