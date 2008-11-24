@@ -676,56 +676,6 @@ MainWindow::createActions()
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
 
-    // FIXME FIXME FIXME
-    // Remove this block before Final release. It is needed only to cleanup
-    // global shortcut registers due to prior mishandling. Must be included in our
-    // next release so that everyone with beta1/beta2 gets cleanup up.
-    //
-    //
-    // During kde4 development amarok handled global shortcuts wrong for some
-    // time. You could see this by opening 'kcmshell4 keys'. The problem was
-    // change the actions objectName() after assigning a global shortcut. The
-    // following code removes the duplicate global Shortcuts.
-    {
-        KAction action(NULL);
-
-        action.setObjectName("addMedia");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("seekForward");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("seekBackward");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("previousTrack");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("nextTrack");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("Toggle Main Window");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("muteVolume");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("play-pause");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-
-        action.setObjectName("showOSD");
-        action.setGlobalShortcut(KShortcut());
-        action.forgetGlobalShortcut();
-    }
-
     KAction *action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Media..."), this );
     ac->addAction( "playlist_add", action );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
