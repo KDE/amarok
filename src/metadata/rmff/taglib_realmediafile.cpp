@@ -42,173 +42,169 @@ using namespace TagLib;
 using namespace TagLib::RealMedia;
 
 
-RealMedia::Tag::Tag(RealMediaFF *rmff, bool allocnew) : m_rmff(rmff), m_owner(allocnew)
-{ 
-   if (m_owner) 
-      m_rmff = new RealMediaFF(*rmff); 
-}
-
-RealMedia::Tag::~Tag () 
-{ 
-   if (m_owner) 
-      delete m_rmff; 
-}
-
-String RealMedia::Tag::title () const
+RealMedia::Tag::Tag( RealMediaFF *rmff, bool allocnew ) : m_rmff( rmff ), m_owner( allocnew )
 {
-   return m_rmff->title();
+    if( m_owner )
+        m_rmff = new RealMediaFF( *rmff );
 }
 
-String RealMedia::Tag::artist () const
+RealMedia::Tag::~Tag()
 {
-   return m_rmff->artist();
+    if( m_owner )
+        delete m_rmff;
 }
 
-String RealMedia::Tag::album () const
+String RealMedia::Tag::title() const
 {
-   return m_rmff->album();
+    return m_rmff->title();
 }
 
-String RealMedia::Tag::comment () const
+String RealMedia::Tag::artist() const
 {
-   return m_rmff->comment();
+    return m_rmff->artist();
 }
 
-String RealMedia::Tag::genre () const
+String RealMedia::Tag::album() const
 {
-   return m_rmff->genre();
+    return m_rmff->album();
 }
 
-TagLib::uint RealMedia::Tag::year () const
+String RealMedia::Tag::comment() const
 {
-   return m_rmff->year();
+    return m_rmff->comment();
 }
 
-TagLib::uint RealMedia::Tag::track () const
+String RealMedia::Tag::genre() const
 {
-   return m_rmff->track();
+    return m_rmff->genre();
 }
 
-void   RealMedia::Tag::setTitle (const String &)
+TagLib::uint RealMedia::Tag::year() const
 {
-// TODO: write support
+    return m_rmff->year();
 }
 
-void   RealMedia::Tag::setArtist (const String &)
+TagLib::uint RealMedia::Tag::track() const
+{
+    return m_rmff->track();
+}
+
+void   RealMedia::Tag::setTitle( const String & )
 {
 // TODO: write support
 }
 
-void   RealMedia::Tag::setAlbum (const String &)
+void   RealMedia::Tag::setArtist( const String & )
 {
 // TODO: write support
 }
 
-void   RealMedia::Tag::setComment (const String &)
+void   RealMedia::Tag::setAlbum( const String & )
 {
 // TODO: write support
 }
 
-void   RealMedia::Tag::setGenre (const String &)
+void   RealMedia::Tag::setComment( const String & )
 {
 // TODO: write support
 }
 
-void   RealMedia::Tag::setYear (uint)
+void   RealMedia::Tag::setGenre( const String & )
 {
 // TODO: write support
 }
 
-void   RealMedia::Tag::setTrack (uint)
+void   RealMedia::Tag::setYear( uint )
 {
 // TODO: write support
 }
 
-bool RealMedia::Tag::isEmpty() const 
+void   RealMedia::Tag::setTrack( uint )
 {
-   return TagLib::Tag::isEmpty() && m_rmff->isEmpty();
+// TODO: write support
 }
 
-void RealMedia::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) 
+bool RealMedia::Tag::isEmpty() const
 {
-   TagLib::Tag::duplicate(source, target, overwrite);
-   if (overwrite)
-   {
-      if (target->m_owner)
-      {
-         delete target->m_rmff;
-         target->m_rmff = new RealMediaFF(*source->m_rmff);
-      }
-      else
-         target->m_rmff = source->m_rmff;
-   }
-   else
-   {
-      if (target->isEmpty())
-      if (target->m_owner)
-      {
-         delete target->m_rmff;
-         target->m_rmff = new RealMediaFF(*source->m_rmff);
-      }
-      else
-         target->m_rmff = source->m_rmff;
-   }
+    return TagLib::Tag::isEmpty() && m_rmff->isEmpty();
 }
 
-
-
-int RealMedia::Properties::length () const
+void RealMedia::Tag::duplicate( const Tag *source, Tag *target, bool overwrite )
 {
-   return (m_rmff->length() / 1000);
-}
-
-int RealMedia::Properties::bitrate () const
-{
-   return (m_rmff->bitrate() / 1000);
-}
-
-int RealMedia::Properties::sampleRate () const
-{
-   return m_rmff->sampleRate();
-}
-
-int RealMedia::Properties::channels () const
-{
-   return m_rmff->channels();
+    TagLib::Tag::duplicate( source, target, overwrite );
+    if ( overwrite )
+    {
+        if ( target->m_owner )
+        {
+            delete target->m_rmff;
+            target->m_rmff = new RealMediaFF( *source->m_rmff );
+        }
+        else
+            target->m_rmff = source->m_rmff;
+    }
+    else
+    {
+        if ( target->isEmpty() )
+            if ( target->m_owner )
+            {
+                delete target->m_rmff;
+                target->m_rmff = new RealMediaFF( *source->m_rmff );
+            }
+            else
+                target->m_rmff = source->m_rmff;
+    }
 }
 
 
-RealMedia::File::File(TagLib::FileName file, bool readProperties, Properties::ReadStyle propertiesStyle) 
-   : TagLib::File(file), m_rmfile(0), m_tag(0), m_props(0)
+
+int RealMedia::Properties::length() const
 {
-   m_rmfile = new RealMediaFF(file, readProperties, propertiesStyle);
-   m_tag = new RealMedia::Tag(m_rmfile);
-   m_props = new RealMedia::Properties(m_rmfile);
+    return m_rmff->length() / 1000;
+}
+
+int RealMedia::Properties::bitrate() const
+{
+    return m_rmff->bitrate() / 1000;
+}
+
+int RealMedia::Properties::sampleRate() const
+{
+    return m_rmff->sampleRate();
+}
+
+int RealMedia::Properties::channels() const
+{
+    return m_rmff->channels();
+}
+
+
+RealMedia::File::File( TagLib::FileName file, bool readProperties, Properties::ReadStyle propertiesStyle )
+        : TagLib::File( file ), m_rmfile( 0 ), m_tag( 0 ), m_props( 0 )
+{
+    m_rmfile = new RealMediaFF( file, readProperties, propertiesStyle );
+    m_tag = new RealMedia::Tag( m_rmfile );
+    m_props = new RealMedia::Properties( m_rmfile );
 }
 
 RealMedia::File::~File()
 {
-   delete m_props;
-   delete m_tag;
-   delete m_rmfile;
+    delete m_props;
+    delete m_tag;
+    delete m_rmfile;
 }
 
 TagLib::Tag *RealMedia::File::tag() const
 {
-  return m_tag;
-} 
+    return m_tag;
+}
 
 RealMedia::Tag *RealMedia::File::RealMediaTag() const
 {
-  return m_tag;
-} 
+    return m_tag;
+}
 
 RealMedia::Properties *RealMedia::File::audioProperties() const
 {
-   return m_props; // m_rmfile->properties;
-} 
-
-
-
-
+    return m_props; // m_rmfile->properties;
+}
 
