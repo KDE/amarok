@@ -5,8 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.0
   FEATURES:
-  
+    * Added read/write configuration APIs for Qtscript.
+
   CHANGES:
+    * Added an OK button for the script manager.
 
   BUGFIXES:
     * "Watch folders for changes" actually works now.
