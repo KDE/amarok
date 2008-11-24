@@ -54,7 +54,7 @@ function Seeqpod()
     print ("Seeqpod Seeqpod");
     
     var currentDir = Amarok.Info.scriptPath();
-    print( "got config dir: " + currentDir );
+    print( "got current dir: " + currentDir );
 
 
     //get config file ( if it exists, otherwise, ask for uid )
@@ -62,7 +62,7 @@ function Seeqpod()
 
 
 
-    var file = new QFile( currentDir + "SeeqpodService.html" );
+    var file = new QFile( currentDir + "/SeeqpodService.html" );
     file.open( QIODevice.OpenMode( QIODevice.ReadOnly, QIODevice.Text ) );
 
     while ( !file.atEnd() ) {
@@ -70,8 +70,8 @@ function Seeqpod()
     }
 
     Amarok.debug ("creating service...");
-    //Amarok.debug ("html: " + html );
-    ScriptableServiceScript.call( this, "Seeqpod.com", 2, "Search and stream music from all over the web", "", true );
+    Amarok.debug ("html: " + html );
+    ScriptableServiceScript.call( this, "Seeqpod.com", 2, "Search and stream music from all over the web", html, true );
     Amarok.debug ("done creating service!");
 }
 
