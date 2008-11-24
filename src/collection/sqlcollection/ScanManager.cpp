@@ -62,9 +62,12 @@ ScanManager::ScanManager( SqlCollection *parent )
     , m_isIncremental( false )
     , m_blockScan( false )
 {
-    // If Amarok installed in not standart directory
-    QString binDir = KStandardDirs::findExe("amarok");
-    amarokCollectionScanDir = binDir.left( binDir.lastIndexOf('/') + 1 );
+    // If Amarok is not installed in standard directory
+    const QString binDir = KStandardDirs::findExe( "amarok" );
+    m_amarokCollectionScanDir = binDir.left( binDir.lastIndexOf( '/' ) + 1 );
+
+    QTimer watchFoldersTimer* = new QTimer( this );
+    watchFoldersTimer->start( MONITOR_INTERVAL );
 }
 
 ScanManager::~ScanManager()
@@ -91,7 +94,7 @@ ScanManager::startFullScan()
     }
     cleanTables();
     m_scanner = new AmarokProcess( this );
-    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
+    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
@@ -138,7 +141,7 @@ void ScanManager::startIncrementalScan()
         m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
     }
     m_scanner = new AmarokProcess( this );
-    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
+    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
     if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
     if( pApp->isUniqueInstance() ) *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     *m_scanner << dirs;
@@ -375,7 +378,7 @@ ScanManager::restartScanner()
     }
 
     m_scanner = new AmarokProcess( this );
-    *m_scanner << amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
+    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();

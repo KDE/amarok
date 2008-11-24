@@ -76,7 +76,7 @@ class ScanManager : public QObject
         int m_restartCount;
         bool m_isIncremental;
         bool m_blockScan;
-        QString amarokCollectionScanDir;
+        QString m_amarokCollectionScanDir;
 };
 
 class XmlParseJob : public ThreadWeaver::Job
