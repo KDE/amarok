@@ -11,6 +11,7 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Make lyrics auto-display when applet is added while a song is playing.
     * "Watch folders for changes" actually works now.
     * Fix a bug that caused dynamic playlists not to repopulate. (BR 173776)
     * Fixed potential issues with malformed XML breaking the collection scan.
