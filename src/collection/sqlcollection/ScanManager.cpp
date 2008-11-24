@@ -50,6 +50,7 @@
 
 static const int MAX_RESTARTS = 80;
 static const int MAX_FAILURE_PERCENTAGE = 5;
+static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 
 
 ScanManager::ScanManager( SqlCollection *parent )
@@ -62,12 +63,15 @@ ScanManager::ScanManager( SqlCollection *parent )
     , m_isIncremental( false )
     , m_blockScan( false )
 {
+    DEBUG_BLOCK
+
     // If Amarok is not installed in standard directory
     const QString binDir = KStandardDirs::findExe( "amarok" );
     m_amarokCollectionScanDir = binDir.left( binDir.lastIndexOf( '/' ) + 1 );
 
-    QTimer watchFoldersTimer* = new QTimer( this );
-    watchFoldersTimer->start( MONITOR_INTERVAL );
+    QTimer *watchFoldersTimer = new QTimer( this );
+    connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) ); 
+    watchFoldersTimer->start( WATCH_INTERVAL );
 }
 
 ScanManager::~ScanManager()
@@ -206,6 +210,13 @@ ScanManager::setBlockScan( bool blockScan )
 {
     m_blockScan = blockScan;
     //TODO what happens if the collection scanner is currently running?
+}
+
+void
+ScanManager::slotWatchFolders()
+{
+    if( AmarokConfig::monitorChanges() )
+        startIncrementalScan();
 }
 
 void

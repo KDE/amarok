@@ -53,6 +53,7 @@ class ScanManager : public QObject
         void startIncrementalScan();
 
     private slots:
+        void slotWatchFolders();
         void slotReadReady();
         void slotFinished();
         void slotError(QProcess::ProcessError error);
