@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
+
 #ifndef PIXMAPVIEWER_H
 #define PIXMAPVIEWER_H
 
@@ -29,19 +30,19 @@ class PixmapViewer : public QScrollArea
 {
     Q_OBJECT
 
-public:
-    PixmapViewer( QWidget *widget, const QPixmap &pixmap );
+    public:
+        PixmapViewer( QWidget *widget, const QPixmap &pixmap );
 
-    virtual QSize sizeHint() const;
+        virtual QSize sizeHint() const;
 
-    void mousePressEvent( QMouseEvent *event );
-    void mouseReleaseEvent( QMouseEvent *event );
-    void mouseMoveEvent( QMouseEvent *event );
+        void mousePressEvent( QMouseEvent *event );
+        void mouseReleaseEvent( QMouseEvent *event );
+        void mouseMoveEvent( QMouseEvent *event );
 
-private:
-    bool           m_isDragging;
-    QPoint         m_currentPos;
-    const QPixmap &m_pixmap;
+    private:
+        bool           m_isDragging;
+        QPoint         m_currentPos;
+        const QPixmap &m_pixmap;
 };
 
 #endif

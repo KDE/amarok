@@ -450,7 +450,6 @@ set(amaroklib_LIB_SRCS
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
-    dialogs/PixmapViewer.cpp
     dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
@@ -478,6 +477,7 @@ set(amaroklib_LIB_SRCS
     widgets/MainControlsWidget.cpp
     widgets/MainToolbar.cpp
     widgets/Osd.cpp
+    widgets/PixmapViewer.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressSlider.cpp
     widgets/SearchWidget.cpp

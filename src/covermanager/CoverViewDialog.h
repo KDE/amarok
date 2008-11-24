@@ -19,7 +19,7 @@
 #define AMAROK_COVERVIEWDLG_H
 
 #include "meta/Meta.h"
-#include "dialogs/PixmapViewer.h"
+#include "widgets/PixmapViewer.h"
 
 #include <QHBoxLayout>
 
