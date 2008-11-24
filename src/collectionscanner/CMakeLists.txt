@@ -1,7 +1,6 @@
 
 include_directories( ../
                      ../meta
-                     ../charset-detector
                      ../charset-detector/include
                      ../charset-detector/src
                      ../charset-detector/src/tables
@@ -13,7 +12,6 @@ add_definitions(${TAGLIB_CFLAGS})
 # Character Encoding Detector
 #####################################################################
 set( libchardet_SRCS
-    ../charset-detector/EncodingDetector.cpp
     ../charset-detector/src/impl.cpp
     ../charset-detector/src/CharDistribution.cpp
     ../charset-detector/src/JpCntx.cpp

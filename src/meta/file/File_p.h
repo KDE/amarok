@@ -21,8 +21,8 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
+#include "charset-detector/include/chardet.h"
 #include "Debug.h"
-#include "EncodingDetector.h"
 #include "Meta.h"
 #include "MetaUtility.h"
 
@@ -115,7 +115,7 @@ public:
     QVariantMap changes;
     void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( getFileRef(), changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
- 
+
     int score;
     int rating;
     uint lastPlayed;
@@ -182,21 +182,48 @@ void Track::Private::readMetaData()
                 m_data.artist = strip( flm[ "TPE2" ].front()->toString() );
 
         }
-        TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
-        const char* metastr = metaData.toCString();
-
-        EncodingDetector* encodingDetector = new EncodingDetector( metastr );
-        encodingDetector->startTableDetector();
-        if ( encodingDetector->gotResult() )
+        else if ( file->ID3v1Tag() )
         {
-            QString track_encoding = encodingDetector->encoding();
-            QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
-            m_data.title = codec->toUnicode( m_data.title.toLatin1() );
-            m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
-            m_data.album = codec->toUnicode( m_data.album.toLatin1() );
-            m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
+            TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
+            const char* buf = metaData.toCString();
+            size_t len = strlen( buf );
+            int res = 0;
+            chardet_t det = NULL;
+            char encoding[CHARDET_MAX_ENCODING_NAME];
+            chardet_create( &det );
+            res = chardet_handle_data( det, buf, len );
+            chardet_data_end( det );
+            res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
+            chardet_destroy( det );
+
+            QString track_encoding = encoding;
+            if ( res == CHARDET_RESULT_OK )
+            {
+                //http://doc.trolltech.com/4.4/qtextcodec.html
+                //http://www.mozilla.org/projects/intl/chardet.html
+                if ( track_encoding == "x-euc-tw" ) track_encoding = ""; //no match
+                if ( track_encoding == "HZ-GB2312" ) track_encoding = ""; //no match
+                if ( track_encoding == "ISO-2022-CN" ) track_encoding = ""; //no match
+                if ( track_encoding == "ISO-2022-KR" ) track_encoding = ""; //no match
+                if ( track_encoding == "ISO-2022-JP" ) track_encoding = ""; //no match
+                if ( track_encoding == "x-mac-cyrillic" ) track_encoding = ""; //no match
+                if ( track_encoding == "IBM855" ) track_encoding =""; //no match
+                if ( track_encoding == "IBM866" ) track_encoding = "IBM 866";
+                if ( track_encoding == "TIS-620" ) track_encoding = ""; //ISO-8859-11, no match
+                if ( !track_encoding.isEmpty() )
+                {
+                    //FIXME:about 10% tracks cannot be decoded well. It shows blank for now.
+                    debug () << "Final Codec Name:" << track_encoding.toUtf8() <<endl;
+                    QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
+                    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
+                    QTextCodec::setCodecForCStrings( utf8codec );
+                    m_data.title = codec->toUnicode( m_data.title.toLatin1() );
+                    m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
+                    m_data.album = codec->toUnicode( m_data.album.toLatin1() );
+                    m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
+                }
+            }
         }
-        delete encodingDetector;
     }
 
     else if( TagLib::Ogg::Vorbis::File *file = dynamic_cast< TagLib::Ogg::Vorbis::File *>( fileRef.file() ) )
