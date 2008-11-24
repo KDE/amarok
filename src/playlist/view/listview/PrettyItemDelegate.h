@@ -47,11 +47,11 @@ private:
     //void paintCollapsed() const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
-    const QRectF imageLocation() const
+    inline const QRectF imageLocation() const
     {
         return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
     }
-    const QRectF imageLocationSingleTrack() const
+    inline const QRectF imageLocationSingleTrack() const
     {
         return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
     }
