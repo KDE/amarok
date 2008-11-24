@@ -30,6 +30,7 @@
 
 #include "CoverFetcher.h"
 #include "CoverManager.h"
+#include "CoverViewDialog.h"
 
 /////////////////////////////////////
 //  FetchCoverAction

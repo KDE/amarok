@@ -22,12 +22,10 @@
 #include "CoverFetcher.h"
 
 #include <QSplitter>
-//Added by qt3to4:
 #include <QDropEvent>
 #include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QDialog>
 #include <QPixmap>
 
 class CoverViewItem;
@@ -187,7 +185,6 @@ class CoverViewItem : public QListWidgetItem
 
     protected:
         void paintFocus(QPainter *, const QColorGroup &) { }
-//         void dropped( QDropEvent *, const Q3ValueList<Q3IconDragItem> & );
         void dragEntered();
         void dragLeft();
         void calcRect( const QString& text_ = QString() );
@@ -200,15 +197,6 @@ class CoverViewItem : public QListWidgetItem
         QPixmap m_coverPixmap;
         bool    m_embedded;
         QListWidget *m_parent;
-};
-
-
-class AMAROK_EXPORT CoverViewDialog : public QDialog
-{
-        Q_OBJECT
-
-    public:
-        CoverViewDialog(Meta::AlbumPtr album, QWidget *parent);
 };
 
 #endif

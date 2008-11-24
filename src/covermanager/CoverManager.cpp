@@ -19,6 +19,7 @@
  ******************************************************************************/
 
 #include "CoverManager.h"
+#include "CoverViewDialog.h"
 
 #include "Amarok.h"
 #include "amarokconfig.h"
@@ -47,7 +48,6 @@
 #include <KToolBar>
 #include <KUrl>
 #include <KVBox>
-#include <KWindowSystem>
 
 #include <QDesktopWidget>  //ctor: desktop size
 #include <QFile>
@@ -341,27 +341,6 @@ void CoverManager::init()
 
     item->setSelected( true );
 
-}
-
-
-CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
-    : QDialog( parent, Qt::Window )
-{
-    setAttribute( Qt::WA_DeleteOnClose );
-
-#ifdef Q_WS_X11
-    KWindowSystem::setType( winId(), NET::Utility );
-#endif
-
-    kapp->setTopWidget( this );
-    setWindowTitle( KDialog::makeStandardCaption( i18n("%1 - %2",
-                    album->albumArtist()? album->albumArtist()->prettyName() : i18n( "Various Artists" ),
-                    album->prettyName() ) ) );
-
-    PixmapViewer *pixmapViewer = new PixmapViewer( this, album->image( 0 ) /* full sized image */ );
-    QHBoxLayout *layout = new QHBoxLayout( this );
-    layout->addWidget( pixmapViewer );
-    layout->setSizeConstraint( QLayout::SetFixedSize );
 }
 
 
