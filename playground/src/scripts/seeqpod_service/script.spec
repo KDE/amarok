@@ -12,5 +12,5 @@ X-KDE-PluginInfo-Name=Seeqpod.com
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Scriptable Service
 X-KDE-PluginInfo-Depends=Amarok2.0
-X-KDE-PluginInfo-License=LGPL
+X-KDE-PluginInfo-License=GPL
 X-KDE-PluginInfo-EnabledByDefault=false
