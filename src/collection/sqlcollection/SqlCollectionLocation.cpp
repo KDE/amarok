@@ -331,6 +331,11 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         //the row will exist because this method is called after insertTracks
         QString select = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
         QStringList result = m_collection->query( select );
+        if( result.isEmpty() )
+        {
+            warning() << "SQL Query returned no results:" << select;
+            //continue;
+        }
         QString id = result.first();    //if result is empty something is going very wrong
         //the following sql was copied from SqlMeta.cpp
         QString insert = "INSERT INTO statistics(url,rating,score,playcount,accessdate,createdate) VALUES ( %1 );";
