@@ -9,11 +9,11 @@ VERSION 2.0
   CHANGES:
 
   BUGFIXES:
-    * Fix a bug that caused dynamic playlists not to repopulate. (BR: 173776)
+    * Fix a bug that caused dynamic playlists not to repopulate. (BR 173776)
     * Fixed potential issues with malformed XML breaking the collection scan.
       (BR 170408)
     * Focus of text fields no longer lost when changing tracks using the Next/
-      Previous buttons in tag dialog (BR 175524)
+      Previous buttons in tag dialog/ (BR 175524)
     * Sort Podcasts in the right order.
 
 
