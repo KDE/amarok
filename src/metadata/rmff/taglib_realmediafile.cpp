@@ -132,7 +132,7 @@ bool RealMedia::Tag::isEmpty() const
 void RealMedia::Tag::duplicate( const Tag *source, Tag *target, bool overwrite )
 {
     TagLib::Tag::duplicate( source, target, overwrite );
-    if ( overwrite )
+    if( overwrite || target->isEmpty() )
     {
         if ( target->m_owner )
         {
@@ -142,20 +142,7 @@ void RealMedia::Tag::duplicate( const Tag *source, Tag *target, bool overwrite )
         else
             target->m_rmff = source->m_rmff;
     }
-    else
-    {
-        if ( target->isEmpty() )
-            if ( target->m_owner )
-            {
-                delete target->m_rmff;
-                target->m_rmff = new RealMediaFF( *source->m_rmff );
-            }
-            else
-                target->m_rmff = source->m_rmff;
-    }
 }
-
-
 
 int RealMedia::Properties::length() const
 {
