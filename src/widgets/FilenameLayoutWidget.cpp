@@ -40,7 +40,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     layout->setSpacing( 0 );    //this should be coherent when using separators
     setLayout( layout );
     backText = new QLabel( this );
-    backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
+    backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );    //TODO: when we are out of string freeze remove the html from i18n
     backText->setFixedSize( 400, 30 );
     backText->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     backText->setAlignment(Qt::AlignCenter);
@@ -61,14 +61,7 @@ FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
     Token *token = new Token( text, this );
 
     debug()<< "I am adding a token, the index I got is " << index << ".";
-    if( index == 0)
-    {
-        layout->addWidget( token );
-    }
-    else
-    {
-        layout->insertWidget( index, token );
-    }
+    layout->insertWidget( index, token );
     
     token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
@@ -292,7 +285,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     
     drag->setPixmap( QPixmap::grabWidget( child ) );       //need to get pixmap from widget
 
-    debug() << "Deleting at " << layout->indexOf( child ) - 1;
+    debug() << "Deleting at " << layout->indexOf( child );
     delete child;
     m_tokenCount--;
 
@@ -315,7 +308,10 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
     for( int i = 0; i < layout->count(); ++i)
     {
         //TODO:REWRITE THIS USING PROPER Token::getString();
+        QWidget * tempWidget = layout->itemAt(i)->widget();
+        debug() << "what the hell am I getting here? " << tempWidget->metaObject()->className();
         QString current = qobject_cast<Token*>( layout->itemAt(i)->widget() )->getLabel();  //getting a Token by grabbing a QLayoutItem* at index i and grabbing his QWidget.
+        debug()<<"Still alive after messing with"<< current;
         if( current == i18n( "Track" ) )
         {
             m_parsableScheme += "%track";
