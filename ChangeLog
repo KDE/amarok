@@ -12,6 +12,7 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Covers could not be fetched from Amazon Japan. (BR 176073)
     * Fix a bug that the script manager deletes wrong entry after script installation. (BR: 173919)
     * Make lyrics auto-display when applet is added while a song is playing.
     * "Watch folders for changes" actually works now.

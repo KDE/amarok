@@ -265,8 +265,6 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
         tld = "com";
     else if( locale =="uk" )
         tld = "co.uk";
-    else if( locale == "jp" )
-        tld = "co.jp";
     else
         tld = locale;
 
