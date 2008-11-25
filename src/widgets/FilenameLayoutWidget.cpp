@@ -76,20 +76,15 @@ FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
     
     token->show();
 
-    if( token->getString() == "<space>" )
-    {
-        token->setString( " " );
-    }
-
     //testing, remove when done
     //token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
     //end testing block
 
     //debug stuff follows
-    foreach(Token *temp, *tokenList)
-    {
-        debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->getString();
-    }
+//     foreach(Token *temp, *tokenList)
+//     {
+//         debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->getLabel();
+//     }
     generateParsableScheme();
     emit schemeChanged();
 }
@@ -298,7 +293,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
         return;
     QByteArray itemData;
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-    dataStream << child->getString(); // << QPoint( event->pos() - child->rect().topLeft() -child.pos() );       //I may need the QPoint of the start sooner or later
+    dataStream << child->getLabel(); // << QPoint( event->pos() - child->rect().topLeft() -child.pos() );       //I may need the QPoint of the start sooner or later
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "application/x-amarok-tag-token", itemData );
     QDrag *drag = new QDrag( this );
@@ -330,7 +325,8 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
     m_parsableScheme = "";
     foreach( Token *token, *tokenList)
     {
-        QString current = token->getString();
+        //TODO:REWRITE THIS USING PROPER Token::getString();
+        QString current = token->getLabel();
         if( current == i18n( "Track" ) )
         {
             m_parsableScheme += "%track";

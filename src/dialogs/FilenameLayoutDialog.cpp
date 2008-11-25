@@ -39,8 +39,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
     syntaxLabel->setWordWrap( true );
-    QString * hintImagePath = new QString( KStandardDirs::locate( "data", "amarok/images/FilenameLayoutDialogHint.png" ) );
-    QPixmap * hintImage = new QPixmap( *hintImagePath );
+    QString hintImagePath = QString( KStandardDirs::locate( "data", "amarok/images/FilenameLayoutDialogHint.png" ) );
+    QPixmap *hintImage = new QPixmap( hintImagePath );
     hintPicture->setPixmap( *hintImage );
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
@@ -101,8 +101,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         collectionRootLabel->setContentsMargins( 0, 0, 0, 0 );
         collectionRootIconLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
         collectionRootIconLabel->setFixedSize( 16, 16 );
-        QPixmap * collectionIcon = new QPixmap( KIcon( "collection-amarok" ).pixmap(16, 16) );
-        collectionRootIconLabel->setPixmap( *collectionIcon );
+        QPixmap collectionIcon = QPixmap( KIcon( "collection-amarok" ).pixmap(16, 16) );
+        collectionRootIconLabel->setPixmap( collectionIcon );
 
         collectionSlashFrame->setStyleSheet( "\
             color: palette( Base );\
@@ -119,21 +119,21 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         
 
     //INIT for tokenPool
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Track" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Title" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Artist" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Composer" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Year" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Album" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Comment" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Genre" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "_") ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "-" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "." ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), QString("<space>") ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-track-amarok" ).pixmap( 48, 48 ), i18n( "Track" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-title-amarok" ).pixmap( 48, 48 ), i18n( "Title" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-artist-amarok" ).pixmap( 48, 48 ), i18n( "Artist" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-composer-amarok" ).pixmap( 48, 48 ), i18n( "Composer" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-year-amarok" ).pixmap( 48, 48 ), i18n( "Year" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-album-amarok" ).pixmap( 48, 48 ), i18n( "Album" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-comment-amarok" ).pixmap( 48, 48 ), i18n( "Comment" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-genre-amarok" ).pixmap( 48, 48 ), i18n( "Genre" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-underscore-amarok" ).pixmap( 48, 48 ), i18n( "_") ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-dash-amarok" ).pixmap( 48, 48 ), i18n( "-" ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-dot-amarok" ).pixmap( 48, 48 ), i18n( "." ) ) );
+    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-space-amarok" ).pixmap( 48, 48 ), QString("<space>") ) );
     if( m_isOrganizeCollection == 0 )
     {
-        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Ignore field" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-ignore-amarok" ).pixmap( 48, 48 ), i18n( "Ignore field" ) ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %ignore." ) );
@@ -142,10 +142,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     }
     else
     {
-        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "/" ) ) );
-        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Artist initial" ) ) );
-        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "File type" ) ) );
-        tokenPool->addItem( new QListWidgetItem( KIcon( "placeholder.svg" ), i18n( "Disc number" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-slash-amarok" ).pixmap( 48, 48 ), i18n( "/" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-initial-amarok" ).pixmap( 48, 48 ), i18n( "Artist initial" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-filetype-amarok" ).pixmap( 48, 48 ), i18n( "File type" ) ) );
+        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-discnumber-amarok" ).pixmap( 48, 48 ), i18n( "Disc number" ) ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );

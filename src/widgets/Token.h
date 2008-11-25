@@ -33,13 +33,15 @@ class Token
     public:
         explicit Token( const QString &string, QWidget *parent = 0 );
         QString getString();
-        void setString(const QString &string );
+        QString getLabel(); //legacy method, TODO: remove in favor of getString post-2.0
         
     private:
+        void setIcon();
+        void setString(const QString &string );
         QHBoxLayout *hlayout;
         unsigned int m_myCount;
         QString m_tokenString;
-        QPixmap *m_icon;
+        QLabel *m_iconContainer;
         QLabel *m_label;
     protected:
         void resizeEvent( QResizeEvent *event );

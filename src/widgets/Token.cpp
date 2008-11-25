@@ -19,21 +19,20 @@
 #include "Debug.h"
 
 #include <KColorScheme>
+#include <KIcon>
 
 Token::Token( const QString &string, QWidget *parent )
     : QFrame( parent )
 {
     m_myCount = qobject_cast< FilenameLayoutWidget * >( parent )->getTokenCount();
-    //m_icon = new QPixmap( "placeholder.png"); //TODO: get icons from oxygen guys and handle loading
     m_label = new QLabel( this );
     hlayout = new QHBoxLayout( this );
     setLayout( hlayout );
-    QLabel *iconContainer = new QLabel( this );
-    //m_icon->something to get a pixmap here
-    //iconContainer->setPixmap( *m_icon );
+    m_iconContainer = new QLabel( this );
+    
     setContentsMargins( 0, 0, 0, 0 );
     hlayout->setContentsMargins( 0, 0, 0, 0 );
-    hlayout->addWidget( iconContainer );
+    hlayout->addWidget( m_iconContainer );
     hlayout->addWidget( m_label );
     setString( string );
     m_label->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
@@ -53,7 +52,8 @@ Token::Token( const QString &string, QWidget *parent )
     //m_label->setAutoFillBackground(true);
     //m_label->setPalette(QPalette(QColor(0,0,0),QColor(255,0,0)));
     
-    iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    m_iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    setIcon();
 }
 
 //Access for m_tokenString, private.
@@ -61,15 +61,91 @@ void
 Token::setString( const QString &string )
 {
     m_label->setText( string );
-    m_tokenString = string;
-    //TODO: code to set icon
-}
+    if( string == i18n( "Track" ) )
+    {
+        m_tokenString = "track";
+    }
+    else if( string == i18n( "Title" ) )
+    {
+        m_tokenString = "title";
+    }
+    else if( string == i18n( "Artist" ) )
+    {
+        m_tokenString = "artist";
+    }
+    else if( string == i18n( "Composer" ) )
+    {
+        m_tokenString = "composer";
+    }
+    else if( string == i18n( "Year" ) )
+    {
+        m_tokenString = "year";
+    }
+    else if( string == i18n( "Album" ) )
+    {
+        m_tokenString = "album";
+    }
+    else if( string == i18n( "Comment" ) )
+    {
+        m_tokenString = "comment";
+    }
+    else if( string == i18n( "Genre" ) )
+    {
+        m_tokenString = "genre";
+    }
+    else if( string == i18n( "File type" ) )
+    {
+        m_tokenString = "filetype";
+    }
+    else if( string == i18n( "Ignore field" ) )
+    {
+        m_tokenString = "ignore";
+    }
+    else if( string == i18n( "Collection root" ) )
+    {
+        m_tokenString = "folder";
+    }
+    else if( string == i18n( "Artist initial" ) )
+    {
+        m_tokenString = "initial";
+    }
+    else if( string == i18n( "Disc number" ) )
+    {
+        m_tokenString = "discnumber";
+    }
+    else if( string == i18n( "<space>" ) )
+    {
+        m_tokenString = "space";
+        m_label->setText(" ");
+    }
+    else if( string == "/" )
+        m_tokenString = "slash";
+    else if( string == "." )
+        m_tokenString = "dot";
+    else if( string == "-" )
+        m_tokenString = "dash";
+    else if( string == "_" )
+        m_tokenString = "underscore";
+} 
 
-//Access for m_tokenString.
+//Access for m_tokenString, public.
 QString
 Token::getString()
 {
     return m_tokenString;
+}
+
+QString
+Token::getLabel()
+{
+    return m_label->text();
+}
+
+void
+Token::setIcon()
+{
+    QPixmap pixmap = QPixmap( KIcon( "filename-" + m_tokenString + "-amarok" ).pixmap( 16, 16 ) );
+    m_iconContainer->setPixmap( pixmap );
 }
 
 void //does this do any good?
