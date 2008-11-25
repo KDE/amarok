@@ -367,7 +367,6 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
         }
         else
         {
-            loadScript( destination + entry );
             m_installSuccess = true;
         }
     }
@@ -376,19 +375,24 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 void
 ScriptManager::slotRetrieveScript()
 {
+    bool installed = false;
+    bool deleted = false;
     KNS::Engine engine( this );
     engine.init( "amarok.knsrc" );
     KNS::Entry::List entries = engine.downloadDialogModal( this );
-
-    findScripts();  //reload script list
-/*
-    debug() << "scripts status:" << endl;
-    foreach ( KNS::Entry* entry, entries )
+    foreach( KNS::Entry* entry, entries )
     {
-//        if ( entry->status() == KNS::Entry::Downloadable )
-            debug() << "script downloadable!" << endl;
+        if ( entry->status() == KNS::Entry::Installed )
+            installed = true;
+        else if ( entry->status() == KNS::Entry::Deleted )
+            deleted = true;
     }
-*/
+    if ( installed )
+        KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>"
+                                            "<p>Please restart Amarok to start the script!</p>" ) );
+    else if (  deleted )
+        KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
+                                            "<p>Please restart Amarok to totally remove the script!</p>" ) );
 }
 
 void
