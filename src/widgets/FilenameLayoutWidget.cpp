@@ -191,7 +191,6 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                         childUnder = qobject_cast< Token * >( childAt( fixedPos )->parent() );
                     }
                 }
-                delete fakeChild;
                 debug()<<"I'm looking for a child at "<<fixedPos.x()<<","<<fixedPos.y()<< "Why does it fail?";
                 if( childUnder == 0 ) debug()<<"ERROR: childUnder is null";     //FIXME: I need to pick up Token*, not a member of his
                 insertOverChild( childUnder, textFromMimeData, event );
