@@ -70,23 +70,9 @@ bool CurrentEngine::sourceRequested( const QString& name )
 void CurrentEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
-
     
-    
-    if( state == Current /*&& m_requested*/ )
+    if( state == Current )
     {
-        m_currentTrack = The::engineController()->currentTrack();
-        //debug() << "1";
-        if( m_timer->isActive() )
-            m_timer->stop();
-        
-        if( m_currentTrack )
-        {
-            //debug() << "2";
-            unsubscribeFrom( m_currentTrack );
-            if( m_currentTrack->album() )
-                unsubscribeFrom( m_currentTrack->album() );
-        }        
         update();
     }
     else if( state == Home )
