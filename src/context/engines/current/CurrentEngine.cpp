@@ -14,13 +14,11 @@
 #include "CurrentEngine.h"
 
 #include "Amarok.h"
+#include "ContextView.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
-#include "ContextObserver.h"
-#include "ContextView.h"
-#include "EngineController.h"
-#include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "meta/SourceInfoCapability.h"
 
@@ -37,10 +35,12 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 {
     DEBUG_BLOCK
     Q_UNUSED( args )
-    m_sources = QStringList();
+
     m_sources << "current" << "albums";
+
     m_timer = new QTimer(this);
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( stoppedState() ) );
+
     update();
 }
 
@@ -52,6 +52,7 @@ CurrentEngine::~CurrentEngine()
 QStringList CurrentEngine::sources() const
 {
     DEBUG_BLOCK
+
     return m_sources; // we don't have sources, if connected, it is enabled.
 }
 
@@ -59,11 +60,12 @@ bool CurrentEngine::sourceRequested( const QString& name )
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
-/*    m_sources << name;    // we are already enabled if we are alive*/
+
     removeAllData( name );
-    setData( name, QVariant());
+    setData( name, QVariant() );
     update();
     m_requested = true;
+
     return true;
 }
 
@@ -91,6 +93,7 @@ void
 CurrentEngine::stoppedState()
 {
     DEBUG_BLOCK
+
     m_timer->stop();
     removeAllData( "current" );
     setData( "current", "notrack", i18n( "No track playing") );
@@ -114,8 +117,7 @@ CurrentEngine::stoppedState()
     
     m_qm->run();
 
-
-    // Get the latest tracks played
+    // Get the latest tracks played:
 
     m_qmTracks = coll->queryMaker();
     m_qmTracks->setQueryType( QueryMaker::Track );
@@ -128,6 +130,7 @@ CurrentEngine::stoppedState()
     connect( m_qmTracks, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
              SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( m_qmTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
+
     m_qmTracks->run();
 }
 
@@ -170,7 +173,7 @@ void CurrentEngine::update()
 
     QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack );
 
-    int width = coverWidth();
+    const int width = coverWidth();
     if( m_currentTrack->album() )
         subscribeTo( m_currentTrack->album() );
     
@@ -191,7 +194,7 @@ void CurrentEngine::update()
     if( sic )
     {
         //is the source defined
-        QString source = sic->sourceName();
+        const QString source = sic->sourceName();
         if( !source.isEmpty() )
             setData( "current", "source_emblem",  QVariant( sic->emblem() ) );
 
@@ -247,6 +250,7 @@ void
 CurrentEngine::setupTracksData()
 {
     DEBUG_BLOCK
+
     QVariant v;
     v.setValue( m_latestTracks );
     setData( "current", "tracks", v );
@@ -257,6 +261,7 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
+
     m_albums.clear();
     m_albums << albums;
 }
@@ -266,6 +271,7 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
+
     m_latestTracks.clear();
     m_latestTracks << tracks;
 }

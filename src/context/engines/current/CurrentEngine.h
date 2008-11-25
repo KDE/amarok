@@ -15,11 +15,12 @@
 #define AMAROK_CURRENT_ENGINE
 
 #include "ContextObserver.h"
+#include "collection/QueryMaker.h"
 #include "context/DataEngine.h"
 #include "meta/Meta.h" // album observer
-#include "collection/QueryMaker.h"
 
-#include <QTimer>
+class QTimer;
+
 /**
     This class provides context information on the currently playing track. This includes info such as the artist, trackname, album of the current song, etc.
 
