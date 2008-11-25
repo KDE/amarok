@@ -49,7 +49,6 @@ class FilenameLayoutWidget
         void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
         void generateParsableScheme();
 
-        QList< Token * > *tokenList;    //Handles the indexes of the tokens
         QLabel *backText;               //text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *layout;            //main layout that holds the tokens
         

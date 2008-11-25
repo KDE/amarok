@@ -41,8 +41,10 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     setLayout( layout );
     backText = new QLabel( this );
     backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
-    layout->addWidget( backText );
-    tokenList = new QList< Token * >();
+    backText->setFixedSize( 400, 30 );
+    backText->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    backText->setAlignment(Qt::AlignCenter);
+    backText->move( 3, 3 );
     layout->setContentsMargins( 3, 3, 3, 3 );
 }
 
@@ -62,29 +64,16 @@ FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
     if( index == 0)
     {
         layout->addWidget( token );
-        tokenList->append( token );
-        debug() << "\t\ttokenList action: append";
     }
     else
     {
         layout->insertWidget( index, token );
-        tokenList->insert( index - 1, token );
-        debug()<< "\t\ttokenList action: inserted at " << index - 1 << ".";
     }
     
     token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
     token->show();
 
-    //testing, remove when done
-    //token->setText( token->text() + " " + QString::number( layout->indexOf( token ) ) );
-    //end testing block
-
-    //debug stuff follows
-//     foreach(Token *temp, *tokenList)
-//     {
-//         debug() << tokenList->indexOf( temp ) << " .......... " << layout->indexOf( temp ) << " .......... " << temp->getLabel();
-//     }
     generateParsableScheme();
     emit schemeChanged();
 }
@@ -260,6 +249,8 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
         m_startPos = event->pos();
     if ( event->button() == Qt::MidButton )
     {
+        if( childAt( event->pos() ) == 0)
+            return;
         Token *child = qobject_cast< Token * >( childAt( event->pos() ) );
         if ( child == 0 )
         {
@@ -269,7 +260,6 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
                 return;
         }
         debug()<<"a child has been cast here";
-        tokenList->removeAt( layout->indexOf( child ) - 1 );
         delete child;
         debug() << "I killed the damn token quit poking me!";
         m_tokenCount--;
@@ -302,7 +292,6 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     
     drag->setPixmap( QPixmap::grabWidget( child ) );       //need to get pixmap from widget
 
-    tokenList->removeAt( layout->indexOf( child ) - 1 );
     debug() << "Deleting at " << layout->indexOf( child ) - 1;
     delete child;
     m_tokenCount--;
@@ -323,10 +312,10 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
 {
     //with m_parsableScheme
     m_parsableScheme = "";
-    foreach( Token *token, *tokenList)
+    for( int i = 0; i < layout->count(); ++i)
     {
         //TODO:REWRITE THIS USING PROPER Token::getString();
-        QString current = token->getLabel();
+        QString current = qobject_cast<Token*>( layout->itemAt(i)->widget() )->getLabel();  //getting a Token by grabbing a QLayoutItem* at index i and grabbing his QWidget.
         if( current == i18n( "Track" ) )
         {
             m_parsableScheme += "%track";
@@ -453,11 +442,11 @@ void
 FilenameLayoutWidget::removeAllTokens()
 {
     m_tokenCount = 0;
-    foreach(Token *temp, *tokenList)
+    QLayoutItem *child; //Qt docs suggest this for safe deletion of all the elements of a QLayout.
+    while ((child = layout->takeAt(0)) != 0)
     {
-        delete temp;
+        delete child;
     }
-    tokenList->clear();
     backText->show();
     emit schemeChanged();
 }
