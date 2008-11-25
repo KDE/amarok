@@ -1235,22 +1235,15 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
 
     if( result & TagDialog::LYRICSCHANGED )
     {
-        if ( ui->kTextEdit_lyrics->toPlainText().isEmpty() )
+        if ( ui->kTextEdit_lyrics->toHtml().isEmpty() )
         {
             storedLyrics.remove( track );
             storedLyrics.insert( track, QString() );
         }
         else
         {
-            QDomDocument doc;
-            QDomElement e = doc.createElement( "lyrics" );
-            e.setAttribute( "artist", ui->kComboBox_artist->currentText() );
-            e.setAttribute( "title", ui->kLineEdit_title->text() );
-            QDomText t = doc.createTextNode( ui->kTextEdit_lyrics->toPlainText() );
-            e.appendChild( t );
-            doc.appendChild( e );
             storedLyrics.remove( track );
-            storedLyrics.insert( track, doc.toString() );
+            storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
         }
     }
     /*if( result & TagDialog::LABELSCHANGED ) {
