@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
+ * copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>   *
  * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
  **************************************************************************/
 
@@ -117,7 +117,7 @@ void LyricsEngine::update()
     }
 
     if( cached )
-        LyricsManager::self()->lyricsResult( lyrics.toUtf8(), true );
+        LyricsManager::self()->lyricsResultHtml( lyrics.toUtf8(), true );
     else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
         removeAllData( "lyrics" );

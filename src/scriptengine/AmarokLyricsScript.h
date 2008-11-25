@@ -35,7 +35,10 @@ public:
     ~AmarokLyricsScript();
 
 public slots:
+    // NOTE TODO
+    // we really need to pull this out, but shouldn't break the API now
     void showLyrics( const QString& lyrics ) const;
+    
     void showLyricsHtml( const QString& lyrics ) const;
     void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
     QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );

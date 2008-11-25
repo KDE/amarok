@@ -861,7 +861,7 @@ void TagDialog::readTags()
     ui->kLineEdit_location->setText( m_currentTrack->prettyUrl() );
 
     //lyrics
-    ui->kTextEdit_lyrics->setText( m_lyrics );
+    ui->kTextEdit_lyrics->setHtml( m_lyrics );
 
     if( m_currentTrack->album() )
     {
@@ -1312,11 +1312,11 @@ TagDialog::loadTags( const Meta::TrackPtr &track )
 void
 TagDialog::loadLyrics( const Meta::TrackPtr &track )
 {
-    QString xml = lyricsForTrack( track );
+    QString html = lyricsForTrack( track );
 
     QDomDocument doc;
-    if( doc.setContent( xml ) )
-        m_lyrics = doc.documentElement().text();
+    if( !html.isEmpty() )
+        m_lyrics = html;
     else
         m_lyrics.clear();
 }
