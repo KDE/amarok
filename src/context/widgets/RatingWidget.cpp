@@ -201,12 +201,17 @@ RatingWidget::setHalfStepsEnabled( bool enabled )
 void
 RatingWidget::mousePressEvent( QGraphicsSceneMouseEvent* e )
 {
-    if ( e->button() == Qt::LeftButton ) {
+    if ( e->button() == Qt::LeftButton )
+    {
         QRect rect( contentsRect().topLeft().x(), contentsRect().topLeft().y(),
                     contentsRect().width(), contentsRect().height() );
-        d->hoverRating = d->rating = d->ratingPainter.ratingFromPosition( rect, QPoint( e->pos().x(), e->pos().y() ) );
-        update();
-        emit ratingChanged( d->rating );
+        int ratingFromPos = d->ratingPainter.ratingFromPosition( rect, QPoint( e->pos().x(), e->pos().y() ) );
+        if ( ratingFromPos >= 0 )
+        {
+            d->hoverRating = d->rating = ratingFromPos;
+            update();
+            emit ratingChanged( d->rating );
+        }
     }
 }
 
