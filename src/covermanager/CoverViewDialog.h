@@ -28,11 +28,11 @@
 #include <KLocale>
 #include <KWindowSystem>
 
-class AMAROK_EXPORT CoverViewDialog : public KDialog
+class AMAROK_EXPORT CoverViewDialog : public QDialog
 {
     public:
         CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
-            : KDialog( parent )
+            : QDialog( parent )
         {
             setAttribute( Qt::WA_DeleteOnClose );
 
