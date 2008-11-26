@@ -74,8 +74,6 @@ TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 void
 TrackWidget::setTrack( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     m_track = track;
     m_rating->setRating( track->rating() );
 }
