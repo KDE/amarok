@@ -33,7 +33,7 @@ if [ -e .configured ]
 then
     echo ">>> Looks like sources are already configured. Remove .configured if that's untrue"
 else
-    MYOPTS="--without-server --with-embedded-server --without-docs --without-man --without-bench --without-ssl --without-extra-tools --with-pic"
+    MYOPTS="--without-server --with-embedded-server --without-docs --without-man --without-bench --without-ssl --without-extra-tools --with-pic --without-libwrap --with-mysqld-ldflags=-all-static --with-client-ldflags=-all-static --disable-shared"
     EXTRAOPTS="$@"
     CFLAGS="-fPIC -ggdb ${CFLAGS}"
     CXXFLAGS="-fPIC -ggdb ${CXXFLAGS}"
