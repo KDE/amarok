@@ -36,8 +36,6 @@ PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
     , m_pixmap( pixmap )
 {
     QLabel *imageLabel = new QLabel();
-    imageLabel->setBackgroundRole( QPalette::Base );
-    imageLabel->setScaledContents( true );
     imageLabel->setPixmap( pixmap );
     imageLabel->adjustSize();
 
