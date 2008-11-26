@@ -76,6 +76,7 @@ void CurrentEngine::message( const ContextState& state )
     if( state == Current )
     {
         update();
+        m_timer->stop();
     }
     else if( state == Home )
     {
