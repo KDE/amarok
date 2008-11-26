@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Songkick Data Engine
+Name[cs]=Datový nástroj Songkick
 Name[de]=Datenmodul für Songkick
 Name[el]=Μηχανή δεδομένων Songkick
 Name[gl]=Motor de dados de Songkick
@@ -8,7 +9,7 @@ Name[is]=Songkick gagnarvélin
 Name[it]=Motore dati Songkick
 Name[km]=ម៉ាស៊ីន​ទិន្នន័យ Songkick
 Name[lv]=Songkick datu dzinējs
-Name[nds]=Songkick-Hanteerkarn
+Name[nds]=Songkick-Datenkarn
 Name[nl]=Songkick-gegevensengine
 Name[pl]=Moduł danych Songkick
 Name[pt]=Motor de Dados do Songkick
