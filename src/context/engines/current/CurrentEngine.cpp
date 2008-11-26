@@ -155,21 +155,15 @@ void CurrentEngine::update()
     {
         unsubscribeFrom( m_currentTrack );
         if ( m_currentTrack->album() )
-        {
             unsubscribeFrom( m_currentTrack->album() );
-        }
     }
 
     m_currentTrack = The::engineController()->currentTrack();
     
     if( !m_currentTrack )
-    {
         return;
-    }
     
     subscribeTo( m_currentTrack );
-
-    setData( "current", "notrack" , QString() );
 
     QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack );
 
