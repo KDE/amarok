@@ -211,8 +211,7 @@ ScriptManager::stopScript( const QString& name )
 {
     if( !m_scripts.contains( name ) )
         return false;
-    QTimer::singleShot( 0, this, SLOT( slotStopScript( name ) ) );
-
+    slotStopScript( name );
     return true;
 }
 
@@ -440,28 +439,33 @@ ScriptManager::slotRunScript( QString name, bool silent )
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
     m_scripts[name].running = true;
-
+    m_scripts[name].evaluating = true;
     if( m_scripts[name].info.category() == "Lyrics" )
         m_lyricsScript = name;
    
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
-    m_scripts[name].engine->setProcessEventsInterval( 1000 );
+    m_scripts[name].engine->setProcessEventsInterval( 100 );
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
     scriptFile.close();
 
-    if ( m_scripts[name].engine->hasUncaughtException() )
+    if ( m_scripts[name].evaluating )
     {
-        error() << "Script Error:" << time.currentTime().toString() + ' ' + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() );
-        m_scripts[name].log += time.currentTime().toString() + ' ' + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
-        m_scripts[name].engine->clearExceptions();
-        slotStopScript( name );
-        //FIXME: move the script name inside after the string freeze.
-        if ( !silent )
-            KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) + " (" + name + ")" );
-        else
-            return false;
+        m_scripts[name].evaluating = false;
+        if ( m_scripts[name].engine->hasUncaughtException() )
+        {
+            error() << "Script Error:" << time.currentTime().toString() + ' ' + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() );
+            m_scripts[name].log += time.currentTime().toString() + ' ' + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
+            m_scripts[name].engine->clearExceptions();
+            slotStopScript( name );
+            //FIXME: move the script name inside after the string freeze.
+            if ( !silent )
+                KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) + " (" + name + ")" );
+            else
+                return false;
+        }
     }
-
+    else
+        slotStopScript( name );
     return true;
 }
 
@@ -469,8 +473,13 @@ void
 ScriptManager::slotStopScript( QString name )
 {
     DEBUG_BLOCK
-
-    m_scripts[name].engine->abortEvaluation();
+    //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
+    if ( m_scripts[name].engine->isEvaluating() )
+    {
+        m_scripts[name].engine->abortEvaluation();
+        m_scripts[name].evaluating = false;
+        return;
+    }
     if( m_scripts[name].info.category() == "Scriptable Service" )
         The::scriptableServiceManager()->removeRunningScript( name );
     if ( m_scripts[name].info.isPluginEnabled() )

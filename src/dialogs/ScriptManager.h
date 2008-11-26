@@ -83,6 +83,7 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
             QScriptEngine*                                  engine;
             KUrl                                            url;
             bool                                            running;
+            bool                                            evaluating;
             AmarokScript::AmarokScript*                     globalPtr;
             ScriptableServiceScript*                        servicePtr;
             QString                                         log;

@@ -81,8 +81,6 @@ namespace AmarokScript
 
     void AmarokScript::end()
     {
-        //stopScript calls an associated slot via the event loop to handle cleanup,
-        //so this should be safe
         ScriptManager::instance()->stopScript( m_name );
     }
 

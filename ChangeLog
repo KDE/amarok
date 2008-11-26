@@ -12,6 +12,7 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Fix a bug that stopping a running script crashes amarok.
     * The context view could sometimes show the "stopped state" even when
       a track was playing.
     * Amarok 1.4 database importer would crash under some circumstances.
