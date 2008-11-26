@@ -148,7 +148,7 @@ FastForwardWorker::run()
                 debug() << c << " inserting track:" << track->playableUrl();
             }
             else
-                debug() << c << "  track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
+                debug() << c << " track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
 
             emit trackAdded( track );
             ++i;

@@ -334,7 +334,7 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         if( result.isEmpty() )
         {
             warning() << "SQL Query returned no results:" << select;
-            //continue;
+            continue;
         }
         QString id = result.first();    //if result is empty something is going very wrong
         //the following sql was copied from SqlMeta.cpp
