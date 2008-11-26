@@ -205,8 +205,9 @@ void CurrentEngine::update()
 
     //generate data for album applet
     Meta::ArtistPtr artist = m_currentTrack->artist();
-    //if it's the same artist we don't have to update albums data
-    if( m_currentArtist != artist )
+    
+    //We need to update the albums data even if the artist is the same, since the current track is
+    //most likely different, and thus the rendering of the albums applet should change
     {
         m_currentArtist = artist;
         removeAllData( "albums" );
