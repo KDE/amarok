@@ -25,12 +25,14 @@
 
 class st_mysql;
 typedef struct st_mysql MYSQL;
+
 /**
  * Implements a SqlCollection using a MySQL Embedded Server
  */
 class MySqlEmbeddedCollection : public SqlCollection
 {
     Q_OBJECT
+
     public:
         MySqlEmbeddedCollection( const QString &id, const QString &prettyName );
         virtual ~MySqlEmbeddedCollection();

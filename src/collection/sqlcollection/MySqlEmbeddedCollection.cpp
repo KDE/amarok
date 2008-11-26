@@ -16,7 +16,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #include "MySqlEmbeddedCollection.h"
 
 #include "Amarok.h"
@@ -84,19 +83,16 @@ int ThreadInitializer::threadsCount = 0;
 QMutex ThreadInitializer::countMutex;
 QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
 
-MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, 
-                                                    const QString &prettyName )
+
+MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )
     , m_db( 0 )
 {
-    QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config",
-                    Amarok::saveLocation() + "my.cnf" ); 
-    QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data",
-                    Amarok::saveLocation() + "mysqle" );
-    char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( 
-                    defaultsFile ).toAscii().data() );
-    char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg(
-                    databaseDir ).toAscii().data() );
+    const QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" ); 
+    const QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
+
+    char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
+    char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg( databaseDir ).toAscii().data() );
 
     if( !QFile::exists( defaultsFile ) )
     {
@@ -138,33 +134,34 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id,
         return;
     }
 
-    m_db = mysql_init(NULL);
+    m_db = mysql_init( NULL );
     delete [] server_options;
     delete [] server_groups;
     delete [] defaultsLine;
     delete [] databaseLine;
+
     if( !m_db )
     {
         error() << "MySQLe initialization failed";
     }
     else
     {
-        mysql_options(m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient");
-        mysql_options(m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL);
+        mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" );
+        mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL );
     
-        if( !mysql_real_connect(m_db, NULL,NULL,NULL, 0, 0,NULL,0) )
+        if( !mysql_real_connect( m_db, NULL,NULL,NULL, 0, 0,NULL, 0 ) )
         {
             error() << "Could not connect to mysql!";
-            reportError("na");
+            reportError( "na" );
             mysql_close( m_db );
             m_db = 0;
         }
         else
         {
     
-            mysql_query(m_db, "CREATE DATABASE IF NOT EXISTS amarok");
-            mysql_query(m_db, "CREATE DATABASE IF NOT EXISTS mysql");
-            mysql_query(m_db, "USE amarok");
+            mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS amarok" );
+            mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS mysql" );
+            mysql_query( m_db, "USE amarok" );
 
             debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
         }
@@ -196,7 +193,7 @@ QStringList MySqlEmbeddedCollection::query( const QString& statement )
         return values;
     }
 
-    int res = mysql_query(m_db, statement.toUtf8() ); 
+    int res = mysql_query( m_db, statement.toUtf8() ); 
     
     if( res )
     {
@@ -248,7 +245,7 @@ int MySqlEmbeddedCollection::insert( const QString& statement, const QString& /*
         return 0;
     }
 
-    int res = mysql_query(m_db, statement.toUtf8() ); 
+    int res = mysql_query( m_db, statement.toUtf8() ); 
     if( res )
     {
         reportError( statement );
@@ -262,7 +259,7 @@ int MySqlEmbeddedCollection::insert( const QString& statement, const QString& /*
         mysql_free_result( pres );
     }
 
-    res = mysql_insert_id(m_db ); 
+    res = mysql_insert_id( m_db ); 
     
     return res;
 }
@@ -274,7 +271,7 @@ MySqlEmbeddedCollection::escape( QString text ) const
 }
 
 QString
-MySqlEmbeddedCollection::randomFunc(  ) const
+MySqlEmbeddedCollection::randomFunc() const
 {
     return "RAND()";
 }
