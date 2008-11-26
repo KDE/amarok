@@ -511,9 +511,10 @@ ScriptManager::slotConfigChanged( bool changed )
 void
 ScriptManager::slotConfigComitted( const QByteArray & name )
 {
-    DEBUG_BLOCK
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( name );
 /*
-TODO: to be implemented
+    TODO: to be implemented
     debug() << "config comitted for: " << name;
     m_configChanged = true;
     m_changedScripts << QString( name );
