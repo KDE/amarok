@@ -194,7 +194,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
         m_downloadDialog = new MagnatuneDownloadDialog( m_parent );
         m_downloadDialog->setModal( true );
         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo * ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
-        connect( m_downloadDialog, SIGNAL( rejected () ), this, SLOT( albumPurchaseCancelled() ) );
+        //connect( m_downloadDialog, SIGNAL( rejected () ), this, SLOT( albumPurchaseCancelled() ) );
 
     }
 

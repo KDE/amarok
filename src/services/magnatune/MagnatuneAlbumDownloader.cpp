@@ -48,7 +48,7 @@ MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()
 
 void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 {
-
+    DEBUG_BLOCK
 
     m_currentAlbum = info->album();
 
@@ -57,7 +57,11 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation;
 
 
-    m_currentAlbumFileName = downloadUrl.fileName();
+    //m_currentAlbumFileName = downloadUrl.fileName();
+    if ( m_currentAlbum )
+        m_currentAlbumFileName = m_currentAlbum->albumCode() + ".zip";
+    else
+        m_currentAlbumFileName = "temp_album.zip";
 
 
     debug() << "Using temporary location: " << m_tempDir->name() + m_currentAlbumFileName;
@@ -75,6 +79,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
 void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 {
+    DEBUG_BLOCK
 
     debug() << "album download complete";
 
@@ -128,6 +133,8 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
 void MagnatuneAlbumDownloader::albumDownloadAborted( )
 {
+    DEBUG_BLOCK
+    
     The::statusBar()->endProgressOperation( m_albumDownloadJob );
     m_albumDownloadJob->kill();
     delete m_albumDownloadJob;
