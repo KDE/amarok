@@ -12,6 +12,12 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Magnatune.com store: Correctly show progress info when downloading.
+    * Magnatune.com store: Don't block further purchasing/downloading if
+      download dialog is closed without starting the download.
+    * Magnatune.com store: Fix purchase/download of wrong album being initiated
+      when selecting "Purchase" or "Download" from the playlist context menu.
+      (BR: 176171)
     * Fix a bug that stopping a running script crashes amarok.
     * The context view could sometimes show the "stopped state" even when
       a track was playing.
