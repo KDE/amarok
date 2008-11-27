@@ -270,11 +270,10 @@ MySqlEmbeddedCollection::escape( QString text ) const
     const QByteArray utfText = text.toUtf8();
     const int length = utfText.length() * 2 + 1;
     char outputBuffer[length];
-    char* to = &outputBuffer[0];
 
-    mysql_real_escape_string( m_db, to, utfText.data(), utfText.length() );
+    mysql_real_escape_string( m_db, outputBuffer, utfText.data(), utfText.length() );
 
-    return to; 
+    return outputBuffer; 
 }
 
 QString
