@@ -77,13 +77,14 @@ void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
 
 void MagnatunePurchaseHandler::membershipDownload( const QString &membershipType, const QString &username, const QString &password )
 {
+    DEBUG_BLOCK
     QString purchaseURL = "http://" + username + ":" + password + "@" + membershipType + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok";
 
     m_giftCardPurchase = false;
     m_membershipDownload = true;
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
-    The::statusBar() ->newProgressOperation( m_resultDownloadJob, i18n( "Processing download" ) );
+    The::statusBar()->newProgressOperation( m_resultDownloadJob, i18n( "Processing download" ) );
     connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 
     
@@ -193,6 +194,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
         m_downloadDialog = new MagnatuneDownloadDialog( m_parent );
         m_downloadDialog->setModal( true );
         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo * ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
+        connect( m_downloadDialog, SIGNAL( rejected () ), this, SLOT( albumPurchaseCancelled() ) );
 
     }
 
