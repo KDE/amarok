@@ -15,8 +15,9 @@ VERSION 2.0
     * Magnatune.com store: Correctly show progress info when downloading.
     * Magnatune.com store: Fix purchase/download of wrong album being initiated
       when selecting "Purchase" or "Download" from the playlist context menu.
-      (BR: 176171)
+      (BR 176171)
     * Fix a bug that stopping a running script crashes amarok.
+      (BR 175050)
     * The context view could sometimes show the "stopped state" even when
       a track was playing.
     * Amarok 1.4 database importer would crash under some circumstances.
