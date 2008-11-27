@@ -211,7 +211,7 @@ void
 Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
 {
     const QRect iconBox( 0, 0, m_iconHeight, m_iconWidth );
-    if( iconBox.contains( e->pos() ) )
+    if( iconBox.contains( e->pos() ) && e->button() != Qt::RightButton )
     {
         emit mute();
         return;
