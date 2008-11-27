@@ -115,8 +115,10 @@ void ProgressBarNG::setValue( int percentage )
     progresBar()->setValue( percentage );
     emit( percentageChanged( percentage ) );
 
-    if ( percentage == m_progresBar->maximum() )
-        QTimer::singleShot( POST_COMPLETION_DELAY, this, SLOT( delayedDone() ) );
+    //this safety check has to be removed as KJobs sometimes start out
+    //by showing 100%, thus removing the progress info before it even gets started
+    /*if ( percentage == m_progresBar->maximum() )
+        QTimer::singleShot( POST_COMPLETION_DELAY, this, SLOT( delayedDone() ) );*/
 
 }
 
