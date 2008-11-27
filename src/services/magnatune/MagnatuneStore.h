@@ -102,13 +102,17 @@ public slots:
     * Slot for catching cancelled list downloads
     */
     void listDownloadCancelled();
+
+    void purchase( Meta::MagnatuneTrack * track );
+
+    void purchase( Meta::MagnatuneAlbum * album );
     
 private slots:
     /**
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
     void purchase();
-
+    
     void purchaseCurrentTrackAlbum();
 
     /**

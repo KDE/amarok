@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
 #include "MagnatuneMeta.h"
@@ -22,6 +22,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "MagnatunePurchaseAction.h"
 #include "SvgHandler.h"
 
 #include <KIcon>
@@ -165,18 +166,18 @@ GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 ///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneTrack::MagnatuneTrack( const QString &name )
-    : ServiceTrack( name )
+    : QObject()
+    , ServiceTrack( name )
     , m_downloadMembership ( false )
-    , m_purchaseCustomAction( 0 )
-    , m_purchaseCurrentTrackAction( 0 )
+    , m_purchaseAction( 0 )
     , m_showInServiceAction( 0 )
 {}
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
-    : ServiceTrack( resultRow )
+    : QObject()
+    , ServiceTrack( resultRow )
     , m_downloadMembership ( false )
-    , m_purchaseCustomAction( 0 )
-    , m_purchaseCurrentTrackAction( 0 )
+    , m_purchaseAction( 0 )
     , m_showInServiceAction( 0 )
 {
     DEBUG_BLOCK
@@ -215,44 +216,52 @@ QList< PopupDropperAction * > Meta::MagnatuneTrack::customActions()
     DEBUG_BLOCK
     QList< PopupDropperAction * > actions;
 
-    QString text = i18n( "&Purchase Album" );
-    if ( m_downloadMembership )
-        text = i18n( "&Download Album" );
+    if ( !m_purchaseAction ) {
 
-    if ( !m_purchaseCustomAction ) {
-        m_purchaseCustomAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download", KIcon("download-amarok" ), text, 0 );
-        MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
-        QObject::connect( m_purchaseCustomAction, SIGNAL( activated() ), mAlbum->store(), SLOT( purchase() ) );
+        QString text = i18n( "&Purchase Album" );
+        if ( m_downloadMembership )
+            text = i18n( "&Download Album" );
+
+        MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
+        if ( mAlbum ) {
+            m_purchaseAction = new MagnatunePurchaseAction( text, mAlbum );
+        }
     }
 
-    actions.append( m_purchaseCustomAction );
+    if ( m_purchaseAction )
+        actions.append( m_purchaseAction );
+
     return actions;
+
 }
 
 QList< PopupDropperAction * > Meta::MagnatuneTrack::currentTrackActions()
 {
 
     DEBUG_BLOCK
-            QList< PopupDropperAction * > actions;
+    QList< PopupDropperAction * > actions;
 
-    QString text = i18n( "Magnatune.com: &Purchase Album" );
-    if ( m_downloadMembership )
-        text = i18n( "Magnatune.com: &Download Album" );
+    if ( !m_purchaseAction ) {
 
-    if ( !m_purchaseCurrentTrackAction ) {
-        m_purchaseCurrentTrackAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download", KIcon("download-amarok" ), text, 0 );
-        MagnatuneAlbum * mAlbum = static_cast<MagnatuneAlbum *> ( album().data() );
-        QObject::connect( m_purchaseCurrentTrackAction, SIGNAL( activated() ), mAlbum->store(), SLOT( purchaseCurrentTrackAlbum() ) );
+        QString text = i18n( "Magnatune.com: &Purchase Album" );
+        if ( m_downloadMembership )
+            text = i18n( "Magnatune.com: &Download Album" );
+
+        MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
+        if ( mAlbum ) {
+            m_purchaseAction = new MagnatunePurchaseAction( text, mAlbum );
+        }
     }
 
-    actions.append( m_purchaseCurrentTrackAction );
+    if ( m_purchaseAction )
+        actions.append( m_purchaseAction );
 
     if ( !m_showInServiceAction ) {
 
-        MagnatuneAlbum * malbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
+        MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
 
-        if ( malbum )
-            m_showInServiceAction = new ShowInServiceAction( malbum->store(), this );
+        if ( mAlbum )
+            m_showInServiceAction = new ShowInServiceAction( mAlbum->store(), this );
     }
 
     actions.append( m_showInServiceAction );
@@ -284,6 +293,14 @@ QList< QString > Meta::MagnatuneTrack::moods()
 void Meta::MagnatuneTrack::setMoods(QList< QString > moods)
 {
     m_moods = moods;
+}
+
+void Meta::MagnatuneTrack::purchase()
+{
+    DEBUG_BLOCK
+    MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
+    if ( mAlbum )
+        mAlbum->store()->purchase( this );
 }
 
 
@@ -328,18 +345,22 @@ QString MagnatuneArtist::magnatuneUrl() const
 ///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneAlbum::MagnatuneAlbum( const QString &name )
-    : ServiceAlbumWithCover( name )
+    : QObject()
+    , ServiceAlbumWithCover( name )
     , m_coverUrl()
     , m_launchYear( 0 )
     , m_albumCode()
     , m_store( 0 )
     , m_downloadMembership( false )
+    , m_purchaseAction( 0 )
 
 {}
 
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
-    : ServiceAlbumWithCover( resultRow )
+    : QObject()
+    , ServiceAlbumWithCover( resultRow )
     , m_downloadMembership ( false )
+    , m_purchaseAction( 0 )
 {
     debug() << "create album from result row: " << resultRow;
 
@@ -406,16 +427,24 @@ QList< PopupDropperAction * > MagnatuneAlbum::customActions()
     DEBUG_BLOCK
     QList< PopupDropperAction * > actions;
 
-    QString text = i18n( "&Purchase Album" );
-    if ( m_downloadMembership )
-        text = i18n( "&Download Album" );
+    if ( !m_purchaseAction ) {
 
-    PopupDropperAction * action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download",  KIcon("download-amarok" ), text, 0 );
+        QString text = i18n( "&Purchase Album" );
+        if ( m_downloadMembership )
+            text = i18n( "&Download Album" );
+        m_purchaseAction = new MagnatunePurchaseAction( text, this );
+    }
 
-    QObject::connect( action, SIGNAL( activated() ) , m_store, SLOT( purchase() ) );
+    actions.append( m_purchaseAction );
 
-    actions.append( action );
     return actions;
+}
+
+void Meta::MagnatuneAlbum::purchase()
+{
+    DEBUG_BLOCK
+    if ( store() )
+        store()->purchase( this );
 }
 
 
@@ -430,4 +459,10 @@ MagnatuneGenre::MagnatuneGenre( const QString & name )
 MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {}
+
+#include "MagnatuneMeta.moc"
+
+
+
+
 

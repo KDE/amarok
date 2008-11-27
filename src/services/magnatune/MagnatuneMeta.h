@@ -36,9 +36,9 @@ class MagnatuneStore;
 namespace Meta
 {
     
-class MagnatuneTrack  : public ServiceTrack
+class MagnatuneTrack  : public QObject, public ServiceTrack
 {
-
+    Q_OBJECT
 public:
     MagnatuneTrack( const QString &name );
     MagnatuneTrack( const QStringList &resultRow );
@@ -61,13 +61,15 @@ public:
     void setOggUrl( const QString& url );
     QString oggUrl() const;
 
+public slots:
+    void purchase();
+
 private:
     QString m_lofiUrl;
     QString m_oggUrl;
     bool m_downloadMembership;
     QList<QString> m_moods;
-    PopupDropperAction * m_purchaseCustomAction;
-    PopupDropperAction * m_purchaseCurrentTrackAction;
+    PopupDropperAction * m_purchaseAction;
     ShowInServiceAction * m_showInServiceAction;
 
 };
@@ -92,8 +94,9 @@ public:
     QString magnatuneUrl() const;
 };
 
-class MagnatuneAlbum  : public ServiceAlbumWithCover
+class MagnatuneAlbum  : public QObject, public ServiceAlbumWithCover
 {
+    Q_OBJECT
 private:
     QString m_coverUrl;
     int m_launchYear;
@@ -125,6 +128,11 @@ public:
     MagnatuneStore * store();
 
     void setDownloadMembership();
+
+public slots:
+    void purchase();
+private:
+    PopupDropperAction * m_purchaseAction;
 };
 
 class MagnatuneGenre  : public ServiceGenre

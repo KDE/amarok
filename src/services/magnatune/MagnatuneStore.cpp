@@ -156,8 +156,39 @@ void MagnatuneStore::purchase( )
         connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
     }
 
-    if (m_currentAlbum != 0)
+    if ( m_currentAlbum != 0 )
         m_purchaseHandler->purchaseAlbum( m_currentAlbum );
+}
+
+
+void MagnatuneStore::purchase( Meta::MagnatuneTrack * track )
+{
+    Meta::MagnatuneAlbum * album = dynamic_cast<Meta::MagnatuneAlbum *>( track->album().data() );
+    if ( album )
+        purchase( album );
+}
+
+void MagnatuneStore::purchase( Meta::MagnatuneAlbum * album )
+{
+
+    DEBUG_BLOCK
+    if ( m_purchaseInProgress )
+        return;
+
+    if ( !m_polished )
+        polish();
+
+    m_purchaseInProgress = true;
+    m_purchaseAlbumButton->setEnabled( false );
+    
+    if ( !m_purchaseHandler )
+    {
+        m_purchaseHandler = new MagnatunePurchaseHandler();
+        m_purchaseHandler->setParent( this );
+        connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
+    }
+    
+    m_purchaseHandler->purchaseAlbum( album );
 }
 
 
@@ -591,6 +622,7 @@ QString MagnatuneStore::sendMessage( const QString & message )
 
     return i18n( "ERROR: Unknown argument." );
 }
+
 
 
 #include "MagnatuneStore.moc"

@@ -30,6 +30,7 @@
             MagnatuneDatabaseWorker.cpp
             MagnatuneSqlCollection.cpp
             MagnatuneCollectionLocation.cpp
+            MagnatunePurchaseAction.cpp
         )
 
         kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
