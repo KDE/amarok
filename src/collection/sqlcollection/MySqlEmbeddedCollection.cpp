@@ -267,7 +267,16 @@ int MySqlEmbeddedCollection::insert( const QString& statement, const QString& /*
 QString
 MySqlEmbeddedCollection::escape( QString text ) const
 {
-    return text.replace("\\", "\\\\").replace( '\'', "''" );
+    const QByteArray utfText = text.toUtf8();
+    long unsigned int length = utfText.length() * 2 + 1;
+    char* to = new char[length];
+
+    mysql_real_escape_string( m_db, to, utfText.data(), utfText.length() );
+
+    const QString result( to );
+    delete[] to;
+
+    return result; 
 }
 
 QString
