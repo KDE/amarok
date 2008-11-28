@@ -151,8 +151,6 @@ private:
     Plasma::Containment *m_containment;
     int m_numContainments;
 
-    int m_placementHack;
-
     //ControlBox* m_controlBox;
 
 private slots:

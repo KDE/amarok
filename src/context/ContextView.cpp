@@ -51,7 +51,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , m_startupFinished( false )
     , m_containment( 0 )
     , m_numContainments( 4 )
-    , m_placementHack( 0 )
 {
     s_self = this;
 
@@ -469,15 +468,6 @@ void ContextView::resizeEvent( QResizeEvent* event )
 
     updateContainmentsGeometry();
 
-    //HACK: this is really ugly but i don't know why the containments don't get placed correctly on startup
-    if( m_placementHack < 3 )
-        m_placementHack++;    
-    if( m_placementHack == 2 )
-    {
-        debug() << "has hack";
-        resize( size().width()+1, size().height() );
-        resize( size().width()-1, size().height() );
-    }
 }
 
 
