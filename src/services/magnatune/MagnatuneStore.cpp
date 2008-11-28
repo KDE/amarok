@@ -252,6 +252,7 @@ void MagnatuneStore::initBottomPanel()
 
 void MagnatuneStore::updateButtonClicked()
 {
+    DEBUG_BLOCK
     m_updateAction->setEnabled( false );
     updateMagnatuneList();
 }
@@ -259,6 +260,7 @@ void MagnatuneStore::updateButtonClicked()
 
 bool MagnatuneStore::updateMagnatuneList()
 {
+    DEBUG_BLOCK
     //download new list from magnatune
 
      debug() << "MagnatuneStore: start downloading xml file";
@@ -289,14 +291,18 @@ bool MagnatuneStore::updateMagnatuneList()
 
 void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
 {
+   DEBUG_BLOCK
    debug() << "MagnatuneStore: xml file download complete";
 
-    if ( downLoadJob != m_listDownloadJob )
+    if ( downLoadJob != m_listDownloadJob ) {
+        debug() << "wrong job, ignoring....";
         return ; //not the right job, so let's ignore it
+    }
 
     m_updateAction->setEnabled( true );
     if ( !downLoadJob->error() == 0 )
     {
+        debug() << "Got an error, bailing out: " << downLoadJob->errorString();
         //TODO: error handling here
         return ;
     }

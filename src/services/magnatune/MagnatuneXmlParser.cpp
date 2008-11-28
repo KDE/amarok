@@ -36,6 +36,7 @@ using namespace Meta;
 MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
         : ThreadWeaver::Job()
 {
+    DEBUG_BLOCK
     m_currentArtist = "";
     m_sFileName = filename;
     debug() << "Creating MagnatuneXmlParser";
@@ -49,6 +50,7 @@ MagnatuneXmlParser::~MagnatuneXmlParser()
 void
 MagnatuneXmlParser::run()
 {
+    DEBUG_BLOCK
     m_pCurrentArtist = 0;
     m_pCurrentAlbum = 0;
     debug() << "MagnatuneXmlParser::doJob";
@@ -59,6 +61,7 @@ MagnatuneXmlParser::run()
 void
 MagnatuneXmlParser::completeJob( )
 {
+    DEBUG_BLOCK
     The::statusBar() ->longMessage(
         i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists", m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), StatusBar::Information );
 
@@ -69,6 +72,7 @@ MagnatuneXmlParser::completeJob( )
 void
 MagnatuneXmlParser::readConfigFile( const QString &filename )
 {
+    DEBUG_BLOCK
     m_nNumberOfTracks = 0;
     m_nNumberOfAlbums = 0;
     m_nNumberOfArtists = 0;
