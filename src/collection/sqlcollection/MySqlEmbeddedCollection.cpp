@@ -24,6 +24,7 @@
 
 #include <QMutexLocker>
 #include <QThreadStorage>
+#include <QVarLengthArray>
 
 #include <KRandom>
 
@@ -269,11 +270,11 @@ MySqlEmbeddedCollection::escape( QString text ) const
 {
     const QByteArray utfText = text.toUtf8();
     const int length = utfText.length() * 2 + 1;
-    char outputBuffer[length];
+    QVarLengthArray<char, 1024> outputBuffer( length );
 
-    mysql_real_escape_string( m_db, outputBuffer, utfText.data(), utfText.length() );
+    mysql_real_escape_string( m_db, outputBuffer.data(), utfText.constData(), utfText.length() );
 
-    return outputBuffer; 
+    return QString::fromUtf8( outputBuffer.constData() );
 }
 
 QString
