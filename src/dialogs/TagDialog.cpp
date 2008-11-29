@@ -763,20 +763,14 @@ void TagDialog::readTags()
     setWindowTitle( KDialog::makeStandardCaption( i18n("Track Details: %1 by %2",
                     m_currentTrack->name(),  m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString() ) ) );
 
-    debug() << "before album() stuff";
     QString niceTitle;
 
     const QFontMetrics fnt =  ui->trackArtistAlbumLabel->fontMetrics();
-    const int len = ui->kTabWidget->width() - ui->pixmap_cover->width();
-    QString curTrackAlbName;
-    QString curArtistName;
-    
+    const int len = ui->trackArtistAlbumLabel->width();
+    QString curTrackAlbName = fnt.elidedText( Qt::escape( m_currentTrack->album()->name() ), Qt::ElideRight, len );
     QString curTrackName = fnt.elidedText( Qt::escape( m_currentTrack->name() ), Qt::ElideRight, len );
+    QString curArtistName = fnt.elidedText( Qt::escape( m_currentTrack->artist()->name() ), Qt::ElideRight, len );
     QString curTrackPretName = fnt.elidedText( Qt::escape( m_currentTrack->prettyName() ), Qt::ElideRight, len );
-    if( m_currentTrack->album() )
-        QString curTrackAlbName = fnt.elidedText( Qt::escape( m_currentTrack->album()->name() ), Qt::ElideRight, len );
-    if( m_currentTrack->artist() )
-        QString curArtistName = fnt.elidedText( Qt::escape( m_currentTrack->artist()->name() ), Qt::ElideRight, len );
     
     if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
     {
@@ -789,17 +783,13 @@ void TagDialog::readTags()
         }
         else
                 niceTitle = curTrackPretName;
-    }
-    else if( m_currentTrack->album() )
+    } else if( m_currentTrack->album() )
     {
         niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" , curTrackName, curArtistName, curTrackAlbName );
-    }
-    else if( m_currentTrack->artist() )
+    } else if( m_currentTrack->artist() )
         niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , curTrackName, curArtistName );
     else
         niceTitle = i18n( "<b>%1</b>" , curTrackName );
-
-    debug() << "after album() stuff";
 
     ui->trackArtistAlbumLabel->setText( niceTitle );
     ui->trackArtistAlbumLabel2->setText( niceTitle );
