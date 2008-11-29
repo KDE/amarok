@@ -768,10 +768,15 @@ void TagDialog::readTags()
 
     const QFontMetrics fnt =  ui->trackArtistAlbumLabel->fontMetrics();
     const int len = ui->kTabWidget->width() - ui->pixmap_cover->width();
-    QString curTrackAlbName = fnt.elidedText( Qt::escape( m_currentTrack->album()->name() ), Qt::ElideRight, len );
+    QString curTrackAlbName;
+    QString curArtistName;
+    
     QString curTrackName = fnt.elidedText( Qt::escape( m_currentTrack->name() ), Qt::ElideRight, len );
-    QString curArtistName = fnt.elidedText( Qt::escape( m_currentTrack->artist()->name() ), Qt::ElideRight, len );
     QString curTrackPretName = fnt.elidedText( Qt::escape( m_currentTrack->prettyName() ), Qt::ElideRight, len );
+    if( m_currentTrack->album() )
+        QString curTrackAlbName = fnt.elidedText( Qt::escape( m_currentTrack->album()->name() ), Qt::ElideRight, len );
+    if( m_currentTrack->artist() )
+        QString curArtistName = fnt.elidedText( Qt::escape( m_currentTrack->artist()->name() ), Qt::ElideRight, len );
     
     if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
     {
