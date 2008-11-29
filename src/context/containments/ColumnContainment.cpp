@@ -796,7 +796,7 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
         row = 0;
     }
 
-    //Expand applets width when a complet column has been removed
+    //Expand applets width when a complete column has been removed
     columnCount = m_grid->columnCount();
     rowCount = m_grid->rowCount();
     if( ( startColumn == columnCount && startRow == rowCount - 1 ) || columnsBeforeRearrange > columnCount )
