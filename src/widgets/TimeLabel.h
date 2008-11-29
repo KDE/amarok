@@ -26,7 +26,6 @@
 #include <kglobalsettings.h>
 #include <QFontMetrics>
 #include <QMouseEvent>
-#include <QLocale>
 
 
 class TimeLabel : public QLabel
@@ -47,10 +46,7 @@ public:
     
     virtual QSize sizeHint() const
     {
-        QString zeroTime = QLocale::system().toString( QTime( 0, 0, 0 ), QLocale::LongFormat );
-        //in zeroTime besides time format we have timezone, so we must must remove it
-        QString sHint = QLocale::system().negativeSign() + zeroTime.mid( 0, zeroTime.lastIndexOf( " " ) );
-        return fontMetrics().boundingRect( sHint ).size();
+        return fontMetrics().boundingRect( KGlobal::locale()->negativeSign() + KGlobal::locale()->formatTime( QTime( 0, 0, 0 ), true, true ) ).size();
     }
     
     void setShowTime( bool showTime )
