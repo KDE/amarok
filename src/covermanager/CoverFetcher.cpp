@@ -293,6 +293,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         return;
     }
 
+    //FIXME: Do we still need this? Check after 2.0 final... why is it commented out.
     /*
     if( m_albums.isEmpty() )
     {
@@ -311,7 +312,8 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     if( !doc.setContent( m_xml ) )
     {
         m_errors += i18n("The XML obtained from Amazon is invalid.");
-        buildQueries( m_albums.takeFirst() );
+        if( m_albums.size() > 0 )
+            buildQueries( m_albums.takeFirst() );
         return;
     }
 
