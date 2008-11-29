@@ -240,28 +240,28 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
     {
         m_addAppletsMenu->setContainment( this );
         m_removeAppletsMenu->setContainment( this );
+        m_grid->setGeometry( contentsRect() );
     }
-    
-    m_grid->setGeometry( contentsRect() );
-    
+
     if( m_rowHeight < m_preferredRowHeight && rect().height() / m_preferredRowHeight >= 4 )
     {
         int numRows = rect().height() / m_preferredRowHeight;
         m_rowHeight = rect().height() / numRows;
     }
-    
+
     m_currentRows = ( int )( rect().height() ) / m_rowHeight;
 
     int columns = qMax( 1, ( int )( rect().width() ) / m_minColumnWidth );
-    
+
     if( columns != m_currentColumns )
     {
         const int rowCount = m_grid->rowCount();
         const bool hide = columns  < m_currentColumns;
         const int columnsToUpdate = qAbs( m_currentColumns - columns );
         const int col = hide ? m_currentColumns - columnsToUpdate : m_currentColumns;
-
-        for( int j = col; j < col + columnsToUpdate; j++ )
+        const int lastColumn = col + columnsToUpdate;
+        
+        for( int j = col; j < lastColumn; j++ )
         {
             for( int i = 0; i < rowCount; )
             {
@@ -294,7 +294,7 @@ ColumnContainment::constraintsEvent( Plasma::Constraints constraints )
 
     m_grid->updateGeometry();
     m_maxColumnWidth = rect().width();
-
+    
     correctControlButtonPositions();
 }
 
@@ -684,7 +684,7 @@ ColumnContainment::insertInGrid( Plasma::Applet* applet )
         }
         
         m_grid->setRowMinimumHeight( row, m_rowHeight * qMax( 1, rowSpan - 1 ) );
-        
+        m_grid->setColumnMaximumWidth( col, INT_MAX );
         
         if( m_grid->columnCount() > 0 )
             applet->resize( m_maxColumnWidth / m_grid->columnCount(), rowSpan * m_rowHeight );
@@ -759,19 +759,17 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
 {
     DEBUG_BLOCK
 
-    int i = startRow;
+    int row = startRow;
+    int columnCount = m_grid->columnCount();
+    int columnsBeforeRearrange = columnCount;
+    int rowCount = m_grid->rowCount();
 
-    int lastColumn = m_grid->columnCount();
-    debug() << "start row: " << startRow;
-    debug() << "row count: " << m_grid->rowCount();
-
-    for( int j = startColumn; j < lastColumn; j++ )
-    {
-        int lastRow = m_grid->rowCount();
-
-        while( i < lastRow )
+    //Make applets ocuppy the space left by a removed applet
+    for( int col = startColumn; col < columnCount; col++ )
+    {        
+        while( row < rowCount )
         {
-            Plasma::Applet *applet = static_cast< Plasma::Applet* >( m_grid->itemAt( i, j ) );
+            Plasma::Applet *applet = static_cast< Plasma::Applet* >( m_grid->itemAt( row, col ) );
             if( !applet )
             {
                 debug() << "bad cast";
@@ -786,16 +784,24 @@ ColumnContainment::rearrangeApplets( int startRow, int startColumn )
             m_grid->removeAt( idx );
 
             for( int k = 0; k < rowSpan; k++ )
-                m_gridFreePositions[i + k][j] = true;
+                m_gridFreePositions[row + k][col] = true;
 
             foreach( Plasma::Applet* a, m_appletsIndexes.keys() )
                 if( m_appletsIndexes[a] > idx )
                     m_appletsIndexes[a]--;
 
             insertInGrid( applet );
-            i += rowSpan;
+            row += rowSpan;
         }
-        i = 0;
+        row = 0;
+    }
+
+    //Expand applets width when a complet column has been removed
+    columnCount = m_grid->columnCount();
+    rowCount = m_grid->rowCount();
+    if( ( startColumn == columnCount && startRow == rowCount - 1 ) || columnsBeforeRearrange > columnCount )
+    {
+        m_grid->setColumnMaximumWidth( columnCount, 0 );
     }
 }
 
