@@ -42,7 +42,7 @@ public:
     {
         AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
 
-        ProgressWidget::instance()->drawTimeDisplay( The::engineController()->trackPosition() );
+        ProgressWidget::instance()->drawTimeDisplay( The::engineController()->trackPosition() * 1000 );
     }
     
     virtual QSize sizeHint() const
