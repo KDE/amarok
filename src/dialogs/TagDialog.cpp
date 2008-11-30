@@ -767,7 +767,7 @@ void TagDialog::readTags()
 
     const QFontMetrics fnt =  ui->trackArtistAlbumLabel->fontMetrics();
     const int len = ui->trackArtistAlbumLabel->width();
-    QString curTrackAlbName
+    QString curTrackAlbName;
     QString curArtistName;
     
     QString curTrackName = fnt.elidedText( Qt::escape( m_currentTrack->name() ), Qt::ElideRight, len );
