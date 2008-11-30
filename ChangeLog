@@ -13,7 +13,6 @@ VERSION 2.0
 
   BUGFIXES:
     * Don't try to squeeze text into wrongly tiny space, make the track label in the tag dialog work again. (BR 176399)
-    * Expand applets width when a complete column has been removed.
     * Don't try to fetch another cover if there are no more albums to fetch for (BR 176364)
     * Don't crash if trying to edit the details of a track without an artist or album. (BR 173322)
     * Magnatune.com store: Correctly show progress info when downloading.
