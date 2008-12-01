@@ -62,6 +62,7 @@ class AMAROK_EXPORT PodcastProvider : public TrackProvider, public PlaylistProvi
         virtual void updateAll() = 0;
         virtual void update( Meta::PodcastChannelPtr channel ) = 0;
         virtual void downloadEpisode( Meta::PodcastEpisodePtr episode ) = 0;
+        virtual void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode ) = 0;
         virtual void slotUpdated() = 0;
 
     signals:

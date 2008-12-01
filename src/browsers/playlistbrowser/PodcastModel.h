@@ -64,6 +64,7 @@ class PodcastModel : public QAbstractItemModel
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
         void downloadItems(  QModelIndexList list );
+        void deleteItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
         void removeSubscription( QModelIndexList list );
         void configureChannels( QModelIndexList list );
@@ -77,6 +78,7 @@ class PodcastModel : public QAbstractItemModel
 
     private:
         void downloadEpisode( Meta::PodcastEpisodePtr episode );
+        void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
         void refreshPodcast( Meta::PodcastChannelPtr channel );
         Meta::PodcastChannelList m_channels;
         void removeSubscription( Meta::PodcastChannelPtr channel );

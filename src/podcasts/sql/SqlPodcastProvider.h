@@ -67,11 +67,13 @@ class SqlPodcastProvider : public PodcastProvider
         void updateAll();
         void update( Meta::PodcastChannelPtr channel );
         void downloadEpisode( Meta::PodcastEpisodePtr episode );
+        void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
         void slotUpdated();
 
         void slotReadResult( PodcastReader *podcastReader, bool result );
         void update( Meta::SqlPodcastChannelPtr channel );
         void downloadEpisode( Meta::SqlPodcastEpisodePtr episode );
+        void deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode );
 
     private slots:
         void downloadResult( KJob * );
@@ -85,8 +87,6 @@ class SqlPodcastProvider : public PodcastProvider
         void createTables() const;
         void loadPodcasts();
         void updateDatabase( int fromVersion, int toVersion );
-
-        void deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode );
 
         Meta::SqlPodcastChannelList m_channels;
 

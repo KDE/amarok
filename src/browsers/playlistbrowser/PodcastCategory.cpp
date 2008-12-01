@@ -654,6 +654,7 @@ void
 PodcastView::slotDelete()
 {
    DEBUG_BLOCK
+   m_model->deleteItems( selectedIndexes() );
 }
 
 void

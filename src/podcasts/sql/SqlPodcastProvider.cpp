@@ -127,7 +127,7 @@ void
 SqlPodcastProvider::addPodcast(const KUrl & url)
 {
     KUrl kurl = KUrl( url );
-    
+
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString command = "SELECT title FROM podcastchannels WHERE url='%1';";
@@ -183,6 +183,7 @@ SqlPodcastProvider::channels()
 void
 SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
 {
+    DEBUG_BLOCK
     Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
     if( !sqlChannel )
         return;
@@ -263,6 +264,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
 void
 SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode )
 {
+    DEBUG_BLOCK
     if( episode->localUrl().isEmpty() )
         return;
 
@@ -336,6 +338,13 @@ void
 SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
 {
     downloadEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
+}
+
+void
+SqlPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
+{
+    DEBUG_BLOCK
+    deleteDownloadedEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
 }
 
 void

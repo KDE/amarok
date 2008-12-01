@@ -506,6 +506,25 @@ PlaylistBrowserNS::PodcastModel::downloadItems( QModelIndexList list )
 }
 
 void
+PlaylistBrowserNS::PodcastModel::deleteItems( QModelIndexList list )
+{
+    DEBUG_BLOCK
+    debug() << "number of items: " << list.count();
+    foreach( QModelIndex index, list )
+    {
+        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+        if( pmc->podcastType() ==  Meta::EpisodeType )
+        {
+            deleteDownloadedEpisode( Meta::PodcastEpisodePtr( reinterpret_cast<Meta::PodcastEpisode *>(pmc) ) );
+        }
+        else if( pmc->podcastType() ==  Meta::ChannelType )
+        {
+            // ignore
+        }
+    }
+}
+
+void
 PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
@@ -517,6 +536,25 @@ PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episod
     {
         PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
         podcastProvider->downloadEpisode( episode );
+    }
+    else
+    {
+        debug() << "PodcastChannel provider is null";
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
+{
+    DEBUG_BLOCK
+    debug() << "deleting " << episode->title();
+    //HACK: since we only have one PodcastProvider implementation
+    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
+    PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    if( provider )
+    {
+        PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
+        podcastProvider->deleteDownloadedEpisode( episode );
     }
     else
     {
