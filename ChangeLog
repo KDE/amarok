@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0
   FEATURES:
-    * Added read/write configuration APIs for Qtscript.
+    * Added read/write configuration APIs for QtScript.
 
   CHANGES:
     * Added icons to the filename scheme and organize collection dialogs.
@@ -14,18 +14,20 @@ VERSION 2.0
   BUGFIXES:
     * Collection setup directory chooser would incorrectly set some paths as
       disabled. Patch thanks to Ben Boeckel <MathStuf@gmail.com>. (BR 176569)
-    * Don't try to squeeze text into wrongly tiny space, make the track label in the tag dialog work again. (BR 176399)
+    * Don't try to squeeze text into wrongly tiny space, make the track label
+      in the tag dialog work again. (BR 176399)
     * Expand applets width when a complete column has been removed.
-    * Don't try to fetch another cover if there are no more albums to fetch for (BR 176364)
-    * Don't crash if trying to edit the details of a track without an artist or album. (BR 173322)
+    * Don't try to fetch another cover if there are no more albums to fetch 
+      for. (BR 176364)
+    * Don't crash when trying to edit the details of a track without an artist
+      or album. (BR 173322)
     * Magnatune.com store: Correctly show progress info when downloading.
     * Magnatune.com store: Fix purchase/download of wrong album being initiated
       when selecting "Purchase" or "Download" from the playlist context menu.
       (BR 176171)
-    * Fix a bug that stopping a running script crashes amarok.
-      (BR 175050)
-    * The context view could sometimes show the "stopped state" even when
-      a track was playing.
+    * Fix a bug that stopping a running script crashes amarok. (BR 175050)
+    * The context view could sometimes show the "stopped state" even when a 
+      track was playing.
     * Amarok 1.4 database importer would crash under some circumstances.
       (BR 171784)
     * Covers could not be fetched from Amazon Japan. (BR 176073)
