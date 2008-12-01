@@ -161,9 +161,11 @@ void RefreshImages::finishedImageFetch(KJob* imageJob)
         return;
     }
     QImage img;
-    img.loadFromData(static_cast<KIO::StoredTransferJob*>(imageJob)->data());
-    img.setText( "amazon-url", 0, m_jobInfo[imageJob->objectName()].m_detailUrl);
-    img.save( Amarok::saveLocation("albumcovers/large/") + imageJob->objectName(), "PNG");
+    if (img.loadFromData(static_cast<KIO::StoredTransferJob*>(imageJob)->data()))
+    {
+        img.setText( "amazon-url", 0, m_jobInfo[imageJob->objectName()].m_detailUrl);
+        img.save( Amarok::saveLocation("albumcovers/large/") + imageJob->objectName(), "PNG");
+    }
 //FIXME: PORT 2.0
 //     CollectionDB::instance()->newAmazonReloadDate( m_jobInfo[imageJob->objectName()].m_asin
 //         , m_jobInfo[imageJob->objectName()].m_locale
