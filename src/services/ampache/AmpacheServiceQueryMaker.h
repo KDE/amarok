@@ -31,15 +31,10 @@ namespace ThreadWeaver
     class Job;
 }
 
-
-/**
-A query maker for fetching external data
-
-	@author
-*/
 class AmpacheServiceQueryMaker : public DynamicServiceQueryMaker
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId );
     ~AmpacheServiceQueryMaker();
@@ -71,7 +66,6 @@ public:
     void fetchAlbums();
     void fetchTracks();
 
-
 protected:
     AmpacheServiceCollection * m_collection;
     KIO::StoredTransferJob * m_storedTransferJob;
@@ -88,7 +82,6 @@ protected:
     QString m_lastArtistFilter;
 
 public slots:
-
     void artistDownloadComplete(KJob *job );
     void albumDownloadComplete(KJob *job );
     void trackDownloadComplete(KJob *job );

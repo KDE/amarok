@@ -44,6 +44,7 @@ struct AmpacheServiceQueryMaker::Private
 
 AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId  )
     : DynamicServiceQueryMaker()
+    , m_collection( collection )
     , m_storedTransferJob( 0 )
     , d( new Private )
     , m_server( server )
@@ -88,13 +89,15 @@ AmpacheServiceQueryMaker::run()
     if( m_storedTransferJob != 0 )
         return;
 
-    m_collection->acquireReadLock();
     //naive implementation, fix this
     //note: we are not handling filtering yet
 
+    //TODO error handling
     if ( d->type == Private::NONE )
-        //TODO error handling
         return;
+    
+    m_collection->acquireReadLock();
+    
     if (  d->type == Private::ARTIST )
         fetchArtists();
     else if( d->type == Private::ALBUM )
