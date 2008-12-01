@@ -78,6 +78,7 @@ SqlPodcastProvider::~SqlPodcastProvider()
 void
 SqlPodcastProvider::loadPodcasts()
 {
+    m_channels.clear();
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels, subscribedate, autoscan, fetchtype, haspurge, purgecount FROM podcastchannels;" );
@@ -306,8 +307,6 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
     //PodcastReader will create a progress bar in The StatusBar.
 
     result = podcastReader->update( channel );
-
-    emit updated();
 }
 
 void

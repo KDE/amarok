@@ -192,6 +192,9 @@ Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
     m_episodes << episode;
     addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) );
+
+    //reload from db to get episodes ordered right
+    loadEpisodes();
 }
 
 void
