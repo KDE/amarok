@@ -203,6 +203,7 @@ void CurrentEngine::update()
     
     //We need to update the albums data even if the artist is the same, since the current track is
     //most likely different, and thus the rendering of the albums applet should change
+    if( artist.data() != 0 )
     {
         m_currentArtist = artist;
         removeAllData( "albums" );
