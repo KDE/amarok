@@ -160,8 +160,6 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
 
-    AmarokConfig::setSidebarHidden( m_browserHidden );
-
     QList<int> sPanels;
 
     foreach( int a, m_splitter->saveState() )
