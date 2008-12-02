@@ -136,7 +136,7 @@ class SideBar: public KHBox
             return QSize( static_cast<QWidget*>( parent() )->size().width() / 4, 400 );
         }
 
-    public slots: //!!!!!!
+    private slots:
         void openWidget( int index )
         {
             m_contentsWidget->setParent( m_frame );
