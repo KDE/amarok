@@ -473,4 +473,19 @@
   </entry>
 </group>
 
+<group name="Panel Sizes">
+    <entry key="PanelsSavedState" type="IntList">
+        <label>State of main window splitter</label>
+        <default>-1</default>
+    </entry>
+    <entry key="SidebarHidden" type="Bool">
+        <label>True if the sidebar is hidden</label>
+        <default>false</default>
+    </entry>
+    <entry key="SidebarSavedState" type="IntList">
+        <label>m_sidebarState</label>
+        <default>-1</default>
+    </entry>
+</group>
+
 </kcfg>

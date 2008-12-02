@@ -160,10 +160,26 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
 
-    config = Amarok::config( "Panel_Sizes" );
-    config.writeEntry( "playlist_width", m_playlistWidget->width() );
-    config.writeEntry( "context_width", m_contextWidget->width() );
-    config.writeEntry( "sidebar_width", m_browsers->width() );
+    AmarokConfig::setSidebarHidden( m_browserHidden );
+
+    QList<int> sPanels;
+    QByteArray savedState;
+
+    if( m_browserHidden )
+    {
+        debug() << "Browser hidden";
+        savedState = m_splitterState;
+    }
+    else
+    {
+        debug() << "Browser hidden NOT";
+        savedState = m_splitter->saveState();
+    }
+
+    foreach( int a, savedState )
+        sPanels.append( a );
+
+    AmarokConfig::setPanelsSavedState( sPanels );
 
     delete m_playlistFiles;
     delete m_contextView;
@@ -256,21 +272,6 @@ MainWindow::init()
 
     setCentralWidget( centralWidget );
 
-    //Set panel sizes
-    const QString sSize = Amarok::config( "Panel_Sizes" ).readEntry( "sidebar_width" );
-    const QString pSize = Amarok::config( "Panel_Sizes" ).readEntry( "playlist_width" );
-    const QString cSize = Amarok::config( "Panel_Sizes" ).readEntry( "context_width" );
-
-    if ( !( sSize.isNull() || pSize.isNull() || cSize.isNull() ) )
-    {
-        QList <int> sizes;
-        sizes.append( sSize.toInt() );
-        sizes.append( cSize.toInt() );
-        sizes.append( pSize.toInt() );
-
-        m_splitter->setSizes( sizes );
-    }
-
     //<Browsers>
     {
         Debug::Block block( "Creating browsers. Please report long start times!" );
@@ -329,6 +330,39 @@ MainWindow::init()
 
     TrackToolTip::instance(); //Instantiate
     //Amarok::MessageQueue::instance()->sendMessages();
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!START
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    if( AmarokConfig::panelsSavedState()[0] != -1 )
+    {
+        QByteArray sPanels;
+
+        foreach( int a, AmarokConfig::panelsSavedState() )
+            sPanels.append( a );
+
+        m_splitter->restoreState( sPanels );
+    }
+
+//     if ( AmarokConfig::sidebarHidden() )
+//     {
+//         slotShrinkBrowsers( -1 );
+//         //slotShrinkBorwsers will override m_splitterState with
+//         //an incorrect state. So set to the right state
+//         //This will ensure the sidebar restores properly
+// //         QByteArray sState;
+// // 
+// //         foreach( int a, AmarokConfig::sidebarSavedState() )
+// //             sState.append( a );
+// 
+//         //m_splitterState = sState;
+//     }
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!END
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 }
 
 void
@@ -365,6 +399,7 @@ MainWindow::slotShrinkBrowsers( int index )
     if( index == -1 )
     {
         m_splitterState = m_splitter->saveState();
+        m_browserHidden = true;
 
         QList<int> sizes;
         sizes << m_browsers->sideBarWidget()->width() // browser bar
@@ -373,7 +408,10 @@ MainWindow::slotShrinkBrowsers( int index )
         m_splitter->setSizes( sizes );
     }
     else
+    {
         m_splitter->restoreState( m_splitterState );
+        m_browserHidden = false;
+    }
 }
 
 void
