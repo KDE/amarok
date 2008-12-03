@@ -335,14 +335,14 @@ void ScriptableServiceQueryMaker::fetchTracks()
 
     debug() << "parent id: " << d->parentId;
 
-    if ( d->parentId != -1 )
+    AlbumPtr album;
+    if ( d->parentId != -1 && ( album = m_collection->albumById( d->parentId ) ) )
     {
-        AlbumMatcher albumMatcher( m_collection->albumById( d->parentId ) );
+        AlbumMatcher albumMatcher( album );
         tracks = albumMatcher.match( m_collection );
     }
-    else {
+    else
         tracks = m_collection->trackMap().values();
-    }
 
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
