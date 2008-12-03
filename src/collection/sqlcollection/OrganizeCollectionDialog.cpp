@@ -78,7 +78,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
     m_filenameLayoutDialog->hide();
-    ui->verticalLayout->insertWidget( 4, m_filenameLayoutDialog );
+    ui->verticalLayout->insertWidget( 3, m_filenameLayoutDialog );
     ui->ignoreTheCheck->show();
 
     const QStringList folders = MountPointManager::instance()->collectionFolders();
@@ -93,7 +93,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
     ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
     ui->customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
-    //ui->formatEdit->setText( AmarokConfig::customScheme() );
     ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
 
@@ -105,7 +104,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->customschemeCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    //connect( ui->formatEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( m_filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
@@ -114,11 +112,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
              this, SLOT( slotUpdatePreview() ) );
-
-    // These are old (from A1) and are being replaced by Teo's filenamelayout dialog
-    ui->formatEdit->hide(); 
-    ui->formatLabel->hide();
-    ui->formatHelp->hide();
 
     toggleCustomScheme( ui->customschemeCheck->isChecked() );
 
@@ -336,8 +329,6 @@ OrganizeCollectionDialog::update( const QString & dummy )
 void
 OrganizeCollectionDialog::init()
 {
-    ui->formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
-            arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
     slotUpdatePreview();
 }
 
@@ -358,7 +349,6 @@ OrganizeCollectionDialog::slotDialogAccepted()
     AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
     AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
     AmarokConfig::setUseCustomScheme( ui->customschemeCheck->isChecked() );
-    //AmarokConfig::setCustomScheme( ui->formatEdit->text() );
     AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
     AmarokConfig::setReplacementString( ui->replaceEdit->text() );
 }
@@ -453,7 +443,6 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         AmarokConfig::setVfatCompatible( dialog.vfatCheck->isChecked() );
         AmarokConfig::setAsciiOnly( dialog.asciiCheck->isChecked() );
         AmarokConfig::setUseCustomScheme( dialog.customschemeCheck->isChecked() );
-        AmarokConfig::setCustomScheme( dialog.formatEdit->text() );
         AmarokConfig::setReplacementRegexp( dialog.regexpEdit->text() );
         AmarokConfig::setReplacementString( dialog.replaceEdit->text() );
         KURL::List skipped;
