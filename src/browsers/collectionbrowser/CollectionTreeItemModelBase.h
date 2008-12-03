@@ -92,6 +92,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         void setCurrentFilter( const QString &filter );
 
+        bool isQuerying();
+
     signals:
         void expandIndex( const QModelIndex &index );
 

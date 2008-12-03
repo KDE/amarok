@@ -741,6 +741,10 @@ void
 CollectionTreeItemModelBase::slotFilter()
 {
     DEBUG_BLOCK
+
+    if ( isQuerying() )
+        return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
+            
     filterChildren();
     reset();
     debug() << "m_expandedCollections.isEmpty() ? " << (m_expandedCollections.isEmpty() ? "true" : "false");
@@ -782,6 +786,11 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
 void CollectionTreeItemModelBase::update()
 {
    reset();
+}
+
+bool CollectionTreeItemModelBase::isQuerying()
+{
+    return !( d->m_childQueries.count() == 0 && d->m_compilationQueries.count() == 0 );
 }
 
 
