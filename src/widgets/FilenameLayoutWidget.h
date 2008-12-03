@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
+ *           (C) 2008 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -31,8 +32,8 @@ class FilenameLayoutWidget : public QFrame
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
 
-        unsigned int getTokenCount();   //access for uint m_tokenCount
-        QString getParsableScheme();    //access for QString m_parsableScheme
+        uint getTokenCount() const;
+        QString getParsableScheme() const;
 
     protected:
         void mouseMoveEvent( QMouseEvent *event );
@@ -42,8 +43,8 @@ class FilenameLayoutWidget : public QFrame
         void dropEvent( QDropEvent *event );     
 
     public slots:
-        void addToken( QString text, int index = -1 /* append */ );
-        void inferScheme( QString scheme );
+        void addToken( const QString &text, int index = -1 /* append */ );
+        void inferScheme( const QString &scheme );
         
     signals:
         void schemeChanged();
@@ -54,11 +55,11 @@ class FilenameLayoutWidget : public QFrame
         void generateParsableScheme();
         void removeAllTokens();
 
-        QLabel *m_infoText;             // text in the back of the empty FilenameLayoutWidget
+        QLabel      *m_infoText;        // text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *m_layout;          // main layout that holds the tokens
         
-        QPoint m_startPos;              // needed for initiating the drag
-        unsigned int m_tokenCount;
+        QPoint  m_startPos;             // needed for initiating the drag
+        uint    m_tokenCount;
         QString m_parsableScheme;       // a string that TagGuesser will be able to use
 };
 

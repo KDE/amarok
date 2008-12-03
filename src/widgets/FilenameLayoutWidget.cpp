@@ -51,7 +51,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 // FilenameLayoutWidget bar and computes the parsable scheme 
 // currently defined by the FilenameLayoutWidget.
 void
-FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
+FilenameLayoutWidget::addToken( const QString &text, int index )   //SLOT
 {
     DEBUG_BLOCK
     if( !m_tokenCount )
@@ -193,8 +193,8 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
 }
 
 //Access for m_tokenCount
-unsigned int
-FilenameLayoutWidget::getTokenCount()
+uint
+FilenameLayoutWidget::getTokenCount() const
 {
     return m_tokenCount;
 }
@@ -323,14 +323,14 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
 
 //Access for m_parsableScheme.
 QString
-FilenameLayoutWidget::getParsableScheme()
+FilenameLayoutWidget::getParsableScheme() const
 {
     return m_parsableScheme;
 }
 
 //tries to populate the widget with tokens according to a string
 void
-FilenameLayoutWidget::inferScheme( const QString s ) //SLOT
+FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
 {
     DEBUG_BLOCK
 
