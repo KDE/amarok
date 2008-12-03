@@ -28,26 +28,15 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     : KListWidget( parent )
 {
     setAcceptDrops( true );
-
-    //filenameLayoutWidget = qobject_cast< FilenameLayoutDialog * >( parent )->filenameLayout;    //omg filenameLayoutDialog is NOT a parent of filenameLayoutWidget, the parent is a stupid QWidget
-
-    //addItem( new QListWidgetItem( KIcon("placeholder.svg"), QString( "Track" ) ) );
-
-    //setViewMode( QListView::ListMode );   //I try to let this be handled by .ui
-    //setFlow( QListView::LeftToRight );
 }
 
-//Executed on doubleclick of the TokenListWidget, emits signal onDoubleClick( QString ) that connects to FilenameLayoutWidget::addToken( QString )
+// Executed on doubleclick of the TokenListWidget, emits signal onDoubleClick( QString )
+// that connects to FilenameLayoutWidget::addToken( QString )
 void
 TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *token = itemAt( event->pos() );
-    debug()<<"Double-clicked, gonna add token!";
-    if( token == 0 )//is null
-    {
-        debug() << "I have NULL as token!";
-    }
-    else
+    if( token )
         emit onDoubleClick( token->text() );
 }
 
@@ -55,9 +44,8 @@ TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 void
 TokenListWidget::mousePressEvent( QMouseEvent *event )
 {
-    if ( event->button() == Qt::LeftButton )
+    if( event->button() == Qt::LeftButton )
         m_startPos = event->pos();            //store the start position
-    debug()<<"Mouse pressed, got start position.";
     KListWidget::mousePressEvent( event );    //feed it to parent's event
 }
 
@@ -65,14 +53,11 @@ TokenListWidget::mousePressEvent( QMouseEvent *event )
 void
 TokenListWidget::mouseMoveEvent( QMouseEvent *event )
 {
-    if ( event->buttons() & Qt::LeftButton )
+    if( event->buttons() & Qt::LeftButton )
     {
         int distance = ( event->pos() - m_startPos ).manhattanLength();
-        debug()<<"Mouse moved, calculated distance from start position.";
         if ( distance >= KApplication::startDragDistance() )
-        {
             performDrag( event );
-        }
     }
     KListWidget::mouseMoveEvent( event );
 }
@@ -123,7 +108,7 @@ TokenListWidget::performDrag( QMouseEvent *event )
         mimeData->setData( "application/x-amarok-tag-token", itemData );    //setText( item->text() );
         QDrag *drag = new QDrag( this );
         drag->setMimeData( mimeData );
-        debug() << "I am dragging from the token pool, performing drag";
+        
         //TODO: set a pointer for the drag, like this: drag->setPixmap( QPixmap("foo.png" ) );
         drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction );
     }
