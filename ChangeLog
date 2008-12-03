@@ -46,7 +46,7 @@ VERSION 2.0
     * Focus of text fields no longer lost when changing tracks using the Next/
       Previous buttons in tag dialog. (BR 175524)
     * Sort Podcasts in the right order.
-	* Fixed deletion for downloaded podcast episodes (BR 176084)
+    * Fixed deletion for downloaded podcast episodes (BR 176084)
 
 
 VERSION 2.0-rc1
