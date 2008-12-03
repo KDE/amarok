@@ -44,7 +44,6 @@ include_directories(
             amaroklib
             amarokpud
             amarok_service_liblastfm
-			amarok_kdenetwork
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
