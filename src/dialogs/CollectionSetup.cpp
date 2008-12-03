@@ -149,8 +149,8 @@ CollectionSetup::importCollection()
 // CLASS Model
 //////////////////////////////////////////////////////////////////////////////////////////
 
-namespace CollectionFolder
-{
+namespace CollectionFolder {
+
     Model::Model()
         : QFileSystemModel()
     {
@@ -245,24 +245,19 @@ namespace CollectionFolder
     bool
     Model::ancestorChecked( const QString &path ) const
     {
-        // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
-        QString _path = path.endsWith( '/' ) ? path : path + '/';
         foreach( const QString &element, m_checked )
         {
-            if( path.startsWith( element ) && element != _path )
+            if( path.startsWith( element ) && element != path )
                 return true;
         }
         return false;
     }
 
-    bool
-    Model::descendantChecked( const QString& path ) const
+    bool Model::descendantChecked( const QString& path ) const
     {
         foreach( const QString& element, m_checked )
         {
-            // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
-            QString _element = element.endsWith( '/' ) ? element : element + '/';
-            if( _element.startsWith( path ) && _element != path )
+            if( element.startsWith( path ) && element != path )
                 return true;
         }
         return false;
