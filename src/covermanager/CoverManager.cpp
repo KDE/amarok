@@ -136,6 +136,7 @@ CoverManager::CoverManager()
     Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Artist );
+    qm->orderBy( Meta::valArtist );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
              this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
@@ -462,6 +463,7 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
 
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Album );
+    qm->orderBy( Meta::valAlbum );
     if( item != m_artistView->invisibleRootItem()->child( 0 ) )
         qm->addMatch( artist );
     else
