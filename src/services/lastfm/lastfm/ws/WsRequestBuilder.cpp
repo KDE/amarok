@@ -78,3 +78,10 @@ WsRequestBuilder::start()
     }
 	return 0;
 }
+
+void 
+WsRequestBuilder::setWAM( WsAccessManager* wam )
+{
+    nam = wam;
+}
+

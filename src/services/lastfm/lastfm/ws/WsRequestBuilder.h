@@ -46,6 +46,7 @@ class LASTFM_WS_DLLEXPORT WsRequestBuilder
 public:
     WsRequestBuilder( const QString& methodName );
     
+    
     WsReply* get() { request_method = GET; return start(); }
     WsReply* post() { request_method = POST; return start(); }
 
@@ -56,6 +57,10 @@ public:
   
     /** connects the receiver and slot to the reply's done() signal */
     WsRequestBuilder& connect( QObject* receiver, const char* slot );
+    
+    /** Set the WsAccessManager or WsAccessManager-derived class to use for network connections
+        Useful if you need custom internet access via a proxy. */
+    static void setWAM( WsAccessManager* wam );
 };
 
 #endif

@@ -30,10 +30,14 @@
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
+#include "kdenetwork/knetworkaccessmanager.h"
+ 
 #include <lastfm/Scrobbler.h> // from liblastfm
+ #include <lastfm/ws/WsAccessManager.h>
 #include <lastfm/ws/WsKeys.h>
 #include <lastfm/ws/WsReply.h>
 #include <lastfm/ws/WsRequestBuilder.h>
+
 
 #include <QComboBox>
 #include <QCryptographicHash>
@@ -102,6 +106,10 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     Ws::Username = qstrdup( m_userName.toLatin1().data() );
+    
+    // set up proxy
+    WsAccessManager* qnam = new KNetworkAccessManager( this );
+    WsRequestBuilder::setWAM( qnam );
     
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 

@@ -22,7 +22,6 @@ include_directories(
         add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
         set(amarok_service_lastfm_PART_SRCS
-    #        AudioController.cpp
             LastFmService.cpp
             LastFmServiceCollection.cpp
             LastFmServiceConfig.cpp
@@ -33,6 +32,9 @@ include_directories(
             meta/LastFmMeta.cpp
             meta/LastFmStreamInfoCapability.cpp
 
+			kdenetwork/knetworkreply.cpp
+		    kdenetwork/knetworkaccessmanager.cpp
+
         )
 
         # add_definitions(-DUNICORN_DLLEXPORT_PRO -DMOOSE_DLLEXPORT_PRO -DQT_XML_LIB)
@@ -42,15 +44,12 @@ include_directories(
             amaroklib
             amarokpud
             amarok_service_liblastfm
+			amarok_kdenetwork
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
-           # ${LIBLASTFM_LIBRARY_CORE}
-           # ${LIBLASTFM_LIBRARY_WS}
-           # ${LIBLASTFM_LIBRARY_TYPES}
-           # ${LIBLASTFM_LIBRARY_SCROBBLE}
-           # ${LIBLASTFM_LIBRARY_RADIO}
+		    ${QT_QTNETWORK_LIBRARY}
         )
         # TODO not sure if this is still relevant...
 #         if (APPLE)
