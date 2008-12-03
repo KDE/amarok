@@ -113,6 +113,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 debug() << "relative url";
                 //Replace \ with / for windows playlists
                 line.replace('\\','/');
+                
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
