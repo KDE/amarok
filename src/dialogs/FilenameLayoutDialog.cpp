@@ -72,9 +72,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     if( !m_isOrganizeCollection )
         optionsFrame->show();
 
-    //INIT for collection root
-    unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
-
     //INIT for tokenPool
     tokenPool->addItem( new QListWidgetItem( KIcon( "filename-track-amarok" ).pixmap( 48, 48 ), i18n( "Track" ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "filename-title-amarok" ).pixmap( 48, 48 ), i18n( "Title" ) ) );
@@ -130,9 +127,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
             toBasicMode();
             filenameLayout->inferScheme( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
         }
-
     }
-
 }
 
 //Stores the configuration when the dialog is accepted.
@@ -259,7 +254,6 @@ FilenameLayoutDialog::toAdvancedMode()
     filenameLayoutEdit->show();
     filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
     tokenPool->hide();
-    hintPicture->hide();
     syntaxLabel->show();
     if( m_isOrganizeCollection )
         Amarok::config( "OrganizeCollectionDialog").writeEntry( "Mode", "Advanced" );
@@ -276,11 +270,9 @@ FilenameLayoutDialog::toBasicMode()
     filenameLayout->show();
     filenameLayout->inferScheme( filenameLayoutEdit->text() );
     tokenPool->show();
-    hintPicture->show();
     if( m_isOrganizeCollection )
         Amarok::config( "OrganizeCollectionDialog" ).writeEntry( "Mode", "Basic" );
     else
         Amarok::config( "FilenameLayoutDialog" ).writeEntry( "Mode", "Basic" );
 }
-
 
