@@ -555,7 +555,7 @@ void
 EngineController::slotPrefinishMarkReached( qint32 msecToEnd )
 {
     // For some resason, phonon occasionally emits this right when the track starts playing.
-    if( msecToEnd < 0 )
+    if( msecToEnd < 0 || m_multi ) //skip for multi tracks as metadata might otehrwise go out of sync
         return;
     else
         slotAboutToFinish();
