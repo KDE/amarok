@@ -12,6 +12,7 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Elide text properly in applet chooser widget. (BR 175064)
     * Don't show wrong metadata for Last.fm radio. (BR 175435)
     * Collection setup directory chooser would incorrectly set some paths as
       disabled. Patch thanks to Ben Boeckel <MathStuf@gmail.com>. (BR 176569)
