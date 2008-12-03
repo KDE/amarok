@@ -23,6 +23,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPaintEvent>
 
 // Handles the graphical representation of the target filename as a bar that contains tokens.
 class FilenameLayoutWidget : public QFrame
@@ -34,6 +35,7 @@ class FilenameLayoutWidget : public QFrame
 
         unsigned int getTokenCount() const;
         QString getParsableScheme() const;
+        void paintEvent( QPaintEvent *event );
 
     protected:
         void mouseMoveEvent( QMouseEvent *event );
@@ -54,8 +56,9 @@ class FilenameLayoutWidget : public QFrame
         void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
         void generateParsableScheme();
         void removeAllTokens();
+        void switchBackText( bool show );
 
-        QLabel *m_infoText;        // text in the back of the empty FilenameLayoutWidget
+        QString *m_infoText;        // text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *m_layout;          // main layout that holds the tokens
         
         QPoint  m_startPos;             // needed for initiating the drag
