@@ -75,7 +75,7 @@
      </property>
      <widget class="QWidget" name="tab" >
       <attribute name="title" >
-       <string>Tab 1</string>
+       <string>File Format</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout" >
        <item>
@@ -131,7 +131,7 @@
      </widget>
      <widget class="QWidget" name="tab_2" >
       <attribute name="title" >
-       <string>Tab 2</string>
+       <string>Character Replacement</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5" >
        <item>
@@ -232,7 +232,6 @@
       <zorder>asciiCheck</zorder>
       <zorder>ignoreTheCheck</zorder>
       <zorder>verticalSpacer</zorder>
-      <zorder>previewBox</zorder>
      </widget>
     </widget>
    </item>
