@@ -5,12 +5,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>692</width>
-    <height>601</height>
+    <width>554</width>
+    <height>568</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy vsizetype="Minimum" hsizetype="Fixed" >
+   <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -21,140 +21,148 @@
     <height>16777215</height>
    </size>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4" >
+  <layout class="QVBoxLayout" name="verticalLayout_3" >
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3" >
+    <widget class="TokenListWidget" name="tokenPool" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="iconSize" >
+      <size>
+       <width>48</width>
+       <height>48</height>
+      </size>
+     </property>
+     <property name="textElideMode" >
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="movement" >
+      <enum>QListView::Static</enum>
+     </property>
+     <property name="isWrapping" stdset="0" >
+      <bool>false</bool>
+     </property>
+     <property name="layoutMode" >
+      <enum>QListView::Batched</enum>
+     </property>
+     <property name="gridSize" >
+      <size>
+       <width>72</width>
+       <height>64</height>
+      </size>
+     </property>
+     <property name="viewMode" >
+      <enum>QListView::IconMode</enum>
+     </property>
+     <property name="modelColumn" >
+      <number>0</number>
+     </property>
+     <property name="uniformItemSizes" >
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="syntaxLabel" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>144</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>The following tokens can be used to define a filename scheme: &lt;br>%track, %title, %artist, %composer, %year, %album, %comment, %genre&lt;br></string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="FilenameLayoutWidget" name="filenameLayout" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>30000</width>
+       <height>36</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2" >
      <item>
-      <widget class="TokenListWidget" name="tokenPool" >
+      <widget class="KLineEdit" name="filenameLayoutEdit" >
        <property name="sizePolicy" >
-        <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+        <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize" >
-        <size>
-         <width>682</width>
-         <height>100</height>
-        </size>
-       </property>
-       <property name="maximumSize" >
-        <size>
-         <width>16777215</width>
-         <height>100</height>
-        </size>
-       </property>
-       <property name="selectionMode" >
-        <enum>QAbstractItemView::SingleSelection</enum>
-       </property>
-       <property name="iconSize" >
-        <size>
-         <width>48</width>
-         <height>48</height>
-        </size>
-       </property>
-       <property name="textElideMode" >
-        <enum>Qt::ElideNone</enum>
-       </property>
-       <property name="movement" >
-        <enum>QListView::Static</enum>
-       </property>
-       <property name="isWrapping" stdset="0" >
-        <bool>false</bool>
-       </property>
-       <property name="layoutMode" >
-        <enum>QListView::Batched</enum>
-       </property>
-       <property name="gridSize" >
-        <size>
-         <width>72</width>
-         <height>64</height>
-        </size>
-       </property>
-       <property name="viewMode" >
-        <enum>QListView::IconMode</enum>
-       </property>
-       <property name="modelColumn" >
-        <number>0</number>
-       </property>
-       <property name="uniformItemSizes" >
-        <bool>false</bool>
-       </property>
-       <property name="wordWrap" >
+       <property name="showClearButton" stdset="0" >
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="syntaxLabel" >
+      <widget class="KPushButton" name="kpbAdvanced" >
        <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+        <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize" >
-        <size>
-         <width>682</width>
-         <height>152</height>
-        </size>
-       </property>
-       <property name="maximumSize" >
-        <size>
-         <width>16777215</width>
-         <height>144</height>
-        </size>
-       </property>
        <property name="text" >
-        <string>The following tokens can be used to define a filename scheme: &lt;br>%track, %title, %artist, %composer, %year, %album, %comment, %genre&lt;br></string>
+        <string>&amp;Advanced...</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" >
-       <item>
-        <widget class="FilenameLayoutWidget" name="filenameLayout" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize" >
-          <size>
-           <width>200</width>
-           <height>36</height>
-          </size>
-         </property>
-         <property name="maximumSize" >
-          <size>
-           <width>30000</width>
-           <height>36</height>
-          </size>
-         </property>
-         <property name="frameShape" >
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Sunken</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="KLineEdit" name="filenameLayoutEdit" >
-         <property name="showClearButton" stdset="0" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="KPushButton" name="kpbAdvanced" >
-         <property name="text" >
-          <string>&amp;Advanced...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
     </layout>
    </item>
@@ -163,7 +171,7 @@
      <item>
       <widget class="KButtonGroup" name="optionsFrame" >
        <property name="sizePolicy" >
-        <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+        <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -181,14 +189,14 @@
         <item>
          <widget class="QCheckBox" name="cbCase" >
           <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+           <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize" >
            <size>
-            <width>320</width>
+            <width>0</width>
             <height>0</height>
            </size>
           </property>
@@ -218,14 +226,14 @@
            <item>
             <widget class="QRadioButton" name="rbTitleCase" >
              <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+              <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize" >
               <size>
-               <width>280</width>
+               <width>0</width>
                <height>0</height>
               </size>
              </property>
@@ -240,14 +248,14 @@
            <item>
             <widget class="QRadioButton" name="rbFirstLetter" >
              <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+              <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize" >
               <size>
-               <width>280</width>
+               <width>0</width>
                <height>0</height>
               </size>
              </property>
@@ -259,14 +267,14 @@
            <item>
             <widget class="QRadioButton" name="rbAllUpper" >
              <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+              <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize" >
               <size>
-               <width>280</width>
+               <width>0</width>
                <height>0</height>
               </size>
              </property>
@@ -278,14 +286,14 @@
            <item>
             <widget class="QRadioButton" name="rbAllLower" >
              <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+              <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize" >
               <size>
-               <width>280</width>
+               <width>0</width>
                <height>0</height>
               </size>
              </property>
@@ -300,14 +308,14 @@
         <item>
          <widget class="QCheckBox" name="cbEliminateSpaces" >
           <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+           <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize" >
            <size>
-            <width>320</width>
+            <width>0</width>
             <height>0</height>
            </size>
           </property>
@@ -321,6 +329,12 @@
         </item>
         <item>
          <widget class="QCheckBox" name="cbReplaceUnderscores" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text" >
            <string>Replace &amp;underscores with spaces</string>
           </property>
