@@ -42,7 +42,7 @@ class FilenameLayoutWidget : public QFrame
         void dropEvent( QDropEvent *event );     
 
     public slots:
-        void addToken( QString text, int index = 0);    //this one needs to be a SLOT, connects to TokenListWidget::onDoubleClick.
+        void addToken( QString text, int index = -1 /* append */ );
         void inferScheme( QString scheme );
         
     signals:
