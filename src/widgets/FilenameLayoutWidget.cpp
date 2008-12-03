@@ -43,8 +43,10 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     m_infoText = new QLabel( this );
     m_infoText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) ); //TODO: when we are out of string freeze remove the html from i18n
     m_infoText->setFixedSize( 300, 30 ); //FIXME this is rubbish, need to have it automatically fill the parent size
-    m_infoText->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
-    m_layout->setContentsMargins( 3, 3, 3, 3 );
+                                         //No, this is not rubbish as it's not a good idea to use the same layout that's used for the tokens.
+                                         //You can say it needs a better implementation but there's a reason I handled it like this.
+    m_infoText->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    m_layout->setContentsMargins( 1, 1, 1, 1 );
 }
 
 // Adds a token with caption text at the index-th place in the 
