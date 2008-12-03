@@ -60,7 +60,6 @@ FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
     m_tokenCount++;
     Token *token = new Token( text, this );
 
-    debug()<< "I am adding a token, the index I got is " << index << ".";
     layout->insertWidget( index, token );
     
     token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -80,13 +79,11 @@ FilenameLayoutWidget::dragEnterEvent( QDragEnterEvent *event )        //override
     {
         event->setDropAction( Qt::CopyAction );
         event->accept();
-        debug() << "dragEnterEvent, source is != this";
     }
     else if ( source && source == this )
     {
         event->setDropAction( Qt::MoveAction );
         event->accept();
-        debug() << "dragEnterEvent, source is == this";
     }
 }
 
@@ -112,23 +109,14 @@ void
 FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event )
 {
     if ( !childUnder )
-    {
-        debug() << "childUnder is NULL!";
         return;
-    }
+    
     int index = layout->indexOf( childUnder );
-    debug()<< "I'm in insertOverChild, inserting at " << index << " !   Get outta here, it's gonna blow!";
+
     if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
-    {
-        debug()<< "About to call addToken( "<< textFromMimeData << ", index )";
         addToken( textFromMimeData, index );
-    }
     else
-    {
-        debug()<< "About to call addToken( "<< textFromMimeData << ", index + 1)";
         addToken( textFromMimeData, index + 1 );
-    }
-    debug()<< "BOOM!";
 }
 
 //Executed whenever a valid drag object is dropped on the FilenameLayoutWidget. Will call addToken and insertOverChild.
@@ -140,42 +128,34 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
     QString textFromMimeData;
     dataStream >> textFromMimeData;
+
     if ( source && source != this )
-    {
-        debug() << "I am dragging from the token pool";
         event->setDropAction( Qt::CopyAction );
-    }
     else if ( source && source == this )
-    {
-        debug() << "I am dragging from the layout widget";
         event->setDropAction( Qt::MoveAction );
-    }
-    debug()<<"everything fine so far, now I am gonna calculate where to insert the new token";
+    
     Token *childUnder = qobject_cast< Token * >( childAt( event->pos() ) );
-    if( childUnder == 0 )   //if I'm not dropping on an existing token
+    // if not dropping on an existing token
+    if( childUnder == 0 )
     {
-        if( !m_tokenCount )   //if the bar is empty
-        {
+        // if the bar is empty
+        if( !m_tokenCount )   
             addToken( textFromMimeData );
-            debug()<<">>>>>>>>> EMPTY BAR";
-        }
-        else                //if the bar is not empty and I'm still not dropping on an existing token
+        
+        //if the bar is not empty and I'm still not dropping on an existing token
+        else
         {
-            debug() << ">>>>>>>>>>>>>> I'm picking up a drop at " << event->pos().x()<<", "<<event->pos().y();
             QPoint fixedPos = QPoint( event->pos().x(), size().height() / 2 );      //first I lower the y coordinate of the drop, this should handle the drops higher and lower than the tokens
-            debug()<<">>>>>>>>> CENTERING VERTICALLY";
             childUnder = qobject_cast< Token * >( childAt( fixedPos ) );            //and I look for a child (token) on these new coordinates
             if( childUnder == 0 )                                                   //if there's none, then I'm either at the beginning or at the end of the bar
             {
                 if( fixedPos.x() < childrenRect().topLeft().x() )                   //if I'm dropping before all the tokens
                 {
                     fixedPos = QPoint( fixedPos.x() + 10, fixedPos.y() );
-                    debug()<<">>>>>>>>> SIMULATING DROP TO THE RIGHT";
                 }
                 else if( fixedPos.x() > childrenRect().topLeft().x() + childrenRect().size().width() )          //this covers if I'm dropping after all the tokens or in between
                 {
                     fixedPos = QPoint( fixedPos.x() - 10, fixedPos.y() );           //to self: why the f am I moving to the left as else? I should do that only if I'm on the end of the childrenRect
-                    debug()<<">>>>>>>>> SIMULATING DROP TO THE LEFT";
                 }
                 childUnder = qobject_cast< Token * >( childAt( fixedPos ) );
                 QWidget * fakeChild = childAt( fixedPos );
@@ -191,15 +171,14 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                         childUnder = qobject_cast< Token * >( childAt( fixedPos )->parent() );
                     }
                 }
-                debug()<<"I'm looking for a child at "<<fixedPos.x()<<","<<fixedPos.y()<< "Why does it fail?";
-                if( childUnder == 0 ) debug()<<"ERROR: childUnder is null";     //FIXME: I need to pick up Token*, not a member of his
+                
+                if( !childUnder )
+                    error() << "ERROR: childUnder is null";     //FIXME: I need to pick up Token*, not a member of his
                 insertOverChild( childUnder, textFromMimeData, event );
-                debug()<<">>>>>>>>> \\called insertOverChild";
             }
             else                                                                    //if I find a token, I'm done
             {
                 insertOverChild( childUnder, textFromMimeData, event );
-                debug()<<">>>>>>>>> \\called insertOverChild";
             }
         }
     }
@@ -208,7 +187,6 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
         insertOverChild( childUnder, textFromMimeData, event );
     }
     event->accept();
-    debug() << "Accepted drop event";
     
 }
 
@@ -244,22 +222,18 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
         if( childAt( event->pos() ) == 0)
             return;
         Token *child = qobject_cast< Token * >( childAt( event->pos() ) );
-        if ( child == 0 )
+        if( !child )
         {
-            debug()<<"no child here, fixing";
             child = qobject_cast< Token * >( childAt( event->pos() )->parent() );
-            if ( child == 0 )
+            if( !child )
                 return;
         }
-        debug()<<"a child has been cast here";
         delete child;
-        debug() << "I killed the damn token quit poking me!";
         m_tokenCount--;
 
         if( !m_tokenCount )
-        {
             backText->show();
-        }
+        
         generateParsableScheme();
         emit schemeChanged();
     }
@@ -284,7 +258,6 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     
     drag->setPixmap( QPixmap::grabWidget( child ) );       //need to get pixmap from widget
 
-    debug() << "Deleting at " << layout->indexOf( child );
     delete child;
     m_tokenCount--;
 
@@ -308,67 +281,37 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
     {
         //TODO:REWRITE THIS USING PROPER Token::getString();
         QWidget * tempWidget = layout->itemAt(i)->widget();
-        debug() << "what the hell am I getting here? " << tempWidget->metaObject()->className();
         QString current = qobject_cast<Token*>( layout->itemAt(i)->widget() )->getLabel();  //getting a Token by grabbing a QLayoutItem* at index i and grabbing his QWidget.
-        debug()<<"Still alive after messing with"<< current;
+        
         if( current == i18n( "Track" ) )
-        {
             m_parsableScheme += "%track";
-        }
         else if( current == i18n( "Title" ) )
-        {
             m_parsableScheme += "%title";
-        }
         else if( current == i18n( "Artist" ) )
-        {
             m_parsableScheme += "%artist";
-        }
         else if( current == i18n( "Composer" ) )
-        {
             m_parsableScheme += "%composer";
-        }
         else if( current == i18n( "Year" ) )
-        {
             m_parsableScheme += "%year";
-        }
         else if( current == i18n( "Album" ) )
-        {
             m_parsableScheme += "%album";
-        }
         else if( current == i18n( "Comment" ) )
-        {
             m_parsableScheme += "%comment";
-        }
         else if( current == i18n( "Genre" ) )
-        {
             m_parsableScheme += "%genre";
-        }
         else if( current == i18n( "File type" ) )
-        {
             m_parsableScheme += "%filetype";
-        }
         else if( current == i18n( "Ignore field" ) )
-        {
             m_parsableScheme += "%ignore";
-        }
         else if( current == i18n( "Collection root" ) )
-        {
             m_parsableScheme += "%folder";
-        }
         else if( current == i18n( "Artist initial" ) )
-        {
             m_parsableScheme += "%initial";
-        }
         else if( current == i18n( "Disc number" ) )
-        {
             m_parsableScheme += "%discnumber";
-        }
         else
-        {
             m_parsableScheme += current;
-        }
     }
-    debug() << "||| PARSABLE SCHEME ||| >>  " << m_parsableScheme;
 }
 
 //Access for m_parsableScheme.
@@ -427,7 +370,7 @@ FilenameLayoutWidget::inferScheme( const QString s ) //SLOT
             else if( s.at(i) == ' ' )
                 addToken( "<space>");
             else
-                debug()<<"This can't be represented as FilenameLayoutWidget Token";
+                error() << "This can't be represented as FilenameLayoutWidget Token";
             i++;
         }
     }
