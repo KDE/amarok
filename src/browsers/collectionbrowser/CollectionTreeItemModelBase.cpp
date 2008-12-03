@@ -788,9 +788,9 @@ void CollectionTreeItemModelBase::update()
    reset();
 }
 
-bool CollectionTreeItemModelBase::isQuerying()
+bool CollectionTreeItemModelBase::isQuerying() const
 {
-    return !( d->m_childQueries.count() == 0 && d->m_compilationQueries.count() == 0 );
+    return !( d->m_childQueries.isEmpty() && d->m_compilationQueries.isEmpty() );
 }
 
 
