@@ -427,12 +427,11 @@ FilenameLayoutWidget::inferScheme( const QString s ) //SLOT
 void
 FilenameLayoutWidget::removeAllTokens()
 {
-    m_tokenCount = 0;
     QLayoutItem *child; //Qt docs suggest this for safe deletion of all the elements of a QLayout.
-    while ((child = m_layout->takeAt(0)) != 0)
-    {
+    while( (child = m_layout->takeAt(0) ) )
         delete child;
-    }
+
+    m_tokenCount = 0;
     m_infoText->show();
     emit schemeChanged();
 }
