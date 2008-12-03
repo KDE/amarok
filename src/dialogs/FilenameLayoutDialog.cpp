@@ -298,6 +298,7 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
         filenameLayoutEdit->show();
         filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
         tokenPool->hide();
+        hintPicture->hide();
         syntaxLabel->show();
 
     }
@@ -308,6 +309,7 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
         filenameLayout->inferScheme( filenameLayoutEdit->text() );
         filenameLayoutEdit->hide();
         tokenPool->show();
+        hintPicture->show();
         syntaxLabel->hide();
     }
 
