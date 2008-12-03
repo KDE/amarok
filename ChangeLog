@@ -8,6 +8,7 @@ VERSION 2.0
     * Added read/write configuration APIs for QtScript.
 
   CHANGES:
+    * Last.Fm service now uses KIO for network access, respects desktop proxy settings.
     * Added icons to the filename scheme and organize collection dialogs.
     * Added an OK button for the script manager.
 
