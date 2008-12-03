@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>994</width>
+    <width>529</width>
     <height>360</height>
    </rect>
   </property>
@@ -75,7 +75,7 @@
      </property>
      <widget class="QWidget" name="tab" >
       <attribute name="title" >
-       <string>Filename Format</string>
+       <string>Tab 1</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout" >
        <item>
@@ -131,7 +131,7 @@
      </widget>
      <widget class="QWidget" name="tab_2" >
       <attribute name="title" >
-       <string>Character Replacement</string>
+       <string>Tab 2</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5" >
        <item>

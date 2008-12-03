@@ -234,7 +234,6 @@ FilenameLayoutDialog::getUnderscoreOptions()
 void
 FilenameLayoutDialog::toggleAdvancedMode()
 {
-    debug()<<"pressed";
     if( kpbAdvanced->text() == i18n( "&Advanced..." ) )     //is this a good idea?
     {
         toAdvancedMode();
