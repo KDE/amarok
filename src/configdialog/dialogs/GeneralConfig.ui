@@ -76,28 +76,6 @@
     </widget>
    </item>
    <item row="1" column="0" >
-    <widget class="QGroupBox" name="resizeBox" >
-     <property name="title" >
-      <string>Panel Settings</string>
-     </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-        <widget class="QPushButton" name="resetWidths" >
-         <property name="text" >
-          <string>Reset panel widths</string>
-         </property>
-         <property name="toolTip" >
-          <string>Resets the panels to their default widths</string>
-         </property>
-         <property name="whatsThis" >
-          <string>Resets the panels to their defualt widths</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>

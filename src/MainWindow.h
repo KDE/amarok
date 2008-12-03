@@ -93,7 +93,6 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         void showHide();
         void loveTrack();
         void playAudioCD();
-        void resetPanelWidths();
 
     protected:
         //Reimplemented from EngineObserver

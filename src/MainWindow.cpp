@@ -1080,17 +1080,6 @@ void MainWindow::metadataChanged( Meta::TrackPtr track )
 
     setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
-
-void
-MainWindow::resetPanelWidths()
-{
-    QList <int> sizes;
-    sizes.append( static_cast<QWidget*>( this )->size().width() / 4 );
-    sizes.append( static_cast<QWidget*>( this )->size().width() / 2 );
-    sizes.append( static_cast<QWidget*>( this )->size().width() / 4 );
-
-    m_splitter->setSizes( sizes );
-}
  
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
