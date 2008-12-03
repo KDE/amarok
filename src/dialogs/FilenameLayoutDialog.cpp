@@ -21,7 +21,7 @@
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <kstandarddirs.h>
+#include <KStandardDirs>
 #include <KColorScheme>
 
 #include <QGridLayout>

@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
+ *           (C) 2008 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -33,34 +34,32 @@
 FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     : QFrame( parent )
     , m_tokenCount( 0 )   //how many tokens have I built, need this to assign unique IDs
-    , m_parsableScheme( "" )
+    , m_parsableScheme( QString()  )
 {
     setAcceptDrops( true );
-    layout = new QHBoxLayout;
-    layout->setSpacing( 0 );    //this should be coherent when using separators
-    setLayout( layout );
-    backText = new QLabel( this );
-    backText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );    //TODO: when we are out of string freeze remove the html from i18n
-    backText->setFixedSize( 400, 30 );
-    backText->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    backText->setAlignment(Qt::AlignCenter);
-    backText->move( 3, 3 );
-    layout->setContentsMargins( 3, 3, 3, 3 );
+    m_layout = new QHBoxLayout;
+    m_layout->setSpacing( 0 );    //this should be coherent when using separators
+    setLayout( m_layout );
+    m_infoText = new QLabel( this );
+    m_infoText->setText( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) ); //TODO: when we are out of string freeze remove the html from i18n
+    m_infoText->setFixedSize( 300, 30 ); //FIXME this is rubbish, need to have it automatically fill the parent size
+    m_infoText->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    m_layout->setContentsMargins( 3, 3, 3, 3 );
 }
 
-//Adds a token with caption text at the index-th place in the FilenameLayoutWidget bar and computes the parsable scheme currently defined by the FilenameLayoutWidget.
+// Adds a token with caption text at the index-th place in the 
+// FilenameLayoutWidget bar and computes the parsable scheme 
+// currently defined by the FilenameLayoutWidget.
 void
 FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
 {
     if( !m_tokenCount )
-    {
-        backText->hide();
-    }
+        m_infoText->hide();
 
     m_tokenCount++;
     Token *token = new Token( text, this );
 
-    layout->insertWidget( index, token );
+    m_layout->insertWidget( index, token );
     
     token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     
@@ -111,7 +110,7 @@ FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeD
     if ( !childUnder )
         return;
     
-    int index = layout->indexOf( childUnder );
+    int index = m_layout->indexOf( childUnder );
 
     if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
         addToken( textFromMimeData, index );
@@ -232,7 +231,7 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
         m_tokenCount--;
 
         if( !m_tokenCount )
-            backText->show();
+            m_infoText->show();
         
         generateParsableScheme();
         emit schemeChanged();
@@ -263,7 +262,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
 
     if( !m_tokenCount )
     {
-        backText->show();
+        m_infoText->show();
     }
     
     drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
@@ -277,11 +276,16 @@ FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of
 {
     //with m_parsableScheme
     m_parsableScheme = "";
-    for( int i = 0; i < layout->count(); ++i)
+    for( int i = 0; i < m_layout->count(); ++i)
     {
-        //TODO:REWRITE THIS USING PROPER Token::getString();
-        QWidget * tempWidget = layout->itemAt(i)->widget();
-        QString current = qobject_cast<Token*>( layout->itemAt(i)->widget() )->getLabel();  //getting a Token by grabbing a QLayoutItem* at index i and grabbing his QWidget.
+        // TODO: REWRITE THIS USING PROPER Token::getString();
+
+        // getting a Token by grabbing a QLayoutItem* at index i and grabbing his QWidget.
+        Token *token = qobject_cast<Token*>( m_layout->itemAt(i)->widget() );
+        if( !token )
+            continue;
+
+        QString current = token->getLabel();
         
         if( current == i18n( "Track" ) )
             m_parsableScheme += "%track";
@@ -381,11 +385,11 @@ FilenameLayoutWidget::removeAllTokens()
 {
     m_tokenCount = 0;
     QLayoutItem *child; //Qt docs suggest this for safe deletion of all the elements of a QLayout.
-    while ((child = layout->takeAt(0)) != 0)
+    while ((child = m_layout->takeAt(0)) != 0)
     {
         delete child;
     }
-    backText->show();
+    m_infoText->show();
     emit schemeChanged();
 }
 

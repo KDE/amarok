@@ -23,9 +23,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-//Handles the graphical representation of the target filename as a bar that contains tokens.
-class FilenameLayoutWidget
-    : public QFrame
+// Handles the graphical representation of the target filename as a bar that contains tokens.
+class FilenameLayoutWidget : public QFrame
 {
     Q_OBJECT
 
@@ -40,22 +39,7 @@ class FilenameLayoutWidget
         void mousePressEvent( QMouseEvent *event );
         void dragEnterEvent( QDragEnterEvent *event );
         void dragMoveEvent( QDragMoveEvent *event );
-        void dropEvent( QDropEvent *event );
-        
-
-    private:
-        //void performDrag();
-        void performDrag( QMouseEvent *event );
-        void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
-        void generateParsableScheme();
-
-        QLabel *backText;               //text in the back of the empty FilenameLayoutWidget
-        QHBoxLayout *layout;            //main layout that holds the tokens
-        
-        QPoint m_startPos;              //needed for initiating the drag
-        unsigned int m_tokenCount;
-        QString m_parsableScheme;       //a string that TagGuesser will be able to use
-        void removeAllTokens();
+        void dropEvent( QDropEvent *event );     
 
     public slots:
         void addToken( QString text, int index = 0);    //this one needs to be a SLOT, connects to TokenListWidget::onDoubleClick.
@@ -63,6 +47,19 @@ class FilenameLayoutWidget
         
     signals:
         void schemeChanged();
+
+    private:
+        void performDrag( QMouseEvent *event );
+        void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
+        void generateParsableScheme();
+        void removeAllTokens();
+
+        QLabel *m_infoText;             // text in the back of the empty FilenameLayoutWidget
+        QHBoxLayout *m_layout;          // main layout that holds the tokens
+        
+        QPoint m_startPos;              // needed for initiating the drag
+        unsigned int m_tokenCount;
+        QString m_parsableScheme;       // a string that TagGuesser will be able to use
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H
