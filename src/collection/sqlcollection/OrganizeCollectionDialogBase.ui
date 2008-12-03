@@ -75,7 +75,7 @@
      </property>
      <widget class="QWidget" name="tab" >
       <attribute name="title" >
-       <string>File Format</string>
+       <string>File Naming Scheme</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout" >
        <item>
