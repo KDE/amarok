@@ -53,8 +53,11 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 void
 FilenameLayoutWidget::addToken( QString text, int index )   //SLOT
 {
+    DEBUG_BLOCK
     if( !m_tokenCount )
         m_infoText->hide();
+
+    debug() << "Adding token: " << text;
 
     m_tokenCount++;
     Token *token = new Token( text, this );
@@ -329,44 +332,85 @@ FilenameLayoutWidget::getParsableScheme()
 void
 FilenameLayoutWidget::inferScheme( const QString s ) //SLOT
 {
+    DEBUG_BLOCK
+
+    debug() << "infering scheme: " << s;
+
     removeAllTokens();
-    for( int i(0); i < s.size(); )
+    for( int i = 0; i < s.size(); )
     {
         if( s.at(i) == '%')
         {
             if( s.mid( i, 6 ) == "%title" )
+            {
                 addToken( "Title" );
-            if( s.mid( i, 6 ) == "%track" )
+                i += 6;
+            }
+            else if( s.mid( i, 6 ) == "%track" )
+            {
                 addToken( "Track" );
-            if( s.mid( i, 7 ) == "%artist" )
+                i += 6;
+            }
+            else if( s.mid( i, 7 ) == "%artist" )
+            {
                 addToken( "Artist" );
-            if( s.mid( i, 9 ) == "%composer" )
+                i += 7;
+            }
+            else if( s.mid( i, 9 ) == "%composer" )
+            {
                 addToken( "Composer" );
-            if( s.mid( i, 5 ) == "%year" )
+                i += 9;
+            }
+            else if( s.mid( i, 5 ) == "%year" )
+            {
                 addToken( "Year" );
-            if( s.mid( i, 6 ) == "%album" )
+                i += 5;
+            }
+            else if( s.mid( i, 6 ) == "%album" )
+            {
                 addToken( "Album" );
-            if( s.mid( i, 8 ) == "%comment" )
+                i += 6;
+            }
+            else if( s.mid( i, 8 ) == "%comment" )
+            {
                 addToken( "Comment" );
-            if( s.mid( i, 6 ) == "%genre" )
+                i += 8;
+            }
+            else if( s.mid( i, 6 ) == "%genre" )
+            {
                 addToken( "Genre" );
-            if( s.mid( i, 9 ) == "%filetype" )
+                i += 6;
+            }
+            else if( s.mid( i, 9 ) == "%filetype" )
+            {
                 addToken( "File type" );
-            if( s.mid( i, 7 ) == "%ignore" )
+                i += 9;
+            }
+            else if( s.mid( i, 7 ) == "%ignore" )
+            {
                 addToken( "Ignore" );
-            if( s.mid( i, 7 ) == "%folder" )
+                i += 7;
+            }
+            else if( s.mid( i, 7 ) == "%folder" )
+            {
                 addToken( "Collection root" );
-            if( s.mid( i, 8 ) == "%initial" )
+                i += 7;
+            }
+            else if( s.mid( i, 8 ) == "%initial" )
+            {
                 addToken( "Artist initial" );
-            if( s.mid( i, 11 ) == "%discnumber" )
+                i += 8;
+            }
+            else if( s.mid( i, 11 ) == "%discnumber" )
+            {
                 addToken( "Disc number" );
-            i+=5;
-            
+                i += 11;
+            }
         }
         else
         {
             if( s.at(i) == '_' )
-                this->addToken( "_" );
+                addToken( "_" );
             else if( s.at(i) == '-' )
                 addToken( "-" );
             else if( s.at(i) == '.' )
@@ -374,7 +418,7 @@ FilenameLayoutWidget::inferScheme( const QString s ) //SLOT
             else if( s.at(i) == ' ' )
                 addToken( "<space>");
             else
-                error() << "This can't be represented as FilenameLayoutWidget Token";
+                debug() << "This can't be represented as FilenameLayoutWidget Token";
             i++;
         }
     }
