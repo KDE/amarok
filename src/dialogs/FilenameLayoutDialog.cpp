@@ -40,9 +40,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
     syntaxLabel->setWordWrap( true );
-    QString hintImagePath = QString( KStandardDirs::locate( "data", "amarok/images/FilenameLayoutDialogHint.png" ) );
-    QPixmap *hintImage = new QPixmap( hintImagePath );
-    hintPicture->setPixmap( *hintImage );
     
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
@@ -298,7 +295,6 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
         filenameLayoutEdit->show();
         filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
         tokenPool->hide();
-        hintPicture->hide();
         syntaxLabel->show();
 
     }
@@ -309,7 +305,6 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
         filenameLayout->inferScheme( filenameLayoutEdit->text() );
         filenameLayoutEdit->hide();
         tokenPool->show();
-        hintPicture->show();
         syntaxLabel->hide();
     }
 
