@@ -417,6 +417,8 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
                 addToken( "." );
             else if( s.at(i) == ' ' )
                 addToken( "<space>");
+            else if( s.at(i) == '/' )
+                addToken( "/" );
             else
                 debug() << "This can't be represented as FilenameLayoutWidget Token";
             i++;
