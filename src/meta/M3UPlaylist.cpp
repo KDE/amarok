@@ -107,9 +107,12 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             if( url.startsWith( '/' ) )
                 url.prepend( "file://" );
             // Won't be relative if it begins with a /
+            // Also won't be windows url, so no need to worry about swapping \ for /
             if( KUrl::isRelativeUrl( url ) )
             {
                 debug() << "relative url";
+                //Replace \ with / for windows playlists
+                line.replace('\\','/');
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
