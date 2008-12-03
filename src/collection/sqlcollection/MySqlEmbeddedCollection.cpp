@@ -268,6 +268,12 @@ int MySqlEmbeddedCollection::insert( const QString& statement, const QString& /*
 QString
 MySqlEmbeddedCollection::escape( QString text ) const
 {
+    if( !m_db )
+    {
+        error() << "Tried to perform escape() on uninitialized MySQLe";
+        return QString();
+    }
+
     const QByteArray utfText = text.toUtf8();
     const int length = utfText.length() * 2 + 1;
     QVarLengthArray<char, 1024> outputBuffer( length );
