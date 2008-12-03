@@ -12,6 +12,7 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Don't show wrong metadata for Last.fm radio. (BR 175435)
     * Collection setup directory chooser would incorrectly set some paths as
       disabled. Patch thanks to Ben Boeckel <MathStuf@gmail.com>. (BR 176569)
     * Don't try to squeeze text into wrongly tiny space, make the track label
