@@ -32,7 +32,7 @@ class FilenameLayoutWidget : public QFrame
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
 
-        uint getTokenCount() const;
+        unsigned int getTokenCount() const;
         QString getParsableScheme() const;
 
     protected:
@@ -55,11 +55,11 @@ class FilenameLayoutWidget : public QFrame
         void generateParsableScheme();
         void removeAllTokens();
 
-        QLabel      *m_infoText;        // text in the back of the empty FilenameLayoutWidget
+        QLabel *m_infoText;        // text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *m_layout;          // main layout that holds the tokens
         
         QPoint  m_startPos;             // needed for initiating the drag
-        uint    m_tokenCount;
+        unsigned int m_tokenCount;
         QString m_parsableScheme;       // a string that TagGuesser will be able to use
 };
 

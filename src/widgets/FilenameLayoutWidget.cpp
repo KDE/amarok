@@ -143,7 +143,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     if( childUnder == 0 )
     {
         // if the bar is empty
-        if( !m_tokenCount )   
+        if( !m_tokenCount )
             addToken( textFromMimeData );
         
         //if the bar is not empty and I'm still not dropping on an existing token
@@ -177,7 +177,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                 }
                 
                 if( !childUnder )
-                    error() << "ERROR: childUnder is null";     //FIXME: I need to pick up Token*, not a member of his
+                    error() << "ERROR: childUnder is null";
                 insertOverChild( childUnder, textFromMimeData, event );
             }
             else                                                                    //if I find a token, I'm done
@@ -195,7 +195,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
 }
 
 //Access for m_tokenCount
-uint
+unsigned int
 FilenameLayoutWidget::getTokenCount() const
 {
     return m_tokenCount;
