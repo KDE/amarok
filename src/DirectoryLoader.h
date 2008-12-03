@@ -25,11 +25,14 @@
 
 #include "Meta.h"
 
+#include <KFileItem>
+
 class KJob;
 namespace KIO {
     class Job;
     class UDSEntry;
     typedef QList< UDSEntry >  UDSEntryList;
+    typedef QList< KFileItem > KFileItemList;
 }
 
 
@@ -56,12 +59,14 @@ class DirectoryLoader : public QObject
 
     private:
         void finishUrlList();
+        static bool directorySensitiveLessThan( const KFileItem& item1, const KFileItem& item2);
         /**
          * the number of directory list operations. this is used so that
          * the last directory operations knows its the last */
         int m_listOperations; 
         bool m_localConnection; //!was insertAtRow called? otherwise finishUrlList should deleteLater
         int m_row; //! for insertAtRow
+        KIO::KFileItemList m_expanded;
         Meta::TrackList m_tracks; //! the tracks found. they get all sorted at the end.
 };
 #endif

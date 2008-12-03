@@ -26,8 +26,9 @@
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KFileItem>
 #include <kio/job.h> // KIO::listRecursive
+
+#include <QtAlgorithms>
 
 DirectoryLoader::DirectoryLoader()
     : QObject( 0 )
@@ -115,15 +116,8 @@ DirectoryLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &l
     const KUrl dir = static_cast<KIO::SimpleJob*>( job )->url();
     foreach( const KIO::UDSEntry &entry, list )
     {
-        KUrl currentUrl = dir;
-        currentUrl.addPath( entry.stringValue( KIO::UDSEntry::UDS_NAME ) );
-        debug() << "listing url: " << currentUrl;
-        if( !entry.isDir() )
-        {
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( currentUrl );
-            if( track )
-                m_tracks.append( track );
-        }
+        KFileItem item( entry, dir, true, true );
+        m_expanded.append( item );
     }
 }
 
@@ -138,13 +132,45 @@ DirectoryLoader::listJobFinished(KJob*)
 void
 DirectoryLoader::finishUrlList()
 {
-    if( !m_tracks.isEmpty() )
+    if( !m_expanded.isEmpty() )
     {
-        //qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan ); //this will screw up if we add multiple dirs at once, or a playlist containing stuff from multiple
-        //                                                                          albums as it will sort across all track numbers, regardless of dir/album of the track
+        qStableSort( m_expanded.begin(), m_expanded.end(), DirectoryLoader::directorySensitiveLessThan );
+        foreach( const KFileItem& item, m_expanded )
+        {
+            if( !item.isDir() )
+            {
+                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
+                if( track )
+                    m_tracks.append( track );
+            }
+        }
         emit finished( m_tracks );
     }
     if( !m_localConnection )
         deleteLater();
 }
+
+bool
+DirectoryLoader::directorySensitiveLessThan( const KFileItem& item1, const KFileItem& item2 )
+{
+    QString dir1 =  item1.url().directory();
+    QString dir2 =  item2.url().directory();
+
+    debug() << "dir1: " << dir1;
+    debug() << "dir2: " << dir2;
+    if(dir1 == dir2)
+    {
+        debug() << "dir1==dir2";
+        return item1.url().url() < item2.url().url();
+    }
+    else if( dir1 < dir2 )
+    {
+        debug() << "dir1<dir2";
+        return true;
+    } else {
+        debug() << "dir1>dir2";
+        return false;
+    }
+}
+
 
