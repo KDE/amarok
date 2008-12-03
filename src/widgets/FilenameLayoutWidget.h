@@ -58,7 +58,7 @@ class FilenameLayoutWidget : public QFrame
         void removeAllTokens();
         void switchBackText( bool show );
 
-        QString *m_infoText;        // text in the back of the empty FilenameLayoutWidget
+        QString m_infoText;        // text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *m_layout;          // main layout that holds the tokens
         
         QPoint  m_startPos;             // needed for initiating the drag

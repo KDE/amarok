@@ -41,7 +41,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     m_layout = new QHBoxLayout;
     m_layout->setSpacing( 0 );    //this should be coherent when using separators
     setLayout( m_layout );
-    m_infoText = new QString();
+    m_infoText = QString();
     switchBackText( true );
     m_layout->setContentsMargins( 1, 1, 1, 1 );
 }
@@ -440,14 +440,14 @@ FilenameLayoutWidget::switchBackText( bool on )
 {
     if( on )
     {
-        *m_infoText = i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" );
+        m_infoText = i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" );
         //TODO: when we are out of string freeze remove the html from i18n
         //now a workaround to avoid breaking string freeze.
-        m_infoText->remove( 0, 21 );
-        m_infoText->remove( m_infoText->length() - 10, 10 );
+        m_infoText.remove( 0, 21 );
+        m_infoText.remove( m_infoText.length() - 10, 10 );
     }
     else
-        m_infoText->clear();
+        m_infoText.clear();
     repaint();
 }
 
@@ -455,6 +455,6 @@ void
 FilenameLayoutWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p(this);
-    p.drawText( rect(), Qt::AlignCenter, *m_infoText );
+    p.drawText( rect(), Qt::AlignCenter, m_infoText );
     QFrame::paintEvent( event );
 }
