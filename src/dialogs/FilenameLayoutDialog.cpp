@@ -29,12 +29,13 @@
 
 FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeCollection )
     : QWidget( parent )
+    , m_isOrganizeCollection( isOrganizeCollection )
+    , m_advancedMode( false )
 {
     setupUi( this );
     optionsFrame->hide();
 
-    m_isOrganizeCollection = isOrganizeCollection;
-    caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
+    m_caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
@@ -106,12 +107,12 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     {
         if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Advanced" )
         {
-            toAdvancedMode();
+            setAdvancedMode( true );
             filenameLayoutEdit->setText( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
         }
         else if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Basic" )
         {
-            toBasicMode();
+            setAdvancedMode( false );
             filenameLayout->inferScheme( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
         }
     }
@@ -119,12 +120,12 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     {
         if( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Mode" ) == "Advanced" )
         {
-            toAdvancedMode();
+            setAdvancedMode( true );
             filenameLayoutEdit->setText( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
         }
         else if( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Mode" ) == "Basic" )
         {
-            toBasicMode();
+            setAdvancedMode( false );
             filenameLayout->inferScheme( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
         }
     }
@@ -171,14 +172,14 @@ FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
 {
     if( !checked )
     {
-        foreach( QRadioButton *rb, caseEditRadioButtons )
+        foreach( QRadioButton *rb, m_caseEditRadioButtons )
         {
             rb->setEnabled( false );
         }
     }
     else
     {
-        foreach( QRadioButton *rb, caseEditRadioButtons )
+        foreach( QRadioButton *rb, m_caseEditRadioButtons )
         {
             rb->setEnabled( true );
         }
@@ -216,8 +217,7 @@ FilenameLayoutDialog::getWhitespaceOptions()
 {
     if( !cbEliminateSpaces->isChecked() )
         return 0;
-    else
-        return 1;
+    return 1;
 }
 
 //As above
@@ -226,52 +226,45 @@ FilenameLayoutDialog::getUnderscoreOptions()
 {
     if( !cbReplaceUnderscores->isChecked() )
         return 0;
-    else
-        return 1;
+    return 1;
 }
 
 //Handles the modifications to the dialog to toggle between advanced and basic editing mode.
 void
 FilenameLayoutDialog::toggleAdvancedMode()
 {
-    if( kpbAdvanced->text() == i18n( "&Advanced..." ) )     //is this a good idea?
-    {
-        toAdvancedMode();
-    }
-    else
-    {
-        toBasicMode();
-    }
+    setAdvancedMode( !m_advancedMode );
 }
 
 //handles switching between basic and advanced mode
 void
-FilenameLayoutDialog::toAdvancedMode()
+FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
 {
-    kpbAdvanced->setText( i18n( "&Basic..." ) );
-    filenameLayout->hide();
-    filenameLayoutEdit->show();
-    filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
-    tokenPool->hide();
-    syntaxLabel->show();
-    if( m_isOrganizeCollection )
-        Amarok::config( "OrganizeCollectionDialog").writeEntry( "Mode", "Advanced" );
-    else
-        Amarok::config( "FilenameLayoutDialog" ).writeEntry( "Mode", "Advanced" );
-}
+    m_advancedMode = isAdvanced;
 
-void
-FilenameLayoutDialog::toBasicMode()
-{
-    kpbAdvanced->setText( i18n( "&Advanced..." ) );
-    filenameLayoutEdit->hide();
-    syntaxLabel->hide();
-    filenameLayout->show();
-    filenameLayout->inferScheme( filenameLayoutEdit->text() );
-    tokenPool->show();
-    if( m_isOrganizeCollection )
-        Amarok::config( "OrganizeCollectionDialog" ).writeEntry( "Mode", "Basic" );
-    else
-        Amarok::config( "FilenameLayoutDialog" ).writeEntry( "Mode", "Basic" );
+    if( isAdvanced )
+    {
+        kpbAdvanced->setText( i18n( "&Basic..." ) );
+        filenameLayout->hide();
+        filenameLayoutEdit->show();
+        filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
+        tokenPool->hide();
+        syntaxLabel->show();
+
+    }
+    else // set Basic mode
+    {
+        kpbAdvanced->setText( i18n( "&Advanced..." ) );
+        filenameLayout->show();
+        filenameLayout->inferScheme( filenameLayoutEdit->text() );
+        filenameLayoutEdit->hide();
+        tokenPool->show();
+        syntaxLabel->hide();
+    }
+
+    QString configValue = m_isOrganizeCollection ? "OrganizeCollectionDialog" : "FilenameLayoutDialog";
+    QString entryValue  = m_advancedMode ? "Advanced" : "Basic";
+
+    Amarok::config( configValue ).writeEntry( "Mode", entryValue );
 }
 

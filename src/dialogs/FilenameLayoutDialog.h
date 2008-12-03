@@ -36,19 +36,21 @@ class FilenameLayoutDialog
         int getWhitespaceOptions();
         int getUnderscoreOptions();
 
-    private:
-        QList< QRadioButton * > caseEditRadioButtons;
-        void toBasicMode();
-        void toAdvancedMode();
-        bool m_isOrganizeCollection;
+    signals:
+        void schemeChanged();
 
     private slots:
         void editStateEnable( bool checked );
         void onAccept();
         void toggleAdvancedMode();
+    
+    private:
+        void setAdvancedMode( bool isAdvanced );
 
-    signals:
-        void schemeChanged();
+        bool m_isOrganizeCollection;
+        bool m_advancedMode;
+        
+        QList<QRadioButton*> m_caseEditRadioButtons;
 };
 
 #endif    //FILENAMELAYOUTDIALOG_H
