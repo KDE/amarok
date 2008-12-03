@@ -8,13 +8,15 @@ VERSION 2.0
     * Added read/write configuration APIs for QtScript.
 
   CHANGES:
-    * Last.Fm service now uses KIO for network access, respects desktop proxy settings.
+    * Last.Fm service now uses KIO for network access, respects desktop proxy
+      settings.
     * Added icons to the filename scheme and organize collection dialogs.
     * Added an OK button for the script manager.
 
   BUGFIXES:
     * Show artists in Cover Manager sorted alphabetically. (BR 176178)
-    * Fix reading of windows playlists, recognise \ as directory separator(BR 93717)
+    * Fix reading of windows playlists, recognise \ as directory separator.
+      (BR 93717)
     * Fix crash when searching in collections. (BR 175094)
     * Elide text properly in applet chooser widget. (BR 175064)
     * Fixed potential crash when playing streams. (BR 175886)
