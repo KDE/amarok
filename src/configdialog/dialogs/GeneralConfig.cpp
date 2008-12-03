@@ -21,6 +21,7 @@
 #include "GeneralConfig.h"
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "MainWindow.h"
 #include <config-amarok.h>  
 
 #include <KStandardDirs>
@@ -75,6 +76,7 @@ GeneralConfig::GeneralConfig( QWidget* parent )
 
     connect( kcfg_ExternalBrowser, SIGNAL( textChanged( int ) ), parent, SLOT( updateButtons() ) );
     //connect( kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
+    connect( resetWidths, SIGNAL( clicked() ), The::mainWindow(), SLOT( resetPanelWidths() ) );
 }
 
 GeneralConfig::~GeneralConfig()
