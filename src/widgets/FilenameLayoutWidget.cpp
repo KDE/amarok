@@ -455,6 +455,8 @@ void
 FilenameLayoutWidget::paintEvent( QPaintEvent *event )
 {
     QPainter p(this);
-    p.drawText( rect(), Qt::AlignCenter, m_infoText );
+    QFontMetrics fm( p.font() );
+    p.drawText( QRect( rect().topLeft() + QPoint( 4, 4 ), rect().size() - QSize( 8, 8 ) ),
+                Qt::AlignCenter, fm.elidedText( m_infoText, Qt::ElideRight, rect().width() - 8 ) );
     QFrame::paintEvent( event );
 }
