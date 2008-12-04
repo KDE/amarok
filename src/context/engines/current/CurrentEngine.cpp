@@ -168,7 +168,10 @@ void CurrentEngine::update()
 
     QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack );
 
-    const int width = coverWidth();
+    int width = coverWidth(); // this is always == 0, someone needs to setCoverWidth()
+    width = 156; // workaround to make the art less grainy. 156 is the width of the nocover image
+                 // there is no way to resize the currenttrack applet at this time, so this size
+                 // will always look good.
     if( m_currentTrack->album() )
         subscribeTo( m_currentTrack->album() );
     
