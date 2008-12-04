@@ -112,6 +112,11 @@ ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, 
 void
 ScanResultProcessor::commit()
 {
+    if( !m_setupComplete )
+    {
+        debug() << "ERROR: Database temporary table setup did not complete.  This is probably a result of no directories being scanned.";
+        return;
+    }
     if( m_type == ScanResultProcessor::IncrementalScan )
     {
         foreach( const QString &dir, m_directories.keys() )
