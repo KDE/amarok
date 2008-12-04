@@ -21,7 +21,7 @@ VERSION 2.0
 	* Workaround a bug in the CurrentEngine class that makes the nocover image
       look grainy in the currenttrack applet.
     * Dragging and Dropping folders from the filebrowser into the playlist will 
-      now result in the tracks being ordered correctly. (BR 176673, 176156)
+      now result in the tracks being ordered correctly. (BR 176673) (BR 176156)
     * Fixed deletion for downloaded podcast episodes (BR 176084)
     * Show artists in Cover Manager sorted alphabetically. (BR 176178)
     * Fix reading of windows playlists, recognise \ as directory separator.
