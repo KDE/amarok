@@ -42,9 +42,8 @@ int main( int argc, char *argv[] )
             ki18n(( "Developer (jefferai)" )), "mitchell@kde.org" );
     aboutData.addAuthor( ki18n("Leo Franchi"),
             ki18n(( "Developer (lfranchi)" )), "lfranchi@kde.org" );
-    //FIXME: k18n after string freeze
-    aboutData.addAuthor( "Lydia 'is wrong(TM)' Pintscher",
-            "Release Vixen (Nightrose)", "lydia@kde.org" );
+    aboutData.addAuthor( ki18n("Lydia 'is wrong(TM)' Pintscher"),
+            ki18n(( "Release Vixen (Nightrose)" )), "lydia@kde.org" );
     aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann"), //krazy:exclude=contractions
             ki18n(( "Project founder (markey)" )), "kretschmann@kde.org" );
     aboutData.addAuthor( ki18n("Maximilian Kossick"),
