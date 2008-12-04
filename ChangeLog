@@ -63,6 +63,7 @@ VERSION 2.0
       Previous buttons in tag dialog. (BR 175524)
     * Sort Podcasts in the right order.
 
+
 VERSION 2.0-rc1
   FEATURES:
     * Users' Recommended radio is now shown in the Last.Fm Service.
