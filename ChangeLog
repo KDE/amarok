@@ -8,12 +8,18 @@ VERSION 2.0
     * Added read/write configuration APIs for QtScript.
 
   CHANGES:
+    * The Organize Collection dialog has been improved.
     * Last.Fm service now uses KIO for network access, respects desktop proxy
       settings.
     * Added icons to the filename scheme and organize collection dialogs.
     * Added an OK button for the script manager.
 
   BUGFIXES:
+	* Workaround a bug in the CurrentEngine class that makes the nocover image
+      look grainy in the currenttrack applet.
+    * Dragging and Dropping folders from the filebrowser into the playlist will 
+      now result in the tracks being ordered correctly. (BR 176673, 176156)
+    * Fixed deletion for downloaded podcast episodes (BR 176084)
     * Show artists in Cover Manager sorted alphabetically. (BR 176178)
     * Fix reading of windows playlists, recognise \ as directory separator.
       (BR 93717)
@@ -48,12 +54,6 @@ VERSION 2.0
     * Focus of text fields no longer lost when changing tracks using the Next/
       Previous buttons in tag dialog. (BR 175524)
     * Sort Podcasts in the right order.
-    * Fixed deletion for downloaded podcast episodes (BR 176084)
-	* Dragging and Dropping folders from the filebrowser into the playlist will 
-      now result in the tracks being ordered correctly. (BR 176673, 176156)
-	* Workaround a bug in the CurrentEngine class that makes the nocover image
-      look grainy in the currenttrack applet.
-
 
 VERSION 2.0-rc1
   FEATURES:
