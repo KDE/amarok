@@ -9,7 +9,7 @@ VERSION 2.0
 
   CHANGES:
     * Removed the KBookmarks menu in the FileBrowser because it causes
-	  crashes.
+      crashes.
     * The Organize Collection dialog has been improved.
     * Last.Fm service now uses KIO for network access, respects desktop proxy
       settings.
@@ -17,8 +17,10 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Fix shadows around the cover in the current track applet (and potentially 
+      other places as well) getting progresssively darker.
     * Don't compare Solid and libmtp's serial number to connect. (BR 176403)
-	* Workaround a bug in the CurrentEngine class that makes the nocover image
+    * Workaround a bug in the CurrentEngine class that makes the nocover image
       look grainy in the currenttrack applet.
     * Dragging and Dropping folders from the filebrowser into the playlist will 
       now result in the tracks being ordered correctly. (BR 176673) (BR 176156)
