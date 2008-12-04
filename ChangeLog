@@ -15,6 +15,7 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Don't compare Solid and libmtp's serial number to connect. (BR 176403)
 	* Workaround a bug in the CurrentEngine class that makes the nocover image
       look grainy in the currenttrack applet.
     * Dragging and Dropping folders from the filebrowser into the playlist will 
