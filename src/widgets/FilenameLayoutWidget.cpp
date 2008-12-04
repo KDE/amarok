@@ -41,8 +41,13 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     m_layout = new QHBoxLayout;
     m_layout->setSpacing( 0 );    //this should be coherent when using separators
     setLayout( m_layout );
-    m_infoText = QString();
-    switchBackText( true );
+    m_infoText = QString( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
+    //TODO: when we are out of string freeze remove the html from i18n
+    //now a workaround to avoid breaking string freeze.
+    m_infoText.remove( 0, 21 );
+    m_infoText.remove( m_infoText.length() - 10, 10 );
+    repaint();  //update m_infoText
+    
     m_layout->setContentsMargins( 1, 1, 1, 1 );
 }
 
@@ -52,10 +57,9 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 void
 FilenameLayoutWidget::addToken( const QString &text, int index )   //SLOT
 {
-    if( !m_tokenCount )
-        switchBackText( false );
-
     m_tokenCount++;
+    repaint();  //update m_infoText
+    
     Token *token = new Token( text, this );
 
     m_layout->insertWidget( index, token );
@@ -228,9 +232,7 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
         }
         delete child;
         m_tokenCount--;
-
-        if( !m_tokenCount )
-            switchBackText( true );
+        repaint();  //update m_infoText
         
         generateParsableScheme();
         emit schemeChanged();
@@ -258,11 +260,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
 
     delete child;
     m_tokenCount--;
-
-    if( !m_tokenCount )
-    {
-        switchBackText( true );
-    }
+    repaint();  //update m_infoText
     
     drag->exec(Qt::MoveAction | Qt::CopyAction, Qt:: CopyAction);
     generateParsableScheme();
@@ -430,33 +428,20 @@ FilenameLayoutWidget::removeAllTokens()
         delete child;
     }
     m_tokenCount = 0;
-    switchBackText( true );
-    repaint();
+    repaint();  //update m_infoText
+    
     emit schemeChanged();
-}
-
-void
-FilenameLayoutWidget::switchBackText( bool on )
-{
-    if( on )
-    {
-        m_infoText = i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" );
-        //TODO: when we are out of string freeze remove the html from i18n
-        //now a workaround to avoid breaking string freeze.
-        m_infoText.remove( 0, 21 );
-        m_infoText.remove( m_infoText.length() - 10, 10 );
-    }
-    else
-        m_infoText.clear();
-    repaint();
 }
 
 void
 FilenameLayoutWidget::paintEvent( QPaintEvent *event )
 {
-    QPainter p(this);
-    QFontMetrics fm( p.font() );
-    p.drawText( QRect( rect().topLeft() + QPoint( 4, 4 ), rect().size() - QSize( 8, 8 ) ),
-                Qt::AlignCenter, fm.elidedText( m_infoText, Qt::ElideRight, rect().width() - 8 ) );
+    if( m_tokenCount == 0 )
+    {
+        QPainter p(this);
+        QFontMetrics fm( p.font() );
+        p.drawText( QRect( rect().topLeft() + QPoint( 4, 4 ), rect().size() - QSize( 8, 8 ) ),
+                    Qt::AlignCenter, fm.elidedText( m_infoText, Qt::ElideRight, rect().width() - 8 ) );
+    }
     QFrame::paintEvent( event );
 }

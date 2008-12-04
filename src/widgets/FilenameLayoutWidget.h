@@ -56,7 +56,6 @@ class FilenameLayoutWidget : public QFrame
         void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
         void generateParsableScheme();
         void removeAllTokens();
-        void switchBackText( bool show );
 
         QString m_infoText;        // text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *m_layout;          // main layout that holds the tokens
