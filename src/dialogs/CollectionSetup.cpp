@@ -245,9 +245,13 @@ namespace CollectionFolder {
     bool
     Model::ancestorChecked( const QString &path ) const
     {
+        // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
+        const QString _path = path.endsWith( '/' ) ? path : path + '/';
+
         foreach( const QString &element, m_checked )
         {
-            if( path.startsWith( element ) && element != path )
+            const QString _element = element.endsWith( '/' ) ? element : element + '/';
+            if( _path.startsWith( _element ) && _element != _path )
                 return true;
         }
         return false;
@@ -255,9 +259,13 @@ namespace CollectionFolder {
 
     bool Model::descendantChecked( const QString& path ) const
     {
+        // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
+        const QString _path = path.endsWith( '/' ) ? path : path + '/';
+
         foreach( const QString& element, m_checked )
         {
-            if( element.startsWith( path ) && element != path )
+            const QString _element = element.endsWith( '/' ) ? element : element + '/';
+            if( _element.startsWith( _path ) && _element != _path )
                 return true;
         }
         return false;
