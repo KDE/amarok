@@ -165,6 +165,10 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 
         debug() << "Testing serial number";
 
+        // HACK: not checking serial to confirm the right device is in place
+        // this is not incorrect, and long-term goal is to remove serial number from use altogether
+
+        /*
         QString mtpSerial = QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) );
         if( !mtpSerial.contains(serial) )
         {
@@ -174,6 +178,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
             LIBMTP_Release_Device( device );
             continue;
         }
+        */
 
         debug() << "Correct device found";
         success = true;
