@@ -8,6 +8,8 @@ VERSION 2.0
     * Added read/write configuration APIs for QtScript.
 
   CHANGES:
+    * Removed the KBookmarks menu in the FileBrowser because it causes
+	  crashes.
     * The Organize Collection dialog has been improved.
     * Last.Fm service now uses KIO for network access, respects desktop proxy
       settings.
