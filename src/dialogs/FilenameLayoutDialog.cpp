@@ -132,6 +132,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     {
         tokenPool->addItem( new QListWidgetItem( KIcon( "filename-ignore-amarok" ).pixmap( 48, 48 ), i18n( "Ignore field" ) ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
+                                    // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %ignore." ) );
         collectionRootFrame->hide();
@@ -144,6 +145,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         tokenPool->addItem( new QListWidgetItem( KIcon( "filename-filetype-amarok" ).pixmap( 48, 48 ), i18n( "File type" ) ) );
         tokenPool->addItem( new QListWidgetItem( KIcon( "filename-discnumber-amarok" ).pixmap( 48, 48 ), i18n( "Disc number" ) ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
+                                    // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
         collectionRootFrame->show();
