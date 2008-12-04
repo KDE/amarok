@@ -145,8 +145,8 @@ DirectoryLoader::finishUrlList()
             }
         }
         qStableSort( m_tracks.begin(), m_tracks.end(), Meta::Track::lessThan );
-        emit finished( m_tracks );
     }
+    emit finished( m_tracks );
     if( !m_localConnection )
         deleteLater();
 }
