@@ -65,12 +65,10 @@ Scrobbler::handshake()
     
     m_handshake = new ScrobblerHandshake( m_clientId );
     connect( m_handshake, SIGNAL(done( QByteArray )), SLOT(onHandshakeReturn( QByteArray )), Qt::QueuedConnection );
-    connect( m_handshake, SIGNAL(responseHeaderReceived( QHttpResponseHeader )), SLOT(onHandshakeHeaderReceived( QHttpResponseHeader )) );
     m_np = new NowPlaying( np_data );
     connect( m_np, SIGNAL(done( QByteArray )), SLOT(onNowPlayingReturn( QByteArray )), Qt::QueuedConnection );
     m_submitter = new ScrobblerSubmission;
     connect( m_submitter, SIGNAL(done( QByteArray )), SLOT(onSubmissionReturn( QByteArray )), Qt::QueuedConnection );
-    connect( m_submitter, SIGNAL(requestStarted( int )), SLOT(onSubmissionStarted( int )) );
 }
 
 
@@ -93,6 +91,7 @@ Scrobbler::submit()
 {
     m_submitter->setTracks( m_cache->tracks() );
     m_submitter->submitNextBatch();
+    emit status( Scrobbling );
 }
 
 
@@ -172,13 +171,15 @@ Scrobbler::onNowPlayingReturn( const QByteArray& result )
     }
     else if (code == "BADSESSION")
     {
-        if (!m_submitter->hasPendingRequests())
+        //FIXME: Not sure what to replace this with, so simply triggering onError
+/*        if (!m_submitter->hasPendingRequests())
         {
             // if scrobbling is happening then there is no way I'm causing
-            // duplicate scrobbles! We'll fail next time we try to contact 
+            // duplicate scrobbles! We'll fail next time we try to contact
             // Last.fm instead
             onError( Scrobbler::ErrorBadSession );
-        }
+        }*/
+        onError( Scrobbler::ErrorBadSession );
     }
     // yep, no else. The protocol says hard fail, I say, don't:
     //  1) if only np is down, then hard failing will just mean a lot of work for the handshake php script with no good reason
@@ -223,21 +224,3 @@ Scrobbler::onSubmissionReturn( const QByteArray& result )
         m_submitter->retry();
 }
 
-
-void
-Scrobbler::onHandshakeHeaderReceived( const QHttpResponseHeader& header )
-{
-    if (header.statusCode() != 200)
-    {
-        m_handshake->abort(); //TEST
-        m_handshake->retry();
-    }
-}
-
-
-void
-Scrobbler::onSubmissionStarted( int id )
-{
-    if (id == m_submitter->requestId())
-        emit status( Scrobbling );
-}

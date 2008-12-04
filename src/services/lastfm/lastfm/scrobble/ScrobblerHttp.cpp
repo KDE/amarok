@@ -24,31 +24,31 @@
 
 
 ScrobblerHttp::ScrobblerHttp( QObject* parent )
-             : QHttp( parent ),
-               m_id( -1 )
+             : QNetworkAccessManager( parent ),
+               m_reply( 0 )
 {
     m_retry_timer = new QTimer( this );
     m_retry_timer->setSingleShot( true );
     connect( m_retry_timer, SIGNAL(timeout()), SLOT(request()) );
     resetRetryTimer();
 
-    connect( this, SIGNAL(requestFinished( int, bool )), SLOT(onRequestFinished( int, bool )) );
+    connect( this, SIGNAL(finished( QNetworkReply* )), SLOT(onFinished( QNetworkReply* )) );
 }
 
 
 void
-ScrobblerHttp::onRequestFinished( int id, bool error )
+ScrobblerHttp::onFinished( QNetworkReply* reply )
 {
-    if (id == m_id)
+    if (reply == m_reply)
     {
-		if (error && this->error() == QHttp::Aborted)
-			return;
+        if ( m_reply->error() == QNetworkReply::OperationCanceledError )
+            return;
 		
-        QByteArray const data = readAll();
+        QByteArray const data = m_reply->readAll();
 
-        if (error)
+        if (m_reply->error() != QNetworkReply::NoError)
         {
-            qDebug() << "ERROR!" << this;
+            qDebug() << "ERROR! QNetworkReply error code: " << m_reply->error();
             emit done( QByteArray() );
         }
         else
@@ -57,8 +57,8 @@ ScrobblerHttp::onRequestFinished( int id, bool error )
             emit done( data );
         }
 		
-		// just in case
-        m_id = -1;
+	// just in case
+        m_reply = 0;
     }
 }
 
@@ -66,8 +66,7 @@ ScrobblerHttp::onRequestFinished( int id, bool error )
 void
 ScrobblerPostHttp::setUrl( const QUrl& url )
 {
-    m_path = url.path();
-    setHost( url.host(), url.port() );
+    m_request.setUrl( url );
 }
 
 
@@ -91,24 +90,15 @@ ScrobblerHttp::resetRetryTimer()
 }
 
 
-int
-ScrobblerHttp::get( QString url )
-{
-    return QHttp::get( url );
-}
-
-
 void
 ScrobblerPostHttp::request()
 {
     if (m_data.isEmpty() || m_session.isEmpty())
         return;
 
-    QHttpRequestHeader header( "POST", m_path );
-    header.setValue( "Host", host() ); //Qt makes me LOL today
-    header.setContentType( "application/x-www-form-urlencoded" );
+    m_request.setHeader( QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded" );
 
-    qDebug() << "HTTP POST:" << host() + m_path + m_data;
+    qDebug() << "HTTP POST:" << m_request.url().toString() + m_data;
 
-    m_id = QHttp::request( header, "s=" + m_session + m_data );
+    m_reply = QNetworkAccessManager::post( m_request, "s=" + m_session + m_data );
 }

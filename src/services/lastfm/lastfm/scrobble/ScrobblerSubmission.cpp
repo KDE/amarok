@@ -35,11 +35,12 @@ ScrobblerSubmission::setTracks( const QList<Track>& tracks )
 void
 ScrobblerSubmission::submitNextBatch()
 {
-    if (hasPendingRequests())
+    //FIXME: what to do (here and elsewhere where there was hasPendingRequests?)
+    //if (hasPendingRequests())
 		// the tracks cannot be submitted at this time
 		// if a parent Scrobbler exists, it will submit another batch
 		// when the current one is done
-		return;
+	//	return;
 
     m_batch.clear(); //yep first
     m_data.clear();

@@ -80,8 +80,6 @@ private slots:
     void onHandshakeReturn( const QByteArray& );
     void onNowPlayingReturn( const QByteArray& );
     void onSubmissionReturn( const QByteArray& );
-    void onSubmissionStarted( int );
-    void onHandshakeHeaderReceived( const class QHttpResponseHeader& );
 
 private:
     void handshake();

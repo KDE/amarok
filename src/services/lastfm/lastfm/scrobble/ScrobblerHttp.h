@@ -21,44 +21,39 @@
 #define SCROBBLER_HTTP_H
 
 #include <QDebug> // leave first, due to QtOverrides
-#include <QtNetwork/QHttp>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
 #include <QUrl>
 
 
 /** facade pattern base class for QHttp for Scrobbler usage */
-class ScrobblerHttp : public QHttp
+class ScrobblerHttp : public QNetworkAccessManager
 {
     Q_OBJECT
 
 public:
     void retry();
-    int requestId() const { return m_id; }
-
-    QString host() const { return m_host; }
+    QNetworkReply* reply() const { return m_reply; }
 
 protected:
     ScrobblerHttp( QObject* parent = 0 );
 
-    void setHost( QString s, int i=80 ) { m_host = s; QHttp::setHost( s, i ); }
-
 protected slots:
     virtual void request() = 0;
-    // Never use the QHttp::get method directly. Makes it possible to test without needing to mock QHttp.
-    int get( QString );
+
 signals:
     void done( const QByteArray& data );
 
 protected:
-    int m_id;
+    QNetworkReply *m_reply;
     class QTimer *m_retry_timer;
 
 private slots:
-    void onRequestFinished( int id, bool error );
+    void onFinished( QNetworkReply* reply );
 
 private:
     void resetRetryTimer();
-
-    QString m_host;
 };
 
 
@@ -69,6 +64,7 @@ class ScrobblerPostHttp : public ScrobblerHttp
 
 protected:
     QByteArray m_data;
+    QNetworkRequest m_request;
 
 public:
     ScrobblerPostHttp()
@@ -86,12 +82,15 @@ public:
 
 inline QDebug operator<<( QDebug d, ScrobblerHttp* http )
 {
+/*
     d << "  Http response: " << http->lastResponse().statusCode() << "\n"
   	  << "  QHttp error code: " << http->error() << "\n"
 	  << "  QHttp error text: " << http->errorString() << "\n"
 	  << "  Request: " << http->host() + http->currentRequest().path() << "\n"
 	  << "  Bytes returned: " << http->bytesAvailable();
-	
+*/
+    Q_UNUSED(http)
+    d << "SOMEDEBUG";    
     return d;
 }
 

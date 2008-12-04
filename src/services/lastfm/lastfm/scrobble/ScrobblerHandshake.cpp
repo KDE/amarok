@@ -28,7 +28,6 @@
 ScrobblerHandshake::ScrobblerHandshake( const QString& clientId )
                   : m_clientId( clientId )
 {
-    setHost( "post.audioscrobbler.com" );
     request();
 }
 
@@ -50,7 +49,9 @@ ScrobblerHandshake::request()
         "&api_key=" + Ws::ApiKey +
         "&sk=" + Ws::SessionKey;
 
-    m_id = get( '/' + query_string );
+    QNetworkRequest request( QUrl( "http://post.audioscrobbler.com/" + query_string ) );
 
-    qDebug() << "HTTP GET" << host() + '/' + query_string;
+    m_reply = get( request );
+
+    qDebug() << "HTTP GET" << "http://post.audioscrobbler.com/" + query_string;
 }
