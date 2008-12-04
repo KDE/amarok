@@ -40,6 +40,10 @@ void Mp3tunesServiceFactory::init()
 {
     Mp3tunesConfig config;
 
+    //The user activated the service, but didn't fill the email/password? Don't start it.
+    if ( config.email().isEmpty() || config.password().isEmpty() )
+        return;
+    
     ServiceBase* service = new Mp3tunesService( this, "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
     m_activeServices << service;
     m_initialized = true;

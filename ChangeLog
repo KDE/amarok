@@ -25,6 +25,7 @@ VERSION 2.0
     * Fix reading of windows playlists, recognise \ as directory separator.
       (BR 93717)
     * Fix crash when searching in collections. (BR 175094)
+    * Prevent disabled MP3tunes service from being initialized on first run.
     * Elide text properly in applet chooser widget. (BR 175064)
     * Fixed potential crash when playing streams. (BR 175886)
     * Don't show wrong metadata for Last.fm radio. (BR 175435)
