@@ -138,7 +138,8 @@ CurrentEngine::stoppedState()
 void CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
     DEBUG_BLOCK
-    setData( "current", "albumart", album->image( coverWidth() ) );
+    const int width = 156;
+    setData( "current", "albumart", album->image( width ) );
 }
 
 void
