@@ -56,7 +56,8 @@ LastFmServiceFactory::init()
     LastFmServiceConfig config;
  
     //  The user activated the service, but didn't fill the username/password? Don't start it.
-    if ( config.username().isEmpty() || config.password().isEmpty() ) return;
+    if ( config.username().isEmpty() || config.password().isEmpty() )
+        return;
     
     ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.scrobble(), config.fetchSimilar() );
     m_activeServices << service;
