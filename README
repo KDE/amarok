@@ -94,9 +94,6 @@ and stutter!" please visit:
 It is possible to build Amarok to use MySQL as the database backend. Using
 MySQL makes the Amarok collection faster.
 
-We suggest compiling Os, there is no particular part of Amarok that would
-benefit from optimisation, so the smallest binary is probably the best route.
-
 In order to limit the dependencies the Amarok package demands we suggest
 splitting Amarok into the following packages:
 
