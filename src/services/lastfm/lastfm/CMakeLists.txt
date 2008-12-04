@@ -72,22 +72,20 @@ set( amarok_service_liblastfm_SRCS
 
 kde4_add_library(amarok_service_liblastfm SHARED ${amarok_service_liblastfm_SRCS} ${amarok_service_liblastfm_core_EXTRASRCS} )
 
+set(amarok_service_liblastfm_LIBS
+        ${QT_QTCORE_LIBRARY}
+        ${QT_QTXML_LIBRARY}
+        ${QT_QTGUI_LIBRARY}
+        ${QT_QTNETWORK_LIBRARY}
+        ${KDE4_PHONON_LIBRARY}
+        ${KDE4_KIO_LIBS}
+   )
+
 if ( WIN32 )
-	target_link_libraries(amarok_service_liblastfm
-			winhttp
-                        ${QT_QTCORE_LIBRARY}
-                        ${QT_QTXML_LIBRARY}
-                        ${QT_QTGUI_LIBRARY}
-                        ${QT_QTNETWORK_LIBRARY}
-                        ${KDE4_PHONON_LIBRARY} )
-else( WIN32 )
-	target_link_libraries(amarok_service_liblastfm
-                        ${QT_QTCORE_LIBRARY}
-                        ${QT_QTXML_LIBRARY}
-                        ${QT_QTGUI_LIBRARY}
-                        ${QT_QTNETWORK_LIBRARY}
-                        ${KDE4_PHONON_LIBRARY} )
+    set(amarok_service_liblastfm_LIBS ${amarok_service_liblastfm_LIBS} winhttp)
 endif ( WIN32 )
+
+target_link_libraries(amarok_service_liblastfm ${amarok_service_liblastfm_LIBS} )
 
 if(APPLE)
     SET_TARGET_PROPERTIES(amarok_service_liblastfm PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
