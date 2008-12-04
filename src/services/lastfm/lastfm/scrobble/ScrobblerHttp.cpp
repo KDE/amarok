@@ -19,6 +19,11 @@
 
 #include "ScrobblerHttp.h"
 #include "Scrobbler.h"
+#include "knetworkreply.h"
+
+#include <KDebug>
+#include <kio/job.h>
+
 #include <QDebug>
 #include <QTimer>
 
@@ -102,3 +107,88 @@ ScrobblerPostHttp::request()
 
     m_reply = QNetworkAccessManager::post( m_request, "s=" + m_session + m_data );
 }
+
+
+QNetworkReply *ScrobblerHttp::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
+{
+    KIO::Job *kioJob = 0;
+
+    switch (op) {
+        case HeadOperation: {
+            kDebug() << "HeadOperation:" << req.url();
+
+            kioJob = KIO::mimetype(req.url(), KIO::HideProgressInfo);
+
+            break;
+        }
+        case GetOperation: {
+            kDebug() << "GetOperation:" << req.url();
+
+            kioJob = KIO::get(req.url(), KIO::NoReload, KIO::HideProgressInfo);
+
+            break;
+        }
+        case PutOperation: {
+            kDebug() << "PutOperation:" << req.url();
+
+            kioJob = KIO::put(req.url(), -1, KIO::HideProgressInfo);
+
+            break;
+        }
+        case PostOperation: {
+            kDebug() << "PostOperation:" << req.url();
+
+            kioJob = KIO::http_post(req.url(), outgoingData->readAll(), KIO::HideProgressInfo);
+
+            break;
+        }
+        default:
+            kDebug() << "Unknown operation";
+            return 0;
+    }
+
+    KNetworkReply *reply = new KNetworkReply(req, kioJob, this);
+
+    kioJob->addMetaData(metaDataForRequest(req));
+
+    connect(kioJob, SIGNAL(data(KIO::Job *, const QByteArray &)),
+        reply, SLOT(appendData(KIO::Job *, const QByteArray &)));
+    connect(kioJob, SIGNAL(result(KJob *)), reply, SIGNAL(finished()));
+    connect(kioJob, SIGNAL(mimetype(KIO::Job *, const QString&)),
+        reply, SLOT(setMimeType(KIO::Job *, const QString&)));
+
+    return reply;
+}
+
+
+KIO::MetaData ScrobblerHttp::metaDataForRequest(QNetworkRequest request)
+{
+    KIO::MetaData metaData;
+
+    metaData.insert("PropagateHttpHeader", "true");
+
+    metaData.insert("UserAgent", request.rawHeader("User-Agent"));
+    request.setRawHeader("User-Agent", QByteArray());
+
+    metaData.insert("accept", request.rawHeader("Accept"));
+    request.setRawHeader("Accept", QByteArray());
+
+    request.setRawHeader("content-length", QByteArray());
+    request.setRawHeader("Connection", QByteArray());
+
+    QString additionHeaders;
+    Q_FOREACH(const QByteArray &headerKey, request.rawHeaderList()) {
+        const QByteArray value = request.rawHeader(headerKey);
+        if (value.isNull())
+            continue;
+
+        if (additionHeaders.length() > 0) {
+            additionHeaders += "\r\n";
+        }
+        additionHeaders += headerKey + ": " + value;
+    }
+    metaData.insert("customHTTPHeader", additionHeaders);
+
+    return metaData;
+}
+

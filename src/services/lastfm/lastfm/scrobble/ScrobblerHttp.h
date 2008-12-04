@@ -20,6 +20,9 @@
 #ifndef SCROBBLER_HTTP_H
 #define SCROBBLER_HTTP_H
 
+
+#include <KDE/KIO/MetaData>
+ 
 #include <QDebug> // leave first, due to QtOverrides
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -35,6 +38,9 @@ class ScrobblerHttp : public QNetworkAccessManager
 public:
     void retry();
     QNetworkReply* reply() const { return m_reply; }
+    
+    // implementing for KIO use
+    static KIO::MetaData metaDataForRequest(QNetworkRequest request);
 
 protected:
     ScrobblerHttp( QObject* parent = 0 );
@@ -46,6 +52,10 @@ signals:
     void done( const QByteArray& data );
 
 protected:
+    // HACK this is until we split out to liblastfm proper
+    // reimplementing to use KIO
+    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
+    
     QNetworkReply *m_reply;
     class QTimer *m_retry_timer;
 

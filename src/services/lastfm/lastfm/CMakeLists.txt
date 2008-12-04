@@ -53,6 +53,7 @@ set( amarok_service_liblastfm_SRCS
         scrobble/ScrobblerHandshake.cpp
         scrobble/ScrobblerHttp.cpp
         scrobble/ScrobblerSubmission.cpp
+		scrobble/knetworkreply.cpp
         types/Album.cpp
         types/Artist.cpp
         types/Mbid.cpp
