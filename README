@@ -20,8 +20,8 @@ interface that really makes playlist handling easy.
     * Automatic play-statistics generation (iRate style)
     * Full lyrics download
     * Learn about your music with integrated Wikipedia
-    * Full last.fm support
-    * Fully configurable OSD for track changes
+    * Full Last.fm support
+    * Fully configurable on screen display for track changes
     * Podcast support
     * iPod support
     * Powerful scripting interface
@@ -39,15 +39,11 @@ Required
       http://www.kde.org
 
     * TagLib 1.5 (or newer)
-      (metadata tagging library)
+      (Metadata tagging library)
       http://freshmeat.net/projects/taglib
 
     * MySQL 5.0 (possibly 5.1.26rc) Embedded: libmysqld compiled with fPIC
       (In-process database support)
-      Currently MySQL provides a static library, which is less then ideal.
-      This causes problems that we hope the release of 2.0-beta2 will help
-      address. On x86-64 especially, libmysqld.a may have to be compiled with
-      the CFLAGS -fPIC.
 
 Optional
     * libgpod 0.4.2 (or newer)
@@ -81,6 +77,7 @@ To compile from source, please refer to the INSTALL file.
 Packages for popular distributions are available at http://amarok.kde.org
 --------------------------------------------------------------------------------
 
+
  FURTHER RESOURCES
 ===================
 
@@ -104,8 +101,8 @@ In order to limit the dependencies the Amarok package demands we suggest
 splitting Amarok into the following packages:
 
    1. Amarok + Phonon Engine
-   2. ipod media device
-   3. mtp media device
+   2. iPod media device
+   3. MTP media device
 
 Amarok is modular and will be fully functional as long as one of 2 or 3 is
 also installed. Hence we suggest Amarok + one backend.
@@ -132,7 +129,7 @@ See you in IRC!
 
 --------------------------------------------------------------------------------
 
-WWW : http://amarok.kde.org
-MAIL: amarok@kde.org
-IRC : irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr
+WWW  : http://amarok.kde.org
+MAIL : amarok@kde.org
+IRC  : irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr
 
