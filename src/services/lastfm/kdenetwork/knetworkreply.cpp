@@ -31,7 +31,7 @@ class KNetworkReply::KNetworkReplyPrivate
 {
 public:
     KNetworkReplyPrivate()
-    : m_metaDataRead(false)
+    : m_kioJob(0), m_data(), m_metaDataRead(false)
     {}
 
     KIO::Job *m_kioJob;
