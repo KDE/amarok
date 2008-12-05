@@ -774,12 +774,6 @@ ContextView::findContainmentForApplet( QString pluginName, int rowSpan )
                     amarokContainment->addApplet( pluginName );
 
                     setContainment( amarokContainment );
-                    if( m_zoomLevel == Plasma::DesktopZoom )
-                    {
-                        //HACK alert!
-                        resize( size().width()+1, size().height() );
-                        resize( size().width()-1, size().height() );
-                    }
 
                     placeFound = true;
                 }
