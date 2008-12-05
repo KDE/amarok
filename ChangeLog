@@ -3,6 +3,15 @@ Amarok ChangeLog
 (C) 2002-2008 the Amarok authors.
 
 
+VERSION 2.0.1
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+
+
 VERSION 2.0
   FEATURES:
     * Added read/write configuration APIs for QtScript.
