@@ -17,6 +17,9 @@ VERSION 2.0
     * Added an OK button for the script manager.
 
   BUGFIXES:
+    * Fix bug that showed misplaced applets in the Context View after resizing the window and
+    changing to another containment. (BR 176101)
+    * Don't try to squeeze text into wrongly tiny space, make the track label in the tag dialog work again. (BR 176399)
     * Collection setup directory chooser would incorrectly set some paths as
       disabled. Patch thanks to Ben Boeckel <MathStuf@gmail.com>. (BR 176569)
     * Fix shadows around the cover in the current track applet (and potentially 
