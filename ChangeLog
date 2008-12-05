@@ -10,6 +10,7 @@ VERSION 2.0.1
     * Playlist items now have tooltips (BR 170844)
 
   BUGFIXES:
+    * Add tooltips to icons in context view (BR 174478)
 
 
 

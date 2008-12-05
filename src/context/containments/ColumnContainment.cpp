@@ -180,24 +180,22 @@ ColumnContainment::setupControlButtons()
     m_removeAppletsMenu = new AmarokToolBoxMenu( this, true );
 //     m_removeAppletsMenu->setZValue( zValue() + 10000 ); // show over applets
 
-    // TODO can't add text b/c of string freeze
-    // add after 2.0
-    QAction* zoomInAction = new QAction( "Zoom In", this );
+    QAction* zoomInAction = new QAction( i18n( "Zoom In" ), this );
     zoomInAction->setIcon( KIcon( "zoom-in" ) );
     zoomInAction->setVisible( true );
     zoomInAction->setEnabled( true );
 
-    QAction* zoomOutAction = new QAction( "Zoom Out", this );
+    QAction* zoomOutAction = new QAction( i18n( "Zoom Out" ), this );
     zoomOutAction->setIcon( KIcon( "zoom-out" ) );
     zoomOutAction->setVisible( true );
     zoomOutAction->setEnabled( true );
 
-    QAction* listAdd = new QAction( "Add Widgets...", this );
+    QAction* listAdd = new QAction( i18n( "Add Widgets..." ), this );
     listAdd->setIcon( KIcon( "list-add" ) );
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     
-    QAction *listRemove = new QAction( "", this );
+    QAction *listRemove = new QAction( i18n( "Remove Widgets..." ), this );
     listRemove->setIcon( KIcon( "list-remove" ) );
     listRemove->setVisible( true );
     if( m_grid->count() > 0 )
@@ -205,14 +203,12 @@ ColumnContainment::setupControlButtons()
     else
         listRemove->setEnabled( false );
 
-    // TODO can't add text due to string freeze. :(
-    QAction *switchRight = new QAction( "", this );
+    QAction *switchRight = new QAction( i18n( "Next Group" ), this );
     switchRight->setIcon( KIcon( "arrow-right" ) );
     switchRight->setVisible( true );
     switchRight->setEnabled( true );
 
-    // TODO can't add text due to string freeze. :(
-    QAction *switchLeft = new QAction( "", this );
+    QAction *switchLeft = new QAction( i18n( "Previous Group" ), this );
     switchLeft->setIcon( KIcon( "arrow-left" ) );
     switchLeft->setVisible( true );
     switchLeft->setEnabled( true );

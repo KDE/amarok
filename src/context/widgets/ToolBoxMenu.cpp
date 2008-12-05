@@ -92,7 +92,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     
     m_hideIcon = new ToolBoxIcon( this );
 
-    QAction *hideMenu = new QAction( "", this );
+    QAction *hideMenu = new QAction( i18n( "Close" ), this );
     hideMenu->setIcon( KIcon( "window-close" ) );
     hideMenu->setEnabled( true );
     hideMenu->setVisible( true );
