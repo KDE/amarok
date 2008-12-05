@@ -7,6 +7,7 @@ VERSION 2.0.1
   FEATURES:
 
   CHANGES:
+    * Playlist items now have tooltips (BR 170844)
 
   BUGFIXES:
 

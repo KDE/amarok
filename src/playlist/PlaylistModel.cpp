@@ -185,7 +185,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == StateRole )
         return m_items.at( row )->state();
 
-    else if ( role == Qt::DisplayRole )
+    else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
     {
         switch ( index.column() )
         {
