@@ -331,9 +331,9 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
                 containment->showTitle();
                 containment->setZoomLevel( Plasma::GroupZoom );
             }
-        }
-        m_zoomLevel = Plasma::GroupZoom;
+        }        
         updateContainmentsGeometry( true );
+        m_zoomLevel = Plasma::GroupZoom;
         debug() << "Scaling factor: " << Plasma::scalingFactor( m_zoomLevel );
         qreal factor = Plasma::scalingFactor( m_zoomLevel ) - 0.05;
         qreal s = factor / matrix().m11();
