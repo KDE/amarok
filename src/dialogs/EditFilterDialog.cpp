@@ -53,7 +53,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
 
     // Redefine "Default" button
-    KGuiItem defaultButton( i18n("&Append"), "add" );
+    KGuiItem defaultButton( i18n("&Append"), "list-add" );
     setButtonWhatsThis( Default, i18n( "<qt><p>By clicking here you can add the defined condition. The \"OK\" button will "
                                         "close the dialog and apply the defined filter. With this button you can add more than "
                                         "one condition to create a more complex filtering condition.</p></qt>" ) );
@@ -61,7 +61,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     setButtonGuiItem( Default, defaultButton );
 
     // define "User1" button
-    KGuiItem user1Button( i18n("&Clear"), "remove" );
+    KGuiItem user1Button( i18n("&Clear"), "list-remove" );
     setButtonWhatsThis( User1, i18n( "<p>By clicking here you will clear the filter. If you intend to "
                                      "undo the last appending just click on the \"Undo\" button.</p>" ) );
     setButtonToolTip(User1, i18n( "Clear the filter" ) );
@@ -69,7 +69,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     // define "User2" button
     KGuiItem user2Button( i18nc("this \"undo\" will undo the last appended filter... be careful how you will translate it "
-       "to avoid two buttons (\"Cancel\" and \"Undo\") with same label in the same dialog", "&Undo"), "undo" );
+       "to avoid two buttons (\"Cancel\" and \"Undo\") with same label in the same dialog", "&Undo"), "edit-undo" );
     setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
                 "You cannot undo more than one action.</p>" ) );
     setButtonToolTip(User2, i18n( "Remove last appended filter" ) );
