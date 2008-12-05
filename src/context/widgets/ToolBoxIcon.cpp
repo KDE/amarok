@@ -177,8 +177,7 @@ ToolBoxIcon::shape() const
 void
 ToolBoxIcon::setText( const QString &text )
 {
-    const QFontMetricsF fm( font() );    
-    m_text->setText( fm.elidedText ( text, Qt::ElideRight, size().width() - 20 ) );
+    m_text->setText( text );
     update();
 }
 
