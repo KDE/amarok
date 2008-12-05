@@ -358,7 +358,7 @@ QString CoverManager::amazonTld() //static
     if( AmarokConfig::amazonLocale() == "us" )
         return "com";
     else if( AmarokConfig::amazonLocale()== "jp" )
-        return "co.jp";
+        return "jp";
     else if( AmarokConfig::amazonLocale() == "uk" )
         return "co.uk";
     else if( AmarokConfig::amazonLocale() == "ca" )
@@ -428,10 +428,6 @@ void CoverManager::showOnce( const QString &artist )
 
 void CoverManager::slotArtistSelected() //SLOT
 {
-    //TODO: port?
-//     if( artist->prettyName().endsWith( ", The" ) )
-//        Amarok::manipulateThe( artist->prettyName(), false );
-
     m_coverView->clear();
     m_coverItems.clear();
 
@@ -585,16 +581,13 @@ void CoverManager::slotSetFilter() //SLOT
         item = tmp;
     }
 
-//     m_coverView->setAutoArrange( false );
     foreach( QListWidgetItem *item, m_coverItems )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( coverItem->album().contains( m_filter, Qt::CaseInsensitive ) || coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
             m_coverView->insertItem( m_coverView->count() -  1, item );
     }
-//     m_coverView->setAutoArrange( true );
 
-//     m_coverView->arrangeItemsInGrid();
     updateStatusBar();
 }
 
@@ -610,40 +603,36 @@ void CoverManager::changeView( int id  ) //SLOT
 {
     DEBUG_BLOCK
     
-    if( m_currentView == id ) return;
+    if( m_currentView == id ) 
+        return;
 
     //clear the iconview without deleting items
     m_coverView->clearSelection();
-    //QListWidgetItem *item = m_coverView->item( 0 );
 
-    while ( m_coverView->count() > 0 ) {
+    while ( m_coverView->count() > 0 ) 
        m_coverView->takeItem( 0 );
-    }
 
-//     m_coverView->setAutoArrange(false );
     foreach( QListWidgetItem *item, m_coverItems )
     {
         bool show = false;
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( !m_filter.isEmpty() ) {
-            if( !coverItem->album().contains( m_filter, Qt::CaseInsensitive ) && !coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
+        if( !m_filter.isEmpty() ) 
+        {
+            if( !coverItem->album().contains( m_filter, Qt::CaseInsensitive ) && 
+                !coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
                 continue;
         }
 
         if( id == AllAlbums )    //show all albums
             show = true;
-        else if( id == AlbumsWithCover && coverItem->hasCover() ) {    //show only albums with cover
+        else if( id == AlbumsWithCover && coverItem->hasCover() )    //show only albums with cover
             show = true;
-        } else if( id == AlbumsWithoutCover && !coverItem->hasCover() ) {   //show only albums without cover
+        else if( id == AlbumsWithoutCover && !coverItem->hasCover() )//show only albums without cover
             show = true;
-        }
-        if( show ) {
-            m_coverView->insertItem( m_coverView->count() - 1, item );
-        }
-    }
-//     m_coverView->setAutoArrange( true );
 
-//     m_coverView->arrangeItemsInGrid();
+        if( show )
+            m_coverView->insertItem( m_coverView->count() - 1, item );
+    }
     m_currentView = id;
 }
 
@@ -682,7 +671,8 @@ void CoverManager::coverFetcherError()
 
 void CoverManager::stopFetching()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_FUNC_INFO
+
     updateStatusBar();
 }
 
@@ -727,7 +717,8 @@ void CoverManager::updateStatusBar()
     QString text;
 
     //cover fetching info
-    if( m_fetchingCovers ) {
+    if( m_fetchingCovers )
+    {
         //update the progress bar
         m_progress->setMaximum( m_fetchingCovers );
         m_progress->setValue( m_coversFetched + m_coverErrors );
@@ -747,7 +738,8 @@ void CoverManager::updateStatusBar()
             QTimer::singleShot( 2000, this, SLOT( updateStatusBar() ) );
         }
 
-        if( m_fetchingCovers == 1 ) {
+        if( m_fetchingCovers == 1 ) 
+        {
             foreach( Meta::AlbumPtr album, m_fetchCovers )
             {
                 if( album->albumArtist()->prettyName().isEmpty() )
@@ -758,19 +750,23 @@ void CoverManager::updateStatusBar()
                                  album->prettyName() );
             }
         }
-        else if( m_fetchingCovers ) {
+        else if( m_fetchingCovers )
+        {
             text = i18np( "Fetching 1 cover: ", "Fetching <b>%1</b> covers... : ", m_fetchingCovers );
             if( m_coversFetched )
                 text += i18np( "1 fetched", "%1 fetched", m_coversFetched );
-            if( m_coverErrors ) {
-            if( m_coversFetched ) text += i18n(" - ");
+            if( m_coverErrors ) 
+            {
+                if( m_coversFetched ) 
+                    text += i18n(" - ");
                 text += i18np( "1 not found", "%1 not found", m_coverErrors );
             }
             if( m_coversFetched + m_coverErrors == 0 )
                 text += i18n( "Connecting..." );
         }
     }
-    else {
+    else 
+    {
         m_coversFetched = 0;
         m_coverErrors = 0;
 
@@ -787,14 +783,13 @@ void CoverManager::updateStatusBar()
         {
             totalCounter++;
             if( !static_cast<CoverViewItem*>( item )->hasCover() )
-            {
                 missingCounter++;    //counter for albums without cover
-            }
         }
 
         if( !m_filter.isEmpty() )
             text = i18np( "1 result for \"%2\"", "%1 results for \"%2\"", totalCounter, m_filter );
-        else if( m_artistView->selectedItems().count() > 0 ) {
+        else if( m_artistView->selectedItems().count() > 0 ) 
+        {
             text = i18np( "1 album", "%1 albums", totalCounter );
             if( m_artistView->selectedItems().first() != m_artistView->invisibleRootItem()->child( 0 ) ) //showing albums by an artist
             {
@@ -826,7 +821,7 @@ void CoverManager::setStatusText( QString text )
 CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     : QListWidget( parent )
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     setObjectName( name );
     setWindowFlags( f );
@@ -877,31 +872,6 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
     // Set custom cover action
 }
 
-
-//TODO: PORT 2.0
-// Q3DragObject *CoverView::dragObject()
-// {
-//     CoverViewItem *item = static_cast<CoverViewItem*>( currentItem() );
-//     if( !item )
-//        return 0;
-//
-//     const QString sql = "SELECT tags.url FROM tags, album WHERE album.name %1 AND tags.album = album.id ORDER BY tags.track;";
-//     const QStringList values = CollectionDB::instance()->query( sql.arg( CollectionDB::likeCondition( item->album() ) ) );
-//
-//     KUrl::List urls;
-//     for( QStringList::ConstIterator it = values.constBegin(), end = values.constEnd(); it != end; ++it )
-//         urls += *it;
-//
-//     QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), false, 1 );
-//     K3MultipleDrag *drag = new K3MultipleDrag( this );
-//     drag->setPixmap( item->coverPixmap() );
-//     drag->addDragObject( new Q3IconDrag( this ) );
-//     drag->addDragObject( new Q3ImageDrag( QImage( imagePath ) ) );
-//     drag->addDragObject( new K3URLDrag( urls ) );
-//
-//     return drag;
-// }
-
 void CoverView::setStatusText( QListWidgetItem *item )
 {
     #define item static_cast<CoverViewItem *>( item )
@@ -911,7 +881,8 @@ void CoverView::setStatusText( QListWidgetItem *item )
     bool sampler = false;
     //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
     //FIXME: Don't rely on other independent code, use an sql query
-    if( item->artist().isEmpty() ) sampler = true;
+    if( item->artist().isEmpty() )
+        sampler = true;
 
     QString tipContent = i18n( "%1 - %2", sampler ? i18n("Various Artists") : item->artist() , item->album() );
 
@@ -938,9 +909,6 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     setText( album->prettyName() );
     setIcon( album->image( 100 ) );
     CoverManager::instance()->subscribeTo( album );
-//     setDragEnabled( true );
-//     setDropEnabled( true );
-    calcRect();
 }
 
 CoverViewItem::~CoverViewItem()
@@ -955,52 +923,7 @@ void CoverViewItem::loadCover()
 {
     m_coverPixmap = m_albumPtr->image();  //create the scaled cover
     setIcon( m_coverPixmap );
-
-//     repaint();
 }
-
-
-void CoverViewItem::calcRect( const QString& )
-{
-#if 0
-    int thumbWidth = AmarokConfig::coverPreviewSize();
-
-    QFontMetrics fm = listWidget()->fontMetrics();
-    QRect itemPixmapRect( 5, 1, thumbWidth, thumbWidth );
-    QRect itemRect = rect();
-    itemRect.setWidth( thumbWidth + 10 );
-    itemRect.setHeight( thumbWidth + fm.lineSpacing() + 2 );
-    QRect itemTextRect( 0, thumbWidth+2, itemRect.width(), fm.lineSpacing() );
-
-    setPixmapRect( itemPixmapRect );
-    setTextRect( itemTextRect );
-    setItemRect( itemRect );
-#endif
-}
-
-
-//TODO: Port
-// void CoverViewItem::dropped( QDropEvent *e, const Q3ValueList<Q3IconDragItem> & )
-// {
-//     if( Q3ImageDrag::canDecode( e ) ) {
-//        if( hasCover() ) {
-//            KGuiItem continueButton = KStandardGuiItem::cont();
-//            continueButton.setText( i18n("&Overwrite") );
-//            int button = KMessageBox::warningContinueCancel( iconView(),
-//                             i18n( "Are you sure you want to overwrite this cover?"),
-//                             i18n("Overwrite Confirmation"),
-//                             continueButton );
-//            if( button == KMessageBox::Cancel )
-//                return;
-//        }
-//
-//        QImage img;
-//        Q3ImageDrag::decode( e, img );
-//        m_albumPtr->setImage( img );
-//        loadCover();
-//     }
-// }
-
 
 void CoverViewItem::dragEntered()
 {

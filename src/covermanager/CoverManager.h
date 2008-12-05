@@ -187,7 +187,6 @@ class CoverViewItem : public QListWidgetItem
         void paintFocus(QPainter *, const QColorGroup &) { }
         void dragEntered();
         void dragLeft();
-        void calcRect( const QString& text_ = QString() );
 
     private:
         Meta::AlbumPtr m_albumPtr;
