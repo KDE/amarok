@@ -26,6 +26,7 @@
 
 #include "statusbar/StatusBar.h"
 
+#include <KMenuBar>
 #include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
 

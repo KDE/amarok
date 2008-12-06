@@ -33,6 +33,7 @@
 
 #include "File.h" // for KIO file handling
 
+#include <KUniqueApplication> // needed for KIO processes
 #include <KIO/Job>
 #include <KIO/DeleteJob>
 #include "kjob.h"
