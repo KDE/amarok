@@ -7,11 +7,11 @@ VERSION 2.0.1
   FEATURES:
 
   CHANGES:
-    * Playlist items now have tooltips (BR 170844)
+    * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
-    * Add tooltips to icons in context view (BR 174478)
-
+    * Added tooltips to icons in context view. (BR 174478)
+    * Fixed icons in Advanced filter dialog.
 
 
 VERSION 2.0
