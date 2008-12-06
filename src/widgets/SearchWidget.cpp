@@ -21,20 +21,20 @@
 #include <KPushButton>
 
 
-SearchWidget::SearchWidget( QWidget *parent )
+SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     : QWidget( parent )
     , m_sw( 0 )
     , m_filterButton( 0 )
 {
-    init( parent );
+    init( parent, advanced );
 }
 
-SearchWidget::SearchWidget( QWidget *parent, QWidget *caller )
+SearchWidget::SearchWidget( QWidget *parent, QWidget *caller, bool advanced )
     : QWidget( parent )
     , m_sw( 0 )
     , m_filterButton( 0 )
 {
-    init( parent );
+    init( parent, advanced );
     setup( caller );
 }
 
@@ -50,7 +50,7 @@ SearchWidget::setup( QObject* caller )
 
 ///Private
 void
-SearchWidget::init( QWidget *parent )
+SearchWidget::init( QWidget *parent, bool advanced )
 {
     Q_UNUSED( parent )
     setContentsMargins( 0, 0, 0, 0 );
@@ -68,13 +68,15 @@ SearchWidget::init( QWidget *parent )
     layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
 
-    m_filterButton = new KPushButton( i18n( "Advanced" ), searchBox );
-    //m_filterButton->setFlat( true ); //TODO: maybe?
-    m_filterButton->setObjectName( "filter" );
-    m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-    m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+    if ( advanced ) {
+        m_filterButton = new KPushButton( i18n( "Advanced" ), searchBox );
+        //m_filterButton->setFlat( true ); //TODO: maybe?
+        m_filterButton->setObjectName( "filter" );
+        m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+        m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
 
-    connect ( m_filterButton, SIGNAL( clicked() ), this, SLOT( slotShowFilterEditor() ) );
+        connect ( m_filterButton, SIGNAL( clicked() ), this, SLOT( slotShowFilterEditor() ) );
+    }
 }
 
 void

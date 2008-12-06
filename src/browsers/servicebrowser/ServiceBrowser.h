@@ -27,10 +27,13 @@
 
 #include <KVBox>
 
+#include <QTimer>
 #include <QTreeView>
 #include <QMap>
+#include "ServiceListSortFilterProxyModel.h"
 
 class ServiceListDelegate;
+class SearchWidget;
 
 /**
  *  A browser for selecting and displaying a service in the style of the first imbedded Magnatune store from a list of available services. Allows many services to be shown as a single tab.
@@ -101,6 +104,8 @@ class ServiceBrowser : public KVBox
 
         static ServiceBrowser    *s_instance;
 
+        SearchWidget             *m_searchWidget;
+
         QTreeView                *m_serviceListView;
 
         QMap<QString,ServiceBase*> m_services;
@@ -109,7 +114,12 @@ class ServiceBrowser : public KVBox
         ScriptableServiceManager *m_scriptableServiceManager;
         bool                      m_usingContextView;
         ServiceListModel         *m_serviceListModel;
+        ServiceListSortFilterProxyModel* m_proxyModel;
         ServiceListDelegate      *m_delegate;
+
+        QTimer m_filterTimer;
+
+        QString m_currentFilter;
 
     private slots:
         /**
@@ -122,6 +132,10 @@ class ServiceBrowser : public KVBox
          * Slot called when the active service should be hidden the service selection list shown again.
          */
         void home();
+
+        void slotSetFilterTimeout();
+        void slotFilterNow();
+
 };
 
 

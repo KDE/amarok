@@ -21,10 +21,12 @@
 
 #include "Debug.h"
 #include "ServiceListDelegate.h"
-#include "ServiceListSortFilterProxyModel.h"
 #include "context/ContextView.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
+#include "widgets/SearchWidget.h"
+
+#include <KLineEdit>
 
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;
@@ -47,6 +49,11 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     setObjectName( name );
     debug() << "ServiceBrowser starting...";
 
+    m_searchWidget = new SearchWidget( this, this, false );
+
+    m_filterTimer.setSingleShot( true );
+    connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
+
     m_serviceListView = new Amarok::PrettyTreeView( this );
 #ifdef Q_WS_MAC
     m_serviceListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
@@ -59,8 +66,8 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
 
     m_serviceListView->setFrameShape( QFrame::NoFrame );
 
-    ServiceListSortFilterProxyModel* proxyModel = new ServiceListSortFilterProxyModel( this );
-    proxyModel->setSourceModel( m_serviceListModel );
+    m_proxyModel = new ServiceListSortFilterProxyModel( this );
+    m_proxyModel->setSourceModel( m_serviceListModel );
 
     m_delegate = new ServiceListDelegate( m_serviceListView );
     m_serviceListView->setItemDelegate( m_delegate );
@@ -69,7 +76,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     m_serviceListView->setRootIsDecorated( false );
     m_serviceListView->setSortingEnabled( true );
     m_serviceListView->setAlternatingRowColors( true );
-    m_serviceListView->setModel( proxyModel );
+    m_serviceListView->setModel( m_proxyModel );
     connect(m_serviceListView, SIGNAL( clicked ( const QModelIndex & ) ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
     m_scriptableServiceManager = 0;
 
@@ -197,6 +204,22 @@ ServiceBrowser::resetService( const QString &name )
     //Currently unused, but needed, in the future, for resetting a service based on config changes
     //or the user choosing to reset the state of the service somehow.
     Q_UNUSED( name );
+}
+
+void ServiceBrowser::slotSetFilterTimeout()
+{
+    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
+    if( lineEdit )
+    {
+        m_currentFilter = lineEdit->text();
+        m_filterTimer.stop();
+        m_filterTimer.start( 500 );
+    }
+}
+
+void ServiceBrowser::slotFilterNow()
+{
+    m_proxyModel->setFilterFixedString( m_currentFilter );
 }
 
 #include "ServiceBrowser.moc"
