@@ -93,7 +93,6 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         
         const QFontMetricsF fm( m_text->font() );
         m_text->setPos( PADDING, size().height() / 2 - fm.boundingRect( m_text->text() ).height() / 2 );
-        m_text->setText( fm.elidedText ( m_text->text(), Qt::ElideRight, size().width() - 20 ) );
         painter->save();
         
         QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,

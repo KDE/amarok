@@ -296,11 +296,11 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
         containment->setZoomLevel( Plasma::DesktopZoom );
         
     if ( m_zoomLevel == Plasma::GroupZoom )
-    {        
+    {
         m_zoomLevel = Plasma::DesktopZoom;
         qreal factor = Plasma::scalingFactor( m_zoomLevel ) / matrix().m11();
         scale( factor, factor );
-        updateContainmentsGeometry();
+
         int count = contextScene()->containments().size();
         for( int i = 0; i < count; i++ )
         {
@@ -309,7 +309,14 @@ ContextView::zoomIn( Plasma::Containment* toContainment )
             {
                 containment->hideTitle();
             }
-        }            
+        }
+        
+        updateContainmentsGeometry();
+        
+        qreal left, top, right, bottom;
+        containment->getContentsMargins( &left, &top, &right, &bottom );
+        setSceneRect( containment->geometry().adjusted( left, top, -right, -bottom )  );
+
     }
 
 }
@@ -320,19 +327,17 @@ ContextView::zoomOut( Plasma::Containment* fromContainment )
     DEBUG_BLOCK
     Q_UNUSED( fromContainment )
     if ( m_zoomLevel == Plasma::DesktopZoom )
-    {
-        
-        int count = contextScene()->containments().size();        
+    {        
+        int count = contextScene()->containments().size();
         for( int i = 0; i < count; i++ )
-        {            
+        {
             Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
             if( containment )
             {
                 containment->showTitle();
-                containment->setZoomLevel( Plasma::GroupZoom );
+                containment->setZoomLevel( Plasma::GroupZoom);
             }
-        }        
-        updateContainmentsGeometry( true );
+        }
         m_zoomLevel = Plasma::GroupZoom;
         debug() << "Scaling factor: " << Plasma::scalingFactor( m_zoomLevel );
         qreal factor = Plasma::scalingFactor( m_zoomLevel ) - 0.05;
@@ -467,33 +472,38 @@ void ContextView::resizeEvent( QResizeEvent* event )
 
 
 void
-ContextView::updateContainmentsGeometry( bool updateAll )
+ContextView::updateContainmentsGeometry()
 {
     DEBUG_BLOCK
-    
+
+    debug() << "cv rect: " << rect();
+    int x,y;
+    const int last = contextScene()->containments().size() - 1;
     const int width = rect().width();
     const int height = rect().height();
-    
+
     if( m_zoomLevel == Plasma::DesktopZoom )
     {
+        for( int i = last; i >= 0; i-- )
+        {
+            Plasma::Containment *cont = contextScene()->containments()[i];
+            
+            x = ( width + 25 ) * ( i % 2 );
+            y = ( height + 65 )* ( i / 2 );
+            debug() << "width: "  << width;
+            debug() << "height: " << height;
+            cont->resize( width + 20, height + 60 );
+            cont->setPos( rect().topLeft().x() + x, rect().topLeft().y() + y );
+            
+            debug() << "newPos: " << rect().topLeft().x() + x << "," << rect().topLeft().y() + y;
+            cont->updateConstraints();
+            debug() << "containment geometry:" << cont->geometry();
+
+        }
         qreal left, top, right, bottom;
         containment()->getContentsMargins( &left, &top, &right, &bottom );
-        if( updateAll )
-        {
-            foreach( Plasma::Containment *cont, contextScene()->containments() )
-            {
-                cont->resize( width + left + right, height + top + bottom );
-                cont->updateConstraints();
-            }
-        }
-        else
-        {
-            containment()->resize( width + left + right, height + top + bottom );
-            containment()->updateConstraints();
-            QRectF contRect( containment()->geometry() );
-            setSceneRect( contRect.adjusted( left, top, -right, -bottom ) );
-        }
-
+        QRectF contRect( containment()->geometry() );
+        setSceneRect( contRect.adjusted( left, top, -right, -bottom ) );
     }
 }
 
@@ -522,11 +532,19 @@ ContextView::addContainment( const QVariantList& args )
         Plasma::Containment *c = corona->addContainment( "context", args );
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
-        qreal left, top, right, bottom;
-        containment()->getContentsMargins( &left, &top, &right, &bottom );
-        QSizeF newSize( rect().width() + left + right, rect().height() + top + bottom );
 
+        const int x = ( rect().width() + 25 ) * ( size % 2 );
+        const int y = ( rect().height() + 65 ) * ( size / 2 );
+
+        debug() << "x: " << x;
+        debug() << "y: " << y;
+        
+        QSizeF newSize( rect().width() + 20, rect().height() + 60 );
+        QPointF newPos( rect().topLeft().x() + x, rect().topLeft().y() + y );
+        debug() << "new size: " << newSize;
+        debug() << "new pos: " << newPos;
         c->resize( newSize );
+        c->setPos( newPos );
         c->updateConstraints();
         connectContainment( c );
         Containment *amarokContainment = qobject_cast< Containment * >( c );
@@ -577,54 +595,57 @@ ContextView::disconnectContainment( Plasma::Containment* containment )
 }
 
 void
-ContextView::setContainment( Plasma::Containment* newContainment )
+ContextView::setContainment( Plasma::Containment* containment )
 {
     DEBUG_BLOCK
-    if( newContainment->isContainment() )
+    if( containment != this->containment() )
     {
-        if( newContainment != containment() )
+        DEBUG_LINE_INFO
+//         disconnectContainment( this->containment() );
+        if( containment->isContainment() )
         {
-            
             if( m_startupFinished )
-            {
-                //Resize the containment first because it probably had a wrong geometry.
-                //Be aware that plasma automatically change all other containments position so they don't overlap.
-                newContainment->resize( containment()->size() );
-                newContainment->updateConstraints();
+                m_startPos = this->containment()->geometry();
+                                                              
+            m_containment = containment;
+            
+            //resize the containment and the scene to an appropriate size
+            qreal left, top, right, bottom;
+            containment->getContentsMargins( &left, &top, &right, &bottom );
 
-                //Plasma changes the containments placement but not inmediately so we can't rely on it yet
-                const QList< Plasma::Containment* > containments = contextScene()->containments();
-                int fromIndex = containments.indexOf( containment() );
-                qreal width = containment()->size().width();
-                qreal height = containment()->size().height();
-                qreal x = width * ( fromIndex % CONTAINMENT_COLUMNS );
-                qreal y = height * ( fromIndex / CONTAINMENT_COLUMNS );
-                m_startPos = QRectF( QPointF( x, y ), QSizeF( width, height ) );
-
-                if( m_zoomLevel == Plasma::DesktopZoom )
-                {
-
-                    int toIndex = containments.indexOf( newContainment );
-                    x = width * ( toIndex % CONTAINMENT_COLUMNS );
-                    y = height * ( toIndex / CONTAINMENT_COLUMNS );
-                    m_destinationPos = QRectF( QPointF( x, y ), QSizeF( width, height ) );
-                    
-                    Containment* amarokContainment = qobject_cast<Containment*>( newContainment );
-                    if( amarokContainment )
-                        amarokContainment->setZoomLevel( Plasma::DesktopZoom );
-                    
-                    connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
-                             this, SLOT( animateContainmentChangeFinished( int ) ) );
-                             
-                    Plasma::Animator::self()->customAnimation( m_startPos.width() / 30, 250,
-                                                            Plasma::Animator::EaseInOutCurve,
-                                                            this, "animateContainmentChange" );
-                }
+            QSizeF correctSize( rect().size().width() + left - right , rect().size().height() + top - bottom );
+            if( m_zoomLevel == Plasma::DesktopZoom )
+            {                
+                containment->resize( correctSize );
+                setSceneRect( containment->contentsRect() );
             }
-            m_containment = newContainment;
+            else
+            {
+                containment->resize( correctSize );
+                debug() << "correct size: " << correctSize;
+                QRectF correctRect( 0, 0,
+                                    mapToScene( rect() ).boundingRect().width(),
+                                    mapToScene( rect() ).boundingRect().height() );
+                setSceneRect( correctRect );
+                debug() << "setSceneRect: " <<  mapToScene( rect() ).boundingRect() ;
+            }
+            
+            if( m_startupFinished && m_zoomLevel == Plasma::DesktopZoom )
+            {                
+                m_destinationPos = containment->geometry();
+                
+                Containment* amarokContainment = qobject_cast<Containment*>( containment );                
+                if( amarokContainment )
+                    amarokContainment->setZoomLevel( Plasma::DesktopZoom );
+                
+                Plasma::Animator::self()->customAnimation( m_startPos.width() / 30, 250,
+                                                           Plasma::Animator::EaseInOutCurve,                                                           
+                                                           this, "animateContainmentChange" );
+                debug() << "startPos: " << m_startPos;
+                debug() << "destinationPos: " << m_destinationPos;
+            }
         }
     }
-
 }
 
 
@@ -706,7 +727,7 @@ void
 ContextView::animateContainmentChange( qreal progress, int id )
 {
     Q_UNUSED( id )
-    DEBUG_BLOCK
+
     qreal incrementX;
     qreal incrementY;
     
@@ -719,36 +740,27 @@ ContextView::animateContainmentChange( qreal progress, int id )
         
     if( m_startPos.left() < m_destinationPos.left() )
     {
-        incrementX = progress * ( m_destinationPos.width() + left + INTER_CONTAINMENT_MARGIN );
+        incrementX = progress * ( m_destinationPos.width() + left + 5 );
         x = m_startPos.left() + incrementX;
     }
     else if ( m_startPos.left() > m_destinationPos.left() )
     {
-        incrementX = progress * ( m_destinationPos.width() );
+        incrementX = progress * ( m_destinationPos.width() + 5 );
         x = m_startPos.left() - incrementX;
     }
     if( m_startPos.top() < m_destinationPos.top() )
     {
-        incrementY = progress * ( m_destinationPos.height() + top + INTER_CONTAINMENT_MARGIN );
+        incrementY = progress * ( m_destinationPos.height() + top + 5 );
         y = m_startPos.top() + incrementY;
     }
     else if( m_startPos.top() > m_destinationPos.top() )
     {
-        incrementY = progress * ( m_destinationPos.height() );
+        incrementY = progress * ( m_destinationPos.height() + 5 );
         y = m_startPos.top() - incrementY;
     }
-    debug() << "( "<<x << ", " << y << " ) ";
+    
     QRectF visibleRect( QPointF( x, y ), m_destinationPos.size() );
     setSceneRect( visibleRect );
-}
-
-void
-ContextView::animateContainmentChangeFinished( int id )
-{
-    Q_UNUSED( id )
-    updateContainmentsGeometry( true );
-    disconnect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ),
-                             this, SLOT( animateContainmentChangeFinished( int ) ) );
 }
 
 void
@@ -774,6 +786,12 @@ ContextView::findContainmentForApplet( QString pluginName, int rowSpan )
                     amarokContainment->addApplet( pluginName );
 
                     setContainment( amarokContainment );
+                    if( m_zoomLevel == Plasma::DesktopZoom )
+                    {
+                        //HACK alert!
+                        resize( size().width()+1, size().height() );
+                        resize( size().width()-1, size().height() );
+                    }
 
                     placeFound = true;
                 }
