@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Add simple filtering to the service browser.
 
   CHANGES:
     * Playlist items now have tooltips. (BR 170844)
