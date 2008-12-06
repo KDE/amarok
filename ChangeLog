@@ -11,6 +11,8 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * The wikipedia applet did not give a status update when an entry was not 
+      found (BR 173940)
     * Added tooltips to icons in context view. (BR 174478)
     * Fixed icons in Advanced filter dialog.
 
