@@ -4,7 +4,7 @@
 #                                                                         #
 #   Use with the "/exec -out" command of your client.                     #
 #   You can bind an alias like this (tested with irssi):                  #
-#   /alias np exec -out /home/myself/amaroknowplaying.rb                  #
+#   /alias np exec -out - /home/myself/amaroknowplaying.rb                #
 #                                                                         #
 #   Copyright                                                             #
 #   (C) 2005-2008 Mark Kretschmann <kretschmann@kde.org>                  #
