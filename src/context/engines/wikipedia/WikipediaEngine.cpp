@@ -192,14 +192,12 @@ WikipediaEngine::wikiResult( KJob* job )
     if ( m_wiki.contains( "charset=utf-8"  ) )
         m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
 
-    if( m_wiki.contains( "var wgArticleId = 0" ) )
+    if( m_wiki.contains( "var wgArticleId = 0" ) ) // The article does not exist
     {
-
         if ( m_triedRefinedSearch )
         {
             debug() << "We already tried a refined search. Lets end this madness...";
-            //FIXME: Re-enable after string freeze
-            //setData( "wikipedia", "message", i18n( "No information found..." ) );
+            setData( "wikipedia", "message", i18n( "No information found..." ) );
             m_wikiJob = 0;
             return;
         }
@@ -210,25 +208,16 @@ WikipediaEngine::wikiResult( KJob* job )
 
         // article was not found
         if( m_wikiCurrentEntry.endsWith( wikiArtistPostfix() ) )
-        {
-            debug() << "m_wikiCurrentEntry.endsWith( wikiArtistPostfix() )";
             entry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiArtistPostfix().length() );
-        }
         else if( m_wikiCurrentEntry.endsWith( wikiAlbumPostfix() ) )
-        {
             entry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiAlbumPostfix().length() );
-        }
         else if( m_wikiCurrentEntry.endsWith( wikiTrackPostfix() ) )
-        {
             entry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiTrackPostfix().length() );
-        }
 
         m_wikiCurrentUrl = wikiUrl( entry );
         reloadWikipedia();
         return;
     }
-
-    debug() << "Even better";
 
     //remove the new-lines and tabs(replace with spaces IS needed).
     m_wiki.replace( '\n', ' ' );
