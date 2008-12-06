@@ -26,7 +26,6 @@
 #include <KAction>
 #include <KActionCollection>
 
-#include <QtScript>
 
 namespace AmarokScript
 {
@@ -107,3 +106,4 @@ namespace AmarokScript
 }
 
 #include "AmarokWindowScript.moc"
+

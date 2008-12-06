@@ -23,11 +23,8 @@
 #include "PopupDropperItem.h"
 
 #include <QtDebug>
-#include <QAction>
-#include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
-#include <QGraphicsSceneDragDropEvent>
 #include <QtSvg/QSvgRenderer>
 #include <QPalette>
 #include <QTimeLine>

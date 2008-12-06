@@ -283,3 +283,4 @@ MetaTrackPrototype::setTitle( const QString& title )
 #undef GET_TRACK_EC
 
 #include "MetaTypeExporter.moc"
+

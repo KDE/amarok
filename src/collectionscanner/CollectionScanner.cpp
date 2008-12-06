@@ -29,17 +29,16 @@
 #include <iostream>
 #include <limits.h>    //PATH_MAX
 
+#include <QTextDocument> //Qt::escape
 #include <QByteArray>
 #include <QDBusReply>
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
 #include <QTextCodec>
-#include <QTextDocument>
 #include <QTextStream>
 #include <QTimer>
 
-#include <KGlobal>
 #include <KLocale>
 #include <KMD5>
 

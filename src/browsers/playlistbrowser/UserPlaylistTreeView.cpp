@@ -39,7 +39,6 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
-#include <QPoint>
 
 #include <typeinfo>
 

@@ -20,8 +20,6 @@
 
 #include <QPainter>
 #include <QBrush>
-#include <QVBoxLayout>
-#include <QCheckBox>
 #include <QSpinBox>
 #include <QLabel>
 
@@ -193,3 +191,4 @@ void PlayistInfo::resize( qreal newWidth, qreal aspectRatio )
 }
 
 #include "PlayistInfo.moc"
+

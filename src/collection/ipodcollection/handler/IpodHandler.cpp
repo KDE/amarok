@@ -37,7 +37,6 @@ extern "C" {
 #include <KIO/DeleteJob>
 #include "kjob.h"
 #include <KTemporaryFile>
-#include <KUniqueApplication> // needed for KIO processes
 #include <KUrl>
 
 #include <QDir>
@@ -1385,3 +1384,4 @@ IpodHandler::parseTracks()
     m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
 }
+

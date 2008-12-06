@@ -16,7 +16,6 @@
 */
 
 #include <Carbon/Carbon.h>
-#include <QStringList>
 
 static AEEventHandlerUPP appleEventProcessorUPP = 0;
 
@@ -48,3 +47,4 @@ setupEventHandler_mac(long handlerRef)
     appleEventProcessorUPP = AEEventHandlerUPP(appleEventProcessor);
     AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, appleEventProcessorUPP, handlerRef, true);
 }
+

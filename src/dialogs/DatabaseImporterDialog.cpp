@@ -17,9 +17,7 @@
 #include "databaseimporter/amarok14/FastForwardImporter.h"
 #include "databaseimporter/itunes/ITunesImporter.h"
 
-#include <KIcon>
 #include <KPageWidgetItem>
-#include <KStandardGuiItem>
 #include <KVBox>
 
 #include <QButtonGroup>

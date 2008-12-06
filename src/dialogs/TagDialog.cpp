@@ -39,30 +39,15 @@
 #include "ui_TagDialogBase.h"
 #include "UpdateCapability.h"
 
-#include <KApplication>
-#include <KComboBox>
-#include <KCursor>
 #include <KGlobal>
 #include <KHTMLView>
-#include <KIconLoader>
 #include <KLineEdit>
-#include <KMessageBox>
-#include <KNumInput>
 #include <KRun>
-#include <KTabWidget>
-#include <KTextEdit>
-#include <KVBox>
 
-#include <QCheckBox>
 #include <qdom.h>
-#include <QFile>
-#include <QLabel>
-#include <QLayout>
 #include <QMap>
 #include <QPair>
-#include <QPushButton>
 #include <QTimer>
-#include <QToolTip>
 
 #include "metadata/tfile_helper.h" //TagLib::File::isWritable
 
@@ -1759,3 +1744,4 @@ TagDialogWriter::completeJob()
 
 
 #include "TagDialog.moc"
+

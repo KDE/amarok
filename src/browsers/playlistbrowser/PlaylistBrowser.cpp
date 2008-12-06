@@ -31,7 +31,6 @@
 #include <kicon.h>
 #include <klocale.h>
 
-#include <QHeaderView>
 #include <QToolBox>
 #include <QTreeView>
 

@@ -78,3 +78,4 @@ QSize PixmapViewer::sizeHint() const
 }
 
 #include "PixmapViewer.moc"
+

@@ -27,8 +27,6 @@
 #include "context/ContextView.h"
 #include "context/Svg.h"
 
-#include <QGraphicsScene>
-#include <QGraphicsView>
 #include <QPainter>
 
 
@@ -95,3 +93,4 @@ Video::effectiveSizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 }
 
 #include "Video.moc"
+

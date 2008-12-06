@@ -34,7 +34,6 @@
 
 #include <KApplication>
 
-#include <QColor>
 #include <QContextMenuEvent>
 #include <QDropEvent>
 #include <QItemSelection>
@@ -347,3 +346,4 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
     The::paletteHandler()->updateItemView( this );
     reset();
 }
+

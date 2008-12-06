@@ -32,9 +32,7 @@
 
 #include <QFrame>
 #include <QLabel>
-#include <QPainter>
 
-#include <QDirModel>
 
 ServiceFactory::ServiceFactory() : m_initialized( false )
 {

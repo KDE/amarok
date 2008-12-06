@@ -871,3 +871,4 @@ void ColumnContainment::setZoomLevel( Plasma::ZoomLevel level )
 
 
 #include "ColumnContainment.moc"
+

@@ -27,15 +27,10 @@
 #include "PluginManager.h"
 #include "ScriptManager.h"
 
-#include <KApplication>
-#include <KComboBox>
 #include <KLocale>
-#include <KPushButton>
 #include <KVBox>
-#include <KWindowSystem>
 
 #include <QLabel>
-#include <QToolTip>
 #include <q3buttongroup.h>
 
 
@@ -161,3 +156,4 @@ DeviceConfigureDialog::slotButtonClicked( KDialog::ButtonCode button )
 }
 
 #include "deviceconfiguredialog.moc"
+

@@ -30,7 +30,6 @@
 #include <QFontMetrics>
 #include <QIcon>
 #include <QPainter>
-#include <QPixmapCache>
 
 
 ServiceListDelegate::ServiceListDelegate( QTreeView *view )

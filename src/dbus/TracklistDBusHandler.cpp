@@ -27,8 +27,6 @@
 #include "ActionClasses.h"
 
 
-#include <KUrl>
-#include <KSelectAction>
 
 #include "TracklistAdaptor.h"
 
@@ -99,3 +97,4 @@ namespace Amarok
 }
 
 #include "TracklistDBusHandler.moc"
+

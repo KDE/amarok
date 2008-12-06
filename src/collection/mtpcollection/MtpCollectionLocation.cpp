@@ -26,13 +26,11 @@
 #include "../../statusbar/StatusBar.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
-#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 
 #include <kjob.h>
 #include <KLocale>
-#include <KSharedPtr>
 #include <KTempDir>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -270,3 +268,4 @@ MtpCollectionLocation::movedByDestination( const Meta::TrackPtr &track, bool rem
 }
 */
 #include "MtpCollectionLocation.moc"
+

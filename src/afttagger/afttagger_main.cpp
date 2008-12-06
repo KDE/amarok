@@ -30,11 +30,10 @@
 #include <KMD5>
 #include <KRandom>
 
-#include <QDebug>
+#include <QtDebug>
 #include <QDir>
 #include <QFileInfo>
 #include <QString>
-#include <QStringList>
 
 #include <iostream>
 
@@ -333,3 +332,4 @@ QString upgradeUID( int version, QString currValue )
     Q_UNUSED(version)
     return currValue + "abcd";
 }
+

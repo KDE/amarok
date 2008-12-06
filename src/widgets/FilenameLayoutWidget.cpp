@@ -20,7 +20,6 @@
 #include "Debug.h"
 
 #include <KApplication>
-#include <KPushButton>
 
 #include <QMouseEvent>
 #include <QByteArray>
@@ -445,3 +444,4 @@ FilenameLayoutWidget::paintEvent( QPaintEvent *event )
     }
     QFrame::paintEvent( event );
 }
+

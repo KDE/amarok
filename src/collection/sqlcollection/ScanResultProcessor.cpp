@@ -29,7 +29,6 @@
 #include <QFileInfo>
 #include <QListIterator>
 
-#include <KUrl>
 
 using namespace Meta;
 

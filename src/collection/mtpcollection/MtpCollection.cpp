@@ -30,7 +30,6 @@
 
 #include <KUrl>
 
-#include <QStringList>
 
 AMAROK_EXPORT_PLUGIN( MtpCollectionFactory )
 

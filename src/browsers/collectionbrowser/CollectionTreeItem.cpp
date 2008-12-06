@@ -24,7 +24,6 @@
 
 #include <KLocale>
 
-#include <QtAlgorithms>
 
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )

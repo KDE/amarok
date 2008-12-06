@@ -30,7 +30,6 @@
 #include <KDialog>
 #include <KHBox>
 #include <KIO/Job>
-#include <KLineEdit>
 #include <KLocale>
 #include <KPushButton>
 #include <KUrl>
@@ -40,7 +39,6 @@
 #include <QDomElement>
 #include <QDomNode>
 #include <QLabel>
-#include <QMutexLocker>
 #include <QRegExp>
 
 
@@ -720,3 +718,4 @@ CoverFetcher::finishWithError( const QString &message, KJob *job )
 }
 
 #include "CoverFetcher.moc"
+

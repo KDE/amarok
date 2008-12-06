@@ -24,7 +24,6 @@
 //#include "mediabrowser.h"
 #include "playlist/PlaylistActions.h"
 
-#include <QtScript>
 
 #include <KSelectAction>
 
@@ -205,3 +204,4 @@ namespace AmarokScript
 }
 
 #include "AmarokEngineScript.moc"
+

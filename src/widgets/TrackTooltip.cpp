@@ -31,7 +31,6 @@
 #include "amarokconfig.h"
 #include "meta/MetaUtility.h"
 
-#include <KCalendarSystem>
 #include <KStandardDirs>
 
 #include <QApplication>
@@ -44,7 +43,7 @@
 #include <QPixmap>
 #include <QPoint>
 #include <QRect>
-#include <QTextDocument> // Qt::escape
+#include <QTextDocument>
 #include <QTimer>
 #include <QToolTip>
 

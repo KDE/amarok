@@ -27,7 +27,6 @@
 #include <QFile>
 
 #include <KLocale>
-#include <KFilterDev>
 #include <threadweaver/Job.h>
 
 using namespace Meta;

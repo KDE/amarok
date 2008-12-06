@@ -18,7 +18,6 @@
 
 #include "MemoryFilter.h"
 
-#include <QtAlgorithms>
 
 namespace FilterFactory
 {

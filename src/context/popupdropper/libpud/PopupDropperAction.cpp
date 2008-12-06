@@ -20,7 +20,6 @@
 #include "PopupDropperAction.h"
 
 #include <QIcon>
-#include <QMutex>
 #include <QPen>
 #include <QString>
 #include <QtDebug>

@@ -29,8 +29,6 @@
 #include "support/MemoryQueryMaker.h"
 //#include "reader.h"
 
-#include <QStringList>
-#include <QTimer>
 
 using namespace Meta;
 

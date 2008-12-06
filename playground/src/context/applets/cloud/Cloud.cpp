@@ -24,12 +24,8 @@
 #include "context/Svg.h"
 
 #include <QBrush>
-#include <QCheckBox>
 #include <QDBusInterface>
-#include <QLabel>
 #include <QPainter>
-#include <QSpinBox>
-#include <QVBoxLayout>
 
 Cloud::Cloud( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )

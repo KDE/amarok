@@ -22,12 +22,8 @@
 #include "mediabrowser.h"
 #include "MediaDevice.h"
 
-#include <KApplication>
 #include <KComboBox>
-#include <KConfig>
-#include <KLineEdit>
 #include <KLocale>
-#include <KPushButton>
 #include <KVBox>
 
 #include <QCheckBox>
@@ -196,3 +192,4 @@ TransferDialog::convertSpaces_toggled( bool on )
 }
 
 #include "transferdialog.moc"
+

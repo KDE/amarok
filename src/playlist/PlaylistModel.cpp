@@ -39,12 +39,8 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h" // used in constructor
 
-#include <QAction>
 #include <QStringList>
-#include <QUndoStack>
 
-#include <KFileItem>
-#include <KIcon>
 #include <KUrl>
 
 #include <typeinfo>
@@ -773,3 +769,4 @@ AMAROK_EXPORT Playlist::Model* playlistModel()
     return Playlist::Model::instance();
 }
 }
+

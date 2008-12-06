@@ -24,7 +24,6 @@
 #include <KWindowSystem>
 
 #include <QListView>
-#include <QHBoxLayout>
 
 using namespace QueueManagerNS;
 
@@ -74,3 +73,4 @@ QueueManager::~QueueManager()
 }
 
 #include "QueueManager.moc"
+

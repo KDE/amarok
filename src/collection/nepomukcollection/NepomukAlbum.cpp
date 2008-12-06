@@ -35,7 +35,6 @@
 #include <QString>
 
 #include <KMD5>
-#include <KUrl>
 #include <Nepomuk/ResourceManager>
 #include <Nepomuk/Variant>
 #include <Soprano/BindingSet>
@@ -437,3 +436,4 @@ NepomukAlbum::findImageInDir() const
     }
    return QString();
 }
+

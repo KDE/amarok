@@ -30,7 +30,6 @@
 #include <KIcon>
 
 #include <QAbstractListModel>
-#include <QListIterator>
 
 #include <typeinfo>
 
@@ -494,3 +493,4 @@ PlaylistBrowserNS::UserModel::createNewStream( const QString& streamName, const 
 
 
 #include "UserPlaylistModel.moc"
+

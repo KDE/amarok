@@ -30,7 +30,6 @@
 
 #include "KJobProgressBar.h"
 
-#include <QMetaType>
 #include <QTextDocument>
 
 #include <cmath>

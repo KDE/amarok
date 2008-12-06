@@ -37,16 +37,11 @@
 #include <KIO/DeleteJob>
 #include "kjob.h"
 #include <threadweaver/ThreadWeaver.h>
-#include <KUniqueApplication> // needed for KIO processes
 #include <KUrl>
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
-#include <QTime>
 
 using namespace Mtp;
 using namespace Meta;

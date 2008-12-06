@@ -24,7 +24,6 @@
 #include "collection/sqlcollection/SqlCollectionLocation.h"
 #include "Debug.h"
 
-#include <QtScript>
 
 namespace AmarokScript
 {
@@ -142,3 +141,4 @@ namespace AmarokScript
 }
 
 #include "AmarokCollectionScript.moc"
+

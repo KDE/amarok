@@ -30,7 +30,6 @@
 #include <QLabel>
 #include <QMimeData>
 #include <QMouseEvent>
-#include <QStringList>
 #include <QVBoxLayout>
 
 const QString Playlist::HeaderWidget::HeaderMimeType = "application/x-amarok-playlist-header";
@@ -129,3 +128,4 @@ Playlist::HeaderWidget::mousePressEvent( QMouseEvent *event )
     //drag->setHotSpot( QPoint( labelPixmap.width()/2, labelPixmap.height() ) );
     drag->exec();
 }
+

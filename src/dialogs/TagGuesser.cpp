@@ -24,7 +24,6 @@
 #include "Amarok.h"
 #include "Debug.h"
 
-#include <KApplication>
 #include <KConfig>
 #include <KConfigGroup>
 #include <KGlobal>

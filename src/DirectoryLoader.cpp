@@ -28,7 +28,6 @@
 
 #include <kio/job.h> // KIO::listRecursive
 
-#include <QtAlgorithms>
 
 DirectoryLoader::DirectoryLoader()
     : QObject( 0 )

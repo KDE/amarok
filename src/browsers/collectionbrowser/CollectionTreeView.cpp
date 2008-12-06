@@ -47,12 +47,10 @@
 #include <QHash>
 #include <QSet>
 
-#include <KAction>
 #include <KIcon>
 #include <KLineEdit>
 #include <KMenu>
 #include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
-#include <KSharedPtr>
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : Amarok::PrettyTreeView( parent )

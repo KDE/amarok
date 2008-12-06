@@ -20,7 +20,6 @@
 #include <QAction>
 #include <QGraphicsLinearLayout>
 #include <QPainter>
-#include <QFontMetrics>
 #include <QSizeF>
  
 #include <plasma/svg.h>
@@ -505,3 +504,4 @@ MediaDevicesApplet::redraw()
 }
  
 #include "MediaDevicesApplet.moc"
+

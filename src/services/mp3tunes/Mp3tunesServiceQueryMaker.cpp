@@ -31,7 +31,6 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
-#include <QDomDocument>
 #include <QList>
 
 using namespace Meta;
@@ -498,3 +497,4 @@ int Mp3tunesServiceQueryMaker::validFilterMask()
 }
 
 #include "Mp3tunesServiceQueryMaker.moc"
+

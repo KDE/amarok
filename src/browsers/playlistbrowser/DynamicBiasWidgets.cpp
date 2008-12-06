@@ -49,9 +49,7 @@
 #include <QToolButton>
 
 #include <KComboBox>
-#include <KHistoryComboBox>
 #include <KIcon>
-#include <KToolBar>
 #include <KVBox>
 #include <klocale.h>
 
@@ -872,3 +870,4 @@ PlaylistBrowserNS::BiasNormalWidget::makeDateTimeSelection()
 }
 
 #include "DynamicBiasWidgets.moc"
+

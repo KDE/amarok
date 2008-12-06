@@ -22,7 +22,6 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QSqlDatabase>
 
 FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     : DatabaseImporterConfig( parent )

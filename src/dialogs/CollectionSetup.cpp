@@ -25,7 +25,6 @@
 #include "amarokconfig.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
-#include <KFileItem>
 #include <KLocale>
 #include <KPushButton>
 #include <KVBox>
@@ -33,7 +32,6 @@
 #include <QDir>
 #include <QFile>
 #include <QLabel>
-#include <QToolTip>
 
 
 CollectionSetup* CollectionSetup::s_instance;

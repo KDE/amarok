@@ -20,18 +20,15 @@
 #include "equalizerpresetmanager.h"
 
 #include <k3listview.h>
-#include <KApplication>
 #include <KInputDialog>
 #include <KLocale>
 #include <KMessageBox>
 #include <KStandardDirs> //locate()
-#include <KVBox>
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
 #include <QFile>
-#include <QLayout>
 #include <QPushButton>
 #include <QTextStream>
 
@@ -204,3 +201,4 @@ EqualizerPresetManager::updateButtonState()
 }
 
 #include "equalizerpresetmanager.moc"
+

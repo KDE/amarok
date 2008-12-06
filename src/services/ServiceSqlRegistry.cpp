@@ -23,7 +23,6 @@
 #include "Debug.h"
 
 
-#include <QHashIterator>
 #include <QMutableHashIterator>
 #include <QMutexLocker>
 

@@ -24,7 +24,6 @@
 
 #include <KLocale>
 
-#include <QFile>
 
 using namespace Meta;
 

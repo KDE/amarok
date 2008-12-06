@@ -21,7 +21,6 @@
 
 #include "App.h"
 
-#include <QtScript>
 
 namespace AmarokScript
 {
@@ -63,3 +62,4 @@ namespace AmarokScript
 }
 
 #include "AmarokServicePluginManagerScript.moc"
+

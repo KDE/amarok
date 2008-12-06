@@ -25,17 +25,10 @@
 
 #include <plasma/theme.h>
 
-#include <KApplication>
 #include <KColorScheme>
-#include <KIcon>
-#include <KMessageBox>
 
-#include <QCheckBox>
 #include <QFont>
-#include <QLabel>
 #include <QPainter>
-#include <QSpinBox>
-#include <QVBoxLayout>
 
 
 Songkick::Songkick( QObject* parent, const QVariantList& args )
@@ -356,3 +349,4 @@ void Songkick::paletteChanged( const QPalette & palette )
 }
 
 #include "Songkick.moc"
+

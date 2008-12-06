@@ -24,7 +24,6 @@
 #include "hasher.h"
 
 #include <QBuffer>
-#include <QDataStream>
 #include <QHttp>
 #include <QByteArray>
 

@@ -34,7 +34,6 @@
 #include "Debug.h"
 #include "playlist/PlaylistController.h"
 
-#include <KIconLoader>   //multiTabBar icons
 #include <KMenuBar>
 #include <KStandardDirs>  //locate()
 #include <KTemporaryFile>
@@ -43,13 +42,7 @@
 
 #include <QAction>
 #include <QDateTime>
-#include <QDirModel>
-#include <QGraphicsScene>
-#include <QLabel>
 #include <QMenu>
-#include <QSplitter>
-#include <QStandardItemModel>
-#include <QTextStream>
 
 #include <typeinfo>
 

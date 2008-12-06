@@ -35,20 +35,11 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 
-#include <QBrush>
-#include <QDrag>
 #include <QFontMetricsF>
 #include <QGraphicsScene>
-#include <QGraphicsTextItem>
 #include <QGraphicsPixmapItem>
-#include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
-#include <QMimeData>
-#include <QPen>
-#include <QPixmapCache>
-#include <QRadialGradient>
-#include <QScrollBar>
 #include <QStyleOptionGraphicsItem>
 
 #include <KLocale>
@@ -1317,3 +1308,4 @@ GraphicsItem::row()
 {
     return m_currentRow;
 }
+

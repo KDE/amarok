@@ -20,10 +20,7 @@
 #include "plasma/theme.h"
 
 #include <QGraphicsSceneDragDropEvent>
-#include <QGraphicsView>
-#include <QMimeData>
 
-#include <KMimeType>
 
 // NOTE for now ContextScene is a completely useless class (performs the same as
 // Corona. but i think i might want to add stuff to it soon.
@@ -66,3 +63,4 @@ void ContextScene::appletDestroyed(QObject* object)
 } // Context namespace
 
 #include "ContextScene.moc"
+

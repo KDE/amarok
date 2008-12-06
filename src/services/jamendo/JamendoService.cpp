@@ -26,13 +26,14 @@
 #include "JamendoXmlParser.h"
 #include "ServiceSqlRegistry.h"
 
-#include <KTemporaryFile>
+#include <KMenuBar>
 #include <KRun>
 #include <KShell>
+#include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
-#include <KMenuBar>
 
 #include <QAction>
+
 #include <typeinfo>
 
 using namespace Meta;

@@ -24,10 +24,8 @@
 
 #include <KIcon>
 #include <KLocale>
-#include <KVBox>
 
-#include <QDialog>
-#include <QVBoxLayout>
+#include <QLayout>
 
 CompoundProgressBar::CompoundProgressBar( QWidget * parent )
         : ProgressBarNG( parent )

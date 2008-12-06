@@ -28,27 +28,22 @@
 #include "equalizerpresetmanager.h"
 #include "widgets/SliderWidget.h"
 
-#include <KApplication>
 #include <KComboBox>
 #include <KInputDialog>  //presets
 #include <KLocale>
-#include <KMenu>
 #include <KMessageBox>
 #include <KStandardDirs> //locate()
 #include <KVBox>
 #include <KWindowSystem>
 
-#include <QCheckBox>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
 #include <QFile>
 #include <QGroupBox>
 #include <QLabel>
-#include <QLayout>
 #include <QPushButton>
 #include <QTextStream>   //presets
-#include <QToolTip>
 
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
@@ -523,3 +518,4 @@ EqualizerSetup::sliderChanged() //SLOT
 }
 
 #include "equalizersetup.moc"
+

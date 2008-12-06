@@ -24,18 +24,14 @@
 #include <KLineEdit>
 #include <KLocale>
 #include <KMessageBox>
-#include <KPushButton>
 
-#include <QLayout>
-#include <QDateTime>
 #include <QLabel>
+#include <QLayout>
 #include <QGroupBox>
 #include <QRadioButton>
-#include <QLineEdit>
 #include <QComboBox>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <QToolTip>
 
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
@@ -791,3 +787,4 @@ void EditFilterDialog::slotOk() // SLOT
 }
 
 #include "EditFilterDialog.moc"
+

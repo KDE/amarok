@@ -29,7 +29,6 @@
 
 #include "kdebug.h"
 #include <QtCore/QList>
-#include <QGraphicsLinearLayout>
 #include <QtCore/QRectF>
 #include <QtCore/QTimeLine>
 

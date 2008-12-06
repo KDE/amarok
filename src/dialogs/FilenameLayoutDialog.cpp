@@ -20,12 +20,8 @@
 #include "Debug.h"
 
 #include <KConfig>
-#include <KConfigGroup>
-#include <KStandardDirs>
 #include <KColorScheme>
 
-#include <QGridLayout>
-#include <QPushButton>
 
 FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeCollection )
     : QWidget( parent )

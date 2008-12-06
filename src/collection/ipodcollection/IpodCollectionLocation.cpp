@@ -26,13 +26,9 @@
 #include "../../statusbar/StatusBar.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
 
 #include <kjob.h>
 #include <KLocale>
-#include <KSharedPtr>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
@@ -121,3 +117,4 @@ IpodCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &t
 }
 
 #include "IpodCollectionLocation.moc"
+

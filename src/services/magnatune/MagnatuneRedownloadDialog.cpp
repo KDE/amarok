@@ -22,7 +22,6 @@
 
 #include "Debug.h"
 
-#include <QPushButton>
 #include <QHeaderView>
 
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)

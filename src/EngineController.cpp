@@ -30,7 +30,6 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
 
-#include <KApplication>
 #include <KFileItem>
 #include <KIO/Job>
 #include <KMessageBox>
@@ -41,8 +40,6 @@
 #include <Phonon/MediaObject>
 #include <Phonon/VolumeFaderEffect>
 
-#include <QByteArray>
-#include <QFile>
 #include <QTimer>
 
 namespace The {

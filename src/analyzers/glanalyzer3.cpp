@@ -27,7 +27,6 @@
 #include <kstandarddirs.h>
 #include <QImage>
 #include <sys/time.h>
-#include <QtAlgorithms>
 
 #ifndef HAVE_FABSF
 inline float fabsf(float f)
@@ -480,3 +479,4 @@ void GLAnalyzer3::freeTexture( GLuint& textureID )
 }
 
 #endif
+

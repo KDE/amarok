@@ -21,7 +21,6 @@
 #include <cmath>
 #include <QGridLayout>
 #include <QLabel>
-#include <QLayout>
 #include <QPainter>
 #include <QSlider>
 #include <qspinbox.h>
@@ -171,3 +170,4 @@ BoomAnalyzer::analyze( const Scope &scope )
 }
 
 #include "boomanalyzer.moc"
+

@@ -27,10 +27,8 @@
 
 #include "Debug.h"
 
-#include <QList>
 #include <QString>
 #include <QStringList>
-#include <QUuid>
 
 #include <KUrl>
 #include <threadweaver/Job.h>
@@ -739,3 +737,4 @@ NepomukQueryMaker::doQuery(const QString &query)
     }
 }
 #include "NepomukQueryMaker.moc"
+

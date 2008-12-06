@@ -15,8 +15,6 @@
 
 #include <plasma/animator.h>
 
-#include <KService>
-#include <KServiceTypeTrader>
 
 #include <QGraphicsLayout>
 #include <QGraphicsScene>
@@ -107,3 +105,4 @@ Context::Applet::cleanUpAndDelete()
     Plasma::Applet::scene()->removeItem( this );
     Plasma::Applet::deleteLater();
 }
+

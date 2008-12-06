@@ -31,15 +31,12 @@
 #include <KLineEdit>
 #include <KLocale>
 #include <kmountpoint.h>
-#include <KNumInput>
 #include <KVBox>
 
 #include <QCheckBox>
 #include <QDateTime>
 #include <QFrame>
 #include <QLabel>
-#include <QLayout>
-#include <QObject>
 #include <QStringList>
 #include <QToolButton>
 
@@ -1108,3 +1105,4 @@ int CriteriaEditor::getValueType( int index )
 
 
 #include "SmartPlaylistEditor.moc"
+

@@ -23,7 +23,6 @@
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "ScriptManager.h"
 
-#include <QtScript>
 
 StreamItem::StreamItem( QScriptEngine *engine )
     : m_year( 0 )
@@ -220,3 +219,4 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 
 
 #include "AmarokScriptableServiceScript.moc"
+

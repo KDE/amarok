@@ -30,18 +30,9 @@
 
 #include <plasma/theme.h>
 
-#include <KApplication>
-#include <KIcon>
-#include <KMessageBox>
 
-#include <QBrush>
-#include <QFont>
-#include <QLabel>
-#include <QMap>
 #include <QPainter>
 #include <QTreeView>
-#include <QVBoxLayout>
-
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -240,3 +231,4 @@ void Albums::connectSource( const QString &source )
 }
 
 #include "Albums.moc"
+

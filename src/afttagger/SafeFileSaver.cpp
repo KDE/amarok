@@ -21,7 +21,7 @@
 #include <KRandom>
 #include <KMD5>
 
-#include <QDebug>
+#include <QtDebug>
 #include <QFile>
 #include <QFileInfo>
 #include <QString>

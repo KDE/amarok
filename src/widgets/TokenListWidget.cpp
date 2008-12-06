@@ -19,7 +19,6 @@
 #include "Debug.h"
 
 #include <KApplication>
-#include <KDialog>
 
 #include <QMouseEvent>
 

@@ -20,7 +20,6 @@
 #include "EngineController.h"
 #include "ScriptManager.h"
 
-#include <QDomDocument>
 
 using namespace Context;
 

@@ -25,13 +25,10 @@
 #include "amarokconfig.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 
-#include <KConfigGroup>
-#include <KLineEdit>
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
 
-#include <QVBoxLayout>
 
 CollectionWidget *CollectionWidget::s_instance = 0;
 
@@ -130,3 +127,4 @@ CollectionWidget::sortByGenreArtistAlbum()
 
 
 #include "CollectionWidget.moc"
+

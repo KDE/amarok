@@ -25,7 +25,6 @@
 #include "MagnatunePurchaseAction.h"
 #include "SvgHandler.h"
 
-#include <KIcon>
 #include <KLocale>
 #include <KStandardDirs>
 

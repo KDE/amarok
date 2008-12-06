@@ -17,9 +17,6 @@
 
 #include "plasma/corona.h"
 
-#include <QGraphicsSceneContextMenuEvent>
-#include <QGraphicsScene>
-#include <KMenu>
 
 namespace Context
 {

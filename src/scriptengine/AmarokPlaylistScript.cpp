@@ -25,7 +25,6 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 
-#include <QtScript>
 
 namespace AmarokScript
 {
@@ -140,3 +139,4 @@ namespace AmarokScript
 }
 
 #include "AmarokPlaylistScript.moc"
+

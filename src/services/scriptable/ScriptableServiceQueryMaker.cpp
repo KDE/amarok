@@ -26,8 +26,6 @@
 
 #include "Debug.h"
 
-#include <KRun>
-#include <KShell>
 
 
 struct ScriptableServiceQueryMaker::Private {

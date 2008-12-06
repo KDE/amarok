@@ -31,17 +31,16 @@
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 
+#include <QAction>
 #include <QContextMenuEvent>
 #include <QFontMetrics>
+#include <QMenu>
 #include <QPainter>
-#include <QPixmapCache>
 #include <QStyle>
 #include <QStyleOptionComplex>
-#include <QSvgRenderer>
 
 #include <KIcon>
 #include <KLocale>
-#include <KMenu>
 #include <KStandardDirs>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )

@@ -27,23 +27,16 @@
 #include "browsers/filebrowser/MyDirOperator.h"
 #include "browsers/filebrowser/kbookmarkhandler.h"
 
-#include <QCheckBox>
 #include <QDir>
-#include <QLayout>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QScrollBar>
 #include <QToolButton>
 
 #include <KActionCollection>
 #include <KActionMenu>
-#include <KActionSelector>
 #include <KApplication>
-#include <KComboBox>
 #include <KConfig>
 #include <KConfigGroup>
-#include <KDebug>
-#include <KFileItem>
 #include <KGlobal>
 #include <KHistoryComboBox>
 #include <KLocale>
@@ -457,3 +450,4 @@ bool FileBrowser::Widget::eventFilter( QObject* o, QEvent *e )
 // kate: space-indent on; indent-width 4; replace-tabs on;
 
 #include "FileBrowser.moc"
+

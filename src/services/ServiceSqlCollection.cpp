@@ -25,7 +25,6 @@
 
 #include <klocale.h>
 
-#include <QTimer>
 
 
 ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )

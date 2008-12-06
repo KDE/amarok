@@ -34,10 +34,6 @@
 #include "playlist/PlaylistController.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 
-#include <KApplication>
-#include <KConfig>
-#include <KCursor>
-#include <KFileDialog>
 #include <KIO/NetAccess>
 #include <KLineEdit>
 #include <KLocale>
@@ -46,31 +42,16 @@
 #include <KSqueezedTextLabel> //status label
 #include <KStatusBar>
 #include <KToolBar>
-#include <KUrl>
 #include <KVBox>
 
-#include <QDesktopWidget>  //ctor: desktop size
-#include <QFile>
-#include <QFontMetrics>    //paintItem()
-#include <QImage>
-#include <QLabel>
-#include <QLayout>
-#include <QObject>    //used to delete all cover fetchers
-#include <QPainter>    //paintItem()
-#include <QPalette>    //paintItem()
-#include <QPixmap>
-#include <QPoint>
+#include <QDesktopWidget>
 #include <QProgressBar>
 #include <QProgressDialog>
-#include <QRect>
 #include <QStringList>
-#include <QToolTip>
 #include <QTimer>    //search filter timer
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 //Added by qt3to4:
-#include <QDropEvent>
-#include <QToolButton>
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -937,3 +918,4 @@ void CoverViewItem::dragLeft()
 }
 
 #include "CoverManager.moc"
+

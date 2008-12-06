@@ -52,32 +52,19 @@
 #include "scriptengine/ScriptImporter.h"
 #include "ui_ScriptManagerBase.h"
 
-#include <KAboutApplicationDialog>
-#include <KAboutData>
 #include <KApplication>
 #include <KFileDialog>
 #include <KIO/NetAccess>
 #include <KLocale>
-#include <KMenu>
 #include <KMessageBox>
 #include <knewstuff2/engine.h>
 #include <knewstuff2/core/entry.h>
 #include <KProtocolManager>
-#include <KPushButton>
-#include <KRun>
 #include <KStandardDirs>
 #include <KTar>
-#include <KTextEdit>
 #include <KWindowSystem>
 
-#include <QCheckBox>
-#include <QDir>
 #include <QFileInfo>
-#include <QFont>
-#include <QLabel>
-#include <QPixmap>
-#include <QSettings>
-#include <QTextCodec>
 #include <QTimer>
 #include <QScriptEngine>
 

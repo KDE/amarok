@@ -30,9 +30,6 @@
 #include "QueryMaker.h"
 
 #include <KLocale>
-#include <KIcon>
-#include <QMimeData>
-#include <QPixmap>
 #include <QTimer>
 
 
@@ -246,3 +243,4 @@ void CollectionTreeItemModel::update()
     reset();
 }
 #include "CollectionTreeItemModel.moc"
+

@@ -48,12 +48,8 @@ email                : markey@web.de
 #include <KAction>
 #include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
-#include <KConfigDialogManager>
-#include <KCursor>                       //Amarok::OverrideCursor
 #include <KEditToolBar>                  //slotConfigToolbars()
-#include <KGlobalSettings>               //applyColorScheme()
 #include <KIO/CopyJob>
-#include <KIconLoader>                   //amarok Icon
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
@@ -63,14 +59,10 @@ email                : markey@web.de
 #include <KSplashScreen>
 #include <KStandardDirs>
 
-#include <QDBusInterface>
-#include <QDBusReply>
-#include <QEventLoop>                   //applySettings()
 #include <QFile>
 #include <KPixmapCache>
 #include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
-#include <QToolTip>                     //default tooltip for trayicon
 #include <QtDBus/QtDBus>
 
 QMutex Debug::mutex;

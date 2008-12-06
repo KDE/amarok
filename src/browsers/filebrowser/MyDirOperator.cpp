@@ -29,7 +29,6 @@
 
 #include <KActionMenu>
 #include <KLocale>
-#include <KActionCollection>
 #include <KAction>
 #include <QAbstractItemView>
 #include <QMenu>

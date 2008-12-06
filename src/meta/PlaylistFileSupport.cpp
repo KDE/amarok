@@ -31,7 +31,6 @@
 #include <KTemporaryFile>
 #include <KUrl>
 
-#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 
@@ -145,3 +144,4 @@ loadPlaylist( const KUrl &url )
 }
 
 }
+

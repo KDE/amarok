@@ -25,7 +25,6 @@
 
 #include <QDesktopWidget>
 
-
 OsdConfig::OsdConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {

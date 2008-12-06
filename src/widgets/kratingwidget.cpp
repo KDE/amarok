@@ -261,3 +261,4 @@ void KRatingWidget::resizeEvent( QResizeEvent* e )
 }
 
 #include "kratingwidget.moc"
+

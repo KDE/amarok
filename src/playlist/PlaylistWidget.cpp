@@ -32,13 +32,9 @@
 #include "PlaylistModel.h"
 #include "widgets/Widget.h"
 
-#include <KConfigGroup>
 #include <KToolBarSpacerAction>
 
 #include <QHBoxLayout>
-#include <QTreeView>
-#include <QStackedWidget>
-#include <QTime>
 
 Playlist::Widget::Widget( QWidget* parent )
         : KVBox( parent )

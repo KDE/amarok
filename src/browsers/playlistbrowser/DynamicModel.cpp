@@ -29,7 +29,6 @@
 #include "collection/support/XmlQueryWriter.h"
 
 #include <QFile>
-#include <QMutexLocker>
 #include <QVariant>
 
 
@@ -476,3 +475,4 @@ PlaylistBrowserNS::DynamicModel::universeNeedsUpdate()
 {
     Dynamic::BiasSolver::outdateUniverse();
 }
+

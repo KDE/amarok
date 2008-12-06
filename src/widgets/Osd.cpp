@@ -27,7 +27,6 @@
 
 #include <KApplication>
 #include <KIcon>
-#include <KStandardDirs>   //locate
 
 #include <QDesktopWidget>
 #include <QMouseEvent>
@@ -771,3 +770,4 @@ namespace ShadowEngine
 }
 
 #include "Osd.moc"
+

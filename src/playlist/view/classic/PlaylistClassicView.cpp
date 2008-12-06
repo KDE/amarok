@@ -26,12 +26,8 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/view/PlaylistViewCommon.h"
 
-#include <KAction>
-#include <KMenu>
-
 #include <QHeaderView>
 #include <QModelIndex>
-#include <QKeyEvent>
 
 
 
@@ -149,3 +145,4 @@ void Playlist::ClassicView::editTrackInformation()
     dialog->show();
     */
 }
+

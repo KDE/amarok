@@ -29,8 +29,6 @@
 #include "PluginManager.h"
 #include "SqlStorage.h"
 
-#include <QtAlgorithms>
-#include <QtGlobal>
 #include <QList>
 #include <QMetaEnum>
 #include <QMetaObject>
@@ -38,12 +36,9 @@
 #include <QTimer>
 
 #include <KService>
-#include <KConfigGroup>
-#include <KFileItem>
 #include <KGlobal>
 #include <KMessageBox>
 #include <KRun>
-#include <KSharedConfig>
 
 #include <cstdlib>
 
@@ -557,3 +552,4 @@ CollectionManager::removeTrackProvider( TrackProvider *provider )
 }
 
 #include "CollectionManager.moc"
+

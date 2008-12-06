@@ -24,7 +24,6 @@
 #include "SqlCollection.h"
 #include "XesamDbus.h"
 
-#include <QBuffer>
 #include <QDBusConnection>
 #include <QDBusReply>
 #include <QDir>
@@ -399,3 +398,4 @@ XesamCollectionBuilder::urlId( const QString &url )
 }
 
 #include "XesamCollectionBuilder.moc"
+

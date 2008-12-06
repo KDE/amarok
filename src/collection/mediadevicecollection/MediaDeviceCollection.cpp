@@ -35,8 +35,6 @@
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
 
-//#include <QDir>
-#include <QStringList>
 
 
 AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )

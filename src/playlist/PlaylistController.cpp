@@ -33,10 +33,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KActionCollection>
-#include <KIcon>
 
-#include <QAction>
 
 #include <algorithm> // STL
 
@@ -516,3 +513,4 @@ AMAROK_EXPORT Playlist::Controller* playlistController()
     return Playlist::Controller::instance();
 }
 }
+

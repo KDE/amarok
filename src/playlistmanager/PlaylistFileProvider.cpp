@@ -23,9 +23,7 @@
 #include "Debug.h"
 
 #include <QString>
-#include <QFile>
 
-#include <KConfigGroup>
 #include <KLocale>
 #include <KUrl>
 
@@ -87,3 +85,4 @@ PlaylistFileProvider::playlists()
 {
     return m_playlists;
 }
+

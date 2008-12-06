@@ -22,7 +22,6 @@
 
 #include "Debug.h"
 
-#include <QToolTip>
 
 PopupWidget::PopupWidget( QWidget * anchor, const QString &name )
         : KVBox( The::mainWindow() )

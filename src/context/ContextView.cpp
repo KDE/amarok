@@ -27,12 +27,8 @@
 #include "Theme.h"
 #include "amarokconfig.h"
 
-#include <QFile>
 #include <QWheelEvent>
 
-#include <KPluginInfo>
-#include <KServiceTypeTrader>
-#include <KMenu>
 
 #define DEBUG_PREFIX "ContextView"
 
@@ -817,3 +813,4 @@ ContextView::containment()
 } // Context namespace
 
 #include "ContextView.moc"
+

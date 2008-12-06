@@ -34,7 +34,6 @@
 #include <QGLFormat>
 #include <QGLWidget>
 #include <QTimer>
-#include <KStandardDirs>
 
 #include <climits>
 

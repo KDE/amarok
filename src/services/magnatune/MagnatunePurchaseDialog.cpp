@@ -26,11 +26,7 @@
 
 #include <KMessageBox>
 
-#include <QComboBox>
-#include <QLabel>
-#include <QLineEdit>
 #include <QPixmap>
-#include <QPushButton>
 #include <QRegExp>
 
 using namespace Meta;

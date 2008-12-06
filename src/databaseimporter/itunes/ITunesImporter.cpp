@@ -15,7 +15,6 @@
 #include "ITunesImporter.h"
 #include "Debug.h"
 
-#include <QLabel>
 
 ITunesImporter::ITunesImporter( QObject *parent )
     : DatabaseImporter( parent )

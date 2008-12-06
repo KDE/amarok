@@ -28,10 +28,8 @@
 #include "PluginManager.h"
 #include "statusbar/StatusBar.h"
 
-#include <KApplication>
 #include <KComboBox>
 #include <KConfig>
-#include <KLineEdit>
 #include <KLocale>
 #include <KPushButton>
 #include <KVBox>
@@ -43,9 +41,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <KMessageBox>
-#include <QTextDocument>
 #include <QTableWidget>
-#include <QToolTip>
 #include <QWhatsThis>
 
 MediaDevicePluginManagerDialog::MediaDevicePluginManagerDialog()
@@ -726,3 +722,4 @@ MediaDeviceVolumeMarkerDialog::slotOk()
 }
 
 #include "MediaDevicePluginManager.moc"
+

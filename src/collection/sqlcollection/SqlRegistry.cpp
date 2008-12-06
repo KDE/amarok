@@ -25,7 +25,6 @@
 #include "MountPointManager.h"
 #include "SqlCollection.h"
 
-#include <QHashIterator>
 #include <QMutableHashIterator>
 #include <QMutexLocker>
 
@@ -333,3 +332,4 @@ SqlRegistry::emptyCache()
 }
 
 #include "SqlRegistry.moc"
+

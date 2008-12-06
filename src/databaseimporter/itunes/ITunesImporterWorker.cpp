@@ -25,10 +25,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-#include <QDir>
-#include <QFileInfo>
-#include <QMap>
-#include <QXmlStreamReader>
+#include <QFile>
 
 ITunesImporterWorker::ITunesImporterWorker()
     : ThreadWeaver::Job()
@@ -184,3 +181,4 @@ ITunesImporterWorker::run()
 
 
 #include "ITunesImporterWorker.moc"
+

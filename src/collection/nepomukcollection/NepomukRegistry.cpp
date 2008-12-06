@@ -24,7 +24,6 @@
 #include "QueryMaker.h"
 
 #include <QDateTime>
-#include <QHash>
 #include <QUrl>
 #include <QUuid>
 
@@ -281,3 +280,4 @@ NepomukRegistry::jobDone( ThreadWeaver::Job *job )
 }
 
 #include "NepomukRegistry.moc"
+

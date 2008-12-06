@@ -33,7 +33,6 @@
 #include <KAction>
 #include <KIcon>
 #include <KLineEdit>
-#include <KMenu>
 
 #include <QGridLayout>
 #include <QHeaderView>

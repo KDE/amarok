@@ -40,13 +40,10 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
-#include <QListIterator>
 #include <QMutexLocker>
 #include <QPointer>
 
-#include <KAction>
 #include <KCodecs>
-#include <KFileMetaInfo>
 #include <KLocale>
 #include <KSharedPtr>
 
@@ -1669,3 +1666,4 @@ SqlYear::tracks()
 }
 
 #include "sqlmeta.moc"
+

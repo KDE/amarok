@@ -28,7 +28,6 @@
 #include <KApplication>
 
 #include <QPen>
-#include <QGraphicsScene>
 
 QHash<GraphicsView*, DropVis*> Playlist::DropVis::s_instanceHash;
 

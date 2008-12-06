@@ -28,19 +28,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <KConfigGroup>
 #include <KDialog>
 #include <KGlobal>
-#include <KHBox>
 #include <KIconLoader>
 #include <KIO/DeleteJob>
 #include <KLocale>
 #include <KStandardGuiItem>
 #include <KUrl>
-#include <KVBox>
 
-#include <QCheckBox>
-#include <QLabel>
-#include <QLayout>
-#include <QStringList>
-#include <QTimer>
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -170,3 +163,4 @@ bool DeleteDialog::showTrashDialog(QWidget* parent, const KUrl::List& files)
 #include "deletedialog.moc"
 
 // vim: set et ts=4 sw=4:
+

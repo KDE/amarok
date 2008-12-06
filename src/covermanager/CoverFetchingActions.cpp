@@ -19,8 +19,6 @@
 
 #include "CoverFetchingActions.h"
 
-#include <QAction>
-#include <KApplication>
 #include <KIcon>
 #include <KFile>
 #include <KFileDialog>
@@ -147,3 +145,4 @@ SetCustomCoverAction::slotTriggered()
 }
 
 #include "CoverFetchingActions.moc"
+

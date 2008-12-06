@@ -23,14 +23,7 @@
 
 #include <KStandardDirs>
 
-#include <QDBusInterface>
 #include <QPainter>
-#include <QBrush>
-#include <QVBoxLayout>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QLabel>
-#include <QWebFrame>
 
 ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -260,3 +253,4 @@ void ServiceInfo::trackListChanged( Meta::Playlist * playlist )
 
 
 #include "ServiceInfo.moc"
+

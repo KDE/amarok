@@ -27,8 +27,6 @@
 #include "ServiceSqlRegistry.h"
 
 #include <KTemporaryFile>
-#include <KRun>
-#include <KShell>
 #include <threadweaver/ThreadWeaver.h>
 
 #include <typeinfo>

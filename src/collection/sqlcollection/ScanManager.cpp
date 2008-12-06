@@ -35,10 +35,8 @@
 
 #include <QFileInfo>
 #include <QListIterator>
-#include <QMap>
 #include <QStringList>
 #include <QVariant>
-#include <QThread>
 #include <QTextCodec>
 #include <QXmlStreamAttributes>
 

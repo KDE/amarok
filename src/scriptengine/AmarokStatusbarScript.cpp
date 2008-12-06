@@ -20,7 +20,6 @@
 #include "App.h"
 #include "statusbar/StatusBar.h"
 
-#include <QtScript>
 
 namespace AmarokScript
 {
@@ -72,3 +71,4 @@ namespace AmarokScript
 }
 
 #include "AmarokStatusbarScript.moc"
+

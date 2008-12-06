@@ -26,7 +26,6 @@
 #include <QDragMoveEvent>
 #include <QDragLeaveEvent>
 #include <QDropEvent>
-#include <QTimer>
 
 #include <QtDebug>
 

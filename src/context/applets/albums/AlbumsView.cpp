@@ -26,13 +26,10 @@
 
 #include <QGraphicsSceneContextMenuEvent>
 #include <QHeaderView>
-#include <QPainter>
-#include <QStyleOptionViewItem>
 #include <QTreeView>
 
 #include <KAction>
 #include <KIcon>
-#include <KIconLoader>
 #include <KMenu>
 
 // Subclassed to override the access level of some methods.

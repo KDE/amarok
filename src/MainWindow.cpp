@@ -60,21 +60,19 @@
 #include <QDesktopWidget>
 #include <QList>
 #include <QVBoxLayout>
-#include <KPixmapCache>
 #include <QSizeGrip>
 
 #include <kabstractfilewidget.h> //savePlaylist()
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
-#include <KActionMenu>
 #include <KApplication>     //kapp
 #include <KFileDialog>      //savePlaylist(), openPlaylist()
 #include <KInputDialog>     //slotAddStream()
 #include <KLocale>
-#include <KMenuBar>
 #include <KMessageBox>      //savePlaylist()
 #include <KMenu>
-#include <KPushButton>
+#include <KMenuBar>
+#include <KPixmapCache>
 #include <KStandardAction>
 #include <KWindowSystem>
 

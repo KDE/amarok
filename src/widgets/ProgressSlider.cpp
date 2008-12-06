@@ -21,13 +21,8 @@
 #include "TimeLabel.h"
 
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QList>
-#include <QPolygon>
 
-#include <KHBox>
 #include <KLocale>
-#include <KPassivePopup>
 
 //Class ProgressWidget
 ProgressWidget *ProgressWidget::s_instance = 0;
@@ -212,3 +207,4 @@ QSize ProgressWidget::sizeHint() const
 }
 
 #include "ProgressSlider.moc"
+

@@ -33,7 +33,6 @@
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <KIcon>
-#include <KTemporaryFile>
 #include <KUrl>
 
 #include <QFileInfo>
@@ -1091,3 +1090,4 @@ MtpYear::remTrack( MtpTrackPtr track )
 }
 
 #include "mtpmeta.moc"
+

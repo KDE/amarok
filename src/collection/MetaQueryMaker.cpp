@@ -18,7 +18,6 @@
 
 #include "MetaQueryMaker.h"
 
-#include <QtGlobal>
 
 using namespace Meta;
 
@@ -345,3 +344,4 @@ MetaQueryMaker::slotQueryDone()
 }
 
 #include "MetaQueryMaker.moc"
+

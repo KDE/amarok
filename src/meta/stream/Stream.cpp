@@ -25,7 +25,6 @@
 #include "default/DefaultMetaTypes.h"
 
 #include <QPointer>
-#include <QSet>
 #include <QString>
 
 using namespace MetaStream;

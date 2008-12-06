@@ -41,7 +41,6 @@
 #include <KStandardDirs>
 #include <QPixmap>
 #include <QTimeLine>
-#include <QTimer>
 
 using namespace Meta;
 

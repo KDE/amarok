@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <QTextStream>
 #include <QByteArray>
 
 #include <kbookmarkimporter.h>

@@ -290,3 +290,4 @@ RatingWidget::sizeHint( Qt::SizeHint hint, const QSizeF& size ) const
 // }
 
 #include "RatingWidget.moc"
+

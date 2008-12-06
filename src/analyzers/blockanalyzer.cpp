@@ -35,7 +35,6 @@
 #include <klocale.h>         //mousePressEvent
 #include <kmenu.h>      //mousePressEvent
 
-#include <QEvent>          //mousePressEvent
 #include <QPainter>        //paletteChange()
 //Added by qt3to4:
 #include <QContextMenuEvent>

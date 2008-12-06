@@ -26,7 +26,6 @@
 #include <QThreadStorage>
 #include <QVarLengthArray>
 
-#include <KRandom>
 
 #include <mysql.h>
 

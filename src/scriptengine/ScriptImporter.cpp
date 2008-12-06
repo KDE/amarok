@@ -22,8 +22,6 @@
 
 #include <KUrl>
 
-#include <QFileInfo>
-#include <QtScript>
 #include <QSet>
 
 namespace AmarokScript
@@ -82,3 +80,4 @@ namespace AmarokScript
     }
 }
 #include "ScriptImporter.moc"
+

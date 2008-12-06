@@ -30,12 +30,10 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QLabel>
-#include <QTreeWidget>
 
 #include <KHBox>
 #include <KIcon>
 #include <KToolBar>
-#include <KVBox>
 
 
 namespace PlaylistBrowserNS {
@@ -290,3 +288,4 @@ void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
 
 
 #include "DynamicCategory.moc"
+

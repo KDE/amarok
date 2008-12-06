@@ -19,11 +19,7 @@
 #include "PodcastSettingsDialog.h"
 #include "ui_PodcastSettingsBase.h"
 
-#include <KUrlRequester>
 
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QSpinBox>
 
 PodcastSettingsDialog::PodcastSettingsDialog( Meta::PodcastChannelPtr channel, QWidget* parent )
     : KDialog( parent )
@@ -131,3 +127,4 @@ bool PodcastSettingsDialog::configure()
 }
 
 #include "PodcastSettingsDialog.moc"
+

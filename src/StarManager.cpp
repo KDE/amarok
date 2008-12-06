@@ -26,7 +26,6 @@
 #include <KIconEffect>
 #include <KStandardDirs>   //KGlobal::dirs()
 
-#include <QFile>
 #include <QImage>
 #include <QPixmap>
 
@@ -168,3 +167,4 @@ StarManager::setHalfColor( const QColor &color )
 }
 
 #include "StarManager.moc"
+

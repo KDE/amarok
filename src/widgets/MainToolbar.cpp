@@ -33,12 +33,10 @@
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "ToolBar.h"
 
-#include <KAction>
 #include <KApplication>
 #include <KVBox>
 
 #include <QPainter>
-#include <KPixmapCache>
 #include <QResizeEvent>
 #include <QVBoxLayout>
 

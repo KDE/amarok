@@ -26,8 +26,6 @@
 #include <kfiledialog.h>
 #include <kurlrequester.h>
 
-#include <QCheckBox>
-#include <QComboBox>
 
 
 

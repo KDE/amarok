@@ -27,17 +27,10 @@
 
 #include <plasma/theme.h>
 
-#include <KApplication>
 #include <KColorScheme>
-#include <KIcon>
-#include <KMessageBox>
 
-#include <QCheckBox>
 #include <QFont>
-#include <QLabel>
 #include <QPainter>
-#include <QSpinBox>
-#include <QVBoxLayout>
 
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
@@ -514,3 +507,4 @@ void CurrentTrack::paletteChanged( const QPalette & palette )
 }
 
 #include "CurrentTrack.moc"
+

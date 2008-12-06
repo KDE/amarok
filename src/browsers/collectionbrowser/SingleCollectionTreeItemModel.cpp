@@ -29,11 +29,6 @@
 #include "QueryMaker.h"
 
 #include <KLocale>
-#include <KIcon>
-#include <QMapIterator>
-#include <QMimeData>
-#include <QPixmap>
-#include <QTimer>
 
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collection * collection, const QList<int> &levelType )
@@ -169,3 +164,4 @@ SingleCollectionTreeItemModel::filterChildren()
 }
 
 #include "SingleCollectionTreeItemModel.moc"
+

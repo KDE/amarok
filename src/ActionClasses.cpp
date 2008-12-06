@@ -24,16 +24,10 @@
 #include "playlist/PlaylistActions.h"
 
 #include <KAuthorized>
-#include <KHBox>
 #include <KHelpMenu>
-#include <KLineEdit>
 #include <KLocale>
-#include <KPushButton>
 #include <KToolBar>
-#include <KUrl>
 
-#include <QPixmap>
-#include <QToolTip>
 
 
 namespace Amarok

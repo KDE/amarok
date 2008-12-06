@@ -29,7 +29,6 @@
 #include <QHash>
 #include <QString>
 #include <QTime>
-#include <QUuid>
 
 #include <klocale.h>
 #include <KUrl>
@@ -38,7 +37,6 @@
 #include <Soprano/LiteralValue>
 #include <Soprano/Model>
 #include <Soprano/PluginManager>
-#include <Soprano/QueryResultIterator>
 #include <Soprano/Statement>
 #include <Soprano/Vocabulary/NAO>
 #include <Soprano/Vocabulary/RDF>
@@ -301,3 +299,4 @@ NepomukCollection::registry() const
 }
 
 #include "NepomukCollection.moc"
+

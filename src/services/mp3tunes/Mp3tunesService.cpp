@@ -26,12 +26,9 @@
 
 #include "statusbar/StatusBar.h"
 
-#include <KMenuBar>
 #include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
 
-#include <QByteArray>
-#include <QDomDocument>
 #include <QRegExp>
 
 AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
@@ -383,3 +380,4 @@ void Mp3tunesService::harmonyDownloadPending( const QVariantMap &download )
 }
 
 #include "Mp3tunesService.moc"
+

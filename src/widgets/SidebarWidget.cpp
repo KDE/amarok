@@ -27,7 +27,6 @@
 
 #include "SvgTinter.h"
 
-#include <KIconEffect>
 
 #include <QAbstractItemDelegate>
 #include <QAction>
@@ -414,3 +413,4 @@ void SideBarButton::paletteChange(const QPalette & /*oldPalette*/)
 
 
 #include "SidebarWidget.moc"
+

@@ -31,11 +31,9 @@
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 
-#include <KIcon>
 #include <KMessageBox>
 #include <KUrl>
 
-#include <QStringList>
 
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 

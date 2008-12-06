@@ -17,13 +17,11 @@
 
 #include "Debug.h"
 
-#include <QComboBox>
 #include <QCompleter>
 #include <QDirModel>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QSqlDatabase>
 #include <QDesktopServices>
 
 ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )

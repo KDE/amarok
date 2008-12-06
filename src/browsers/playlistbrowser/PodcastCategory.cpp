@@ -34,25 +34,20 @@
 #include "SvgHandler.h"
 
 #include <QAction>
-#include <QFile>
 #include <QFontMetrics>
-#include <QHBoxLayout>
 #include <QHeaderView>
 #include <QIcon>
 #include <QLinearGradient>
 #include <QModelIndexList>
 #include <QPainter>
-#include <QPixmapCache>
 #include <QRegExp>
-#include <QSvgRenderer>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <qnamespace.h>
 #include <QWebFrame>
+#include <qnamespace.h>
 
 #include <KAction>
 #include <KMenu>
-#include <KStandardDirs>
 #include <KIcon>
 
 #include <typeinfo>
@@ -703,3 +698,4 @@ PodcastView::slotRemove()
 }
 
 #include "PodcastCategory.moc"
+

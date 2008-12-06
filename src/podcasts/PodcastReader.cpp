@@ -25,8 +25,6 @@
 #include <kurl.h>
 
 #include <QDate>
-#include <QDebug>
-#include <QMap>
 /* used as PubDate for Podcasts module RSS
 ** Mon, 13 Mar 2006 23:37:46 +0000
 */
@@ -419,3 +417,4 @@ PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
 }
 
 #include "PodcastReader.moc"
+

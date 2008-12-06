@@ -99,3 +99,4 @@ AmarokLyricsScript::fromUtf8( const QString& str, const QString& encoding )
 }
 
 #include "AmarokLyricsScript.moc"
+

@@ -21,12 +21,7 @@
 
 #include "Debug.h"
 
-#include <KSharedConfig>
 
-#include <QCheckBox>
-#include <QFrame>
-#include <QHBoxLayout>
-#include <QLabel>
 #include <QVBoxLayout>
 
 
@@ -102,3 +97,4 @@ void ServiceConfig::slotConfigComitted( const QByteArray & name )
 }
 
 #include "ServiceConfig.moc"
+

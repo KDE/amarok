@@ -21,7 +21,6 @@
 
 #include <KStandardDirs>
 
-#include <QGraphicsTextItem>
 #include <QGraphicsSimpleTextItem>
 #include <QPainter>
 
@@ -200,3 +199,4 @@ QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint 
 }
 
 #include "WikipediaApplet.moc"
+

@@ -37,17 +37,10 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 
-#include <KAction>
-#include <KMenu>
 
-//#include <QClipboard>
 #include <QGraphicsItemAnimation>
-#include <QKeyEvent>
 #include <QModelIndex>
-#include <QPixmapCache>
-#include <QScrollBar>
 #include <QTimeLine>
-#include <QVariant>
 
 #include <typeinfo>
 
@@ -528,3 +521,4 @@ Playlist::GraphicsView::paletteChange( const QPalette & oldPalette )
         it->paletteChange();
     }
 }
+

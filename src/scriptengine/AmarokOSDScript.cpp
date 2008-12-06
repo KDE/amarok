@@ -21,7 +21,6 @@
 #include "App.h"
 #include "Osd.h"
 
-#include <QtScript>
 
 namespace AmarokScript
 {
@@ -93,3 +92,4 @@ namespace AmarokScript
 }
 
 #include "AmarokOSDScript.moc"
+

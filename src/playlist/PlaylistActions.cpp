@@ -40,7 +40,6 @@
 #include "PlaylistModel.h"
 #include "statusbar/StatusBar.h"
 
-#include <QAction>
 
 #include <typeinfo>
 
@@ -290,3 +289,4 @@ namespace The
 {
     AMAROK_EXPORT Playlist::Actions* playlistActions() { return Playlist::Actions::instance(); }
 }
+

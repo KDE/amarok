@@ -32,12 +32,8 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/view/PlaylistViewCommon.h"
 
-#include <QClipboard>
-#include <QGraphicsView>
 #include <QKeyEvent>
-#include <QMimeData>
 
-#include <KApplication>
 
 #include <typeinfo>
 
@@ -406,3 +402,4 @@ Playlist::GraphicsScene::editTrackInformation()
     TagDialog *dialog = new TagDialog( selected, m_playlistView );
     dialog->show();
 }
+

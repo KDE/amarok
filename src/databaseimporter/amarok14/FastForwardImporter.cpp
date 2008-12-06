@@ -17,8 +17,6 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 
-#include <QSqlError>
-#include <QSqlQuery>
 
 FastForwardImporter::FastForwardImporter( QObject *parent )
     : DatabaseImporter( parent )
@@ -91,3 +89,4 @@ FastForwardImporter::finishUp()
     
     delete m_worker;
 }
+
