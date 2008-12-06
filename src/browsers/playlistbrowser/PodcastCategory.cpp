@@ -406,6 +406,9 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
     QList<PopupDropperAction *> actions =
             actionsForIndices( selectionModel()->selectedIndexes() );
 
+    if( actions.isEmpty() )
+        return;
+    
     foreach( PopupDropperAction * action, actions )
     {
         if( action )
@@ -419,6 +422,9 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
 QList< PopupDropperAction * >
 PodcastView::actionsForIndices( QModelIndexList indices )
 {
+    if( indices.isEmpty() )
+        return QList< PopupDropperAction * >();
+    
     bool episodeSelected = false;
     bool channelSelected = false;
 
