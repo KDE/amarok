@@ -24,9 +24,7 @@ email                : markey@web.de
 #include "Debug.h"
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
-//#include "equalizersetup.h"
 #include "MainWindow.h"
-//#include "mediabrowser.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
 #include "metadata/tplugins.h"
@@ -38,7 +36,6 @@ email                : markey@web.de
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
-#include "refreshimages.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "statusbar/StatusBar.h"
@@ -216,7 +213,8 @@ App::~App()
                 AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
             }
         }
-        else AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
+        else 
+            AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
     }
 
     The::engineController()->endSession(); //records final statistics
@@ -578,10 +576,6 @@ App::continueInit()
         //do this after applySettings() so OSD displays correctly
         The::engineController()->restoreSession();
     }
-
-    PERF_LOG( "before cover refresh" )
-    // Refetch covers every 80 days to comply with Amazon license
-    new RefreshImages();
 
     if( AmarokConfig::monitorChanges() )
         CollectionManager::instance()->checkCollectionChanges();

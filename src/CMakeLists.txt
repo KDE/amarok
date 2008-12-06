@@ -464,7 +464,6 @@ set(amaroklib_LIB_SRCS
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
-    refreshimages.cpp
     services/lastfm/SimilarArtistsAction.cpp
     Systray.cpp
     widgets/hintlineedit.cpp
