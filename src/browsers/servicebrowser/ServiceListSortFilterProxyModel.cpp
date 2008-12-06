@@ -32,6 +32,8 @@ ServiceListSortFilterProxyModel::ServiceListSortFilterProxyModel(  QObject * par
     setSortRole( CustomServiceRoles::SortRole );
 
     setDynamicSortFilter( true );
+
+    setFilterCaseSensitivity( Qt::CaseInsensitive );
 }
 
 ServiceListSortFilterProxyModel::~ServiceListSortFilterProxyModel()
