@@ -34,6 +34,7 @@
 
 #include <QFile>
 #include <QDir>
+#include <QTimer>
 
 using namespace Meta;
 
@@ -41,7 +42,10 @@ static const int PODCAST_DB_VERSION = 3;
 static const QString key("AMAROK_PODCAST");
 
 SqlPodcastProvider::SqlPodcastProvider()
+    : m_updateTimer( new QTimer(this) )
 {
+    connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
+    
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
@@ -59,6 +63,18 @@ SqlPodcastProvider::SqlPodcastProvider()
             loadPodcasts();
         else
             updateDatabase( version /*from*/, PODCAST_DB_VERSION /*to*/ );
+
+        bool startAutoRefreshTimer = false;
+        foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+        {
+            startAutoRefreshTimer = channel->autoScan();
+        }
+        if( startAutoRefreshTimer )
+        {
+            float interval = 1.0;
+            m_updateTimer->start( interval * 1000 * 60 * 30 );
+        }
+            
     }
 }
 
@@ -295,6 +311,17 @@ SqlPodcastProvider::updateAll()
     foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
     {
         update( channel );
+    }
+}
+
+void
+SqlPodcastProvider::autoUpdate()
+{
+    DEBUG_BLOCK
+    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
+    {
+        if( channel->autoScan() )
+            update( channel );
     }
 }
 

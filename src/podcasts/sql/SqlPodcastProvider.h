@@ -28,6 +28,7 @@
 class KUrl;
 class PodcastReader;
 class SqlStorage;
+class QTimer;
 
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
@@ -78,6 +79,7 @@ class SqlPodcastProvider : public PodcastProvider
     private slots:
         void downloadResult( KJob * );
         void redirected( KIO::Job *, const KUrl& );
+        void autoUpdate();
 
     signals:
             void updated();
@@ -92,6 +94,7 @@ class SqlPodcastProvider : public PodcastProvider
 
         QHash<KJob *, Meta::SqlPodcastEpisode *> m_jobMap;
         QHash<KJob *, QString> m_fileNameMap;
+        QTimer *m_updateTimer;
 
 };
 
