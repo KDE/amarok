@@ -157,27 +157,34 @@ LastFmService::~LastFmService()
 void
 LastFmService::onAuthenticated( WsReply* reply )
 {
-    switch (reply->error())
+    try
     {
-        case Ws::NoError:
+        switch (reply->error())
         {
-            m_sessionKey = reply->lfm()["session"]["key"].nonEmptyText();
-            Ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
-            if( m_scrobble )
-                m_scrobbler = new ScrobblerAdapter( this, "ark" );
-            break;
-        } case Ws::AuthenticationFailed:
-            //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly." ), KDE::StatusBar::Error );
-            break;
-            
-        default:
-            //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later." ), KDE::StatusBar::Error );
-            break;
-            
-        case Ws::UrProxyIsFuckedLol:
-        case Ws::UrLocalNetworkIsFuckedLol:
-            //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings." ), KDE::StatusBar::Error );
-            break;
+            case Ws::NoError:
+            {
+                m_sessionKey = reply->lfm()["session"]["key"].nonEmptyText();
+                Ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+                if( m_scrobble )
+                    m_scrobbler = new ScrobblerAdapter( this, "ark" );
+                break;
+            } case Ws::AuthenticationFailed:
+                //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly." ), KDE::StatusBar::Error );
+                break;
+                
+            default:
+                //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later." ), KDE::StatusBar::Error );
+                break;
+                
+            case Ws::UrProxyIsFuckedLol:
+            case Ws::UrLocalNetworkIsFuckedLol:
+                //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings." ), KDE::StatusBar::Error );
+                break;
+        }
+    }
+    catch (CoreDomElement::Exception& e)
+    {
+        qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
     }
 }
 
