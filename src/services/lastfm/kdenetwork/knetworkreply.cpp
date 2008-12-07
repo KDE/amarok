@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE project.
  *
+ * Copyright (C) 2008 Alex Merry <alex.merry @ kdemail.net>
  * Copyright (C) 2008 Urs Wolfer <uwolfer @ kde.org>
  *
  * This library is free software; you can redistribute it and/or
