@@ -67,6 +67,7 @@
 #include <QFileInfo>
 #include <QTimer>
 #include <QScriptEngine>
+#include <QTextDocument>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -234,13 +235,13 @@ void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
     DEBUG_BLOCK
-    emit fetchLyrics( artist, title, QString() );
+    emit fetchLyrics( Qt::escape( artist ), Qt::escape( title ), QString() );
 }
 
 void
 ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url )
 {
-    emit fetchLyrics( artist, title, url );
+    emit fetchLyrics( Qt::escape( artist ), Qt::escape( title ), url );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
