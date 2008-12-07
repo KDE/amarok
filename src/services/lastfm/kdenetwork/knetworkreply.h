@@ -31,6 +31,7 @@ namespace KIO
 {
     class Job;
 }
+class KJob;
 
 class KDE_EXPORT KNetworkReply : public QNetworkReply
 {
@@ -44,6 +45,7 @@ public:
 public Q_SLOTS:
     void appendData(KIO::Job *kioJob, const QByteArray &data);
     void setMimeType(KIO::Job *kioJob, const QString &mimeType);
+    void jobDone(KJob *kJob);
 
 protected:
     virtual qint64 readData(char *data, qint64 maxSize);
