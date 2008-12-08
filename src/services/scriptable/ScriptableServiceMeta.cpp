@@ -152,6 +152,18 @@ void Meta::ScriptableServiceTrack::setYearNumber( int newYear )
     d->year = Meta::YearPtr( new ScriptableServiceInternalYear( QPointer<ScriptableServiceTrack::Private>( d ) ) );
 }
 
+void Meta::ScriptableServiceTrack::setCustomAlbumCoverUrl( const QString & coverurl )
+{
+    DEBUG_BLOCK
+    if ( d->album ) {
+        debug() << "one";
+        ServiceAlbumWithCoverPtr albumWithCover = ServiceAlbumWithCoverPtr::dynamicCast( d->album );
+        if ( albumWithCover ) {
+            debug() << "two";
+            albumWithCover->setCoverUrl( coverurl );
+        }
+    }
+}
 
 
 QString Meta::ScriptableServiceTrack::sourceName()
@@ -229,6 +241,7 @@ QString Meta::ScriptableServiceGenre::description()
 {
     return m_description;
 }
+
 
 
 

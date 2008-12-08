@@ -133,6 +133,7 @@ function episodeFetchResult( result )
     try
     {
 
+        var cover = Amarok.Info.scriptPath() + "/LibrivoxIcon.png";
         htmlPage = result;
 
         //remove all <em> and </em> as they screw up simple parsing if present ( basicaly be cause on some pages they are there and on some they are not
@@ -185,6 +186,7 @@ function episodeFetchResult( result )
             item.infoHtml = html;
             item.artist = author;
             item.album = album;
+            item.coverUrl = cover; // when setting a custom album we also need to set the cover if it has one
 
             script.insertItem( item );
         }

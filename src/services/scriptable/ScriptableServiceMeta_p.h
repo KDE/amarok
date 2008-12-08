@@ -127,11 +127,11 @@ class ScriptableServiceInternalArtist : public Meta::Artist
         QPointer<Meta::ScriptableServiceTrack::Private> const d;
 };
 
-class ScriptableServiceInternalAlbum : public Meta::Album
+class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover
 {
     public:
         ScriptableServiceInternalAlbum( Meta::ScriptableServiceTrack::Private *dptr )
-        : Meta::Album()
+        : Meta::ServiceAlbumWithCover( QString() )
         , d( dptr )
         {}
 
@@ -174,12 +174,14 @@ class ScriptableServiceInternalAlbum : public Meta::Album
             return name();
         }
 
-        QPixmap image( int size )
-        {
-            return Meta::Album::image( size );
-        }
+        virtual QString downloadPrefix() const { return "script"; }
+        virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
+        virtual QString coverUrl() const { return m_coverUrl; }
 
         QPointer<Meta::ScriptableServiceTrack::Private> const d;
+
+    private:
+        QString m_coverUrl;
 };
 
 class ScriptableServiceInternalGenre : public Meta::Genre

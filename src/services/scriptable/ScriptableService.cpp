@@ -117,6 +117,9 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                 track->setComposerName( composerOverride );
             if ( yearOverride != 0 )
                 track->setYearNumber( yearOverride );
+            if ( !coverUrl.isEmpty() )
+                track->setCustomAlbumCoverUrl( coverUrl );
+            
 
 
             return addTrack( track );

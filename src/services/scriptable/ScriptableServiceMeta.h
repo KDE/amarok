@@ -85,6 +85,8 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         void setComposerName( const QString &newComposer );
         void setYearNumber( int newYear );
 
+        void setCustomAlbumCoverUrl( const QString &coverurl );
+
         class Private;
 
     private:

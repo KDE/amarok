@@ -34,7 +34,9 @@ namespace Meta
 
 //forward declaration
 class ServiceAlbumCoverDownloader;
+class ServiceAlbumWithCover;
 
+typedef KSharedPtr<ServiceAlbumWithCover> ServiceAlbumWithCoverPtr;
 
 /**
 A specialized ServiceAlbum that supports fetching its cover from a known url.
@@ -117,6 +119,7 @@ protected:
     QString m_coverDownloadPath;
     mutable ServiceAlbumCoverDownloader * m_coverDownloader;
 };
+
 
 
 /**
