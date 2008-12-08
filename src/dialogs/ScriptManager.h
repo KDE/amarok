@@ -78,6 +78,8 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         
         void ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter );
 
+        void ServiceScriptCustomize( QString name );
+
         struct ScriptItem {
             KPluginInfo                                     info;
             QScriptEngine*                                  engine;

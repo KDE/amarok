@@ -108,12 +108,17 @@ void ScriptableServiceManager::removeRunningScript(const QString & name)
 
 void ScriptableServiceManager::setIcon( const QString & serviceName, const QPixmap & icon )
 {
+    DEBUG_BLOCK
+            debug() << "service: " << serviceName;
     if ( !m_serviceMap.contains( serviceName ) ) {
         //invalid service name
+        debug() << "does not exist.... ";
         return;
     }
 
+  
     m_serviceMap[serviceName]->setIcon( KIcon( QIcon( icon ) ) );
+    emit( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
 void ScriptableServiceManager::setEmblem( const QString & serviceName, const QPixmap & emblem )
@@ -122,8 +127,9 @@ void ScriptableServiceManager::setEmblem( const QString & serviceName, const QPi
         //invalid service name
         return;
     }
-
+    
     m_serviceMap[serviceName]->setCustomEmblem( emblem );
+    emit( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
 

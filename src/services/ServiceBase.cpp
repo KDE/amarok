@@ -184,7 +184,7 @@ ServiceBase::~ServiceBase()
 }
 
 QString
-ServiceBase::name( ) const
+ServiceBase::name() const
 {
     return m_name;
 }
@@ -214,7 +214,7 @@ ServiceBase::setLongDescription( const QString &longDescription )
 }
 
 QString
-ServiceBase::longDescription( ) const
+ServiceBase::longDescription() const
 {
     return m_longDescription;
 }
@@ -222,11 +222,12 @@ ServiceBase::longDescription( ) const
 void
 ServiceBase::setIcon( const QIcon &icon )
 {
+    DEBUG_BLOCK
     m_icon = icon;
 }
 
 QIcon
-ServiceBase::icon( ) const
+ServiceBase::icon() const
 {
     return m_icon;
 }

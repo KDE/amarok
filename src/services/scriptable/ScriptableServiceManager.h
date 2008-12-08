@@ -49,6 +49,8 @@ class ScriptableServiceManager : public QObject
          */
         void addService( ServiceBase * service );
 
+        void serviceUpdated( ServiceBase * service );
+
     public slots:
 
         /**

@@ -93,12 +93,14 @@ class ScriptableServiceScript : public QObject, public QScriptable
         ~ScriptableServiceScript();
         void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
 
+        void slotCustomize( const QString &name );
+
     public slots:
         int insertItem( StreamItem* item );
         int donePopulating() const;
 
-        void setServiceIcon( const QPixmap &icon );
-        void setServiceEmblem( const QPixmap &icon );
+        void setIcon( const QPixmap &icon );
+        void setEmblem( const QPixmap &icon );
 
     private:
         QScriptEngine* m_scriptEngine;
@@ -109,6 +111,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
 
     signals:
         void populate( int, QString, QString );
+        void customize();
 };
 
 Q_DECLARE_METATYPE( StreamItem* )

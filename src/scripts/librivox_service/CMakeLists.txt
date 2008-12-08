@@ -6,5 +6,7 @@ install( FILES
     script.spec
     LibrivoxService.html
     LibrivoxLogo.png
+    LibrivoxIcon.png
+    LibrivoxEmblem.png
     DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/librivox_service
 )

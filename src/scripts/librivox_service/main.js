@@ -24,6 +24,7 @@
 Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.xml" );
 Importer.loadQtBinding( "qt.network" );
+Importer.loadQtBinding( "qt.gui" ); //for QPixmap
 
 QByteArray.prototype.toString = function() 
 {
@@ -45,11 +46,23 @@ function Librivox()
 
     html = html.replace( "_IMAGE_DIR_", currentDir );
 
-
     Amarok.debug ("creating service...");
     //Amarok.debug ("html: " + html );
     ScriptableServiceScript.call( this, "Librivox.org", 3, "Search for books from Librivox", html, true );
+
     Amarok.debug ("done creating service!");
+}
+
+function onCustomize()
+{
+    Amarok.debug ("customizing Librivox service");
+    var currentDir = Amarok.Info.scriptPath() + "/";
+    Amarok.debug ( "loading icon: " + currentDir + "LibrivoxIcon.png" );
+    var iconPixmap = new QPixmap( currentDir + "LibrivoxIcon.png" );
+    script.setIcon( iconPixmap );
+
+    var emblemPixmap = new QPixmap( currentDir + "LibrivoxEmblem.png" );
+    script.setEmblem( emblemPixmap );
 }
 
 function bookFetchResult( reply )
@@ -199,7 +212,7 @@ function onPopulate( level, callback, filter )
     }
 
     if ( level == 2 ) {
-        
+
         if ( offset > 0 )
             name = name + " ( " + offset + " - " + (offset + 100) + " )";
 
@@ -261,3 +274,4 @@ html = "";
 
 script = new Librivox();
 script.populate.connect( onPopulate );
+script.customize.connect( onCustomize );

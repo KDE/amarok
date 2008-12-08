@@ -451,9 +451,16 @@ ScriptManager::slotRunScript( QString name, bool silent )
             else
                 return false;
         }
+
+        if( m_scripts[name].info.category() == "Scriptable Service" )
+            ServiceScriptCustomize( name );
     }
     else
         slotStopScript( name );
+
+
+
+
     return true;
 }
 
@@ -482,6 +489,11 @@ void
 ScriptManager::ServiceScriptPopulate( QString name, int level, int parent_id, QString path, QString filter )
 {
     m_scripts[name].servicePtr->slotPopulate( name, level, parent_id, path, filter );
+}
+
+void ScriptManager::ServiceScriptCustomize( QString name )
+{
+    m_scripts[name].servicePtr->slotCustomize( name );
 }
 
 void
@@ -677,6 +689,8 @@ ScriptManager::startScriptEngine( QString name )
                                 scriptEngine->newQObject( trackProto ) );
     m_scripts[name].wrapperList.append( trackProto );
 }
+
+
 
 #include "ScriptManager.moc"
 
