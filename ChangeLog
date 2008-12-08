@@ -6,6 +6,7 @@ Amarok ChangeLog
 VERSION 2.0.1
   FEATURES:
     * Add simple filtering to the service browser.
+    * PodcastChannels are automaticaly refreshed once per hour if autoscan is enabled.
 
   CHANGES:
     * Playlist items now have tooltips. (BR 170844)
