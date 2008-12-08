@@ -156,6 +156,8 @@ ServiceBrowser::showService( const QString &name )
         m_usingContextView = service->updateContextView();
         m_currentService = service;
     }
+
+    m_searchWidget->hide();
 }
 
 void
@@ -165,8 +167,8 @@ ServiceBrowser::home()
     {
         m_currentService->setParent( 0 );
         m_serviceListView->setParent( this );
-        m_currentService = 0;
-        // remove any context stuff we might have added
+        m_currentService = 0; // remove any context stuff we might have added
+        m_searchWidget->show();
 
         // NOTE why does thic clear the CV?
         if ( m_usingContextView )
