@@ -7,28 +7,6 @@
 
 echo ">>> Hi there!"
 
-if [ -e .patched ]
-then
-    echo ">>> Looks like sources are already patched. Remove .patched if that's untrue"
-else
-    echo -n "Where're mysql patches located? [patches] "
-    read -e ENTERED_PATCHDIR
-    
-    PATCHDIR=${ENTERED_PATCHDIR:-patches}
-    patchcount=0
-    failcount=0
-    for k in  ${PATCHDIR}/*.patch
-    do
-        echo ">>> Applying patch $k #" $((patchcount++))
-        patch -p1 < $k || echo "!!! Oh noes! patch failed! Failure count:" $((failcount++))
-    done
-    
-    [ $failcount -gt 0 ] && echo "!!! Some patches could not be applied"
-    [ $patchcount -le 0 ] && { echo "!!! No patches found, did you misspell patch directory?"; exit 1; }
-
-    echo $PATCHDIR > .patched
-fi
-
 if [ -e .configured ]
 then
     echo ">>> Looks like sources are already configured. Remove .configured if that's untrue"
@@ -62,18 +40,12 @@ make ${MAKEOPTS} || {
     exit 3
 }
 
-echo ">>> Reverting mysql.h patch"
-patch -R -p1 < $( cat .patched )/printerrorbeforeexit.patch 
-
 echo ">>> Running make install"
 
 make install || {
     echo "!!! make install failed"
     exit 4
 }
-
-echo ">>> Reapplying mysql.h patch for future builds"
-patch -p1 < $( cat .patched )/printerrorbeforeexit.patch 
 
 echo ">>> Done."
 
