@@ -8,5 +8,6 @@ install( FILES
     LibrivoxLogo.png
     LibrivoxIcon.png
     LibrivoxEmblem.png
+    book.png
     DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/librivox_service
 )

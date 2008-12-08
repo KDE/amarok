@@ -71,7 +71,7 @@ function bookFetchResult( reply )
     try
     {
 
-        var cover = Amarok.Info.scriptPath() + "/LibrivoxIcon.png";
+        var cover = Amarok.Info.scriptPath() + "/book.png";
     
         doc.setContent( reply );
 
@@ -110,7 +110,7 @@ function bookFetchResult( reply )
             item.callbackData = link;
             item.itemName = title;
             item.playableUrl = "";
-            item.infoHtml = html;
+            item.infoHtml = "";
 
             item.coverUrl = cover;
 
@@ -133,7 +133,7 @@ function episodeFetchResult( result )
     try
     {
 
-        var cover = Amarok.Info.scriptPath() + "/LibrivoxIcon.png";
+        var cover = Amarok.Info.scriptPath() + "/book.png";
         htmlPage = result;
 
         //remove all <em> and </em> as they screw up simple parsing if present ( basicaly be cause on some pages they are there and on some they are not
@@ -183,7 +183,7 @@ function episodeFetchResult( result )
             item.callbackData = "";
             item.itemName = title;
             item.playableUrl = url;
-            item.infoHtml = html;
+            item.infoHtml = ""; //html;
             item.artist = author;
             item.album = album;
             item.coverUrl = cover; // when setting a custom album we also need to set the cover if it has one
@@ -225,7 +225,7 @@ function onPopulate( level, callback, filter )
         item.callbackData = "dummy";
         item.itemName = name;
         item.playableUrl = "";
-        item.infoHtml = html;
+        item.infoHtml = "";
         script.insertItem( item );
 
         script.donePopulating();
@@ -267,6 +267,26 @@ function onPopulate( level, callback, filter )
     }
 }
 
+function onFetchInfo( level, callback ) {
+
+    if ( level == 1 ) {
+        qurl = new QUrl( callback );
+        b = new Downloader( qurl, parseInfo );
+    }
+
+}
+
+function parseInfo( result ) {
+
+    Amarok.debug( result );
+
+    rx = new RegExp( "<blockquote>(.*)<\\/blockquote>" );
+    list = result.match( rx );
+    
+    script.setCurrentInfo( list[0] );
+
+}
+
 
 http = new QHttp;
 data = new QBuffer;
@@ -279,3 +299,4 @@ html = "";
 script = new Librivox();
 script.populate.connect( onPopulate );
 script.customize.connect( onCustomize );
+script.fetchInfo.connect( onFetchInfo );

@@ -75,6 +75,8 @@ public:
     void setCustomEmblem( const QPixmap &emblem );
     QPixmap customEmblem();
 
+    void setCurrentInfo( const QString & info );
+
 private slots:
 
 

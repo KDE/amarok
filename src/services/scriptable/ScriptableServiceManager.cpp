@@ -80,6 +80,17 @@ int ScriptableServiceManager::insertItem( const QString &serviceName, int level,
     //return -1; // FIXME: what should this return?
 }
 
+void ScriptableServiceManager::setCurrentInfo( const QString &serviceName, const QString & info )
+{
+    DEBUG_BLOCK
+    if ( !m_serviceMap.contains( serviceName ) ) {
+    //invalid service name
+        return;
+    }
+
+    m_serviceMap[serviceName]->setCurrentInfo( info );
+}
+
 
 void ScriptableServiceManager::donePopulating(const QString & serviceName, int parentId)
 {
@@ -143,6 +154,8 @@ namespace The {
         return ScriptableServiceManager::s_instance;
     }
 }
+
+
 
 
 

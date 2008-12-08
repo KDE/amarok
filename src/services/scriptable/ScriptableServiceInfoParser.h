@@ -32,7 +32,7 @@ class ScriptableServiceInfoParser : public InfoParserBase
 {
 Q_OBJECT
 public:
-    ScriptableServiceInfoParser();
+    ScriptableServiceInfoParser( const QString &serviceName );
 
     ~ScriptableServiceInfoParser();
 
@@ -41,6 +41,9 @@ public:
     virtual void getInfo( Meta::ArtistPtr artist );
     virtual void getInfo( Meta::AlbumPtr album ) ;
     virtual void getInfo( Meta::TrackPtr track );
+
+private:
+    QString m_serviceName;
 
 };
 

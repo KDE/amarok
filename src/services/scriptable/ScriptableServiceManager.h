@@ -89,6 +89,8 @@ class ScriptableServiceManager : public QObject
 
         void setEmblem( const QString &serviceName, const QPixmap &emblem );
 
+        void setCurrentInfo( const QString &serviceName, const QString &info );
+
 
     private:
 

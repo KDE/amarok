@@ -226,6 +226,13 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 */
 }
 
+void ScriptableServiceScript::slotRequestInfo( QString name, int level, QString callbackData )
+{
+    DEBUG_BLOCK
+    m_serviceName = name;
+    emit( fetchInfo( level, callbackData ) );
+}
+
 void ScriptableServiceScript::slotCustomize( const QString &name )
 {
     DEBUG_BLOCK
@@ -242,6 +249,11 @@ void ScriptableServiceScript::setIcon( const QPixmap &icon )
 void ScriptableServiceScript::setEmblem( const QPixmap &emblem )
 {
     The::scriptableServiceManager()->setEmblem( m_serviceName, emblem );
+}
+
+int ScriptableServiceScript::setCurrentInfo( const QString &infoHtml )
+{
+    The::scriptableServiceManager()->setCurrentInfo( m_serviceName, infoHtml );
 }
 
 

@@ -20,11 +20,13 @@
 //
 #include "ScriptableServiceInfoParser.h"
 #include "../ServiceMetaBase.h"
+#include "dialogs/ScriptManager.h"
 
 using namespace Meta;
 
-ScriptableServiceInfoParser::ScriptableServiceInfoParser()
+ScriptableServiceInfoParser::ScriptableServiceInfoParser( const QString &serviceName )
  : InfoParserBase()
+ , m_serviceName( serviceName )
 {
 }
 
@@ -33,35 +35,57 @@ ScriptableServiceInfoParser::~ScriptableServiceInfoParser()
 {
 }
 
-void ScriptableServiceInfoParser::getInfo(ArtistPtr artist)
+void ScriptableServiceInfoParser::getInfo( ArtistPtr artist )
 {
-    ServiceArtist * serviceArtist = dynamic_cast< ServiceArtist * >( artist.data() );
+    ScriptableServiceArtist * serviceArtist = dynamic_cast< ScriptableServiceArtist * >( artist.data() );
     if (serviceArtist == 0) return;
+
     emit( info( serviceArtist->description() ) );
+
+    if ( serviceArtist->description().isEmpty() )
+        ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceArtist->level(), serviceArtist->callbackString() );
+
+    //FIXME: when out of string freeze, add a "fething info" comment instead of just useing blank info
+
 }
 
 void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
 {
     DEBUG_BLOCK
-    ServiceAlbum * serviceAlbum = dynamic_cast< ServiceAlbum * >( album.data() );
+    ScriptableServiceAlbum * serviceAlbum = dynamic_cast< ScriptableServiceAlbum * >( album.data() );
     if (serviceAlbum == 0) return;
+
     emit( info( serviceAlbum->description() ) );
+
+    if ( serviceAlbum->description().isEmpty() )
+        ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceAlbum->level(), serviceAlbum->callbackString() );
+
 }
 
 void ScriptableServiceInfoParser::getInfo(TrackPtr track)
 {
     DEBUG_BLOCK
-    ServiceTrack * serviceTrack = dynamic_cast< ServiceTrack * >( track.data() );
+    ScriptableServiceTrack * serviceTrack = dynamic_cast< ScriptableServiceTrack * >( track.data() );
     if (serviceTrack == 0) return;
+
     emit( info( serviceTrack->description() ) );
+
+    if ( serviceTrack->description().isEmpty() )
+        ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceTrack->level(), serviceTrack->callbackString() );
+
 }
 
 
-void ScriptableServiceInfoParser::getInfo(Meta::GenrePtr genre)
+void ScriptableServiceInfoParser::getInfo( Meta::GenrePtr genre )
 {
     ScriptableServiceGenre * serviceGenre = dynamic_cast< ScriptableServiceGenre * >( genre.data() );
     if (serviceGenre == 0) return;
+
     emit( info( serviceGenre->description() ) );
+
+    if ( serviceGenre->description().isEmpty() )
+        ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceGenre->level(), serviceGenre->callbackString() );
+
 }
 
 #include "ScriptableServiceInfoParser.moc"

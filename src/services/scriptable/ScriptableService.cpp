@@ -54,7 +54,7 @@ void ScriptableService::init( int levels, const QString & rootHtml, bool showSea
     DEBUG_BLOCK
     m_levels = levels;
     m_rootHtml = rootHtml;
-    setInfoParser( new ScriptableServiceInfoParser() );
+    setInfoParser( new ScriptableServiceInfoParser( m_name ) );
     m_collection = new ScriptableServiceCollection( m_name );
     m_collection->setLevels( levels );
 
@@ -120,8 +120,6 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             if ( !coverUrl.isEmpty() )
                 track->setCustomAlbumCoverUrl( coverUrl );
             
-
-
             return addTrack( track );
             break;
             
@@ -343,6 +341,11 @@ void ScriptableService::setCustomEmblem( const QPixmap &emblem )
 QPixmap ScriptableService::customEmblem()
 {
     return m_customEmblem;
+}
+
+void ScriptableService::setCurrentInfo( const QString & info )
+{
+    infoChanged( info );
 }
 
 

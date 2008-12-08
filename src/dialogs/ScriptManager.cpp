@@ -496,6 +496,11 @@ void ScriptManager::ServiceScriptCustomize( QString name )
     m_scripts[name].servicePtr->slotCustomize( name );
 }
 
+void ScriptManager::ServiceScriptRequestInfo( QString name, int level, QString callbackString )
+{
+    m_scripts[name].servicePtr->slotRequestInfo( name, level, callbackString );
+}
+
 void
 ScriptManager::slotConfigChanged( bool changed )
 {
@@ -689,6 +694,8 @@ ScriptManager::startScriptEngine( QString name )
                                 scriptEngine->newQObject( trackProto ) );
     m_scripts[name].wrapperList.append( trackProto );
 }
+
+
 
 
 

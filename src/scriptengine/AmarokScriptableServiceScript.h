@@ -98,11 +98,14 @@ class ScriptableServiceScript : public QObject, public QScriptable
         ScriptableServiceScript( QScriptEngine* engine );
         ~ScriptableServiceScript();
         void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
+        void slotRequestInfo( QString name, int level, QString callbackData );
 
         void slotCustomize( const QString &name );
 
     public slots:
         int insertItem( StreamItem* item );
+        int setCurrentInfo( const QString &infoHtml );
+        
         int donePopulating() const;
 
         void setIcon( const QPixmap &icon );
@@ -117,6 +120,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
 
     signals:
         void populate( int, QString, QString );
+        void fetchInfo( int, QString );
         void customize();
 };
 
