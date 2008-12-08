@@ -5,6 +5,15 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Scripted Service: Service scripts can now dynamically fetch context info
+      when items are selected (info can still be applied statically to each 
+      item as well).
+    * Scripted Service: Album items from a service script can now have
+      custom covers.
+    * Scripted Service: Items from a service script can now have a custom 
+      emblem.
+    * Scripted Service: Service scripts can now set custom icons for the
+      service browser.
     * Add simple filtering to the service browser.
     * Podcast channels are automatically refreshed once per hour if autoscan is
       enabled.
