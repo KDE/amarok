@@ -47,7 +47,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabelLeft->setToolTip( i18n( "The amount of time elapsed in current song" ) );
 
     m_timeLabelRight = new TimeLabel( this );
-    m_timeLabelLeft->setToolTip( i18n( "The amount of time remaining in current song" ) );
+    m_timeLabelRight->setToolTip( i18n( "The amount of time remaining in current song" ) );
 
     m_timeLabelLeft->setShowTime( false);
     m_timeLabelLeft->setAlignment(Qt::AlignRight);
