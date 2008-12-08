@@ -20,6 +20,7 @@
 #define AMAROK_SCRIPTABLE_SERVICE_SCRIPT_H
 
 #include <QObject>
+#include <QPixmap>
 #include <QtScript>
 
 class StreamItem : public QObject
@@ -31,12 +32,14 @@ class StreamItem : public QObject
 	Q_PROPERTY( QString playableUrl WRITE setPlayableUrl READ playableUrl )
     Q_PROPERTY( QString callbackData WRITE setCallbackData READ callbackData )
     Q_PROPERTY( int level WRITE setLevel READ level )
+            
 
     Q_PROPERTY( QString album WRITE setAlbum READ album )
     Q_PROPERTY( QString artist WRITE setArtist READ artist )
     Q_PROPERTY( QString genre WRITE setGenre READ genre )
     Q_PROPERTY( QString composer WRITE setComposer READ composer )
     Q_PROPERTY( int year WRITE setYear READ year )
+    Q_PROPERTY( QString coverUrl WRITE setCoverUrl READ coverUrl )
             
 
     public:
@@ -54,6 +57,7 @@ class StreamItem : public QObject
         QString genre() const;
         QString composer() const;
         int year() const;
+        QString coverUrl();
 
         void setItemName( QString name );
         void setInfoHtml( QString infoHtml );
@@ -66,6 +70,7 @@ class StreamItem : public QObject
         void setGenre( QString genre );
         void setComposer( QString composer );
         void setYear( int year );
+        void setCoverUrl( QString url );
   
         
     private:
@@ -81,6 +86,7 @@ class StreamItem : public QObject
         QString m_genre;
         QString m_composer;
         int m_year;
+        QString m_coverUrl;
 
 };
 

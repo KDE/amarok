@@ -70,7 +70,7 @@ ServiceCollection * ScriptableService::collection()
 
 int ScriptableService::insertItem( int level, int parentId, const QString & name, const QString & infoHtml, const QString & callbackData, const QString & playableUrl,
                                    const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
-                                   const QString & composerOverride, int yearOverride )
+                                   const QString & composerOverride, int yearOverride, const QString &coverUrl  )
 {
     DEBUG_BLOCK
 
@@ -83,6 +83,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
     debug() << "albumOverride: " << albumOverride;
     debug() << "artistOverride: " << artistOverride;
+    debug() << "coverUrl: " << coverUrl;
 
     if ( ( level +1 > m_levels ) || level < 0 )
         return -1;
@@ -131,6 +132,8 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             album->setArtistId( parentId );
             album->setDescription( infoHtml );
             album->setServiceName( m_name );
+            debug() << "setting coverUrl: " << coverUrl;
+            album->setCoverUrl( coverUrl );
             return addAlbum( album );
             
         } case 2:

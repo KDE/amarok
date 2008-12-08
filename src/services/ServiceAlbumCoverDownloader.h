@@ -109,7 +109,7 @@ public:
      */
     virtual QPixmap image( int size = 1 ); //overridden from Meta::Album
 
-private:
+protected:
 
     mutable QImage m_cover;
     mutable bool m_hasFetchedCover;

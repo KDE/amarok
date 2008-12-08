@@ -57,7 +57,15 @@ ServiceAlbumWithCover::image( int size )
         debug() << "Giant image detected, are you sure you want this?";
         return Meta::Album::image( size );
     }
-    QString coverName = downloadPrefix() + '_' + albumArtist()->name() + '_' + name() + "_cover.png";
+
+    QString artist;
+
+    if ( albumArtist() )
+        artist = albumArtist()->name();
+    else
+        artist = "NULL"; //no need to translate, only used as a caching key/temp filename
+    
+    QString coverName = downloadPrefix() + '_' + artist+ '_' + name() + "_cover.png";
 
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
 
@@ -76,14 +84,14 @@ ServiceAlbumWithCover::image( int size )
         img = QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
         return QPixmap::fromImage( img );
     }
-    else if ( m_hasFetchedCover )
+    else if ( m_hasFetchedCover && !m_cover.isNull() )
     {
         img = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
         return QPixmap::fromImage( img );
 
     }
-    else if ( !m_isFetchingCover )
+    else if ( !m_isFetchingCover && !coverUrl().isEmpty() )
     {
         m_isFetchingCover = true;
 
@@ -109,7 +117,7 @@ ServiceAlbumWithCover::setImage( const QImage & image )
 void
 ServiceAlbumWithCover::imageDownloadCanceled() const
 {
-    m_hasFetchedCover = false;
+    m_hasFetchedCover = true;
     m_isFetchingCover = false;
 }
 

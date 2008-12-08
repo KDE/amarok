@@ -86,6 +86,11 @@ int StreamItem::year() const
     return m_year;
 }
 
+QString StreamItem::coverUrl()
+{
+    return m_coverUrl;;
+}
+
 
 void StreamItem::setItemName( QString name )
 {
@@ -137,6 +142,12 @@ void StreamItem::setYear( int year )
     m_year = year;
 }
 
+void StreamItem::setCoverUrl( QString url )
+{
+    m_coverUrl = url;
+}
+
+
 ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
 : QObject( kapp )
 , m_scriptEngine( engine )
@@ -187,7 +198,8 @@ int ScriptableServiceScript::insertItem( StreamItem* item )
     DEBUG_BLOCK
             debug() << "artistOverride: item->artist()";
     return The::scriptableServiceManager()->insertItem( m_serviceName, item->level(), m_currentId, item->itemName(), item->infoHtml(), item->callbackData(), item->playableUrl(),
-                                                        item->album(), item->artist(), item->genre(), item->composer(), item->year() );
+                                                        item->album(), item->artist(), item->genre(), item->composer(), item->year(),
+                                                        item->coverUrl() );
 }
 
 int ScriptableServiceScript::donePopulating() const

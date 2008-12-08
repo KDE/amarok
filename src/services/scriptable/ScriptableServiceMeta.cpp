@@ -174,15 +174,14 @@ QPixmap Meta::ScriptableServiceTrack::emblem()
 
 /* DynamicScriptableAlbum */
 ScriptableServiceAlbum::ScriptableServiceAlbum( const QString & name )
-    : ServiceAlbum( name )
+    : ServiceAlbumWithCover( name )
     , ScriptableServiceMetaItem( 1 )
 {}
 
 ScriptableServiceAlbum::ScriptableServiceAlbum( const QStringList & resultRow )
-    : ServiceAlbum( resultRow )
+    : ServiceAlbumWithCover( resultRow )
     , ScriptableServiceMetaItem( 1 )
 {}
-
 
 
 /* ScriptableServiceArtist */
@@ -230,5 +229,7 @@ QString Meta::ScriptableServiceGenre::description()
 {
     return m_description;
 }
+
+
 
 

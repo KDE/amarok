@@ -22,6 +22,7 @@
 #define DYNAMICSCRIPTABLESERVICEMETA_H
 
 #include "../ServiceMetaBase.h"
+#include "../ServiceAlbumCoverDownloader.h"
 
 /**
     Meta types for use in the dynamic scriptable service. Nearly identical to 
@@ -90,11 +91,19 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         Private * const d;
 };
 
-class ScriptableServiceAlbum : public Meta::ServiceAlbum, public ScriptableServiceMetaItem
+class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public ScriptableServiceMetaItem
 {
     public:
         ScriptableServiceAlbum( const QString &name );
         ScriptableServiceAlbum( const QStringList &resultRow );
+
+        virtual QString downloadPrefix() const { return "script"; }
+        virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
+        virtual QString coverUrl() const { return m_coverUrl; }
+
+    private:
+        QString m_coverUrl;
+
 };
 
 class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableServiceMetaItem

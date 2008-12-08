@@ -70,6 +70,8 @@ function bookFetchResult( reply )
 
     try
     {
+
+        var cover = Amarok.Info.scriptPath() + "/LibrivoxIcon.png";
     
         doc.setContent( reply );
 
@@ -97,7 +99,6 @@ function bookFetchResult( reply )
 
         }
 
-
         for( i = 0; i < bookElements.length(); i++ )
         {
 
@@ -111,8 +112,9 @@ function bookFetchResult( reply )
             item.playableUrl = "";
             item.infoHtml = html;
 
-            script.insertItem( item );
+            item.coverUrl = cover;
 
+            script.insertItem( item );
         }
 
     }
