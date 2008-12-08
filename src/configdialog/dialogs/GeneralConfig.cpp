@@ -73,7 +73,7 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     }
 
 
-    connect( kcfg_ExternalBrowser, SIGNAL( textChanged( int ) ), parent, SLOT( updateButtons() ) );
+    connect( kcfg_ExternalBrowser, SIGNAL( editTextChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
     //connect( kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
 }
 
