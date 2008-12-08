@@ -523,7 +523,6 @@ target_link_libraries(amaroklib
     ${TAGLIB_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
-    ${QT_QTWEBKIT_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     amarok_taglib
     amarokplasma
