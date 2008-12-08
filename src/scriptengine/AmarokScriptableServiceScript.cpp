@@ -215,8 +215,15 @@ void ScriptableServiceScript::slotPopulate( QString name, int level, int parent_
 }
 
 
+void ScriptableServiceScript::setServiceIcon( const QPixmap &icon )
+{
+    The::scriptableServiceManager()->setIcon( m_serviceName, icon );
+}
 
+void ScriptableServiceScript::setServiceEmblem( const QPixmap &emblem )
+{
+    The::scriptableServiceManager()->setEmblem( m_serviceName, emblem );
+}
 
 
 #include "AmarokScriptableServiceScript.moc"
-

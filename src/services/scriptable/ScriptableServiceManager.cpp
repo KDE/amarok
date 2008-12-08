@@ -106,6 +106,26 @@ void ScriptableServiceManager::removeRunningScript(const QString & name)
     ServiceBrowser::instance()->removeService( name );
 }
 
+void ScriptableServiceManager::setIcon( const QString & serviceName, const QPixmap & icon )
+{
+    if ( !m_serviceMap.contains( serviceName ) ) {
+        //invalid service name
+        return;
+    }
+
+    m_serviceMap[serviceName]->setIcon( KIcon( QIcon( icon ) ) );
+}
+
+void ScriptableServiceManager::setEmblem( const QString & serviceName, const QPixmap & emblem )
+{
+    if ( !m_serviceMap.contains( serviceName ) ) {
+        //invalid service name
+        return;
+    }
+
+    m_serviceMap[serviceName]->setCustomEmblem( emblem );
+}
+
 
 namespace The {
     ScriptableServiceManager*
@@ -117,6 +137,8 @@ namespace The {
         return ScriptableServiceManager::s_instance;
     }
 }
+
+
 
 
 #include "ScriptableServiceManager.moc"

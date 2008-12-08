@@ -72,6 +72,9 @@ public:
 
     void donePopulating( int parentId );
 
+    void setCustomEmblem( const QPixmap &emblem );
+    QPixmap customEmblem();
+
 private slots:
 
 
@@ -103,6 +106,8 @@ private:
     ScriptableServiceAlbumIdMap m_ssAlbumIdMap;
     ScriptableServiceArtistIdMap m_ssArtistIdMap;
     ScriptableServiceGenreIdMap m_ssGenreIdMap;
+
+    QPixmap m_customEmblem;
     
 };
 

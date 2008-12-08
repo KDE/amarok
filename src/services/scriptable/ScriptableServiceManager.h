@@ -83,6 +83,11 @@ class ScriptableServiceManager : public QObject
          */
         void donePopulating( const QString &serviceName, int parentId );
 
+        void setIcon( const QString &serviceName, const QPixmap &icon );
+
+        void setEmblem( const QString &serviceName, const QPixmap &emblem );
+
+
     private:
 
         /**

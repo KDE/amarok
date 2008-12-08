@@ -99,7 +99,11 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             track->setUidUrl( playableUrl );
             track->setServiceName( m_name );
             track->setDescription( infoHtml );
-            track->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+
+            if ( !m_customEmblem.isNull() )
+                track->setServiceEmblem( m_customEmblem );
+            else
+                track->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
 
             if ( !albumOverride.isEmpty() )
                 track->setAlbumName( albumOverride );
@@ -322,6 +326,16 @@ void ScriptableService::polish()
     }
 
     infoChanged( m_rootHtml );
+}
+
+void ScriptableService::setCustomEmblem( const QPixmap &emblem )
+{
+    m_customEmblem = emblem;
+}
+
+QPixmap ScriptableService::customEmblem()
+{
+    return m_customEmblem;
 }
 
 

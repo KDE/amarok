@@ -97,6 +97,9 @@ class ScriptableServiceScript : public QObject, public QScriptable
         int insertItem( StreamItem* item );
         int donePopulating() const;
 
+        void setServiceIcon( const QPixmap &icon );
+        void setServiceEmblem( const QPixmap &icon );
+
     private:
         QScriptEngine* m_scriptEngine;
         int m_currentId;
