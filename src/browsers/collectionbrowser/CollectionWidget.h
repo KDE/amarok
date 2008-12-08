@@ -42,6 +42,7 @@ class CollectionWidget : public KVBox
         void sortByAlbum();
         void sortByGenreArtist();
         void sortByGenreArtistAlbum();
+        void sortByComposer();
 
     private:
         SearchWidget           *m_searchWidget;

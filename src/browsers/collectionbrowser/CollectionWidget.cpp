@@ -79,6 +79,10 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
     filterMenu->addAction( action );
 
+    action = new QAction( i18n( "Composer" ), menubar );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByComposer() ) );
+    filterMenu->addAction( action );
+    
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
 }
@@ -123,6 +127,13 @@ CollectionWidget::sortByGenreArtistAlbum()
 {
     AmarokConfig::setShowYears( false );
     m_treeView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
+}
+
+void
+CollectionWidget::sortByComposer()
+{
+    AmarokConfig::setShowYears( false );
+    m_treeView->setLevels( QList<int>() << CategoryId::Composer );
 }
 
 
