@@ -13,8 +13,9 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "AlbumItem.h"
 #include "AlbumsView.h"
+
+#include "AlbumItem.h"
 #include "Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"

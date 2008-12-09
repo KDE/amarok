@@ -20,8 +20,9 @@
 
 #define DEBUG_PREFIX "BiasedPlaylist"
 
-#include "amarokconfig.h"
 #include "BiasedPlaylist.h"
+
+#include "amarokconfig.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "Debug.h"

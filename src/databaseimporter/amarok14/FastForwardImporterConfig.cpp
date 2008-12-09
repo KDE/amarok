@@ -11,7 +11,6 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "FastForwardImporter.h"
 #include "FastForwardImporterConfig.h"
 
 #include "Debug.h"

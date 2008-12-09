@@ -22,7 +22,6 @@
 
 #include "Amarok.h"
 #include "statusbar/StatusBar.h"
-#include "statusbar/StatusBar.h"
 #include "statusbar/ProgressBar.h"
 #include "EngineController.h"
 #include "MagnatuneConfig.h"

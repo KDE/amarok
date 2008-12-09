@@ -12,8 +12,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "AlbumItem.h"
 #include "Albums.h"
+
+#include "AlbumItem.h"
 #include "AlbumsView.h"
 #include "AlbumsModel.h"
 #include "Amarok.h"

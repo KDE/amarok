@@ -10,8 +10,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef FIRSTRUNTUTORIAL_H
 #define FIRSTRUNTUTORIAL_H
+
+#include "amarokconfig.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>

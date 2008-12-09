@@ -11,9 +11,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokconfig.h"
-#include "Debug.h"
+
 #include "FirstRunTutorial.h"
+
+#include "Debug.h"
 
 #include <QTimer>
 

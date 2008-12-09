@@ -15,6 +15,7 @@
 #ifndef AMAROK_FASTFORWARD_IMPORTER_CONFIG_H
 #define AMAROK_FASTFORWARD_IMPORTER_CONFIG_H
 
+#include "FastForwardImporter.h"
 #include "databaseimporter/DatabaseImporter.h"
 
 #include <QCheckBox>

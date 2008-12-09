@@ -18,8 +18,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "amarokconfig.h"
 #include "CollectionSortFilterProxyModel.h"
+
+#include "amarokconfig.h"
 #include "CollectionTreeItem.h"
 #include "Debug.h"
 

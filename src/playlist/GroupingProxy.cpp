@@ -21,10 +21,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#ifndef AMAROK_GROUPINGPROXY_H
+#define AMAROK_GROUPINGPROXY_H
+
 #define DEBUG_PREFIX "Playlist::GroupingProxy"
 
-#include "Debug.h"
 #include "GroupingProxy.h"
+
+#include "Debug.h"
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
 
@@ -346,3 +350,5 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
 
     return ( albumMatch && artistMatch );
 }
+
+#endif

@@ -17,8 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "MetaConstants.h"
 #include "ScriptableServiceQueryMaker.h"
+
+#include "MetaConstants.h"
 #include "ScriptableServiceMeta.h"
 #include "ScriptManager.h"
 

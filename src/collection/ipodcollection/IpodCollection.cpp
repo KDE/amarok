@@ -18,8 +18,9 @@
 
 #define DEBUG_PREFIX "IpodCollection"
 
-#include "meta/CollectionCapability.h"
 #include "IpodCollection.h"
+
+#include "meta/CollectionCapability.h"
 #include "IpodCollectionLocation.h"
 #include "IpodMeta.h"
 #include "CollectionCapabilityIpod.h"

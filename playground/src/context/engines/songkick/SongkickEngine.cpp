@@ -12,10 +12,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "SongkickEngine.h"
+
 #include "JsonQt/JsonToVariant.h"
 #include "JsonQt/ParseException.h"
-
-#include "SongkickEngine.h"
 
 #include "Amarok.h"
 #include "Debug.h"
