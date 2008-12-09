@@ -19,6 +19,9 @@
 
 #include "playlist/PlaylistModel.h"
 
-Playlist::RepeatTrackNavigator::RepeatTrackNavigator() {
+Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
+{
+    m_trackid = Model::instance()->activeId();
+
     connect( Model::instance(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 }

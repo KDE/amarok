@@ -34,7 +34,8 @@ namespace Playlist
             RepeatTrackNavigator();
 
             quint64 requestNextTrack() { return m_trackid; }
-
+            quint64 requestLastTrack() { return m_trackid; }
+            
         private slots:
             void recvActiveTrackChanged( const quint64 id ) { m_trackid = id; }
 
