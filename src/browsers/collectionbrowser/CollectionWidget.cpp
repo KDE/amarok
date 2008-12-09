@@ -71,6 +71,10 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbum() ) );
     filterMenu->addAction( action );
 
+    action = new QAction( i18n( "Composer" ), menubar );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByComposer() ) );
+    filterMenu->addAction( action );
+    
     action = new QAction( i18n( "Genre / Artist" ), menubar );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtist() ) );
     filterMenu->addAction( action );
@@ -79,10 +83,6 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     connect( action, SIGNAL(triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
     filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Composer" ), menubar );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByComposer() ) );
-    filterMenu->addAction( action );
-    
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
 }
