@@ -55,32 +55,32 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_treeView->setModel( new CollectionTreeItemModel( cats ) );
     sw->setup( m_treeView );
 
-    QAction *action = new QAction( i18n("Artist"), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
+    QAction *action = new QAction( i18n( "Artist" ), menubar );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT(sortByArtist() ) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Artist / Album" ), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Artist / Year - Album" ), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByArtistYearAlbum() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistYearAlbum() ) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Album" ), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbum() ) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Genre / Artist" ), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtist() ) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Genre / Artist / Album" ), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
+    connect( action, SIGNAL(triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
     filterMenu->addAction( action );
 
     action = new QAction( i18n( "Composer" ), menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByComposer() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByComposer() ) );
     filterMenu->addAction( action );
     
     setFrameShape( QFrame::StyledPanel );
