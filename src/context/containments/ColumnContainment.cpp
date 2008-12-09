@@ -195,7 +195,7 @@ ColumnContainment::setupControlButtons()
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     
-    QAction *listRemove = new QAction( i18n( "Remove Widgets..." ), this );
+    QAction *listRemove = new QAction( "", this );
     listRemove->setIcon( KIcon( "list-remove" ) );
     listRemove->setVisible( true );
     if( m_grid->count() > 0 )
