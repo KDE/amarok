@@ -104,7 +104,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
 
     public slots:
         int insertItem( StreamItem* item );
-        int setCurrentInfo( const QString &infoHtml );
+        void setCurrentInfo( const QString &infoHtml );
         
         int donePopulating() const;
 

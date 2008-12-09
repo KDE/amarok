@@ -251,7 +251,7 @@ void ScriptableServiceScript::setEmblem( const QPixmap &emblem )
     The::scriptableServiceManager()->setEmblem( m_serviceName, emblem );
 }
 
-int ScriptableServiceScript::setCurrentInfo( const QString &infoHtml )
+void ScriptableServiceScript::setCurrentInfo( const QString &infoHtml )
 {
     The::scriptableServiceManager()->setCurrentInfo( m_serviceName, infoHtml );
 }
