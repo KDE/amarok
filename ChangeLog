@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Greatly improved Librivox.org service script. It now works for all books,
+      and dynamically fetches a summary of each book that is shown in the 
+      service info applet. The script now also has a propper icon in the
+      service browser and its own emblem and default "album" cover for books.
     * Scripted Service: Service scripts can now dynamically fetch context info
       when items are selected (info can still be applied statically to each 
       item as well).
