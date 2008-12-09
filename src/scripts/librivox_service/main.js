@@ -87,15 +87,23 @@ function bookFetchResult( reply )
         for ( ; i < bookElements.length(); i++ )
         {
 
-
             elt = bookElements.at( i );
             elt2 = elt.firstChildElement( "title" );
 
-            titles[i] = elt2.text();
+            var title = elt2.text();
 
-            elt2 = elt.firstChildElement( "url" );
+            var rx = new RegExp( ".*\\(in\\s\\\"(.*)\\\"\\).*" );
+            var list = title.match( rx );
+
+            if ( list != null ) {
+                Amarok.debug( "got a match: " + list[0] );
+                title = list[1];
+            }
+
+            titles[i] = title;
+
+            elt2 = elt.firstChildElement( "rssurl" );
             links[i] = elt2.text();
-
 
         }
 
@@ -134,61 +142,70 @@ function episodeFetchResult( result )
     {
 
         var cover = Amarok.Info.scriptPath() + "/book.png";
-        htmlPage = result;
+        doc.setContent( result );
 
-        //remove all <em> and </em> as they screw up simple parsing if present ( basicaly be cause on some pages they are there and on some they are not
-        //in a way that is difficult to take into account in a regexp )
-        htmlPage = htmlPage.replace( "<em>", "" );
-        htmlPage = htmlPage.replace( "</em>", "" );
+        //get book and author title as these might not match the filter that was used...
 
-        //Amarok.debug( " Got reply from librivox: " +  html );
-
-
-        //get author name ( as whatever we searched for might not be the actual author )
-
-        print( "getting author...");
-        //authorRx = new RegExp( "<p>by\\s<a\\shref=\\\"http:\\/\\/librivox\\.org\\/newcatalog\\/search\\.php\\?title=&author=.*action=Search\\\">([^\\n]*)<\\/a>" );
-        authorRx = new RegExp( "<li><a href=\\\"[^\\n]*\\\">[^\\n]*-\\s([^\\n]*)<\\/a>[^\\n]*<\\/li>\\n" );
-        author = htmlPage.match( authorRx )[1];
-        print( "Librivox -- Got author: " +  author );
+        elt = doc.firstChildElement("rss");
+        elt = elt.firstChildElement("channel");
+        
+        elt2 = elt.firstChildElement( "title" );
+        var bookTitle = elt2.text();
 
 
-        print( "getting album...");
-        albumRx = new RegExp( "<h2><a([^\\n]*)>([^\\n]*)<\\/a><\\/h2>" );
-        album = htmlPage.match( albumRx )[2];
-        print( "Librivox -- Got album: " +  album );
+        //give propper book titles for chpters in a compilation
+        Amarok.debug( "Book title: " + bookTitle );
+        var rx = new RegExp( ".*\\(in\\s\\\"(.*)\\\"\\).*" );
+        var list = bookTitle.match( rx );
 
-        //get the book description. Unfortunately this will not work currently, as tracks do not have a description, and there is no easy way to apply this to the book level.
-        //In the long term, I think we should add a "get info" callback instead of having to pass html info for each object at creation 
-        //descriptionRx = new RegExp( "<blockquote>(.*)<\\/blockquote>" );
-        //description = htmlPage.match( descriptionRx );
+        if ( list != null ) {
+            Amarok.debug( "got a match: " + list[0] );
+            bookTitle = list[1];
+        }
 
+        var author = "Librivox.com";
 
-        //Apparently we cannot do both multiple matches and multiple capture groups as well in qt-script, so use the same regexp twice, one for getting each book, and once for getting
-        //book, and once for getting the two parts of the book element that we are interested in, the title and the url.
-        rx = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n+[^\\n]*\\n*[^\\n]*\\n[^\\n]*\\n+[^\\n]*href=\\\"([^\\n]*\\.ogg)\\\">ogg\\svorbis", "g" );
-        list = htmlPage.match( rx );
+        //process chapters
+        chapterElements = doc.elementsByTagName( "item" );
 
-
-
-        rx2 = new RegExp( "<li>([^\\n]*)<br\\s\\/>\\s*\\n+[^\\n]*\\n*[^\\n]*\\n+[^\\n]*\\n+[^\\n]*href=\\\"([^\\n]*\\.ogg)\\\">ogg\\svorbis" );
-        for ( i = 0; i < list.length; i++ )
-
+        Amarok.debug( "got " + chapterElements.length() + " items..." );
+        
+        for ( var i = 0; i < chapterElements.length(); i++ )
         {
-            list2 = list[i].match( rx2 );
-            title = list2[1];
-            url = list2[2];
+            
+            elt = chapterElements.at( i );
+            
+            elt2 = elt.firstChildElement( "link" );
+            var url = elt2.text();
+
+            elt2 = elt.firstChildElement( "title" );
+            var title = elt2.text();
+
+            elt2 = elt.firstChildElement( "itunes:duration" );
+            var duration = elt2.text();
+
+            url = url.replace( "_64kb.mp3", ".ogg" );
+
+            //lets see if we have a propper title, if not, create soething that does not look like crap
+            var rx = new RegExp( "(\\d*)_" );
+            var list = title.match( rx );
+
+            if ( list != null )
+                title = "Chapter " + list[1];
+
+
             item = Amarok.StreamItem;
             item.level = 0;
             item.callbackData = "";
             item.itemName = title;
             item.playableUrl = url;
-            item.infoHtml = ""; //html;
+            item.album = bookTitle;
             item.artist = author;
-            item.album = album;
-            item.coverUrl = cover; // when setting a custom album we also need to set the cover if it has one
+            item.coverUrl = cover;
+            item.infoHtml = title;
 
             script.insertItem( item );
+
         }
 
 
@@ -280,7 +297,7 @@ function parseInfo( result ) {
 
     Amarok.debug( result );
 
-    rx = new RegExp( "<blockquote>(.*)<\\/blockquote>" );
+    rx = new RegExp( "<description>(.*)<\\/description>" );
     list = result.match( rx );
     
     script.setCurrentInfo( list[0] );
