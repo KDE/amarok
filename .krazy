@@ -1,4 +1,3 @@
-EXTRA tipsandthis
 SKIP /src/charset-detector
 SKIP /src/context/animators
 SKIP /src/context/plasma/
