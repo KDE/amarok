@@ -41,8 +41,9 @@ Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()
         m_albumGroups[album].append( model->idAt( i ) ); // conveniently creates an empty list if none exists
     }
 
-    m_currentAlbum = Meta::AlbumPtr();
-    m_currentTrack = 0;
+    Meta::TrackPtr activeTrack = model->activeTrack();
+    m_currentAlbum = activeTrack ? activeTrack->album() : Meta::AlbumPtr();
+    m_currentTrack = model->activeId();
 
     dump();
 }
@@ -144,7 +145,7 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
     {
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         int row = atl.indexOf( m_currentTrack ) - 1;
-        row = ( row > 0 ) ? row : atl.size() - 1;
+        row = ( row >= 0 ) ? row : atl.size() - 1;
         m_currentTrack = atl.at( row );
         return m_currentTrack;
     }
