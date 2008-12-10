@@ -529,6 +529,9 @@ target_link_libraries(amaroklib
     amarokpud
 )
 
+if(WIN32)
+    target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
+endif(WIN32)
 if(APPLE)
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
