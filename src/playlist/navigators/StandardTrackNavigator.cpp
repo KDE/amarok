@@ -22,6 +22,7 @@
 #include "StandardTrackNavigator.h"
 
 #include "playlist/PlaylistModel.h"
+#include <QDebug>
 
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
@@ -42,7 +43,7 @@ Playlist::StandardTrackNavigator::requestLastTrack()
     int updateRow = model->activeRow() - 1;
 
     if ( m_repeatPlaylist )
-        updateRow = ( updateRow >= model->rowCount() ) ? 0 : updateRow;
+        updateRow = ( updateRow < 0 ) ? model->rowCount() - 1 : updateRow;
 
     return model->idAt( updateRow );
 }
