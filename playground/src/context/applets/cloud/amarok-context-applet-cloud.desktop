@@ -18,6 +18,7 @@ Name[pa]=ਕਲਾਉਡ
 Name[pt]=Nuvem
 Name[pt_BR]=Nuvem
 Name[ro]=Nor
+Name[th]=กลุ่มเมฆ
 Name[x-test]=xxCloudxx
 Type=Service
 ServiceTypes=AmarokContext/Applet

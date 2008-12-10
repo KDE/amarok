@@ -16,6 +16,7 @@ Name[pt]=Nocturna do Amarok
 Name[pt_BR]=Nightly do Amarok
 Name[ro]=Amarok Nocturn
 Name[sv]=Nattlig Amarok
+Name[th]=แอมอะร็อกช่วงกลางคืน
 Name[x-test]=xxAmarok Nightlyxx
 Exec=amarok-nightly %U
 TryExec=amarok-nightly
