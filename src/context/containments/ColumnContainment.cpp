@@ -195,14 +195,11 @@ ColumnContainment::setupControlButtons()
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     
-    QAction *listRemove = new QAction( "", this );
+    QAction* listRemove = new QAction( i18n( "Remove Widgets..." ), this );
     listRemove->setIcon( KIcon( "list-remove" ) );
     listRemove->setVisible( true );
-    if( m_grid->count() > 0 )
-        listRemove->setEnabled( true );
-    else
-        listRemove->setEnabled( false );
-
+    listRemove->setEnabled( m_grid->count() > 0 );
+    
     QAction *switchRight = new QAction( i18n( "Next Group" ), this );
     switchRight->setIcon( KIcon( "arrow-right" ) );
     switchRight->setVisible( true );
@@ -393,6 +390,7 @@ ColumnContainment::loadConfig( const KConfigGroup &conf )
         else
             Plasma::Containment::addApplet( plugin );
     }
+    setupControlButtons();
 }
 
 
@@ -564,7 +562,7 @@ ColumnContainment::addAction( QAction *action )
     Plasma::IconWidget *tool = new Plasma::IconWidget( this );
 
     tool->setAction( action );
-    tool->setText( "" );
+    tool->setText( QString() );
     tool->setToolTip( action->text() );
     tool->setDrawBackground( false );
     tool->setOrientation( Qt::Horizontal );
