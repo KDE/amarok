@@ -40,6 +40,7 @@
 #include "services/ServicePluginManager.h" // used in constructor
 
 #include <QStringList>
+#include <QTextDocument>
 
 #include <KUrl>
 
@@ -187,18 +188,18 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         {
         case 0:
         {
-            return m_items.at( row )->track()->name();
+            return Qt::escape( m_items.at( row )->track()->name() );
         }
         case 1:
         {
             if ( m_items.at( row )->track()->album() )
-                return m_items.at( row )->track()->album()->name();
+                return Qt::escape( m_items.at( row )->track()->album()->name() );
             return QString();
         }
         case 2:
         {
             if ( m_items.at( row )->track()->artist() )
-                return m_items.at( row )->track()->artist()->name();
+                return Qt::escape( m_items.at( row )->track()->artist()->name() );
             return QString();
         }
         case 3:
@@ -216,7 +217,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     album = m_items.at( row )->track()->album()->name();
             }
 
-            return QString( "%1 - %2 - %3" ).arg( artist, album, track );
+            return Qt::escape( QString( "%1 - %2 - %3" ).arg( artist, album, track ) );
         }
         }
     }
