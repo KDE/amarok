@@ -93,6 +93,7 @@ private:
     bool insertInGrid( Plasma::Applet* applet );
     void loadInitialConfig();   
     void setupControlButtons();
+    void setupRemoveButton();
     void correctControlButtonPositions();
     
     Plasma::IconWidget* addAction( QAction* );

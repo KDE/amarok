@@ -99,6 +99,7 @@ ColumnContainment::ColumnContainment( QObject *parent, const QVariantList &args 
     m_actions->append( appletBrowserAction );
 
     setupControlButtons();
+    setupRemoveButton();
     
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
 
@@ -171,6 +172,19 @@ ColumnContainment::loadInitialConfig()
 }
 
 void
+ColumnContainment::setupRemoveButton()
+{
+    QAction* listRemove = new QAction( i18n( "Remove Widgets..." ), this );
+    listRemove->setIcon( KIcon( "list-remove" ) );
+    listRemove->setVisible( true );
+    listRemove->setEnabled( m_grid->count() > 0 );
+    
+    m_removeAppletsIcon = addAction( listRemove );
+
+    connect( listRemove, SIGNAL( triggered() ), this, SLOT( showRemoveAppletsMenu() ) );
+}
+
+void
 ColumnContainment::setupControlButtons()
 {
 
@@ -194,12 +208,7 @@ ColumnContainment::setupControlButtons()
     listAdd->setIcon( KIcon( "list-add" ) );
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
-    
-    QAction* listRemove = new QAction( i18n( "Remove Widgets..." ), this );
-    listRemove->setIcon( KIcon( "list-remove" ) );
-    listRemove->setVisible( true );
-    listRemove->setEnabled( m_grid->count() > 0 );
-    
+
     QAction *switchRight = new QAction( i18n( "Next Group" ), this );
     switchRight->setIcon( KIcon( "arrow-right" ) );
     switchRight->setVisible( true );
@@ -213,13 +222,11 @@ ColumnContainment::setupControlButtons()
     m_zoomInIcon = addAction( zoomInAction  );
     m_zoomOutIcon = addAction( zoomOutAction );
     m_addAppletsIcon = addAction( listAdd );
-    m_removeAppletsIcon = addAction( listRemove );
     m_switchLeftIcon = addAction( switchLeft );
     m_switchRightIcon = addAction( switchRight );
 
     connect( listAdd, SIGNAL( triggered() ), this, SLOT( showAddAppletsMenu() ) );
-    connect( listRemove, SIGNAL( triggered() ), this, SLOT( showRemoveAppletsMenu() ) );
-    
+
     connect( m_zoomInIcon, SIGNAL( clicked() ), this, SLOT( zoomInRequested() ) );
     connect( m_zoomOutIcon, SIGNAL( clicked() ), this, SLOT( zoomOutRequested() ) );
 }
@@ -390,7 +397,7 @@ ColumnContainment::loadConfig( const KConfigGroup &conf )
         else
             Plasma::Containment::addApplet( plugin );
     }
-    setupControlButtons();
+    setupRemoveButton();
 }
 
 
