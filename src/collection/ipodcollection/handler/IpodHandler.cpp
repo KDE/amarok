@@ -25,10 +25,11 @@
 #include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
+#ifdef FOUND_GDK
 extern "C" {
 #include <gdk-pixbuf/gdk-pixbuf.h>
 }
-
+#endif
 
 #include "File.h" // for KIO file handling
 #include "taglib_audiblefile.h"
@@ -199,7 +200,9 @@ IpodHandler::detectModel()
     DEBUG_BLOCK
     // set some sane default values
     m_isShuffle = false;
+
     m_supportsArtwork = true;
+
     m_supportsVideo = false;
     m_isIPhone = false;
     m_needsFirewireGuid = false;
@@ -213,7 +216,11 @@ IpodHandler::detectModel()
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_device );
         debug() << "Got ipodinfo";
         const gchar *modelString = 0;
+        #ifdef FOUND_GDK
         m_supportsArtwork = itdb_device_supports_artwork( m_device );
+        #else
+        m_supportsArtwork = false;
+        #endif
         debug() << "Supports Artwork: " << ( m_supportsArtwork ? "true" : "false" );
         QString musicdirs;
         musicdirs.setNum( itdb_musicdirs_number(m_itdb) );
@@ -329,8 +336,12 @@ IpodHandler::detectModel()
 
     if( m_isIPhone )
     {
-        m_supportsVideo = true;
+        #ifdef FOUND_GDK
         m_supportsArtwork = true;
+        #else
+        m_supportsArtwork = false;
+        #endif
+        m_supportsVideo = true;
     }
 
     if( pathExists( ":.rockbox" ) )
@@ -1057,6 +1068,8 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     return;
 }
 
+#ifdef FOUND_GDK
+
 void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 {
@@ -1172,6 +1185,8 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 
     return;
 }
+
+#endif
 
 void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
@@ -1345,9 +1360,10 @@ IpodHandler::parseTracks()
         /* cover art */
 
         //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
-
+        #ifdef FOUND_GDK
         if( m_supportsArtwork )
             getCoverArt( ipodtrack, track );
+        #endif
 
         //getCoverArt( ipodtrack, track );
         

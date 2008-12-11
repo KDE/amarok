@@ -2,7 +2,7 @@ macro_optional_find_package(Ipod)
 #macro_optional_find_package(Gtk2)
 macro_optional_find_package(Gdk)
 
-if (IPOD_FOUND AND GDK_FOUND)
+if (IPOD_FOUND)
    include_directories( ../..
    ../../plugin
    ../../meta
@@ -17,6 +17,10 @@ if (IPOD_FOUND AND GDK_FOUND)
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
    ${QT_INCLUDES} )
+
+########### set GDK var ################
+     # Generate config-gdk.h.cmake
+     configure_file(config-gdk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gdk.h )
 
 
 ########### next target ################
@@ -49,4 +53,4 @@ if (IPOD_FOUND AND GDK_FOUND)
 
 	install( FILES amarok_collection-ipodcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-endif (IPOD_FOUND AND GDK_FOUND)
+endif (IPOD_FOUND)

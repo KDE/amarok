@@ -26,6 +26,9 @@
 #ifndef IPODHANDLER_H
 #define IPODHANDLER_H
 
+/* CMake check for GDK */
+#include "config-gdk.h"
+
 extern "C" {
   #include <gpod/itdb.h>
 }
@@ -104,7 +107,9 @@ struct PodcastInfo
 	   void parseTracks();
        void addIpodTrackToCollection( Itdb_Track *ipodtrack );
        void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+       #ifdef FOUND_GDK
        void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+       #endif
        void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
        QString           realPath( const char *ipodPath );
