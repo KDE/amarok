@@ -93,7 +93,24 @@ FastForwardImporter::ConnectionType
 FastForwardImporterConfig::connectionType() const
 {
     const int index = m_connectionCombo->currentIndex();
-    return (FastForwardImporter::ConnectionType) m_connectionCombo->itemData( index ).toInt();
+    bool isOK = true;
+    int connType = FastForwardImporter::SQLite;
+    if ( index == -1 )
+        return FastForwardImporter::ConnectionType( connType );
+
+    QVariant itemData = m_connectionCombo->itemData( index );
+    if ( itemData == QVariant::Invalid )
+        return FastForwardImporter::ConnectionType( connType );
+
+    connType = itemData.toInt( &isOK );
+    if ( !isOK ||
+         ( connType < FastForwardImporter::SQLite ||
+           connType > FastForwardImporter::PostgreSQL ) )
+    {
+        connType = FastForwardImporter::SQLite;
+    }
+
+    return FastForwardImporter::ConnectionType( connType );
 }
 
 void

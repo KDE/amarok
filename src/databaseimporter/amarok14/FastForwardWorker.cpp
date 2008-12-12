@@ -51,10 +51,14 @@ FastForwardWorker::databaseConnection()
 
     const bool isSqlite = m_driver == FastForwardImporter::SQLite;
 
-    QSqlDatabase connection = QSqlDatabase::addDatabase( driverName() );
+    QString driver = driverName();
+    if (driver.isEmpty())
+        return QSqlDatabase();
+
+    QSqlDatabase connection = QSqlDatabase::addDatabase( driver );
     connection.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
 
-    if( m_driver == FastForwardImporter::MySQL || m_driver == FastForwardImporter::PostgreSQL )
+    if( !isSqlite )
     {
         connection.setHostName( m_hostname );
         connection.setUserName( m_username );
@@ -152,7 +156,8 @@ FastForwardWorker::run()
 
             emit trackAdded( track );
             ++i;
-        }
+        } else
+            debug() << c << " no track produced for URL " << url;
     }
 
     if( tracksForInsert.size() > 0 )
