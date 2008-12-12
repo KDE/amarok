@@ -110,7 +110,7 @@ function bookFetchResult( reply )
         for( i = 0; i < bookElements.length(); i++ )
         {
 
-            title = titles[i]
+            title = titles[i];
             link = links[i];
 
             item = Amarok.StreamItem;
