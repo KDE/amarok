@@ -39,6 +39,8 @@ class WebViewPrivate
 public:
     WebViewPrivate(WebView *parent)
         : q(parent)
+        , page(0)
+        , loaded(false)
     {
     }
 

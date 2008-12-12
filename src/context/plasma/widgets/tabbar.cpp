@@ -69,6 +69,9 @@ public:
     TabBarPrivate(TabBar *parent)
         : q(parent),
           tabProxy(0),
+          mainLayout(0),
+          tabWidgetLayout(0),
+          tabBarLayout(0),
           currentIndex(0),
           isTabWidget(true),
           oldPage(0),

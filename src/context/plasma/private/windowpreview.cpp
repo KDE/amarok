@@ -54,6 +54,7 @@ bool WindowPreview::previewsAvailable() // static
 
 WindowPreview::WindowPreview(QWidget *parent)
     : QWidget(parent)
+    , id(0)
 {
 }
 
