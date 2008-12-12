@@ -190,9 +190,10 @@ void PopupDropperPrivate::reposItems()
         my_max = ( counter + 1 ) * partitionsize;
         //qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
         vert_center = ( ( my_max - my_min ) / 2 ) + my_min; //gives us our center line...now center the item around it
-        if( dynamic_cast<PopupDropperItem*>( allItems.at( i ) ) )
+        PopupDropperItem* pItem = dynamic_cast<PopupDropperItem*>( allItems.at( i ) );
+        QGraphicsLineItem* qglItem = 0;
+        if( pItem )
         {
-            PopupDropperItem* pItem = dynamic_cast<PopupDropperItem*>( allItems.at( i ) );
             pItem->setPopupDropper( q ); //safety
             //qDebug() << "item " << i << " is a PDI ";
             if( pItem->svgItem()->elementId().isEmpty() )
@@ -212,10 +213,10 @@ void PopupDropperPrivate::reposItems()
             //qDebug() << "size of view frame = " << view->size();
             ++counter;
         }
-        else if( dynamic_cast<QGraphicsLineItem*>( allItems.at( i ) ) )
+        else if( ( qglItem = dynamic_cast<QGraphicsLineItem*>( allItems.at( i ) ) ) )
         {
             //qDebug() << "item " << i << " is a QGLI";
-            dynamic_cast<QGraphicsLineItem*>( allItems.at( i ) )->setLine( horizontalOffset, (my_max-partitionsize), scene->width() - horizontalOffset, (my_max-partitionsize) );
+            qglItem->setLine( horizontalOffset, (my_max-partitionsize), scene->width() - horizontalOffset, (my_max-partitionsize) );
         }
     }
 }
