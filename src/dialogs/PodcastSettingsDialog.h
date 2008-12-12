@@ -32,7 +32,7 @@ class PodcastSettingsDialog : public KDialog
     Q_OBJECT
 
     public:
-        PodcastSettingsDialog( Meta::PodcastChannelPtr channel, QWidget* parent=0 );
+        explicit PodcastSettingsDialog( Meta::PodcastChannelPtr channel, QWidget* parent=0 );
 
         bool configure();
 

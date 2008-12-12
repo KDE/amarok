@@ -30,7 +30,7 @@ class FilenameLayoutDialog
     Q_OBJECT
 
     public:
-        AMAROK_EXPORT FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 );  //could I have exported the whole class? I don't see how
+        AMAROK_EXPORT explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 ); // Could I have exported the whole class? I don't see how
         AMAROK_EXPORT QString getParsableScheme();
         int getCaseOptions();
         int getWhitespaceOptions();

@@ -32,9 +32,9 @@ class Mp3tunesHarmonyHandler : public QObject {
     Q_OBJECT
     Q_CLASSINFO("Amarok Harmony D-Bus Interface", "org.kde.amarok.Mp3tunesHarmonyHandler")
     public:
-        Mp3tunesHarmonyHandler( QString identifier,
-                                QString email = QString(),
-                                QString pin  = QString() );
+        explicit Mp3tunesHarmonyHandler( QString identifier,
+                                         QString email = QString(),
+                                         QString pin  = QString() );
         ~Mp3tunesHarmonyHandler();
 
         bool startDaemon();

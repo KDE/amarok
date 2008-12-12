@@ -47,7 +47,7 @@ class AMAROK_EXPORT ContainmentArrow : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    ContainmentArrow( QGraphicsItem *parent  = 0, int direction = RIGHT );
+    explicit ContainmentArrow( QGraphicsItem *parent  = 0, int direction = RIGHT );
     ~ContainmentArrow();
     
     virtual QRectF boundingRect() const;
