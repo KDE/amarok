@@ -84,7 +84,7 @@ const Medium Medium::create( const QStringList &properties )
 {
     Medium m;
 
-    if ( properties.size() >= PROPERTIES_COUNT )
+    if ( properties.size() > 0 && uint(properties.size()) >= PROPERTIES_COUNT )
     {
         m.m_properties[AUTODETECTED] = properties[AUTODETECTED];
         m.m_properties[ID] = properties[ID];

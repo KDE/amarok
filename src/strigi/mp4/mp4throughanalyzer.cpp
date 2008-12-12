@@ -41,6 +41,8 @@
 #include "textutils.h"
 #endif
 
+#include <QtGlobal>
+
 using namespace Strigi;
 
 class Mp4ThroughAnalyzerFactory;
@@ -283,12 +285,19 @@ bool Mp4ThroughAnalyzer::parseFtypBox(const char *buf, int64_t size, const std::
     {
        std::cerr << "ftyp: compbrand=" << std::string(buf+pos,4) << std::endl;
     }
+#else
+    Q_UNUSED( buf );
+    Q_UNUSED( size );
+    Q_UNUSED( typepath );
+    Q_UNUSED( level );
 #endif
     return true;
 }
 
 bool Mp4ThroughAnalyzer::parseHintBox(const char *buf, int64_t size, const std::string &typepath, int level)
 {
+   Q_UNUSED( typepath );
+   Q_UNUSED( level );
    uint8_t version;
    uint32_t flags;
    parseFullBox(buf, size, &version, &flags);
@@ -296,10 +305,10 @@ bool Mp4ThroughAnalyzer::parseHintBox(const char *buf, int64_t size, const std::
    if(version > 0)
       return false;
 
+#ifdef VERBOSE
    uint32_t maxbr = readBigEndianUInt32(buf+8);
    uint32_t avgbr = readBigEndianUInt32(buf+12);
 
-#ifdef VERBOSE
    std::cerr << "bit rate=" << avgbr << " (" << maxbr << " max)" << std::endl;
 #endif
    return true;
@@ -307,6 +316,8 @@ bool Mp4ThroughAnalyzer::parseHintBox(const char *buf, int64_t size, const std::
 
 bool Mp4ThroughAnalyzer::parseStsdBox(const char *buf, int64_t size, const std::string &typepath, int level)
 {
+   Q_UNUSED( typepath );
+   Q_UNUSED( level );
    uint8_t version;
    uint32_t flags;
    parseFullBox(buf, size, &version, &flags);
@@ -339,6 +350,8 @@ bool Mp4ThroughAnalyzer::parseStsdBox(const char *buf, int64_t size, const std::
 
 bool Mp4ThroughAnalyzer::parseHdlrBox(const char *buf, int64_t size, const std::string &typepath, int level)
 {
+   Q_UNUSED( typepath );
+   Q_UNUSED( level );
    uint8_t version;
    uint32_t flags;
    parseFullBox(buf, size, &version, &flags);
@@ -357,6 +370,8 @@ bool Mp4ThroughAnalyzer::parseHdlrBox(const char *buf, int64_t size, const std::
 
 bool Mp4ThroughAnalyzer::parseMdhdBox(const char *buf, int64_t size, const std::string &typepath, int level)
 {
+   Q_UNUSED( typepath );
+   Q_UNUSED( level );
    uint8_t version;
    uint32_t flags;
    parseFullBox(buf, size, &version, &flags);
@@ -390,6 +405,8 @@ bool Mp4ThroughAnalyzer::parseMdhdBox(const char *buf, int64_t size, const std::
 
 bool Mp4ThroughAnalyzer::parseMvhdBox(const char *buf, int64_t size, const std::string &typepath, int level)
 {
+   Q_UNUSED( typepath );
+   Q_UNUSED( level );
    uint8_t version;
    uint32_t flags;
    parseFullBox(buf, size, &version, &flags);
@@ -436,6 +453,7 @@ bool Mp4ThroughAnalyzer::parseMetaBox(const char *buf, int64_t size, const std::
 
 bool Mp4ThroughAnalyzer::parseDataBox(const char *buf, int64_t size, const std::string &typepath, int level)
 {
+   Q_UNUSED( level );
    std::string shortpath = typepath.substr(0, typepath.length()-10);
    std::string data(buf+8, size-8);
    if(shortpath == "moov.udta.meta.ilst")
@@ -532,6 +550,7 @@ bool Mp4ThroughAnalyzer::parseDataBox(const char *buf, int64_t size, const std::
 
 bool Mp4ThroughAnalyzer::parseFullBox(const char *buf, int64_t size, uint8_t *version, uint32_t *flags)
 {
+   Q_UNUSED( size );
    *flags = readBigEndianUInt32(buf);
    *flags &= 0xffffff;
    *version = *buf;

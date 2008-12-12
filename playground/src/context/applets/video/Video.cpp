@@ -73,6 +73,7 @@ EngineNewTrackPlaying()
 void
 Video::constraintsEvent( Plasma::Constraints constraints )
 {
+    Q_UNUSED( constraints );
     prepareGeometryChange();
     m_videoWidget->setGeometry( QRect( pos().toPoint(),  size().toSize() ) );
 }
@@ -80,7 +81,9 @@ Video::constraintsEvent( Plasma::Constraints constraints )
 void
 Video::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
+    Q_UNUSED( p );
     Q_UNUSED( option );
+    Q_UNUSED( contentsRect );
 }
 
 QSizeF

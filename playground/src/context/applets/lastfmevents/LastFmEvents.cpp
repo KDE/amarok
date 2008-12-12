@@ -210,6 +210,7 @@ void LastFmEvents::dataUpdated( const QString& name, const Plasma::DataEngine::D
 QSizeF 
 LastFmEvents::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
+    Q_UNUSED( which );
     DEBUG_BLOCK
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
     {

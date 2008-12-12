@@ -37,6 +37,7 @@
 #include "fieldtypes.h"
 #include "textutils.h"
 #endif
+#include <QtGlobal>
 
 using namespace Strigi;
 
@@ -231,6 +232,7 @@ private:
         contentIdField = reg.registerField("content.ID", FieldRegister::stringType, 1, 0);
 
         channelsField = reg.registerField("audio.channel_count", FieldRegister::integerType, 1, 0);
+        Q_UNUSED( sampleRateField );
     }
 };
 
