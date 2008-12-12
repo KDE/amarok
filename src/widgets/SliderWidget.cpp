@@ -31,6 +31,11 @@
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 
+#include <KIcon>
+#include <KLocale>
+#include <KStandardDirs>
+#include <KGlobalSettings>
+
 #include <QAction>
 #include <QContextMenuEvent>
 #include <QFontMetrics>
@@ -39,9 +44,6 @@
 #include <QStyle>
 #include <QStyleOptionComplex>
 
-#include <KIcon>
-#include <KLocale>
-#include <KStandardDirs>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
     : QSlider( orientation, parent )
@@ -204,6 +206,10 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 {
     setFocusPolicy( Qt::NoFocus );
     m_margin = 4;
+
+    QFontMetrics fm( KGlobalSettings::fixedFont() );
+    m_textHeight = fm.height();
+    
 }
 
 void
@@ -296,14 +302,14 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         p->setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
         //QFont font;
         //font.setPixelSize( 12 );
-        //p->setFont( font );
+        p->setFont( KGlobalSettings::fixedFont() );
 
-        QFontMetrics fm( font() );
-        const int pixelsHigh = fm.height();
+        p->setRenderHint( QPainter::TextAntialiasing, true );
 
-        const int yOffset =  sliderY + ( m_sliderHeight - pixelsHigh ) / 2;
 
-        const QRect rect( m_iconWidth + m_sliderWidth + 4, yOffset, 40, pixelsHigh );
+        const int yOffset =  sliderY + ( m_sliderHeight - m_textHeight ) / 2;
+
+        const QRect rect( m_iconWidth + m_sliderWidth + 4, yOffset, 40, m_textHeight );
         p->drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
     }
 

@@ -110,6 +110,8 @@ namespace Amarok
             int m_sliderX;
 
             int m_margin;
+
+            int m_textHeight;
     };
 
     class TimeSlider : public Amarok::Slider
