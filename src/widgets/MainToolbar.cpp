@@ -77,7 +77,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     pWidget->setMinimumSize( 100, 17 );
     pWidget->setContentsMargins( 0, 2, 0, 0 );
 
-    const int volumeRightMargin = 18; // margin to have the volume slider right-aligned with the progress slider
+    const int volumeRightMargin = 24; // margin to have the volume slider right-aligned with the progress slider
     m_volumeWidget = new VolumeWidget( topHBox );
     m_volumeWidget->setFixedSize( 170 + volumeRightMargin, 24 );
     m_volumeWidget->setContentsMargins( 0, 0, volumeRightMargin, 0 );
