@@ -1,3 +1,9 @@
+Section 0: A few days in advance
+
+ * Check that release date doesn't clash with KDE's schedule
+ * Notify translators and update http://techbase.kde.org/Schedules/Extragear
+--------------------------------------------------------------------------------
+
 SECTION 1: Preparation
 
  * Check the README file is still relevant
@@ -8,7 +14,7 @@ SECTION 1: Preparation
 
 SECTION 2: Creating and Testing the Tarball
 
- * Run the release_amarok.rb script; OR
+ * Run the release.rb script; OR
    Follow the guide lines in appendix A
  * Test the following:
 
@@ -23,16 +29,25 @@ SECTION 3: Once Happy with the Tarball
  * SFtp the tarball to ftpamarok@ktown.kde.org/stable/amarok/VERSION/src or
    ftpamarok@ktown.kde.org/unstable/amarok/VERSION/src
    (If you don't have access, mail sysadmin@kde.org)
- * Update the amarok.kde.org front-page before anything else!
- * Update kde-apps.org and freshmeat.net
- * Send a witty, intelligent and diligently crafted email to the following:
-
-     To:  kde-announce-apps@kde.org, amarok@kde.org
-     CC:  amarok-promo@kde.org
-     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org, amarok-packagers@googlegroups.com
+ * Notify packagers
+ * Write release notes and dot story (and notify KDE-press list if necessary)
+ * Add new version to Bugzilla
 --------------------------------------------------------------------------------
 
-SECTION 4: After the Release
+Section 4: The Release Day
+
+ * Update download page on the wiki
+ * Update the amarok.kde.org front-page
+ * Send a witty, intelligent and diligently crafted email to the following lists:
+     To:  kde-announce-apps@kde.org, amarok@kde.org
+     CC:  amarok-promo@kde.org
+     BCC: kde-extra-gear@kde.org, kde-multimedia@kde.org,
+          amarok-packagers@googlegroups.com, (kde-press-announce@kde.org)
+ * Blog, update IRC channel topics, ...
+ * Update kde-apps.org
+--------------------------------------------------------------------------------
+
+SECTION 5: After the Release
 
  If you must change anything about the tarball you need to email binner@kde.org
  because otherwise he gets annoyed that the md5 has changed.
