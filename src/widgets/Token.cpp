@@ -24,7 +24,6 @@
 Token::Token( const QString &string, QWidget *parent )
     : QFrame( parent )
 {
-    m_myCount = qobject_cast< FilenameLayoutWidget * >( parent )->getTokenCount();
     m_label = new QLabel( this );
     hlayout = new QHBoxLayout( this );
     setLayout( hlayout );

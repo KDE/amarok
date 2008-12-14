@@ -45,7 +45,6 @@ class Token : public QFrame
         void setString( const QString &string );
 
         QHBoxLayout *hlayout;
-        uint         m_myCount;
         QString      m_tokenString;
         QLabel      *m_iconContainer;
         QLabel      *m_label;
