@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Growl support on OS X.
     * Greatly improved Librivox.org service script. It now works for all books,
       and dynamically fetches a summary of each book that is shown in the 
       service info applet. The script now also has a propper icon in the
