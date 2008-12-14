@@ -203,7 +203,7 @@ int CompoundProgressBar::calcCompoundPercentage()
     int count = m_progressMap.count();
     int total = 0;
 
-    foreach( ProgressBarNG * currentBar, m_progressMap.values() )
+    foreach( ProgressBarNG * currentBar, m_progressMap )
     {
         total += currentBar->percentage();
     }
@@ -216,7 +216,7 @@ void CompoundProgressBar::cancelAll()
 {
     DEBUG_BLOCK
 
-    foreach( ProgressBarNG * currentBar, m_progressMap.values() )
+    foreach( ProgressBarNG * currentBar, m_progressMap )
         currentBar->cancel();
 }
 

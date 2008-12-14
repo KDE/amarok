@@ -1512,7 +1512,7 @@ ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name)
 
 PrimitiveTypeEntry *TypeDatabase::findTargetLangPrimitiveType(const QString &java_name)
 {
-    foreach (QList<TypeEntry *> entries, m_entries.values()) {
+    foreach (QList<TypeEntry *> entries, m_entries) {
         foreach (TypeEntry *e, entries) {
             if (e && e->isPrimitive()) {
                 PrimitiveTypeEntry *pe = static_cast<PrimitiveTypeEntry *>(e);

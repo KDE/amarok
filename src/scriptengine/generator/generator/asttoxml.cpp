@@ -65,12 +65,12 @@ void astToXML(QString name) {
     s.writeStartElement("code");
 
     QHash<QString, NamespaceModelItem> namespaceMap = dom->namespaceMap();
-    foreach (NamespaceModelItem item, namespaceMap.values()) {
+    foreach (NamespaceModelItem item, namespaceMap) {
         writeOutNamespace(s, item);
     }
 
     QHash<QString, ClassModelItem> typeMap = dom->classMap();
-    foreach (ClassModelItem item, typeMap.values()) {
+    foreach (ClassModelItem item, typeMap) {
         writeOutClass(s, item);
     }
     s.writeEndElement();
@@ -82,17 +82,17 @@ void writeOutNamespace(QXmlStreamWriter &s, NamespaceModelItem &item) {
     s.writeAttribute("name", item->name());
 
     QHash<QString, NamespaceModelItem> namespaceMap = item->namespaceMap();
-    foreach (NamespaceModelItem item, namespaceMap.values()) {
+    foreach (NamespaceModelItem item, namespaceMap) {
         writeOutNamespace(s, item);
     }
 
     QHash<QString, ClassModelItem> typeMap = item->classMap();
-    foreach (ClassModelItem item, typeMap.values()) {
+    foreach (ClassModelItem item, typeMap) {
         writeOutClass(s, item);
     }
 
     QHash<QString, EnumModelItem> enumMap = item->enumMap();
-    foreach (EnumModelItem item, enumMap.values()) {
+    foreach (EnumModelItem item, enumMap) {
         writeOutEnum(s, item);
     }
 
@@ -136,17 +136,17 @@ void writeOutClass(QXmlStreamWriter &s, ClassModelItem &item) {
     s.writeAttribute("name", qualified_name);
 
     QHash<QString, EnumModelItem> enumMap = item->enumMap();
-    foreach (EnumModelItem item, enumMap.values()) {
+    foreach (EnumModelItem item, enumMap) {
         writeOutEnum(s, item);
     }
 
     QHash<QString, FunctionModelItem> functionMap = item->functionMap();
-    foreach (FunctionModelItem item, functionMap.values()) {
+    foreach (FunctionModelItem item, functionMap) {
         writeOutFunction(s, item);
     }
 
     QHash<QString, ClassModelItem> typeMap = item->classMap();
-    foreach (ClassModelItem item, typeMap.values()) {
+    foreach (ClassModelItem item, typeMap) {
         writeOutClass(s, item);
     }
     s.writeEndElement();

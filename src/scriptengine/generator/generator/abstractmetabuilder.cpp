@@ -362,14 +362,14 @@ bool AbstractMetaBuilder::build()
 
 
     // Start the generation...
-    foreach (ClassModelItem item, typeMap.values()) {
+    foreach (const ClassModelItem &item, typeMap) {
         AbstractMetaClass *cls = traverseClass(item);
         addAbstractMetaClass(cls);
     }
 
 
     QHash<QString, NamespaceModelItem> namespaceMap = m_dom->namespaceMap();
-    foreach (NamespaceModelItem item, namespaceMap.values()) {
+    foreach (const NamespaceModelItem &item, namespaceMap) {
         AbstractMetaClass *meta_class = traverseNamespace(item);
         if (meta_class)
             m_meta_classes << meta_class;
