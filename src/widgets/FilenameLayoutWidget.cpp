@@ -334,67 +334,67 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
         {
             if( s.mid( i, 6 ) == "%title" )
             {
-                addToken( "Title" );
+                addToken( i18n( "Title" ) );
                 i += 6;
             }
             else if( s.mid( i, 6 ) == "%track" )
             {
-                addToken( "Track" );
+                addToken( i18n( "Track" ) );
                 i += 6;
             }
             else if( s.mid( i, 7 ) == "%artist" )
             {
-                addToken( "Artist" );
+                addToken( i18n( "Artist" ) );
                 i += 7;
             }
             else if( s.mid( i, 9 ) == "%composer" )
             {
-                addToken( "Composer" );
+                addToken( i18n( "Composer" ) );
                 i += 9;
             }
             else if( s.mid( i, 5 ) == "%year" )
             {
-                addToken( "Year" );
+                addToken( i18n( "Year" ) );
                 i += 5;
             }
             else if( s.mid( i, 6 ) == "%album" )
             {
-                addToken( "Album" );
+                addToken( i18n( "Album" ) );
                 i += 6;
             }
             else if( s.mid( i, 8 ) == "%comment" )
             {
-                addToken( "Comment" );
+                addToken( i18n( "Comment" ) );
                 i += 8;
             }
             else if( s.mid( i, 6 ) == "%genre" )
             {
-                addToken( "Genre" );
+                addToken( i18n( "Genre" ) );
                 i += 6;
             }
             else if( s.mid( i, 9 ) == "%filetype" )
             {
-                addToken( "File type" );
+                addToken( i18n( "File type" ) );
                 i += 9;
             }
             else if( s.mid( i, 7 ) == "%ignore" )
             {
-                addToken( "Ignore" );
+                addToken( i18n( "Ignore field" ) );
                 i += 7;
             }
             else if( s.mid( i, 7 ) == "%folder" )
             {
-                addToken( "Collection root" );
+                addToken( i18n( "Collection root" ) );
                 i += 7;
             }
             else if( s.mid( i, 8 ) == "%initial" )
             {
-                addToken( "Artist initial" );
+                addToken( i18n( "Artist initial" ) );
                 i += 8;
             }
             else if( s.mid( i, 11 ) == "%discnumber" )
             {
-                addToken( "Disc number" );
+                addToken( i18n( "Disc number" ) );
                 i += 11;
             }
         }
