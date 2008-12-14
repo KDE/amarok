@@ -508,7 +508,7 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 double
 Dynamic::NormalBias::releventField( Meta::TrackPtr track )
 {
-    if( m_field == Meta::valYear )
+    if( m_field == Meta::valYear && track->year() )
         return (double)track->year()->name().toInt();
     if( m_field == Meta::valPlaycount )
         return (double)track->playCount();

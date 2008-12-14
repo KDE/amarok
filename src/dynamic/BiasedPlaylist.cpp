@@ -232,6 +232,9 @@ Dynamic::BiasedPlaylist::solverFinished( ThreadWeaver::Job* job )
 {
     DEBUG_BLOCK
 
+    if( !m_solver )
+        return;
+
     bool success;
     The::statusBar()->endProgressOperation( m_solver );
     m_backbufferMutex.lock();
