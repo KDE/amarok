@@ -107,7 +107,7 @@ struct PodcastInfo
 	   void parseTracks();
        void addIpodTrackToCollection( Itdb_Track *ipodtrack );
        void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
-       #ifdef FOUND_GDK
+       #if FOUND_GDK
        void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
        #endif
        void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );

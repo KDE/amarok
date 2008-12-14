@@ -25,7 +25,7 @@
 #include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
-#ifdef FOUND_GDK
+#if FOUND_GDK
 extern "C" {
 #include <gdk-pixbuf/gdk-pixbuf.h>
 }
@@ -1068,7 +1068,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     return;
 }
 
-#ifdef FOUND_GDK
+#if FOUND_GDK
 
 void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
@@ -1360,7 +1360,7 @@ IpodHandler::parseTracks()
         /* cover art */
 
         //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
-        #ifdef FOUND_GDK
+        #if FOUND_GDK
         if( m_supportsArtwork )
             getCoverArt( ipodtrack, track );
         #endif

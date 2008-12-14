@@ -1,1 +1,1 @@
-#define FOUND_GDK "${GDK_FOUND}"
+#define FOUND_GDK ${FOUND_GDK}
