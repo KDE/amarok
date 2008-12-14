@@ -124,7 +124,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     tokenPool->addItem( new QListWidgetItem( KIcon( "filename-dash-amarok" ).pixmap( 48, 48 ), i18n( "-" ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "filename-dot-amarok" ).pixmap( 48, 48 ), i18n( "." ) ) );
     tokenPool->addItem( new QListWidgetItem( KIcon( "filename-space-amarok" ).pixmap( 48, 48 ), QString("<space>") ) );
-    if( m_isOrganizeCollection == 0 )
+
+    if( !m_isOrganizeCollection )
     {
         tokenPool->addItem( new QListWidgetItem( KIcon( "filename-ignore-amarok" ).pixmap( 48, 48 ), i18n( "Ignore field" ) ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
@@ -188,24 +189,9 @@ FilenameLayoutDialog::onAccept()    //SLOT
 QString
 FilenameLayoutDialog::getParsableScheme()
 {
-    QString category;
-    QString scheme;
-    if( m_isOrganizeCollection )
-    {
-        category = "OrganizeCollectionDialog";
-    }
-    else
-    {
-        category = "FilenameLayoutDialog";
-    }
-    if( kpbAdvanced->text() == i18n( "&Basic..." ) )
-    {
-        scheme = filenameLayoutEdit->text();
-    }
-    else
-    {
-        scheme = filenameLayout->getParsableScheme();
-    }
+    QString category = m_isOrganizeCollection ? "OrganizeCollectionDialog" : "FilenameLayoutDialog";
+    QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : filenameLayout->getParsableScheme();
+
     Amarok::config( category ).writeEntry( "Scheme", scheme );
     return scheme;
 }
@@ -214,20 +200,8 @@ FilenameLayoutDialog::getParsableScheme()
 void
 FilenameLayoutDialog::editStateEnable( bool checked )      //SLOT
 {
-    if( !checked )
-    {
-        foreach( QRadioButton *rb, m_caseEditRadioButtons )
-        {
-            rb->setEnabled( false );
-        }
-    }
-    else
-    {
-        foreach( QRadioButton *rb, m_caseEditRadioButtons )
-        {
-            rb->setEnabled( true );
-        }
-    }
+    foreach( QRadioButton *rb, m_caseEditRadioButtons )
+        rb->setEnabled( checked );
 }
 
 //Returns a code for the configuration.
