@@ -25,7 +25,7 @@
 #include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
-#if FOUND_GDK
+#if GDK_FOUND
 extern "C" {
 #include <gdk-pixbuf/gdk-pixbuf.h>
 }
@@ -216,7 +216,7 @@ IpodHandler::detectModel()
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_device );
         debug() << "Got ipodinfo";
         const gchar *modelString = 0;
-        #ifdef FOUND_GDK
+        #ifdef GDK_FOUND
         m_supportsArtwork = itdb_device_supports_artwork( m_device );
         #else
         m_supportsArtwork = false;
@@ -336,7 +336,7 @@ IpodHandler::detectModel()
 
     if( m_isIPhone )
     {
-        #ifdef FOUND_GDK
+        #ifdef GDK_FOUND
         m_supportsArtwork = true;
         #else
         m_supportsArtwork = false;
@@ -1068,7 +1068,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     return;
 }
 
-#if FOUND_GDK
+#if GDK_FOUND
 
 void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
@@ -1360,7 +1360,7 @@ IpodHandler::parseTracks()
         /* cover art */
 
         //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
-        #if FOUND_GDK
+        #if GDK_FOUND
         if( m_supportsArtwork )
             getCoverArt( ipodtrack, track );
         #endif
