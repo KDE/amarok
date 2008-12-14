@@ -117,8 +117,7 @@ MainWindow::MainWindow()
 
 #ifdef Q_WS_MAC
     QSizeGrip* grip = new QSizeGrip( this );
-    if( AmarokConfig::growlEnabled() )
-        GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
+    GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
 #endif
     //create this object now as we might run into issues if anyone tries to use it during initialization
     //make room for a full width statusbar at the bottom of everything

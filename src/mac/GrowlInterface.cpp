@@ -13,6 +13,7 @@
  
 #include "GrowlInterface.h"
 
+#include "AmarokConfig.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "MetaUtility.h" // for secToPrettyTime
@@ -77,7 +78,9 @@ GrowlInterface::show( Meta::TrackPtr track )
 void
 GrowlInterface::show( QString text, CFDataRef img )
 {
-    Growl_NotifyWithTitleDescriptionNameIconPriorityStickyClickContext( CFSTR( "Amarok" ), QStringToCFString( text ), CFSTR( "Song Playing"), img, 0, false, 0 );
+    debug() << "is growl enabled:" << AmarokConfig::growlEnabled();
+    if( AmarokConfig::growlEnabled() )
+        Growl_NotifyWithTitleDescriptionNameIconPriorityStickyClickContext( CFSTR( "Amarok" ), QStringToCFString( text ), CFSTR( "Song Playing"), img, 0, false, 0 );
 }
 
 void 

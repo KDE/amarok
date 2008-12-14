@@ -20,6 +20,7 @@
 
 #include "OsdConfig.h"
 #include "amarokconfig.h"
+#include "Debug.h"
 #include "Osd.h"
 //#include "QStringx.h"
 
@@ -36,6 +37,7 @@ OsdConfig::OsdConfig( QWidget* parent )
 
     #ifdef Q_WS_MAC
         QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
+        growl->setChecked( AmarokConfig::growlEnabled() );
         gridLayout_2->addWidget( growl, 2, 0, 1, 1 );
         connect( growl,         SIGNAL( toggled( bool ) ),
                  this,                      SLOT( setGrowlEnabled( bool ) ) );
@@ -151,6 +153,7 @@ OsdConfig::showEvent( QShowEvent* )
 void
 OsdConfig::setGrowlEnabled( bool enable )
 {
+    DEBUG_BLOCK
     AmarokConfig::setGrowlEnabled( enable );
 }
 
