@@ -8,16 +8,16 @@ if(MP4V2_FOUND)
 if(APPLE)	
     set(mac_SRCS 
 		app_mac.cpp 
-		mac/CFStringToQString.cpp
 		widgets/GrowlInterface.cpp 
 		)
 		
-		include_directories ( mac/Growl-WithInstaller.framework/Headers )
+		include_directories ( services/lastfm/
+							  mac/Growl-WithInstaller.framework/Headers )
 		set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
 		set( GROWL_FRAMEWORK ${CMAKE_SOURCE_DIR}/src/mac/Growl-WithInstaller.framework )
 		set( GROWL_LIBRARIES "-framework Growl-WithInstaller -F${CMAKE_SOURCE_DIR}/src/mac" CACHE FILEPATH "Growl-WithInstaller framework" FORCE)
 		mark_as_advanced( GROWL_FRAMEWORK GROWL_LIBRARIES )
-		set( EXTRA_LIBS ${GROWL_LIBRARIES} )
+		set( EXTRA_LIBS ${GROWL_LIBRARIES} amarok_service_liblastfm )
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
