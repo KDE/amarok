@@ -145,7 +145,7 @@ Header Formatting
 General rules apply here.  Please keep header function definitions aligned nicely,
 if possible.  It helps greatly when looking through the code.  Sorted methods,
 either by name or by their function (ie, group all related methods together) is
-great too.
+great too. Access levels should be sorted in this order: public, protected, private.
 
 
  | #ifndef AMAROK_QUEUEMANAGER_H
