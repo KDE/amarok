@@ -34,6 +34,12 @@ OsdConfig::OsdConfig( QWidget* parent )
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     m_osdPreview->setOffset( AmarokConfig::osdYOffset() );
 
+    #ifdef Q_WS_MAC
+        QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
+        gridLayout_2->addWidget( growl, 2, 0, 1, 1 );
+        connect( growl,         SIGNAL( toggled( bool ) ),
+                 this,                      SLOT( setGrowlEnabled( bool ) ) );
+    #endif 
     // Enable/disable the translucency option depending on whether the QWidget has the WindowOpacity property
     // kcfg_OsdUseTranslucency->setEnabled( CheckHasWindowOpacityProperty )
 
@@ -140,6 +146,12 @@ OsdConfig::showEvent( QShowEvent* )
 
     m_osdPreview->setScreen( kcfg_OsdScreen->currentIndex() );
     m_osdPreview->setVisible( kcfg_OsdEnabled->isChecked() );
+}
+
+void
+OsdConfig::setGrowlEnabled( bool enable )
+{
+    AmarokConfig::setGrowlEnabled( enable );
 }
 
 void

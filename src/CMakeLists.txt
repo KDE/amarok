@@ -8,7 +8,7 @@ if(MP4V2_FOUND)
 if(APPLE)	
     set(mac_SRCS 
 		app_mac.cpp 
-		widgets/GrowlInterface.cpp 
+		mac/GrowlInterface.cpp 
 		)
 		
 		include_directories ( services/lastfm/

@@ -38,6 +38,7 @@ class GrowlInterface : public EngineObserver , public Meta::Observer
     protected:
         // Reimplemented from EngineObserver
         virtual void engineVolumeChanged( int );
+        virtual void engineNewTrackPlaying();
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
 
         // Reimplemented from Meta::Observer

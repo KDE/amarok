@@ -37,7 +37,7 @@ GrowlInterface::GrowlInterface( QString appName ) :
 void 
 GrowlInterface::show( Meta::TrackPtr track )
 {
-   
+    DEBUG_BLOCK
     QString text;
     if( !track || track->playableUrl().isEmpty() )
         text = i18n( "No track playing" );
@@ -66,7 +66,7 @@ GrowlInterface::show( Meta::TrackPtr track )
     QImage image;
     if( track && track->album() )
         image = track->album()->imageWithBorder( 100, 5 ).toImage();
-    
+
     CFDataRef imgData = CFDataCreate( kCFAllocatorDefault, image.bits(), image.numBytes() );
     
     show( text, imgData );
@@ -78,7 +78,20 @@ void
 GrowlInterface::show( QString text, CFDataRef img )
 {
     Growl_NotifyWithTitleDescriptionNameIconPriorityStickyClickContext( CFSTR( "Amarok" ), QStringToCFString( text ), CFSTR( "Song Playing"), img, 0, false, 0 );
+}
+
+void 
+GrowlInterface::engineNewTrackPlaying()
+{
+    DEBUG_BLOCK
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+
+    unsubscribeFrom( m_currentTrack );
+    m_currentTrack = track;
+    subscribeTo( track );
+    metadataChanged( track );
     
+    show( m_currentTrack );
 }
 
 void
@@ -86,26 +99,8 @@ GrowlInterface::engineStateChanged( Phonon::State state, Phonon::State oldState 
 {
     Q_UNUSED( oldState )
     DEBUG_BLOCK
-
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    switch( state )
-    {
-    case Phonon::PlayingState:
-        unsubscribeFrom( m_currentTrack );
-        m_currentTrack = track;
-        subscribeTo( track );
-        metadataChanged( track );
-        break;
-
-    case Phonon::PausedState:
+    if( state == Phonon::PausedState )
         show( i18n( "Paused" ), 0 );
-        break;
-
-    default:
-        break;
-    }
 }
 
 
@@ -121,5 +116,5 @@ GrowlInterface::metadataChanged( Meta::TrackPtr track )
     Q_UNUSED( track )
     DEBUG_BLOCK
 
-    show( m_currentTrack );
+   // show( m_currentTrack );
 } 
