@@ -37,20 +37,20 @@
 class CollectionAction : public QAction
 {
 public:
-    CollectionAction( Collection *coll, QObject *parent = 0 )
+    CollectionAction( Amarok::Collection *coll, QObject *parent = 0 )
             : QAction( parent )
             , m_collection( coll )
     {
         setText( m_collection->prettyName() );
     }
 
-    Collection *collection() const
+    Amarok::Collection *collection() const
     {
         return m_collection;
     }
 
 private:
-    Collection *m_collection;
+    Amarok::Collection *m_collection;
 };
 
 class MyDirOperator : public KDirOperator

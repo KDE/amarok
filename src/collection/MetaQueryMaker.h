@@ -29,7 +29,7 @@ class MetaQueryMaker : public QueryMaker
     Q_OBJECT
 
     public:
-        MetaQueryMaker( const QList<Collection*> &collections );
+        MetaQueryMaker( const QList<Amarok::Collection*> &collections );
         MetaQueryMaker( const QList<QueryMaker*> &queryMakers );
         ~MetaQueryMaker();
 

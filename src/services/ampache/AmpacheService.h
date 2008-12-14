@@ -62,7 +62,7 @@ public:
 
     void polish();
 
-    virtual Collection * collection() { return m_collection; }
+    virtual Amarok::Collection * collection() { return m_collection; }
 
 private slots:
     void authenticate();

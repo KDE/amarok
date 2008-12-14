@@ -31,7 +31,7 @@
 class KUrl;
 class NepomukRegistry;
 
-class NepomukCollectionFactory : public CollectionFactory
+class NepomukCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
     public:

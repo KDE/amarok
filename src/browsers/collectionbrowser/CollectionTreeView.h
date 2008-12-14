@@ -101,15 +101,15 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode );
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
-        void copyTracks( const QSet<CollectionTreeItem*> &items, Collection *destination, bool removeSources ) const;
+        void copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::Collection *destination, bool removeSources ) const;
         PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
         PopupDropperActionList createExtendedActions( const QModelIndexList &indcies );
         PopupDropperActionList createCollectionActions( const QModelIndexList & indices );
 
         bool onlyOneCollection( const QModelIndexList &indices );
-        Collection *getCollection( const QModelIndex &index );
-        QHash<PopupDropperAction*, Collection*> getCopyActions( const QModelIndexList &indcies );
-        QHash<PopupDropperAction*, Collection*> getMoveActions( const QModelIndexList &indcies );
+        Amarok::Collection *getCollection( const QModelIndex &index );
+        QHash<PopupDropperAction*, Amarok::Collection*> getCopyActions( const QModelIndexList &indcies );
+        QHash<PopupDropperAction*, Amarok::Collection*> getMoveActions( const QModelIndexList &indcies );
 
         QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
 
@@ -126,8 +126,8 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         PopupDropperAction * m_cmSeperator;
 
 
-        QHash<PopupDropperAction*, Collection*> m_currentCopyDestination;
-        QHash<PopupDropperAction*, Collection*> m_currentMoveDestination;
+        QHash<PopupDropperAction*, Amarok::Collection*> m_currentCopyDestination;
+        QHash<PopupDropperAction*, Amarok::Collection*> m_currentMoveDestination;
 
         QMap<AmarokMimeData*, Playlist::AddOptions> m_playChildTracksMode;
 

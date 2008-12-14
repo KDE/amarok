@@ -432,7 +432,7 @@ IpodTrack::inCollection() const
     return true;
 }
 
-Collection*
+Amarok::Collection*
 IpodTrack::collection() const
 {
     return m_collection;

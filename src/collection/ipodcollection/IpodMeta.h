@@ -137,7 +137,7 @@ class IpodTrack : public Meta::Track
         virtual void unsubscribe ( Observer *observer );
 
         virtual bool inCollection() const;
-        virtual Collection* collection() const;
+        virtual Amarok::Collection* collection() const;
 
 	virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 	virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );

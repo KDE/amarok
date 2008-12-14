@@ -100,7 +100,7 @@ namespace Dynamic
              * Set the collection that will be used when generating the
              * playlist.
              */
-            static void setUniverseCollection( Collection* );
+            static void setUniverseCollection( Amarok::Collection* );
 
             /**
              * Return the universe set (a list of the uid of every track being
@@ -267,7 +267,7 @@ namespace Dynamic
             static QList<QByteArray>  s_universe;
             static QMutex             s_universeMutex;
             static QueryMaker*        s_universeQuery;
-            static Collection*        s_universeCollection;
+            static Amarok::Collection*  s_universeCollection;
             static bool               s_universeOutdated;
             static unsigned int       s_uidUrlProtocolPrefixLength;
 

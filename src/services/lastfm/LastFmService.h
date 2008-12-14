@@ -63,7 +63,7 @@ public:
 
     ScrobblerAdapter *scrobbler() { return m_scrobbler; }
 
-    virtual Collection * collection();
+    virtual Amarok::Collection * collection();
 
 private slots:
     void love();

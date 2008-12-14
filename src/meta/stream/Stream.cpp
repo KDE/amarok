@@ -308,7 +308,7 @@ Track::inCollection() const
     return false;
 }
 
-Collection*
+Amarok::Collection*
 Track::collection() const
 {
     return 0;

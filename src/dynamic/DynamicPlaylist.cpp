@@ -24,7 +24,7 @@
 
 
 
-Dynamic::DynamicPlaylist::DynamicPlaylist( Collection* coll )
+Dynamic::DynamicPlaylist::DynamicPlaylist( Amarok::Collection* coll )
      : m_collection(coll), m_upcoming(10), m_previous(5)
 {
     if( !m_collection )

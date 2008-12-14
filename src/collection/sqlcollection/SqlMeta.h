@@ -127,7 +127,7 @@ class SqlTrack : public Meta::Track
         virtual void finishedPlaying( double playedFraction );
 
         virtual bool inCollection() const;
-        virtual Collection* collection() const;
+        virtual Amarok::Collection* collection() const;
 
         virtual QString cachedLyrics() const;
         virtual void setCachedLyrics( const QString &lyrics );

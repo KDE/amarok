@@ -95,12 +95,12 @@ void MyDirOperator::aboutToShowContextMenu()
     foreach( QAction *action, actions )
         menu->addAction( action );
 
-    QList<Collection*> writableCollections;
-    QHash<Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
-    QHash<Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+    QList<Amarok::Collection*> writableCollections;
+    QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+    QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
     while ( it != hash.constEnd() )
     {
-        Collection *coll = it.key();
+        Amarok::Collection *coll = it.key();
         if ( coll && coll->isWritable() )
         {
             writableCollections.append( coll );
@@ -110,7 +110,7 @@ void MyDirOperator::aboutToShowContextMenu()
     if ( !writableCollections.isEmpty() )
     {
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), this );
-        foreach( Collection *coll, writableCollections )
+        foreach( Amarok::Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, this );
             connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotPrepareMoveTracks() ) );
@@ -119,7 +119,7 @@ void MyDirOperator::aboutToShowContextMenu()
         menu->addMenu( moveMenu );
 
         QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), this );
-        foreach( Collection *coll, writableCollections )
+        foreach( Amarok::Collection *coll, writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, this );
             connect( copyAction, SIGNAL( triggered() ), this, SLOT( slotPrepareCopyTracks() ) );

@@ -42,17 +42,17 @@
 
 #include <cstdlib>
 
-typedef QPair<Collection*, CollectionManager::CollectionStatus> CollectionPair;
+typedef QPair<Amarok::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
-    QList<CollectionFactory*> factories;
+    QList<Amarok::CollectionFactory*> factories;
     SqlStorage *sqlDatabase;
-    QList<Collection*> unmanagedCollections;
-    QList<Collection*> managedCollections;
-    QList<TrackProvider*> trackProviders;
-    Collection *primaryCollection;
+    QList<Amarok::Collection*> unmanagedCollections;
+    QList<Amarok::Collection*> managedCollections;
+    QList<Amarok::TrackProvider*> trackProviders;
+    Amarok::Collection *primaryCollection;
 };
 
 CollectionManager* CollectionManager::s_instance = 0;
@@ -131,10 +131,10 @@ CollectionManager::init()
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
         if ( plugin )
         {
-            CollectionFactory* factory = dynamic_cast<CollectionFactory*>( plugin );
+            Amarok::CollectionFactory* factory = dynamic_cast<Amarok::CollectionFactory*>( plugin );
             if ( factory )
             {
-                connect( factory, SIGNAL( newCollection( Collection* ) ), this, SLOT( slotNewCollection( Collection* ) ) );
+                connect( factory, SIGNAL( newCollection( Amarok::Collection* ) ), this, SLOT( slotNewCollection( Amarok::Collection* ) ) );
                 d->factories.append( factory );
                 factory->init();
             }
@@ -179,7 +179,7 @@ CollectionManager::checkCollectionChanges()
 QueryMaker*
 CollectionManager::queryMaker() const
 {
-    QList<Collection*> colls;
+    QList<Amarok::Collection*> colls;
     foreach( const CollectionPair &pair, d->collections )
     {
         if( pair.second & CollectionQueryable )
@@ -191,7 +191,7 @@ CollectionManager::queryMaker() const
 }
 
 void
-CollectionManager::slotNewCollection( Collection* newCollection )
+CollectionManager::slotNewCollection( Amarok::Collection* newCollection )
 {
     if( !newCollection )
     {
@@ -238,7 +238,7 @@ CollectionManager::slotNewCollection( Collection* newCollection )
 void
 CollectionManager::slotRemoveCollection()
 {
-    Collection* collection = qobject_cast<Collection*>( sender() );
+    Amarok::Collection* collection = qobject_cast<Amarok::Collection*>( sender() );
     if( collection )
     {
         CollectionStatus status = collectionStatus( collection->collectionId() );
@@ -274,7 +274,7 @@ CollectionManager::slotRemoveCollection()
 void
 CollectionManager::slotCollectionChanged()
 {
-    Collection *collection = dynamic_cast<Collection*>( sender() );
+    Amarok::Collection *collection = dynamic_cast<Amarok::Collection*>( sender() );
     if( collection )
     {
         CollectionStatus status = collectionStatus( collection->collectionId() );
@@ -285,10 +285,10 @@ CollectionManager::slotCollectionChanged()
     }
 }
 
-QList<Collection*>
+QList<Amarok::Collection*>
 CollectionManager::viewableCollections() const
 {
-    QList<Collection*> result;
+    QList<Amarok::Collection*> result;
     foreach( const CollectionPair &pair, d->collections )
     {
         if( pair.second & CollectionViewable )
@@ -299,10 +299,10 @@ CollectionManager::viewableCollections() const
     return result;
 }
 
-QList<Collection*>
+QList<Amarok::Collection*>
 CollectionManager::queryableCollections() const
 {
-    QList<Collection*> result;
+    QList<Amarok::Collection*> result;
     foreach( const CollectionPair &pair, d->collections )
         if( pair.second & CollectionQueryable )
             result << pair.first;
@@ -310,7 +310,7 @@ CollectionManager::queryableCollections() const
 
 }
 
-Collection*
+Amarok::Collection*
 CollectionManager::primaryCollection() const
 {
     return d->primaryCollection;
@@ -352,7 +352,7 @@ CollectionManager::trackForUrl( const KUrl &url )
         return Meta::TrackPtr( 0 );
     }
 
-    foreach( TrackProvider *provider, d->trackProviders )
+    foreach( Amarok::TrackProvider *provider, d->trackProviders )
     {
         if( provider->possiblyContainsTrack( url ) )
         {
@@ -452,7 +452,7 @@ CollectionManager::slotContinueRelatedArtists() //SLOT
 }
 
 void
-CollectionManager::addUnmanagedCollection( Collection *newCollection, CollectionStatus defaultStatus )
+CollectionManager::addUnmanagedCollection( Amarok::Collection *newCollection, CollectionStatus defaultStatus )
 {
     if( newCollection && d->unmanagedCollections.indexOf( newCollection ) == -1 )
     {
@@ -475,7 +475,7 @@ CollectionManager::addUnmanagedCollection( Collection *newCollection, Collection
 }
 
 void
-CollectionManager::removeUnmanagedCollection( Collection *collection )
+CollectionManager::removeUnmanagedCollection( Amarok::Collection *collection )
 {
     //do not remove it from collection if it is not in unmanagedCollections
     if( collection && d->unmanagedCollections.removeAll( collection ) )
@@ -527,10 +527,10 @@ CollectionManager::collectionStatus( const QString &collectionId ) const
     return CollectionDisabled;
 }
 
-QHash<Collection*, CollectionManager::CollectionStatus>
+QHash<Amarok::Collection*, CollectionManager::CollectionStatus>
 CollectionManager::collections() const
 {
-    QHash<Collection*, CollectionManager::CollectionStatus> result;
+    QHash<Amarok::Collection*, CollectionManager::CollectionStatus> result;
     foreach( const CollectionPair &pair, d->collections )
     {
         result.insert( pair.first, pair.second );
@@ -539,14 +539,14 @@ CollectionManager::collections() const
 }
 
 void
-CollectionManager::addTrackProvider( TrackProvider *provider )
+CollectionManager::addTrackProvider( Amarok::TrackProvider *provider )
 {
     d->trackProviders.append( provider );
     emit trackProviderAdded( provider );
 }
 
 void
-CollectionManager::removeTrackProvider( TrackProvider *provider )
+CollectionManager::removeTrackProvider( Amarok::TrackProvider *provider )
 {
     d->trackProviders.removeAll( provider );
 }

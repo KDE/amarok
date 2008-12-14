@@ -34,8 +34,12 @@
 #include <ksharedptr.h>
 #include <kurl.h>
 
-class Collection;
 class QueryMaker;
+
+namespace Amarok
+{
+    class Collection;
+}
 
 namespace Meta
 {
@@ -233,7 +237,7 @@ namespace Meta
             /**
                 returns the collection that the track is part of, or 0 iff
                 inCollection() returns false */
-            virtual Collection* collection() const;
+            virtual Amarok::Collection* collection() const;
 
             /** get the cached lyrics for the track. returns an empty string if
                 no cached lyrics are available */

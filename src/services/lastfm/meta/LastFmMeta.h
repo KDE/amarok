@@ -88,7 +88,7 @@ namespace LastFm
             virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
-            virtual Collection *collection() const;
+            virtual Amarok::Collection *collection() const;
 
             virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 

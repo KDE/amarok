@@ -104,7 +104,7 @@ class DaapTrack : public Meta::Track
         virtual void unsubscribe ( Observer *observer );
 
         virtual bool inCollection() const;
-        virtual Collection* collection() const;
+        virtual Amarok::Collection* collection() const;
 
         //DaapTrack specific methods
         void setAlbum( DaapAlbumPtr album );

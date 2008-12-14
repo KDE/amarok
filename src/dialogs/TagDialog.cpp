@@ -641,7 +641,7 @@ void TagDialog::init()
 void
 TagDialog::startDataQuery()
 {
-    Collection *coll = CollectionManager::instance()->primaryCollection();
+    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( !coll )
     {
         return;

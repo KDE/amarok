@@ -108,7 +108,7 @@ namespace Dynamic
 
         public:
             CollectionDependantBias();
-            CollectionDependantBias( Collection* );
+            CollectionDependantBias( Amarok::Collection* );
 
             /**
              * This gets called when the collection changes. It's expected to
@@ -124,7 +124,7 @@ namespace Dynamic
             void collectionUpdated();
 
         protected:
-            Collection* m_collection; // null => all queryable collections
+            Amarok::Collection* m_collection; // null => all queryable collections
             bool m_needsUpdating;
             QMutex m_mutex;
     };
@@ -141,7 +141,7 @@ namespace Dynamic
                 
         public:
             GlobalBias( double weight, XmlQueryReader::Filter );
-            GlobalBias( Collection* coll, double weight, XmlQueryReader::Filter query );
+            GlobalBias( Amarok::Collection* coll, double weight, XmlQueryReader::Filter query );
             
             ~GlobalBias();
 

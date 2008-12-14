@@ -105,7 +105,7 @@ namespace Meta
 	    virtual void unsubscribe ( Observer *observer );
 	    
 	    virtual bool inCollection() const;
-	    virtual Collection* collection() const;
+	    virtual Amarok::Collection* collection() const;
 
 	    //MediaDeviceTrack specific methods
 	    virtual void setAlbum( MediaDeviceAlbumPtr album );

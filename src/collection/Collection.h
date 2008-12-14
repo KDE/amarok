@@ -30,8 +30,13 @@
 
 #include <KUrl>
 
-class Collection;
+
 class CollectionLocation;
+ 
+namespace Amarok
+{
+
+class Collection;
 
 class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
 {
@@ -43,7 +48,7 @@ class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
         virtual void init() = 0;
 
     signals:
-        void newCollection( Collection *newCollection );
+        void newCollection( Amarok::Collection *newCollection );
 
 };
 
@@ -158,5 +163,7 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
         void remove();
         void updated();
 };
+
+}
 
 #endif /* AMAROK_COLLECTION_H */

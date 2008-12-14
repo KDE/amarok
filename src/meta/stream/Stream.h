@@ -94,7 +94,7 @@ namespace MetaStream
             virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
-            virtual Collection *collection() const;
+            virtual Amarok::Collection *collection() const;
 
             virtual void subscribe( Meta::Observer *observer );
             virtual void unsubscribe( Meta::Observer *observer );

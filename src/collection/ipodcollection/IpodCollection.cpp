@@ -39,7 +39,7 @@
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 
 IpodCollectionFactory::IpodCollectionFactory()
-    : CollectionFactory()
+    : Amarok::CollectionFactory()
 {
     //nothing to do
 }

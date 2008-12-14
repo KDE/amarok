@@ -29,7 +29,7 @@
 
 class MediaDeviceCollection;
 
-class MediaDeviceCollectionFactory : public CollectionFactory
+class MediaDeviceCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
     public:
@@ -46,7 +46,7 @@ class MediaDeviceCollectionFactory : public CollectionFactory
 
 };
 
-class MediaDeviceCollection : public Collection, public MemoryCollection
+class MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
     public:

@@ -49,7 +49,7 @@ CoverBling::CoverBling( QWidget* parent )
 
     setFixedHeight( 200 );
 
-    Collection *coll = CollectionManager::instance()->primaryCollection();
+    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Album );
     qm->limitMaxResultSize( 10 );

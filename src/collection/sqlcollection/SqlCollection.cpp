@@ -46,7 +46,7 @@ AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
 void
 SqlCollectionFactory::init()
 {
-    Collection* collection;
+   Amarok::Collection* collection;
     /*  
     switch( CollectionDB::instance()->getDbConnectionType() )
     {

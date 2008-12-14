@@ -37,7 +37,7 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Collection* ) ), this, SLOT( collectionAdded( Collection* ) ), Qt::QueuedConnection );
+    connect( collMgr, SIGNAL( collectionAdded( Amarok::Collection* ) ), this, SLOT( collectionAdded( Amarok::Collection* ) ), Qt::QueuedConnection );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     setLevels( levelType );
     debug() << "Collection root has " << m_rootItem->childCount() << " children";
@@ -141,7 +141,7 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent )
 }
 
 void
-CollectionTreeItemModel::collectionAdded( Collection *newCollection )
+CollectionTreeItemModel::collectionAdded( Amarok::Collection *newCollection )
 {
     DEBUG_BLOCK
     if ( !newCollection )
@@ -231,8 +231,8 @@ void CollectionTreeItemModel::update()
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     d->m_collections.clear();
-    QList<Collection*> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Collection *coll, collections )
+    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    foreach( Amarok::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( update() ) ) ;
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );

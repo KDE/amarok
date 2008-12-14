@@ -154,7 +154,7 @@ NepomukTrack::inCollection() const
     return true;
 }
 
-Collection*
+Amarok::Collection*
 NepomukTrack::collection() const
 {
     return m_collection;

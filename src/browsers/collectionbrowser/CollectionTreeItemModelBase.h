@@ -34,7 +34,7 @@ class CollectionTreeItem;
 class QTimeLine;
 class QueryMaker;
 
-typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
+typedef QPair<Amarok::Collection*, CollectionTreeItem* > CollectionRoot;
 
 namespace CategoryId
 {
@@ -128,7 +128,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
-        QSet<Collection*> m_expandedCollections;
+        QSet<Amarok::Collection*> m_expandedCollections;
         
     protected slots:
         void loadingAnimationTick();

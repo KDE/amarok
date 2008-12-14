@@ -749,7 +749,7 @@ CollectionTreeItemModelBase::slotFilter()
     debug() << "m_expandedCollections.isEmpty() ? " << (m_expandedCollections.isEmpty() ? "true" : "false");
     if ( !m_expandedCollections.isEmpty() )
     {
-        foreach( Collection *expanded, m_expandedCollections )
+        foreach( Amarok::Collection *expanded, m_expandedCollections )
         {
             debug() << "checking item...is item 0 ? " << (d->m_collections.value( expanded->collectionId() ).second == 0 ? "true" : "false" );
             CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;

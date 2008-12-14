@@ -26,7 +26,7 @@
 #include "SqlStorage.h"
 #include "amarok_export.h"
 
-class SqlCollectionFactory : public CollectionFactory
+class SqlCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
 
@@ -41,7 +41,7 @@ class CollectionLocation;
 class XesamCollectionBuilder;
 class ScanManager;
 
-class SqlCollection : public Collection, public SqlStorage
+class SqlCollection : public Amarok::Collection, public SqlStorage
 {
     Q_OBJECT
 

@@ -57,14 +57,14 @@ class AMAROK_EXPORT CollectionManager : public QObject
         /**
          * returns all viewable collections.
          */
-        QList<Collection*> viewableCollections() const;
+        QList<Amarok::Collection*> viewableCollections() const;
 
         /**
          * returns all queryable collections.
          */
-        QList<Collection*> queryableCollections() const;
+        QList<Amarok::Collection*> queryableCollections() const;
 
-        Collection* primaryCollection() const;
+        Amarok::Collection* primaryCollection() const;
 
         /**
             This method will try to get a Track object for the given url. This method will return 0 if no Track object
@@ -90,12 +90,12 @@ class AMAROK_EXPORT CollectionManager : public QObject
          * CollectionManger uses the default status passed as the second argument unless a custom
          * status is stored in Amarok's config file.
          */
-        void addUnmanagedCollection( Collection *newCollection, CollectionStatus defaultStatus );
-        void removeUnmanagedCollection( Collection *collection );
+        void addUnmanagedCollection( Amarok::Collection *newCollection, CollectionStatus defaultStatus );
+        void removeUnmanagedCollection( Amarok::Collection *collection );
 
         void setCollectionStatus( const QString &collectionId, CollectionStatus status );
         CollectionStatus collectionStatus( const QString &collectionId ) const;
-        QHash<Collection*, CollectionStatus> collections() const;
+        QHash<Amarok::Collection*, CollectionStatus> collections() const;
 
         /**
          * adds a TrackProvider to the list of TrackProviders,
@@ -107,7 +107,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          *
          * @param provider the new TrackProvider
          */
-        void addTrackProvider( TrackProvider *provider );
+        void addTrackProvider( Amarok::TrackProvider *provider );
 
         /**
          * removes a TrackProvider. Does not do anything if
@@ -118,7 +118,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          *
          * @param provider the provider to be removed
          */
-        void removeTrackProvider( TrackProvider *provider );
+        void removeTrackProvider( Amarok::TrackProvider *provider );
 
     public slots:
         void startFullScan();
@@ -127,19 +127,19 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     signals:
         void scanFinished();
-        void collectionAdded( Collection *newCollection );
+        void collectionAdded( Amarok::Collection *newCollection );
         void collectionRemoved( QString collectionId );
-        void trackProviderAdded( TrackProvider *provider );
+        void trackProviderAdded( Amarok::TrackProvider *provider );
         //this signal will be emitted after major changes to the collection
         //e.g. new songs where added, or an album changed
         //from compilation to non-compilation (and vice versa)
         //it will not be emitted on minor changes (e.g. the tags of a song were changed)
-        void collectionDataChanged( Collection *changedCollection );
+        void collectionDataChanged( Amarok::Collection *changedCollection );
 
         void foundRelatedArtists( Meta::ArtistList artists );
 
     private slots:
-        void slotNewCollection( Collection *newCollection );
+        void slotNewCollection( Amarok::Collection *newCollection );
         void slotRemoveCollection();
         void slotCollectionChanged();
         void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );

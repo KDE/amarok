@@ -84,14 +84,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
     public:
         CollectionLocation();
-        CollectionLocation( const Collection* parentCollection );
+        CollectionLocation( const Amarok::Collection* parentCollection );
         virtual  ~CollectionLocation();
 
         /**
             Returns a pointer to the collection location's corresponding collection.
             @return a pointer to the collection location's corresponding collection
          */
-        const Collection* collection() const;
+        const Amarok::Collection* collection() const;
 
         /**
             a displayable string representation of the collection location. use the return
@@ -251,7 +251,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         CollectionLocation *m_source;
         Meta::TrackList m_sourceTracks;
 
-        const Collection* m_parentCollection;
+        const Amarok::Collection* m_parentCollection;
         
         bool m_removeSources;
         QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;

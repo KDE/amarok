@@ -70,7 +70,7 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
 
 
     connect( CollectionManager::instance(),
-            SIGNAL(collectionDataChanged(Collection*)),
+            SIGNAL(collectionDataChanged(Amarok::Collection*)),
             SLOT(universeNeedsUpdate()) );
 }
 

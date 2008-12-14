@@ -20,32 +20,32 @@
 #include "CollectionLocation.h"
 #include "meta/Meta.h"
 
-CollectionFactory::CollectionFactory() : Amarok::Plugin()
+Amarok::CollectionFactory::CollectionFactory() : Amarok::Plugin()
 {
 }
 
-CollectionFactory::~CollectionFactory()
+Amarok::CollectionFactory::~CollectionFactory()
 {
 }
 
 
-TrackProvider::TrackProvider()
+Amarok::TrackProvider::TrackProvider()
 {
 }
 
-TrackProvider::~TrackProvider()
+Amarok::TrackProvider::~TrackProvider()
 {
 }
 
 bool
-TrackProvider::possiblyContainsTrack( const KUrl &url ) const
+Amarok::TrackProvider::possiblyContainsTrack( const KUrl &url ) const
 {
     Q_UNUSED( url )
     return false;
 }
 
 Meta::TrackPtr
-TrackProvider::trackForUrl( const KUrl &url )
+Amarok::TrackProvider::trackForUrl( const KUrl &url )
 {
     Q_UNUSED( url )
     return Meta::TrackPtr();
@@ -54,14 +54,14 @@ TrackProvider::trackForUrl( const KUrl &url )
 // CollectionBase
 
 bool
-CollectionBase::hasCapabilityInterface( Meta::Capability::Type type ) const
+Amarok::CollectionBase::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     Q_UNUSED( type );
     return false;
 }
 
 Meta::Capability*
-CollectionBase::asCapabilityInterface( Meta::Capability::Type type )
+Amarok::CollectionBase::asCapabilityInterface( Meta::Capability::Type type )
 {
     Q_UNUSED( type );
     return 0;
@@ -69,30 +69,30 @@ CollectionBase::asCapabilityInterface( Meta::Capability::Type type )
 
 // Collection
 
-Collection::Collection()
+Amarok::Collection::Collection()
     : QObject()
-    , TrackProvider()
+    , Amarok::TrackProvider()
 {
 }
 
-Collection::~Collection()
+Amarok::Collection::~Collection()
 {
 }
 
 QString
-Collection::uidUrlProtocol() const
+Amarok::Collection::uidUrlProtocol() const
 {
     return QString();
 }
 
 CollectionLocation*
-Collection::location() const
+Amarok::Collection::location() const
 {
     return new CollectionLocation( this );
 }
 
 bool
-Collection::isWritable() const
+Amarok::Collection::isWritable() const
 {
     CollectionLocation* loc = this->location();
     bool writable = loc->isWritable();
@@ -101,7 +101,7 @@ Collection::isWritable() const
 }
 
 bool
-Collection::isOrganizable() const
+Amarok::Collection::isOrganizable() const
 {
     CollectionLocation* loc = this->location();
     bool org = loc->isOrganizable();

@@ -37,7 +37,7 @@ class CollectionTreeItem
 {
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
-        CollectionTreeItem( Collection *parentCollection, CollectionTreeItem *parent );
+        CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent );
         //this ctor creates a "Various Artists" node. do not use it for anything else
         CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent );
 
@@ -70,7 +70,7 @@ class CollectionTreeItem
         void setChildrenLoaded( bool childrenLoaded );
 
         const Meta::DataPtr data() const { return m_data; }
-        Collection* parentCollection() const { return m_parentCollection; }
+        Amarok::Collection* parentCollection() const { return m_parentCollection; }
 
         KUrl::List urls() const;
         QList<Meta::TrackPtr> descendentTracks();
@@ -82,7 +82,7 @@ class CollectionTreeItem
 
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
-        Collection* m_parentCollection;
+        Amarok::Collection* m_parentCollection;
 
         QList<CollectionTreeItem*> m_childItems;
         bool m_childrenLoaded;

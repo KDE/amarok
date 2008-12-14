@@ -32,7 +32,7 @@ CollectionLocation::CollectionLocation()
     //nothing to do
 }
 
-CollectionLocation::CollectionLocation( const Collection* parentCollection)
+CollectionLocation::CollectionLocation( const Amarok::Collection* parentCollection)
     :QObject()
     , m_destination( 0 )
     , m_source( 0 )
@@ -48,7 +48,7 @@ CollectionLocation::~CollectionLocation()
     //nothing to do
 }
 
-const Collection*
+const Amarok::Collection*
 CollectionLocation::collection() const
 {
     return m_parentCollection;

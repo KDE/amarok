@@ -92,7 +92,7 @@ public:
     void polish();
    // bool updateContextView();
 
-    virtual Collection * collection() { return m_collection; }
+    virtual Amarok::Collection * collection() { return m_collection; }
 
     virtual QString messages();
     virtual QString sendMessage( const QString &message );

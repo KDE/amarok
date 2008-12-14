@@ -40,7 +40,7 @@
 AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
 
 MediaDeviceCollectionFactory::MediaDeviceCollectionFactory()
-    : CollectionFactory()
+    : Amarok::CollectionFactory()
 {
     //nothing to do
 }

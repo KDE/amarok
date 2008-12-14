@@ -34,7 +34,7 @@
 AMAROK_EXPORT_PLUGIN( MtpCollectionFactory )
 
 MtpCollectionFactory::MtpCollectionFactory()
-    : CollectionFactory()
+    : Amarok::CollectionFactory()
 {
     // nothing to do
 }

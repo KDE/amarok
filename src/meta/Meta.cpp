@@ -249,7 +249,7 @@ Meta::Track::inCollection() const
     return false;
 }
 
-Collection*
+Amarok::Collection*
 Meta::Track::collection() const
 {
     return 0;

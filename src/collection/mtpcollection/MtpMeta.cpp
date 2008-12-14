@@ -481,7 +481,7 @@ MtpTrack::inCollection() const
     return true;
 }
 
-Collection*
+Amarok::Collection*
 MtpTrack::collection() const
 {
     return m_collection;

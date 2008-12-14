@@ -104,7 +104,7 @@ CurrentEngine::stoppedState()
     // Collect data for the recently added albums
     setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
     
-    Collection *coll = CollectionManager::instance()->primaryCollection();
+    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     m_qm = coll->queryMaker();
     m_qm->setQueryType( QueryMaker::Album );
     m_qm->excludeFilter( Meta::valAlbum, QString(), true, true ); 
@@ -217,7 +217,7 @@ void CurrentEngine::update()
         if( albums.count() == 0 )
         {
             //try searching the collection as we might be dealing with a non local track
-            Collection *coll = CollectionManager::instance()->primaryCollection();
+            Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
             m_qm = coll->queryMaker();
             m_qm->setQueryType( QueryMaker::Album );
             m_qm->addMatch( artist );

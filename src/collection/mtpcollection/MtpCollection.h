@@ -32,7 +32,7 @@
 
 class MtpCollection;
 
-class MtpCollectionFactory : public CollectionFactory
+class MtpCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
     public:
@@ -59,7 +59,7 @@ class MtpCollectionFactory : public CollectionFactory
 
 };
 
-class MtpCollection : public Collection, public MemoryCollection
+class MtpCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
 	public:

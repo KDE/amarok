@@ -56,7 +56,7 @@ const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
 QList<QByteArray> Dynamic::BiasSolver::s_universe;
 QMutex            Dynamic::BiasSolver::s_universeMutex;
 QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
-Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
+Amarok::Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
 bool              Dynamic::BiasSolver::s_universeOutdated = true;
 unsigned int      Dynamic::BiasSolver::s_uidUrlProtocolPrefixLength = 0;
 
@@ -887,7 +887,7 @@ Dynamic::BiasSolver::outdateUniverse()
 }
 
 void
-Dynamic::BiasSolver::setUniverseCollection( Collection* coll )
+Dynamic::BiasSolver::setUniverseCollection( Amarok::Collection* coll )
 {
     QMutexLocker locker( &s_universeMutex );
 

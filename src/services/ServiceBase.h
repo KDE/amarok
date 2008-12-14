@@ -48,7 +48,7 @@ A virtual base class for factories for creating and handling the different types
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
-class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, public TrackProvider
+class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, public Amarok::TrackProvider
 {
     Q_OBJECT
     public:
@@ -234,7 +234,7 @@ public:
      * Return the Collection used by this service.
      * @return The collection.
      */
-    virtual Collection * collection() = 0;
+    virtual Amarok::Collection * collection() = 0;
 
     /**
      * Do expensive initialization. This method is called when the service is first shown.

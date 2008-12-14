@@ -41,7 +41,7 @@ fetch their data from somewhere ( a web service, an external program, etc....)
     @author
  */
 
-class AMAROK_EXPORT ServiceCollection : public Collection, public MemoryCollection
+class AMAROK_EXPORT ServiceCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
     public:

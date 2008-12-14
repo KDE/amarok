@@ -34,7 +34,7 @@ extern "C" {
 
 class IpodCollection;
 
-class IpodCollectionFactory : public CollectionFactory
+class IpodCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
     public:
@@ -57,7 +57,7 @@ class IpodCollectionFactory : public CollectionFactory
         QMap<QString, IpodCollection*> m_collectionMap;
 };
 
-class IpodCollection : public Collection, public MemoryCollection
+class IpodCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
     public:

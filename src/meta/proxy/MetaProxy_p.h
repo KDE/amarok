@@ -89,7 +89,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         }
 
     public slots:
-        void slotNewTrackProvider( TrackProvider *newTrackProvider )
+        void slotNewTrackProvider( Amarok::TrackProvider *newTrackProvider )
         {
             DEBUG_BLOCK
             if ( !newTrackProvider )
@@ -105,7 +105,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                     subscribeTo( track );
                     realTrack = track;
                     notifyObservers();
-                    disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), this, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
+                    disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Amarok::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Amarok::TrackProvider* ) ) );
                 }
             }
         }
@@ -126,7 +126,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             if( track )
                 realTrack = track;
             notifyObservers();
-            disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collection* ) ), this, SLOT( slotNewCollection( Collection* ) ) );
+            disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Amarok::Collection* ) ), this, SLOT( slotNewCollection( Amarok::Collection* ) ) );
         }
 };
 
