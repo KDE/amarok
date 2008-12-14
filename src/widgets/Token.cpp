@@ -35,22 +35,22 @@ Token::Token( const QString &string, QWidget *parent )
     hlayout->addWidget( m_iconContainer );
     hlayout->addWidget( m_label );
     setString( string );
-    m_label->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
-    unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
+    m_label->setAlignment( Qt::AlignCenter );
+
+    const uint borderColor = static_cast<uint>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
+    const QString hexBorder = QString::number( borderColor, 16 ).remove( 0, 2 ); // remove the Alpha channel (first two hex bits)
+    
     setStyleSheet( "Token {\
         color: palette( Base );\
-        border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
+        border: 2px solid #" + hexBorder + ";\
         border-radius: 4px;\
         padding: 2px;\
-    }" );       //I use QString::remove(int start, int n) to remove the A channel from ARGB - first two characters
+    }" );
 
     QFontMetrics metric( font() );
     QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
     QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_label->setSizePolicy( sizePolicy );
-    //debug stuff, I'm not done with it yet:
-    //m_label->setAutoFillBackground(true);
-    //m_label->setPalette(QPalette(QColor(0,0,0),QColor(255,0,0)));
     
     m_iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     setIcon();
