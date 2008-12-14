@@ -60,7 +60,7 @@ ServiceAlbumWithCover::image( int size )
 
     QString artist;
 
-    if ( albumArtist() )
+    if ( hasAlbumArtist() )
         artist = albumArtist()->name();
     else
         artist = "NULL"; //no need to translate, only used as a caching key/temp filename
