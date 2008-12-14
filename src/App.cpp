@@ -352,7 +352,7 @@ App::handleCliArgs() //static
     }
     */
 
-    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+    Amarok::config().writeEntry( "Debug Enabled", true /*args->isSet( "debug" )*/ );
 
     static bool firstTime = true;
     if( !firstTime && !haveArgs )

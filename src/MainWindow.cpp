@@ -80,6 +80,10 @@
 #include <fixx11h.h>
 #endif
 
+#ifdef Q_WS_MAC
+#include "GrowlInterface.h"
+#endif
+
 // Let people know OS X and Windows versions are still work-in-progress
 #if defined(Q_WS_MAC) || defined(Q_WS_WIN)
 #define AMAROK_CAPTION "Amarok 2 beta"
@@ -113,6 +117,7 @@ MainWindow::MainWindow()
 
 #ifdef Q_WS_MAC
     QSizeGrip* grip = new QSizeGrip( this );
+    GrowlInterface* growl = new GrowlInterface( "Amarok" );
 #endif
     //create this object now as we might run into issues if anyone tries to use it during initialization
     //make room for a full width statusbar at the bottom of everything
