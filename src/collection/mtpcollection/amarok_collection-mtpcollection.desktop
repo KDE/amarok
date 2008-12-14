@@ -2,6 +2,7 @@
 Type=Service
 Name=MTP Collection
 Name[be]=Калекцыя MTP
+Name[bg]=MTP колекция
 Name[ca]=Col·lecció MTP
 Name[cs]=MTP kolekce
 Name[da]=MTP-samling
@@ -32,6 +33,7 @@ Name[x-test]=xxMTP Collectionxx
 Name[zh_CN]=MTP 收藏
 Comment=MTP collection plugin for Amarok
 Comment[be]=Утулка калекцыі MTP для Amarok
+Comment[bg]=Приставка за MTP колекция за Amarok
 Comment[ca]=Connector de col·leccions MTP per a l'Amarok
 Comment[cs]=Modul kolekce MTP pro AmaroK
 Comment[da]=Plugin til MTP-samling til Amarok
