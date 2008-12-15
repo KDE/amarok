@@ -677,6 +677,15 @@ void
 IpodHandler::slotCopyTracksToDevice()
 {
     DEBUG_BLOCK
+
+    // Do not bother copying 0 tracks
+    // This could happen if all tracks to copy are dupes
+
+    if( m_tracksToCopy.size() == 0 )
+    {
+        m_memColl->collectionUpdated();
+        return;
+    }
     debug() << "Copying " << m_tracksToCopy.size() << " tracks";
 
 
