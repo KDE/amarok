@@ -684,6 +684,15 @@ IpodHandler::slotCopyTracksToDevice()
     /* Start first file copy, which triggers copying of
     all files enqueued in m_tracksToCopy */
 
+    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to iPod" ) );
+
+    m_statusbar->setMaximum( m_tracksToCopy.size() );
+
+    connect( this, SIGNAL( incrementProgress() ),
+            The::statusBar(), SLOT( incrementProgress() ) );
+    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+            The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+
     copyNextTrackToDevice();
 
 }
@@ -703,10 +712,16 @@ IpodHandler::copyNextTrackToDevice()
         // Copy the track
 
         privateCopyTrackToDevice( track );
+
+        emit incrementProgress();
     }
     // No tracks left to copy, emit done
     else
+    {
+        emit incrementProgress();
+        emit endProgressOperation( this );
         emit copyTracksDone();
+    }
 }
 
 void
@@ -1066,7 +1081,7 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job, i18n( "Transferring Tracks to iPod" )  );
+    //The::statusBar()->newProgressOperation( job, i18n( "Transferring Tracks to iPod" )  );
     //KIO::Scheduler::scheduleJob( job );
     //job->start();
 

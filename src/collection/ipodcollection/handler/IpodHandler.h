@@ -36,6 +36,7 @@ extern "C" {
 #include "Meta.h"
 #include "MemoryCollection.h"
 #include "IpodMeta.h"
+#include "../../../statusbar/StatusBar.h"
 
 #include "kjob.h"
 #include <KTempDir>
@@ -136,6 +137,8 @@ struct PodcastInfo
         signals:
 
         void copyTracksDone();
+        void incrementProgress();
+        void endProgressOperation( const QObject *owner );
 
         private slots:
 
@@ -152,6 +155,8 @@ struct PodcastInfo
 
         IpodCollection *m_memColl;
         TitleMap m_titlemap;
+
+        ProgressBarNG *m_statusbar;
 	    
         // ipod database
         Itdb_iTunesDB    *m_itdb;
