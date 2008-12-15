@@ -582,7 +582,6 @@ EngineController::slotTrackEnded()
     if( m_currentTrack && !m_multi )
     {
         emit trackFinished();
-        m_currentTrack->finishedPlaying( 1.0 );
         m_currentTrack = 0;
     }
 
