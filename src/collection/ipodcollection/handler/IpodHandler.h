@@ -141,6 +141,7 @@ struct PodcastInfo
 
         //void slotCopyTrackToDevice( QString collectionId, Meta::TrackList tracklist );
         void slotCopyTracksToDevice();
+        void copyNextTrackToDevice();
 
         void slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist );
 

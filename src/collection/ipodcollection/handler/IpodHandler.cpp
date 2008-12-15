@@ -38,7 +38,9 @@ extern "C" {
 #include "taglib_audiblefile.h"
 
 #include <KIO/Job>
+#include <KIO/CopyJob>
 #include <KIO/DeleteJob>
+#include <KIO/Scheduler>
 #include "kjob.h"
 #include <KTemporaryFile>
 #include <KUrl>
@@ -674,10 +676,37 @@ IpodHandler::slotCopyTracksToDevice()
 {
     DEBUG_BLOCK
     debug() << "Copying " << m_tracksToCopy.size() << " tracks";
-    foreach( Meta::TrackPtr track, m_tracksToCopy )
-       privateCopyTrackToDevice( track );
 
-    emit copyTracksDone();
+
+    //foreach( Meta::TrackPtr track, m_tracksToCopy )
+//       privateCopyTrackToDevice( track );
+
+    /* Start first file copy, which triggers copying of
+    all files enqueued in m_tracksToCopy */
+
+    copyNextTrackToDevice();
+
+}
+
+void
+IpodHandler::copyNextTrackToDevice()
+{
+    Meta::TrackPtr track;
+    // If there are more tracks to copy, copy the next one
+    if( !m_tracksToCopy.isEmpty() )
+    {
+        // Pop the track off the front of the list
+
+        track = m_tracksToCopy.first();
+        m_tracksToCopy.removeFirst();
+
+        // Copy the track
+
+        privateCopyTrackToDevice( track );
+    }
+    // No tracks left to copy, emit done
+    else
+        emit copyTracksDone();
 }
 
 void
@@ -1032,15 +1061,14 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     debug() << "Copying from *" << src << "* to *" << dst << "*";
 
-    KIO::FileCopyJob *job = KIO::file_copy( src, dst,
-                                            -1 /* permissions */,
-                                            KIO::HideProgressInfo );
+    KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
 
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
     The::statusBar()->newProgressOperation( job, i18n( "Transferring Tracks to iPod" )  );
-    job->start();
+    //KIO::Scheduler::scheduleJob( job );
+    //job->start();
 
     return true;
 }
@@ -1059,6 +1087,8 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         }
 
         m_wait = false;
+
+        copyNextTrackToDevice();
 }
 
 void
