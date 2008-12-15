@@ -24,7 +24,7 @@
 #include <QList>
 #include <QMutex>
 
-class MetaQueryMaker : public QueryMaker
+class AMAROK_EXPORT MetaQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
