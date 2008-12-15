@@ -175,6 +175,15 @@ IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
     return;
 }
 
+void
+IpodCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+    connect( m_handler, SIGNAL( copyTracksDone() ),
+             SLOT( slotCopyTracksCompleted() ) );
+    m_handler->copyTrackListToDevice( tracklist );
+}
+
 bool
 IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 {
@@ -373,11 +382,14 @@ IpodCollection::slotDisconnect()
 }
 
 void
-IpodCollection::copyTracksCompleted()
+IpodCollection::slotCopyTracksCompleted()
 {
     DEBUG_BLOCK
     debug() << "Trying to write iTunes database";
     m_handler->writeITunesDB( false ); // false, since not threaded, implement later
+
+    // inform treeview collection has updated
+    emit updated();
 }
 
 void

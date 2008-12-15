@@ -25,6 +25,9 @@
 #include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
+#include "MetaQueryMaker.h"
+#include "QueryMaker.h"
+
 #if GDK_FOUND
 extern "C" {
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -527,6 +530,161 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 
+    /* Check for duplicates before copying */
+
+    QueryMaker *qm = m_memColl->queryMaker();
+    qm->setQueryType( QueryMaker::Track );
+    qm->addMatch( track );
+
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+             SLOT( slotCopyTrackToDevice( QString, Meta::TrackList ) ) , Qt::QueuedConnection );
+    // NOTE: ignoring queryDone signal since nothing to be done based on it
+
+
+
+    qm->run();
+
+}
+
+void
+IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+//    QList<QueryMaker*> queryMakers;
+//    QueryMaker *metaqm;
+    bool isDupe;
+    TrackMap trackMap = m_memColl->trackMap();
+
+    Meta::TrackList tempTrackList;
+
+    /* Clear Transfer queue */
+
+    m_tracksToCopy.clear();
+
+    /* Check for same tags, don't copy if same tags */
+
+    foreach( Meta::TrackPtr track, tracklist )
+    {
+        tempTrackList = m_titlemap.values( track->name() );
+
+        /* If no song with same title, already not a dupe */
+
+        if( tempTrackList.isEmpty() )
+        {
+            debug() << "No tracks with same title, track not a dupe";
+            m_tracksToCopy.append( track );
+            continue;
+        }
+
+        /* Songs with same title present, check other tags */
+
+        debug() << "Same title present, checking other tags";
+
+        isDupe = false;
+
+        foreach( Meta::TrackPtr tempTrack, tempTrackList )
+        {
+
+            if( ( tempTrack->artist()->name() != track->artist()->name() )
+                && ( tempTrack->album()->name() != track->album()->name() )
+                && ( tempTrack->genre()->name() != track->genre()->name() )
+                && ( tempTrack->composer()->name() != track->composer()->name() )
+                && ( tempTrack->year()->name() != track->year()->name() ) )
+            {
+                debug() << "Same title, but other tags differ, not a dupe";
+                continue;
+            }
+
+
+
+            /* Track is already on there, break */
+
+            isDupe = true;
+            break;
+        }
+
+        if( !isDupe )
+            m_tracksToCopy.append( track );
+        else
+            debug() << "Track " << track->name() << " is a dupe!";
+    }
+
+    /* List ready, begin copying */
+
+    slotCopyTracksToDevice();
+
+    /* For each track make a querymaker testing if it's in ipod already */
+/*
+    foreach( Meta::TrackPtr track, tracklist )
+    {
+        debug() << "QM for: " << track->name();
+        QueryMaker * qm = track->collection()->queryMaker();
+       // QueryMaker *qm = m_memColl->queryMaker();
+        qm->setQueryType( QueryMaker::Track );
+        qm->addMatch( track );
+
+        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+                 SLOT( slotQueueTrackForCopy( QString, Meta::TrackList ) ) , Qt::QueuedConnection );
+        // NOTE: ignoring queryDone signal since nothing to be done based on it
+
+        queryMakers.append( qm );
+    }
+
+    metaqm = new MetaQueryMaker( queryMakers );
+
+    metaqm->setQueryType( QueryMaker::Track );
+
+    connect( metaqm, SIGNAL( queryDone() ),
+             SLOT( slotCopyTracksToDevice() ), Qt::QueuedConnection );
+
+    metaqm->run();
+    */
+}
+
+void
+IpodHandler::slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist )
+{
+    Q_UNUSED( collectionId );
+    DEBUG_BLOCK
+    debug() << "Tracklist size: " << tracklist.size();
+    /* If tracklist contains 1 track, no duplicates, add to queue */
+    /*
+    if( tracklist.size() == 1 )
+        m_tracksToCopy.append( tracklist.first() );
+    else
+        debug() << "Duplicate track, not copying";
+    */
+}
+
+/*
+void
+IpodHandler::slotCopyTrackToDevice( QString collectionId, Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+    // Track not found in collection, go ahead and copy 
+    if( tracklist.isEmpty() )
+        privateCopyTrackToDevice( m_trackToCopy );
+    else
+        debug() << "Duplicate track, not copying to device";
+}
+*/
+
+void
+IpodHandler::slotCopyTracksToDevice()
+{
+    DEBUG_BLOCK
+    debug() << "Copying " << m_tracksToCopy.size() << " tracks";
+    foreach( Meta::TrackPtr track, m_tracksToCopy )
+       privateCopyTrackToDevice( track );
+
+    emit copyTracksDone();
+}
+
+void
+IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
+{
+    DEBUG_BLOCK
+
     debug() << "Mountpoint is: " << mountPoint();
 
     KUrl url = determineURLOnDevice(track);
@@ -575,16 +733,16 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
     /*
     if( bundle.podcastBundle() )
     {
-        PodcastEpisodeBundle *peb = bundle.podcastBundle();
-        podcastInfo = new PodcastInfo;
-        podcastInfo->url = peb->url().url();
-        podcastInfo->description = peb->description();
-        podcastInfo->author = peb->author();
-        podcastInfo->rss = peb->parent().url();
-        podcastInfo->date = peb->dateTime();
-        podcastInfo->listened = !peb->isNew();
-    }
-*/
+    PodcastEpisodeBundle *peb = bundle.podcastBundle();
+    podcastInfo = new PodcastInfo;
+    podcastInfo->url = peb->url().url();
+    podcastInfo->description = peb->description();
+    podcastInfo->author = peb->author();
+    podcastInfo->rss = peb->parent().url();
+    podcastInfo->date = peb->dateTime();
+    podcastInfo->listened = !peb->isNew();
+}
+    */
     insertTrackIntoDB( url, track );
     if( !m_trackCreated )
     {
@@ -649,7 +807,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         ipodtrack->title = g_strdup( track->name().toUtf8() );
     else
         ipodtrack->title = g_strdup( KUrl::fromPath( track->uidUrl() ).fileName().toUtf8() );
-    
+
     ipodtrack->album = g_strdup( track->album()->name().toUtf8() );
     ipodtrack->artist = g_strdup( track->artist()->name().toUtf8() );
     ipodtrack->genre = g_strdup( track->genre()->name().toUtf8() );
@@ -1000,6 +1158,7 @@ IpodHandler::realPath( const char *ipodPath )
 void
 IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 {
+
     TrackMap trackMap = m_memColl->trackMap();
     ArtistMap artistMap = m_memColl->artistMap();
     AlbumMap albumMap = m_memColl->albumMap();
@@ -1021,8 +1180,10 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     setupYearMap( ipodtrack, track, yearMap );
 
     /* trackmap also soon to be subordinated */
-    
+
     trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
+
+    m_titlemap.insertMulti( track->name(), TrackPtr::staticCast( track ) );
 
     track->setIpodTrack( ipodtrack ); // convenience pointer
     // NOTE: not supporting adding track that's already on a playlist
@@ -1067,6 +1228,8 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
 
     return;
 }
+
+
 
 #if GDK_FOUND
 
@@ -1117,7 +1280,7 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
                 Itdb_Thumb *curThumb = ( Itdb_Thumb * )thumbs->data;
                 if( curThumb == NULL)
                     continue;
-                
+
 //                //debug() << "Found valid thumb while iterating";
 //                //debug() << "Cover probably set by iTunes";
 //                //debug() << "Type is the following:";
@@ -1157,10 +1320,10 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 
                 thumb = curThumb;
                 break;
-                
+
             }
 
-            
+
             if( thumb != NULL)
             {
                 thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
@@ -1214,7 +1377,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     debug() << "Adding image that's temporarily at: " << tempImagePath;
 
     success = itdb_track_set_thumbnails( ipodtrack, QFile::encodeName( tempImagePath ) );
-    
+
     if( success )
     {
         debug() << "Image added successfully!";
@@ -1366,9 +1529,11 @@ IpodHandler::parseTracks()
         #endif
 
         //getCoverArt( ipodtrack, track );
-        
+
         /* TrackMap stuff to be subordinated later */
         trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
+
+        m_titlemap.insertMulti( track->name(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
         ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
@@ -1400,4 +1565,8 @@ IpodHandler::parseTracks()
     m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
 }
+
+/* Private Functions */
+
+#include "IpodHandler.moc"
 

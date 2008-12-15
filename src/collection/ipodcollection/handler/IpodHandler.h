@@ -41,6 +41,7 @@ extern "C" {
 #include <KTempDir>
 
 #include <QObject>
+#include <QMap>
 
 class QString;
 class QFile;
@@ -51,6 +52,8 @@ class IpodCollection;
 
 namespace Ipod
 {
+
+    typedef QMap<QString, Meta::TrackPtr> TitleMap;
 
 
 /*
@@ -92,6 +95,7 @@ struct PodcastInfo
 	   QString mountPoint() const { return m_mountPoint; }
 	   bool openDevice( bool silent=false );
        void copyTrackToDevice( const Meta::TrackPtr &track );
+       void copyTrackListToDevice( const Meta::TrackList tracklist );
        bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
        bool deleteTracksFromDevice( const Meta::TrackList &tracks );
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
@@ -123,7 +127,7 @@ struct PodcastInfo
        void setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap );
        void setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap );
        void setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap );
-           
+
         public slots:
 	    bool initializeIpod();
 	void fileTransferred( KJob *job );
@@ -131,8 +135,22 @@ struct PodcastInfo
 
         signals:
 
+        void copyTracksDone();
+
+        private slots:
+
+        //void slotCopyTrackToDevice( QString collectionId, Meta::TrackList tracklist );
+        void slotCopyTracksToDevice();
+
+        void slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist );
+
         private:
-            IpodCollection *m_memColl;
+
+        void privateCopyTrackToDevice( const Meta::TrackPtr &track );
+        Meta::TrackList m_tracksToCopy;
+
+        IpodCollection *m_memColl;
+        TitleMap m_titlemap;
 	    
         // ipod database
         Itdb_iTunesDB    *m_itdb;

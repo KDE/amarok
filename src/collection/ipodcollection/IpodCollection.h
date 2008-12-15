@@ -65,12 +65,13 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
         virtual ~IpodCollection();
 
         void copyTrackToDevice( const Meta::TrackPtr &track );
+        void copyTrackListToDevice( const Meta::TrackList tracklist );
         bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
         void removeTrack( const Meta::IpodTrackPtr &track );
 
         void setTrackToDelete( const Meta::IpodTrackPtr &track );
 
-        void copyTracksCompleted();
+        
 
         void deviceRemoved();
 
@@ -106,6 +107,10 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
     void deleteTracksSlot( Meta::TrackList tracklist );
 
     void slotDisconnect();
+
+    private slots:
+
+    void slotCopyTracksCompleted();
 
     private:
         Meta::IpodTrackPtr m_trackToDelete;
