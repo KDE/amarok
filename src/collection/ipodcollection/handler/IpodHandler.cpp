@@ -443,6 +443,8 @@ DEBUG_BLOCK
                     ok = false;
                 }
             }
+            // Kill status bar only once DB is written
+            emit endProgressOperation( this );
         }
         else
         {
@@ -719,7 +721,6 @@ IpodHandler::copyNextTrackToDevice()
     else
     {
         emit incrementProgress();
-        emit endProgressOperation( this );
         emit copyTracksDone();
     }
 }

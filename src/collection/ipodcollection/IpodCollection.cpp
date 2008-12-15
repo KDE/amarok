@@ -180,7 +180,7 @@ IpodCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
 {
     DEBUG_BLOCK
     connect( m_handler, SIGNAL( copyTracksDone() ),
-             SLOT( slotCopyTracksCompleted() ) );
+             SLOT( slotCopyTracksCompleted() ), Qt::QueuedConnection );
     m_handler->copyTrackListToDevice( tracklist );
 }
 
