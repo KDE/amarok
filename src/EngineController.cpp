@@ -64,7 +64,7 @@ EngineController::destroy()
 EngineController::EngineController()
     : m_media( 0 )
     , m_audio( 0 )
-    , m_playWhenFetched(true)
+    , m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
 {
     DEBUG_BLOCK
