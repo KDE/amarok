@@ -29,6 +29,8 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * When reaching the end of the playlist, actually show stopped state.
+      (BR 177782)
     * Fixes in playing tracks in repeat modes.
     * The wikipedia applet did not give a status update when an entry was not 
       found. (BR 173940)
