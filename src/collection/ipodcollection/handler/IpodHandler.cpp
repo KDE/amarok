@@ -506,6 +506,8 @@ IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
+    Meta::TrackList tracklist;
+
     foreach( Meta::TrackPtr track, tracks )
     {
         Itdb_Track *ipodtrack = Meta::IpodTrackPtr::staticCast(track)->getIpodTrack();
@@ -522,6 +524,10 @@ IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
             debug() << "Error: failed to remove track from db";
             return false;
         }
+
+        // remove from titlemap
+
+        m_titlemap.remove( track->name(), track );
 
     }
 
@@ -557,6 +563,7 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 //    QList<QueryMaker*> queryMakers;
 //    QueryMaker *metaqm;
     bool isDupe;
+    QString format;
     TrackMap trackMap = m_memColl->trackMap();
 
     Meta::TrackList tempTrackList;
@@ -566,9 +573,20 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
     m_tracksToCopy.clear();
 
     /* Check for same tags, don't copy if same tags */
+    /* Also check for compatible format */
 
     foreach( Meta::TrackPtr track, tracklist )
     {
+        /* Check for compatible formats: MP3/AAC/MP4 */
+
+        format = track->type();
+
+        if( !( format == "mp3" || format == "aac" || format == "mp4" ) )
+        {
+            debug() << "Unsupported Ipod format: " << format;
+            continue;
+        }
+
         tempTrackList = m_titlemap.values( track->name() );
 
         /* If no song with same title, already not a dupe */
@@ -1238,7 +1256,7 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 
     trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
-    m_titlemap.insertMulti( track->name(), TrackPtr::staticCast( track ) );
+    m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
 
     track->setIpodTrack( ipodtrack ); // convenience pointer
     // NOTE: not supporting adding track that's already on a playlist
@@ -1588,7 +1606,7 @@ IpodHandler::parseTracks()
         /* TrackMap stuff to be subordinated later */
         trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
-        m_titlemap.insertMulti( track->name(), TrackPtr::staticCast( track ) );
+        m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
         ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation

@@ -43,6 +43,7 @@ extern "C" {
 
 #include <QObject>
 #include <QMap>
+#include <QMultiMap>
 
 class QString;
 class QFile;
@@ -54,7 +55,7 @@ class IpodCollection;
 namespace Ipod
 {
 
-    typedef QMap<QString, Meta::TrackPtr> TitleMap;
+    typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
 
 /*
@@ -101,7 +102,7 @@ struct PodcastInfo
        bool deleteTracksFromDevice( const Meta::TrackList &tracks );
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
-       
+
 
        void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
        void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
