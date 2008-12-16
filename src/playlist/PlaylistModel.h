@@ -159,8 +159,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         Item::State stateOfId( quint64 id ) const;
 
         // methods to save playlist to file
-        bool exportPlaylist( const QString &path ) const; // FIXME: why are there two methods for this?
-        bool savePlaylist( const QString &path ) const;
+        bool exportPlaylist( const QString &path ) const;
+        bool savePlaylist( const QString &name ) const;
         void setPlaylistName( const QString &name, bool proposeOverwriting = false );
         void proposePlaylistName( const QString &name, bool proposeOverwriting = false );
         const QString& playlistName() const { return m_playlistName; }
