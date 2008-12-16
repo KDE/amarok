@@ -447,7 +447,7 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::Editable:
             return true;
         case Meta::Capability::CustomActions:
-            return true;
+            return false;
         case Meta::Capability::Updatable:
             return true;
 
@@ -465,7 +465,8 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::Editable:
             return new EditCapabilityIpod( this );
         case Meta::Capability::CustomActions:
-            return new CustomActionsCapabilityIpod( this );
+            return 0;
+            //return new CustomActionsCapabilityIpod( this );
         case Meta::Capability::Updatable:
             return new UpdateCapabilityIpod( m_collection );
 
