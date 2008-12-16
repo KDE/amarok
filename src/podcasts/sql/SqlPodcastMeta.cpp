@@ -96,19 +96,19 @@ Meta::SqlPodcastEpisode::updateInDb()
     //if we don't have a database ID yet we should insert
     QString command = m_dbId ? update : insert;
 
-    command = command.arg( escape(m_url.url()) );
-    command = command.arg( m_sqlChannel->dbId() );
-    command = command.arg( escape(m_localUrl.url()) );
-    command = command.arg( escape(m_guid) );
-    command = command.arg( escape(m_title) );
-    command = command.arg( escape(m_subtitle) );
-    command = command.arg( QString::number(m_sequenceNumber) );
-    command = command.arg( escape(m_description) );
-    command = command.arg( escape(m_mimeType) );
-    command = command.arg( escape(m_pubDate.toString(Qt::ISODate)) );
-    command = command.arg( QString::number(m_duration) );
-    command = command.arg( QString::number(m_fileSize) );
-    command = command.arg( m_isNew ? boolTrue : boolFalse );
+    command = command.arg( escape(m_url.url()) ); //%1
+    command = command.arg( m_sqlChannel->dbId() ); //%2
+    command = command.arg( escape(m_localUrl.url()) ); //%3
+    command = command.arg( escape(m_guid) ); //%4
+    command = command.arg( escape(m_title) ); //%5
+    command = command.arg( escape(m_subtitle) ); //%6
+    command = command.arg( QString::number(m_sequenceNumber) ); //%7
+    command = command.arg( escape(m_description) ); //%8
+    command = command.arg( escape(m_mimeType) ); //%9
+    command = command.arg( escape(m_pubDate.toString(Qt::ISODate)) ); //%10
+    command = command.arg( QString::number(m_duration) ); //%11
+    command = command.arg( QString::number(m_fileSize) ); //%12
+    command = command.arg( m_isNew ? boolTrue : boolFalse ); //%13
 
     if( m_dbId )
         sqlStorage->query( command.arg( m_dbId ) );
@@ -160,7 +160,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 
     //Default Settings
     m_directory = KUrl( Amarok::saveLocation("podcasts") );
-    m_directory.addPath( m_title );
+    m_directory.addPath( Amarok::vfatPath( m_title ) );
     m_autoScan = true;
     m_fetchType = StreamOrDownloadOnDemand;
     m_purge = false;
@@ -217,22 +217,22 @@ Meta::SqlPodcastChannel::updateInDb()
     //if we don't have a database ID yet we should insert;
     QString command = m_dbId ? update : insert;
 
-    command = command.arg( escape(m_url.url()) );
-    command = command.arg( escape(m_title) );
-    command = command.arg( escape(m_webLink.url()) );
+    command = command.arg( escape(m_url.url()) ); //%1
+    command = command.arg( escape(m_title) ); //%2
+    command = command.arg( escape(m_webLink.url()) ); //%3
     //TODO:m_image.url()
-    command = command.arg( escape(QString("")) ); //image
-    command = command.arg( escape(m_description) );
-    command = command.arg( escape(m_copyright) );
-    command = command.arg( escape(m_directory.url()) );
+    command = command.arg( escape(QString("")) ); //image  //%4
+    command = command.arg( escape(m_description) ); //%5
+    command = command.arg( escape(m_copyright) ); //%6
+    command = command.arg( escape(m_directory.url()) ); //%7
     //TODO: QStringList -> comma separated QString
     QString labels = QString("");
-    command = command.arg( escape(labels) );
-    command = command.arg( escape(m_subscribeDate.toString()) );
-    command = command.arg( m_autoScan ? boolTrue : boolFalse );
-    command = command.arg( QString::number(m_fetchType) );
-    command = command.arg( m_purge ? boolTrue : boolFalse );
-    command = command.arg( QString::number(m_purgeCount) );
+    command = command.arg( escape(labels) ); //%8
+    command = command.arg( escape(m_subscribeDate.toString()) ); //%9
+    command = command.arg( m_autoScan ? boolTrue : boolFalse ); //%10
+    command = command.arg( QString::number(m_fetchType) ); //%11
+    command = command.arg( m_purge ? boolTrue : boolFalse ); //%12
+    command = command.arg( QString::number(m_purgeCount) ); //%13
 
     if( m_dbId )
         sqlStorage->query( command.arg( m_dbId ) );
