@@ -1498,6 +1498,11 @@ void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
 {
     DEBUG_BLOCK
+
+    // HACK: not setting cover art until working properly
+
+    return;
+
     KTemporaryFile tempImageFile; // create a temp file to save pixmap
     // use tempdir's path
     tempImageFile.setPrefix( m_tempdir->name() );
