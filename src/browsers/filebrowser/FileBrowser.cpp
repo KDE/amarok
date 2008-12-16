@@ -250,7 +250,7 @@ void FileBrowser::Widget::setupToolbar( QStringList actions )
         "bookmarks";
     }
     QAction *ac;
-    for ( QStringList::Iterator it = actions.begin(); it != actions.end(); ++it )
+    for ( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
     {
         if ( *it == "bookmarks" )
             ac = m_actionCollection->action(( *it ).toLatin1().constData() );
