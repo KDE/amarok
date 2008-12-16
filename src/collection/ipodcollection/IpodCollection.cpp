@@ -351,15 +351,17 @@ IpodCollection::deleteTrackSlot( Meta::IpodTrackPtr track)
 void
 IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
 {
+
     DEBUG_BLOCK
+    connect( m_handler, SIGNAL( deleteTracksDone() ),
+                        SLOT( slotDeleteTracksCompleted() ), Qt::QueuedConnection );
 
-    // remove the tracks from the device
-    if( !m_handler->deleteTracksFromDevice( tracklist ) )
-            debug() << "Failed to delete tracks";
-
-    // remove the tracks from the collection maps too
+    // remove the tracks from the collection maps
     foreach( Meta::TrackPtr track, tracklist )
         removeTrack( Meta::IpodTrackPtr::staticCast( track ) );
+
+    // remove the tracks from the device
+    m_handler->deleteTracksFromDevice( tracklist );
 
 /*
     const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
@@ -367,8 +369,6 @@ IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
             text,
             QString() ) == KMessageBox::Continue;
 */
-
-    
 
     // inform treeview collection has updated
     emit updated();
@@ -386,6 +386,18 @@ IpodCollection::slotCopyTracksCompleted()
 {
     DEBUG_BLOCK
     debug() << "Trying to write iTunes database";
+    m_handler->writeITunesDB( false ); // false, since not threaded, implement later
+
+    // inform treeview collection has updated
+    emit updated();
+}
+
+void
+IpodCollection::slotDeleteTracksCompleted()
+{
+    DEBUG_BLOCK
+    debug() << "Trying to write iTunes database";
+
     m_handler->writeITunesDB( false ); // false, since not threaded, implement later
 
     // inform treeview collection has updated

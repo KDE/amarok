@@ -506,7 +506,22 @@ IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
-    Meta::TrackList tracklist;
+    // Init the list of tracks to be deleted
+
+    m_tracksToDelete = tracks;
+
+    // Set up statusbar for deletion operation
+
+    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Deleting Tracks from iPod" ) );
+
+    m_statusbar->setMaximum( tracks.size() );
+
+    connect( this, SIGNAL( incrementProgress() ),
+             The::statusBar(), SLOT( incrementProgress() ) );
+    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+
+    /*
 
     foreach( Meta::TrackPtr track, tracks )
     {
@@ -531,8 +546,64 @@ IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
 
     }
 
-    return ( writeITunesDB( false ) );
+    */
 
+//    return ( writeITunesDB( false ) );
+
+    deleteNextTrackFromDevice();
+
+}
+
+void
+IpodHandler::deleteNextTrackFromDevice()
+{
+
+    Meta::TrackPtr track;
+    // If there are more tracks to copy, copy the next one
+    if( !m_tracksToDelete.isEmpty() )
+    {
+        // Pop the track off the front of the list
+
+        track = m_tracksToDelete.first();
+        m_tracksToDelete.removeFirst();
+
+        // Copy the track
+
+        privateDeleteTrackFromDevice( track );
+
+        emit incrementProgress();
+    }
+    // No tracks left to copy, emit done
+    else
+    {
+        emit incrementProgress();
+        emit deleteTracksDone();
+    }
+
+
+}
+
+void
+IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
+{
+    Itdb_Track *ipodtrack = Meta::IpodTrackPtr::staticCast(track)->getIpodTrack();
+
+    // delete file
+    KUrl url;
+    url.setPath( realPath( ipodtrack->ipod_path ) );
+    deleteFile( url );
+
+        // remove it from the ipod database, ipod playlists and all
+
+    if ( !removeDBTrack( ipodtrack ) )
+    {
+        debug() << "Error: failed to remove track from db";
+//        return false;
+    }
+
+        // remove from titlemap
+
+    m_titlemap.remove( track->name(), track );
 }
 
 void
@@ -1143,9 +1214,6 @@ IpodHandler::deleteFile( const KUrl &url )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job, i18n( "Deleting Tracks from iPod" ) );
-    job->start();
-
     return;
 }
 
@@ -1156,6 +1224,8 @@ IpodHandler::fileDeleted( KJob *job )  //SLOT
     {
         debug() << "file deletion failed: " << job->errorText();
     }
+
+    deleteNextTrackFromDevice();
 }
 
 KUrl

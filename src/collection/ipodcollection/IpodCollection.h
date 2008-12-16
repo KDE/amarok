@@ -111,6 +111,7 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
     private slots:
 
     void slotCopyTracksCompleted();
+    void slotDeleteTracksCompleted();
 
     private:
         Meta::IpodTrackPtr m_trackToDelete;

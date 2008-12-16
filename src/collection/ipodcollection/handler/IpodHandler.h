@@ -138,6 +138,7 @@ struct PodcastInfo
         signals:
 
         void copyTracksDone();
+        void deleteTracksDone();
         void incrementProgress();
         void endProgressOperation( const QObject *owner );
 
@@ -153,6 +154,10 @@ struct PodcastInfo
 
         void privateCopyTrackToDevice( const Meta::TrackPtr &track );
         Meta::TrackList m_tracksToCopy;
+
+        void deleteNextTrackFromDevice();
+        void privateDeleteTrackFromDevice( const Meta::TrackPtr &track );
+        Meta::TrackList m_tracksToDelete;
 
         IpodCollection *m_memColl;
         TitleMap m_titlemap;
