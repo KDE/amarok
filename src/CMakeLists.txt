@@ -21,8 +21,6 @@ if(APPLE)
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
-add_subdirectory( browsers/collectionbrowser )
-add_subdirectory( browsers/servicebrowser )
 add_subdirectory( collection )
 add_subdirectory( collectionscanner )
 add_subdirectory( context )
