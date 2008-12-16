@@ -23,7 +23,7 @@
 
 #include <QMutex>
 
-class st_mysql;
+struct st_mysql;
 typedef struct st_mysql MYSQL;
 
 /**
