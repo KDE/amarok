@@ -486,6 +486,8 @@ EngineController::setNextTrack( Meta::TrackPtr track )
 {
     QMutexLocker locker( &m_mutex );
 
+    track->prepareToPlay();
+
     if( !track || track->playableUrl().isEmpty() )
         return;
 
