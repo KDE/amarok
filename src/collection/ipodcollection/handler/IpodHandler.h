@@ -80,8 +80,6 @@ struct PodcastInfo
     {
         // enum to simplify map-building
 
-//        typedef enum { Artist, Album, Genre, Composer, Year } Metadata;
-        
         Q_OBJECT
 
         public:
@@ -100,16 +98,15 @@ struct PodcastInfo
            virtual void metadataChanged( Meta::ComposerPtr composer );
            virtual void metadataChanged( Meta::YearPtr year );
 
-          
 
-	   void detectModel();
-	   QString itunesDir( const QString &path = QString() ) const;
-	   QString mountPoint() const { return m_mountPoint; }
-	   bool openDevice( bool silent=false );
+       void detectModel();
+       QString itunesDir( const QString &path = QString() ) const;
+       QString mountPoint() const { return m_mountPoint; }
+       bool openDevice( bool silent=false );
        void copyTrackToDevice( const Meta::TrackPtr &track );
        void copyTrackListToDevice( const Meta::TrackList tracklist );
        bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
-       bool deleteTracksFromDevice( const Meta::TrackList &tracks );
+       void deleteTracksFromDevice( const Meta::TrackList &tracks );
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
 

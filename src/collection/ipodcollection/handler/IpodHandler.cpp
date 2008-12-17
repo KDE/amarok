@@ -551,7 +551,7 @@ IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
 
 }
 
-bool
+void
 IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
@@ -609,7 +609,7 @@ IpodHandler::deleteNextTrackFromDevice()
 {
 
     Meta::TrackPtr track;
-    // If there are more tracks to copy, copy the next one
+    // If there are more tracks to delete, delete the next one
     if( !m_tracksToDelete.isEmpty() )
     {
         // Pop the track off the front of the list
@@ -617,13 +617,13 @@ IpodHandler::deleteNextTrackFromDevice()
         track = m_tracksToDelete.first();
         m_tracksToDelete.removeFirst();
 
-        // Copy the track
+        // Delete the track
 
         privateDeleteTrackFromDevice( track );
 
         emit incrementProgress();
     }
-    // No tracks left to copy, emit done
+    // No tracks left to delete, emit done
     else
     {
         emit incrementProgress();
