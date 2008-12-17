@@ -30,6 +30,7 @@
 #include "Meta.h"
 #include "MemoryCollection.h"
 #include "MtpMeta.h"
+#include "../../../statusbar/StatusBar.h"
 
 #include "kjob.h"
 #include <threadweaver/Job.h>
@@ -77,6 +78,10 @@ namespace Mtp
        void terminate();
        bool succeeded() const { return m_success; }
 
+       // Some internal stuff that must be public due to libmtp being in C
+
+       static int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
+
         private:
             // file-copying related functions
             uint32_t checkFolderStructure( const Meta::TrackPtr track, bool create );
@@ -85,11 +90,16 @@ namespace Mtp
             uint32_t subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
             uint32_t createFolder( const char *name, uint32_t parent_id );
             void updateFolders( void );
-            int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
 
        // file io functions
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
+
+       // Progress Bar functions
+
+       void setBarMaximum( int total );
+       void setBarProgress( int steps );
+       void endBarProgressOperation();
 
        // internal mtp functions
 
@@ -118,12 +128,17 @@ namespace Mtp
            void succeeded();
            void failed();
 
+           void setProgress( int steps );
+           void endProgressOperation( const QObject *owner );
+
         private slots:
             void slotDeviceMatchSucceeded( ThreadWeaver::Job* job);
             void slotDeviceMatchFailed( ThreadWeaver::Job* job);
 
         private:
             MtpCollection *m_memColl;
+
+            ProgressBarNG *m_statusbar;
 
         // mtp database
 

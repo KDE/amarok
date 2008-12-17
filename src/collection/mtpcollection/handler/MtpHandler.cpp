@@ -273,20 +273,6 @@ MtpHandler::terminate()
     }
 }
 
-int
-MtpHandler::progressCallback( uint64_t const sent, uint64_t const total, void const * const data )
-{
-    Q_UNUSED( sent );
-    Q_UNUSED( total );
-    Q_UNUSED( data );
-
-    kapp->processEvents();
-
-    // TODO: allow cancellation from outside
-
-    return 0;
-}
-
 void
 MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
 {
@@ -675,7 +661,61 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 int
 MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
 {
+    DEBUG_BLOCK
+            /*
+    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Loading Track" ) );
+
+    connect( this, SIGNAL( setProgress( int ) ),
+             The::statusBar(), SLOT( setProgress( int ) ) );
+    
+    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+            */
+
     return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), 0, 0 );
+}
+
+int
+MtpHandler::progressCallback( uint64_t const sent, uint64_t const total, void const * const data )
+{
+    DEBUG_BLOCK
+    MtpHandler *handler = (MtpHandler*)(data);
+
+    // NOTE: setting max many times wastes cycles,
+    // but how else to get total outside of callback?
+
+    debug() << "Setting max to: " << ((int) total);
+
+    debug() << "Device: " << handler->prettyName();
+
+    handler->setBarMaximum( (int) total );
+    handler->setBarProgress( (int) sent );
+
+    if( sent == total )
+        handler->endBarProgressOperation();
+
+    return 0;
+}
+
+
+void
+MtpHandler::setBarMaximum( int total )
+{
+    DEBUG_BLOCK
+    m_statusbar->setMaximum( total );
+}
+void
+MtpHandler::setBarProgress( int steps )
+{
+    DEBUG_BLOCK
+    emit setProgress( steps );
+}
+
+void
+MtpHandler::endBarProgressOperation()
+{
+    DEBUG_BLOCK
+    emit endProgressOperation( this );
 }
 
 int
