@@ -53,7 +53,7 @@ int main( int argc, char *argv[] )
 
 
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );
-    aboutData.addAuthor( ki18n("Alexandre 'Ain't afraid of no bugs' Oliveira"), ki18n(( "Developer" )), "aleprj@gmail.com" );
+    aboutData.addCredit( ki18n("Alexandre 'Ain't afraid of no bugs' Oliveira"), ki18n(( "Developer" )), "aleprj@gmail.com" );
     aboutData.addCredit( ki18n("Casey Link"), ki18n(( "MP3tunes integration" )), "unnamedrambler@gmail.com" );
     aboutData.addCredit( ki18n("Christie Harris"), ki18n(( "Rokymoter (dangle)" )), "dangle.baby@gmail.com" );
     aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n(( "Usability" )), "admin@leinir.dk" );
