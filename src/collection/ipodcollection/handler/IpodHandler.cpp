@@ -143,6 +143,8 @@ IpodHandler::metadataChanged( TrackPtr track )
     debug() << "Changed app_rating to: " << Meta::IpodTrackPtr::staticCast(track)->getIpodTrack()->app_rating;
             */
 
+    debug() << "Rating is: " << track->rating();
+
     Meta::IpodTrackPtr trackPtr = Meta::IpodTrackPtr::staticCast( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
@@ -1084,7 +1086,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
 
     ipodtrack->playcount = track->playCount();
     // 1 star = 20 internally
-    ipodtrack->rating = ( track->rating() * 20 );
+    ipodtrack->rating = ( track->rating() * ITDB_RATING_STEP / 2 );
 
     m_dbChanged = true;
 
@@ -1413,7 +1415,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     track->setBpm( ipodtrack->BPM );
     track->setFileSize( ipodtrack->size );
     track->setPlayCount( ipodtrack->playcount );
-    track->setRating( ipodtrack->rating / ITDB_RATING_STEP );
+    track->setRating( ipodtrack->rating / ITDB_RATING_STEP * 2 );
 
     QString path = QString( ipodtrack->ipod_path ).split( ':' ).join( "/" );
     path = m_mountPoint + path;
