@@ -391,7 +391,13 @@ IpodTrack::setDiscNumber( int newDiscNumber )
 int
 IpodTrack::playCount() const
 {
-    return 0;
+    return m_playCount;
+}
+
+void
+IpodTrack::setPlayCount( const int newCount )
+{
+    m_playCount = newCount;
 }
 
 uint

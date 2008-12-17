@@ -1358,6 +1358,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     track->setBitrate( ipodtrack->bitrate );
     track->setBpm( ipodtrack->BPM );
     track->setFileSize( ipodtrack->size );
+    track->setPlayCount( ipodtrack->playcount );
 
     QString path = QString( ipodtrack->ipod_path ).split( ':' ).join( "/" );
     path = m_mountPoint + path;
