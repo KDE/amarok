@@ -22,6 +22,9 @@
 
 #include <KVBox>
 
+class QAction;
+class QMenu;
+
 class SearchWidget;
 class CollectionTreeView;
 
@@ -36,17 +39,28 @@ class CollectionWidget : public KVBox
         //void slotSetFilter();
 
     private slots:
+        void customFilter( QAction * );
         void sortByArtist();
         void sortByArtistAlbum();
-        void sortByArtistYearAlbum();
         void sortByAlbum();
         void sortByGenreArtist();
         void sortByGenreArtistAlbum();
         void sortByComposer();
+        void slotShowYears( bool checked );
 
     private:
-        SearchWidget           *m_searchWidget;
-        CollectionTreeView* m_treeView;
+        SearchWidget        *m_searchWidget;
+        CollectionTreeView  *m_treeView;
+        
+        QAction             *m_firstLevelSelectedAction;
+        QAction             *m_secondLevelSelectedAction;
+        QAction             *m_thirdLevelSelectedAction;
+        
+        QMenu               *m_firstLevel;
+        QMenu               *m_secondLevel;
+        QMenu               *m_thirdLevel;
+        
+        QList<int>          m_levels;
         static CollectionWidget *s_instance;
 };
 

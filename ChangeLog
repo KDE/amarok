@@ -30,6 +30,7 @@ VERSION 2.0.1
       enabled.
 
   CHANGES:
+    * Custom Sorting in the Collection has returned.
     * Memory use optimizations.
     * Playlist items now have tooltips. (BR 170844)
 

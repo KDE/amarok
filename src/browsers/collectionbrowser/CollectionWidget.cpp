@@ -29,6 +29,7 @@
 #include <KMenu>
 #include <KMenuBar>
 
+#include <QActionGroup>
 
 CollectionWidget *CollectionWidget::s_instance = 0;
 
@@ -48,11 +49,11 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_treeView = new CollectionTreeView( this );
     m_treeView->setFrameShape( QFrame::NoFrame );
 
-    QList<int> cats = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
-    if ( cats.isEmpty() )
-        cats << CategoryId::Artist << CategoryId::Album;
+    m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    if ( m_levels.isEmpty() )
+        m_levels << CategoryId::Artist << CategoryId::Album;
 
-    m_treeView->setModel( new CollectionTreeItemModel( cats ) );
+    m_treeView->setModel( new CollectionTreeItemModel( m_levels ) );
     sw->setup( m_treeView );
 
     QAction *action = new QAction( i18n( "Artist" ), menubar );
@@ -62,11 +63,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     action = new QAction( i18n( "Artist / Album" ), menubar );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
     filterMenu->addAction( action );
-
-    action = new QAction( i18n( "Artist / Year - Album" ), menubar );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistYearAlbum() ) );
-    filterMenu->addAction( action );
-
+    
     action = new QAction( i18n( "Album" ), menubar );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbum() ) );
     filterMenu->addAction( action );
@@ -82,58 +79,254 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     action = new QAction( i18n( "Genre / Artist / Album" ), menubar );
     connect( action, SIGNAL(triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
     filterMenu->addAction( action );
+    
+    filterMenu->addSeparator();
+    
+    m_firstLevel = filterMenu->addMenu( i18n( "First Level" ) );
+    
+    QAction *firstArtistAction   = m_firstLevel->addAction( i18n( "Artist" ) );
+    firstArtistAction->setData( CategoryId::Artist );
+    
+    QAction *firstAlbumAction    = m_firstLevel->addAction( i18n( "Album"  ) );
+    firstAlbumAction->setData( CategoryId::Album );
+    
+    QAction *firstGenreAction    = m_firstLevel->addAction( i18n( "Genre"  ) );
+    firstGenreAction->setData( CategoryId::Genre );
+    
+    QAction *firstComposerAction = m_firstLevel->addAction( i18n( "Composer" ) );
+    firstComposerAction->setData( CategoryId::Composer );
+    
+    firstArtistAction->setCheckable  ( true );
+    firstAlbumAction->setCheckable   ( true );
+    firstGenreAction->setCheckable   ( true );
+    firstComposerAction->setCheckable( true );
+    
+    QActionGroup *firstGroup = new QActionGroup( this );
+    firstGroup->addAction( firstArtistAction );
+    firstGroup->addAction( firstAlbumAction );
+    firstGroup->addAction( firstGenreAction );
+    firstGroup->addAction( firstComposerAction );
 
+    connect( m_firstLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
+        
+    m_secondLevel = filterMenu->addMenu( i18n( "Second Level" ) );
+    QAction *secondNullAction     = m_secondLevel->addAction( i18n( "None" ) );
+    secondNullAction->setData( CategoryId::None );
+    
+    QAction *secondArtistAction   = m_secondLevel->addAction( i18n( "Artist" ) );
+    secondArtistAction->setData( CategoryId::Artist );
+    
+    QAction *secondAlbumAction    = m_secondLevel->addAction( i18n( "Album"  ) );
+    secondAlbumAction->setData( CategoryId::Album );
+    
+    QAction *secondGenreAction    = m_secondLevel->addAction( i18n( "Genre"  ) );
+    secondGenreAction->setData( CategoryId::Genre );
+    
+    QAction *secondComposerAction = m_secondLevel->addAction( i18n( "Composer" ) );
+    secondComposerAction->setData( CategoryId::Composer );
+    
+    secondNullAction->setCheckable    ( true );
+    secondArtistAction->setCheckable  ( true );
+    secondAlbumAction->setCheckable   ( true );
+    secondGenreAction->setCheckable   ( true );
+    secondComposerAction->setCheckable( true );
+    
+    QActionGroup *secondGroup = new QActionGroup( this );
+    secondGroup->addAction( secondNullAction );
+    secondGroup->addAction( secondArtistAction );
+    secondGroup->addAction( secondAlbumAction );
+    secondGroup->addAction( secondGenreAction );
+    secondGroup->addAction( secondComposerAction );
+    secondNullAction->setChecked( true );
+
+    connect( m_secondLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
+
+    m_thirdLevel = filterMenu->addMenu( i18n( "Third Level" ) );
+    QAction *thirdNullAction     = m_thirdLevel->addAction( i18n( "None" ) );
+    thirdNullAction->setData( CategoryId::None );
+    
+    QAction *thirdArtistAction   = m_thirdLevel->addAction( i18n( "Artist" ) );
+    thirdArtistAction->setData( CategoryId::Artist );
+    
+    QAction *thirdAlbumAction    = m_thirdLevel->addAction( i18n( "Album"  ) );
+    thirdAlbumAction->setData( CategoryId::Album );
+    
+    QAction *thirdGenreAction    = m_thirdLevel->addAction( i18n( "Genre"  ) );
+    thirdGenreAction->setData( CategoryId::Genre );
+    
+    QAction *thirdComposerAction = m_thirdLevel->addAction( i18n( "Composer" ) );
+    thirdComposerAction->setData( CategoryId::Composer );
+    
+    thirdNullAction->setCheckable    ( true );
+    thirdArtistAction->setCheckable  ( true );
+    thirdAlbumAction->setCheckable   ( true );
+    thirdGenreAction->setCheckable   ( true );
+    thirdComposerAction->setCheckable( true );
+    
+    QActionGroup *thirdGroup = new QActionGroup( this );
+    thirdGroup->addAction( thirdNullAction );
+    thirdGroup->addAction( thirdArtistAction );
+    thirdGroup->addAction( thirdAlbumAction );
+    thirdGroup->addAction( thirdGenreAction );
+    thirdGroup->addAction( thirdComposerAction );
+    thirdNullAction->setChecked( true );
+
+    connect( m_thirdLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
+    
+    filterMenu->addSeparator();
+    QAction *showYears = filterMenu->addAction( i18n( "Show Years" ) );
+    showYears->setCheckable( true );
+    showYears->setChecked( AmarokConfig::showYears() );
+    connect( showYears, SIGNAL( toggled( bool ) ), SLOT( slotShowYears( bool ) ) );
+    
+    // Preset the checked status properly
+    if( m_levels.size() > 0 )
+    {
+        //First Category
+        const int i = m_levels.takeFirst();
+        switch( i )
+        {
+            case CategoryId::Artist:
+                firstArtistAction->setChecked( true );
+                break;
+            case CategoryId::Album:
+                firstAlbumAction->setChecked( true );
+                break;
+            case CategoryId::Genre:
+                firstGenreAction->setChecked( true );
+                break;
+            default: //as good a fall through as any, here
+                firstComposerAction->setChecked( true );
+                break;
+        }
+    }
+    if( m_levels.size() > 0 ) //We have a second level
+    {
+        const int i = m_levels.takeFirst();
+        switch( i )
+        {
+            case CategoryId::Artist:
+                secondArtistAction->setChecked( true );
+                break;
+            case CategoryId::Album:
+                secondAlbumAction->setChecked( true );
+                break;
+            case CategoryId::Genre:
+                secondGenreAction->setChecked( true );
+                break;
+            case CategoryId::Composer:
+                secondComposerAction->setChecked( true );
+                break;
+            default:
+                secondNullAction->setChecked( true );
+        }
+    }
+    if( m_levels.size() > 0 ) //We have a third level
+    {
+        const int i = m_levels.takeFirst();
+        switch( i )
+        {
+            case CategoryId::Artist:
+                thirdArtistAction->setChecked( true );
+                break;
+            case CategoryId::Album:
+                thirdAlbumAction->setChecked( true );
+                break;
+            case CategoryId::Genre:
+                thirdGenreAction->setChecked( true );
+                break;
+            case CategoryId::Composer:
+                thirdComposerAction->setChecked( true );
+                break;
+            default:
+                thirdNullAction->setChecked( true );
+        }
+    }
+    m_firstLevelSelectedAction = firstGroup->checkedAction();
+    m_secondLevelSelectedAction = secondGroup->checkedAction();
+    m_thirdLevelSelectedAction = thirdGroup->checkedAction();
+    
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
 }
 
 void
+CollectionWidget::customFilter( QAction *action )
+{
+    QMenu *menu = qobject_cast<QMenu*>( sender() );
+    
+    if( menu == m_firstLevel )
+        m_firstLevelSelectedAction = action;        
+    else if( menu == m_secondLevel )
+        m_secondLevelSelectedAction = action;
+    else
+        m_thirdLevelSelectedAction = action;
+    
+    const int firstLevel = m_firstLevelSelectedAction->data().toInt();
+    const int secondLevel = m_secondLevelSelectedAction->data().toInt();
+    const int thirdLevel = m_thirdLevelSelectedAction->data().toInt();
+    m_levels.clear();
+    m_levels << firstLevel;
+    if( secondLevel != CategoryId::None )
+        m_levels << secondLevel;
+    if( thirdLevel != CategoryId::None )
+        m_levels << thirdLevel;
+    m_treeView->setLevels( m_levels );
+}        
+
+void
 CollectionWidget::sortByArtist()
 {
-    AmarokConfig::setShowYears( false );
-    m_treeView->setLevels( QList<int>() << CategoryId::Artist );
+    m_levels.clear();
+    m_levels << CategoryId::Artist;
+    m_treeView->setLevels( m_levels );
 }
 
 void
 CollectionWidget::sortByArtistAlbum()
 {
-    AmarokConfig::setShowYears( false );
-    m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
-}
-
-void
-CollectionWidget::sortByArtistYearAlbum()
-{
-    AmarokConfig::setShowYears( true );
-    m_treeView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
+    m_levels.clear();
+    m_levels << CategoryId::Artist << CategoryId::Album;
+    m_treeView->setLevels( m_levels );
 }
 
 void
 CollectionWidget::sortByAlbum()
 {
-    AmarokConfig::setShowYears( false );
-    m_treeView->setLevels( QList<int>() << CategoryId::Album );
+    m_levels.clear();
+    m_levels << CategoryId::Album;
+    m_treeView->setLevels( m_levels );
 }
 
 void
 CollectionWidget::sortByGenreArtist()
 {
-    AmarokConfig::setShowYears( false );
-    m_treeView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
+    m_levels.clear();
+    m_levels << CategoryId::Genre << CategoryId::Artist;
+    m_treeView->setLevels( m_levels );
 }
 
 void
 CollectionWidget::sortByGenreArtistAlbum()
 {
-    AmarokConfig::setShowYears( false );
-    m_treeView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
+    m_levels.clear();
+    m_levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+    m_treeView->setLevels( m_levels );
 }
 
 void
 CollectionWidget::sortByComposer()
 {
-    AmarokConfig::setShowYears( false );
-    m_treeView->setLevels( QList<int>() << CategoryId::Composer );
+    m_levels.clear();
+    m_levels.append( CategoryId::Composer );
+    m_treeView->setLevels( m_levels );
+}
+
+void
+CollectionWidget::slotShowYears( bool checked )
+{
+    AmarokConfig::setShowYears( checked );
+    m_treeView->setLevels( m_levels );
 }
 
 
