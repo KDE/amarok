@@ -107,12 +107,11 @@ class IpodTrack : public Meta::Track
 
         void setFileSize( int newFileSize );
         virtual int filesize() const;
-        virtual int sampleRate() const;
 
         virtual int bitrate() const;
         virtual void setBitrate( int newBitrate );
 
-        virtual int samplerate() const;
+        virtual int sampleRate() const;
         virtual void setSamplerate( int newSamplerate );
 
         virtual float bpm() const;

@@ -325,12 +325,6 @@ IpodTrack::filesize() const
 }
 
 int
-IpodTrack::sampleRate() const
-{
-    return 0;
-}
-
-int
 IpodTrack::bitrate() const
 {
     return m_bitrate;
@@ -343,7 +337,7 @@ IpodTrack::setBitrate( int newBitrate )
 }
 
 int
-IpodTrack::samplerate() const
+IpodTrack::sampleRate() const
 {
     return m_samplerate;
 }

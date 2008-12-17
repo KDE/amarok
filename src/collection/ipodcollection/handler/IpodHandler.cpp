@@ -1412,6 +1412,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     track->setComment( QString::fromUtf8( ipodtrack->comment ) );
     track->setDiscNumber( ipodtrack->cd_nr );
     track->setBitrate( ipodtrack->bitrate );
+    track->setSamplerate( ipodtrack->samplerate );
     track->setBpm( ipodtrack->BPM );
     track->setFileSize( ipodtrack->size );
     track->setPlayCount( ipodtrack->playcount );
