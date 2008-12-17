@@ -69,12 +69,15 @@ MtpCollectionLocation::isWritable() const
 bool
 MtpCollectionLocation::remove( const Meta::TrackPtr &track )
 {
+    Q_UNUSED( track );
     DEBUG_BLOCK
-
+/*
     MtpTrackPtr mtpTrack = MtpTrackPtr::dynamicCast( track );
 
     if( track )
         return m_collection->deleteTrackFromDevice( mtpTrack );
+
+*/
 
     return false;
     

@@ -628,8 +628,55 @@ MtpHandler::updateFolders( void )
     m_folders = LIBMTP_Get_Folder_List( m_device );
 }
 
-bool
-MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
+void
+MtpHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+
+    // Init the list of tracks to be deleted
+
+    m_tracksToDelete = tracks;
+
+    // Set up statusbar for deletion operation
+
+    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Deleting Tracks from MTP" ) );
+
+    m_statusbar->setMaximum( tracks.size() );
+
+    connect( this, SIGNAL( incrementProgress() ),
+             The::statusBar(), SLOT( incrementProgress() ) );
+    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+
+    while( !m_tracksToDelete.isEmpty() )
+        deleteNextTrackFromDevice();
+
+    emit incrementProgress();
+    emit deleteTracksDone();
+
+}
+
+void
+MtpHandler::deleteNextTrackFromDevice()
+{
+
+    Meta::TrackPtr track;
+
+    // Pop the track off the front of the list
+
+    track = m_tracksToDelete.first();
+    m_tracksToDelete.removeFirst();
+
+    // Delete the track
+
+    privateDeleteTrackFromDevice( Meta::MtpTrackPtr::staticCast( track ) );
+
+    emit incrementProgress();
+
+}
+
+void
+MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 {
     DEBUG_BLOCK
 
@@ -650,11 +697,13 @@ MtpHandler::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
                        i18n( "Delete failed" ),
                              StatusBar::Error
                                           );
-        return false;
+ //       return false;
     }
     debug() << "object deleted";
 
-    return true;
+ //   return true;
+
+    m_titlemap.remove( track->name(), Meta::TrackPtr::staticCast( track ) );
 
 }
 
@@ -696,7 +745,6 @@ MtpHandler::progressCallback( uint64_t const sent, uint64_t const total, void co
 
     return 0;
 }
-
 
 void
 MtpHandler::setBarMaximum( int total )
@@ -742,7 +790,7 @@ MtpHandler::getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr tr
     track->setBitrate( mtptrack->bitrate );
     track->setFileSize( mtptrack->filesize );
 
-    debug() << "Title is: " << track->title();
+//    debug() << "Title is: " << track->title();
 
     /* set proposed temporary file path, to which track will be copied temporarily before attempting to play */
 
@@ -756,7 +804,7 @@ MtpHandler::getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr tr
     track->setFolderId( mtptrack->parent_id );
     track->setId( mtptrack->item_id );
 
-    debug() << "Id is: " << track->id();
+//    debug() << "Id is: " << track->id();
 
 //    track->setPlayableUrl( "" ); // defaulting, since not provided
     track->setUrl( QString::number( track->id(), 10 ) ); // for map key
@@ -1015,6 +1063,8 @@ MtpHandler::parseTracks()
 
         trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
+        m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
+
         track->setMtpTrack( mtptrack ); // convenience pointer
         mtpTrackMap.insert( mtptrack, track ); // map for playlist formation
     }
@@ -1097,6 +1147,8 @@ MtpHandler::addMtpTrackToCollection( LIBMTP_track_t *mtptrack )
     /* trackmap also soon to be subordinated */
 
     trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
+
+    m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
 
     track->setMtpTrack( mtptrack ); // convenience pointer
     // NOTE: not supporting adding track that's already on a playlist

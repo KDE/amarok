@@ -501,7 +501,7 @@ MtpTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::Editable:
             return true;
         case Meta::Capability::CustomActions:
-            return true;
+            return false;
         case Meta::Capability::Updatable:
             return true;
 
@@ -521,7 +521,8 @@ MtpTrack::asCapabilityInterface( Meta::Capability::Type type )
             return new EditCapabilityMtp( this );
 
         case Meta::Capability::CustomActions:
-            return new CustomActionsCapabilityMtp( this );
+            return 0;
+            //return new CustomActionsCapabilityMtp( this );
         case Meta::Capability::Updatable:
             return new UpdateCapabilityMtp( m_collection );
 

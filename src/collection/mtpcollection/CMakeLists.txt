@@ -25,7 +25,8 @@ if (MTP_FOUND)
 	MtpMeta.cpp
 	MtpCollection.cpp
 	MtpCollectionLocation.cpp
-	handler/MtpHandler.cpp)	
+	handler/MtpHandler.cpp
+	CollectionCapabilityMtp.cpp)	
 	kde4_add_plugin(amarok_collection-mtpcollection WITH_PREFIX ${amarok_collection-mtpcollection_PART_SRCS})
 
 	target_link_libraries(amarok_collection-mtpcollection

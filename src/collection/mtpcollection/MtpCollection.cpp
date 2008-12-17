@@ -20,7 +20,9 @@
 
 #include "MtpCollection.h"
 #include "MtpCollectionLocation.h"
+#include "meta/CollectionCapability.h"
 #include "MtpMeta.h"
+#include "CollectionCapabilityMtp.h"
 
 #include "../../../statusbar/StatusBar.h"
 #include "amarokconfig.h"
@@ -173,6 +175,33 @@ MtpCollection::~MtpCollection()
         delete m_handler;
 }
 
+bool
+MtpCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    DEBUG_BLOCK
+            switch( type )
+    {
+        case Meta::Capability::Collection:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+MtpCollection::asCapabilityInterface( Meta::Capability::Type type )
+{
+    DEBUG_BLOCK
+            switch( type )
+    {
+        case Meta::Capability::Collection:
+            return new Meta::CollectionCapabilityMtp( this );
+        default:
+            return 0;
+    }
+}
+
 void
 MtpCollection::init()
 {
@@ -195,7 +224,7 @@ MtpCollection::copyTrackToDevice( const Meta::TrackPtr &track )
     m_handler->copyTrackToDevice( track );
     return;
 }
-
+/*
 bool
 MtpCollection::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 {
@@ -215,7 +244,7 @@ MtpCollection::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     debug() << "deleteTrackFromDevice returning true";
     return true;
 }
-
+*/
 void
 MtpCollection::removeTrack( const Meta::MtpTrackPtr &track )
 {
@@ -367,17 +396,49 @@ MtpCollection::setTrackToDelete( const Meta::MtpTrackPtr &track )
 {
     m_trackToDelete = track;
 }
-
+/*
 void
 MtpCollection::deleteTrackToDelete()
 {
     deleteTrackFromDevice( m_trackToDelete );
 }
-
+*/
+/*
 void
 MtpCollection::deleteTrackSlot( Meta::MtpTrackPtr track)
 {
     deleteTrackFromDevice( track );
+}
+*/
+void
+MtpCollection::deleteTracksSlot( Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+    connect( m_handler, SIGNAL( deleteTracksDone() ),
+                     SLOT( slotDeleteTracksCompleted() ), Qt::QueuedConnection );
+
+    // remove the tracks from the collection maps
+    foreach( Meta::TrackPtr track, tracklist )
+        removeTrack( Meta::MtpTrackPtr::staticCast( track ) );
+
+    // remove the tracks from the device
+    m_handler->deleteTracksFromDevice( tracklist );
+
+    // inform treeview collection has updated
+    emit updated();
+}
+
+void
+MtpCollection::slotDeleteTracksCompleted()
+{
+    DEBUG_BLOCK
+
+    // Signal the end of process to the handler
+
+    m_handler->endBarProgressOperation();
+
+    // inform treeview collection has updated
+    emit updated();
 }
 
 void

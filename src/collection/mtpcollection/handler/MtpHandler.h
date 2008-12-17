@@ -37,6 +37,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QMultiMap>
 #include <QMutex>
 
 
@@ -51,6 +52,8 @@ class MtpCollection;
 
 namespace Mtp
 {
+
+    typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
 /* The libmtp backend for all Mtp calls */
     class MtpHandler : public QObject
@@ -70,7 +73,8 @@ namespace Mtp
 
        // external functions
        void copyTrackToDevice( const Meta::TrackPtr &track );
-       bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
+//       bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
+       void deleteTracksFromDevice( const Meta::TrackList &tracks );
        int getTrackToFile( const uint32_t id, const QString & filename );
        void parseTracks();
        void updateTrackInDB( const Meta::MtpTrackPtr track );
@@ -81,6 +85,11 @@ namespace Mtp
        // Some internal stuff that must be public due to libmtp being in C
 
        static int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
+       // Progress Bar functions
+
+       void setBarMaximum( int total );
+       void setBarProgress( int steps );
+       void endBarProgressOperation();
 
         private:
             // file-copying related functions
@@ -95,11 +104,7 @@ namespace Mtp
        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
        void deleteFile( const KUrl &url );
 
-       // Progress Bar functions
 
-       void setBarMaximum( int total );
-       void setBarProgress( int steps );
-       void endBarProgressOperation();
 
        // internal mtp functions
 
@@ -128,7 +133,10 @@ namespace Mtp
            void succeeded();
            void failed();
 
+           void deleteTracksDone();
+
            void setProgress( int steps );
+           void incrementProgress();
            void endProgressOperation( const QObject *owner );
 
         private slots:
@@ -137,6 +145,12 @@ namespace Mtp
 
         private:
             MtpCollection *m_memColl;
+
+            TitleMap m_titlemap;
+
+            void deleteNextTrackFromDevice();
+            void privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track );
+            Meta::TrackList m_tracksToDelete;
 
             ProgressBarNG *m_statusbar;
 

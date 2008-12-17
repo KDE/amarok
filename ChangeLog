@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * MTP devices can now delete multiple tracks at once.
     * Status bar notification oncopying or deleting tracks on Ipod.
     * Ipod ratings are read/written/displayed.
     * Ipod playcounts are read and displayed on Current Track Info applet.

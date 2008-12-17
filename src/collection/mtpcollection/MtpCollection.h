@@ -70,7 +70,7 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
     void init(); // called by factory
 
     void copyTrackToDevice( const Meta::TrackPtr &track );
-    bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
+ //   bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
     void removeTrack( const Meta::MtpTrackPtr &track );
 
     QString getTempFileName( const Meta::MtpTrackPtr track, const QString &tempDir );
@@ -93,6 +93,9 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
     virtual QString collectionId() const;
     virtual QString prettyName() const;
 
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
     virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
 
     Mtp::MtpHandler* handler() { return m_handler; }
@@ -107,8 +110,10 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
     void collectionDisconnected( const QString &udi );
 
     public slots:
-    void deleteTrackToDelete();
-    void deleteTrackSlot( Meta::MtpTrackPtr track);
+//    void deleteTrackToDelete();
+//    void deleteTrackSlot( Meta::MtpTrackPtr track);
+    void deleteTracksSlot( Meta::TrackList tracklist );
+    void slotDeleteTracksCompleted();
 
     void slotDisconnect();
 
@@ -119,8 +124,8 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
  private:
 
     Meta::MtpTrackPtr m_trackToDelete;
-    QString           m_udi;
     QString           m_serial;
+    QString           m_udi;
     Mtp::MtpHandler *m_handler;
 
 };
