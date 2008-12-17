@@ -260,14 +260,14 @@ SqlTrack::isPlayable() const
 bool
 SqlTrack::isEditable() const
 {
-    return m_collection && QFile::exists( m_url.path() ) && QFile::permissions( m_url.path() ) & QFile::WriteUser;
+    return m_collection && QFile::exists( m_url.path() ) && QFile( m_url.path() ).isWritable();
 }
 
 QString
 SqlTrack::type() const
 {
     return m_url.isLocalFile()
-           ? m_url.fileName().mid( m_url.fileName().lastIndexOf( '.' ) + 1 )
+           ? Amarok::extension( m_url.fileName() )
            : i18n( "Stream" );
 }
 
@@ -284,7 +284,8 @@ SqlTrack::fullPrettyName() const
         s = i18n("%1 - %2", m_artist->name(), name() );
 
     //TODO
-    if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
+    if( s.isEmpty() ) 
+        s = prettyTitle( m_url.fileName() );
 
     return s;
 }
