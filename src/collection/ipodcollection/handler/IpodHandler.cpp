@@ -1416,6 +1416,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     track->setBpm( ipodtrack->BPM );
     track->setFileSize( ipodtrack->size );
     track->setPlayCount( ipodtrack->playcount );
+    track->setLastPlayed( ipodtrack->time_played );
     track->setRating( ipodtrack->rating / ITDB_RATING_STEP * 2 );
 
     QString path = QString( ipodtrack->ipod_path ).split( ':' ).join( "/" );

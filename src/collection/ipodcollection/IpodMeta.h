@@ -124,6 +124,7 @@ class IpodTrack : public Meta::Track
         virtual void setDiscNumber ( int newDiscNumber );
 
         virtual uint lastPlayed() const;
+        void setLastPlayed( const uint newTime );
 
         virtual int playCount() const;
         void setPlayCount( const int newCount );
@@ -205,6 +206,7 @@ class IpodTrack : public Meta::Track
         int m_samplerate;
         int m_trackNumber;
         int m_playCount;
+        uint m_lastPlayed;
         int m_rating;
         float m_bpm;
         QString m_displayUrl;

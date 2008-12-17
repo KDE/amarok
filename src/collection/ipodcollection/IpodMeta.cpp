@@ -398,7 +398,13 @@ IpodTrack::setPlayCount( const int newCount )
 uint
 IpodTrack::lastPlayed() const
 {
-    return 0;
+    return m_lastPlayed;
+}
+
+void
+IpodTrack::setLastPlayed( const uint newTime )
+{
+    m_lastPlayed = newTime;
 }
 
 QString
