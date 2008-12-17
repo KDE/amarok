@@ -30,8 +30,6 @@ extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
 
 int main( int argc, char *argv[] )
 {
-    aboutData.addAuthor( ki18n("Alexandre 'Ain't afraid of no bugs' Oliveira"),
-            ki18n(( "Developer (Untouchable)" )), "aleprj@gmail.com" );
     aboutData.addAuthor( ki18n("Bart 'Where are my toothpicks' Cerneels"),
             ki18n(( "Developer (Stecchino)" )), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
     aboutData.addAuthor( ki18n("Dan 'Hey, it compiled...' Meltzer"),
@@ -55,6 +53,7 @@ int main( int argc, char *argv[] )
 
 
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );
+    aboutData.addAuthor( ki18n("Alexandre 'Ain't afraid of no bugs' Oliveira"), ki18n(( "Developer" )), "aleprj@gmail.com" );
     aboutData.addCredit( ki18n("Casey Link"), ki18n(( "MP3tunes integration" )), "unnamedrambler@gmail.com" );
     aboutData.addCredit( ki18n("Christie Harris"), ki18n(( "Rokymoter (dangle)" )), "dangle.baby@gmail.com" );
     aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n(( "Usability" )), "admin@leinir.dk" );
