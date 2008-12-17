@@ -19,7 +19,20 @@
    <property name="margin" >
     <number>0</number>
    </property>
-   <item row="0" column="0" >
+   <item row="5" column="0" >
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item rowspan="2" row="0" column="0" >
     <widget class="QGroupBox" name="groupBox3" >
      <property name="title" >
       <string>Last.fm Profile</string>
@@ -37,9 +50,6 @@
          <cstring>kcfg_ScrobblerUsername</cstring>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="KLineEdit" name="kcfg_ScrobblerUsername" />
       </item>
       <item row="2" column="0" >
        <widget class="QLabel" name="labelPassword" >
@@ -61,7 +71,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
+      <item row="1" column="1" >
+       <widget class="KLineEdit" name="kcfg_ScrobblerUsername" />
+      </item>
+      <item row="4" column="1" >
        <widget class="QLabel" name="kActiveLabel1" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
@@ -70,10 +83,10 @@
          </sizepolicy>
         </property>
         <property name="text" >
-         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
+         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">&#xd;
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">&#xd;
+p, li { white-space: pre-wrap; }&#xd;
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">&#xd;
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;a href="http://www.last.fm:80/signup.php">&lt;span style=" text-decoration: underline; color:#0057ae;">Sign up to last.fm&lt;/span>&lt;/a>.&lt;/p>&lt;/body>&lt;/html></string>
         </property>
         <property name="wordWrap" >
@@ -81,15 +94,17 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
+      <item row="3" column="1" >
+       <widget class="QPushButton" name="testLogin" >
+        <property name="text" >
+         <string>&amp;Test Login</string>
+        </property>
+       </widget>
+      </item>
      </layout>
-     <zorder>labelUsername</zorder>
-     <zorder>labelPassword</zorder>
-     <zorder>kcfg_ScrobblerPassword</zorder>
-     <zorder>kcfg_ScrobblerUsername</zorder>
-     <zorder>kActiveLabel1</zorder>
     </widget>
    </item>
-   <item row="2" column="0" >
+   <item row="4" column="0" >
     <widget class="QLabel" name="kActiveLabel2" >
      <property name="text" >
       <string>Why not join the &lt;a href="http://www.last.fm:80/group/Amarok+Users">Amarok last.fm group&lt;/a> and share your musical tastes with other Amarok users?</string>
@@ -100,19 +115,6 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item row="3" column="0" >
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="0" >
     <widget class="QGroupBox" name="groupBox2" >
      <property name="title" >
       <string>Last.fm Services</string>
@@ -133,11 +135,11 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="1" column="0" >
        <widget class="QCheckBox" name="kcfg_RetrieveSimilarArtists" >
-        <property name="checked">
-         <bool>true</bool>
-        </property>
         <property name="text" >
          <string>&amp;Retrieve similar artists</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -145,11 +147,6 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
-  <zorder>kActiveLabel3</zorder>
-  <zorder>groupBox3</zorder>
-  <zorder>kActiveLabel2</zorder>
-  <zorder>groupBox2</zorder>
-  <zorder>kActiveLabel1</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>

@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Lastfm Settings Dialog can now check to ensure username/password is 
+      correct. (BR 144456)
     * Growl support on OS X.
     * Greatly improved Librivox.org service script. It now works for all books,
       and dynamically fetches a summary of each book that is shown in the 

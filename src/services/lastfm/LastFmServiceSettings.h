@@ -18,6 +18,8 @@
 
 #include <kcmodule.h>
 
+class WsReply;
+
 namespace Ui { class LastFmConfigWidget; }
 
 class LastFmServiceSettings : public KCModule
@@ -33,6 +35,9 @@ public:
     virtual void load();
     virtual void defaults();
 
+private slots:
+    void testLogin();
+    void onAuthenticated( WsReply *reply );
 private:
     Ui::LastFmConfigWidget *m_configDialog;
     LastFmServiceConfig     m_config;
