@@ -82,11 +82,26 @@ class ImportCapabilityImpl : public Meta::ImportCapability
             : Meta::ImportCapability()
             , m_track( track ) {}
 
-        virtual void setScore( const int score ) { m_track->setScore( score ); }
-        virtual void setRating( const int rating ) { m_track->setRating( rating ); }
-        virtual void setFirstPlayed( const uint time ) { m_track->setFirstPlayed( time ); }
-        virtual void setLastPlayed( const uint time ) { m_track->setLastPlayed( time ); }
-        virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
+        virtual void setScore( const int score ) {
+            if( score > 0 ) // don't reset it
+                m_track->setScore( score );
+        }
+        virtual void setRating( const int rating ) {
+            if( rating > 0 ) // don't reset it
+                m_track->setRating( rating );
+        }
+        virtual void setFirstPlayed( const uint time ) {
+            if( time < m_track->firstPlayed() ) // only update if older
+                m_track->setFirstPlayed( time );
+        }
+        virtual void setLastPlayed( const uint time ) {
+            if( time > m_track->lastPlayed() ) // only update if newer
+                m_track->setLastPlayed( time );
+        }
+        virtual void setPlayCount( const int playcount ) {
+            if( playcount > 0 ) // don't reset it
+                m_track->setPlayCount( playcount );
+        }
         virtual void beginStatisticsUpdate()
         {
             m_track->setWriteAllStatisticsFields( true );
