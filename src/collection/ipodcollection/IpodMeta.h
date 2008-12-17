@@ -135,8 +135,8 @@ class IpodTrack : public Meta::Track
         virtual void endMetaDataUpdate();
         virtual void abortMetaDataUpdate() { DEBUG_BLOCK }    //read only
 
-        virtual void subscribe ( Observer *observer );
-        virtual void unsubscribe ( Observer *observer );
+//        virtual void subscribe ( Observer *observer );
+//        virtual void unsubscribe ( Observer *observer );
 
         virtual bool inCollection() const;
         virtual Amarok::Collection* collection() const;
@@ -206,6 +206,7 @@ class IpodTrack : public Meta::Track
         int m_samplerate;
         int m_trackNumber;
         int m_playCount;
+        int m_rating;
         float m_bpm;
         QString m_displayUrl;
         QString m_playableUrl;

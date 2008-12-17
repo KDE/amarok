@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Status bar notification oncopying or deleting tracks on Ipod.
+    * Ipod ratings are read/written/displayed.
+    * Ipod playcounts are read and displayed on Current Track Info applet.
     * Lastfm Settings Dialog can now check to ensure username/password is 
       correct. (BR 144456)
     * Growl support on OS X.

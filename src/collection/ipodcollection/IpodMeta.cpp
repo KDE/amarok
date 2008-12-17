@@ -295,13 +295,14 @@ IpodTrack::setScore( double newScore )
 int
 IpodTrack::rating() const
 {
-    return 0;
+    return m_rating;
 }
 
 void
 IpodTrack::setRating( int newRating )
 {
-    Q_UNUSED( newRating )
+    m_rating = newRating;
+    notifyObservers();
 }
 
 int
@@ -419,7 +420,7 @@ IpodTrack::setType( const QString & type )
 {
     m_type = type;
 }
-
+/*
 void
 IpodTrack::subscribe( Observer *observer )
 {
@@ -431,6 +432,7 @@ IpodTrack::unsubscribe( Observer *observer )
 {
     Q_UNUSED( observer )    //read only
 }
+*/
 // TODO: implement this for IpodCollectionLocation
 bool
 IpodTrack::inCollection() const

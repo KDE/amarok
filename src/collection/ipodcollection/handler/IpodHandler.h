@@ -76,7 +76,7 @@ struct PodcastInfo
 */
 
 /* The libgpod backend for all Ipod calls */
-    class IpodHandler : public QObject
+    class IpodHandler : public QObject, public Meta::Observer
     {
         // enum to simplify map-building
 
@@ -89,6 +89,16 @@ struct PodcastInfo
            ~IpodHandler();
 
            bool succeeded() const { return m_success; }
+
+           // Observer Methods
+
+           /** This method is called when the metadata of a track has changed. */
+           virtual void metadataChanged( Meta::TrackPtr track );
+           virtual void metadataChanged( Meta::ArtistPtr artist );
+           virtual void metadataChanged( Meta::AlbumPtr album );
+           virtual void metadataChanged( Meta::GenrePtr genre );
+           virtual void metadataChanged( Meta::ComposerPtr composer );
+           virtual void metadataChanged( Meta::YearPtr year );
 
           
 
@@ -117,6 +127,7 @@ struct PodcastInfo
        void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
        #endif
        void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+       void setRating( const int newrating );
 	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
        QString           realPath( const char *ipodPath );
 	   bool pathExists( const QString &ipodPath, QString *realPath=0 );

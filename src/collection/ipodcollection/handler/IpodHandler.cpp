@@ -120,6 +120,9 @@ IpodHandler::~IpodHandler()
 {
     DEBUG_BLOCK
     delete m_tempdir;
+    // Write to DB before closing, for ratings updates etc.
+    debug() << "Writing to Ipod DB";
+    writeITunesDB( false );
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
@@ -127,6 +130,51 @@ IpodHandler::~IpodHandler()
     debug() << "End of destructor reached";
 }
 
+/** Observer Methods **/
+void
+IpodHandler::metadataChanged( TrackPtr track )
+{
+    DEBUG_BLOCK
+    // Update rating
+    /*
+    Meta::IpodTrackPtr::staticCast(track)->getIpodTrack()->rating = ( track->rating() * ITDB_RATING_STEP / 2 );
+    Meta::IpodTrackPtr::staticCast(track)->getIpodTrack()->app_rating = ( track->rating() * ITDB_RATING_STEP /2 );
+
+    debug() << "Changed app_rating to: " << Meta::IpodTrackPtr::staticCast(track)->getIpodTrack()->app_rating;
+            */
+
+    Meta::IpodTrackPtr trackPtr = Meta::IpodTrackPtr::staticCast( track );
+    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
+
+    debug() << "Running updateTrackInDB...";
+
+    updateTrackInDB( trackUrl, track, trackPtr->getIpodTrack() );
+}
+void
+IpodHandler::metadataChanged( ArtistPtr artist )
+{
+    Q_UNUSED( artist );
+}
+void
+IpodHandler::metadataChanged( AlbumPtr album )
+{
+    Q_UNUSED( album );
+}
+void
+IpodHandler::metadataChanged( GenrePtr genre )
+{
+    Q_UNUSED( genre );
+}
+void
+IpodHandler::metadataChanged( ComposerPtr composer )
+{
+    Q_UNUSED( composer );
+}
+void
+IpodHandler::metadataChanged( YearPtr year )
+{
+    Q_UNUSED( year );
+}
 
 bool
 IpodHandler::initializeIpod()
@@ -1032,6 +1080,12 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     ipodtrack->samplerate = track->sampleRate();
     ipodtrack->tracklen = track->length()*1000;
 
+    // set playcount and rating
+
+    ipodtrack->playcount = track->playCount();
+    // 1 star = 20 internally
+    ipodtrack->rating = ( track->rating() * 20 );
+
     m_dbChanged = true;
 
 // In Amarok 2, tracks come from many places, no such reliable info
@@ -1359,6 +1413,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     track->setBpm( ipodtrack->BPM );
     track->setFileSize( ipodtrack->size );
     track->setPlayCount( ipodtrack->playcount );
+    track->setRating( ipodtrack->rating / ITDB_RATING_STEP );
 
     QString path = QString( ipodtrack->ipod_path ).split( ':' ).join( "/" );
     path = m_mountPoint + path;
@@ -1686,6 +1741,10 @@ IpodHandler::parseTracks()
 
         track->setIpodTrack( ipodtrack ); // convenience pointer
         ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
+
+        // Subscribe to Track for metadata updates
+
+        subscribeTo( Meta::TrackPtr::staticCast( track ) );
     }
 
     // Iterate through ipod's playlists to set track's playlists
