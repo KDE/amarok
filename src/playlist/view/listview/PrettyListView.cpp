@@ -406,9 +406,10 @@ void Playlist::PrettyListView::find( const QString &searchTerm )
         QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
-        
-    } else {
 
+        emit( found() );
+    } else {
+        emit( notFound() );
     }
 
     
@@ -437,6 +438,10 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm )
         QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
+        
+        emit( found() );
+    } else {
+        emit( notFound() );
     }
 }
 
@@ -463,6 +468,10 @@ void Playlist::PrettyListView::findPrevious(const QString & searchTerm)
         QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
+        
+        emit( found() );
+    } else {
+        emit( notFound() );
     }
 }
 

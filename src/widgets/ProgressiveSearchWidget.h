@@ -38,18 +38,6 @@ public:
 
     ~ProgressiveSearchWidget();
 
-    /**
-     * Notify the widget that there are no matches, so the next and previous actions
-     * should be disabled and the text color set to no_match color.
-     */
-    void hasMatches();
-    
-    /**
-     * Notify the widget that there are matches (at least one), so the next and previous actions
-     * should be enabled and the text color set to normal
-     */
-    void noMatches();
-
 signals:
 
     /**
@@ -74,7 +62,21 @@ signals:
      * @param filter The curren search term
      */
     void previous( const QString &filter );
-    
+
+public slots:
+
+    /**
+     * Notify the widget that there are matches (at least one), so the next and previous actions
+     * should be enabled and the text color set to normal
+     */
+    void match();
+
+    /**
+     * Notify the widget that there are no matches, so the next and previous actions
+     * should be disabled and the text color set to no_match color.
+     */
+    void noMatch();
+
 protected slots:
 
     /**

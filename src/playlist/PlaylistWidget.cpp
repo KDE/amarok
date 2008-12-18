@@ -60,6 +60,9 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( m_searchWidget, SIGNAL( next( const QString & ) ), playView, SLOT( findNext( const QString & ) ) );
     connect( m_searchWidget, SIGNAL( previous( const QString & ) ), playView, SLOT( findPrevious( const QString & ) ) );
 
+    connect( playView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
+    connect( playView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );
+
 
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( playView );

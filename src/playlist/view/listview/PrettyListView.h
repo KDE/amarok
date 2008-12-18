@@ -44,6 +44,10 @@ public:
     PrettyListView( QWidget* parent = 0 );
     ~PrettyListView();
 
+signals:
+    void found();
+    void notFound(); 
+
     // these slots are used by the ContextMenu
 public slots:
     void editTrackInformation();

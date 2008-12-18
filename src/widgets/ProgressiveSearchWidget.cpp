@@ -50,6 +50,8 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     toolbar->addAction( m_nextAction );
     toolbar->addAction( m_previousAction );
+
+    noMatch();
     
     
 }
@@ -64,9 +66,10 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
     DEBUG_BLOCK
     debug() << "New filter: " << filter;
 
-    if( filter.isEmpty() )
+    if( filter.isEmpty() ) {
         emit( filterCleared() );
-    else
+        noMatch();
+    } else
         emit( filterChanged( filter ) );
 
 }
@@ -82,6 +85,18 @@ void ProgressiveSearchWidget::slotPrevious()
     DEBUG_BLOCK
     emit( previous( m_searchEdit->text() ) );
             
+}
+
+void ProgressiveSearchWidget::match()
+{
+    m_nextAction->setEnabled( true );
+    m_previousAction->setEnabled( true );
+}
+
+void ProgressiveSearchWidget::noMatch()
+{
+    m_nextAction->setEnabled( false );
+    m_previousAction->setEnabled( false );
 }
 
 
