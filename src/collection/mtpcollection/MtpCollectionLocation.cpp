@@ -112,17 +112,9 @@ MtpCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 {
     DEBUG_BLOCK
 
-    // iterate through source tracks
-    foreach( const Meta::TrackPtr &track, sources.keys() )
-    {
 
-        debug() << "copying from " << sources[ track ];
-        m_collection->copyTrackToDevice( track );
+    m_collection->copyTrackListToDevice( sources.keys() );
 
-    }
-
-    m_collection->collectionUpdated();
-    
     slotCopyOperationFinished();
 }
 

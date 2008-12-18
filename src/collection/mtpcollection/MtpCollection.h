@@ -67,9 +67,10 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
     MtpCollection( const QString &serial, const QString &udi );
     virtual ~MtpCollection();
 
+    void copyTrackListToDevice( const Meta::TrackList tracklist );
+
     void init(); // called by factory
 
-    void copyTrackToDevice( const Meta::TrackPtr &track );
  //   bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
     void removeTrack( const Meta::MtpTrackPtr &track );
 
@@ -118,6 +119,8 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
     void slotDisconnect();
 
     private slots:
+        void slotCopyTracksCompleted();
+
         void handlerSucceeded();
         void handlerFailed();
 

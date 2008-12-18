@@ -58,7 +58,7 @@ namespace Mtp
 /* The libmtp backend for all Mtp calls */
     class MtpHandler : public QObject
     {
-        
+
         Q_OBJECT
 
         public:
@@ -72,7 +72,7 @@ namespace Mtp
            bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial );
 
        // external functions
-       void copyTrackToDevice( const Meta::TrackPtr &track );
+       void copyTrackListToDevice( const Meta::TrackList tracklist );
 //       bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
        void deleteTracksFromDevice( const Meta::TrackList &tracks );
        int getTrackToFile( const uint32_t id, const QString & filename );
@@ -133,6 +133,7 @@ namespace Mtp
            void succeeded();
            void failed();
 
+           void copyTracksDone();
            void deleteTracksDone();
 
            void setProgress( int steps );
@@ -144,12 +145,17 @@ namespace Mtp
             void slotDeviceMatchFailed( ThreadWeaver::Job* job);
 
         private:
+
+            void copyTracksToDevice();
+            void copyNextTrackToDevice();
+            void privateCopyTrackToDevice( const Meta::TrackPtr &track );
             MtpCollection *m_memColl;
 
             TitleMap m_titlemap;
 
             void deleteNextTrackFromDevice();
             void privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track );
+            Meta::TrackList m_tracksToCopy;
             Meta::TrackList m_tracksToDelete;
 
             ProgressBarNG *m_statusbar;

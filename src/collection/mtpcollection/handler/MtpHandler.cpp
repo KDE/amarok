@@ -273,187 +273,7 @@ MtpHandler::terminate()
     }
 }
 
-void
-MtpHandler::copyTrackToDevice( const Meta::TrackPtr &track )
-{
-    DEBUG_BLOCK
 
-    QString genericError = i18n( "Could not send track" );
-
-    LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
-    trackmeta->item_id = 0;
-    debug() << "filetype : " << track->type();
-    if( track->type() == "mp3" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_MP3;
-    }
-    else if( track->type() == "ogg" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_OGG;
-    }
-    else if( track->type() == "wma" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_WMA;
-    }
-    else if( track->type() == "mp4" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_MP4;
-    }
-    else
-    {
-        // Couldn't recognise an Amarok filetype.
-        // fallback to checking the extension (e.g. .wma, .ogg, etc)
-        debug() << "No filetype found by Amarok filetype";
-
-        const QString extension = track->type().toLower();
-
-        int libmtp_type = m_supportedFiles.indexOf( extension );
-        if( libmtp_type >= 0 )
-        {
-            int keyIndex = mtpFileTypes.values().indexOf( extension );
-            libmtp_type = mtpFileTypes.keys()[keyIndex];
-            trackmeta->filetype = (LIBMTP_filetype_t) libmtp_type;
-            debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension;
-        }
-        else
-        {
-            debug() << "We do not support the extension ." << extension;
-         /*   The::statusBar()->shortLongMessage(
-                           genericError,
-                           i18n( "Cannot determine a valid file type" ),
-                                 StatusBar::Error
-                                              );*/
-            return;
-        }
-    }
-
-    if( track->prettyName().isEmpty() )
-    {
-        trackmeta->title = qstrdup( i18n( "Unknown title" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->title = qstrdup( track->prettyName().toUtf8() );
-    }
-
-    if( !track->album() )
-    {
-        trackmeta->album = qstrdup( i18n( "Unknown album" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->album = qstrdup( track->album()->prettyName().toUtf8() );
-    }
-
-    if( !track->artist() )
-    {
-        trackmeta->artist = qstrdup( i18n( "Unknown artist" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->artist = qstrdup( track->artist()->prettyName().toUtf8() );
-    }
-
-    if( !track->genre() )
-    {
-        trackmeta->genre = qstrdup( i18n( "Unknown genre" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->genre = qstrdup( track->genre()->prettyName().toUtf8() );
-    }
-
-    // TODO: port to Qt4
-
-    if( track->year() > 0 )
-    {
-        QString date;
-        QTextStream( &date ) << track->year() << "0101T0000.0";
-        trackmeta->date = qstrdup( date.toUtf8() );
-    }
-
-    else
-    {
-        trackmeta->date = qstrdup( "00010101T0000.0" );
-    }
-
-    if( track->trackNumber() > 0 )
-    {
-        trackmeta->tracknumber = track->trackNumber();
-    }
-    if( track->length() > 0 )
-    {
-        // Multiply by 1000 since this is in milliseconds
-        trackmeta->duration = track->length();
-    }
-    if( !track->playableUrl().fileName().isEmpty() )
-    {
-        trackmeta->filename = qstrdup( track->playableUrl().fileName().toUtf8() );
-    }
-    trackmeta->filesize = track->filesize();
-
-    // try and create the requested folder structure
-    uint32_t parent_id = 0;
-    if( !m_folderStructure.isEmpty() )
-    {
-        parent_id = checkFolderStructure( track, true ); // true means create
-        if( parent_id == 0 )
-        {
-            debug() << "Could not create new parent (" << m_folderStructure << ")";
-            /*The::statusBar()->shortLongMessage(
-                           genericError,
-                           i18n( "Cannot create parent folder. Check your structure." ),
-                                 StatusBar::Error
-                                              );*/
-            return;
-        }
-    }
-    else
-    {
-        parent_id = getDefaultParentId();
-    }
-    debug() << "Parent id : " << parent_id;
-
-    trackmeta->parent_id = parent_id; // api change, set id here
-    trackmeta->storage_id = 0; // default storage id
-    debug() << "Sending track... " << track->playableUrl();
-    debug() << "Filename is: " << QString::fromUtf8( trackmeta->filename );
-
-
-
-
-    // TODO: implement callback correctly, not 0
-
-    debug() << "Playable Url is: " << track->playableUrl();
-    debug() << "Sending file with path: " << track->playableUrl().path().toUtf8();
-
-    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->playableUrl().path().toUtf8() ), trackmeta,
-            0, this );
-
-
-
-    if( ret < 0 )
-    {
-        debug() << "Could not write file " << ret;
-        /*The::statusBar()->shortLongMessage(
-                       genericError,
-                       i18n( "File write failed" ),
-                             StatusBar::Error
-                                          );*/
-        return;
-    }
-// TODO: cleanup
-
-
-
-    addMtpTrackToCollection( trackmeta );
-
-
-
-    //LIBMTP_destroy_track_t( trackmeta );
-
-    return;
-}
 
 /**
  * Check (and optionally create) the folder structure to put a
@@ -626,6 +446,304 @@ MtpHandler::updateFolders( void )
     LIBMTP_destroy_folder_t( m_folders );
     m_folders = 0;
     m_folders = LIBMTP_Get_Folder_List( m_device );
+}
+
+void
+MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+
+    bool isDupe;
+    TrackMap trackMap = m_memColl->trackMap();
+
+    Meta::TrackList tempTrackList;
+
+    /* Clear Transfer queue */
+
+    m_tracksToCopy.clear();
+
+    /* Check for same tags, don't copy if same tags */
+
+    foreach( Meta::TrackPtr track, tracklist )
+    {
+        tempTrackList = m_titlemap.values( track->name() );
+
+        /* If no song with same title, already not a dupe */
+
+        if( tempTrackList.isEmpty() )
+        {
+            debug() << "No tracks with same title, track not a dupe";
+            m_tracksToCopy.append( track );
+            continue;
+        }
+
+        /* Songs with same title present, check other tags */
+
+        debug() << "Same title present, checking other tags";
+
+        isDupe = false;
+
+        foreach( Meta::TrackPtr tempTrack, tempTrackList )
+        {
+
+            if( ( tempTrack->artist()->name() != track->artist()->name() )
+                  && ( tempTrack->album()->name() != track->album()->name() )
+                  && ( tempTrack->genre()->name() != track->genre()->name() )
+                  && ( tempTrack->composer()->name() != track->composer()->name() )
+                  && ( tempTrack->year()->name() != track->year()->name() ) )
+            {
+                debug() << "Same title, but other tags differ, not a dupe";
+                continue;
+            }
+
+            /* Track is already on there, break */
+
+            isDupe = true;
+            break;
+        }
+
+        if( !isDupe )
+            m_tracksToCopy.append( track );
+        else
+            debug() << "Track " << track->name() << " is a dupe!";
+    }
+
+    /* List ready, begin copying */
+
+    copyTracksToDevice();
+
+}
+
+void
+MtpHandler::copyTracksToDevice()
+{
+    DEBUG_BLOCK
+
+    // Do not bother copying 0 tracks
+    // This could happen if all tracks to copy are dupes
+
+    if( m_tracksToCopy.size() == 0 )
+    {
+        m_memColl->collectionUpdated();
+        return;
+    }
+    debug() << "Copying " << m_tracksToCopy.size() << " tracks";
+
+    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to MTP" ) );
+
+    m_statusbar->setMaximum( m_tracksToCopy.size() );
+
+    connect( this, SIGNAL( incrementProgress() ),
+             The::statusBar(), SLOT( incrementProgress() ) );
+    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+
+    while( !m_tracksToCopy.isEmpty() )
+        copyNextTrackToDevice();
+
+    emit incrementProgress();
+    emit copyTracksDone();
+
+}
+
+void
+MtpHandler::copyNextTrackToDevice()
+{
+    Meta::TrackPtr track;
+
+    // Pop the track off the front of the list
+
+    track = m_tracksToCopy.first();
+    m_tracksToCopy.removeFirst();
+
+    // Copy the track
+
+    privateCopyTrackToDevice( track );
+
+    emit incrementProgress();
+
+}
+
+void
+MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
+{
+    DEBUG_BLOCK
+
+    QString genericError = i18n( "Could not send track" );
+
+    LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
+    trackmeta->item_id = 0;
+    debug() << "filetype : " << track->type();
+    if( track->type() == "mp3" )
+    {
+        trackmeta->filetype = LIBMTP_FILETYPE_MP3;
+    }
+    else if( track->type() == "ogg" )
+    {
+        trackmeta->filetype = LIBMTP_FILETYPE_OGG;
+    }
+    else if( track->type() == "wma" )
+    {
+        trackmeta->filetype = LIBMTP_FILETYPE_WMA;
+    }
+    else if( track->type() == "mp4" )
+    {
+        trackmeta->filetype = LIBMTP_FILETYPE_MP4;
+    }
+    else
+    {
+        // Couldn't recognise an Amarok filetype.
+        // fallback to checking the extension (e.g. .wma, .ogg, etc)
+        debug() << "No filetype found by Amarok filetype";
+
+        const QString extension = track->type().toLower();
+
+        int libmtp_type = m_supportedFiles.indexOf( extension );
+        if( libmtp_type >= 0 )
+        {
+            int keyIndex = mtpFileTypes.values().indexOf( extension );
+            libmtp_type = mtpFileTypes.keys()[keyIndex];
+            trackmeta->filetype = (LIBMTP_filetype_t) libmtp_type;
+            debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension;
+        }
+        else
+        {
+            debug() << "We do not support the extension ." << extension;
+         /*   The::statusBar()->shortLongMessage(
+            genericError,
+            i18n( "Cannot determine a valid file type" ),
+            StatusBar::Error
+                                              );*/
+            return;
+        }
+    }
+
+    if( track->prettyName().isEmpty() )
+    {
+        trackmeta->title = qstrdup( i18n( "Unknown title" ).toUtf8() );
+    }
+    else
+    {
+        trackmeta->title = qstrdup( track->prettyName().toUtf8() );
+    }
+
+    if( !track->album() )
+    {
+        trackmeta->album = qstrdup( i18n( "Unknown album" ).toUtf8() );
+    }
+    else
+    {
+        trackmeta->album = qstrdup( track->album()->prettyName().toUtf8() );
+    }
+
+    if( !track->artist() )
+    {
+        trackmeta->artist = qstrdup( i18n( "Unknown artist" ).toUtf8() );
+    }
+    else
+    {
+        trackmeta->artist = qstrdup( track->artist()->prettyName().toUtf8() );
+    }
+
+    if( !track->genre() )
+    {
+        trackmeta->genre = qstrdup( i18n( "Unknown genre" ).toUtf8() );
+    }
+    else
+    {
+        trackmeta->genre = qstrdup( track->genre()->prettyName().toUtf8() );
+    }
+
+    // TODO: port to Qt4
+
+    if( track->year() > 0 )
+    {
+        QString date;
+        QTextStream( &date ) << track->year() << "0101T0000.0";
+        trackmeta->date = qstrdup( date.toUtf8() );
+    }
+
+    else
+    {
+        trackmeta->date = qstrdup( "00010101T0000.0" );
+    }
+
+    if( track->trackNumber() > 0 )
+    {
+        trackmeta->tracknumber = track->trackNumber();
+    }
+    if( track->length() > 0 )
+    {
+        // Multiply by 1000 since this is in milliseconds
+        trackmeta->duration = track->length();
+    }
+    if( !track->playableUrl().fileName().isEmpty() )
+    {
+        trackmeta->filename = qstrdup( track->playableUrl().fileName().toUtf8() );
+    }
+    trackmeta->filesize = track->filesize();
+
+    // try and create the requested folder structure
+    uint32_t parent_id = 0;
+    if( !m_folderStructure.isEmpty() )
+    {
+        parent_id = checkFolderStructure( track, true ); // true means create
+        if( parent_id == 0 )
+        {
+            debug() << "Could not create new parent (" << m_folderStructure << ")";
+            /*The::statusBar()->shortLongMessage(
+            genericError,
+            i18n( "Cannot create parent folder. Check your structure." ),
+            StatusBar::Error
+                                              );*/
+            return;
+        }
+    }
+    else
+    {
+        parent_id = getDefaultParentId();
+    }
+    debug() << "Parent id : " << parent_id;
+
+    trackmeta->parent_id = parent_id; // api change, set id here
+    trackmeta->storage_id = 0; // default storage id
+    debug() << "Sending track... " << track->playableUrl();
+    debug() << "Filename is: " << QString::fromUtf8( trackmeta->filename );
+
+
+
+
+    // TODO: implement callback correctly, not 0
+
+    debug() << "Playable Url is: " << track->playableUrl();
+    debug() << "Sending file with path: " << track->playableUrl().path().toUtf8();
+
+    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->playableUrl().path().toUtf8() ), trackmeta,
+                                           0, this );
+
+
+
+    if( ret < 0 )
+    {
+        debug() << "Could not write file " << ret;
+        /*The::statusBar()->shortLongMessage(
+        genericError,
+        i18n( "File write failed" ),
+        StatusBar::Error
+                                          );*/
+        return;
+    }
+// TODO: cleanup
+
+
+
+    addMtpTrackToCollection( trackmeta );
+
+
+
+    //LIBMTP_destroy_track_t( trackmeta );
+
+    return;
 }
 
 void

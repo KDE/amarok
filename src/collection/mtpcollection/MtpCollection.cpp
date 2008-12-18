@@ -175,6 +175,15 @@ MtpCollection::~MtpCollection()
         delete m_handler;
 }
 
+void
+MtpCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+    connect( m_handler, SIGNAL( copyTracksDone() ),
+                     SLOT( slotCopyTracksCompleted() ), Qt::QueuedConnection );
+    m_handler->copyTrackListToDevice( tracklist );
+}
+
 bool
 MtpCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
@@ -216,14 +225,6 @@ MtpCollection::init()
     m_handler->init( m_serial );
 }
 
-void
-MtpCollection::copyTrackToDevice( const Meta::TrackPtr &track )
-{
-    
-    
-    m_handler->copyTrackToDevice( track );
-    return;
-}
 /*
 bool
 MtpCollection::deleteTrackFromDevice( const Meta::MtpTrackPtr &track )
@@ -423,6 +424,17 @@ MtpCollection::deleteTracksSlot( Meta::TrackList tracklist )
 
     // remove the tracks from the device
     m_handler->deleteTracksFromDevice( tracklist );
+
+    // inform treeview collection has updated
+    emit updated();
+}
+
+void
+MtpCollection::slotCopyTracksCompleted()
+{
+    DEBUG_BLOCK
+
+    m_handler->endBarProgressOperation();
 
     // inform treeview collection has updated
     emit updated();
