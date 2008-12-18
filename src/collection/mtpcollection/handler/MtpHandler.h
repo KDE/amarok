@@ -70,6 +70,7 @@ namespace Mtp
 
            // thread-related functions
            bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial );
+           bool privateCopyTrackToDevice( const Meta::TrackPtr &track );
 
        // external functions
        void copyTrackListToDevice( const Meta::TrackList tracklist );
@@ -144,11 +145,16 @@ namespace Mtp
             void slotDeviceMatchSucceeded( ThreadWeaver::Job* job);
             void slotDeviceMatchFailed( ThreadWeaver::Job* job);
 
+            void slotCopyNextTrackFailed( ThreadWeaver::Job* job );
+            void slotCopyNextTrackToDevice( ThreadWeaver::Job* job );
+
+            void copyNextTrackToDevice();
+
         private:
 
             void copyTracksToDevice();
-            void copyNextTrackToDevice();
-            void privateCopyTrackToDevice( const Meta::TrackPtr &track );
+
+
             MtpCollection *m_memColl;
 
             TitleMap m_titlemap;
@@ -205,6 +211,24 @@ namespace Mtp
             int m_numrawdevices;
             LIBMTP_raw_device_t* m_rawdevices;
             QString m_serial;
+            MtpHandler *m_handler;
+    };
+
+    class CopyWorkerThread : public ThreadWeaver::Job
+    {
+        Q_OBJECT
+        public:
+            CopyWorkerThread( const Meta::TrackPtr &track, MtpHandler* handler );
+            virtual ~CopyWorkerThread();
+
+            virtual bool success() const;
+
+        protected:
+            virtual void run();
+
+        private:
+            bool m_success;
+            Meta::TrackPtr m_track;
             MtpHandler *m_handler;
     };
     

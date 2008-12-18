@@ -532,17 +532,14 @@ MtpHandler::copyTracksToDevice()
     m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to MTP" ) );
 
     m_statusbar->setMaximum( m_tracksToCopy.size() );
+    m_statusbar->setValue( 0 );
 
     connect( this, SIGNAL( incrementProgress() ),
              The::statusBar(), SLOT( incrementProgress() ) );
     connect( this, SIGNAL( endProgressOperation( const QObject*) ),
              The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
 
-    while( !m_tracksToCopy.isEmpty() )
-        copyNextTrackToDevice();
-
-    emit incrementProgress();
-    emit copyTracksDone();
+    copyNextTrackToDevice();
 
 }
 
@@ -551,20 +548,30 @@ MtpHandler::copyNextTrackToDevice()
 {
     Meta::TrackPtr track;
 
-    // Pop the track off the front of the list
+    // If there are more tracks to copy, copy the next one
+    if( !m_tracksToCopy.isEmpty() )
+    {
+        // Pop the track off the front of the list
 
-    track = m_tracksToCopy.first();
-    m_tracksToCopy.removeFirst();
+        track = m_tracksToCopy.first();
+        m_tracksToCopy.removeFirst();
 
-    // Copy the track
+        // Copy the track
 
-    privateCopyTrackToDevice( track );
+        ThreadWeaver::Weaver::instance()->enqueue( new CopyWorkerThread( track, this ) );
 
-    emit incrementProgress();
+    }
+
+    // No tracks left to copy, emit done
+    else
+    {
+        emit incrementProgress();
+        emit copyTracksDone();
+    }
 
 }
 
-void
+bool
 MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
@@ -614,7 +621,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
             i18n( "Cannot determine a valid file type" ),
             StatusBar::Error
                                               );*/
-            return;
+            return false;
         }
     }
 
@@ -696,7 +703,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
             i18n( "Cannot create parent folder. Check your structure." ),
             StatusBar::Error
                                               );*/
-            return;
+            return false;
         }
     }
     else
@@ -731,7 +738,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         i18n( "File write failed" ),
         StatusBar::Error
                                           );*/
-        return;
+        return false;
     }
 // TODO: cleanup
 
@@ -743,7 +750,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     //LIBMTP_destroy_track_t( trackmeta );
 
-    return;
+    return true;
 }
 
 void
@@ -1368,3 +1375,47 @@ WorkerThread::run()
     m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices, m_serial );
 }
 
+void
+MtpHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    emit deleteTracksDone();
+}
+
+void
+MtpHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        copyNextTrackToDevice();
+        emit incrementProgress();
+    }
+}
+
+CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MtpHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_track( track )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+}
+
+CopyWorkerThread::~CopyWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+CopyWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+CopyWorkerThread::run()
+{
+    m_success = m_handler->privateCopyTrackToDevice( m_track );
+}
