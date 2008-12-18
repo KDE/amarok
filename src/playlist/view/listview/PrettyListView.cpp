@@ -391,10 +391,10 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
 
 
 
-void Playlist::PrettyListView::find( const QString &searchTerm )
+void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
 {
     DEBUG_BLOCK
-    int row = GroupingProxy::instance()->find( searchTerm );
+    int row = GroupingProxy::instance()->find( searchTerm, fields );
     if( row != -1 ) {
         //select this track
         debug() << "Got match at row: " << row;
@@ -415,7 +415,7 @@ void Playlist::PrettyListView::find( const QString &searchTerm )
     
 }
 
-void Playlist::PrettyListView::findNext( const QString & searchTerm )
+void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields )
 {
     DEBUG_BLOCK
     QList<int> selected = selectedRows();
@@ -426,7 +426,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm )
 
     debug() << "current row is: " << currentRow;
     
-    int row = GroupingProxy::instance()->findNext( searchTerm, currentRow );
+    int row = GroupingProxy::instance()->findNext( searchTerm, currentRow, fields );
     if( row != -1 ) {
         //select this track
         debug() << "Got match at row: " << row;
@@ -445,7 +445,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm )
     }
 }
 
-void Playlist::PrettyListView::findPrevious(const QString & searchTerm)
+void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fields )
 {
     DEBUG_BLOCK
     QList<int> selected = selectedRows();
@@ -456,7 +456,7 @@ void Playlist::PrettyListView::findPrevious(const QString & searchTerm)
 
     debug() << "current row is: " << currentRow;
     
-    int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow );
+    int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow, fields );
     if( row != -1 ) {
         //select this track
         debug() << "Got match at row: " << row;

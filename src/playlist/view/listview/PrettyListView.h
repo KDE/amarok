@@ -55,9 +55,9 @@ public slots:
     void removeSelection();
     void scrollToActiveTrack();
 
-    void find( const QString & searchTerm );
-    void findNext( const QString & searchTerm );
-    void findPrevious( const QString & searchTerm );
+    void find( const QString & searchTerm, int fields );
+    void findNext( const QString & searchTerm, int fields  );
+    void findPrevious( const QString & searchTerm, int fields  );
 
 protected slots:
     void newPalette( const QPalette & palette );

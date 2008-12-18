@@ -89,9 +89,9 @@ public:
     int firstInGroup( int ) const;
     int lastInGroup( int ) const;
 
-    int find( const QString & searchTerm );
-    int findNext( const QString & searchTerm, int selectedRow  );
-    int findPrevious( const QString & searchTerm, int selectedRow );
+    int find( const QString & searchTerm, int fields );
+    int findNext( const QString & searchTerm, int selectedRow, int fields  );
+    int findPrevious( const QString & searchTerm, int selectedRow, int fields  );
 
     int totalLength();
 

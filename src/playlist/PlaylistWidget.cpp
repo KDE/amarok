@@ -56,9 +56,9 @@ Playlist::Widget::Widget( QWidget* parent )
     playView->show();
     m_playlistView = qobject_cast<QWidget*>( playView );
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ), playView, SLOT( find( const QString & ) ) );
-    connect( m_searchWidget, SIGNAL( next( const QString & ) ), playView, SLOT( findNext( const QString & ) ) );
-    connect( m_searchWidget, SIGNAL( previous( const QString & ) ), playView, SLOT( findPrevious( const QString & ) ) );
+    connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int ) ), playView, SLOT( find( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( next( const QString &, int ) ), playView, SLOT( findNext( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( previous( const QString &, int ) ), playView, SLOT( findPrevious( const QString &, int ) ) );
 
     connect( playView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
     connect( playView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );

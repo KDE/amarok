@@ -24,6 +24,7 @@
 
 class KAction;
 class KLineEdit;
+class QMenu;
 
 /**
 A composite widget for progressive (Firefix style search as you type) searching, with buttons next and previous result
@@ -43,8 +44,9 @@ signals:
     /**
      * Signal emitted when the search term has changed
      * @param filter the new search term
+     * @param filelds The mask containing the fields to match against
      */
-    void filterChanged( const QString &filter );
+    void filterChanged( const QString &filter, int fields );
     
     /**
      * Signal emitted when the search term is cleared
@@ -53,15 +55,17 @@ signals:
     
     /**
      * Signal emitted when the "next" button is pressed 
-     * @param filter The curren search term
+     * @param filter The current search term
+     * @param filelds The mask containing the fields to match against
      */
-    void next( const QString &filter );
+    void next( const QString &filter, int fields  );
     
     /**
      * Signal emitted when the "previous" button is pressed
-     * @param filter The curren search term
+     * @param filter The current search term
+     * @param filelds The mask containing the fields to match against
      */
-    void previous( const QString &filter );
+    void previous( const QString &filter, int fields  );
 
 public slots:
 
@@ -94,12 +98,22 @@ protected slots:
      * Notify widget that the "previous" button has been pressed
      */
     void slotPrevious();
+
+    void slotSearchTracks( bool search );
+    void slotSearchArtists( bool search );
+    void slotSearchAlbums( bool search );
+    void slotSearchGenre( bool search );
+    void slotSearchComposers( bool search );
+    void slotSearchYears( bool search );
     
 private:
 
     KLineEdit * m_searchEdit;
     KAction * m_nextAction;
     KAction * m_previousAction;
+    QMenu * m_menu;
+
+    int m_searchFieldsMask;
 };
 
 #endif

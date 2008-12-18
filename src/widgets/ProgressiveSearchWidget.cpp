@@ -20,17 +20,21 @@
 #include "ProgressiveSearchWidget.h"
 
 #include "Debug.h"
+#include "playlist/PlaylistModel.h"
 
 #include <KAction>
 #include <KLineEdit>
 #include <KLocale>
 #include <KColorScheme>
 
+#include <QMenu>
 #include <QToolBar>
 
 ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     : KHBox( parent )
 {
+
+    m_searchFieldsMask = Playlist::MatchTrack | Playlist::MatchArtist | Playlist::MatchAlbum;
 
     m_searchEdit = new KLineEdit( this );
     m_searchEdit->setClickMessage( i18n( "Search playlist" ) );
@@ -54,6 +58,59 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     m_nextAction->setEnabled( true );
     m_previousAction->setEnabled( true );
+
+    m_menu = new QMenu( this );
+
+    KAction * searchTracksAction = new KAction( i18n( "Tracks" ), this );
+    searchTracksAction->setCheckable( true );
+    connect( searchTracksAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchTracks( bool ) ) );
+    if( m_searchFieldsMask & Playlist::MatchTrack )
+        searchTracksAction->setChecked( true );
+    m_menu->addAction( searchTracksAction );
+
+    KAction * searchAlbumsAction = new KAction( i18n( "Albums" ), this );
+    searchAlbumsAction->setCheckable( true );
+    connect( searchAlbumsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchAlbums( bool ) ) );
+    if( m_searchFieldsMask & Playlist::MatchAlbum )
+        searchAlbumsAction->setChecked( true );
+    m_menu->addAction( searchAlbumsAction );
+    
+    KAction * searchArtistsAction = new KAction( i18n( "Artists" ), this );
+    searchArtistsAction->setCheckable( true );
+    connect( searchArtistsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchArtists( bool ) ) );
+    if( m_searchFieldsMask & Playlist::MatchArtist )
+        searchArtistsAction->setChecked( true );
+    m_menu->addAction( searchArtistsAction );
+
+    KAction * searchGenreAction = new KAction( i18n( "Genre" ), this );
+    searchGenreAction->setCheckable( true );
+    connect( searchGenreAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchGenre( bool ) ) );
+    if( m_searchFieldsMask & Playlist::MatchGenre )
+        searchGenreAction->setChecked( true );
+    m_menu->addAction( searchGenreAction );
+
+    KAction * searchComposersAction = new KAction( i18n( "Composers" ), this );
+    searchComposersAction->setCheckable( true );
+    connect( searchComposersAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchComposers( bool ) ) );
+    if( m_searchFieldsMask & Playlist::MatchComposer )
+        searchComposersAction->setChecked( true );
+    m_menu->addAction( searchComposersAction );
+
+
+    KAction * searchYearsAction = new KAction( i18n( "Years" ), this );
+    searchYearsAction->setCheckable( true );
+    connect( searchYearsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchYears( bool ) ) );
+    if( m_searchFieldsMask & Playlist::MatchYear)
+        searchYearsAction->setChecked( true );
+    m_menu->addAction( searchYearsAction );
+
+
+    KAction * searchMenuAction = new KAction(KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+
+    searchMenuAction->setMenu( m_menu );
+    
+
+    toolbar->addAction( searchMenuAction );
 
 }
 
@@ -79,20 +136,20 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
         emit( filterCleared() );
         
     } else
-        emit( filterChanged( filter ) );
+        emit( filterChanged( filter, m_searchFieldsMask ) );
 
 }
 
 void ProgressiveSearchWidget::slotNext()
 {
     DEBUG_BLOCK
-    emit( next( m_searchEdit->text() ) );
+    emit( next( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::slotPrevious()
 {
     DEBUG_BLOCK
-    emit( previous( m_searchEdit->text() ) );
+    emit( previous( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::match()
@@ -117,6 +174,55 @@ void ProgressiveSearchWidget::noMatch()
     QPalette p = m_searchEdit->palette();
     p.setColor( QPalette::Base, backgroundBrush.brush( m_searchEdit ).color() );
     m_searchEdit->setPalette( p );
+}
+
+
+void ProgressiveSearchWidget::slotSearchTracks( bool search )
+{
+    if( search )
+        m_searchFieldsMask |= Playlist::MatchTrack;
+    else
+        m_searchFieldsMask ^= Playlist::MatchTrack;
+}
+
+void ProgressiveSearchWidget::slotSearchArtists( bool search )
+{
+    if( search )
+        m_searchFieldsMask |= Playlist::MatchArtist;
+    else
+        m_searchFieldsMask ^= Playlist::MatchArtist;
+}
+
+void ProgressiveSearchWidget::slotSearchAlbums( bool search )
+{
+    if( search )
+        m_searchFieldsMask |= Playlist::MatchAlbum;
+    else
+        m_searchFieldsMask ^= Playlist::MatchAlbum;
+}
+
+void ProgressiveSearchWidget::slotSearchGenre( bool search )
+{
+    if( search )
+        m_searchFieldsMask |= Playlist::MatchGenre;
+    else
+        m_searchFieldsMask ^= Playlist::MatchGenre;
+}
+
+void ProgressiveSearchWidget::slotSearchComposers( bool search )
+{
+    if( search )
+        m_searchFieldsMask |= Playlist::MatchComposer;
+    else
+        m_searchFieldsMask ^= Playlist::MatchComposer;
+}
+
+void ProgressiveSearchWidget::slotSearchYears( bool search )
+{
+    if( search )
+        m_searchFieldsMask |= Playlist::MatchYear;
+    else
+        m_searchFieldsMask ^= Playlist::MatchYear;
 }
 
 
