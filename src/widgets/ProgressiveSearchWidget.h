@@ -108,6 +108,8 @@ protected slots:
     
 private:
 
+    void readConfig();
+
     KLineEdit * m_searchEdit;
     KAction * m_nextAction;
     KAction * m_previousAction;

@@ -34,7 +34,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     : KHBox( parent )
 {
 
-    m_searchFieldsMask = Playlist::MatchTrack | Playlist::MatchArtist | Playlist::MatchAlbum;
+    readConfig();
 
     m_searchEdit = new KLineEdit( this );
     m_searchEdit->setClickMessage( i18n( "Search playlist" ) );
@@ -184,6 +184,9 @@ void ProgressiveSearchWidget::slotSearchTracks( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchTrack;
 
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    config.writeEntry( "MatchTrack", search );
+
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
@@ -195,6 +198,9 @@ void ProgressiveSearchWidget::slotSearchArtists( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchArtist;
 
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    config.writeEntry( "MatchArtist", search );
+
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
@@ -205,6 +211,9 @@ void ProgressiveSearchWidget::slotSearchAlbums( bool search )
         m_searchFieldsMask |= Playlist::MatchAlbum;
     else
         m_searchFieldsMask ^= Playlist::MatchAlbum;
+
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    config.writeEntry( "MatchAlbum", search );
     
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
@@ -217,6 +226,9 @@ void ProgressiveSearchWidget::slotSearchGenre( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchGenre;
 
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    config.writeEntry( "MatchGenre", search );
+
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
@@ -227,6 +239,9 @@ void ProgressiveSearchWidget::slotSearchComposers( bool search )
         m_searchFieldsMask |= Playlist::MatchComposer;
     else
         m_searchFieldsMask ^= Playlist::MatchComposer;
+
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    config.writeEntry( "MatchComposer", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
@@ -239,8 +254,30 @@ void ProgressiveSearchWidget::slotSearchYears( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchYear;
 
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    config.writeEntry( "MatchYear", search );
+
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+}
+
+void ProgressiveSearchWidget::readConfig()
+{
+    m_searchFieldsMask = 0;
+    
+    KConfigGroup config = Amarok::config("Playlist Search");
+    if( config.readEntry( "MatchTrack", true ) )
+        m_searchFieldsMask |= Playlist::MatchTrack;
+    if( config.readEntry( "MatchArtist", true ) )
+        m_searchFieldsMask |= Playlist::MatchArtist;
+    if( config.readEntry( "MatchAlbum", true ) )
+        m_searchFieldsMask |= Playlist::MatchAlbum;
+    if( config.readEntry( "MatchGenre", false ) )
+        m_searchFieldsMask |= Playlist::MatchGenre;
+    if( config.readEntry( "MatchComposer", false ) )
+        m_searchFieldsMask |= Playlist::MatchComposer;
+    if( config.readEntry( "MatchYear", false ) )
+        m_searchFieldsMask |= Playlist::MatchYear;
 }
 
 

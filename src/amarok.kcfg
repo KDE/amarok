@@ -485,4 +485,31 @@
     </entry>
 </group>
 
+<group name="Playlist Search">
+    <entry key="MatchTrack" type="Bool">
+        <label>Include track names in matching</label>
+        <default>true</default>
+    </entry>
+    <entry key="MatchAlbum" type="Bool">
+        <label>Include album names in matching</label>
+        <default>true</default>
+    </entry>
+    <entry key="MatchArtist" type="Bool">
+        <label>Include artist names in matching</label>
+        <default>true</default>
+    </entry>
+    <entry key="MatchGenre" type="Bool">
+        <label>Include genre names in matching</label>
+        <default>false</default>
+    </entry>
+    <entry key="MatchComposer" type="Bool">
+        <label>Include composer names in matching</label>
+        <default>false</default>
+    </entry>
+    <entry key="MatchYear" type="Bool">
+        <label>Include years in matching</label>
+        <default>false</default>
+    </entry>
+</group>
+
 </kcfg>
