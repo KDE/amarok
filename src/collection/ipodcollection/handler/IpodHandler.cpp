@@ -709,10 +709,10 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 
     /* List ready, begin copying */
 
-    slotCopyTracksToDevice();
+    copyTracksToDevice();
 
 }
-
+/*
 void
 IpodHandler::slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist )
 {
@@ -721,9 +721,10 @@ IpodHandler::slotQueueTrackForCopy( QString collectionId, Meta::TrackList trackl
     debug() << "Tracklist size: " << tracklist.size();
 
 }
+*/
 
 void
-IpodHandler::slotCopyTracksToDevice()
+IpodHandler::copyTracksToDevice()
 {
     DEBUG_BLOCK
 

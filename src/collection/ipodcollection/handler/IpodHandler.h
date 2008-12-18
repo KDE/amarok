@@ -81,14 +81,23 @@ struct PodcastInfo
         Q_OBJECT
 
         public:
-            IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject* parent );
+           /**
+            * Constructor
+            */
+           IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject* parent );
+           /**
+            * Destructor
+            */
            ~IpodHandler();
 
+           /**
+            * Successfully read Ipod database
+            */
            bool succeeded() const { return m_success; }
 
            // Observer Methods
 
-           /** This method is called when the metadata of a track has changed. */
+           /** These methods are called when the metadata of a track has changed. */
            virtual void metadataChanged( Meta::TrackPtr track );
            virtual void metadataChanged( Meta::ArtistPtr artist );
            virtual void metadataChanged( Meta::AlbumPtr album );
@@ -97,6 +106,16 @@ struct PodcastInfo
            virtual void metadataChanged( Meta::YearPtr year );
 
            void detectModel();
+
+           QString itunesDir( const QString &path = QString() ) const;
+           QString mountPoint() const { return m_mountPoint; }
+           bool openDevice( bool silent=false );
+           void copyTrackToDevice( const Meta::TrackPtr &track );
+           void copyTrackListToDevice( const Meta::TrackList tracklist );
+           bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
+           void deleteTracksFromDevice( const Meta::TrackList &tracks );
+           bool kioCopyTrack( const KUrl &src, const KUrl &dst );
+           void deleteFile( const KUrl &url );
 
 
            void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
@@ -141,63 +160,75 @@ struct PodcastInfo
         private slots:
 
         //void slotCopyTrackToDevice( QString collectionId, Meta::TrackList tracklist );
-        void slotCopyTracksToDevice();
-        void copyNextTrackToDevice();
+        
 
-        void slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist );
+
+//        void slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist );
 
         private:
 
-        void privateCopyTrackToDevice( const Meta::TrackPtr &track );
-        Meta::TrackList m_tracksToCopy;
+        /* Copy/Delete Functions */
 
+        void copyTracksToDevice();
+
+        void copyNextTrackToDevice();
         void deleteNextTrackFromDevice();
+
+        void privateCopyTrackToDevice( const Meta::TrackPtr &track );
         void privateDeleteTrackFromDevice( const Meta::TrackPtr &track );
+
+        /* Copy/Delete Variables */
+
+        Meta::TrackList m_tracksToCopy;
         Meta::TrackList m_tracksToDelete;
 
         IpodCollection *m_memColl;
         TitleMap m_titlemap;
 
         ProgressBarNG *m_statusbar;
-	    
-        // ipod database
+
+        // libgpod variables
         Itdb_iTunesDB    *m_itdb;
         Itdb_Device      *m_device;
         Itdb_Playlist    *m_masterPlaylist;
 
-        // cover handling
+        // tempdir for covers
         KTempDir *m_tempdir;
 
-        bool             m_trackCreated;
-        bool             m_success;
-
-        // XXX - Not currently implemented in the class
-        // podcasts
-//        Itdb_Playlist*    m_podcastPlaylist;
-
+        /* Ipod Model */
         bool              m_isShuffle;
         bool              m_isMobile;
-	bool              m_isIPhone;
+        bool              m_isIPhone;
 
+        /* Properties of Ipod */
         bool              m_supportsArtwork;
         bool              m_supportsVideo;
-	bool              m_rockboxFirmware;
+        bool              m_rockboxFirmware;
         bool              m_needsFirewireGuid;
+
+        /* Ipod Connection */
+
         bool              m_autoConnect;
+        QString           m_mountPoint;
+        QString           m_name;
 
-	QString           m_mountPoint;
-	QString           m_name;
+        /* Success/Failure */
 
-        bool              m_dbChanged;
-
-        // XXX - Not currently implemented in the class
-//        QFile            *m_lockFile;
-
-        // KIO-related Vars
-
+        bool m_dbChanged;
         bool m_copyFailed;
         bool m_isCanceled;
         bool m_wait;
+        // whether Itdb_Track is created correctly
+        bool m_trackCreated;
+        // whether read Ipod DB or not
+        bool m_success;
+
+        // TODO: Implement lockfile
+        // QFile *m_lockFile;
+
+        // TODO: Implement podcasts
+        // podcasts
+        // Itdb_Playlist* m_podcastPlaylist;
 
 
     };

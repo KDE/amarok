@@ -167,14 +167,14 @@ IpodCollection::asCapabilityInterface( Meta::Capability::Type type )
             return 0;
     }
 }
-
+/*
 void
 IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
 {
     m_handler->copyTrackToDevice( track );
     return;
 }
-
+*/
 void
 IpodCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
 {
