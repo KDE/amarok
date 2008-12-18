@@ -487,6 +487,7 @@ set(amaroklib_LIB_SRCS
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
     widgets/PrettyTreeView.cpp
+    widgets/ProgressiveSearchWidget.cpp
     widgets/ProgressSlider.cpp
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp

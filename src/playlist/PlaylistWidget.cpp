@@ -31,6 +31,7 @@
 #include "ToolBar.h"
 #include "PlaylistModel.h"
 #include "widgets/Widget.h"
+#include "widgets/ProgressiveSearchWidget.h"
 
 #include <KToolBarSpacerAction>
 
@@ -41,6 +42,8 @@ Playlist::Widget::Widget( QWidget* parent )
 {
     setContentsMargins( 1, 1, 1, 1 );
 
+    m_searchWidget = new ProgressiveSearchWidget( this );
+    
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
 
     layoutHolder->setMinimumWidth( 100 );

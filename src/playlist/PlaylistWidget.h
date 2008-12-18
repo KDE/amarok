@@ -29,6 +29,7 @@
 
 #include <QLabel>
 class QWidget;
+class ProgressiveSearchWidget;
 
 namespace Playlist
 {
@@ -53,6 +54,7 @@ protected:
 private:
     Amarok::StackedWidget *m_stackedWidget;
     QWidget* m_playlistView;
+    ProgressiveSearchWidget * m_searchWidget;
 };
 }
 
