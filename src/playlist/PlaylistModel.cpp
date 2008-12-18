@@ -784,7 +784,7 @@ int Playlist::Model::find( const QString & searchTerm )
         Meta::TrackPtr track = item->track();
 
         debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
-        if ( track->prettyName().contains( searchTerm ) ) {
+        if ( track->prettyName().contains( searchTerm, Qt::CaseInsensitive ) ) {
             matchRow = row;
             debug() << "match at row: " << row;
             break;
@@ -809,7 +809,7 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow )
         Meta::TrackPtr track = item->track();
 
         debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
-        if ( track->prettyName().contains( searchTerm ) ) {
+        if ( track->prettyName().contains( searchTerm, Qt::CaseInsensitive ) ) {
             if ( firstMatch == -1 )
                 firstMatch = row;
 
@@ -843,7 +843,7 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow )
         Meta::TrackPtr track = item->track();
 
         debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
-        if ( track->prettyName().contains( searchTerm ) ) {
+        if ( track->prettyName().contains( searchTerm, Qt::CaseInsensitive ) ) {
             if ( lastMatch == -1 )
                 lastMatch = row;
 
