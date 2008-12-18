@@ -183,6 +183,9 @@ void ProgressiveSearchWidget::slotSearchTracks( bool search )
         m_searchFieldsMask |= Playlist::MatchTrack;
     else
         m_searchFieldsMask ^= Playlist::MatchTrack;
+
+    if( !m_searchEdit->text().isEmpty() )
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::slotSearchArtists( bool search )
@@ -191,6 +194,9 @@ void ProgressiveSearchWidget::slotSearchArtists( bool search )
         m_searchFieldsMask |= Playlist::MatchArtist;
     else
         m_searchFieldsMask ^= Playlist::MatchArtist;
+
+    if( !m_searchEdit->text().isEmpty() )
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::slotSearchAlbums( bool search )
@@ -199,6 +205,9 @@ void ProgressiveSearchWidget::slotSearchAlbums( bool search )
         m_searchFieldsMask |= Playlist::MatchAlbum;
     else
         m_searchFieldsMask ^= Playlist::MatchAlbum;
+    
+    if( !m_searchEdit->text().isEmpty() )
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::slotSearchGenre( bool search )
@@ -207,6 +216,9 @@ void ProgressiveSearchWidget::slotSearchGenre( bool search )
         m_searchFieldsMask |= Playlist::MatchGenre;
     else
         m_searchFieldsMask ^= Playlist::MatchGenre;
+
+    if( !m_searchEdit->text().isEmpty() )
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::slotSearchComposers( bool search )
@@ -215,6 +227,9 @@ void ProgressiveSearchWidget::slotSearchComposers( bool search )
         m_searchFieldsMask |= Playlist::MatchComposer;
     else
         m_searchFieldsMask ^= Playlist::MatchComposer;
+
+    if( !m_searchEdit->text().isEmpty() )
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::slotSearchYears( bool search )
@@ -223,6 +238,9 @@ void ProgressiveSearchWidget::slotSearchYears( bool search )
         m_searchFieldsMask |= Playlist::MatchYear;
     else
         m_searchFieldsMask ^= Playlist::MatchYear;
+
+    if( !m_searchEdit->text().isEmpty() )
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 
