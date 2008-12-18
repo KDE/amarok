@@ -40,10 +40,12 @@ extern "C" {
 
 #include "kjob.h"
 #include <KTempDir>
+#include <threadweaver/Job.h>
 
 #include <QObject>
 #include <QMap>
 #include <QMultiMap>
+#include <QMutex>
 
 class QString;
 class QFile;
@@ -115,6 +117,10 @@ struct PodcastInfo
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
            void writeDatabase();
 
+           // NOTE: do not use writeITunesDB,
+           // use the threaded writeDatabase
+           bool writeITunesDB( bool threaded=false );
+
         signals:
            void copyTracksDone();
            void deleteTracksDone();
@@ -145,7 +151,6 @@ struct PodcastInfo
            void addTrackInDB( Itdb_Track *ipodtrack );
            void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
            bool removeDBTrack( Itdb_Track *track );
-           bool writeITunesDB( bool threaded=false );
 
            /* libgpod Information Extraction Methods */
 
@@ -224,6 +229,11 @@ struct PodcastInfo
            Itdb_Device      *m_device;
            Itdb_Playlist    *m_masterPlaylist;
 
+           /* Lockers */
+           QMutex m_dbLocker; // DB only written by 1 thread at a time
+           QMutex m_joblocker; // lets only 1 job finish at a time
+           int m_jobcounter; // keeps track of copy jobs present
+
            /* Copy/Delete Variables */
 
            Meta::TrackList m_tracksToCopy;
@@ -279,6 +289,25 @@ struct PodcastInfo
               void fileTransferred( KJob *job );
               void fileDeleted( KJob *job );
 
+              void slotDBWriteFailed( ThreadWeaver::Job* job );
+              void slotDBWriteSucceeded( ThreadWeaver::Job* job );
+    };
+
+    class DBWorkerThread : public ThreadWeaver::Job
+    {
+        Q_OBJECT
+        public:
+            DBWorkerThread( IpodHandler* handler );
+            virtual ~DBWorkerThread();
+
+            virtual bool success() const;
+
+        protected:
+            virtual void run();
+
+        private:
+            bool m_success;
+            IpodHandler *m_handler;
     };
 }
 #endif

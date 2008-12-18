@@ -43,11 +43,13 @@ extern "C" {
 #include <KIO/Scheduler>
 #include "kjob.h"
 #include <KTemporaryFile>
+#include <threadweaver/ThreadWeaver.h>
 #include <KUrl>
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QMutexLocker>
 #include <QPixmap>
 #include <QString>
 #include <QStringList>
@@ -122,7 +124,7 @@ IpodHandler::~IpodHandler()
     delete m_tempdir;
     // Write to DB before closing, for ratings updates etc.
     debug() << "Writing to Ipod DB";
-    writeITunesDB( false );
+    writeDatabase();
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
@@ -229,9 +231,13 @@ IpodHandler::initializeIpod()
         return false;
 
     debug() << "Init 4";
-
+    // NOTE: writing itunes DB allowed to block since
+    // initializing a device is rare, and requires focus
+    // to minimize possible error
     if( !writeITunesDB( false ) )
         return false;
+
+
 
     debug() << "Init 5";
 
@@ -435,7 +441,9 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 bool
 IpodHandler::writeITunesDB( bool threaded )
 {
-DEBUG_BLOCK
+    DEBUG_BLOCK
+
+    QMutexLocker locker( &m_dbLocker );
     if(!m_itdb)
         return false;
 
@@ -707,6 +715,8 @@ IpodHandler::copyTracksToDevice()
     connect( this, SIGNAL( endProgressOperation( const QObject*) ),
             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
 
+    m_jobcounter = 0;
+
     copyNextTrackToDevice();
 
 }
@@ -714,29 +724,18 @@ IpodHandler::copyTracksToDevice()
 void
 IpodHandler::copyNextTrackToDevice()
 {
+    DEBUG_BLOCK
     Meta::TrackPtr track;
 
-    // If there are more tracks to copy, copy the next one
-    if( !m_tracksToCopy.isEmpty() )
-    {
-        // Pop the track off the front of the list
+    track = m_tracksToCopy.first();
+    m_tracksToCopy.removeFirst();
 
-        track = m_tracksToCopy.first();
-        m_tracksToCopy.removeFirst();
+    // Copy the track
 
-        // Copy the track
+    privateCopyTrackToDevice( track );
 
-        privateCopyTrackToDevice( track );
+    emit incrementProgress();
 
-        emit incrementProgress();
-    }
-
-    // No tracks left to copy, emit done
-    else
-    {
-        emit incrementProgress();
-        emit copyTracksDone();
-    }
 }
 
 void
@@ -1008,7 +1007,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
 void
 IpodHandler::writeDatabase()
 {
-    writeITunesDB( false );
+    ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
 
 void
@@ -1089,6 +1088,7 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     debug() << "Copying from *" << src << "* to *" << dst << "*";
 
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
+    m_jobcounter++;
 
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
@@ -1099,19 +1099,46 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 void
 IpodHandler::fileTransferred( KJob *job )  //SLOT
 {
-        if ( job->error() )
+    DEBUG_BLOCK
+    QMutexLocker locker(&m_joblocker);
+
+    if ( job->error() )
+    {
+        m_copyFailed = true;
+        debug() << "file transfer failed: " << job->errorText();
+    }
+    else
+    {
+        m_copyFailed = false;
+    }
+
+    m_wait = false;
+
+    m_jobcounter--;
+
+    // Limit max number of jobs to 10, make sure more tracks left
+    // to copy
+
+    if( !m_tracksToCopy.empty() )
+    {
+        debug() << "Tracks to copy still remain";
+        if( m_jobcounter < 10 )
         {
-            m_copyFailed = true;
-            debug() << "file transfer failed: " << job->errorText();
+            debug() << "Jobs: " << m_jobcounter;
+            copyNextTrackToDevice();
         }
-        else
+    }
+    else
+    {
+        debug() << "Tracklist empty";
+        // Empty copy queue, this is last job
+        if( m_jobcounter == 0 )
         {
-            m_copyFailed = false;
+            emit incrementProgress();
+            emit copyTracksDone();
         }
 
-        m_wait = false;
-
-        copyNextTrackToDevice();
+    }
 }
 
 void
@@ -1604,6 +1631,48 @@ IpodHandler::parseTracks()
 }
 
 /* Private Functions */
+
+void
+IpodHandler::slotDBWriteFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Writing to DB failed!";
+}
+
+void
+IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Writing to DB succeeded!";
+}
+
+DBWorkerThread::DBWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteFailed( ThreadWeaver::Job* ) ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteSucceeded( ThreadWeaver::Job* ) ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+}
+
+DBWorkerThread::~DBWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+DBWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+DBWorkerThread::run()
+{
+    m_success = m_handler->writeITunesDB( false );
+}
+
 
 #include "IpodHandler.moc"
 
