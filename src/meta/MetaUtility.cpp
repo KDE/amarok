@@ -262,6 +262,20 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->ID3v2Tag(true)->addFrame( frame );
             }
         }
+        if( changes.contains( Meta::Field::DISCNUMBER ) )
+        {
+            shouldSave = true;
+            if( file->ID3v2Tag() )
+                file->ID3v2Tag()->removeFrames( "TPOS" );
+            const QString discNumber = changes.value( Meta::Field::DISCNUMBER ).toString();
+            if( !discNumber.isEmpty() )
+            {
+                TagLib::ID3v2::TextIdentificationFrame *frame =
+                        new TagLib::ID3v2::TextIdentificationFrame( "TPOS" );
+                frame->setText( Qt4QStringToTString( discNumber ) );
+                file->ID3v2Tag(true)->addFrame( frame );
+            }
+        }
     }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
