@@ -433,6 +433,24 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm )
 
 void Playlist::PrettyListView::findPrevious(const QString & searchTerm)
 {
+    DEBUG_BLOCK
+    QList<int> selected = selectedRows();
+
+    int currentRow = GroupingProxy::instance()->totalLength();
+    if( selected.size() > 0 )
+        currentRow = selected.first();
+
+    debug() << "current row is: " << currentRow;
+    
+    int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow );
+    if( row != -1 ) {
+        //select this track
+        debug() << "Got match at row: " << row;
+        
+        QModelIndex index = model()->index( row, 0 );
+        QItemSelection selItems( index, index );
+        selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
+    }
 }
 
 #include "PrettyListView.moc"

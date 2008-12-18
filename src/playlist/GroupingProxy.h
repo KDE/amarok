@@ -93,6 +93,8 @@ public:
     int findNext( const QString & searchTerm, int selectedRow  );
     int findPrevious( const QString & searchTerm, int selectedRow );
 
+    int totalLength();
+
 signals:
     void rowsInserted( const QModelIndex&, int, int );
     void rowsRemoved( const QModelIndex&, int, int );

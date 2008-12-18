@@ -366,4 +366,11 @@ int Playlist::GroupingProxy::findPrevious( const QString &searchTerm, int select
     m_model->findPrevious( searchTerm, selectedRow );
 }
 
+int Playlist::GroupingProxy::totalLength()
+{
+    return m_model->totalLength();
+}
+
 #endif
+
+

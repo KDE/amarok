@@ -824,11 +824,39 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow )
 
     //we have searche through everything and not found anything that matched _below_
     //the selected index. So return the first one found above it ( wrap around )
-
     return firstMatch;
 }
 
 int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow )
 {
-    return -1;
+    DEBUG_BLOCK
+
+    int matchRow = -1;
+    int row = m_items.count() -1;
+    int lastMatch = -1;
+
+    QList<Item*> tempItems = m_items;
+    while( tempItems.size() > 0 ) {
+
+        Item* item = tempItems.takeLast();
+
+        Meta::TrackPtr track = item->track();
+
+        debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
+        if ( track->prettyName().contains( searchTerm ) ) {
+            if ( lastMatch == -1 )
+                lastMatch = row;
+
+            if ( row < selectedRow ) {
+                debug() << "match at row: " << row;
+                return row;
+            }
+        }
+
+        row--;
+    }
+
+    //we have searche through everything and not found anything that matched _below_
+    //the selected index. So return the first one found above it ( wrap around )
+    return lastMatch;
 }
