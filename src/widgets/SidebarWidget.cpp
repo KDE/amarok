@@ -325,58 +325,59 @@ void SideBarButton::paintEvent( QPaintEvent* )
     QPainter p( this );
     p.setRenderHint ( QPainter::Antialiasing, false );
 
-    const int borderWidth = 8;
-    const int borderHeight = 8;
-    const int halfWidth = borderWidth / 2;
-    const int halfHeight = borderHeight / 2;
+    static const int borderWidth = 8;
+    static const int borderHeight = 8;
+    static const int halfWidth = borderWidth / 2;
+    static const int halfHeight = borderHeight / 2;
 
-    QString prefix = "sidebar_button_";
+    const QString prefix = "sidebar_button_";
     QString shadow = "_shadow";
-    if ( isDown() || isChecked() ) shadow = "_shadow_down";
+    if ( isDown() || isChecked() )
+        shadow = "_shadow_down";
 
-    QImage topLeft_shadow = The::svgHandler()->renderSvg( prefix + "topleft" + shadow, borderWidth, borderHeight, prefix + "topleft" + shadow).toImage();
-    QImage topLeft = The::svgHandler()->renderSvg( prefix + "topleft", halfWidth, halfHeight, prefix + "topleft" ).toImage();
-    p.drawImage( 0, 0, topLeft_shadow );
-    p.drawImage( halfWidth, halfHeight, topLeft );
+    QPixmap topLeft_shadow = The::svgHandler()->renderSvg( prefix + "topleft" + shadow, borderWidth, borderHeight, prefix + "topleft" + shadow);
+    QPixmap topLeft = The::svgHandler()->renderSvg( prefix + "topleft", halfWidth, halfHeight, prefix + "topleft" );
+    p.drawPixmap( 0, 0, topLeft_shadow );
+    p.drawPixmap( halfWidth, halfHeight, topLeft );
 
-    QImage top_shadow = The::svgHandler()->renderSvg( prefix + "top" + shadow, width() - ( 2 * borderWidth ), borderHeight, prefix + "top" + shadow).toImage();
-    QImage top = The::svgHandler()->renderSvg( prefix + "top", width() - ( 2 * borderWidth ), halfHeight, prefix + "top" ).toImage();
-    p.drawImage( borderWidth, 0, top_shadow );
-    p.drawImage( borderWidth, halfHeight, top );
+    QPixmap top_shadow = The::svgHandler()->renderSvg( prefix + "top" + shadow, width() - ( 2 * borderWidth ), borderHeight, prefix + "top" + shadow);
+    QPixmap top = The::svgHandler()->renderSvg( prefix + "top", width() - ( 2 * borderWidth ), halfHeight, prefix + "top" );
+    p.drawPixmap( borderWidth, 0, top_shadow );
+    p.drawPixmap( borderWidth, halfHeight, top );
 
-    QImage topRight_shadow = The::svgHandler()->renderSvg( prefix + "topright" + shadow, borderWidth, borderHeight, prefix + "topright" + shadow).toImage();
-    QImage topRight = The::svgHandler()->renderSvg( prefix + "topright", halfWidth, halfHeight, prefix + "topright" ).toImage();
-    p.drawImage( width() - borderWidth, 0, topRight_shadow );
-    p.drawImage( width() - borderWidth, halfHeight, topRight );
+    QPixmap topRight_shadow = The::svgHandler()->renderSvg( prefix + "topright" + shadow, borderWidth, borderHeight, prefix + "topright" + shadow);
+    QPixmap topRight = The::svgHandler()->renderSvg( prefix + "topright", halfWidth, halfHeight, prefix + "topright" );
+    p.drawPixmap( width() - borderWidth, 0, topRight_shadow );
+    p.drawPixmap( width() - borderWidth, halfHeight, topRight );
 
-    QImage right_shadow = The::svgHandler()->renderSvg( prefix + "right" + shadow, borderWidth, height() - ( 2 * borderHeight ), prefix + "right" + shadow).toImage();
-    QImage right = The::svgHandler()->renderSvg( prefix + "right", halfWidth, height() - ( 2 * borderHeight ), prefix + "right" ).toImage();
-    p.drawImage( width() - borderWidth, borderHeight, right_shadow );
-    p.drawImage( width() - borderWidth, borderHeight, right);
+    QPixmap right_shadow = The::svgHandler()->renderSvg( prefix + "right" + shadow, borderWidth, height() - ( 2 * borderHeight ), prefix + "right" + shadow);
+    QPixmap right = The::svgHandler()->renderSvg( prefix + "right", halfWidth, height() - ( 2 * borderHeight ), prefix + "right" );
+    p.drawPixmap( width() - borderWidth, borderHeight, right_shadow );
+    p.drawPixmap( width() - borderWidth, borderHeight, right);
 
-    QImage bottomRight_shadow = The::svgHandler()->renderSvg( prefix + "bottomright" + shadow, borderWidth, borderHeight, prefix + "bottomright" + shadow).toImage();
-    QImage bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", halfWidth, halfHeight, prefix + "bottomright" ).toImage();
-    p.drawImage( width() - borderWidth, height() - borderHeight, bottomRight_shadow );
-    p.drawImage( width() - borderWidth, height() - borderHeight, bottomRight );
+    QPixmap bottomRight_shadow = The::svgHandler()->renderSvg( prefix + "bottomright" + shadow, borderWidth, borderHeight, prefix + "bottomright" + shadow);
+    QPixmap bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", halfWidth, halfHeight, prefix + "bottomright" );
+    p.drawPixmap( width() - borderWidth, height() - borderHeight, bottomRight_shadow );
+    p.drawPixmap( width() - borderWidth, height() - borderHeight, bottomRight );
 
-    QImage bottom_shadow = The::svgHandler()->renderSvg( prefix + "bottom" + shadow, width() - 2 * borderWidth, borderHeight, prefix + "bottom" + shadow).toImage();
-    QImage bottom = The::svgHandler()->renderSvg( prefix + "bottom", width() - 2 * borderWidth, halfHeight, prefix + "bottom" ).toImage();
-    p.drawImage( borderWidth, height() - borderHeight, bottom_shadow );
-    p.drawImage( borderWidth, height() - borderHeight, bottom );
+    QPixmap bottom_shadow = The::svgHandler()->renderSvg( prefix + "bottom" + shadow, width() - 2 * borderWidth, borderHeight, prefix + "bottom" + shadow);
+    QPixmap bottom = The::svgHandler()->renderSvg( prefix + "bottom", width() - 2 * borderWidth, halfHeight, prefix + "bottom" );
+    p.drawPixmap( borderWidth, height() - borderHeight, bottom_shadow );
+    p.drawPixmap( borderWidth, height() - borderHeight, bottom );
 
-    QImage bottomLeft_shadow = The::svgHandler()->renderSvg( prefix + "bottomleft" + shadow, borderWidth, borderHeight, prefix + "bottomleft" + shadow).toImage();
-    QImage bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", halfWidth, halfHeight, prefix + "bottomleft" ).toImage();
-    p.drawImage( 0, height() - borderHeight, bottomLeft_shadow );
-    p.drawImage( halfWidth, height() - borderHeight , bottomLeft );
+    QPixmap bottomLeft_shadow = The::svgHandler()->renderSvg( prefix + "bottomleft" + shadow, borderWidth, borderHeight, prefix + "bottomleft" + shadow);
+    QPixmap bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", halfWidth, halfHeight, prefix + "bottomleft" );
+    p.drawPixmap( 0, height() - borderHeight, bottomLeft_shadow );
+    p.drawPixmap( halfWidth, height() - borderHeight , bottomLeft );
 
-    QImage left_shadow = The::svgHandler()->renderSvg( prefix + "left" + shadow, borderWidth, height() - 2 * borderHeight, prefix + "left" + shadow).toImage();
-    QImage left = The::svgHandler()->renderSvg( prefix + "left", halfWidth, height() - 2 * borderHeight, prefix + "left" ).toImage();
-    p.drawImage( 0, borderHeight, left_shadow );
-    p.drawImage( halfWidth, borderHeight, left );
+    QPixmap left_shadow = The::svgHandler()->renderSvg( prefix + "left" + shadow, borderWidth, height() - 2 * borderHeight, prefix + "left" + shadow);
+    QPixmap left = The::svgHandler()->renderSvg( prefix + "left", halfWidth, height() - 2 * borderHeight, prefix + "left" );
+    p.drawPixmap( 0, borderHeight, left_shadow );
+    p.drawPixmap( halfWidth, borderHeight, left );
 
     
-    QImage center = The::svgHandler()->renderSvg( prefix + "center", width() - 2 * borderWidth, height() - 2 * borderHeight, prefix + "center" ).toImage();
-    p.drawImage( borderWidth, borderHeight, center );
+    QPixmap center = The::svgHandler()->renderSvg( prefix + "center", width() - 2 * borderWidth, height() - 2 * borderHeight, prefix + "center" );
+    p.drawPixmap( borderWidth, borderHeight, center );
 
     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
     const QString txt = text().remove( '&' );
