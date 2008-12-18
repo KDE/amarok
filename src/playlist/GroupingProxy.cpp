@@ -376,6 +376,18 @@ void Playlist::GroupingProxy::clearSearchTerm()
     m_model->clearSearchTerm();
 }
 
+QString Playlist::GroupingProxy::currentSearchTerm()
+{
+    return m_model->currentSearchTerm();
+}
+
+int Playlist::GroupingProxy::currentSearchFields()
+{
+    return m_model->currentSearchFields();
+}
+
 #endif
+
+
 
 

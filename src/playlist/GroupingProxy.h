@@ -97,6 +97,9 @@ public:
 
     int totalLength();
 
+    QString currentSearchTerm();
+    int currentSearchFields();
+
 signals:
     void rowsInserted( const QModelIndex&, int, int );
     void rowsRemoved( const QModelIndex&, int, int );

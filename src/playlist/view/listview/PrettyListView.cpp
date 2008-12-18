@@ -413,7 +413,8 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
         emit( notFound() );
     }
 
-    NavigatorFilterProxyModel::instance()->filterUpdated();
+    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+        NavigatorFilterProxyModel::instance()->filterUpdated();
 
 }
 
@@ -446,7 +447,8 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         emit( notFound() );
     }
 
-    NavigatorFilterProxyModel::instance()->filterUpdated();
+    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+        NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
 void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fields )
@@ -478,7 +480,8 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         emit( notFound() );
     }
 
-    NavigatorFilterProxyModel::instance()->filterUpdated();
+    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+        NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
 void Playlist::PrettyListView::clearSearchTerm()

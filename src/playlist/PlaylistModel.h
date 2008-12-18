@@ -187,6 +187,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         void clearSearchTerm();
 
         bool matchesCurrentSearchTerm( int row ) const;
+
+        QString currentSearchTerm() { return m_currentSearchTerm; }
+        int currentSearchFields() { return m_currentSearchFields; }
         
     signals:
         void insertedIds( const QList<quint64>& );
