@@ -22,20 +22,25 @@
 
 #include <QSortFilterProxyModel>
 
+#include "playlist/PlaylistItem.h"
+
 namespace Playlist {
 
 /**
-A proxy model used by navigators that wants to only operate on track sthat match the current paylist search term
+A proxy model used by navigators that wants to only operate on tracks that match the current paylist search term
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
 class NavigatorFilterProxyModel : public QSortFilterProxyModel {
+    Q_OBJECT
 public:
 
     static NavigatorFilterProxyModel* instance();
 
     int activeRow() const;
     quint64 idAt( const int row ) const;
+    Item::State stateOfRow( int row ) const;
+    Item::State stateOfId( quint64 id ) const;
 
 
     /**
@@ -56,6 +61,17 @@ public:
 
 protected:
     virtual bool filterAcceptsRow ( int row, const QModelIndex & source_parent ) const;
+
+protected slots:
+
+    void slotInsertedIds( const QList<quint64> &ids );
+    void slotRemovedIds( const QList<quint64> &ids );
+
+signals:
+    void insertedIds( const QList<quint64>& );
+    void removedIds( const QList<quint64>& );
+
+    void filterChanged();
 
 private:
     NavigatorFilterProxyModel();

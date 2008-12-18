@@ -37,6 +37,9 @@ NavigatorFilterProxyModel::NavigatorFilterProxyModel()
     : QSortFilterProxyModel( Model::instance() )
 {
     setSourceModel( Model::instance() );
+
+    connect( Model::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
+    connect( Model::instance(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
 }
 
 NavigatorFilterProxyModel::~NavigatorFilterProxyModel()
@@ -84,9 +87,9 @@ quint64 Playlist::NavigatorFilterProxyModel::idAt( const int row ) const
 
 void Playlist::NavigatorFilterProxyModel::filterUpdated()
 {
+    DEBUG_BLOCK
     invalidateFilter();
-}
-
+    emit( filterChanged() );
 }
 
 int Playlist::NavigatorFilterProxyModel::firstMatchAfterActive()
@@ -142,6 +145,55 @@ int Playlist::NavigatorFilterProxyModel::firstMatchBeforeActive()
 
     return index.row();
 }
+
+void Playlist::NavigatorFilterProxyModel::slotInsertedIds( const QList< quint64 > &ids )
+{
+    Model * model = Model::instance();
+
+    QList< quint64 > proxyIds;
+    foreach( quint64 id, ids ) {
+        if ( model->matchesCurrentSearchTerm( model->rowForId( id ) ) ) {
+            proxyIds << id;
+        }
+    }
+
+    if ( proxyIds.size() > 0 )
+        emit( insertedIds( proxyIds ) );
+}
+
+void Playlist::NavigatorFilterProxyModel::slotRemovedIds( const QList< quint64 > &ids )
+{
+    Model * model = Model::instance();
+
+    QList< quint64 > proxyIds;
+    foreach( quint64 id, ids ) {
+        if ( model->matchesCurrentSearchTerm( model->rowForId( id ) ) ) {
+            proxyIds << id;
+        }
+    }
+
+    if ( proxyIds.size() > 0 )
+        emit( removedIds( proxyIds ) );
+}
+
+
+Item::State Playlist::NavigatorFilterProxyModel::stateOfRow( int row ) const
+{
+    //map to sourceRow:
+    QModelIndex index = this->index( row, 0 );
+    QModelIndex sourceIndex = mapToSource( index );
+    
+    return Model::instance()->stateOfRow( sourceIndex.row() );
+}
+
+Item::State Playlist::NavigatorFilterProxyModel::stateOfId( quint64 id ) const
+{
+    return Model::instance()->stateOfId( id );
+}
+
+}
+
+#include "NavigatorFilterProxyModel.moc"
 
 
 
