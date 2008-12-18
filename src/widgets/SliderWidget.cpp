@@ -161,7 +161,6 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
 
     if( m_needsResize )
     {
-        debug() << "WIDTH " << width << " HEIGHT " << height << " X " << x << " Y " << y;
         m_topLeft = The::svgHandler()->renderSvg( prefix + "topleft", borderWidth, borderHeight, prefix + "topleft" );
         m_top = The::svgHandler()->renderSvg( prefix + "top", width - ( 2 * borderWidth ), borderHeight, prefix + "top" );
         m_topRight = The::svgHandler()->renderSvg( prefix + "topright", borderWidth, borderHeight, prefix + "topright" );
@@ -170,7 +169,6 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         m_bottom = The::svgHandler()->renderSvg( prefix + "bottom", width - 2 * borderWidth, borderHeight, prefix + "bottom" );
         m_bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", borderWidth, borderHeight, prefix + "bottomleft" );
         m_left = The::svgHandler()->renderSvg( prefix + "left", borderWidth, height - 2 * borderHeight, prefix + "left" );
-        DEBUG_LINE_INFO
         m_needsResize = false;
     }
     p->drawPixmap( x, y, m_topLeft );
@@ -181,11 +179,8 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
     p->drawPixmap( x + borderWidth, y + ( height - borderHeight ), m_bottom );
     p->drawPixmap( x, y + ( height - borderHeight ) , m_bottomLeft );
     p->drawPixmap( x, y + borderHeight, m_left );
-    debug() << "M_BOTTOM IS NULL? " << m_bottom.isNull();
-    debug() << "M_TOP IS NULL? " << m_top.isNull();
-    debug() << "M_LEFT IS NULL? " << m_left.isNull();
 
-    if ( value() != minimum() )
+    if( value() != minimum() )
     {
         const int sliderHeight = height - ( sliderInsertY * 2 );
         const int sliderLeftWidth = sliderHeight / 3;
