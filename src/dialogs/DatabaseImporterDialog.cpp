@@ -142,8 +142,14 @@ DatabaseImporterDialog::selectImporter()
 void
 DatabaseImporterDialog::importSucceeded()
 {
-    QString text = i18np( "<b><font color='green'>Success:</font></b> Imported %1 track", 
-                          "<b><font color='green'>Success:</font></b> Imported %1 tracks", m_importer->importedCount() );
+    // Special case the 0 import track count as it is really a failure
+    QString text;
+    if( !m_importer->importedCount() )
+        text = i18n( "<b><font color='red'>Failed:</font></b> No tracks were imported" );
+    else
+        text = i18np( "<b><font color='green'>Success:</font></b> Imported %1 track", 
+                      "<b><font color='green'>Success:</font></b> Imported %1 tracks", m_importer->importedCount() );
+
     m_results->appendHtml( text );
 
     enableButton( KDialog::User1, true );
