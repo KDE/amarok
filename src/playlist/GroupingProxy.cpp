@@ -353,17 +353,17 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
 
 int Playlist::GroupingProxy::find( const QString &searchTerm, int fields  )
 {
-    m_model->find( searchTerm, fields );
+    return m_model->find( searchTerm, fields );
 }
 
 int Playlist::GroupingProxy::findNext( const QString &searchTerm, int selectedRow, int fields  )
 {
-    m_model->findNext( searchTerm, selectedRow, fields );
+    return m_model->findNext( searchTerm, selectedRow, fields );
 }
 
 int Playlist::GroupingProxy::findPrevious( const QString &searchTerm, int selectedRow, int fields  )
 {
-    m_model->findPrevious( searchTerm, selectedRow, fields );
+    return m_model->findPrevious( searchTerm, selectedRow, fields );
 }
 
 int Playlist::GroupingProxy::totalLength()
