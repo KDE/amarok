@@ -44,6 +44,8 @@ namespace Playlist
         void recvRemovedIds( const QList<quint64>& );
         void recvActiveTrackChanged( const quint64 );
 
+        void reset();
+
     private:
         QList<quint64> m_playedRows;
         QList<quint64> m_unplayedRows;

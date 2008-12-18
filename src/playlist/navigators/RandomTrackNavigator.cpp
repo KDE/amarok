@@ -25,7 +25,7 @@
 
 #include "Debug.h"
 #include "playlist/PlaylistItem.h"
-#include "playlist/PlaylistModel.h"
+#include "NavigatorFilterProxyModel.h"
 
 #include <KRandom>
 
@@ -33,34 +33,21 @@
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
-    Model* model = Model::instance();
+    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
     connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
+    connect( model, SIGNAL( filterChanged() ), this, SLOT( reset() ) );
 
-    const int max = model->rowCount();
-    for ( int i = 0; i < max; i++ )
-    {
-        if (( model->stateOfRow( i ) == Item::Unplayed ) || ( model->stateOfRow( i ) == Item::NewlyAdded ) )
-        {
-            m_unplayedRows.append( model->idAt( i ) );
-        }
-        else
-        {
-            m_playedRows.append( model->idAt( i ) );
-        }
-    }
-
-    std::random_shuffle( m_unplayedRows.begin(), m_unplayedRows.end() );
-    std::random_shuffle( m_playedRows.begin(), m_playedRows.end() );
+    reset();
 }
 
 void
 Playlist::RandomTrackNavigator::recvInsertedIds( const QList<quint64>& list )
 {
-    Model* model = Model::instance();
+    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
     foreach( quint64 t, list )
     {
-        if (( model->stateOfId( t ) == Item::Unplayed ) || ( model->stateOfId( t ) == Item::NewlyAdded ) )
+        if ( ( model->stateOfId( t ) == Item::Unplayed ) || ( model->stateOfId( t ) == Item::NewlyAdded ) )
         {
             m_unplayedRows.append( t );
         }
@@ -130,4 +117,29 @@ Playlist::RandomTrackNavigator::requestLastTrack()
         m_unplayedRows.prepend( t );
         return t;
     }
+}
+
+void Playlist::RandomTrackNavigator::reset()
+{
+    DEBUG_BLOCK
+    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+
+    m_unplayedRows.clear();
+    m_playedRows.clear();
+
+    const int max = model->rowCount();
+    for ( int i = 0; i < max; i++ )
+    {
+        if (( model->stateOfRow( i ) == Item::Unplayed ) || ( model->stateOfRow( i ) == Item::NewlyAdded ) )
+        {
+            m_unplayedRows.append( model->idAt( i ) );
+        }
+        else
+        {
+            m_playedRows.append( model->idAt( i ) );
+        }
+    }
+
+    std::random_shuffle( m_unplayedRows.begin(), m_unplayedRows.end() );
+    std::random_shuffle( m_playedRows.begin(), m_playedRows.end() );
 }
