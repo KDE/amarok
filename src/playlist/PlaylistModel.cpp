@@ -702,6 +702,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     if ( m_items.size() > 0 )
     {
         max = ( max < m_items.size() ) ? max : m_items.size() - 1;
+        debug() << "Emitting dataChanged. min=" << min << ", max=" << max << ", rowCount=" << m_items.size() << ", columnCount=" << columnCount();
         emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() ) );
     }
     emit removedIds( delIds );
