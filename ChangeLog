@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Make it possible to lock "standard" and "random track" playback mode to
+      only play tracks that matche the current playlist search.
+    * Add advanced, configurable, searching to the playlist.
     * MTP devices can now delete multiple tracks at once.
     * Status bar notification oncopying or deleting tracks on Ipod.
     * Ipod ratings are read/written/displayed.
