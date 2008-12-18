@@ -27,7 +27,7 @@ class KLineEdit;
 class QMenu;
 
 /**
-A composite widget for progressive (Firefix style search as you type) searching, with buttons next and previous result
+A composite widget for progressive (Firefix style search as you type) searching, with buttons for next and previous result. Also includes a drop down menu to configure which fields in the track ( track name, album name, genre, ...) should be used for matching, as well as a config option for whether the current search and search fields should be taken into account when doing track progression (i.e. should navigators only jump between tracks that match the current search term)
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
@@ -35,45 +35,58 @@ class ProgressiveSearchWidget : public KHBox
 {
     Q_OBJECT
 public:
+    
+    /**
+     * Constructor.
+     * @param parent The parent widget this is added to.
+     */
     ProgressiveSearchWidget( QWidget * parent );
 
+    /**
+     * Destructor.
+     */
     ~ProgressiveSearchWidget();
 
 signals:
 
     /**
-     * Signal emitted when the search term has changed
-     * @param filter the new search term
-     * @param filelds The mask containing the fields to match against
+     * Signal emitted when the search term has changed.
+     * @param filter The new search term.
+     * @param filelds The mask containing the fields to match against.
      */
     void filterChanged( const QString &filter, int fields );
     
     /**
-     * Signal emitted when the search term is cleared
+     * Signal emitted when the search term is cleared.
      */
     void filterCleared();
     
     /**
-     * Signal emitted when the "next" button is pressed 
-     * @param filter The current search term
-     * @param filelds The mask containing the fields to match against
+     * Signal emitted when the "next" button is pressed.
+     * @param filter The current search term.
+     * @param filelds The mask containing the fields to match against.
      */
     void next( const QString &filter, int fields  );
     
     /**
-     * Signal emitted when the "previous" button is pressed
-     * @param filter The current search term
-     * @param filelds The mask containing the fields to match against
+     * Signal emitted when the "previous" button is pressed.
+     * @param filter The current search term.
+     * @param filelds The mask containing the fields to match against.
      */
     void previous( const QString &filter, int fields  );
 
+    /**
+     * Signal emitted when the user changes the value of the "Play only
+     * matches" option.
+     * @param playOnlyMatches The value selected by the user.
+     */
     void playOnlyMatches( bool onlyMatches );
 
 public slots:
 
     /**
      * Notify the widget that there are matches (at least one), so the next and previous actions
-     * should be enabled and the text color set to normal
+     * should be enabled and the text color set to normal.
      */
     void match();
 
@@ -86,32 +99,70 @@ public slots:
 protected slots:
 
     /**
-     * Notify widget that the text in the search edit has changed
-     * @param filter The new text in the search widget
+     * Notify widget that the text in the search edit has changed.
+     * @param filter The new text in the search widget.
      */
     void slotFilterChanged( const QString &filter );
     
     /**
-     * Notify widget that the "next" button has been pressed
+     * Notify widget that the "next" button has been pressed.
      */
     void slotNext();
 
     /**
-     * Notify widget that the "previous" button has been pressed
+     * Notify widget that the "previous" button has been pressed.
      */
     void slotPrevious();
 
+    /**
+     * Toggle track name matching when searching.
+     * @param search On/off.
+     */
     void slotSearchTracks( bool search );
+    
+    /**
+     * Toggle artist name matching when searching.
+     * @param search On/off.
+     */
     void slotSearchArtists( bool search );
+    
+    /**
+     * Toggle album name matching when searching.
+     * @param search On/off.
+     */
     void slotSearchAlbums( bool search );
+    
+    /**
+     * Toggle genre name matching when searching.
+     * @param search On/off.
+     */
     void slotSearchGenre( bool search );
+    
+    /**
+     * Toggle composer name matching when searching.
+     * @param search On/off.
+     */
     void slotSearchComposers( bool search );
+    
+    /**
+     * Toggle year matching when searching.
+     * @param search On/off.
+     */
     void slotSearchYears( bool search );
 
+    /**
+     * Toggle navigate only tracks that match the current search term and
+     * search fields. (The user can always manually select a track that
+     * is not a part of the search results.
+     * @param playOnlyMatches On/off.
+     */
     void slotPlayOnlyMatches( bool onlyMatches );
     
 private:
 
+    /**
+     * Load the current search field settings from config.
+     */
     void readConfig();
 
     KLineEdit * m_searchEdit;
