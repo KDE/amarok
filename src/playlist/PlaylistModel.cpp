@@ -705,8 +705,11 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         debug() << "Emitting dataChanged. min=" << min << ", max=" << max << ", rowCount=" << m_items.size() << ", columnCount=" << columnCount();
         emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() ) );
     }
+
+    debug() << "Emitting removedIds";
     emit removedIds( delIds );
 
+    debug() << "update the active row";
     //update the active row
     if ( !activeDeleted && ( m_activeRow >= 0 ) )
     {
@@ -717,8 +720,12 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         m_activeRow = -1;
     }
 
+    debug() << "Almost there....";
+
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
+
+    debug() << "Done!";
 }
 
 void

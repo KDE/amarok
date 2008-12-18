@@ -169,12 +169,14 @@ void Playlist::NavigatorFilterProxyModel::slotInsertedIds( const QList< quint64 
 
 void Playlist::NavigatorFilterProxyModel::slotRemovedIds( const QList< quint64 > &ids )
 {
+    DEBUG_BLOCK
     Model * model = Model::instance();
 
     QList< quint64 > proxyIds;
     foreach( quint64 id, ids ) {
         const int row = model->rowForId( id );
         if ( row == -1 || model->matchesCurrentSearchTerm( row ) ) {
+            debug() << "proxy removing id " << id;
             proxyIds << id;
         }
     }
