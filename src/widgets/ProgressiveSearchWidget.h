@@ -67,6 +67,8 @@ signals:
      */
     void previous( const QString &filter, int fields  );
 
+    void playOnlyMatches( bool onlyMatches );
+
 public slots:
 
     /**
@@ -105,6 +107,8 @@ protected slots:
     void slotSearchGenre( bool search );
     void slotSearchComposers( bool search );
     void slotSearchYears( bool search );
+
+    void slotPlayOnlyMatches( bool onlyMatches );
     
 private:
 

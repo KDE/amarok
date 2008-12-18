@@ -60,6 +60,7 @@ public slots:
     void findNext( const QString & searchTerm, int fields  );
     void findPrevious( const QString & searchTerm, int fields  );
     void clearSearchTerm();
+    void playOnlyMatches( bool onlyMatches );
 
 protected slots:
     void newPalette( const QPalette & palette );

@@ -531,5 +531,10 @@ void Playlist::PrettyListView::updateProxyTimeout()
     NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
+void Playlist::PrettyListView::playOnlyMatches( bool onlyMatches )
+{
+    NavigatorFilterProxyModel::instance()->setPassThrough( !onlyMatches );
+}
+
 
 #include "PrettyListView.moc"
