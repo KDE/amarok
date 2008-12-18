@@ -103,7 +103,7 @@ ITunesImporterWorker::readTrackElement()
             ec->beginStatisticsUpdate();
             if( rating != -1 ) 
                 ec->setRating( rating );
-            if( lastplayed != -1 )
+            if( lastplayed > 0 )
                 ec->setLastPlayed( lastplayed );
             if( playcount != -1 ) 
                 ec->setPlayCount( playcount );
