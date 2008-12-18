@@ -48,11 +48,8 @@ NavigatorFilterProxyModel::~NavigatorFilterProxyModel()
 
 bool Playlist::NavigatorFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
 {
-    DEBUG_BLOCK
     Q_UNUSED( source_parent );
-
     bool match = Model::instance()->matchesCurrentSearchTerm( row );
-    debug() << "Match for row " << row << ": " << match;
     return match;
 }
 
@@ -74,20 +71,13 @@ int Playlist::NavigatorFilterProxyModel::activeRow() const
 
 quint64 Playlist::NavigatorFilterProxyModel::idAt( const int row ) const
 {
-
-    DEBUG_BLOCK
-
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
-
-    debug() << "proxy row " << row << " = source row " << sourceIndex.row();
-    
     return Model::instance()->idAt( sourceIndex.row() );
 }
 
 void Playlist::NavigatorFilterProxyModel::filterUpdated()
 {
-    DEBUG_BLOCK
     invalidateFilter();
     emit( filterChanged() );
 }

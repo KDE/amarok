@@ -436,13 +436,9 @@ Playlist::Model::trackForId( const quint64 id ) const
 quint64
 Playlist::Model::idAt( const int row ) const
 {
-    DEBUG_BLOCK
-
-    debug() << "row " << row;
     if ( rowExists( row ) )
         return m_items.at( row )->id();
 
-    debug() << "no such row. count = " << m_totalLength;
     return 0;
 }
 
@@ -791,10 +787,8 @@ int Playlist::Model::find( const QString & searchTerm, int searchFields )
 
         Meta::TrackPtr track = item->track();
 
-        debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
         if ( trackMatch( track, searchTerm, searchFields ) ) {
             matchRow = row;
-            debug() << "match at row: " << row;
             break;
         }
 
@@ -817,13 +811,11 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int 
 
         Meta::TrackPtr track = item->track();
 
-        debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
         if ( trackMatch( track, searchTerm, searchFields ) ) {
             if ( firstMatch == -1 )
                 firstMatch = row;
 
             if ( row > selectedRow ) {
-                debug() << "match at row: " << row;
                 return row;
             }
         }
@@ -852,13 +844,11 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, 
 
         Meta::TrackPtr track = item->track();
 
-        debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
         if ( trackMatch( track, searchTerm, searchFields ) ) {
             if ( lastMatch == -1 )
                 lastMatch = row;
 
             if ( row < selectedRow ) {
-                debug() << "match at row: " << row;
                 return row;
             }
         }
@@ -907,7 +897,8 @@ bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTer
          track->year()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
        )
         return true;
-    
+
+    return false;
 }
 
 void Playlist::Model::clearSearchTerm()
@@ -919,9 +910,6 @@ void Playlist::Model::clearSearchTerm()
 
 bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
 {
-    DEBUG_BLOCK
-
-    debug() << "current search term: " << m_currentSearchTerm;
     if ( rowExists( row ) )
     {
         if ( m_currentSearchTerm.isEmpty() )
