@@ -57,7 +57,7 @@ namespace Ipod
 
     typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
-
+// NOTE: podcasts NYI
 /*
 struct PodcastInfo
 {
@@ -78,8 +78,6 @@ struct PodcastInfo
 /* The libgpod backend for all Ipod calls */
     class IpodHandler : public QObject, public Meta::Observer
     {
-        // enum to simplify map-building
-
         Q_OBJECT
 
         public:
@@ -98,37 +96,27 @@ struct PodcastInfo
            virtual void metadataChanged( Meta::ComposerPtr composer );
            virtual void metadataChanged( Meta::YearPtr year );
 
-
-       void detectModel();
-       QString itunesDir( const QString &path = QString() ) const;
-       QString mountPoint() const { return m_mountPoint; }
-       bool openDevice( bool silent=false );
-       void copyTrackToDevice( const Meta::TrackPtr &track );
-       void copyTrackListToDevice( const Meta::TrackList tracklist );
-       bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
-       void deleteTracksFromDevice( const Meta::TrackList &tracks );
-       bool kioCopyTrack( const KUrl &src, const KUrl &dst );
-       void deleteFile( const KUrl &url );
+           void detectModel();
 
 
-       void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
-       void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
-       void addTrackInDB( Itdb_Track *ipodtrack );
-       bool removeDBTrack( Itdb_Track *track );
-       QString           ipodPath( const QString &realPath );
-       KUrl determineURLOnDevice( const Meta::TrackPtr &track );
-	   void parseTracks();
-       void addIpodTrackToCollection( Itdb_Track *ipodtrack );
-       void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
-       #if GDK_FOUND
-       void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
-       #endif
-       void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
-       void setRating( const int newrating );
-	   void setMountPoint( const QString &mp) { m_mountPoint = mp; }
-       QString           realPath( const char *ipodPath );
-	   bool pathExists( const QString &ipodPath, QString *realPath=0 );
-	   bool writeITunesDB( bool threaded=true );
+           void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
+           void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
+           void addTrackInDB( Itdb_Track *ipodtrack );
+           bool removeDBTrack( Itdb_Track *track );
+           QString           ipodPath( const QString &realPath );
+           KUrl determineURLOnDevice( const Meta::TrackPtr &track );
+           void parseTracks();
+           void addIpodTrackToCollection( Itdb_Track *ipodtrack );
+           void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+           #if GDK_FOUND
+           void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+           #endif
+           void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+           void setRating( const int newrating );
+           void setMountPoint( const QString &mp) { m_mountPoint = mp; }
+           QString realPath( const char *ipodPath );
+           bool pathExists( const QString &ipodPath, QString *realPath=0 );
+           bool writeITunesDB( bool threaded=true );
 
        // convenience methods to avoid repetitive code
 

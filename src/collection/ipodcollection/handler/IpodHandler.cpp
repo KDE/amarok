@@ -135,20 +135,9 @@ void
 IpodHandler::metadataChanged( TrackPtr track )
 {
     DEBUG_BLOCK
-    // Update rating
-    /*
-    Meta::IpodTrackPtr::staticCast(track)->getIpodTrack()->rating = ( track->rating() * ITDB_RATING_STEP / 2 );
-    Meta::IpodTrackPtr::staticCast(track)->getIpodTrack()->app_rating = ( track->rating() * ITDB_RATING_STEP /2 );
-
-    debug() << "Changed app_rating to: " << Meta::IpodTrackPtr::staticCast(track)->getIpodTrack()->app_rating;
-            */
-
-    debug() << "Rating is: " << track->rating();
 
     Meta::IpodTrackPtr trackPtr = Meta::IpodTrackPtr::staticCast( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
-
-    debug() << "Running updateTrackInDB...";
 
     updateTrackInDB( trackUrl, track, trackPtr->getIpodTrack() );
 }
@@ -571,35 +560,6 @@ IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
     connect( this, SIGNAL( endProgressOperation( const QObject*) ),
              The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
 
-    /*
-
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        Itdb_Track *ipodtrack = Meta::IpodTrackPtr::staticCast(track)->getIpodTrack();
-
-        // delete file
-        KUrl url;
-        url.setPath( realPath( ipodtrack->ipod_path ) );
-        deleteFile( url );
-
-        // remove it from the ipod database, ipod playlists and all
-
-        if ( !removeDBTrack( ipodtrack ) )
-        {
-            debug() << "Error: failed to remove track from db";
-            return false;
-        }
-
-        // remove from titlemap
-
-        m_titlemap.remove( track->name(), track );
-
-    }
-
-    */
-
-//    return ( writeITunesDB( false ) );
-
     deleteNextTrackFromDevice();
 
 }
@@ -643,15 +603,15 @@ IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
     url.setPath( realPath( ipodtrack->ipod_path ) );
     deleteFile( url );
 
-        // remove it from the ipod database, ipod playlists and all
+    // remove it from the ipod database, ipod playlists and all
 
     if ( !removeDBTrack( ipodtrack ) )
     {
         debug() << "Error: failed to remove track from db";
-//        return false;
+
     }
 
-        // remove from titlemap
+    // remove from titlemap
 
     m_titlemap.remove( track->name(), track );
 }
@@ -671,8 +631,6 @@ IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
              SLOT( slotCopyTrackToDevice( QString, Meta::TrackList ) ) , Qt::QueuedConnection );
     // NOTE: ignoring queryDone signal since nothing to be done based on it
 
-
-
     qm->run();
 
 }
@@ -681,8 +639,7 @@ void
 IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 {
     DEBUG_BLOCK
-//    QList<QueryMaker*> queryMakers;
-//    QueryMaker *metaqm;
+
     bool isDupe;
     QString format;
     TrackMap trackMap = m_memColl->trackMap();
@@ -738,8 +695,6 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
                 continue;
             }
 
-
-
             /* Track is already on there, break */
 
             isDupe = true;
@@ -756,32 +711,6 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 
     slotCopyTracksToDevice();
 
-    /* For each track make a querymaker testing if it's in ipod already */
-/*
-    foreach( Meta::TrackPtr track, tracklist )
-    {
-        debug() << "QM for: " << track->name();
-        QueryMaker * qm = track->collection()->queryMaker();
-       // QueryMaker *qm = m_memColl->queryMaker();
-        qm->setQueryType( QueryMaker::Track );
-        qm->addMatch( track );
-
-        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-                 SLOT( slotQueueTrackForCopy( QString, Meta::TrackList ) ) , Qt::QueuedConnection );
-        // NOTE: ignoring queryDone signal since nothing to be done based on it
-
-        queryMakers.append( qm );
-    }
-
-    metaqm = new MetaQueryMaker( queryMakers );
-
-    metaqm->setQueryType( QueryMaker::Track );
-
-    connect( metaqm, SIGNAL( queryDone() ),
-             SLOT( slotCopyTracksToDevice() ), Qt::QueuedConnection );
-
-    metaqm->run();
-    */
 }
 
 void
@@ -790,27 +719,8 @@ IpodHandler::slotQueueTrackForCopy( QString collectionId, Meta::TrackList trackl
     Q_UNUSED( collectionId );
     DEBUG_BLOCK
     debug() << "Tracklist size: " << tracklist.size();
-    /* If tracklist contains 1 track, no duplicates, add to queue */
-    /*
-    if( tracklist.size() == 1 )
-        m_tracksToCopy.append( tracklist.first() );
-    else
-        debug() << "Duplicate track, not copying";
-    */
-}
 
-/*
-void
-IpodHandler::slotCopyTrackToDevice( QString collectionId, Meta::TrackList tracklist )
-{
-    DEBUG_BLOCK
-    // Track not found in collection, go ahead and copy 
-    if( tracklist.isEmpty() )
-        privateCopyTrackToDevice( m_trackToCopy );
-    else
-        debug() << "Duplicate track, not copying to device";
 }
-*/
 
 void
 IpodHandler::slotCopyTracksToDevice()
@@ -826,13 +736,6 @@ IpodHandler::slotCopyTracksToDevice()
         return;
     }
     debug() << "Copying " << m_tracksToCopy.size() << " tracks";
-
-
-    //foreach( Meta::TrackPtr track, m_tracksToCopy )
-//       privateCopyTrackToDevice( track );
-
-    /* Start first file copy, which triggers copying of
-    all files enqueued in m_tracksToCopy */
 
     m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to iPod" ) );
 
@@ -851,6 +754,7 @@ void
 IpodHandler::copyNextTrackToDevice()
 {
     Meta::TrackPtr track;
+
     // If there are more tracks to copy, copy the next one
     if( !m_tracksToCopy.isEmpty() )
     {
@@ -865,6 +769,7 @@ IpodHandler::copyNextTrackToDevice()
 
         emit incrementProgress();
     }
+
     // No tracks left to copy, emit done
     else
     {
@@ -960,7 +865,7 @@ IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
 
     addTrackInDB( ipodtrack );
 
-        // add track to collection
+    // add track to collection
     addIpodTrackToCollection( ipodtrack );
     }
     else
@@ -1090,21 +995,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
 
     m_dbChanged = true;
 
-// In Amarok 2, tracks come from many places, no such reliable info
-/*
-    //Get the createdate from database
-    QueryBuilder qb;
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valCreateDate );
-    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valURL, metaBundle.url().path() );
-    QStringList values = qb.run();
-
-    //Add to track info if present
-    if ( values.count() ) {
-        uint createdate = values.first().toUInt();
-        ipodtrack->time_added = itdb_time_host_to_mac( createdate );
-        ipodtrack->time_modified = itdb_time_host_to_mac( createdate );
-    }
-*/
 // TODO: podcasts/compilations NYI
     /*
     if(podcastInfo)
@@ -1235,10 +1125,6 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
-
-    //The::statusBar()->newProgressOperation( job, i18n( "Transferring Tracks to iPod" )  );
-    //KIO::Scheduler::scheduleJob( job );
-    //job->start();
 
     return true;
 }
@@ -1385,8 +1271,6 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
 
     track->setIpodTrack( ipodtrack ); // convenience pointer
-    // NOTE: not supporting adding track that's already on a playlist
-    //ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
 
     // Finally, assign the created maps to the collection
     m_memColl->acquireWriteLock();
@@ -1425,14 +1309,11 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
 
     QString filetype = QString::fromUtf8( ipodtrack->filetype );
 
-
     if( filetype == "mpeg" )
         track->setType( "mp3" );
 
     return;
 }
-
-
 
 #if GDK_FOUND
 
@@ -1455,27 +1336,20 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
     {
         // try small first
 
-        //debug() << "Attempting to get small cover";
         thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL );
 
         // then large if needed
         if( thumb == NULL)
         {
-//            //debug() << "Failed to get small cover, trying large";
             thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE );
         }
 
         if( thumb != NULL)
         {
-//            //debug() << "Got a valid thumb, attempting to fetch pixbuf";
             gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
         }
         else
         {
-//            //debug() << "No valid thumb gotten, not fetching pixbuf";
-//            //debug() << "Attempting to fetch artwork via a thumb";
-//            //debug() << "Iterating through thumbs";
-
             GList *thumbs = ipodtrack->artwork->thumbnails;
 
             for(; thumbs; thumbs = thumbs->next)
@@ -1484,53 +1358,37 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
                 if( curThumb == NULL)
                     continue;
 
-//                //debug() << "Found valid thumb while iterating";
-//                //debug() << "Cover probably set by iTunes";
-//                //debug() << "Type is the following:";
-
                 switch( curThumb->type )
                 {
                     case ITDB_THUMB_PHOTO_SMALL:
-                        //debug() << "ITDB_THUMB_PHOTO_SMALL";
                         break;
                     case ITDB_THUMB_PHOTO_LARGE:
-                        //debug() << "ITDB_THUMB_PHOTO_LARGE";
                         break;
                     case ITDB_THUMB_PHOTO_FULL_SCREEN:
-                        //debug() << "ITDB_THUMB_PHOTO_FULL_SCREEN";
                         break;
                     case ITDB_THUMB_PHOTO_TV_SCREEN:
-                        //debug() << "ITDB_THUMB_PHOTO_TV_SCREEN";
                         break;
                     case ITDB_THUMB_COVER_XLARGE:
-                        //debug() << "ITDB_THUMB_COVER_XLARGE";
                         break;
                     case ITDB_THUMB_COVER_MEDIUM:
-                        //debug() << "ITDB_THUMB_COVER_MEDIUM";
                         break;
                     case ITDB_THUMB_COVER_SMEDIUM:
-                        //debug() << "ITDB_THUMB_COVER_SMEDIUM";
                         break;
                     case ITDB_THUMB_COVER_XSMALL:
-                        //debug() << "ITDB_THUMB_COVER_XSMALL";
                         break;
 
                     default:
-                        //debug() << "Unknown Thumb Type";
                         break;
                 }
-                ////debug() << "Type is: " << curThumb->type;
 
                 thumb = curThumb;
                 break;
 
             }
 
-
             if( thumb != NULL)
             {
                 thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
-
                 gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
             }
         }
