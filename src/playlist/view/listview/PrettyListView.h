@@ -33,6 +33,7 @@ class QDropEvent;
 class QKeyEvent;
 class QMouseEvent;
 class QPaintEvent;
+class QTimer;
 
 namespace Playlist
 {
@@ -65,6 +66,7 @@ protected slots:
 
 private slots:
     void trackActivated( const QModelIndex& ) const;
+    void updateProxyTimeout();
 
 private:
     void contextMenuEvent( QContextMenuEvent* );
@@ -82,9 +84,13 @@ private:
 
     QList<int> selectedRows() const;
 
+    void startProxyUpdateTimeout();
+
     QRect m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;
     bool m_mousePressInHeader;
+
+    QTimer * m_proxyUpdateTimer;
 };
 }
 

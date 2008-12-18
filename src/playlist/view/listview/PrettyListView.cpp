@@ -45,6 +45,7 @@
 #include <QPainter>
 #include <QPalette>
 #include <QPersistentModelIndex>
+#include <QTimer>
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
@@ -70,6 +71,11 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     // signal connections
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
+
+    m_proxyUpdateTimer = new QTimer( this );
+    m_proxyUpdateTimer->setSingleShot( true );
+
+    connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -395,6 +401,11 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
 void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
 {
     DEBUG_BLOCK
+
+    bool updateProxy = false;
+    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+        updateProxy = true;
+            
     int row = GroupingProxy::instance()->find( searchTerm, fields );
     if( row != -1 ) {
         //select this track
@@ -413,8 +424,14 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
         emit( notFound() );
     }
 
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
-        NavigatorFilterProxyModel::instance()->filterUpdated();
+
+    //instead of kicking the proxy right away, start a 500msec timeout.
+    //this stops us from updating it for each letter of a long search term,
+    //and since it does not affect any views, this is fine. Worst case is that
+    //a navigator skips to a track form the old search if the track change happens
+    //before this  timeout. Only start count if values have actually changed!
+    if ( updateProxy )
+        startProxyUpdateTimeout();
 
 }
 
@@ -422,6 +439,10 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
 {
     DEBUG_BLOCK
     QList<int> selected = selectedRows();
+
+    bool updateProxy = false;
+    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+        updateProxy = true;
 
     int currentRow = -1;
     if( selected.size() > 0 )
@@ -447,7 +468,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         emit( notFound() );
     }
 
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( updateProxy )
         NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
@@ -455,6 +476,10 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
 {
     DEBUG_BLOCK
     QList<int> selected = selectedRows();
+
+    bool updateProxy = false;
+    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+        updateProxy = true;
 
     int currentRow = GroupingProxy::instance()->totalLength();
     if( selected.size() > 0 )
@@ -480,7 +505,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         emit( notFound() );
     }
 
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( updateProxy )
         NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
@@ -488,6 +513,22 @@ void Playlist::PrettyListView::clearSearchTerm()
 {
     NavigatorFilterProxyModel::instance()->filterUpdated();
     GroupingProxy::instance()->clearSearchTerm();
+}
+
+void Playlist::PrettyListView::startProxyUpdateTimeout()
+{
+    DEBUG_BLOCK
+    if ( m_proxyUpdateTimer->isActive() )
+        m_proxyUpdateTimer->stop();
+
+    m_proxyUpdateTimer->setInterval( 500 );
+    m_proxyUpdateTimer->start();
+}
+
+void Playlist::PrettyListView::updateProxyTimeout()
+{
+    DEBUG_BLOCK
+    NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
 
