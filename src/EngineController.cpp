@@ -329,13 +329,14 @@ EngineController::stop( bool forceInstant ) //SLOT
         emit trackChanged( Meta::TrackPtr( 0 ) );
     }
 
-    // Stop instantly if fadeout is already running (i.e. pressing Stop twice)
-    if( m_fader ) 
+    // Stop instantly if fadeout is already running, or the media is paused (i.e. pressing Stop twice)
+    if( m_fader || m_media->state() == Phonon::PausedState ) 
     {
         forceInstant = true; 
     }
 
-    if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant ) {
+    if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant )
+    {
         stateChangedNotify( Phonon::StoppedState, Phonon::PlayingState ); //immediately disable Stop action
 
         m_fader = new Phonon::VolumeFaderEffect( this );
