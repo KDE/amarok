@@ -57,6 +57,7 @@ namespace Amarok
             virtual void mouseReleaseEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void slideEvent( QMouseEvent* );
+            virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
             virtual void paletteChange( const QPalette & oldPalette );
 
@@ -74,6 +75,16 @@ namespace Amarok
         private:
             bool m_outside;
             int  m_prevValue;
+            bool m_needsResize;
+            
+            QPixmap m_topLeft;
+            QPixmap m_topRight;
+            QPixmap m_top;
+            QPixmap m_bottomRight;
+            QPixmap m_right;
+            QPixmap m_bottomLeft;
+            QPixmap m_bottom;
+            QPixmap m_left;
 
             Q_DISABLE_COPY( Slider )
     };

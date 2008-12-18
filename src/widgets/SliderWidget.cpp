@@ -50,6 +50,7 @@ Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
     , m_sliding( false )
     , m_outside( false )
     , m_prevValue( 0 )
+    , m_needsResize( true )
 {
     setRange( 0, max );
 }
@@ -150,49 +151,51 @@ Amarok::Slider::setValue( int newValue )
 
 void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
 {
-    const int borderWidth = 6;
-    const int borderHeight = 6;
+    static const int borderWidth = 6;
+    static const int borderHeight = 6;
 
-    const int sliderInsertX = 5;
-    const int sliderInsertY = 5;
+    static const int sliderInsertX = 5;
+    static const int sliderInsertY = 5;
     
-    QString prefix = "slider_bg_";
+    const QString prefix = "slider_bg_";
 
-    QImage topLeft = The::svgHandler()->renderSvg( prefix + "topleft", borderWidth, borderHeight, prefix + "topleft" ).toImage();
-    p->drawImage( x, y, topLeft );
-
-    QImage top = The::svgHandler()->renderSvg( prefix + "top", width - ( 2 * borderWidth ), borderHeight, prefix + "top" ).toImage();
-    p->drawImage( x + borderWidth, y, top );
-
-    QImage topRight = The::svgHandler()->renderSvg( prefix + "topright", borderWidth, borderHeight, prefix + "topright" ).toImage();
-    p->drawImage( x + ( width - borderWidth ), y, topRight );
-
-    QImage right = The::svgHandler()->renderSvg( prefix + "right", borderWidth, height - ( 2 * borderHeight ), prefix + "right" ).toImage();
-    p->drawImage( x + ( width - borderWidth ), y + borderHeight, right );
-
-    QImage bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", borderWidth, borderHeight, prefix + "bottomright" ).toImage();
-    p->drawImage( x + ( width - borderWidth ), y + ( height - borderHeight ), bottomRight );
-
-    QImage bottom = The::svgHandler()->renderSvg( prefix + "bottom", width - 2 * borderWidth, borderHeight, prefix + "bottom" ).toImage();
-    p->drawImage( x + borderWidth, y + ( height - borderHeight ), bottom );
-
-    QImage bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", borderWidth, borderHeight, prefix + "bottomleft" ).toImage();
-    p->drawImage( x, y + ( height - borderHeight ) , bottomLeft );
-
-    QImage left = The::svgHandler()->renderSvg( prefix + "left", borderWidth, height - 2 * borderHeight, prefix + "left" ).toImage();
-    p->drawImage( x, y + borderHeight, left );
+    if( m_needsResize )
+    {
+        debug() << "WIDTH " << width << " HEIGHT " << height << " X " << x << " Y " << y;
+        m_topLeft = The::svgHandler()->renderSvg( prefix + "topleft", borderWidth, borderHeight, prefix + "topleft" );
+        m_top = The::svgHandler()->renderSvg( prefix + "top", width - ( 2 * borderWidth ), borderHeight, prefix + "top" );
+        m_topRight = The::svgHandler()->renderSvg( prefix + "topright", borderWidth, borderHeight, prefix + "topright" );
+        m_right = The::svgHandler()->renderSvg( prefix + "right", borderWidth, height - ( 2 * borderHeight ), prefix + "right" );
+        m_bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", borderWidth, borderHeight, prefix + "bottomright" );
+        m_bottom = The::svgHandler()->renderSvg( prefix + "bottom", width - 2 * borderWidth, borderHeight, prefix + "bottom" );
+        m_bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", borderWidth, borderHeight, prefix + "bottomleft" );
+        m_left = The::svgHandler()->renderSvg( prefix + "left", borderWidth, height - 2 * borderHeight, prefix + "left" );
+        DEBUG_LINE_INFO
+        m_needsResize = false;
+    }
+    p->drawPixmap( x, y, m_topLeft );
+    p->drawPixmap( x + borderWidth, y, m_top );
+    p->drawPixmap( x + ( width - borderWidth ), y, m_topRight );
+    p->drawPixmap( x + ( width - borderWidth ), y + borderHeight, m_right );
+    p->drawPixmap( x + ( width - borderWidth ), y + ( height - borderHeight ), m_bottomRight );
+    p->drawPixmap( x + borderWidth, y + ( height - borderHeight ), m_bottom );
+    p->drawPixmap( x, y + ( height - borderHeight ) , m_bottomLeft );
+    p->drawPixmap( x, y + borderHeight, m_left );
+    debug() << "M_BOTTOM IS NULL? " << m_bottom.isNull();
+    debug() << "M_TOP IS NULL? " << m_top.isNull();
+    debug() << "M_LEFT IS NULL? " << m_left.isNull();
 
     if ( value() != minimum() )
     {
         const int sliderHeight = height - ( sliderInsertY * 2 );
         const int sliderLeftWidth = sliderHeight / 3;
-        const int sliderRigthWidth = sliderLeftWidth;
+        const int sliderRightWidth = sliderLeftWidth;
 
-        int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRigthWidth + sliderInsertX * 2 ) );
+        int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRightWidth + sliderInsertX * 2 ) );
 
         p->drawPixmap( x + sliderInsertX, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_left",sliderLeftWidth , sliderHeight, "slider_bar_left" ) );
         p->drawPixmap( x + sliderInsertX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_center", knobX, sliderHeight, "slider_bar_center" ) );
-        p->drawPixmap( x + sliderInsertX + knobX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_right", sliderRigthWidth, sliderHeight, "slider_bar_right" ) );
+        p->drawPixmap( x + sliderInsertX + knobX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_right", sliderRightWidth, sliderHeight, "slider_bar_right" ) );
     }
 }
 
@@ -324,7 +327,7 @@ Amarok::VolumeSlider::paletteChange( const QPalette& )
 
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
-    Q_UNUSED( event );
+    Amarok::Slider::resizeEvent( event );
     m_iconHeight = static_cast<int>( height() * 0.66 );
     m_iconWidth  = static_cast<int>( m_iconHeight * 1.33 );
     m_textWidth  = 40;
@@ -373,7 +376,7 @@ Amarok::TimeSlider::paletteChange( const QPalette& )
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 {
-    Q_UNUSED( event );
+    Amarok::Slider::resizeEvent( event );
     //m_sliderHeight = (int)width() / 25; //maintain sane aspect ratio
     m_sliderHeight = 20;
     if ( m_sliderHeight > height() )
