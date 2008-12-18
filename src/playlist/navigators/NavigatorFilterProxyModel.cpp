@@ -173,7 +173,8 @@ void Playlist::NavigatorFilterProxyModel::slotRemovedIds( const QList< quint64 >
 
     QList< quint64 > proxyIds;
     foreach( quint64 id, ids ) {
-        if ( model->matchesCurrentSearchTerm( model->rowForId( id ) ) ) {
+        const int row = model->rowForId( id );
+        if ( row == -1 || model->matchesCurrentSearchTerm( row ) ) {
             proxyIds << id;
         }
     }
