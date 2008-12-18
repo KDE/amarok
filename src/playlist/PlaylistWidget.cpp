@@ -57,6 +57,7 @@ Playlist::Widget::Widget( QWidget* parent )
     m_playlistView = qobject_cast<QWidget*>( playView );
 
     connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ), playView, SLOT( find( const QString & ) ) );
+    connect( m_searchWidget, SIGNAL( next( const QString & ) ), playView, SLOT( findNext( const QString & ) ) );
 
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( playView );

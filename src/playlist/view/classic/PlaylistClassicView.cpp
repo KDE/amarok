@@ -117,7 +117,7 @@ void Playlist::ClassicView::removeSelection()
 {
     DEBUG_BLOCK
 
-    QModelIndexList indexes = m_treeView->selectionModel()->selectedRows() ;
+    QModelIndexList indexes = m_treeView->selectionModel()->selectedRows();
     while ( indexes.size() > 0 )
     {
 
