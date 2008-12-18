@@ -20,6 +20,7 @@
  **************************************************************************/
 
 #include "StandardTrackNavigator.h"
+#include "NavigatorFilterProxyModel.h"
 
 #include "playlist/PlaylistModel.h"
 #include <QDebug>
@@ -27,8 +28,17 @@
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    Model* model = Model::instance();
-    int updateRow = model->activeRow() + 1;
+    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+
+    int activeRow = model->activeRow();
+    int updateRow;
+
+    //if the currently playing track is not in the proxy model (does not match the
+    //current search term ), we just jump to the first matching track
+    if ( activeRow == -1 )
+        updateRow = model->firstMatchAfterActive();
+    else
+        updateRow = activeRow + 1;
 
     if ( m_repeatPlaylist )
         updateRow = ( updateRow >= model->rowCount() ) ? 0 : updateRow;
@@ -39,8 +49,18 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 quint64
 Playlist::StandardTrackNavigator::requestLastTrack()
 {
-    Model* model = Model::instance();
-    int updateRow = model->activeRow() - 1;
+    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+
+    
+    int activeRow = model->activeRow();
+    int updateRow;
+
+    //if the currently playing track is not in the proxy model (does not match the
+    //current search term ), we just jump to the first matching track
+    if ( activeRow == -1 )
+        updateRow = model->firstMatchBeforeActive();
+    else
+        updateRow = activeRow -1;
 
     if ( m_repeatPlaylist )
         updateRow = ( updateRow < 0 ) ? model->rowCount() - 1 : updateRow;
