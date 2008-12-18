@@ -371,6 +371,11 @@ int Playlist::GroupingProxy::totalLength()
     return m_model->totalLength();
 }
 
+void Playlist::GroupingProxy::clearSearchTerm()
+{
+    m_model->clearSearchTerm();
+}
+
 #endif
 
 

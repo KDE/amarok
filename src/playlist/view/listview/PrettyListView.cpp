@@ -31,6 +31,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
+#include "playlist/navigators/NavigatorFilterProxyModel.h"
 
 #include <KApplication>
 
@@ -412,7 +413,8 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
         emit( notFound() );
     }
 
-    
+    NavigatorFilterProxyModel::instance()->filterUpdated();
+
 }
 
 void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields )
@@ -443,6 +445,8 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
     } else {
         emit( notFound() );
     }
+
+    NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
 void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fields )
@@ -473,6 +477,15 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     } else {
         emit( notFound() );
     }
+
+    NavigatorFilterProxyModel::instance()->filterUpdated();
 }
+
+void Playlist::PrettyListView::clearSearchTerm()
+{
+    NavigatorFilterProxyModel::instance()->filterUpdated();
+    GroupingProxy::instance()->clearSearchTerm();
+}
+
 
 #include "PrettyListView.moc"

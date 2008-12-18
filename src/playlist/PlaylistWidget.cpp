@@ -59,6 +59,7 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int ) ), playView, SLOT( find( const QString &, int ) ) );
     connect( m_searchWidget, SIGNAL( next( const QString &, int ) ), playView, SLOT( findNext( const QString &, int ) ) );
     connect( m_searchWidget, SIGNAL( previous( const QString &, int ) ), playView, SLOT( findPrevious( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( filterCleared() ), playView, SLOT( clearSearchTerm() ) );
 
     connect( playView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
     connect( playView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );

@@ -183,6 +183,10 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         int find( const QString & searchTerm, int searchFields = MatchTrack );
         int findNext( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack   );
         int findPrevious( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack  );
+
+        void clearSearchTerm();
+
+        bool matchesCurrentSearchTerm( int row ) const;
         
     signals:
         void insertedIds( const QList<quint64>& );
@@ -206,7 +210,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         void moveTracksCommand( const MoveCmdList&, bool reverse = false );
         void setStateOfRow( int row, Item::State state ) { m_items.at( row )->setState( state ); }
 
-        bool trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields );
+        bool trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields ) const;
 
         QList<Item*> m_items;            //! list of tracks in order currently in the playlist
         QHash<quint64, Item*> m_itemIds; //! maps track id's to items
@@ -217,7 +221,11 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         QString m_playlistName;
         bool m_proposeOverwriting;
 
+        QString m_currentSearchTerm;
+        int m_currentSearchFields;
+
         static Model* s_instance;      //! instance variable
+
 };
 } // namespace Playlist
 

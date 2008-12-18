@@ -67,6 +67,7 @@ Playlist::Model::Model()
         : QAbstractListModel( 0 )
         , m_activeRow( -1 )
         , m_totalLength( 0 )
+        , m_currentSearchFields( 0 )
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -435,8 +436,13 @@ Playlist::Model::trackForId( const quint64 id ) const
 quint64
 Playlist::Model::idAt( const int row ) const
 {
+    DEBUG_BLOCK
+
+    debug() << "row " << row;
     if ( rowExists( row ) )
         return m_items.at( row )->id();
+
+    debug() << "no such row. count = " << m_totalLength;
     return 0;
 }
 
@@ -777,6 +783,8 @@ int Playlist::Model::find( const QString & searchTerm, int searchFields )
 {
 
     DEBUG_BLOCK
+    m_currentSearchTerm = searchTerm;
+    m_currentSearchFields = searchFields;
     int matchRow = -1;
     int row = 0;
     foreach( Item* item, m_items ) {
@@ -800,7 +808,8 @@ int Playlist::Model::find( const QString & searchTerm, int searchFields )
 int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int searchFields )
 {
     DEBUG_BLOCK
-
+    m_currentSearchTerm = searchTerm;
+    m_currentSearchFields = searchFields;
     int matchRow = -1;
     int row = 0;
     int firstMatch = -1;
@@ -830,7 +839,8 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int 
 int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
 {
     DEBUG_BLOCK
-
+    m_currentSearchTerm = searchTerm;
+    m_currentSearchFields = searchFields;
     int matchRow = -1;
     int row = m_items.count() -1;
     int lastMatch = -1;
@@ -861,7 +871,7 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, 
     return lastMatch;
 }
 
-bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields )
+bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields ) const
 {
     if ( searchFields & MatchTrack &&
         track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
@@ -898,6 +908,29 @@ bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTer
        )
         return true;
     
+}
 
-    
+void Playlist::Model::clearSearchTerm()
+{
+    DEBUG_BLOCK
+    m_currentSearchTerm = QString();
+    m_currentSearchFields = 0;
+}
+
+bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
+{
+    DEBUG_BLOCK
+
+    debug() << "current search term: " << m_currentSearchTerm;
+    if ( rowExists( row ) )
+    {
+        if ( m_currentSearchTerm.isEmpty() )
+            return true;
+        else
+            return trackMatch( m_items.at( row )->track(), m_currentSearchTerm, m_currentSearchFields );
+    }
+    else
+    {
+        return false;
+    }
 }

@@ -93,6 +93,8 @@ public:
     int findNext( const QString & searchTerm, int selectedRow, int fields  );
     int findPrevious( const QString & searchTerm, int selectedRow, int fields  );
 
+    void clearSearchTerm();
+
     int totalLength();
 
 signals:
