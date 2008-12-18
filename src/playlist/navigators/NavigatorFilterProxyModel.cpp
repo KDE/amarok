@@ -40,6 +40,10 @@ NavigatorFilterProxyModel::NavigatorFilterProxyModel()
 
     connect( Model::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
     connect( Model::instance(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
+
+    KConfigGroup config = Amarok::config("Playlist Search");
+    m_passThrough = !config.readEntry( "PlayOnlyMatches", true );
+
 }
 
 NavigatorFilterProxyModel::~NavigatorFilterProxyModel()
@@ -49,6 +53,10 @@ NavigatorFilterProxyModel::~NavigatorFilterProxyModel()
 bool Playlist::NavigatorFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
 {
     Q_UNUSED( source_parent );
+
+    if ( m_passThrough )
+        return true;
+    
     bool match = Model::instance()->matchesCurrentSearchTerm( row );
     return match;
 }
@@ -78,14 +86,19 @@ quint64 Playlist::NavigatorFilterProxyModel::idAt( const int row ) const
 
 void Playlist::NavigatorFilterProxyModel::filterUpdated()
 {
-    invalidateFilter();
-    emit( filterChanged() );
+    if ( !m_passThrough ) {
+        invalidateFilter();
+        emit( filterChanged() );
+    }
 }
 
 int Playlist::NavigatorFilterProxyModel::firstMatchAfterActive()
 {
     Model * model = Model::instance();
     int activeSourceRow = model->activeRow();
+
+    if ( m_passThrough )
+        return activeSourceRow + 1;
 
     int matchRow = -1;
     int nextRow = activeSourceRow + 1;
@@ -113,6 +126,9 @@ int Playlist::NavigatorFilterProxyModel::firstMatchBeforeActive()
 {
     Model * model = Model::instance();
     int activeSourceRow = model->activeRow();
+
+    if ( m_passThrough )
+        return activeSourceRow - 1;
 
     int matchRow = -1;
     int previousRow = activeSourceRow - 1;
@@ -179,6 +195,17 @@ Item::State Playlist::NavigatorFilterProxyModel::stateOfRow( int row ) const
 Item::State Playlist::NavigatorFilterProxyModel::stateOfId( quint64 id ) const
 {
     return Model::instance()->stateOfId( id );
+}
+
+
+void Playlist::NavigatorFilterProxyModel::setPassThrough( bool passThrough )
+{
+    m_passThrough = passThrough;
+
+    //make sure to update model when mode changes ( as we might have ignored and
+    //number of changes to the search therm )
+    invalidateFilter();
+    emit( filterChanged() );
 }
 
 }

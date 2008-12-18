@@ -59,6 +59,8 @@ public:
 
     void filterUpdated();
 
+    void setPassThrough( bool passThrough );
+
 protected:
     virtual bool filterAcceptsRow ( int row, const QModelIndex & source_parent ) const;
 
@@ -76,6 +78,8 @@ signals:
 private:
     NavigatorFilterProxyModel();
     ~NavigatorFilterProxyModel();
+    
+    bool m_passThrough;
     
     static NavigatorFilterProxyModel* s_instance;      //! instance variable
 };
