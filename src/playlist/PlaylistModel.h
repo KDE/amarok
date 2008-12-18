@@ -169,7 +169,11 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
 
         // static member functions
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
-
+        
+        int find( const QString & searchTerm );
+        int findNext( const QString & searchTerm, int selectedRow  );
+        int findPrevious( const QString & searchTerm, int selectedRow );
+        
     signals:
         void insertedIds( const QList<quint64>& );
         void removedIds( const QList<quint64>& );

@@ -389,3 +389,28 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
     reset();
 }
 
+
+
+void Playlist::PrettyListView::find( const QString &searchTerm )
+{
+    DEBUG_BLOCK
+    int row = GroupingProxy::instance()->find( searchTerm );
+    if( row != -1 ) {
+        //select this track
+        debug() << "Got match at row: " << row;
+        
+        QModelIndex index = model()->index( row, 0 );
+        QItemSelection selItems( index, index );
+        selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
+    }
+}
+
+void Playlist::PrettyListView::findNext(const QString & searchTerm)
+{
+}
+
+void Playlist::PrettyListView::findPrevious(const QString & searchTerm)
+{
+}
+
+#include "PrettyListView.moc"

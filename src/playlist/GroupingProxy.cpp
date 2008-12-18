@@ -351,4 +351,19 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
     return ( albumMatch && artistMatch );
 }
 
+int Playlist::GroupingProxy::find( const QString &searchTerm )
+{
+    m_model->find( searchTerm );
+}
+
+int Playlist::GroupingProxy::findNext( const QString &searchTerm, int selectedRow )
+{
+    m_model->findNext( searchTerm, selectedRow );
+}
+
+int Playlist::GroupingProxy::findPrevious( const QString &searchTerm, int selectedRow )
+{
+    m_model->findPrevious( searchTerm, selectedRow );
+}
+
 #endif

@@ -18,6 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#ifndef PRETTYLISTVIEW_H
+#define PRETTYLISTVIEW_H
+
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
@@ -48,6 +51,10 @@ public slots:
     void removeSelection();
     void scrollToActiveTrack();
 
+    void find( const QString & searchTerm );
+    void findNext( const QString & searchTerm );
+    void findPrevious( const QString & searchTerm );
+
 protected slots:
     void newPalette( const QPalette & palette );
 
@@ -75,3 +82,5 @@ private:
     bool m_mousePressInHeader;
 };
 }
+
+#endif

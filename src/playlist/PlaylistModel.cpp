@@ -771,3 +771,38 @@ AMAROK_EXPORT Playlist::Model* playlistModel()
 }
 }
 
+
+
+int Playlist::Model::find( const QString & searchTerm )
+{
+
+    DEBUG_BLOCK
+    int matchRow = -1;
+    int row = 0;
+    foreach( Item* item, m_items ) {
+
+        Meta::TrackPtr track = item->track();
+
+        debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
+        if ( track->prettyName().contains( searchTerm ) ) {
+            matchRow = row;
+            debug() << "match at row: " << row;
+            break;
+        }
+
+        row++;
+    }
+
+    return matchRow;
+    
+}
+
+int Playlist::Model::findNext( const QString & searchTerm, int selectedRow )
+{
+    return -1;
+}
+
+int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow )
+{
+    return -1;
+}
