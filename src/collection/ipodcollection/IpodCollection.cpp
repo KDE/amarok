@@ -167,14 +167,7 @@ IpodCollection::asCapabilityInterface( Meta::Capability::Type type )
             return 0;
     }
 }
-/*
-void
-IpodCollection::copyTrackToDevice( const Meta::TrackPtr &track )
-{
-    m_handler->copyTrackToDevice( track );
-    return;
-}
-*/
+
 void
 IpodCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
 {
@@ -182,22 +175,6 @@ IpodCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
     connect( m_handler, SIGNAL( copyTracksDone() ),
              SLOT( slotCopyTracksCompleted() ), Qt::QueuedConnection );
     m_handler->copyTrackListToDevice( tracklist );
-}
-
-bool
-IpodCollection::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
-{
-    DEBUG_BLOCK
-
-    // remove the track from the device
-    if( !m_handler->deleteTrackFromDevice( track ) )
-        return false;
-
-    // remove the track from the collection maps too
-    removeTrack( track );
-
-    debug() << "deleteTrackFromDevice returning true";
-    return true;
 }
 
 void
@@ -280,7 +257,7 @@ IpodCollection::updateTags( Meta::IpodTrack *track)
 void
 IpodCollection::writeDatabase()
 {
-    m_handler->writeITunesDB( false );
+    m_handler->writeDatabase();
 }
 
 IpodCollection::~IpodCollection()
@@ -337,18 +314,6 @@ IpodCollection::setTrackToDelete( const Meta::IpodTrackPtr &track )
 }
 
 void
-IpodCollection::deleteTrackToDelete()
-{
-    deleteTrackFromDevice( m_trackToDelete );
-}
-
-void
-IpodCollection::deleteTrackSlot( Meta::IpodTrackPtr track)
-{
-    deleteTrackFromDevice( track );
-}
-
-void
 IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
 {
 
@@ -361,7 +326,7 @@ IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
         removeTrack( Meta::IpodTrackPtr::staticCast( track ) );
 
     // remove the tracks from the device
-    m_handler->deleteTracksFromDevice( tracklist );
+    m_handler->deleteTrackListFromDevice( tracklist );
 
 /*
     const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
@@ -386,7 +351,7 @@ IpodCollection::slotCopyTracksCompleted()
 {
     DEBUG_BLOCK
     debug() << "Trying to write iTunes database";
-    m_handler->writeITunesDB( false ); // false, since not threaded, implement later
+    m_handler->writeDatabase();
 
     // inform treeview collection has updated
     emit updated();
@@ -398,7 +363,7 @@ IpodCollection::slotDeleteTracksCompleted()
     DEBUG_BLOCK
     debug() << "Trying to write iTunes database";
 
-    m_handler->writeITunesDB( false ); // false, since not threaded, implement later
+    m_handler->writeDatabase();
 
     // inform treeview collection has updated
     emit updated();

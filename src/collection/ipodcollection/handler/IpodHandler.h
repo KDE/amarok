@@ -90,14 +90,115 @@ struct PodcastInfo
             */
            ~IpodHandler();
 
+           /* Get Methods */
+
+           QString mountPoint() const { return m_mountPoint; }
            /**
-            * Successfully read Ipod database
+            * Successfully read Ipod database?
             */
            bool succeeded() const { return m_success; }
 
-           // Observer Methods
+           /* Set Methods */
 
-           /** These methods are called when the metadata of a track has changed. */
+           void setRating( const int newrating );
+           void setMountPoint( const QString &mp) { m_mountPoint = mp; }
+
+           /* Methods Provided for Collection */
+
+           void copyTrackListToDevice( const Meta::TrackList tracklist );
+           void deleteTrackListFromDevice( const Meta::TrackList &tracks );
+           /**
+            * Parses Ipod DB and creates a Meta::IpodTrack
+            * for each track in the DB
+            */
+           void parseTracks();
+           void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
+           void writeDatabase();
+
+        signals:
+           void copyTracksDone();
+           void deleteTracksDone();
+           void incrementProgress();
+           void endProgressOperation( const QObject *owner );
+
+        public slots:
+           bool initializeIpod();
+
+        private:
+
+           /* Handler's Main Methods */
+
+           /**
+            * @param ipodtrack - track being read from
+            * @param track - track being written to
+            * Extracts track information from ipodtrack
+            * and puts it in track
+            */
+           void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+
+           /* Handler's Collection Methods */
+
+           void addIpodTrackToCollection( Itdb_Track *ipodtrack );
+
+           /* libgpod DB Methods */
+
+           void addTrackInDB( Itdb_Track *ipodtrack );
+           void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
+           bool removeDBTrack( Itdb_Track *track );
+           bool writeITunesDB( bool threaded=false );
+
+           /* libgpod Information Extraction Methods */
+
+           void detectModel();
+           KUrl determineURLOnDevice( const Meta::TrackPtr &track );
+           QString itunesDir( const QString &path = QString() ) const;
+           QString ipodPath( const QString &realPath );
+           bool pathExists( const QString &ipodPath, QString *realPath=0 );
+           QString realPath( const char *ipodPath );
+
+           /* Cover Art functions */
+           #if GDK_FOUND
+           void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+           #endif
+           void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+
+           /* File I/O Methods */
+
+           void copyTracksToDevice();
+
+           void copyNextTrackToDevice();
+           void deleteNextTrackFromDevice();
+
+           void privateCopyTrackToDevice( const Meta::TrackPtr &track );
+           void privateDeleteTrackFromDevice( const Meta::TrackPtr &track );
+
+           void deleteFile( const KUrl &url );
+           bool kioCopyTrack( const KUrl &src, const KUrl &dst );
+
+           /* Convenience methods to avoid repetitive code */
+
+           /**
+            * Pulls out meta information (e.g. artist string)
+            * from ipodtrack, inserts into appropriate map
+            * (e.g. ArtistMap).  Sets track's meta info
+            * (e.g. artist string) to that extracted from
+            * ipodtrack's.
+            * @param ipodtrack - track being read from
+            * @param track - track being written to
+            * @param Map - map where meta information is
+            * associated to appropriate meta pointer
+            * (e.g. QString artist, ArtistPtr )
+            */
+
+           void setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap );
+           void setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap );
+           void setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap );
+           void setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap );
+           void setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap );
+
+           /* Observer Methods */
+
+           /** These methods are called when the metadata of a track has changed. They invoke an Ipod DB update */
            virtual void metadataChanged( Meta::TrackPtr track );
            virtual void metadataChanged( Meta::ArtistPtr artist );
            virtual void metadataChanged( Meta::AlbumPtr album );
@@ -105,131 +206,78 @@ struct PodcastInfo
            virtual void metadataChanged( Meta::ComposerPtr composer );
            virtual void metadataChanged( Meta::YearPtr year );
 
-           void detectModel();
 
-           QString itunesDir( const QString &path = QString() ) const;
-           QString mountPoint() const { return m_mountPoint; }
-           bool openDevice( bool silent=false );
-           void copyTrackToDevice( const Meta::TrackPtr &track );
-           void copyTrackListToDevice( const Meta::TrackList tracklist );
-           bool deleteTrackFromDevice( const Meta::IpodTrackPtr &track );
-           void deleteTracksFromDevice( const Meta::TrackList &tracks );
-           bool kioCopyTrack( const KUrl &src, const KUrl &dst );
-           void deleteFile( const KUrl &url );
+           /**
+            * Handler Variables
+            */
 
+           /* Collection Variables */
 
-           void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
-           void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
-           void addTrackInDB( Itdb_Track *ipodtrack );
-           bool removeDBTrack( Itdb_Track *track );
-           QString           ipodPath( const QString &realPath );
-           KUrl determineURLOnDevice( const Meta::TrackPtr &track );
-           void parseTracks();
-           void addIpodTrackToCollection( Itdb_Track *ipodtrack );
-           void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
-           #if GDK_FOUND
-           void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
-           #endif
-           void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
-           void setRating( const int newrating );
-           void setMountPoint( const QString &mp) { m_mountPoint = mp; }
-           QString realPath( const char *ipodPath );
-           bool pathExists( const QString &ipodPath, QString *realPath=0 );
-           bool writeITunesDB( bool threaded=true );
+           // Associated collection
+           IpodCollection *m_memColl;
+           // Map of titles, used to check for duplicate tracks
+           TitleMap m_titlemap;
 
-       // convenience methods to avoid repetitive code
+           /* libgpod variables */
 
-       void setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap );
-       void setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap );
-       void setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap );
-       void setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap );
-       void setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap );
+           Itdb_iTunesDB    *m_itdb;
+           Itdb_Device      *m_device;
+           Itdb_Playlist    *m_masterPlaylist;
 
-        public slots:
-	    bool initializeIpod();
-	void fileTransferred( KJob *job );
-    void fileDeleted( KJob *job );
+           /* Copy/Delete Variables */
 
-        signals:
+           Meta::TrackList m_tracksToCopy;
+           Meta::TrackList m_tracksToDelete;
 
-        void copyTracksDone();
-        void deleteTracksDone();
-        void incrementProgress();
-        void endProgressOperation( const QObject *owner );
+           /* Operation Progress Bar */
 
-        private slots:
+           ProgressBarNG *m_statusbar;
 
-        //void slotCopyTrackToDevice( QString collectionId, Meta::TrackList tracklist );
-        
+           /* Ipod Connection */
 
+           bool              m_autoConnect;
+           QString           m_mountPoint;
+           QString           m_name;
 
-//        void slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist );
+           /* Ipod Model */
 
-        private:
+           bool              m_isShuffle;
+           bool              m_isMobile;
+           bool              m_isIPhone;
 
-        /* Copy/Delete Functions */
+           /* Properties of Ipod */
 
-        void copyTracksToDevice();
+           bool              m_supportsArtwork;
+           bool              m_supportsVideo;
+           bool              m_rockboxFirmware;
+           bool              m_needsFirewireGuid;
 
-        void copyNextTrackToDevice();
-        void deleteNextTrackFromDevice();
+           /* Success/Failure */
 
-        void privateCopyTrackToDevice( const Meta::TrackPtr &track );
-        void privateDeleteTrackFromDevice( const Meta::TrackPtr &track );
+           bool m_dbChanged;
+           bool m_copyFailed;
+           bool m_isCanceled;
+           bool m_wait;
+           // whether Itdb_Track is created correctly
+           bool m_trackCreated;
+           // whether read Ipod DB or not
+           bool m_success;
 
-        /* Copy/Delete Variables */
+           /* Miscellaneous Variables */
 
-        Meta::TrackList m_tracksToCopy;
-        Meta::TrackList m_tracksToDelete;
+           // tempdir for covers
+           KTempDir *m_tempdir;
 
-        IpodCollection *m_memColl;
-        TitleMap m_titlemap;
+           // TODO: Implement lockfile
+           // QFile *m_lockFile;
 
-        ProgressBarNG *m_statusbar;
+           // TODO: Implement podcasts
+           // podcasts
+           // Itdb_Playlist* m_podcastPlaylist;
 
-        // libgpod variables
-        Itdb_iTunesDB    *m_itdb;
-        Itdb_Device      *m_device;
-        Itdb_Playlist    *m_masterPlaylist;
-
-        // tempdir for covers
-        KTempDir *m_tempdir;
-
-        /* Ipod Model */
-        bool              m_isShuffle;
-        bool              m_isMobile;
-        bool              m_isIPhone;
-
-        /* Properties of Ipod */
-        bool              m_supportsArtwork;
-        bool              m_supportsVideo;
-        bool              m_rockboxFirmware;
-        bool              m_needsFirewireGuid;
-
-        /* Ipod Connection */
-
-        bool              m_autoConnect;
-        QString           m_mountPoint;
-        QString           m_name;
-
-        /* Success/Failure */
-
-        bool m_dbChanged;
-        bool m_copyFailed;
-        bool m_isCanceled;
-        bool m_wait;
-        // whether Itdb_Track is created correctly
-        bool m_trackCreated;
-        // whether read Ipod DB or not
-        bool m_success;
-
-        // TODO: Implement lockfile
-        // QFile *m_lockFile;
-
-        // TODO: Implement podcasts
-        // podcasts
-        // Itdb_Playlist* m_podcastPlaylist;
-
+           private slots:
+              void fileTransferred( KJob *job );
+              void fileDeleted( KJob *job );
 
     };
 }

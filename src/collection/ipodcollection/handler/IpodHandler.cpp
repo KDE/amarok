@@ -61,8 +61,9 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     , m_memColl( mc )
     , m_device( 0 )
     , m_masterPlaylist( 0 )
-    , m_tempdir( new KTempDir() )
-    , m_trackCreated( false )
+    , m_autoConnect( false )
+    , m_mountPoint( mountPoint )
+    , m_name()
     , m_isShuffle( false )
     , m_isMobile( false )
     , m_isIPhone( false )
@@ -70,13 +71,12 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     , m_supportsVideo( false )
     , m_rockboxFirmware( false )
     , m_needsFirewireGuid( false )
-    , m_autoConnect( false )
-    , m_mountPoint( mountPoint )
-    , m_name()
     , m_dbChanged( false )
     , m_copyFailed( false )
     , m_isCanceled( false )
     , m_wait( false )
+    , m_trackCreated( false )
+    , m_tempdir( new KTempDir() )
 {
     DEBUG_BLOCK
 
@@ -519,29 +519,8 @@ IpodHandler::itunesDir(const QString &p) const
     return base + p;
 }
 
-bool
-IpodHandler::deleteTrackFromDevice( const Meta::IpodTrackPtr &track )
-{
-    DEBUG_BLOCK
-    Itdb_Track *ipodtrack = track->getIpodTrack();
-
-    // delete file
-    KUrl url;
-    url.setPath( realPath( ipodtrack->ipod_path ) );
-    deleteFile( url );
-
-    // remove it from the ipod database, ipod playlists and all
-
-    if( removeDBTrack( ipodtrack ) )
-        if( writeITunesDB( false ) )
-            return true;
-
-    return false;
-
-}
-
 void
-IpodHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
+IpodHandler::deleteTrackListFromDevice( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
@@ -614,25 +593,6 @@ IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
     // remove from titlemap
 
     m_titlemap.remove( track->name(), track );
-}
-
-void
-IpodHandler::copyTrackToDevice( const Meta::TrackPtr &track )
-{
-    DEBUG_BLOCK
-
-    /* Check for duplicates before copying */
-
-    QueryMaker *qm = m_memColl->queryMaker();
-    qm->setQueryType( QueryMaker::Track );
-    qm->addMatch( track );
-
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-             SLOT( slotCopyTrackToDevice( QString, Meta::TrackList ) ) , Qt::QueuedConnection );
-    // NOTE: ignoring queryDone signal since nothing to be done based on it
-
-    qm->run();
-
 }
 
 void
@@ -1043,6 +1003,12 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         debug() << "No image available";
 
     debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
+}
+
+void
+IpodHandler::writeDatabase()
+{
+    writeITunesDB( false );
 }
 
 void

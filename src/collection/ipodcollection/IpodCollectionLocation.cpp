@@ -62,17 +62,10 @@ IpodCollectionLocation::isWritable() const
     return true;
 }
 
-// TODO: implement (use IpodHandler ported method for removing a track)
 bool
 IpodCollectionLocation::remove( const Meta::TrackPtr &track )
 {
-    DEBUG_BLOCK
-
-    IpodTrackPtr ipodTrack = IpodTrackPtr::dynamicCast( track );
-
-    if( track )
-        return m_collection->deleteTrackFromDevice( ipodTrack );
-
+    Q_UNUSED( track );
     return false;
 }
 
