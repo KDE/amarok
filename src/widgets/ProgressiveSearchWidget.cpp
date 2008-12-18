@@ -24,6 +24,7 @@
 #include <KAction>
 #include <KLineEdit>
 #include <KLocale>
+#include <KColorScheme>
 
 #include <QToolBar>
 
@@ -51,9 +52,9 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     toolbar->addAction( m_nextAction );
     toolbar->addAction( m_previousAction );
 
-    noMatch();
-    
-    
+    m_nextAction->setEnabled( true );
+    m_previousAction->setEnabled( true );
+
 }
 
 
@@ -67,8 +68,16 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
     debug() << "New filter: " << filter;
 
     if( filter.isEmpty() ) {
+        
+        m_nextAction->setEnabled( false );
+        m_previousAction->setEnabled( false );
+
+        QPalette p = m_searchEdit->palette();
+        p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
+        m_searchEdit->setPalette( p );
+
         emit( filterCleared() );
-        noMatch();
+        
     } else
         emit( filterChanged( filter ) );
 
@@ -84,19 +93,30 @@ void ProgressiveSearchWidget::slotPrevious()
 {
     DEBUG_BLOCK
     emit( previous( m_searchEdit->text() ) );
-            
 }
 
 void ProgressiveSearchWidget::match()
 {
     m_nextAction->setEnabled( true );
     m_previousAction->setEnabled( true );
+
+    QPalette p = m_searchEdit->palette();
+    p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
+    m_searchEdit->setPalette( p );
+
 }
 
 void ProgressiveSearchWidget::noMatch()
 {
     m_nextAction->setEnabled( false );
     m_previousAction->setEnabled( false );
+
+
+    KStatefulBrush backgroundBrush( KColorScheme::View,KColorScheme::NegativeBackground );
+
+    QPalette p = m_searchEdit->palette();
+    p.setColor( QPalette::Base, backgroundBrush.brush( m_searchEdit ).color() );
+    m_searchEdit->setPalette( p );
 }
 
 
