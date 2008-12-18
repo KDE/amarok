@@ -773,7 +773,7 @@ AMAROK_EXPORT Playlist::Model* playlistModel()
 
 
 
-int Playlist::Model::find( const QString & searchTerm )
+int Playlist::Model::find( const QString & searchTerm, int searchFields )
 {
 
     DEBUG_BLOCK
@@ -784,7 +784,7 @@ int Playlist::Model::find( const QString & searchTerm )
         Meta::TrackPtr track = item->track();
 
         debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
-        if ( track->prettyName().contains( searchTerm, Qt::CaseInsensitive ) ) {
+        if ( trackMatch( track, searchTerm, searchFields ) ) {
             matchRow = row;
             debug() << "match at row: " << row;
             break;
@@ -797,7 +797,7 @@ int Playlist::Model::find( const QString & searchTerm )
     
 }
 
-int Playlist::Model::findNext( const QString & searchTerm, int selectedRow )
+int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int searchFields )
 {
     DEBUG_BLOCK
 
@@ -809,7 +809,7 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow )
         Meta::TrackPtr track = item->track();
 
         debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
-        if ( track->prettyName().contains( searchTerm, Qt::CaseInsensitive ) ) {
+        if ( trackMatch( track, searchTerm, searchFields ) ) {
             if ( firstMatch == -1 )
                 firstMatch = row;
 
@@ -827,7 +827,7 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow )
     return firstMatch;
 }
 
-int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow )
+int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
 {
     DEBUG_BLOCK
 
@@ -843,7 +843,7 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow )
         Meta::TrackPtr track = item->track();
 
         debug() << "Looking for '" << searchTerm << "' in '" << track->prettyName() << "'";
-        if ( track->prettyName().contains( searchTerm, Qt::CaseInsensitive ) ) {
+        if ( trackMatch( track, searchTerm, searchFields ) ) {
             if ( lastMatch == -1 )
                 lastMatch = row;
 
@@ -859,4 +859,45 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow )
     //we have searche through everything and not found anything that matched _below_
     //the selected index. So return the first one found above it ( wrap around )
     return lastMatch;
+}
+
+bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields )
+{
+    if ( searchFields & MatchTrack &&
+        track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+
+    if ( searchFields & MatchArtist &&
+         track->artist() &&
+         track->artist()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+         return true;
+
+    if ( searchFields & MatchAlbum &&
+         track->album() &&
+         track->album()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+         return true;
+
+    if ( searchFields & MatchGenre &&
+         track->genre() &&
+         track->genre()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+
+    if ( searchFields & MatchComposer &&
+         track->composer() &&
+         track->composer()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+
+    if ( searchFields & MatchYear &&
+         track->year() &&
+         track->year()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+    
+
+    
 }

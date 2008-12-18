@@ -79,6 +79,16 @@ enum Column
     NUM_COLUMNS
 };
 
+enum SearchFields
+{
+    MatchTrack = 1,
+    MatchArtist = 2,
+    MatchAlbum = 4,
+    MatchGenre = 8,
+    MatchComposer = 16,
+    MatchYear = 32
+};
+
 enum DataRoles
 {
     TrackRole = Qt::UserRole,
@@ -170,9 +180,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         // static member functions
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
         
-        int find( const QString & searchTerm );
-        int findNext( const QString & searchTerm, int selectedRow  );
-        int findPrevious( const QString & searchTerm, int selectedRow );
+        int find( const QString & searchTerm, int searchFields = MatchTrack );
+        int findNext( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack   );
+        int findPrevious( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack  );
         
     signals:
         void insertedIds( const QList<quint64>& );
@@ -195,6 +205,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         void removeTracksCommand( const RemoveCmdList& );
         void moveTracksCommand( const MoveCmdList&, bool reverse = false );
         void setStateOfRow( int row, Item::State state ) { m_items.at( row )->setState( state ); }
+
+        bool trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields );
 
         QList<Item*> m_items;            //! list of tracks in order currently in the playlist
         QHash<quint64, Item*> m_itemIds; //! maps track id's to items
