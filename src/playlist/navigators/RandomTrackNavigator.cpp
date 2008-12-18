@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (C) 2008 Seb Ruiz <ruiz@kde.org>
  *                      : (C) 2008 Soren Harward <stharward@gmail.com>
+ *                      : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

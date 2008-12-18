@@ -2,6 +2,7 @@
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
  *                        (C) 2008 Seb Ruiz <ruiz@kde.org>
  *                        (C) 2008 Soren Harward <stharward@gmail.com>
+ *                      : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -180,15 +181,60 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         // static member functions
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
         
+        /**
+         * Find the first track in the playlist that matches the search term in one of the
+         * specified search fields. This function emits found() or notFound() depending on
+         * whether a match is found.
+         * @param searchTerm The term to search for.
+         * @param searchFields A bitmask specifying the fields to look in.
+         * @return The row of the first found match, -1 if no match is found.
+         */
         int find( const QString & searchTerm, int searchFields = MatchTrack );
+
+        /**
+         * Find the first track below a given row that matches the search term in one of the
+         * specified search fields. This function emits found() or notFound() depending on
+         * whether a match is found. If no row is found below the current row, the function wraps
+         * around and returns the first match. If no match is found at all, -1 is returned.
+         * @param searchTerm The term to search for.
+         * @param selectedRow The offset row.
+         * @param searchFields A bitmask specifying the fields to look in.
+         * @return The row of the first found match below the offset, -1 if no match is found.
+         */
         int findNext( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack   );
+
+        /**
+         * Find the first track above a given row that matches the search term in one of the
+         * specified search fields. This function emits found() or notFound() depending on
+         * whether a match is found. If no row is found above the current row, the function wraps
+         * around and returns the last match. If no match is found at all, -1 is returned.
+         * @param searchTerm The term to search for.
+         * @param selectedRow The offset row.
+         * @param searchFields A bitmask specifying the fields to look in.
+         * @return The row of the first found match above the offset, -1 if no match is found.
+         */
         int findPrevious( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack  );
 
         void clearSearchTerm();
 
+        /**
+         * Check if a given row matches the current search term with the current
+         * search fields.
+         * @param row The row to check.
+         * @return True if the row matches, false otherwise.
+         */
         bool matchesCurrentSearchTerm( int row ) const;
 
+        /**
+         * Get the current search term.
+         * @return The curent search term.
+         */
         QString currentSearchTerm() { return m_currentSearchTerm; }
+        
+        /**
+         * Get the current search fields bit bitmask.
+         * @return The current search fields.
+         */
         int currentSearchFields() { return m_currentSearchFields; }
         
     signals:
@@ -213,6 +259,14 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         void moveTracksCommand( const MoveCmdList&, bool reverse = false );
         void setStateOfRow( int row, Item::State state ) { m_items.at( row )->setState( state ); }
 
+        /**
+         * Check if a certain tracks matches a search term when looking at the fields
+         * specified by the searchFields bitmask.
+         * @param track The track to match against.
+         * @param searchTerm The search term.
+         * @param searchFields A bitmask containing the fields that should be matched against.
+         * @return True if a match is found in any field, false otherwise.
+         */
         bool trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields ) const;
 
         QList<Item*> m_items;            //! list of tracks in order currently in the playlist
