@@ -40,12 +40,9 @@ class CollectionWidget : public KVBox
 
     private slots:
         void customFilter( QAction * );
-        void sortByArtist();
         void sortByArtistAlbum();
-        void sortByAlbum();
         void sortByGenreArtist();
         void sortByGenreArtistAlbum();
-        void sortByComposer();
         void slotShowYears( bool checked );
 
     private:

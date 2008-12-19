@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ *                        (C) 2008 Dan Meltzer <hydrogen@notyetimplemented.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -25,11 +26,14 @@
 #include "amarokconfig.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModel.h"
 
+#include <KAction>
+#include <KIcon>
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
 
 #include <QActionGroup>
+#include <QToolButton>
 
 CollectionWidget *CollectionWidget::s_instance = 0;
 
@@ -41,10 +45,9 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     setMargin( 0 );
     setSpacing( 0 );
 
-    KMenuBar *menubar = new KMenuBar( this );
-    QMenu *filterMenu = menubar->addMenu( i18n( "Group By" ) );
-
-    SearchWidget *sw = new SearchWidget( this );
+    QMenu *filterMenu = new QMenu( this );
+    KHBox *hbox = new KHBox( this );
+    SearchWidget *sw = new SearchWidget( hbox );
 
     m_treeView = new CollectionTreeView( this );
     m_treeView->setFrameShape( QFrame::NoFrame );
@@ -56,27 +59,15 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_treeView->setModel( new CollectionTreeItemModel( m_levels ) );
     sw->setup( m_treeView );
 
-    QAction *action = new QAction( i18n( "Artist" ), menubar );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT(sortByArtist() ) );
-    filterMenu->addAction( action );
-
-    action = new QAction( i18n( "Artist / Album" ), menubar );
+    QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
     filterMenu->addAction( action );
     
-    action = new QAction( i18n( "Album" ), menubar );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbum() ) );
-    filterMenu->addAction( action );
-
-    action = new QAction( i18n( "Composer" ), menubar );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByComposer() ) );
-    filterMenu->addAction( action );
-    
-    action = new QAction( i18n( "Genre / Artist" ), menubar );
+    action = new QAction( i18n( "Genre / Artist" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtist() ) );
     filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Genre / Artist / Album" ), menubar );
+    action = new QAction( i18n( "Genre / Artist / Album" ), this );
     connect( action, SIGNAL(triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
     filterMenu->addAction( action );
     
@@ -246,6 +237,12 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_secondLevelSelectedAction = secondGroup->checkedAction();
     m_thirdLevelSelectedAction = thirdGroup->checkedAction();
     
+    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), hbox );
+    QToolButton *button = new QToolButton( hbox );
+    button->setMenu( filterMenu );
+    button->setPopupMode( QToolButton::InstantPopup );
+    button->setDefaultAction( searchMenuAction );
+    
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
 }
@@ -275,26 +272,10 @@ CollectionWidget::customFilter( QAction *action )
 }        
 
 void
-CollectionWidget::sortByArtist()
-{
-    m_levels.clear();
-    m_levels << CategoryId::Artist;
-    m_treeView->setLevels( m_levels );
-}
-
-void
 CollectionWidget::sortByArtistAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Artist << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
-}
-
-void
-CollectionWidget::sortByAlbum()
-{
-    m_levels.clear();
-    m_levels << CategoryId::Album;
     m_treeView->setLevels( m_levels );
 }
 
@@ -311,14 +292,6 @@ CollectionWidget::sortByGenreArtistAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
-}
-
-void
-CollectionWidget::sortByComposer()
-{
-    m_levels.clear();
-    m_levels.append( CategoryId::Composer );
     m_treeView->setLevels( m_levels );
 }
 
