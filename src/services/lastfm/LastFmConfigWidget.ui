@@ -83,10 +83,10 @@
          </sizepolicy>
         </property>
         <property name="text" >
-         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">&#xd;
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">&#xd;
-p, li { white-space: pre-wrap; }&#xd;
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">&#xd;
+         <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">&#xd;&#xd;
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">&#xd;&#xd;
+p, li { white-space: pre-wrap; }&#xd;&#xd;
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">&#xd;&#xd;
 &lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;a href="http://www.last.fm:80/signup.php">&lt;span style=" text-decoration: underline; color:#0057ae;">Sign up to last.fm&lt;/span>&lt;/a>.&lt;/p>&lt;/body>&lt;/html></string>
         </property>
         <property name="wordWrap" >
@@ -156,6 +156,13 @@ p, li { white-space: pre-wrap; }&#xd;
    <header>klineedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>kcfg_ScrobblerUsername</tabstop>
+  <tabstop>kcfg_ScrobblerPassword</tabstop>
+  <tabstop>testLogin</tabstop>
+  <tabstop>kcfg_SubmitPlayedSongs</tabstop>
+  <tabstop>kcfg_RetrieveSimilarArtists</tabstop>
+ </tabstops>
  <includes>
   <include location="local" >klineedit.h</include>
  </includes>
