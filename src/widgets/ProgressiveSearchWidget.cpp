@@ -29,6 +29,7 @@
 
 #include <QMenu>
 #include <QToolBar>
+#include <QToolButton>
 
 ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     : KHBox( parent )
@@ -115,13 +116,16 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     playOnlyMatchesAction->setChecked( config.readEntry( "PlayOnlyMatches", true ) );
     m_menu->addAction( playOnlyMatchesAction );
 
-    KAction * searchMenuAction = new KAction(KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
-
+    KAction *searchMenuAction = new KAction(KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
+    toolbar->addAction( searchMenuAction );
+    
+    QToolButton *tbutton = qobject_cast<QToolButton*>(toolbar->widgetForAction( searchMenuAction ) );
+    if( tbutton )
+        tbutton->setPopupMode( QToolButton::InstantPopup );
+    
     toolbar->setFixedHeight( m_searchEdit->sizeHint().height() );
     
-
-    toolbar->addAction( searchMenuAction );
 }
 
 
