@@ -46,7 +46,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
 
-    QToolBar * toolbar = new QToolBar( this );
+    QToolBar *toolbar = new QToolBar( this );
 
     m_nextAction = new KAction( KIcon( "go-down" ), i18n( "&Next" ), this );
     connect( m_nextAction, SIGNAL( triggered() ), this, SLOT( slotNext() ) );
@@ -118,6 +118,8 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     KAction * searchMenuAction = new KAction(KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
 
     searchMenuAction->setMenu( m_menu );
+    toolbar->setFixedHeight( m_searchEdit->sizeHint().height() );
+    
 
     toolbar->addAction( searchMenuAction );
 }
