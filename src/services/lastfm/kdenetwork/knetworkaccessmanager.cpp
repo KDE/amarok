@@ -74,11 +74,13 @@ QNetworkReply *KNetworkAccessManager::createRequest(Operation op, const QNetwork
             break;
         }
         case PostOperation: {
-            kDebug() << "PostOperation:" << req.url();
-
+        /*    kDebug() << "PostOperation:" << req.url();
+            kDebug() << "post data:" << dynamic_cast<QBuffer*>(outgoingData)->data();
             kioJob = KIO::http_post(req.url(), outgoingData->readAll(), KIO::HideProgressInfo);
-
-            break;
+        
+            break;  */ 
+           return WsAccessManager::createRequest( op, req, outgoingData );
+            
         }
         default:
             kDebug() << "Unknown operation";
