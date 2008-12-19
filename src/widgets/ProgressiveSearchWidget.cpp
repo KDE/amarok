@@ -57,8 +57,8 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     toolbar->addAction( m_nextAction );
     toolbar->addAction( m_previousAction );
 
-    m_nextAction->setEnabled( true );
-    m_previousAction->setEnabled( true );
+    m_nextAction->setEnabled( false );
+    m_previousAction->setEnabled( false );
 
     m_menu = new QMenu( this );
 
