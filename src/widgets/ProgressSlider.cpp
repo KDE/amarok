@@ -76,6 +76,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 void
 ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
+
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label
     const uint trackLength = The::engineController()->trackLength();
@@ -143,7 +144,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 void
 ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
-//     debug() << "POSITION: " << position;
+    //debug() << "POSITION: " << position;
     m_slider->setSliderValue( position );
 
     if ( !m_slider->isEnabled() )
@@ -153,16 +154,21 @@ ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 void
 ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
+    DEBUG_BLOCK
     switch ( state ) {
         case Phonon::StoppedState:
         case Phonon::LoadingState:
-            m_slider->setEnabled( false );
-            m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
-            m_slider->setMaximum( 0 );
-            m_timeLabelLeft->setEnabled( false );
-            m_timeLabelLeft->setEnabled( false );
-            m_timeLabelLeft->setShowTime( false );
-            m_timeLabelRight->setShowTime( false );
+            if ( !The::engineController()->currentTrack() || ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) ) {
+                m_slider->setEnabled( false );
+                debug() << "slider disabled!";
+                m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
+                m_slider->setMaximum( 0 );
+                m_timeLabelLeft->setEnabled( false );
+                m_timeLabelLeft->setEnabled( false );
+                m_timeLabelLeft->setShowTime( false );
+                m_timeLabelRight->setShowTime( false );
+
+            }
             break;
 
         case Phonon::PlayingState:
@@ -189,15 +195,24 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
 void
 ProgressWidget::engineTrackLengthChanged( long seconds )
 {
+    DEBUG_BLOCK
+    debug() << "new length: " << seconds;
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( seconds * 1000 );
     m_slider->setEnabled( seconds > 0 );
+    debug() << "slider enabled!";
     m_timeLength = Meta::secToPrettyTime( seconds ).length()+1; // account for - in remaining time
+
+    //get the urlid of the current track as the engine might stop and start several times
+    //when skipping lst.fm tracks, so we need to know if we are still on the same track...
+    if ( The::engineController()->currentTrack() )
+        m_currentUrlId = The::engineController()->currentTrack()->uidUrl();
 }
 
 void
 ProgressWidget::engineNewTrackPlaying()
 {
+    m_slider->setEnabled( false );
     engineTrackLengthChanged( The::engineController()->trackLength() );
 }
 
@@ -205,6 +220,15 @@ QSize ProgressWidget::sizeHint() const
 {
     //int height = fontMetrics().boundingRect( "123456789:-" ).height();
     return QSize( width(), 12 );
+}
+
+void ProgressWidget::enginePlaybackEnded(int finalPosition, int trackLength, const QString & reason)
+{
+    Q_UNUSED( finalPosition )
+    Q_UNUSED( trackLength )
+    Q_UNUSED( reason )
+            
+    m_currentUrlId = QString();
 }
 
 #include "ProgressSlider.moc"
