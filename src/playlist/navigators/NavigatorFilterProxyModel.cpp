@@ -44,6 +44,8 @@ NavigatorFilterProxyModel::NavigatorFilterProxyModel()
     KConfigGroup config = Amarok::config("Playlist Search");
     m_passThrough = !config.readEntry( "PlayOnlyMatches", true );
 
+    setDynamicSortFilter( true );
+
 }
 
 NavigatorFilterProxyModel::~NavigatorFilterProxyModel()
