@@ -33,6 +33,8 @@
 ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     : KHBox( parent )
 {
+    DEBUG_BLOCK
+
     readConfig();
 
     m_searchEdit = new KLineEdit( this );
