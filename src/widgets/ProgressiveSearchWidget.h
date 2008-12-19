@@ -34,8 +34,8 @@ A composite widget for progressive (Firefix style search as you type) searching,
 class ProgressiveSearchWidget : public KHBox
 {
     Q_OBJECT
+
 public:
-    
     /**
      * Constructor.
      * @param parent The parent widget this is added to.
@@ -48,7 +48,6 @@ public:
     ~ProgressiveSearchWidget();
 
 signals:
-
     /**
      * Signal emitted when the search term has changed.
      * @param filter The new search term.
@@ -83,7 +82,6 @@ signals:
     void playOnlyMatches( bool onlyMatches );
 
 public slots:
-
     /**
      * Notify the widget that there are matches (at least one), so the next and previous actions
      * should be enabled and the text color set to normal.
@@ -97,7 +95,6 @@ public slots:
     void noMatch();
 
 protected slots:
-
     /**
      * Notify widget that the text in the search edit has changed.
      * @param filter The new text in the search widget.
@@ -159,7 +156,6 @@ protected slots:
     void slotPlayOnlyMatches( bool onlyMatches );
     
 private:
-
     /**
      * Load the current search field settings from config.
      */
