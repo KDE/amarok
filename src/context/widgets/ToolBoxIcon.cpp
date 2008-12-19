@@ -35,6 +35,7 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     , m_animHighlightId( 0 )
 {
     m_text = new QGraphicsSimpleTextItem( this );
+    m_text->setCursor( Qt::ArrowCursor ); // Don't show the carot, the text isn't editable.
 
     QFont font;
     font.setBold( true );
