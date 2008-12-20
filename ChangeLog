@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Queue track functionality has returned. (BR 171939)
     * Make it possible to lock "standard" and "random track" playback mode to
       only play tracks that matche the current playlist search.
     * Add advanced, configurable, searching to the playlist.
