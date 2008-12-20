@@ -184,7 +184,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         return m_items.at( row )->state();
 
     else if ( role == QueuePositionRole )
-        return Actions::instance()->queuePosition( idAt( row ) );
+        return Actions::instance()->queuePosition( idAt( row ) ) + 1;
 
     else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
     {
