@@ -64,7 +64,7 @@ SvgHandler::SvgHandler( QObject* parent )
     , d( new Private() )
 {
     //use default theme
-    d->themeFile = "amarok/images/default-theme.svg";
+    d->themeFile = "amarok/images/default-theme-clean.svg";
     d->customTheme = false;
 }
 

@@ -7,7 +7,7 @@ install(
         FILES
         FilenameLayoutDialogHint.png
         amarok_icon.svg
-        default-theme.svg
+        default-theme-clean.svg
         emblem-default.png
         emblem-jamendo.png
         emblem-lastfm.png
