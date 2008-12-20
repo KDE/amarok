@@ -169,7 +169,7 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
         const int x = imageRect.x() + imageRect.width() - w;
         const int y = imageRect.y();
         const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", 22, 22, "active_overlay" ) ); // TODO: actual queue overlay
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", w, h, "active_overlay" ) ); // TODO: actual queue overlay
         painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
     }
 
