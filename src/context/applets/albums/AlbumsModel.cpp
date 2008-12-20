@@ -14,8 +14,8 @@
 #include "AlbumsModel.h"
 #include <AmarokMimeData.h>
 #include "AlbumItem.h"
+#include "Debug.h"
 #include "TrackItem.h"
-
 
 QMimeData*
 AlbumsModel::mimeData(const QModelIndexList & indices) const
