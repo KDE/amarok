@@ -111,6 +111,12 @@ Playlist::PrettyListView::removeSelection()
 }
 
 void
+Playlist::PrettyListView::queueSelection()
+{
+    Actions::instance()->queue( selectedRows() );
+}
+
+void
 Playlist::PrettyListView::scrollToActiveTrack()
 {
     QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
@@ -374,8 +380,7 @@ Playlist::PrettyListView::headerReleaseSelectionCommand( const QModelIndex& inde
 
     if ( !controlKeyPressed && !shiftKeyPressed )
         return QItemSelectionModel::ClearAndSelect;
-    else
-        return QItemSelectionModel::NoUpdate;
+    return QItemSelectionModel::NoUpdate;
 }
 
 QList<int>
