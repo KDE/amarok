@@ -263,6 +263,7 @@ MtpHandler::getDeviceInfo()
 void
 MtpHandler::terminate()
 {
+    DEBUG_BLOCK
     // clear folder structure
     if( m_folders != 0 )
     {
@@ -271,6 +272,16 @@ MtpHandler::terminate()
 
         m_folders = 0;
         debug() << "Folders destroyed";
+    }
+
+    // Delete temporary files
+
+    TrackMap trackMap = m_memColl->trackMap();
+
+    foreach( Meta::TrackPtr track,  trackMap.values() )
+    {
+        Meta::MtpTrackPtr mtptrack = Meta::MtpTrackPtr::staticCast( track );
+        mtptrack->deleteTempFile();
     }
 
     // release device
@@ -849,9 +860,9 @@ int
 MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
 {
     DEBUG_BLOCK
-            /*
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Loading Track" ) );
 
+//    The::statusBar()->shortMessage( i18n( "Loading Track" ) );
+/*
     connect( this, SIGNAL( setProgress( int ) ),
              The::statusBar(), SLOT( setProgress( int ) ) );
     

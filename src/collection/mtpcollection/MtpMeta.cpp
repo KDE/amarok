@@ -177,7 +177,7 @@ MtpTrack::~MtpTrack()
 
 //    if ( m_tempfile )
 //        delete m_tempfile;
-    m_tempfile.remove();
+//    m_tempfile.remove();
 }
 
 QString
@@ -237,6 +237,12 @@ MtpTrack::setTempFile( const QString &format )
     m_tempfile.setAutoRemove( true );
 
     return tempPath;
+}
+
+void
+MtpTrack::deleteTempFile()
+{
+    m_tempfile.remove();
 }
 
 KUrl

@@ -188,6 +188,7 @@ class MtpTrack : public Meta::Track
     QString setTempFile( const QString &format );
     void setFormat( const QString &format ) { m_format = format; }
     //KTemporaryFile* getTempFile() const { return m_tempfile; }
+    void deleteTempFile();
 
     private:
         MtpCollection *m_collection;
