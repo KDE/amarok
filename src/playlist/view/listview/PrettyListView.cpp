@@ -144,13 +144,9 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     if ( !index.isValid() )
         return;
     
-    Qt::KeyboardModifiers modifiers = event->modifiers();
-    const bool controlKeyPressed = modifiers & Qt::ControlModifier;
-    //Ctrl + Right Click is used for quick queue sorting
-    if ( controlKeyPressed )
-    {
+    //Ctrl + Right Click is used for queuing
+    if( event->modifiers() & Qt::ControlModifier )
         return;
-    }
 
     ViewCommon::trackMenu( this, &index, event->globalPos(), true );
     event->accept();
@@ -247,7 +243,8 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         m_mousePressInHeader = true;
         QModelIndex index = indexAt( event->pos() );
         //only do this dance if header is not already selected
-        if ( !selectionModel()->isSelected( index ) ) {
+        if( !selectionModel()->isSelected( index ) )
+        {
             m_headerPressIndex = QPersistentModelIndex( index );
             int rows = index.data( GroupedTracksRole ).toInt();
             QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
@@ -263,42 +260,14 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         m_mousePressInHeader = false;
     }
 
-    //handle Ctrl + Right Click for quick queue sorting
-    Qt::KeyboardModifiers modifiers = event->modifiers();
-    const bool controlKeyPressed = modifiers & Qt::ControlModifier;
-    if ( ( event->button() == Qt::RightButton ) && controlKeyPressed )
-    {
-        QAbstractItemModel* plModel = model();
-        
-        //move clicked items to row right after the last selected item.
-        int targetRow = selectedRows().isEmpty()
-                ? plModel->rowCount()
-                : selectedRows().last() + 1;
-        selectionModel()->clear();
-        
-        event->accept();
-        
-        QModelIndex index = indexAt( event->pos() );
-        QList<int> sr;
-        if( mouseEventInHeader( event ) )
-        {
-            int rows = index.data( GroupedTracksRole ).toInt();
-            for( int i = index.row(); i < index.row() + rows; i++ )
-            {
-                sr << i;
-            }
-        }
-        else
-        {
-            sr << index.row();
-        }
-        Controller::instance()->moveRows( sr, targetRow );
-    }
-    else
-    {
-        QListView::mousePressEvent( event ); //this should always be forwarded, as it is used to determine the offset
-        //relative to the mouse of the selection we are dragging!
-    }
+    // This should always be forwarded, as it is used to determine the offset
+    // relative to the mouse of the selection we are dragging!
+    QListView::mousePressEvent( event ); 
+    
+    // This must go after the call to the super class as the current index is not yet selected otherwise
+    // Queueing support for Ctrl Right click
+    if( event->button() == Qt::RightButton && event->modifiers() & Qt::ControlModifier )
+        queueSelection();
 }
 
 void
