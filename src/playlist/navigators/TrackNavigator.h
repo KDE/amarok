@@ -61,9 +61,27 @@ namespace Playlist
              */
             virtual quint64 requestLastTrack() = 0;
 
+            /**
+             * Queues the specified id and schedules it to be played.
+             */
+            virtual bool queueId( quint64 id );
+
+            /**
+             * Dequeue the specified id from the queue list
+             */
+            virtual bool dequeueId( quint64 id );
+
         protected:
             // repeat the entire playlist when we've reached the end
             bool m_repeatPlaylist;
+
+            // Holds the list of tracks to be played next. General 
+            // workflow should dictate that the TrackAdvancer should
+            // respect the queue list as an override to what the Advancer
+            // implementation would normally return as the next track.
+            // TODO: a history queue to allow requestLastTrack() to work 
+            // properly?
+            QQueue<quint64> m_queue;
     };
 }
 

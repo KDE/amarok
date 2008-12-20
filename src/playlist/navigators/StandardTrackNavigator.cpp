@@ -31,6 +31,9 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 {
     NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
 
+    if( !m_queue.isEmpty() )
+        return m_queue.takeFirst();
+
     int activeRow = model->activeRow();
     int updateRow;
 
@@ -68,3 +71,4 @@ Playlist::StandardTrackNavigator::requestLastTrack()
 
     return model->idAt( updateRow );
 }
+

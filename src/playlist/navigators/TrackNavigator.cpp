@@ -23,6 +23,23 @@
 
 #include "Amarok.h"
 
-Playlist::TrackNavigator::TrackNavigator() {
+#include <QQueue>
+
+Playlist::TrackNavigator::TrackNavigator()
+{
     m_repeatPlaylist = Amarok::repeatPlaylist();
+}
+
+bool
+Playlist::TrackNavigator::queueTrack( quint64 id )
+{
+    m_queue.enqueue( id );
+    return true;
+}
+
+bool
+Playlist::TrackNavigator::dequeueTrack( quint64 id )
+{
+    m_queue.removeOne( id );
+    return true;
 }
