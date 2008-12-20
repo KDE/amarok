@@ -367,7 +367,11 @@ Playlist::Model::setRowQueued( int row )
 {
     if( rowExists( row ) )
     {
-        Item::State state = /*stateOfRow(row) | */Item::Queued; //FIXME: overwrites state
+        Item::State state = stateOfRow(row);
+        if( state == Item::Invalid )
+            state = Item::Queued;
+        else
+            state = (Item::State) ( state | Item::Queued );
         setStateOfRow( row, state );
     }
 }
@@ -375,8 +379,15 @@ Playlist::Model::setRowQueued( int row )
 void
 Playlist::Model::setRowDequeued( int row )
 {
-    AMAROK_NOTIMPLEMENTED
-    Q_UNUSED( row );
+    if( rowExists( row ) )
+    {
+        Item::State state = stateOfRow(row);
+        if( state == Item::Queued )
+            state = Item::Invalid;
+        else
+            state = (Item::State) ( stateOfRow(row) & ~Item::Queued );
+        setStateOfRow( row, state );
+    }
 }
 
 Playlist::Item::State

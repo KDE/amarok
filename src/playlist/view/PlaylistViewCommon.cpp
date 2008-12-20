@@ -66,7 +66,12 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
         menu->addAction( playAction );
     }
 
-    ( menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), parent, SLOT( queueSelection() ) ) );
+    const bool isQueued = index->data( Playlist::StateRole ).toInt() & Item::Queued;
+    if( !isQueued )
+        menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), parent, SLOT( queueSelection() ) );
+    else
+        menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Dequeue Track" ), parent, SLOT( dequeueSelection() ) );
+
     //( menu->addAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After Track" ), parent, SLOT( stopAfterTrack() ) ) )->setEnabled( false );
     
     menu->addSeparator();

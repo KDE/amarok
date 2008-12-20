@@ -117,6 +117,12 @@ Playlist::PrettyListView::queueSelection()
 }
 
 void
+Playlist::PrettyListView::dequeueSelection()
+{
+    Actions::instance()->dequeue( selectedRows() );
+}
+
+void
 Playlist::PrettyListView::scrollToActiveTrack()
 {
     QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
