@@ -233,7 +233,11 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
         if( job )   //just to be safe
         {
             connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
-            The::statusBar()->newProgressOperation( job, i18n( "Transferring Tracks" ) );
+            QString name = track->prettyName();
+            if( track->artist() )
+                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+
+            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
             m_jobs.insert( job );
             job->start();
             jobsCreated = true;
