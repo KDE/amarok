@@ -95,7 +95,8 @@ enum DataRoles
     TrackRole = Qt::UserRole,
     StateRole,
     UniqueIdRole,
-    ActiveTrackRole
+    ActiveTrackRole,
+    QueuePositionRole
 };
 
 class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
@@ -132,6 +133,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
         int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
         void setActiveRow( int row );
+        void setRowQueued( int row );
+        void setRowDequeued( int row );
         Item::State stateOfRow( int row ) const;
 
         bool containsTrack( const Meta::TrackPtr track ) const;

@@ -43,3 +43,9 @@ Playlist::TrackNavigator::dequeueId( quint64 id )
     m_queue.removeOne( id );
     return true;
 }
+
+int
+Playlist::TrackNavigator::queuePosition( const quint64 id ) const
+{
+    return m_queue.indexOf( id );
+}

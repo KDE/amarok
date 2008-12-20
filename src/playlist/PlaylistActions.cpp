@@ -240,6 +240,7 @@ Playlist::Actions::queue( QList<int> rows )
     {
         quint64 id = Model::instance()->idAt( row );
         m_navigator->queueId( id );
+        Model::instance()->setRowQueued( row );
     }
 }
 
@@ -250,6 +251,7 @@ Playlist::Actions::dequeue( QList<int> rows )
     {
         quint64 id = Model::instance()->idAt( row );
         m_navigator->dequeueId( id );
+        Model::instance()->setRowDequeued( row );
     }
 }
 

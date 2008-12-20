@@ -35,7 +35,8 @@ namespace Playlist
                 Invalid,
                 NewlyAdded,
                 Unplayed,
-                Played
+                Played,
+                Queued
             };
 
             Item() : m_track( 0 ), m_state( Invalid ), m_id( 0 ) { }

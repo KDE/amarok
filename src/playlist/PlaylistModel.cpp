@@ -183,6 +183,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == StateRole )
         return m_items.at( row )->state();
 
+    else if ( role == QueuePositionRole )
+        return 1;
+
     else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
     {
         switch ( index.column() )
@@ -342,7 +345,7 @@ Playlist::Model::setActiveRow( int row )
 {
     if ( rowExists( row ) )
     {
-        m_items.at( row )->setState( Item::Played );
+        setStateOfRow( row, Item::Played );
         int oldactiverow = m_activeRow;
         m_activeRow = row;
 
@@ -359,17 +362,29 @@ Playlist::Model::setActiveRow( int row )
     emit activeRowChanged( m_activeRow );
 }
 
+void
+Playlist::Model::setRowQueued( int row )
+{
+    if( rowExists( row ) )
+    {
+        Item::State state = /*stateOfRow(row) | */Item::Queued; //FIXME: overwrites state
+        setStateOfRow( row, state );
+    }
+}
+
+void
+Playlist::Model::setRowDequeued( int row )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( row );
+}
+
 Playlist::Item::State
 Playlist::Model::stateOfRow( int row ) const
 {
     if ( rowExists( row ) )
-    {
         return m_items.at( row )->state();
-    }
-    else
-    {
-        return Item::Invalid;
-    }
+    return Item::Invalid;
 }
 
 bool
@@ -378,9 +393,7 @@ Playlist::Model::containsTrack( const Meta::TrackPtr track ) const
     foreach( Item* i, m_items )
     {
         if ( i->track() == track )
-        {
             return true;
-        }
     }
     return false;
 }
@@ -392,9 +405,7 @@ Playlist::Model::rowForTrack( const Meta::TrackPtr track ) const
     foreach( Item* i, m_items )
     {
         if ( i->track() == track )
-        {
             return row;
-        }
         row++;
     }
     return -1;
@@ -405,8 +416,7 @@ Playlist::Model::trackAt( int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->track();
-    else
-        return Meta::TrackPtr();
+    return Meta::TrackPtr();
 }
 
 Meta::TrackPtr

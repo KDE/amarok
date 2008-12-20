@@ -72,6 +72,12 @@ namespace Playlist
              */
             virtual bool dequeueId( quint64 id );
 
+            /**
+             * Find the position of the id in the queue
+             * @return the position, or -1 if non in queue
+             */
+            int queuePosition( const quint64 id ) const;
+
         protected:
             // repeat the entire playlist when we've reached the end
             bool m_repeatPlaylist;

@@ -161,6 +161,18 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
         delete sic;
     }
 
+    // Draw queue display indicator
+    if( index.data( StateRole ).toInt() & Item::Queued )
+    {
+        const int queuePosition = index.data( QueuePositionRole ).toInt();
+        const int w = 16, h = 16;
+        const int x = imageRect.x() + imageRect.width() - w;
+        const int y = imageRect.y();
+        const QRect rect( x, y, w, h );
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", 22, 22, "active_overlay" ) ); // TODO: actual queue overlay
+        painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+    }
+
     // Set up the text areas
     qreal leftside = MARGINH + SINGLE_TRACK_ALBUM_WIDTH + 3 * PADDING;
     qreal boxheight = ( trackRect.height() - 3 * MARGIN ) / 2.0;
@@ -193,13 +205,15 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
     textwidth -= static_cast<qreal>( nfm.averageCharWidth() * 2.0 ); // make room for a space between artist & album
     qreal albumNameWidth;
     qreal artistNameWidth = nfm.size( Qt::TextSingleLine, rawArtistString ).width();
-    if ( artistNameWidth <= textwidth / 2.0 ) {
+    if ( artistNameWidth <= textwidth / 2.0 )
         albumNameWidth = textwidth - artistNameWidth;
-    } else {
+    else
+    {
         albumNameWidth = nfm.size( Qt::TextSingleLine, rawAlbumString ).width();
-        if ( albumNameWidth <= textwidth / 2.0 ) {
+        if ( albumNameWidth <= textwidth / 2.0 )
             artistNameWidth = textwidth - albumNameWidth;
-        } else {
+        else
+        {
             artistNameWidth = textwidth / 2.0;
             albumNameWidth = textwidth / 2.0;
         }

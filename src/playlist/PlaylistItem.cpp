@@ -23,8 +23,6 @@
 
 #include "PlaylistItem.h"
 
-#include "Debug.h"
-
 #include <KRandom>
 
 Playlist::Item::Item( Meta::TrackPtr track )
