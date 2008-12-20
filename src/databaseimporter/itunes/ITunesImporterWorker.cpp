@@ -40,18 +40,14 @@ ITunesImporterWorker::readTrackElement()
     QString title, artist, album, url;
     int year = -1, bpm = -1, playcount = -1, rating = -1, lastplayed = -1;
     
-    //debug() << "element name:" << name().toString();
-    
     while( !( isEndElement() && name() == "dict" ) )
     {
         readNext();
         QString text = readElementText();
-        //debug() << "checking element name:" << name().toString() << text;
         if( name() == "key" && text == "Name" )
         {
             readNext(); // skip past the </key> and to the data tag
             QString text = readElementText();
-            debug() << "saving element:" << name().toString() << text;
             title = text;
         } else if( name() == "key" && text == "Artist" )
         {
@@ -115,7 +111,7 @@ ITunesImporterWorker::readTrackElement()
                 debug() << " inserting track:" << track->playableUrl();
             }
             else
-                debug() << "  track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
+                debug() << "track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
 
             emit trackAdded( track );
         }
