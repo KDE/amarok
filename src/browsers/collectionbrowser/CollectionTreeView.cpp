@@ -59,6 +59,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_pd( 0 )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
+    , m_queueAction( 0 )
     , m_editAction( 0 )
     , m_organizeAction( 0 )
     , m_caSeperator( 0 )
@@ -588,6 +589,14 @@ PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndex
         }
 
         actions.append( m_loadAction );
+
+        if( m_queueAction == 0 )
+        {
+            m_queueAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "queue", KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), this );
+            connect( m_queueAction, SIGNAL( triggered() ), this, SLOT( slotQueueChildTracks() ) );
+        }
+
+        actions.append( m_queueAction );
     }
 
     return actions;
@@ -867,6 +876,11 @@ void CollectionTreeView::slotPlayChildTracks()
 void CollectionTreeView::slotAppendChildTracks()
 {
     playChildTracks( m_currentItems, Playlist::AppendAndPlay );
+}
+
+void CollectionTreeView::slotQueueChildTracks()
+{
+    playChildTracks( m_currentItems, Playlist::Queue );
 }
 
 void CollectionTreeView::slotDeleteTracks()

@@ -85,6 +85,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         void slotPlayChildTracks();
         void slotAppendChildTracks();
+        void slotQueueChildTracks();
         void slotDeleteTracks();
         void slotEditTracks();
         void slotCopyTracks();
@@ -119,12 +120,12 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         PopupDropper* m_pd;
         PopupDropperAction* m_appendAction;
         PopupDropperAction* m_loadAction;
+        PopupDropperAction* m_queueAction;
         PopupDropperAction* m_editAction;
         PopupDropperAction* m_organizeAction;
 
         PopupDropperAction * m_caSeperator;
         PopupDropperAction * m_cmSeperator;
-
 
         QHash<PopupDropperAction*, Amarok::Collection*> m_currentCopyDestination;
         QHash<PopupDropperAction*, Amarok::Collection*> m_currentMoveDestination;
