@@ -524,12 +524,8 @@ EngineController::isStream()
 {
     DEBUG_BLOCK
 
-    if( m_media ) {
-        debug() << "stream = true";
-        return m_media->currentSource().stream() != 0;
-    }
-
-    debug() << "stream = false";
+    if( m_media )
+        return m_media->currentSource().type() == Phonon::MediaSource::Stream;
     return false;
 }
 
@@ -566,7 +562,7 @@ void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
-
+ 
     if( m_multi )
     {
         m_mutex.lock();
@@ -574,6 +570,7 @@ EngineController::slotAboutToFinish()
         m_mutex.unlock();
         m_multi->fetchNext();
     }
+
     else if( m_media->queue().isEmpty() )
         The::playlistActions()->requestNextTrack();
 }
@@ -585,6 +582,7 @@ EngineController::slotTrackEnded()
 
     if( m_currentTrack && !m_multi )
     {
+        m_currentTrack->finishedPlaying( 1.0 );
         emit trackFinished();
         m_currentTrack = 0;
     }
@@ -615,10 +613,15 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 
     if ( m_currentTrack )
     {
+        const double pos = trackPosition();
+        const double length = m_currentTrack->length();
+        double finPlaying = 0.0;
+        if( pos == 0 ) // When a track ends, trackPosition() is reporting 0, not length() on windows and os x.
+            finPlaying = 1.0;
+        else
+            finPlaying = pos / length;
+        m_currentTrack->finishedPlaying( finPlaying );
         emit trackFinished();
-        double pos = trackPosition();
-        double length = m_currentTrack->length();
-        m_currentTrack->finishedPlaying( pos/length );
     }
 
     // the new track was taken from the queue, so clear these fields
