@@ -234,6 +234,26 @@ Playlist::Actions::repopulateDynamicPlaylist()
 }
 
 void
+Playlist::Actions::queue( QList<int> rows )
+{
+    foreach( int row, rows )
+    {
+        quint64 id = Model::instance()->idAt( row );
+        m_navigator->queueId( id );
+    }
+}
+
+void
+Playlist::Actions::dequeue( QList<int> rows )
+{
+    foreach( int row, rows )
+    {
+        quint64 id = Model::instance()->idAt( row );
+        m_navigator->dequeueId( id );
+    }
+}
+
+void
 Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State )
 {
     static int failures = 0;

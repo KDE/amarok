@@ -51,7 +51,7 @@ namespace Playlist
     };
 
 
-    class AMAROK_EXPORT Actions : public QObject , public EngineObserver
+    class AMAROK_EXPORT Actions : public QObject, public EngineObserver
     {
         Q_OBJECT
 
@@ -94,6 +94,8 @@ namespace Playlist
             void back();
             void playlistModeChanged(); //! Changes the tracknavigator
             void repopulateDynamicPlaylist();
+            void queue( QList<int> rows );
+            void dequeue( QList<int> rows );
 
         private:
             Actions( QObject* parent = 0 );
