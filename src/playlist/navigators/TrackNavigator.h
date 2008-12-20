@@ -63,20 +63,23 @@ namespace Playlist
             virtual quint64 requestLastTrack() = 0;
 
             /**
-             * Queues the specified id and schedules it to be played.
-             */
-            virtual bool queueId( quint64 id );
-
-            /**
-             * Dequeue the specified id from the queue list
-             */
-            virtual bool dequeueId( quint64 id );
-
-            /**
              * Find the position of the id in the queue
              * @return the position, or -1 if non in queue
              */
             int queuePosition( const quint64 id ) const;
+
+        public slots:
+            /**
+             * Queues the specified id and schedules it to be played.
+             */
+            virtual bool queueIds( const QList<quint64> &ids );
+            virtual bool queueId( const quint64 id );
+
+            /**
+             * Dequeue the specified id from the queue list
+             */
+            virtual bool dequeueIds( const QList<quint64> &ids );
+            virtual bool dequeueId( const quint64 id );
 
         protected:
             // repeat the entire playlist when we've reached the end
@@ -88,6 +91,7 @@ namespace Playlist
             // implementation would normally return as the next track.
             // TODO: a history queue to allow requestLastTrack() to work 
             // properly?
+            // Static queue so that all navigators share the same queue
             QQueue<quint64> m_queue;
     };
 }

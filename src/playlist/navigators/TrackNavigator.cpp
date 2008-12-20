@@ -20,27 +20,47 @@
  **************************************************************************/
 
 #include "TrackNavigator.h"
-
 #include "Amarok.h"
+#include "playlist/PlaylistModel.h"
 
 #include <QQueue>
 
 Playlist::TrackNavigator::TrackNavigator()
 {
     m_repeatPlaylist = Amarok::repeatPlaylist();
+    connect( Model::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+             this, SLOT( dequeueIds( const QList<quint64>& ) ) );
 }
 
 bool
-Playlist::TrackNavigator::queueId( quint64 id )
+Playlist::TrackNavigator::queueId( const quint64 id )
 {
-    m_queue.enqueue( id );
+    QList<quint64> ids;
+    ids << id;
+    return queueIds( ids );
+}
+
+bool
+Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
+{
+    foreach( quint64 id, ids )
+        m_queue.enqueue( id );
     return true;
 }
 
 bool
-Playlist::TrackNavigator::dequeueId( quint64 id )
+Playlist::TrackNavigator::dequeueId( const quint64 id )
 {
-    m_queue.removeOne( id );
+    QList<quint64> ids;
+    ids << id;
+    return dequeueIds( ids );
+}
+
+bool
+Playlist::TrackNavigator::dequeueIds( const QList<quint64> &ids )
+{
+    foreach( quint64 id, ids )
+        m_queue.removeAll( id );
     return true;
 }
 

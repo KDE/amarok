@@ -85,6 +85,9 @@ namespace Playlist
             StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
             void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
 
+            // This shouldn't be in Actions, it doesn't make sense
+            int queuePosition( quint64 id );
+
         public slots:
             void play();
             void play( const int row );

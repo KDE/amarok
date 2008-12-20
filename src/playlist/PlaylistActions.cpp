@@ -233,6 +233,12 @@ Playlist::Actions::repopulateDynamicPlaylist()
     }
 }
 
+int
+Playlist::Actions::queuePosition( quint64 id )
+{
+    return m_navigator->queuePosition( id );
+}
+
 void
 Playlist::Actions::queue( QList<int> rows )
 {
