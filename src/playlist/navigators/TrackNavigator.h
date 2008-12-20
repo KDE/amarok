@@ -22,6 +22,7 @@
 #define TRACKNAVIGATOR_H
 
 #include <QObject>
+#include <QQueue>
 
 namespace Playlist
 {
