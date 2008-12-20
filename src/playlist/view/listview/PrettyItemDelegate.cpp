@@ -399,6 +399,18 @@ Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionVi
                            );
     }
 
+    // Draw queue display indicator
+    if( index.data( StateRole ).toInt() & Item::Queued )
+    {
+        const int queuePosition = index.data( QueuePositionRole ).toInt();
+        const int w = 16, h = 16;
+        const int x = 1;
+        const int y = 1;
+        const QRect rect( x, y, w, h );
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", w, h, "active_overlay" ) ); // TODO: actual queue overlay
+        painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+    }
+
     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
 
     // right: track time
