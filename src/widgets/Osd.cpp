@@ -654,22 +654,22 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
 
     switch( state )
     {
-    case Phonon::PlayingState:
-        unsubscribeFrom( m_currentTrack );
-        m_currentTrack = track;
-        subscribeTo( track );
-        metadataChanged( track );
-        m_paused = false;
-        break;
+        case Phonon::PlayingState:
+            unsubscribeFrom( m_currentTrack );
+            m_currentTrack = track;
+            subscribeTo( track );
+            metadataChanged( track );
+            m_paused = false;
+            break;
 
-    case Phonon::PausedState:
-        setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-        OSDWidget::show( i18n( "Paused" ) );
-        m_paused = true;
-        break;
+        case Phonon::PausedState:
+            setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+            OSDWidget::show( i18n( "Paused" ) );
+            m_paused = true;
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 }
 
