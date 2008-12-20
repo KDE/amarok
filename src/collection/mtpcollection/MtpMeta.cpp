@@ -195,6 +195,7 @@ MtpTrack::prettyName() const
 void
 MtpTrack::prepareToPlay()
 {
+    DEBUG_BLOCK
     KUrl url;
     if( m_isCopied )
     {
