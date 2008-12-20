@@ -54,7 +54,8 @@ target_link_libraries(amarokcollectionscanner
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarokcollectionscanner PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+	# install to app bundle on os x, otherwise amarok fails to load it
+	install(TARGETS amarokcollectionscanner DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
+else(APPLE)
+	install(TARGETS amarokcollectionscanner ${INSTALL_TARGETS_DEFAULT_ARGS} )
 endif(APPLE)
-
-install(TARGETS amarokcollectionscanner ${INSTALL_TARGETS_DEFAULT_ARGS} )
-
