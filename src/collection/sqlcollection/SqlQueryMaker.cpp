@@ -417,7 +417,18 @@ SqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberC
             comparison = "<";
             break;
     }
-    d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+
+    if( (filter == 0 && compare == QueryMaker::Equals)
+     || (filter <  0 && compare == QueryMaker::GreaterThan)
+     || (filter >  0 && compare == QueryMaker::LessThan) )
+    {
+        d->queryFilter += QString( " %1 (%2 %3 %4 or %2 is null)" ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    }
+    else
+    {
+        d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    }
+
     return this;
 }
 
@@ -437,7 +448,17 @@ SqlQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Num
             comparison = ">=";
             break;
     }
-    d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+
+    if( (filter == 0 && compare == QueryMaker::Equals)
+     || (filter >= 0 && compare == QueryMaker::GreaterThan)
+     || (filter <= 0 && compare == QueryMaker::LessThan) )
+    {
+        d->queryFilter += QString( " %1 (%2 %3 %4 and %2 is not null)" ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    }
+    else
+    {
+        d->queryFilter += QString( " %1 %2 %3 %4 " ).arg( andOr(), nameForValue( value ), comparison, QString::number( filter ) );
+    }
     return this;
 }
 
