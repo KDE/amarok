@@ -97,7 +97,17 @@ Playlist::RandomTrackNavigator::requestNextTrack()
             m_playedRows.clear();
         }
 
-        quint64 t = m_unplayedRows.takeFirst();
+        quint64 t;
+        // Respect queue priority over random track
+        if( !m_queue.isEmpty() )
+        {
+            t = m_queue.takeFirst();
+            // remove the id from the unplayed rows list
+            m_unplayedRows.removeAll( t );
+        }
+        else
+            t = m_unplayedRows.takeFirst();
+
         m_playedRows.prepend( t );
         return t;
     }
