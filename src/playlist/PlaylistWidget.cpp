@@ -23,7 +23,6 @@
 #include "ActionClasses.h"
 #include "App.h"
 #include "MainWindow.h"
-//#include "view/graphic/PlaylistClassicView.h"
 #include "view/graphic/PlaylistGraphicsView.h"
 #include "PlaylistController.h"
 #include "view/listview/PrettyListView.h"

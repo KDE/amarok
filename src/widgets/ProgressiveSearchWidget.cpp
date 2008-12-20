@@ -27,6 +27,7 @@
 #include <KLineEdit>
 #include <KLocale>
 
+#include <QKeyEvent>
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
@@ -294,5 +295,24 @@ void ProgressiveSearchWidget::slotPlayOnlyMatches( bool onlyMatches )
     emit( playOnlyMatches( onlyMatches ) );
 }
 
+void
+ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
+{
+    if( event->matches( QKeySequence::FindNext ) )
+    {
+        event->accept();
+        slotNext();
+    }
+    else if( event->matches( QKeySequence::FindPrevious ) )
+    {
+        event->accept();
+        slotPrevious();
+    }
+    else
+    {
+        event->ignore();
+        KHBox::keyPressEvent( event );
+    }
+}
 
 #include "ProgressiveSearchWidget.moc"

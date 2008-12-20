@@ -24,12 +24,20 @@
 
 class KAction;
 class KLineEdit;
+
+class QKeyEvent;
 class QMenu;
 
 /**
-A composite widget for progressive (Firefix style search as you type) searching, with buttons for next and previous result. Also includes a drop down menu to configure which fields in the track ( track name, album name, genre, ...) should be used for matching, as well as a config option for whether the current search and search fields should be taken into account when doing track progression (i.e. should navigators only jump between tracks that match the current search term)
+    A composite widget for progressive (Firefix style search as you type) 
+    searching, with buttons for next and previous result. Also includes 
+    a drop down menu to configure which fields in the track ( track name, 
+    album name, genre, ...) should be used for matching, as well as a config 
+    option for whether the current search and search fields should be taken 
+    into account when doing track progression (i.e. should navigators only 
+    jump between tracks that match the current search term)
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
 class ProgressiveSearchWidget : public KHBox
 {
@@ -155,6 +163,9 @@ protected slots:
      */
     void slotPlayOnlyMatches( bool onlyMatches );
     
+protected:
+    void keyPressEvent( QKeyEvent *event );
+
 private:
     /**
      * Load the current search field settings from config.
