@@ -30,7 +30,8 @@
 #include <QMutexLocker>
 
 
-Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p ) : m_playlist( p )
+Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p )
+    : m_playlist( p )
 {
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
     connect( Model::instance(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
@@ -38,12 +39,10 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ), SLOT( activePlaylistChanged() ) );
 }
 
-
 Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 {
     m_playlist->requestAbort();
 }
-
 
 void
 Playlist::DynamicTrackNavigator::receiveTracks( Meta::TrackList tracks )
@@ -52,7 +51,6 @@ Playlist::DynamicTrackNavigator::receiveTracks( Meta::TrackList tracks )
 
     Controller::instance()->insertOptioned( tracks, Append );
 }
-
 
 void
 Playlist::DynamicTrackNavigator::appendUpcoming()
