@@ -111,6 +111,12 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     {
         firstItemAdded = m_model->activeRow() + 1;
         insertionHelper( firstItemAdded, list );
+        // Construct list of rows to be queued
+        // NOTE: possible race condition here, if the rows get moved around?
+        QList<int> rows;
+        for( int i = firstItemAdded; i < firstItemAdded + list.size(); ++i )
+            rows << i;
+        Actions::instance()->queue( rows );
     }
     else
     {
@@ -346,7 +352,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
 
     QList<int> source;
     QList<int> target;
-    for ( int i = min; i <= max; i++ ) {
+    for ( int i = min; i <= max; i++ )
+    {
         if ( i >=  m_model->rowCount() )
             break; // we are likely moving below the last element, to an index that really does not exist, and thus should not be moved up.
         source.append( i );
@@ -355,7 +362,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
 
     int originalTo = to;
     
-    foreach ( int f, from ) {
+    foreach ( int f, from )
+    {
         if ( f < originalTo )
             to--; // since we are moving an item down in the list, this item will no longer count towards the target row
         source.removeOne( f );
@@ -365,7 +373,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     //We itterate through the items in reverse order, as this allows us to keep the target row constant
     //( remember that the item that was origianlly on the target row is pushed down )
     QList<int>::const_iterator f_iter = from.end();
-    while (f_iter != from.begin()) {
+    while( f_iter != from.begin() )
+    {
         --f_iter;
         source.insert( ( to - min ), *f_iter );
     }
@@ -477,17 +486,21 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 {
     // expand any tracks that are actually playlists
     QMutableListIterator<Meta::TrackPtr> i( tl );
-    while ( i.hasNext() ) {
+    while ( i.hasNext() )
+    {
         i.next();
         Meta::TrackPtr track = i.value();
-        if ( track == Meta::TrackPtr() ) {
+        if ( track == Meta::TrackPtr() )
             i.remove();
-        } else if ( The::playlistManager()->canExpand( track ) ) {
+        else if ( The::playlistManager()->canExpand( track ) )
+        {
             Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job times out
-            if ( playlist ) {
+            if ( playlist )
+            {
                 Meta::TrackList newtracks = playlist->tracks();
                 i.remove();
-                foreach( Meta::TrackPtr t, newtracks ) {
+                foreach( Meta::TrackPtr t, newtracks )
+                {
                     if ( t != Meta::TrackPtr() )
                         i.insert( t );
                 }
@@ -498,9 +511,8 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
     InsertCmdList cmds;
     row = qBound(0, Model::instance()->rowCount(), row);
 
-    foreach( Meta::TrackPtr t, tl ) {
+    foreach( Meta::TrackPtr t, tl )
         cmds.append( InsertCmd( t, row++ ) );
-    }
 
     if ( cmds.size() > 0 )
         m_undoStack->push( new InsertTracksCmd( 0, cmds ) );
