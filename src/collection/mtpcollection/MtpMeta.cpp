@@ -177,6 +177,7 @@ MtpTrack::~MtpTrack()
 
 //    if ( m_tempfile )
 //        delete m_tempfile;
+    m_tempfile.remove();
 }
 
 QString
@@ -202,8 +203,11 @@ MtpTrack::prepareToPlay()
     }
     else
     {
+        QString tempPath = setTempFile( m_format );
+        setPlayableUrl( tempPath );
+
         debug() << "Beginning temporary file copy";
-        m_tempfile.open();
+//        m_tempfile.open();
         bool success = !( m_collection->handler()->getTrackToFile( m_id, m_playableUrl ) );
         debug() << "File transfer complete";
         if( success )
@@ -229,7 +233,7 @@ MtpTrack::setTempFile( const QString &format )
     QFileInfo tempFileInfo( m_tempfile ); // get info for path
     QString tempPath = tempFileInfo.absoluteFilePath(); // path
 
-//    tempfile->setAutoRemove( false );
+    m_tempfile.setAutoRemove( true );
 
     return tempPath;
 }

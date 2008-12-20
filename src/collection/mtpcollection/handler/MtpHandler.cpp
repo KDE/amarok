@@ -203,6 +203,19 @@ MtpHandler::getDeviceInfo()
 {
     // Get information for device
 
+    // Get Battery level and print to debug
+
+    unsigned char max;
+    unsigned char curr;
+    int failed;
+
+    failed = LIBMTP_Get_Batterylevel( m_device, &max, &curr );
+
+    if( !failed )
+        debug() << "Battery at: " << curr << "/" << max;
+    else
+        debug() << "Unknown battery level";
+
 
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
@@ -919,10 +932,7 @@ MtpHandler::getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr tr
 
     /* set proposed temporary file path, to which track will be copied temporarily before attempting to play */
 
-    QString format = getFormat( mtptrack );
-
-    QString tempPath = track->setTempFile( format );
-    track->setPlayableUrl( tempPath );
+    track->setFormat( getFormat( mtptrack ) );
 
     // libmtp low-level function data
 

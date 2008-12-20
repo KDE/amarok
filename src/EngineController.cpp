@@ -487,10 +487,12 @@ EngineController::setNextTrack( Meta::TrackPtr track )
 {
     QMutexLocker locker( &m_mutex );
 
-    if( !track || track->playableUrl().isEmpty() )
-        return;
-
-    track->prepareToPlay();
+    if( !track )
+    {
+        track->prepareToPlay();
+        if( track->playableUrl().isEmpty() )
+            return;
+    }
 
     if( m_media->state() == Phonon::PlayingState ||
         m_media->state() == Phonon::BufferingState )

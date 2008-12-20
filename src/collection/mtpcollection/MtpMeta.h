@@ -186,6 +186,7 @@ class MtpTrack : public Meta::Track
     // these methods are used to deal with the m_tempfile used for playing
 
     QString setTempFile( const QString &format );
+    void setFormat( const QString &format ) { m_format = format; }
     //KTemporaryFile* getTempFile() const { return m_tempfile; }
 
     private:
@@ -216,6 +217,7 @@ class MtpTrack : public Meta::Track
         QString m_comment;
         QString m_name;
         QString m_type;
+        QString m_format;
         int m_bitrate;
         int m_filesize;
         int m_length;
