@@ -135,14 +135,14 @@ Playlist::Actions::play( const QModelIndex& index )
 }
 
 void
-Playlist::Actions::play( int row )
+Playlist::Actions::play( const int row )
 {
     m_nextTrackCandidate = Model::instance()->idAt( row );
     play( m_nextTrackCandidate );
 }
 
 void
-Playlist::Actions::play( quint64 trackid, bool now )
+Playlist::Actions::play( const quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 

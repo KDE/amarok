@@ -87,9 +87,9 @@ namespace Playlist
 
         public slots:
             void play();
-            void play( int row );
+            void play( const int row );
             void play( const QModelIndex& index );
-            void play( quint64 id, bool now = true );
+            void play( const quint64 id, bool now = true );
             void next();
             void back();
             void playlistModeChanged(); //! Changes the tracknavigator
