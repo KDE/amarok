@@ -103,16 +103,19 @@ void
 AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
     KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
-    KAction *loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
-    KAction *editAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
+    KAction *loadAction   = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+    KAction *queueAction  = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), this );
+    KAction *editAction   = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
     
     connect( appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendSelected() ) );
     connect( loadAction  , SIGNAL( triggered() ), this, SLOT( slotPlaySelected() ) );
+    connect( queueAction , SIGNAL( triggered() ), this, SLOT( slotQueueSelected() ) );
     connect( editAction  , SIGNAL( triggered() ), this, SLOT( slotEditSelected() ) );
 
     KMenu menu;
     menu.addAction( appendAction );
     menu.addAction( loadAction );
+    menu.addAction( queueAction );
     menu.addSeparator();
     menu.addAction( editAction );
 
@@ -151,6 +154,13 @@ AlbumsView::slotPlaySelected()
 {
     Meta::TrackList selected = getSelectedTracks();
     The::playlistController()->insertOptioned( selected, Playlist::LoadAndPlay );
+}
+
+void
+AlbumsView::slotQueueSelected()
+{
+    Meta::TrackList selected = getSelectedTracks();
+    The::playlistController()->insertOptioned( selected, Playlist::Queue );
 }
 
 void

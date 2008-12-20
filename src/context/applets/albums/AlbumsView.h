@@ -62,6 +62,7 @@ private slots:
     void slotAppendSelected();
     void slotEditSelected();
     void slotPlaySelected();
+    void slotQueueSelected();
 
 private:
     Meta::TrackList getSelectedTracks() const;
