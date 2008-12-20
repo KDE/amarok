@@ -29,7 +29,7 @@ class QKeyEvent;
 class QMenu;
 
 /**
-    A composite widget for progressive (Firefix style search as you type) 
+    A composite widget for progressive (Firefox style search as you type) 
     searching, with buttons for next and previous result. Also includes 
     a drop down menu to configure which fields in the track ( track name, 
     album name, genre, ...) should be used for matching, as well as a config 
