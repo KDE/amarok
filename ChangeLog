@@ -41,7 +41,7 @@ VERSION 2.0.1
   BUGFIXES:
     * Fix progress indicator disapearing when skipping in last.fm streams.
     * Write the discnumber field for mp3 tags.
-    * Don't start a fadeout when stopping paused media. (BR 178056)
+    * Don't start a fadeout when stopping paused media. (BR 178057)
     * More accurate Amarok 1.4 database imports.
     * Ipod tracks' sample rate is now shown correctly in Tag Dialog.
     * Tracks did not always report that their editable status correctly (BR 177058)
