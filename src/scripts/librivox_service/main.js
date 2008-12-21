@@ -71,7 +71,7 @@ function bookFetchResult( reply )
     try
     {
 
-        var cover = Amarok.Info.scriptPath() + "/book.png";
+        var cover = Amarok.Info.scriptPath() + "/audio_book128.png";
     
         doc.setContent( reply );
 
@@ -141,7 +141,7 @@ function episodeFetchResult( result )
     try
     {
 
-        var cover = Amarok.Info.scriptPath() + "/book.png";
+        var cover = Amarok.Info.scriptPath() + "/audio_book128.png";
         doc.setContent( result );
 
         //get book and author title as these might not match the filter that was used...
