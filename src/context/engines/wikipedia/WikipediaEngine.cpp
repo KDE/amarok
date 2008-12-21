@@ -154,7 +154,7 @@ void WikipediaEngine::update()
 
     removeAllData( "wikipedia" );
 
-    foreach( QString key, data.keys() )
+    foreach( const QString &key, data.keys() )
         setData( key, data[key] );
 
     m_wikiCurrentEntry = tmpWikiStr;

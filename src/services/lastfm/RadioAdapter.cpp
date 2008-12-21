@@ -43,7 +43,7 @@ RadioAdapter::slotStationName( const QString& name )
 void
 RadioAdapter::slotNewTracks( const QList< Track >& tracks )
 {
-    foreach( Track track,  tracks )
+    foreach( const Track &track,  tracks )
         m_upcomingTracks.enqueue( track );
 }
 

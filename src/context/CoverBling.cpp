@@ -195,7 +195,7 @@ CoverBling::draw( GLuint selected )
     float yoffset = -0.6;
     float zoffset = -1.1;
 
-    foreach( GLuint id, m_textureIds ) {
+    foreach( GLuint id, m_textureIds ) { // krazy:exclude=foreach
         glBindTexture( GL_TEXTURE_2D, id );
         glPushMatrix();
             //const float xsin = sin( xoffset );

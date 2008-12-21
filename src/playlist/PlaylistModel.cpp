@@ -602,7 +602,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     int min = m_items.size() + cmds.size();
     int max = 0;
     QList<quint64> newIds;
-    foreach( InsertCmd ic, cmds )
+    foreach( const InsertCmd &ic, cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );

@@ -524,7 +524,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     XSPFTrackList::iterator it;
 
     Meta::TrackPtr track;
-    foreach( track, trackList )
+    foreach( track, trackList ) // krazy:exclude=foreach
     {
         QDomNode subNode = createElement( "track" );
 

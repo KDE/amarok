@@ -407,7 +407,7 @@ Dynamic::BiasSolver::ga_optimize( int iterationLimit, bool updateStatus )
 
         // 4. Replace the worst in the population with the offspring.
         int j = population.size() - 1;
-        foreach( Meta::TrackList p, offspring )
+        foreach( const Meta::TrackList &p, offspring )
         {
             // TODO: try introducing mutations to the offspring here.
 

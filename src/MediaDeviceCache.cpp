@@ -63,8 +63,7 @@ MediaDeviceCache::refreshCache()
     m_type.clear();
     m_name.clear();
     QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
-    Solid::Device temp;
-    foreach( Solid::Device device, deviceList )
+    foreach( const Solid::Device &device, deviceList )
     {
         if( device.as<Solid::StorageDrive>() )
         {

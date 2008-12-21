@@ -142,7 +142,7 @@ CollectionScanner::doJob() //SLOT
     }
     else
     {
-        foreach( QString dir, m_folders )
+        foreach( QString dir, m_folders ) // krazy:exclude=foreach
         {
             if( dir.isEmpty() )
                 //apparently somewhere empty strings get into the mix

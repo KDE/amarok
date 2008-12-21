@@ -238,7 +238,7 @@ MyDirOperator::tracksForEdit() const
     if( list.isEmpty() )
         return tracks;
 
-    foreach( KFileItem item, list )
+    foreach( const KFileItem &item, list )
     {
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
         if( track )

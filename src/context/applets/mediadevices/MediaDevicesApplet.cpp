@@ -483,7 +483,7 @@ MediaDevicesApplet::redraw()
 
     // iterate over devices, add their layouts to main layout
 
-    foreach( QString udi, m_infoMap.keys() )
+    foreach( const QString &udi, m_infoMap.keys() )
     {
         debug() << "Pulling out device";
         DeviceInfo *device = m_infoMap[udi];

@@ -222,7 +222,7 @@ namespace CollectionFolder {
         // they are redundant when recursive mode is chosen
         if( recursive() )
         {
-            foreach( QString dir, dirs )
+            foreach( const QString &dir, dirs )
             {
                 if( ancestorChecked( dir ) )
                     dirs.removeAll( dir );

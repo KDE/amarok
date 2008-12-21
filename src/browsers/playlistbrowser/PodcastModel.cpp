@@ -390,7 +390,7 @@ PlaylistBrowserNS::PodcastModel::loadItems(QModelIndexList list, Playlist::AddOp
 {
     Meta::TrackList episodes;
     Meta::PlaylistList channels;
-    foreach( QModelIndex item, list )
+    foreach( const QModelIndex &item, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>( item.internalPointer() );
         switch( pmc->podcastType() )
@@ -412,7 +412,7 @@ PlaylistBrowserNS::PodcastModel::refreshItems( QModelIndexList list )
 {
     DEBUG_BLOCK
     debug() << "number of items: " << list.count();
-    foreach( QModelIndex index, list )
+    foreach( const QModelIndex &index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
         if( pmc->podcastType() == Meta::ChannelType )
@@ -428,7 +428,7 @@ PlaylistBrowserNS::PodcastModel::removeSubscription( QModelIndexList list )
 {
     DEBUG_BLOCK
     debug() << "number of items: " << list.count();
-    foreach( QModelIndex index, list )
+    foreach( const QModelIndex &index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
         if( pmc->podcastType() == Meta::ChannelType )
@@ -491,7 +491,7 @@ PlaylistBrowserNS::PodcastModel::downloadItems( QModelIndexList list )
 {
     DEBUG_BLOCK
     debug() << "number of items: " << list.count();
-    foreach( QModelIndex index, list )
+    foreach( const QModelIndex &index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
         if( pmc->podcastType() ==  Meta::EpisodeType )
@@ -510,7 +510,7 @@ PlaylistBrowserNS::PodcastModel::deleteItems( QModelIndexList list )
 {
     DEBUG_BLOCK
     debug() << "number of items: " << list.count();
-    foreach( QModelIndex index, list )
+    foreach( const QModelIndex &index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
         if( pmc->podcastType() ==  Meta::EpisodeType )
@@ -567,7 +567,7 @@ PlaylistBrowserNS::PodcastModel::configureChannels( QModelIndexList list )
 {
     DEBUG_BLOCK
     debug() << "number of items: " << list.count();
-    foreach( QModelIndex index, list )
+    foreach( const QModelIndex &index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
         if( pmc->podcastType() ==  Meta::ChannelType )
