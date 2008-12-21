@@ -56,6 +56,7 @@ public slots:
     void dequeueSelection();
     void queueSelection();
     void removeSelection();
+    void stopAfterTrack();
     void scrollToActiveTrack();
 
     void find( const QString & searchTerm, int fields );

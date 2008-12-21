@@ -160,6 +160,14 @@ Playlist::PrettyListView::dragLeaveEvent( QDragLeaveEvent* event )
 }
 
 void
+Playlist::PrettyListView::stopAfterTrack()
+{
+    DEBUG_BLOCK
+    debug()<<"set stop after queue on track "<<currentIndex().data(UniqueIdRole).value<quint64>()<<endl;
+    Actions::instance()->setStopAfterMode( StopAfterQueue );
+    Actions::instance()->setTrackToBeLast( currentIndex().data( UniqueIdRole ).value<quint64>() );
+}
+void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
     QPoint mousept = event->pos() + QPoint( horizontalOffset(), verticalOffset() );

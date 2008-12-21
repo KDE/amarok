@@ -84,6 +84,7 @@ namespace Playlist
 
             StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
             void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
+            void setTrackToBeLast( quint64 id ) { m_trackToBeLast = id; }
 
             // This shouldn't be in Actions, it doesn't make sense
             int queuePosition( quint64 id );
@@ -108,6 +109,8 @@ namespace Playlist
             void engineNewTrackPlaying(); //from EngineObserver
 
             quint64 m_nextTrackCandidate;
+            quint64 m_currentTrack;
+            quint64 m_trackToBeLast;
             TrackNavigator* m_navigator;                //! the strategy of what to do when a track finishes playing
             Playlist::StopAfterMode m_stopAfterMode;
             bool m_trackError;

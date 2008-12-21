@@ -75,6 +75,7 @@ Playlist::Actions::Actions( QObject* parent )
     m_nextTrackCandidate = m_navigator->requestNextTrack();
 }
 
+
 Playlist::Actions::~Actions()
 {
     DEBUG_BLOCK
@@ -85,9 +86,22 @@ Playlist::Actions::~Actions()
 void
 Playlist::Actions::requestNextTrack()
 {
+    if ( m_nextTrackCandidate!=0 )return;
     m_trackError = false;
+    if ( stopAfterMode()==StopAfterQueue && m_currentTrack==m_trackToBeLast )
+    {
+            setStopAfterMode( StopAfterCurrent );
+    }
     m_nextTrackCandidate = m_navigator->requestNextTrack();
-    play( m_nextTrackCandidate, false );
+    m_currentTrack=m_nextTrackCandidate;
+    if ( stopAfterMode()==StopAfterCurrent )  //stop after current / stop after track starts here
+    {
+        setStopAfterMode( StopNever );
+    }
+    else
+    {
+        play( m_nextTrackCandidate, false );
+    }
 }
 
 void
