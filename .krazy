@@ -1,10 +1,11 @@
 EXTRA tipsandthis
+SKIP /playground/src/context/engines/songkick/JsonQt/
 SKIP /src/charset-detector
 SKIP /src/context/animators
 SKIP /src/context/plasma/
 SKIP /src/context/popupdropper
+SKIP /src/mac/
 SKIP /src/scriptengine/generator/generator/
 SKIP /src/services/lastfm/lastfm/
-SKIP /src/sqlite/
-SKIP /src/mac/
-SKIP /playground/src/context/engines/songkick/JsonQt/
+SKIP /src/services/mp3tunes/libmp3tunes/
+
