@@ -193,16 +193,7 @@ MediaDeviceMonitor::isMtp( const QString &udi )
 
     Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
 
-    foreach( QString protocol, pmp->supportedProtocols() )
-    {
-        if( protocol == "mtp" )
-        {
-            debug() << "MTP device detected!";
-            return true;
-        }
-    }
-
-    return false;
+    return pmp->supportedProtocols().contains( "mtp" );
 }
 
 void
