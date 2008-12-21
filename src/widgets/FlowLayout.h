@@ -56,7 +56,7 @@
  class AMAROK_EXPORT FlowLayout : public QLayout
 {
     public:
-        FlowLayout(QWidget *parent, int margin = 0, int spacing = -1);
+        explicit FlowLayout(QWidget *parent, int margin = 0, int spacing = -1);
         FlowLayout(int spacing = -1);
         ~FlowLayout();
 

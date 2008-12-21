@@ -37,7 +37,7 @@
 class CollectionAction : public QAction
 {
 public:
-    CollectionAction( Amarok::Collection *coll, QObject *parent = 0 )
+    explicit CollectionAction( Amarok::Collection *coll, QObject *parent = 0 )
             : QAction( parent )
             , m_collection( coll )
     {

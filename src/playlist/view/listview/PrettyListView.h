@@ -97,5 +97,4 @@ private:
     QTimer * m_proxyUpdateTimer;
 };
 }
-
 #endif

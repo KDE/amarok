@@ -270,7 +270,7 @@ Meta::SqlPodcastChannel::loadEpisodes()
         command = QString( "SELECT id, url, channel, localurl, guid, "
         "title, subtitle, sequencenumber, description, mimetype, pubdate, "
         "duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 "
-        "ORDER BY pubdate DESC LIMIT " + QString::number( purgeCount() ) + ";" );
+        "ORDER BY pubdate DESC LIMIT " + QString::number( purgeCount() ) + ';' );
     }
     else
     {
