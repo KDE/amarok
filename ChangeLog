@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Add "Stop after track" option to the playlist menu.
     * Queue track functionality has returned. (BR 171939)
     * Add advanced, configurable, searching and filtering to the playlist.
     * MTP devices can now delete multiple tracks at once.
