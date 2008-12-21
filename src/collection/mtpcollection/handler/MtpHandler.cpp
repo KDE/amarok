@@ -703,16 +703,21 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     {
         trackmeta->tracknumber = track->trackNumber();
     }
+    debug() << "Has track length" << (track->length() > 0 ? "true" : "false");
     if( track->length() > 0 )
     {
+        debug() << "Setting tracklength to: " << track->length() << "s";
         // Multiply by 1000 since this is in milliseconds
-        trackmeta->duration = track->length();
+        trackmeta->duration = (track->length() * 1000);
+        debug() << "Track length is now: " << trackmeta->duration << "ms";
     }
     if( !track->playableUrl().fileName().isEmpty() )
     {
         trackmeta->filename = qstrdup( track->playableUrl().fileName().toUtf8() );
     }
     trackmeta->filesize = track->filesize();
+
+    debug() << "Filesize before copy: " << trackmeta->filesize;
 
     // try and create the requested folder structure
     uint32_t parent_id = 0;
@@ -751,6 +756,8 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->playableUrl().path().toUtf8() ), trackmeta,
                                            0, this );
+
+    debug() << "Filesize after copy: " << trackmeta->filesize;
 
 
 
