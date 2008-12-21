@@ -100,6 +100,31 @@ public:
      */
     void setPassThrough( bool passThrough );
 
+
+    QVariant data( const QModelIndex& index, int role ) const;
+    
+    bool rowExists( int row ) const;
+    void setActiveRow( int row );
+    Meta::TrackPtr trackAt( int row ) const;
+    
+    Qt::DropActions supportedDropActions() const;
+    Qt::ItemFlags flags( const QModelIndex& ) const;
+    QStringList mimeTypes() const;
+    QMimeData* mimeData( const QModelIndexList& ) const;
+    bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
+
+
+
+    
+    int find( const QString & searchTerm, int searchFields );
+    int findNext( const QString & searchTerm, int selectedRow, int searchFields );
+    int findPrevious( const QString & searchTerm, int selectedRow, int searchFields );
+    int totalLength() const;
+
+    void clearSearchTerm();
+    QString currentSearchTerm();
+    int currentSearchFields();
+
 protected:
     /**
      * Reimplemented from QSortFilterProxyModel. Used internally by the proxy to
@@ -159,6 +184,9 @@ private:
      * Destructor.
      */
     ~NavigatorFilterProxyModel();
+
+    int rowToSource( int row ) const;
+    int rowFromSource( int row ) const;
     
     bool m_passThrough;
     

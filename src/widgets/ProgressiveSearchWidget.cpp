@@ -109,13 +109,17 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     m_menu->addSeparator();
 
-    KAction * playOnlyMatchesAction = new KAction( i18n( "Play only matches" ), this );
-    playOnlyMatchesAction->setCheckable( true );
-    connect( playOnlyMatchesAction, SIGNAL( toggled( bool ) ), this, SLOT( slotPlayOnlyMatches( bool ) ) );
+    KAction * showOnlyMatchesAction = new KAction( i18n( "Show only matches" ), this );
+    showOnlyMatchesAction->setCheckable( true );
+    connect( showOnlyMatchesAction, SIGNAL( toggled( bool ) ), this, SLOT( slotShowOnlyMatches( bool ) ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
-    playOnlyMatchesAction->setChecked( config.readEntry( "PlayOnlyMatches", true ) );
-    m_menu->addAction( playOnlyMatchesAction );
+    bool onlyMatches = config.readEntry( "ShowOnlyMatches", false );
+    showOnlyMatchesAction->setChecked( onlyMatches );
+    m_menu->addAction( showOnlyMatchesAction );
+
+    m_nextAction->setVisible( !onlyMatches );
+    m_previousAction->setVisible( !onlyMatches );
 
     KAction *searchMenuAction = new KAction(KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
@@ -148,7 +152,6 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
         m_searchEdit->setPalette( p );
 
         emit( filterCleared() );
-        return;
     }
 
     emit( filterChanged( filter, m_searchFieldsMask ) );
@@ -287,12 +290,15 @@ void ProgressiveSearchWidget::readConfig()
         m_searchFieldsMask |= Playlist::MatchYear;
 }
 
-void ProgressiveSearchWidget::slotPlayOnlyMatches( bool onlyMatches )
+void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
 {
     KConfigGroup config = Amarok::config( "Playlist Search" );
-    config.writeEntry( "PlayOnlyMatches", onlyMatches );
+    config.writeEntry( "ShowOnlyMatches", onlyMatches );
 
-    emit( playOnlyMatches( onlyMatches ) );
+    m_nextAction->setVisible( !onlyMatches );
+    m_previousAction->setVisible( !onlyMatches );
+    
+    emit( showOnlyMatches( onlyMatches ) );
 }
 
 void

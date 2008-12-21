@@ -31,7 +31,6 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
-#include "playlist/navigators/NavigatorFilterProxyModel.h"
 
 #include <KApplication>
 
@@ -511,7 +510,7 @@ void Playlist::PrettyListView::updateProxyTimeout()
     NavigatorFilterProxyModel::instance()->filterUpdated();
 }
 
-void Playlist::PrettyListView::playOnlyMatches( bool onlyMatches )
+void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
     NavigatorFilterProxyModel::instance()->setPassThrough( !onlyMatches );
 }

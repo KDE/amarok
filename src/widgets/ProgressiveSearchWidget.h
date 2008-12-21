@@ -85,9 +85,9 @@ signals:
     /**
      * Signal emitted when the user changes the value of the "Play only
      * matches" option.
-     * @param playOnlyMatches The value selected by the user.
+     * @param showOnlyMatches The value selected by the user.
      */
-    void playOnlyMatches( bool onlyMatches );
+    void showOnlyMatches( bool onlyMatches );
 
 public slots:
     /**
@@ -159,9 +159,9 @@ protected slots:
      * Toggle navigate only tracks that match the current search term and
      * search fields. (The user can always manually select a track that
      * is not a part of the search results.
-     * @param playOnlyMatches On/off.
+     * @param showOnlyMatches On/off.
      */
-    void slotPlayOnlyMatches( bool onlyMatches );
+    void slotShowOnlyMatches( bool onlyMatches );
     
 protected:
     void keyPressEvent( QKeyEvent *event );

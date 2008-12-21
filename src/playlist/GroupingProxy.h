@@ -22,7 +22,7 @@
  **************************************************************************/
 
 #include "meta/Meta.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/navigators/NavigatorFilterProxyModel.h"
 
 #include <QAbstractProxyModel>
 #include <QHash>
@@ -130,7 +130,7 @@ private:
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
 
-    Model* m_model;
+    NavigatorFilterProxyModel *m_model;
 
     static GroupingProxy* s_instance;
 };

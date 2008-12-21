@@ -510,9 +510,9 @@
         <label>Include years in matching</label>
         <default>false</default>
     </entry>
-    <entry key="PlayOnlyMatches" type="Bool">
+    <entry key="ShowOnlyMatches" type="Bool">
         <label>Include years in matching</label>
-        <default>true</default>
+        <default>false</default>
     </entry>
 </group>
 

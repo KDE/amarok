@@ -30,7 +30,6 @@
 
 #include "Debug.h"
 #include "meta/Meta.h"
-#include "playlist/PlaylistModel.h"
 
 #include <QAbstractProxyModel>
 #include <QVariant>
@@ -52,7 +51,7 @@ Playlist::GroupingProxy::destroy()
     }
 }
 
-Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( Model::instance() )
+Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( NavigatorFilterProxyModel::instance() )
 {
     DEBUG_BLOCK
 

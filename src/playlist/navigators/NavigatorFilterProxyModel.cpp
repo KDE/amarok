@@ -42,9 +42,9 @@ NavigatorFilterProxyModel::NavigatorFilterProxyModel()
     connect( Model::instance(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
-    m_passThrough = !config.readEntry( "PlayOnlyMatches", true );
+    m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
 
-    setDynamicSortFilter( true );
+    //setDynamicSortFilter( true );
 
 }
 
@@ -54,12 +54,18 @@ NavigatorFilterProxyModel::~NavigatorFilterProxyModel()
 
 bool Playlist::NavigatorFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
 {
+    //DEBUG_BLOCK
+
+    //debug() << "checking for match agaist row: " << row;
     Q_UNUSED( source_parent );
 
-    if ( m_passThrough )
+    if ( m_passThrough ) {
+        //debug() << "true";
         return true;
+    }
     
     bool match = Model::instance()->matchesCurrentSearchTerm( row );
+    debug() << match;
     return match;
 }
 
@@ -68,15 +74,7 @@ int Playlist::NavigatorFilterProxyModel::activeRow() const
 
     //we map the active row form the source to this model. if The active row is not in the items exposed by this proxy, just point to out first item.
     Model * model = Model::instance();
-
-    QModelIndex sourceIndex = model->index( model->activeRow(), 0 );
-    QModelIndex index = mapFromSource( sourceIndex );
-
-    if ( !index.isValid() )
-        return -1;
-    else
-        return index.row();
-    
+    return rowFromSource( model->activeRow() );
 }
 
 quint64 Playlist::NavigatorFilterProxyModel::idAt( const int row ) const
@@ -91,6 +89,7 @@ void Playlist::NavigatorFilterProxyModel::filterUpdated()
     if ( !m_passThrough ) {
         invalidateFilter();
         emit( filterChanged() );
+        emit( layoutChanged() );
     }
 }
 
@@ -116,12 +115,8 @@ int Playlist::NavigatorFilterProxyModel::firstMatchAfterActive()
 
     if ( matchRow == -1 )
         return -1;
-    
-    //convert to proxy row:
-    QModelIndex sourceIndex = model->index( matchRow, 0 );
-    QModelIndex index = mapFromSource( sourceIndex );
 
-    return index.row();
+    return rowFromSource( matchRow );
 }
 
 int Playlist::NavigatorFilterProxyModel::firstMatchBeforeActive()
@@ -147,11 +142,7 @@ int Playlist::NavigatorFilterProxyModel::firstMatchBeforeActive()
     if ( matchRow == -1 )
         return -1;
     
-    //convert to proxy row:
-    QModelIndex sourceIndex = model->index( matchRow, 0 );
-    QModelIndex index = mapFromSource( sourceIndex );
-
-    return index.row();
+    return rowFromSource( matchRow );
 }
 
 void Playlist::NavigatorFilterProxyModel::slotInsertedIds( const QList< quint64 > &ids )
@@ -190,11 +181,8 @@ void Playlist::NavigatorFilterProxyModel::slotRemovedIds( const QList< quint64 >
 
 Item::State Playlist::NavigatorFilterProxyModel::stateOfRow( int row ) const
 {
-    //map to sourceRow:
-    QModelIndex index = this->index( row, 0 );
-    QModelIndex sourceIndex = mapToSource( index );
-    
-    return Model::instance()->stateOfRow( sourceIndex.row() );
+
+    return Model::instance()->stateOfRow( rowToSource( row ) );
 }
 
 Item::State Playlist::NavigatorFilterProxyModel::stateOfId( quint64 id ) const
@@ -211,15 +199,120 @@ void Playlist::NavigatorFilterProxyModel::setPassThrough( bool passThrough )
     //number of changes to the search therm )
     invalidateFilter();
     emit( filterChanged() );
+    emit( layoutChanged() );
 }
 
+}
+
+int Playlist::NavigatorFilterProxyModel::rowToSource( int row ) const
+{
+    QModelIndex index = this->index( row, 0 );
+    QModelIndex sourceIndex = mapToSource( index );
+
+    if ( !sourceIndex.isValid() )
+        return -1;
+    return sourceIndex.row();
+}
+
+int Playlist::NavigatorFilterProxyModel::rowFromSource( int row ) const
+{
+    Model * model = Model::instance();
+    QModelIndex sourceIndex = model->index( row, 0 );
+    QModelIndex index = mapFromSource( sourceIndex );
+
+    if ( !index.isValid() )
+        return -1;
+    return index.row();
+}
+
+bool Playlist::NavigatorFilterProxyModel::rowExists( int row ) const
+{
+
+    QModelIndex index = this->index( row, 0 );
+    return index.isValid();
+}
+
+void Playlist::NavigatorFilterProxyModel::setActiveRow( int row )
+{
+    Model::instance()->setActiveRow( rowToSource( row ) );
+}
+
+Meta::TrackPtr Playlist::NavigatorFilterProxyModel::trackAt(int row) const
+{
+    return Model::instance()->trackAt( rowToSource( row ) );
+}
+
+int Playlist::NavigatorFilterProxyModel::find( const QString &searchTerm, int searchFields )
+{
+    return rowFromSource( Model::instance()->find( searchTerm, searchFields ) );
+}
+
+int Playlist::NavigatorFilterProxyModel::findNext( const QString & searchTerm, int selectedRow, int searchFields )
+{
+    return rowFromSource( Model::instance()->findNext( searchTerm, selectedRow, searchFields ) );
+}
+
+int Playlist::NavigatorFilterProxyModel::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
+{
+    return rowFromSource( Model::instance()->findPrevious( searchTerm, selectedRow, searchFields ) );
+}
+
+int Playlist::NavigatorFilterProxyModel::totalLength() const
+{
+    return Model::instance()->totalLength();
+}
+
+void Playlist::NavigatorFilterProxyModel::clearSearchTerm()
+{
+    Model::instance()->clearSearchTerm();
+}
+
+QString Playlist::NavigatorFilterProxyModel::currentSearchTerm()
+{
+    return Model::instance()->currentSearchTerm();
+}
+
+int Playlist::NavigatorFilterProxyModel::currentSearchFields()
+{
+    return Model::instance()->currentSearchFields();
+}
+
+QVariant Playlist::NavigatorFilterProxyModel::data( const QModelIndex & index, int role ) const
+{
+
+     //HACK around incomlete index causing a crash...
+    QModelIndex newIndex = this->index( index.row(), index.column() );
+
+    QModelIndex sourceIndex = mapToSource( newIndex );
+    return Model::instance()->data( sourceIndex, role );
+
+    
+}
+
+
+Qt::DropActions Playlist::NavigatorFilterProxyModel::supportedDropActions() const
+{
+    return Model::instance()->supportedDropActions();
+}
+
+Qt::ItemFlags Playlist::NavigatorFilterProxyModel::flags( const QModelIndex &index ) const
+{
+    return Model::instance()->flags( index );
+}
+
+QStringList Playlist::NavigatorFilterProxyModel::mimeTypes() const
+{
+    return Model::instance()->mimeTypes();
+}
+
+QMimeData * Playlist::NavigatorFilterProxyModel::mimeData( const QModelIndexList &index ) const
+{
+    return Model::instance()->mimeData( index );
+}
+
+bool Playlist::NavigatorFilterProxyModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
+{
+    return Model::instance()->dropMimeData( data, action, row, column, parent );
 }
 
 #include "NavigatorFilterProxyModel.moc"
-
-
-
-
-
-
-
