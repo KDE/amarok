@@ -687,11 +687,16 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     // TODO: port to Qt4
 
+    debug() << "Source track year: " << track->year();
+
     if( track->year() > 0 )
     {
         QString date;
-        QTextStream( &date ) << track->year() << "0101T0000.0";
-        trackmeta->date = qstrdup( date.toUtf8() );
+        QTextStream dateout( &date );
+        dateout << track->year()->name() << "0101T0000.0";
+//        debug() << "Proposed date: " << dateout.string();
+        trackmeta->date = qstrdup( dateout.string()->toUtf8() );
+//        debug() << "Set date to: " << trackmeta->date;
     }
 
     else
