@@ -29,7 +29,7 @@
 class KUrl;
 
 /**
-	@author Bart Cerneels <bart.cerneels@kde.org3>
+	@author Bart Cerneels <bart.cerneels@kde.org>
 */
 class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public PlaylistProvider
 {
