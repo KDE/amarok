@@ -335,19 +335,7 @@ Playlist::GroupingProxy::groupRowCount( int row ) const
 bool
 Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
 {
-    //FIXME: Do this the propper way after 2.0.0
-
-    
-    bool albumMatch = false;
-    bool artistMatch = true;  // default to true if there is no artist:
-
-    if ( track1->artist() && track2->artist() )
-        artistMatch = ( track1->artist()->name() == track2->artist()->name() );
-
-    if ( track1->album() && track2->album() )
-        albumMatch = ( track1->album()->name() == track2->album()->name() );
-
-    return ( albumMatch && artistMatch );
+    return track1->album() == track2->album();
 }
 
 int Playlist::GroupingProxy::find( const QString &searchTerm, int fields  )
