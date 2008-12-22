@@ -22,9 +22,10 @@
 
 #define DEBUG_PREFIX "Playlist::PrettyItemDelegate"
 
+#include "PrettyItemDelegate.h"
+
 #include "App.h"
 #include "Debug.h"
-#include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"

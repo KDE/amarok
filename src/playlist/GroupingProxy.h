@@ -21,6 +21,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#ifndef GROUPINGPROXY_H
+#define GROUPINGPROXY_H
+
 #include "meta/Meta.h"
 #include "playlist/navigators/NavigatorFilterProxyModel.h"
 
@@ -135,3 +138,5 @@ private:
     static GroupingProxy* s_instance;
 };
 } // namespace Playlist
+
+#endif

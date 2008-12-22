@@ -19,6 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
+#ifndef PRETTYITEMDELEGATE_H
+#define PRETTYITEMDELEGATE_H
+
 #include <QModelIndex>
 #include <QStyledItemDelegate>
 
@@ -68,3 +71,5 @@ private:
     static QFontMetricsF* s_bfm; //bold
 };
 }
+
+#endif

@@ -16,7 +16,10 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include<QString>
+#ifndef AMAROK_STATE_H
+#define AMAROK_STATE_H
+
+#include <QString>
 
 class CollectionManager;
 class EngineController;
@@ -85,3 +88,5 @@ namespace Amarok {
     };
     
 }
+
+#endif

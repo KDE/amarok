@@ -27,7 +27,7 @@
 #define IPODHANDLER_H
 
 /* CMake check for GDK */
-#include "config-gdk.h"
+#include <config-gdk.h>
 
 extern "C" {
   #include <gpod/itdb.h>

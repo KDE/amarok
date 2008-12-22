@@ -16,6 +16,9 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#ifndef AMAROK_BACKENDSTARTINGSTATE_H
+#define AMAROK_BACKENDSTARTINGSTATE_H
+
 #include "State.h"
 
 namespace Amarok {
@@ -33,3 +36,5 @@ namespace Amarok {
         virtual ServiceBrowser* serviceBrowser() const;
     };
 }
+
+#endif
