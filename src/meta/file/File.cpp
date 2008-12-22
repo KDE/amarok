@@ -157,8 +157,13 @@ Track::isPlayable() const
 bool
 Track::isEditable() const
 {
-    //not this probably needs more work on *nix
-    return QFile::permissions( d->url.path() ) & QFile::WriteUser;
+    DEBUG_BLOCK
+
+    //note this probably needs more work on *nix
+    const bool editable = QFile::permissions( d->url.path() ) & QFile::WriteUser;
+
+    debug() << d->url.path() << " editable: " << editable;
+    return editable; 
 }
 
 Meta::AlbumPtr
