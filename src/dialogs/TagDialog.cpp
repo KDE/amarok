@@ -1183,6 +1183,8 @@ TagDialog::changes()
 void
 TagDialog::storeTags()
 {
+    DEBUG_BLOCK
+
     storeTags( m_currentTrack );
 }
 
@@ -1469,6 +1471,8 @@ TagDialog::saveTags()
 void
 TagDialog::applyToAllTracks()
 {
+    DEBUG_BLOCK
+
     generateDeltaForLabelList( labelListFromText( ui->kTextEdit_selectedLabels->toPlainText() ) );
 
     foreach( Meta::TrackPtr track, m_tracks )
