@@ -275,7 +275,9 @@ SqlTrack::isPlayable() const
 bool
 SqlTrack::isEditable() const
 {
-    return m_collection && QFile::exists( m_url.path() ) && QFile( m_url.path() ).isWritable();
+    QFile::Permissions p = QFile::permissions( m_url.path() );
+    const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
+    return m_collection && QFile::exists( m_url.path() ) && editable;
 }
 
 QString
@@ -832,7 +834,7 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::Updatable:
             return true;
         case Meta::Capability::Editable:
-            return QFile::permissions( playableUrl().path() ) & QFile::WriteUser;
+            return isEditable();
         default:
             return false;
     }

@@ -160,7 +160,8 @@ Track::isEditable() const
     DEBUG_BLOCK
 
     //note this probably needs more work on *nix
-    const bool editable = QFile::permissions( d->url.path() ) & QFile::WriteUser;
+    QFile::Permissions p = QFile::permissions( d->url.path() );
+    const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
 
     debug() << d->url.path() << " editable: " << editable;
     return editable; 
