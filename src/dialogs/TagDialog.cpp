@@ -1102,29 +1102,6 @@ QStringList
 TagDialog::getCommonLabels()
 {
     AMAROK_NOTIMPLEMENTED
-    /*QMap<QString, int> counterMap;
-    const KUrl::List::ConstIterator end = m_urlList.constEnd();
-    KUrl::List::ConstIterator iter = m_urlList.constBegin();
-    for(; iter != end; ++iter )
-    {
-        QStringList labels = labelsForURL( *iter );
-        oldForeach( labels )
-        {
-            if ( counterMap.contains( *it ) )
-                counterMap[ *it ] = counterMap[ *it ] +1;
-            else
-                counterMap[ *it ] = 1;
-        }
-    }
-    int n = m_urlList.count();
-    QStringList result;
-    QMap<QString, int>::ConstIterator counterEnd( counterMap.constEnd() );
-    for(QMap<QString, int>::ConstIterator it = counterMap.constBegin(); it != counterEnd; ++it )
-    {
-        if ( it.value() == n )
-            result.append( it.key() );
-    }
-    return result;*/
     return QStringList();
 }
 
@@ -1241,27 +1218,6 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
             storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
         }
     }
-    /*if( result & TagDialog::LABELSCHANGED ) {
-        generateDeltaForLabelList( labelListFromText( ui->kTextEdit_selectedLabels->toPlainText() ) );
-        QStringList tmpLabels;
-        if ( newLabels.find( url ) != newLabels.end() )
-            tmpLabels = newLabels[ url ];
-        else
-            tmpLabels = originalLabels[ url ];
-        //apply delta
-        oldForeach( m_removedLabels )
-        {
-            tmpLabels.removeAt( tmpLabels.indexOf(*it) );
-        }
-        oldForeach( m_addedLabels )
-        {
-            // this just feels dirty...
-            if( tmpLabels.indexOf( *it ) == tmpLabels.indexOf( *tmpLabels.end() ) )
-                tmpLabels.append( *it );
-        }
-        newLabels.remove( url );
-        newLabels.insert( url, tmpLabels );
-    }*/
 }
 
 void
@@ -1314,18 +1270,6 @@ TagDialog::loadLabels( const Meta::TrackPtr &track )
 {
     Q_UNUSED( track )
     AMAROK_NOTIMPLEMENTED
-    /*DEBUG_BLOCK
-    m_labels = labelsForURL( url );
-    originalLabels[ url.path() ] = m_labels;
-    QString text;
-    oldForeach( m_labels )
-    {
-        if ( !text.isEmpty() )
-            text.append( ", " );
-        text.append( *it );
-    }
-    ui->kTextEdit_selectedLabels->setText( text );
-    m_commaSeparatedLabels = text;*/
 }
 
 QVariantMap
@@ -1463,18 +1407,6 @@ TagDialog::saveTags()
 
         uc->collectionUpdated();
     }
-    
-    //TODO: port 2.0
-    /*
-    QMap<QString, QStringList>::ConstIterator endLabels( newLabels.constEnd() );
-    for(QMap<QString, QStringList>::ConstIterator it = newLabels.constBegin(); it != endLabels; ++it ) {
-        CollectionDB::instance()->setLabels( it.key(), it.value(),
-                CollectionDB::instance()->uniqueIdFromUrl( KUrl( it.key() ) ), CollectionDB::typeUser );
-    }
-    CollectionDB::instance()->cleanLabels();*/
-
-    //ThreadManager::instance()->queueJob( new TagDialogWriter( storedTags ) );
-
 }
 
 void
