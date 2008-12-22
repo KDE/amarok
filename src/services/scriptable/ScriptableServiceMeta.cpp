@@ -20,6 +20,8 @@
 #include "ScriptableServiceMeta.h"
 #include "ScriptableServiceMeta_p.h"
 
+#include "meta/PrivateMetaRegistry.h"
+
 using namespace Meta;
 
 
@@ -67,56 +69,39 @@ void Meta::ScriptableServiceMetaItem::setServiceEmblem( const QPixmap & emblem )
 ScriptableServiceTrack::ScriptableServiceTrack( const QString & name )
     : ServiceTrack( name )
     , ScriptableServiceMetaItem( 0 )
-     , d( new ScriptableServiceTrack::Private( this ) )
 {}
 
 ScriptableServiceTrack::ScriptableServiceTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
     , ScriptableServiceMetaItem( 0 )
-    , d( new ScriptableServiceTrack::Private( this ) )
 {}
 
 
 Meta::AlbumPtr Meta::ScriptableServiceTrack::album() const
 {
     DEBUG_BLOCK
-    if ( d->album ){
-        debug() << "got a custom album named " << d->album->name();
-        return d->album;
-    }
-    return ServiceTrack::album();
+    return m_albumPtr;
 }
 
 Meta::ArtistPtr Meta::ScriptableServiceTrack::artist() const
 {
     DEBUG_BLOCK
-            
-    if ( d->artist ) {
-        debug() << "got a custom artist named " << d->artist->name();
-        return d->artist;
-    }
-    return ServiceTrack::artist();
+    return m_artistPtr;
 }
 
 Meta::GenrePtr Meta::ScriptableServiceTrack::genre() const
 {
-    if ( d->genre )
-        return d->genre;
-    return ServiceTrack::genre();
+    return m_genrePtr;
 }
 
 Meta::ComposerPtr Meta::ScriptableServiceTrack::composer() const
 {
-    if ( d->composer )
-        return d->composer;
-    return ServiceTrack::composer();
+    return m_composerPtr;
 }
 
 Meta::YearPtr Meta::ScriptableServiceTrack::year() const
 {
-    if ( d->year )
-        return d->year;
-    return ServiceTrack::year();
+    return m_yearPtr;
 }
 
 
@@ -124,40 +109,67 @@ Meta::YearPtr Meta::ScriptableServiceTrack::year() const
 
 void Meta::ScriptableServiceTrack::setAlbumName( const QString &newAlbum )
 {
-    d->m_data.album = newAlbum;
-    d->album = Meta::AlbumPtr( new ScriptableServiceInternalAlbum( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+    Meta::AlbumPtr albumPtr = Meta::PrivateMetaRegistry::instance()->album( m_serviceName, newAlbum );
+    if ( !albumPtr ) {
+        albumPtr = Meta::AlbumPtr( new ScriptableServiceInternalAlbum( newAlbum ) );
+        Meta::PrivateMetaRegistry::instance()->insertAlbum( m_serviceName, newAlbum, albumPtr );
+    }
+
+    m_albumPtr = albumPtr;
 }
 
 void Meta::ScriptableServiceTrack::setArtistName( const QString &newArtist )
 {
-    d->m_data.artist = newArtist;
-    d->artist = Meta::ArtistPtr( new ScriptableServiceInternalArtist( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+    Meta::ArtistPtr artistPtr = Meta::PrivateMetaRegistry::instance()->artist( m_serviceName, newArtist );
+    if ( !artistPtr ) {
+        artistPtr = Meta::ArtistPtr( new ScriptableServiceInternalArtist( newArtist ) );
+        Meta::PrivateMetaRegistry::instance()->insertArtist( m_serviceName, newArtist, artistPtr );
+    }
+    
+    m_artistPtr = artistPtr;
 }
 
 void Meta::ScriptableServiceTrack::setGenreName( const QString &newGenre )
 {
-    d->m_data.genre = newGenre;
-    d->genre = Meta::GenrePtr( new ScriptableServiceInternalGenre( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+    Meta::GenrePtr genrePtr = Meta::PrivateMetaRegistry::instance()->genre( m_serviceName, newGenre );
+    if ( !genrePtr ) {
+        genrePtr = Meta::GenrePtr( new ScriptableServiceInternalGenre( newGenre ) );
+        Meta::PrivateMetaRegistry::instance()->insertGenre( m_serviceName, newGenre, genrePtr );
+    }
+    
+    m_genrePtr = genrePtr;
 }
 
 void Meta::ScriptableServiceTrack::setComposerName( const QString &newComposer )
 {
-    d->m_data.composer = newComposer;
-    d->composer = Meta::ComposerPtr( new ScriptableServiceInternalComposer( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+    Meta::ComposerPtr composerPtr = Meta::PrivateMetaRegistry::instance()->composer( m_serviceName, newComposer );
+    if ( !composerPtr ) {
+        composerPtr = Meta::ComposerPtr( new ScriptableServiceInternalComposer( newComposer) );
+        Meta::PrivateMetaRegistry::instance()->insertComposer( m_serviceName, newComposer, composerPtr );
+    }
+    
+    m_composerPtr = composerPtr;
 }
 
 void Meta::ScriptableServiceTrack::setYearNumber( int newYear )
 {
-    d->m_data.year = newYear;
-    d->year = Meta::YearPtr( new ScriptableServiceInternalYear( QPointer<ScriptableServiceTrack::Private>( d ) ) );
+    const QString yearString = QString::number( newYear );
+    
+    Meta::YearPtr yearPtr = Meta::PrivateMetaRegistry::instance()->year( m_serviceName, yearString );
+    if ( !yearPtr ) {
+        yearPtr = Meta::YearPtr( new ScriptableServiceInternalYear( yearString ) );
+        Meta::PrivateMetaRegistry::instance()->insertYear( m_serviceName, yearString, yearPtr );
+    }
+    
+    m_yearPtr = yearPtr;
 }
 
 void Meta::ScriptableServiceTrack::setCustomAlbumCoverUrl( const QString & coverurl )
 {
     DEBUG_BLOCK
-    if ( d->album ) {
+            if ( m_albumPtr ) {
         debug() << "one";
-        ServiceAlbumWithCoverPtr albumWithCover = ServiceAlbumWithCoverPtr::dynamicCast( d->album );
+        ServiceAlbumWithCoverPtr albumWithCover = ServiceAlbumWithCoverPtr::dynamicCast( m_albumPtr );
         if ( albumWithCover ) {
             debug() << "two";
             albumWithCover->setCoverUrl( coverurl );

@@ -60,6 +60,12 @@ class ScriptableServiceMetaItem
         QString m_serviceName;
         QString m_serviceDescription;
         QPixmap m_serviceEmblem;
+
+        Meta::AlbumPtr m_albumPtr;
+        Meta::ArtistPtr m_artistPtr;
+        Meta::GenrePtr m_genrePtr;
+        Meta::ComposerPtr m_composerPtr;
+        Meta::YearPtr m_yearPtr;
 };
 
 
@@ -87,10 +93,10 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
 
         void setCustomAlbumCoverUrl( const QString &coverurl );
 
-        class Private;
-
     private:
-        Private * const d;
+
+        
+
 };
 
 class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public ScriptableServiceMetaItem

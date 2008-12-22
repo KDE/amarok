@@ -33,66 +33,14 @@
 
 
 
-
-//d-pointer implementation
-
-struct MetaData
-{
-    MetaData()
-    : discNumber( 0 )
-    , trackNumber( 0 )
-    , length( 0 )
-    , fileSize( 0 )
-    , sampleRate( 0 )
-    , bitRate( 0 )
-    , year( 0 )
-    { }
-
-
-    QString artist;
-    QString album;
-    QString genre;
-    QString comment;
-    QString composer;
-    int discNumber;
-    int trackNumber;
-    int length;
-    int fileSize;
-    int sampleRate;
-    int bitRate;
-    int year;
-
-};
-
-class Meta::ScriptableServiceTrack::Private : public QObject
-{
-    public:
-        Private( ScriptableServiceTrack *t )
-        : QObject()
-        , track( t )
-        {}
-
-        Meta::AlbumPtr album;
-        Meta::ArtistPtr artist;
-        Meta::GenrePtr genre;
-        Meta::ComposerPtr composer;
-        Meta::YearPtr year;
-
-        MetaData m_data;
-
-    private:
-        ScriptableServiceTrack *track;
-};
-
-
 // internal helper classes
 
 class ScriptableServiceInternalArtist : public Meta::Artist
 {
     public:
-        ScriptableServiceInternalArtist( Meta::ScriptableServiceTrack::Private *dptr )
+        ScriptableServiceInternalArtist( const QString &name = QString() )
         : Meta::Artist()
-        , d( dptr )
+        , m_name( name )
         {}
 
         Meta::TrackList tracks()
@@ -107,16 +55,10 @@ class ScriptableServiceInternalArtist : public Meta::Artist
 
         QString name() const
         {
-            if( d )
-            {
-                const QString artist = d->m_data.artist;
-                if( !artist.isEmpty() )
-                    return artist;
-                else
-                    return i18nc( "The value is not known", "Unknown" );
-            }
+            if( !m_name.isEmpty() )
+                return m_name;
             else
-                return i18nc( "The value is not known", "Unknown" );
+                return i18nc( "The value is not known", "Unknown" );;
         }
 
         QString prettyName() const
@@ -124,15 +66,17 @@ class ScriptableServiceInternalArtist : public Meta::Artist
             return name();
         }
 
-        QPointer<Meta::ScriptableServiceTrack::Private> const d;
+private:
+    QString m_name;
+
 };
 
 class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover
 {
     public:
-        ScriptableServiceInternalAlbum( Meta::ScriptableServiceTrack::Private *dptr )
+        ScriptableServiceInternalAlbum( const QString &name = QString() )
         : Meta::ServiceAlbumWithCover( QString() )
-        , d( dptr )
+        , m_name( name )
         {}
 
         bool isCompilation() const
@@ -157,14 +101,8 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover
 
         QString name() const
         {
-            if( d )
-            {
-                const QString albumName = d->m_data.album;
-                if( !albumName.isEmpty() )
-                    return albumName;
-                else
-                    return i18nc( "The value is not known", "Unknown" );
-            }
+            if( !m_name.isEmpty() )
+                return m_name;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -178,18 +116,17 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover
         virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
         virtual QString coverUrl() const { return m_coverUrl; }
 
-        QPointer<Meta::ScriptableServiceTrack::Private> const d;
-
     private:
+        QString m_name;
         QString m_coverUrl;
 };
 
 class ScriptableServiceInternalGenre : public Meta::Genre
 {
     public:
-        ScriptableServiceInternalGenre( Meta::ScriptableServiceTrack::Private *dptr )
+        ScriptableServiceInternalGenre( const QString &name = QString() )
         : Meta::Genre()
-        , d( dptr )
+        , m_name( name )
         {}
 
         Meta::TrackList tracks()
@@ -199,14 +136,8 @@ class ScriptableServiceInternalGenre : public Meta::Genre
 
         QString name() const
         {
-            if( d )
-            {
-                QString genreName = d->m_data.genre;
-                if( !genreName.isEmpty() )
-                    return genreName;
-                else
-                    return i18nc( "The value is not known", "Unknown" );
-            }
+            if( !m_name.isEmpty() )
+                return m_name;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -215,16 +146,16 @@ class ScriptableServiceInternalGenre : public Meta::Genre
         {
             return name();
         }
-
-        QPointer<Meta::ScriptableServiceTrack::Private> const d;
+    private:
+        QString m_name;
 };
 
 class ScriptableServiceInternalComposer : public Meta::Composer
 {
     public:
-        ScriptableServiceInternalComposer( Meta::ScriptableServiceTrack::Private *dptr )
+        ScriptableServiceInternalComposer( const QString &name = QString() )
         : Meta::Composer()
-        , d( dptr )
+        , m_name( name )
         {}
 
         Meta::TrackList tracks()
@@ -234,14 +165,9 @@ class ScriptableServiceInternalComposer : public Meta::Composer
 
         QString name() const
         {
-            if( d )
-            {
-                QString composer = d->m_data.composer;
-                if( !composer.isEmpty() )
-                    return composer;
-                else
-                    return i18nc( "The value is not known", "Unknown" );
-            }
+
+            if( !m_name.isEmpty() )
+                return m_name;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -250,16 +176,16 @@ class ScriptableServiceInternalComposer : public Meta::Composer
         {
             return name();
         }
-
-        QPointer<Meta::ScriptableServiceTrack::Private> const d;
+    private:
+        QString m_name;
 };
 
 class ScriptableServiceInternalYear : public Meta::Year
 {
     public:
-        ScriptableServiceInternalYear( Meta::ScriptableServiceTrack::Private *dptr )
+        ScriptableServiceInternalYear( const QString &name = QString() )
         : Meta::Year()
-        , d( dptr )
+        , m_name( name )
         {}
 
         Meta::TrackList tracks()
@@ -269,14 +195,8 @@ class ScriptableServiceInternalYear : public Meta::Year
 
         QString name() const
         {
-            if( d )
-            {
-                const QString year = QString::number( d->m_data.year );
-                if( !year.isEmpty()  )
-                    return year;
-                else
-                    return i18nc( "The value is not known", "Unknown" );
-            }
+            if( !m_name.isEmpty() )
+                return m_name;
             else
                 return i18nc( "The value is not known", "Unknown" );
         }
@@ -285,8 +205,8 @@ class ScriptableServiceInternalYear : public Meta::Year
         {
             return name();
         }
-
-        QPointer<Meta::ScriptableServiceTrack::Private> const d;
+    private:
+        QString m_name;
 };
 
 
