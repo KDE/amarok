@@ -1643,31 +1643,6 @@ TagDialog::openUrlRequest(const KUrl &url )         //SLOT
     }
 }
 
-/*bool
-TagDialog::writeTag( MetaBundle &mb, bool updateCB )
-{
-    TagLib::FileName path = TagLibEncodeName( mb.url().path() );
-    if ( !TagLib::File::isWritable( path ) ) {
-        The::statusBar()->longMessage( i18n(
-           "The file %1 is not writable.", mb.url().fileName() ), StatusBar::Error );
-        return false;
-    }
-
-    //visual feedback
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    bool result = mb.save();
-    mb.updateFilesize();
-
-    if( result )
-        //update the collection db
-        CollectionDB::instance()->updateTags( mb.url().path(), mb, updateCB );
-
-    QApplication::restoreOverrideCursor();
-
-    return result;
-}*/
-
 void
 TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )
 {
@@ -1682,66 +1657,6 @@ TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )
         comboBox->setCurrentIndex( index );
     }
 }
-
-/*TagDialogWriter::TagDialogWriter( const QMap<QString, Meta::TrackPtr> tagsToChange )
-        : ThreadManager::Job( "TagDialogWriter" ),
-          m_successCount ( 0 ),
-          m_failCount    ( 0 )
-{
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    QMap<QString, Meta::TrackPtr>::ConstIterator end = tagsToChange.constEnd();
-    for(QMap<QString, Meta::TrackPtr>::ConstIterator it = tagsToChange.constBegin(); it != end; ++it ) {
-        Meta::TrackPtr mb = it.value();
-        m_tags += mb;
-    }
-}
-
-bool
-TagDialogWriter::doJob()
-{
-    //FIXME: Port 2.0
-//     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
-//         TagLib::FileName path = reinterpret_cast<const wchar_t *>( m_tags[i]->playableUrl().path().utf16() );
-//         if ( !TagLib::File::isWritable( path ) ) {
-//             The::statusBar()->longMessage( i18n(
-//                 "The file %1 is not writable.", m_tags[i]->playableUrl().fileName() ), StatusBar::Error );
-//             m_failed += true;
-//             continue;
-//         }
-//
-//         //FIXME: Port 2.0
-// //         bool result = m_tags[i].save();
-// //         m_tags[i].updateFilesize();
-//
-//         if( result )
-//             m_successCount++;
-//         else {
-//             m_failCount++;
-//             m_failedURLs += m_tags[i].prettyUrl();
-//         }
-//         m_failed += !result;
-//     }
-     return true;
-}
-
-void
-TagDialogWriter::completeJob()
-{
-     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
-        if ( !m_failed[i] ) {
-            //Port 2.0
-//             CollectionDB::instance()->updateTags( m_tags[i].url().path(), m_tags[i], false ); //do not update browsers
-// PORT 2.0            Playlist::instance()->updateMetaData( m_tags[i] );
-        }
-     }
-     QApplication::restoreOverrideCursor();
-//PORT 2.0     if ( m_successCount )
-//PORT 2.0        CollectionView::instance()->databaseChanged();
-     if ( m_failCount )
-        The::statusBar()->longMessage( i18n(
-                        "Sorry, the tags for the following files could not be changed:\n%1", m_failedURLs.join( ";\n" ) ), StatusBar::Error );
-}*/
-
 
 #include "TagDialog.moc"
 
