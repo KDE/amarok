@@ -255,6 +255,8 @@ TagDialog::dataQueryDone()
 void
 TagDialog::cancelPressed() //SLOT
 {
+    DEBUG_BLOCK
+
     QApplication::restoreOverrideCursor(); // restore the cursor before closing the dialog
     reject();
 }
@@ -263,6 +265,8 @@ TagDialog::cancelPressed() //SLOT
 void
 TagDialog::accept() //SLOT
 {
+    DEBUG_BLOCK
+
     ui->pushButton_ok->setEnabled( false ); //visual feedback
     saveTags();
 
@@ -933,7 +937,6 @@ TagDialog::setMultipleTracksMode()
 void
 TagDialog::setSingleTrackMode()
 {
-
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->summaryTab), true );
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->lyricsTab), true );
 
@@ -1369,6 +1372,8 @@ TagDialog::labelsForTrack( const Meta::TrackPtr &track )
 void
 TagDialog::saveTags()
 {
+    DEBUG_BLOCK
+
     if( !m_perTrack )
     {
         applyToAllTracks();
