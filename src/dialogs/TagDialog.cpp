@@ -1191,9 +1191,13 @@ TagDialog::storeTags()
 void
 TagDialog::storeTags( const Meta::TrackPtr &track )
 {
-    int result = changes();
+    DEBUG_BLOCK
+
+    const int result = changes();
+
     if( result & TagDialog::TAGSCHANGED )
     {
+        debug() << "TagDialog::TAGSCHANGED";
         QVariantMap map( m_currentData );
 
         map.insert( Meta::Field::TITLE, ui->kLineEdit_title->text() );
@@ -1210,18 +1214,22 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
     }
     if( result & TagDialog::SCORECHANGED )
     {
+        debug() << "TagDialog::SCORECHANGED";
         storedScores.remove( track );
         storedScores.insert( track, ui->qSpinBox_score->value() );
     }
 
     if( result & TagDialog::RATINGCHANGED )
     {
+        debug() << "TagDialog::RATINGCHANGED";
         storedRatings.remove( track );
         storedRatings.insert( track, ui->ratingWidget->rating() );
     }
 
     if( result & TagDialog::LYRICSCHANGED )
     {
+        debug() << "TagDialog::LYRICSCHANGED";
+
         if ( ui->kTextEdit_lyrics->toHtml().isEmpty() )
         {
             storedLyrics.remove( track );
