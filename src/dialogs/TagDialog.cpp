@@ -120,8 +120,6 @@ TagDialog::~TagDialog()
     }
     else
         debug() << "Empty tracklist?  Must mean TreeView has not been updated!";
-
-    delete ui;
 }
 
 void
