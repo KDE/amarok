@@ -1350,12 +1350,19 @@ TagDialog::saveTags()
             track->setCachedLyrics( storedLyrics[ track ] );
             emit lyricsChanged( track->uidUrl() );
         }
+
         Meta::EditCapability *ec = track->as<Meta::EditCapability>();
-        if( !ec || !ec->isEditable() )
+        if( !ec )
         {
-            debug() << "Tags not editable. Aborting loop.";
+            debug() << "Track does not have Meta::EditCapability. Aborting loop.";
             continue;
         }
+        if( !ec->isEditable() )
+        {
+            debug() << "Track not editable. Aborting loop.";
+            continue;
+        }
+
         QVariantMap data = storedTags[ track ];
         ec->beginMetaDataUpdate();
         if( data.contains( Meta::Field::TITLE ) )
