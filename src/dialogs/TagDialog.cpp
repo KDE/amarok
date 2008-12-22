@@ -1411,6 +1411,7 @@ TagDialog::saveTags()
         Meta::EditCapability *ec = track->as<Meta::EditCapability>();
         if( !ec || !ec->isEditable() )
         {
+            debug() << "Tags not editable. Aborting loop.";
             continue;
         }
         QVariantMap data = storedTags[ track ];
