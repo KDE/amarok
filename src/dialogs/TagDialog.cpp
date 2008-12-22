@@ -417,9 +417,7 @@ void
 TagDialog::loadCover()
 {
     if( !m_currentTrack->album() )
-    {
         return;
-    }
 
     ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize() ) );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
@@ -446,14 +444,12 @@ TagDialog::guessFromFilename() //SLOT
     QString schemeFromDialog = QString();       //note to self: see where to put it from an old revision
     debug() << "FilenameLayoutDialog finished.";
     schemeFromDialog = "";
+
     if( dcode == KDialog::Accepted )
-    {
         schemeFromDialog = widget->getParsableScheme();
-    }
     else
-    {
         debug() << "WARNING: Have not received a new scheme from FilenameLayoutDialog";
-    }
+
     debug() << "I have " << schemeFromDialog << " as filename scheme to use.";
     //legacy tagguesserconfigdialog code follows, needed to make everything hackishly work
     //probably not the best solution
@@ -466,7 +462,6 @@ TagDialog::guessFromFilename() //SLOT
     
     if( schemeFromDialog.isEmpty() )
     {
-
         //FIXME: remove this before release
 
         debug()<<"No filename scheme to extract tags from. Please choose a filename scheme to describe the layout of the filename(s) to extract the tags.";
@@ -611,31 +606,30 @@ void TagDialog::init()
     
     // Connects for modification check
     // only set to overwrite-on-save if the text has changed
-    connect( ui->kLineEdit_title,     SIGNAL(textChanged( const QString& )),     SLOT(checkModified()) );
-    connect( ui->kComboBox_composer,  SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_composer,  SIGNAL(editTextChanged( const QString& )), SLOT(composerModified()) );
-    connect( ui->kComboBox_artist,    SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_artist,    SIGNAL(editTextChanged( const QString& )), SLOT(artistModified()) );
-    connect( ui->kComboBox_album,     SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_album,     SIGNAL(editTextChanged( const QString& )), SLOT(albumModified()) );
-    connect( ui->kComboBox_genre,     SIGNAL(activated( int )),                  SLOT(checkModified()) );
-    connect( ui->kComboBox_genre,     SIGNAL(editTextChanged( const QString& )), SLOT(genreModified()) );
-    connect( ui->ratingWidget,        SIGNAL(ratingChanged( int )),              SLOT(ratingModified()) );
-    connect( ui->qSpinBox_track,      SIGNAL(valueChanged( int )),               SLOT(checkModified()) );
-    connect( ui->qSpinBox_year,       SIGNAL(valueChanged( int )),               SLOT(yearModified()) );
-    connect( ui->qSpinBox_score,      SIGNAL(valueChanged( int )),               SLOT(scoreModified()) );
-    connect( ui->kTextEdit_comment,   SIGNAL(textChanged()),                     SLOT(commentModified()) );
-    connect( ui->kTextEdit_lyrics,    SIGNAL(textChanged()),                     SLOT(checkModified()) );
-    connect( ui->kTextEdit_selectedLabels, SIGNAL(textChanged()),                SLOT(checkModified()) );
-    connect( ui->qSpinBox_discNumber, SIGNAL(valueChanged( int )),               SLOT(discNumberModified()) );
+    connect( ui->kLineEdit_title,     SIGNAL( textChanged( const QString& ) ),     SLOT(checkModified()) );
+    connect( ui->kComboBox_composer,  SIGNAL( activated( int ) ),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_composer,  SIGNAL( editTextChanged( const QString& ) ), SLOT(composerModified()) );
+    connect( ui->kComboBox_artist,    SIGNAL( activated( int ) ),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_artist,    SIGNAL( editTextChanged( const QString& ) ), SLOT(artistModified()) );
+    connect( ui->kComboBox_album,     SIGNAL( activated( int ) ),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_album,     SIGNAL( editTextChanged( const QString& ) ), SLOT(albumModified()) );
+    connect( ui->kComboBox_genre,     SIGNAL( activated( int ) ),                  SLOT(checkModified()) );
+    connect( ui->kComboBox_genre,     SIGNAL( editTextChanged( const QString& ) ), SLOT(genreModified()) );
+    connect( ui->ratingWidget,        SIGNAL( ratingChanged( int ) ),              SLOT(ratingModified()) );
+    connect( ui->qSpinBox_track,      SIGNAL( valueChanged( int ) ),               SLOT(checkModified()) );
+    connect( ui->qSpinBox_year,       SIGNAL( valueChanged( int ) ),               SLOT(yearModified()) );
+    connect( ui->qSpinBox_score,      SIGNAL( valueChanged( int ) ),               SLOT(scoreModified()) );
+    connect( ui->kTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
+    connect( ui->kTextEdit_lyrics,    SIGNAL( textChanged() ),                     SLOT(checkModified()) );
+    connect( ui->kTextEdit_selectedLabels, SIGNAL( textChanged() ),                SLOT(checkModified()) );
+    connect( ui->qSpinBox_discNumber, SIGNAL( valueChanged( int ) ),               SLOT(discNumberModified()) );
 
-    connect( ui->pushButton_cancel,   SIGNAL(clicked()), SLOT(cancelPressed()) );
-    connect( ui->pushButton_ok,       SIGNAL(clicked()), SLOT(accept()) );
-    connect( ui->pushButton_open,     SIGNAL(clicked()), SLOT(openPressed()) );
-    connect( ui->pushButton_previous, SIGNAL(clicked()), SLOT(previousTrack()) );
-    connect( ui->pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
-    connect( ui->checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
-    
+    connect( ui->pushButton_cancel,   SIGNAL( clicked() ), SLOT( cancelPressed() ) );
+    connect( ui->pushButton_ok,       SIGNAL( clicked() ), SLOT( accept() ) );
+    connect( ui->pushButton_open,     SIGNAL( clicked() ), SLOT( openPressed() ) );
+    connect( ui->pushButton_previous, SIGNAL( clicked() ), SLOT( previousTrack() ) );
+    connect( ui->pushButton_next,     SIGNAL( clicked() ), SLOT( nextTrack() ) );
+    connect( ui->checkBox_perTrack,   SIGNAL( clicked() ), SLOT( perTrack() ) );
 }
 
 void
@@ -643,17 +637,18 @@ TagDialog::startDataQuery()
 {
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( !coll )
-    {
         return;
-    }
+
     QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
     QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
     QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
     QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
     QList<QueryMaker*> queries;
     queries << artist << album << composer << genre;
+
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
+
     m_dataQueryMaker = new MetaQueryMaker( queries );
     connect( m_dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
     connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
