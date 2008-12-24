@@ -185,16 +185,14 @@ public:
     {
         if( d )
             return d->artist;
-        else
-            return QString( "Last.fm" );
+        return QString( "Last.fm" );
     }
 
     QString prettyName() const
     {
         if( d )
             return d->artist;
-        else
-            return QString( "Last.fm" );
+        return QString( "Last.fm" );
     }
 
     Track::Private * const d;
@@ -223,21 +221,20 @@ public:
     {
         if( d )
             return d->album;
-        else
-            return QString();
+        return QString();
     }
 
     QString prettyName() const
     {
         if( d )
             return d->album;
-        else
-            return QString();
+        return QString();
     }
 
     QPixmap image( int size )
     {
-        if( !d || d->albumArt.isNull() ) {
+        if( !d || d->albumArt.isNull() )
+        {
             //return Meta::Album::image( size, withShadow );
             //TODO implement shadow
             //TODO improve this
@@ -265,8 +262,7 @@ public:
             
         if( d->albumArt.width() != size && size > 0 )
             return d->albumArt.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-        else
-            return d->albumArt;
+        return d->albumArt;
     }
 
     // return true since we handle our own fetching
