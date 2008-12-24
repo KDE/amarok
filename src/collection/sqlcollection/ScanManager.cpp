@@ -40,6 +40,7 @@
 #include <QTextCodec>
 #include <QXmlStreamAttributes>
 
+#include <KMessageBox>
 #include <KStandardDirs>
 
 #include <threadweaver/ThreadWeaver.h>
@@ -361,12 +362,13 @@ ScanManager::handleRestart()
 
     if( m_restartCount >= MAX_RESTARTS )
     {
-        //TODO: Inform user
+        KMessageBox::error( 0, i18n( "<p>Sorry, the collection scan had to be aborted.</p>Too many errors were encountered during the scan.</p>" ),
+                            i18n( "Collection Scan Error" ) );
+        stopParser();
+        return;
     }
-    else
-    {
-        QTimer::singleShot( 1000, this, SLOT( restartScanner() ) );
-    }
+
+    QTimer::singleShot( 1000, this, SLOT( restartScanner() ) );
 }
 
 void
