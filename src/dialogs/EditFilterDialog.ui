@@ -1,0 +1,367 @@
+<ui version="4.0" >
+ <class>EditFilterDialog</class>
+ <widget class="QWidget" name="EditFilterDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>636</width>
+    <height>416</height>
+   </rect>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>636</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="baseSize" >
+   <size>
+    <width>625</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>2</x>
+     <y>5</y>
+     <width>611</width>
+     <height>401</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout" >
+    <property name="sizeConstraint" >
+     <enum>QLayout::SetMaximumSize</enum>
+    </property>
+    <item>
+     <widget class="QLabel" name="mainLabel" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize" >
+       <size>
+        <width>16777215</width>
+        <height>34</height>
+       </size>
+      </property>
+      <property name="text" >
+       <string>Edit the filter for finding tracks with specific attributes
+e.g. a track that has a length of three minutes.</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="keywordLayout" >
+      <property name="sizeConstraint" >
+       <enum>QLayout::SetMaximumSize</enum>
+      </property>
+      <item>
+       <widget class="QLabel" name="attributeLabel" >
+        <property name="whatsThis" >
+         <string comment="you can translate the keyword as you will do for the combobox" >&lt;p>Here you can choose to &lt;i>Simple Search&lt;/i> directly or to use some keywords to specify some attributes, such as the artist name and so on. The keywords selectable are divided by their specific value.  Some keywords are numeric and others are alphanumeric. You do not need to know it directly. When a keyword is numeric it will be used to search the numeric data for each track.&lt;/p>
+&lt;p>The alphanumeric keywords are the following: &lt;b>album&lt;/b>, &lt;b>artist&lt;/b>, &lt;b>filename&lt;/b> (including path), &lt;b>mountpoint&lt;/b> (e.g. /home/user1), &lt;b>filetype&lt;/b> (you can specify mp3, ogg, flac, ... and the file extensions will be matched), &lt;b>genre&lt;/b>, &lt;b>comment&lt;/b>, &lt;b>composer&lt;/b>, &lt;b>directory&lt;/b>, &lt;b>lyrics&lt;/b>, &lt;b>title&lt;/b>, and &lt;b>label&lt;/b>.&lt;/p> 
+&lt;p>The numeric keywords are: &lt;b>bitrate&lt;/b>, &lt;b>disc/discnumber&lt;/b>, &lt;b>length&lt;/b> (expressed in seconds), &lt;b>playcount&lt;/b>, &lt;b>rating&lt;/b>, &lt;b>samplerate&lt;/b>, &lt;b>score&lt;/b>, &lt;b>size/filesize&lt;/b> (expressed in bytes, kbytes, and megabytes as specified in the unit for the filesize keyword), &lt;b>track&lt;/b> (i.e. the track number), and &lt;b>year&lt;/b>.&lt;/p></string>
+        </property>
+        <property name="text" >
+         <string>Attribute</string>
+        </property>
+        <property name="buddy" >
+         <cstring>keywordCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KComboBox" name="keywordCombo" >
+        <property name="toolTip" >
+         <string>Select an attribute for the filter</string>
+        </property>
+        <item>
+         <property name="text" >
+          <string>Simple Search</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Album</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Artist</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Composer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Genre</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Title</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Track</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Year</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="KLineEdit" name="editKeywordBox" >
+        <property name="whatsThis" >
+         <string>&lt;p>Type the attribute value or the text to look for here.&lt;/p></string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>0</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="title" >
+       <string>Attribute value is</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget_2" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>21</y>
+         <width>591</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout" >
+        <property name="sizeConstraint" >
+         <enum>QLayout::SetNoConstraint</enum>
+        </property>
+        <item>
+         <widget class="KComboBox" name="conditionCombo" >
+          <item>
+           <property name="text" >
+            <string>Smaller Than</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Larger Than</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Equal To</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Between</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="minimum1" >
+          <property name="maximum" >
+           <number>100000000</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="andLabel" >
+          <property name="text" >
+           <string>and</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="maximum1" >
+          <property name="maximum" >
+           <number>100000000</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2" >
+      <item>
+       <widget class="QGroupBox" name="groupBox_2" >
+        <property name="maximumSize" >
+         <size>
+          <width>316</width>
+          <height>130</height>
+         </size>
+        </property>
+        <property name="title" >
+         <string>Filter Action</string>
+        </property>
+        <widget class="QWidget" name="layoutWidget" >
+         <property name="geometry" >
+          <rect>
+           <x>8</x>
+           <y>17</y>
+           <width>124</width>
+           <height>110</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="ratioLayout" >
+          <item>
+           <widget class="QRadioButton" name="matchAll" >
+            <property name="toolTip" >
+             <string>Check this box to look for the tracks that contain all the words you typed in the related Simple Search edit box</string>
+            </property>
+            <property name="text" >
+             <string>Match All Words</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="matchAny" >
+            <property name="toolTip" >
+             <string>Check this box to look for the tracks that contain at least one of the words "
+ you typed in the related Simple Search edit box</string>
+            </property>
+            <property name="text" >
+             <string>Match Any Word</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="matchLiteral" >
+            <property name="toolTip" >
+             <string>Check this box to look for all the tracks that contain exactly the words you typed in the related Simple Search edit box</string>
+            </property>
+            <property name="text" >
+             <string>Exact Match</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="matchNot" >
+            <property name="toolTip" >
+             <string>Check this box to look for all the tracks that do not contain the words you typed in the related Simple Search edit box</string>
+            </property>
+            <property name="text" >
+             <string>Exclude</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="otherOptionsLayout" >
+        <item>
+         <widget class="QGroupBox" name="groupBox_3" >
+          <property name="maximumSize" >
+           <size>
+            <width>313</width>
+            <height>97</height>
+           </size>
+          </property>
+          <property name="title" >
+           <string>Appending Condition</string>
+          </property>
+          <widget class="QWidget" name="layoutWidget" >
+           <property name="geometry" >
+            <rect>
+             <x>0</x>
+             <y>24</y>
+             <width>60</width>
+             <height>50</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="ratioLayout2" >
+            <item>
+             <widget class="QRadioButton" name="andButton" >
+              <property name="toolTip" >
+               <string>Check this box if you want to add another condition and you want that the filter to match both the previous conditions and this new one</string>
+              </property>
+              <property name="text" >
+               <string>AND</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="orButton" >
+              <property name="toolTip" >
+               <string>Check this box if you want to add another condition and you want that the filter to match either the previous conditions or this new one</string>
+              </property>
+              <property name="text" >
+               <string>OR</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="invertButton" >
+          <property name="toolTip" >
+           <string>Check this box to negate the defined filter condition</string>
+          </property>
+          <property name="whatsThis" >
+           <string>&lt;p>If this option is checked the defined filter condition will be negated. This means that, for example, you can define a filter that looks for all tracks that are not of a specific album, artist, and so on.&lt;/p>"</string>
+          </property>
+          <property name="text" >
+           <string>Invert Condition</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -18,23 +18,16 @@
 #ifndef AMAROK_EDITFILTERDIALOG_H
 #define AMAROK_EDITFILTERDIALOG_H
 
+#include "ui_editfilterdialog.h"
+
 #include <KDialog>
 
 #include <QList>
 #include <QVector>
 
 
-class QGroupBox;
-class QCheckBox;
-class QComboBox;
-class QLabel;
-class QRadioButton;
-class QSpinBox;
 class QStringList;
-class QVBoxLayout;
 class QWidget;
-
-class KLineEdit;
 
 class EditFilterDialog : public KDialog
 {
@@ -49,34 +42,9 @@ class EditFilterDialog : public KDialog
         void filterChanged( const QString &filter );
 
     private:
-        QVBoxLayout *m_mainLayout;
-
-        QCheckBox *m_invertButton;
-        QComboBox *m_keywordCombo;
-        KLineEdit *m_keywordEdit;
-
-        QGroupBox *m_groupBox;
-
-        QComboBox *m_conditionCombo;
-        QLabel *m_filesizeLabel;
-        QComboBox *m_unitSizeCombo;
-
-        QRadioButton *m_minMaxRadio;
-        QSpinBox *m_minimumSpin1, *m_minimumSpin2;
-        QLabel *m_andLabel;
-        QSpinBox *m_maxSpin1, *m_maxSpin2;
-
-        QGroupBox *m_groupBox2;
-        QRadioButton *m_matchAllButton;
-        QRadioButton *m_matchOneButton;
-        QRadioButton *m_matchExactlyButton;
-        QRadioButton *m_excludeMatchButton;
         QList<QRadioButton*> m_checkActions;
-
-        QGroupBox *m_groupBox3;
-        QRadioButton *m_andButton;
-        QRadioButton *m_orButton;
-
+        Ui::EditFilterDialog m_ui;
+        
         bool m_appended;               // true if a filter appended
         int m_selectedIndex;           // the position of the selected keyword in the combobox
         QVector<QString> m_vector; // the vector of the amarok filter keyword
@@ -87,7 +55,6 @@ class EditFilterDialog : public KDialog
     private:
         void exclusiveSelectOf( int which );
         QString keywordConditionString(const QString& keyword) const;
-        void setMinMaxValueSpins();
 
     private slots:
         void selectedKeyword(int index);
