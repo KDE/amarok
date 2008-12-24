@@ -34,13 +34,12 @@
 #include <QSpinBox>
 
 
-EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
+EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : KDialog( parent ),
       m_minMaxRadio(0),
-      m_filterText(text)
+      m_filterText(text),
+      m_appended( false )
 {
-    Q_UNUSED( metaBundleKeywords );
-
     setCaption( i18n("Edit Filter") );
     setModal( true );
     setButtons( User1|User2|Default|Ok|Cancel );
@@ -53,7 +52,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     setButtonWhatsThis( Default, i18n( "<qt><p>By clicking here you can add the defined condition. The \"OK\" button will "
                                         "close the dialog and apply the defined filter. With this button you can add more than "
                                         "one condition to create a more complex filtering condition.</p></qt>" ) );
-    setButtonToolTip(Default, i18n( "Add this filter condition to the list" ) );
+    setButtonToolTip( Default, i18n( "Add this filter condition to the list" ) );
     setButtonGuiItem( Default, defaultButton );
 
     // define "User1" button
@@ -68,30 +67,28 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
        "to avoid two buttons (\"Cancel\" and \"Undo\") with same label in the same dialog", "&Undo"), "edit-undo" );
     setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
                 "You cannot undo more than one action.</p>" ) );
-    setButtonToolTip(User2, i18n( "Remove last appended filter" ) );
+    setButtonToolTip( User2, i18n( "Remove last appended filter" ) );
     setButtonGuiItem( User2, user2Button );
 
     setMainWidget( new QWidget( this ) );
 
-    m_mainLay = new QVBoxLayout( mainWidget() );
-    m_mainLay->activate();
-
-    // no filter rule available
-    m_appended = false;
+    m_mainLayout = new QVBoxLayout( mainWidget() );
 
     // text explanation of this dialog
-    QLabel *label1 = new QLabel( mainWidget() );
-    label1->setObjectName( "label1" );
-    label1->setText( i18n("<p>Edit the filter for finding tracks with specific attributes"
+    QLabel *mainLabel = new QLabel( mainWidget() );
+    mainLabel->setObjectName( "mainLabel" );
+    mainLabel->setText( i18n("<p>Edit the filter for finding tracks with specific attributes"
                              ", e.g. you can look for a track that has a length of three minutes.</p>") );
-    m_mainLay->addWidget( label1 );
-    m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+    m_mainLayout->addWidget( mainLabel );
+    
+    m_mainLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
 
     // choosing keyword filtering
     QHBoxLayout *keywordLayout = new QHBoxLayout( mainWidget() );
-    QLabel *label3 = new QLabel( i18n("Attribute:"), mainWidget() );
-    label3->setObjectName( "label3" );
-    label3->setWhatsThis(
+    
+    QLabel *attributeLabel = new QLabel( i18n("Attribute:"), mainWidget() );
+    attributeLabel->setObjectName( "attributeLabel" );
+    attributeLabel->setWhatsThis(
       i18nc("you can translate the keyword as you will do for the combobox",
            "<p>Here you can choose to <i>Simple Search</i> directly or to use "
            "some keywords to specify some attributes, such as the artist name "
@@ -109,48 +106,53 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
            "<b>samplerate</b>, <b>score</b>, <b>size/filesize</b> (expressed in bytes, "
            "kbytes, and megabytes as specified in the unit for the filesize keyword), "
            "<b>track</b> (i.e. the track number), and <b>year</b>.</p>") );
-    keywordLayout->addWidget( label3 );
+    keywordLayout->addWidget( attributeLabel );
+    
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-    m_comboKeyword = new QComboBox( mainWidget() );
-    m_comboKeyword->setObjectName( "keywordComboBox" );
-    m_comboKeyword->setToolTip( i18n("Select an attribute for the filter") );
-    label3->setBuddy( m_comboKeyword );
+    
+    m_keywordCombo = new QComboBox( mainWidget() );
+    m_keywordCombo->setObjectName( "keywordComboBox" );
+    m_keywordCombo->setToolTip( i18n("Select an attribute for the filter") );
+    attributeLabel->setBuddy( m_keywordCombo );
 
-    m_comboKeyword->addItem( i18n("Simple Search") );
+    m_keywordCombo->addItem( i18n("Simple Search") );
     m_vector.push_back("Simple Search");
-    m_comboKeyword->addItem( i18n("Album") );
+    m_keywordCombo->addItem( i18n("Album") );
     m_vector.push_back( "album" );
-    m_comboKeyword->addItem( i18n("Artist") );
+    m_keywordCombo->addItem( i18n("Artist") );
     m_vector.push_back( "artist" );
-    m_comboKeyword->addItem( i18n("Composer") );
+    m_keywordCombo->addItem( i18n("Composer") );
     m_vector.push_back( "composer" );
-    m_comboKeyword->addItem( i18n("Genre") );
+    m_keywordCombo->addItem( i18n("Genre") );
     m_vector.push_back( "genre" );
-    m_comboKeyword->addItem( i18n("Title") );
+    m_keywordCombo->addItem( i18n("Title") );
     m_vector.push_back( "title" );
-    m_comboKeyword->addItem( i18n("Track") );
+    m_keywordCombo->addItem( i18n("Track") );
     m_vector.push_back( "track" );
-    m_comboKeyword->addItem( i18n("Year") );
+    m_keywordCombo->addItem( i18n("Year") );
     m_vector.push_back( "year" );
 
     // the "Simple Search" text is selected in the comboKeyword
     m_selectedIndex = 0;
 
-    keywordLayout->addWidget( m_comboKeyword );
+    keywordLayout->addWidget( m_keywordCombo );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-    m_editKeyword = new KLineEdit( mainWidget() );
-    m_editKeyword->setObjectName( "editKeywordBox" );
-    m_editKeyword->setWhatsThis( i18n("<p>Type the attribute value or the text to look for here.</p>") );
-    keywordLayout->addWidget( m_editKeyword );
-    m_mainLay->addLayout( keywordLayout );
-    m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-    connect(m_comboKeyword, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
+    
+    m_keywordEdit = new KLineEdit( mainWidget() );
+    m_keywordEdit->setObjectName( "editKeywordBox" );
+    m_keywordEdit->setWhatsThis( i18n("<p>Type the attribute value or the text to look for here.</p>") );
+    keywordLayout->addWidget( m_keywordEdit );
+    
+    m_mainLayout->addLayout( keywordLayout );
+    m_mainLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+    
+    connect(m_keywordCombo, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
 
     // group of options on numeric attribute keywords: a value <,>,= ... or a value between Min and Max
     m_groupBox = new QGroupBox( mainWidget() );
     m_groupBox->setTitle( i18n( "Attribute value is" ) );
-    m_mainLay->addWidget( m_groupBox );
-    m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
+    m_mainLayout->addWidget( m_groupBox );
+    m_mainLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
     QVBoxLayout *vertLayout = new QVBoxLayout( m_groupBox );
     vertLayout->setMargin( 15 );
@@ -160,57 +162,62 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     QHBoxLayout *paramLayout = new QHBoxLayout();
     vertLayout->addLayout( paramLayout );
 
-    m_comboCondition = new QComboBox( m_groupBox );
-    m_comboCondition->setObjectName( "valuecondition" );
-    m_comboCondition->addItem( i18n("smaller than") );
-    m_comboCondition->addItem( i18n("larger than") );
-    m_comboCondition->addItem( i18n("equal to") );
-    m_comboCondition->addItem( i18n("between") );
-    paramLayout->addWidget( m_comboCondition );
+    m_conditionCombo = new QComboBox( m_groupBox );
+    m_conditionCombo->setObjectName( "valuecondition" );
+    m_conditionCombo->addItem( i18n("smaller than") );
+    m_conditionCombo->addItem( i18n("larger than") );
+    m_conditionCombo->addItem( i18n("equal to") );
+    m_conditionCombo->addItem( i18n("between") );
+    paramLayout->addWidget( m_conditionCombo );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Fixed, QSizePolicy::Minimum ) );
 
-    m_spinMin1 = new QSpinBox( m_groupBox );
-    m_spinMin1->setObjectName( "minimum1" );
-    paramLayout->addWidget( m_spinMin1 );
+    m_minimumSpin1 = new QSpinBox( m_groupBox );
+    m_minimumSpin1->setObjectName( "minimum1" );
+    paramLayout->addWidget( m_minimumSpin1 );
+    
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_spinMin2 = new QSpinBox( m_groupBox );
-    m_spinMin2->setObjectName( "minimum2" );
-    paramLayout->addWidget( m_spinMin2 );
+    m_minimumSpin2 = new QSpinBox( m_groupBox );
+    m_minimumSpin2->setObjectName( "minimum2" );
+    paramLayout->addWidget( m_minimumSpin2 );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    connect(m_spinMin1, SIGNAL(valueChanged(int)), this, SLOT(minSpinChanged(int)));
+    connect(m_minimumSpin1, SIGNAL(valueChanged(int)), this, SLOT(minSpinChanged(int)));
 
     m_andLabel = new QLabel( i18n("and"), m_groupBox );
     m_andLabel->setObjectName( "andLabel" );
     paramLayout->addWidget( m_andLabel );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_spinMax1 = new QSpinBox( m_groupBox );
-    m_spinMax1->setObjectName( "maximum1" );
-    paramLayout->addWidget( m_spinMax1 );
+    m_maxSpin1 = new QSpinBox( m_groupBox );
+    m_maxSpin1->setObjectName( "maximum1" );
+    paramLayout->addWidget( m_maxSpin1 );
+    
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_spinMax2 = new QSpinBox( m_groupBox );
-    m_spinMax2->setObjectName( "maximum2" );
-    paramLayout->addWidget( m_spinMax2 );
+    m_maxSpin2 = new QSpinBox( m_groupBox );
+    m_maxSpin2->setObjectName( "maximum2" );
+    paramLayout->addWidget( m_maxSpin2 );
 
-    connect(m_spinMax1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
+    connect(m_maxSpin1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
 
     QHBoxLayout *filesizeLayout = new QHBoxLayout();
     vertLayout->addLayout( filesizeLayout );
     filesizeLayout->setAlignment( Qt::AlignLeft );
-    m_filesizeLabel = new QLabel( i18n("Unit:"), m_groupBox );
+    
+    m_filesizeLabel = new QLabel( i18n( "Unit:" ), m_groupBox );
     m_filesizeLabel->setObjectName( "filesizeLabel" );
     filesizeLayout->addWidget( m_filesizeLabel );
+    
     filesizeLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Fixed, QSizePolicy::Minimum ) );
-    m_comboUnitSize = new QComboBox( m_groupBox );
-    m_comboUnitSize->setObjectName( "comboUnitSize" );
-    m_filesizeLabel->setBuddy( m_comboUnitSize );
-    m_comboUnitSize->addItem( i18n("B (1 Byte)") );
-    m_comboUnitSize->addItem( i18n("KB (1024 Bytes)") );
-    m_comboUnitSize->addItem( i18n("MB (1024 KB)") );
-    filesizeLayout->addWidget( m_comboUnitSize );
+    
+    m_unitSizeCombo = new QComboBox( m_groupBox );
+    m_unitSizeCombo->setObjectName( "comboUnitSize" );
+    m_filesizeLabel->setBuddy( m_unitSizeCombo );
+    m_unitSizeCombo->addItem( i18n("B (1 Byte)") );
+    m_unitSizeCombo->addItem( i18n("KB (1024 Bytes)") );
+    m_unitSizeCombo->addItem( i18n("MB (1024 KB)") );
+    filesizeLayout->addWidget( m_unitSizeCombo );
 
     // type text selected
     textWanted();
@@ -218,58 +225,58 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     // check the "One Value Choosing" by default
     chooseOneValue();
 
-    connect( m_comboCondition, SIGNAL(activated(int)), SLOT(chooseCondition(int)) );
+    connect( m_conditionCombo, SIGNAL(activated(int)), SLOT(chooseCondition(int)) );
 
     QHBoxLayout *otherOptionsLayout = new QHBoxLayout( mainWidget() );
     otherOptionsLayout->setAlignment( Qt::AlignHCenter );
-    m_mainLay->addLayout( otherOptionsLayout );
+    m_mainLayout->addLayout( otherOptionsLayout );
 
     // the groupbox to select the action filter
     m_groupBox2 = new QGroupBox( mainWidget() );
     m_groupBox2->setTitle( i18n( "Filter action" ) );
     otherOptionsLayout->addWidget( m_groupBox2 );
 
-    QVBoxLayout* ratioLay = new QVBoxLayout( m_groupBox2 );
-    ratioLay->setMargin( 15 );
-    ratioLay->setSpacing( 0 );
+    QVBoxLayout* ratioLayout = new QVBoxLayout( m_groupBox2 );
+    ratioLayout->setMargin( 15 );
+    ratioLayout->setSpacing( 0 );
 
-    m_checkALL = new QRadioButton( i18n("Match all words"), m_groupBox2 );
-    m_checkALL->setObjectName( "checkall" );
-    m_checkALL->setToolTip(
+    m_matchAllButton = new QRadioButton( i18n("Match all words"), m_groupBox2 );
+    m_matchAllButton->setObjectName( "checkall" );
+    m_matchAllButton->setToolTip(
       i18n("<p>Check this box to look for the tracks that contain all the words you typed "
            "in the related Simple Search edit box</p>"));
-    ratioLay->addWidget( m_checkALL );
+    ratioLayout->addWidget( m_matchAllButton );
 
-    m_checkAtLeastOne = new QRadioButton( i18n("Match any word"), m_groupBox2 );
-    m_checkAtLeastOne->setObjectName( "checkor" );
-    m_checkAtLeastOne->setToolTip(
+    m_matchOneButton = new QRadioButton( i18n("Match any word"), m_groupBox2 );
+    m_matchOneButton->setObjectName( "checkor" );
+    m_matchOneButton->setToolTip(
       i18n("<p>Check this box to look for the tracks that contain at least one of the words "
            "you typed in the related Simple Search edit box</p>"));
-    ratioLay->addWidget( m_checkAtLeastOne );
+    ratioLayout->addWidget( m_matchOneButton );
 
-    m_checkExactly = new QRadioButton( i18n("Exact match"), m_groupBox2 );
-    m_checkExactly->setObjectName( "checkexactly" );
-    m_checkExactly->setToolTip(
+    m_matchExactlyButton = new QRadioButton( i18n("Exact match"), m_groupBox2 );
+    m_matchExactlyButton->setObjectName( "checkexactly" );
+    m_matchExactlyButton->setToolTip(
       i18n("<p>Check this box to look for all the tracks that contain exactly the words you typed "
            "in the related Simple Search edit box</p>"));
-    ratioLay->addWidget( m_checkExactly );
+    ratioLayout->addWidget( m_matchExactlyButton );
 
-    m_checkExclude = new QRadioButton( i18n("Exclude"), m_groupBox2 );
-    m_checkExclude->setObjectName( "checkexclude" );
-    m_checkExclude->setToolTip(
+    m_excludeMatchButton = new QRadioButton( i18n("Exclude"), m_groupBox2 );
+    m_excludeMatchButton->setObjectName( "checkexclude" );
+    m_excludeMatchButton->setToolTip(
       i18n("<p>Check this box to look for all the tracks that do not contain the words you typed "
            "in the related Simple Search edit box</p>"));
-    ratioLay->addWidget( m_checkExclude );
+    ratioLayout->addWidget( m_excludeMatchButton );
 
-    m_actionCheck << m_checkALL;
-    m_actionCheck << m_checkAtLeastOne;
-    m_actionCheck << m_checkExactly;
-    m_actionCheck << m_checkExclude;
+    m_checkActions << m_matchAllButton;
+    m_checkActions << m_matchOneButton;
+    m_checkActions << m_matchExactlyButton;
+    m_checkActions << m_excludeMatchButton;
 
-    connect( m_checkALL, SIGNAL(clicked()), this, SLOT(slotCheckAll()) );
-    connect( m_checkAtLeastOne, SIGNAL(clicked()), this, SLOT(slotCheckAtLeastOne()) );
-    connect( m_checkExactly, SIGNAL(clicked()), this, SLOT(slotCheckExactly()) );
-    connect( m_checkExclude, SIGNAL(clicked()), this, SLOT(slotCheckExclude()) );
+    connect( m_matchAllButton, SIGNAL(clicked()), this, SLOT(slotCheckAll()) );
+    connect( m_matchOneButton, SIGNAL(clicked()), this, SLOT(slotCheckAtLeastOne()) );
+    connect( m_matchExactlyButton, SIGNAL(clicked()), this, SLOT(slotCheckExactly()) );
+    connect( m_excludeMatchButton, SIGNAL(clicked()), this, SLOT(slotCheckExclude()) );
 
     // check "select all words" as default
     slotCheckAll();
@@ -277,73 +284,72 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     // some vertical space
     otherOptionsLayout->addItem( new QSpacerItem( 50, 5, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    QVBoxLayout* verticalCondLay = new QVBoxLayout();
-    otherOptionsLayout->addLayout( verticalCondLay );
-    verticalCondLay->setMargin(15);
-    verticalCondLay->setSpacing(0);
+    QVBoxLayout* verticalConditionLayout = new QVBoxLayout();
+    otherOptionsLayout->addLayout( verticalConditionLayout );
+    verticalConditionLayout->setMargin( 15 );
+    verticalConditionLayout->setSpacing( 0 );
 
     m_groupBox3 = new QGroupBox( mainWidget() );
     m_groupBox3->setTitle( i18n( "Appending condition" ) );
-    verticalCondLay->addWidget( m_groupBox3 );
+    verticalConditionLayout->addWidget( m_groupBox3 );
 
-    QVBoxLayout* ratioLay2 = new QVBoxLayout( m_groupBox3 );
-    ratioLay2->setMargin(15);
-    ratioLay2->setSpacing(0);
+    QVBoxLayout* ratioLayout2 = new QVBoxLayout( m_groupBox3 );
+    ratioLayout2->setMargin(15);
+    ratioLayout2->setSpacing(0);
 
-
-    m_checkAND = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3 );
-    m_checkAND->setObjectName( "checkAND" );
-    m_checkAND->setToolTip(
+    m_andButton = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3 );
+    m_andButton->setObjectName( "checkAND" );
+    m_andButton->setToolTip(
       i18n("<p>Check this box if you want to add another condition and you want that the filter "
            "to match both the previous conditions and this new one</p>"));
-    ratioLay2->addWidget( m_checkAND );
+    ratioLayout2->addWidget( m_andButton );
 
-    m_checkOR = new QRadioButton( i18nc("OR logic condition", "OR"), m_groupBox3 );
-    m_checkOR->setObjectName( "checkOR" );
-    m_checkOR->setToolTip(
+    m_orButton = new QRadioButton( i18nc("OR logic condition", "OR"), m_groupBox3 );
+    m_orButton->setObjectName( "checkOR" );
+    m_orButton->setToolTip(
       i18n("<p>Check this box if you want to add another condition and you want that the filter "
            "to match either the previous conditions or this new one</p>"));
-    ratioLay2->addWidget( m_checkOR );
+    ratioLayout2->addWidget( m_orButton );
 
     otherOptionsLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_prefixNOT = new QCheckBox( i18n("Invert condition"), mainWidget() );
-    m_prefixNOT->setObjectName( "prefixNOT" );
-    m_prefixNOT->setToolTip(
+    m_invertButton = new QCheckBox( i18n("Invert condition"), mainWidget() );
+    m_invertButton->setObjectName( "prefixNOT" );
+    m_invertButton->setToolTip(
       i18n("Check this box to negate the defined filter condition"));
-    m_prefixNOT->setWhatsThis(
+    m_invertButton->setWhatsThis(
       i18n("<p>If this option is checked the defined filter condition will be negated. "
            "This means that, for example, you can define a filter that looks for all "
            "tracks that are not of a specific album, artist, and so on.</p>"));
-    verticalCondLay->addWidget( m_prefixNOT );
-    m_prefixNOT->setEnabled( false );
+    verticalConditionLayout->addWidget( m_invertButton );
+    m_invertButton->setEnabled( false );
 
-    connect(m_prefixNOT, SIGNAL(clicked()), SLOT(assignPrefixNOT()));
+    connect(m_invertButton, SIGNAL(clicked()), SLOT(assignPrefixNOT()));
 
-    m_mainLay->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
+    m_mainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
     // you need to append at least one filter condition to specify if do
     // an "AND" or an "OR" with the next condition if the filter is empty
-    if (m_filterText.isEmpty())
+    if( m_filterText.isEmpty() )
       m_groupBox3->setEnabled( false );
 
-    connect( m_checkAND, SIGNAL(clicked()), SLOT(slotCheckAND()) );
-    connect( m_checkOR, SIGNAL(clicked()), SLOT(slotCheckOR()) );
+    connect( m_andButton, SIGNAL(clicked()), SLOT(slotCheckAND()) );
+    connect( m_orButton, SIGNAL(clicked()), SLOT(slotCheckOR()) );
 
     // check "AND" condition as default
     slotCheckAND();
 
     // setup Min Max Value spin
     setMinMaxValueSpins();
-    connect(this,SIGNAL(okClicked()),this,SLOT(slotOk()));
-    connect(this,SIGNAL(defaultClicked()),this,SLOT(slotDefault()));
-    connect(this,SIGNAL(user1Clicked()),this,SLOT(slotUser1()));
-    connect(this,SIGNAL(user2Clicked()),this,SLOT(slotUser2()));
+    connect( this, SIGNAL(okClicked()), this, SLOT(slotOk() ) );
+    connect( this, SIGNAL( defaultClicked() ) , this, SLOT(slotDefault() ) );
+    connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotUser1() ) );
+    connect( this, SIGNAL( user2Clicked() ), this, SLOT( slotUser2() ) );
 }
 
 EditFilterDialog::~EditFilterDialog()
 {
-    delete m_editKeyword;
+    delete m_keywordEdit;
 }
 
 QString EditFilterDialog::filter() const
@@ -353,22 +359,25 @@ QString EditFilterDialog::filter() const
 
 void EditFilterDialog::exclusiveSelectOf( int which )
 {
-    int size = static_cast<int>( m_actionCheck.count() );
+    int size = static_cast<int>( m_checkActions.count() );
 
-    for ( int i = 0; i < size; i++ )
+    for( int i = 0; i < size; i++ )
+    {
         if ( i != which )
-            m_actionCheck[i]->setChecked( false );
+            m_checkActions[i]->setChecked( false );
         else
-            m_actionCheck[i]->setChecked( true );
+            m_checkActions[i]->setChecked( true );
+    }
 }
 
-QString EditFilterDialog::keywordConditionString(const QString& keyword) const
+QString EditFilterDialog::keywordConditionString( const QString& keyword ) const
 {
     // this member is called when there is a keyword that needs numeric attributes
     QString result, unit;
 
     if (m_vector.at(m_selectedIndex) == "size")
-        switch (m_comboUnitSize->currentIndex())
+    {
+        switch (m_unitSizeCombo->currentIndex())
         {
             case 1:
                 // kbytes
@@ -379,38 +388,39 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
                 unit = "m";
                 break;
         }
+    }
 
-    switch(m_comboCondition->currentIndex())
+    switch(m_conditionCombo->currentIndex())
     {
         case 0:
             // less than...
             result = m_strPrefixNOT + keyword + ":<";
             if (keyword == "length")
-                result += QString::number( m_spinMin1->value() * 60 + m_spinMin2->value() ) + unit;
+                result += QString::number( m_minimumSpin1->value() * 60 + m_minimumSpin2->value() ) + unit;
             else
-                result += m_spinMin1->text() + unit;
+                result += m_minimumSpin1->text() + unit;
             break;
         case 1:
             // greater than...
             result = m_strPrefixNOT + keyword + ":>";
             if (keyword == "length")
-                result += QString::number( m_spinMin1->value() * 60 + m_spinMin2->value() ) + unit;
+                result += QString::number( m_minimumSpin1->value() * 60 + m_minimumSpin2->value() ) + unit;
             else
-                result += m_spinMin1->text() + unit;
+                result += m_minimumSpin1->text() + unit;
             break;
         case 2:
             // equal to...
             if (keyword == "length")
-                result = m_strPrefixNOT + "length:" + QString::number( m_spinMin1->value() * 60
-                        + m_spinMin2->value() ) + unit;
+                result = m_strPrefixNOT + "length:" + QString::number( m_minimumSpin1->value() * 60
+                        + m_minimumSpin2->value() ) + unit;
             else
             {
                 if (m_strPrefixNOT.isEmpty())
-                    result = keyword + ":>" + QString::number(m_spinMin1->value() - 1) + unit +
-                        ' ' + keyword + ":<" + QString::number(m_spinMin1->value() + 1) + unit;
+                    result = keyword + ":>" + QString::number(m_minimumSpin1->value() - 1) + unit +
+                        ' ' + keyword + ":<" + QString::number(m_minimumSpin1->value() + 1) + unit;
                 else
-                    result = keyword + ":<" + QString::number(m_spinMin1->value()) + unit +
-                        " OR " + keyword + ":>" + QString::number(m_spinMin1->value()) + unit;
+                    result = keyword + ":<" + QString::number(m_minimumSpin1->value()) + unit +
+                        " OR " + keyword + ":>" + QString::number(m_minimumSpin1->value()) + unit;
             }
             break;
         case 3:
@@ -418,20 +428,20 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
             if (keyword == "length")
             {
                 if (m_strPrefixNOT.isEmpty())
-                    result = "length:>" + QString::number( m_spinMin1->value() * 60 + m_spinMin2->value() - 1) + unit
-                        + " length:<" + QString::number( m_spinMax1->value() * 60 + m_spinMax2->value() + 1) + unit;
+                    result = "length:>" + QString::number( m_minimumSpin1->value() * 60 + m_minimumSpin2->value() - 1) + unit
+                        + " length:<" + QString::number( m_maxSpin1->value() * 60 + m_maxSpin2->value() + 1) + unit;
                 else
-                    result = "length:<" + QString::number( m_spinMin1->value() * 60 + m_spinMin2->value()) + unit
-                        + " OR length:>" + QString::number( m_spinMax1->value() * 60 + m_spinMax2->value()) + unit;
+                    result = "length:<" + QString::number( m_minimumSpin1->value() * 60 + m_minimumSpin2->value()) + unit
+                        + " OR length:>" + QString::number( m_maxSpin1->value() * 60 + m_maxSpin2->value()) + unit;
             }
             else
             {
                 if (m_strPrefixNOT.isEmpty())
-                    result = keyword + ":>" + QString::number(m_spinMin1->value() - 1) + unit +
-                        ' ' + keyword + ":<" + QString::number(m_spinMax1->value() + 1) + unit;
+                    result = keyword + ":>" + QString::number(m_minimumSpin1->value() - 1) + unit +
+                        ' ' + keyword + ":<" + QString::number(m_maxSpin1->value() + 1) + unit;
                 else
-                    result = keyword + ":<" + QString::number(m_spinMin1->value() - 1) + unit +
-                        " OR " + keyword + ":>" + QString::number(m_spinMax1->value() + 1) + unit;
+                    result = keyword + ":<" + QString::number(m_minimumSpin1->value() - 1) + unit +
+                        " OR " + keyword + ":>" + QString::number(m_maxSpin1->value() + 1) + unit;
             }
             break;
     }
@@ -442,38 +452,38 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
 void EditFilterDialog::setMinMaxValueSpins()
 {
     // setting some spin box options and limit values
-    m_spinMin1->setValue( 0 );
-    m_spinMin1->setMinimum( 0 );
-    m_spinMin1->setMaximum( 100000000 );
+    m_minimumSpin1->setValue( 0 );
+    m_minimumSpin1->setMinimum( 0 );
+    m_minimumSpin1->setMaximum( 100000000 );
 
-    m_spinMin2->setMinimum( 0 );
-    m_spinMin2->setMaximum( 59 );
-    m_spinMin2->hide();
+    m_minimumSpin2->setMinimum( 0 );
+    m_minimumSpin2->setMaximum( 59 );
+    m_minimumSpin2->hide();
 
-    m_spinMax1->setValue( 0 );
-    m_spinMax1->setMinimum( 0 );
-    m_spinMax1->setMaximum( 100000000 );
+    m_maxSpin1->setValue( 0 );
+    m_maxSpin1->setMinimum( 0 );
+    m_maxSpin1->setMaximum( 100000000 );
 
-    m_spinMax2->setMinimum( 0 );
-    m_spinMax2->setMaximum( 59 );
-    m_spinMax2->hide();
+    m_maxSpin2->setMinimum( 0 );
+    m_maxSpin2->setMaximum( 59 );
+    m_maxSpin2->hide();
 
     // fix tooltip
-    m_spinMin1->setToolTip( "" );
-    m_spinMin2->setToolTip( i18n("Seconds") );
+    m_minimumSpin1->setToolTip( "" );
+    m_minimumSpin2->setToolTip( i18n("Seconds") );
 
-    m_spinMax1->setToolTip( "" );
-    m_spinMax2->setToolTip( i18n("Seconds") );
+    m_maxSpin1->setToolTip( "" );
+    m_maxSpin2->setToolTip( i18n("Seconds") );
 }
 
 // SLOTS
 void EditFilterDialog::selectedKeyword(int index) // SLOT
 {
-    debug() << "you selected index " << index << ": '" << m_comboKeyword->currentText() << "'";
+    debug() << "you selected index " << index << ": '" << m_keywordCombo->currentText() << "'";
     m_groupBox2->setEnabled( false );
-    m_comboUnitSize->setEnabled( false );
+    m_unitSizeCombo->setEnabled( false );
     m_filesizeLabel->setEnabled( false );
-    m_prefixNOT->setEnabled( true );
+    m_invertButton->setEnabled( true );
 
     setMinMaxValueSpins();
 
@@ -482,36 +492,36 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
     {
         // Simple Search
         m_groupBox2->setEnabled( true );
-        m_prefixNOT->setEnabled( false );
+        m_invertButton->setEnabled( false );
         textWanted();
     }
     else if( key=="bitrate" )
     {
         // bitrate: set useful values for the spinboxes
-        m_spinMin1->setValue( 128 );
-        m_spinMax1->setValue( 384 );
+        m_minimumSpin1->setValue( 128 );
+        m_maxSpin1->setValue( 384 );
         valueWanted();
     }
     else if( key=="samplerate" )
     {
         // samplerate: set useful values for the spinboxes
-        m_spinMin1->setValue( 8000 );
-        m_spinMax1->setValue( 48000 );
+        m_minimumSpin1->setValue( 8000 );
+        m_maxSpin1->setValue( 48000 );
         valueWanted();
     }
     else if( key=="length" )
     {
         // length: set useful values for the spinboxes
-        m_spinMin2->show();
-        m_spinMax2->show();
-        m_spinMin1->setValue( 1 );
-        m_spinMax1->setValue( 5 );
-        m_spinMin1->setToolTip( i18n("Minutes") );
-        m_spinMax1->setToolTip( i18n("Minutes") );
+        m_minimumSpin2->show();
+        m_maxSpin2->show();
+        m_minimumSpin1->setValue( 1 );
+        m_maxSpin1->setValue( 5 );
+        m_minimumSpin1->setToolTip( i18n("Minutes") );
+        m_maxSpin1->setToolTip( i18n("Minutes") );
 
         // fix the maximum values to reduce spinboxes size
-        m_spinMin1->setMaximum( 240 );
-        m_spinMax1->setMaximum( 240 );
+        m_minimumSpin1->setMaximum( 240 );
+        m_maxSpin1->setMaximum( 240 );
 
         valueWanted();
     }
@@ -519,24 +529,24 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
     {
         // size: set useful values for the spinboxes
         m_filesizeLabel->setEnabled( true );
-        m_comboUnitSize->setEnabled( true );
-        m_spinMin1->setValue( 1 );
-        m_spinMax1->setValue( 3 );
-        m_comboUnitSize->setCurrentIndex( 2 );
+        m_unitSizeCombo->setEnabled( true );
+        m_minimumSpin1->setValue( 1 );
+        m_maxSpin1->setValue( 3 );
+        m_unitSizeCombo->setCurrentIndex( 2 );
         valueWanted();
     }
     else if( key=="year" )
     {
         // year: set useful values for the spinboxes
-        m_spinMin1->setValue( 1900 );
-        m_spinMax1->setValue( QDate::currentDate().year() );
+        m_minimumSpin1->setValue( 1900 );
+        m_maxSpin1->setValue( QDate::currentDate().year() );
         valueWanted();
     }
     else if( key=="track" || key=="disc" || key=="discnumber" )
     {
         // track/disc: set useful values for the spinboxes
-        m_spinMin1->setValue( 1 );
-        m_spinMax1->setValue( 15 );
+        m_minimumSpin1->setValue( 1 );
+        m_maxSpin1->setValue( 15 );
         valueWanted();
     }
     else if( key=="playcount"
@@ -577,38 +587,38 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
 
 void EditFilterDialog::minSpinChanged(int value) // SLOT
 {
-  if (value > m_spinMax1->value())
-    m_spinMax1->setValue(value);
+  if (value > m_maxSpin1->value())
+    m_maxSpin1->setValue(value);
 }
 
 void EditFilterDialog::maxSpinChanged(int value) // SLOT
 {
-  if (m_spinMin1->value() > value)
-    m_spinMin1->setValue(value);
+  if (m_minimumSpin1->value() > value)
+    m_minimumSpin1->setValue(value);
 }
 
 void EditFilterDialog::textWanted() // SLOT
 {
-    m_editKeyword->setEnabled( true );
+    m_keywordEdit->setEnabled( true );
     m_groupBox->setEnabled( false );
 
-    m_editKeyword->completionObject()->clear();
+    m_keywordEdit->completionObject()->clear();
 }
 
 void EditFilterDialog::textWanted( const QStringList &completion ) // SLOT
 {
-    m_editKeyword->setEnabled( true );
+    m_keywordEdit->setEnabled( true );
     m_groupBox->setEnabled( false );
 
-    m_editKeyword->completionObject()->clear();
-    m_editKeyword->completionObject()->insertItems( completion );
-    m_editKeyword->completionObject()->setIgnoreCase( true );
-    m_editKeyword->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_keywordEdit->completionObject()->clear();
+    m_keywordEdit->completionObject()->insertItems( completion );
+    m_keywordEdit->completionObject()->setIgnoreCase( true );
+    m_keywordEdit->setCompletionMode( KGlobalSettings::CompletionPopup );
 }
 
 void EditFilterDialog::valueWanted() // SLOT
 {
-    m_editKeyword->setEnabled( false );
+    m_keywordEdit->setEnabled( false );
     m_groupBox->setEnabled( true );
 }
 
@@ -623,15 +633,15 @@ void EditFilterDialog::chooseCondition( int condition ) // SLOT
 void EditFilterDialog::chooseOneValue() // SLOT
 {
     m_andLabel->setEnabled( false);
-    m_spinMax1->setEnabled( false );
-    m_spinMax2->setEnabled( false );
+    m_maxSpin1->setEnabled( false );
+    m_maxSpin2->setEnabled( false );
 }
 
 void EditFilterDialog::chooseMinMaxValue() // SLOT
 {
     m_andLabel->setEnabled( true );
-    m_spinMax1->setEnabled( true );
-    m_spinMax2->setEnabled( true );
+    m_maxSpin1->setEnabled( true );
+    m_maxSpin2->setEnabled( true );
 }
 
 void EditFilterDialog::slotCheckAll() // SLOT
@@ -656,19 +666,19 @@ void EditFilterDialog::slotCheckExclude() // SLOT
 
 void EditFilterDialog::slotCheckAND() // SLOT
 {
-    m_checkAND->setChecked( true );
-    m_checkOR->setChecked( false );
+    m_andButton->setChecked( true );
+    m_orButton->setChecked( false );
 }
 
 void EditFilterDialog::slotCheckOR() // SLOT
 {
-    m_checkAND->setChecked( false );
-    m_checkOR->setChecked( true );
+    m_andButton->setChecked( false );
+    m_orButton->setChecked( true );
 }
 
 void EditFilterDialog::assignPrefixNOT() // SLOT
 {
-    if (m_prefixNOT->isChecked())
+    if (m_invertButton->isChecked())
         m_strPrefixNOT = "-";
     else
         m_strPrefixNOT = "";
@@ -677,11 +687,11 @@ void EditFilterDialog::assignPrefixNOT() // SLOT
 void EditFilterDialog::slotDefault() // SLOT
 {
     // now append the filter rule if not empty
-    if (m_editKeyword->text().isEmpty() && (m_selectedIndex == 0))
+    if (m_keywordEdit->text().isEmpty() && (m_selectedIndex == 0))
     {
         KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be set. The text field is empty. "
                     "Please type something into it and retry.</p>"), i18n("Empty Text Field"));
-        m_editKeyword->setFocus();
+        m_keywordEdit->setFocus();
         return;
     }
     if (!m_appended)
@@ -695,33 +705,33 @@ void EditFilterDialog::slotDefault() // SLOT
     if (!m_filterText.isEmpty())
     {
         m_filterText += ' ';
-        if (m_checkOR->isChecked())
+        if (m_orButton->isChecked())
             m_filterText += "OR ";
     }
-    QStringList list = m_editKeyword->text().split( ' ' );
+    QStringList list = m_keywordEdit->text().split( ' ' );
     const QString key = m_vector[m_selectedIndex];
     if( m_selectedIndex == 0 )
     {
         // Simple Search
-        debug() << "selected text: '" << m_editKeyword->text() << "'";
-        if (m_actionCheck[0]->isChecked())
+        debug() << "selected text: '" << m_keywordEdit->text() << "'";
+        if (m_checkActions[0]->isChecked())
         {
             // all words
-            m_filterText += m_editKeyword->text();
+            m_filterText += m_keywordEdit->text();
         }
-        else if (m_actionCheck[1]->isChecked())
+        else if (m_checkActions[1]->isChecked())
         {
             // at least one word
             m_filterText += *(list.constBegin());
             for ( QStringList::ConstIterator it = ++list.constBegin(), end = list.constEnd(); it != end; ++it )
                 m_filterText += " OR " + *it;
         }
-        else if (m_actionCheck[2]->isChecked())
+        else if (m_checkActions[2]->isChecked())
         {
             // exactly the words
-            m_filterText += "\"" + m_editKeyword->text() + "\"";
+            m_filterText += "\"" + m_keywordEdit->text() + "\"";
         }
-        else if (m_actionCheck[3]->isChecked())
+        else if (m_checkActions[3]->isChecked())
         {
             // exclude words
             for ( QStringList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
@@ -743,11 +753,11 @@ void EditFilterDialog::slotDefault() // SLOT
     }
     else
     {
-        m_filterText += m_vector[m_selectedIndex] + ":\"" +  m_editKeyword->text() + "\"";
+        m_filterText += m_vector[m_selectedIndex] + ":\"" +  m_keywordEdit->text() + "\"";
     }
     emit filterChanged( m_filterText );
 
-    m_editKeyword->clear();
+    m_keywordEdit->clear();
 }
 
 void EditFilterDialog::slotUser1() // SLOT
@@ -778,7 +788,7 @@ void EditFilterDialog::slotOk() // SLOT
 {
     // If there's a filter typed in but unadded, add it.
     // This makes it easier to just add one condition - you only need to press OK.
-    if ( !m_editKeyword->text().isEmpty() )
+    if ( !m_keywordEdit->text().isEmpty() )
         slotDefault();
 
     // Don't let OK do anything if they haven't set any filters.

@@ -40,7 +40,7 @@ class EditFilterDialog : public KDialog
 {
     Q_OBJECT
     public:
-        EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text = "" );
+        EditFilterDialog( QWidget* parent, const QString &text = QString() );
         ~EditFilterDialog();
 
         QString filter() const;
@@ -49,33 +49,33 @@ class EditFilterDialog : public KDialog
         void filterChanged( const QString &filter );
 
     private:
-        QVBoxLayout *m_mainLay;
+        QVBoxLayout *m_mainLayout;
 
-        QCheckBox *m_prefixNOT;
-        QComboBox *m_comboKeyword;
-        KLineEdit *m_editKeyword;
+        QCheckBox *m_invertButton;
+        QComboBox *m_keywordCombo;
+        KLineEdit *m_keywordEdit;
 
         QGroupBox *m_groupBox;
 
-        QComboBox *m_comboCondition;
+        QComboBox *m_conditionCombo;
         QLabel *m_filesizeLabel;
-        QComboBox *m_comboUnitSize;
+        QComboBox *m_unitSizeCombo;
 
         QRadioButton *m_minMaxRadio;
-        QSpinBox *m_spinMin1, *m_spinMin2;
+        QSpinBox *m_minimumSpin1, *m_minimumSpin2;
         QLabel *m_andLabel;
-        QSpinBox *m_spinMax1, *m_spinMax2;
+        QSpinBox *m_maxSpin1, *m_maxSpin2;
 
         QGroupBox *m_groupBox2;
-        QRadioButton *m_checkALL;
-        QRadioButton *m_checkAtLeastOne;
-        QRadioButton *m_checkExactly;
-        QRadioButton *m_checkExclude;
-        QList<QRadioButton*> m_actionCheck;
+        QRadioButton *m_matchAllButton;
+        QRadioButton *m_matchOneButton;
+        QRadioButton *m_matchExactlyButton;
+        QRadioButton *m_excludeMatchButton;
+        QList<QRadioButton*> m_checkActions;
 
         QGroupBox *m_groupBox3;
-        QRadioButton *m_checkAND;
-        QRadioButton *m_checkOR;
+        QRadioButton *m_andButton;
+        QRadioButton *m_orButton;
 
         bool m_appended;               // true if a filter appended
         int m_selectedIndex;           // the position of the selected keyword in the combobox
