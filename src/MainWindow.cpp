@@ -270,9 +270,6 @@ MainWindow::init()
              m_browsers->addWidget( KIcon( icon ), text, new Type( name , m_browsers ) ); \
              m_browserNames.append( name ); }
 
-        #define addInstBrowserMacro( Type, name, text, icon ) { \
-             m_browsers->addWidget( KIcon( icon ), text, Type::instance() ); \
-             m_browserNames.append( name ); }
 
         PERF_LOG( "Creating CollectionWidget" )
         addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), "collection-amarok" )
@@ -305,20 +302,13 @@ MainWindow::init()
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
-        /*new MediaBrowser( "MediaBrowser" );
-        PERF_LOG( "created mediabrowser" )
-        if( MediaBrowser::isAvailable() )
-        {
-            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), "multimedia-player-amarok" )
-        }*/
+        
         #undef addBrowserMacro
-        #undef addInstBrowserMacro
         PERF_LOG( "finished MainWindow::init" )
     }
     //</Browsers>
 
     TrackToolTip::instance(); //Instantiate
-    //Amarok::MessageQueue::instance()->sendMessages();
 
     if( AmarokConfig::panelsSavedState()[0] != -1 )
     {
@@ -348,13 +338,6 @@ void
 MainWindow::deleteBrowsers()
 {
     m_browsers->deleteBrowsers();
-}
-
-void
-MainWindow::slotSetFilter( const QString &filter ) //SLOT
-{
-    Q_UNUSED( filter );
-//    m_lineEdit->setText( filter );
 }
 
 void
@@ -454,12 +437,6 @@ MainWindow::closeEvent( QCloseEvent *e )
 #endif
 }
 
-
-void
-MainWindow::showEvent( QShowEvent* )
-{
-}
-
 QSize
 MainWindow::sizeHint() const
 {
@@ -500,11 +477,6 @@ MainWindow::savePlaylist() const
 }
 
 
-void
-MainWindow::slotBurnPlaylist() const //SLOT
-{
-    //K3bExporter::instance()->exportCurrentPlaylist();
-}
 
 void
 MainWindow::slotShowCoverManager() const //SLOT
@@ -589,33 +561,6 @@ MainWindow::showQueueManager() //SLOT
     }
 }
 
-void
-MainWindow::showStatistics() //SLOT
-{
-#if 0
-    if( Statistics::instance() ) {
-        Statistics::instance()->raise();
-        return;
-    }
-    Statistics dialog;
-    dialog.exec();
-#endif
-}
-
-void
-MainWindow::slotToggleFocus() //SLOT
-{
-    //Port 2.0
-//     if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() /*|| m_searchWidget->lineEdit()->hasFocus()*/ ) )
-//         m_browsers->currentWidget()->setFocus();
-}
-
-void
-MainWindow::toolsMenuAboutToShow() //SLOT
-{
-    // Amarok::actionCollection()->action( "equalizer" )->setEnabled( false ); //TODO phonon
-}
-
 /**
  * "Toggle Main Window" global shortcut connects to this slot
  */
@@ -659,7 +604,7 @@ MainWindow::isReallyShown() const
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
     return !isHidden() && !info.isMinimized() && info.isOnDesktop( KWindowSystem::currentDesktop() );
 #else
-    return isHidden();
+    return !isHidden();
 #endif
 }
 
@@ -700,25 +645,11 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
 
-    /*
-    action = new KAction( KIcon( "tools-media-optical-burn-amarok" ), i18n( "Burn Current Playlist" ), this );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotBurnPlaylist() ) );
-    action->setEnabled( K3bExporter::isAvailable() );
-    ac->addAction( "playlist_burn", action );
-    */
-
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    // action = new KAction( KIcon( "view-media-visualization-amarok" ), i18n("&Visualizations"), this );
-    // connect( visuals, SIGNAL( triggered(bool) ), Vis::Selector::instance(), SLOT( show() ) );
-    // ac->addAction( "visualizations", action );
-
-    // action = new KAction( KIcon( "view-media-equalizer-amarok" ), i18n( "E&qualizer"), this );
-    // connect( action, SIGNAL( triggered(bool) ), kapp, SLOT( slotConfigEqualizer() ) );
-    // ac->addAction( "equalizer", action );
-
+    
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
 //     //update_podcasts->setIcon( KIcon("view-refresh-amarok") );
@@ -861,12 +792,6 @@ MainWindow::createActions()
     new Amarok::RandomAction( ac, this );
     new Amarok::FavorAction( ac, this );
 
-    /*
-    PERF_LOG( "MainWindow::createActions 9" )
-    if( K3bExporter::isAvailable() )
-        new Amarok::BurnMenuAction( ac );
-    */
-
     ac->addAssociatedWidget( this );
     foreach (QAction* action, ac->actions())
         action->setShortcutContext(Qt::WindowShortcut);
@@ -960,16 +885,9 @@ MainWindow::createMenus()
     m_toolsMenu->addAction( actionCollection()->action("cover_manager") );
 //FIXME: Reenable when ported//working
 //     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-//     m_toolsMenu->addAction( actionCollection()->action("visualizations") );
-//     m_toolsMenu->addAction( actionCollection()->action("equalizer") );
     m_toolsMenu->addAction( actionCollection()->action("script_manager") );
-//     m_toolsMenu->addAction( actionCollection()->action("statistics") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
-
-//#ifndef HAVE_LIBVISUAL
-//    actionCollection()->action( "visualizations" )->setEnabled( false );
-//#endif
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
     connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );

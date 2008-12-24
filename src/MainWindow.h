@@ -106,22 +106,16 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         void slotShrinkBrowsers( int index );
         void savePlaylist() const;
         void exportPlaylist() const;
-        void slotBurnPlaylist() const;
         void slotShowCoverManager() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
         void showQueueManager();
         void showScriptSelector();
-        void showStatistics();
-        void toolsMenuAboutToShow();
-        void slotToggleFocus();
-        void slotSetFilter( const QString &filter );
 
     protected:
         virtual void closeEvent( QCloseEvent* );
         virtual void keyPressEvent( QKeyEvent* );
-        virtual void showEvent( QShowEvent* );
         virtual QSize sizeHint() const;
         virtual void resizeEvent ( QResizeEvent * event );
 
