@@ -4,6 +4,7 @@
    Copyright (C) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>
    Copyright (C) 2007 Mirko Stocker <me@misto.ch>
    Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -36,7 +37,6 @@ class KActionCollection;
 class KActionSelector;
 class KBookmarkHandler;
 class KConfigBase;
-class KDirOperator;
 class KFilePlacesModel;
 class KHistoryComboBox;
 class KUrlNavigator;
@@ -48,9 +48,10 @@ class QFocusEvent;
 class QShowEvent;
 class QSpinBox;
 class QToolButton;
+class MyDirOperator;
 
 /*
-    The kate file selector presents a directory view, in which the default action is
+    The Amarok Files browser presents a directory view, in which the default action is
     to open the activated file.
     Additionally, a toolbar for managing the kdiroperator widget + sync that to
     the directory of the current file is available, as well as a filter widget
@@ -83,7 +84,7 @@ public:
     void writeConfig();
     void setupToolbar( QStringList actions );
     void setView( KFile::FileView );
-    KDirOperator *dirOperator() const { return m_dir; }
+    MyDirOperator *dirOperator() const { return m_dirOperator; }
     KActionCollection *actionCollection() const { return m_actionCollection; }
 
 public Q_SLOTS:
@@ -111,8 +112,7 @@ private:
     KUrlNavigator *m_urlNav;
     KFilePlacesModel *m_filePlacesModel;
 //       KUrlComboBox *m_cmbPath;
-    KDirOperator * m_dir;
-    QAction *m_acSyncDir;
+    MyDirOperator * m_dirOperator;
     KHistoryComboBox * m_filter;
     QToolButton *m_btnFilter;
 

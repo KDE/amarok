@@ -3,6 +3,7 @@
    Copyright (C) 2001 Joseph Wenninger <jowenn@kde.org>
    Copyright (C) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>
    Copyright (C) 2007 Mirko Stocker <me@misto.ch>
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -19,7 +20,6 @@
    Boston, MA 02110-1301, USA.
 */
 
-//BEGIN Includes
 #include "FileBrowser.h"
 
 #include "Debug.h"
@@ -44,38 +44,27 @@
 #include <KUrlNavigator>
 #include <kfileplacesmodel.h>
 // #include <KUrlComboBox>
-//END Includes
+
 
 //BEGIN Toolbar
 // from kfiledialog.cpp - avoid qt warning in STDERR (~/.xsessionerrors)
-static void silenceQToolBar( QtMsgType, const char * )
-{}
+static void silenceQToolBar( QtMsgType, const char * ) {}
+
 
 // helper classes to be able to have a toolbar without move handle
 FileBrowser::ToolBar::ToolBar( QWidget *parent )
-        : KToolBar( parent, "Kate FileSelector Toolbar", true )
+    : KToolBar( parent, "Kate FileSelector Toolbar", true )
 {
     setMinimumWidth( 10 );
 }
 
 FileBrowser::ToolBar::~ToolBar()
 {}
-//END
 
-//BEGIN Constructor/destructor
 
 FileBrowser::Widget::Widget( const char * name , QWidget *parent )
-        : KVBox( parent ),
-        m_toolbar( 0 ),
-        m_actionCollection( 0 ),
-        m_bookmarkHandler( 0 ),
-//       m_cmbPath( 0 ),
-        m_urlNav( 0 ),
-        m_filePlacesModel( 0 ),
-        m_dir( 0 ),
-        m_acSyncDir( 0 ),
-        m_filter( 0 ),
-        m_btnFilter( 0 )
+    : KVBox( parent )
+    , m_bookmarkHandler( 0 )
 {
     DEBUG_BLOCK
 
@@ -101,7 +90,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
 
-
 // FIXME
 //  m_cmbPath->listBox()->installEventFilter( this );
 
@@ -118,21 +106,19 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     connect( m_filter, SIGNAL( editTextChanged( const QString& ) ), SLOT( slotFilterChange( const QString& ) ) );
     connect( m_filter, SIGNAL( returnPressed( const QString& ) ), m_filter, SLOT( addToHistory( const QString& ) ) );
 
-    m_dir = new MyDirOperator( KUrl( QDir::home().path() ), this );
+    m_dirOperator = new MyDirOperator( QDir::home().path(), this );
 
-    QPalette p = m_dir->palette();
+    QPalette p = m_dirOperator->palette();
     QColor c = p.color( QPalette::Base );
     c.setAlpha( 0 );
     p.setColor( QPalette::Base, c );
-    m_dir->setPalette( p );
+    m_dirOperator->setPalette( p );
 
+    connect( m_dirOperator, SIGNAL( viewChanged( QAbstractItemView * ) ), this, SLOT( selectorViewChanged( QAbstractItemView * ) ) );
+    setStretchFactor( m_dirOperator, 2 );
+    m_dirOperator->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding ) );
 
-    connect( m_dir, SIGNAL( viewChanged( QAbstractItemView * ) ),
-             this, SLOT( selectorViewChanged( QAbstractItemView * ) ) );
-    setStretchFactor( m_dir, 2 );
-    m_dir->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding ) );
-
-    KActionCollection *coll = m_dir->actionCollection();
+    KActionCollection *coll = m_dirOperator->actionCollection();
     // some shortcuts of diroperator that clash with Kate
     coll->action( "delete" )->setShortcut( Qt::ALT + Qt::Key_Delete );
 
@@ -146,13 +132,11 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_toolbar->setIconDimensions( 16 );
     m_toolbar->setContextMenuPolicy( Qt::NoContextMenu );
 
-//   connect( m_cmbPath, SIGNAL( urlActivated( const KUrl&  )),
-//            this, SLOT( cmbPathActivated( const KUrl& ) ));
+//   connect( m_cmbPath, SIGNAL( urlActivated( const KUrl&  )), this, SLOT( cmbPathActivated( const KUrl& ) ));
     connect( m_urlNav, SIGNAL( urlChanged( const KUrl& ) ), this, SLOT( cmbPathActivated( const KUrl& ) ) );
-//   connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )),
-//            this, SLOT( cmbPathReturnPressed( const QString& ) ));
-    connect( m_dir, SIGNAL( urlEntered( const KUrl& ) ), this, SLOT( dirUrlEntered( const KUrl& ) ) );
-    connect( m_dir, SIGNAL( finishedLoading() ), this, SLOT( dirFinishedLoading() ) );
+//   connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )), this, SLOT( cmbPathReturnPressed( const QString& ) ));
+    connect( m_dirOperator, SIGNAL( urlEntered( const KUrl& ) ), this, SLOT( dirUrlEntered( const KUrl& ) ) );
+    connect( m_dirOperator, SIGNAL( finishedLoading() ), this, SLOT( dirFinishedLoading() ) );
 
     // Connect the bookmark handler
     connect( m_bookmarkHandler, SIGNAL( openUrl( const QString& ) ), this, SLOT( setDir( const QString& ) ) );
@@ -186,7 +170,6 @@ FileBrowser::Widget::~Widget()
     DEBUG_BLOCK
 }
 
-//END Constroctor/Destrctor
 
 //BEGIN Public Methods
 
@@ -208,10 +191,10 @@ void FileBrowser::Widget::readConfig()
 void FileBrowser::Widget::readSessionConfig( KConfigBase *config, const QString & name )
 {
     KConfigGroup cgView( config, name + ":view" );
-    m_dir->setViewConfig( cgView );
+    m_dirOperator->setViewConfig( cgView );
 
     KConfigGroup cgDir( config, name + ":dir" );
-    m_dir->readConfig( cgDir );
+    m_dirOperator->readConfig( cgDir );
 
     KConfigGroup cg( config, name );
 //   m_cmbPath->setUrls( cg.readPathEntry( "dir history", QStringList() ) );
@@ -255,7 +238,7 @@ void FileBrowser::Widget::setupToolbar( QStringList actions )
         if ( *it == "bookmarks" )
             ac = m_actionCollection->action(( *it ).toLatin1().constData() );
         else
-            ac = m_dir->actionCollection()->action(( *it ).toLatin1().constData() );
+            ac = m_dirOperator->actionCollection()->action(( *it ).toLatin1().constData() );
         if ( ac )
             m_toolbar->addAction( ac );
     }
@@ -273,7 +256,7 @@ void FileBrowser::Widget::writeConfig()
 void FileBrowser::Widget::writeSessionConfig( KConfigBase *config, const QString & name )
 {
     KConfigGroup cgDir( config, name + ":dir" );
-    m_dir->writeConfig( cgDir );
+    m_dirOperator->writeConfig( cgDir );
 
     KConfigGroup cg = KConfigGroup( config, name );
     QStringList l;
@@ -289,8 +272,8 @@ void FileBrowser::Widget::writeSessionConfig( KConfigBase *config, const QString
 
 void FileBrowser::Widget::setView( KFile::FileView view )
 {
-    m_dir->setView( view );
-    m_dir->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    m_dirOperator->setView( view );
+    m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
 
 //END Public Methods
@@ -306,20 +289,20 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
 
     if ( empty )
     {
-        m_dir->clearFilter();
+        m_dirOperator->clearFilter();
         m_filter->lineEdit()->setText( QString() );
         m_btnFilter->setToolTip( i18n( "Apply last filter (\"%1\")", lastFilter ) ) ;
     }
     else
     {
         f = '*' + f + '*'; // add regexp matches surrounding the filter
-        m_dir->setNameFilter( f );
+        m_dirOperator->setNameFilter( f );
         lastFilter = f;
         m_btnFilter->setToolTip( i18n( "Clear filter" ) );
     }
 
     m_btnFilter->setChecked( !empty );
-    m_dir->updateDir(); //FIXME Crashes here, see http://bugs.kde.org/show_bug.cgi?id=177981
+    m_dirOperator->updateDir(); //FIXME Crashes here, see http://bugs.kde.org/show_bug.cgi?id=177981
 
     // this will be never true after the filter has been used;)
     m_btnFilter->setEnabled( !( empty && lastFilter.isEmpty() ) );
@@ -356,7 +339,7 @@ void FileBrowser::Widget::setDir( KUrl u )
     if ( !FileBrowser::isReadable( newurl ) )
         newurl.setPath( QDir::homePath() );
 
-    m_dir->setUrl( newurl, true );
+    m_dirOperator->setUrl( newurl, true );
 }
 
 //END Public Slots
@@ -378,8 +361,8 @@ void FileBrowser::Widget::cmbPathReturnPressed( const QString& u )
 //   urls.removeAll( typedURL.url() );
 //   urls.prepend( typedURL.url() );
 //   m_cmbPath->setUrls( urls, KUrlComboBox::RemoveBottom );
-    m_dir->setFocus();
-    m_dir->setUrl( KUrl( u ), true );
+    m_dirOperator->setFocus();
+    m_dirOperator->setUrl( KUrl( u ), true );
 }
 
 void FileBrowser::Widget::dirUrlEntered( const KUrl& u )
@@ -423,7 +406,7 @@ void FileBrowser::Widget::selectorViewChanged( QAbstractItemView * newView )
 
 void FileBrowser::Widget::focusInEvent( QFocusEvent * )
 {
-    m_dir->setFocus();
+    m_dirOperator->setFocus();
 }
 
 bool FileBrowser::Widget::eventFilter( QObject* o, QEvent *e )
