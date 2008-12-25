@@ -42,6 +42,8 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * Fix bug that showed misplaced applets in the Context View after resizing
+      the window and changing to another containment. (BR 176101)
     * MPRIS GetMetadata() call returns arturl for last.fm streams. (BR 178695)
     * Fix grouping of various artist albums in the playlist. (BR 175604)
     * Updating statistics properly on windows and Mac versions.
