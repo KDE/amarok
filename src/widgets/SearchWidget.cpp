@@ -89,7 +89,7 @@ SearchWidget::setSearchString( const QString &searchString )
 void
 SearchWidget::slotShowFilterEditor()
 {
-    EditFilterDialog *fd = new EditFilterDialog( this );
+    EditFilterDialog *fd = new EditFilterDialog( this, m_sw->text() );
 
     connect( fd, SIGNAL( filterChanged( const QString & ) ), m_sw,  SLOT( setText( const QString & ) ) );
 
