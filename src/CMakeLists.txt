@@ -512,7 +512,7 @@ kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EditCoverSearchDialog.ui
-    #dialogs/deletedialogbase.ui
+    dialogs/EditFilterDialog.ui
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
