@@ -68,6 +68,7 @@ class Track::Private : public QObject
         QString albumUrl;
         QString artistUrl;
         QString trackUrl;
+        QString imageUrl;
 
         Meta::ArtistPtr artistPtr;
         Meta::AlbumPtr albumPtr;
@@ -128,9 +129,11 @@ class Track::Private : public QObject
 
                 notifyObservers();
 
-                if( !reply->lfm()[ "track" ][ "album" ][ "image size=large" ].text().isEmpty() )
+                imageUrl = reply->lfm()[ "track" ][ "album" ][ "image size=large" ].text();
+
+                if( !imageUrl.isEmpty() )
                 {
-                    KIO::Job* job = KIO::storedGet( KUrl( reply->lfm()[ "track" ][ "album" ][ "image size=large" ].text() ), KIO::Reload, KIO::HideProgressInfo );
+                    KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
                     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
                 }
             }
@@ -263,6 +266,14 @@ public:
         if( d->albumArt.width() != size && size > 0 )
             return d->albumArt.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
         return d->albumArt;
+    }
+
+    KUrl imageLocation( int size )
+    {
+        Q_UNUSED( size );
+        if( d && !d->imageUrl.isEmpty() )
+            return KUrl( d->imageUrl );
+        return KUrl();
     }
 
     // return true since we handle our own fetching
