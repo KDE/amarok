@@ -32,6 +32,7 @@ class QWidget;
 class EditFilterDialog : public KDialog
 {
     Q_OBJECT
+
     public:
         EditFilterDialog( QWidget* parent, const QString &text = QString() );
         ~EditFilterDialog();
@@ -47,7 +48,7 @@ class EditFilterDialog : public KDialog
         
         bool m_appended;               // true if a filter appended
         int m_selectedIndex;           // the position of the selected keyword in the combobox
-        QVector<QString> m_vector; // the vector of the amarok filter keyword
+        QVector<QString> m_vector;     // the vector of the amarok filter keyword
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
         QString m_strPrefixNOT;        // is empty if no NOT prefix is needed else it's "-"

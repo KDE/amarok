@@ -35,11 +35,11 @@
 
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
-    : KDialog( parent ),
-      m_filterText(text),
-      m_appended( false )
+    : KDialog( parent )
+    , m_appended( false )
+    , m_filterText( text )
 {
-    setCaption( i18n("Edit Filter") );
+    setCaption( i18n( "Edit Filter" ) );
     setModal( true );
     setButtons( User1|User2|Default|Ok|Cancel );
     setDefaultButton( Cancel );
@@ -73,7 +73,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     
     //setMainWidget( m_ui );
         
-    m_vector.push_back("Simple Search");
+    m_vector.push_back( "Simple Search" );
     m_vector.push_back( "album" );
     m_vector.push_back( "artist" );
     m_vector.push_back( "composer" );
@@ -86,10 +86,10 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     m_selectedIndex = 0;
     
     
-    connect(m_ui.keywordCombo, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
+    connect( m_ui.keywordCombo, SIGNAL( activated( int ) ), SLOT(selectedKeyword( int ) ) );
 
-    connect(m_ui.minimum1, SIGNAL(valueChanged(int)), this, SLOT(minSpinChanged(int)));
-    connect(m_ui.maximum1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
+    connect( m_ui.minimum1, SIGNAL( valueChanged( int ) ), SLOT(minSpinChanged( int ) ) );
+    connect( m_ui.maximum1, SIGNAL( valueChanged( int ) ), SLOT(maxSpinChanged( int ) ) );
 
     // type text selected
     textWanted();
@@ -97,24 +97,24 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     // check the "One Value Choosing" by default
     chooseOneValue();
 
-    connect( m_ui.conditionCombo, SIGNAL(activated(int)), SLOT(chooseCondition(int)) );
+    connect( m_ui.conditionCombo, SIGNAL(activated( int ) ), SLOT(chooseCondition( int ) ) );
 
     m_checkActions << m_ui.matchAll;
     m_checkActions << m_ui.matchAny;
     m_checkActions << m_ui.matchLiteral;
     m_checkActions << m_ui.matchNot;
 
-    connect( m_ui.matchAll,     SIGNAL(clicked()), this, SLOT(slotCheckAll()) );
-    connect( m_ui.matchAny,     SIGNAL(clicked()), this, SLOT(slotCheckAtLeastOne()) );
-    connect( m_ui.matchLiteral, SIGNAL(clicked()), this, SLOT(slotCheckExactly()) );
-    connect( m_ui.matchNot,     SIGNAL(clicked()), this, SLOT(slotCheckExclude()) );
+    connect( m_ui.matchAll,     SIGNAL( clicked() ), SLOT( slotCheckAll() ) );
+    connect( m_ui.matchAny,     SIGNAL( clicked() ), SLOT( slotCheckAtLeastOne() ) );
+    connect( m_ui.matchLiteral, SIGNAL( clicked() ), SLOT( slotCheckExactly() ) );
+    connect( m_ui.matchNot,     SIGNAL( clicked() ), SLOT( slotCheckExclude() ) );
 
     // check "select all words" as default
     slotCheckAll();
 
     m_ui.invertButton->setEnabled( false );
 
-    connect(m_ui.invertButton, SIGNAL(clicked()), SLOT(assignPrefixNOT()));
+    connect( m_ui.invertButton, SIGNAL( clicked() ), SLOT( assignPrefixNOT() ) );
 
     // you need to append at least one filter condition to specify if do
     // an "AND" or an "OR" with the next condition if the filter is empty
