@@ -299,14 +299,16 @@ void FileBrowser::Widget::setView( KFile::FileView view )
 
 void FileBrowser::Widget::slotFilterChange( const QString & nf )
 {
+    DEBUG_BLOCK
+
     QString f = nf.trimmed();
-    bool empty = f.isEmpty() || f == "*";
+    const bool empty = f.isEmpty() || f == "*";
+
     if ( empty )
     {
         m_dir->clearFilter();
         m_filter->lineEdit()->setText( QString() );
-        m_btnFilter->setToolTip(
-            i18n( "Apply last filter (\"%1\")", lastFilter ) ) ;
+        m_btnFilter->setToolTip( i18n( "Apply last filter (\"%1\")", lastFilter ) ) ;
     }
     else
     {
@@ -315,8 +317,10 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
         lastFilter = f;
         m_btnFilter->setToolTip( i18n( "Clear filter" ) );
     }
+
     m_btnFilter->setChecked( !empty );
-    m_dir->updateDir();
+    m_dir->updateDir(); //FIXME Crashes here, see http://bugs.kde.org/show_bug.cgi?id=177981
+
     // this will be never true after the filter has been used;)
     m_btnFilter->setEnabled( !( empty && lastFilter.isEmpty() ) );
 }

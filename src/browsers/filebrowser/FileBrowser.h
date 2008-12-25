@@ -83,22 +83,13 @@ public:
     void writeConfig();
     void setupToolbar( QStringList actions );
     void setView( KFile::FileView );
-    KDirOperator *dirOperator()
-    {
-        return m_dir;
-    }
-    KActionCollection *actionCollection()
-    {
-        return m_actionCollection;
-    }
+    KDirOperator *dirOperator() const { return m_dir; }
+    KActionCollection *actionCollection() const { return m_actionCollection; }
 
 public Q_SLOTS:
     void slotFilterChange( const QString& );
     void setDir( KUrl );
-    void setDir( const QString& url )
-    {
-        setDir( KUrl( url ) );
-    }
+    void setDir( const QString& url ) { setDir( url ); }
     void selectorViewChanged( QAbstractItemView * );
 
 private Q_SLOTS:
