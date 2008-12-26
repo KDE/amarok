@@ -470,8 +470,7 @@ ContextView::updateContainmentsGeometry( bool updateAll )
     DEBUG_BLOCK
 
     debug() << "cv rect: " << rect();
-    int x,y;
-    const int last = contextScene()->containments().size() - 1;
+
     const int width = rect().width();
     const int height = rect().height();
 
