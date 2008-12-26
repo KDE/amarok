@@ -382,7 +382,6 @@ CollectionLocation::setGoingToRemoveSources( bool removeSources )
 void
 CollectionLocation::transferError( const Meta::TrackPtr &track, const QString &error )
 {
-	DEBUG_BLOCK
     m_tracksWithError.insert( track, error );
 }
 

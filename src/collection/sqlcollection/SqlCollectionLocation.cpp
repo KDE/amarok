@@ -53,7 +53,6 @@ SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
 
 SqlCollectionLocation::~SqlCollectionLocation()
 {
-    DEBUG_BLOCK
     //nothing to do
 }
 
@@ -83,7 +82,6 @@ SqlCollectionLocation::isOrganizable() const
 bool
 SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 {
-    DEBUG_BLOCK
     KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( track );
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
@@ -138,7 +136,6 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 void
 SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
 {
-    DEBUG_BLOCK
     setGoingToRemoveSources( removeSources );
     OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks );
     connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
@@ -149,7 +146,6 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
 void
 SqlCollectionLocation::slotDialogAccepted()
 {
-    DEBUG_BLOCK
     sender()->deleteLater();
     OrganizeCollectionDialog *dialog = qobject_cast<OrganizeCollectionDialog*>( sender() );
     m_destinations = dialog->getDestinations();
@@ -168,10 +164,6 @@ SqlCollectionLocation::slotDialogRejected()
 void
 SqlCollectionLocation::slotJobFinished( KJob *job )
 {
-    DEBUG_BLOCK
-
-    debug() << "job.error: " << job->error() << " errorstring: " << job->errorString();
-
     if( job->error() )
     {
         //TODO: proper error handling
@@ -193,7 +185,6 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
 void
 SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    DEBUG_BLOCK
     m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are coyping stuff
     bool jobsCreated = false;
     foreach( const Meta::TrackPtr &track, sources.keys() )
@@ -255,7 +246,6 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 void
 SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap )
 {
-    DEBUG_BLOCK
     QList<QVariantMap > metadata;
     QStringList urls;
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
@@ -301,7 +291,6 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
 QMap<QString, uint>
 SqlCollectionLocation::updatedMtime( const QStringList &urls )
 {
-    DEBUG_BLOCK
     QMap<QString, uint> mtime;
     foreach( const QString &url, urls )
     {
@@ -323,7 +312,6 @@ SqlCollectionLocation::updatedMtime( const QStringList &urls )
 void
 SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap )
 {
-    DEBUG_BLOCK
     MountPointManager *mpm = MountPointManager::instance();
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
     {
