@@ -24,7 +24,7 @@ class SearchWidget : public QWidget
 {
     Q_OBJECT
     public:
-        SearchWidget( QWidget *parent, bool advanced = true );
+        explicit SearchWidget( QWidget *parent, bool advanced = true );
         SearchWidget( QWidget *parent, QWidget *caller, bool advanced = true  );
         KLineEdit *lineEdit() { return m_sw; }
         void setup( QObject* caller );
