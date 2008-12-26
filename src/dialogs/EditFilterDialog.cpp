@@ -19,6 +19,8 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
+#include "collection/CollectionManager.h"
+#include "collection/MetaQueryMaker.h"
 
 #include <KGlobal>
 #include <KLineEdit>
@@ -131,6 +133,29 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( this, SIGNAL( defaultClicked() ) , this, SLOT(slotDefault() ) );
     connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotUser1() ) );
     connect( this, SIGNAL( user2Clicked() ), this, SLOT( slotUser2() ) );
+    
+    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    if( !coll )
+        return;
+
+    QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
+    QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
+    QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
+    QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
+    QList<QueryMaker*> queries;
+    queries << artist << album << composer << genre;
+
+    //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
+    //to set the query type. Configuring the queries is ok though
+
+    MetaQueryMaker *dataQueryMaker = new MetaQueryMaker( queries );
+    connect( dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
+    connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+    connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
+    connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
+    dataQueryMaker->run();
+    
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -145,7 +170,7 @@ QString EditFilterDialog::filter() const
 
 void EditFilterDialog::exclusiveSelectOf( int which )
 {
-    int size = static_cast<int>( m_checkActions.count() );
+    int size = m_checkActions.count();
 
     for( int i = 0; i < size; i++ )
     {
@@ -282,14 +307,14 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
     //FIXME: PORT 2.0
 //     else if( key=="label" )
 //         textWanted( CollectionDB::instance()->labelList() );
-//     else if( key=="album" )
-//         textWanted( CollectionDB::instance()->albumList() );
-//     else if( key=="artist" )
-//         textWanted( CollectionDB::instance()->artistList() );
-//     else if( key=="composer" )
-//         textWanted( CollectionDB::instance()->composerList() );
-//     else if( key=="genre" )
-//         textWanted( CollectionDB::instance()->genreList() );
+     else if( key=="album" )
+         textWanted( m_albums );
+     else if( key=="artist" )
+         textWanted( m_artists );
+     else if( key=="composer" )
+         textWanted( m_composers );
+     else if( key=="genre" )
+         textWanted( m_genres );
     else if( key=="type" || key=="filetype" )
     {
         QStringList types;
@@ -514,6 +539,46 @@ void EditFilterDialog::slotOk() // SLOT
     // Don't let OK do anything if they haven't set any filters.
     if (m_appended)
         accept();
+}
+
+void
+EditFilterDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::AlbumPtr album, albums )
+    {
+        m_albums << album->name();
+    }
+}
+
+void
+EditFilterDialog::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::ArtistPtr artist, artists )
+    {
+        m_artists << artist->name();
+    }
+}
+
+void
+EditFilterDialog::resultReady( const QString &collectionId, const Meta::ComposerList &composers )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::ComposerPtr composer, composers )
+    {
+        m_composers << composer->name();
+    }
+}
+
+void
+EditFilterDialog::resultReady( const QString &collectionId, const Meta::GenreList &genres )
+{
+    Q_UNUSED( collectionId )
+    foreach( Meta::GenrePtr genre, genres )
+    {
+        m_genres << genre->name();
+    }
 }
 
 #include "EditFilterDialog.moc"

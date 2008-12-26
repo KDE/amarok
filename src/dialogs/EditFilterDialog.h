@@ -18,6 +18,7 @@
 #ifndef AMAROK_EDITFILTERDIALOG_H
 #define AMAROK_EDITFILTERDIALOG_H
 
+#include "meta/Meta.h"
 #include "ui_EditFilterDialog.h"
 
 #include <KDialog>
@@ -52,6 +53,12 @@ class EditFilterDialog : public KDialog
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
         QString m_strPrefixNOT;        // is empty if no NOT prefix is needed else it's "-"
+        
+        // Cache lists for completion
+        QStringList m_artists;
+        QStringList m_albums;
+        QStringList m_genres;
+        QStringList m_composers;
 
     private:
         void exclusiveSelectOf( int which );
@@ -80,6 +87,11 @@ class EditFilterDialog : public KDialog
         void slotCheckOR();
 
         void assignPrefixNOT();
+        
+        void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
+        void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
+        void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
+        void resultReady( const QString &collectionId, const Meta::GenreList &genres );
 
     protected slots:
         virtual void slotDefault();
