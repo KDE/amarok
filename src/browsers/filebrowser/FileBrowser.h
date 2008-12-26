@@ -90,7 +90,7 @@ public:
 public Q_SLOTS:
     void slotFilterChange( const QString& );
     void setDir( KUrl );
-    void setDir( const QString& url ) { setDir( url ); }
+    void setDir( const QString& url ) { setDir( KUrl( url ) ); }
     void selectorViewChanged( QAbstractItemView * );
 
 private Q_SLOTS:
