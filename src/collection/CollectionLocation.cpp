@@ -19,6 +19,7 @@
 
 #include "CollectionLocation.h"
 #include "Collection.h"
+#include "Debug.h"
 #include "QueryMaker.h"
 
 CollectionLocation::CollectionLocation()
@@ -325,8 +326,16 @@ void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
     Meta::TrackList notDeletableTracks;
+    int count = m_tracksWithError.count();
+    debug() << "Transfer errors: " << count;
     foreach( Meta::TrackPtr track, tracks )
     {
+        if( m_tracksWithError.contains( track ) )
+        {
+            debug() << "transfer error for track " << track->playableUrl();
+            continue;
+        }
+
         if( !remove( track ) )
             notDeletableTracks.append( track );
     }
@@ -369,6 +378,12 @@ CollectionLocation::setGoingToRemoveSources( bool removeSources )
 {
     m_removeSources = removeSources;
 }
-    
+
+void
+CollectionLocation::transferError( const Meta::TrackPtr &track, const QString &error )
+{
+	DEBUG_BLOCK
+    m_tracksWithError.insert( track, error );
+}
 
 #include "CollectionLocation.moc"

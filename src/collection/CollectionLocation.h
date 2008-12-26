@@ -156,6 +156,11 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool movedByDestination( const Meta::TrackPtr &track ) const;
         virtual bool consideredByDestination( const Meta::TrackPtr &track ) const;
         virtual void setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
+    
+        /**
+        * tells the source location that an error occured during the transfer of the file
+        */
+        virtual void transferError( const Meta::TrackPtr &track, const QString &error );
         
         /**
          * Inserts a set of TrackPtrs directly into the database without needing to actuall move any files
@@ -255,6 +260,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         
         bool m_removeSources;
         QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;
+        QMap<Meta::TrackPtr, QString> m_tracksWithError;
 };
 
 #endif

@@ -59,7 +59,7 @@ class SqlCollectionLocation : public CollectionLocation
         SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
         bool m_overwriteFiles;
-        QSet<KJob*> m_jobs;
+        QMap<KJob*, Meta::TrackPtr> m_jobs;
 };
 
 #endif

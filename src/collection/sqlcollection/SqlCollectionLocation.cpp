@@ -125,7 +125,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
                 if( !dir.rmdir( name ) )
                     break;
             }
-                  
+
         }
         return removed;
     }
@@ -169,12 +169,17 @@ void
 SqlCollectionLocation::slotJobFinished( KJob *job )
 {
     DEBUG_BLOCK
-    m_jobs.remove( job );
+
+    debug() << "job.error: " << job->error() << " errorstring: " << job->errorString();
+
     if( job->error() )
     {
         //TODO: proper error handling
         warning() << "An error occurred when copying a file: " << job->errorString();
+        source()->transferError(m_jobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
+        m_destinations.remove( m_jobs.value( job ) );
     }
+    m_jobs.remove( job );
     job->deleteLater();
     if( m_jobs.isEmpty() )
     {
@@ -238,7 +243,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
             The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
-            m_jobs.insert( job );
+            m_jobs.insert( job, track );
             job->start();
             jobsCreated = true;
         }
