@@ -251,8 +251,7 @@ e.g. a track that has a length of three minutes.</string>
           <item>
            <widget class="QRadioButton" name="matchAny" >
             <property name="toolTip" >
-             <string>Check this box to look for the tracks that contain at least one of the words "
- you typed in the related Simple Search edit box</string>
+             <string>Check this box to look for the tracks that contain at least one of the words you typed in the related Simple Search edit box</string>
             </property>
             <property name="text" >
              <string>Match Any Word</string>
@@ -336,7 +335,7 @@ e.g. a track that has a length of three minutes.</string>
            <string>Check this box to negate the defined filter condition</string>
           </property>
           <property name="whatsThis" >
-           <string>&lt;p>If this option is checked the defined filter condition will be negated. This means that, for example, you can define a filter that looks for all tracks that are not of a specific album, artist, and so on.&lt;/p>"</string>
+           <string>&lt;p>If this option is checked the defined filter condition will be negated. This means that, for example, you can define a filter that looks for all tracks that are not of a specific album, artist, and so on.&lt;/p></string>
           </property>
           <property name="text" >
            <string>Invert Condition</string>
