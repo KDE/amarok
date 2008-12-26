@@ -572,7 +572,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    QueryMaker *qm = static_cast<QueryMaker*>( sender() );
+    QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
+    if( !qm )
+        return;
+    
     CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 
     //reset icon for this item
@@ -595,7 +598,10 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     
     //if we are expanding an item, we'll find the sender in m_childQueries
     //otherwise we are filtering all collections
-    QueryMaker *qm = static_cast<QueryMaker*>( sender() );
+    QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
+    if( !qm )
+        return;
+    
     if( d->m_childQueries.contains( qm ) )
     {
         CollectionTreeItem *parent = d->m_childQueries.value( qm );
@@ -650,8 +656,20 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
             }
             //we only insert the "Various Artists" node
             beginInsertRows( parentIndex, 0, 0 );
-            new CollectionTreeItem( data, parent );
+            CollectionTreeItem *vaItem = new CollectionTreeItem( data, parent );
             endInsertRows();
+            
+            CollectionTreeItem *tmp = parent;
+            while( tmp->isDataItem() )
+                tmp = tmp->parent();
+            
+            if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
+            {
+                debug() << "Expand vanode for collection " << collectionId;
+                QModelIndex vanode = createIndex( 0, 0, vaItem ); //we've just inserted the vaItem at row 0
+                emit expandIndex( vanode );
+            }
+            
         }
     }
 }
@@ -739,7 +757,6 @@ CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 void
 CollectionTreeItemModelBase::slotFilter()
 {
-    DEBUG_BLOCK
 
     if ( isQuerying() )
         return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
@@ -771,13 +788,43 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
     if ( index.isValid() )      //probably unnecessary, but let's be safe
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        if ( item->isDataItem() )
+        if ( item->isDataItem() && item->data() )
         {
             m_expandedItems.remove( item->data() );
+        }
+        else if( item->isDataItem() && !item->data() ) //Various artists nodes
+        {
+            CollectionTreeItem *tmp = item->parent();
+            while( tmp->isDataItem() )
+                tmp = tmp->parent();
+            
+            m_expandedVariousArtistsNodes.remove( tmp->parentCollection() );
         }
         else
         {
             m_expandedCollections.remove( item->parentCollection() );
+        }
+    }
+}
+
+void
+CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
+{
+    if( index.isValid() )
+    {
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        //we are really only interested in the various artists nodes here.
+        //we have to remember whether the user expanded a various artists node or not.
+        //otherwise we won't be able to automatically expand the various artists node after filtering again
+        //there is exactly one various artists node per collection, so use the collection to store that information
+        if( item->isDataItem() && !item->data() )
+        {
+            CollectionTreeItem *tmp = item->parent();
+            while( tmp->isDataItem() )
+                tmp = tmp->parent();
+            
+            debug() << "VA node for collection " << tmp->parentCollection()->collectionId() << " expanded";
+            m_expandedVariousArtistsNodes.insert( tmp->parentCollection() );
         }
     }
 }

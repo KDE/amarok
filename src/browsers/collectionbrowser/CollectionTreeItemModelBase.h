@@ -104,6 +104,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void slotFilter();
 
         void slotCollapsed( const QModelIndex &index );
+    
+        void slotExpanded( const QModelIndex &index );
 
     protected:
         virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent) const;
@@ -129,6 +131,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
         QSet<Amarok::Collection*> m_expandedCollections;
+        QSet<Amarok::Collection*> m_expandedVariousArtistsNodes;
         
     protected slots:
         void loadingAnimationTick();

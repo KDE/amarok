@@ -39,7 +39,7 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Amarok::Collection
     m_expandedCollections.insert( m_collection );
     setLevels( levelType );
 
-    connect( collection, SIGNAL( updated() ), this, SLOT( update() ) ) ;
+    connect( collection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
 
 }
 
@@ -54,6 +54,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
 
     updateHeaderText();
     m_expandedItems.clear();
+    m_expandedVariousArtistsNodes.clear();
     reset(); //resets the whole model, as the data changed
 }
 

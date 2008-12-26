@@ -64,6 +64,12 @@ CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelI
 
         if( leftItem->isAlbumItem() && rightItem->isAlbumItem() )
             return lessThanAlbum( left, right );
+        
+        if( leftItem->isDataItem() && !leftItem->data() ) //left item is a various artists node
+            return true;
+        
+        if( rightItem->isDataItem() && !rightItem->data() ) //rightItem is a various artists node
+            return false;
     }
 
     return lessThanIndex( left, right );

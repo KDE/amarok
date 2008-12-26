@@ -82,6 +82,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );
         void slotCollapsed( const QModelIndex &index );
+        void slotExpanded( const QModelIndex &index );
 
         void slotPlayChildTracks();
         void slotAppendChildTracks();

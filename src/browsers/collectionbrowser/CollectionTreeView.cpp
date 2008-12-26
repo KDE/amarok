@@ -86,13 +86,15 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
-
+    connect( this, SIGNAL( expanded( const QModelIndex & ) ), SLOT( slotExpanded( const QModelIndex & ) ) );
 }
 
 
 void CollectionTreeView::setModel(QAbstractItemModel * model)
 {
-    m_treeModel = static_cast<CollectionTreeItemModelBase *> ( model );
+    m_treeModel = qobject_cast<CollectionTreeItemModelBase *> ( model );
+    if( !m_treeModel )
+        return;
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
@@ -443,6 +445,15 @@ CollectionTreeView::slotCollapsed( const QModelIndex &index )
         m_treeModel->slotCollapsed( m_filterModel->mapToSource( index ) );
     else
         m_treeModel->slotCollapsed( index );
+}
+
+void
+CollectionTreeView::slotExpanded( const QModelIndex &index )
+{
+    if( m_filterModel )
+        m_treeModel->slotExpanded( m_filterModel->mapToSource( index ));
+    else
+        m_treeModel->slotExpanded( index );
 }
 
 void
@@ -949,6 +960,9 @@ void
 CollectionTreeView::deleteQueryDone()
 {
     DEBUG_BLOCK
+    QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
+    if( qm )
+        qm->deleteLater();
 }
 
 

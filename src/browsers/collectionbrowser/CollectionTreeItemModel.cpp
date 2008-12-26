@@ -147,7 +147,7 @@ CollectionTreeItemModel::collectionAdded( Amarok::Collection *newCollection )
     if ( !newCollection )
         return;
 
-    connect( newCollection, SIGNAL( updated() ), this, SLOT( update() ) ) ;
+    connect( newCollection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
 
     QString collectionId = newCollection->collectionId();
     if ( d->m_collections.contains( collectionId ) )
@@ -234,12 +234,13 @@ void CollectionTreeItemModel::update()
     QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Amarok::Collection *coll, collections )
     {
-        connect( coll, SIGNAL( updated() ), this, SLOT( update() ) ) ;
+        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );
     }
     m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
     updateHeaderText();
     m_expandedItems.clear();
+    m_expandedVariousArtistsNodes.clear();
     reset();
 }
 #include "CollectionTreeItemModel.moc"
