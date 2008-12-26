@@ -238,7 +238,7 @@ WikipediaEngine::wikiResult( KJob* job )
     {
         copyright = m_wiki.mid( m_wiki.indexOf(copyrightMark) + copyrightMark.length() );
         copyright = copyright.mid( 0, copyright.indexOf( "</li>" ) );
-        copyright.replace( "<br />", QString() );
+        copyright.remove( "<br />" );
         //only one br at the beginning
         copyright.prepend( "<br />" );
     }
@@ -249,32 +249,32 @@ WikipediaEngine::wikiResult( KJob* job )
     // Adding back license information
     m_wiki += copyright;
     m_wiki.append( "</div>" );
-    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString() );
+    m_wiki.remove( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>") );
 
-    m_wiki.replace( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ), QString() );
+    m_wiki.remove( QRegExp( "<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>" ) );
 
     m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
 
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
-    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString() );
+    m_wiki.remove( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ) );
 
     // Remove hidden table rows as well
     QRegExp hidden( "<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>", Qt::CaseInsensitive );
     hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
-    m_wiki.replace( hidden, QString() );
+    m_wiki.remove( hidden );
 
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
-    m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString() );
+    m_wiki.remove( QRegExp( "style= *\"[^\"]*\"" ) );
     // We need to leave the classes behind, otherwise styling it ourselves gets really nasty and tedious and roughly impossible to do in a sane maner
     //m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
     // let's remove the form elements, we don't want them.
-    m_wiki.replace( QRegExp( "<input[^>]*>" ), QString() );
-    m_wiki.replace( QRegExp( "<select[^>]*>" ), QString() );
-    m_wiki.replace( "</select>\n" , QString() );
-    m_wiki.replace( QRegExp( "<option[^>]*>" ), QString() );
-    m_wiki.replace( "</option>\n" , QString() );
-    m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString() );
-    m_wiki.replace( "</textarea>" , QString() );
+    m_wiki.remove( QRegExp( "<input[^>]*>" ) );
+    m_wiki.remove( QRegExp( "<select[^>]*>" ) );
+    m_wiki.remove( "</select>\n"  );
+    m_wiki.remove( QRegExp( "<option[^>]*>" ) );
+    m_wiki.remove( "</option>\n"  );
+    m_wiki.remove( QRegExp( "<textarea[^>]*>" ) );
+    m_wiki.remove( "</textarea>" );
 
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
