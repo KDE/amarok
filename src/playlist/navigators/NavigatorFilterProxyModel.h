@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef PLAYLISTNAVIGATORFILTERPROXYMODEL_H
 #define PLAYLISTNAVIGATORFILTERPROXYMODEL_H
 
@@ -29,9 +29,11 @@ namespace Playlist {
 /**
 A proxy model used by navigators to only operate on tracks that match the current paylist search term
 
-This model only forwards the functions needed by the navigators and is not intended to be used for populating a view. The proxy also provides a number of special functions to deal with cases like when a search term is active and the currently playing track is not in the subset represented by this proxy.
+This model only forwards the functions needed by the navigators and is not intended to be used for
+populating a view. The proxy also provides a number of special functions to deal with cases like when
+a search term is active and the currently playing track is not in the subset represented by this proxy.
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class NavigatorFilterProxyModel : public QSortFilterProxyModel {
     Q_OBJECT
@@ -56,14 +58,14 @@ public:
      * @return The id of the row.
      */
     quint64 idAt( const int row ) const;
-    
+
     /**
      * Get the sate of the track at given row in the proxy model.
      * @param row The row in proxy terms.
      * @return The state of the track at the row.
      */
     Item::State stateOfRow( int row ) const;
-    
+
     /**
      * Get the sate of a track by its id.
      * @param id The id of the track.
@@ -102,11 +104,11 @@ public:
 
 
     QVariant data( const QModelIndex& index, int role ) const;
-    
+
     bool rowExists( int row ) const;
     void setActiveRow( int row );
     Meta::TrackPtr trackAt( int row ) const;
-    
+
     Qt::DropActions supportedDropActions() const;
     Qt::ItemFlags flags( const QModelIndex& ) const;
     QStringList mimeTypes() const;
@@ -115,7 +117,7 @@ public:
 
 
 
-    
+
     int find( const QString & searchTerm, int searchFields );
     int findNext( const QString & searchTerm, int selectedRow, int searchFields );
     int findPrevious( const QString & searchTerm, int selectedRow, int searchFields );
@@ -130,7 +132,7 @@ protected:
      * Reimplemented from QSortFilterProxyModel. Used internally by the proxy to
      * determine if a given row in the source model should be included in this
      * proxy. When in pass through mode, this always returns true.
-     * @param row The row in the source model to check. 
+     * @param row The row in the source model to check.
      * @param source_parent Ignored.
      * @return True if the row should be included, false otherwise.
      */
@@ -155,7 +157,7 @@ protected slots:
     void slotRemovedIds( const QList<quint64> &ids );
 
 signals:
-    
+
     /**
      * Signal forwarded from the source model.
      * @param the list of id's added that are also represented by this proxy.
@@ -174,12 +176,12 @@ signals:
     void filterChanged();
 
 private:
-    
+
     /**
      * Constructor.
      */
     NavigatorFilterProxyModel();
-    
+
     /**
      * Destructor.
      */
@@ -187,9 +189,9 @@ private:
 
     int rowToSource( int row ) const;
     int rowFromSource( int row ) const;
-    
+
     bool m_passThrough;
-    
+
     static NavigatorFilterProxyModel* s_instance;      //! instance variable
 };
 
