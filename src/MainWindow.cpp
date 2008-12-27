@@ -711,10 +711,6 @@ MainWindow::createActions()
     action->setText( i18n( "Next Track" ) );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( next() ) );
 
-    action = new KAction(i18n( "Toggle Focus" ), this);
-    action->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
-    connect( action, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
-
     action = new KAction( i18n( "Increase Volume" ), this );
     ac->addAction( "increaseVolume", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
