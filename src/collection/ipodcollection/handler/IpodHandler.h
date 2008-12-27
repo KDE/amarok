@@ -95,6 +95,7 @@ struct PodcastInfo
            /* Get Methods */
 
            QString mountPoint() const { return m_mountPoint; }
+           QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
            /**
             * Successfully read Ipod database?
             */
@@ -274,6 +275,10 @@ struct PodcastInfo
            bool m_success;
 
            /* Miscellaneous Variables */
+
+           // tracks that failed to copy
+
+           QMap<Meta::TrackPtr, QString> m_tracksFailed;
 
            // tempdir for covers
            KTempDir *m_tempdir;

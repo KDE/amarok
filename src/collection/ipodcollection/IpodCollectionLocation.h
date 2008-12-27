@@ -44,10 +44,10 @@ class IpodCollectionLocation : public CollectionLocation
 
     signals:
         void addDevice( const QString &udi );
-        
 
     private slots:
         void slotJobFinished( KJob *job );
+        void copyOperationFinished( bool success );
 
     private:
 

@@ -172,7 +172,7 @@ void
 IpodCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
 {
     DEBUG_BLOCK
-    connect( m_handler, SIGNAL( copyTracksDone( bool ) ),
+    connect( m_handler, SIGNAL( copyTracksDone( bool  ) ),
              SLOT( slotCopyTracksCompleted( bool ) ), Qt::QueuedConnection );
     m_handler->copyTrackListToDevice( tracklist );
 }
@@ -356,12 +356,9 @@ IpodCollection::slotCopyTracksCompleted( bool success )
     debug() << "Trying to write iTunes database";
     m_handler->writeDatabase();
 
-    // If tracks copied correctly, inform CollectionLocation
-    if( success )
-    {
-        debug() << "Copying all tracks succeeded";
-        emit copyTracksCompleted();
-    }
+    // inform collection location that copying is done
+
+    emit copyTracksCompleted( success );
 
     // inform treeview collection has updated
 

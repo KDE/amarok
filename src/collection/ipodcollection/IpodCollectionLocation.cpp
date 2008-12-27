@@ -81,8 +81,8 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
 {
     DEBUG_BLOCK
 
-    connect( m_collection, SIGNAL( copyTracksCompleted() ),
-             SIGNAL( slotCopyOperationFinished() ) );
+    connect( m_collection, SIGNAL( copyTracksCompleted( bool ) ),
+             SLOT( copyOperationFinished( bool ) ) );
 
     // Copy list of tracks
 
@@ -92,6 +92,25 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
 
 //    m_collection->collectionUpdated();
 //    slotCopyOperationFinished();
+}
+
+void
+IpodCollectionLocation::copyOperationFinished( bool success )
+{
+    DEBUG_BLOCK
+    if( !success )
+    {
+        QMap<Meta::TrackPtr, QString> failedTracks = m_collection->handler()->tracksFailed();
+        debug() << "The following tracks failed to copy";
+        foreach( Meta::TrackPtr track, failedTracks.keys() )
+            {
+                // TODO: better error handling
+                debug() << track->artist()->name() << " - " << track->name() << " with error: " << failedTracks[ track ];
+                source()->transferError( track, failedTracks[ track ] );
+            }
+    }
+
+    slotCopyOperationFinished();
 }
 
 void

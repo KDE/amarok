@@ -624,6 +624,8 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 
     hasDupe = false;
 
+    m_tracksFailed.clear();
+
     /* Clear Transfer queue */
 
     m_tracksToCopy.clear();
@@ -639,7 +641,10 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 
         if( !( format == "mp3" || format == "aac" || format == "mp4" ) )
         {
-            debug() << "Unsupported Ipod format: " << format;
+            QString error;
+            error += "Unsupported Ipod format: ";
+            error += format;
+            m_tracksFailed.insert( track, error );
             continue;
         }
 
@@ -664,10 +669,10 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
         {
 
             if( ( tempTrack->artist()->name() != track->artist()->name() )
-                && ( tempTrack->album()->name() != track->album()->name() )
-                && ( tempTrack->genre()->name() != track->genre()->name() )
-                && ( tempTrack->composer()->name() != track->composer()->name() )
-                && ( tempTrack->year()->name() != track->year()->name() ) )
+                || ( tempTrack->album()->name() != track->album()->name() )
+                || ( tempTrack->genre()->name() != track->genre()->name() )
+                || ( tempTrack->composer()->name() != track->composer()->name() )
+                || ( tempTrack->year()->name() != track->year()->name() ) )
             {
                 debug() << "Same title, but other tags differ, not a dupe";
                 continue;
@@ -680,12 +685,15 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
             break;
         }
 
-
-
         if( !isDupe )
             m_tracksToCopy.append( track );
         else
+        {
             debug() << "Track " << track->name() << " is a dupe!";
+
+            QString error = "Already on device";
+            m_tracksFailed.insert( track, error );
+        }
     }
 
     // NOTE: see comment at top of copyTrackListToDevice

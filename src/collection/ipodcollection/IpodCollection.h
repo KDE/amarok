@@ -95,7 +95,7 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
         void collectionReady();
         void collectionDisconnected( const QString &udi );
 
-        void copyTracksCompleted();
+        void copyTracksCompleted( bool success );
 
     public slots:
         void connectDevice();
