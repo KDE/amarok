@@ -117,6 +117,7 @@ CoverManager::CoverManager()
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Artist );
+    qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
