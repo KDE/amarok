@@ -5,19 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
-    * Queuing support makes a return. (BR 171939)
-    * Make it possible to lock "standard" and "random track" playback mode to
-      only play tracks that matche the current playlist search.
-    * Add advanced, configurable, searching to the playlist.
+    * Add advanced, configurable, searching and filtering to the playlist.
     * Add "Stop after track" option to the playlist menu.
     * Queue track functionality has returned. (BR 171939)
-    * Add advanced, configurable, searching and filtering to the playlist.
-    * MTP devices can now delete multiple tracks at once.
-    * Status bar notification oncopying or deleting tracks on Ipod.
-    * Ipod ratings are read/written/displayed.
-    * Ipod playcounts are read and displayed on Current Track Info applet.
-    * Lastfm Settings Dialog can now check to ensure username/password is 
-      correct. (BR 144456)
     * Growl support on OS X.
     * Greatly improved Librivox.org service script. It now works for all books,
       and dynamically fetches a summary of each book that is shown in the 
@@ -38,6 +28,8 @@ VERSION 2.0.1
       enabled.
 
   CHANGES:
+    * MTP devices can now delete multiple tracks at once.
+    * Status bar notification oncopying or deleting tracks on Ipod.
     * Don't fold the Collection Browser after editing or updating the
       collection. (BR 166841)
     * Replaced the systray icon with a more modern logo.
@@ -48,12 +40,21 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * Files could be deleted when moving files to an unwritable destination.
+      (BR 178701)
+    * Don't override cached lyrics when fetching. (BR 178196)
+    * Show a warning when the collection scanner dies. (BR 176154)
+    * MTP: Date was being set incorrectly. (BR 171194)
+    * Ipod ratings are read/written/displayed.
+    * Ipod playcounts are read and displayed on Current Track Info applet.
+    * Lastfm Settings Dialog can now check to ensure username/password is 
+      correct. (BR 144456)
     * Don't delete files if an error occurs during transfer. (BR 178701)
     * Fix bug that showed misplaced applets in the Context View after resizing
       the window and changing to another containment. (BR 176101)
     * MPRIS GetMetadata() call returns arturl for last.fm streams. (BR 178695)
     * Fix grouping of various artist albums in the playlist. (BR 175604)
-    * Updating statistics properly on windows and Mac versions.
+    * Update statistics properly on windows and Mac versions.
     * Fix progress indicator disapearing when skipping in last.fm streams.
     * Write the discnumber field for mp3 tags.
     * Don't start a fadeout when stopping paused media. (BR 178057)
