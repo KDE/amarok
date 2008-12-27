@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "NavigatorFilterProxyModel.h"
 
 #include "Debug.h"
@@ -56,23 +56,24 @@ bool Playlist::NavigatorFilterProxyModel::filterAcceptsRow( int row, const QMode
 {
     //DEBUG_BLOCK
 
-    //debug() << "checking for match agaist row: " << row;
+    //debug() << "checking for match against row: " << row;
     Q_UNUSED( source_parent );
 
     if ( m_passThrough ) {
         //debug() << "true";
         return true;
     }
-    
+
     bool match = Model::instance()->matchesCurrentSearchTerm( row );
-    debug() << match;
+    //debug() << match;
     return match;
 }
 
 int Playlist::NavigatorFilterProxyModel::activeRow() const
 {
 
-    //we map the active row form the source to this model. if The active row is not in the items exposed by this proxy, just point to out first item.
+    //we map the active row form the source to this model. if the active row is not in the items
+	//exposed by this proxy, just point to our first item.
     Model * model = Model::instance();
     return rowFromSource( model->activeRow() );
 }
@@ -141,7 +142,7 @@ int Playlist::NavigatorFilterProxyModel::firstMatchBeforeActive()
 
     if ( matchRow == -1 )
         return -1;
-    
+
     return rowFromSource( matchRow );
 }
 
@@ -175,7 +176,7 @@ void Playlist::NavigatorFilterProxyModel::slotRemovedIds( const QList< quint64 >
     }
 
     if ( proxyIds.size() > 0 )
-        emit( removedIds( proxyIds ) );
+        emit removedIds( proxyIds );
 }
 
 
@@ -196,7 +197,7 @@ void Playlist::NavigatorFilterProxyModel::setPassThrough( bool passThrough )
     m_passThrough = passThrough;
 
     //make sure to update model when mode changes ( as we might have ignored and
-    //number of changes to the search therm )
+    //number of changes to the search term )
     invalidateFilter();
     emit( filterChanged() );
     emit( layoutChanged() );
@@ -280,13 +281,13 @@ int Playlist::NavigatorFilterProxyModel::currentSearchFields()
 QVariant Playlist::NavigatorFilterProxyModel::data( const QModelIndex & index, int role ) const
 {
 
-     //HACK around incomlete index causing a crash...
+     //HACK around incomplete index causing a crash...
     QModelIndex newIndex = this->index( index.row(), index.column() );
 
     QModelIndex sourceIndex = mapToSource( newIndex );
     return Model::instance()->data( sourceIndex, role );
 
-    
+
 }
 
 

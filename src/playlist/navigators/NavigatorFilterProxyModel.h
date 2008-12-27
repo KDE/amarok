@@ -40,7 +40,7 @@ class NavigatorFilterProxyModel : public QSortFilterProxyModel {
 public:
 
     /**
-     * Acessor function for singlton pattern.
+     * Accessor function for singleton pattern.
      * @return The class instance.
      */
     static NavigatorFilterProxyModel* instance();
@@ -67,7 +67,7 @@ public:
     Item::State stateOfRow( int row ) const;
 
     /**
-     * Get the sate of a track by its id.
+     * Get the state of a track by its id.
      * @param id The id of the track.
      * @return The state of the track.
      */
@@ -89,7 +89,7 @@ public:
 
     /**
      * Notify proxy that the search term of searched fields has changed. Since
-     * this calls does not sue the parents filter values, this method needs to be
+     * this calls does not use the parents filter values, this method needs to be
      * called when the values change.
      */
     void filterUpdated();
