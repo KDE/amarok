@@ -62,21 +62,25 @@ Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, cons
     QFontMetricsF bfm( boldfont );
 
     int groupMode = index.data( GroupRole ).toInt();
-    switch ( groupMode )
+
+    switch( groupMode )
     {
-    case Head:
-        height = static_cast<int>( MARGIN + qMax( SINGLE_TRACK_ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + 3 * PADDING + nfm.height() + MARGINBODY );
-        break;
-    case Body:
-        height = static_cast<int>( nfm.height() + 2 * PADDING + 2 * MARGINBODY );
-        break;
-    case Tail:
-        height = static_cast<int>( MARGINBODY + nfm.height() + 2 * PADDING + MARGIN );
-        break;
-    case None:
-    default:
-        height = static_cast<int>( qMax( SINGLE_TRACK_ALBUM_WIDTH, nfm.height() * 2 + 4 * PADDING ) + 2 * MARGIN );
-        break;
+        case Head:
+            height = static_cast<int>( MARGIN + qMax( SINGLE_TRACK_ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + 3 * PADDING + nfm.height() + MARGINBODY );
+            break;
+
+        case Body:
+            height = static_cast<int>( nfm.height() + 2 * PADDING + 2 * MARGINBODY );
+            break;
+
+        case Tail:
+            height = static_cast<int>( MARGINBODY + nfm.height() + 2 * PADDING + MARGIN );
+            break;
+
+        case None:
+        default:
+            height = static_cast<int>( qMax( SINGLE_TRACK_ALBUM_WIDTH, nfm.height() * 2 + 4 * PADDING ) + 2 * MARGIN );
+            break;
     }
 
     return QSize( 120, height );
@@ -106,10 +110,6 @@ Playlist::PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewIt
         paintBody( painter, option, index );
     else if ( groupMode == Tail )
         paintTail( painter, option, index );
-    /*else if ( groupMode == Head_Collapsed )
-        paintCollapsedHead( painter, option, index );
-    else if ( m_groupMode == Collapsed )
-        paintCollapsed( );*/
     else
         QStyledItemDelegate::paint( painter, option, index );
 
@@ -378,8 +378,8 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
     //setTextColor(index.data(ActiveTrackRole).toBool());
     painter->drawText( textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString );
     painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
-
 }
+
 void
 Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
@@ -443,7 +443,6 @@ Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionVi
     //setTextColor(index.data(ActiveTrackRole).toBool());
     painter->drawText( textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString );
     painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
-
 }
 
 void
@@ -497,9 +496,7 @@ Playlist::PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionVi
     //setTextColor(index.data(ActiveTrackRole).toBool());
     painter->drawText( textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString );
     painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
-
 }
-
 
 QPointF
 Playlist::PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) const
@@ -518,41 +515,3 @@ Playlist::PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& 
 
 }
 
-#if 0
-void
-Playlist::PrettyItemDelegate::setTextColor( const QModelIndex& index ) const
-{
-    int state = index.data( StateRole ).toInt();
-
-    if ( index.data( ActiveTrackRole ).toBool() )
-    {
-        m_items->bottomLeftText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-        m_items->bottomRightText->setDefaultTextColor( App::instance()->palette().brightText().color() );
-    }
-    else
-    {
-        QColor textColor;
-        switch ( state )
-        {
-            // TODO: what should these be really ?
-        case Item::NewlyAdded:
-            textColor = App::instance()->palette().link().color();
-            m_items->bottomLeftText->setDefaultTextColor( textColor );
-            m_items->bottomRightText->setDefaultTextColor( textColor );
-            break;
-
-        case Item::DynamicPlayed:
-            textColor = App::instance()->palette().brush( QPalette::Disabled, QPalette::ButtonText ).color();
-            m_items->bottomLeftText->setDefaultTextColor( textColor );
-            m_items->bottomRightText->setDefaultTextColor( textColor );
-            break;
-
-        case Item::Normal:
-        default:
-            textColor = App::instance()->palette().text().color();
-            m_items->bottomLeftText->setDefaultTextColor( textColor );
-            m_items->bottomRightText->setDefaultTextColor( textColor );
-        }
-    }
-}
-#endif
