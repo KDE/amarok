@@ -682,15 +682,16 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
      * So each item has to be removed individually, and you can't just iterate
      * over the commands, calling "m_items.removeAt(index)" as you go, because
      * the indices of m_items will change with every removeAt().  Thus the
-     * following strategy of copying m_item, and removing the items from the
-     * copy, and then replacing m_items with the newly modified list.
+     * following strategy of copying m_item, looking up the index in the copy and
+     * removing the item from the original list. (The strategy was changed from
+     * only replacing m_items at the end because that meant lying to the view -- Max)
      *
      * As a safety measure, the items themselves are not deleted until after m_items
      * has been replaced.  If you delete as you go, then m_items will be holding
      * dangling pointers, and the program will probably crash if the model is
      * accessed in this state.   -- stharward */
 
-    QList<Item*> newlist(m_items); // copy the current item list
+    QList<Item*> originalList(m_items); // copy the current item list
     QList<Item*> delitems;
     foreach( const RemoveCmd &rc, cmds )
     {
@@ -700,23 +701,20 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         if ( track->album() )
             unsubscribeFrom( track->album() );
 
-        Item* item = m_items.at(rc.second);
-        int idx = newlist.indexOf(item);
+        Item* item = originalList.at(rc.second);
+        int idx = m_items.indexOf(item);
         if (idx != -1) {
             beginRemoveRows(QModelIndex(), idx, idx);
-            delitems.append(newlist.takeAt(idx));
+            delitems.append(item);
+            m_items.removeAll( item );
+            delIds.append( item->id() );
+            m_itemIds.remove( item->id() );
             endRemoveRows();
         } else {
             error() << "tried to delete a non-existent item:" << rc.first->prettyName() << rc.second;
         }
     }
-    m_items = newlist;
 
-    foreach( Item* item, delitems ) {
-        m_itemIds.remove( item->id() );
-        delIds.append( item->id() );
-    }
-    
     qDeleteAll(delitems);
     delitems.clear();
 
@@ -825,7 +823,7 @@ int Playlist::Model::find( const QString & searchTerm, int searchFields )
     }
 
     return matchRow;
-    
+
 }
 
 int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int searchFields )
