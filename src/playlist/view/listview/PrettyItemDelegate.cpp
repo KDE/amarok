@@ -410,6 +410,8 @@ Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionVi
         const QRect rect( x, y, w, h );
         painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", w, h, "active_overlay" ) ); // TODO: actual queue overlay
         painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+
+        line.setLeft( line.left() + w ); // adjust the left edge of the text to account for the queue indicator
     }
 
     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
