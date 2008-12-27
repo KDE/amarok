@@ -166,6 +166,7 @@ IpodTrack::IpodTrack( IpodCollection *collection )
 IpodTrack::~IpodTrack()
 {
     //nothing to do
+    
 }
 
 QString

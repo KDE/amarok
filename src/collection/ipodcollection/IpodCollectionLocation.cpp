@@ -81,15 +81,8 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
 {
     DEBUG_BLOCK
 
-    // iterate through source tracks
-    /*
-    foreach( const Meta::TrackPtr &track, sources.keys() )
-    {
-        debug() << "copying from " << sources[ track ];
-        m_collection->copyTrackToDevice( track );
-    }
-
-    */
+    connect( m_collection, SIGNAL( copyTracksCompleted() ),
+             SIGNAL( slotCopyOperationFinished() ) );
 
     // Copy list of tracks
 
@@ -98,7 +91,7 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
 //    m_collection->copyTracksCompleted();
 
 //    m_collection->collectionUpdated();
-    slotCopyOperationFinished();
+//    slotCopyOperationFinished();
 }
 
 void

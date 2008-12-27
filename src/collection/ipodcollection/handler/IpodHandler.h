@@ -122,7 +122,7 @@ struct PodcastInfo
            bool writeITunesDB( bool threaded=false );
 
         signals:
-           void copyTracksDone();
+           void copyTracksDone( bool success );
            void deleteTracksDone();
            void incrementProgress();
            void endProgressOperation( const QObject *owner );

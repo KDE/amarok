@@ -609,10 +609,20 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
     DEBUG_BLOCK
 
     bool isDupe;
+    bool hasDupe;
     QString format;
     TrackMap trackMap = m_memColl->trackMap();
 
     Meta::TrackList tempTrackList;
+
+    // HACK: Copy is said to fail if >=1 tracks isn't copied to device.
+    // This is so that a move operation doesn't attempt to delete
+    // the tracks from the original collection, as some of these tracks
+    // would not have been copied to the device.
+
+    m_copyFailed = false;
+
+    hasDupe = false;
 
     /* Clear Transfer queue */
 
@@ -666,8 +676,11 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
             /* Track is already on there, break */
 
             isDupe = true;
+            hasDupe = true;
             break;
         }
+
+
 
         if( !isDupe )
             m_tracksToCopy.append( track );
@@ -675,21 +688,16 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
             debug() << "Track " << track->name() << " is a dupe!";
     }
 
+    // NOTE: see comment at top of copyTrackListToDevice
+
+    if( hasDupe )
+        m_copyFailed = true;
+
     /* List ready, begin copying */
 
     copyTracksToDevice();
 
 }
-/*
-void
-IpodHandler::slotQueueTrackForCopy( QString collectionId, Meta::TrackList tracklist )
-{
-    Q_UNUSED( collectionId );
-    DEBUG_BLOCK
-    debug() << "Tracklist size: " << tracklist.size();
-
-}
-*/
 
 void
 IpodHandler::copyTracksToDevice()
@@ -701,7 +709,7 @@ IpodHandler::copyTracksToDevice()
 
     if( m_tracksToCopy.size() == 0 )
     {
-        m_memColl->collectionUpdated();
+        emit copyTracksDone( false );
         return;
     }
     debug() << "Copying " << m_tracksToCopy.size() << " tracks";
@@ -1107,11 +1115,12 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         m_copyFailed = true;
         debug() << "file transfer failed: " << job->errorText();
     }
+    /*
     else
     {
         m_copyFailed = false;
     }
-
+*/
     m_wait = false;
 
     m_jobcounter--;
@@ -1135,7 +1144,7 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         if( m_jobcounter == 0 )
         {
             emit incrementProgress();
-            emit copyTracksDone();
+            emit copyTracksDone( !m_copyFailed );
         }
 
     }
