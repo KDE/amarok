@@ -36,23 +36,25 @@
 #include <QFontMetricsF>
 #include <QPainter>
 
-const qreal Playlist::PrettyItemDelegate::ALBUM_WIDTH = 50.0;
-const qreal Playlist::PrettyItemDelegate::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
-const qreal Playlist::PrettyItemDelegate::MARGIN = 2.0;
-const qreal Playlist::PrettyItemDelegate::MARGINH = 6.0;
-const qreal Playlist::PrettyItemDelegate::MARGINBODY = 1.0;
-const qreal Playlist::PrettyItemDelegate::PADDING = 1.0;
+using namespace Playlist;
 
-Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
+const qreal PrettyItemDelegate::ALBUM_WIDTH = 50.0;
+const qreal PrettyItemDelegate::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
+const qreal PrettyItemDelegate::MARGIN = 2.0;
+const qreal PrettyItemDelegate::MARGINH = 6.0;
+const qreal PrettyItemDelegate::MARGINBODY = 1.0;
+const qreal PrettyItemDelegate::PADDING = 1.0;
+
+PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
         : QStyledItemDelegate( parent )
 {
     DEBUG_BLOCK
 }
 
-Playlist::PrettyItemDelegate::~PrettyItemDelegate() { }
+PrettyItemDelegate::~PrettyItemDelegate() { }
 
 QSize
-Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     int height = 0;
 
@@ -87,7 +89,7 @@ Playlist::PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, cons
 }
 
 void
-Playlist::PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     painter->save();
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
@@ -117,7 +119,7 @@ Playlist::PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewIt
 }
 
 bool
-Playlist::PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
+PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
 {
     QRect headerBounds = rect.adjusted(( int )MARGINH,
                                        ( int )MARGIN,
@@ -128,7 +130,7 @@ Playlist::PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& r
 }
 
 void
-Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QRectF trackRect( option.rect );
     QFontMetricsF nfm( option.font );
@@ -141,11 +143,8 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
         albumPixmap = track->album()->imageWithBorder( int( SINGLE_TRACK_ALBUM_WIDTH ), 3 );
 
     //offset cover if non square
-    QPointF offset = centerImage( albumPixmap, imageLocation() );
-    QRectF imageRect( imageLocationSingleTrack().x() + offset.x(),
-                      imageLocationSingleTrack().y() + offset.y(),
-                      imageLocationSingleTrack().width() - offset.x() * 2,
-                      imageLocationSingleTrack().height() - offset.y() * 2 );
+    const QPointF offset = centerImage( albumPixmap, imageLocation() );
+    const QRectF imageRect = imageRectify( offset );
 
     painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
@@ -235,19 +234,10 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
     QString albumString = nfm.elidedText( rawAlbumString, Qt::ElideRight, albumNameWidth );
 
     // draw the "current track" highlight underneath the text
-    if ( index.data( ActiveTrackRole ).toBool() )
-    {
-        painter->drawPixmap(( int )topLine.x(), ( int )topLine.y(),
-                            The::svgHandler()->renderSvg(
-                                "active_overlay",
-                                ( int )bottomLine.width(), ( int )bottomLine.height(),
-                                "active_overlay"
-                            )
-                           );
-    }
+    if( index.data( ActiveTrackRole ).toBool() )
+        paintActiveOverlay( painter, topLine.x(), topLine.y(), bottomLine.width(), bottomLine.height() );
 
     // render text in here
-    //setTextColor(index.data(ActiveTrackRole).toBool());
     painter->drawText( titleTextBox, Qt::AlignLeft | Qt::AlignVCenter, titleString );
     painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
     painter->drawText( artistTextBox, Qt::AlignLeft | Qt::AlignVCenter, artistString );
@@ -266,7 +256,7 @@ Playlist::PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleO
 }
 
 void
-Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QRectF trackRect( option.rect );
     QFontMetricsF nfm( option.font );
@@ -282,11 +272,8 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
         albumPixmap = track->album()->imageWithBorder( int( SINGLE_TRACK_ALBUM_WIDTH ), 3 );
 
     //offset cover if non square
-    QPointF offset = centerImage( albumPixmap, imageLocation() );
-    QRectF imageRect( imageLocation().x() + offset.x(),
-                      imageLocation().y() + offset.y(),
-                      imageLocation().width() - offset.x() * 2,
-                      imageLocation().height() - offset.y() * 2 );
+    const QPointF offset = centerImage( albumPixmap, imageLocation() );
+    const QRectF imageRect = imageRectify( offset );
 
     painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
@@ -338,16 +325,8 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
     QRectF line( QPointF( MARGINH, headheight + MARGIN ), QPointF( trackRect.width() - MARGINH, trackRect.height() - MARGINBODY ) );
 
     // draw the "current track" highlight underneath the text
-    if ( index.data( ActiveTrackRole ).toBool() )
-    {
-        painter->drawPixmap(( int )line.x(), ( int )line.y(),
-                            The::svgHandler()->renderSvg(
-                                "active_overlay",
-                                ( int )line.width(), ( int )line.height(),
-                                "active_overlay"
-                            )
-                           );
-    }
+    if( index.data( ActiveTrackRole ).toBool() )
+        paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
 
     // right: track time
     QString timeString;
@@ -381,7 +360,7 @@ Playlist::PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionVi
 }
 
 void
-Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QRectF trackRect( option.rect );
     QFontMetricsF nfm( option.font );
@@ -390,15 +369,7 @@ Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionVi
 
     // draw the "current track" highlight underneath the text
     if ( index.data( ActiveTrackRole ).toBool() )
-    {
-        painter->drawPixmap(( int )line.x(), ( int )line.y(),
-                            The::svgHandler()->renderSvg(
-                                "active_overlay",
-                                ( int )line.width(), ( int )line.height(),
-                                "active_overlay"
-                            )
-                           );
-    }
+        paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
 
     // Draw queue display indicator
     if( index.data( StateRole ).toInt() & Item::Queued )
@@ -448,7 +419,7 @@ Playlist::PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionVi
 }
 
 void
-Playlist::PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     QRectF trackRect( option.rect );
     QFontMetricsF nfm( option.font );
@@ -456,16 +427,9 @@ Playlist::PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionVi
     QRectF line( MARGINH, MARGINBODY, trackRect.width() - ( 2*MARGINH ), trackRect.height() - MARGINBODY - MARGIN );
 
     // draw the "current track" highlight underneath the text
-    if ( index.data( ActiveTrackRole ).toBool() )
-    {
-        painter->drawPixmap(( int )line.x(), ( int )line.y(),
-                            The::svgHandler()->renderSvg(
-                                "active_overlay",
-                                ( int )line.width(), ( int )line.height(),
-                                "active_overlay"
-                            )
-                           );
-    }
+    if( index.data( ActiveTrackRole ).toBool() )
+        paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
+    
 
     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
 
@@ -501,7 +465,7 @@ Playlist::PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionVi
 }
 
 QPointF
-Playlist::PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) const
+PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) const
 {
     qreal pixmapRatio = ( qreal )pixmap.width() / ( qreal )pixmap.height();
 
@@ -514,6 +478,27 @@ Playlist::PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& 
         moveByX = ( rect.width() - ( rect.height() * pixmapRatio ) ) / 2.0;
 
     return QPointF( moveByX, moveByY );
+}
 
+const QRectF
+PrettyItemDelegate::imageRectify( const QPointF offset ) const
+{
+    const QRectF imageRect( imageLocationSingleTrack().x() + offset.x(),
+                      imageLocationSingleTrack().y() + offset.y(),
+                      imageLocationSingleTrack().width() - offset.x() * 2,
+                      imageLocationSingleTrack().height() - offset.y() * 2 );
+    return imageRect;
+}
+
+void
+PrettyItemDelegate::paintActiveOverlay( QPainter *painter, qreal x, qreal y, qreal w, qreal h ) const
+{
+    painter->drawPixmap( (int) x, (int) y,
+                        The::svgHandler()->renderSvg(
+                            "active_overlay",
+                            (int) w, (int) h,
+                            "active_overlay"
+                        )
+                       );
 }
 

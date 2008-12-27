@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.0.1
   FEATURES:
+    * Queuing support makes a return. (BR 171939)
+    * Make it possible to lock "standard" and "random track" playback mode to
+      only play tracks that matche the current playlist search.
+    * Add advanced, configurable, searching to the playlist.
     * Add "Stop after track" option to the playlist menu.
     * Queue track functionality has returned. (BR 171939)
     * Add advanced, configurable, searching and filtering to the playlist.
@@ -34,14 +38,17 @@ VERSION 2.0.1
       enabled.
 
   CHANGES:
+    * Don't fold the Collection Browser after editing or updating the
+      collection. (BR 166841)
     * Replaced the systray icon with a more modern logo.
     * "Cool-Streams" radio service script is now enabled by default.
     * Show more verbose output when copying tracks to the local collection.
-    * Custom Sorting in the Collection has returned.
+    * Custom Sorting in the Collection Browser has returned.
     * Memory use optimizations.
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * Don't delete files if an error occurs during transfer. (BR 178701)
     * Fix bug that showed misplaced applets in the Context View after resizing
       the window and changing to another containment. (BR 176101)
     * MPRIS GetMetadata() call returns arturl for last.fm streams. (BR 178695)
