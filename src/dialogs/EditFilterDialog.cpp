@@ -47,8 +47,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     setDefaultButton( Cancel );
     showButtonSeparator( true );
     m_ui.setupUi( mainWidget() );
-    resize( m_ui.verticalLayout->sizeHint() );
-
 
     // Redefine "Default" button
     KGuiItem defaultButton( i18n("&Append"), "list-add" );
