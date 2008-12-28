@@ -29,7 +29,7 @@
     <rect>
      <x>2</x>
      <y>5</y>
-     <width>611</width>
+     <width>630</width>
      <height>401</height>
     </rect>
    </property>
@@ -52,8 +52,7 @@
        </size>
       </property>
       <property name="text" >
-       <string>Edit the filter for finding tracks with specific attributes
-e.g. a track that has a length of three minutes.</string>
+       <string>Edit the filter for finding tracks with specific attributes, e.g. a track that has a length of three minutes.</string>
       </property>
      </widget>
     </item>
@@ -156,7 +155,7 @@ e.g. a track that has a length of three minutes.</string>
          <x>10</x>
          <y>21</y>
          <width>591</width>
-         <height>25</height>
+         <height>29</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout" >
@@ -233,8 +232,8 @@ e.g. a track that has a length of three minutes.</string>
           <rect>
            <x>8</x>
            <y>17</y>
-           <width>124</width>
-           <height>110</height>
+           <width>130</width>
+           <height>114</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="ratioLayout" >
@@ -301,7 +300,7 @@ e.g. a track that has a length of three minutes.</string>
              <x>0</x>
              <y>24</y>
              <width>60</width>
-             <height>50</height>
+             <height>56</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="ratioLayout2" >
