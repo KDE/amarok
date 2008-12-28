@@ -86,7 +86,7 @@ OsdConfig::OsdConfig( QWidget* parent )
 		"<li>Elapsed Time - %17"
                 "</ul>"
             "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
-                "<pre>%19</pre>"
+                "<pre>%18</pre>"
             "Will not show <b>Score: <i>%score</i></b> if the track has no score." );
     */
 }
