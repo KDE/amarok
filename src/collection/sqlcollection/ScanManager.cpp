@@ -98,7 +98,8 @@ ScanManager::startFullScan()
     cleanTables();
     m_scanner = new AmarokProcess( this );
     *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
-    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
+    if( AmarokConfig::scanRecursively() )
+        *m_scanner << "-r";
     *m_scanner << MountPointManager::instance()->collectionFolders();
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -137,6 +138,7 @@ void ScanManager::startIncrementalScan()
 
     if( dirs.isEmpty() )
     {
+        debug() << "Scanning nothing, return.";
         return;
     }
     if( !m_dbusHandler )
@@ -145,8 +147,10 @@ void ScanManager::startIncrementalScan()
     }
     m_scanner = new AmarokProcess( this );
     *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
-    if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
-    if( pApp->isUniqueInstance() ) *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
+    if( AmarokConfig::scanRecursively() )
+        *m_scanner << "-r";
+    if( pApp->isUniqueInstance() ) 
+        *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -167,6 +171,7 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
+    DEBUG_BLOCK
     // In the database all directories have a trailing slash, so we must add that
     if ( !path.endsWith( '/' ) )
         path += '/';
@@ -178,12 +183,14 @@ ScanManager::isDirInCollection( QString path )
             m_collection->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
             .arg( QString::number( deviceid ), m_collection->escape( rpath ) ) );
 
+    debug() << "dir " << rpath << " is in collection? " << !values.isEmpty();
     return !values.isEmpty();
 }
 
 bool
 ScanManager::isFileInCollection( const QString &url  )
 {
+    DEBUG_BLOCK
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
 
@@ -201,6 +208,7 @@ ScanManager::isFileInCollection( const QString &url  )
     }
     QStringList values = m_collection->query( sql );
 
+    debug() << "File " << rpath << " is in collection? " << !values.isEmpty();
     return !values.isEmpty();
 }
 
@@ -208,6 +216,10 @@ void
 ScanManager::setBlockScan( bool blockScan )
 {
     m_blockScan = blockScan;
+    if( m_parser )
+    {
+        warning() << "Scanner is running while scan got blocked";
+    }
     //TODO what happens if the collection scanner is currently running?
 }
 
@@ -225,13 +237,15 @@ ScanManager::slotReadReady()
     QString newData;
     line = m_scanner->readLine();
 
-    while( !line.isEmpty() ) {
+    while( !line.isEmpty() )
+    {
         // amarokcollectionscanner outputs UTF-8 regardless of local encoding
         QString data = QTextCodec::codecForName( "UTF-8" )->toUnicode( line );
         if( !data.startsWith( "exepath=" ) ) // skip binary location info from scanner
             newData += data;
         line = m_scanner->readLine();
     }
+    debug() << "Parsing all the following data:\n" << newData;
     if( m_parser )
         m_parser->addNewXmlData( newData );
 }
@@ -335,6 +349,7 @@ ScanManager::getDirsToScan() const
             }
         }
     }
+    debug() << "Scanning the following dirs: " << result;
     return result;
 }
 
@@ -393,9 +408,10 @@ ScanManager::restartScanner()
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
-        if( pApp->isUniqueInstance() ) *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
+        if( pApp->isUniqueInstance() )
+            *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     }
-    *m_scanner << "-s";
+    *m_scanner << "-s"; // "--restart"
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
     connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
@@ -410,6 +426,7 @@ ScanManager::restartScanner()
 void
 ScanManager::cleanTables()
 {
+    DEBUG_BLOCK
     m_collection->query( "DELETE FROM tracks;" );
     m_collection->query( "DELETE FROM genres;" );
     m_collection->query( "DELETE FROM years;" );
@@ -524,8 +541,12 @@ XmlParseJob::run()
                 }
                 else if( localname == "tags" )
                 {
-                    //TODO handle tag data
+                    debug() << "Parsing FILE:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
+                    QList<QXmlStreamAttribute> list = attrs.toList();
+                    foreach( QXmlStreamAttribute l, list )
+                        debug() << " TAG: " << l.name().toString() << '\t' << l.value().toString() << '\n';
+                    debug() << "End FILE";
                     QVariantMap data;
                     data.insert( Meta::Field::URL, attrs.value( "path" ).toString() );
                     data.insert( Meta::Field::TITLE, attrs.value( "title" ).toString() );
@@ -571,7 +592,12 @@ XmlParseJob::run()
                 }
                 else if( localname == "folder" )
                 {
+                    debug() << "Parsing FOLDER:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
+                    QList<QXmlStreamAttribute> list = attrs.toList();
+                    foreach( QXmlStreamAttribute l, list )
+                        debug() << " ATTRIBUTE: " << l.name().toString() << '\t' << l.value().toString() << '\n';
+                    debug() << "End FOLDER";
                     const QString folder = attrs.value( "path" ).toString();
                     const QFileInfo info( folder );
 
@@ -580,11 +606,17 @@ XmlParseJob::run()
                 else if( localname == "playlist" )
                 {
                     //TODO check for duplicates
+                    debug() << "Saving playlist with path: " << m_reader.attributes().value( "path" ).toString();
                     The::playlistManager()->save( m_reader.attributes().value( "path" ).toString() );
                 }
                 else if( localname == "image" )
                 {
+                    debug() << "Parsing IMAGE:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
+                    QList<QXmlStreamAttribute> thisList = attrs.toList();
+                    foreach( QXmlStreamAttribute l, thisList )
+                        debug() << " ATTR: " << l.name().toString() << '\t' << l.value().toString() << '\n';
+                    debug() << "End IMAGE";
                     // Deserialize CoverBundle list
                     QStringList list = attrs.value( "list" ).toString().split( "AMAROK_MAGIC" );
                     QList< QPair<QString, QString> > covers;
@@ -600,8 +632,7 @@ XmlParseJob::run()
                 }
             }
         }
-    }
-    while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
+    } while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
 
     if( !m_finishRequested && ( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError ) )
     {
