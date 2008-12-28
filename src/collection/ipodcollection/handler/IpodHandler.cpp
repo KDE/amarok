@@ -1431,7 +1431,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     // HACK: not setting cover art until working properly
 
     return;
-
+#if 0
     KTemporaryFile tempImageFile; // create a temp file to save pixmap
     // use tempdir's path
     tempImageFile.setPrefix( m_tempdir->name() );
@@ -1465,6 +1465,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
         debug() << "Image failed to add!";
         ipodtrack->has_artwork = 0x02;
     }
+#endif
 }
 
 void
