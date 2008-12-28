@@ -52,7 +52,7 @@ Win_SettingsWindow::open(HWND parent)
 IeSettings::IeSettings()
 {
 	if (!WinHttpGetIEProxyConfigForCurrentUser(this)) {
-		fAutoDetect = FALSE;
+		fAutoDetect = false;
 		lpszAutoConfigUrl =	lpszProxy = lpszProxyBypass = 0;
 	}
 }

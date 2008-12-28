@@ -111,7 +111,7 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 			opts.dwFlags = WINHTTP_AUTOPROXY_AUTO_DETECT;
 			opts.dwAutoDetectFlags = WINHTTP_AUTO_DETECT_TYPE_DHCP | WINHTTP_AUTO_DETECT_TYPE_DNS_A;
 		}
-		opts.fAutoLogonIfChallenged = TRUE;
+		opts.fAutoLogonIfChallenged = true;
 		
 		if (WinHttpGetProxyForUrl(m_hSession, A2W((LPCSTR)url.utf16()), &opts, &info))
 		{

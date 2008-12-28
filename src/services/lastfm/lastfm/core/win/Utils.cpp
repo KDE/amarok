@@ -130,7 +130,7 @@ Utils::createShortcut( LPCTSTR lpszFileName,
     #endif
 
         // Write the shortcut to disk
-        hRes = ipPersistFile->Save(wszTemp, TRUE);
+        hRes = ipPersistFile->Save(wszTemp, true);
     }
 
     return hRes;
