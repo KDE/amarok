@@ -50,6 +50,7 @@ using namespace Meta;
 MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
     : QObject( parent )
     , m_memColl( mc )
+    , m_statusbar( 0 )
     , m_device( 0 )
     , m_default_parent_folder( 0 )
     , m_folders( 0 )

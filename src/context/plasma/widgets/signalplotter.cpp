@@ -47,7 +47,10 @@ class SignalPlotterPrivate
 {
     public:
         SignalPlotterPrivate()
-            : scaledBy(0.0)
+            : precision(0)
+            , samples(0)
+            , bezierCurveOffset(0)
+            , scaledBy(0.0)
             , verticalMin(0.0)
             , verticalMax(0.0)
             , niceVertMin(0.0)

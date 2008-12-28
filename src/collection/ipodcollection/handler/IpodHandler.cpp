@@ -62,6 +62,8 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     : QObject( parent )
     , m_memColl( mc )
     , m_device( 0 )
+    , m_jobcounter( 0 )
+    , m_statusbar( 0 )
     , m_masterPlaylist( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
