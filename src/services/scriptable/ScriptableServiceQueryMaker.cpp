@@ -422,8 +422,12 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
         TrackList tracks;
         if ( d->parentId != -1 )
         {
-            AlbumMatcher albumMatcher( m_collection->albumById( d->parentId ) );
-            tracks = albumMatcher.match( m_collection );
+            Meta::AlbumPtr album = m_collection->albumById( d->parentId );
+            if( album )
+            {
+                AlbumMatcher albumMatcher( album );
+                tracks = albumMatcher.match( m_collection );
+            }
         } 
         debug() << "there are " << tracks.count() << " tracks";
         handleResult( tracks );
