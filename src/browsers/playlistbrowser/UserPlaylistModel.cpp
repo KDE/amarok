@@ -95,8 +95,8 @@ PlaylistBrowserNS::UserModel::createIndex( int row, int column, SqlPlaylistViewI
     else
         m_viewItems[ index ] = item;
     QModelIndex ret = QAbstractItemModel::createIndex( row, column, index );
-    if( debugIt )
-        debug() << "created " << ret << " with " << ret.parent().internalId();
+//    if( debugIt )
+//        debug() << "created " << ret << " with " << ret.parent().internalId();
     return ret;
 }
 
