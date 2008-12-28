@@ -159,16 +159,24 @@ MtpTrack::MtpTrack( MtpCollection *collection, const QString &format)
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
+    , m_mtptrack( 0 )
+    , m_isCopied( false )
+    , m_id( 0 )
+    , m_folder_id( 0 )
+    , m_comment()
     , m_name()
     , m_type( format )
+    , m_bitrate( 0 )
+    , m_filesize( 0 )
     , m_length( 0 )
+    , m_discNumber( 0 )
+    , m_samplerate( 0 )
     , m_trackNumber( 0 )
+    , m_bpm( 0.0 )
     , m_displayUrl()
     , m_playableUrl()
+    , m_url()
 {
-    m_displayUrl = QString();
-    m_playableUrl = QString();
-    m_isCopied = false;
 }
 
 MtpTrack::~MtpTrack()

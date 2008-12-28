@@ -247,7 +247,8 @@ void TagGuesser::loadSchemes()      //note to self: this method should get its s
 
 void TagGuesser::guess( const QString &absFileName, FilenameLayoutDialog *dialog )
 {
-    m_title = m_artist = m_album = m_track = m_comment = m_year = m_composer = m_genre = QString();
+    m_title.clear(); m_artist.clear(); m_album.clear(); m_track.clear();
+    m_comment.clear(); m_year.clear(); m_composer.clear(); m_genre.clear();
 
     int caseOptions = dialog->getCaseOptions();
     int whitespaceOptions = dialog->getWhitespaceOptions();

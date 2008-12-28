@@ -191,7 +191,7 @@ void Medium::loadUserLabel()
     }
     else
     {
-        m_properties[USER_LABEL] = QString();
+        m_properties[USER_LABEL].clear();
     }
 }
 

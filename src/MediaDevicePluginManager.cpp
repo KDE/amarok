@@ -306,7 +306,7 @@ ManualDeviceAdder::ManualDeviceAdder()
 
 
     m_successful = false;
-    m_newId = QString();
+    m_newId.clear();
 
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Add New Device") ) );
@@ -417,7 +417,7 @@ ManualDeviceAdder::getId( bool recreate )
 
     if( !m_newId.isEmpty() && recreate )
     {
-        m_newId = QString();
+        m_newId.clear();
     }
 
     if( m_mdaMountPoint->isEnabled() == false && m_mdaName->text().isNull() )

@@ -79,7 +79,7 @@ AlbumItem::metadataChanged( Meta::AlbumPtr album )
         year = first->year()->name();
         // do some sanity checking
         if( year.length() != 4 )
-            year = QString();
+            year.clear();
     }
 
     if( !year.isEmpty() )

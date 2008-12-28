@@ -40,8 +40,6 @@ MediaDeviceTrack::MediaDeviceTrack( MediaDeviceCollection *collection, const QSt
 {
   //QString url = QString( "ipod://%1:%2/%3/%4.%5" )
   //                .arg( host, QString::number( port ), dbId, itemId, format );
-    m_displayUrl = QString();
-    m_playableUrl = QString();
 }
 
 MediaDeviceTrack::~MediaDeviceTrack()

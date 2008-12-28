@@ -164,12 +164,12 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     if( data.contains( "label" ) )
         m_label = data[ "label" ].toString() + ':';
     else
-        m_label = QString();
+        m_label.clear();
 
     if( data.contains( "title" ) )
         m_title = data[ "title" ].toString();
     else
-        m_title = QString();
+        m_title.clear();
 }
 
 void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

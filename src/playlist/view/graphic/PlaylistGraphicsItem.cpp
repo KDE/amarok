@@ -241,7 +241,7 @@ Playlist::GraphicsItem::resize( Meta::TrackPtr track, int totalWidth )
         if ( track->length() > 0 )
             prettyLength = Meta::secToPrettyTime( track->length() );
         else
-            prettyLength = QString();
+            prettyLength.clear();
     }
 
     QString album;

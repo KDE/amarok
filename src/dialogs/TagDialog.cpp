@@ -443,10 +443,8 @@ TagDialog::guessFromFilename() //SLOT
     dialog->setMainWidget( widget );
     
     const int dcode = dialog->exec();
-    QString schemeFromDialog = QString();       //note to self: see where to put it from an old revision
+    QString schemeFromDialog; //note to self: see where to put it from an old revision
     debug() << "FilenameLayoutDialog finished.";
-    schemeFromDialog = "";
-
     if( dcode == KDialog::Accepted )
         schemeFromDialog = widget->getParsableScheme();
     else
