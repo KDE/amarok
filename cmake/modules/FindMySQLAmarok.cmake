@@ -22,13 +22,14 @@ find_path(MYSQL_INCLUDE_DIR mysql.h
    /opt/local/include/mysql
 )
 
-find_library(MYSQL_LIBRARIES NAMES mysqlclient
+find_library(MYSQL_LIBRARIES NAMES mysqlclient 
    PATHS
    ~/usr/lib/mysql
    /opt/local/lib/mysql5/mysql
    /opt/mysqle/lib/mysql
    /usr/lib/mysql
    /usr/lib64/mysql
+   /usr/lib64
    /usr/local/lib/mysql
    /opt/local/lib/mysql
 )
