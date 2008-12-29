@@ -884,9 +884,6 @@ MainWindow::createMenus()
     m_toolsMenu->addAction( actionCollection()->action("script_manager") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( actionCollection()->action("update_collection") );
-
-    connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
-    connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Tools menu
 
     //BEGIN Settings menu
@@ -897,8 +894,6 @@ MainWindow::createMenus()
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
-
-    connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
     m_menubar->addMenu( actionsMenu );
