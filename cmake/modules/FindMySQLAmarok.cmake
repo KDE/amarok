@@ -28,6 +28,7 @@ find_library(MYSQL_LIBRARIES NAMES mysqlclient
    /opt/local/lib/mysql5/mysql
    /opt/mysqle/lib/mysql
    /usr/lib/mysql
+   /usr/lib64/mysql
    /usr/local/lib/mysql
    /opt/local/lib/mysql
 )
