@@ -45,6 +45,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_searchEdit->setClearButtonShown( true );
     m_searchEdit->setFrame( true );
     m_searchEdit->setToolTip( i18n( "Start typing to progressively search through the playlist" ) );
+    m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
 
