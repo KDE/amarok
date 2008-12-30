@@ -51,6 +51,7 @@ class MtpCollectionLocation : public CollectionLocation
 
     private slots:
         void slotJobFinished( KJob *job );
+        void copyOperationFinished( bool success );
 
     private:
 

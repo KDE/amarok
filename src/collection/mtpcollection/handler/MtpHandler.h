@@ -83,6 +83,8 @@ namespace Mtp
        void terminate();
        bool succeeded() const { return m_success; }
 
+       QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
+
        // Some internal stuff that must be public due to libmtp being in C
 
        static int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
@@ -134,7 +136,7 @@ namespace Mtp
            void succeeded();
            void failed();
 
-           void copyTracksDone();
+           void copyTracksDone( bool success );
            void deleteTracksDone();
 
            void setProgress( int steps );
@@ -164,6 +166,9 @@ namespace Mtp
             Meta::TrackList m_tracksToCopy;
             Meta::TrackList m_tracksToDelete;
 
+            Meta::TrackPtr m_lastTrackCopied;
+            QMap<Meta::TrackPtr, QString> m_tracksFailed;
+
             ProgressBarNG *m_statusbar;
 
         // mtp database
@@ -178,7 +183,6 @@ namespace Mtp
         QString                 m_format;
         QString                 m_name;
         QStringList             m_supportedFiles;
-        
 
         QMutex                  m_critical_mutex;
 

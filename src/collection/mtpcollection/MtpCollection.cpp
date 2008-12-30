@@ -179,8 +179,8 @@ void
 MtpCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
 {
     DEBUG_BLOCK
-    connect( m_handler, SIGNAL( copyTracksDone() ),
-                     SLOT( slotCopyTracksCompleted() ), Qt::QueuedConnection );
+    connect( m_handler, SIGNAL( copyTracksDone( bool ) ),
+                     SLOT( slotCopyTracksCompleted( bool ) ), Qt::QueuedConnection );
     m_handler->copyTrackListToDevice( tracklist );
 }
 
@@ -430,11 +430,15 @@ MtpCollection::deleteTracksSlot( Meta::TrackList tracklist )
 }
 
 void
-MtpCollection::slotCopyTracksCompleted()
+MtpCollection::slotCopyTracksCompleted( bool success )
 {
     DEBUG_BLOCK
 
     m_handler->endBarProgressOperation();
+
+    // inform collection location that copying is done
+
+    emit copyTracksCompleted( success );
 
     // inform treeview collection has updated
     emit updated();

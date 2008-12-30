@@ -110,6 +110,8 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
     void collectionReady();
     void collectionDisconnected( const QString &udi );
 
+    void copyTracksCompleted( bool success );
+
     public slots:
 //    void deleteTrackToDelete();
 //    void deleteTrackSlot( Meta::MtpTrackPtr track);
@@ -119,7 +121,7 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
     void slotDisconnect();
 
     private slots:
-        void slotCopyTracksCompleted();
+        void slotCopyTracksCompleted( bool success );
 
         void handlerSucceeded();
         void handlerFailed();

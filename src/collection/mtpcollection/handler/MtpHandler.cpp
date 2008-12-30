@@ -479,9 +479,18 @@ MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
     DEBUG_BLOCK
 
     bool isDupe;
+    bool hasDupe;
     TrackMap trackMap = m_memColl->trackMap();
 
     Meta::TrackList tempTrackList;
+
+    m_copyFailed = false;
+
+    hasDupe = false;
+
+    m_tracksFailed.clear();
+
+    m_lastTrackCopied = 0;
 
     /* Clear Transfer queue */
 
@@ -524,14 +533,23 @@ MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
             /* Track is already on there, break */
 
             isDupe = true;
+            hasDupe = true;
             break;
         }
 
         if( !isDupe )
             m_tracksToCopy.append( track );
         else
+        {
             debug() << "Track " << track->name() << " is a dupe!";
+
+            QString error = "Already on device";
+            m_tracksFailed.insert( track, error );
+        }
     }
+
+    if( hasDupe )
+        m_copyFailed = true;
 
     /* List ready, begin copying */
 
@@ -549,7 +567,7 @@ MtpHandler::copyTracksToDevice()
 
     if( m_tracksToCopy.size() == 0 )
     {
-        m_memColl->collectionUpdated();
+        emit copyTracksDone( false );
         return;
     }
     debug() << "Copying " << m_tracksToCopy.size() << " tracks";
@@ -583,6 +601,8 @@ MtpHandler::copyNextTrackToDevice()
 
         // Copy the track
 
+        m_lastTrackCopied = track;
+
         ThreadWeaver::Weaver::instance()->enqueue( new CopyWorkerThread( track, this ) );
 
     }
@@ -591,7 +611,8 @@ MtpHandler::copyNextTrackToDevice()
     else
     {
         emit incrementProgress();
-        emit copyTracksDone();
+        emit endProgressOperation( this );
+        emit copyTracksDone( !m_copyFailed );
     }
 
 }
@@ -1413,7 +1434,11 @@ void
 MtpHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
 {
     Q_UNUSED( job );
-    emit deleteTracksDone();
+    m_copyFailed = true;
+    QString error = "Job Failed";
+    m_tracksFailed.insert( m_lastTrackCopied, error );
+
+    copyNextTrackToDevice();
 }
 
 void
@@ -1421,9 +1446,16 @@ MtpHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
 {
     if( job->success() )
     {
-        copyNextTrackToDevice();
         emit incrementProgress();
     }
+    else
+    {
+        m_copyFailed = true;
+        QString error = "MTP copy error";
+        m_tracksFailed.insert( m_lastTrackCopied, error );
+    }
+
+    copyNextTrackToDevice();
 }
 
 CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MtpHandler* handler )
