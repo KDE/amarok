@@ -352,7 +352,17 @@ App::handleCliArgs() //static
     }
     */
 
+    const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
     Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+
+    // Debug output will only work from this point on. If Amarok was run without debug output before,
+    // then a part of the output (until this point) will be missing. Inform the user about this:
+    if( debugWasJustEnabled )
+    {
+       debug() << "************************************************************************************************************";
+       debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PlEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
+       debug() << "************************************************************************************************************";
+    }
 
     static bool firstTime = true;
     if( !firstTime && !haveArgs )
