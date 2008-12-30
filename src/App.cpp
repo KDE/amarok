@@ -360,7 +360,7 @@ App::handleCliArgs() //static
     if( debugWasJustEnabled )
     {
        debug() << "************************************************************************************************************";
-       debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PlEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
+       debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
        debug() << "************************************************************************************************************";
     }
 
