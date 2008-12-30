@@ -110,7 +110,8 @@ class AnimatorPrivate
 
             QMutableMapIterator<int, CustomAnimationState*> it(customAnims);
             while (it.hasNext()) {
-                delete it.value()->slot;
+                it.next();
+                delete[] it.value()->slot;
                 delete it.value();
                 it.remove();
             }
