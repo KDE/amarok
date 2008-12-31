@@ -110,8 +110,11 @@ CollectionScanner::~CollectionScanner()
 void
 CollectionScanner::doJob() //SLOT
 {
-    std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-    std::cout << "<scanner>";
+    if( !m_restart )
+    {
+        std::cout << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+        std::cout << "<scanner>";
+    }
 
     QStringList entries;
 

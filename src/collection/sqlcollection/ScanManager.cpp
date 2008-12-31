@@ -368,10 +368,11 @@ ScanManager::handleRestart()
     m_restartCount++;
     debug() << "Collection scanner crashed, restart count is " << m_restartCount;
 
+    slotReadReady(); //make sure that we read the complete buffer
+
     disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
     disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
     disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
-    m_scanner->kill();
     m_scanner->deleteLater();
     m_scanner = 0;
 
@@ -383,25 +384,13 @@ ScanManager::handleRestart()
         return;
     }
 
-    QTimer::singleShot( 1000, this, SLOT( restartScanner() ) );
+    QTimer::singleShot( 0, this, SLOT( restartScanner() ) );
 }
 
 void
 ScanManager::restartScanner()
 {
     DEBUG_BLOCK
-
-    if( m_parser )
-    {
-        ThreadWeaver::Weaver::instance()->dequeue( m_parser );
-
-        m_parser->requestFinish();
-        while( !m_parser->isFinished() )
-            usleep( 100000 ); // Sleep 100 msec
-
-        m_parser->deleteLater();
-        m_parser = 0;
-    }
 
     m_scanner = new AmarokProcess( this );
     *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
@@ -411,16 +400,13 @@ ScanManager::restartScanner()
         if( pApp->isUniqueInstance() )
             *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     }
+
     *m_scanner << "-s"; // "--restart"
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
     connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
     connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
     connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->start();
-    m_parser = new XmlParseJob( this, m_collection );
-    m_parser->setIsIncremental( m_isIncremental );
-    connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
-    ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 }
 
 void
@@ -462,7 +448,6 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     : ThreadWeaver::Job( parent )
     , m_collection( collection )
     , m_abortRequested( false )
-    , m_finishRequested( false )
     , m_isIncremental( false )
 {
     DEBUG_BLOCK
@@ -488,6 +473,7 @@ void
 XmlParseJob::run()
 {
     DEBUG_BLOCK
+
     QList<QVariantMap > directoryData;
     bool firstTrack = true;
     QString currentDir;
@@ -505,22 +491,25 @@ XmlParseJob::run()
     do
     {
         m_abortMutex.lock();
-        bool abort = m_abortRequested;
+        const bool abort = m_abortRequested;
         m_abortMutex.unlock();
 
-        m_finishMutex.lock();
-        bool finish = m_finishRequested;
-        m_finishMutex.unlock();
-
-        if( abort || finish )
+        if( abort )
             break;
         
-        //get new xml data or wait till new xml data is available
+        debug() << "Get new xml data or wait till new xml data is available";
+
         m_mutex.lock();
         if( m_nextData.isEmpty() )
         {
+            debug() << "before: m_wait.wait( &m_mutex )";
             m_wait.wait( &m_mutex );
+            debug() << "after:  m_wait.wait( &m_mutex )";
         }
+        
+        if( m_nextData.isEmpty() )
+            break;
+
         m_reader.addData( m_nextData );
         m_nextData.clear();
         m_mutex.unlock();
@@ -531,10 +520,11 @@ XmlParseJob::run()
             if( m_reader.isStartElement() )
             {
                 QStringRef localname = m_reader.name();
-                if( localname == "dud" || localname == "tags" || localname == "playlist" )
+                if( localname == "dud" || localname == "tags" || localname == "playlist" || localname == "image" )
                 {
                     emit incrementProgress();
                 }
+
                 if( localname == "itemcount" )
                 {
                     The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
@@ -632,17 +622,27 @@ XmlParseJob::run()
                 }
             }
         }
+        if( m_reader.error() != QXmlStreamReader::PrematureEndOfDocumentError )
+        {
+            debug() << "do-while done with error: " << m_reader.error();
+            //the error cannot be PrematureEndOfDocumentError, so handle an unrecoverable error here
+
+            // At this point, most likely the scanner has crashed and is about to get restarted.
+            // Reset the XML-reader and try to get new data:
+            debug() << "Trying to restart the QXmlStreamReader.."; 
+            m_reader.clear();
+            continue;
+        }
     } while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
 
-    if( !m_finishRequested && ( m_abortRequested || m_reader.error() != QXmlStreamReader::NoError ) )
+    if( m_abortRequested )
     {
-        debug() << "do-while done with error";
-        //the error cannot be PrematureEndOfDocumentError, so handle
-        //an unrecoverable error here
+        debug() << "Abort requested.";
         processor.rollback();
     }
     else
     {
+        debug() << "Success. Committing result to database.";
         if( !directoryData.isEmpty() )
             processor.processDirectory( directoryData );
         processor.commit();
@@ -652,6 +652,8 @@ XmlParseJob::run()
 void
 XmlParseJob::addNewXmlData( const QString &data )
 {
+    DEBUG_BLOCK
+
     m_mutex.lock();
     //append the new xml data because the parser thread
     //might not have retrieved all xml data yet
@@ -668,17 +670,6 @@ XmlParseJob::requestAbort()
     m_abortMutex.lock();
     m_abortRequested = true;
     m_abortMutex.unlock();
-    m_wait.wakeOne();
-}
-
-void
-XmlParseJob::requestFinish()
-{
-    DEBUG_BLOCK
-
-    m_finishMutex.lock();
-    m_finishRequested = true;
-    m_finishMutex.unlock();
     m_wait.wakeOne();
 }
 

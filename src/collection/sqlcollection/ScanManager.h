@@ -94,7 +94,6 @@ class XmlParseJob : public ThreadWeaver::Job
         void setIsIncremental( bool incremental );
 
         void requestAbort();
-        void requestFinish();
 
     signals:
         void incrementProgress();
@@ -104,7 +103,6 @@ class XmlParseJob : public ThreadWeaver::Job
         SqlCollection *m_collection;
 
         bool m_abortRequested;
-        bool m_finishRequested;
         bool m_isIncremental;
 
         QXmlStreamReader m_reader;
@@ -113,7 +111,6 @@ class XmlParseJob : public ThreadWeaver::Job
 
         QMutex m_mutex;
         QMutex m_abortMutex;
-        QMutex m_finishMutex;
 };
 
 #endif
