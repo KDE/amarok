@@ -40,6 +40,8 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * Fixed problems with the collection scanner often missing a part of the
+      collection, or potentially failing altogether. (BR 176154)
     * Fix Context View crash when quitting the application. (BR 179110)
     * LibRivox: Don't crash when double clicking "Enter Query". (BR 177991)
     * Files could be deleted when moving files to an unwritable destination.
