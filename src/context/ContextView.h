@@ -38,9 +38,6 @@ class QPixmap;
 namespace Context
 {
 
-static const int INTER_CONTAINMENT_MARGIN = 6;
-static const int CONTAINMENT_COLUMNS = 2;
-    
 class ContextScene;
 class ControlBox;
 
@@ -129,12 +126,10 @@ private:
     void disconnectContainment( Plasma::Containment* containment );
     
     /**
-    * Set the current containment or all containments geometry in the scene with the same geometry as the
-    * Context View widget.
-    * @arg updateAll if true updates all containments else only the current containment.
+    * Set all containments geometry in the scene with the same geometry as the Context View widget 
     */
-    void updateContainmentsGeometry( bool updateAll = false );
-    
+    void updateContainmentsGeometry();
+
     void centerOnZoom( qreal factor, Plasma::ZoomDirection direction );
     
     void loadConfig();
@@ -164,12 +159,6 @@ private slots:
     void zoomInFinished( int id );
     void zoomOutFinished( int id );
     void animateContainmentChange( qreal progress, int id );
-
-    /**
-    * Correct containments geometries after containment change animation has finished
-    * @arg id the id of the custom animation
-    */
-    void animateContainmentChangeFinished( int id );
 };
 
 } // Context namespace

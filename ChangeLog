@@ -54,8 +54,6 @@ VERSION 2.0.1
     * Lastfm Settings Dialog can now check to ensure username/password is 
       correct. (BR 144456)
     * Don't delete files if an error occurs during transfer. (BR 178701)
-    * Fix bug that showed misplaced applets in the Context View after resizing
-      the window and changing to another containment. (BR 176101)
     * MPRIS GetMetadata() call returns arturl for last.fm streams. (BR 178695)
     * Fix grouping of various artist albums in the playlist. (BR 175604)
     * Update statistics properly on windows and Mac versions.
