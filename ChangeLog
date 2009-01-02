@@ -40,6 +40,8 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * The Files browser now remembers its settings, like the active directory.
+      (BR 173742)
     * Fixed problems with the collection scanner often missing a part of the
       collection, or potentially failing altogether. (BR 176154)
     * Fix Context View crash when quitting the application. (BR 179110)
