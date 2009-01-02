@@ -3,7 +3,7 @@
    Copyright (C) 2001 Joseph Wenninger <jowenn@kde.org>
    Copyright (C) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>
    Copyright (C) 2007 Mirko Stocker <me@misto.ch>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
+   Copyright (C) 2008-2009 Mark Kretschmann <kretschmann@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -43,7 +43,6 @@
 #include <KUrlCompletion>
 #include <KUrlNavigator>
 #include <kfileplacesmodel.h>
-// #include <KUrlComboBox>
 
 
 //BEGIN Toolbar
@@ -77,11 +76,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_toolbar->setMovable( false );
     qInstallMsgHandler( oldHandler );
 
-//   m_cmbPath = new KUrlComboBox( KUrlComboBox::Directories, true, this);
-//   m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-//   KUrlCompletion* cmpl = new KUrlCompletion(KUrlCompletion::DirCompletion);
-//   m_cmbPath->setCompletionObject( cmpl );
-//   m_cmbPath->setAutoDeleteCompletionObject( true );
     m_filePlacesModel = new KFilePlacesModel( this );
     m_urlNav = new KUrlNavigator( m_filePlacesModel, KUrl( QDir::home().path() ), this );
 
@@ -89,9 +83,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
 
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
-
-// FIXME
-//  m_cmbPath->listBox()->installEventFilter( this );
 
     KHBox* filterBox = new KHBox( this );
     m_btnFilter = new QToolButton( filterBox );
@@ -107,6 +98,9 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     connect( m_filter, SIGNAL( returnPressed( const QString& ) ), m_filter, SLOT( addToHistory( const QString& ) ) );
 
     m_dirOperator = new MyDirOperator( QDir::home().path(), this );
+    KConfigGroup config = Amarok::config( "File Browser" );
+    m_dirOperator->setViewConfig( config ); //KDirOperator needs this for reading view settings
+    //setView( KFile::Default );
 
     QPalette p = m_dirOperator->palette();
     QColor c = p.color( QPalette::Base );
@@ -132,9 +126,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_toolbar->setIconDimensions( 16 );
     m_toolbar->setContextMenuPolicy( Qt::NoContextMenu );
 
-//   connect( m_cmbPath, SIGNAL( urlActivated( const KUrl&  )), this, SLOT( cmbPathActivated( const KUrl& ) ));
     connect( m_urlNav, SIGNAL( urlChanged( const KUrl& ) ), this, SLOT( cmbPathActivated( const KUrl& ) ) );
-//   connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )), this, SLOT( cmbPathReturnPressed( const QString& ) ));
     connect( m_dirOperator, SIGNAL( urlEntered( const KUrl& ) ), this, SLOT( dirUrlEntered( const KUrl& ) ) );
     connect( m_dirOperator, SIGNAL( finishedLoading() ), this, SLOT( dirFinishedLoading() ) );
 
@@ -144,10 +136,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     waitingUrl.clear();
 
     // whatsthis help
-//   m_cmbPath->setWhatsThis(       i18n("<p>Here you can enter a path for a folder to display.</p>"
-//                                     "<p>To go to a folder previously entered, press the arrow on "
-//                                     "the right and choose one.</p><p>The entry has folder "
-//                                     "completion. Right-click to choose how completion should behave.</p>") );
     m_urlNav->setWhatsThis( i18n( "<p>Here you can enter a path for a folder to display.</p>"
                                   "<p>To go to a folder previously entered, press the arrow on "
                                   "the right and choose one.</p><p>The entry has folder "
@@ -159,6 +147,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
                                      "reapplies the last filter used when toggled on.</p>" ) );
 
     readConfig();
+    setupToolbar();
 
     m_actionCollection->addAssociatedWidget( this );
     foreach( QAction* action, m_actionCollection->actions() )
@@ -168,6 +157,8 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
 FileBrowser::Widget::~Widget()
 {
     DEBUG_BLOCK
+
+    writeConfig();
 }
 
 
@@ -175,63 +166,53 @@ FileBrowser::Widget::~Widget()
 
 void FileBrowser::Widget::readConfig()
 {
-//   dir->setView( KFile::Default );
-//   dir->view()->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    DEBUG_BLOCK
 
-    // set up the toolbar
-    KConfigGroup fileselectorConfigGroup( KGlobal::config(), "fileselector" );
-    setupToolbar( fileselectorConfigGroup.readEntry( "toolbar actions", QStringList() ) );
+    KConfigGroup config = Amarok::config( "File Browser" );
 
-//   m_cmbPath->setMaxItems( fileselectorConfigGroup.readEntry( "pathcombo history len", 9 ) );
-    // if we restore history
+    m_filter->setMaxCount( config.readEntry( "Filter History Length", 9 ) );
 
-    m_filter->setMaxCount( fileselectorConfigGroup.readEntry( "filter history len", 9 ) );
+    m_dirOperator->readConfig( config );
+
+    setDir( config.readEntry( "Current Directory" ) );
+
+    m_filter->setHistoryItems( config.readEntry( "Filter History", QStringList() ), true );
+    lastFilter = config.readEntry( "Last Filter" );
+
+    const QString filter = config.readEntry( "Current Filter" );
+    m_filter->lineEdit()->setText( filter );
+    slotFilterChange( filter );
 }
 
-void FileBrowser::Widget::readSessionConfig( KConfigBase *config, const QString & name )
+
+void FileBrowser::Widget::writeConfig()
 {
-    KConfigGroup cgView( config, name + ":view" );
-    m_dirOperator->setViewConfig( cgView );
+    DEBUG_BLOCK
 
-    KConfigGroup cgDir( config, name + ":dir" );
-    m_dirOperator->readConfig( cgDir );
+    KConfigGroup config = Amarok::config( "File Browser" );
 
-    KConfigGroup cg( config, name );
-//   m_cmbPath->setUrls( cg.readPathEntry( "dir history", QStringList() ) );
+    config.writeEntry( "Current Directory", m_dirOperator->url() );
+    config.writeEntry( "Filter History Length", m_filter->maxCount() );
+    config.writeEntry( "Filter History", m_filter->historyItems() );
+    config.writeEntry( "Current Filter", m_filter->currentText() );
+    config.writeEntry( "Last Filter", lastFilter );
 
-    KConfigGroup globalConfig( KGlobal::config(), "fileselector" );
-
-    if ( globalConfig.readEntry( "restore location", true ) || kapp->isSessionRestored() )
-    {
-        QString loc( cg.readPathEntry( "location", QString() ) );
-        if ( ! loc.isEmpty() )
-            setDir( loc );
-    }
-
-    m_filter->setHistoryItems( cg.readEntry( "filter history", QStringList() ), true );
-    lastFilter = cg.readEntry( "last filter" );
-    QString flt( "" );
-    if ( globalConfig.readEntry( "restore last filter", true ) || kapp->isSessionRestored() )
-        flt = cg.readEntry( "current filter" );
-    m_filter->lineEdit()->setText( flt );
-    slotFilterChange( flt );
+    // Writes some settings from KDirOperator
+    m_dirOperator->writeConfig( config );
 }
+
 
 void FileBrowser::Widget::initialDirChangeHack()
 {
     setDir( waitingDir );
 }
 
-void FileBrowser::Widget::setupToolbar( QStringList actions )
+
+void FileBrowser::Widget::setupToolbar()
 {
-    m_toolbar->clear();
-    if ( actions.isEmpty() )
-    {
-        // reasonable collection for default toolbar
-        actions << "up" << "back" << "forward" << "home" <<
-        "short view" << "detailed view" <<
-        "bookmarks";
-    }
+    QStringList actions;
+    actions << "up" << "back" << "forward" << "home" << "short view" << "detailed view" << "bookmarks";
+
     QAction *ac;
     for ( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
     {
@@ -244,31 +225,6 @@ void FileBrowser::Widget::setupToolbar( QStringList actions )
     }
 }
 
-void FileBrowser::Widget::writeConfig()
-{
-    KConfigGroup cg = KConfigGroup( KGlobal::config(), "fileselector" );
-
-//   cg.writeEntry( "pathcombo history len", m_cmbPath->maxItems() );
-    cg.writeEntry( "filter history len", m_filter->maxCount() );
-    cg.writeEntry( "filter history", m_filter->historyItems() );
-}
-
-void FileBrowser::Widget::writeSessionConfig( KConfigBase *config, const QString & name )
-{
-    KConfigGroup cgDir( config, name + ":dir" );
-    m_dirOperator->writeConfig( cgDir );
-
-    KConfigGroup cg = KConfigGroup( config, name );
-    QStringList l;
-//   for (int i = 0; i < m_cmbPath->count(); i++)
-//   {
-//     l.append( m_cmbPath->itemText( i ) );
-//   }
-//   cg.writePathEntry( "dir history", l );
-//   cg.writePathEntry( "location", m_cmbPath->currentText() );
-    cg.writeEntry( "current filter", m_filter->currentText() );
-    cg.writeEntry( "last filter", lastFilter );
-}
 
 void FileBrowser::Widget::setView( KFile::FileView view )
 {
@@ -346,29 +302,9 @@ void FileBrowser::Widget::setDir( KUrl u )
 
 //BEGIN Private Slots
 
-void FileBrowser::Widget::cmbPathActivated( const KUrl& u )
-{
-    cmbPathReturnPressed( u.url() );
-}
-
-void FileBrowser::Widget::cmbPathReturnPressed( const QString& u )
-{
-//   KUrl typedURL( u );
-//   if ( typedURL.hasPass() )
-//     typedURL.setPass( QString() );
-//
-//   QStringList urls = m_cmbPath->urls();
-//   urls.removeAll( typedURL.url() );
-//   urls.prepend( typedURL.url() );
-//   m_cmbPath->setUrls( urls, KUrlComboBox::RemoveBottom );
-    m_dirOperator->setFocus();
-    m_dirOperator->setUrl( KUrl( u ), true );
-}
-
 void FileBrowser::Widget::dirUrlEntered( const KUrl& u )
 {
     m_urlNav->setUrl( u );
-//   m_cmbPath->setUrl( u );
 }
 
 void FileBrowser::Widget::dirFinishedLoading()
@@ -411,23 +347,6 @@ void FileBrowser::Widget::focusInEvent( QFocusEvent * )
 
 bool FileBrowser::Widget::eventFilter( QObject* o, QEvent *e )
 {
-    /*
-        This is rather unfortunate, but:
-        QComboBox does not support setting the size of the listbox to something
-        reasonable. Even using listbox->setVariableWidth() does not yield a
-        satisfying result, something is wrong with the handling of the sizehint.
-        And the popup is rather useless, if the paths are only partly visible.
-    */
-    /* FIXME QListWidget *lb = m_cmbPath->listBox();
-      if ( o == lb && e->type() == QEvent::Show ) {
-        int add = lb->height() < lb->contentsHeight() ? lb->verticalScrollBar()->width() : 0;
-        int w = qMin( mainwin->width(), lb->contentsWidth() + add );
-        lb->resize( w, lb->height() );
-        // TODO - move the listbox to a suitable place if necessary
-        // TODO - decide if it is worth caching the size while untill the contents
-        //        are changed.
-      }
-      */// TODO - same thing for the completion popup?
     return QWidget::eventFilter( o, e );
 }
 

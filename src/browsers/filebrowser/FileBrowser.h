@@ -4,7 +4,7 @@
    Copyright (C) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>
    Copyright (C) 2007 Mirko Stocker <me@misto.ch>
    Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
+   Copyright (C) 2008-2009 Mark Kretschmann <kretschmann@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -32,7 +32,6 @@
 
 #include <QMenu>
 
-// class KUrlComboBox;
 class KActionCollection;
 class KActionSelector;
 class KBookmarkHandler;
@@ -78,11 +77,7 @@ public:
     explicit Widget( const char * name, QWidget *parent );
     ~Widget();
 
-    virtual void readSessionConfig( KConfigBase *, const QString & );
-    virtual void writeSessionConfig( KConfigBase *, const QString & );
-    void readConfig();
-    void writeConfig();
-    void setupToolbar( QStringList actions );
+    void setupToolbar();
     void setView( KFile::FileView );
     MyDirOperator *dirOperator() const { return m_dirOperator; }
     KActionCollection *actionCollection() const { return m_actionCollection; }
@@ -90,12 +85,9 @@ public:
 public Q_SLOTS:
     void slotFilterChange( const QString& );
     void setDir( KUrl );
-    void setDir( const QString& url ) { setDir( KUrl( url ) ); }
     void selectorViewChanged( QAbstractItemView * );
 
 private Q_SLOTS:
-    void cmbPathActivated( const KUrl& u );
-    void cmbPathReturnPressed( const QString& u );
     void dirUrlEntered( const KUrl& u );
     void dirFinishedLoading();
     void btnFilterClick();
@@ -106,12 +98,14 @@ protected:
     void initialDirChangeHack();
 
 private:
+    void readConfig();
+    void writeConfig();
+
     ToolBar *m_toolbar;
     KActionCollection *m_actionCollection;
     KBookmarkHandler *m_bookmarkHandler;
     KUrlNavigator *m_urlNav;
     KFilePlacesModel *m_filePlacesModel;
-//       KUrlComboBox *m_cmbPath;
     MyDirOperator * m_dirOperator;
     KHistoryComboBox * m_filter;
     QToolButton *m_btnFilter;
