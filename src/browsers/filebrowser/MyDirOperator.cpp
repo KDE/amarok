@@ -47,11 +47,6 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
     dirlister->setMainWindow( The::mainWindow() );
     setDirLister( dirlister );
 
-    setView( KFile::Simple );
-    view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    view()->setContentsMargins( 0, 0, 0, 0 );
-    view()->setFrameShape( QFrame::NoFrame );
-
     connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
              this,   SLOT( fileSelected( const KFileItem& ) ) );
 

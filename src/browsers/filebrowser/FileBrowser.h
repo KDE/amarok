@@ -24,7 +24,6 @@
 #ifndef FILEBROWSER_H
 #define FILEBROWSER_H
 
-#include <KFile>
 #include <KUrl>
 #include <KVBox>
 
@@ -64,7 +63,6 @@ public:
     ~Widget();
 
     void setupToolbar();
-    void setView( KFile::FileView );
     MyDirOperator *dirOperator() const { return m_dirOperator; }
     KActionCollection *actionCollection() const { return m_actionCollection; }
 

@@ -36,6 +36,7 @@
 #include <KActionMenu>
 #include <KApplication>
 #include <KConfigGroup>
+#include <KFile>
 #include <KGlobal>
 #include <KHistoryComboBox>
 #include <KLocale>
@@ -79,9 +80,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     connect( m_filter, SIGNAL( returnPressed( const QString& ) ), m_filter, SLOT( addToHistory( const QString& ) ) );
 
     m_dirOperator = new MyDirOperator( QDir::home().path(), this );
-    KConfigGroup config = Amarok::config( "File Browser" );
-    m_dirOperator->setViewConfig( config ); //KDirOperator needs this for reading view settings
-    //setView( KFile::Default );
 
     QPalette p = m_dirOperator->palette();
     QColor c = p.color( QPalette::Base );
@@ -152,10 +150,14 @@ void FileBrowser::Widget::readConfig()
     KConfigGroup config = Amarok::config( "File Browser" );
 
     m_filter->setMaxCount( config.readEntry( "Filter History Length", 9 ) );
-
-    m_dirOperator->readConfig( config );
-
     setDir( config.readEntry( "Current Directory" ) );
+
+    // KDirOperator view configuration:
+    m_dirOperator->setView( config.readEntry( "View Style" ) == "Detail" ? KFile::Detail : KFile::Simple );
+    m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    m_dirOperator->view()->setContentsMargins( 0, 0, 0, 0 );
+    m_dirOperator->view()->setFrameShape( QFrame::NoFrame );
+    m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     m_filter->setHistoryItems( config.readEntry( "Filter History", QStringList() ), true );
     lastFilter = config.readEntry( "Last Filter" );
@@ -204,13 +206,6 @@ void FileBrowser::Widget::setupToolbar()
         if ( ac )
             m_toolbar->addAction( ac );
     }
-}
-
-
-void FileBrowser::Widget::setView( KFile::FileView view )
-{
-    m_dirOperator->setView( view );
-    m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
 
 //END Public Methods
