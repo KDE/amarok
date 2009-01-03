@@ -25,12 +25,9 @@
 #define FILEBROWSER_H
 
 #include <KFile>
-#include <KFileItem>
 #include <KToolBar>
 #include <KUrl>
 #include <KVBox>
-
-#include <QMenu>
 
 class KActionCollection;
 class KActionSelector;
@@ -39,14 +36,12 @@ class KConfigBase;
 class KFilePlacesModel;
 class KHistoryComboBox;
 class KUrlNavigator;
+
 class QAbstractItemView;
-class QAction;
-class QCheckBox;
 class QEvent;
 class QFocusEvent;
-class QShowEvent;
-class QSpinBox;
 class QToolButton;
+
 class MyDirOperator;
 
 /*

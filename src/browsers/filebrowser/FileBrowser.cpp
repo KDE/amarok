@@ -35,7 +35,6 @@
 #include <KActionCollection>
 #include <KActionMenu>
 #include <KApplication>
-#include <KConfig>
 #include <KConfigGroup>
 #include <KGlobal>
 #include <KHistoryComboBox>
