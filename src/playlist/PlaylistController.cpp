@@ -484,6 +484,8 @@ Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
 void
 Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 {
+    DEBUG_BLOCK
+
     // expand any tracks that are actually playlists
     QMutableListIterator<Meta::TrackPtr> i( tl );
     while ( i.hasNext() )
@@ -509,7 +511,7 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
     }
 
     InsertCmdList cmds;
-    row = qBound(0, Model::instance()->rowCount(), row);
+    row = qBound( 0, Model::instance()->rowCount(), row );
 
     foreach( Meta::TrackPtr t, tl )
         cmds.append( InsertCmd( t, row++ ) );
