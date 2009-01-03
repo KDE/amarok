@@ -39,25 +39,10 @@
 #include <KGlobal>
 #include <KHistoryComboBox>
 #include <KLocale>
+#include <KToolBar>
 #include <KUrlCompletion>
 #include <KUrlNavigator>
 #include <kfileplacesmodel.h>
-
-
-//BEGIN Toolbar
-// from kfiledialog.cpp - avoid qt warning in STDERR (~/.xsessionerrors)
-static void silenceQToolBar( QtMsgType, const char * ) {}
-
-
-// helper classes to be able to have a toolbar without move handle
-FileBrowser::ToolBar::ToolBar( QWidget *parent )
-    : KToolBar( parent, "Kate FileSelector Toolbar", true )
-{
-    setMinimumWidth( 10 );
-}
-
-FileBrowser::ToolBar::~ToolBar()
-{}
 
 
 FileBrowser::Widget::Widget( const char * name , QWidget *parent )
@@ -69,11 +54,8 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     setObjectName( name );
     m_actionCollection = new KActionCollection( this );
 
-    QtMsgHandler oldHandler = qInstallMsgHandler( silenceQToolBar );
-
-    m_toolbar = new FileBrowser::ToolBar( this );
+    m_toolbar = new KToolBar( this );
     m_toolbar->setMovable( false );
-    qInstallMsgHandler( oldHandler );
 
     m_filePlacesModel = new KFilePlacesModel( this );
     m_urlNav = new KUrlNavigator( m_filePlacesModel, KUrl( QDir::home().path() ), this );

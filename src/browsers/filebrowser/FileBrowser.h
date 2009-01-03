@@ -25,7 +25,6 @@
 #define FILEBROWSER_H
 
 #include <KFile>
-#include <KToolBar>
 #include <KUrl>
 #include <KVBox>
 
@@ -35,6 +34,7 @@ class KBookmarkHandler;
 class KConfigBase;
 class KFilePlacesModel;
 class KHistoryComboBox;
+class KToolBar;
 class KUrlNavigator;
 
 class QAbstractItemView;
@@ -54,15 +54,6 @@ class MyDirOperator;
 
 namespace FileBrowser
 {
-
-class ToolBar: public KToolBar
-{
-    Q_OBJECT
-
-public:
-    ToolBar( QWidget *parent );
-    virtual ~ToolBar();
-};
 
 class Widget : public KVBox
 {
@@ -96,7 +87,7 @@ private:
     void readConfig();
     void writeConfig();
 
-    ToolBar *m_toolbar;
+    KToolBar *m_toolbar;
     KActionCollection *m_actionCollection;
     KBookmarkHandler *m_bookmarkHandler;
     KUrlNavigator *m_urlNav;
