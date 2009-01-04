@@ -105,7 +105,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_toolbar->setIconDimensions( 16 );
     m_toolbar->setContextMenuPolicy( Qt::NoContextMenu );
 
-    connect( m_urlNav, SIGNAL( urlChanged( const KUrl& ) ), this, SLOT( cmbPathActivated( const KUrl& ) ) );
+    connect( m_urlNav, SIGNAL( urlChanged( const KUrl& ) ), this, SLOT( setDir( const KUrl& ) ) );
     connect( m_dirOperator, SIGNAL( urlEntered( const KUrl& ) ), this, SLOT( dirUrlEntered( const KUrl& ) ) );
 
     // Connect the bookmark handler
@@ -248,14 +248,16 @@ bool isReadable( const KUrl& url )
 
 }
 
-void FileBrowser::Widget::setDir( KUrl u )
+void FileBrowser::Widget::setDir( const KUrl& url )
 {
+    DEBUG_BLOCK
+
     KUrl newurl;
 
-    if ( !u.isValid() )
+    if ( !url.isValid() )
         newurl.setPath( QDir::homePath() );
     else
-        newurl = u;
+        newurl = url;
 
     QString pathstr = newurl.path( KUrl::AddTrailingSlash );
     newurl.setPath( pathstr );
