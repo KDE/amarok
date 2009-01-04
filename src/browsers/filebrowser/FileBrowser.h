@@ -73,7 +73,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void dirUrlEntered( const KUrl& u );
-    void btnFilterClick();
+    void filterButtonClicked();
 
 protected:
     void focusInEvent( QFocusEvent * );

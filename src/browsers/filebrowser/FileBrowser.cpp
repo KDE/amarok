@@ -73,7 +73,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_filter = new KHistoryComboBox( true, filterBox );
     m_filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     filterBox->setStretchFactor( m_filter, 2 );
-    connect( m_filterButton, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
+    connect( m_filterButton, SIGNAL( clicked() ), this, SLOT( filterButtonClicked() ) );
 
     connect( m_filter, SIGNAL( activated( const QString& ) ), SLOT( slotFilterChange( const QString& ) ) );
     connect( m_filter, SIGNAL( editTextChanged( const QString& ) ), SLOT( slotFilterChange( const QString& ) ) );
@@ -247,6 +247,7 @@ bool isReadable( const KUrl& url )
 }
 
 }
+
 void FileBrowser::Widget::setDir( KUrl u )
 {
     KUrl newurl;
@@ -285,8 +286,10 @@ void FileBrowser::Widget::dirUrlEntered( const KUrl& u )
    If on:
    Set last filter.
 */
-void FileBrowser::Widget::btnFilterClick()
+void FileBrowser::Widget::filterButtonClicked()
 {
+    DEBUG_BLOCK
+
     if ( !m_filterButton->isChecked() )
     {
         slotFilterChange( QString() );
@@ -297,6 +300,7 @@ void FileBrowser::Widget::btnFilterClick()
         slotFilterChange( lastFilter );
     }
 }
+
 
 void FileBrowser::Widget::selectorViewChanged( QAbstractItemView * newView )
 {
@@ -311,6 +315,7 @@ void FileBrowser::Widget::focusInEvent( QFocusEvent * )
 {
     m_dirOperator->setFocus();
 }
+
 
 bool FileBrowser::Widget::eventFilter( QObject* o, QEvent *e )
 {
