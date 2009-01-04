@@ -92,7 +92,7 @@ private:
     KFilePlacesModel *m_filePlacesModel;
     MyDirOperator * m_dirOperator;
     KHistoryComboBox * m_filter;
-    QToolButton *m_btnFilter;
+    QToolButton *m_filterButton;
 
     QString lastFilter;
     QString waitingUrl; // maybe display when we gets visible

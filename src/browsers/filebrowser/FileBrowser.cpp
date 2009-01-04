@@ -67,13 +67,13 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     setFrameShadow( QFrame::Sunken );
 
     KHBox* filterBox = new KHBox( this );
-    m_btnFilter = new QToolButton( filterBox );
-    m_btnFilter->setIcon( KIcon( "view-filter" ) );
-    m_btnFilter->setCheckable( true );
+    m_filterButton = new QToolButton( filterBox );
+    m_filterButton->setIcon( KIcon( "view-filter" ) );
+    m_filterButton->setCheckable( true );
     m_filter = new KHistoryComboBox( true, filterBox );
     m_filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     filterBox->setStretchFactor( m_filter, 2 );
-    connect( m_btnFilter, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
+    connect( m_filterButton, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
 
     connect( m_filter, SIGNAL( activated( const QString& ) ), SLOT( slotFilterChange( const QString& ) ) );
     connect( m_filter, SIGNAL( editTextChanged( const QString& ) ), SLOT( slotFilterChange( const QString& ) ) );
@@ -122,7 +122,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_filter->setWhatsThis( i18n( "<p>Here you can enter a name filter to limit which files are displayed.</p>"
                                   "<p>To clear the filter, toggle off the filter button to the left.</p>"
                                   "<p>To reapply the last filter used, toggle on the filter button.</p>" ) );
-    m_btnFilter->setWhatsThis( i18n( "<p>This button clears the name filter when toggled off, or "
+    m_filterButton->setWhatsThis( i18n( "<p>This button clears the name filter when toggled off, or "
                                      "reapplies the last filter used when toggled on.</p>" ) );
 
     readConfig();
@@ -218,21 +218,21 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
     {
         m_dirOperator->clearFilter();
         m_filter->lineEdit()->setText( QString() );
-        m_btnFilter->setToolTip( i18n( "Apply last filter (\"%1\")", lastFilter ) ) ;
+        m_filterButton->setToolTip( i18n( "Apply last filter (\"%1\")", lastFilter ) ) ;
     }
     else
     {
         f = '*' + f + '*'; // add regexp matches surrounding the filter
         m_dirOperator->setNameFilter( f );
         lastFilter = f;
-        m_btnFilter->setToolTip( i18n( "Clear filter" ) );
+        m_filterButton->setToolTip( i18n( "Clear filter" ) );
     }
 
-    m_btnFilter->setChecked( !empty );
+    m_filterButton->setChecked( !empty );
     m_dirOperator->updateDir(); //FIXME Crashes here, see http://bugs.kde.org/show_bug.cgi?id=177981
 
     // this will be never true after the filter has been used;)
-    m_btnFilter->setEnabled( !( empty && lastFilter.isEmpty() ) );
+    m_filterButton->setEnabled( !( empty && lastFilter.isEmpty() ) );
 }
 
 namespace FileBrowser
@@ -291,7 +291,7 @@ void FileBrowser::Widget::dirFinishedLoading()
 
 void FileBrowser::Widget::btnFilterClick()
 {
-    if ( !m_btnFilter->isChecked() )
+    if ( !m_filterButton->isChecked() )
     {
         slotFilterChange( QString() );
     }
