@@ -237,15 +237,13 @@ Track::setGenre( const QString& newGenre )
 void
 Track::setComposer( const QString& newComposer )
 {
-    Q_UNUSED( newComposer );
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::COMPOSER ) ).setValue( newComposer );
+    d->changes.insert( Meta::Field::COMPOSER, QVariant( newComposer ) );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->m_data.composer = newComposer;
+        d->writeMetaData();
         notifyObservers();
     }
-    #endif
 }
 
 void
@@ -344,15 +342,13 @@ Track::discNumber() const
 void
 Track::setDiscNumber( int newDiscNumber )
 {
-    Q_UNUSED( newDiscNumber );
-    #if 0
-    d->metaInfo.item( Meta::Field::xesamPrettyToFullFieldName( Meta::Field::DISCNUMBER ) ).setValue( newDiscNumber );
+    d->changes.insert( Meta::Field::DISCNUMBER, QVariant ( newDiscNumber ) );
     if( !d->batchUpdate )
     {
-        d->metaInfo.applyChanges();
+        d->m_data.discNumber = newDiscNumber;
+        d->writeMetaData();
         notifyObservers();
     }
-    #endif
 }
 
 int
