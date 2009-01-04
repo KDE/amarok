@@ -163,7 +163,7 @@ struct PodcastInfo
            QString realPath( const char *ipodPath );
 
            /* Cover Art functions */
-           #if GDK_FOUND
+           #ifdef GDK_FOUND
            void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
            #endif
            void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
