@@ -243,7 +243,7 @@ void Track::Private::readMetaData()
         if( file->xiphComment() )
         {
             const TagLib::Ogg::FieldListMap flm = file->xiphComment()->fieldListMap();
-            if( !flm[ "COMPOSER "].isEmpty() )
+            if( !flm[ "COMPOSER" ].isEmpty() )
                 m_data.composer = strip( flm[ "COMPOSER" ].front() );
             if( !flm[ "DISCNUMBER" ].isEmpty() )
                 disc = strip( flm[ "DISCNUMBER" ].front() );
