@@ -1,1 +1,1 @@
-#define GDK_FOUND ${GDK_FOUND}
+#cmakedefine GDK_FOUND 1
