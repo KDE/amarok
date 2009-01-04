@@ -114,6 +114,8 @@ int main(int argc, char *argv[])
     if (!gs->readParameters(args))
         displayHelp(gs);
 
+    printf("Please wait while source files are being generated...\n");
+
     if (!TypeDatabase::instance()->parseFile(typesystemFileName))
         qFatal("Cannot parse file: '%s'", qPrintable(typesystemFileName));
 

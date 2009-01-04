@@ -136,6 +136,7 @@
   <enum-type name="QCalendarWidget::SelectionMode"/>
   <enum-type name="QCalendarWidget::VerticalHeaderFormat"/>
   <enum-type name="QColor::Spec"/>
+  <enum-type name="QColorDialog::ColorDialogOption" flags="QColorDialog::ColorDialogOptions"/>
   <enum-type name="QColormap::Mode"/>
   <enum-type name="QComboBox::InsertPolicy"/>
   <enum-type name="QComboBox::SizeAdjustPolicy"/>
@@ -158,6 +159,7 @@
   <enum-type name="QFont::StyleStrategy"/>
   <enum-type name="QFont::Weight"/>
   <enum-type name="QFontComboBox::FontFilter" flags="QFontComboBox::FontFilters"/>
+  <enum-type name="QFontDialog::FontDialogOption" flags="QFontDialog::FontDialogOptions"/>
   <enum-type name="QFrame::Shadow" extensible="yes"/>
   <enum-type name="QFrame::Shape"/>
   <enum-type name="QFrame::StyleMask"/>
@@ -193,6 +195,8 @@
   <enum-type name="QImageReader::ImageReaderError"/>
   <enum-type name="QImageWriter::ImageWriterError"/>
   <enum-type name="QInputContext::StandardFormat"/>
+  <enum-type name="QInputDialog::InputDialogOption" flags="QInputDialog::InputDialogOptions"/>
+  <enum-type name="QInputDialog::InputMode"/>
   <enum-type name="QInputMethodEvent::AttributeType"/>
   <enum-type name="QItemSelectionModel::SelectionFlag" flags="QItemSelectionModel::SelectionFlags"/>
   <enum-type name="QKeySequence::SequenceFormat"/>
@@ -344,6 +348,8 @@
   <enum-type name="QStyleOptionViewItemV2::ViewItemFeature" flags="QStyleOptionViewItemV2::ViewItemFeatures"/>
   <enum-type name="QSystemTrayIcon::ActivationReason"/>
   <enum-type name="QSystemTrayIcon::MessageIcon"/>
+  <enum-type name="QTabBar::ButtonPosition"/>
+  <enum-type name="QTabBar::SelectionBehavior"/>
   <enum-type name="QTabBar::Shape"/>
   <enum-type name="QTabWidget::TabPosition"/>
   <enum-type name="QTabWidget::TabShape"/>
@@ -485,12 +491,12 @@
   <value-type name="QTransform">
     <modify-function signature="operator=(QTransform)" remove="all"/>
     <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
-    <modify-function signature="map(double,double,double*,double*)const" remove="all"/>
+    <modify-function signature="map(qreal,qreal,qreal*,qreal*)const" remove="all"/>
     
-    <modify-function signature="operator*=(double)" access="private"/>    
-    <modify-function signature="operator+=(double)" access="private"/>
-    <modify-function signature="operator-=(double)" access="private"/>
-    <modify-function signature="operator/=(double)" access="private"/>
+    <modify-function signature="operator*=(qreal)" access="private"/>    
+    <modify-function signature="operator+=(qreal)" access="private"/>
+    <modify-function signature="operator-=(qreal)" access="private"/>
+    <modify-function signature="operator/=(qreal)" access="private"/>
     <modify-function signature="operator*(QTransform)const" rename="multiplied" />
     <modify-function signature="operator*=(QTransform)" access="private"/>
   </value-type>  
@@ -559,7 +565,7 @@
         <modify-argument index="2"> <remove-default-expression/> </modify-argument>
     </modify-function>
 
-    <modify-function signature="fromData(QSize,const unsigned char*,QImage::Format)">
+    <modify-function signature="fromData(QSize,const uchar*,QImage::Format)">
         <access modifier="private"/>        
         <modify-argument index="3">
             <remove-default-expression/>
@@ -782,15 +788,15 @@
       </extra-includes>
 
       <modify-function signature="map(int,int,int*,int*)const" remove="all"/>
-      <modify-function signature="map(double,double,double*,double*)const" remove="all"/>
+      <modify-function signature="map(qreal,qreal,qreal*,qreal*)const" remove="all"/>
       <modify-function signature="operator=(QMatrix)" remove="all"/>
     
       <modify-function signature="operator*(QMatrix)const" access="private"/>
       <modify-function signature="operator*=(QMatrix)" access="private"/>
-      <modify-function signature="rotate(double)" access="private" rename="rotate_private"/>
-      <modify-function signature="scale(double,double)" access="private" rename="scale_private"/>
-      <modify-function signature="shear(double,double)" access="private" rename="shear_private"/>
-      <modify-function signature="translate(double,double)" access="private" rename="translate_private"/>
+      <modify-function signature="rotate(qreal)" access="private" rename="rotate_private"/>
+      <modify-function signature="scale(qreal,qreal)" access="private" rename="scale_private"/>
+      <modify-function signature="shear(qreal,qreal)" access="private" rename="shear_private"/>
+      <modify-function signature="translate(qreal,qreal)" access="private" rename="translate_private"/>
 
       <modify-function signature="inverted(bool*)const">
         <access modifier="private"/>
@@ -891,7 +897,7 @@
     <modify-function signature="QImage(const char **)">
         <access modifier="private"/>
     </modify-function>
-    <modify-function signature="QImage(const unsigned char*,int,int,int,QImage::Format)">
+    <modify-function signature="QImage(const uchar*,int,int,int,QImage::Format)">
 	    <remove/>
     </modify-function>
     <modify-function signature="bits()const">
@@ -900,7 +906,7 @@
     <modify-function signature="scanLine(int)const">
         <remove/>
     </modify-function>
-    <modify-function signature="QImage(const unsigned char *, int, int, QImage::Format)">
+    <modify-function signature="QImage(const uchar *, int, int, QImage::Format)">
         <remove/>
     </modify-function>
   
@@ -908,18 +914,8 @@
         <include file-name="QStringList" location="global"/>
         <include file-name="QMatrix" location="global"/>
     </extra-includes>
-    <modify-function signature="save(const QString &amp;, const char *, int) const">
-        <access modifier="private"/>
-        <rename to="private_save"/>
-        <modify-argument index="2">
-            <remove-default-expression/>
-        </modify-argument>
-        <modify-argument index="3">
-            <remove-default-expression/>
-        </modify-argument>        
-    </modify-function>
     
-    <modify-function signature="QImage(unsigned char*,int,int,QImage::Format)">
+    <modify-function signature="QImage(uchar*,int,int,QImage::Format)">
         <access modifier="private"/>
     </modify-function>
 
@@ -943,7 +939,7 @@
         <access modifier="private"/>
     </modify-function>
        
-    <modify-function signature="loadFromData(const unsigned char*,int,const char*)">
+    <modify-function signature="loadFromData(const uchar*,int,const char*)">
         <access modifier="private"/>
         <modify-argument index="2">
             <remove-default-expression/>
@@ -977,7 +973,7 @@
         </modify-argument>
     </modify-function>
       
-    <modify-function signature="fromData(const unsigned char*,int,const char*)">
+    <modify-function signature="fromData(const uchar*,int,const char*)">
         <remove/>
     </modify-function>        
   
@@ -1041,7 +1037,7 @@
         <remove/>
     </modify-function>
     
-    <modify-function signature="getCmykF(double*,double*,double*,double*,double*)">
+    <modify-function signature="getCmykF(qreal*,qreal*,qreal*,qreal*,qreal*)">
         <remove/>
     </modify-function>
     
@@ -1049,7 +1045,7 @@
         <remove/>
     </modify-function>
     
-    <modify-function signature="getHsvF(double*,double*,double*,double*)const">
+    <modify-function signature="getHsvF(qreal*,qreal*,qreal*,qreal*)const">
         <remove/>
     </modify-function>
     
@@ -1057,7 +1053,7 @@
         <remove/>
     </modify-function>
     
-    <modify-function signature="getRgbF(double*,double*,double*,double*)const">
+    <modify-function signature="getRgbF(qreal*,qreal*,qreal*,qreal*)const">
         <remove/>
     </modify-function>
       
@@ -4375,13 +4371,6 @@
         <remove/>    
     </modify-function>
     <modify-field name="state" read="false" write="false"/>
-  </object-type>
-  
-  <object-type name="QAbstractTableModel">
-    <extra-includes>
-        <include file-name="QStringList" location="global"/>
-        <include file-name="QSize" location="global"/>
-    </extra-includes>  
   </object-type>
   
   <object-type name="QGuiSignalMapper"/>  

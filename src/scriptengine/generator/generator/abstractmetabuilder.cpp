@@ -362,14 +362,14 @@ bool AbstractMetaBuilder::build()
 
 
     // Start the generation...
-    foreach (const ClassModelItem &item, typeMap) {
+    foreach (ClassModelItem item, typeMap.values()) {
         AbstractMetaClass *cls = traverseClass(item);
         addAbstractMetaClass(cls);
     }
 
 
     QHash<QString, NamespaceModelItem> namespaceMap = m_dom->namespaceMap();
-    foreach (const NamespaceModelItem &item, namespaceMap) {
+    foreach (NamespaceModelItem item, namespaceMap.values()) {
         AbstractMetaClass *meta_class = traverseNamespace(item);
         if (meta_class)
             m_meta_classes << meta_class;
@@ -753,8 +753,10 @@ void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *meta_cl
 
     AbstractMetaEnumList enums = meta_class->enums();
     foreach (AbstractMetaEnum *e, enums) {
-        if (!e)
+        if (!e) {
             ReportHandler::warning("bad enum in class " + meta_class->name());
+            continue;
+        }
         AbstractMetaEnumValueList lst = e->values();
         int value = 0;
         for (int i=0; i<lst.size(); ++i) {
@@ -800,7 +802,7 @@ void AbstractMetaBuilder::figureOutEnumValuesForClass(AbstractMetaClass *meta_cl
                 AbstractMetaEnumValue *used = entries.value(reject->value());
                 if (!used) {
                     ReportHandler::warning(
-                        QString::fromLatin1("Rejected enum has no alternative...: %1::%2\n")
+                        QString::fromLatin1("Rejected enum has no alternative...: %1::%2")
                         .arg(meta_class->name())
                         .arg(reject->name()));
                     continue;
@@ -1631,9 +1633,9 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
     //    type system
     TypeInfo typei;
     if (resolveType) {
-        bool ok;
-        AbstractMetaType *t = translateType(_typei, &ok, false, resolveScope);
-        if (t != 0 && ok)
+        bool isok;
+        AbstractMetaType *t = translateType(_typei, &isok, false, resolveScope);
+        if (t != 0 && isok)
             return t;
     }
 
@@ -1683,15 +1685,15 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
             newInfo.setVolatile(typei.isVolatile());
 
             AbstractMetaType *elementType = translateType(newInfo, ok);
-            if (!ok)
+            if (!(*ok))
                 return 0;
 
             for (int i=typeInfo.arrays.size()-1; i>=0; --i) {
                 QString s = typeInfo.arrays.at(i);
-                bool ok;
+                bool isok;
 
-                int elems = s.toInt(&ok);
-                if (!ok)
+                int elems = s.toInt(&isok);
+                if (!isok)
                     return 0;
 
                 AbstractMetaType *arrayType = createMetaType();
@@ -1762,10 +1764,10 @@ AbstractMetaType *AbstractMetaBuilder::translateType(const TypeInfo &_typei, boo
         while (!contexts.isEmpty() && type == 0) {
             //type = TypeDatabase::instance()->findType(contexts.at(0) + "::" + qualified_name);
 
-            bool ok;
+            bool isok;
             info.setQualifiedName(QStringList() << contexts.at(0) << qualified_name);
-            AbstractMetaType *t = translateType(info, &ok, true, false);
-            if (t != 0 && ok)
+            AbstractMetaType *t = translateType(info, &isok, true, false);
+            if (t != 0 && isok)
                 return t;
 
             ClassModelItem item = m_dom->findClass(contexts.at(0));
@@ -1946,7 +1948,7 @@ QString AbstractMetaBuilder::translateDefaultValue(ArgumentModelItem item, Abstr
         return replaced_expression;
 
     QString expr = item->defaultValueExpression();
-    if (type->isPrimitive()) {
+    if (type != 0 && type->isPrimitive()) {
         if (type->name() == "boolean") {
             if (expr == "false" || expr=="true") {
                 return expr;
@@ -1983,7 +1985,7 @@ QString AbstractMetaBuilder::translateDefaultValue(ArgumentModelItem item, Abstr
             TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(expr.indexOf("::")));
             if (typeEntry)
                 return typeEntry->qualifiedTargetLangName() + "." + expr.right(expr.length() - expr.indexOf("::") - 2);
-        } else if (expr.endsWith(")") && type->isValue()) {
+        } else if (expr.endsWith(")") && type != 0 && type->isValue()) {
             int pos = expr.indexOf("(");
 
             TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(pos));
@@ -1993,7 +1995,7 @@ QString AbstractMetaBuilder::translateDefaultValue(ArgumentModelItem item, Abstr
                 return expr;
         } else if (expr == "0") {
             return "null";
-        } else if (type->isObject() || type->isValue() || expr.contains("::")) { // like Qt::black passed to a QColor
+        } else if (type != 0 && (type->isObject() || type->isValue() || expr.contains("::"))) { // like Qt::black passed to a QColor
             TypeEntry *typeEntry = TypeDatabase::instance()->findType(expr.left(expr.indexOf("::")));
 
             expr = expr.right(expr.length() - expr.indexOf("::") - 2);

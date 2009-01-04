@@ -607,8 +607,8 @@
   </value-type>
 
   <value-type name="QRectF">
-    <modify-function signature="getCoords(double*,double*,double*,double*)const"> <remove/> </modify-function>
-    <modify-function signature="getRect(double*,double*,double*,double*)const"> <remove/> </modify-function>
+    <modify-function signature="getCoords(qreal*,qreal*,qreal*,qreal*)const"> <remove/> </modify-function>
+    <modify-function signature="getRect(qreal*,qreal*,qreal*,qreal*)const"> <remove/> </modify-function>
     <modify-function signature="operator&amp;=(QRectF)"> <remove/> </modify-function>
     <modify-function signature="operator|=(QRectF)"> <remove/> </modify-function>
     <modify-function signature="operator&amp;(QRectF)const"> <remove/> </modify-function>
@@ -620,8 +620,8 @@
 
 
   <value-type name="QSize">
-    <modify-function signature="operator*=(double)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator/=(double)"> <access modifier="private"/> </modify-function>
+    <modify-function signature="operator*=(qreal)"> <access modifier="private"/> </modify-function>
+    <modify-function signature="operator/=(qreal)"> <access modifier="private"/> </modify-function>
     <modify-function signature="operator+=(QSize)"> <access modifier="private"/> </modify-function>
     <modify-function signature="operator-=(QSize)"> <access modifier="private"/> </modify-function>
     <modify-function signature="rheight()"> <remove/> </modify-function>
@@ -629,8 +629,8 @@
   </value-type>
 
   <value-type name="QSizeF">
-    <modify-function signature="operator*=(double)"> <access modifier="private"/> </modify-function>
-    <modify-function signature="operator/=(double)"> <access modifier="private"/> </modify-function>
+    <modify-function signature="operator*=(qreal)"> <access modifier="private"/> </modify-function>
+    <modify-function signature="operator/=(qreal)"> <access modifier="private"/> </modify-function>
     <modify-function signature="operator+=(QSizeF)"> <access modifier="private"/> </modify-function>
     <modify-function signature="operator-=(QSizeF)"> <access modifier="private"/> </modify-function>
     <modify-function signature="rheight()"> <remove/> </modify-function>
@@ -656,8 +656,8 @@
   </value-type>
 
   <value-type name="QLocale">  
-    <modify-function signature="toString(unsigned long long) const" remove="all"/>
-    <modify-function signature="toString(unsigned short) const" remove="all"/>
+    <modify-function signature="toString(qlonglong) const" remove="all"/>
+    <modify-function signature="toString(ushort) const" remove="all"/>
     <modify-function signature="toString(unsigned int) const" remove="all"/>
     <modify-function signature="toUInt(QString,bool*,int)const" remove="all"/>
     <modify-function signature="toULongLong(QString,bool*,int)const" remove="all"/>
@@ -688,6 +688,13 @@
         <include file-name="QStringList" location="global"/>
         <include file-name="QSize" location="global"/>
     </extra-includes>
+  </object-type>
+  
+  <object-type name="QAbstractTableModel">
+    <extra-includes>
+        <include file-name="QStringList" location="global"/>
+        <include file-name="QSize" location="global"/>
+    </extra-includes>  
   </object-type>
   
   <value-type name="QUrl">
@@ -744,7 +751,7 @@
     <modify-function signature="end()" remove="all"/>
     <modify-function signature="end()const" remove="all"/>
     <modify-function signature="number(uint,int)" remove="all"/>
-    <modify-function signature="number(unsigned long long,int)" remove="all"/>
+    <modify-function signature="number(qulonglong,int)" remove="all"/>
     <modify-function signature="operator const char *()const" remove="all"/>
     <modify-function signature="operator const void *()const" remove="all"/>
     <modify-function signature="operator+=(const char*)" remove="all"/>
@@ -760,8 +767,8 @@
     <modify-function signature="push_front(const QByteArray&amp;)" remove="all"/>
     <modify-function signature="push_front(const char*)" remove="all"/>
     <modify-function signature="setNum(uint,int)" remove="all"/>
-    <modify-function signature="setNum(unsigned long long,int)" remove="all"/>
-    <modify-function signature="setNum(unsigned short,int)" remove="all"/>
+    <modify-function signature="setNum(qulonglong,int)" remove="all"/>
+    <modify-function signature="setNum(ushort,int)" remove="all"/>
     <modify-function signature="toLong(bool*, int) const" remove="all"/>
     <modify-function signature="toLongLong(bool*, int) const" remove="all"/>
     <modify-function signature="toShort(bool*, int) const" remove="all"/>
@@ -787,8 +794,8 @@
   <object-type name="QFile">  
     <modify-function signature="readLink()const" remove="all"/> <!--### Obsolete in 4.3-->
     <modify-function signature="readLink(QString)" remove="all"/> <!--### Obsolete in 4.3-->
-    <modify-function signature="map(long long,long long,QFile::MemoryMapFlags)" remove="all" /> <!-- Can't provide same API and performance -->
-    <modify-function signature="unmap(unsigned char*)" remove="all" /> <!-- Can't provide same API and performance -->    
+    <modify-function signature="map(qint64,qint64,QFile::MemoryMapFlags)" remove="all" /> <!-- Can't provide same API and performance -->
+    <modify-function signature="unmap(uchar*)" remove="all" /> <!-- Can't provide same API and performance -->    
   </object-type>
 
   <object-type name="QIODevice"/>
@@ -904,7 +911,7 @@
     <extra-includes>
         <include file-name="QDateTime" location="global"/>
     </extra-includes>
-    <modify-function signature="map(long long,long long,QFile::MemoryMapFlags)" remove="all" />
+    <modify-function signature="map(qlonglong,qlonglong,QFile::MemoryMapFlags)" remove="all" />
     <modify-function signature="unmap(unsigned char*)" remove="all" />
   </object-type>
   
@@ -1089,13 +1096,13 @@
     <modify-function signature="operator&gt;&gt;(QChar&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(const void*)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(unsigned int)"> <remove/> </modify-function>     
-    <modify-function signature="operator&lt;&lt;(unsigned long long)"> <remove/> </modify-function>    
+    <modify-function signature="operator&lt;&lt;(qlonglong)"> <remove/> </modify-function>    
     <modify-function signature="operator&lt;&lt;(const QChar &amp;)"> <remove/> </modify-function>        
     <modify-function signature="operator&lt;&lt;(unsigned long)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(signed long)"> <remove/> </modify-function>
     <modify-function signature="operator&lt;&lt;(const char*)"> <remove/> </modify-function>    
     <modify-function signature="operator&lt;&lt;(unsigned short)"> <remove/> </modify-function>   
-    <modify-function signature="operator&gt;&gt;(unsigned long long&amp;)"> <remove/> </modify-function>
+    <modify-function signature="operator&gt;&gt;(qulonglong&amp;)"> <remove/> </modify-function>
     <modify-function signature="operator&gt;&gt;(ulong&amp;)"> <remove/> </modify-function>
     <modify-function signature="setString(QString*,QFlags&lt;QIODevice::OpenModeFlag&gt;)"> <remove/> </modify-function>    
     <modify-function signature="string()const"> <remove/> </modify-function>
@@ -1168,6 +1175,7 @@
     <object-type name="QXmlStreamReader"/>
     <object-type name="QXmlStreamWriter"/>
 
+    <value-type name="QModelIndex"/>
 
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type 'std::*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private\*'"/>

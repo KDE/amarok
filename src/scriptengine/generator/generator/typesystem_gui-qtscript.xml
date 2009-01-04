@@ -24,15 +24,12 @@
 
   <!-- ### these don't compile -->
   <rejection class="QAbstractProxyModel"/>
-  <rejection class="QAbstractTableModel"/> <!-- ### why is this class generated for Gui? -->
   <rejection class="QSortFilterProxyModel"/>
   <rejection class="QDirModel"/>
   <rejection class="QDrag"/>
   <rejection class="QDropEvent"/>
   <rejection class="QFileSystemModel"/>
   <rejection class="QGraphicsSceneDragDropEvent"/>
-  <rejection class="QItemSelectionModel"/>
-  <rejection class="QItemSelectionRange"/>
   <rejection class="QPrinterInfo"/>
   <rejection class="QProxyModel"/>
   <rejection class="QPrinterInfo"/> <!-- ### constructor takes QPrinter&, must become QPrinter* -->
@@ -315,6 +312,7 @@
   <object-type name="QPainter">
     <modify-function signature="fontInfo()const" remove="all"/>
     <modify-function signature="fontMetrics()const" remove="all"/>
+    <modify-function signature="QPainter(QPaintDevice*)" remove="all"/>
 
     <modify-function signature="begin(QPaintDevice*)">
       <modify-argument index="1">
@@ -558,5 +556,8 @@
         </modify-argument>
       </modify-function>
   </value-type>
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Rejected enum has no alternative...: QPalette::NColorRoles" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Cannot find enum constant for value 'DragMove' in 'QDragMoveEvent' or any of its super classes" />
 
 </typesystem>

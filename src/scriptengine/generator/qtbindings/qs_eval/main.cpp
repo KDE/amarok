@@ -23,7 +23,9 @@
 
 
 #include <QtScript>
-
+#if QT_VERSION >= 0x040500
+#include <QtScriptTools>
+#endif
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QStringList>
@@ -136,6 +138,10 @@ int main(int argc, char *argv[])
     app->setLibraryPaths(paths);
 
     QScriptEngine *eng = new QScriptEngine();
+#if QT_VERSION >= 0x040500
+    QScriptEngineDebugger *dbg = new QScriptEngineDebugger();
+    dbg->attachTo(eng);
+#endif
 
     eng->importExtension("qt.core");
     eng->importExtension("qt.gui");
@@ -206,6 +212,9 @@ int main(int argc, char *argv[])
     }
 
     delete eng;
+#if QT_VERSION >= 0x040500
+    delete dbg;
+#endif
     delete app;
 
     return EXIT_SUCCESS;

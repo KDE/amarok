@@ -5,6 +5,7 @@
   <enum-type name="QXmlNodeModelIndex::NodeKind"/>
   <enum-type name="QXmlNodeModelIndex::DocumentOrder"/>
   <enum-type name="QXmlNodeModelIndex::Axis"/>
+  <enum-type name="QXmlQuery::QueryLanguage"/>
   <enum-type name="QAbstractXmlNodeModel::SimpleAxis"/>
 
   <object-type name="QAbstractMessageHandler">

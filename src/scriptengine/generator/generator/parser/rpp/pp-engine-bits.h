@@ -277,6 +277,22 @@ inline FILE *pp::find_include_file(std::string const &__input_filename, std::str
 
       if (file_exists (*__filepath) && !file_isdir(*__filepath))
         return fopen (__filepath->c_str(), "r");
+
+#ifdef Q_OS_MAC
+      // try in Framework path on Mac, if there is a path in front
+      // ### what about escaped slashes?
+      size_t slashPos = __input_filename.find('/');
+      if (slashPos != std::string::npos) {
+          __filepath->assign (*it);
+          __filepath->append (__input_filename.substr(0, slashPos));
+          __filepath->append (".framework/Headers/");
+          __filepath->append (__input_filename.substr(slashPos+1, std::string::npos));
+          std::cerr << *__filepath << "\n";
+
+          if (file_exists (*__filepath) && !file_isdir(*__filepath))
+            return fopen (__filepath->c_str(), "r");
+      }
+#endif // Q_OS_MAC
     }
 
   return 0;

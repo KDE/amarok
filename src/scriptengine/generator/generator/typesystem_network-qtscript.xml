@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <typesystem package="com.trolltech.qt.network">
     
-    <!-- ### fixme -->
-    <rejection class="QSsl"/>
-    <rejection class="QHttpHeader"/>
+  <object-type name="QHttpHeader">
+    <modify-function signature="QHttpHeader(QHttpHeader)" remove="all"/>
+  </object-type>
 
   <value-type name="QNetworkCookie">
     <extra-includes>
