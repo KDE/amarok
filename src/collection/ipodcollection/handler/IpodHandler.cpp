@@ -28,7 +28,7 @@
 #include "MetaQueryMaker.h"
 #include "QueryMaker.h"
 
-#if GDK_FOUND
+#ifdef GDK_FOUND
 extern "C" {
 #include <gdk-pixbuf/gdk-pixbuf.h>
 }
@@ -1328,7 +1328,7 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     return;
 }
 
-#if GDK_FOUND
+#ifdef GDK_FOUND
 
 void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
@@ -1603,7 +1603,7 @@ IpodHandler::parseTracks()
         /* cover art */
 
         //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
-        #if GDK_FOUND
+        #ifdef GDK_FOUND
         if( m_supportsArtwork )
             getCoverArt( ipodtrack, track );
         #endif
