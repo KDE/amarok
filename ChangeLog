@@ -45,7 +45,7 @@ VERSION 2.0.1
     * Fixed problems with the collection scanner often missing a part of the
       collection, or potentially failing altogether. (BR 176154)
     * Fix Context View crash when quitting the application. (BR 179110)
-    * LibRivox: Don't crash when double clicking "Enter Query". (BR 177991)
+    * LibriVox: Don't crash when double clicking "Enter Query". (BR 177991)
     * Files could be deleted when moving files to an unwritable destination.
       (BR 178701)
     * Don't override cached lyrics when fetching. (BR 178196)
