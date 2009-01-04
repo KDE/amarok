@@ -7,7 +7,7 @@
 #   Copyright                                                             #
 #   (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               #
 #   (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                          #
-#   (C) 2008 Sven Krohlas <sven@getamarok.com>                            #
+#   (C) 2008-2009 Sven Krohlas <sven@getamarok.com>                            #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -26,22 +26,26 @@
 ########################################################################### */
 
 Importer.loadQtBinding( "qt.core" );
-Importer.loadQtBinding( "qt.xml" );
+Importer.loadQtBinding( "qt.gui" ); //for QPixmap
 Importer.loadQtBinding( "qt.network" );
+Importer.loadQtBinding( "qt.xml" );
 
 service_name = "Free Music Charts";
-html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/pollsarchive/\">www.darkerradio.com/pollsarchive/</a>, support for voting from within Amarok might be added later.<br/><br/>Podcasts of the radio shows (in German) are located at <a href=\"http://www.darkerradio.com/category/podcast/\">www.darkerradio.com/category/podcast/</a>.";
+html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/\">www.darkerradio.com/</a> (in the right column, scroll down a bit), support for voting from within Amarok might be added later.";
 
 // temporary location for testing purposes, will very likely
 // be moved to darkerradio.com
 xmlUrl = new QUrl( "http://krohlas.de/fmc.xml" );
 http   = new QHttp;
 data   = new QIODevice;
-doc    = new QDomDocument("doc");
+doc    = new QDomDocument( "doc" );
 elt    = new QDomElement;
 elt2   = new QDomElement;
 shows  = new QDomNodeList;
+script = new FreeMusicCharts();
 
+script.populate.connect( onPopulate );
+script.customize.connect( onCustomize );
 
 /* Initialization of service */
 function FreeMusicCharts() {
@@ -57,7 +61,7 @@ function fmcShowsXmlParser( reply ) {
   try {
     doc.setContent( reply );
     shows = doc.elementsByTagName( "show" );
-    Amarok.debug ("got " + shows.length() + " shows!");
+    Amarok.debug ( "got " + shows.length() + " shows!" );
 
     var showTitles = new Array( shows.length() );
 
@@ -65,6 +69,7 @@ function fmcShowsXmlParser( reply ) {
     item.level = 1;
     item.playableUrl = "";
     item.infoHtml = html;
+    item.coverUrl = Amarok.Info.scriptPath() + "/FMCShow.png";
 
     var i = 0;
     for ( ; i < shows.length(); i++ ) {
@@ -101,14 +106,14 @@ function fmcTracksXmlParser( url ) {
     tempShow = tempShow.firstChildElement( "songs" );
     songs    = tempShow.firstChildElement( "song" );
 
-    // ...try to find the track
+    // ...try to find the track, beautify rank and votes for newcomers
     for ( ; j != 0; j-- ) {
       if ( songs.firstChildElement( "url" ).text() == url ) { // found song
         rank = songs.firstChildElement( "rank" ).text();
-        if( rank == "99") rank = "New";
+        if( rank == "99" ) rank = "New";
 
         votes = songs.firstChildElement( "votes" ).text();
-        if( votes == "-1") votes = "none";
+        if( votes == "-1" ) votes = "none";
 
         html = html + "<br/><b>" + title;
         html = html + ":</b> Rank: " + rank + ", Votes: " + votes;
@@ -117,6 +122,19 @@ function fmcTracksXmlParser( url ) {
     }
   }
   return html;
+}
+
+
+/* Set service icon and emblem */
+function onCustomize() {
+  Amarok.debug ( "customizing fmc service" );
+  var currentDir = Amarok.Info.scriptPath() + "/";
+  Amarok.debug ( "loading icon: " + currentDir + "FMCIcon.png" );
+  var iconPixmap = new QPixmap( currentDir + "FMCIcon.png" );
+  script.setIcon( iconPixmap );
+
+  var emblemPixmap = new QPixmap( currentDir + "FMCEmblem.png" );
+  script.setEmblem( emblemPixmap );
 }
 
 
@@ -172,25 +190,28 @@ function onPopulate( level, callbackData, filter ) {
     var songArtistTitle = new Array( 2 );
 
     for ( ; i != 0; i-- ) {
-      // beautify rank and votes for newcomers
+      // beautify rank for newcomers
       elt2 = elt.firstChildElement( "rank" );
-      if( elt2.text() == "99") item.itemName = "New";
+      if( elt2.text() == "99" ) item.itemName = "New";
       else item.itemName = elt2.text();
 
       item.itemName = item.itemName + ": " + elt.firstChildElement( "name" ).text();
 
       // split name into artist/title
-      songArtistTitle = elt.firstChildElement( "name" ).text().split(" - ");
+      songArtistTitle = elt.firstChildElement( "name" ).text().split( " - " );
       Amarok.debug( songArtistTitle[0] );
       Amarok.debug( songArtistTitle[1] );
       item.artist = songArtistTitle[0];
+      //item.itemName = songArtistTitle[1];
 
       elt2 = elt.firstChildElement( "url" );
+      item.album = elt.firstChildElement( "name" ).text();
       item.playableUrl = elt2.text();
       item.infoHtml = "<center><b>Chart positions of<br/>";
-      item.infoHtml = item.infoHtml + elt.firstChildElement( "name" ).text();
+      item.infoHtml = item.infoHtml + item.album;
       item.infoHtml = item.infoHtml + "</b></center><br/>";
       item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() );
+
       elt = elt.nextSiblingElement( "song" );
       script.insertItem( item );
     }
@@ -199,6 +220,3 @@ function onPopulate( level, callbackData, filter ) {
     script.donePopulating();
   }
 }
-
-script = new FreeMusicCharts();
-script.populate.connect( onPopulate );

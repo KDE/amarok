@@ -4,7 +4,5 @@
 * artwork
 
 ==problematic Ideas==
-* icon (not yet possible, missing api)
-* cover for each item (not yet possible, missing api)
 * give Amarok hints to correct track name without messing with the order in the browser (missing api)
 * localization would be nice

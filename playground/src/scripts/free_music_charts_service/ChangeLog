@@ -1,3 +1,6 @@
+==1.1.2 (2009-??-??)
+* use latest Amarok api to show a custom service icon, emblems and album icons
+
 ==1.1.1 (2008-11-22)==
 * update to latest Amarok api, the updated script should still work with 2.0 beta 3 or later
 * show correct license (GPL)
