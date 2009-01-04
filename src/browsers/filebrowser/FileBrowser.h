@@ -73,7 +73,6 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void dirUrlEntered( const KUrl& u );
-    void dirFinishedLoading();
     void btnFilterClick();
 
 protected:

@@ -107,7 +107,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
 
     connect( m_urlNav, SIGNAL( urlChanged( const KUrl& ) ), this, SLOT( cmbPathActivated( const KUrl& ) ) );
     connect( m_dirOperator, SIGNAL( urlEntered( const KUrl& ) ), this, SLOT( dirUrlEntered( const KUrl& ) ) );
-    connect( m_dirOperator, SIGNAL( finishedLoading() ), this, SLOT( dirFinishedLoading() ) );
 
     // Connect the bookmark handler
     connect( m_bookmarkHandler, SIGNAL( openUrl( const QString& ) ), this, SLOT( setDir( const QString& ) ) );
@@ -278,8 +277,6 @@ void FileBrowser::Widget::dirUrlEntered( const KUrl& u )
     m_urlNav->setUrl( u );
 }
 
-void FileBrowser::Widget::dirFinishedLoading()
-{}
 
 /*
    When the button in the filter box toggles:
@@ -288,7 +285,6 @@ void FileBrowser::Widget::dirFinishedLoading()
    If on:
    Set last filter.
 */
-
 void FileBrowser::Widget::btnFilterClick()
 {
     if ( !m_filterButton->isChecked() )
