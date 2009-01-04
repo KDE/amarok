@@ -162,11 +162,12 @@ function onPopulate( level, callbackData, filter ) {
 
   else if ( level == 0 ) { // the tracks from each show
     Amarok.debug( "populating fmc track level..." );
+    elt = shows.at( callbackData ); // jump to the correct show
+
     item = Amarok.StreamItem;
     item.level = 0;
     item.callbackData = "";
-
-    elt = shows.at( callbackData ); // jump to the correct show
+    item.album = elt.firstChildElement( "title" ).text();
 
     /* The podcasts */
     item.itemName    = "Podcast (MP3)";
@@ -205,7 +206,6 @@ function onPopulate( level, callbackData, filter ) {
       //item.itemName = songArtistTitle[1];
 
       elt2 = elt.firstChildElement( "url" );
-      item.album = elt.firstChildElement( "name" ).text();
       item.playableUrl = elt2.text();
       item.infoHtml = "<center><b>Chart positions of<br/>";
       item.infoHtml = item.infoHtml + item.album;
