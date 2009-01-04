@@ -161,10 +161,6 @@ void FileBrowser::Widget::readConfig()
 
     m_filter->setHistoryItems( config.readEntry( "Filter History", QStringList() ), true );
     lastFilter = config.readEntry( "Last Filter" );
-
-    const QString filter = config.readEntry( "Current Filter" );
-    m_filter->lineEdit()->setText( filter );
-    slotFilterChange( filter );
 }
 
 
@@ -177,7 +173,6 @@ void FileBrowser::Widget::writeConfig()
     config.writeEntry( "Current Directory", m_dirOperator->url() );
     config.writeEntry( "Filter History Length", m_filter->maxCount() );
     config.writeEntry( "Filter History", m_filter->historyItems() );
-    config.writeEntry( "Current Filter", m_filter->currentText() );
     config.writeEntry( "Last Filter", lastFilter );
 
     // Writes some settings from KDirOperator
