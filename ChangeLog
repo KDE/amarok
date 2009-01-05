@@ -37,7 +37,9 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
-    * Update the QtScript Qt binding generator.
+    * The QtScript Qt binding generator has been updated to the latest.
+      This should complete some features such as Model/View in the QtScript API
+      and fix building with Qt 4.5. (BR 177863)
     * The Files browser now remembers its settings, like the active directory.
       (BR 173742)
     * Fix problems with the collection scanner often missing a part of the
@@ -77,9 +79,9 @@ VERSION 2.0.1
     * Fixes in playing tracks in repeat modes.
     * The wikipedia applet did not give a status update when an entry was not 
       found. (BR 173940)
-    * The QtScript Qt binding generator has been updated to the latest.
-      This should complete some features such as Model/View in the QtScript API
-      and fix building with Qt 4.5. (BR 177863)
+    * Add tooltips to icons in context view. (BR 174478)
+    * Fix icons and layout in Advanced Filter dialog.
+
 
 VERSION 2.0
   FEATURES:
