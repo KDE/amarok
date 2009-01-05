@@ -7,7 +7,7 @@
 #   Copyright                                                             #
 #   (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               #
 #   (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                          #
-#   (C) 2008-2009 Sven Krohlas <sven@getamarok.com>                            #
+#   (C) 2008-2009 Sven Krohlas <sven@getamarok.com>                       #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -31,7 +31,7 @@ Importer.loadQtBinding( "qt.network" );
 Importer.loadQtBinding( "qt.xml" );
 
 service_name = "Free Music Charts";
-html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/\">www.darkerradio.com/</a> (in the right column, scroll down a bit), support for voting from within Amarok might be added later.";
+html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/\">www.darkerradio.com</a> (in the right column, scroll down a bit), support for voting from within Amarok might be added later.";
 
 // temporary location for testing purposes, will very likely
 // be moved to darkerradio.com
@@ -64,6 +64,11 @@ function fmcShowsXmlParser( reply ) {
     Amarok.debug ( "got " + shows.length() + " shows!" );
 
     var showTitles = new Array( shows.length() );
+
+    elt = shows.at( 0 ); // latest show
+    html = html + "<br/><br/>Next radio show airs on Tuesday, ";
+    html = html + elt.firstChildElement( "nextdate" ).text() + ". ";
+    html = html + "The voting ends the day before.";
 
     item = Amarok.StreamItem;
     item.level = 1;
@@ -170,9 +175,9 @@ function onPopulate( level, callbackData, filter ) {
     item.album = elt.firstChildElement( "title" ).text();
 
     /* The podcasts */
-    item.itemName    = "Podcast (MP3)";
-    item.artist      = "Free Music Charts";
     item.infoHtml    = html;
+    item.artist      = "Free Music Charts";
+    item.itemName    = "Podcast (MP3)";
     item.playableUrl = elt.firstChildElement( "podcastmp3" ).text();
     if (item.playableUrl != "not yet available" )
       script.insertItem( item );
@@ -208,7 +213,7 @@ function onPopulate( level, callbackData, filter ) {
       elt2 = elt.firstChildElement( "url" );
       item.playableUrl = elt2.text();
       item.infoHtml = "<center><b>Chart positions of<br/>";
-      item.infoHtml = item.infoHtml + item.album;
+      item.infoHtml = item.infoHtml + elt.firstChildElement( "name" ).text();
       item.infoHtml = item.infoHtml + "</b></center><br/>";
       item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() );
 
@@ -220,3 +225,4 @@ function onPopulate( level, callbackData, filter ) {
     script.donePopulating();
   }
 }
+
