@@ -64,7 +64,7 @@ message( "hello" )
 message( "${QT_VERSION_MINOR} hey " QT_VERSION_MINOR )
 set( Generated_QtNetwork_SRCS ${Generated_QtNetwork_SRCS} ${Generated_45_QtNetwork_SRCS} )
 endif(QT_VERSION_MINOR GREATER 4)
-set_source_files_properties( ${Generated_QtNetwork_SRCS} ${Generated_45_QtNetwork_SRCS} PROPERTIES GENERATED true )
+set_source_files_properties( ${Generated_QtNetwork_SRCS} PROPERTIES GENERATED true )
 #qtscript bindings don't use moc
 add_library( qtscript_network MODULE ${Generated_QtNetwork_SRCS} )
 add_dependencies( qtscript_network generator )
