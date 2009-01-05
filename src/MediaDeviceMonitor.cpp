@@ -1,4 +1,4 @@
-/* 
+/*
    Copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
 
    This program is free software; you can redistribute it and/or
@@ -189,9 +189,14 @@ MediaDeviceMonitor::isMtp( const QString &udi )
 
     device = Solid::Device( udi );
     if( !device.is<Solid::PortableMediaPlayer>() )
+    {
+        debug() << "Not a PMP";
         return false;
+    }
 
     Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
+
+    debug() << "Supported Protocols: " << pmp->supportedProtocols();
 
     return pmp->supportedProtocols().contains( "mtp" );
 }
