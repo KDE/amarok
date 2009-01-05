@@ -568,6 +568,10 @@ set( Generated_QtGUI_45
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QFontDialog.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QInputDialog.cpp )
 
+if(QTVERSION VERSION_GREATER "4.4.99")
+    set( Generated_QtGUI_cnv2_SRCS ${Generated_QtGUI_cnv2_SRCS} ${Generated_QtGUI_45} )
+endif(QTVERSION VERSION_GREATER "4.4.99")
+
 set_source_files_properties( ${Generated_QtGUI_cnv0_SRCS} PROPERTIES GENERATED true )
 set_source_files_properties( ${Generated_QtGUI_cnv1_SRCS} PROPERTIES GENERATED true )
 set_source_files_properties( ${Generated_QtGUI_cnv2_SRCS} PROPERTIES GENERATED true )

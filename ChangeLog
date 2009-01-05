@@ -77,9 +77,9 @@ VERSION 2.0.1
     * Fixes in playing tracks in repeat modes.
     * The wikipedia applet did not give a status update when an entry was not 
       found. (BR 173940)
-    * Add tooltips to icons in context view. (BR 174478)
-    * Fix icons and layout in Advanced Filter dialog.
-
+    * The QtScript Qt binding generator has been updated to the latest.
+      This should complete some features such as Model/View in the QtScript API
+      and fix building with Qt 4.5. (BR 177863)
 
 VERSION 2.0
   FEATURES:

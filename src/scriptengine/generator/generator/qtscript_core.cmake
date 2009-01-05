@@ -99,7 +99,7 @@ set( Generated_QtCore_SRCS
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QXmlStreamEntityResolver.cpp
 )
 
-#This needs to be added to qt 4.5 builds:
+#Files added in latest qtscriptgenerator, turns out it generates it for both qt 4.4 and qt 4.5
 set( Generated_QtCore_45_SRCS
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_Global.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QAbstractItemModel.cpp
