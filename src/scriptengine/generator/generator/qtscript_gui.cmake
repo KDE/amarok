@@ -129,6 +129,7 @@ set( Generated_QtGUI_cnv0_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QItemEditorCreatorBase.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QItemEditorFactory.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QItemSelection.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QItemSelectionModel.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QItemSelectionRange.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QKeyEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QKeySequence.cpp
@@ -411,6 +412,7 @@ set( Generated_QtGUI_cnv2_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QItemDelegate.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QItemEditorCreatorBase.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QItemEditorFactory.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QItemSelectionModel.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QKeyEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QLCDNumber.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QLabel.cpp
@@ -562,11 +564,9 @@ set( Generated_QtGUI_cnv2_SRCS
 
 #This needs to be added to qt 4.5 builds:
 set( Generated_QtGUI_45
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QItemSelectionModel.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QColorDialog.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QFontDialog.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QInputDialog.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QItemSelectionModel.cpp )
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QInputDialog.cpp )
 
 set_source_files_properties( ${Generated_QtGUI_cnv0_SRCS} PROPERTIES GENERATED true )
 set_source_files_properties( ${Generated_QtGUI_cnv1_SRCS} PROPERTIES GENERATED true )
