@@ -471,6 +471,7 @@ set( Generated_QtGUI_cnv2_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStandardItem.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStandardItemModel.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStatusBar.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStringListModel.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStyle.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStyleFactory.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStyleHintReturn.cpp
@@ -565,8 +566,7 @@ set( Generated_QtGUI_45
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QColorDialog.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QFontDialog.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QInputDialog.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QItemSelectionModel.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QStringListModel.cpp )
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QItemSelectionModel.cpp )
 
 set_source_files_properties( ${Generated_QtGUI_cnv0_SRCS} PROPERTIES GENERATED true )
 set_source_files_properties( ${Generated_QtGUI_cnv1_SRCS} PROPERTIES GENERATED true )
