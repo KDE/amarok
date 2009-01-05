@@ -59,11 +59,7 @@
   <rejection class="QAbstractFileEngine"/>
   <rejection class="QAbstractFileEngineHandler"/>
   <rejection class="QAbstractFileEngineIterator"/>
-  <rejection class="QAbstractItemModel"/>
-  <rejection class="QAbstractListModel"/>
-  <rejection class="QPersistentModelIndex"/>
   <rejection class="QFSFileEngine"/>
-  <rejection class="QMimeData"/>
   <rejection class="QSystemLocale"/>
 
   <rejection class="QFutureWatcherBase"/>
@@ -364,7 +360,15 @@
     Q_DECLARE_METATYPE(QScriptValue)
     </inject-code>
 
-    <modify-function signature="QByteArray(const char*)" remove="all"/>
+    <modify-function signature="QByteArray(const char*)">
+      <modify-argument index="1">
+        <replace-type modified-type="QString"/>
+        <conversion-rule class="native">
+          <insert-template name="core.convert_string_arg_to_char*"/>
+        </conversion-rule>            
+      </modify-argument>
+    </modify-function>
+
     <modify-function signature="QByteArray(const char*,int)" remove="all"/>
 
     <modify-function signature="at(int)const">
@@ -979,7 +983,7 @@
       </modify-function>
 
       <modify-function signature="operator&lt;&lt;(qulonglong)" remove="all"/> 
-      <modify-function signature="operator&gt;&gt;(qulonglong)" remove="all"/> 
+      <modify-function signature="operator&gt;&gt;(qulonglong&amp;)" remove="all"/> 
   </object-type>
 
   <value-type name="QPointF">
@@ -1186,6 +1190,9 @@
             <remove />
         </modify-function>            
         <modify-function signature="value(const QLatin1String &amp;)const">
+            <remove />            
+        </modify-function>            
+        <modify-function signature="hasAttribute(const QLatin1String &amp;)const">
             <remove />            
         </modify-function>            
 
@@ -1469,5 +1476,27 @@
     <primitive-type name="QBitRef"/>
     <primitive-type name="QBool"/>
     <primitive-type name="jobject"/>
+    <primitive-type name="quintptr"/>
+
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: signal 'finished' in class 'QProcess' is overloaded." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: missing required class for enums: QRegExp" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'QtValidLicenseForScriptToolsModule' does not have a type entry or is not an enum" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Rejected enum has no alternative...: QDataStream::Qt_4_5" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unhandled enum value: Qt::MatchFlags(Qt::MatchStartsWith in Qt::MatchFlag" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unhandled enum value: Qt::MatchWrap) in Qt::MatchFlag" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unmatched enum Qt::MatchFlags(Qt::MatchStartsWith|Qt::MatchWrap) when parsing default value of 'match' in class 'QAbstractItemModel'" />
+
+  <!-- some catch-all warning suppressions -->
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value 'QLatin1String(defaultConnection)' of argument in function '*', class '*'"/>
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Class '*' has equals operators but no qHash() function" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: type '*' is specified in typesystem, but not defined. This could potentially lead to compilation errors." />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace '*' for enum '*' is not declared" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function '*', unmatched parameter type '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function '*', unmatched return type '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: signature '*' for function modification in '*' not found. Possible candidates: " />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: namespace '*' does not have a type entry" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: unsupported default value '*' of argument in function '*', class '*'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: Shadowing: * and *; Java code will not compile" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum '*' is specified in typesystem, but not declared" />
 
 </typesystem>

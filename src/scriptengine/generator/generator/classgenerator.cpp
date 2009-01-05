@@ -240,6 +240,8 @@ static void writeArgumentTypeTests(QTextStream &stream, const AbstractMetaFuncti
         QString scriptArg = QString::fromLatin1("context->argument(%0)").arg(i);
         if (argType && isSequenceType(argType)) {
             stream << scriptArg << ".isArray()";
+        } else if (typeName == "QVariant") {
+            stream << "true";
         } else {
             QString tester = builtinTypeTesterFunction(typeName);
             if (!tester.isEmpty()) {
@@ -768,7 +770,10 @@ static void writeEnumClass(QTextStream &stream, const AbstractMetaClass *meta_cl
                    << "::" << values.at(uniqueIndexes.first())->name() << ")"
                    << " && (value <= " << meta_class->qualifiedCppName()
                    << "::" << values.at(uniqueIndexes.last())->name() << "))" << endl
-                   << "        return qtscript_" << qtScriptEnumName << "_keys[static_cast<int>(value)];" << endl;
+                   << "        return qtscript_" << qtScriptEnumName
+                   << "_keys[static_cast<int>(value)-static_cast<int>("
+                   << meta_class->qualifiedCppName() << "::"
+                   << values.at(uniqueIndexes.first())->name() << ")];" << endl;
         } else {
             stream << "    for (int i = 0; i < " << uniqueIndexes.size() << "; ++i) {" << endl
                    << "        if (qtscript_" << qtScriptEnumName << "_values[i] == value)" << endl
@@ -1230,7 +1235,8 @@ static void writePrototypeCall(QTextStream &s, const AbstractMetaClass *meta_cla
       << "        return context->throwError(QScriptContext::TypeError," << endl
       << "            QString::fromLatin1(\"" << meta_class->name()
       << ".%0(): this object is not a " << meta_class->name() << "\")" << endl
-      << "            .arg(qtscript_" << meta_class->name() << "_function_names[_id+1]));" << endl
+      << "            .arg(qtscript_" << meta_class->name()
+      << "_function_names[_id+" << prototypeFunctionsOffset <<"]));" << endl
       << "    }" << endl << endl;
 
     s << "    switch (_id) {" << endl;
@@ -1345,7 +1351,8 @@ static void writeHelperFunctions(QTextStream &stream, const AbstractMetaClass *m
            << "    QStringList fullSignatures;" << endl
            << "    for (int i = 0; i < lines.size(); ++i)" << endl
            << "        fullSignatures.append(QString::fromLatin1(\"%0(%1)\").arg(functionName).arg(lines.at(i)));" << endl
-           << "    return context->throwError(QString::fromLatin1(\"QFile::%0(): could not find a function match; candidates are:\\n%1\")" << endl
+           << "    return context->throwError(QString::fromLatin1(\"" << meta_class->name()
+           << "::%0(): could not find a function match; candidates are:\\n%1\")" << endl
            << "        .arg(functionName).arg(fullSignatures.join(QLatin1String(\"\\n\"))));" << endl
            << "}" << endl << endl;
 }

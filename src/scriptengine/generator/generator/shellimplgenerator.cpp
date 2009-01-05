@@ -133,10 +133,18 @@ void ShellImplGenerator::write(QTextStream &s, const AbstractMetaClass *meta_cla
                                Option(OriginalName | ShowStatic | UnderscoreSpaces),
                                "QtScriptShell_");
         s << endl << "{" << endl;
+        QString scriptFunctionName = fun->name();
+        if (QPropertySpec *read = meta_class->propertySpecForRead(fun->name())) {
+            if (read->name() == fun->name()) {
+                // use different name to avoid infinite recursion
+                // ### not sure if this is the best solution though...
+                scriptFunctionName.prepend("_qs_");
+            }
+        }
         s << "    QScriptValue _q_function = __qtscript_self.property(\""
-          << fun->name() << "\");" << endl;
+          << scriptFunctionName << "\");" << endl;
         s << "    if (!_q_function.isFunction() || QTSCRIPT_IS_GENERATED_FUNCTION(_q_function)" << endl
-          << "        || (__qtscript_self.propertyFlags(\"" << fun->name() << "\") & QScriptValue::QObjectMember)) {" << endl;
+          << "        || (__qtscript_self.propertyFlags(\"" << scriptFunctionName << "\") & QScriptValue::QObjectMember)) {" << endl;
 
         AbstractMetaArgumentList args = fun->arguments();
         s << "        ";

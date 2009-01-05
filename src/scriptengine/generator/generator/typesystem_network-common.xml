@@ -17,7 +17,9 @@
   <enum-type name="QHttp::State" />
   <enum-type name="QHttp::ConnectionMode" />
   <enum-type name="QNetworkInterface::InterfaceFlag" flags="QNetworkInterface::InterfaceFlags" />
+  <enum-type name="QNetworkProxy::Capability" flags="QNetworkProxy::Capabilities" />
   <enum-type name="QNetworkProxy::ProxyType" />
+  <enum-type name="QNetworkProxyQuery::QueryType" />
   <enum-type name="QUdpSocket::BindFlag" flags="QUdpSocket::BindMode" />
   <enum-type name="QUrlInfo::PermissionSpec" />
   <enum-type name="QHostInfo::HostInfoError" />    
@@ -34,6 +36,9 @@
   <enum-type name="QNetworkRequest::Attribute" extensible="yes" />
   <enum-type name="QNetworkRequest::CacheLoadControl" />
   <enum-type name="QNetworkRequest::KnownHeaders" />
+
+  <object-type name="QAbstractNetworkCache">
+  </object-type>
 
   <object-type name="QAbstractSocket" />
   <object-type name="QFtp" />
@@ -84,12 +89,26 @@
     <modify-function signature="operator=(QNetworkAddressEntry)" remove="all"/>
   </value-type>
   
+  <value-type name="QNetworkCacheMetaData">
+    <modify-function signature="operator=(QNetworkCacheMetaData)" remove="all"/>
+    <extra-includes>
+        <include file-name="QDateTime" location="global"/>
+    </extra-includes>  
+  </value-type>
+
   <value-type name="QNetworkInterface">
     <modify-function signature="operator=(QNetworkInterface)" remove="all"/>
   </value-type>
   
   <value-type name="QNetworkProxy">
     <modify-function signature="operator=(QNetworkProxy)" remove="all"/>
+  </value-type>
+
+  <object-type name="QNetworkProxyFactory">
+  </object-type>
+
+  <value-type name="QNetworkProxyQuery">
+    <modify-function signature="operator=(QNetworkProxyQuery)" remove="all"/>
   </value-type>
 
   <value-type name="QUrlInfo">

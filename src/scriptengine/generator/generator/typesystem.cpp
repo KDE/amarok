@@ -28,6 +28,8 @@
 
 #include <reporthandler.h>
 
+#include <memory>
+
 #include <QtXml>
 
 QString strings_Object = QLatin1String("Object");
@@ -425,7 +427,7 @@ bool Handler::startElement(const QString &, const QString &n,
         return importFileElement(atts);
     }
 
-    StackElement *element = new StackElement(current);
+    std::auto_ptr<StackElement> element(new StackElement(current));
 
     if (!tagNames.contains(tagName)) {
         m_error = QString("Unknown tag name: '%1'").arg(tagName);
@@ -548,9 +550,9 @@ bool Handler::startElement(const QString &, const QString &n,
                 ftype->setOriginator(m_current_enum);
                 ftype->setOriginalName(attributes["flags"]);
                 ftype->setCodeGeneration(m_generate);
-                QString n = ftype->originalName();
+                QString origname = ftype->originalName();
 
-                QStringList lst = n.split("::");
+                QStringList lst = origname.split("::");
                 if (QStringList(lst.mid(0, lst.size() - 1)).join("::") != m_current_enum->javaQualifier()) {
                     ReportHandler::warning(QString("enum %1 and flags %2 differ in qualifiers")
                                            .arg(m_current_enum->javaQualifier())
@@ -1388,7 +1390,7 @@ bool Handler::startElement(const QString &, const QString &n,
         };
     }
 
-    current = element;
+    current = element.release();
     return true;
 }
 
@@ -1449,7 +1451,8 @@ TypeDatabase::TypeDatabase() : m_suppressWarnings(true)
     addType(new ContainerTypeEntry("QMultiMap", ContainerTypeEntry::MultiMapContainer));
 
     // Custom types...
-    addType(new QModelIndexTypeEntry());
+    // ### QtScript: no custom handling of QModelIndex for now
+//    addType(new QModelIndexTypeEntry());
 
     addRemoveFunctionToTemplates(this);
 }
@@ -1512,7 +1515,7 @@ ContainerTypeEntry *TypeDatabase::findContainerType(const QString &name)
 
 PrimitiveTypeEntry *TypeDatabase::findTargetLangPrimitiveType(const QString &java_name)
 {
-    foreach (QList<TypeEntry *> entries, m_entries) {
+    foreach (QList<TypeEntry *> entries, m_entries.values()) {
         foreach (TypeEntry *e, entries) {
             if (e && e->isPrimitive()) {
                 PrimitiveTypeEntry *pe = static_cast<PrimitiveTypeEntry *>(e);

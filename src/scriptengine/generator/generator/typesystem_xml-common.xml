@@ -183,13 +183,13 @@
         <modify-function signature="setAttribute(const QString &amp;, unsigned int)">
             <remove />
         </modify-function>
-        <modify-function signature="setAttribute(const QString &amp;, unsigned long long)">
+        <modify-function signature="setAttribute(const QString &amp;, qulonglong)">
             <remove />
         </modify-function>        
         <modify-function signature="setAttributeNS(const QString, const QString &amp;, unsigned int)">
             <remove />
         </modify-function>
-        <modify-function signature="setAttributeNS(const QString, const QString &amp;, unsigned long long)">
+        <modify-function signature="setAttributeNS(const QString, const QString &amp;, qulonglong)">
             <remove />
         </modify-function>        
         

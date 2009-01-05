@@ -18,4 +18,9 @@
         <modify-function signature="operator==(Phonon::EffectParameter)const" remove="all" />
     </value-type>
 
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'Phonon::AddonInterface::SubtitleCommand' does not have a type entry or is not an enum" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: enum 'Phonon::AddonInterface::AudioChannelCommand' does not have a type entry or is not an enum" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: class 'AudioOutputInterface' inherits from unknown base class 'Phonon::AudioOutputInterface40'" />
+  <suppress-warning text="WARNING(MetaJavaBuilder) :: class not found for setup inheritance 'Phonon::AudioOutputInterface40'" />
+
 </typesystem>
