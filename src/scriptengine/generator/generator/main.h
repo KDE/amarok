@@ -56,7 +56,7 @@ struct Preprocess
 #if defined(Q_OS_WIN32)
         char *path_splitter = ";";
 #else
-        const char *path_splitter = ":";
+        char *path_splitter = ":";
 #endif
 
         // Environment INCLUDE
@@ -71,18 +71,7 @@ struct Preprocess
         // Include Qt
         QString qtdir = getenv ("QTDIR");
         if (qtdir.isEmpty()) {
-#if defined(Q_OS_MAC)
-            qWarning("QTDIR environment variable not set. Assuming standard binary install using frameworks.");
-            QString frameworkDir = "/Library/Frameworks";
-            includes << (frameworkDir + "/QtXml.framework/Headers");
-            includes << (frameworkDir + "/QtNetwork.framework/Headers");
-            includes << (frameworkDir + "/QtCore.framework/Headers");
-            includes << (frameworkDir + "/QtGui.framework/Headers");
-            includes << (frameworkDir + "/QtOpenGL.framework/Headers");
-            includes << frameworkDir;
-#else
             qWarning("QTDIR environment variable not set. This may cause problems with finding the necessary include files.");
-#endif
         } else {
             qtdir += "/include";
             includes << (qtdir + "/QtXml");

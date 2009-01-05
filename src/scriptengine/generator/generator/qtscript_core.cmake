@@ -1,5 +1,4 @@
 set( Generated_QtCore_SRCS
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/main.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QBasicTimer.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QBitArray.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QBuffer.cpp
@@ -97,24 +96,8 @@ set( Generated_QtCore_SRCS
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QUuid.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QXmlStreamAttributes.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QXmlStreamEntityResolver.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/main.cpp
 )
-
-#This needs to be added to qt 4.5 builds:
-set( Generated_QtCore_45_SRCS
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_Global.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QAbstractItemModel.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QAbstractListModel.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QAbstractTableModel.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QMimeData.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QModelIndex.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QPersistentModelIndex.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QAbstractItemModel.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QAbstractListModel.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QAbstractTableModel.cpp
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QMimeData.cpp
-)
-
-
 set_source_files_properties( ${Generated_QtCore_SRCS} PROPERTIES GENERATED true )
 #qtscript bindings don't use moc
 add_library( qtscript_core MODULE ${Generated_QtCore_SRCS} )
