@@ -9,27 +9,24 @@ VERSION 2.0.1
     * Add "Stop after track" option to the playlist menu.
     * Queue track functionality has returned. (BR 171939)
     * Growl support on OS X.
+    * Add automatic recovery option to MySQL embedded server.
     * Greatly improved Librivox.org service script. It now works for all books,
       and dynamically fetches a summary of each book that is shown in the 
       service info applet. The script now also has a propper icon in the
       service browser and its own emblem and default "album" cover for books.
     * Sorting collection by Composer is now possible. (BR 177271)
-    * Scripted Service: Service scripts can now dynamically fetch context info
-      when items are selected (info can still be applied statically to each 
-      item as well).
-    * Scripted Service: Album items from a service script can now have
-      custom covers.
-    * Scripted Service: Items from a service script can now have a custom 
-      emblem.
-    * Scripted Service: Service scripts can now set custom icons for the
-      service browser.
+    * Service scripts can now dynamically fetch context info when items are
+      selected (info can still be applied statically to each item as well).
+    * Album items from a service script can now have custom covers.
+    * Items from a service script can now have a custom emblem.
+    * Service scripts can now set custom icons for the service browser.
     * Add simple filtering to the service browser.
     * Podcast channels are automatically refreshed once per hour if autoscan is
       enabled.
 
   CHANGES:
     * MTP devices can now delete multiple tracks at once.
-    * Status bar notification oncopying or deleting tracks on Ipod.
+    * Status bar notification on copying or deleting tracks on Ipod.
     * Don't fold the Collection Browser after editing or updating the
       collection. (BR 166841)
     * Replaced the systray icon with a more modern logo.
@@ -40,9 +37,10 @@ VERSION 2.0.1
     * Playlist items now have tooltips. (BR 170844)
 
   BUGFIXES:
+    * Update the QtScript Qt binding generator.
     * The Files browser now remembers its settings, like the active directory.
       (BR 173742)
-    * Fixed problems with the collection scanner often missing a part of the
+    * Fix problems with the collection scanner often missing a part of the
       collection, or potentially failing altogether. (BR 176154)
     * Fix Context View crash when quitting the application. (BR 179110)
     * LibriVox: Don't crash when double clicking "Enter Query". (BR 177991)
@@ -50,7 +48,7 @@ VERSION 2.0.1
       (BR 178701)
     * Don't override cached lyrics when fetching. (BR 178196)
     * Show a warning when the collection scanner dies. (BR 176154)
-    * MTP: Date was being set incorrectly. (BR 171194)
+    * Set date correctly on MTP devices. (BR 171194)
     * Ipod ratings are read/written/displayed.
     * Ipod playcounts are read and displayed on Current Track Info applet.
     * Lastfm Settings Dialog can now check to ensure username/password is 
@@ -58,19 +56,22 @@ VERSION 2.0.1
     * Don't delete files if an error occurs during transfer. (BR 178701)
     * MPRIS GetMetadata() call returns arturl for last.fm streams. (BR 178695)
     * Fix grouping of various artist albums in the playlist. (BR 175604)
-    * Update statistics properly on windows and Mac versions.
+    * Update statistics properly on Windows and Mac versions.
     * Fix progress indicator disapearing when skipping in last.fm streams.
     * Write the discnumber field for mp3 tags.
     * Don't start a fadeout when stopping paused media. (BR 178057)
     * More accurate Amarok 1.4 database imports.
     * Ipod tracks' sample rate is now shown correctly in Tag Dialog.
-    * Tracks did not always report that their editable status correctly (BR 177058)
+    * Tracks did not always report that their editable status correctly.
+      (BR 177058)
     * Gapless playback of MTP tracks one after another now works.
-    * Podcast with some unsafe characters in them cause database corruption. (BR 172594)
+    * Podcast with some unsafe characters in them caused database corruption.
+      (BR 172594)
     * Amarok no longer stalls on large Ipod copy operations. (BR 173707)
-    * Fixed switching between basic and advanced mode in the filename scheme chooser.
-    * Fixed MTP device attached on startup crashing. (BR 177201)
-    * Tracks with same tags as a track on Ipod no longer copied. (BR 177198)
+    * Fixed switching between basic and advanced mode in the filename scheme
+      chooser.
+    * Fix MTP device attached on startup crashing. (BR 177201)
+    * Tracks with same tags as a track on Ipod are no longer copied. (BR 177198)
     * When reaching the end of the playlist, actually show stopped state.
       (BR 177782)
     * Fixes in playing tracks in repeat modes.
@@ -78,8 +79,6 @@ VERSION 2.0.1
       found. (BR 173940)
     * Added tooltips to icons in context view. (BR 174478)
     * Fixed icons and layout in Advanced Filter dialog.
-    * The QtScript Qt binding generator has been updated to the latest.
-      This should fix some bugs in the QtScript API.
 
 
 VERSION 2.0
