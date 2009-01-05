@@ -115,7 +115,7 @@ set( Generated_QtCore_45_SRCS
 )
 
 
-set_source_files_properties( ${Generated_QtCore_SRCS} PROPERTIES GENERATED true )
+set_source_files_properties( ${Generated_QtCore_SRCS} ${Generated_QtCore_45_SRCS} PROPERTIES GENERATED true )
 #qtscript bindings don't use moc
 add_library( qtscript_core MODULE ${Generated_QtCore_SRCS} ${Generated_QtCore_45_SRCS} )
 add_dependencies( qtscript_core generator )
