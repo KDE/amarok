@@ -78,6 +78,8 @@ VERSION 2.0.1
       found. (BR 173940)
     * Added tooltips to icons in context view. (BR 174478)
     * Fixed icons and layout in Advanced Filter dialog.
+    * The QtScript Qt binding generator has been updated to the latest.
+      This should fix some bugs in the QtScript API.
 
 
 VERSION 2.0
