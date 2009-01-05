@@ -13,8 +13,6 @@ set( Generated_QtNetwork_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QLocalSocket.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkAccessManager.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkAddressEntry.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QAbstractNetworkCache.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkCacheMetaData.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkCookie.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkCookieJar.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkInterface.cpp
@@ -53,6 +51,8 @@ set( Generated_QtNetwork_SRCS
 )
 #This needs to be added to qt 4.5 builds:
 set( Generated_45_QtNetwork_SRCS
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QAbstractNetworkCache.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkCacheMetaData.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkProxyFactory.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscript_QNetworkProxyQuery.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_network/qtscriptshell_QAbstractNetworkCache.cpp
