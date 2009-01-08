@@ -72,6 +72,8 @@ PrettyItemConfigRowElement PrettyItemConfigRow::element( int at )
 //////////////////////////////////////////////
 
 PrettyItemConfig::PrettyItemConfig()
+    : m_showCover( false )
+    , m_activeIndicatorRow( 0 )
 {
 }
 
@@ -105,6 +107,16 @@ void Playlist::PrettyItemConfig::setShowCover( bool showCover )
     m_showCover = showCover;
 }
 
+}
+
+int Playlist::PrettyItemConfig::activeIndicatorRow()
+{
+    return m_activeIndicatorRow;
+}
+
+void Playlist::PrettyItemConfig::setActiveIndicatorRow( int row )
+{
+    m_activeIndicatorRow = row;
 }
 
 

@@ -73,6 +73,7 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     s_albumHeadConfig.addRow( headRow1 );
     s_albumHeadConfig.addRow( headRow2 );
     s_albumHeadConfig.setShowCover( true );
+    s_albumHeadConfig.setActiveIndicatorRow( -1 );
 
     PrettyItemConfigRow bodyRow1;
     bodyRow1.addElement( PrettyItemConfigRowElement( Title, 0.8, false, Qt::AlignLeft | Qt::AlignVCenter ) );
@@ -607,6 +608,16 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
         int elementCount = row.count();
 
         qreal rowWidth = option.rect.width() - ( rowOffsetX + MARGINH );
+
+
+        if ( i == config.activeIndicatorRow() && index.data( ActiveTrackRole ).toBool() )
+        {
+            painter->drawPixmap( rowOffsetX - 1, rowOffsetY + 1,
+                                  The::svgHandler()->renderSvg(
+                                  "active_overlay",
+                                  rowWidth + 2, rowHeight - 2,
+                                  "active_overlay" ) );
+        }
 
         for ( int j = 0; j < elementCount; j++ ) {
 

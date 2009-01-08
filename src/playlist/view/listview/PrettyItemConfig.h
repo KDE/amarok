@@ -73,13 +73,16 @@ public:
     int rows();
     PrettyItemConfigRow row( int at );
     bool showCover();
+    int activeIndicatorRow();
 
     void addRow( PrettyItemConfigRow row );
     void setShowCover( bool showCover );
+    void setActiveIndicatorRow( int row );
     
 private:
     QList<PrettyItemConfigRow> m_rows;
     bool m_showCover;
+    int m_activeIndicatorRow;
 };
 
 }
