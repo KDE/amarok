@@ -22,7 +22,7 @@
 
 #include <QGraphicsLinearLayout>
 
-#define TOOLBAR_X_OFFSET 10000
+#define TOOLBAR_X_OFFSET 2000
 
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )

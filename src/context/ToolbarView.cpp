@@ -19,7 +19,7 @@
 #include <QSizePolicy>
 #include <QWidget>
 
-#define TOOLBAR_X_OFFSET 10000
+#define TOOLBAR_X_OFFSET 2000
 
 Context::ToolbarView::ToolbarView( QGraphicsScene* scene, QWidget* parent )
     : QGraphicsView( scene, parent )
