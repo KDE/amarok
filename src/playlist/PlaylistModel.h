@@ -25,6 +25,7 @@
 #define AMAROK_PLAYLISTMODEL_H
 
 #include "Amarok.h"
+#include "PlaylistDefines.h"
 #include "PlaylistItem.h"
 #include "UndoCommands.h"
 #include "meta/Meta.h"
@@ -51,45 +52,8 @@ AMAROK_EXPORT Playlist::Model* playlistModel();
 
 namespace Playlist
 {
-enum Column
-{
-    Album  = 1,
-    AlbumArtist,
-    Artist,
-    Bitrate,
-    Bpm,
-    Comment,
-    Composer,
-    CoverImage,
-    Directory,
-    DiscNumber,
-    Filename,
-    Filesize,
-    Genre,
-    LastPlayed,
-    Length,
-    Mood,
-    PlayCount,
-    Rating,
-    SampleRate,
-    Score,
-    Title,
-    TrackNumber,
-    Type,
-    Year,
-    NUM_COLUMNS
-};
 
-enum SearchFields
-{
-    MatchTrack = 1,
-    MatchArtist = 2,
-    MatchAlbum = 4,
-    MatchGenre = 8,
-    MatchComposer = 16,
-    MatchYear = 32
-};
-
+    
 enum DataRoles
 {
     TrackRole = Qt::UserRole,
