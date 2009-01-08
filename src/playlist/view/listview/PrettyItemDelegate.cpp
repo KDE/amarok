@@ -182,7 +182,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         trackOption.rect = QRect( 0, headHeight, option.rect.width(), trackHeight );
 
         paintItem( s_albumHeadConfig, painter, headOption, index );
-        painter->translate( 0, headHeight );
+        painter->translate( 0, headHeight - 1 );
         paintItem( s_albumBodyConfig, painter, trackOption, index );
         
     } else if ( groupMode == Body )
