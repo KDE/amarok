@@ -42,10 +42,14 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), 
              this, SLOT( appletRemoved( Plasma::Applet* ) ) );
+    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), 
+             this, SIGNAL( geometryChanged() ) );
              
     connect( m_applets,  SIGNAL( appletAdded( Plasma::Applet*, int ) ), 
              m_toolbar,      SLOT( appletAdded( Plasma::Applet*, int) ) );
-  
+    connect( m_applets, SIGNAL(  appletAdded( Plasma::Applet*, int ) ), 
+             this, SIGNAL( geometryChanged() ) );
+             
     connect( m_toolbar, SIGNAL( showApplet( Plasma::Applet* ) ), m_applets, SLOT( showApplet( Plasma::Applet* ) ) );
     connect( m_toolbar, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_applets, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
     connect( m_toolbar, SIGNAL( addAppletToContainment( const QString&, int ) ), this, SLOT( addApplet( const QString&, int ) ) );

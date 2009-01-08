@@ -152,6 +152,8 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     if( index < 0 || index > m_appletList.size() )
         return;
     
+    prepareGeometryChange();
+    
     qreal runningHeight = 0.0, currentHeight = 0.0;
     qreal width =  boundingRect().width();
     debug() << "showing applet at index" << index;
