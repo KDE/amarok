@@ -30,7 +30,7 @@ class QGraphicsLinearLayout;
 namespace Context
 {
     
-class AppletToolbarItem;
+class AppletToolbarAddItem;
     
 class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
 {
@@ -51,8 +51,8 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
         qreal m_width;    
         QGraphicsLinearLayout* m_appletLayout;
         
-        AppletToolbarItem* m_test1;
-        AppletToolbarItem* m_test2;
+        AppletToolbarAddItem* m_test1;
+        AppletToolbarAddItem* m_test2;
 };
 
 }

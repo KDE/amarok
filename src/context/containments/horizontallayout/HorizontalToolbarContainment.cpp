@@ -51,7 +51,7 @@ Context::HorizontalToolbarContainment::constraintsEvent( Plasma::Constraints con
 QList<QAction*> 
 Context::HorizontalToolbarContainment::contextualActions()
 {
-    
+    return QList< QAction* >();
 }
 
 void 

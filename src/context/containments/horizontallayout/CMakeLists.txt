@@ -8,7 +8,7 @@ include_directories( ../../..
 set(context_SRCS 
 	HorizontalToolbarContainment.cpp 
 	AppletToolbar.cpp 
-	AppletToolbarItem.cpp
+	AppletToolbarAddItem.cpp
 	HorizontalAppletLayout.cpp
 	)
 

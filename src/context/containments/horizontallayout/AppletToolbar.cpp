@@ -13,7 +13,7 @@
 
 #include "AppletToolbar.h"
 
-#include "AppletToolbarItem.h"
+#include "AppletToolbarAddItem.h"
 #include "Debug.h"
 
 #include <QPainter>
@@ -28,11 +28,10 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
 {    
     m_appletLayout = new QGraphicsLinearLayout( Qt::Horizontal, this );
     
-    m_test1 = new AppletToolbarItem( 0 );
-    m_test2 = new AppletToolbarItem( 0 );
+    m_test1 = new AppletToolbarAddItem( 0 );
+    m_test2 = new AppletToolbarAddItem( 0 );
     
     m_appletLayout->addItem( m_test1 );
-    m_appletLayout->addItem( m_test2 );
 }
 
 Context::AppletToolbar::~AppletToolbar()
