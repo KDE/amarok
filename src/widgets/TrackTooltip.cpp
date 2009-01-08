@@ -204,7 +204,7 @@ void TrackToolTip::setTrack()
             left << i18n( "Length" );
         }
 
-        m_tooltip = i18n( "Volume: %1%", QString::number( The::engineController()->volume() ) );
+        m_tooltip = i18n( "<i>Volume: %1%</i>", QString::number( The::engineController()->volume() ) );
         //NOTE it seems to be necessary to <center> each element indivdually
         m_tooltip += "<table cellpadding='2' cellspacing='2' align='center'><tr>";
 
