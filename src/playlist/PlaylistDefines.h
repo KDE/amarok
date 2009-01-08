@@ -51,6 +51,7 @@ enum Column
     SampleRate,
     Score,
     Title,
+    TitleWithTrackNum,
     TrackNumber,
     Type,
     Year,
@@ -80,6 +81,7 @@ static const QStringList columnNames = ( QStringList()
         << i18n( "Sample rate" )
         << i18n( "score" )
         << i18n( "Title" )
+        << i18n( "Title (with track number)" )
         << i18n( "Track number" )
         << i18n( "Type" )
         << i18n( "Year" ) );

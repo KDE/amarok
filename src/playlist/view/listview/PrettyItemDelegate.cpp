@@ -76,7 +76,7 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     s_albumHeadConfig.setActiveIndicatorRow( -1 );
 
     PrettyItemConfigRow bodyRow1;
-    bodyRow1.addElement( PrettyItemConfigRowElement( Title, 0.8, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    bodyRow1.addElement( PrettyItemConfigRowElement( TitleWithTrackNum, 0.8, false, Qt::AlignLeft | Qt::AlignVCenter ) );
     bodyRow1.addElement( PrettyItemConfigRowElement( Length, 0.2, false, Qt::AlignRight | Qt::AlignVCenter ) );
     s_albumBodyConfig.addRow( bodyRow1 );
     s_albumBodyConfig.setShowCover( false );

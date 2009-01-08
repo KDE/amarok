@@ -278,7 +278,20 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Title:
             {
-                return Qt::escape( m_items.at( row )->track()->name() );
+                return Qt::escape( m_items.at( row )->track()->prettyName() );
+            }
+            case TitleWithTrackNum:
+            {
+                QString trackString;
+                QString trackName = m_items.at( row )->track()->prettyName();
+                if ( m_items.at( row )->track()->trackNumber() > 0 )
+                {
+                    QString trackNumber = QString::number( m_items.at( row )->track()->trackNumber() );
+                    trackString =  QString( trackNumber + " - " + trackName );
+                } else
+                    trackString = trackName;
+                
+                return Qt::escape( trackString );
             }
             case TrackNumber:
             {
