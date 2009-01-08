@@ -1012,18 +1012,21 @@ TagDialog::readMultipleTracks()
     {
         cur_item = ui->kComboBox_artist->currentIndex();
         m_currentData.insert( Meta::Field::ARTIST, first.value( Meta::Field::ARTIST ) );
+        ui->kComboBox_artist->completionObject()->insertItems( m_artists );
         selectOrInsertText( first.value( Meta::Field::ARTIST ).toString(), ui->kComboBox_artist );
     }
     if( album )
     {
         cur_item = ui->kComboBox_album->currentIndex();
         m_currentData.insert( Meta::Field::ALBUM, first.value( Meta::Field::ALBUM ) );
+        ui->kComboBox_album->completionObject()->insertItems( m_albums );
         selectOrInsertText( first.value( Meta::Field::ALBUM ).toString(), ui->kComboBox_album );
     }
     if( genre )
     {
         cur_item = ui->kComboBox_genre->currentIndex();
         m_currentData.insert( Meta::Field::GENRE, first.value( Meta::Field::GENRE ) );
+        ui->kComboBox_genre->completionObject()->insertItems( m_genres );
         selectOrInsertText( first.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
     }
     if( comment )
@@ -1035,6 +1038,7 @@ TagDialog::readMultipleTracks()
     {
         cur_item = ui->kComboBox_composer->currentIndex();
         m_currentData.insert( Meta::Field::COMPOSER, first.value( Meta::Field::COMPOSER ) );
+        ui->kComboBox_composer->completionObject()->insertItems( m_composers );
         selectOrInsertText( first.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     }
     if( year )
