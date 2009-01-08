@@ -356,9 +356,12 @@ AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName
 void
 AmarokToolBoxMenu::addApplet( const QString &pluginName )
 {
+    DEBUG_BLOCK
     if( !pluginName.isEmpty() && containment() )
     {
-        containment()->addApplet( pluginName );
+        // we can't add directly b/c we may want to say at what location, so we just report
+        //containment()->addApplet( pluginName );
+        emit addAppletToContainment( pluginName );
     }
 }
 

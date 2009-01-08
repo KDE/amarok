@@ -37,7 +37,7 @@ class AppletToolbarAddItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool maximizeHorizontally = false );
+        AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool fixedAdd = false );
         ~AppletToolbarAddItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
@@ -47,9 +47,13 @@ class AppletToolbarAddItem : public QGraphicsWidget
         void setMaximized( bool max );
         void hideMenu();
         
+    signals:
+        void addApplet( const QString&, AppletToolbarAddItem*  );
+        
     public slots:
         void updatedContainment( Containment* cont );
         void iconClicked();
+        void addApplet( const QString& pluginName );
         
     protected:    
          virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
@@ -60,7 +64,7 @@ class AppletToolbarAddItem : public QGraphicsWidget
         void showAddAppletsMenu( QPointF pos = QPointF() );
         
         int m_iconPadding;
-        bool m_maximizeHorizontally;
+        bool m_fixedAdd;
         
         Plasma::IconWidget* m_icon;
         QGraphicsSimpleTextItem* m_label;

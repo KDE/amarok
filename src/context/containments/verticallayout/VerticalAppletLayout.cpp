@@ -25,6 +25,8 @@ Context::VerticalAppletLayout::VerticalAppletLayout( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
     , m_showingIndex( -1 )
 {
+    
+    setAcceptDrops( true );
 }
 
 Context::VerticalAppletLayout::~VerticalAppletLayout()
@@ -38,29 +40,57 @@ Context::VerticalAppletLayout::paint ( QPainter * painter, const QStyleOptionGra
   //  DEBUG_BLOCK
     
  //   debug() << "drawing rect:" << boundingRect();
-    painter->save();
+  /*  painter->save();
     painter->setPen( QColor( Qt::green ) );   
     painter->setOpacity( 0.75 ); 
     painter->drawRect( boundingRect() );
     painter->restore();
+    */
 }
 
 void
 Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
-    
+    // update all the applet widths
+    foreach( Plasma::Applet* applet, m_appletList )
+        applet->resize( event->newSize().width(), applet->size().height() );
+}
+
+
+void 
+Context::VerticalAppletLayout::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
+{
+    DEBUG_BLOCK
+}
+
+void
+Context::VerticalAppletLayout::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
+{
+    DEBUG_BLOCK
+}
+
+void 
+Context::VerticalAppletLayout::dropEvent( QGraphicsSceneDragDropEvent *event )
+{
+    DEBUG_BLOCK
 }
 
 void 
 Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
 {
     DEBUG_BLOCK
+    debug() << "layout told to add applet at" << location;
     if( location < 0 ) // being told to add at end
     {
         m_appletList << applet;
         showAtIndex( m_appletList.size() - 1 );
         location = m_appletList.size() - 1; // so the signal has the correct location
+    } else
+    {
+        m_appletList.insert( location, applet );
+        showAtIndex( location );
     }
+    debug() << "emitting addApplet with location" << location;
     emit appletAdded( applet, location );
 }
 

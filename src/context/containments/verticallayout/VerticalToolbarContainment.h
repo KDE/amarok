@@ -56,8 +56,13 @@ class VerticalToolbarContainment : public Containment
         virtual void hideTitle() {}
         virtual void addCurrentTrack() {}
 
+    protected:
+        virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
+        virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
+        virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+        
     public slots:
-        Applet* addApplet( Plasma::Applet* applet, const QPointF & );
+        Applet* addApplet( const QString& pluginName, const int );
         void    appletRemoved( Plasma::Applet* );
         
     signals:

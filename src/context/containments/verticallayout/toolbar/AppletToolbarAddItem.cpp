@@ -26,15 +26,15 @@
 #include <QSizeF>
 #include <QPainter>
 
-Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont, bool maximizeHorizontally )
+Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont, bool fixedAdd )
     : QGraphicsWidget( parent )
-    , m_iconPadding( 3 )
-    , m_maximizeHorizontally( maximizeHorizontally )
+    , m_iconPadding( 0 )
+    , m_fixedAdd( fixedAdd )
     , m_icon( 0 )
     , m_label( 0 )
     , m_addMenu( 0 )
 {
-    QAction* listAdd = new QAction( i18n( "Add Widgets..." ), this );
+    QAction* listAdd = new QAction( i18n( "Add Applets..." ), this );
     listAdd->setIcon( KIcon( "list-add" ) );
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
@@ -48,17 +48,22 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_icon->setToolTip( listAdd->text() );
     m_icon->setDrawBackground( false );
     m_icon->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = m_icon->sizeFromIconSize( 22 );
+    QSizeF iconSize;
+    if( m_fixedAdd )
+        iconSize = m_icon->sizeFromIconSize( 22 );
+    else
+        iconSize = m_icon->sizeFromIconSize( 11 );
     m_icon->setMinimumSize( iconSize );
     m_icon->setMaximumSize( iconSize );
     m_icon->resize( iconSize );
     m_icon->setZValue( zValue() + 1 );
     
-    m_label = new QGraphicsSimpleTextItem( "Add Applet", this );
+    m_label = new QGraphicsSimpleTextItem( i18n( "Add Applet..." ), this );
     m_label->hide();
     
     m_addMenu = new AmarokToolBoxMenu( this, false );
     m_addMenu->setContainment( cont );
+    connect( m_addMenu, SIGNAL( addAppletToContainment( const QString& ) ), this, SLOT( addApplet( const QString& ) ) );
 }
 
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
@@ -83,18 +88,10 @@ Context::AppletToolbarAddItem::paint ( QPainter * painter, const QStyleOptionGra
 QSizePolicy 
 Context::AppletToolbarAddItem::sizePolicy () const
 {
-    if( m_maximizeHorizontally )
+    if( m_fixedAdd )
         return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     else
         return QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-}
-
-
-void 
-Context::AppletToolbarAddItem::setMaximized( bool max )
-{
-    debug() << "add icon no longer maximizing";
-    m_maximizeHorizontally = max;
 }
 
 void 
@@ -116,11 +113,18 @@ Context::AppletToolbarAddItem::iconClicked() // SLOT
 }
 
 void 
+Context::AppletToolbarAddItem::addApplet( const QString& pluginName ) // SLOT
+{
+    DEBUG_BLOCK
+    emit addApplet( pluginName, this );
+}
+
+void 
 Context::AppletToolbarAddItem::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
     if( m_label->boundingRect().width() < ( boundingRect().width() - 2*m_icon->boundingRect().width() ) ) // do we have size to show it?
     {
-        m_icon->setPos( 0, ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
+        m_icon->setPos(  boundingRect().width() - m_icon->boundingRect().width(), ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
         m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
         m_label->show();
     } else 
@@ -134,7 +138,7 @@ Context::AppletToolbarAddItem::resizeEvent( QGraphicsSceneResizeEvent * event )
 QSizeF
 Context::AppletToolbarAddItem::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
-    if( m_maximizeHorizontally )
+    if( m_fixedAdd )
         return QGraphicsWidget::sizeHint( which, constraint );
     else
         return QSizeF( m_icon->size().width() + 2 * m_iconPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );

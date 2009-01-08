@@ -53,7 +53,8 @@ public slots:
 
 Q_SIGNALS:
     void menuHidden();
-
+    void addAppletToContainment( const QString& );
+    
 protected:
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );

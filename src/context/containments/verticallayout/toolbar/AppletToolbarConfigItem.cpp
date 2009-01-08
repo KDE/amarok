@@ -24,10 +24,10 @@
 
 Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
-    , m_iconPadding( 4 )
+    , m_iconPadding( 2 )
     , m_icon( 0 )
 {
-    QAction* listAdd = new QAction( i18n( "Configure Widgets..." ), this );
+    QAction* listAdd = new QAction( i18n( "Configure Applets..." ), this );
     listAdd->setIcon( KIcon( "configure" ) );
     listAdd->setVisible( true );
     listAdd->setEnabled( true );

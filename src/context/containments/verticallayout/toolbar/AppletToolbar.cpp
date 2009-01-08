@@ -28,6 +28,7 @@
 
 Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
+    , m_configMode( false )
     , m_appletLayout( 0 )
     , m_cont( 0 )
     , m_addItem( 0 )
@@ -40,18 +41,16 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
         debug() << "applettoolbar created with a real containment";
     }
         
+    setAcceptDrops( true );
+
     m_appletLayout = new QGraphicsLinearLayout( Qt::Horizontal, this );
     
-    m_addItem = new AppletToolbarAddItem( this, m_cont, false );
+    m_addItem = new AppletToolbarAddItem( this, m_cont, true );
     connect( cont, SIGNAL( updatedContainment( Containment* ) ), m_addItem, SLOT( updatedContainment( Containment* ) ) );
-    
-    m_configItem = new AppletToolbarConfigItem( this );
-    connect( m_configItem, SIGNAL( triggered() ), this, SLOT( toggleConfigMode() ) );
+    connect( m_addItem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
     
     m_appletLayout->addItem( m_addItem );
-    m_appletLayout->setAlignment( m_addIt2em, Qt::AlignRight );
-    m_appletLayout->addItem( m_configItem );
-    m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
+    m_appletLayout->setAlignment( m_addItem, Qt::AlignRight );
 }
 
 Context::AppletToolbar::~AppletToolbar()
@@ -90,7 +89,7 @@ Context::AppletToolbar::sizePolicy () const
     return QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Fixed );
 }
 
-
+// this takes care of the cleanup after the applet has been removed from the containment itself
 void 
 Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
 {
@@ -100,16 +99,35 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
         AppletToolbarAppletItem* app = dynamic_cast< AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
         if( app && app->applet() == applet )
         {
+            if( m_configMode ) // also remove one of the now-extra config icons
+            {
+                Context::AppletToolbarAddItem* tmpItem = dynamic_cast< Context::AppletToolbarAddItem* >( m_appletLayout->itemAt( i + 1 ) );
+                if( !tmpItem )
+                    debug() << "GOT NON-ADDITEM";
+                m_appletLayout->removeItem( tmpItem );
+                m_configAddIcons.removeAll( tmpItem );
+                tmpItem->deleteLater();
+            }
             m_appletLayout->removeItem( app );
             app->deleteLater();
         }
+    }
+    // if all applets are removed, re-add the add item
+    if( m_appletLayout->count() == 2 && m_configMode )
+    {
+        toggleConfigMode();
+        m_appletLayout->removeItem( m_configItem );
+        delete m_configItem;
+        m_configItem = 0;
+        m_appletLayout->insertItem( 0, m_addItem );
+        m_addItem->show();
     }
 }
 
 QSizeF
 Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
-    return QSizeF( constraint.width(), 40 );
+    return QSizeF( constraint.width(), 30 );
 }
 
 
@@ -123,22 +141,143 @@ Context::AppletToolbar::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 
 void 
+Context::AppletToolbar::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
+{
+    DEBUG_BLOCK
+}
+
+void
+Context::AppletToolbar::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
+{
+    DEBUG_BLOCK
+}
+
+void 
+Context::AppletToolbar::dropEvent( QGraphicsSceneDragDropEvent *event )
+{
+    DEBUG_BLOCK
+}
+
+
+// user clicked on one of the add applet buttons, figure out which one he selected and tell the containment to
+// actually add the applet. appletAdded is called by the containment when it has been created.
+void 
+Context::AppletToolbar::addApplet( const QString& pluginName, Context::AppletToolbarAddItem* item ) // SLOT
+{
+    DEBUG_BLOCK
+    
+    int loc = -1; // -1  means at end
+    if( m_configMode )
+    {
+        for( int i = 0; i < m_appletLayout->count(); i++ )
+        {
+            if( item == m_appletLayout->itemAt( i ) )
+                loc = i;
+        }
+        if( loc == -1 )
+        {
+            warning() << "HELP GOT ADD REQUEST FROM NON-EXISTENT LOCATION";
+            return;
+        }
+        // since we inserted a bunch of placeholder add icons, our real index is half
+        loc /= 2;
+    }
+    debug() << "ADDING APPLET AT LOC:" << loc;
+    emit addAppletToContainment( pluginName, loc );
+}
+
+// called when the containment is done successfully adding the applet, updates the toolbar
+void 
 Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
 {
     DEBUG_BLOCK
     
     debug() << "inserting applet icon in position" << loc;
-    Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
-    connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
-    m_appletLayout->insertItem( loc, item );
-    m_addItem->setMaximized( false );
-    m_addItem->hideMenu();
-}
+    if( !m_configItem )
+    {
+        m_configItem = new AppletToolbarConfigItem( this );
+        connect( m_configItem, SIGNAL( triggered() ), this, SLOT( toggleConfigMode() ) );
+        m_appletLayout->addItem( m_configItem );
+        m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
+    }
     
+    if( m_configMode )
+    {
+        // loc doesn't take into account additional + icons, also we need to add 1 more + icon
+        Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
+        item->setConfigEnabled( true );
+        connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
+        
+        loc *= 2;
+        
+        // add the real item
+        m_appletLayout->insertItem( loc, item );
+        
+        // add the extra +
+        AppletToolbarAddItem* additem = new AppletToolbarAddItem( this, m_cont, false );
+        connect( additem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
+        m_appletLayout->insertItem( loc, additem );
+        m_configAddIcons << additem;
+    } else
+    {
+        Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
+        connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
+        m_appletLayout->insertItem( loc, item );
+        // since we have an applet, we remove the add applet button
+        // would be better to check if it is in there (otherwise we try to erase it on each add)
+        // but there is no QGraphicsLinearLayout->contains() or ->indexOf()
+        m_addItem->hide();
+        m_appletLayout->removeItem( m_addItem );
+        m_addItem->hideMenu();
+    }
+}
+
+
 void 
-Context::AppletToolbar::appletRemoved( Plasma::Applet* applet, int loc) // SLOT
+Context::AppletToolbar::toggleConfigMode() // SLOT
 {
     DEBUG_BLOCK
+    if( !m_configMode )
+    {
+        // place add icons in all possible places that the user can add an icon
+        // place overlays over applets
+        // enable dragging-and-dropping of applets
+        
+        m_configMode = true;
+        
+        int count = m_appletLayout->count(); // save now so we don't check count after adding :)
+        for( int i = 0; i < count; i++ ) // tell each applet we are configuring
+        {
+            Context::AppletToolbarAppletItem* appletItem = dynamic_cast< Context::AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
+            if( appletItem )
+                appletItem->setConfigEnabled( true );
+        }
+        
+        for( int i = 0; i < count; i++ )
+        {
+            AppletToolbarAddItem* additem = new AppletToolbarAddItem( this, m_cont, false );
+            connect( additem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
+            m_appletLayout->insertItem( i * 2, additem );
+            m_configAddIcons << additem;
+        }
+    } else
+    {
+        for( int i = 0; i < m_appletLayout->count(); i++ ) // tell each applet we are done configuring
+        {
+            Context::AppletToolbarAppletItem* appletItem = dynamic_cast< Context::AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
+            if( appletItem )
+                appletItem->setConfigEnabled( false );
+        }
+        
+        // remove all the config stuff
+        foreach( AppletToolbarAddItem* item, m_configAddIcons )
+        {
+            m_appletLayout->removeItem( item );
+            item->deleteLater();
+        }
+        m_configAddIcons.clear();
+        m_configMode = false;
+    }
 }
   
 #include "AppletToolbar.moc"

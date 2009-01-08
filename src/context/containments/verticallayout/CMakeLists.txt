@@ -12,6 +12,7 @@ set(context_SRCS
 	toolbar/AppletToolbarAddItem.cpp
 	toolbar/AppletToolbarAppletItem.cpp
 	toolbar/AppletToolbarConfigItem.cpp
+	toolbar/AppletToolbarMimeData.cpp
 	VerticalAppletLayout.cpp
 	)
 

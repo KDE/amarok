@@ -50,10 +50,11 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
         QSizePolicy sizePolicy () const;  
         
         void appletRemoved( Plasma::Applet* applet );
+        
     signals:
         void showApplet( Plasma::Applet* );
-    
-    
+        void addAppletToContainment( const QString& pluginName, int loc );
+        
     protected:
         // reimplemented dfrom QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
@@ -61,12 +62,21 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
 
         void mousePressEvent( QGraphicsSceneMouseEvent *event );
         
+        virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
+        virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
+        virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+        
     private slots:
-        void appletRemoved( Plasma::Applet*, int );
+        void addApplet( const QString& pluginName, AppletToolbarAddItem* item  );
         void appletAdded( Plasma::Applet*, int );
+        void toggleConfigMode();
         
     private:
         qreal m_width;    
+        
+        bool m_configMode;
+        QList< AppletToolbarAddItem* > m_configAddIcons;
+        
         QGraphicsLinearLayout* m_appletLayout;
                 
         Containment* m_cont;

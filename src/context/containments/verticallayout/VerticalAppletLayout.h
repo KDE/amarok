@@ -54,6 +54,11 @@ class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
     protected:
         // reimplemented from QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+        
+        virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
+        virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
+        virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
+        
     private:
         void showAtIndex( int index );
         
