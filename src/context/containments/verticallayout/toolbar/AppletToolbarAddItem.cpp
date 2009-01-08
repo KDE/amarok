@@ -27,6 +27,8 @@
 #include <QSizeF>
 #include <QPainter>
 
+#define TOOLBAR_X_OFFSET 1000
+
 Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont, bool fixedAdd )
     : QGraphicsWidget( parent )
     , m_iconPadding( 0 )
@@ -167,15 +169,16 @@ Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
         m_addMenu->setZValue( zValue() - 10000 );
         return;
     }
-    // HACK to compensate for the toolbar actually being at (10000,0). we want
+    // HACK to compensate for the toolbar actually being at (1000,0). we want
     // the menu to be seen in the "main" view
-    qreal xpos = pos.x() - 1000;
+    qreal xpos = pos.x() - TOOLBAR_X_OFFSET;
     const qreal ypos = Context::ContextView::self()->size().height() - m_addMenu->boundingRect().height();
     debug() << "placing at X coord:" << QPointF( xpos, ypos ) << "in scene coords" << mapToScene( QPointF( xpos, ypos ) );
     
-    debug() << "checking if it will overflow:"  << xpos + m_addMenu->boundingRect().width() << " > " << sceneBoundingRect().width() ;
-    if( xpos + m_addMenu->boundingRect().width() > sceneBoundingRect().width() )
-        xpos = sceneBoundingRect().width() - m_addMenu->boundingRect().width();
+    qreal diff = Context::ContextView::self()->size().width() - ( mapToScene( QPointF( xpos, ypos ) ).x() + m_addMenu->boundingRect().width() );
+    debug() << "checking if it will overflow, diff is:" << diff;
+    if( diff < 0 )
+        xpos = 0 - TOOLBAR_X_OFFSET + diff;
 
     m_addMenu->setPos( xpos, ypos );
     m_addMenu->show();
