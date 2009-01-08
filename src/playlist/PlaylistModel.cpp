@@ -148,19 +148,7 @@ Playlist::Model::headerData( int section, Qt::Orientation orientation, int role 
     if ( role != Qt::DisplayRole )
         return QVariant();
 
-    switch ( section )
-    {
-    case 0:
-        return "title";
-    case 1:
-        return "album";
-    case 2:
-        return "artist";
-    case 3:
-        return "custom";
-    default:
-        return QVariant();
-    }
+    return columnNames[section];
 }
 
 QVariant
@@ -190,39 +178,118 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     {
         switch ( index.column() )
         {
-        case 0:
-        {
-            return Qt::escape( m_items.at( row )->track()->name() );
-        }
-        case 1:
-        {
-            if ( m_items.at( row )->track()->album() )
-                return Qt::escape( m_items.at( row )->track()->album()->name() );
-            return QString();
-        }
-        case 2:
-        {
-            if ( m_items.at( row )->track()->artist() )
-                return Qt::escape( m_items.at( row )->track()->artist()->name() );
-            return QString();
-        }
-        case 3:
-        {
-            QString artist;
-            QString album;
-            QString track;
-
-            if ( m_items.at( row )->track() )
+            case Album:
             {
-                track = m_items.at( row )->track()->name();
+                if ( m_items.at( row )->track()->album() )
+                    return Qt::escape( m_items.at( row )->track()->album()->name() );
+                return QString();
+            }
+            case AlbumArtist:
+            {
+                if ( m_items.at( row )->track()->album() )
+                    if (  m_items.at( row )->track()->album()->albumArtist() )
+                        return Qt::escape( m_items.at( row )->track()->album()->albumArtist()->name() );
+                return QString();
+            }
+            case Artist:
+            {
                 if ( m_items.at( row )->track()->artist() )
-                    artist = m_items.at( row )->track()->artist()->name();
-                if ( m_items.at( row )->track()->artist() )
-                    album = m_items.at( row )->track()->album()->name();
+                    return Qt::escape( m_items.at( row )->track()->artist()->name() );
+                return QString();
+            }
+            case Bitrate:
+            {
+                return m_items.at( row )->track()->bitrate();
+            }
+            case Bpm:
+            {
+                return 0;
+            }
+            case Comment:
+            {
+                return Qt::escape( m_items.at( row )->track()->comment() );
+            }
+            case Composer:
+            {
+                if ( m_items.at( row )->track()->composer() )
+                    return Qt::escape( m_items.at( row )->track()->composer()->name() );
+                return QString();
+            }
+            case CoverImage:
+            {
+                if ( m_items.at( row )->track()->album() )
+                    return m_items.at( row )->track()->album()->image( 100 ); //FIXME:size?
+                return QImage();
+            }
+            case Directory:
+            {
+                return QString(); //FIXME
+            }
+            case DiscNumber:
+            {
+                return m_items.at( row )->track()->discNumber();
+            }
+            case Filename:
+            {
+                return QString(); //FIXME
+            }
+            case Filesize:
+            {
+                return 0;
+            }
+            case Genre:
+            {
+                if ( m_items.at( row )->track()->genre() )
+                    return Qt::escape( m_items.at( row )->track()->genre()->name() );
+                return QString();
+            }
+            case LastPlayed:
+            {
+                return m_items.at( row )->track()->lastPlayed();
+            }
+            case Length:
+            {
+                return m_items.at( row )->track()->length();
+            }
+            case Mood:
+            {
+                return QString(); //FIXME
+            }
+            case PlayCount:
+            {
+                return m_items.at( row )->track()->playCount();
+            }
+            case Rating:
+            {
+                return m_items.at( row )->track()->rating();
+            }
+            case SampleRate:
+            {
+                return m_items.at( row )->track()->sampleRate();
+            }
+            case Score:
+            {
+                return m_items.at( row )->track()->score();
+            }
+            case Title:
+            {
+                return Qt::escape( m_items.at( row )->track()->name() );
+            }
+            case TrackNumber:
+            {
+                return m_items.at( row )->track()->trackNumber();
+            }
+            case Type:
+            {
+                return QString(); //FIXME
+            }
+            case Year:
+            {
+                if ( m_items.at( row )->track()->year() )
+                    return Qt::escape( m_items.at( row )->track()->year()->name() );
+                return QString();
             }
 
-            return Qt::escape( QString( "%1 - %2 - %3" ).arg( artist, album, track ) );
-        }
         }
     }
     // else

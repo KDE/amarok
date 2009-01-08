@@ -77,7 +77,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
 
         // inherited from QAbstractListModel
         int rowCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return m_items.size(); }
-        int columnCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return 4; }
+        int columnCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return NUM_COLUMNS; }
         QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
         QVariant data( const QModelIndex& index, int role ) const;
         Qt::DropActions supportedDropActions() const;
