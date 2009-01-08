@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * New vertical Context View layout.
+    * New applet toolbar in the Context View to arrange, select, and add applets.
   
   CHANGES:
 
