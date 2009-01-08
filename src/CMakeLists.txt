@@ -318,6 +318,7 @@ set(libplaylist_SRCS
     playlist/view/classic/PlaylistClassicView.cpp
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
+    playlist/view/listview/PrettyItemConfig.cpp
 )
 
 #####################################################################
