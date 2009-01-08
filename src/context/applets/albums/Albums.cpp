@@ -40,7 +40,6 @@ Albums::Albums( QObject* parent, const QVariantList& args )
     , m_configLayout( 0 )
     , m_width( 0 )
     , m_albumWidth( 50 )
-    , m_aspectRatio( 0.0 )
 {
     setHasConfigurationInterface( false );
 }
@@ -66,8 +65,6 @@ void Albums::init()
     m_albumsView->resize( size().width() - 28, size().height() - 28 );
     m_albumsView->setPos( 7, 42 );
     m_albumsView->show();
-    // get natural aspect ratio, so we can keep it on resize
-    m_aspectRatio = m_width / m_height;
     resize( m_width, m_height );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
@@ -186,14 +183,7 @@ Albums::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     Q_UNUSED( which )
 
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    {
-        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    }
-    else
-    {
-        return constraint;
-    }
+    return QSizeF( constraint.width(), m_height );
     
 }
 void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

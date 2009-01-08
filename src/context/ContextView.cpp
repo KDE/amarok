@@ -230,7 +230,7 @@ ContextView::updateContainmentsGeometry()
 
 void ContextView::wheelEvent( QWheelEvent* event )
 {
-    QGraphicsView::wheelEvent( event );
+    if( event->QGraphicsView::wheelEvent( event );
 }
 
 } // Context namespace

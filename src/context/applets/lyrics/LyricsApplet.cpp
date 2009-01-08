@@ -248,11 +248,11 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
 QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
 {
+    DEBUG_BLOCK
     Q_UNUSED( which );
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-        return QSizeF( constraint.width(), m_lyrics->size().height() );
+    debug() << "returning sizehint height of" << m_lyrics->sizeHint().height();
+    return QSizeF( constraint.width(), m_lyrics->sizeHint().height() );
     
-    return constraint;
 }
 void
 LyricsApplet::suggestionChosen( const QString& link )

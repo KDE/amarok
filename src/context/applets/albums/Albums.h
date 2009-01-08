@@ -66,8 +66,6 @@ private:
     int m_height;
     const qreal m_albumWidth;
 
-    qreal m_aspectRatio;
-
     Meta::AlbumList m_albums;
     int m_albumCount;
 
