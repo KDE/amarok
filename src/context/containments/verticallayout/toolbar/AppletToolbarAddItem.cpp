@@ -13,7 +13,7 @@
 
 #include "AppletToolbarAddItem.h"
 
-#include "widgets/ToolboxMenu.h"
+#include "widgets/ToolBoxMenu.h"
 #include "Debug.h"
 
 #include <KIcon>
@@ -62,7 +62,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_label = new QGraphicsSimpleTextItem( i18n( "Add Applet..." ), this );
     m_label->hide();
     
-    m_addMenu = new AmarokToolBoxMenu( this, false );
+    m_addMenu = new Context::AmarokToolBoxMenu( this, false );
     m_addMenu->setContainment( cont );
     m_addMenu->setZValue( zValue() - 10000 );
     connect( m_addMenu, SIGNAL( addAppletToContainment( const QString& ) ), this, SLOT( addApplet( const QString& ) ) );
