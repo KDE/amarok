@@ -54,6 +54,7 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
         virtual void engineNewTrackPlaying();
         virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
         virtual void engineTrackPositionChanged( long position, bool userSeek );
+        virtual void engineVolumeChanged( int percent );
 
         bool eventFilter( QObject* obj, QEvent* event );
         virtual void mousePressEvent( QMouseEvent* );

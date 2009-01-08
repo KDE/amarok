@@ -231,6 +231,8 @@ void TrackToolTip::setTrack()
                 m_title += i18n( " on <b>%1</b></center>", album );
         }
 
+        m_tooltip += i18n( "Volume: %1%", QString::number( The::engineController()->volume() ) );
+
         m_tooltip += "</table></td>";
         m_tooltip += "</tr></table></center>";
 
@@ -330,6 +332,13 @@ void TrackToolTip::engineTrackPositionChanged( long position, bool userSeek )
             m_trackPosition = position;
             updateWidgets();
         }
+}
+
+void TrackToolTip::engineVolumeChanged( int percent )
+{
+    Q_UNUSED( percent )
+
+    setTrack();
 }
 
 bool TrackToolTip::eventFilter( QObject* obj, QEvent* event )
