@@ -28,7 +28,7 @@
 
 Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont, bool maximizeHorizontally )
     : QGraphicsWidget( parent )
-    , m_iconPadding( 5 )
+    , m_iconPadding( 3 )
     , m_maximizeHorizontally( maximizeHorizontally )
     , m_icon( 0 )
     , m_label( 0 )
@@ -98,6 +98,12 @@ Context::AppletToolbarAddItem::setMaximized( bool max )
 }
 
 void 
+Context::AppletToolbarAddItem::hideMenu()
+{
+    m_addMenu->hide();
+}
+
+void 
 Context::AppletToolbarAddItem::updatedContainment( Containment* cont )
 {
     m_addMenu->setContainment( cont );
@@ -131,7 +137,7 @@ Context::AppletToolbarAddItem::sizeHint( Qt::SizeHint which, const QSizeF & cons
     if( m_maximizeHorizontally )
         return QGraphicsWidget::sizeHint( which, constraint );
     else
-        return QSizeF( m_icon->size().width() /* + 2 * m_iconPadding */, QGraphicsWidget::sizeHint( which, constraint ).height() );
+        return QSizeF( m_icon->size().width() + 2 * m_iconPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
     
 }
 

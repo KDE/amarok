@@ -1,15 +1,17 @@
 project(context-vertical-containment)
 
-include_directories( ../../..
+include_directories( toolbar
+		     ../../..
                      ../..
                      ..
                      ../plasma )
 
 set(context_SRCS 
 	VerticalToolbarContainment.cpp 
-	AppletToolbar.cpp 
-	AppletToolbarAddItem.cpp
-	AppletToolbarAppletItem.cpp
+	toolbar/AppletToolbar.cpp 
+	toolbar/AppletToolbarAddItem.cpp
+	toolbar/AppletToolbarAppletItem.cpp
+	toolbar/AppletToolbarConfigItem.cpp
 	VerticalAppletLayout.cpp
 	)
 

@@ -15,6 +15,7 @@
 
 #include "AppletToolbarAddItem.h"
 #include "AppletToolbarAppletItem.h"
+#include "AppletToolbarConfigItem.h"
 #include "Containment.h"
 #include "Debug.h"
 #include "plasma/applet.h"
@@ -30,6 +31,7 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     , m_appletLayout( 0 )
     , m_cont( 0 )
     , m_addItem( 0 )
+    , m_configItem( 0 )
 {    
     Context::Containment* cont = dynamic_cast<Context::Containment*>( parent );
     if( cont )
@@ -40,12 +42,16 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
         
     m_appletLayout = new QGraphicsLinearLayout( Qt::Horizontal, this );
     
-    m_addItem = new AppletToolbarAddItem( this, m_cont, true );
- //   AppletToolbarAppletItem* test =  new AppletToolbarAppletItem( this );
+    m_addItem = new AppletToolbarAddItem( this, m_cont, false );
     connect( cont, SIGNAL( updatedContainment( Containment* ) ), m_addItem, SLOT( updatedContainment( Containment* ) ) );
     
-  //  m_appletLayout->addItem( test );
+    m_configItem = new AppletToolbarConfigItem( this );
+    connect( m_configItem, SIGNAL( triggered() ), this, SLOT( toggleConfigMode() ) );
+    
     m_appletLayout->addItem( m_addItem );
+    m_appletLayout->setAlignment( m_addIt2em, Qt::AlignRight );
+    m_appletLayout->addItem( m_configItem );
+    m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
 }
 
 Context::AppletToolbar::~AppletToolbar()
@@ -126,6 +132,7 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
     connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
     m_appletLayout->insertItem( loc, item );
     m_addItem->setMaximized( false );
+    m_addItem->hideMenu();
 }
     
 void 

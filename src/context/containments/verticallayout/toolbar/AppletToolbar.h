@@ -34,7 +34,8 @@ namespace Plasma
 namespace Context
 {
     
-class AppletToolbarAddItem;
+class AppletToolbarAddItem;    
+class AppletToolbarConfigItem;
 class Containment;
 
 class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
@@ -70,6 +71,7 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
                 
         Containment* m_cont;
         AppletToolbarAddItem* m_addItem;
+        AppletToolbarConfigItem* m_configItem;
 };
 
 }

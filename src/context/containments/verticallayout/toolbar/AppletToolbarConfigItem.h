@@ -11,61 +11,47 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef AMAROK_APPLET_TOOLBAR_ADD_ITEM_H
-#define AMAROK_APPLET_TOOLBAR_ADD_ITEM_H
-
-
-#include "amarok_export.h"
-
-#include "plasma/widgets/iconwidget.h"
+#ifndef AMAROK_APPLET_TOOLBAR_CONFIG_ITEM_H
+#define AMAROK_APPLET_TOOLBAR_CONFIG_ITEM_H
 
 #include <QGraphicsWidget>
 
-class QGraphicsItem;
-class QGraphicsSceneResizeEvent;
-class QGraphicsSimpleTextItem;
+
 class QPainter;
+class QSizePolicy;
 class QStyleOptionGraphicsItem;
 
-// this provides a simple toolbar to switch between applets in the CV
+namespace Plasma
+{
+    class IconWidget;
+}
 
 namespace Context
 {
-    
-class AmarokToolBoxMenu;
-class Containment;
 
-class AppletToolbarAddItem : public QGraphicsWidget
+class AppletToolbarConfigItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool maximizeHorizontally = false );
-        ~AppletToolbarAddItem();
+        AppletToolbarConfigItem( QGraphicsItem* parent = 0 );
+        ~AppletToolbarConfigItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
         QSizePolicy sizePolicy () const;
         
-        void setMaximized( bool max );
-        
-    public slots:
-        void updatedContainment( Containment* cont );
-        void iconClicked();
+    signals:
+        void triggered();
         
     protected:    
          virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
          virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
     
          void mousePressEvent( QGraphicsSceneMouseEvent * event );
-    private: 
-        void showAddAppletsMenu( QPointF pos = QPointF() );
-        
+    private:         
         int m_iconPadding;
-        bool m_maximizeHorizontally;
         
         Plasma::IconWidget* m_icon;
-        QGraphicsSimpleTextItem* m_label;
-        AmarokToolBoxMenu* m_addMenu;
 };
 
 }
