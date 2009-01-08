@@ -272,8 +272,6 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     DEBUG_BLOCK
     Q_UNUSED( name );
 
-    kDebug() << "CurrentTrack::dataUpdated";
-
     if( data.size() == 0 ) 
         return;
 
