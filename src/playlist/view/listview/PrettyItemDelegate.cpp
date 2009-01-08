@@ -32,6 +32,7 @@
 #include "meta/SourceInfoCapability.h"
 #include "playlist/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
+#include "LayoutManager.h"
 
 #include <QFontMetricsF>
 #include <QPainter>
@@ -45,63 +46,12 @@ const qreal PrettyItemDelegate::MARGINH = 6.0;
 const qreal PrettyItemDelegate::MARGINBODY = 1.0;
 const qreal PrettyItemDelegate::PADDING = 1.0;
 
-Playlist::PrettyItemConfig Playlist::PrettyItemDelegate::s_singleTrackConfig = Playlist::PrettyItemConfig();
-Playlist::PrettyItemConfig Playlist::PrettyItemDelegate::s_albumHeadConfig = Playlist::PrettyItemConfig();
-Playlist::PrettyItemConfig Playlist::PrettyItemDelegate::s_albumBodyConfig = Playlist::PrettyItemConfig();
-
 Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
         : QStyledItemDelegate( parent )
 {
     DEBUG_BLOCK
 
-
-    //temp stuff for setting up some defaults that look slike the normal playlist
-    PrettyItemConfigRow row1;
-    PrettyItemConfigRow row2;
-    row1.addElement( PrettyItemConfigRowElement( Title, 0.5, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    row1.addElement( PrettyItemConfigRowElement( Length, 0.5, false, Qt::AlignRight | Qt::AlignVCenter ) );
-    row2.addElement( PrettyItemConfigRowElement( Artist, 0.5, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    row2.addElement( PrettyItemConfigRowElement( Album, 0.5, false, Qt::AlignRight | Qt::AlignVCenter ) );
-    s_singleTrackConfig.addRow( row1 );
-    s_singleTrackConfig.addRow( row2 );
-    s_singleTrackConfig.setShowCover( true );
-
-    PrettyItemConfigRow headRow1;
-    PrettyItemConfigRow headRow2;
-    headRow1.addElement( PrettyItemConfigRowElement( Album, 1.0, true, Qt::AlignCenter | Qt::AlignVCenter ) );
-    headRow2.addElement( PrettyItemConfigRowElement( Artist, 1.0, true, Qt::AlignCenter | Qt::AlignVCenter ) );
-    s_albumHeadConfig.addRow( headRow1 );
-    s_albumHeadConfig.addRow( headRow2 );
-    s_albumHeadConfig.setShowCover( true );
-    s_albumHeadConfig.setActiveIndicatorRow( -1 );
-
-    PrettyItemConfigRow bodyRow1;
-    bodyRow1.addElement( PrettyItemConfigRowElement( TitleWithTrackNum, 0.8, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    bodyRow1.addElement( PrettyItemConfigRowElement( Length, 0.2, false, Qt::AlignRight | Qt::AlignVCenter ) );
-    s_albumBodyConfig.addRow( bodyRow1 );
-    s_albumBodyConfig.setShowCover( false );
-
-
-    //this is the classic view imitation
-    /*PrettyItemConfigRow row1;
-    row1.addElement( PrettyItemConfigRowElement( Title, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    row1.addElement( PrettyItemConfigRowElement( Artist, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    row1.addElement( PrettyItemConfigRowElement( Album, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    row1.addElement( PrettyItemConfigRowElement( Genre, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    row1.addElement( PrettyItemConfigRowElement( Length, 0.1, false, Qt::AlignRight | Qt::AlignVCenter ) );
-    s_singleTrackConfig.addRow( row1 );
-    s_singleTrackConfig.setShowCover( false );
-
-    s_albumHeadConfig.setShowCover( false );
-
-    PrettyItemConfigRow bodyRow1;
-    bodyRow1.addElement( PrettyItemConfigRowElement( Title, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    bodyRow1.addElement( PrettyItemConfigRowElement( Artist, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    bodyRow1.addElement( PrettyItemConfigRowElement( Album, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    bodyRow1.addElement( PrettyItemConfigRowElement( Genre, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
-    bodyRow1.addElement( PrettyItemConfigRowElement( Length, 0.1, false, Qt::AlignRight | Qt::AlignVCenter ) );
-    s_albumBodyConfig.addRow( bodyRow1 );
-    s_albumBodyConfig.setShowCover( false );*/
+    LayoutManager::instance();
 
 }
 
@@ -117,22 +67,24 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
     boldfont.setBold( true );
     QFontMetricsF bfm( boldfont );
 
+    PlaylistLayout layout = LayoutManager::instance()->activeLayout();
+
     int groupMode = index.data( GroupRole ).toInt();
     int rowCount = 1;
     switch ( groupMode )
     {
     case Head:
-        rowCount = s_albumHeadConfig.rows() + s_albumBodyConfig.rows();
+        rowCount = layout.head().rows() + layout.body().rows();
         break;
     case Body:
-        rowCount = s_albumBodyConfig.rows();
+        rowCount = layout.body().rows();
         break;
     case Tail:
-        rowCount = s_albumBodyConfig.rows();
+        rowCount = layout.body().rows();
         break;
     case None:
     default:
-        rowCount = s_singleTrackConfig.rows();
+        rowCount = layout.single().rows();
         break;
     }
 
@@ -148,6 +100,8 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
 void
 PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
+    PlaylistLayout layout = LayoutManager::instance()->activeLayout();
+    
     painter->save();
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
     painter->translate( option.rect.topLeft() );
@@ -162,7 +116,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     // call paint method based on type
     int groupMode = index.data( GroupRole ).toInt();
     if ( groupMode == None )
-        paintItem( s_singleTrackConfig, painter, option, index );
+        paintItem( layout.single(), painter, option, index );
     else if ( groupMode == Head ) {
 
         //we need to split up the options for the actual header and the included first track
@@ -174,22 +128,22 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         QStyleOptionViewItem headOption( option );
         QStyleOptionViewItem trackOption( option );
 
-        int headRows = s_albumHeadConfig.rows();
+        int headRows = layout.head().rows();
         int headHeight = MARGIN * 2 + headRows * bfm.height() + ( headRows - 1 ) * PADDING;
         headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
 
-        int trackRows = s_albumBodyConfig.rows();
+        int trackRows = layout.body().rows();
         int trackHeight = MARGIN * 2 + trackRows * bfm.height() + ( trackRows - 1 ) * PADDING;
         trackOption.rect = QRect( 0, headHeight, option.rect.width(), trackHeight );
 
-        paintItem( s_albumHeadConfig, painter, headOption, index );
+        paintItem( layout.head(), painter, headOption, index );
         painter->translate( 0, headHeight - 1 );
-        paintItem( s_albumBodyConfig, painter, trackOption, index );
+        paintItem( layout.body(), painter, trackOption, index );
         
     } else if ( groupMode == Body )
-        paintItem( s_albumBodyConfig, painter, option, index );
+        paintItem( layout.body(), painter, option, index );
     else if ( groupMode == Tail )
-        paintItem( s_albumBodyConfig, painter, option, index );
+        paintItem( layout.body(), painter, option, index );
     else
         QStyledItemDelegate::paint( painter, option, index );
 

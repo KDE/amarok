@@ -319,6 +319,7 @@ set(libplaylist_SRCS
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/PrettyItemConfig.cpp
+    playlist/view/listview/LayoutManager.cpp
 )
 
 #####################################################################
@@ -611,6 +612,9 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
               dbus/org.freedesktop.MediaPlayer.player.xml
               dbus/org.freedesktop.MediaPlayer.tracklist.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+
+
+install(FILES playlist/view/listview/DefaultPlaylistLayouts.xml DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 

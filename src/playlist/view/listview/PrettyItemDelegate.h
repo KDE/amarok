@@ -74,9 +74,6 @@ namespace Playlist
     static QFontMetricsF* s_ifm; //italic
     static QFontMetricsF* s_bfm; //bold
 
-    static PrettyItemConfig s_singleTrackConfig;
-    static PrettyItemConfig s_albumHeadConfig;
-    static PrettyItemConfig s_albumBodyConfig;
     
 };
 
