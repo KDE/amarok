@@ -22,12 +22,6 @@ namespace Context
 
 } // context  namespace
 
-/*#define K_EXPORT_AMAROK_DATAENGINE(libname, classname) \
-K_EXPORT_COMPONENT_FACTORY(                    \
-amarok_data_engine_##libname,        \
-KGenericFactory<classname>("amarok_data_engine_" #libname))
-*/
-
 #define K_EXPORT_AMAROK_DATAENGINE(libname, classname) \
 K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
 K_EXPORT_PLUGIN(factory("amarok_data_engine_" #libname))\

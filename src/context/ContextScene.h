@@ -36,10 +36,6 @@ public:
 signals:
     void appletRemoved( QObject *object );
 
-protected slots:
-    // TODO: Port to Containment
-//     void appletDestroyed(QObject* object);
-
 protected:
     void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
 };

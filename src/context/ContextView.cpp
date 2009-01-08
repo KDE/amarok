@@ -177,40 +177,6 @@ void ContextView::clear()
     
 }
 
-// void
-// ContextView::mousePressEvent( QMouseEvent* event )
-// {
-//     DEBUG_BLOCK
-//     // event->accept();
-//     QPoint pos = mapToScene( event->pos() ).toPoint();
-//     debug() << "Event pos: " << event->pos();
-//     debug() << "mapFromScene pos: " << mapFromScene( event->pos() );
-//     debug() << "mapToScene pos: " << mapToScene( event->pos() );
-//     debug() << "sceneRect: " << sceneRect();
-//     debug() << "view items at pos: " << items( event->pos() ).count();
-//     debug() << "scene items: " << scene()->items( mapToScene( event->pos() ) ).count();
-// //     if( itemAt( pos ) )    
-//     foreach( QGraphicsItem* item, items( event->pos() ) )
-//     {
-//         debug() << "got an item under click, seeing if it is an applet, and its sceneBoundingRect: " << itemAt( event->pos() )->sceneBoundingRect();
-//         Plasma::Applet* a = dynamic_cast<Plasma::Applet* >( item );
-//         if( a )
-//         {
-//             debug() << "cast successful";
-// 
-// //             if( a->isContainment() )
-// //             {
-// //                 Plasma::Containment* c = dynamic_cast<Plasma::Containment* >( a );
-// //                 setContainment( c );
-// //             }
-// //             else if( a->containment() )
-// //                 setContainment( a->containment() );
-//         }
-//     }
-//     debug() << "scene rect:" << scene()->sceneRect();
-//     QGraphicsView::mousePressEvent( event );
-// }
-
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState );

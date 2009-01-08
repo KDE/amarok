@@ -22,9 +22,6 @@
 #include <QGraphicsSceneDragDropEvent>
 
 
-// NOTE for now ContextScene is a completely useless class (performs the same as
-// Corona. but i think i might want to add stuff to it soon.
-
 namespace Context
 {
 
@@ -50,15 +47,6 @@ void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )
 {
     Q_UNUSED( event );
 }
-
-// TODO port to Containment
-/*
-void ContextScene::appletDestroyed(QObject* object)
-{
-    DEBUG_BLOCK
-    Corona::appletDestroyed( object ); // corona needs to clean up internally
-    emit appletRemoved( object );
-}*/
 
 } // Context namespace
 
