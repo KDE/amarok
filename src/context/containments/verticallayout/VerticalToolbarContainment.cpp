@@ -26,6 +26,9 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     , m_toolbar( 0 )
     , m_applets( 0 )
 {    
+    setContainmentType( CustomContainment );
+    setDrawWallpaper( false );
+    
     m_mainLayout = new QGraphicsLinearLayout( Qt::Vertical, this );
         
     m_applets = new VerticalAppletLayout( this );
