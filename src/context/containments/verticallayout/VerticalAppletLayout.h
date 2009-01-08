@@ -19,6 +19,8 @@
 
 #include <QGraphicsWidget>
 
+class KConfigGroup;
+
 class QGraphicsItem;
 class QGraphicsSceneResizeEvent;
 class QPainter;
@@ -45,6 +47,10 @@ class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
         
         void addApplet( Plasma::Applet*, int location = -1 );
         
+        virtual void saveToConfig( KConfigGroup &conf );
+        
+        void refresh();
+        
     signals:
         void appletAdded( Plasma::Applet* applet, int location );
     
@@ -57,6 +63,7 @@ class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
         // reimplemented from QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
     private:
+        int minIndexWithAppletOnScreen( int loc );
         void showAtIndex( int index );
         
         QList< Plasma::Applet* > m_appletList;

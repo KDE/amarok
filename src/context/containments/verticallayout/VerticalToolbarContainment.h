@@ -18,6 +18,8 @@
 #include "Containment.h"
 #include "ContextView.h"
 
+class KConfigGroup;
+
 class QGraphicsLinearLayout;
 
 namespace Context

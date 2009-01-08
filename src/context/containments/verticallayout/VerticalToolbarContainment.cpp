@@ -18,6 +18,8 @@
 #include "Debug.h"
 #include "VerticalAppletLayout.h"
 
+#include <KConfig>
+
 #include <QGraphicsLinearLayout>
 
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
@@ -84,18 +86,28 @@ Context::VerticalToolbarContainment::paintInterface(QPainter *painter,
     
 }
 
-void 
+
+void
 Context::VerticalToolbarContainment::saveToConfig( KConfigGroup &conf )
 {
-    
+    m_applets->saveToConfig( conf );
 }
 
-void 
+
+void
 Context::VerticalToolbarContainment::loadConfig( const KConfigGroup &conf )
 {
-    
-}
+    DEBUG_BLOCK
 
+    QStringList plugins = conf.readEntry( "plugins", QStringList() );
+    debug() << "plugins.size(): " << plugins.size();
+
+    foreach( const QString& plugin, plugins )
+    {
+        debug() << "Adding applet: " << plugin;
+        addApplet( plugin, -1 );
+    }
+}
 
 void 
 Context::VerticalToolbarContainment::setView( ContextView* view )

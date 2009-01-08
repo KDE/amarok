@@ -17,6 +17,8 @@
 #include "Debug.h"
 #include "plasma/applet.h"
 
+#include <KConfig>
+
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneResizeEvent>
@@ -52,6 +54,8 @@ Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
     // update all the applet widths
     foreach( Plasma::Applet* applet, m_appletList )
         applet->resize( event->newSize().width(), applet->size().height() );
+    showAtIndex( m_showingIndex );
+    
 }
 
 void 
@@ -62,15 +66,41 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
     if( location < 0 ) // being told to add at end
     {
         m_appletList << applet;
-        showAtIndex( m_appletList.size() - 1 );
+        showAtIndex( minIndexWithAppletOnScreen ( m_appletList.size() - 1 ) );
         location = m_appletList.size() - 1; // so the signal has the correct location
     } else
     {
         m_appletList.insert( location, applet );
-        showAtIndex( location );
+        showAtIndex( minIndexWithAppletOnScreen ( location ) );
     }
     debug() << "emitting addApplet with location" << location;
     emit appletAdded( applet, location );
+}
+
+
+void
+Context::VerticalAppletLayout::saveToConfig( KConfigGroup &conf )
+{
+    DEBUG_BLOCK
+    QStringList plugins;
+
+    for( int i = 0; i < m_appletList.size(); i++ )
+    {
+        Plasma::Applet *applet = m_appletList[ i ];
+        if( applet != 0 )
+        {
+            debug() << "saving applet" << applet->name();
+            plugins << applet->pluginName();
+        }
+        conf.writeEntry( "plugins", plugins );
+    }
+    conf.writeEntry( "firstShowingApplet", m_showingIndex );
+}
+
+void
+Context::VerticalAppletLayout::refresh()
+{
+    showAtIndex( m_showingIndex );
 }
 
 void 
@@ -88,7 +118,7 @@ Context::VerticalAppletLayout::moveApplet( Plasma::Applet* applet, int oldLoc, i
     if( oldLoc <  0 || oldLoc > m_appletList.size() - 1 || newLoc < 0 || newLoc > m_appletList.size() )
         return;
     m_appletList.insert( newLoc, m_appletList.takeAt( oldLoc ) );
-    showAtIndex( qMin( oldLoc, newLoc ) );
+    showAtIndex( minIndexWithAppletOnScreen( qMin( oldLoc, newLoc ) ) );
 }
 
 void 
@@ -100,7 +130,7 @@ Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
     m_appletList.removeAll( app );
     if( m_showingIndex > removedIndex )
         m_showingIndex--;
-    showAtIndex( m_showingIndex );
+    showAtIndex( minIndexWithAppletOnScreen( m_showingIndex ) );
 }
 
 void
@@ -140,6 +170,27 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     }
     
     m_showingIndex = index;
+}
+
+int 
+Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
+{
+    DEBUG_BLOCK
+    qreal height = 0.0;
+    int index = -1;
+    if( boundingRect().height() == 0 ) // if we have a 0 height this is b/c we are starting up and don't have a real size yet
+        return 0;                      // for now just show all the applets 
+    for( int i = m_appletList.size() - 1; i >= 0; i-- )
+    {
+        debug() << "height:" << height;
+        index = i;
+        qreal curHeight = m_appletList[ i ]->boundingRect().height();
+        debug() << "calculating:" << curHeight << " + " << height << " > " << boundingRect().height();
+        if( ( curHeight + height ) > boundingRect().height() )
+            break;
+        height += curHeight;
+    }
+    return index;
 }
 
 #include "VerticalAppletLayout.moc"
