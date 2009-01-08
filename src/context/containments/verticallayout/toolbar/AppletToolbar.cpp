@@ -180,20 +180,24 @@ Context::AppletToolbar::dropEvent( QGraphicsSceneDragDropEvent *event )
     if( data && data->appletData() )
     {
         debug() << "got an applet drop at position" << event->scenePos();
-        foreach( QGraphicsItem* item, scene()->items( event->scenePos() ) )
-            debug() << "scene has item at position with rect:" << mapToScene( mapFromItem( item, item->boundingRect() ).boundingRect() ).boundingRect();
-        if( scene() )
-        {
-            QGraphicsItem* itemAtPos = scene()->itemAt( event->scenePos() );
-            if( itemAtPos )
+       if( scene() )
+        {    
+            Context::AppletToolbarAppletItem* itemUnder;
+            foreach( QGraphicsItem* item, scene()->items( event->scenePos() ) )
+            {
+                debug() << "scene has item at position with rect:" << mapToScene( mapFromItem( item, item->boundingRect() ).boundingRect() ).boundingRect();
+                itemUnder = qgraphicsitem_cast< Context::AppletToolbarAppletItem* >( item );
+                if( itemUnder )
+                    break;
+            }
+       /*     if( itemAtPos )
                 debug() << "there is an item under the drop, with rect:" 
                         << mapToScene( mapFromItem( itemAtPos, 
                                        itemAtPos->boundingRect() ).boundingRect() ).boundingRect()
                         << "and parent geom:" 
                         << mapToScene( mapFromItem( itemAtPos->parentItem(), 
                                                     itemAtPos->parentItem()->boundingRect() ).boundingRect() ).boundingRect();
-            
-            Context::AppletToolbarAppletItem* itemUnder = dynamic_cast< Context::AppletToolbarAppletItem* >( itemAtPos );
+          */  
             if( itemUnder )
             {
                 debug() << "got a toolbar applet item under the drag too!";
@@ -284,7 +288,6 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
         // but there is no QGraphicsLinearLayout->contains() or ->indexOf()
         m_addItem->hide();
         m_appletLayout->removeItem( m_addItem );
-        m_addItem->hideMenu();
     }
 }
 

@@ -62,6 +62,10 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_label = new QGraphicsSimpleTextItem( i18n( "Add Applet..." ), this );
     m_label->hide();
     
+    m_addMenu = new AmarokToolBoxMenu( this, false );
+    m_addMenu->setContainment( cont );
+    m_addMenu->setZValue( zValue() - 10000 );
+    connect( m_addMenu, SIGNAL( addAppletToContainment( const QString& ) ), this, SLOT( addApplet( const QString& ) ) );
 }
 
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
@@ -93,24 +97,16 @@ Context::AppletToolbarAddItem::sizePolicy () const
 }
 
 void 
-Context::AppletToolbarAddItem::hideMenu() // SLOT
+Context::AppletToolbarAddItem::hideMenu()
 {
-    DEBUG_BLOCK
-    // we have to delete and re-create the menu each time we want to show it
-    // this is not idea, but if we just hide it (and set a low zvalue) the menu is
-    // still "on top" of the applet according to the scene, and whats more, on top of
-    // all the other toolbar applets around this one, eating up all the drop events.
-    // when the parent applettoolbar asks for this applet instead it gets the menu and fails.
-    if( m_addMenu )
-        m_addMenu->deleteLater();
+    m_addMenu->hide();
+    m_addMenu->setZValue( zValue() - 10000 );
 }
 
 void 
 Context::AppletToolbarAddItem::updatedContainment( Containment* cont )
 {
-    m_cont = cont;
-    if( m_addMenu )
-        m_addMenu->setContainment( cont );
+    m_addMenu->setContainment( cont );
 }
 
 void 
@@ -163,16 +159,12 @@ void
 Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
 {
     DEBUG_BLOCK
-    if( m_addMenu )
+    if( m_addMenu->showing() )
     {   // hide again on double-click
-        m_addMenu->deleteLater();
+        m_addMenu->hide();
+        m_addMenu->setZValue( zValue() - 10000 );
         return;
     }
-    
-    m_addMenu = new AmarokToolBoxMenu( this, false );
-    m_addMenu->setContainment( m_cont );
-    connect( m_addMenu, SIGNAL( addAppletToContainment( const QString& ) ), this, SLOT( addApplet( const QString& ) ) );
-    connect( m_addMenu, SIGNAL( menuHidden() ), this, SLOT( hideMenu() ) );
     
     qreal xpos = pos.x();
     const qreal ypos = 0 - m_addMenu->boundingRect().height();
