@@ -50,6 +50,7 @@ class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
         virtual void saveToConfig( KConfigGroup &conf );
         
         void refresh();
+        QSizeF totalSize();
         
     signals:
         void appletAdded( Plasma::Applet* applet, int location );

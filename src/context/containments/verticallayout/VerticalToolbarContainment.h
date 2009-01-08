@@ -57,7 +57,8 @@ class VerticalToolbarContainment : public Containment
         virtual void showTitle() {}
         virtual void hideTitle() {}
         virtual void addCurrentTrack() {}
-
+        
+        QRectF boundingRect () const;
     public slots:
         Applet* addApplet( const QString& pluginName, const int );
         void    appletRemoved( Plasma::Applet* );

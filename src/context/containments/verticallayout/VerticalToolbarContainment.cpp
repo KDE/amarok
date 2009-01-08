@@ -34,8 +34,10 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     debug() << "corona at this point:" << corona();
     m_toolbar = new AppletToolbar( this );
     
+    // NOTE the toolbar is not set within this view. ToolbarView is actually over the area that the toolbar is placed
+    // this is so we can easily get a scolling QGV without having to deal with constant placements of the toolbar
     m_toolbar->setZValue( m_applets->zValue() + 100 );
-    m_toolbar->setPos( 10000, 0 );
+    m_toolbar->setPos( 1000, 0 );
     debug() << "containment has corona:" << corona();
     
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), 
@@ -115,6 +117,12 @@ Context::ContextView*
 Context::VerticalToolbarContainment::view()
 {
     return m_view;
+}
+
+QRectF 
+Context::VerticalToolbarContainment::boundingRect () const
+{
+    return QRectF( QPointF( 0, 0), m_applets->totalSize() );
 }
 
 Plasma::Applet* 

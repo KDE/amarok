@@ -103,6 +103,18 @@ Context::VerticalAppletLayout::refresh()
     showAtIndex( m_showingIndex );
 }
 
+QSizeF 
+Context::VerticalAppletLayout::totalSize()
+{
+    QSizeF sizeR( boundingRect().width(), 0 );
+    qreal size = 0.0;
+    foreach( Plasma::Applet* applet, m_appletList )
+        size += applet->effectiveSizeHint( Qt::PreferredSize, QSizeF( boundingRect().width(), -1 ) ).height();
+    sizeR.setHeight( size );
+    return sizeR;
+}
+
+
 void 
 Context::VerticalAppletLayout::showApplet( Plasma::Applet* applet ) // SLOT
 {
@@ -184,7 +196,7 @@ Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
     {
         debug() << "height:" << height;
         index = i;
-        qreal curHeight = m_appletList[ i ]->boundingRect().height();
+        qreal curHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( boundingRect().width(), -1 ) ).height();
         debug() << "calculating:" << curHeight << " + " << height << " > " << boundingRect().height();
         if( ( curHeight + height ) > boundingRect().height() )
             break;

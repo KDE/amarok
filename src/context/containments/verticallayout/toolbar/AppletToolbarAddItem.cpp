@@ -13,6 +13,7 @@
 
 #include "AppletToolbarAddItem.h"
 
+#include "ContextView.h"
 #include "widgets/ToolBoxMenu.h"
 #include "Debug.h"
 
@@ -166,9 +167,11 @@ Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
         m_addMenu->setZValue( zValue() - 10000 );
         return;
     }
-    
-    qreal xpos = pos.x();
-    const qreal ypos = 0 - m_addMenu->boundingRect().height();
+    // HACK to compensate for the toolbar actually being at (10000,0). we want
+    // the menu to be seen in the "main" view
+    qreal xpos = pos.x() - 1000;
+    const qreal ypos = Context::ContextView::self()->size().height() - m_addMenu->boundingRect().height();
+    debug() << "placing at X coord:" << QPointF( xpos, ypos ) << "in scene coords" << mapToScene( QPointF( xpos, ypos ) );
     
     debug() << "checking if it will overflow:"  << xpos + m_addMenu->boundingRect().width() << " > " << sceneBoundingRect().width() ;
     if( xpos + m_addMenu->boundingRect().width() > sceneBoundingRect().width() )
