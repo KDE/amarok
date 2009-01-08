@@ -597,6 +597,13 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
 
         painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
+
+        QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
+        QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
+
+        if ( !albumPixmap.isNull() )
+            painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
+
         rowOffsetX = imageSize + MARGINH + PADDING * 2;
     }
 

@@ -276,6 +276,30 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             {
                 return m_items.at( row )->track()->score();
             }
+            case Source:
+            {
+                QString sourceName;
+                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->as<Meta::SourceInfoCapability>();
+                if ( sic )
+                {
+                    sourceName = sic->sourceName();
+                    delete sic;
+                }
+                return Qt::escape( sourceName );
+            }
+            case SourceEmblem:
+            {
+                QPixmap emblem;
+                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->as<Meta::SourceInfoCapability>();
+                if ( sic )
+                {
+                    QString source = sic->sourceName();
+                    if ( !source.isEmpty() )
+                        emblem = sic->emblem();;
+                    delete sic;
+                }
+                return emblem;
+            }
             case Title:
             {
                 return Qt::escape( m_items.at( row )->track()->prettyName() );
