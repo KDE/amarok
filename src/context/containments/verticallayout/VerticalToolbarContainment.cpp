@@ -11,16 +11,16 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "HorizontalToolbarContainment.h"
+#include "VerticalToolbarContainment.h"
 
 #include "AppletToolbar.h"
 #include "ContextView.h"
 #include "Debug.h"
-#include "HorizontalAppletLayout.h"
+#include "VerticalAppletLayout.h"
 
 #include <QGraphicsLinearLayout>
 
-Context::HorizontalToolbarContainment::HorizontalToolbarContainment( QObject *parent, const QVariantList &args )
+Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )
     , m_mainLayout( 0 )
     , m_toolbar( 0 )
@@ -28,20 +28,26 @@ Context::HorizontalToolbarContainment::HorizontalToolbarContainment( QObject *pa
 {    
     m_mainLayout = new QGraphicsLinearLayout( Qt::Vertical, this );
         
-    m_toolbar = new AppletToolbar( 0 );
-    m_applets = new HorizontalAppletLayout( 0 );
+    m_applets = new VerticalAppletLayout( this );
+    debug() << "corona at this point:" << corona();
+    m_toolbar = new AppletToolbar( this );
+    
+    debug() << "containment has corona:" << corona();
     
     m_mainLayout->addItem( m_applets );
     m_mainLayout->addItem( m_toolbar );
+    
+    connect( this, SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ),
+             this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
 }
 
-Context::HorizontalToolbarContainment::~HorizontalToolbarContainment()
+Context::VerticalToolbarContainment::~VerticalToolbarContainment()
 {
     
 }
 
 void 
-Context::HorizontalToolbarContainment::constraintsEvent( Plasma::Constraints constraints )
+Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints constraints )
 {
  //   m_toolbar->setGeometry( 0, contentsRect().height() - 40, contentsRect().width(), 40 );
  //   m_toolbar->setGeometry( contentsRect() );
@@ -49,13 +55,13 @@ Context::HorizontalToolbarContainment::constraintsEvent( Plasma::Constraints con
 }
 
 QList<QAction*> 
-Context::HorizontalToolbarContainment::contextualActions()
+Context::VerticalToolbarContainment::contextualActions()
 {
     return QList< QAction* >();
 }
 
 void 
-Context::HorizontalToolbarContainment::paintInterface(QPainter *painter,
+Context::VerticalToolbarContainment::paintInterface(QPainter *painter,
                                                       const QStyleOptionGraphicsItem *option,
                                                       const QRect& contentsRect)
 {
@@ -63,21 +69,39 @@ Context::HorizontalToolbarContainment::paintInterface(QPainter *painter,
 }
 
 void 
-Context::HorizontalToolbarContainment::saveToConfig( KConfigGroup &conf )
+Context::VerticalToolbarContainment::saveToConfig( KConfigGroup &conf )
 {
     
 }
 
 void 
-Context::HorizontalToolbarContainment::loadConfig( const KConfigGroup &conf )
+Context::VerticalToolbarContainment::loadConfig( const KConfigGroup &conf )
 {
     
+}
+
+
+void 
+Context::VerticalToolbarContainment::setView( ContextView* view )
+{
+    DEBUG_BLOCK
+    m_view = view;
+    // kick the toolbar with a real corona no w
+    emit updatedContainment( this );
 }
 
 Context::ContextView*
-Context::HorizontalToolbarContainment::view()
+Context::VerticalToolbarContainment::view()
 {
-    
+    return m_view;
 }
 
-#include "HorizontalToolbarContainment.moc"
+Plasma::Applet* 
+Context::VerticalToolbarContainment::addApplet( Plasma::Applet* applet, const QPointF & )
+{
+    DEBUG_BLOCK
+    // TODO for now just put the applets as placeholders in the CV
+    m_applets->addApplet( applet, -1 );
+}
+
+#include "VerticalToolbarContainment.moc"

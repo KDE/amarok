@@ -1,5 +1,5 @@
 /***************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org  >        *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
 **************************************************************************/
 
 /***************************************************************************
@@ -11,51 +11,47 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef AMAROK_APPLET_TOOLBAR_ADD_ITEM_H
-#define AMAROK_APPLET_TOOLBAR_ADD_ITEM_H
+#ifndef AMAROK_HORIZONTAL_APPLET_LAYOUT_H
+#define AMAROK_HORIZONTAL_APPLET_LAYOUT_H
 
 
 #include "amarok_export.h"
-
-#include "plasma/widgets/iconwidget.h"
 
 #include <QGraphicsWidget>
 
 class QGraphicsItem;
 class QGraphicsSceneResizeEvent;
-class QGraphicsSimpleTextItem;
 class QPainter;
 class QStyleOptionGraphicsItem;
 
-// this provides a simple toolbar to switch between applets in the CV
+namespace Plasma
+{
+    class Applet;
+}
 
 namespace Context
 {
     
-class AmarokToolBoxMenu;
-
-class AppletToolbarAddItem : public QGraphicsWidget
+class Containment;
+    
+class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        AppletToolbarAddItem( QGraphicsItem* parent = 0 );
-        ~AppletToolbarAddItem();
+        VerticalAppletLayout( QGraphicsItem* parent = 0 );
+        ~VerticalAppletLayout();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
-        QSizePolicy sizePolicy () const;
+        void addApplet( Plasma::Applet*, int location = -1 );
+    protected:
+        // reimplemented from QGraphicsWidget
+        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+    private:
+        void showAtIndex( int index );
         
-    protected:    
-         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
-         virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-    
-        virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * event );
-    private: 
-        void showAddAppletsMenu( QPointF pos = QPointF() );
-        
-        Plasma::IconWidget* m_icon;
-        QGraphicsSimpleTextItem* m_label;
-        AmarokToolBoxMenu* m_addMenu;
+        QList< Plasma::Applet* > m_appletList;
+        int m_showingIndex;
 };
 
 }

@@ -26,7 +26,7 @@
 #include <QSizeF>
 #include <QPainter>
 
-Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent )
+Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont )
     : QGraphicsWidget( parent )
     , m_icon( 0 )
     , m_label( 0 )
@@ -53,6 +53,9 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent )
     m_icon->setZValue( zValue() + 1 );
     
     m_label = new QGraphicsSimpleTextItem( "Add Applet", this );
+    
+    m_addMenu = new AmarokToolBoxMenu( this, false );
+    m_addMenu->setContainment( cont );
 }
 
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
@@ -81,6 +84,12 @@ Context::AppletToolbarAddItem::sizePolicy () const
 }
 
 void 
+Context::AppletToolbarAddItem::updatedContainment( Containment* cont )
+{
+    m_addMenu->setContainment( cont );
+}
+
+void 
 Context::AppletToolbarAddItem::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
     m_icon->setPos( 0, ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
@@ -96,10 +105,8 @@ Context::AppletToolbarAddItem::sizeHint( Qt::SizeHint which, const QSizeF & cons
 }
 
 void 
-Context::AppletToolbarAddItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
-{
-    DEBUG_BLOCK
-    
+Context::AppletToolbarAddItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
+{    
     showAddAppletsMenu( event->pos() );
     event->accept();
 }
@@ -107,6 +114,7 @@ Context::AppletToolbarAddItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * eve
 void
 Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
 {
+    DEBUG_BLOCK
     if( m_addMenu->showing() )
     {   // hide again on double-click
         m_addMenu->hide();
@@ -114,7 +122,7 @@ Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
     }
     
     const qreal xpos = pos.x();
-    const qreal ypos = contentsRect().height() - m_addMenu->boundingRect().height() + 40;
+    const qreal ypos = 0 - m_addMenu->boundingRect().height();
 
     m_addMenu->setPos( xpos, ypos );
     m_addMenu->show();

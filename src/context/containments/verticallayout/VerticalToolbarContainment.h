@@ -24,14 +24,14 @@ namespace Context
 {
 
 class AppletToolbar;
-class HorizontalAppletLayout;
+class VerticalAppletLayout;
 
-class HorizontalToolbarContainment : public Containment
+class VerticalToolbarContainment : public Containment
 {
     Q_OBJECT
     public:
-        HorizontalToolbarContainment( QObject *parent, const QVariantList &args );
-        ~HorizontalToolbarContainment();
+        VerticalToolbarContainment( QObject *parent, const QVariantList &args );
+        ~VerticalToolbarContainment();
         
         void constraintsEvent( Plasma::Constraints constraints );
 
@@ -44,7 +44,7 @@ class HorizontalToolbarContainment : public Containment
         virtual void saveToConfig( KConfigGroup &conf );
         virtual void loadConfig( const KConfigGroup &conf );
         
-        virtual void setView( ContextView* view) {}
+        virtual void setView( ContextView* view);
         virtual ContextView *view();
         
         //tmp
@@ -55,15 +55,21 @@ class HorizontalToolbarContainment : public Containment
         virtual void showTitle() {}
         virtual void hideTitle() {}
         virtual void addCurrentTrack() {}
+
+    public slots:
+        Applet* addApplet( Plasma::Applet* applet, const QPointF & );
         
-        
+    signals:
+        void updatedContainment( Containment* );
+    
     private:
+        ContextView* m_view;
         QGraphicsLinearLayout* m_mainLayout;
         AppletToolbar* m_toolbar;
-        HorizontalAppletLayout* m_applets;
+        VerticalAppletLayout* m_applets;
 };
 
-K_EXPORT_PLASMA_APPLET( amarok_containment_horizontal, HorizontalToolbarContainment )
+K_EXPORT_PLASMA_APPLET( amarok_containment_vertical, VerticalToolbarContainment )
 
 
 }

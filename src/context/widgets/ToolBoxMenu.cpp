@@ -30,7 +30,6 @@ namespace Context
     
 AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningAppletsOnly )
     : QGraphicsItem( parent )
-    , m_containment( 0 )
     , m_removeApplets( false )
     , m_menuSize( 4 )
     , m_showing( 0 )
@@ -50,7 +49,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
 
         allApplets.insert( info.name(), info.pluginName() );
         if( !runningAppletsOnly )
-            appletsToShow << info.name();        
+            appletsToShow << info.name();      
     }
     
     if( runningAppletsOnly )
@@ -119,8 +118,10 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
 void
 AmarokToolBoxMenu::setContainment( Containment *newContainment )
 {
+    DEBUG_BLOCK
     if( m_containment != newContainment )
     {        
+        debug() << "got new containment with corona" << newContainment->corona();
         Plasma::Corona *corona = newContainment->corona();        
         if( !corona )
             return;
@@ -135,7 +136,7 @@ AmarokToolBoxMenu::setContainment( Containment *newContainment )
             disconnect( containment, SIGNAL( appletRemoved( Plasma::Applet * ) ),
                  this, SLOT( appletRemoved( Plasma::Applet * ) ) );
         }
-        
+        debug() << "setting up applets";
         m_containment = newContainment;
         initRunningApplets();
         populateMenu();
@@ -355,22 +356,9 @@ AmarokToolBoxMenu::setupMenuEntry( ToolBoxIcon *entry, const QString &appletName
 void
 AmarokToolBoxMenu::addApplet( const QString &pluginName )
 {
-    if( !pluginName.isEmpty() )
+    if( !pluginName.isEmpty() && containment() )
     {
-        bool appletFound = false;
-        //First we check if the applet is already running and in that case we just change
-        //to the containment where the applet is otherwise we add the applet to the current containment.
-        foreach( Plasma::Containment *containment, m_runningApplets.keys() )
-        {
-            if( m_runningApplets[containment].contains( pluginName ) )
-            {
-                emit changeContainment( containment );
-                appletFound = true;
-                break;
-            }
-        }
-        if( !appletFound && containment() )
-            containment()->addApplet( pluginName );
+        containment()->addApplet( pluginName );
     }
 }
 

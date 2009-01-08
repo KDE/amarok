@@ -53,7 +53,6 @@ public slots:
 
 Q_SIGNALS:
     void menuHidden();
-    void changeContainment( Plasma::Containment *containment );
 
 protected:
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
@@ -62,7 +61,6 @@ protected:
     virtual void wheelEvent( QGraphicsSceneWheelEvent *event );
 
 private slots:
-    void addApplet( const QString &pluginName );
     void removeApplet( const QString &pluginName );
     void appletAdded( Plasma::Applet *applet );
     void appletRemoved( Plasma::Applet *applet );
@@ -70,6 +68,7 @@ private slots:
     void scrollDown();
     void scrollUp();
     void timeToHide();
+    void addApplet( const QString &pluginName );
 
 private:
     void init( QMap< QString, QString > allAppletsList, QStringList appletsToShow );

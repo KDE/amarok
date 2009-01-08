@@ -192,7 +192,7 @@ Plasma::Applet* ContextView::addApplet( const QString& name, const QStringList& 
         argList << QVariant( i.next() );
 
     if( !containment() )
-        contextScene()->addContainment( "amarok_containment_horizontal" );
+        contextScene()->addContainment( "amarok_containment_vertical" );
 
     return containment()->addApplet( name, argList );
 }

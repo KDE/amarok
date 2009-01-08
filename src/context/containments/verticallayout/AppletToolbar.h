@@ -1,6 +1,6 @@
 /***************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
-**************************************************************************/
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>         *
+****************************************************************************/
 
 /***************************************************************************
 *                                                                         *
@@ -11,9 +11,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef AMAROK_HORIZONTAL_APPLET_LAYOUT_H
-#define AMAROK_HORIZONTAL_APPLET_LAYOUT_H
-
+#ifndef AMAROK_APPLET_TOOLBAR_H
+#define AMAROK_APPLET_TOOLBAR_H
 
 #include "amarok_export.h"
 
@@ -23,25 +22,49 @@ class QGraphicsItem;
 class QGraphicsSceneResizeEvent;
 class QPainter;
 class QStyleOptionGraphicsItem;
+class QSizePolicy;
+class QGraphicsLinearLayout;
 
 // this provides a simple toolbar to switch between applets in the CV
+namespace Plasma
+{
+    class Applet;
+}
 
 namespace Context
 {
     
-class AMAROK_EXPORT HorizontalAppletLayout : public QGraphicsWidget
+class AppletToolbarAddItem;
+class Containment;
+
+class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        HorizontalAppletLayout( QGraphicsItem* parent = 0 );
-        ~HorizontalAppletLayout();
+        AppletToolbar( QGraphicsItem* parent = 0 );
+        ~AppletToolbar();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+        
+        QSizePolicy sizePolicy () const;        
     protected:
         // reimplemented dfrom QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+
+        void mousePressEvent( QGraphicsSceneMouseEvent *event );
         
+    private slots:
+        void appletAdded( Plasma::Applet*, const QPointF& );
+        void appletRemoved( Plasma::Applet* );
+    private:
+        qreal m_width;    
+        QGraphicsLinearLayout* m_appletLayout;
         
+        AppletToolbarAddItem* m_test1;
+        AppletToolbarAddItem* m_test2;
+        
+        Containment* m_cont;
 };
 
 }
