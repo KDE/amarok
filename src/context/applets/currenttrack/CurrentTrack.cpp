@@ -416,6 +416,12 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
+    // Only show the ratings widget if the current track is in the collection
+    if( track && track->inCollection() )
+        m_ratingWidget->show();
+    else
+        m_ratingWidget->hide();
+
     //don't paint this until we have something better looking that also works with non square covers
     /*if( track && track->album() && track->album()->hasImage() )
         m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );*/
