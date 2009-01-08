@@ -107,7 +107,7 @@ void Playlist::PrettyItemConfig::setShowCover( bool showCover )
     m_showCover = showCover;
 }
 
-}
+
 
 int Playlist::PrettyItemConfig::activeIndicatorRow()
 {
@@ -119,7 +119,40 @@ void Playlist::PrettyItemConfig::setActiveIndicatorRow( int row )
     m_activeIndicatorRow = row;
 }
 
+//////////////////////////////////////////////
 
+
+PrettyItemConfig Playlist::PlaylistLayout::head()
+{
+    return m_head;
+}
+
+PrettyItemConfig Playlist::PlaylistLayout::body()
+{
+    return m_body;
+}
+
+PrettyItemConfig Playlist::PlaylistLayout::single()
+{
+    return m_single;
+}
+
+void Playlist::PlaylistLayout::setHead( PrettyItemConfig head )
+{
+    m_head = head;
+}
+
+void Playlist::PlaylistLayout::setBody( PrettyItemConfig body )
+{
+    m_body = body;
+}
+
+void Playlist::PlaylistLayout::setSingle( PrettyItemConfig single )
+{
+    m_single = single;
+}
+
+}
 
 
 

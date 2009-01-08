@@ -85,6 +85,26 @@ private:
     int m_activeIndicatorRow;
 };
 
+
+class PlaylistLayout{
+
+public:
+
+    PrettyItemConfig head();
+    PrettyItemConfig body();
+    PrettyItemConfig single();
+
+    void setHead( PrettyItemConfig head );
+    void setBody( PrettyItemConfig body );
+    void setSingle( PrettyItemConfig single );
+
+private:
+
+    PrettyItemConfig m_head;
+    PrettyItemConfig m_body;
+    PrettyItemConfig m_single;
+};
+
 }
 
 #endif
