@@ -22,6 +22,7 @@
 #include <KIcon>
 
 #include <QAction>
+#include <QBitmap>
 #include <QDrag>
 #include <QMimeData>
 #include <QStyleOptionGraphicsItem>
@@ -72,7 +73,7 @@ Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
 void 
 Context::AppletToolbarAppletItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
-  //  DEBUG_BLOCK
+    //DEBUG_BLOCK
     painter->save();
     QColor fillColor( 102, 102, 102, 210 );
     QPainterPath fillPath;
@@ -163,10 +164,20 @@ Context::AppletToolbarAppletItem::mouseMoveEvent( QGraphicsSceneMouseEvent * eve
         Context::AppletToolbarMimeData* data = new Context::AppletToolbarMimeData;
     
         drag->setMimeData( data );
-    
         data->setAppletData( this );
-        data->setLocationData( -1 );
     
+        // create pixmap for drag, half size
+        QPixmap pixmap( boundingRect().width() / 2, boundingRect().height() );
+        QPainter painter( &pixmap );
+     //   painter.translate( 15, 15 );
+        painter.setRenderHint(QPainter::Antialiasing);
+        paint(&painter, 0, 0);
+        painter.end();
+       
+      //  pixmap->setAlphaChannel( )
+        drag->setPixmap( pixmap) ;
+        drag->setHotSpot( QPoint( 0, 0 ) );
+        
         debug() << "starting drag";
         drag->start();
     //    setCursor(Qt::OpenHandCursor);
