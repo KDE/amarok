@@ -240,6 +240,7 @@ set( libcontextview_SRCS
     context/ContextScene.cpp
     context/ContextView.cpp
     context/LyricsManager.cpp
+	context/ToolbarView.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
     context/widgets/RatingWidget.cpp

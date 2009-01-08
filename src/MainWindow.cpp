@@ -42,6 +42,7 @@
 #include "collection/CollectionManager.h"
 #include "context/ContextScene.h"
 #include "context/ContextView.h"
+#include "context/ToolbarView.h"
 #include "context/plasma/plasma.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "playlist/PlaylistActions.h"
@@ -219,6 +220,7 @@ MainWindow::init()
     m_contextWidget = new ContextWidget( this );
     PERF_LOG( "ContextWidget created" )
     m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+    m_contextWidget->setSpacing( 0 );
     m_contextWidget->setFrameShape( QFrame::NoFrame );
     m_contextWidget->setFrameShadow( QFrame::Sunken );
     PERF_LOG( "Creating ContexScene" )
@@ -331,6 +333,9 @@ MainWindow::createContextView( Plasma::Containment *containment )
     PERF_LOG( "Creating ContexView" )
     m_contextView = new Context::ContextView( containment, m_corona, m_contextWidget );
     m_contextView->setFrameShape( QFrame::NoFrame );
+    
+    m_contextToolbarView = new Context::ToolbarView( m_corona, m_contextWidget );
+    m_contextToolbarView->setFrameShape( QFrame::NoFrame );
     PERF_LOG( "ContexView created" )
 }
 

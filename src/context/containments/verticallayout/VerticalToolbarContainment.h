@@ -67,7 +67,6 @@ class VerticalToolbarContainment : public Containment
     
     private:
         ContextView* m_view;
-        QGraphicsLinearLayout* m_mainLayout;
         AppletToolbar* m_toolbar;
         VerticalAppletLayout* m_applets;
 };

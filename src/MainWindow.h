@@ -36,6 +36,7 @@ namespace Playlist { class Widget; }
 namespace Context {
     class ContextScene;
     class ContextView;
+    class ToolbarView;
 }
 
 class KMenu;
@@ -151,6 +152,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         ContextWidget *m_contextWidget;
         Context::ContextScene *m_corona;
         Context::ContextView *m_contextView;
+        Context::ToolbarView *m_contextToolbarView;
 
         PlaylistFileProvider *m_playlistFiles;
         Meta::TrackPtr m_currentTrack;
