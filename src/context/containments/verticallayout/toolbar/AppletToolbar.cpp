@@ -16,10 +16,12 @@
 #include "AppletToolbarAddItem.h"
 #include "AppletToolbarAppletItem.h"
 #include "AppletToolbarConfigItem.h"
+#include "AppletToolbarMimeData.h"
 #include "Containment.h"
 #include "Debug.h"
 #include "plasma/applet.h"
 
+#include <QGraphicsScene>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneResizeEvent>
@@ -139,25 +141,71 @@ Context::AppletToolbar::mousePressEvent( QGraphicsSceneMouseEvent *event )
     QGraphicsWidget::mousePressEvent( event );
 }
 
-
 void 
 Context::AppletToolbar::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
 {
     DEBUG_BLOCK
+    const Context::AppletToolbarMimeData* data = dynamic_cast< const Context::AppletToolbarMimeData* >( event->mimeData() );
+    if( data && data->appletData() )
+    {
+        debug() << "got applet in drag event, accepting";
+        event->setAccepted( true );
+    } else
+    {   
+        debug() << "GOT NO applet in drag event, BAD BAD!";
+        event->setAccepted( false );
+    }
 }
 
+void
+Context::AppletToolbar::dragMoveEvent( QGraphicsSceneDragDropEvent *event )
+{
+ //   DEBUG_BLOCK
+ //   debug() << "whoopdiedoo, accepting drag move event";
+    event->setAccepted( true );
+}
+
+/*
 void
 Context::AppletToolbar::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
 {
     DEBUG_BLOCK
 }
-
+*/
 void 
 Context::AppletToolbar::dropEvent( QGraphicsSceneDragDropEvent *event )
 {
     DEBUG_BLOCK
-}
+    const Context::AppletToolbarMimeData* data = qobject_cast< const Context::AppletToolbarMimeData* >( event->mimeData() );
+    if( data && data->appletData() )
+    {
+        debug() << "got an applet drop at position" << event->scenePos();
 
+        if( scene() )
+        {
+            if( scene()->itemAt( event->scenePos() ) )
+                debug() << "there is an item under the drop...";
+            Context::AppletToolbarAppletItem* itemUnder = dynamic_cast< Context::AppletToolbarAppletItem* >( scene()->itemAt( event->scenePos() ) );
+            if( itemUnder )
+            {
+                debug() << "got a toolbar applet item under the drag too!";
+                QRectF sceneAppletRect = mapToScene( itemUnder->boundingRect() ).boundingRect();
+                debug () << "rect of item we are on:" << mapToScene( itemUnder->boundingRect() );
+                if( event->scenePos().x() < (sceneAppletRect.topRight().x() - ( sceneAppletRect.width() / 2 ) ) )
+                {
+                    debug() << "dropped on first half of applet: " << itemUnder->applet()->name();
+                } else
+                {
+                    debug() << "dropped on second half of applet: " << itemUnder->applet()->name();
+                }
+            }
+            
+        } else if( data )
+        {
+            debug() << "got a NON-APPLET drop....WTF?";
+        }
+    }
+}
 
 // user clicked on one of the add applet buttons, figure out which one he selected and tell the containment to
 // actually add the applet. appletAdded is called by the containment when it has been created.

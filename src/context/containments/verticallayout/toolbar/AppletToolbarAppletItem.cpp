@@ -43,8 +43,6 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
        m_label->setText( m_applet->name() );
     else
         m_label->setText( "no applet name" );
-
-    setAcceptDrops( true );
         
     QAction* delApplet = new QAction( i18n( "Remove Applet" ), this );
     delApplet->setIcon( KIcon( "edit-delete" ) );
@@ -172,25 +170,6 @@ Context::AppletToolbarAppletItem::mouseMoveEvent( QGraphicsSceneMouseEvent * eve
         drag->start();
     //    setCursor(Qt::OpenHandCursor);
     }
-}
-
-
-void 
-Context::AppletToolbarAppletItem::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-}
-
-void
-Context::AppletToolbarAppletItem::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-}
-
-void 
-Context::AppletToolbarAppletItem::dropEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
 }
 
 void 

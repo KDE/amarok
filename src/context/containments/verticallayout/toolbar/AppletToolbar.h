@@ -63,9 +63,10 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
         void mousePressEvent( QGraphicsSceneMouseEvent *event );
         
         virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
-        virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
+        virtual void dragMoveEvent( QGraphicsSceneDragDropEvent *event );
+  //      virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
         virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
-        
+
     private slots:
         void addApplet( const QString& pluginName, AppletToolbarAddItem* item  );
         void appletAdded( Plasma::Applet*, int );

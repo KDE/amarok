@@ -36,8 +36,6 @@ public:
 signals:
     void appletRemoved( QObject *object );
 
-protected:
-    void dragMoveEvent( QGraphicsSceneDragDropEvent * event );
 };
 
 } // Context namespace

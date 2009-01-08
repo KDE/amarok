@@ -32,8 +32,6 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     debug() << "corona at this point:" << corona();
     m_toolbar = new AppletToolbar( this );
     
-    setAcceptDrops( true );
-    
     m_toolbar->setZValue( m_applets->zValue() + 100 );
     
     debug() << "containment has corona:" << corona();
@@ -108,24 +106,6 @@ Context::ContextView*
 Context::VerticalToolbarContainment::view()
 {
     return m_view;
-}
-
-void 
-Context::VerticalToolbarContainment::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-}
-
-void
-Context::VerticalToolbarContainment::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-}
-
-void 
-Context::VerticalToolbarContainment::dropEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
 }
 
 Plasma::Applet* 

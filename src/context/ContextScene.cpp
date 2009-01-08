@@ -44,11 +44,6 @@ void ContextScene::loadDefaultSetup()
     c->setFormFactor( Plasma::Planar );
 }
 
-void ContextScene::dragMoveEvent( QGraphicsSceneDragDropEvent * event )
-{
-    Q_UNUSED( event );
-}
-
 } // Context namespace
 
 #include "ContextScene.moc"

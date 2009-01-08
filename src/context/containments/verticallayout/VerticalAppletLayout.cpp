@@ -25,8 +25,6 @@ Context::VerticalAppletLayout::VerticalAppletLayout( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
     , m_showingIndex( -1 )
 {
-    
-    setAcceptDrops( true );
 }
 
 Context::VerticalAppletLayout::~VerticalAppletLayout()
@@ -54,25 +52,6 @@ Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
     // update all the applet widths
     foreach( Plasma::Applet* applet, m_appletList )
         applet->resize( event->newSize().width(), applet->size().height() );
-}
-
-
-void 
-Context::VerticalAppletLayout::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-}
-
-void
-Context::VerticalAppletLayout::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-}
-
-void 
-Context::VerticalAppletLayout::dropEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
 }
 
 void 
