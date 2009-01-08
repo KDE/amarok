@@ -1,4 +1,4 @@
-/***************************************************************************
+/**************************************************************************
 * copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org  >        *
 **************************************************************************/
 
@@ -39,16 +39,19 @@ class AppletToolbarAddItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0 );
+        AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool maximizeHorizontally = false );
         ~AppletToolbarAddItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
         QSizePolicy sizePolicy () const;
         
+        void setMaximized( bool max );
+        
     public slots:
         void updatedContainment( Containment* cont );
-    
+        void iconClicked();
+        
     protected:    
          virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
          virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
@@ -56,6 +59,9 @@ class AppletToolbarAddItem : public QGraphicsWidget
          void mousePressEvent( QGraphicsSceneMouseEvent * event );
     private: 
         void showAddAppletsMenu( QPointF pos = QPointF() );
+        
+        int m_iconPadding;
+        bool m_maximizeHorizontally;
         
         Plasma::IconWidget* m_icon;
         QGraphicsSimpleTextItem* m_label;

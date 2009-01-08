@@ -14,6 +14,7 @@
 #include "AppletToolbar.h"
 
 #include "AppletToolbarAddItem.h"
+#include "AppletToolbarAppletItem.h"
 #include "Containment.h"
 #include "Debug.h"
 #include "plasma/applet.h"
@@ -28,25 +29,23 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
     , m_appletLayout( 0 )
     , m_cont( 0 )
+    , m_addItem( 0 )
 {    
     Context::Containment* cont = dynamic_cast<Context::Containment*>( parent );
     if( cont )
     {    
         m_cont = cont;
-        connect( m_cont,  SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ), 
-                 this,      SLOT( appletAdded( Plasma::Applet*, const QPointF& ) ) );
-        connect( m_cont,  SIGNAL( appletRemoved( Plasma::Applet* ) ), 
-                 this,      SLOT( appletRemoved( Plasma::Applet* ) ) );
         debug() << "applettoolbar created with a real containment";
     }
         
     m_appletLayout = new QGraphicsLinearLayout( Qt::Horizontal, this );
     
-    m_test1 = new AppletToolbarAddItem( this, m_cont );
-    connect( cont, SIGNAL( updatedContainment( Containment* ) ), m_test1, SLOT( updatedContainment( Containment* ) ) );
-  //  m_test2 = new AppletToolbarAddItem( this );
+    m_addItem = new AppletToolbarAddItem( this, m_cont, true );
+ //   AppletToolbarAppletItem* test =  new AppletToolbarAppletItem( this );
+    connect( cont, SIGNAL( updatedContainment( Containment* ) ), m_addItem, SLOT( updatedContainment( Containment* ) ) );
     
-    m_appletLayout->addItem( m_test1 );
+  //  m_appletLayout->addItem( test );
+    m_appletLayout->addItem( m_addItem );
 }
 
 Context::AppletToolbar::~AppletToolbar()
@@ -85,6 +84,22 @@ Context::AppletToolbar::sizePolicy () const
     return QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Fixed );
 }
 
+
+void 
+Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
+{
+    DEBUG_BLOCK
+    for( int i = 0; i < m_appletLayout->count(); i++ )
+    {
+        AppletToolbarAppletItem* app = dynamic_cast< AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
+        if( app && app->applet() == applet )
+        {
+            m_appletLayout->removeItem( app );
+            app->deleteLater();
+        }
+    }
+}
+
 QSizeF
 Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
@@ -102,18 +117,21 @@ Context::AppletToolbar::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 
 void 
-Context::AppletToolbar::appletAdded( Plasma::Applet* applet, const QPointF& loc ) // SLOT
+Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
 {
     DEBUG_BLOCK
-    Q_UNUSED( loc )
     
-    
+    debug() << "inserting applet icon in position" << loc;
+    Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
+    connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
+    m_appletLayout->insertItem( loc, item );
+    m_addItem->setMaximized( false );
 }
     
 void 
-Context::AppletToolbar::appletRemoved( Plasma::Applet* applet) // SLOT
+Context::AppletToolbar::appletRemoved( Plasma::Applet* applet, int loc) // SLOT
 {
     DEBUG_BLOCK
 }
-    
+  
 #include "AppletToolbar.moc"

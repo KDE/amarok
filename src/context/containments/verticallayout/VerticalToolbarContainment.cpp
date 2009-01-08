@@ -32,6 +32,8 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     debug() << "corona at this point:" << corona();
     m_toolbar = new AppletToolbar( this );
     
+    m_toolbar->setZValue( m_applets->zValue() + 100 );
+    
     debug() << "containment has corona:" << corona();
     
     m_mainLayout->addItem( m_applets );
@@ -39,6 +41,15 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     
     connect( this, SIGNAL( appletAdded( Plasma::Applet*, const QPointF & ) ),
              this, SLOT( addApplet( Plasma::Applet*, const QPointF & ) ) );
+    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), 
+             this, SLOT( appletRemoved( Plasma::Applet* ) ) );
+             
+    connect( m_applets,  SIGNAL( appletAdded( Plasma::Applet*, int ) ), 
+             m_toolbar,      SLOT( appletAdded( Plasma::Applet*, int) ) );
+   // connect( m_applets,  SIGNAL( appletRemoved( Plasma::Applet*, int ) ), 
+   //          m_toolbar,      SLOT( appletRemoved( Plasma::Applet*, int ) ) );
+  
+    connect( m_toolbar, SIGNAL( showApplet( Plasma::Applet* ) ), m_applets, SLOT( showApplet( Plasma::Applet* ) ) );
 }
 
 Context::VerticalToolbarContainment::~VerticalToolbarContainment()
@@ -97,11 +108,17 @@ Context::VerticalToolbarContainment::view()
 }
 
 Plasma::Applet* 
-Context::VerticalToolbarContainment::addApplet( Plasma::Applet* applet, const QPointF & )
+Context::VerticalToolbarContainment::addApplet( Plasma::Applet* applet, const QPointF & ) // SLOT
 {
     DEBUG_BLOCK
-    // TODO for now just put the applets as placeholders in the CV
     m_applets->addApplet( applet, -1 );
+}
+
+void    
+Context::VerticalToolbarContainment::appletRemoved( Plasma::Applet* applet )
+{
+    m_applets->appletRemoved( applet );
+    m_toolbar->appletRemoved( applet );
 }
 
 #include "VerticalToolbarContainment.moc"

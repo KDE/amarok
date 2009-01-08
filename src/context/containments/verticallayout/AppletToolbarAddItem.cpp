@@ -26,8 +26,10 @@
 #include <QSizeF>
 #include <QPainter>
 
-Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont )
+Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont, bool maximizeHorizontally )
     : QGraphicsWidget( parent )
+    , m_iconPadding( 5 )
+    , m_maximizeHorizontally( maximizeHorizontally )
     , m_icon( 0 )
     , m_label( 0 )
     , m_addMenu( 0 )
@@ -37,7 +39,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     listAdd->setVisible( true );
     listAdd->setEnabled( true );
     
-    connect( listAdd, SIGNAL( triggered() ), this, SLOT( SOMETHING ) );
+    connect( listAdd, SIGNAL( triggered() ), this, SLOT( iconClicked() ) );
     
     m_icon = new Plasma::IconWidget( this );
 
@@ -46,13 +48,14 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_icon->setToolTip( listAdd->text() );
     m_icon->setDrawBackground( false );
     m_icon->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = m_icon->sizeFromIconSize( 7 );
+    QSizeF iconSize = m_icon->sizeFromIconSize( 22 );
     m_icon->setMinimumSize( iconSize );
     m_icon->setMaximumSize( iconSize );
     m_icon->resize( iconSize );
     m_icon->setZValue( zValue() + 1 );
     
     m_label = new QGraphicsSimpleTextItem( "Add Applet", this );
+    m_label->hide();
     
     m_addMenu = new AmarokToolBoxMenu( this, false );
     m_addMenu->setContainment( cont );
@@ -80,7 +83,18 @@ Context::AppletToolbarAddItem::paint ( QPainter * painter, const QStyleOptionGra
 QSizePolicy 
 Context::AppletToolbarAddItem::sizePolicy () const
 {
-    return QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding );
+    if( m_maximizeHorizontally )
+        return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    else
+        return QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+}
+
+
+void 
+Context::AppletToolbarAddItem::setMaximized( bool max )
+{
+    debug() << "add icon no longer maximizing";
+    m_maximizeHorizontally = max;
 }
 
 void 
@@ -90,18 +104,35 @@ Context::AppletToolbarAddItem::updatedContainment( Containment* cont )
 }
 
 void 
+Context::AppletToolbarAddItem::iconClicked() // SLOT
+{
+    showAddAppletsMenu( m_icon->pos() );
+}
+
+void 
 Context::AppletToolbarAddItem::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
-    m_icon->setPos( 0, ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
-    m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
+    if( m_label->boundingRect().width() < ( boundingRect().width() - 2*m_icon->boundingRect().width() ) ) // do we have size to show it?
+    {
+        m_icon->setPos( 0, ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
+        m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
+        m_label->show();
+    } else 
+    {        
+        m_icon->setPos( ( boundingRect().width() / 2 ) - ( m_icon->boundingRect().width() / 2 ) , ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
+        m_label->hide();
+    }
 }
 
 
 QSizeF
 Context::AppletToolbarAddItem::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
-    // return QSizeF( m_icon->size().width(), QGraphicsWidget::sizeHint( which, constraint ).height() );
-    return QGraphicsWidget::sizeHint( which, constraint );
+    if( m_maximizeHorizontally )
+        return QGraphicsWidget::sizeHint( which, constraint );
+    else
+        return QSizeF( m_icon->size().width() /* + 2 * m_iconPadding */, QGraphicsWidget::sizeHint( which, constraint ).height() );
+    
 }
 
 void 
@@ -121,8 +152,12 @@ Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
         return;
     }
     
-    const qreal xpos = pos.x();
+    qreal xpos = pos.x();
     const qreal ypos = 0 - m_addMenu->boundingRect().height();
+    
+    debug() << "checking if it will overflow:"  << xpos + m_addMenu->boundingRect().width() << " > " << sceneBoundingRect().width() ;
+    if( xpos + m_addMenu->boundingRect().width() > sceneBoundingRect().width() )
+        xpos = sceneBoundingRect().width() - m_addMenu->boundingRect().width();
 
     m_addMenu->setPos( xpos, ypos );
     m_addMenu->show();

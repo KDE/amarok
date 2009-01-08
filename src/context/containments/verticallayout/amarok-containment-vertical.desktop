@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Vertical Context Containment
+Comment=A vertical containment for the Amarok Context
+
+Icon=
+Type=Service
+ServiceTypes=AmarokContext/Applet,AmarokContext/Containment
+
+X-KDE-Library=amarok_containment_vertical
+X-KDE-PluginInfo-Author=Leo Franchi
+X-KDE-PluginInfo-Email=amarok@kde.org
+X-KDE-PluginInfo-Name=amarok_containment_vertical
+X-KDE-PluginInfo-Version=.1
+X-KDE-PluginInfo-Website=http://amarok.kde.org/
+X-KDE-PluginInfo-Category=Miscellaneous
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=AmarokInvisible

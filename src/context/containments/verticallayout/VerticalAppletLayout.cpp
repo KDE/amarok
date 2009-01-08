@@ -58,31 +58,68 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
     if( location < 0 ) // being told to add at end
     {
         m_appletList << applet;
-        if( m_showingIndex < 0 ) //first applet to be added, nothing being shown yet
-        {
-            showAtIndex( 0 );
-        } else
-        {
-            applet->hide();
-        }
+        showAtIndex( m_appletList.size() - 1 );
+        location = m_appletList.size() - 1; // so the signal has the correct location
     }
+    emit appletAdded( applet, location );
 }
 
 void 
+Context::VerticalAppletLayout::showApplet( Plasma::Applet* applet ) // SLOT
+{
+    showAtIndex( m_appletList.indexOf( applet ) );
+}
+
+
+void 
+Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
+{
+    DEBUG_BLOCK
+    int removedIndex = m_appletList.indexOf( app );
+    debug() << "removing applet at index:" << removedIndex;
+    m_appletList.removeAll( app );
+    if( m_showingIndex > removedIndex )
+        m_showingIndex--;
+    showAtIndex( m_showingIndex );
+}
+
+void
 Context::VerticalAppletLayout::showAtIndex( int index )
 {
-    if( index < 0 )
+    DEBUG_BLOCK
+    if( index < 0 || index > m_appletList.size() )
         return;
-        
-    // for  now we are just maximising the currently shown applet
-    for( int i = 0; i > m_appletList.size(); i++ )
+    
+    qreal runningHeight = 0.0, currentHeight = 0.0;
+    qreal width =  boundingRect().width();
+    debug() << "showing applet at index" << index;
+    debug() << "using applet width of " << width;
+    for( int i = index - 1; i >= 0; i-- ) // lay out backwards above the view
     {
-        if( i != index )
-            m_appletList[ i ]->hide();
+        debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
+        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
+        runningHeight -= currentHeight;
+        m_appletList[ i ]->setPos( 0, runningHeight );
+        debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
+        debug() << "UPWARDS got applet sizehint height:" << currentHeight;
+        m_appletList[ i ]->resize( width, currentHeight );
+        m_appletList[ i ]->show();
     }
-    m_appletList[ index ]->setPos( 0, 0 );
-    m_appletList[ index ]->resize( size() );
-    m_showingIndex = 0;
+    runningHeight = currentHeight = 0.0;
+    for( int i = index; i < m_appletList.size(); i++ ) // now lay out desired item at top and rest below it
+    {
+        debug() << "dealing with" << m_appletList[ i ]->name();
+        debug() << "putting applet #" << i << " at" << 0 << runningHeight;
+        m_appletList[ i ]->setPos( 0, runningHeight );
+        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
+        runningHeight += currentHeight;
+        debug() << "next applet will go at:" << runningHeight;
+        debug() << "got applet sizehint height:" << currentHeight;
+        m_appletList[ i ]->resize( width, currentHeight );
+        m_appletList[ i ]->show();
+    }
+    
+    m_showingIndex = index;
 }
 
 #include "VerticalAppletLayout.moc"

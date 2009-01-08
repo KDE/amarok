@@ -1,5 +1,5 @@
-/***************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
+/**************************************************************************
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org  >        *
 **************************************************************************/
 
 /***************************************************************************
@@ -11,18 +11,14 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef AMAROK_HORIZONTAL_APPLET_LAYOUT_H
-#define AMAROK_HORIZONTAL_APPLET_LAYOUT_H
-
-
-#include "amarok_export.h"
+#ifndef AMAROK_APPLET_TOOLBAR_APPLET_ITEM_H
+#define AMAROK_APPLET_TOOLBAR_APPLET_ITEM_H
 
 #include <QGraphicsWidget>
 
-class QGraphicsItem;
-class QGraphicsSceneResizeEvent;
-class QPainter;
 class QStyleOptionGraphicsItem;
+class QPainter;
+class QGraphicsSceneMouseEvent;
 
 namespace Plasma
 {
@@ -32,35 +28,34 @@ namespace Plasma
 namespace Context
 {
     
-class Containment;
-    
-class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
+class AppletToolbarAppletItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        VerticalAppletLayout( QGraphicsItem* parent = 0 );
-        ~VerticalAppletLayout();
+        AppletToolbarAppletItem( QGraphicsItem* parent = 0, Plasma::Applet* applet = 0 );
+        ~AppletToolbarAppletItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+
+        QSizePolicy sizePolicy () const;
         
-        void addApplet( Plasma::Applet*, int location = -1 );
-        
+        Plasma::Applet* applet() { return m_applet; }
     signals:
-        void appletAdded( Plasma::Applet* applet, int location );
-    
-    public slots:
-        void showApplet( Plasma::Applet* );
-        void appletRemoved( Plasma::Applet* app );
-    protected:
-        // reimplemented from QGraphicsWidget
-        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
-    private:
-        void showAtIndex( int index );
+        void appletChosen( Plasma::Applet* );
         
-        QList< Plasma::Applet* > m_appletList;
-        int m_showingIndex;
+    protected:
+        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+    
+        void mousePressEvent( QGraphicsSceneMouseEvent * event );
+        
+    private:
+        Plasma::Applet* m_applet;
+        QGraphicsSimpleTextItem* m_label;
+        
+        int m_labelPadding;
 };
 
-}
+} // namespace
 
 #endif

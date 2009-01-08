@@ -46,7 +46,13 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
-        QSizePolicy sizePolicy () const;        
+        QSizePolicy sizePolicy () const;  
+        
+        void appletRemoved( Plasma::Applet* applet );
+    signals:
+        void showApplet( Plasma::Applet* );
+    
+    
     protected:
         // reimplemented dfrom QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
@@ -55,16 +61,15 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
         void mousePressEvent( QGraphicsSceneMouseEvent *event );
         
     private slots:
-        void appletAdded( Plasma::Applet*, const QPointF& );
-        void appletRemoved( Plasma::Applet* );
+        void appletRemoved( Plasma::Applet*, int );
+        void appletAdded( Plasma::Applet*, int );
+        
     private:
         qreal m_width;    
         QGraphicsLinearLayout* m_appletLayout;
-        
-        AppletToolbarAddItem* m_test1;
-        AppletToolbarAddItem* m_test2;
-        
+                
         Containment* m_cont;
+        AppletToolbarAddItem* m_addItem;
 };
 
 }

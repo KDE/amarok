@@ -250,7 +250,7 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
 {
     Q_UNUSED( which );
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
+        return QSizeF( constraint.width(), m_lyrics->size().height() );
     
     return constraint;
 }

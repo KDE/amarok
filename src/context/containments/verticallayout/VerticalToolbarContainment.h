@@ -58,6 +58,7 @@ class VerticalToolbarContainment : public Containment
 
     public slots:
         Applet* addApplet( Plasma::Applet* applet, const QPointF & );
+        void    appletRemoved( Plasma::Applet* );
         
     signals:
         void updatedContainment( Containment* );
