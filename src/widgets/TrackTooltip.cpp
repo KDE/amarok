@@ -204,8 +204,9 @@ void TrackToolTip::setTrack()
             left << i18n( "Length" );
         }
 
+        m_tooltip = i18n( "Volume: %1%", QString::number( The::engineController()->volume() ) );
         //NOTE it seems to be necessary to <center> each element indivdually
-        m_tooltip = "<table cellpadding='2' cellspacing='2' align='center'><tr>";
+        m_tooltip += "<table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         if( m_track->album() )
             m_image = m_track->album()->imageWithBorder( 100, 5 );
@@ -230,8 +231,6 @@ void TrackToolTip::setTrack()
             if( !album.isEmpty() )
                 m_title += i18n( " on <b>%1</b></center>", album );
         }
-
-        m_tooltip += i18n( "Volume: %1%", QString::number( The::engineController()->volume() ) );
 
         m_tooltip += "</table></td>";
         m_tooltip += "</tr></table></center>";
