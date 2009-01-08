@@ -55,7 +55,7 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     DEBUG_BLOCK
 
 
-    //temp stuff for setting up some defaults
+    //temp stuff for setting up some defaults that look slike the normal playlist
     PrettyItemConfigRow row1;
     PrettyItemConfigRow row2;
     row1.addElement( PrettyItemConfigRowElement( Title, 0.5, false, Qt::AlignLeft | Qt::AlignVCenter ) );
@@ -79,6 +79,28 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     bodyRow1.addElement( PrettyItemConfigRowElement( Length, 0.2, false, Qt::AlignRight | Qt::AlignVCenter ) );
     s_albumBodyConfig.addRow( bodyRow1 );
     s_albumBodyConfig.setShowCover( false );
+
+
+    //this is the classic view imitation
+    /*PrettyItemConfigRow row1;
+    row1.addElement( PrettyItemConfigRowElement( Title, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    row1.addElement( PrettyItemConfigRowElement( Artist, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    row1.addElement( PrettyItemConfigRowElement( Album, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    row1.addElement( PrettyItemConfigRowElement( Genre, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    row1.addElement( PrettyItemConfigRowElement( Length, 0.1, false, Qt::AlignRight | Qt::AlignVCenter ) );
+    s_singleTrackConfig.addRow( row1 );
+    s_singleTrackConfig.setShowCover( false );
+
+    s_albumHeadConfig.setShowCover( false );
+
+    PrettyItemConfigRow bodyRow1;
+    bodyRow1.addElement( PrettyItemConfigRowElement( Title, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    bodyRow1.addElement( PrettyItemConfigRowElement( Artist, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    bodyRow1.addElement( PrettyItemConfigRowElement( Album, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    bodyRow1.addElement( PrettyItemConfigRowElement( Genre, 0.225, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    bodyRow1.addElement( PrettyItemConfigRowElement( Length, 0.1, false, Qt::AlignRight | Qt::AlignVCenter ) );
+    s_albumBodyConfig.addRow( bodyRow1 );
+    s_albumBodyConfig.setShowCover( false );*/
 
 }
 
@@ -548,6 +570,10 @@ PrettyItemDelegate::imageRectify( const QPointF offset ) const
 void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     int rowCount = config.rows();
+
+    if ( rowCount == 0 )
+        return;
+    
     int rowHeight = option.rect.height() / rowCount;
 
     int rowOffsetX = MARGINH;
