@@ -140,6 +140,7 @@ Context::AppletToolbarAppletItem::mousePressEvent( QGraphicsSceneMouseEvent * ev
         setCursor(Qt::ClosedHandCursor);
     else
         emit appletChosen( m_applet );
+    event->accept();
 }
 
 void 

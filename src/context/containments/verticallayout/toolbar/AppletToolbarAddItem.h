@@ -45,7 +45,6 @@ class AppletToolbarAddItem : public QGraphicsWidget
         QSizePolicy sizePolicy () const;
         
         void setMaximized( bool max );
-        void hideMenu();
         
     signals:
         void addApplet( const QString&, AppletToolbarAddItem*  );
@@ -55,6 +54,7 @@ class AppletToolbarAddItem : public QGraphicsWidget
         void iconClicked();
         void addApplet( const QString& pluginName );
         
+        void hideMenu();
     protected:    
          virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
          virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
@@ -66,6 +66,7 @@ class AppletToolbarAddItem : public QGraphicsWidget
         int m_iconPadding;
         bool m_fixedAdd;
         
+        Containment* m_cont;
         Plasma::IconWidget* m_icon;
         QGraphicsSimpleTextItem* m_label;
         AmarokToolBoxMenu* m_addMenu;
