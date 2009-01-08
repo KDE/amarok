@@ -230,7 +230,8 @@ ContextView::updateContainmentsGeometry()
 
 void ContextView::wheelEvent( QWheelEvent* event )
 {
-    if( event->QGraphicsView::wheelEvent( event );
+    if( event->orientation() != Qt::Horizontal )
+        QGraphicsView::wheelEvent( event );
 }
 
 } // Context namespace

@@ -22,6 +22,8 @@
 
 #include <QGraphicsLinearLayout>
 
+#define TOOLBAR_X_OFFSET 10000
+
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )
     , m_toolbar( 0 )
@@ -37,7 +39,7 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     // NOTE the toolbar is not set within this view. ToolbarView is actually over the area that the toolbar is placed
     // this is so we can easily get a scolling QGV without having to deal with constant placements of the toolbar
     m_toolbar->setZValue( m_applets->zValue() + 100 );
-    m_toolbar->setPos( 1000, 0 );
+    m_toolbar->setPos( TOOLBAR_X_OFFSET, 0 );
     debug() << "containment has corona:" << corona();
     
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), 

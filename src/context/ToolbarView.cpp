@@ -19,11 +19,13 @@
 #include <QSizePolicy>
 #include <QWidget>
 
+#define TOOLBAR_X_OFFSET 10000
+
 Context::ToolbarView::ToolbarView( QGraphicsScene* scene, QWidget* parent )
     : QGraphicsView( scene, parent )
     , m_height( 30 )
 {
-    setSceneRect( 1000, 0, size().width(), m_height );
+    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
     QSizePolicy policy( QSizePolicy::Preferred, QSizePolicy::Fixed );
     policy.setHeightForWidth( true );
     setSizePolicy( policy );
@@ -52,7 +54,7 @@ Context::ToolbarView::heightForWidth ( int w ) const
 void  
 Context::ToolbarView::resizeEvent( QResizeEvent * event )
 {
-    setSceneRect( 1000, 0, size().width(), m_height );
+    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
 }
 
 #include "ToolbarView.moc"

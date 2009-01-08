@@ -27,7 +27,7 @@
 #include <QSizeF>
 #include <QPainter>
 
-#define TOOLBAR_X_OFFSET 1000
+#define TOOLBAR_X_OFFSET 10000
 
 Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont, bool fixedAdd )
     : QGraphicsWidget( parent )
