@@ -114,7 +114,7 @@ View::View(Containment *containment, QWidget *parent)
       d(new ViewPrivate(this, 0))
 {
     d->initGraphicsView();
-
+    
     if (containment) {
         setScene(containment->scene());
         setContainment(containment);

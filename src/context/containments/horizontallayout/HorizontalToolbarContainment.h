@@ -1,5 +1,5 @@
 /***************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@gmail.com>        *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>           *
 **************************************************************************/
 
 /***************************************************************************
@@ -18,10 +18,13 @@
 #include "Containment.h"
 #include "ContextView.h"
 
+class QGraphicsLinearLayout;
+
 namespace Context
 {
 
 class AppletToolbar;
+class HorizontalAppletLayout;
 
 class HorizontalToolbarContainment : public Containment
 {
@@ -55,7 +58,9 @@ class HorizontalToolbarContainment : public Containment
         
         
     private:
+        QGraphicsLinearLayout* m_mainLayout;
         AppletToolbar* m_toolbar;
+        HorizontalAppletLayout* m_applets;
 };
 
 K_EXPORT_PLASMA_APPLET( amarok_containment_horizontal, HorizontalToolbarContainment )

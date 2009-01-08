@@ -28,7 +28,7 @@
 #include "widgets/ContainmentArrow.h"
 
 #include "plasma/containment.h"
-
+#include "plasma/view.h"
 #include <QMouseEvent>
 
 #include <QGraphicsView>
@@ -41,7 +41,7 @@ namespace Context
 class ContextScene;
 class ControlBox;
 
-class AMAROK_EXPORT ContextView : public QGraphicsView, public EngineObserver, public ContextSubject
+class AMAROK_EXPORT ContextView : public Plasma::View, public EngineObserver, public ContextSubject
 {
     Q_OBJECT
 
@@ -70,11 +70,9 @@ public:
     */
     void clear();
 
-    Plasma::Containment *containment();
-
 public slots:
 
-    Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList()); d
+    Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
 
 protected:
     void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
@@ -86,23 +84,6 @@ protected:
 private:
     static ContextView* s_self;
 
-    /**
-    * Add a new context containment to the view
-    */
-    void setContainment( Plasma::Containment* cont );
-
-    /**
-    * Connect all needed signals to a containment
-    * @arg containment the containment to connect the signals to
-    */
-    void connectContainment( Plasma::Containment* containment );    
-
-    /**
-    * Disconnect all signals set in connectContainment
-    * @arg containment the containment to disconnect the signals
-    */
-    void disconnectContainment( Plasma::Containment* containment );
-    
     /**
     * Set all containments geometry in the scene with the same geometry as the Context View widget 
     */
@@ -116,13 +97,6 @@ private:
 
     // holds what is currently being shown
     ContextState m_curState;
-
-    bool m_startupFinished;
-
-    QRectF m_startPos;
-    QRectF m_destinationPos;
-
-    Plasma::Containment *m_containment;
 };
 
 } // Context namespace

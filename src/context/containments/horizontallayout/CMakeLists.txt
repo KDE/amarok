@@ -5,7 +5,12 @@ include_directories( ../../..
                      ..
                      ../plasma )
 
-set(context_SRCS HorizontalToolbarContainment.cpp AppletToolbar.cpp )
+set(context_SRCS 
+	HorizontalToolbarContainment.cpp 
+	AppletToolbar.cpp 
+	AppletToolbarItem.cpp
+	HorizontalAppletLayout.cpp
+	)
 
 kde4_add_plugin(amarok_containment_horizontal ${context_SRCS})
 if(APPLE)

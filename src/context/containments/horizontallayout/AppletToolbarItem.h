@@ -1,6 +1,6 @@
 /***************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>         *
-****************************************************************************/
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org  >        *
+**************************************************************************/
 
 /***************************************************************************
 *                                                                         *
@@ -11,8 +11,9 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef AMAROK_APPLET_TOOLBAR_H
-#define AMAROK_APPLET_TOOLBAR_H
+#ifndef AMAROK_APPLET_TOOLBAR_ITEM_H
+#define AMAROK_APPLET_TOOLBAR_ITEM_H
+
 
 #include "amarok_export.h"
 
@@ -22,37 +23,21 @@ class QGraphicsItem;
 class QGraphicsSceneResizeEvent;
 class QPainter;
 class QStyleOptionGraphicsItem;
-class QSizePolicy;
-class QGraphicsLinearLayout;
 
 // this provides a simple toolbar to switch between applets in the CV
 
 namespace Context
 {
     
-class AppletToolbarItem;
-    
-class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
+class AppletToolbarItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        AppletToolbar( QGraphicsItem* parent = 0 );
-        ~AppletToolbar();
+        AppletToolbarItem( QGraphicsItem* parent = 0 );
+        ~AppletToolbarItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
-        QSizePolicy sizePolicy () const;
-    protected:
-        // reimplemented dfrom QGraphicsWidget
-        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
-        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-    
-    private:
-        qreal m_width;    
-        QGraphicsLinearLayout* m_appletLayout;
-        
-        AppletToolbarItem* m_test1;
-        AppletToolbarItem* m_test2;
 };
 
 }
