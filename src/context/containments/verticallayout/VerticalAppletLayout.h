@@ -50,7 +50,9 @@ class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
     
     public slots:
         void showApplet( Plasma::Applet* );
+        void moveApplet( Plasma::Applet*, int, int);
         void appletRemoved( Plasma::Applet* app );
+    
     protected:
         // reimplemented from QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );

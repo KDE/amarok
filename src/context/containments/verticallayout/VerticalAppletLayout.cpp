@@ -81,6 +81,17 @@ Context::VerticalAppletLayout::showApplet( Plasma::Applet* applet ) // SLOT
 
 
 void 
+Context::VerticalAppletLayout::moveApplet( Plasma::Applet* applet, int oldLoc, int newLoc)
+{
+    DEBUG_BLOCK
+    debug() << "moving applet in layout from" << oldLoc << "to" << newLoc;
+    if( oldLoc <  0 || oldLoc > m_appletList.size() - 1 || newLoc < 0 || newLoc > m_appletList.size() )
+        return;
+    m_appletList.insert( newLoc, m_appletList.takeAt( oldLoc ) );
+    showAtIndex( qMin( oldLoc, newLoc ) );
+}
+
+void 
 Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
 {
     DEBUG_BLOCK

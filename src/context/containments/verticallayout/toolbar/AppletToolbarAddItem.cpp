@@ -119,6 +119,7 @@ void
 Context::AppletToolbarAddItem::addApplet( const QString& pluginName ) // SLOT
 {
     DEBUG_BLOCK
+    m_addMenu->hide();
     emit addApplet( pluginName, this );
 }
 

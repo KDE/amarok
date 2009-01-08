@@ -50,6 +50,7 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
    //          m_toolbar,      SLOT( appletRemoved( Plasma::Applet*, int ) ) );
   
     connect( m_toolbar, SIGNAL( showApplet( Plasma::Applet* ) ), m_applets, SLOT( showApplet( Plasma::Applet* ) ) );
+    connect( m_toolbar, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_applets, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
     connect( m_toolbar, SIGNAL( addAppletToContainment( const QString&, int ) ), this, SLOT( addApplet( const QString&, int ) ) );
 }
 

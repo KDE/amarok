@@ -54,6 +54,7 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
     signals:
         void showApplet( Plasma::Applet* );
         void addAppletToContainment( const QString& pluginName, int loc );
+        void moveApplet( Plasma::Applet*, int, int );
         
     protected:
         // reimplemented dfrom QGraphicsWidget
@@ -73,6 +74,9 @@ class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
         void toggleConfigMode();
         
     private:
+        void deleteAddItem( int loc );
+        void newAddItem( int loc );
+        
         qreal m_width;    
         
         bool m_configMode;

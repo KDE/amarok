@@ -102,14 +102,7 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
         if( app && app->applet() == applet )
         {
             if( m_configMode ) // also remove one of the now-extra config icons
-            {
-                Context::AppletToolbarAddItem* tmpItem = dynamic_cast< Context::AppletToolbarAddItem* >( m_appletLayout->itemAt( i + 1 ) );
-                if( !tmpItem )
-                    debug() << "GOT NON-ADDITEM";
-                m_appletLayout->removeItem( tmpItem );
-                m_configAddIcons.removeAll( tmpItem );
-                tmpItem->deleteLater();
-            }
+                deleteAddItem( i + 1 );
             m_appletLayout->removeItem( app );
             app->deleteLater();
         }
@@ -175,41 +168,72 @@ Context::AppletToolbar::dropEvent( QGraphicsSceneDragDropEvent *event )
 {
     DEBUG_BLOCK
     const Context::AppletToolbarMimeData* data = qobject_cast< const Context::AppletToolbarMimeData* >( event->mimeData() );
-    for( int i = 0; i < m_appletLayout->count(); i++ )
-        debug() << "item " << i << "in layout with scene rect:" << mapToScene( m_appletLayout->itemAt( i )->geometry() ).boundingRect();
-    if( data && data->appletData() )
+    if( data && data->appletData() && data->appletData()->applet() )
     {
-        debug() << "got an applet drop at position" << event->scenePos();
+     //   debug() << "got an applet drop at position" << event->scenePos();
        if( scene() )
         {    
             Context::AppletToolbarAppletItem* itemUnder;
             foreach( QGraphicsItem* item, scene()->items( event->scenePos() ) )
             {
-                debug() << "scene has item at position with rect:" << mapToScene( mapFromItem( item, item->boundingRect() ).boundingRect() ).boundingRect();
+            //    debug() << "scene has item at position with rect:" << mapToScene( mapFromItem( item, item->boundingRect() ).boundingRect() ).boundingRect();
                 itemUnder = qgraphicsitem_cast< Context::AppletToolbarAppletItem* >( item );
                 if( itemUnder )
                     break;
             }
-       /*     if( itemAtPos )
-                debug() << "there is an item under the drop, with rect:" 
-                        << mapToScene( mapFromItem( itemAtPos, 
-                                       itemAtPos->boundingRect() ).boundingRect() ).boundingRect()
-                        << "and parent geom:" 
-                        << mapToScene( mapFromItem( itemAtPos->parentItem(), 
-                                                    itemAtPos->parentItem()->boundingRect() ).boundingRect() ).boundingRect();
-          */  
             if( itemUnder )
             {
-                debug() << "got a toolbar applet item under the drag too!";
-                QRectF sceneAppletRect = mapToScene( itemUnder->boundingRect() ).boundingRect();
-                debug () << "rect of item we are on:" << mapToScene( itemUnder->boundingRect() ).boundingRect();
+                bool turnedOffConfig = false;
+                if( m_configMode )
+                {
+                    toggleConfigMode();
+                    turnedOffConfig = true;
+                }
+            //    debug() << "got a toolbar applet item under the drag too!";
+                int oldLoc = -1, newLoc = -1;
+                for( int i = 0; i < m_appletLayout->count(); i++ )
+                {
+                    if( m_appletLayout->itemAt( i ) == data->appletData() )
+                        oldLoc = i;
+                    else if( m_appletLayout->itemAt( i ) == itemUnder )
+                        newLoc = i;
+                }
+                if( oldLoc == -1 || newLoc == -1 )
+                {
+                    if( turnedOffConfig )
+                        toggleConfigMode();
+                    return;
+                }
+                    
+                QRectF sceneAppletRect = mapToScene( mapFromItem( itemUnder, itemUnder->boundingRect() ).boundingRect() ).boundingRect();
+                int threshold;
                 if( event->scenePos().x() < (sceneAppletRect.topRight().x() - ( sceneAppletRect.width() / 2 ) ) )
                 {
                     debug() << "dropped on first half of applet: " << itemUnder->applet()->name();
+                    threshold = 0;
+                    if( newLoc > oldLoc )
+                        newLoc--;
                 } else
                 {
                     debug() << "dropped on second half of applet: " << itemUnder->applet()->name();
+                    if( newLoc > oldLoc )
+                        threshold = 0;
+                    else
+                        threshold = 1;
                 }
+                
+                // if the move is to the adjacent item (so not really a move), ignore it
+                debug() << "drop is saying move applet from" << oldLoc << " to " << newLoc;
+                if( qAbs( ( oldLoc ) - ( newLoc ) ) > threshold ) 
+                {   
+                    QGraphicsLayoutItem* tmp = m_appletLayout->itemAt( oldLoc );
+                    m_appletLayout->removeAt( oldLoc );
+                    m_appletLayout->insertItem( newLoc, tmp );
+
+                    emit moveApplet( data->appletData()->applet(), oldLoc, newLoc ); // divide by two as we have the add applets around
+                }
+                if( turnedOffConfig ) // leave it in the same state that we got it
+                    toggleConfigMode();
             }
         }   
     } else if( data )
@@ -274,10 +298,7 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
         m_appletLayout->insertItem( loc, item );
         
         // add the extra +
-        AppletToolbarAddItem* additem = new AppletToolbarAddItem( this, m_cont, false );
-        connect( additem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
-        m_appletLayout->insertItem( loc, additem );
-        m_configAddIcons << additem;
+        newAddItem( loc );
     } else
     {
         Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
@@ -313,12 +334,7 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
         }
         
         for( int i = 0; i < count; i++ )
-        {
-            AppletToolbarAddItem* additem = new AppletToolbarAddItem( this, m_cont, false );
-            connect( additem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
-            m_appletLayout->insertItem( i * 2, additem );
-            m_configAddIcons << additem;
-        }
+            newAddItem( i * 2 );
     } else
     {
         for( int i = 0; i < m_appletLayout->count(); i++ ) // tell each applet we are done configuring
@@ -338,5 +354,27 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
         m_configMode = false;
     }
 }
-  
+
+void 
+Context::AppletToolbar::deleteAddItem( int loc )
+{ 
+    if( !m_configMode )
+        return;
+    Context::AppletToolbarAddItem* tmpItem = dynamic_cast< Context::AppletToolbarAddItem* >( m_appletLayout->itemAt( loc ) );
+    if( !tmpItem )
+        debug() << "GOT NON-ADDITEM";
+    m_appletLayout->removeItem( tmpItem );
+    m_configAddIcons.removeAll( tmpItem );
+    tmpItem->deleteLater();
+}
+
+void 
+Context::AppletToolbar::newAddItem( int loc )
+{
+    AppletToolbarAddItem* additem = new AppletToolbarAddItem( this, m_cont, false );
+    connect( additem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
+    m_appletLayout->insertItem( loc, additem );
+    m_configAddIcons << additem;
+}
+
 #include "AppletToolbar.moc"
