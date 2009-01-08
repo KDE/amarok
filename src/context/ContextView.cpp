@@ -21,12 +21,12 @@
 #include "Amarok.h"
 #include "Context.h"
 #include "ContextScene.h"
-#include "DataEngineManager.h"
 #include "Debug.h"
 #include "Svg.h"
 #include "Theme.h"
 #include "amarokconfig.h"
 
+#include "plasma/dataenginemanager.h"
 #include <QWheelEvent>
 
 
@@ -46,7 +46,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , m_zoomLevel( Plasma::DesktopZoom )
     , m_startupFinished( false )
     , m_containment( 0 )
-    , m_numContainments( 4 )
 {
     s_self = this;
 
@@ -79,42 +78,13 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
-        // now add the appropriate arrows
-        // HACK assuming 4 containments in grid layout---but since everywhere else in this code
-        // this is assumed, we have bigger problems if we want to change that.
-        
-    for( int i = 0; i < m_numContainments - 1; i++ )
-    {
-        QVariantList args;
-        if( i == 0 )
-        {
-            args.append( RIGHT );
-            args.append( DOWN );
-        } else if( i == 1 )
-        {
-            args.append( LEFT );
-            args.append( DOWN );
-        } else if( i == 2 )
-        {
-            args.append( RIGHT );
-            args.append( UP );
-        } else if( i == 3 )
-        {
-            args.append( LEFT );
-            args.append( UP );
-        }
-        addContainment( args );    
-    }
-    
-    setContainment( cont );
+  
     cont->setPos( 0, 0 );
     cont->updateConstraints();
     Containment* amarokContainment = qobject_cast<Containment* >( cont );    
     if( amarokContainment )
     {
         amarokContainment->setView( this );
-        amarokContainment->setTitle( i18n( "Page #1" ) );
-        amarokContainment->setFooter( "1" );
         amarokContainment->addCurrentTrack();
     }
 
@@ -230,7 +200,7 @@ Plasma::Applet* ContextView::addApplet( const QString& name, const QStringList& 
         argList << QVariant( i.next() );
 
     if( !containment() )
-        contextScene()->addContainment( "context" );
+        contextScene()->addContainment( "amarok_containment_horizontal" );
 
     return containment()->addApplet( name, argList );
 }
@@ -429,7 +399,6 @@ void ContextView::resizeEvent( QResizeEvent* event )
     }
 
     updateContainmentsGeometry();
-
 }
 
 
@@ -444,6 +413,7 @@ ContextView::updateContainmentsGeometry()
     const int width = rect().width();
     const int height = rect().height();
 
+/*
     if( m_zoomLevel == Plasma::DesktopZoom )
     {
         for( int i = last; i >= 0; i-- )
@@ -467,6 +437,7 @@ ContextView::updateContainmentsGeometry()
         QRectF contRect( containment()->geometry() );
         setSceneRect( contRect.adjusted( left, top, -right, -bottom ) );
     }
+    */
 }
 
 void ContextView::wheelEvent( QWheelEvent* event )
@@ -491,7 +462,7 @@ ContextView::addContainment( const QVariantList& args )
     if (corona)
     {
         const int size = contextScene()->containments().size();
-        Plasma::Containment *c = corona->addContainment( "context", args );
+        Plasma::Containment *c = corona->addContainment( "amarok_containment_horizontal", args );
         c->setScreen( 0 );
         c->setFormFactor( Plasma::Planar );
 

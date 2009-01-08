@@ -70,33 +70,11 @@ public:
     */
     void clear();
 
-    Plasma::ZoomLevel zoomLevel() const;
-
     Plasma::Containment *containment();
 
 public slots:
-    void zoom( Plasma::Containment* containment, Plasma::ZoomDirection direction );
-    void zoomIn( Plasma::Containment* containment );
-    void zoomOut( Plasma::Containment* containment );
 
-    Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
-
-    void setContainment( Plasma::Containment* containment );
-    void setContainment( Plasma::Containment* fromCont, int toDirection );
-    
-    void nextContainment();
-    void previousContainment();
-    
-    // void arrowChangeContainment( Plasma::Containment* from, ArrowDirection to );
-
-    /**
-    * Find a containment with @p rowSpan free rows to add the applet with @p pluginName.
-    * If there is no availiable containment create a new one and add the applet there.
-    * The focus is changed to the containment where the applet has been added.
-    * @arg pluginName the applet pluginName to add.
-    * @arg rowSpan the applet row span
-    */
-    void findContainmentForApplet( QString pluginName, int rowSpan );
+    Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList()); d
 
 protected:
     void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
@@ -111,7 +89,7 @@ private:
     /**
     * Add a new context containment to the view
     */
-    void addContainment( const QVariantList &args = QVariantList() );
+    void setContainment( Plasma::Containment* cont );
 
     /**
     * Connect all needed signals to a containment
@@ -129,9 +107,7 @@ private:
     * Set all containments geometry in the scene with the same geometry as the Context View widget 
     */
     void updateContainmentsGeometry();
-
-    void centerOnZoom( qreal factor, Plasma::ZoomDirection direction );
-    
+      
     void loadConfig();
 
     void showHome();
@@ -140,8 +116,6 @@ private:
 
     // holds what is currently being shown
     ContextState m_curState;
-    
-    Plasma::ZoomLevel m_zoomLevel;
 
     bool m_startupFinished;
 
@@ -149,16 +123,6 @@ private:
     QRectF m_destinationPos;
 
     Plasma::Containment *m_containment;
-    int m_numContainments;
-
-    //ControlBox* m_controlBox;
-
-private slots:
-    void animateZoomIn( qreal progress, int id );
-    void animateZoomOut( qreal progress, int id );
-    void zoomInFinished( int id );
-    void zoomOutFinished( int id );
-    void animateContainmentChange( qreal progress, int id );
 };
 
 } // Context namespace
