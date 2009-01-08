@@ -45,10 +45,41 @@ const qreal PrettyItemDelegate::MARGINH = 6.0;
 const qreal PrettyItemDelegate::MARGINBODY = 1.0;
 const qreal PrettyItemDelegate::PADDING = 1.0;
 
-PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
+Playlist::PrettyItemConfig Playlist::PrettyItemDelegate::s_singleTrackConfig = Playlist::PrettyItemConfig();
+Playlist::PrettyItemConfig Playlist::PrettyItemDelegate::s_albumHeadConfig = Playlist::PrettyItemConfig();
+Playlist::PrettyItemConfig Playlist::PrettyItemDelegate::s_albumBodyConfig = Playlist::PrettyItemConfig();
+
+Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
         : QStyledItemDelegate( parent )
 {
     DEBUG_BLOCK
+
+
+    //temp stuff for setting up some defaults
+    PrettyItemConfigRow row1;
+    PrettyItemConfigRow row2;
+    row1.addElement( PrettyItemConfigRowElement( Title, 0.5, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    row1.addElement( PrettyItemConfigRowElement( Length, 0.5, false, Qt::AlignRight | Qt::AlignVCenter ) );
+    row2.addElement( PrettyItemConfigRowElement( Artist, 0.5, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    row2.addElement( PrettyItemConfigRowElement( Album, 0.5, false, Qt::AlignRight | Qt::AlignVCenter ) );
+    s_singleTrackConfig.addRow( row1 );
+    s_singleTrackConfig.addRow( row2 );
+    s_singleTrackConfig.setShowCover( true );
+
+    PrettyItemConfigRow headRow1;
+    PrettyItemConfigRow headRow2;
+    headRow1.addElement( PrettyItemConfigRowElement( Album, 1.0, true, Qt::AlignCenter | Qt::AlignVCenter ) );
+    headRow2.addElement( PrettyItemConfigRowElement( Artist, 1.0, true, Qt::AlignCenter | Qt::AlignVCenter ) );
+    s_albumHeadConfig.addRow( headRow1 );
+    s_albumHeadConfig.addRow( headRow2 );
+    s_albumHeadConfig.setShowCover( true );
+
+    PrettyItemConfigRow bodyRow1;
+    bodyRow1.addElement( PrettyItemConfigRowElement( Title, 0.8, false, Qt::AlignLeft | Qt::AlignVCenter ) );
+    bodyRow1.addElement( PrettyItemConfigRowElement( Length, 0.2, false, Qt::AlignRight | Qt::AlignVCenter ) );
+    s_albumBodyConfig.addRow( bodyRow1 );
+    s_albumBodyConfig.setShowCover( false );
+
 }
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
@@ -64,28 +95,31 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
     QFontMetricsF bfm( boldfont );
 
     int groupMode = index.data( GroupRole ).toInt();
-
-    switch( groupMode )
+    int rowCount = 1;
+    switch ( groupMode )
     {
-        case Head:
-            height = static_cast<int>( MARGIN + qMax( SINGLE_TRACK_ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + 3 * PADDING + nfm.height() + MARGINBODY );
-            break;
-
-        case Body:
-            height = static_cast<int>( nfm.height() + 2 * PADDING + 2 * MARGINBODY );
-            break;
-
-        case Tail:
-            height = static_cast<int>( MARGINBODY + nfm.height() + 2 * PADDING + MARGIN );
-            break;
-
-        case None:
-        default:
-            height = static_cast<int>( qMax( SINGLE_TRACK_ALBUM_WIDTH, nfm.height() * 2 + 4 * PADDING ) + 2 * MARGIN );
-            break;
+    case Head:
+        rowCount = s_albumHeadConfig.rows() + s_albumBodyConfig.rows();
+        break;
+    case Body:
+        rowCount = s_albumBodyConfig.rows();
+        break;
+    case Tail:
+        rowCount = s_albumBodyConfig.rows();
+        break;
+    case None:
+    default:
+        rowCount = s_singleTrackConfig.rows();
+        break;
     }
 
+    height = MARGIN * 2 + rowCount * bfm.height() + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
+
+    
+
+
+
 }
 
 void
@@ -105,13 +139,34 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     // call paint method based on type
     int groupMode = index.data( GroupRole ).toInt();
     if ( groupMode == None )
-        paintSingleTrack( painter, option, index );
-    else if ( groupMode == Head )
-        paintHead( painter, option, index );
-    else if ( groupMode == Body )
-        paintBody( painter, option, index );
+        paintItem( s_singleTrackConfig, painter, option, index );
+    else if ( groupMode == Head ) {
+
+        //we need to split up the options for the actual header and the included first track
+
+        QFont boldfont( option.font );
+        boldfont.setBold( true );
+        QFontMetricsF bfm( boldfont );
+
+        QStyleOptionViewItem headOption( option );
+        QStyleOptionViewItem trackOption( option );
+
+        int headRows = s_albumHeadConfig.rows();
+        int headHeight = MARGIN * 2 + headRows * bfm.height() + ( headRows - 1 ) * PADDING;
+        headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
+
+        int trackRows = s_albumBodyConfig.rows();
+        int trackHeight = MARGIN * 2 + trackRows * bfm.height() + ( trackRows - 1 ) * PADDING;
+        trackOption.rect = QRect( 0, headHeight, option.rect.width(), trackHeight );
+
+        paintItem( s_albumHeadConfig, painter, headOption, index );
+        painter->translate( 0, headHeight );
+        paintItem( s_albumBodyConfig, painter, trackOption, index );
+        
+    } else if ( groupMode == Body )
+        paintItem( s_albumBodyConfig, painter, option, index );
     else if ( groupMode == Tail )
-        paintTail( painter, option, index );
+        paintItem( s_albumBodyConfig, painter, option, index );
     else
         QStyledItemDelegate::paint( painter, option, index );
 
@@ -234,8 +289,8 @@ PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleOptionViewI
     QString albumString = nfm.elidedText( rawAlbumString, Qt::ElideRight, albumNameWidth );
 
     // draw the "current track" highlight underneath the text
-    if( index.data( ActiveTrackRole ).toBool() )
-        paintActiveOverlay( painter, topLine.x(), topLine.y(), bottomLine.width(), bottomLine.height() );
+    //if( index.data( ActiveTrackRole ).toBool() )
+    //    paintActiveOverlay( painter, topLine.x(), topLine.y(), bottomLine.width(), bottomLine.height() );
 
     // render text in here
     painter->drawText( titleTextBox, Qt::AlignLeft | Qt::AlignVCenter, titleString );
@@ -325,8 +380,8 @@ PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionViewItem& op
     QRectF line( QPointF( MARGINH, headheight + MARGIN ), QPointF( trackRect.width() - MARGINH, trackRect.height() - MARGINBODY ) );
 
     // draw the "current track" highlight underneath the text
-    if( index.data( ActiveTrackRole ).toBool() )
-        paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
+    //if( index.data( ActiveTrackRole ).toBool() )
+    //    paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
 
     // right: track time
     QString timeString;
@@ -368,8 +423,8 @@ PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionViewItem& op
     QRectF line( MARGINH, MARGINBODY, trackRect.width() - ( 2*MARGINH ), trackRect.height() - ( 2*MARGINBODY ) );
 
     // draw the "current track" highlight underneath the text
-    if ( index.data( ActiveTrackRole ).toBool() )
-        paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
+    //if ( index.data( ActiveTrackRole ).toBool() )
+    //    paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
 
     // Draw queue display indicator
     if( index.data( StateRole ).toInt() & Item::Queued )
@@ -427,8 +482,8 @@ PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionViewItem& op
     QRectF line( MARGINH, MARGINBODY, trackRect.width() - ( 2*MARGINH ), trackRect.height() - MARGINBODY - MARGIN );
 
     // draw the "current track" highlight underneath the text
-    if( index.data( ActiveTrackRole ).toBool() )
-        paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
+    //if( index.data( ActiveTrackRole ).toBool() )
+    //    paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
     
 
     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
@@ -490,15 +545,88 @@ PrettyItemDelegate::imageRectify( const QPointF offset ) const
     return imageRect;
 }
 
-void
-PrettyItemDelegate::paintActiveOverlay( QPainter *painter, qreal x, qreal y, qreal w, qreal h ) const
+void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
-    painter->drawPixmap( (int) x, (int) y,
-                        The::svgHandler()->renderSvg(
-                            "active_overlay",
-                            (int) w, (int) h,
-                            "active_overlay"
-                        )
-                       );
+    int rowCount = config.rows();
+    int rowHeight = option.rect.height() / rowCount;
+
+    int rowOffsetX = MARGINH;
+    int rowOffsetY = 0;
+
+    if ( config.showCover() ) {
+        int imageSize = option.rect.height() - MARGIN * 2;
+        
+        QModelIndex coverIndex = index.model()->index( index.row(), CoverImage );
+        QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
+
+        QRectF nominalImageRect( MARGINH, MARGIN, imageSize, imageSize );
+
+        //offset cover if non square
+        QPointF offset = centerImage( albumPixmap, nominalImageRect );
+        QRectF imageRect( nominalImageRect.x() + offset.x(),
+                          nominalImageRect.y() + offset.y(),
+                          nominalImageRect.width() - offset.x() * 2,
+                          nominalImageRect.height() - offset.y() * 2 );
+
+        painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
+
+        rowOffsetX = imageSize + MARGINH + PADDING * 2;
+    }
+
+    for ( int i = 0; i < rowCount; i++ ) {
+        
+        PrettyItemConfigRow row = config.row( i );
+        qreal itemOffsetX = rowOffsetX;
+
+        int elementCount = row.count();
+
+        qreal rowWidth = option.rect.width() - ( rowOffsetX + MARGINH );
+
+        for ( int j = 0; j < elementCount; j++ ) {
+
+            PrettyItemConfigRowElement element = row.element( j );
+            qreal itemWidth = rowWidth * element.size();
+
+            //if not the last item, add a PADDING
+            if ( j < elementCount - 1 )
+                itemWidth += PADDING;
+
+            int value = element.value();
+            bool bold = element.bold();
+            int alignment = element.alignment();
+
+            QFontMetricsF nfm( option.font );
+            QFont boldfont( option.font );
+            boldfont.setBold( true );
+            QFontMetricsF bfm( boldfont );
+
+            
+            QModelIndex textIndex = index.model()->index( index.row(), value );
+            QString orgText = textIndex.data( Qt::DisplayRole ).toString();
+            QString text;
+
+            QRectF textBox( itemOffsetX, rowOffsetY, itemWidth, rowHeight );
+
+            if ( bold ) 
+                text = bfm.elidedText( orgText, Qt::ElideRight, itemWidth );
+            else
+                text = nfm.elidedText( orgText, Qt::ElideRight, itemWidth );
+
+            QFont font;
+            font.setBold( bold );
+            painter->setFont( font );
+
+            painter->drawText( textBox, alignment, text );
+
+            itemOffsetX += itemWidth;
+
+        }
+
+
+        rowOffsetY += rowHeight;
+
+
+    }
 }
+
 

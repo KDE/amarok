@@ -35,16 +35,16 @@ enum
 class PrettyItemConfigRowElement{
 
 public:
-    PrettyItemConfigRowElement( int value, int size, bool bold, int alignment );
+    PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment );
 
     int value();
-    int size();
+    qreal size();
     bool bold();
     int alignment();
     
 private:
     int m_value;
-    int m_size;
+    qreal m_size;
     bool m_bold;
     int m_alignment;
 };

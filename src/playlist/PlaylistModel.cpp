@@ -218,7 +218,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case CoverImage:
             {
                 if ( m_items.at( row )->track()->album() )
-                    return m_items.at( row )->track()->album()->image( 100 ); //FIXME:size?
+                    return m_items.at( row )->track()->album()->imageWithBorder( 100 ); //FIXME:size?
                 return QImage();
             }
             case Directory:
@@ -249,7 +249,12 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Length:
             {
-                return m_items.at( row )->track()->length();
+                QString timeString;
+                if ( m_items.at( row )->track()->length() > 3600 )
+                    timeString = QTime().addSecs( m_items.at( row )->track()->length() ).toString( "h:mm:ss" );
+                else
+                    timeString = QTime().addSecs( m_items.at( row )->track()->length() ).toString( "m:ss" );
+                return timeString;
             }
             case Mood:
             {

@@ -22,6 +22,8 @@
 #ifndef PRETTYITEMDELEGATE_H
 #define PRETTYITEMDELEGATE_H
 
+#include "PrettyItemConfig.h"
+
 #include <QModelIndex>
 #include <QStyledItemDelegate>
 
@@ -47,38 +49,37 @@ namespace Playlist
             void paintBody( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
             void paintTail( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
 
-            QPointF centerImage( const QPixmap&, const QRectF& ) const;
+    void paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const;
 
-            inline const QRectF imageLocation() const
-            {
-                return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
-            }
+    QPointF centerImage( const QPixmap&, const QRectF& ) const;
+    inline const QRectF imageLocation() const
+    {
+        return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
+    }
+    inline const QRectF imageLocationSingleTrack() const
+    {
+        return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
+    }
 
-            inline const QRectF imageLocationSingleTrack() const
-            {
-                return QRectF( MARGINH, MARGIN, SINGLE_TRACK_ALBUM_WIDTH, SINGLE_TRACK_ALBUM_WIDTH );
-            }
+    const QRectF imageRectify( const QPointF offset ) const;
+    //void setTextColor(const QModelIndex&) const;
 
-            /**
-             * Returns a QRectF which has been centered given the particular offset. Used for non-square covers
-             */
-            const QRectF imageRectify( const QPointF offset ) const;
+    static const qreal ALBUM_WIDTH;
+    static const qreal SINGLE_TRACK_ALBUM_WIDTH;
+    static const qreal MARGIN;
+    static const qreal MARGINH;
+    static const qreal MARGINBODY;
+    static const qreal PADDING;
+    static QFontMetricsF* s_nfm; //normal
+    static QFontMetricsF* s_ifm; //italic
+    static QFontMetricsF* s_bfm; //bold
 
-            /**
-             * Paints an SVG marker indicating the track is active
-             */
-            void paintActiveOverlay( QPainter *painter, qreal x, qreal y, qreal w, qreal h ) const;
+    static PrettyItemConfig s_singleTrackConfig;
+    static PrettyItemConfig s_albumHeadConfig;
+    static PrettyItemConfig s_albumBodyConfig;
+    
+};
 
-            static const qreal ALBUM_WIDTH;
-            static const qreal SINGLE_TRACK_ALBUM_WIDTH;
-            static const qreal MARGIN;
-            static const qreal MARGINH;
-            static const qreal MARGINBODY;
-            static const qreal PADDING;
-            static QFontMetricsF* s_nfm; //normal
-            static QFontMetricsF* s_ifm; //italic
-            static QFontMetricsF* s_bfm; //bold
-    };
 }
 
 #endif
