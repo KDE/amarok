@@ -152,12 +152,16 @@ void TrackToolTip::setTrack()
 
     if( m_track )
     {
+        m_tooltip.clear();
         m_haspos = false;
 
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1: </td><td align=left>%2</td></tr>";
 
         QString filename = "", title = ""; //special case these, put the first one encountered on top
+
+        right << QString("<i>%1%</i>").arg( The::engineController()->volume() );
+        left << "<i>Volume</i>";
 
         const float score = m_track->score();
         if( score > 0.f )
@@ -204,7 +208,7 @@ void TrackToolTip::setTrack()
             left << i18n( "Length" );
         }
 
-        m_tooltip = i18n( "<i>Volume: %1%</i>", QString::number( The::engineController()->volume() ) );
+//        m_tooltip = i18n( "<i>Volume: %1%</i>", QString::number( The::engineController()->volume() ) );
         //NOTE it seems to be necessary to <center> each element indivdually
         m_tooltip += "<table cellpadding='2' cellspacing='2' align='center'><tr>";
 

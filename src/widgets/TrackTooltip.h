@@ -37,14 +37,14 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
         TrackToolTip( QWidget* parent );
         ~TrackToolTip();
         static TrackToolTip* instance();
-    
+
         void show( const QPoint &bottomRight );
 
         //Reimplemented from Meta::Observer
         using Observer::metadataChanged;
         void metadataChanged( Meta::TrackPtr track );
         void metadataChanged( Meta::AlbumPtr album );
-    
+
     public slots:
        void hide(); 
 
@@ -67,7 +67,7 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
         void clear();
         QString tooltip() const;
         void updateWidgets();
-    
+
         static TrackToolTip *s_instance;
 
         QList<QWidget> m_widgets;
@@ -77,7 +77,7 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
         bool           m_haspos;
         QString        m_title;
         QTimer*        m_timer;
-            
+
         QLabel *m_imageLabel;
         QPixmap m_image;
         QLabel *m_titleLabel;
@@ -85,4 +85,3 @@ class TrackToolTip : public QWidget, public Meta::Observer, public EngineObserve
 };
 
 #endif
-
