@@ -207,6 +207,11 @@ public:
         return Meta::Album::image( size );
     }
 
+    bool operator==( const Meta::Album &other ) {
+        DEBUG_BLOCK
+        return name() == other.name();
+    }
+
     MetaStream::Track::Private * const d;
 };
 

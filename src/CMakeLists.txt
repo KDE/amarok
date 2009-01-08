@@ -320,6 +320,7 @@ set(libplaylist_SRCS
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/PrettyItemConfig.cpp
     playlist/view/listview/LayoutManager.cpp
+    playlist/view/listview/LayoutConfigWidget.cpp
 )
 
 #####################################################################

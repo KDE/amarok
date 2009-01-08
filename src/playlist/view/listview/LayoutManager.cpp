@@ -42,6 +42,7 @@ LayoutManager * Playlist::LayoutManager::instance()
 }
 
 LayoutManager::LayoutManager()
+    : QObject()
 {
     DEBUG_BLOCK
 
@@ -66,6 +67,7 @@ QStringList Playlist::LayoutManager::layouts()
 void Playlist::LayoutManager::setActiveLayout( const QString & layout )
 {
     m_activeLayout = layout;
+    emit( activeLayoutChanged() );
 }
 
 PlaylistLayout Playlist::LayoutManager::activeLayout()

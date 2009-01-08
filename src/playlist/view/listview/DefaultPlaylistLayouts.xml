@@ -49,5 +49,85 @@
             </row>
         </group_body>
     </layout>
-    
+
+    <layout name="Extended Headers">
+        <single_track show_cover="true">
+            <row>
+                <element value="Title" size="0.5" bold="false" alignment="left"/>
+                <element value="Length" size="0.5" bold="false" alignment="right"/>
+            </row>
+            <row>
+                <element value="Artist" size="0.5" bold="false" alignment="left"/>
+                <element value="Album" size="0.5" bold="false" alignment="right"/>
+            </row>
+        </single_track>
+        <group_head show_cover="true" active_indicator_row="-1">
+            <row>
+                <element value="Album" size="1" bold="true" alignment="center"/>
+            </row>
+            <row>
+                <element value="Artist" size="1" bold="true" alignment="center"/>
+            </row>
+            <row>
+                <element value="Genre" size="0.5" bold="true" alignment="center"/>
+                <element value="Year" size="0.5" bold="true" alignment="center"/>
+            </row>
+        </group_head>
+        <group_body show_cover="false">
+            <row>
+                <element value="Title (with track number)" size="0.8" bold="false" alignment="left"/>
+                <element value="Length" size="0.2" bold="false" alignment="right"/>
+            </row>
+        </group_body>
+    </layout>
+
+    <layout name="Tiny Headers">
+        <single_track show_cover="true">
+            <row>
+                <element value="Title" size="0.5" bold="false" alignment="left"/>
+                <element value="Length" size="0.5" bold="false" alignment="right"/>
+            </row>
+            <row>
+                <element value="Artist" size="0.5" bold="false" alignment="left"/>
+                <element value="Album" size="0.5" bold="false" alignment="right"/>
+            </row>
+        </single_track>
+        <group_head show_cover="false" active_indicator_row="-1">
+            <row>
+                <element value="Album" size="0.5" bold="true" alignment="center"/>
+                <element value="Artist" size="0.5" bold="true" alignment="center"/>
+            </row>
+        </group_head>
+        <group_body show_cover="false">
+            <row>
+                <element value="Title (with track number)" size="0.8" bold="false" alignment="left"/>
+                <element value="Length" size="0.2" bold="false" alignment="right"/>
+            </row>
+        </group_body>
+    </layout>
+
+    <layout name="No Grouping (fake)">
+        <single_track show_cover="true">
+            <row>
+                <element value="Title" size="0.5" bold="false" alignment="left"/>
+                <element value="Length" size="0.5" bold="false" alignment="right"/>
+            </row>
+            <row>
+                <element value="Artist" size="0.5" bold="false" alignment="left"/>
+                <element value="Album" size="0.5" bold="false" alignment="right"/>
+            </row>
+        </single_track>
+        <group_head show_cover="false" active_indicator_row="-1">
+        </group_head>
+        <group_body show_cover="true">
+            <row>
+                <element value="Title" size="0.5" bold="false" alignment="left"/>
+                <element value="Length" size="0.5" bold="false" alignment="right"/>
+            </row>
+            <row>
+                <element value="Artist" size="0.5" bold="false" alignment="left"/>
+                <element value="Album" size="0.5" bold="false" alignment="right"/>
+            </row>
+        </group_body>
+    </layout>
 </playlist_layouts>

@@ -17,48 +17,37 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef PLAYLISTLAYOUTMANAGER_H
-#define PLAYLISTLAYOUTMANAGER_H
+#include "LayoutConfigWidget.h"
 
-#include "PrettyItemConfig.h"
+#include "LayoutManager.h"
 
-#include <QStringList>
-#include <QString>
-#include <QMap>
-
-class QDomElement;
+#include <QLabel>
+#include <QComboBox>
 
 namespace Playlist {
 
-/**
-Class for keeping track of playlist layouts and loading/saving them to xml files
+LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
+    : KVBox( parent )
+{
+    QLabel *label = new QLabel( "Config gui goes here....", this );
+    QComboBox *comboBox = new QComboBox( this );
+    comboBox->addItems( LayoutManager::instance()->layouts() );
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class LayoutManager : public QObject {
-    Q_OBJECT
-public:
-    static LayoutManager * instance();
-
-    QStringList layouts();
-    void setActiveLayout( const QString &layout );
-    PlaylistLayout activeLayout();
-
-signals:
-    void activeLayoutChanged();
-private:
-    LayoutManager();
-    ~LayoutManager();
-
-    void loadLayouts( const QString &fileName );
-    PrettyItemConfig parseItemConfig( const QDomElement &elem );
-
-    static LayoutManager * s_instance;
-
-    QMap<QString, PlaylistLayout> m_layouts;
-    QString m_activeLayout;
-};
+    connect( comboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( setActiveLayout(const QString & ) ) );
 
 }
 
-#endif
+
+LayoutConfigWidget::~LayoutConfigWidget()
+{
+}
+
+
+}
+
+void Playlist::LayoutConfigWidget::setActiveLayout(const QString & layout)
+{
+    LayoutManager::instance()->setActiveLayout( layout );
+}
+
+#include "LayoutConfigWidget.moc"

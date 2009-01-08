@@ -17,46 +17,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef PLAYLISTLAYOUTMANAGER_H
-#define PLAYLISTLAYOUTMANAGER_H
+#ifndef PLAYLISTLAYOUTCONFIGWIDGET_H
+#define PLAYLISTLAYOUTCONFIGWIDGET_H
 
-#include "PrettyItemConfig.h"
-
-#include <QStringList>
-#include <QString>
-#include <QMap>
-
-class QDomElement;
+#include <KVBox>
 
 namespace Playlist {
 
 /**
-Class for keeping track of playlist layouts and loading/saving them to xml files
+A widget containing the gui needed to define playlist layouts
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class LayoutManager : public QObject {
+class LayoutConfigWidget : public KVBox
+{
     Q_OBJECT
 public:
-    static LayoutManager * instance();
+    LayoutConfigWidget( QWidget * parent );
 
-    QStringList layouts();
+    ~LayoutConfigWidget();
+
+private slots:
+
     void setActiveLayout( const QString &layout );
-    PlaylistLayout activeLayout();
 
-signals:
-    void activeLayoutChanged();
-private:
-    LayoutManager();
-    ~LayoutManager();
-
-    void loadLayouts( const QString &fileName );
-    PrettyItemConfig parseItemConfig( const QDomElement &elem );
-
-    static LayoutManager * s_instance;
-
-    QMap<QString, PlaylistLayout> m_layouts;
-    QString m_activeLayout;
 };
 
 }

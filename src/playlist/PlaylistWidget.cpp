@@ -26,6 +26,8 @@
 #include "view/graphic/PlaylistGraphicsView.h"
 #include "PlaylistController.h"
 #include "view/listview/PrettyListView.h"
+#include "view/listview/LayoutManager.h"
+#include "view/listview/LayoutConfigWidget.h"
 #include "PlaylistHeader.h"
 #include "ToolBar.h"
 #include "PlaylistModel.h"
@@ -51,6 +53,8 @@ Playlist::Widget::Widget( QWidget* parent )
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
 
+    LayoutConfigWidget * configWidget = new LayoutConfigWidget( this );
+
     PrettyListView* playView = new PrettyListView( this );
     playView->show();
     m_playlistView = qobject_cast<QWidget*>( playView );
@@ -64,6 +68,7 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( playView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
     connect( playView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );
 
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), playView, SLOT( reset() ) );
 
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( playView );
