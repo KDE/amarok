@@ -158,12 +158,17 @@ bool
 PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
 {
 
+    int headRows = LayoutManager::instance()->activeLayout().head().rows();
+
+    if ( headRows < 1 )
+        return false;
+
     QRect headerBounds = rect.adjusted( ( int )MARGINH,
                                         ( int )MARGIN,
                                         ( int )( -MARGINH ),
                                                     0 );
     
-    headerBounds.setHeight( static_cast<int>( 2 * MARGIN + LayoutManager::instance()->activeLayout().head().rows() * s_fontHeight ) );
+    headerBounds.setHeight( static_cast<int>( 2 * MARGIN + headRows * s_fontHeight ) );
     return headerBounds.contains( pt );
 }
 
