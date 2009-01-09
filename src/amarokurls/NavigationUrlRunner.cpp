@@ -43,13 +43,23 @@ NavigationUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK;
     
-    if ( url.numberOfArgs() == 4 ) {
+    if ( url.numberOfArgs() > 1 ) {
         
         QString type = url.arg( 0 );
         QString collection = url.arg( 1 );
-        QString groupMode = url.arg( 2 );
-        QString filter = url.arg( 3 );
 
+        QString groupMode;
+        QString filter;
+
+        if ( url.numberOfArgs() > 2 )
+            groupMode = url.arg( 2 );
+        if ( url.numberOfArgs() == 4 )
+            filter = url.arg( 3 );
+
+        debug() << "type: " << type;
+        debug() << "collection: " << collection;
+        debug() << "groupMode: " << groupMode;
+        debug() << "filter: " << filter;
 
         if ( type == "service" )
             type = "Internet";
@@ -61,7 +71,8 @@ NavigationUrlRunner::run( AmarokUrl url )
         if ( type ==  "Internet" ) {
         
             ServiceBase * service = ServiceBrowser::instance()->services().value( collection );
-            service->setFilter( filter );
+
+            if ( service == 0 ) return false;
 
             if ( groupMode == "artist-album" )
                 service->sortByArtistAlbum();
@@ -74,10 +85,13 @@ NavigationUrlRunner::run( AmarokUrl url )
             else if ( groupMode == "genre-artist-album" )
                 service->sortByGenreArtistAlbum();
 
+            service->setFilter( filter );
+            debug() << "setting filter";
+
+            debug() << "showing service";
             ServiceBrowser::instance()->showService( collection );
 
             //ensure that the Amarok window is activated and on top
-
             The::mainWindow()->show();
             The::mainWindow()->raise();
 
