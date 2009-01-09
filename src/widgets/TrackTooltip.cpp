@@ -199,12 +199,10 @@ void TrackToolTip::setTrack()
         right << Amarok::verboseTimeSince( lastPlayed );
         left << i18n( "Last Played" );
 
-        const QString length = Meta::secToPrettyTime( m_track->length() );
-
         if( m_track->length() > 0 )
         {
             m_haspos = true;
-            right << "%1 / " + length;
+            right << "%1 / " + Meta::secToPrettyTime( m_track->length() );
             left << i18n( "Length" );
         }
 
@@ -373,7 +371,4 @@ void TrackToolTip::slotTimer()  // SLOT
     }        
 }
 
-
-
 #include "TrackTooltip.moc"
-
