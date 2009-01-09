@@ -1,0 +1,138 @@
+/*****************************************************************************
+ * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>          *
+ *                      : (C) 2008 William Viana Soares <vianasw@gmail.com>  *
+ *****************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "Bookmark.h"
+
+#include "Amarok.h"
+#include "AmarokUrl.h"
+#include "NavigationUrlGenerator.h"
+#include "Debug.h"
+#include "EngineController.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "meta/MetaUtility.h"
+#include "PaletteHandler.h"
+#include "SvgHandler.h"
+
+#include <plasma/theme.h>
+
+#include <KApplication>
+#include <KColorScheme>
+#include <KIcon>
+#include <KMessageBox>
+
+#include <QCheckBox>
+#include <QFont>
+#include <QLabel>
+#include <QPainter>
+#include <QSpinBox>
+#include <QVBoxLayout>
+
+
+Bookmark::Bookmark( QObject* parent, const QVariantList& args )
+    : Context::Applet( parent, args )
+    , m_width( 0 )
+    , m_aspectRatio( 0.0 )
+{
+    setHasConfigurationInterface( false );
+}
+
+Bookmark::~Bookmark()
+{}
+
+void Bookmark::init()
+{
+    DEBUG_BLOCK
+
+    m_theme = new Context::Svg( this );
+    m_theme->setImagePath( "widgets/amarok-songkick" );
+    m_theme->setContainsMultipleImages( true );
+
+    QFont labelFont;
+    labelFont.setPointSize( labelFont.pointSize() + 1  );
+    QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+
+    m_currentBookmarkUrl = new QGraphicsSimpleTextItem( this );
+    m_currentBookmarkUrl->setBrush( brush );
+    m_currentBookmarkUrl->setText( getBookmarkUrl() );
+
+    // get natural aspect ratio, so we can keep it on resize
+    m_theme->resize();
+    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
+    resize( m_width, m_aspectRatio );
+
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+}
+
+void Bookmark::constraintsEvent( Plasma::Constraints constraints )
+{
+    Q_UNUSED( constraints )
+    DEBUG_BLOCK
+
+    prepareGeometryChange();
+
+    /*if( constraints & Plasma::SizeConstraint )
+         m_theme->resize(size().toSize());*/
+
+    m_currentBookmarkUrl->setPos( QPointF( 10, 10 ) );
+}
+
+QSizeF 
+Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
+{
+    Q_UNUSED( which )
+
+    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
+        return QSizeF( constraint.width(), 150 );
+//      return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
+
+    return constraint;
+}
+
+void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+{
+    Q_UNUSED( option );
+
+    //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
+    //context view has been minimized completely
+    if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
+    {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
+            childItem->hide();
+        return;
+    }
+    else
+    {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
+            childItem->show();
+    }
+
+    p->save();
+    p->restore();
+
+}
+
+
+void Bookmark::paletteChanged( const QPalette & palette )
+{
+    DEBUG_BLOCK
+    m_currentBookmarkUrl->setBrush( palette.text() );
+}
+
+QString Bookmark::getBookmarkUrl()
+{
+    NavigationUrlGenerator urlGenerator;
+    return urlGenerator.CreateAmarokUrl().url();
+}
+
+#include "Bookmark.moc"
