@@ -12,6 +12,8 @@ VERSION 2.1
 	* Now using KSystemTrayIcon.
 
   BUGFIXES:
+    * Fixed an infinite loop bug when using title case conversion in Guess Tags.
+      (BR 180164)
     * Don't show the rating widget for tracks which are not in the collection.
       (BR 180023)
 
