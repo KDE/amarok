@@ -129,15 +129,19 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         QStyleOptionViewItem trackOption( option );
 
         int headRows = layout.head().rows();
-        int headHeight = MARGIN * 2 + headRows * bfm.height() + ( headRows - 1 ) * PADDING;
-        headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
+        int headHeight ;
+
+        if ( headRows > 0 )
+        {
+            headHeight = MARGIN * 2 + headRows * s_fontHeight + ( headRows - 1 ) * PADDING;
+            headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
+            paintItem( layout.head(), painter, headOption, index, true );
+            painter->translate( 0, headHeight - 3 );
+        } 
 
         int trackRows = layout.body().rows();
-        int trackHeight = MARGIN * 2 + trackRows * bfm.height() + ( trackRows - 1 ) * PADDING;
-        trackOption.rect = QRect( 0, headHeight, option.rect.width(), trackHeight );
-
-        paintItem( layout.head(), painter, headOption, index, true );
-        painter->translate( 0, headHeight - 1 );
+        int trackHeight = MARGIN * 2 + trackRows * s_fontHeight + ( trackRows - 1 ) * PADDING;
+        trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         paintItem( layout.body(), painter, trackOption, index );
         
     } else if ( groupMode == Body )
