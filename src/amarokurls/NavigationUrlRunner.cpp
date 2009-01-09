@@ -72,6 +72,11 @@ NavigationUrlRunner::run( AmarokUrl url )
         The::mainWindow()->showBrowser( type );
 
         if ( type ==  "Internet" ) {
+
+            if ( collection.isEmpty() ) {
+                ServiceBrowser::instance()->home();
+                return true;
+            }
         
             ServiceBase * service = ServiceBrowser::instance()->services().value( collection );
 

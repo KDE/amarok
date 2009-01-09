@@ -98,6 +98,11 @@ class ServiceBrowser : public KVBox
          */
         void setScriptableServiceManager( ScriptableServiceManager *scriptableServiceManager );
 
+        /**
+         * Slot called when the active service should be hidden the service selection list shown again.
+         */
+        void home();
+
     private:
         /**
          * Private constructor ( Singleton pattern )
@@ -131,11 +136,6 @@ class ServiceBrowser : public KVBox
          * @param index The index that was activated
          */
         void serviceActivated( const QModelIndex &index );
-
-        /**
-         * Slot called when the active service should be hidden the service selection list shown again.
-         */
-        void home();
 
         void slotSetFilterTimeout();
         void slotFilterNow();

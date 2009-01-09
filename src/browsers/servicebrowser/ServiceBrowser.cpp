@@ -170,7 +170,7 @@ ServiceBrowser::home()
         m_currentService = 0; // remove any context stuff we might have added
         m_searchWidget->show();
 
-        // NOTE why does thic clear the CV?
+        // NOTE why does thic clear the CV? That is a damn good question....
         if ( m_usingContextView )
             Context::ContextView::self()->clear();
     }
