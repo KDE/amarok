@@ -39,8 +39,10 @@ namespace Amarok
             QVariantMap GetMetadata( int );
             void SetLoop( bool enable );
             void SetRandom( bool enable );
+
         signals:
             void TrackListChange( int );
+
         private slots:
             void slotTrackListChange();
     };

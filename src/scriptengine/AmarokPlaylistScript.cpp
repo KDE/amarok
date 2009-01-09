@@ -29,19 +29,20 @@
 namespace AmarokScript
 {
     AmarokPlaylistScript::AmarokPlaylistScript( QScriptEngine* scriptEngine, QList<QObject*>* wrapperList )
-    : QObject( kapp )
-    , m_wrapperList( wrapperList )
-    , m_scriptEngine( scriptEngine )
+        : QObject( kapp )
+        , m_wrapperList( wrapperList )
+        , m_scriptEngine( scriptEngine )
     {
         m_wrapperList = wrapperList;
-        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged( ) ) );
-        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged( ) ) );
+        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged() ) );
+        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged() ) );
         connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
     }
 
     AmarokPlaylistScript::~AmarokPlaylistScript()
     {
     }
+
     int AmarokPlaylistScript::activeIndex()
     {
         return The::playlistModel()->activeRow();
@@ -120,7 +121,7 @@ namespace AmarokScript
     QStringList AmarokPlaylistScript::filenames()
     {
         QStringList fileNames;
-        for (int i=0; i < The::playlistModel()->rowCount(); i++)
+        for( int i=0; i < The::playlistModel()->rowCount(); i++ )
             fileNames << The::playlistModel()->trackAt(i)->prettyUrl();
         return fileNames;
     }
@@ -132,9 +133,9 @@ namespace AmarokScript
         return QVariant::fromValue( track );;
     }
 
-    void AmarokPlaylistScript::slotCountChanged( )
+    void AmarokPlaylistScript::slotCountChanged()
     {
-        emit CountChanged ( The::playlistModel()->rowCount() );
+        emit CountChanged( The::playlistModel()->rowCount() );
     }
 }
 

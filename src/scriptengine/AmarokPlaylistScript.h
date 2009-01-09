@@ -36,6 +36,7 @@ namespace AmarokScript
         public:
             AmarokPlaylistScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList );
             ~AmarokPlaylistScript();
+
         public slots:
             int activeIndex();
             int totalTrackCount();
@@ -52,11 +53,14 @@ namespace AmarokScript
             void togglePlaylist();
             QStringList filenames();
             QVariant trackAt( int row );
+
         signals:
             void CountChanged( int newCount );
             void activeRowChanged( int row );
+
         private slots:
             void slotCountChanged();
+
         private:
             QList<QObject*>* m_wrapperList;
             QScriptEngine* m_scriptEngine;
