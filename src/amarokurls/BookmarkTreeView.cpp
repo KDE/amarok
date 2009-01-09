@@ -30,6 +30,7 @@
 #include <KAction>
 #include <KMenu>
 
+#include <QFrame>
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -46,21 +47,23 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     , m_addGroupAction( 0 )
 {
 
-    setDragEnabled( true );
-    setAcceptDrops( true );
-    setDropIndicatorShown( true );
     setEditTriggers( QAbstractItemView::NoEditTriggers );
 
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     The::paletteHandler()->updateItemView( this );
 
     header()->hide();
+    setFrameShape( QFrame::NoFrame );
 
     //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
     //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
     QPalette p = The::paletteHandler()->palette();
     QColor c = p.color( QPalette::Base );
     setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
+
+    setDragEnabled( true );
+    setAcceptDrops( true );
+    setDropIndicatorShown( true );
 }
 
 

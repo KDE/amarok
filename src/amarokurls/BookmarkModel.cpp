@@ -198,12 +198,16 @@ BookmarkModel::columnCount(const QModelIndex & /*parent*/) const
 Qt::ItemFlags
 BookmarkModel::flags( const QModelIndex & index ) const
 {
+            
     if (!index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
     BookmarkViewItemPtr item = BookmarkViewItemPtr::staticCast( m_viewItems.value( index.internalId() ) );
 
     if ( typeid( * item ) == typeid( BookmarkGroup ) )
+    {
+        debug() <<  "got a group with ItemIsDropEnabled";
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
+    }
     else
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
@@ -240,6 +244,7 @@ bool BookmarkModel::setData(const QModelIndex & index, const QVariant & value, i
 QStringList
 BookmarkModel::mimeTypes() const
 {
+    DEBUG_BLOCK
     QStringList ret;
     ret << AmarokMimeData::BOOKMARKGROUP_MIME;
     ret << AmarokMimeData::AMAROKURL_MIME;
@@ -271,6 +276,8 @@ BookmarkModel::mimeData( const QModelIndexList &indexes ) const
         }
     }
 
+    debug() << "adding " << groups.count() << " groups and " << bookmarks.count() << " bookmarks";
+
     mime->setBookmarkGroups( groups );
     mime->setBookmarks( bookmarks );
 
@@ -281,10 +288,10 @@ BookmarkModel::mimeData( const QModelIndexList &indexes ) const
 bool
 BookmarkModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
+    DEBUG_BLOCK
+            
     Q_UNUSED( column ); 
     Q_UNUSED( row );
-    DEBUG_BLOCK
-
     if( action == Qt::IgnoreAction )
         return true;
 

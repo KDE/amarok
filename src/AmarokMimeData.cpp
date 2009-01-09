@@ -77,20 +77,26 @@ AmarokMimeData::~AmarokMimeData()
 QStringList
 AmarokMimeData::formats() const
 {
+    DEBUG_BLOCK
+    
     QStringList formats( QMimeData::formats() );
-    if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty() || !d->playlistGroups.isEmpty() )
+    if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty() || !d->playlistGroups.isEmpty() || !d->bookmarks.isEmpty() || !d->bookmarkGroups.isEmpty() )
     {
         formats.append( TRACK_MIME );
         formats.append( PLAYLIST_MIME );
         formats.append( PLAYLISTBROWSERGROUP_MIME );
         formats.append( PODCASTCHANNEL_MIME );
         formats.append( PODCASTEPISODE_MIME );
+        formats.append( BOOKMARKGROUP_MIME );
+        formats.append( AMAROKURL_MIME );
 
         if( !formats.contains( "text/uri-list" ) )
             formats.append( "text/uri-list" );
         if( !formats.contains( "text/plain" ) )
             formats.append( "text/plain" );
     }
+
+    debug() << "returning formats: " << formats;
     return formats;
 }
 
@@ -107,6 +113,10 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
         return !d->m_podcastChannels.isEmpty();
     else if( mimeType == PODCASTEPISODE_MIME )
         return !d->m_podcastEpisodes.isEmpty();
+    else if( mimeType == BOOKMARKGROUP_MIME )
+        return !d->bookmarkGroups.isEmpty();
+    else if( mimeType == AMAROKURL_MIME )
+        return !d->bookmarks.isEmpty();
     else if( mimeType == "text/uri-list" || mimeType == "text/plain" )
         return !d->tracks.isEmpty() || !d->playlists.isEmpty()
             || !d->m_podcastChannels.isEmpty() || !d->m_podcastEpisodes.isEmpty()
