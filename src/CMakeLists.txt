@@ -106,8 +106,16 @@ set(libserviceframework_SRCS
     browsers/servicebrowser/ServiceListModel.cpp
     browsers/servicebrowser/ServiceListSortFilterProxyModel.cpp
 )
-        
 
+#####################################################################
+# AMAROKURL
+#####################################################################
+set(libamarokurl_SRCS
+    amarokurls/AmarokUrl.cpp
+    amarokurls/AmarokUrlHandler.cpp
+    amarokurls/NavigationUrlRunner.cpp
+)
+        
 #####################################################################
 # SCRIPTABLESERVICE
 #####################################################################
@@ -434,6 +442,7 @@ set(amaroklib_LIB_SRCS
     ${dbus_SRCS}
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
+    ${libamarokurl_SRCS}
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp

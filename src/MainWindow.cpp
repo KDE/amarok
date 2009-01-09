@@ -33,6 +33,7 @@
 #include "Sidebar.moc"
 #include "statusbar/StatusBar.h"
 #include "amarokconfig.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
@@ -321,7 +322,10 @@ MainWindow::init()
 
         m_splitter->restoreState( sPanels );
     }
-    
+
+    //Amarok::MessageQueue::instance()->sendMessages();
+
+    The::amarokUrlHandler(); //Instantiate
 }
 
 void
