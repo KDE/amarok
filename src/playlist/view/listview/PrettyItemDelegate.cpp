@@ -46,6 +46,8 @@ const qreal PrettyItemDelegate::MARGINH = 6.0;
 const qreal PrettyItemDelegate::MARGINBODY = 1.0;
 const qreal PrettyItemDelegate::PADDING = 1.0;
 
+int Playlist::PrettyItemDelegate::s_fontHeight = 0;
+
 Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
         : QStyledItemDelegate( parent )
 {
@@ -66,6 +68,8 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
     QFont boldfont( option.font );
     boldfont.setBold( true );
     QFontMetricsF bfm( boldfont );
+
+    s_fontHeight = bfm.height();
 
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
 
@@ -88,7 +92,7 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
         break;
     }
 
-    height = MARGIN * 2 + rowCount * bfm.height() + ( rowCount - 1 ) * PADDING;
+    height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
 
 }
@@ -149,11 +153,13 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
 bool
 PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
 {
-    QRect headerBounds = rect.adjusted(( int )MARGINH,
-                                       ( int )MARGIN,
-                                       ( int )( -MARGINH ),
-                                       0 );
-    headerBounds.setHeight( static_cast<int>( 2 * MARGIN + SINGLE_TRACK_ALBUM_WIDTH ) );
+
+    QRect headerBounds = rect.adjusted( ( int )MARGINH,
+                                        ( int )MARGIN,
+                                        ( int )( -MARGINH ),
+                                                    0 );
+    
+    headerBounds.setHeight( static_cast<int>( 2 * MARGIN + LayoutManager::instance()->activeLayout().head().rows() * s_fontHeight ) );
     return headerBounds.contains( pt );
 }
 

@@ -59,6 +59,8 @@ private:
     static QFontMetricsF* s_ifm; //italic
     static QFontMetricsF* s_bfm; //bold
 
+    static int s_fontHeight;
+
     
 };
 
