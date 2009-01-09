@@ -29,7 +29,7 @@ BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent )
  : GlobalCollectionAlbumAction( i18n( "Bookmark this Album" ), parent )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-    setIcon( KIcon("bookmark") );
+    setIcon( KIcon("bookmark-new") );
     setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
     setElementId( "lastfm" );
 }
@@ -46,7 +46,7 @@ BookmarkArtistAction::BookmarkArtistAction( QObject * parent )
     : GlobalCollectionArtistAction( i18n( "Bookmark this Artist" ), parent )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-    setIcon( KIcon("bookmark") );
+    setIcon( KIcon("bookmark-new") );
     setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
     setElementId( "lastfm" );
 }
