@@ -18,7 +18,8 @@
  ***************************************************************************/
  
 #include "NavigationUrlGenerator.h"
-#include"AmarokUrl.h"
+#include "AmarokUrl.h"
+#include "Debug.h"
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModelBase.h"
@@ -35,7 +36,7 @@ NavigationUrlGenerator::~NavigationUrlGenerator()
 
 AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 {
-
+    DEBUG_BLOCK
     //first, which browser is active?
 
     QString browser = The::mainWindow()->activeBrowserName();
@@ -45,8 +46,11 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         browser = "service";
 
         QString serviceName = ServiceBrowser::instance()->activeServiceName();
+        debug() << "serviceName: " << serviceName;
+        
         QString serviceFilter = ServiceBrowser::instance()->activeServiceFilter();
-
+        debug() << "serviceFilter: " <<  serviceFilter;
+        
         QList<int> levels = ServiceBrowser::instance()->activeServiceLevels();
         QString sortMode;
         
@@ -75,6 +79,8 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         //we have left a trailing '-' in there, get rid of it!
         if ( sortMode.size() > 0 )
             sortMode = sortMode.left( sortMode.size() - 1 );
+
+        debug() << "sortMode: " <<  sortMode;
 
         AmarokUrl url;
 

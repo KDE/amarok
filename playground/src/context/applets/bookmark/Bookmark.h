@@ -1,6 +1,7 @@
 /*****************************************************************************
  * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>          *
  *                      : (C) 2008 William Viana Soares <vianasw@gmail.com>  *
+ *                  : (C) 2008 Nikolaj Hald Nielsen <nhnFreespiri@gmail.com> *
  *****************************************************************************/
 
 /***************************************************************************
@@ -20,9 +21,12 @@
 #include "context/Svg.h"
 #include <context/widgets/TrackWidget.h>
 #include <meta/Meta.h>
+#include "amarokurls/BookmarkManagerWidget.h"
+
 
 #include <QAction>
 #include <QList>
+#include <QGraphicsProxyWidget>
 
 class RatingWidget;
 class QCheckBox;
@@ -56,14 +60,14 @@ private slots:
 
 private:
 
-    QString getBookmarkUrl();
+    QGraphicsProxyWidget * m_proxyWidget;
+    BookmarkManagerWidget * m_bookmarkWidget;
+
     int m_width;
 
     qreal m_aspectRatio;
 
     Context::Svg* m_theme;
-
-    QGraphicsSimpleTextItem* m_currentBookmarkUrl;
 
 };
 

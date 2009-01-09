@@ -1,6 +1,7 @@
 /*****************************************************************************
  * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>          *
  *                      : (C) 2008 William Viana Soares <vianasw@gmail.com>  *
+ *                  : (C) 2008 Nikolaj Hald Nielsen <nhnFreespiri@gmail.com> *
  *****************************************************************************/
 
 /***************************************************************************
@@ -62,9 +63,10 @@ void Bookmark::init()
     labelFont.setPointSize( labelFont.pointSize() + 1  );
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
 
-    m_currentBookmarkUrl = new QGraphicsSimpleTextItem( this );
-    m_currentBookmarkUrl->setBrush( brush );
-    m_currentBookmarkUrl->setText( getBookmarkUrl() );
+    m_proxyWidget = new QGraphicsProxyWidget( this );
+    m_bookmarkWidget = new BookmarkManagerWidget( 0 );
+    m_proxyWidget->setWidget( m_bookmarkWidget );
+    
 
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
@@ -84,7 +86,9 @@ void Bookmark::constraintsEvent( Plasma::Constraints constraints )
     /*if( constraints & Plasma::SizeConstraint )
          m_theme->resize(size().toSize());*/
 
-    m_currentBookmarkUrl->setPos( QPointF( 10, 10 ) );
+    m_proxyWidget->setPos( QPointF( 10, 10 ) );
+    m_bookmarkWidget->setFixedWidth( size().toSize().width() - 20 );
+    m_bookmarkWidget->setFixedHeight( size().toSize().height() - 20 );
 }
 
 QSizeF 
@@ -125,14 +129,7 @@ void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *opti
 
 void Bookmark::paletteChanged( const QPalette & palette )
 {
-    DEBUG_BLOCK
-    m_currentBookmarkUrl->setBrush( palette.text() );
-}
-
-QString Bookmark::getBookmarkUrl()
-{
-    NavigationUrlGenerator urlGenerator;
-    return urlGenerator.CreateAmarokUrl().url();
+    Q_UNUSED( palette )
 }
 
 #include "Bookmark.moc"

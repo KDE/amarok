@@ -376,7 +376,7 @@ ServiceBase::sendMessage( const QString & message )
 
 QString ServiceBase::filter()
 {
-    m_searchWidget->lineEdit()->text();
+    return m_searchWidget->lineEdit()->text();
 }
 
 QList<int> ServiceBase::levels()
