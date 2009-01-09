@@ -44,6 +44,12 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     , m_renameAction( 0 )
     , m_addGroupAction( 0 )
 {
+
+    setDragEnabled( true );
+    setAcceptDrops( true );
+    setDropIndicatorShown( true );
+    setEditTriggers( QAbstractItemView::NoEditTriggers );
+
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     The::paletteHandler()->updateItemView( this );
 
@@ -180,7 +186,7 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     if( indices.count() == 0 )
         menu.addAction( m_addGroupAction );
 
-    menu.exec( mapToGlobal( event->globalPos() ) );
+    menu.exec( event->globalPos() );  // hack to get it to work correctly when embedded in the context view
 }
 
 QSet<BookmarkViewItemPtr>

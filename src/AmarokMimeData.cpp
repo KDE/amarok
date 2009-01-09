@@ -30,6 +30,8 @@ const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlists";
 const QString AmarokMimeData::PLAYLISTBROWSERGROUP_MIME = "application/x-amarok-playlistbrowsergroup";
 const QString AmarokMimeData::PODCASTCHANNEL_MIME = "application/x-amarok-podcastchannel";
 const QString AmarokMimeData::PODCASTEPISODE_MIME = "application/x-amarok-podcastepisode";
+const QString AmarokMimeData::AMAROKURL_MIME = "application/x-amarok-amarokurl";
+const QString AmarokMimeData::BOOKMARKGROUP_MIME = "application/x-amarok-bookmarkgroup";
 
 
 class AmarokMimeData::Private
@@ -52,6 +54,9 @@ public:
     QList<QueryMaker*> queryMakers;
     QMap<QueryMaker*, Meta::TrackList> trackMap;
     QMap<QueryMaker*, Meta::PlaylistList> playlistMap;
+    BookmarkList bookmarks;
+    BookmarkGroupList bookmarkGroups;
+    
     bool deleteQueryMakers;
     int completedQueries;
 
@@ -256,6 +261,36 @@ AmarokMimeData::setQueryMakers( const QList<QueryMaker*> &queryMakers )
     d->queryMakers << queryMakers;
 }
 
+BookmarkList AmarokMimeData::bookmarks() const
+{
+    return d->bookmarks;
+}
+
+void AmarokMimeData::setBookmarks( const BookmarkList &bookmarks )
+{
+    d->bookmarks = bookmarks;
+}
+
+void AmarokMimeData::addBookmarks( const BookmarkList &bookmarks )
+{
+    d->bookmarks << bookmarks;
+}
+
+BookmarkGroupList AmarokMimeData::bookmarkGroups() const
+{
+    return d->bookmarkGroups;
+}
+
+void AmarokMimeData::setBookmarkGroups( const BookmarkGroupList &groups )
+{
+    d->bookmarkGroups = groups;
+}
+
+void AmarokMimeData::addBookmarkGroups( const BookmarkGroupList &groups )
+{
+    d->bookmarkGroups << groups;
+}
+
 QVariant
 AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) const
 {
@@ -354,5 +389,6 @@ AmarokMimeData::queryDone()
 {
     d->completedQueries++;
 }
+
 
 #include "AmarokMimeData.moc"

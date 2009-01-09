@@ -204,4 +204,8 @@ bool AmarokUrl::isNull()
     return m_fields.count() == 0;
 }
 
-
+void AmarokUrl::reparent( BookmarkGroupPtr parent )
+{
+    m_parent = parent;
+    saveToDb();
+}

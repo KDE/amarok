@@ -20,6 +20,7 @@
 #define AMAROK_AMAROKMIMEDATA_H
 
 #include "amarok_export.h"
+#include "amarokurls/BookmarkGroup.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 #include "podcasts/PodcastMeta.h"
@@ -41,6 +42,9 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
 
         static const QString PODCASTCHANNEL_MIME;
         static const QString PODCASTEPISODE_MIME;
+
+        static const QString AMAROKURL_MIME;
+        static const QString BOOKMARKGROUP_MIME;
 
         AmarokMimeData();
         virtual ~AmarokMimeData();
@@ -71,6 +75,14 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         QList<QueryMaker*> queryMakers();
         void addQueryMaker( QueryMaker *queryMaker );
         void setQueryMakers( const QList<QueryMaker*> &queryMakers );
+
+        BookmarkList bookmarks() const;
+        void setBookmarks( const BookmarkList &bookmarks );
+        void addBookmarks( const BookmarkList &bookmarks );
+
+        BookmarkGroupList bookmarkGroups() const;
+        void setBookmarkGroups( const BookmarkGroupList &groups );
+        void addBookmarkGroups( const BookmarkGroupList &groups );
 
         /**
             There is a lot of time to run the queries while the user is dragging.

@@ -240,10 +240,9 @@ bool BookmarkModel::setData(const QModelIndex & index, const QVariant & value, i
 QStringList
 BookmarkModel::mimeTypes() const
 {
-    QStringList ret; // = QAbstractListModel::mimeTypes();
-    ret << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
-    ret << AmarokMimeData::PLAYLIST_MIME;
-    //ret << "text/uri-list"; //we do accept urls
+    QStringList ret;
+    ret << AmarokMimeData::BOOKMARKGROUP_MIME;
+    ret << AmarokMimeData::AMAROKURL_MIME;
     return ret;
 }
 
@@ -272,9 +271,9 @@ BookmarkModel::mimeData( const QModelIndexList &indexes ) const
         }
     }
 
-    //FIXME:
-    //mime->setBookmarGroups( groups );
-    //mime->setAmarokUrls( playlists );
+
+    mime->setBookmarkGroups( groups );
+    mime->setBookmarks( bookmarks );
 
     return mime;
 }
@@ -285,7 +284,7 @@ BookmarkModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int
 {
     Q_UNUSED( column ); 
     Q_UNUSED( row );
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
 
     if( action == Qt::IgnoreAction )
         return true;
@@ -300,27 +299,26 @@ BookmarkModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int
         parentGroup = BookmarkGroupPtr::staticCast( m_viewItems.value( parent.internalId() ) );
     }
 
-    if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
+    if( data->hasFormat( AmarokMimeData::BOOKMARKGROUP_MIME ) )
     {
         debug() << "Found playlist group mime type";
 
         const AmarokMimeData* bookmarkGroupDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( bookmarkGroupDrag )
         {
-            //FIXME:
-            /*
-            BookmarkGroupList groups = BookmarkGroupDrag->BookmarkGroups();
+
+            BookmarkGroupList groups = bookmarkGroupDrag->bookmarkGroups();
 
             foreach( BookmarkGroupPtr group, groups ) {
                 group->reparent( parentGroup );
             }
 
             reloadFromDb();
-            */
+
             return true;
         }
     }
-    else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    else if( data->hasFormat( AmarokMimeData::AMAROKURL_MIME ) )
     {
         debug() << "Found playlist mime type";
 
@@ -328,17 +326,15 @@ BookmarkModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int
         if( dragList )
         {
 
-            //FIXME:
-            /*
             BookmarkList bookmarks = dragList->bookmarks();
 
             foreach( AmarokUrlPtr bookmarkPtr, bookmarks ) {
 
-                bookmarkPtr->reparent( parentGroup );
+            bookmarkPtr->reparent( parentGroup );
             }
 
             reloadFromDb();
-            */
+
             return true;
         }
     }

@@ -38,6 +38,8 @@ public:
 
     ~AmarokUrl();
 
+    void reparent( BookmarkGroupPtr parent );
+
     void initFromString( const QString & urlString );
 
     void setCommand( const QString &command );
