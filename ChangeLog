@@ -16,6 +16,11 @@ VERSION 2.1
       (BR 180023)
 
 
+VERSION 2.0.1.1
+  BUGFIX:
+    * Fix possible buffer overflows when parsing Audible .aa files.
+
+
 VERSION 2.0.1
   FEATURES:
     * Add advanced, configurable, searching and filtering to the playlist.
