@@ -30,6 +30,7 @@
 #include <KAction>
 #include <KMenu>
 
+#include <QHeaderView>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
@@ -52,6 +53,8 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
 
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     The::paletteHandler()->updateItemView( this );
+
+    header()->hide();
 
     //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
     //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
@@ -223,5 +226,36 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     
 }
 
+void BookmarkTreeView::showContextMenu( const QPoint &point, const QPoint &globalPoint  )
+{
+    DEBUG_BLOCK
+    KMenu menu;
+
+    debug() << "point: " << point;
+
+    
+    QModelIndex index = indexAt( point );
+    if( index.isValid() )
+    {
+
+        debug() << "got valid index";
+        
+        QModelIndexList indices = selectionModel()->selectedIndexes();
+
+        QList<KAction *> actions = createCommonActions( indices );
+
+        foreach( KAction * action, actions )
+            menu.addAction( action );
+
+        if( indices.count() == 0 )
+            menu.addAction( m_addGroupAction );
+
+        menu.exec( globalPoint );
+    }
+
+}
+
 #include "BookmarkTreeView.moc"
+
+
 

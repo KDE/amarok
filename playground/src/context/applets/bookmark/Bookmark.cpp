@@ -132,4 +132,12 @@ void Bookmark::paletteChanged( const QPalette & palette )
     Q_UNUSED( palette )
 }
 
+void Bookmark::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
+{
+    //Note that in this case, global refers to the context view and not the entire screen
+    m_bookmarkWidget->treeView()->showContextMenu( m_bookmarkWidget->treeView()->mapFromGlobal( event->pos().toPoint() ), event->screenPos() );
+}
+
 #include "Bookmark.moc"
+
+

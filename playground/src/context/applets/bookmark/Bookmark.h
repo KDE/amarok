@@ -54,6 +54,7 @@ public:
 
 protected:
     virtual void constraintsEvent( Plasma::Constraints constraints );
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
 private slots:
     void paletteChanged( const QPalette & palette );

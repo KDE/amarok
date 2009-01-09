@@ -42,6 +42,8 @@ public:
     BookmarkManagerWidget( QWidget * parent );
     ~BookmarkManagerWidget();
 
+    BookmarkTreeView * treeView();
+
 private:
     
     QString getBookmarkUrl();

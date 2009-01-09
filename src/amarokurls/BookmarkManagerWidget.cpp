@@ -136,6 +136,13 @@ void BookmarkManagerWidget::updateAddButton()
         m_addBookmarkButton->setText( i18n( "Save" ) );
 }
 
+BookmarkTreeView * BookmarkManagerWidget::treeView()
+{
+    return m_bookmarkView;
+}
+
 
 #include "BookmarkManagerWidget.moc"
+
+
 

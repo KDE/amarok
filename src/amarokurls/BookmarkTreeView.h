@@ -20,16 +20,19 @@
 #ifndef BOOKMARKTREEVIEW_H
 #define BOOKMARKTREEVIEW_H
 
+#include "amarok_export.h"
 #include "AmarokUrl.h"
 #include "BookmarkViewItem.h"
 #include "widgets/PrettyTreeView.h"
+
+#include <KMenu>
 
 class PopupDropper;
 class PopupDropperAction;
 
 class KAction;
 
-class BookmarkTreeView : public Amarok::PrettyTreeView
+class AMAROK_EXPORT BookmarkTreeView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
 
@@ -38,11 +41,12 @@ public:
     ~BookmarkTreeView();
 
     void setNewGroupAction( KAction * action );
+    void showContextMenu( const QPoint &point, const QPoint &globalPoint );
 
 protected:
     void keyPressEvent( QKeyEvent *event );
     void mouseDoubleClickEvent( QMouseEvent *event );
-    void contextMenuEvent( QContextMenuEvent* event );
+    void contextMenuEvent( QContextMenuEvent * event );
 
 protected slots:
     void slotLoad();
