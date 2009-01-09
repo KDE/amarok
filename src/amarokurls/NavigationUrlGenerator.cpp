@@ -159,7 +159,22 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         
         return url;
 
-        
+    }
+    else if ( browser == "PlaylistBrowser" )
+    {
+        browser = "playlists";
+        url.appendArg( browser );
+         //TODO: add handling of playlist browser categories here!
+        return url;
+
+    }
+    else if ( browser == "FileBrowser::Widget" )
+    {
+        browser = "files";
+        url.appendArg( browser );
+        //TODO: add handling of playlist browser categories here!
+        return url;
+
     }
 }
 
