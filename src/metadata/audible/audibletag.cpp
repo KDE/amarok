@@ -139,13 +139,20 @@ void Audible::Tag::readTags( FILE *fp )
 
 bool Audible::Tag::readTag( FILE *fp, char **name, char **value)
 {
+    // arbitrary value that has to be smaller than 2^32-1 and that should be large enough for all tags
+    const quint32 maxtaglen = 100000;
+
     quint32 nlen;
     if ( fread(&nlen, sizeof(nlen), 1, fp) != 1 )
         return false;
 
     nlen = ntohl(nlen);
     //fprintf(stderr, "tagname len=%x\n", (unsigned)nlen);
+    if(nlen > maxtaglen)
+        return false;
     *name = new char[nlen+1];
+    if (!*name)
+        return false;
     (*name)[nlen] = '\0';
 
     quint32 vlen;
@@ -157,8 +164,13 @@ bool Audible::Tag::readTag( FILE *fp, char **name, char **value)
     }
 
     vlen = ntohl(vlen);
+    if (vlen > maxtaglen)
+    {
+        delete [] *name;
+        *name = 0;
+        return false;
+    }
     //fprintf(stderr, "tag len=%x\n", (unsigned)vlen);
-
     if ( fread(*name, nlen, 1, fp) != 1 )
     {
         delete [] *name;
@@ -167,6 +179,12 @@ bool Audible::Tag::readTag( FILE *fp, char **name, char **value)
     }
 
     *value = new char[vlen+1];
+    if (!*value)
+    {
+        delete [] *name;
+        *name = 0;
+        return false;
+    }
     (*value)[vlen] = '\0';
 
     if ( fread(*value, vlen, 1, fp) != 1 )
