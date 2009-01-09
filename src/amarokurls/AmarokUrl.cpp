@@ -54,6 +54,15 @@ void AmarokUrl::initFromString( const QString & urlString )
     
 }
 
+void AmarokUrl::setCommand( const QString & command )
+{
+    if ( m_fields.count() > 0 )
+        m_fields[0] = command;
+    else
+        m_fields << command;
+}
+
+
 QString AmarokUrl::command()
 {
     if ( m_fields.count() != 0 )
@@ -72,6 +81,14 @@ int AmarokUrl::numberOfArgs()
         return 0;
 }
 
+void AmarokUrl::appendArg( QString & arg )
+{
+    if ( m_fields.count() > 0 )
+        m_fields << arg;
+    else
+        m_fields << QString() << arg; //reserve space for command
+}
+
 QString AmarokUrl::arg( int arg )
 {
     if ( m_fields.count() != 0 )
@@ -86,4 +103,15 @@ bool AmarokUrl::run()
     The::amarokUrlHandler()->run( *this );
 }
 
+
+QString AmarokUrl::url()
+{
+    QString url = "amarok:/";
+    foreach( QString field, m_fields ) {
+        url += '/';
+        url += field;
+    }
+
+    return url;
+}
 

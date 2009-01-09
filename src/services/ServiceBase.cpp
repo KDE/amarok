@@ -28,6 +28,7 @@
 #include "ServiceInfoProxy.h"
 
 #include <khbox.h>
+#include <KLineEdit>
 #include <KMenuBar>
 
 #include <QFrame>
@@ -373,6 +374,20 @@ ServiceBase::sendMessage( const QString & message )
     return i18n( "ERROR: unknown message" );
 }
 
+QString ServiceBase::filter()
+{
+    m_searchWidget->lineEdit()->text();
+}
+
+QList<int> ServiceBase::levels()
+{
+    return m_contentView->levels();
+}
+
+
+
 
 #include "ServiceBase.moc"
+
+
 

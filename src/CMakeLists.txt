@@ -34,6 +34,7 @@ add_subdirectory( themes )
 
 include_directories(
 #    analyzers
+    amarokurls
     browsers/playlistbrowser
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
@@ -114,6 +115,7 @@ set(libamarokurl_SRCS
     amarokurls/AmarokUrl.cpp
     amarokurls/AmarokUrlHandler.cpp
     amarokurls/NavigationUrlRunner.cpp
+    amarokurls/NavigationUrlGenerator.cpp
 )
         
 #####################################################################

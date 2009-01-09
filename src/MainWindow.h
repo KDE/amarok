@@ -81,6 +81,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         KMenu   *SettingsMenu() const { return m_settingsMenu; }
         void deleteBrowsers();
 
+        QString activeBrowserName();
+
         CollectionWidget * collectionBrowser();
 
         //will return the size of the rect defined top, right and left by the main toolbar and bottom by the context view.

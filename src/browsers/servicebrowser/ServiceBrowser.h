@@ -81,6 +81,10 @@ class ServiceBrowser : public KVBox
          */
         void showService( const QString &name );
 
+        QString activeServiceName();
+        QString activeServiceFilter();
+        QList<int> activeServiceLevels();
+
     public slots:
         /**
          * Add a service.

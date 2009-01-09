@@ -126,6 +126,11 @@ CollectionTreeView::setLevels( const QList<int> &levels )
     m_treeModel->setLevels( levels );
 }
 
+QList< int > CollectionTreeView::levels()
+{
+    return m_treeModel->levels();
+}
+
 
 void
 CollectionTreeView::setLevel( int level, int type )
@@ -1012,6 +1017,8 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
     }
     return new MetaQueryMaker( queryMakers );
 }
+
+
 
 #include "CollectionTreeView.moc"
 

@@ -1011,5 +1011,12 @@ CollectionWidget * MainWindow::collectionBrowser()
     return qobject_cast<CollectionWidget *>( m_browsers->at( 0 ) );
 }
 
+QString MainWindow::activeBrowserName()
+{
+    return m_browserNames[ m_browsers->currentIndex() ];
+}
+
 #include "MainWindow.moc"
+
+
 

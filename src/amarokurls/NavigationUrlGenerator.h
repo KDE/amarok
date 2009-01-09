@@ -17,41 +17,24 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AMAROKURL_H
-#define AMAROKURL_H
+#ifndef NAVIGATIONURLGENERATOR_H
+#define NAVIGATIONURLGENERATOR_H
 
 #include "amarok_export.h"
 
-#include <QString>
-#include <QStringList>
+class AmarokUrl;
 
 /**
+A class used to generate navigation urls.
+
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT AmarokUrl{
+class AMAROK_EXPORT NavigationUrlGenerator{
 public:
-    AmarokUrl();
-    AmarokUrl( const QString & urlString );
+    NavigationUrlGenerator();
+    ~NavigationUrlGenerator();
 
-    ~AmarokUrl();
-
-    void initFromString( const QString & urlString );
-
-    void setCommand( const QString &command );
-    QString command();
-
-    int numberOfArgs();
-
-    void appendArg( QString &arg );
-    QString arg( int );
-
-    bool run();
-
-    QString url();
-
-private:
-
-    QStringList m_fields;
+    AmarokUrl CreateAmarokUrl();
 
 };
 

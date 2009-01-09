@@ -224,5 +224,31 @@ void ServiceBrowser::slotFilterNow()
     m_proxyModel->setFilterFixedString( m_currentFilter );
 }
 
+QString ServiceBrowser::activeServiceName()
+{
+    if ( m_currentService )
+        return m_currentService->name();
+    else
+        return QString();
+}
+
+QString ServiceBrowser::activeServiceFilter()
+{
+    if ( m_currentService )
+        return m_currentService->filter();
+    else
+        return QString();
+}
+
+QList<int> ServiceBrowser::activeServiceLevels()
+{
+    if ( m_currentService )
+        return m_currentService->levels();
+    else
+        return QList<int>();
+}
+
 #include "ServiceBrowser.moc"
+
+
 
