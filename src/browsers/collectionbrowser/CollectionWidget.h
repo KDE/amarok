@@ -35,11 +35,17 @@ class CollectionWidget : public KVBox
         CollectionWidget( const char* name , QWidget *parent );
         static CollectionWidget *instance() { return s_instance; }
         CollectionTreeView *view() const { return m_treeView; }
-    public slots:
-        //void slotSetFilter();
 
-    private slots:
+        /**
+         * Apply a filter to the tree view.
+         * @param filter The filter to apply.
+         */
+        void setFilter( const QString &filter );
+    public slots:
+
         void customFilter( QAction * );
+        void sortByAlbum();
+        void sortByArtist();
         void sortByArtistAlbum();
         void sortByGenreArtist();
         void sortByGenreArtistAlbum();
@@ -58,6 +64,7 @@ class CollectionWidget : public KVBox
         QMenu               *m_thirdLevel;
         
         QList<int>          m_levels;
+
         static CollectionWidget *s_instance;
 };
 

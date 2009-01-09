@@ -26,6 +26,7 @@
 #include "MainWindow.h"
 #include "services/ServiceBase.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
+#include "browsers/collectionbrowser/CollectionWidget.h"
 
 NavigationUrlRunner::NavigationUrlRunner()
     : AmarokUrlRunnerBase()
@@ -43,14 +44,16 @@ NavigationUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK;
     
-    if ( url.numberOfArgs() > 1 ) {
+    if ( url.numberOfArgs() > 0 ) {
         
         QString type = url.arg( 0 );
-        QString collection = url.arg( 1 );
 
+        QString collection;
         QString groupMode;
         QString filter;
 
+        if ( url.numberOfArgs() > 1 )
+            collection = url.arg( 1 );
         if ( url.numberOfArgs() > 2 )
             groupMode = url.arg( 2 );
         if ( url.numberOfArgs() == 4 )
@@ -64,7 +67,7 @@ NavigationUrlRunner::run( AmarokUrl url )
         if ( type == "service" )
             type = "Internet";
         else if ( type == "collection" )
-            type = "Collection";
+            type = "CollectionBrowser";
 
         The::mainWindow()->showBrowser( type );
 
@@ -106,6 +109,45 @@ NavigationUrlRunner::run( AmarokUrl url )
 
             return true;
 
+        } else  if ( type ==  "CollectionBrowser" ) {
+
+            debug() << "get collection browser";
+
+            CollectionWidget * collectionBrowser = The::mainWindow()->collectionBrowser();
+            if ( collectionBrowser == 0 ) return false;
+
+            debug() << "apply sort mode";
+
+            if ( groupMode == "artist-album" )
+                collectionBrowser->sortByArtistAlbum();
+            else if ( groupMode == "genre-artist" )
+                collectionBrowser->sortByGenreArtist();
+            else if ( groupMode == "album" )
+                collectionBrowser->sortByAlbum();
+            else if ( groupMode == "artist" )
+                collectionBrowser->sortByArtist();
+            else if ( groupMode == "genre-artist-album" )
+                collectionBrowser->sortByGenreArtistAlbum();
+
+            debug() << "setting filter";
+            collectionBrowser->setFilter( filter );
+
+            debug() << "done";
+
+            if ( The::mainWindow()->isHidden() )
+                The::mainWindow()->show();
+            if ( The::mainWindow()->isMinimized() )
+                The::mainWindow()->showNormal();
+
+            The::mainWindow()->raise();
+            The::mainWindow()->activateWindow();
+
+
+            return true;
+
+
+
+            
         }
 
     }

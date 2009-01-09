@@ -47,7 +47,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
 
     QMenu *filterMenu = new QMenu( this );
     KHBox *hbox = new KHBox( this );
-    SearchWidget *sw = new SearchWidget( hbox );
+    m_searchWidget = new SearchWidget( hbox );
 
     m_treeView = new CollectionTreeView( this );
     m_treeView->setFrameShape( QFrame::NoFrame );
@@ -57,7 +57,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
         m_levels << CategoryId::Artist << CategoryId::Album;
 
     m_treeView->setModel( new CollectionTreeItemModel( m_levels ) );
-    sw->setup( m_treeView );
+    m_searchWidget->setup( m_treeView );
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
@@ -295,12 +295,34 @@ CollectionWidget::sortByGenreArtistAlbum()
     m_treeView->setLevels( m_levels );
 }
 
+void CollectionWidget::sortByAlbum()
+{
+    m_levels.clear();
+    m_levels << CategoryId::Album;
+    m_treeView->setLevels( m_levels );
+}
+
+void CollectionWidget::sortByArtist()
+{
+    m_levels.clear();
+    m_levels << CategoryId::Artist;
+    m_treeView->setLevels( m_levels );
+}
+
 void
 CollectionWidget::slotShowYears( bool checked )
 {
     AmarokConfig::setShowYears( checked );
     m_treeView->setLevels( m_levels );
 }
+
+void CollectionWidget::setFilter( const QString &filter )
+{
+    m_searchWidget->setSearchString( filter );
+}
+
+
+
 
 
 #include "CollectionWidget.moc"

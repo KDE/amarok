@@ -1006,5 +1006,10 @@ namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
 
+CollectionWidget * MainWindow::collectionBrowser()
+{
+    return qobject_cast<CollectionWidget *>( m_browsers->at( 0 ) );
+}
+
 #include "MainWindow.moc"
 
