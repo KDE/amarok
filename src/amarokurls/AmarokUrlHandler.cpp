@@ -18,6 +18,9 @@
  ***************************************************************************/
  
 #include "AmarokUrlHandler.h"
+
+#include "Debug.h"
+
 #include "NavigationUrlRunner.h"
 
 
@@ -63,7 +66,12 @@ void AmarokUrlHandler::unRegisterRunner( AmarokUrlRunnerBase * runner )
 bool AmarokUrlHandler::run( AmarokUrl url )
 {
 
+    DEBUG_BLOCK
+
     QString command = url.command();
+
+    debug() << "command: " << command;
+    debug() << "registered commands: " << m_registeredRunners.keys();
 
     if ( m_registeredRunners.contains( command ) )
         return m_registeredRunners.value( command )->run( url );

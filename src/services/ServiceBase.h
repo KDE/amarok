@@ -294,6 +294,26 @@ public slots:
      */
     void sortByArtistAlbum();
 
+    /**
+     * Set sorting in the tree view to be "Artist".
+     */
+    void sortByArtist();
+
+    /**
+     * Set sorting in the tree view to be "Album".
+     */
+    void sortByAlbum();
+
+    /**
+     * Set sorting in the tree view to be "Genre-Artist".
+     */
+    void sortByGenreArtist();
+
+    /**
+     * Set sorting in the tree view to be "Genre-Artist-Album".
+     */
+    void sortByGenreArtistAlbum();
+
 signals:
     /**
      * Signal emitted when the service wants to be hidden and the service browser list shown instead, for instance when the "Home" button is clicked.
@@ -328,26 +348,6 @@ protected slots:
      * @param item The selected item
      */
     void itemSelected( CollectionTreeItem * item  );
-
-        /**
-     * Set sorting in the tree view to be "Artist".
-         */
-    void sortByArtist();
-
-    /**
-     * Set sorting in the tree view to be "Album".
-     */
-    void sortByAlbum();
-
-    /**
-     * Set sorting in the tree view to be "Genre-Artist".
-     */
-    void sortByGenreArtist();
-
-    /**
-     * Set sorting in the tree view to be "Genre-Artist-Album".
-     */
-    void sortByGenreArtistAlbum();
 
 protected:
     /**

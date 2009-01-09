@@ -18,6 +18,9 @@
  ***************************************************************************/
  
 #include "NavigationUrlRunner.h"
+
+#include "Debug.h"
+
 #include "AmarokUrlHandler.h"
 
 #include "MainWindow.h"
@@ -38,6 +41,8 @@ NavigationUrlRunner::~NavigationUrlRunner()
 bool
 NavigationUrlRunner::run( AmarokUrl url )
 {
+    DEBUG_BLOCK;
+    
     if ( url.numberOfArgs() == 4 ) {
         
         QString type = url.arg( 0 );
@@ -53,13 +58,27 @@ NavigationUrlRunner::run( AmarokUrl url )
 
         The::mainWindow()->showBrowser( type );
 
-        ServiceBase * service = ServiceBrowser::instance()->services().value( collection );
-        service->setFilter( filter );
-        service->sortByArtistAlbum();
+        if ( type ==  "Internet" ) {
+        
+            ServiceBase * service = ServiceBrowser::instance()->services().value( collection );
+            service->setFilter( filter );
 
-        ServiceBrowser::instance()->showService( collection );
+            if ( groupMode == "artist-album" )
+                service->sortByArtistAlbum();
+            else if ( groupMode == "genre-artist" )
+                service->sortByGenreArtist();
+            else if ( groupMode == "album" )
+                service->sortByAlbum();
+            else if ( groupMode == "artist" )
+                service->sortByArtist();
+            else if ( groupMode == "genre-artist-album" )
+                service->sortByGenreArtistAlbum();
 
-        return true;
+            ServiceBrowser::instance()->showService( collection );
+
+            return true;
+
+        }
 
     }
     

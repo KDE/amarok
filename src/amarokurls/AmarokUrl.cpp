@@ -19,6 +19,8 @@
  
 #include "AmarokUrl.h"
 
+#include "Debug.h"
+
 #include "AmarokUrlHandler.h"
 
 AmarokUrl::AmarokUrl()
@@ -27,6 +29,7 @@ AmarokUrl::AmarokUrl()
 
 AmarokUrl::AmarokUrl( const QString & urlString )
 {
+    initFromString( urlString );
 }
 
 
@@ -73,6 +76,7 @@ QString AmarokUrl::arg( int arg )
 
 bool AmarokUrl::run()
 {
+    DEBUG_BLOCK
     The::amarokUrlHandler()->run( *this );
 }
 

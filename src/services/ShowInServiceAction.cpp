@@ -18,8 +18,7 @@
  ***************************************************************************/
 #include "ShowInServiceAction.h"
 
-#include "MainWindow.h"
-#include "ServiceBrowser.h"
+#include "amarokurls/AmarokUrl.h"
 
 ShowInServiceAction::ShowInServiceAction( ServiceBase * service, Meta::ServiceTrack *track )
     : PopupDropperAction( service )
@@ -45,10 +44,12 @@ void ShowInServiceAction::slotTriggered()
     if ( m_service == 0 || !m_track || !m_track->artist() )
         return;
 
-    The::mainWindow()->showBrowser( "Internet" );
-    m_service->setFilter( QString( "artist:\"%1\"" ).arg( m_track->artist()->prettyName() ) );
-    m_service->sortByArtistAlbum();
-    ServiceBrowser::instance()->showService( m_service->name() );
+    QString urlString = QString( "amarok://navigate/service/%1/artist-album/artist:\"%2\"" )
+                        .arg( m_service->name() )
+                        .arg( m_track->artist()->prettyName() );
+
+    AmarokUrl url( urlString );
+    url.run();
 }
 
 #include "ShowInServiceAction.moc"
