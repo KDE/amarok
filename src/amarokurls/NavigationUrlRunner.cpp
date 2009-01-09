@@ -68,6 +68,10 @@ NavigationUrlRunner::run( AmarokUrl url )
             type = "Internet";
         else if ( type == "collection" )
             type = "CollectionBrowser";
+        else if ( type == "playlists" )
+            type = "PlaylistBrowser";
+        else if ( type == "files" )
+            type = "FileBrowser::Widget";
 
         The::mainWindow()->showBrowser( type );
 
@@ -150,16 +154,17 @@ NavigationUrlRunner::run( AmarokUrl url )
 
             return true;
 
-
-
-            
+        } else  if ( type ==  "PlaylistBrowser" ) {
+            return true;
+        }
+        else  if ( type ==  "FileBrowser::Widget" ) {
+            return true;
         }
 
     }
     
     return false;
 
-    
 }
 
 QString NavigationUrlRunner::command() const
