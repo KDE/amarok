@@ -119,7 +119,7 @@ QString AmarokUrl::arg( int arg )
 bool AmarokUrl::run()
 {
     DEBUG_BLOCK
-    The::amarokUrlHandler()->run( *this );
+    return The::amarokUrlHandler()->run( *this );
 }
 
 
