@@ -19,6 +19,7 @@
 #define AMAROK_SYSTRAY_H
 
 #include "EngineObserver.h" //baseclass
+#include "meta/Meta.h"
 
 #include <KAction>
 #include <ksystemtrayicon.h>
@@ -48,6 +49,7 @@ protected:
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
+    virtual void engineVolumeChanged( int percent );
     // get notified of 'highlight' color change
     virtual void paletteChange( const QPalette & oldPalette );
 
@@ -57,6 +59,7 @@ private slots:
 private:
     virtual bool event( QEvent *e );
     void setupMenu();
+    void setupToolTip();
 
     // repaints trayIcon showing progress (and overlay if present)
     void paintIcon( int mergePixels = -1, bool force = false );
@@ -64,6 +67,9 @@ private:
     void blendOverlay( QPixmap &sourcePixmap );
 
     static TrayIcon* s_instance;
+
+    Meta::TrackPtr m_track;
+    long m_trackPosition;
 
     long trackLength, mergeLevel;
     QIcon baseIcon;

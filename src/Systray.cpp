@@ -22,12 +22,12 @@
 
 #include "Amarok.h"
 #include "EngineController.h"
-#include "TrackTooltip.h"
 #include "amarokconfig.h"
 #include "Debug.h"
 #include "meta/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
+#include "meta/MetaUtility.h" // for time formatting
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
@@ -40,11 +40,13 @@
 #include <KStandardDirs>
 
 #include <QEvent>
+#include <QFontMetrics>
 #include <QImage>
 #include <QMouseEvent>
 #include <QPixmap>
+#include <QTextDocument> // for Qt::escape()
 #include <QTimerEvent>
-
+#include <QToolTip>
 
 namespace Amarok
 {
@@ -97,7 +99,110 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     PERF_LOG("Adding Icon");
     setIcon( baseIcon );
 
+    setupToolTip();
+
     connect( this, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), SLOT( slotActivated( QSystemTrayIcon::ActivationReason ) ) );
+}
+
+void
+Amarok::TrayIcon::setupToolTip()
+{
+    DEBUG_BLOCK
+
+    if( m_track )
+    {
+        QString tooltip;
+
+        QFontMetrics fm( QToolTip::font() );
+        const int elideWidth = 200;
+        tooltip = "<center><b>" + fm.elidedText( Qt::escape(m_track->prettyName()), Qt::ElideRight, elideWidth ) + "</b>";
+        if( m_track->artist() ) {
+            const QString artist = fm.elidedText( Qt::escape(m_track->artist()->prettyName()), Qt::ElideRight, elideWidth );
+            if( !artist.isEmpty() )
+                tooltip += i18n( " by <b>%1</b>", artist );
+        }
+        if( m_track->album() ) {
+            const QString album = fm.elidedText( Qt::escape(m_track->album()->prettyName()), Qt::ElideRight, elideWidth );
+            if( !album.isEmpty() )
+                tooltip += i18n( " on <b>%1</b>", album );
+        }
+        tooltip += "</center>";
+
+        tooltip += "<table cellspacing='2' align='center' width='300'>";
+
+        // HACK: This block is inefficient and more or less stupid
+        QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
+        if( m_track->album() )
+        {
+            QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
+            image.save( tmpFilename, "PNG" );
+            tooltip += "<tr><td align='left' valign='bottom' rowspan='9'>";
+            tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
+        }
+
+        QStringList left, right;
+
+        QString filename = "", title = ""; //special case these, put the first one encountered on top
+
+        right << QString("<i>%1%</i>").arg( The::engineController()->volume() );
+        left << "<i>Volume</i>";
+
+        const float score = m_track->score();
+        if( score > 0.f )
+        {
+            right << QString::number( score, 'f', 2 );  // 2 digits after decimal point
+            left << i18n( "Score" );
+        }
+
+        const int rating = m_track->rating();
+        if( rating > 0 )
+        {
+            QString s;
+            for( int i = 0; i < rating / 2; ++i )
+                s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                        .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
+                        .arg( QFontMetrics( QToolTip::font() ).height() )
+                        .arg( QFontMetrics( QToolTip::font() ).height() );
+            if( rating % 2 )
+                s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                        .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
+                        .arg( QFontMetrics( QToolTip::font() ).height() )
+                        .arg( QFontMetrics( QToolTip::font() ).height() );
+            right << s;
+            left << i18n( "Rating" );
+        }
+
+        const int count = m_track->playCount();
+        if( count > 0 )
+        {
+            right << QString::number( count );
+            left << i18n( "Play Count" );
+        }
+
+        const uint lastPlayed = m_track->lastPlayed();
+        right << Amarok::verboseTimeSince( lastPlayed );
+        left << i18n( "Last Played" );
+
+        if( m_track->length() > 0 )
+        {
+            right << Meta::secToPrettyTime( m_track->length() );
+            left << i18n( "Length" );
+        }
+
+        // NOTE: It seems to be necessary to <center> each element indivdually
+        const QString tableRow = "<tr><td width=100 align=right>%1: </td><td align=left>%2</td></tr>";
+        for( int x = 0; x < left.count(); ++x )
+            if ( !right[x].isEmpty() )
+                tooltip += tableRow.arg( left[x] ).arg( right[x] );
+
+        tooltip += "</table>";
+
+        setToolTip( tooltip );
+    }
+    else
+    {
+        setToolTip( i18n( "Amarok - No track playing" ) );
+    }
 }
 
 bool
@@ -110,11 +215,6 @@ Amarok::TrayIcon::event( QEvent *e )
         e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
         break;
         #undef e
-
-    case QEvent::ToolTip:
-        DEBUG_LINE_INFO
-        TrackToolTip::instance()->show( static_cast<QHelpEvent*>(e)->globalPos() );
-        return true;
 
     case QEvent::Drop:
         #define e static_cast<QDropEvent*>(e)
@@ -217,11 +317,16 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
         case Phonon::BufferingState:
             break;
     }
+
+    setupToolTip();
 }
 
 void
 Amarok::TrayIcon::engineNewTrackPlaying( )
 {
+    m_track = The::engineController()->currentTrack();
+
+    setupToolTip();
     setupMenu();
 }
 
@@ -231,6 +336,7 @@ Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
     Q_UNUSED( trackChanged )
     trackLength = newMetaData.value( Meta::valLength ).toInt() * 1000;
 
+    setupToolTip();
     setupMenu();
 }
 
@@ -244,6 +350,14 @@ Amarok::TrayIcon::engineTrackPositionChanged( long position, bool userSeek )
     mergeLevel = trackLength ? ((baseIcon.height() + 1) * position) / trackLength : -1;
     paintIcon( mergeLevel );
 */
+}
+
+void
+Amarok::TrayIcon::engineVolumeChanged( int percent )
+{
+    Q_UNUSED( percent );
+
+    setupToolTip();
 }
 
 void
@@ -399,4 +513,3 @@ Amarok::TrayIcon::slotActivated( QSystemTrayIcon::ActivationReason reason )
 
 
 #include "Systray.moc"
-
