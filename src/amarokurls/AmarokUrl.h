@@ -60,7 +60,10 @@ public:
 
     bool saveToDb();
 
+    void setId( int id ) { m_id = id; }
     int id() { return m_id; }
+
+    bool isNull();
 
     virtual QString name() const;
     virtual QString description() const;

@@ -28,6 +28,8 @@
 #include "AmarokUrlHandler.h"
 
 AmarokUrl::AmarokUrl()
+    : m_id( -1 )
+    , m_parent( 0 )
 {
 }
 
@@ -195,6 +197,11 @@ void AmarokUrl::rename( const QString &name )
     m_name = name;
     if ( m_id != -1 )
         saveToDb();
+}
+
+bool AmarokUrl::isNull()
+{
+    return m_fields.count() == 0;
 }
 
 

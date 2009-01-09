@@ -66,6 +66,8 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_gotoBookmarkButton = new QPushButton( i18n( "Goto" ), buttonBox );
     connect( m_gotoBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( gotoBookmark() ) );
 
+    m_currentBookmarkId = -1;
+
 
 
 }
@@ -78,6 +80,9 @@ void BookmarkManagerWidget::showCurrentUrl()
 {
     m_currentBookmarkUrlEdit->setText( getBookmarkUrl() );
     m_currentBookmarkNameEdit->setText( i18n( "New Bookmark" ) );
+
+    m_currentBookmarkId = -1;
+    updateAddButton();
 }
 
 void BookmarkManagerWidget::addBookmark()
@@ -99,18 +104,36 @@ void BookmarkManagerWidget::gotoBookmark()
 void BookmarkManagerWidget::bookmarkCurrent()
 {
     DEBUG_BLOCK
-            
+
     AmarokUrl url( m_currentBookmarkUrlEdit->text() );
     url.setName( m_currentBookmarkNameEdit->text() );
+
+    if ( m_currentBookmarkId != -1) 
+        url.setId( m_currentBookmarkId );
     
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
+
+    m_currentBookmarkId = -1;
+    updateAddButton();
 }
 
 void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )
 {
+    m_currentBookmarkId = bookmark.id();
+    
     m_currentBookmarkUrlEdit->setText( bookmark.url() );
     m_currentBookmarkNameEdit->setText( bookmark.name() );
+
+    updateAddButton();
+}
+
+void BookmarkManagerWidget::updateAddButton()
+{
+    if ( m_currentBookmarkId == -1 )
+        m_addBookmarkButton->setText( i18n( "Add" ) );
+    else
+        m_addBookmarkButton->setText( i18n( "Save" ) );
 }
 
 

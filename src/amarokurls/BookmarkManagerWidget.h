@@ -45,6 +45,7 @@ public:
 private:
     
     QString getBookmarkUrl();
+    void updateAddButton();
     
     QPushButton * m_getCurrentBookmarkButton;
     QPushButton * m_addBookmarkButton;
@@ -54,6 +55,8 @@ private:
 
     QToolBar * m_toolBar;
     BookmarkTreeView * m_bookmarkView;
+
+    int m_currentBookmarkId;
 
 private slots:
 
