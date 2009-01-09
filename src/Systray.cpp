@@ -128,7 +128,7 @@ Amarok::TrayIcon::setupToolTip()
         }
         tooltip += "</center>";
 
-        tooltip += "<table cellspacing='2' align='center' width='300'>";
+        tooltip += "<table cellspacing='2' align='center' width='100%'>";
 
         // HACK: This block is inefficient and more or less stupid
         QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
@@ -136,7 +136,7 @@ Amarok::TrayIcon::setupToolTip()
         {
             QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
             image.save( tmpFilename, "PNG" );
-            tooltip += "<tr><td align='left' valign='bottom' rowspan='9'>";
+            tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
             tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
         }
 
@@ -190,7 +190,7 @@ Amarok::TrayIcon::setupToolTip()
         }
 
         // NOTE: It seems to be necessary to <center> each element indivdually
-        const QString tableRow = "<tr><td width=100 align=right>%1: </td><td align=left>%2</td></tr>";
+        const QString tableRow = "<tr><td align='right'>%1: </td><td align='left'>%2</td></tr>";
         for( int x = 0; x < left.count(); ++x )
             if ( !right[x].isEmpty() )
                 tooltip += tableRow.arg( left[x] ).arg( right[x] );
