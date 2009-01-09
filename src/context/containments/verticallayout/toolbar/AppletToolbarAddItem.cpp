@@ -82,6 +82,7 @@ Context::AppletToolbarAddItem::paint ( QPainter * painter, const QStyleOptionGra
   //  DEBUG_BLOCK
     
     painter->save();
+    painter->setRenderHint( QPainter::Antialiasing );
     QColor fillColor( 88, 88, 88, 225 );
     QPainterPath fillPath;
     fillPath.addRoundedRect( boundingRect(), 5, 5 );

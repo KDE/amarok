@@ -69,13 +69,12 @@ Context::AppletToolbar::paint ( QPainter * painter, const QStyleOptionGraphicsIt
     
     // draw translucent curved background
     painter->save();
+    painter->setRenderHint( QPainter::Antialiasing );
     QColor fillColor( 176, 176, 176, 225 );
     QPainterPath path;
     path.addRoundedRect( boundingRect(), 5, 5 );
     painter->fillPath( path ,fillColor );
     painter->restore();
-    
-    
 }
 
 void
