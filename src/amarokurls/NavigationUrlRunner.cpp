@@ -76,6 +76,11 @@ NavigationUrlRunner::run( AmarokUrl url )
 
             ServiceBrowser::instance()->showService( collection );
 
+            //ensure that the Amarok window is activated and on top
+
+            The::mainWindow()->show();
+            The::mainWindow()->raise();
+
             return true;
 
         }
