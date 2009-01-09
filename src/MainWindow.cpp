@@ -55,7 +55,6 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "queuemanager/QueueManager.h"
 #include "widgets/Splitter.h"
-#include "widgets/TrackTooltip.h"
 //#include "mediabrowser.h"
 
 #include <QCheckBox>
@@ -310,8 +309,6 @@ MainWindow::init()
         PERF_LOG( "finished MainWindow::init" )
     }
     //</Browsers>
-
-    TrackToolTip::instance(); //Instantiate
 
     if( AmarokConfig::panelsSavedState()[0] != -1 )
     {

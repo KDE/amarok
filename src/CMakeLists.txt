@@ -515,7 +515,6 @@ set(amaroklib_LIB_SRCS
     widgets/SliderWidget.cpp
     widgets/TokenListWidget.cpp
     widgets/Token.cpp
-    widgets/TrackTooltip.cpp
     widgets/VolumeWidget.cpp
     widgets/Splitter.cpp
     GlobalCollectionActions.cpp
