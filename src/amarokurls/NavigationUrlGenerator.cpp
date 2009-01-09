@@ -90,16 +90,14 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 
         url.appendArg( browser );
 
-        if ( !sortMode.isEmpty() || !filter.isEmpty() )
+        if ( !serviceName.isEmpty() )
             url.appendArg( serviceName );
-        else
-            return url;
+
+        if ( !sortMode.isEmpty() )
+            url.appendArg( sortMode );
 
         if ( !filter.isEmpty() )
-        {
-            url.appendArg( sortMode );
             url.appendArg( filter );
-        }
         
         return url;
     
@@ -148,14 +146,12 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 
         if ( !sortMode.isEmpty() || !filter.isEmpty() )
             url.appendArg( collection );
-        else
-            return url;
+        
+        if ( !sortMode.isEmpty() )
+            url.appendArg( sortMode );
 
         if ( !filter.isEmpty() )
-        {
-            url.appendArg( sortMode );
             url.appendArg( filter );
-        }
         
         return url;
 
