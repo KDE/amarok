@@ -201,15 +201,14 @@ void TrackToolTip::setTrack()
 
         const QString length = Meta::secToPrettyTime( m_track->length() );
 
-        if( length > 0 )
+        if( m_track->length() > 0 )
         {
             m_haspos = true;
             right << "%1 / " + length;
             left << i18n( "Length" );
         }
 
-//        m_tooltip = i18n( "<i>Volume: %1%</i>", QString::number( The::engineController()->volume() ) );
-        //NOTE it seems to be necessary to <center> each element indivdually
+        // NOTE: It seems to be necessary to <center> each element indivdually
         m_tooltip += "<table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         if( m_track->album() )
