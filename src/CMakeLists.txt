@@ -645,5 +645,9 @@ target_link_libraries(amarok_afttagger
 
 install(TARGETS amarok_afttagger ${INSTALL_TARGETS_DEFAULT_ARGS})
 
+############ amarok protocol handler ###########
+
+install( FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR} )
+
 
 

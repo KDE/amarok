@@ -44,6 +44,12 @@ void AmarokUrl::initFromString( const QString & urlString )
     QString strippedUrlString = urlString;
 
     strippedUrlString = strippedUrlString.replace( "amarok://", "" );
+
+    //some poor mans unescaping
+    strippedUrlString = strippedUrlString.replace( "%22", "\"" );
+    strippedUrlString = strippedUrlString.replace( "%20", " " );
+    
+    
     m_fields = strippedUrlString.split( "/" );
     
 }

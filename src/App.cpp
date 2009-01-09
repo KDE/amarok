@@ -18,6 +18,7 @@ email                : markey@web.de
 
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
@@ -280,8 +281,16 @@ App::handleCliArgs() //static
 //             if( url.protocol() == "itpc" || url.protocol() == "pcast" )
 //                 PlaylistBrowserNS::instance()->addPodcast( url );
 //             else
+
+            if ( url.protocol() == "amarok" ) {
+
+                AmarokUrl aUrl( url.url() );
+                aUrl.run();
+
+            } else {
                 list << url;
                 DEBUG_LINE_INFO
+            }
         }
 
         int options = Playlist::AppendAndPlay;
