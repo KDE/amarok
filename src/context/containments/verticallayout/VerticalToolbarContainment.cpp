@@ -140,6 +140,7 @@ Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const
         debug() << "FAILED ADDING APPLET TO CONTAINMENT!! NOT FOUND!!";
     else
         m_applets->addApplet( applet, loc );
+    return applet;
 }
 
 void    
