@@ -49,15 +49,6 @@ class VerticalToolbarContainment : public Containment
         virtual void setView( ContextView* view);
         virtual ContextView *view();
         
-        //tmp
-        virtual bool hasPlaceForApplet( int rowSpan ) {}
-
-        virtual void setTitle( const QString& text ) {}
-        virtual void setFooter( const QString& text ) {}
-        virtual void showTitle() {}
-        virtual void hideTitle() {}
-        virtual void addCurrentTrack() {}
-        
         QRectF boundingRect () const;
     public slots:
         Applet* addApplet( const QString& pluginName, const int );

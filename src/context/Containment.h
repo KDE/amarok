@@ -41,23 +41,10 @@ public:
     virtual void saveToConfig( KConfigGroup &conf ) = 0;
     virtual void loadConfig( const KConfigGroup &conf ) = 0;
 
-    virtual bool hasPlaceForApplet( int rowSpan ) = 0;
-
-    virtual void setTitle( const QString& text ) = 0;
-    virtual void setFooter( const QString& text ) = 0;
-    virtual void showTitle() = 0;
-    virtual void hideTitle() = 0;
-    virtual void addCurrentTrack() = 0;
     virtual void setView( ContextView *newView ) = 0;
-    virtual void setZoomLevel( Plasma::ZoomLevel );
 
     virtual ContextView *view() = 0;
     
-signals:
-    void appletRejected( QString pluginName, int rowSpan );
-  
-private:
-    Plasma::ZoomLevel m_zoomLevel;      
 };
 
 } // Context namespace

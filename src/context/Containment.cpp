@@ -34,11 +34,6 @@ Containment::~Containment()
     DEBUG_BLOCK
 }
 
-void
-Containment::setZoomLevel( Plasma::ZoomLevel zoomLevel )
-{
-    m_zoomLevel = zoomLevel;
-}
 
 } // namespace Context
 #include "Containment.moc"
