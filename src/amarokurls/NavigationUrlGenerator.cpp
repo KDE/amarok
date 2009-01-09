@@ -169,7 +169,6 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     {
         browser = "files";
         url.appendArg( browser );
-        //TODO: add handling of playlist browser categories here!
         return url;
 
     }
@@ -188,7 +187,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
         debug() << "service album";
         Meta::SourceInfoCapability * sic = qobject_cast<Meta::SourceInfoCapability *>( album->asCapabilityInterface( Meta::Capability::SourceInfo ) );
         serviceName = sic->sourceName();
-        target = "collection";
+        target = "service";
     } else if ( album->hasCapabilityInterface( Meta::Capability::CustomActions ) ){
         //case 2, this is something from the SqlCollection ( or potentailly a mobile
         //device which shows up in the same view )
