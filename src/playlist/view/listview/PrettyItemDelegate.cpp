@@ -91,10 +91,6 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
     height = MARGIN * 2 + rowCount * bfm.height() + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
 
-    
-
-
-
 }
 
 void
@@ -136,7 +132,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         int trackHeight = MARGIN * 2 + trackRows * bfm.height() + ( trackRows - 1 ) * PADDING;
         trackOption.rect = QRect( 0, headHeight, option.rect.width(), trackHeight );
 
-        paintItem( layout.head(), painter, headOption, index );
+        paintItem( layout.head(), painter, headOption, index, true );
         painter->translate( 0, headHeight - 1 );
         paintItem( layout.body(), painter, trackOption, index );
         
@@ -161,341 +157,6 @@ PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
     return headerBounds.contains( pt );
 }
 
-void
-PrettyItemDelegate::paintSingleTrack( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
-{
-    QRectF trackRect( option.rect );
-    QFontMetricsF nfm( option.font );
-
-    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
-
-    //paint cover
-    QPixmap albumPixmap;
-    if ( track->album() )
-        albumPixmap = track->album()->imageWithBorder( int( SINGLE_TRACK_ALBUM_WIDTH ), 3 );
-
-    //offset cover if non square
-    const QPointF offset = centerImage( albumPixmap, imageLocation() );
-    const QRectF imageRect = imageRectify( offset );
-
-    painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
-
-    //check if there is a emblem to display
-    //does this track have the SourceInfoCapability?
-    Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
-    if ( sic )
-    {
-        //is the source defined
-        QString source = sic->sourceName();
-        if ( !source.isEmpty() )
-            painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
-
-        delete sic;
-    }
-
-    // Draw queue display indicator
-    if( index.data( StateRole ).toInt() & Item::Queued )
-    {
-        const int queuePosition = index.data( QueuePositionRole ).toInt();
-        const int w = 16, h = 16;
-        const int x = imageRect.x() + imageRect.width() - w;
-        const int y = imageRect.y();
-        const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", w, h, "active_overlay" ) ); // TODO: actual queue overlay
-        painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
-    }
-
-    // Set up the text areas
-    qreal leftside = MARGINH + SINGLE_TRACK_ALBUM_WIDTH + 3 * PADDING;
-    qreal boxheight = ( trackRect.height() - 3 * MARGIN ) / 2.0;
-    qreal textwidth = trackRect.width() - leftside - MARGINH;
-
-    QPointF topLeft( leftside, MARGIN );
-    QRectF topLine( leftside, MARGIN, textwidth, boxheight ); // box that surrounds the entire top line of text
-    QRectF bottomLine( leftside, MARGIN + boxheight + MARGIN, textwidth, boxheight ); // box that surrounds the entire bottom line of text
-
-    // top right: track time
-    QString timeString;
-    if ( track->length() > 3600 )
-        timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
-    else
-        timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
-    timeStringSize.setHeight( boxheight );
-    QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, MARGIN );
-    QRectF timeTextBox( textLoc, timeStringSize );
-    timeTextBox = timeTextBox.adjusted( 0, PADDING, 0, -PADDING );
-
-    // top left: track name
-    QRectF titleTextBox = topLine.adjusted( PADDING, PADDING, -2 * PADDING - timeStringSize.width(), -PADDING );
-    QString titleString = nfm.elidedText( track->prettyName(), Qt::ElideRight, ( int )titleTextBox.width() );
-
-    QString rawArtistString = ( track->album() == Meta::ArtistPtr() ) ? QString() : track->artist()->prettyName();
-    QString rawAlbumString = ( track->album() == Meta::AlbumPtr() ) ? QString() : track->album()->prettyName();
-
-    // figure out widths for artist and album boxes
-    textwidth -= static_cast<qreal>( nfm.averageCharWidth() * 2.0 ); // make room for a space between artist & album
-    qreal albumNameWidth;
-    qreal artistNameWidth = nfm.size( Qt::TextSingleLine, rawArtistString ).width();
-    if ( artistNameWidth <= textwidth / 2.0 )
-        albumNameWidth = textwidth - artistNameWidth;
-    else
-    {
-        albumNameWidth = nfm.size( Qt::TextSingleLine, rawAlbumString ).width();
-        if ( albumNameWidth <= textwidth / 2.0 )
-            artistNameWidth = textwidth - albumNameWidth;
-        else
-        {
-            artistNameWidth = textwidth / 2.0;
-            albumNameWidth = textwidth / 2.0;
-        }
-    }
-
-    // bottom left: artist name
-    QPointF artistLoc( bottomLine.topLeft() );
-    artistLoc.rx() += PADDING;
-    QRectF artistTextBox( artistLoc, QSizeF( artistNameWidth, boxheight ) );
-    artistTextBox.adjust( 0, PADDING, 0, -PADDING );
-    QString artistString = nfm.elidedText( rawArtistString, Qt::ElideRight, artistNameWidth );
-
-    // bottom right: album name
-    QPointF albumLoc( bottomLine.topRight() );
-    albumLoc.rx() -= ( albumNameWidth + PADDING );
-    QRectF albumTextBox( albumLoc, QSizeF( albumNameWidth, boxheight ) );
-    albumTextBox.adjust( 0, PADDING, 0, -PADDING );
-    QString albumString = nfm.elidedText( rawAlbumString, Qt::ElideRight, albumNameWidth );
-
-    // draw the "current track" highlight underneath the text
-    //if( index.data( ActiveTrackRole ).toBool() )
-    //    paintActiveOverlay( painter, topLine.x(), topLine.y(), bottomLine.width(), bottomLine.height() );
-
-    // render text in here
-    painter->drawText( titleTextBox, Qt::AlignLeft | Qt::AlignVCenter, titleString );
-    painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
-    painter->drawText( artistTextBox, Qt::AlignLeft | Qt::AlignVCenter, artistString );
-    painter->drawText( albumTextBox, Qt::AlignRight | Qt::AlignVCenter, albumString );
-
-    //set selection marker if needed
-    /*if (option.state & QStyle::State_Selected) {
-        painter->drawPixmap( (int)topLine.x(),(int)topLine.y(),
-                             The::svgHandler()->renderSvg(
-                                        "selection",
-                                        (int)bottomLine.width(), (int)bottomLine.height(),
-                                        "selection"
-                                      )
-                           );
-    }*/
-}
-
-void
-PrettyItemDelegate::paintHead( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
-{
-    QRectF trackRect( option.rect );
-    QFontMetricsF nfm( option.font );
-    QFont boldfont( option.font );
-    boldfont.setBold( true );
-    QFontMetricsF bfm( boldfont );
-
-    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
-
-    //paint cover
-    QPixmap albumPixmap;
-    if ( track->album() )
-        albumPixmap = track->album()->imageWithBorder( int( SINGLE_TRACK_ALBUM_WIDTH ), 3 );
-
-    //offset cover if non square
-    const QPointF offset = centerImage( albumPixmap, imageLocation() );
-    const QRectF imageRect = imageRectify( offset );
-
-    painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
-
-    //check if there is a emblem to display
-    //does this track have the SourceInfoCapability?
-    Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
-    if ( sic )
-    {
-        //is the source defined
-        QString source = sic->sourceName();
-        if ( !source.isEmpty() )
-            painter->drawPixmap( QRectF( imageLocation().x(), imageLocation().y() , 16, 16 ), sic->emblem(), QRectF( 0, 0 , 16, 16 ) );
-
-        delete sic;
-    }
-
-    qreal headheight = MARGIN + qMax( SINGLE_TRACK_ALBUM_WIDTH, bfm.height() * 2 + PADDING ) + PADDING;
-
-    // Set up the text areas
-    qreal leftside = MARGINH + SINGLE_TRACK_ALBUM_WIDTH + 3 * PADDING;
-    qreal boxheight = ( headheight - PADDING ) / 2.0;
-    qreal textwidth = trackRect.width() - leftside - MARGINH;
-
-    QPointF topLeft( leftside, MARGIN );
-    QRectF topLine( leftside, MARGIN, textwidth, boxheight ); // box that surrounds the entire top line of text
-    QRectF bottomLine( leftside, MARGIN + boxheight + MARGIN, textwidth, boxheight ); // box that surrounds the entire bottom line of text
-
-    painter->save(); // before changing to bold text
-
-    QFont font;
-    font.setBold( true );
-    painter->setFont( font );
-
-    // top line: album
-    QRectF albumTextBox = topLine.adjusted( PADDING, PADDING, -PADDING, -PADDING );
-    QString rawAlbumString = ( track->album() == Meta::AlbumPtr() ) ? QString() : track->album()->prettyName();
-    QString albumString = bfm.elidedText( rawAlbumString, Qt::ElideRight, ( int )albumTextBox.width() );
-    painter->drawText( albumTextBox, Qt::AlignCenter, albumString );
-
-    // bottom line: artist
-    QRectF artistTextBox = bottomLine.adjusted( PADDING, PADDING, -PADDING, -PADDING );
-    QString rawArtistString = ( track->album() == Meta::ArtistPtr() ) ? QString() : track->artist()->prettyName();
-    QString artistString = bfm.elidedText( rawArtistString, Qt::ElideRight, ( int )artistTextBox.width() );
-    painter->drawText( artistTextBox, Qt::AlignCenter, artistString );
-
-    painter->restore(); // change back from bold text
-
-    // for track number, name, and time
-    QRectF line( QPointF( MARGINH, headheight + MARGIN ), QPointF( trackRect.width() - MARGINH, trackRect.height() - MARGINBODY ) );
-
-    // draw the "current track" highlight underneath the text
-    //if( index.data( ActiveTrackRole ).toBool() )
-    //    paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
-
-    // right: track time
-    QString timeString;
-    if ( track->length() > 3600 )
-        timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
-    else
-        timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
-    timeStringSize.setHeight( line.height() );
-    QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, line.y() );
-    QRectF timeTextBox( textLoc, timeStringSize );
-    timeTextBox = timeTextBox.adjusted( 0, PADDING, 0, -PADDING );
-
-    // left: track number and name
-    QRectF textBox = line.adjusted( PADDING, PADDING, -2 * PADDING - timeStringSize.width(), -PADDING );
-
-    QString trackString;
-    QString trackName = track->prettyName();
-    if ( track->trackNumber() > 0 )
-    {
-        QString trackNumber = QString::number( track->trackNumber() );
-        trackString = nfm.elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
-    }
-    else
-        trackString = nfm.elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
-
-    // render text in here
-    //setTextColor(index.data(ActiveTrackRole).toBool());
-    painter->drawText( textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString );
-    painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
-}
-
-void
-PrettyItemDelegate::paintBody( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
-{
-    QRectF trackRect( option.rect );
-    QFontMetricsF nfm( option.font );
-
-    QRectF line( MARGINH, MARGINBODY, trackRect.width() - ( 2*MARGINH ), trackRect.height() - ( 2*MARGINBODY ) );
-
-    // draw the "current track" highlight underneath the text
-    //if ( index.data( ActiveTrackRole ).toBool() )
-    //    paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
-
-    // Draw queue display indicator
-    if( index.data( StateRole ).toInt() & Item::Queued )
-    {
-        const int queuePosition = index.data( QueuePositionRole ).toInt();
-        const int w = 16, h = 16;
-        const int x = 1;
-        const int y = 1;
-        const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", w, h, "active_overlay" ) ); // TODO: actual queue overlay
-        painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
-
-        line.setLeft( line.left() + w ); // adjust the left edge of the text to account for the queue indicator
-    }
-
-    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
-
-    // right: track time
-    QString timeString;
-    if ( track->length() > 3600 )
-        timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
-    else
-        timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
-    timeStringSize.setHeight( line.height() );
-    QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, MARGIN );
-    QRectF timeTextBox( textLoc, timeStringSize );
-    timeTextBox = timeTextBox.adjusted( 0, PADDING, 0, -PADDING );
-
-    // left: track number and name
-    QRectF textBox = line.adjusted( PADDING, PADDING, -2 * PADDING - timeStringSize.width(), -PADDING );
-
-    QString trackString;
-    QString trackName = track->prettyName();
-    if ( track->trackNumber() > 0 )
-    {
-        QString trackNumber = QString::number( track->trackNumber() );
-        trackString = nfm.elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
-    }
-    else
-        trackString = nfm.elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
-
-    // render text in here
-    //setTextColor(index.data(ActiveTrackRole).toBool());
-    painter->drawText( textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString );
-    painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
-}
-
-void
-PrettyItemDelegate::paintTail( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
-{
-    QRectF trackRect( option.rect );
-    QFontMetricsF nfm( option.font );
-
-    QRectF line( MARGINH, MARGINBODY, trackRect.width() - ( 2*MARGINH ), trackRect.height() - MARGINBODY - MARGIN );
-
-    // draw the "current track" highlight underneath the text
-    //if( index.data( ActiveTrackRole ).toBool() )
-    //    paintActiveOverlay( painter, line.x(), line.y(), line.width(), line.height() );
-    
-
-    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
-
-    // right: track time
-    QString timeString;
-    if ( track->length() > 3600 )
-        timeString = QTime().addSecs( track->length() ).toString( "h:mm:ss" );
-    else
-        timeString = QTime().addSecs( track->length() ).toString( "m:ss" );
-    QSizeF timeStringSize( nfm.size( Qt::TextSingleLine, timeString ) );
-    timeStringSize.setHeight( line.height() );
-    QPointF textLoc( trackRect.width() - MARGINH - timeStringSize.width() - PADDING, MARGIN );
-    QRectF timeTextBox( textLoc, timeStringSize );
-    timeTextBox = timeTextBox.adjusted( 0, PADDING, 0, -PADDING );
-
-    // left: track number and name
-    QRectF textBox = line.adjusted( PADDING, PADDING, -2 * PADDING - timeStringSize.width(), -PADDING );
-
-    QString trackString;
-    QString trackName = track->prettyName();
-    if ( track->trackNumber() > 0 )
-    {
-        QString trackNumber = QString::number( track->trackNumber() );
-        trackString = nfm.elidedText( QString( trackNumber + " - " + trackName ), Qt::ElideRight, ( int )textBox.width() );
-    }
-    else
-        trackString = nfm.elidedText( QString( trackName ), Qt::ElideRight, ( int )textBox.width() );
-
-    // render text in here
-    //setTextColor(index.data(ActiveTrackRole).toBool());
-    painter->drawText( textBox, Qt::AlignLeft | Qt::AlignVCenter, trackString );
-    painter->drawText( timeTextBox, Qt::AlignRight | Qt::AlignVCenter, timeString );
-}
-
 QPointF
 PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) const
 {
@@ -512,17 +173,8 @@ PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) con
     return QPointF( moveByX, moveByY );
 }
 
-const QRectF
-PrettyItemDelegate::imageRectify( const QPointF offset ) const
-{
-    const QRectF imageRect( imageLocationSingleTrack().x() + offset.x(),
-                      imageLocationSingleTrack().y() + offset.y(),
-                      imageLocationSingleTrack().width() - offset.x() * 2,
-                      imageLocationSingleTrack().height() - offset.y() * 2 );
-    return imageRect;
-}
 
-void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker ) const
 {
     int rowCount = config.rows();
 
@@ -534,13 +186,15 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
     int rowOffsetX = MARGINH;
     int rowOffsetY = 0;
 
+    int imageSize = option.rect.height() - MARGIN * 2;
+    QRectF nominalImageRect( MARGINH, MARGIN, imageSize, imageSize );
+    
     if ( config.showCover() ) {
-        int imageSize = option.rect.height() - MARGIN * 2;
         
         QModelIndex coverIndex = index.model()->index( index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-        QRectF nominalImageRect( MARGINH, MARGIN, imageSize, imageSize );
+
 
         //offset cover if non square
         QPointF offset = centerImage( albumPixmap, nominalImageRect );
@@ -559,6 +213,20 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
             painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
 
         rowOffsetX = imageSize + MARGINH + PADDING * 2;
+    }
+
+    if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
+    {
+        const int queuePosition = index.data( QueuePositionRole ).toInt();
+        const int w = 16, h = 16;
+        const int x = nominalImageRect.x();
+        const int y = nominalImageRect.y() + ( imageSize - h );
+        const QRect rect( x, y, w, h );
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", w, h, "active_overlay" ) ); // TODO: actual queue overlay
+        painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+
+        if ( !config.showCover() )
+            rowOffsetX = 16 + MARGINH + PADDING * 2;
     }
 
     for ( int i = 0; i < rowCount; i++ ) {
