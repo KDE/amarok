@@ -56,11 +56,11 @@ signals:
 
 private:
     QSet<BookmarkViewItemPtr> selectedItems() const;
-    QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
+    QList<KAction *> createCommonActions( QModelIndexList indices );
 
-    PopupDropperAction *m_loadAction;
-    PopupDropperAction *m_deleteAction;
-    PopupDropperAction *m_renameAction;
+    KAction *m_loadAction;
+    KAction *m_deleteAction;
+    KAction *m_renameAction;
 
     KAction *m_addGroupAction;
 };

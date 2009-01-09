@@ -91,38 +91,41 @@ BookmarkTreeView::keyPressEvent( QKeyEvent *event )
     QTreeView::keyPressEvent( event );
 }
 
-QList<PopupDropperAction *>
+QList<KAction *>
 BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
 
-    QList< PopupDropperAction * > actions;
+    QList< KAction * > actions;
     
     if ( m_loadAction == 0 )
     {
-        m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+        m_loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 
     if ( m_deleteAction == 0 )
     {
-        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new KAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
     }
 
     if ( m_renameAction == 0 )
     {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        m_renameAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
     
     if ( indices.count() > 0 )
     {
         actions << m_loadAction;
-        //menu.addSeparator();
     }
 
     if ( indices.count() > 0 )
         actions << m_deleteAction;
+
+    if ( indices.count() == 1 )
+        actions << m_renameAction;
+
 
     return actions;
 }
@@ -169,15 +172,15 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
 
     KMenu menu;
 
-    QList<PopupDropperAction *> actions = createCommonActions( indices );
+    QList<KAction *> actions = createCommonActions( indices );
 
-    foreach( PopupDropperAction * action, actions )
+    foreach( KAction * action, actions )
         menu.addAction( action );
 
     if( indices.count() == 0 )
         menu.addAction( m_addGroupAction );
 
-    menu.exec( mapToGlobal( event->pos() ) );
+    menu.exec( mapToGlobal( event->globalPos() ) );
 }
 
 QSet<BookmarkViewItemPtr>
