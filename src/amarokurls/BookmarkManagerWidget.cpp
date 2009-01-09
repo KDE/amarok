@@ -23,6 +23,8 @@
 #include "BookmarkModel.h"
 #include "NavigationUrlGenerator.h"
 
+#include <KAction>
+#include <KIcon>
 #include <KLocale>
 #include <KVBox>
 
@@ -31,6 +33,20 @@
 BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
  : KVBox( parent )
 {
+    
+    setContentsMargins(0,0,0,0);
+    
+    m_toolBar = new QToolBar( this );
+    m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+
+    KAction * addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
+    m_toolBar->addAction( addGroupAction );
+    connect( addGroupAction, SIGNAL( triggered( bool ) ), BookmarkModel::instance(), SLOT( createNewGroup() ) );
+
+    m_bookmarkView = new BookmarkTreeView( this );
+    m_bookmarkView->setModel( BookmarkModel::instance() );
+    connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
+
     KHBox * editBox1 = new KHBox( this );
     new QLabel( i18n( "Name:" ), editBox1 );
     m_currentBookmarkNameEdit = new QLineEdit( editBox1 );
@@ -50,12 +66,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_gotoBookmarkButton = new QPushButton( i18n( "Goto" ), buttonBox );
     connect( m_gotoBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( gotoBookmark() ) );
 
-    m_bookmarkView = new BookmarkTreeView( this );
-    m_bookmarkView->setModel( BookmarkModel::instance() );
 
-    connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
-
-    QPalette p = palette();
 
 }
 
@@ -101,6 +112,7 @@ void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )
     m_currentBookmarkUrlEdit->setText( bookmark.url() );
     m_currentBookmarkNameEdit->setText( bookmark.name() );
 }
+
 
 #include "BookmarkManagerWidget.moc"
 

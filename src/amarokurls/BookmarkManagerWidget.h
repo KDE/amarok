@@ -27,6 +27,7 @@
 
 #include <QLineEdit>
 #include <QPushButton>
+#include <QToolBar>
 
 
 /**
@@ -51,6 +52,7 @@ private:
     QLineEdit * m_currentBookmarkNameEdit;
     QLineEdit * m_currentBookmarkUrlEdit;
 
+    QToolBar * m_toolBar;
     BookmarkTreeView * m_bookmarkView;
 
 private slots:

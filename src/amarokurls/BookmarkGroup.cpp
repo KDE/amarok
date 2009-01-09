@@ -69,14 +69,14 @@ void BookmarkGroup::save()
 
     if ( m_dbId != -1 ) {
         //update existing
-        QString query = "UPDATE playlist_groups SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
+        QString query = "UPDATE bookmark_groups SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( QString::number( m_dbId ) );
         CollectionManager::instance()->sqlStorage()->query( query );
 
     } else {
         //insert new
 
-        QString query = "INSERT INTO playlist_groups ( parent_id, name, description) VALUES ( %1, '%2', '%3' );";
+        QString query = "INSERT INTO bookmark_groups ( parent_id, name, description) VALUES ( %1, '%2', '%3' );";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
 
@@ -89,7 +89,7 @@ BookmarkGroupList BookmarkGroup::childGroups() const
     //DEBUG_BLOCK
     if ( !m_hasFetchedChildGroups ) {
 
-        QString query = "SELECT id, parent_id, name, description FROM playlist_groups where parent_id=%1 ORDER BY name;";
+        QString query = "SELECT id, parent_id, name, description FROM bookmark_groups where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
@@ -190,15 +190,15 @@ void BookmarkGroup::deleteChild( BookmarkViewItemPtr item )
 
 void BookmarkGroup::removeFromDb()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
 
     foreach( BookmarkGroupPtr group, m_childGroups )
         group->removeFromDb();
     foreach( AmarokUrlPtr bookmark, m_childBookmarks )
         bookmark->removeFromDb();
 
-    QString query = "DELETE FROM bookmark_groups where id=%1;";
-    query = query.arg( QString::number( m_dbId ) );
+    QString query = QString( "DELETE FROM bookmark_groups where id=%1;").arg( QString::number( m_dbId ) );
+    debug() << "query: " << query;
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 }
 
