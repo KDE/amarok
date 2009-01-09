@@ -153,7 +153,6 @@ void TrackToolTip::setTrack()
     if( m_track )
     {
         m_tooltip.clear();
-        m_haspos = false;
 
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1: </td><td align=left>%2</td></tr>";
@@ -244,6 +243,7 @@ void TrackToolTip::clear()
 {
     DEBUG_BLOCK
 
+    m_haspos = false;
     m_trackPosition = 0;
     m_tooltip = i18n( "Amarok - No track playing." );
     m_title.clear();
