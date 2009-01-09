@@ -25,6 +25,7 @@
 #include "SourceInfoCapability.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
+#include "collection/sqlcollection/SqlMeta.h"
 
 NavigationUrlGenerator::NavigationUrlGenerator()
 {
@@ -179,36 +180,55 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
     AmarokUrl url;
 
     //we need to figure out the type of this thing...
-
-    //case 1, from a service:
+    QString target;
+    QString serviceName;
+    
     if ( album->hasCapabilityInterface( Meta::Capability::SourceInfo ) ) {
+        //case 1, from a service:
+        debug() << "service album";
         Meta::SourceInfoCapability * sic = qobject_cast<Meta::SourceInfoCapability *>( album->asCapabilityInterface( Meta::Capability::SourceInfo ) );
-        QString serviceName = sic->sourceName();
-        QString albumName = album->prettyName();
-        QString artistName;
-        if ( album->albumArtist() )
-            artistName = album->albumArtist()->prettyName();
-
-        debug() << "Got and album from service: " << serviceName;
-        
-        url.setCommand( "navigate" );
-        url.appendArg( "service" );
-        url.appendArg( serviceName );
-        url.appendArg( "album" );
-
-        QString filter = "album:\"" + albumName + "\"";
-        if ( !artistName.isEmpty() )
-            filter += ( " AND artist:\"" + artistName + "\"" );
-        
-        url.appendArg( filter );
-
-        debug() << "got url: " << url.url();
-
-        url.setName( i18n( "Album \"%1\" from %2", albumName, serviceName ) );
-
-        debug() << "url name: " << url.name();
-
+        serviceName = sic->sourceName();
+        target = "collection";
+    } else if ( album->hasCapabilityInterface( Meta::Capability::CustomActions ) ){
+        //case 2, this is something from the SqlCollection ( or potentailly a mobile
+        //device which shows up in the same view )
+        debug() << "local album";
+        target = "collection";
+    } else {
+        //case 3, no clue what this is, bail out...
+        debug() << "no idea";
+        return url;
     }
+       
+        
+    QString albumName = album->prettyName();
+    QString artistName;
+    if ( album->albumArtist() )
+        artistName = album->albumArtist()->prettyName();
+
+    debug() << "Got and album from service: " << serviceName;
+
+    url.setCommand( "navigate" );
+    url.appendArg( target );
+    url.appendArg( serviceName );
+    url.appendArg( "album" );
+
+    QString filter = "album:\"" + albumName + "\"";
+    if ( !artistName.isEmpty() )
+        filter += ( " AND artist:\"" + artistName + "\"" );
+
+    url.appendArg( filter );
+
+    debug() << "got url: " << url.url();
+
+    
+    if ( !serviceName.isEmpty() ) 
+        url.setName( i18n( "Album \"%1\" from %2", albumName, serviceName ) );
+    else
+        url.setName( i18n( "Album \"%1\"", albumName ) );
+
+    debug() << "url name: " << url.name();
+
 
     return url;
 }
@@ -217,30 +237,46 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 {
     AmarokUrl url;
 
+    QString target;
+    QString serviceName;
+
  //case 1, from a service:
     if ( artist->hasCapabilityInterface( Meta::Capability::SourceInfo ) ) {
         Meta::SourceInfoCapability * sic = qobject_cast<Meta::SourceInfoCapability *>( artist->asCapabilityInterface( Meta::Capability::SourceInfo ) );
-        QString serviceName = sic->sourceName();
-        QString artistName = artist->prettyName();
-        
-        debug() << "Got and artist from service: " << serviceName;
-        
-        url.setCommand( "navigate" );
-        url.appendArg( "service" );
-        url.appendArg( serviceName );
-        url.appendArg( "artist-album" );
-
-        QString filter = "artist:\"" + artistName + "\"";
-        
-        url.appendArg( filter );
-
-        debug() << "got url: " << url.url();
-
-        url.setName( i18n( "Artist \"%1\" from %2", artistName, serviceName ) );
-
-        debug() << "url name: " << url.name();
-
+        serviceName = sic->sourceName();
+        target = "service";
+    } else if ( true /*FIXME: we really need some check here*/ ){
+        //case 2, this is something from the SqlCollection ( or potentailly a mobile
+        //device which shows up in the same view )
+        debug() << "local artist";
+        target = "collection";
+    } else {
+        //case 3, no clue what this is, bail out...
+        debug() << "no idea";
+        return url;
     }
 
+    QString artistName = artist->prettyName();
+
+    debug() << "Got and artist from service: " << serviceName;
+
+    url.setCommand( "navigate" );
+    url.appendArg( target );
+    url.appendArg( serviceName );
+    url.appendArg( "artist-album" );
+
+    QString filter = "artist:\"" + artistName + "\"";
+
+    url.appendArg( filter );
+
+    debug() << "got url: " << url.url();
+
+    if ( !serviceName.isEmpty() )
+        url.setName( i18n( "Artist \"%1\" from %2", artistName, serviceName ) );
+    else
+        url.setName( i18n( "Artist \"%1\"", artistName ) );
+
+    debug() << "url name: " << url.name();
+    
     return url;
 }

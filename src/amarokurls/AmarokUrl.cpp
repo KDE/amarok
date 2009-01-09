@@ -138,6 +138,9 @@ bool AmarokUrl::saveToDb()
 {
     DEBUG_BLOCK
 
+    if ( isNull() )
+        return false;
+
     int parentId = -1;
     if ( m_parent )
         parentId = m_parent->id();
