@@ -17,68 +17,52 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AMAROKURL_H
-#define AMAROKURL_H
+#ifndef BOOKMARKTREEVIEW_H
+#define BOOKMARKTREEVIEW_H
 
-#include "amarok_export.h"
+#include "AmarokUrl.h"
 #include "BookmarkViewItem.h"
-#include "BookmarkGroup.h"
+#include "widgets/PrettyTreeView.h"
 
-#include <QString>
-#include <QStringList>
+class PopupDropper;
+class PopupDropperAction;
 
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem{
+class KAction;
+
+class BookmarkTreeView : public Amarok::PrettyTreeView
+{
+    Q_OBJECT
+
 public:
-    AmarokUrl();
-    AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
-    AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent  = BookmarkGroupPtr() );
+    BookmarkTreeView( QWidget *parent = 0 );
+    ~BookmarkTreeView();
 
-    ~AmarokUrl();
+    void setNewGroupAction( KAction * action );
 
-    void initFromString( const QString & urlString );
+protected:
+    void keyPressEvent( QKeyEvent *event );
+    void mouseDoubleClickEvent( QMouseEvent *event );
+    void contextMenuEvent( QContextMenuEvent* event );
 
-    void setCommand( const QString &command );
-    QString command();
+protected slots:
+    void slotLoad();
+    void slotDelete();
+    void slotRename();
 
-    void setName( const QString &name );
-;
+    void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
 
-    void setDescription( const QString &description );
-
-
-    int numberOfArgs();
-
-    void appendArg( QString &arg );
-    QString arg( int );
-
-    bool run();
-
-    QString url();
-
-    bool saveToDb();
-
-    int id() { return m_id; }
-
-    virtual QString name() const;
-    virtual QString description() const;
-    virtual BookmarkGroupPtr parent() const { return m_parent; }
-    virtual void removeFromDb();
-    virtual void rename( const QString &name );
-
+signals:
+    void bookmarkSelected( AmarokUrl bookmark );
 
 private:
+    QSet<BookmarkViewItemPtr> selectedItems() const;
+    QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
 
-    QStringList m_fields;
+    PopupDropperAction *m_loadAction;
+    PopupDropperAction *m_deleteAction;
+    PopupDropperAction *m_renameAction;
 
-    int m_id;
-    BookmarkGroupPtr m_parent;
-    QString m_description;
-    QString m_name;
-
-
+    KAction *m_addGroupAction;
 };
 
 #endif

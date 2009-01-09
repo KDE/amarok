@@ -117,6 +117,9 @@ set(libamarokurl_SRCS
     amarokurls/NavigationUrlRunner.cpp
     amarokurls/NavigationUrlGenerator.cpp
     amarokurls/BookmarkManagerWidget.cpp
+    amarokurls/BookmarkGroup.cpp
+    amarokurls/BookmarkModel.cpp
+    amarokurls/BookmarkTreeView.cpp
 )
         
 #####################################################################

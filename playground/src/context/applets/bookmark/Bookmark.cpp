@@ -97,7 +97,7 @@ Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
     Q_UNUSED( which )
 
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-        return QSizeF( constraint.width(), 150 );
+        return QSizeF( constraint.width(), 350 );
 //      return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
 
     return constraint;

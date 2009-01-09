@@ -21,6 +21,7 @@
 #define BOOKMARKMANAGERWIDGET_H
 
 #include "amarok_export.h"
+#include "BookmarkTreeView.h"
 
 #include <KVBox>
 
@@ -50,11 +51,16 @@ private:
     QLineEdit * m_currentBookmarkNameEdit;
     QLineEdit * m_currentBookmarkUrlEdit;
 
+    BookmarkTreeView * m_bookmarkView;
+
 private slots:
 
     void showCurrentUrl();
     void addBookmark();
     void gotoBookmark();
+    void bookmarkCurrent();
+
+    void slotBookmarkSelected( AmarokUrl bookmark );
 
 };
 

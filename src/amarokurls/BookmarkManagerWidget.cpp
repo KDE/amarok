@@ -20,6 +20,7 @@
 #include "BookmarkManagerWidget.h"
 
 #include "AmarokUrl.h"
+#include "BookmarkModel.h"
 #include "NavigationUrlGenerator.h"
 
 #include <KLocale>
@@ -42,11 +43,20 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     
     m_getCurrentBookmarkButton = new QPushButton( i18n( "Get Current" ), buttonBox );
     connect( m_getCurrentBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( showCurrentUrl() ) );
+    
     m_addBookmarkButton = new QPushButton( i18n( "Add" ), buttonBox );
-    m_addBookmarkButton->setEnabled( false );
+    connect( m_addBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( bookmarkCurrent() ) );
 
     m_gotoBookmarkButton = new QPushButton( i18n( "Goto" ), buttonBox );
     connect( m_gotoBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( gotoBookmark() ) );
+
+    m_bookmarkView = new BookmarkTreeView( this );
+    m_bookmarkView->setModel( BookmarkModel::instance() );
+
+    connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
+
+    QPalette p = palette();
+
 }
 
 BookmarkManagerWidget::~BookmarkManagerWidget()
@@ -73,6 +83,23 @@ void BookmarkManagerWidget::gotoBookmark()
 {
     AmarokUrl url( m_currentBookmarkUrlEdit->text() );
     url.run();
+}
+
+void BookmarkManagerWidget::bookmarkCurrent()
+{
+    DEBUG_BLOCK
+            
+    AmarokUrl url( m_currentBookmarkUrlEdit->text() );
+    url.setName( m_currentBookmarkNameEdit->text() );
+    
+    url.saveToDb();
+    BookmarkModel::instance()->reloadFromDb();
+}
+
+void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )
+{
+    m_currentBookmarkUrlEdit->setText( bookmark.url() );
+    m_currentBookmarkNameEdit->setText( bookmark.name() );
 }
 
 #include "BookmarkManagerWidget.moc"

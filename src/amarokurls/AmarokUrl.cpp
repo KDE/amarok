@@ -18,8 +18,12 @@
  ***************************************************************************/
  
 #include "AmarokUrl.h"
+#include "BookmarkGroup.h"
 
+#include "CollectionManager.h"
 #include "Debug.h"
+
+#include "SqlStorage.h"
 
 #include "AmarokUrlHandler.h"
 
@@ -27,8 +31,21 @@ AmarokUrl::AmarokUrl()
 {
 }
 
-AmarokUrl::AmarokUrl( const QString & urlString )
+AmarokUrl::AmarokUrl( const QString & urlString, BookmarkGroupPtr parent )
+    : m_id( -1 )
+    , m_parent( parent )
 {
+    initFromString( urlString );
+}
+
+AmarokUrl::AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent )
+    : m_parent( parent )
+{
+    m_id = resultRow[0].toInt();
+    m_name = resultRow[2];
+    QString urlString = resultRow[3];
+    m_description = resultRow[4];
+
     initFromString( urlString );
 }
 
@@ -114,4 +131,70 @@ QString AmarokUrl::url()
 
     return url;
 }
+
+bool AmarokUrl::saveToDb()
+{
+    DEBUG_BLOCK
+
+    int parentId = -1;
+    if ( m_parent )
+        parentId = m_parent->id();
+
+    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+
+
+    if( m_id != -1 )
+    {
+        //update existing
+        debug() << "Updating bookmark";
+        QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4' WHERE id=%5;";
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( QString::number( m_id ) );
+        CollectionManager::instance()->sqlStorage()->query( query );
+
+    }
+    else
+    {
+        //insert new
+        debug() << "Creating new bookmark in the db";
+        QString query = "INSERT INTO bookmarks ( parent_id, name, url, description ) VALUES ( %1, '%2', '%3', '%4' );";
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) );
+        m_id = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
+    }
+    return true;
+}
+
+void AmarokUrl::setName( const QString & name )
+{
+    m_name = name;
+}
+
+QString AmarokUrl::name() const
+{
+    return m_name;
+}
+
+void AmarokUrl::setDescription( const QString & description )
+{
+    m_description = description;
+}
+
+QString AmarokUrl::description() const
+{
+    return m_description;
+}
+
+void AmarokUrl::removeFromDb()
+{
+    QString query = "DELETE FROM bookmarks WHERE id=%1";
+    query = query.arg( QString::number( m_id ) );
+    CollectionManager::instance()->sqlStorage()->query( query );
+}
+
+void AmarokUrl::rename( const QString &name )
+{
+    m_name = name;
+    if ( m_id != -1 )
+        saveToDb();
+}
+
 

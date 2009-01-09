@@ -17,68 +17,41 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AMAROKURL_H
-#define AMAROKURL_H
+#ifndef BOOKMARKVIEWITEM_H
+#define BOOKMARKVIEWITEM_H
 
-#include "amarok_export.h"
-#include "BookmarkViewItem.h"
-#include "BookmarkGroup.h"
+#include "Debug.h"
 
-#include <QString>
-#include <QStringList>
+#include <QSharedData>
+#include <KSharedPtr>
+class BookmarkGroup;
+
+typedef KSharedPtr<BookmarkGroup> BookmarkGroupPtr;
+typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem{
-public:
-    AmarokUrl();
-    AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
-    AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent  = BookmarkGroupPtr() );
 
-    ~AmarokUrl();
+class BookmarkViewItem;
+typedef KSharedPtr<BookmarkViewItem> BookmarkViewItemPtr;
 
-    void initFromString( const QString & urlString );
-
-    void setCommand( const QString &command );
-    QString command();
-
-    void setName( const QString &name );
-;
-
-    void setDescription( const QString &description );
-
-
-    int numberOfArgs();
-
-    void appendArg( QString &arg );
-    QString arg( int );
-
-    bool run();
-
-    QString url();
-
-    bool saveToDb();
-
-    int id() { return m_id; }
-
-    virtual QString name() const;
-    virtual QString description() const;
-    virtual BookmarkGroupPtr parent() const { return m_parent; }
-    virtual void removeFromDb();
-    virtual void rename( const QString &name );
-
-
-private:
-
-    QStringList m_fields;
-
-    int m_id;
-    BookmarkGroupPtr m_parent;
-    QString m_description;
-    QString m_name;
-
+class BookmarkViewItem : public virtual QSharedData
+{
+    public:
+        BookmarkViewItem() : QSharedData() {}
+        
+        virtual  ~BookmarkViewItem() { DEBUG_BLOCK };
+    
+        virtual BookmarkGroupPtr parent() const = 0;
+        virtual int childCount() const { return 0; }
+        virtual QString name() const = 0;
+        virtual QString description() const = 0;
+        virtual void rename( const QString &name ) = 0;
+        virtual void removeFromDb() = 0;
 
 };
+
+Q_DECLARE_METATYPE( BookmarkViewItemPtr )
 
 #endif
