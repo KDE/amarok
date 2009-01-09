@@ -17,72 +17,33 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AMAROKURL_H
-#define AMAROKURL_H
+#ifndef BOOKMARKMETAACTIONS_H
+#define BOOKMARKMETAACTIONS_H
 
-#include "amarok_export.h"
-#include "BookmarkViewItem.h"
-#include "BookmarkGroup.h"
-
-#include <QString>
-#include <QStringList>
+#include <GlobalCollectionActions.h>
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem{
+class BookmarkAlbumAction : public GlobalCollectionAlbumAction
+{
+    Q_OBJECT
 public:
-    AmarokUrl();
-    AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
-    AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent  = BookmarkGroupPtr() );
+    BookmarkAlbumAction( QObject *parent );
 
-    ~AmarokUrl();
+    private slots:
+        void slotTriggered();
 
-    void reparent( BookmarkGroupPtr parent );
+};
 
-    void initFromString( const QString & urlString );
+class BookmarkArtistAction : public GlobalCollectionArtistAction
+{
+    Q_OBJECT
+    public:
+        BookmarkArtistAction( QObject *parent );
 
-    void setCommand( const QString &command );
-    QString command();
-
-    void setName( const QString &name );
-;
-
-    void setDescription( const QString &description );
-
-
-    int numberOfArgs();
-
-    void appendArg( const QString &arg );
-    QString arg( int );
-
-    bool run();
-
-    QString url();
-
-    bool saveToDb();
-
-    void setId( int id ) { m_id = id; }
-    int id() { return m_id; }
-
-    bool isNull();
-
-    virtual QString name() const;
-    virtual QString description() const;
-    virtual BookmarkGroupPtr parent() const { return m_parent; }
-    virtual void removeFromDb();
-    virtual void rename( const QString &name );
-
-
-private:
-
-    QStringList m_fields;
-
-    int m_id;
-    BookmarkGroupPtr m_parent;
-    QString m_description;
-    QString m_name;
-
+    private slots:
+        void slotTriggered();
 
 };
 

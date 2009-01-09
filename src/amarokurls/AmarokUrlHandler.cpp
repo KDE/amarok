@@ -19,10 +19,12 @@
  
 #include "AmarokUrlHandler.h"
 
+#include "BookmarkMetaActions.h"
 #include "Debug.h"
 
+#include "NavigationUrlGenerator.h"
 #include "NavigationUrlRunner.h"
-
+#include "BookmarkModel.h"
 
 namespace The {
     static AmarokUrlHandler* s_AmarokUrlHandler_instance = 0;
@@ -37,10 +39,14 @@ namespace The {
 }
 
 AmarokUrlHandler::AmarokUrlHandler()
+    : QObject()
 {
     //we init some of the default runners here.
     m_navigationRunner = new NavigationUrlRunner();
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
+
+    The::globalCollectionActions()->addAlbumAction( new BookmarkAlbumAction( this ) );
+    The::globalCollectionActions()->addArtistAction( new BookmarkArtistAction( this ) );
 }
 
 
@@ -80,4 +86,18 @@ bool AmarokUrlHandler::run( AmarokUrl url )
     
 }
 
+void AmarokUrlHandler::bookmarkAlbum( Meta::AlbumPtr album )
+{
+    NavigationUrlGenerator generator;
+    generator.urlFromAlbum( album ).saveToDb();
+    BookmarkModel::instance()->reloadFromDb();
+}
 
+void AmarokUrlHandler::bookmarkArtist( Meta::ArtistPtr artist )
+{
+    NavigationUrlGenerator generator;
+    generator.urlFromArtist( artist ).saveToDb();
+    BookmarkModel::instance()->reloadFromDb();
+}
+
+#include "AmarokUrlHandler.moc"

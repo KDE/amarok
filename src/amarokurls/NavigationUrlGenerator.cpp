@@ -22,9 +22,9 @@
 #include "Debug.h"
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
+#include "SourceInfoCapability.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
-
 
 NavigationUrlGenerator::NavigationUrlGenerator()
 {
@@ -174,4 +174,73 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     }
 }
 
+AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
+{
+    AmarokUrl url;
 
+    //we need to figure out the type of this thing...
+
+    //case 1, from a service:
+    if ( album->hasCapabilityInterface( Meta::Capability::SourceInfo ) ) {
+        Meta::SourceInfoCapability * sic = qobject_cast<Meta::SourceInfoCapability *>( album->asCapabilityInterface( Meta::Capability::SourceInfo ) );
+        QString serviceName = sic->sourceName();
+        QString albumName = album->prettyName();
+        QString artistName;
+        if ( album->albumArtist() )
+            artistName = album->albumArtist()->prettyName();
+
+        debug() << "Got and album from service: " << serviceName;
+        
+        url.setCommand( "navigate" );
+        url.appendArg( "service" );
+        url.appendArg( serviceName );
+        url.appendArg( "album" );
+
+        QString filter = "album:\"" + albumName + "\"";
+        if ( !artistName.isEmpty() )
+            filter += ( " AND artist:\"" + artistName + "\"" );
+        
+        url.appendArg( filter );
+
+        debug() << "got url: " << url.url();
+
+        url.setName( i18n( "Album \"%1\" from %2", albumName, serviceName ) );
+
+        debug() << "url name: " << url.name();
+
+    }
+
+    return url;
+}
+
+AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
+{
+    AmarokUrl url;
+
+ //case 1, from a service:
+    if ( artist->hasCapabilityInterface( Meta::Capability::SourceInfo ) ) {
+        Meta::SourceInfoCapability * sic = qobject_cast<Meta::SourceInfoCapability *>( artist->asCapabilityInterface( Meta::Capability::SourceInfo ) );
+        QString serviceName = sic->sourceName();
+        QString artistName = artist->prettyName();
+        
+        debug() << "Got and artist from service: " << serviceName;
+        
+        url.setCommand( "navigate" );
+        url.appendArg( "service" );
+        url.appendArg( serviceName );
+        url.appendArg( "artist-album" );
+
+        QString filter = "artist:\"" + artistName + "\"";
+        
+        url.appendArg( filter );
+
+        debug() << "got url: " << url.url();
+
+        url.setName( i18n( "Artist \"%1\" from %2", artistName, serviceName ) );
+
+        debug() << "url name: " << url.name();
+
+    }
+
+    return url;
+}

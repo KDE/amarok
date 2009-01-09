@@ -120,6 +120,7 @@ set(libamarokurl_SRCS
     amarokurls/BookmarkGroup.cpp
     amarokurls/BookmarkModel.cpp
     amarokurls/BookmarkTreeView.cpp
+    amarokurls/BookmarkMetaActions.cpp
 )
         
 #####################################################################

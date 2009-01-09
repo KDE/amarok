@@ -129,6 +129,7 @@ AlbumPtr MagnatuneMetaFactory::createAlbum(const QStringList & rows)
     if ( m_membershipPrefix == "download" )
         album->setDownloadMembership();
 
+    album->setSourceName( "Magnatune.com" );
     return AlbumPtr( album );
 }
 
@@ -151,12 +152,18 @@ QString MagnatuneMetaFactory::getArtistSqlRows()
 
 ArtistPtr MagnatuneMetaFactory::createArtist(const QStringList & rows)
 {
-    return ArtistPtr( new MagnatuneArtist( rows ) );
+    MagnatuneArtist * artist = new MagnatuneArtist( rows );
+    artist->setSourceName( "Magnatune.com" );
+    return ArtistPtr( artist );
+
+    
 }
 
 GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 {
-    return GenrePtr( new MagnatuneGenre( rows ) );
+    MagnatuneGenre * genre = new MagnatuneGenre( rows );
+    genre->setSourceName( "Magnatune.com" );
+    return GenrePtr( genre );
 }
 
 

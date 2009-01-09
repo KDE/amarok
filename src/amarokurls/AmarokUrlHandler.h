@@ -22,6 +22,7 @@
 
 #include "amarok_export.h"
 #include "AmarokUrlRunnerBase.h"
+#include "Meta.h"
 
 #include <QMap>
 
@@ -37,8 +38,9 @@ A singleton class for handling and delegating all amarok:// urls
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AmarokUrlHandler{
-    
+class AmarokUrlHandler : public QObject
+{
+    Q_OBJECT
     friend AmarokUrlHandler* The::amarokUrlHandler();
     
 public:
@@ -47,6 +49,10 @@ public:
     void unRegisterRunner( AmarokUrlRunnerBase * runner );
 
     bool run( AmarokUrl url );
+
+public slots:
+    void bookmarkAlbum( Meta::AlbumPtr album );
+    void bookmarkArtist( Meta::ArtistPtr artist );
 
 private:
 

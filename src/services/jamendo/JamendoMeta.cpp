@@ -68,6 +68,7 @@ JamendoMetaFactory::createAlbum( const QStringList & rows )
 {
     JamendoAlbum * album = new JamendoAlbum( rows );
     album->setService( m_service );
+    album->setSourceName( "Jamendo.com" );
     return AlbumPtr( album );
 }
 
@@ -94,13 +95,17 @@ JamendoMetaFactory::getArtistSqlRows()
 ArtistPtr
 JamendoMetaFactory::createArtist( const QStringList & rows )
 {
-    return ArtistPtr( new JamendoArtist( rows ) );
+    JamendoArtist * artist = new JamendoArtist( rows );
+    artist->setSourceName( "Jamendo.com" );
+    return ArtistPtr( artist );
 }
 
 GenrePtr
 JamendoMetaFactory::createGenre( const QStringList & rows )
 {
-    return GenrePtr( new JamendoGenre( rows ) );
+    JamendoGenre * genre = new JamendoGenre( rows );
+    genre->setSourceName( "Jamendo.com" );
+    return GenrePtr( genre );
 }
 
 //// JamendoTrack ////

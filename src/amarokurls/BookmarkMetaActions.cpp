@@ -17,73 +17,45 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AMAROKURL_H
-#define AMAROKURL_H
-
-#include "amarok_export.h"
-#include "BookmarkViewItem.h"
-#include "BookmarkGroup.h"
-
-#include <QString>
-#include <QStringList>
-
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem{
-public:
-    AmarokUrl();
-    AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
-    AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent  = BookmarkGroupPtr() );
-
-    ~AmarokUrl();
-
-    void reparent( BookmarkGroupPtr parent );
-
-    void initFromString( const QString & urlString );
-
-    void setCommand( const QString &command );
-    QString command();
-
-    void setName( const QString &name );
-;
-
-    void setDescription( const QString &description );
+#include "BookmarkMetaActions.h"
+#include "AmarokUrlHandler.h"
+#include "SvgHandler.h"
 
 
-    int numberOfArgs();
+#include <KIcon>
+#include <KLocale>
 
-    void appendArg( const QString &arg );
-    QString arg( int );
+BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent )
+ : GlobalCollectionAlbumAction( i18n( "Bookmark this Album" ), parent )
+{
+    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    setIcon( KIcon("bookmark") );
+    setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    setElementId( "lastfm" );
+}
 
-    bool run();
-
-    QString url();
-
-    bool saveToDb();
-
-    void setId( int id ) { m_id = id; }
-    int id() { return m_id; }
-
-    bool isNull();
-
-    virtual QString name() const;
-    virtual QString description() const;
-    virtual BookmarkGroupPtr parent() const { return m_parent; }
-    virtual void removeFromDb();
-    virtual void rename( const QString &name );
+void BookmarkAlbumAction::slotTriggered()
+{
+    The::amarokUrlHandler()->bookmarkAlbum( album() );
+}
 
 
-private:
-
-    QStringList m_fields;
-
-    int m_id;
-    BookmarkGroupPtr m_parent;
-    QString m_description;
-    QString m_name;
 
 
-};
+BookmarkArtistAction::BookmarkArtistAction( QObject * parent )
+    : GlobalCollectionArtistAction( i18n( "Bookmark this Artist" ), parent )
+{
+    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    setIcon( KIcon("bookmark") );
+    setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    setElementId( "lastfm" );
+}
 
-#endif
+void BookmarkArtistAction::slotTriggered()
+{
+    The::amarokUrlHandler()->bookmarkArtist( artist() );
+}
+
+#include "BookmarkMetaActions.moc"
+
+

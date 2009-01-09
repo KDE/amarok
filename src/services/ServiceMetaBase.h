@@ -313,11 +313,15 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         int id( ) const;
         void setTitle( const QString &title );
 
+        void setSourceName( const QString source ) { m_sourceName = source; }
+        virtual QString sourceName() { return m_sourceName; }
+
     private:
         int       m_id;
         QString   m_name;
         QString   m_description;
         TrackList m_tracks;
+        QString   m_sourceName;
 };
 
 class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
@@ -374,6 +378,9 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         
         void setTitle( const QString &title );
 
+        void setSourceName( const QString source ) { m_sourceName = source; }
+        virtual QString sourceName() { return m_sourceName; }
+
     private:
         int       m_id;
         QString   m_name;
@@ -383,6 +390,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         QString   m_description;
         int       m_artistId;
         QString   m_artistName;
+        QString   m_sourceName;
 };
 
 class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
@@ -426,11 +434,15 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         int  albumId();
         void setAlbumId( int albumId );
 
+        void setSourceName( const QString source ) { m_sourceName = source; }
+        virtual QString sourceName() { return m_sourceName; }
+
     private:
         int       m_id;
         int       m_albumId;
         QString   m_name;
         TrackList m_tracks;
+        QString   m_sourceName;
 };
 
 class AMAROK_EXPORT ServiceComposer : public Meta::Composer,

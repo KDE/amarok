@@ -21,6 +21,7 @@
 #define NAVIGATIONURLGENERATOR_H
 
 #include "amarok_export.h"
+#include "Meta.h"
 
 class AmarokUrl;
 
@@ -35,6 +36,9 @@ public:
     ~NavigationUrlGenerator();
 
     AmarokUrl CreateAmarokUrl();
+
+    AmarokUrl urlFromAlbum( Meta::AlbumPtr album );
+    AmarokUrl urlFromArtist( Meta::ArtistPtr artist );
 
 };
 

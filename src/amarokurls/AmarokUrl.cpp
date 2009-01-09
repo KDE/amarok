@@ -100,7 +100,7 @@ int AmarokUrl::numberOfArgs()
         return 0;
 }
 
-void AmarokUrl::appendArg( QString & arg )
+void AmarokUrl::appendArg( const QString & arg )
 {
     if ( m_fields.count() > 0 )
         m_fields << arg;
