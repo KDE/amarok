@@ -41,6 +41,10 @@ class CollectionWidget : public KVBox
          * @param filter The filter to apply.
          */
         void setFilter( const QString &filter );
+        QString filter() const;
+
+        QList<int> levels();
+        
     public slots:
 
         void customFilter( QAction * );

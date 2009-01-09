@@ -23,6 +23,7 @@
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModelBase.h"
+#include "browsers/collectionbrowser/CollectionWidget.h"
 
 
 NavigationUrlGenerator::NavigationUrlGenerator()
@@ -41,6 +42,10 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 
     QString browser = The::mainWindow()->activeBrowserName();
 
+
+    AmarokUrl url;
+    url.setCommand( "navigate" );
+
     if ( browser == "Internet" ) {
 
         browser = "service";
@@ -48,8 +53,8 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         QString serviceName = ServiceBrowser::instance()->activeServiceName();
         debug() << "serviceName: " << serviceName;
         
-        QString serviceFilter = ServiceBrowser::instance()->activeServiceFilter();
-        debug() << "serviceFilter: " <<  serviceFilter;
+        QString filter = ServiceBrowser::instance()->activeServiceFilter();
+        debug() << "filter: " <<  filter;
         
         QList<int> levels = ServiceBrowser::instance()->activeServiceLevels();
         QString sortMode;
@@ -82,33 +87,79 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 
         debug() << "sortMode: " <<  sortMode;
 
-        AmarokUrl url;
 
-        url.setCommand( "navigate" );
+        url.appendArg( browser );
 
-        if ( !browser.isEmpty() )
-            url.appendArg( browser );
-        else
-            return url;
-
-        if ( !serviceName.isEmpty() )
+        if ( !sortMode.isEmpty() || !filter.isEmpty() )
             url.appendArg( serviceName );
         else
             return url;
 
-        if ( !sortMode.isEmpty() )
+        if ( !filter.isEmpty() )
+        {
             url.appendArg( sortMode );
-        else
-            return url;
-
-        if ( !serviceFilter.isEmpty() )
-            url.appendArg( serviceFilter );
-
+            url.appendArg( filter );
+        }
+        
         return url;
     
 
     } else if ( browser == "CollectionBrowser" ) {
+        
+        browser = "collection";
 
+        QString collection; //empty for now... we keep this space reserved if we later want to be able to specify a specific colletion.
+
+        QString filter = The::mainWindow()->collectionBrowser()->filter();
+        debug() << "filter: " <<  filter;
+        
+        QList<int> levels = The::mainWindow()->collectionBrowser()->levels();
+        QString sortMode;
+        
+        foreach( int level, levels ) {
+            switch( level ) {
+                case CategoryId::Genre:
+                    sortMode += "genre-";
+                    break;
+                case CategoryId::Artist:
+                    sortMode += "artist-";
+                    break;
+                case CategoryId::Album:
+                    sortMode += "album-";
+                    break;
+                case CategoryId::Composer:
+                    sortMode += "composer-";
+                    break;
+                case CategoryId::Year:
+                    sortMode += "year-";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //we have left a trailing '-' in there, get rid of it!
+        if ( sortMode.size() > 0 )
+            sortMode = sortMode.left( sortMode.size() - 1 );
+
+        debug() << "sortMode: " <<  sortMode;
+
+        url.appendArg( browser );
+
+        if ( !sortMode.isEmpty() || !filter.isEmpty() )
+            url.appendArg( collection );
+        else
+            return url;
+
+        if ( !filter.isEmpty() )
+        {
+            url.appendArg( sortMode );
+            url.appendArg( filter );
+        }
+        
+        return url;
+
+        
     }
 }
 
