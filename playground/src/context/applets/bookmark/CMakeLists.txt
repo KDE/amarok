@@ -3,6 +3,7 @@ project(context-bookmark)
 set(bookmark_SRCS Bookmark.cpp )
 
 include_directories( ../../../../../src/
+                     ../../../../../src/meta
                      ../../../../../src/context
                      ../../../../../src/amarokurls
                      )
