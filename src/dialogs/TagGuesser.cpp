@@ -318,6 +318,55 @@ void TagGuesser::guess( const QString &absFileName, FilenameLayoutDialog *dialog
     }
 }
 
+QString TagGuesser::toTitleCase(const QString &s) {
+    if(s.isEmpty()) {
+        return s;
+    }
+
+    QString result = s;
+    debug() << "Original string: \"" << s << "\"" << endl;
+
+    QRegExp wordRegExp("\\b(\\w+)\\b");
+    int i = wordRegExp.indexIn(result);
+    QString match = wordRegExp.cap(1);
+
+    // "small words" that ought not be capitalized. This is English only.
+    // a an and as at but by en for if in of on or the to v[.]? via vs[.]?
+    QRegExp littleWordRegExp( "\\b(a|an|as|at|by|for|if|and|of|or|to|the|in)\\b" );
+    while(i > -1) {
+        debug() << "  Title case i=" << i << "; remaining: \"" << result.mid(i) << "\"" << endl;
+
+        if(match == match.toLower() && !littleWordRegExp.exactMatch(match)) {
+            result[i] = result[i].toUpper();
+        } else {
+            debug() << "  partial will not be capitalized: \"" << match << "\"" << endl;
+        }
+
+        i = wordRegExp.indexIn(result, i+match.length());
+        match = wordRegExp.cap(1);
+    }
+
+    return result;
+}
+
+
+QString TagGuesser::toCapitalizedCase(const QString &s) {
+    if(s.isEmpty()) {
+        return s;
+    }
+
+    QString result = s;
+    QRegExp wordRegExp( "\\b(\\w+)\\b" );
+    int i = wordRegExp.indexIn(result);
+    int ml = wordRegExp.cap(1).length();
+    while(i > -1) {
+        result[i] = result[i].toUpper();
+        i = wordRegExp.indexIn(result, i+ml);
+        ml = wordRegExp.cap(1).length();
+    }
+    return result;
+}
+
 QString TagGuesser::capitalizeWords( const QString &s, const int &caseOptions )
 {
     if( s.isEmpty() )
@@ -341,39 +390,12 @@ QString TagGuesser::capitalizeWords( const QString &s, const int &caseOptions )
     else if( caseOptions == 3 )
     {
         debug() << "UPPER/LOWER CASE OPTIONS: 3 - First letter of every word uppercase";
-        QString result = s;
-        result[ 0 ] = result[ 0 ].toUpper();
-
-        const QRegExp wordRegExp( "\\s\\w" );
-        int i = result.indexOf( wordRegExp );
-        while ( i > -1 ) {
-            result[ i + 1 ] = result[ i + 1 ].toUpper();
-            i = result.indexOf( wordRegExp, ++i );
-        }
-        return result;
+        return toCapitalizedCase(s);
     }
     else if( caseOptions == 4 )
     {
         debug() << "UPPER/LOWER CASE OPTIONS: 4 - Title case.";
-        QString result = s;
-        result[ 0 ] = result[ 0 ].toUpper();
-
-        const QRegExp wordRegExp( "\\s\\w" );
-        int i = result.indexOf( wordRegExp );
-        const QRegExp littleWordRegExp( "(a|an|as|at|by|for|if|and|of|or|to|the|in)" ); //a an and as at but by en for if in of on or the to v[.]? via vs[.]?
-        while ( i > -1 ) {
-            if( result.mid( i + 1, 20).section( " ", 0, 0 ) == result.mid( i + 1, 20).section( " ", 0, 0 ).toLower() )        //if the word has some capitalization we suppose it's capitalized correctly. This solves issues with proper nouns and acronyms
-            {
-                if( !result.mid( i + 1, 20).section( " ", 0, 0 ).contains( littleWordRegExp ) )
-                {
-                    result[ i + 1 ] = result[ i + 1 ].toUpper();
-                    i = result.indexOf( wordRegExp, ++i );
-                }
-                else    //we have a little word
-                    i = result.indexOf( wordRegExp, ++i );
-            }
-        }
-        return result;   
+        return toTitleCase(s);
     }
     else
     {
