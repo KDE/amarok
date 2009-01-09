@@ -74,6 +74,8 @@ NavigationUrlRunner::run( AmarokUrl url )
 
             if ( service == 0 ) return false;
 
+            service->polish(); //ensure that everything we need is initalized ( especially if
+                               //amarok is launched just to handle this url ).
             if ( groupMode == "artist-album" )
                 service->sortByArtistAlbum();
             else if ( groupMode == "genre-artist" )
@@ -92,8 +94,15 @@ NavigationUrlRunner::run( AmarokUrl url )
             ServiceBrowser::instance()->showService( collection );
 
             //ensure that the Amarok window is activated and on top
-            The::mainWindow()->show();
+
+            if ( The::mainWindow()->isHidden() )
+                The::mainWindow()->show();
+            if ( The::mainWindow()->isMinimized() )
+                The::mainWindow()->showNormal();
+
             The::mainWindow()->raise();
+            The::mainWindow()->activateWindow();
+
 
             return true;
 
