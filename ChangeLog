@@ -7,8 +7,9 @@ VERSION 2.1
   FEATURES:
     * New vertical Context View layout.
     * New applet toolbar in the Context View to arrange, select, and add applets.
-  
+
   CHANGES:
+	* Now using KSystemTrayIcon.
 
   BUGFIXES:
     * Don't show the rating widget for tracks which are not in the collection.
