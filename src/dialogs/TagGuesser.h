@@ -98,8 +98,6 @@ class TagGuesser
 
     private:
         void loadSchemes();
-        static QString toTitleCase(const QString& s);
-        static QString toCapitalizedCase(const QString& s);
         QString capitalizeWords( const QString &s, const int &caseOptions );
 
         FileNameScheme::List m_schemes;
