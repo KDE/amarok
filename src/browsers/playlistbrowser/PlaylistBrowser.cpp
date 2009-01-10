@@ -76,9 +76,7 @@ void
 PlaylistBrowser::addCategory( int category )
 {
     DEBUG_BLOCK
-
     QString typeName = The::playlistManager()->typeName( category );
-
     QWidget *widget = 0;
 
     //TODO: PlaylistBrowser::iconForCategory( int playlistCategory )
@@ -99,6 +97,9 @@ PlaylistBrowser::addCategory( int category )
     }
 
     m_toolBox->addItem( widget, icon, typeName );
+
+    m_categoryIndexMap.insert( m_toolBox->count() - 1, category );
+        
 }
 
 QWidget *
@@ -119,7 +120,13 @@ void
 PlaylistBrowser::showCategory( int category )
 {
     DEBUG_BLOCK;
-    m_toolBox->setCurrentIndex( category );
+    m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
+}
+
+
+int PlaylistBrowserNS::PlaylistBrowser::currentCategory()
+{
+    return m_categoryIndexMap.value( m_toolBox->currentIndex() );
 }
 
 }

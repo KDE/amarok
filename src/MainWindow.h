@@ -31,6 +31,8 @@ class PlaylistFileProvider;
 class SearchWidget;
 class SideBar;
 
+namespace PlaylistBrowserNS { class PlaylistBrowser; }
+
 namespace Plasma { class Containment; }
 namespace Playlist { class Widget; }
 
@@ -84,6 +86,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         QString activeBrowserName();
 
         CollectionWidget * collectionBrowser();
+        PlaylistBrowserNS::PlaylistBrowser * playlistBrowser();
 
         //will return the size of the rect defined top, right and left by the main toolbar and bottom by the context view.
         QSize backgroundSize();

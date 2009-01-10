@@ -27,6 +27,8 @@
 #include "services/ServiceBase.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
+#include "browsers/playlistbrowser/PlaylistBrowser.h"
+#include "PlaylistManager.h"
 
 NavigationUrlRunner::NavigationUrlRunner()
     : AmarokUrlRunnerBase()
@@ -155,6 +157,22 @@ NavigationUrlRunner::run( AmarokUrl url )
             return true;
 
         } else  if ( type ==  "PlaylistBrowser" ) {
+
+            debug() << "Show playlist category: " << collection;
+            QList<int> categories = The::playlistManager()->availableCategories();
+
+            int cat = -1;
+
+            foreach( int currentCat, categories ) {
+                if ( The::playlistManager()->typeName( currentCat ) == collection ) {
+                    cat = currentCat;
+                    break;
+                }
+            }
+            debug() << "got cat: " << cat;
+            if ( cat != -1 )
+                The::mainWindow()->playlistBrowser()->showCategory( cat );
+            
             return true;
         }
         else  if ( type ==  "FileBrowser::Widget" ) {

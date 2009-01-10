@@ -21,6 +21,7 @@
 
 #include <KVBox>
 
+#include <QMap>
 #include <QString>
 
 class QToolBox;
@@ -41,6 +42,8 @@ public:
 
     ~PlaylistBrowser();
 
+    int currentCategory();
+
 
 public slots:
     void addCategory( int category );
@@ -53,6 +56,7 @@ private:
     QToolBox *m_toolBox;
     PodcastCollection *m_localPodcasts;
     PodcastCategory * m_podcastCategory;
+    QMap<int, int> m_categoryIndexMap;
 };
 
 }

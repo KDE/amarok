@@ -25,7 +25,9 @@
 #include "SourceInfoCapability.h"
 #include "browsers/collectionbrowser/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
+#include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "collection/sqlcollection/SqlMeta.h"
+#include "PlaylistManager.h"
 
 NavigationUrlGenerator::NavigationUrlGenerator()
 {
@@ -161,7 +163,12 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     {
         browser = "playlists";
         url.appendArg( browser );
-         //TODO: add handling of playlist browser categories here!
+
+        int cat = The::mainWindow()->playlistBrowser()->currentCategory();
+        QString catName = The::playlistManager()->typeName( cat );
+
+        url.appendArg( catName );
+        
         return url;
 
     }

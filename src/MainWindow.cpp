@@ -998,10 +998,6 @@ void MainWindow::metadataChanged( Meta::TrackPtr track )
 
     setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
- 
-namespace The {
-    MainWindow* mainWindow() { return MainWindow::s_instance; }
-}
 
 CollectionWidget * MainWindow::collectionBrowser()
 {
@@ -1011,6 +1007,15 @@ CollectionWidget * MainWindow::collectionBrowser()
 QString MainWindow::activeBrowserName()
 {
     return m_browserNames[ m_browsers->currentIndex() ];
+}
+
+PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()
+{
+    return qobject_cast<PlaylistBrowserNS::PlaylistBrowser *>( m_browsers->at( 2 ) );
+}
+
+namespace The {
+    MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
 
 #include "MainWindow.moc"

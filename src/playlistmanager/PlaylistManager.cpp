@@ -244,7 +244,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
         //      during a collection scan ---lfranchi 9/5/08
 
         The::mainWindow()->showBrowser( "PlaylistBrowser" );
-        emit( showCategory( UserPlaylist - 1 ) );
+        emit( showCategory( UserPlaylist ) );
         PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
     }
 
