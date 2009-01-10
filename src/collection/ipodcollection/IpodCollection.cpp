@@ -20,7 +20,7 @@
 
 #include "IpodCollection.h"
 
-#include "meta/CollectionCapability.h"
+#include "meta/capabilities/CollectionCapability.h"
 #include "IpodCollectionLocation.h"
 #include "IpodMeta.h"
 #include "CollectionCapabilityIpod.h"
