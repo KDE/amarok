@@ -21,6 +21,7 @@
 #define PLAYLISTPRETTYITEMCONFIG_H
 
 #include <QList>
+#include <QString>
 
 namespace Playlist {
 
@@ -35,18 +36,20 @@ enum
 class PrettyItemConfigRowElement{
 
 public:
-    PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment );
+    PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment, const QString &string = QString() );
 
-    int value();
-    qreal size();
-    bool bold();
-    int alignment();
+    int value() const;
+    qreal size() const;
+    bool bold() const;
+    int alignment() const;
+    const QString &string() const;
     
 private:
     int m_value;
     qreal m_size;
     bool m_bold;
     int m_alignment;
+    QString m_string;
 };
 
 class PrettyItemConfigRow{

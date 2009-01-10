@@ -266,39 +266,44 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
         for ( int j = 0; j < elementCount; j++ ) {
 
             PrettyItemConfigRowElement element = row.element( j );
-            qreal itemWidth = rowWidth * element.size();
-
-            //if not the last item, add a PADDING
-            if ( j < elementCount - 1 )
-                itemWidth += PADDING;
 
             int value = element.value();
             bool bold = element.bold();
             int alignment = element.alignment();
 
-            QFontMetricsF nfm( option.font );
-            QFont boldfont( option.font );
-            boldfont.setBold( true );
-            QFontMetricsF bfm( boldfont );
-
-            
-            QModelIndex textIndex = index.model()->index( index.row(), value );
-            QString orgText = textIndex.data( Qt::DisplayRole ).toString();
             QString text;
-
-            QRectF textBox( itemOffsetX, rowOffsetY, itemWidth, rowHeight );
-
-            if ( bold ) 
-                text = bfm.elidedText( orgText, Qt::ElideRight, itemWidth );
+            if (value < 0)
+                text = element.string();
             else
-                text = nfm.elidedText( orgText, Qt::ElideRight, itemWidth );
+            {
+                QModelIndex textIndex = index.model()->index( index.row(), value );
+                text = textIndex.data( Qt::DisplayRole ).toString();
+            }
 
-            QFont font;
+            QFont font = option.font;
             font.setBold( bold );
             painter->setFont( font );
 
-            painter->drawText( textBox, alignment, text );
+            qreal itemWidth;
 
+            if (element.size() > 0)
+            {
+                itemWidth = rowWidth * element.size();
+                QRectF textBox( itemOffsetX, rowOffsetY, itemWidth, rowHeight );
+                text = QFontMetricsF(font).elidedText( text, Qt::ElideRight, itemWidth );
+                painter->drawText( textBox, alignment, text );
+            }
+            else
+            {
+                QRectF textBox( itemOffsetX, rowOffsetY, rowWidth-itemOffsetX, rowHeight );
+                painter->drawText( textBox, alignment, text, &textBox );
+                itemWidth = textBox.width();
+            }
+
+            //if not the last item, add a PADDING
+            if ( j < elementCount - 1 )
+                itemWidth += PADDING;
+            
             itemOffsetX += itemWidth;
 
         }

@@ -151,8 +151,9 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
             index2++;
 
             debug() << "element!";
-            
-            int value = columnNames.indexOf( elementNode.toElement().attribute( "value", "Title" ) );
+
+            QString valStr = elementNode.toElement().attribute( "value", "Title" );
+            int value = columnNames.indexOf( valStr );
             qreal size = elementNode.toElement().attribute( "size", "1.0" ).toDouble();
             bool bold = ( elementNode.toElement().attribute( "bold", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
@@ -166,7 +167,7 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
             else
                 alignment = Qt::AlignCenter| Qt::AlignVCenter;
 
-            row.addElement( PrettyItemConfigRowElement( value, size, bold, alignment ) );
+            row.addElement( PrettyItemConfigRowElement( value, size, bold, alignment, value < 0 ? valStr : QString() ) );
         }
 
         config.addRow( row );

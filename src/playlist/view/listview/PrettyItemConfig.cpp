@@ -21,35 +21,39 @@
 
 namespace Playlist {
 
-    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment )
+    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment, const QString &string )
     : m_value( value )
     , m_size( size )
     , m_bold( bold )
     , m_alignment( alignment )
+    , m_string( string )
 {
 }
 
-int PrettyItemConfigRowElement::value()
+int PrettyItemConfigRowElement::value() const
 {
     return m_value;
 }
 
-qreal PrettyItemConfigRowElement::size()
+qreal PrettyItemConfigRowElement::size() const
 {
     return m_size;
 }
 
-bool PrettyItemConfigRowElement::bold()
+bool PrettyItemConfigRowElement::bold() const
 {
     return m_bold;
 }
 
-int PrettyItemConfigRowElement::alignment()
+int PrettyItemConfigRowElement::alignment() const
 {
     return m_alignment;
 }
 
-
+const QString &PrettyItemConfigRowElement::string() const
+{
+    return m_string;
+}
 
 //////////////////////////////////////////////
 
