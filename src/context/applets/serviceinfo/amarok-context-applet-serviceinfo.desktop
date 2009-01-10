@@ -37,6 +37,7 @@ Name[tr]=Hizmet Bilgisi
 Name[uk]=Інформація про службу
 Name[x-test]=xxService Infoxx
 Name[zh_CN]=服务信息
+Name[zh_TW]=服務資訊
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

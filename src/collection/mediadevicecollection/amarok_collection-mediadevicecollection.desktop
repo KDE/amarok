@@ -37,6 +37,7 @@ Name[tr]=Ortam Aygıtı Koleksiyonu
 Name[uk]=Збірка на носіях інформації
 Name[x-test]=xxMedia Device Collectionxx
 Name[zh_CN]=媒体设备收藏
+Name[zh_TW]=媒體裝置收藏
 Comment=Media Device collection plugin for Amarok
 Comment[be]=Утулка калекцыі медыяпрылады для Amarok
 Comment[bg]=Приставка за колекцията на медийните устройства (Amarok)
@@ -74,6 +75,7 @@ Comment[tr]=Amarok için Ortam Aygıtı koleksiyonu eklentisi
 Comment[uk]=Втулка збірки на носіях інформації для Amarok
 Comment[x-test]=xxMedia Device collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的媒体设备收藏插件
+Comment[zh_TW]=Amarok 裡的媒體裝置收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

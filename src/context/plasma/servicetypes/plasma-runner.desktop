@@ -40,6 +40,7 @@ Comment[tr]=KRunner eklentisi
 Comment[uk]=Втулок KRunner
 Comment[x-test]=xxKRunner pluginxx
 Comment[zh_CN]=KRunner 插件
+Comment[zh_TW]=KRunner 外掛程式
 
 [PropertyDef::TryExec]
 Type=QString

@@ -43,6 +43,7 @@ Name[tr]=Magnatune Müzik Mağazası Hizmeti Yapılandırması
 Name[uk]=Налаштування служби MagnatuneStore
 Name[x-test]=xxMagnatuneStore Service Configxx
 Name[zh_CN]=Magnatune 商店服务配置
+Name[zh_TW]=Magnatune 商店服務設定
 Comment=Configure Magnatune store settings and memberships credentials
 Comment[bg]=Настройване на членството в Magnatune
 Comment[ca]=Configura els paràmetres de la botiga Magnatune i les credencials de soci
@@ -76,4 +77,5 @@ Comment[tr]=Magnatune mağaza ayarlarını ve üyelik durumlarını yapılandır
 Comment[uk]=Налаштувати параметри і членських даних Magnatune
 Comment[x-test]=xxConfigure Magnatune store settings and memberships credentialsxx
 Comment[zh_CN]=配置 Magnatune 商店的设置和会员资格
+Comment[zh_TW]=設定 Magnatune 商店設定與成員憑證
 

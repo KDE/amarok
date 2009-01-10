@@ -21,6 +21,7 @@ Name[pt_BR]=Nuvem
 Name[ro]=Nor
 Name[th]=กลุ่มเมฆ
 Name[x-test]=xxCloudxx
+Name[zh_TW]=雲
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

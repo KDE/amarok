@@ -35,6 +35,7 @@ Name[tr]=Hizmet Bilgi Veri Motoru
 Name[uk]=Рушій даних службової інформації
 Name[x-test]=xxService Info Data Enginexx
 Name[zh_CN]=服务信息数据引擎
+Name[zh_TW]=服務資訊資料引擎
 X-KDE-ServiceTypes=AmarokContext/DataEngine
 Type=Service
 Icon=amarok

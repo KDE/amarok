@@ -32,6 +32,7 @@ Comment[tr]=Plasma duvar kağıdı
 Comment[uk]=Тло стільниці Плазми
 Comment[x-test]=xxPlasma wallpaperxx
 Comment[zh_CN]=Plasma 墙纸
+Comment[zh_TW]=Plasma 桌布
 
 [PropertyDef::X-Plasma-FormFactors]
 Type=QStringList

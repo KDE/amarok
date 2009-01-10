@@ -35,6 +35,7 @@ Name[tr]=Şarkı Sözleri Veri Motoru
 Name[uk]=Рушій даних слів пісень
 Name[x-test]=xxLyrics Data Enginexx
 Name[zh_CN]=Lyrics 数据引擎
+Name[zh_TW]=歌詞資料引擎
 X-KDE-ServiceTypes=AmarokContext/DataEngine
 Type=Service
 Icon=lyrics

@@ -37,6 +37,7 @@ Name[tr]=Jamendo Hizmeti
 Name[uk]=Служба Jamendo
 Name[x-test]=xxJamendo Servicexx
 Name[zh_CN]=Jamendo 服务
+Name[zh_TW]=Jamendo 服務
 Comment=Listen to and download music uploaded by independent artists
 Comment[bg]=Слушане и сваляне на музика от независими изпълнители
 Comment[ca]=Escolta i baixa música pujada per artistes independents
@@ -70,6 +71,7 @@ Comment[tr]=Bağımsız sanaçtılardan müzik dinleyin ve indirin
 Comment[uk]=Прослухайте і завантажте музику, записану незалежними виконавцями
 Comment[x-test]=xxListen to and download music uploaded by independent artistsxx
 Comment[zh_CN]=收听并下载由自由艺术家上传的音乐
+Comment[zh_TW]=收聽並下載獨立演出者所上傳的音樂
 
 
 ServiceTypes=Amarok/Plugin

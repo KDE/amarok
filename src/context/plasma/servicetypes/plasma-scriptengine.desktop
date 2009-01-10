@@ -39,6 +39,7 @@ Comment[tr]=Plasma için betik dili uzantısı
 Comment[uk]=Розширення скриптових мов для Plasma
 Comment[x-test]=xxScripting language extension for Plasmaxx
 Comment[zh_CN]=用于 Plasma 的脚本语言扩展
+Comment[zh_TW]=Plasma 文稿語言延伸
 
 [PropertyDef::X-Plasma-ComponentTypes]
 Type=QStringList

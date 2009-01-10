@@ -37,6 +37,7 @@ Name[tr]=Şarkı Sözleri Uygulamacığı
 Name[uk]=Аплет слів пісень
 Name[x-test]=xxLyrics Appletxx
 Name[zh_CN]=Lyrics 小程序
+Name[zh_TW]=歌詞小程式
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

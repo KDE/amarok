@@ -36,6 +36,7 @@ Name[tr]=Magnatune Müzik Mağazası
 Name[uk]=Магазин Magnatune
 Name[x-test]=xxMagnatune Storexx
 Name[zh_CN]=Magnatune 商店
+Name[zh_TW]=Magnatune 商店
 Comment=Preview and buy music from the non-evil Magnatune record label
 Comment[bg]=Обзор и купуване на музика от Magnatune
 Comment[ca]=Vista prèvia i compra de música del segell de música  Magnatune (non-evil)
@@ -66,6 +67,7 @@ Comment[th]=ฟังตัวอย่างและซื้อเพลง�
 Comment[uk]=Прослухайте і купіть музику з ненав’язливої агенції звукозапису Magnatune
 Comment[x-test]=xxPreview and buy music from the non-evil Magnatune record labelxx
 Comment[zh_CN]=预览并购买来自于非罪的 Magnatune 记录标签的音乐
+Comment[zh_TW]=從標記有「友善 Magnatune 紀錄」標籤的商店預覽並購買音樂
 
 
 ServiceTypes=Amarok/Plugin

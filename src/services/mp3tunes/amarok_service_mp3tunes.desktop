@@ -38,6 +38,7 @@ Name[tr]=Mp3tunes Hizmeti
 Name[uk]=Служба Mp3tunes
 Name[x-test]=xxMp3tunes Servicexx
 Name[zh_CN]=Mp3tunes 服务
+Name[zh_TW]=Mp3tunes 服務
 Comment=Browse and listen to the music stored in your mp3tunes account
 Comment[bg]=Обзор и слушане на музиката от вашата mp3tunes сметка
 Comment[ca]=Navegueu i escolteu la música emmagatzemada en el vostre compte de mp3tunes
@@ -71,6 +72,7 @@ Comment[tr]=mp3tunes hesabınızdaki müziklere göz atın ve dinleyin
 Comment[uk]=Перегляньте і прослухайте музику, що зберігається на вашому рахунку у mp3tunes
 Comment[x-test]=xxBrowse and listen to the music stored in your mp3tunes accountxx
 Comment[zh_CN]=浏览并收听储存在您的 Mp3tunes 账户中的音乐
+Comment[zh_TW]=瀏覽並收聽儲存在您的 mp3tunes 帳號裡的音樂
 
 ServiceTypes=Amarok/Plugin
 

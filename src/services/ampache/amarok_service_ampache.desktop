@@ -38,6 +38,7 @@ Name[tr]=Ampache Hizmeti
 Name[uk]=Служба Ampache
 Name[x-test]=xxAmpache Servicexx
 Name[zh_CN]=Ampache 服务
+Name[zh_TW]=Ampache 服務
 Comment=Listen to music from an Ampache server
 Comment[bg]=Слушане на музика от Ampache
 Comment[ca]=Escolta música des d'un servidor Ampache
@@ -71,6 +72,7 @@ Comment[tr]=Bir Ampache sunucudan müzik dinle
 Comment[uk]=Прослуховування музики з сервера Ampache
 Comment[x-test]=xxListen to music from an Ampache serverxx
 Comment[zh_CN]=从 Ampache 服务聆听音乐
+Comment[zh_TW]=從 Ampache 伺服器收聽音樂
 
 
 ServiceTypes=Amarok/Plugin

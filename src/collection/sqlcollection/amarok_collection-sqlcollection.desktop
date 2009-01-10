@@ -40,6 +40,7 @@ Name[tr]=SQL Koleksiyonu
 Name[uk]=Збірка SQL
 Name[x-test]=xxSQL Collectionxx
 Name[zh_CN]=SQL 收藏
+Name[zh_TW]=SQL 收藏
 Comment=Collection plugin for Amarok
 Comment[be]=Утулка калекцыі для Amarok
 Comment[bg]=Приставка за колекция (Amarok)
@@ -80,6 +81,7 @@ Comment[tr]=Amarok için Koleksiyon eklentisi
 Comment[uk]=Втулка збірки для Amarok
 Comment[x-test]=xxCollection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的收藏插件
+Comment[zh_TW]=Amarok 裡的收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

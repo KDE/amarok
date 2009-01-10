@@ -44,5 +44,6 @@ Name[tr]=Amarok'a Podcast olarak Ekle
 Name[uk]=Додати в Amarok як радіотрансляцію
 Name[x-test]=xxAdd as Podcast to Amarokxx
 Name[zh_CN]=将播客添加到 Aamarok
+Name[zh_TW]=當成 Podcast 新增到 Amarok
 Icon=amarok
 Exec=qdbus org.kde.amarok  /PlaylistBrowser addPodcast %u

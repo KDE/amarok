@@ -35,6 +35,7 @@ Name[tr]=Wikipedia Veri Motoru
 Name[uk]=Рушій даних Wikipedia
 Name[x-test]=xxWikipedia Data Enginexx
 Name[zh_CN]=维基百科数据引擎
+Name[zh_TW]=Wikipedia 資料引擎
 X-KDE-ServiceTypes=AmarokContext/DataEngine
 Type=Service
 Icon=wikipedia

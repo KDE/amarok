@@ -40,6 +40,7 @@ Name[tr]=DAAP Koleksiyonu
 Name[uk]=Збірка DAAP
 Name[x-test]=xxDAAP Collectionxx
 Name[zh_CN]=DAAP 收藏
+Name[zh_TW]=DAAP 收藏
 Comment=DAAP collection plugin for Amarok
 Comment[be]=Утулка калекцыі DAAP для Amarok
 Comment[bg]=Приставка за DAAP колекция за Amarok
@@ -80,6 +81,7 @@ Comment[tr]=Amarok için DAAP koleksiyon eklentisi
 Comment[uk]=Втулка збірки DAAP для Amarok
 Comment[x-test]=xxDAAP collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的 DAAP 收藏插件
+Comment[zh_TW]=Amarok 裡的 DAAP 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

@@ -24,6 +24,7 @@ Name[tr]=İç Genişletme Kapsayıcısı
 Name[uk]=Внутрішній контейнер розширювача
 Name[x-test]=xxInternal Extender Containerxx
 Name[zh_CN]=内部扩展容器
+Name[zh_TW]=內部延伸容器
 Type=Service
 X-KDE-ServiceTypes=Plasma/Applet
 X-KDE-PluginInfo-Name=internal:extender

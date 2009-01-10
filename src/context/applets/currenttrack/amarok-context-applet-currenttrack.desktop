@@ -38,6 +38,7 @@ Name[tr]=Şu anki İz Bilgisi
 Name[uk]=Інформація про поточну доріжку
 Name[x-test]=xxCurrent Track Infoxx
 Name[zh_CN]=当前音轨信息
+Name[zh_TW]=目前的音軌資訊
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

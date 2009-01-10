@@ -32,6 +32,7 @@ Name[tr]=Paket meta verisi test dosyası
 Name[uk]=Файл тесту метаданих пакунка
 Name[x-test]=xxPackage metadata test filexx
 Name[zh_CN]=包元数据测试文件
+Name[zh_TW]=套件中繼資料測試檔
 Comment=A test desktop file to test the PackageMetaData class.
 Comment[bg]=Тестване класа на метаданните.
 Comment[ca]=Un fitxer d'escriptori de proves per provar la classe PackageMetaData.
@@ -64,6 +65,7 @@ Comment[tr]=PaketMetaVeri sınıfı testi için masaüstü test dosyası.
 Comment[uk]=Тестовий стільничний файл для перевірки класу PackageMetaData.
 Comment[x-test]=xxA test desktop file to test the PackageMetaData class.xx
 Comment[zh_CN]=一个用于测试 PackageMetaData 类的桌面文件。
+Comment[zh_TW]=測試 PackageMetaData 類別的桌面檔
 
 Icon=test
 Type=Service

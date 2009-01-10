@@ -26,6 +26,7 @@ Name[th]=ข้อมูลรายละเอียดของคอนเ�
 Name[tr]=Songkick Konser Bilgileri
 Name[uk]=Відомості про концерти з Songkick
 Name[x-test]=xxSongkick Concert Informationxx
+Name[zh_TW]=Songkick 音樂會資訊
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

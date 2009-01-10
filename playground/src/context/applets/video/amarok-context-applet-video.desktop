@@ -21,6 +21,7 @@ Name[th]=วิดีโอ
 Name[uk]=Відео
 Name[x-test]=xxVideoxx
 Name[zh_CN]=视频
+Name[zh_TW]=影像
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

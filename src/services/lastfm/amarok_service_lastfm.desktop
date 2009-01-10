@@ -40,6 +40,7 @@ Name[tr]=Last.fm Hizmeti
 Name[uk]=Служба Last.fm
 Name[x-test]=xxLast.fm Servicexx
 Name[zh_CN]=Last.fm 服务
+Name[zh_TW]=Lastfm 服務
 Comment=A service that integrates last.fm functionality into Amarok
 Comment[bg]=Интеграция на last.fm с Amarok
 Comment[ca]=Un servei que integra la funcionalitat del last.fm en l'Amarok
@@ -74,6 +75,7 @@ Comment[tr]=Last.fm işlevlerini Amarok'a entegre eden bir hizmet
 Comment[uk]=Служба, яка інтегрує функціональність last.fm до Amarok
 Comment[x-test]=xxA service that integrates last.fm functionality into Amarokxx
 Comment[zh_CN]=一个在 Amarok 中集成 Last.fm 功能的服务
+Comment[zh_TW]=將 last.fm 功能整合到 Amarok 的服務。
 
 
 ServiceTypes=Amarok/Plugin

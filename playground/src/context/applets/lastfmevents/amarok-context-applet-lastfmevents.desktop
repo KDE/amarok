@@ -37,6 +37,7 @@ Name[tr]=last.Fm Olayları
 Name[uk]=Події Last.Fm
 Name[x-test]=xxLast.Fm Eventsxx
 Name[zh_CN]=Last.Fm 事件
+Name[zh_TW]=LastFm 事件
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

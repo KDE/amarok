@@ -54,6 +54,7 @@ Name[tr]=Parça Listesine Ekle
 Name[uk]=Додати до списку композицій
 Name[x-test]=xxAppend to Playlistxx
 Name[zh_CN]=追加到播放列表
+Name[zh_TW]=新增到播放清單
 Icon=amarok
 Exec=amarok -e %U
 
@@ -100,6 +101,7 @@ Name[tr]=Parça Listesine Ekle ve Çal
 Name[uk]=Додати і програти
 Name[x-test]=xxAppend & Playxx
 Name[zh_CN]=追加并播放
+Name[zh_TW]=新增並播放
 Icon=amarok
 Exec=qdbus org.kde.amarok /PlayerList playMedia %U
 
@@ -147,5 +149,6 @@ Name[tr]=Parçayı Sıraya Ekle
 Name[uk]=Поставити доріжку в чергу
 Name[x-test]=xxQueue Trackxx
 Name[zh_CN]=音轨排队
+Name[zh_TW]=把曲目放入佇列
 Icon=amarok
 Exec=amarok --queue %U

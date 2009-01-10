@@ -36,6 +36,7 @@ Name[tr]=UPnP Koleksiyonu
 Name[uk]=Збірка на UPnP
 Name[x-test]=xxUPnP Collectionxx
 Name[zh_CN]=UPnP 收藏
+Name[zh_TW]=UPnP 收藏
 Comment=UPnP collection plugin for Amarok
 Comment[be]=Утулка калекцыі UPnP для Amarok
 Comment[bg]=Приставка за UPnP колекция (Amarok)
@@ -72,6 +73,7 @@ Comment[tr]=Amarok için UPnP koleksiyonu eklentisi
 Comment[uk]=Втулка збірки на UPnP для Amarok
 Comment[x-test]=xxUPnP collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的 UPnP 收藏插件
+Comment[zh_TW]=Amarok 裡的 UPnP 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

@@ -34,6 +34,7 @@ Name[tr]=Amarok Nightly Ses Yapılandırması
 Name[uk]=Налаштування звуку Nightly для Amarok
 Name[x-test]=xxAmarok Nightly Audio Configurationxx
 Name[zh_CN]=Amarok Nightly 音频配置
+Name[zh_TW]=Amarok Nightly Audio 設定
 Exec=amarok-nightly-phonon
 TryExec=amarok-nightly-phonon
 Icon=amarok

@@ -36,6 +36,7 @@ Name[tr]=Shoutcast Hizmeti
 Name[uk]=Служба Shoutcast
 Name[x-test]=xxShoutcast Servicexx
 Name[zh_CN]=Shoutcast 服务
+Name[zh_TW]=Shoutcast 服務
 Comment=A service that allows browsing of thousands of shoutcast stations
 Comment[bg]=Услуга за обзор на хиляди shoutcast радио станции
 Comment[ca]=Un servei que permet navegar per milers d'estacions de shoutcast
@@ -69,6 +70,7 @@ Comment[tr]=Binlerce shoutcast radyo istasyonuna göz atmanıza izin veren bir h
 Comment[uk]=Служба, що дозволяє вам прослуховувати тисячі станцій shoutcast
 Comment[x-test]=xxA service that allows browsing of thousands of shoutcast stationsxx
 Comment[zh_CN]=一种允许浏览数千个 Shoutcast 站点的服务
+Comment[zh_TW]=允許瀏覽上千個 shoutcast 站台的服務
 
 
 ServiceTypes=Amarok/Plugin
