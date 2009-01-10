@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Album cover art can be accessed via the scripting API. Patch thanks to
+      Simon Esneault <simon.esneault@gmail.com>. (BR 179732)
     * New vertical Context View layout.
     * New applet toolbar in the Context View to arrange, select, and add applets.
 

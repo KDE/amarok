@@ -173,6 +173,12 @@ MetaTrackPrototype::title() const
     return track ? track->prettyName() : QString();
 }
 
+QString
+MetaTrackPrototype::imageUrl() const
+{
+    GET_TRACK
+    return track ? track->album()->imageLocation().prettyUrl() : QString();
+}
 
 bool
 MetaTrackPrototype::isValid() const
@@ -277,6 +283,13 @@ MetaTrackPrototype::setTitle( const QString& title )
 {
     GET_TRACK_EC
     if ( ec ) ec->setTitle( title );
+}
+
+void
+MetaTrackPrototype::setImageUrl(const QString& imageUrl )
+{
+    GET_TRACK
+    if ( track ) track->album()->setImage(QImage(imageUrl));
 }
 
 #undef GET_TRACK
