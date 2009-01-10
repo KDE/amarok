@@ -1,6 +1,14 @@
 [Desktop Entry]
 Name=Vertical Context Containment
+Name[pt]=Contentor de Contexto Vertical
+Name[pt_BR]=Contentor de Contexto Vertical
+Name[sv]=Vertikal sammanhangsinneslutning
+Name[uk]=Вертикальний контейнер вмісту
 Comment=A vertical containment for the Amarok Context
+Comment[pt]=Um contentor vertical para o Contexto do Amarok
+Comment[pt_BR]=Um contentor vertical para o Contexto do Amarok
+Comment[sv]=En vertikal inneslutning för Amaroks Sammanhang
+Comment[uk]=Вертикальний контейнер для контексту Amarok
 
 Icon=
 Type=Service

@@ -1,6 +1,5 @@
 [Desktop Entry]
 Name=Amarok Bookmark Manager
-Name[x-test]=xxAmarok Bookmark Managerxx
 Type=Service
 ServiceTypes=AmarokContext/Applet
 
