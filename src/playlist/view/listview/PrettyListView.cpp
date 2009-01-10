@@ -311,10 +311,7 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
         mousePressPos.ry() += verticalOffset();
         return PrettyItemDelegate::insideItemHeader( mousePressPos, rectForIndex( index ) );
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 void
@@ -394,7 +391,8 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
         updateProxy = true;
             
     int row = GroupingProxy::instance()->find( searchTerm, fields );
-    if( row != -1 ) {
+    if( row != -1 )
+    {
         //select this track
         debug() << "Got match at row: " << row;
         
@@ -407,9 +405,9 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
         emit( found() );
-    } else {
-        emit( notFound() );
     }
+    else
+        emit( notFound() );
 
 
     //instead of kicking the proxy right away, start a 500msec timeout.
@@ -419,7 +417,6 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
     //before this  timeout. Only start count if values have actually changed!
     if ( updateProxy )
         startProxyUpdateTimeout();
-
 }
 
 void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields )

@@ -53,8 +53,6 @@ Playlist::Widget::Widget( QWidget* parent )
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
 
-    LayoutConfigWidget * configWidget = new LayoutConfigWidget( this );
-
     PrettyListView* playView = new PrettyListView( this );
     playView->show();
     m_playlistView = qobject_cast<QWidget*>( playView );

@@ -24,8 +24,8 @@
 
 #include "playlist/PlaylistItem.h"
 
-namespace Playlist {
-
+namespace Playlist
+{
 /**
 A proxy model used by navigators to only operate on tracks that match the current paylist search term
 
@@ -35,7 +35,8 @@ a search term is active and the currently playing track is not in the subset rep
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class NavigatorFilterProxyModel : public QSortFilterProxyModel {
+class NavigatorFilterProxyModel : public QSortFilterProxyModel
+{
     Q_OBJECT
 public:
 
@@ -102,7 +103,6 @@ public:
      */
     void setPassThrough( bool passThrough );
 
-
     QVariant data( const QModelIndex& index, int role ) const;
 
     bool rowExists( int row ) const;
@@ -114,9 +114,6 @@ public:
     QStringList mimeTypes() const;
     QMimeData* mimeData( const QModelIndexList& ) const;
     bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
-
-
-
 
     int find( const QString & searchTerm, int searchFields );
     int findNext( const QString & searchTerm, int selectedRow, int searchFields );
@@ -139,7 +136,6 @@ protected:
     virtual bool filterAcceptsRow ( int row, const QModelIndex & source_parent ) const;
 
 protected slots:
-
     /**
      * Slot called when the source model has inserted new tracks. Uses filterAcceptsRow
      * to determine if a given id should be included in the list forwarded to any
@@ -157,7 +153,6 @@ protected slots:
     void slotRemovedIds( const QList<quint64> &ids );
 
 signals:
-
     /**
      * Signal forwarded from the source model.
      * @param the list of id's added that are also represented by this proxy.
@@ -176,7 +171,6 @@ signals:
     void filterChanged();
 
 private:
-
     /**
      * Constructor.
      */
