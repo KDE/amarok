@@ -20,7 +20,7 @@
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
 #include "meta/MetaUtility.h"
-#include "meta/SourceInfoCapability.h"
+#include "meta/capabilities/SourceInfoCapability.h"
 
 #include <QVariant>
 
