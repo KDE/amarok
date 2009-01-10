@@ -26,9 +26,9 @@
 
 #include "Debug.h"
 #include "SvgHandler.h"
-#include "meta/EditCapability.h"
-#include "meta/CustomActionsCapability.h"
-#include "meta/UpdateCapability.h"
+#include "meta/capabilities/EditCapability.h"
+#include "meta/capabilities/CustomActionsCapability.h"
+#include "meta/capabilities/UpdateCapability.h"
 
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 

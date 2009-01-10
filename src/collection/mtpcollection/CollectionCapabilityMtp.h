@@ -21,7 +21,7 @@
 
 #include "Meta.h"
 
-#include "meta/CollectionCapability.h"
+#include "meta/capabilities/CollectionCapability.h"
 
 class MtpCollection;
 

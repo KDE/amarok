@@ -20,7 +20,7 @@
 
 #include "MtpCollection.h"
 #include "MtpCollectionLocation.h"
-#include "meta/CollectionCapability.h"
+#include "meta/capabilities/CollectionCapability.h"
 #include "MtpMeta.h"
 #include "CollectionCapabilityMtp.h"
 
