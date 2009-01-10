@@ -830,11 +830,14 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     switch( type )
     {
         case Meta::Capability::CustomActions:
+        case Meta::Capability::Importable:
         case Meta::Capability::Organisable:
         case Meta::Capability::Updatable:
             return true;
+
         case Meta::Capability::Editable:
             return isEditable();
+
         default:
             return false;
     }
