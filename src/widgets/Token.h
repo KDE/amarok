@@ -20,12 +20,17 @@
 #define AMAROK_TOKEN_H
 
 #include <QFrame>
-#include <QString>
 #include <QLabel>
-#include <QHBoxLayout>
 #include <QPixmap>
-#include <QResizeEvent>
 
+class Token;
+
+class TokenBuilder
+{
+    public:
+        Token* buildToken( const QString &element ) const;
+
+};
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
 class Token : public QFrame
@@ -33,19 +38,40 @@ class Token : public QFrame
         Q_OBJECT
 
     public:
-        explicit Token( const QString &string, QWidget *parent = 0 );
-        QString getString();
-        QString getLabel(); //legacy method, TODO: remove in favor of getString post-2.0
+        enum Type { Unknown
+                    , Ignore
+                    , Track
+                    , Title
+                    , Artist
+                    , Composer
+                    , Year
+                    , Album
+                    , Comment
+                    , Genre
+                    , FileType
+                    , Folder
+                    , Initial
+                    , DiscNumber
+                    , Space
+                    , Slash
+                    , Dot
+                    , Dash
+                    , Underscore
+                };
 
-    protected:
-        void resizeEvent( QResizeEvent *event );
-        
+        explicit Token( Type type, QWidget *parent = 0 );
+
+        QString tokenElement() const;
+        static QString tokenElement( const Type type );
+
     private:
         void setIcon();
-        void setString( const QString &string );
+        QString iconName() const;
+        QString text() const;
+        QString prettyText() const;
 
-        QHBoxLayout *hlayout;
-        QString      m_tokenString;
+        Type         m_type;
+ 
         QLabel      *m_iconContainer;
         QLabel      *m_label;
 };

@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
+
 #include "Token.h"
 #include "FilenameLayoutWidget.h"
 #include "Debug.h"
@@ -21,21 +22,70 @@
 #include <KColorScheme>
 #include <KIcon>
 
-Token::Token( const QString &string, QWidget *parent )
+#include <QHBoxLayout>
+
+Token*
+TokenBuilder::buildToken( const QString &element ) const 
+{
+    if( element == Token::tokenElement( Token::Track ) )
+        return new Token( Token::Track );
+    if( element == Token::tokenElement( Token::Title ) )
+        return new Token( Token::Title );
+    if( element == Token::tokenElement( Token::Artist ) )
+        return new Token( Token::Artist );
+    if( element == Token::tokenElement( Token::Composer ) )
+        return new Token( Token::Composer );
+    if( element == Token::tokenElement( Token::Year ) )
+        return new Token( Token::Year );
+    if( element == Token::tokenElement( Token::Album ) )
+        return new Token( Token::Album );
+    if( element == Token::tokenElement( Token::Comment ) )
+        return new Token( Token::Comment );
+    if( element == Token::tokenElement( Token::Genre ) )
+        return new Token( Token::Genre );
+    if( element == Token::tokenElement( Token::FileType ) )
+        return new Token( Token::Folder );
+    if( element == Token::tokenElement( Token::Initial ) )
+        return new Token( Token::Initial );
+    if( element == Token::tokenElement( Token::DiscNumber ) )
+        return new Token( Token::DiscNumber );
+    if( element == Token::tokenElement( Token::Space ) )
+        return new Token( Token::Space );
+    if( element == Token::tokenElement( Token::Slash ) )
+        return new Token( Token::Slash );
+    if( element == Token::tokenElement( Token::Dot ) )
+        return new Token( Token::Dot );
+    if( element == Token::tokenElement( Token::Dash ) )
+        return new Token( Token::Dash );
+    if( element == Token::tokenElement( Token::Underscore ) )
+        return new Token( Token::Underscore );
+
+    warning() << "Could not build token for element string: " << element;
+    return 0;
+}
+
+Token::Token( Type type, QWidget *parent )
     : QFrame( parent )
+    , m_type( type )
 {
     m_label = new QLabel( this );
-    hlayout = new QHBoxLayout( this );
+    m_label->setAlignment( Qt::AlignCenter );
+    m_label->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    m_label->setText( prettyText() );
+
+    QHBoxLayout *hlayout = new QHBoxLayout( this );
     setLayout( hlayout );
-    m_iconContainer = new QLabel( this );
     
+    m_iconContainer = new QLabel( this );
+    m_iconContainer->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    setIcon();
+
     setContentsMargins( 0, 0, 0, 0 );
+
     hlayout->setContentsMargins( 0, 0, 0, 0 );
     hlayout->addWidget( m_iconContainer );
     hlayout->addWidget( m_label );
-    setString( string );
-    m_label->setAlignment( Qt::AlignCenter );
-
+    
     const uint borderColor = static_cast<uint>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
     const QString hexBorder = QString::number( borderColor, 16 ).remove( 0, 2 ); // remove the Alpha channel (first two hex bits)
     
@@ -55,101 +105,143 @@ Token::Token( const QString &string, QWidget *parent )
     setIcon();
 }
 
-//Access for m_tokenString, private.
-void
-Token::setString( const QString &string )
+QString
+Token::text() const
 {
-    m_label->setText( string );
-    if( string == i18n( "Track" ) )
+    switch( m_type )
     {
-        m_tokenString = "track";
+        case Unknown:
+            return i18n( "Unknown" );
+        case Ignore:
+            return i18n( "Ignore field" );
+        case Track:
+            return i18n( "Track" );
+        case Title:
+            return i18n( "Title" );
+        case Artist:
+            return i18n( "Artist" );
+        case Composer:
+            return i18n( "Composer" );
+        case Year:
+            return i18n( "Year" );
+        case Album:
+            return i18n( "Album" );
+        case Comment:
+            return i18n( "Comment" );
+        case Genre:
+            return i18n( "Genre" );
+        case FileType:
+            return i18n( "File type" );
+        case Folder:
+            return i18n( "Collection root" );
+        case Initial:
+            return i18n( "Artist initial" );
+        case DiscNumber:
+            return i18n( "Disc number" );
+        case Space:
+            return i18n( "<space>" );
+        case Slash:
+            return QString( "/" );
+        case Dot:
+            return QString( "." );
+        case Dash:
+            return QString( "-" );
+        case Underscore:
+            return QString( "_" );
     }
-    else if( string == i18n( "Title" ) )
-    {
-        m_tokenString = "title";
-    }
-    else if( string == i18n( "Artist" ) )
-    {
-        m_tokenString = "artist";
-    }
-    else if( string == i18n( "Composer" ) )
-    {
-        m_tokenString = "composer";
-    }
-    else if( string == i18n( "Year" ) )
-    {
-        m_tokenString = "year";
-    }
-    else if( string == i18n( "Album" ) )
-    {
-        m_tokenString = "album";
-    }
-    else if( string == i18n( "Comment" ) )
-    {
-        m_tokenString = "comment";
-    }
-    else if( string == i18n( "Genre" ) )
-    {
-        m_tokenString = "genre";
-    }
-    else if( string == i18n( "File type" ) )
-    {
-        m_tokenString = "filetype";
-    }
-    else if( string == i18n( "Ignore field" ) )
-    {
-        m_tokenString = "ignore";
-    }
-    else if( string == i18n( "Collection root" ) )
-    {
-        m_tokenString = "folder";
-    }
-    else if( string == i18n( "Artist initial" ) )
-    {
-        m_tokenString = "initial";
-    }
-    else if( string == i18n( "Disc number" ) )
-    {
-        m_tokenString = "discnumber";
-    }
-    else if( string == i18n( "<space>" ) )
-    {
-        m_tokenString = "space";
-        m_label->setText(" ");
-    }
-    else if( string == "/" )
-        m_tokenString = "slash";
-    else if( string == "." )
-        m_tokenString = "dot";
-    else if( string == "-" )
-        m_tokenString = "dash";
-    else if( string == "_" )
-        m_tokenString = "underscore";
+    return QString();
 } 
 
-//Access for m_tokenString, public.
 QString
-Token::getString()
+Token::prettyText() const
 {
-    return m_tokenString;
+    switch( m_type )
+    {
+        case Space:
+            return QString(" ");
+        default:
+            return text();
+    }
 }
 
 QString
-Token::getLabel()
+Token::tokenElement() const
 {
-    return m_label->text();
+    return tokenElement( m_type );
+}
+
+// Static. Accessed by the builder when creating an object
+QString
+Token::tokenElement( Type type )
+{
+    switch( type )
+    {
+        case Unknown:
+            return QString();
+        case Ignore:
+            return QString( "%ignore" );
+        case Track:
+            return QString( "%track" );
+        case Title:
+            return QString( "%title" );
+        case Artist:
+            return QString( "%artist" );
+        case Composer:
+            return QString( "%composer" );
+        case Year:
+            return QString( "%year" );
+        case Album:
+            return QString( "%album" );
+        case Comment:
+            return QString( "%comment" );
+        case Genre:
+            return QString( "%genre" );
+        case FileType:
+            return QString( "%filetype" );
+        case Folder:
+            return QString( "%folder" );
+        case Initial:
+            return QString( "%initial" );
+        case DiscNumber:
+            return QString( "%discnumber" );
+        case Space:
+            return QString( " " );
+        case Slash:
+            return QString( "/" );
+        case Dot:
+            return QString( "." );
+        case Dash:
+            return QString( "-" );
+        case Underscore:
+            return QString( "_" );
+    }
+    return QString();
+} 
+
+QString
+Token::iconName() const
+{
+    switch( m_type )
+    {
+        case Space:
+            return QString( "space" );
+        case Slash:
+            return QString( "slash" );
+        case Dot:
+            return QString( "dot" );
+        case Dash:
+            return QString( "dash" );
+        case Underscore:
+            return QString( "underscore" );
+        default:
+            return tokenElement().mid( 1 );// remove '%'
+    }
+    return QString();
 }
 
 void
 Token::setIcon()
 {
-    QPixmap pixmap = QPixmap( KIcon( "filename-" + m_tokenString + "-amarok" ).pixmap( 16, 16 ) );
+    QPixmap pixmap = QPixmap( KIcon( "filename-" + iconName() + "-amarok" ).pixmap( 16, 16 ) );
     m_iconContainer->setPixmap( pixmap );
-}
-
-void //does this do any good?
-Token::resizeEvent( QResizeEvent *event )
-{
-    Q_UNUSED( event );
-    hlayout->update(); //does this do any good?
 }

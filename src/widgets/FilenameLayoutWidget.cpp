@@ -40,11 +40,8 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     m_layout = new QHBoxLayout;
     m_layout->setSpacing( 0 );    //this should be coherent when using separators
     setLayout( m_layout );
-    m_infoText = QString( i18n( "<div align=center><i>Drag tokens here to define a filename scheme.</i></div>" ) );
-    //TODO: when we are out of string freeze remove the html from i18n
-    //now a workaround to avoid breaking string freeze.
-    m_infoText.remove( 0, 21 );
-    m_infoText.remove( m_infoText.length() - 10, 10 );
+    
+    m_infoText = QString( i18n( "Drag tokens here to define a filename scheme." ) );
     repaint();  //update m_infoText
     
     m_layout->setContentsMargins( 1, 1, 1, 1 );
@@ -54,26 +51,41 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
 // FilenameLayoutWidget bar and computes the parsable scheme 
 // currently defined by the FilenameLayoutWidget.
 void
-FilenameLayoutWidget::addToken( const QString &text, int index )   //SLOT
+FilenameLayoutWidget::addToken( Token *token, int index )   //SLOT
 {
-    m_tokenCount++;
-    repaint();  //update m_infoText
-    
-    Token *token = new Token( text, this );
+    if( !token )
+        return;
 
+    m_tokenCount++;
     m_layout->insertWidget( index, token );
     
-    token->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    
+    token->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     token->show();
 
     generateParsableScheme();
     emit schemeChanged();
 }
 
-//Executed whenever a drag object enters the FilenameLayoutWidget
 void
-FilenameLayoutWidget::dragEnterEvent( QDragEnterEvent *event )        //overrides QListWidget's implementation. this is when the drag becomes droppable
+FilenameLayoutWidget::addToken( Token::Type type, int index )
+{
+    Token *token = new Token( type, this );
+    addToken( token, index );
+}
+
+void
+FilenameLayoutWidget::addToken( const QString &tokenElement, int index )
+{
+    TokenBuilder *tb = new TokenBuilder();
+    Token *token = tb->buildToken( tokenElement );
+    addToken( token, index );
+    delete tb;
+}
+
+//Executed whenever a drag object enters the FilenameLayoutWidget
+//overrides QListWidget's implementation. this is when the drag becomes droppable
+void
+FilenameLayoutWidget::dragEnterEvent( QDragEnterEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );
     if ( source && source != this )
@@ -90,7 +102,7 @@ FilenameLayoutWidget::dragEnterEvent( QDragEnterEvent *event )        //override
 
 //Executed whenever a drag object moves inside the FilenameLayoutWidget
 void
-FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to override QListWidget
+FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );     //same as in dragEnterEvent
     if ( source && source != this )
@@ -107,7 +119,7 @@ FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )          //need to 
 
 //Handles the insertion of a token over another depending on its position, computes the index and calls addToken
 void
-FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event )
+FilenameLayoutWidget::insertOverChild( Token *childUnder, const QString &tokenElement, QDropEvent *event )
 {
     if ( !childUnder )
         return;
@@ -115,9 +127,9 @@ FilenameLayoutWidget::insertOverChild( Token *childUnder, QString &textFromMimeD
     int index = m_layout->indexOf( childUnder );
 
     if( event->pos().x() < childUnder->pos().x() + childUnder->size().width() / 2 )
-        addToken( textFromMimeData, index );
+        addToken( tokenElement, index );
     else
-        addToken( textFromMimeData, index + 1 );
+        addToken( tokenElement, index + 1 );
 }
 
 //Executed whenever a valid drag object is dropped on the FilenameLayoutWidget. Will call addToken and insertOverChild.
@@ -127,8 +139,9 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     QWidget *source = qobject_cast<QWidget *>( event->source() );     //not sure how to handle this
     QByteArray itemData = event->mimeData()->data( "application/x-amarok-tag-token" );
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-    QString textFromMimeData;
-    dataStream >> textFromMimeData;
+    
+    QString tokenElement;
+    dataStream >> tokenElement;
 
     if ( source && source != this )
         event->setDropAction( Qt::CopyAction );
@@ -141,14 +154,13 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     {
         // if the bar is empty
         if( !m_tokenCount )
-            addToken( textFromMimeData );
-        
+            addToken( tokenElement );
         //if the bar is not empty and I'm still not dropping on an existing token
         else
         {
             QPoint fixedPos = QPoint( event->pos().x(), size().height() / 2 );      //first I lower the y coordinate of the drop, this should handle the drops higher and lower than the tokens
             childUnder = qobject_cast< Token * >( childAt( fixedPos ) );            //and I look for a child (token) on these new coordinates
-            if( childUnder == 0 )                                                   //if there's none, then I'm either at the beginning or at the end of the bar
+            if( !childUnder )                                                       //if there's none, then I'm either at the beginning or at the end of the bar
             {
                 if( fixedPos.x() < childrenRect().topLeft().x() )                   //if I'm dropping before all the tokens
                 {
@@ -175,17 +187,17 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
                 
                 if( !childUnder )
                     error() << "ERROR: childUnder is null";
-                insertOverChild( childUnder, textFromMimeData, event );
+                insertOverChild( childUnder, tokenElement, event );
             }
-            else                                                                    //if I find a token, I'm done
+            else // token found
             {
-                insertOverChild( childUnder, textFromMimeData, event );
+                insertOverChild( childUnder, tokenElement, event );
             }
         }
     }
-    else                    //I'm dropping on an existing token, that's easy
+    else // Dropping on an existing token, that's easy
     {
-        insertOverChild( childUnder, textFromMimeData, event );
+        insertOverChild( childUnder, tokenElement, event );
     }
     event->accept();
     
@@ -205,7 +217,7 @@ FilenameLayoutWidget::mouseMoveEvent( QMouseEvent *event )
     if ( event->buttons() & Qt::LeftButton )
     {
         int distance = ( event->pos() - m_startPos ).manhattanLength();
-        if ( distance >= KApplication::startDragDistance() )    //TODO:maybe it's not my business to say it but this should be done in PlaylistView too.
+        if ( distance >= KApplication::startDragDistance() ) // TODO: maybe it's not my business to say it but this should be done in PlaylistView too.
         {
             performDrag( event );
         }
@@ -231,6 +243,7 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
         }
         delete child;
         m_tokenCount--;
+        
         repaint();  //update m_infoText
         
         generateParsableScheme();
@@ -242,15 +255,19 @@ FilenameLayoutWidget::mousePressEvent( QMouseEvent *event )
 void
 FilenameLayoutWidget::performDrag( QMouseEvent *event )
 {
-    //transfer of QByteData, not text --thank you Fridge Magnet example from Qt doc
+    // transfer of QByteData, not text
     Token *child = qobject_cast< Token * >( childAt( event->pos() ) );
     if ( !child )
         return;
+    
     QByteArray itemData;
+    
     QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-    dataStream << child->getLabel(); // << QPoint( event->pos() - child->rect().topLeft() -child.pos() );       //I may need the QPoint of the start sooner or later
-    QMimeData *mimeData = new QMimeData;
+    dataStream << child->tokenElement();
+
+    QMimeData *mimeData = new QMimeData();
     mimeData->setData( "application/x-amarok-tag-token", itemData );
+    
     QDrag *drag = new QDrag( this );
     drag->setMimeData( mimeData );
     drag->setHotSpot( event->pos() - child->rect().topLeft() - child->pos() );        //I grab the initial position of the item I'm dragging
@@ -266,55 +283,24 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     emit schemeChanged();
 }
 
-//Iterates over the elements of the FilenameLayoutWidget bar (really over the elements of a QList that stores the indexes of the tokens) and generates a string that TagGuesser can digest.
+// Iterates over the elements of the FilenameLayoutWidget bar 
+// (really over the elements of a QList that stores the indexes 
+// of the tokens) and generates a string that TagGuesser can digest.
 void
-FilenameLayoutWidget::generateParsableScheme()      //invoked on every change of the layout
+FilenameLayoutWidget::generateParsableScheme()
 {
-    //with m_parsableScheme
     m_parsableScheme = "";
     for( int i = 0; i < m_layout->count(); ++i)
     {
-        // TODO: REWRITE THIS USING PROPER Token::getString();
-
         // getting a Token by grabbing a QLayoutItem* at index i and grabbing his QWidget.
         Token *token = qobject_cast<Token*>( m_layout->itemAt(i)->widget() );
         if( !token )
             continue;
 
-        QString current = token->getLabel();
-        
-        if( current == i18n( "Track" ) )
-            m_parsableScheme += "%track";
-        else if( current == i18n( "Title" ) )
-            m_parsableScheme += "%title";
-        else if( current == i18n( "Artist" ) )
-            m_parsableScheme += "%artist";
-        else if( current == i18n( "Composer" ) )
-            m_parsableScheme += "%composer";
-        else if( current == i18n( "Year" ) )
-            m_parsableScheme += "%year";
-        else if( current == i18n( "Album" ) )
-            m_parsableScheme += "%album";
-        else if( current == i18n( "Comment" ) )
-            m_parsableScheme += "%comment";
-        else if( current == i18n( "Genre" ) )
-            m_parsableScheme += "%genre";
-        else if( current == i18n( "File type" ) )
-            m_parsableScheme += "%filetype";
-        else if( current == i18n( "Ignore field" ) )
-            m_parsableScheme += "%ignore";
-        else if( current == i18n( "Collection root" ) )
-            m_parsableScheme += "%folder";
-        else if( current == i18n( "Artist initial" ) )
-            m_parsableScheme += "%initial";
-        else if( current == i18n( "Disc number" ) )
-            m_parsableScheme += "%discnumber";
-        else
-            m_parsableScheme += current;
+        m_parsableScheme += token->tokenElement();
     }
 }
 
-//Access for m_parsableScheme.
 QString
 FilenameLayoutWidget::getParsableScheme() const
 {
@@ -327,6 +313,8 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
 {
     DEBUG_BLOCK
 
+    debug() << "infering scheme: " << s;
+
     removeAllTokens();
     for( int i = 0; i < s.size(); )
     {
@@ -334,84 +322,84 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
         {
             if( s.mid( i, 6 ) == "%title" )
             {
-                addToken( i18n( "Title" ) );
+                addToken( Token::Title );
                 i += 6;
             }
             else if( s.mid( i, 6 ) == "%track" )
             {
-                addToken( i18n( "Track" ) );
+                addToken( Token::Track );
                 i += 6;
             }
             else if( s.mid( i, 7 ) == "%artist" )
             {
-                addToken( i18n( "Artist" ) );
+                addToken( Token::Artist );
                 i += 7;
             }
             else if( s.mid( i, 9 ) == "%composer" )
             {
-                addToken( i18n( "Composer" ) );
+                addToken( Token::Composer );
                 i += 9;
             }
             else if( s.mid( i, 5 ) == "%year" )
             {
-                addToken( i18n( "Year" ) );
+                addToken( Token::Year );
                 i += 5;
             }
             else if( s.mid( i, 6 ) == "%album" )
             {
-                addToken( i18n( "Album" ) );
+                addToken( Token::Album );
                 i += 6;
             }
             else if( s.mid( i, 8 ) == "%comment" )
             {
-                addToken( i18n( "Comment" ) );
+                addToken( Token::Comment );
                 i += 8;
             }
             else if( s.mid( i, 6 ) == "%genre" )
             {
-                addToken( i18n( "Genre" ) );
+                addToken( Token::Genre );
                 i += 6;
             }
             else if( s.mid( i, 9 ) == "%filetype" )
             {
-                addToken( i18n( "File type" ) );
+                addToken( Token::FileType );
                 i += 9;
             }
             else if( s.mid( i, 7 ) == "%ignore" )
             {
-                addToken( i18n( "Ignore field" ) );
+                addToken( Token::Ignore );
                 i += 7;
             }
             else if( s.mid( i, 7 ) == "%folder" )
             {
-                addToken( i18n( "Collection root" ) );
+                addToken( Token::Folder );
                 i += 7;
             }
             else if( s.mid( i, 8 ) == "%initial" )
             {
-                addToken( i18n( "Artist initial" ) );
+                addToken( Token::Initial );
                 i += 8;
             }
             else if( s.mid( i, 11 ) == "%discnumber" )
             {
-                addToken( i18n( "Disc number" ) );
+                addToken( Token::DiscNumber );
                 i += 11;
             }
         }
         else
         {
             if( s.at(i) == '_' )
-                addToken( "_" );
+                addToken( Token::Underscore );
             else if( s.at(i) == '-' )
-                addToken( "-" );
+                addToken( Token::Dash );
             else if( s.at(i) == '.' )
-                addToken( "." );
+                addToken( Token::Dot );
             else if( s.at(i) == ' ' )
-                addToken( "<space>");
+                addToken( Token::Space );
             else if( s.at(i) == '/' )
-                addToken( "/" );
+                addToken( Token::Slash );
             else
-                debug() << "This can't be represented as FilenameLayoutWidget Token";
+                debug() << "'" << s.at(i) << "' can't be represented as FilenameLayoutWidget Token";
             i++;
         }
     }
@@ -435,7 +423,7 @@ FilenameLayoutWidget::removeAllTokens()
 void
 FilenameLayoutWidget::paintEvent( QPaintEvent *event )
 {
-    if( m_tokenCount == 0 )
+    if( !m_tokenCount )
     {
         QPainter p(this);
         QFontMetrics fm( p.font() );

@@ -36,7 +36,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
     syntaxLabel->setWordWrap( true );
-    
+
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
     connect( parent, SIGNAL( accepted() ),
@@ -132,8 +132,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %ignore." ) );
-        collectionRootFrame->hide();
-        collectionSlashFrame->hide();
     }
     else
     {
@@ -145,8 +143,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
                                      <br>%track, %title, %artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %discnumber." ) );
-        collectionRootFrame->show();
-        collectionSlashFrame->show();
     }
     if( m_isOrganizeCollection )
     {

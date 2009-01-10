@@ -45,23 +45,26 @@ class FilenameLayoutWidget : public QFrame
         void dropEvent( QDropEvent *event );     
 
     public slots:
-        void addToken( const QString &text, int index = -1 /* append */ );  //this one needs to be a SLOT, connects to TokenListWidget::onDoubleClick.
         void inferScheme( const QString &scheme );
+        void addToken( Token::Type type, int index = -1 /* append */ );
+        void addToken( Token* token, int index = -1 /* append */ );
         
     signals:
         void schemeChanged();
 
     private:
+        void addToken( const QString &tokenElement, int index = -1 );
+
         void performDrag( QMouseEvent *event );
-        void insertOverChild( Token *childUnder, QString &textFromMimeData, QDropEvent *event );
+        void insertOverChild( Token *childUnder, const QString &tokenElement, QDropEvent *event );
         void generateParsableScheme();
         void removeAllTokens();
 
-        QString m_infoText;        // text in the back of the empty FilenameLayoutWidget
+        QString      m_infoText;        // text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *m_layout;          // main layout that holds the tokens
         
         QPoint  m_startPos;             // needed for initiating the drag
-        unsigned int m_tokenCount;
+        uint    m_tokenCount;
         QString m_parsableScheme;       // a string that TagGuesser will be able to use
 };
 
