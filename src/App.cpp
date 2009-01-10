@@ -997,29 +997,23 @@ namespace Amarok
         return s;
     }
 
+    /* Strip the common prefix of two strings from the first one and trim 
+     * whitespaces from the beginning of the resultant string.
+     * Case-insensitive.
+     *
+     * @param input the string being processed
+     * @param ref the string used to determine prefix
+     */
     QString decapitateString( const QString &input, const QString &ref )
     {
-        QString t = ref.toUpper();
-        int length = t.length();
-        int commonLength = 0;
-        while( length > 0 )
-        {
-            if ( input.toUpper().startsWith( t ) )
-            {
-                commonLength = t.length();
-                t = ref.toUpper().left( t.length() + length/2 );
-                length = length/2;
-            }
-            else
-            {
-                t = ref.toUpper().left( t.length() - length/2 );
-                length = length/2;
-            }
+        //Sometimes it's good to be c-like...
+        int len;    //the length of common prefix calculated so far
+        for (len = 0; len<input.length() && len<ref.length(); len++){
+            if (input.at(len).toUpper() != ref.at(len).toUpper())
+                break;
         }
-        QString clean = input;
-        if( t.endsWith( ' ' ) || !ref.at( t.length() ).isLetterOrNumber() ) // common part ends with a space or complete word
-            clean = input.right( input.length() - commonLength ).trimmed();
-        return clean;
+        
+        return input.right(input.length() - len).trimmed();
     }
 
     KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
