@@ -177,7 +177,7 @@ QString
 MetaTrackPrototype::imageUrl() const
 {
     GET_TRACK
-    return track ? track->album()->imageLocation().prettyUrl() : QString();
+    return ( track && track->album() ) ? track->album()->imageLocation().prettyUrl() : QString();
 }
 
 bool
@@ -289,7 +289,7 @@ void
 MetaTrackPrototype::setImageUrl(const QString& imageUrl )
 {
     GET_TRACK
-    if ( track ) track->album()->setImage(QImage(imageUrl));
+    if ( track && track->album() ) track->album()->setImage( QImage(imageUrl) );
 }
 
 #undef GET_TRACK
