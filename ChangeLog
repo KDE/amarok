@@ -7,7 +7,7 @@ VERSION 2.1
   FEATURES:
     * Amarok urls. Amarok can now load and generate "amarok urls" that allows
       any "view" to be bookmarked and later retrieved. A protocol handler is
-      also installed that will launc amarok into the correct state, or make 
+      also installed that will launch amarok into the correct state, or make 
       amarok show the correct view if already running if such a url is
       activated system wide.
     * Customizable playlist layouts. The playlist is now rendered according to 
