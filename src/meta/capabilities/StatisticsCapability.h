@@ -16,19 +16,19 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#ifndef AMAROK_IMPORTCAPABILITY_H
-#define AMAROK_IMPORTCAPABILITY_H
+#ifndef AMAROK_STATISTICSCAPABILITY_H
+#define AMAROK_STATISTICSCAPABILITY_H
 
 #include "amarok_export.h"
 #include "meta/Capability.h"
 
 namespace Meta
 {
-    class AMAROK_EXPORT ImportCapability : public Meta::Capability
+    class AMAROK_EXPORT StatisticsCapability : public Meta::Capability
     {
         Q_OBJECT
         public:
-            virtual ~ImportCapability();
+            virtual ~StatisticsCapability();
 
             static Type capabilityInterfaceType() { return Meta::Capability::Importable; }
 

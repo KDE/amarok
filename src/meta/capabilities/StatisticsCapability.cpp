@@ -16,11 +16,11 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "ImportCapability.h"
+#include "StatisticsCapability.h"
 
-Meta::ImportCapability::~ImportCapability()
+Meta::StatisticsCapability::~StatisticsCapability()
 {
     //nothing to do
 }
 
-#include "ImportCapability.moc"
+#include "StatisticsCapability.moc"

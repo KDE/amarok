@@ -22,7 +22,7 @@
 
 #include "Meta.h"
 #include "meta/capabilities/EditCapability.h"
-#include "meta/capabilities/ImportCapability.h"
+#include "meta/capabilities/StatisticsCapability.h"
 #include "MetaUtility.h"
 
 #include <QPointer>
@@ -57,11 +57,11 @@ class EditCapabilityImpl : public Meta::EditCapability
         KSharedPtr<MetaFile::Track> m_track;
 };
 
-class ImportCapabilityImpl : public Meta::ImportCapability
+class StatisticsCapabilityImpl : public Meta::StatisticsCapability
 {
     public:
-        ImportCapabilityImpl( MetaFile::Track *track )
-            : Meta::ImportCapability()
+        StatisticsCapabilityImpl( MetaFile::Track *track )
+            : Meta::StatisticsCapability()
             , m_track( track )
         {}
 
@@ -483,7 +483,7 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
             return new EditCapabilityImpl( this );
             break;
         case Meta::Capability::Importable:
-            return new ImportCapabilityImpl( this );
+            return new StatisticsCapabilityImpl( this );
         default:
             return 0;
     }

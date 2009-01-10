@@ -215,11 +215,11 @@ set(meta_SRCS
     meta/capabilities/CustomActionsCapability.cpp
     meta/capabilities/EditCapability.cpp
     meta/capabilities/EditablePlaylistCapability.cpp
-    meta/capabilities/ImportCapability.cpp
     meta/capabilities/LastFmCapability.cpp
     meta/capabilities/MultiPlayableCapability.cpp
     meta/capabilities/OrganiseCapability.cpp
     meta/capabilities/SourceInfoCapability.cpp
+    meta/capabilities/StatisticsCapability.cpp
     meta/capabilities/StreamInfoCapability.cpp
     meta/capabilities/UpdateCapability.cpp
     meta/file/File.cpp

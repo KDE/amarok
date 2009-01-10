@@ -31,7 +31,7 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
-#include "meta/capabilities/ImportCapability.h"
+#include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/OrganiseCapability.h"
 #include "meta/capabilities/UpdateCapability.h"
 #include "MountPointManager.h"
@@ -75,11 +75,11 @@ class EditCapabilityImpl : public Meta::EditCapability
         KSharedPtr<SqlTrack> m_track;
 };
 
-class ImportCapabilityImpl : public Meta::ImportCapability
+class StatisticsCapabilityImpl : public Meta::StatisticsCapability
 {
     public:
-        ImportCapabilityImpl( SqlTrack *track )
-            : Meta::ImportCapability()
+        StatisticsCapabilityImpl( SqlTrack *track )
+            : Meta::StatisticsCapability()
             , m_track( track ) {}
 
         virtual void setScore( const int score ) {
@@ -849,7 +849,7 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
             return new EditCapabilityImpl( this );
 
         case Meta::Capability::Importable:
-            return new ImportCapabilityImpl( this );
+            return new StatisticsCapabilityImpl( this );
 
         case Meta::Capability::CustomActions:
         {

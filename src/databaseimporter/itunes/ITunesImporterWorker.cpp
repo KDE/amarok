@@ -19,7 +19,7 @@
 #include "CollectionLocation.h"
 #include "Debug.h"
 #include "collection/support/FileCollectionLocation.h"
-#include "ImportCapability.h"
+#include "StatisticsCapability.h"
 #include "meta/file/File.h"
 
 #include <kio/job.h>
@@ -93,7 +93,7 @@ ITunesImporterWorker::readTrackElement()
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     if( track )
     {
-        Meta::ImportCapability *ec = track->as<Meta::ImportCapability>();
+        Meta::StatisticsCapability *ec = track->as<Meta::StatisticsCapability>();
         if( ec )
         {   
             ec->beginStatisticsUpdate();
