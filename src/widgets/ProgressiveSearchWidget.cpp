@@ -43,6 +43,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     KHBox *searchBox = new KHBox( this );
     m_warningLabel = new QLabel( i18n("Warning: tracks have been hidden in the playlist"), this );
+    hideHiddenTracksWarning();
 
     m_searchEdit = new KLineEdit( searchBox );
     m_searchEdit->setClickMessage( i18n( "Search playlist" ) );
@@ -181,7 +182,7 @@ void ProgressiveSearchWidget::match()
     m_searchEdit->setPalette( p );
 
     if( m_showOnlyMatches )
-        showHiddenTracksWarning();
+        hideHiddenTracksWarning();
 }
 
 void ProgressiveSearchWidget::noMatch()
@@ -189,14 +190,14 @@ void ProgressiveSearchWidget::noMatch()
     m_nextAction->setEnabled( false );
     m_previousAction->setEnabled( false );
 
-    const KStatefulBrush backgroundBrush( KColorScheme::View,KColorScheme::NegativeBackground );
+    const KStatefulBrush backgroundBrush( KColorScheme::View, KColorScheme::NegativeBackground );
 
     QPalette p = m_searchEdit->palette();
     p.setColor( QPalette::Base, backgroundBrush.brush( m_searchEdit ).color() );
     m_searchEdit->setPalette( p );
 
     if( m_showOnlyMatches )
-        hideHiddenTracksWarning();
+        showHiddenTracksWarning();
 }
 
 void ProgressiveSearchWidget::showHiddenTracksWarning()
