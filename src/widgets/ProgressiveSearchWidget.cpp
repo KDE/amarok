@@ -100,7 +100,6 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
         searchComposersAction->setChecked( true );
     m_menu->addAction( searchComposersAction );
 
-
     KAction * searchYearsAction = new KAction( i18n( "Years" ), this );
     searchYearsAction->setCheckable( true );
     connect( searchYearsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchYears( bool ) ) );
@@ -114,13 +113,11 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     showOnlyMatchesAction->setCheckable( true );
     connect( showOnlyMatchesAction, SIGNAL( toggled( bool ) ), this, SLOT( slotShowOnlyMatches( bool ) ) );
 
-    KConfigGroup config = Amarok::config("Playlist Search");
-    bool onlyMatches = config.readEntry( "ShowOnlyMatches", false );
-    showOnlyMatchesAction->setChecked( onlyMatches );
+    showOnlyMatchesAction->setChecked( m_showOnlyMatches );
     m_menu->addAction( showOnlyMatchesAction );
 
-    m_nextAction->setVisible( !onlyMatches );
-    m_previousAction->setVisible( !onlyMatches );
+    m_nextAction->setVisible( !m_showOnlyMatches );
+    m_previousAction->setVisible( !m_showOnlyMatches );
 
     KAction *searchMenuAction = new KAction(KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
@@ -131,7 +128,6 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
     toolbar->setFixedHeight( m_searchEdit->sizeHint().height() );
-    
 }
 
 
@@ -178,6 +174,9 @@ void ProgressiveSearchWidget::match()
     QPalette p = m_searchEdit->palette();
     p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
     m_searchEdit->setPalette( p );
+
+    if( m_showOnlyMatches )
+        showHiddenTracksWarning();
 }
 
 void ProgressiveSearchWidget::noMatch()
@@ -190,8 +189,18 @@ void ProgressiveSearchWidget::noMatch()
     QPalette p = m_searchEdit->palette();
     p.setColor( QPalette::Base, backgroundBrush.brush( m_searchEdit ).color() );
     m_searchEdit->setPalette( p );
+
+    if( m_showOnlyMatches )
+        hideHiddenTracksWarning();
 }
 
+void ProgressiveSearchWidget::showHiddenTracksWarning()
+{
+}
+
+void ProgressiveSearchWidget::hideHiddenTracksWarning()
+{
+}
 
 void ProgressiveSearchWidget::slotSearchTracks( bool search )
 {
@@ -289,12 +298,16 @@ void ProgressiveSearchWidget::readConfig()
         m_searchFieldsMask |= Playlist::MatchComposer;
     if( config.readEntry( "MatchYear", false ) )
         m_searchFieldsMask |= Playlist::MatchYear;
+
+    m_showOnlyMatches = config.readEntry( "ShowOnlyMatches", false );
 }
 
 void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
 {
     KConfigGroup config = Amarok::config( "Playlist Search" );
     config.writeEntry( "ShowOnlyMatches", onlyMatches );
+
+    m_showOnlyMatches = onlyMatches;
 
     m_nextAction->setVisible( !onlyMatches );
     m_previousAction->setVisible( !onlyMatches );

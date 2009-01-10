@@ -172,12 +172,16 @@ private:
      */
     void readConfig();
 
-    KLineEdit * m_searchEdit;
-    KAction * m_nextAction;
-    KAction * m_previousAction;
-    QMenu * m_menu;
+    void hideHiddenTracksWarning();
+    void showHiddenTracksWarning();
 
-    int m_searchFieldsMask;
+    KLineEdit *m_searchEdit;
+    KAction   *m_nextAction;
+    KAction   *m_previousAction;
+    QMenu     *m_menu;
+
+    int        m_searchFieldsMask;
+    bool       m_showOnlyMatches;
 };
 
 #endif
