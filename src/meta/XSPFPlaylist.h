@@ -21,7 +21,7 @@
 #define XSPFPLAYLIST_H
 
 #include "Playlist.h"
-#include "EditablePlaylistCapability.h"
+#include "capabilities/EditablePlaylistCapability.h"
 
 #include <QDomDocument>
 #include <QTextStream>

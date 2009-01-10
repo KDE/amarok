@@ -25,7 +25,7 @@
 #include "EngineController.h"
 #include "LongMessageWidget.h"
 #include "meta/MetaUtility.h"
-#include "meta/SourceInfoCapability.h"
+#include "meta/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistModel.h"
 
 #include "KJobProgressBar.h"

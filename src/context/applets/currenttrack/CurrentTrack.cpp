@@ -19,7 +19,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
-#include "meta/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"

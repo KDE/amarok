@@ -20,7 +20,7 @@
 #include "ServiceCollectionTreeView.h"
 
 #include "Debug.h"
-#include "../meta/CustomActionsCapability.h"
+#include "../meta/capabilities/CustomActionsCapability.h"
 #include "../context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <KMenu>

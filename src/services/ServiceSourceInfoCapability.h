@@ -20,7 +20,7 @@
 #define SERVICESOURCEINFOCAPABILITY_H
 
 #include "amarok_export.h"
-#include "meta/SourceInfoCapability.h"
+#include "meta/capabilities/SourceInfoCapability.h"
 
 
 class SourceInfoProvider;

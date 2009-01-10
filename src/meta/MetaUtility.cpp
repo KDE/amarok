@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "Meta.h"
 #include "meta/Capability.h"
-#include "meta/EditCapability.h"
+#include "meta/capabilities/EditCapability.h"
 
 #include <QChar>
 #include <QFile>

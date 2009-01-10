@@ -24,7 +24,7 @@
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "meta/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h" // for time formatting

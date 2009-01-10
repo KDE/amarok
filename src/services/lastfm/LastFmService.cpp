@@ -25,7 +25,7 @@
 #include "GlobalCollectionActions.h"
 
 #include "collection/CollectionManager.h"
-#include "meta/LastFmCapability.h"
+#include "meta/capabilities/LastFmCapability.h"
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
@@ -33,7 +33,7 @@
 #include "kdenetwork/knetworkaccessmanager.h"
  
 #include <lastfm/Scrobbler.h> // from liblastfm
- #include <lastfm/ws/WsAccessManager.h>
+#include <lastfm/ws/WsAccessManager.h>
 #include <lastfm/ws/WsKeys.h>
 #include <lastfm/ws/WsReply.h>
 #include <lastfm/ws/WsRequestBuilder.h>

@@ -20,8 +20,8 @@
 #define METAEDITABLEPLAYLISTCAPABILITY_H
 
 #include "amarok_export.h"
-#include "Capability.h"
-#include "Meta.h"
+#include "meta/Capability.h"
+#include "meta/Meta.h"
 
 #include <QDateTime>
 

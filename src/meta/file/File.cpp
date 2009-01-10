@@ -21,8 +21,8 @@
 #include "File_p.h"
 
 #include "Meta.h"
-#include "meta/EditCapability.h"
-#include "meta/ImportCapability.h"
+#include "meta/capabilities/EditCapability.h"
+#include "meta/capabilities/ImportCapability.h"
 #include "MetaUtility.h"
 
 #include <QPointer>

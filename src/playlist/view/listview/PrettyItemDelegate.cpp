@@ -29,7 +29,7 @@
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
-#include "meta/SourceInfoCapability.h"
+#include "meta/capabilities/SourceInfoCapability.h"
 #include "playlist/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
 #include "LayoutManager.h"

@@ -21,7 +21,7 @@
 #include "TrackItem.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "dialogs/TagDialog.h"
-#include "meta/CustomActionsCapability.h"
+#include "meta/capabilities/CustomActionsCapability.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 

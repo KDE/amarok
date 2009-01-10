@@ -33,7 +33,7 @@
 #include "MetaConstants.h"
 #include "QueryMaker.h"
 #include "amarokconfig.h"
-#include "meta/EditCapability.h"
+#include "meta/capabilities/EditCapability.h"
 
 #include <KIcon>
 #include <KIconLoader>

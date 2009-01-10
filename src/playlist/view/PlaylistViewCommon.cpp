@@ -26,7 +26,7 @@
 #include "TagDialog.h"
 #include "playlist/PlaylistModel.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "meta/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <QObject>

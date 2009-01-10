@@ -22,7 +22,7 @@
 #include "Debug.h"
 #include "LastFmServiceConfig.h"
 #include "Meta.h"
-#include "meta/MultiPlayableCapability.h"
+#include "meta/capabilities/MultiPlayableCapability.h"
 
 #include <lastfm/types/Track.h>
 #include <lastfm/radio/Tuner.h>

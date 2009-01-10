@@ -50,6 +50,7 @@ include_directories(
     dialogs
     dynamic
     meta
+    meta/capabilities
     playlistmanager
     plugin
     podcasts
@@ -201,26 +202,26 @@ set(libstatusbar_SRCS
 #####################################################################
 set(meta_SRCS
     meta/Capability.cpp
-    meta/CollectionCapability.cpp
-    meta/CurrentTrackActionsCapability.cpp
-    meta/CustomActionsCapability.cpp
-    meta/EditCapability.cpp
-    meta/EditablePlaylistCapability.cpp
-    meta/ImportCapability.cpp
-    meta/LastFmCapability.cpp
     meta/M3UPlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
-    meta/MultiPlayableCapability.cpp
-    meta/OrganiseCapability.cpp
     meta/PLSPlaylist.cpp
-    meta/SqlPlaylist.cpp
     meta/PlaylistFileSupport.cpp
-    meta/SourceInfoCapability.cpp
-    meta/StreamInfoCapability.cpp
-    meta/UpdateCapability.cpp
-    meta/XSPFPlaylist.cpp
     meta/PrivateMetaRegistry.cpp
+    meta/SqlPlaylist.cpp
+    meta/XSPFPlaylist.cpp
+    meta/capabilities/CollectionCapability.cpp
+    meta/capabilities/CurrentTrackActionsCapability.cpp
+    meta/capabilities/CustomActionsCapability.cpp
+    meta/capabilities/EditCapability.cpp
+    meta/capabilities/EditablePlaylistCapability.cpp
+    meta/capabilities/ImportCapability.cpp
+    meta/capabilities/LastFmCapability.cpp
+    meta/capabilities/MultiPlayableCapability.cpp
+    meta/capabilities/OrganiseCapability.cpp
+    meta/capabilities/SourceInfoCapability.cpp
+    meta/capabilities/StreamInfoCapability.cpp
+    meta/capabilities/UpdateCapability.cpp
     meta/file/File.cpp
     meta/proxy/MetaProxy.cpp
     meta/stream/Stream.cpp

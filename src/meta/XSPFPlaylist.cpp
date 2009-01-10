@@ -25,7 +25,7 @@
 #include "MainWindow.h"
 #include "meta/proxy/MetaProxy.h"
 #include "meta/MetaUtility.h"
-#include "meta/StreamInfoCapability.h"
+#include "meta/capabilities/StreamInfoCapability.h"
 #include "meta/stream/Stream.h"
 #include "meta/file/File.h"
 #include "PlaylistManager.h"

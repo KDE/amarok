@@ -24,7 +24,7 @@
 #include "MainWindow.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
-#include "meta/MultiPlayableCapability.h"
+#include "meta/capabilities/MultiPlayableCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"

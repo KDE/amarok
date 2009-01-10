@@ -21,7 +21,7 @@
 #define SERVICECURRENTTRACKACTIONSCAPABILITY_H
 
 #include "amarok_export.h"
-#include "meta/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 
 class CurrentTrackActionsProvider;
 

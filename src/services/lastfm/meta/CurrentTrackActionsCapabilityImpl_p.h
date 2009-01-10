@@ -21,7 +21,7 @@
 #define AMAROK_CURRENTTRACKACTIONSCAPABILITYIMPL_P_H
 
 
-#include "meta/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 
 #include "Debug.h"
 

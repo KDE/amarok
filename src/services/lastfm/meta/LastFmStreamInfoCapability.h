@@ -20,7 +20,7 @@
 #ifndef AMAROK_LASTFMSTREAMINFOCAPABILITY_H
 #define AMAROK_LASTFMSTREAMINFOCAPABILITY_H
 
-#include "meta/StreamInfoCapability.h"
+#include "meta/capabilities/StreamInfoCapability.h"
 
 namespace LastFm
 {

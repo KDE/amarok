@@ -29,7 +29,7 @@
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "VolumeWidget.h"
-#include "meta/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "ToolBar.h"
 

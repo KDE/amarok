@@ -21,7 +21,7 @@
 #define SERVICECUSTOMACTIONSCAPABILITY_H
 
 #include "amarok_export.h"
-#include "meta/CustomActionsCapability.h"
+#include "meta/capabilities/CustomActionsCapability.h"
 
 class CustomActionsProvider;
 
