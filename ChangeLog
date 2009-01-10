@@ -9,9 +9,11 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
-	* Now using KSystemTrayIcon.
+    * Now using KSystemTrayIcon.
 
   BUGFIXES:
+    * Open ogg files in Amarok when using Dolphin and other file managers.
+      Patch thanks to Lubos Lunak <l.lunak@kde.org>. (BR 180155)
     * Fixed an infinite loop bug when using title case conversion in Guess Tags.
       (BR 180164)
     * Don't show the rating widget for tracks which are not in the collection.
