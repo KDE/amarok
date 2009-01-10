@@ -50,7 +50,7 @@ int PrettyItemConfigRowElement::alignment() const
     return m_alignment;
 }
 
-const QString &PrettyItemConfigRowElement::string() const
+QString PrettyItemConfigRowElement::string() const
 {
     return m_string;
 }

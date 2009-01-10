@@ -42,7 +42,7 @@ public:
     qreal size() const;
     bool bold() const;
     int alignment() const;
-    const QString &string() const;
+    QString string() const;
     
 private:
     int m_value;
