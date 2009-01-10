@@ -455,6 +455,7 @@ set(amaroklib_LIB_SRCS
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp
+    CaseConverter.cpp
     DirectoryLoader.cpp
     EngineController.cpp
     EngineObserver.cpp

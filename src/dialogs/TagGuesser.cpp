@@ -23,6 +23,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "CaseConverter.h"
 
 #include <KConfig>
 #include <KConfigGroup>
@@ -30,8 +31,8 @@
 #include <KMacroExpanderBase>
 
 FileNameScheme::FileNameScheme( const QString &s )
-    : m_cod( s )                    
-    , m_titleField( -1 )               
+    : m_cod( s )
+    , m_titleField( -1 )
     , m_artistField( -1 )
     , m_albumField( -1 )
     , m_trackField( -1 )
@@ -304,7 +305,7 @@ void TagGuesser::guess( const QString &absFileName, FilenameLayoutDialog *dialog
                 composer = capitalizeWords( composer, caseOptions);
                 genre = capitalizeWords( genre, caseOptions);
             }
-            
+
             m_title = title;
             m_artist = artist;
             m_album = album;
@@ -341,52 +342,16 @@ QString TagGuesser::capitalizeWords( const QString &s, const int &caseOptions )
     else if( caseOptions == 3 )
     {
         debug() << "UPPER/LOWER CASE OPTIONS: 3 - First letter of every word uppercase";
-        QString s_mod = s;
-        QRegExp wordRegExp( "\\b(\\w+)\\b" );
-        int i = wordRegExp.indexIn( s_mod );
-        int ml = wordRegExp.cap( 1 ).length();
-        while( i > -1 )
-        {
-            s_mod[i] = s_mod[i].toUpper();
-            i = wordRegExp.indexIn( s_mod, i + ml );
-            ml = wordRegExp.cap( 1 ).length();
-        }
-        return s_mod;
+        return Amarok::CaseConverter::toCapitalizedCase( s );
     }
     else if( caseOptions == 4 )
     {
         debug() << "UPPER/LOWER CASE OPTIONS: 4 - Title case.";
-        debug() << "Original string: \"" << s << "\"" << endl;
-
-        QString s_mod = s;
-        QRegExp wordRegExp( "\\b(\\w+)\\b" );
-        int i = wordRegExp.indexIn( s_mod );
-        QString match = wordRegExp.cap( 1 );
-
-        // "small words" that ought not be capitalized. This is English only.
-        // a an and as at but by en for if in of on or the to v[.]? via vs[.]?
-        QRegExp littleWordRegExp( "\\b(a|an|as|at|by|for|if|and|of|or|to|the|in)\\b" );
-        while( i > -1 )
-        {
-            debug() << "  Title case i=" << i << "; remaining: \"" << s_mod.mid(i) << "\"" << endl;
-
-            if( match == match.toLower() && !littleWordRegExp.exactMatch( match ) )
-            {
-                s_mod[i] = s_mod[i].toUpper();
-            }
-            else
-            {
-                debug() << "  partial will not be capitalized: \"" << match << "\"" << endl;
-            }
-
-            i = wordRegExp.indexIn( s_mod, i + match.length() );
-            match = wordRegExp.cap( 1 );
-        }
-        return s_mod;
+        return Amarok::CaseConverter::toTitleCase( s );
     }
     else
     {
-        debug() << "OUCH!";
+        error() << "Case option out of range! (" << caseOptions << ")";
         return s;
     }
 }
