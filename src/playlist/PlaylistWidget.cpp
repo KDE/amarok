@@ -44,6 +44,7 @@ Playlist::Widget::Widget( QWidget* parent )
     setContentsMargins( 1, 1, 1, 1 );
 
     m_searchWidget = new ProgressiveSearchWidget( this );
+    LayoutConfigWidget * configWidget = new LayoutConfigWidget( this );
     
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
 
