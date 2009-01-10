@@ -24,22 +24,27 @@
 
 #include <KAction>
 #include <KColorScheme>
+#include <KHBox>
 #include <KLineEdit>
 #include <KLocale>
 
 #include <QKeyEvent>
+#include <QLabel>
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
 
 ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
-    : KHBox( parent )
+    : KVBox( parent )
 {
     DEBUG_BLOCK
 
     readConfig();
 
-    m_searchEdit = new KLineEdit( this );
+    KHBox *searchBox = new KHBox( this );
+    m_warningLabel = new QLabel( i18n("Warning: tracks have been hidden in the playlist"), this );
+
+    m_searchEdit = new KLineEdit( searchBox );
     m_searchEdit->setClickMessage( i18n( "Search playlist" ) );
     m_searchEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_searchEdit->setClearButtonShown( true );
@@ -49,7 +54,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
 
-    QToolBar *toolbar = new QToolBar( this );
+    QToolBar *toolbar = new QToolBar( searchBox );
 
     m_nextAction = new KAction( KIcon( "go-down" ), i18n( "&Next" ), this );
     connect( m_nextAction, SIGNAL( triggered() ), this, SLOT( slotNext() ) );
@@ -196,10 +201,12 @@ void ProgressiveSearchWidget::noMatch()
 
 void ProgressiveSearchWidget::showHiddenTracksWarning()
 {
+    m_warningLabel->show();
 }
 
 void ProgressiveSearchWidget::hideHiddenTracksWarning()
 {
+    m_warningLabel->hide();
 }
 
 void ProgressiveSearchWidget::slotSearchTracks( bool search )

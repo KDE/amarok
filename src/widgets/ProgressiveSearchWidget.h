@@ -20,12 +20,13 @@
 #ifndef PROGRESSIVESEARCHWIDGET_H
 #define PROGRESSIVESEARCHWIDGET_H
 
-#include <KHBox>
+#include <KVBox>
 
 class KAction;
 class KLineEdit;
 
 class QKeyEvent;
+class QLabel;
 class QMenu;
 
 /**
@@ -39,7 +40,7 @@ class QMenu;
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class ProgressiveSearchWidget : public KHBox
+class ProgressiveSearchWidget : public KVBox
 {
     Q_OBJECT
 
@@ -179,6 +180,7 @@ private:
     KAction   *m_nextAction;
     KAction   *m_previousAction;
     QMenu     *m_menu;
+    QLabel    *m_warningLabel;
 
     int        m_searchFieldsMask;
     bool       m_showOnlyMatches;
