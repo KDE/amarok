@@ -378,7 +378,7 @@ ScanManager::handleRestart()
 
     if( m_restartCount >= MAX_RESTARTS )
     {
-        KMessageBox::error( 0, i18n( "<p>Sorry, the collection scan had to be aborted.</p>Too many errors were encountered during the scan.</p>" ),
+        KMessageBox::error( 0, i18n( "<p>Sorry, the collection scan had to be aborted.</p><p>Too many errors were encountered during the scan.</p>" ),
                             i18n( "Collection Scan Error" ) );
         stopParser();
         return;
