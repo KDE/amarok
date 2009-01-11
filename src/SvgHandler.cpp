@@ -267,7 +267,7 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
         // Cache miss! We need to create the pixmap
 
         //whoops... if skipCache is true, we might actually already have fetched the image, including borders from the cache....
-        //so we really need to create a blank pixmap here so we dont paint several layers of borders on top of each other
+        //so we really need to create a blank pixmap here so we don't paint several layers of borders on top of each other
         if ( skipCache ) {
             pixmap = QPixmap( newWidth, newHeight );
             pixmap.fill( Qt::transparent );

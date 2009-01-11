@@ -158,7 +158,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual void setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
     
         /**
-        * tells the source location that an error occured during the transfer of the file
+        * tells the source location that an error occurred during the transfer of the file
         */
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
         

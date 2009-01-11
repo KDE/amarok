@@ -88,7 +88,7 @@ NavigationUrlRunner::run( AmarokUrl url )
 
             if ( service == 0 ) return false;
 
-            service->polish(); //ensure that everything we need is initalized ( especially if
+            service->polish(); //ensure that everything we need is initialized ( especially if
                                //amarok is launched just to handle this url ).
             if ( groupMode == "artist-album" )
                 service->sortByArtistAlbum();

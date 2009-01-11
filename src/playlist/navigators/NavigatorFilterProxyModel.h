@@ -166,7 +166,7 @@ signals:
     void removedIds( const QList<quint64>& );
 
     /**
-     * Signal emited when the proxy changes its filtering.
+     * Signal emitted when the proxy changes its filtering.
      */
     void filterChanged();
 
