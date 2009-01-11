@@ -96,8 +96,8 @@ BookmarkModel::createIndex( int row, int column, BookmarkViewItemPtr item ) cons
     else
         m_viewItems[ index ] = item;
     QModelIndex ret = QAbstractItemModel::createIndex( row, column, index );
-    if( debugIt )
-        debug() << "created " << ret << " with " << ret.parent().internalId();
+//    if( debugIt )
+//        debug() << "created " << ret << " with " << ret.parent().internalId();
     return ret;
 }
 
