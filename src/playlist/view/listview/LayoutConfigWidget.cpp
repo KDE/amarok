@@ -29,7 +29,7 @@ namespace Playlist {
 LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
     : KVBox( parent )
 {
-    QLabel *label = new QLabel( "Config gui goes here....", this );
+    new QLabel( "Config gui goes here....", this );
     QComboBox *comboBox = new QComboBox( this );
     comboBox->addItems( LayoutManager::instance()->layouts() );
 
