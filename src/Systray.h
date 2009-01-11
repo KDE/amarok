@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>               *
+ * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                       *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -24,27 +25,22 @@
 #include <KAction>
 #include <ksystemtrayicon.h>
 
-#include <QPixmap>
-
 class QEvent;
 class App;
 class PopupDropperAction;
 
 namespace Amarok {
 
-
 class TrayIcon : public KSystemTrayIcon, public EngineObserver
 {
     Q_OBJECT
 
 public:
-    TrayIcon( QWidget* widget);
+    TrayIcon( QWidget *widget );
     friend class ::App;
 
-    static TrayIcon* instance() { return s_instance; }  // Only needed for the TrackTooltip widget
-
 protected:
-    // reimpl from engineobserver
+    // reimplemented from engineobserver
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
@@ -61,27 +57,16 @@ private:
     void setupMenu();
     void setupToolTip();
 
-    // repaints trayIcon showing progress (and overlay if present)
-    void paintIcon( int mergePixels = -1, bool force = false );
-    // blend an overlay icon over 'sourcePixmap' and repaint trayIcon
-    void blendOverlay( QPixmap &sourcePixmap );
-
-    static TrayIcon* s_instance;
+    void paintIcon( long trackPosition = -1 );
 
     Meta::TrackPtr m_track;
-    long m_trackPosition;
+    long m_trackLength;
 
-    long trackLength, mergeLevel;
-    QIcon baseIcon;
-    QPixmap grayedIcon, alternateIcon;
-    QPixmap playOverlay, pauseOverlay;
-    QPixmap *overlay;   // the current overlay (may be NULL)
-    int blinkTimerID;   // timer ID returned by QObject::startTimer()
-    bool overlayVisible;// used for blinking / hiding overlay
+    QIcon m_baseIcon;
+    QPixmap m_fancyIcon;
     QList<PopupDropperAction *> m_extraActions;
 };
 
 }
 
 #endif // AMAROK_SYSTRAY_H
-

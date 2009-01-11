@@ -3,6 +3,7 @@
  * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                  *
  * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                          *
  * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                              *
+ * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                       *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -41,48 +42,26 @@
 
 #include <QEvent>
 #include <QFontMetrics>
-#include <QImage>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QPixmap>
 #include <QTextDocument> // for Qt::escape()
-#include <QTimerEvent>
 #include <QToolTip>
-
-namespace Amarok
-{
-    static QImage
-    loadOverlay( const char *iconName )
-    {
-        QImage img = QImage( KStandardDirs::locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" );
-        if (!img.isNull())
-            img = img.scaled( 10, 10, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-        return img;
-    }
-
-    TrayIcon* TrayIcon::s_instance = 0;
-}
-
 
 Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTrayIcon( playerWidget )
         , EngineObserver( The::engineController() )
-        , trackLength( 0 )
-        , mergeLevel( -1 )
-        , overlay( 0 )
-        , blinkTimerID( 0 )
-        , overlayVisible( false )
+        , m_trackLength( 0 )
 {
     DEBUG_BLOCK
-
-    s_instance = this;
 
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
 
     //seems to be necessary
-    QAction *quit = actionCollection()->action( "file_quit" );
+    /*QAction *quit = actionCollection()->action( "file_quit" );
     quit->disconnect();
-    connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );
+    connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );*/
 
     PERF_LOG( "Before adding actions" );
     contextMenu()->addAction( ac->action( "prev"       ) );
@@ -90,14 +69,9 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
 
-    baseIcon     = KSystemTrayIcon::loadIcon( "amarok" );
-    playOverlay  = QPixmap::fromImage( Amarok::loadOverlay( "play" ) );
-    pauseOverlay = QPixmap::fromImage( Amarok::loadOverlay( "pause" ) );
-    overlayVisible = false;
-
-    //paintIcon();
-    PERF_LOG("Adding Icon");
-    setIcon( baseIcon );
+    PERF_LOG( "Adding system tray icon" );
+    m_baseIcon = KSystemTrayIcon::loadIcon( "amarok" );
+    paintIcon();
 
     setupToolTip();
 
@@ -131,6 +105,7 @@ Amarok::TrayIcon::setupToolTip()
         tooltip += "<table cellspacing='2' align='center' width='100%'>";
 
         // HACK: This block is inefficient and more or less stupid
+        // (Unnecessary I/O on disk. Workaround?)
         const QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
         if( m_track->album() )
         {
@@ -181,9 +156,9 @@ Amarok::TrayIcon::setupToolTip()
         right << Amarok::verboseTimeSince( lastPlayed );
         left << i18n( "Last Played" );
 
-        if( m_track->length() > 0 )
+        if( m_trackLength > 0 )
         {
-            right << Meta::secToPrettyTime( m_track->length() );
+            right << Meta::secToPrettyTime( m_trackLength );
             left << i18n( "Length" );
         }
 
@@ -255,21 +230,6 @@ Amarok::TrayIcon::event( QEvent *e )
         #undef e
         break;
 
-    case QEvent::Timer:
-        if( static_cast<QTimerEvent*>(e)->timerId() != blinkTimerID )
-            return KSystemTrayIcon::event( e );
-
-        // if we're playing, blink icon
-        if ( overlay == &playOverlay )
-        {
-            overlayVisible = !overlayVisible;
-            paintIcon( mergeLevel, true );
-        }
-
-        break;
-
-        //else FALL THROUGH
-
     default:
         return KSystemTrayIcon::event( e );
     }
@@ -279,38 +239,17 @@ Amarok::TrayIcon::event( QEvent *e )
 void
 Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
-    // stop timer
-    if ( blinkTimerID )
-    {
-        killTimer( blinkTimerID );
-        blinkTimerID = 0;
-    }
-    // draw overlay
-    overlayVisible = true;
-
-    // draw the right overlay for each state
     switch( state )
     {
         case Phonon::PausedState:
-            overlay = &pauseOverlay;
-            paintIcon( mergeLevel, true );
             break;
 
         case Phonon::PlayingState:
-            overlay = &playOverlay;
-            if( AmarokConfig::animateTrayIcon() )
-            blinkTimerID = startTimer( 1500 );  // start 'blink' timer
-
-            paintIcon( mergeLevel, true ); // repaint the icon
             setupMenu();
             break;
 
         case Phonon::StoppedState:
         case Phonon::LoadingState:
-            overlayVisible = false;
-            paintIcon( -1, true ); // repaint the icon
-            // FALL THROUGH
-
         case Phonon::ErrorState:
         case Phonon::BufferingState:
             break;
@@ -320,10 +259,11 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
 }
 
 void
-Amarok::TrayIcon::engineNewTrackPlaying( )
+Amarok::TrayIcon::engineNewTrackPlaying()
 {
     m_track = The::engineController()->currentTrack();
 
+    paintIcon( -1 );
     setupToolTip();
     setupMenu();
 }
@@ -332,7 +272,9 @@ void
 Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
     Q_UNUSED( trackChanged )
-    trackLength = newMetaData.value( Meta::valLength ).toInt() * 1000;
+    Q_UNUSED( &newMetaData );
+
+    m_trackLength = m_track->length();
 
     setupToolTip();
     setupMenu();
@@ -341,13 +283,10 @@ Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 void
 Amarok::TrayIcon::engineTrackPositionChanged( long position, bool userSeek )
 {
-    //AMAROK_NOTIMPLEMENTED
-    Q_UNUSED( position )
-    Q_UNUSED( userSeek )
-/*
-    mergeLevel = trackLength ? ((baseIcon.height() + 1) * position) / trackLength : -1;
-    paintIcon( mergeLevel );
-*/
+    Q_UNUSED( userSeek );
+
+    if( m_trackLength )
+        paintIcon( position );
 }
 
 void
@@ -361,109 +300,47 @@ Amarok::TrayIcon::engineVolumeChanged( int percent )
 void
 Amarok::TrayIcon::paletteChange( const QPalette & op )
 {
-    AMAROK_NOTIMPLEMENTED
-    Q_UNUSED( op )
-/*
-    if ( palette().active().highlight() == op.active().highlight() || alternateIcon.isNull() )
+    Q_UNUSED( op );
+
+    paintIcon();
+}
+
+void
+Amarok::TrayIcon::paintIcon( long trackPosition )
+{
+    static int oldMergePos = -1;
+
+    // do some sanity checks
+    if( trackPosition < 0 || !m_trackLength )
+    {
+        oldMergePos = -1;
+        setIcon( m_baseIcon );
+        return;
+    }
+
+    const int mergePos = ((float(trackPosition)/1000) / m_trackLength ) * geometry().height();
+
+    // return if pixmap would stay the same
+    if( oldMergePos == mergePos )
         return;
 
-    alternateIcon.resize( 0, 0 );
-    paintIcon( mergeLevel, true );
-*/
-}
-
-void
-Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
-{
-    Q_UNUSED( mergePixels )
-    Q_UNUSED( force )
-
-#if 0
-    // skip redrawing the same pixmap
-    static int mergePixelsCache = 0;
-    if ( mergePixels == mergePixelsCache && !force )
-         return;
-    mergePixelsCache = mergePixels;
-
-    if ( mergePixels < 0 ) {}
-        //return blendOverlay( baseIcon );
-
-    // make up the grayed icon
-    if ( grayedIcon.isNull() )
+    // start from scratch if necessary (pixmap empty or irregular seek / track change)
+    if( m_fancyIcon.isNull() || mergePos == 0 || mergePos < oldMergePos )
     {
-        //QImage tmpTrayIcon = baseIcon.convertToImage();
-        //KIconEffect::semiTransparent( tmpTrayIcon );
-        //grayedIcon = tmpTrayIcon;
+        m_fancyIcon = m_baseIcon.pixmap(geometry().size());
+        KIconEffect::semiTransparent( m_fancyIcon );
     }
 
-    // make up the alternate icon (use hilight color but more saturated)
-    if ( alternateIcon.isNull() )
+    if( mergePos > 0 )
     {
-        #if 0
-        QImage tmpTrayIcon = baseIcon.convertToImage();
-        // eros: this looks cool with dark red blue or green but sucks with
-        // other colors (such as kde default's pale pink..). maybe the effect
-        // or the blended color has to be changed..
-        QColor saturatedColor = palette().active().highlight();
-        int hue, sat, value;
-        saturatedColor.getHsv( &hue, &sat, &value );
-        saturatedColor.setHsv( hue, sat > 200 ? 200 : sat, value < 100 ? 100 : value );
-        KIconEffect::colorize( tmpTrayIcon, saturatedColor/* Qt::blue */, 0.9 );
-        alternateIcon = tmpTrayIcon;
-        #endif
+        // draw m_baseIcon on top of the gray version
+        QPainter p( &m_fancyIcon );
+        p.drawPixmap(0, 0, m_baseIcon.pixmap(geometry().size()), 0, 0, geometry().width(), mergePos);
     }
 
-    if ( mergePixels >= alternateIcon.height() ) {}
-        //return blendOverlay( grayedIcon );
-    if ( mergePixels == 0 ) {}
-        //return blendOverlay( alternateIcon );
+    oldMergePos = mergePos;
 
-    // mix [ grayed <-> colored ] icons
-    QPixmap tmpTrayPixmap = alternateIcon;
-    copyBlt( &tmpTrayPixmap, 0,0, &grayedIcon, 0,0,
-            alternateIcon.width(), mergePixels>0 ? mergePixels-1 : 0 );
-    blendOverlay( tmpTrayPixmap );
-#endif
-}
-
-void
-Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
-{
-    Q_UNUSED( sourcePixmap )
-
-    #if 0
-    if ( !overlayVisible || !overlay || overlay->isNull() )
-        return setPixmap( sourcePixmap ); // @since 3.2
-
-    // here comes the tricky part.. no kdefx functions are helping here.. :-(
-    // we have to blend pixmaps with different sizes (blending will be done in
-    // the bottom-left corner of source pixmap with a smaller overlay pixmap)
-    int opW = overlay->width(),
-        opH = overlay->height(),
-        opX = 1,
-        opY = sourcePixmap.height() - opH;
-
-    // get the rectangle where blending will take place
-    QPixmap sourceCropped( opW, opH, sourcePixmap.depth() );
-    copyBlt( &sourceCropped, 0,0, &sourcePixmap, opX,opY, opW,opH );
-
-    //speculative fix for a bactrace we received
-    //crash was in covertToImage() somewhere in this function
-    if( sourceCropped.isNull() )
-        return setPixmap( sourcePixmap );
-
-    // blend the overlay image over the cropped rectangle
-    QImage blendedImage = sourceCropped.convertToImage();
-    QImage overlayImage = overlay->convertToImage();
-    KIconEffect::overlay( blendedImage, overlayImage );
-    sourceCropped.convertFromImage( blendedImage );
-
-    // put back the blended rectangle to the original image
-    QPixmap sourcePixmapCopy = sourcePixmap;
-    copyBlt( &sourcePixmapCopy, opX,opY, &sourceCropped, 0,0, opW,opH );
-
-    setPixmap( sourcePixmapCopy ); // @since 3.2
-    #endif
+    setIcon( m_fancyIcon );
 }
 
 void
@@ -480,7 +357,7 @@ Amarok::TrayIcon::setupMenu()
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            //remove the two bottom items, so we can push them to the button again
+            // remove the two bottom items, so we can push them to the button again
             contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
             contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
@@ -493,7 +370,7 @@ Amarok::TrayIcon::setupMenu()
                 contextMenu()->addAction( action );
             //m_extraActions.append( contextMenu()->addSeparator() );
 
-            //readd
+            // readd
         #ifndef Q_WS_MAC
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         #endif
@@ -508,6 +385,5 @@ Amarok::TrayIcon::slotActivated( QSystemTrayIcon::ActivationReason reason )
     if( reason == QSystemTrayIcon::MiddleClick )
         The::engineController()->playPause();
 }
-
 
 #include "Systray.moc"
