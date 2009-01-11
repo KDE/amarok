@@ -352,15 +352,15 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
 void
 Amarok::TrayIcon::setupMenu()
 {
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( !track ) return;
+    if( !m_track )
+        return;
 
     foreach( QAction * action, m_extraActions ) {
         contextMenu()->removeAction( action );
     }
 
-    if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
-        Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
+    if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
+        Meta::CurrentTrackActionsCapability *cac = m_track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
             // remove the two bottom items, so we can push them to the button again
