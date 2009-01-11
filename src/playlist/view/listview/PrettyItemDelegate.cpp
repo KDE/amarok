@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
- *                      : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *                      : (C) 2008 - 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  *                      : (C) 2008 Soren Harward <stharward@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
@@ -263,7 +263,7 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                                   "active_overlay" ) );
         }
 
-        QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth-itemOffsetX, rowHeight );
+        QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
 
         for ( int j = 0; j < elementCount; ++j ) {
 
