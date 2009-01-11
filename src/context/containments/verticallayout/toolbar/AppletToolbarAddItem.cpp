@@ -178,7 +178,7 @@ Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
     qreal diff = Context::ContextView::self()->size().width() - ( mapToScene( QPointF( xpos, ypos ) ).x() + m_addMenu->boundingRect().width() );
     debug() << "checking if it will overflow, diff is:" << diff;
     if( diff < 0 )
-        xpos = 0 - TOOLBAR_X_OFFSET + diff;
+        xpos += diff;
 
     m_addMenu->setPos( xpos, ypos );
     m_addMenu->show();

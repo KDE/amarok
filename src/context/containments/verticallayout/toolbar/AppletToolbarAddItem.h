@@ -43,8 +43,7 @@ class AppletToolbarAddItem : public QGraphicsWidget
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
         QSizePolicy sizePolicy () const;
-        
-        
+                
     signals:
         void addApplet( const QString&, AppletToolbarAddItem*  );
         
