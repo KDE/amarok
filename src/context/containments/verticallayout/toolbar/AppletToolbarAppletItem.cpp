@@ -149,7 +149,10 @@ void
 Context::AppletToolbarAppletItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * )
 {
      if( m_configEnabled )
+     {  
+         setCursor( Qt::OpenHandCursor );
          emit appletChosen( m_applet );
+     }
 }
  
 void 
