@@ -11,8 +11,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef AMAROK_HORIZONTAL_TOOLBAR_CONTAINMENT_H
-#define AMAROK_HORIZONTAL_TOOLBAR_CONTAINMENT_H
+#ifndef AMAROK_VERTICAL_TOOLBAR_CONTAINMENT_H
+#define AMAROK_VERTICAL_TOOLBAR_CONTAINMENT_H
 
 #include "Applet.h"
 #include "Containment.h"

@@ -37,7 +37,7 @@ class AppletToolbarAddItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool fixedAdd = false );
+        explicit AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool fixedAdd = false );
         ~AppletToolbarAddItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );

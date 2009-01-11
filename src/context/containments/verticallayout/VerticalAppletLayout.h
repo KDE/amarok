@@ -11,8 +11,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef AMAROK_HORIZONTAL_APPLET_LAYOUT_H
-#define AMAROK_HORIZONTAL_APPLET_LAYOUT_H
+#ifndef AMAROK_VERTICAL_APPLET_LAYOUT_H
+#define AMAROK_VERTICAL_APPLET_LAYOUT_H
 
 
 #include "amarok_export.h"

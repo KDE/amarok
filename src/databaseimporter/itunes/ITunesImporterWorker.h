@@ -12,8 +12,8 @@
 ********************************************************************************/
 
 
-#ifndef AMAROK_ITUNES_WORKER_H
-#define AMAROK_ITUNES_WORKER_H
+#ifndef AMAROK_ITUNES_IMPORTER_WORKER_H
+#define AMAROK_ITUNES_IMPORTER_WORKER_H
 
 #include "databaseimporter/DatabaseImporter.h"
 #include "meta/Meta.h"

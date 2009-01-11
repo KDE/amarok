@@ -26,7 +26,7 @@ class ToolbarView : public QGraphicsView
 {
     Q_OBJECT
     public:
-        ToolbarView( QGraphicsScene* scene, QWidget* parent = 0 );
+        explicit ToolbarView( QGraphicsScene* scene, QWidget* parent = 0 );
         ~ToolbarView();
         
         virtual QSize sizeHint() const;

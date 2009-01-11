@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#ifndef AMAROK_COVERVIEWDLG_H
-#define AMAROK_COVERVIEWDLG_H
+#ifndef AMAROK_COVERVIEWDIALOG_H
+#define AMAROK_COVERVIEWDIALOG_H
 
 #include "meta/Meta.h"
 #include "widgets/PixmapViewer.h"

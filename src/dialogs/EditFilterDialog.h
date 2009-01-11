@@ -35,7 +35,7 @@ class EditFilterDialog : public KDialog
     Q_OBJECT
 
     public:
-        EditFilterDialog( QWidget* parent, const QString &text = QString() );
+        explicit EditFilterDialog( QWidget* parent, const QString &text = QString() );
         ~EditFilterDialog();
 
         QString filter() const;

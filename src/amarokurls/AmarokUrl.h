@@ -33,8 +33,8 @@
 class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem{
 public:
     AmarokUrl();
-    AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
-    AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent  = BookmarkGroupPtr() );
+    explicit AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
+    explicit AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent  = BookmarkGroupPtr() );
 
     ~AmarokUrl();
 

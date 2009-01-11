@@ -22,10 +22,9 @@
 #include <QAction>
 #include <QGraphicsSceneResizeEvent>
 #include <QGraphicsSimpleTextItem>
+#include <QPainter>
 #include <QSizeF>
 #include <QStyleOptionGraphicsItem>
-#include <QSizeF>
-#include <QPainter>
 
 #define TOOLBAR_X_OFFSET 2000
 

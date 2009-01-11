@@ -33,7 +33,7 @@ class AppletToolbarAppletItem : public QGraphicsWidget
 {
     Q_OBJECT
     public:
-        AppletToolbarAppletItem( QGraphicsItem* parent = 0, Plasma::Applet* applet = 0 );
+        explicit AppletToolbarAppletItem( QGraphicsItem* parent = 0, Plasma::Applet* applet = 0 );
         ~AppletToolbarAppletItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
