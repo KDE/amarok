@@ -1,5 +1,7 @@
 [Desktop Entry]
 Name=Amarok Bookmark Manager
+Name[nds]=Amarok-Leestekenpleger
+Name[uk]=Інструмент керування закладками Amarok
 Type=Service
 ServiceTypes=AmarokContext/Applet
 

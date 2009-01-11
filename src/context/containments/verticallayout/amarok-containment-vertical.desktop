@@ -1,10 +1,12 @@
 [Desktop Entry]
 Name=Vertical Context Containment
+Name[nds]=Pielrecht Kontextgelaats
 Name[pt]=Contentor de Contexto Vertical
 Name[pt_BR]=Contentor de Contexto Vertical
 Name[sv]=Vertikal sammanhangsinneslutning
 Name[uk]=Вертикальний контейнер вмісту
 Comment=A vertical containment for the Amarok Context
+Comment[nds]=En pielrecht Schell för Amarok-Kontext
 Comment[pt]=Um contentor vertical para o Contexto do Amarok
 Comment[pt_BR]=Um contentor vertical para o Contexto do Amarok
 Comment[sv]=En vertikal inneslutning för Amaroks Sammanhang
