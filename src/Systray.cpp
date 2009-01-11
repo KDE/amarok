@@ -131,18 +131,16 @@ Amarok::TrayIcon::setupToolTip()
         tooltip += "<table cellspacing='2' align='center' width='100%'>";
 
         // HACK: This block is inefficient and more or less stupid
-        QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
+        const QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
         if( m_track->album() )
         {
-            QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
+            const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
             image.save( tmpFilename, "PNG" );
             tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
             tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
         }
 
         QStringList left, right;
-
-        QString filename = "", title = ""; //special case these, put the first one encountered on top
 
         right << QString("<i>%1%</i>").arg( The::engineController()->volume() );
         left << "<i>Volume</i>";
