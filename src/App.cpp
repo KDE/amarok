@@ -1006,14 +1006,14 @@ namespace Amarok
      */
     QString decapitateString( const QString &input, const QString &ref )
     {
-        //Sometimes it's good to be c-like...
         int len;    //the length of common prefix calculated so far
-        for (len = 0; len<input.length() && len<ref.length(); len++){
-            if (input.at(len).toUpper() != ref.at(len).toUpper())
+        for ( len = 0; len < input.length() && len < ref.length(); len++ )
+        {
+            if ( input.at( len ).toUpper() != ref.at( len ).toUpper() )
                 break;
         }
         
-        return input.right(input.length() - len).trimmed();
+        return input.right( input.length() - len ).trimmed();
     }
 
     KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
