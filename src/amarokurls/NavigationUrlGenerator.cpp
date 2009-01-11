@@ -286,3 +286,4 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
     
     return url;
 }
+

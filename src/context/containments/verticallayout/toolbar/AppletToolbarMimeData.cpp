@@ -50,3 +50,4 @@ Context::AppletToolbarMimeData::locationData() const
 {
     return m_location;
 }
+

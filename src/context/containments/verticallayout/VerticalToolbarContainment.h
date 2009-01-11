@@ -69,3 +69,4 @@ K_EXPORT_PLASMA_APPLET( amarok_containment_vertical, VerticalToolbarContainment 
 }
 
 #endif
+

@@ -212,3 +212,4 @@ void AmarokUrl::reparent( BookmarkGroupPtr parent )
     m_parent = parent;
     saveToDb();
 }
+
