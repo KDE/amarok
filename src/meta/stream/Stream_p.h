@@ -207,7 +207,7 @@ public:
         return Meta::Album::image( size );
     }
 
-    bool operator==( const Meta::Album &other ) {
+    bool operator==( const Meta::Album &other ) const {
         DEBUG_BLOCK
         return name() == other.name();
     }
