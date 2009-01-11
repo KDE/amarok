@@ -228,7 +228,7 @@ void ProgressWidget::enginePlaybackEnded(int finalPosition, int trackLength, con
     Q_UNUSED( trackLength )
     Q_UNUSED( reason )
             
-    m_currentUrlId = QString();
+    m_currentUrlId.clear();
 }
 
 #include "ProgressSlider.moc"

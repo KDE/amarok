@@ -340,7 +340,7 @@ Mp3tunesLocker::tracksWithArtistId ( int artistId ) const
 QList<Mp3tunesLockerTrack>
 Mp3tunesLocker::tracksWithFileKeys( QStringList filekeys ) const
 {
-    QString keys = QString();
+    QString keys;
     foreach( const QString &key, filekeys )
     {
        keys.append(key);

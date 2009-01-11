@@ -27,7 +27,6 @@ ScriptableServiceCollection::ScriptableServiceCollection( const QString &name )
 {
     DEBUG_BLOCK
     m_name = name;
-    m_lastFilter = QString();
 }
 
 

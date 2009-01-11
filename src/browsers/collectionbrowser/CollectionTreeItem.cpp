@@ -104,7 +104,7 @@ CollectionTreeItem::albumYear() const
         }
     }
     if( year == "0" )
-        year = QString();
+        year.clear();
     return year;
 }
 

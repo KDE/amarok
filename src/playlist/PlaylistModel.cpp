@@ -1034,7 +1034,7 @@ bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTer
 void Playlist::Model::clearSearchTerm()
 {
     DEBUG_BLOCK
-    m_currentSearchTerm = QString();
+    m_currentSearchTerm.clear();
     m_currentSearchFields = 0;
 }
 
