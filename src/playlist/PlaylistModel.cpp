@@ -181,20 +181,20 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Album:
             {
                 if ( m_items.at( row )->track()->album() )
-                    return Qt::escape( m_items.at( row )->track()->album()->name() );
+                    return m_items.at( row )->track()->album()->name();
                 return QString();
             }
             case AlbumArtist:
             {
                 if ( m_items.at( row )->track()->album() )
                     if (  m_items.at( row )->track()->album()->albumArtist() )
-                        return Qt::escape( m_items.at( row )->track()->album()->albumArtist()->name() );
+                        return m_items.at( row )->track()->album()->albumArtist()->name();
                 return QString();
             }
             case Artist:
             {
                 if ( m_items.at( row )->track()->artist() )
-                    return Qt::escape( m_items.at( row )->track()->artist()->name() );
+                    return m_items.at( row )->track()->artist()->name();
                 return QString();
             }
             case Bitrate:
@@ -207,12 +207,12 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Comment:
             {
-                return Qt::escape( m_items.at( row )->track()->comment() );
+                return m_items.at( row )->track()->comment();
             }
             case Composer:
             {
                 if ( m_items.at( row )->track()->composer() )
-                    return Qt::escape( m_items.at( row )->track()->composer()->name() );
+                    return m_items.at( row )->track()->composer()->name();
                 return QString();
             }
             case CoverImage:
@@ -240,7 +240,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Genre:
             {
                 if ( m_items.at( row )->track()->genre() )
-                    return Qt::escape( m_items.at( row )->track()->genre()->name() );
+                    return m_items.at( row )->track()->genre()->name();
                 return QString();
             }
             case LastPlayed:
@@ -285,7 +285,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     sourceName = sic->sourceName();
                     delete sic;
                 }
-                return Qt::escape( sourceName );
+                return sourceName;
             }
             case SourceEmblem:
             {
@@ -302,7 +302,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Title:
             {
-                return Qt::escape( m_items.at( row )->track()->prettyName() );
+                return m_items.at( row )->track()->prettyName();
             }
             case TitleWithTrackNum:
             {
@@ -315,7 +315,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 } else
                     trackString = trackName;
                 
-                return Qt::escape( trackString );
+                return trackString;
             }
             case TrackNumber:
             {
@@ -328,7 +328,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Year:
             {
                 if ( m_items.at( row )->track()->year() )
-                    return Qt::escape( m_items.at( row )->track()->year()->name() );
+                    return m_items.at( row )->track()->year()->name();
                 return QString();
             }
 

@@ -130,4 +130,31 @@
             </row>
         </group_body>
     </layout>
+
+    <layout name="New Demo">
+        <single_track show_cover="false">
+            <row>
+                <element value="Artist" suffix=": " />
+                <element value="Title" suffix=" " bold="true"/>
+                <element value="Album" prefix="(" suffix=")" />
+                <element value="Length" bold="false" alignment="right"/>
+            </row>
+        </single_track>
+        <group_head show_cover="false" active_indicator_row="-1">
+            <row>
+                <!-- SIC, for right alignment, we want an inversed order -->
+                <element value="Artist" prefix =" by " alignment="right"/>
+                <element value="Album" bold="true" alignment="right"/>
+                <!--                 <element value="Length" alignment="right"/> // how to get album length? -->
+            </row>
+        </group_head>
+        <group_body show_cover="false">
+            <row>
+                <element value="Track number" suffix = ". "/>
+                <element value="Title"/>
+                <element value="Length" alignment="right"/>
+            </row>
+        </group_body>
+    </layout>
+    
 </playlist_layouts>

@@ -263,54 +263,53 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                                   "active_overlay" ) );
         }
 
-        for ( int j = 0; j < elementCount; j++ ) {
+        QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth-itemOffsetX, rowHeight );
+
+        for ( int j = 0; j < elementCount; ++j ) {
 
             PrettyItemConfigRowElement element = row.element( j );
 
             int value = element.value();
-            bool bold = element.bold();
-            int alignment = element.alignment();
 
-            QString text;
-            if (value < 0)
-                text = element.string();
-            else
+            QModelIndex textIndex = index.model()->index( index.row(), value );
+            QString text = textIndex.data( Qt::DisplayRole ).toString();
+
+            qreal itemWidth = 0.0;
+            if ( !text.isEmpty() )
             {
-                QModelIndex textIndex = index.model()->index( index.row(), value );
-                text = textIndex.data( Qt::DisplayRole ).toString();
+                text = element.prefix() + text + element.suffix();
+                
+                bool bold = element.bold();
+                int alignment = element.alignment();
+                
+                QFont font = option.font;
+                font.setBold( bold );
+                painter->setFont( font );
+
+                QRectF elementBox;
+                if ( element.size() > 0 )
+                {
+                    elementBox = rowBox;
+                    itemWidth = rowWidth * element.size();
+                    elementBox.setWidth(itemWidth);
+                    text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
+                    painter->drawText( rowBox, alignment, text );
+                    rowBox.setLeft( elementBox.right() + PADDING );
+                }
+                else
+                {
+                    painter->drawText( rowBox, alignment, text, &elementBox );
+                    if (alignment & Qt::AlignRight)
+                        rowBox.setRight( elementBox.left() - PADDING );
+                    else
+                        rowBox.setLeft( elementBox.right() + PADDING );
+                }
+
             }
-
-            QFont font = option.font;
-            font.setBold( bold );
-            painter->setFont( font );
-
-            qreal itemWidth;
-
-            if (element.size() > 0)
-            {
-                itemWidth = rowWidth * element.size();
-                QRectF textBox( itemOffsetX, rowOffsetY, itemWidth, rowHeight );
-                text = QFontMetricsF(font).elidedText( text, Qt::ElideRight, itemWidth );
-                painter->drawText( textBox, alignment, text );
-            }
-            else
-            {
-                QRectF textBox( itemOffsetX, rowOffsetY, rowWidth-itemOffsetX, rowHeight );
-                painter->drawText( textBox, alignment, text, &textBox );
-                itemWidth = textBox.width();
-            }
-
-            //if not the last item, add a PADDING
-            if ( j < elementCount - 1 )
-                itemWidth += PADDING;
-            
-            itemOffsetX += itemWidth;
 
         }
 
-
         rowOffsetY += rowHeight;
-
 
     }
 }

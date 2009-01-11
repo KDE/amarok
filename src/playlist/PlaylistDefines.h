@@ -104,6 +104,4 @@ enum SearchFields
 
 }
 
-
 #endif
-

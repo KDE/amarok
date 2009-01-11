@@ -21,12 +21,14 @@
 
 namespace Playlist {
 
-    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment, const QString &string )
+    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment,
+                                                            const QString &prefix , const QString &suffix )
     : m_value( value )
     , m_size( size )
     , m_bold( bold )
     , m_alignment( alignment )
-    , m_string( string )
+    , m_prefix( prefix )
+    , m_suffix( suffix )
 {
 }
 
@@ -50,9 +52,14 @@ int PrettyItemConfigRowElement::alignment() const
     return m_alignment;
 }
 
-QString PrettyItemConfigRowElement::string() const
+QString PrettyItemConfigRowElement::prefix() const
 {
-    return m_string;
+    return m_prefix;
+}
+
+QString PrettyItemConfigRowElement::suffix() const
+{
+    return m_suffix;
 }
 
 //////////////////////////////////////////////
