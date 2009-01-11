@@ -126,7 +126,7 @@ bool AmarokUrl::run()
 QString AmarokUrl::url()
 {
     QString url = "amarok:/";
-    foreach( QString field, m_fields ) {
+    foreach( const QString &field, m_fields ) {
         url += '/';
         url += field;
     }
