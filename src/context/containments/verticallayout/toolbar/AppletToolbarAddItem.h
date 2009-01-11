@@ -44,7 +44,6 @@ class AppletToolbarAddItem : public QGraphicsWidget
         
         QSizePolicy sizePolicy () const;
         
-        void setMaximized( bool max );
         
     signals:
         void addApplet( const QString&, AppletToolbarAddItem*  );
