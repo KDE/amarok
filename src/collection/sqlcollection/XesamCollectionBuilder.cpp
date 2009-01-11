@@ -240,6 +240,13 @@ XesamCollectionBuilder::processDirectory( const QList<QList<QVariant> > &data )
 void
 XesamCollectionBuilder::addTrack( const QList<QVariant> &trackData, int albumArtistId )
 {
+    // from setupXesam():
+    // 0: URL          6: YEAR            12: DISCNUMBER
+    // 1: TITLE        7: COMMENT         13: FILESIZE
+    // 2: ALBUM        8: CODEC           14: LENGTH
+    // 3: ARTIST       9: BITRATE         15: SAMPLERATE
+    // 4: GENRE       10: BPM
+    // 5: COMPOSER    11: TRACKNUMBER
     int album = albumId( trackData[2].toString(), albumArtistId );
     int artist = artistId( trackData[3].toString() );
     int genre = genreId( trackData[4].toString() );
@@ -254,9 +261,12 @@ XesamCollectionBuilder::addTrack( const QList<QVariant> &trackData, int albumArt
     insert = insert.arg( m_collection->escape( trackData[1].toString() ), m_collection->escape( trackData[7].toString() ) );
 
     QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9,%10);";
+    // tracknumber, discnumber, bitrate
     insert2 = insert2.arg( trackData[11].toInt() ).arg( trackData[12].toInt() ).arg( trackData[9].toInt() );
+    // length, samplerate, filesize
     insert2 = insert2.arg( trackData[14].toInt() ).arg( trackData[15].toInt() ).arg( trackData[13].toInt() );
-    insert2 = insert2.arg( "0", "0", "0" ); //bpm, createdate, modifydate not implemented yet
+    // filetype, bpm, createdate, modifydate
+    insert2 = insert2.arg( "0", "0", "0", "0" ); //filetype, bpm, createdate, modifydate not implemented yet
     insert += insert2;
 
     m_collection->insert( insert, "tracks" );
