@@ -249,6 +249,10 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
             break;
 
         case Phonon::StoppedState:
+            m_trackLength = 0;
+            paintIcon();
+            break;
+
         case Phonon::LoadingState:
         case Phonon::ErrorState:
         case Phonon::BufferingState:
