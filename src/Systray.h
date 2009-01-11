@@ -64,8 +64,7 @@ private:
     Meta::TrackPtr m_track;
     long m_trackLength;
 
-    QIcon m_baseIcon;
-    QPixmap m_fancyIcon;
+    QPixmap m_baseIcon, m_grayedIcon;
     QList<PopupDropperAction *> m_extraActions;
 };
 

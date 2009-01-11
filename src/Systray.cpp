@@ -70,7 +70,6 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     contextMenu()->addAction( ac->action( "next"       ) );
 
     PERF_LOG( "Adding system tray icon" );
-    m_baseIcon = KSystemTrayIcon::loadIcon( "amarok" );
     paintIcon();
 
     setupToolTip();
@@ -242,10 +241,14 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
     switch( state )
     {
         case Phonon::PlayingState:
+            m_track = The::engineController()->currentTrack();
+            m_trackLength = m_track->length();
+            paintIcon();
             setupMenu();
             break;
 
         case Phonon::StoppedState:
+            m_track = 0;
             m_trackLength = 0;
             paintIcon();
             break;
@@ -263,9 +266,6 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
 void
 Amarok::TrayIcon::engineNewTrackPlaying()
 {
-    m_track = The::engineController()->currentTrack();
-
-    paintIcon();
     setupToolTip();
     setupMenu();
 }
@@ -275,8 +275,6 @@ Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 {
     Q_UNUSED( trackChanged )
     Q_UNUSED( &newMetaData );
-
-    m_trackLength = m_track->length();
 
     setupToolTip();
     setupMenu();
@@ -312,6 +310,21 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
 {
     static int oldMergePos = -1;
 
+    // start up
+    if( m_baseIcon.isNull() )
+    {
+        QIcon icon = KSystemTrayIcon::loadIcon( "amarok" );
+        setIcon( icon ); // show icon
+        m_baseIcon = icon.pixmap( geometry().size() );
+        return; // return because m_baseIcon is still null after first startup
+    }
+
+    if( m_grayedIcon.isNull() )
+    {
+        m_grayedIcon = m_baseIcon; // copies object
+        KIconEffect::semiTransparent( m_grayedIcon );
+    }
+
     // do some sanity checks
     if( trackPosition < 0 || !m_trackLength )
     {
@@ -326,23 +339,14 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
     if( oldMergePos == mergePos )
         return;
 
-    // start from scratch if necessary (pixmap empty or irregular seek / track change)
-    if( m_fancyIcon.isNull() || mergePos == 0 || mergePos < oldMergePos )
-    {
-        m_fancyIcon = m_baseIcon.pixmap( geometry().size() );
-        KIconEffect::semiTransparent( m_fancyIcon );
-    }
-
-    if( mergePos > 0 )
-    {
-        // draw m_baseIcon on top of the gray version
-        QPainter p( &m_fancyIcon );
-        p.drawPixmap( 0, 0, m_baseIcon.pixmap( geometry().size()), 0, 0, geometry().width(), mergePos );
-    }
+    // draw m_baseIcon on top of the gray version
+    QPixmap pixmap = m_grayedIcon; // copies object
+    QPainter p( &pixmap );
+    p.drawPixmap( 0, mergePos, m_baseIcon, 0, mergePos, 0, 0 );
 
     oldMergePos = mergePos;
 
-    setIcon( m_fancyIcon );
+    setIcon( pixmap );
 }
 
 void
