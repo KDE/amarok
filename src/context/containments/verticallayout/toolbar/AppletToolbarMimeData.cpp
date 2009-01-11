@@ -18,6 +18,7 @@
 Context::AppletToolbarMimeData::AppletToolbarMimeData()
     : QMimeData()
     , m_applet( 0 )
+    , m_location( 0 )
 {
     
 }
