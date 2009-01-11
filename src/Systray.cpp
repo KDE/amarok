@@ -22,16 +22,16 @@
 #include "Systray.h"
 
 #include "Amarok.h"
+#include "Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
-#include "Debug.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h" // for time formatting
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <KAction>
 #include <KApplication>
@@ -241,9 +241,6 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
 {
     switch( state )
     {
-        case Phonon::PausedState:
-            break;
-
         case Phonon::PlayingState:
             setupMenu();
             break;
@@ -253,6 +250,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
             paintIcon();
             break;
 
+        case Phonon::PausedState:
         case Phonon::LoadingState:
         case Phonon::ErrorState:
         case Phonon::BufferingState:
@@ -267,7 +265,7 @@ Amarok::TrayIcon::engineNewTrackPlaying()
 {
     m_track = The::engineController()->currentTrack();
 
-    paintIcon( -1 );
+    paintIcon();
     setupToolTip();
     setupMenu();
 }
@@ -322,7 +320,7 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
         return;
     }
 
-    const int mergePos = ((float(trackPosition)/1000) / m_trackLength ) * geometry().height();
+    const int mergePos = ( ( float( trackPosition ) / 1000 ) / m_trackLength ) * geometry().height();
 
     // return if pixmap would stay the same
     if( oldMergePos == mergePos )
@@ -331,7 +329,7 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
     // start from scratch if necessary (pixmap empty or irregular seek / track change)
     if( m_fancyIcon.isNull() || mergePos == 0 || mergePos < oldMergePos )
     {
-        m_fancyIcon = m_baseIcon.pixmap(geometry().size());
+        m_fancyIcon = m_baseIcon.pixmap( geometry().size() );
         KIconEffect::semiTransparent( m_fancyIcon );
     }
 
@@ -339,7 +337,7 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
     {
         // draw m_baseIcon on top of the gray version
         QPainter p( &m_fancyIcon );
-        p.drawPixmap(0, 0, m_baseIcon.pixmap(geometry().size()), 0, 0, geometry().width(), mergePos);
+        p.drawPixmap( 0, 0, m_baseIcon.pixmap( geometry().size()), 0, 0, geometry().width(), mergePos );
     }
 
     oldMergePos = mergePos;

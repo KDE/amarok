@@ -23,11 +23,12 @@
 #include "meta/Meta.h"
 
 #include <KAction>
-#include <ksystemtrayicon.h>
+#include <KSystemTrayIcon> //baseclass
 
 class QEvent;
 class App;
 class PopupDropperAction;
+
 
 namespace Amarok {
 
@@ -46,6 +47,7 @@ protected:
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
     virtual void engineVolumeChanged( int percent );
+
     // get notified of 'highlight' color change
     virtual void paletteChange( const QPalette & oldPalette );
 
