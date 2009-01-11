@@ -342,7 +342,7 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
     // draw m_baseIcon on top of the gray version
     QPixmap pixmap = m_grayedIcon; // copies object
     QPainter p( &pixmap );
-    p.drawPixmap( 0, mergePos, m_baseIcon, 0, mergePos, 0, 0 );
+    p.drawPixmap( 0, 0, m_baseIcon, 0, 0, 0, geometry().height() - mergePos );
 
     oldMergePos = mergePos;
 
