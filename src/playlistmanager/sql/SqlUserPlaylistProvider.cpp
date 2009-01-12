@@ -53,13 +53,15 @@ SqlUserPlaylistProvider::playlists()
     return playlists;
 }
 
-void
+bool
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
     debug() << "saving " << tracks.count() << " tracks to db";
     m_playlists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( "new playlist", tracks ) );
     emit updated();
+
+    return true; //assume insertion in db was successful
 }
 
 void

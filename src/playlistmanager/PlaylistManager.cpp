@@ -234,28 +234,16 @@ bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
 {
     SqlUserPlaylistProvider *sqlProvider = dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
-    sqlProvider->save( tracks );
-//     Meta::SqlPlaylist playlist( name, tracks, /*SqlPlaylistGroupPtr(),*/ fromLocation );
-//     const int newId = playlist.id();
+    bool saveSuccessful = sqlProvider->save( tracks );
 
-//     if ( editNow )
-//     {
-//         //jolt the playlist browser model to reload so the newly added item is shown
-//         //talk about over-coupling... :|
-//         // That might be so, but it is needed when manually saving a list, otherwise
-//         // the user will not know that anything has happend and will end up with
-//         // 20 entries just named "playlist" in the view
-//         PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
-//
-//         // NOTE this doesn't really make sense, especially when batch adding
-//         //      during a collection scan ---lfranchi 9/5/08
-//
-//         The::mainWindow()->showBrowser( "PlaylistBrowser" );
-//         emit( showCategory( UserPlaylist - 1 ) );
+    if ( editNow )
+    {
+        The::mainWindow()->showBrowser( "PlaylistBrowser" );
+        emit( showCategory( UserPlaylist - 1 ) );
 //         PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
-//     }
+    }
 
-    return true; //FIXME what's this supposed to return?
+    return saveSuccessful;
 }
 
 bool

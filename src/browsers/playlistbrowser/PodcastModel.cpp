@@ -41,7 +41,6 @@ PlaylistBrowserNS::PodcastModel::PodcastModel()
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()));
 }
 
-
 PlaylistBrowserNS::PodcastModel::~PodcastModel()
 {
 }

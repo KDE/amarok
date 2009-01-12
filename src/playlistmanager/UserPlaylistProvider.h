@@ -37,8 +37,16 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         virtual Meta::PlaylistList playlists() = 0;
 
         /* UserPlaylistProvider functions */
+        /**
+            @returns true if this provider supports - and is currently able to - save playlists
+        **/
         virtual bool canSavePlaylists() = 0;
-        virtual void save( const Meta::TrackList &tracks ) = 0;
+
+        /**
+            Save a list of tracks as a playlist in the database.
+            @returns true if successful
+        **/
+        virtual bool save( const Meta::TrackList &tracks ) = 0;
 };
 
 #endif
