@@ -12,13 +12,13 @@
  ***************************************************************************/
 
 #include "ProgressSlider.h"
-#include "SliderWidget.h"
 
-#include "amarokconfig.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "meta/MetaUtility.h"
+#include "SliderWidget.h"
 #include "TimeLabel.h"
+#include "amarokconfig.h"
+#include "meta/MetaUtility.h"
 
 #include <QHBoxLayout>
 
@@ -26,6 +26,7 @@
 
 //Class ProgressWidget
 ProgressWidget *ProgressWidget::s_instance = 0;
+
 ProgressWidget::ProgressWidget( QWidget *parent )
     : QWidget( parent )
     , EngineObserver( The::engineController() )
@@ -67,8 +68,8 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     engineStateChanged( Phonon::StoppedState );
 
-    connect( m_slider, SIGNAL(sliderReleased( int )), The::engineController(), SLOT(seek( int )) );
-    connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
+    connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
+    connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( drawTimeDisplay( int ) ) );
 
     setBackgroundRole( QPalette::BrightText );
 }
@@ -76,9 +77,9 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 void
 ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
-
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label
+
     const uint trackLength = The::engineController()->trackLength();
 
     // when the left label shows the remaining time and it's not a stream
@@ -86,17 +87,23 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     {
         seconds2 = seconds;
         seconds = trackLength - seconds;
+    } 
+    
     // when the left label shows the remaining time and it's a stream
-    } else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         seconds2 = seconds;
         seconds = 0; // for streams
+    }
+     
     // when the right label shows the remaining time and it's not a stream
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         seconds2 = trackLength - seconds;
+    }
+     
     // when the right label shows the remaining time and it's a stream
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         seconds2 = 0;
     }
@@ -108,8 +115,9 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
         s1.prepend( '-' );
+    }
     // when the right label shows the remaining time and it's not a stream
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         s2.prepend( '-' );
     }
@@ -130,11 +138,13 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     {
         m_timeLabelLeft->setEnabled( false );
         m_timeLabelRight->setEnabled( true );
-    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    }
+    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         m_timeLabelLeft->setEnabled( true );
         m_timeLabelRight->setEnabled( false );
-    } else
+    }
+    else
     {
         m_timeLabelLeft->setEnabled( true );
         m_timeLabelRight->setEnabled( true );
@@ -155,10 +165,13 @@ void
 ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
     DEBUG_BLOCK
-    switch ( state ) {
+
+    switch ( state )
+    {
         case Phonon::StoppedState:
         case Phonon::LoadingState:
-            if ( !The::engineController()->currentTrack() || ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) ) {
+            if ( !The::engineController()->currentTrack() || ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) )
+            {
                 m_slider->setEnabled( false );
                 debug() << "slider disabled!";
                 m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
@@ -180,15 +193,13 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
             break;
 
         case Phonon::BufferingState:
+        case Phonon::ErrorState:
             break;
 
         case Phonon::PausedState:
             m_timeLabelLeft->setEnabled( true );
             m_timeLabelRight->setEnabled( true );
             break;
-
-        case Phonon::ErrorState:
-            ;
     }
 }
 
@@ -196,6 +207,7 @@ void
 ProgressWidget::engineTrackLengthChanged( long seconds )
 {
     DEBUG_BLOCK
+
     debug() << "new length: " << seconds;
     m_slider->setMinimum( 0 );
     m_slider->setMaximum( seconds * 1000 );
@@ -222,11 +234,12 @@ QSize ProgressWidget::sizeHint() const
     return QSize( width(), 12 );
 }
 
-void ProgressWidget::enginePlaybackEnded(int finalPosition, int trackLength, const QString & reason)
+void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, const QString & reason )
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )
     Q_UNUSED( reason )
+    DEBUG_BLOCK
             
     m_currentUrlId.clear();
 }

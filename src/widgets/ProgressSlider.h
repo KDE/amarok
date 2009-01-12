@@ -11,8 +11,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PROGRESSSLIDER_H
-#define PROGRESSSLIDER_H
+#ifndef AMAROK_PROGRESSSLIDER_H
+#define AMAROK_PROGRESSSLIDER_H
 
 #include "EngineObserver.h"
 
@@ -23,9 +23,8 @@
 #include <QPolygon>
 #include <QWidget>
 
-namespace Amarok { class TimeSlider; }
 class TimeLabel;
-
+namespace Amarok { class TimeSlider; }
 
 class ProgressWidget : public QWidget, public EngineObserver
 {
@@ -56,4 +55,6 @@ class ProgressWidget : public QWidget, public EngineObserver
         Amarok::TimeSlider *m_slider;
         QString m_currentUrlId;
 };
+
 #endif
+

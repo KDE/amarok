@@ -21,6 +21,7 @@
 #include "ActionClasses.h"
 #include "EngineController.h"
 #include "ProgressSlider.h"
+#include "amarokconfig.h"
 
 #include <QLabel>
 #include <kglobalsettings.h>
