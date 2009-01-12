@@ -25,27 +25,21 @@
 
 #include <typeinfo>
 
-Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, SqlPlaylistGroupPtr parent )
-    : m_parent( parent )
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow )
 {
     m_dbId = dbResultRow[0].toInt();
+    m_parentId = dbResultRow[1].toInt();
     m_name = dbResultRow[2];
     m_description = dbResultRow[3];
 }
 
-Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name )
     : m_dbId( -1 )
-    , m_parent( parent )
+    , m_parentId( -1 )
     , m_name( name )
     , m_description( QString() )
 {
-    if ( parent.isNull() )
-    {
-        //root item
-        m_dbId = -1;
-    }
 }
-
 
 Meta::SqlPlaylistGroup::~SqlPlaylistGroup()
 {
@@ -56,15 +50,11 @@ Meta::SqlPlaylistGroup::~SqlPlaylistGroup()
 void
 Meta::SqlPlaylistGroup::save()
 {
-    int parentId = 0;
-    if ( m_parent )
-        parentId = m_parent->id();
-
     if ( m_dbId != -1 )
     {
         //update existing
         QString query = "UPDATE playlist_groups SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
-        query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( QString::number( m_dbId ) );
+        query = query.arg( QString::number( m_parentId ) ).arg( m_name ).arg( m_description ).arg( QString::number( m_dbId ) );
         CollectionManager::instance()->sqlStorage()->query( query );
 
     }
@@ -72,7 +62,7 @@ Meta::SqlPlaylistGroup::save()
     {
         //insert new
         QString query = "INSERT INTO playlist_groups ( parent_id, name, description) VALUES ( %1, '%2', '%3' );";
-        query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description );
+        query = query.arg( QString::number( m_parentId ) ).arg( m_name ).arg( m_description );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
     }
 }
@@ -101,10 +91,10 @@ Meta::SqlPlaylistGroup::removeFromDb()
 }
 
 void
-Meta::SqlPlaylistGroup::setParent( PlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::setParent( Meta::PlaylistGroupPtr parent )
 {
     if( parent )
-        m_parent = SqlPlaylistGroupPtr::staticCast( parent );
+        m_parent = Meta::SqlPlaylistGroupPtr::staticCast( parent );
     else
         debug() << "have to create the parent";
 

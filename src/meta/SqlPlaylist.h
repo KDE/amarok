@@ -23,8 +23,7 @@
 
 
 #include "Playlist.h"
-//Changed to fix a strange build error in AlbumModel.cpp
-//#include "SqlPlaylistViewItem.h"
+// #include "SqlPlaylistGoup.h"
 #include <browsers/playlistbrowser/SqlPlaylistViewItem.h>
 
 
@@ -59,10 +58,10 @@ class SqlPlaylist : public Playlist
         virtual QString description() const { return m_description; }
         virtual void rename( const QString &name );
 
-    //     void reparent( SqlPlaylistGroupPtr parent );
+//         void setParent( Meta::PlaylistGroupPtr parent );
 
         int id();
-
+        int parentId() { return m_parentId; }
 
         /** returns all tracks in this playlist */
         virtual TrackList tracks();
@@ -70,19 +69,18 @@ class SqlPlaylist : public Playlist
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
         Capability* asCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-    //     virtual SqlPlaylistGroupPtr parent() const { return m_parent; }
+//         virtual Meta::PlaylistGroupPtr parent() const { return m_parent; }
 
         virtual void removeFromDb();
 
         //bool load();
 
     private:
-
         void loadTracks();
         void saveTracks();
 
         int m_dbId;
-    //     SqlPlaylistGroupPtr m_parent;
+        int m_parentId;
         Meta::TrackList m_tracks;
         QString m_name;
         QString m_description;

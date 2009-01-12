@@ -32,6 +32,7 @@ Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList &tra
     : Meta::Playlist()
     , m_dbId( -1 )
 //     , m_parent( parent )
+    , m_parentId( -1 )
     , m_tracks( tracks )
     , m_name( name )
     , m_description( QString() )
@@ -48,6 +49,7 @@ Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow/*, SqlPlaylistGrou
     , m_tracksLoaded( false )
 {
     m_dbId = resultRow[0].toInt();
+    m_parentId = resultRow[1].toInt();
     m_name = resultRow[2];
     m_description = resultRow[3];
     m_urlId = resultRow[4];
@@ -66,7 +68,7 @@ bool
 Meta::SqlPlaylist::saveToDb( bool tracks )
 {
     DEBUG_BLOCK
-            
+
     int parentId = -1;
 //     if ( m_parent )
 //         parentId = m_parent->id();
@@ -76,19 +78,19 @@ Meta::SqlPlaylist::saveToDb( bool tracks )
     //figure out if we have a urlId and if this id is already in the db, if so, update it instead of creating a new one.
     if ( !m_urlId.isEmpty() ) {
 
-        debug() << "Checking " << m_urlId << " against db"; 
+        debug() << "Checking " << m_urlId << " against db";
 
         //check if urlId exists
         QString query = "SELECT id from playlists WHERE urlid='%1'";
         query = query.arg( sql->escape( m_urlId ) );
         QStringList result = sql->query( query );
-        
+
         if ( !result.isEmpty() ) {
 
             //set this id to the already existing one
             m_dbId =  result.at( 0 ).toInt();
             debug() << "Got existing playlist with id " << m_dbId;
-            
+
         }
 
     }
@@ -127,11 +129,11 @@ Meta::SqlPlaylist::saveToDb( bool tracks )
         m_tracks.clear();
         m_tracksLoaded = false;
     }
-    
+
     return true;
 }
 
-void 
+void
 Meta::SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
@@ -156,7 +158,7 @@ Meta::SqlPlaylist::saveTracks()
     }
 }
 
-Meta::TrackList 
+Meta::TrackList
 Meta::SqlPlaylist::tracks()
 {
     DEBUG_BLOCK
@@ -167,7 +169,7 @@ Meta::SqlPlaylist::tracks()
     return m_tracks;
 }
 
-void 
+void
 Meta::SqlPlaylist::loadTracks()
 {
     DEBUG_BLOCK
@@ -213,14 +215,14 @@ Meta::SqlPlaylist::loadTracks()
 }
 
 
-void 
+void
 Meta::SqlPlaylist::rename(const QString & name)
 {
     m_name = name;
     saveToDb( false ); //no need to resave all tracks
 }
 
-void 
+void
 Meta::SqlPlaylist::removeFromDb()
 {
     DEBUG_BLOCK

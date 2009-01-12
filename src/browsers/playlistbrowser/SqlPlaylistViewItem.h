@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef SQLPLAYLISTVIEWITEM_H
 #define SQLPLAYLISTVIEWITEM_H
 
@@ -24,12 +24,14 @@
 
 #include <QSharedData>
 #include <KSharedPtr>
-class SqlPlaylistGroup;
-typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
-typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
+namespace Meta {
+    class SqlPlaylistGroup;
+    typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+    typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
+}
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
 class SqlPlaylistViewItem;
@@ -39,10 +41,10 @@ class SqlPlaylistViewItem : public virtual QSharedData
 {
     public:
         SqlPlaylistViewItem() : QSharedData() {}
-        
+
         virtual  ~SqlPlaylistViewItem() { DEBUG_BLOCK };
-    
-        virtual SqlPlaylistGroupPtr parent() const = 0;
+
+        virtual Meta::SqlPlaylistGroupPtr parent() const = 0;
         virtual int childCount() const { return 0; }
         virtual QString name() const = 0;
         virtual QString description() const = 0;

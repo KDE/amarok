@@ -26,6 +26,8 @@
 #include "SqlStorage.h"
 #include <KUrl>
 
+#include <QMap>
+
 static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
@@ -166,13 +168,10 @@ void
 SqlUserPlaylistProvider::loadFromDb()
 {
     DEBUG_BLOCK;
-//     QString query = "SELECT id, parent_id, name, description, urlid FROM playlists WHERE parent_id=%1 ORDER BY name;";
     QString query = "SELECT id, parent_id, name, description, urlid FROM playlists ORDER BY name;";
 
-//     query = query.arg( QString::number( -1 ) );
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
-    //debug() << "Result: " << result;
     int resultRows = result.count() / 5;
 
     for( int i = 0; i < resultRows; i++ )
@@ -180,6 +179,48 @@ SqlUserPlaylistProvider::loadFromDb()
         QStringList row = result.mid( i*5, 5 );
         m_playlists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( row ) );
     }
+
+    loadGroups();
+}
+
+void
+SqlUserPlaylistProvider::loadGroups()
+{
+    m_groups.clear();
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    QString command = "SELECT id, parent_id, name, description FROM playlist_groups where id=%1 ORDER BY name;";
+
+    QMap<int, Meta::SqlPlaylistGroupPtr> groupMap;
+    foreach( Meta::SqlPlaylistPtr playlist, m_playlists )
+    {
+        debug() << "Playlist " << playlist->name();
+        int groupId = playlist->parentId();
+        if( (groupId != -1) && !groupMap.contains( groupId ) )
+        {
+            debug() << "loading group " << groupId;
+            groupMap[groupId] = Meta::SqlPlaylistGroupPtr(
+                    new Meta::SqlPlaylistGroup(
+                            sqlStorage->query( command.arg( groupId ) )
+                    )
+            );
+        }
+    }
+    m_groups = groupMap.values();
+    foreach( Meta::SqlPlaylistGroupPtr group, m_groups )
+    {
+        debug() << "group " << group->name();
+        int groupId = group->parentId();
+        if( (groupId != -1) && !groupMap.contains( groupId ) )
+        {
+            debug() << "loading group " << groupId;
+            groupMap[groupId] = Meta::SqlPlaylistGroupPtr(
+                    new Meta::SqlPlaylistGroup(
+                            sqlStorage->query( command.arg( groupId ) )
+                    )
+            );
+        }
+    }
+    m_groups = groupMap.values();
 }
 
 #include "SqlUserPlaylistProvider.moc"

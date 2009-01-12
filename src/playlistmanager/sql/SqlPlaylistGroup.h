@@ -41,8 +41,8 @@ namespace Meta
     class SqlPlaylistGroup : public PlaylistGroup
     {
         public:
-            SqlPlaylistGroup( const QStringList &dbResultRow, SqlPlaylistGroupPtr parent );
-            SqlPlaylistGroup( const QString &name, SqlPlaylistGroupPtr parent = SqlPlaylistGroupPtr() );
+            SqlPlaylistGroup( const QStringList &dbResultRow );
+            SqlPlaylistGroup( const QString &name );
 
             ~SqlPlaylistGroup();
 
@@ -50,7 +50,8 @@ namespace Meta
             QString name() const { return m_name; }
             QString description() const { return m_description; }
 
-            virtual Meta::PlaylistGroupPtr parent() const { return Meta::PlaylistGroupPtr::staticCast(m_parent); }
+            virtual Meta::PlaylistGroupPtr parent() const { return
+                    Meta::PlaylistGroupPtr::staticCast(m_parent); }
 
             virtual void setName( const QString &name );
             virtual void setParent( Meta::PlaylistGroupPtr parent );
@@ -58,11 +59,13 @@ namespace Meta
 
             /* SqlPlaylistGroup specific functions */
             int id() const { return m_dbId; }
+            int parentId() const { return m_parentId; }
             void save();
             void removeFromDb();
 
         private:
             int m_dbId;
+            int m_parentId;
             Meta::SqlPlaylistGroupPtr m_parent;
             QString m_name;
             QString m_description;
