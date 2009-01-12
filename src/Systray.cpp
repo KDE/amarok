@@ -261,18 +261,18 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
             m_track = The::engineController()->currentTrack();
             m_trackLength = m_track->length();
 
-            paintIcon();
+            paintIcon( 0 );
             setupMenu();
             break;
 
         case Phonon::StoppedState:
             m_track = 0;
             m_trackLength = 0;
+
             paintIcon();
             break;
 
         case Phonon::PausedState:
-            paintIcon();
             blendOverlay( m_pauseOverlay );
             break;
 
@@ -347,11 +347,19 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
         KIconEffect::semiTransparent( m_grayedIcon );
     }
 
-    // do some sanity checks
-    if( trackPosition < 0 || !m_trackLength )
+    // trackPosition < 0 means reset
+    if( trackPosition < 0 )
     {
         oldMergePos = -1;
         setIcon( m_baseIcon );
+        return;
+    }
+
+    // check if we are playing a stream
+    if( !m_trackLength )
+    {
+        m_icon = m_baseIcon;
+        blendOverlay( m_playOverlay );
         return;
     }
 
