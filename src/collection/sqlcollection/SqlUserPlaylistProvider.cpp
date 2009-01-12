@@ -1,5 +1,63 @@
+/***************************************************************************
+ *   Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>     *
+ *   Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
 
-void PlaylistBrowserNS::UserModel::createTables()
+#include "SqlUserPlaylistProvider.h"
+
+#include "Amarok.h"
+#include "CollectionManager.h"
+#include "Debug.h"
+#include "SqlStorage.h"
+
+#include <KUrl>
+
+static const int USERPLAYLIST_DB_VERSION = 2;
+static const QString key("AMAROK_USERPLAYLIST");
+
+SqlUserPlaylistProvider::SqlUserPlaylistProvider()
+    : UserPlaylistProvider()
+{
+}
+
+SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
+{
+}
+
+Meta::PlaylistList
+SqlUserPlaylistProvider::playlists()
+{
+    Meta::PlaylistList playlists;
+    foreach( Meta::SqlPlaylistPtr sqlPlaylist, m_playlists )
+    {
+        playlists << Meta::PlaylistPtr::staticCast( sqlPlaylist );
+    }
+    return playlists;
+}
+
+void
+SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+}
+
+void
+SqlUserPlaylistProvider::createTables()
 {
     DEBUG_BLOCK
 
@@ -33,16 +91,14 @@ void PlaylistBrowserNS::UserModel::createTables()
 
     sqlStorage->query( "CREATE INDEX parent_playlist_tracks ON playlist_tracks( playlist_id );" );
     sqlStorage->query( "CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );" );
-
-
-
 }
 
-void PlaylistBrowserNS::UserModel::deleteTables()
+void
+SqlUserPlaylistProvider::deleteTables()
 {
 
     DEBUG_BLOCK
-    
+
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     sqlStorage->query( "DROP INDEX parent_podchannel ON playlist_groups;" );
@@ -56,22 +112,23 @@ void PlaylistBrowserNS::UserModel::deleteTables()
 
 }
 
-void PlaylistBrowserNS::UserModel::checkTables()
+void
+SqlUserPlaylistProvider::checkTables()
 {
-
     DEBUG_BLOCK
-            
+
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
     if( values.isEmpty() )
     {
         //debug() << "creating Playlist Tables";
         createTables();
-        
+
         sqlStorage->query( "INSERT INTO admin(component,version) "
                 "VALUES('" + key + "'," + QString::number( USERPLAYLIST_DB_VERSION ) + ");" );
-    } else {
-
+    }
+    else
+    {
         int dbVersion = values.at( 0 ).toInt();
         if ( dbVersion != USERPLAYLIST_DB_VERSION ) {
             //ah screw it, we do not have any stable releases of this out, so just redo the db. This wil also make sure that we do not
@@ -81,17 +138,15 @@ void PlaylistBrowserNS::UserModel::checkTables()
 
             sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
         }
-
     }
-    
-
-
 }
 
 void
-PlaylistBrowserNS::UserModel::reloadFromDb()
+SqlUserPlaylistProvider::reloadFromDb()
 {
     DEBUG_BLOCK;
-    reset();
-    m_root->clear();
+//     reset();
+//     m_root->clear();
 }
+
+#include "SqlUserPlaylistProvider.moc"

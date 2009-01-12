@@ -24,17 +24,14 @@
 #include "meta/stream/Stream.h"
 #include "SqlStorage.h"
 
-#include "SqlPlaylistGroup.h"
+// #include "SqlPlaylistGroup.h"
 
 #include <typeinfo>
 
-using namespace Meta;
-
-SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList & tracks, SqlPlaylistGroupPtr parent, const QString &urlId )
-    : SqlPlaylistViewItem()
-    , Playlist()
+Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList &tracks, /*SqlPlaylistGroupPtr parent,*/ const QString &urlId )
+    : Meta::Playlist()
     , m_dbId( -1 )
-    , m_parent( parent )
+//     , m_parent( parent )
     , m_tracks( tracks )
     , m_name( name )
     , m_description( QString() )
@@ -45,10 +42,9 @@ SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList & tracks, 
     saveToDb();
 }
 
-SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent )
-    : SqlPlaylistViewItem()
-    , Playlist()
-    , m_parent( parent )
+Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow/*, SqlPlaylistGroupPtr parent*/ )
+    : Meta::Playlist()
+//     , m_parent( parent )
     , m_tracksLoaded( false )
 {
     m_dbId = resultRow[0].toInt();
@@ -62,17 +58,18 @@ SqlPlaylist::SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr par
 }
 
 
-SqlPlaylist::~SqlPlaylist()
+Meta::SqlPlaylist::~SqlPlaylist()
 {
 }
 
-bool SqlPlaylist::saveToDb( bool tracks )
+bool
+Meta::SqlPlaylist::saveToDb( bool tracks )
 {
     DEBUG_BLOCK
             
     int parentId = -1;
-    if ( m_parent )
-        parentId = m_parent->id();
+//     if ( m_parent )
+//         parentId = m_parent->id();
 
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
 
@@ -134,7 +131,8 @@ bool SqlPlaylist::saveToDb( bool tracks )
     return true;
 }
 
-void SqlPlaylist::saveTracks()
+void 
+Meta::SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
@@ -144,10 +142,13 @@ void SqlPlaylist::saveTracks()
         if ( trackPtr )
         {
             QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7, '%8' );";
-            query = query.arg( QString::number( m_dbId ), QString::number( trackNum ), sql->escape( trackPtr->playableUrl().url() ),
-                                sql->escape( trackPtr->prettyName() ), sql->escape( trackPtr->album()->prettyName() ),
-                                sql->escape( trackPtr->artist()->prettyName() ), QString::number( trackPtr->length() ),
-                                sql->escape( trackPtr->uidUrl() ) );
+            query = query.arg( QString::number( m_dbId ), QString::number( trackNum ),
+                        sql->escape( trackPtr->playableUrl().url() ),
+                        sql->escape( trackPtr->prettyName() ),
+                        sql->escape( trackPtr->album()->prettyName() ),
+                        sql->escape( trackPtr->artist()->prettyName() ),
+                        QString::number( trackPtr->length() ),
+                        sql->escape( trackPtr->uidUrl() ) );
             sql->insert( query, NULL );
 
             trackNum++;
@@ -155,7 +156,8 @@ void SqlPlaylist::saveTracks()
     }
 }
 
-TrackList SqlPlaylist::tracks()
+Meta::TrackList 
+Meta::SqlPlaylist::tracks()
 {
     DEBUG_BLOCK
     if ( !m_tracksLoaded )
@@ -165,7 +167,8 @@ TrackList SqlPlaylist::tracks()
     return m_tracks;
 }
 
-void SqlPlaylist::loadTracks()
+void 
+Meta::SqlPlaylist::loadTracks()
 {
     DEBUG_BLOCK
     QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
@@ -210,13 +213,15 @@ void SqlPlaylist::loadTracks()
 }
 
 
-void Meta::SqlPlaylist::rename(const QString & name)
+void 
+Meta::SqlPlaylist::rename(const QString & name)
 {
     m_name = name;
     saveToDb( false ); //no need to resave all tracks
 }
 
-void Meta::SqlPlaylist::removeFromDb()
+void 
+Meta::SqlPlaylist::removeFromDb()
 {
     DEBUG_BLOCK
     QString query = "DELETE FROM playlist_tracks WHERE playlist_id=%1";
@@ -228,15 +233,16 @@ void Meta::SqlPlaylist::removeFromDb()
     CollectionManager::instance()->sqlStorage()->query( query );
 }
 
-int Meta::SqlPlaylist::id()
+int
+Meta::SqlPlaylist::id()
 {
     return m_dbId;
 }
 
-
-void Meta::SqlPlaylist::reparent( SqlPlaylistGroupPtr parent )
+/*
+void
+Meta::SqlPlaylist::reparent( SqlPlaylistGroupPtr parent )
 {
     m_parent = parent;
     saveToDb( false );
-}
-
+}*/

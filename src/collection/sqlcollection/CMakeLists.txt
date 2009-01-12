@@ -37,6 +37,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlRegistry.cpp
     SqlMeta.cpp 
     MySqlEmbeddedCollection.cpp
+    SqlUserPlaylistProvider.cpp
     ${amarok_collection-sqlcollection_PART_SRCS}
     ${extra_src}
  )

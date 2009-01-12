@@ -22,6 +22,7 @@
 #include "App.h"
 #include "statusbar/StatusBar.h"
 #include "CollectionManager.h"
+#include "collection/sqlcollection/SqlUserPlaylistProvider.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
 #include "sql/SqlPodcastProvider.h"
@@ -71,6 +72,8 @@ PlaylistManager::PlaylistManager()
     m_defaultPodcastProvider = new SqlPodcastProvider();
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
+
+//     m_defaultUserPlaylistProvider = The::collection()->userPlaylistProvider();
 }
 
 PlaylistManager::~PlaylistManager()

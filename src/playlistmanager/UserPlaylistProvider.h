@@ -22,17 +22,23 @@
 #define USERPLAYLISTPROVIDER_H
 
 #include "meta/Playlist.h"
+#include "playlistmanager/PlaylistManager.h"
 
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
 class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 {
-    virtual UserPlaylistProvider();
+    public:
+        virtual ~UserPlaylistProvider() {};
 
-    virtual Meta::PlaylistList playlists();
+        /* PlaylistProvider functions */
+        virtual int category() const { return PlaylistManager::UserPlaylist; };
+        virtual Meta::PlaylistList playlists() = 0;
 
-    virtual save( const Meta::TrackList &tracks );
-}
+        /* UserPlaylistProvider functions */
+        virtual bool canSavePlaylists() = 0;
+        virtual void save( const Meta::TrackList &tracks ) = 0;
+};
 
 #endif

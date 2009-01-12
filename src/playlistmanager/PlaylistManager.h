@@ -26,10 +26,11 @@
 #include <QMultiMap>
 #include <QList>
 
+class KJob;
 class PlaylistManager;
 class PlaylistProvider;
 class PodcastProvider;
-class KJob;
+class UserPlaylistProvider;
 
 namespace The {
     AMAROK_EXPORT PlaylistManager* playlistManager();
@@ -134,6 +135,7 @@ class PlaylistManager : public QObject
         Meta::PlaylistPtr expand( Meta::TrackPtr track );
 
         PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; };
+        UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; };
 
     signals:
         void updated();
@@ -150,6 +152,7 @@ class PlaylistManager : public QObject
         ~PlaylistManager();
 
         PodcastProvider *m_defaultPodcastProvider;
+        UserPlaylistProvider *m_defaultUserPlaylistProvider;
 
         QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;
@@ -176,10 +179,6 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
         virtual int category() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;
-
-        virtual bool canSavePlaylists() { return false; };
-
-        virtual void save( Meta::PlaylistPtr playlist ) { Q_UNUSED( playlist ) };
 
     signals:
         virtual void updated();

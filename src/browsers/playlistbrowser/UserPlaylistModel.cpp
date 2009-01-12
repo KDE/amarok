@@ -31,9 +31,6 @@
 
 #include <typeinfo>
 
-static const int USERPLAYLIST_DB_VERSION = 2;
-static const QString key("AMAROK_USERPLAYLIST");
-
 PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::s_instance = 0;
 
 PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
