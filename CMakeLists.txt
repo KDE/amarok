@@ -1,6 +1,6 @@
 project(Amarok)
 
-cmake_minimum_required(VERSION 2.4.5)
+cmake_minimum_required(VERSION 2.6.2)
 
 
 #We depend on kde4.1 now.. I believe this is the easiest way to do it.
