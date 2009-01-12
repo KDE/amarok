@@ -233,9 +233,11 @@ PlaylistManager::typeName( int playlistCategory )
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
 {
-//     Meta::SqlPlaylist playlist( name, tracks, SqlPlaylistGroupPtr(), fromLocation );
+    SqlUserPlaylistProvider *sqlProvider = dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
+    sqlProvider->save( tracks );
+//     Meta::SqlPlaylist playlist( name, tracks, /*SqlPlaylistGroupPtr(),*/ fromLocation );
 //     const int newId = playlist.id();
-//
+
 //     if ( editNow )
 //     {
 //         //jolt the playlist browser model to reload so the newly added item is shown

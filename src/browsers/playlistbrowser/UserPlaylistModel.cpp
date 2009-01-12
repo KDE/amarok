@@ -41,30 +41,48 @@ PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
     return s_instance;
 }
 
-
 PlaylistBrowserNS::UserModel::UserModel()
  : QAbstractItemModel()
 {
 
 //     m_root = PlaylistGroupPtr( new PlaylistGroup( "root", PlaylistGroupPtr() ) );
-    QList<Meta::PlaylistPtr> playlists =
-            The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
-    QListIterator<Meta::PlaylistPtr> i(playlists);
-    while (i.hasNext())
-        m_playlists << Meta::PlaylistPtr::staticCast( i.next() );
+    loadPlaylists();
 
-    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()));
+    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
 }
-
 
 PlaylistBrowserNS::UserModel::~UserModel()
 {
 }
 
+void
+PlaylistBrowserNS::UserModel::slotUpdate()
+{
+    loadPlaylists();
+
+    emit layoutAboutToBeChanged();
+    emit layoutChanged();
+}
+
+void
+PlaylistBrowserNS::UserModel::loadPlaylists()
+{
+    DEBUG_BLOCK
+    QList<Meta::PlaylistPtr> playlists =
+    The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
+    QListIterator<Meta::PlaylistPtr> i(playlists);
+    m_playlists.clear();
+    while (i.hasNext())
+    {
+        Meta::PlaylistPtr playlist = Meta::PlaylistPtr::staticCast( i.next() );
+        m_playlists << playlist;
+    }
+}
+
 QVariant
 PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 {
-    
+
     if ( !index.isValid() )
         return QVariant();
 
@@ -235,7 +253,7 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indexes ) const
 bool
 PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
 {
-    Q_UNUSED( column ); 
+    Q_UNUSED( column );
     Q_UNUSED( row );
 //     DEBUG_BLOCK
 
@@ -278,13 +296,13 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
 //         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
 //         if( dragList )
 //         {
-// 
+//
 //             Meta::PlaylistList playlists = dragList->playlists();
-// 
+//
 //             foreach( Meta::PlaylistPtr playlistPtr, playlists )
 //             {
 //                 Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( playlistPtr );
-// 
+//
 //                 if( playlist )
 //                     playlist->reparent( parentGroup );
 //             };
@@ -314,14 +332,14 @@ PlaylistBrowserNS::UserModel::editPlaylist( int id )
 // PlaylistBrowserNS::UserModel::createNewGroup()
 // {
 //     DEBUG_BLOCK
-// 
+//
 //     PlaylistGroup * group = new PlaylistGroup( i18n("New Group"), m_root );
 //     group->save();
 //     int id = group->id();
 //     delete group;
-// 
+//
 //     reloadFromDb();
-// 
+//
 //     int row = 0;
 //     foreach ( PlaylistGroupPtr childGroup, m_root->childGroups() ) {
 //         if ( childGroup->id() == id )
@@ -331,8 +349,8 @@ PlaylistBrowserNS::UserModel::editPlaylist( int id )
 //         }
 //         row++;
 //     }
-// 
-// } 
+//
+// }
 
 // void
 // PlaylistBrowserNS::UserModel::createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack )

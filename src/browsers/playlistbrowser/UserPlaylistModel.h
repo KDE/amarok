@@ -29,10 +29,10 @@
 // #include "meta/PlaylistGroup.h"
 
 // class SqlPlaylistGroup;
-// 
+//
 // class SqlPlaylistViewItem;
 // typedef KSharedPtr<SqlPlaylistViewItem> SqlPlaylistViewItemPtr;
-// 
+//
 // class SqlPlaylistGroup;
 // typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
 // typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
@@ -81,12 +81,14 @@ class UserModel : public QAbstractItemModel
 //         QModelIndex createIndex( int, int, quint32 ) const { Q_ASSERT( 0 ); return QModelIndex(); }
     public slots:
 //         void createNewGroup();
+        void slotUpdate();
 
     signals:
         void editIndex( const QModelIndex & index );
 
     private:
         UserModel();
+        void loadPlaylists();
 
         static UserModel * s_instance;
 
