@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef METASQLPLAYLIST_H
 #define METASQLPLAYLIST_H
 
@@ -39,7 +39,7 @@ typedef QList<SqlPlaylistPtr> SqlPlaylistList;
 /**
     A playlist that saves and loads itself from the Amarok database
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class SqlPlaylist : public Playlist
 {
@@ -54,7 +54,8 @@ class SqlPlaylist : public Playlist
 
         /* Playlist virtual functions */
         virtual QString name() const { return m_name; }
-        QString prettyName() const { return m_name; }
+        virtual QString prettyName() const { return m_name; }
+        virtual void setName( const QString &name ) { m_name = name; }
         virtual QString description() const { return m_description; }
         virtual void rename( const QString &name );
 

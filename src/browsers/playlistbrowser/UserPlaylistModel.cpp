@@ -104,7 +104,6 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     return QVariant();
 }
 
-
 /*
 QModelIndex
 PlaylistBrowserNS::UserModel::createIndex( int row, int column, PlaylistViewItemPtr item ) const
@@ -166,7 +165,6 @@ PlaylistBrowserNS::UserModel::columnCount(const QModelIndex & /*parent*/) const
     return 1;
 }
 
-
 Qt::ItemFlags
 PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
 {
@@ -191,19 +189,23 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
     return QVariant();
 }
 
-bool PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool
+PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
+    DEBUG_BLOCK
     if (role != Qt::EditRole)
         return false;
     if ( index.column() != 0 )
         return false;
 
+    debug() << "setting name of item " << index.internalId() << " to " << value.toString();
     Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
 
     item->setName( value.toString() );
 
+    //call update reload playlists and emit signals
+    slotUpdate();
     return true;
-
 }
 
 QStringList
@@ -248,7 +250,6 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indexes ) const
 
     return mime;
 }
-
 
 bool
 PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented

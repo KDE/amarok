@@ -61,7 +61,7 @@ namespace Meta
             virtual QString prettyName() const = 0;
 
             /**override showing just the filename */
-            void setName( QString name ) { m_name = name; }
+            virtual void setName( const QString &name ) { m_name = name; }
 
             /** returns all tracks in this playlist */
             virtual TrackList tracks() = 0;
