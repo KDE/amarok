@@ -22,6 +22,7 @@
 
 #include "meta/Meta.h"
 #include "meta/PlaylistGroup.h"
+#include "meta/SqlPlaylist.h"
 
 #include <QString>
 #include <QStringList>
@@ -41,8 +42,10 @@ namespace Meta
     class SqlPlaylistGroup : public PlaylistGroup
     {
         public:
-            SqlPlaylistGroup( const QStringList &dbResultRow );
-            SqlPlaylistGroup( const QString &name );
+            SqlPlaylistGroup( const QStringList &dbResultRow,
+                    Meta::SqlPlaylistGroupPtr parent );
+            SqlPlaylistGroup( const QString &name,
+                    Meta::SqlPlaylistGroupPtr parent );
 
             ~SqlPlaylistGroup();
 
@@ -51,7 +54,9 @@ namespace Meta
             QString description() const { return m_description; }
 
             virtual Meta::PlaylistGroupPtr parent() const { return
-                    Meta::PlaylistGroupPtr::staticCast(m_parent); }
+                    Meta::PlaylistGroupPtr::staticCast( m_parent ); }
+            virtual Meta::PlaylistGroupList childGroups() const;
+            virtual Meta::PlaylistList childPlaylists() const;
 
             virtual void setName( const QString &name );
             virtual void setParent( Meta::PlaylistGroupPtr parent );
@@ -59,16 +64,24 @@ namespace Meta
 
             /* SqlPlaylistGroup specific functions */
             int id() const { return m_dbId; }
-            int parentId() const { return m_parentId; }
             void save();
             void removeFromDb();
+            void clear();
+            Meta::SqlPlaylistGroupList allChildGroups() const;
+            Meta::SqlPlaylistList allChildPlaylists() const;
 
         private:
+            Meta::SqlPlaylistGroupList childSqlGroups() const;
+            Meta::SqlPlaylistList childSqlPlaylists() const;
+
             int m_dbId;
-            int m_parentId;
-            Meta::SqlPlaylistGroupPtr m_parent;
+            mutable bool m_hasFetchedChildGroups;
+            mutable bool m_hasFetchedChildPlaylists;
+            mutable Meta::SqlPlaylistGroupList m_childGroups;
+            mutable Meta::SqlPlaylistList m_childPlaylists;
             QString m_name;
             QString m_description;
+            Meta::SqlPlaylistGroupPtr m_parent;
     };
 }
 

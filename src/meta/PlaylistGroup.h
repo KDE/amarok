@@ -49,6 +49,8 @@ namespace Meta
             virtual QString description() const = 0;
 
             virtual Meta::PlaylistGroupPtr parent() const = 0;
+            virtual Meta::PlaylistGroupList childGroups() const = 0;
+            virtual Meta::PlaylistList childPlaylists() const = 0;
 
             virtual void setName( const QString &name ) = 0;
             virtual void setDescription( const QString &description ) = 0;

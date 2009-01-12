@@ -35,22 +35,23 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
 {
     checkTables();
-    loadFromDb();
+    m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "root",
+            Meta::SqlPlaylistGroupPtr() ) );
 }
 
 SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
 {
-    foreach( Meta::SqlPlaylistPtr playlist, m_playlists )
-    {
-        playlist->saveToDb( true );
-    }
+//     foreach( Meta::SqlPlaylistPtr playlist, m_playlists )
+//     {
+//         playlist->saveToDb( true );
+//     }
 }
 
 Meta::PlaylistList
 SqlUserPlaylistProvider::playlists()
 {
     Meta::PlaylistList playlists;
-    foreach( Meta::SqlPlaylistPtr sqlPlaylist, m_playlists )
+    foreach( Meta::SqlPlaylistPtr sqlPlaylist, m_root->allChildPlaylists() )
     {
         playlists << Meta::PlaylistPtr::staticCast( sqlPlaylist );
     }
@@ -61,7 +62,7 @@ Meta::PlaylistGroupList
 SqlUserPlaylistProvider::groups()
 {
     Meta::PlaylistGroupList groups;
-    foreach( Meta::SqlPlaylistGroupPtr sqlGroup, m_groups )
+    foreach( Meta::SqlPlaylistGroupPtr sqlGroup, m_root->allChildGroups() )
     {
         groups << Meta::PlaylistGroupPtr::staticCast( sqlGroup );
     }
@@ -72,11 +73,21 @@ bool
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
+    //TODO: ask for name and folder to save in
     debug() << "saving " << tracks.count() << " tracks to db";
-    m_playlists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( "new playlist", tracks ) );
+    Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( "new playlist", tracks,
+            Meta::SqlPlaylistGroupPtr() ) );
+    reloadFromDb();
     emit updated();
 
     return true; //assume insertion in db was successful
+}
+
+void
+SqlUserPlaylistProvider::reloadFromDb()
+{
+    DEBUG_BLOCK;
+    m_root->clear();
 }
 
 void
@@ -162,65 +173,6 @@ SqlUserPlaylistProvider::checkTables()
             sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
         }
     }
-}
-
-void
-SqlUserPlaylistProvider::loadFromDb()
-{
-    DEBUG_BLOCK;
-    QString query = "SELECT id, parent_id, name, description, urlid FROM playlists ORDER BY name;";
-
-    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
-
-    int resultRows = result.count() / 5;
-
-    for( int i = 0; i < resultRows; i++ )
-    {
-        QStringList row = result.mid( i*5, 5 );
-        m_playlists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( row ) );
-    }
-
-    loadGroups();
-}
-
-void
-SqlUserPlaylistProvider::loadGroups()
-{
-    m_groups.clear();
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    QString command = "SELECT id, parent_id, name, description FROM playlist_groups where id=%1 ORDER BY name;";
-
-    QMap<int, Meta::SqlPlaylistGroupPtr> groupMap;
-    foreach( Meta::SqlPlaylistPtr playlist, m_playlists )
-    {
-        debug() << "Playlist " << playlist->name();
-        int groupId = playlist->parentId();
-        if( (groupId != -1) && !groupMap.contains( groupId ) )
-        {
-            debug() << "loading group " << groupId;
-            groupMap[groupId] = Meta::SqlPlaylistGroupPtr(
-                    new Meta::SqlPlaylistGroup(
-                            sqlStorage->query( command.arg( groupId ) )
-                    )
-            );
-        }
-    }
-    m_groups = groupMap.values();
-    foreach( Meta::SqlPlaylistGroupPtr group, m_groups )
-    {
-        debug() << "group " << group->name();
-        int groupId = group->parentId();
-        if( (groupId != -1) && !groupMap.contains( groupId ) )
-        {
-            debug() << "loading group " << groupId;
-            groupMap[groupId] = Meta::SqlPlaylistGroupPtr(
-                    new Meta::SqlPlaylistGroup(
-                            sqlStorage->query( command.arg( groupId ) )
-                    )
-            );
-        }
-    }
-    m_groups = groupMap.values();
 }
 
 #include "SqlUserPlaylistProvider.moc"

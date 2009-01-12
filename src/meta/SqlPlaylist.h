@@ -20,20 +20,18 @@
 #ifndef METASQLPLAYLIST_H
 #define METASQLPLAYLIST_H
 
-
-
 #include "Playlist.h"
-// #include "SqlPlaylistGoup.h"
-#include <browsers/playlistbrowser/SqlPlaylistViewItem.h>
-
+#include "PlaylistGroup.h"
 
 namespace Meta
 {
-
 class SqlPlaylist;
-
 typedef KSharedPtr<SqlPlaylist> SqlPlaylistPtr;
 typedef QList<SqlPlaylistPtr> SqlPlaylistList;
+
+class SqlPlaylistGroup;
+typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
 /**
     A playlist that saves and loads itself from the Amarok database
@@ -44,24 +42,24 @@ class SqlPlaylist : public Playlist
 {
     public:
         //SqlPlaylist( int id );
-        SqlPlaylist( const QString &name, const TrackList &tracks, /*SqlPlaylistGroupPtr parent,*/ const QString &urlId = QString() );
+        SqlPlaylist( const QString &name, const TrackList &tracks,
+                SqlPlaylistGroupPtr parent, const QString &urlId = QString() );
         SqlPlaylist( const QStringList & resultRow/*, SqlPlaylistGroupPtr parent*/ );
 
         ~SqlPlaylist();
 
         bool saveToDb( bool tracks = true );
+        QString description() const { return m_description; }
+        QString setDescription( const QString &description ) { m_description = description; }
 
         /* Playlist virtual functions */
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
-        virtual void setName( const QString &name ) { m_name = name; }
-        virtual QString description() const { return m_description; }
-        virtual void rename( const QString &name );
+        virtual void setName( const QString &name );
 
-//         void setParent( Meta::PlaylistGroupPtr parent );
+        void setParent( Meta::PlaylistGroupPtr parent );
 
         int id();
-        int parentId() { return m_parentId; }
 
         /** returns all tracks in this playlist */
         virtual TrackList tracks();
@@ -69,7 +67,7 @@ class SqlPlaylist : public Playlist
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
         Capability* asCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-//         virtual Meta::PlaylistGroupPtr parent() const { return m_parent; }
+//         virtual Meta::PlaylistGroupPtr parent() const;
 
         virtual void removeFromDb();
 
@@ -80,7 +78,7 @@ class SqlPlaylist : public Playlist
         void saveTracks();
 
         int m_dbId;
-        int m_parentId;
+        Meta::SqlPlaylistGroupPtr m_parent;
         Meta::TrackList m_tracks;
         QString m_name;
         QString m_description;

@@ -23,22 +23,20 @@
 #include "Debug.h"
 #include "meta/stream/Stream.h"
 #include "SqlStorage.h"
-
-// #include "SqlPlaylistGroup.h"
+#include "playlistmanager/sql/SqlPlaylistGroup.h"
 
 #include <typeinfo>
 
-Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList &tracks, /*SqlPlaylistGroupPtr parent,*/ const QString &urlId )
+Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
+        &tracks, SqlPlaylistGroupPtr parent, const QString &urlId )
     : Meta::Playlist()
     , m_dbId( -1 )
-//     , m_parent( parent )
-    , m_parentId( -1 )
+    , m_parent( parent )
     , m_tracks( tracks )
     , m_name( name )
     , m_description( QString() )
     , m_urlId( urlId )
     , m_tracksLoaded( true )
-
 {
     saveToDb();
 }
@@ -49,7 +47,6 @@ Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow/*, SqlPlaylistGrou
     , m_tracksLoaded( false )
 {
     m_dbId = resultRow[0].toInt();
-    m_parentId = resultRow[1].toInt();
     m_name = resultRow[2];
     m_description = resultRow[3];
     m_urlId = resultRow[4];
@@ -216,7 +213,7 @@ Meta::SqlPlaylist::loadTracks()
 
 
 void
-Meta::SqlPlaylist::rename(const QString & name)
+Meta::SqlPlaylist::setName( const QString & name )
 {
     m_name = name;
     saveToDb( false ); //no need to resave all tracks

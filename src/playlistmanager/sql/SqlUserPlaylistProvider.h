@@ -45,10 +45,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void updated();
 
     private:
-        void loadGroups();
-
-        Meta::SqlPlaylistList m_playlists;
-        Meta::SqlPlaylistGroupList m_groups;
+        void reloadFromDb();
+        Meta::SqlPlaylistGroupPtr m_root;
 
         void createTables();
         void deleteTables();
