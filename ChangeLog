@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Replay Gain support, currently only for Ogg Vorbis and FLAC files.
     * Amarok urls. Amarok can now load and generate "amarok urls" that allows
       any "view" to be bookmarked and later retrieved. A protocol handler is
       also installed that will launch amarok into the correct state, or make 
