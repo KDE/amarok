@@ -49,7 +49,7 @@ namespace Meta
             virtual QString name() const = 0;
             virtual QString description() const = 0;
 
-            virtual int childCount() const;
+            virtual int childCount() const = 0;
 
             virtual PlaylistGroupPtr parent() const = 0;
 
@@ -60,13 +60,13 @@ namespace Meta
 
             virtual void reparent( PlaylistGroupPtr parent ) = 0;
 
-            virtual void clear();
+            virtual void clear() = 0;
 
-            virtual void addChildPlaylist( Meta::PlaylistPtr playlist );
-            virtual void removeChildPlaylist( Meta::PlaylistPtr playlist );
+            virtual void addChildPlaylist( Meta::PlaylistPtr playlist ) = 0;
+            virtual void removeChildPlaylist( Meta::PlaylistPtr playlist ) = 0;
 
-            virtual void addChildGroup( Meta::PlaylistGroup group );
-            virtual void removeChildGroup( Meta::PlaylistGroup group );
+            virtual void addChildGroup( Meta::PlaylistGroup group ) = 0;
+            virtual void removeChildGroup( Meta::PlaylistGroup group ) = 0;
     };
 }
 

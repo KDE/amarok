@@ -20,12 +20,8 @@
 #ifndef SQLPLAYLISTGROUP_H
 #define SQLPLAYLISTGROUP_H
 
-
-
 #include "meta/Meta.h"
-#include "SqlPlaylistViewItem.h"
 #include "meta/SqlPlaylist.h"
-
 
 #include <QString>
 #include <QStringList>
@@ -43,7 +39,7 @@ namespace Meta
 
         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
     */
-    class SqlPlaylistGroup : public SqlPlaylistViewItem
+    class SqlPlaylistGroup : public PlaylistGroup
     {
         public:
 
@@ -62,28 +58,27 @@ namespace Meta
 
             virtual void rename( const QString &name );
 
-            SqlPlaylistGroupList childGroups() const;
-            Meta::SqlPlaylistList childPlaylists() const;
+            virtual SqlPlaylistGroupList childGroups() const;
+            virtual Meta::SqlPlaylistList childPlaylists() const;
 
-            void reparent( SqlPlaylistGroupPtr parent );
+            virtual void reparent( PlaylistGroupPtr parent );
 
-            void clear();
+            virtual void clear();
 
             virtual void addChildPlaylist( Meta::PlaylistPtr playlist );
             virtual void removeChildPlaylist( Meta::PlaylistPtr playlist );
 
             virtual void addChildGroup( Meta::PlaylistGroup group );
             virtual void removeChildGroup( Meta::PlaylistGroup group );
-            
+
             /* SqlPlaylistGroup specific functions */
             int id() const;
             void save();
 
             void deleteChild( SqlPlaylistViewItemPtr item );
-            virtual void removeFromDb();
+            void removeFromDb();
 
         private:
-
             int m_dbId;
             SqlPlaylistGroupPtr m_parent;
             QString m_name;

@@ -290,7 +290,6 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/UserPlaylistModel.cpp
     browsers/playlistbrowser/UserPlaylistTreeView.cpp
     browsers/playlistbrowser/PlaylistCategory.cpp
-#     browsers/playlistbrowser/SqlPlaylistGroup.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
 )
@@ -310,6 +309,7 @@ set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
     playlistmanager/PlaylistFileProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
+    #playlistmanager/sql/SqlPlaylistGroup.cpp
 )
 
 #####################################################################

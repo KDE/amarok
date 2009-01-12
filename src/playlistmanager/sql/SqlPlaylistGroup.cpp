@@ -1,6 +1,5 @@
 /***************************************************************************
  *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *   Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,19 +17,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "PlaylistGroup.h"
+#include "SqlPlaylistGroup.h"
 
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "meta/Playlist.h"
+#include "meta/SqlPlaylist.h"
 #include "SqlStorage.h"
 
 #include <typeinfo>
 
-Meta::PlaylistGroup::PlaylistGroup( const QStringList & dbResultRow, PlaylistGroupPtr parent )
-    : PlaylistViewItem()
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, SqlPlaylistGroupPtr parent )
+    : SqlPlaylistViewItem()
     , m_parent( parent )
-    ,  m_hasFetchedChildGroups( false )
+    , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
 {
     m_dbId = dbResultRow[0].toInt();
@@ -39,8 +38,8 @@ Meta::PlaylistGroup::PlaylistGroup( const QStringList & dbResultRow, PlaylistGro
 
 }
 
-Meta::PlaylistGroup::PlaylistGroup( const QString & name, PlaylistGroupPtr parent )
-    : PlaylistViewItem()
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, SqlPlaylistGroupPtr parent )
+    : SqlPlaylistViewItem()
     , m_dbId( -1 )
     , m_parent( parent )
     , m_name( name )
@@ -56,7 +55,7 @@ Meta::PlaylistGroup::PlaylistGroup( const QString & name, PlaylistGroupPtr paren
 }
 
 
-Meta::PlaylistGroup::~PlaylistGroup()
+Meta::SqlPlaylistGroup::~SqlPlaylistGroup()
 {
     //DEBUG_BLOCK
     //debug() << "deleting " << m_name;
@@ -64,7 +63,7 @@ Meta::PlaylistGroup::~PlaylistGroup()
 }
 
 void
-Meta::PlaylistGroup::save()
+Meta::SqlPlaylistGroup::save()
 {
     int parentId = 0;
     if ( m_parent )
@@ -87,8 +86,8 @@ Meta::PlaylistGroup::save()
 
 }
 
-Meta::PlaylistGroupList
-Meta::PlaylistGroup::childGroups() const
+SqlPlaylistGroupList
+Meta::SqlPlaylistGroup::childGroups() const
 {
     //DEBUG_BLOCK
     if ( !m_hasFetchedChildGroups ) {
@@ -103,8 +102,8 @@ Meta::PlaylistGroup::childGroups() const
         for( int i = 0; i < resultRows; i++ )
         {
             QStringList row = result.mid( i*4, 4 );
-            PlaylistGroup* mutableThis = const_cast<PlaylistGroup*>( this );
-            m_childGroups << PlaylistGroupPtr( new PlaylistGroup( row, PlaylistGroupPtr( mutableThis ) ) );
+            SqlPlaylistGroup* mutableThis = const_cast<SqlPlaylistGroup*>( this );
+            m_childGroups << SqlPlaylistGroupPtr( new SqlPlaylistGroup( row, SqlPlaylistGroupPtr( mutableThis ) ) );
         }
 
         m_hasFetchedChildGroups = true;
@@ -114,8 +113,8 @@ Meta::PlaylistGroup::childGroups() const
     return m_childGroups;
 }
 
-Meta::PlaylistList
-Meta::PlaylistGroup::childPlaylists() const
+Meta::SqlPlaylistList
+Meta::SqlPlaylistGroup::childPlaylists() const
 {
     //DEBUG_BLOCK
     //debug() << "my name: " << m_name << " my pointer: " << this;
@@ -130,31 +129,41 @@ Meta::PlaylistGroup::childPlaylists() const
         for( int i = 0; i < resultRows; i++ )
         {
             QStringList row = result.mid( i*5, 5 );
-            PlaylistGroup* mutableThis = const_cast<PlaylistGroup*>( this );
-            m_childPlaylists << Meta::PlaylistPtr( new Meta::Playlist( row, PlaylistGroupPtr( mutableThis ) ) );
+            SqlPlaylistGroup* mutableThis = const_cast<SqlPlaylistGroup*>( this );
+            m_childPlaylists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( row, SqlPlaylistGroupPtr( mutableThis ) ) );
         }
         m_hasFetchedChildPlaylists = true;
     }
     return m_childPlaylists;
 }
 
-QString PlaylistGroup::name() const
+int
+Meta::SqlPlaylistGroup::id() const
+{
+    return m_dbId;
+}
+
+QString
+Meta::SqlPlaylistGroup::name() const
 {
     return m_name;
 }
 
-QString PlaylistGroup::description() const
+QString
+Meta::SqlPlaylistGroup::description() const
 {
     return m_description;
 }
 
-int PlaylistGroup::childCount() const
+int
+Meta::SqlPlaylistGroup::childCount() const
 {
     //DEBUG_BLOCK
     return childGroups().count() + childPlaylists().count();
 }
 
-void PlaylistGroup::clear()
+void
+Meta::SqlPlaylistGroup::clear()
 {
     //DEBUG_BLOCK
 //m_childPlaylists, m_childGroups are KSharedPtrs, so we should be able to just clear the list
@@ -168,33 +177,36 @@ void PlaylistGroup::clear()
 
 
 
-void PlaylistGroup::rename(const QString & name)
+void
+Meta::SqlPlaylistGroup::rename(const QString & name)
 {
     m_name = name;
     save();
 }
 
-void PlaylistGroup::deleteChild( PlaylistViewItemPtr item )
+void
+Meta::SqlPlaylistGroup::deleteChild( SqlPlaylistViewItemPtr item )
 {
-    if ( typeid( * item ) == typeid( PlaylistGroup ) )
+    if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )
     {
-        PlaylistGroupPtr group = PlaylistGroupPtr::staticCast( item );
+        SqlPlaylistGroupPtr group = SqlPlaylistGroupPtr::staticCast( item );
         m_childGroups.removeAll( group );
     }
-    else if ( typeid( * item ) == typeid( Meta::Playlist ) )
+    else if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
     {
-        Meta::PlaylistPtr playlist = Meta::PlaylistPtr::staticCast( item );
+        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
         m_childPlaylists.removeAll( playlist );
     }
 }
 
-void PlaylistGroup::removeFromDb()
+void
+Meta::SqlPlaylistGroup::removeFromDb()
 {
     //DEBUG_BLOCK
 
-    foreach( PlaylistGroupPtr group, m_childGroups )
+    foreach( SqlPlaylistGroupPtr group, m_childGroups )
         group->removeFromDb();
-    foreach( Meta::PlaylistPtr playlist, m_childPlaylists )
+    foreach( Meta::SqlPlaylistPtr playlist, m_childPlaylists )
         playlist->removeFromDb();
 
     QString query = "DELETE FROM playlist_groups where id=%1;";
@@ -202,7 +214,8 @@ void PlaylistGroup::removeFromDb()
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 }
 
-void PlaylistGroup::reparent( PlaylistGroupPtr parent )
+void
+Meta::SqlPlaylistGroup::reparent( SqlPlaylistGroupPtr parent )
 {
     m_parent = parent;
     save();

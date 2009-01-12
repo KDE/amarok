@@ -20,6 +20,7 @@
 
 #include "playlistmanager/UserPlaylistProvider.h"
 #include "meta/SqlPlaylist.h"
+// #include "SqlPlaylistGroup.h"
 
 #include <klocale.h>
 
@@ -43,12 +44,13 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void updated();
 
     private:
+//         Meta::SqlPlaylistGroupPtr m_root;
         Meta::SqlPlaylistList m_playlists;
 
         void createTables();
         void deleteTables();
         void checkTables();
-        void reloadFromDb();
+        void loadFromDb();
 };
 
 #endif

@@ -33,6 +33,9 @@ static const QString key("AMAROK_USERPLAYLIST");
 SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
 {
+    checkTables();
+//     m_root = SqlPlaylistGroupPtr( new SqlPlaylistGroup( "root", SqlPlaylistGroupPtr() ) );
+    loadFromDb();
 }
 
 SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
@@ -142,11 +145,23 @@ SqlUserPlaylistProvider::checkTables()
 }
 
 void
-SqlUserPlaylistProvider::reloadFromDb()
+SqlUserPlaylistProvider::loadFromDb()
 {
     DEBUG_BLOCK;
-//     reset();
-//     m_root->clear();
+//     QString query = "SELECT id, parent_id, name, description, urlid FROM playlists WHERE parent_id=%1 ORDER BY name;";
+    QString query = "SELECT id, parent_id, name, description, urlid FROM playlists ORDER BY name;";
+
+//     query = query.arg( QString::number( -1 ) );
+    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
+
+    //debug() << "Result: " << result;
+    int resultRows = result.count() / 5;
+
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*5, 5 );
+        m_playlists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( row ) );
+    }
 }
 
 #include "SqlUserPlaylistProvider.moc"
