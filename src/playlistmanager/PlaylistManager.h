@@ -22,6 +22,7 @@
 #include "amarok_export.h"
 #include "plugin/plugin.h"
 #include "meta/Playlist.h"
+#include "meta/PlaylistGroup.h"
 
 #include <QMultiMap>
 #include <QList>
@@ -179,6 +180,7 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
         virtual int category() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;
+        virtual Meta::PlaylistGroupList groups() = 0;
 
     signals:
         virtual void updated();

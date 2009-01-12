@@ -46,6 +46,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode ) = 0;
 
         virtual Meta::PodcastChannelList channels()= 0;
+        virtual Meta::PlaylistGroupList groups() = 0;
 
         virtual void removeSubscription( Meta::PodcastChannelPtr channel ) = 0;
 

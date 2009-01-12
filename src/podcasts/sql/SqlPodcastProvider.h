@@ -47,6 +47,7 @@ class SqlPodcastProvider : public PodcastProvider
         int category() const { return (int)PlaylistManager::PodcastChannel; };
 
         Meta::PlaylistList playlists();
+        Meta::PlaylistGroupList groups();
 
         //PodcastProvider methods
         void addPodcast( const KUrl &url );

@@ -37,6 +37,7 @@ class PlaylistFileProvider : public PlaylistProvider
         int category() const { return PlaylistManager::UserPlaylist; };
 
         Meta::PlaylistList playlists();
+        Meta::PlaylistGroupList groups() { return Meta::PlaylistGroupList(); }
 
     private:
         Meta::PlaylistList m_playlists;

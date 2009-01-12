@@ -24,7 +24,6 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "SqlStorage.h"
-
 #include <KUrl>
 
 static const int USERPLAYLIST_DB_VERSION = 2;
@@ -54,6 +53,17 @@ SqlUserPlaylistProvider::playlists()
         playlists << Meta::PlaylistPtr::staticCast( sqlPlaylist );
     }
     return playlists;
+}
+
+Meta::PlaylistGroupList
+SqlUserPlaylistProvider::groups()
+{
+    Meta::PlaylistGroupList groups;
+    foreach( Meta::SqlPlaylistGroupPtr sqlGroup, m_groups )
+    {
+        groups << Meta::PlaylistGroupPtr::staticCast( sqlGroup );
+    }
+    return groups;
 }
 
 bool

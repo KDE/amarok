@@ -20,7 +20,7 @@
 
 #include "playlistmanager/UserPlaylistProvider.h"
 #include "meta/SqlPlaylist.h"
-// #include "SqlPlaylistGroup.h"
+#include "SqlPlaylistGroup.h"
 
 #include <klocale.h>
 
@@ -36,6 +36,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         /* UserPlaylistProvider functions */
         virtual Meta::PlaylistList playlists();
+        virtual Meta::PlaylistGroupList groups();
 
         virtual bool canSavePlaylists() { return true; };
         virtual bool save( const Meta::TrackList &tracks );
@@ -46,6 +47,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
     private:
 //         Meta::SqlPlaylistGroupPtr m_root;
         Meta::SqlPlaylistList m_playlists;
+        Meta::SqlPlaylistGroupList m_groups;
 
         void createTables();
         void deleteTables();

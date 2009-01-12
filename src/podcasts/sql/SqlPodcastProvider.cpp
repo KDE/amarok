@@ -25,6 +25,7 @@
 #include "PodcastReader.h"
 #include "PodcastSettingsDialog.h"
 #include "SqlStorage.h"
+#include "playlistmanager/sql/SqlPlaylistGroup.h"
 
 #include <KLocale>
 #include <KIO/CopyJob>
@@ -45,7 +46,7 @@ SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
-    
+
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
@@ -74,7 +75,7 @@ SqlPodcastProvider::SqlPodcastProvider()
             float interval = 1.0;
             m_updateTimer->start( interval * 1000 * 60 * 30 );
         }
-            
+
     }
 }
 
@@ -137,6 +138,12 @@ SqlPodcastProvider::playlists()
         playlistList << PlaylistPtr::staticCast( i.next() );
     }
     return playlistList;
+}
+
+Meta::PlaylistGroupList
+SqlPodcastProvider::groups()
+{
+    return Meta::PlaylistGroupList();
 }
 
 void
