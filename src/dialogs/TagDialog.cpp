@@ -142,7 +142,7 @@ TagDialog::resultReady( const QString &collectionId, const Meta::TrackList &trac
     m_tracks << tracks;
     foreach( Meta::TrackPtr d_track, tracks )
     {
-        if ( d_track )
+        if ( d_track && d_track->artist() )
             debug() << "Artist is: " << d_track->artist()->name();
     }
 }
