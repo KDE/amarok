@@ -30,9 +30,9 @@
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
-#include "meta/SqlPlaylist.h"
+// #include "meta/SqlPlaylist.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
-#include "browsers/playlistbrowser/SqlPlaylistGroup.h"
+// #include "browsers/playlistbrowser/SqlPlaylistGroup.h"
 
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
@@ -228,25 +228,25 @@ PlaylistManager::typeName( int playlistCategory )
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
 {
-    Meta::SqlPlaylist playlist( name, tracks, SqlPlaylistGroupPtr(), fromLocation );
-    const int newId = playlist.id();
-
-    if ( editNow )
-    {
-        //jolt the playlist browser model to reload so the newly added item is shown
-        //talk about over-coupling... :|
-        // That might be so, but it is needed when manually saving a list, otherwise
-        // the user will not know that anything has happend and will end up with
-        // 20 entries just named "playlist" in the view
-        PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
-
-        // NOTE this doesn't really make sense, especially when batch adding
-        //      during a collection scan ---lfranchi 9/5/08
-
-        The::mainWindow()->showBrowser( "PlaylistBrowser" );
-        emit( showCategory( UserPlaylist ) );
-        PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
-    }
+//     Meta::SqlPlaylist playlist( name, tracks, SqlPlaylistGroupPtr(), fromLocation );
+//     const int newId = playlist.id();
+//
+//     if ( editNow )
+//     {
+//         //jolt the playlist browser model to reload so the newly added item is shown
+//         //talk about over-coupling... :|
+//         // That might be so, but it is needed when manually saving a list, otherwise
+//         // the user will not know that anything has happend and will end up with
+//         // 20 entries just named "playlist" in the view
+//         PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
+//
+//         // NOTE this doesn't really make sense, especially when batch adding
+//         //      during a collection scan ---lfranchi 9/5/08
+//
+//         The::mainWindow()->showBrowser( "PlaylistBrowser" );
+//         emit( showCategory( UserPlaylist - 1 ) );
+//         PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
+//     }
 
     return true; //FIXME what's this supposed to return?
 }
@@ -336,7 +336,7 @@ PlaylistManager::canExpand( Meta::TrackPtr track )
 {
     if( !track )
         return false;
-        
+
     return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
 }
 

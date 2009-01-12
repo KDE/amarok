@@ -5,12 +5,12 @@ if(MP4V2_FOUND)
     include_directories( ${MP4V2_INCLUDE_DIR} )
         endif(MP4V2_FOUND)
 
-if(APPLE)	
-    set(mac_SRCS 
-		app_mac.cpp 
-		mac/GrowlInterface.cpp 
+if(APPLE)
+    set(mac_SRCS
+		app_mac.cpp
+		mac/GrowlInterface.cpp
 		)
-		
+
 		include_directories ( services/lastfm/
 							  mac/Growl-WithInstaller.framework/Headers )
 		set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
@@ -123,7 +123,7 @@ set(libamarokurl_SRCS
     amarokurls/BookmarkTreeView.cpp
     amarokurls/BookmarkMetaActions.cpp
 )
-        
+
 #####################################################################
 # SCRIPTABLESERVICE
 #####################################################################
@@ -289,7 +289,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/UserPlaylistModel.cpp
     browsers/playlistbrowser/UserPlaylistTreeView.cpp
     browsers/playlistbrowser/PlaylistCategory.cpp
-    browsers/playlistbrowser/SqlPlaylistGroup.cpp
+#     browsers/playlistbrowser/SqlPlaylistGroup.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
 )

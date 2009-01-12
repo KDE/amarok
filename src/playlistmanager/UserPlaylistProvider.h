@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Bart Cerneels <bart.cerneels@kde.org>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,72 +18,21 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef PLAYLISTCATEGORY_H
-#define PLAYLISTCATEGORY_H
+#ifndef USERPLAYLISTPROVIDER_H
+#define USERPLAYLISTPROVIDER_H
 
-// #include "SqlPlaylistViewItem.h"
-#include "UserPlaylistTreeView.h"
-#include "widgets/Widget.h"
-
-#include <KDialog>
-
-#include <QModelIndex>
-#include <QPoint>
-
-
-
-class QToolBar;
-class QTreeView;
-
-class KAction;
-class KLineEdit;
-
-namespace PlaylistBrowserNS {
+#include "meta/Playlist.h"
 
 /**
-The widget that displays playlists in the playlist browser
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PlaylistCategory : public Amarok::Widget
+class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 {
-Q_OBJECT
-public:
-    PlaylistCategory( QWidget * parent );
+    virtual UserPlaylistProvider();
 
-    ~PlaylistCategory();
+    virtual Meta::PlaylistList playlists();
 
-private slots:
-    
-//     void showAddStreamDialog();
-//     void streamDialogConfirmed();
-    void newPalette( const QPalette & palette );
-
-private:
-
-    QToolBar * m_toolBar;
-    UserPlaylistTreeView * m_playlistView;
-
-    KAction * m_addGroupAction;
-
-
-};
-
-class StreamEditor : public KDialog
-{
-    Q_OBJECT
-    public:
-        StreamEditor( QWidget* parent );
-        QString streamName();
-        QString streamUrl();
-    private slots:
-        void slotTextChanged( const QString & );
-    private:
-        QWidget   *m_mainWidget;
-        KLineEdit *m_streamName;
-        KLineEdit *m_streamUrl;
-};
-
+    virtual save( const Meta::TrackList &tracks );
 }
 
 #endif

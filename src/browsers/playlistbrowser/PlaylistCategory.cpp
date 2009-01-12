@@ -23,8 +23,8 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
-#include "SqlPlaylist.h"
-#include "SqlPlaylistGroup.h"
+// #include "SqlPlaylist.h"
+// #include "SqlPlaylistGroup.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
@@ -82,9 +82,9 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setNewGroupAction( m_addGroupAction );
 
-    KAction* addStreamAction = new KAction( KIcon("list-add"), i18n("Add Stream"), this );
-    m_toolBar->addAction( addStreamAction );
-    connect( addStreamAction, SIGNAL( triggered( bool ) ), this, SLOT( showAddStreamDialog() ) );
+//     KAction* addStreamAction = new KAction( KIcon("list-add"), i18n("Add Stream"), this );
+//     m_toolBar->addAction( addStreamAction );
+//     connect( addStreamAction, SIGNAL( triggered( bool ) ), this, SLOT( showAddStreamDialog() ) );
 }
 
 
@@ -92,14 +92,14 @@ PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
 {
 }
 
-
+/*
 void
 PlaylistBrowserNS::PlaylistCategory::showAddStreamDialog()
 {
     KDialog *dialog = new PlaylistBrowserNS::StreamEditor( this );
     connect( dialog, SIGNAL( okClicked() ), this, SLOT( streamDialogConfirmed() ) );
-}
-
+}*/
+/*
 void
 PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
 {
@@ -116,6 +116,7 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
         The::statusBar()->longMessage( i18n("The stream URL provided was not valid.") );
     }
 }
+*/
 
 PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
     : KDialog( parent )

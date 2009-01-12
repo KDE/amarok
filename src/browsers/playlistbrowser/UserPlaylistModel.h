@@ -25,15 +25,17 @@
 #include <QVariant>
 
 #include "Meta.h"
+#include "meta/Playlist.h"
+// #include "meta/PlaylistGroup.h"
 
-class SqlPlaylistGroup;
-
-class SqlPlaylistViewItem;
-typedef KSharedPtr<SqlPlaylistViewItem> SqlPlaylistViewItemPtr;
-
-class SqlPlaylistGroup;
-typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
-typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
+// class SqlPlaylistGroup;
+// 
+// class SqlPlaylistViewItem;
+// typedef KSharedPtr<SqlPlaylistViewItem> SqlPlaylistViewItemPtr;
+// 
+// class SqlPlaylistGroup;
+// typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+// typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
 
 #define PLAYLIST_DB_VERSION 1
@@ -72,13 +74,13 @@ class UserModel : public QAbstractItemModel
 
         void reloadFromDb();
         void editPlaylist( int id );
-        void createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack );
-        QModelIndex createIndex( int row, int column, SqlPlaylistViewItemPtr item ) const;
+//         void createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack );
+//         QModelIndex createIndex( int row, int column, SqlPlaylistViewItemPtr item ) const;
         //only use the above method
-        QModelIndex createIndex( int, int, void * ptr = 0) const { Q_UNUSED( ptr ); Q_ASSERT( 0 );  return QModelIndex(); }
-        QModelIndex createIndex( int, int, quint32 ) const { Q_ASSERT( 0 ); return QModelIndex(); }
+//         QModelIndex createIndex( int, int, void * ptr = 0) const { Q_UNUSED( ptr ); Q_ASSERT( 0 );  return QModelIndex(); }
+//         QModelIndex createIndex( int, int, quint32 ) const { Q_ASSERT( 0 ); return QModelIndex(); }
     public slots:
-        void createNewGroup();
+//         void createNewGroup();
 
     signals:
         void editIndex( const QModelIndex & index );
@@ -86,14 +88,12 @@ class UserModel : public QAbstractItemModel
     private:
         UserModel();
 
-        void checkTables();
-        void createTables();
-        void deleteTables();
-
         static UserModel * s_instance;
 
-        SqlPlaylistGroupPtr m_root;
-        mutable QHash<quint32, SqlPlaylistViewItemPtr> m_viewItems; ///the hash of the pointer mapped to the KSharedPtr
+//         SqlPlaylistGroupPtr m_root;
+//        mutable QHash<quint32, SqlPlaylistViewItemPtr> m_viewItems; ///the hash of the pointer mapped to the KSharedPtr
+
+        Meta::PlaylistList m_playlists;
 
 };
 

@@ -19,13 +19,11 @@
  ***************************************************************************/
 
 #include "UserPlaylistModel.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include "AmarokMimeData.h"
 #include "Debug.h"
 #include "CollectionManager.h"
-#include "SqlStorage.h"
-#include "SqlPlaylist.h"
-#include "SqlPlaylistGroup.h"
 
 #include <KIcon>
 
@@ -50,9 +48,15 @@ PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
 PlaylistBrowserNS::UserModel::UserModel()
  : QAbstractItemModel()
 {
-    checkTables();
 
-    m_root = SqlPlaylistGroupPtr( new SqlPlaylistGroup( "root", SqlPlaylistGroupPtr() ) );
+//     m_root = PlaylistGroupPtr( new PlaylistGroup( "root", PlaylistGroupPtr() ) );
+    QList<Meta::PlaylistPtr> playlists =
+            The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
+    QListIterator<Meta::PlaylistPtr> i(playlists);
+    while (i.hasNext())
+        m_playlists << Meta::PlaylistPtr::staticCast( i.next() );
+
+    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()));
 }
 
 
@@ -67,26 +71,28 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     if ( !index.isValid() )
         return QVariant();
 
-    SqlPlaylistViewItemPtr item =  m_viewItems.value( index.internalId() );
+//     PlaylistViewItemPtr item =  m_viewItems.value( index.internalId() );
+    Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
 
     if ( role == 0xf00d )
         return QVariant::fromValue( item );
     else if ( role == Qt::DisplayRole || role == Qt::EditRole )
         return item->name();
-    else if (role == Qt::DecorationRole ) {
-
-        if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )
-            return QVariant( KIcon( "folder-amarok" ) );
-        else if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
-            return QVariant( KIcon( "x-media-podcast-amarok" ) );
+    else if (role == Qt::DecorationRole )
+    {
+//         if ( typeid( * item ) == typeid( PlaylistGroup ) )
+//             return QVariant( KIcon( "folder-amarok" ) );
+//         else if ( typeid( * item ) == typeid( Meta::Playlist ) )
+            return QVariant( KIcon( "amarok_playlist" ) );
     }
 
     return QVariant();
 }
 
 
+/*
 QModelIndex
-PlaylistBrowserNS::UserModel::createIndex( int row, int column, SqlPlaylistViewItemPtr item ) const
+PlaylistBrowserNS::UserModel::createIndex( int row, int column, PlaylistViewItemPtr item ) const
 {
     quint32 index = qHash( item.data() );
     bool debugIt = false;
@@ -99,91 +105,44 @@ PlaylistBrowserNS::UserModel::createIndex( int row, int column, SqlPlaylistViewI
 //        debug() << "created " << ret << " with " << ret.parent().internalId();
     return ret;
 }
+*/
 
 QModelIndex
 PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & parent) const
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
 
-    //debug() << "row: " << row << ", column: " <<column;
+    debug() << "row: " << row << ", column: " <<column;
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    if ( !parent.isValid() )
-    {
-
-        int noOfGroups = m_root->childGroups().count();
-        if ( row < noOfGroups )
-        {
-            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( m_root->childGroups().at( row ) ) );
-        }
-        else
-        {
-            //debug() << "Root playlist";
-            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( m_root->childPlaylists().at( row - noOfGroups ) ) );
-        }
-    }
-    else
-    {
-        SqlPlaylistGroupPtr playlistGroup = SqlPlaylistGroupPtr::staticCast( m_viewItems.value( parent.internalId() ) );
-        int noOfGroups = playlistGroup->childGroups().count();
-
-        if ( row < noOfGroups )
-        {
-            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( playlistGroup->childGroups().at(row) ) );
-        }
-        else
-        {
-            return createIndex( row, column, SqlPlaylistViewItemPtr::staticCast( playlistGroup->childPlaylists().at(row - noOfGroups) ) );
-        }
-    }
+    return createIndex( row, column, row );
 }
 
 QModelIndex
 PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
 
-    if (!index.isValid())
-        return QModelIndex();
-    SqlPlaylistViewItemPtr item = m_viewItems.value( index.internalId() );
-    
-    SqlPlaylistGroupPtr parent = item->parent();
-
-    //debug() << "parent: " << parent;
-
-    if ( parent &&  parent->parent() )
-    {
-        int row = parent->parent()->childGroups().indexOf( parent );
-        return createIndex( row , 0, SqlPlaylistViewItemPtr::staticCast( parent ) );
-    }
-    else {
-        return QModelIndex();
-    }
+    return QModelIndex();
 }
 
 int
 PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
 
-    if (parent.column() > 0) {
+    if (parent.column() > 0)
+    {
         return 0;
     }
 
-    if (!parent.isValid()) {
-
-        //debug() << "top level item has" << m_root->childCount();
-
-        return m_root->childCount();
-
+    if (!parent.isValid())
+    {
+        return m_playlists.count();
     }
-    SqlPlaylistViewItemPtr item = m_viewItems.value( parent.internalId() );
-    //debug() << "row: " << parent.row();
-    //debug() << "address: " << item;
-    //debug() << "name: " << item->name();
 
-    return item->childCount();
+    return 0;
 }
 
 int
@@ -198,12 +157,9 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
 {
     if (!index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-    SqlPlaylistViewItemPtr item = SqlPlaylistViewItemPtr::staticCast( m_viewItems.value( index.internalId() ) );
 
-    if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
-    else
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    //item is a playlist
+    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 
 QVariant
@@ -227,9 +183,9 @@ bool PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVar
     if ( index.column() != 0 )
         return false;
 
-    SqlPlaylistViewItemPtr item = m_viewItems.value( index.internalId() );
+    Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
 
-    item->rename( value.toString() );
+    item->setName( value.toString() );
 
     return true;
 
@@ -239,7 +195,7 @@ QStringList
 PlaylistBrowserNS::UserModel::mimeTypes() const
 {
     QStringList ret; // = QAbstractListModel::mimeTypes();
-    ret << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
+//     ret << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
     ret << AmarokMimeData::PLAYLIST_MIME;
     //ret << "text/uri-list"; //we do accept urls
     return ret;
@@ -251,26 +207,28 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indexes ) const
     DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
 
-    SqlPlaylistGroupList groups;
+//     PlaylistGroupList groups;
     Meta::PlaylistList playlists;
 
-    foreach( const QModelIndex &index, indexes ) {
+    foreach( const QModelIndex &index, indexes )
+    {
+        playlists << m_playlists.value( index.internalId() );
 
-        SqlPlaylistViewItemPtr item = m_viewItems.value( index.internalId() );
+//         PlaylistViewItemPtr item = m_viewItems.value( index.internalId() );
 
-        if ( typeid( * item ) == typeid( SqlPlaylistGroup ) ) {
-            SqlPlaylistGroupPtr playlistGroup = SqlPlaylistGroupPtr::staticCast( item );
-            groups << playlistGroup;
-        }
-        else
-        {
-            Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( item );
-            if( playlist )
-                playlists << playlist;
-        }
+//         if ( typeid( * item ) == typeid( PlaylistGroup ) ) {
+//             PlaylistGroupPtr playlistGroup = PlaylistGroupPtr::staticCast( item );
+//             groups << playlistGroup;
+//         }
+//         else
+//         {
+//             Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( item );
+//             if( playlist )
+//                 playlists << playlist;
+//         }
     }
 
-    mime->setPlaylistGroups( groups );
+//     mime->setPlaylistGroups( groups );
     mime->setPlaylists( playlists );
 
     return mime;
@@ -287,14 +245,14 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
     if( action == Qt::IgnoreAction )
         return true;
 
-    SqlPlaylistGroupPtr parentGroup;
+    /*PlaylistGroupPtr parentGroup;
     if ( !parent.isValid() )
     {
         parentGroup = m_root;
     }
     else
     {
-        parentGroup = SqlPlaylistGroupPtr::staticCast( m_viewItems.value( parent.internalId() ) );
+        parentGroup = PlaylistGroupPtr::staticCast( m_viewItems.value( parent.internalId() ) );
     }
 
     if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
@@ -305,9 +263,9 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
         if( playlistGroupDrag )
         {
 
-            SqlPlaylistGroupList groups = playlistGroupDrag->sqlPlaylistsGroups();
+            PlaylistGroupList groups = playlistGroupDrag->sqlPlaylistsGroups();
 
-            foreach( SqlPlaylistGroupPtr group, groups ) {
+            foreach( PlaylistGroupPtr group, groups ) {
                 group->reparent( parentGroup );
             }
 
@@ -316,128 +274,29 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
             return true;
         }
     }
-    else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    else*/ if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "Found playlist mime type";
 
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
-        if( dragList )
-        {
-
-            Meta::PlaylistList playlists = dragList->playlists();
-
-            foreach( Meta::PlaylistPtr playlistPtr, playlists ) {
-
-                Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::dynamicCast( playlistPtr );
-
-                if( playlist ) 
-                    playlist->reparent( parentGroup );
-            }
-
-            reloadFromDb();
+//         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+//         if( dragList )
+//         {
+// 
+//             Meta::PlaylistList playlists = dragList->playlists();
+// 
+//             foreach( Meta::PlaylistPtr playlistPtr, playlists )
+//             {
+//                 Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( playlistPtr );
+// 
+//                 if( playlist )
+//                     playlist->reparent( parentGroup );
+//             };
 
             return true;
-        }
+//         }
     }
 
     return false;
-}
-
-void PlaylistBrowserNS::UserModel::createTables()
-{
-    DEBUG_BLOCK
-
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    sqlStorage->query( QString( "CREATE TABLE playlist_groups ("
-            " id " + sqlStorage->idType() +
-            ", parent_id INTEGER"
-            ", name " + sqlStorage->textColumnType() +
-            ", description " + sqlStorage->textColumnType() + " );" ) );
-    sqlStorage->query( "CREATE INDEX parent_podchannel ON playlist_groups( parent_id );" );
-
-
-    sqlStorage->query( QString( "CREATE TABLE playlists ("
-            " id " + sqlStorage->idType() +
-            ", parent_id INTEGER"
-            ", name " + sqlStorage->textColumnType() +
-            ", description " + sqlStorage->textColumnType() +
-            ", urlid " + sqlStorage->exactTextColumnType() + " );" ) );
-    sqlStorage->query( "CREATE INDEX parent_playlist ON playlists( parent_id );" );
-
-    sqlStorage->query( QString( "CREATE TABLE playlist_tracks ("
-            " id " + sqlStorage->idType() +
-            ", playlist_id INTEGER "
-            ", track_num INTEGER "
-            ", url " + sqlStorage->exactTextColumnType() +
-            ", title " + sqlStorage->textColumnType() +
-            ", album " + sqlStorage->textColumnType() +
-            ", artist " + sqlStorage->textColumnType() +
-            ", length INTEGER "
-            ", uniqueid " + sqlStorage->textColumnType(128) + ");" ) );
-
-    sqlStorage->query( "CREATE INDEX parent_playlist_tracks ON playlist_tracks( playlist_id );" );
-    sqlStorage->query( "CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );" );
-
-
-
-}
-
-void PlaylistBrowserNS::UserModel::deleteTables()
-{
-
-    DEBUG_BLOCK
-    
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-
-    sqlStorage->query( "DROP INDEX parent_podchannel ON playlist_groups;" );
-    sqlStorage->query( "DROP INDEX parent_playlist ON playlists;" );
-    sqlStorage->query( "DROP INDEX parent_playlist_tracks ON playlist_tracks;" );
-    sqlStorage->query( "DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;" );
-
-    sqlStorage->query( "DROP TABLE playlist_groups;" );
-    sqlStorage->query( "DROP TABLE playlists;" );
-    sqlStorage->query( "DROP TABLE playlist_tracks;" );
-
-}
-
-void PlaylistBrowserNS::UserModel::checkTables()
-{
-
-    DEBUG_BLOCK
-            
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
-    if( values.isEmpty() )
-    {
-        //debug() << "creating Playlist Tables";
-        createTables();
-        
-        sqlStorage->query( "INSERT INTO admin(component,version) "
-                "VALUES('" + key + "'," + QString::number( USERPLAYLIST_DB_VERSION ) + ");" );
-    } else {
-
-        int dbVersion = values.at( 0 ).toInt();
-        if ( dbVersion != USERPLAYLIST_DB_VERSION ) {
-            //ah screw it, we do not have any stable releases of this out, so just redo the db. This wil also make sure that we do not
-            //get duplicate playlists from files due to one having a urlid and the other not having one
-            deleteTables();
-            createTables();
-
-            sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
-        }
-
-    }
-    
-
-
-}
-
-void
-PlaylistBrowserNS::UserModel::reloadFromDb()
-{
-    DEBUG_BLOCK;
-    reset();
-    m_root->clear();
 }
 
 void
@@ -445,52 +304,47 @@ PlaylistBrowserNS::UserModel::editPlaylist( int id )
 {
 
   //for now, assume that the newly added playlist is in the top level:
-    int row = m_root->childGroups().count() - 1;
-    foreach ( Meta::SqlPlaylistPtr playlist, m_root->childPlaylists() ) {
-        row++;
-        if ( playlist->id() == id ) {
-            emit editIndex( createIndex( row , 0, SqlPlaylistViewItemPtr::staticCast( playlist ) ) );
-        }
-    }
+//     int row = m_root->childGroups().count() - 1;
+//     foreach ( Meta::PlaylistPtr playlist, m_root->childPlaylists() ) {
+//         row++;
+//         if ( playlist->id() == id ) {
+//             emit editIndex( createIndex( row , 0, PlaylistViewItemPtr::staticCast( playlist ) ) );
+//         }
+//     }
 }
 
-void
-PlaylistBrowserNS::UserModel::createNewGroup()
-{
-    DEBUG_BLOCK
+// void
+// PlaylistBrowserNS::UserModel::createNewGroup()
+// {
+//     DEBUG_BLOCK
+// 
+//     PlaylistGroup * group = new PlaylistGroup( i18n("New Group"), m_root );
+//     group->save();
+//     int id = group->id();
+//     delete group;
+// 
+//     reloadFromDb();
+// 
+//     int row = 0;
+//     foreach ( PlaylistGroupPtr childGroup, m_root->childGroups() ) {
+//         if ( childGroup->id() == id )
+//         {
+//             debug() << "emmiting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
+//             emit editIndex( createIndex( row , 0, PlaylistViewItemPtr::staticCast( childGroup ) ) );
+//         }
+//         row++;
+//     }
+// 
+// } 
 
-    SqlPlaylistGroup * group = new SqlPlaylistGroup( i18n("New Group"), m_root );
-    group->save();
-    int id = group->id();
-    delete group;
-
-    reloadFromDb();
-
-    int row = 0;
-    foreach ( SqlPlaylistGroupPtr childGroup, m_root->childGroups() ) {
-        if ( childGroup->id() == id )
-        {
-            debug() << "emmiting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
-            emit editIndex( createIndex( row , 0, SqlPlaylistViewItemPtr::staticCast( childGroup ) ) );
-        }
-        row++;
-    }
-
-} 
-
-void
-PlaylistBrowserNS::UserModel::createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack )
-{
-    Meta::TrackList list;
-    list.append( streamTrack );
-    Meta::SqlPlaylist *stream = new Meta::SqlPlaylist( streamName, list, m_root );
-    delete stream;
-    reloadFromDb();
-}
-
-
-
-
+// void
+// PlaylistBrowserNS::UserModel::createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack )
+// {
+//     Meta::TrackList list;
+//     list.append( streamTrack );
+//     Meta::Playlist *stream = new Meta::Playlist( streamName, list, m_root );
+//     delete stream;
+//     reloadFromDb();
+// }
 
 #include "UserPlaylistModel.moc"
-

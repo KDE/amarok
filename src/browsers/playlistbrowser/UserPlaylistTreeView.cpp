@@ -27,8 +27,8 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
-#include "SqlPlaylist.h"
-#include "SqlPlaylistGroup.h"
+// #include "SqlPlaylist.h"
+// #include "SqlPlaylistGroup.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
@@ -92,12 +92,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
 
     if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
     {
-        SqlPlaylistViewItem *item = static_cast<SqlPlaylistViewItem*>( index.internalPointer() );
-
-        if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-            Meta::SqlPlaylist * playlist = static_cast< Meta::SqlPlaylist* >( item );
-            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
-        }
+//         SqlPlaylistViewItem *item = static_cast<SqlPlaylistViewItem*>( index.internalPointer() );
+// 
+//         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
+//             Meta::SqlPlaylist * playlist = static_cast< Meta::SqlPlaylist* >( item );
+//             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
+//         }
     }
 }
 
@@ -205,27 +205,27 @@ PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList in
 void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad()
 {
     DEBUG_BLOCK
-    foreach( SqlPlaylistViewItemPtr item, selectedItems() )
-    {
-        if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
-        {
-            Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
-        }
-    }
+//     foreach( SqlPlaylistViewItemPtr item, selectedItems() )
+//     {
+//         if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
+//         {
+//             Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
+//             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
+//         }
+//     }
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::slotAppend()
 {
     DEBUG_BLOCK
-    foreach( SqlPlaylistViewItemPtr item, selectedItems() )
-    {
-        if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
-        {
-            Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
-        }
-    }
+//     foreach( SqlPlaylistViewItemPtr item, selectedItems() )
+//     {
+//         if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
+//         {
+//             Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
+//             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
+//         }
+//     }
 }
 
 
@@ -235,13 +235,13 @@ void PlaylistBrowserNS::UserPlaylistTreeView::slotDelete()
 
     //TODO FIXME Confirmation of delete
 
-    foreach( SqlPlaylistViewItemPtr item, selectedItems() )
-    {
-        debug() << "deleting " << item->name();
-        item->removeFromDb();
-        item->parent()->deleteChild( item );
-    }
-    PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
+//     foreach( SqlPlaylistViewItemPtr item, selectedItems() )
+//     {
+//         debug() << "deleting " << item->name();
+//         item->removeFromDb();
+//         item->parent()->deleteChild( item );
+//     }
+//     PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::slotRename()
