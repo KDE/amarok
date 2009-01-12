@@ -1052,3 +1052,113 @@ bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
         return false;
     }
 }
+
+void Playlist::Model::sort( int field )
+{
+
+    switch ( field )
+    {
+        case Album:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanAlbum );
+        }
+        case AlbumArtist:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanAlbumArtist );
+        }
+        case Artist:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanArtist );
+        }
+        case Bitrate:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanBitrate);
+        }
+
+        case Comment:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanComment );
+
+        }
+        case Composer:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanComposer );
+        }
+
+        case Directory:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanDirectory );
+        }
+        case DiscNumber:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanDiscNumber );
+
+        }
+        case Filename:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanFilename );
+        }
+        case Filesize:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanFilesize );
+        }
+        case Genre:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanGenre );
+        }
+        case LastPlayed:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanLastPlayed );
+        }
+        case Length:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanLength );
+        }
+        case Mood:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanMood );
+        }
+        case PlayCount:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanPlayCount );
+        }
+        case Rating:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanRating );
+        }
+        case SampleRate:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanSampleRate );
+        }
+        case Score:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanScore );
+        }
+        case Source:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanSource );
+        }
+ 
+        case Title:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanTitle );
+        }
+
+        case TrackNumber:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanTrackNumber );
+        }
+        case Type:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanType );
+        }
+        case Year:
+        {
+            qStableSort( m_items.begin(), m_items.end(), Item::lessThanYear );
+        }
+
+        emit dataChanged( createIndex( 0, 0 ), createIndex( m_items.count() -1, columnCount() - 1 ) );
+
+    }
+    
+}
