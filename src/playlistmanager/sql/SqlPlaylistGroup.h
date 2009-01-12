@@ -21,7 +21,7 @@
 #define SQLPLAYLISTGROUP_H
 
 #include "meta/Meta.h"
-#include "meta/SqlPlaylist.h"
+#include "meta/PlaylistGroup.h"
 
 #include <QString>
 #include <QStringList>
@@ -33,7 +33,6 @@ namespace Meta
     typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
     typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
-
     /**
     A class for allowing a "folder structure" in the playlist browser and the database. Takes care of reading and writing  itself to the database.
 
@@ -42,55 +41,35 @@ namespace Meta
     class SqlPlaylistGroup : public PlaylistGroup
     {
         public:
-
             SqlPlaylistGroup( const QStringList &dbResultRow, SqlPlaylistGroupPtr parent );
-            explicit SqlPlaylistGroup( const QString &name, SqlPlaylistGroupPtr parent = SqlPlaylistGroupPtr() );
+            SqlPlaylistGroup( const QString &name, SqlPlaylistGroupPtr parent = SqlPlaylistGroupPtr() );
 
             ~SqlPlaylistGroup();
 
             /* Meta::PlaylistGroup virtual functions */
-            QString name() const;
-            QString description() const;
+            QString name() const { return m_name; }
+            QString description() const { return m_description; }
 
-            virtual int childCount() const;
+            virtual Meta::PlaylistGroupPtr parent() const { return Meta::PlaylistGroupPtr::staticCast(m_parent); }
 
-            virtual PlaylistGroupPtr parent() const { return m_parent; }
-
-            virtual void rename( const QString &name );
-
-            virtual SqlPlaylistGroupList childGroups() const;
-            virtual Meta::SqlPlaylistList childPlaylists() const;
-
-            virtual void reparent( PlaylistGroupPtr parent );
-
-            virtual void clear();
-
-            virtual void addChildPlaylist( Meta::PlaylistPtr playlist );
-            virtual void removeChildPlaylist( Meta::PlaylistPtr playlist );
-
-            virtual void addChildGroup( Meta::PlaylistGroup group );
-            virtual void removeChildGroup( Meta::PlaylistGroup group );
+            virtual void setName( const QString &name );
+            virtual void setParent( Meta::PlaylistGroupPtr parent );
+            virtual void setDescription( const QString &description );
 
             /* SqlPlaylistGroup specific functions */
-            int id() const;
+            int id() const { return m_dbId; }
             void save();
-
-            void deleteChild( SqlPlaylistViewItemPtr item );
             void removeFromDb();
 
         private:
             int m_dbId;
-            SqlPlaylistGroupPtr m_parent;
+            Meta::SqlPlaylistGroupPtr m_parent;
             QString m_name;
             QString m_description;
-
-            mutable SqlPlaylistGroupList m_childGroups;
-            mutable Meta::SqlPlaylistList m_childPlaylists;
-
-            mutable bool m_hasFetchedChildGroups;
-            mutable bool m_hasFetchedChildPlaylists;
-
     };
 }
+
+Q_DECLARE_METATYPE( Meta::SqlPlaylistGroupPtr )
+Q_DECLARE_METATYPE( Meta::SqlPlaylistGroupList )
 
 #endif

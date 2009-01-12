@@ -21,34 +21,26 @@
 
 #include "CollectionManager.h"
 #include "Debug.h"
-#include "meta/SqlPlaylist.h"
 #include "SqlStorage.h"
 
 #include <typeinfo>
 
 Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, SqlPlaylistGroupPtr parent )
-    : SqlPlaylistViewItem()
-    , m_parent( parent )
-    , m_hasFetchedChildGroups( false )
-    , m_hasFetchedChildPlaylists( false )
+    : m_parent( parent )
 {
     m_dbId = dbResultRow[0].toInt();
     m_name = dbResultRow[2];
     m_description = dbResultRow[3];
-
 }
 
 Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, SqlPlaylistGroupPtr parent )
-    : SqlPlaylistViewItem()
-    , m_dbId( -1 )
+    : m_dbId( -1 )
     , m_parent( parent )
     , m_name( name )
     , m_description( QString() )
-    , m_hasFetchedChildGroups( false )
-    , m_hasFetchedChildPlaylists( false )
 {
-
-    if ( parent.isNull() ) {
+    if ( parent.isNull() )
+    {
         //root item
         m_dbId = -1;
     }
@@ -59,7 +51,6 @@ Meta::SqlPlaylistGroup::~SqlPlaylistGroup()
 {
     //DEBUG_BLOCK
     //debug() << "deleting " << m_name;
-    clear();
 }
 
 void
@@ -69,154 +60,53 @@ Meta::SqlPlaylistGroup::save()
     if ( m_parent )
         parentId = m_parent->id();
 
-    if ( m_dbId != -1 ) {
+    if ( m_dbId != -1 )
+    {
         //update existing
         QString query = "UPDATE playlist_groups SET parent_id=%1, name='%2', description='%3' WHERE id=%4;";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( QString::number( m_dbId ) );
         CollectionManager::instance()->sqlStorage()->query( query );
 
-    } else {
+    }
+    else
+    {
         //insert new
-
         QString query = "INSERT INTO playlist_groups ( parent_id, name, description) VALUES ( %1, '%2', '%3' );";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
-
     }
-
-}
-
-SqlPlaylistGroupList
-Meta::SqlPlaylistGroup::childGroups() const
-{
-    //DEBUG_BLOCK
-    if ( !m_hasFetchedChildGroups ) {
-
-        QString query = "SELECT id, parent_id, name, description FROM playlist_groups where parent_id=%1 ORDER BY name;";
-        query = query.arg( QString::number( m_dbId ) );
-        QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
-
-
-        int resultRows = result.count() / 4;
-
-        for( int i = 0; i < resultRows; i++ )
-        {
-            QStringList row = result.mid( i*4, 4 );
-            SqlPlaylistGroup* mutableThis = const_cast<SqlPlaylistGroup*>( this );
-            m_childGroups << SqlPlaylistGroupPtr( new SqlPlaylistGroup( row, SqlPlaylistGroupPtr( mutableThis ) ) );
-        }
-
-        m_hasFetchedChildGroups = true;
-
-    }
-
-    return m_childGroups;
-}
-
-Meta::SqlPlaylistList
-Meta::SqlPlaylistGroup::childPlaylists() const
-{
-    //DEBUG_BLOCK
-    //debug() << "my name: " << m_name << " my pointer: " << this;
-    if ( !m_hasFetchedChildPlaylists ) {
-        QString query = "SELECT id, parent_id, name, description, urlid FROM playlists where parent_id=%1 ORDER BY name;";
-        query = query.arg( QString::number( m_dbId ) );
-        QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
-
-        //debug() << "Result: " << result;
-        int resultRows = result.count() / 5;
-
-        for( int i = 0; i < resultRows; i++ )
-        {
-            QStringList row = result.mid( i*5, 5 );
-            SqlPlaylistGroup* mutableThis = const_cast<SqlPlaylistGroup*>( this );
-            m_childPlaylists << Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( row, SqlPlaylistGroupPtr( mutableThis ) ) );
-        }
-        m_hasFetchedChildPlaylists = true;
-    }
-    return m_childPlaylists;
-}
-
-int
-Meta::SqlPlaylistGroup::id() const
-{
-    return m_dbId;
-}
-
-QString
-Meta::SqlPlaylistGroup::name() const
-{
-    return m_name;
-}
-
-QString
-Meta::SqlPlaylistGroup::description() const
-{
-    return m_description;
-}
-
-int
-Meta::SqlPlaylistGroup::childCount() const
-{
-    //DEBUG_BLOCK
-    return childGroups().count() + childPlaylists().count();
 }
 
 void
-Meta::SqlPlaylistGroup::clear()
-{
-    //DEBUG_BLOCK
-//m_childPlaylists, m_childGroups are KSharedPtrs, so we should be able to just clear the list
-//and the playlistptrs will delete themselves
-    m_childGroups.clear();
-    m_childPlaylists.clear();
-
-    m_hasFetchedChildGroups = false;
-    m_hasFetchedChildPlaylists = false;
-}
-
-
-
-void
-Meta::SqlPlaylistGroup::rename(const QString & name)
+Meta::SqlPlaylistGroup::setName( const QString & name )
 {
     m_name = name;
     save();
 }
 
 void
-Meta::SqlPlaylistGroup::deleteChild( SqlPlaylistViewItemPtr item )
+Meta::SqlPlaylistGroup::setDescription( const QString &description )
 {
-    if ( typeid( * item ) == typeid( SqlPlaylistGroup ) )
-    {
-        SqlPlaylistGroupPtr group = SqlPlaylistGroupPtr::staticCast( item );
-        m_childGroups.removeAll( group );
-    }
-    else if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
-    {
-        Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-        m_childPlaylists.removeAll( playlist );
-    }
+    m_description = description;
+    save();
 }
 
 void
 Meta::SqlPlaylistGroup::removeFromDb()
 {
-    //DEBUG_BLOCK
-
-    foreach( SqlPlaylistGroupPtr group, m_childGroups )
-        group->removeFromDb();
-    foreach( Meta::SqlPlaylistPtr playlist, m_childPlaylists )
-        playlist->removeFromDb();
-
+    DEBUG_BLOCK
     QString query = "DELETE FROM playlist_groups where id=%1;";
     query = query.arg( QString::number( m_dbId ) );
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 }
 
 void
-Meta::SqlPlaylistGroup::reparent( SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::setParent( PlaylistGroupPtr parent )
 {
-    m_parent = parent;
+    if( parent )
+        m_parent = SqlPlaylistGroupPtr::staticCast( parent );
+    else
+        debug() << "have to create the parent";
+
     save();
 }

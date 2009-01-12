@@ -17,18 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef PLAYLISTVIEWITEM_H
 #define PLAYLISTVIEWITEM_H
 
+#include "meta/PlaylistGroup.h"
+
 #include <QSharedData>
 #include <KSharedPtr>
-class PlaylistGroup;
-typedef KSharedPtr<PlaylistGroup> PlaylistGroupPtr;
-typedef QList<PlaylistGroupPtr> PlaylistGroupList;
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
 class PlaylistViewItem;
@@ -38,10 +37,10 @@ class PlaylistViewItem : public virtual QSharedData
 {
     public:
         PlaylistViewItem() : QSharedData() {}
-        
+
         virtual  ~PlaylistViewItem() {};
-    
-        virtual PlaylistGroupPtr parent() const = 0;
+
+        virtual Meta::PlaylistGroupPtr parent() const = 0;
         virtual int childCount() const { return 0; }
         virtual QString name() const = 0;
         virtual QString description() const = 0;

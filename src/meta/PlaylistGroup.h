@@ -22,7 +22,6 @@
 #define PLAYLISTGROUP_H
 
 #include "meta/Meta.h"
-#include "PlaylistViewItem.h"
 #include "meta/Playlist.h"
 
 #include <QString>
@@ -41,33 +40,23 @@ namespace Meta
 
         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
     */
-    class PlaylistGroup : public PlaylistViewItem
+    class PlaylistGroup : public virtual QSharedData
     {
         public:
-            virtual ~PlaylistGroup();
+            virtual ~PlaylistGroup() {};
 
             virtual QString name() const = 0;
             virtual QString description() const = 0;
 
-            virtual int childCount() const = 0;
+            virtual Meta::PlaylistGroupPtr parent() const = 0;
 
-            virtual PlaylistGroupPtr parent() const = 0;
-
-            virtual void rename( const QString &name ) = 0;
-
-            virtual PlaylistGroupList childGroups() const = 0;
-            virtual Meta::PlaylistList childPlaylists() const = 0;
-
-            virtual void reparent( PlaylistGroupPtr parent ) = 0;
-
-            virtual void clear() = 0;
-
-            virtual void addChildPlaylist( Meta::PlaylistPtr playlist ) = 0;
-            virtual void removeChildPlaylist( Meta::PlaylistPtr playlist ) = 0;
-
-            virtual void addChildGroup( Meta::PlaylistGroup group ) = 0;
-            virtual void removeChildGroup( Meta::PlaylistGroup group ) = 0;
+            virtual void setName( const QString &name ) = 0;
+            virtual void setDescription( const QString &description ) = 0;
+            virtual void setParent( Meta::PlaylistGroupPtr parent ) = 0;
     };
 }
+
+Q_DECLARE_METATYPE( Meta::PlaylistGroupPtr )
+Q_DECLARE_METATYPE( Meta::PlaylistGroupList )
 
 #endif

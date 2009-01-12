@@ -309,7 +309,7 @@ set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
     playlistmanager/PlaylistFileProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
-    #playlistmanager/sql/SqlPlaylistGroup.cpp
+    playlistmanager/sql/SqlPlaylistGroup.cpp
 )
 
 #####################################################################

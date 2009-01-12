@@ -34,7 +34,6 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
 {
     checkTables();
-//     m_root = SqlPlaylistGroupPtr( new SqlPlaylistGroup( "root", SqlPlaylistGroupPtr() ) );
     loadFromDb();
 }
 
