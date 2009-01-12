@@ -1,6 +1,11 @@
 [Desktop Entry]
 Name=Amarok Bookmark Manager
+Name[gl]=Xestor de marcadores de Amarok
+Name[it]=Gestore dei segnalibri di Amarok
+Name[km]=កម្មវិធី​គ្រប់គ្រង​ចំណាំ Amarok
 Name[nds]=Amarok-Leestekenpleger
+Name[pt]=Gestor de Favoritos do Amarok
+Name[pt_BR]=Gestor de Favoritos do Amarok
 Name[uk]=Інструмент керування закладками Amarok
 Type=Service
 ServiceTypes=AmarokContext/Applet
