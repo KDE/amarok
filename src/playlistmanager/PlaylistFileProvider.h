@@ -36,8 +36,9 @@ class PlaylistFileProvider : public PlaylistProvider
         QString prettyName() const;
         int category() const { return PlaylistManager::UserPlaylist; };
 
-        Meta::PlaylistList playlists();
-        Meta::PlaylistGroupList groups() { return Meta::PlaylistGroupList(); }
+        virtual Meta::PlaylistGroupPtr rootGroup() { return Meta::PlaylistGroupPtr(); }
+        virtual Meta::PlaylistList playlists();
+        virtual Meta::PlaylistGroupList groups() { return Meta::PlaylistGroupList(); }
 
     private:
         Meta::PlaylistList m_playlists;

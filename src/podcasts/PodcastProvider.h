@@ -58,6 +58,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual int category() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;
+        virtual Meta::PlaylistGroupPtr rootGroup() { return Meta::PlaylistGroupPtr(); }
 
     public slots:
         virtual void updateAll() = 0;

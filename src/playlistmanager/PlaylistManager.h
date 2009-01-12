@@ -179,6 +179,7 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
          */
         virtual int category() const = 0;
 
+        virtual Meta::PlaylistGroupPtr rootGroup() = 0;
         virtual Meta::PlaylistList playlists() = 0;
         virtual Meta::PlaylistGroupList groups() = 0;
 

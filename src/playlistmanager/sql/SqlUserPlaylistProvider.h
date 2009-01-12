@@ -35,6 +35,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual QString prettyName() const { return i18n("Local Playlists stored in the database"); };
 
         /* UserPlaylistProvider functions */
+        virtual Meta::PlaylistGroupPtr rootGroup() { return Meta::PlaylistGroupPtr::staticCast( m_root ); }
         virtual Meta::PlaylistList playlists();
         virtual Meta::PlaylistGroupList groups();
 

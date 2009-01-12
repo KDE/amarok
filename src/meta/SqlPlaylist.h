@@ -50,7 +50,7 @@ class SqlPlaylist : public Playlist
 
         bool saveToDb( bool tracks = true );
         QString description() const { return m_description; }
-        QString setDescription( const QString &description ) { m_description = description; }
+        void setDescription( const QString &description ) { m_description = description; }
 
         /* Playlist virtual functions */
         virtual QString name() const { return m_name; }
