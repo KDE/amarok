@@ -35,6 +35,7 @@
 
 #include <KAction>
 #include <KApplication>
+#include <KIcon>
 #include <KIconEffect>
 #include <KLocale>
 #include <KMenu>
@@ -47,6 +48,19 @@
 #include <QPixmap>
 #include <QTextDocument> // for Qt::escape()
 #include <QToolTip>
+
+namespace Amarok
+{
+    static QPixmap
+    loadOverlay( const QString &iconName )
+    {
+        KIcon icon = KIcon( iconName );
+        if ( !icon.isNull() )
+            return icon.pixmap( 10, 10 ); // overlay size, adjust here
+
+        return 0;
+    }
+}
 
 Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTrayIcon( playerWidget )
@@ -68,6 +82,9 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
+
+    m_playOverlay = loadOverlay( "media-playback-start" );
+    m_pauseOverlay = loadOverlay( "media-playback-pause" );
 
     PERF_LOG( "Adding system tray icon" );
     paintIcon();
@@ -243,6 +260,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
         case Phonon::PlayingState:
             m_track = The::engineController()->currentTrack();
             m_trackLength = m_track->length();
+
             paintIcon();
             setupMenu();
             break;
@@ -254,6 +272,10 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
             break;
 
         case Phonon::PausedState:
+            paintIcon();
+            blendOverlay( m_pauseOverlay );
+            break;
+
         case Phonon::LoadingState:
         case Phonon::ErrorState:
         case Phonon::BufferingState:
@@ -314,8 +336,8 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
     if( m_baseIcon.isNull() )
     {
         QIcon icon = KSystemTrayIcon::loadIcon( "amarok" );
-        setIcon( icon ); // show icon
         m_baseIcon = icon.pixmap( geometry().size() );
+        setIcon( icon ); // show icon
         return; // return because m_baseIcon is still null after first startup
     }
 
@@ -340,13 +362,29 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
         return;
 
     // draw m_baseIcon on top of the gray version
-    QPixmap pixmap = m_grayedIcon; // copies object
-    QPainter p( &pixmap );
+    m_icon = m_grayedIcon; // copies object
+    QPainter p( &m_icon );
     p.drawPixmap( 0, 0, m_baseIcon, 0, 0, 0, geometry().height() - mergePos );
+    p.end();
 
     oldMergePos = mergePos;
 
-    setIcon( pixmap );
+    blendOverlay( m_playOverlay );
+}
+
+void
+Amarok::TrayIcon::blendOverlay( const QPixmap &overlay )
+{
+    if ( !overlay.isNull() )
+    {
+        // draw overlay at bottom right
+        const int x = geometry().size().width() - overlay.size().width();
+        const int y = geometry().size().height() - overlay.size().width();
+        QPainter p( &m_icon );
+        p.drawPixmap( x, y, overlay );
+        p.end();
+        setIcon( m_icon );
+    }
 }
 
 void

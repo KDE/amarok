@@ -60,11 +60,13 @@ private:
     void setupToolTip();
 
     void paintIcon( long trackPosition = -1 );
+    void blendOverlay( const QPixmap &overlay );
 
     Meta::TrackPtr m_track;
     long m_trackLength;
 
-    QPixmap m_baseIcon, m_grayedIcon;
+    QPixmap m_baseIcon, m_grayedIcon, m_icon;
+    QPixmap m_playOverlay, m_pauseOverlay;
     QList<PopupDropperAction *> m_extraActions;
 };
 
