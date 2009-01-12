@@ -22,10 +22,10 @@
 #include "App.h"
 #include "statusbar/StatusBar.h"
 #include "CollectionManager.h"
-#include "collection/sqlcollection/SqlUserPlaylistProvider.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
 #include "sql/SqlPodcastProvider.h"
+#include "sql/SqlUserPlaylistProvider.h"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "meta/M3UPlaylist.h"
@@ -73,12 +73,14 @@ PlaylistManager::PlaylistManager()
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
 
-//     m_defaultUserPlaylistProvider = The::collection()->userPlaylistProvider();
+    m_defaultUserPlaylistProvider = new SqlUserPlaylistProvider();
+    addProvider( m_defaultUserPlaylistProvider, UserPlaylist );
 }
 
 PlaylistManager::~PlaylistManager()
 {
     delete m_defaultPodcastProvider;
+    delete m_defaultUserPlaylistProvider;
 }
 
 bool
