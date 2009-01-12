@@ -38,6 +38,7 @@
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h" // used in constructor
+#include "GroupingProxy.h"
 
 #include <QStringList>
 #include <QTextDocument>
@@ -1055,110 +1056,134 @@ bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
 
 void Playlist::Model::sort( int field )
 {
+    DEBUG_BLOCK
 
     switch ( field )
     {
         case Album:
         {
+            debug() << "Sort by album";
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanAlbum );
+            break;
         }
         case AlbumArtist:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanAlbumArtist );
+            break;
         }
         case Artist:
         {
+            debug() << "Sort by artist";
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanArtist );
+            break;
         }
         case Bitrate:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanBitrate);
+            break;
         }
-
         case Comment:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanComment );
-
+            break;
         }
         case Composer:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanComposer );
+            break;
         }
 
         case Directory:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanDirectory );
+            break;
         }
         case DiscNumber:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanDiscNumber );
+            break;
 
         }
         case Filename:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanFilename );
+            break;
         }
         case Filesize:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanFilesize );
+            break;
         }
         case Genre:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanGenre );
+            break;
         }
         case LastPlayed:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanLastPlayed );
+            break;
         }
         case Length:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanLength );
+            break;
         }
         case Mood:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanMood );
+            break;
         }
         case PlayCount:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanPlayCount );
+            break;
         }
         case Rating:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanRating );
+            break;
         }
         case SampleRate:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanSampleRate );
+            break;
         }
         case Score:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanScore );
+            break;
         }
         case Source:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanSource );
+            break;
         }
- 
         case Title:
         {
+            debug() << "Sort by title";
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanTitle );
+            break;
         }
 
         case TrackNumber:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanTrackNumber );
+            break;
         }
         case Type:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanType );
+            break;
         }
         case Year:
         {
             qStableSort( m_items.begin(), m_items.end(), Item::lessThanYear );
+            break;
         }
 
-        emit dataChanged( createIndex( 0, 0 ), createIndex( m_items.count() -1, columnCount() - 1 ) );
-
     }
+
+    emit dataChanged( createIndex( 0, 0 ), createIndex( m_items.count() -1, columnCount() - 1 ) );
     
 }

@@ -27,6 +27,7 @@
 
 #include <KVBox>
 
+#include <QComboBox>
 #include <QLabel>
 class QWidget;
 class ProgressiveSearchWidget;
@@ -47,6 +48,7 @@ public:
 
 public slots:
     void switchView();
+    void sort( int field );
 
 protected:
     QSize sizeHint() const;
@@ -55,6 +57,7 @@ private:
     Amarok::StackedWidget *m_stackedWidget;
     QWidget* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
+    QComboBox * m_sortBox;
 };
 }
 

@@ -22,7 +22,9 @@
 
 #include "ActionClasses.h"
 #include "App.h"
+#include "Debug.h"
 #include "MainWindow.h"
+#include "PlaylistDefines.h"
 #include "view/graphic/PlaylistGraphicsView.h"
 #include "PlaylistController.h"
 #include "view/listview/PrettyListView.h"
@@ -45,6 +47,34 @@ Playlist::Widget::Widget( QWidget* parent )
 
     m_searchWidget = new ProgressiveSearchWidget( this );
     new LayoutConfigWidget( this );
+
+    m_sortBox = new QComboBox( this );
+    m_sortBox->insertItem( 0, "Album", Album);
+    m_sortBox->insertItem( 1, "AlbumArtist", Album);
+    m_sortBox->insertItem( 2, "Artist", Artist );
+    m_sortBox->insertItem( 3, "Bitrate", Bitrate );
+    m_sortBox->insertItem( 4, "Bpm", Bpm );
+    m_sortBox->insertItem( 5, "Comment", Comment );
+    m_sortBox->insertItem( 6, "Composer", Composer );
+    m_sortBox->insertItem( 7, "Directory", Directory );
+    m_sortBox->insertItem( 8, "DiscNumber", DiscNumber );
+    m_sortBox->insertItem( 9, "Filename", Filename );
+    m_sortBox->insertItem( 10, "Filesize", Filesize );
+    m_sortBox->insertItem( 11, "Genre", Genre );
+    m_sortBox->insertItem( 12, "LastPlayed", LastPlayed );
+    m_sortBox->insertItem( 13, "Length", Length );
+    m_sortBox->insertItem( 14, "Mood", Mood );
+    m_sortBox->insertItem( 15, "PlayCount", PlayCount );
+    m_sortBox->insertItem( 16, "Rating", Rating );
+    m_sortBox->insertItem( 17, "SampleRate", SampleRate );
+    m_sortBox->insertItem( 18, "Score", Score );
+    m_sortBox->insertItem( 29, "Source", Source );
+    m_sortBox->insertItem( 30, "Title", Title );
+    m_sortBox->insertItem( 31, "TrackNumber", TrackNumber );
+    m_sortBox->insertItem( 32, "Type", Type );
+    m_sortBox->insertItem( 33, "Year", Year );
+
+    connect( m_sortBox, SIGNAL( activated( int ) ), this, SLOT( sort( int ) ) );
     
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
 
@@ -136,6 +166,14 @@ void
 Playlist::Widget::switchView()
 {
     m_stackedWidget->setCurrentIndex(( m_stackedWidget->currentIndex() + 1 ) % 2 );
+}
+
+void Playlist::Widget::sort( int index )
+{
+    DEBUG_BLOCK
+    int field = m_sortBox->itemData( index ).toInt();
+    debug() << "Field: " << field;
+    The::playlistModel()->sort( field );
 }
 
 
