@@ -53,6 +53,10 @@ namespace Meta
         static const QString TRACKNUMBER    = "xesam:trackNumber";
         static const QString URL            = "xesam:url";
         static const QString YEAR           = "xesam:contentCreated";
+        static const QString ALBUMGAIN      = "xesam:albumGain";
+        static const QString ALBUMPEAKGAIN  = "xesam:albumPeakGain";
+        static const QString TRACKGAIN      = "xesam:trackGain";
+        static const QString TRACKPEAKGAIN  = "xesam:trackPeakGain";
 
         static const QString SCORE          = "xesam:autoRating";
         static const QString PLAYCOUNT      = "xesam:useCount";

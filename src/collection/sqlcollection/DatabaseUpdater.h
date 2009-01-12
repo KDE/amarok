@@ -38,6 +38,7 @@ public:
     void removeTemporaryTables();
     void copyToPermanentTables();
     void cleanPermanentTables();
+    void upgradeVersion1to2();
 
     void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
 

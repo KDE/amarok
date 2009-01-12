@@ -98,6 +98,8 @@ XesamCollectionBuilder::setupXesam()
     fields << Meta::Field::COMPOSER << Meta::Field::YEAR << Meta::Field::COMMENT << Meta::Field::CODEC;
     fields << Meta::Field::BITRATE << Meta::Field::BPM << Meta::Field::TRACKNUMBER << Meta::Field::DISCNUMBER;
     fields << Meta::Field::FILESIZE << Meta::Field::LENGTH << Meta::Field::SAMPLERATE;
+    fields << Meta::Field::ALBUMGAIN << Meta::Field::ALBUMPEAKGAIN;
+    fields << Meta::Field::TRACKGAIN << Meta::Field::TRACKPEAKGAIN;
     m_xesam->SetProperty( m_session, "hit.fields", QDBusVariant( fields ) );
     QStringList fieldsExtended;
     m_xesam->SetProperty( m_session, "hit.fields.extended", QDBusVariant( fieldsExtended ) );
@@ -205,7 +207,7 @@ XesamCollectionBuilder::generateXesamQuery() const
 void
 XesamCollectionBuilder::processDirectory( const QList<QList<QVariant> > &data )
 {
-    //URL TITLE ALBUM ARTIST GENRE COMPOSER YEAR COMMENT CODEC BITRATE BPM TRACKNUMBER DISCNUMBER FILESIZE LENGTH SAMPLERATE
+    //URL TITLE ALBUM ARTIST GENRE COMPOSER YEAR COMMENT CODEC BITRATE BPM TRACKNUMBER DISCNUMBER FILESIZE LENGTH SAMPLERATE ALBUMGAIN ALBUMPEAK TRACKGAIN TRACKPEAK
 
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
@@ -241,12 +243,12 @@ void
 XesamCollectionBuilder::addTrack( const QList<QVariant> &trackData, int albumArtistId )
 {
     // from setupXesam():
-    // 0: URL          6: YEAR            12: DISCNUMBER
-    // 1: TITLE        7: COMMENT         13: FILESIZE
+    // 0: URL          6: YEAR            12: DISCNUMBER   18: TRACKGAIN
+    // 1: TITLE        7: COMMENT         13: FILESIZE     19: TRACKPEAKGAIN
     // 2: ALBUM        8: CODEC           14: LENGTH
     // 3: ARTIST       9: BITRATE         15: SAMPLERATE
-    // 4: GENRE       10: BPM
-    // 5: COMPOSER    11: TRACKNUMBER
+    // 4: GENRE       10: BPM             16: ALBUMGAIN
+    // 5: COMPOSER    11: TRACKNUMBER     17: ALBUMPEAKGAIN
     int album = albumId( trackData[2].toString(), albumArtistId );
     int artist = artistId( trackData[3].toString() );
     int genre = genreId( trackData[4].toString() );
@@ -256,17 +258,24 @@ XesamCollectionBuilder::addTrack( const QList<QVariant> &trackData, int albumArt
 
     QString insert = "INSERT INTO tracks(url,artist,album,genre,composer,year,title,comment,"
                      "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm"
-                     "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8'"; //goes up to comment
+                     "createdate,modifydate,albumgain,albumpeakgain,trackgain,trackpeakgain) "
+                     "VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8'"; //goes up to comment
     insert = insert.arg( url ).arg( artist ).arg( album ).arg( genre ).arg( composer ).arg( year );
     insert = insert.arg( m_collection->escape( trackData[1].toString() ), m_collection->escape( trackData[7].toString() ) );
 
-    QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9,%10);";
+    QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9,%10,%11,%12,%13,%14);";
     // tracknumber, discnumber, bitrate
     insert2 = insert2.arg( trackData[11].toInt() ).arg( trackData[12].toInt() ).arg( trackData[9].toInt() );
     // length, samplerate, filesize
     insert2 = insert2.arg( trackData[14].toInt() ).arg( trackData[15].toInt() ).arg( trackData[13].toInt() );
     // filetype, bpm, createdate, modifydate
     insert2 = insert2.arg( "0", "0", "0", "0" ); //filetype, bpm, createdate, modifydate not implemented yet
+    // FIXME: what format should we expect the *PeakGain values to be in?
+    //        may need to do 20 * log10( received_value ) to get into decibels
+    // albumgain
+    insert2 = insert2.arg( trackData[16].toDouble() ).arg( trackData[17].toDouble() );
+    // trackgain
+    insert2 = insert2.arg( trackData[18].toDouble() ).arg( trackData[19].toDouble() );
     insert += insert2;
 
     m_collection->insert( insert, "tracks" );

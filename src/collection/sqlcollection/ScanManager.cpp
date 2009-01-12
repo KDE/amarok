@@ -558,6 +558,20 @@ XmlParseJob::run()
                     }
                     if( !attrs.value( "filesize" ).isEmpty() )
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
+                    if( !attrs.value( "albumgain" ).isEmpty() )
+                    {
+                        data.insert( Meta::Field::ALBUMGAIN, attrs.value( "albumgain" ).toString() );
+                        // peak gain is in decibels
+                        if( !attrs.value( "albumpeakgain" ).isEmpty() )
+                            data.insert( Meta::Field::ALBUMPEAKGAIN, attrs.value( "albumpeakgain" ).toString() );
+                    }
+                    if( !attrs.value( "trackgain" ).isEmpty() )
+                    {
+                        data.insert( Meta::Field::TRACKGAIN, attrs.value( "trackgain" ).toString() );
+                        // peak gain is in decibels
+                        if( !attrs.value( "trackpeakgain" ).isEmpty() )
+                            data.insert( Meta::Field::TRACKPEAKGAIN, attrs.value( "trackpeakgain" ).toString() );
+                    }
 
                     data.insert( Meta::Field::UNIQUEID, attrs.value( "uniqueid" ).toString() );
 

@@ -28,6 +28,7 @@
 #include <cerrno>
 #include <iostream>
 #include <limits.h>    //PATH_MAX
+#include <cmath>
 
 #include <QTextDocument> //Qt::escape
 #include <QByteArray>
@@ -67,6 +68,15 @@
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
 #include <xiphcomment.h>
+
+static qreal ParseGain( const TagLib::String &input )
+{
+    qreal scaleVal = TStringToQString( input ).trimmed().toFloat();
+    if ( scaleVal > 0 )
+        return 20 * log10( scaleVal );
+    else
+        return 0;
+}
 
 CollectionScanner::CollectionScanner( const QStringList& folders,
                                       const QString& amarokPid,
@@ -500,11 +510,17 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             isValid = true;
         }
 
-    /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
-        we have to cast the files, not the tags! */
-
         QString disc;
         QString compilation;
+        QString albumReplayGain;
+        qreal albumRGPeak = 0.0;
+        QString trackReplayGain;
+        qreal trackRGPeak = 0.0;
+
+        //FIXME: get replaygain info for other formats we can read
+
+        /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
+           we have to cast the files, not the tags! */
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
             fileType = mp3;
@@ -524,6 +540,32 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
+
+                TagLib::ID3v2::UserTextIdentificationFrame* frame =
+                    TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_TRACK_GAIN" );
+                if ( frame )
+                {
+                    trackReplayGain = TStringToQString( frame->toString() );
+                    TagLib::ID3v2::UserTextIdentificationFrame* peakFrame =
+                        TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_TRACK_PEAK" );
+                    if ( peakFrame )
+                    {
+                        trackRGPeak = ParseGain( peakFrame->toString() );
+                    }
+                }
+
+                frame = TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_ALBUM_GAIN" );
+                if ( frame )
+                {
+                    albumReplayGain = TStringToQString( frame->toString() );
+                    TagLib::ID3v2::UserTextIdentificationFrame* peakFrame =
+                        TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_ALBUM_PEAK" );
+                    if ( peakFrame )
+                    {
+                        albumRGPeak = ParseGain( peakFrame->toString() );
+                    }
+                }
+                // FIXME: get replaygain info from APE tags if ID3v2 tags didn't work
 
                 //FIXME: Port 2.0
 //                 if( images )
@@ -590,6 +632,20 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( !file->tag()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).trimmed();
+
+                if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_TRACK_GAIN" ].isEmpty() )
+                {
+                    trackReplayGain = TStringToQString( file->tag()->fieldListMap()["REPLAYGAIN_TRACK_GAIN"].front() ).trimmed();
+                    if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_TRACK_PEAK" ].isEmpty() )
+                        trackRGPeak = ParseGain( file->tag()->fieldListMap()["REPLAYGAIN_TRACK_PEAK"].front() );
+                }
+
+                if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_ALBUM_GAIN" ].isEmpty() )
+                {
+                    albumReplayGain = TStringToQString( file->tag()->fieldListMap()["REPLAYGAIN_ALBUM_GAIN"].front() ).trimmed();
+                    if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_ALBUM_PEAK" ].isEmpty() )
+                        albumRGPeak = ParseGain( file->tag()->fieldListMap()["REPLAYGAIN_ALBUM_PEAK"].front() );
+                }
             }
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
@@ -608,6 +664,22 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
+
+                if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_TRACK_GAIN" ].isEmpty() )
+                {
+                    trackReplayGain = TStringToQString( file->xiphComment()->fieldListMap()["REPLAYGAIN_TRACK_GAIN"].front() ).trimmed();
+                    if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_TRACK_PEAK" ].isEmpty() )
+                        trackRGPeak = ParseGain( file->xiphComment()->fieldListMap()["REPLAYGAIN_TRACK_PEAK"].front() );
+                }
+
+                if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_ALBUM_GAIN" ].isEmpty() )
+                {
+                    albumReplayGain = TStringToQString( file->xiphComment()->fieldListMap()["REPLAYGAIN_ALBUM_GAIN"].front() ).trimmed();
+                    if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_ALBUM_PEAK" ].isEmpty() )
+                    {
+                        albumRGPeak = ParseGain( file->xiphComment()->fieldListMap()["REPLAYGAIN_ALBUM_PEAK"].front() );
+                    }
+                }
             }
 //             if ( images && file->ID3v2Tag() )
 //                 loadImagesFromTag( *file->ID3v2Tag(), *images );
@@ -622,6 +694,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 attributes["bpm"] = QString::number( mp4tag->bpm() ).toFloat();
                 disc = QString::number( mp4tag->disk() );
                 compilation = QString::number( mp4tag->compilation() );
+                // FIXME: get replaygain info for MP4 files
 
 //                 if ( images && mp4tag->cover().size() )
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
@@ -651,6 +724,28 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         {
             int i = compilation.toInt();
             attributes["compilation"] = QString::number( i );
+        }
+        if ( !trackReplayGain.isEmpty() )
+        {
+            trackReplayGain.remove( " dB" );
+            bool ok = false;
+            qreal gain = trackReplayGain.toFloat( &ok );
+            if (ok)
+            {
+                attributes["trackgain"] = QString::number( gain );
+                attributes["trackpeakgain"] = QString::number( trackRGPeak );
+            }
+        }
+        if ( !albumReplayGain.isEmpty() )
+        {
+            albumReplayGain.remove( " dB" );
+            bool ok = false;
+            qreal gain = albumReplayGain.toFloat( &ok );
+            if (ok)
+            {
+                attributes["albumgain"] = QString::number( gain );
+                attributes["albumpeakgain"] = QString::number( albumRGPeak );
+            }
         }
     }
 

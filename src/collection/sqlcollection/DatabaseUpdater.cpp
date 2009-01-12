@@ -21,8 +21,9 @@
 #include "Debug.h"
 #include "MountPointManager.h"
 #include "SqlCollection.h"
+#include <KMessageBox>
 
-static const int DB_VERSION = 1;
+static const int DB_VERSION = 2;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -45,18 +46,45 @@ void
 DatabaseUpdater::update()
 {
     DEBUG_BLOCK
-    const int dbVersion = adminValue( "DB_VERSION" );
+    int dbVersion = adminValue( "DB_VERSION" );
     if( dbVersion == 0 )
     {
         createTables();
-        m_collection->query( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', 1);" );
+        m_collection->query( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', 2);" );
+    }
+    else if( dbVersion < DB_VERSION )
+    {
+        debug() << "Database out of date: database version is" << dbVersion << ", current version is" << DB_VERSION;
+        if ( dbVersion == 1 )
+        {
+            upgradeVersion1to2();
+            dbVersion = 2;
+        }
+        m_collection->query( "UPDATE admin SET version = 2 WHERE component = 'DB_VERSION';" );
+        m_collection->startFullScan();
     }
     else if( dbVersion > DB_VERSION )
     {
-        cleanPermanentTables();
-        createTables();
-        m_collection->query( "INSERT INTO admin(component, version) VALUES( 'DB_VERSION', 1);" );
+        KMessageBox::error(0,
+                "<p>The Amarok collection database was created by a newer version of Amarok, "
+                "and this version of Amarok cannot use it.</p>",
+                "Database Type Unknown");
+        // FIXME: maybe we should tell them how to delete the database?
+        // FIXME: exit() may be a little harsh, but QCoreApplication::exit() doesn't seem to work
+        exit(1);
     }
+}
+
+void
+DatabaseUpdater::upgradeVersion1to2()
+{
+    DEBUG_BLOCK
+
+    m_collection->query( "ALTER TABLE tracks "
+                         "ADD COLUMN albumgain FLOAT, "
+                         "ADD COLUMN albumpeakgain FLOAT, "
+                         "ADD COLUMN trackgain FLOAT,"
+                         "ADD COLUMN trackpeakgain FLOAT;" );
 }
 
 void
@@ -158,6 +186,10 @@ DatabaseUpdater::createTemporaryTables()
                     ",bpm FLOAT"
                     ",createdate INTEGER"   //are the two dates needed?
                     ",modifydate INTEGER"
+                    ",albumgain FLOAT"
+                    ",albumpeakgain FLOAT"
+                    ",trackgain FLOAT"
+                    ",trackpeakgain FLOAT"
                     ");";
 
         m_collection->query( c );
@@ -419,6 +451,10 @@ DatabaseUpdater::createTables() const
                     ",bpm FLOAT"
                     ",createdate INTEGER"   //are the two dates needed?
                     ",modifydate INTEGER"
+                    ",albumgain FLOAT"
+                    ",albumpeakgain FLOAT" // decibels, relative to albumgain
+                    ",trackgain FLOAT"
+                    ",trackpeakgain FLOAT" // decibels, relative to trackgain
                     ");";
 
         m_collection->query( c );

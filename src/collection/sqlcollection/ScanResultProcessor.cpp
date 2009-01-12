@@ -325,13 +325,31 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     const int created  = file.created().toTime_t();
     const int modified = file.lastModified().toTime_t();
 
+    qreal albumGain = 0.0;
+    qreal albumPeakGain = 0.0;
+    if ( trackData.contains( Field::ALBUMGAIN ) )
+    {
+        albumGain = trackData[ Field::ALBUMGAIN ].toString().toFloat();
+        if ( trackData.contains( Field::ALBUMPEAKGAIN ) )
+            albumPeakGain = trackData[ Field::ALBUMPEAKGAIN ].toString().toFloat();
+    }
+    qreal trackGain = 0.0;
+    qreal trackPeakGain = 0.0;
+    if ( trackData.contains( Field::TRACKGAIN ) )
+    {
+        trackGain = trackData[ Field::TRACKGAIN ].toString().toFloat();
+        if ( trackData.contains( Field::TRACKPEAKGAIN ) )
+            trackPeakGain = trackData[ Field::TRACKPEAKGAIN ].toString().toFloat();
+    }
+
     //urlId will take care of the urls table part of AFT
     int url = urlId( path, uid );
 
-    QString sql,sql2;
+    QString sql,sql2,sql3;
     sql = "REPLACE INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
                     "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
-                    "createdate,modifydate) VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
+                    "createdate,modifydate,albumgain,albumpeakgain,trackgain,trackpeakgain) "
+                    "VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
     sql = sql.arg( QString::number( url )
                 , QString::number( artist )
                 , QString::number( compilationId ? compilationId : album )
@@ -342,7 +360,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                 , m_collection->escape( trackData[ Field::COMMENT ].toString() )
                 , QString::number( trackData[Field::TRACKNUMBER].toInt() ) );
 
-    sql2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9);";
+    sql2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9"; // goes up to modifydate
     sql2 = sql2.arg( QString::number( trackData[Field::DISCNUMBER].toInt() )
                 , QString::number( trackData[Field::BITRATE].toInt() )
                 , QString::number( trackData[Field::LENGTH].toInt() )
@@ -352,7 +370,14 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                 , "0" // NYI: bpm
                 , QString::number( created )
                 , QString::number( modified ) );
-    sql += sql2;
+
+    sql3 = ",%1,%2,%3,%4);";
+    sql3 = sql3.arg( QString::number( albumGain )
+                , QString::number( albumPeakGain )
+                , QString::number( trackGain )
+                , QString::number( trackPeakGain ) );
+
+    sql += sql2 + sql3;
 
     m_collection->query( sql );
 
