@@ -24,6 +24,7 @@
 #include "App.h"
 #include "Debug.h"
 #include "MainWindow.h"
+#include "navigators/NavigatorFilterProxyModel.h"
 #include "PlaylistDefines.h"
 #include "view/graphic/PlaylistGraphicsView.h"
 #include "PlaylistController.h"
@@ -173,7 +174,8 @@ void Playlist::Widget::sort( int index )
     DEBUG_BLOCK
     int field = m_sortBox->itemData( index ).toInt();
     debug() << "Field: " << field;
-    The::playlistModel()->sort( field );
+    //The::playlistModel()->sort( field );
+    NavigatorFilterProxyModel::instance()->sort( field );
 }
 
 

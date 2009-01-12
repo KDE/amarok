@@ -204,10 +204,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
          */
         int currentSearchFields() { return m_currentSearchFields; }
 
-    public slots:
-
-        void sort( int field );
-
     signals:
         void insertedIds( const QList<quint64>& );
         void removedIds( const QList<quint64>& );
