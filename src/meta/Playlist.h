@@ -59,6 +59,7 @@ namespace Meta
             virtual ~Playlist() {}
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
+            virtual QString description() const { return QString(); }
 
             /**override showing just the filename */
             virtual void setName( const QString &name ) { m_name = name; }

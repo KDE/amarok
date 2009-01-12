@@ -48,14 +48,15 @@ class SqlPlaylist : public Playlist
 
         ~SqlPlaylist();
 
-        bool saveToDb( bool tracks = true );
-        QString description() const { return m_description; }
-        void setDescription( const QString &description ) { m_description = description; }
-
         /* Playlist virtual functions */
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
+        virtual QString description() const { return m_description; }
         virtual void setName( const QString &name );
+
+
+        bool saveToDb( bool tracks = true );
+        void setDescription( const QString &description ) { m_description = description; }
 
         void setParent( Meta::PlaylistGroupPtr parent );
 

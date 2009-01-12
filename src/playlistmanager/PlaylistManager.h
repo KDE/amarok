@@ -30,6 +30,7 @@
 class KJob;
 class PlaylistManager;
 class PlaylistProvider;
+typedef QList<PlaylistProvider *> PlaylistProviderList;
 class PodcastProvider;
 class UserPlaylistProvider;
 
@@ -95,6 +96,11 @@ class PlaylistManager : public QObject
         Meta::PlaylistList playlistsOfCategory( int playlistCategory );
 
         /**
+        * returns all PlaylistProviders that provider a certain playlist category.
+        **/
+        PlaylistProviderList providersForCategory( int playlistCategory );
+
+        /**
          * Add a PlaylistProvider that contains Playlists of a category defined
          * in the PlaylistCategory enum.
          * @arg provider a PlaylistProvider
@@ -128,10 +134,8 @@ class PlaylistManager : public QObject
 
         bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
-
         //the next two functions are needed to support some services that have no other way of presenting data to the user
         //than wrapping the url to a playlist in a track.
-
         bool canExpand( Meta::TrackPtr track );
         Meta::PlaylistPtr expand( Meta::TrackPtr track );
 

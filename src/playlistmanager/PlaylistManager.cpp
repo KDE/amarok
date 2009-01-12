@@ -160,6 +160,12 @@ PlaylistManager::playlistsOfCategory( int playlistCategory )
     return list;
 }
 
+PlaylistProviderList
+PlaylistManager::providersForCategory( int playlistCategory )
+{
+    return m_map.values( playlistCategory );
+}
+
 PlaylistProvider *
 PlaylistManager::playlistProvider(int category, QString name)
 {

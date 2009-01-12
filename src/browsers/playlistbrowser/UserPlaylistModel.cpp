@@ -82,7 +82,6 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 QVariant
 PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 {
-
     if ( !index.isValid() )
         return QVariant();
 
@@ -93,33 +92,28 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
         return QVariant::fromValue( item );
     else if ( role == Qt::DisplayRole || role == Qt::EditRole )
         return item->name();
+    else if( role == DescriptionRole || role == Qt::ToolTipRole )
+        return item->description();
+    else if( role == OriginRole )
+        return QVariant(); //TODO return the provider name
     else if (role == Qt::DecorationRole )
+        return QVariant( KIcon( "amarok_playlist" ) );
+    else if( role == GroupRole )
     {
-//         if ( typeid( * item ) == typeid( PlaylistGroup ) )
-//             return QVariant( KIcon( "folder-amarok" ) );
-//         else if ( typeid( * item ) == typeid( Meta::Playlist ) )
-            return QVariant( KIcon( "amarok_playlist" ) );
+        Meta::PlaylistGroupPtr group = m_reverseGroupMap[item];
+        QStringList groupName;
+        //Keep recursing up until we reach the root item
+        do
+            groupName << group->name();
+        while( group = group->parent() );
+
+        //we return a stringlist to allow the view to represent it any way it wants
+        // including as labels
+        return QVariant( groupName );
     }
 
     return QVariant();
 }
-
-/*
-QModelIndex
-PlaylistBrowserNS::UserModel::createIndex( int row, int column, PlaylistViewItemPtr item ) const
-{
-    quint32 index = qHash( item.data() );
-    bool debugIt = false;
-    if( m_viewItems.contains( index ) )
-        debugIt = false;
-    else
-        m_viewItems[ index ] = item;
-    QModelIndex ret = QAbstractItemModel::createIndex( row, column, index );
-//    if( debugIt )
-//        debug() << "created " << ret << " with " << ret.parent().internalId();
-    return ret;
-}
-*/
 
 QModelIndex
 PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & parent) const

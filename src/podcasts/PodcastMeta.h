@@ -242,6 +242,8 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
         //PodcastMetaCommon methods
         int podcastType() { return ChannelType; }
+        //override this since it's ambigous in PodcastMetaCommon and Playlist
+        virtual QString description() const { return m_description; }
 
         //PodcastChannel specific methods
         KUrl url() const { return m_url; }
