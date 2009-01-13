@@ -54,7 +54,7 @@ namespace Amarok
     static QPixmap
     loadOverlay( const QString &iconName )
     {
-        KIcon icon = KIcon( iconName );
+        KIcon icon( iconName );
         if ( !icon.isNull() )
             return icon.pixmap( 10, 10 ); // overlay size, adjust here
 
@@ -270,6 +270,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
             m_trackLength = 0;
 
             paintIcon();
+            setupMenu(); // remove custom track actions on stop
             break;
 
         case Phonon::PausedState:
@@ -398,12 +399,12 @@ Amarok::TrayIcon::blendOverlay( const QPixmap &overlay )
 void
 Amarok::TrayIcon::setupMenu()
 {
-    if( !m_track )
-        return;
-
     foreach( QAction * action, m_extraActions ) {
         contextMenu()->removeAction( action );
     }
+
+    if( !m_track )
+        return;
 
     if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
         Meta::CurrentTrackActionsCapability *cac = m_track->as<Meta::CurrentTrackActionsCapability>();
@@ -420,7 +421,7 @@ Amarok::TrayIcon::setupMenu()
 
             foreach( QAction *action, m_extraActions )
                 contextMenu()->addAction( action );
-            //m_extraActions.append( contextMenu()->addSeparator() );
+            contextMenu()->addSeparator();
 
             // readd
         #ifndef Q_WS_MAC
