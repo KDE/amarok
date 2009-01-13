@@ -29,13 +29,13 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
 
     QGridLayout *databaseLayout = new QGridLayout( gridHolder );
 
-    QLabel *connectionLabel = new QLabel( "Connection", gridHolder );
+    QLabel *connectionLabel = new QLabel( i18n("Connection"), gridHolder );
     m_connectionCombo = new QComboBox( gridHolder );
     m_connectionCombo->insertItem( 0, "SQLite", FastForwardImporter::SQLite );
     m_connectionCombo->insertItem( 1, "MySQL", FastForwardImporter::MySQL );
     m_connectionCombo->insertItem( 2, "PostgreSQL", FastForwardImporter::PostgreSQL );
 
-    m_databaseLocationLabel = new QLabel( "Database Location", gridHolder );
+    m_databaseLocationLabel = new QLabel( i18n("Database Location"), gridHolder );
     m_databaseLocationInput = new QLineEdit( gridHolder );
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
