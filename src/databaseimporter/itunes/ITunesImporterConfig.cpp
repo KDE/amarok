@@ -23,6 +23,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QDesktopServices>
+#include <KLocale>
 
 ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )
     : DatabaseImporterConfig( parent )
@@ -31,7 +32,7 @@ ITunesImporterConfig::ITunesImporterConfig( QWidget *parent )
 
     QGridLayout *databaseLayout = new QGridLayout( gridHolder );
 
-    m_databaseLocationLabel = new QLabel( "Database Location", gridHolder );
+    m_databaseLocationLabel = new QLabel( i18n("Database Location"), gridHolder );
     m_databaseLocationInput = new QLineEdit( gridHolder );
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
