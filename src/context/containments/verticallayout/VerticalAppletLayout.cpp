@@ -193,17 +193,17 @@ Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
     qreal height = 0.0;
     int index = -1;
     if( boundingRect().height() == 0 || 
-      ( m_appletList.size() == 0     || loc < m_appletList.size() ) ) // if we have a 0 height this is b/c we are starting up and don't have a real size yet
+      ( m_appletList.size() == 0     || loc > m_appletList.size() - 1 ) ) // if we have a 0 height this is b/c we are starting up and don't have a real size yet
         return 0;                      // for now just show all the applets 
     for( int i = loc; i >= 0; i-- )
-    {
+    {    
+        index = i;
         debug() << "height:" << height;
         qreal curHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( boundingRect().width(), -1 ) ).height();
         debug() << "calculating:" << curHeight << " + " << height << " > " << boundingRect().height();
         if( ( curHeight + height ) > boundingRect().height() )
             break;
             
-        index = i;
         height += curHeight;
     }
     return index;
