@@ -177,8 +177,9 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         browser = "files";
         url.appendArg( browser );
         return url;
-
     }
+
+    return url;
 }
 
 AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
