@@ -172,7 +172,7 @@ Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
     // HACK to compensate for the toolbar actually being at (1000,0). we want
     // the menu to be seen in the "main" view
     qreal xpos = pos.x() - TOOLBAR_X_OFFSET;
-    const qreal ypos = Context::ContextView::self()->size().height() - m_addMenu->boundingRect().height();
+    const qreal ypos = Context::ContextView::self()->size().height() - m_addMenu->boundingRect().height() - 20 /* push the down arrow above the toolbar */;
     debug() << "placing at X coord:" << QPointF( xpos, ypos ) << "in scene coords" << mapToScene( QPointF( xpos, ypos ) );
     
     qreal diff = Context::ContextView::self()->size().width() - ( mapToScene( QPointF( xpos, ypos ) ).x() + m_addMenu->boundingRect().width() );
