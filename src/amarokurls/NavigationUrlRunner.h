@@ -31,7 +31,7 @@ class NavigationUrlRunner : public AmarokUrlRunnerBase
 public:
     NavigationUrlRunner();
 
-    ~NavigationUrlRunner();
+    virtual ~NavigationUrlRunner();
 
     virtual QString command() const;
     virtual bool run( AmarokUrl url );

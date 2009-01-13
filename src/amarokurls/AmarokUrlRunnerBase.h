@@ -29,12 +29,14 @@ Virtual base class for all classes that wants to be able to register to handle a
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AmarokUrlRunnerBase {
+class AmarokUrlRunnerBase
+{
 public:
-
     virtual QString command() const = 0;
     virtual bool run( AmarokUrl url ) = 0;
 
+protected:
+    virtual ~AmarokUrlRunnerBase() {};
 };
 
 #endif
