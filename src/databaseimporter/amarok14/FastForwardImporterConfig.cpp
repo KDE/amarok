@@ -43,20 +43,20 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     m_databaseLocationInput->setText( QDir::homePath() + "/.kde/share/apps/amarok/collection.db" );
     m_databaseLocationLabel->setBuddy( m_databaseLocationInput );
 
-    m_usernameLabel = new QLabel( "Username", gridHolder );
+    m_usernameLabel = new QLabel( i18n("Username"), gridHolder );
     m_usernameInput = new QLineEdit( gridHolder );
     m_usernameLabel->setBuddy( m_usernameInput );
 
-    m_passwordLabel = new QLabel( "Password", gridHolder );
+    m_passwordLabel = new QLabel( i18n("Password"), gridHolder );
     m_passwordInput = new QLineEdit( gridHolder );
     m_passwordInput->setEchoMode( QLineEdit::Password );
     m_passwordLabel->setBuddy( m_passwordInput );
 
-    m_databaseLabel = new QLabel( "Database Name", gridHolder );
+    m_databaseLabel = new QLabel( i18n("Database Name"), gridHolder );
     m_databaseInput = new QLineEdit( gridHolder );
     m_databaseLabel->setBuddy( m_databaseInput );
 
-    m_hostnameLabel = new QLabel( "Hostname", gridHolder );
+    m_hostnameLabel = new QLabel( i18n("Hostname"), gridHolder );
     m_hostnameInput = new QLineEdit( gridHolder );
     m_hostnameInput->setText( "localhost" );
     m_hostnameLabel->setBuddy( m_hostnameInput );
