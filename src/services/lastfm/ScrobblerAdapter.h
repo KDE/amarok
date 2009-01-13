@@ -31,7 +31,7 @@ public:
     ScrobblerAdapter( QObject *parent, const QString &clientId );
     virtual ~ScrobblerAdapter();
 
-    virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
     virtual void engineTrackPositionChanged( long position , bool userSeek );
     virtual void engineNewTrackPlaying();
 

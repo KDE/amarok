@@ -42,7 +42,7 @@ public:
 
     // EngineObserver
     virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
-    virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
     virtual void engineNewTrackPlaying();
 
 signals:

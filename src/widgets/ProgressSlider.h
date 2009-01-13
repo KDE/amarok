@@ -46,7 +46,7 @@ class ProgressWidget : public QWidget, public EngineObserver
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
         virtual void engineTrackLengthChanged( long seconds );
         virtual void engineNewTrackPlaying();
-        virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
+        virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
 
     private:
         TimeLabel *m_timeLabelLeft;

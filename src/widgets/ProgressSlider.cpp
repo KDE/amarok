@@ -234,7 +234,7 @@ QSize ProgressWidget::sizeHint() const
     return QSize( width(), 12 );
 }
 
-void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, const QString & reason )
+void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason )
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )

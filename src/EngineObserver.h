@@ -33,14 +33,20 @@ class QString;
 class AMAROK_EXPORT EngineObserver
 {
 public:
+    enum PlaybackEndedReason
+    {
+        EndedStopped = 0,
+        EndedQuit    = 1
+    };
+
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
     virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
-    virtual void enginePlaybackEnded( int finalPosition, int trackLength, const QString &reason );
+    virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineVolumeChanged( int percent );
-    virtual void engineTrackPositionChanged( long position , bool userSeek );
+    virtual void engineTrackPositionChanged( long position, bool userSeek );
     virtual void engineTrackLengthChanged( long seconds );
 
 private:
@@ -59,7 +65,7 @@ protected:
     EngineSubject();
     virtual ~EngineSubject();
     void stateChangedNotify( Phonon::State newState, Phonon::State oldState );
-    void playbackEnded( int /*finalPosition*/, int /*trackLength*/, const QString &reason );
+    void playbackEnded( int /*finalPosition*/, int /*trackLength*/, EngineObserver::PlaybackEndedReason reason );
     void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const;
     void volumeChangedNotify( int /*percent*/ );
     /* userSeek means the position didn't change due to normal playback */
