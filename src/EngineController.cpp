@@ -584,6 +584,7 @@ EngineController::slotTrackEnded()
     {
         m_currentTrack->finishedPlaying( 1.0 );
         emit trackFinished();
+        playbackEnded( trackPosition(), m_currentTrack->length(), EngineObserver::EndedStopped );
         m_currentTrack = 0;
     }
 

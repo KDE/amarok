@@ -168,7 +168,6 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
 
     switch ( state )
     {
-        case Phonon::StoppedState:
         case Phonon::LoadingState:
             if ( !The::engineController()->currentTrack() || ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) )
             {
@@ -180,7 +179,6 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
                 m_timeLabelLeft->setEnabled( false );
                 m_timeLabelLeft->setShowTime( false );
                 m_timeLabelRight->setShowTime( false );
-
             }
             break;
 
@@ -192,6 +190,7 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
             //fallthrough
             break;
 
+        case Phonon::StoppedState:
         case Phonon::BufferingState:
         case Phonon::ErrorState:
             break;
@@ -241,6 +240,14 @@ void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, Pl
     Q_UNUSED( reason )
     DEBUG_BLOCK
             
+    m_slider->setEnabled( false );
+    m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
+    m_slider->setMaximum( 0 );
+    m_timeLabelLeft->setEnabled( false );
+    m_timeLabelLeft->setEnabled( false );
+    m_timeLabelLeft->setShowTime( false );
+    m_timeLabelRight->setShowTime( false );
+   
     m_currentUrlId.clear();
 }
 
