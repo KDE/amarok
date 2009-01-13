@@ -95,7 +95,7 @@ public:
         q->setAcceptDrops(true);
         q->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         q->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        q->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        q->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     }
 
     Plasma::View *q;
