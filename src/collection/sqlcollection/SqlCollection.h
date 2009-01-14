@@ -26,6 +26,8 @@
 #include "SqlStorage.h"
 #include "amarok_export.h"
 
+#include <QPointer>
+
 class SqlCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
@@ -113,7 +115,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
     private:
         SqlRegistry* const m_registry;
         DatabaseUpdater * const m_updater;
-        ScanManager * const m_scanManager;
+        QPointer<ScanManager> m_scanManager;
 
         QString m_collectionId;
         QString m_prettyName;
