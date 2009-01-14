@@ -24,6 +24,7 @@ VERSION 2.1
     * Now using KSystemTrayIcon.
 
   BUGFIXES:
+    * Fixed crash on exit when collection scan has been aborted. (BR 176870)
     * Open ogg files in Amarok when using Dolphin and other file managers.
       Patch thanks to Lubos Lunak <l.lunak@kde.org>. (BR 180155)
     * Fixed an infinite loop bug when using title case conversion in Guess Tags.
