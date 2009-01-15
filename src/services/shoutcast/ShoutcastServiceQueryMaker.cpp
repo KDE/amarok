@@ -270,6 +270,7 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
     if ( job->error() )
     {
         error() << job->error();
+        error() << job->errorString();
         m_storedTransferJob->deleteLater();
         return;
     }
