@@ -107,13 +107,22 @@ Playlist::DynamicTrackNavigator::repopulate()
     if ( !m_mutex.tryLock() )
         return;
 
-    int start = Model::instance()->activeRow() + 1;
-    if ( start < 0 )
-        start = 0;
-    int span = Model::instance()->rowCount() - start;
+    int row = Model::instance()->activeRow() + 1;
+    if ( row < 0 )
+        row = 0;
 
-    if ( span > 0 )
-        Controller::instance()->removeRows( start, span );
+    // Don't remove queued tracks
+    QList<int> rows;
+
+    do {
+        if( !(Model::instance()->stateOfRow( row ) & Item::Queued) )
+            rows << row;
+        row++;
+    }
+    while( row < Model::instance()->rowCount() );
+
+    if( !rows.isEmpty() )
+        Controller::instance()->removeRows( rows );
 
     m_playlist->recalculate();
     appendUpcoming();

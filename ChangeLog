@@ -6,7 +6,7 @@ Amarok ChangeLog
 VERSION 2.1
   FEATURES:
     * The last.fm service now allows for the playing of all types of user
-	  stations (personal, loved tracks, recommendations, and neighborhood).
+      stations (personal, loved tracks, recommendations, and neighborhood).
     * Arbitrary Tags can now be played in the last.fm service. (BR 139802)
     * Replay Gain support, currently only for Ogg Vorbis and FLAC files.
     * Amarok urls. Amarok can now load and generate "amarok urls" that allows
@@ -23,6 +23,8 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
+    * Don't remove queued tracks from the playlist when repopulating dynamic
+      playlists.
     * Major last.fm UI overhaul
     * Progress indicator on system tray icon is back.
     * Now using KSystemTrayIcon.
