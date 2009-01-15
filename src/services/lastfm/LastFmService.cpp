@@ -371,10 +371,15 @@ LastFmService::polish()
 
         m_avatarLabel = new QLabel(outerProfilebox);
         if( !m_avatar )
+        {
             m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(32, 32) );
-        else
+            m_avatarLabel->setFixedSize( 32, 32 );
+        } else
+        {
             m_avatarLabel->setPixmap( m_avatar );
-        m_avatarLabel->setFixedSize( 32, 32 );
+            m_avatarLabel->setFixedSize( m_avatar.width(), m_avatar.height() );
+        }
+        
         
         debug() << m_avatarLabel->margin();
         KVBox * innerProfilebox = new KVBox( outerProfilebox );
