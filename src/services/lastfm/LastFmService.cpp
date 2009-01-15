@@ -374,6 +374,8 @@ LastFmService::polish()
             m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(32, 32) );
         else
             m_avatarLabel->setPixmap( m_avatar );
+        m_avatarLabel->setFixedSize( 32, 32 );
+        
         debug() << m_avatarLabel->margin();
         KVBox * innerProfilebox = new KVBox( outerProfilebox );
         innerProfilebox->setSpacing(1);
