@@ -25,23 +25,22 @@
 
 #include <typeinfo>
 
-Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow,
-                                          Meta::SqlPlaylistGroupPtr parent )
-        : m_parent( parent )
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, Meta::SqlPlaylistGroupPtr parent )
+    : m_hasFetchedChildPlaylists( false )
+    , m_parent( parent )
 {
     m_dbId = dbResultRow[0].toInt();
     m_name = dbResultRow[2];
     m_description = dbResultRow[3];
 }
 
-Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name,
-                                          Meta::SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, Meta::SqlPlaylistGroupPtr parent )
     : m_dbId( -1 )
-    , m_parent( parent )
+    , m_hasFetchedChildPlaylists( false )
     , m_name( name )
     , m_description( QString() )
-{
-}
+    , m_parent( parent )
+{}
 
 Meta::SqlPlaylistGroup::~SqlPlaylistGroup()
 {
