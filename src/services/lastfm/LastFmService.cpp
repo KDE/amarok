@@ -1,6 +1,7 @@
 /***************************************************************************
 * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
 * copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
+* copyright            : (C) 2009 Casey Link <unnamedrambler@gmail.com>   *
  **************************************************************************/
 
 /***************************************************************************
@@ -14,10 +15,13 @@
 
 #include "LastFmService.h"
 
+#include "AvatarDownloader.h"
 #include "EngineController.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "SimilarArtistsAction.h"
+#include "LastFmTreeModel.h"
+#include "LastFmTreeView.h"
 #include "ScrobblerAdapter.h"
 #include "StatusBar.h"
 #include "widgets/FlowLayout.h"
@@ -31,16 +35,20 @@
 #include "widgets/SearchWidget.h"
 
 #include "kdenetwork/knetworkaccessmanager.h"
- 
+
 #include <lastfm/Scrobbler.h> // from liblastfm
 #include <lastfm/ws/WsAccessManager.h>
 #include <lastfm/ws/WsKeys.h>
 #include <lastfm/ws/WsReply.h>
 #include <lastfm/ws/WsRequestBuilder.h>
 
+#include <KLocale>
 
 #include <QComboBox>
 #include <QCryptographicHash>
+#include <QPainter>
+#include <QImage>
+#include <QFrame>
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
 
@@ -54,11 +62,11 @@ void
 LastFmServiceFactory::init()
 {
     LastFmServiceConfig config;
- 
+
     //  The user activated the service, but didn't fill the username/password? Don't start it.
     if ( config.username().isEmpty() || config.password().isEmpty() )
         return;
-    
+
     ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.scrobble(), config.fetchSimilar() );
     m_activeServices << service;
     m_initialized = true;
@@ -90,16 +98,19 @@ LastFmServiceFactory::config()
 
 
 LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar )
-    : ServiceBase( name, parent ),
+    : ServiceBase( name, parent, false ),
       m_scrobble( scrobble ),
       m_scrobbler( 0 ),
       m_polished( false ),
+      m_avatarLabel( 0 ),
+      m_profile( 0 ),
+      m_userinfo( 0 ),
       m_userName( username )
 {
     DEBUG_BLOCK
-    
+
     Q_UNUSED( fetchSimilar ); // TODO implement..
-    
+
     // set the global static Lastfm::Ws stuff
     Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
     Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
@@ -107,16 +118,16 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     Ws::Username = qstrdup( m_userName.toLatin1().data() );
-    
+
     // set up proxy
     WsAccessManager* qnam = new KNetworkAccessManager( this );
     WsRequestBuilder::setWAM( qnam );
-    
+
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
     QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "authToken" + authToken + "methodauth.getMobileSession" + QString( Ws::SharedSecret ) ).toUtf8() );
-    
+
     // now authenticate w/ last.fm and get our session key
     WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
     .add( "username", m_userName )
@@ -124,9 +135,9 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     .add( "api_key", Ws::ApiKey )
     .add( "api_sig", sign_key )
     .get();
-    
+
     connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
-    
+
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
     setShortDescription( i18n( "Last.fm: The social music revolution." ) );
@@ -167,15 +178,22 @@ LastFmService::onAuthenticated( WsReply* reply )
                 Ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
                 if( m_scrobble )
                     m_scrobbler = new ScrobblerAdapter( this, "ark" );
+                QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "sk" + QString( Ws::SessionKey ) + "methoduser.getInfo" + QString( Ws::SharedSecret ) ).toUtf8() );
+                WsReply* getinfo = WsRequestBuilder( "user.getInfo" )
+
+                .get();
+
+                connect( getinfo, SIGNAL( finished( WsReply* ) ), SLOT( onGetUserInfo( WsReply* ) ) );
+
                 break;
             } case Ws::AuthenticationFailed:
                 //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly." ), KDE::StatusBar::Error );
                 break;
-                
+
             default:
                 //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later." ), KDE::StatusBar::Error );
                 break;
-                
+
             case Ws::UrProxyIsFuckedLol:
             case Ws::UrLocalNetworkIsFuckedLol:
                 //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings." ), KDE::StatusBar::Error );
@@ -189,15 +207,142 @@ LastFmService::onAuthenticated( WsReply* reply )
 }
 
 void
+LastFmService::onGetUserInfo( WsReply* reply )
+{
+    DEBUG_BLOCK
+    try
+    {
+        switch (reply->error())
+        {
+            case Ws::NoError:
+            {
+                m_country = reply->lfm()["user"]["country"].nonEmptyText();
+                m_age = reply->lfm()["user"]["age"].nonEmptyText();
+                m_gender = reply->lfm()["user"]["gender"].nonEmptyText();
+                m_playcount = reply->lfm()["user"]["playcount"].nonEmptyText();
+                m_subscriber = reply->lfm()["user"]["subscriber"].nonEmptyText() == "1";
+                debug() << "profile info "  << m_country << " " << m_age << " " << m_gender << " " << m_playcount << " " << m_subscriber;
+                if( !reply->lfm()["user"][ "image" ].text().isEmpty() )
+                {
+                    debug() << "profile avatar: " << reply->lfm()["user"][ "image" ].text();
+                    AvatarDownloader* downloader = new AvatarDownloader();
+                    KUrl url( reply->lfm()["user"][ "image" ].text() );
+                    downloader->downloadAvatar( m_userName,  url);
+                    connect( downloader, SIGNAL( signalAvatarDownloaded( QPixmap ) ), SLOT( onAvatarDownloaded( QPixmap ) ) );
+                }
+                updateProfileInfo();
+                break;
+            } case Ws::AuthenticationFailed:
+//             debug() << "Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly.";
+            break;
+
+            default:
+//                 debug() << "Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later.";
+                break;
+
+            case Ws::UrProxyIsFuckedLol:
+            case Ws::UrLocalNetworkIsFuckedLol:
+//                 debug() <<  "Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings.";
+                break;
+        }
+    }
+    catch (CoreDomElement::Exception& e)
+    {
+        qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
+    }
+}
+
+void
+LastFmService::onAvatarDownloaded( QPixmap avatar )
+{
+    DEBUG_BLOCK
+    if( !avatar.isNull() ) {
+        int m = 48;
+        avatar = avatar.scaled( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
+        // This code is here to stop Qt from crashing on certain weirdly shaped avatars.
+        // We had a case were an avatar got a height of 1px after scaling and it would
+        // crash in the rendering code. This here just fills in the background with
+        // transparency first.
+        if ( avatar.width() < m || avatar.height() < m )
+        {
+            QImage finalAvatar( m, m, QImage::Format_ARGB32 );
+            finalAvatar.fill( 0 );
+
+            QPainter p( &finalAvatar );
+            QRect r;
+
+            if ( avatar.width() < m )
+                r = QRect( ( m - avatar.width() ) / 2, 0, avatar.width(), avatar.height() );
+            else
+                r = QRect( 0, ( m - avatar.height() ) / 2, avatar.width(), avatar.height() );
+
+            p.drawPixmap( r, avatar );
+            p.end();
+
+            avatar = QPixmap::fromImage( finalAvatar );
+        }
+        m_avatar = avatar;
+        if( m_avatarLabel )
+            m_avatarLabel->setPixmap( m_avatar );
+    }
+//     sender()->deleteLater();
+}
+
+void
+LastFmService::updateEditHint( int index )
+{
+    if( !m_customStationEdit )
+        return;
+    QString hint;
+    switch ( index ) {
+        case 0:
+            hint = i18n( "Enter an artist name" );
+            break;
+        case 1:
+            hint = i18n( "Enter a tag" );
+            break;
+        case 2:
+            hint = i18n( "Enter a last.fm user name" );
+            break;
+        default:
+            return;
+    }
+    m_customStationEdit->setClickMessage( hint );
+}
+
+void
+LastFmService::updateProfileInfo()
+{
+    if( m_userinfo && !m_age.isEmpty() && !m_gender.isEmpty()) {
+        QString ageinfo = " (" + m_age + ", " + m_gender + ")";
+        m_userinfo->setText( m_userName + ageinfo);
+    }
+    if( m_profile && !m_playcount.isEmpty() ) {
+        QString playcount = KGlobal::locale()->formatNumber( m_playcount, false );
+        m_profile->setText( playcount + i18n( " plays" ) );
+    }
+}
+
+void
 LastFmService::polish()
 {
     if( !m_polished )
     {
-        m_bottomPanel->setMaximumHeight( 150 );
+        LastFmTreeView* view = new LastFmTreeView( this );
+        view->setFrameShape( QFrame::NoFrame );
+        view->setDragEnabled ( true );
+        view->setSortingEnabled( false );
+        view->setDragDropMode ( QAbstractItemView::DragOnly );
+        setView( view );
+        setModel( new LastFmTreeModel( m_userName, this ) );
+
+        m_bottomPanel->setMaximumHeight( 300 );
+//         m_bottomPanel->hide();
         m_buttonBox = new QWidget( m_bottomPanel );
         FlowLayout * flowLayout= new FlowLayout( 3 );
         m_buttonBox->setLayout( flowLayout );
-        
+
         m_loveButton = new QPushButton( );
         m_loveButton->setText( i18n( "Love" ) );
         m_loveButton->setObjectName( "loveButton" );
@@ -219,22 +364,48 @@ LastFmService::polish()
         connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
         flowLayout->addWidget( m_skipButton );
 
-        KHBox * customStationBox = new KHBox( m_bottomPanel );
+        m_topPanel->setMaximumHeight( 300 );
+        KHBox * outerProfilebox = new KHBox( m_topPanel );
+        outerProfilebox->setSpacing(1);
+        outerProfilebox->setMargin(0);
+
+        m_avatarLabel = new QLabel(outerProfilebox);
+        if( !m_avatar )
+            m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(32, 32) );
+        else
+            m_avatarLabel->setPixmap( m_avatar );
+        debug() << m_avatarLabel->margin();
+        KVBox * innerProfilebox = new KVBox( outerProfilebox );
+        innerProfilebox->setSpacing(1);
+        innerProfilebox->setMargin(0);
+        m_userinfo = new QLabel(innerProfilebox);
+        m_userinfo->setText( m_userName );
+        m_userinfo->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
+        m_userinfo->setMinimumSize( 230 , 28 );
+        m_profile = new QLabel(innerProfilebox);
+        m_profile->setText(QString());
+        m_profile->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
+        updateProfileInfo();
+
+        KHBox * customStationBox = new KHBox( m_topPanel );
         customStationBox->setSpacing( 3 );
+        m_customStationCombo = new QComboBox( customStationBox );
+        QStringList choices;
+        choices << i18n( "Artist" ) << i18n( "Tag" ) << i18n( "User" );
+        m_customStationCombo->insertItems(0, choices);
         m_customStationEdit = new KLineEdit( customStationBox );
-        m_customStationEdit->setClickMessage( i18n( "Enter artist name" ) );
+        updateEditHint( m_customStationCombo->currentIndex() );
         m_customStationButton = new QPushButton( customStationBox );
-        m_customStationButton->setText( i18n( "Go" ) );
+        m_customStationButton->setText( i18n( "Start New Station" ) );
         m_customStationButton->setObjectName( "customButton" );
         m_customStationButton->setIcon( KIcon( "media-playback-start-amarok" ) );
 
         connect( m_customStationEdit, SIGNAL( returnPressed() ), this, SLOT( playCustomStation() ) );
         connect( m_customStationButton, SIGNAL( clicked() ), this, SLOT( playCustomStation() ) );
+        connect( m_customStationCombo, SIGNAL( currentIndexChanged(int) ), this, SLOT( updateEditHint(int) ));
 
         QList<int> levels;
-        levels << CategoryId::Genre;
-        setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-
+        levels << CategoryId::Genre << CategoryId::Album;
         m_polished = true;
     }
 }
@@ -259,7 +430,7 @@ void
 LastFmService::ban()
 {
     DEBUG_BLOCK
-    
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
     if( lastfmTrack )
@@ -271,7 +442,7 @@ void
 LastFmService::skip()
 {
     DEBUG_BLOCK
-    
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
     if( lastfmTrack )
@@ -301,10 +472,26 @@ namespace The
 
 void LastFmService::playCustomStation()
 {
-    QString band = m_customStationEdit->text();
+    DEBUG_BLOCK
+    QString text = m_customStationEdit->text();
+    QString station;
+    debug() << "Selected combo " <<m_customStationCombo->currentIndex();
+    switch ( m_customStationCombo->currentIndex() ) {
+        case 0:
+            station = "lastfm://artist/" + text + "/similarartists";
+            break;
+        case 1:
+            station = "lastfm://globaltags/" + text;
+            break;
+        case 2:
+            station = "lastfm://user/" + text + "/personal";
+            break;
+        default:
+            return;
+    }
 
-    if ( !band.isEmpty() ) {
-        playLastFmStation( "lastfm://artist/" + band + "/similarartists" );
+    if ( !station.isEmpty() ) {
+        playLastFmStation( station );
     }
 }
 

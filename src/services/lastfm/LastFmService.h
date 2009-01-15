@@ -19,7 +19,7 @@
 #include "../ServiceBase.h"
 
 #include <KLineEdit>
-
+#include <QLabel>
 class ScrobblerAdapter;
 class LastFmService;
 class LastFmServiceCollection;
@@ -71,32 +71,47 @@ private slots:
     void ban();
 
     void playCustomStation();
+    void updateEditHint( int index );
 
     void setRadioButtons( bool hasRadio );
 
     void onAuthenticated( WsReply* );
-    
+    void onGetUserInfo( WsReply* );
+    void onAvatarDownloaded( QPixmap );
+
 private:
     bool m_scrobble;
     ScrobblerAdapter *m_scrobbler;
     LastFmServiceCollection *m_collection;
 
     void playLastFmStation( const KUrl &url );
+    void updateProfileInfo();
 
     bool m_polished;
     QWidget *m_buttonBox;
+    QWidget *m_profileBox;
     QPushButton *m_loveButton;
     QPushButton *m_banButton;
     QPushButton *m_skipButton;
+    QLabel *m_avatarLabel;
+    QLabel *m_profile;
+    QLabel *m_userinfo;
 
     QComboBox *m_globalComboBox;
 
     KLineEdit * m_customStationEdit;
     QPushButton * m_customStationButton;
+    QComboBox * m_customStationCombo;
 
     const QString m_userName;
     QString m_sessionKey;
     QString m_station;
+    QString m_age;
+    QString m_gender;
+    QString m_country;
+    QString m_playcount;
+    QPixmap m_avatar;
+    bool m_subscriber;
 
     static LastFmService *ms_service;
 

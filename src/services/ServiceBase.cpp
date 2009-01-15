@@ -417,7 +417,10 @@ QString ServiceBase::filter()
 
 QList<int> ServiceBase::levels()
 {
-    return m_contentView->levels();
+    CollectionTreeView *contentView = qobject_cast<CollectionTreeView*>(m_contentView);
+    if( contentView != 0 )
+        return contentView->levels();
+    return QList<int>();
 }
 
 

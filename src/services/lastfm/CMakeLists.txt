@@ -28,6 +28,9 @@ include_directories(
             LastFmServiceQueryMaker.cpp
             LastFmSettings.cpp
             ScrobblerAdapter.cpp
+            LastFmTreeModel.cpp
+            LastFmTreeView.cpp
+            AvatarDownloader.cpp
 
             meta/LastFmMeta.cpp
             meta/LastFmStreamInfoCapability.cpp
@@ -69,10 +72,10 @@ include_directories(
 
         kde4_add_plugin( kcm_amarok_service_lastfm ${kcm_amarok_service_lastfm_PART_SRCS} )
 
-        target_link_libraries( kcm_amarok_service_lastfm 
+        target_link_libraries( kcm_amarok_service_lastfm
             amaroklib
-            amarok_service_liblastfm 
-            ${KDE4_KDEUI_LIBS} 
+            amarok_service_liblastfm
+            ${KDE4_KDEUI_LIBS}
             ${KDE4_KUTILS_LIBS} )
 
         install(TARGETS kcm_amarok_service_lastfm  DESTINATION ${PLUGIN_INSTALL_DIR})
