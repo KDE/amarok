@@ -99,12 +99,14 @@ void ServiceFactory::slotServiceReady()
 ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView )
-        : KVBox( 0)
+        : KVBox( 0 )
         , m_parentFactory( parent )
         , m_polished( false )
         , m_serviceready( false )
         , m_useCollectionTreeView( useCollectionTreeView )
         , m_infoParser( 0 )
+        , m_contentView ( 0 )
+        , m_model( 0 )
 {
     DEBUG_BLOCK
 
@@ -138,27 +140,22 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     nameLabel->setFont( nameLabelFont );
     nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
 
-    if( useCollectionTreeView )
+    if( useCollectionTreeView ) {
         m_contentView = new ServiceCollectionTreeView( this );
-    else
-        m_contentView = new Amarok::PrettyTreeView( this );
-    m_contentView->setFrameShape( QFrame::NoFrame );
-
+        m_contentView->setFrameShape( QFrame::NoFrame );
+        m_contentView->setSortingEnabled( true );
+        m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
+        m_contentView->setDragEnabled ( true );
+        m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
+        connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+    }
     //m_contentView->setAlternatingRowColors ( true );
     //m_contentView->setAnimated( true );
-    m_contentView->setSortingEnabled( true );
-    m_contentView->sortByColumn ( 0, Qt::AscendingOrder );
 
-    m_contentView->setDragEnabled ( true );
-    m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
 
 
     //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
     //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
-
-    if( useCollectionTreeView )
-        connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
-
 
     m_bottomPanel = new KVBox( this );
     m_bottomPanel->setFixedHeight( 50 );
@@ -264,6 +261,22 @@ QAbstractItemModel *
 ServiceBase::model()
 {
     return m_model;
+}
+
+QTreeView *
+ServiceBase::view()
+{
+    return m_contentView;
+}
+
+void
+ServiceBase::setView( QTreeView * view )
+{
+    if( !view)
+        return;
+    m_contentView = view;
+    if( m_model )
+        m_contentView->setModel( m_model );
 }
 
 bool

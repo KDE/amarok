@@ -214,6 +214,18 @@ public:
     QAbstractItemModel * model();
 
     /**
+    * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.
+    * @param model The model.
+    */
+    void setView( QTreeView * model );
+
+    /**
+    * Get the model that is used for displaying items in the tree view.
+    * @return The model.
+    */
+    QTreeView * view();
+
+    /**
      * Set if it should be possible to add the tracks shown in the tree view to the playlist. This method is a bit of a hack and might be removed!
      * @param playable Are tracks playlable.
      */
@@ -362,7 +374,7 @@ protected:
     virtual void generateWidgetInfo( const QString &html = QString() ) const;
 
     static ServiceBase *s_instance;
-    Amarok::PrettyTreeView *m_contentView;
+    QTreeView *m_contentView;
     ServiceFactory *m_parentFactory;
 
     QPushButton *m_homeButton;
