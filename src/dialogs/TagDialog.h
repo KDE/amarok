@@ -46,7 +46,7 @@ namespace Ui
 class QueryMaker;
 class QComboBox;
 
-class AMAROK_EXPORT TagDialog : public KDialog
+class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 {
     Q_OBJECT
 
@@ -64,6 +64,10 @@ class AMAROK_EXPORT TagDialog : public KDialog
 
         friend class TagSelect;
 
+        // inherited from Meta::Observer
+        using Observer::metadataChanged;
+        void metadataChanged( Meta::AlbumPtr album );
+
     signals:
         void lyricsChanged( const QString& );
 
@@ -79,6 +83,7 @@ class AMAROK_EXPORT TagDialog : public KDialog
         void perTrack();
         void checkModified();
 
+        void showCoverMenu( const QPoint &pos );
         void loadCover();
 
         void guessFromFilename();
@@ -106,6 +111,7 @@ class AMAROK_EXPORT TagDialog : public KDialog
         
     private:
         void init();
+        void setCurrentTrack( Meta::TrackPtr track );
         void startDataQuery();
         void readTags();
         void readMultipleTracks();

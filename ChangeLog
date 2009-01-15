@@ -23,6 +23,7 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
+    * Show the cover menu when right clicking on artwork in the Tag Dialog.
     * Don't remove queued tracks from the playlist when repopulating dynamic
       playlists.
     * Major last.fm UI overhaul

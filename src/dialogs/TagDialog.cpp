@@ -27,6 +27,7 @@
 #include "amarokconfig.h"
 #include "CollectionManager.h"
 #include "covermanager/CoverFetcher.h"
+#include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
 #include "EditCapability.h"
 #include "FilenameLayoutDialog.h"
@@ -42,6 +43,7 @@
 #include <KGlobal>
 #include <KHTMLView>
 #include <KLineEdit>
+#include <KMenu>
 #include <KRun>
 
 #include <qdom.h>
@@ -55,12 +57,13 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     : KDialog( parent )
     , m_currentCover()
     , m_tracks( tracks )
-    , m_currentTrack( tracks.first() )
     , m_trackIterator( m_tracks )
     , m_queryMaker( 0 )
     , ui( new Ui::TagDialogBase() )
 {
     DEBUG_BLOCK
+
+    setCurrentTrack( m_tracks.first() );
 
     ui->setupUi( this );
     init();
@@ -71,12 +74,13 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     : KDialog( parent )
     , m_currentCover()
     , m_tracks()
-    , m_currentTrack( track )
     , m_trackIterator( m_tracks )   //makes the compiler happy
     , m_queryMaker( 0 )
     , ui( new Ui::TagDialogBase() )
 {
     DEBUG_BLOCK
+
+    setCurrentTrack( m_tracks.first() );
 
     m_tracks.append( track );
     //we changed the list after creating the iterator, so create a new iterator
@@ -111,6 +115,9 @@ TagDialog::~TagDialog()
 
     Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", ui->kTabWidget->currentIndex() );
 
+    if( m_currentTrack && m_currentTrack->album() )
+        unsubscribeFrom( m_currentTrack->album() );
+
     // NOTE: temporary crash prevention.  TreeView should _always_ be updated
     // if tags have changed.
 
@@ -126,6 +133,19 @@ void
 TagDialog::setTab( int id )
 {
     ui->kTabWidget->setCurrentIndex( id );
+}
+
+void
+TagDialog::setCurrentTrack( Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+    if( m_currentTrack && m_currentTrack->album() )
+        unsubscribeFrom( m_currentTrack->album() );
+
+    m_currentTrack = track;
+
+    if( m_currentTrack && m_currentTrack->album() )
+        subscribeTo( m_currentTrack->album() );
 }
 
 
@@ -156,7 +176,7 @@ TagDialog::queryDone()
     m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
     if( m_tracks.size() )
     {
-        m_currentTrack = m_tracks.first();
+        setCurrentTrack( m_tracks.first() );
         init();
         QTimer::singleShot( 0, this, SLOT( show() ) );
     }
@@ -288,7 +308,8 @@ TagDialog::previousTrack()
     {
         if ( m_currentTrack == m_trackIterator.peekPrevious() )
             m_trackIterator.previous();
-        m_currentTrack = m_trackIterator.previous();
+
+        setCurrentTrack( m_trackIterator.previous() );
     }
     loadTags( m_currentTrack );
     enableItems();
@@ -305,7 +326,8 @@ TagDialog::nextTrack()
     {
         if ( m_currentTrack == m_trackIterator.peekNext() )
             m_trackIterator.next();
-        m_currentTrack = m_trackIterator.next();
+    
+        setCurrentTrack( m_trackIterator.next() );
     }
     loadTags( m_currentTrack );
     enableItems();
@@ -575,14 +597,6 @@ void TagDialog::init()
     // set an icon for the open-in-konqui button
     ui->pushButton_open->setIcon( KIcon( "folder-amarok" ) );
 
-    //Update cover
-    //FIXME: Port 2.0
-//     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
-//             this, SLOT( loadCover( const QString&, const QString& ) ) );
-//     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
-//              this, SLOT( loadCover( const QString&, const QString& ) ) );
-
-
     connect( ui->pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );
 
     if( m_tracks.count() > 1 )
@@ -630,6 +644,9 @@ void TagDialog::init()
     connect( ui->pushButton_previous, SIGNAL( clicked() ), SLOT( previousTrack() ) );
     connect( ui->pushButton_next,     SIGNAL( clicked() ), SLOT( nextTrack() ) );
     connect( ui->checkBox_perTrack,   SIGNAL( clicked() ), SLOT( perTrack() ) );
+
+    ui->pixmap_cover->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( ui->pixmap_cover, SIGNAL( customContextMenuRequested(const QPoint &) ), SLOT( showCoverMenu(const QPoint &) ) );
 }
 
 void
@@ -664,6 +681,48 @@ inline const QString TagDialog::unknownSafe( QString s )
     return ( s.isNull() || s.isEmpty() || s == "?" || s == "-" )
            ? i18nc( "The value for this tag is not known", "Unknown" )
            : s;
+}
+
+void
+TagDialog::metadataChanged( Meta::AlbumPtr album )
+{
+    DEBUG_BLOCK
+
+    if( !m_currentTrack || !m_currentTrack->album() )
+        return;
+
+    debug() << "setting album cover?";
+
+    if( album == m_currentTrack->album() )
+    {
+        debug() << "yep";
+        loadCover();
+    }
+}
+
+void
+TagDialog::showCoverMenu( const QPoint &pos )
+{
+    Meta::AlbumPtr album = m_currentTrack->album();
+    if( !album )
+        return; // TODO: warning or something?
+
+    QAction *displayCoverAction = new DisplayCoverAction( this, album );
+    QAction *unsetCoverAction   = new UnsetCoverAction( this, album );
+
+    if( !album->hasImage() )
+    {
+        displayCoverAction->setEnabled( false );
+        unsetCoverAction->setEnabled( false );
+    }
+
+    KMenu *menu = new KMenu( this );
+    menu->addAction( displayCoverAction );
+    menu->addAction( new FetchCoverAction( this, album ) );
+    menu->addAction( new SetCustomCoverAction( this, album ) );
+    menu->addAction( unsetCoverAction );
+
+    menu->exec( ui->pixmap_cover->mapToGlobal(pos) );
 }
 
 const QStringList TagDialog::statisticsData()
@@ -769,11 +828,11 @@ void TagDialog::readTags()
                 niceTitle = QString( "<b>%1</b>").arg( curTrackName );
         }
         else
-                niceTitle = curTrackPretName;
-    } else if( m_currentTrack->album() )
-    {
+            niceTitle = curTrackPretName;
+    }
+    else if( m_currentTrack->album() )
         niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" , curTrackName, curArtistName, curTrackAlbName );
-    } else if( m_currentTrack->artist() )
+    else if( m_currentTrack->artist() )
         niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , curTrackName, curArtistName );
     else
         niceTitle = i18n( "<b>%1</b>" , curTrackName );
@@ -845,16 +904,7 @@ void TagDialog::readTags()
     //lyrics
     ui->kTextEdit_lyrics->setHtml( m_lyrics );
 
-    if( m_currentTrack->album() )
-    {
-        ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize() ) );
-        if( m_currentTrack->artist() )
-            ui->pixmap_cover->setInformation( m_currentTrack->artist()->name(), m_currentTrack->album()->name() );
-    }
-    const int s = AmarokConfig::coverPreviewSize();
-    ui->pixmap_cover->setMinimumSize( s, s );
-    ui->pixmap_cover->setMaximumSize( s, s );
-
+    loadCover();
 
     // enable only for editable files
 #define enableOrDisable( X ) \
@@ -1063,7 +1113,8 @@ TagDialog::readMultipleTracks()
     }
 
     m_trackIterator.toFront();
-    m_currentTrack = m_tracks.first();
+    
+    setCurrentTrack( m_tracks.first() );
 
     ui->trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %1 files", songCount ) );
 
