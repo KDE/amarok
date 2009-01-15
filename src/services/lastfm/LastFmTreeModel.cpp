@@ -113,23 +113,21 @@ void
 LastFmTreeModel::slotAddTags ( WsReply* reply )
 {
     DEBUG_BLOCK
-//     mTags.clear();
+    mTags.clear();
     sortTags ( Tag::list ( reply ), Qt::DescendingOrder ) ;
 }
 
 void
 LastFmTreeModel::sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder )
 {
-    if ( mTags.count() == 0 )
-    {
-        for ( int i = 0; i < tagsToSort.count(); i++ )
-            tagsToSort[i] += " (" + QVariant ( tagsToSort.at ( i ).weighting() ).toString() + ")";
-    }
+    for ( int i = 0; i < tagsToSort.count(); i++ )
+        tagsToSort[i] += " (" + QVariant ( tagsToSort.at ( i ).weighting() ).toString() + ")";
     tagsToSort.weightedSort ( sortOrder );
 //     mTags = tagsToSort;
     for ( int i = 0; i < tagsToSort.count(); i++ )
     {
-        QString actual = tagsToSort[i].remove ( tagsToSort[i].lastIndexOf ( " (" ), tagsToSort[i].length() );
+        QString actual = tagsToSort[i];
+        actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
         LastFmTreeItem* tag = new LastFmTreeItem ( mapTypeToUrl ( LastFm::MyTagsChild, actual ), LastFm::MyTagsChild, tagsToSort[i], mMyTags );
         mMyTags->appendChild ( tag );
     }
