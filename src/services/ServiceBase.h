@@ -30,6 +30,7 @@
 #include "CollectionManager.h"
 #include "plugin/plugin.h"
 #include "meta/proxy/MetaProxy.h"
+#include "widgets/PrettyTreeView.h"
 
 #include <KPluginInfo>
 #include <KVBox>
@@ -151,7 +152,7 @@ public:
      /**
       * Constructor.
       */
-    ServiceBase( const QString &name, ServiceFactory* parent );
+    ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true );
 
     /**
      * Destructor.
@@ -198,19 +199,19 @@ public:
      * Get the icon of this service.
      * @return The icon
      */
-    QIcon icon() const; 
+    QIcon icon() const;
 
     /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.
      * @param model The model.
      */
-    void setModel( SingleCollectionTreeItemModel * model );
+    void setModel( QAbstractItemModel * model );
 
     /**
      * Get the model that is used for displaying items in the tree view.
      * @return The model.
      */
-    SingleCollectionTreeItemModel * model();
+    QAbstractItemModel * model();
 
     /**
      * Set if it should be possible to add the tracks shown in the tree view to the playlist. This method is a bit of a hack and might be removed!
@@ -356,12 +357,12 @@ protected:
     /**
      * Generate info to show in the service info applet. useful for showing initial info before any items are selected and hence
      * trigger the info parser.
-     * @param html 
+     * @param html
      */
     virtual void generateWidgetInfo( const QString &html = QString() ) const;
 
     static ServiceBase *s_instance;
-    ServiceCollectionTreeView *m_contentView;
+    Amarok::PrettyTreeView *m_contentView;
     ServiceFactory *m_parentFactory;
 
     QPushButton *m_homeButton;
@@ -376,6 +377,7 @@ protected:
     QIcon        m_icon;
 
     bool m_serviceready;
+    bool m_useCollectionTreeView;
 
     KUrl::List   m_urlsToInsert;
 
@@ -388,7 +390,7 @@ protected:
     //void addToPlaylist( CollectionTreeItem * item );
 
 private: // need to move stuff here
-     SingleCollectionTreeItemModel * m_model;
+    QAbstractItemModel * m_model;
      QSortFilterProxyModel * m_filterModel;
 };
 

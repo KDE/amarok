@@ -98,11 +98,12 @@ void ServiceFactory::slotServiceReady()
 
 ServiceBase *ServiceBase::s_instance = 0;
 
-ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent )
+ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView )
         : KVBox( 0)
         , m_parentFactory( parent )
         , m_polished( false )
         , m_serviceready( false )
+        , m_useCollectionTreeView( useCollectionTreeView )
         , m_infoParser( 0 )
 {
     DEBUG_BLOCK
@@ -137,7 +138,10 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent )
     nameLabel->setFont( nameLabelFont );
     nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
 
-    m_contentView = new ServiceCollectionTreeView( this );
+    if( useCollectionTreeView )
+        m_contentView = new ServiceCollectionTreeView( this );
+    else
+        m_contentView = new Amarok::PrettyTreeView( this );
     m_contentView->setFrameShape( QFrame::NoFrame );
 
     //m_contentView->setAlternatingRowColors ( true );
@@ -152,7 +156,8 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent )
     //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
     //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
-    connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+    if( useCollectionTreeView )
+        connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
 
     m_bottomPanel = new KVBox( this );
@@ -247,7 +252,7 @@ ServiceBase::itemActivated ( const QModelIndex & index )
 
 
 void
-ServiceBase::setModel( SingleCollectionTreeItemModel * model )
+ServiceBase::setModel( QAbstractItemModel * model )
 {
     //m_filterModel->setSourceModel( model );
     //m_contentView->setModel( m_filterModel );
@@ -255,7 +260,7 @@ ServiceBase::setModel( SingleCollectionTreeItemModel * model )
     m_model  = model;
 }
 
-SingleCollectionTreeItemModel *
+QAbstractItemModel *
 ServiceBase::model()
 {
     return m_model;
@@ -307,37 +312,55 @@ ServiceBase::generateWidgetInfo( const QString &html ) const
 void
 ServiceBase::setPlayableTracks(bool playable)
 {
-    m_contentView->setPlayableTracks( playable );
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setPlayableTracks( playable );
+    }
 }
 
 void
 ServiceBase::sortByArtist()
 {
-    m_contentView->setLevels( QList<int>() << CategoryId::Artist );
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setLevels( QList<int>() << CategoryId::Artist );
+    }
 }
 
 void
 ServiceBase::sortByArtistAlbum()
 {
-    m_contentView->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
+    }
 }
 
 void
 ServiceBase::sortByAlbum()
 {
-    m_contentView->setLevels( QList<int>() << CategoryId::Album );
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setLevels( QList<int>() << CategoryId::Album );
+    }
 }
 
 void
 ServiceBase::sortByGenreArtist()
 {
-    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
+    }
 }
 
 void
 ServiceBase::sortByGenreArtistAlbum()
 {
-    m_contentView->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist << CategoryId::Album );
+    }
 }
 
 void
