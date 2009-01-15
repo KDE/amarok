@@ -26,7 +26,8 @@
 #include <typeinfo>
 
 Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, Meta::SqlPlaylistGroupPtr parent )
-    : m_hasFetchedChildPlaylists( false )
+    : m_hasFetchedChildGroups( false )
+    , m_hasFetchedChildPlaylists( false )
     , m_parent( parent )
 {
     m_dbId = dbResultRow[0].toInt();
@@ -36,6 +37,7 @@ Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, Meta:
 
 Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, Meta::SqlPlaylistGroupPtr parent )
     : m_dbId( -1 )
+    , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
     , m_name( name )
     , m_description( QString() )
