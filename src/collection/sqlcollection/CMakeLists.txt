@@ -74,7 +74,7 @@ target_link_libraries(amarok_collection-sqlcollection
 if(NOT WIN32)
     target_link_libraries(amarok_collection-sqlcollection crypto ssl)
     if(NOT APPLE)
-        target_link_libraries(amarok_collection-sqlcollection crypt)
+        target_link_libraries(amarok_collection-sqlcollection crypt pthread)
     endif(NOT APPLE)
 endif(NOT WIN32)
 
