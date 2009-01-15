@@ -325,23 +325,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     const int created  = file.created().toTime_t();
     const int modified = file.lastModified().toTime_t();
 
-    qreal albumGain = 0.0;
-    qreal albumPeakGain = 0.0;
-    if ( trackData.contains( Field::ALBUMGAIN ) )
-    {
-        albumGain = trackData[ Field::ALBUMGAIN ].toString().toFloat();
-        if ( trackData.contains( Field::ALBUMPEAKGAIN ) )
-            albumPeakGain = trackData[ Field::ALBUMPEAKGAIN ].toString().toFloat();
-    }
-    qreal trackGain = 0.0;
-    qreal trackPeakGain = 0.0;
-    if ( trackData.contains( Field::TRACKGAIN ) )
-    {
-        trackGain = trackData[ Field::TRACKGAIN ].toString().toFloat();
-        if ( trackData.contains( Field::TRACKPEAKGAIN ) )
-            trackPeakGain = trackData[ Field::TRACKPEAKGAIN ].toString().toFloat();
-    }
-
     //urlId will take care of the urls table part of AFT
     int url = urlId( path, uid );
 
@@ -371,11 +354,23 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                 , QString::number( created )
                 , QString::number( modified ) );
 
+    // replay gain - only store gain values if we also have peak gain values
+    //               (ie: ignore broken tags)
     sql3 = ",%1,%2,%3,%4);";
-    sql3 = sql3.arg( QString::number( albumGain )
-                , QString::number( albumPeakGain )
-                , QString::number( trackGain )
-                , QString::number( trackPeakGain ) );
+    if ( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
+    {
+        sql3 = sql3.arg( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ) );
+        sql3 = sql3.arg( trackData[ Field::ALBUMPEAKGAIN ].toDouble() );
+    }
+    else
+        sql3 = sql3.arg( "NULL", "NULL" );
+    if ( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
+    {
+        sql3 = sql3.arg( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ) );
+        sql3 = sql3.arg( trackData[ Field::TRACKPEAKGAIN ].toDouble() );
+    }
+    else
+        sql3 = sql3.arg( "NULL", "NULL" );
 
     sql += sql2 + sql3;
 

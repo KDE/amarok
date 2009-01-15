@@ -273,6 +273,20 @@ Meta::Track::addMatchTo( QueryMaker *qm )
     qm->addMatch( TrackPtr( this ) );
 }
 
+double
+Meta::Track::replayGain( Meta::Track::ReplayGainMode mode ) const
+{
+    Q_UNUSED( mode )
+    return 0.0;
+}
+
+double
+Meta::Track::replayPeakGain( Meta::Track::ReplayGainMode mode ) const
+{
+    Q_UNUSED( mode )
+    return 0.0;
+}
+
 void
 Meta::Track::prepareToPlay()
 {

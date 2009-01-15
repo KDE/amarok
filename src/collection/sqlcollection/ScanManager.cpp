@@ -560,17 +560,17 @@ XmlParseJob::run()
                         data.insert( Meta::Field::FILESIZE, attrs.value( "filesize" ).toString() );
                     if( !attrs.value( "albumgain" ).isEmpty() )
                     {
-                        data.insert( Meta::Field::ALBUMGAIN, attrs.value( "albumgain" ).toString() );
+                        data.insert( Meta::Field::ALBUMGAIN, attrs.value( "albumgain" ).toString().toDouble() );
                         // peak gain is in decibels
                         if( !attrs.value( "albumpeakgain" ).isEmpty() )
-                            data.insert( Meta::Field::ALBUMPEAKGAIN, attrs.value( "albumpeakgain" ).toString() );
+                            data.insert( Meta::Field::ALBUMPEAKGAIN, attrs.value( "albumpeakgain" ).toString().toDouble() );
                     }
                     if( !attrs.value( "trackgain" ).isEmpty() )
                     {
-                        data.insert( Meta::Field::TRACKGAIN, attrs.value( "trackgain" ).toString() );
+                        data.insert( Meta::Field::TRACKGAIN, attrs.value( "trackgain" ).toString().toDouble() );
                         // peak gain is in decibels
                         if( !attrs.value( "trackpeakgain" ).isEmpty() )
-                            data.insert( Meta::Field::TRACKPEAKGAIN, attrs.value( "trackpeakgain" ).toString() );
+                            data.insert( Meta::Field::TRACKPEAKGAIN, attrs.value( "trackpeakgain" ).toString().toDouble() );
                     }
 
                     data.insert( Meta::Field::UNIQUEID, attrs.value( "uniqueid" ).toString() );

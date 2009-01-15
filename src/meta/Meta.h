@@ -169,6 +169,17 @@ namespace Meta
     {
         public:
 
+            /**
+             * The Replay Gain mode.
+             */
+            enum ReplayGainMode
+            {
+                /** All tracks should be equally loud.  Also known as Radio mode. */
+                TrackReplayGain,
+                /** All albums should be equally loud.  Also known as Audiophile mode. */
+                AlbumReplayGain
+            };
+
             virtual ~Track() {}
             /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
             virtual QString prettyName() const = 0;
@@ -218,6 +229,17 @@ namespace Meta
             virtual uint firstPlayed() const;
             /** Returns the number of times the track was played (what about unknown?)*/
             virtual int playCount() const = 0;
+            /**
+             * Returns the gain adjustment for a given replay gain mode.
+             *
+             * Should return @c 0 if no replay gain value is known.
+             *
+             * Should return the track replay gain if the album gain is requested but
+             * is not available.
+             */
+            virtual qreal replayGain( ReplayGainMode mode ) const;
+            /** Returns the peak (after gain adjustment) for a given replay gain mode */
+            virtual qreal replayPeakGain( ReplayGainMode mode ) const;
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
             virtual QString type() const = 0;

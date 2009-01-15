@@ -41,6 +41,8 @@
 
 #include <QTimer>
 
+#include <cmath>
+
 namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
@@ -62,6 +64,7 @@ EngineController::destroy()
 
 EngineController::EngineController()
     : m_media( 0 )
+    , m_preamp( new Phonon::VolumeFaderEffect( this ) )
     , m_audio( 0 )
     , m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
@@ -73,6 +76,7 @@ EngineController::EngineController()
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_path = Phonon::createPath(m_media, m_audio);
+    m_path.insertEffect( m_preamp );
 
     m_media->setTickInterval( 100 );
     debug() << "Tick Interval (actual): " << m_media->tickInterval();
@@ -606,6 +610,8 @@ EngineController::slotTrackEnded()
     m_mutex.unlock();
 }
 
+static const qreal log10over20 = 0.1151292546497022842; // ln(10) / 20
+
 void
 EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
@@ -634,6 +640,25 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 
     if( !m_nextUrl.isEmpty() )
         m_nextUrl.clear();
+
+    if ( m_currentTrack )
+    {
+        // gain is usually negative (but may be positive)
+        qreal gain = m_currentTrack->replayGain( Meta::Track::TrackReplayGain );
+        // peak is usually positive and smaller than gain (but may be negative)
+        qreal peak = m_currentTrack->replayPeakGain( Meta::Track::TrackReplayGain );
+        if ( gain + peak > 0.0 )
+        {
+            debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;
+            gain -= gain + peak;
+        }
+        debug() << "Using gain of" << gain << "with relative peak of" << peak;
+        // we calculate the volume change ourselves, because m_preamp->setVolumeDecibel is
+        // a little confused about minus signs
+        m_preamp->setVolume( exp( gain * log10over20 ) );
+    }
+    else
+        m_preamp->setVolumeDecibel( 0.0 );
 
     // state never changes if tracks are queued, but we need this to update the caption
     stateChangedNotify( m_media->state(), m_media->state() );

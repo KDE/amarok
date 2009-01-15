@@ -259,10 +259,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
     {
         case Phonon::PlayingState:
             m_track = The::engineController()->currentTrack();
-            if ( m_track )
-                m_trackLength = m_track->length();
-            else
-                m_trackLength = 0;
+            m_trackLength = m_track ? m_track->length() : 0;
 
             paintIcon( 0 );
             setupMenu();

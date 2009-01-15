@@ -116,7 +116,12 @@ class SqlTrack : public Meta::Track
         
         virtual int playCount() const { return m_playCount; }
         virtual void setPlayCount( const int newCount );
-        
+
+        virtual qreal replayGain( ReplayGainMode mode ) const
+        { return ( mode == AlbumReplayGain ) ? m_albumGain : m_trackGain; }
+        virtual qreal replayPeakGain( ReplayGainMode mode ) const
+        { return ( mode == AlbumReplayGain ) ? m_albumPeakGain : m_trackPeakGain; }
+
         virtual void setUidUrl( const QString &uid );
 
         virtual void beginMetaDataUpdate();
@@ -171,6 +176,10 @@ class SqlTrack : public Meta::Track
         double m_score;
         QString m_comment;
         QString m_uid;
+        qreal m_albumGain;
+        qreal m_albumPeakGain;
+        qreal m_trackGain;
+        qreal m_trackPeakGain;
 
         Meta::AlbumPtr m_album;
         Meta::ArtistPtr m_artist;

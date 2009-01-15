@@ -170,6 +170,8 @@ SqlTrack::getTrackReturnValues()
            "tracks.filesize, tracks.samplerate, "
            "statistics.createdate, statistics.accessdate, "
            "statistics.playcount, tracks.filetype, tracks.bpm, "
+           "tracks.albumgain, tracks.albumpeakgain, "
+           "tracks.trackgain, tracks.trackpeakgain, "
            "artists.name, artists.id, "
            "albums.name, albums.id, albums.artist, "
            "genres.name, genres.id, "
@@ -244,6 +246,24 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
     ++iter; //BPM
+
+    // if there is no track gain, we assume a gain of 0
+    // if there is no album gain, we use the track gain
+    QString albumGain = *(iter++);
+    QString albumPeakGain = *(iter++);
+    m_trackGain = (*(iter++)).toDouble();
+    m_trackPeakGain = (*(iter++)).toDouble();
+    if ( albumGain.isEmpty() )
+    {
+        debug() << "No album gain for" << m_url << "!  Using track gain (" << m_trackGain << ") instead";
+        m_albumGain = m_trackGain;
+        m_albumPeakGain = m_trackPeakGain;
+    }
+    else
+    {
+        m_albumGain = albumGain.toDouble();
+        m_albumPeakGain = albumPeakGain.toDouble();
+    }
 
     SqlRegistry* registry = m_collection->registry();
     QString artist = *(iter++);

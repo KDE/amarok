@@ -48,6 +48,11 @@ namespace Meta
     static const qint64 valLastPlayed   = 1LL << 19;
     static const qint64 valPlaycount    = 1LL << 20;
     static const qint64 valUniqueId     = 1LL << 21;
+    //replay gain
+    static const qint64 valTrackGain    = 1LL << 22;
+    static const qint64 valTrackGainPeak= 1LL << 23;
+    static const qint64 valAlbumGain    = 1LL << 24;
+    static const qint64 valAlbumGainPeak= 1LL << 25;
 }
 
 #endif
