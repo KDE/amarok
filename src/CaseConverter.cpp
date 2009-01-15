@@ -17,8 +17,9 @@
  ******************************************************************************/
 #define DEBUG_PREFIX "CaseConverter"
 
-#include "Debug.h"
 #include "CaseConverter.h"
+
+#include "Debug.h"
 
 #include <QObject>
 #include <QString>
