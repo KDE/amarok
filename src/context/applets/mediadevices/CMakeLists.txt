@@ -3,7 +3,8 @@ project(context-mediadevices)
 set(mediadevices_SRCS MediaDevicesApplet.cpp )
 
 include_directories( ../..
-                    ../../.. )
+                    ../../.. 
+                    ../../../collection/mediadevicecollection/support)
 
 kde4_add_plugin(amarok_context_applet_mediadevices ${mediadevices_SRCS})
 if(APPLE)
