@@ -31,6 +31,9 @@ VERSION 2.1
     * Now using KSystemTrayIcon.
 
   BUGFIXES:
+    * Fix grouping of Stream and File meta objects. This affects many cases, 
+      Such as when loading a playlist containing tracks from a scripted
+      service.
     * Fixed crash on exit when collection scan has been aborted. (BR 176870)
     * Open ogg files in Amarok when using Dolphin and other file managers.
       Patch thanks to Lubos Lunak <l.lunak@kde.org>. (BR 180155)
