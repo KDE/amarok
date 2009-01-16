@@ -118,9 +118,8 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 QModelIndex
 PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & parent) const
 {
-    DEBUG_BLOCK
+    //debug() << "row: " << row << ", column: " <<column;
 
-    debug() << "row: " << row << ", column: " <<column;
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
@@ -130,16 +129,12 @@ PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & par
 QModelIndex
 PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 {
-    DEBUG_BLOCK
-
     return QModelIndex();
 }
 
 int
 PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 {
-    DEBUG_BLOCK
-
     if (parent.column() > 0)
     {
         return 0;
