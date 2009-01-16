@@ -40,6 +40,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual bool canSavePlaylists() { return true; };
         virtual bool save( const Meta::TrackList &tracks );
 
+        virtual bool supportsEmptyGroups() { return true; }
+
     signals:
         void updated();
 
