@@ -633,7 +633,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 {
                     trackReplayGain = TStringToQString( file->APETag()->itemListMap()["REPLAYGAIN_TRACK_GAIN"].values()[0] );
                     if ( file->APETag()->itemListMap().contains("REPLAYGAIN_TRACK_PEAK") )
-                        trackRGPeak = ParseGain( file->APETag()->itemListMap()["REPLAYGAIN_TRACK_GAIN"].values()[0] );
+                        trackRGPeak = ParseGain( file->APETag()->itemListMap()["REPLAYGAIN_TRACK_PEAK"].values()[0] );
                 }
                 if ( file->APETag()->itemListMap().contains("REPLAYGAIN_ALBUM_GAIN") )
                 {
