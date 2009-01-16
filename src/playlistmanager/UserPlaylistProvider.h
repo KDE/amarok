@@ -34,9 +34,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         /* PlaylistProvider functions */
         virtual int category() const { return PlaylistManager::UserPlaylist; };
-        virtual Meta::PlaylistGroupPtr rootGroup() = 0;
         virtual Meta::PlaylistList playlists() = 0;
-        virtual Meta::PlaylistGroupList groups() = 0;
 
         /* UserPlaylistProvider functions */
         /**

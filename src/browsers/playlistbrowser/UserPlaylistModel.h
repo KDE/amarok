@@ -26,7 +26,6 @@
 
 #include "Meta.h"
 #include "meta/Playlist.h"
-#include "meta/PlaylistGroup.h"
 
 #define PLAYLIST_DB_VERSION 1
 
@@ -88,8 +87,6 @@ class UserModel : public QAbstractItemModel
         static UserModel * s_instance;
 
         Meta::PlaylistList m_playlists;
-        QMap<Meta::PlaylistPtr, Meta::PlaylistGroupPtr> m_reverseGroupMap;
-        QMap<Meta::PlaylistPtr, PlaylistProvider *> m_reverseProviderMap;
 };
 
 }

@@ -115,7 +115,7 @@ Meta::SqlPlaylistGroup::clear()
 }
 
 void
-Meta::SqlPlaylistGroup::setParent( Meta::PlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::setParent( Meta::SqlPlaylistGroupPtr parent )
 {
     if( parent )
         m_parent = Meta::SqlPlaylistGroupPtr::staticCast( parent );
@@ -123,28 +123,6 @@ Meta::SqlPlaylistGroup::setParent( Meta::PlaylistGroupPtr parent )
         debug() << "You have to create the parent first before " << name() <<
             " can be added to it";
     save();
-}
-
-Meta::PlaylistGroupList
-Meta::SqlPlaylistGroup::childGroups() const
-{
-    Meta::PlaylistGroupList childGroups;
-    foreach( Meta::SqlPlaylistGroupPtr sqlGroup, childSqlGroups() )
-    {
-        childGroups << Meta::PlaylistGroupPtr::staticCast( sqlGroup );
-    }
-    return childGroups;
-}
-
-Meta::PlaylistList
-Meta::SqlPlaylistGroup::childPlaylists() const
-{
-    Meta::PlaylistList childPlaylists;
-    foreach( Meta::SqlPlaylistPtr sqlPlaylist, childSqlPlaylists() )
-    {
-        childPlaylists << Meta::PlaylistPtr::staticCast( sqlPlaylist );
-    }
-    return childPlaylists;
 }
 
 Meta::SqlPlaylistGroupList
@@ -199,8 +177,8 @@ Meta::SqlPlaylistGroup::childSqlPlaylists() const
                     const_cast<SqlPlaylistGroup*>( this );
             m_childPlaylists << Meta::SqlPlaylistPtr(
                     new Meta::SqlPlaylist(
-                                row/*,
-                                SqlPlaylistGroupPtr( mutableThis )*/
+                                row,
+                                SqlPlaylistGroupPtr( mutableThis )
                     )
             );
         }

@@ -58,17 +58,6 @@ SqlUserPlaylistProvider::playlists()
     return playlists;
 }
 
-Meta::PlaylistGroupList
-SqlUserPlaylistProvider::groups()
-{
-    Meta::PlaylistGroupList groups;
-    foreach( Meta::SqlPlaylistGroupPtr sqlGroup, m_root->allChildGroups() )
-    {
-        groups << Meta::PlaylistGroupPtr::staticCast( sqlGroup );
-    }
-    return groups;
-}
-
 bool
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
@@ -130,7 +119,6 @@ SqlUserPlaylistProvider::createTables()
 void
 SqlUserPlaylistProvider::deleteTables()
 {
-
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();

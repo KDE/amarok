@@ -100,16 +100,9 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
         return QVariant( KIcon( "amarok_playlist" ) );
     else if( role == GroupRole )
     {
-        Meta::PlaylistGroupPtr group = m_reverseGroupMap[item];
-        QStringList groupName;
-        //Keep recursing up until we reach the root item
-        do
-            groupName << group->name();
-        while( group = group->parent() );
+        QStringList groups = item->groups();
 
-        //we return a stringlist to allow the view to represent it any way it wants
-        // including as labels
-        return QVariant( groupName );
+        return groups.first();
     }
 
     return QVariant();

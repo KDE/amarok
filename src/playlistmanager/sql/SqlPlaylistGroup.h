@@ -21,7 +21,6 @@
 #define SQLPLAYLISTGROUP_H
 
 #include "meta/Meta.h"
-#include "meta/PlaylistGroup.h"
 #include "meta/SqlPlaylist.h"
 
 #include <QString>
@@ -39,7 +38,7 @@ namespace Meta
 
         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
     */
-    class SqlPlaylistGroup : public PlaylistGroup
+    class SqlPlaylistGroup : public virtual QSharedData
     {
         public:
             SqlPlaylistGroup( const QStringList &dbResultRow,
@@ -49,20 +48,15 @@ namespace Meta
 
             ~SqlPlaylistGroup();
 
-            /* Meta::PlaylistGroup virtual functions */
             QString name() const { return m_name; }
             QString description() const { return m_description; }
 
-            virtual Meta::PlaylistGroupPtr parent() const { return
-                    Meta::PlaylistGroupPtr::staticCast( m_parent ); }
-            virtual Meta::PlaylistGroupList childGroups() const;
-            virtual Meta::PlaylistList childPlaylists() const;
+            Meta::SqlPlaylistGroupPtr parent() const { return m_parent; }
 
-            virtual void setName( const QString &name );
-            virtual void setParent( Meta::PlaylistGroupPtr parent );
-            virtual void setDescription( const QString &description );
+            void setName( const QString &name );
+            void setParent( Meta::SqlPlaylistGroupPtr parent );
+            void setDescription( const QString &description );
 
-            /* SqlPlaylistGroup specific functions */
             int id() const { return m_dbId; }
             void save();
             void removeFromDb();

@@ -140,12 +140,6 @@ SqlPodcastProvider::playlists()
     return playlistList;
 }
 
-Meta::PlaylistGroupList
-SqlPodcastProvider::groups()
-{
-    return Meta::PlaylistGroupList();
-}
-
 void
 SqlPodcastProvider::addPodcast(const KUrl & url)
 {

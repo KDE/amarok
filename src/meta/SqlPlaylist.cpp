@@ -28,9 +28,8 @@
 #include <typeinfo>
 
 Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
-        &tracks, SqlPlaylistGroupPtr parent, const QString &urlId )
-    : Meta::Playlist()
-    , m_dbId( -1 )
+        &tracks, Meta::SqlPlaylistGroupPtr parent, const QString &urlId )
+    : m_dbId( -1 )
     , m_parent( parent )
     , m_tracks( tracks )
     , m_name( name )
@@ -41,9 +40,8 @@ Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
     saveToDb();
 }
 
-Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow/*, SqlPlaylistGroupPtr parent*/ )
-    : Meta::Playlist()
-//     , m_parent( parent )
+Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow, Meta::SqlPlaylistGroupPtr parent )
+    : m_parent( parent )
     , m_tracksLoaded( false )
 {
     m_dbId = resultRow[0].toInt();
@@ -59,6 +57,21 @@ Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow/*, SqlPlaylistGrou
 
 Meta::SqlPlaylist::~SqlPlaylist()
 {
+}
+
+Meta::SqlPlaylistGroupPtr
+Meta::SqlPlaylist::parent() const
+{
+    return m_parent;
+}
+
+QStringList
+Meta::SqlPlaylist::groups()
+{
+    QStringList groups;
+    if( m_parent )
+        groups << m_parent->name();
+    return groups;
 }
 
 bool
@@ -210,7 +223,6 @@ Meta::SqlPlaylist::loadTracks()
 
     m_tracksLoaded = true;
 }
-
 
 void
 Meta::SqlPlaylist::setName( const QString & name )

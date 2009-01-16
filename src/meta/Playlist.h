@@ -72,6 +72,7 @@ namespace Meta
             virtual void unsubscribe( PlaylistObserver *observer )
                     { m_observers.remove( observer ); };
 
+            virtual QStringList groups() { return QStringList(); }
 
             /* the following has been copied from Meta.h
             * it is my hope that we can integrate Playlists

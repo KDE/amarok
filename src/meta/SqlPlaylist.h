@@ -21,7 +21,7 @@
 #define METASQLPLAYLIST_H
 
 #include "Playlist.h"
-#include "PlaylistGroup.h"
+// #include "playlistmanager/sql/SqlPlaylistGroup.h"
 
 namespace Meta
 {
@@ -44,7 +44,7 @@ class SqlPlaylist : public Playlist
         //SqlPlaylist( int id );
         SqlPlaylist( const QString &name, const TrackList &tracks,
                 SqlPlaylistGroupPtr parent, const QString &urlId = QString() );
-        SqlPlaylist( const QStringList & resultRow/*, SqlPlaylistGroupPtr parent*/ );
+        SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent );
 
         ~SqlPlaylist();
 
@@ -54,11 +54,12 @@ class SqlPlaylist : public Playlist
         virtual QString description() const { return m_description; }
         virtual void setName( const QString &name );
 
+        virtual QStringList groups();
 
         bool saveToDb( bool tracks = true );
         void setDescription( const QString &description ) { m_description = description; }
 
-        void setParent( Meta::PlaylistGroupPtr parent );
+        void setParent( Meta::SqlPlaylistGroupPtr parent );
 
         int id();
 
@@ -68,9 +69,9 @@ class SqlPlaylist : public Playlist
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
         Capability* asCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-//         virtual Meta::PlaylistGroupPtr parent() const;
+        Meta::SqlPlaylistGroupPtr parent() const;
 
-        virtual void removeFromDb();
+        void removeFromDb();
 
         //bool load();
 
