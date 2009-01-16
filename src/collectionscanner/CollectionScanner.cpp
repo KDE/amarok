@@ -69,14 +69,19 @@
 #include <uniquefileidentifierframe.h>
 #include <xiphcomment.h>
 
-static qreal ParseGain( const TagLib::String &input )
+static qreal ParseGain( const QString &input )
 {
-    qreal scaleVal = TStringToQString( input ).trimmed().toFloat();
+    qreal scaleVal = input.trimmed().toFloat();
     if ( scaleVal > 0 )
         return 20 * log10( scaleVal );
     else
         return 0;
 }
+static qreal ParseGain( const TagLib::String &input )
+{
+    return ParseGain( TStringToQString( input ) );
+}
+
 
 CollectionScanner::CollectionScanner( const QStringList& folders,
                                       const QString& amarokPid,
@@ -541,31 +546,39 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
 
+                // FIXME: this should be a case-insentitive search, but I can't see how to do that in TagLib
                 TagLib::ID3v2::UserTextIdentificationFrame* frame =
                     TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_TRACK_GAIN" );
-                if ( frame )
+                if ( !frame )
+                    frame = TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "replaygain_track_gain" );
+                if ( frame && frame->fieldList().size() >= 2 )
                 {
-                    trackReplayGain = TStringToQString( frame->toString() );
+                    trackReplayGain = TStringToQString( frame->fieldList()[1] );
                     TagLib::ID3v2::UserTextIdentificationFrame* peakFrame =
                         TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_TRACK_PEAK" );
-                    if ( peakFrame )
+                    if ( !peakFrame )
+                        peakFrame = TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "replaygain_track_peak" );
+                    if ( peakFrame && peakFrame->fieldList().size() >= 2 )
                     {
-                        trackRGPeak = ParseGain( peakFrame->toString() );
+                        trackRGPeak = ParseGain( peakFrame->fieldList()[1] );
                     }
                 }
 
                 frame = TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_ALBUM_GAIN" );
-                if ( frame )
+                if ( !frame )
+                    frame = TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "replaygain_album_gain" );
+                if ( frame && frame->fieldList().size() >= 2 )
                 {
-                    albumReplayGain = TStringToQString( frame->toString() );
+                    albumReplayGain = TStringToQString( frame->fieldList()[1] );
                     TagLib::ID3v2::UserTextIdentificationFrame* peakFrame =
                         TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "REPLAYGAIN_ALBUM_PEAK" );
-                    if ( peakFrame )
+                    if ( !peakFrame )
+                        peakFrame = TagLib::ID3v2::UserTextIdentificationFrame::find( file->ID3v2Tag(), "replaygain_album_peak" );
+                    if ( peakFrame && peakFrame->fieldList().size() >= 2 )
                     {
-                        albumRGPeak = ParseGain( peakFrame->toString() );
+                        albumRGPeak = ParseGain( peakFrame->fieldList()[1] );
                     }
                 }
-                // FIXME: get replaygain info from APE tags if ID3v2 tags didn't work
 
                 //FIXME: Port 2.0
 //                 if( images )
@@ -612,6 +625,21 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                         attributes["album"] = codec->toUnicode( strip( tag->album() ).toLatin1() );
                         attributes["comment"] = codec->toUnicode( strip( tag->comment() ).toLatin1() );
                     }
+                }
+            }
+            if ( trackReplayGain.isEmpty() && file->APETag() )
+            {
+                if ( file->APETag()->itemListMap().contains("REPLAYGAIN_TRACK_GAIN") )
+                {
+                    trackReplayGain = TStringToQString( file->APETag()->itemListMap()["REPLAYGAIN_TRACK_GAIN"].values()[0] );
+                    if ( file->APETag()->itemListMap().contains("REPLAYGAIN_TRACK_PEAK") )
+                        trackRGPeak = ParseGain( file->APETag()->itemListMap()["REPLAYGAIN_TRACK_GAIN"].values()[0] );
+                }
+                if ( file->APETag()->itemListMap().contains("REPLAYGAIN_ALBUM_GAIN") )
+                {
+                    albumReplayGain = TStringToQString( file->APETag()->itemListMap()["REPLAYGAIN_ALBUM_GAIN"].values()[0] );
+                    if ( file->APETag()->itemListMap().contains("REPLAYGAIN_ALBUM_PEAK") )
+                        albumRGPeak = ParseGain( file->APETag()->itemListMap()["REPLAYGAIN_ALBUM_PEAK"].values()[0] );
                 }
             }
             #undef strip
