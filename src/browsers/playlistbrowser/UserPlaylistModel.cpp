@@ -44,8 +44,6 @@ PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
 PlaylistBrowserNS::UserModel::UserModel()
  : QAbstractItemModel()
 {
-
-//     m_root = PlaylistGroupPtr( new PlaylistGroup( "root", PlaylistGroupPtr() ) );
     loadPlaylists();
 
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
@@ -85,7 +83,6 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     if ( !index.isValid() )
         return QVariant();
 
-//     PlaylistViewItemPtr item =  m_viewItems.value( index.internalId() );
     Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
 
     if ( role == 0xf00d )
@@ -111,8 +108,6 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 QModelIndex
 PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & parent) const
 {
-    //debug() << "row: " << row << ", column: " <<column;
-
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
@@ -206,28 +201,13 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indexes ) const
     DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
 
-//     PlaylistGroupList groups;
     Meta::PlaylistList playlists;
 
     foreach( const QModelIndex &index, indexes )
     {
         playlists << m_playlists.value( index.internalId() );
-
-//         PlaylistViewItemPtr item = m_viewItems.value( index.internalId() );
-
-//         if ( typeid( * item ) == typeid( PlaylistGroup ) ) {
-//             PlaylistGroupPtr playlistGroup = PlaylistGroupPtr::staticCast( item );
-//             groups << playlistGroup;
-//         }
-//         else
-//         {
-//             Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( item );
-//             if( playlist )
-//                 playlists << playlist;
-//         }
     }
 
-//     mime->setPlaylistGroups( groups );
     mime->setPlaylists( playlists );
 
     return mime;
@@ -238,111 +218,40 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
 {
     Q_UNUSED( column );
     Q_UNUSED( row );
-//     DEBUG_BLOCK
 
     if( action == Qt::IgnoreAction )
         return true;
 
-    /*PlaylistGroupPtr parentGroup;
-    if ( !parent.isValid() )
-    {
-        parentGroup = m_root;
-    }
-    else
-    {
-        parentGroup = PlaylistGroupPtr::staticCast( m_viewItems.value( parent.internalId() ) );
-    }
-
-    if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
-    {
-        debug() << "Found playlist group mime type";
-
-        const AmarokMimeData* playlistGroupDrag = dynamic_cast<const AmarokMimeData*>( data );
-        if( playlistGroupDrag )
-        {
-
-            PlaylistGroupList groups = playlistGroupDrag->sqlPlaylistsGroups();
-
-            foreach( PlaylistGroupPtr group, groups ) {
-                group->reparent( parentGroup );
-            }
-
-            reloadFromDb();
-
-            return true;
-        }
-    }
-    else*/ if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "Found playlist mime type";
 
-//         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
-//         if( dragList )
-//         {
-//
-//             Meta::PlaylistList playlists = dragList->playlists();
-//
-//             foreach( Meta::PlaylistPtr playlistPtr, playlists )
-//             {
-//                 Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( playlistPtr );
-//
-//                 if( playlist )
-//                     playlist->reparent( parentGroup );
-//             };
+        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        if( dragList )
+        {
+
+            Meta::PlaylistList playlists = dragList->playlists();
+
+            foreach( Meta::PlaylistPtr playlistPtr, playlists )
+            {
+                Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( playlistPtr );
+
+                if( playlist )
+                    playlist->reparent( parentGroup );
+            };
 
             return true;
-//         }
+        }
     }
 
     return false;
 }
 
 void
-PlaylistBrowserNS::UserModel::editPlaylist( int id )
+PlaylistBrowserNS::UserModel::createNewGroup()
 {
-
-  //for now, assume that the newly added playlist is in the top level:
-//     int row = m_root->childGroups().count() - 1;
-//     foreach ( Meta::PlaylistPtr playlist, m_root->childPlaylists() ) {
-//         row++;
-//         if ( playlist->id() == id ) {
-//             emit editIndex( createIndex( row , 0, PlaylistViewItemPtr::staticCast( playlist ) ) );
-//         }
-//     }
+    DEBUG_BLOCK
+    //TODO: create the group in default provider if that supports empty groups.
 }
-
-// void
-// PlaylistBrowserNS::UserModel::createNewGroup()
-// {
-//     DEBUG_BLOCK
-//
-//     PlaylistGroup * group = new PlaylistGroup( i18n("New Group"), m_root );
-//     group->save();
-//     int id = group->id();
-//     delete group;
-//
-//     reloadFromDb();
-//
-//     int row = 0;
-//     foreach ( PlaylistGroupPtr childGroup, m_root->childGroups() ) {
-//         if ( childGroup->id() == id )
-//         {
-//             debug() << "emmiting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
-//             emit editIndex( createIndex( row , 0, PlaylistViewItemPtr::staticCast( childGroup ) ) );
-//         }
-//         row++;
-//     }
-//
-// }
-
-// void
-// PlaylistBrowserNS::UserModel::createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack )
-// {
-//     Meta::TrackList list;
-//     list.append( streamTrack );
-//     Meta::Playlist *stream = new Meta::Playlist( streamName, list, m_root );
-//     delete stream;
-//     reloadFromDb();
-// }
 
 #include "UserPlaylistModel.moc"

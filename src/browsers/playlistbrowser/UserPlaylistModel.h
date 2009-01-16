@@ -70,11 +70,9 @@ class UserModel : public QAbstractItemModel
         bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
 
         void reloadFromDb();
-        void editPlaylist( int id );
-//         void createNewStream( const QString& streamName, const Meta::TrackPtr& streamTrack );
 
     public slots:
-//         void createNewGroup();
+        void createNewGroup();
         void slotUpdate();
 
     signals:
