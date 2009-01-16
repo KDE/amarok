@@ -168,7 +168,8 @@ public:
     StreamAlbum( MetaStream::Track::Private *dptr )
         : Meta::Album()
         , d( dptr )
-    {}
+    {
+    }
 
     bool isCompilation() const
     {
@@ -208,7 +209,6 @@ public:
     }
 
     bool operator==( const Meta::Album &other ) const {
-        DEBUG_BLOCK
         return name() == other.name();
     }
 

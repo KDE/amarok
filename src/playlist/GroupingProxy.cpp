@@ -335,7 +335,7 @@ Playlist::GroupingProxy::groupRowCount( int row ) const
 bool
 Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
 {
-    return track1->album() == track2->album();
+    return ( *track1->album().data() ) == ( *track2->album().data() );
 }
 
 int Playlist::GroupingProxy::find( const QString &searchTerm, int fields  )

@@ -360,6 +360,10 @@ public:
         return Meta::Album::image( size );
     }
 
+    bool operator==( const Meta::Album &other ) const {
+        return name() == other.name();
+    }
+
     QPointer<MetaFile::Track::Private> const d;
 };
 
