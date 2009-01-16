@@ -362,15 +362,26 @@ App::handleCliArgs() //static
     */
 
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
-    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+    const bool debugIsDisabled = !args->isSet( "debug" );
 
+    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+ 
     // Debug output will only work from this point on. If Amarok was run without debug output before,
     // then a part of the output (until this point) will be missing. Inform the user about this:
     if( debugWasJustEnabled )
     {
-       debug() << "************************************************************************************************************";
-       debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
-       debug() << "************************************************************************************************************";
+        debug() << "************************************************************************************************************";
+        debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
+        debug() << "************************************************************************************************************";
+    }
+    else if( debugIsDisabled )
+    {
+        Amarok::config().writeEntry( "Debug Enabled", true );
+        debug() << "**********************************************************************************************";
+        debug() << "** AMAROK WAS STARTED IN NORMAL MODE. IF YOU WANT TO SEE DEBUGGING INFORMATION, PLEASE USE: **";
+        debug() << "** amarok --debug                                                                           **";
+        debug() << "**********************************************************************************************";
+        Amarok::config().writeEntry( "Debug Enabled", false );
     }
 
     static bool firstTime = true;
