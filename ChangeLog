@@ -5,17 +5,19 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * The Playlist Browser can now show playlists from multiple sources,
+      including media devices.
     * The last.fm service now allows for the playing of all types of user
       stations (personal, loved tracks, recommendations, and neighborhood).
     * Arbitrary Tags can now be played in the last.fm service. (BR 139802)
     * Replay Gain support, currently only for Ogg Vorbis and FLAC files.
     * Amarok urls. Amarok can now load and generate "amarok urls" that allows
       any "view" to be bookmarked and later retrieved. A protocol handler is
-      also installed that will launch amarok into the correct state, or make 
+      also installed that will launch amarok into the correct state, or make
       amarok show the correct view if already running if such a url is
       activated system wide.
-    * Customizable playlist layouts. The playlist is now rendered according to 
-      an xml layout, allowing the playlist to assume a variety of different 
+    * Customizable playlist layouts. The playlist is now rendered according to
+      an xml layout, allowing the playlist to assume a variety of different
       looks and supply customizable information.
     * Album cover art can be accessed via the scripting API. Patch thanks to
       Simon Esneault <simon.esneault@gmail.com>. (BR 179732)
@@ -31,7 +33,7 @@ VERSION 2.1
     * Now using KSystemTrayIcon.
 
   BUGFIXES:
-    * Fix grouping of Stream and File meta objects. This affects many cases, 
+    * Fix grouping of Stream and File meta objects. This affects many cases,
       Such as when loading a playlist containing tracks from a scripted
       service.
     * Fixed crash on exit when collection scan has been aborted. (BR 176870)
@@ -56,7 +58,7 @@ VERSION 2.0.1
     * Growl support on OS X.
     * Add automatic recovery option to MySQL embedded server.
     * Greatly improved Librivox.org service script. It now works for all books,
-      and dynamically fetches a summary of each book that is shown in the 
+      and dynamically fetches a summary of each book that is shown in the
       service info applet. The script now also has a propper icon in the
       service browser and its own emblem and default "album" cover for books.
     * Sorting collection by Composer is now possible. (BR 177271)
@@ -98,7 +100,7 @@ VERSION 2.0.1
     * Set date correctly on MTP devices. (BR 171194)
     * Ipod ratings are read/written/displayed.
     * Ipod playcounts are read and displayed on Current Track Info applet.
-    * Lastfm Settings Dialog can now check to ensure username/password is 
+    * Lastfm Settings Dialog can now check to ensure username/password is
       correct. (BR 144456)
     * Don't delete files if an error occurs during transfer. (BR 178701)
     * MPRIS GetMetadata() call returns arturl for last.fm streams. (BR 178695)
@@ -122,7 +124,7 @@ VERSION 2.0.1
     * When reaching the end of the playlist, actually show stopped state.
       (BR 177782)
     * Fixes in playing tracks in repeat modes.
-    * The wikipedia applet did not give a status update when an entry was not 
+    * The wikipedia applet did not give a status update when an entry was not
       found. (BR 173940)
     * Add tooltips to icons in context view. (BR 174478)
     * Fix icons and layout in Advanced Filter dialog.
@@ -146,12 +148,12 @@ VERSION 2.0
       in the tag dialog work again. (BR 176399)
     * Collection setup directory chooser would incorrectly set some paths as
       disabled. Patch thanks to Ben Boeckel <MathStuf@gmail.com>. (BR 176569)
-    * Fix shadows around the cover in the current track applet (and potentially 
+    * Fix shadows around the cover in the current track applet (and potentially
       other places as well) getting progresssively darker.
     * Don't compare Solid and libmtp's serial number to connect. (BR 176403)
     * Workaround a bug in the CurrentEngine class that makes the nocover image
       look grainy in the currenttrack applet.
-    * Dragging and Dropping folders from the filebrowser into the playlist will 
+    * Dragging and Dropping folders from the filebrowser into the playlist will
       now result in the tracks being ordered correctly. (BR 176673) (BR 176156)
     * Fixed deletion for downloaded podcast episodes (BR 176084)
     * Show artists in Cover Manager sorted alphabetically. (BR 176178)
@@ -165,7 +167,7 @@ VERSION 2.0
     * Don't try to squeeze text into wrongly tiny space, make the track label
       in the tag dialog work again. (BR 176399)
     * Expand applets width when a complete column has been removed.
-    * Don't try to fetch another cover if there are no more albums to fetch 
+    * Don't try to fetch another cover if there are no more albums to fetch
       for. (BR 176364)
     * Don't crash when trying to edit the details of a track without an artist
       or album. (BR 173322)
@@ -174,12 +176,12 @@ VERSION 2.0
       when selecting "Purchase" or "Download" from the playlist context menu.
       (BR 176171)
     * Fix a bug that stopping a running script crashes amarok. (BR 175050)
-    * The context view could sometimes show the "stopped state" even when a 
+    * The context view could sometimes show the "stopped state" even when a
       track was playing.
     * Amarok 1.4 database importer would crash under some circumstances.
       (BR 171784)
     * Covers could not be fetched from Amazon Japan. (BR 176073)
-    * Fix a bug that the script manager deletes wrong entry after script 
+    * Fix a bug that the script manager deletes wrong entry after script
       installation. (BR 173919)
     * Make lyrics auto-display when applet is added while a song is playing.
     * "Watch folders for changes" actually works now.
@@ -206,7 +208,7 @@ VERSION 2.0-rc1
   CHANGES:
     * Video and Last.fm applet have been disabled. They are not ready for release.
     * Ipods and MTP devices auto-connect again for usability.
-    * Ipod Collections can now delete multiple tracks at once.	
+    * Ipod Collections can now delete multiple tracks at once.
     * User playlists added from files are now updated on collection rescans, so
       any changes in the file is reflected in the SQL playlist.
     * Layout refactoring in the Organize Collection dialog.
@@ -220,7 +222,7 @@ VERSION 2.0-rc1
     * Update Collection works now correctly, only scanning the necessary dirs.
       (BR 169602)
     * In Organize Collection, the "Collection root" token is now fixed at the
-      beginning of the filename scheme. (BR 175376)       
+      beginning of the filename scheme. (BR 175376)
     * Resize handle now appears in OS X. (BR 170199)
     * Do not deselect album when right clicking on header. (BR 175527)
       (BR 174584)
@@ -242,7 +244,7 @@ VERSION 2.0-rc1
       collections.
     * Fix playlist behaviour when adding a track that is already playing
       (BR 174634)
-    * Jamendo Service: Remove some sorting modes that caused the database to 
+    * Jamendo Service: Remove some sorting modes that caused the database to
       choke as the result sets became too large. Will be revisisted post
       2.0.0. (BR 174851)
     * Fixed possible crash with reading wav files. Patch by Peter van Fessem
@@ -290,13 +292,13 @@ VERSION 2.0-beta3
     * Context menu and drag & drop support for the albums applet.
     * Added tracks count and total playlist time to the status bar.
       (BR 171652)
-    * You can now Copy To a collection, Append, and Load tracks from 
+    * You can now Copy To a collection, Append, and Load tracks from
       the file browser's context menu.
 
   CHANGES:
     * Improved usability for the collection configuration dialog.
     * XSPF playlists will now attempt to apply any stored metadata to items
-      not owned by a service when loading. This will make many streams stored 
+      not owned by a service when loading. This will make many streams stored
       on shutdown appear with correct metadata after a restart of Amarok.
     * Scripted services are now able to set the infoHtml used in the
       service info applet for individual tracks.
@@ -308,13 +310,13 @@ VERSION 2.0-beta3
     * Allow multiple items to be selected in the user playlist category.
     * Statusbar rewrite: Messages are no longer shown as top-level windows.
     * Added proper mouse over visuals to some places where it was missing.
-    * All services (or any other part of Amarok) can now add context 
-      actions to any item in any collection. This is only used for the "play 
-      similar artists from last.fm" currently, but it allows this kind of 
-      action to be added without hardcoding it in the core. The immidiate 
-      effect of this is that the last.fm action is now available for any 
+    * All services (or any other part of Amarok) can now add context
+      actions to any item in any collection. This is only used for the "play
+      similar artists from last.fm" currently, but it allows this kind of
+      action to be added without hardcoding it in the core. The immidiate
+      effect of this is that the last.fm action is now available for any
       artist in any collection.
-    * New "playground" directory added for plugins and applets that are not 
+    * New "playground" directory added for plugins and applets that are not
       yet ready for prime time.
     * Nonconsecutive items can now be selected and dragged around in the
       playlist.
@@ -351,7 +353,7 @@ VERSION 2.0-beta3
     * Script downloads using KNewStuff2 now correctly installs and uninstalls
       scripts.
     * Fix memleak in iPod handler. Thanks to Christophe Fergeau.
-    * Wikipedia applet: Fix infinite retry loop if no artist information is 
+    * Wikipedia applet: Fix infinite retry loop if no artist information is
       found. (BR 171074)
     * First track of an album in the playlist can now be dragged seperately
       from the entire album. (BR 171331)
@@ -359,10 +361,10 @@ VERSION 2.0-beta3
     * Fix crash when adding multiple shoutcast stations. (BR 170247)
     * Escape HTML characters from track metadata when showing the system tray
       tooltip. Patch by Andrey Esin <gmlastik@gmail.com>. (BR 172623)
-    * Only add one new folder when selecting "Add Folder" from the context 
+    * Only add one new folder when selecting "Add Folder" from the context
       menu in the user playlist category. (BR 169666)
-    * Statusbar rewrite: Bring back the detailed progres operations view. 
-      It is now possible again to get a list of all running operations and 
+    * Statusbar rewrite: Bring back the detailed progres operations view.
+      It is now possible again to get a list of all running operations and
       to cancel each one individually. (BR 168380)
     * Statusbar rewrite: The "cancel all" button now works.
     * Statusbar rewrite: Don't hang on exit. (BR 171665)
@@ -380,14 +382,14 @@ VERSION 2.0-beta3
 
 VERSION 2.0-beta2
   FEATURES:
-    * Add themable borders to album covers where ever they are shown (with 
+    * Add themable borders to album covers where ever they are shown (with
       very few exceptions).
     * Automatically check for collection changes on startup if monitoring
       is enabled.
     * Files can be moved into collections from the Filebrowser. (BR 170077)
     * Clicking on the volume icon in the toolbar toggles mute. (BR 171017)
     * Arrows to switch between containments directly.
-    * Scripted services can now show source info in the statusbar like most 
+    * Scripted services can now show source info in the statusbar like most
       other services.
     * Scripts now able to access web via KDE-wide proxy.
     * Middle click on playlist will append URLs from the clipboard.
@@ -469,7 +471,7 @@ VERSION 2.0-beta2
     * Handle multidisc albums properly (BR 167238)
     * Remove empty folders after organizing the collection. (BR 141555)
     * Display rating (when present) in OSD. (BR: 167263)
-    * Make the currently playing track active in the playlist if it has been 
+    * Make the currently playing track active in the playlist if it has been
       removed and is later re added. (BR 167552)
     * Detect Amarok 1.x style compilations when scanning the collection.
     * Show the album year in the Collection Browser if requested.
@@ -488,7 +490,7 @@ VERSION 2.0-beta2
       been stopped.
     * Applets do not disappear if Context View is shrunk too much. (BR 169504)
     * Fix last.fm events applet.
-    * The Current track applet now has tooltips for the icons on the right 
+    * The Current track applet now has tooltips for the icons on the right
       hand side. (BR 168260)
     * "Resume playback on start" now also restores the track position
       correctly. (BR 168792)
@@ -496,9 +498,9 @@ VERSION 2.0-beta2
     * Fix crash when closing last.fm settings while playing. (BR 168828)
     * Make it possible to actually disable the audio fadeout. (BR 169022)
     * Podcast Episode downloading doesn't crash anymore. (BR 168203)
-    * Dragging files to the playlist no longer appends, but drops in the 
+    * Dragging files to the playlist no longer appends, but drops in the
       correct spot.
-    * Correctly order out-of-collection files dragged into the playlist. 
+    * Correctly order out-of-collection files dragged into the playlist.
       (BR 169064)
     * You can add directories from the Play and Add Media menus. (BR 166549)
     * Allow statistics to be written out when we move to the next track, not
@@ -509,7 +511,7 @@ VERSION 2.0-beta1
   FEATURES:
     * Inline editing of tracks in the Collection is now possible.
     * Album moves can be undone
-    * Grouped albums can be moved in the playlist by draggin the album 
+    * Grouped albums can be moved in the playlist by draggin the album
       header
     * Track moves in the playlist can now be undone
     * Gapless playback.
@@ -524,13 +526,13 @@ VERSION 2.0-beta1
     * Saving/loading of biased playlists.
     * Improved script console
     * Set items in directory selector to partially checked when relevant.
-      patch by Sebastian Trueg <trueg@kde.org> 
+      patch by Sebastian Trueg <trueg@kde.org>
     * Album is now added to the playlist when clicked in Albums applet.
     * Trigger play/pause when middle-clicking systray icon. (BR 167162)
     * New start flag --multipleinstances allows to run multiple instances of
       Amarok.
     * Full cover support for Nepomuk collection
-    * Search local collection for albums to show in the album applet when 
+    * Search local collection for albums to show in the album applet when
       playing non local content
     * Context view state is saved on exit and restored on start up.
     * New functions available to the scripting interface, under Amarok.Info.
@@ -544,11 +546,11 @@ VERSION 2.0-beta1
       <wade@corefunction.com>
     * Better zooming animation in the context view
     * Better usage of the available space in the context view.
-    * Show url in the playlist if track has no name. patch by Edward Hades 
+    * Show url in the playlist if track has no name. patch by Edward Hades
       <edward.hades@gmail.com> (BR 167171)
 
   BUGFIXES:
-    * Fix crash when dragging media from an external source (or the file 
+    * Fix crash when dragging media from an external source (or the file
       browser) to the playlist (BR 169035)
     * Fix crash when opening the setting dialog (BR 169215)
     * Many fixes to the behavior of the playlist when dragging things around.
@@ -557,7 +559,7 @@ VERSION 2.0-beta1
     * Amarok would not respect the user's changes in the cover search dialog.
     * Amarok would submit tracks to lastfm reguardless of whether the user chose to enable scrobbling.
     * OSD translucency works now. (BR 166567)
-    * Use name based sorting of tracks without a track number (fixes 
+    * Use name based sorting of tracks without a track number (fixes
       sorting in shoutcast and cool streams services)
     * Don't try to scan the whole $HOME on first startup.
     * Don't pop up the OSD after changing Amarok settings. (BR: 168197)
@@ -570,14 +572,14 @@ VERSION 2.0-beta1
     * Submit tracks to Last.fm also when playing Last.fm Radio. (BR 164156)
     * Check if the file is writable before allowing the tags to be edited in
       SqlMeta. ( BR 122797 )
-    * Properly insert items dragged from the collection view. (BR: 166609) 
+    * Properly insert items dragged from the collection view. (BR: 166609)
     * Don't remove all the tracks in the group when removing the first.
-      (BR: 167251) 
+      (BR: 167251)
     * Only increment playcount if we've played more than half of the song.
       (BR 121587)
     * Added protection against endless looping when a playlist contains only
       unplayable tracks.
-    * Missing default playlist does not produce error message now. 
+    * Missing default playlist does not produce error message now.
       (BR 167385)
     * Fixed playlist bias drop-down box showing multiple empty and duplicate
       entries. (BR 167153)
@@ -614,7 +616,7 @@ VERSION 2.0-alpha2
     * In the Wikipedia applet scrolling works properly now.
     * Context menu separators are no longer shown as empty items.
     * Make the filebrowser filter instantaneously display results for files.
-    * Add a path separator if required when constructing relative urls from M3U 
+    * Add a path separator if required when constructing relative urls from M3U
       playlists. (BR 166346)
     * Rescan collection if the version is higher than we currently use
       (downgrades). (BR 142712)
@@ -627,13 +629,13 @@ VERSION 2.0-alpha2
     * Fix bug with selection getting stuck in collection browser when selecting
       multiple items when dragging over them. (BR 164960)
     * Fix crash when removing collapsed album from the playlist. (BR 163653)
-    * Mp3tunes would load for users who had never used it before and prompt 
+    * Mp3tunes would load for users who had never used it before and prompt
       them with an annoying login box. (BR 166332)
     * Random album playback mode implemented. (BR 164623)
     * Fix rendering glitches when double clicking tracks in dynamic mode.
       (BR 166705)
     * Make the rating widget on the current track hideable.
-  
+
 
 VERSION 2.0-alpha1
   FEATURES:
@@ -669,10 +671,10 @@ VERSION 2.0-alpha1
     * OPML Directory service: A simple podcast directory service has been added
     * Shoutcast service: The shoutcast list from previous versions of Amarok has
       been reimplemented as a service.
-    * Scriptable Service Manager: Add support for writing simple services using 
+    * Scriptable Service Manager: Add support for writing simple services using
       scripts. This allows quick prototyping of services as well as the
       integration and distribution of community created services. The scripted
-      service can be started and stopped from the service manager. Also add 2 
+      service can be started and stopped from the service manager. Also add 2
       simple demo scripts.
     * Playlist Framework: The Playlist Browser can now contain
       Playlists/Podcasts/Streams from any mediadevice/service/collection in
@@ -847,12 +849,12 @@ VERSION 1.4.5
 
   CHANGES:
     * Added configure option to build without DAAP support.
-    * Album covers are now downloaded and added to album directory when 
+    * Album covers are now downloaded and added to album directory when
       purchasing from the Magnatune.com store. (BR 136680)
     * Update context browser when a change in the collection has been detected.
       (BR 140588)
     * Ignore leading 'The ' when sorting playlist by artist. (BR 139829)
-    * Smart Playlists now have 'does not start with' and 'does not end with' 
+    * Smart Playlists now have 'does not start with' and 'does not end with'
       options, as well as a dropdown for mount points. (BR 139552)
     * Support for cue files not matching audio files' name. Patch by Dawid
       Wróbel <dawid@klej.net>. (BR 128046)
@@ -911,12 +913,12 @@ VERSION 1.4.5
       (BR 138582)
     * "Listening since..." has been changed to the more clear "First
       Played..."  Patch by Andrew Ash <ash211@gmail.com>. (BR 131727)
-    * Fixed regression: the DEL key no longer worked in the 
+    * Fixed regression: the DEL key no longer worked in the
       playlist after opening the File Browser context menu. (BR 140197)
     * Smart playlists now work correctly with "is not" filters containing
-      numbers. Patch by Felix Rotthowe <felix.rotthowe@cs.uni-dortmund.de>. 
+      numbers. Patch by Felix Rotthowe <felix.rotthowe@cs.uni-dortmund.de>.
     * Context browser would not display updated covers correctly. (BR 130518)
-    * The select custom cover dialog no longer starts in the wrong directory 
+    * The select custom cover dialog no longer starts in the wrong directory
       for compilations. (BR 131776)
     * Amarok's xine engine would cut off approximately the last second of an
       audio file. (BR 135190)
