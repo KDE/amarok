@@ -4,6 +4,7 @@ set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 
 add_subdirectory( daap )
 
+add_subdirectory( mediadevicecollection )
 add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 

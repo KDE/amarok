@@ -23,6 +23,8 @@ extern "C" {
   #include <gpod/itdb.h>
 }
 
+#include "MediaDeviceInfo.h"
+
 #include "Debug.h"
 
 #include "Collection.h"
@@ -43,6 +45,10 @@ class IpodCollectionFactory : public Amarok::CollectionFactory
 
         virtual void init();
 
+    signals:
+        void ipodDetected( const MediaDeviceInfo &deviceinfo );
+        void tellIpodDetected( const QString &mountPoint, const QString &udi );
+
     public slots:
         // convenience slot
         void removeIpod( const QString &udi ) { deviceRemoved( udi ); }
@@ -54,6 +60,9 @@ class IpodCollectionFactory : public Amarok::CollectionFactory
         void slotCollectionDisconnected( const QString & udi );
 
     private:
+        void checkDevicesForIpod();
+        bool isIpod( const QString &udi );
+
         QMap<QString, IpodCollection*> m_collectionMap;
 };
 

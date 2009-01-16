@@ -10,6 +10,7 @@ if (MTP_FOUND)
    ../../meta
    ../../meta/file
    ../../collection
+   ../mediadevicecollection/support
    handler
    ${GLIB2_INCLUDE_DIR}
    ${MTP_INCLUDE_DIR}

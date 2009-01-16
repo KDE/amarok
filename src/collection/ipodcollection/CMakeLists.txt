@@ -14,6 +14,7 @@ if (IPOD_FOUND)
    ../../meta/file
    ../../collection
    ../../metadata/audible
+   ../mediadevicecollection/support
    handler
    ${GLIB2_INCLUDE_DIR}
    ${GDK_INCLUDE_DIR}
@@ -39,6 +40,7 @@ if (IPOD_FOUND)
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
 	target_link_libraries(amarok_collection-ipodcollection
+        mediadevicelib
         amaroklib
         amarokpud
         ${KDE4_KDECORE_LIBS}

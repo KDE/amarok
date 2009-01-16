@@ -19,6 +19,7 @@
 #define DEBUG_PREFIX "IpodCollection"
 
 #include "IpodCollection.h"
+#include "IpodDeviceInfo.h"
 
 #include "meta/capabilities/CollectionCapability.h"
 #include "IpodCollectionLocation.h"
@@ -29,11 +30,14 @@
 #include "amarokconfig.h"
 #include "Debug.h"
 
+#include "MediaDeviceCache.h"
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 
 #include <KMessageBox>
 #include <KUrl>
+
+#include <solid/device.h>
 
 
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
@@ -56,16 +60,23 @@ IpodCollectionFactory::init()
 
     // connect to the monitor
 
-    // TODO: the connection to this slot needs to be redone elsewhere
+ //   connect( this, SIGNAL( ipodDetected( const MediaDeviceInfo & ) ),
+//             MediaDeviceMonitor::instance(), SIGNAL( deviceDetected( const MediaDeviceInfo & ) ) );
+
     connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToConnect( const QString &, const QString & ) ),
              SLOT( ipodDetected( const QString &, const QString & ) ) );
+
+    // HACK: emitting old signal to avoid refactoring applet yet
+    connect( this, SIGNAL( tellIpodDetected( const QString &, const QString & ) ),
+             MediaDeviceMonitor::instance(), SIGNAL( ipodDetected( const QString &, const QString & ) ) );
+
     connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToDisconnect( const QString & ) ),
              SLOT( deviceRemoved( const QString & ) ) );
 
     connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), SLOT( deviceRemoved( const QString & ) ) );
 
     // HACK: Usability: Force auto-connection of device upon detection
-    MediaDeviceMonitor::instance()->checkDevicesForIpod();
+    checkDevicesForIpod();
 }
 
 void
@@ -125,6 +136,56 @@ IpodCollectionFactory::slotCollectionReady()
         emit newCollection(  collection );
     }
 }
+
+void
+IpodCollectionFactory::checkDevicesForIpod()
+{
+    QStringList udiList = MediaDeviceMonitor::instance()->getDevices();
+
+    /* poll udi list for supported devices */
+    foreach( const QString &udi, udiList )
+    {
+        /* if ipod device found, emit signal */
+        if( isIpod( udi ) )
+        {
+            // HACK: Usability: Force auto-connection of device upon detection
+            QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
+            ipodDetected( mountpoint, udi );
+
+            MediaDeviceInfo *deviceinfo = new IpodDeviceInfo( mountpoint, udi );
+            //emit ipodDetected( deviceinfo );
+            // HACK: emit old signal to avoid refactor of applet yet
+            emit tellIpodDetected( mountpoint, udi );
+        }
+    }
+}
+
+bool
+IpodCollectionFactory::isIpod( const QString &udi )
+{
+    DEBUG_BLOCK
+
+    Solid::Device device;
+
+    device = Solid::Device(udi);
+    /* going until we reach a vendor, e.g. Apple */
+    while ( device.isValid() && device.vendor().isEmpty() )
+    {
+        device = Solid::Device( device.parentUdi() );
+    }
+
+    debug() << "Device udi: " << udi;
+    debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
+    debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
+    if ( device.isValid() )
+    {
+        debug() << "vendor: " << device.vendor() << ", product: " << device.product();
+    }
+
+    /* if iPod found, return true */
+    return device.product() == "iPod";
+}
+
 
 //IpodCollection
 

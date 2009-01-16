@@ -60,10 +60,9 @@ MediaDeviceCollectionFactory::init()
 
 //MediaDeviceCollection
 
-MediaDeviceCollection::MediaDeviceCollection( const QString &mountPoint )
+MediaDeviceCollection::MediaDeviceCollection()
     : Collection()
     , MemoryCollection()
-    , m_mountPoint(mountPoint)
 {
     DEBUG_BLOCK
 }
@@ -71,6 +70,15 @@ MediaDeviceCollection::MediaDeviceCollection( const QString &mountPoint )
 MediaDeviceCollection::~MediaDeviceCollection()
 {
 
+}
+
+void
+MediaDeviceCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
+{
+    DEBUG_BLOCK
+    connect( m_handler, SIGNAL( copyTracksDone() ),
+                     SLOT( slotCopyTracksCompleted() ), Qt::QueuedConnection );
+    m_handler->copyTrackListToDevice( tracklist );
 }
 
 void

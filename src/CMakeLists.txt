@@ -42,6 +42,7 @@ include_directories(
     charset-detector/src
     charset-detector/src/tables
     collection
+    collection/mediadevicecollection/support # for MediaDeviceInfo
     configdialog
     configdialog/dialogs
     context
@@ -563,6 +564,7 @@ target_link_libraries(amaroklib
     amarok_taglib
     amarokplasma
     amarokpud
+    mediadevicelib
 )
 
 if(WIN32)

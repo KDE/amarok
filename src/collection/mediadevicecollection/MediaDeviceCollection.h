@@ -1,8 +1,5 @@
-/* 
-   Mostly taken from Daap code:
-   Copyright (C) 2006 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2006 Seb Ruiz <ruiz@kde.org>  
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+/*
+   Copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -27,8 +24,6 @@
 
 #include <QtGlobal>
 
-class MediaDeviceCollection;
-
 class MediaDeviceCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
@@ -36,13 +31,15 @@ class MediaDeviceCollectionFactory : public Amarok::CollectionFactory
         MediaDeviceCollectionFactory();
         virtual ~MediaDeviceCollectionFactory();
 
-        virtual void init();
+        virtual void init() = 0;
 
     private:
 
     private slots:
-    
-    private:
+        virtual void deviceDetected() = 0;
+        virtual void deviceRemoved( const QString &udi ) = 0;
+        virtual void slotCollectionReady() = 0;
+        virtual void slotCollectionDisconnected( const QString & udi ) = 0;
 
 };
 
@@ -51,23 +48,24 @@ class MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
     Q_OBJECT
     public:
 
-        MediaDeviceCollection( const QString &mountPoint);
-        virtual ~MediaDeviceCollection();
+        void copyTrackListToDevice( const Meta::TrackList tracklist );
 
         virtual void startFullScan();
         virtual QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
-        virtual QString prettyName() const;        
+        virtual QString prettyName() const;
 
     signals:
         void collectionReady();
 
     public slots:
+        virtual void deleteTracksSlot( Meta::TrackList tracklist );
+
+    protected:
+        MediaDevice::MediaDeviceHandler *m_handler;
 
     private slots:
-
-    private:
 
 
 };
