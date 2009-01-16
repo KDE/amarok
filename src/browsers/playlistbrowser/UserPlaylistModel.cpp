@@ -234,10 +234,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
 
             foreach( Meta::PlaylistPtr playlistPtr, playlists )
             {
-                Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( playlistPtr );
-
-                if( playlist )
-                    playlist->reparent( parentGroup );
+                //TODO: found out if it dropped on a group and add the group to the playlists
             };
 
             return true;

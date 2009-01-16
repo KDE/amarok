@@ -16,9 +16,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "UserPlaylistTreeView.h"
 
+#include "Debug.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
 #include "context/ContextView.h"
@@ -27,8 +28,6 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
-// #include "SqlPlaylist.h"
-// #include "SqlPlaylistGroup.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
@@ -93,7 +92,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
     if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
     {
 //         SqlPlaylistViewItem *item = static_cast<SqlPlaylistViewItem*>( index.internalPointer() );
-// 
+//
 //         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
 //             Meta::SqlPlaylist * playlist = static_cast< Meta::SqlPlaylist* >( item );
 //             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
@@ -161,13 +160,13 @@ PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList in
 {
 
     QList< PopupDropperAction * > actions;
-    
+
     if ( m_appendAction == 0 )
     {
         m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
         connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
     }
-    
+
     if ( m_loadAction == 0 )
     {
         m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
@@ -185,7 +184,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList in
         m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
-    
+
     if ( indices.count() > 0 )
     {
         actions << m_appendAction;
@@ -267,18 +266,6 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
         menu.addAction( m_addGroupAction );
 
     menu.exec( mapToGlobal( event->pos() ) );
-}
-
-QSet<SqlPlaylistViewItemPtr>
-PlaylistBrowserNS::UserPlaylistTreeView::selectedItems() const
-{
-    QSet<SqlPlaylistViewItemPtr> selected;
-    foreach( const QModelIndex &index, selectionModel()->selectedIndexes() )
-    {
-        if( index.isValid() && index.internalPointer() )
-            selected.insert( PlaylistBrowserNS::UserModel::instance()->data( index, 0xf00d ).value<SqlPlaylistViewItemPtr>() );
-    } 
-    return selected;
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )

@@ -20,7 +20,6 @@
 #ifndef PLAYLISTCATEGORY_H
 #define PLAYLISTCATEGORY_H
 
-// #include "SqlPlaylistViewItem.h"
 #include "UserPlaylistTreeView.h"
 #include "widgets/Widget.h"
 
@@ -28,8 +27,6 @@
 
 #include <QModelIndex>
 #include <QPoint>
-
-
 
 class QToolBar;
 class QTreeView;
@@ -53,7 +50,7 @@ public:
     ~PlaylistCategory();
 
 private slots:
-    
+
 //     void showAddStreamDialog();
 //     void streamDialogConfirmed();
     void newPalette( const QPalette & palette );

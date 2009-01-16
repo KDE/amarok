@@ -16,11 +16,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef USERPLAYLISTTREEVIEW_H
 #define USERPLAYLISTTREEVIEW_H
 
-#include "SqlPlaylistViewItem.h"
+
 #include "widgets/PrettyTreeView.h"
 
 class PopupDropper;
@@ -56,7 +56,7 @@ private slots:
     void slotRename();
 
 private:
-    QSet<SqlPlaylistViewItemPtr> selectedItems() const;
+//     QSet<SqlPlaylistViewItemPtr> selectedItems() const;
     QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
 
     PopupDropper* m_pd;
