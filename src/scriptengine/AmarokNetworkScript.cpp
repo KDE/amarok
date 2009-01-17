@@ -45,7 +45,6 @@ Downloader::Downloader( QScriptEngine* engine )
     engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QScriptValue() );
     const QScriptValue ctor = engine->newFunction( Downloader_prototype_ctor );
     engine->globalObject().setProperty( "Downloader", ctor );
-
 }
 
 Downloader::~Downloader()
@@ -54,13 +53,15 @@ Downloader::~Downloader()
 
 QScriptValue
 Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine )
-{ // from QtScript API docs
+{
+    // from QtScript API docs
     DEBUG_BLOCK
     QScriptValue object;
+    
     if( context->isCalledAsConstructor() )
-    {
         object = context->thisObject();
-    } else {
+    else
+    {
         object = engine->newObject();
         object.setPrototype( context->callee().property("prototype") );
     }
@@ -69,16 +70,20 @@ Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* e
     {
         debug() << "ERROR! Constructor not called with enough arguments:" << context->argumentCount();
         return object;
-    } else if( !context->argument( 1 ).isFunction() ) //TODO: check QUrl
+    }
+    
+    if( !context->argument( 1 ).isFunction() ) //TODO: check QUrl
     {
         debug() << "ERROR! Constructor not called with a QUrl and function!";
         return object;
     }
+    
     QString encoding = "UTF-8";
     KUrl tmpUrl;
     QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
     if( context->argumentCount() == 3 ) // encoding specified
         encoding = context->argument( 2 ).toString();
+    
     tmpUrl.setEncodedUrl( url.toEncoded() );
     // start download, and connect to it
     //FIXME: url is not working directly.
@@ -134,11 +139,14 @@ AmarokDownloadHelper::result( KJob* job )
     {
         debug() << "script object is valid but not a function!!";
         return;
-    } else if( !engine )
+    }
+   
+    if( !engine )
     {
         debug() << "stored script engine is not valid!";
         return;
     }
+
     QScriptValueList args;
     args <<  QScriptValue( engine, data );
     obj.call( obj, args );
@@ -152,11 +160,8 @@ AmarokDownloadHelper*
 AmarokDownloadHelper::instance()
 {
     if( !s_instance )
-    {
         s_instance = new AmarokDownloadHelper();
-        return s_instance;
-    } else
-        return s_instance;
+    return s_instance;
 }
 
 

@@ -33,10 +33,7 @@ class AmarokNetworkScript : public QObject
     public:
         AmarokNetworkScript( QScriptEngine* ScriptEngine );
         ~AmarokNetworkScript();
-
-
 };
-
 
 class Downloader : public QObject
 {
@@ -50,7 +47,6 @@ class Downloader : public QObject
         static QScriptValue Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
 
         QScriptEngine* m_scriptEngine;
-
 };
 
 Q_DECLARE_METATYPE( Downloader* )
