@@ -174,19 +174,19 @@ WikipediaEngine::wikiResult( KJob* job )
     
     if( !m_wikiJob ) return; //track changed while we were fetching
 
+    // It's the correct job but it errored out
     if( job->error() != KJob::NoError && job == m_wikiJob )
-    { //It's the correct job but it errored out
-        setData( "wikipedia", "error" );
+    {
+        setData( "wikipedia", "message", i18n( "Unable to retrieve Wikipedia information: %1", job->errorString() ) );
         m_wikiJob = 0; // clear job
         return;
     }
+    // not the right job, so let's ignore it
     if( job != m_wikiJob )
-        return; //not the right job, so let's ignore it
+        return;
 
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     m_wiki = storedJob->data();
-
-    //debug() << "reply: " << m_wiki;
 
     // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
     if ( m_wiki.contains( "charset=utf-8"  ) )
