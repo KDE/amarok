@@ -95,7 +95,7 @@ class SqlPodcastProvider : public PodcastProvider
         QHash<KJob *, Meta::SqlPodcastEpisode *> m_jobMap;
         QHash<KJob *, QString> m_fileNameMap;
         QTimer *m_updateTimer;
-
+        int m_updatingChannels;
 };
 
 #endif
