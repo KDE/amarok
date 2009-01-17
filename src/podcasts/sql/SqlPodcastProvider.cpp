@@ -45,7 +45,7 @@ SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
-    
+
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
@@ -74,7 +74,7 @@ SqlPodcastProvider::SqlPodcastProvider()
             float interval = 1.0;
             m_updateTimer->start( interval * 1000 * 60 * 30 );
         }
-            
+
     }
 }
 
@@ -105,6 +105,8 @@ SqlPodcastProvider::loadPodcasts()
         QStringList channelResult = results.mid( i, rowLength );
         m_channels << SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
     }
+
+    emit( updated() );
 }
 
 bool
@@ -392,7 +394,8 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
 
     podcastReader->deleteLater();
 
-    emit( updated() );
+    //reload to make sure all objects are valid BUG:180851
+    loadPodcasts();
 }
 
 void
