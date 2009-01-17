@@ -20,7 +20,7 @@ include_directories( ../..
 ########### next target ###############
 
 if (NOT WIN32)
- set (extra_src     
+ set (extra_src
     XesamDbus.cpp
     XesamCollectionBuilder.cpp)
 endif (NOT WIN32)
@@ -35,7 +35,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     SqlCollectionLocation.cpp
     SqlQueryMaker.cpp
     SqlRegistry.cpp
-    SqlMeta.cpp 
+    SqlMeta.cpp
     MySqlEmbeddedCollection.cpp
     ${amarok_collection-sqlcollection_PART_SRCS}
     ${extra_src}
@@ -74,7 +74,7 @@ target_link_libraries(amarok_collection-sqlcollection
 if(NOT WIN32)
     target_link_libraries(amarok_collection-sqlcollection crypto ssl)
     if(NOT APPLE)
-        target_link_libraries(amarok_collection-sqlcollection crypt)
+        target_link_libraries(amarok_collection-sqlcollection crypt pthread)
     endif(NOT APPLE)
 endif(NOT WIN32)
 
