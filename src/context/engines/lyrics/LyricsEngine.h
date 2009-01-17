@@ -48,7 +48,7 @@ public:
     void newLyrics( QStringList& lyrics );
     void newLyricsHtml( QString& lyrics );
     void newSuggestions( QStringList& suggest );
-    void lyricsMessage( QString& message );
+    void lyricsMessage( QString& key, QString& val );
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;

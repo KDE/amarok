@@ -154,12 +154,12 @@ void LyricsEngine::newSuggestions( QStringList& suggested )
     setData( "lyrics", "suggested", suggested );
 }
 
-void LyricsEngine::lyricsMessage( QString& msg )
+void LyricsEngine::lyricsMessage( QString& key, QString &val )
 {
     DEBUG_BLOCK
 
     removeAllData( "lyrics" );
-    setData( "lyrics", msg, msg );
+    setData( "lyrics", key, val );
 }
 
 #include "LyricsEngine.moc"

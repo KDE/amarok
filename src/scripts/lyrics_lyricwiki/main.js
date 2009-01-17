@@ -29,10 +29,14 @@ function onFinished( dat )
 {
     try
     {
-        Amarok.Lyrics.showLyricsHtml( dat );
+        if( dat.length == 0 )
+            Amarok.Lyrics.showLyricsError( "Unable to contact server" ); // TODO: this should be i18n able
+        else
+            Amarok.Lyrics.showLyricsHtml( dat );
     }
     catch( err )
     {
+        Amarok.Lyrics.showLyricsError( "Could not retrieve lyrics: " + err );
         Amarok.debug( "error: " + err );
     }
 }

@@ -25,56 +25,58 @@ class LyricsSubject;
 
 class AMAROK_EXPORT LyricsObserver
 {
-public:
-    LyricsObserver();
-    LyricsObserver( LyricsSubject* );
-    virtual ~LyricsObserver();
+    public:
+        LyricsObserver();
+        LyricsObserver( LyricsSubject* );
+        virtual ~LyricsObserver();
     
-    virtual void newLyrics( QStringList& lyrics ) { Q_UNUSED( lyrics ); }
-    virtual void newLyricsHtml( QString& lyrics ) { Q_UNUSED( lyrics ); }
-    virtual void newSuggestions( QStringList& suggestions ) { Q_UNUSED( suggestions ); }
-    virtual void lyricsMessage( QString& msg ) { Q_UNUSED( msg ); }
+        virtual void newLyrics( QStringList& lyrics ) { Q_UNUSED( lyrics ); }
+        virtual void newLyricsHtml( QString& lyrics ) { Q_UNUSED( lyrics ); }
+        virtual void newSuggestions( QStringList& suggestions ) { Q_UNUSED( suggestions ); }
+        virtual void lyricsMessage( QString& key, QString &val ) { Q_UNUSED( key ); Q_UNUSED( val ); }
 
-private:
-    LyricsSubject *m_subject;
+    private:
+        LyricsSubject *m_subject;
 };
 
 class LyricsSubject
 {
-public:
-    void attach( LyricsObserver *observer );
-    void detach( LyricsObserver *observer );
+    public:
+        void attach( LyricsObserver *observer );
+        void detach( LyricsObserver *observer );
     
-protected:
-    LyricsSubject() {}
-    virtual ~LyricsSubject() {}
+    protected:
+        LyricsSubject() {}
+        virtual ~LyricsSubject() {}
     
-    void sendNewLyrics( QStringList lyrics );
-    void sendNewLyricsHtml( QString lyrics );
-    void sendNewSuggestions( QStringList suggestions );
-    void sendLyricsMessage( QString msg );
+        void sendNewLyrics( QStringList lyrics );
+        void sendNewLyricsHtml( QString lyrics );
+        void sendNewSuggestions( QStringList suggestions );
+        void sendLyricsMessage( QString key, QString val );
     
-private:
-    QList< LyricsObserver* > m_observers;
+    private:
+        QList<LyricsObserver*> m_observers;
 };
 
 class AMAROK_EXPORT LyricsManager : public LyricsSubject
 {
-public:
-    LyricsManager() : LyricsSubject() { s_self = this; }
+    public:
+        LyricsManager() : LyricsSubject() { s_self = this; }
     
-    static LyricsManager* self() 
-    { 
-        if( !s_self )
-            s_self = new LyricsManager();
+        static LyricsManager* self() 
+        { 
+            if( !s_self )
+                s_self = new LyricsManager();
+
+            return s_self; 
+        }
     
-        return s_self; 
-    }
-    
-    void lyricsResult( const QString& lyrics = 0, bool cached = false );
-    void lyricsResultHtml( const QString& lyrics = 0, bool cached = false );
-private:
-    static LyricsManager* s_self;
+        void lyricsResult( const QString& lyrics, bool cached = false );
+        void lyricsResultHtml( const QString& lyrics, bool cached = false );
+        void lyricsError( const QString &error );
+
+    private:
+        static LyricsManager* s_self;
 };
 
 #endif

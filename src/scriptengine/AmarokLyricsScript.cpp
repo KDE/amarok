@@ -49,8 +49,6 @@ AmarokLyricsScript::showLyrics( const QString& lyrics ) const
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
-    //debug() << "got lyrics: " << lyrics << " and track: " << track;
-//    debug() << lyrics;
     LyricsManager::self()->lyricsResult( lyrics, false );
 }
 
@@ -60,8 +58,13 @@ AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
-    //debug() << "got lyrics: " << lyrics << " and track: " << track;
     LyricsManager::self()->lyricsResultHtml( lyrics, false );
+}
+
+void
+AmarokLyricsScript::showLyricsError( const QString& error ) const
+{
+    LyricsManager::self()->lyricsError( error );
 }
 
 void

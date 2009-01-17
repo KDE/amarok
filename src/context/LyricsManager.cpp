@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Leo Franchi <lfranchi@kde.org>          *
+ *                        (C) 2009 Seb Ruiz <ruiz@kde.org>                 *
  **************************************************************************/
 
 /***************************************************************************
@@ -67,11 +68,12 @@ void LyricsSubject::sendNewSuggestions( QStringList sug )
     }
 }
 
-void LyricsSubject::sendLyricsMessage( QString msg )
+void LyricsSubject::sendLyricsMessage( QString key, QString val )
 {
+    DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
-        obs->lyricsMessage( msg );
+        obs->lyricsMessage( key, val );
     }
 }
 
@@ -99,13 +101,11 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     DEBUG_BLOCK
     Q_UNUSED( cached );
 
-    //debug() << "got xml: " << lyricsXML;
-    
     QDomDocument doc;
     if( !doc.setContent( lyricsXML ) )
     {
-        debug() << "could not read the xml of lyrics, misformed";
-        sendLyricsMessage( QString( "error" ) );
+        debug() << "could not read the xml of lyrics, malformed";
+        lyricsError( i18n("Lyrics data could not be parsed") );
         return;
     }
 
@@ -120,7 +120,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         debug() << "got suggestion list of length" << l.length();
         if( l.length() ==0 )
         {
-            sendLyricsMessage( QString( "notfound" ) );
+            sendLyricsMessage( "notfound", "notfound" );
         }
         else
         {
@@ -132,7 +132,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
                 suggested << QString( "%1 - %2 - %3" ).arg( title, artist, url );
             }
-           // setData( "lyrics", "suggested", suggested );
+            // setData( "lyrics", "suggested", suggested );
             // TODO for now suggested is disabled
             sendNewSuggestions( suggested );
         }
@@ -140,15 +140,13 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     else
     {
         if( !The::engineController()->currentTrack() )
-        {
             return;
-        }
 
         lyrics = el.text();
         debug() << "setting cached lyrics";
         The::engineController()->currentTrack()->setCachedLyrics( lyricsXML ); // TODO: setLyricsByPath?
 
-        const QString title      = el.attribute( "title" );
+        const QString title = el.attribute( "title" );
 
         QStringList lyricsData;
         lyricsData << title
@@ -156,9 +154,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             << QString() // TODO lyrics site
             << lyrics;
 
-//         setData( "lyrics", "lyrics", lyricsData );
         sendNewLyrics( lyricsData );
-
     }
 }
 
@@ -179,5 +175,11 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     // cache the Html anyway.
     if( The::engineController()->currentTrack()->cachedLyrics().isEmpty() )
         The::engineController()->currentTrack()->setCachedLyrics( lyricsHTML );
+}
+
+void
+LyricsManager::lyricsError( const QString &error )
+{
+    sendLyricsMessage( "error", error );
 }
 
