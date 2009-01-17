@@ -112,18 +112,19 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     collectionSlashLabel->setContentsMargins( 0, 0, 0, 0 );
         
     //INIT for tokenPool
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-track-amarok" ).pixmap( 48, 48 ), i18n( "Track" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-title-amarok" ).pixmap( 48, 48 ), i18n( "Title" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-artist-amarok" ).pixmap( 48, 48 ), i18n( "Artist" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-composer-amarok" ).pixmap( 48, 48 ), i18n( "Composer" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-year-amarok" ).pixmap( 48, 48 ), i18n( "Year" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-album-amarok" ).pixmap( 48, 48 ), i18n( "Album" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-comment-amarok" ).pixmap( 48, 48 ), i18n( "Comment" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-genre-amarok" ).pixmap( 48, 48 ), i18n( "Genre" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-underscore-amarok" ).pixmap( 48, 48 ), i18n( "_") ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-dash-amarok" ).pixmap( 48, 48 ), i18n( "-" ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-dot-amarok" ).pixmap( 48, 48 ), i18n( "." ) ) );
-    tokenPool->addItem( new QListWidgetItem( KIcon( "filename-space-amarok" ).pixmap( 48, 48 ), QString("<space>") ) );
+    tokenPool->addToken( Token::Track );
+    tokenPool->addToken( Token::Title );
+    tokenPool->addToken( Token::Artist );
+    tokenPool->addToken( Token::Composer );
+    tokenPool->addToken( Token::Year );
+    tokenPool->addToken( Token::Album );
+    tokenPool->addToken( Token::Comment );
+    tokenPool->addToken( Token::Genre );
+    tokenPool->addToken( Token::Underscore );
+    tokenPool->addToken( Token::Dash );
+    tokenPool->addToken( Token::Dot );
+    tokenPool->addToken( Token::Space );
+    tokenPool->addToken( Token::Slash );
 
     if( !m_isOrganizeCollection )
     {

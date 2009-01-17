@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
+ *               2009 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -20,6 +21,7 @@
 #include "FilenameLayoutWidget.h"
 
 #include <KListWidget>
+#include <QMap>
 
 //Holds a number of icons representing parts of the filename that will become tokens when dropped on the FilenameLayoutWidget.
 class TokenListWidget : public KListWidget
@@ -28,6 +30,7 @@ class TokenListWidget : public KListWidget
     
     public:
         TokenListWidget( QWidget *parent = 0 );
+        void addToken( Token::Type type );
     
     protected:
         void mouseDoubleClickEvent( QMouseEvent *event );
@@ -43,6 +46,8 @@ class TokenListWidget : public KListWidget
     private:
         void performDrag( QMouseEvent *event );
         QPoint m_startPos;  //needed for starting the drag
+
+        QMap<QListWidgetItem*,Token*> m_itemTokenMap;
 };
 
 #endif    //TOKENLISTWIDGET_H

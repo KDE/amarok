@@ -1,6 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
- *           (C) 2008 Seb Ruiz <ruiz@kde.org>                                 *
+ *           (C) 2008-2009 Seb Ruiz <ruiz@kde.org>                            *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -19,6 +19,7 @@
 #ifndef AMAROK_TOKEN_H
 #define AMAROK_TOKEN_H
 
+#include <KIcon>
 #include <QFrame>
 #include <QLabel>
 #include <QPixmap>
@@ -28,8 +29,7 @@ class Token;
 class TokenBuilder
 {
     public:
-        Token* buildToken( const QString &element ) const;
-
+        static Token* buildToken( const QString &element );
 };
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
@@ -63,15 +63,13 @@ class Token : public QFrame
 
         QString tokenElement() const;
         static QString tokenElement( const Type type );
+        KIcon icon() const;
+        QString text() const;
 
     private:
         void setIcon();
-        QString iconName() const;
-        QString text() const;
-        QString prettyText() const;
 
         Type         m_type;
- 
         QLabel      *m_iconContainer;
         QLabel      *m_label;
 };

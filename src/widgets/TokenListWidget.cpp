@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
+ *               2009 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -27,6 +28,17 @@ TokenListWidget::TokenListWidget( QWidget *parent )
     : KListWidget( parent )
 {
     setAcceptDrops( true );
+}
+
+void
+TokenListWidget::addToken( Token::Type type )
+{
+    Token *token = new Token( type );
+    QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->text() );
+
+    addItem( item );
+
+    m_itemTokenMap.insert( item, token );
 }
 
 // Executed on doubleclick of the TokenListWidget, emits signal onDoubleClick( QString )
@@ -98,13 +110,18 @@ void
 TokenListWidget::performDrag( QMouseEvent *event )
 {
     QListWidgetItem *item = currentItem();
-    if ( item )
+
+    if( item )
     {
+        Token *token = m_itemTokenMap.value( item );
         QByteArray itemData;
+
         QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-        dataStream << item->text() << QPoint( event->pos() - rect().topLeft() );
+        dataStream << token->tokenElement() << QPoint( event->pos() - rect().topLeft() );
+        
         QMimeData *mimeData = new QMimeData;
-        mimeData->setData( "application/x-amarok-tag-token", itemData );    //setText( item->text() );
+        mimeData->setData( "application/x-amarok-tag-token", itemData );
+        
         QDrag *drag = new QDrag( this );
         drag->setMimeData( mimeData );
         

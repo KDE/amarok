@@ -76,10 +76,8 @@ FilenameLayoutWidget::addToken( Token::Type type, int index )
 void
 FilenameLayoutWidget::addToken( const QString &tokenElement, int index )
 {
-    TokenBuilder *tb = new TokenBuilder();
-    Token *token = tb->buildToken( tokenElement );
+    Token *token = TokenBuilder::buildToken( tokenElement );
     addToken( token, index );
-    delete tb;
 }
 
 //Executed whenever a drag object enters the FilenameLayoutWidget
@@ -256,7 +254,7 @@ void
 FilenameLayoutWidget::performDrag( QMouseEvent *event )
 {
     // transfer of QByteData, not text
-    Token *child = qobject_cast< Token * >( childAt( event->pos() ) );
+    Token *child = qobject_cast<Token*>( childAt( event->pos() ) );
     if ( !child )
         return;
     

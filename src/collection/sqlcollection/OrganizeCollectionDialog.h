@@ -75,6 +75,7 @@ class OrganizeCollectionDialog : public KDialog
         Meta::TrackPtr m_previewTrack;
         bool m_detailed;
         Meta::TrackList m_allTracks;
+
     private slots:
         void toggleCustomScheme( bool state );
 };

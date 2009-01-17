@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
+ *               2008-2009 Seb Ruiz <ruiz@kde.org>                            *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -20,12 +21,10 @@
 #include "Debug.h"
 
 #include <KColorScheme>
-#include <KIcon>
-
 #include <QHBoxLayout>
 
 Token*
-TokenBuilder::buildToken( const QString &element ) const 
+TokenBuilder::buildToken( const QString &element )
 {
     if( element == Token::tokenElement( Token::Track ) )
         return new Token( Token::Track );
@@ -71,7 +70,7 @@ Token::Token( Type type, QWidget *parent )
     m_label = new QLabel( this );
     m_label->setAlignment( Qt::AlignCenter );
     m_label->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-    m_label->setText( prettyText() );
+    m_label->setText( text() );
 
     QHBoxLayout *hlayout = new QHBoxLayout( this );
     setLayout( hlayout );
@@ -153,18 +152,6 @@ Token::text() const
 } 
 
 QString
-Token::prettyText() const
-{
-    switch( m_type )
-    {
-        case Space:
-            return QString(" ");
-        default:
-            return text();
-    }
-}
-
-QString
 Token::tokenElement() const
 {
     return tokenElement( m_type );
@@ -218,30 +205,37 @@ Token::tokenElement( Type type )
     return QString();
 } 
 
-QString
-Token::iconName() const
+KIcon
+Token::icon() const
 {
+    QString iconName;
     switch( m_type )
     {
         case Space:
-            return QString( "space" );
+            iconName = "space";
+            break;
         case Slash:
-            return QString( "slash" );
+            iconName = "slash";
+            break;
         case Dot:
-            return QString( "dot" );
+            iconName = "dot";
+            break;
         case Dash:
-            return QString( "dash" );
+            iconName = "dash";
+            break;
         case Underscore:
-            return QString( "underscore" );
+            iconName = "underscore";
+            break;
         default:
-            return tokenElement().mid( 1 );// remove '%'
+            iconName = tokenElement().mid( 1 );// remove '%'
+            break;
     }
-    return QString();
+    return KIcon( "filename-" + iconName + "-amarok" );
 }
 
 void
 Token::setIcon()
 {
-    QPixmap pixmap = QPixmap( KIcon( "filename-" + iconName() + "-amarok" ).pixmap( 16, 16 ) );
+    QPixmap pixmap = QPixmap( icon().pixmap( 16, 16 ) );
     m_iconContainer->setPixmap( pixmap );
 }
