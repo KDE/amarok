@@ -87,6 +87,10 @@ private:
     QGraphicsSimpleTextItem* m_playedLast;
     QGraphicsSimpleTextItem* m_noTrack;
 
+    QGraphicsRectItem* m_scoreIconBox;
+    QGraphicsRectItem* m_numPlayedIconBox;
+    QGraphicsRectItem* m_playedLastIconBox;
+
     int m_rating;
     int m_trackLength;
 
