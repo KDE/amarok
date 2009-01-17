@@ -48,9 +48,9 @@
 LastFmTreeView::LastFmTreeView ( QWidget* parent )
         : Amarok::PrettyTreeView ( parent )
         , m_timer ( 0 )
+        , m_pd( 0 )
         , m_appendAction ( 0 )
         , m_loadAction ( 0 )
-        , m_pd( 0 )
         , m_dragMutex()
         , m_ongoingDrag( false )
 {
@@ -91,6 +91,7 @@ LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )
 
 PopupDropperActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices )
 {
+    Q_UNUSED( indices )
     PopupDropperActionList actions;
     QModelIndex index = currentIndex();
     LastFmTreeItem* i = static_cast<LastFmTreeItem*> ( index.internalPointer() );
@@ -217,12 +218,6 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
     m_dragMutex.lock();
     m_ongoingDrag = false;
     m_dragMutex.unlock();
-}
-
-void
-LastFmTreeView::onActivated ( const QModelIndex& i )
-{
-//     contextMenuHandler ( i, DoQMenuDefaultAction );
 }
 
 void

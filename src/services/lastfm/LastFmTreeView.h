@@ -20,8 +20,8 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#ifndef SIDE_BAR_TREE_H
-#define SIDE_BAR_TREE_H
+#ifndef LASTFMTREEVIEW_H
+#define LASTFMTREEVIEW_H
 
 #include "LastFmTreeModel.h"
 #include "playlist/PlaylistController.h"
@@ -53,7 +53,6 @@ signals:
     void plsShowNowPlaying();
 
 private slots:
-    void onActivated ( const QModelIndex& );
     void slotPlayChildTracks();
     void slotAppendChildTracks();
 
