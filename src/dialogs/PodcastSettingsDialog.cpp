@@ -19,7 +19,11 @@
 #include "PodcastSettingsDialog.h"
 #include "ui_PodcastSettingsBase.h"
 
+#include "Debug.h"
 
+#include <QApplication>
+#include <QClipboard>
+#include <QFontMetrics>
 
 PodcastSettingsDialog::PodcastSettingsDialog( Meta::PodcastChannelPtr channel, QWidget* parent )
     : KDialog( parent )
@@ -42,6 +46,17 @@ PodcastSettingsDialog::PodcastSettingsDialog( Meta::PodcastChannelPtr channel, Q
 void
 PodcastSettingsDialog::init()
 {
+    QString url = m_channel->url().url();
+    //TODO:use calculated width based on size of m_ps->m_leftClickLabel
+    QString feedUrlText = QWidget::fontMetrics().elidedText(
+                    url,
+                    Qt::ElideMiddle,
+                    275 ); //experimentally determined value. i18n might break this.
+    m_ps->m_feedLabel->setText( feedUrlText );
+    m_ps->m_feedLabel->setUrl( url );
+    connect( m_ps->m_feedLabel, SIGNAL(leftClickedUrl( const QString& )),
+                  SLOT(slotFeedUrlClicked( const QString& ) ) );
+
     m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
     m_ps->m_saveLocation->setUrl( m_channel->saveLocation() );
 
@@ -78,6 +93,13 @@ PodcastSettingsDialog::init()
     connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
 
     connect( this, SIGNAL(applyClicked()), this ,SLOT(slotApply()) );
+}
+
+void
+PodcastSettingsDialog::slotFeedUrlClicked( const QString &url ) //SLOT
+{
+    //adding url to clipboard for users convenience
+    QApplication::clipboard()->setText( url );
 }
 
 bool
