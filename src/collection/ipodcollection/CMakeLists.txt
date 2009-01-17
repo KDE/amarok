@@ -46,6 +46,7 @@ if (IPOD_FOUND)
         ${KDE4_KDECORE_LIBS}
         ${KDE4_KIO_LIBS}
         ${KDE4_KDEUI_LIBS}
+        ${KDE4_SOLID_LIBRARY}
         ${KDE4_THREADWEAVER_LIBRARIES}
         ${QT_QTGUI_LIBRARY}
         ${GLIB2_LIBRARIES}
