@@ -75,9 +75,21 @@ void CurrentTrack::init()
     m_noTrack      = new QGraphicsSimpleTextItem( this );
     m_albumCover   = new QGraphicsPixmapItem    ( this );
 
+    m_scoreIconBox      = new QGraphicsRectItem( this );
+    m_numPlayedIconBox  = new QGraphicsRectItem( this );
+    m_playedLastIconBox = new QGraphicsRectItem( this );
+
     m_score->setToolTip( i18n( "Score:" ) );
     m_numPlayed->setToolTip( i18n( "Play Count:" ) );
     m_playedLast->setToolTip( i18nc("a single item (singular)", "Last Played:") );
+
+    m_scoreIconBox->setToolTip( i18n( "Score:" ) );
+    m_numPlayedIconBox->setToolTip( i18n( "Play Count:" ) );
+    m_playedLastIconBox->setToolTip( i18nc("a single item (singular)", "Last Played:") );
+
+    m_scoreIconBox->setPen( QPen( Qt::NoPen ) );
+    m_numPlayedIconBox->setPen( QPen( Qt::NoPen ) );
+    m_playedLastIconBox->setPen( QPen( Qt::NoPen ) );
     
 
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
@@ -198,10 +210,14 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 + 2 ) );
 
     const int addLabelOffset = contentsRect().width() - 25;
-    
+
     m_score->setPos( QPointF( addLabelOffset, margin + 2 ) );
     m_numPlayed->setPos( QPointF( addLabelOffset, margin * 2 + textHeight + 2 ) );
     m_playedLast->setPos( QPointF( addLabelOffset, margin * 3 + textHeight * 2.0 + 2 ) );
+
+    m_scoreIconBox->setRect( addLabelOffset - 25, margin, 25, 22 );
+    m_numPlayedIconBox->setRect( addLabelOffset - 25, margin * 2 + textHeight, 25, 22 );
+    m_playedLastIconBox->setRect( addLabelOffset - 25, margin * 3 + textHeight * 2.0, 25, 22 );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
@@ -333,6 +349,10 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_score->setToolTip( i18n( "Score:" ) + ' ' + score );
     m_numPlayed->setToolTip( i18n( "Playcount:" ) + ' ' + numPlayed );
     m_playedLast->setToolTip( i18nc("a single item (singular)", "Last Played:") + ' ' + playedLastVerbose );
+
+    m_scoreIconBox->setToolTip( i18n( "Score:" ) + ' ' + score );
+    m_numPlayedIconBox->setToolTip( i18n( "Playcount:" ) + ' ' + numPlayed );
+    m_playedLastIconBox->setToolTip( i18nc("a single item (singular)", "Last Played:") + ' ' + playedLastVerbose );
 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
