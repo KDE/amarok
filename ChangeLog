@@ -6,7 +6,7 @@ Amarok ChangeLog
 VERSION 2.1
   FEATURES:
     * The feed url is displayed in the config dialog of a podcast channel.
-      By left clicking oin the url it's copied to the clipboard. (BR 180853)
+      By left clicking in the url it's copied to the clipboard. (BR 180853)
     * The Playlist Browser can now show playlists from multiple sources,
       including media devices.
     * The last.fm service now allows for the playing of all types of user
