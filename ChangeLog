@@ -46,11 +46,9 @@ VERSION 2.1
     * Don't show the rating widget for tracks which are not in the collection.
       (BR 180023)
 
-
 VERSION 2.0.1.1
   BUGFIX:
     * Fix possible buffer overflows when parsing Audible .aa files.
-    * Add tooltips to now playing widget icons.
 
 
 VERSION 2.0.1
