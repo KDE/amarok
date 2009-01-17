@@ -53,7 +53,6 @@ int main( int argc, char *argv[] )
 
 
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );
-    aboutData.addCredit( ki18n("Alexandre 'Ain't afraid of no bugs' Oliveira"), ki18n(( "Developer" )), "aleprj@gmail.com" );
     aboutData.addCredit( ki18n("Casey Link"), ki18n(( "MP3tunes integration" )), "unnamedrambler@gmail.com" );
     aboutData.addCredit( ki18n("Christie Harris"), ki18n(( "Rokymoter (dangle)" )), "dangle.baby@gmail.com" );
     aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n(( "Usability" )), "admin@leinir.dk" );
@@ -65,7 +64,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Kevin Funk"), ki18n(( "Rokymoter (KRF)" )), "krf@electrostorm.net" );
     aboutData.addCredit( ki18n("Lee Olson"), ki18n(( "Artwork" )), "leetolson@gmail.com" );
     aboutData.addCredit( ki18n("Ljubomir Simin"), ki18n(( "Rokymoter (ljubomir)" )), "ljubomir.simin@gmail.com" );
-    aboutData.addCredit( ki18n("Lydia Pintscher"), ki18n(( "Community manager & Rokymoter (Nightrose)" )), "lydia@kde.org" );
     aboutData.addCredit( ki18n("Max Howell"), ki18n(( "Developer, Vision" )), "max.howell@methylblue.com" );
     aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n(( "Rokymoter (Mamarok)" )), "schweingruber@pharma-traduction.ch" );
     aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n(( "Artwork" )), "nuno@oxygen-icons.org" );
