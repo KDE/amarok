@@ -43,6 +43,7 @@ static const QString key("AMAROK_PODCAST");
 
 SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
+    , m_updatingChannels( 0 )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
 
@@ -163,6 +164,7 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
     else
     {
         bool result = false;
+        m_updatingChannels++;
         PodcastReader * podcastReader = new PodcastReader( this );
 
         connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
@@ -331,6 +333,7 @@ void
 SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 {
     bool result = false;
+    m_updatingChannels++;
     PodcastReader * podcastReader = new PodcastReader( this );
 
     connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
@@ -379,6 +382,7 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
 void
 SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
 {
+    DEBUG_BLOCK
     if ( !result )
     {
         debug() << "Parse error in podcast "
@@ -390,12 +394,16 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
     else
     {
         debug() << "Finished updating: " << podcastReader->url();
+        debug() << "Updating counter reached " << m_updatingChannels-1;
+        //decrement the counter and load podcasts if needed.
+        if( --m_updatingChannels == 0 )
+        {
+            //reload to make sure all objects are valid BUG:180851
+            loadPodcasts();
+        }
     }
 
     podcastReader->deleteLater();
-
-    //reload to make sure all objects are valid BUG:180851
-    loadPodcasts();
 }
 
 void
