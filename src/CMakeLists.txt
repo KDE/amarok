@@ -210,7 +210,6 @@ set(meta_SRCS
     meta/SqlPlaylist.cpp
     meta/PlaylistFileSupport.cpp
     meta/PrivateMetaRegistry.cpp
-    meta/SqlPlaylist.cpp
     meta/XSPFPlaylist.cpp
     meta/capabilities/CollectionCapability.cpp
     meta/capabilities/CurrentTrackActionsCapability.cpp
