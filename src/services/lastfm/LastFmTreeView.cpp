@@ -24,6 +24,7 @@
 #include "LastFmTreeView.h"
 
 #include "Amarok.h"
+#include "context/ContextView.h"
 #include "Debug.h"
 #include "SvgHandler.h"
 #include "PopupDropperFactory.h"
@@ -49,6 +50,9 @@ LastFmTreeView::LastFmTreeView ( QWidget* parent )
         , m_timer ( 0 )
         , m_appendAction ( 0 )
         , m_loadAction ( 0 )
+        , m_pd( 0 )
+        , m_dragMutex()
+        , m_ongoingDrag( false )
 {
 //     connect ( this, SIGNAL ( activated ( QModelIndex ) ), SLOT ( onActivated ( QModelIndex ) ) );
 
@@ -74,45 +78,145 @@ LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )
         return;
     PopupDropperAction separator ( this );
     separator.setSeparator ( true );
+
+    PopupDropperActionList actions = createBasicActions( m_currentItems );
+
+    actions += &separator;
+    KMenu menu;
+    foreach ( PopupDropperAction * action, actions )
+        menu.addAction ( action );
+
+    menu.exec ( event->globalPos() );
+}
+
+PopupDropperActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices )
+{
     PopupDropperActionList actions;
     QModelIndex index = currentIndex();
     LastFmTreeItem* i = static_cast<LastFmTreeItem*> ( index.internalPointer() );
     switch ( i->type() )
     {
-    case LastFm::MyRecommendations:
-    case LastFm::PersonalRadio:
-    case LastFm::LovedTracksRadio:
-    case LastFm::NeighborhoodRadio:
-    case LastFm::FriendsChild:
-    case LastFm::NeighborsChild:
-    case LastFm::MyTagsChild:
-    case LastFm::UserChildLoved:
-    case LastFm::UserChildPersonal:
-    case LastFm::UserChildNeighborhood:
+        case LastFm::MyRecommendations:
+        case LastFm::PersonalRadio:
+        case LastFm::LovedTracksRadio:
+        case LastFm::NeighborhoodRadio:
+        case LastFm::FriendsChild:
+        case LastFm::NeighborsChild:
+        case LastFm::MyTagsChild:
+        case LastFm::UserChildLoved:
+        case LastFm::UserChildPersonal:
+        case LastFm::UserChildNeighborhood:
+        {
+            if ( m_appendAction == 0 )
+            {
+                m_appendAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "append", KIcon ( "media-track-add-amarok" ), i18n ( "&Append to Playlist" ), this );
+                connect ( m_appendAction, SIGNAL ( triggered() ), this, SLOT ( slotAppendChildTracks() ) );
+            }
+
+            actions.append ( m_appendAction );
+
+            if ( m_loadAction == 0 )
+            {
+                m_loadAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "load", KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Load" ), this );
+                connect ( m_loadAction, SIGNAL ( triggered() ), this, SLOT ( slotPlayChildTracks() ) );
+            }
+            actions.append ( m_loadAction );
+        }
+        default:
+            break;
+    }
+    return actions;
+}
+
+void LastFmTreeView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+    QModelIndex index;
+    index = indexAt( event->pos() );
+
+    if( index.isValid() && index.internalPointer() )
     {
-        if ( m_appendAction == 0 )
+        playChildTracks( index, Playlist::AppendAndPlay );
+    }
+}
+
+void
+LastFmTreeView::startDrag(Qt::DropActions supportedActions)
+{
+    DEBUG_BLOCK
+
+    //setSelectionMode( QAbstractItemView::NoSelection );
+
+    // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
+    m_dragMutex.lock();
+    if( m_ongoingDrag )
+    {
+        m_dragMutex.unlock();
+        return;
+    }
+    m_ongoingDrag = true;
+    m_dragMutex.unlock();
+
+    if( !m_pd )
+        m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
+
+    if( m_pd && m_pd->isHidden() )
+    {
+
+        QModelIndexList indices = selectedIndexes();
+
+        PopupDropperActionList actions = createBasicActions( indices );
+
+        QFont font;
+        font.setPointSize( 16 );
+        font.setBold( true );
+
+        foreach( PopupDropperAction * action, actions )
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+
+
+        m_currentItems.clear();
+        foreach( const QModelIndex &index, indices )
         {
-            m_appendAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "append", KIcon ( "media-track-add-amarok" ), i18n ( "&Append to Playlist" ), this );
-            connect ( m_appendAction, SIGNAL ( triggered() ), this, SLOT ( slotAppendChildTracks() ) );
+            if( index.isValid() && index.internalPointer() )
+                m_currentItems << index;
         }
 
-        actions.append ( m_appendAction );
+        PopupDropperItem* subItem;
 
-        if ( m_loadAction == 0 )
+        PopupDropper * morePud = 0;
+        if ( actions.count() > 1 )
         {
-            m_loadAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "load", KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Load" ), this );
-            connect ( m_loadAction, SIGNAL ( triggered() ), this, SLOT ( slotPlayChildTracks() ) );
+            morePud = The::popupDropperFactory()->createPopupDropper( 0 );
+
+            foreach( PopupDropperAction * action, actions )
+                morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
-        actions.append ( m_loadAction );
+        else
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions[0] ), false );
+
+        //TODO: Keep bugging i18n team about problems with 3 dots
+        if ( actions.count() > 1 )
+        {
+            subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
+            The::popupDropperFactory()->adjustSubmenuItem( subItem );
+        }
+
+        m_pd->show();
     }
-    default:
-        break;
+
+    QTreeView::startDrag( supportedActions );
+    debug() << "After the drag!";
+
+    if( m_pd )
+    {
+        debug() << "clearing PUD";
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        m_pd->hide();
     }
-    actions += &separator;
-    KMenu menu;
-    foreach ( PopupDropperAction * action, actions )
-    menu.addAction ( action );
-    menu.exec ( event->globalPos() );
+
+    m_dragMutex.lock();
+    m_ongoingDrag = false;
+    m_dragMutex.unlock();
 }
 
 void
@@ -133,6 +237,14 @@ LastFmTreeView::slotAppendChildTracks()
     playChildTracks ( m_currentItems, Playlist::AppendAndPlay );
 }
 
+void
+LastFmTreeView::playChildTracks( const QModelIndex &item, Playlist::AddOptions insertMode)
+{
+    QModelIndexList items;
+    items << item;
+
+    playChildTracks( items, insertMode );
+}
 void
 LastFmTreeView::playChildTracks ( const QModelIndexList &items, Playlist::AddOptions insertMode )
 {

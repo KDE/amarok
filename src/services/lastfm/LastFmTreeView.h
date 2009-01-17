@@ -23,18 +23,22 @@
 #ifndef SIDE_BAR_TREE_H
 #define SIDE_BAR_TREE_H
 
-#include "widgets/PrettyTreeView.h"
-// #include "SideBarRevealPopup.h"
-// #include "LastFmMimeData.h"
 #include "LastFmTreeModel.h"
-// #include "SideBarDelegate.h"
 #include "playlist/PlaylistController.h"
+#include "widgets/PrettyTreeView.h"
+
+#include <QContextMenuEvent>
+#include <QList>
+#include <QMouseEvent>
+#include <QMutex>
 #include <QPointer>
 #include <QTreeView>
 #include <QSet>
-#include <QList>
+
+class PopupDropper;
 class PopupDropperAction;
 typedef QList<PopupDropperAction *> PopupDropperActionList;
+
 class LastFmTreeView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
@@ -43,38 +47,35 @@ public:
     LastFmTreeView ( QWidget* parent = 0 );
     ~LastFmTreeView();
 
-    //////
-//         void addRecentlyPlayedTrack( Track );
-//         static QSet<SideBarItem*> cleanItemSet( const QSet<SideBarItem*> &items );
 signals:
     void statusMessage ( const QString& message );
     void plsShowRestState();
     void plsShowNowPlaying();
 
 private slots:
-//         void expandIndexUnderMouse();
     void onActivated ( const QModelIndex& );
     void slotPlayChildTracks();
     void slotAppendChildTracks();
 
 protected:
     virtual void contextMenuEvent ( QContextMenuEvent* );
+    void mouseDoubleClickEvent( QMouseEvent *event );
+    void startDrag( Qt::DropActions supportedActions );
 
 private:
     enum ContextMenuActionType { ExecQMenu, DoQMenuDefaultAction };
+    void playChildTracks ( const QModelIndex &item, Playlist::AddOptions insertMode );
     void playChildTracks ( const QModelIndexList &items, Playlist::AddOptions insertMode );
-    //Helper function to remove children if their parent is already present
-//         void dragDropHandler( class QDropEvent* );
-//         bool dragDropHandlerPrivate( const QModelIndex&, QDropEvent*, QString& status_message );
+    PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
 
     QTimer* m_timer;
     LastFmTreeModel* m_model;
+    PopupDropper* m_pd;
     PopupDropperAction* m_appendAction;
     PopupDropperAction* m_loadAction;
     QModelIndexList m_currentItems;
-//         SideBarDelegate* m_delegate;
-//         QPointer<RevealPopup> m_revealer;
-//         ToolTipLabel* m_drag_tip;
+    QMutex m_dragMutex;
+    bool m_ongoingDrag;
 };
 
 #endif
