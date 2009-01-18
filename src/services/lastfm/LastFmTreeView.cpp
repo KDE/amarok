@@ -106,6 +106,7 @@ PopupDropperActionList LastFmTreeView::createBasicActions( const QModelIndexList
         case LastFm::FriendsChild:
         case LastFm::NeighborsChild:
         case LastFm::MyTagsChild:
+        case LastFm::ArtistsChild:
         case LastFm::UserChildLoved:
         case LastFm::UserChildPersonal:
         case LastFm::UserChildNeighborhood:

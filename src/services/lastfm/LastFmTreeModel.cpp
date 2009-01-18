@@ -40,9 +40,8 @@ using namespace LastFm;
 LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
         : QAbstractItemModel ( parent ), mUserName ( username ), mUser()
 {
-    QVariant rootData;
 //     rootData << "Title" << "Summary";
-    rootItem = new LastFmTreeItem ( LastFm::Root, rootData );
+    rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
     setupModelData ( rootItem );
     WsReply* reply = mUser.getNeighbours();
     connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddNeighbors ( WsReply* ) ) );
@@ -50,6 +49,8 @@ LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
     connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddFriends ( WsReply* ) ) );
     reply = mUser.getTopTags();
     connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddTags ( WsReply* ) ) );
+    reply = WsRequestBuilder("user.getTopArtists").add("user", username).add("period", "overall").get();
+    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddTopArtists ( WsReply* ) ) );
 
 }
 
@@ -99,6 +100,21 @@ LastFmTreeModel::slotAddFriends ( WsReply* reply )
     }
     queueAvatarsDownload ( avatarlist );
 }
+
+void
+LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
+{
+    DEBUG_BLOCK
+    // iterate through each neighbour
+    QMap<QString, QString> avatarlist;
+    foreach ( CoreDomElement e, reply->lfm() [ "topartists" ].children ( "artist" ) )
+    {
+        QString name = e[ "name" ].text();
+        LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, name ), LastFm::ArtistsChild, name, mMyTopArtists );
+        mMyTopArtists->appendChild ( artist );
+    }
+}
+
 void
 LastFmTreeModel::appendUserStations ( LastFmTreeItem* item )
 {
@@ -276,6 +292,8 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
             //             case RecentlyPlayed:      return tr("Recently Played");
             //             case RecentlyLoved:       return tr("Recently Loved");
             //             case RecentlyBanned:      return tr("Recently Banned");
+        case TopArtists:
+            return i18n ( "My Top Artists" );
         case MyTags:
             return i18n ( "My Tags" );
         case Friends:
@@ -289,6 +307,7 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
             //             case RecentlyBannedTrack: return m_banned.value( index.row() );
 //             case MyTagsChild:         return m_tags.value( index.row() );
         case FriendsChild:
+        case ArtistsChild:
         case NeighborsChild:
         case UserChildLoved:
         case UserChildPersonal:
@@ -305,6 +324,7 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
             //             case MyProfile:           return m_avatar;
         case MyRecommendations:
             return KIcon ( "lastfm-recommended-radio-amarok" );
+        case TopArtists:
         case PersonalRadio:
             return KIcon ( "lastfm-personal-radio-amarok" );
         case LovedTracksRadio:
@@ -379,6 +399,7 @@ Qt::ItemFlags LastFmTreeModel::flags ( const QModelIndex &index ) const
     case RecentlyBannedTrack:
     case MyTagsChild:
     case FriendsChild:
+    case ArtistsChild:
     case NeighborsChild:
     case HistoryStation:
     case UserChildLoved:
@@ -397,6 +418,7 @@ Qt::ItemFlags LastFmTreeModel::flags ( const QModelIndex &index ) const
     case UserChildPersonal:
     case UserChildNeighborhood:
     case MyTagsChild:
+    case ArtistsChild:
     case MyRecommendations:
     case PersonalRadio:
     case LovedTracksRadio:
@@ -478,6 +500,9 @@ void LastFmTreeModel::setupModelData ( LastFmTreeItem *parent )
     parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::LovedTracksRadio ), LastFm::LovedTracksRadio, parents.last() ) );
     parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborhoodRadio ), LastFm::NeighborhoodRadio, parents.last() ) );
 
+    mMyTopArtists = new LastFmTreeItem ( LastFm::TopArtists, parents.last() );
+    parents.last()->appendChild ( mMyTopArtists );
+
     mMyTags = new LastFmTreeItem ( LastFm::MyTags, parents.last() );
     parents.last()->appendChild ( mMyTags );
 
@@ -507,6 +532,8 @@ QString LastFmTreeModel::mapTypeToUrl ( LastFm::Type type, const QString &key )
         return "lastfm://globaltags/" + KUrl::toPercentEncoding ( key );
     case FriendsChild:
         return "lastfm://user/" + KUrl::toPercentEncoding ( key ) + "/personal";
+    case ArtistsChild:
+        return "lastfm://artist/" + KUrl::toPercentEncoding ( key ) + "/similarartists";
     case NeighborsChild:
         return "lastfm://user/" + KUrl::toPercentEncoding ( key ) + "/personal";
     case UserChildPersonal:

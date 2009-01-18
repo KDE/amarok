@@ -380,8 +380,8 @@ LastFmService::polish()
             m_avatarLabel->setPixmap( m_avatar );
             m_avatarLabel->setFixedSize( m_avatar.width(), m_avatar.height() );
         }
-        
-        
+
+
         debug() << m_avatarLabel->margin();
         KVBox * innerProfilebox = new KVBox( outerProfilebox );
         innerProfilebox->setSpacing(1);
@@ -395,6 +395,9 @@ LastFmService::polish()
         m_profile->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
         updateProfileInfo();
 
+        QLabel* customStation = new QLabel(m_topPanel);
+        customStation->setText(i18n("Create a Custom Last.fm Station"));
+        customStation->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
         KHBox * customStationBox = new KHBox( m_topPanel );
         customStationBox->setSpacing( 3 );
         m_customStationCombo = new QComboBox( customStationBox );
@@ -404,7 +407,7 @@ LastFmService::polish()
         m_customStationEdit = new KLineEdit( customStationBox );
         updateEditHint( m_customStationCombo->currentIndex() );
         m_customStationButton = new QPushButton( customStationBox );
-        m_customStationButton->setText( i18n( "Start New Station" ) );
+        m_customStationButton->setText( i18n( "Start" ) );
         m_customStationButton->setObjectName( "customButton" );
         m_customStationButton->setIcon( KIcon( "media-playback-start-amarok" ) );
 

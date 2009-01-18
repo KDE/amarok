@@ -48,6 +48,7 @@ enum Type
     MyTags,
     Friends,
     Neighbors,
+    TopArtists,
 
     //         History,
 
@@ -56,6 +57,7 @@ enum Type
     MyTagsChild,
     FriendsChild,
     NeighborsChild,
+    ArtistsChild,
     RecentlyBannedTrack,
     RecentlyPlayedTrack,
     RecentlyLovedTrack,
@@ -113,6 +115,7 @@ private slots:
     void slotAddNeighbors ( WsReply* reply );
     void slotAddFriends ( WsReply* reply );
     void slotAddTags ( WsReply* reply );
+    void slotAddTopArtists ( WsReply* reply );
 
 private:
     void setupModelData ( LastFmTreeItem *parent );
@@ -121,6 +124,7 @@ private:
     LastFmTreeItem *mMyTags;
     LastFmTreeItem *mMyFriends;
     LastFmTreeItem *mMyNeighbors;
+    LastFmTreeItem *mMyTopArtists;
 
     QString mUserName;
     AuthenticatedUser mUser;
