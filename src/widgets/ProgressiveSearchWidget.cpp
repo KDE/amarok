@@ -156,8 +156,10 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
 
         emit( filterCleared() );
     }
-
-    emit( filterChanged( filter, m_searchFieldsMask ) );
+    else
+    {
+        emit( filterChanged( filter, m_searchFieldsMask ) );
+    }
 }
 
 void ProgressiveSearchWidget::slotNext()
