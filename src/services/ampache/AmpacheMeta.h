@@ -79,6 +79,10 @@ public:
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
 
+    bool operator==( const Meta::Album &other ) const {
+        return name() == other.name();
+    }
+
 
 };
 
