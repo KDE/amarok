@@ -8,6 +8,7 @@ include_directories(
         ../../meta
         ../../statusbar
         ../../widgets
+        ../../context
         liblastfm/
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
