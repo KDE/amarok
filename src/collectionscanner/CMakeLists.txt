@@ -42,7 +42,7 @@ set( libchardet_SRCS
 
 ########### next target ###############
 
-set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp)
+set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp ../meta/MetaReplayGain.cpp)
 
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
 

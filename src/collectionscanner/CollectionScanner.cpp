@@ -24,11 +24,11 @@
 
 #include "Amarok.h"
 #include "charset-detector/include/chardet.h"
+#include "../meta/MetaReplayGain.h"
 
 #include <cerrno>
 #include <iostream>
 #include <limits.h>    //PATH_MAX
-#include <cmath>
 
 #include <QTextDocument> //Qt::escape
 #include <QByteArray>
@@ -458,164 +458,6 @@ CollectionScanner::readUniqueId( const QString &path )
     return QString();
 }
 
-qreal
-CollectionScanner::peakToDecibels( qreal scaleVal )
-{
-    if ( scaleVal > 0 )
-        return 20 * log10( scaleVal );
-    else
-        return 0;
-}
-
-// NOTE: representation is taken to be a binary value with units in the first column,
-//       1/2 in the second and so on.
-qreal
-CollectionScanner::readRVA2PeakValue( const TagLib::ByteVector &data, int bits, bool *ok )
-{
-    qreal peak = 0.0;
-    // discarding digits at the end reduces precision, but doesn't otherwise change the value
-    if ( bits > 32 )
-        bits = 32;
-    // the +7 makes sure we round up when we divide by 8
-    unsigned int bytes = (bits + 7) / 8;
-    // fewer than 4 bits would just be daft
-    if ( bits >= 4 && data.size() >= bytes )
-    {
-        // excessBits is the number of bits we have to discard at the end
-        unsigned int excessBits = (8 * bytes) - bits;
-        // mask has 1s everywhere but the last /excessBits/ bits
-        quint32 mask = 0xffffffff << excessBits;
-        quint32 rawValue = 0;
-        for ( unsigned int i = 0; i < bytes; ++i )
-        {
-            rawValue <<= 8;
-            rawValue += (unsigned char)data[i];
-        }
-        rawValue &= mask;
-        peak = rawValue;
-        // amount we need to "shift" the value right to make the first digit the unit column
-        unsigned int rightShift = (8 * bytes) - 1;
-        peak /= (qreal)(1 << rightShift);
-        if ( ok )
-            *ok = true;
-    }
-    else
-        if ( ok )
-            *ok = false;
-    return peak;
-}
-
-void
-CollectionScanner::addPeakFromScale( const TagLib::String &scaleVal, const QString &key, AttributeHash *attributes )
-{
-    // scale value is >= 0, and typically not much bigger than 1
-    QString value = TStringToQString( scaleVal );
-    bool ok = false;
-    qreal peak = value.toFloat( &ok );
-    if ( ok && peak >= 0 )
-        (*attributes)[key] = QString::number( peakToDecibels( peak ) );
-}
-
-void
-CollectionScanner::addGain( const TagLib::String &input, const QString &key, AttributeHash *attributes )
-{
-    QString value = TStringToQString( input ).remove( " dB" );
-    bool ok = false;
-    qreal gain = value.toFloat( &ok );
-    if (ok)
-        (*attributes)[key] = QString::number( gain );
-}
-
-void
-CollectionScanner::readMP3ReplayGainTags( TagLib::MPEG::File *file, AttributeHash *attributes )
-{
-    if ( file->ID3v2Tag() )
-    {
-        {   // ID3v2.4.0 native replay gain tag support (as written by Quod Libet, for example).
-            TagLib::ID3v2::FrameList frames = file->ID3v2Tag()->frameListMap()["RVA2"];
-            frames.append(file->ID3v2Tag()->frameListMap()["XRVA"]);
-            if ( !frames.isEmpty() )
-            {
-                for ( unsigned int i = 0; i < frames.size(); ++i )
-                {
-                    // we have to parse this frame ourselves
-                    // ID3v2 frame header is 10 bytes, so skip that
-                    TagLib::ByteVector data = frames[i]->render().mid( 10 );
-                    unsigned int offset = 0;
-                    QString desc( data.data() );
-                    offset += desc.count() + 1;
-                    unsigned int channel = data.mid( offset, 1 ).toUInt( true );
-                    // channel 1 is the main volume - the only one we care about
-                    if ( channel == 1 )
-                    {
-                        ++offset;
-                        qint16 adjustment512 = data.mid( offset, 2 ).toShort( true );
-                        qreal adjustment = ( (qreal)adjustment512 ) / 512.0;
-                        offset += 2;
-                        unsigned int peakBits = data.mid( offset, 1 ).toUInt( true );
-                        ++offset;
-                        bool ok = false;
-                        qreal peak = readRVA2PeakValue( data.mid( offset ), peakBits, &ok );
-                        if ( ok )
-                        {
-                            if ( desc.toLower() == "album" )
-                            {
-                                (*attributes)["albumgain"] = QString::number( adjustment );
-                                (*attributes)["albumpeakgain"] = QString::number( peakToDecibels( peak ) );
-                            }
-                            else if ( desc.toLower() == "track" || !attributes->contains( "trackgain" ) )
-                            {
-                                (*attributes)["trackgain"] = QString::number( adjustment );
-                                (*attributes)["trackpeakgain"] = QString::number( peakToDecibels( peak ) );
-                            }
-                        }
-                    }
-                }
-                if ( attributes->contains( "trackgain" ) || attributes->contains( "albumgain" ) )
-                    return;
-            }
-        }
-
-        {   // Foobar2000-style ID3v2.3.0 tags
-            TagLib::ID3v2::FrameList frames = file->ID3v2Tag()->frameListMap()["TXXX"];
-            for ( TagLib::ID3v2::FrameList::Iterator it = frames.begin(); it != frames.end(); ++it ) {
-                TagLib::ID3v2::UserTextIdentificationFrame* frame =
-                    dynamic_cast<TagLib::ID3v2::UserTextIdentificationFrame*>( *it );
-                if ( frame && frame->fieldList().size() >= 2 )
-                {
-                    QString desc = TStringToQString( frame->description() ).toLower();
-                    if ( desc == "replaygain_track_gain" )
-                        addGain( frame->fieldList()[1], "trackgain", attributes );
-                    if ( desc == "replaygain_track_peak" )
-                        addPeakFromScale( frame->fieldList()[1], "trackpeakgain", attributes );
-                    if ( desc == "replaygain_album_gain" )
-                        addGain( frame->fieldList()[1], "albumgain", attributes );
-                    if ( desc == "replaygain_album_peak" )
-                        addPeakFromScale( frame->fieldList()[1], "albumpeakgain", attributes );
-                }
-            }
-            if ( attributes->contains( "trackgain" ) || attributes->contains( "albumgain" ) )
-                return;
-        }
-    }
-    if ( file->APETag() )
-    {
-        const TagLib::APE::ItemListMap &items = file->APETag()->itemListMap();
-        if ( items.contains("REPLAYGAIN_TRACK_GAIN") )
-        {
-            addGain( items["REPLAYGAIN_TRACK_GAIN"].values()[0], "trackgain", attributes );
-            if ( items.contains("REPLAYGAIN_TRACK_PEAK") )
-                addPeakFromScale( items["REPLAYGAIN_TRACK_PEAK"].values()[0], "trackpeakgain", attributes );
-        }
-        if ( items.contains("REPLAYGAIN_ALBUM_GAIN") )
-        {
-            addGain( items["REPLAYGAIN_ALBUM_GAIN"].values()[0], "albumgain", attributes );
-            if ( items.contains("REPLAYGAIN_ALBUM_PEAK") )
-                addPeakFromScale( items["REPLAYGAIN_ALBUM_PEAK"].values()[0], "albumpeakgain", attributes );
-        }
-    }
-}
-
 AttributeHash
 CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle )
 {
@@ -660,19 +502,28 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             isValid = true;
         }
 
+        Meta::ReplayGainTagMap replayGainTags = Meta::readReplayGainTags( fileref );
+        if ( replayGainTags.contains( Meta::ReplayGain_Track_Gain ) )
+        {
+            attributes["trackgain"] = QString::number( replayGainTags[Meta::ReplayGain_Track_Gain] );
+            if ( replayGainTags.contains( Meta::ReplayGain_Track_Peak ) )
+                attributes["trackpeakgain"] = QString::number( replayGainTags[Meta::ReplayGain_Track_Peak] );
+        }
+        if ( replayGainTags.contains( Meta::ReplayGain_Album_Gain ) )
+        {
+            attributes["albumgain"] = QString::number( replayGainTags[Meta::ReplayGain_Album_Gain] );
+            if ( replayGainTags.contains( Meta::ReplayGain_Album_Peak ) )
+                attributes["albumpeakgain"] = QString::number( replayGainTags[Meta::ReplayGain_Album_Peak] );
+        }
+
         QString disc;
         QString compilation;
-
-        //FIXME: get replaygain info for other formats we can read
 
         /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
            we have to cast the files, not the tags! */
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
             fileType = mp3;
-
-            readMP3ReplayGainTags( file, &attributes );
-
             if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
@@ -755,20 +606,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( !file->tag()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).trimmed();
-
-                if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_TRACK_GAIN" ].isEmpty() )
-                {
-                    addGain( file->tag()->fieldListMap()["REPLAYGAIN_TRACK_GAIN"].front(), "trackgain", &attributes );
-                    if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_TRACK_PEAK" ].isEmpty() )
-                        addPeakFromScale( file->tag()->fieldListMap()["REPLAYGAIN_TRACK_PEAK"].front(), "trackpeakgain", &attributes );
-                }
-
-                if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_ALBUM_GAIN" ].isEmpty() )
-                {
-                    addGain( file->tag()->fieldListMap()["REPLAYGAIN_ALBUM_GAIN"].front(), "albumgain", &attributes );
-                    if ( !file->tag()->fieldListMap()[ "REPLAYGAIN_ALBUM_PEAK" ].isEmpty() )
-                        addPeakFromScale( file->tag()->fieldListMap()["REPLAYGAIN_ALBUM_PEAK"].front(), "albumpeakgain", &attributes );
-                }
             }
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
@@ -787,20 +624,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
-
-                if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_TRACK_GAIN" ].isEmpty() )
-                {
-                    addGain( file->xiphComment()->fieldListMap()["REPLAYGAIN_TRACK_GAIN"].front(), "trackgain", &attributes );
-                    if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_TRACK_PEAK" ].isEmpty() )
-                        addPeakFromScale( file->xiphComment()->fieldListMap()["REPLAYGAIN_TRACK_PEAK"].front(), "trackpeakgain", &attributes );
-                }
-
-                if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_ALBUM_GAIN" ].isEmpty() )
-                {
-                    addGain( file->xiphComment()->fieldListMap()["REPLAYGAIN_ALBUM_GAIN"].front(), "albumgain", &attributes );
-                    if ( !file->xiphComment()->fieldListMap()[ "REPLAYGAIN_ALBUM_PEAK" ].isEmpty() )
-                        addPeakFromScale( file->xiphComment()->fieldListMap()["REPLAYGAIN_ALBUM_PEAK"].front(), "albumpeakgain", &attributes );
-                }
             }
 //             if ( images && file->ID3v2Tag() )
 //                 loadImagesFromTag( *file->ID3v2Tag(), *images );
@@ -815,7 +638,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 attributes["bpm"] = QString::number( mp4tag->bpm() ).toFloat();
                 disc = QString::number( mp4tag->disk() );
                 compilation = QString::number( mp4tag->compilation() );
-                // FIXME: get replaygain info for MP4 files
 
 //                 if ( images && mp4tag->cover().size() )
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );

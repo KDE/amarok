@@ -206,6 +206,7 @@ set(meta_SRCS
     meta/M3UPlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
+    meta/MetaReplayGain.cpp
     meta/PLSPlaylist.cpp
     meta/SqlPlaylist.cpp
     meta/PlaylistFileSupport.cpp
