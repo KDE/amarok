@@ -16,12 +16,12 @@
 #ifndef BOOKMARK_APPLET_H
 #define BOOKMARK_APPLET_H
 
-#include <context/Applet.h>
-#include <context/DataEngine.h>
-#include "context/Svg.h"
-#include <context/widgets/TrackWidget.h>
-#include <meta/Meta.h>
-#include "amarokurls/BookmarkManagerWidget.h"
+#include "Applet.h"
+#include "DataEngine.h"
+#include "Svg.h"
+#include "widgets/TrackWidget.h"
+#include "Meta.h"
+#include "BookmarkManagerWidget.h"
 
 
 #include <QAction>
