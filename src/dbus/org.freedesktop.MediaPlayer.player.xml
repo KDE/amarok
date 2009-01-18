@@ -68,5 +68,17 @@
         <arg type="i" />
     </signal>
 
+    <!-- NB: Amarok extensions to the mpris spec -->
+    <method name="VolumeUp">
+        <arg type="i" drection="in"/>
+    </method>
+
+    <method name="VolumeDown">
+        <arg type="i" drection="in"/>
+    </method>
+
+    <method name="Mute">
+    </method>
+
   </interface>
 </node>

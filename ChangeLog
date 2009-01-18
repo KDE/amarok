@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Dbus methods added: VolumeUp, VolumeDown and Mute. (BR 181130)
     * The feed url is displayed in the config dialog of a podcast channel.
       By left clicking in the url it's copied to the clipboard. (BR 180853)
     * The Playlist Browser can now show playlists from multiple sources,

@@ -175,6 +175,21 @@ namespace Amarok
         The::engineController()->setVolume(vol);
     }
 
+    void PlayerDBusHandler::VolumeUp( int step ) const
+    {
+        The::engineController()->increaseVolume( step );
+    }
+
+    void PlayerDBusHandler::VolumeDown( int step ) const
+    {
+        The::engineController()->decreaseVolume( step );
+    }
+
+    void PlayerDBusHandler::Mute() const
+    {
+        The::engineController()->mute();
+    }
+
     QVariantMap PlayerDBusHandler::GetMetadata()
     {
         return GetTrackMetadata( The::engineController()->currentTrack() );

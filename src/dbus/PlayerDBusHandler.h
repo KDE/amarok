@@ -71,28 +71,41 @@ namespace Amarok
 
         public slots:
             DBusStatus GetStatus();
+
             void Pause();
             void Play();
+            void Stop();
             void Prev();
             void Next();
-            void Repeat(bool on);
-            int PositionGet();
-            void PositionSet(int time);
-            void Stop();
-            int VolumeGet();
-            void VolumeSet(int vol);
+            void Repeat( bool on );
+
+            int  PositionGet();
+            void PositionSet( int time );
+
+            int  VolumeGet();
+            void VolumeSet( int vol );
+
             int GetCaps();
             QVariantMap GetMetadata();
+
+            // NB: Amarok extensions, not part of the mpris spec
+            void VolumeUp( int step ) const;
+            void VolumeDown( int step ) const;
+            void Mute() const;
+
         signals:
             void CapsChange( int );
             void TrackChange( QVariantMap );
             void StatusChange( DBusStatus );
+
         private slots:
             void slotCapsChange();
             void slotTrackChange();
             void slotStatusChange();
+
         public:
             QVariantMap GetTrackMetadata( Meta::TrackPtr track );
+
         private:
             static PlayerDBusHandler* s_instance;
     };
