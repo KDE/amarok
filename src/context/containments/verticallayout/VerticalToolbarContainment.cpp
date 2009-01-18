@@ -150,4 +150,10 @@ Context::VerticalToolbarContainment::appletRemoved( Plasma::Applet* applet )
     m_toolbar->appletRemoved( applet );
 }
 
+void
+Context::VerticalToolbarContainment::wheelEvent( QWheelEvent* event )
+{
+    //eat wheel events, we dont want scrolling
+}
+
 #include "VerticalToolbarContainment.moc"

@@ -54,6 +54,8 @@ class VerticalToolbarContainment : public Containment
         Applet* addApplet( const QString& pluginName, const int );
         void    appletRemoved( Plasma::Applet* );
         
+    protected:
+        void wheelEvent( QWheelEvent* event );
     signals:
         void updatedContainment( Containment* );
     
