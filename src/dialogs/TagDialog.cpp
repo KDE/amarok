@@ -926,6 +926,8 @@ void TagDialog::readTags()
     ui->kTextEdit_comment->setEnabled( editable );
     ui->kTextEdit_selectedLabels->setEnabled( editable );
     m_labelCloud->view()->setEnabled( editable );
+    ui->ratingWidget->setEnabled( editable );
+    ui->qSpinBox_score->setEnabled( editable );
 
     if( local )
         ui->pushButton_guessTags->show();
