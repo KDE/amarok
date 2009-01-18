@@ -39,6 +39,13 @@
 #include <fileref.h>
 
 typedef QHash<QString, QString> AttributeHash;
+namespace TagLib
+{
+    namespace MPEG
+    {
+        class File;
+    }
+}
 
 /**
  * @class CollectionScanner
@@ -98,6 +105,51 @@ private:
      * @return QString contains the uniqueID, an MD5 hash (but not a hash of the entire file!).
      */
     static const QString readUniqueId( const QString &path );
+
+    /**
+     * Converts the peak value from the standard representation (position on the digital scale
+     * after decoding and adjusting the gain) to a decibel value.
+     *
+     * @param scaleVal the peak in digital scale form
+     */
+    static qreal peakToDecibels( qreal scaleVal );
+
+    /**
+     * Converts the peak value from the standard representation (position on the digital scale
+     * after decoding and adjusting the gain) to a decibel value.
+     *
+     * @param scaleVal the peak in digital scale form as a TagLib::String
+     */
+    static void addPeakFromScale( const TagLib::String &scaleVal, const QString &key, AttributeHash *attributes );
+
+    /**
+     * Strips any trailing " dB" from the input and checks that it is a valid real number
+     * before adding it to the attributes hash.
+     *
+     * @param input the value read from the tags
+     * @param key the key to store it in ("trackgain" or "albumgain")
+     * @param attributes used to store the tags
+     */
+    static void addGain( const TagLib::String &input, const QString &key, AttributeHash *attributes );
+
+    /**
+     * Reads the replay gain tags (if any) from an MP3 file.
+     *
+     * The tags will be stored in the following keys:
+     * - trackgain
+     * - trackpeakgain
+     * - albumgain
+     * - albumpeakgain
+     *
+     * @param file the MP3 file
+     * @param attributes used to store the tags
+     */
+    static void readMP3ReplayGainTags( TagLib::MPEG::File *file, AttributeHash *attributes );
+
+    /**
+     * Reads the peak value in the format it is stored in RVA2 frames.
+     */
+    static qreal readRVA2PeakValue( const TagLib::ByteVector &data, int bits, bool *ok = 0 );
 
     /**
      * Read metadata tags of a given file.
