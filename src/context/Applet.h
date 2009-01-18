@@ -21,7 +21,6 @@
 #include <QRectF>
 #include <QString>
 
-
 namespace Context
 {
 
@@ -29,7 +28,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 {
 
     public:
-
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
 
         //helper functions
@@ -38,6 +36,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         
     public Q_SLOTS:
         virtual void destroy();
+
     private:
         void cleanUpAndDelete();
 

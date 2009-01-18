@@ -20,14 +20,14 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "LastFmTreeModel.h" //FIXME just for enums
 #include "LastFmTreeView.h"
 
 #include "Amarok.h"
-#include "context/ContextView.h"
 #include "Debug.h"
-#include "SvgHandler.h"
+#include "LastFmTreeModel.h" //FIXME just for enums
 #include "PopupDropperFactory.h"
+#include "SvgHandler.h"
+#include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
@@ -35,15 +35,18 @@
 #include <KIcon>
 #include <KMenu>
 
+#include <QContextMenuEvent>
+#include <QDesktopServices>
 #include <QDropEvent>
 #include <QHeaderView>
 #include <QMap>
+#include <QMouseEvent>
 #include <QPainter>
-#include <QWidgetAction>
 #include <QSlider>
-#include <QTimer>
-#include <QDesktopServices>
 #include <QStandardItemModel>
+#include <QTimer>
+#include <QTreeView>
+#include <QWidgetAction>
 
 LastFmTreeView::LastFmTreeView ( QWidget* parent )
         : Amarok::PrettyTreeView ( parent )
@@ -62,8 +65,7 @@ LastFmTreeView::LastFmTreeView ( QWidget* parent )
 
 
 LastFmTreeView::~LastFmTreeView()
-{
-}
+{}
 
 void
 LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )

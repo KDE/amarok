@@ -16,8 +16,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef CONTEXT_VIEW_H
-#define CONTEXT_VIEW_H
+#ifndef AMAROK_CONTEXT_VIEW_H
+#define AMAROK_CONTEXT_VIEW_H
 
 #include "Context.h"
 #include "ContextObserver.h"

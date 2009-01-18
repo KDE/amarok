@@ -26,12 +26,12 @@ namespace Context
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_transient( 0 )
-{
-}
+{}
 
 QFont Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
 {
     Q_UNUSED( text );
+
     int size = 13; // start here, shrink if needed
     QFont font( QString(), size, QFont::Light );
     font.setStyleHint( QFont::SansSerif );

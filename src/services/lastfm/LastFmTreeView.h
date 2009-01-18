@@ -27,16 +27,16 @@
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <QContextMenuEvent>
 #include <QList>
-#include <QMouseEvent>
 #include <QMutex>
 #include <QPointer>
-#include <QTreeView>
-#include <QSet>
+
+class QContextMenuEvent;
+class QMouseEvent;
 
 class PopupDropper;
 class PopupDropperAction;
+
 typedef QList<PopupDropperAction *> PopupDropperActionList;
 
 class LastFmTreeView : public Amarok::PrettyTreeView
