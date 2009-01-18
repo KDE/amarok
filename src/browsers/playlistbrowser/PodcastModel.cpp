@@ -50,8 +50,9 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
 
     if ( !index.isValid() ||
-         ( role != Qt::DisplayRole && role != Qt::DecorationRole &&
-           role != ShortDescriptionRole && role != OnDiskRole ) )
+         ( role != Qt::DisplayRole && role != Qt::DecorationRole
+           && role != Qt::ToolTipRole
+           && role != ShortDescriptionRole && role != OnDiskRole ) )
     {
         return QVariant();
     }
@@ -89,12 +90,14 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         return QVariant();
     }
 
-    if ( role == Qt::DisplayRole )
-        return title;
-    else if ( role == Qt::DecorationRole )
+    if( role == Qt::DisplayRole )
+        return title.simplified(); //whitespace removed from start and end + extra whitespace in between
+    else if( role == Qt::DecorationRole )
         return QVariant( icon );
-    else if ( role == OnDiskRole )
+    else if( role == OnDiskRole )
         return QVariant( isOnDisk );
+    else if( role == Qt::ToolTipRole )
+        return title;
 
     // At this point role can only be ShortDescriptionRole
     return description;
