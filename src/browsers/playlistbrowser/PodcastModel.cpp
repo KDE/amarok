@@ -359,9 +359,9 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
 {
     debug() << "adding Podcast";
 
-    //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    //TODO: request the user to which PodcastProvider he wants to add it in case
+    // of multiple (enabled) Podcast Providers.
+    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         bool ok;
@@ -445,8 +445,7 @@ PlaylistBrowserNS::PodcastModel::removeSubscription( Meta::PodcastChannelPtr cha
 {
     debug() << "remove Podcast subscription for " << channel->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
@@ -472,8 +471,7 @@ PlaylistBrowserNS::PodcastModel::refreshPodcast( Meta::PodcastChannelPtr channel
 {
     debug() << "refresh Podcast " << channel->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
@@ -495,7 +493,12 @@ PlaylistBrowserNS::PodcastModel::downloadItems( QModelIndexList list )
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
         if( pmc->podcastType() ==  Meta::EpisodeType )
         {
-            downloadEpisode( Meta::PodcastEpisodePtr( reinterpret_cast<Meta::PodcastEpisode *>(pmc) ) );
+            Meta::PodcastEpisodePtr episode
+                = Meta::PodcastEpisodePtr( dynamic_cast<Meta::PodcastEpisode *>(pmc) );
+            if( episode.isNull() )
+                debug() << "could not downcast PodcastMetaCommon pointer!";
+            else
+                downloadEpisode( episode );
         }
         else if( pmc->podcastType() ==  Meta::ChannelType )
         {
@@ -529,8 +532,7 @@ PlaylistBrowserNS::PodcastModel::downloadEpisode( Meta::PodcastEpisodePtr episod
     DEBUG_BLOCK
     debug() << "downloading " << episode->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
@@ -583,8 +585,7 @@ PlaylistBrowserNS::PodcastModel::configureChannel( Meta::PodcastChannelPtr chann
     DEBUG_BLOCK
     debug() << "configuring " << channel->title();
     //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
+    PlaylistProvider *provider = The::playlistManager()->defaultPodcasts();
     if( provider )
     {
         PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
