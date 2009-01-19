@@ -71,7 +71,7 @@ LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
         mNeighbors << name;
         LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, mMyNeighbors );
         mMyNeighbors->appendChild ( neighbor );
-        appendUserStations ( neighbor );
+        appendUserStations ( neighbor, name );
         if ( !e[ "image size=large" ].text().isEmpty() )
         {
             avatarlist.insert ( name, e[ "image size=large" ].text() );
@@ -93,7 +93,7 @@ LastFmTreeModel::slotAddFriends ( WsReply* reply )
         mFriends << name;
         LastFmTreeItem* afriend = new LastFmTreeItem ( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
         mMyFriends->appendChild ( afriend );
-        appendUserStations ( afriend );
+        appendUserStations ( afriend, name );
         if ( !e[ "image size=large" ].text().isEmpty() )
         {
             avatarlist.insert ( name, e[ "image size=large" ].text() );
@@ -128,11 +128,11 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
 }
 
 void
-LastFmTreeModel::appendUserStations ( LastFmTreeItem* item )
+LastFmTreeModel::appendUserStations ( LastFmTreeItem* item, const QString &user )
 {
-    LastFmTreeItem* personal = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildPersonal, mUserName ), LastFm::UserChildPersonal, i18n ( "Personal Radio" ), item );
-    LastFmTreeItem* loved = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildLoved, mUserName ), LastFm::UserChildLoved, i18n ( "Loved Tracks" ), item );
-    LastFmTreeItem* neigh = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildNeighborhood, mUserName ), LastFm::UserChildNeighborhood, i18n ( "Neighborhood" ), item );
+    LastFmTreeItem* personal = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildPersonal, user ), LastFm::UserChildPersonal, i18n ( "Personal Radio" ), item );
+    LastFmTreeItem* loved = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildLoved, user ), LastFm::UserChildLoved, i18n ( "Loved Tracks" ), item );
+    LastFmTreeItem* neigh = new LastFmTreeItem ( mapTypeToUrl ( LastFm::UserChildNeighborhood, user ), LastFm::UserChildNeighborhood, i18n ( "Neighborhood" ), item );
     item->appendChild ( personal );
     item->appendChild ( loved );
     item->appendChild ( neigh );

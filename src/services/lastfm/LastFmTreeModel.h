@@ -143,7 +143,7 @@ private:
     void downloadAvatar ( const QString& user, const KUrl& url );
     QString mapTypeToUrl ( LastFm::Type type, const QString &key = "" );
 
-    void appendUserStations ( LastFmTreeItem* item );
+    void appendUserStations ( LastFmTreeItem* item, const QString& user );
 
 };
 
