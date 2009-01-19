@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,41 +17,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#include "LayoutConfigWidget.h"
+#ifndef EDITDELETEDELEGATE_H
+#define EDITDELETEDELEGATE_H
 
-#include "LayoutManager.h"
-#include "widgets/EditDeleteDelegate.h"
+#include <QStyledItemDelegate>
 
-#include <QLabel>
-#include <QComboBox>
+/**
+A special delegate with buttons for editing and deleting the current entry.
 
-namespace Playlist {
-
-LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
-    : KVBox( parent )
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+*/
+class EditDeleteDelegate : public QStyledItemDelegate
 {
-    new QLabel( "Config gui goes here....", this );
-    QComboBox *comboBox = new QComboBox( this );
-    comboBox->setItemDelegate( new EditDeleteDelegate( comboBox ) );
+public:
+    EditDeleteDelegate( QObject * parent = 0 );
+    ~EditDeleteDelegate();
 
+    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    virtual QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-    comboBox->addItems( LayoutManager::instance()->layouts() );
+};
 
-    connect( comboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( setActiveLayout(const QString & ) ) );
-
-}
-
-
-LayoutConfigWidget::~LayoutConfigWidget()
-{
-}
-
-
-}
-
-void Playlist::LayoutConfigWidget::setActiveLayout(const QString & layout)
-{
-    LayoutManager::instance()->setActiveLayout( layout );
-}
-
-#include "LayoutConfigWidget.moc"
+#endif
