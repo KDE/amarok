@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.0.2
   BUGFIXES:
+    * Add Ok button to the podcast configuration dialog to improve usability.
+      (BR 181339)
     * Add tooltips to now playing widget icons.
     * Fix not possible to download episodes from newly added podcast channel.
       (BR 180851)

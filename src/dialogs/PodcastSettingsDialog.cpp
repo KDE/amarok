@@ -32,8 +32,8 @@ PodcastSettingsDialog::PodcastSettingsDialog( Meta::PodcastChannelPtr channel, Q
 
     setCaption( i18nc("change options", "Configure %1", m_channel->title() ) );
     setModal( true );
-    setButtons( Apply | Cancel );
-    setDefaultButton( Cancel );
+    setButtons( Apply | Cancel | Ok );
+    setDefaultButton( Ok );
     showButtonSeparator( true );
 
     init();
@@ -78,6 +78,7 @@ PodcastSettingsDialog::init()
     connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
 
     connect( this, SIGNAL(applyClicked()), this ,SLOT(slotApply()) );
+    connect( this, SIGNAL(okClicked()), this, SLOT(slotApply()) );
 }
 
 bool
