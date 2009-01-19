@@ -53,6 +53,8 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     
     m_appletLayout->addItem( m_addItem );
     m_appletLayout->setAlignment( m_addItem, Qt::AlignRight );
+    m_appletLayout->setContentsMargins( 3, 3, 3, 3 );
+    m_appletLayout->setSpacing( 4 );
 }
 
 Context::AppletToolbar::~AppletToolbar()
