@@ -22,6 +22,7 @@
 #include "MetaReplayGain.h"
 
 #include <QString>
+#include <cmath>
 
 // Taglib
 #include <taglib/tag.h>
