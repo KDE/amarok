@@ -28,8 +28,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 {
     Q_OBJECT
     public:
-        AMAROK_EXPORT SqlUserPlaylistProvider();
-        AMAROK_EXPORT ~SqlUserPlaylistProvider();
+        SqlUserPlaylistProvider();
+        ~SqlUserPlaylistProvider();
 
         /* PlaylistProvider functions */
         virtual QString prettyName() const { return i18n("Local Playlists stored in the database"); };
