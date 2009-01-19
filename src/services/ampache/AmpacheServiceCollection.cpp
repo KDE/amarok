@@ -22,6 +22,7 @@
 #include "AmpacheServiceQueryMaker.h"
 
 #include <KLocale>
+#include <threadweaver/ThreadWeaver.h>
 
 using namespace Meta;
 
@@ -30,13 +31,7 @@ AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase * service, const
     , m_server( server )
     , m_sessionId( sessionId )
 {
-    m_urlTrack = 0;
-    m_urlAlbum = 0;
-    m_urlArtist = 0;
-
-    m_urlTrackId = 0;
-    m_urlAlbumId = 0;
-    m_urlArtistId = 0;
+    m_trackForUrlWorker = 0;
 }
 
 AmpacheServiceCollection::~AmpacheServiceCollection()
@@ -67,48 +62,31 @@ AmpacheServiceCollection::possiblyContainsTrack(const KUrl & url) const
     return url.url().contains( m_server );
 }
 
+void
+AmpacheServiceCollection::slotAuthenticationNeeded()
+{
+    emit authenticationNeeded();
+}
+
 Meta::TrackPtr
 AmpacheServiceCollection::trackForUrl( const KUrl & url )
 {
-//     DEBUG_BLOCK;
+    MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
+    MetaProxy::TrackPtr trackptr(ptrack);
+    AmpacheTrackForUrlWorker * worker =  new AmpacheTrackForUrlWorker(url, trackptr, m_server, m_sessionId, service() );
+//     connect( worker, SIGNAL( finishedLookup ( const Meta::TrackPtr& ) ), this,
+//              SLOT( slotLookupComplete( const Meta::TrackPtr& ) ) );
+    connect( worker, SIGNAL( authenticationNeeded() ), this,
+             SLOT( slotAuthenticationNeeded() ) );
+    ThreadWeaver::Weaver::instance()->enqueue( worker );
 
-    m_urlTrack = 0;
-    m_urlAlbum = 0;
-    m_urlArtist = 0;
-
-    m_urlTrackId = 0;
-    m_urlAlbumId = 0;
-    m_urlArtistId = 0;
-
-    //send url_to_song to Ampache
-
-    QString requestUrl = QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3")
-            . arg( m_server, m_sessionId, url.url() );
-
-//     debug() << "request url: " << requestUrl;
-
-    m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
-    if ( !m_storedTransferJob->exec() )
-    {
-        if( m_storedTransferJob->error() == 401 ) {
-            debug() << "Trying to re-authenticate Ampache..";
-            emit authenticationNeeded();
-
-            m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo ); //Second try..
-            if( !m_storedTransferJob->exec() )
-                return TrackPtr();
-        }
-        else
-            return TrackPtr();
-    }
-
-    parseTrack( m_storedTransferJob->data() );
-    m_storedTransferJob->deleteLater();
-
-    return TrackPtr( m_urlTrack );
+    return Meta::TrackPtr::staticCast( trackptr );
+}
+void AmpacheServiceCollection::slotLookupComplete( const Meta::TrackPtr& )
+{
 }
 
-void AmpacheServiceCollection::parseTrack( const QString &xml )
+void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
 {
 //     DEBUG_BLOCK
 
@@ -128,10 +106,10 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
     if ( title.isEmpty() ) title = "Unknown";
 
     element = song.firstChildElement("url");
-   
-    m_urlTrack = new AmpacheTrack( title, service() );
+
+    m_urlTrack = new AmpacheTrack( title, m_service );
     TrackPtr trackPtr( m_urlTrack );
-    
+
     //debug() << "Adding track: " <<  title;
     m_urlTrack->setUidUrl( element.text() );
     m_urlTrack->setId( m_urlTrackId );
@@ -161,3 +139,51 @@ void AmpacheServiceCollection::parseTrack( const QString &xml )
     album->setAlbumArtist( artistPtr );
 }
 
+AmpacheTrackForUrlWorker::AmpacheTrackForUrlWorker(const KUrl &url, MetaProxy::TrackPtr track, const QString &server, const QString &sessionId, ServiceBase* service) : Amarok::TrackForUrlWorker(url), mProxy(track), m_server(server), m_sessionId(sessionId), m_service(service)
+{
+}
+
+AmpacheTrackForUrlWorker::~AmpacheTrackForUrlWorker()
+{}
+
+void
+AmpacheTrackForUrlWorker::run()
+{
+    //     DEBUG_BLOCK;
+
+    m_urlTrack = 0;
+    m_urlAlbum = 0;
+    m_urlArtist = 0;
+
+    m_urlTrackId = 0;
+    m_urlAlbumId = 0;
+    m_urlArtistId = 0;
+
+    //send url_to_song to Ampache
+
+    QString requestUrl = QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3")
+    . arg( m_server, m_sessionId, mUrl.url() );
+
+    //     debug() << "request url: " << requestUrl;
+
+    m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
+    if ( !m_storedTransferJob->exec() )
+    {
+        if( m_storedTransferJob->error() == 401 ) {
+            debug() << "Trying to re-authenticate Ampache..";
+            emit authenticationNeeded();
+
+            m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo ); //Second try..
+//             if( !m_storedTransferJob->exec() )
+//                 return TrackPtr();
+        }
+//         else
+//             return TrackPtr();
+    }
+
+    parseTrack( m_storedTransferJob->data() );
+    m_storedTransferJob->deleteLater();
+
+    mTrack = TrackPtr( m_urlTrack );
+    mProxy->updateTrack( mTrack );
+}

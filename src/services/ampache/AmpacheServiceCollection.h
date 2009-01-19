@@ -21,13 +21,43 @@
 
 #include <ServiceCollection.h>
 #include "AmpacheMeta.h"
+#include "TrackForUrlWorker.h"
 
 #include <kio/jobclasses.h>
+
+class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
+{
+    Q_OBJECT
+    public:
+        AmpacheTrackForUrlWorker( const KUrl &url, MetaProxy::TrackPtr track, const QString &server, const QString &sessionId, ServiceBase* service);
+        ~AmpacheTrackForUrlWorker();
+        virtual void run ();
+        void parseTrack( const QString &xml );
+    signals:
+        void authenticationNeeded();
+    private:
+        MetaProxy::TrackPtr mProxy;
+        int m_urlTrackId;
+        int m_urlAlbumId;
+        int m_urlArtistId;
+
+        Meta::AmpacheTrack *m_urlTrack;
+        Meta::AmpacheAlbum *m_urlAlbum;
+        Meta::ServiceArtist *m_urlArtist;
+
+        QString m_server;
+        QString m_sessionId;
+
+        ServiceBase* m_service;
+
+        KIO::StoredTransferJob * m_storedTransferJob;
+};
+
 
 /**
 A collection that dynamically fetches data from a remote location as needed
 
-	@author 
+	@author
 */
 class AmpacheServiceCollection : public ServiceCollection
 {
@@ -49,23 +79,17 @@ public:
 signals:
     void authenticationNeeded();
 
+public slots:
+    void slotAuthenticationNeeded();
+    void slotLookupComplete( const Meta::TrackPtr& );
+
 private:
-    void parseTrack( const QString &xml );
     /*void parseAlbum( const QString &xml );
     void parseArtist( const QString &xml );*/
 
     QString m_server;
     QString m_sessionId;
 
-    Meta::AmpacheTrack *m_urlTrack;
-    Meta::AmpacheAlbum *m_urlAlbum;
-    Meta::ServiceArtist *m_urlArtist;
-
-    int m_urlTrackId;
-    int m_urlAlbumId;
-    int m_urlArtistId;
-
-    KIO::StoredTransferJob * m_storedTransferJob;
+    AmpacheTrackForUrlWorker * m_trackForUrlWorker;
 };
-
 #endif
