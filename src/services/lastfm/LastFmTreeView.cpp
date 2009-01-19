@@ -96,8 +96,8 @@ PopupDropperActionList LastFmTreeView::createBasicActions( const QModelIndexList
     Q_UNUSED( indices )
     PopupDropperActionList actions;
     QModelIndex index = currentIndex();
-    LastFmTreeItem* i = static_cast<LastFmTreeItem*> ( index.internalPointer() );
-    switch ( i->type() )
+    QVariant type = model()->data(index, LastFm::TypeRole);
+    switch ( type.toInt() )
     {
         case LastFm::MyRecommendations:
         case LastFm::PersonalRadio:
@@ -250,8 +250,7 @@ LastFmTreeView::playChildTracks ( const QModelIndexList &items, Playlist::AddOpt
     Meta::TrackList list;
     foreach ( QModelIndex item, items )
     {
-        LastFmTreeItem *i = static_cast<LastFmTreeItem*> ( item.internalPointer() );
-        Meta::TrackPtr track ( i->track() );
+        Meta::TrackPtr track = model()->data(item, LastFm::TrackRole).value< Meta::TrackPtr >();
         if ( track )
             list << track;
     }

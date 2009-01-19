@@ -74,7 +74,8 @@ enum Role
 {
     StationUrlRole = Qt::UserRole,
     UrlRole,
-    TrackRole
+    TrackRole,
+    TypeRole
 };
 
 enum SortOrder

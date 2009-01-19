@@ -403,6 +403,29 @@ QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
             break;
         }
 
+        if( role == LastFm::TrackRole )
+        {
+            switch ( i->type() )
+            {
+                case LastFm::MyRecommendations:
+                case LastFm::PersonalRadio:
+                case LastFm::LovedTracksRadio:
+                case LastFm::NeighborhoodRadio:
+                case LastFm::FriendsChild:
+                case LastFm::NeighborsChild:
+                case LastFm::MyTagsChild:
+                case LastFm::ArtistsChild:
+                case LastFm::UserChildLoved:
+                case LastFm::UserChildPersonal:
+                case LastFm::UserChildNeighborhood:
+                    return QVariant::fromValue( i->track() );
+                default:
+                    break;
+            }
+        }
+        if( role == LastFm::TypeRole )
+            return i->type();
+
 //     return i->data ( index.column() );
     return QVariant();
 }
