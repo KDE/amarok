@@ -107,10 +107,19 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
+    WeightedStringList list;
     foreach ( CoreDomElement e, reply->lfm() [ "topartists" ].children ( "artist" ) )
     {
         QString name = e[ "name" ].text();
-        LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, name ), LastFm::ArtistsChild, name, mMyTopArtists );
+        QString weight = e[ "playcount" ].text();
+        WeightedString s(name, weight.toFloat() );
+        list << s;
+    }
+    list.weightedSort(Qt::DescendingOrder);
+    for ( int i = 0; i < list.count(); i++ )
+    {
+        list[i] += " (" + QVariant ( list.at ( i ).weighting() ).toString() + " plays)";
+        LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, list[i] ), LastFm::ArtistsChild, list[i], mMyTopArtists );
         mMyTopArtists->appendChild ( artist );
     }
 }

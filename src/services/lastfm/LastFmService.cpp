@@ -407,7 +407,6 @@ LastFmService::polish()
         m_customStationEdit = new KLineEdit( customStationBox );
         updateEditHint( m_customStationCombo->currentIndex() );
         m_customStationButton = new QPushButton( customStationBox );
-        m_customStationButton->setText( i18n( "Start" ) );
         m_customStationButton->setObjectName( "customButton" );
         m_customStationButton->setIcon( KIcon( "media-playback-start-amarok" ) );
 
