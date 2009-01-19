@@ -78,6 +78,7 @@ LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
         }
     }
     queueAvatarsDownload ( avatarlist );
+    emitRowChanged(LastFm::Neighbors);
 }
 
 void
@@ -99,6 +100,7 @@ LastFmTreeModel::slotAddFriends ( WsReply* reply )
         }
     }
     queueAvatarsDownload ( avatarlist );
+    emitRowChanged(LastFm::Friends);
 }
 
 void
@@ -122,6 +124,7 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
         LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, list[i] ), LastFm::ArtistsChild, list[i], mMyTopArtists );
         mMyTopArtists->appendChild ( artist );
     }
+    emitRowChanged(LastFm::TopArtists);
 }
 
 void
@@ -140,6 +143,7 @@ LastFmTreeModel::slotAddTags ( WsReply* reply )
     DEBUG_BLOCK
     mTags.clear();
     sortTags ( Tag::list ( reply ), Qt::DescendingOrder ) ;
+    emitRowChanged(LastFm::MyTags);
 }
 
 void
@@ -177,6 +181,19 @@ LastFmTreeModel::changeData ( int row, T& old_data, const T& new_data )
     if ( n < 0 ) endInsertRows();
     emit dataChanged( index( 0, 0, parent ), index( new_data.count() - 1, 0, parent ) );
 }*/
+
+void
+LastFmTreeModel::emitRowChanged( int parent_row, int child_row )
+{
+    QModelIndex parent;
+    if (child_row != -1)
+    parent = index( parent_row, 0 );
+
+    QModelIndex i = index( child_row, 0, parent );
+
+    emit dataChanged( i, i );
+}
+
 
 void
 LastFmTreeModel::queueAvatarsDownload ( const QMap<QString, QString>& urls )
@@ -263,8 +280,8 @@ LastFmTreeModel::onAvatarDownloaded ( QPixmap avatar )
             {
                 //                 debug() << "inserting avatar";
                 m_avatars.insert ( username, avatar );
-//                 emitRowChanged( LastFm::Friends );
-//                 emitRowChanged( LastFm::Neighbors );
+                emitRowChanged( LastFm::Friends );
+                emitRowChanged( LastFm::Neighbors );
             }
         }
     }

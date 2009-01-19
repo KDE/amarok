@@ -119,6 +119,7 @@ private slots:
 
 private:
     void setupModelData ( LastFmTreeItem *parent );
+    void emitRowChanged(int parent, int child = -1);
 
     LastFmTreeItem *rootItem;
     LastFmTreeItem *mMyTags;
