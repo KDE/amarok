@@ -36,8 +36,8 @@ PodcastSettingsDialog::PodcastSettingsDialog( Meta::PodcastChannelPtr channel, Q
 
     setCaption( i18nc("change options", "Configure %1", m_channel->title() ) );
     setModal( true );
-    setButtons( Apply | Cancel );
-    setDefaultButton( Cancel );
+    setButtons( Apply | Cancel | Ok );
+    setDefaultButton( Ok );
     showButtonSeparator( true );
 
     init();
