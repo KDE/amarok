@@ -269,11 +269,11 @@ public:
         const ProxyAlbum *proxy = dynamic_cast<const ProxyAlbum*>( &album );
         if( proxy )
         {
-            return d && proxy->d && d->realTrack && proxy->d->realTrack && d->realTrack->album() && d->realTrack->album() == proxy->d->realTrack->album();
+            return d && proxy->d && d->realTrack && proxy->d->realTrack && d->realTrack->album() && ( *d->realTrack->album().data() ) == ( *proxy->d->realTrack->album().data() );
         }
         else
         {
-            return d && d->realTrack && d->realTrack->album() && d->realTrack->album().data() == &album;
+            return d && d->realTrack && d->realTrack->album() && ( *d->realTrack->album().data() ) == album;
         }
     }
 
