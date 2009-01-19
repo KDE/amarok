@@ -38,7 +38,7 @@ class AppletToolbarAddItem;
 class AppletToolbarConfigItem;
 class Containment;
 
-class AMAROK_EXPORT AppletToolbar : public QGraphicsWidget
+class AppletToolbar : public QGraphicsWidget
 {
     Q_OBJECT
     public:

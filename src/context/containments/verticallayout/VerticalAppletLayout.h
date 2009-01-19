@@ -36,7 +36,7 @@ namespace Context
     
 class Containment;
     
-class AMAROK_EXPORT VerticalAppletLayout : public QGraphicsWidget
+class VerticalAppletLayout : public QGraphicsWidget
 {
     Q_OBJECT
     public:
