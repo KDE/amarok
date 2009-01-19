@@ -17,9 +17,9 @@
 
 #include "MediaDeviceInfo.h"
 
-#include "amarok_export.h"
+#include "mediadevicecollection_export.h"
 
-class AMAROK_EXPORT IpodDeviceInfo : public MediaDeviceInfo
+class MEDIADEVICECOLLECTION_EXPORT IpodDeviceInfo : public MediaDeviceInfo
 {
     Q_OBJECT
     public:

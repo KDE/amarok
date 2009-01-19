@@ -3,6 +3,7 @@ include_directories( ../..
    ../../meta
    ../../collection
    ${CMAKE_CURRENT_BINARY_DIR}/../..
+   ${CMAKE_CURRENT_SOURCE_DIR}
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
    ${QT_INCLUDES} )
@@ -11,7 +12,7 @@ include_directories( ../..
 ########### next target ###############
 
 	set(mediadevicelib_LIB_SRCS
-        support/MediaDeviceInfo.cpp
+    support/MediaDeviceInfo.cpp
 	support/IpodDeviceInfo.cpp)
 	
 	kde4_add_library(mediadevicelib SHARED ${mediadevicelib_LIB_SRCS})

@@ -15,7 +15,7 @@
 #ifndef MEDIA_DEVICE_INFO_H
 #define MEDIA_DEVICE_INFO_H
 
-#include "amarok_export.h"
+#include "mediadevicecollection_export.h"
 
 #include <QObject>
 #include <QString>
@@ -25,7 +25,7 @@ typedef enum {
     MTP_T
 } device_info_t;
 
-class AMAROK_EXPORT MediaDeviceInfo : public QObject
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceInfo : public QObject
 {
     Q_OBJECT
     public:
