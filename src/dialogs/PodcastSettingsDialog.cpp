@@ -93,6 +93,7 @@ PodcastSettingsDialog::init()
     connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
 
     connect( this, SIGNAL(applyClicked()), this ,SLOT(slotApply()) );
+    connect( this, SIGNAL(okClicked()), this, SLOT(slotApply()) );
 }
 
 void
