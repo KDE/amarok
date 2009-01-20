@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,18 +16,41 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#include "GlobalCurrentTrackActions.h"
 
-#include "CurrentTrackActionsCapability.h"
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
-    : CustomActionsCapability()
+namespace The {
+    static GlobalCurrentTrackActions* s_GlobalCurrentTrackActions_instance = 0;
+
+    GlobalCurrentTrackActions* globalCurrentTrackActions()
+    {
+        if( !s_GlobalCurrentTrackActions_instance )
+            s_GlobalCurrentTrackActions_instance = new GlobalCurrentTrackActions();
+
+        return s_GlobalCurrentTrackActions_instance;
+    }
+}
+
+
+
+GlobalCurrentTrackActions::GlobalCurrentTrackActions()
 {
 }
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< PopupDropperAction * > & actions )
-    : CustomActionsCapability( actions )
+
+GlobalCurrentTrackActions::~GlobalCurrentTrackActions()
 {
 }
 
+void GlobalCurrentTrackActions::addAction( QAction * action )
+{
+    m_actions.append( action );
+}
 
-#include "CurrentTrackActionsCapability.moc"
+QList< QAction * > GlobalCurrentTrackActions::actions()
+{
+    return m_actions;
+}
+
+

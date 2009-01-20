@@ -156,7 +156,7 @@ public:
     void addGenreAction( GlobalCollectionGenreAction * action );
     void addArtistAction( GlobalCollectionArtistAction * action );
     void addAlbumAction( GlobalCollectionAlbumAction * action );
-    void addtrackAction( GlobalCollectionTrackAction * action );
+    void addTrackAction( GlobalCollectionTrackAction * action );
     void addYearAction( GlobalCollectionYearAction * action );
     void addComposerAction( GlobalCollectionComposerAction * action );
   

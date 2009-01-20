@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,18 +16,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef LOVETRACKACTION_H
+#define LOVETRACKACTION_H
 
-#include "CurrentTrackActionsCapability.h"
+#include "GlobalCollectionActions.h"
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
-    : CustomActionsCapability()
+#include "amarok_export.h"
+#include "meta/Meta.h"
+#include "LastFmService.h"
+
+
+/**
+A last.fm specific global collection action for loving a track.
+
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+*/
+class AMAROK_EXPORT LoveTrackAction : public GlobalCollectionTrackAction
 {
-}
+    Q_OBJECT
+public:
+    LoveTrackAction( LastFmService * service );
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< PopupDropperAction * > & actions )
-    : CustomActionsCapability( actions )
-{
-}
+private slots:
+    void slotTriggered();
 
+private:
+    LastFmService * m_service;
+};
 
-#include "CurrentTrackActionsCapability.moc"
+#endif

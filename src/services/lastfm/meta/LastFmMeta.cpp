@@ -100,11 +100,13 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
 
-    PopupDropperAction * loveAction = new PopupDropperAction( KIcon( "love-amarok" ), i18n( "Last.fm: &Love" ), this );
+
+    //not needed any more as all tracks can now be loved, not just last.fm ones
+    /*PopupDropperAction * loveAction = new PopupDropperAction( KIcon( "love-amarok" ), i18n( "Last.fm: &Love" ), this );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
     loveAction->setStatusTip( i18n( "Love this track on Last.fm" ) );
     connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );
-    m_currentTrackActions.append( loveAction );
+    m_currentTrackActions.append( loveAction );*/
 
     PopupDropperAction * banAction = new PopupDropperAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );

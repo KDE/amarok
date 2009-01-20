@@ -26,6 +26,7 @@
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "GlobalCurrentTrackActions.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h" // for time formatting
@@ -406,30 +407,38 @@ Amarok::TrayIcon::setupMenu()
     if( !m_track )
         return;
 
-    if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) ) {
+    m_extraActions = The::globalCurrentTrackActions()->actions();
+
+    if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    {
         Meta::CurrentTrackActionsCapability *cac = m_track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            // remove the two bottom items, so we can push them to the button again
-            contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
-            contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
-            m_extraActions = cac->customActions();
+            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
+            foreach( PopupDropperAction *action, currentTrackActions )
+                m_extraActions.append( action );
+        }
+    }
 
-            //if ( contextMenu()->actions().size() < 5 )
-                //m_extraActions.append( contextMenu()->addSeparator() );
 
-            foreach( QAction *action, m_extraActions )
-                contextMenu()->addAction( action );
-            contextMenu()->addSeparator();
+    if ( m_extraActions.count() > 0 )
+    {
+        // remove the two bottom items, so we can push them to the button again
+        contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
+        contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
-            // readd
+        foreach( QAction *action, m_extraActions )
+            contextMenu()->addAction( action );
+        contextMenu()->addSeparator();
+
+        // readd
         #ifndef Q_WS_MAC
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         #endif
-            contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
-        }
+        contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
     }
+
 }
 
 void

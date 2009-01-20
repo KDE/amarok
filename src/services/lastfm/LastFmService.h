@@ -65,6 +65,8 @@ public:
 
     virtual Amarok::Collection * collection();
 
+    void love( Meta::TrackPtr track );
+
 private slots:
     void love();
     void skip();

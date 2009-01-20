@@ -500,7 +500,7 @@ set(amaroklib_LIB_SRCS
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
-    services/lastfm/SimilarArtistsAction.cpp
+#services/lastfm/SimilarArtistsAction.cpp
     Systray.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
@@ -525,6 +525,7 @@ set(amaroklib_LIB_SRCS
     widgets/VolumeWidget.cpp
     widgets/Splitter.cpp
     GlobalCollectionActions.cpp
+    GlobalCurrentTrackActions.cpp
 )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)

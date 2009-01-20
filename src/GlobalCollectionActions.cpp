@@ -61,7 +61,7 @@ GlobalCollectionActions::addAlbumAction( GlobalCollectionAlbumAction * action )
 }
 
 void
-GlobalCollectionActions::addtrackAction( GlobalCollectionTrackAction * action )
+GlobalCollectionActions::addTrackAction( GlobalCollectionTrackAction * action )
 {
     m_trackActions.append( action );
 }

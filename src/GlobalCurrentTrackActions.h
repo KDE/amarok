@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,18 +16,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef GLOBALNOWPLAYINGACTIONS_H
+#define GLOBALNOWPLAYINGACTIONS_H
 
-#include "CurrentTrackActionsCapability.h"
+#include "amarok_export.h"
+#include "Meta.h"
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
-    : CustomActionsCapability()
-{
+#include <QAction>
+
+
+class GlobalCurrentTrackActions;
+
+namespace The {
+    AMAROK_EXPORT GlobalCurrentTrackActions* globalCurrentTrackActions();
 }
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< PopupDropperAction * > & actions )
-    : CustomActionsCapability( actions )
-{
-}
+/**
+A global list of actions that is made available to all playing tracks.
 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+*/
+class AMAROK_EXPORT GlobalCurrentTrackActions{
+    
+    friend GlobalCurrentTrackActions* The::globalCurrentTrackActions();
+    
+public:
 
-#include "CurrentTrackActionsCapability.moc"
+    void addAction( QAction * action );
+    QList<QAction *> actions();
+    
+private:
+    GlobalCurrentTrackActions();
+    ~GlobalCurrentTrackActions();
+    
+    QList<QAction *> m_actions;
+
+};
+
+#endif

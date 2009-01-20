@@ -19,6 +19,7 @@
 #include "EngineController.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
+#include "LoveTrackAction.h"
 #include "SimilarArtistsAction.h"
 #include "LastFmTreeModel.h"
 #include "LastFmTreeView.h"
@@ -27,6 +28,7 @@
 #include "widgets/FlowLayout.h"
 
 #include "GlobalCollectionActions.h"
+#include "GlobalCurrentTrackActions.h"
 
 #include "collection/CollectionManager.h"
 #include "meta/capabilities/LastFmCapability.h"
@@ -147,8 +149,15 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
 
-    //add the "plas simmilar artists" action to all artist
+    //add the "play simmilar artists" action to all artist
     The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
+    The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
+
+
+    QAction * loveAction = new QAction( KIcon( "love-amarok" ), i18n( "Last.fm: Love" ), this );
+    loveAction->setShortcut( i18n( "Ctrl+L" ) );
+    The::globalCurrentTrackActions()->addAction( loveAction );
+
 
     Q_ASSERT( ms_service == 0 );
     ms_service = this;
@@ -435,6 +444,11 @@ LastFmService::love()
 
 }
 
+void LastFmService::love( Meta::TrackPtr track )
+{
+    m_scrobbler->loveTrack( track );
+}
+
 
 void
 LastFmService::ban()
@@ -515,3 +529,6 @@ Amarok::Collection * LastFmService::collection()
 {
     return m_collection;
 }
+
+
+

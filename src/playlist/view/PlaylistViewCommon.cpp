@@ -23,6 +23,7 @@
 
 #include "EngineController.h"
 #include "Debug.h"
+#include "GlobalCurrentTrackActions.h"
 #include "TagDialog.h"
 #include "playlist/PlaylistModel.h"
 #include "covermanager/CoverFetchingActions.h"
@@ -82,6 +83,11 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
     if( isCurrentTrack )
     {
+
+        QList<QAction *> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
+        foreach( QAction *action, globalCurrentTrackActions )
+            menu->addAction( action );
+        
         if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {
             Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();

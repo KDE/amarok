@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,18 +16,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#include "LoveTrackAction.h"
 
-#include "CurrentTrackActionsCapability.h"
+#include "SvgHandler.h"
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
-    : CustomActionsCapability()
+#include <KIcon>
+#include <KLocale>
+
+LoveTrackAction::LoveTrackAction( LastFmService * service )
+    : GlobalCollectionTrackAction( i18n( "Last.fm: Love" ), service )
+    , m_service( service )
 {
+    setIcon( KIcon( "love-amarok") );
+    setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    setElementId( "lastfm" );
 }
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< PopupDropperAction * > & actions )
-    : CustomActionsCapability( actions )
+void LoveTrackAction::slotTriggered()
 {
+    m_service->love( track() );
 }
 
 
-#include "CurrentTrackActionsCapability.moc"

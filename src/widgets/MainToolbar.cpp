@@ -24,6 +24,7 @@
 #include "AnalyzerWidget.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "GlobalCurrentTrackActions.h"
 #include "MainControlsWidget.h"
 #include "ProgressSlider.h"
 #include "SvgHandler.h"
@@ -125,28 +126,33 @@ void MainToolbar::handleAddActions()
     foreach( QAction * action, m_additionalActions )
         m_addControlsToolbar->removeAction( action );
 
+    m_additionalActions.clear();
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
+    m_additionalActions = The::globalCurrentTrackActions()->actions();
+    
     if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            m_additionalActions = cac->customActions();
 
-            foreach( PopupDropperAction *action, m_additionalActions )
-                m_addControlsToolbar->addAction( action );
+            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
+            foreach( PopupDropperAction *action, currentTrackActions )
+                m_additionalActions.append( action );
+
 
             m_addControlsToolbar->adjustSize();
 
             //centerAddActions();
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
         }
-        else
-            m_additionalActions.clear();
     }
-    else
-        m_additionalActions.clear();
+
+
+    foreach( QAction *action, m_additionalActions )
+        m_addControlsToolbar->addAction( action );
 
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }

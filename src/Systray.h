@@ -67,7 +67,7 @@ private:
 
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
     QPixmap m_playOverlay, m_pauseOverlay;
-    QList<PopupDropperAction *> m_extraActions;
+    QList<QAction *> m_extraActions;
 };
 
 }

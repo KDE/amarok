@@ -63,7 +63,7 @@ private:
     int m_addActionsOffsetX;
     bool m_ignoreCache;
 
-    QList<PopupDropperAction *> m_additionalActions;
+    QList<QAction *> m_additionalActions;
 };
 
 #endif
