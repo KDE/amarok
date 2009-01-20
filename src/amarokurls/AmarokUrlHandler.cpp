@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "AmarokUrlHandler.h"
 
 #include "BookmarkMetaActions.h"
@@ -24,6 +24,7 @@
 
 #include "NavigationUrlGenerator.h"
 #include "NavigationUrlRunner.h"
+#include "PlayUrlRunner.h"
 #include "BookmarkModel.h"
 
 namespace The {
@@ -43,7 +44,9 @@ AmarokUrlHandler::AmarokUrlHandler()
 {
     //we init some of the default runners here.
     m_navigationRunner = new NavigationUrlRunner();
+    m_playRunner = new PlayUrlRunner();
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
+    registerRunner( m_playRunner, m_playRunner->command() );
 
     The::globalCollectionActions()->addAlbumAction( new BookmarkAlbumAction( this ) );
     The::globalCollectionActions()->addArtistAction( new BookmarkArtistAction( this ) );
@@ -83,7 +86,7 @@ bool AmarokUrlHandler::run( AmarokUrl url )
         return m_registeredRunners.value( command )->run( url );
     else
         return false;
-    
+
 }
 
 void AmarokUrlHandler::bookmarkAlbum( Meta::AlbumPtr album )

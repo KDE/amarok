@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef AMAROKURLHANDLER_H
 #define AMAROKURLHANDLER_H
 
@@ -28,21 +28,22 @@
 
 class AmarokUrlHandler;
 class NavigationUrlRunner;
+class PlayUrlRunner;
 
 namespace The {
     AMAROK_EXPORT AmarokUrlHandler* amarokUrlHandler();
 }
 
 /**
-A singleton class for handling and delegating all amarok:// urls 
+A singleton class for handling and delegating all amarok:// urls
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class AmarokUrlHandler : public QObject
 {
     Q_OBJECT
     friend AmarokUrlHandler* The::amarokUrlHandler();
-    
+
 public:
 
     void registerRunner( AmarokUrlRunnerBase * runner, const QString & command );
@@ -62,6 +63,7 @@ private:
     QMap<QString, AmarokUrlRunnerBase *> m_registeredRunners;
 
     NavigationUrlRunner * m_navigationRunner;
+    PlayUrlRunner * m_playRunner;
 
 };
 

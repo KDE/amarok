@@ -16,12 +16,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "BookmarkManagerWidget.h"
 
 #include "AmarokUrl.h"
 #include "BookmarkModel.h"
 #include "NavigationUrlGenerator.h"
+#include "PlayUrlGenerator.h"
 
 #include <KAction>
 #include <KIcon>
@@ -33,9 +34,9 @@
 BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
  : KVBox( parent )
 {
-    
+
     setContentsMargins(0,0,0,0);
-    
+
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
@@ -54,17 +55,20 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     KHBox * editBox2 = new KHBox( this );
     new QLabel( i18n( "Url:" ), editBox2 );
     m_currentBookmarkUrlEdit = new QLineEdit( editBox2 );
-    
+
     KHBox * buttonBox = new KHBox( this );
-    
+
     m_getCurrentBookmarkButton = new QPushButton( i18n( "Get Current" ), buttonBox );
     connect( m_getCurrentBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( showCurrentUrl() ) );
-    
+
     m_addBookmarkButton = new QPushButton( i18n( "Add" ), buttonBox );
     connect( m_addBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( bookmarkCurrent() ) );
 
     m_gotoBookmarkButton = new QPushButton( i18n( "Goto" ), buttonBox );
     connect( m_gotoBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( gotoBookmark() ) );
+
+    m_getPositionBookmarkButton = new QPushButton( i18n( "Save Current Position" ), buttonBox );
+    connect( m_getPositionBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( savePositionBookmark() ) );
 
     m_currentBookmarkId = -1;
 
@@ -108,20 +112,34 @@ void BookmarkManagerWidget::bookmarkCurrent()
     AmarokUrl url( m_currentBookmarkUrlEdit->text() );
     url.setName( m_currentBookmarkNameEdit->text() );
 
-    if ( m_currentBookmarkId != -1) 
+    if ( m_currentBookmarkId != -1)
         url.setId( m_currentBookmarkId );
-    
+
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 
     m_currentBookmarkId = -1;
     updateAddButton();
 }
+void BookmarkManagerWidget::savePositionBookmark()
+{
+    m_currentBookmarkUrlEdit->setText( getPositionBookmark() );
+    m_currentBookmarkNameEdit->setText( i18n( "New Bookmark" ) );
+
+    m_currentBookmarkId = -1;
+    updateAddButton();
+}
+
+QString BookmarkManagerWidget::getPositionBookmark()
+{
+    PlayUrlGenerator urlGenerator;
+    return urlGenerator.CreateCurrentTrackBookmark().url();
+}
 
 void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )
 {
     m_currentBookmarkId = bookmark.id();
-    
+
     m_currentBookmarkUrlEdit->setText( bookmark.url() );
     m_currentBookmarkNameEdit->setText( bookmark.name() );
 

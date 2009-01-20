@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef BOOKMARKMANAGERWIDGET_H
 #define BOOKMARKMANAGERWIDGET_H
 
@@ -33,7 +33,7 @@
 /**
 A widget for managing amarok:// bookmark urls
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>  
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class AMAROK_EXPORT BookmarkManagerWidget : public KVBox
 {
@@ -45,13 +45,15 @@ public:
     BookmarkTreeView * treeView();
 
 private:
-    
+
     QString getBookmarkUrl();
+    QString getPositionBookmark();
     void updateAddButton();
-    
+
     QPushButton * m_getCurrentBookmarkButton;
     QPushButton * m_addBookmarkButton;
     QPushButton * m_gotoBookmarkButton;
+    QPushButton * m_getPositionBookmarkButton;
     QLineEdit * m_currentBookmarkNameEdit;
     QLineEdit * m_currentBookmarkUrlEdit;
 
@@ -65,6 +67,7 @@ private slots:
     void showCurrentUrl();
     void addBookmark();
     void gotoBookmark();
+    void savePositionBookmark();
     void bookmarkCurrent();
 
     void slotBookmarkSelected( AmarokUrl bookmark );

@@ -118,6 +118,8 @@ set(libamarokurl_SRCS
     amarokurls/AmarokUrlHandler.cpp
     amarokurls/NavigationUrlRunner.cpp
     amarokurls/NavigationUrlGenerator.cpp
+    amarokurls/PlayUrlRunner.cpp
+    amarokurls/PlayUrlGenerator.cpp
     amarokurls/BookmarkManagerWidget.cpp
     amarokurls/BookmarkGroup.cpp
     amarokurls/BookmarkModel.cpp
