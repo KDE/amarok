@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * When the last.fm service is active, any track, from any collection or
+      service, can be loved from the browser , and there will always be a love
+      button for the currently playing track, no matter the source.
     * Dbus methods added: VolumeUp, VolumeDown and Mute. (BR 181130)
     * The feed url is displayed in the config dialog of a podcast channel.
       By left clicking in the url it's copied to the clipboard. (BR 180853)
