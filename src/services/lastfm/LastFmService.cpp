@@ -155,6 +155,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
 
     QAction * loveAction = new QAction( KIcon( "love-amarok" ), i18n( "Last.fm: Love" ), this );
+    connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );
     loveAction->setShortcut( i18n( "Ctrl+L" ) );
     The::globalCurrentTrackActions()->addAction( loveAction );
 
@@ -446,6 +447,7 @@ LastFmService::love()
 
 void LastFmService::love( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
     m_scrobbler->loveTrack( track );
 }
 
