@@ -295,6 +295,7 @@ LastFmTreeModel::onAvatarDownloaded ( QPixmap avatar )
 
 int LastFmTreeModel::columnCount ( const QModelIndex &parent ) const
 {
+    Q_UNUSED( parent )
     return 1;
 }
 
@@ -484,6 +485,9 @@ Qt::ItemFlags LastFmTreeModel::flags ( const QModelIndex &index ) const
 QVariant LastFmTreeModel::headerData ( int section, Qt::Orientation orientation,
                                        int role ) const
 {
+    Q_UNUSED( section )
+    Q_UNUSED( role )
+    Q_UNUSED( orientation )
 //     if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
 //         return rootItem->data ( section );
 

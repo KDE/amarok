@@ -172,10 +172,10 @@ public:
 
 private:
     QList<LastFmTreeItem*> childItems;
-    QVariant itemData;
-    QString mUrl;
     LastFm::Type mType;
     LastFmTreeItem *parentItem;
+    QVariant itemData;
+    QString mUrl;
 
 
 };
