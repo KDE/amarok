@@ -36,6 +36,7 @@ class AMAROK_EXPORT PlayUrlGenerator {
         PlayUrlGenerator();
         ~PlayUrlGenerator();
 
-        AmarokUrl CreateCurrentTrackBookmark();
+        AmarokUrl createCurrentTrackBookmark();
+        AmarokUrl createTrackBookmark( Meta::TrackPtr track, int seconds );
 };
 #endif // PLAYURLGENERATOR_H

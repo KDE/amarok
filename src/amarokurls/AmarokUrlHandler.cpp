@@ -25,8 +25,6 @@
 #include "NavigationUrlGenerator.h"
 #include "NavigationUrlRunner.h"
 #include "PlayUrlRunner.h"
-#include "PlayUrlGenerator.h"
-#include "ProgressSlider.h"
 #include "BookmarkModel.h"
 
 #include <KIcon>
@@ -54,11 +52,6 @@ AmarokUrlHandler::AmarokUrlHandler()
 
     The::globalCollectionActions()->addAlbumAction( new BookmarkAlbumAction( this ) );
     The::globalCollectionActions()->addArtistAction( new BookmarkArtistAction( this ) );
-
-    QAction * flagAction = new QAction( KIcon( "flag-amarok" ), i18n( "Flag Position" ), this );
-    connect( flagAction, SIGNAL( triggered() ), this, SLOT( flagPosition() ) );
-//     flagAction->setShortcut( i18n( "Ctrl+L" ) );
-    The::globalCurrentTrackActions()->addAction( flagAction );
 }
 
 
@@ -110,20 +103,6 @@ void AmarokUrlHandler::bookmarkArtist( Meta::ArtistPtr artist ) //slot
     NavigationUrlGenerator generator;
     generator.urlFromArtist( artist ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();
-}
-
-void AmarokUrlHandler::flagPosition() //slot
-{
-    PlayUrlGenerator urlGenerator;
-    AmarokUrl url = urlGenerator.CreateCurrentTrackBookmark();
-    ProgressWidget* pw = ProgressWidget::instance();
-    if( pw )
-        ProgressWidget::instance()->addBookmark( url.arg(1).toInt() );
-    else
-        debug() << "ProgressWidget is NULL";
-
-    url.saveToDb();
-    //TODO actually add the bookmark to the db
 }
 
 #include "AmarokUrlHandler.moc"

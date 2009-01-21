@@ -143,7 +143,7 @@ void BookmarkManagerWidget::savePositionBookmark()
 AmarokUrl BookmarkManagerWidget::getPositionBookmark()
 {
     PlayUrlGenerator urlGenerator;
-    return urlGenerator.CreateCurrentTrackBookmark();
+    return urlGenerator.createCurrentTrackBookmark();
 }
 
 void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )

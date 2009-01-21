@@ -33,18 +33,22 @@ PlayUrlGenerator::~PlayUrlGenerator()
 {
 }
 
-AmarokUrl PlayUrlGenerator::CreateCurrentTrackBookmark()
+AmarokUrl PlayUrlGenerator::createCurrentTrackBookmark()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    int seconds = The::engineController()->trackPosition();
+    return createTrackBookmark( track, seconds );
+}
+
+AmarokUrl PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds )
 {
     AmarokUrl url;
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if(!track)
+    if( !track )
         return url;
     url.setCommand ( "play" );
     QString track_url = track->playableUrl().toEncoded().toBase64();
     url.appendArg ( track_url );
-    int seconds = The::engineController()->trackPosition();
     url.appendArg ( QString::number ( seconds ) );
-
     url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );
     debug() << "concocted url: " << url.url();
     return url;

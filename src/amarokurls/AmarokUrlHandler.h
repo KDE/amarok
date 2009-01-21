@@ -54,7 +54,6 @@ public:
 public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );
     void bookmarkArtist( Meta::ArtistPtr artist );
-    void flagPosition();
 
 private:
 
