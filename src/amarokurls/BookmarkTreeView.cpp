@@ -75,12 +75,12 @@ void BookmarkTreeView::mouseDoubleClickEvent( QMouseEvent * event )
 {
     QModelIndex index = indexAt( event->pos() );
 
-    if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
+    if( index.isValid() )
     {
-        BookmarkViewItem *item = static_cast<BookmarkViewItem*>( index.internalPointer() );
+        BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
 
-        if ( typeid( * item ) == typeid( AmarokUrl ) ) {
-            AmarokUrl * bookmark = static_cast< AmarokUrl* >( item );
+        if ( typeid( *item ) == typeid( AmarokUrl ) ) {
+            AmarokUrl * bookmark = static_cast< AmarokUrl* >( item.data() );
             bookmark->run();
         }
     }
@@ -192,6 +192,7 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     if( indices.count() == 0 )
         menu.addAction( m_addGroupAction );
 
+    debug() << "showing menu at pos:" << event->pos() << "and globalpos:" << event->globalPos();
     menu.exec( event->pos() );  // hack to get it to work correctly when embedded in the context view
 }
 
@@ -218,11 +219,11 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     QModelIndexList indexes = selected.indexes();
     if ( indexes.size() == 1 ) {
         QModelIndex index = indexes.at( 0 );
-        BookmarkViewItem *item = static_cast<BookmarkViewItem*>( index.internalPointer() );
+        BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
 
         if ( typeid( * item ) == typeid( AmarokUrl ) ) {
             debug() << "a url was selected...";
-            AmarokUrl bookmark = *static_cast< AmarokUrl* >( item );
+            AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
             emit( bookmarkSelected( bookmark ) );
         }
     }
