@@ -239,6 +239,8 @@ PlaylistManager::typeName( int playlistCategory )
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
 {
+    Q_UNUSED( name )
+    Q_UNUSED( fromLocation )
     SqlUserPlaylistProvider *sqlProvider = dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
     bool saveSuccessful = sqlProvider->save( tracks );
 

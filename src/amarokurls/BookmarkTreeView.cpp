@@ -215,6 +215,7 @@ void BookmarkTreeView::setNewGroupAction( KAction * action )
 void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
 {
     DEBUG_BLOCK
+    Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
     if ( indexes.size() == 1 ) {
         QModelIndex index = indexes.at( 0 );

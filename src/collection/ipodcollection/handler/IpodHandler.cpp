@@ -1429,6 +1429,8 @@ void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
 {
     DEBUG_BLOCK
+    Q_UNUSED( image )
+    Q_UNUSED( ipodtrack )
 
     // HACK: not setting cover art until working properly
 

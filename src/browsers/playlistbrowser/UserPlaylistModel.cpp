@@ -117,6 +117,7 @@ PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & par
 QModelIndex
 PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 {
+    Q_UNUSED( index )
     return QModelIndex();
 }
 
@@ -218,6 +219,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
 {
     Q_UNUSED( column );
     Q_UNUSED( row );
+    Q_UNUSED( parent )
 
     if( action == Qt::IgnoreAction )
         return true;

@@ -72,14 +72,16 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
 
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
 {
-    
+
 }
 
-void 
+void
 Context::AppletToolbarAddItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
   //  DEBUG_BLOCK
-    
+
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );
     QColor fillColor( 88, 88, 88, 225 );
@@ -129,6 +131,7 @@ Context::AppletToolbarAddItem::addApplet( const QString& pluginName ) // SLOT
 void 
 Context::AppletToolbarAddItem::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
+    Q_UNUSED( event )
     if( m_label->boundingRect().width() < ( boundingRect().width() - 2*m_icon->boundingRect().width() ) ) // do we have size to show it?
     {
         m_icon->setPos(  boundingRect().width() - m_icon->boundingRect().width(), ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
