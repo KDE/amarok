@@ -54,7 +54,6 @@ public:
 
 protected:
     virtual void constraintsEvent( Plasma::Constraints constraints );
-    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
 private slots:
     void paletteChanged( const QPalette & palette );
@@ -63,13 +62,6 @@ private:
 
     QGraphicsProxyWidget * m_proxyWidget;
     BookmarkManagerWidget * m_bookmarkWidget;
-
-    int m_width;
-
-    qreal m_aspectRatio;
-
-    Context::Svg* m_theme;
-
 };
 
 K_EXPORT_AMAROK_APPLET( bookmark, Bookmark )
