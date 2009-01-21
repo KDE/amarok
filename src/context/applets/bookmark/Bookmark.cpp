@@ -49,7 +49,12 @@ Bookmark::Bookmark( QObject* parent, const QVariantList& args )
 }
 
 Bookmark::~Bookmark()
-{}
+{
+    m_proxyWidget->setWidget( 0 );
+    delete m_bookmarkWidget;
+    m_bookmarkWidget = 0;
+    delete m_proxyWidget;
+}
 
 void Bookmark::init()
 {
