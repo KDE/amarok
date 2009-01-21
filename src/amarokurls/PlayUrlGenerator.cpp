@@ -22,6 +22,7 @@
 #include "AmarokUrl.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "MetaUtility.h"
 
 PlayUrlGenerator::PlayUrlGenerator()
 {
@@ -34,14 +35,17 @@ PlayUrlGenerator::~PlayUrlGenerator()
 
 AmarokUrl PlayUrlGenerator::CreateCurrentTrackBookmark()
 {
-    //TODO check for something not playing
     AmarokUrl url;
     Meta::TrackPtr track = The::engineController()->currentTrack();
+    if(!track)
+        return url;
     url.setCommand ( "play" );
     QString track_url = track->playableUrl().toEncoded().toBase64();
     url.appendArg ( track_url );
-    url.appendArg ( QString::number ( The::engineController()->trackPosition() ) );
+    int seconds = The::engineController()->trackPosition();
+    url.appendArg ( QString::number ( seconds ) );
 
+    url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );
     debug() << "concocted url: " << url.url();
     return url;
 }

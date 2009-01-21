@@ -122,6 +122,7 @@ void AmarokUrlHandler::flagPosition() //slot
     else
         debug() << "ProgressWidget is NULL";
 
+    url.saveToDb();
     //TODO actually add the bookmark to the db
 }
 
