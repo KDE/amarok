@@ -42,8 +42,6 @@
 
 Bookmark::Bookmark( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_width( 0 )
-    , m_aspectRatio( 0.0 )
 {
     setHasConfigurationInterface( false );
 }
@@ -93,7 +91,7 @@ Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
         return QSizeF( constraint.width(), 350 );
 
-    return QGraphicsItem::sizeHint( which, constraint );
+    return QGraphicsWidget::sizeHint( which, constraint );
 }
 
 void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -113,22 +111,12 @@ void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *opti
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
             childItem->show();
     }
-
-    p->save();
-    p->restore();
-
 }
 
 
 void Bookmark::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
-}
-
-void Bookmark::contextMenuEvent( QGraphicsSceneContextMenuEvent * event )
-{
-    //Note that in this case, global refers to the context view and not the entire screen
-    m_bookmarkWidget->treeView()->showContextMenu( m_bookmarkWidget->treeView()->mapFromGlobal( event->pos().toPoint() ), event->screenPos() );
 }
 
 #include "Bookmark.moc"
