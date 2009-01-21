@@ -38,8 +38,7 @@ AmarokUrl PlayUrlGenerator::CreateCurrentTrackBookmark()
     AmarokUrl url;
     Meta::TrackPtr track = The::engineController()->currentTrack();
     url.setCommand ( "play" );
-    QString track_url = track->playableUrl().url();
-    track_url = QUrl::toPercentEncoding ( track_url );
+    QString track_url = track->playableUrl().toEncoded().toBase64();
     url.appendArg ( track_url );
     url.appendArg ( QString::number ( The::engineController()->trackPosition() ) );
 

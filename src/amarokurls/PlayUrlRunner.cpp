@@ -41,8 +41,8 @@ bool PlayUrlRunner::run ( AmarokUrl url )
     if( url.numberOfArgs() == 0)
         return false;
 
-    QString track_url = QUrl::fromPercentEncoding( url.arg(0).toUtf8() );
-    debug() << "decoded url: " << track_url;
+    QUrl track_url = QUrl::fromEncoded ( QByteArray::fromBase64( url.arg(0).toUtf8() ) );
+    debug() << "decoded track url: " << track_url.toString();
     int pos = url.arg(1).toInt() * 1000;
     debug() << "seek pos: " << pos;
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( track_url );
