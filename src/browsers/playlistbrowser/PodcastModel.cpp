@@ -360,21 +360,21 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
 {
     debug() << "adding Podcast";
 
-    //HACK: since we only have one PodcastProvider implementation
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
-    if( provider )
+    PodcastProvider * podcastProvider = The::playlistManager()->defaultPodcasts();
+    if( podcastProvider )
     {
         bool ok;
         QString url = QInputDialog::getText( 0,
                             i18n("Amarok"), i18n("Enter Podcast URL:"), QLineEdit::Normal,
                             QString(), &ok );
-        if ( ok && !url.isEmpty() ) {
-        // user entered something and pressed OK
-        PodcastProvider * podcastProvider = static_cast<PodcastProvider *>(provider);
-        podcastProvider->addPodcast( url );
-        } else {
-        // user entered nothing or pressed Cancel
+        if ( ok && !url.isEmpty() )
+        {
+            // user entered something and pressed OK
+            podcastProvider->addPodcast( url.trimmed() );
+        }
+        else
+        {
+            // user entered nothing or pressed Cancel
             debug() << "invalid input or cancel";
         }
     }
