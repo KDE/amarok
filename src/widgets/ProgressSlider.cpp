@@ -254,6 +254,7 @@ void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, Pl
     m_timeLabelRight->setShowTime( false );
 
     m_currentUrlId.clear();
+    m_slider->clearTriangles();
 }
 
 #include "ProgressSlider.moc"
