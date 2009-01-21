@@ -43,11 +43,10 @@ public:
     ~BookmarkManagerWidget();
 
     BookmarkTreeView * treeView();
-
 private:
 
     QString getBookmarkUrl();
-    QString getPositionBookmark();
+    AmarokUrl getPositionBookmark();
     void updateAddButton();
 
     QPushButton * m_getCurrentBookmarkButton;

@@ -71,6 +71,14 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 }
 
 void
+ProgressWidget::addBookmark( int x )
+{
+    DEBUG_BLOCK
+    if( m_slider )
+        m_slider->drawTriangle( x );
+}
+
+void
 ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
@@ -221,6 +229,7 @@ ProgressWidget::engineNewTrackPlaying()
 {
     m_slider->setEnabled( false );
     engineTrackLengthChanged( The::engineController()->trackLength() );
+    m_slider->clearTriangles();
 }
 
 QSize ProgressWidget::sizeHint() const

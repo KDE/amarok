@@ -23,6 +23,7 @@
 #include "BookmarkModel.h"
 #include "NavigationUrlGenerator.h"
 #include "PlayUrlGenerator.h"
+#include "ProgressSlider.h"
 
 #include <KAction>
 #include <KIcon>
@@ -123,17 +124,25 @@ void BookmarkManagerWidget::bookmarkCurrent()
 }
 void BookmarkManagerWidget::savePositionBookmark()
 {
-    m_currentBookmarkUrlEdit->setText( getPositionBookmark() );
+    DEBUG_BLOCK
+    AmarokUrl url = getPositionBookmark();
+    ProgressWidget* pw = ProgressWidget::instance();
+    if( pw )
+        ProgressWidget::instance()->addBookmark( url.arg(1).toInt() );
+    else
+        debug() << "ProgressWidget is NULL";
+
+    m_currentBookmarkUrlEdit->setText( url.url() );
     m_currentBookmarkNameEdit->setText( i18n( "New Bookmark" ) );
 
     m_currentBookmarkId = -1;
     updateAddButton();
 }
 
-QString BookmarkManagerWidget::getPositionBookmark()
+AmarokUrl BookmarkManagerWidget::getPositionBookmark()
 {
     PlayUrlGenerator urlGenerator;
-    return urlGenerator.CreateCurrentTrackBookmark().url();
+    return urlGenerator.CreateCurrentTrackBookmark();
 }
 
 void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )

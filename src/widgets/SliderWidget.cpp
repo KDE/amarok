@@ -26,6 +26,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "App.h"
+#include "BookmarkTriangle.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "SvgHandler.h"
@@ -338,6 +339,7 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 Amarok::TimeSlider::TimeSlider( QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, parent )
     , m_knobX( 0.0 )
+    , m_triangles()
 {
     setFocusPolicy( Qt::NoFocus );
     m_sliderHeight = 20;
@@ -371,6 +373,27 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
     m_sliderHeight = 20;
     if ( m_sliderHeight > height() )
         m_sliderHeight = height();
+}
+
+void Amarok::TimeSlider::drawTriangle( int seconds )
+{
+    DEBUG_BLOCK
+    int ms = seconds * 1000;
+//     int x_pos = QStyle::sliderPositionFromValue( minimum(), maximum(), ms, width() );
+    int sliderHeight = height() - ( m_sliderInsertY * 2 );
+    int sliderLeftWidth = sliderHeight / 3;
+    int x_pos = ( ( ( double ) ms - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
+    debug() << "drawing triangle at " << x_pos;
+    BookmarkTriangle * tri = new BookmarkTriangle( this );
+    m_triangles << tri;
+    tri->setGeometry(x_pos + 6 /* to center the point */, 5 /*y*/, 11, 11 ); // 6 = hard coded border width
+    tri->show();
+}
+
+void Amarok::TimeSlider::clearTriangles()
+{
+    qDeleteAll( m_triangles );
+    m_triangles.clear();
 }
 
 void Amarok::Slider::paletteChange(const QPalette & oldPalette)

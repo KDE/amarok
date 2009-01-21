@@ -526,6 +526,7 @@ set(amaroklib_LIB_SRCS
     widgets/Token.cpp
     widgets/VolumeWidget.cpp
     widgets/Splitter.cpp
+    widgets/BookmarkTriangle.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
 )

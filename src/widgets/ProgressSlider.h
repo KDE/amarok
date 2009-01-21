@@ -38,6 +38,8 @@ class ProgressWidget : public QWidget, public EngineObserver
 
         virtual QSize sizeHint() const;
 
+        void addBookmark( int x );
+
     public slots:
         void drawTimeDisplay( int position );
 

@@ -22,12 +22,14 @@
 #ifndef SLIDERWIDGET_H
 #define SLIDERWIDGET_H
 
+#include <QList>
 #include <QPixmap>
 #include <QSlider>
 #include <QVector>
 
 class QPalette;
 class QTimer;
+class BookmarkTriangle;
 
 namespace Amarok
 {
@@ -139,6 +141,8 @@ namespace Amarok
             TimeSlider( QWidget *parent );
 
             void setSliderValue( int value );
+            void drawTriangle( int x );
+            void clearTriangles();
 
         protected:
             virtual void paintEvent( QPaintEvent* );
@@ -151,7 +155,7 @@ namespace Amarok
             ////////////////////////////////////////////////////////////////
 
             QTimer *m_animTimer; // Used for a smooth progress.
-
+            QList<BookmarkTriangle*> m_triangles;
             int m_sliderHeight;
             double m_knobX; // The position of the current indicator.
     };
