@@ -192,7 +192,7 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     if( indices.count() == 0 )
         menu.addAction( m_addGroupAction );
 
-    menu.exec( event->globalPos() );  // hack to get it to work correctly when embedded in the context view
+    menu.exec( event->pos() );  // hack to get it to work correctly when embedded in the context view
 }
 
 QSet<BookmarkViewItemPtr>

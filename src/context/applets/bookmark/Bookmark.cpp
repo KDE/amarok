@@ -59,11 +59,6 @@ Bookmark::~Bookmark()
 void Bookmark::init()
 {
     DEBUG_BLOCK
-
-    m_theme = new Context::Svg( this );
-    m_theme->setImagePath( "widgets/amarok-songkick" );
-    m_theme->setContainsMultipleImages( true );
-
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 1  );
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
@@ -72,12 +67,6 @@ void Bookmark::init()
     m_bookmarkWidget = new BookmarkManagerWidget( 0 );
     m_proxyWidget->setWidget( m_bookmarkWidget );
     
-
-    // get natural aspect ratio, so we can keep it on resize
-    m_theme->resize();
-    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio );
-
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
@@ -103,9 +92,8 @@ Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
         return QSizeF( constraint.width(), 350 );
-//      return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
 
-    return constraint;
+    return QGraphicsItem::sizeHint( which, constraint );
 }
 
 void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
