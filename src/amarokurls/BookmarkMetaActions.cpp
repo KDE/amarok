@@ -21,6 +21,9 @@
 #include "AmarokUrlHandler.h"
 #include "SvgHandler.h"
 
+#include "PlayUrlRunner.h"
+#include "PlayUrlGenerator.h"
+#include "ProgressSlider.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -54,6 +57,28 @@ BookmarkArtistAction::BookmarkArtistAction( QObject * parent )
 void BookmarkArtistAction::slotTriggered()
 {
     The::amarokUrlHandler()->bookmarkArtist( artist() );
+}
+
+BookmarkCurrentTrackPositionAction::BookmarkCurrentTrackPositionAction( QObject * parent )
+    : PopupDropperAction( parent )
+{
+    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    setIcon( KIcon("flag-amarok") );
+}
+
+void
+BookmarkCurrentTrackPositionAction::slotTriggered()
+{
+    DEBUG_BLOCK
+    PlayUrlGenerator urlGenerator;
+    AmarokUrl url = urlGenerator.createCurrentTrackBookmark();
+    ProgressWidget* pw = ProgressWidget::instance();
+    if( pw )
+        ProgressWidget::instance()->addBookmark( url.arg(1).toInt() );
+    else
+        debug() << "ProgressWidget is NULL";
+
+    url.saveToDb();
 }
 
 #include "BookmarkMetaActions.moc"

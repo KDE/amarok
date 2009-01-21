@@ -16,10 +16,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #ifndef BOOKMARKMETAACTIONS_H
 #define BOOKMARKMETAACTIONS_H
 
+#include "amarok_export.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "Meta.h"
 #include <GlobalCollectionActions.h>
 
 /**
@@ -45,6 +48,16 @@ class BookmarkArtistAction : public GlobalCollectionArtistAction
     private slots:
         void slotTriggered();
 
+};
+
+class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public PopupDropperAction
+{
+    Q_OBJECT
+    public:
+        explicit BookmarkCurrentTrackPositionAction( QObject *parent );
+
+    private slots:
+        void slotTriggered();
 };
 
 #endif

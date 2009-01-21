@@ -20,11 +20,15 @@
 #include "File.h"
 #include "File_p.h"
 
+#include "BookmarkMetaActions.h"
 #include "Meta.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
 #include "MetaUtility.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
+#include <QList>
 #include <QPointer>
 #include <QString>
 
@@ -471,19 +475,28 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::Editable || type == Meta::Capability::Importable;
+    DEBUG_BLOCK
+    return type == Meta::Capability::Editable || type == Meta::Capability::Importable || type == Meta::Capability::CurrentTrackActions;
 }
 
 Meta::Capability*
 Track::asCapabilityInterface( Meta::Capability::Type type )
 {
+    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::Editable:
             return new EditCapabilityImpl( this );
-            break;
         case Meta::Capability::Importable:
             return new StatisticsCapabilityImpl( this );
+        case Meta::Capability::CurrentTrackActions:
+            {
+            QList< PopupDropperAction * > actions;
+            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
+            actions << flag;
+            debug() << "returning bookmarkcurrenttrack action";
+            return new Meta::CurrentTrackActionsCapability( actions );
+            }
         default:
             return 0;
     }

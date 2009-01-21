@@ -30,12 +30,14 @@
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/capabilities/CustomActionsCapability.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/OrganiseCapability.h"
 #include "meta/capabilities/UpdateCapability.h"
 #include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
+#include "amarokurls/BookmarkMetaActions.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -853,6 +855,7 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::Importable:
         case Meta::Capability::Organisable:
         case Meta::Capability::Updatable:
+        case Meta::Capability::CurrentTrackActions:
             return true;
 
         case Meta::Capability::Editable:
@@ -889,6 +892,15 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
 
         case Meta::Capability::Updatable:
             return new UpdateCapabilityImpl( this );
+
+        case Meta::Capability::CurrentTrackActions:
+        {
+            QList< PopupDropperAction * > actions;
+            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( m_collection );
+            actions << flag;
+            debug() << "returning bookmarkcurrenttrack action";
+            return new Meta::CurrentTrackActionsCapability( actions );
+        }
 
         default:
             return 0;
