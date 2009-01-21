@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
-  	* Bookmarking specific position within tracks is now possible.
+  	* Bookmarking specific positions within local tracks is now possible.
     * When the last.fm service is active, any track, from any collection or
       service, can be loved from the browser , and there will always be a love
       button for the currently playing track, no matter the source.
@@ -32,6 +32,7 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
+    * Compilation fixed for the OpenSolaris Operating System.
     * Show error messages when Wikipedia information or Lyrics are unable to
       be displayed retrieved.
     * Show the cover menu when right clicking on artwork in the Tag Dialog.
