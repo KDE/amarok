@@ -48,10 +48,8 @@ Bookmark::Bookmark( QObject* parent, const QVariantList& args )
 
 Bookmark::~Bookmark()
 {
-    m_proxyWidget->setWidget( 0 );
     delete m_bookmarkWidget;
     m_bookmarkWidget = 0;
-    delete m_proxyWidget;
 }
 
 void Bookmark::init()
@@ -61,9 +59,7 @@ void Bookmark::init()
     labelFont.setPointSize( labelFont.pointSize() + 1  );
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
 
-    m_proxyWidget = new QGraphicsProxyWidget( this );
-    m_bookmarkWidget = new BookmarkManagerWidget( 0 );
-    m_proxyWidget->setWidget( m_bookmarkWidget );
+    m_bookmarkWidget = new BookmarkManagerWidgetProxy( this );
     
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
@@ -78,9 +74,7 @@ void Bookmark::constraintsEvent( Plasma::Constraints constraints )
     /*if( constraints & Plasma::SizeConstraint )
          m_theme->resize(size().toSize());*/
 
-    m_proxyWidget->setPos( QPointF( 10, 10 ) );
-    m_bookmarkWidget->setFixedWidth( size().toSize().width() - 20 );
-    m_bookmarkWidget->setFixedHeight( size().toSize().height() - 20 );
+    m_bookmarkWidget->setGeometry( QRectF( 10, 10, size().toSize().width() - 20 , size().toSize().height() - 20 ) );
 }
 
 QSizeF 

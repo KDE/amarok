@@ -182,18 +182,17 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
 
     QModelIndexList indices = selectionModel()->selectedIndexes();
 
-    KMenu menu;
+    KMenu* menu = new KMenu( this );
 
     QList<KAction *> actions = createCommonActions( indices );
 
     foreach( KAction * action, actions )
-        menu.addAction( action );
+        menu->addAction( action );
 
     if( indices.count() == 0 )
-        menu.addAction( m_addGroupAction );
+        menu->addAction( m_addGroupAction );
 
-    debug() << "showing menu at pos:" << event->pos() << "and globalpos:" << event->globalPos();
-    menu.exec( event->globalPos() ); 
+    emit showMenu( menu, event->globalPos() ); 
 }
 
 QSet<BookmarkViewItemPtr>
@@ -230,14 +229,12 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     
 }
 
-void BookmarkTreeView::showContextMenu( const QPoint &point, const QPoint &globalPoint  )
+KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
 {
     DEBUG_BLOCK
-    KMenu menu;
+    KMenu* menu = new KMenu( 0 );
 
-    debug() << "point: " << point;
-
-    
+    debug() << "getting menu for point:" << point;
     QModelIndex index = indexAt( point );
     if( index.isValid() )
     {
@@ -249,14 +246,14 @@ void BookmarkTreeView::showContextMenu( const QPoint &point, const QPoint &globa
         QList<KAction *> actions = createCommonActions( indices );
 
         foreach( KAction * action, actions )
-            menu.addAction( action );
+            menu->addAction( action );
 
         if( indices.count() == 0 )
-            menu.addAction( m_addGroupAction );
+            menu->addAction( m_addGroupAction );
 
-        menu.exec( globalPoint );
     }
-
+    
+    return menu;
 }
 
 #include "BookmarkTreeView.moc"

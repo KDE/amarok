@@ -25,8 +25,8 @@
 #include "BookmarkViewItem.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <KMenu>
-
+class KMenu;
+ 
 class PopupDropper;
 class PopupDropperAction;
 
@@ -41,7 +41,7 @@ public:
     ~BookmarkTreeView();
 
     void setNewGroupAction( KAction * action );
-    void showContextMenu( const QPoint &point, const QPoint &globalPoint );
+    KMenu* contextMenu( const QPoint& point );
 
 protected:
     void keyPressEvent( QKeyEvent *event );
@@ -57,7 +57,8 @@ protected slots:
 
 signals:
     void bookmarkSelected( AmarokUrl bookmark );
-
+    void showMenu( KMenu*, const QPointF& );
+    
 private:
     QSet<BookmarkViewItemPtr> selectedItems() const;
     QList<KAction *> createCommonActions( QModelIndexList indices );

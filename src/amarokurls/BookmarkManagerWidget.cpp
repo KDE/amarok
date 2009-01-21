@@ -48,7 +48,8 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_bookmarkView = new BookmarkTreeView( this );
     m_bookmarkView->setModel( BookmarkModel::instance() );
     connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
-
+    connect( m_bookmarkView, SIGNAL( showMenu( KMenu*, const QPointF& ) ), this, SIGNAL( showMenu( KMenu*, const QPointF& ) ) );
+    
     KHBox * editBox1 = new KHBox( this );
     new QLabel( i18n( "Name:" ), editBox1 );
     m_currentBookmarkNameEdit = new QLineEdit( editBox1 );

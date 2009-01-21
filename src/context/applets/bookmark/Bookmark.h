@@ -21,7 +21,7 @@
 #include "Svg.h"
 #include "widgets/TrackWidget.h"
 #include "Meta.h"
-#include "BookmarkManagerWidget.h"
+#include "BookmarkManagerWidgetProxy.h"
 
 
 #include <QAction>
@@ -60,8 +60,9 @@ private slots:
 
 private:
 
-    QGraphicsProxyWidget * m_proxyWidget;
-    BookmarkManagerWidget * m_bookmarkWidget;
+//    QGraphicsProxyWidget * m_proxyWidget;
+//    BookmarkManagerWidget * m_bookmarkWidget;
+    BookmarkManagerWidgetProxy* m_bookmarkWidget;
 };
 
 K_EXPORT_AMAROK_APPLET( bookmark, Bookmark )

@@ -39,7 +39,7 @@ class AMAROK_EXPORT BookmarkManagerWidget : public KVBox
 {
     Q_OBJECT
 public:
-    BookmarkManagerWidget( QWidget * parent );
+    BookmarkManagerWidget( QWidget * parent = 0);
     ~BookmarkManagerWidget();
 
     BookmarkTreeView * treeView();
@@ -61,6 +61,10 @@ private:
 
     int m_currentBookmarkId;
 
+signals:
+    // needed so the proxy widget can place it in the right place
+    void showMenu( KMenu*, const QPointF& );
+    
 private slots:
 
     void showCurrentUrl();

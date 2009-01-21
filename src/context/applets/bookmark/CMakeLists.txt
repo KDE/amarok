@@ -1,6 +1,6 @@
 project(context-bookmark)
 
-set(bookmark_SRCS Bookmark.cpp )
+set(bookmark_SRCS Bookmark.cpp BookmarkManagerWidgetProxy.cpp )
 
 include_directories( ../..
                      ../../..
