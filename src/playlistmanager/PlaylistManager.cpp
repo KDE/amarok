@@ -183,7 +183,7 @@ PlaylistManager::playlistProvider(int category, QString name)
 }
 
 void
-PlaylistManager::downloadPlaylist( const KUrl & path, Meta::PlaylistPtr playlist )
+PlaylistManager::downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
 

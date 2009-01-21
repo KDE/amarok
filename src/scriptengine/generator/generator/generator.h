@@ -36,7 +36,7 @@ class Generator : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString outputDirectory READ outputDirectory WRITE setOutputDirectory);
+    Q_PROPERTY(QString outputDirectory READ outputDirectory WRITE setOutputDirectory)
 
 public:
     enum Option {

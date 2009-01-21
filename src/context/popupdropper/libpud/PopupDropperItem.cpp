@@ -177,7 +177,7 @@ PopupDropperItem::HoverIndicatorShowStyle PopupDropperItem::hoverIndicatorShowSt
     return d->hoverIndicatorShowStyle;
 }
 
-void PopupDropperItem::setHoverIndicatorShowStyle( const HoverIndicatorShowStyle hover )
+void PopupDropperItem::setHoverIndicatorShowStyle( HoverIndicatorShowStyle hover )
 {
     d->hoverIndicatorShowStyle = hover;
     if( !d->hoveredOver )

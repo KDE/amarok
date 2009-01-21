@@ -17,12 +17,12 @@
 
 #ifndef __MD5_H__
 #define __MD5_H__
-
+#include <inttypes.h>
 #include "portability.h"
 
 typedef struct {
-    u_int32_t buf[4];
-    u_int32_t bits[2];
+    uint32_t buf[4];
+    uint32_t bits[2];
     unsigned char in[64];
     int apple_ver;
 } MD5_CTX;
