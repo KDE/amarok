@@ -197,16 +197,16 @@ LastFmService::onAuthenticated( WsReply* reply )
 
                 break;
             } case Ws::AuthenticationFailed:
-                //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly." ), KDE::StatusBar::Error );
+                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Sorry, we don't recognise that username, or you typed the password wrongly." ) );
                 break;
 
             default:
-                //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later." ), KDE::StatusBar::Error );
+                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
                 break;
 
             case Ws::UrProxyIsFuckedLol:
             case Ws::UrLocalNetworkIsFuckedLol:
-                //The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings." ), KDE::StatusBar::Error );
+                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Last.fm cannot be reached. Please check your firewall settings." ) );
                 break;
         }
     }
