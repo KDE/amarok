@@ -26,6 +26,7 @@
 
 #include "Debug.h"
 #include "playlist/PlaylistItem.h"
+#include "playlist/PlaylistModel.h"
 #include "NavigatorFilterProxyModel.h"
 
 #include <KRandom>
@@ -107,6 +108,12 @@ Playlist::RandomTrackNavigator::requestNextTrack()
         }
         else
             t = m_unplayedRows.takeFirst();
+        
+        if ( t == Model::instance()->activeId())
+        {
+            m_playedRows.prepend( t );
+            t = m_unplayedRows.takeFirst();
+        }
 
         m_playedRows.prepend( t );
         return t;
@@ -129,6 +136,13 @@ Playlist::RandomTrackNavigator::requestLastTrack()
         }
 
         quint64 t = m_playedRows.takeFirst();
+        
+        if ( t == Model::instance()->activeId())
+        {
+            m_unplayedRows.prepend( t );
+            t = m_playedRows.takeFirst();
+        }
+        
         m_unplayedRows.prepend( t );
         return t;
     }
