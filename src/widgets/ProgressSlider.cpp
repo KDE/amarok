@@ -61,10 +61,6 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     box->addWidget( m_timeLabelLeft );
     box->addWidget( m_slider );
     box->addWidget( m_timeLabelRight );
-#ifdef Q_WS_MAC
-    // don't overlap the resize handle with the time display
-    box->addSpacing( 12 );
-#endif
 
     engineStateChanged( Phonon::StoppedState );
 
@@ -87,21 +83,21 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     {
         seconds2 = seconds;
         seconds = trackLength - seconds;
-    } 
-    
+    }
+
     // when the left label shows the remaining time and it's a stream
     else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         seconds2 = seconds;
         seconds = 0; // for streams
     }
-     
+
     // when the right label shows the remaining time and it's not a stream
     else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         seconds2 = trackLength - seconds;
     }
-     
+
     // when the right label shows the remaining time and it's a stream
     else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
@@ -239,7 +235,7 @@ void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, Pl
     Q_UNUSED( trackLength )
     Q_UNUSED( reason )
     DEBUG_BLOCK
-            
+
     m_slider->setEnabled( false );
     m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
     m_slider->setMaximum( 0 );
@@ -247,7 +243,7 @@ void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, Pl
     m_timeLabelLeft->setEnabled( false );
     m_timeLabelLeft->setShowTime( false );
     m_timeLabelRight->setShowTime( false );
-   
+
     m_currentUrlId.clear();
 }
 
