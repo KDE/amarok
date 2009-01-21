@@ -151,46 +151,41 @@ Amarok::Slider::setValue( int newValue )
 
 void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
 {
-    static const int borderWidth = 6;
-    static const int borderHeight = 6;
 
-    static const int sliderInsertX = 5;
-    static const int sliderInsertY = 5;
-    
     const QString prefix = "slider_bg_";
 
     if( m_needsResize )
     {
-        m_topLeft = The::svgHandler()->renderSvg( prefix + "topleft", borderWidth, borderHeight, prefix + "topleft" );
-        m_top = The::svgHandler()->renderSvg( prefix + "top", width - ( 2 * borderWidth ), borderHeight, prefix + "top" );
-        m_topRight = The::svgHandler()->renderSvg( prefix + "topright", borderWidth, borderHeight, prefix + "topright" );
-        m_right = The::svgHandler()->renderSvg( prefix + "right", borderWidth, height - ( 2 * borderHeight ), prefix + "right" );
-        m_bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", borderWidth, borderHeight, prefix + "bottomright" );
-        m_bottom = The::svgHandler()->renderSvg( prefix + "bottom", width - 2 * borderWidth, borderHeight, prefix + "bottom" );
-        m_bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", borderWidth, borderHeight, prefix + "bottomleft" );
-        m_left = The::svgHandler()->renderSvg( prefix + "left", borderWidth, height - 2 * borderHeight, prefix + "left" );
+        m_topLeft = The::svgHandler()->renderSvg( prefix + "topleft", m_borderWidth, m_borderHeight, prefix + "topleft" );
+        m_top = The::svgHandler()->renderSvg( prefix + "top", width - ( 2 * m_borderWidth ), m_borderHeight, prefix + "top" );
+        m_topRight = The::svgHandler()->renderSvg( prefix + "topright", m_borderWidth, m_borderHeight, prefix + "topright" );
+        m_right = The::svgHandler()->renderSvg( prefix + "right", m_borderWidth, height - ( 2 * m_borderHeight ), prefix + "right" );
+        m_bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", m_borderWidth, m_borderHeight, prefix + "bottomright" );
+        m_bottom = The::svgHandler()->renderSvg( prefix + "bottom", width - 2 * m_borderWidth, m_borderHeight, prefix + "bottom" );
+        m_bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", m_borderWidth, m_borderHeight, prefix + "bottomleft" );
+        m_left = The::svgHandler()->renderSvg( prefix + "left", m_borderWidth, height - 2 * m_borderHeight, prefix + "left" );
         m_needsResize = false;
     }
     p->drawPixmap( x, y, m_topLeft );
-    p->drawPixmap( x + borderWidth, y, m_top );
-    p->drawPixmap( x + ( width - borderWidth ), y, m_topRight );
-    p->drawPixmap( x + ( width - borderWidth ), y + borderHeight, m_right );
-    p->drawPixmap( x + ( width - borderWidth ), y + ( height - borderHeight ), m_bottomRight );
-    p->drawPixmap( x + borderWidth, y + ( height - borderHeight ), m_bottom );
-    p->drawPixmap( x, y + ( height - borderHeight ) , m_bottomLeft );
-    p->drawPixmap( x, y + borderHeight, m_left );
+    p->drawPixmap( x + m_borderWidth, y, m_top );
+    p->drawPixmap( x + ( width - m_borderWidth ), y, m_topRight );
+    p->drawPixmap( x + ( width - m_borderWidth ), y + m_borderHeight, m_right );
+    p->drawPixmap( x + ( width - m_borderWidth ), y + ( height - m_borderHeight ), m_bottomRight );
+    p->drawPixmap( x + m_borderWidth, y + ( height - m_borderHeight ), m_bottom );
+    p->drawPixmap( x, y + ( height - m_borderHeight ) , m_bottomLeft );
+    p->drawPixmap( x, y + m_borderHeight, m_left );
 
     if( value() != minimum() )
     {
-        const int sliderHeight = height - ( sliderInsertY * 2 );
+        const int sliderHeight = height - ( m_sliderInsertY * 2 );
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRightWidth = sliderLeftWidth;
 
-        int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRightWidth + sliderInsertX * 2 ) );
+        int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2 ) );
 
-        p->drawPixmap( x + sliderInsertX, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_left",sliderLeftWidth , sliderHeight, "slider_bar_left" ) );
-        p->drawPixmap( x + sliderInsertX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_center", knobX, sliderHeight, "slider_bar_center" ) );
-        p->drawPixmap( x + sliderInsertX + knobX + sliderLeftWidth, y + sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_right", sliderRightWidth, sliderHeight, "slider_bar_right" ) );
+        p->drawPixmap( x + m_sliderInsertX, y + m_sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_left",sliderLeftWidth , sliderHeight, "slider_bar_left" ) );
+        p->drawPixmap( x + m_sliderInsertX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_center", knobX, sliderHeight, "slider_bar_center" ) );
+        p->drawPixmap( x + m_sliderInsertX + knobX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_right", sliderRightWidth, sliderHeight, "slider_bar_right" ) );
     }
 }
 

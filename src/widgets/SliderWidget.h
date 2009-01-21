@@ -72,6 +72,12 @@ namespace Amarok
                return orientation() == Qt::Vertical ? mp - (v - mp) : v;
             }
 
+            static const int m_borderWidth = 6;
+            static const int m_borderHeight = 6;
+
+            static const int m_sliderInsertX = 5;
+            static const int m_sliderInsertY = 5;
+
         private:
             bool m_outside;
             int  m_prevValue;
