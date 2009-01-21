@@ -121,7 +121,9 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
     for ( int i = 0; i < list.count(); i++ )
     {
         list[i] += " (" + QVariant ( list.at ( i ).weighting() ).toString() + " plays)";
-        LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, list[i] ), LastFm::ArtistsChild, list[i], mMyTopArtists );
+        QString actual = list[i];
+        actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
+        LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, actual ), LastFm::ArtistsChild, list[i], mMyTopArtists );
         mMyTopArtists->appendChild ( artist );
     }
     emitRowChanged(LastFm::TopArtists);
