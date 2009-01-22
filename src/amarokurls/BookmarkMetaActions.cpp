@@ -61,7 +61,7 @@ void BookmarkArtistAction::slotTriggered()
 }
 
 BookmarkCurrentTrackPositionAction::BookmarkCurrentTrackPositionAction( QObject * parent )
-    : PopupDropperAction( parent )
+    : PopupDropperAction( i18n( "Bookmark Position" ), parent )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
     setIcon( KIcon("flag-amarok") );
