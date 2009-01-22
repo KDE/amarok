@@ -22,10 +22,10 @@
 #define AMAROK_META_FILE_P_H
 
 #include "charset-detector/include/chardet.h"
-#include "../../Debug.h"
-#include "../Meta.h"
-#include "../MetaUtility.h"
-#include "../MetaReplayGain.h"
+#include "Debug.h"
+#include "Meta.h"
+#include "MetaUtility.h"
+#include "MetaReplayGain.h"
 
 #include <QFile>
 #include <QObject>
