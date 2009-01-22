@@ -25,6 +25,7 @@
 #include "collection/CollectionManager.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
+#include "SqlStorage.h"
 
 PlayUrlRunner::PlayUrlRunner() : AmarokUrlRunnerBase()
 {
@@ -58,4 +59,26 @@ bool PlayUrlRunner::run ( AmarokUrl url )
 QString PlayUrlRunner::command() const
 {
     return "play";
+}
+BookmarkList PlayUrlRunner::bookmarksFromUrl( KUrl url )
+{
+    DEBUG_BLOCK
+    BookmarkList list;
+
+    QString track_encoded = url.toEncoded().toBase64();
+    track_encoded.chop(1);
+
+    QString query = "SELECT id, parent_id, name, url, description FROM bookmarks WHERE url LIKE '%%1%'";
+    query = query.arg( track_encoded );
+    debug() << "query: " << query;
+    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
+
+    int resultRows = result.count() / 5;
+
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*5, 5 );
+            list << AmarokUrlPtr( new AmarokUrl( row ) );
+    }
+    return list;
 }

@@ -19,7 +19,7 @@
 #include "TimeLabel.h"
 #include "amarokconfig.h"
 #include "meta/MetaUtility.h"
-
+#include "amarokurls/PlayUrlRunner.h"
 #include <QHBoxLayout>
 
 #include <KLocale>
@@ -227,9 +227,23 @@ ProgressWidget::engineTrackLengthChanged( long seconds )
 void
 ProgressWidget::engineNewTrackPlaying()
 {
+    DEBUG_BLOCK
     m_slider->setEnabled( false );
     engineTrackLengthChanged( The::engineController()->trackLength() );
     m_slider->clearTriangles();
+    if( The::engineController()->currentTrack() )
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        {
+            BookmarkList list = PlayUrlRunner::bookmarksFromUrl( track->playableUrl() );
+            foreach(AmarokUrlPtr url, list)
+            {
+                if(url->command() == "play")
+                    addBookmark( url->arg(1).toInt() );
+            }
+        }
+    }
 }
 
 QSize ProgressWidget::sizeHint() const

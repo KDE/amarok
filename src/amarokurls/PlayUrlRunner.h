@@ -22,6 +22,7 @@
 
 #include "AmarokUrlRunnerBase.h"
 
+#include <QList>
 /**
  * The Runner that handles urls that plays tracks.
  * @author Casey Link <unnamedrambler@gmail.com>
@@ -35,6 +36,8 @@ public:
 
     virtual QString command () const;
     virtual bool run ( AmarokUrl url );
+
+    static BookmarkList bookmarksFromUrl( KUrl url );
 
 };
 
