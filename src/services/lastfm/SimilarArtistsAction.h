@@ -22,11 +22,10 @@
 
 #include "GlobalCollectionActions.h"
 
-#include "amarok_export.h"
 #include "meta/Meta.h"
 
 
-class AMAROK_EXPORT SimilarArtistsAction : public GlobalCollectionArtistAction
+class SimilarArtistsAction : public GlobalCollectionArtistAction
 {
     Q_OBJECT
 public:
