@@ -29,14 +29,14 @@
 
 
 
-class GlobalCollectionAction : public PopupDropperAction
+class AMAROK_EXPORT GlobalCollectionAction : public PopupDropperAction
 {
 public:
     GlobalCollectionAction( const QString &text, QObject * parent );
 };
 
 
-class GlobalCollectionGenreAction : public GlobalCollectionAction
+class AMAROK_EXPORT GlobalCollectionGenreAction : public GlobalCollectionAction
 {
     public:
 
@@ -51,7 +51,7 @@ class GlobalCollectionGenreAction : public GlobalCollectionAction
 
 };
 
-class GlobalCollectionArtistAction : public GlobalCollectionAction
+class AMAROK_EXPORT GlobalCollectionArtistAction : public GlobalCollectionAction
 {
     public:
 
@@ -67,7 +67,7 @@ class GlobalCollectionArtistAction : public GlobalCollectionAction
 };
 
 
-class GlobalCollectionAlbumAction : public GlobalCollectionAction
+class AMAROK_EXPORT GlobalCollectionAlbumAction : public GlobalCollectionAction
 {
     public:
 
@@ -82,7 +82,7 @@ class GlobalCollectionAlbumAction : public GlobalCollectionAction
 
 };
 
-class GlobalCollectionTrackAction : public GlobalCollectionAction
+class AMAROK_EXPORT GlobalCollectionTrackAction : public GlobalCollectionAction
 {
     public:
 
@@ -97,7 +97,7 @@ class GlobalCollectionTrackAction : public GlobalCollectionAction
 
 };
 
-class GlobalCollectionYearAction : public GlobalCollectionAction
+class AMAROK_EXPORT GlobalCollectionYearAction : public GlobalCollectionAction
 {
     public:
 

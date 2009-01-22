@@ -38,7 +38,6 @@ include_directories(
 
 			kdenetwork/knetworkreply.cpp
 		    kdenetwork/knetworkaccessmanager.cpp
-            ../../GlobalCollectionActions.cpp
             SimilarArtistsAction.cpp
             LoveTrackAction.cpp
 
