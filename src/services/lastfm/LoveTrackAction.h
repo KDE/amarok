@@ -22,7 +22,6 @@
 
 #include "GlobalCollectionActions.h"
 
-#include "amarok_export.h"
 #include "meta/Meta.h"
 #include "LastFmService.h"
 
@@ -32,7 +31,7 @@ A last.fm specific global collection action for loving a track.
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT LoveTrackAction : public GlobalCollectionTrackAction
+class LoveTrackAction : public GlobalCollectionTrackAction
 {
     Q_OBJECT
 public:
