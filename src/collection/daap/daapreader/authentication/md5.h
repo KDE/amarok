@@ -17,7 +17,13 @@
 
 #ifndef __MD5_H__
 #define __MD5_H__
+
+#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L
 #include <inttypes.h>
+#else
+typedef unsigned int uint32_t;
+#endif
+
 #include "portability.h"
 
 typedef struct {
