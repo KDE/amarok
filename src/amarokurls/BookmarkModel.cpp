@@ -78,8 +78,15 @@ BookmarkModel::data(const QModelIndex & index, int role) const
 
         if ( typeid( * item ) == typeid( BookmarkGroup ) )
             return QVariant( KIcon( "folder-amarok" ) );
-        else if ( typeid( * item ) == typeid( AmarokUrl ) )
-            return QVariant( KIcon( "x-media-podcast-amarok" ) );
+        else if ( typeid( * item ) == typeid( AmarokUrl ) ) {
+            AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
+            if ( url->command() == "navigate" )
+                return QVariant( KIcon( "flag-amarok" ) );
+            else if ( url->command() == "play" )
+                return QVariant( KIcon( "x-media-podcast-amarok" ) );
+            else
+                return QVariant( KIcon() );
+        }
     }
 
     return QVariant();
