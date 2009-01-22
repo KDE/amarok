@@ -74,43 +74,44 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     cbReplaceUnderscores->setChecked( underscoreOptions );
     if( !m_isOrganizeCollection )
         optionsFrame->show();
+    else
+    {
+        //INIT for collection root
+        unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
+        collectionRootFrame->setStyleSheet( "\
+            color: palette( Base );\
+            border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
+            border-radius: 4px;\
+            padding: 2px;\
+            " );
+        QHBoxLayout *collectionRootLayout = new QHBoxLayout( collectionRootFrame );
+        QLabel *collectionRootIconLabel = new QLabel( "", this );
+        QLabel *collectionRootLabel = new QLabel( i18n( "Collection root" ), this );
+        collectionRootLayout->addWidget( collectionRootIconLabel );
+        collectionRootLayout->addWidget( collectionRootLabel );
+        collectionRootLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        collectionRootIconLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        collectionRootLayout->setContentsMargins( 0, 0, 0, 0 );
+        collectionRootIconLabel->setContentsMargins( 0, 0, 0, 0 );
+        collectionRootLabel->setContentsMargins( 0, 0, 0, 0 );
+        collectionRootIconLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+        collectionRootIconLabel->setFixedSize( 16, 16 );
+        QPixmap collectionIcon = QPixmap( KIcon( "collection-amarok" ).pixmap(16, 16) );
+        collectionRootIconLabel->setPixmap( collectionIcon );
 
-    //INIT for collection root
-    unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
-    collectionRootFrame->setStyleSheet( "\
-        color: palette( Base );\
-        border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
-        border-radius: 4px;\
-        padding: 2px;\
-        " );
-    QHBoxLayout *collectionRootLayout = new QHBoxLayout( collectionRootFrame );
-    QLabel *collectionRootIconLabel = new QLabel( "", this );
-    QLabel *collectionRootLabel = new QLabel( i18n( "Collection root" ), this );
-    collectionRootLayout->addWidget( collectionRootIconLabel );
-    collectionRootLayout->addWidget( collectionRootLabel );
-    collectionRootLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
-    collectionRootIconLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
-    collectionRootLayout->setContentsMargins( 0, 0, 0, 0 );
-    collectionRootIconLabel->setContentsMargins( 0, 0, 0, 0 );
-    collectionRootLabel->setContentsMargins( 0, 0, 0, 0 );
-    collectionRootIconLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-    collectionRootIconLabel->setFixedSize( 16, 16 );
-    QPixmap collectionIcon = QPixmap( KIcon( "collection-amarok" ).pixmap(16, 16) );
-    collectionRootIconLabel->setPixmap( collectionIcon );
-
-    collectionSlashFrame->setStyleSheet( "\
-        color: palette( Base );\
-        border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
-        border-radius: 4px;\
-        padding: 2px;\
-        " );
-    QHBoxLayout *collectionSlashLayout = new QHBoxLayout( collectionSlashFrame );
-    QLabel *collectionSlashLabel = new QLabel( "/", this );
-    collectionSlashLayout->addWidget(collectionSlashLabel);
-    collectionSlashLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
-    collectionSlashLayout->setContentsMargins( 0, 0, 0, 0 );
-    collectionSlashLabel->setContentsMargins( 0, 0, 0, 0 );
-        
+        collectionSlashFrame->setStyleSheet( "\
+            color: palette( Base );\
+            border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
+            border-radius: 4px;\
+            padding: 2px;\
+            " );
+        QHBoxLayout *collectionSlashLayout = new QHBoxLayout( collectionSlashFrame );
+        QLabel *collectionSlashLabel = new QLabel( "/", this );
+        collectionSlashLayout->addWidget(collectionSlashLabel);
+        collectionSlashLabel->setStyleSheet( "border:0px solid #000000; border-radius: 0px; padding: 0px;" );
+        collectionSlashLayout->setContentsMargins( 0, 0, 0, 0 );
+        collectionSlashLabel->setContentsMargins( 0, 0, 0, 0 );
+    }
     //INIT for tokenPool
     tokenPool->addToken( Token::Track );
     tokenPool->addToken( Token::Title );
@@ -124,11 +125,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     tokenPool->addToken( Token::Dash );
     tokenPool->addToken( Token::Dot );
     tokenPool->addToken( Token::Space );
-    tokenPool->addToken( Token::Slash );
 
     if( !m_isOrganizeCollection )
     {
-        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-ignore-amarok" ).pixmap( 48, 48 ), i18n( "Ignore field" ) ) );
+        tokenPool->addToken( Token::Ignore );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
@@ -136,10 +136,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     }
     else
     {
-        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-slash-amarok" ).pixmap( 48, 48 ), i18n( "/" ) ) );
-        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-initial-amarok" ).pixmap( 48, 48 ), i18n( "Artist initial" ) ) );
-        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-filetype-amarok" ).pixmap( 48, 48 ), i18n( "File type" ) ) );
-        tokenPool->addItem( new QListWidgetItem( KIcon( "filename-discnumber-amarok" ).pixmap( 48, 48 ), i18n( "Disc number" ) ) );
+        tokenPool->addToken( Token::Slash );
+        tokenPool->addToken( Token::Initial );
+        tokenPool->addToken( Token::FileType );
+        tokenPool->addToken( Token::DiscNumber );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \

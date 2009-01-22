@@ -26,6 +26,8 @@
 Token*
 TokenBuilder::buildToken( const QString &element )
 {
+    if( element == Token::tokenElement( Token::Ignore ) )
+        return new Token( Token::Ignore );
     if( element == Token::tokenElement( Token::Track ) )
         return new Token( Token::Track );
     if( element == Token::tokenElement( Token::Title ) )

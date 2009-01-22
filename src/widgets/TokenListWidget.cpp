@@ -129,4 +129,3 @@ TokenListWidget::performDrag( QMouseEvent *event )
         drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction );
     }
 }
-
