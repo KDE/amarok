@@ -387,7 +387,7 @@ void Amarok::TimeSlider::drawTriangle( int seconds )
     BookmarkTriangle * tri = new BookmarkTriangle( this, seconds, The::engineController()->currentTrack()->playableUrl().url() );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     m_triangles << tri;
-    tri->setGeometry(x_pos + 6 /* to center the point */, 5 /*y*/, 11, 11 ); // 6 = hard coded border width
+    tri->setGeometry(x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width
     tri->show();
 }
 

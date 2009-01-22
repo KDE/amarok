@@ -19,8 +19,9 @@
 
 #include "BookmarkTriangle.h"
 #include "Debug.h"
+#include "SvgHandler.h"
+
 #include <QPainter>
-#include <QPolygon>
 #include <QSize>
 #include <QSizePolicy>
 
@@ -49,11 +50,7 @@ QSize BookmarkTriangle::minimumSizeHint() const
 void BookmarkTriangle::paintEvent ( QPaintEvent* )
 {
     QPainter p ( this );
-    p.setPen ( Qt::white );
-    p.setBrush ( Qt::white );
-    QPolygon triangle;
-    triangle << QPoint ( 0, 0 ) << QPoint ( 10, 0 ) << QPoint ( 5 , 10 );
-    p.drawPolygon ( triangle );
+    p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "bookmark_position",10 , 10, "bookmark_position" ) );
 }
 
 void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
