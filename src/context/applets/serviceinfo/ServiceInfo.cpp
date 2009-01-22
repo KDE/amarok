@@ -15,6 +15,7 @@
 #include "ServiceInfo.h"
 
 #include "Amarok.h"
+#include "amarokurls/AmarokUrl.h"
 #include "Debug.h"
 #include "context/Svg.h"
 #include "playlist/PlaylistController.h"
@@ -234,9 +235,11 @@ void ServiceInfo::linkClicked( const QUrl & url )
 {
     debug() << "Link clicked: " << url.toString();
 
-    //for now, just handle xspf playlist files
 
-    if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) ) {
+    if ( url.toString().startsWith( "amarok://", Qt::CaseInsensitive ) ) {
+        AmarokUrl aUrl( url.toString() );
+        aUrl.run();
+    } else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) ) {
 
         Meta::XSPFPlaylist * playlist = new Meta::XSPFPlaylist( url );
         playlist->subscribe( this );

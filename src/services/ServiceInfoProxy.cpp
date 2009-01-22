@@ -159,6 +159,8 @@ ServiceInfoProxy::loadHomePage()
 
     m_storedInfo["service_name"] =  i18n( "Home" );
     m_storedInfo["main_info"] = html;
+
+    notifyObservers( m_storedInfo );
 }
 
 

@@ -25,6 +25,7 @@
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
 #include "widgets/SearchWidget.h"
+#include "services/ServiceInfoProxy.h"
 
 #include <KLineEdit>
 
@@ -169,6 +170,8 @@ ServiceBrowser::home()
         m_serviceListView->setParent( this );
         m_currentService = 0; // remove any context stuff we might have added
         m_searchWidget->show();
+
+        The::serviceInfoProxy()->loadHomePage();
 
         // NOTE why does thic clear the CV? That is a damn good question....
         if ( m_usingContextView )

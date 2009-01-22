@@ -51,6 +51,9 @@ class AMAROK_EXPORT ServiceInfoProxy
 
         void setInfo( const QVariantMap &infoMap );
         void setCloud( const QVariantMap &cloudMap );
+
+        void loadHomePage();
+        
         QVariantMap info(); // info about the service
         QVariantMap cloud(); //cloud view for the service
 
@@ -58,7 +61,6 @@ class AMAROK_EXPORT ServiceInfoProxy
         ServiceInfoProxy();
         void notifyObservers( const QVariantMap &infoMap ) const;
         void notifyCloudObservers( const QVariantMap &cloudMap ) const;
-        void loadHomePage();
         QSet<ServiceInfoObserver *> m_observers;
         QSet<ServiceInfoObserver *> m_cloudObservers;
 
