@@ -21,6 +21,7 @@
 #include "AmarokUrlHandler.h"
 #include "SvgHandler.h"
 
+#include "BookmarkModel.h"
 #include "PlayUrlRunner.h"
 #include "PlayUrlGenerator.h"
 #include "ProgressSlider.h"
@@ -79,6 +80,7 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
         debug() << "ProgressWidget is NULL";
 
     url.saveToDb();
+    BookmarkModel::instance()->reloadFromDb(); //Update bookmark manager view.
 }
 
 #include "BookmarkMetaActions.moc"
