@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Vertical Context Containment
 Name[el]=Υποδοχέας κατακόρυφου περιεχομένου
+Name[es]=Contenedor de contexto vertical
 Name[et]=Püstine kontekstikonteiner
+Name[fr]=Conteneur vertical du navigateur de contexte
 Name[gl]=Contedor vertical de contextos
 Name[it]=Contenitore verticale di contesto
 Name[km]=ការ​ផ្ទុក​បរិបទ​បញ្ឈរ
@@ -13,7 +15,9 @@ Name[sv]=Vertikal sammanhangsinneslutning
 Name[uk]=Вертикальний контейнер вмісту
 Comment=A vertical containment for the Amarok Context
 Comment[el]=Ένας κατακόρυφος υποδοχέας για το περιεχόμενο Amarok
+Comment[es]=Un contenedor vertical para el contexto de Amarok
 Comment[et]=Amaroki konteksti püstine konteiner
+Comment[fr]=Un conteneur vertical pour le navigateur de contexte d'Amarok
 Comment[gl]=Un contedor vertical para o contexto de Amarok
 Comment[it]=Un contenitore verticale per i contesti di Amarok
 Comment[km]=ការ​ផ្ទុក​បញ្ឈរ​សម្រាប់បរិបទ Amarok
