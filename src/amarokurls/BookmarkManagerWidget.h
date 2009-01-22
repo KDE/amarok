@@ -52,7 +52,6 @@ private:
     QPushButton * m_getCurrentBookmarkButton;
     QPushButton * m_addBookmarkButton;
     QPushButton * m_gotoBookmarkButton;
-    QPushButton * m_getPositionBookmarkButton;
     QLineEdit * m_currentBookmarkNameEdit;
     QLineEdit * m_currentBookmarkUrlEdit;
 
@@ -64,13 +63,12 @@ private:
 signals:
     // needed so the proxy widget can place it in the right place
     void showMenu( KMenu*, const QPointF& );
-    
+
 private slots:
 
     void showCurrentUrl();
     void addBookmark();
     void gotoBookmark();
-    void savePositionBookmark();
     void bookmarkCurrent();
 
     void slotBookmarkSelected( AmarokUrl bookmark );

@@ -49,7 +49,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_bookmarkView->setModel( BookmarkModel::instance() );
     connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
     connect( m_bookmarkView, SIGNAL( showMenu( KMenu*, const QPointF& ) ), this, SIGNAL( showMenu( KMenu*, const QPointF& ) ) );
-    
+
     KHBox * editBox1 = new KHBox( this );
     new QLabel( i18n( "Name:" ), editBox1 );
     m_currentBookmarkNameEdit = new QLineEdit( editBox1 );
@@ -68,9 +68,6 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
 
     m_gotoBookmarkButton = new QPushButton( i18n( "Goto" ), buttonBox );
     connect( m_gotoBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( gotoBookmark() ) );
-
-    m_getPositionBookmarkButton = new QPushButton( i18n( "Save Current Position" ), buttonBox );
-    connect( m_getPositionBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( savePositionBookmark() ) );
 
     m_currentBookmarkId = -1;
 
@@ -123,28 +120,7 @@ void BookmarkManagerWidget::bookmarkCurrent()
     m_currentBookmarkId = -1;
     updateAddButton();
 }
-void BookmarkManagerWidget::savePositionBookmark()
-{
-    DEBUG_BLOCK
-    AmarokUrl url = getPositionBookmark();
-    ProgressWidget* pw = ProgressWidget::instance();
-    if( pw )
-        ProgressWidget::instance()->addBookmark( url.arg(1).toInt() );
-    else
-        debug() << "ProgressWidget is NULL";
 
-    m_currentBookmarkUrlEdit->setText( url.url() );
-    m_currentBookmarkNameEdit->setText( i18n( "New Bookmark" ) );
-
-    m_currentBookmarkId = -1;
-    updateAddButton();
-}
-
-AmarokUrl BookmarkManagerWidget::getPositionBookmark()
-{
-    PlayUrlGenerator urlGenerator;
-    return urlGenerator.createCurrentTrackBookmark();
-}
 
 void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )
 {
