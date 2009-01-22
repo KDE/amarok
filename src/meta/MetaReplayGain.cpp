@@ -64,8 +64,14 @@ static qreal readRVA2PeakValue( const TagLib::ByteVector &data, int bits, bool *
         bits = 32;
     // the +7 makes sure we round up when we divide by 8
     unsigned int bytes = (bits + 7) / 8;
-    // fewer than 4 bits would just be daft
-    if ( bits >= 4 && data.size() >= bytes )
+
+    // normalize appears not to write a peak at all, and hence sets bits to 0
+    if ( bits == 0 )
+    {
+        if ( ok )
+            *ok = true;
+    }
+    else if ( bits >= 4 && data.size() >= bytes ) // fewer than 4 bits would just be daft
     {
         // excessBits is the number of bits we have to discard at the end
         unsigned int excessBits = (8 * bytes) - bits;
@@ -86,8 +92,10 @@ static qreal readRVA2PeakValue( const TagLib::ByteVector &data, int bits, bool *
             *ok = true;
     }
     else
+    {
         if ( ok )
             *ok = false;
+    }
     return peak;
 }
 
@@ -146,7 +154,7 @@ static Meta::ReplayGainTagMap readID3v2ReplayGainTags( TagLib::ID3v2::Tag *tag )
                             map[Meta::ReplayGain_Album_Gain] = adjustment;
                             map[Meta::ReplayGain_Album_Peak] = peakToDecibels( peak );
                         }
-                        else if ( desc.toLower() == "track" || map.contains( Meta::ReplayGain_Track_Gain ) )
+                        else if ( desc.toLower() == "track" || !map.contains( Meta::ReplayGain_Track_Gain ) )
                         {
                             map[Meta::ReplayGain_Track_Gain] = adjustment;
                             map[Meta::ReplayGain_Track_Peak] = peakToDecibels( peak );
