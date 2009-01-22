@@ -5,7 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
-  	* Bookmarking specific positions within local tracks is now possible.
+    * Bookmarking specific positions within local tracks and downloaded local
+      podcast episodes.
     * When the last.fm service is active, any track, from any collection or
       service, can be loved from the browser , and there will always be a love
       button for the currently playing track, no matter the source.

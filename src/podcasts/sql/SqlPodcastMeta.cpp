@@ -18,8 +18,10 @@
 
 #include "SqlPodcastMeta.h"
 
+#include "amarokurls/BookmarkMetaActions.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 
@@ -74,6 +76,45 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 
 Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 {
+}
+
+bool
+Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    switch( type )
+    {
+        //TODO: for download, delete, etc
+        //case Meta::Capability::CustomActions:
+        case Meta::Capability::CurrentTrackActions:
+            //only downloaded episodes can be position marked
+            return !localUrl().isEmpty();
+
+            //TODO: downloaded episodes can be edited
+//         case Meta::Capability::Editable:
+//             return isEditable();
+
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
+{
+    switch( type )
+    {
+        case Meta::Capability::CurrentTrackActions:
+        {
+            QList< PopupDropperAction * > actions;
+            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
+            actions << flag;
+            debug() << "returning bookmarkcurrenttrack action";
+            return new Meta::CurrentTrackActionsCapability( actions );
+        }
+
+        default:
+            return 0;
+    }
 }
 
 void

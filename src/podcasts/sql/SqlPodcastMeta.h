@@ -47,6 +47,8 @@ class SqlPodcastEpisode : public PodcastEpisode
 
         //Track Methods
         QString type() const { return i18n("SQL Podcast"); };
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //SqlPodcastEpisode specific methods
         int dbId() const { return m_dbId; };
