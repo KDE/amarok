@@ -21,12 +21,15 @@
 #include "Debug.h"
 #include "SvgHandler.h"
 
+#include <KLocale>
+
 #include <QPainter>
 #include <QSize>
 #include <QSizePolicy>
 
-BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int seconds, QString trackUrl  ) : QWidget ( parent ), m_seconds( seconds ), m_trackUrl( trackUrl )
+BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int seconds, QString name  ) : QWidget ( parent ), m_seconds( seconds ), m_name( name )
 {
+    setToolTip( i18n( "Bookmark: %1", m_name ) );
 }
 
 BookmarkTriangle::~BookmarkTriangle()

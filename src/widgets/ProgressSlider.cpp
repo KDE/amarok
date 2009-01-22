@@ -71,11 +71,11 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 }
 
 void
-ProgressWidget::addBookmark( int x )
+ProgressWidget::addBookmark( const QString &name, int x )
 {
     DEBUG_BLOCK
     if( m_slider )
-        m_slider->drawTriangle( x );
+        m_slider->drawTriangle( name, x );
 }
 
 void
@@ -239,8 +239,8 @@ ProgressWidget::engineNewTrackPlaying()
             BookmarkList list = PlayUrlRunner::bookmarksFromUrl( track->playableUrl() );
             foreach(AmarokUrlPtr url, list)
             {
-                if(url->command() == "play")
-                    addBookmark( url->arg(1).toInt() );
+                if( url->command() == "play"  )
+                    addBookmark( url->name(), url->arg(1).toInt() );
             }
         }
     }

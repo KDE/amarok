@@ -375,7 +375,7 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
         m_sliderHeight = height();
 }
 
-void Amarok::TimeSlider::drawTriangle( int seconds )
+void Amarok::TimeSlider::drawTriangle( const QString &name, int seconds )
 {
     DEBUG_BLOCK
     int ms = seconds * 1000;
@@ -384,7 +384,7 @@ void Amarok::TimeSlider::drawTriangle( int seconds )
     int sliderLeftWidth = sliderHeight / 3;
     int x_pos = ( ( ( double ) ms - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
-    BookmarkTriangle * tri = new BookmarkTriangle( this, seconds, The::engineController()->currentTrack()->playableUrl().url() );
+    BookmarkTriangle * tri = new BookmarkTriangle( this, seconds, name );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     m_triangles << tri;
     tri->setGeometry(x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width

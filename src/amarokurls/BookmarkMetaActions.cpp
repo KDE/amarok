@@ -74,7 +74,7 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
     AmarokUrl url = urlGenerator.createCurrentTrackBookmark();
     ProgressWidget* pw = ProgressWidget::instance();
     if( pw )
-        ProgressWidget::instance()->addBookmark( url.arg(1).toInt() );
+        ProgressWidget::instance()->addBookmark( url.name(), url.arg(1).toInt() );
     else
         debug() << "ProgressWidget is NULL";
 

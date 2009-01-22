@@ -34,7 +34,7 @@ class BookmarkTriangle : public QWidget
 {
     Q_OBJECT
 public:
-    BookmarkTriangle ( QWidget *parent, int seconds, QString trackUrl );
+    BookmarkTriangle ( QWidget *parent, int seconds, QString name );
     ~BookmarkTriangle();
     virtual QSize sizeHint () const;
     virtual QSizePolicy sizePolicy() const;
@@ -49,7 +49,7 @@ signals:
 
 private:
     int m_seconds;
-    QString m_trackUrl;
+    QString m_name;
 };
 
 #endif // BOOKMARKTRIANGLE_H
