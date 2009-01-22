@@ -22,9 +22,10 @@
 #define AMAROK_META_FILE_P_H
 
 #include "charset-detector/include/chardet.h"
-#include "Debug.h"
-#include "Meta.h"
-#include "MetaUtility.h"
+#include "../../Debug.h"
+#include "../Meta.h"
+#include "../MetaUtility.h"
+#include "../MetaReplayGain.h"
 
 #include <QFile>
 #include <QObject>
@@ -72,6 +73,10 @@ struct MetaData
         , sampleRate( 0 )
         , bitRate( 0 )
         , year( 0 )
+        , trackGain( 0.0 )
+        , trackPeak( 0.0 )
+        , albumGain( 0.0 )
+        , albumPeak( 0.0 )
     { }
     QString title;
     QString artist;
@@ -86,6 +91,10 @@ struct MetaData
     int sampleRate;
     int bitRate;
     int year;
+    qreal trackGain;
+    qreal trackPeak;
+    qreal albumGain;
+    qreal albumPeak;
 
 };
 
@@ -163,6 +172,20 @@ void Track::Private::readMetaData()
         m_data.bitRate = fileRef.audioProperties()->bitrate();
         m_data.sampleRate = fileRef.audioProperties()->sampleRate();
         m_data.length = fileRef.audioProperties()->length();
+
+        Meta::ReplayGainTagMap map = Meta::readReplayGainTags( fileRef );
+        if ( map.contains( Meta::ReplayGain_Track_Gain ) )
+            m_data.trackGain = map[Meta::ReplayGain_Track_Gain];
+        if ( map.contains( Meta::ReplayGain_Track_Peak ) )
+            m_data.trackPeak = map[Meta::ReplayGain_Track_Peak];
+        if ( map.contains( Meta::ReplayGain_Album_Gain ) )
+            m_data.albumGain = map[Meta::ReplayGain_Album_Gain];
+        else
+            m_data.albumGain = m_data.trackGain;
+        if ( map.contains( Meta::ReplayGain_Album_Peak ) )
+            m_data.albumPeak = map[Meta::ReplayGain_Album_Peak];
+        else
+            m_data.albumPeak = m_data.trackPeak;
     }
     //This is pretty messy...
     QString disc;

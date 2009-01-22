@@ -424,6 +424,24 @@ Track::setPlayCount( int newCount )
     d->playCount = newCount;
 }
 
+qreal
+Track::replayGain( Meta::Track::ReplayGainMode mode ) const
+{
+    if ( mode == Meta::Track::AlbumReplayGain )
+        return d->m_data.trackGain;
+    else
+        return d->m_data.albumGain;
+}
+
+qreal
+Track::replayPeakGain( Meta::Track::ReplayGainMode mode ) const
+{
+    if ( mode == Meta::Track::AlbumReplayGain )
+        return d->m_data.trackPeak;
+    else
+        return d->m_data.albumPeak;
+}
+
 QString
 Track::type() const
 {

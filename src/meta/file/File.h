@@ -83,6 +83,9 @@ namespace MetaFile
             virtual int playCount() const;
             virtual void setPlayCount( int newCount );
 
+            virtual qreal replayGain( ReplayGainMode mode ) const;
+            virtual qreal replayPeakGain( ReplayGainMode mode ) const;
+
             virtual QString type() const;
 
             virtual void beginMetaDataUpdate();
