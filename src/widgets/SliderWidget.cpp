@@ -338,8 +338,8 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 
 Amarok::TimeSlider::TimeSlider( QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, parent )
-    , m_knobX( 0.0 )
     , m_triangles()
+    , m_knobX( 0.0 )
 {
     setFocusPolicy( Qt::NoFocus );
     m_sliderHeight = 20;
@@ -384,10 +384,16 @@ void Amarok::TimeSlider::drawTriangle( int seconds )
     int sliderLeftWidth = sliderHeight / 3;
     int x_pos = ( ( ( double ) ms - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
-    BookmarkTriangle * tri = new BookmarkTriangle( this );
+    BookmarkTriangle * tri = new BookmarkTriangle( this, seconds, The::engineController()->currentTrack()->playableUrl().url() );
+    connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     m_triangles << tri;
     tri->setGeometry(x_pos + 6 /* to center the point */, 5 /*y*/, 11, 11 ); // 6 = hard coded border width
     tri->show();
+}
+
+void Amarok::TimeSlider::slotTriangleClicked( int seconds )
+{
+    emit sliderReleased( seconds );
 }
 
 void Amarok::TimeSlider::clearTriangles()

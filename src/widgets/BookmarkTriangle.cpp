@@ -24,7 +24,7 @@
 #include <QSize>
 #include <QSizePolicy>
 
-BookmarkTriangle::BookmarkTriangle ( QWidget *parent ) : QWidget ( parent )
+BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int seconds, QString trackUrl  ) : QWidget ( parent ), m_seconds( seconds ), m_trackUrl( trackUrl )
 {
 }
 
@@ -55,4 +55,12 @@ void BookmarkTriangle::paintEvent ( QPaintEvent* )
     triangle << QPoint ( 0, 0 ) << QPoint ( 10, 0 ) << QPoint ( 5 , 10 );
     p.drawPolygon ( triangle );
 }
+
+void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
+{
+    Q_UNUSED( event )
+    emit clicked( m_seconds );
+}
+
+#include "BookmarkTriangle.moc"
 

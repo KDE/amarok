@@ -20,6 +20,9 @@
 #ifndef BOOKMARKTRIANGLE_H
 #define BOOKMARKTRIANGLE_H
 
+#include "Meta.h"
+
+#include <QMouseEvent>
 #include <QPaintEvent>
 #include <QWidget>
 
@@ -29,15 +32,24 @@ class QSizePolicy;
 
 class BookmarkTriangle : public QWidget
 {
+    Q_OBJECT
 public:
-    BookmarkTriangle ( QWidget *parent );
+    BookmarkTriangle ( QWidget *parent, int seconds, QString trackUrl );
     ~BookmarkTriangle();
     virtual QSize sizeHint () const;
     virtual QSizePolicy sizePolicy() const;
     virtual QSize minimumSizeHint () const;
 
+    virtual void mouseReleaseEvent ( QMouseEvent * event );
+
     virtual void paintEvent ( QPaintEvent* );
 
+signals:
+    void clicked( int );
+
+private:
+    int m_seconds;
+    QString m_trackUrl;
 };
 
 #endif // BOOKMARKTRIANGLE_H

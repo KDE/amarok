@@ -144,6 +144,9 @@ namespace Amarok
             void drawTriangle( int x );
             void clearTriangles();
 
+        public slots:
+            void slotTriangleClicked( int );
+
         protected:
             virtual void paintEvent( QPaintEvent* );
 
