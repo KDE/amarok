@@ -249,7 +249,7 @@ namespace Meta
 
             virtual bool operator==( const Track &track ) const;
 
-            static bool lessThan( TrackPtr left, TrackPtr right );
+            static bool lessThan( const TrackPtr left, const TrackPtr right );
 
         protected:
             virtual void notifyObservers() const;

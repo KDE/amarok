@@ -33,6 +33,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <netinet/in.h>
 #include <taglib.h>
 #include <id3v1tag.h>
@@ -209,7 +210,7 @@ RealMediaFF::RealMediaFF(RealMediaFF &src)
 
 RealMediaFF::~RealMediaFF()
 {
-   ::free(m_filename);
+   free(m_filename);
 
    Collectable *hdr = m_head, *next;
    while (hdr)

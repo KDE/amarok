@@ -32,8 +32,9 @@
 #include <QMutex>
 #include <QObject>
 
-#include <iostream>
 #include <sys/time.h>
+#include <unistd.h>
+#include <iostream>
 #include <cerrno>
 
 #include "amarok_export.h"
@@ -160,6 +161,10 @@ using Debug::fatal;
 
 /// Announce a line
 #define DEBUG_LINE_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << "Line: " << __LINE__; Debug::mutex.unlock(); }
+
+#ifdef __SUNPRO_CC
+#define __PRETTY_FUNCTION__ __FILE__
+#endif
 
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );

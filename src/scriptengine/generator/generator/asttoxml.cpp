@@ -32,7 +32,7 @@
 #include <QTextCodec>
 #include <QFile>
 
-void astToXML(QString name) {
+void astToXML(const QString &name) {
     QFile file(name);
 
     if (!file.open(QFile::ReadOnly))

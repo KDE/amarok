@@ -160,7 +160,7 @@ void ToolBox::setShowing(const bool show)
     d->showing = show;
 }
 
-void ToolBox::setCorner(const Corner corner)
+void ToolBox::setCorner(Corner corner)
 {
     d->corner = corner;
 }

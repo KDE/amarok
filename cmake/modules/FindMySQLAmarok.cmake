@@ -14,6 +14,7 @@
 
 
 find_path(MYSQL_INCLUDE_DIR mysql.h
+   /opt/mysql/mysql/include /usr/mysql/include/mysql
    ~/usr/include/mysql
    /opt/local/include/mysql5/mysql
    /opt/mysqle/include/mysql
@@ -24,6 +25,7 @@ find_path(MYSQL_INCLUDE_DIR mysql.h
 
 find_library(MYSQL_LIBRARIES NAMES mysqlclient 
    PATHS
+   /opt/mysql/mysql/lib /usr/mysql/lib/mysql
    ~/usr/lib/mysql
    /opt/local/lib/mysql5/mysql
    /opt/mysqle/lib/mysql

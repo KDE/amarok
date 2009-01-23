@@ -30,7 +30,7 @@
 #include <QString>
 #include <QXmlStreamWriter>
 
-void astToXML(const QString name);
+void astToXML(const QString &name);
 void writeOutNamespace(QXmlStreamWriter &s, NamespaceModelItem &item);
 void writeOutEnum(QXmlStreamWriter &s, EnumModelItem &item);
 void writeOutFunction(QXmlStreamWriter &s, FunctionModelItem &item);

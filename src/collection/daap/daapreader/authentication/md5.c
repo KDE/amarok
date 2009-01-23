@@ -44,7 +44,7 @@
 * on buffers full of bytes, and then call OpenDaap_MD5Final, which will fill
 * a supplied 16-byte array with the digest.
 */
-static void MD5Transform(u_int32_t buf[4], u_int32_t const in[16], int apple_ver);
+static void MD5Transform(uint32_t buf[4], uint32_t const in[16], int apple_ver);
 /* for some reason we still have to reverse bytes on bigendian machines
  * I don't really know why... but otherwise it fails..
  * Any MD5 gurus out there know why???
@@ -60,11 +60,11 @@ static void byteReverse(unsigned char *buf, unsigned longs);
 */
 static void byteReverse(unsigned char *buf, unsigned longs)
 {
-     u_int32_t t;
+     uint32_t t;
      do {
-          t = (u_int32_t) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
+          t = (uint32_t) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
                ((unsigned) buf[1] << 8 | buf[0]);
-          *(u_int32_t *) buf = t;
+          *(uint32_t *) buf = t;
           buf += 4;
      } while (--longs);
 }
@@ -88,12 +88,12 @@ void OpenDaap_MD5Init(MD5_CTX *ctx, int apple_ver)
 
 void OpenDaap_MD5Update(MD5_CTX *ctx, unsigned char const *buf, unsigned int len)
 {
-    u_int32_t t;
+    uint32_t t;
 
     /* Update bitcount */
 
     t = ctx->bits[0];
-    if ((ctx->bits[0] = t + ((u_int32_t) len << 3)) < t)
+    if ((ctx->bits[0] = t + ((uint32_t) len << 3)) < t)
         ctx->bits[1]++;          /* Carry from low to high */
     ctx->bits[1] += len >> 29;
 
@@ -111,7 +111,7 @@ void OpenDaap_MD5Update(MD5_CTX *ctx, unsigned char const *buf, unsigned int len
         }
         memcpy(p, buf, t);
         byteReverse(ctx->in, 16);
-        MD5Transform(ctx->buf, (u_int32_t *) ctx->in, ctx->apple_ver);
+        MD5Transform(ctx->buf, (uint32_t *) ctx->in, ctx->apple_ver);
         buf += t;
         len -= t;
     }
@@ -120,7 +120,7 @@ void OpenDaap_MD5Update(MD5_CTX *ctx, unsigned char const *buf, unsigned int len
     while (len >= 64) {
         memcpy(ctx->in, buf, 64);
         byteReverse(ctx->in, 16);
-        MD5Transform(ctx->buf, (u_int32_t *) ctx->in, ctx->apple_ver);
+        MD5Transform(ctx->buf, (uint32_t *) ctx->in, ctx->apple_ver);
         buf += 64;
         len -= 64;
     }
@@ -152,7 +152,7 @@ void OpenDaap_MD5Final(MD5_CTX *ctx, unsigned char digest[16])
         /* Two lots of padding:  Pad the first block to 64 bytes */
         memset(p, 0, count);
         byteReverse(ctx->in, 16);
-        MD5Transform(ctx->buf, (u_int32_t *) ctx->in, ctx->apple_ver);
+        MD5Transform(ctx->buf, (uint32_t *) ctx->in, ctx->apple_ver);
 
         /* Now fill the next block with 56 bytes */
         memset(ctx->in, 0, 56);
@@ -163,10 +163,10 @@ void OpenDaap_MD5Final(MD5_CTX *ctx, unsigned char digest[16])
     byteReverse(ctx->in, 14);
 
     /* Append length in bits and transform */
-    ((u_int32_t *) ctx->in)[14] = ctx->bits[0];
-    ((u_int32_t *) ctx->in)[15] = ctx->bits[1];
+    ((uint32_t *) ctx->in)[14] = ctx->bits[0];
+    ((uint32_t *) ctx->in)[15] = ctx->bits[1];
 
-    MD5Transform(ctx->buf, (u_int32_t *) ctx->in, ctx->apple_ver);
+    MD5Transform(ctx->buf, (uint32_t *) ctx->in, ctx->apple_ver);
     byteReverse((unsigned char *) ctx->buf, 4);
     memcpy(digest, ctx->buf, 16);
     memset(ctx, 0, sizeof(ctx));     /* In case it's sensitive */
@@ -191,9 +191,9 @@ void OpenDaap_MD5Final(MD5_CTX *ctx, unsigned char digest[16])
 * the addition of 16 longwords of new data.  OpenDaap_MD5Update blocks the
 * data and converts bytes into longwords for this routine.
 */
-static void MD5Transform(u_int32_t buf[4], u_int32_t const in[16], int apple_ver)
+static void MD5Transform(uint32_t buf[4], uint32_t const in[16], int apple_ver)
 {
-    u_int32_t a, b, c, d;
+    uint32_t a, b, c, d;
 
     a = buf[0];
     b = buf[1];
