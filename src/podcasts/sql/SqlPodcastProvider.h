@@ -61,6 +61,9 @@ class SqlPodcastProvider : public PodcastProvider
         void configureProvider();
         void configureChannel( Meta::PodcastChannelPtr channel );
 
+        QList<PopupDropperAction *> episodeActions( Meta::PodcastEpisodeList );
+        QList<PopupDropperAction *> channelActions( Meta::PodcastChannelList );
+
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
@@ -80,6 +83,10 @@ class SqlPodcastProvider : public PodcastProvider
         void downloadResult( KJob * );
         void redirected( KIO::Job *, const KUrl& );
         void autoUpdate();
+        void slotDeleteEpisodes();
+        void slotDownloadEpisodes();
+        void slotConfigureChannel();
+        void slotRemoveChannels();
 
     signals:
             void updated();
@@ -96,6 +103,12 @@ class SqlPodcastProvider : public PodcastProvider
         QHash<KJob *, QString> m_fileNameMap;
         QTimer *m_updateTimer;
         int m_updatingChannels;
+
+        PopupDropperAction * m_configureAction; //Configure a Channel
+        PopupDropperAction * m_deleteAction; //delete a downloaded Episode
+        PopupDropperAction * m_downloadAction;
+        PopupDropperAction * m_removeAction; //remove a subscription
+        PopupDropperAction * m_renameAction; //rename a Channel or Episode
 };
 
 #endif

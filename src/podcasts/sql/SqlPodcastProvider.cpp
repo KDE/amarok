@@ -20,12 +20,17 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "context/popupdropper/libpud/PopupDropper.h"
 #include "statusbar/StatusBar.h"
 #include "Debug.h"
+#include "PodcastModel.h"
 #include "PodcastReader.h"
 #include "PodcastSettingsDialog.h"
 #include "SqlStorage.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
+#include "SvgHandler.h"
 
 #include <KLocale>
 #include <KIO/CopyJob>
@@ -45,6 +50,11 @@ static const QString key("AMAROK_PODCAST");
 SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
     , m_updatingChannels( 0 )
+    , m_configureAction( 0 )
+    , m_deleteAction( 0 )
+    , m_downloadAction( 0 )
+    , m_removeAction( 0 )
+    , m_renameAction( 0 )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
 
@@ -208,6 +218,7 @@ SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
     if( !sqlChannel )
         return;
 
+    debug() << "Deleting channel " << sqlChannel->title();
     sqlChannel->deleteFromDb();
 
     m_channels.removeOne( sqlChannel );
@@ -217,12 +228,16 @@ SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
 void
 SqlPodcastProvider::configureProvider()
 {
+    DEBUG_BLOCK
 }
 
 void
 SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
 {
     Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+    if( !sqlChannel )
+        return;
+
     KUrl oldSaveLocation = sqlChannel->saveLocation();
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
@@ -279,6 +294,144 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
         if( !filesToMove.isEmpty() )
             KIO::move( filesToMove, sqlChannel->saveLocation(), KIO::HideProgressInfo );
     }
+}
+
+QList<PopupDropperAction *>
+SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
+{
+    DEBUG_BLOCK
+    QList< PopupDropperAction * > actions;
+
+    if( m_deleteAction == 0 )
+    {
+        m_deleteAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "delete",
+            KIcon( "edit-delete" ),
+            i18n( "&Delete Downloaded Episode" ),
+            this
+        );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
+    }
+    bool hasDownloaded;
+    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    {
+        Meta::SqlPodcastEpisodePtr sqlEpisode
+                = Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        if( !sqlEpisode->localUrl().isEmpty() )
+        {
+            hasDownloaded = true;
+            break;
+        }
+    }
+    if( hasDownloaded )
+    {
+        actions << m_deleteAction;
+    }
+    else
+    {
+        if ( m_downloadAction == 0 )
+        {
+            m_downloadAction = new PopupDropperAction(
+                The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                "download",
+                KIcon( "go-down" ),
+                i18n( "&Download Episode" ),
+                this
+            );
+            connect( m_downloadAction, SIGNAL( triggered() ), this, SLOT( slotDownloadEpisodes() ) );
+        }
+        actions << m_downloadAction;
+    }
+
+    return actions;
+}
+
+QList<PopupDropperAction *>
+SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
+{
+    DEBUG_BLOCK
+    QList< PopupDropperAction * > actions;
+
+    if( m_configureAction == 0 )
+    {
+        m_configureAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer("amarok/images/pud_items.svg"),
+            "configure",
+            KIcon( "configure" ),
+            i18n( "&Configure" ),
+            this
+        );
+        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ));
+    }
+    actions << m_configureAction;
+
+    if( m_removeAction == 0 )
+    {
+        m_removeAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "remove",
+            KIcon( "news-unsubscribe" ),
+            i18n( "&Remove Subscription" ),
+            this
+        );
+        connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemoveChannels() ) );
+    }
+    actions << m_removeAction;
+
+    return actions;
+}
+
+void
+SqlPodcastProvider::slotDeleteEpisodes()
+{
+    DEBUG_BLOCK
+    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
+    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    {
+        Meta::SqlPodcastEpisodePtr sqlEpisode =
+                Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        if( !sqlEpisode )
+            continue;
+
+        deleteDownloadedEpisode( sqlEpisode );
+    }
+}
+
+void
+SqlPodcastProvider::slotDownloadEpisodes()
+{
+    DEBUG_BLOCK
+    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
+    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    {
+        Meta::SqlPodcastEpisodePtr sqlEpisode =
+                Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+//         if( !sqlEpisode )
+//             continue;
+
+        downloadEpisode( sqlEpisode );
+    }
+}
+
+void
+SqlPodcastProvider::slotRemoveChannels()
+{
+    DEBUG_BLOCK
+    foreach( Meta::PodcastChannelPtr channel, The::podcastModel()->selectedChannels() )
+    {
+        Meta::SqlPodcastChannelPtr sqlChannel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+//         if( !sqlChannel )
+            removeSubscription( channel );
+    }
+}
+
+void
+SqlPodcastProvider::slotConfigureChannel()
+{
+    DEBUG_BLOCK
+    configureChannel( The::podcastModel()->selectedChannels().first() );
 }
 
 void

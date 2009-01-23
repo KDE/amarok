@@ -27,7 +27,6 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "PodcastModel.h"
-#include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "services/ServiceInfoProxy.h"
 #include "SvgTinter.h"
@@ -52,7 +51,33 @@
 
 #include <typeinfo>
 
+namespace The
+{
+    PlaylistBrowserNS::PodcastCategory* podcastCategory()
+    {
+        return PlaylistBrowserNS::PodcastCategory::instance();
+    }
+}
+
 using namespace PlaylistBrowserNS;
+
+PodcastCategory* PodcastCategory::s_instance = 0;
+
+PodcastCategory*
+PodcastCategory::instance()
+{
+    return s_instance ? s_instance : new PodcastCategory( The::podcastModel() );
+}
+
+void
+PodcastCategory::destroy()
+{
+    if( s_instance )
+    {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
 
 PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     : QWidget()
@@ -127,10 +152,24 @@ PodcastCategory::~PodcastCategory()
 {
 }
 
+QModelIndexList
+PodcastCategory::currentItems() const
+{
+    DEBUG_BLOCK
+    if( m_podcastTreeView )
+    {
+        debug() << m_podcastTreeView->currentItems().count() << " selectedIndexes";
+        return m_podcastTreeView->currentItems();
+    }
+    else
+        debug() << "m_podcastTreeView is null";
+
+    return QModelIndexList();
+}
+
 void
 PodcastCategory::showInfo( const QModelIndex & index )
 {
-
     QString description = index.data( ShortDescriptionRole ).toString();
     description.replace( QRegExp("\n "), "\n" );
     description.replace( QRegExp("\n+"), "\n" );
@@ -289,16 +328,8 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
 
 PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     : Amarok::PrettyTreeView( parent )
-    , m_model( model )
+    , m_podcastModel( model )
     , m_pd( 0 )
-    , m_appendAction( 0 )
-    , m_loadAction( 0 )
-    , m_downloadAction( 0 )
-    , m_deleteAction( 0 )
-    , m_removeAction( 0 )
-    , m_renameAction( 0 )
-    , m_configureAction( 0 )
-    , m_labelAction( 0 )
 {
 }
 
@@ -333,21 +364,11 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
 {
     QModelIndex index = indexAt( event->pos() );
 
-    if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
+    if( index.isValid() )
     {
-        Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-
-        if ( pmc->podcastType() ==  Meta::EpisodeType )
-        {
-            Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( pmc );
-            The::playlistController()->insertOptioned( Meta::TrackPtr( static_cast<Meta::Track *>(episode )), Playlist::Append );
-        }
-        else if ( pmc->podcastType() ==  Meta::ChannelType )
-        {
-            QModelIndexList list;
-            list << index;
-            m_model->refreshItems( list );
-        }
+        QModelIndexList indices;
+        indices << index;
+        m_podcastModel->loadItems( indices, Playlist::Append );
     }
 }
 
@@ -362,6 +383,8 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
         return;
     ongoingDrags = true;
 
+    m_currentItems.clear();
+
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
@@ -369,10 +392,11 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     {
 
         QModelIndexList indices = selectedIndexes();
+        m_currentItems << indices;
+        QList<PopupDropperAction*> actions = m_podcastModel->actionsFor( indices );
 
-        QList<PopupDropperAction*> actions = actionsForIndices( indices );
-
-        foreach( PopupDropperAction * action, actions ) {
+        foreach( PopupDropperAction * action, actions )
+        {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
 
@@ -396,14 +420,17 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
 {
     DEBUG_BLOCK
 
+    m_currentItems.clear();
     KMenu menu;
-
+    QModelIndexList indices = selectedIndexes();
+    debug() << indices.count() << " selectedIndexes";
+    m_currentItems << indices;
     QList<PopupDropperAction *> actions =
-            actionsForIndices( selectionModel()->selectedIndexes() );
+            m_podcastModel->actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
-    
+
     foreach( PopupDropperAction * action, actions )
     {
         if( action )
@@ -412,289 +439,8 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
 
     KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
     Q_UNUSED( result )
-}
 
-QList< PopupDropperAction * >
-PodcastView::actionsForIndices( QModelIndexList indices )
-{
-    if( indices.isEmpty() )
-        return QList< PopupDropperAction * >();
-    
-    bool episodeSelected = false;
-    bool channelSelected = false;
-
-    QList<PopupDropperAction *> actions = createCommonActions( indices );
-
-    m_currentItems.clear();
-    foreach( const QModelIndex &index, indices )
-    {
-        if( index.isValid() && index.internalPointer() )
-        {
-            Meta::PodcastMetaCommon *pmc =
-                static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-
-            m_currentItems << pmc;
-            switch( pmc->podcastType() )
-            {
-                case Meta::EpisodeType: episodeSelected = true; break;
-                case Meta::ChannelType: channelSelected = true; break;
-            }
-        }
-    }
-
-    if( episodeSelected && !channelSelected )
-        actions << createEpisodeActions( indices );
-    else if( channelSelected && !episodeSelected )
-        actions << createChannelActions( indices );
-
-    return actions;
-}
-
-QList< PopupDropperAction * >
-PodcastView::createCommonActions( QModelIndexList indices )
-{
-    Q_UNUSED( indices )
-    QList< PopupDropperAction * > actions;
-
-    if( m_appendAction == 0 )
-    {
-        m_appendAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "append",
-            KIcon( "media-track-add-amarok" ),
-            i18n( "&Append to Playlist" ),
-            this
-        );
-        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
-    }
-
-    if( m_loadAction == 0 )
-    {
-        m_loadAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "load",
-            KIcon( "folder-open" ),
-            i18nc( "Replace the currently loaded tracks with these",
-            "&Load" ),
-            this
-        );
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
-    }
-
-    /*TODO: rename episodes
-    if( m_renameAction == 0 )
-    {
-        m_renameAction =  new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "edit",
-            KIcon( "media-track-edit-amarok" ),
-            i18n( "&Rename" ),
-            this
-        );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-    }
-    */
-
-    actions << m_appendAction;
-    actions << m_loadAction;
-//     actions << m_renameAction;
-
-    return actions;
-}
-
-QList< PopupDropperAction * >
-PodcastView::createChannelActions( QModelIndexList indices )
-{
-    Q_UNUSED( indices )
-    QList< PopupDropperAction * > actions;
-
-    if( m_removeAction == 0 )
-    {
-        m_removeAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "remove",
-            KIcon( "news-unsubscribe" ),
-            i18n( "&Remove Subscription" ),
-            this
-        );
-        connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemove() ) );
-    }
-
-    /* TODO: label channels
-    if( m_labelAction == 0 )
-    {
-        m_labelAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer("amarok/images/pud_items.svg"),
-            "label",
-            KIcon( "flag-black" ),
-            i18nc( "Label (or tag) the currently selected Channel(s)", "&Label" ),
-            this
-        );
-        connect( m_labelAction, SIGNAL( triggered() ), this, SLOT( slotLabel() ) );
-    }
-    */
-
-    if( m_configureAction == 0 )
-    {
-        m_configureAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer("amarok/images/pud_items.svg"),
-            "configure",
-            KIcon( "configure" ),
-            i18n( "&Configure" ),
-            this
-        );
-        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigure() ));
-    }
-
-    actions << m_removeAction;
-//     actions << m_labelAction;
-    actions << m_configureAction;
-
-    return actions;
-}
-
-QList< PopupDropperAction * >
-PodcastView::createEpisodeActions( QModelIndexList indices )
-{
-    Q_UNUSED( indices )
-    QList< PopupDropperAction * > actions;
-
-    if ( m_deleteAction == 0 )
-    {
-        m_deleteAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "delete",
-            KIcon( "edit-delete" ),
-            i18n( "&Delete Downloaded Episode" ),
-            this
-        );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
-    }
-    actions << m_deleteAction;
-    if ( m_downloadAction == 0 )
-    {
-        m_downloadAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "download",
-            KIcon( "go-down" ),
-            i18n( "&Download Episode" ),
-            this
-        );
-        connect( m_downloadAction, SIGNAL( triggered() ), this, SLOT( slotDownload() ) );
-    }
-    actions << m_downloadAction;
-
-    return actions;
-}
-
-Meta::PodcastChannelList
-PodcastView::selectedChannels()
-{
-    Meta::PodcastChannelList channels;
-    foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
-    {
-        switch( pmc->podcastType() )
-        {
-            case Meta::EpisodeType:
-                break;
-            case Meta::ChannelType:
-                channels << Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
-                break;
-        }
-    }
-    return channels;
-}
-
-Meta::PodcastEpisodeList
-PodcastView::selectedEpisodes()
-{
-    Meta::PodcastEpisodeList episodes;
-    foreach( Meta::PodcastMetaCommon *pmc, m_currentItems )
-    {
-        switch( pmc->podcastType() )
-        {
-            case Meta::EpisodeType:
-                episodes << Meta::PodcastEpisodePtr( static_cast<Meta::PodcastEpisode *>(pmc) );
-                break;
-            case Meta::ChannelType:
-                episodes << static_cast<Meta::PodcastChannel *>(pmc)->episodes();
-                break;
-        }
-    }
-    return episodes;
-}
-
-Meta::TrackList
-PodcastView::podcastEpisodesToTracks( Meta::PodcastEpisodeList episodes )
-{
-    Meta::TrackList tracks;
-    foreach( Meta::PodcastEpisodePtr episode, episodes )
-        tracks << Meta::TrackPtr::staticCast( episode );
-    return tracks;
-}
-
-void
-PodcastView::slotAppend()
-{
-    DEBUG_BLOCK
-
-    Meta::PodcastEpisodeList episodes = selectedEpisodes();
-    if( !episodes.empty() )
-    {
-        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Append );
-    }
-}
-
-void
-PodcastView::slotConfigure()
-{
-    m_model->configureChannels( selectedIndexes() );
-}
-
-void
-PodcastView::slotDelete()
-{
-   DEBUG_BLOCK
-   m_model->deleteItems( selectedIndexes() );
-}
-
-void
-PodcastView::slotDownload()
-{
-    DEBUG_BLOCK
-    m_model->downloadItems( selectedIndexes() );
-}
-
-void
-PodcastView::slotLabel()
-{
-    DEBUG_BLOCK
-}
-
-void
-PodcastView::slotLoad()
-{
-    DEBUG_BLOCK
-
-    Meta::PodcastEpisodeList episodes = selectedEpisodes();
-
-    if( !episodes.empty() )
-    {
-        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Replace );
-    }
-}
-
-void
-PodcastView::slotRename()
-{
-    DEBUG_BLOCK
-}
-
-void
-PodcastView::slotRemove()
-{
-    DEBUG_BLOCK
-    m_model->removeSubscription( selectedIndexes() );
+    debug() << m_currentItems.count() << " selectedIndexes";
 }
 
 #include "PodcastCategory.moc"

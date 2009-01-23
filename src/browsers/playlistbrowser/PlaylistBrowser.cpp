@@ -52,7 +52,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
     setContentsMargins(0,0,0,0);
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
-    
+
     addCategory( PlaylistManager::Dynamic );
 
     QList<int> categories = The::playlistManager()->availableCategories();
@@ -100,14 +100,13 @@ PlaylistBrowser::addCategory( int category )
     m_toolBox->addItem( widget, icon, typeName );
 
     m_categoryIndexMap.insert( m_toolBox->count() - 1, category );
-        
+
 }
 
 QWidget *
 PlaylistBrowser::loadPodcastCategory()
 {
-    PodcastModel *podcastModel = new PodcastModel();
-    return new PodcastCategory( podcastModel );
+    return The::podcastCategory();
 }
 
 

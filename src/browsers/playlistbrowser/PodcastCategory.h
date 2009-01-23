@@ -48,11 +48,16 @@ class PodcastCategory : public QWidget
 {
     Q_OBJECT
     public:
-    PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
-
-    ~PodcastCategory();
+        static PodcastCategory *instance();
+        static void destroy();
+        QModelIndexList currentItems() const;
 
     private:
+        static PodcastCategory* s_instance;
+
+        PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
+        ~PodcastCategory();
+
         QToolButton *m_addPodcastButton;
         QToolButton *m_refreshPodcastsButton;
         QToolButton *m_configurePodcastsButton;
@@ -65,7 +70,6 @@ class PodcastCategory : public QWidget
     private slots:
         void showInfo( const QModelIndex & index );
 };
-
 
 class ViewKicker : public QObject
 {
@@ -87,7 +91,7 @@ class PodcastView : public Amarok::PrettyTreeView
     public:
         explicit PodcastView( PodcastModel *model, QWidget *parent = 0 );
         ~PodcastView();
-
+        QModelIndexList currentItems() const { return m_currentItems; }
 
     protected:
         void mousePressEvent( QMouseEvent *event );
@@ -98,57 +102,13 @@ class PodcastView : public Amarok::PrettyTreeView
         void contextMenuEvent( QContextMenuEvent* event );
 
     private:
-        PodcastModel *m_model;
-
-        QList< PopupDropperAction * > actionsForIndices( QModelIndexList indices );
-
-        QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
-
-        QList<PopupDropperAction *> createEpisodeActions( QModelIndexList indices );
-
-        QList<PopupDropperAction *> createChannelActions( QModelIndexList indices );
-
-        /** @returns all channels currently selected
-        **/
-        Meta::PodcastChannelList selectedChannels();
-
-        /** @returns all episodes currently selected, this includes children of a selected
-        * channel
-        **/
-        Meta::PodcastEpisodeList selectedEpisodes();
-
-        /** A convenience function to convert a PodcastEpisodeList into a TrackList.
-        **/
-        static Meta::TrackList
-        podcastEpisodesToTracks(
-            Meta::PodcastEpisodeList episodes );
+        PodcastModel *m_podcastModel;
 
         PopupDropper* m_pd;
 
-        PopupDropperAction * m_appendAction;
-        PopupDropperAction * m_loadAction;
-        PopupDropperAction * m_downloadAction;
-
-        PopupDropperAction * m_deleteAction; //delete a downloaded Episode
-        PopupDropperAction * m_removeAction; //remove a subscription
-        PopupDropperAction * m_renameAction; //rename a Channel or Episode
-        PopupDropperAction * m_configureAction; //Configure a Channel
-        //TODO:split into add and remove label
-        PopupDropperAction * m_labelAction; //label a channel
-
-        QSet<Meta::PodcastMetaCommon *> m_currentItems;
-
         QPoint m_dragStartPosition;
-
-    private slots:
-        void slotAppend();
-        void slotConfigure();
-        void slotDelete();
-        void slotDownload();
-        void slotLabel();
-        void slotLoad();
-        void slotRename();
-        void slotRemove();
+        //The next is a hack because using selectedItems() after an actions is triggered doesn't work
+        QModelIndexList m_currentItems;
 };
 
 /**
@@ -171,6 +131,10 @@ class PodcastCategoryDelegate : public QItemDelegate
         QWebPage * m_webPage;
 };
 
+}
+
+namespace The {
+    PlaylistBrowserNS::PodcastCategory *podcastCategory();
 }
 
 #endif

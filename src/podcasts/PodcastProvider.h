@@ -27,6 +27,7 @@
 #include <klocale.h>
 
 class KUrl;
+class PopupDropperAction;
 
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
@@ -57,6 +58,11 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual int category() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;
+
+        virtual QList<PopupDropperAction *> episodeActions( Meta::PodcastEpisodeList )
+            { return QList<PopupDropperAction *>(); }
+        virtual QList<PopupDropperAction *> channelActions( Meta::PodcastChannelList )
+            { return QList<PopupDropperAction *>(); }
 
     public slots:
         virtual void updateAll() = 0;

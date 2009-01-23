@@ -27,6 +27,8 @@
 #include <QModelIndex>
 #include <QVariant>
 
+class PopupDropperAction;
+
 namespace PlaylistBrowserNS {
 
 enum {
@@ -44,9 +46,8 @@ class PodcastModel : public QAbstractItemModel
 {
     Q_OBJECT
     public:
-        PodcastModel();
-
-        ~PodcastModel();
+        static PodcastModel *instance();
+        static void destroy();
 
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -62,12 +63,23 @@ class PodcastModel : public QAbstractItemModel
         QMimeData* mimeData( const QModelIndexList &indexes ) const;
         bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
 
+        QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
+
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
         void downloadItems(  QModelIndexList list );
         void deleteItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
         void removeSubscription( QModelIndexList list );
         void configureChannels( QModelIndexList list );
+
+        /** @returns all channels currently selected
+        **/
+        Meta::PodcastChannelList selectedChannels();
+
+        /** @returns all episodes currently selected, this includes children of a selected
+        * channel
+        **/
+        Meta::PodcastEpisodeList selectedEpisodes();
 
     public slots:
         void slotUpdate();
@@ -76,7 +88,27 @@ class PodcastModel : public QAbstractItemModel
         void setPodcastsInterval();
         void emitLayoutChanged();
 
+    private slots:
+        void slotAppend();
+        void slotLoad();
+
     private:
+        static PodcastModel* s_instance;
+        PodcastModel();
+        ~PodcastModel();
+
+        Q_DISABLE_COPY( PodcastModel )
+
+        QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
+        PopupDropperAction * m_appendAction;
+        PopupDropperAction * m_loadAction;
+
+        /** A convenience function to convert a PodcastEpisodeList into a TrackList.
+        **/
+        static Meta::TrackList
+        podcastEpisodesToTracks(
+            Meta::PodcastEpisodeList episodes );
+
         void downloadEpisode( Meta::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
         void refreshPodcast( Meta::PodcastChannelPtr channel );
@@ -85,6 +117,10 @@ class PodcastModel : public QAbstractItemModel
         void configureChannel( Meta::PodcastChannelPtr channel );
 };
 
+}
+
+namespace The {
+    AMAROK_EXPORT PlaylistBrowserNS::PodcastModel* podcastModel();
 }
 
 #endif

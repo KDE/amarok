@@ -22,15 +22,38 @@
 #include "Debug.h"
 #include "PodcastMeta.h"
 #include "PodcastProvider.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "context/popupdropper/libpud/PopupDropper.h"
+#include "PodcastCategory.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "SvgHandler.h"
 
 #include <QInputDialog>
 #include <KIcon>
 #include <QListIterator>
 #include <typeinfo>
 
+namespace The
+{
+    PlaylistBrowserNS::PodcastModel* podcastModel()
+    {
+        return PlaylistBrowserNS::PodcastModel::instance();
+    }
+}
+
+PlaylistBrowserNS::PodcastModel* PlaylistBrowserNS::PodcastModel::s_instance = 0;
+
+PlaylistBrowserNS::PodcastModel*
+PlaylistBrowserNS::PodcastModel::instance()
+{
+    return s_instance ? s_instance : new PodcastModel();
+}
+
 PlaylistBrowserNS::PodcastModel::PodcastModel()
  : QAbstractItemModel()
+ , m_appendAction( 0 )
+ , m_loadAction( 0 )
 {
     QList<Meta::PlaylistPtr> playlists =
             The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
@@ -390,7 +413,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
 }
 
 void
-PlaylistBrowserNS::PodcastModel::loadItems(QModelIndexList list, Playlist::AddOptions insertMode)
+PlaylistBrowserNS::PodcastModel::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
 {
     Meta::TrackList episodes;
     Meta::PlaylistList channels;
@@ -512,6 +535,109 @@ PlaylistBrowserNS::PodcastModel::downloadItems( QModelIndexList list )
     }
 }
 
+QList<PopupDropperAction *>
+PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
+{
+    DEBUG_BLOCK
+    QList<PopupDropperAction *> actions;
+    Meta::PodcastEpisodeList episodes;
+    Meta::PodcastChannelList channels;
+
+    if( indices.isEmpty() )
+        return actions;
+
+    foreach( const QModelIndex &index, indices )
+    {
+        if( index.isValid() && index.internalPointer() )
+        {
+            Meta::PodcastMetaCommon *pmc =
+                static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+
+            switch( pmc->podcastType() )
+            {
+                case Meta::EpisodeType:
+                {
+                    episodes << Meta::PodcastEpisodePtr(
+                            dynamic_cast<Meta::PodcastEpisode *>(pmc) );
+                    break;
+                }
+                case Meta::ChannelType:
+                {
+                    channels << Meta::PodcastChannelPtr(
+                            dynamic_cast<Meta::PodcastChannel *>(pmc) );
+                    break;
+                }
+            }
+        }
+    }
+
+    actions << createCommonActions( indices );
+
+    //HACK: since we only have one PodcastProvider implementation
+    PodcastProvider *provider = The::playlistManager()->defaultPodcasts();
+    if( provider )
+    {
+        if( !episodes.isEmpty() )
+            actions << provider->episodeActions( episodes );
+        if( !channels.isEmpty() )
+        actions << provider->channelActions( channels );
+    }
+
+    return actions;
+}
+
+QList< PopupDropperAction * >
+PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
+{
+    Q_UNUSED( indices )
+    QList< PopupDropperAction * > actions;
+
+    if( m_appendAction == 0 )
+    {
+        m_appendAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "append",
+            KIcon( "media-track-add-amarok" ),
+            i18n( "&Append to Playlist" ),
+            this
+        );
+        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
+    }
+
+    if( m_loadAction == 0 )
+    {
+        m_loadAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "load",
+            KIcon( "folder-open" ),
+            i18nc( "Replace the currently loaded tracks with these",
+            "&Load" ),
+            this
+        );
+        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
+    }
+
+    /*TODO: rename episodes
+    if( m_renameAction == 0 )
+    {
+        m_renameAction =  new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "edit",
+            KIcon( "media-track-edit-amarok" ),
+            i18n( "&Rename" ),
+            this
+        );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+    }
+    */
+
+    actions << m_appendAction;
+    actions << m_loadAction;
+//     actions << m_renameAction;
+
+    return actions;
+}
+
 void
 PlaylistBrowserNS::PodcastModel::deleteItems( QModelIndexList list )
 {
@@ -615,4 +741,90 @@ PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
     emit( layoutChanged() );
 }
 
+Meta::PodcastChannelList
+PlaylistBrowserNS::PodcastModel::selectedChannels()
+{
+    Meta::PodcastChannelList channels;
+    Meta::PodcastMetaCommon *pmc;
+    foreach( const QModelIndex &index, The::podcastCategory()->currentItems() )
+    {
+        if( !index.isValid() )
+            break;
+
+        pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+        if( !pmc )
+            break;
+
+        switch( pmc->podcastType() )
+        {
+            case Meta::EpisodeType:
+                break;
+            case Meta::ChannelType:
+                channels << Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
+                break;
+        }
+    }
+    return channels;
+}
+
+Meta::PodcastEpisodeList
+PlaylistBrowserNS::PodcastModel::selectedEpisodes()
+{
+    DEBUG_BLOCK
+    Meta::PodcastEpisodeList episodes;
+    Meta::PodcastMetaCommon *pmc;
+    debug() << The::podcastCategory()->currentItems().count() << " items selected";
+    foreach( const QModelIndex &index, The::podcastCategory()->currentItems() )
+    {
+        if( !index.isValid() )
+            break;
+
+        pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
+        switch( pmc->podcastType() )
+        {
+            case Meta::EpisodeType:
+                episodes << Meta::PodcastEpisodePtr( static_cast<Meta::PodcastEpisode *>(pmc) );
+                break;
+            case Meta::ChannelType:
+                episodes << static_cast<Meta::PodcastChannel *>(pmc)->episodes();
+                break;
+        }
+    }
+    debug() << episodes.count() << " episodes selected";
+    return episodes;
+}
+
+void
+PlaylistBrowserNS::PodcastModel::slotAppend()
+{
+    DEBUG_BLOCK
+
+    Meta::PodcastEpisodeList episodes = selectedEpisodes();
+    if( !episodes.empty() )
+    {
+        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Append );
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::slotLoad()
+{
+    DEBUG_BLOCK
+
+    Meta::PodcastEpisodeList episodes = selectedEpisodes();
+
+    if( !episodes.empty() )
+    {
+        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Replace );
+    }
+}
+
+Meta::TrackList
+PlaylistBrowserNS::PodcastModel::podcastEpisodesToTracks( Meta::PodcastEpisodeList episodes )
+{
+    Meta::TrackList tracks;
+    foreach( Meta::PodcastEpisodePtr episode, episodes )
+        tracks << Meta::TrackPtr::staticCast( episode );
+    return tracks;
+}
 #include "PodcastModel.moc"
