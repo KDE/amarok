@@ -32,7 +32,9 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "playlist/PlaylistController.h"
+#include "widgets/SearchWidget.h"
 
+#include <KAction>
 #include <KMenuBar>
 #include <KStandardDirs>  //locate()
 #include <KTemporaryFile>
@@ -186,39 +188,51 @@ void MagnatuneStore::purchase( Meta::MagnatuneAlbum * album )
 
 void MagnatuneStore::initTopPanel( )
 {
-    //connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
-    QAction *action = new QAction( i18n("Artist"), m_menubar );
+
+    QMenu *filterMenu = new QMenu( this );
+    
+    QAction *action = filterMenu->addAction( i18n("Artist") );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtist() ) );
-    m_filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Artist / Album" ), m_menubar );
+    action = filterMenu->addAction( i18n( "Artist / Album" ) );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
-    m_filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Album" ), m_menubar );
+    action = filterMenu->addAction( i18n( "Album" ) ) ;
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByAlbum() ) );
-    m_filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Genre / Artist" ), m_menubar );
+    action = filterMenu->addAction( i18n( "Genre / Artist" ) );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtist() ) );
-    m_filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Genre / Artist / Album" ), m_menubar );
+    action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
-    m_filterMenu->addAction( action );
 
+    KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+    filterMenuAction->setMenu( filterMenu );
 
-    QMenu * actionsMenu = m_menubar->addMenu( i18n( "Actions" ) );
-    action = new QAction( i18n( "Redownload" ), m_menubar );
+    m_searchWidget->toolBar()->addSeparator();
+    m_searchWidget->toolBar()->addAction( filterMenuAction );
+
+    QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( filterMenuAction ) );
+    if( tbutton )
+        tbutton->setPopupMode( QToolButton::InstantPopup );
+
+    QMenu * actionsMenu = new QMenu( this );
+
+    action = actionsMenu->addAction( i18n( "Redownload" ) );
     connect( action, SIGNAL( triggered( bool) ), SLOT( processRedownload() ) );
-    actionsMenu->addAction( action );
 
-    m_updateAction = new QAction( i18n( "Update Database" ), m_menubar );
+    m_updateAction = actionsMenu->addAction( i18n( "Update Database" ) );
     connect( m_updateAction, SIGNAL( triggered( bool) ), SLOT( updateButtonClicked() ) );
-    actionsMenu->addAction( m_updateAction );
+
+    KAction *actionsMenuAction = new KAction( KIcon( "list-add" ), i18n( "Tools" ), this );
+    actionsMenuAction->setMenu( actionsMenu );
     
-    
-    m_menubar->show();
+    m_searchWidget->toolBar()->addAction( actionsMenuAction );
+
+    tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( actionsMenuAction ) );
+    if( tbutton )
+        tbutton->setPopupMode( QToolButton::InstantPopup );
+
 }
 
 void MagnatuneStore::initBottomPanel()
