@@ -34,12 +34,13 @@ class BookmarkTriangle : public QWidget
 {
     Q_OBJECT
 public:
-    BookmarkTriangle ( QWidget *parent, int seconds, QString name );
+    BookmarkTriangle ( QWidget *parent, int milliseconds, QString name );
     ~BookmarkTriangle();
     virtual QSize sizeHint () const;
     virtual QSizePolicy sizePolicy() const;
     virtual QSize minimumSizeHint () const;
 
+    virtual void mousePressEvent ( QMouseEvent * event );
     virtual void mouseReleaseEvent ( QMouseEvent * event );
 
     virtual void paintEvent ( QPaintEvent* );
@@ -48,7 +49,7 @@ signals:
     void clicked( int );
 
 private:
-    int m_seconds;
+    int m_mseconds;
     QString m_name;
 };
 

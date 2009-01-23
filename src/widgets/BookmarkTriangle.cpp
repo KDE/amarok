@@ -27,7 +27,7 @@
 #include <QSize>
 #include <QSizePolicy>
 
-BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int seconds, QString name  ) : QWidget ( parent ), m_seconds( seconds ), m_name( name )
+BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name  ) : QWidget ( parent ), m_mseconds( milliseconds ), m_name( name )
 {
     setToolTip( i18n( "Bookmark: %1", m_name ) );
 }
@@ -56,10 +56,15 @@ void BookmarkTriangle::paintEvent ( QPaintEvent* )
     p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "bookmark_position",10 , 10, "bookmark_position" ) );
 }
 
+void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
+{
+
+}
+
 void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
 {
     Q_UNUSED( event )
-    emit clicked( m_seconds );
+    emit clicked( m_mseconds );
 }
 
 #include "BookmarkTriangle.moc"
