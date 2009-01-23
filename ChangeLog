@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.0.2
   BUGFIXES:
+    * Compilation fixes on Open Solaris.
     * Trim URL before adding a new podcast.
     * Add Ok button to the podcast configuration dialog to improve usability.
       (BR 181339)
