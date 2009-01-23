@@ -125,7 +125,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_nextAction->setVisible( !m_showOnlyMatches );
     m_previousAction->setVisible( !m_showOnlyMatches );
 
-    KAction *searchMenuAction = new KAction(KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
     toolbar->addAction( searchMenuAction );
     

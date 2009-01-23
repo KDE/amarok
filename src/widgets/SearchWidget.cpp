@@ -15,6 +15,7 @@
 
 #include <QVBoxLayout>
 
+#include <KIcon>
 #include <KLineEdit>
 #include <KLocale>
 #include <KHBox>
@@ -24,7 +25,7 @@
 SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     : QWidget( parent )
     , m_sw( 0 )
-    , m_filterButton( 0 )
+    , m_filterAction( 0 )
 {
     init( parent, advanced );
 }
@@ -32,7 +33,7 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
 SearchWidget::SearchWidget( QWidget *parent, QWidget *caller, bool advanced )
     : QWidget( parent )
     , m_sw( 0 )
-    , m_filterButton( 0 )
+    , m_filterAction( 0 )
 {
     init( parent, advanced );
     setup( caller );
@@ -68,14 +69,14 @@ SearchWidget::init( QWidget *parent, bool advanced )
     layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
 
-    if ( advanced ) {
-        m_filterButton = new KPushButton( i18n( "Advanced" ), searchBox );
-        //m_filterButton->setFlat( true ); //TODO: maybe?
-        m_filterButton->setObjectName( "filter" );
-        m_filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-        m_filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+    m_toolBar = new QToolBar( searchBox );
 
-        connect ( m_filterButton, SIGNAL( clicked() ), this, SLOT( slotShowFilterEditor() ) );
+    if ( advanced ) {
+        m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit playlist filter" ), this );
+        m_filterAction->setObjectName( "filter" );
+        m_toolBar->addAction( m_filterAction );
+
+        connect ( m_filterAction, SIGNAL( activated() ), this, SLOT( slotShowFilterEditor() ) );
     }
 }
 
@@ -94,6 +95,11 @@ SearchWidget::slotShowFilterEditor()
     connect( fd, SIGNAL( filterChanged( const QString & ) ), m_sw,  SLOT( setText( const QString & ) ) );
 
     fd->exec();
+}
+
+QToolBar * SearchWidget::toolBar()
+{
+    return m_toolBar;
 }
 
 #include "SearchWidget.moc"

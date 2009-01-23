@@ -34,6 +34,7 @@
 #include <KMenuBar>
 
 #include <QActionGroup>
+#include <QToolBar>
 #include <QToolButton>
 
 CollectionWidget *CollectionWidget::s_instance = 0;
@@ -238,12 +239,17 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_secondLevelSelectedAction = secondGroup->checkedAction();
     m_thirdLevelSelectedAction = thirdGroup->checkedAction();
     
-    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), hbox );
-    QToolButton *button = new QToolButton( hbox );
-    button->setMenu( filterMenu );
-    button->setPopupMode( QToolButton::InstantPopup );
-    button->setDefaultAction( searchMenuAction );
+    m_searchWidget->toolBar()->addSeparator();
     
+    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+    searchMenuAction->setMenu( filterMenu );
+    
+    m_searchWidget->toolBar()->addAction( searchMenuAction );
+
+    QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
+    if( tbutton )
+        tbutton->setPopupMode( QToolButton::InstantPopup );
+
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
 }
