@@ -173,7 +173,8 @@ void BookmarkTreeView::slotDelete()
 void BookmarkTreeView::slotRename()
 {
     DEBUG_BLOCK
-    edit( selectionModel()->selectedIndexes().first() );
+    if ( selectionModel()->hasSelection() )
+        edit( selectionModel()->selectedIndexes().first() );
 }
 
 void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
