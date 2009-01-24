@@ -67,6 +67,8 @@ class SqlPodcastEpisode : public PodcastEpisode
 class SqlPodcastChannel : public PodcastChannel
 {
     public:
+        static TrackList sqlEpisodesToTracks( SqlPodcastEpisodeList episodes );
+
         SqlPodcastChannel( const QStringList &queryResult );
 
         /** Copy a PodcastChannel
@@ -74,8 +76,10 @@ class SqlPodcastChannel : public PodcastChannel
         SqlPodcastChannel( PodcastChannelPtr channel );
 
         ~SqlPodcastChannel();
+        // Mets::Playlist methods
+        TrackList tracks() { return sqlEpisodesToTracks( m_sqlEpisodes ); }
 
-        virtual void addEpisode( PodcastEpisodePtr episode );
+        void addEpisode( PodcastEpisodePtr episode );
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; }
         void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; }

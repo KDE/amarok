@@ -226,6 +226,16 @@ Meta::SqlPodcastChannel::~SqlPodcastChannel()
     m_episodes.clear();
 }
 
+Meta::TrackList
+Meta::SqlPodcastChannel::sqlEpisodesToTracks( Meta::SqlPodcastEpisodeList episodes )
+{
+    Meta::TrackList tracks;
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
+        tracks << Meta::TrackPtr::dynamicCast( sqlEpisode );
+
+    return tracks;
+}
+
 void
 Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 {
