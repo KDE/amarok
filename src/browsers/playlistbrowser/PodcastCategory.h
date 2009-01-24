@@ -91,7 +91,7 @@ class PodcastView : public Amarok::PrettyTreeView
     public:
         explicit PodcastView( PodcastModel *model, QWidget *parent = 0 );
         ~PodcastView();
-        QModelIndexList currentItems() const { return m_currentItems; }
+        QModelIndexList currentItems() const { return selectionModel()->selectedIndexes(); }
 
     protected:
         void mousePressEvent( QMouseEvent *event );
@@ -107,8 +107,7 @@ class PodcastView : public Amarok::PrettyTreeView
         PopupDropper* m_pd;
 
         QPoint m_dragStartPosition;
-        //The next is a hack because using selectedItems() after an actions is triggered doesn't work
-        QModelIndexList m_currentItems;
+
 };
 
 /**

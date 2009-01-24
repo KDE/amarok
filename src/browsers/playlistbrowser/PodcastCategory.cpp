@@ -383,17 +383,13 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
         return;
     ongoingDrags = true;
 
-    m_currentItems.clear();
-
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
     if( m_pd && m_pd->isHidden() )
     {
 
-        QModelIndexList indices = selectedIndexes();
-        m_currentItems << indices;
-        QList<PopupDropperAction*> actions = m_podcastModel->actionsFor( indices );
+        QList<PopupDropperAction*> actions = m_podcastModel->actionsFor( currentItems() );
 
         foreach( PopupDropperAction * action, actions )
         {
@@ -420,11 +416,9 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
 {
     DEBUG_BLOCK
 
-    m_currentItems.clear();
     KMenu menu;
-    QModelIndexList indices = selectedIndexes();
+    QModelIndexList indices = currentItems();
     debug() << indices.count() << " selectedIndexes";
-    m_currentItems << indices;
     QList<PopupDropperAction *> actions =
             m_podcastModel->actionsFor( indices );
 
@@ -440,7 +434,7 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
     KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
     Q_UNUSED( result )
 
-    debug() << m_currentItems.count() << " selectedIndexes";
+   debug() << indices.count() << " selectedIndexes";
 }
 
 #include "PodcastCategory.moc"
