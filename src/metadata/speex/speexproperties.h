@@ -26,6 +26,7 @@
 #ifndef TAGLIB_SPEEXPROPERTIES_H
 #define TAGLIB_SPEEXPROPERTIES_H
 
+#include <amarok_libs_export.h>
 #include <audioproperties.h>
 
 namespace TagLib {
@@ -41,7 +42,7 @@ namespace TagLib {
      * API.
      */
 
-    class Properties : public AudioProperties
+    class AMAROK_TAGLIB_EXPORT Properties : public AudioProperties
     {
     public:
       /*!

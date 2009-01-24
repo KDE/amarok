@@ -26,6 +26,7 @@
 #ifndef TAGLIB_AUDIBLEFILE_H
 #define TAGLIB_AUDIBLEFILE_H
 
+#include <amarok_libs_export.h>
 #include "../tfile_helper.h"
 #include "audibleproperties.h"
 #include "audibletag.h"
@@ -36,7 +37,7 @@ namespace TagLib {
 
         class Tag;
 
-        class File : public TagLib::File
+        class AMAROK_TAGLIB_EXPORT File : public TagLib::File
         {
             public:
                 /*!

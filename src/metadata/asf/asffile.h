@@ -21,6 +21,7 @@
 #ifndef TAGLIB_ASFFILE_H
 #define TAGLIB_ASFFILE_H
 
+#include <amarok_libs_export.h>
 #include <tag.h>
 #include <tfile.h>
 #include "asfproperties.h"
@@ -37,7 +38,7 @@ namespace TagLib {
      * the abstract TagLib::File API as well as providing some additional
      * information specific to ASF files.
      */
-    class File : public TagLib::File
+    class AMAROK_TAGLIB_EXPORT File : public TagLib::File
     {
     public:
 

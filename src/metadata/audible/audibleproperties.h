@@ -28,6 +28,7 @@
 
 #include <config-amarok.h>  
 
+#include <amarok_libs_export.h>
 #include <audioproperties.h>
 #include <tstring.h>
 
@@ -42,7 +43,7 @@ namespace TagLib {
          * AudioProperties API.
          */
 
-        class Properties : public AudioProperties
+        class AMAROK_TAGLIB_EXPORT Properties : public AudioProperties
         {
             public:
                 /*!

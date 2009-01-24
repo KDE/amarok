@@ -26,6 +26,7 @@
 #ifndef TAGLIB_WAVFILE_H
 #define TAGLIB_WAVFILE_H
 
+#include <amarok_libs_export.h>
 #include "../tfile_helper.h"
 #include "wavproperties.h"
 
@@ -35,7 +36,7 @@ namespace TagLib {
 
         class Tag;
 
-        class File : public TagLib::File
+        class AMAROK_TAGLIB_EXPORT File : public TagLib::File
         {
             public:
                 /*!

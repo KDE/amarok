@@ -26,6 +26,7 @@
 #ifndef TAGLIB_TTAPROPERTIES_H
 #define TAGLIB_TTAPROPERTIES_H
 
+#include <amarok_libs_export.h>
 #include <audioproperties.h>
 #include <taglib/taglib.h>
 #include <taglib/tbytevector.h>
@@ -44,7 +45,7 @@ namespace TagLib {
      * API.
      */
 
-    class Properties : public AudioProperties
+    class AMAROK_TAGLIB_EXPORT Properties : public AudioProperties
     {
     public:
       /*!

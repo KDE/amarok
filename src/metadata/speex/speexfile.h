@@ -31,6 +31,7 @@
 #include <oggfile.h>
 #include <xiphcomment.h>
 
+#include <amarok_libs_export.h>
 #include "speexproperties.h"
 
 namespace TagLib {
@@ -48,7 +49,7 @@ namespace TagLib {
      * the codec implementations, in this case Speex specifically.
      */
 
-    class File : public Ogg::File
+    class AMAROK_TAGLIB_EXPORT File : public Ogg::File
     {
     public:
       /*!

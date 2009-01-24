@@ -28,6 +28,7 @@
 
 #include "../tfile_helper.h"
 
+#include <amarok_libs_export.h>
 #include "wvproperties.h"
 
 namespace TagLib {
@@ -57,7 +58,7 @@ namespace TagLib {
      * information specific to WavPack files.
      */
 
-    class File : public TagLib::File
+    class AMAROK_TAGLIB_EXPORT File : public TagLib::File
     {
     public:
       /*!

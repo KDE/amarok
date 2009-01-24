@@ -21,6 +21,7 @@
 #ifndef TAGLIB_ASFPROPERTIES_H
 #define TAGLIB_ASFPROPERTIES_H
 
+#include <amarok_libs_export.h>
 #include <audioproperties.h>
 #include <tstring.h>
 
@@ -29,7 +30,7 @@ namespace TagLib {
   namespace ASF {
 
     //! An implementation of ASF audio properties
-    class Properties : public AudioProperties
+    class AMAROK_TAGLIB_EXPORT Properties : public AudioProperties
     {
     public:
 

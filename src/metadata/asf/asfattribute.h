@@ -21,6 +21,7 @@
 #ifndef TAGLIB_ASFATTRIBUTE_H
 #define TAGLIB_ASFATTRIBUTE_H
 
+#include <amarok_libs_export.h>
 #include <tstring.h>
 #include <tbytevector.h>
 
@@ -32,7 +33,7 @@ namespace TagLib
 
     class File;
 
-    class Attribute
+    class AMAROK_TAGLIB_EXPORT Attribute
     {
     public:
 

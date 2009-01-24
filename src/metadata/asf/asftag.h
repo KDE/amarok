@@ -20,6 +20,7 @@
 #ifndef TAGLIB_ASFTAG_H
 #define TAGLIB_ASFTAG_H
 
+#include <amarok_libs_export.h>
 #include <tag.h>
 #include <tlist.h>
 #include <tmap.h>
@@ -32,7 +33,7 @@ namespace TagLib {
     typedef List<Attribute> AttributeList;
     typedef Map<String, AttributeList> AttributeListMap;
 
-    class Tag : public TagLib::Tag {
+    class AMAROK_TAGLIB_EXPORT Tag : public TagLib::Tag {
 
       friend class File;
 

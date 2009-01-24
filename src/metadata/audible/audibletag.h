@@ -28,6 +28,7 @@
 
 #include <config-amarok.h>  
 
+#include <amarok_libs_export.h>
 #include <tag.h>
 
 namespace TagLib {
@@ -36,7 +37,7 @@ namespace TagLib {
         /*!
          * This implements the generic TagLib::Tag API
          */
-        class Tag : public TagLib::Tag
+        class AMAROK_TAGLIB_EXPORT Tag : public TagLib::Tag
         {
             public:
                 Tag();
