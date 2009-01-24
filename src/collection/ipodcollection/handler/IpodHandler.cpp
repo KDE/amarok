@@ -1339,72 +1339,15 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
     QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
     QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
 
-    Itdb_Thumb *thumb = NULL;
     GdkPixbuf *gpixbuf = NULL;
-    QString thumbPath;
 
     // pull image out of ipod
 
+    // NOTE: 0x01 = has, 0x02 = has not
+
     if( ipodtrack->has_artwork == 0x01 )
     {
-        // try small first
-
-        thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_SMALL );
-
-        // then large if needed
-        if( thumb == NULL)
-        {
-            thumb = itdb_artwork_get_thumb_by_type ( ipodtrack->artwork, ITDB_THUMB_COVER_LARGE );
-        }
-
-        if( thumb != NULL)
-        {
-            gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
-        }
-        else
-        {
-            GList *thumbs = ipodtrack->artwork->thumbnails;
-
-            for(; thumbs; thumbs = thumbs->next)
-            {
-                Itdb_Thumb *curThumb = ( Itdb_Thumb * )thumbs->data;
-                if( curThumb == NULL)
-                    continue;
-
-                switch( curThumb->type )
-                {
-                    case ITDB_THUMB_PHOTO_SMALL:
-                        break;
-                    case ITDB_THUMB_PHOTO_LARGE:
-                        break;
-                    case ITDB_THUMB_PHOTO_FULL_SCREEN:
-                        break;
-                    case ITDB_THUMB_PHOTO_TV_SCREEN:
-                        break;
-                    case ITDB_THUMB_COVER_XLARGE:
-                        break;
-                    case ITDB_THUMB_COVER_MEDIUM:
-                        break;
-                    case ITDB_THUMB_COVER_SMEDIUM:
-                        break;
-                    case ITDB_THUMB_COVER_XSMALL:
-                        break;
-
-                    default:
-                        break;
-                }
-
-                thumb = curThumb;
-                break;
-
-            }
-
-            if( thumb != NULL)
-            {
-                thumbPath = QString::fromUtf8( itdb_thumb_get_filename( m_device, thumb ) );
-                gpixbuf = (GdkPixbuf*) itdb_thumb_get_gdk_pixbuf( m_device, thumb );
-            }
-        }
+        gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, 50, 50 );
     }
 
     if(gpixbuf != NULL)
