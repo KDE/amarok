@@ -875,7 +875,7 @@ IpodAlbum::image( int size )
 {
     //DEBUG_BLOCK
     if( m_hasCover )
-        return QPixmap::fromImage( m_image );
+        return ( QPixmap::fromImage( m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio ) ) );
     
     return Meta::Album::image( size );
 }

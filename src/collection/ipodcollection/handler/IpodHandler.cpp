@@ -1335,7 +1335,7 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 {
     KTemporaryFile tempImageFile;
 
-    tempImageFile.setSuffix( ".jpeg" ); // default suffix jpeg
+    tempImageFile.setSuffix( ".png" ); // default suffix jpeg
     QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
     QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
 
@@ -1347,13 +1347,13 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 
     if( ipodtrack->has_artwork == 0x01 )
     {
-        gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, 50, 50 );
+        gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, -1, -1 );
     }
 
     if(gpixbuf != NULL)
     {
         // temporarily save to file
-        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", 0, (const char*) 0 );
+        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "png", NULL, NULL );
 
         // pull temporary file's image out as QImage
         QImage image( tempImagePath );
