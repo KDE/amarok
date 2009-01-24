@@ -45,6 +45,11 @@ public:
 
     virtual ContextView *view() = 0;
     
+public slots:
+    void showApplet( Plasma::Applet* ) {}
+    void moveApplet( Plasma::Applet*, int, int ) {}
+
+    
 };
 
 } // Context namespace

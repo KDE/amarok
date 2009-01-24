@@ -126,8 +126,15 @@ void
 Context::VerticalAppletLayout::moveApplet( Plasma::Applet* applet, int oldLoc, int newLoc)
 {
     DEBUG_BLOCK
+    // if oldLoc is -1 we search for the applet to get the real location
+    if( oldLoc == -1 )
+        oldLoc = m_appletList.indexOf( applet );
+    if( oldLoc == -1 )
+        debug() << "COULDN'T FIND APPLET IN LIST!";
+    
     debug() << "moving applet in layout from" << oldLoc << "to" << newLoc;
-    if( oldLoc <  0 || oldLoc > m_appletList.size() - 1 || newLoc < 0 || newLoc > m_appletList.size() )
+        
+    if( oldLoc <  0 || oldLoc > m_appletList.size() - 1 || newLoc < 0 || newLoc > m_appletList.size() || oldLoc == newLoc )
         return;
     m_appletList.insert( newLoc, m_appletList.takeAt( oldLoc ) );
     showAtIndex( minIndexWithAppletOnScreen( qMin( oldLoc, newLoc ) ) );

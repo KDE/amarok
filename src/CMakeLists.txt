@@ -263,7 +263,13 @@ set( libcontextview_SRCS
     context/LyricsManager.cpp
 	context/ToolbarView.cpp
     context/layouts/ContextLayout.cpp
-    context/layouts/VerticalLayout.cpp
+    context/layouts/VerticalLayout.cpp	
+	context/toolbar/AppletItemOverlay.cpp
+	context/toolbar/AppletToolbar.cpp 
+	context/toolbar/AppletToolbarAddItem.cpp
+	context/toolbar/AppletToolbarAppletItem.cpp
+	context/toolbar/AppletToolbarConfigItem.cpp
+	context/toolbar/AppletToolbarMimeData.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/ToolBoxIcon.cpp
     context/widgets/ContainmentArrow.cpp

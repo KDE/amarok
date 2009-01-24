@@ -8,11 +8,6 @@ include_directories( toolbar
 
 set(context_SRCS 
 	VerticalToolbarContainment.cpp 
-	toolbar/AppletToolbar.cpp 
-	toolbar/AppletToolbarAddItem.cpp
-	toolbar/AppletToolbarAppletItem.cpp
-	toolbar/AppletToolbarConfigItem.cpp
-	toolbar/AppletToolbarMimeData.cpp
 	VerticalAppletLayout.cpp
 	)
 

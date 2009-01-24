@@ -25,7 +25,6 @@ class QGraphicsLinearLayout;
 namespace Context
 {
 
-class AppletToolbar;
 class VerticalAppletLayout;
 
 class VerticalToolbarContainment : public Containment
@@ -53,15 +52,18 @@ class VerticalToolbarContainment : public Containment
     public slots:
         Applet* addApplet( const QString& pluginName, const int );
         void    appletRemoved( Plasma::Applet* );
+        // these slots below are forwarded to the layout
+        void showApplet( Plasma::Applet* );
+        void moveApplet( Plasma::Applet*, int, int );
         
     protected:
-        void wheelEvent( QWheelEvent* event );
+        virtual void wheelEvent( QGraphicsSceneWheelEvent* event );
     signals:
         void updatedContainment( Containment* );
-    
+        void appletAdded( Plasma::Applet*, int );
+        
     private:
         ContextView* m_view;
-        AppletToolbar* m_toolbar;
         VerticalAppletLayout* m_applets;
 };
 

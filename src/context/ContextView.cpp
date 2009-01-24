@@ -83,9 +83,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     //    amarokContainment->addCurrentTrack();
     }
 
-    PERF_LOG( "Showing home in contextview" )
-    showHome();
-    PERF_LOG( "done showing home in contextview" )
         
 }
 

@@ -119,10 +119,8 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
 void
 AmarokToolBoxMenu::setContainment( Containment *newContainment )
 {
-    DEBUG_BLOCK
     if( m_containment != newContainment )
     {        
-        debug() << "got new containment with corona" << newContainment->corona();
         Plasma::Corona *corona = newContainment->corona();        
         if( !corona )
             return;
@@ -137,7 +135,6 @@ AmarokToolBoxMenu::setContainment( Containment *newContainment )
             disconnect( containment, SIGNAL( appletRemoved( Plasma::Applet * ) ),
                  this, SLOT( appletRemoved( Plasma::Applet * ) ) );
         }
-        debug() << "setting up applets";
         m_containment = newContainment;
         initRunningApplets();
         populateMenu();

@@ -333,10 +333,10 @@ MainWindow::createContextView( Plasma::Containment *containment )
             this, SLOT( createContextView( Plasma::Containment* ) ) );
     PERF_LOG( "Creating ContexView" )
     m_contextView = new Context::ContextView( containment, m_corona, m_contextWidget );
-    m_contextView->setFrameShape( QFrame::NoFrame );
-    
-    m_contextToolbarView = new Context::ToolbarView( m_corona, m_contextWidget );
+    m_contextView->setFrameShape( QFrame::NoFrame );   
+    m_contextToolbarView = new Context::ToolbarView( containment, m_corona, m_contextWidget );
     m_contextToolbarView->setFrameShape( QFrame::NoFrame );
+    m_contextView->showHome();
     PERF_LOG( "ContexView created" )
 }
 

@@ -69,6 +69,12 @@ public:
         Clear the context scene of all items, discarding any data/widgets currently on the scene.
     */
     void clear();
+    
+    /** 
+        Shows the home state. Loads applets from config file.
+    */
+    void showHome();
+
 
 public slots:
 
@@ -90,8 +96,6 @@ private:
     void updateContainmentsGeometry();
       
     void loadConfig();
-
-    void showHome();
 
     typedef QPointer< Context::Applet > AppletPointer;    
 
