@@ -43,6 +43,8 @@
 #include "metadata/m4a/mp4file.h"
 #include "metadata/m4a/mp4itunestag.h"
 #endif
+#include "metadata/asf/asffile.h"
+#include "metadata/asf/asftag.h"
 
 // converts a peak value from the normal digital scale form to the more useful decibel form
 // decibels are relative to the /adjusted/ waveform
@@ -230,6 +232,28 @@ static Meta::ReplayGainTagMap readXiphTags( TagLib::Ogg::XiphComment *tag )
     return outputMap;
 }
 
+static Meta::ReplayGainTagMap readASFTags( TagLib::ASF::Tag *tag )
+{
+    const TagLib::ASF::AttributeListMap &tagMap = tag->attributeListMap();
+    Meta::ReplayGainTagMap outputMap;
+
+    if ( !tagMap["REPLAYGAIN_TRACK_GAIN"].isEmpty() )
+    {
+        maybeAddGain( tagMap["REPLAYGAIN_TRACK_GAIN"].front().toString(), Meta::ReplayGain_Track_Gain, &outputMap );
+        if ( !tagMap["REPLAYGAIN_TRACK_PEAK"].isEmpty() )
+            maybeAddPeak( tagMap["REPLAYGAIN_TRACK_PEAK"].front().toString(), Meta::ReplayGain_Track_Peak, &outputMap );
+    }
+
+    if ( !tagMap["REPLAYGAIN_ALBUM_GAIN"].isEmpty() )
+    {
+        maybeAddGain( tagMap["REPLAYGAIN_ALBUM_GAIN"].front().toString(), Meta::ReplayGain_Album_Gain, &outputMap );
+        if ( !tagMap["REPLAYGAIN_ALBUM_PEAK"].isEmpty() )
+            maybeAddPeak( tagMap["REPLAYGAIN_ALBUM_PEAK"].front().toString(), Meta::ReplayGain_Album_Peak, &outputMap );
+    }
+
+    return outputMap;
+}
+
 Meta::ReplayGainTagMap
 Meta::readReplayGainTags( TagLib::FileRef fileref )
 {
@@ -259,6 +283,11 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
     {
         if ( file->tag() )
             map = readXiphTags( file->tag() );
+    }
+    else if ( TagLib::ASF::File *file = dynamic_cast<TagLib::ASF::File *>( fileref.file() ) )
+    {
+        if ( file->tag() )
+            map = readASFTags( file->tag() );
     }
     return map;
 }
