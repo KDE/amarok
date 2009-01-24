@@ -88,7 +88,7 @@ namespace TagLib {
        * Returns the Tag for this file.  This will be an APE tag, an ID3v1 tag
        * or a combination of the two.
        */
-      virtual TagLib::Tag *tag() const;
+      virtual MP4::Tag *tag() const;
 
       /*!
        * Returns the mp4 itunes::Properties for this file.  If no audio properties

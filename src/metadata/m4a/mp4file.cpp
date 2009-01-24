@@ -104,7 +104,7 @@ MP4::File::~File()
   delete d;
 }
 
-Tag *MP4::File::tag() const
+MP4::Tag *MP4::File::tag() const
 {
   return &d->mp4tag;
 }
