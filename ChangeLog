@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Ipod support now uses/depends on libgpod 0.7.0
     * Bookmarking specific positions within local tracks and downloaded local
       podcast episodes.
     * When the last.fm service is active, any track, from any collection or
