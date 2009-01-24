@@ -63,7 +63,7 @@ SearchWidget::init( QWidget *parent, bool advanced )
     m_sw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_sw->setClearButtonShown( true );
     m_sw->setFrame( true );
-    m_sw->setToolTip( i18n( "Enter space-separated terms to search in the playlist." ) );
+    m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
     layout->setContentsMargins( 0, 0, 0, 0 );
@@ -72,7 +72,7 @@ SearchWidget::init( QWidget *parent, bool advanced )
     m_toolBar = new QToolBar( searchBox );
 
     if ( advanced ) {
-        m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit playlist filter" ), this );
+        m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
         m_filterAction->setObjectName( "filter" );
         m_toolBar->addAction( m_filterAction );
 
