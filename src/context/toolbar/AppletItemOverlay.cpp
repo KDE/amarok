@@ -345,7 +345,7 @@ Context::AppletItemOverlay::applet()
 void
 Context::AppletItemOverlay::resizeEvent( QResizeEvent* )
 {
-    m_deleteIcon->setGeometry( QRect( QPoint( ( size().width() - (m_deleteIcon->size().width() ) ) - 10, 0 ), m_deleteIcon->geometry().size() ) );
+    m_deleteIcon->setGeometry( QRect( QPoint( ( size().width() - (m_deleteIcon->size().width() ) ) , 0 ), m_deleteIcon->geometry().size() ) );
 }
 
 void
