@@ -185,10 +185,7 @@ AmpacheService::authenticate()
 
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
-    The::statusBar()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating" ) );
-
-   // if ( m_xmlDownloadJob->exec() )
-//        authenticationComplete( m_xmlDownloadJob );
+    The::statusBar()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
 }
 
 void AmpacheService::authenticationComplete(KJob * job)
