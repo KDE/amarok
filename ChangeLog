@@ -33,6 +33,10 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
+    * Doubleclick on a podcast channel appends all it's child episodes to the
+      playlist.
+    * Delete and download actions will only be shown when relevant to the
+      selected podcast episode.
     * Major refactoring of the podcast model and view to allow custom actions
       per podcasts source.
     * Compilation fixed for the OpenSolaris Operating System.
