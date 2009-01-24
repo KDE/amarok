@@ -431,7 +431,10 @@ void
 SqlPodcastProvider::slotConfigureChannel()
 {
     DEBUG_BLOCK
-    configureChannel( The::podcastModel()->selectedChannels().first() );
+    //only one channel should be selected or dragged because
+    //of the actions we've returned in channelActions()
+    if( The::podcastModel()->selectedChannels().count() )
+        configureChannel( The::podcastModel()->selectedChannels().first() );
 }
 
 void
