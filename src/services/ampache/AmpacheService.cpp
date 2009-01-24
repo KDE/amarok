@@ -184,12 +184,11 @@ AmpacheService::authenticate()
     debug() << "Authenticating with string: " << authenticationString;
 
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
-    /*connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
-    The::statusBar() ->newProgressOperation( m_xmlDownloadJob )
-    .setDescription( i18n( "Authenticating" ) );*/
+    connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
+    The::statusBar()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating" ) );
 
-    if ( m_xmlDownloadJob->exec() )
-        authenticationComplete( m_xmlDownloadJob );
+   // if ( m_xmlDownloadJob->exec() )
+//        authenticationComplete( m_xmlDownloadJob );
 }
 
 void AmpacheService::authenticationComplete(KJob * job)
