@@ -263,7 +263,7 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
     debug() << p << g << "<-- movin'?";
     g.moveLeft( p.x() + m_offset );
 
-    m_applet->setGeometry( g );
+  //  m_applet->setGeometry( g );
 
     // swap items if we pass completely over the next/previous item or cross
     // more than halfway across it, whichever comes first
@@ -292,12 +292,12 @@ Context::AppletItemOverlay::mouseReleaseEvent( QMouseEvent *event )
 
     if( !m_origin.isNull() ) 
     {
-        debug() << m_clickDrag << m_origin << mapToParent( event->pos() );
+   //     debug() << m_clickDrag << m_origin << mapToParent( event->pos() );
         m_clickDrag = abs( mapToParent( event->pos() ).x() - m_origin.x() ) < KGlobalSettings::dndEventDelay();
 
         if( m_clickDrag ) 
         {
-            debug() << "click dragging." << this << mouseGrabber();
+  //          debug() << "click dragging." << this << mouseGrabber();
             setMouseTracking( true );
             event->setAccepted( false );
             return;
@@ -305,7 +305,7 @@ Context::AppletItemOverlay::mouseReleaseEvent( QMouseEvent *event )
     }
 
     releaseMouse();
-    debug() << "m_origin is null, canceling drag and putting applet back";
+  //  debug() << "m_origin is null, canceling drag and putting applet back";
     m_layout->removeItem( m_spacer );
     m_spacer->deleteLater();
     m_spacer = 0;
@@ -411,7 +411,7 @@ Context::AppletItemOverlay::syncGeometry()
 {
     DEBUG_BLOCK
     setGeometry( m_applet->geometry().toRect() );
-    debug() << "setting overlay geometry to" << m_applet->geometry().toRect();
+  //  debug() << "setting overlay geometry to" << m_applet->geometry().toRect();
 
     if( m_index > 1 ) 
     {
@@ -428,7 +428,7 @@ Context::AppletItemOverlay::syncGeometry()
     {
         m_nextGeom = QRectF();
     }
-    debug() << m_index << m_layout->count() << m_prevGeom << m_nextGeom;
+ //   debug() << m_index << m_layout->count() << m_prevGeom << m_nextGeom;
 }
 
 #include "AppletItemOverlay.moc"

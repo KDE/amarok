@@ -132,7 +132,7 @@ Context::VerticalAppletLayout::moveApplet( Plasma::Applet* applet, int oldLoc, i
     if( oldLoc == -1 )
         debug() << "COULDN'T FIND APPLET IN LIST!";
     
-    debug() << "moving applet in layout from" << oldLoc << "to" << newLoc;
+ //   debug() << "moving applet in layout from" << oldLoc << "to" << newLoc;
         
     if( oldLoc <  0 || oldLoc > m_appletList.size() - 1 || newLoc < 0 || newLoc > m_appletList.size() || oldLoc == newLoc )
         return;
