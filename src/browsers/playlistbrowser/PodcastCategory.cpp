@@ -152,21 +152,6 @@ PodcastCategory::~PodcastCategory()
 {
 }
 
-QModelIndexList
-PodcastCategory::currentItems() const
-{
-    DEBUG_BLOCK
-    if( m_podcastTreeView )
-    {
-        debug() << m_podcastTreeView->currentItems().count() << " selectedIndexes";
-        return m_podcastTreeView->currentItems();
-    }
-    else
-        debug() << "m_podcastTreeView is null";
-
-    return QModelIndexList();
-}
-
 void
 PodcastCategory::showInfo( const QModelIndex & index )
 {
@@ -389,7 +374,7 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     if( m_pd && m_pd->isHidden() )
     {
 
-        QList<PopupDropperAction*> actions = m_podcastModel->actionsFor( currentItems() );
+        QList<PopupDropperAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
 
         foreach( PopupDropperAction * action, actions )
         {
@@ -417,8 +402,7 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
     DEBUG_BLOCK
 
     KMenu menu;
-    QModelIndexList indices = currentItems();
-    debug() << indices.count() << " selectedIndexes";
+    QModelIndexList indices = selectedIndexes();
     QList<PopupDropperAction *> actions =
             m_podcastModel->actionsFor( indices );
 

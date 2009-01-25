@@ -403,6 +403,7 @@ SqlPodcastProvider::slotDownloadEpisodes()
 {
     DEBUG_BLOCK
     Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
+    debug() << episodes.count() << " episodes selected";
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =

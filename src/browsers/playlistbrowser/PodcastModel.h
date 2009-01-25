@@ -25,6 +25,7 @@
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
+#include <QPersistentModelIndex>
 #include <QVariant>
 
 class PopupDropperAction;
@@ -74,12 +75,12 @@ class PodcastModel : public QAbstractItemModel
 
         /** @returns all channels currently selected
         **/
-        Meta::PodcastChannelList selectedChannels();
+        Meta::PodcastChannelList selectedChannels() { return m_selectedChannels; }
 
         /** @returns all episodes currently selected, this includes children of a selected
         * channel
         **/
-        Meta::PodcastEpisodeList selectedEpisodes();
+        Meta::PodcastEpisodeList selectedEpisodes() { return m_selectedEpisodes; }
 
     public slots:
         void slotUpdate();
@@ -99,9 +100,13 @@ class PodcastModel : public QAbstractItemModel
 
         Q_DISABLE_COPY( PodcastModel )
 
+        Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
+        Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
         QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
         PopupDropperAction * m_appendAction;
         PopupDropperAction * m_loadAction;
+        Meta::PodcastEpisodeList m_selectedEpisodes;
+        Meta::PodcastChannelList m_selectedChannels;
 
         /** A convenience function to convert a PodcastEpisodeList into a TrackList.
         **/

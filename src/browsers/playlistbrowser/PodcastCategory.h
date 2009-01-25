@@ -50,7 +50,6 @@ class PodcastCategory : public QWidget
     public:
         static PodcastCategory *instance();
         static void destroy();
-        QModelIndexList currentItems() const;
 
     private:
         static PodcastCategory* s_instance;
@@ -91,7 +90,6 @@ class PodcastView : public Amarok::PrettyTreeView
     public:
         explicit PodcastView( PodcastModel *model, QWidget *parent = 0 );
         ~PodcastView();
-        QModelIndexList currentItems() const { return selectionModel()->selectedIndexes(); }
 
     protected:
         void mousePressEvent( QMouseEvent *event );

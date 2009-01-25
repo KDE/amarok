@@ -535,109 +535,6 @@ PlaylistBrowserNS::PodcastModel::downloadItems( QModelIndexList list )
     }
 }
 
-QList<PopupDropperAction *>
-PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
-{
-    DEBUG_BLOCK
-    QList<PopupDropperAction *> actions;
-    Meta::PodcastEpisodeList episodes;
-    Meta::PodcastChannelList channels;
-
-    if( indices.isEmpty() )
-        return actions;
-
-    foreach( const QModelIndex &index, indices )
-    {
-        if( index.isValid() && index.internalPointer() )
-        {
-            Meta::PodcastMetaCommon *pmc =
-                static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-
-            switch( pmc->podcastType() )
-            {
-                case Meta::EpisodeType:
-                {
-                    episodes << Meta::PodcastEpisodePtr(
-                            dynamic_cast<Meta::PodcastEpisode *>(pmc) );
-                    break;
-                }
-                case Meta::ChannelType:
-                {
-                    channels << Meta::PodcastChannelPtr(
-                            dynamic_cast<Meta::PodcastChannel *>(pmc) );
-                    break;
-                }
-            }
-        }
-    }
-
-    actions << createCommonActions( indices );
-
-    //HACK: since we only have one PodcastProvider implementation
-    PodcastProvider *provider = The::playlistManager()->defaultPodcasts();
-    if( provider )
-    {
-        if( !episodes.isEmpty() )
-            actions << provider->episodeActions( episodes );
-        if( !channels.isEmpty() )
-        actions << provider->channelActions( channels );
-    }
-
-    return actions;
-}
-
-QList< PopupDropperAction * >
-PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
-{
-    Q_UNUSED( indices )
-    QList< PopupDropperAction * > actions;
-
-    if( m_appendAction == 0 )
-    {
-        m_appendAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "append",
-            KIcon( "media-track-add-amarok" ),
-            i18n( "&Append to Playlist" ),
-            this
-        );
-        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
-    }
-
-    if( m_loadAction == 0 )
-    {
-        m_loadAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "load",
-            KIcon( "folder-open" ),
-            i18nc( "Replace the currently loaded tracks with these",
-            "&Load" ),
-            this
-        );
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
-    }
-
-    /*TODO: rename episodes
-    if( m_renameAction == 0 )
-    {
-        m_renameAction =  new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "edit",
-            KIcon( "media-track-edit-amarok" ),
-            i18n( "&Rename" ),
-            this
-        );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-    }
-    */
-
-    actions << m_appendAction;
-    actions << m_loadAction;
-//     actions << m_renameAction;
-
-    return actions;
-}
-
 void
 PlaylistBrowserNS::PodcastModel::deleteItems( QModelIndexList list )
 {
@@ -741,12 +638,95 @@ PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
     emit( layoutChanged() );
 }
 
+QList<PopupDropperAction *>
+PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
+{
+    DEBUG_BLOCK
+    QList<PopupDropperAction *> actions;
+
+    m_selectedEpisodes.clear();
+    m_selectedChannels.clear();
+    m_selectedEpisodes << selectedEpisodes( indices );
+    debug() << m_selectedEpisodes.count() << " episodes selected";
+    m_selectedChannels << selectedChannels( indices );
+
+    if( indices.isEmpty() )
+        return actions;
+
+    actions << createCommonActions( indices );
+
+    //HACK: since we only have one PodcastProvider implementation
+    PodcastProvider *provider = The::playlistManager()->defaultPodcasts();
+    if( provider )
+    {
+        if( !m_selectedEpisodes.isEmpty() )
+            actions << provider->episodeActions( m_selectedEpisodes );
+        if( !m_selectedChannels.isEmpty() )
+            actions << provider->channelActions( m_selectedChannels );
+    }
+
+    return actions;
+}
+
+QList< PopupDropperAction * >
+PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
+{
+    Q_UNUSED( indices )
+    QList< PopupDropperAction * > actions;
+
+    if( m_appendAction == 0 )
+    {
+        m_appendAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "append",
+            KIcon( "media-track-add-amarok" ),
+            i18n( "&Append to Playlist" ),
+            this
+        );
+        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
+    }
+
+    if( m_loadAction == 0 )
+    {
+        m_loadAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "load",
+            KIcon( "folder-open" ),
+            i18nc( "Replace the currently loaded tracks with these",
+            "&Load" ),
+            this
+        );
+        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
+    }
+
+    /*TODO: rename episodes
+    if( m_renameAction == 0 )
+    {
+        m_renameAction =  new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "edit",
+            KIcon( "media-track-edit-amarok" ),
+            i18n( "&Rename" ),
+            this
+        );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+    }
+    */
+
+    actions << m_appendAction;
+    actions << m_loadAction;
+//     actions << m_renameAction;
+
+    return actions;
+}
+
 Meta::PodcastChannelList
-PlaylistBrowserNS::PodcastModel::selectedChannels()
+PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indices )
 {
     Meta::PodcastChannelList channels;
-    Meta::PodcastMetaCommon *pmc;
-    foreach( const QModelIndex &index, The::podcastCategory()->currentItems() )
+    Meta::PodcastMetaCommon *pmc = 0;
+    debug() << indices.count() << " indices selected";
+    foreach( const QModelIndex &index, indices )
     {
         if( !index.isValid() )
             break;
@@ -768,13 +748,13 @@ PlaylistBrowserNS::PodcastModel::selectedChannels()
 }
 
 Meta::PodcastEpisodeList
-PlaylistBrowserNS::PodcastModel::selectedEpisodes()
+PlaylistBrowserNS::PodcastModel::selectedEpisodes( const QModelIndexList &indices )
 {
     DEBUG_BLOCK
     Meta::PodcastEpisodeList episodes;
-    Meta::PodcastMetaCommon *pmc;
-    debug() << The::podcastCategory()->currentItems().count() << " items selected";
-    foreach( const QModelIndex &index, The::podcastCategory()->currentItems() )
+    Meta::PodcastMetaCommon *pmc = 0;
+    debug() << indices.count() << " indices selected";
+    foreach( const QModelIndex &index, indices )
     {
         if( !index.isValid() )
             break;
@@ -812,6 +792,7 @@ PlaylistBrowserNS::PodcastModel::slotLoad()
     DEBUG_BLOCK
 
     Meta::PodcastEpisodeList episodes = selectedEpisodes();
+    debug() << episodes.count() << " selectedEpisodes";
 
     if( !episodes.empty() )
     {
