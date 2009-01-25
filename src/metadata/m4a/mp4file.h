@@ -46,18 +46,17 @@
 #include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <amarok_libs_export.h>
-#include "mp4fourcc.h"
+#include "mp4itunestag.h"
 
 namespace TagLib {
 
   typedef unsigned long long ulonglong;
 
-  class Tag;
-
   namespace MP4
   {
     class Mp4TagsProxy;
     class Mp4PropsProxy;
+    class Fourcc;
 
     //! An implementation of TagLib::File with mp4 itunes specific methods
 
@@ -88,7 +87,7 @@ namespace TagLib {
        * Returns the Tag for this file.  This will be an APE tag, an ID3v1 tag
        * or a combination of the two.
        */
-      virtual MP4::Tag *tag() const;
+      virtual Tag *tag() const;
 
       /*!
        * Returns the mp4 itunes::Properties for this file.  If no audio properties
