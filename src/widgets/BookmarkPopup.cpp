@@ -25,13 +25,32 @@
 
 #include <QPainter>
 
-BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label ) : QWidget ( parent ), m_label ( label )
+
+BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label )
+    : QWidget ( parent )
+    , m_label( label )
 {
+
+    //calculate height and width
+    const int margin = 2;
+    QFontMetrics fm( font() );
+
+    m_lineHeight = fm.height();
+
+    int line1Width = fm.width( i18n( "Bookmark" ) );
+    int line2Width = fm.width( m_label );
+
+    m_height = 44;
+    m_width = qMax( line1Width, line2Width ) + 2 * margin;
+
+    setGeometry( 0, 0, m_width, m_height );
+
+
 }
 
 QSize BookmarkPopup::sizeHint() const
 {
-    return QSize ( 101, 46 );
+    return QSize ( m_width, m_height );
 }
 
 QSizePolicy BookmarkPopup::sizePolicy() const
@@ -41,11 +60,13 @@ QSizePolicy BookmarkPopup::sizePolicy() const
 
 QSize BookmarkPopup::minimumSizeHint() const
 {
-    return QSize ( 101, 41 );
+    return QSize ( m_width, m_height );
 }
 
 void BookmarkPopup::paintEvent ( QPaintEvent* )
 {
+    const int margin = 2;
+    
     QPainter p ( this );
     p.setRenderHint ( QPainter::Antialiasing );
     p.setBrush ( Qt::white );
@@ -53,18 +74,19 @@ void BookmarkPopup::paintEvent ( QPaintEvent* )
     QPen pen = QPen ( Qt::black );
     pen.setCosmetic ( true );
     p.setPen ( pen );
-    QRect rect = QRect ( 0,0, 100, 40 );
+    QRect rect = QRect ( 0,0, m_width, m_height );
     p.drawRoundedRect ( rect, 5, 5 );
     p.setOpacity ( 1 );
 
-    p.drawPixmap ( 70, 0, The::svgHandler()->renderSvg ( "bookmark", 6, 20, "bookmark" ) ); // TODO THIS DOESNT WORK
+    p.drawPixmap ( m_width - 20, 0, The::svgHandler()->renderSvg ( "bookmark", 6, 20, "bookmark" ) );
 
     p.setPen ( Qt::gray );
-    rect = QRect ( 0, 3, 100, 40 );
+    rect = QRect ( 0, 3, m_width, m_lineHeight );
     p.drawText ( rect, Qt::AlignHCenter, i18n ( "Bookmark" ) );
 
     p.setPen ( Qt::black );
-    rect = QRect ( 0, 10, 100, 40 );
+    rect = QRect ( 0, m_lineHeight + 6, m_width, m_lineHeight );
     p.drawText ( rect, Qt::AlignCenter, m_label );
+
 }
 

@@ -74,11 +74,11 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
     DEBUG_BLOCK
     Q_UNUSED( event )
     debug() << The::svgHandler()->themeFile();
-    QString label = Meta::secToPrettyTime( m_mseconds/1000 );
+    QString timeLabel = Meta::secToPrettyTime( m_mseconds/1000 );
     if ( !m_tooltip )
-        m_tooltip = new BookmarkPopup ( nativeParentWidget(), label );
+        m_tooltip = new BookmarkPopup ( nativeParentWidget(), m_name );
     QPoint pt = mapTo( nativeParentWidget(), QPoint( 0, 0 ) );
-    m_tooltip->setGeometry ( pt.x(), 25, 101, 46 ); //TODO better way to calc the y position
+    m_tooltip->move ( pt.x(), 25 ); //TODO better way to calc the y position
     m_tooltip->show();
 }
 

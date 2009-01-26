@@ -25,7 +25,7 @@
 class BookmarkPopup : public QWidget
 {
 public:
-    BookmarkPopup ( QWidget* parent, QString label );
+    BookmarkPopup ( QWidget* parent, QString label);
 
     virtual QSize sizeHint () const;
     virtual QSizePolicy sizePolicy() const;
@@ -37,6 +37,10 @@ protected:
 
 private:
     QString m_label;
+    int m_width;
+    int m_height;
+
+    int m_lineHeight;
 };
 
 #endif // BOOKMARKPOPUP_H
