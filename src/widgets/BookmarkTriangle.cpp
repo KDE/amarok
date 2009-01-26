@@ -78,7 +78,7 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
     QString label = Meta::secToPrettyTime( m_mseconds/1000 );
     if ( !m_tooltip )
         m_tooltip = new BookmarkPopup ( nativeParentWidget(), label );
-    QPoint pt = mapToGlobal( QPoint( 0,0 ) );
+    QPoint pt = mapTo( nativeParentWidget(), QPoint( 0, 0 ) );
     m_tooltip->setGeometry ( pt.x(), 25, 101, 46 ); //TODO better way to calc the y position
     m_tooltip->show();
 }
