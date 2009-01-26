@@ -164,7 +164,7 @@ ASF::File::FilePropertiesObject::guid()
 }
 
 void
-ASF::File::FilePropertiesObject::parse(ASF::File *file, uint size)
+ASF::File::FilePropertiesObject::parse(ASF::File *file, TagLib::uint size)
 {
   BaseObject::parse(file, size);
   file->d->properties->setLength((int)(data.mid(40, 8).toLongLong(false) / 10000000L - data.mid(56, 8).toLongLong(false) / 1000L));
@@ -177,7 +177,7 @@ ASF::File::StreamPropertiesObject::guid()
 }
 
 void
-ASF::File::StreamPropertiesObject::parse(ASF::File *file, uint size)
+ASF::File::StreamPropertiesObject::parse(ASF::File *file, TagLib::uint size)
 {
   BaseObject::parse(file, size);
   file->d->properties->setChannels(data.mid(56, 2).toShort(false));
@@ -192,7 +192,7 @@ ASF::File::ContentDescriptionObject::guid()
 }
 
 void
-ASF::File::ContentDescriptionObject::parse(ASF::File *file, uint /*size*/)
+ASF::File::ContentDescriptionObject::parse(ASF::File *file, TagLib::uint /*size*/)
 {
   file->d->contentDescriptionObject = this;
   int titleLength = file->readWORD();
@@ -236,7 +236,7 @@ ASF::File::ExtendedContentDescriptionObject::guid()
 }
 
 void
-ASF::File::ExtendedContentDescriptionObject::parse(ASF::File *file, uint /*size*/)
+ASF::File::ExtendedContentDescriptionObject::parse(ASF::File *file, TagLib::uint /*size*/)
 {
   file->d->extendedContentDescriptionObject = this;
   int count = file->readWORD();
@@ -263,7 +263,7 @@ ASF::File::MetadataObject::guid()
 }
 
 void
-ASF::File::MetadataObject::parse(ASF::File *file, uint /*size*/)
+ASF::File::MetadataObject::parse(ASF::File *file, TagLib::uint /*size*/)
 {
   file->d->metadataObject = this;
   int count = file->readWORD();
@@ -290,7 +290,7 @@ ASF::File::MetadataLibraryObject::guid()
 }
 
 void
-ASF::File::MetadataLibraryObject::parse(ASF::File *file, uint /*size*/)
+ASF::File::MetadataLibraryObject::parse(ASF::File *file, TagLib::uint /*size*/)
 {
   file->d->metadataLibraryObject = this;
   int count = file->readWORD();
@@ -317,7 +317,7 @@ ASF::File::HeaderExtensionObject::guid()
 }
 
 void
-ASF::File::HeaderExtensionObject::parse(ASF::File *file, uint /*size*/)
+ASF::File::HeaderExtensionObject::parse(ASF::File *file, TagLib::uint /*size*/)
 {
   file->d->headerExtensionObject = this;
   file->seek(18, File::Current);

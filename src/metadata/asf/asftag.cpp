@@ -151,7 +151,7 @@ ASF::Tag::setGenre(const String &value)
 }
 
 void
-ASF::Tag::setYear(uint value)
+ASF::Tag::setYear(TagLib::uint value)
 {
   setAttribute("WM/Year", String::number(value));
 }
