@@ -491,14 +491,12 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    DEBUG_BLOCK
     return type == Meta::Capability::Editable || type == Meta::Capability::Importable || type == Meta::Capability::CurrentTrackActions;
 }
 
 Meta::Capability*
 Track::asCapabilityInterface( Meta::Capability::Type type )
 {
-    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::Editable:
