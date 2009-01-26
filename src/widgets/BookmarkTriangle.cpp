@@ -30,7 +30,6 @@
 
 BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name ) : QWidget ( parent ), m_mseconds ( milliseconds ), m_name ( name ), m_tooltip ( 0 )
 {
-    setToolTip ( i18n ( "Bookmark: %1", m_name ) );
 }
 
 BookmarkTriangle::~BookmarkTriangle()
