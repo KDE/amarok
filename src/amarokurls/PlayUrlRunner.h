@@ -37,6 +37,15 @@ public:
     virtual QString command () const;
     virtual bool run ( AmarokUrl url );
 
+    /**
+     * This function takes a url for a track, and returns a list
+     * of bookmarks (represented by play amarokurls) for the track.
+     * The definition of a play amarokurl is in PlayUrlGenerator
+     *
+     * @param url the playableUrl() of a Meta::Track
+     * @return a list of bookmarks. the list is empty if no bookmarks exist.
+     * @see PlayUrlGenerator
+     */
     static BookmarkList bookmarksFromUrl( KUrl url );
 
 };

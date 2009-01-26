@@ -29,6 +29,9 @@ class AmarokUrl;
  *
  * A class used to generate play urls.
  *
+ * The format of a 'play' amarokurl is:
+ * amarokurl://play/<Base 64 Encoded playableUrl() of the track>/<integer seconds>
+ *
  * @author Casey Link <unnaemdrambler@gmail.com>
  */
 class AMAROK_EXPORT PlayUrlGenerator {

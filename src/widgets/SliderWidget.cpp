@@ -378,16 +378,17 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 void Amarok::TimeSlider::drawTriangle( const QString &name, int seconds )
 {
     DEBUG_BLOCK
-    int ms = seconds * 1000;
-//     int x_pos = QStyle::sliderPositionFromValue( minimum(), maximum(), ms, width() );
+    int ms = seconds * 1000; // convert to milliseconds
     int sliderHeight = height() - ( m_sliderInsertY * 2 );
     int sliderLeftWidth = sliderHeight / 3;
+
+    // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
     int x_pos = ( ( ( double ) ms - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
     BookmarkTriangle * tri = new BookmarkTriangle( this, ms, name );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     m_triangles << tri;
-    tri->setGeometry(x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width
+    tri->setGeometry( x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width
     tri->show();
 }
 
