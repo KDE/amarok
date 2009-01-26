@@ -3,7 +3,7 @@
                            -------------------
   begin                : Dec 15 2003
   copyright            : (C) 2003-2008 by Mark Kretschmann
-  email                : kretschmann@kde.org 
+  email                : kretschmann@kde.org
   copyright            : (C) 2005 by Gábor Lehel
   email                : illissius@gmail.com
   copyright            : (C) 2008 by Dan Meltzer
@@ -203,7 +203,7 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 
     QFontMetrics fm( KGlobalSettings::fixedFont() );
     m_textHeight = fm.height();
-    
+
 }
 
 void
@@ -215,7 +215,7 @@ Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
         emit mute();
         return;
     }
-    
+
     if( e->button() != Qt::RightButton )
     {
         Amarok::Slider::mousePressEvent( e );
@@ -283,10 +283,10 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     const int sliderY =  ( m_iconHeight -m_sliderHeight ) / 2;
 
     paintCustomSlider( p, m_sliderX, sliderY, m_sliderWidth, m_sliderHeight );
-    
+
     //Using pre-rendered SVG for now, cause QtSvg renders the icon wrong
     //p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
-    
+
     const QImage volumeIcon( KStandardDirs::locate( "data", "amarok/images/volume_icon.png" ) );
     p->drawImage( 0, 0, volumeIcon.scaled( m_iconWidth, m_iconHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
 

@@ -19,6 +19,7 @@
 
 #include "BookmarkTriangle.h"
 #include "Debug.h"
+#include "MetaUtility.h"
 #include "SvgHandler.h"
 
 #include <KLocale>
@@ -53,19 +54,40 @@ QSize BookmarkTriangle::minimumSizeHint() const
 void BookmarkTriangle::paintEvent ( QPaintEvent* )
 {
     QPainter p ( this );
-    p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "bookmark_position",10 , 10, "bookmark_position" ) );
+    p.drawPixmap ( 0, 0, The::svgHandler()->renderSvg ( "blue_triangle", 10 , 10, "blue_triangle" ) ); // TODO THIS DOESNT WORK
 }
 
 void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
 {
-
+    Q_UNUSED( event )
+// we don't do anything here, but we want to prevent the event from being
+// propagated to the parent.
 }
 
 void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
 {
-    Q_UNUSED( event )
-    emit clicked( m_mseconds );
+    Q_UNUSED ( event )
+    emit clicked ( m_mseconds );
 }
 
+void BookmarkTriangle::enterEvent ( QEvent * event )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( event )
+    debug() << The::svgHandler()->themeFile();
+    QString label = Meta::secToPrettyTime( m_mseconds/1000 );
+    if ( !m_tooltip )
+        m_tooltip = new BookmarkPopup ( nativeParentWidget(), label );
+    QPoint pt = mapToGlobal( QPoint( 0,0 ) );
+    m_tooltip->setGeometry ( pt.x(), 25, 101, 46 ); //TODO better way to calc the y position
+    m_tooltip->show();
+}
+
+void BookmarkTriangle::leaveEvent ( QEvent * event )
+{
+    Q_UNUSED( event )
+    if ( m_tooltip )
+        m_tooltip->hide();
+}
 #include "BookmarkTriangle.moc"
 

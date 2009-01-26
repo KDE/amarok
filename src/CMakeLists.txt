@@ -533,6 +533,7 @@ set(amaroklib_LIB_SRCS
     widgets/VolumeWidget.cpp
     widgets/Splitter.cpp
     widgets/BookmarkTriangle.cpp
+    widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
 )

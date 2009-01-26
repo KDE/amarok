@@ -17,44 +17,26 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
 
-#ifndef BOOKMARKTRIANGLE_H
-#define BOOKMARKTRIANGLE_H
+#ifndef BOOKMARKPOPUP_H
+#define BOOKMARKPOPUP_H
 
-#include "BookmarkPopup.h"
-
-#include <QEvent>
-#include <QMouseEvent>
 #include <QPaintEvent>
 #include <QWidget>
-
-class QSize;
-class QSizePolicy;
-
-
-class BookmarkTriangle : public QWidget
+class BookmarkPopup : public QWidget
 {
-    Q_OBJECT
 public:
-    BookmarkTriangle ( QWidget *parent, int milliseconds, QString name );
-    ~BookmarkTriangle();
+    BookmarkPopup ( QWidget* parent, QString label );
+
     virtual QSize sizeHint () const;
     virtual QSizePolicy sizePolicy() const;
     virtual QSize minimumSizeHint () const;
 
-    virtual void mousePressEvent ( QMouseEvent * event );
-    virtual void mouseReleaseEvent ( QMouseEvent * event );
-    virtual void enterEvent ( QEvent * event );
-    virtual void leaveEvent ( QEvent * event );
+protected:
 
     virtual void paintEvent ( QPaintEvent* );
 
-signals:
-    void clicked( int );
-
 private:
-    int m_mseconds;
-    QString m_name;
-    BookmarkPopup* m_tooltip;
+    QString m_label;
 };
 
-#endif // BOOKMARKTRIANGLE_H
+#endif // BOOKMARKPOPUP_H

@@ -17,44 +17,54 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
 
-#ifndef BOOKMARKTRIANGLE_H
-#define BOOKMARKTRIANGLE_H
-
 #include "BookmarkPopup.h"
+#include "SvgHandler.h"
 
-#include <QEvent>
-#include <QMouseEvent>
-#include <QPaintEvent>
-#include <QWidget>
+#include <KLocale>
+#include <KPixmapCache>
 
-class QSize;
-class QSizePolicy;
+#include <QPainter>
 
-
-class BookmarkTriangle : public QWidget
+BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label ) : QWidget ( parent ), m_label ( label )
 {
-    Q_OBJECT
-public:
-    BookmarkTriangle ( QWidget *parent, int milliseconds, QString name );
-    ~BookmarkTriangle();
-    virtual QSize sizeHint () const;
-    virtual QSizePolicy sizePolicy() const;
-    virtual QSize minimumSizeHint () const;
+}
 
-    virtual void mousePressEvent ( QMouseEvent * event );
-    virtual void mouseReleaseEvent ( QMouseEvent * event );
-    virtual void enterEvent ( QEvent * event );
-    virtual void leaveEvent ( QEvent * event );
+QSize BookmarkPopup::sizeHint() const
+{
+    return QSize ( 101, 46 );
+}
 
-    virtual void paintEvent ( QPaintEvent* );
+QSizePolicy BookmarkPopup::sizePolicy() const
+{
+    return QSizePolicy ( QSizePolicy::Preferred, QSizePolicy::Minimum );
+}
 
-signals:
-    void clicked( int );
+QSize BookmarkPopup::minimumSizeHint() const
+{
+    return QSize ( 101, 41 );
+}
 
-private:
-    int m_mseconds;
-    QString m_name;
-    BookmarkPopup* m_tooltip;
-};
+void BookmarkPopup::paintEvent ( QPaintEvent* )
+{
+    QPainter p ( this );
+    p.setRenderHint ( QPainter::Antialiasing );
+    p.setBrush ( Qt::white );
+    p.setOpacity ( 0.7 );
+    QPen pen = QPen ( Qt::black );
+    pen.setCosmetic ( true );
+    p.setPen ( pen );
+    QRect rect = QRect ( 0,0, 100, 40 );
+    p.drawRoundedRect ( rect, 5, 5 );
+    p.setOpacity ( 1 );
 
-#endif // BOOKMARKTRIANGLE_H
+    p.drawPixmap ( 70, 0, The::svgHandler()->renderSvg ( "bookmark", 6, 20, "bookmark" ) ); // TODO THIS DOESNT WORK
+
+    p.setPen ( Qt::gray );
+    rect = QRect ( 0, 3, 100, 40 );
+    p.drawText ( rect, Qt::AlignHCenter, i18n ( "Bookmark" ) );
+
+    p.setPen ( Qt::black );
+    rect = QRect ( 0, 10, 100, 40 );
+    p.drawText ( rect, Qt::AlignCenter, m_label );
+}
+
