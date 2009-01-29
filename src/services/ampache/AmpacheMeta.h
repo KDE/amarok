@@ -83,7 +83,6 @@ public:
         return name() == other.name();
     }
 
-
 };
 
 }

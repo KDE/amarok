@@ -186,105 +186,94 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 {
     AmarokUrl url;
 
-    //we need to figure out the type of this thing...
-    QString target;
-    QString serviceName;
-    
-    if ( album->hasCapabilityInterface( Meta::Capability::SourceInfo ) ) {
-        //case 1, from a service:
-        debug() << "service album";
-        Meta::SourceInfoCapability * sic = qobject_cast<Meta::SourceInfoCapability *>( album->asCapabilityInterface( Meta::Capability::SourceInfo ) );
-        serviceName = sic->sourceName();
-        target = "service";
-    } else if ( album->hasCapabilityInterface( Meta::Capability::CustomActions ) ){
-        //case 2, this is something from the SqlCollection ( or potentailly a mobile
-        //device which shows up in the same view )
-        debug() << "local album";
-        target = "collection";
-    } else {
-        //case 3, no clue what this is, bail out...
-        debug() << "no idea";
-        return url;
+    Meta::BookmarkThisCapability *btc = album->as<Meta::BookmarkThisCapability>();
+    if( btc )
+    {
+        if( btc->isBookmarkable() ) {
+
+            QString albumName = album->prettyName();
+            
+            url.setCommand( "navigate" );
+            url.appendArg( btc->browserName() );
+            url.appendArg( btc->collectionName() );
+            
+
+            QString filter;
+            if ( btc->simpleFiltering() ) {
+                url.appendArg( "" );
+                filter = albumName;
+            }
+            else
+            {
+                url.appendArg( "album" );
+
+                QString artistName;
+                if ( album->albumArtist() )
+                    artistName = album->albumArtist()->prettyName();
+
+                filter = "album:\"" + albumName + "\"";
+                if ( !artistName.isEmpty() )
+                    filter += ( " AND artist:\"" + artistName + "\"" );
+            }
+
+            url.appendArg( filter );
+
+            if ( !btc->collectionName().isEmpty() )
+                url.setName( i18n( "Album \"%1\" from %2", albumName, btc->collectionName() ) );
+            else
+                url.setName( i18n( "Album \"%1\"", albumName ) );
+
+        }
+        delete btc;
     }
-       
-        
-    QString albumName = album->prettyName();
-    QString artistName;
-    if ( album->albumArtist() )
-        artistName = album->albumArtist()->prettyName();
-
-    debug() << "Got and album from service: " << serviceName;
-
-    url.setCommand( "navigate" );
-    url.appendArg( target );
-    url.appendArg( serviceName );
-    url.appendArg( "album" );
-
-    QString filter = "album:\"" + albumName + "\"";
-    if ( !artistName.isEmpty() )
-        filter += ( " AND artist:\"" + artistName + "\"" );
-
-    url.appendArg( filter );
 
     debug() << "got url: " << url.url();
-
-    
-    if ( !serviceName.isEmpty() ) 
-        url.setName( i18n( "Album \"%1\" from %2", albumName, serviceName ) );
-    else
-        url.setName( i18n( "Album \"%1\"", albumName ) );
-
-    debug() << "url name: " << url.name();
-
-
     return url;
+
 }
 
 AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 {
+
     AmarokUrl url;
 
-    QString target;
-    QString serviceName;
+    Meta::BookmarkThisCapability *btc = artist->as<Meta::BookmarkThisCapability>();
+    if( btc )
+    {
+        if( btc->isBookmarkable() ) {
 
- //case 1, from a service:
-    if ( artist->hasCapabilityInterface( Meta::Capability::SourceInfo ) ) {
-        Meta::SourceInfoCapability * sic = qobject_cast<Meta::SourceInfoCapability *>( artist->asCapabilityInterface( Meta::Capability::SourceInfo ) );
-        serviceName = sic->sourceName();
-        target = "service";
-    } else if ( true /*FIXME: we really need some check here*/ ){
-        //case 2, this is something from the SqlCollection ( or potentailly a mobile
-        //device which shows up in the same view )
-        debug() << "local artist";
-        target = "collection";
-    } else {
-        //case 3, no clue what this is, bail out...
-        debug() << "no idea";
-        return url;
+            QString artistName = artist->prettyName();
+
+            url.setCommand( "navigate" );
+            url.appendArg( btc->browserName() );
+            url.appendArg( btc->collectionName() );
+            
+
+            QString filter;
+            if ( btc->simpleFiltering() ) {
+                //for services only suporting simple filtering, do not try to set the sorting mode
+                url.appendArg( "" );
+                filter = artistName;
+            }
+            else
+            {
+                url.appendArg( "artist" );
+                filter = ( "artist:\"" + artistName + "\"" );
+            }
+
+            url.appendArg( filter );
+
+            if ( !btc->collectionName().isEmpty() )
+                url.setName( i18n( "Artist \"%1\" from %2", artistName, btc->collectionName() ) );
+            else
+                url.setName( i18n( "Artist \"%1\"", artistName ) );
+
+        }
+        delete btc;
     }
 
-    QString artistName = artist->prettyName();
-
-    debug() << "Got and artist from service: " << serviceName;
-
-    url.setCommand( "navigate" );
-    url.appendArg( target );
-    url.appendArg( serviceName );
-    url.appendArg( "artist-album" );
-
-    QString filter = "artist:\"" + artistName + "\"";
-
-    url.appendArg( filter );
-
     debug() << "got url: " << url.url();
-
-    if ( !serviceName.isEmpty() )
-        url.setName( i18n( "Artist \"%1\" from %2", artistName, serviceName ) );
-    else
-        url.setName( i18n( "Artist \"%1\"", artistName ) );
-
-    debug() << "url name: " << url.name();
-    
     return url;
+
 }
 

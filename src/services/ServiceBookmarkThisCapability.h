@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,55 +16,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-
-#ifndef BOOKMARKMETAACTIONS_H
-#define BOOKMARKMETAACTIONS_H
+ 
+#ifndef SERVICEBOOKMARKTHISCAPABILITY_H
+#define SERVICEBOOKMARKTHISCAPABILITY_H
 
 #include "amarok_export.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-#include "Meta.h"
+#include "meta/capabilities/BookmarkThisCapability.h"
+
+class BookmarkThisProvider;
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+A service specific implementation of the BookmarkThisCapability
+
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT BookmarkAlbumAction : public PopupDropperAction
-{
-    Q_OBJECT
+class AMAROK_EXPORT ServiceBookmarkThisCapability : public Meta::BookmarkThisCapability {
 public:
-    BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album );
+    ServiceBookmarkThisCapability( BookmarkThisProvider * provider );
 
-    private slots:
-        void slotTriggered();
+    ~ServiceBookmarkThisCapability();
 
-    private:
-        Meta::AlbumPtr m_album;
+    virtual bool isBookmarkable();
+    virtual QString browserName();
+    virtual QString collectionName();
+    virtual bool simpleFiltering();
+    virtual PopupDropperAction * bookmarkAction();
 
-};
+private:
 
-class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
-{
-    Q_OBJECT
-    public:
-        BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist );
-
-    private slots:
-        void slotTriggered();
-
-    private:
-        Meta::ArtistPtr m_artist;
-
-};
-
-
-
-class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public PopupDropperAction
-{
-    Q_OBJECT
-    public:
-        explicit BookmarkCurrentTrackPositionAction( QObject *parent );
-
-    private slots:
-        void slotTriggered();
+    BookmarkThisProvider * m_provider;
 };
 
 #endif

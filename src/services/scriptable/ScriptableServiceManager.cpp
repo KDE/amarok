@@ -143,6 +143,16 @@ void ScriptableServiceManager::setEmblem( const QString & serviceName, const QPi
     emit( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
+ScriptableService * ScriptableServiceManager::service(const QString &name)
+{
+    
+    if ( !m_serviceMap.contains( name ) ) {
+        return 0;
+    }
+
+    return m_serviceMap[name];
+}
+
 
 namespace The {
     ScriptableServiceManager*
@@ -161,6 +171,8 @@ namespace The {
 
 
 #include "ScriptableServiceManager.moc"
+
+
 
 
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,55 +16,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef METABOOKMARKTHISCAPABILITY_H
+#define METABOOKMARKTHISCAPABILITY_H
 
-#ifndef BOOKMARKMETAACTIONS_H
-#define BOOKMARKMETAACTIONS_H
-
-#include "amarok_export.h"
+#include "meta/Capability.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
-#include "Meta.h"
+
+namespace Meta {
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+This capability dertermines wheter a meta item in a collection can be directly bookmarked. Not all collections/services supports bookmarks on all levels, and some might not support Item level bookmarks at all as they have no query field and some might only support simple queries.
+
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT BookmarkAlbumAction : public PopupDropperAction
-{
+class BookmarkThisCapability : public Capability {
     Q_OBJECT
 public:
-    BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album );
+    virtual ~BookmarkThisCapability();
 
-    private slots:
-        void slotTriggered();
+    virtual bool isBookmarkable() { return false; }
+    virtual QString browserName() = 0;
+    virtual QString collectionName() = 0;
+    virtual bool simpleFiltering() { return false; }
+    virtual PopupDropperAction * bookmarkAction() = 0;
 
-    private:
-        Meta::AlbumPtr m_album;
-
-};
-
-class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
-{
-    Q_OBJECT
-    public:
-        BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist );
-
-    private slots:
-        void slotTriggered();
-
-    private:
-        Meta::ArtistPtr m_artist;
+    /**
+     * Get the capabilityInterfaceType of this capability
+     * @return The capabilityInterfaceType ( always Meta::Capability::BookmarkThis; )
+    */
+    static Type capabilityInterfaceType() { return Meta::Capability::BookmarkThis; }
 
 };
 
-
-
-class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public PopupDropperAction
-{
-    Q_OBJECT
-    public:
-        explicit BookmarkCurrentTrackPositionAction( QObject *parent );
-
-    private slots:
-        void slotTriggered();
-};
+}
 
 #endif

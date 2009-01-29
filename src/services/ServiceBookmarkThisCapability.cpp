@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,55 +16,45 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#include "ServiceBookmarkThisCapability.h"
 
-#ifndef BOOKMARKMETAACTIONS_H
-#define BOOKMARKMETAACTIONS_H
+#include "ServiceMetaBase.h"
 
-#include "amarok_export.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-#include "Meta.h"
-
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class AMAROK_EXPORT BookmarkAlbumAction : public PopupDropperAction
+ServiceBookmarkThisCapability::ServiceBookmarkThisCapability( BookmarkThisProvider * provider )
+    : Meta::BookmarkThisCapability()
+    , m_provider( provider )
 {
-    Q_OBJECT
-public:
-    BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album );
+}
 
-    private slots:
-        void slotTriggered();
 
-    private:
-        Meta::AlbumPtr m_album;
-
-};
-
-class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
+ServiceBookmarkThisCapability::~ServiceBookmarkThisCapability()
 {
-    Q_OBJECT
-    public:
-        BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist );
+}
 
-    private slots:
-        void slotTriggered();
-
-    private:
-        Meta::ArtistPtr m_artist;
-
-};
-
-
-
-class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public PopupDropperAction
+bool ServiceBookmarkThisCapability::isBookmarkable()
 {
-    Q_OBJECT
-    public:
-        explicit BookmarkCurrentTrackPositionAction( QObject *parent );
+    return m_provider->isBookmarkable();
+}
 
-    private slots:
-        void slotTriggered();
-};
+QString ServiceBookmarkThisCapability::browserName()
+{
+    return m_provider->browserName();
+}
 
-#endif
+QString ServiceBookmarkThisCapability::collectionName()
+{
+    return m_provider->collectionName();
+}
+
+bool ServiceBookmarkThisCapability::simpleFiltering()
+{
+    return m_provider->simpleFiltering();
+}
+
+PopupDropperAction * ServiceBookmarkThisCapability::bookmarkAction()
+{
+    return m_provider->bookmarkAction();
+}
+
+

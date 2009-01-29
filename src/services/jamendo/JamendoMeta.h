@@ -79,6 +79,10 @@ public:
     virtual QString sourceDescription();
     virtual QPixmap emblem();
 
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Jamendo.com"; }
+    virtual bool simpleFiltering() { return false; }
+
     virtual QList< PopupDropperAction *> customActions();
     virtual QList< PopupDropperAction * > currentTrackActions();
 
@@ -118,6 +122,10 @@ public:
 
     void setJamendoURL( const QString &jamendoURL );
     QString jamendoURL() const;
+
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Jamendo.com"; }
+    virtual bool simpleFiltering() { return false; }
 };
 
 
@@ -162,6 +170,10 @@ public:
     void setService( JamendoService * store );
     JamendoService * service();
 
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Jamendo.com"; }
+    virtual bool simpleFiltering() { return false; }
+
 private:
     JamendoService * m_service;
 
@@ -174,6 +186,10 @@ class JamendoGenre  : public ServiceGenre
 public:
     JamendoGenre( const QString &name );
     JamendoGenre( const QStringList &resultRow );
+
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Jamendo.com"; }
+    virtual bool simpleFiltering() { return false; }
 
 };
 

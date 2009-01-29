@@ -84,6 +84,7 @@ set(libserviceframework_SRCS
     services/InfoParserBase.cpp
     services/ServiceAlbumCoverDownloader.cpp
     services/ServiceBase.cpp
+    services/ServiceBookmarkThisCapability.cpp
     services/ServiceCollection.cpp
     services/ServiceCollectionLocation.cpp
     services/ServiceCollectionTreeView.cpp
@@ -214,6 +215,7 @@ set(meta_SRCS
     meta/PlaylistFileSupport.cpp
     meta/PrivateMetaRegistry.cpp
     meta/XSPFPlaylist.cpp
+    meta/capabilities/BookmarkThisCapability.cpp
     meta/capabilities/CollectionCapability.cpp
     meta/capabilities/CurrentTrackActionsCapability.cpp
     meta/capabilities/CustomActionsCapability.cpp

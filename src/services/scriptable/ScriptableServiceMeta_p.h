@@ -1,7 +1,7 @@
 /*
    Copyright (C) 2007 Maximilian Kossick     <maximilian.kossick@googlemail.com>
    Copyright (C) 2008 Peter ZHOU             <peterzhoulei@gmail.com>
-   Copyright (C) 2008 Nikolaj Hald Nielsen   <nhnFreespirit@@gmail.com>
+   Copyright (C) 2008 - 2009 Nikolaj Hald Nielsen   <nhnFreespirit@@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -24,8 +24,10 @@
 
 #include "Debug.h"
 #include "Meta.h"
+#include "SourceInfoCapability.h"
 
 #include <QObject>
+#include <QPixmap>
 #include <QPointer>
 #include <QString>
 
@@ -35,7 +37,49 @@
 
 // internal helper classes
 
-class ScriptableServiceInternalArtist : public Meta::Artist
+
+/**
+ * Base class for the private meta types. This is used to give these private items source info capability which is neede in some cases,for instance when bookmarking.
+ */
+class ScriptableServiceInternalMetaItem
+{
+    public:
+
+        QString serviceName() { return m_serviceName; }
+        QString serviceDescription() { return m_serviceDescription; }
+        QPixmap serviceEmblem() { return m_serviceEmblem; }
+
+        void setServiceName( const QString &name ) { m_serviceName = name; }
+        void setServiceDescription( const QString &description ) { m_serviceDescription = m_serviceDescription; }
+        void setServiceEmblem( const QPixmap &emblem ) { m_serviceEmblem = emblem; }
+
+    protected:
+        QString m_serviceName;
+        QString m_serviceDescription;
+        QPixmap m_serviceEmblem;
+};
+
+
+class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Meta::SourceInfoCapability
+{
+    public:
+        ScriptableServiceInternalSourceInfoCapability( ScriptableServiceInternalMetaItem * sourceInfoProvider )
+        {
+            m_sourceInfoProvider = sourceInfoProvider;
+        }
+        ~ScriptableServiceInternalSourceInfoCapability() {};
+
+        QString sourceName() { return m_sourceInfoProvider->serviceName(); }
+        QString sourceDescription() { return m_sourceInfoProvider->serviceDescription(); }
+        QPixmap emblem() { return m_sourceInfoProvider->serviceEmblem(); }
+
+    private:
+        ScriptableServiceInternalMetaItem * m_sourceInfoProvider;
+
+};
+
+
+class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableServiceInternalMetaItem
 {
     public:
         ScriptableServiceInternalArtist( const QString &name = QString() )
@@ -66,12 +110,24 @@ class ScriptableServiceInternalArtist : public Meta::Artist
             return name();
         }
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return ( type == Meta::Capability::SourceInfo );
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            if ( type == Meta::Capability::SourceInfo )
+                return new ScriptableServiceInternalSourceInfoCapability( this );
+            return 0;
+        }
+
 private:
     QString m_name;
 
 };
 
-class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover
+class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, public ScriptableServiceInternalMetaItem
 {
     public:
         ScriptableServiceInternalAlbum( const QString &name = QString() )
@@ -116,12 +172,24 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover
         virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
         virtual QString coverUrl() const { return m_coverUrl; }
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return ( type == Meta::Capability::SourceInfo );
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            if ( type == Meta::Capability::SourceInfo )
+                return new ScriptableServiceInternalSourceInfoCapability( this );
+            return 0;
+        }
+
     private:
         QString m_name;
         QString m_coverUrl;
 };
 
-class ScriptableServiceInternalGenre : public Meta::Genre
+class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServiceInternalMetaItem
 {
     public:
         ScriptableServiceInternalGenre( const QString &name = QString() )
@@ -146,11 +214,24 @@ class ScriptableServiceInternalGenre : public Meta::Genre
         {
             return name();
         }
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return ( type == Meta::Capability::SourceInfo );
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            if ( type == Meta::Capability::SourceInfo )
+                return new ScriptableServiceInternalSourceInfoCapability( this );
+            return 0;
+        }
+        
     private:
         QString m_name;
 };
 
-class ScriptableServiceInternalComposer : public Meta::Composer
+class ScriptableServiceInternalComposer : public Meta::Composer, public ScriptableServiceInternalMetaItem
 {
     public:
         ScriptableServiceInternalComposer( const QString &name = QString() )
@@ -176,11 +257,24 @@ class ScriptableServiceInternalComposer : public Meta::Composer
         {
             return name();
         }
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return ( type == Meta::Capability::SourceInfo );
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            if ( type == Meta::Capability::SourceInfo )
+                return new ScriptableServiceInternalSourceInfoCapability( this );
+            return 0;
+        }
+        
     private:
         QString m_name;
 };
 
-class ScriptableServiceInternalYear : public Meta::Year
+class ScriptableServiceInternalYear : public Meta::Year, public ScriptableServiceInternalMetaItem
 {
     public:
         ScriptableServiceInternalYear( const QString &name = QString() )
@@ -205,6 +299,19 @@ class ScriptableServiceInternalYear : public Meta::Year
         {
             return name();
         }
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
+        {
+            return ( type == Meta::Capability::SourceInfo );
+        }
+
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        {
+            if ( type == Meta::Capability::SourceInfo )
+                return new ScriptableServiceInternalSourceInfoCapability( this );
+            return 0;
+        }
+        
     private:
         QString m_name;
 };

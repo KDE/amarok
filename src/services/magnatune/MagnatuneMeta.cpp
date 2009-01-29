@@ -172,16 +172,14 @@ GenrePtr MagnatuneMetaFactory::createGenre(const QStringList & rows)
 ///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneTrack::MagnatuneTrack( const QString &name )
-    : QObject()
-    , ServiceTrack( name )
+    : ServiceTrack( name )
     , m_downloadMembership ( false )
     , m_purchaseAction( 0 )
     , m_showInServiceAction( 0 )
 {}
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
-    : QObject()
-    , ServiceTrack( resultRow )
+    : ServiceTrack( resultRow )
     , m_downloadMembership ( false )
     , m_purchaseAction( 0 )
     , m_showInServiceAction( 0 )
@@ -351,8 +349,7 @@ QString MagnatuneArtist::magnatuneUrl() const
 ///////////////////////////////////////////////////////////////////////////////
 
 MagnatuneAlbum::MagnatuneAlbum( const QString &name )
-    : QObject()
-    , ServiceAlbumWithCover( name )
+    : ServiceAlbumWithCover( name )
     , m_coverUrl()
     , m_launchYear( 0 )
     , m_albumCode()
@@ -363,8 +360,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
 {}
 
 MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
-    : QObject()
-    , ServiceAlbumWithCover( resultRow )
+    : ServiceAlbumWithCover( resultRow )
     , m_downloadMembership ( false )
     , m_purchaseAction( 0 )
 {

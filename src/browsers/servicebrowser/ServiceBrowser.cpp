@@ -229,8 +229,11 @@ void ServiceBrowser::slotFilterNow()
 
 QString ServiceBrowser::activeServiceName()
 {
-    if ( m_currentService )
+    DEBUG_BLOCK
+    if ( m_currentService ) {
+        debug() << "getting service name: " << m_currentService->name();
         return m_currentService->name();
+    }
     else
         return QString();
 }

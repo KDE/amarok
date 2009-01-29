@@ -41,6 +41,8 @@ class ScriptableServiceManager : public QObject
 
     public:
         void removeRunningScript( const QString &name );
+        ScriptableService * service( const QString &name );
+        
 
     signals:
         /**

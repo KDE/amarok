@@ -50,8 +50,8 @@ AmarokUrlHandler::AmarokUrlHandler()
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
 
-    The::globalCollectionActions()->addAlbumAction( new BookmarkAlbumAction( this ) );
-    The::globalCollectionActions()->addArtistAction( new BookmarkArtistAction( this ) );
+    //The::globalCollectionActions()->addAlbumAction( new BookmarkAlbumAction( this ) );
+    //The::globalCollectionActions()->addArtistAction( new BookmarkArtistAction( this ) );
 }
 
 

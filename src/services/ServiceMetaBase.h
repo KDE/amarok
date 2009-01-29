@@ -21,11 +21,13 @@
 #define SERVICEMETABASE_H
 
 #include "amarok_export.h"
+#include "amarokurls/BookmarkMetaActions.h"
 #include "Debug.h"
 #include "InfoParserBase.h"
 #include "meta/proxy/MetaProxy.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
+#include "ServiceBookmarkThisCapability.h"
 #include "ServiceCustomActionsCapability.h"
 #include "ServiceSourceInfoCapability.h"
 #include "ServiceCurrentTrackActionsCapability.h"
@@ -105,6 +107,23 @@ class AMAROK_EXPORT SourceInfoProvider
         virtual bool hasSourceInfo() const { return true; }
 };
 
+class AMAROK_EXPORT BookmarkThisProvider : public QObject
+{
+    Q_OBJECT
+    public:
+
+        BookmarkThisProvider() : QObject(), m_bookmarkAction( 0 ) {}
+        virtual ~BookmarkThisProvider() {}
+
+        virtual bool isBookmarkable() { return false; }
+        virtual QString browserName() { return "Internet"; }
+        virtual QString collectionName() { return ""; }
+        virtual bool simpleFiltering() { return true; }
+        virtual PopupDropperAction * bookmarkAction() { return 0; };
+
+    protected:
+        PopupDropperAction * m_bookmarkAction;
+};
 
 
 namespace Meta
@@ -134,7 +153,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                                    public ServiceDisplayInfoProvider,
                                    public CustomActionsProvider,
                                    public SourceInfoProvider,
-                                   public CurrentTrackActionsProvider
+                                   public CurrentTrackActionsProvider,
+                                   public BookmarkThisProvider
 {
     public:
         //Give this a displayable name as some services has terrible names for their streams
@@ -211,7 +231,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         {
             return ( type == Meta::Capability::CustomActions ) ||
                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
-                   ( type == Meta::Capability::CurrentTrackActions );
+                   ( type == Meta::Capability::CurrentTrackActions ) ||
+                   ( type == Meta::Capability::BookmarkThis );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -222,6 +243,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                 return new ServiceSourceInfoCapability( this );
             else if ( type == Meta::Capability::CurrentTrackActions )
                 return new ServiceCurrentTrackActionsCapability( this );
+            else if ( type == Meta::Capability::BookmarkThis )
+                return new ServiceBookmarkThisCapability( this );
             return 0;
         }
 
@@ -271,7 +294,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
                                     public ServiceDisplayInfoProvider,
                                     public CustomActionsProvider,
-                                    public SourceInfoProvider
+                                    public SourceInfoProvider,
+                                    public BookmarkThisProvider
 {
     public:
         ServiceArtist( const QStringList & resultRow );
@@ -291,7 +315,8 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() );
+                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) || 
+                    ( type == Meta::Capability::BookmarkThis );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -300,7 +325,20 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
+            else if ( type == Meta::Capability::BookmarkThis )
+                return new ServiceBookmarkThisCapability( this );
             return 0;
+        }
+
+        virtual PopupDropperAction * bookmarkAction() {
+
+            if ( isBookmarkable() ) {
+                if ( m_bookmarkAction ==  0)
+                    m_bookmarkAction = new BookmarkArtistAction( this, ArtistPtr( this ) );
+                return m_bookmarkAction;
+            }
+            else
+                return 0;
         }
 
         //ServiceArtist specific methods
@@ -327,7 +365,8 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
 class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
                                    public ServiceDisplayInfoProvider,
                                    public CustomActionsProvider,
-                                   public SourceInfoProvider
+                                   public SourceInfoProvider,
+                                   public BookmarkThisProvider
 {
     public:
         ServiceAlbum( const QStringList & resultRow );
@@ -347,7 +386,8 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() );
+                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Meta::Capability::BookmarkThis );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -356,7 +396,20 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
+            else if ( type == Meta::Capability::BookmarkThis )
+                return new ServiceBookmarkThisCapability( this );
             return 0;
+        }
+
+        virtual PopupDropperAction * bookmarkAction() {
+
+            if ( isBookmarkable() ) {
+                if ( m_bookmarkAction ==  0)
+                    m_bookmarkAction = new BookmarkAlbumAction( this, AlbumPtr( this ) );
+                return m_bookmarkAction;
+            }
+            else
+                return 0;
         }
 
         //ServiceAlbum specific methods
@@ -396,7 +449,8 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
 class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
                                    public ServiceDisplayInfoProvider,
                                    public CustomActionsProvider,
-                                   public SourceInfoProvider
+                                   public SourceInfoProvider,
+                                   public BookmarkThisProvider
 {
     public:
         ServiceGenre( const QString &name );
@@ -413,7 +467,8 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() );
+                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Meta::Capability::BookmarkThis );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -422,8 +477,11 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
+            else if ( type == Meta::Capability::BookmarkThis )
+                return new ServiceBookmarkThisCapability( this );
             return 0;
         }
+
 
         //ServiceGenre specific methods
         void setId( int id );
@@ -448,7 +506,8 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
 class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
                                       public ServiceDisplayInfoProvider,
                                       public CustomActionsProvider,
-                                      public SourceInfoProvider
+                                      public SourceInfoProvider,
+                                      public BookmarkThisProvider
 {
     public:
         ServiceComposer( const QString &name );
@@ -464,7 +523,8 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() );
+                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Meta::Capability::BookmarkThis );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -473,6 +533,8 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
+            else if ( type == Meta::Capability::BookmarkThis )
+                return new ServiceBookmarkThisCapability( this );
             return 0;
         }
 
@@ -487,7 +549,8 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
 class AMAROK_EXPORT ServiceYear : public Meta::Year,
                                   public ServiceDisplayInfoProvider,
                                   public CustomActionsProvider,
-                                  public SourceInfoProvider
+                                  public SourceInfoProvider,
+                                  public BookmarkThisProvider
 {
     public:
         ServiceYear( const QString &name );
@@ -503,7 +566,8 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                   ( type == Meta::Capability::SourceInfo && hasSourceInfo() );
+                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
+                    ( type == Meta::Capability::BookmarkThis );
         }
 
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
@@ -512,6 +576,8 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
                 return new ServiceCustomActionsCapability( this );
             else if ( type == Meta::Capability::SourceInfo && hasSourceInfo() )
                 return new ServiceSourceInfoCapability( this );
+            else if ( type == Meta::Capability::BookmarkThis )
+                return new ServiceBookmarkThisCapability( this );
             return 0;
         }
 

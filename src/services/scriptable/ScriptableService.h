@@ -77,6 +77,9 @@ public:
 
     void setCurrentInfo( const QString & info );
 
+    int levels() { return m_levels; }
+    bool hasSearchBar() { return m_hasSearchBar; }
+
 private slots:
 
 
@@ -92,6 +95,7 @@ private:
     QString m_rootHtml;
             
     int m_levels;
+    bool m_hasSearchBar;
 
     int addTrack( Meta::ScriptableServiceTrack * track );
     int addAlbum( Meta::ScriptableServiceAlbum * album );

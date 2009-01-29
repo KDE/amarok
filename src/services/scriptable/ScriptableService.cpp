@@ -54,6 +54,7 @@ void ScriptableService::init( int levels, const QString & rootHtml, bool showSea
     DEBUG_BLOCK
     m_levels = levels;
     m_rootHtml = rootHtml;
+    m_hasSearchBar = showSearchBar;
     setInfoParser( new ScriptableServiceInfoParser( m_name ) );
     m_collection = new ScriptableServiceCollection( m_name );
     m_collection->setLevels( levels );
@@ -135,6 +136,15 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             album->setServiceName( m_name );
             debug() << "setting coverUrl: " << coverUrl;
             album->setCoverUrl( coverUrl );
+
+            album->setServiceName( m_name );
+            album->setDescription( infoHtml );
+
+            if ( !m_customEmblem.isNull() )
+                album->setServiceEmblem( m_customEmblem );
+            else
+                album->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+            
             return addAlbum( album );
             
         } case 2:
@@ -147,6 +157,15 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             artist->setGenreId( parentId );
             artist->setDescription( infoHtml );
             artist->setServiceName( m_name );
+
+            artist->setServiceName( m_name );
+            artist->setDescription( infoHtml );
+
+            if ( !m_customEmblem.isNull() )
+                artist->setServiceEmblem( m_customEmblem );
+            else
+                artist->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+            
             return addArtist( artist );
             
         } case 3:
@@ -159,6 +178,15 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             genre->setCallbackString( callbackData );
             genre->setDescription( infoHtml );
             genre->setServiceName( m_name );
+
+            genre->setServiceName( m_name );
+            genre->setDescription( infoHtml );
+
+            if ( !m_customEmblem.isNull() )
+                genre->setServiceEmblem( m_customEmblem );
+            else
+                genre->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+            
             return addGenre( genre );
             
         }

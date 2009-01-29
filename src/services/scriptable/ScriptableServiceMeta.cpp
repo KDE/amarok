@@ -1,26 +1,28 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/*******************************************************************************
+ *   Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *                                                                             *
+ *   This program is free software; you can redistribute it and/or modify      *
+ *   it under the terms of the GNU General Public License as published by      *
+ *   the Free Software Foundation; either version 2 of the License, or         *
+ *   (at your option) any later version.                                       *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful,           *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *                                                                             *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program; if not, write to the                             *
+ *   Free Software Foundation, Inc.,                                           *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.             *
+ *******************************************************************************/
 
 #include "ScriptableServiceMeta.h"
 #include "ScriptableServiceMeta_p.h"
 
 #include "meta/PrivateMetaRegistry.h"
+#include "ScriptableService.h"
+#include "ScriptableServiceManager.h"
 
 using namespace Meta;
 
@@ -111,7 +113,11 @@ void Meta::ScriptableServiceTrack::setAlbumName( const QString &newAlbum )
 {
     Meta::AlbumPtr albumPtr = Meta::PrivateMetaRegistry::instance()->album( m_serviceName, newAlbum );
     if ( !albumPtr ) {
-        albumPtr = Meta::AlbumPtr( new ScriptableServiceInternalAlbum( newAlbum ) );
+        ScriptableServiceInternalAlbum * intAlbum = new ScriptableServiceInternalAlbum( newAlbum );
+        intAlbum->setServiceName( m_serviceName );
+        intAlbum->setServiceDescription( m_serviceDescription );
+        intAlbum->setServiceEmblem( m_serviceEmblem );
+        albumPtr = Meta::AlbumPtr( intAlbum );
         Meta::PrivateMetaRegistry::instance()->insertAlbum( m_serviceName, newAlbum, albumPtr );
     }
 
@@ -122,7 +128,11 @@ void Meta::ScriptableServiceTrack::setArtistName( const QString &newArtist )
 {
     Meta::ArtistPtr artistPtr = Meta::PrivateMetaRegistry::instance()->artist( m_serviceName, newArtist );
     if ( !artistPtr ) {
-        artistPtr = Meta::ArtistPtr( new ScriptableServiceInternalArtist( newArtist ) );
+        ScriptableServiceInternalArtist * intArtist = new ScriptableServiceInternalArtist( newArtist );
+        intArtist->setServiceName( m_serviceName );
+        intArtist->setServiceDescription( m_serviceDescription );
+        intArtist->setServiceEmblem( m_serviceEmblem );
+        artistPtr = Meta::ArtistPtr( intArtist );
         Meta::PrivateMetaRegistry::instance()->insertArtist( m_serviceName, newArtist, artistPtr );
     }
     
@@ -133,7 +143,11 @@ void Meta::ScriptableServiceTrack::setGenreName( const QString &newGenre )
 {
     Meta::GenrePtr genrePtr = Meta::PrivateMetaRegistry::instance()->genre( m_serviceName, newGenre );
     if ( !genrePtr ) {
-        genrePtr = Meta::GenrePtr( new ScriptableServiceInternalGenre( newGenre ) );
+        ScriptableServiceInternalGenre * intGenre = new ScriptableServiceInternalGenre( newGenre );
+        intGenre->setServiceName( m_serviceName );
+        intGenre->setServiceDescription( m_serviceDescription );
+        intGenre->setServiceEmblem( m_serviceEmblem );
+        genrePtr = Meta::GenrePtr( intGenre );
         Meta::PrivateMetaRegistry::instance()->insertGenre( m_serviceName, newGenre, genrePtr );
     }
     
@@ -144,7 +158,11 @@ void Meta::ScriptableServiceTrack::setComposerName( const QString &newComposer )
 {
     Meta::ComposerPtr composerPtr = Meta::PrivateMetaRegistry::instance()->composer( m_serviceName, newComposer );
     if ( !composerPtr ) {
-        composerPtr = Meta::ComposerPtr( new ScriptableServiceInternalComposer( newComposer) );
+        ScriptableServiceInternalComposer * intComposer = new ScriptableServiceInternalComposer( newComposer);
+        intComposer->setServiceName( m_serviceName );
+        intComposer->setServiceDescription( m_serviceDescription );
+        intComposer->setServiceEmblem( m_serviceEmblem );
+        composerPtr = Meta::ComposerPtr( intComposer );
         Meta::PrivateMetaRegistry::instance()->insertComposer( m_serviceName, newComposer, composerPtr );
     }
     
@@ -157,7 +175,11 @@ void Meta::ScriptableServiceTrack::setYearNumber( int newYear )
     
     Meta::YearPtr yearPtr = Meta::PrivateMetaRegistry::instance()->year( m_serviceName, yearString );
     if ( !yearPtr ) {
-        yearPtr = Meta::YearPtr( new ScriptableServiceInternalYear( yearString ) );
+        ScriptableServiceInternalYear * intYear = new ScriptableServiceInternalYear( yearString );
+        intYear->setServiceName( m_serviceName );
+        intYear->setServiceDescription( m_serviceDescription );
+        intYear->setServiceEmblem( m_serviceEmblem );
+        yearPtr = Meta::YearPtr( intYear );
         Meta::PrivateMetaRegistry::instance()->insertYear( m_serviceName, yearString, yearPtr );
     }
     
@@ -207,6 +229,31 @@ ScriptableServiceAlbum::ScriptableServiceAlbum( const QStringList & resultRow )
     , ScriptableServiceMetaItem( 1 )
 {}
 
+QString Meta::ScriptableServiceAlbum::sourceName()
+{
+    return m_serviceName;
+}
+
+QString Meta::ScriptableServiceAlbum::sourceDescription()
+{
+    return m_serviceDescription;
+}
+
+QPixmap Meta::ScriptableServiceAlbum::emblem()
+{
+    return m_serviceEmblem;
+}
+
+bool Meta::ScriptableServiceAlbum::isBookmarkable()
+{
+    ScriptableService * service = The::scriptableServiceManager()->service( m_serviceName );
+    if ( service )
+        return service->hasSearchBar();
+    else
+        return false;
+}
+
+
 
 /* ScriptableServiceArtist */
 ScriptableServiceArtist::ScriptableServiceArtist( const QString & name )
@@ -221,6 +268,7 @@ ScriptableServiceArtist::ScriptableServiceArtist( const QStringList & resultRow 
     , m_genreId( 0 )
 {}
 
+
 void Meta::ScriptableServiceArtist::setGenreId(int genreId)
 {
     m_genreId = genreId;
@@ -231,6 +279,31 @@ int Meta::ScriptableServiceArtist::genreId() const
 {
     return m_genreId;
 }
+
+QString Meta::ScriptableServiceArtist::sourceName()
+{
+    return m_serviceName;
+}
+
+QString Meta::ScriptableServiceArtist::sourceDescription()
+{
+    return m_serviceDescription;
+}
+
+QPixmap Meta::ScriptableServiceArtist::emblem()
+{
+    return m_serviceEmblem;
+}
+
+bool Meta::ScriptableServiceArtist::isBookmarkable()
+{
+    ScriptableService * service = The::scriptableServiceManager()->service( m_serviceName );
+    if ( service )
+        return service->hasSearchBar();
+    else
+        return false;
+}
+
 
 /* ScriptableServiceGenre */
 ScriptableServiceGenre::ScriptableServiceGenre( const QString & name )
@@ -253,6 +326,24 @@ QString Meta::ScriptableServiceGenre::description()
 {
     return m_description;
 }
+
+QString Meta::ScriptableServiceGenre::sourceName()
+{
+    return m_serviceName;
+}
+
+QString Meta::ScriptableServiceGenre::sourceDescription()
+{
+    return m_serviceDescription;
+}
+
+QPixmap Meta::ScriptableServiceGenre::emblem()
+{
+    return m_serviceEmblem;
+}
+
+
+
 
 
 

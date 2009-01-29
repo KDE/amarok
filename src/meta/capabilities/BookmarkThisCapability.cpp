@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,55 +16,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#include "BookmarkThisCapability.h"
 
-#ifndef BOOKMARKMETAACTIONS_H
-#define BOOKMARKMETAACTIONS_H
+namespace Meta {
 
-#include "amarok_export.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-#include "Meta.h"
-
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class AMAROK_EXPORT BookmarkAlbumAction : public PopupDropperAction
+BookmarkThisCapability::~BookmarkThisCapability()
 {
-    Q_OBJECT
-public:
-    BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album );
-
-    private slots:
-        void slotTriggered();
-
-    private:
-        Meta::AlbumPtr m_album;
-
-};
-
-class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
-{
-    Q_OBJECT
-    public:
-        BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist );
-
-    private slots:
-        void slotTriggered();
-
-    private:
-        Meta::ArtistPtr m_artist;
-
-};
+}
 
 
-
-class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public PopupDropperAction
-{
-    Q_OBJECT
-    public:
-        explicit BookmarkCurrentTrackPositionAction( QObject *parent );
-
-    private slots:
-        void slotTriggered();
-};
-
-#endif
+}

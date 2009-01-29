@@ -31,6 +31,7 @@
 #include "GlobalCollectionActions.h"
 #include "Meta.h"
 #include "MetaQueryMaker.h"
+#include "meta/capabilities/BookmarkThisCapability.h"
 #include "meta/capabilities/CollectionCapability.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "PaletteHandler.h"
@@ -708,6 +709,22 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                         }
                         delete cac;
                     }
+                    //check if this item can be bookmarked...
+                    Meta::BookmarkThisCapability *btc = data->as<Meta::BookmarkThisCapability>();
+                    if( btc )
+                    {
+                        if( btc->isBookmarkable() ) {
+
+                            PopupDropperAction *bookmarAction = btc->bookmarkAction();
+                            if ( bookmarAction )
+                                actions.append( bookmarAction );
+                        }
+                        delete btc;
+                    }
+
+
+
+                    
                 }
             }
         }

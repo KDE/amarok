@@ -36,7 +36,7 @@ class MagnatuneStore;
 namespace Meta
 {
     
-class MagnatuneTrack  : public QObject, public ServiceTrack
+class MagnatuneTrack  : public ServiceTrack
 {
     Q_OBJECT
 public:
@@ -58,6 +58,10 @@ public:
     virtual QString sourceDescription();
     virtual QPixmap emblem();
 
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Magnatune.com"; }
+    virtual bool simpleFiltering() { return false; }
+
     void setOggUrl( const QString& url );
     QString oggUrl() const;
 
@@ -77,7 +81,6 @@ private:
 
 class MagnatuneArtist : public ServiceArtist
 {
-
 private:
 
     QString m_photoUrl;
@@ -92,9 +95,13 @@ public:
 
     void setMagnatuneUrl( const QString &url );
     QString magnatuneUrl() const;
+
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Magnatune.com"; }
+    virtual bool simpleFiltering() { return false; }
 };
 
-class MagnatuneAlbum  : public QObject, public ServiceAlbumWithCover
+class MagnatuneAlbum : public ServiceAlbumWithCover
 {
     Q_OBJECT
 private:
@@ -129,6 +136,10 @@ public:
 
     void setDownloadMembership();
 
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Magnatune.com"; }
+    virtual bool simpleFiltering() { return false; }
+
 public slots:
     void purchase();
 private:
@@ -141,6 +152,10 @@ class MagnatuneGenre  : public ServiceGenre
 public:
     MagnatuneGenre( const QString &name );
     MagnatuneGenre( const QStringList &resultRow );
+
+    virtual bool isBookmarkable() { return true; }
+    virtual QString collectionName() { return "Magnatune.com"; }
+    virtual bool simpleFiltering() { return false; }
 };
 
 }
