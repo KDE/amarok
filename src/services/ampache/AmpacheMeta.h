@@ -85,6 +85,27 @@ public:
 
 };
 
+class AmpacheArtist : public ServiceArtist
+{
+    private:
+        QString m_coverURL;
+
+
+    public:
+        AmpacheArtist( const QString &name, ServiceBase * service )
+            : ServiceArtist( name )
+            , m_service( service )
+             { }
+
+        virtual bool isBookmarkable() { return true; }
+        virtual QString collectionName() { return m_service->name(); }
+        virtual bool simpleFiltering() { return true; }
+
+    private:
+        ServiceBase * m_service;
+
+};
+
 }
 
 #endif

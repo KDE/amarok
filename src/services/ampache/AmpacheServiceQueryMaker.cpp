@@ -362,7 +362,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
         //    break;
 
         QDomElement element = n.firstChildElement("name");
-        ServiceArtist * artist = new ServiceArtist( element.text() );
+        ServiceArtist * artist = new AmpacheArtist( element.text(), m_collection->service() );
 
         int artistId = e.attribute( "id", "0").toInt();
 
