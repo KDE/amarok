@@ -201,7 +201,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
             QString filter;
             if ( btc->simpleFiltering() ) {
                 url.appendArg( "" );
-                filter = albumName;
+                filter = "\"" + albumName + "\"";
             }
             else
             {
@@ -253,7 +253,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
             if ( btc->simpleFiltering() ) {
                 //for services only suporting simple filtering, do not try to set the sorting mode
                 url.appendArg( "" );
-                filter = artistName;
+                filter = "\"" + artistName + "\"";
             }
             else
             {
