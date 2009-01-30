@@ -143,7 +143,7 @@ MP4::Mp4IsoBox* MP4::BoxFactory::createInstance( TagLib::File* anyfile, MP4::Fou
   case 0x636f7672: // 'covr'
     return new MP4::ITunesCvrBox( file, fourcc, size, offset );
     break;
-  case 0x64616461: // 'data'
+  case 0x64617461: // 'data'
     return new MP4::ITunesDataBox( file, fourcc, size, offset );
     break;
   default:
