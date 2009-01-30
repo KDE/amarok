@@ -18,9 +18,9 @@
 #include <KIcon>
 
 #include <QAction>
-#include <QPainter>;
-#include <QSizePolicy>;
-#include <QStyleOptionGraphicsItem>;
+#include <QPainter>
+#include <QSizePolicy>
+#include <QStyleOptionGraphicsItem>
 
 Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
