@@ -206,8 +206,34 @@ namespace TagLib {
                  *
                  * If \a overwrite is true then the values will be unconditionally copied.
                  * If false only empty values will be overwritten.
+                 *
+                 * This will not copy the replay gain information.
                  */
                 static void duplicate(const Tag *source, Tag *target, bool overwrite = true);
+
+                /*!
+                 * The replay gain adjustment tag field for this track.
+                 */
+                String trackReplayGain() { return m_trackGain; }
+
+                /*!
+                 * The peak value tag field for this track, after trackReplayGain() has been applied.
+                 *
+                 * The peak is specified as a digital scale value, with 1 being full scale.
+                 */
+                String trackReplayGainPeak() { return m_trackPeak; }
+
+                /*!
+                 * The album replay gain adjustment tag field for this track in decibels.
+                 */
+                String albumReplayGain() { return m_albumGain; }
+
+                /*!
+                 * The peak value tag field for this album, after albumReplayGain() has been applied.
+                 *
+                 * The peak is specified as a digital scale value, with 1 being full scale.
+                 */
+                String albumReplayGainPeak() { return m_albumPeak; }
 
             protected:
                 String m_title;
@@ -222,6 +248,10 @@ namespace TagLib {
                 TagLib::uint m_bpm;
                 int m_compilation;
                 ByteVector m_image;
+                String m_trackGain;
+                String m_trackPeak;
+                String m_albumGain;
+                String m_albumPeak;
         };
     }
 }

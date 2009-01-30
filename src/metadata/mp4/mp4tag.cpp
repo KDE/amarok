@@ -40,6 +40,10 @@ MP4::Tag::Tag() : TagLib::Tag::Tag() {
     m_disk = 0;
     m_bpm = 0;
     m_compilation = Undefined;
+    m_trackGain = String::null;
+    m_trackPeak = String::null;
+    m_albumGain = String::null;
+    m_albumPeak = String::null;
 }
 
 MP4::Tag::~Tag() {
@@ -57,14 +61,16 @@ bool MP4::Tag::isEmpty() const {
         m_disk == 0 &&
         m_bpm == 0 &&
         m_compilation == Undefined &&
-        m_image.size() == 0;
+        m_image.size() == 0 &&
+        m_trackGain == String::null &&
+        m_albumGain == String::null;
 }
 
 void MP4::Tag::duplicate(const Tag *source, Tag *target, bool overwrite) {
     // Duplicate standard information
     Tag::duplicate(source, target, overwrite);
 
-    if (overwrite || target->compilation() == Undefined && source->compilation() != Undefined)
+    if (overwrite || (target->compilation() == Undefined && source->compilation() != Undefined))
         target->setCompilation(source->compilation());
 
     if (overwrite || target->cover().size() == 0)
@@ -77,8 +83,8 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
     char *value;
     uint8_t boolvalue;
     uint16_t numvalue, numvalue2;
-    uint8_t *image;
-    uint32_t imageSize;
+    uint8_t *data;
+    uint32_t dataSize;
     if (MP4GetMetadataName(mp4file, &value) && value != NULL) {
         m_title = String(value, String::UTF8);
         free(value);
@@ -121,8 +127,26 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
         m_composer = String(value, String::UTF8);
         free(value);
     }
-    if (MP4GetMetadataCoverArt(mp4file, &image, &imageSize) && image && imageSize) {
-        m_image.setData(reinterpret_cast<const char *>( image ), imageSize);
-        free(image);
+    if (MP4GetMetadataCoverArt(mp4file, &data, &dataSize) && data && dataSize) {
+        m_image.setData(reinterpret_cast<const char *>( data ), dataSize);
+        free(data);
+    }
+    // Really, we should parse the tags here and return floats.  But it's so much nicer just to
+    // do it all with QStrings later.
+    if (MP4GetMetadataFreeForm(mp4file, "replaygain_track_gain", &data, &dataSize) && data && dataSize) {
+        m_trackGain = String(ByteVector(reinterpret_cast<const char *>( data ), dataSize), String::UTF8);
+        free(data);
+        if (MP4GetMetadataFreeForm(mp4file, "replaygain_track_peak", &data, &dataSize) && data && dataSize) {
+            m_trackPeak = String(ByteVector(reinterpret_cast<const char *>( data ), dataSize), String::UTF8);
+            free(data);
+        }
+    }
+    if (MP4GetMetadataFreeForm(mp4file, "replaygain_album_gain", &data, &dataSize) && data && dataSize) {
+        m_albumGain = String(ByteVector(reinterpret_cast<const char *>( data ), dataSize), String::UTF8);
+        free(data);
+        if (MP4GetMetadataFreeForm(mp4file, "replaygain_album_peak", &data, &dataSize) && data && dataSize) {
+            m_albumPeak = String(ByteVector(reinterpret_cast<const char *>( data ), dataSize), String::UTF8);
+            free(data);
+        }
     }
 }

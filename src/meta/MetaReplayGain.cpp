@@ -254,6 +254,27 @@ static Meta::ReplayGainTagMap readASFTags( TagLib::ASF::Tag *tag )
     return outputMap;
 }
 
+#ifdef HAVE_MP4V2
+static Meta::ReplayGainTagMap readMP4Tags( TagLib::MP4::Tag *tag )
+{
+    Meta::ReplayGainTagMap outputMap;
+
+    if ( !tag->trackReplayGain().isNull() ) {
+        maybeAddGain( tag->trackReplayGain(), Meta::ReplayGain_Track_Gain, &outputMap );
+        if ( !tag->trackReplayGainPeak().isNull() )
+            maybeAddPeak( tag->trackReplayGainPeak(), Meta::ReplayGain_Track_Peak, &outputMap );
+    }
+
+    if ( !tag->albumReplayGain().isNull() ) {
+        maybeAddGain( tag->albumReplayGain(), Meta::ReplayGain_Album_Gain, &outputMap );
+        if ( !tag->albumReplayGainPeak().isNull() )
+            maybeAddPeak( tag->albumReplayGainPeak(), Meta::ReplayGain_Album_Peak, &outputMap );
+    }
+
+    return outputMap;
+}
+#endif // HAVE_MP4V2
+
 Meta::ReplayGainTagMap
 Meta::readReplayGainTags( TagLib::FileRef fileref )
 {
@@ -289,5 +310,12 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
         if ( file->tag() )
             map = readASFTags( file->tag() );
     }
+#ifdef HAVE_MP4V2
+    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+    {
+        if ( file->tag() )
+            map = readMP4Tags( file->getMP4Tag() );
+    }
+#endif // HAVE_MP4V2
     return map;
 }

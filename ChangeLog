@@ -19,7 +19,8 @@ VERSION 2.1
     * The last.fm service now allows for the playing of all types of user
       stations (personal, loved tracks, recommendations, and neighborhood).
     * Arbitrary Tags can now be played in the last.fm service. (BR 139802)
-    * Replay Gain support, currently for MP3, Ogg Vorbis, FLAC and WMA files.
+    * Replay Gain support for MP3, Ogg Vorbis, FLAC, WMA and MP4 (with
+      libMP4v2).
     * Amarok urls. Amarok can now load and generate "amarok urls" that allows
       any "view" to be bookmarked and later retrieved. A protocol handler is
       also installed that will launch amarok into the correct state, or make
