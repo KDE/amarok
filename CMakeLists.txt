@@ -56,7 +56,9 @@ macro_optional_find_package(Gdk)
 macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
 
 macro_optional_find_package(Ipod)
+if(IPOD_FOUND)
 macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_0_7)
+endif(IPOD_FOUND)
 macro_log_feature( IPOD_0_7 "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
 
 #macro_optional_find_package(MySQL)
