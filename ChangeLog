@@ -65,6 +65,7 @@ VERSION 2.1
       (BR 180164)
     * Don't show the rating widget for tracks which are not in the collection.
       (BR 180023)
+    * The negation operator (the minus sign) works in the collection browser.
 
 VERSION 2.0.1.1
   BUGFIX:
