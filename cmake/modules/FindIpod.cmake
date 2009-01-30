@@ -2,45 +2,35 @@
 # Once done this will define
 #
 #  IPOD_FOUND - system has libgpod
-#  IPOD_INCLUDE_DIR - the libgpod include directory
+#  IPOD_INCLUDE_DIRS - the libgpod include directory
 #  IPOD_LIBRARIES - Link these to use libgpod
-#  IPOD_DEFINITIONS - Compiler switches required for using libgpod
+#  IPOD_CFLAGS - Compiler switches required for using libgpod
+#  IPOD_VERSION - Version number of libgpod
 #
 
-if (IPOD_INCLUDE_DIR AND IPOD_LIBRARIES)
+if (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
 
   # in cache already
   SET(IPOD_FOUND TRUE)
 
-else (IPOD_INCLUDE_DIR AND IPOD_LIBRARIES)
+else (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
   if(NOT WIN32)
     # use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
-    INCLUDE(UsePkgConfig)
-  
-    PKGCONFIG(libgpod-1.0 _IPODIncDir _IPODLinkDir _IPODLinkFlags _IPODCflags)
-  
-    set(IPOD_DEFINITIONS ${_IPODCflags})
+    find_package(PkgConfig)
+    PKG_SEARCH_MODULE(IPOD libgpod-1.0)
+
   endif(NOT WIN32)
+  IF (IPOD_FOUND)
+     IF (NOT IPOD_FIND_QUIETLY)
+        MESSAGE(STATUS "Found libgpod-1 ${IPOD_VERSION}")
+     ENDIF (NOT IPOD_FIND_QUIETLY)
+  ELSE (IPOD_FOUND)
+     IF (IPOD_FIND_REQUIRED)
+        MESSAGE(FATAL_ERROR "Could NOT find libgpod-1, check FindPkgConfig output above!")
+     ENDIF (IPOD_FIND_REQUIRED)
+  ENDIF (IPOD_FOUND)
 
-  FIND_PATH(IPOD_INCLUDE_DIR gpod/itdb.h /usr/include/gpod-1.0
-    ${_IPODIncDir}
-  )
-  
-  FIND_LIBRARY(IPOD_LIBRARIES NAMES gpod
-    PATHS
-    ${_IPODLinkDir}
-  )
+  MARK_AS_ADVANCED(IPOD_INCLUDE_DIRS)
 
-  if (IPOD_INCLUDE_DIR AND IPOD_LIBRARIES)
-    SET(IPOD_FOUND TRUE)
-  else (IPOD_INCLUDE_DIR AND IPOD_LIBRARIES)
-    SET(IPOD_FOUND_FALSE)
-  endif (IPOD_INCLUDE_DIR AND IPOD_LIBRARIES)
-
-  include(FindPackageHandleStandardArgs)
-  FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ipod DEFAULT_MSG IPOD_INCLUDE_DIR IPOD_LIBRARIES )
- 
-  MARK_AS_ADVANCED(IPOD_INCLUDE_DIR IPOD_LIBRARIES)
-  
-endif (IPOD_INCLUDE_DIR AND IPOD_LIBRARIES)
+endif (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
