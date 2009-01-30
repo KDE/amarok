@@ -45,21 +45,35 @@ namespace AmarokScript
 
     }
 
-    void
+    bool
     ScriptImporter::loadQtBinding( const QString& binding )
     {
         DEBUG_BLOCK
         debug() << "importing qt bindings " << binding;
         QSet<QString> allowedBindings;
         allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.webkit" << "qt.xml" << "qt.uitools" << "qt.network";
-        if( allowedBindings.contains( binding ) && ( !m_importedBindings.contains( binding ) ) )
+        if( allowedBindings.contains( binding ) )
         {
-            if ( ( binding != "qt.core" ) && ( !m_importedBindings.contains( "qt.core" ) ) ) warning() << "qt.core should be included before the other bindings!";
-            m_scriptEngine->importExtension( binding );
-            m_importedBindings << binding;
+            if( !m_importedBindings.contains( binding ) )
+            {
+//I'm pretty sure this warning isn't true, the order doesn't appear to matter. - Ian
+/*                if( ( binding != "qt.core" || binding != "qt.dbus" ) && ( !m_importedBindings.contains( "qt.core" ) ) )
+                {
+                    warning() << "qt.core should be included before the other bindings!";
+                }*/
+                if( m_scriptEngine->importExtension( binding ).isUndefined() )
+                { // undefined indiciates success
+                    m_importedBindings << binding;
+                    return true;
+                }
+                //else fall through and return false
+            }
+            else
+                return true;
         }
         else
             warning() <<"Qt Binding: " << binding << " not found!";
+        return false;
     }
 
     bool

@@ -36,7 +36,7 @@ namespace AmarokScript
 
         public slots:
             void loadExtension( const QString& src );
-            void loadQtBinding( const QString& binding );
+            bool loadQtBinding( const QString& binding );
             bool include( const QString& relativeFile );
 
         private:
