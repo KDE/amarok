@@ -157,7 +157,7 @@ ASF::Tag::setYear(TagLib::uint value)
 }
 
 void
-ASF::Tag::setTrack(uint value)
+ASF::Tag::setTrack(TagLib::uint value)
 {
   setAttribute("WM/TrackNumber", String::number(value));
 }
