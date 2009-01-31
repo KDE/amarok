@@ -54,18 +54,6 @@ set(libtagwav_SRCS
         wav/wavfiletyperesolver.cpp
 )
 
-set(libtagtrueaudio_SRCS
-        trueaudio/taglib_trueaudiofiletyperesolver.cpp
-        trueaudio/ttafile.cpp
-        trueaudio/ttaproperties.cpp
-)
-
-set(libtagwavpack_SRCS
-        wavpack/taglib_wavpackfiletyperesolver.cpp
-        wavpack/wvfile.cpp
-        wavpack/wvproperties.cpp
-)
-
 set(libtagspeex_SRCS
         speex/speexfile.cpp
         speex/taglib_speexfiletyperesolver.cpp
@@ -119,9 +107,7 @@ SET(amarok_taglib_SRCS
         ${libtagaac_SRCS}
         ${libtagasf_SRCS}
         ${libtagwav_SRCS}
-        ${libtagwavpack_SRCS}
         ${libtagspeex_SRCS}
-        ${libtagtrueaudio_SRCS}
 )
 
 kde4_add_library(amarok_taglib SHARED ${amarok_taglib_SRCS})
