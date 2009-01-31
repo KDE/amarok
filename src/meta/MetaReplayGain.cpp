@@ -121,7 +121,7 @@ static void maybeAddGain( const TagLib::String &input, Meta::ReplayGainTag key, 
         (*map)[key] = gain;
 }
 
-static Meta::ReplayGainTagMap readID3v2ReplayGainTags( TagLib::ID3v2::Tag *tag )
+static Meta::ReplayGainTagMap readID3v2Tags( TagLib::ID3v2::Tag *tag )
 {
     Meta::ReplayGainTagMap map;
     {   // ID3v2.4.0 native replay gain tag support (as written by Quod Libet, for example).
@@ -191,7 +191,7 @@ static Meta::ReplayGainTagMap readID3v2ReplayGainTags( TagLib::ID3v2::Tag *tag )
     return map;
 }
 
-static Meta::ReplayGainTagMap readApeReplayGainTags( TagLib::APE::Tag *tag )
+static Meta::ReplayGainTagMap readAPETags( TagLib::APE::Tag *tag )
 {
     Meta::ReplayGainTagMap map;
     const TagLib::APE::ItemListMap &items = tag->itemListMap();
@@ -284,9 +284,9 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         if ( file->ID3v2Tag() )
-            map = readID3v2ReplayGainTags( file->ID3v2Tag() );
+            map = readID3v2Tags( file->ID3v2Tag() );
         if ( map.isEmpty() && file->APETag() )
-            map = readApeReplayGainTags( file->APETag() );
+            map = readAPETags( file->APETag() );
     }
     else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
     {
@@ -298,7 +298,7 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
         if ( file->xiphComment() )
             map = readXiphTags( file->xiphComment() );
         if ( map.isEmpty() && file->ID3v2Tag() )
-            map = readID3v2ReplayGainTags( file->ID3v2Tag() );
+            map = readID3v2Tags( file->ID3v2Tag() );
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
     {
@@ -319,3 +319,4 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
 #endif // HAVE_MP4V2
     return map;
 }
+
