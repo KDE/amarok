@@ -265,9 +265,9 @@ set( libcontextview_SRCS
     context/LyricsManager.cpp
 	context/ToolbarView.cpp
     context/layouts/ContextLayout.cpp
-    context/layouts/VerticalLayout.cpp	
+    context/layouts/VerticalLayout.cpp
 	context/toolbar/AppletItemOverlay.cpp
-	context/toolbar/AppletToolbar.cpp 
+	context/toolbar/AppletToolbar.cpp
 	context/toolbar/AppletToolbarAddItem.cpp
 	context/toolbar/AppletToolbarAppletItem.cpp
 	context/toolbar/AppletToolbarConfigItem.cpp
@@ -302,6 +302,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/UserPlaylistModel.cpp
     browsers/playlistbrowser/UserPlaylistTreeView.cpp
     browsers/playlistbrowser/PlaylistCategory.cpp
+    browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
 )

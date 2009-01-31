@@ -22,6 +22,7 @@
 #include "CollectionManager.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
+#include "PlaylistsInGroupsProxy.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 // #include "SqlPlaylist.h"
 // #include "SqlPlaylistGroup.h"
@@ -52,7 +53,6 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView = new UserPlaylistTreeView( this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins(0,0,0,0);
-    m_playlistView->setModel( PlaylistBrowserNS::UserModel::instance() );
     m_playlistView->header()->hide();
 
     //m_playlistView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -65,7 +65,10 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     //connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
     //connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
-    connect( PlaylistBrowserNS::UserModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
+    m_groupedProxy = new PlaylistsInGroupsProxy( PlaylistBrowserNS::UserModel::instance() );
+    m_playlistView->setModel( m_groupedProxy );
+
+    connect( m_groupedProxy, SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
 
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
@@ -78,7 +81,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
-    connect( m_addGroupAction, SIGNAL( triggered( bool ) ), PlaylistBrowserNS::UserModel::instance(), SLOT( createNewGroup() ) );
+//TODO:     connect( m_addGroupAction, SIGNAL( triggered( bool ) ), m_groupedProxy, SLOT( createNewGroup() ) );
 
     m_playlistView->setNewGroupAction( m_addGroupAction );
 
@@ -96,7 +99,7 @@ PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
 void
 PlaylistBrowserNS::PlaylistCategory::showAddStreamDialog()
 {
-    KDialog *dialog = new PlaylistBrowserNS::StreamEditor( this );
+    KDialog *dialog = new PlaylistBrowserNS::treamEditor( this );
     connect( dialog, SIGNAL( okClicked() ), this, SLOT( streamDialogConfirmed() ) );
 }*/
 /*
@@ -109,7 +112,7 @@ PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl(  dialog->streamUrl() );
     if( !track.isNull() )
     {
-        PlaylistBrowserNS::UserModel::instance()->createNewStream(  dialog->streamName(), track );
+        m_model->createNewStream(  dialog->streamName(), track );
     }
     else
     {

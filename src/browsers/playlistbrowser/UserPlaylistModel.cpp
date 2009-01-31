@@ -80,29 +80,25 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 QVariant
 PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 {
+    DEBUG_BLOCK
+
     if ( !index.isValid() )
         return QVariant();
 
     Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
 
-    if ( role == 0xf00d )
-        return QVariant::fromValue( item );
-    else if ( role == Qt::DisplayRole || role == Qt::EditRole )
-        return item->name();
-    else if( role == DescriptionRole || role == Qt::ToolTipRole )
-        return item->description();
-    else if( role == OriginRole )
-        return QVariant(); //TODO return the provider name
-    else if (role == Qt::DecorationRole )
-        return QVariant( KIcon( "amarok_playlist" ) );
-    else if( role == GroupRole )
+    switch( role )
     {
-        QStringList groups = item->groups();
-
-        return groups.first();
+        case 0xf00d: return QVariant::fromValue( item );
+        case Qt::DisplayRole:
+        case Qt::EditRole: return item->name();
+        case DescriptionRole:
+        case Qt::ToolTipRole: return item->description();
+        case OriginRole: return QVariant(); //TODO return the provider name
+        case Qt::DecorationRole: return QVariant( KIcon( "amarok_playlist" ) );
+        case GroupRole: return item->groups();
+        default: return QVariant();
     }
-
-    return QVariant();
 }
 
 QModelIndex

@@ -34,6 +34,8 @@ class QTreeView;
 class KAction;
 class KLineEdit;
 
+class PlaylistsInGroupsProxy;
+
 namespace PlaylistBrowserNS {
 
 /**
@@ -61,7 +63,7 @@ private:
     UserPlaylistTreeView * m_playlistView;
 
     KAction * m_addGroupAction;
-
+    PlaylistsInGroupsProxy *m_groupedProxy;
 
 };
 

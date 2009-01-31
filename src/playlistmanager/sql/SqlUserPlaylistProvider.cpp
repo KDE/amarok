@@ -35,7 +35,7 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
 {
     checkTables();
-    m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "root",
+    m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "",
             Meta::SqlPlaylistGroupPtr() ) );
 }
 

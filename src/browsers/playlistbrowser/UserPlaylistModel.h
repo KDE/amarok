@@ -43,8 +43,8 @@ class UserModel : public QAbstractItemModel
         enum {
             DescriptionRole = Qt::UserRole + 1,
             //Where is this Playlist from i.e. which PlaylistProvider
-            OriginRole = Qt::UserRole,
-            GroupRole = Qt::UserRole //What is the name of the group this Playlist is in.
+            OriginRole = Qt::UserRole + 2,
+            GroupRole = Qt::UserRole + 3 //What is the name of the group this Playlist is in.
         };
         static UserModel * instance();
 
