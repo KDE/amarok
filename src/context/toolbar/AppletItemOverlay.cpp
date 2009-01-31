@@ -109,7 +109,7 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
     trans.setAlpha( 0 );
     QBrush brush( Qt::transparent );
     QPalette pal = m_deleteIcon->palette();
-    pal.setBrush( QPalette::Button, brush );
+    pal.setBrush( QPalette::Window, brush );
  //   m_deleteIcon->setBackgroundRole( QPalette::Base );
     m_deleteIcon->setPalette( pal );  
     m_deleteIcon->setAutoFillBackground( true );
@@ -195,7 +195,6 @@ Context::AppletItemOverlay::mousePressEvent( QMouseEvent *event )
         m_layout->removeItem( m_spacer );
     }
 
-    debug() << "gonna put spacer here:" << m_index;
     m_origin = mapToParent( event->pos() );
     m_spacer->setMinimumSize( m_applet->geometry().size() );
     m_spacer->setMaximumSize( m_applet->geometry().size() );
@@ -211,7 +210,7 @@ Context::AppletItemOverlay::mousePressEvent( QMouseEvent *event )
 void 
 Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
 {
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
 //    Plasma::FormFactor f = m_applet->formFactor();
 
     // todo add in support for dragging an item out of the toolbar area
@@ -260,21 +259,21 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
     QPoint p = mapToParent( event->pos() );
     QRectF g = m_applet->geometry();
 
-    debug() << p << g << "<-- movin'?";
+  //  debug() << p << g << "<-- movin'?";
     g.moveLeft( p.x() + m_offset );
 
-  //  m_applet->setGeometry( g );
+    m_applet->setGeometry( g );
 
     // swap items if we pass completely over the next/previous item or cross
     // more than halfway across it, whichever comes first
-    debug() << m_prevGeom << g << m_nextGeom;
+  //  debug() << m_prevGeom << g << m_nextGeom;
     if( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() ) {
         swapWithPrevious();
     }else if ( m_nextGeom.isValid() && g.right() >= m_nextGeom.right() ) {
         swapWithNext();
     }
 
-    debug() << "=================================";
+  //  debug() << "=================================";
 }
 
 void 
@@ -409,7 +408,7 @@ Context::AppletItemOverlay::delaySyncGeometry()
 void 
 Context::AppletItemOverlay::syncGeometry()
 {
-    DEBUG_BLOCK
+  //  DEBUG_BLOCK
     setGeometry( m_applet->geometry().toRect() );
   //  debug() << "setting overlay geometry to" << m_applet->geometry().toRect();
 
@@ -421,14 +420,14 @@ Context::AppletItemOverlay::syncGeometry()
         m_prevGeom = QRectF();
     }
 
-    if( m_index < m_layout->count() - 2 ) 
+    if( m_index < m_layout->count() - 2  ) 
     {
         m_nextGeom = m_layout->itemAt( m_index + 2 )->geometry();
     } else 
     {
         m_nextGeom = QRectF();
     }
- //   debug() << m_index << m_layout->count() << m_prevGeom << m_nextGeom;
+    //debug() << m_index << m_layout->count() << m_prevGeom << m_nextGeom;
 }
 
 #include "AppletItemOverlay.moc"
