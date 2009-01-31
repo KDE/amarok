@@ -35,7 +35,10 @@
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
+#include <speexfile.h>
+#include <trueaudiofile.h>
 #include <vorbisfile.h>
+#include <wavpackfile.h>
 #ifdef HAVE_MP4V2
 #include "metadata/mp4/mp4file.h"
 #include "metadata/mp4/mp4tag.h"
@@ -279,7 +282,10 @@ Meta::ReplayGainTagMap
 Meta::readReplayGainTags( TagLib::FileRef fileref )
 {
     Meta::ReplayGainTagMap map;
-    //FIXME: get replaygain info for other formats we can read
+    // NB: we can't get replay gain info from MPC files, since it's stored in some magic place
+    //     and not in the APE tags, and taglib doesn't let us access the information (unless
+    //     we want to parse the file ourselves).
+    // FIXME: should we try getting the info from the MPC APE tag just in case?
 
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
@@ -309,6 +315,21 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
     {
         if ( file->tag() )
             map = readASFTags( file->tag() );
+    }
+    else if ( TagLib::WavPack::File *file = dynamic_cast<TagLib::WavPack::File *>( fileref.file() ) )
+    {
+        if ( file->APETag() )
+            map = readAPETags( file->APETag() );
+    }
+    else if ( TagLib::TrueAudio::File *file = dynamic_cast<TagLib::TrueAudio::File *>( fileref.file() ) )
+    {
+        if ( file->ID3v2Tag() )
+            map = readID3v2Tags( file->ID3v2Tag() );
+    }
+    else if ( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
+    {
+        if ( file->tag() )
+            map = readXiphTags( file->tag() );
     }
 #ifdef HAVE_MP4V2
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
