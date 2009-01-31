@@ -250,8 +250,12 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
 {
     DEBUG_BLOCK
     Q_UNUSED( which );
-    debug() << "returning sizehint height of" << m_lyrics->sizeHint().height();
-    return QSizeF( constraint.width(), m_lyrics->sizeHint().height() );
+    if( m_lyrics )
+    {
+        debug() << "returning sizehint height of" << m_lyrics->sizeHint().height();
+        return QSizeF( constraint.width(), m_lyrics->sizeHint().height() );
+    } else
+        return QGraphicsWidget::sizeHint( which, constraint );
     
 }
 void
