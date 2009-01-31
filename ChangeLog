@@ -35,8 +35,8 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
-    * Use the wavpack and trueaudio support in TagLib 1.5, rather than our own
-      plugins.
+    * Use the speex, trueaudio and wavpack support in TagLib 1.5, rather than
+      our own plugins.
     * Doubleclick on a podcast channel appends all it's child episodes to the
       playlist.
     * Delete and download actions will only be shown when relevant to the

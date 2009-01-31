@@ -54,12 +54,6 @@ set(libtagwav_SRCS
         wav/wavfiletyperesolver.cpp
 )
 
-set(libtagspeex_SRCS
-        speex/speexfile.cpp
-        speex/taglib_speexfiletyperesolver.cpp
-        speex/speexproperties.cpp
-)
-
 set(libtagasf_SRCS
 	asf/asfattribute.cpp
 	asf/asfproperties.cpp
@@ -107,7 +101,6 @@ SET(amarok_taglib_SRCS
         ${libtagaac_SRCS}
         ${libtagasf_SRCS}
         ${libtagwav_SRCS}
-        ${libtagspeex_SRCS}
 )
 
 kde4_add_library(amarok_taglib SHARED ${amarok_taglib_SRCS})

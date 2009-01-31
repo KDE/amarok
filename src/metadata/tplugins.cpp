@@ -39,8 +39,6 @@
 #include "m4a/mp4file.h"
 #endif
 
-#include "speex/taglib_speexfiletyperesolver.h"
-#include "speex/speexfile.h"
 #include "asf/taglib_asffiletyperesolver.h"
 #include "asf/asffile.h"
 #include "rmff/taglib_realmediafiletyperesolver.h"
@@ -51,14 +49,15 @@
 #include "wav/wavfile.h"
 #include "aac/aacfiletyperesolver.h"
 
+#include <flacfile.h>
+#include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
-#include <vorbisfile.h>
-#include <flacfile.h>
-#include <mpcfile.h>
-#include <wavpackfile.h>
+#include <speexfile.h>
 #include <trueaudiofile.h>
+#include <vorbisfile.h>
+#include <wavpackfile.h>
 
 
 #ifdef KMIMETYPE_RESOLVER
@@ -124,6 +123,10 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(TagLib::FileName fileName,
     {
         return new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
     }
+    else if( mimetype->is( "audio/x-speex" ) || mimetype->is( "audio/x-speex+ogg" ) )
+    {
+        return new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
+    }
 
     debug() << "kmimetype filetype guessing failed for" << fileName;
 
@@ -141,6 +144,5 @@ AMAROK_TAGLIB_EXPORT void registerTaglibPlugins()
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AACFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new SpeexFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
 }
