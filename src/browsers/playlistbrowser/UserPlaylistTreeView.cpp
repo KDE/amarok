@@ -89,14 +89,13 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
 {
     QModelIndex index = indexAt( event->pos() );
 
-    if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
+    if( index.isValid() )
     {
-//         SqlPlaylistViewItem *item = static_cast<SqlPlaylistViewItem*>( index.internalPointer() );
-//
-//         if ( typeid( * item ) == typeid( Meta::SqlPlaylist ) ) {
-//             Meta::SqlPlaylist * playlist = static_cast< Meta::SqlPlaylist* >( item );
-//             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
-//         }
+        //hack: get data from Model
+        QVariant data = index.data( 0xf00d );
+        Meta::PlaylistPtr playlist = data.value<Meta::PlaylistPtr>();
+        if( playlist )
+            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
     }
 }
 
@@ -203,28 +202,32 @@ PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList in
 
 void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad()
 {
-    DEBUG_BLOCK
-//     foreach( SqlPlaylistViewItemPtr item, selectedItems() )
-//     {
-//         if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
-//         {
-//             Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-//             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
-//         }
-//     }
+    foreach( QModelIndex index, selectedIndexes() )
+    {
+        if( index.isValid() )
+        {
+            //hack: get data from Model
+            QVariant data = index.data( 0xf00d );
+            Meta::PlaylistPtr playlist = data.value<Meta::PlaylistPtr>();
+            if( playlist )
+                The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
+        }
+    }
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::slotAppend()
 {
-    DEBUG_BLOCK
-//     foreach( SqlPlaylistViewItemPtr item, selectedItems() )
-//     {
-//         if( typeid( * item ) == typeid( Meta::SqlPlaylist ) )
-//         {
-//             Meta::SqlPlaylistPtr playlist = Meta::SqlPlaylistPtr::staticCast( item );
-//             The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
-//         }
-//     }
+    foreach( QModelIndex index, selectedIndexes() )
+    {
+        if( index.isValid() )
+        {
+            //hack: get data from Model
+            QVariant data = index.data( 0xf00d );
+            Meta::PlaylistPtr playlist = data.value<Meta::PlaylistPtr>();
+            if( playlist )
+                The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
+        }
+    }
 }
 
 
