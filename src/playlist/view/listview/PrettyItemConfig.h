@@ -36,13 +36,13 @@ enum
 class PrettyItemConfigRowElement{
 
 public:
-    PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment,
+    PrettyItemConfigRowElement( int value, qreal size, bool bold, Qt::Alignment alignment,
                                 const QString &prefix = QString(), const QString &suffix = QString() );
 
     int value() const;
     qreal size() const;
     bool bold() const;
-    int alignment() const;
+    Qt::Alignment alignment() const;
     QString prefix() const;
     QString suffix() const;
     
@@ -50,7 +50,7 @@ private:
     int m_value;
     qreal m_size;
     bool m_bold;
-    int m_alignment;
+    Qt::Alignment m_alignment;
     QString m_prefix, m_suffix;
 };
 

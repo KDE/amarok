@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "TokenWithLayout.h"
 
 #include "Debug.h"
@@ -50,9 +50,9 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
 {
 
     DEBUG_BLOCK
-    
+
     QMenu menu;
-    
+
     menu.setTitle(   i18n( "Layout" ) );
 
     KAction *boldAction = new KAction( i18n( "Bold" ), &menu );
@@ -66,11 +66,11 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
     alignCenterAction->setCheckable( true );
     alignRightAction->setCheckable( true );
 
-    if ( m_alignment == Qt::AlignLeft )
+    if ( m_alignment & Qt::AlignLeft )
         alignLeftAction->setChecked( true );
-    else if ( m_alignment == Qt::AlignCenter )
+    else if ( m_alignment & Qt::AlignHCenter )
         alignCenterAction->setChecked( true );
-    else if ( m_alignment == Qt::AlignRight )
+    else if ( m_alignment & Qt::AlignRight )
         alignRightAction->setChecked( true );
 
     QActionGroup *alignmentGroup = new QActionGroup( &menu );
@@ -88,7 +88,7 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
 
 
     QAction* a = menu.exec( mapToGlobal( event->pos() ) );
-    
+
     if( a == alignLeftAction )
         setAlignment( Qt::AlignLeft );
     else if( a == alignCenterAction )
@@ -97,7 +97,7 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
         setAlignment( Qt::AlignRight );
     else if( a == boldAction )
         setBold( boldAction->isChecked() );
-    
+
 }
 
 Qt::Alignment TokenWithLayout::alignment()

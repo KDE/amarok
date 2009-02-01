@@ -21,7 +21,7 @@
 
 namespace Playlist {
 
-    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, int alignment,
+    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, Qt::Alignment alignment,
                                                             const QString &prefix , const QString &suffix )
     : m_value( value )
     , m_size( size )
@@ -47,7 +47,7 @@ bool PrettyItemConfigRowElement::bold() const
     return m_bold;
 }
 
-int PrettyItemConfigRowElement::alignment() const
+Qt::Alignment PrettyItemConfigRowElement::alignment() const
 {
     return m_alignment;
 }

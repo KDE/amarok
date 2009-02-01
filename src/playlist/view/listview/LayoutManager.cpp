@@ -168,7 +168,7 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
             qreal size = elementNode.toElement().attribute( "size", "0.0" ).toDouble();
             bool bold = ( elementNode.toElement().attribute( "bold", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
-            int alignment;
+            Qt::Alignment alignment;
             
 
             if ( alignmentString.compare( "left", Qt::CaseInsensitive ) == 0 )

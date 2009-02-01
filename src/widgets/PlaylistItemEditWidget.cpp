@@ -91,8 +91,6 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
     m_noOfRowsSpinBox->setValue( rowCount );
 
     m_showCoverCheckBox->setChecked( config.showCover() );
-
-    TokenWithLayoutFactory factory;
     
     for( int i = 0; i < rowCount; i++ )
     {
@@ -110,7 +108,9 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
         for( int j = 0; j < elementCount; j++ )
         {
             Playlist::PrettyItemConfigRowElement element = rowConfig.element( j );
-            Token * token = factory.createToken( columnNames[element.value()], iconNames[element.value()], element.value() );
+            TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
+            token->setBold( element.bold() );
+            token->setAlignment( element.alignment() );
             currentRow->addToken( token );
         }
     }
