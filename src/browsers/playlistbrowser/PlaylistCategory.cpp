@@ -24,8 +24,6 @@
 #include "playlist/PlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
-// #include "SqlPlaylist.h"
-// #include "SqlPlaylistGroup.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
