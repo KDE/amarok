@@ -41,7 +41,7 @@ class TokenListWidget : public KListWidget
         void dropEvent( QDropEvent *event );
 
     signals:
-        void onDoubleClick( QString text );     //connects to FilenameLayoutWidget::addToken( QString )
+        void onDoubleClick( Token *token );     //connects to FilenameLayoutWidget::addToken( QString )
     
     private:
         void performDrag( QMouseEvent *event );

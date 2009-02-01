@@ -45,9 +45,9 @@ TokenListWidget::addToken( Token * token )
 void
 TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    QListWidgetItem *token = itemAt( event->pos() );
-    if( token )
-        emit onDoubleClick( token->text() );
+    QListWidgetItem *tokenItem = itemAt( event->pos() );
+    if( tokenItem )
+        emit onDoubleClick( m_itemTokenMap.value( tokenItem ) ); //token->name() << token->iconName() << token->value()
 }
 
 //Executed on mouse press, handles start of drag.

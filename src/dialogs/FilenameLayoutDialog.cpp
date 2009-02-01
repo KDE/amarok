@@ -42,8 +42,8 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
              this, SLOT( editStateEnable( bool ) ) );
     connect( parent, SIGNAL( accepted() ),
              this, SLOT( onAccept() ) );
-    connect( tokenPool, SIGNAL( onDoubleClick( QString ) ),
-             filenameLayout, SLOT( addToken( QString ) ) );
+    connect( tokenPool, SIGNAL( onDoubleClick( Token * ) ),
+             filenameLayout, SLOT( addToken( Token* ) ) );
     connect( kpbAdvanced, SIGNAL( clicked() ),
              this, SLOT( toggleAdvancedMode() ) );
     connect( filenameLayout, SIGNAL( layoutChanged() ),
@@ -188,7 +188,7 @@ QString
 FilenameLayoutDialog::getParsableScheme()
 {
     QString category = m_isOrganizeCollection ? "OrganizeCollectionDialog" : "FilenameLayoutDialog";
-    QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : getParsableScheme();
+    QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : parsableScheme();
 
     Amarok::config( category ).writeEntry( "Scheme", scheme );
     return scheme;
@@ -263,7 +263,7 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
         kpbAdvanced->setText( i18n( "&Basic..." ) );
         filenameLayout->hide();
         filenameLayoutEdit->show();
-        filenameLayoutEdit->setText( getParsableScheme() );
+        filenameLayoutEdit->setText( parsableScheme() );
         tokenPool->hide();
         syntaxLabel->show();
 

@@ -40,6 +40,8 @@ Token::Token( const QString &name, const QString &iconName, int value, QWidget *
     
     m_iconContainer = new QLabel( this );
     m_iconContainer->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    QPixmap pixmap = QPixmap( icon().pixmap( 16, 16 ) );
+    m_iconContainer->setPixmap( pixmap );
 
     setContentsMargins( 0, 0, 0, 0 );
 
