@@ -50,11 +50,21 @@ PlaylistBrowserNS::PodcastModel::instance()
     return s_instance ? s_instance : new PodcastModel();
 }
 
+void
+PlaylistBrowserNS::PodcastModel::destroy()
+{
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
 PlaylistBrowserNS::PodcastModel::PodcastModel()
  : QAbstractItemModel()
  , m_appendAction( 0 )
  , m_loadAction( 0 )
 {
+    s_instance = this;
     QList<Meta::PlaylistPtr> playlists =
             The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
     QListIterator<Meta::PlaylistPtr> i(playlists);
@@ -597,8 +607,6 @@ PlaylistBrowserNS::PodcastModel::deleteDownloadedEpisode( Meta::PodcastEpisodePt
 void
 PlaylistBrowserNS::PodcastModel::configureChannels( QModelIndexList list )
 {
-    DEBUG_BLOCK
-    debug() << "number of items: " << list.count();
     foreach( const QModelIndex &index, list )
     {
         Meta::PodcastMetaCommon *pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
@@ -644,13 +652,11 @@ PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
 QList<PopupDropperAction *>
 PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
 {
-    DEBUG_BLOCK
     QList<PopupDropperAction *> actions;
 
     m_selectedEpisodes.clear();
     m_selectedChannels.clear();
     m_selectedEpisodes << selectedEpisodes( indices );
-    debug() << m_selectedEpisodes.count() << " episodes selected";
     m_selectedChannels << selectedChannels( indices );
 
     if( indices.isEmpty() )
@@ -702,23 +708,8 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 
-    /*TODO: rename episodes
-    if( m_renameAction == 0 )
-    {
-        m_renameAction =  new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "edit",
-            KIcon( "media-track-edit-amarok" ),
-            i18n( "&Rename" ),
-            this
-        );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-    }
-    */
-
     actions << m_appendAction;
     actions << m_loadAction;
-//     actions << m_renameAction;
 
     return actions;
 }
@@ -728,7 +719,6 @@ PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indice
 {
     Meta::PodcastChannelList channels;
     Meta::PodcastMetaCommon *pmc = 0;
-    debug() << indices.count() << " indices selected";
     foreach( const QModelIndex &index, indices )
     {
         if( !index.isValid() )
@@ -753,10 +743,8 @@ PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indice
 Meta::PodcastEpisodeList
 PlaylistBrowserNS::PodcastModel::selectedEpisodes( const QModelIndexList &indices )
 {
-    DEBUG_BLOCK
     Meta::PodcastEpisodeList episodes;
     Meta::PodcastMetaCommon *pmc = 0;
-    debug() << indices.count() << " indices selected";
     foreach( const QModelIndex &index, indices )
     {
         if( !index.isValid() )
@@ -773,34 +761,25 @@ PlaylistBrowserNS::PodcastModel::selectedEpisodes( const QModelIndexList &indice
                 break;
         }
     }
-    debug() << episodes.count() << " episodes selected";
     return episodes;
 }
 
 void
 PlaylistBrowserNS::PodcastModel::slotAppend()
 {
-    DEBUG_BLOCK
-
     Meta::PodcastEpisodeList episodes = selectedEpisodes();
     if( !episodes.empty() )
-    {
-        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Append );
-    }
+        The::playlistController()->insertOptioned(
+                podcastEpisodesToTracks( episodes ), Playlist::Append );
 }
 
 void
 PlaylistBrowserNS::PodcastModel::slotLoad()
 {
-    DEBUG_BLOCK
-
     Meta::PodcastEpisodeList episodes = selectedEpisodes();
-    debug() << episodes.count() << " selectedEpisodes";
-
     if( !episodes.empty() )
-    {
-        The::playlistController()->insertOptioned( podcastEpisodesToTracks( episodes ), Playlist::Replace );
-    }
+        The::playlistController()->insertOptioned(
+                podcastEpisodesToTracks( episodes ), Playlist::Replace );
 }
 
 Meta::TrackList
