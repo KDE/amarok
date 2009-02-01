@@ -241,7 +241,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     
     m_searchWidget->toolBar()->addSeparator();
     
-    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+    KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
     searchMenuAction->setMenu( filterMenu );
     
     m_searchWidget->toolBar()->addAction( searchMenuAction );
