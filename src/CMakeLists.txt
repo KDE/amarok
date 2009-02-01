@@ -473,7 +473,6 @@ set(amaroklib_LIB_SRCS
     AmarokProcess.cpp
     App.cpp
     CaseConverter.cpp
-    CueFile.cpp
     DirectoryLoader.cpp
     EngineController.cpp
     EngineObserver.cpp
