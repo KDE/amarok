@@ -20,6 +20,8 @@
 #include "PlaylistItemEditWidget.h"
 #include "playlist/PlaylistDefines.h"
 
+#include "Debug.h"
+
 #include <KHBox>
 #include <QCheckBox>
 #include <QSpinBox>
@@ -132,7 +134,9 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
         
         int noOfElements = tokens.count();
         //FIXME! for now, each element get the same size. This needs extensions to the token stuff
-        qreal size = 1.0 / (qreal) noOfElements;
+        qreal size = 1.0 / ( (qreal) noOfElements );
+
+        debug() << "elemets has size: " << size;
 
         foreach( Token * token, tokens ) {
             TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );

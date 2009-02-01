@@ -264,7 +264,8 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
         }
 
         QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
-
+        int currentItemX = itemOffsetX;
+        
         for ( int j = 0; j < elementCount; ++j ) {
 
             PrettyItemConfigRowElement element = row.element( j );
@@ -287,14 +288,15 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                 painter->setFont( font );
 
                 QRectF elementBox;
-                if ( element.size() > 0 )
+                if ( element.size() > 0.0 )
                 {
+                    debug() << "got element with size " << element.size();
                     elementBox = rowBox;
                     itemWidth = rowWidth * element.size();
                     elementBox.setWidth(itemWidth);
                     text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
-                    painter->drawText( rowBox, alignment, text );
-                    rowBox.setLeft( elementBox.right() + PADDING );
+                    painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment, text );
+                    currentItemX += itemWidth;
                 }
                 else
                 {
