@@ -112,7 +112,7 @@ static const QStringList iconNames = ( QStringList()
         << "rating"
         << ""
         << "emblem-favorite"
-        << ""
+        << "applications-internet"
         << ""
         << "filename-title-amarok"
         << "filename-title-amarok"
