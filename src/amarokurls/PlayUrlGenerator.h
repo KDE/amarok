@@ -23,6 +23,7 @@
 #include "amarok_export.h"
 #include "Meta.h"
 
+#include <QString>
 class AmarokUrl;
 
 /**
@@ -40,6 +41,6 @@ class AMAROK_EXPORT PlayUrlGenerator {
         ~PlayUrlGenerator();
 
         AmarokUrl createCurrentTrackBookmark();
-        AmarokUrl createTrackBookmark( Meta::TrackPtr track, int seconds );
+        AmarokUrl createTrackBookmark( Meta::TrackPtr track, int seconds, QString name = QString() );
 };
 #endif // PLAYURLGENERATOR_H

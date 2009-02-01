@@ -40,7 +40,7 @@ AmarokUrl PlayUrlGenerator::createCurrentTrackBookmark()
     return createTrackBookmark( track, seconds );
 }
 
-AmarokUrl PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds )
+AmarokUrl PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QString name )
 {
     AmarokUrl url;
     if( !track )
@@ -49,7 +49,12 @@ AmarokUrl PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int secon
     QString track_url = track->playableUrl().toEncoded().toBase64();
     url.appendArg ( track_url );
     url.appendArg ( QString::number ( seconds ) );
-    url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );
+
+    if( name.isEmpty() )
+        url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );
+    else
+        url.setName( name + " - " + Meta::secToPrettyTime( seconds ) );
+
     debug() << "concocted url: " << url.url();
     return url;
 }
