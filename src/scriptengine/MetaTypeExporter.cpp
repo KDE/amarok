@@ -121,35 +121,35 @@ QString
 MetaTrackPrototype::album() const
 {
     GET_TRACK
-    return track ? track->album()->prettyName() : QString();
+    return ( track && track->album() ) ? track->album()->prettyName() : QString();
 }
 
 QString
 MetaTrackPrototype::artist() const
 {
     GET_TRACK
-    return track ? track->artist()->prettyName() : QString();
+    return ( track && track->artist() ) ? track->artist()->prettyName() : QString();
 }
 
 QString
 MetaTrackPrototype::composer() const
 {
     GET_TRACK
-    return track ? track->composer()->prettyName() : QString();
+    return ( track && track->composer() ) ? track->composer()->prettyName() : QString();
 }
 
 QString
 MetaTrackPrototype::genre() const
 {
     GET_TRACK
-    return track ? track->genre()->prettyName() : QString();
+    return ( track && track->genre() ) ? track->genre()->prettyName() : QString();
 }
 
 QString
 MetaTrackPrototype::year() const
 {
     GET_TRACK
-    return track ? track->year()->prettyName() : QString();
+    return ( track && track->year() ) ? track->year()->prettyName() : QString();
 }
 
 QString
