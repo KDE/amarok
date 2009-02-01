@@ -21,6 +21,7 @@
 
 #include "amarokconfig.h"
 #include "Amarok.h"
+#include "amarokurls/BookmarkMetaActions.h"
 #include "Debug.h"
 #include "MetaUtility.h"
 #include "SqlCollection.h"
@@ -33,12 +34,13 @@
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
+#include "meta/capabilities/TimecodeLoadCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 #include "meta/capabilities/OrganiseCapability.h"
 #include "meta/capabilities/UpdateCapability.h"
+#include "amarokurls/PlayUrlRunner.h"
 #include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
-#include "amarokurls/BookmarkMetaActions.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -174,6 +176,32 @@ class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
         {
             DEBUG_BLOCK
             return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+        }
+
+    private:
+        KSharedPtr<SqlTrack> m_track;
+};
+
+class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+{
+    Q_OBJECT
+    public:
+        TimecodeLoadCapabilityImpl( SqlTrack *track )
+        : Meta::TimecodeLoadCapability()
+        , m_track( track )
+        {}
+
+        virtual bool hasTimecodes()
+        {
+            if ( loadTimecodes().size() > 0 )
+                return true;
+            return false;
+        }
+
+        virtual QList<KSharedPtr<AmarokUrl> > loadTimecodes()
+        {
+            QList<KSharedPtr<AmarokUrl> > list = PlayUrlRunner::bookmarksFromUrl( m_track->playableUrl() );
+            return list;
         }
 
     private:
@@ -876,12 +904,12 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::Organisable:
         case Meta::Capability::Updatable:
         case Meta::Capability::CurrentTrackActions:
+        case Meta::Capability::WriteTimecode:
+        case Meta::Capability::LoadTimecode:
             return true;
 
         case Meta::Capability::Editable:
             return isEditable();
-        case Meta::Capability::WriteTimecode:
-            return true;
 
         default:
             return false;
@@ -925,6 +953,8 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
         }
         case Meta::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( this );
+        case Meta::Capability::LoadTimecode:
+            return new TimecodeLoadCapabilityImpl( this );
 
         default:
             return 0;

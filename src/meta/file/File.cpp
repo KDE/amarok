@@ -26,7 +26,9 @@
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
+#include "meta/capabilities/TimecodeLoadCapability.h"
 #include "MetaUtility.h"
+#include "amarokurls/PlayUrlRunner.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <QList>
@@ -96,6 +98,31 @@ class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
         DEBUG_BLOCK
         return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
     }
+
+    private:
+        KSharedPtr<MetaFile::Track> m_track;
+};
+
+class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+{
+    public:
+        TimecodeLoadCapabilityImpl( MetaFile::Track *track )
+        : Meta::TimecodeLoadCapability()
+        , m_track( track )
+        {}
+
+        virtual bool hasTimecodes()
+        {
+            if ( loadTimecodes().size() > 0 )
+                return true;
+            return false;
+        }
+
+        virtual BookmarkList loadTimecodes()
+        {
+            BookmarkList list = PlayUrlRunner::bookmarksFromUrl( m_track->playableUrl() );
+            return list;
+        }
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
@@ -510,7 +537,7 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::Editable || type == Meta::Capability::Importable || type == Meta::Capability::CurrentTrackActions || type == Meta::Capability::WriteTimecode;
+    return type == Meta::Capability::Editable || type == Meta::Capability::Importable || type == Meta::Capability::CurrentTrackActions || type == Meta::Capability::WriteTimecode || type == Meta::Capability::LoadTimecode;
 }
 
 Meta::Capability*
@@ -532,6 +559,8 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
             }
         case Meta::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( this );
+        case Meta::Capability::LoadTimecode:
+            return new TimecodeLoadCapabilityImpl( this );
         default:
             return 0;
     }

@@ -1,4 +1,4 @@
-/***************************************************************************
+/**************************************************************************
 *   Copyright (c) 2009  Casey Link <unnamedrambler@gmail.com>             *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,38 +17,53 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
 
-#ifndef PLAYURLRUNNER_H
-#define PLAYURLRUNNER_H
+#ifndef TIMECODELOADCAPABILITY_H
+#define TIMECODELOADCAPABILITY_H
 
 #include "amarok_export.h"
-#include "AmarokUrlRunnerBase.h"
+#include "meta/Meta.h"
+#include "meta/Capability.h"
+#include "amarokurls/AmarokUrl.h"
+
+#include <KSharedPtr>
 
 #include <QList>
+
+namespace Meta {
+
+typedef QList<AmarokUrlPtr> BookmarkList;
+typedef KSharedPtr<AmarokUrl> AmarokUrlPtr;
 /**
- * The Runner that handles urls that plays tracks.
- * @author Casey Link <unnamedrambler@gmail.com>
- */
-class AMAROK_EXPORT PlayUrlRunner : public AmarokUrlRunnerBase
+* This capability determines whether a track has timecodes
+* that can be loaded from it, and supplies them if it can.
+* @author Casey Link
+*/
+class AMAROK_EXPORT TimecodeLoadCapability : public Capability
 {
+    Q_OBJECT
 public:
-    PlayUrlRunner ();
-
-    virtual  ~PlayUrlRunner ();
-
-    virtual QString command () const;
-    virtual bool run ( AmarokUrl url );
+    virtual ~TimecodeLoadCapability();
 
     /**
-     * This function takes a url for a track, and returns a list
-     * of bookmarks (represented by play amarokurls) for the track.
-     * The definition of a play amarokurl is in PlayUrlGenerator
-     *
-     * @param url the playableUrl() of a Meta::Track
-     * @return a list of bookmarks. the list is empty if no bookmarks exist.
-     * @see PlayUrlGenerator
+     * @return true if the track has timecodes, false if not
      */
-    static BookmarkList bookmarksFromUrl( KUrl url );
+    virtual bool hasTimecodes() = 0 ;
 
+    /**
+     * @return a QList of AmarokUrlPtrs representing the track's timecodes. Might return an empty list.
+     */
+    virtual BookmarkList loadTimecodes()  = 0;
+
+    /**
+    * Get the capabilityInterfaceType of this capability
+    * @return The capabilityInterfaceType ( always Meta::Capability::LoadTimecode; )
+    */
+    static Type capabilityInterfaceType()
+    {
+        return Meta::Capability::LoadTimecode;
+    }
 };
 
-#endif // PLAYURLRUNNER_H
+}
+
+#endif // TIMECODELOADCAPABILITY_H

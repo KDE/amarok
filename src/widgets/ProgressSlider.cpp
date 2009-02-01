@@ -19,7 +19,9 @@
 #include "TimeLabel.h"
 #include "amarokconfig.h"
 #include "meta/MetaUtility.h"
-#include "amarokurls/PlayUrlRunner.h"
+#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "amarokurls/AmarokUrl.h"
+
 #include <QHBoxLayout>
 
 #include <KLocale>
@@ -234,10 +236,11 @@ ProgressWidget::engineNewTrackPlaying()
     if( The::engineController()->currentTrack() )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
         {
-            BookmarkList list = PlayUrlRunner::bookmarksFromUrl( track->playableUrl() );
-            foreach(AmarokUrlPtr url, list)
+            Meta::TimecodeLoadCapability *tcl = track->as<Meta::TimecodeLoadCapability>();
+            BookmarkList list = tcl->loadTimecodes();
+            foreach( AmarokUrlPtr url, list )
             {
                 if( url->command() == "play"  )
                     addBookmark( url->name(), url->arg(1).toInt() );
