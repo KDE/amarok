@@ -46,8 +46,6 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel
     : Amarok::PrettyTreeView( parent )
     , m_model( model )
     , m_pd( 0 )
-    , m_deleteAction( 0 )
-    , m_renameAction( 0 )
     , m_addGroupAction( 0 )
 {
     setModel( model );
@@ -140,38 +138,17 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 void
 PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
-    switch( event->key() )
-    {
-        case Qt::Key_Delete:
-            slotDelete();
-            return;
-
-        case Qt::Key_F2:
-            slotRename();
-            return;
-    }
-    QTreeView::keyPressEvent( event );
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::slotDelete()
-{
-    DEBUG_BLOCK
-
-    //TODO FIXME Confirmation of delete
-
-//     foreach( SqlPlaylistViewItemPtr item, selectedItems() )
+//     switch( event->key() )
 //     {
-//         debug() << "deleting " << item->name();
-//         item->removeFromDb();
-//         item->parent()->deleteChild( item );
+//         case Qt::Key_Delete:
+//             slotDelete();
+//             return;
+//
+//         case Qt::Key_F2:
+//             slotRename();
+//             return;
 //     }
-//     PlaylistBrowserNS::UserModel::instance()->reloadFromDb();
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::slotRename()
-{
-    DEBUG_BLOCK
-    edit( selectionModel()->selectedIndexes().first() );
+//     QTreeView::keyPressEvent( event );
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEvent * event )

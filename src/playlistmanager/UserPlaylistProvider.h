@@ -24,6 +24,8 @@
 #include "meta/Playlist.h"
 #include "playlistmanager/PlaylistManager.h"
 
+class PopupDropperAction;
+
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
@@ -49,6 +51,8 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         virtual bool save( const Meta::TrackList &tracks ) = 0;
 
         virtual bool supportsEmptyGroups() { return false; }
+
+        virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list ) = 0;
 };
 
 #endif

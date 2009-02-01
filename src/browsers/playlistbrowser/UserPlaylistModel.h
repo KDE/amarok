@@ -49,6 +49,7 @@ class UserModel : public MetaPlaylistModel
             GroupRole = Qt::UserRole + 3 //What is the name of the group this Playlist is in.
         };
         static UserModel * instance();
+        static void destroy();
 
         ~UserModel();
 
@@ -105,4 +106,7 @@ class UserModel : public MetaPlaylistModel
 
 }
 
+namespace The {
+    AMAROK_EXPORT PlaylistBrowserNS::UserModel* userPlaylistModel();
+}
 #endif

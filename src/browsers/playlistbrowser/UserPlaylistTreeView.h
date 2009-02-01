@@ -51,16 +51,9 @@ protected:
 
     void contextMenuEvent( QContextMenuEvent* event );
 
-private slots:
-    void slotDelete();
-    void slotRename();
-
 private:
     MetaPlaylistModel *m_model;
     PopupDropper* m_pd;
-
-    PopupDropperAction *m_deleteAction;
-    PopupDropperAction *m_renameAction;
 
     KAction *m_addGroupAction;
 

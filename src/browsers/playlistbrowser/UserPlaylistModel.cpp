@@ -26,12 +26,21 @@
 #include "CollectionManager.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "SvgHandler.h"
+#include "UserPlaylistProvider.h"
 
 #include <KIcon>
 
 #include <QAbstractListModel>
 
 #include <typeinfo>
+
+namespace The
+{
+    PlaylistBrowserNS::UserModel* userPlaylistModel()
+    {
+        return PlaylistBrowserNS::UserModel::instance();
+    }
+}
 
 PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::s_instance = 0;
 
@@ -43,11 +52,21 @@ PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
     return s_instance;
 }
 
+void
+PlaylistBrowserNS::UserModel::destroy()
+{
+    if (s_instance) {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
 PlaylistBrowserNS::UserModel::UserModel()
     : MetaPlaylistModel()
     , m_appendAction( 0 )
     , m_loadAction( 0 )
 {
+    s_instance = this;
     loadPlaylists();
 
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
@@ -84,8 +103,6 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 QVariant
 PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 {
-    DEBUG_BLOCK
-
     if ( !index.isValid() )
         return QVariant();
 
@@ -263,6 +280,14 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 
     actions << createCommonActions( indices );
 
+    //HACK: since we only have one UserPlaylistProvider implementation
+    UserPlaylistProvider *provider = The::playlistManager()->defaultUserPlaylists();
+    if( provider )
+    {
+        if( !selectedPlaylists().isEmpty() )
+            actions << provider->playlistActions( m_selectedPlaylists );
+    }
+
     return actions;
 }
 
@@ -299,18 +324,6 @@ PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
         m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
-
-//     if ( m_deleteAction == 0 )
-//     {
-//         m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
-//         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
-//     }
-//
-//     if ( m_renameAction == 0 )
-//     {
-//         m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-//         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-//     }
 
     if ( indices.count() > 0 )
     {

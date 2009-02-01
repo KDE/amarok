@@ -22,8 +22,13 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
 #include "SqlStorage.h"
+#include "SvgHandler.h"
+#include "UserPlaylistModel.h"
+
+#include <KIcon>
 #include <KUrl>
 
 #include <QMap>
@@ -33,6 +38,8 @@ static const QString key("AMAROK_USERPLAYLIST");
 
 SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
+    , m_deleteAction( 0 )
+    , m_renameAction( 0 )
 {
     checkTables();
     m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "",
@@ -58,6 +65,55 @@ SqlUserPlaylistProvider::playlists()
     return playlists;
 }
 
+void
+SqlUserPlaylistProvider::slotDelete()
+{
+    DEBUG_BLOCK
+
+    //TODO FIXME Confirmation of delete
+    foreach( Meta::PlaylistPtr playlist, The::userPlaylistModel()->selectedPlaylists() )
+    {
+        Meta::SqlPlaylistPtr sqlPlaylist =
+                Meta::SqlPlaylistPtr::dynamicCast( playlist );
+        if( sqlPlaylist )
+        {
+            debug() << "deleting " << sqlPlaylist->name();
+            sqlPlaylist->removeFromDb();
+        }
+    }
+    reloadFromDb();
+}
+
+void
+SqlUserPlaylistProvider::slotRename()
+{
+    DEBUG_BLOCK
+    //TODO:inline rename
+}
+
+QList<PopupDropperAction *>
+SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
+{
+    Q_UNUSED( list )
+    QList<PopupDropperAction *> actions;
+
+    if ( m_deleteAction == 0 )
+    {
+        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+    }
+    actions << m_deleteAction;
+
+    if ( m_renameAction == 0 )
+    {
+        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+    }
+    actions << m_renameAction;
+
+    return actions;
+}
+
 bool
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
@@ -77,6 +133,7 @@ SqlUserPlaylistProvider::reloadFromDb()
 {
     DEBUG_BLOCK;
     m_root->clear();
+    emit updated();
 }
 
 void

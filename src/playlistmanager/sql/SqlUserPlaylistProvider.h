@@ -24,6 +24,8 @@
 
 #include <klocale.h>
 
+class PopupDropperAction;
+
 class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 {
     Q_OBJECT
@@ -42,8 +44,14 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         virtual bool supportsEmptyGroups() { return true; }
 
+        QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
+
     signals:
         void updated();
+
+    private slots:
+        void slotDelete();
+        void slotRename();
 
     private:
         void reloadFromDb();
@@ -53,6 +61,9 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void deleteTables();
         void checkTables();
         void loadFromDb();
+
+        PopupDropperAction *m_deleteAction;
+        PopupDropperAction *m_renameAction;
 };
 
 #endif
