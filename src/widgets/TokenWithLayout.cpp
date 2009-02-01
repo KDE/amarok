@@ -49,9 +49,6 @@ TokenWithLayout::~TokenWithLayout()
 
 void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
 {
-
-    DEBUG_BLOCK
-
     QMenu menu;
 
     menu.setTitle(   i18n( "Layout" ) );

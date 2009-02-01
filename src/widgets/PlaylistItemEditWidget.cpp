@@ -136,8 +136,6 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
         //FIXME! for now, each element get the same size. This needs extensions to the token stuff
         qreal size = 1.0 / ( (qreal) noOfElements );
 
-        debug() << "elemets has size: " << size;
-
         foreach( Token * token, tokens ) {
             TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );
 

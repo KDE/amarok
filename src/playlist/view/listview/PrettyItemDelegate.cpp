@@ -290,7 +290,6 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                 QRectF elementBox;
                 if ( element.size() > 0.0 )
                 {
-                    debug() << "got element with size " << element.size();
                     elementBox = rowBox;
                     itemWidth = rowWidth * element.size();
                     elementBox.setWidth(itemWidth);
