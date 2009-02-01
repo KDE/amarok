@@ -252,6 +252,7 @@ Playlist::RandomAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
     Model* model = Model::instance();
     Meta::TrackPtr left = model->trackForId( l );
     Meta::TrackPtr right = model->trackForId( r );
+
     return Meta::Track::lessThan( left, right );
 }
 
