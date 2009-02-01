@@ -26,6 +26,7 @@
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
+#include "MetaPlaylistModel.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
@@ -41,15 +42,15 @@
 
 #include <typeinfo>
 
-PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QWidget *parent )
+PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel *model, QWidget *parent )
     : Amarok::PrettyTreeView( parent )
+    , m_model( model )
     , m_pd( 0 )
-    , m_appendAction( 0 )
-    , m_loadAction( 0 )
     , m_deleteAction( 0 )
     , m_renameAction( 0 )
     , m_addGroupAction( 0 )
 {
+    setModel( model );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     The::paletteHandler()->updateItemView( this );
 
@@ -91,11 +92,9 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
 
     if( index.isValid() )
     {
-        //hack: get data from Model
-        QVariant data = index.data( 0xf00d );
-        Meta::PlaylistPtr playlist = data.value<Meta::PlaylistPtr>();
-        if( playlist )
-            The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
+        QModelIndexList list;
+        list << index;
+        m_model->loadItems( list, Playlist::LoadAndPlay );
     }
 }
 
@@ -117,7 +116,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions = createCommonActions( indices );
+        QList<PopupDropperAction*> actions = m_model->actionsFor( indices );
 
         foreach( PopupDropperAction * action, actions ) {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
@@ -154,83 +153,6 @@ PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
     QTreeView::keyPressEvent( event );
 }
 
-QList<PopupDropperAction *>
-PlaylistBrowserNS::UserPlaylistTreeView::createCommonActions( QModelIndexList indices )
-{
-
-    QList< PopupDropperAction * > actions;
-
-    if ( m_appendAction == 0 )
-    {
-        m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
-        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
-    }
-
-    if ( m_loadAction == 0 )
-    {
-        m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
-        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
-    }
-
-    if ( m_deleteAction == 0 )
-    {
-        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
-    }
-
-    if ( m_renameAction == 0 )
-    {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-    }
-
-    if ( indices.count() > 0 )
-    {
-        actions << m_appendAction;
-        actions << m_loadAction;
-        //menu.addSeparator();
-    }
-
-    if ( indices.count() == 1 )
-        actions << m_renameAction;
-
-    if ( indices.count() > 0 )
-        actions << m_deleteAction;
-
-    return actions;
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::slotLoad()
-{
-    foreach( QModelIndex index, selectedIndexes() )
-    {
-        if( index.isValid() )
-        {
-            //hack: get data from Model
-            QVariant data = index.data( 0xf00d );
-            Meta::PlaylistPtr playlist = data.value<Meta::PlaylistPtr>();
-            if( playlist )
-                The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
-        }
-    }
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::slotAppend()
-{
-    foreach( QModelIndex index, selectedIndexes() )
-    {
-        if( index.isValid() )
-        {
-            //hack: get data from Model
-            QVariant data = index.data( 0xf00d );
-            Meta::PlaylistPtr playlist = data.value<Meta::PlaylistPtr>();
-            if( playlist )
-                The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
-        }
-    }
-}
-
-
 void PlaylistBrowserNS::UserPlaylistTreeView::slotDelete()
 {
     DEBUG_BLOCK
@@ -260,7 +182,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 
     KMenu menu;
 
-    QList<PopupDropperAction *> actions = createCommonActions( indices );
+    QList<PopupDropperAction *> actions = m_model->actionsFor( indices );
 
     foreach( PopupDropperAction * action, actions )
         menu.addAction( action );

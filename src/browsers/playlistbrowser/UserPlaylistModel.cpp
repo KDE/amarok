@@ -24,6 +24,8 @@
 #include "AmarokMimeData.h"
 #include "Debug.h"
 #include "CollectionManager.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "SvgHandler.h"
 
 #include <KIcon>
 
@@ -42,7 +44,9 @@ PlaylistBrowserNS::UserModel * PlaylistBrowserNS::UserModel::instance()
 }
 
 PlaylistBrowserNS::UserModel::UserModel()
- : QAbstractItemModel()
+    : MetaPlaylistModel()
+    , m_appendAction( 0 )
+    , m_loadAction( 0 )
 {
     loadPlaylists();
 
@@ -193,14 +197,14 @@ PlaylistBrowserNS::UserModel::mimeTypes() const
 }
 
 QMimeData*
-PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indexes ) const
+PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
 {
     DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
 
     Meta::PlaylistList playlists;
 
-    foreach( const QModelIndex &index, indexes )
+    foreach( const QModelIndex &index, indices )
     {
         playlists << m_playlists.value( index.internalId() );
     }
@@ -247,6 +251,102 @@ PlaylistBrowserNS::UserModel::createNewGroup()
 {
     DEBUG_BLOCK
     //TODO: create the group in default provider if that supports empty groups.
+}
+
+QList<PopupDropperAction *>
+PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
+{
+    DEBUG_BLOCK
+    QList<PopupDropperAction *> actions;
+    m_selectedPlaylists.clear();
+    m_selectedPlaylists << selectedPlaylists( indices );
+
+    actions << createCommonActions( indices );
+
+    return actions;
+}
+
+void
+PlaylistBrowserNS::UserModel::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
+{
+    DEBUG_BLOCK
+    Meta::PlaylistList playlists;
+    foreach( const QModelIndex &index, list )
+    {
+        Meta::PlaylistPtr playlist =
+                m_playlists.value( index.internalId() );
+        if( playlist )
+            playlists << playlist;
+    }
+    if( !playlists.isEmpty() )
+        The::playlistController()->insertOptioned( playlists, insertMode );
+}
+
+QList<PopupDropperAction *>
+PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
+{
+    DEBUG_BLOCK
+    QList< PopupDropperAction * > actions;
+
+    if ( m_appendAction == 0 )
+    {
+        m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
+    }
+
+    if ( m_loadAction == 0 )
+    {
+        m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
+    }
+
+//     if ( m_deleteAction == 0 )
+//     {
+//         m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+//         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+//     }
+//
+//     if ( m_renameAction == 0 )
+//     {
+//         m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+//         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+//     }
+
+    if ( indices.count() > 0 )
+    {
+        actions << m_appendAction;
+        actions << m_loadAction;
+        //menu.addSeparator();
+    }
+
+    return actions;
+}
+
+void
+PlaylistBrowserNS::UserModel::slotLoad()
+{
+    foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
+    {
+        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
+    }
+}
+
+void
+PlaylistBrowserNS::UserModel::slotAppend()
+{
+    foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
+    {
+        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
+    }
+}
+
+Meta::PlaylistList
+PlaylistBrowserNS::UserModel::selectedPlaylists( const QModelIndexList &list )
+{
+    Meta::PlaylistList playlists;
+    foreach( QModelIndex index, list )
+        playlists << m_playlists.value( index.internalId() );
+    return playlists;
 }
 
 #include "UserPlaylistModel.moc"

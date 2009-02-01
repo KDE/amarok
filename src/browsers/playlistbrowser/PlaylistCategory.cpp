@@ -50,25 +50,18 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_playlistView = new UserPlaylistTreeView( this );
+    m_playlistView = new UserPlaylistTreeView( PlaylistBrowserNS::UserModel::instance(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins(0,0,0,0);
     m_playlistView->header()->hide();
 
-    //m_playlistView->setSelectionMode(QAbstractItemView::SingleSelection);
     m_playlistView->setDragEnabled(true);
     m_playlistView->setAcceptDrops(true);
     m_playlistView->setDropIndicatorShown(true);
 
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
-    //connect( m_playlistView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated(  const QModelIndex & ) ) );
-    //connect( m_playlistView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-
-    m_groupedProxy = new PlaylistsInGroupsProxy( PlaylistBrowserNS::UserModel::instance() );
-    m_playlistView->setModel( m_groupedProxy );
-
-    connect( m_groupedProxy, SIGNAL( editIndex( const QModelIndex & ) ), m_playlistView, SLOT( edit( const QModelIndex & ) ) );
+//     m_groupedProxy = new PlaylistsInGroupsProxy( PlaylistBrowserNS::UserModel::instance() );
 
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 

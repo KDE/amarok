@@ -30,12 +30,14 @@ class KAction;
 
 namespace PlaylistBrowserNS {
 
+class MetaPlaylistModel;
+
 class UserPlaylistTreeView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
 
 public:
-    UserPlaylistTreeView( QWidget *parent = 0 );
+    UserPlaylistTreeView( MetaPlaylistModel *model, QWidget *parent = 0 );
     ~UserPlaylistTreeView();
 
     void setNewGroupAction( KAction * action );
@@ -50,19 +52,12 @@ protected:
     void contextMenuEvent( QContextMenuEvent* event );
 
 private slots:
-    void slotLoad();
-    void slotAppend();
     void slotDelete();
     void slotRename();
 
 private:
-//     QSet<SqlPlaylistViewItemPtr> selectedItems() const;
-    QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
-
+    MetaPlaylistModel *m_model;
     PopupDropper* m_pd;
-
-    PopupDropperAction *m_appendAction;
-    PopupDropperAction *m_loadAction;
 
     PopupDropperAction *m_deleteAction;
     PopupDropperAction *m_renameAction;
