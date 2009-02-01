@@ -55,13 +55,13 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
 
     menu.setTitle(   i18n( "Layout" ) );
 
-    KAction *boldAction = new KAction( i18n( "Bold" ), &menu );
+    KAction *boldAction = new KAction( KIcon( "format-text-bold"), i18n( "Bold" ), &menu );
     boldAction->setCheckable( true );
     boldAction->setChecked( m_bold );
 
-    KAction *alignLeftAction = new KAction( i18n( "Left" ), &menu );
-    KAction *alignCenterAction = new KAction( i18n( "Center" ), &menu );
-    KAction *alignRightAction = new KAction( i18n( "Right" ), &menu );
+    KAction *alignLeftAction = new KAction( KIcon( "format-justify-left"), i18n( "Left" ), &menu );
+    KAction *alignCenterAction = new KAction( KIcon( "format-justify-center"), i18n( "Center" ), &menu );
+    KAction *alignRightAction = new KAction( KIcon( "format-justify-right"), i18n( "Right" ), &menu );
     alignLeftAction->setCheckable( true );
     alignCenterAction->setCheckable( true );
     alignRightAction->setCheckable( true );
