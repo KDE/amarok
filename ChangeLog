@@ -5,9 +5,12 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Cue Sheets are now supported as in Amarok 1.4, plus each cue entry
+      (usually a track) will be displayed as a timecode on the Progress Bar
+	  with a nice onMouseOver popup.
     * Ipod support now uses/depends on libgpod 0.7.0
     * Bookmarking specific positions within local tracks and downloaded local
-      podcast episodes.
+      podcast episodes, with a nice visual indicator on the progress bar.
     * When the last.fm service is active, any track, from any collection or
       service, can be loved from the browser , and there will always be a love
       button for the currently playing track, no matter the source.
