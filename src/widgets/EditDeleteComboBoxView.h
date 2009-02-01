@@ -17,27 +17,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef EDITDELETEDELEGATE_H
-#define EDITDELETEDELEGATE_H
+#ifndef EDITDELETECOMBOBOXVIEW_H
+#define EDITDELETECOMBOBOXVIEW_H
 
-#include <QStyledItemDelegate>
+#include <QListView>
 
 /**
-A special delegate with buttons for editing and deleting the current entry.
+A specialised QListView class needed for detecting mouse clicks on the "buttons" on the items in the popup.
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class EditDeleteDelegate : public QStyledItemDelegate
+class EditDeleteComboBoxView : public QListView
 {
+    Q_OBJECT
 public:
-    EditDeleteDelegate( QObject * parent = 0 );
-    ~EditDeleteDelegate();
+    EditDeleteComboBoxView( QWidget* parent = 0 );
+    ~EditDeleteComboBoxView();
 
-    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    virtual QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+signals:
 
-    static bool hitsEdit( const QPoint &point, const QRect &rect );
-    static bool hitsDelete( const QPoint &point, const QRect &rect );
+    void editItem( const QString &itemName );
+    void deleteItem( const QString &itemName );
+
+protected:
+    virtual void mousePressEvent( QMouseEvent* );
 
 };
 

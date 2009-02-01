@@ -78,3 +78,22 @@ QSize EditDeleteDelegate::sizeHint( const QStyleOptionViewItem & option, const Q
 
 
 
+
+
+bool EditDeleteDelegate::hitsEdit( const QPoint &point, const QRect &rect )
+{
+    DEBUG_BLOCK
+    //we considder the icon to be full height, so we just count from the right edge.
+    int right = ( rect.x() + rect.width() ) - ( MARGIN * 2 + ICON_WIDTH );
+    int left = right - ICON_WIDTH;
+    return ( point.x() > left ) && ( point.x() < right );
+}
+
+bool EditDeleteDelegate::hitsDelete( const QPoint &point, const QRect &rect )
+{
+    DEBUG_BLOCK
+    //we considder the icon to be full height, so we just count from the right edge.
+    int right = ( rect.x() + rect.width() ) - MARGIN;
+    int left = right - ICON_WIDTH;
+    return ( point.x() > left ) && ( point.x() < right );
+}

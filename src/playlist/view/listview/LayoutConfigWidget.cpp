@@ -19,8 +19,10 @@
  
 #include "LayoutConfigWidget.h"
 
+#include "Debug.h"
 #include "LayoutManager.h"
 #include "widgets/EditDeleteDelegate.h"
+#include "widgets/EditDeleteComboBoxView.h"
 
 #include <QLabel>
 #include <QComboBox>
@@ -32,8 +34,13 @@ LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
 {
     new QLabel( "Config gui goes here....", this );
     QComboBox *comboBox = new QComboBox( this );
+    EditDeleteComboBoxView * comboView = new EditDeleteComboBoxView( comboBox );
+    comboView->setModel( comboBox->model() );
+    comboBox->setView( comboView );
     comboBox->setItemDelegate( new EditDeleteDelegate( comboBox ) );
 
+    connect( comboView, SIGNAL( editItem( const QString & ) ), this, SLOT( editItem( const QString & ) ) );
+    connect( comboView, SIGNAL( deleteItem( const QString & ) ), this, SLOT( deleteItem( const QString & ) ) );
 
     comboBox->addItems( LayoutManager::instance()->layouts() );
 
@@ -49,9 +56,21 @@ LayoutConfigWidget::~LayoutConfigWidget()
 
 }
 
-void Playlist::LayoutConfigWidget::setActiveLayout(const QString & layout)
+void Playlist::LayoutConfigWidget::setActiveLayout( const QString & layout )
 {
     LayoutManager::instance()->setActiveLayout( layout );
+}
+
+void Playlist::LayoutConfigWidget::editItem( const QString &itemName )
+{
+    DEBUG_BLOCK
+    debug() << "edit item: " << itemName;
+}
+
+void Playlist::LayoutConfigWidget::deleteItem( const QString &itemName )
+{
+    DEBUG_BLOCK
+    debug() << "delete item: " << itemName;
 }
 
 #include "LayoutConfigWidget.moc"

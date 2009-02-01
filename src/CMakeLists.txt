@@ -520,6 +520,7 @@ set(amaroklib_LIB_SRCS
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
     widgets/kratingwidget.cpp
+    widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
     widgets/FilenameLayoutWidget.cpp
     widgets/FlowLayout.cpp

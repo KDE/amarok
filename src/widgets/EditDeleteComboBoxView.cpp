@@ -17,28 +17,40 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef EDITDELETEDELEGATE_H
-#define EDITDELETEDELEGATE_H
+#include "EditDeleteComboBoxView.h"
 
-#include <QStyledItemDelegate>
+#include "Debug.h"
+#include "EditDeleteDelegate.h"
 
-/**
-A special delegate with buttons for editing and deleting the current entry.
+#include <QModelIndex>
+#include <QMouseEvent>
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class EditDeleteDelegate : public QStyledItemDelegate
+EditDeleteComboBoxView::EditDeleteComboBoxView( QWidget* parent )
+ : QListView( parent )
 {
-public:
-    EditDeleteDelegate( QObject * parent = 0 );
-    ~EditDeleteDelegate();
+}
 
-    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    virtual QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-    static bool hitsEdit( const QPoint &point, const QRect &rect );
-    static bool hitsDelete( const QPoint &point, const QRect &rect );
+EditDeleteComboBoxView::~EditDeleteComboBoxView()
+{
+}
 
-};
+void EditDeleteComboBoxView::mousePressEvent( QMouseEvent *event )
+{
+    DEBUG_BLOCK
+    
+    QModelIndex index = indexAt( event->pos() );
+    QPoint mousePressPos = event->pos();
+    mousePressPos.rx() += horizontalOffset();
+    mousePressPos.ry() += verticalOffset();
 
-#endif
+    if ( EditDeleteDelegate::hitsEdit( mousePressPos, rectForIndex( index ) ) )
+        emit( editItem( index.data().toString() ) );
+    else if ( EditDeleteDelegate::hitsDelete( mousePressPos, rectForIndex( index ) ) )
+        emit( deleteItem( index.data().toString() ) );
+
+    QListView::mousePressEvent( event );
+
+}
+
+#include "EditDeleteComboBoxView.moc"

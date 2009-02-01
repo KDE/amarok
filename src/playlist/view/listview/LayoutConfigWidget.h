@@ -41,6 +41,9 @@ private slots:
 
     void setActiveLayout( const QString &layout );
 
+    void editItem( const QString &itemName );
+    void deleteItem( const QString &itemName );
+
 };
 
 }
