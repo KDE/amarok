@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
+ *           (C) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>          *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -45,7 +46,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
              filenameLayout, SLOT( addToken( QString ) ) );
     connect( kpbAdvanced, SIGNAL( clicked() ),
              this, SLOT( toggleAdvancedMode() ) );
-    connect( filenameLayout, SIGNAL( schemeChanged() ),
+    connect( filenameLayout, SIGNAL( layoutChanged() ),
              this, SIGNAL( schemeChanged() ) );
     connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
              this, SIGNAL( schemeChanged() ) );
@@ -113,22 +114,22 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         collectionSlashLabel->setContentsMargins( 0, 0, 0, 0 );
     }
     //INIT for tokenPool
-    tokenPool->addToken( Token::Track );
-    tokenPool->addToken( Token::Title );
-    tokenPool->addToken( Token::Artist );
-    tokenPool->addToken( Token::Composer );
-    tokenPool->addToken( Token::Year );
-    tokenPool->addToken( Token::Album );
-    tokenPool->addToken( Token::Comment );
-    tokenPool->addToken( Token::Genre );
-    tokenPool->addToken( Token::Underscore );
-    tokenPool->addToken( Token::Dash );
-    tokenPool->addToken( Token::Dot );
-    tokenPool->addToken( Token::Space );
+    tokenPool->addToken( new Token( i18n( "Track" ), "filename-track-amarok", Track ) );
+    tokenPool->addToken( new Token( i18n( "Title" ), "filename-title-amarok", Title ) );
+    tokenPool->addToken( new Token( i18n( "Artist" ), "filename-artist-amarok", Artist )) ;
+    tokenPool->addToken( new Token( i18n( "Composer" ), "filename-composer-amarok", Composer ) );
+    tokenPool->addToken( new Token( i18n( "Year" ), "filename-year-amarok", Year ) );
+    tokenPool->addToken( new Token( i18n( "Album" ), "filename-album-amarok", Album ) );
+    tokenPool->addToken( new Token( i18n( "Comment" ), "filename-comment-amarok", Comment ) );
+    tokenPool->addToken( new Token( i18n( "Genre" ), "filename-genre-amarok", Genre ) );
+    tokenPool->addToken( new Token( "_", "filename-underscore-amarok", Underscore ) );
+    tokenPool->addToken( new Token( "-", "filename-dash-amarok", Dash ) );
+    tokenPool->addToken( new Token( ".", "filename-dot-amarok", Dot ) );
+    tokenPool->addToken( new Token( " ", "filename-space-amarok", Space ) );
 
     if( !m_isOrganizeCollection )
     {
-        tokenPool->addToken( Token::Ignore );
+        tokenPool->addToken( new Token( i18n( "Ignore" ), "filename-ignore-amarok", Ignore ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
@@ -136,10 +137,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     }
     else
     {
-        tokenPool->addToken( Token::Slash );
-        tokenPool->addToken( Token::Initial );
-        tokenPool->addToken( Token::FileType );
-        tokenPool->addToken( Token::DiscNumber );
+        tokenPool->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
+        tokenPool->addToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
+        tokenPool->addToken( new Token( i18n( "File type" ), "filename-filetype-amarok", FileType ) );
+        tokenPool->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
         syntaxLabel->setText( i18nc("Please do not translate the %foo words as they define a syntax used internally by a parser to describe a filename.",
                                     // xgettext: no-c-format
                                     "The following tokens can be used to define a filename scheme: \
@@ -155,7 +156,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         else if( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Mode" ) == "Basic" )
         {
             setAdvancedMode( false );
-            filenameLayout->inferScheme( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
+            inferScheme( Amarok::config( "OrganizeCollectionDialog" ).readEntry( "Scheme" ) );
         }
     }
     else
@@ -168,7 +169,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         else if( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Mode" ) == "Basic" )
         {
             setAdvancedMode( false );
-            filenameLayout->inferScheme( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
+            inferScheme( Amarok::config( "FilenameLayoutDialog" ).readEntry( "Scheme" ) );
         }
     }
 }
@@ -187,7 +188,7 @@ QString
 FilenameLayoutDialog::getParsableScheme()
 {
     QString category = m_isOrganizeCollection ? "OrganizeCollectionDialog" : "FilenameLayoutDialog";
-    QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : filenameLayout->getParsableScheme();
+    QString scheme   = m_advancedMode ? filenameLayoutEdit->text() : getParsableScheme();
 
     Amarok::config( category ).writeEntry( "Scheme", scheme );
     return scheme;
@@ -262,7 +263,7 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
         kpbAdvanced->setText( i18n( "&Basic..." ) );
         filenameLayout->hide();
         filenameLayoutEdit->show();
-        filenameLayoutEdit->setText( filenameLayout->getParsableScheme() );
+        filenameLayoutEdit->setText( getParsableScheme() );
         tokenPool->hide();
         syntaxLabel->show();
 
@@ -271,7 +272,7 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
     {
         kpbAdvanced->setText( i18n( "&Advanced..." ) );
         filenameLayout->show();
-        filenameLayout->inferScheme( filenameLayoutEdit->text() );
+        inferScheme( filenameLayoutEdit->text() );
         filenameLayoutEdit->hide();
         tokenPool->show();
         syntaxLabel->hide();
@@ -281,5 +282,125 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
     QString entryValue  = m_advancedMode ? "Advanced" : "Basic";
 
     Amarok::config( configValue ).writeEntry( "Mode", entryValue );
+}
+
+
+
+// Iterates over the elements of the FilenameLayoutWidget bar 
+// (really over the elements of a QList that stores the indexes 
+// of the tokens) and generates a string that TagGuesser can digest.
+QString
+FilenameLayoutDialog::parsableScheme() const
+{
+    QString parsableScheme = "";
+
+    QList< Token *> list = filenameLayout->currentTokenLayout();
+    
+    foreach( Token * token, list )
+    {
+        parsableScheme += typeElements[token->value()];
+    }
+
+    return parsableScheme;
+}
+
+
+
+//tries to populate the widget with tokens according to a string
+void
+FilenameLayoutDialog::inferScheme( const QString &s ) //SLOT
+{
+    DEBUG_BLOCK
+
+    debug() << "infering scheme: " << s;
+
+    filenameLayout->removeAllTokens();
+    for( int i = 0; i < s.size(); )
+    {
+        if( s.at(i) == '%')
+        {
+            if( s.mid( i, 6 ) == "%title" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Title" ), "filename-title-amarok", Title ) );
+                i += 6;
+            }
+            else if( s.mid( i, 6 ) == "%track" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Track" ), "filename-track-amarok", Track ) );
+                i += 6;
+            }
+            else if( s.mid( i, 7 ) == "%artist" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Artist" ), "filename-artist-amarok", Artist ) );
+                i += 7;
+            }
+            else if( s.mid( i, 9 ) == "%composer" )
+            {
+                filenameLayout->addToken( new Token( i18n( "composer" ), "filename-composer-amarok", Composer ) );
+                i += 9;
+            }
+            else if( s.mid( i, 5 ) == "%year" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Year" ), "filename-year-amarok", Year ) );
+                i += 5;
+            }
+            else if( s.mid( i, 6 ) == "%album" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Album" ), "filename-album-amarok", Album ) );
+                i += 6;
+            }
+            else if( s.mid( i, 8 ) == "%comment" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Comment" ), "filename-comment-amarok", Comment ) );
+                i += 8;
+            }
+            else if( s.mid( i, 6 ) == "%genre" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Genre" ), "filename-genre-amarok", Genre ) );
+                i += 6;
+            }
+            else if( s.mid( i, 9 ) == "%filetype" )
+            {
+                filenameLayout->addToken( new Token( i18n( "File type" ), "filename-filetype-amarok", FileType ) );
+                i += 9;
+            }
+            else if( s.mid( i, 7 ) == "%ignore" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Ignore" ), "filename-ignore-amarok", Ignore ) );
+                i += 7;
+            }
+            else if( s.mid( i, 7 ) == "%folder" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Folder" ), "filename-folder-amarok", Folder ) );
+                i += 7;
+            }
+            else if( s.mid( i, 8 ) == "%initial" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
+                i += 8;
+            }
+            else if( s.mid( i, 11 ) == "%discnumber" )
+            {
+                filenameLayout->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
+                i += 11;
+            }
+        }
+        else
+        {
+            if( s.at(i) == '_' )
+                filenameLayout->addToken( new Token( "_", "filename-underscore-amarok", Underscore ) );
+            else if( s.at(i) == '-' )
+                filenameLayout->addToken( new Token( "-", "filename-dash-amarok", Dash ) );
+            else if( s.at(i) == '.' )
+                filenameLayout->addToken( new Token( ".", "filename-dot-amarok", Dot ) );
+            else if( s.at(i) == ' ' )
+                filenameLayout->addToken( new Token( " ", "filename-space-amarok", Space ) );
+            else if( s.at(i) == '/' )
+                filenameLayout->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
+            else
+                debug() << "'" << s.at(i) << "' can't be represented as FilenameLayoutWidget Token";
+            i++;
+        }
+    }
 }
 

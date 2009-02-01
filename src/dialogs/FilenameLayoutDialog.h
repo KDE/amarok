@@ -22,6 +22,30 @@
 
 #include <QWidget>
 
+
+static const QStringList typeElements = ( QStringList()
+<< ""
+<< "%ignore"
+<< "%track"
+<< "%title"
+<< "%artist"
+<< "%composer"
+<< "%year"
+<< "%album"
+<< "%comment"
+<< "%genre"
+<< "%filetype"
+<< "%folder"
+<< "%initial"
+<< "%discnumber"
+<< " "
+<< "/"
+<< "."
+<< "-"
+<< "_" );
+
+
+
 //Holds the FilenameLayoutWidget and TokenListWidget and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
 class FilenameLayoutDialog
     : public QWidget
@@ -30,6 +54,31 @@ class FilenameLayoutDialog
     Q_OBJECT
 
     public:
+
+        enum Type
+        {
+              Unknown = 0
+            , Ignore
+            , Track
+            , Title
+            , Artist
+            , Composer
+            , Year
+            , Album
+            , Comment
+            , Genre
+            , FileType
+            , Folder
+            , Initial
+            , DiscNumber
+            , Space
+            , Slash
+            , Dot
+            , Dash
+            , Underscore
+        };
+
+
         AMAROK_EXPORT explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 ); // Could I have exported the whole class? I don't see how
         AMAROK_EXPORT QString getParsableScheme();
         int getCaseOptions();
@@ -46,7 +95,9 @@ class FilenameLayoutDialog
     
     private:
         void setAdvancedMode( bool isAdvanced );
-
+        QString parsableScheme() const;
+        void inferScheme( const QString &scheme );
+        
         bool m_isOrganizeCollection;
         bool m_advancedMode;
         

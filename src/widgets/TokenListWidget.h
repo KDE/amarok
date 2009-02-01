@@ -30,7 +30,7 @@ class TokenListWidget : public KListWidget
     
     public:
         TokenListWidget( QWidget *parent = 0 );
-        void addToken( Token::Type type );
+        void addToken( Token * token );
     
     protected:
         void mouseDoubleClickEvent( QMouseEvent *event );

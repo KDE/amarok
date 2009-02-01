@@ -34,8 +34,12 @@ class FilenameLayoutWidget : public QFrame
         FilenameLayoutWidget( QWidget *parent = 0 );
 
         unsigned int getTokenCount() const;
-        QString getParsableScheme() const;
+        
         void paintEvent( QPaintEvent *event );
+
+        QList<Token *> currentTokenLayout();
+
+        void removeAllTokens();
 
     protected:
         void mouseMoveEvent( QMouseEvent *event );
@@ -45,20 +49,15 @@ class FilenameLayoutWidget : public QFrame
         void dropEvent( QDropEvent *event );     
 
     public slots:
-        void inferScheme( const QString &scheme );
-        void addToken( Token::Type type, int index = -1 /* append */ );
         void addToken( Token* token, int index = -1 /* append */ );
-        
     signals:
-        void schemeChanged();
+        void layoutChanged();
 
     private:
-        void addToken( const QString &tokenElement, int index = -1 );
 
         void performDrag( QMouseEvent *event );
-        void insertOverChild( Token *childUnder, const QString &tokenElement, QDropEvent *event );
-        void generateParsableScheme();
-        void removeAllTokens();
+        void insertOverChild( Token *childUnder, Token *token, QDropEvent *event );
+
 
         QString      m_infoText;        // text in the back of the empty FilenameLayoutWidget
         QHBoxLayout *m_layout;          // main layout that holds the tokens

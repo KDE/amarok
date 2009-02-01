@@ -24,13 +24,6 @@
 #include <QLabel>
 #include <QPixmap>
 
-class Token;
-
-class TokenBuilder
-{
-    public:
-        static Token* buildToken( const QString &element );
-};
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
 class Token : public QFrame
@@ -38,38 +31,21 @@ class Token : public QFrame
         Q_OBJECT
 
     public:
-        enum Type { Unknown
-                    , Ignore
-                    , Track
-                    , Title
-                    , Artist
-                    , Composer
-                    , Year
-                    , Album
-                    , Comment
-                    , Genre
-                    , FileType
-                    , Folder
-                    , Initial
-                    , DiscNumber
-                    , Space
-                    , Slash
-                    , Dot
-                    , Dash
-                    , Underscore
-                };
 
-        explicit Token( Type type, QWidget *parent = 0 );
+        explicit Token( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
 
-        QString tokenElement() const;
-        static QString tokenElement( const Type type );
         KIcon icon() const;
-        QString text() const;
+        QString iconName() const;
+        QString name() const;
+        int value() const;
 
     private:
-        void setIcon();
 
-        Type         m_type;
+        QString     m_name;
+        KIcon       m_icon;
+        QString     m_iconName;
+        int         m_value;
+
         QLabel      *m_iconContainer;
         QLabel      *m_label;
 };

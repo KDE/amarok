@@ -23,63 +23,23 @@
 #include <KColorScheme>
 #include <QHBoxLayout>
 
-Token*
-TokenBuilder::buildToken( const QString &element )
-{
-    if( element == Token::tokenElement( Token::Ignore ) )
-        return new Token( Token::Ignore );
-    if( element == Token::tokenElement( Token::Track ) )
-        return new Token( Token::Track );
-    if( element == Token::tokenElement( Token::Title ) )
-        return new Token( Token::Title );
-    if( element == Token::tokenElement( Token::Artist ) )
-        return new Token( Token::Artist );
-    if( element == Token::tokenElement( Token::Composer ) )
-        return new Token( Token::Composer );
-    if( element == Token::tokenElement( Token::Year ) )
-        return new Token( Token::Year );
-    if( element == Token::tokenElement( Token::Album ) )
-        return new Token( Token::Album );
-    if( element == Token::tokenElement( Token::Comment ) )
-        return new Token( Token::Comment );
-    if( element == Token::tokenElement( Token::Genre ) )
-        return new Token( Token::Genre );
-    if( element == Token::tokenElement( Token::FileType ) )
-        return new Token( Token::Folder );
-    if( element == Token::tokenElement( Token::Initial ) )
-        return new Token( Token::Initial );
-    if( element == Token::tokenElement( Token::DiscNumber ) )
-        return new Token( Token::DiscNumber );
-    if( element == Token::tokenElement( Token::Space ) )
-        return new Token( Token::Space );
-    if( element == Token::tokenElement( Token::Slash ) )
-        return new Token( Token::Slash );
-    if( element == Token::tokenElement( Token::Dot ) )
-        return new Token( Token::Dot );
-    if( element == Token::tokenElement( Token::Dash ) )
-        return new Token( Token::Dash );
-    if( element == Token::tokenElement( Token::Underscore ) )
-        return new Token( Token::Underscore );
-
-    warning() << "Could not build token for element string: " << element;
-    return 0;
-}
-
-Token::Token( Type type, QWidget *parent )
+Token::Token( const QString &name, const QString &iconName, int value, QWidget *parent )
     : QFrame( parent )
-    , m_type( type )
+    , m_name( name )
+    , m_icon( KIcon( iconName ) )
+    , m_iconName( iconName )
+    , m_value( value )
 {
     m_label = new QLabel( this );
     m_label->setAlignment( Qt::AlignCenter );
     m_label->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-    m_label->setText( text() );
+    m_label->setText( name );
 
     QHBoxLayout *hlayout = new QHBoxLayout( this );
     setLayout( hlayout );
     
     m_iconContainer = new QLabel( this );
     m_iconContainer->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    setIcon();
 
     setContentsMargins( 0, 0, 0, 0 );
 
@@ -103,141 +63,28 @@ Token::Token( Type type, QWidget *parent )
     m_label->setSizePolicy( sizePolicy );
     
     m_iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    setIcon();
 }
 
 QString
-Token::text() const
+Token::name() const
 {
-    switch( m_type )
-    {
-        case Unknown:
-            return i18n( "Unknown" );
-        case Ignore:
-            return i18n( "Ignore field" );
-        case Track:
-            return i18n( "Track" );
-        case Title:
-            return i18n( "Title" );
-        case Artist:
-            return i18n( "Artist" );
-        case Composer:
-            return i18n( "Composer" );
-        case Year:
-            return i18n( "Year" );
-        case Album:
-            return i18n( "Album" );
-        case Comment:
-            return i18n( "Comment" );
-        case Genre:
-            return i18n( "Genre" );
-        case FileType:
-            return i18n( "File type" );
-        case Folder:
-            return i18n( "Collection root" );
-        case Initial:
-            return i18n( "Artist initial" );
-        case DiscNumber:
-            return i18n( "Disc number" );
-        case Space:
-            return i18n( "<space>" );
-        case Slash:
-            return QString( "/" );
-        case Dot:
-            return QString( "." );
-        case Dash:
-            return QString( "-" );
-        case Underscore:
-            return QString( "_" );
-    }
-    return QString();
+    return m_name;
 } 
 
-QString
-Token::tokenElement() const
+int
+Token::value() const
 {
-    return tokenElement( m_type );
+    return m_value;
 }
-
-// Static. Accessed by the builder when creating an object
-QString
-Token::tokenElement( Type type )
-{
-    switch( type )
-    {
-        case Unknown:
-            return QString();
-        case Ignore:
-            return QString( "%ignore" );
-        case Track:
-            return QString( "%track" );
-        case Title:
-            return QString( "%title" );
-        case Artist:
-            return QString( "%artist" );
-        case Composer:
-            return QString( "%composer" );
-        case Year:
-            return QString( "%year" );
-        case Album:
-            return QString( "%album" );
-        case Comment:
-            return QString( "%comment" );
-        case Genre:
-            return QString( "%genre" );
-        case FileType:
-            return QString( "%filetype" );
-        case Folder:
-            return QString( "%folder" );
-        case Initial:
-            return QString( "%initial" );
-        case DiscNumber:
-            return QString( "%discnumber" );
-        case Space:
-            return QString( " " );
-        case Slash:
-            return QString( "/" );
-        case Dot:
-            return QString( "." );
-        case Dash:
-            return QString( "-" );
-        case Underscore:
-            return QString( "_" );
-    }
-    return QString();
-} 
 
 KIcon
 Token::icon() const
 {
-    QString iconName;
-    switch( m_type )
-    {
-        case Space:
-            iconName = "space";
-            break;
-        case Slash:
-            iconName = "slash";
-            break;
-        case Dot:
-            iconName = "dot";
-            break;
-        case Dash:
-            iconName = "dash";
-            break;
-        case Underscore:
-            iconName = "underscore";
-            break;
-        default:
-            iconName = tokenElement().mid( 1 );// remove '%'
-            break;
-    }
-    return KIcon( "filename-" + iconName + "-amarok" );
+    return m_icon;
 }
 
-void
-Token::setIcon()
+QString Token::iconName() const
 {
-    QPixmap pixmap = QPixmap( icon().pixmap( 16, 16 ) );
-    m_iconContainer->setPixmap( pixmap );
+    return m_iconName;
 }
+

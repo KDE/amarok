@@ -31,11 +31,10 @@ TokenListWidget::TokenListWidget( QWidget *parent )
 }
 
 void
-TokenListWidget::addToken( Token::Type type )
+TokenListWidget::addToken( Token * token )
 {
-    Token *token = new Token( type );
-    QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->text() );
 
+    QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->name() );
     addItem( item );
 
     m_itemTokenMap.insert( item, token );
@@ -117,7 +116,7 @@ TokenListWidget::performDrag( QMouseEvent *event )
         QByteArray itemData;
 
         QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-        dataStream << token->tokenElement() << QPoint( event->pos() - rect().topLeft() );
+        dataStream << token->name() << token->iconName() << token->value() << QPoint( event->pos() - rect().topLeft() );
         
         QMimeData *mimeData = new QMimeData;
         mimeData->setData( "application/x-amarok-tag-token", itemData );
