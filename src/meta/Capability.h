@@ -47,6 +47,7 @@ namespace Meta
                         , Importable = 12
                         , Collection = 13
                         , BookmarkThis = 14
+                        , WriteTimecode = 15
                       };
 
             virtual ~Capability();

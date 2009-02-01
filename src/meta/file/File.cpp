@@ -25,6 +25,7 @@
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
+#include "meta/capabilities/TimecodeWriteCapability.h"
 #include "MetaUtility.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 
@@ -77,6 +78,24 @@ class StatisticsCapabilityImpl : public Meta::StatisticsCapability
         virtual void beginStatisticsUpdate() {};
         virtual void endStatisticsUpdate() {};
         virtual void abortStatisticsUpdate() {};
+
+    private:
+        KSharedPtr<MetaFile::Track> m_track;
+};
+
+class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
+{
+    public:
+        TimecodeWriteCapabilityImpl( MetaFile::Track *track )
+            : Meta::TimecodeWriteCapability()
+            , m_track( track )
+        {}
+
+    virtual bool writeTimecode ( int seconds )
+    {
+        DEBUG_BLOCK
+        return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+    }
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
@@ -491,7 +510,7 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::Editable || type == Meta::Capability::Importable || type == Meta::Capability::CurrentTrackActions;
+    return type == Meta::Capability::Editable || type == Meta::Capability::Importable || type == Meta::Capability::CurrentTrackActions || type == Meta::Capability::WriteTimecode;
 }
 
 Meta::Capability*
@@ -511,6 +530,8 @@ Track::asCapabilityInterface( Meta::Capability::Type type )
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );
             }
+        case Meta::Capability::WriteTimecode:
+            return new TimecodeWriteCapabilityImpl( this );
         default:
             return 0;
     }

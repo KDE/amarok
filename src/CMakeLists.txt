@@ -227,6 +227,7 @@ set(meta_SRCS
     meta/capabilities/SourceInfoCapability.cpp
     meta/capabilities/StatisticsCapability.cpp
     meta/capabilities/StreamInfoCapability.cpp
+    meta/capabilities/TimecodeWriteCapability.cpp
     meta/capabilities/UpdateCapability.cpp
     meta/file/File.cpp
     meta/cue/Cue.cpp

@@ -16,12 +16,14 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
 #include "BookmarkMetaActions.h"
 #include "AmarokUrlHandler.h"
 #include "SvgHandler.h"
 
 #include "BookmarkModel.h"
+#include "EngineController.h"
+#include "meta/capabilities/TimecodeWriteCapability.h"
 #include "PlayUrlRunner.h"
 #include "PlayUrlGenerator.h"
 #include "ProgressSlider.h"
@@ -72,15 +74,14 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
 {
     DEBUG_BLOCK
     PlayUrlGenerator urlGenerator;
-    AmarokUrl url = urlGenerator.createCurrentTrackBookmark();
-    ProgressWidget* pw = ProgressWidget::instance();
-    if( pw )
-        ProgressWidget::instance()->addBookmark( url.name(), url.arg(1).toInt() );
-    else
-        debug() << "ProgressWidget is NULL";
-
-    url.saveToDb();
-    BookmarkModel::instance()->reloadFromDb(); //Update bookmark manager view.
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    int seconds = The::engineController()->trackPosition();
+    if ( track && track->hasCapabilityInterface( Meta::Capability::WriteTimecode ) )
+    {
+        debug() << " has WriteTimecode  ";
+        Meta::TimecodeWriteCapability *tcw = track->as<Meta::TimecodeWriteCapability>();
+        tcw->writeTimecode( seconds );
+    }
 }
 
 #include "BookmarkMetaActions.moc"

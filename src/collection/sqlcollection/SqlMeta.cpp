@@ -33,6 +33,7 @@
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
+#include "meta/capabilities/TimecodeWriteCapability.h"
 #include "meta/capabilities/OrganiseCapability.h"
 #include "meta/capabilities/UpdateCapability.h"
 #include "MountPointManager.h"
@@ -155,6 +156,25 @@ class UpdateCapabilityImpl : public Meta::UpdateCapability
 
         virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
 
+
+    private:
+        KSharedPtr<SqlTrack> m_track;
+};
+
+class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
+{
+    Q_OBJECT
+    public:
+        TimecodeWriteCapabilityImpl( SqlTrack *track )
+        : Meta::TimecodeWriteCapability()
+        , m_track( track )
+        {}
+
+        virtual bool writeTimecode ( int seconds )
+        {
+            DEBUG_BLOCK
+            return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+        }
 
     private:
         KSharedPtr<SqlTrack> m_track;
@@ -860,6 +880,8 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 
         case Meta::Capability::Editable:
             return isEditable();
+        case Meta::Capability::WriteTimecode:
+            return true;
 
         default:
             return false;
@@ -901,6 +923,8 @@ SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );
         }
+        case Meta::Capability::WriteTimecode:
+            return new TimecodeWriteCapabilityImpl( this );
 
         default:
             return 0;
