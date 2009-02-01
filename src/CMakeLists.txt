@@ -229,6 +229,7 @@ set(meta_SRCS
     meta/capabilities/StreamInfoCapability.cpp
     meta/capabilities/UpdateCapability.cpp
     meta/file/File.cpp
+    meta/cue/Cue.cpp
     meta/proxy/MetaProxy.cpp
     meta/stream/Stream.cpp
 )
