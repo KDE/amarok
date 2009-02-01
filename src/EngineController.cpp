@@ -141,14 +141,14 @@ EngineController::canDecode( const KUrl &url ) //static
     if( !item.size() )
         return false;
 
-    // We can't play directories, reguardless of what the engine says.    
+    // We can't play directories, reguardless of what the engine says.
     if( item.isDir() )
         return false;
-        
+
     // Accept non-local files, since we can't test them for validity at this point
     if( !item.isLocalFile() )
         return true;
-        
+
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
     static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
                                    Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
@@ -324,7 +324,8 @@ EngineController::stop( bool forceInstant ) //SLOT
     m_mutex.unlock();
 
     //let Amarok know that the previous track is no longer playing
-    if( m_currentTrack ) {
+    if( m_currentTrack )
+    {
         debug() << "m_currentTrack != 0";
         const int pos = trackPosition();
         const int length = m_currentTrack->length();
@@ -334,9 +335,9 @@ EngineController::stop( bool forceInstant ) //SLOT
     }
 
     // Stop instantly if fadeout is already running, or the media is paused (i.e. pressing Stop twice)
-    if( m_fader || m_media->state() == Phonon::PausedState ) 
+    if( m_fader || m_media->state() == Phonon::PausedState )
     {
-        forceInstant = true; 
+        forceInstant = true;
     }
 
     if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant )
@@ -371,7 +372,7 @@ EngineController::playPause() //SLOT
     //this is used by the TrayIcon, PlayPauseAction and DBus
     debug() << "PlayPause: phonon state" << m_media->state();
 
-    if( m_media->state() == Phonon::PausedState || 
+    if( m_media->state() == Phonon::PausedState ||
         m_media->state() == Phonon::StoppedState ||
         m_media->state() == Phonon::LoadingState )
         play();
@@ -462,7 +463,7 @@ EngineController::mute() //SLOT
 {
     // if it's already muted then we restore to previous value
     int newPercent = m_audio->isMuted() ? volume() : 0;
-    
+
     m_audio->setMuted( !isMuted() ); // toggle mute
 
     AmarokConfig::setMasterVolume( newPercent );
@@ -566,7 +567,8 @@ void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
- 
+    debug() << "Track finished completely, updating statistics";
+    m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
     if( m_multi )
     {
         m_mutex.lock();
@@ -617,19 +619,6 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
     DEBUG_BLOCK
     Q_UNUSED( source );
-
-    if ( m_currentTrack )
-    {
-        const double pos = trackPosition();
-        const double length = m_currentTrack->length();
-        double finPlaying = 0.0;
-        if( pos == 0 ) // When a track ends, trackPosition() is reporting 0, not length() on windows and os x.
-            finPlaying = 1.0;
-        else
-            finPlaying = pos / length;
-        m_currentTrack->finishedPlaying( finPlaying );
-        emit trackFinished();
-    }
 
     // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )
@@ -779,7 +768,7 @@ EngineController::slotStopFadeout() //SLOT
 {
     DEBUG_BLOCK
 
-    // Make sure the timer won't call this method again 
+    // Make sure the timer won't call this method again
     m_fadeoutTimer->stop();
 
     if ( m_fader ) {
