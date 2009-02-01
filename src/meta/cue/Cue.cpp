@@ -23,13 +23,59 @@
 
 #include "Debug.h"
 #include "Meta.h"
+#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "amarokurls/PlayUrlRunner.h"
+#include "amarokurls/PlayUrlGenerator.h"
+#include "amarokurls/BookmarkMetaActions.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+
+#include <KSharedPtr>
 
 #include <QDir>
 #include <QFile>
+#include <QMapIterator>
 #include <QPointer>
 
 using namespace MetaCue;
+namespace MetaCue {
+class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+{
+    public:
+        TimecodeLoadCapabilityImpl( Track *track )
+        : Meta::TimecodeLoadCapability()
+        , m_track( track )
+        {}
 
+        virtual bool hasTimecodes()
+        {
+            if ( loadTimecodes().size() > 0 )
+                return true;
+            return false;
+        }
+
+        virtual BookmarkList loadTimecodes()
+        {
+            DEBUG_BLOCK
+            CueFileItemMap map = m_track->cueItems();
+            debug() << " cue has " << map.size() << " entries";
+            QMapIterator<long, CueFileItem> it( map );
+            BookmarkList list;
+            while ( it.hasNext() ) {
+                it.next();
+                debug() << " seconds : " << it.key() / 1000;
+                PlayUrlGenerator gen;
+                AmarokUrl aurl = gen.createTrackBookmark( Meta::TrackPtr( m_track.data() ), it.key() / 1000, it.value().getTitle() );
+                AmarokUrlPtr url( new AmarokUrl( aurl.url() ) );
+                url->setName( aurl.name() ); // TODO AmarokUrl should really have a copy constructor
+                list << url;
+            }
+            return list;
+        }
+
+    private:
+        KSharedPtr<Track> m_track;
+};
+}
 Track::Track ( const KUrl &url, const KUrl &cuefile )
         : MetaFile::Track ( url )
         , EngineObserver ( The::engineController() )
@@ -55,6 +101,11 @@ Track::Track ( const KUrl &url, const KUrl &cuefile )
 Track::~Track()
 {
     delete d;
+}
+
+CueFileItemMap Track::cueItems() const
+{
+    return m_cueitems;
 }
 
 void Track::subscribe ( Meta::Observer *observer )
@@ -566,3 +617,22 @@ Track::length() const
 {
     return d->length;
 }
+
+bool
+Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    return type == Meta::Capability::LoadTimecode;
+}
+
+Meta::Capability*
+Track::asCapabilityInterface( Meta::Capability::Type type )
+{
+    switch( type )
+    {
+        case Meta::Capability::LoadTimecode:
+            return new MetaCue::TimecodeLoadCapabilityImpl( this );
+        default:
+            return 0;
+    }
+}
+

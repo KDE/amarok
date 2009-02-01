@@ -103,14 +103,17 @@ private:
     KUrl m_url;
 };
 
+typedef QMap<long, CueFileItem> CueFileItemMap;
+
 class AMAROK_EXPORT Track : public MetaFile::Track, public EngineObserver
 {
-
 public:
     class Private;
 
     Track ( const KUrl &url, const KUrl &cuefile );
     ~Track();
+
+    virtual CueFileItemMap cueItems() const;
 
     virtual void engineTrackPositionChanged ( long /*position*/ , bool /*userSeek*/ );
 
@@ -156,9 +159,11 @@ public:
     virtual void setTitle ( const QString &newTitle );
     virtual void setTrackNumber ( int newTrackNumber );
 
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
 private:
     typedef KSharedPtr<Track> TrackPtr;
-    typedef QMap<long, CueFileItem> CueFileItemMap;
 
     bool load ( int mediaLength );
     void notify() const;
