@@ -190,6 +190,9 @@ PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
 
     Meta::PodcastMetaCommon *podcastMetaCommon = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
 
+    if ( !podcastMetaCommon )
+        return QModelIndex();
+
     if ( podcastMetaCommon->podcastType() ==  Meta::ChannelType )
     {
         return QModelIndex();
