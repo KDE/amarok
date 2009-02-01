@@ -26,7 +26,7 @@
 class TokenWithLayoutFactory : public TokenFactory
 {
 public:
-    Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+    virtual Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
 };
 
 /**

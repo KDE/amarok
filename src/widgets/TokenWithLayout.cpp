@@ -31,6 +31,7 @@
 
 Token * TokenWithLayoutFactory::createToken(const QString &text, const QString &iconName, int value, QWidget *parent)
 {
+    DEBUG_BLOCK
     return new TokenWithLayout( text, iconName, value, parent );
 }
 

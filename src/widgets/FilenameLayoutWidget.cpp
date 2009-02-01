@@ -109,7 +109,7 @@ FilenameLayoutWidget::dragMoveEvent( QDragMoveEvent *event )
 
 //Handles the insertion of a token over another depending on its position, computes the index and calls addToken
 void
-        FilenameLayoutWidget::insertOverChild( Token *childUnder, Token *token, QDropEvent *event )
+FilenameLayoutWidget::insertOverChild( Token *childUnder, Token *token, QDropEvent *event )
 {
     if ( !childUnder )
         return;

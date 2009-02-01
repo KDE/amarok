@@ -30,7 +30,8 @@ class TokenFactory
 {
 
 public:
-    Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+    virtual ~TokenFactory() {}
+    virtual Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
 };
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
