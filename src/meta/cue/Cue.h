@@ -1,6 +1,5 @@
 /**************************************************************************
 *   Copyright (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
-*             (c) 2005 by Martin Ehmke <ehmke@gmx.de>                     *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -43,88 +42,133 @@ if ( track.url.isLocalFile() )
 
 namespace MetaCue
 {
-    class CueFileItem {
-        public:
-            CueFileItem (const QString& title, const QString& artist, const QString& album, const int trackNumber, const long index)
-            : m_title( title )
-            , m_artist( artist )
-            , m_album( album )
-            , m_trackNumber( trackNumber )
-            , m_index( index )
-            , m_length( -1 )
-            {}
+class CueFileItem
+{
+public:
+    CueFileItem ( const QString& title, const QString& artist, const QString& album, const int trackNumber, const long index )
+            : m_title ( title )
+            , m_artist ( artist )
+            , m_album ( album )
+            , m_trackNumber ( trackNumber )
+            , m_index ( index )
+            , m_length ( -1 )
+    {}
 
-            CueFileItem()
+    CueFileItem()
             : m_title( )
             , m_artist( )
             , m_album( )
-            , m_trackNumber( -1 )
-            , m_index( -1 )
-            , m_length( -1 )
-            {}
-            void setLength(const long length) { m_length = length; }
-            const QString getTitle () const { return m_title; }
-            const QString getArtist () const { return m_artist; }
-            const QString getAlbum () const { return m_album; }
-            int getTrackNumber () const { return m_trackNumber; }
-            long getIndex () const { return m_index; }
-            long getLength () const { return m_length; }
-
-        private:
-            QString m_title;
-            QString m_artist;
-            QString m_album;
-            int     m_trackNumber;
-            long    m_index;
-            long    m_length;
-
-            QSet<Meta::Observer*> observers;
-            KUrl m_url;
-    };
-
-    class AMAROK_EXPORT Track : public QObject, public MetaFile::Track, public EngineObserver
+            , m_trackNumber ( -1 )
+            , m_index ( -1 )
+            , m_length ( -1 )
+    {}
+    void setLength ( const long length )
     {
-        Q_OBJECT
-        public:
-            Track( const KUrl &url, const KUrl &cuefile );
-            virtual ~Track();
+        m_length = length;
+    }
+    const QString getTitle () const
+    {
+        return m_title;
+    }
+    const QString getArtist () const
+    {
+        return m_artist;
+    }
+    const QString getAlbum () const
+    {
+        return m_album;
+    }
+    int getTrackNumber () const
+    {
+        return m_trackNumber;
+    }
+    long getIndex () const
+    {
+        return m_index;
+    }
+    long getLength () const
+    {
+        return m_length;
+    }
 
-            virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ );
+private:
+    QString m_title;
+    QString m_artist;
+    QString m_album;
+    int     m_trackNumber;
+    long    m_index;
+    long    m_length;
 
-            virtual void subscribe( Meta::Observer *observer );
-            virtual void unsubscribe( Meta::Observer *observer );
+    QSet<Meta::Observer*> observers;
+    KUrl m_url;
+};
 
-            /**
-             * Used to locate a cue sheet for a local track.
-             * @return A KUrl containing the url for the cue sheet
-             *         if a valid one was located
-             */
-            static KUrl locateCueSheet( const KUrl &trackurl );
+class AMAROK_EXPORT Track : public MetaFile::Track, public EngineObserver
+{
 
-            /**
-             * Attempts to load and parse a cue sheet.
-             * @return true if the cue sheet is valid
-             *         false if the cue sheet is invalid
-             */
-            static bool validateCueSheet( const QString& cuefile );
+public:
+    class Private;
 
-            enum Markers {
-                BEGIN = 0,
-                TRACK_FOUND, // track found, index not yet found
-                INDEX_FOUND
-            };
+    Track ( const KUrl &url, const KUrl &cuefile );
+    ~Track();
 
-        private:
-            typedef KSharedPtr<Track> TrackPtr;
-            typedef QMap<long, CueFileItem> CueFileItemMap;
+    virtual void engineTrackPositionChanged ( long /*position*/ , bool /*userSeek*/ );
 
-            bool load( int mediaLength );
-            void notify() const;
+    virtual void subscribe ( Meta::Observer *observer );
+    virtual void unsubscribe ( Meta::Observer *observer );
 
-            KUrl m_cuefile;
-            int m_lastSeekPos; // in seconds
-            CueFileItemMap m_cueitems;
-            QSet<Meta::Observer*> m_observers;
+    /**
+     * Used to locate a cue sheet for a local track.
+     * @return A KUrl containing the url for the cue sheet
+     *         if a valid one was located
+     */
+    static KUrl locateCueSheet ( const KUrl &trackurl );
+
+    /**
+     * Attempts to load and parse a cue sheet.
+     * @return true if the cue sheet is valid
+     *         false if the cue sheet is invalid
+     */
+    static bool validateCueSheet ( const QString& cuefile );
+
+    enum Markers
+    {
+        BEGIN = 0,
+        TRACK_FOUND, // track found, index not yet found
+        INDEX_FOUND
     };
+
+    //methods inherited from Meta::MetaBase
+    virtual QString name() const;
+    virtual QString prettyName() const;
+    virtual QString fullPrettyName() const;
+    virtual QString sortableName() const;
+
+    virtual int trackNumber() const;
+    virtual int length() const;
+
+    virtual Meta::AlbumPtr album() const;
+    virtual Meta::ArtistPtr artist() const;
+
+
+    virtual void setAlbum ( const QString &newAlbum );
+    virtual void setArtist ( const QString &newArtist );
+    virtual void setTitle ( const QString &newTitle );
+    virtual void setTrackNumber ( int newTrackNumber );
+
+private:
+    typedef KSharedPtr<Track> TrackPtr;
+    typedef QMap<long, CueFileItem> CueFileItemMap;
+
+    bool load ( int mediaLength );
+    void notify() const;
+
+    KUrl m_cuefile;
+    int m_lastSeekPos; // in seconds
+    CueFileItemMap m_cueitems;
+    QSet<Meta::Observer*> m_observers;
+
+    Private * const d;
+};
 }
 #endif
