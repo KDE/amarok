@@ -539,6 +539,7 @@ set(amaroklib_LIB_SRCS
     widgets/SliderWidget.cpp
     widgets/TokenListWidget.cpp
     widgets/Token.cpp
+    widgets/TokenWithLayout.cpp
     widgets/VolumeWidget.cpp
     widgets/Splitter.cpp
     widgets/BookmarkTriangle.cpp

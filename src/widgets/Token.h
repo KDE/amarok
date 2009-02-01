@@ -24,6 +24,14 @@
 #include <QLabel>
 #include <QPixmap>
 
+class Token;
+
+class TokenFactory
+{
+
+public:
+    Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+};
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
 class Token : public QFrame
@@ -39,7 +47,7 @@ class Token : public QFrame
         QString name() const;
         int value() const;
 
-    private:
+    protected:
 
         QString     m_name;
         KIcon       m_icon;

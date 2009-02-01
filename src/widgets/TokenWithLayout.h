@@ -17,46 +17,43 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef PLAYLISTITEMEDITWIDGET_H
-#define PLAYLISTITEMEDITWIDGET_H
+#ifndef TOKENWITHLAYOUT_H
+#define TOKENWITHLAYOUT_H
 
-#include "FilenameLayoutWidget.h"
-#include "widgets/TokenWithLayout.h"
-#include "playlist/view/listview/PrettyItemConfig.h"
+#include <Token.h>
 
-#include <KVBox>
 
-class KHBox;
-class QCheckBox;
-class QSpinBox;
+class TokenWithLayoutFactory : public TokenFactory
+{
+public:
+    Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+};
 
 /**
-A widget to define the layout of a single type of playlist item ( head, body or single )
+An extended Token with controls for layouting the token and getting layout values for use outside the Token.
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class PlaylistItemEditWidget : public KVBox
+class TokenWithLayout : public Token
 {
-    Q_OBJECT
 public:
-    PlaylistItemEditWidget( QWidget *parent = 0 );
+    TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+    ~TokenWithLayout();
 
-    ~PlaylistItemEditWidget();
+    Qt::Alignment alignment();
+    void setAlignment( Qt::Alignment alignment );
 
-    void readLayout( Playlist::PrettyItemConfig config );
-    Playlist::PrettyItemConfig config();
+    bool bold();
+    void setBold( bool bold );
 
-private slots:
-
-    void numberOfRowsChanged( int noOfRows );
+protected:
+    virtual void contextMenuEvent( QContextMenuEvent * event );
 
 private:
 
-    KVBox * m_rowsBox;
-    QSpinBox * m_noOfRowsSpinBox;
-    QCheckBox * m_showCoverCheckBox;
+    Qt::Alignment m_alignment;
+    bool m_bold;
 
-    QMap<int, FilenameLayoutWidget*> m_rowMap;
 };
 
 #endif

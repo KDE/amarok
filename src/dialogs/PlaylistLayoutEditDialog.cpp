@@ -35,8 +35,8 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     tokenPool->addToken( new Token( columnNames[DiscNumber], iconNames[DiscNumber], DiscNumber ) );
     tokenPool->addToken( new Token( columnNames[Genre], iconNames[Genre], Genre ) );
     tokenPool->addToken( new Token( columnNames[Title], iconNames[Title], Title ) );
+    tokenPool->addToken( new Token( columnNames[TitleWithTrackNum], iconNames[TitleWithTrackNum], TitleWithTrackNum ) );
     tokenPool->addToken( new Token( columnNames[TrackNumber], iconNames[TrackNumber], TrackNumber ) );
-    tokenPool->addToken( new Token( columnNames[Title], iconNames[Title], Title ) );
     tokenPool->addToken( new Token( columnNames[Type], iconNames[Type], Type ) );
 
 

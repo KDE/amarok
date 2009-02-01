@@ -36,6 +36,7 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     : QFrame( parent )
     , m_tokenCount( 0 )   //how many tokens have I built, need this to assign unique IDs
     , m_parsableScheme( QString()  )
+    , m_tokenFactory( new TokenFactory() )
 {
     setAcceptDrops( true );
     m_layout = new QHBoxLayout;
@@ -46,6 +47,11 @@ FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     repaint();  //update m_infoText
     
     m_layout->setContentsMargins( 1, 1, 1, 1 );
+}
+
+FilenameLayoutWidget::~ FilenameLayoutWidget()
+{
+    delete m_tokenFactory;
 }
 
 // Adds a token with caption text at the index-th place in the 
@@ -131,7 +137,7 @@ FilenameLayoutWidget::dropEvent( QDropEvent *event )
     dataStream >> tokenIconName;
     dataStream >> tokenValue;
 
-    Token * droppedtoken = new Token( tokenName, tokenIconName, tokenValue );
+    Token * droppedtoken = m_tokenFactory->createToken( tokenName, tokenIconName, tokenValue );
 
     if ( source && source != this )
         event->setDropAction( Qt::CopyAction );
@@ -257,7 +263,7 @@ FilenameLayoutWidget::performDrag( QMouseEvent *event )
     QMimeData *mimeData = new QMimeData();
     mimeData->setData( "application/x-amarok-tag-token", itemData );
     
-    QDrag *drag = new QDrag( this );
+    QDrag *drag =  new QDrag( this );
     drag->setMimeData( mimeData );
     drag->setHotSpot( event->pos() - child->rect().topLeft() - child->pos() );        //I grab the initial position of the item I'm dragging
     
@@ -315,4 +321,12 @@ QList< Token *> FilenameLayoutWidget::currentTokenLayout()
 
     return list;
 }
+
+void FilenameLayoutWidget::setCustomTokenFactory( TokenFactory * factory )
+{
+    delete m_tokenFactory;
+    m_tokenFactory = factory;
+}
+
+
 

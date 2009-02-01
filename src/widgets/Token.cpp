@@ -23,6 +23,13 @@
 #include <KColorScheme>
 #include <QHBoxLayout>
 
+
+Token * TokenFactory::createToken(const QString & text, const QString & iconName, int value, QWidget * parent)
+{
+    return new Token( text, iconName, value, parent );
+}
+
+
 Token::Token( const QString &name, const QString &iconName, int value, QWidget *parent )
     : QFrame( parent )
     , m_name( name )
@@ -89,4 +96,5 @@ QString Token::iconName() const
 {
     return m_iconName;
 }
+
 

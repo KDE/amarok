@@ -61,6 +61,7 @@ void PlaylistItemEditWidget::numberOfRowsChanged( int noOfRows )
         for( int i = currentNoOfRows; i < rowsToAdd + currentNoOfRows; i++ )
         {
             FilenameLayoutWidget * layoutWidget = new FilenameLayoutWidget( m_rowsBox );
+            layoutWidget->setCustomTokenFactory( new TokenWithLayoutFactory() );
             m_rowMap.insert( i, layoutWidget );
         }
         
@@ -88,6 +89,8 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
     m_noOfRowsSpinBox->setValue( rowCount );
 
     m_showCoverCheckBox->setChecked( config.showCover() );
+
+    TokenWithLayoutFactory factory;
     
     for( int i = 0; i < rowCount; i++ )
     {
@@ -105,7 +108,7 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
         for( int j = 0; j < elementCount; j++ )
         {
             Playlist::PrettyItemConfigRowElement element = rowConfig.element( j );
-            Token * token = new Token( columnNames[element.value()], iconNames[element.value()], element.value() );
+            Token * token = factory.createToken( columnNames[element.value()], iconNames[element.value()], element.value() );
             currentRow->addToken( token );
         }
     }
@@ -132,7 +135,22 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
         qreal size = 1.0 / (qreal) noOfElements;
 
         foreach( Token * token, tokens ) {
-            currentRowConfig.addElement( PrettyItemConfigRowElement( token->value(), size, false, Qt::AlignLeft| Qt::AlignVCenter ) );
+            TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );
+
+            bool bold;
+            Qt::Alignment alignment;
+            if ( twl )
+            {
+                bold = twl->bold();
+                alignment = twl->alignment();
+            }
+            else
+            {
+                bold = false;
+                alignment = Qt::AlignCenter;
+            }
+            
+            currentRowConfig.addElement( PrettyItemConfigRowElement( token->value(), size, bold, alignment ) );
         }
 
         config.addRow( currentRowConfig );

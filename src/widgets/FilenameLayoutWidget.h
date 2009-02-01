@@ -32,6 +32,7 @@ class FilenameLayoutWidget : public QFrame
 
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
+        ~FilenameLayoutWidget();
 
         unsigned int getTokenCount() const;
         
@@ -40,6 +41,8 @@ class FilenameLayoutWidget : public QFrame
         QList<Token *> currentTokenLayout();
 
         void removeAllTokens();
+
+        void setCustomTokenFactory( TokenFactory *factory );
 
     protected:
         void mouseMoveEvent( QMouseEvent *event );
@@ -65,6 +68,8 @@ class FilenameLayoutWidget : public QFrame
         QPoint  m_startPos;             // needed for initiating the drag
         uint    m_tokenCount;
         QString m_parsableScheme;       // a string that TagGuesser will be able to use
+
+        TokenFactory *m_tokenFactory;
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H
