@@ -23,12 +23,10 @@
 
 #include <KIcon>
 
-PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::UserModel *model )
-    : QAbstractProxyModel( 0 )
+PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model )
+    : MetaPlaylistModel()
     , m_model( model )
 {
-    setSourceModel( m_model );
-
     // signal proxies
     connect( m_model,
         SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
@@ -183,6 +181,19 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
     return m_model->index( row, 0, QModelIndex() );
 }
 
+QModelIndexList
+PlaylistsInGroupsProxy::mapToSource( const QModelIndexList& list ) const
+{
+    QModelIndexList originalList;
+    foreach( QModelIndex index, list )
+    {
+        QModelIndex originalIndex = mapToSource( index );
+        if( originalIndex.isValid() )
+            originalList << originalIndex;
+    }
+    return originalList;
+}
+
 QModelIndex
 PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
 {
@@ -220,16 +231,46 @@ PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 void
 PlaylistsInGroupsProxy::modelDataChanged( const QModelIndex& start, const QModelIndex& end )
 {
+    Q_UNUSED( start )
+    Q_UNUSED( end )
 }
 
 void
 PlaylistsInGroupsProxy::modelRowsInserted( const QModelIndex& index, int start, int end )
 {
+    Q_UNUSED( index )
+    Q_UNUSED( start )
+    Q_UNUSED( end )
 }
 
 void
 PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex& index, int start, int end )
 {
+    Q_UNUSED( index )
+    Q_UNUSED( start )
+    Q_UNUSED( end )
+}
+
+QList<PopupDropperAction *>
+PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
+{
+    DEBUG_BLOCK
+    QList<PopupDropperAction *> actions;
+    QModelIndexList originalList = mapToSource( list );
+    debug() << originalList.count() << "original indices";
+    if( !originalList.isEmpty() )
+        actions << m_model->actionsFor( originalList );
+
+    return actions;
+}
+
+void
+PlaylistsInGroupsProxy::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
+{
+    DEBUG_BLOCK
+    QModelIndexList originalList = mapToSource( list );
+
+    m_model->loadItems( originalList, insertMode );
 }
 
 #include "PlaylistsInGroupsProxy.moc"

@@ -18,22 +18,20 @@
 #ifndef AMAROK_PLAYLISTSINGROUPSPROXY_H
 #define AMAROK_PLAYLISTSINGROUPSPROXY_H
 
-#include "UserPlaylistModel.h"
+#include "MetaPlaylistModel.h"
+
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <QAbstractProxyModel>
 #include <QModelIndex>
 #include <QMultiHash>
 #include <QStringList>
-namespace PlaylistBrowserNS
-{
-    class UserModel;
-}
 
-class PlaylistsInGroupsProxy : public QAbstractProxyModel
+class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
 {
     Q_OBJECT
     public:
-        PlaylistsInGroupsProxy( PlaylistBrowserNS::UserModel *model );
+        PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model );
         ~PlaylistsInGroupsProxy();
 
         // functions from QAbstractProxyModel
@@ -46,6 +44,10 @@ class PlaylistsInGroupsProxy : public QAbstractProxyModel
         QModelIndex mapFromSource( const QModelIndex& ) const;
         QVariant data( const QModelIndex &index, int role ) const;
 
+        QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
+
+        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
+
     signals:
         void rowsInserted( const QModelIndex&, int, int );
         void rowsRemoved( const QModelIndex&, int, int );
@@ -57,8 +59,9 @@ class PlaylistsInGroupsProxy : public QAbstractProxyModel
 
     private:
         void buildTree();
+        QModelIndexList mapToSource( const QModelIndexList& list ) const;
 
-        PlaylistBrowserNS::UserModel *m_model;
+        MetaPlaylistModel *m_model;
         QMultiHash<qint64, int> m_groupHash;
         QStringList m_groupNames;
 };

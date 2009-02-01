@@ -161,6 +161,9 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 
     QList<PopupDropperAction *> actions = m_model->actionsFor( indices );
 
+    if( actions.isEmpty() )
+        return;
+
     foreach( PopupDropperAction * action, actions )
         menu.addAction( action );
 

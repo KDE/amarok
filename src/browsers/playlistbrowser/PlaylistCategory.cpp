@@ -48,7 +48,10 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_playlistView = new UserPlaylistTreeView( PlaylistBrowserNS::UserModel::instance(), this );
+
+    m_groupedProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
+
+    m_playlistView = new UserPlaylistTreeView( m_groupedProxy, this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins(0,0,0,0);
     m_playlistView->header()->hide();
@@ -58,8 +61,6 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView->setDropIndicatorShown(true);
 
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
-
-//     m_groupedProxy = new PlaylistsInGroupsProxy( PlaylistBrowserNS::UserModel::instance() );
 
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
