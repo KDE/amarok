@@ -61,7 +61,6 @@ VERSION 2.1
       success.
 
   BUGFIXES:
-    * Statistics were not calculated properly in all instances. (BR 182025)
     * Fix "Stop Playing After Track". It is working now. (BR 180486)
     * Fix switching tracks in random tracks mode. (BR 176019)
     * Fix grouping of Stream and File meta objects. This affects many cases,
