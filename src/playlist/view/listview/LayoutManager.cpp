@@ -64,15 +64,25 @@ QStringList Playlist::LayoutManager::layouts()
     return m_layouts.keys();
 }
 
-void Playlist::LayoutManager::setActiveLayout( const QString & layout )
+void Playlist::LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
     emit( activeLayoutChanged() );
 }
 
+void Playlist::LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
+{
+    m_activeLayout = "%%PREVIEW%%";
+    m_previewLayout = layout;
+    emit( activeLayoutChanged() );
+}
+
 PlaylistLayout Playlist::LayoutManager::activeLayout()
 {
-    return m_layouts.value( m_activeLayout );
+    if ( m_activeLayout == "%%PREVIEW%%" )
+        return m_previewLayout;
+    else
+        return m_layouts.value( m_activeLayout );
 }
 
 void Playlist::LayoutManager::loadLayouts( const QString &fileName )
@@ -177,7 +187,18 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
     return config;
 }
 
+PlaylistLayout Playlist::LayoutManager::layout(const QString &layout )
+{
+    return m_layouts.value( layout );
+}
+
 
 }
+
+
+
+
+
+
 
 

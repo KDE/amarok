@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,51 +17,45 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef PLAYLISTLAYOUTMANAGER_H
-#define PLAYLISTLAYOUTMANAGER_H
+#ifndef PLAYLISTITEMEDITWIDGET_H
+#define PLAYLISTITEMEDITWIDGET_H
 
-#include "PrettyItemConfig.h"
+#include "FilenameLayoutWidget.h"
+#include "playlist/view/listview/PrettyItemConfig.h"
 
-#include <QStringList>
-#include <QString>
-#include <QMap>
+#include <KVBox>
 
-class QDomElement;
-
-namespace Playlist {
+class KHBox;
+class QCheckBox;
+class QSpinBox;
 
 /**
-Class for keeping track of playlist layouts and loading/saving them to xml files
+A widget to define the layout of a single type of playlist item ( head, body or single )
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class LayoutManager : public QObject {
+class PlaylistItemEditWidget : public KVBox
+{
     Q_OBJECT
 public:
-    static LayoutManager * instance();
+    PlaylistItemEditWidget( QWidget *parent = 0 );
 
-    QStringList layouts();
-    void setActiveLayout( const QString &layout );
-    void setPreviewLayout( const PlaylistLayout &layout );
-    PlaylistLayout layout( const QString &layout );
-    PlaylistLayout activeLayout();
+    ~PlaylistItemEditWidget();
 
-signals:
-    void activeLayoutChanged();
+    void readLayout( Playlist::PrettyItemConfig config );
+    Playlist::PrettyItemConfig config();
+
+private slots:
+
+    void numberOfRowsChanged( int noOfRows );
+
 private:
-    LayoutManager();
-    ~LayoutManager();
 
-    void loadLayouts( const QString &fileName );
-    PrettyItemConfig parseItemConfig( const QDomElement &elem );
+    KVBox * m_rowsBox;
+    QSpinBox * m_noOfRowsSpinBox;
+    QCheckBox * m_showCoverCheckBox;
 
-    static LayoutManager * s_instance;
-
-    QMap<QString, PlaylistLayout> m_layouts;
-    QString m_activeLayout;
-    PlaylistLayout m_previewLayout;
+    QMap<int, FilenameLayoutWidget*> m_rowMap;
 };
-
-}
 
 #endif

@@ -22,6 +22,8 @@
 
 #include <KVBox>
 
+class PlaylistLayoutEditDialog;
+
 namespace Playlist {
 
 /**
@@ -43,6 +45,9 @@ private slots:
 
     void editItem( const QString &itemName );
     void deleteItem( const QString &itemName );
+
+private:
+    PlaylistLayoutEditDialog * m_playlistEditDialog;
 
 };
 

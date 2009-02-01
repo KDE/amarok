@@ -21,16 +21,19 @@
 
 #include "Debug.h"
 #include "LayoutManager.h"
+#include "dialogs/PlaylistLayoutEditDialog.h"
 #include "widgets/EditDeleteDelegate.h"
 #include "widgets/EditDeleteComboBoxView.h"
 
 #include <QLabel>
 #include <QComboBox>
 
-namespace Playlist {
+namespace Playlist
+{
 
 LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
     : KVBox( parent )
+    , m_playlistEditDialog( 0 )
 {
     new QLabel( "Config gui goes here....", this );
     QComboBox *comboBox = new QComboBox( this );
@@ -65,6 +68,11 @@ void Playlist::LayoutConfigWidget::editItem( const QString &itemName )
 {
     DEBUG_BLOCK
     debug() << "edit item: " << itemName;
+
+    if ( !m_playlistEditDialog )
+        m_playlistEditDialog = new PlaylistLayoutEditDialog( this );
+    m_playlistEditDialog->setLayout( itemName );
+    m_playlistEditDialog->show();
 }
 
 void Playlist::LayoutConfigWidget::deleteItem( const QString &itemName )

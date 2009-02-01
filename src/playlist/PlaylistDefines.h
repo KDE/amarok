@@ -90,6 +90,36 @@ static const QStringList columnNames = ( QStringList()
         << i18n( "Type" )
         << i18n( "Year" ) );
 
+static const QStringList iconNames = ( QStringList()
+        << "DUMMY_VALUE"
+        << "filename-album-amarok"
+        << "filename-album-amarok"
+        << "filename-artist-amarok"
+        << ""
+        << ""
+        << "filename-comment-amarok"
+        << "filename-composer-amarok"
+        << ""
+        << ""
+        << "filename-discnumber-amarok"
+        << ""
+        << ""
+        << "filename-genre-amarok"
+        << ""
+        << ""
+        << ""
+        << ""
+        << ""
+        << ""
+        << ""
+        << ""
+        << ""
+        << "filename-title-amarok"
+        << "filename-title-amarok"
+        << "filename-track-amarok"
+        << "filename-filetype-amarok"
+        << "filename-year-amarok" );
+
 
 enum SearchFields
 {

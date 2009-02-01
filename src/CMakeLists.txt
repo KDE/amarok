@@ -500,6 +500,7 @@ set(amaroklib_LIB_SRCS
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
+    dialogs/PlaylistLayoutEditDialog.cpp
     dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
@@ -529,6 +530,7 @@ set(amaroklib_LIB_SRCS
     widgets/MainToolbar.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
+    widgets/PlaylistItemEditWidget.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressiveSearchWidget.cpp
     widgets/ProgressSlider.cpp
@@ -559,6 +561,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
+    dialogs/PlaylistLayoutEditDialog.ui
     dialogs/PodcastSettingsBase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )

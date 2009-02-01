@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,51 +17,41 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef PLAYLISTLAYOUTMANAGER_H
-#define PLAYLISTLAYOUTMANAGER_H
+#ifndef PLAYLISTLAYOUTEDITDIALOG_H
+#define PLAYLISTLAYOUTEDITDIALOG_H
 
-#include "PrettyItemConfig.h"
+#include "widgets/PlaylistItemEditWidget.h"
+#include <QDialog>
 
-#include <QStringList>
-#include <QString>
-#include <QMap>
-
-class QDomElement;
-
-namespace Playlist {
+#include "ui_PlaylistLayoutEditDialog.h"
 
 /**
-Class for keeping track of playlist layouts and loading/saving them to xml files
+Dialog for editing playlist layouts
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class LayoutManager : public QObject {
+class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditDialog
+{
     Q_OBJECT
 public:
-    static LayoutManager * instance();
+    PlaylistLayoutEditDialog( QWidget *parent = 0 );
+    ~PlaylistLayoutEditDialog();
 
-    QStringList layouts();
-    void setActiveLayout( const QString &layout );
-    void setPreviewLayout( const PlaylistLayout &layout );
-    PlaylistLayout layout( const QString &layout );
-    PlaylistLayout activeLayout();
+    void setLayout( const QString &layoutName );
 
-signals:
-    void activeLayoutChanged();
+private slots:
+
+    void preview();
+        
+
 private:
-    LayoutManager();
-    ~LayoutManager();
 
-    void loadLayouts( const QString &fileName );
-    PrettyItemConfig parseItemConfig( const QDomElement &elem );
+    PlaylistItemEditWidget * m_headEdit;
+    PlaylistItemEditWidget * m_bodyEdit;
+    PlaylistItemEditWidget * m_singleEdit;
 
-    static LayoutManager * s_instance;
+    QString m_layoutName;
 
-    QMap<QString, PlaylistLayout> m_layouts;
-    QString m_activeLayout;
-    PlaylistLayout m_previewLayout;
 };
-
-}
 
 #endif
