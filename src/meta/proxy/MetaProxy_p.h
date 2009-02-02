@@ -19,8 +19,6 @@
 #ifndef AMAROK_METAPROXY_P_H
 #define AMAROK_METAPROXY_P_H
 
-#include "Debug.h"
-
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "Collection.h"
@@ -70,7 +68,6 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
     public:
         void notifyObservers()
         {
-            DEBUG_BLOCK
             if( proxy )
             {
                 foreach( Meta::Observer *observer, observers )
@@ -84,14 +81,12 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         void metadataChanged( Meta::TrackPtr track )
         {
             Q_UNUSED( track )
-            DEBUG_BLOCK
             notifyObservers();
         }
 
     public slots:
         void slotNewTrackProvider( Amarok::TrackProvider *newTrackProvider )
         {
-            DEBUG_BLOCK
             if ( !newTrackProvider )
             {
                 return;
@@ -112,7 +107,6 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 
         void slotUpdateTrack( Meta::TrackPtr track )
         {
-            DEBUG_BLOCK
             if( track )
             {
                 subscribeTo( track );
@@ -158,7 +152,8 @@ public:
 
     QString name() const
     {
-        if( d && d->realTrack ) {
+        if( d && d->realTrack )
+        {
             if ( d->realTrack->artist() )
                 return d->realTrack->artist()->name();
             return QString();

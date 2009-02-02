@@ -20,7 +20,6 @@
 #include "MetaProxy_p.h"
 #include "MetaProxy_p.moc"
 
-#include "Debug.h"
 #include "EditCapability.h"
 
 #include "CollectionManager.h"
@@ -85,16 +84,16 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
 	d->url = url;
     d->proxy = this;
     d->cachedLength = 0;
-	
+
 	if( !awaitLookupNotification )
 		QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), d, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
-	
+
     d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( QPointer<Track::Private>( d ) ) );
     d->artistPtr = Meta::ArtistPtr( new ProxyArtist( QPointer<Track::Private>( d ) ) );
     d->genrePtr = Meta::GenrePtr( new ProxyGenre( QPointer<Track::Private>( d ) ) );
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
-	
+
 	if( !awaitLookupNotification )
 		QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
 }
@@ -110,7 +109,7 @@ MetaProxy::Track::name() const
     if( d->realTrack ) {
         QString name = d->realTrack->name();
         return name;
-    } 
+    }
     return d->cachedName;
 }
 
@@ -126,7 +125,7 @@ MetaProxy::Track::prettyName() const
     if( d->realTrack ) {
         QString prettyName = d->realTrack->prettyName();
         return prettyName;
-    } 
+    }
     return d->cachedName;   //TODO maybe change this?
 }
 
@@ -136,7 +135,7 @@ MetaProxy::Track::fullPrettyName() const
     if( d->realTrack ) {
         QString fullPrettyName = d->realTrack->fullPrettyName();
         return fullPrettyName;
-    } 
+    }
     return d->cachedName;   //TODO maybe change this??
 }
 
@@ -428,7 +427,6 @@ MetaProxy::Track::lookupTrack( Amarok::TrackProvider *provider )
 void
 MetaProxy::Track::updateTrack( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     d->slotUpdateTrack( track );
 }
 
@@ -462,6 +460,6 @@ MetaProxy::Track::operator==( const Meta::Track &track ) const
         return d->realTrack == proxy->d->realTrack;
     else if( proxy )
         return d->url == proxy->d->url;
-    
+
     return d->realTrack && d->realTrack.data() == &track;
 }
