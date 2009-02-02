@@ -112,7 +112,9 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
             token->setBold( element.bold() );
             token->setAlignment( element.alignment() );
             currentRow->addToken( token );
+            token->setSize( element.size() * 100.0 );
         }
+
     }
 }
 
@@ -134,24 +136,29 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
         
         int noOfElements = tokens.count();
         //FIXME! for now, each element get the same size. This needs extensions to the token stuff
-        qreal size = 1.0 / ( (qreal) noOfElements );
+        qreal defaultSize = 1.0 / ( (qreal) noOfElements );
 
         foreach( Token * token, tokens ) {
             TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );
 
             bool bold;
             Qt::Alignment alignment;
+            qreal size = defaultSize;
             if ( twl )
             {
                 bold = twl->bold();
                 alignment = twl->alignment();
+
+                if ( twl->size() > 0.04 ) {
+                    size = twl->size();
+                }
             }
             else
             {
                 bold = false;
                 alignment = Qt::AlignCenter;
             }
-            
+
             currentRowConfig.addElement( PrettyItemConfigRowElement( token->value(), size, bold, alignment ) );
         }
 
@@ -163,6 +170,4 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
 
 
 #include "PlaylistItemEditWidget.moc"
-
-
 

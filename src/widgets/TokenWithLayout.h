@@ -36,6 +36,7 @@ An extended Token with controls for layouting the token and getting layout value
 */
 class TokenWithLayout : public Token
 {
+    Q_OBJECT
 public:
     TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
     ~TokenWithLayout();
@@ -45,6 +46,12 @@ public:
 
     bool bold();
     void setBold( bool bold );
+    qreal size();
+
+    
+public slots:
+
+    void setSize( int size );
 
 protected:
     virtual void contextMenuEvent( QContextMenuEvent * event );
@@ -53,6 +60,7 @@ private:
 
     Qt::Alignment m_alignment;
     bool m_bold;
+    qreal m_size;
 
 };
 

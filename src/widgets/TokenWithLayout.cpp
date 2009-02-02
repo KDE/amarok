@@ -19,14 +19,22 @@
 
 #include "TokenWithLayout.h"
 
+#include "FilenameLayoutWidget.h"
+
 #include "Debug.h"
 
 #include <KAction>
+#include <KHBox>
 #include <KLocale>
 
 #include <QActionGroup>
 #include <QContextMenuEvent>
+#include <QLayout>
 #include <QMenu>
+#include <QSlider>
+#include <QLCDNumber>
+
+
 
 
 Token * TokenWithLayoutFactory::createToken(const QString &text, const QString &iconName, int value, QWidget *parent)
@@ -37,6 +45,7 @@ Token * TokenWithLayoutFactory::createToken(const QString &text, const QString &
 
 TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent )
     : Token( text, iconName, value, parent  )
+    , m_size( 0.0 )
 {
     m_alignment = Qt::AlignCenter;
     m_bold = false;
@@ -82,8 +91,33 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
     menu.addAction( alignLeftAction );
     menu.addAction( alignCenterAction );
     menu.addAction( alignRightAction );
+    menu.addSeparator()->setText( i18n( "Width" ) );
+    menu.adjustSize();
+
+    int orgHeight = menu.height();
+
+    KHBox * sliderBox = new KHBox( &menu );
+    sliderBox->setFixedWidth( menu.width() - 4 );
+    sliderBox->move( sliderBox->pos().x() + 2, orgHeight );
+    
+    QSlider * slider = new QSlider( Qt::Horizontal, sliderBox );
+    slider->setMaximum( 100 );
+    slider->setMinimum( 5 );
+    slider->setValue( m_size * 100.0 );
+
+    QLCDNumber * sizeLabel = new QLCDNumber( 3, sliderBox );
+    sizeLabel->display( m_size * 100.0 );
+
+    connect( slider, SIGNAL( valueChanged( int ) ), sizeLabel, SLOT( display( int ) ) );
+    connect( slider, SIGNAL( valueChanged( int ) ), this, SLOT( setSize( int ) ) );
+   
 
 
+    
+    
+    menu.setFixedHeight( orgHeight + slider->height() );
+
+    slider->setFixedWidth( menu.width() - 4 );
 
     QAction* a = menu.exec( mapToGlobal( event->pos() ) );
 
@@ -122,6 +156,40 @@ void TokenWithLayout::setBold( bool bold )
     m_label->setFont( font );
 }
 
+void TokenWithLayout::setSize( int size )
+{
+
+    //lets try to stop the slider moving further than it is allowed...
+    //we need all the other items on this line...
+
+    int maxValue = 100;
+    FilenameLayoutWidget * flw = dynamic_cast<FilenameLayoutWidget *>( parentWidget() );
+    if ( flw ) {
+        foreach( Token * token, flw->currentTokenLayout() ) {
+            TokenWithLayout * twl = dynamic_cast<TokenWithLayout *>( token );
+            if ( twl && twl != this )
+                maxValue -= ( twl->size() * 100 );
+        }
+    }
+
+    if ( size <= maxValue )
+        m_size = ( (qreal) size ) / 100.0;
+    else
+    {
+        QSlider * slider = dynamic_cast<QSlider *>( sender() );
+        if ( slider )
+            slider->setValue( maxValue );
+        m_size = ( (qreal) maxValue ) / 100.0;
+    }
+}
+
+qreal TokenWithLayout::size()
+{
+    return m_size;
+}
+
+
+#include "TokenWithLayout.moc"
 
 
 
