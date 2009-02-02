@@ -35,7 +35,6 @@ LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
     : KVBox( parent )
     , m_playlistEditDialog( 0 )
 {
-    new QLabel( "Config gui goes here....", this );
     m_comboBox = new QComboBox( this );
     EditDeleteComboBoxView * comboView = new EditDeleteComboBoxView( m_comboBox );
     comboView->setModel( m_comboBox->model() );
