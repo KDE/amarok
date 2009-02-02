@@ -49,7 +49,9 @@ Playlist::Widget::Widget( QWidget* parent )
     m_searchWidget = new ProgressiveSearchWidget( this );
     new LayoutConfigWidget( this );
 
-    m_sortBox = new QComboBox( this );
+
+    //this is really only useful for debugging at the moment, so dont show it to users and testers
+    /*m_sortBox = new QComboBox( this );
     m_sortBox->insertItem( 0, "Album", Album);
     m_sortBox->insertItem( 1, "AlbumArtist", Album);
     m_sortBox->insertItem( 2, "Artist", Artist );
@@ -75,7 +77,7 @@ Playlist::Widget::Widget( QWidget* parent )
     m_sortBox->insertItem( 32, "Type", Type );
     m_sortBox->insertItem( 33, "Year", Year );
 
-    connect( m_sortBox, SIGNAL( activated( int ) ), this, SLOT( sort( int ) ) );
+    connect( m_sortBox, SIGNAL( activated( int ) ), this, SLOT( sort( int ) ) );*/
     
     Amarok::Widget * layoutHolder = new Amarok::Widget( this );
 
