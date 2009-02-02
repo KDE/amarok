@@ -279,49 +279,46 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
             QString text = textIndex.data( Qt::DisplayRole ).toString();
 
             qreal itemWidth = 0.0;
-            if ( !text.isEmpty() )
+
+            text = element.prefix() + text + element.suffix();
+
+            bool bold = element.bold();
+            int alignment = element.alignment();
+
+            QFont font = option.font;
+            font.setBold( bold );
+            painter->setFont( font );
+
+            QRectF elementBox;
+            if ( element.size() > 0.0 )
             {
-                text = element.prefix() + text + element.suffix();
-                
-                bool bold = element.bold();
-                int alignment = element.alignment();
-                
-                QFont font = option.font;
-                font.setBold( bold );
-                painter->setFont( font );
+                itemWidth = rowWidth * element.size();
 
-                QRectF elementBox;
-                if ( element.size() > 0.0 )
+                //special case for painting the rating...
+                if ( value == Rating )
                 {
-                    itemWidth = rowWidth * element.size();
-                    
-                    //special case for painting the rating...
-                    if ( value == Rating )
+                    if( textIndex.data( InCollectionRole ).toBool() )
                     {
-                        if( textIndex.data( InCollectionRole ).toBool() )
-                        {
-                            int rating = textIndex.data( Qt::DisplayRole ).toInt();
-                            m_ratingPainter.paint( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), rating, rating );
-                        }
-
-                    }
-                    else
-                    {
-                        text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
-                        painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment, text );
+                        int rating = textIndex.data( Qt::DisplayRole ).toInt();
+                        m_ratingPainter.paint( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), rating, rating );
                     }
 
-                    currentItemX += itemWidth;
                 }
                 else
                 {
-                    painter->drawText( rowBox, alignment, text, &elementBox );
-                    if (alignment & Qt::AlignRight)
-                        rowBox.setRight( elementBox.left() - PADDING );
-                    else
-                        rowBox.setLeft( elementBox.right() + PADDING );
+                    text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
+                    painter->drawText( currentItemX, rowOffsetY, itemWidth, rowHeight, alignment, text );
                 }
 
+                currentItemX += itemWidth;
+            }
+            else
+            {
+                painter->drawText( rowBox, alignment, text, &elementBox );
+                if (alignment & Qt::AlignRight)
+                    rowBox.setRight( elementBox.left() - PADDING );
+                else
+                    rowBox.setLeft( elementBox.right() + PADDING );
             }
 
         }
