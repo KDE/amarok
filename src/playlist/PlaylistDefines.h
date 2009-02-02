@@ -93,7 +93,7 @@ static const QStringList columnNames = ( QStringList()
 static const QStringList iconNames = ( QStringList()
         << "DUMMY_VALUE"
         << "filename-album-amarok"
-        << "filename-album-amarok"
+        << "filename-artist-amarok"
         << "filename-artist-amarok"
         << "application-octet-stream"
         << ""
