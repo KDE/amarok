@@ -38,6 +38,8 @@ class FirstRunTutorial : public QObject
         void fadeHideTimerFinished();
         void setupPerms();
 
+        void slotPage1();
+
     private:
         QWidget* m_parent;
         QGraphicsScene *m_scene;
@@ -46,6 +48,7 @@ class FirstRunTutorial : public QObject
         QTimeLine m_fadeHideTimer;
         int m_framesMax;
         QSet<QGraphicsItem*> m_itemSet;
+        int m_pageNum;
 };
 
 #endif

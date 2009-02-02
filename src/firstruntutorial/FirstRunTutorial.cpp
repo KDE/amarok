@@ -16,7 +16,11 @@
 
 #include "Debug.h"
 
+#include <QChar>
+#include <QString>
 #include <QTimer>
+
+static int MAX_PAGE = 1;
 
 FirstRunTutorial::FirstRunTutorial( QWidget *parent )
     : QObject( parent )
@@ -27,6 +31,7 @@ FirstRunTutorial::FirstRunTutorial( QWidget *parent )
     , m_fadeHideTimer()
     , m_framesMax( 60 )
     , m_itemSet()
+    , m_pageNum( 0 )
 {
 }
 
@@ -77,7 +82,7 @@ void
 FirstRunTutorial::fadeShowTimerFrameChanged( int frame ) //SLOT
 {
     DEBUG_BLOCK
-    if( m_fadeShowTimer.state() == QTimeLine::Running )
+    if( m_fadeShowTimer.state() == QTimeLine::Running && m_pageNum == 0 )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
         QColor color = Qt::blue;
@@ -92,19 +97,22 @@ void
 FirstRunTutorial::fadeShowTimerFinished() //SLOT
 {
     DEBUG_BLOCK
-    QColor color = Qt::blue;
-    color.setAlpha( 48 );
-    QPalette p = m_view->palette();
-    p.setColor( QPalette::Window, color );
-    m_view->setPalette( p );
-    QTimer::singleShot( 2000, this, SLOT( setupPerms() ) );
+    if( m_pageNum == 0 )
+    {
+        QColor color = Qt::blue;
+        color.setAlpha( 48 );
+        QPalette p = m_view->palette();
+        p.setColor( QPalette::Window, color );
+        m_view->setPalette( p );
+        QTimer::singleShot( 2000, this, SLOT( setupPerms() ) );
+    }
 }
 
 void
 FirstRunTutorial::fadeHideTimerFrameChanged( int frame ) //SLOT
 {
     DEBUG_BLOCK
-    if( m_fadeHideTimer.state() == QTimeLine::Running )
+    if( m_fadeHideTimer.state() == QTimeLine::Running && m_pageNum == 0 )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
         QColor color = Qt::blue;
@@ -119,19 +127,26 @@ void
 FirstRunTutorial::fadeHideTimerFinished() //SLOT
 {
     DEBUG_BLOCK
-    QColor color = Qt::blue;
-    color.setAlpha( 0 );
-    QPalette p = m_view->palette();
-    p.setColor( QPalette::Window, color );
-    m_view->setPalette( p );
-    deleteLater();
+    if( m_pageNum == MAX_PAGE )
+    {
+        QColor color = Qt::blue;
+        color.setAlpha( 0 );
+        QPalette p = m_view->palette();
+        p.setColor( QPalette::Window, color );
+        m_view->setPalette( p );
+        deleteLater();
+    }
 }
 
 void FirstRunTutorial::setupPerms() //SLOT
 {
     //Set up permanent items here, like close button, next/prev...for now just cause it to exit
-    m_fadeHideTimer.start();
+    //m_fadeHideTimer.start();
     //now start the first page...see below
+    m_pageNum++;
+    QString page( QString("1slotPage%1()").arg( m_pageNum ) );
+    //QMetaObject::invokeMethod( this, page.toAscii().constData() ); //this should work, but doesn't...asking on k-c-d
+    QTimer::singleShot( 0, this, page.toAscii().constData() );
 }
 
 /*
@@ -144,6 +159,12 @@ and trigger a common single slot to do the fade in and another to do the fade ou
 where it just operates on the items currently in the set...reusability++
 
 */
+
+void FirstRunTutorial::slotPage1() //SLOT
+{
+    DEBUG_BLOCK
+    m_fadeHideTimer.start();
+}
 
 #include "FirstRunTutorial.moc"
 
