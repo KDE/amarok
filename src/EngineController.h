@@ -119,7 +119,6 @@ protected:
 
 private slots:
     void slotTrackEnded();
-    void slotPrefinishMarkReached(qint32);
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);

@@ -96,7 +96,6 @@ EngineController::EngineController()
 
     // Get the next track when there is 2 seconds left on the current one.
     m_media->setPrefinishMark( 2000 );
-    connect( m_media, SIGNAL( prefinishMarkReached(qint32) ), SLOT( slotPrefinishMarkReached( qint32 ) ) );
     connect( m_media, SIGNAL( aboutToFinish()), SLOT( slotAboutToFinish() ) );
 
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
@@ -490,26 +489,28 @@ EngineController::trackLength() const
 void
 EngineController::setNextTrack( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
     if( !track )
-    {
-        track->prepareToPlay();
-        if( track->playableUrl().isEmpty() )
-            return;
-    }
+        return;
+
+    track->prepareToPlay();
+    if( track->playableUrl().isEmpty() )
+        return;
 
     if( m_media->state() == Phonon::PlayingState ||
         m_media->state() == Phonon::BufferingState )
     {
+        DEBUG_LINE_INFO
         m_media->clearQueue();
-        if( track->playableUrl().isLocalFile() )
-            m_media->enqueue( track->playableUrl() );
+        m_media->enqueue( track->playableUrl() );
         m_nextTrack = track;
         m_nextUrl = track->playableUrl();
     }
     else
     {
+        DEBUG_LINE_INFO
         play( track );
     }
 }
@@ -550,17 +551,6 @@ void
 EngineController::slotTick( qint64 position )
 {
     trackPositionChangedNotify( static_cast<long>( position ), false ); //it expects milliseconds
-}
-
-
-void
-EngineController::slotPrefinishMarkReached( qint32 msecToEnd )
-{
-    // For some resason, phonon occasionally emits this right when the track starts playing.
-    if( msecToEnd < 0 || m_multi ) //skip for multi tracks as metadata might otehrwise go out of sync
-        return;
-    else
-        slotAboutToFinish();
 }
 
 void
@@ -682,16 +672,17 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
 
     if( url.isEmpty() )
     {
+        DEBUG_LINE_INFO
         The::playlistActions()->requestNextTrack();
         return;
     }
 
     if( !m_playWhenFetched )
     {
+        DEBUG_LINE_INFO
         m_mutex.lock();
         m_media->clearQueue();
-        if( url.isLocalFile() )
-            m_media->enqueue( url );
+        m_media->enqueue( url );
         m_nextTrack.clear();
         m_nextUrl = url;
         // reset this flag each time
