@@ -200,8 +200,8 @@ Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
     DEBUG_BLOCK
     qreal height = 0.0;
     int index = -1;
-    if( boundingRect().height() == 0 || 
-      ( m_appletList.size() == 0     || loc > m_appletList.size() - 1 ) ) // if we have a 0 height this is b/c we are starting up and don't have a real size yet
+    if( boundingRect().height() < 30|| 
+      ( m_appletList.size() == 0     || loc > m_appletList.size() - 1 ) ) // if we this small a height we are starting up and don't have a real size yet
         return 0;                      // for now just show all the applets 
     for( int i = loc; i >= 0; i-- )
     {    

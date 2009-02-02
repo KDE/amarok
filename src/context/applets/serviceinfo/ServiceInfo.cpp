@@ -101,6 +101,7 @@ ServiceInfo::~ServiceInfo()
 
 void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 {
+    DEBUG_BLOCK
     if( !m_header )
         return;
 
@@ -153,6 +154,8 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 
 void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
+    DEBUG_BLOCK
+    
     Q_UNUSED( option );
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
