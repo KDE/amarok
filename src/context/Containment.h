@@ -16,7 +16,7 @@
 
 #include "amarok_export.h"
 
-#include "plasma/containment.h"
+#include <plasma/containment.h>
 
 #include <QAction>
 #include <QRectF>

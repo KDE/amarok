@@ -14,7 +14,7 @@
 #ifndef AMAROK_DATA_SOURCE_H
 #define AMAROK_DATA_SOURCE_H
 
-#include "plasma/datasource.h"
+#include <plasma/datasource.h>
 
 namespace Context
 {

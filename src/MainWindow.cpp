@@ -44,7 +44,7 @@
 #include "context/ContextScene.h"
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
-#include "context/plasma/plasma.h"
+#include <plasma/plasma.h>
 #include "covermanager/CoverManager.h" // for actions
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -118,7 +118,7 @@ MainWindow::MainWindow()
 
 #ifdef Q_WS_MAC
     QSizeGrip* grip = new QSizeGrip( this );
-    GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
+  //  GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
 #endif
     //create this object now as we might run into issues if anyone tries to use it during initialization
     //make room for a full width statusbar at the bottom of everything

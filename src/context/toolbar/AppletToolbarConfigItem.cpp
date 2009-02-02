@@ -13,7 +13,7 @@
 
 #include "AppletToolbarConfigItem.h"
 
-#include "plasma/widgets/iconwidget.h"
+#include <plasma/widgets/iconwidget.h>
 
 #include <KIcon>
 

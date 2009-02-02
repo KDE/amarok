@@ -27,8 +27,8 @@
 #include "amarok_export.h"
 #include "widgets/ContainmentArrow.h"
 
-#include "plasma/containment.h"
-#include "plasma/view.h"
+#include <plasma/containment.h>
+#include <plasma/view.h>
 #include <QMouseEvent>
 
 #include <QGraphicsView>

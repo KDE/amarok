@@ -1,4 +1,0 @@
-[KNewStuff2]
-ProvidersUrl=http://download.kde.org/khotnewstuff/plasmoids-providers.xml
-StandardResource=tmp
-InstallationCommand=plasmapkg -i %f

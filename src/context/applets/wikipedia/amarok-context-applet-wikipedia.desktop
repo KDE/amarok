@@ -37,7 +37,7 @@ Name[uk]=Аплет Wikipedia
 Name[x-test]=xxWikipedia Appletxx
 Name[zh_CN]=维基百科小程序
 Type=Service
-ServiceTypes=AmarokContext/Applet
+ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_wikipedia
 X-KDE-PluginInfo-Author=Leo Franchi

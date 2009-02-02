@@ -13,10 +13,11 @@
 
 #include "Applet.h"
 
-#include "plasma/animator.h"
+#include <plasma/animator.h>
 
 #include <QGraphicsLayout>
 #include <QGraphicsScene>
+#include <QFontMetrics>
 
 namespace Context
 {

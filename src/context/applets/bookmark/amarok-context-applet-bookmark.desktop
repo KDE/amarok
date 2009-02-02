@@ -13,7 +13,7 @@ Name[th]=เครื่องมือแก้ไขที่คั่นห�
 Name[tr]=Yer İmleri Yöneticisi
 Name[uk]=Інструмент керування закладками
 Type=Service
-ServiceTypes=AmarokContext/Applet
+ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_bookmark
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen

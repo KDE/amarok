@@ -36,7 +36,7 @@ Comment[uk]=Вертикальний контейнер для контекст�
 
 Icon=
 Type=Service
-ServiceTypes=AmarokContext/Applet,AmarokContext/Containment
+ServiceTypes=Plasma/Applet,Plasma/Containment
 
 X-KDE-Library=amarok_containment_vertical
 X-KDE-PluginInfo-Author=Leo Franchi

@@ -15,7 +15,8 @@
 
 #include "Containment.h"
 #include "Debug.h"
-#include "plasma/applet.h"
+
+#include <plasma/applet.h>
 
 #include <KConfig>
 

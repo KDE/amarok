@@ -35,7 +35,7 @@ Name[uk]=Альбоми
 Name[x-test]=xxAlbumsxx
 Name[zh_CN]=专辑
 Type=Service
-ServiceTypes=AmarokContext/Applet
+ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_albums
 X-KDE-PluginInfo-Author=Seb Ruiz

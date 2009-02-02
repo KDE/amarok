@@ -19,9 +19,9 @@
 #include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 
-#include "plasma/applet.h"
-#include "plasma/containment.h"
-#include "plasma/theme.h"
+#include <plasma/applet.h>
+#include <plasma/containment.h>
+#include <plasma/theme.h>
 
 #include <QGraphicsLinearLayout>
 #include <QGraphicsScene>

@@ -12,7 +12,7 @@ if(APPLE)
 endif(APPLE)
 target_link_libraries(amarok_context_applet_video
     amaroklib
-    amarokplasma
+    ${KDE4_PLASMA_LIBS}
     ${KDE4_KDECORE_LIBS}
     ${QT_QTGUI_LIBRARY}
     ${KDE4_PHONON_LIBRARY}

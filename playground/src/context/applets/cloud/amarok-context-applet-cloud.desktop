@@ -23,7 +23,7 @@ Name[ro]=Nor
 Name[th]=กลุ่มเมฆ
 Name[x-test]=xxCloudxx
 Type=Service
-ServiceTypes=AmarokContext/Applet
+ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_cloud
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen

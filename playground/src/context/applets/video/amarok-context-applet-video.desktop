@@ -22,7 +22,7 @@ Name[uk]=Відео
 Name[x-test]=xxVideoxx
 Name[zh_CN]=视频
 Type=Service
-ServiceTypes=AmarokContext/Applet
+ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_video
 X-KDE-PluginInfo-Author=Mark Kretschmann

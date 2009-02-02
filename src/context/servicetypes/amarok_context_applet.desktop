@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=ServiceType
-X-KDE-ServiceType=AmarokContext/Applet
+X-KDE-ServiceType=Plasma/Applet
 
 Comment=Amarok Context applet
 Comment[bg]=Аплет за контекст (Amarok)

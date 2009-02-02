@@ -15,7 +15,8 @@
 #define AMAROK_APPLET_H
 
 #include "amarok_export.h"
-#include "plasma/applet.h"
+
+#include <plasma/applet.h>
 
 #include <QFont>
 #include <QRectF>

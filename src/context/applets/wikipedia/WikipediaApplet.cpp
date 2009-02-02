@@ -17,6 +17,7 @@
 #include "Debug.h"
 #include "context/Svg.h"
 #include "EngineController.h"
+
 #include <plasma/theme.h>
 
 #include <KStandardDirs>

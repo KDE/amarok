@@ -15,7 +15,7 @@
 
 #include "Debug.h"
 
-#include "plasma/corona.h"
+#include <plasma/corona.h>
 
 
 namespace Context

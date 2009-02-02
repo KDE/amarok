@@ -17,8 +17,9 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "context/Svg.h"
-#include "plasma/framesvg.h"
-#include "plasma/widgets/iconwidget.h"
+
+#include <plasma/framesvg.h>
+#include <plasma/widgets/iconwidget.h>
 
 
 class QGraphicsSimpleTextItem;

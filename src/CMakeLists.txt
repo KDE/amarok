@@ -553,7 +553,7 @@ qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.x
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.tracklist.xml TracklistDBusHandler.h Amarok::TracklistDBusHandler TracklistAdaptor TracklistAdaptor)
 
-set( amaroklib_DEPENDS "amarokplasma" "amarokpud" )
+set( amaroklib_DEPENDS "amarokpud" )
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 

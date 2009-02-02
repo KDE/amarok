@@ -36,7 +36,7 @@ Name[uk]=Рушій даних Amarok
 Name[x-test]=xxAmarok Data Enginexx
 Name[zh_CN]=Amarok 数据引擎
 Type=ServiceType
-X-KDE-ServiceType=AmarokContext/DataEngine
+X-KDE-ServiceType=Plasma/DataEngine
 
 Comment=Amarok Data Engine
 Comment[bg]=Ядро за Amarok

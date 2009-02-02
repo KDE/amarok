@@ -16,7 +16,7 @@
 
 #include "amarok_export.h"
 
-#include "plasma/svg.h"
+#include <plasma/svg.h>
 
 namespace Context
 {

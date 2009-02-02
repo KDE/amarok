@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=ServiceType
-X-KDE-ServiceType=AmarokContext/Animator
+X-KDE-ServiceType=Plasma/Animator
 
 Comment=Plasma Animation Engine
 Comment[bg]=Ядро за Plasma

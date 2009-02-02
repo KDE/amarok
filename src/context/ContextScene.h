@@ -17,7 +17,8 @@
 #include "amarok_export.h"
 #include "Applet.h"
 #include "Context.h"
-#include "plasma/corona.h"
+
+#include <plasma/corona.h>
 
 #include <QGraphicsSceneMouseEvent>
 

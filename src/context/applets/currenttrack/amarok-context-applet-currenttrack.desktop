@@ -40,7 +40,7 @@ Name[uk]=Інформація про поточну доріжку
 Name[x-test]=xxCurrent Track Infoxx
 Name[zh_CN]=当前音轨信息
 Type=Service
-ServiceTypes=AmarokContext/Applet
+ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_currenttrack
 X-KDE-PluginInfo-Author=Leo Franchi

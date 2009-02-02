@@ -28,7 +28,7 @@ Name[tr]=Songkick Konser Bilgileri
 Name[uk]=Відомості про концерти з Songkick
 Name[x-test]=xxSongkick Concert Informationxx
 Type=Service
-ServiceTypes=AmarokContext/Applet
+ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_songkick
 X-KDE-PluginInfo-Author=Jeff Mitchell

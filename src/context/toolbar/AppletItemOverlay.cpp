@@ -17,9 +17,9 @@
 #include "toolbar/AppletToolbarAppletItem.h"
 #include "ToolbarView.h"
 
-#include "plasma/applet.h"
-#include "plasma/theme.h"
-#include "plasma/paintutils.h"
+#include <plasma/applet.h>
+#include <plasma/theme.h>
+#include <plasma/paintutils.h>
 
 #include <KIcon>
 #include <KGlobalSettings>

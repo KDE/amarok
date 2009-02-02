@@ -16,8 +16,8 @@
 #include "AppletToolbarMimeData.h"
 #include "Debug.h"
 
-#include "plasma/applet.h"
-#include "plasma/widgets/iconwidget.h"
+#include <plasma/applet.h>
+#include <plasma/widgets/iconwidget.h>
 
 #include <KIcon>
 

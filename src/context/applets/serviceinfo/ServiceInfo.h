@@ -22,13 +22,13 @@
 #include "meta/Playlist.h"
 
 #include <plasma/framesvg.h>
-
+#include <plasma/widgets/webview.h>
+ 
 #include <KDialog>
 
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
 
-#include "context/plasma/widgets/webview.h"
 
 class QGraphicsPixmapItem;
 class QLabel;

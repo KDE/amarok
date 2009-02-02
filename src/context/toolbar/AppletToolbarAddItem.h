@@ -17,7 +17,7 @@
 
 #include "amarok_export.h"
 
-#include "plasma/widgets/iconwidget.h"
+#include <plasma/widgets/iconwidget.h>
 
 #include <QGraphicsWidget>
 

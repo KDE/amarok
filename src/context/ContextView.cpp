@@ -26,7 +26,7 @@
 #include "Theme.h"
 #include "amarokconfig.h"
 
-#include "plasma/dataenginemanager.h"
+#include <plasma/dataenginemanager.h>
 
 #include <QWheelEvent>
 

@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=ServiceType
-X-KDE-ServiceType=AmarokContext/Containment
+X-KDE-ServiceType=Plasma/Containment
 
 Comment=Plasma applet container and background painter
 Comment[bg]=Аплет за Plasma и фон

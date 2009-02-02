@@ -14,7 +14,7 @@
 #ifndef AMAROK_THEME_H
 #define AMAROK_THEME_H
 
-#include "plasma/theme.h"
+#include <plasma/theme.h>
 
 namespace Context
 {

@@ -16,13 +16,13 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "context/plasma/framesvg.h"
 #include "context/Svg.h"
 
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
 
-#include "context/plasma/widgets/webview.h"
+#include <plasma/framesvg.h>
+#include <plasma/widgets/webview.h>
 
 
 class QGraphicsSimpleTextItem;
