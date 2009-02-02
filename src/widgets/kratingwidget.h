@@ -23,6 +23,8 @@
 
 #include <QtGui/QFrame>
 
+//#include "nepomuk_export.h"
+
 /**
  * \brief Displays a rating value as a row of pixmaps.
  *
@@ -118,7 +120,7 @@ class KRatingWidget : public QFrame
     /**
      * \deprecated use setRating( int max )
      */
-     void setRating( unsigned int rating );
+    void setRating( unsigned int rating );
 
     /**
      * Set the maximum allowed rating value. The default is 10 which means
@@ -130,7 +132,7 @@ class KRatingWidget : public QFrame
     /**
      * \deprecated use setMaxRating( int max )
      */
-     void setMaxRating( unsigned int max );
+    void setMaxRating( unsigned int max );
 
     /**
      * If half steps are enabled (the default) then
@@ -141,7 +143,7 @@ class KRatingWidget : public QFrame
     /**
      * \deprecated Use setHalfStepsEnabled
      */
-     void setOnlyPaintFullSteps( bool );
+    void setOnlyPaintFullSteps( bool );
 
     /**
      * Set the spacing between the pixmaps. The default is 0.
@@ -175,7 +177,7 @@ class KRatingWidget : public QFrame
      *
      * \deprecated use setCustomPixmap
      */
-     void setPixmap( const QPixmap& );
+    void setPixmap( const QPixmap& );
 
     /**
      * Set the recommended size of the pixmaps. This is

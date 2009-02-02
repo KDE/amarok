@@ -45,7 +45,7 @@ class QRect;
  *
  * \since 4.1
  */
-class /*NEPOMUK_EXPORT*/ KRatingPainter
+class KRatingPainter
 {
 public:
     /**

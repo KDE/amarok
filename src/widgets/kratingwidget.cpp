@@ -196,16 +196,11 @@ void KRatingWidget::setOnlyPaintFullSteps( bool fs )
 
 void KRatingWidget::mousePressEvent( QMouseEvent* e )
 {
-    if ( e->button() == Qt::LeftButton )
-    {
-        int ratingFromPos = d->ratingPainter.ratingFromPosition( contentsRect(), e->pos() );
-        if ( ratingFromPos >= 0 )
-        {
-            d->hoverRating = d->rating = ratingFromPos;
-            update();
-            emit ratingChanged( d->rating );
-            emit ratingChanged( (unsigned int)d->rating );
-        }
+    if ( e->button() == Qt::LeftButton ) {
+        d->hoverRating = d->rating = d->ratingPainter.ratingFromPosition( contentsRect(), e->pos() );
+        update();
+        emit ratingChanged( d->rating );
+        emit ratingChanged( (unsigned int)d->rating );
     }
 }
 
@@ -261,4 +256,3 @@ void KRatingWidget::resizeEvent( QResizeEvent* e )
 }
 
 #include "kratingwidget.moc"
-
