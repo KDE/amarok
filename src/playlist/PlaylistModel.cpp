@@ -323,7 +323,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Type:
             {
-                return QString(); //FIXME
+                return m_items.at( row )->track()->type();
             }
             case Year:
             {
