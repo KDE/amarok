@@ -108,7 +108,7 @@ static const QStringList iconNames = ( QStringList()
         << ""
         << "chronometer"
         << ""
-        << ""
+        << "amarok_playcount"
         << "rating"
         << ""
         << "emblem-favorite"
