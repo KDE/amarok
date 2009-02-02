@@ -448,8 +448,7 @@ ScriptManager::slotRunScript( QString name, bool silent )
             //FIXME: move the script name inside after the string freeze.
             if ( !silent )
                 KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) + " (" + name + ")" );
-            else
-                return false;
+            return false;
         }
 
         if( m_scripts[name].info.category() == "Scriptable Service" )
