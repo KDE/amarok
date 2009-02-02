@@ -13,7 +13,6 @@
 
 #include "AppletToolbarAppletItem.h"
 
-#include "AppletToolbarMimeData.h"
 #include "Debug.h"
 
 #include <plasma/applet.h>

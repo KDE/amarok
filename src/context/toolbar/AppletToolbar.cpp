@@ -17,7 +17,6 @@
 #include "AppletToolbarAddItem.h"
 #include "AppletToolbarAppletItem.h"
 #include "AppletToolbarConfigItem.h"
-#include "AppletToolbarMimeData.h"
 #include "Containment.h"
 #include "Debug.h"
 
