@@ -228,7 +228,10 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Directory:
             {
-                return QString(); //FIXME
+                if ( m_items.at( row )->track()->playableUrl().isLocalFile() )
+                    return m_items.at( row )->track()->playableUrl().directory();
+                else
+                    return QString();
             }
             case DiscNumber:
             {
@@ -236,7 +239,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Filename:
             {
-                return QString(); //FIXME
+
+                if ( m_items.at( row )->track()->playableUrl().isLocalFile() )
+                    return m_items.at( row )->track()->playableUrl().fileName();
+                else
+                    return QString();
             }
             case Filesize:
             {
