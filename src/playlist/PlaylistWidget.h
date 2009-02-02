@@ -22,9 +22,6 @@
 #ifndef AMAROK_PLAYLISTWIDGET_H
 #define AMAROK_PLAYLISTWIDGET_H
 
-#include "widgets/StackedWidget.h"
-
-
 #include <KVBox>
 
 #include <QComboBox>
@@ -47,14 +44,12 @@ public:
     }
 
 public slots:
-    void switchView();
     void sort( int field );
 
 protected:
     QSize sizeHint() const;
 
 private:
-    Amarok::StackedWidget *m_stackedWidget;
     QWidget* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
     QComboBox * m_sortBox;

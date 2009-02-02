@@ -105,11 +105,6 @@ Playlist::Widget::Widget( QWidget* parent )
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( playView );
 
-    m_stackedWidget = new Amarok::StackedWidget( this );
-
-    m_stackedWidget->addWidget( layoutHolder );
-
-    m_stackedWidget->setCurrentIndex( 0 );
 
     KHBox *barBox = new KHBox( this );
     barBox->setMargin( 0 );
@@ -118,10 +113,6 @@ Playlist::Widget::Widget( QWidget* parent )
     plBar->setObjectName( "PlaylistToolBar" );
 
     Model::instance();
-
-    KAction *action = new KAction( KIcon( "view-media-playlist-amarok" ), i18nc( "switch view", "Switch Playlist &View" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( switchView() ) );
-    Amarok::actionCollection()->addAction( "playlist_switch", action );
 
     // the Controller ctor creates the undo/redo actions that we use below, so we want
     // to make sure that it's been constructed and the the actions registered
@@ -163,12 +154,6 @@ QSize
 Playlist::Widget::sizeHint() const
 {
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
-}
-
-void
-Playlist::Widget::switchView()
-{
-    m_stackedWidget->setCurrentIndex(( m_stackedWidget->currentIndex() + 1 ) % 2 );
 }
 
 void Playlist::Widget::sort( int index )
