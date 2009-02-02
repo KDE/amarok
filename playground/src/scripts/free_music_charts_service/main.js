@@ -32,7 +32,7 @@ Importer.loadQtBinding( "qt.uitools" ); // for voting-gui
 Importer.loadQtBinding( "qt.xml" );
 
 service_name = "Free Music Charts";
-html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes by going to the menu bar: <i>Tools -> Free Music Charts Voting</i>";
+html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. Only open music is allowed to take part. You have up to five votes.<br/><br/>You can cast your votes by going to the menu bar: <i>Tools -> Free Music Charts Voting</i>";
 
 votingUrl = new QUrl( "http://www.darkerradio.com/free-music-charts/free-music-charts-voting/" );
 xmlUrl    = new QUrl( "http://krohlas.de/fmc.xml" );
@@ -67,9 +67,6 @@ function fmcShowsXmlParser( reply ) {
     shows = doc.elementsByTagName( "show" );
     Amarok.debug ( "got " + shows.length() + " shows!" );
 
-    if( shows.length() == 0)
-      Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Download of charts seems to have <font color=red><b>failed</b></font>. Please check your internet connection." );
-
     var showTitles = new Array( shows.length() );
 
     elt = shows.at( 0 ); // latest show
@@ -82,6 +79,13 @@ function fmcShowsXmlParser( reply ) {
     item.playableUrl = "";
     item.infoHtml = html;
     item.coverUrl = Amarok.Info.scriptPath() + "/FMCShow.png";
+
+    if( shows.length() == 0) {
+      Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Download of charts seems to have <font color=red><b>failed</b></font>. Please check your internet connection." );
+      item.itemName = "Download failed :(";
+      item.callbackData = "failed";
+      script.insertItem( item )
+    }
 
     var i = 0;
     for ( ; i < shows.length(); i++ ) {
