@@ -3,8 +3,8 @@ project(Amarok)
 cmake_minimum_required(VERSION 2.6.2)
 
 
-#We depend on kde4.1 now.. I believe this is the easiest way to do it.
-set(KDE_MIN_VERSION "4.1.0")
+#We depend on kde4.2 now.. I believe this is the easiest way to do it.
+set(KDE_MIN_VERSION "4.2.0")
 find_package( KDE4 REQUIRED )
 include (KDE4Defaults)
 include (MacroLibrary)
@@ -13,7 +13,7 @@ include(CheckTypeSize)
 include(MacroBoolTo01)
 include(MacroLogFeature)
 
-macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.1.0" "" )
+macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.2.0" "" )
 
 set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )

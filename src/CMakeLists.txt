@@ -23,6 +23,7 @@ endif(APPLE)
 # add_subdirectory( playlistmanager )
 add_subdirectory( collection )
 add_subdirectory( collectionscanner )
+#dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
 add_subdirectory( metadata )
@@ -578,6 +579,7 @@ target_link_libraries(amaroklib
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KNEWSTUFF2_LIBS}
     ${KDE4_PHONON_LIBRARY}
+	${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${TAGLIB_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
@@ -586,7 +588,6 @@ target_link_libraries(amaroklib
     ${CMAKE_THREAD_LIBS_INIT}
 	${EXTRA_LIBS}
     amarok_taglib
-    amarokplasma
     amarokpud
     mediadevicelib
 )
