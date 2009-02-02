@@ -1,3 +1,7 @@
+==1.1.3 (2009-02-??)==
+* show a warning when downloading of charts failed
+* beautify messages
+
 ==1.1.2 (2009-01-12)
 * use latest Amarok api to show a custom service icon, emblems and album icons
 * show date of next radio show/end of voting

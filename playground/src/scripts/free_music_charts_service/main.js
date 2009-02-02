@@ -33,8 +33,6 @@ Importer.loadQtBinding( "qt.xml" );
 service_name = "Free Music Charts";
 html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/\">www.darkerradio.com</a> (in the right column, scroll down a bit), support for voting from within Amarok might be added later.";
 
-// temporary location for testing purposes, will very likely
-// be moved to darkerradio.com
 xmlUrl = new QUrl( "http://krohlas.de/fmc.xml" );
 http   = new QHttp;
 data   = new QIODevice;
@@ -62,6 +60,9 @@ function fmcShowsXmlParser( reply ) {
     doc.setContent( reply );
     shows = doc.elementsByTagName( "show" );
     Amarok.debug ( "got " + shows.length() + " shows!" );
+
+    if( shows.length() == 0)
+      Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Download of charts seems to have <font color=red><b>failed</b></font>. Please check your internet connection." );
 
     var showTitles = new Array( shows.length() );
 
@@ -150,7 +151,7 @@ function onPopulate( level, callbackData, filter ) {
 
   if ( level == 1 ) { // the shows
     Amarok.debug( "fetching fmc xml..." );
-    Amarok.Window.Statusbar.longMessage( "Free Music Charts: Fetching charts. This might take some seconds, depending on the speed of your internet connection..." );
+    Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Fetching charts.<br/>This might take some seconds, depending on the speed of your internet connection..." );
     try {
       qurl = new QUrl( xmlUrl );
       a = new Downloader( qurl, fmcShowsXmlParser );
