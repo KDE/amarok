@@ -75,10 +75,10 @@ public:
 
     ~PrettyItemConfig();
 
-    int rows();
-    PrettyItemConfigRow row( int at );
-    bool showCover();
-    int activeIndicatorRow();
+    int rows() const;
+    PrettyItemConfigRow row( int at ) const;
+    bool showCover() const;
+    int activeIndicatorRow() const;
 
     void addRow( PrettyItemConfigRow row );
     void setShowCover( bool showCover );
@@ -95,19 +95,22 @@ class PlaylistLayout{
 
 public:
 
-    PrettyItemConfig head();
-    PrettyItemConfig body();
-    PrettyItemConfig single();
+    PrettyItemConfig head() const;
+    PrettyItemConfig body() const;
+    PrettyItemConfig single() const;
+    bool isEditable();
 
     void setHead( PrettyItemConfig head );
     void setBody( PrettyItemConfig body );
     void setSingle( PrettyItemConfig single );
+    void setIsEditable( bool editable );
 
 private:
 
     PrettyItemConfig m_head;
     PrettyItemConfig m_body;
     PrettyItemConfig m_single;
+    bool m_isEditable;
 };
 
 }

@@ -19,12 +19,14 @@
  
 #include "LayoutManager.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 #include "playlist/PlaylistDefines.h"
 
 #include <KStandardDirs>
 #include <KUrl>
 
+#include <QDir>
 #include <QDomDocument>
 #include <QFile>
 #include <QStringList>
@@ -46,10 +48,8 @@ LayoutManager::LayoutManager()
 {
     DEBUG_BLOCK
 
-    const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
-    QString configFile = url.path() + "DefaultPlaylistLayouts.xml";
-    loadLayouts( configFile );
-    setActiveLayout( "Default" );
+    loadDefaultLayouts();
+    loadUserLayouts();
 
     debug() << "Loaded layouts: " << layouts();
     debug() << "active layout: " << m_activeLayout;
@@ -85,7 +85,39 @@ PlaylistLayout Playlist::LayoutManager::activeLayout()
         return m_layouts.value( m_activeLayout );
 }
 
-void Playlist::LayoutManager::loadLayouts( const QString &fileName )
+
+void Playlist::LayoutManager::loadUserLayouts()
+{
+
+    QDir cacheCoverDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
+
+    cacheCoverDir.setSorting( QDir::Name );
+
+    QStringList filters;
+    filters << "*.xml" << "*.XML";
+    cacheCoverDir.setNameFilters(filters);
+    cacheCoverDir.setSorting( QDir::Name );
+
+    QFileInfoList list = cacheCoverDir.entryInfoList();
+
+    for (int i = 0; i < list.size(); ++i) {
+        QFileInfo fileInfo = list.at(i);
+        debug() << "found user file: " << fileInfo.fileName();
+        loadLayouts( cacheCoverDir.filePath( fileInfo.fileName() ), true );
+    }
+
+}
+
+void Playlist::LayoutManager::loadDefaultLayouts()
+{
+    const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+    QString configFile = url.path() + "DefaultPlaylistLayouts.xml";
+    loadLayouts( configFile, false );
+    setActiveLayout( "Default" );
+}
+
+
+void Playlist::LayoutManager::loadLayouts( const QString &fileName, bool user )
 {
     QDomDocument doc( "layouts" );
 
@@ -120,6 +152,7 @@ void Playlist::LayoutManager::loadLayouts( const QString &fileName )
 
         QString layoutName = layout.toElement().attribute( "name", "" );
         PlaylistLayout currentLayout;
+        currentLayout.setIsEditable( user );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -192,8 +225,96 @@ PlaylistLayout Playlist::LayoutManager::layout(const QString &layout )
     return m_layouts.value( layout );
 }
 
+void Playlist::LayoutManager::addUserLayout( const QString &name, const PlaylistLayout &layout )
+{
+    m_layouts.insert( name, layout );
+
+    QDomDocument doc( "layouts" );
+    QDomElement layouts_element = doc.createElement( "playlist_layouts" );
+    QDomElement newLayout = doc.createElement( ("layout" ) );
+
+    doc.appendChild( layouts_element );
+    layouts_element.appendChild( newLayout );
+
+    emit( layoutListChanged() );
+
+   
+    QDomElement body = doc.createElement( "body" );
+    QDomElement single = doc.createElement( "single" );
+
+    newLayout.appendChild( createItemElement( doc, "head", layout.head() ) );
+    newLayout.appendChild( createItemElement( doc, "body", layout.body() ) );
+    newLayout.appendChild( createItemElement( doc, "single", layout.single() ) );
+
+
+
+    debug() << doc.toString();
+    QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
+
+    //make sure that this dir exists
+    if ( !layoutsDir.exists() )
+        layoutsDir.mkpath( Amarok::saveLocation( "playlist_layouts/" ) );
+
+
+    QFile file( layoutsDir.filePath( name + ".xml" ) );
+    if ( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
+        return;
+
+    QTextStream out( &file );
+    out << doc.toString();
+
+
 
 }
+
+
+QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const QString &name, const PrettyItemConfig & item ) const
+{
+
+    QDomElement element = doc.createElement( name );
+
+    QString showCover = item.showCover() ? "true" : "false";
+    element.setAttribute ( "show_cover", showCover );
+
+    for( int i = 0; i < item.rows(); i++ ) {
+        PrettyItemConfigRow row = item.row( i );
+
+        QDomElement rowElement = doc.createElement( "row" );
+        element.appendChild( rowElement );
+
+        for( int j = 0; j < row.count(); j++ ) {
+            PrettyItemConfigRowElement element = row.element( j );
+            QDomElement elementElement = doc.createElement( "element" );
+
+            elementElement.setAttribute ( "value", columnNames[element.value()] );
+            elementElement.setAttribute ( "size", QString::number( element.size() ) );
+            elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
+
+            QString alignmentString;
+            if ( element.alignment() & Qt::AlignLeft )
+                alignmentString = "left";
+            else  if ( element.alignment() & Qt::AlignRight )
+                alignmentString = "right";
+            else
+                alignmentString = "center";
+            
+            elementElement.setAttribute ( "alignment", alignmentString );
+
+            rowElement.appendChild( elementElement );
+            
+        }
+
+    }
+
+    return element;
+}
+
+
+}
+
+
+
+
 
 
 

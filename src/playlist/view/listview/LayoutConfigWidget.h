@@ -23,6 +23,7 @@
 #include <KVBox>
 
 class PlaylistLayoutEditDialog;
+class QComboBox;
 
 namespace Playlist {
 
@@ -42,12 +43,14 @@ public:
 private slots:
 
     void setActiveLayout( const QString &layout );
-
+    void layoutListChanged();
     void editItem( const QString &itemName );
     void deleteItem( const QString &itemName );
 
 private:
     PlaylistLayoutEditDialog * m_playlistEditDialog;
+
+    QComboBox *m_comboBox;
 
 };
 

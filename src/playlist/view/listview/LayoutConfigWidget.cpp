@@ -36,18 +36,20 @@ LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
     , m_playlistEditDialog( 0 )
 {
     new QLabel( "Config gui goes here....", this );
-    QComboBox *comboBox = new QComboBox( this );
-    EditDeleteComboBoxView * comboView = new EditDeleteComboBoxView( comboBox );
-    comboView->setModel( comboBox->model() );
-    comboBox->setView( comboView );
-    comboBox->setItemDelegate( new EditDeleteDelegate( comboBox ) );
+    m_comboBox = new QComboBox( this );
+    EditDeleteComboBoxView * comboView = new EditDeleteComboBoxView( m_comboBox );
+    comboView->setModel( m_comboBox->model() );
+    m_comboBox->setView( comboView );
+    m_comboBox->setItemDelegate( new EditDeleteDelegate( m_comboBox ) );
 
     connect( comboView, SIGNAL( editItem( const QString & ) ), this, SLOT( editItem( const QString & ) ) );
     connect( comboView, SIGNAL( deleteItem( const QString & ) ), this, SLOT( deleteItem( const QString & ) ) );
 
-    comboBox->addItems( LayoutManager::instance()->layouts() );
+    m_comboBox->addItems( LayoutManager::instance()->layouts() );
 
-    connect( comboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( setActiveLayout(const QString & ) ) );
+    connect( m_comboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( setActiveLayout(const QString & ) ) );
+
+    connect( LayoutManager::instance(), SIGNAL( layoutListChanged() ), this, SLOT( layoutListChanged() ) );
 
 }
 
@@ -79,6 +81,12 @@ void Playlist::LayoutConfigWidget::deleteItem( const QString &itemName )
 {
     DEBUG_BLOCK
     debug() << "delete item: " << itemName;
+}
+
+void Playlist::LayoutConfigWidget::layoutListChanged()
+{
+    m_comboBox->clear();
+    m_comboBox->addItems( LayoutManager::instance()->layouts() );
 }
 
 #include "LayoutConfigWidget.moc"

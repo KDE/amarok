@@ -19,6 +19,8 @@
  
 #include "PlaylistLayoutEditDialog.h"
 
+#include "Debug.h"
+
 #include "playlist/view/listview/LayoutManager.h"
 #include "playlist/PlaylistDefines.h"
 
@@ -43,6 +45,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     tokenPool->addToken( new Token( columnNames[TitleWithTrackNum], iconNames[TitleWithTrackNum], TitleWithTrackNum ) );
     tokenPool->addToken( new Token( columnNames[TrackNumber], iconNames[TrackNumber], TrackNumber ) );
     tokenPool->addToken( new Token( columnNames[Type], iconNames[Type], Type ) );
+    tokenPool->addToken( new Token( columnNames[Year], iconNames[Year], Year ) );
 
 
     //add an editor to each tab
@@ -85,6 +88,18 @@ void PlaylistLayoutEditDialog::preview()
 
     LayoutManager::instance()->setPreviewLayout( layout );
     
+}
+
+void PlaylistLayoutEditDialog::accept()
+{
+    DEBUG_BLOCK
+
+    PlaylistLayout layout;
+    layout.setHead( m_headEdit->config() );
+    layout.setBody( m_bodyEdit->config() );
+    layout.setSingle( m_singleEdit->config() );
+
+    LayoutManager::instance()->addUserLayout( "userTest", layout);
 }
 
 

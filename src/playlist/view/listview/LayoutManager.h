@@ -27,6 +27,7 @@
 #include <QMap>
 
 class QDomElement;
+class QDomDocument;
 
 namespace Playlist {
 
@@ -46,13 +47,23 @@ public:
     PlaylistLayout layout( const QString &layout );
     PlaylistLayout activeLayout();
 
+    void addUserLayout( const QString &name, const PlaylistLayout &layout );
+
 signals:
     void activeLayoutChanged();
+    void layoutListChanged();
+    
 private:
     LayoutManager();
     ~LayoutManager();
 
-    void loadLayouts( const QString &fileName );
+    void loadDefaultLayouts();
+    void loadUserLayouts();
+
+    void loadLayouts( const QString &fileName, bool user );
+
+    QDomElement createItemElement( QDomDocument doc, const QString &name,  const PrettyItemConfig &item ) const;
+    
     PrettyItemConfig parseItemConfig( const QDomElement &elem );
 
     static LayoutManager * s_instance;

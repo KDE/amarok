@@ -92,13 +92,13 @@ PrettyItemConfig::~PrettyItemConfig()
 {
 }
 
-int PrettyItemConfig::rows()
+int PrettyItemConfig::rows() const
 {
     return m_rows.size();
 }
 
 
-PrettyItemConfigRow Playlist::PrettyItemConfig::row( int at )
+PrettyItemConfigRow Playlist::PrettyItemConfig::row( int at ) const
 {
     return m_rows.at( at );
 }
@@ -108,7 +108,7 @@ void Playlist::PrettyItemConfig::addRow( PrettyItemConfigRow row )
     m_rows.append( row );
 }
 
-bool PrettyItemConfig::showCover()
+bool PrettyItemConfig::showCover() const
 {
     return m_showCover;
 }
@@ -120,7 +120,7 @@ void Playlist::PrettyItemConfig::setShowCover( bool showCover )
 
 
 
-int Playlist::PrettyItemConfig::activeIndicatorRow()
+int Playlist::PrettyItemConfig::activeIndicatorRow() const
 {
     return m_activeIndicatorRow;
 }
@@ -133,17 +133,17 @@ void Playlist::PrettyItemConfig::setActiveIndicatorRow( int row )
 //////////////////////////////////////////////
 
 
-PrettyItemConfig Playlist::PlaylistLayout::head()
+PrettyItemConfig Playlist::PlaylistLayout::head() const
 {
     return m_head;
 }
 
-PrettyItemConfig Playlist::PlaylistLayout::body()
+PrettyItemConfig Playlist::PlaylistLayout::body() const
 {
     return m_body;
 }
 
-PrettyItemConfig Playlist::PlaylistLayout::single()
+PrettyItemConfig Playlist::PlaylistLayout::single() const
 {
     return m_single;
 }
@@ -163,6 +163,16 @@ void Playlist::PlaylistLayout::setSingle( PrettyItemConfig single )
     m_single = single;
 }
 
+}
+
+bool Playlist::PlaylistLayout::isEditable()
+{
+    return m_isEditable;
+}
+
+void Playlist::PlaylistLayout::setIsEditable( bool editable )
+{
+    m_isEditable = editable;
 }
 
 

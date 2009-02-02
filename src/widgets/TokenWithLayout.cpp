@@ -108,6 +108,9 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
     QLCDNumber * sizeLabel = new QLCDNumber( 3, sliderBox );
     sizeLabel->display( m_size * 100.0 );
 
+
+       
+
     connect( slider, SIGNAL( valueChanged( int ) ), sizeLabel, SLOT( display( int ) ) );
     connect( slider, SIGNAL( valueChanged( int ) ), this, SLOT( setSize( int ) ) );
    

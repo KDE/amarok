@@ -42,6 +42,7 @@ public:
 private slots:
 
     void preview();
+    virtual void accept();
         
 
 private:
