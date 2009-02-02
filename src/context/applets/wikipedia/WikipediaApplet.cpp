@@ -107,7 +107,6 @@ WikipediaApplet::connectSource( const QString &source )
 void
 WikipediaApplet::linkClicked( const QUrl &url )
 {
-    DEBUG_BLOCK
     debug() << "URL: " << url;
 
     Amarok::invokeBrowser( url.toString() );
@@ -189,14 +188,13 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
 QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
-    Q_UNUSED( which )
-
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    {
-        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    }
-        
-    return constraint;
+    // TODO hardcoding for now.
+    // i want to have a system where an applet can ask
+    // for a full "CV pane" of size, but for now this will stop the crash
+    QSizeF size;
+    size.setWidth( QGraphicsWidget::sizeHint( which, constraint ).width() );
+    size.setHeight( 450 );
+    return size;
 }
 
 #include "WikipediaApplet.moc"

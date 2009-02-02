@@ -37,8 +37,6 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     , m_currentPlaylist( 0 )
 
 {
-    DEBUG_BLOCK
-
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
 
@@ -101,7 +99,6 @@ ServiceInfo::~ServiceInfo()
 
 void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 {
-    DEBUG_BLOCK
     if( !m_header )
         return;
 
@@ -133,7 +130,6 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 
 void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
-    DEBUG_BLOCK
     Q_UNUSED( name );
 
     if( data.size() == 0 ) return;
@@ -153,9 +149,7 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 }
 
 void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    DEBUG_BLOCK
-    
+{    
     Q_UNUSED( option );
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
@@ -224,14 +218,13 @@ qreal ServiceInfo::heightForWidth(qreal width) const
 QSizeF 
 ServiceInfo::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
-    Q_UNUSED( which )
-
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-    {
-        return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-    }
-        
-    return constraint;
+    // TODO hardcoding for now.
+    // i want to have a system where an applet can ask
+    // for a full "CV pane" of size, but for now this will stop the crash
+    QSizeF size;
+    size.setWidth( QGraphicsWidget::sizeHint( which, constraint ).width() );
+    size.setHeight( 450 );
+    return size;
 }
 
 void ServiceInfo::linkClicked( const QUrl & url )
