@@ -445,9 +445,10 @@ ScriptManager::slotRunScript( QString name, bool silent )
             m_scripts[name].log += time.currentTime().toString() + ' ' + m_scripts[name].engine->uncaughtException().toString() + " on Line: " + QString::number( m_scripts[name].engine->uncaughtExceptionLineNumber() ) + '\n';
             m_scripts[name].engine->clearExceptions();
             slotStopScript( name );
-            //FIXME: move the script name inside after the string freeze.
+
             if ( !silent )
-                KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script. Please refer to the log!" ) + " (" + name + ")" );
+                KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script '%1'. Please refer to the log!", name ) );
+
             return false;
         }
 
