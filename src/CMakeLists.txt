@@ -275,7 +275,6 @@ set( libcontextview_SRCS
 	context/toolbar/AppletToolbarAddItem.cpp
 	context/toolbar/AppletToolbarAppletItem.cpp
 	context/toolbar/AppletToolbarConfigItem.cpp
-	context/toolbar/AppletToolbarMimeData.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/ToolBoxIcon.cpp
     context/widgets/ContainmentArrow.cpp
