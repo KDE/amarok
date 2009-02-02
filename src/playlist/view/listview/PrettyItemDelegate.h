@@ -24,6 +24,8 @@
 
 #include "PrettyItemConfig.h"
 
+#include "kratingpainter.h"
+
 #include <QModelIndex>
 #include <QStyledItemDelegate>
 
@@ -48,6 +50,8 @@ private:
     void paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
+
+    KRatingPainter m_ratingPainter;
 
     static const qreal ALBUM_WIDTH;
     static const qreal SINGLE_TRACK_ALBUM_WIDTH;
