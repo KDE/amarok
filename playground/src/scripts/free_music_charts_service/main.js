@@ -26,24 +26,30 @@
 ########################################################################### */
 
 Importer.loadQtBinding( "qt.core" );
-Importer.loadQtBinding( "qt.gui" ); //for QPixmap
+Importer.loadQtBinding( "qt.gui" );     // for QPixmap
 Importer.loadQtBinding( "qt.network" );
+Importer.loadQtBinding( "qt.uitools" ); // for voting-gui
 Importer.loadQtBinding( "qt.xml" );
 
 service_name = "Free Music Charts";
-html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes at <a href=\"http://www.darkerradio.com/\">www.darkerradio.com</a> (in the right column, scroll down a bit), support for voting from within Amarok might be added later.";
+html = "The rules for the Darkerradio Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. You have up to five votes.<br/><br/>You can cast your votes by going to the menu bar: <i>Tools -> Free Music Charts Voting</i>";
 
-xmlUrl = new QUrl( "http://krohlas.de/fmc.xml" );
-http   = new QHttp;
-data   = new QIODevice;
-doc    = new QDomDocument( "doc" );
-elt    = new QDomElement;
-elt2   = new QDomElement;
-shows  = new QDomNodeList;
-script = new FreeMusicCharts();
+votingUrl = new QUrl( "http://www.darkerradio.com/free-music-charts/free-music-charts-voting/" );
+xmlUrl    = new QUrl( "http://krohlas.de/fmc.xml" );
+http      = new QHttp;
+data      = new QIODevice;
+doc       = new QDomDocument( "doc" );
+elt       = new QDomElement;
+elt2      = new QDomElement;
+shows     = new QDomNodeList;
+script    = new FreeMusicCharts();
+
+Amarok.Window.addToolsSeparator();
+Amarok.Window.addToolsMenu( "votingGui", "Free Music Charts Voting", "amarok" );
 
 script.populate.connect( onPopulate );
 script.customize.connect( onCustomize );
+Amarok.Window.ToolsMenu.votingGui.triggered.connect( onVote );
 
 /* Initialization of service */
 function FreeMusicCharts() {
@@ -225,5 +231,10 @@ function onPopulate( level, callbackData, filter ) {
     Amarok.debug( "done populating fmc track level..." );
     script.donePopulating();
   }
+}
+
+function onVote() {
+  Amarok.debug( "FMC: onVote" );
+  QDesktopServices.openUrl( votingUrl );
 }
 
