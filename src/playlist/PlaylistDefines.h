@@ -103,7 +103,7 @@ static const QStringList iconNames = ( QStringList()
         << ""
         << "filename-discnumber-amarok"
         << ""
-        << ""
+        << "help-about"
         << "filename-genre-amarok"
         << ""
         << "chronometer"

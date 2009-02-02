@@ -31,6 +31,7 @@
 #include "Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
+#include "MetaUtility.h"
 #include "PlaylistActions.h"
 #include "PlaylistController.h"
 #include "PlaylistItem.h"
@@ -203,7 +204,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Bitrate:
             {
-                return m_items.at( row )->track()->bitrate();
+                return Meta::prettyBitrate( m_items.at( row )->track()->bitrate() );
             }
             case Bpm:
             {
@@ -239,7 +240,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Filesize:
             {
-                return 0;
+                return Meta::prettyFilesize( m_items.at( row )->track()->filesize() );
             }
             case Genre:
             {
@@ -253,12 +254,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Length:
             {
-                QString timeString;
-                if ( m_items.at( row )->track()->length() > 3600 )
-                    timeString = QTime().addSecs( m_items.at( row )->track()->length() ).toString( "h:mm:ss" );
-                else
-                    timeString = QTime().addSecs( m_items.at( row )->track()->length() ).toString( "m:ss" );
-                return timeString;
+                return  Meta::secToPrettyTime( m_items.at( row )->track()->length() );
             }
             case Mood:
             {
