@@ -148,51 +148,6 @@ Context::AppletToolbarAppletItem::mousePressEvent( QGraphicsSceneMouseEvent * ev
     event->accept();
 }
 
-/*
-void 
-Context::AppletToolbarAppletItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * )
-{
-     if( m_configEnabled )
-     {  
-         setCursor( Qt::OpenHandCursor );
-         emit appletChosen( m_applet );
-     }
-}
- 
-
-void 
-Context::AppletToolbarAppletItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
-{
-    if( m_configEnabled )
-    {
-        if( QLineF( event->screenPos(), event->buttonDownScreenPos( Qt::LeftButton ) )
-                 .length() < QApplication::startDragDistance() )
-            return;
-
-        QDrag* drag = new QDrag( event->widget() );
-        Context::AppletToolbarMimeData* data = new Context::AppletToolbarMimeData;
-    
-        drag->setMimeData( data );
-        data->setAppletData( this );
-    
-        // create pixmap for drag, half size
-        QPixmap pixmap( boundingRect().width() / 2, boundingRect().height() );
-        QPainter painter( &pixmap );
-     //   painter.translate( 15, 15 );
-        painter.setRenderHint(QPainter::Antialiasing);
-        paint(&painter, 0, 0);
-        painter.end();
-       
-      //  pixmap->setAlphaChannel( )
-        drag->setPixmap( pixmap) ;
-        drag->setHotSpot( QPoint( 0, 0 ) );
-        
-        debug() << "starting drag";
-        drag->start();
-    //    setCursor(Qt::OpenHandCursor);
-    }
-}  */
-
 void 
 Context::AppletToolbarAppletItem::deleteApplet()
 {

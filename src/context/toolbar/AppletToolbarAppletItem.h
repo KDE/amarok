@@ -58,9 +58,7 @@ class AppletToolbarAppletItem : public QGraphicsWidget
          virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     
         void mousePressEvent( QGraphicsSceneMouseEvent * event );
-    //    void mouseMoveEvent( QGraphicsSceneMouseEvent *event );
-  //      void mouseReleaseEvent( QGraphicsSceneMouseEvent * );
-        
+
     private slots:
         void deleteApplet();
     
