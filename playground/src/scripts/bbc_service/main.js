@@ -209,7 +209,7 @@ function onPopulate( level, callbackData, filter ) {
 
         if ( shows.length() == 0 ) {
             Amarok.debug( "fetching bbc xml..." );
-            Amarok.Window.Statusbar.longMessage( "BBC: Fetching and parsing shows. This might take some seconds, depending on the speed of your internet connection..." );
+            Amarok.Window.Statusbar.longMessage( "<b>BBC</b><br/><br/>Fetching and parsing shows.<br/>This might take some seconds, depending on the speed of your internet connection..." );
 
             qurl = new QUrl( xmlUrl );
             a = new Downloader( qurl, xmlDownloadResult );
