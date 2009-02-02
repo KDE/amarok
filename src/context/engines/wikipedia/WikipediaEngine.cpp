@@ -244,7 +244,7 @@ WikipediaEngine::wikiResult( KJob* job )
     }
 
     // Ok lets remove the top and bottom parts of the page
-    m_wiki = m_wiki.mid( m_wiki.indexOf( "<h1 class=\"firstHeading\">" ) );
+    m_wiki = m_wiki.mid( m_wiki.indexOf( "<h1 id=\"firstHeading\"" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
     // Adding back license information
     m_wiki += copyright;
