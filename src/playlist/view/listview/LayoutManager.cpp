@@ -89,21 +89,21 @@ PlaylistLayout Playlist::LayoutManager::activeLayout()
 void Playlist::LayoutManager::loadUserLayouts()
 {
 
-    QDir cacheCoverDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
+    QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
-    cacheCoverDir.setSorting( QDir::Name );
+    layoutsDir.setSorting( QDir::Name );
 
     QStringList filters;
     filters << "*.xml" << "*.XML";
-    cacheCoverDir.setNameFilters(filters);
-    cacheCoverDir.setSorting( QDir::Name );
+    layoutsDir.setNameFilters(filters);
+    layoutsDir.setSorting( QDir::Name );
 
-    QFileInfoList list = cacheCoverDir.entryInfoList();
+    QFileInfoList list = layoutsDir.entryInfoList();
 
     for (int i = 0; i < list.size(); ++i) {
         QFileInfo fileInfo = list.at(i);
         debug() << "found user file: " << fileInfo.fileName();
-        loadLayouts( cacheCoverDir.filePath( fileInfo.fileName() ), true );
+        loadLayouts( layoutsDir.filePath( fileInfo.fileName() ), true );
     }
 
 }
@@ -232,6 +232,7 @@ void Playlist::LayoutManager::addUserLayout( const QString &name, const Playlist
     QDomDocument doc( "layouts" );
     QDomElement layouts_element = doc.createElement( "playlist_layouts" );
     QDomElement newLayout = doc.createElement( ("layout" ) );
+    newLayout.setAttribute( "name", name );
 
     doc.appendChild( layouts_element );
     layouts_element.appendChild( newLayout );
@@ -242,9 +243,9 @@ void Playlist::LayoutManager::addUserLayout( const QString &name, const Playlist
     QDomElement body = doc.createElement( "body" );
     QDomElement single = doc.createElement( "single" );
 
-    newLayout.appendChild( createItemElement( doc, "head", layout.head() ) );
-    newLayout.appendChild( createItemElement( doc, "body", layout.body() ) );
-    newLayout.appendChild( createItemElement( doc, "single", layout.single() ) );
+    newLayout.appendChild( createItemElement( doc, "single_track", layout.single() ) );
+    newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
+    newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
 
 
 
