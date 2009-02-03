@@ -351,20 +351,4 @@ void LayoutManager::deleteLayout( const QString & layout )
                             i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
 }
 
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} //namespace Playlist
