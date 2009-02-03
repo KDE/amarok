@@ -130,14 +130,17 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    MutableTrack trackInfo;
-    trackInfo.setTitle( track->name() );
-    if( track->artist() )
-        trackInfo.setArtist( track->artist()->name() );
-    if( track->album() )
-        trackInfo.setAlbum( track->album()->name() );
+    if( track )
+    {
+        MutableTrack trackInfo;
+        trackInfo.setTitle( track->name() );
+        if( track->artist() )
+            trackInfo.setArtist( track->artist()->name() );
+        if( track->album() )
+            trackInfo.setAlbum( track->album()->name() );
 
-    trackInfo.love();
+        trackInfo.love();
+    }
 }
 
 
