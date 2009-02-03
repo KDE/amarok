@@ -23,7 +23,9 @@
 #include "Debug.h"
 #include "meta/stream/Stream.h"
 #include "SqlStorage.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
+#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 
 #include <typeinfo>
 
@@ -74,14 +76,27 @@ Meta::SqlPlaylist::groups()
     return groups;
 }
 
+void
+Meta::SqlPlaylist::setGroups( const QStringList &groups )
+{
+    DEBUG_BLOCK
+    debug() << groups;
+    //HACK: fix this to use m_provider;
+    SqlUserPlaylistProvider *provider = dynamic_cast<SqlUserPlaylistProvider *>(The::playlistManager()->defaultUserPlaylists());
+    m_parent = provider->group( groups.first() );
+    saveToDb();
+
+    m_parent->clear();
+}
+
 bool
 Meta::SqlPlaylist::saveToDb( bool tracks )
 {
     DEBUG_BLOCK
 
     int parentId = -1;
-//     if ( m_parent )
-//         parentId = m_parent->id();
+    if ( m_parent )
+        parentId = m_parent->id();
 
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
 

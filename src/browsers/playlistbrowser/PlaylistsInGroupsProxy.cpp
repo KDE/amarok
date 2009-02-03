@@ -18,7 +18,10 @@
 
 #include "PlaylistsInGroupsProxy.h"
 
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
+#include "meta/Playlist.h"
+#include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 
 #include <KIcon>
@@ -26,6 +29,8 @@
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model )
     : MetaPlaylistModel()
     , m_model( model )
+    , m_renameAction( 0 )
+    , m_deleteAction( 0 )
 {
     // signal proxies
     connect( m_model,
@@ -251,15 +256,106 @@ PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex& index, int start, i
     Q_UNUSED( end )
 }
 
+void
+PlaylistsInGroupsProxy::slotDeleteGroup()
+{
+    DEBUG_BLOCK
+}
+
+void
+PlaylistsInGroupsProxy::slotRenameGroup()
+{
+    DEBUG_BLOCK
+    //get the name for this new group
+    QString newName = "newName";
+    foreach( int originalRow, m_groupHash.values( m_selectedGroups.first().row() ) )
+    {
+        QModelIndex index = m_model->index( originalRow, 0, QModelIndex() );
+        Meta::PlaylistPtr playlist = index.data( 0xf00d ).value<Meta::PlaylistPtr>();
+        QStringList groups;
+        groups << newName;
+        if( playlist )
+            playlist->setGroups( groups );
+    }
+    buildTree();
+    emit layoutChanged();
+}
+
+QList<PopupDropperAction *>
+PlaylistsInGroupsProxy::createGroupActions()
+{
+    QList<PopupDropperAction *> actions;
+
+    if ( m_deleteAction == 0 )
+    {
+        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete_group", KIcon( "media-track-remove-amarok" ), i18n( "&Delete group" ), this );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteGroup() ) );
+    }
+    actions << m_deleteAction;
+
+    if ( m_renameAction == 0 )
+    {
+        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit_group", KIcon( "media-track-edit-amarok" ), i18n( "&Rename group" ), this );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRenameGroup() ) );
+    }
+    actions << m_renameAction;
+
+    return actions;
+}
+
+bool
+PlaylistsInGroupsProxy::isAGroupSelected( const QModelIndexList& list ) const
+{
+    foreach( const QModelIndex &index, list )
+    {
+        if( index.internalId() < 0 )
+            if( m_groupHash.keys().contains( index.row() ) )
+                return true;
+    }
+    return false;
+}
+
+bool
+PlaylistsInGroupsProxy::isAPlaylistSelected( const QModelIndexList& list ) const
+{
+    return mapToSource( list ).count() > 0;
+}
+
 QList<PopupDropperAction *>
 PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 {
     DEBUG_BLOCK
+    bool playlistSelected = isAPlaylistSelected( list );
+    bool groupSelected = isAGroupSelected( list );
+
     QList<PopupDropperAction *> actions;
-    QModelIndexList originalList = mapToSource( list );
-    debug() << originalList.count() << "original indices";
-    if( !originalList.isEmpty() )
+    m_selectedGroups.clear();
+
+    //only playlists selected
+    if( playlistSelected )
+    {
+        QModelIndexList originalList = mapToSource( list );
+        debug() << originalList.count() << "original indices";
+        if( !originalList.isEmpty() )
+        {
+            actions << m_model->actionsFor( originalList );
+        }
+    }
+    else if( groupSelected )
+    {
+        QModelIndexList originalList;
+        originalList << m_model->index( 0, 0, QModelIndex() );
+        originalList << m_model->index( 1, 0, QModelIndex() );
         actions << m_model->actionsFor( originalList );
+        actions << createGroupActions();
+        foreach( const QModelIndex &index, list )
+        {
+            QModelIndexList tempList;
+            tempList << index;
+            if( isAGroupSelected( tempList ) )
+                m_selectedGroups << index;
+        }
+    }
 
     return actions;
 }

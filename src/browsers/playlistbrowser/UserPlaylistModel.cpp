@@ -280,12 +280,16 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 
     actions << createCommonActions( indices );
 
-    //HACK: since we only have one UserPlaylistProvider implementation
-    UserPlaylistProvider *provider = The::playlistManager()->defaultUserPlaylists();
-    if( provider )
+    //only if only one playlist is selected
+    if( m_selectedPlaylists.count() == 1 )
     {
-        if( !selectedPlaylists().isEmpty() )
-            actions << provider->playlistActions( m_selectedPlaylists );
+        //HACK: since we only have one UserPlaylistProvider implementation
+        UserPlaylistProvider *provider = The::playlistManager()->defaultUserPlaylists();
+        if( provider )
+        {
+            if( !selectedPlaylists().isEmpty() )
+                actions << provider->playlistActions( m_selectedPlaylists );
+        }
     }
 
     return actions;
@@ -329,7 +333,6 @@ PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
     {
         actions << m_appendAction;
         actions << m_loadAction;
-        //menu.addSeparator();
     }
 
     return actions;

@@ -27,6 +27,8 @@
 #include <QMultiHash>
 #include <QStringList>
 
+class PopupDropperAction;
+
 class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
 {
     Q_OBJECT
@@ -57,13 +59,23 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         void modelRowsInserted( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
 
+        void slotDeleteGroup();
+        void slotRenameGroup();
+
     private:
         void buildTree();
         QModelIndexList mapToSource( const QModelIndexList& list ) const;
+        QList<PopupDropperAction *> createGroupActions();
+        bool isAGroupSelected( const QModelIndexList& list ) const;
+        bool isAPlaylistSelected( const QModelIndexList& list ) const;
 
         MetaPlaylistModel *m_model;
+        PopupDropperAction *m_renameAction;
+        PopupDropperAction *m_deleteAction;
+
         QMultiHash<qint64, int> m_groupHash;
         QStringList m_groupNames;
+        QModelIndexList m_selectedGroups;
 };
 
 #endif //AMAROK_PLAYLISTSINGROUPSPROXY_H

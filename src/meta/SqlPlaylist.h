@@ -55,6 +55,7 @@ class SqlPlaylist : public Playlist
         virtual void setName( const QString &name );
 
         virtual QStringList groups();
+        void setGroups( const QStringList &groups );
 
         bool saveToDb( bool tracks = true );
         void setDescription( const QString &description ) { m_description = description; }

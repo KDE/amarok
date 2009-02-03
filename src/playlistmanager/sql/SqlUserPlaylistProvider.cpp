@@ -136,6 +136,29 @@ SqlUserPlaylistProvider::reloadFromDb()
     emit updated();
 }
 
+Meta::SqlPlaylistGroupPtr
+SqlUserPlaylistProvider::group( const QString &name )
+{
+    DEBUG_BLOCK
+    Meta::SqlPlaylistGroupPtr group;
+
+    foreach( const Meta::SqlPlaylistGroupPtr &group, m_root->allChildGroups() )
+    {
+        debug() << group->name();
+        if( group->name() == name )
+        {
+            debug() << "match";
+            return group;
+        }
+    }
+
+    debug() << "Creating a new group " << name;
+    group = new Meta::SqlPlaylistGroup( name, m_root );
+    group->save();
+
+    return group;
+}
+
 void
 SqlUserPlaylistProvider::createTables()
 {
