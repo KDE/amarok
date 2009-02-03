@@ -142,7 +142,7 @@ SqlUserPlaylistProvider::group( const QString &name )
     DEBUG_BLOCK
     Meta::SqlPlaylistGroupPtr group;
 
-    if( name == "" )
+    if( name.isEmpty() )
         return m_root;
 
     //clear the root first to force a reload.
