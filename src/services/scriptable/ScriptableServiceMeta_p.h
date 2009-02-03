@@ -50,7 +50,7 @@ class ScriptableServiceInternalMetaItem
         QPixmap serviceEmblem() { return m_serviceEmblem; }
 
         void setServiceName( const QString &name ) { m_serviceName = name; }
-        void setServiceDescription( const QString &description ) { m_serviceDescription = m_serviceDescription; }
+        void setServiceDescription( const QString &description ) { m_serviceDescription = description; }
         void setServiceEmblem( const QPixmap &emblem ) { m_serviceEmblem = emblem; }
 
     protected:
@@ -226,7 +226,7 @@ class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServ
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }
-        
+
     private:
         QString m_name;
 };
@@ -269,7 +269,7 @@ class ScriptableServiceInternalComposer : public Meta::Composer, public Scriptab
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }
-        
+
     private:
         QString m_name;
 };
@@ -311,7 +311,7 @@ class ScriptableServiceInternalYear : public Meta::Year, public ScriptableServic
                 return new ScriptableServiceInternalSourceInfoCapability( this );
             return 0;
         }
-        
+
     private:
         QString m_name;
 };
