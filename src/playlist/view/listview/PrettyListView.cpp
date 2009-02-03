@@ -249,20 +249,16 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     {
         m_mousePressInHeader = true;
         QModelIndex index = indexAt( event->pos() );
-        //only do this dance if header is not already selected
-        if( !selectionModel()->isSelected( index ) )
-        {
-            m_headerPressIndex = QPersistentModelIndex( index );
-            int rows = index.data( GroupedTracksRole ).toInt();
-            QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
+        m_headerPressIndex = QPersistentModelIndex( index );
+        int rows = index.data( GroupedTracksRole ).toInt();
+        QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
 
-            //offset by 1 as the actual header item is selected in QListView::mousePressEvent( event ); and is otherwise deselected again
-            QItemSelection selItems( model()->index( index.row() + 1, 0 ), bottomIndex );
-            QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
-            selectionModel()->select( selItems, command );
-            // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
-            selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
-        }
+        //offset by 1 as the actual header item is selected in QListView::mousePressEvent( event ); and is otherwise deselected again
+        QItemSelection selItems( model()->index( index.row() + 1, 0 ), bottomIndex );
+        QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
+        selectionModel()->select( selItems, command );
+        // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
+        selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
     }
     else
     {
