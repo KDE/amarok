@@ -41,10 +41,14 @@
 #include "services/ServicePluginManager.h" // used in constructor
 #include "GroupingProxy.h"
 
+#include <KGlobal>
+#include <KUrl>
+
+#include <QDate>
 #include <QStringList>
 #include <QTextDocument>
 
-#include <KUrl>
+
 
 #include <typeinfo>
 
@@ -267,7 +271,8 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case LastPlayed:
             {
-                return m_items.at( row )->track()->lastPlayed();
+                QDate date = QDateTime::fromTime_t( m_items.at( row )->track()->lastPlayed() ).date();
+                return KGlobal::locale()->formatDate( date, KLocale::ShortDate );
             }
             case Length:
             {
