@@ -516,4 +516,10 @@
     </entry>
 </group>
 
+<group name="Playlist Layout">
+    <entry key="CurrentLayout" type="String">
+        <label>The name of the layout that will be loaded on startup</label>
+        <default>Default</default>
+    </entry>
+</group>
 </kcfg>

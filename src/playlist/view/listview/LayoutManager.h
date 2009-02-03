@@ -46,6 +46,7 @@ public:
     void setPreviewLayout( const PlaylistLayout &layout );
     PlaylistLayout layout( const QString &layout );
     PlaylistLayout activeLayout();
+    QString activeLayoutName();
 
     bool isDefaultLayout( const QString &layout ) const;
 

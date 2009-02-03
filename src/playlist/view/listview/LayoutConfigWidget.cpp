@@ -45,6 +45,8 @@ LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
     connect( comboView, SIGNAL( deleteItem( const QString & ) ), this, SLOT( deleteItem( const QString & ) ) );
 
     m_comboBox->addItems( LayoutManager::instance()->layouts() );
+    int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
+    m_comboBox->setCurrentIndex( index );
 
     connect( m_comboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( setActiveLayout(const QString & ) ) );
 
@@ -57,18 +59,15 @@ LayoutConfigWidget::~LayoutConfigWidget()
 {
 }
 
-
-}
-
-void Playlist::LayoutConfigWidget::setActiveLayout( const QString & layout )
+void LayoutConfigWidget::setActiveLayout( const QString & layout )
 {
     LayoutManager::instance()->setActiveLayout( layout );
 }
 
-void Playlist::LayoutConfigWidget::editItem( const QString &itemName )
+void LayoutConfigWidget::editItem( const QString &itemName )
 {
     DEBUG_BLOCK
-    debug() << "edit item: " << itemName;
+            debug() << "edit item: " << itemName;
 
     if ( !m_playlistEditDialog )
         m_playlistEditDialog = new PlaylistLayoutEditDialog( this );
@@ -76,10 +75,10 @@ void Playlist::LayoutConfigWidget::editItem( const QString &itemName )
     m_playlistEditDialog->show();
 }
 
-void Playlist::LayoutConfigWidget::deleteItem( const QString &itemName )
+void LayoutConfigWidget::deleteItem( const QString &itemName )
 {
     DEBUG_BLOCK
-    debug() << "delete item: " << itemName;
+            debug() << "delete item: " << itemName;
 }
 
 void Playlist::LayoutConfigWidget::layoutListChanged()
@@ -87,5 +86,10 @@ void Playlist::LayoutConfigWidget::layoutListChanged()
     m_comboBox->clear();
     m_comboBox->addItems( LayoutManager::instance()->layouts() );
 }
+
+
+}
+
+
 
 #include "LayoutConfigWidget.moc"

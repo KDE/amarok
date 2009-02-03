@@ -51,6 +51,9 @@ LayoutManager::LayoutManager()
     loadDefaultLayouts();
     loadUserLayouts();
 
+    KConfigGroup config = Amarok::config("Playlist Layout");
+    m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
+
     debug() << "Loaded layouts: " << layouts();
     debug() << "active layout: " << m_activeLayout;
 }
@@ -67,6 +70,7 @@ QStringList Playlist::LayoutManager::layouts()
 void Playlist::LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
+    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
     emit( activeLayoutChanged() );
 }
 
@@ -113,7 +117,6 @@ void Playlist::LayoutManager::loadDefaultLayouts()
     const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
     QString configFile = url.path() + "DefaultPlaylistLayouts.xml";
     loadLayouts( configFile, false );
-    setActiveLayout( "Default" );
 }
 
 
@@ -310,10 +313,7 @@ QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const 
     return element;
 }
 
-
-}
-
-bool Playlist::LayoutManager::isDefaultLayout( const QString & layout ) const
+bool LayoutManager::isDefaultLayout( const QString & layout ) const
 {
     if ( m_layouts.keys().contains( layout ) ) {
         return !m_layouts.value( layout ).isEditable();
@@ -321,6 +321,16 @@ bool Playlist::LayoutManager::isDefaultLayout( const QString & layout ) const
     else
         return false;
 }
+
+QString LayoutManager::activeLayoutName()
+{
+    return m_activeLayout;
+}
+
+
+}
+
+
 
 
 
