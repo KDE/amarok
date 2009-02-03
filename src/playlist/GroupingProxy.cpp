@@ -376,7 +376,25 @@ int Playlist::GroupingProxy::currentSearchFields()
     return m_model->currentSearchFields();
 }
 
+int Playlist::GroupingProxy::tracksInGroup( int row ) const
+{
+    return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
+}
+
+int Playlist::GroupingProxy::lengthOfGroup( int row ) const
+{
+
+    int totalLenght = 0;
+    for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ ) {
+        totalLenght += m_model->trackAt( row )->length();
+    }
+
+    return totalLenght;
+}
+
 #endif
+
+
 
 
 

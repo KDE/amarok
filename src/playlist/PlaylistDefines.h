@@ -44,6 +44,8 @@ enum Column
     Filename,
     Filesize,
     Genre,
+    GroupLength,
+    GroupTracks,
     LastPlayed,
     Length,
     Mood,
@@ -76,6 +78,8 @@ static const QStringList columnNames = ( QStringList()
         << i18n( "File name" )
         << i18n( "File size" )
         << i18n( "Genre" )
+        << i18n( "Group length" )
+        << i18n( "Group tracks" )
         << i18n( "Last played" )
         << i18n( "Length" )
         << i18n( "Mood" )
@@ -106,6 +110,8 @@ static const QStringList iconNames = ( QStringList()
         << "filename-filetype-amarok"
         << "help-about"
         << "filename-genre-amarok"
+        << ""
+        << ""
         << ""
         << "chronometer"
         << ""

@@ -257,6 +257,14 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     return m_items.at( row )->track()->genre()->name();
                 return QString();
             }
+            case GroupLength:
+            {
+                return Meta::secToPrettyTime( GroupingProxy::instance()->lengthOfGroup( row ) );
+            }
+            case GroupTracks:
+            {
+                return GroupingProxy::instance()->tracksInGroup( row );
+            }
             case LastPlayed:
             {
                 return m_items.at( row )->track()->lastPlayed();
