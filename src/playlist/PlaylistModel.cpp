@@ -296,7 +296,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Score:
             {
-                return m_items.at( row )->track()->score();
+                return (int)m_items.at( row )->track()->score(); // Cast to int, as we don't need to show the decimals in the view..
             }
             case Source:
             {
@@ -340,7 +340,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     trackString =  QString( trackNumber + " - " + trackName );
                 } else
                     trackString = trackName;
-                
+
                 return trackString;
             }
             case TrackNumber:
