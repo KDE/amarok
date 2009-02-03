@@ -142,6 +142,12 @@ SqlUserPlaylistProvider::group( const QString &name )
     DEBUG_BLOCK
     Meta::SqlPlaylistGroupPtr group;
 
+    if( name == "" )
+        return m_root;
+
+    //clear the root first to force a reload.
+    m_root->clear();
+
     foreach( const Meta::SqlPlaylistGroupPtr &group, m_root->allChildGroups() )
     {
         debug() << group->name();

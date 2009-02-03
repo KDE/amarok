@@ -25,6 +25,7 @@
 #include "UserPlaylistModel.h"
 
 #include <KIcon>
+#include <KInputDialog>
 
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model )
     : MetaPlaylistModel()
@@ -267,7 +268,9 @@ PlaylistsInGroupsProxy::slotRenameGroup()
 {
     DEBUG_BLOCK
     //get the name for this new group
-    QString newName = "newName";
+    const QString newName = KInputDialog::getText( i18n("New name"),
+                i18n("Enter new group name:") );
+
     foreach( int originalRow, m_groupHash.values( m_selectedGroups.first().row() ) )
     {
         QModelIndex index = m_model->index( originalRow, 0, QModelIndex() );
