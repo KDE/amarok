@@ -47,6 +47,8 @@ public:
     PlaylistLayout layout( const QString &layout );
     PlaylistLayout activeLayout();
 
+    bool isDefaultLayout( const QString &layout ) const;
+
     void addUserLayout( const QString &name, const PlaylistLayout &layout );
 
 signals:

@@ -220,7 +220,7 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
     return config;
 }
 
-PlaylistLayout Playlist::LayoutManager::layout(const QString &layout )
+PlaylistLayout Playlist::LayoutManager::layout( const QString &layout )
 {
     return m_layouts.value( layout );
 }
@@ -311,6 +311,15 @@ QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const 
 }
 
 
+}
+
+bool Playlist::LayoutManager::isDefaultLayout( const QString & layout ) const
+{
+    if ( m_layouts.keys().contains( layout ) ) {
+        return !m_layouts.value( layout ).isEditable();
+    }
+    else
+        return false;
 }
 
 

@@ -24,6 +24,8 @@
 #include "playlist/view/listview/LayoutManager.h"
 #include "playlist/PlaylistDefines.h"
 
+#include <KMessageBox>
+
 using namespace Playlist;
 
 PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
@@ -77,7 +79,8 @@ PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )
 {
     m_layoutName = layoutName;
-
+    nameEdit->setText( layoutName );
+    
     PlaylistLayout layout = LayoutManager::instance()->layout( layoutName );
     m_headEdit->readLayout( layout.head() );
     m_bodyEdit->readLayout( layout.body() );
@@ -100,12 +103,21 @@ void PlaylistLayoutEditDialog::accept()
 {
     DEBUG_BLOCK
 
+    if ( LayoutManager::instance()->isDefaultLayout( nameEdit->text() ) ) {
+        KMessageBox::sorry( this,
+                            i18n( "The layout '%1' is one of the default layouts and cannot be overwritten. Please select a different name.", nameEdit->text() ), i18n( "Reserved Layout Name" ) );
+        return;
+    }
+            
     PlaylistLayout layout;
     layout.setHead( m_headEdit->config() );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
 
-    LayoutManager::instance()->addUserLayout( "userTest", layout);
+
+    
+    LayoutManager::instance()->addUserLayout( nameEdit->text(), layout);
+    QDialog::accept();
 }
 
 

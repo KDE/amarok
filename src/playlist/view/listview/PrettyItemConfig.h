@@ -98,7 +98,7 @@ public:
     PrettyItemConfig head() const;
     PrettyItemConfig body() const;
     PrettyItemConfig single() const;
-    bool isEditable();
+    bool isEditable() const;
 
     void setHead( PrettyItemConfig head );
     void setBody( PrettyItemConfig body );

@@ -163,9 +163,7 @@ void Playlist::PlaylistLayout::setSingle( PrettyItemConfig single )
     m_single = single;
 }
 
-}
-
-bool Playlist::PlaylistLayout::isEditable()
+bool Playlist::PlaylistLayout::isEditable() const
 {
     return m_isEditable;
 }
@@ -174,6 +172,10 @@ void Playlist::PlaylistLayout::setIsEditable( bool editable )
 {
     m_isEditable = editable;
 }
+
+}
+
+
 
 
 
