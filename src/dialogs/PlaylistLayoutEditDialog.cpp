@@ -80,7 +80,7 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )
 {
     m_layoutName = layoutName;
     nameEdit->setText( layoutName );
-    
+
     PlaylistLayout layout = LayoutManager::instance()->layout( layoutName );
     m_headEdit->readLayout( layout.head() );
     m_bodyEdit->readLayout( layout.body() );
@@ -91,7 +91,11 @@ void PlaylistLayoutEditDialog::preview()
 {
 
     PlaylistLayout layout;
-    layout.setHead( m_headEdit->config() );
+
+    PrettyItemConfig headConfig = m_headEdit->config() ;
+    headConfig.setActiveIndicatorRow( -1 );
+    
+    layout.setHead( headConfig );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
 
@@ -110,7 +114,12 @@ void PlaylistLayoutEditDialog::accept()
     }
             
     PlaylistLayout layout;
-    layout.setHead( m_headEdit->config() );
+
+    PrettyItemConfig headConfig = m_headEdit->config();
+    headConfig.setActiveIndicatorRow( -1 );
+    
+    
+    layout.setHead( headConfig );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
 
