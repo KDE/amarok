@@ -30,7 +30,8 @@ namespace Playlist
 
 enum Column
 {
-    Album = 1,
+    PlaceHolder = 0,
+    Album,
     AlbumArtist,
     Artist,
     Bitrate,
@@ -61,7 +62,7 @@ enum Column
 };
 
 static const QStringList columnNames = ( QStringList()
-        << "DUMMY_VALUE"
+        << i18n( "placeholder" )
         << i18n( "Album" )
         << i18n( "Album artist" )
         << i18n( "Artist" )
@@ -91,7 +92,7 @@ static const QStringList columnNames = ( QStringList()
         << i18n( "Year" ) );
 
 static const QStringList iconNames = ( QStringList()
-        << "DUMMY_VALUE"
+        << "filename-space-amarok"
         << "filename-album-amarok"
         << "filename-artist-amarok"
         << "filename-artist-amarok"

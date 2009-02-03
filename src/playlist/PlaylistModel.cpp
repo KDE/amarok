@@ -183,6 +183,8 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     {
         switch ( index.column() )
         {
+            case PlaceHolder:
+                return QString();
             case Album:
             {
                 if ( m_items.at( row )->track()->album() )
