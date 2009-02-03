@@ -255,7 +255,9 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
             m_headerPressIndex = QPersistentModelIndex( index );
             int rows = index.data( GroupedTracksRole ).toInt();
             QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
-            QItemSelection selItems( index, bottomIndex );
+
+            //offset by 1 as the actual header item is selected in QListView::mousePressEvent( event ); and is otherwise deselected again
+            QItemSelection selItems( model()->index( index.row() + 1, 0 ), bottomIndex );
             QItemSelectionModel::SelectionFlags command = headerPressSelectionCommand( index, event );
             selectionModel()->select( selItems, command );
             // TODO: if you're doing shift-select on rows above the header, then the rows following the header will be lost from the selection
