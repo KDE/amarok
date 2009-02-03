@@ -23,6 +23,7 @@
 #include "Debug.h"
 #include "playlist/PlaylistDefines.h"
 
+#include <KMessageBox>
 #include <KStandardDirs>
 #include <KUrl>
 
@@ -315,7 +316,8 @@ QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const 
 
 bool LayoutManager::isDefaultLayout( const QString & layout ) const
 {
-    if ( m_layouts.keys().contains( layout ) ) {
+    if ( m_layouts.keys().contains( layout ) )
+    {
         return !m_layouts.value( layout ).isEditable();
     }
     else
@@ -328,7 +330,30 @@ QString LayoutManager::activeLayoutName()
 }
 
 
+void LayoutManager::deleteLayout( const QString & layout )
+{
+    //check if layout is editable
+    if ( m_layouts.value( layout ).isEditable() )
+    {
+        QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
+        QString xmlFile = layoutsDir.path() + layout + ".xml";
+        QFile::remove( xmlFile );
+        m_layouts.remove( layout );
+        emit( layoutListChanged() );
+
+        if ( layout == m_activeLayout ) {
+            setActiveLayout( "Default" );
+        }
+        
+    }
+    else
+        KMessageBox::sorry( 0,
+                            i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
 }
+
+
+}
+
 
 
 

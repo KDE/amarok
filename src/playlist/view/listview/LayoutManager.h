@@ -51,11 +51,12 @@ public:
     bool isDefaultLayout( const QString &layout ) const;
 
     void addUserLayout( const QString &name, const PlaylistLayout &layout );
+    void deleteLayout( const QString &layout );
 
 signals:
     void activeLayoutChanged();
     void layoutListChanged();
-    
+
 private:
     LayoutManager();
     ~LayoutManager();

@@ -78,7 +78,8 @@ void LayoutConfigWidget::editItem( const QString &itemName )
 void LayoutConfigWidget::deleteItem( const QString &itemName )
 {
     DEBUG_BLOCK
-            debug() << "delete item: " << itemName;
+    debug() << "delete item: " << itemName;
+    LayoutManager::instance()->deleteLayout( itemName );
 }
 
 void Playlist::LayoutConfigWidget::layoutListChanged()
