@@ -45,7 +45,9 @@ Albums::Albums( QObject* parent, const QVariantList& args )
 }
 
 Albums::~Albums()
-{}
+{
+    delete m_albumsView->widget();
+}
 
 void Albums::init()
 {

@@ -34,7 +34,7 @@ class AlbumsView : public QGraphicsProxyWidget
 
 public:
     explicit AlbumsView( QGraphicsWidget *parent = 0 );
-    ~AlbumsView() { }
+    ~AlbumsView();
 
     /**
      * Sets a model for this weather view

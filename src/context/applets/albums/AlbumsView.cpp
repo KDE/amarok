@@ -74,6 +74,10 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     treeView->show();
 }
 
+AlbumsView::~AlbumsView()
+{
+}
+
 void
 AlbumsView::setModel( QAbstractItemModel *model )
 {
