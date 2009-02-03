@@ -23,6 +23,7 @@
 #include "Debug.h"
 
 #include <KHBox>
+
 #include <QCheckBox>
 #include <QSpinBox>
 
@@ -37,6 +38,8 @@ PlaylistItemEditWidget::PlaylistItemEditWidget( QWidget *parent )
 
     m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , bottomBox );
     m_noOfRowsSpinBox = new QSpinBox( bottomBox );
+
+    m_noOfRowsSpinBox->setPrefix( i18n( "No. of Rows: " ) );
 
     m_noOfRowsSpinBox->setRange( 0, 5 );
     m_noOfRowsSpinBox->setValue( 1 );
