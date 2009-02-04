@@ -281,6 +281,7 @@ QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const 
 
     QString showCover = item.showCover() ? "true" : "false";
     element.setAttribute ( "show_cover", showCover );
+    element.setAttribute ( "active_indicator_row", QString::number( item.activeIndicatorRow() ) );
 
     for( int i = 0; i < item.rows(); i++ ) {
         PrettyItemConfigRow row = item.row( i );
