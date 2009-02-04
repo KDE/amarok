@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.0.2
   BUGFIXES:
+    * Fix crash in tagdialog when editing tracks without an artist. (BR 183180)
     * Statistics were not calculated properly in all instances. (BR 182025)
     * Compilation fixes on Open Solaris.
     * Trim URL before adding a new podcast.
