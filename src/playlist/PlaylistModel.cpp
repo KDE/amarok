@@ -271,8 +271,12 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case LastPlayed:
             {
-                QDateTime date = QDateTime::fromTime_t( m_items.at( row )->track()->lastPlayed() );
-                return Amarok::verboseTimeSince( date );
+                if ( m_items.at( row )->track()->lastPlayed() == 0 )
+                    return i18n( "Never" );
+                else {
+                    QDateTime date = QDateTime::fromTime_t( m_items.at( row )->track()->lastPlayed() );
+                    return Amarok::verboseTimeSince( date );
+                }
             }
             case Length:
             {
