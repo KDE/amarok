@@ -152,7 +152,7 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
                 bold = twl->bold();
                 alignment = twl->alignment();
 
-                if ( twl->size() > 0.04 ) {
+                if ( twl->size() > 0.01 ) {
                     size = twl->size();
                 }
             }
