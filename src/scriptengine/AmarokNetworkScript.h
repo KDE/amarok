@@ -44,7 +44,10 @@ class Downloader : public QObject
         ~Downloader();
 
     private:
-        static QScriptValue Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
+        static QScriptValue dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
+        static QScriptValue stringDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
+        static QScriptValue init( QScriptContext* context, QScriptEngine* engine, bool stringResult );
+
 
         QScriptEngine* m_scriptEngine;
 };
@@ -65,10 +68,12 @@ public:
     static AmarokDownloadHelper *instance();
     
     // called by the wrapper class to register a new download
-    void newDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
+    void newStringDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
+    void newDataDownload( KJob* download, QScriptEngine* engine, QScriptValue obj );
 
-public slots:
-    void result( KJob* job );
+private slots:
+    void resultString( KJob* job );
+    void resultData( KJob* job );
     
 private:
     QHash< KJob*, QScriptEngine* > m_engines;

@@ -37,6 +37,8 @@ VERSION 2.1
       Simon Esneault <simon.esneault@gmail.com>. (BR 179732)
     * New vertical Context View layout.
     * New applet toolbar in the Context View to arrange, select, and add applets.
+    * New QtScript class 'DataDownloader' that returns results as a QByteArray
+      instead of a string. Needed for image downloads.
 
   CHANGES:
     * Increased width of volume slider for greater precision.

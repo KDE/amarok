@@ -43,8 +43,13 @@ Downloader::Downloader( QScriptEngine* engine )
 {
     DEBUG_BLOCK
     engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QScriptValue() );
-    const QScriptValue ctor = engine->newFunction( Downloader_prototype_ctor );
-    engine->globalObject().setProperty( "Downloader", ctor );
+    const QScriptValue stringCtor = engine->newFunction( stringDownloader_prototype_ctor );
+    engine->globalObject().setProperty( "Downloader", stringCtor ); //kept for compat
+    engine->globalObject().setProperty( "StringDownloader", stringCtor ); //added for clarity
+    const QScriptValue dataCtor = engine->newFunction( dataDownloader_prototype_ctor );
+    engine->globalObject().setProperty( "DataDownloader", dataCtor );
+
+    
 }
 
 Downloader::~Downloader()
@@ -52,7 +57,25 @@ Downloader::~Downloader()
 }
 
 QScriptValue
-Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine )
+Downloader::stringDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine )
+{
+    return init( context, engine, true );
+}
+
+QScriptValue
+Downloader::dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine )
+{
+    if( engine->importedExtensions().contains( "qt.core" ) )
+        return init( context, engine, false );
+    else
+    {
+        context->throwError( i18nc("do not translate 'DataDownloader' or 'qt.core'", "qt.core must be loaded to use DataDownloader" ) );
+        return QScriptValue( engine, false );
+    }
+}
+
+QScriptValue
+Downloader::init( QScriptContext* context, QScriptEngine* engine, bool stringResult )
 {
     // from QtScript API docs
     DEBUG_BLOCK
@@ -78,20 +101,25 @@ Downloader::Downloader_prototype_ctor( QScriptContext* context, QScriptEngine* e
         return object;
     }
     
-    QString encoding = "UTF-8";
     KUrl tmpUrl;
     QUrl url = qscriptvalue_cast<QUrl>( context->argument( 0 ) );
-    if( context->argumentCount() == 3 ) // encoding specified
-        encoding = context->argument( 2 ).toString();
-    
     tmpUrl.setEncodedUrl( url.toEncoded() );
+    
+
     // start download, and connect to it
     //FIXME: url is not working directly.
     KIO::Job* job = KIO::storedGet( tmpUrl, KIO::NoReload, KIO::HideProgressInfo );
-    AmarokDownloadHelper::instance()->newDownload( job, engine, context->argument( 1 ), encoding );
+    if( stringResult )
+    {
+        QString encoding = "UTF-8";
+        if(context->argumentCount() == 3 ) // encoding specified
+            encoding = context->argument( 2 ).toString();
+        AmarokDownloadHelper::instance()->newStringDownload( job, engine, context->argument( 1 ), encoding );
+    }
+    else
+        AmarokDownloadHelper::instance()->newDataDownload( job, engine, context->argument( 1 ) );
     // connect to a local slot to extract the qstring
     //qScriptConnect( job, SIGNAL( result( KJob* ) ), object, fetchResult( job ) );
-    connect( job, SIGNAL( result( KJob* ) ), AmarokDownloadHelper::instance(), SLOT( result( KJob* ) ) );
     return object;
 }
 
@@ -105,15 +133,54 @@ AmarokDownloadHelper::AmarokDownloadHelper()
 }
 
 void
-AmarokDownloadHelper::newDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding )
+AmarokDownloadHelper::newStringDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
     m_jobs[ download ] = obj ;
     m_engines[ download ] = engine;
     m_encodings[ download ] = encoding;
+    connect( download, SIGNAL( result( KJob* ) ), this, SLOT( resultString( KJob* ) ) );
 }
 
 void
-AmarokDownloadHelper::result( KJob* job )
+AmarokDownloadHelper::newDataDownload( KJob* download, QScriptEngine* engine, QScriptValue obj )
+{
+    m_jobs[ download ] = obj ;
+    m_engines[ download ] = engine;
+    connect( download, SIGNAL( result( KJob* ) ), this, SLOT( resultData( KJob* ) ) );
+}
+
+void
+AmarokDownloadHelper::resultData( KJob* job )
+{
+    DEBUG_BLOCK
+
+    QScriptValue obj = m_jobs[ job ];
+    QScriptEngine* engine = m_engines[ job ];
+    
+    // now send the data to the associated script object
+    if( !obj.isFunction() )
+    {
+        debug() << "script object is valid but not a function!!";
+        return;
+    }
+
+    if( !engine )
+    {
+        debug() << "stored script engine is not valid!";
+        return;
+    }
+
+    QScriptValueList args;
+    args <<  engine->toScriptValue( static_cast< KIO::StoredTransferJob* >( job )->data() );
+    obj.call( obj, args );
+
+    m_jobs.remove( job );
+    m_engines.remove( job );
+}
+
+
+void
+AmarokDownloadHelper::resultString( KJob* job )
 {
     DEBUG_BLOCK
 
