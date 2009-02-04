@@ -267,12 +267,12 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case GroupTracks:
             {
-                return GroupingProxy::instance()->tracksInGroup( row );
+                return i18n ( "%1 tracks", GroupingProxy::instance()->tracksInGroup( row ) );
             }
             case LastPlayed:
             {
-                QDate date = QDateTime::fromTime_t( m_items.at( row )->track()->lastPlayed() ).date();
-                return KGlobal::locale()->formatDate( date, KLocale::ShortDate );
+                QDateTime date = QDateTime::fromTime_t( m_items.at( row )->track()->lastPlayed() );
+                return Amarok::verboseTimeSince( date );
             }
             case Length:
             {
