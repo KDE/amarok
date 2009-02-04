@@ -180,6 +180,19 @@ MetaTrackPrototype::imageUrl() const
     return ( track && track->album() ) ? track->album()->imageLocation().prettyUrl() : QString();
 }
 
+QScriptValue
+MetaTrackPrototype::imagePixmap( int size ) const
+{
+    GET_TRACK
+    return ( track && track->album() ) ? thisObject().engine()->toScriptValue( track->album()->image( size ) ) : QScriptValue();
+}
+
+QScriptValue
+MetaTrackPrototype::imagePixmap() const
+{
+    return imagePixmap( 1 );
+}
+
 bool
 MetaTrackPrototype::isValid() const
 {

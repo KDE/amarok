@@ -56,6 +56,9 @@ class MetaTrackPrototype : public QObject, protected QScriptable
     public:
         MetaTrackPrototype();
         ~MetaTrackPrototype();
+    public slots:
+        QScriptValue imagePixmap( int size ) const;
+        QScriptValue imagePixmap() const;
 
     private:
         int sampleRate() const;

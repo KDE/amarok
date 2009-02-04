@@ -5,6 +5,11 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * New QtScript method for the Track prototype: imagePixmap( size ). Returns
+      a QPixmap of the given size, or the default if the size argument isn't
+      supplied.
+    * New QtScript class 'DataDownloader' that returns results as a QByteArray
+      instead of a string. Needed for image downloads.
     * Cue Sheets are now supported as in Amarok 1.4, plus each cue entry
       (usually a track) will be displayed as a timecode on the Progress Bar
 	  with a nice onMouseOver popup.
@@ -37,8 +42,6 @@ VERSION 2.1
       Simon Esneault <simon.esneault@gmail.com>. (BR 179732)
     * New vertical Context View layout.
     * New applet toolbar in the Context View to arrange, select, and add applets.
-    * New QtScript class 'DataDownloader' that returns results as a QByteArray
-      instead of a string. Needed for image downloads.
 
   CHANGES:
     * Increased width of volume slider for greater precision.
