@@ -12,6 +12,10 @@
     <rejection class="AudioOutputAdaptor" />    
     <rejection class="*" field-name="k_ptr" />
     
+    <rejection class="Phonon::AudioOutputInterface40" />
+    <rejection class="Phonon::AudioOutputInterface42" />
+    <rejection class="Phonon::AudioOutputInterface" />
+
     <namespace-type name="Phonon" />
     <namespace-type name="Phonon::BackendCapabilities" java-name="BackendCapabilities" />
 
@@ -21,6 +25,8 @@
     <enum-type name="Phonon::Category">
         <reject-enum-value name="LastCategory" />
     </enum-type>
+    <enum-type name="Phonon::AddonInterface::SubtitleCommand" />
+    <enum-type name="Phonon::AddonInterface::AudioChannelCommand" />
     <enum-type name="Phonon::DiscType" />
     <enum-type name="Phonon::ErrorType" />
     <enum-type name="Phonon::MetaData" />
@@ -42,7 +48,8 @@
 
     <interface-type name="Phonon::AbstractVideoOutput" java-name="AbstractVideoOutput" />
     <interface-type name="Phonon::AddonInterface" java-name="AbstractAddon" />
-    <interface-type name="Phonon::AudioOutputInterface" java-name="AudioOutputInterface" />
+    <!-- ### causes compile error with Qt 4.5, the functions in the class aren't picked up by the typesystem -->
+<!--    <interface-type name="Phonon::AudioOutputInterface" java-name="AudioOutputInterface" /> -->
     <interface-type name="Phonon::BackendInterface" java-name="AbstractBackend" />
     <interface-type name="Phonon::EffectInterface" java-name="AbstractEffect" />
     <interface-type name="Phonon::MediaNode" java-name="MediaNode" />
@@ -91,6 +98,9 @@
     <value-type name="Phonon::ObjectDescription" generate="no" />
     <value-type name="Phonon::EffectDescription" java-name="EffectDescription" />
     <value-type name="Phonon::AudioOutputDevice" java-name="AudioOutputDevice" />
+    <value-type name="Phonon::AudioChannelDescription" java-name="AudioChannelDescription" />
+    <value-type name="Phonon::SubtitleDescription" java-name="SubtitleDescription" />
+    <value-type name="Phonon::AudioCaptureDevice"  java-name="AudioCaptureDevice" />
 
     <object-type name="Phonon::AbstractAudioOutput" java-name="AbstractAudioOutput" />
     <object-type name="Phonon::AbstractMediaStream" java-name="AbstractMediaStream" />

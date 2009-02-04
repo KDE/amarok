@@ -164,9 +164,15 @@ static QString builtinTypeTesterFunction(const QString &typeName)
         return QLatin1String("isString");
     else if (typeName == QLatin1String("double"))
         return QLatin1String("isNumber");
+    else if (typeName == QLatin1String("float"))
+        return QLatin1String("isNumber");
     else if (typeName == QLatin1String("int"))
         return QLatin1String("isNumber");
     else if (typeName == QLatin1String("uint"))
+        return QLatin1String("isNumber");
+    else if (typeName == QLatin1String("short"))
+        return QLatin1String("isNumber");
+    else if (typeName == QLatin1String("unsigned short"))
         return QLatin1String("isNumber");
     else if (typeName == QLatin1String("bool"))
         return QLatin1String("isBoolean");

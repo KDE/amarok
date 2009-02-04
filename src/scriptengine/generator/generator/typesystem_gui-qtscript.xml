@@ -26,8 +26,6 @@
   <rejection class="QAbstractProxyModel"/>
   <rejection class="QSortFilterProxyModel"/>
   <rejection class="QDirModel"/>
-  <rejection class="QDrag"/>
-  <rejection class="QDropEvent"/>
   <rejection class="QFileSystemModel"/>
   <rejection class="QGraphicsSceneDragDropEvent"/>
   <rejection class="QPrinterInfo"/>
