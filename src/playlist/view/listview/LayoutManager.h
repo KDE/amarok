@@ -50,7 +50,7 @@ public:
 
     bool isDefaultLayout( const QString &layout ) const;
 
-    void addUserLayout( const QString &name, const PlaylistLayout &layout );
+    void addUserLayout( const QString &name, PlaylistLayout layout );
     void deleteLayout( const QString &layout );
 
 signals:

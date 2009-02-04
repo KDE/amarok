@@ -130,7 +130,7 @@ void PlaylistLayoutEditDialog::accept()
 
 
     
-    LayoutManager::instance()->addUserLayout( nameEdit->text(), layout);
+    LayoutManager::instance()->addUserLayout( nameEdit->text(), layout );
     QDialog::accept();
 }
 

@@ -229,8 +229,9 @@ PlaylistLayout Playlist::LayoutManager::layout( const QString &layout )
     return m_layouts.value( layout );
 }
 
-void Playlist::LayoutManager::addUserLayout( const QString &name, const PlaylistLayout &layout )
+void Playlist::LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 {
+    layout.setIsEditable( true );
     m_layouts.insert( name, layout );
 
     QDomDocument doc( "layouts" );
