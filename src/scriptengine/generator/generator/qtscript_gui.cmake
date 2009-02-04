@@ -57,10 +57,12 @@ set( Generated_QtGUI_cnv0_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDockWidget.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDoubleSpinBox.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDoubleValidator.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDrag.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDragEnterEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDragLeaveEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDragMoveEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDragResponseEvent.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QDropEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QErrorMessage.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QFileDialog.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QFileIconProvider.cpp
@@ -365,8 +367,10 @@ set( Generated_QtGUI_cnv1_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QDockWidget.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QDoubleSpinBox.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QDoubleValidator.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QDrag.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QDragMoveEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QDragResponseEvent.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QDropEvent.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QErrorMessage.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QFileDialog.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QFileIconProvider.cpp
