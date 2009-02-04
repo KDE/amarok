@@ -41,6 +41,7 @@ enum Column
     CoverImage,
     Directory,
     DiscNumber,
+    Divider,
     Filename,
     Filesize,
     Genre,
@@ -75,6 +76,7 @@ static const QStringList columnNames = ( QStringList()
         << i18n( "Cover image" )
         << i18n( "Directory" )
         << i18n( "Disc number" )
+        << i18n( "Divider" )
         << i18n( "File name" )
         << i18n( "File size" )
         << i18n( "Genre" )
@@ -107,6 +109,7 @@ static const QStringList iconNames = ( QStringList()
         << ""
         << "folder-blue"
         << "filename-discnumber-amarok"
+        << ""
         << "filename-filetype-amarok"
         << "help-about"
         << "filename-genre-amarok"

@@ -357,6 +357,8 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     return m_items.at( row )->track()->year()->name();
                 return QString();
             }
+            default:
+                return QString();
 
         }
     }

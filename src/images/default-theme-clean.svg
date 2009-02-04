@@ -29,16 +29,16 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.48199693"
-     inkscape:cx="1249.5831"
-     inkscape:cy="776.04374"
+     inkscape:zoom="5.4531728"
+     inkscape:cx="287.1701"
+     inkscape:cy="497.30693"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1440"
      inkscape:window-height="840"
-     inkscape:window-x="-5"
-     inkscape:window-y="-3" />
+     inkscape:window-x="470"
+     inkscape:window-y="292" />
   <defs
      id="defs6832">
     <filter
@@ -3751,6 +3751,28 @@
        y1="13.921767"
        x2="46.758774"
        y2="70.827744" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5370"
+       id="radialGradient3440"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.5619834,0,0,8.5419697e-2,-871.89389,-47.71355)"
+       cx="516.5"
+       cy="233"
+       fx="516.5"
+       fy="233"
+       r="182" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4436"
+       id="radialGradient3442"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,-0.6666383,5.8111385e-2,0,-577.02835,1013.3205)"
+       cx="516.5"
+       cy="233"
+       fx="516.5"
+       fy="233"
+       r="182" />
   </defs>
   <metadata
      id="metadata6835">
@@ -7564,5 +7586,24 @@
          id="rect3386"
          style="fill:url(#linearGradient2458);fill-opacity:1;stroke:none;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.30196078;filter:url(#filter3430)" />
     </g>
+    <g
+       transform="matrix(0,-1.2871795,1,0,-643.30263,508.5501)"
+       style="opacity:0.56306308"
+       id="divider_right"
+       inkscape:label="#g3432">
+      <g
+         transform="matrix(0.3315696,0,0,1,-102.53647,110)"
+         id="g3434">
+        <path
+           id="path3436"
+           d="M -348.625,-28.3125 L -348.625,-27.3125 L 218.375,-27.3125 L 218.375,-28.3125 L -348.625,-28.3125 z"
+           style="fill:url(#radialGradient3440);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      </g>
+    </g>
+    <path
+       id="divider_left"
+       d="M -563.99014,789.99475 L -562.99014,789.99475 L -562.99014,548.00511 L -563.99014,548.00511 L -563.99014,789.99475 z"
+       style="opacity:0.2892562;fill:url(#radialGradient3442);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:label="#path3438" />
   </g>
 </svg>

@@ -303,6 +303,37 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                         m_ratingPainter.paint( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), rating, rating );
                     }
 
+                } else if ( value == Divider ) {
+
+                    debug() << "painting divider....";
+                    QPixmap left = The::svgHandler()->renderSvg(
+                            "divider_left",
+                            1, rowHeight ,
+                            "divider_left" );
+
+                    QPixmap right = The::svgHandler()->renderSvg(
+                            "divider_right",
+                            1, rowHeight,
+                            "divider_right" );
+
+                    if ( alignment & Qt::AlignLeft ) {
+                        debug() << "at " << currentItemX << ", " << rowOffsetY << " (" <<  1 << "x" << rowHeight << ")";
+                        painter->drawPixmap( currentItemX, rowOffsetY, left );
+                        painter->drawPixmap( currentItemX + 1, rowOffsetY, right );
+                    }
+                    else if ( alignment & Qt::AlignRight )
+                    {
+                        debug() << "at " << currentItemX + itemWidth - 1 << ", " << rowOffsetY << " (" <<  1 << "x" << rowHeight << ")";
+                        painter->drawPixmap( currentItemX + itemWidth - 1, rowOffsetY, left );
+                        painter->drawPixmap( currentItemX + itemWidth, rowOffsetY, right );
+                    }
+                    else
+                    {
+                        int center = currentItemX + ( itemWidth / 2 );
+                        debug() << "at " << center << ", " << rowOffsetY << " (" <<  1 << "x" << rowHeight << ")";
+                        painter->drawPixmap( center, rowOffsetY, left );
+                        painter->drawPixmap( center + 1, rowOffsetY, right );
+                    }
                 }
                 else
                 {
