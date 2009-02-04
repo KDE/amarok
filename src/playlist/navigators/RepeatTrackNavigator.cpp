@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright     : (C) 2007 Dan Meltzer <hydrogen@notyetimplemented.com>   *
+ * copyright     : (C) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>   *
  *               : (C) 2008 Soren Harward <stharward@gmail.com>            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

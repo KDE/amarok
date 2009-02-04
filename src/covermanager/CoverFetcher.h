@@ -1,7 +1,7 @@
 /******************************************************************************
  * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                  *
  *           (c) 2004 Stefan Bogner <bochi@online.ms>                         *
- *           (c) 2007 Dan Meltzer <hydrogen@notyetimplemented.com>            *
+ *           (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>            *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *

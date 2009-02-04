@@ -7,7 +7,7 @@
  copyright            : (C) 2005 by Gábor Lehel
  email                : illissius@gmail.com
  copyright            : (C) 2008 by Dan Meltzer
- email                : hydrogen@notyetimplemented.com
+ email                : parallelgrapefruit@gmail.com
 ***************************************************************************/
 
 /***************************************************************************

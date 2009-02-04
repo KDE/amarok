@@ -33,7 +33,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( ki18n("Bart 'Where are my toothpicks' Cerneels"),
             ki18n(( "Developer (Stecchino)" )), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
     aboutData.addAuthor( ki18n("Dan 'Hey, it compiled...' Meltzer"),
-            ki18n(( "Developer (hydrogen)" )), "hydrogen@notyetimplemented.com" );
+            ki18n(( "Developer (hydrogen)" )), "parallelgrapefruit@gmail.com" );
     aboutData.addAuthor( ki18n("Ian 'The Beard' Monroe"),
             ki18n(( "Developer (eean)" )), "ian@monroe.nu", "http://www.monroe.nu/" );
     aboutData.addAuthor( ki18n("Jeff 'IROCKSOHARD' Mitchell"),

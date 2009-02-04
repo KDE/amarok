@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
- *                        (C) 2008 Dan Meltzer <hydrogen@notyetimplemented.com>
+ *                        (C) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

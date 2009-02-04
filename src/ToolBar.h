@@ -2,7 +2,7 @@
 
 /***************************************************************************
 *   copyright: Max Howell <max.howell@methylblue.com>, (C) 2004            *
-*              Dan Meltzer <hydrogen@notyetimplemented.com>, (C) 2007      *
+*              Dan Meltzer <parallelgrapefruit@gmail.com>, (C) 2007      *
 ***************************************************************************/
 
 
