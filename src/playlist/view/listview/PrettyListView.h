@@ -26,6 +26,8 @@
 #include <QPersistentModelIndex>
 #include <QRect>
 
+class PopupDropper;
+class PopupDropperAction;
 class QContextMenuEvent;
 class QDragLeaveEvent;
 class QDragMoveEvent;
@@ -47,7 +49,7 @@ public:
 
 signals:
     void found();
-    void notFound(); 
+    void notFound();
 
     // these slots are used by the ContextMenu
 public slots:
@@ -81,6 +83,7 @@ private:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
     void paintEvent( QPaintEvent* );
+    void startDrag( Qt::DropActions supportedActions );
 
     bool mouseEventInHeader( const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
@@ -90,11 +93,15 @@ private:
 
     void startProxyUpdateTimeout();
 
+    void trackMenu( QWidget *, const QModelIndex &, const QPoint &pos, bool coverActions = false );
+    QList<PopupDropperAction *> actionsFor( const QModelIndex &index, bool coverActions );
+
     QRect m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;
     bool m_mousePressInHeader;
 
     QTimer * m_proxyUpdateTimer;
+    PopupDropper* m_pd;
 };
 }
 #endif
