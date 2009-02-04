@@ -626,6 +626,9 @@ Mp4ThroughAnalyzer::connectInputStream(InputStream* in) {
     while(in->size() == -1 || filepos < in->size())
     {
         int32_t nreq = filepos + 2*4;
+        if (nreq < 0) { // overflow
+            return in;
+        }
         nread = in->read(buf, nreq, nreq);
         in->reset(0);
         if (nread < nreq) {
@@ -639,6 +642,9 @@ Mp4ThroughAnalyzer::connectInputStream(InputStream* in) {
            boxlength = in->size()-filepos;
         }
         nreq = filepos+boxlength;
+        if (nreq < 0) { // overflow
+            return in;
+        }
         nread = in->read(buf, nreq, nreq);
         in->reset(0);
         if (nread < nreq) {
