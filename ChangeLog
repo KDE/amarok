@@ -66,6 +66,8 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * QtScript correctly writes the tags of tracks metadata it changes. 
+      (BR 182667)
     * Don't crash if a script has uncaught exceptions.
     * Fix "Stop Playing After Track". It is working now. (BR 180486)
     * Fix switching tracks in random tracks mode. (BR 176019)

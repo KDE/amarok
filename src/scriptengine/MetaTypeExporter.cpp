@@ -22,8 +22,14 @@
 #include <QtScript>
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
-#define GET_TRACK_EC Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() ); \
-Meta::EditCapability* ec = track->as<Meta::EditCapability>();
+#define GET_TRACK_EC( X ) Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() ); \
+Meta::EditCapability* ec = track->as<Meta::EditCapability>(); \
+if( ec ) \
+{ \
+    ec->beginMetaDataUpdate(); \
+    X; \
+    ec->endMetaDataUpdate(); \
+}
 
 MetaTrackPrototype::MetaTrackPrototype()
 {
@@ -203,8 +209,9 @@ MetaTrackPrototype::isValid() const
 bool
 MetaTrackPrototype::isEditable() const
 {
-    GET_TRACK_EC
-    return ( ec );
+    GET_TRACK
+    Meta::EditCapability* ec = track->as<Meta::EditCapability>();
+    return ( ec && ec->isEditable() );
 }
 
 QString
@@ -231,57 +238,49 @@ MetaTrackPrototype::setRating( int rating )
 void
 MetaTrackPrototype::setTrackNumber( int number )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setTrackNumber( number );
+    GET_TRACK_EC( ec->setTrackNumber( number ) )
 }
 
 void
 MetaTrackPrototype::setDiscNumber( int number )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setDiscNumber( number );
+    GET_TRACK_EC( ec->setDiscNumber( number ) )
 }
 
 void
 MetaTrackPrototype::setAlbum( QString album )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setAlbum( album );
+    GET_TRACK_EC( ec->setAlbum( album ) )
 }
 
 void
 MetaTrackPrototype::setArtist( QString artist )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setArtist( artist );
+    GET_TRACK_EC( ec->setArtist( artist ) )
 }
 
 void
 MetaTrackPrototype::setComposer( QString composer )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setComposer( composer );
+    GET_TRACK_EC( ec->setComposer( composer ) )
 }
 
 void
 MetaTrackPrototype::setGenre( QString genre )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setGenre( genre );
+    GET_TRACK_EC( ec->setGenre( genre ) )
 }
 
 void
 MetaTrackPrototype::setYear( QString year )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setYear( year );
+    GET_TRACK_EC( ec->setYear( year ) )
 }
 
 void
 MetaTrackPrototype::setComment( QString comment )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setComment( comment );
+    GET_TRACK_EC( ec->setComment( comment ) )
 }
 
 void
@@ -294,8 +293,7 @@ MetaTrackPrototype::setLyrics( QString lyrics )
 void
 MetaTrackPrototype::setTitle( const QString& title )
 {
-    GET_TRACK_EC
-    if ( ec ) ec->setTitle( title );
+    GET_TRACK_EC( ec->setTitle( title ) )
 }
 
 void
@@ -309,4 +307,3 @@ MetaTrackPrototype::setImageUrl(const QString& imageUrl )
 #undef GET_TRACK_EC
 
 #include "MetaTypeExporter.moc"
-
