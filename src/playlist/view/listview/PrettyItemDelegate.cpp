@@ -267,7 +267,22 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
 
         QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
         int currentItemX = itemOffsetX;
+
+
+
         
+        //we need to do a quick pass to figure out how much space is left for auto sizing elements
+        qreal spareSpace = 1.0;
+        int autoSizeElemCount = 0;
+        for ( int k = 0; k < elementCount; ++k )
+        {
+            spareSpace -= row.element( k ).size();
+            if ( row.element( k ).size() < 0.001 ) {
+                autoSizeElemCount++;
+            }
+        }
+
+        qreal spacePerAutoSizeElem = spareSpace / (qreal) autoSizeElemCount;
         for ( int j = 0; j < elementCount; ++j )
         {
 
@@ -292,9 +307,16 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
             painter->setFont( font );
 
             QRectF elementBox;
-            if ( element.size() > 0.0 )
+
+            qreal size;
+            if ( element.size() > 0.0001 )
+                size = element.size();
+            else 
+                size = spacePerAutoSizeElem;
+            
+            if ( size > 0.0001 )
             {
-                itemWidth = rowWidth * element.size();
+                itemWidth = rowWidth * size;
 
                 //special case for painting the rating...
                 if ( value == Rating )
@@ -340,14 +362,6 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                 }
 
                 currentItemX += itemWidth;
-            }
-            else
-            {
-                painter->drawText( rowBox, alignment, text, &elementBox );
-                if (alignment & Qt::AlignRight)
-                    rowBox.setRight( elementBox.left() - PADDING );
-                else
-                    rowBox.setLeft( elementBox.right() + PADDING );
             }
 
         }

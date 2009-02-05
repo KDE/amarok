@@ -108,7 +108,7 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
     
     QSlider * slider = new QSlider( Qt::Horizontal, sliderBox );
     slider->setMaximum( 100 );
-    slider->setMinimum( 2 );
+    slider->setMinimum( 0 );
     slider->setValue( m_size * 100.0 );
 
     QLCDNumber * sizeLabel = new QLCDNumber( 3, sliderBox );

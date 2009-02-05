@@ -137,10 +137,6 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
 
         FilenameLayoutWidget * currentLayoutWidget = m_rowMap.value( i );
         QList<Token *> tokens = currentLayoutWidget->currentTokenLayout();
-        
-        int noOfElements = tokens.count();
-        //FIXME! for now, each element get the same size. This needs extensions to the token stuff
-        qreal defaultSize = 1.0 / ( (qreal) noOfElements );
 
         foreach( Token * token, tokens ) {
             TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );
@@ -148,7 +144,7 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
             bool bold;
             bool italic;
             Qt::Alignment alignment;
-            qreal size = defaultSize;
+            qreal size = 0.0;
             if ( twl )
             {
                 bold = twl->bold();
