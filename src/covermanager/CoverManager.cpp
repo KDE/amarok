@@ -51,7 +51,7 @@
 #include <QTimer>    //search filter timer
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
-//Added by qt3to4:
+
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -243,7 +243,6 @@ CoverManager::slotContinueConstruction() //SLOT
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
-
 
     //cover view
     m_coverView = new CoverView( vbox );
@@ -494,15 +493,15 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
 
     m_progressDialog->setMaximum( m_albumList.count() );
 
-    //insert the covers first because the list view is soooo paint-happy
-    //doing it in the second loop looks really bad, unfortunately
-    //this is the slowest step in the bit that we can't process events
     uint x = 0;
     foreach( Meta::AlbumPtr album, m_albumList )
     {
-        m_coverItems.append( new CoverViewItem( m_coverView, album ) );
+        CoverViewItem *item = new CoverViewItem( m_coverView, album );
+        m_coverItems.append( item );
+        item->loadCover();
 
-        if ( ++x % 50 == 0 ) {
+        if ( ++x % 50 == 0 )
+        {
             m_progressDialog->setValue( x );
             kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
 
@@ -510,22 +509,6 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
             if( m_progressDialog->wasCanceled() )
                break;
         }
-    }
-
-    //now, load the thumbnails
-    QList<QListWidgetItem*> items;
-    int i = 0;
-    for ( QListWidgetItem *item = m_coverView->item( i );
-          i < m_coverView->count();
-          item = m_coverView->item( i++ ) )
-    {
-        m_progressDialog->setValue( m_progressDialog->value() + 1 );
-        kapp->processEvents();
-
-        if( m_progressDialog->wasCanceled() )
-           break;
-
-        static_cast<CoverViewItem*>(item)->loadCover();
     }
 
     updateStatusBar();
@@ -584,23 +567,23 @@ void CoverManager::slotSetFilterTimeout() //SLOT
 void CoverManager::changeView( int id  ) //SLOT
 {
     DEBUG_BLOCK
-    
-    if( m_currentView == id ) 
+
+    if( m_currentView == id )
         return;
 
     //clear the iconview without deleting items
     m_coverView->clearSelection();
 
-    while ( m_coverView->count() > 0 ) 
+    while ( m_coverView->count() > 0 )
        m_coverView->takeItem( 0 );
 
     foreach( QListWidgetItem *item, m_coverItems )
     {
         bool show = false;
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( !m_filter.isEmpty() ) 
+        if( !m_filter.isEmpty() )
         {
-            if( !coverItem->album().contains( m_filter, Qt::CaseInsensitive ) && 
+            if( !coverItem->album().contains( m_filter, Qt::CaseInsensitive ) &&
                 !coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
                 continue;
         }
@@ -720,7 +703,7 @@ void CoverManager::updateStatusBar()
             QTimer::singleShot( 2000, this, SLOT( updateStatusBar() ) );
         }
 
-        if( m_fetchingCovers == 1 ) 
+        if( m_fetchingCovers == 1 )
         {
             foreach( Meta::AlbumPtr album, m_fetchCovers )
             {
@@ -737,9 +720,9 @@ void CoverManager::updateStatusBar()
             text = i18np( "Fetching 1 cover: ", "Fetching <b>%1</b> covers... : ", m_fetchingCovers );
             if( m_coversFetched )
                 text += i18np( "1 fetched", "%1 fetched", m_coversFetched );
-            if( m_coverErrors ) 
+            if( m_coverErrors )
             {
-                if( m_coversFetched ) 
+                if( m_coversFetched )
                     text += i18n(" - ");
                 text += i18np( "1 not found", "%1 not found", m_coverErrors );
             }
@@ -747,7 +730,7 @@ void CoverManager::updateStatusBar()
                 text += i18n( "Connecting..." );
         }
     }
-    else 
+    else
     {
         m_coversFetched = 0;
         m_coverErrors = 0;
@@ -770,7 +753,7 @@ void CoverManager::updateStatusBar()
 
         if( !m_filter.isEmpty() )
             text = i18np( "1 result for \"%2\"", "%1 results for \"%2\"", totalCounter, m_filter );
-        else if( m_artistView->selectedItems().count() > 0 ) 
+        else if( m_artistView->selectedItems().count() > 0 )
         {
             text = i18np( "1 album", "%1 albums", totalCounter );
             if( m_artistView->selectedItems().first() != m_artistView->invisibleRootItem()->child( 0 ) ) //showing albums by an artist
