@@ -138,6 +138,9 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 void
 PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
+    Q_UNUSED( event )
+    AMAROK_NOTIMPLEMENTED
+
 //     switch( event->key() )
 //     {
 //         case Qt::Key_Delete:

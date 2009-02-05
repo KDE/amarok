@@ -44,7 +44,9 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , EngineObserver( The::engineController() )
     , m_curState( Home )
 {
+    Q_UNUSED( corona )
     DEBUG_BLOCK
+
     s_self = this;
 
 //     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
