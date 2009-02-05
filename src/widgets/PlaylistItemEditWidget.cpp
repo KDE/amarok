@@ -113,6 +113,7 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
             Playlist::PrettyItemConfigRowElement element = rowConfig.element( j );
             TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
             token->setBold( element.bold() );
+            token->setItalic( element.italic() );
             token->setAlignment( element.alignment() );
             currentRow->addToken( token );
             token->setSize( element.size() * 100.0 );
@@ -145,11 +146,13 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
             TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );
 
             bool bold;
+            bool italic;
             Qt::Alignment alignment;
             qreal size = defaultSize;
             if ( twl )
             {
                 bold = twl->bold();
+                italic = twl->italic();
                 alignment = twl->alignment();
 
                 if ( twl->size() > 0.01 ) {
@@ -162,7 +165,7 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
                 alignment = Qt::AlignCenter;
             }
 
-            currentRowConfig.addElement( PrettyItemConfigRowElement( token->value(), size, bold, alignment ) );
+            currentRowConfig.addElement( PrettyItemConfigRowElement( token->value(), size, bold, italic, alignment ) );
         }
 
         config.addRow( currentRowConfig );

@@ -283,10 +283,12 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
             text = element.prefix() + text + element.suffix();
 
             bool bold = element.bold();
+            bool italic = element.italic();
             int alignment = element.alignment();
 
             QFont font = option.font;
             font.setBold( bold );
+            font.setItalic( italic );
             painter->setFont( font );
 
             QRectF elementBox;

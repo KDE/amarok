@@ -49,6 +49,7 @@ TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, 
 {
     m_alignment = Qt::AlignCenter;
     m_bold = false;
+    m_italic = false;
 }
 
 
@@ -65,6 +66,10 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
     KAction *boldAction = new KAction( KIcon( "format-text-bold"), i18n( "Bold" ), &menu );
     boldAction->setCheckable( true );
     boldAction->setChecked( m_bold );
+
+    KAction *italicAction = new KAction( KIcon( "format-text-italic"), i18n( "Italic" ), &menu );
+    italicAction->setCheckable( true );
+    italicAction->setChecked( m_italic );
 
     KAction *alignLeftAction = new KAction( KIcon( "format-justify-left"), i18n( "Left" ), &menu );
     KAction *alignCenterAction = new KAction( KIcon( "format-justify-center"), i18n( "Center" ), &menu );
@@ -87,6 +92,7 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
 
 
     menu.addAction( boldAction );
+    menu.addAction( italicAction );
     menu.addSeparator()->setText( i18n( "Alignment" ) );
     menu.addAction( alignLeftAction );
     menu.addAction( alignCenterAction );
@@ -132,6 +138,8 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
         setAlignment( Qt::AlignRight );
     else if( a == boldAction )
         setBold( boldAction->isChecked() );
+    else if( a == italicAction )
+        setItalic( italicAction->isChecked() );
 
 }
 
@@ -146,7 +154,7 @@ void TokenWithLayout::setAlignment( Qt::Alignment alignment )
     m_label->setAlignment( alignment );
 }
 
-bool TokenWithLayout::bold()
+bool TokenWithLayout::bold() const
 {
     return m_bold;
 }
@@ -186,9 +194,22 @@ void TokenWithLayout::setSize( int size )
     }
 }
 
-qreal TokenWithLayout::size()
+qreal TokenWithLayout::size() const
 {
     return m_size;
+}
+
+bool TokenWithLayout::italic() const
+{
+    return m_italic;
+}
+
+void TokenWithLayout::setItalic( bool italic )
+{
+    m_italic = italic;
+    QFont font = m_label->font();
+    font.setItalic( italic );
+    m_label->setFont( font );
 }
 
 

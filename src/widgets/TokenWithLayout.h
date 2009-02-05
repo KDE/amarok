@@ -44,9 +44,12 @@ public:
     Qt::Alignment alignment();
     void setAlignment( Qt::Alignment alignment );
 
-    bool bold();
+    bool bold() const;
     void setBold( bool bold );
-    qreal size();
+
+    bool italic() const;
+    void setItalic( bool italic );
+    qreal size() const;
 
     
 public slots:
@@ -60,6 +63,7 @@ private:
 
     Qt::Alignment m_alignment;
     bool m_bold;
+    bool m_italic;
     qreal m_size;
 
 };

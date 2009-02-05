@@ -204,6 +204,7 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
             QString sufix = elementNode.toElement().attribute( "suffix", QString() );
             qreal size = elementNode.toElement().attribute( "size", "0.0" ).toDouble();
             bool bold = ( elementNode.toElement().attribute( "bold", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+            bool italic = ( elementNode.toElement().attribute( "italic", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
             Qt::Alignment alignment;
             
@@ -215,7 +216,7 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
             else
                 alignment = Qt::AlignCenter| Qt::AlignVCenter;
 
-            row.addElement( PrettyItemConfigRowElement( value, size, bold, alignment, prefix, sufix ) );
+            row.addElement( PrettyItemConfigRowElement( value, size, bold, italic, alignment, prefix, sufix ) );
         }
 
         config.addRow( row );
@@ -296,6 +297,7 @@ QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const 
             elementElement.setAttribute ( "value", columnNames[element.value()] );
             elementElement.setAttribute ( "size", QString::number( element.size() ) );
             elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
+            elementElement.setAttribute ( "italic", element.italic() ? "true" : "false" );
 
             QString alignmentString;
             if ( element.alignment() & Qt::AlignLeft )

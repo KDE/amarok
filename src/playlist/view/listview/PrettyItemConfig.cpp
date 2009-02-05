@@ -21,11 +21,12 @@
 
 namespace Playlist {
 
-    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, Qt::Alignment alignment,
+    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
                                                             const QString &prefix , const QString &suffix )
     : m_value( value )
     , m_size( size )
     , m_bold( bold )
+    , m_italic( italic )
     , m_alignment( alignment )
     , m_prefix( prefix )
     , m_suffix( suffix )
@@ -45,6 +46,11 @@ qreal PrettyItemConfigRowElement::size() const
 bool PrettyItemConfigRowElement::bold() const
 {
     return m_bold;
+}
+
+bool Playlist::PrettyItemConfigRowElement::italic() const
+{
+    return m_italic;
 }
 
 Qt::Alignment PrettyItemConfigRowElement::alignment() const
@@ -174,6 +180,8 @@ void Playlist::PlaylistLayout::setIsEditable( bool editable )
 }
 
 }
+
+
 
 
 
