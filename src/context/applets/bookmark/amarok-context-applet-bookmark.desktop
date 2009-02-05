@@ -2,6 +2,7 @@
 Name=Bookmark Manager
 Name[cs]=Správce záložek
 Name[et]=Järjehoidjate haldur
+Name[ga]=Bainisteoir na Leabharmharcanna
 Name[gl]=Xestor de marcadores
 Name[km]=កម្មវិធី​គ្រប់គ្រង​ចំណាំ
 Name[nds]=Leestekenpleger
@@ -13,6 +14,7 @@ Name[sv]=Bokmärkeshantering
 Name[th]=เครื่องมือแก้ไขที่คั่นหน้าของแอมอะร็อก
 Name[tr]=Yer İmleri Yöneticisi
 Name[uk]=Інструмент керування закладками
+Name[x-test]=xxBookmark Managerxx
 Type=Service
 ServiceTypes=Plasma/Applet
 
