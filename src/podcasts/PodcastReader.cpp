@@ -28,7 +28,7 @@
 /* used as PubDate for Podcasts module RSS
 ** Mon, 13 Mar 2006 23:37:46 +0000
 */
-#define RFC822_DATE_FORMAT "ddd, d MMM yyyy HH:mm:ss"
+#define RFC822_DATE_FORMAT "d MMM yyyy HH:mm:ss"
 
 using namespace Meta;
 
@@ -293,13 +293,17 @@ PodcastReader::read()
 QDateTime
 PodcastReader::parsePubDate( const QString &datestring )
 {
-    //slightly hackish: leftmost 25 characters should be everything minus the zone
+    DEBUG_BLOCK
+    QString goodString = datestring.trimmed();
+    //first remove the day since that is locale dependant
+    QStringList parsedString = goodString.split(',');
+    if( parsedString.count() == 2 )
+        goodString = parsedString[1];
+    //slightly hackish: leftmost 21 characters should be everything minus the zone
     //remove the whitespace with simplified() in case the date number was 1 long
-    QDateTime pubdate = QDateTime::fromString(datestring.left( 25 ).simplified(), RFC822_DATE_FORMAT);
-    if( pubdate.isValid() )
-        return pubdate;
-    else
-        return QDateTime::currentDateTime();
+    goodString = goodString.left( 21 ).simplified();
+    QDateTime pubdate = QDateTime::fromString(goodString, RFC822_DATE_FORMAT);
+    return pubdate;
 }
 
 void
