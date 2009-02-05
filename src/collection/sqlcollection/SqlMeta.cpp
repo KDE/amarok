@@ -305,7 +305,6 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     m_trackPeakGain = (*(iter++)).toDouble();
     if ( albumGain.isEmpty() )
     {
-        debug() << "No album gain for" << m_url << "!  Using track gain (" << m_trackGain << ") instead";
         m_albumGain = m_trackGain;
         m_albumPeakGain = m_trackPeakGain;
     }
