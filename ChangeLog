@@ -3,6 +3,9 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 VERSION 2.0.2
+  CHANGES:
+    * Show a statusbar message when loving a lastfm track.
+
   BUGFIXES:
     * Fix crash in tagdialog when editing tracks without an artist. (BR 183180)
     * Statistics were not calculated properly in all instances. (BR 182025)
