@@ -3,8 +3,8 @@
     <layout name="Default">
         <single_track show_cover="true">
             <row>
-                <element value="Title" size="0.5" bold="false" alignment="left"/>
-                <element value="Length" size="0.5" bold="false" alignment="right"/>
+                <element value="Title" size="0.80" bold="false" alignment="left"/>
+                <element value="Length" size="0.20" bold="false" alignment="right"/>
             </row>
             <row>
                 <element value="Artist" size="0.5" bold="false" alignment="left"/>
