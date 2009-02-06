@@ -1018,7 +1018,7 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, 
         row--;
     }
 
-    //we have searche through everything and not found anything that matched _below_
+    //we have searched through everything and not found anything that matched _below_
     //the selected index. So return the first one found above it ( wrap around )
     return lastMatch;
 }

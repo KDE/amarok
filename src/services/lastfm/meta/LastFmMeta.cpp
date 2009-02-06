@@ -60,7 +60,7 @@ Track::Track( const QString &lastFmUri )
 {
     d->lastFmUri = QUrl( lastFmUri );
     d->t = this;
-    
+
 
     init();
 }
@@ -78,7 +78,7 @@ Track::Track( ::Track track )
       .add( "track", track.title() )
       .add( "api_key", Ws::ApiKey )
       .get();
-      
+
       connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( slotResultReady( WsReply* ) ) );
 }
 
@@ -99,14 +99,6 @@ void Track::init( int id /* = -1*/ )
     d->genrePtr = Meta::GenrePtr( new LastFmGenre( QPointer<Track::Private>( d ) ) );
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
-
-
-    //not needed any more as all tracks can now be loved, not just last.fm ones
-    /*PopupDropperAction * loveAction = new PopupDropperAction( KIcon( "love-amarok" ), i18n( "Last.fm: &Love" ), this );
-    loveAction->setShortcut( i18n( "Ctrl+L" ) );
-    loveAction->setStatusTip( i18n( "Love this track on Last.fm" ) );
-    connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );
-    m_currentTrackActions.append( loveAction );*/
 
     PopupDropperAction * banAction = new PopupDropperAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
@@ -330,7 +322,7 @@ Track::collection() const
     return 0;
 }
 
-void 
+void
 Track::setTrackInfo( const ::Track &track )
 {
     d->setTrackInfo( track );
@@ -346,8 +338,8 @@ Track::streamName() const
     {
         QString customPart = elements[2];
         customPart = customPart.replace( "%20", " " );
-        
-        
+
+
         if( elements[1] == "globaltags" )
         {
                 // lastfm://globaltag/<tag>
@@ -380,19 +372,19 @@ Track::streamName() const
                 // lastfm://user/<user>/neighbours
                 if( elements[3] == "neighbours" )
                     return i18n( "%1's Neighbor Radio", elements[2] );
-                    
+
                 // lastfm://user/<user>/personal
                 else if( elements[3] == "personal" )
                     return i18n( "%1's Personal Radio", elements[2] );
-                    
+
                 // lastfm://user/<user>/loved
                 else if( elements[3] == "loved" )
                     return i18n( "%1's Loved Radio", elements[2] );
-                    
+
                 // lastfm://user/<user>/recommended
                 else if( elements.size() < 5 && elements[3] == "recommended" )
-                    return i18n( "%1's Recommended Radio", elements[2] );    
-                
+                    return i18n( "%1's Recommended Radio", elements[2] );
+
                 // lastfm://user/<user>/recommended/<popularity>
                 else if( elements.size() >= 5 && elements[3] == "recommended" )
                     return i18n( "%1's Recommended Radio (Popularity %2)", elements[2], elements[4] );
@@ -426,7 +418,7 @@ void
 Track::love()
 {
     DEBUG_BLOCK
-    
+
     debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
     WsReply* reply = MutableTrack( d->lastFmTrack ).love();
     connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
@@ -439,7 +431,7 @@ Track::ban()
     WsReply* reply = MutableTrack( d->lastFmTrack ).ban();
     connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
     emit( skipTrack() );
-    
+
 }
 
 void
@@ -467,11 +459,11 @@ void Track::slotResultReady( WsReply *reply )
 }
 
 
-void 
+void
 Track::slotWsReply( WsReply *reply )
 {
     if( reply->error() == Ws::NoError )
-    {   
+    {
         //debug() << "successfully completed WS transaction";
     } else
     {

@@ -59,7 +59,7 @@ WsReply::onFinished()
             m_lfm = m_xml.documentElement();
 
             if (m_lfm.isNull())
-                throw Ws::MalformedResponse;
+                qDebug() << "M_LFM is Null";
 
             QString const status = m_lfm.attribute( "status" );
             QDomElement error = m_lfm.firstChildElement( "error" );
@@ -67,9 +67,11 @@ WsReply::onFinished()
 
             if (status == "failed" || n == 1 && !error.isNull())
             {
-                throw error.isNull()
-                        ? Ws::MalformedResponse
-                        : Ws::Error( error.attribute( "code" ).toUInt() );
+                if( error.isNull() )
+                    qDebug() << "Error is null!";
+
+                else
+                    qDebug() << "ERROR in lastfm! " << error.attribute("code").toUInt();
             }
 
 			// no elements beyond the lfm is perfectably acceptable
@@ -129,7 +131,7 @@ WsReply::onFinished()
                 // QMetaObject in App::App(). Neat :)
                 QMetaObject::invokeMethod( qApp, "onWsError", Q_ARG( Ws::Error, m_error ) );
                 break;
-			
+
 			default: //please, I want a pragma to remove this warning
 				break;
         }

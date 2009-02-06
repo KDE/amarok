@@ -60,7 +60,7 @@ void Bookmark::init()
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
 
     m_bookmarkWidget = new BookmarkManagerWidgetProxy( this );
-    
+
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
@@ -77,7 +77,7 @@ void Bookmark::constraintsEvent( Plasma::Constraints constraints )
     m_bookmarkWidget->setGeometry( QRectF( 10, 10, size().toSize().width() - 20 , size().toSize().height() - 20 ) );
 }
 
-QSizeF 
+QSizeF
 Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
     Q_UNUSED( which )
@@ -90,7 +90,7 @@ Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 
 void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
-    Q_UNUSED( option );
+    Q_UNUSED( option ); Q_UNUSED(p);
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
