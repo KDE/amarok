@@ -23,53 +23,20 @@
 
 #include "SvgHandler.h"
 
+#include <QAction>
 #include <QAbstractButton>
+#include <QList>
+
 #include <kvbox.h>
 
 class QTimer;
-
-class SideBarWidget: public KVBox
-{
-    typedef KVBox super;
-    Q_OBJECT
-    public:
-        SideBarWidget( QWidget *parent );
-        virtual ~SideBarWidget();
-
-        /* Restores visible/invisible and active/inactive state of browsers from last session */
-        void restoreSession();
-
-        int addSideBar( const QIcon &icon, const QString &text );
-        int count() const;
-        QString text( int index ) const;
-        QIcon icon( int index ) const;
-
-    public slots:
-        void open( int index );
-
-    signals:
-        void opened( int index );
-        void closed();
-
-    protected:
-        virtual void wheelEvent( QWheelEvent *e );
-
-    private slots:
-        void slotClicked( bool checked );
-        void slotSetVisible( bool visible );
-
-    private:
-        void updateShortcuts();
-        class Private;
-        Private* const d;
-};
-
 
 class SideBarButton: public QAbstractButton
 {
     Q_OBJECT
 
     typedef QAbstractButton super;
+
     public:
         SideBarButton( const QIcon &icon, const QString &text, QWidget *parent );
 
@@ -102,5 +69,49 @@ class SideBarButton: public QAbstractButton
         QTimer* m_animTimer;
         QTimer* m_autoOpenTimer;
 };
+
+
+class SideBarWidget: public KVBox
+{
+    typedef KVBox super;
+
+    Q_OBJECT
+
+    public:
+        SideBarWidget( QWidget *parent );
+        virtual ~SideBarWidget();
+
+        /* Restores visible/invisible and active/inactive state of browsers from last session */
+        void restoreSession();
+
+        int addSideBar( const QIcon &icon, const QString &text );
+        int count() const;
+        QString text( int index ) const;
+        QIcon icon( int index ) const;
+
+    public slots:
+        void open( int index );
+
+    signals:
+        void opened( int index );
+        void closed();
+
+    protected:
+        virtual void wheelEvent( QWheelEvent *e );
+
+    private slots:
+        void slotClicked( bool checked );
+        void slotSetVisible( bool visible );
+
+    private:
+        void updateShortcuts();
+
+        QList<SideBarButton*> m_buttons;
+        QList<QAction*> m_actions;
+        QList<QAction*> m_shortcuts;
+        QAction* m_closeShortcut;
+        QList<int> m_visible;
+};
+
 
 #endif
