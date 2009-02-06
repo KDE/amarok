@@ -92,7 +92,7 @@ EngineController::EngineController()
 //     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
 //         m_media->setTransitionTime( -AmarokConfig::crossfadeLength() );
 
-    connect( m_media, SIGNAL( finished() ), SLOT( slotTrackEnded() ) );
+    connect( m_media, SIGNAL( finished() ), SLOT( slotQueueEnded() ) );
 
     // Get the next track when there is 2 seconds left on the current one.
     m_media->setPrefinishMark( 2000 );
@@ -489,7 +489,6 @@ EngineController::trackLength() const
 void
 EngineController::setNextTrack( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
     if( !track )
@@ -502,15 +501,14 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     if( m_media->state() == Phonon::PlayingState ||
         m_media->state() == Phonon::BufferingState )
     {
-        DEBUG_LINE_INFO
         m_media->clearQueue();
-        m_media->enqueue( track->playableUrl() );
+        if( track->playableUrl().isLocalFile() )
+            m_media->enqueue( track->playableUrl() );
         m_nextTrack = track;
         m_nextUrl = track->playableUrl();
     }
     else
     {
-        DEBUG_LINE_INFO
         play( track );
     }
 }
@@ -553,6 +551,7 @@ EngineController::slotTick( qint64 position )
     trackPositionChangedNotify( static_cast<long>( position ), false ); //it expects milliseconds
 }
 
+
 void
 EngineController::slotAboutToFinish()
 {
@@ -561,10 +560,12 @@ EngineController::slotAboutToFinish()
     m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
     if( m_multi )
     {
+        DEBUG_LINE_INFO
         m_mutex.lock();
         m_playWhenFetched = false;
         m_mutex.unlock();
         m_multi->fetchNext();
+        debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
     }
 
     else if( m_media->queue().isEmpty() )
@@ -572,7 +573,7 @@ EngineController::slotAboutToFinish()
 }
 
 void
-EngineController::slotTrackEnded()
+EngineController::slotQueueEnded()
 {
     DEBUG_BLOCK
 
@@ -589,10 +590,12 @@ EngineController::slotTrackEnded()
     // Non-local urls are not enqueued so we must play them explicitly.
     if( m_nextTrack )
     {
+        DEBUG_LINE_INFO
         play( m_nextTrack );
     }
     else if( !m_nextUrl.isEmpty() )
     {
+        DEBUG_LINE_INFO
         playUrl( m_nextUrl, 0 );
     }
     else
@@ -655,7 +658,21 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         return;
 
     if( newState == Phonon::ErrorState )  // If media is borked, skip to next track
+    {
         warning() << "Phonon failed to play this URL. Error: " << m_media->errorString();
+        if( m_multi )
+        {
+            DEBUG_LINE_INFO
+            m_mutex.lock();
+            m_playWhenFetched = false;
+            m_mutex.unlock();
+            m_multi->fetchNext();
+            debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
+        }
+
+        else if( m_media->queue().isEmpty() )
+            The::playlistActions()->requestNextTrack();
+    }
 
     stateChangedNotify( newState, oldState );
 
@@ -669,7 +686,7 @@ void
 EngineController::slotPlayableUrlFetched( const KUrl &url )
 {
     DEBUG_BLOCK
-
+    debug() << "Fetched url: " << url;
     if( url.isEmpty() )
     {
         DEBUG_LINE_INFO
@@ -682,15 +699,18 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
         DEBUG_LINE_INFO
         m_mutex.lock();
         m_media->clearQueue();
-        m_media->enqueue( url );
+        if( url.isLocalFile() )
+            m_media->enqueue( url );
         m_nextTrack.clear();
         m_nextUrl = url;
+        debug() << "The next url we're playing is: " << m_nextUrl;
         // reset this flag each time
         m_playWhenFetched = true;
         m_mutex.unlock();
     }
     else
     {
+        DEBUG_LINE_INFO
         m_mutex.lock();
         playUrl( url, 0 );
         m_mutex.unlock();

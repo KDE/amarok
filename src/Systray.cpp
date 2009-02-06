@@ -98,8 +98,6 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 void
 Amarok::TrayIcon::setupToolTip()
 {
-    DEBUG_BLOCK
-
     if( m_track )
     {
         QString tooltip;

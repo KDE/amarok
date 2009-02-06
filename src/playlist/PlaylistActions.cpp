@@ -88,29 +88,22 @@ Playlist::Actions::~Actions()
 void
 Playlist::Actions::requestNextTrack()
 {
-    DEBUG_BLOCK
     if ( m_nextTrackCandidate != 0 )
-    {
-        debug() << "Already have a next track, why are we here?";
         return;
-    }
     m_trackError = false;
     m_currentTrack = Model::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
     {
-        DEBUG_LINE_INFO
             setStopAfterMode( StopAfterCurrent );
     }
     m_nextTrackCandidate = m_navigator->requestNextTrack();
     m_currentTrack = m_nextTrackCandidate;
     if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
     {
-        DEBUG_LINE_INFO
         setStopAfterMode( StopNever );
     }
     else
     {
-        debug() << "Playing next track: " << m_nextTrackCandidate;
         play( m_nextTrackCandidate, false );
     }
 }
