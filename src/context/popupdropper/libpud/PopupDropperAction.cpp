@@ -71,36 +71,18 @@ PopupDropperAction::PopupDropperAction( const QIcon & icon, const QString & text
 {
 }
 
-PopupDropperAction::PopupDropperAction( const QString &file, const QString &text, QObject *parent )
+PopupDropperAction::PopupDropperAction( const QString &elementId, const QString &text, QObject *parent )
     : QAction( text, parent )
     , d( new PopupDropperActionPrivate )
 {
-    d->renderer = new QSvgRenderer( file, this );
-    d->ownRenderer = true;
+    d->elementId = elementId;
 }
 
-PopupDropperAction::PopupDropperAction( const QString &file, const QIcon &icon, const QString &text, QObject *parent )
+PopupDropperAction::PopupDropperAction( const QString &elementId, const QIcon &icon, const QString &text, QObject *parent )
     : QAction( icon, text, parent )
     , d( new PopupDropperActionPrivate )
 {
-    d->renderer = new QSvgRenderer( file, this );
-    d->ownRenderer = true;
-}
-
-PopupDropperAction::PopupDropperAction( const QByteArray &contents, const QString &text, QObject *parent )
-    : QAction( text, parent )
-    , d( new PopupDropperActionPrivate )
-{
-    d->renderer = new QSvgRenderer( contents, this );
-    d->ownRenderer = true;
-}
-
-PopupDropperAction::PopupDropperAction( const QByteArray &contents, const QIcon &icon, const QString &text, QObject *parent )
-    : QAction( icon, text, parent )
-    , d( new PopupDropperActionPrivate )
-{
-    d->renderer = new QSvgRenderer( contents, this );
-    d->ownRenderer = true;
+    d->elementId = elementId;
 }
 
 PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &text, QObject *parent )
@@ -150,6 +132,18 @@ QSvgRenderer* PopupDropperAction::renderer() const
 void PopupDropperAction::setRenderer( QSvgRenderer *renderer )
 {
     d->renderer = renderer;
+}
+
+void PopupDropperAction::setRenderer( const QString &file )
+{
+    d->renderer = new QSvgRenderer( file, this );
+    d->ownRenderer = true;
+}
+
+void PopupDropperAction::setRenderer( const QByteArray &contents )
+{
+    d->renderer = new QSvgRenderer( contents, this );
+    d->ownRenderer = true;
 }
 
 QString PopupDropperAction::elementId() const

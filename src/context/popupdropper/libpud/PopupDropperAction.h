@@ -45,11 +45,9 @@ class POPUPDROPPER_EXPORT PopupDropperAction : public QAction
 public:
     PopupDropperAction( QObject *parent );
     PopupDropperAction( const QString &text, QObject *parent );
-    PopupDropperAction( const QString &file, const QString &text, QObject *parent );
-    PopupDropperAction( const QString &file, const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( const QIcon &icon, const QString &text, QObject *parent );
-    PopupDropperAction( const QByteArray &contents, const QString &text, QObject *parent );
-    PopupDropperAction( const QByteArray &contents, const QIcon &icon, const QString &text, QObject *parent );
+    PopupDropperAction( const QString &elementId, const QString &text, QObject *parent );
+    PopupDropperAction( const QString &elementId, const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( QSvgRenderer* renderer, const QString &text, QObject *parent );
     PopupDropperAction( QSvgRenderer* renderer, const QIcon &icon, const QString &text, QObject *parent );
     PopupDropperAction( QSvgRenderer* renderer, const QString &elementId, const QString &text, QObject *parent );
@@ -59,6 +57,8 @@ public:
 
     QSvgRenderer* renderer() const;
     void setRenderer( QSvgRenderer *renderer );
+    void setRenderer( const QString &file );
+    void setRenderer( const QByteArray &contents );
     QString elementId() const;
     void setElementId( const QString &id );
 

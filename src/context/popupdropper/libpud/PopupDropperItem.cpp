@@ -132,15 +132,18 @@ void PopupDropperItem::setAction( PopupDropperAction *action )
         }
         if( d->svgItem && pudaction->renderer() && pudaction->renderer()->isValid() )
             d->svgItem->setSharedRenderer( pudaction->renderer() );
-        if( d->svgItem && !pudaction->elementId().isEmpty() && d->svgItem->renderer() && d->svgItem->renderer()->elementExists( pudaction->elementId() ) )
-        {
+
+        if( d->svgItem && !pudaction->elementId().isEmpty() )
             d->svgItem->setElementId( pudaction->elementId() );
+
+        if( d->svgItem->renderer() && d->svgItem->renderer()->elementExists( pudaction->elementId() ) )
             d->svgItem->show();
-        }
         else if( d->svgItem )
             d->svgItem->hide();
+
         if( pudaction->isSeparator() )
             d->separator = true;
+        
         reposSvgItem();
 
         d->hoverIndicatorRectItem = new QGraphicsRectItem( this );
@@ -519,7 +522,16 @@ QSvgRenderer* PopupDropperItem::sharedRenderer() const
 void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
 {
     if( renderer && d->svgItem )
+    {
         d->svgItem->setSharedRenderer( renderer );
+        if( !d->svgItem->elementId().isEmpty() && d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) )
+        {
+            reposSvgItem();
+            d->svgItem->show();
+            if( d->pd )
+                d->pd->updateAllOverlays();
+        }
+    }
 }
 
 QString PopupDropperItem::elementId() const

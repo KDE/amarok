@@ -353,13 +353,14 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
     if( m_pd && m_pd->isHidden() )
     {
 
+        m_pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
         QModelIndexList indices = selectedIndexes();
 
         QList<PopupDropperAction*> actions =
                 actionsFor( indices.first(), true );
 
         foreach( PopupDropperAction * action, actions ) {
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
         }
 
         m_pd->show();
@@ -401,10 +402,10 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
 
     const bool isCurrentTrack = index.data( Playlist::ActiveTrackRole ).toBool();
 
-    PopupDropperAction *playAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "play", KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), this );
+    PopupDropperAction *playAction = new PopupDropperAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), this );
     connect( playAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
 
-    PopupDropperAction *pauseAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "pause", KIcon( "media-playback-pause-amarok" ), i18n( "&Pause" ), this );
+    PopupDropperAction *pauseAction = new PopupDropperAction( KIcon( "media-playback-pause-amarok" ), i18n( "&Pause" ), this );
     connect( pauseAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
 
     const bool isPaused = The::engineController()->isPaused();
@@ -413,10 +414,10 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
     else
         actions << playAction;
 
-    PopupDropperAction *queueAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "queue", KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
+    PopupDropperAction *queueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     connect( queueAction, SIGNAL( triggered() ), this, SLOT( queueSelection() ) );
 
-    PopupDropperAction *dequeueAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "dequeue", KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
+    PopupDropperAction *dequeueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     connect( dequeueAction, SIGNAL( triggered() ), this, SLOT( dequeueSelection() ) );
 
     const bool isQueued = index.data( Playlist::StateRole ).toInt() & Item::Queued;
@@ -425,15 +426,15 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
     else
         actions << queueAction;
 
-    PopupDropperAction *stopAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "stop", KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), this );
+    PopupDropperAction *stopAction = new PopupDropperAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), this );
     connect( stopAction, SIGNAL( triggered() ), this, SLOT( stopAfterTrack() ) );
     actions << stopAction;
 
-    PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "remove", KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), this );
+    PopupDropperAction *removeAction = new PopupDropperAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), this );
     connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeSelection() ) );
     actions << removeAction;
 
-    PopupDropperAction *editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
+    PopupDropperAction *editAction = new PopupDropperAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
     connect( editAction, SIGNAL( triggered() ), this, SLOT( editTrackInformation() ) );
     actions << editAction;
 
