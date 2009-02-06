@@ -47,7 +47,7 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( QGraphicsSvgItem* svgItem READ svgItem )
     Q_PROPERTY( QSvgRenderer* sharedRenderer READ sharedRenderer WRITE setSharedRenderer )
     Q_PROPERTY( QString elementId READ elementId WRITE setElementId )
-    Q_PROPERTY( QRect blankElementRect READ blankElementRect WRITE setBlankElementRect )
+    Q_PROPERTY( QRect svgElementRect READ svgElementRect WRITE setSvgElementRect )
     Q_PROPERTY( int horizontalOffset READ horizontalOffset WRITE setHorizontalOffset )
     Q_PROPERTY( int textOffset READ textOffset WRITE setTextOffset )
     Q_PROPERTY( int hoverMsecs READ hoverMsecs WRITE setHoverMsecs )
@@ -106,7 +106,7 @@ public:
 
     QGraphicsTextItem* textItem() const;
     void setTextItem( QGraphicsTextItem *textItem );
-    void reposSvgItem();
+    void scaleAndReposSvgItem();
     void reposTextItem();
     void reposHoverFillRects();
     QGraphicsRectItem* borderRectItem() const;
@@ -117,8 +117,8 @@ public:
     void setSharedRenderer( QSvgRenderer *renderer );
     QString elementId() const;
     void setElementId( const QString &id );
-    QRect blankElementRect() const;
-    void setBlankElementRect( const QRect &rect );
+    QRect svgElementRect() const;
+    void setSvgElementRect( const QRect &rect );
     int horizontalOffset() const;
     void setHorizontalOffset( int offset );
     int textOffset() const;
@@ -140,6 +140,8 @@ public:
     void setPopupDropper( PopupDropper* pd );
 
     //bool operator<( const PopupDropperItem &other ) const;
+
+    void fullUpdate();
     
     virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );

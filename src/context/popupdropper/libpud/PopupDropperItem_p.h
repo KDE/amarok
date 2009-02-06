@@ -61,7 +61,7 @@ public:
     bool customHoveredFillBrush;
     bool separator;
     QString file;
-    QRect blankElementRect;
+    QRect svgElementRect;
     int horizontalOffset;
     int textOffset;
     PopupDropperItem::HoverIndicatorShowStyle hoverIndicatorShowStyle;

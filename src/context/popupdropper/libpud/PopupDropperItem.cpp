@@ -55,7 +55,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , customHoveredFillBrush( false )
     , separator( false )
     , file( QString() )
-    , blankElementRect( 0, 0, 30, 50 )
+    , svgElementRect( 0, 0, 30, 50 )
     , horizontalOffset( 30 )
     , textOffset( 30 )
     , hoverIndicatorShowStyle( PopupDropperItem::Never )
@@ -144,7 +144,7 @@ void PopupDropperItem::setAction( PopupDropperAction *action )
         if( pudaction->isSeparator() )
             d->separator = true;
         
-        reposSvgItem();
+        scaleAndReposSvgItem();
 
         d->hoverIndicatorRectItem = new QGraphicsRectItem( this );
             
@@ -200,9 +200,7 @@ PopupDropperItem::Orientation PopupDropperItem::orientation() const
 void PopupDropperItem::setOrientation( const Orientation orientation )
 {
     d->orientation = orientation;
-    reposSvgItem();
-    reposTextItem();
-    reposHoverFillRects();
+    fullUpdate();
 }
 
 QString PopupDropperItem::text() const
@@ -378,10 +376,25 @@ QGraphicsSvgItem* PopupDropperItem::svgItem() const
     return d->svgItem;
 }
 
-void PopupDropperItem::reposSvgItem()
+void PopupDropperItem::scaleAndReposSvgItem()
 {
     if( !d->svgItem )
         return;
+
+    //Need to scale if it is too tall
+    //FIXME: Maybe if it is too wide as well?
+/*
+    qreal maxheight = boundingRect().height() - ( 2 *
+            ( d->hoverIndicatorRectItem ? d->hoverIndicatorRectItem->pen().width() : 10 )
+            - 10 );
+    qDebug() << "for PUD Item " << (QObject*)(this) << "with elementId " << d->svgItem->elementId();
+    qDebug() << "maxheight is " << maxheight << ", d->svgItem->boundingRect() is " << d->svgItem->boundingRect();
+    if( maxheight > d->svgItem->boundingRect().height() )
+    {
+        d->svgItem->scale( 1, maxheight / d->svgItem->boundingRect().height() );
+        qDebug() << "new boundingRect = " << d->svgItem->boundingRect() << endl;
+    }
+*/
     //qDebug() << "\n\nPUDItem boundingRect().width() = " << boundingRect().width();
     //qDebug() << "svgItem boundingRect width = " << d->svgItem->boundingRect().width();
     if( d->orientation == PopupDropperItem::Left )
@@ -417,39 +430,23 @@ void PopupDropperItem::reposTextItem()
         rightside = d->pd->viewSize().width();
     if( d->textItem )
     {
-        if( d->svgItem->elementId().isEmpty() || ( d->svgItem->renderer() && !d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) ) )
-        {
-            int offsetPos = d->horizontalOffset + d->textOffset + d->blankElementRect.width();
-            d->textItem->setPos(
-                    ( d->orientation == PopupDropperItem::Left
-                        ? offsetPos
-                        : ( d->borderRectItem
-                              ? d->borderRectItem->boundingRect().width() - offsetPos - d->textItem->boundingRect().width()
-                              : rightside - offsetPos - d->textItem->boundingRect().width()
-                          )
-                    )
-                , ( d->blankElementRect.height() / 2 ) - ( d->textItem->boundingRect().height() / 2 ) ); 
-        }
-        else
-        {
-            int offsetPos = d->horizontalOffset + d->textOffset + d->svgItem->boundingRect().width();
-            d->textItem->setPos(
-                    ( d->orientation == PopupDropperItem::Left
-                        ? offsetPos
-                        : ( d->borderRectItem
-                            ? d->borderRectItem->boundingRect().width() - offsetPos - d->textItem->boundingRect().width()
-                            : rightside - offsetPos - d->textItem->boundingRect().width()
-                          )
-                    )
-                , ( d->svgItem->boundingRect().height() / 2 ) - ( d->textItem->boundingRect().height() / 2 ) );
-        }
+        int offsetPos = d->horizontalOffset + d->textOffset + d->svgElementRect.width();
+        d->textItem->setPos(
+                ( d->orientation == PopupDropperItem::Left
+                    ? offsetPos
+                    : ( d->borderRectItem
+                          ? d->borderRectItem->boundingRect().width() - offsetPos - d->textItem->boundingRect().width()
+                          : rightside - offsetPos - d->textItem->boundingRect().width()
+                      )
+                )
+            , ( d->svgElementRect.height() / 2 ) - ( d->textItem->boundingRect().height() / 2 ) ); 
         d->textItem->setFont( d->font );
     }
 }
 
 void PopupDropperItem::reposHoverFillRects()
 {
-    if( !d->hoverIndicatorRectItem || !d->hoverIndicatorRectFillItem || !d->svgItem || !d->borderRectItem )
+    if( !d->hoverIndicatorRectItem || !d->hoverIndicatorRectFillItem || !d->textItem || !d->borderRectItem )
         return;
 
     //qDebug() << "\n\nPUDItem boundingRect().width() = " << boundingRect().width();
@@ -461,42 +458,22 @@ void PopupDropperItem::reposHoverFillRects()
             rightside = d->pd->viewSize().width();
     //int rightside = d->borderRectItem ? d->borderRectItem->boundingRect().width() : boundingRect().width();
     if( d->orientation == PopupDropperItem::Left )
-        startx = ( d->textItem
-                     && ( d->svgItem->elementId().isEmpty()
-                            || ( d->svgItem->renderer()
-                                && !d->svgItem->renderer()->elementExists( d->svgItem->elementId() )
-                               )
-                        )
-                 ? ( d->textItem->pos().x() / 2 )
-                 : ( d->svgItem->pos().x() / 2 )
-                 )
+        startx = d->textItem->pos().x() / 2 
                  - ( d->hoverIndicatorRectWidth / 2 )
                  + d->hoverIndicatorRectItem->pen().width();
     else
     {
         //qDebug() << "right side = " << rightside;
-        startx = ( d->textItem
-                     && ( d->svgItem->elementId().isEmpty()
-                            || ( d->svgItem->renderer()
-                                && !d->svgItem->renderer()->elementExists( d->svgItem->elementId() )
-                               )
-                         )
-                 ? ( rightside - ( ( rightside - d->textItem->pos().x() - d->textItem->boundingRect().width() ) / 2 ) )
-                 : ( rightside - ( ( rightside - d->svgItem->pos().x() - d->svgItem->boundingRect().width() ) / 2 ) )
-                 )
+        startx = rightside - ( ( rightside - d->textItem->pos().x() - d->textItem->boundingRect().width() ) / 2 )
                  - ( d->hoverIndicatorRectWidth / 2 )
                  + d->hoverIndicatorRectItem->pen().width();
     }
 
-    starty = ( d->svgItem->elementId().isEmpty() || ( d->svgItem->renderer() && !d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) )
-                ? ( d->borderRectItem->pos().y() + ( 2 * d->borderRectItem->pen().width() ) - ( d->hoverIndicatorRectItem->pen().width() ) )
-                : ( d->svgItem->pos().y() + ( 2 * d->borderRectItem->pen().width() ) ) );
+    starty = d->borderRectItem->pos().y() + ( 2 * d->borderRectItem->pen().width() ) - ( d->hoverIndicatorRectItem->pen().width() );
 
     endx = d->hoverIndicatorRectWidth - ( 2 * d->hoverIndicatorRectItem->pen().width() );
 
-    endy = ( d->svgItem->elementId().isEmpty() || ( d->svgItem->renderer() && !d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) )
-                ? ( d->borderRectItem->boundingRect().height() - ( 4 * d->borderRectItem->pen().width() ) - ( 3 * d->hoverIndicatorRectItem->pen().width() ) )
-                : ( d->svgItem->boundingRect().height() - ( 4 * d->borderRectItem->pen().width() ) ) );
+    endy = d->borderRectItem->boundingRect().height() - ( 4 * d->borderRectItem->pen().width() ) - ( 3 * d->hoverIndicatorRectItem->pen().width() ); 
 
     //qDebug() << "startx, endx = " << startx << ", " << endx;
 
@@ -526,10 +503,8 @@ void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
         d->svgItem->setSharedRenderer( renderer );
         if( !d->svgItem->elementId().isEmpty() && d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) )
         {
-            reposSvgItem();
             d->svgItem->show();
-            if( d->pd )
-                d->pd->updateAllOverlays();
+            fullUpdate();
         }
     }
 }
@@ -554,14 +529,14 @@ void PopupDropperItem::setElementId( const QString &id )
     }
 }
 
-QRect PopupDropperItem::blankElementRect() const
+QRect PopupDropperItem::svgElementRect() const
 {
-    return d->blankElementRect;
+    return d->svgElementRect;
 }
 
-void PopupDropperItem::setBlankElementRect( const QRect &rect )
+void PopupDropperItem::setSvgElementRect( const QRect &rect )
 {
-    d->blankElementRect = rect;
+    d->svgElementRect = rect;
 }
 
 int PopupDropperItem::horizontalOffset() const
@@ -755,12 +730,21 @@ void PopupDropperItem::hoverFrameChanged( int frame ) //SLOT
         d->pd->updateAllOverlays();
 }
 
+void PopupDropperItem::fullUpdate()
+{
+    scaleAndReposSvgItem();
+    reposTextItem();
+    reposHoverFillRects();
+    if( d->pd )
+        d->pd->updateAllOverlays();
+}
+
 QRectF PopupDropperItem::boundingRect() const
 {
     if( d->borderRectItem )
         return d->borderRectItem->boundingRect();
     else
-        return QRectF( 0, 0, d->blankElementRect.width(), d->blankElementRect.height() );
+        return QRectF( 0, 0, d->svgElementRect.width(), d->svgElementRect.height() );
 }
 
 void PopupDropperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )

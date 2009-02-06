@@ -185,9 +185,10 @@ void PopupDropperPrivate::reposItems()
     for( int i = 0; i < allItems.size(); i++ )
     {
         //qDebug() << "item " << i;
+        int verticalmargin = 5;
         partitionsize = scene->height() / pdiItems.size(); //gives partition size...now center in this area
-        my_min = counter * partitionsize;
-        my_max = ( counter + 1 ) * partitionsize;
+        my_min = ( counter * partitionsize ) + verticalmargin;
+        my_max = ( ( counter + 1 ) * partitionsize ) - verticalmargin;
         //qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
         vert_center = ( ( my_max - my_min ) / 2 ) + my_min; //gives us our center line...now center the item around it
         PopupDropperItem* pItem = dynamic_cast<PopupDropperItem*>( allItems.at( i ) );
@@ -196,18 +197,11 @@ void PopupDropperPrivate::reposItems()
         {
             pItem->setPopupDropper( q ); //safety
             //qDebug() << "item " << i << " is a PDI ";
-            if( pItem->svgItem()->elementId().isEmpty() )
-                item_min = vert_center - ( pItem->blankElementRect().height() / 2 );
-            else
-                item_min = vert_center - ( pItem->svgItem()->boundingRect().height() / 2 );
+            item_min = vert_center - ( pItem->svgElementRect().height() / 2 );
             //qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
             pItem->setPos( 0, item_min );
-            int verticalmargin = 5;
-            if( pItem->svgItem()->elementId().isEmpty() )
-                pItem->borderRectItem()->setRect( 0 - pItem->borderWidth(), -1*verticalmargin, scene->width() + 2*pItem->borderWidth(), pItem->blankElementRect().height() + 2*verticalmargin );
-            else
-                pItem->borderRectItem()->setRect( 0 - pItem->borderWidth(), -1*verticalmargin, scene->width() + 2*pItem->borderWidth(), pItem->svgItem()->boundingRect().height() + 2*verticalmargin );
-            pItem->reposSvgItem();
+            pItem->borderRectItem()->setRect( 0 - pItem->borderWidth(), 0, scene->width() + 2*pItem->borderWidth(), pItem->svgElementRect().height() );
+            pItem->scaleAndReposSvgItem();
             pItem->reposTextItem();
             pItem->reposHoverFillRects();
             //qDebug() << "size of view frame = " << view->size();
@@ -504,6 +498,7 @@ void PopupDropper::slotHideAllOverlays()
 
 void PopupDropper::update()
 {
+    d->reposItems();
     d->view->update();
 }
 
@@ -512,8 +507,10 @@ void PopupDropper::updateAllOverlays()
     for( int i = m_viewStack.size() - 1; i >= 0; --i )
     {
         PopupDropperPrivate* pdp = m_viewStack.at( i );
+        pdp->reposItems();
         pdp->view->update();
     }
+    d->reposItems();
     d->view->update();
 }
 

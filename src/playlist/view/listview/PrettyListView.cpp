@@ -354,6 +354,9 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
     {
 
         m_pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+        qDebug() << "svgHandler SVG renderer is " << (QObject*)(The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ));
+        qDebug() << "m_pd SVG renderer is " << (QObject*)(m_pd->svgRenderer());
+        qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
         QList<PopupDropperAction*> actions =
