@@ -84,8 +84,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
         amarokContainment->setView( this );
     //    amarokContainment->addCurrentTrack();
     }
-
-        
 }
 
 ContextView::~ContextView()
@@ -94,8 +92,10 @@ ContextView::~ContextView()
 
     // Unload and destroy all Amarok plasma-engines
     const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines();
-    foreach( const QString &engine, engines ) {
-        if( engine.startsWith( "amarok-" ) ) {
+    foreach( const QString &engine, engines )
+    {
+        if( engine.startsWith( "amarok-" ) )
+        {
             debug() << "Unloading plasma engine: " << engine;
 
             // PlasmaDataEngineManager uses refcounting for the engines, so we need to unload until the refcount reaches 0
@@ -121,14 +121,15 @@ void ContextView::clear( const ContextState& state )
     // erase previous config
     foreach( const QString& group, appletConfig.groupList() )
         appletConfig.deleteGroup( group );
-    int numContainments = contextScene()->containments().size();
-    for(int i = 0; i < numContainments; i++ )
+
+    const int numContainments = contextScene()->containments().size();
+    for( int i = 0; i < numContainments; i++ )
     {
         DEBUG_LINE_INFO
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
         KConfigGroup cg( &appletConfig, QString( "Containment %1" ).arg( i ) );
-       if( containment )
-           containment->saveToConfig( cg );
+        if( containment )
+            containment->saveToConfig( cg );
     }
     contextScene()->clearContainments();
 }
