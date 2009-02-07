@@ -65,8 +65,6 @@ QSize BookmarkPopup::minimumSizeHint() const
 
 void BookmarkPopup::paintEvent ( QPaintEvent* )
 {
-    const int margin = 2;
-    
     QPainter p ( this );
     p.setRenderHint ( QPainter::Antialiasing );
     p.setBrush ( Qt::white );
@@ -87,6 +85,5 @@ void BookmarkPopup::paintEvent ( QPaintEvent* )
     p.setPen ( Qt::black );
     rect = QRect ( 0, m_lineHeight + 6, m_width, m_lineHeight );
     p.drawText ( rect, Qt::AlignCenter, m_label );
-
 }
 
