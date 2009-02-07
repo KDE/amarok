@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * New QtScript methods for accessing the playlist:
+      Amarok.Playlist.selectedFilenames() & Amarok.Playlist.selectedIndizes().
+	  Patch by Mathias Panzenböck <grosser.meister.morti@gmx.net>.
     * New QtScript method for the Track prototype: imagePixmap( size ). Returns
       a QPixmap of the given size, or the default if the size argument isn't
       supplied.
