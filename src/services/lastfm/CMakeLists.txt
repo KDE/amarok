@@ -83,6 +83,7 @@ include_directories(
             amarok_service_liblastfm
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KUTILS_LIBS}
+            ${KDE4_KIO_LIBS}
 		    ${QT_QTNETWORK_LIBRARY} )
 
         install(TARGETS kcm_amarok_service_lastfm  DESTINATION ${PLUGIN_INSTALL_DIR})
