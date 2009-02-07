@@ -113,6 +113,10 @@ Context::AppletItemOverlay::AppletItemOverlay( Context::AppletToolbarAppletItem 
  //   m_deleteIcon->setBackgroundRole( QPalette::Base );
     m_deleteIcon->setPalette( pal );  
     m_deleteIcon->setAutoFillBackground( false );
+    m_deleteIcons->setAttribute(Qt::WA_NoSystemBackground);
+    m_deleteIcons->setAttribute(Qt::WA_TranslucentBackgrounds);
+    
+    
     connect( delApplet, SIGNAL( triggered() ), this, SLOT( deleteApplet() ) );
     connect( m_deleteIcon, SIGNAL( released() ), this, SLOT( deleteApplet() ) );
     
