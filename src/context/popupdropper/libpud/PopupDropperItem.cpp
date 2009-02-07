@@ -55,7 +55,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , customHoveredFillBrush( false )
     , separator( false )
     , file( QString() )
-    , svgElementRect( 0, 0, 30, 50 )
+    , svgElementRect( 0, 0, 50, 50 )
     , horizontalOffset( 30 )
     , textOffset( 30 )
     , hoverIndicatorShowStyle( PopupDropperItem::Never )
@@ -381,44 +381,32 @@ void PopupDropperItem::scaleAndReposSvgItem()
     if( !d->svgItem )
         return;
 
-    //Need to scale if it is too tall
-    //FIXME: Maybe if it is too wide as well?
-/*
-    qreal maxheight = boundingRect().height() - ( 2 *
-            ( d->hoverIndicatorRectItem ? d->hoverIndicatorRectItem->pen().width() : 10 )
-            - 10 );
-    qDebug() << "for PUD Item " << (QObject*)(this) << "with elementId " << d->svgItem->elementId();
-    qDebug() << "maxheight is " << maxheight << ", d->svgItem->boundingRect() is " << d->svgItem->boundingRect();
-    if( maxheight > d->svgItem->boundingRect().height() )
-    {
-        d->svgItem->scale( 1, maxheight / d->svgItem->boundingRect().height() );
-        qDebug() << "new boundingRect = " << d->svgItem->boundingRect() << endl;
-    }
-*/
-    //qDebug() << "\n\nPUDItem boundingRect().width() = " << boundingRect().width();
-    //qDebug() << "svgItem boundingRect width = " << d->svgItem->boundingRect().width();
+    //Need to scale if it is too tall or wide
+    qreal maxheight = d->svgElementRect.height() - ( d->borderRectItem ? ( 2 * d->borderRectItem->pen().width() ) : 0 );
+    qreal maxwidth = d->svgElementRect.width() - ( d->borderRectItem ? ( 2 * d->borderRectItem->pen().width() ) : 0 );
+    qreal vertScaleValue = maxheight / d->svgItem->sceneBoundingRect().height();
+    qreal horizScaleValue = maxwidth / d->svgItem->sceneBoundingRect().width();
+    qreal scaleValue = vertScaleValue < horizScaleValue ? vertScaleValue : horizScaleValue;
+    
+    d->svgItem->scale( scaleValue, scaleValue );
+
     if( d->orientation == PopupDropperItem::Left )
     {
-        d->svgItem->setPos( d->horizontalOffset, 0 );
-        //qDebug() << "Left, svgItem pos = " << d->svgItem->pos().x();
+        d->svgItem->setPos( d->horizontalOffset, ( d->svgElementRect.height() - d->svgItem->sceneBoundingRect().height() ) / 2 );
     }
     else
     {
-        //int rightside = d->borderRectItem ? d->borderRectItem->boundingRect().width() : boundingRect().width();
         int rightside;
         if( !d->pd || d->pd->viewSize().width() == 0 )
             rightside = boundingRect().width();
         else
             rightside = d->pd->viewSize().width();
-        //qDebug() << "right side = " << rightside;
         d->svgItem->setPos( 
                 rightside
                 - d->svgItem->boundingRect().width()
                 - d->horizontalOffset
-                , 0 );
-        //qDebug() << "Right, svgItem pos = " << d->svgItem->pos().x();
+                , ( d->svgElementRect.height() - d->svgItem->sceneBoundingRect().height() ) / 2 );
     }
-    //qDebug() << "\n\n";
 }
 
 void PopupDropperItem::reposTextItem()
