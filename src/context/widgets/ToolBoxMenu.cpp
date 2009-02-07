@@ -18,6 +18,7 @@
 
 #include <plasma/applet.h>
 #include <plasma/corona.h>
+
 #include <kicon.h>
 
 #define ENTRY_HEIGHT  32
@@ -33,6 +34,7 @@ AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningApplets
     , m_containment( 0 )
     , m_removeApplets( false )
     , m_menuSize( 4 )
+    , m_installScriptedApplet( 0 )
     , m_showing( 0 )
     , m_delay( 250 )
 {
@@ -114,6 +116,20 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_downArrow = new ToolBoxIcon( this );
     createArrow( m_upArrow, "up" );
     createArrow( m_downArrow, "down" );
+    
+    m_installScriptedApplet = new ToolBoxIcon( this );
+    m_installScriptedApplet->setDrawBackground( true );
+    m_installScriptedApplet->setOrientation( Qt::Horizontal );
+    m_installScriptedApplet->setText( i18n( "Install Applets" ) );
+    const QSizeF size( ENTRY_WIDTH - 60, ENTRY_HEIGHT - 9 );
+    m_installScriptedApplet->setMinimumSize( size );
+    m_installScriptedApplet->setMaximumSize( size );
+    m_installScriptedApplet->resize( size );
+    m_installScriptedApplet->setZValue( zValue() + 1 );
+    m_installScriptedApplet->hide();
+    
+    connect( m_installScriptedApplet, SIGNAL( clicked() ), this, SIGNAL( installApplets() ) );
+    
 }
 
 void
@@ -295,6 +311,10 @@ AmarokToolBoxMenu::show( bool refreshApplets )
     m_hideIcon->setPos( 5, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
     m_hideIcon->show();
     setZValue( zValue() + 10000 );
+    
+    m_installScriptedApplet->setPos( 30, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
+    m_installScriptedApplet->show();
+    
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {
         ToolBoxIcon *entry = m_currentMenu[m_currentMenu.count() - i - 1];

@@ -19,10 +19,14 @@
 #include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 
+#include <kfiledialog.h>
+#include <kstandarddirs.h>
 #include <plasma/applet.h>
 #include <plasma/containment.h>
+#include <plasma/packagestructure.h>
 #include <plasma/theme.h>
 
+#include <QDBusInterface>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsScene>
 #include <QPalette>
@@ -59,6 +63,7 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     m_toolbar->setPos( TOOLBAR_X_OFFSET, 0 );
   
    connect( m_toolbar, SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
+   connect( m_toolbar, SIGNAL( installApplets() ), this, SLOT( installApplets() ) );
    
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
@@ -233,4 +238,22 @@ Context::ToolbarView::recreateOverlays()
     }
 }
 
+void
+Context::ToolbarView::installApplets()
+{
+    DEBUG_BLOCK
+    // TODO this hsould open the GHNS dialog, for now just allow user to specify package
+    QString appletFile = KFileDialog::getOpenFileName( KUrl(), "*.amarokapplet.zip", this, "Please select Amarok Applet to install" );
+    
+    debug() << "installing amarok applet file:" << appletFile;
+    QString packageRoot = "plasma/plasmoids/";
+    packageRoot = KStandardDirs::locateLocal("data", packageRoot);
+    
+    Plasma::PackageStructure* installer = new Plasma::PackageStructure();
+    installer->setServicePrefix( "amarok-context-applet-" );
+    installer->installPackage( appletFile, packageRoot );
+    
+    QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
+    dbus.call(QDBus::Block, "recreate");
+}
 #include "ToolbarView.moc"

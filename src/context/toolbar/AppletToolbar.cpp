@@ -406,6 +406,7 @@ Context::AppletToolbar::newAddItem( int loc )
     DEBUG_BLOCK
     Context::AppletToolbarAddItem* additem = new Context::AppletToolbarAddItem( this, m_cont, false );
     connect( additem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
+    connect( additem, SIGNAL( installApplets() ), this, SIGNAL( installApplets() ) );
     m_appletLayout->insertItem( loc, additem );
     m_configAddIcons << additem;
 }

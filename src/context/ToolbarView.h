@@ -53,6 +53,7 @@ class ToolbarView : public QGraphicsView
         void appletAdded( Plasma::Applet*, int);
         void refreshOverlays();
         void recreateOverlays();
+        void installApplets();
     
     private:
         int m_height;

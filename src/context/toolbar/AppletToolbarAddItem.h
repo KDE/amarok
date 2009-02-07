@@ -51,6 +51,7 @@ class AppletToolbarAddItem : public QGraphicsWidget
         
     signals:
         void addApplet( const QString&, AppletToolbarAddItem*  );
+        void installApplets();
         
     public slots:
         void updatedContainment( Containment* cont );

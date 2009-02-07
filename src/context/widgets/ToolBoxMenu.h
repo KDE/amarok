@@ -54,6 +54,7 @@ public slots:
 Q_SIGNALS:
     void menuHidden();
     void addAppletToContainment( const QString& );
+    void installApplets();
     
 protected:
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
@@ -70,7 +71,7 @@ private slots:
     void scrollUp();
     void timeToHide();
     void addApplet( const QString &pluginName );
-
+    
 private:
     void init( QMap< QString, QString > allAppletsList, QStringList appletsToShow );
     void createArrow( ToolBoxIcon *arrow, const QString &direction );
@@ -95,7 +96,8 @@ private:
     ToolBoxIcon *m_hideIcon;
     ToolBoxIcon *m_upArrow;
     ToolBoxIcon *m_downArrow;
-
+    ToolBoxIcon* m_installScriptedApplet;
+    
     QMap<Plasma::Containment *, QStringList> m_runningApplets;
 
     QTimer *m_timer;

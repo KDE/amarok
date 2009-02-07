@@ -68,6 +68,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_addMenu->setContainment( cont );
     m_addMenu->setZValue( zValue() - 10000 );
     connect( m_addMenu, SIGNAL( addAppletToContainment( const QString& ) ), this, SLOT( addApplet( const QString& ) ) );
+    connect( m_addMenu, SIGNAL( installApplets() ), this, SIGNAL( installApplets() ) );
     
   //  resize( QSizeF( 18, 24 ) );
 }
