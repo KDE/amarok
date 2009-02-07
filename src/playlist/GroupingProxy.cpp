@@ -206,6 +206,7 @@ int
 Playlist::GroupingProxy::firstInGroup( int row ) const
 {
     AMAROK_DEPRECATED
+
     if ( m_rowGroupMode.at( row ) == None )
         return row;
 
@@ -223,6 +224,7 @@ int
 Playlist::GroupingProxy::lastInGroup( int row ) const
 {
     AMAROK_DEPRECATED
+
     if ( m_rowGroupMode.at( row ) == None )
         return row;
 
@@ -273,7 +275,6 @@ Playlist::GroupingProxy::regroupAll()
 void
 Playlist::GroupingProxy::regroupRows( int first, int last )
 {
-
     /* This function maps row numbers to one of the GroupMode enums, according
      * to the following truth matrix:
      *
@@ -383,7 +384,6 @@ int Playlist::GroupingProxy::tracksInGroup( int row ) const
 
 int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
-
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ ) {
         totalLenght += m_model->trackAt( row )->length();

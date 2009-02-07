@@ -36,8 +36,10 @@ Class for keeping track of playlist layouts and loading/saving them to xml files
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class LayoutManager : public QObject {
+class LayoutManager : public QObject
+{
     Q_OBJECT
+
 public:
     static LayoutManager * instance();
 

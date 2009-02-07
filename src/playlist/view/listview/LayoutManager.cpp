@@ -60,8 +60,7 @@ LayoutManager::LayoutManager()
 }
 
 LayoutManager::~LayoutManager()
-{
-}
+{}
 
 QStringList Playlist::LayoutManager::layouts()
 {
@@ -90,10 +89,8 @@ PlaylistLayout Playlist::LayoutManager::activeLayout()
         return m_layouts.value( m_activeLayout );
 }
 
-
 void Playlist::LayoutManager::loadUserLayouts()
 {
-
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
     layoutsDir.setSorting( QDir::Name );
@@ -105,12 +102,12 @@ void Playlist::LayoutManager::loadUserLayouts()
 
     QFileInfoList list = layoutsDir.entryInfoList();
 
-    for (int i = 0; i < list.size(); ++i) {
+    for ( int i = 0; i < list.size(); ++i )
+    {
         QFileInfo fileInfo = list.at(i);
         debug() << "found user file: " << fileInfo.fileName();
         loadLayouts( layoutsDir.filePath( fileInfo.fileName() ), true );
     }
-
 }
 
 void Playlist::LayoutManager::loadDefaultLayouts()
@@ -150,7 +147,8 @@ void Playlist::LayoutManager::loadLayouts( const QString &fileName, bool user )
     QDomNodeList layouts = layouts_element.elementsByTagName("layout");
 
     int index = 0;
-    while ( index < layouts.size() ) {
+    while ( index < layouts.size() )
+    {
         QDomNode layout = layouts.item( index );
         index++;
 
@@ -171,8 +169,8 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
 {
     DEBUG_BLOCK
             
-    bool showCover = ( elem.attribute( "show_cover", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-    int activeIndicatorRow = elem.attribute( "active_indicator_row", "0" ).toInt();
+    const bool showCover = ( elem.attribute( "show_cover", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+    const int activeIndicatorRow = elem.attribute( "active_indicator_row", "0" ).toInt();
 
     PrettyItemConfig config;
     config.setShowCover( showCover );
@@ -181,7 +179,8 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
     QDomNodeList rows = elem.elementsByTagName("row");
 
     int index = 0;
-    while ( index < rows.size() ) {
+    while ( index < rows.size() )
+    {
         QDomNode rowNode = rows.item( index );
         index++;
 
@@ -253,8 +252,6 @@ void Playlist::LayoutManager::addUserLayout( const QString &name, PlaylistLayout
     newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
     newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
 
-
-
     debug() << doc.toString();
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
@@ -262,29 +259,24 @@ void Playlist::LayoutManager::addUserLayout( const QString &name, PlaylistLayout
     if ( !layoutsDir.exists() )
         layoutsDir.mkpath( Amarok::saveLocation( "playlist_layouts/" ) );
 
-
     QFile file( layoutsDir.filePath( name + ".xml" ) );
     if ( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
         return;
 
     QTextStream out( &file );
     out << doc.toString();
-
-
-
 }
-
 
 QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const QString &name, const PrettyItemConfig & item ) const
 {
-
     QDomElement element = doc.createElement( name );
 
     QString showCover = item.showCover() ? "true" : "false";
     element.setAttribute ( "show_cover", showCover );
     element.setAttribute ( "active_indicator_row", QString::number( item.activeIndicatorRow() ) );
 
-    for( int i = 0; i < item.rows(); i++ ) {
+    for( int i = 0; i < item.rows(); i++ )
+    {
         PrettyItemConfigRow row = item.row( i );
 
         QDomElement rowElement = doc.createElement( "row" );
@@ -310,9 +302,7 @@ QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const 
             elementElement.setAttribute ( "alignment", alignmentString );
 
             rowElement.appendChild( elementElement );
-            
         }
-
     }
 
     return element;
@@ -321,18 +311,15 @@ QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const 
 bool LayoutManager::isDefaultLayout( const QString & layout ) const
 {
     if ( m_layouts.keys().contains( layout ) )
-    {
         return !m_layouts.value( layout ).isEditable();
-    }
-    else
-        return false;
+
+    return false;
 }
 
 QString LayoutManager::activeLayoutName()
 {
     return m_activeLayout;
 }
-
 
 void LayoutManager::deleteLayout( const QString & layout )
 {
@@ -342,21 +329,18 @@ void LayoutManager::deleteLayout( const QString & layout )
         QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
         QString xmlFile = layoutsDir.path() + '/' + layout + ".xml";
         debug() << "deleting file: " << xmlFile;
+       
         if ( !QFile::remove( xmlFile ) )
-        {
             debug() << "error deleting file....";
-        }
+
         m_layouts.remove( layout );
         emit( layoutListChanged() );
 
-        if ( layout == m_activeLayout ) {
+        if ( layout == m_activeLayout )
             setActiveLayout( "Default" );
-        }
-        
     }
     else
-        KMessageBox::sorry( 0,
-                            i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
+        KMessageBox::sorry( 0, i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
 }
 
 } //namespace Playlist
