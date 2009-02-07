@@ -68,6 +68,9 @@ include_directories(
         set(kcm_amarok_service_lastfm_PART_SRCS
             LastFmServiceSettings.cpp
             LastFmServiceConfig.cpp
+			# sad that these are necessary :-/
+			kdenetwork/knetworkreply.cpp
+		    kdenetwork/knetworkaccessmanager.cpp
         )
 
         kde4_add_ui_files( kcm_amarok_service_lastfm_PART_SRCS LastFmConfigWidget.ui )
@@ -79,7 +82,8 @@ include_directories(
             amaroklib
             amarok_service_liblastfm
             ${KDE4_KDEUI_LIBS}
-            ${KDE4_KUTILS_LIBS} )
+            ${KDE4_KUTILS_LIBS}
+		    ${QT_QTNETWORK_LIBRARY} )
 
         install(TARGETS kcm_amarok_service_lastfm  DESTINATION ${PLUGIN_INSTALL_DIR})
 

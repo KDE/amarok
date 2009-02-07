@@ -16,7 +16,6 @@
 #include "LastFmServiceConfig.h"
 #include "Debug.h"
 
-
 LastFmServiceConfig::LastFmServiceConfig()
 {
     load();
