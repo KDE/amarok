@@ -81,6 +81,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         SideBar *sideBar() const { return m_browsers; }
         KMenu   *ToolsMenu() const { return m_toolsMenu; }
         KMenu   *SettingsMenu() const { return m_settingsMenu; }
+		Playlist::Widget * playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
 
         QString activeBrowserName();

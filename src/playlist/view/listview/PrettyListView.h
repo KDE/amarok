@@ -89,8 +89,6 @@ private:
     QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerReleaseSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
 
-    QList<int> selectedRows() const;
-
     void startProxyUpdateTimeout();
 
     void trackMenu( QWidget *, const QModelIndex &, const QPoint &pos, bool coverActions = false );
@@ -102,6 +100,9 @@ private:
 
     QTimer * m_proxyUpdateTimer;
     PopupDropper* m_pd;
+
+public:
+    QList<int> selectedRows() const;
 };
 }
 #endif
