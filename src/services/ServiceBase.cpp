@@ -100,12 +100,12 @@ ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView )
         : KVBox( 0 )
+        , m_contentView ( 0 )
         , m_parentFactory( parent )
         , m_polished( false )
         , m_serviceready( false )
         , m_useCollectionTreeView( useCollectionTreeView )
         , m_infoParser( 0 )
-        , m_contentView ( 0 )
         , m_model( 0 )
 {
     DEBUG_BLOCK
