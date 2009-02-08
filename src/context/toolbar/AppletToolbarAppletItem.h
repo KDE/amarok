@@ -41,7 +41,6 @@ class AppletToolbarAppletItem : public QGraphicsWidget
         void setConfigEnabled( bool config );
         bool configEnabled();
 
-        QSizePolicy sizePolicy () const;
         Plasma::Applet* applet() { return m_applet; }
         // needed for the overlay to check if the click is over the del icon
         QRectF delIconSceneRect();

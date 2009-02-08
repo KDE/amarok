@@ -42,7 +42,6 @@ class AppletToolbarAddItem : public QGraphicsWidget
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
-        QSizePolicy sizePolicy () const;
         // these two below are a hack, we shouldn't need to implement them.
         // however, for some reason this widget is getting a size/rect/geom of (0,0 0x0)
         // and i can't figure out why. so i'm forcing it to be the real size

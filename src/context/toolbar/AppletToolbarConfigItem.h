@@ -37,9 +37,7 @@ class AppletToolbarConfigItem : public QGraphicsWidget
         ~AppletToolbarConfigItem();
         
         virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-        
-        QSizePolicy sizePolicy () const;
-        
+                
     signals:
         void triggered();
         

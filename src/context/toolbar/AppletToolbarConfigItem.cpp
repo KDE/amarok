@@ -46,6 +46,8 @@ Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent
     m_icon->setMaximumSize( iconSize );
     m_icon->resize( iconSize );
     m_icon->setZValue( zValue() + 1 );
+
+    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
     
 }
 
@@ -63,13 +65,7 @@ Context::AppletToolbarConfigItem::paint ( QPainter * painter, const QStyleOption
     painter->fillPath( fillPath ,fillColor );
     painter->restore();
 }
-    
-QSizePolicy 
-Context::AppletToolbarConfigItem::sizePolicy () const
-{
-    return QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-}
-
+   
       
 void 
 Context::AppletToolbarConfigItem::resizeEvent( QGraphicsSceneResizeEvent * event )

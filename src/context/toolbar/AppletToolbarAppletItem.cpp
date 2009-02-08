@@ -52,7 +52,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     m_deleteIcon = addAction( delApplet, 18 );
     m_deleteIcon->hide();
     
-        
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 }
 
 Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
@@ -94,13 +94,6 @@ Context::AppletToolbarAppletItem::configEnabled()
 {
     return m_configEnabled;
 }
-
-QSizePolicy 
-Context::AppletToolbarAppletItem::sizePolicy () const
-{
-    return QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding );
-}
-
 
 QRectF 
 Context::AppletToolbarAppletItem::delIconSceneRect()

@@ -69,7 +69,11 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_addMenu->setZValue( zValue() - 10000 );
     connect( m_addMenu, SIGNAL( addAppletToContainment( const QString& ) ), this, SLOT( addApplet( const QString& ) ) );
     connect( m_addMenu, SIGNAL( installApplets() ), this, SIGNAL( installApplets() ) );
-    
+
+    if( m_fixedAdd )
+        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    else
+        setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
   //  resize( QSizeF( 18, 24 ) );
 }
 
@@ -107,15 +111,6 @@ Context::AppletToolbarAddItem::geometry() const
     return boundingRect();
 }
 */
-
-QSizePolicy 
-Context::AppletToolbarAddItem::sizePolicy () const
-{
-    if( m_fixedAdd )
-        return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    else
-        return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-}
 
 void 
 Context::AppletToolbarAddItem::hideMenu()
@@ -165,7 +160,8 @@ QSizeF
 Context::AppletToolbarAddItem::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     if( m_fixedAdd )
-        return QGraphicsWidget::sizeHint( which, constraint );
+    //    return QSizeF( m_icon->size().width() + 2 * m_iconPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
+        return QGraphicsWidget::sizeHint(which, constraint);
     else
         return QSizeF( m_icon->size().width() + 2 * m_iconPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
     
