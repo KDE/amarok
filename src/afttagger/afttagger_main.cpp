@@ -109,7 +109,7 @@ int main( int argc, char *argv[] )
         std::cin >> response;
         cin.get();
 
-        if( response != "y" && response != "Y" )
+        if( response != "y" && response != "Y" && QString::fromUtf8(response.c_str()) != i18nc("translate this according to what you translated in TERMS OF USE sentence", "y") && QString::fromUtf8(response.c_str()) != i18nc("translate this according to what you translated in TERMS OF USE sentence", "Y"))
         {
             qDebug() << "INFO: Terms not accepted; exiting...";
             return 1;
