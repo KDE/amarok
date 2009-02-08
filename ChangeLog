@@ -5,6 +5,7 @@ Amarok ChangeLog
 VERSION 2.0.2
   CHANGES:
     * Show a statusbar message when loving a lastfm track.
+    * Show error message when Wikipedia information cannot be retrieved.
 
   BUGFIXES:
     * Open ogg files in Amarok when using Dolphin and other file managers.
