@@ -7,6 +7,8 @@ VERSION 2.0.2
     * Show a statusbar message when loving a lastfm track.
 
   BUGFIXES:
+    * Open ogg files in Amarok when using Dolphin and other file managers.
+      Patch thanks to Lubos Lunak <l.lunak@kde.org>. (BR 180155)
     * Fix podcast episodes not ordered right because of incorrect parsing of
       pubdate. (BR 181338)
     * Fix crash in tagdialog when editing tracks without an artist. (BR 183180)
