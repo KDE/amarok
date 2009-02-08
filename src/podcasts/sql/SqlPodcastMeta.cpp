@@ -343,4 +343,3 @@ Meta::SqlPodcastChannel::loadEpisodes()
     }
 }
 
-#include "SqlPodcastMeta.moc"
