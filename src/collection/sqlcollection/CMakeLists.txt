@@ -30,6 +30,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     OrganizeCollectionDialog.cpp
     ScanManager.cpp
     ScanResultProcessor.cpp
+    SqlBookmarkThisCapability.cpp
     SqlCollection.cpp
     SqlCollectionDBusHandler.cpp
     SqlCollectionLocation.cpp

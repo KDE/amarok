@@ -17,39 +17,31 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef METABOOKMARKTHISCAPABILITY_H
-#define METABOOKMARKTHISCAPABILITY_H
+#include "SqlBookmarkThisCapability.h"
 
-#include "amarok_export.h"
-#include "meta/Capability.h"
+#include "amarokurls/BookmarkMetaActions.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 
-namespace Meta {
+namespace Meta
+{
 
-/**
-This capability dertermines wheter a meta item in a collection can be directly bookmarked. Not all collections/services supports bookmarks on all levels, and some might not support Item level bookmarks at all as they have no query field and some might only support simple queries.
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class AMAROK_EXPORT BookmarkThisCapability : public Capability {
-    Q_OBJECT
-public:
-    virtual ~BookmarkThisCapability();
+Meta::SqlBookmarkThisCapability::SqlBookmarkThisCapability( PopupDropperAction * action )
+    : BookmarkThisCapability()
+    , m_action( action )
+{
+}
 
-    virtual bool isBookmarkable() { return false; }
-    virtual QString browserName() = 0;
-    virtual QString collectionName() = 0;
-    virtual bool simpleFiltering() { return false; }
-    virtual PopupDropperAction * bookmarkAction() = 0;
+Meta::SqlBookmarkThisCapability::~ SqlBookmarkThisCapability()
+{
+}
 
-    /**
-     * Get the capabilityInterfaceType of this capability
-     * @return The capabilityInterfaceType ( always Meta::Capability::BookmarkThis; )
-    */
-    static Type capabilityInterfaceType() { return Meta::Capability::BookmarkThis; }
-
-};
+PopupDropperAction * Meta::SqlBookmarkThisCapability::bookmarkAction()
+{
+    return m_action;
+}
 
 }
 
-#endif
+
+#include "SqlBookmarkThisCapability.moc"

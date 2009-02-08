@@ -24,6 +24,7 @@
 #include "amarokurls/BookmarkMetaActions.h"
 #include "Debug.h"
 #include "MetaUtility.h"
+#include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
@@ -969,9 +970,16 @@ SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) :
     ,m_tracksLoaded( false )
     ,m_albumsLoaded( false )
     ,m_mutex( QMutex::Recursive )
+    ,m_bookmarkAction( 0 )
 {
     //nothing to do (yet)
 }
+
+Meta::SqlArtist::~SqlArtist()
+{
+    delete m_bookmarkAction;
+}
+
 
 void
 SqlArtist::invalidateCache()
@@ -1048,6 +1056,8 @@ SqlArtist::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     switch( type )
     {
+        case Meta::Capability::BookmarkThis:
+            return true;
         default:
             return false;
     }
@@ -1058,6 +1068,12 @@ SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {
+        case Meta::Capability::BookmarkThis:
+        {
+            if ( !m_bookmarkAction )
+                m_bookmarkAction = new BookmarkArtistAction( 0, ArtistPtr( this ) );
+            return new SqlBookmarkThisCapability( m_bookmarkAction );
+        }
         default:
             return 0;
     }
@@ -1106,8 +1122,14 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     , m_tracksLoaded( false )
     , m_artist()
     , m_mutex( QMutex::Recursive )
+    , m_bookmarkAction( 0 )
 {
     //nothing to do
+}
+
+Meta::SqlAlbum::~SqlAlbum()
+{
+    delete m_bookmarkAction;
 }
 
 void
@@ -1597,7 +1619,8 @@ SqlAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
     {
         case Meta::Capability::CustomActions:
             return true;
-
+        case Meta::Capability::BookmarkThis:
+            return true;
         default:
             return false;
     }
@@ -1629,6 +1652,12 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
             }
             actions.append( unsetCoverAction );
             return new CustomActionsCapability( actions );
+        }
+        case Meta::Capability::BookmarkThis:
+        {
+            if ( !m_bookmarkAction )
+                m_bookmarkAction = new BookmarkAlbumAction( 0, AlbumPtr( this ) );
+            return new SqlBookmarkThisCapability( m_bookmarkAction );
         }
 
         default:
@@ -1770,6 +1799,8 @@ SqlYear::tracks()
     else
         return TrackList();
 }
+
+
 
 #include "sqlmeta.moc"
 

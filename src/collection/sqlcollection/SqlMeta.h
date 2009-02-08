@@ -30,6 +30,7 @@
 #include <QVariant>
 
 class SqlCollection;
+class PopupDropperAction;
 
 namespace Meta
 {
@@ -196,7 +197,8 @@ class SqlArtist : public Meta::Artist
 {
     public:
         SqlArtist( SqlCollection* collection, int id, const QString &name );
-
+        ~SqlArtist();
+        
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
         virtual QString sortableName() const;
@@ -228,6 +230,7 @@ class SqlArtist : public Meta::Artist
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
+        PopupDropperAction * m_bookmarkAction;
 
 };
 
@@ -235,6 +238,7 @@ class SqlAlbum : public Meta::Album
 {
     public:
         SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist );
+        ~SqlAlbum();
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
@@ -293,6 +297,8 @@ class SqlAlbum : public Meta::Album
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
+
+        PopupDropperAction * m_bookmarkAction;
 
         //TODO: add album artist
 };

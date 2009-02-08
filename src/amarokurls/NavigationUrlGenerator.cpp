@@ -257,7 +257,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
             }
             else
             {
-                url.appendArg( "artist" );
+                url.appendArg( "artist-album" );
                 filter = ( "artist:\"" + artistName + "\"" );
             }
 
