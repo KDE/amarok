@@ -27,7 +27,6 @@
 
 Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.gui" );     // for QPixmap
-Importer.loadQtBinding( "qt.network" );
 Importer.loadQtBinding( "qt.uitools" ); // for voting-gui
 Importer.loadQtBinding( "qt.xml" );
 
@@ -36,7 +35,6 @@ html = "The rules for the Darkerradio Free Music Charts are quite simple: the be
 
 votingUrl = new QUrl( "http://www.darkerradio.com/free-music-charts/free-music-charts-voting/" );
 xmlUrl    = new QUrl( "http://krohlas.de/fmc.xml" );
-http      = new QHttp;
 data      = new QIODevice;
 doc       = new QDomDocument( "doc" );
 elt       = new QDomElement;
@@ -163,8 +161,7 @@ function onPopulate( level, callbackData, filter ) {
     Amarok.debug( "fetching fmc xml..." );
     Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Fetching charts.<br/>This might take some seconds, depending on the speed of your internet connection..." );
     try {
-      qurl = new QUrl( xmlUrl );
-      a = new Downloader( qurl, fmcShowsXmlParser );
+      a = new Downloader( xmlUrl, fmcShowsXmlParser );
     }
     catch( err ) {
       Amarok.debug( err );
