@@ -1150,7 +1150,7 @@ MediaDevice::isPlayable( const Meta::TrackPtr track )
     if( supportedFiletypes().isEmpty() )
         return true;
 
-    QString type = track->url().section( ".", -1 ).toLower();
+    QString type = track->url().section( '.', -1 ).toLower();
     return supportedFiletypes().contains( type );
 }
 
@@ -1163,7 +1163,7 @@ MediaDevice::isPreferredFormat( const Meta::TrackPtr track )
     if( supportedFiletypes().isEmpty() )
         return true;
 
-    QString type = track->url().section( ".", -1 ).toLower();
+    QString type = track->url().section( '.', -1 ).toLower();
     return ( type == supportedFiletypes().first() );
 }
 

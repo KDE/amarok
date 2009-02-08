@@ -127,8 +127,8 @@ NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
 DeviceHandler *
 NfsDeviceHandlerFactory::createHandler( const Medium * m ) const
 {
-    QString server = m->deviceNode().section( ":", 0, 0 );
-    QString share = m->deviceNode().section( ":", 1, 1 );
+    QString server = m->deviceNode().section( ':', 0, 0 );
+    QString share = m->deviceNode().section( ':', 1, 1 );
     QStringList ids = CollectionManager::instance()->sqlStorage()->query( QString( "SELECT id, label, lastmountpoint "
                                                                 "FROM devices WHERE type = 'nfs' "
                                                                 "AND servername = '%1' AND sharename = '%2';" )

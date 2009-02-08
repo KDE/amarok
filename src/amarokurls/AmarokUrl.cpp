@@ -69,7 +69,7 @@ void AmarokUrl::initFromString( const QString & urlString )
     strippedUrlString = strippedUrlString.replace( "%20", " " );
     
     
-    m_fields = strippedUrlString.split( "/" );
+    m_fields = strippedUrlString.split( '/' );
     
 }
 

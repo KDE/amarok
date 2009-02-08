@@ -65,7 +65,7 @@ LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
-    foreach ( CoreDomElement e, reply->lfm() [ "neighbours" ].children ( "user" ) )
+    foreach( const CoreDomElement &e, reply->lfm() [ "neighbours" ].children ( "user" ) )
     {
         QString name = e[ "name" ].text();
         mNeighbors << name;
@@ -87,7 +87,7 @@ LastFmTreeModel::slotAddFriends ( WsReply* reply )
     DEBUG_BLOCK
     // iterate through each friend
     QMap<QString, QString> avatarlist;
-    foreach ( CoreDomElement e, reply->lfm() [ "friends" ].children ( "user" ) )
+    foreach( const CoreDomElement &e, reply->lfm() [ "friends" ].children ( "user" ) )
     {
         QString name = e[ "name" ].text();
         mFriends << name;
@@ -110,7 +110,7 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
     WeightedStringList list;
-    foreach ( CoreDomElement e, reply->lfm() [ "topartists" ].children ( "artist" ) )
+    foreach( const CoreDomElement &e, reply->lfm() [ "topartists" ].children ( "artist" ) )
     {
         QString name = e[ "name" ].text();
         QString weight = e[ "playcount" ].text();
@@ -152,7 +152,7 @@ void
 LastFmTreeModel::sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder )
 {
     for ( int i = 0; i < tagsToSort.count(); i++ )
-        tagsToSort[i] += " (" + QVariant ( tagsToSort.at ( i ).weighting() ).toString() + ")";
+        tagsToSort[i] += " (" + QVariant ( tagsToSort.at ( i ).weighting() ).toString() + ')';
     tagsToSort.weightedSort ( sortOrder );
 //     mTags = tagsToSort;
     for ( int i = 0; i < tagsToSort.count(); i++ )

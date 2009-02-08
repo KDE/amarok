@@ -191,7 +191,7 @@ QModelIndexList
 PlaylistsInGroupsProxy::mapToSource( const QModelIndexList& list ) const
 {
     QModelIndexList originalList;
-    foreach( QModelIndex index, list )
+    foreach( const QModelIndex &index, list )
     {
         QModelIndex originalIndex = mapToSource( index );
         if( originalIndex.isValid() )

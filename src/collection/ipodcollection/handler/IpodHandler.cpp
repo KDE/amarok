@@ -778,7 +778,7 @@ IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         do
         {
             create.setPath(path);
-            path = path.section("/", 0, path.indexOf('/')-1);
+            path = path.section('/', 0, path.indexOf('/')-1);
             parentdir.setPath(path);
         }
         while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );

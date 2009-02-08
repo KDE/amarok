@@ -130,8 +130,8 @@ SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
 DeviceHandler *
 SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
 {
-    QString server = m->deviceNode().section( "/", 2, 2 );
-    QString share = m->deviceNode().section( "/", 3, 3 );
+    QString server = m->deviceNode().section( '/', 2, 2 );
+    QString share = m->deviceNode().section( '/', 3, 3 );
     QStringList ids = CollectionManager::instance()->sqlStorage()->query( QString( "SELECT id, label, lastmountpoint "
                                                                           "FROM devices WHERE type = 'smb' "
                                                                           "AND servername = '%1' AND sharename = '%2';" )

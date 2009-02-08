@@ -196,10 +196,10 @@ bool Track::load ( int mediaLength )
         debug() << "  EXISTS!";
         QFile file ( m_cuefile.pathOrUrl() );
         int track = 0;
-        QString defaultArtist = QString::null;
-        QString defaultAlbum = QString::null;
-        QString artist = QString::null;
-        QString title = QString::null;
+        QString defaultArtist;
+        QString defaultAlbum;
+        QString artist;
+        QString title;
         long length = 0;
         long prevIndex = -1;
         bool index00Present = false;
@@ -221,7 +221,7 @@ bool Track::load ( int mediaLength )
                     if ( mode == BEGIN )
                     {
                         defaultAlbum = title;
-                        title = QString::null;
+                        title.clear();
                         debug() << "Album: " << defaultAlbum;
                     }
                     else
@@ -234,7 +234,7 @@ bool Track::load ( int mediaLength )
                     if ( mode == BEGIN )
                     {
                         defaultArtist = artist;
-                        artist = QString::null;
+                        artist.clear();
                         debug() << "Album Artist: " << defaultArtist;
                     }
                     else
@@ -259,8 +259,8 @@ bool Track::load ( int mediaLength )
                         // add previous entry to map
                         m_cueitems.insert ( index, CueFileItem ( title, artist, defaultAlbum, track, index ) );
                         prevIndex = index;
-                        title = QString::null;
-                        artist = QString::null;
+                        title.clear();
+                        artist.clear();
                         track  = 0;
                     }
                     track = line.section ( ' ',1,1 ).toInt();
@@ -417,10 +417,10 @@ bool Track::validateCueSheet ( const QString& cuefile )
 
     QFile file ( cuefile );
     int track = 0;
-    QString defaultArtist = QString::null;
-    QString defaultAlbum = QString::null;
-    QString artist = QString::null;
-    QString title = QString::null;
+    QString defaultArtist;
+    QString defaultAlbum;
+    QString artist;
+    QString title;
     long length = 0;
     long prevIndex = -1;
     bool index00Present = false;
@@ -442,7 +442,7 @@ bool Track::validateCueSheet ( const QString& cuefile )
                 if ( mode == Track::BEGIN )
                 {
                     defaultAlbum = title;
-                    title = QString::null;
+                    title.clear();
                     debug() << "Album: " << defaultAlbum;
                 }
                 else
@@ -455,7 +455,7 @@ bool Track::validateCueSheet ( const QString& cuefile )
                 if ( mode == Track::BEGIN )
                 {
                     defaultArtist = artist;
-                    artist = QString::null;
+                    artist.clear();
                     debug() << "Album Artist: " << defaultArtist;
                 }
                 else
@@ -477,8 +477,8 @@ bool Track::validateCueSheet ( const QString& cuefile )
                         artist = defaultArtist;
 
                     prevIndex = index;
-                    title = QString::null;
-                    artist = QString::null;
+                    title.clear();
+                    artist.clear();
                     track  = 0;
                 }
                 track = line.section ( ' ',1,1 ).toInt();

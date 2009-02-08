@@ -94,7 +94,7 @@ class LastFmTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    LastFmTreeModel ( const QString &username, QObject *parent = 0 );
+    explicit LastFmTreeModel ( const QString &username, QObject *parent = 0 );
     ~LastFmTreeModel();
 
     QVariant data ( const QModelIndex &index, int role ) const;
@@ -152,7 +152,7 @@ class LastFmTreeItem
 public:
     LastFmTreeItem ( const LastFm::Type &type, const QVariant &data, LastFmTreeItem *parent = 0 );
     LastFmTreeItem ( const QString &url, const LastFm::Type &type, const QVariant &data, LastFmTreeItem *parent = 0 );
-    LastFmTreeItem ( const LastFm::Type &type, LastFmTreeItem *parent = 0 );
+    explicit LastFmTreeItem ( const LastFm::Type &type, LastFmTreeItem *parent = 0 );
     LastFmTreeItem ( const QString &url, const LastFm::Type &type, LastFmTreeItem *parent = 0 );
     ~LastFmTreeItem();
 

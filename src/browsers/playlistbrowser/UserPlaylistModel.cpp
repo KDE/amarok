@@ -360,7 +360,7 @@ Meta::PlaylistList
 PlaylistBrowserNS::UserModel::selectedPlaylists( const QModelIndexList &list )
 {
     Meta::PlaylistList playlists;
-    foreach( QModelIndex index, list )
+    foreach( const QModelIndex &index, list )
         playlists << m_playlists.value( index.internalId() );
     return playlists;
 }

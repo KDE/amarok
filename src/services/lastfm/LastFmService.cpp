@@ -325,7 +325,7 @@ void
 LastFmService::updateProfileInfo()
 {
     if( m_userinfo && !m_age.isEmpty() && !m_gender.isEmpty()) {
-        QString ageinfo = " (" + m_age + ", " + m_gender + ")";
+        QString ageinfo = " (" + m_age + ", " + m_gender + ')';
         m_userinfo->setText( m_userName + ageinfo);
     }
     if( m_profile && !m_playcount.isEmpty() ) {
@@ -439,7 +439,7 @@ LastFmService::love()
     Meta::TrackPtr track = The::engineController()->currentTrack();
     LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
     if( track )
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1" ).arg( track->prettyName() ) );
+        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
 
     if( lastfmTrack )
         lastfmTrack->love();
@@ -452,7 +452,7 @@ void LastFmService::love( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
     if( track )
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1" ).arg( track->prettyName() ) );
+        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
     m_scrobbler->loveTrack( track );
 }
 
