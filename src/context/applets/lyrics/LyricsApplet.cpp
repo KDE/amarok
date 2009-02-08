@@ -34,7 +34,6 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_titleLabel( 0 )
     , m_reloadIcon( 0 )
     , m_lyrics( 0 )
-    , m_aspectRatio( 1 )
     , m_suggested( 0 )
     , m_theme( 0 )
 {
@@ -210,7 +209,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         // we assume html lyrics take care of titles as well
         m_titleLabel->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
-        m_lyrics->show();
     }
     else if( data.contains( "lyrics" ) )
     {
@@ -250,12 +248,16 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
 {
     DEBUG_BLOCK
     Q_UNUSED( which );
-    if( m_lyrics )
+ /*   if( m_lyrics )
     {
         debug() << "returning sizehint height of" << m_lyrics->sizeHint().height();
-        return QSizeF( constraint.width(), m_lyrics->sizeHint().height() );
+    //     return QSizeF( constraint.width(), m_lyricsProxy->sizeHint().height() );
+        if( m_textHeight > 0 )
+            return QGraphicsWidget::sizeHint( which, constraint );
+
     } else
-        return QGraphicsWidget::sizeHint( which, constraint );
+        return QGraphicsWidget::sizeHint( which, constraint ); */
+    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), 300 );
     
 }
 void

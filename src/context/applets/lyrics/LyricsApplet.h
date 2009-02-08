@@ -60,7 +60,6 @@ private:
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextEdit* m_lyrics;
-    qreal m_aspectRatio;
     QGraphicsTextItem* m_suggested;
 
     Plasma::FrameSvg* m_theme;
