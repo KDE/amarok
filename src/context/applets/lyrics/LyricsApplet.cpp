@@ -209,6 +209,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         // we assume html lyrics take care of titles as well
         m_titleLabel->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
+        m_lyrics->show();
     }
     else if( data.contains( "lyrics" ) )
     {
