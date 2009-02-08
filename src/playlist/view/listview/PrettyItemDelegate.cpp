@@ -238,7 +238,7 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
         const int x = nominalImageRect.x();
         const int y = nominalImageRect.y() + ( imageSize - h );
         const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "active_overlay", w, h, "active_overlay" ) ); // TODO: actual queue overlay
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
         painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
 
         if ( !config.showCover() )
