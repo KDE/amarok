@@ -63,8 +63,25 @@ QString md5( const QByteArray& src )
 void
 LastFmServiceFactory::init()
 {
-#ifdef HAVE_NETWORKMANAGER
-    if( Solid::Networking::status() == Solid::Networking::Connected )
+    if( haveWorkingSolidNetworkBackend() )
+    {
+        if( Solid::Networking::status() == Solid::Networking::Connected )
+        {
+            ServiceBase *service = createLastFmService();
+            if( service )
+            {
+                m_activeServices << service;
+                m_initialized = true;
+                emit newService( service );
+            }
+        }
+
+            connect( Solid::Networking::notifier(), SIGNAL( shouldConnect() ),
+                    this, SLOT( slotCreateLastFmService() ) );
+            connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
+                        this, SLOT( slotRemoveLastFmService() ) );
+    }
+    else
     {
         ServiceBase *service = createLastFmService();
         if( service )
@@ -74,20 +91,17 @@ LastFmServiceFactory::init()
             emit newService( service );
         }
     }
+}
 
-        connect( Solid::Networking::notifier(), SIGNAL( shouldConnect() ),
-                 this, SLOT( slotCreateLastFmService() ) );
-        connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
-                    this, SLOT( slotRemoveLastFmService() ) );
-#else HAVE_NETWORKMANAGER
-    ServiceBase *service = createLastFmService();
-    if( service )
-    {
-        m_activeServices << service;
-        m_initialized = true;
-        emit newService( service );
-    }
+bool
+LastFmServiceFactory::haveWorkingSolidNetworkBackend()
+{
+    bool haveValidBackend = false;
+#ifdef HAVE_NETWORKMANAGER
+//Networkmanager is the only working solid::networking backend right now.
+    haveValidBackend = true;
 #endif
+    return haveValidBackend;
 }
 
 void

@@ -56,6 +56,7 @@ private slots:
 
 private:
     ServiceBase* createLastFmService();
+    bool haveWorkingSolidNetworkBackend();
 };
 
 class LastFmService : public ServiceBase
