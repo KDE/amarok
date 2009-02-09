@@ -484,10 +484,9 @@ XSPFPlaylist::trackList()
                     track.duration = subSubNode.firstChild().nodeValue().toInt();
                 else if ( subSubNode.nodeName() == "annotation" )
                     track.annotation = subSubNode.firstChild().nodeValue();
-                else if ( subSubNode.nodeName() == "album" ) {
+                else if ( subSubNode.nodeName() == "album" )
                     track.album = subSubNode.firstChild().nodeValue();
-                    debug() << "loaded album name from xspf: " << subSubNode.firstChild().nodeValue();
-                } else if ( subSubNode.nodeName() == "trackNum" )
+                else if ( subSubNode.nodeName() == "trackNum" )
                     track.trackNum = (uint)subSubNode.firstChild().nodeValue().toInt();
                 else if ( subSubNode.nodeName() == "identifier" )
                     track.identifier = subSubNode.firstChild().nodeValue();
