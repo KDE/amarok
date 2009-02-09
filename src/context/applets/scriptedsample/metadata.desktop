@@ -1,6 +1,11 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Scripted Applet
+Name[ga]=Feidhmchláirín Scriptithe
+Name[pt]='Applet' Programada
+Name[pt_BR]='Applet' Programada
+Name[sv]=Miniprogram med skript
+Name[uk]=Аплет зі скриптами
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=chronometer
