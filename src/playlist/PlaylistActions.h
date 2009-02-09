@@ -102,7 +102,7 @@ namespace Playlist
             void dequeue( QList<int> rows );
 
         private:
-            Actions( QObject* parent = 0 );
+            Actions();
             ~Actions();
 
             void engineStateChanged( Phonon::State currentState, Phonon::State oldState ); //from EngineObserver

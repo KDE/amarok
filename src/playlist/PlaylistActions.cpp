@@ -47,21 +47,20 @@ Playlist::Actions* Playlist::Actions::s_instance = 0;
 
 Playlist::Actions* Playlist::Actions::instance()
 {
-    return ( s_instance ) ? s_instance : new Actions( 0 );
+    if( !s_instance )
+        s_instance = new Actions();
+    return s_instance;
 }
 
 void
 Playlist::Actions::destroy()
 {
-    if ( s_instance )
-    {
-        delete s_instance;
-        s_instance = 0;
-    }
+    delete s_instance;
+    s_instance = 0;
 }
 
-Playlist::Actions::Actions( QObject* parent )
-        : QObject( parent )
+Playlist::Actions::Actions()
+        : QObject()
         , EngineObserver( The::engineController() )
         , m_nextTrackCandidate( 0 )
         , m_currentTrack( 0 )
@@ -72,11 +71,9 @@ Playlist::Actions::Actions( QObject* parent )
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
-    s_instance = this;
     playlistModeChanged(); // sets m_navigator.
     m_nextTrackCandidate = m_navigator->requestNextTrack();
 }
-
 
 Playlist::Actions::~Actions()
 {
@@ -84,13 +81,11 @@ Playlist::Actions::~Actions()
     m_navigator->deleteLater();
 }
 
-
 void
 Playlist::Actions::requestNextTrack()
 {
     if ( m_nextTrackCandidate != 0 )
         return;
-
     m_trackError = false;
     m_currentTrack = Model::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
