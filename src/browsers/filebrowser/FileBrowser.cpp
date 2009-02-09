@@ -146,19 +146,39 @@ void FileBrowser::Widget::readConfig()
 {
     DEBUG_BLOCK
 
+    debug() << "BEFORE 'KConfigGroup config'";
     KConfigGroup config = Amarok::config( "File Browser" );
+    debug() << "AFTER  'KConfigGroup config'";
 
+    { DEBUG_BLOCK
+    debug() << "BEFORE 'm_filter->setMaxCount()'"; 
     m_filter->setMaxCount( config.readEntry( "Filter History Length", 9 ) );
-    setDir( config.readEntry( "Current Directory" ) );
+    debug() << "AFTER  'm_filter->setMaxCount()'"; 
+    }
 
+    { DEBUG_BLOCK
+    debug() << "BEFORE 'setDir()'"; 
+    setDir( config.readEntry( "Current Directory" ) );
+    debug() << "AFTER  'setDir()'"; 
+    }
+
+    { DEBUG_BLOCK
+    debug() << "BEFORE view initialization.";
     // KDirOperator view configuration:
     m_dirOperator->setView( config.readEntry( "View Style" ) == "Detail" ? KFile::Detail : KFile::Simple );
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_dirOperator->view()->setContentsMargins( 0, 0, 0, 0 );
     m_dirOperator->view()->setFrameShape( QFrame::NoFrame );
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
+    debug() << "AFTER  view initialization.";
+    }
 
+    { DEBUG_BLOCK
+    debug() << "BEFORE 'm_filter->setHistoryItems()'";
     m_filter->setHistoryItems( config.readEntry( "Filter History", QStringList() ), true );
+    debug() << "AFTER  'm_filter->setHistoryItems()'";
+    }
+
     lastFilter = config.readEntry( "Last Filter" );
 }
 
