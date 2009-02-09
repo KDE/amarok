@@ -21,6 +21,8 @@
 #ifndef PRETTYLISTVIEW_H
 #define PRETTYLISTVIEW_H
 
+#include "EngineObserver.h"
+
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
@@ -39,7 +41,7 @@ class QTimer;
 
 namespace Playlist
 {
-class PrettyListView : public QListView
+class PrettyListView : public QListView, public EngineObserver
 {
     Q_OBJECT
 
@@ -66,6 +68,8 @@ public slots:
     void findPrevious( const QString & searchTerm, int fields  );
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
+
+    virtual void engineNewTrackPlaying(); // from EngineObserver
 
 protected slots:
     void newPalette( const QPalette & palette );

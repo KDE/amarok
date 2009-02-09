@@ -44,7 +44,7 @@ public:
     static EngineController* instance();
     static void destroy();
 
-    static bool              canDecode( const KUrl& );
+    static bool canDecode( const KUrl& );
 
     /* returns track position (elapsed time) in seconds */
     int trackPosition() const;

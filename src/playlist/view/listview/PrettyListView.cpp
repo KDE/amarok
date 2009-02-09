@@ -28,6 +28,7 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "PrettyItemDelegate.h"
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
@@ -58,6 +59,7 @@
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
+        , EngineObserver( The::engineController() )
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_pd( 0 )
@@ -89,6 +91,13 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
+
+void
+Playlist::PrettyListView::engineNewTrackPlaying()
+{
+    if( AmarokConfig::autoScrollPlaylist() )
+        scrollToActiveTrack();
+}
 
 void
 Playlist::PrettyListView::editTrackInformation()
