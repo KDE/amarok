@@ -155,8 +155,6 @@ ServiceInfoProxy::loadHomePage()
 
     html.replace( "_PATH_", imagePath );
 
-    debug() << "html:" << html;
-
     m_storedInfo["service_name"] =  i18n( "Home" );
     m_storedInfo["main_info"] = html;
 
