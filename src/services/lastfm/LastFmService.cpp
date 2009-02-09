@@ -75,6 +75,8 @@ LastFmServiceFactory::init()
 
         connect( Solid::Networking::notifier(), SIGNAL( shouldConnect() ),
                  this, SLOT( slotCreateLastFmService() ) );
+        connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
+                    this, SLOT( slotRemoveLastFmService() ) );
 }
 
 void
@@ -90,6 +92,17 @@ LastFmServiceFactory::slotCreateLastFmService()
             emit newService( service );
         }
     }
+}
+
+void
+LastFmServiceFactory::slotRemoveLastFmService()
+{
+    if( m_activeServices.size() == 0 )
+        return;
+
+    m_initialized = false;
+    emit removeService( m_activeServices.first() );
+    m_activeServices.clear();
 }
 
 ServiceBase*

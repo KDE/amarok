@@ -129,6 +129,12 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
          */
         void newService( class ServiceBase *newService );
 
+        /**
+         * This signal is emitted whenever a service is removed
+         * @param removedService The service that has been removed
+         */
+        void removeService( ServiceBase *newService );
+
     protected:
         QList<ServiceBase *> m_activeServices;
         bool m_initialized;

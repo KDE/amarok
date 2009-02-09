@@ -81,6 +81,7 @@ private:
 
 private slots:
     void slotNewService( ServiceBase *newService);
+    void slotRemoveService( ServiceBase *removedService );
 };
 
 

@@ -52,6 +52,7 @@ public:
 
 private slots:
     void slotCreateLastFmService();
+    void slotRemoveLastFmService();
 
 private:
     ServiceBase* createLastFmService();

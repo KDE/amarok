@@ -74,6 +74,8 @@ ServicePluginManager::collect()
                 debug() << "Got hold of a valid factory";
                 m_factories.insert( factory->name(), factory );
                 connect( factory, SIGNAL( newService( ServiceBase * ) ), this, SLOT( slotNewService( ServiceBase * ) ) );
+                connect( factory, SIGNAL( removeService( ServiceBase * ) ), this,
+                         SLOT( slotRemoveService( ServiceBase * ) ) );
             }
             else
             {
@@ -111,6 +113,13 @@ ServicePluginManager::slotNewService( ServiceBase *newService )
 {
     DEBUG_BLOCK
     m_serviceBrowser->addService( newService );
+}
+
+void
+ServicePluginManager::slotRemoveService( ServiceBase *removedService )
+{
+    DEBUG_BLOCK
+    m_serviceBrowser->removeService( removedService->name() );
 }
 
 QMap<QString, ServiceFactory*>
