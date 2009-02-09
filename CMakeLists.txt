@@ -110,6 +110,9 @@ macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with
 
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
+find_package(NetworkManager)
+macro_bool_to_01(NETWORKMANAGER_FOUND HAVE_NETWORKMANAGER)
+
 check_type_size("int" SIZEOF_INT)
 check_type_size("long" SIZEOF_LONG)
 

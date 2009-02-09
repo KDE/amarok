@@ -63,6 +63,7 @@ QString md5( const QByteArray& src )
 void
 LastFmServiceFactory::init()
 {
+#ifdef HAVE_NETWORKMANAGER
     if( Solid::Networking::status() == Solid::Networking::Connected )
     {
         ServiceBase *service = createLastFmService();
@@ -78,6 +79,15 @@ LastFmServiceFactory::init()
                  this, SLOT( slotCreateLastFmService() ) );
         connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
                     this, SLOT( slotRemoveLastFmService() ) );
+#else HAVE_NETWORKMANAGER
+    ServiceBase *service = createLastFmService();
+    if( service )
+    {
+        m_activeServices << service;
+        m_initialized = true;
+        emit newService( service );
+    }
+#endif
 }
 
 void

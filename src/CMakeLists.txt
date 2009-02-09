@@ -7,17 +7,17 @@ if(MP4V2_FOUND)
 
 if(APPLE)
     set(mac_SRCS
-		app_mac.cpp
-		mac/GrowlInterface.cpp
-		)
+        app_mac.cpp
+        mac/GrowlInterface.cpp
+    )
 
-		include_directories ( services/lastfm/
-							  mac/Growl-WithInstaller.framework/Headers )
-		set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
-		set( GROWL_FRAMEWORK ${CMAKE_SOURCE_DIR}/src/mac/Growl-WithInstaller.framework )
-		set( GROWL_LIBRARIES "-framework Growl-WithInstaller -F${CMAKE_SOURCE_DIR}/src/mac" CACHE FILEPATH "Growl-WithInstaller framework" FORCE)
-		mark_as_advanced( GROWL_FRAMEWORK GROWL_LIBRARIES )
-		set( EXTRA_LIBS ${GROWL_LIBRARIES} amarok_service_liblastfm )
+    include_directories ( services/lastfm/
+                          mac/Growl-WithInstaller.framework/Headers )
+    set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
+    set( GROWL_FRAMEWORK ${CMAKE_SOURCE_DIR}/src/mac/Growl-WithInstaller.framework )
+    set( GROWL_LIBRARIES "-framework Growl-WithInstaller -F${CMAKE_SOURCE_DIR}/src/mac" CACHE FILEPATH "Growl-WithInstaller framework" FORCE)
+    mark_as_advanced( GROWL_FRAMEWORK GROWL_LIBRARIES )
+    set( EXTRA_LIBS ${GROWL_LIBRARIES} amarok_service_liblastfm )
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
@@ -267,14 +267,14 @@ set( libcontextview_SRCS
     context/ContextScene.cpp
     context/ContextView.cpp
     context/LyricsManager.cpp
-	context/ToolbarView.cpp
+    context/ToolbarView.cpp
     context/layouts/ContextLayout.cpp
     context/layouts/VerticalLayout.cpp
-	context/toolbar/AppletItemOverlay.cpp
-	context/toolbar/AppletToolbar.cpp
-	context/toolbar/AppletToolbarAddItem.cpp
-	context/toolbar/AppletToolbarAppletItem.cpp
-	context/toolbar/AppletToolbarConfigItem.cpp
+    context/toolbar/AppletItemOverlay.cpp
+    context/toolbar/AppletToolbar.cpp
+    context/toolbar/AppletToolbarAddItem.cpp
+    context/toolbar/AppletToolbarAppletItem.cpp
+    context/toolbar/AppletToolbarConfigItem.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/ToolBoxIcon.cpp
     context/widgets/ContainmentArrow.cpp
@@ -578,14 +578,14 @@ target_link_libraries(amaroklib
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KNEWSTUFF2_LIBS}
     ${KDE4_PHONON_LIBRARY}
-	${KDE4_PLASMA_LIBS}
+    ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${TAGLIB_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
-	${EXTRA_LIBS}
+    ${EXTRA_LIBS}
     amarok_taglib
     amarokpud
     mediadevicelib
@@ -627,9 +627,9 @@ if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-	# also install growl to the app bundle
-	install(DIRECTORY ${GROWL_FRAMEWORK} DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/Frameworks)
-	install( FILES "${MAC_FILES_DIR}/Growl Registration Ticket.growlRegDict" DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/Resources )
+    # also install growl to the app bundle
+    install(DIRECTORY ${GROWL_FRAMEWORK} DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/Frameworks)
+    install( FILES "${MAC_FILES_DIR}/Growl Registration Ticket.growlRegDict" DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/Resources )
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
