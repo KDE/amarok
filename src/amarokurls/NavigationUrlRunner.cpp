@@ -74,6 +74,7 @@ NavigationUrlRunner::run( AmarokUrl url )
             type = "PlaylistBrowser";
         else if ( type == "files" )
             type = "FileBrowser::Widget";
+        else return false;
 
         The::mainWindow()->showBrowser( type );
 
@@ -100,6 +101,8 @@ NavigationUrlRunner::run( AmarokUrl url )
                 service->sortByArtist();
             else if ( groupMode == "genre-artist-album" )
                 service->sortByGenreArtistAlbum();
+            else
+                return false;
 
             service->setFilter( filter );
             debug() << "setting filter";
