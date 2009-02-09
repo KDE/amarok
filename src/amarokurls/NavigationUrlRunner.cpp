@@ -74,7 +74,8 @@ NavigationUrlRunner::run( AmarokUrl url )
             type = "PlaylistBrowser";
         else if ( type == "files" )
             type = "FileBrowser::Widget";
-        else return false;
+        else
+            return false;
 
         The::mainWindow()->showBrowser( type );
 
