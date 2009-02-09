@@ -47,6 +47,7 @@
 
 #include <QComboBox>
 #include <QCryptographicHash>
+#include <QGroupBox>
 #include <QPainter>
 #include <QImage>
 #include <QFrame>
@@ -393,7 +394,7 @@ LastFmService::polish()
         m_bottomPanel->setMaximumHeight( 300 );
 //         m_bottomPanel->hide();
         m_buttonBox = new QWidget( m_bottomPanel );
-        FlowLayout * flowLayout= new FlowLayout( 3 );
+        FlowLayout * flowLayout = new FlowLayout( 3 );
         m_buttonBox->setLayout( flowLayout );
 
         m_loveButton = new QPushButton( );
@@ -448,20 +449,21 @@ LastFmService::polish()
         m_profile->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
         updateProfileInfo();
 
-        QLabel* customStation = new QLabel(m_topPanel);
-        customStation->setText(i18n("Create a Custom Last.fm Station"));
-        customStation->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
-        KHBox * customStationBox = new KHBox( m_topPanel );
-        customStationBox->setSpacing( 3 );
-        m_customStationCombo = new QComboBox( customStationBox );
+        QGroupBox *customStation = new QGroupBox( i18n( "Create a Custom Last.fm Station" ), m_topPanel );
+        m_customStationCombo = new QComboBox;
         QStringList choices;
         choices << i18n( "Artist" ) << i18n( "Tag" ) << i18n( "User" );
         m_customStationCombo->insertItems(0, choices);
-        m_customStationEdit = new KLineEdit( customStationBox );
+        m_customStationEdit = new KLineEdit;
         updateEditHint( m_customStationCombo->currentIndex() );
-        m_customStationButton = new QPushButton( customStationBox );
+        m_customStationButton = new QPushButton;
         m_customStationButton->setObjectName( "customButton" );
         m_customStationButton->setIcon( KIcon( "media-playback-start-amarok" ) );
+        QHBoxLayout *hbox = new QHBoxLayout();
+        hbox->addWidget(m_customStationCombo);
+        hbox->addWidget(m_customStationEdit);
+        hbox->addWidget(m_customStationButton);
+        customStation->setLayout(hbox);
 
         connect( m_customStationEdit, SIGNAL( returnPressed() ), this, SLOT( playCustomStation() ) );
         connect( m_customStationButton, SIGNAL( clicked() ), this, SLOT( playCustomStation() ) );
