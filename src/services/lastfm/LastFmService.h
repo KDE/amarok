@@ -49,6 +49,12 @@ public:
     virtual KConfigGroup config();
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.protocol() == "lastfm"; }
+
+private slots:
+    void slotCreateLastFmService();
+
+private:
+    ServiceBase* createLastFmService();
 };
 
 class LastFmService : public ServiceBase

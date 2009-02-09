@@ -36,8 +36,8 @@ include_directories(
             meta/LastFmMeta.cpp
             meta/LastFmStreamInfoCapability.cpp
 
-			kdenetwork/knetworkreply.cpp
-		    kdenetwork/knetworkaccessmanager.cpp
+            kdenetwork/knetworkreply.cpp
+            kdenetwork/knetworkaccessmanager.cpp
             SimilarArtistsAction.cpp
             LoveTrackAction.cpp
 
@@ -53,8 +53,9 @@ include_directories(
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
+            ${KDE4_SOLID_LIBRARY}
             ${KDE4_THREADWEAVER_LIBRARIES}
-		    ${QT_QTNETWORK_LIBRARY}
+            ${QT_QTNETWORK_LIBRARY}
         )
         # TODO not sure if this is still relevant...
 #         if (APPLE)

@@ -26,10 +26,8 @@
 #include "ScrobblerAdapter.h"
 #include "StatusBar.h"
 #include "widgets/FlowLayout.h"
-
 #include "GlobalCollectionActions.h"
 #include "GlobalCurrentTrackActions.h"
-
 #include "collection/CollectionManager.h"
 #include "meta/capabilities/LastFmCapability.h"
 #include "meta/LastFmMeta.h"
@@ -45,6 +43,7 @@
 #include <lastfm/ws/WsRequestBuilder.h>
 
 #include <KLocale>
+#include <solid/networking.h>
 
 #include <QComboBox>
 #include <QCryptographicHash>
@@ -63,16 +62,47 @@ QString md5( const QByteArray& src )
 void
 LastFmServiceFactory::init()
 {
+    if( Solid::Networking::status() == Solid::Networking::Connected )
+    {
+        ServiceBase *service = createLastFmService();
+        if( service )
+        {
+            m_activeServices << service;
+            m_initialized = true;
+            emit newService( service );
+        }
+    }
+
+        connect( Solid::Networking::notifier(), SIGNAL( shouldConnect() ),
+                 this, SLOT( slotCreateLastFmService() ) );
+}
+
+void
+LastFmServiceFactory::slotCreateLastFmService()
+{
+    if( !m_initialized ) // Until we can remove a service when networking gets disabled, only create it the first time.
+    {
+        ServiceBase *service = createLastFmService();
+        if( service )
+        {
+            m_activeServices << service;
+            m_initialized = true;
+            emit newService( service );
+        }
+    }
+}
+
+ServiceBase*
+LastFmServiceFactory::createLastFmService()
+{
     LastFmServiceConfig config;
 
     //  The user activated the service, but didn't fill the username/password? Don't start it.
     if ( config.username().isEmpty() || config.password().isEmpty() )
-        return;
+        return 0;
 
     ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.scrobble(), config.fetchSimilar() );
-    m_activeServices << service;
-    m_initialized = true;
-    emit newService( service );
+    return service;
 }
 
 
