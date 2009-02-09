@@ -22,6 +22,7 @@
 
 #include "PrettyListView.h"
 
+#include "amarokconfig.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
@@ -140,9 +141,11 @@ Playlist::PrettyListView::scrollToActiveTrack()
 }
 
 void
-Playlist::PrettyListView::trackActivated( const QModelIndex& idx ) const
+Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 {
     Actions::instance()->play( idx );
+    if( AmarokConfig::autoScrollPlaylist() )
+        scrollToActiveTrack();
 }
 
 void

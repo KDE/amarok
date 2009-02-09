@@ -71,7 +71,7 @@ protected slots:
     void newPalette( const QPalette & palette );
 
 private slots:
-    void trackActivated( const QModelIndex& ) const;
+    void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
 
 private:
