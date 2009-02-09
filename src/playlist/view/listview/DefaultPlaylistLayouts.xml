@@ -50,4 +50,42 @@
             </row>
         </group_body>
     </layout>
+    <layout name="Verbose" >
+        <single_track active_indicator_row="0" show_cover="true" >
+            <row>
+                <element size="0.65" bold="false" alignment="left" value="Title" italic="true" />
+                <element size="0.2" bold="false" alignment="center" value="Rating" italic="false" />
+                <element size="0.15" bold="false" alignment="right" value="Length" italic="false" />
+            </row>
+            <row>
+                <element size="0.5" bold="false" alignment="left" value="Artist" italic="false" />
+                <element size="0.5" bold="false" alignment="right" value="Album" italic="false" />
+            </row>
+        </single_track>
+        <group_head active_indicator_row="-1" show_cover="true" >
+            <row>
+                <element size="0.8" bold="true" alignment="center" value="Album" italic="false" />
+                <element size="0.2" bold="false" alignment="right" value="Group tracks" italic="false" />
+            </row>
+            <row>
+                <element size="0.8" bold="true" alignment="center" value="Artist" italic="false" />
+                <element size="0.2" bold="false" alignment="right" value="Group length" italic="false" />
+            </row>
+            <row>
+                <element size="0.8" bold="true" alignment="center" value="Genre" italic="false" />
+                <element size="0.2" bold="false" alignment="right" value="Type" italic="false" />
+            </row>
+            <row>
+                <element size="0.8" bold="true" alignment="center" value="Year" italic="false" />
+                <element size="0.2" bold="false" alignment="right" value="placeholder" italic="false" />
+            </row>
+        </group_head>
+        <group_body active_indicator_row="0" show_cover="false" >
+            <row>
+                <element size="0.7" bold="false" alignment="left" value="Title (with track number)" italic="true" />
+                <element size="0.15" bold="false" alignment="center" value="Rating" italic="false" />
+                <element size="0.15" bold="false" alignment="right" value="Length" italic="false" />
+            </row>
+        </group_body>
+ </layout>
 </playlist_layouts>
