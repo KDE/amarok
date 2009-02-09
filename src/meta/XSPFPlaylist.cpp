@@ -158,29 +158,22 @@ XSPFPlaylist::tracks()
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
-
         TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( track.location );
-        if ( trackPtr ){
+        if ( trackPtr )
+        {
             if( !trackPtr->isPlayable() )
-            {
                 trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
-            }
         }
 
-        if ( trackPtr ) {
-
-            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )  {
-
-                debug() << "got stream from trackForUrl, setting album to " << track.album;
-
+        if ( trackPtr )
+        {
+            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
+            {
                 MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
-
                 streamTrack->setTitle( track.title );
                 streamTrack->setAlbum( track.album );
                 streamTrack->setArtist( track.creator );
-
             } 
-
             tracks << trackPtr;
         }
 
