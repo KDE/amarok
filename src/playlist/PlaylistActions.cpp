@@ -90,22 +90,19 @@ Playlist::Actions::requestNextTrack()
 {
     if ( m_nextTrackCandidate != 0 )
         return;
+
     m_trackError = false;
     m_currentTrack = Model::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
-    {
-            setStopAfterMode( StopAfterCurrent );
-    }
+        setStopAfterMode( StopAfterCurrent );
+    
     m_nextTrackCandidate = m_navigator->requestNextTrack();
     m_currentTrack = m_nextTrackCandidate;
+    
     if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
-    {
         setStopAfterMode( StopNever );
-    }
     else
-    {
         play( m_nextTrackCandidate, false );
-    }
 }
 
 void

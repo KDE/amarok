@@ -144,8 +144,6 @@ void
 Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 {
     Actions::instance()->play( idx );
-    if( AmarokConfig::autoScrollPlaylist() )
-        scrollToActiveTrack();
 }
 
 void
@@ -447,7 +445,6 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
     //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
     if( isCurrentTrack )
     {
-
         QList<QAction *> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
         foreach( QAction *action, globalCurrentTrackActions )
             actions << PopupDropperAction::from( action );
@@ -546,7 +543,6 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
     if( row != -1 )
     {
         //select this track
-        debug() << "Got match at row: " << row;
 
         QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
@@ -587,9 +583,9 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
     debug() << "current row is: " << currentRow;
 
     int row = GroupingProxy::instance()->findNext( searchTerm, currentRow, fields );
-    if( row != -1 ) {
+    if( row != -1 )
+    {
         //select this track
-        debug() << "Got match at row: " << row;
 
         QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
@@ -600,9 +596,9 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
         emit( found() );
-    } else {
-        emit( notFound() );
     }
+    else
+        emit( notFound() );
 
     if ( updateProxy )
         NavigatorFilterProxyModel::instance()->filterUpdated();
@@ -624,9 +620,9 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     debug() << "current row is: " << currentRow;
 
     int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow, fields );
-    if( row != -1 ) {
+    if( row != -1 )
+    {
         //select this track
-        debug() << "Got match at row: " << row;
 
         QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
@@ -637,9 +633,9 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
         emit( found() );
-    } else {
-        emit( notFound() );
     }
+    else
+        emit( notFound() );
 
     if ( updateProxy )
         NavigatorFilterProxyModel::instance()->filterUpdated();
