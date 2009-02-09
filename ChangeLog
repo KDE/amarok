@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Option to automatically scroll the playlist to the active item on track
+      change.
     * New QtScript methods for accessing the playlist:
       Amarok.Playlist.selectedFilenames() & Amarok.Playlist.selectedIndizes().
 	  Patch by Mathias Panzenböck <grosser.meister.morti@gmx.net>.
