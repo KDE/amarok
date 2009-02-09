@@ -28,7 +28,6 @@
 #include "PlaylistDefines.h"
 #include "view/graphic/PlaylistGraphicsView.h"
 #include "PlaylistController.h"
-#include "view/listview/PrettyListView.h"
 #include "view/listview/LayoutManager.h"
 #include "view/listview/LayoutConfigWidget.h"
 #include "PlaylistHeader.h"
@@ -87,23 +86,22 @@ Playlist::Widget::Widget( QWidget* parent )
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
 
-    PrettyListView* playView = new PrettyListView( this );
-    playView->show();
-    m_playlistView = qobject_cast<QWidget*>( playView );
+    m_playlistView = new PrettyListView( this );
+    m_playlistView->show();
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int ) ), playView, SLOT( find( const QString &, int ) ) );
-    connect( m_searchWidget, SIGNAL( next( const QString &, int ) ), playView, SLOT( findNext( const QString &, int ) ) );
-    connect( m_searchWidget, SIGNAL( previous( const QString &, int ) ), playView, SLOT( findPrevious( const QString &, int ) ) );
-    connect( m_searchWidget, SIGNAL( filterCleared() ), playView, SLOT( clearSearchTerm() ) );
-    connect( m_searchWidget, SIGNAL( showOnlyMatches( bool ) ), playView, SLOT( showOnlyMatches( bool ) ) );
+    connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int ) ), m_playlistView, SLOT( find( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( next( const QString &, int ) ), m_playlistView, SLOT( findNext( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( previous( const QString &, int ) ), m_playlistView, SLOT( findPrevious( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( filterCleared() ), m_playlistView, SLOT( clearSearchTerm() ) );
+    connect( m_searchWidget, SIGNAL( showOnlyMatches( bool ) ), m_playlistView, SLOT( showOnlyMatches( bool ) ) );
 
-    connect( playView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
-    connect( playView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );
+    connect( m_playlistView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
+    connect( m_playlistView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );
 
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), playView, SLOT( reset() ) );
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), m_playlistView, SLOT( reset() ) );
 
     mainPlaylistlayout->setSpacing( 0 );
-    mainPlaylistlayout->addWidget( playView );
+    mainPlaylistlayout->addWidget( m_playlistView );
 
 
     KHBox *barBox = new KHBox( this );
@@ -129,7 +127,7 @@ Playlist::Widget::Widget( QWidget* parent )
         
         //FIXME this action should go in ActionController, but we don't have any visibility to the view
         KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
-        connect( action, SIGNAL( triggered( bool ) ), playView, SLOT( scrollToActiveTrack() ) );
+        connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
         plBar->addAction( action );
 
         plBar->addSeparator();

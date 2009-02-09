@@ -22,38 +22,37 @@
 #ifndef AMAROK_PLAYLISTWIDGET_H
 #define AMAROK_PLAYLISTWIDGET_H
 
+#include "view/listview/PrettyListView.h"
+
 #include <KVBox>
 
 #include <QComboBox>
 #include <QLabel>
+
 class QWidget;
 class ProgressiveSearchWidget;
 
 namespace Playlist
 {
-
-class Widget : public KVBox
-{
-    Q_OBJECT
-
-public:
-    Widget( QWidget* parent );
-    QWidget* currentView()
+    class Widget : public KVBox
     {
-        return m_playlistView;
-    }
+        Q_OBJECT
 
-public slots:
-    void sort( int field );
+        public:
+            Widget( QWidget* parent );
+            PrettyListView* currentView() { return m_playlistView; }
 
-protected:
-    QSize sizeHint() const;
+        public slots:
+            void sort( int field );
 
-private:
-    QWidget* m_playlistView;
-    ProgressiveSearchWidget * m_searchWidget;
-    QComboBox * m_sortBox;
-};
+        protected:
+            QSize sizeHint() const;
+
+        private:
+            PrettyListView* m_playlistView;
+            ProgressiveSearchWidget * m_searchWidget;
+            QComboBox * m_sortBox;
+    };
 }
 
 #endif
