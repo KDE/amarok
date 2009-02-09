@@ -61,7 +61,7 @@ public slots:
     void queueSelection();
     void removeSelection();
     void stopAfterTrack();
-    void scrollToActiveTrack();
+    void scrollToActiveTrack( QAbstractItemView::ScrollHint hint = QAbstractItemView::PositionAtCenter );
 
     void find( const QString & searchTerm, int fields );
     void findNext( const QString & searchTerm, int fields  );

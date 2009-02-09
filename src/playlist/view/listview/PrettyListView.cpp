@@ -96,7 +96,7 @@ void
 Playlist::PrettyListView::engineNewTrackPlaying()
 {
     if( AmarokConfig::autoScrollPlaylist() )
-        scrollToActiveTrack();
+        scrollToActiveTrack( QAbstractItemView::EnsureVisible );
 }
 
 void
@@ -142,11 +142,11 @@ Playlist::PrettyListView::dequeueSelection()
 }
 
 void
-Playlist::PrettyListView::scrollToActiveTrack()
+Playlist::PrettyListView::scrollToActiveTrack( QAbstractItemView::ScrollHint hint )
 {
     QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
     if ( activeIndex.isValid() )
-        scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
+        scrollTo( activeIndex, hint );
 }
 
 void
