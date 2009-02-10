@@ -75,7 +75,7 @@ function fmcShowsXmlParser( reply ) {
 
     var showTitles = new Array( shows.length() );
 
-    elt = shows.at( 0 ); // latest show
+    elt  = shows.at( 0 ); // latest show
     html = html + "<br/><br/>Next radio show airs on Tuesday, ";
     html = html + elt.firstChildElement( "nextdate" ).text() + ". ";
     html = html + "The voting ends the day before.";
@@ -199,6 +199,7 @@ function onPopulate( level, callbackData, filter ) {
 
   else if( level == 0 ) { // the tracks from each show
     Amarok.debug( "populating fmc track level..." );
+    var addAll = false;
     elt = shows.at( callbackData ); // jump to the correct show
 
     item              = Amarok.StreamItem;
@@ -206,17 +207,19 @@ function onPopulate( level, callbackData, filter ) {
     item.callbackData = "";
     item.album        = elt.firstChildElement( "title" ).text();
 
+    addAll = isFilterMatch( item.album );
+
     /* The podcasts */
     item.infoHtml    = html;
     item.artist      = "Free Music Charts";
     item.itemName    = "Podcast (MP3)";
     item.playableUrl = elt.firstChildElement( "podcastmp3" ).text();
-    if( item.playableUrl != "not yet available"  && isFilterMatch( item.itemName ) )
+    if( item.playableUrl != "not yet available" && ( isFilterMatch( item.itemName ) || addAll ) )
       script.insertItem( item );
 
     item.itemName    = "Podcast (OGG)";
     item.playableUrl = elt.firstChildElement( "podcastogg" ).text();
-    if( item.playableUrl != "not yet available" && isFilterMatch( item.itemName ) )
+    if( item.playableUrl != "not yet available" && ( isFilterMatch( item.itemName ) || addAll ) )
       script.insertItem( item );
 
     /* The songs */
@@ -250,7 +253,7 @@ function onPopulate( level, callbackData, filter ) {
       item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() );
 
       elt = elt.nextSiblingElement( "song" );
-      if( isFilterMatch( item.itemName ) )
+      if( addAll || isFilterMatch( item.itemName ) )
         script.insertItem( item );
     }
 
@@ -281,14 +284,21 @@ function containsFilterMatch( id ) {
     // podcast names are not in the xml
     var itemNameLowerCase = "podcast (mp3)";
     if( itemNameLowerCase.indexOf( currentFilter ) != -1 )
-    return true;
+      return true;
 
     itemNameLowerCase = "podcast (ogg)";
     if( itemNameLowerCase.indexOf( currentFilter ) != -1 )
-    return true;
+      return true;
 
     var tempElt = new QDomElement;
     tempElt = shows.at( id );
+
+    // match the show title
+    itemNameLowerCase = tempElt.firstChildElement( "title" ).text();
+    itemNameLowerCase = itemNameLowerCase.toLowerCase();
+    if( itemNameLowerCase.indexOf( currentFilter ) != -1 )
+      return true;
+
     var i   = tempElt.firstChildElement( "songcount" ).text();
     tempElt = tempElt.firstChildElement( "songs" ); // ascend to songs
     tempElt = tempElt.firstChildElement( "song" );  // ascent to first song
