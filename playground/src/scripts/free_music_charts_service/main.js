@@ -59,6 +59,10 @@ function FreeMusicCharts() {
 }
 
 
+/*###########################################################################
+#   Helper functions for parsing                                          #
+########################################################################### */
+
 /* Get info for shows */
 function fmcShowsXmlParser( reply ) {
   Amarok.debug( "start fmc shows xml parsing..." );
@@ -144,6 +148,10 @@ function fmcTracksXmlParser( url ) {
   return html;
 }
 
+
+/*###########################################################################
+#   Event handlers                                                        #
+########################################################################### */
 
 /* Set service icon and emblem */
 function onCustomize() {
@@ -251,11 +259,16 @@ function onPopulate( level, callbackData, filter ) {
   }
 }
 
+
 function onVote() {
   Amarok.debug( "FMC: onVote" );
   QDesktopServices.openUrl( votingUrl );
 }
 
+
+/*###########################################################################
+#   Helper functions                                                      #
+########################################################################### */
 
 /* checks weather a show contains a match for the current filter */
 function containsFilterMatch( id ) {
@@ -266,12 +279,12 @@ function containsFilterMatch( id ) {
 
   else {
     // podcast names are not in the xml
-    var itemNameLowercase = "podcast (mp3)";
-    if( itemNameLowercase.indexOf( currentFilter ) != -1 )
+    var itemNameLowerCase = "podcast (mp3)";
+    if( itemNameLowerCase.indexOf( currentFilter ) != -1 )
     return true;
 
-    itemNameLowercase = "podcast (ogg)";
-    if( itemNameLowercase.indexOf( currentFilter ) != -1 )
+    itemNameLowerCase = "podcast (ogg)";
+    if( itemNameLowerCase.indexOf( currentFilter ) != -1 )
     return true;
 
     var tempElt = new QDomElement;
@@ -281,10 +294,10 @@ function containsFilterMatch( id ) {
     tempElt = tempElt.firstChildElement( "song" );  // ascent to first song
 
     for( ; i != 0; i-- ) {
-      itemNameLowercase = tempElt.firstChildElement( "name" ).text();
-      itemNameLowercase = itemNameLowercase.toLowerCase();
+      itemNameLowerCase = tempElt.firstChildElement( "name" ).text();
+      itemNameLowerCase = itemNameLowerCase.toLowerCase();
 
-      if( itemNameLowercase.indexOf( currentFilter ) != -1 )
+      if( itemNameLowerCase.indexOf( currentFilter ) != -1 )
         return true;
 
       tempElt = tempElt.nextSiblingElement( "song" );
@@ -298,9 +311,9 @@ function containsFilterMatch( id ) {
 /* checks weather a song matches a filter */
 function isFilterMatch( itemName ) {
   Amarok.debug( "FMC: isFilterMatch" );
-  var itemNameLowercase = itemName.toLowerCase();
+  var itemNameLowerCase = itemName.toLowerCase();
 
-  if( ( currentFilter != "" ) && ( itemNameLowercase.indexOf( currentFilter ) == -1 ) )
+  if( ( currentFilter != "" ) && ( itemNameLowerCase.indexOf( currentFilter ) == -1 ) )
     return false;
 
   return true;
