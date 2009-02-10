@@ -191,12 +191,17 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
     {
         if( btc->isBookmarkable() ) {
 
+            QString target;
+            if ( btc->browserName()  == "Internet" )
+                target = "service";
+            else 
+                target = "collection";
+
             QString albumName = album->prettyName();
-            
+
             url.setCommand( "navigate" );
-            url.appendArg( btc->browserName() );
+            url.appendArg( target );
             url.appendArg( btc->collectionName() );
-            
 
             QString filter;
             if ( btc->simpleFiltering() ) {
@@ -242,10 +247,17 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
     {
         if( btc->isBookmarkable() ) {
 
+            QString target;
+            if ( btc->browserName()  == "Internet" )
+                target = "service";
+            else
+                target = "collection";
+
+            
             QString artistName = artist->prettyName();
 
             url.setCommand( "navigate" );
-            url.appendArg( btc->browserName() );
+            url.appendArg( target );
             url.appendArg( btc->collectionName() );
             
 

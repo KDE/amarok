@@ -66,7 +66,7 @@ NavigationUrlRunner::run( AmarokUrl url )
         debug() << "groupMode: " << groupMode;
         debug() << "filter: " << filter;
 
-        if ( type == "service" )
+        if ( type == "service" || type == "Internet" )
             type = "Internet";
         else if ( type == "collection" )
             type = "CollectionBrowser";
@@ -102,7 +102,7 @@ NavigationUrlRunner::run( AmarokUrl url )
                 service->sortByArtist();
             else if ( groupMode == "genre-artist-album" )
                 service->sortByGenreArtistAlbum();
-            else
+            else if ( groupMode != "" ) //allow for not specifying any sort mode ( remain the same )
                 return false;
 
             service->setFilter( filter );
