@@ -927,18 +927,17 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 
 namespace The
 {
-AMAROK_EXPORT Playlist::Model* playlistModel()
-{
-    return Playlist::Model::instance();
+    AMAROK_EXPORT Playlist::Model* playlistModel()
+    {
+        return Playlist::Model::instance();
+    }
 }
-}
-
 
 
 int Playlist::Model::find( const QString & searchTerm, int searchFields )
 {
-
     DEBUG_BLOCK
+
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
     int matchRow = -1;
@@ -956,12 +955,12 @@ int Playlist::Model::find( const QString & searchTerm, int searchFields )
     }
 
     return matchRow;
-
 }
 
 int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int searchFields )
 {
     DEBUG_BLOCK
+
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
     int row = 0;
@@ -990,6 +989,7 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int 
 int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
 {
     DEBUG_BLOCK
+
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
     int row = m_items.count() -1;
