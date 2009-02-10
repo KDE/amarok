@@ -23,6 +23,8 @@
 #include <KVBox>
 #include <KXmlGuiWindow>
 
+#include <QPointer>
+
 class CollectionWidget;
 class ContextWidget;
 class MainToolbar;
@@ -171,7 +173,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         int     m_lastBrowser;
         int     m_searchField;
 
-        static MainWindow *s_instance;
+        static QPointer<MainWindow> s_instance;
 
     private slots:
         void createContextView( Plasma::Containment *c );

@@ -106,19 +106,23 @@ XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
 }
 
 XSPFPlaylist::~XSPFPlaylist()
-{
-}
+{}
 
 bool
 XSPFPlaylist::save( const QString &location, bool relative )
 {
     DEBUG_BLOCK
     Q_UNUSED( relative );
+
     QFile file( location );
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        KMessageBox::sorry( The::mainWindow(), i18n( "Cannot write playlist (%1).", file.fileName() ) );
+        if( The::mainWindow() ) // MainWindow might already be destroyed at this point (at program shutdown)
+            KMessageBox::sorry( The::mainWindow(), i18n( "Cannot write playlist (%1).", file.fileName() ) );
+        else
+            warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() ); 
+
         return false;
     }
 

@@ -104,7 +104,7 @@ class ContextWidget : public KVBox
         }
 };
 
-MainWindow *MainWindow::s_instance = 0;
+QPointer<MainWindow> MainWindow::s_instance = 0;
 
 MainWindow::MainWindow()
     : KXmlGuiWindow( 0 )
