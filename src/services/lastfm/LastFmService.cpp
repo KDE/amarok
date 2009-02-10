@@ -63,7 +63,17 @@ QString md5( const QByteArray& src )
 void
 LastFmServiceFactory::init()
 {
-    if( haveWorkingSolidNetworkBackend() )
+    if( Solid::Networking::status() == Solid::Networking::Unknown ) // No working solid network backend, so force creation of the service
+    {
+        ServiceBase *service = createLastFmService();
+        if( service )
+        {
+            m_activeServices << service;
+            m_initialized = true;
+            emit newService( service );
+        }
+    }
+    else
     {
         if( Solid::Networking::status() == Solid::Networking::Connected )
         {
@@ -81,27 +91,6 @@ LastFmServiceFactory::init()
             connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
                         this, SLOT( slotRemoveLastFmService() ) );
     }
-    else
-    {
-        ServiceBase *service = createLastFmService();
-        if( service )
-        {
-            m_activeServices << service;
-            m_initialized = true;
-            emit newService( service );
-        }
-    }
-}
-
-bool
-LastFmServiceFactory::haveWorkingSolidNetworkBackend()
-{
-    bool haveValidBackend = false;
-#ifdef HAVE_NETWORKMANAGER
-//Networkmanager is the only working solid::networking backend right now.
-    haveValidBackend = true;
-#endif
-    return haveValidBackend;
 }
 
 void

@@ -38,6 +38,3 @@
 
 /* Whether TagLib::FileName is a struct supporting wide characters or just a typedef */
 #cmakedefine COMPLEX_TAGLIB_FILENAME 1
-
-/* Define to 1 if you networkmanager is found */
-#cmakedefine HAVE_NETWORKMANAGER 1
