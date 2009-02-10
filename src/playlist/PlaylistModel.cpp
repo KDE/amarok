@@ -56,16 +56,17 @@ Playlist::Model* Playlist::Model::s_instance = 0;
 
 Playlist::Model* Playlist::Model::instance()
 {
-    if( !s_instance )
-        s_instance = new Model();
-    return s_instance;
+    return ( s_instance ) ? s_instance : new Model();
 }
 
 void
 Playlist::Model::destroy()
 {
-    delete s_instance;
-    s_instance = 0;
+    if ( s_instance )
+    {
+        delete s_instance;
+        s_instance = 0;
+    }
 }
 
 Playlist::Model::Model()
@@ -75,6 +76,7 @@ Playlist::Model::Model()
         , m_currentSearchFields( 0 )
 {
     DEBUG_BLOCK
+    s_instance = this;
 
     /* The ServicePluginManager needs to be loaded up so that it can handle
      * any tracks in the saved playlist that are associated with services.
