@@ -62,6 +62,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , EngineObserver( The::engineController() )
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
+        , m_skipAutoScroll( false )
         , m_pd( 0 )
 {
     setModel( GroupingProxy::instance() );
@@ -96,7 +97,7 @@ void
 Playlist::PrettyListView::engineNewTrackPlaying()
 {
     if( AmarokConfig::autoScrollPlaylist() )
-        scrollToActiveTrack( QAbstractItemView::EnsureVisible );
+        scrollToActiveTrack(); 
 }
 
 void
@@ -142,16 +143,22 @@ Playlist::PrettyListView::dequeueSelection()
 }
 
 void
-Playlist::PrettyListView::scrollToActiveTrack( QAbstractItemView::ScrollHint hint )
+Playlist::PrettyListView::scrollToActiveTrack()
 {
+    if( m_skipAutoScroll )
+    {
+        m_skipAutoScroll = false;
+        return;
+    }
     QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
     if ( activeIndex.isValid() )
-        scrollTo( activeIndex, hint );
+        scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
 }
 
 void
 Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 {
+    m_skipAutoScroll = true; // we don't want to do crazy view changes when selecting an item in the view
     Actions::instance()->play( idx );
 }
 

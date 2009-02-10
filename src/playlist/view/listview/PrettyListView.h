@@ -61,7 +61,7 @@ public slots:
     void queueSelection();
     void removeSelection();
     void stopAfterTrack();
-    void scrollToActiveTrack( QAbstractItemView::ScrollHint hint = QAbstractItemView::PositionAtCenter );
+    void scrollToActiveTrack();
 
     void find( const QString & searchTerm, int fields );
     void findNext( const QString & searchTerm, int fields  );
@@ -98,12 +98,13 @@ private:
     void trackMenu( QWidget *, const QModelIndex &, const QPoint &pos, bool coverActions = false );
     QList<PopupDropperAction *> actionsFor( const QModelIndex &index, bool coverActions );
 
-    QRect m_dropIndicator;
+    QRect                 m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;
-    bool m_mousePressInHeader;
+    bool                  m_mousePressInHeader;
+    bool                  m_skipAutoScroll;
 
-    QTimer * m_proxyUpdateTimer;
-    PopupDropper* m_pd;
+    QTimer       *m_proxyUpdateTimer;
+    PopupDropper *m_pd;
 
 public:
     QList<int> selectedRows() const;
