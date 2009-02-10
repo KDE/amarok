@@ -91,13 +91,15 @@ function fmcShowsXmlParser( reply ) {
 
     var i = 0;
     for ( ; i < shows.length(); i++ ) {
-      elt = shows.at( i );
-      elt2 = elt.firstChildElement( "title" );
-      item.itemName = elt2.text();
-      // this is needed to identify the item when we need to expand
-      // it in onPopulate( level, -->callbackData<--, filter )
-      item.callbackData = i;
-      script.insertItem( item );
+      if( containsFilterMatch( i ) ) {
+        elt = shows.at( i );
+        elt2 = elt.firstChildElement( "title" );
+        item.itemName = elt2.text();
+        // this is needed to identify the item when we need to expand
+        // it in onPopulate( level, -->callbackData<--, filter )
+        item.callbackData = i;
+        script.insertItem( item );
+      }
     }
   }
   catch( err ) {
@@ -254,6 +256,46 @@ function onVote() {
   QDesktopServices.openUrl( votingUrl );
 }
 
+
+/* checks weather a show contains a match for the current filter */
+function containsFilterMatch( id ) {
+  Amarok.debug( "FMC: containsFilterMatch" );
+
+  if( currentFilter == "" ) // no filter -> matches everywhere
+    return true;
+
+  else {
+    // podcast names are not in the xml
+    var itemNameLowercase = "podcast (mp3)";
+    if( itemNameLowercase.indexOf( currentFilter ) != -1 )
+    return true;
+
+    itemNameLowercase = "podcast (ogg)";
+    if( itemNameLowercase.indexOf( currentFilter ) != -1 )
+    return true;
+
+    var tempElt = new QDomElement;
+    tempElt = shows.at( id );
+    var i   = tempElt.firstChildElement( "songcount" ).text();
+    tempElt = tempElt.firstChildElement( "songs" ); // ascend to songs
+    tempElt = tempElt.firstChildElement( "song" );  // ascent to first song
+
+    for( ; i != 0; i-- ) {
+      itemNameLowercase = tempElt.firstChildElement( "name" ).text();
+      itemNameLowercase = itemNameLowercase.toLowerCase();
+
+      if( itemNameLowercase.indexOf( currentFilter ) != -1 )
+        return true;
+
+      tempElt = tempElt.nextSiblingElement( "song" );
+    }
+  }
+
+  return false;
+}
+
+
+/* checks weather a song matches a filter */
 function isFilterMatch( itemName ) {
   Amarok.debug( "FMC: isFilterMatch" );
   var itemNameLowercase = itemName.toLowerCase();
