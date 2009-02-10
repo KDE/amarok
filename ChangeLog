@@ -8,6 +8,7 @@ VERSION 2.0.2
     * Show error message when Wikipedia information cannot be retrieved.
 
   BUGFIXES:
+    * Don't crash if a script has uncaught exceptions.
     * Open ogg files in Amarok when using Dolphin and other file managers.
       Patch thanks to Lubos Lunak <l.lunak@kde.org>. (BR 180155)
     * Fix podcast episodes not ordered right because of incorrect parsing of
