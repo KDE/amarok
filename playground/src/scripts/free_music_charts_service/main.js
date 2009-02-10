@@ -36,11 +36,13 @@ html = "The rules for the Darkerradio Free Music Charts are quite simple: the be
 votingUrl = new QUrl( "http://www.darkerradio.com/free-music-charts/free-music-charts-voting/" );
 xmlUrl    = new QUrl( "http://krohlas.de/fmc.xml" );
 data      = new QIODevice;
-doc       = new QDomDocument;
+doc       = new QDomDocument( "doc" );
 elt       = new QDomElement;
 elt2      = new QDomElement;
 shows     = new QDomNodeList;
 script    = new FreeMusicCharts();
+
+currentFilter = "";
 
 Amarok.Window.addToolsSeparator();
 Amarok.Window.addToolsMenu( "votingGui", "Free Music Charts Voting", "amarok" );
@@ -61,9 +63,11 @@ function FreeMusicCharts() {
 function fmcShowsXmlParser( reply ) {
   Amarok.debug( "start fmc shows xml parsing..." );
   try {
-    doc.setContent( reply );
-    shows = doc.elementsByTagName( "show" );
-    Amarok.debug ( "got " + shows.length() + " shows!" );
+    if( shows.length() == 0 ) {
+      doc.setContent( reply );
+      shows = doc.elementsByTagName( "show" );
+      Amarok.debug( "got " + shows.length() + " shows!" );
+    }
 
     var showTitles = new Array( shows.length() );
 
@@ -72,11 +76,11 @@ function fmcShowsXmlParser( reply ) {
     html = html + elt.firstChildElement( "nextdate" ).text() + ". ";
     html = html + "The voting ends the day before.";
 
-    item = Amarok.StreamItem;
-    item.level = 1;
+    item             = Amarok.StreamItem;
+    item.level       = 1;
     item.playableUrl = "";
-    item.infoHtml = html;
-    item.coverUrl = Amarok.Info.scriptPath() + "/FMCShow.png";
+    item.infoHtml    = html;
+    item.coverUrl    = Amarok.Info.scriptPath() + "/FMCShow.png";
 
     if( shows.length() == 0 ) {
       Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Download of charts seems to have <font color=red><b>failed</b></font>. Please check your internet connection." );
@@ -115,8 +119,8 @@ function fmcTracksXmlParser( url ) {
   for ( ; i < shows.length(); i++ ) {
     Amarok.debug( "found a show..." );
     tempShow = shows.at( i );
-    j = tempShow.firstChildElement( "songcount" ).text();
-    title = tempShow.firstChildElement( "title" ).text();
+    j        = tempShow.firstChildElement( "songcount" ).text();
+    title    = tempShow.firstChildElement( "title" ).text();
     tempShow = tempShow.firstChildElement( "songs" );
     songs    = tempShow.firstChildElement( "song" );
 
@@ -155,10 +159,15 @@ function onCustomize() {
 /* Fill tree view in Amarok */
 function onPopulate( level, callbackData, filter ) {
   var i = 0;
+
+  filter        = filter.replace( "%20", " " );
+  filter        = filter.trim();
+  currentFilter = filter.toLowerCase();
+
   Amarok.debug( "populating fmc level: " + level );
 
   if( level == 1 ) { // the shows
-    if( doc.isNull() ) { // we have yet to fetch the xml
+    if( shows.length() == 0 ) { // we have to fetch the xml
       try {
         Amarok.debug( "fetching fmc xml..." );
         Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Fetching charts.<br/>This might take some seconds, depending on the speed of your internet connection..." );
@@ -170,6 +179,9 @@ function onPopulate( level, callbackData, filter ) {
 
       Amarok.debug( "done fetching fmc xml..." );
     }
+
+    else
+      fmcShowsXmlParser(); // we already have the xml, now we need to filter
   // No script.donePopulating(); here, as the downloader returns
   // immediately, even before the parser is being run.
   // Instead call it at then end of fmcShowsXmlParser(...).
@@ -179,22 +191,22 @@ function onPopulate( level, callbackData, filter ) {
     Amarok.debug( "populating fmc track level..." );
     elt = shows.at( callbackData ); // jump to the correct show
 
-    item = Amarok.StreamItem;
-    item.level = 0;
+    item              = Amarok.StreamItem;
+    item.level        = 0;
     item.callbackData = "";
-    item.album = elt.firstChildElement( "title" ).text();
+    item.album        = elt.firstChildElement( "title" ).text();
 
     /* The podcasts */
     item.infoHtml    = html;
     item.artist      = "Free Music Charts";
     item.itemName    = "Podcast (MP3)";
     item.playableUrl = elt.firstChildElement( "podcastmp3" ).text();
-    if (item.playableUrl != "not yet available" )
+    if( item.playableUrl != "not yet available"  && isFilterMatch( item.itemName ) )
       script.insertItem( item );
 
     item.itemName    = "Podcast (OGG)";
     item.playableUrl = elt.firstChildElement( "podcastogg" ).text();
-    if (item.playableUrl != "not yet available" )
+    if( item.playableUrl != "not yet available" && isFilterMatch( item.itemName ) )
       script.insertItem( item );
 
     /* The songs */
@@ -205,7 +217,7 @@ function onPopulate( level, callbackData, filter ) {
 
     var songArtistTitle = new Array( 2 );
 
-    for ( ; i != 0; i-- ) {
+    for( ; i != 0; i-- ) {
       // beautify rank for newcomers
       elt2 = elt.firstChildElement( "rank" );
       if( elt2.text() == "99" ) item.itemName = "New";
@@ -228,7 +240,8 @@ function onPopulate( level, callbackData, filter ) {
       item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() );
 
       elt = elt.nextSiblingElement( "song" );
-      script.insertItem( item );
+      if( isFilterMatch( item.itemName ) )
+        script.insertItem( item );
     }
 
     Amarok.debug( "done populating fmc track level..." );
@@ -239,5 +252,21 @@ function onPopulate( level, callbackData, filter ) {
 function onVote() {
   Amarok.debug( "FMC: onVote" );
   QDesktopServices.openUrl( votingUrl );
+}
+
+function isFilterMatch( itemName ) {
+  Amarok.debug( "FMC: isFilterMatch" );
+  var itemNameLowercase = itemName.toLowerCase();
+
+  if( ( currentFilter != "" ) && ( itemNameLowercase.indexOf( currentFilter ) == -1 ) )
+    return false;
+
+  return true;
+}
+
+
+String.prototype.trim = function() {
+  a = this.replace(/^\s+/, '');
+  return a.replace(/\s+$/, '');
 }
 
