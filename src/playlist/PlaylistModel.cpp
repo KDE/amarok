@@ -964,7 +964,6 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int 
     DEBUG_BLOCK
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
-    int matchRow = -1;
     int row = 0;
     int firstMatch = -1;
     foreach( Item* item, m_items ) {
@@ -993,7 +992,6 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, 
     DEBUG_BLOCK
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
-    int matchRow = -1;
     int row = m_items.count() -1;
     int lastMatch = -1;
 
