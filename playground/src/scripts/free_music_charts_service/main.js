@@ -36,7 +36,7 @@ html = "The rules for the Darkerradio Free Music Charts are quite simple: the be
 votingUrl = new QUrl( "http://www.darkerradio.com/free-music-charts/free-music-charts-voting/" );
 xmlUrl    = new QUrl( "http://krohlas.de/fmc.xml" );
 data      = new QIODevice;
-doc       = new QDomDocument( "doc" );
+doc       = new QDomDocument;
 elt       = new QDomElement;
 elt2      = new QDomElement;
 shows     = new QDomNodeList;
@@ -52,7 +52,7 @@ Amarok.Window.ToolsMenu.votingGui.triggered.connect( onVote );
 /* Initialization of service */
 function FreeMusicCharts() {
   Amarok.debug( "creating fmc service..." );
-  ScriptableServiceScript.call( this, "Free Music Charts", 2, "Free Music Charts from Darkerradio.com", html, false );
+  ScriptableServiceScript.call( this, "Free Music Charts", 2, "Free Music Charts from Darkerradio.com", html, true );
   Amarok.debug( "done creating fmc service!" );
 }
 
@@ -78,7 +78,7 @@ function fmcShowsXmlParser( reply ) {
     item.infoHtml = html;
     item.coverUrl = Amarok.Info.scriptPath() + "/FMCShow.png";
 
-    if( shows.length() == 0) {
+    if( shows.length() == 0 ) {
       Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Download of charts seems to have <font color=red><b>failed</b></font>. Please check your internet connection." );
       item.itemName = "Download failed :(";
       item.callbackData = "failed";
@@ -157,23 +157,25 @@ function onPopulate( level, callbackData, filter ) {
   var i = 0;
   Amarok.debug( "populating fmc level: " + level );
 
-  if ( level == 1 ) { // the shows
-    Amarok.debug( "fetching fmc xml..." );
-    Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Fetching charts.<br/>This might take some seconds, depending on the speed of your internet connection..." );
-    try {
-      a = new Downloader( xmlUrl, fmcShowsXmlParser );
-    }
-    catch( err ) {
-      Amarok.debug( err );
-    }
+  if( level == 1 ) { // the shows
+    if( doc.isNull() ) { // we have yet to fetch the xml
+      try {
+        Amarok.debug( "fetching fmc xml..." );
+        Amarok.Window.Statusbar.longMessage( "<b>Free Music Charts</b><br/><br/>Fetching charts.<br/>This might take some seconds, depending on the speed of your internet connection..." );
+        a = new Downloader( xmlUrl, fmcShowsXmlParser );
+      }
+      catch( err ) {
+        Amarok.debug( err );
+      }
 
-  Amarok.debug( "done fetching fmc xml..." );
+      Amarok.debug( "done fetching fmc xml..." );
+    }
   // No script.donePopulating(); here, as the downloader returns
   // immediately, even before the parser is being run.
   // Instead call it at then end of fmcShowsXmlParser(...).
   }
 
-  else if ( level == 0 ) { // the tracks from each show
+  else if( level == 0 ) { // the tracks from each show
     Amarok.debug( "populating fmc track level..." );
     elt = shows.at( callbackData ); // jump to the correct show
 
