@@ -328,12 +328,14 @@ void CollectionWidget::setFilter( const QString &filter )
     m_searchWidget->setSearchString( filter );
 }
 
-QString CollectionWidget::filter() const
+QString 
+CollectionWidget::filter() const
 {
     return m_searchWidget->lineEdit()->text();
 }
 
-QList< int > CollectionWidget::levels()
+QList< int > 
+CollectionWidget::levels()
 {
     return m_treeView->levels();
 }
