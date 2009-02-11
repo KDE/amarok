@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,37 +17,29 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AMAROKWIDGET_H
-#define AMAROKWIDGET_H
+#include "Widget.h"
 
-#include <QPalette>
-#include <QWidget>
+#include "PaletteHandler.h"
 
-namespace Amarok {
-
-/**
-A simple QWidget subclass with transparent background
-
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class Widget : public QWidget
+Amarok::Widget::Widget( QWidget * parent )
+    : QWidget( parent )
 {
-    Q_OBJECT
-public:
-    Widget( QWidget * parent = 0 );
-    ~Widget( ) {}
+    QPalette p = palette();
+    QColor c = p.color( QPalette::Window );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Window, c );
+    setPalette( p );
 
-protected slots:
-
-    void newPalette( const QPalette &palette );
-    
-protected:
-    virtual void paintEvent( QPaintEvent * )
-    {
-    }
-
-};
-
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 }
 
-#endif
+void Amarok::Widget::newPalette( const QPalette & palette )
+{
+    QPalette p = palette;
+    QColor c = p.color( QPalette::Window );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Window, c );
+    setPalette( p );
+}
+
+#include "Widget.moc"

@@ -544,6 +544,7 @@ set(amaroklib_LIB_SRCS
     widgets/Splitter.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
+    widgets/Widget.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
 )
