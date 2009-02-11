@@ -81,7 +81,7 @@ function xmlDownloadResult( reply ) {
     Amarok.debug ("got " + shows.length() + " shows!");
 
 
-    Amarok.debug ("building episode map..." );
+    //Amarok.debug ("building episode map..." );
 
 
     //build a map of all episodes keyed by their unique url
@@ -114,7 +114,7 @@ function xmlDownloadResult( reply ) {
 
       //episodes[key] = item2;
       episodes[key] = data;
-      Amarok.debug ("item " + data + " inserted with key: " + key);
+      //Amarok.debug ("item " + data + " inserted with key: " + key);
 
     }
 
@@ -135,11 +135,11 @@ function xmlDownloadResult( reply ) {
 
       //episodes[key] = item2;
       urls[ulrKey] = url;
-      Amarok.debug ("url " + url + " inserted with key: " + ulrKey);
+      //Amarok.debug ("url " + url + " inserted with key: " + ulrKey);
 
     }
 
-    Amarok.debug ("got " + episodeNodes.length() + " episodes!");
+    //Amarok.debug ("got " + episodeNodes.length() + " episodes!");
 
   }
   catch( err ) {
@@ -152,7 +152,7 @@ function xmlDownloadResult( reply ) {
 
 function populateShows( filter ) {
 
-  Amarok.debug ("in populateShows");
+  //Amarok.debug ("in populateShows");
   try {
 
     var showTitles = new Array( shows.length() );
@@ -171,7 +171,7 @@ function populateShows( filter ) {
         var lowerCaseTitle = item.itemName.toLowerCase();
         var lowerCaseFilter = filter.toLowerCase();
 
-          Amarok.debug ("searching for filter " + lowerCaseFilter + " in title " + lowerCaseTitle);
+        //Amarok.debug ("searching for filter " + lowerCaseFilter + " in title " + lowerCaseTitle);
 
 
         if ( lowerCaseFilter != "" && lowerCaseTitle.indexOf(lowerCaseFilter) == -1 ) {
@@ -202,7 +202,7 @@ function populateShows( filter ) {
 /* Fill tree view in Amarok */
 function onPopulate( level, callbackData, filter ) {
   var i = 0;
-  Amarok.debug( "populating bbc level: " + level );
+  //Amarok.debug( "populating bbc level: " + level );
 
   filter = filter.replace( "%20", " " );
   filter = filter.trim();
@@ -229,14 +229,14 @@ function onPopulate( level, callbackData, filter ) {
   else if ( level == 0 ) { // the tracks from each show
 
     var show = new QDomElement;
-    Amarok.debug ("got " + shows.length() + " shows! ( only need one right now... )");
+    //Amarok.debug ("got " + shows.length() + " shows! ( only need one right now... )");
 
     try {
 
         show = shows.at( callbackData );
 
         elt = show.firstChildElement( "dc:title" );
-        Amarok.debug ("populating show: " + elt.text() );
+       // Amarok.debug ("populating show: " + elt.text() );
 
 /*for(att in episodes){
  Amarok.debug ("att: " + att + ", " + episodes[att].itemName)
@@ -249,7 +249,7 @@ function onPopulate( level, callbackData, filter ) {
 
         while ( elt.isNull() == false ) {
 
-            Amarok.debug ("here!!: " + elt.isNull() );
+            //Amarok.debug ("here!!: " + elt.isNull() );
 
             var key = trimKey( elt.attribute( "rdf:resource", "failed" ) );
  
@@ -260,8 +260,8 @@ function onPopulate( level, callbackData, filter ) {
 
             }
 
-            Amarok.debug ("using key: " + key );
-            Amarok.debug ("inserting item: " + episodes[key] );
+            //Amarok.debug ("using key: " + key );
+            //Amarok.debug ("inserting item: " + episodes[key] );
 
 
             var item2 = Amarok.StreamItem;
@@ -291,7 +291,7 @@ function onPopulate( level, callbackData, filter ) {
 
 
     script.donePopulating();
-    Amarok.debug( "done populating bbc track level..." );
+    //Amarok.debug( "done populating bbc track level..." );
   }
 }
 
