@@ -406,31 +406,7 @@ LastFmService::polish()
 
         m_bottomPanel->setMaximumHeight( 300 );
 //         m_bottomPanel->hide();
-        m_buttonBox = new QWidget( m_bottomPanel );
-        FlowLayout * flowLayout = new FlowLayout( 3 );
-        m_buttonBox->setLayout( flowLayout );
-
-        m_loveButton = new QPushButton( );
-        m_loveButton->setText( i18n( "Love" ) );
-        m_loveButton->setObjectName( "loveButton" );
-        m_loveButton->setIcon( KIcon( "love-amarok" ) );
-        connect( m_loveButton, SIGNAL( clicked() ), this, SLOT( love() ) );
-        flowLayout->addWidget( m_loveButton );
-
-        m_banButton = new QPushButton();
-        m_banButton->setText( i18n( "Ban" ) );
-        m_banButton->setObjectName( "banButton" );
-        m_banButton->setIcon( KIcon( "remove-amarok" ) );
-        connect( m_banButton, SIGNAL( clicked() ), this, SLOT( ban() ) );
-        flowLayout->addWidget( m_banButton );
-
-        m_skipButton = new QPushButton();
-        m_skipButton->setText( i18n( "Skip" ) );
-        m_skipButton->setObjectName( "skipButton" );
-        m_skipButton->setIcon( KIcon( "media-seek-forward-amarok" ) );
-        connect( m_skipButton, SIGNAL( clicked() ), this, SLOT( skip() ) );
-        flowLayout->addWidget( m_skipButton );
-
+        
         m_topPanel->setMaximumHeight( 300 );
         KHBox * outerProfilebox = new KHBox( m_topPanel );
         outerProfilebox->setSpacing(1);
@@ -536,15 +512,6 @@ LastFmService::skip()
     LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
     if( lastfmTrack )
         lastfmTrack->skip();
-}
-
-
-void
-LastFmService::setRadioButtons( bool hasRadio )
-{
-    m_loveButton->setEnabled( true ); // we can love any track, anytime
-    m_skipButton->setEnabled( hasRadio );
-    m_banButton->setEnabled( hasRadio );
 }
 
 

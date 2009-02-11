@@ -82,8 +82,6 @@ private slots:
     void playCustomStation();
     void updateEditHint( int index );
 
-    void setRadioButtons( bool hasRadio );
-
     void onAuthenticated( WsReply* );
     void onGetUserInfo( WsReply* );
     void onAvatarDownloaded( QPixmap );
@@ -97,11 +95,7 @@ private:
     void updateProfileInfo();
 
     bool m_polished;
-    QWidget *m_buttonBox;
     QWidget *m_profileBox;
-    QPushButton *m_loveButton;
-    QPushButton *m_banButton;
-    QPushButton *m_skipButton;
     QLabel *m_avatarLabel;
     QLabel *m_profile;
     QLabel *m_userinfo;
