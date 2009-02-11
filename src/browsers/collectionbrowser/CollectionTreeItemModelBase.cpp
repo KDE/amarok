@@ -574,6 +574,46 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "tracknumber" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
+                } else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if( compare == QueryMaker::Equals ) // just do some basic string matching
+                    {
+                        QDateTime curTime = QDateTime::currentDateTime();
+                        uint dateCutOff = 0;
+                        if( ( elem.text.compare( "today", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "today" ), Qt::CaseInsensitive ) == 0 ) )
+                            dateCutOff = curTime.addDays( -1 ).toTime_t();
+                        else if( ( elem.text.compare( "last week", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last week" ), Qt::CaseInsensitive ) == 0 ) )
+                            dateCutOff = curTime.addDays( -7 ).toTime_t();
+                        else if( ( elem.text.compare( "last month", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last month" ), Qt::CaseInsensitive ) == 0 ) )
+                            dateCutOff = curTime.addMonths( -1 ).toTime_t();
+                        else if( ( elem.text.compare( "two months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "two months ago" ), Qt::CaseInsensitive ) == 0 ) )
+                            dateCutOff = curTime.addMonths( -2 ).toTime_t();
+                        else if( ( elem.text.compare( "three months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "three months ago" ), Qt::CaseInsensitive ) == 0 ) )
+                            dateCutOff = curTime.addMonths( -3 ).toTime_t();
+                        
+                        if( dateCutOff > 0 )
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, QueryMaker::GreaterThan );
+                    } else if( compare == QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                    {
+                        int months = 0, days = 0;
+                        QString tmp;
+                        for( int i = 0; i < elem.text.length(); i++ )
+                        {
+                            QChar c = elem.text.at( i );
+                            if( c.isNumber() )
+                                tmp += c;
+                            else if( c == 'm' )
+                            {
+                                months = 0 - QString( tmp ).toInt();
+                                tmp = "";
+                            } else if( c == 'd' )
+                            {   
+                                days = 0 - QString( tmp ).toInt();
+                                break;
+                            }
+                        }
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( days ).toTime_t(), QueryMaker::GreaterThan );
+                    }
                 }
             }
             qm->endAndOr();
