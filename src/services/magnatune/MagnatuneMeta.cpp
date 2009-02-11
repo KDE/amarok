@@ -307,6 +307,21 @@ void Meta::MagnatuneTrack::purchase()
         mAlbum->store()->purchase( this );
 }
 
+void Meta::MagnatuneTrack::setAlbum( Meta::AlbumPtr album )
+{
+    DEBUG_BLOCK
+    ServiceTrack::setAlbum( album );
+
+    //get year from magnatue album:
+    MagnatuneAlbum * ma = dynamic_cast<MagnatuneAlbum *>( album.data() );
+    if ( ma )
+    {
+        debug() << "release year: " << ma->launchYear();
+        YearPtr year = YearPtr( new ServiceYear( QString::number( ma->launchYear() ) ) );
+        setYear( year );
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // class MagnatuneArtist
@@ -461,6 +476,8 @@ MagnatuneGenre::MagnatuneGenre( const QString & name )
 MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {}
+
+
 
 #include "MagnatuneMeta.moc"
 

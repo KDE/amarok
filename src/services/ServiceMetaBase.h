@@ -250,7 +250,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         //ServiceTrack specific methods
 
-        void setAlbum( Meta::AlbumPtr album );
+        virtual void setAlbum( Meta::AlbumPtr album );
         void setArtist( Meta::ArtistPtr artist );
         void setComposer( Meta::ComposerPtr composer );
         void setGenre( Meta::GenrePtr genre );

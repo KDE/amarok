@@ -65,6 +65,8 @@ public:
     void setOggUrl( const QString& url );
     QString oggUrl() const;
 
+    void setAlbum( Meta::AlbumPtr album );
+
 public slots:
     void purchase();
 

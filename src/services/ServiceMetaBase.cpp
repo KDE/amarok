@@ -318,7 +318,7 @@ ServiceTrack::composer() const
 YearPtr
 ServiceTrack::year() const
 {
-    if( !m_year == 0 )
+    if( m_year )
         return YearPtr::staticCast( m_year );
     else
         return Meta::YearPtr( new DefaultYear() );
