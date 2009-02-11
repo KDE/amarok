@@ -80,6 +80,8 @@ class SideBar: public KHBox
 
         void deleteBrowsers()
         {
+            DEBUG_BLOCK
+
             QWidget * widget = m_widgets->widget( 0 );
             while( widget )
             {
