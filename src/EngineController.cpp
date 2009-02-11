@@ -623,12 +623,15 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     if( !m_nextUrl.isEmpty() )
         m_nextUrl.clear();
 
-    if ( m_currentTrack )
+    if ( m_currentTrack && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
+        Meta::Track::ReplayGainMode mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
+                                         ? Meta::Track::TrackReplayGain
+                                         : Meta::Track::AlbumReplayGain;
         // gain is usually negative (but may be positive)
-        qreal gain = m_currentTrack->replayGain( Meta::Track::TrackReplayGain );
+        qreal gain = m_currentTrack->replayGain( mode );
         // peak is usually positive and smaller than gain (but may be negative)
-        qreal peak = m_currentTrack->replayPeakGain( Meta::Track::TrackReplayGain );
+        qreal peak = m_currentTrack->replayPeakGain( mode );
         if ( gain + peak > 0.0 )
         {
             debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;

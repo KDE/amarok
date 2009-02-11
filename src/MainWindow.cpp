@@ -793,6 +793,7 @@ MainWindow::createActions()
     new Amarok::RepeatAction( ac, this );
     new Amarok::RandomAction( ac, this );
     new Amarok::FavorAction( ac, this );
+    new Amarok::ReplayGainModeAction( ac, this );
 
     ac->addAssociatedWidget( this );
     foreach (QAction* action, ac->actions())
@@ -897,6 +898,7 @@ MainWindow::createMenus()
     m_settingsMenu->setTitle( i18n("&Settings") );
     //TODO use KStandardAction or KXmlGuiWindow
 
+    m_settingsMenu->addAction( actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );

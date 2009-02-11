@@ -356,6 +356,18 @@ RepeatAction::RepeatAction( KActionCollection *ac, QObject *parent ) :
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
+// ReplayGainModeAction
+//////////////////////////////////////////////////////////////////////////////////////////
+ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *parent ) :
+    SelectAction( i18n( "&Replay gain mode" ), &AmarokConfig::setReplayGainMode, ac, "replay_gain_mode", parent )
+{
+    setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
+                            << i18n( "&Album" ) );
+    //setIcons( QStringList() << "media-playlist-replaygain-off-amarok" << "media-track-replaygain-amarok" << "media-album-replaygain-amarok" );
+    setCurrentItem( AmarokConfig::replayGainMode() );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 // BurnMenuAction
 //////////////////////////////////////////////////////////////////////////////////////////
 BurnMenuAction::BurnMenuAction( KActionCollection *ac, QObject *parent )

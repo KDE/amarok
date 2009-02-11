@@ -274,6 +274,22 @@
         <label>Equalizer preset name.</label>
         <default>Zero</default>
     </entry>
+    <entry key="Replay Gain Mode" type="Enum">
+        <label>The mode for adjusting playback volume.</label>
+        <whatsthis>Whether to adjust the volume of tracks to make them sound the same volume, and if so whether to make the adjustments per-track or per-album.</whatsthis>
+        <choices>
+            <choice name="Off">
+                <label>Disable replay gain</label>
+            </choice>
+            <choice name="Track">
+                <label>Make each track the same volume</label>
+            </choice>
+            <choice name="Album">
+                <label>Make each album the same volume</label>
+            </choice>
+        </choices>
+        <default>Track</default>
+    </entry>
 </group>
 
 <group name="Cover Manager">

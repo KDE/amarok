@@ -108,6 +108,12 @@ namespace Amarok
             RepeatAction( KActionCollection *ac, QObject* );
     };
 
+    class ReplayGainModeAction : public SelectAction
+    {
+        public:
+            ReplayGainModeAction( KActionCollection *ac, QObject* );
+    };
+
     class BurnMenu : public KMenu
     {
         Q_OBJECT
