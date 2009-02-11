@@ -404,8 +404,8 @@ LastFmService::polish()
         setView( view );
         setModel( new LastFmTreeModel( m_userName, this ) );
 
-        m_bottomPanel->setMaximumHeight( 300 );
-//         m_bottomPanel->hide();
+        //m_bottomPanel->setMaximumHeight( 300 );
+        m_bottomPanel->hide();
         
         m_topPanel->setMaximumHeight( 300 );
         KHBox * outerProfilebox = new KHBox( m_topPanel );
