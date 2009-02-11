@@ -74,9 +74,9 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                                    const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
                                    const QString & composerOverride, int yearOverride, const QString &coverUrl  )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
-    debug() << "level: " << level;
+    /*debug() << "level: " << level;
     debug() << "parentId: " << parentId;
     debug() << "name: " << name;
     debug() << "infoHtml: " << infoHtml;
@@ -85,7 +85,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
     debug() << "albumOverride: " << albumOverride;
     debug() << "artistOverride: " << artistOverride;
-    debug() << "coverUrl: " << coverUrl;
+    debug() << "coverUrl: " << coverUrl;*/
 
     if ( ( level +1 > m_levels ) || level < 0 )
         return -1;
@@ -135,7 +135,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             album->setArtistId( parentId );
             album->setDescription( infoHtml );
             album->setServiceName( m_name );
-            debug() << "setting coverUrl: " << coverUrl;
+            //debug() << "setting coverUrl: " << coverUrl;
             album->setCoverUrl( coverUrl );
 
             album->setServiceName( m_name );
@@ -315,7 +315,7 @@ int ScriptableService::addGenre( Meta::ScriptableServiceGenre * genre )
     GenrePtr genrePtr = GenrePtr( genre );
     m_genreIdCounter++;
 
-    debug() << "adding genre: " << genre->name() << ", with id: " << m_genreIdCounter;
+    //debug() << "adding genre: " << genre->name() << ", with id: " << m_genreIdCounter;
     
     genre->setId( m_genreIdCounter );
     m_ssGenreIdMap.insert( m_genreIdCounter, genre );
