@@ -205,7 +205,6 @@ Playlist::GroupingProxy::setCollapsed( int, bool ) const
 int
 Playlist::GroupingProxy::firstInGroup( int row ) const
 {
-    AMAROK_DEPRECATED
 
     if ( m_rowGroupMode.at( row ) == None )
         return row;
@@ -223,8 +222,7 @@ Playlist::GroupingProxy::firstInGroup( int row ) const
 int
 Playlist::GroupingProxy::lastInGroup( int row ) const
 {
-    AMAROK_DEPRECATED
-
+    
     if ( m_rowGroupMode.at( row ) == None )
         return row;
 
