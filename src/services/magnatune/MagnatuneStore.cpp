@@ -189,7 +189,7 @@ void MagnatuneStore::purchase( Meta::MagnatuneAlbum * album )
 void MagnatuneStore::initTopPanel( )
 {
 
-    QMenu *filterMenu = new QMenu( this );
+    QMenu *filterMenu = new QMenu( 0 );
     
     QAction *action = filterMenu->addAction( i18n("Artist") );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtist() ) );
@@ -216,7 +216,7 @@ void MagnatuneStore::initTopPanel( )
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
 
-    QMenu * actionsMenu = new QMenu( this );
+    QMenu * actionsMenu = new QMenu( 0 );
 
     action = actionsMenu->addAction( i18n( "Redownload" ) );
     connect( action, SIGNAL( triggered( bool) ), SLOT( processRedownload() ) );
