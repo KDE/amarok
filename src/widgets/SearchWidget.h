@@ -35,6 +35,8 @@ class AMAROK_EXPORT SearchWidget : public QWidget
 
         QToolBar * toolBar();
 
+        void showAdvancedButton( bool show );
+
     signals:
 
         void filterNow();

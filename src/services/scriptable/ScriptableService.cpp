@@ -55,6 +55,7 @@ void ScriptableService::init( int levels, const QString & rootHtml, bool showSea
     m_levels = levels;
     m_rootHtml = rootHtml;
     m_hasSearchBar = showSearchBar;
+    m_searchWidget->showAdvancedButton( false );
     setInfoParser( new ScriptableServiceInfoParser( m_name ) );
     m_collection = new ScriptableServiceCollection( m_name );
     m_collection->setLevels( levels );

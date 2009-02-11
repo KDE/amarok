@@ -102,5 +102,26 @@ QToolBar * SearchWidget::toolBar()
     return m_toolBar;
 }
 
+void SearchWidget::showAdvancedButton(bool show)
+{
+    if ( show ) {
+        if ( m_filterAction != 0 ) {
+            m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
+            m_filterAction->setObjectName( "filter" );
+            m_toolBar->addAction( m_filterAction );
+            connect ( m_filterAction, SIGNAL( activated() ), this, SLOT( slotShowFilterEditor() ) );
+        }
+    } else {
+        delete m_filterAction;
+        m_filterAction = 0;
+    }
+
+
+        
+}
+
+
 #include "SearchWidget.moc"
+
+
 
