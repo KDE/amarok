@@ -29,6 +29,7 @@ Importer.loadQtBinding( "qt.network" );
 
 service_name = "BBC";
 html = "BBC";
+globalFilter = "";
 
 
 xmlUrl = new QUrl( "http://open.bbc.co.uk/rad/uriplay/availablecontent" );
@@ -145,7 +146,7 @@ function xmlDownloadResult( reply ) {
     Amarok.debug( err );
   }
   xmlFetched == 1;
-  populateShows( "" );
+  populateShows( globalFilter );
 }
 
 
@@ -203,6 +204,10 @@ function onPopulate( level, callbackData, filter ) {
   var i = 0;
   Amarok.debug( "populating bbc level: " + level );
 
+  filter = filter.replace( "%20", " " );
+  filter = filter.trim();
+  globalFilter = filter;
+
   if ( level == 1 ) { // the shows
 
     try {
@@ -210,12 +215,9 @@ function onPopulate( level, callbackData, filter ) {
         if ( shows.length() == 0 ) {
             Amarok.debug( "fetching bbc xml..." );
             Amarok.Window.Statusbar.longMessage( "<b>BBC</b><br/><br/>Fetching and parsing shows.<br/>This might take some seconds, depending on the speed of your internet connection..." );
-
             qurl = new QUrl( xmlUrl );
             a = new Downloader( qurl, xmlDownloadResult );
         } else {
-            filter = filter.replace( "%20", " " );
-            filter = filter.trim();
             populateShows( filter );
         }
     } catch( err ) {
