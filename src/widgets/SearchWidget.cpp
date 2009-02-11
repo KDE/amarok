@@ -111,13 +111,12 @@ void SearchWidget::showAdvancedButton(bool show)
             m_toolBar->addAction( m_filterAction );
             connect ( m_filterAction, SIGNAL( activated() ), this, SLOT( slotShowFilterEditor() ) );
         }
-    } else {
+    }
+    else
+    {
         delete m_filterAction;
         m_filterAction = 0;
     }
-
-
-        
 }
 
 
