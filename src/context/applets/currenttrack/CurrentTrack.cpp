@@ -130,6 +130,8 @@ void CurrentTrack::init()
     m_noTrack->setText( m_noTrackText );
     
     m_tabBar = new Plasma::TabBar( this );
+    m_tabBar->setStyleSheet( "TabBar::tab { border-radius: 4px; }" ); // Makes the TabBar look differently, with round borders 
+
     for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
     {
         m_tracks[i] = new TrackWidget( this );
