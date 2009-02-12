@@ -384,7 +384,7 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ ) {
-        totalLenght += m_model->trackAt( row )->length();
+        totalLenght += m_model->trackAt( i )->length();
     }
 
     return totalLenght;
