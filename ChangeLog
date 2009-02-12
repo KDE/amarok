@@ -79,6 +79,8 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Do not break up grouping in the playlist when editing (all but
+      album) tags.
     * QtScript correctly writes the tags of tracks metadata it changes. 
       (BR 182667)
     * Fix "Stop Playing After Track". It is working now. (BR 180486)
