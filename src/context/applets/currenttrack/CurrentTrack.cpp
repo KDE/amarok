@@ -26,10 +26,12 @@
 #include <context/widgets/RatingWidget.h>
 
 #include <plasma/theme.h>
+#include <plasma/widgets/tabbar.h>
 
 #include <KColorScheme>
 
 #include <QFont>
+#include <QGraphicsLinearLayout>
 #include <QPainter>
 
 
@@ -41,6 +43,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_rating( -1 )
     , m_trackLength( 0 )
     , m_tracksToShow( 0 )
+    , m_tabBar( 0 )
 {
     setHasConfigurationInterface( false );
 }
@@ -125,12 +128,17 @@ void CurrentTrack::init()
     m_noTrackText = i18n( "No track playing" );
     m_noTrack->hide();
     m_noTrack->setText( m_noTrackText );
-
-
-    for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
-        m_lastTracks[i] = new TrackWidget( this );
     
+    m_tabBar = new Plasma::TabBar( this );
+    for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
+    {
+        m_tracks[i] = new TrackWidget( this );
+    }
+    m_tabBar->addTab( i18n( "Last played" ) );
+    m_tabBar->addTab( i18n( "Favourite tracks" ) );
+
     connectSource( "current" );
+    connect( m_tabBar, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
@@ -235,8 +243,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     m_maxTextWidth = textWidth;
     //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
-
-
+    
     m_title->setFont( textFont );
     m_artist->setFont( textFont );
     m_album->setFont( textFont );
@@ -249,18 +256,20 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
     m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
     
-    if( !m_tracks.isEmpty() )
-    {
-        m_noTrack->setText( truncateTextToFit( i18n( "Last Played" ), m_noTrack->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-        QFontMetricsF fm( m_noTrack->font() );
-                
-        m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2, 10 );
+    if( !m_lastTracks.isEmpty() )
+    {                
+        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
 
-        m_tracksToShow = qMin( m_tracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
+        QFontMetrics fm( m_tabBar->font() );
+        qreal tabTextWidth = qMin( fm.boundingRect( m_tabBar->tabText( 0 ) +  m_tabBar->tabText( 1 ) ).width() + 100.0, size().width() );
+        m_tabBar->resize( QSizeF( tabTextWidth, m_tabBar->size().height() ) ); 
+        m_tabBar->setPos( size().width()/2 - m_tabBar->size().width()/2, 10 );
+        m_tabBar->show();
+        
         for( int i = 0; i < m_tracksToShow; i++ )
         {
-            m_lastTracks[i]->resize( contentsRect().width() - margin * 2, textHeight * 1.2 );
-            m_lastTracks[i]->setPos( ( rect().width() - m_lastTracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + m_noTrack->boundingRect().height() + 10 );
+            m_tracks[i]->resize( contentsRect().width() - margin * 2, textHeight * 1.2 );
+            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
         }
     }        
     else if( !m_noTrackText.isEmpty() )
@@ -294,16 +303,24 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     QRect textRect( 0, 0, m_maxTextWidth, 30 );
 
     m_noTrackText = data[ "notrack" ].toString();
-    m_tracks = data[ "tracks" ].value<Meta::TrackList>();
-
-    if( !m_tracks.isEmpty() )
+    m_lastTracks = data[ "lastTracks" ].value<Meta::TrackList>();
+    m_favoriteTracks = data[ "favoriteTracks" ].value<Meta::TrackList>();
+    
+    if( !m_lastTracks.isEmpty() )
     {
+        
+        Meta::TrackList tracks;
+        if( m_tabBar->currentIndex() == 0 )
+            tracks = m_lastTracks;
+        else
+            tracks = m_favoriteTracks;
         int i = 0;
-        foreach( Meta::TrackPtr track, m_tracks )
+        foreach( Meta::TrackPtr track, tracks )
         {
-            m_lastTracks[i]->setTrack( track );
+            m_tracks[i]->setTrack( track );
             i++;
         }
+        
         updateConstraints();
         update();
         return;
@@ -319,7 +336,8 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
 
     m_noTrack->setText( QString() );
-    m_tracks.clear();
+    m_lastTracks.clear();
+    m_favoriteTracks.clear();
     
     m_currentInfo = data[ "current" ].toMap();
     m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), textRect ) );
@@ -399,14 +417,14 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
             childItem->show();        
     }    
 
-    if( !m_tracks.isEmpty() )
+    if( !m_lastTracks.isEmpty() )
     {
         QList<QGraphicsItem*> children = QGraphicsItem::children();
         foreach ( QGraphicsItem *childItem, children )
             childItem->hide();
-        m_noTrack->show();
+        m_tabBar->show();
         for( int i = 0; i < m_tracksToShow; i++)
-            m_lastTracks[i]->show();
+            m_tracks[i]->show();
         return;
     }
     else if( !m_noTrack->text().isEmpty() )
@@ -419,9 +437,10 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     }
     else
     {
+        m_tabBar->hide();
         m_noTrack->hide();
         for( int i = 0; i < MAX_PLAYED_TRACKS; i++)
-            m_lastTracks[i]->hide();
+            m_tracks[i]->hide();
     }
     
     const qreal margin = 14.0;
@@ -528,6 +547,27 @@ void CurrentTrack::paletteChanged( const QPalette & palette )
     m_numPlayed->setBrush( palette.text() );
     m_playedLast->setBrush( palette.text() );
     m_noTrack->setBrush( palette.text() );
+}
+
+void
+CurrentTrack::tabChanged( int index )
+{
+    Meta::TrackList tracks;
+    if( index == 0 )
+        tracks = m_lastTracks;
+    else
+        tracks = m_favoriteTracks;
+    
+    int i = 0;    
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        m_tracks[i]->hide();
+        m_tracks[i]->setTrack( track );
+        i++;
+    }
+    for( i = 0; i < m_tracksToShow; i++ )
+        m_tracks[i]->show();
+    
 }
 
 #include "CurrentTrack.moc"

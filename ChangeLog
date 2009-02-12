@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Add a tab bar in the current track applet for showing also the favorite
+      tracks in the collection.
     * Add an advanced but user friendly playlist layout editor allowing users
       to modify and create their own playlist layouts.
     * The Playlist can now render itself using layouts defined in XML. A

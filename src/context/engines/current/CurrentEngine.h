@@ -80,9 +80,11 @@ private:
     
     QueryMaker *m_qm;
     QueryMaker *m_qmTracks;
+    QueryMaker *m_qmFavTracks;
     Meta::AlbumList m_albums;
     Meta::ArtistPtr m_currentArtist;
     Meta::TrackList m_latestTracks;
+    Meta::TrackList m_favoriteTracks;
     
 private slots:
     void resultReady( const QString &collectionId, const Meta::AlbumList &albums );

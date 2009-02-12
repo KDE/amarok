@@ -133,6 +133,20 @@ CurrentEngine::stoppedState()
     connect( m_qmTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
 
     m_qmTracks->run();
+
+    // Get the favorite tracks:
+
+    m_qmFavTracks = coll->queryMaker();
+    m_qmFavTracks->setQueryType( QueryMaker::Track );
+    m_qmFavTracks->excludeFilter( Meta::valTitle, QString(), true, true );
+    m_qmFavTracks->orderBy( Meta::valScore, true );
+    m_qmFavTracks->limitMaxResultSize( 5 );
+
+    m_qmFavTracks->run();
+
+    connect( m_qmFavTracks, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
+             SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( m_qmFavTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
 }
 
 void CurrentEngine::metadataChanged( Meta::AlbumPtr album )
@@ -253,8 +267,16 @@ CurrentEngine::setupTracksData()
     DEBUG_BLOCK
 
     QVariant v;
-    v.setValue( m_latestTracks );
-    setData( "current", "tracks", v );
+    if( sender() == m_qmTracks )
+    {
+        v.setValue( m_latestTracks );
+        setData( "current", "lastTracks", v );
+    }
+    else if( sender() == m_qmFavTracks )
+    {
+        v.setValue( m_favoriteTracks );
+        setData( "current", "favoriteTracks", v );
+    }
 }
 
 void
@@ -272,9 +294,16 @@ CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId )
-
-    m_latestTracks.clear();
-    m_latestTracks << tracks;
+    if( sender() == m_qmTracks )
+    {
+        m_latestTracks.clear();
+        m_latestTracks << tracks;
+    }
+    else if( sender() == m_qmFavTracks )
+    {
+        m_favoriteTracks.clear();
+        m_favoriteTracks << tracks;
+    }
 }
 
 

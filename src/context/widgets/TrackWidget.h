@@ -22,8 +22,10 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSimpleTextItem>
 #include <QPainter>
 
+namespace Plasma { class IconWidget; }
 /**
  * @class TrackWidget
  * @short A widget to show track information
@@ -32,7 +34,7 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
 {
     Q_OBJECT
 
-    static const int PADDING = 15;
+    static const int PADDING = 10;
 
     public:
         TrackWidget( QGraphicsItem *parent = 0 );
@@ -66,7 +68,9 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
         
     private:
         Meta::TrackPtr m_track;
-        RatingWidget *m_rating;    
+        RatingWidget *m_rating;
+        Plasma::IconWidget *m_scoreIcon;
+        QGraphicsSimpleTextItem *m_scoreText;
 };
 
 #endif

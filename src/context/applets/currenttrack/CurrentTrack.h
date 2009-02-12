@@ -27,11 +27,15 @@
 class RatingWidget;
 class QCheckBox;
 class QGraphicsPixmapItem;
+class QGraphicsLinearLayout;
 class QHBoxLayout;
 class QLabel;
 class QSpinBox;
 
-namespace Plasma { class DataEngine; }
+namespace Plasma {
+    class DataEngine;
+    class TabBar;
+}
 
 static const int MAX_PLAYED_TRACKS = 5;
 
@@ -60,6 +64,7 @@ private slots:
     void changeTrackRating( int rating );
     void connectSource( const QString &source );
     void paletteChanged( const QPalette & palette );
+    void tabChanged( int index );
 
 private:
     QList<QAction*> contextualActions();
@@ -111,9 +116,12 @@ private:
     //keep this safe as we might need it when resizing
     QVariantMap m_currentInfo;
 
-    TrackWidget *m_lastTracks[MAX_PLAYED_TRACKS];
-    Meta::TrackList m_tracks;
+    TrackWidget *m_tracks[MAX_PLAYED_TRACKS];
+    Meta::TrackList m_lastTracks;
+    Meta::TrackList m_favoriteTracks;
     int m_tracksToShow;
+
+    Plasma::TabBar *m_tabBar;
 
 };
 
