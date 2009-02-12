@@ -446,22 +446,31 @@ void PopupDropperItem::reposHoverFillRects()
             rightside = d->pd->viewSize().width();
     //int rightside = d->borderRectItem ? d->borderRectItem->boundingRect().width() : boundingRect().width();
     if( d->orientation == PopupDropperItem::Left )
-        startx = d->textItem->pos().x() / 2 
-                 - ( d->hoverIndicatorRectWidth / 2 )
-                 + d->hoverIndicatorRectItem->pen().width();
+        startx = d->horizontalOffset 
+                 - d->hoverIndicatorRectWidth
+                 - ( 2  * d->hoverIndicatorRectItem->pen().width() );
     else
     {
         //qDebug() << "right side = " << rightside;
-        startx = rightside - ( ( rightside - d->textItem->pos().x() - d->textItem->boundingRect().width() ) / 2 )
-                 - ( d->hoverIndicatorRectWidth / 2 )
-                 + d->hoverIndicatorRectItem->pen().width();
+        startx = rightside - d->horizontalOffset
+                 + d->hoverIndicatorRectWidth / 2
+                 + ( 2 * d->hoverIndicatorRectItem->pen().width() );
     }
 
-    starty = d->borderRectItem->pos().y() + ( 2 * d->borderRectItem->pen().width() ) - ( d->hoverIndicatorRectItem->pen().width() );
+    starty = d->borderRectItem->pos().y()
+                + ( 2 * d->borderRectItem->pen().width() )
+                + ( 1 * d->hoverIndicatorRectItem->pen().width() );
 
     endx = d->hoverIndicatorRectWidth - ( 2 * d->hoverIndicatorRectItem->pen().width() );
 
-    endy = d->borderRectItem->boundingRect().height() - ( 4 * d->borderRectItem->pen().width() ) - ( 3 * d->hoverIndicatorRectItem->pen().width() ); 
+//    endy = ( d->borderRectItem->sceneBoundingRect().height() + d->borderRectItem->pos().y() )
+//            - ( starty - d->borderRectItem->pos().y() )
+//            - ( 2 * d->borderRectItem->pen().width() )
+//            - ( 2 * d->hoverIndicatorRectItem->pen().width() );
+    endy = ( d->borderRectItem->sceneBoundingRect().height() + d->borderRectItem->pos().y() )
+            - ( 3 * d->borderRectItem->pen().width() )
+            - ( 4 * d->hoverIndicatorRectItem->pen().width() ); //spacer + pen width
+
 
     //qDebug() << "startx, endx = " << startx << ", " << endx;
 
@@ -657,9 +666,9 @@ void PopupDropperItem::hoverFinished() //SLOT
         d->textItem->setDefaultTextColor( d->hoveredTextColor );
     else
         d->textItem->setDefaultTextColor( d->baseTextColor );
-   
+
     //Something is messed up in QTimeLine...I get hoverFinished immediately after doing a hoverLeft, but only sometimes...hence the check
-    //to see if the timeline isn't running 
+    //to see if the timeline isn't running
     if( d->hoverIndicatorRectFillItem && d->hoverTimer.state() == QTimeLine::NotRunning && d->hoverTimer.direction() == QTimeLine::Backward )
     {
         d->hoverIndicatorRectFillItem->hide();
@@ -731,6 +740,8 @@ QRectF PopupDropperItem::boundingRect() const
 {
     if( d->borderRectItem )
         return d->borderRectItem->boundingRect();
+    else if( d->pd && d->pd->viewSize().width() != 0 )
+        return QRectF( 0, 0, d->pd->viewSize().width(), d->svgElementRect.height() );
     else
         return QRectF( 0, 0, d->svgElementRect.width(), d->svgElementRect.height() );
 }
