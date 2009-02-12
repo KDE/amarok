@@ -435,6 +435,9 @@ SqlTrack::setUrl( const int deviceid, const QString &rpath )
 void
 SqlTrack::setArtist( const QString &newArtist )
 {
+    if ( m_artist && m_artist->name() == newArtist )
+        return;
+    
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::ARTIST, newArtist );
     else
@@ -453,6 +456,9 @@ SqlTrack::setArtist( const QString &newArtist )
 void
 SqlTrack::setGenre( const QString &newGenre )
 {
+    if ( m_genre && m_genre->name() == newGenre )
+        return;
+
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::GENRE, newGenre );
     else
@@ -469,6 +475,9 @@ SqlTrack::setGenre( const QString &newGenre )
 void
 SqlTrack::setComposer( const QString &newComposer )
 {
+    if ( m_composer && m_composer->name() == newComposer )
+        return;
+
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::COMPOSER, newComposer );
     else
@@ -485,6 +494,9 @@ SqlTrack::setComposer( const QString &newComposer )
 void
 SqlTrack::setYear( const QString &newYear )
 {
+    if ( m_year && m_year->name() == newYear )
+        return;
+
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::YEAR, newYear );
     else
@@ -501,6 +513,9 @@ SqlTrack::setYear( const QString &newYear )
 void
 SqlTrack::setAlbum( const QString &newAlbum )
 {
+    if ( m_album && m_album->name() == newAlbum )
+        return;
+
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::ALBUM, newAlbum );
     else

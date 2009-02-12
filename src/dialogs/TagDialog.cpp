@@ -1230,15 +1230,27 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         debug() << "TagDialog::TAGSCHANGED";
         QVariantMap map( m_currentData );
 
-        map.insert( Meta::Field::TITLE, ui->kLineEdit_title->text() );
-        map.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
-        map.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
-        map.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
-        map.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
-        map.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
-        map.insert( Meta::Field::TRACKNUMBER, ui->qSpinBox_track->value() );
-        map.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
-        map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
+        //do not nedlessly update everything, as theat wrecks havoc with grouping in the playlist....
+
+        if ( ui->kLineEdit_title->text() != track->name() )
+            map.insert( Meta::Field::TITLE, ui->kLineEdit_title->text() );
+        if ( !track->composer() || ui->kComboBox_composer->currentText() != track->composer()->name() )
+            map.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
+        if ( !track->artist() || ui->kComboBox_artist->currentText() != track->artist()->name() )
+            map.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
+        if ( !track->album() || ui->kComboBox_album->currentText() != track->album()->name() )
+            map.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
+        if ( ui->kTextEdit_comment->toPlainText() != track->comment() )
+            map.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
+        if ( !track->genre() || ui->kComboBox_genre->currentText() != track->genre()->name() )
+            map.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
+        if ( ui->qSpinBox_track->value() != track->trackNumber() )
+            map.insert( Meta::Field::TRACKNUMBER, ui->qSpinBox_track->value() );
+        if ( !track->year() || QString::number( ui->qSpinBox_year->value() ) != track->year()->name() )
+            map.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
+        if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
+            map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
+        
         storedTags.remove( track );
         storedTags.insert( track, map );
     }
