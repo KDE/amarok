@@ -78,11 +78,6 @@ class SideBar: public KHBox
 
         ~SideBar() {}
 
-        int minimumSizeHint()
-        {
-            return 100;
-        }
-
         void deleteBrowsers()
         {
             DEBUG_BLOCK
