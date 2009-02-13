@@ -20,6 +20,7 @@
 #ifndef AMAROK_SIDEBAR_H
 #define AMAROK_SIDEBAR_H
 
+#include "Debug.h"
 #include "widgets/SidebarWidget.h"
 
 #include <KHBox>
@@ -27,6 +28,7 @@
 #include <QIcon>
 #include <QFrame>
 #include <QLayout>
+#include <QPointer>
 #include <QStackedWidget>
 
 /**
@@ -160,7 +162,7 @@ class SideBar: public KHBox
         }
 
     private:
-        SideBarWidget *m_bar;
+        QPointer<SideBarWidget> m_bar;
         KHBox *m_frame;
         QStackedWidget *m_widgets;
         QWidget *m_contentsWidget;

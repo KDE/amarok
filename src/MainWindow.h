@@ -19,6 +19,7 @@
 #include "amarok_export.h"
 #include "meta/Meta.h"
 #include "EngineObserver.h"
+#include "Sidebar.h"
 
 #include <KVBox>
 #include <KXmlGuiWindow>
@@ -31,7 +32,6 @@ class MainToolbar;
 class MainWindow;
 class PlaylistFileProvider;
 class SearchWidget;
-class SideBar;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
 
@@ -147,7 +147,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         QMenuBar      *m_menubar;
         KMenu         *m_toolsMenu;
         KMenu         *m_settingsMenu;
-        SideBar       *m_browsers;
+        QPointer<SideBar> m_browsers;
         QStringList    m_browserNames;
         KMenu         *m_searchMenu;
 

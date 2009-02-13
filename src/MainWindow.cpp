@@ -29,7 +29,6 @@
 #include "PaletteHandler.h"
 #include "ScriptManager.h"
 #include "SearchWidget.h"
-#include "Sidebar.h"
 #include "Sidebar.moc"
 #include "statusbar/StatusBar.h"
 #include "amarokconfig.h"
