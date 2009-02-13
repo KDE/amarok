@@ -1,21 +1,5 @@
 [Desktop Entry]
-Name=Bookmark Manager
-Name[cs]=Správce záložek
-Name[el]=Διαχειριστής σελιδοδεικτών
-Name[et]=Järjehoidjate haldur
-Name[ga]=Bainisteoir na Leabharmharcanna
-Name[gl]=Xestor de marcadores
-Name[km]=កម្មវិធី​គ្រប់គ្រង​ចំណាំ
-Name[nds]=Leestekenpleger
-Name[nl]=Bladwijzerbeheerder
-Name[pl]=Manager zakładek
-Name[pt]=Gestor de Favoritos
-Name[pt_BR]=Gestor de Favoritos
-Name[sv]=Bokmärkeshantering
-Name[th]=เครื่องมือแก้ไขที่คั่นหน้าของแอมอะร็อก
-Name[tr]=Yer İmleri Yöneticisi
-Name[uk]=Інструмент керування закладками
-Name[x-test]=xxBookmark Managerxx
+Name=Bookmarks
 Type=Service
 ServiceTypes=Plasma/Applet
 
