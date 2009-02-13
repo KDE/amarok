@@ -76,15 +76,8 @@ private:
     Plasma::FrameSvg *m_theme;
     QSizeF m_size;
 
-    QGraphicsSimpleTextItem* m_serviceName;
-    //QGraphicsProxyWidget* m_serviceMainInfo;
-
-    //QWebView * m_webView;
-
     Plasma::WebView * m_webView;
-
     bool m_initialized;
-
     Meta::XSPFPlaylist * m_currentPlaylist;
 
 

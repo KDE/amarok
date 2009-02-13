@@ -57,9 +57,6 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     m_header->resize( m_size );
     m_width = globalConfig().readEntry( "width", 500 );
 
-    m_serviceName = new QGraphicsSimpleTextItem( this );
-    m_serviceName->setText( i18n("Service Info (No service active)") );
-
     //m_serviceMainInfo = new QGraphicsProxyWidget( this );
     //m_webView = new QWebView( 0 );
 
@@ -76,8 +73,6 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     //m_serviceMainInfo->setWidget( m_webView );
 
     connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
-
-    m_serviceName->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
 
     // get natural aspect ratio, so we can keep it on resize
     m_header->resize();
@@ -109,18 +104,7 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 
     m_theme->resizeFrame( size().toSize() );
 
-    //make the text as large as possible:
-    m_serviceName->setFont( shrinkTextSizeToFit( m_serviceName->text(), m_header->elementRect( "service_name" ) ) );
-
-    //center it
-
-    float textWidth = m_serviceName->boundingRect().width();
-    float totalWidth = m_header->elementRect( "service_name" ).width();
-    float offsetX =  ( totalWidth - textWidth ) / 2;
-
-    m_serviceName->setPos( m_header->elementRect( "service_name" ).topLeft() + QPointF ( offsetX, 0 ) );
-
-    QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 7 );
+    QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
 
     m_webView->resize( infoSize );
 
@@ -138,7 +122,6 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 
     if  ( m_initialized ) {
         //m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/ServiceInfoCustomStyle.css" ) );
-        m_serviceName->setText( data[ "service_name" ].toString() );
         m_webView->setHtml( data[ "main_info" ].toString(), KUrl( QString() ) );
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
         //some css voodoo to make sure the background of the page is a sane color
@@ -173,10 +156,9 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
     m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
     p->restore();
 
-    //m_serviceName->setPos( m_header->elementRect( "service_name" ).topLeft() );
     QPointF pos( m_header->elementRect( "main_info" ).topLeft() );
     //m_serviceMainInfo->setPos( pos.x() + 7, pos.y() );
-    m_webView->setPos( pos.x() + 7, pos.y() );
+    m_webView->setPos( pos.x() + 7, pos.y() + 5 );
 
     QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
     //infoSize.setHeight(  infoSize.height() - 50 );
