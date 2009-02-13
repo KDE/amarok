@@ -80,6 +80,8 @@ private:
     bool m_initialized;
     Meta::XSPFPlaylist * m_currentPlaylist;
 
+    static QString s_defaultHtml;
+
 
 };
 

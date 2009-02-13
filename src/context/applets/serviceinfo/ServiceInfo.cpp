@@ -26,6 +26,16 @@
 
 #include <QPainter>
 
+
+QString ServiceInfo::s_defaultHtml = "<HTML>"
+                                    "    <HEAD>"
+                                    "        <style type=\"text/css\">body {text-align:center}</style>"
+                                    "    </HEAD>"
+                                    "    <BODY>"
+                                    "        <b>%%SERVICE_NAME%%</b>"
+                                    "    </BODY>"
+                                    "</HTML>";
+
 ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_config( 0 )
@@ -121,11 +131,19 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
     kDebug() << "got data from engine: " << data[ "service_name" ].toString();
 
     if  ( m_initialized ) {
-        //m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/ServiceInfoCustomStyle.css" ) );
-        m_webView->setHtml( data[ "main_info" ].toString(), KUrl( QString() ) );
+
+
+        if ( !data[ "main_info" ].toString().isEmpty() )
+        {
+            m_webView->setHtml( data[ "main_info" ].toString(), KUrl( QString() ) );
+        }
+        else
+        {
+            QString html = s_defaultHtml;
+            html = html.replace( "%%SERVICE_NAME%%", data[ "service_name" ].toString() );
+            m_webView->setHtml( html );
+        }
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-        //some css voodoo to make sure the background of the page is a sane color
-        
         constraintsEvent();
     }
 
