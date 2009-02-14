@@ -76,7 +76,7 @@ QString KBookmarkHandler::currentTitle() const
 
 void KBookmarkHandler::openBookmark( const KBookmark & bm, Qt::MouseButtons, Qt::KeyboardModifiers )
 {
-  emit openUrl(bm.url().url());
+  emit openUrl(bm.url());
 }
 
 void KBookmarkHandler::slotNewBookmark( const QString& text,

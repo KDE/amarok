@@ -53,7 +53,7 @@ class KBookmarkHandler : public QObject, public KBookmarkOwner
     virtual void openBookmark( const KBookmark &, Qt::MouseButtons, Qt::KeyboardModifiers );
 
   signals:
-    void openUrl( const QString& url );
+    void openUrl( const KUrl& url );
 
   private slots:
     void slotNewBookmark( const QString& text, const QByteArray& url,

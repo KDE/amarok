@@ -109,7 +109,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     connect( m_dirOperator, SIGNAL( urlEntered( const KUrl& ) ), this, SLOT( dirUrlEntered( const KUrl& ) ) );
 
     // Connect the bookmark handler
-    connect( m_bookmarkHandler, SIGNAL( openUrl( const QString& ) ), this, SLOT( setDir( const QString& ) ) );
+    connect( m_bookmarkHandler, SIGNAL( openUrl( const KUrl& ) ), this, SLOT( setDir( const KUrl& ) ) );
 
     waitingUrl.clear();
 
