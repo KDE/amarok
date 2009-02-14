@@ -81,6 +81,7 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Dynamic playlist weight's are now saved correctly. (BR 184304)
     * Fix using "Copy to Collection" to download Magnatune.com preview
       tracks. (BR 183328)
     * Correct behaviour when queuing in a filtered playlist. (BR 180477)
