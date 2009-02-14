@@ -63,48 +63,14 @@ EngineController::destroy()
 }
 
 EngineController::EngineController()
-    : m_media( 0 )
-    , m_preamp( new Phonon::VolumeFaderEffect( this ) )
-    , m_audio( 0 )
-    , m_playWhenFetched( true )
+    : m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
 {
     DEBUG_BLOCK
 
-    PERF_LOG( "EngineController: loading phonon objects" )
-    m_media = new Phonon::MediaObject( this );
-    m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
-
-    m_path = Phonon::createPath(m_media, m_audio);
-    m_path.insertEffect( m_preamp );
-
-    m_media->setTickInterval( 100 );
-    debug() << "Tick Interval (actual): " << m_media->tickInterval();
-    PERF_LOG( "EngineController: loaded phonon objects" )
+    initializePhonon();
 
     m_fadeoutTimer->setSingleShot( true );
-
-    //TODO: The xine engine does not support crossfading.
-    // I cannot get the gstreamer engine to work, will test this once I do.
-
-//     if( AmarokConfig::trackDelayLength() > -1 )
-//         m_media->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
-//     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
-//         m_media->setTransitionTime( -AmarokConfig::crossfadeLength() );
-
-    connect( m_media, SIGNAL( finished() ), SLOT( slotQueueEnded() ) );
-
-    // Get the next track when there is 2 seconds left on the current one.
-    m_media->setPrefinishMark( 2000 );
-    connect( m_media, SIGNAL( aboutToFinish()), SLOT( slotAboutToFinish() ) );
-
-    connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
-    connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
-                      SLOT( slotStateChanged( Phonon::State, Phonon::State ) ) );
-    connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
-    connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
-    connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ),
-                       SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
 
     connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
 
@@ -119,6 +85,48 @@ EngineController::~EngineController()
 
     delete m_media;
     delete m_audio;
+}
+
+void
+EngineController::initializePhonon()
+{
+    DEBUG_BLOCK
+
+    delete m_media;
+    delete m_audio;
+    delete m_preamp;
+
+    PERF_LOG( "EngineController: loading phonon objects" )
+    m_media = new Phonon::MediaObject( this );
+    m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
+    m_preamp = new Phonon::VolumeFaderEffect( this );
+
+    m_path = Phonon::createPath( m_media, m_audio );
+    m_path.insertEffect( m_preamp );
+
+    m_media->setTickInterval( 100 );
+    debug() << "Tick Interval (actual): " << m_media->tickInterval();
+    PERF_LOG( "EngineController: loaded phonon objects" )
+
+    // Get the next track when there is 2 seconds left on the current one.
+    m_media->setPrefinishMark( 2000 );
+
+    connect( m_media, SIGNAL( finished() ), SLOT( slotQueueEnded() ) );
+    connect( m_media, SIGNAL( aboutToFinish()), SLOT( slotAboutToFinish() ) );
+    connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
+    connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SLOT( slotStateChanged( Phonon::State, Phonon::State ) ) );
+    connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
+    connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
+    connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
+
+    
+    //TODO: The xine engine does not support crossfading. Cannot get the gstreamer engine to work, will test this once I do.
+#if 0
+    if( AmarokConfig::trackDelayLength() > -1 )
+        m_media->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
+    else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
+        m_media->setTransitionTime( -AmarokConfig::crossfadeLength() );
+#endif
 }
 
 

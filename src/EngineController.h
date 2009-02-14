@@ -118,6 +118,7 @@ protected:
     void trackDone();
 
 private slots:
+    void initializePhonon();
     void slotQueueEnded();
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
