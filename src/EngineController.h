@@ -135,11 +135,11 @@ private:
 
     Q_DISABLE_COPY( EngineController )
 
-    Phonon::MediaObject *m_media;
-    Phonon::VolumeFaderEffect *m_preamp;
-    Phonon::AudioOutput *m_audio;
-    Phonon::Path        m_path;
+    QPointer<Phonon::MediaObject>       m_media;
+    QPointer<Phonon::VolumeFaderEffect> m_preamp;
+    QPointer<Phonon::AudioOutput>       m_audio;
     QPointer<Phonon::VolumeFaderEffect> m_fader;
+    Phonon::Path                        m_path;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::TrackPtr  m_lastTrack;
