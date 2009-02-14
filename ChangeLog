@@ -80,6 +80,7 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Correct behaviour when queuing in a filtered playlist. (BR 180477)
     * Do not break up grouping in the playlist when editing (all but
       album) tags.
     * QtScript correctly writes the tags of tracks metadata it changes. 
