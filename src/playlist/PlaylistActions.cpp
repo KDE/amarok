@@ -37,6 +37,7 @@
 #include "navigators/RepeatAlbumNavigator.h"
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
+#include "navigators/NavigatorFilterProxyModel.h"
 #include "PlaylistModel.h"
 #include "statusbar/StatusBar.h"
 
@@ -267,9 +268,9 @@ Playlist::Actions::queue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = Model::instance()->idAt( row );
+        quint64 id = NavigatorFilterProxyModel::instance()->idAt( row );
         m_navigator->queueId( id );
-        Model::instance()->setRowQueued( row );
+        NavigatorFilterProxyModel::instance()->setRowQueued( row );
     }
 }
 
@@ -278,9 +279,9 @@ Playlist::Actions::dequeue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = Model::instance()->idAt( row );
+        quint64 id = NavigatorFilterProxyModel::instance()->idAt( row );
         m_navigator->dequeueId( id );
-        Model::instance()->setRowDequeued( row );
+        NavigatorFilterProxyModel::instance()->setRowDequeued( row );
     }
 }
 

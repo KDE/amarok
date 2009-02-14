@@ -316,4 +316,14 @@ bool Playlist::NavigatorFilterProxyModel::dropMimeData(const QMimeData* data, Qt
     return Model::instance()->dropMimeData( data, action, row, column, parent );
 }
 
+void Playlist::NavigatorFilterProxyModel::setRowQueued( int row )
+{
+    Model::instance()->setRowQueued( rowToSource( row ) );
+}
+
+void Playlist::NavigatorFilterProxyModel::setRowDequeued( int row )
+{
+    Model::instance()->setRowDequeued( rowToSource( row ) );
+}
+
 #include "NavigatorFilterProxyModel.moc"

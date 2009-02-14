@@ -103,6 +103,9 @@ public:
      */
     void setPassThrough( bool passThrough );
 
+    void setRowQueued( int row );
+    void setRowDequeued( int row );
+
     QVariant data( const QModelIndex& index, int role ) const;
 
     bool rowExists( int row ) const;
