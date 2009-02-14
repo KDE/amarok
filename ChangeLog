@@ -81,6 +81,8 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Fix using "Copy to Collection" to download Magnatune.com preview
+      tracks. (BR 183328)
     * Correct behaviour when queuing in a filtered playlist. (BR 180477)
     * Do not break up grouping in the playlist when editing (all but
       album) tags.
