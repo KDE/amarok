@@ -55,5 +55,6 @@ void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList & trac
     if ( dialog.result() == QDialog::Rejected )
         abort();
 
+    slotShowSourceDialogDone();
     return;
 }
