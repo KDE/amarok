@@ -308,6 +308,12 @@ Meta::Track::operator==( const Meta::Track &track ) const
 bool
 Meta::Track::lessThan( const Meta::TrackPtr left, const Meta::TrackPtr right )
 {
+    if( !left || !right ) // These should never be 0, but it can apparently happen (http://bugs.kde.org/show_bug.cgi?id=181187)
+        return false;
+
+    if( !left->album() || !right->album() )
+        return false;
+
     if( left->album()->name() == right->album()->name() ) // If the albums are the same
     {
         if ( left->discNumber() < right->discNumber() ) //First compare by disc number
@@ -323,10 +329,15 @@ Meta::Track::lessThan( const Meta::TrackPtr left, const Meta::TrackPtr right )
             return false; // Right disc has a lower number
         }
     }
-    else if( left->artist()->name() == right->artist()->name() )
-        return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
-    // compare artists alphabetically
-    return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
+    else if( left->artist() && right->artist() )
+    {
+        if( left->artist()->name() == right->artist()->name() )
+            return QString::localeAwareCompare( left->album()->prettyName(), right->album()->prettyName() ) < 0;
+        // compare artists alphabetically
+        return QString::localeAwareCompare( left->artist()->prettyName(), right->artist()->prettyName() ) < 0;
+    }
+
+    return false;
 }
 
 //Meta::Artist
