@@ -673,8 +673,11 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
             PopupDropperActionList gActions = The::globalCollectionActions()->actionsFor( item->data() );
             foreach( PopupDropperAction *action, gActions )
             {
-                actions.append( action );
-                debug() << "Got global action: " << action->text();
+                if( action ) // Can become 0-pointer, see http://bugs.kde.org/show_bug.cgi?id=183250
+                {
+                    actions.append( action );
+                    debug() << "Got global action: " << action->text();
+                }
             }
         }
 
