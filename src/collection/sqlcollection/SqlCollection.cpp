@@ -349,11 +349,13 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
     if( !del )
         return;
 
+	CollectionLocation *loc = location();
     // remove the tracks from the collection maps
     //TODO make unblocking
     foreach( Meta::TrackPtr track, tracklist )
-        location()->remove( track );
+        loc->remove( track );
 
+	loc->deleteLater();
     // inform treeview collection has updated
     emit updated();
 }
