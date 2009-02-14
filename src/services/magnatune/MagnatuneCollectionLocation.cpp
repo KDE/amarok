@@ -43,7 +43,7 @@ void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList & trac
     dialog.setCaption( i18n( "Preview Tracks" ) );
     dialog.setButtons( KDialog::Ok | KDialog::Cancel );
 
-    QLabel *label = new QLabel( i18n( "The tracks you are about to copy are Magnatune.com preview streams. For better quality and free streams, consider buying an album download. Remember that when buying from Magnatune the artist gets 50%. Also if you buy using Amarok, you support the Amarok project with 10%." ) );
+    QLabel *label = new QLabel( i18n( "The tracks you are about to copy are Magnatune.com preview streams. For better quality and advert free streams, consider buying an album download. Remember that when buying from Magnatune the artist gets 50%. Also if you buy using Amarok, you support the Amarok project with 10%." ) );
 
     label->setWordWrap ( true );
     label->setMaximumWidth( 400 );
