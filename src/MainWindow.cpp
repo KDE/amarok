@@ -898,6 +898,7 @@ MainWindow::createMenus()
     //TODO use KStandardAction or KXmlGuiWindow
 
     m_settingsMenu->addAction( actionCollection()->action("replay_gain_mode") );
+    m_settingsMenu->addSeparator();
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
