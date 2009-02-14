@@ -431,9 +431,7 @@ Amarok::TrayIcon::setupMenu()
         contextMenu()->addSeparator();
 
         // readd
-        #ifndef Q_WS_MAC
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
-        #endif
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
     }
 
