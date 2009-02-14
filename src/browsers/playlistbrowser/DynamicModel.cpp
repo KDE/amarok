@@ -95,7 +95,7 @@ Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::createDefaultPlaylist()
 {
     return Dynamic::DynamicPlaylistPtr(
-        new Dynamic::BiasedPlaylist( i18n( "Random Playlist" ), QList<Dynamic::Bias*>() ) );
+        new Dynamic::BiasedPlaylist( i18n( "Random" ), QList<Dynamic::Bias*>() ) );
 }
 
 void
@@ -114,7 +114,7 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( const QString& name )
     //
     Dynamic::DynamicPlaylistPtr p = m_playlistHash[ name ];
     if( p == Dynamic::DynamicPlaylistPtr() )
-        debug() << "Failed to retrive biased playlist: " << name;
+        debug() << "Failed to retrieve biased playlist: " << name;
     m_activePlaylist = m_playlistList.indexOf( p );
 
     emit activeChanged();
@@ -137,7 +137,7 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 
     Dynamic::DynamicPlaylistPtr p = m_playlistList[ index ];
     if( p == Dynamic::DynamicPlaylistPtr() )
-        debug() << "Failed to retrive biased playlist: " << index;
+        debug() << "Failed to retrieve biased playlist: " << index;
     m_activePlaylist = index;
 
     emit activeChanged();
