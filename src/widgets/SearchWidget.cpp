@@ -76,7 +76,7 @@ SearchWidget::init( QWidget *parent, bool advanced )
         m_filterAction->setObjectName( "filter" );
         m_toolBar->addAction( m_filterAction );
 
-        connect ( m_filterAction, SIGNAL( activated() ), this, SLOT( slotShowFilterEditor() ) );
+        connect ( m_filterAction, SIGNAL( triggered() ), this, SLOT( slotShowFilterEditor() ) );
     }
 }
 
@@ -109,7 +109,7 @@ void SearchWidget::showAdvancedButton(bool show)
             m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
             m_toolBar->addAction( m_filterAction );
-            connect ( m_filterAction, SIGNAL( activated() ), this, SLOT( slotShowFilterEditor() ) );
+            connect ( m_filterAction, SIGNAL( triggered() ), this, SLOT( slotShowFilterEditor() ) );
         }
     }
     else

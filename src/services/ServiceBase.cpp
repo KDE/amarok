@@ -175,7 +175,8 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     m_menubar->hide();
 
     m_searchWidget = new SearchWidget( m_topPanel );
-    m_searchWidget->setup( m_contentView );
+    if ( m_contentView )
+        m_searchWidget->setup( m_contentView );
 
     //setFrameShape( QFrame::StyledPanel );
     //setFrameShadow( QFrame::Sunken );
