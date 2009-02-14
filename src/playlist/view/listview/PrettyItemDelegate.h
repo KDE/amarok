@@ -46,7 +46,6 @@ public:
     static bool insideItemHeader( const QPoint&, const QRect& );
 
 private:
-
     void paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
@@ -64,8 +63,6 @@ private:
     static QFontMetricsF* s_bfm; //bold
 
     static int s_fontHeight;
-
-    
 };
 
 }

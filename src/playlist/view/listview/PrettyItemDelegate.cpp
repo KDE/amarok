@@ -26,13 +26,13 @@
 
 #include "App.h"
 #include "Debug.h"
+#include "LayoutManager.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 #include "playlist/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
-#include "LayoutManager.h"
 
 #include <QFontMetricsF>
 #include <QPainter>
@@ -48,13 +48,13 @@ const qreal PrettyItemDelegate::PADDING = 1.0;
 
 int Playlist::PrettyItemDelegate::s_fontHeight = 0;
 
+
 Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     : QStyledItemDelegate( parent )
 {
     DEBUG_BLOCK
 
     LayoutManager::instance();
-
 }
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
@@ -73,28 +73,31 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
 
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
 
-    int groupMode = index.data( GroupRole ).toInt();
+    const int groupMode = index.data( GroupRole ).toInt();
     int rowCount = 1;
+
     switch ( groupMode )
     {
-    case Head:
-        rowCount = layout.head().rows() + layout.body().rows();
-        break;
-    case Body:
-        rowCount = layout.body().rows();
-        break;
-    case Tail:
-        rowCount = layout.body().rows();
-        break;
-    case None:
-    default:
-        rowCount = layout.single().rows();
-        break;
+        case Head:
+            rowCount = layout.head().rows() + layout.body().rows();
+            break;
+
+        case Body:
+            rowCount = layout.body().rows();
+            break;
+
+        case Tail:
+            rowCount = layout.body().rows();
+            break;
+
+        case None:
+        default:
+            rowCount = layout.single().rows();
+            break;
     }
 
     height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
-
 }
 
 void
@@ -114,11 +117,12 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         painter->setPen( App::instance()->palette().text().color() );
 
     // call paint method based on type
-    int groupMode = index.data( GroupRole ).toInt();
+    const int groupMode = index.data( GroupRole ).toInt();
+
     if ( groupMode == None )
         paintItem( layout.single(), painter, option, index );
-    else if ( groupMode == Head ) {
-
+    else if ( groupMode == Head )
+    {
         //we need to split up the options for the actual header and the included first track
 
         QFont boldfont( option.font );
@@ -157,7 +161,6 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
 bool
 PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
 {
-
     int headRows = LayoutManager::instance()->activeLayout().head().rows();
 
     if ( headRows < 1 )
@@ -169,6 +172,7 @@ PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
                                                     0 );
     
     headerBounds.setHeight( static_cast<int>( 2 * MARGIN + headRows * s_fontHeight ) );
+
     return headerBounds.contains( pt );
 }
 
@@ -206,11 +210,8 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
     
     if ( config.showCover() )
     {
-        
         QModelIndex coverIndex = index.model()->index( index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
-
-
 
         //offset cover if non square
         QPointF offset = centerImage( albumPixmap, nominalImageRect );
@@ -221,7 +222,6 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
 
         if ( !albumPixmap.isNull() )
             painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
-
 
         QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
         QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
@@ -248,14 +248,12 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
 
     for ( int i = 0; i < rowCount; i++ )
     {
-        
         PrettyItemConfigRow row = config.row( i );
         qreal itemOffsetX = rowOffsetX;
 
-        int elementCount = row.count();
+        const int elementCount = row.count();
 
         qreal rowWidth = option.rect.width() - ( rowOffsetX + MARGINH );
-
 
         if ( i == config.activeIndicatorRow() && index.data( ActiveTrackRole ).toBool() )
         {
@@ -268,9 +266,6 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
 
         QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
         int currentItemX = itemOffsetX;
-
-
-
         
         //we need to do a quick pass to figure out how much space is left for auto sizing elements
         qreal spareSpace = 1.0;
@@ -278,15 +273,14 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
         for ( int k = 0; k < elementCount; ++k )
         {
             spareSpace -= row.element( k ).size();
-            if ( row.element( k ).size() < 0.001 ) {
+            if ( row.element( k ).size() < 0.001 )
                 autoSizeElemCount++;
-            }
         }
 
         qreal spacePerAutoSizeElem = spareSpace / (qreal) autoSizeElemCount;
+
         for ( int j = 0; j < elementCount; ++j )
         {
-
             PrettyItemConfigRowElement element = row.element( j );
 
             int value = element.value();
@@ -328,8 +322,8 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                         m_ratingPainter.paint( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), rating, rating );
                     }
 
-                } else if ( value == Divider ) {
-
+                } else if ( value == Divider )
+                {
                     QPixmap left = The::svgHandler()->renderSvg(
                             "divider_left",
                             1, rowHeight ,
@@ -340,7 +334,8 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                             1, rowHeight,
                             "divider_right" );
 
-                    if ( alignment & Qt::AlignLeft ) {
+                    if ( alignment & Qt::AlignLeft )
+                    {
                         painter->drawPixmap( currentItemX, rowOffsetY, left );
                         painter->drawPixmap( currentItemX + 1, rowOffsetY, right );
                     }
@@ -366,9 +361,7 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
             }
 
         }
-
         rowOffsetY += rowHeight;
-
     }
 }
 
