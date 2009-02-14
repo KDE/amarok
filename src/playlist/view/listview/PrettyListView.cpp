@@ -471,7 +471,7 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
             if ( cac )
             {
                 foreach( PopupDropperAction *action, cac->customActions() )
-                    actions << PopupDropperAction::from( action );
+                    actions << action;
             }
         }
     }
@@ -485,7 +485,7 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
             if ( cac )
             {
                 foreach( PopupDropperAction *action, cac->customActions() )
-                    actions << PopupDropperAction::from( action );
+                    actions << action;
             }
         }
     }
