@@ -147,7 +147,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     //to set the query type. Configuring the queries is ok though
 
     MetaQueryMaker *dataQueryMaker = new MetaQueryMaker( queries );
-    connect( dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
