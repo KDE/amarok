@@ -693,10 +693,6 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
     connect(action, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
 
-    action = new KAction( KIcon("view-statistics-amarok"), i18n( "Statistics" ), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(showStatistics()));
-    ac->addAction( "statistics", action );
-
     PERF_LOG( "MainWindow::createActions 6" )
     action = new KAction( KIcon("collection-refresh-amarok"), i18n( "Update Collection" ), this );
     connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));

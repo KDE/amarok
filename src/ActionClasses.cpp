@@ -105,7 +105,6 @@ Menu::Menu( QWidget* parent )
     safePlug( ac, "queue_manager", this );
     safePlug( ac, "equalizer", this );
     safePlug( ac, "script_manager", this );
-    safePlug( ac, "statistics", this );
 
     addSeparator();
 
