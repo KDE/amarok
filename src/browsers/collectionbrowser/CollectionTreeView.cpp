@@ -777,17 +777,6 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
         qm->deleteLater();
     }
 
-// Sample delete action skeleton, will be replaced
-    /*
-
-    PopupDropperAction *deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "delete", KIcon( "remove-amarok" ), i18n( "&Delete Tracks" ), 0 );
-
-    connect( deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteTracks() ) );
-
-    actions.append( deleteAction );
-    */
-
     return actions;
 }
 

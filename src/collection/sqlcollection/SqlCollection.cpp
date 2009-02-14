@@ -19,6 +19,8 @@
 
 #include "SqlCollection.h"
 
+#include "meta/capabilities/CollectionCapability.h"
+#include "SqlCollectionCapability.h"
 #include "DatabaseUpdater.h"
 #include "Debug.h"
 #include "MySqlEmbeddedCollection.h"
@@ -26,6 +28,7 @@
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqliteCollection.h"
+#include "SvgHandler.h"
 
 #ifdef Q_OS_WIN32
 class XesamCollectionBuilder
@@ -38,7 +41,8 @@ public:
 #endif
 
 #include <klocale.h>
-
+#include <KIcon>
+#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
 #include <QTimer>
 
 AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
@@ -304,6 +308,56 @@ SqlCollection::initXesam() //SLOT
 {
     m_xesamBuilder = new XesamCollectionBuilder( this );
 }
+
+bool
+SqlCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    DEBUG_BLOCK
+    switch( type )
+    {
+        case Meta::Capability::Collection:
+            return true;
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+SqlCollection::asCapabilityInterface( Meta::Capability::Type type )
+{
+    DEBUG_BLOCK
+    switch( type )
+    {
+        case Meta::Capability::Collection:
+            return new Meta::SqlCollectionCapability( this );
+        default:
+            return 0;
+    }
+}
+
+void
+SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
+{
+
+    DEBUG_BLOCK
+
+   // TODO put the delete confirmation code somewhere else?
+    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
+    const bool del = KMessageBox::warningContinueCancel(0,
+                                                     text,
+                                                     QString() ) == KMessageBox::Continue;
+    if( !del )
+        return;
+
+    // remove the tracks from the collection maps
+    //TODO make unblocking
+    foreach( Meta::TrackPtr track, tracklist )
+        location()->remove( track );
+
+    // inform treeview collection has updated
+    emit updated();
+}
+
 
 #include "SqlCollection.moc"
 

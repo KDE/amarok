@@ -31,6 +31,7 @@ set(amarok_collection-sqlcollection_PART_SRCS
     ScanManager.cpp
     ScanResultProcessor.cpp
     SqlBookmarkThisCapability.cpp
+    SqlCollectionCapability.cpp
     SqlCollection.cpp
     SqlCollectionDBusHandler.cpp
     SqlCollectionLocation.cpp
