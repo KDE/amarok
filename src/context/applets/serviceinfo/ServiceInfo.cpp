@@ -27,14 +27,14 @@
 #include <QPainter>
 
 
-QString ServiceInfo::s_defaultHtml = "<HTML>"
-                                    "    <HEAD>"
+QString ServiceInfo::s_defaultHtml = "<html>"
+                                    "    <head>"
                                     "        <style type=\"text/css\">body {text-align:center}</style>"
-                                    "    </HEAD>"
-                                    "    <BODY>"
+                                    "    </head>"
+                                    "    <body>"
                                     "        <b>%%SERVICE_NAME%%</b>"
-                                    "    </BODY>"
-                                    "</HTML>";
+                                    "    </body>"
+                                    "</html>";
 
 ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
