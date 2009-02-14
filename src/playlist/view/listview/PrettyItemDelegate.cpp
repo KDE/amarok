@@ -219,7 +219,8 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
                           nominalImageRect.width() - offset.x() * 2,
                           nominalImageRect.height() - offset.y() * 2 );
 
-        painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
+        if ( !albumPixmap.isNull() )
+            painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
 
 
         QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
