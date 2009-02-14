@@ -222,7 +222,7 @@ Dynamic::GlobalBias::xml() const
     e.setAttribute( "type", "global" );
 
     QDomElement weight = doc.createElement( "weight" );
-    weight.setAttribute( "value", m_weight );
+    weight.setAttribute( "value", QString::number( m_weight, 'f', 16 ) );
 
     e.appendChild( weight );
     e.appendChild( m_qm->getDomElement() );
