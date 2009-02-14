@@ -378,7 +378,7 @@ QGraphicsSvgItem* PopupDropperItem::svgItem() const
 
 void PopupDropperItem::scaleAndReposSvgItem()
 {
-    if( !d->svgItem )
+    if( !d->svgItem || !d->borderRectItem )
         return;
 
     //Need to scale if it is too tall or wide
@@ -390,9 +390,11 @@ void PopupDropperItem::scaleAndReposSvgItem()
     
     d->svgItem->scale( scaleValue, scaleValue );
 
+    qreal item_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
+
     if( d->orientation == PopupDropperItem::Left )
     {
-        d->svgItem->setPos( d->horizontalOffset, ( d->svgElementRect.height() - d->svgItem->sceneBoundingRect().height() ) / 2 );
+        d->svgItem->setPos( d->horizontalOffset, item_center - ( d->svgElementRect.height() / 2 ) );
     }
     else
     {
@@ -405,31 +407,31 @@ void PopupDropperItem::scaleAndReposSvgItem()
                 rightside
                 - d->svgItem->boundingRect().width()
                 - d->horizontalOffset
-                , ( d->svgElementRect.height() - d->svgItem->sceneBoundingRect().height() ) / 2 );
+                , item_center - ( d->svgElementRect.height() / 2 ) );
     }
 }
 
 void PopupDropperItem::reposTextItem()
 {
-    int rightside; 
+    if( !d->textItem || !d->borderRectItem )
+        return;
+    
+    qreal item_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
+
+    int rightside;
     if( !d->pd || d->pd->viewSize().width() == 0 )
         rightside = boundingRect().width();
     else
         rightside = d->pd->viewSize().width();
-    if( d->textItem )
-    {
-        int offsetPos = d->horizontalOffset + d->textOffset + d->svgElementRect.width();
-        d->textItem->setPos(
-                ( d->orientation == PopupDropperItem::Left
-                    ? offsetPos
-                    : ( d->borderRectItem
-                          ? d->borderRectItem->boundingRect().width() - offsetPos - d->textItem->boundingRect().width()
-                          : rightside - offsetPos - d->textItem->boundingRect().width()
-                      )
-                )
-            , ( d->svgElementRect.height() / 2 ) - ( d->textItem->boundingRect().height() / 2 ) ); 
-        d->textItem->setFont( d->font );
-    }
+    
+    int offsetPos = d->horizontalOffset + d->textOffset + d->svgElementRect.width();
+    d->textItem->setPos(
+            ( d->orientation == PopupDropperItem::Left
+                ? offsetPos
+                : d->borderRectItem->boundingRect().width() - offsetPos - d->textItem->sceneBoundingRect().width()
+            )
+        , item_center - ( d->textItem->sceneBoundingRect().height() / 2 ) ); 
+    d->textItem->setFont( d->font );
 }
 
 void PopupDropperItem::reposHoverFillRects()
@@ -438,7 +440,7 @@ void PopupDropperItem::reposHoverFillRects()
         return;
 
     //qDebug() << "\n\nPUDItem boundingRect().width() = " << boundingRect().width();
-    qreal startx, starty, endx, endy;
+    qreal startx, starty, endx, endy, item_center;
     int rightside;
         if( !d->pd || d->pd->viewSize().width() == 0 )
             rightside = boundingRect().width();
@@ -457,19 +459,13 @@ void PopupDropperItem::reposHoverFillRects()
                  + ( 2 * d->hoverIndicatorRectItem->pen().width() );
     }
 
-    starty = d->borderRectItem->pos().y()
-                + ( 2 * d->borderRectItem->pen().width() )
-                + ( 1 * d->hoverIndicatorRectItem->pen().width() );
+    item_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
+
+    starty = item_center - ( d->svgElementRect.height() / 2 );
 
     endx = d->hoverIndicatorRectWidth - ( 2 * d->hoverIndicatorRectItem->pen().width() );
 
-//    endy = ( d->borderRectItem->sceneBoundingRect().height() + d->borderRectItem->pos().y() )
-//            - ( starty - d->borderRectItem->pos().y() )
-//            - ( 2 * d->borderRectItem->pen().width() )
-//            - ( 2 * d->hoverIndicatorRectItem->pen().width() );
-    endy = ( d->borderRectItem->sceneBoundingRect().height() + d->borderRectItem->pos().y() )
-            - ( 3 * d->borderRectItem->pen().width() )
-            - ( 4 * d->hoverIndicatorRectItem->pen().width() ); //spacer + pen width
+    endy = item_center + ( d->svgElementRect.height() / 2 );
 
 
     //qDebug() << "startx, endx = " << startx << ", " << endx;

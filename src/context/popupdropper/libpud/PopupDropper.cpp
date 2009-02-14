@@ -198,12 +198,11 @@ void PopupDropperPrivate::reposItems()
             pItem->setPopupDropper( q ); //safety
             //qDebug() << "item " << i << " is a PDI ";
             //If the svgElementRect is too high, resize it to fit
-//            if( my_max - my_min > pItem->svgElementRect().height() )
             pItem->svgElementRect().setHeight( my_max - my_min - ( 2 * verticalmargin ) );
             item_min = vert_center - ( pItem->svgElementRect().height() / 2 );
             //qDebug() << "vert_center = " << vert_center << ", ited->min = " << item_min;
-            pItem->setPos( 0, item_min );
-            pItem->borderRectItem()->setRect( 0 - pItem->borderWidth(), 0, scene->width() + 2*pItem->borderWidth(), pItem->svgElementRect().height() );
+            pItem->setPos( 0, my_min );
+            pItem->borderRectItem()->setRect( 0 - pItem->borderWidth(), 0, scene->width() + 2*pItem->borderWidth(), my_max - my_min );
             pItem->scaleAndReposSvgItem();
             pItem->reposTextItem();
             pItem->reposHoverFillRects();
