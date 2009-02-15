@@ -59,6 +59,7 @@ namespace Meta
         public slots:
             void newResultReady( QString collId, Meta::TrackList tracklist );
             void runQuery(); // runs querymaker
+            void tracklistReadySlot();
 
         private:
             TrackList  *m_tracklist;

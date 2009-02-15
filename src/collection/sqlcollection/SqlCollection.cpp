@@ -340,12 +340,17 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
 {
 
     DEBUG_BLOCK
+    QStringList files;
+    foreach( Meta::TrackPtr track, tracklist )
+        files << track->prettyUrl();
 
    // TODO put the delete confirmation code somewhere else?
-    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
-    const bool del = KMessageBox::warningContinueCancel(0,
+    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracklist.count() ) );
+    const bool del = KMessageBox::warningContinueCancelList(0,
                                                      text,
-                                                     QString() ) == KMessageBox::Continue;
+                                                     files,
+                                                     i18n("Delete Files"),
+                                                     KStandardGuiItem::del() ) == KMessageBox::Yes;
     if( !del )
         return;
 

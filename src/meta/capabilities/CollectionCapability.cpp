@@ -44,6 +44,7 @@ Meta::CollectionCapabilityHelper::setAction( PopupDropperAction *action, const Q
     DEBUG_BLOCK
     connect( action, SIGNAL( triggered() ), this, SLOT( runQuery() ) );
     connect( m_querymaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( newResultReady ( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( m_querymaker, SIGNAL( queryDone() ), this, SLOT( tracklistReadySlot() ), Qt::QueuedConnection );
 
     connect( this, SIGNAL( tracklistReady( Meta::TrackList ) ), receiver, method, Qt::QueuedConnection );
 
@@ -57,7 +58,10 @@ Meta::CollectionCapabilityHelper::newResultReady( QString collId, Meta::TrackLis
 {
     Q_UNUSED( collId );
     DEBUG_BLOCK
-    emit tracklistReady( tracklist );
+    if( !m_tracklist )
+        m_tracklist = new QList<Meta::TrackPtr>();
+    *m_tracklist << tracklist;
+    debug() << "m_tracklist size " << m_tracklist->size();
 }
 
 void
@@ -67,6 +71,12 @@ Meta::CollectionCapabilityHelper::runQuery()
     // Stops the Helper from being destroyed while QM runs
     //disconnect( sender(), 0, 0, 0 );
     m_querymaker->run();
+}
+
+void
+Meta::CollectionCapabilityHelper::tracklistReadySlot()
+{
+    emit tracklistReady( *m_tracklist );
 }
 
 Meta::CollectionCapability::~CollectionCapability()
