@@ -97,7 +97,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
 
     // bookmarks action!
     KActionMenu *acmBookmarks = new KActionMenu( KIcon( "bookmarks" ), i18n( "Bookmarks" ), this );
-    // m_actionCollection->addAction( "bookmarks", acmBookmarks ); // TODO DISABLED FOR 2.0 final because of crashes
+    m_actionCollection->addAction( "bookmarks", acmBookmarks );
     acmBookmarks->setDelayed( false );
     m_bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->menu() );
 
