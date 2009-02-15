@@ -293,6 +293,8 @@ void Track::Private::readMetaData()
     }
 #undef strip
     m_data.fileSize = QFile( url.path() ).size();
+
+    debug() << "Read metadata from file for: " + m_data.title;
 }
 
 // internal helper classes
