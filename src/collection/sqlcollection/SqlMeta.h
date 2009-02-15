@@ -155,6 +155,9 @@ class SqlTrack : public Meta::Track
         void updateStatisticsInDb();
 
     private:
+        /** returns a string of all database joins that are required to fetch all values for a track*/
+        static QString getTrackJoinConditions();
+
         SqlCollection* m_collection;
 
         QString m_title;

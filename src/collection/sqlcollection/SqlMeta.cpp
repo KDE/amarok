@@ -230,6 +230,18 @@ SqlTrack::getTrackReturnValues()
            "years.name, years.id";
 }
 
+QString
+SqlTrack::getTrackJoinConditions()
+{
+    return "LEFT JOIN tracks ON urls.id = tracks.url "
+           "LEFT JOIN statistics ON urls.id = statistics.url "
+           "LEFT JOIN artists ON tracks.artist = artists.id "
+           "LEFT JOIN albums ON tracks.album = albums.id "
+           "LEFT JOIN genres ON tracks.genre = genres.id "
+           "LEFT JOIN composers ON tracks.composer = composers.id "
+           "LEFT JOIN years ON tracks.year = years.id";
+}
+
 int
 SqlTrack::getTrackReturnValueCount()
 {
@@ -240,16 +252,10 @@ SqlTrack::getTrackReturnValueCount()
 TrackPtr
 SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collection )
 {
-    QString query = "SELECT %1 FROM urls "
-                    "LEFT JOIN tracks ON urls.id = tracks.url "
-                    "LEFT JOIN statistics ON urls.id = statistics.url "
-                    "LEFT JOIN artists ON tracks.artist = artists.id "
-                    "LEFT JOIN albums ON tracks.album = albums.id "
-                    "LEFT JOIN genres ON tracks.genre = genres.id "
-                    "LEFT JOIN composers ON tracks.composer = composers.id "
-                    "LEFT JOIN years ON tracks.year = years.id "
-                    "WHERE urls.deviceid = %2 AND urls.rpath = '%3';";
-    query = query.arg( SqlTrack::getTrackReturnValues(), QString::number( deviceid ), collection->escape( rpath ) );
+    QString query = "SELECT %1 FROM urls %2 "
+                    "WHERE urls.deviceid = %3 AND urls.rpath = '%4';";
+    query = query.arg( getTrackReturnValues(), getTrackJoinConditions(),
+                       QString::number( deviceid ), collection->escape( rpath ) );
     QStringList result = collection->query( query );
     if( result.isEmpty() )
         return TrackPtr();
@@ -259,16 +265,10 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
 TrackPtr
 SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
 {
-    QString query = "SELECT %1 FROM urls "
-                    "LEFT JOIN tracks ON urls.id = tracks.url "
-                    "LEFT JOIN statistics ON urls.id = statistics.url "
-                    "LEFT JOIN artists ON tracks.artist = artists.id "
-                    "LEFT JOIN albums ON tracks.album = albums.id "
-                    "LEFT JOIN genres ON tracks.genre = genres.id "
-                    "LEFT JOIN composers ON tracks.composer = composers.id "
-                    "LEFT JOIN years ON tracks.year = years.id "
-                    "WHERE urls.uniqueid = '%2';";
-    query = query.arg( SqlTrack::getTrackReturnValues(), collection->escape( uid ) );
+    QString query = "SELECT %1 FROM urls %2 "
+                    "WHERE urls.uniqueid = '%3';";
+    query = query.arg( getTrackReturnValues(), getTrackJoinConditions(), 
+                       collection->escape( uid ) );
     QStringList result = collection->query( query );
     if( result.isEmpty() )
         return TrackPtr();
