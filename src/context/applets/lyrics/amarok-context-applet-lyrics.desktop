@@ -1,5 +1,8 @@
 [Desktop Entry]
 Name=Lyrics
+Name[ga]=Liricí
+Name[sv]=Sångtext
+Name[uk]=Текст пісні
 Type=Service
 ServiceTypes=Plasma/Applet
 

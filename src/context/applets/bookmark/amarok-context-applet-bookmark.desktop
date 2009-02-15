@@ -1,5 +1,8 @@
 [Desktop Entry]
 Name=Bookmarks
+Name[ga]=Leabharmharcanna
+Name[sv]=Bokmärken
+Name[uk]=Закладки
 Type=Service
 ServiceTypes=Plasma/Applet
 

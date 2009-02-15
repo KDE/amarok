@@ -1,5 +1,8 @@
 [Desktop Entry]
 Name=Services
+Name[ga]=Seirbhísí
+Name[sv]=Tjänster
+Name[uk]=Служби
 Type=Service
 ServiceTypes=Plasma/Applet
 
