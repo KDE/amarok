@@ -595,7 +595,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                             ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, QueryMaker::GreaterThan );
                     } else if( compare == QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
                     {
-                        int months = 0, days = 0;
+                        int months = 0, weeks = 0, days = 0;
                         QString tmp;
                         for( int i = 0; i < elem.text.length(); i++ )
                         {
@@ -606,13 +606,17 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                             {
                                 months = 0 - QString( tmp ).toInt();
                                 tmp = "";
+                            } else if( c == 'w' )
+                            {
+                                weeks = 0 - 7 * QString( tmp ).toInt();
+                                tmp = "";
                             } else if( c == 'd' )
                             {   
                                 days = 0 - QString( tmp ).toInt();
                                 break;
                             }
                         }
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( days ).toTime_t(), QueryMaker::GreaterThan );
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t(), QueryMaker::GreaterThan );
                     }
                 }
             }
