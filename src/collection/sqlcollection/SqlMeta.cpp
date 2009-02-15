@@ -259,14 +259,20 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
 TrackPtr
 SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
 {
-    QString query = "SELECT urls.deviceid, urls.rpath FROM urls "
-                    "WHERE urls.uniqueid = '%1';";
-    query = query.arg( collection->escape( uid ) );
+    QString query = "SELECT %1 FROM urls "
+                    "LEFT JOIN tracks ON urls.id = tracks.url "
+                    "LEFT JOIN statistics ON urls.id = statistics.url "
+                    "LEFT JOIN artists ON tracks.artist = artists.id "
+                    "LEFT JOIN albums ON tracks.album = albums.id "
+                    "LEFT JOIN genres ON tracks.genre = genres.id "
+                    "LEFT JOIN composers ON tracks.composer = composers.id "
+                    "LEFT JOIN years ON tracks.year = years.id "
+                    "WHERE urls.uniqueid = '%2';";
+    query = query.arg( SqlTrack::getTrackReturnValues(), collection->escape( uid ) );
     QStringList result = collection->query( query );
     if( result.isEmpty() )
         return TrackPtr();
-    else
-        return getTrack( result[0].toInt(), result[1], collection );    
+    return TrackPtr( new SqlTrack( collection, result ) );
 }
 
 SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
