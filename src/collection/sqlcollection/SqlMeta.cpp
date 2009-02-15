@@ -253,8 +253,7 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
     QStringList result = collection->query( query );
     if( result.isEmpty() )
         return TrackPtr();
-    else
-        return TrackPtr( new SqlTrack( collection, result ) );
+    return TrackPtr( new SqlTrack( collection, result ) );
 }
 
 TrackPtr

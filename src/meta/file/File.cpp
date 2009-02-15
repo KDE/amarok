@@ -537,7 +537,11 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::Editable || type == Meta::Capability::Importable || type == Meta::Capability::CurrentTrackActions || type == Meta::Capability::WriteTimecode || type == Meta::Capability::LoadTimecode;
+    return type == Meta::Capability::Editable || 
+           type == Meta::Capability::Importable || 
+           type == Meta::Capability::CurrentTrackActions || 
+           type == Meta::Capability::WriteTimecode || 
+           type == Meta::Capability::LoadTimecode;
 }
 
 Meta::Capability*

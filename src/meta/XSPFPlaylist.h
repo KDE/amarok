@@ -68,7 +68,7 @@ public:
     virtual QString name() const { return title(); }
     virtual QString prettyName() const { return name(); }
 
-    bool load( QTextStream &stream ) { return loadXSPF( stream ); };
+    bool load( QTextStream &stream ) { return loadXSPF( stream ); }
     bool save( const QString &location, bool relative );
 
     /** returns all tracks in this playlist */
@@ -102,16 +102,16 @@ public:
     void setTrackList( TrackList trackList, bool append = false );
 
     //TODO: implement these
-    void beginMetaDataUpdate() {};
-    void endMetaDataUpdate() {};
-    void abortMetaDataUpdate() {};
+    void beginMetaDataUpdate() {}
+    void endMetaDataUpdate() {}
+    void abortMetaDataUpdate() {}
 
-    bool isEditable() const { return true; };
+    bool isEditable() const { return true; }
 
     /* Meta::Playlist virtual functions */
     bool hasCapabilityInterface( Capability::Type type ) const;
 
-    KUrl retrievableUrl() { return m_url; };
+    KUrl retrievableUrl() { return m_url; }
 
     Capability* asCapabilityInterface( Capability::Type type );
 

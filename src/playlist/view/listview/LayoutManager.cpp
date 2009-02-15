@@ -54,9 +54,6 @@ LayoutManager::LayoutManager()
 
     KConfigGroup config = Amarok::config("Playlist Layout");
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
-
-    debug() << "Loaded layouts: " << layouts();
-    debug() << "active layout: " << m_activeLayout;
 }
 
 LayoutManager::~LayoutManager()
@@ -85,8 +82,7 @@ PlaylistLayout Playlist::LayoutManager::activeLayout()
 {
     if ( m_activeLayout == "%%PREVIEW%%" )
         return m_previewLayout;
-    else
-        return m_layouts.value( m_activeLayout );
+    return m_layouts.value( m_activeLayout );
 }
 
 void Playlist::LayoutManager::loadUserLayouts()
@@ -167,8 +163,6 @@ void Playlist::LayoutManager::loadLayouts( const QString &fileName, bool user )
 
 PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &elem )
 {
-    DEBUG_BLOCK
-            
     const bool showCover = ( elem.attribute( "show_cover", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
     const int activeIndicatorRow = elem.attribute( "active_indicator_row", "0" ).toInt();
 
@@ -184,19 +178,15 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
         QDomNode rowNode = rows.item( index );
         index++;
 
-        debug() << "row!";
-        
         PrettyItemConfigRow row;
 
         QDomNodeList elements = rowNode.toElement().elementsByTagName("element");
 
-
         int index2 = 0;
-        while ( index2 < elements.size() ) {
+        while ( index2 < elements.size() )
+        {
             QDomNode elementNode = elements.item( index2 );
             index2++;
-
-            debug() << "element!";
 
             int value = columnNames.indexOf( elementNode.toElement().attribute( "value", "Title" ) );
             QString prefix = elementNode.toElement().attribute( "prefix", QString() );

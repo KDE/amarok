@@ -28,16 +28,16 @@ class QComboBox;
 namespace Playlist {
 
 /**
-A widget containing the gui needed to define playlist layouts
+    A widget containing the gui needed to define playlist layouts
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ */
+
 class LayoutConfigWidget : public KVBox
 {
     Q_OBJECT
 public:
     LayoutConfigWidget( QWidget * parent );
-
     ~LayoutConfigWidget();
 
 private slots:

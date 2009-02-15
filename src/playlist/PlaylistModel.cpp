@@ -409,13 +409,8 @@ Playlist::Model::mimeData( const QModelIndexList &indexes ) const
 bool
 Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int, const QModelIndex& parent )
 {
-    DEBUG_BLOCK
-
     if ( action == Qt::IgnoreAction )
-    {
-        debug() << "ignoring drop";
         return true;
-    }
 
     int beginRow;
     if ( row != -1 )
@@ -477,7 +472,6 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         dl->init( data->urls() );
         return true;
     }
-    debug() << "ignoring unknown drop data";
     return false;
 }
 
@@ -726,8 +720,6 @@ Playlist::Model::prettyColumnName( Column index ) //static
 void
 Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
 {
-    DEBUG_BLOCK
-
     if ( cmds.size() < 1 )
         return;
 
@@ -747,7 +739,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );
-        debug() << "inserting" << ic.first->prettyName() << "at" << ic.second;
     }
 
     // actually do the insertion
@@ -790,8 +781,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
 void
 Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 {
-    DEBUG_BLOCK
-
     if ( cmds.size() < 1 )
         return;
 
@@ -805,12 +794,8 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         min = qMin( min, rc.second );
         max = qMax( max, rc.second );
         activeShift += ( rc.second < m_activeRow ) ? 1 : 0;
-        debug() << "removing" << rc.first->prettyName() << "from" << rc.second;
         if ( rc.second == m_activeRow )
-        {
-            debug() << "deleting the active track";
             activeDeleted = true;
-        }
     }
 
     /* This next bit is probably more complicated that you expected it to be.
@@ -885,8 +870,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 void
 Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 {
-    DEBUG_BLOCK
-
     if ( cmds.size() < 1 )
         return;
 
@@ -898,7 +881,6 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
         min = qMin( min, rc.second );
         max = qMax( max, rc.first );
         max = qMax( max, rc.second );
-        debug() << "moving" << rc.first << "to" << rc.second;
     }
 
     int newActiveRow = m_activeRow;
@@ -944,11 +926,12 @@ int Playlist::Model::find( const QString & searchTerm, int searchFields )
     m_currentSearchFields = searchFields;
     int matchRow = -1;
     int row = 0;
-    foreach( Item* item, m_items ) {
-
+    foreach( Item* item, m_items )
+    {
         Meta::TrackPtr track = item->track();
 
-        if ( trackMatch( track, searchTerm, searchFields ) ) {
+        if ( trackMatch( track, searchTerm, searchFields ) )
+        {
             matchRow = row;
             break;
         }
@@ -967,17 +950,17 @@ int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int 
     m_currentSearchFields = searchFields;
     int row = 0;
     int firstMatch = -1;
-    foreach( Item* item, m_items ) {
-
+    foreach( Item* item, m_items )
+    {
         Meta::TrackPtr track = item->track();
 
-        if ( trackMatch( track, searchTerm, searchFields ) ) {
+        if ( trackMatch( track, searchTerm, searchFields ) )
+        {
             if ( firstMatch == -1 )
                 firstMatch = row;
 
-            if ( row > selectedRow ) {
+            if ( row > selectedRow )
                 return row;
-            }
         }
 
         row++;
@@ -998,19 +981,19 @@ int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, 
     int lastMatch = -1;
 
     QList<Item*> tempItems = m_items;
-    while( tempItems.size() > 0 ) {
-
+    while( tempItems.size() > 0 )
+    {
         Item* item = tempItems.takeLast();
 
         Meta::TrackPtr track = item->track();
 
-        if ( trackMatch( track, searchTerm, searchFields ) ) {
+        if ( trackMatch( track, searchTerm, searchFields ) )
+        {
             if ( lastMatch == -1 )
                 lastMatch = row;
 
-            if ( row < selectedRow ) {
+            if ( row < selectedRow )
                 return row;
-            }
         }
 
         row--;
@@ -1074,11 +1057,7 @@ bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
     {
         if ( m_currentSearchTerm.isEmpty() )
             return true;
-        else
-            return trackMatch( m_items.at( row )->track(), m_currentSearchTerm, m_currentSearchFields );
+        return trackMatch( m_items.at( row )->track(), m_currentSearchTerm, m_currentSearchFields );
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }

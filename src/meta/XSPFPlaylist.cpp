@@ -457,6 +457,7 @@ XSPFPlaylist::setLink( const KUrl &link )
 XSPFTrackList
 XSPFPlaylist::trackList()
 {
+    DEBUG_BLOCK
     XSPFTrackList list;
 
     QDomNode trackList = documentElement().namedItem( "trackList" );
