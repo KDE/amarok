@@ -299,8 +299,12 @@ function parseInfo( result ) {
 
     rx = new RegExp( "<description>(.*)<\\/description>" );
     list = result.match( rx );
-    
-    script.setCurrentInfo( list[0] );
+    info = list[1];
+
+    info = info.replace( "<![CDATA[", "" );
+    info = info.replace( "]]>", "" );
+
+    script.setCurrentInfo( info );
 
 }
 
