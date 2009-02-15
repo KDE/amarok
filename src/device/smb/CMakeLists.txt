@@ -4,7 +4,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 ########### next target ###############
 
-set(amarok_smb-device_PART_SRCS smbdevicehandler.cpp )
+set(amarok_smb-device_PART_SRCS SmbDeviceHandler.cpp )
 
 kde4_add_plugin(amarok_smb-device WITH_PREFIX
 ${amarok_smb-device_PART_SRCS})

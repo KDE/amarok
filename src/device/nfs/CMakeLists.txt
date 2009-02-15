@@ -4,7 +4,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 ########### next target ###############
 
-set(amarok_nfs-device_PART_SRCS nfsdevicehandler.cpp )
+set(amarok_nfs-device_PART_SRCS NfsDeviceHandler.cpp )
 
 kde4_add_plugin(amarok_nfs-device WITH_PREFIX
 ${amarok_nfs-device_PART_SRCS})

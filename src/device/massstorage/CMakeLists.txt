@@ -4,7 +4,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 ########### next target ###############
 
-set(amarok_massstorage-device_PART_SRCS massstoragedevicehandler.cpp )
+set(amarok_massstorage-device_PART_SRCS MassStorageDeviceHandler.cpp )
 
 kde4_add_plugin(amarok_massstorage-device WITH_PREFIX
 ${amarok_massstorage-device_PART_SRCS})
