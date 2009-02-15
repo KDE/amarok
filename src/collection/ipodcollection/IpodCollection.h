@@ -73,6 +73,9 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
         IpodCollection( const QString &mountPoint, const QString &udi );
         virtual ~IpodCollection();
 
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+
         void copyTrackListToDevice( const Meta::TrackList tracklist );
         void removeTrack( const Meta::IpodTrackPtr &track );
 

@@ -508,9 +508,9 @@ IpodTrack::setAlbum( const QString &newAlbum )
     // check for the existence of the album to be set to,
     // if album exists, reuse, else create
     
-    if (  albumMap.contains( newAlbum ) )
+    if ( albumMap.contains( newAlbum ) )
     {
-        albumPtr = IpodAlbumPtr::staticCast( albumMap.value(  newAlbum ) );
+        albumPtr = IpodAlbumPtr::staticCast( albumMap.value( newAlbum ) );
     }
     else
     {
@@ -552,14 +552,14 @@ IpodTrack::setArtist( const QString &newArtist )
     // check for the existence of the artist to be set to,
     // if artist exists, reuse, else create
     
-    if (  artistMap.contains( newArtist ) )
+    if ( artistMap.contains( newArtist ) )
     {
-        artistPtr = IpodArtistPtr::staticCast( artistMap.value(  newArtist ) );
+        artistPtr = IpodArtistPtr::staticCast( artistMap.value( newArtist ) );
     }
     else
     {
-        artistPtr = IpodArtistPtr(  new IpodArtist(  newArtist ) );
-        artistMap.insert(  newArtist,  ArtistPtr::staticCast(  artistPtr ) );
+        artistPtr = IpodArtistPtr( new IpodArtist( newArtist ) );
+        artistMap.insert( newArtist, ArtistPtr::staticCast( artistPtr ) );
     }
 
     // add track to artist's tracklist
@@ -568,7 +568,7 @@ IpodTrack::setArtist( const QString &newArtist )
     setArtist( artistPtr );
 
     m_collection->acquireWriteLock();
-    m_collection->setArtistMap(  artistMap );
+    m_collection->setArtistMap( artistMap );
     m_collection->releaseLock();
 
 }
@@ -596,14 +596,14 @@ IpodTrack::setGenre( const QString &newGenre )
     // check for the existence of the genre to be set to,
     // if genre exists, reuse, else create
     
-    if (  genreMap.contains( newGenre ) )
+    if ( genreMap.contains( newGenre ) )
     {
-        genrePtr = IpodGenrePtr::staticCast( genreMap.value(  newGenre ) );
+        genrePtr = IpodGenrePtr::staticCast( genreMap.value( newGenre ) );
     }
     else
     {
-        genrePtr = IpodGenrePtr(  new IpodGenre(  newGenre ) );
-        genreMap.insert(  newGenre,  GenrePtr::staticCast(  genrePtr ) );
+        genrePtr = IpodGenrePtr( new IpodGenre( newGenre ) );
+        genreMap.insert( newGenre, GenrePtr::staticCast( genrePtr ) );
     }
 
     // add track to genre's tracklist
@@ -612,7 +612,7 @@ IpodTrack::setGenre( const QString &newGenre )
     setGenre( genrePtr );
 
     m_collection->acquireWriteLock();
-    m_collection->setGenreMap(  genreMap );
+    m_collection->setGenreMap( genreMap );
     m_collection->releaseLock();
 
 }
@@ -640,14 +640,14 @@ IpodTrack::setComposer( const QString &newComposer )
     // check for the existence of the composer to be set to,
     // if composer exists, reuse, else create
     
-    if (  composerMap.contains( newComposer ) )
+    if ( composerMap.contains( newComposer ) )
     {
-        composerPtr = IpodComposerPtr::staticCast( composerMap.value(  newComposer ) );
+        composerPtr = IpodComposerPtr::staticCast( composerMap.value( newComposer ) );
     }
     else
     {
-        composerPtr = IpodComposerPtr(  new IpodComposer(  newComposer ) );
-        composerMap.insert(  newComposer,  ComposerPtr::staticCast(  composerPtr ) );
+        composerPtr = IpodComposerPtr( new IpodComposer( newComposer ) );
+        composerMap.insert( newComposer, ComposerPtr::staticCast( composerPtr ) );
     }
 
     // add track to composer's tracklist
@@ -656,7 +656,7 @@ IpodTrack::setComposer( const QString &newComposer )
     setComposer( composerPtr );
 
     m_collection->acquireWriteLock();
-    m_collection->setComposerMap(  composerMap );
+    m_collection->setComposerMap( composerMap );
     m_collection->releaseLock();
 
 }
@@ -684,14 +684,14 @@ IpodTrack::setYear( const QString &newYear )
     // check for the existence of the year to be set to,
     // if year exists, reuse, else create
     
-    if (  yearMap.contains( newYear ) )
+    if ( yearMap.contains( newYear ) )
     {
-        yearPtr = IpodYearPtr::staticCast( yearMap.value(  newYear ) );
+        yearPtr = IpodYearPtr::staticCast( yearMap.value( newYear ) );
     }
     else
     {
-        yearPtr = IpodYearPtr(  new IpodYear(  newYear ) );
-        yearMap.insert(  newYear,  YearPtr::staticCast(  yearPtr ) );
+        yearPtr = IpodYearPtr( new IpodYear( newYear ) );
+        yearMap.insert( newYear, YearPtr::staticCast( yearPtr ) );
     }
 
     // add track to year's tracklist
@@ -700,9 +700,8 @@ IpodTrack::setYear( const QString &newYear )
     setYear( yearPtr );
 
     m_collection->acquireWriteLock();
-    m_collection->setYearMap(  yearMap );
+    m_collection->setYearMap( yearMap );
     m_collection->releaseLock();
-
 }
 
 void

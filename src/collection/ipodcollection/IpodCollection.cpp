@@ -203,10 +203,24 @@ IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
 }
 
 bool
+IpodCollection::possiblyContainsTrack( const KUrl &url ) const
+{
+    //return url.protocol() == "ipod"; // TODO: Check actual mount point
+    return Collection::possiblyContainsTrack( url );
+}
+
+Meta::TrackPtr
+IpodCollection::trackForUrl( const KUrl &url )
+{
+    // Check blah
+    return Collection::trackForUrl(url);
+}
+
+bool
 IpodCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     DEBUG_BLOCK
-            switch( type )
+    switch( type )
     {
         case Meta::Capability::Collection:
             return true;
@@ -220,7 +234,7 @@ Meta::Capability*
 IpodCollection::asCapabilityInterface( Meta::Capability::Type type )
 {
     DEBUG_BLOCK
-            switch( type )
+    switch( type )
     {
         case Meta::Capability::Collection:
             return new Meta::CollectionCapabilityIpod( this );
