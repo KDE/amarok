@@ -122,10 +122,12 @@ class UpdateCapabilityIpod : public Meta::UpdateCapability
     Q_OBJECT
     public:
         UpdateCapabilityIpod( IpodCollection *coll )
-    : Meta::UpdateCapability()
-                , m_coll( coll ) {}
+            : Meta::UpdateCapability()
+            , m_coll( coll )
+        {}
 
-        virtual void collectionUpdated() const {
+        virtual void collectionUpdated() const
+        {
             m_coll->collectionUpdated();
             m_coll->writeDatabase();
         }
@@ -453,7 +455,6 @@ IpodTrack::collection() const
 bool
 IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::Editable:
@@ -471,7 +472,6 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 Meta::Capability*
 IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
 {
-        DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::Editable:
@@ -490,7 +490,6 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
 void
 IpodTrack::setAlbum( const QString &newAlbum )
 {
-
     IpodAlbumPtr albumPtr;
     IpodTrackPtr track( this );
     AlbumMap albumMap = m_collection->albumMap();

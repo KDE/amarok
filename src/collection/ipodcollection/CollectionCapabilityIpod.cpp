@@ -28,43 +28,40 @@
 
 using namespace Meta;
 
-
 CollectionCapabilityIpod::CollectionCapabilityIpod( IpodCollection *coll )
     : CollectionCapability()
-                , m_coll( coll ) {}
+    , m_coll( coll )
+{
+}
 
 QList<PopupDropperAction *>
-CollectionCapabilityIpod::collectionActions( QueryMaker *qm ) {
+CollectionCapabilityIpod::collectionActions( QueryMaker *qm )
+{
+    QList< PopupDropperAction* > actions;
+    // Create helper
+    Meta::CollectionCapabilityHelper *helper = new Meta::CollectionCapabilityHelper( qm );
 
-            QList< PopupDropperAction* > actions;
+    // Create action
 
-            // Create helper
+    PopupDropperAction *deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                                                               "delete", KIcon( "remove-amarok" ), i18n( "&Delete Tracks" ), 0 );
 
-            Meta::CollectionCapabilityHelper *helper = new Meta::CollectionCapabilityHelper( qm );
+    // Delete action triggered() goes to helper's run query
+    helper->setAction( deleteAction, m_coll, SLOT( deleteTracksSlot( Meta::TrackList ) )  );
 
-            // Create action
+    actions.append( deleteAction );
 
-            PopupDropperAction *deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                    "delete", KIcon( "remove-amarok" ), i18n( "&Delete Tracks" ), 0 );
+    return actions;
+}
 
-            // Delete action triggered() goes to helper's run query
-
-            helper->setAction( deleteAction, m_coll, SLOT( deleteTracksSlot( Meta::TrackList ) )  );
-
-            actions.append( deleteAction );
-
-            return actions;
-        }
-
-        // NOTE: NYI
+// NOTE: NYI
 QList<PopupDropperAction *>
-CollectionCapabilityIpod::collectionActions( const TrackList tracklist ) {
-            Q_UNUSED( tracklist );
+CollectionCapabilityIpod::collectionActions( const TrackList tracklist )
+{
+    Q_UNUSED( tracklist );
 
-            QList< PopupDropperAction* > actions;
-
-            return actions;
-
+    QList< PopupDropperAction* > actions;
+    return actions;
 }
 
 #include "CollectionCapabilityIpod.moc"
