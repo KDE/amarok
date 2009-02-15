@@ -162,7 +162,11 @@ XSPFPlaylist::tracks()
 
     foreach( const XSPFTrack &track, xspfTracks )
     {
-        TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( track.location );
+        TrackPtr trackPtr;
+        if( !track.identifier.isEmpty() )
+            trackPtr = CollectionManager::instance()->trackForUrl( track.identifier );
+        else
+            trackPtr = CollectionManager::instance()->trackForUrl( track.location );
         if ( trackPtr )
         {
             if( !trackPtr->isPlayable() )
