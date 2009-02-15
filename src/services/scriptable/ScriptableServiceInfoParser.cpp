@@ -43,7 +43,10 @@ void ScriptableServiceInfoParser::getInfo( ArtistPtr artist )
     emit( info( serviceArtist->description() ) );
 
     if ( serviceArtist->description().isEmpty() )
+    {
+        showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceArtist->level(), serviceArtist->callbackString() );
+    }
 
     //FIXME: when out of string freeze, add a "fething info" comment instead of just useing blank info
 
@@ -58,7 +61,10 @@ void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
     emit( info( serviceAlbum->description() ) );
 
     if ( serviceAlbum->description().isEmpty() )
+    {
+        showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceAlbum->level(), serviceAlbum->callbackString() );
+    }
 
 }
 
@@ -71,7 +77,10 @@ void ScriptableServiceInfoParser::getInfo(TrackPtr track)
     emit( info( serviceTrack->description() ) );
 
     if ( serviceTrack->description().isEmpty() )
+    {
+        showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceTrack->level(), serviceTrack->callbackString() );
+    }
 
 }
 
@@ -84,7 +93,10 @@ void ScriptableServiceInfoParser::getInfo( Meta::GenrePtr genre )
     emit( info( serviceGenre->description() ) );
 
     if ( serviceGenre->description().isEmpty() )
+    {
+        showLoading( i18n( "Loading info..." ) );
         ScriptManager::instance()->ServiceScriptRequestInfo( m_serviceName, serviceGenre->level(), serviceGenre->callbackString() );
+    }
 
 }
 
