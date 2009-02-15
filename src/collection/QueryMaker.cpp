@@ -44,5 +44,14 @@ int QueryMaker::validFilterMask()
     return AllFilters;
 }
 
+QueryMaker*
+QueryMaker::setAutoDelete( bool autoDelete )
+{
+	if( autoDelete )
+		connect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+	else
+		disconnect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+}
+
 #include "QueryMaker.moc"
 

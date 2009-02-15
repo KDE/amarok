@@ -181,6 +181,16 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* beginAnd() = 0;
         virtual QueryMaker* beginOr() = 0;
         virtual QueryMaker* endAndOr() = 0;
+                                                     
+		/**
+		 * Choose whether the query maker instance should delete itself after the query.
+		 * By passing true the query maker instance will delete itself after emitting queryDone().
+		 * Otherwise it is the responsibility of the owner (the code which called ::queryMaker() usually) to delete the instance
+		 * when it is not needed anymore.
+		 *
+		 * Defaults to false, i.e. the querymaker instance will not delete itself.
+	     */
+		QueryMaker* setAutoDelete( bool autoDelete );
 
 
         virtual int validFilterMask();
