@@ -169,6 +169,8 @@ void PopupDropperItem::setAction( PopupDropperAction *action )
             d->hoverIndicatorRectItem->hide();
 
         d->hoverIndicatorRectFillItem->hide();
+
+        reposHoverFillRects();
     }
 
     if( d->pd )
@@ -465,10 +467,7 @@ void PopupDropperItem::reposHoverFillRects()
 
     endx = d->hoverIndicatorRectWidth - ( 2 * d->hoverIndicatorRectItem->pen().width() );
 
-    endy = item_center + ( d->svgElementRect.height() / 2 );
-
-
-    //qDebug() << "startx, endx = " << startx << ", " << endx;
+    endy = d->svgElementRect.height();
 
     QRectF indicatorRect( startx, starty, endx, endy );
     d->hoverIndicatorRectItem->setRect( indicatorRect );

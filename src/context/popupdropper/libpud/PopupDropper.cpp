@@ -510,10 +510,8 @@ void PopupDropper::updateAllOverlays()
     for( int i = m_viewStack.size() - 1; i >= 0; --i )
     {
         PopupDropperPrivate* pdp = m_viewStack.at( i );
-        pdp->reposItems();
         pdp->view->update();
     }
-    d->reposItems();
     d->view->update();
 }
 
