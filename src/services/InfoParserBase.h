@@ -61,12 +61,19 @@ public:
      */
     virtual void getInfo( Meta::TrackPtr track ) = 0;
 
+
+    void showLoading( const QString &message );
+
 signals:
     /**
      * Signal emmited when new html info is ready to be shown
      * @param info The string containing the html formatted information
      */
     void info( QString info );
+
+private:
+
+    static QString s_loadingBaseHtml;
 };
 
 #endif

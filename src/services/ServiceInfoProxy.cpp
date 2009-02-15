@@ -96,14 +96,14 @@ ServiceInfoProxy::notifyObservers( const QVariantMap &infoMap ) const
 }
 
 void
-ServiceInfoProxy::notifyCloudObservers( const QVariantMap &cloudMap) const
+ServiceInfoProxy::notifyCloudObservers( const QVariantMap &cloudMap ) const
 {
     foreach( ServiceInfoObserver *observer, m_cloudObservers )
         observer->serviceInfoChanged( cloudMap );
 }
 
 void
-ServiceInfoProxy::setInfo( const QVariantMap &infoMap)
+ServiceInfoProxy::setInfo( const QVariantMap &infoMap )
 {
     DEBUG_BLOCK;
     m_storedInfo = infoMap;

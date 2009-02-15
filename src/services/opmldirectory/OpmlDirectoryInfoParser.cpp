@@ -52,9 +52,10 @@ void OpmlDirectoryInfoParser::getInfo(AlbumPtr album)
     Q_UNUSED( album );
 }
 
-void OpmlDirectoryInfoParser::getInfo(TrackPtr track)
+void OpmlDirectoryInfoParser::getInfo( TrackPtr track )
 {
     DEBUG_BLOCK
+    showLoading( i18n( "Loading Podcast Info..." ) );
 
     OpmlDirectoryFeed * feed = dynamic_cast<OpmlDirectoryFeed *>( track.data() );
 

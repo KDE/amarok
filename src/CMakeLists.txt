@@ -661,7 +661,9 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 
-install(FILES playlist/view/listview/DefaultPlaylistLayouts.xml DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
+install(FILES playlist/view/listview/DefaultPlaylistLayouts.xml
+              services/InfoParserLoading.html
+              DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 

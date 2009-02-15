@@ -39,7 +39,8 @@ class MagnatuneInfoParser : public InfoParserBase
 Q_OBJECT
 
 public:
-    MagnatuneInfoParser() {}
+    MagnatuneInfoParser()
+       : InfoParserBase() {}
 
     ~MagnatuneInfoParser() {}
 
@@ -62,9 +63,6 @@ private slots:
     void artistInfoDownloadComplete( KJob *downLoadJob );
     void frontPageDownloadComplete( KJob *downLoadJob );
 
-signals:
-
-    void info( QString );
 };
 
 #endif

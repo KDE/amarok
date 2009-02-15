@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script language="javascript"> 
+      var currentImage = 1; 
+      function changeImage(){ 
+	  currentImage = ( currentImage % 12 ) + 1;
+	  imageName = "%%IMAGEPATH%%service_info_loading" + currentImage + ".png";
+      document.getElementById("loading_img").src=imageName;
+	setTimeout('changeImage()', 80); 
+      } 
+    </script> 
+   <style type="text/css">body {text-align:center}</style>
+  </head>
+  <body onload="setTimeout('changeImage()', 80)">
+    <br>
+    <br>
+    <br>
+    %%TEXT%%<br>
+    <IMG id="loading_img" SRC="%%IMAGEPATH%%service_info_loading1.png" ALT="Loading..."></A>
+  </body>
+</html>

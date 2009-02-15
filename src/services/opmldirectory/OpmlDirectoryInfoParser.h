@@ -35,7 +35,6 @@ Q_OBJECT
 
 public:
     OpmlDirectoryInfoParser();
-
     ~OpmlDirectoryInfoParser();
 
     virtual void getInfo( Meta::ArtistPtr artist );
@@ -48,8 +47,6 @@ private:
 private slots:
     void rssDownloadComplete( KJob *downLoadJob );
     
-signals:
-    void info( QString );
 };
 
 #endif

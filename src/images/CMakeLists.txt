@@ -26,6 +26,18 @@ install(
         star.png
         volume_icon.png
         web_applet_background.svg
+        service_info_loading1.png
+        service_info_loading2.png
+        service_info_loading3.png
+        service_info_loading4.png
+        service_info_loading5.png
+        service_info_loading6.png
+        service_info_loading7.png
+        service_info_loading8.png
+        service_info_loading9.png
+        service_info_loading10.png
+        service_info_loading11.png
+        service_info_loading12.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
 

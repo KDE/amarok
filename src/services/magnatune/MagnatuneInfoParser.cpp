@@ -30,6 +30,8 @@ using namespace Meta;
 void MagnatuneInfoParser::getInfo(ArtistPtr artist)
 {
 
+    showLoading( i18n( "Loading artist info..." ) );
+
     MagnatuneArtist * magnatuneArtist = dynamic_cast<MagnatuneArtist *>( artist.data() );
     if ( magnatuneArtist == 0) return;
 
@@ -49,7 +51,8 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
 void MagnatuneInfoParser::getInfo(AlbumPtr album)
 {
 
-
+    showLoading( i18n( "Loading album info..." ) );
+    
     MagnatuneAlbum * magnatuneAlbum = dynamic_cast<MagnatuneAlbum *>( album.data() );
 
     const QString artistName = album->albumArtist()->name();
@@ -153,6 +156,8 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 
 void MagnatuneInfoParser::getFrontPage()
 {
+    showLoading( i18n( "Loading Magnatune.com frontpage..." ) );
+    
     m_frontPageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
     The::statusBar()->newProgressOperation( m_frontPageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
     connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );

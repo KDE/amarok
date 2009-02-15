@@ -291,7 +291,6 @@ void
 ServiceBase::infoChanged( const QString &infoHtml )
 {
     DEBUG_BLOCK
-
     QVariantMap map;
     map["service_name"] = m_name;
     map["main_info"] = infoHtml;

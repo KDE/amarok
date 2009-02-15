@@ -18,10 +18,58 @@
  ***************************************************************************/
 
 #include "InfoParserBase.h"
+#include "Debug.h"
+
+#include <KStandardDirs>
+
+#include <QFile>
+
+QString InfoParserBase::s_loadingBaseHtml = QString();
 
 InfoParserBase::InfoParserBase()
   : QObject()
 {
+
+}
+
+void InfoParserBase::showLoading( const QString &message )
+{
+
+    DEBUG_BLOCK
+    if ( s_loadingBaseHtml.isEmpty() ) {
+
+        const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+        QString htmlFile = url.path() + "InfoParserLoading.html";
+
+        if ( !QFile::exists( htmlFile ) )
+        {
+            debug() << "file " << htmlFile << "does not exist";
+            return;
+        }
+
+        QFile file( htmlFile );
+        if( !file.open( QIODevice::ReadOnly ) )
+        {
+            debug() << "error reading file " << htmlFile;
+            return;
+        }
+
+        QString html;
+        while (!file.atEnd()) {
+            html += file.readLine();
+        }
+
+        s_loadingBaseHtml = html;
+    }
+
+    QString currentHtml = s_loadingBaseHtml;
+
+    const KUrl url( KStandardDirs::locate( "data", "amarok/images/" ) );
+    currentHtml = currentHtml.replace( "%%IMAGEPATH%%", url.url() );
+    currentHtml = currentHtml.replace( "%%TEXT%%", message );
+
+    debug() << "showing html: " << currentHtml;
+    emit ( info( currentHtml ) );
 
 }
 
