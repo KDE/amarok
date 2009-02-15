@@ -88,9 +88,8 @@ MountPointManager::~MountPointManager()
 
     m_handlerMapMutex.lock();
     foreach( DeviceHandler *dh, m_handlerMap )
-    {
         delete dh;
-    }
+    
     while( !m_mediumFactories.isEmpty() )
         delete m_mediumFactories.takeFirst();
     while( !m_remoteFactories.isEmpty() )
@@ -100,8 +99,10 @@ MountPointManager::~MountPointManager()
 
 
 void
-MountPointManager::destroy() {
-    if (s_instance) {
+MountPointManager::destroy()
+{
+    if (s_instance)
+    {
         delete s_instance;
         s_instance = 0;
     }
@@ -170,7 +171,8 @@ MountPointManager::getIdForUrl( const QString &url )
 }
 
 bool
-MountPointManager::isMounted ( const int deviceId ) const {
+MountPointManager::isMounted ( const int deviceId ) const
+{
     m_handlerMapMutex.lock();
     bool result = m_handlerMap.contains( deviceId );
     m_handlerMapMutex.unlock();
@@ -403,7 +405,8 @@ MountPointManager::mediumAdded( const Medium *m )
 }
 
 IdList
-MountPointManager::getMountedDeviceIds() const {
+MountPointManager::getMountedDeviceIds() const
+{
     m_handlerMapMutex.lock();
     IdList list( m_handlerMap.keys() );
     m_handlerMapMutex.unlock();
@@ -412,7 +415,7 @@ MountPointManager::getMountedDeviceIds() const {
 }
 
 QStringList
-MountPointManager::collectionFolders( )
+MountPointManager::collectionFolders()
 {
     DEBUG_BLOCK
 
