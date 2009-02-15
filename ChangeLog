@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Add a animated "loading..." screen when dynamically fetching info about
+      an item to show in the service info applet.
     * Deleting tracks from the local collection is now possible. (BR 170999)
     * Add a filter-by-date-added to the collection browser. Use added:"today" or added:<2m2d
     * Add a tab bar in the current track applet for showing also the favorite
@@ -81,6 +83,7 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Fix showing of book information from the LibriVox service.
     * Dynamic playlist weight's are now saved correctly. (BR 184304)
     * Fix using "Copy to Collection" to download Magnatune.com preview
       tracks. (BR 183328)
