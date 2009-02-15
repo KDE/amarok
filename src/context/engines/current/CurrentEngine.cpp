@@ -32,6 +32,9 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     , m_coverWidth( 0 )
     , m_requested( true )
     , m_currentArtist( 0 )
+	, m_qm( 0 )
+	, m_qmTracks( 0 )
+	, m_qmFavTracks( 0 )
 {
     DEBUG_BLOCK
     Q_UNUSED( args )
@@ -105,7 +108,10 @@ CurrentEngine::stoppedState()
     setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
     
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
-    m_qm = coll->queryMaker();
+    if( m_qm )
+		m_qm->reset();
+	else
+    	m_qm = coll->queryMaker();
     m_qm->setQueryType( QueryMaker::Album );
     m_qm->excludeFilter( Meta::valAlbum, QString(), true, true ); 
     m_qm->orderBy( Meta::valCreateDate, true );
@@ -120,7 +126,10 @@ CurrentEngine::stoppedState()
 
     // Get the latest tracks played:
 
-    m_qmTracks = coll->queryMaker();
+    if( m_qmTracks )
+		m_qmTracks->reset();
+	else
+    	m_qmTracks = coll->queryMaker();
     m_qmTracks->setQueryType( QueryMaker::Track );
     m_qmTracks->excludeFilter( Meta::valTitle, QString(), true, true );
     m_qmTracks->orderBy( Meta::valLastPlayed, true );
@@ -136,7 +145,10 @@ CurrentEngine::stoppedState()
 
     // Get the favorite tracks:
 
-    m_qmFavTracks = coll->queryMaker();
+    if( m_qmFavTracks )
+		m_qmFavTracks->reset();
+	else
+    	m_qmFavTracks = coll->queryMaker();
     m_qmFavTracks->setQueryType( QueryMaker::Track );
     m_qmFavTracks->excludeFilter( Meta::valTitle, QString(), true, true );
     m_qmFavTracks->orderBy( Meta::valScore, true );
