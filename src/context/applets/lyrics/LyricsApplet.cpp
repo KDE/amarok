@@ -258,7 +258,7 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
 
     } else
         return QGraphicsWidget::sizeHint( which, constraint ); */
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), 300 );
+    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), 500 );
     
 }
 void
