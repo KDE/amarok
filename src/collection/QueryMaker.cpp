@@ -47,10 +47,11 @@ int QueryMaker::validFilterMask()
 QueryMaker*
 QueryMaker::setAutoDelete( bool autoDelete )
 {
-	if( autoDelete )
-		connect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
-	else
-		disconnect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+    if( autoDelete )
+        connect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+    else
+        disconnect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+    return this;
 }
 
 #include "QueryMaker.moc"
