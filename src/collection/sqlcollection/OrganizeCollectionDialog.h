@@ -77,6 +77,7 @@ class OrganizeCollectionDialog : public KDialog
         Meta::TrackList m_allTracks;
     private slots:
         void toggleCustomScheme( bool state );
+        void slotEnableOk( const QString & currentCollectionRoot );
 };
 
 #endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_H
