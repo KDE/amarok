@@ -21,6 +21,7 @@
 #include <context/DataEngine.h>
 
 #include <KIO/Job>
+#include <QLocale>
 
 /**
     This class provide Wikipedia data for use in Context applets. 
@@ -80,7 +81,7 @@ private:
     QString m_wikiCurrentEntry;
     QString m_wikiCurrentUrl;
     QString m_wikiLanguages;
-    QString m_wikiLocale;
+    QLocale m_wikiLang;
     // stores what features are enabled
     bool m_requested;
     QStringList m_sources;

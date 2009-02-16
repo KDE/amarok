@@ -27,7 +27,6 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     , ContextObserver( ContextView::self() )
     , m_wikiJob( 0 )
     , m_currentSelection( "artist" )
-    , m_wikiLocale( "en" )
     , m_requested( true )
     , m_sources( "current" )
     , m_triedRefinedSearch( false )
@@ -329,7 +328,7 @@ WikipediaEngine::wikiResult( KJob* job )
 inline QString
 WikipediaEngine::wikiLocale() const
 {
-    return !m_wikiLocale.isEmpty() ? m_wikiLocale : QString( "en" );
+	return m_wikiLang.name().split('_')[0];
 }
 
 inline QString
@@ -339,6 +338,8 @@ WikipediaEngine::wikiArtistPostfix()
         return " (band)";
     else if( wikiLocale() == "de" )
         return " (Band)";
+    else if( wikiLocale() == "pl" )
+        return " (Kapela)";
     return QString();
 }
 
