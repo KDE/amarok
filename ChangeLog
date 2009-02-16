@@ -85,6 +85,8 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Fix issue with files being deleted when Organize Collection is run
+      without selecting a collection root. (BR 184410)
     * Fix showing of book information from the LibriVox service.
     * Dynamic playlist weight's are now saved correctly. (BR 184304)
     * Fix using "Copy to Collection" to download Magnatune.com preview
