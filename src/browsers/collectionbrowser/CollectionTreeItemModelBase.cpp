@@ -816,27 +816,18 @@ CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 void
 CollectionTreeItemModelBase::slotFilter()
 {
-
     if ( isQuerying() )
         return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
             
     filterChildren();
     reset();
-    debug() << "m_expandedCollections.isEmpty() ? " << (m_expandedCollections.isEmpty() ? "true" : "false");
     if ( !m_expandedCollections.isEmpty() )
     {
         foreach( Amarok::Collection *expanded, m_expandedCollections )
         {
-            debug() << "checking item...is item 0 ? " << (d->m_collections.value( expanded->collectionId() ).second == 0 ? "true" : "false" );
             CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
-            if( expandedItem == 0 )
-                debug() << "ARRG! expandedItem is 0!!! id=" << expanded->collectionId() ;
-            else
-            {
-                debug() << "urls = " << expandedItem->urls();
-                debug() << "row = " << expandedItem->row();
+            if( expandedItem )
                 emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
-            }
         }
     }
 }
@@ -890,7 +881,7 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
 
 void CollectionTreeItemModelBase::update()
 {
-   reset();
+    reset();
 }
 
 bool CollectionTreeItemModelBase::isQuerying() const
