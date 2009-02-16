@@ -46,6 +46,7 @@ set( Generated_QtCore_SRCS
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QTemporaryFile.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QTextBoundaryFinder.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QTextCodec.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QTextCodecPlugin.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QTextDecoder.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QTextEncoder.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscript_QTextStream.cpp
@@ -88,6 +89,7 @@ set( Generated_QtCore_SRCS
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QSocketNotifier.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QTemporaryFile.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QTextCodec.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QTextCodecPlugin.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QTextStream.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QThreadPool.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_core/qtscriptshell_QTimeLine.cpp

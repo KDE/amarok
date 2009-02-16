@@ -4921,7 +4921,6 @@
   <interface-type name="QImageIOHandlerFactoryInterface" java-name="QAbstractImageIOHandlerFactory" />  
   <interface-type name="QInputContextFactoryInterface" java-name="QAbstractInputContextFactory" />
   <interface-type name="QStyleFactoryInterface" java-name="QAbstractStyleFactory" />
-  <interface-type name="QTextCodecFactoryInterface" java-name="QAbstractTextCodecFactory" />
   <interface-type name="QPictureFormatInterface" java-name="QAbstractPictureFormat" />
   
   <object-type name="QIconEnginePluginV2"/>
@@ -4930,7 +4929,6 @@
   <object-type name="QInputContextPlugin" />
   <object-type name="QPictureFormatPlugin" />
   <object-type name="QStylePlugin" />
-  <object-type name="QTextCodecPlugin" />
      
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPixmap::QPixmap', unmatched parameter type 'QPixmapData*'" />
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>

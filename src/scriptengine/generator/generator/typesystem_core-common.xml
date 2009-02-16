@@ -858,6 +858,9 @@
     </modify-function>
   </object-type>
 
+  <interface-type name="QTextCodecFactoryInterface" java-name="QAbstractTextCodecFactory" />
+  <object-type name="QTextCodecPlugin" />
+
   <object-type name="QTextDecoder">
     <modify-function signature="toUnicode(const char*,int)">
         <remove/>

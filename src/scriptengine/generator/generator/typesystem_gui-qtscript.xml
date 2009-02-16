@@ -19,7 +19,6 @@
   <rejection class="QImageIOHandlerFactoryInterface"/>  
   <rejection class="QInputContextFactoryInterface"/>
   <rejection class="QStyleFactoryInterface"/>
-  <rejection class="QTextCodecFactoryInterface"/>
   <rejection class="QPictureFormatInterface"/>
 
   <!-- ### these don't compile -->

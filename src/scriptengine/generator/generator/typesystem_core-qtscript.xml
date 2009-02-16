@@ -55,6 +55,7 @@
 
   <!-- classes that aren't deemed relevant to scripts -->
   <rejection class="QTextCodec::ConverterState"/>
+  <rejection class="QTextCodecFactoryInterface"/>
   <rejection class="QAbstractEventDispatcher"/>
   <rejection class="QAbstractFileEngine"/>
   <rejection class="QAbstractFileEngineHandler"/>

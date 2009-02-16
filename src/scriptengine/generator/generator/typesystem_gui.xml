@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<typesystem package="com.trolltech.qt.gui"><rejection class="QAbstractTextDocumentLayout"/><rejection class="QColormap"/><rejection class="QFontDatabase"/><rejection class="QIconEngineV2"/><rejection class="QInputMethodEvent"/><rejection class="QPainterPath::Element"/><rejection class="QTextBlock::iterator"/><rejection class="QTextEdit::ExtraSelection"/><rejection class="QTextFrame::iterator"/><rejection class="QTextLayout::FormatRange"/><rejection class="QTreeWidgetItemIterator"/><rejection class="QAccessibleFactoryInterface"/><rejection class="QIconEngineFactoryInterfaceV2"/><rejection class="QImageIOHandlerFactoryInterface"/><rejection class="QInputContextFactoryInterface"/><rejection class="QStyleFactoryInterface"/><rejection class="QTextCodecFactoryInterface"/><rejection class="QPictureFormatInterface"/><rejection class="QAbstractProxyModel"/><rejection class="QSortFilterProxyModel"/><rejection class="QDirModel"/><rejection class="QFileSystemModel"/><rejection class="QGraphicsSceneDragDropEvent"/><rejection class="QPrinterInfo"/><rejection class="QProxyModel"/><rejection class="QPrinterInfo"/><rejection class="QTextOption"/><suppress-warning text="WARNING(MetaJavaBuilder) :: Rejected enum has no alternative...: QPalette::NColorRoles"/><suppress-warning text="WARNING(MetaJavaBuilder) :: Cannot find enum constant for value 'DragMove' in 'QDragMoveEvent' or any of its super classes"/>
+<typesystem package="com.trolltech.qt.gui"><rejection class="QAbstractTextDocumentLayout"/><rejection class="QColormap"/><rejection class="QFontDatabase"/><rejection class="QIconEngineV2"/><rejection class="QInputMethodEvent"/><rejection class="QPainterPath::Element"/><rejection class="QTextBlock::iterator"/><rejection class="QTextEdit::ExtraSelection"/><rejection class="QTextFrame::iterator"/><rejection class="QTextLayout::FormatRange"/><rejection class="QTreeWidgetItemIterator"/><rejection class="QAccessibleFactoryInterface"/><rejection class="QIconEngineFactoryInterfaceV2"/><rejection class="QImageIOHandlerFactoryInterface"/><rejection class="QInputContextFactoryInterface"/><rejection class="QStyleFactoryInterface"/><rejection class="QPictureFormatInterface"/><rejection class="QAbstractProxyModel"/><rejection class="QSortFilterProxyModel"/><rejection class="QDirModel"/><rejection class="QFileSystemModel"/><rejection class="QGraphicsSceneDragDropEvent"/><rejection class="QPrinterInfo"/><rejection class="QProxyModel"/><rejection class="QPrinterInfo"/><rejection class="QTextOption"/><suppress-warning text="WARNING(MetaJavaBuilder) :: Rejected enum has no alternative...: QPalette::NColorRoles"/><suppress-warning text="WARNING(MetaJavaBuilder) :: Cannot find enum constant for value 'DragMove' in 'QDragMoveEvent' or any of its super classes"/>
   <rejection class="*" function-name="d_func"/>
 
   <rejection class="*" field-name="d_ptr"/>
@@ -5380,7 +5380,6 @@
   <interface-type name="QImageIOHandlerFactoryInterface" java-name="QAbstractImageIOHandlerFactory"/>  
   <interface-type name="QInputContextFactoryInterface" java-name="QAbstractInputContextFactory"/>
   <interface-type name="QStyleFactoryInterface" java-name="QAbstractStyleFactory"/>
-  <interface-type name="QTextCodecFactoryInterface" java-name="QAbstractTextCodecFactory"/>
   <interface-type name="QPictureFormatInterface" java-name="QAbstractPictureFormat"/>
   
   <object-type name="QIconEnginePluginV2"/>
@@ -5389,7 +5388,6 @@
   <object-type name="QInputContextPlugin"/>
   <object-type name="QPictureFormatPlugin"/>
   <object-type name="QStylePlugin"/>
-  <object-type name="QTextCodecPlugin"/>
      
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping function 'QPixmap::QPixmap', unmatched parameter type 'QPixmapData*'"/>
   <suppress-warning text="WARNING(MetaJavaBuilder) :: skipping * unmatched *type '*Private&amp;'"/>
