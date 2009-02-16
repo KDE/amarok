@@ -61,7 +61,7 @@ class IpodCollectionFactory : public Amarok::CollectionFactory
 
     private:
         void checkDevicesForIpod();
-        bool isIpod( const QString &udi );
+        bool isIpod( const QString &udi ) const;
 
         QMap<QString, IpodCollection*> m_collectionMap;
 };

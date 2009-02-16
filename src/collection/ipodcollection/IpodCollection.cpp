@@ -102,10 +102,10 @@ void
 IpodCollectionFactory::deviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
-    if (  m_collectionMap.contains( udi ) )
+    if( m_collectionMap.contains( udi ) )
     {
         IpodCollection* coll = m_collectionMap[ udi ];
-        if (  coll )
+        if( coll )
         {
             m_collectionMap.remove( udi ); // remove from map
             coll->deviceRemoved();  //collection will be deleted by collectionmanager
@@ -129,11 +129,11 @@ void
 IpodCollectionFactory::slotCollectionReady()
 {
     DEBUG_BLOCK
-    IpodCollection *collection = dynamic_cast<IpodCollection*>(  sender() );
+    IpodCollection *collection = dynamic_cast<IpodCollection*>( sender() );
     if( collection )
     {
         debug() << "emitting ipod collection newcollection";
-        emit newCollection(  collection );
+        emit newCollection( collection );
     }
 }
 
@@ -161,7 +161,7 @@ IpodCollectionFactory::checkDevicesForIpod()
 }
 
 bool
-IpodCollectionFactory::isIpod( const QString &udi )
+IpodCollectionFactory::isIpod( const QString &udi ) const
 {
     DEBUG_BLOCK
 
@@ -205,15 +205,18 @@ IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
 bool
 IpodCollection::possiblyContainsTrack( const KUrl &url ) const
 {
-    //return url.protocol() == "ipod"; // TODO: Check actual mount point
-    return Collection::possiblyContainsTrack( url );
+    // We could simply check for iPod_Control except that we could actually have multiple ipods connected
+    return url.url().startsWith( m_mountPoint ) || url.url().startsWith( "file://" + m_mountPoint );
 }
 
 Meta::TrackPtr
 IpodCollection::trackForUrl( const KUrl &url )
 {
-    // Check blah
-    return Collection::trackForUrl(url);
+    QString uid = url.url();
+    if( uid.startsWith("file://") )
+        uid = uid.remove( 0, 7 );
+    Meta::TrackPtr ipodTrack = m_trackMap.value( uid );
+    return ipodTrack ? ipodTrack : Collection::trackForUrl(url);
 }
 
 bool
@@ -318,7 +321,7 @@ IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
 }
 
 void
-IpodCollection::updateTags( Meta::IpodTrack *track)
+IpodCollection::updateTags( Meta::IpodTrack *track )
 {
     DEBUG_BLOCK
     Meta::IpodTrackPtr trackPtr( track );
@@ -391,7 +394,6 @@ IpodCollection::setTrackToDelete( const Meta::IpodTrackPtr &track )
 void
 IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
 {
-
     DEBUG_BLOCK
     connect( m_handler, SIGNAL( deleteTracksDone() ),
                         SLOT( slotDeleteTracksCompleted() ), Qt::QueuedConnection );
