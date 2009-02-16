@@ -35,7 +35,6 @@ typedef QMap<QString, Meta::YearPtr> YearMap;
 class MemoryCollection
 {
     public:
-
         void acquireReadLock() { m_readWriteLock.lockForRead(); }
         void releaseLock() { m_readWriteLock.unlock(); }
         void acquireWriteLock() { m_readWriteLock.lockForWrite(); }

@@ -139,8 +139,10 @@ MemoryQueryMaker::runQuery()
         {
             TrackList filtered;
             foreach( TrackPtr track, result )
+            {
                 if( d->containerFilters.first()->filterMatches( track ) )
                     filtered.append( track );
+            }
             handleResult( filtered );
         }
         else
@@ -153,9 +155,7 @@ MemoryQueryMaker::runQuery()
         foreach( const TrackPtr &track, tracks )
         {
             if ( d->containerFilters.first()->filterMatches( track ) )
-            {
                 filtered.append( track );
-            }
         }
         handleResult( filtered );
     }
