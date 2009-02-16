@@ -62,9 +62,9 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     : QObject( parent )
     , m_memColl( mc )
     , m_device( 0 )
+    , m_masterPlaylist( 0 )
     , m_jobcounter( 0 )
     , m_statusbar( 0 )
-    , m_masterPlaylist( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
     , m_name()
@@ -550,13 +550,11 @@ IpodHandler::deleteTrackListFromDevice( const Meta::TrackList &tracks )
              The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
 
     deleteNextTrackFromDevice();
-
 }
 
 void
 IpodHandler::deleteNextTrackFromDevice()
 {
-
     Meta::TrackPtr track;
     // If there are more tracks to delete, delete the next one
     if( !m_tracksToDelete.isEmpty() )
@@ -578,8 +576,6 @@ IpodHandler::deleteNextTrackFromDevice()
         emit incrementProgress();
         emit deleteTracksDone();
     }
-
-
 }
 
 void
@@ -595,10 +591,7 @@ IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
     // remove it from the ipod database, ipod playlists and all
 
     if ( !removeDBTrack( ipodtrack ) )
-    {
         debug() << "Error: failed to remove track from db";
-
-    }
 
     // remove from titlemap
 
@@ -706,7 +699,6 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
     /* List ready, begin copying */
 
     copyTracksToDevice();
-
 }
 
 void
@@ -736,7 +728,6 @@ IpodHandler::copyTracksToDevice()
     m_jobcounter = 0;
 
     copyNextTrackToDevice();
-
 }
 
 void
@@ -753,7 +744,6 @@ IpodHandler::copyNextTrackToDevice()
     privateCopyTrackToDevice( track );
 
     emit incrementProgress();
-
 }
 
 void
@@ -838,13 +828,11 @@ IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
 
     if( m_trackCreated )
     {
-
-    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
-
-    addTrackInDB( ipodtrack );
-
-    // add track to collection
-    addIpodTrackToCollection( ipodtrack );
+        debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
+        addTrackInDB( ipodtrack );
+    
+        // add track to collection
+        addIpodTrackToCollection( ipodtrack );
     }
     else
         debug() << "Failed to create track, aborting insertion!";
@@ -1256,7 +1244,6 @@ IpodHandler::realPath( const char *ipodPath )
 void
 IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 {
-
     TrackMap trackMap = m_memColl->trackMap();
     ArtistMap artistMap = m_memColl->artistMap();
     AlbumMap albumMap = m_memColl->albumMap();

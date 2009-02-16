@@ -56,7 +56,6 @@ class IpodCollection;
 
 namespace Ipod
 {
-
     typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
 // NOTE: podcasts NYI
@@ -220,51 +219,44 @@ struct PodcastInfo
            /* Collection Variables */
 
            // Associated collection
-           IpodCollection *m_memColl;
+           IpodCollection   *m_memColl;
            // Map of titles, used to check for duplicate tracks
-           TitleMap m_titlemap;
+           TitleMap          m_titlemap;
 
            /* libgpod variables */
-
            Itdb_iTunesDB    *m_itdb;
            Itdb_Device      *m_device;
            Itdb_Playlist    *m_masterPlaylist;
 
            /* Lockers */
-           QMutex m_dbLocker; // DB only written by 1 thread at a time
-           QMutex m_joblocker; // lets only 1 job finish at a time
-           int m_jobcounter; // keeps track of copy jobs present
+           QMutex            m_dbLocker; // DB only written by 1 thread at a time
+           QMutex            m_joblocker; // lets only 1 job finish at a time
+           int               m_jobcounter; // keeps track of copy jobs present
 
            /* Copy/Delete Variables */
-
-           Meta::TrackList m_tracksToCopy;
-           Meta::TrackList m_tracksToDelete;
+           Meta::TrackList   m_tracksToCopy;
+           Meta::TrackList   m_tracksToDelete;
 
            /* Operation Progress Bar */
-
-           ProgressBarNG *m_statusbar;
+           ProgressBarNG    *m_statusbar;
 
            /* Ipod Connection */
-
            bool              m_autoConnect;
            QString           m_mountPoint;
            QString           m_name;
 
            /* Ipod Model */
-
            bool              m_isShuffle;
            bool              m_isMobile;
            bool              m_isIPhone;
 
            /* Properties of Ipod */
-
            bool              m_supportsArtwork;
            bool              m_supportsVideo;
            bool              m_rockboxFirmware;
            bool              m_needsFirewireGuid;
 
            /* Success/Failure */
-
            bool m_dbChanged;
            bool m_copyFailed;
            bool m_isCanceled;
@@ -290,12 +282,12 @@ struct PodcastInfo
            // podcasts
            // Itdb_Playlist* m_podcastPlaylist;
 
-           private slots:
-              void fileTransferred( KJob *job );
-              void fileDeleted( KJob *job );
+        private slots:
+          void fileTransferred( KJob *job );
+          void fileDeleted( KJob *job );
 
-              void slotDBWriteFailed( ThreadWeaver::Job* job );
-              void slotDBWriteSucceeded( ThreadWeaver::Job* job );
+          void slotDBWriteFailed( ThreadWeaver::Job* job );
+          void slotDBWriteSucceeded( ThreadWeaver::Job* job );
     };
 
     class DBWorkerThread : public ThreadWeaver::Job
