@@ -358,7 +358,7 @@ RepeatAction::RepeatAction( KActionCollection *ac, QObject *parent ) :
 // ReplayGainModeAction
 //////////////////////////////////////////////////////////////////////////////////////////
 ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *parent ) :
-    SelectAction( i18n( "&Replay gain mode" ), &AmarokConfig::setReplayGainMode, ac, "replay_gain_mode", parent )
+    SelectAction( i18n( "&Replay Gain Mode" ), &AmarokConfig::setReplayGainMode, ac, "replay_gain_mode", parent )
 {
     setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
                             << i18n( "&Album" ) );
