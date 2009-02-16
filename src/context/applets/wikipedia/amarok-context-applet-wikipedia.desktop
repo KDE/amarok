@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Wikipedia
 Name[ga]=Vicipéid
+Name[pt]=Wikipédia
+Name[pt_BR]=Wikipédia
 Type=Service
 ServiceTypes=Plasma/Applet
 
