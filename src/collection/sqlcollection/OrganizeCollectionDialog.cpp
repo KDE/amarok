@@ -112,8 +112,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
              this, SLOT( slotUpdatePreview() ) );
-
+    connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
+             this, SLOT( slotEnableOk( const QString & ) ) );
+             
     toggleCustomScheme( ui->customschemeCheck->isChecked() );
+    slotEnableOk( ui->folderCombo->currentText() );
 
     init();
 }
@@ -371,6 +374,15 @@ OrganizeCollectionDialog::toggleCustomScheme( bool state )  //SLOT
     }
 }
 
+//The Ok button should be disabled when there's no collection root selected.
+void
+OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
+{
+    if( currentCollectionRoot == 0 )
+        enableButtonOk( false );
+    else
+        enableButtonOk( true );
+}
 
 /* Code to port
  *

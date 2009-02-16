@@ -78,6 +78,7 @@ class OrganizeCollectionDialog : public KDialog
 
     private slots:
         void toggleCustomScheme( bool state );
+        void slotEnableOk( const QString & currentCollectionRoot );
 };
 
 #endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_H
