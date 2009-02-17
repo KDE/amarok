@@ -38,12 +38,11 @@ A global list of actions that is made available to all playing tracks.
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT GlobalCurrentTrackActions{
-    
+class AMAROK_EXPORT GlobalCurrentTrackActions
+{
     friend GlobalCurrentTrackActions* The::globalCurrentTrackActions();
     
 public:
-
     void addAction( QAction * action );
     QList<QAction *> actions();
     

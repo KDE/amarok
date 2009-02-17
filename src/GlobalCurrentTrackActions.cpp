@@ -20,7 +20,8 @@
 #include "GlobalCurrentTrackActions.h"
 
 
-namespace The {
+namespace The
+{
     static GlobalCurrentTrackActions* s_GlobalCurrentTrackActions_instance = 0;
 
     GlobalCurrentTrackActions* globalCurrentTrackActions()
@@ -33,15 +34,12 @@ namespace The {
 }
 
 
-
 GlobalCurrentTrackActions::GlobalCurrentTrackActions()
-{
-}
+{}
 
 
 GlobalCurrentTrackActions::~GlobalCurrentTrackActions()
-{
-}
+{}
 
 void GlobalCurrentTrackActions::addAction( QAction * action )
 {
