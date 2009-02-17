@@ -50,7 +50,22 @@ void GlobalCurrentTrackActions::addAction( QAction * action )
 
 QList< QAction * > GlobalCurrentTrackActions::actions()
 {
-    return m_actions;
+    // Here we filter out dangling pointers to already destroyed QActions
+
+    QList<QAction*> validActions;
+
+    foreach( QAction* action, m_actions )
+    {
+        if( action )
+            validActions.append( action );
+    }
+
+    m_actions.clear();
+
+    foreach( QAction* action, validActions )
+        m_actions.append( action );
+
+    return validActions;
 }
 
 

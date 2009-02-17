@@ -24,6 +24,7 @@
 #include "Meta.h"
 
 #include <QAction>
+#include <QPointer>
 
 
 class GlobalCurrentTrackActions;
@@ -50,8 +51,8 @@ private:
     GlobalCurrentTrackActions();
     ~GlobalCurrentTrackActions();
     
-    QList<QAction *> m_actions;
-
+    typedef QPointer<QAction> QActionPtr;
+    QList<QActionPtr> m_actions;
 };
 
 #endif
