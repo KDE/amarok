@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Auto timecoding (position bookmarking) now exists for tracks with length
+	  greater than 10 minutes. (BR 148740)
     * Add a animated "loading..." screen when dynamically fetching info about
       an item to show in the service info applet.
     * Deleting tracks from the local collection is now possible. (BR 170999)

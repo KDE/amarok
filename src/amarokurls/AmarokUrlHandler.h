@@ -26,6 +26,7 @@
 
 #include <QMap>
 
+class TimecodeObserver;
 class AmarokUrlHandler;
 class NavigationUrlRunner;
 class PlayUrlRunner;
@@ -64,6 +65,7 @@ private:
 
     NavigationUrlRunner * m_navigationRunner;
     PlayUrlRunner * m_playRunner;
+    TimecodeObserver * m_timecodeObserver;
 
 };
 

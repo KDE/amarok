@@ -57,6 +57,7 @@ include_directories(
     plugin
     podcasts
     statusbar
+    timecode
     widgets
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
@@ -127,6 +128,7 @@ set(libamarokurl_SRCS
     amarokurls/BookmarkModel.cpp
     amarokurls/BookmarkTreeView.cpp
     amarokurls/BookmarkMetaActions.cpp
+    timecode/TimecodeObserver.cpp
 )
 
 #####################################################################

@@ -26,6 +26,7 @@
 #include "NavigationUrlRunner.h"
 #include "PlayUrlRunner.h"
 #include "BookmarkModel.h"
+#include "timecode/TimecodeObserver.h"
 
 #include <KIcon>
 
@@ -45,10 +46,12 @@ AmarokUrlHandler::AmarokUrlHandler()
     : QObject()
     , m_navigationRunner( 0 )
     , m_playRunner ( 0 )
+    , m_timecodeObserver( 0 )
 {
     //we init some of the default runners here.
     m_navigationRunner = new NavigationUrlRunner();
     m_playRunner = new PlayUrlRunner();
+    m_timecodeObserver = new TimecodeObserver();
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
 

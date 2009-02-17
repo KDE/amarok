@@ -1,4 +1,4 @@
-/**************************************************************************
+/***************************************************************************
 *   Copyright (c) 2009  Casey Link <unnamedrambler@gmail.com>             *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -16,43 +16,35 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
-#include "TimecodeWriteCapability.h"
 
-#include "amarokurls/AmarokUrl.h"
-#include "amarokurls/PlayUrlGenerator.h"
-#include "amarokurls/BookmarkModel.h"
-#include "Debug.h"
-#include "ProgressSlider.h"
+#ifndef TIMECODEOBSERVER_H
+#define TIMECODEOBSERVER_H
+
 #include "EngineController.h"
+#include "EngineObserver.h"
 
-namespace Meta
+
+/**
+ * This class handles auto timecoding (position bookmarking) of tracks.
+ * After the current track's position has crossed an arbitrary threshold
+ * when the user stops playing the track (before the ending) a timecode
+ * will be created.
+ * @author Casey Link
+ */
+class TimecodeObserver : public EngineObserver
 {
+public:
+    TimecodeObserver();
+    virtual ~TimecodeObserver();
+    virtual void engineNewTrackPlaying();
+    virtual void enginePlaybackEnded ( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason );
+    virtual void engineTrackPositionChanged ( long position, bool userSeek );
 
-TimecodeWriteCapability::~TimecodeWriteCapability()
-{}
+private:
+    bool m_trackTimecodeable; //!< stores if current track has the writetimecode capability
+    static int m_threshold;  //!< the arbitrary minum tracklength threshold in seconds
+    Meta::TrackPtr m_currentTrack; //!< The current/just played track
+    long m_currPos; //!< the position the current track is at
+};
 
-bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-    PlayUrlGenerator urlGenerator;
-    AmarokUrl url = urlGenerator.createTrackBookmark(track, seconds);
-
-    // lets see if we are bookmarking the currently playing track, if so
-    // we need to update the slider with another icon
-    Meta::TrackPtr currtrack = The::engineController()->currentTrack();
-    if(  currtrack  == track )
-    {
-        debug() << " current track";
-        ProgressWidget* pw = ProgressWidget::instance();
-        if( pw )
-            ProgressWidget::instance()->addBookmark( url.name(), url.arg(1).toInt() );
-        else
-            debug() << "ProgressWidget is NULL";
-    }
-
-    url.saveToDb();
-    BookmarkModel::instance()->reloadFromDb(); //Update bookmark manager view.
-    return true;
-}
-}
-
+#endif // TIMECODEOBSERVER_H
