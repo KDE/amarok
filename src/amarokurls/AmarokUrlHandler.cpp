@@ -43,6 +43,8 @@ namespace The {
 
 AmarokUrlHandler::AmarokUrlHandler()
     : QObject()
+    , m_navigationRunner( 0 )
+    , m_playRunner ( 0 )
 {
     //we init some of the default runners here.
     m_navigationRunner = new NavigationUrlRunner();
