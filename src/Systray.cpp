@@ -398,8 +398,10 @@ Amarok::TrayIcon::blendOverlay( const QPixmap &overlay )
 void
 Amarok::TrayIcon::setupMenu()
 {
-    foreach( QAction * action, m_extraActions ) {
-        contextMenu()->removeAction( action );
+    foreach( QAction * action, m_extraActions )
+    {
+        if( action )
+            contextMenu()->removeAction( action );
     }
 
     if( !m_track )
