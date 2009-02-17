@@ -24,7 +24,6 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "LastFmSettings.h"
 #include "meta/Meta.h"
 
 #include <lastfm/ws/WsKeys.h>
