@@ -29,6 +29,7 @@ LastFmServiceConfig::load()
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     m_username = config.readEntry( "username", QString() );
     m_password = config.readEntry( "password", QString() );
+    m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
 }
@@ -40,6 +41,7 @@ void LastFmServiceConfig::save()
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "username", m_username );
     config.writeEntry( "password", m_password );
+    config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
 }
@@ -50,6 +52,7 @@ void LastFmServiceConfig::reset()
     debug() << "reset config";
     m_username = "";
     m_password = "";
+    m_sessionKey = "";
     m_scrobble = true;
     m_fetchSimilar = true;
 }

@@ -63,7 +63,7 @@ class LastFmService : public ServiceBase
     Q_OBJECT
 
 public:
-    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar );
+    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, const QString &sessionKey, bool scrobble, bool fetchSimilar );
     virtual ~LastFmService();
 
     virtual void polish();

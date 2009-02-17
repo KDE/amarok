@@ -33,6 +33,9 @@ public:
     const QString &password() { return m_password; }
     void setPassword( const QString &password ) { m_password = password; }
 
+    const QString sessionKey() { return m_sessionKey; }
+    void setSessionKey( const QString& sessionKey ) { m_sessionKey = sessionKey; }
+    
     bool scrobble() { return m_scrobble; }
     void setScrobble( bool scrobble ) { m_scrobble = scrobble; }
 
@@ -42,6 +45,7 @@ public:
 private:
     QString m_username;
     QString m_password;
+    QString m_sessionKey;
     bool m_scrobble;
     bool m_fetchSimilar;
 };

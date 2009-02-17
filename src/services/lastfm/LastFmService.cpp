@@ -128,7 +128,7 @@ LastFmServiceFactory::createLastFmService()
     if ( config.username().isEmpty() || config.password().isEmpty() )
         return 0;
 
-    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.scrobble(), config.fetchSimilar() );
+    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar() );
     return service;
 }
 
@@ -156,7 +156,7 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, bool scrobble, bool fetchSimilar )
+LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, const QString& sessionKey, bool scrobble, bool fetchSimilar )
     : ServiceBase( name, parent, false ),
       m_scrobble( scrobble ),
       m_scrobbler( 0 ),
@@ -177,6 +177,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     Ws::Username = qstrdup( m_userName.toLatin1().data() );
+    
 
     // set up proxy
     WsAccessManager* qnam = new KNetworkAccessManager( this );
@@ -187,15 +188,32 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
     QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "authToken" + authToken + "methodauth.getMobileSession" + QString( Ws::SharedSecret ) ).toUtf8() );
 
-    // now authenticate w/ last.fm and get our session key
-    WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
-    .add( "username", m_userName )
-    .add( "authToken", authToken )
-    .add( "api_key", Ws::ApiKey )
-    .add( "api_sig", sign_key )
-    .get();
+    // now authenticate w/ last.fm and get our session key if we dont have one
+    if( sessionKey.isEmpty() )
+    {
+        debug() << "got no saved session key, authenticating with last.fm";
+        WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
+        .add( "username", m_userName )
+        .add( "authToken", authToken )
+        .add( "api_key", Ws::ApiKey )
+        .add( "api_sig", sign_key )
+        .get();
+        
+        connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
+        
+    } else
+    {
+        debug() << "using saved sessionkey from last.fm";
+        Ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
+        m_sessionKey = sessionKey;
+        
+        if( m_scrobble )
+            m_scrobbler = new ScrobblerAdapter( this, "ark" );
+        WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
 
-    connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
+        connect( getinfo, SIGNAL( finished( WsReply* ) ), SLOT( onGetUserInfo( WsReply* ) ) );
+    }
+
 
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
@@ -243,12 +261,13 @@ LastFmService::onAuthenticated( WsReply* reply )
             {
                 m_sessionKey = reply->lfm()["session"]["key"].nonEmptyText();
                 Ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+                LastFmServiceConfig config;
+                config.setSessionKey( m_sessionKey );
+                config.save();
+                
                 if( m_scrobble )
                     m_scrobbler = new ScrobblerAdapter( this, "ark" );
-                QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "sk" + QString( Ws::SessionKey ) + "methoduser.getInfo" + QString( Ws::SharedSecret ) ).toUtf8() );
-                WsReply* getinfo = WsRequestBuilder( "user.getInfo" )
-
-                .get();
+                WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
 
                 connect( getinfo, SIGNAL( finished( WsReply* ) ), SLOT( onGetUserInfo( WsReply* ) ) );
 
