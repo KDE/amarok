@@ -5,12 +5,15 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+
+    * Ampache service: Add support for Ampache 3.5.x as well as 3.4.4.
     * Auto timecoding (position bookmarking) now exists for tracks with length
-	  greater than 10 minutes. (BR 148740)
+      greater than 10 minutes. (BR 148740)
     * Add a animated "loading..." screen when dynamically fetching info about
       an item to show in the service info applet.
     * Deleting tracks from the local collection is now possible. (BR 170999)
-    * Add a filter-by-date-added to the collection browser. Use added:"today" or added:<2m2d
+    * Add a filter-by-date-added to the collection browser. Use added:"today" 
+      or added:<2m2d
     * Add a tab bar in the current track applet for showing also the favorite
       tracks in the collection.
     * Add an advanced but user friendly playlist layout editor allowing users
@@ -21,7 +24,7 @@ VERSION 2.1
       change.
     * New QtScript methods for accessing the playlist:
       Amarok.Playlist.selectedFilenames() & Amarok.Playlist.selectedIndizes().
-	  Patch by Mathias Panzenböck <grosser.meister.morti@gmx.net>.
+      Patch by Mathias Panzenböck <grosser.meister.morti@gmx.net>.
     * New QtScript method for the Track prototype: imagePixmap( size ). Returns
       a QPixmap of the given size, or the default if the size argument isn't
       supplied.
@@ -29,7 +32,7 @@ VERSION 2.1
       instead of a string. Needed for image downloads.
     * Cue Sheets are now supported as in Amarok 1.4, plus each cue entry
       (usually a track) will be displayed as a timecode on the Progress Bar
-	  with a nice onMouseOver popup.
+      with a nice onMouseOver popup.
     * Ipod support now uses/depends on libgpod 0.7.0
     * Bookmarking specific positions within local tracks and downloaded local
       podcast episodes, with a nice visual indicator on the progress bar.
