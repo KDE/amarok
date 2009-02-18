@@ -90,6 +90,7 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * The collection scanner no longer sucks.
     * A full rescan is no longer necessary after disconnecting/reconnecting an external
       harddrive
     * Fix issue with files being deleted when Organize Collection is run

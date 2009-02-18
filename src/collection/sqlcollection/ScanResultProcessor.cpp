@@ -57,6 +57,7 @@ ScanResultProcessor::setScanType( ScanType type )
 void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
+    DEBUG_BLOCK
     if( dir.isEmpty() )
     {
         debug() << "got directory with no path from the scanner, not adding";
@@ -158,6 +159,8 @@ ScanResultProcessor::rollback()
 void
 ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 {
+    DEBUG_BLOCK
+
     setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
@@ -170,7 +173,10 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     QString album;
     bool multipleAlbums = false;
     if( !data.isEmpty() )
+    {
         album = data[0].value( Field::ALBUM ).toString();
+        debug() << "Album is: " << album;
+    }
 
     foreach( const QVariantMap &row, data )
     {
@@ -178,6 +184,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         if( row.value( Field::ALBUM ).toString() != album )
             multipleAlbums = true;
     }
+    debug() << "Artists: " << artists;
     if( multipleAlbums || album.isEmpty() || data.count() > 60 || artists.size() == 1 )
     {
         foreach( const QVariantMap &row, data )
@@ -277,6 +284,7 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
 void
 ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 {
+//     DEBUG_BLOCK
     //amarok 1 stored all tracks of a compilation in different directories.
     //when using its "Organize Collection" feature
     //try to detect these cases
@@ -284,12 +292,12 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int album = 0;
 
     QString path = trackData.value( Field::URL ).toString();
-    
+
     QFileInfo file( path );
-    
+
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
-    
+
     //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
     QStringList filters;
     filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma" << "*.m4a";

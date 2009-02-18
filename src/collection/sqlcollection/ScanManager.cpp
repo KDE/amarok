@@ -171,8 +171,9 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
+    Q_ASSERT( !path.isEmpty() );
     // In the database all directories have a trailing slash, so we must add that
-    if ( !path.endsWith( '/' ) )
+    if( !path.endsWith( '/' ) )
         path += '/';
 
     const int deviceid = MountPointManager::instance()->getIdForUrl( path );
@@ -525,17 +526,18 @@ XmlParseJob::run()
 
                 if( localname == "itemcount" )
                 {
+//                     debug() << "Got an itemcount with value: " << localname.toString();
                     The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {
-                    //debug() << "Parsing FILE:\n";
+//                     debug() << "Parsing FILE:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> list = attrs.toList();
 
-                    //foreach( QXmlStreamAttribute l, list )
-                    //    debug() << " TAG: " << l.name().toString() << '\t' << l.value().toString() << '\n';
-                    //debug() << "End FILE";
+//                     foreach( QXmlStreamAttribute l, list )
+//                        debug() << " TAG: " << l.name().toString() << '\t' << l.value().toString() << '\n';
+//                     debug() << "End FILE";
 
                     QVariantMap data;
                     data.insert( Meta::Field::URL, attrs.value( "path" ).toString() );
@@ -596,13 +598,13 @@ XmlParseJob::run()
                 }
                 else if( localname == "folder" )
                 {
-                    //debug() << "Parsing FOLDER:\n";
+//                     debug() << "Parsing FOLDER:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> list = attrs.toList();
 
-                    //foreach( QXmlStreamAttribute l, list )
-                    //    debug() << " ATTRIBUTE: " << l.name().toString() << '\t' << l.value().toString() << '\n';
-                    //debug() << "End FOLDER";
+                    foreach( QXmlStreamAttribute l, list )
+                       debug() << " ATTRIBUTE: " << l.name().toString() << '\t' << l.value().toString() << '\n';
+                    debug() << "End FOLDER";
 
                     const QString folder = attrs.value( "path" ).toString();
                     const QFileInfo info( folder );
@@ -617,13 +619,13 @@ XmlParseJob::run()
                 }
                 else if( localname == "image" )
                 {
-                    debug() << "Parsing IMAGE:\n";
+//                     debug() << "Parsing IMAGE:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> thisList = attrs.toList();
 
-                    //foreach( QXmlStreamAttribute l, thisList )
-                    //    debug() << " ATTR: " << l.name().toString() << '\t' << l.value().toString() << '\n';
-                    //debug() << "End IMAGE";
+//                     foreach( QXmlStreamAttribute l, thisList )
+//                        debug() << " ATTR: " << l.name().toString() << '\t' << l.value().toString() << '\n';
+//                     debug() << "End IMAGE";
 
                     // Deserialize CoverBundle list
                     QStringList list = attrs.value( "list" ).toString().split( "AMAROK_MAGIC" );
@@ -640,7 +642,7 @@ XmlParseJob::run()
                 }
             }
         }
-        if( m_reader.error() != QXmlStreamReader::PrematureEndOfDocumentError )
+        if( m_reader.error() != QXmlStreamReader::PrematureEndOfDocumentError && m_reader.error() != QXmlStreamReader::NoError )
         {
             debug() << "do-while done with error: " << m_reader.error();
             //the error cannot be PrematureEndOfDocumentError, so handle an unrecoverable error here
@@ -651,7 +653,7 @@ XmlParseJob::run()
             m_reader.clear();
             continue;
         }
-    } while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
+    } while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError && m_reader.error() != QXmlStreamReader::NoError );
 
     if( m_abortRequested )
     {
