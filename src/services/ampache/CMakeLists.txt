@@ -9,7 +9,8 @@
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}
-            ${QT_INCLUDES} )
+            ${QT_INCLUDES}
+            ${QCA2_INCLUDE_DIR} )
 
 ########### next target ###############
 
@@ -30,6 +31,7 @@
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
+            ${QCA2_LIBRARIES}
         )
 
 

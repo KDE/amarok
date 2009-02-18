@@ -30,6 +30,8 @@
 #include <kpassworddialog.h>
 #include <KMD5>
 
+#include <QtCrypto>
+
 #include <QDomDocument>
 
 AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
@@ -93,6 +95,9 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     , m_sessionId ( QString() )
     , m_collection( 0 )
 {
+    DEBUG_BLOCK
+
+
     setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server!" ) );
     setIcon( KIcon( "view-services-ampache-amarok" ) );
 
@@ -111,11 +116,22 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
         kurl.setProtocol( "http" );
         kurl.setAuthority( url );
     }
+
     m_server = kurl.url();
+
+    // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
+
+    QString versionString = "<server>/server/xml.server.php?action=ping";
+
+    versionString.replace(QString("<server>"), m_server);
+
+    debug() << "Verifying Ampache Version Using: " << versionString;
+
     m_username = username;
     m_password = password;
 
-    authenticate();
+    m_xmlVersionJob = KIO::storedGet( versionString, KIO::Reload, KIO::HideProgressInfo );
+    connect( m_xmlVersionJob, SIGNAL(result(KJob *)), this, SLOT( authenticate(KJob *) ) );
 }
 
 AmpacheService::~AmpacheService()
@@ -134,10 +150,22 @@ AmpacheService::polish()
 }
 
 void
-AmpacheService::authenticate()
+AmpacheService::authenticate(KJob * job)
 {
     DEBUG_BLOCK
 
+    versionVerify(job); 
+
+    QCA::Initializer init;
+    // Check and see if we're using a newer version of ampache, if so we need sha256 support so we should check for it
+    debug() << "Authenticate::Version is:" << m_version; 
+    if ( m_version > 350000 )
+    {
+        debug() << "Version Newer, checking for SHA256";
+        if(!QCA::isSupported("sha256"))
+            KMessageBox::error ( this, i18n( "SHA256 Required, and not found" ), i18n( "Authentication Error!" ) );
+    }
+    
     //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
     if ( m_server.isEmpty() || m_password.isEmpty() )
     {
@@ -166,12 +194,26 @@ AmpacheService::authenticate()
 
     QString timestamp = QString::number( QDateTime::currentDateTime().toTime_t() );
 
-    QString rawHandshake = timestamp + m_password;
-    KMD5 context( rawHandshake.toUtf8() );
+    QString rawHandshake;
+    QString authenticationString;
+    QString passPhrase;
 
-    QString passPhrase = context.hexDigest().data();
-
-    QString authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>";
+    // We need to use different authentication strings depending on the version of ampache
+    if ( m_version > 350000 )
+    {
+	debug() << "New Password Scheme " << m_version; 
+        authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>&version=350001";
+        rawHandshake = timestamp + QCA::Hash("sha256").hashToString(m_password.toUtf8());
+        passPhrase = QCA::Hash("sha256").hashToString(rawHandshake.toUtf8());
+	debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
+    }
+    else { 
+        debug() << "Version Older then 35001 Generated MD5 Auth " << m_version;
+        authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>";
+        rawHandshake = timestamp + m_password;
+        KMD5 context( rawHandshake.toUtf8() );
+        passPhrase = context.hexDigest().data();
+    }
 
     authenticationString.replace(QString("<server>"), m_server);
     if ( !m_username.isEmpty() )
@@ -181,7 +223,7 @@ AmpacheService::authenticate()
     authenticationString.replace(QString("<passphrase>"), passPhrase);
     authenticationString.replace(QString("<timestamp>"), timestamp);
 
-    debug() << "Authenticating with string: " << authenticationString;
+    debug() << "Authenticating with string: " << authenticationString << passPhrase;
 
     m_xmlDownloadJob = KIO::storedGet( authenticationString, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_xmlDownloadJob, SIGNAL(result(KJob *)), this, SLOT( authenticationComplete( KJob*) ) );
@@ -235,6 +277,49 @@ void AmpacheService::authenticationComplete(KJob * job)
         emit( ready() );
 
         m_xmlDownloadJob->deleteLater();
+    }
+
+}
+
+void AmpacheService::versionVerify(KJob * job)
+{
+
+    DEBUG_BLOCK
+
+    if( !job->error() == 0 )
+    {
+	debug() << "Job Error" << job->error();
+	// Default the Version down if it didn't work 
+	m_version = 100000;
+        //TODO: error handling here
+        return;
+    }
+    QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
+    debug() << "Version Verify reply: " << xmlReply;
+
+    //so lets figure out what we got here:
+    QDomDocument doc( "version" );
+
+    doc.setContent(m_xmlVersionJob->data() );
+    QDomElement root = doc.firstChildElement("root");
+    //is this an error?
+
+    QDomElement error = root.firstChildElement("error");
+    if ( !error.isNull() )
+    {
+	debug() << "AmpacheService::versionVerify Error: " << error.text();
+        KMessageBox::error ( this, error.text(), i18n( "Authentication Error!" ) );
+    }
+    else
+    {
+        //find status code:
+        QDomElement element = root.firstChildElement("version");
+
+        m_version = element.text().toInt();
+
+        debug() << "versionVerify Returned: " << m_version;
+
+        job->deleteLater();
     }
 
 }

@@ -65,17 +65,20 @@ public:
     virtual Amarok::Collection * collection() { return m_collection; }
 
 private slots:
-    void authenticate();
+    void authenticate(KJob *job);
     void authenticationComplete(  KJob *job );
+    void versionVerify( KJob *job); 
 
 private:
     KIO::StoredTransferJob *m_xmlDownloadJob;
+    KIO::StoredTransferJob *m_xmlVersionJob;
 
     bool m_authenticated;
     QString m_server;
     QString m_username;
     QString m_password;
     QString m_sessionId;
+    int m_version;
 
     AmpacheServiceCollection *  m_collection;
 

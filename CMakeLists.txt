@@ -108,6 +108,9 @@ macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomu
 include(CheckQtGlib)
 macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
 
+macro_optional_find_package(QCA2)
+macro_log_feature( QCA2_FOUND "Qt Cryptographic Architecture 2" "Requiered for building the Ampache service" "http://delta.affinix.com/download/qca/2.0/" FALSE "2.0" "")
+
 macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
 check_type_size("int" SIZEOF_INT)
