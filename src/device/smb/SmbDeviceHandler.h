@@ -26,11 +26,11 @@ public:
     SmbDeviceHandlerFactory();
     virtual ~SmbDeviceHandlerFactory();
 
-    virtual bool canHandle( const Medium* m ) const;
+    virtual bool canHandle( const Solid::Device &device ) const;
 
     virtual bool canCreateFromMedium() const;
 
-    virtual DeviceHandler* createHandler( const Medium* m ) const;
+    virtual DeviceHandler* createHandler( const Solid::Device &volume, const QString &udi ) const;
 
     virtual bool canCreateFromConfig() const;
 
@@ -55,7 +55,7 @@ public:
     virtual const QString &getDevicePath() const;
     virtual void getURL( KUrl &absolutePath, const KUrl &relativePath );
     virtual void getPlayableURL( KUrl &absolutePath, const KUrl &relativePath );
-    virtual bool deviceIsMedium( const Medium *m ) const;
+    virtual bool deviceMatchesUdi( const QString &udi ) const;
 
 private:
 

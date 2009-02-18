@@ -21,6 +21,7 @@ if(APPLE)
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
+add_subdirectory( device )
 add_subdirectory( collection )
 add_subdirectory( collectionscanner )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
@@ -513,7 +514,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
-    medium.cpp
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp

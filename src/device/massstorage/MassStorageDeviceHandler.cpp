@@ -22,20 +22,24 @@
 AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
 
 #include "Debug.h"
+#include "collection/CollectionManager.h"
+#include "collection/SqlStorage.h"
 
-#include <KConfig>
-#include <KUrl>
+#include <kconfig.h>
+#include <kurl.h>
+#include <solid/storagevolume.h>
+#include <solid/storageaccess.h>
 
 
 MassStorageDeviceHandler::MassStorageDeviceHandler(): DeviceHandler()
 {
 }
 
-MassStorageDeviceHandler::MassStorageDeviceHandler( int deviceId, const QString &mountPoint, const QString &uuid )
+MassStorageDeviceHandler::MassStorageDeviceHandler( int deviceId, const QString &mountPoint, const QString &udi )
     : DeviceHandler()
     , m_deviceID( deviceId )
     , m_mountPoint( mountPoint )
-    , m_uuid( uuid )
+    , m_udi( udi )
 {
 }
 
@@ -76,9 +80,9 @@ void MassStorageDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &r
     getURL( absolutePath, relativePath );
 }
 
-bool MassStorageDeviceHandler::deviceIsMedium( const Medium * m ) const
+bool MassStorageDeviceHandler::deviceMatchesUdi( const QString &udi ) const
 {
-    return m_uuid == m->id();
+    return m_udi == udi;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,9 +104,11 @@ bool MassStorageDeviceHandlerFactory::canCreateFromConfig( ) const
     return false;
 }
 
-bool MassStorageDeviceHandlerFactory::canHandle( const Medium * m ) const
+bool MassStorageDeviceHandlerFactory::canHandle( const Solid::Device &device ) const
 {
-    return m && !m->id().isEmpty() && !excludedFilesystem( m->fsType() );
+    const Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
+    return volume && !volume->uuid().isEmpty()
+           && !volume->isIgnored() && !excludedFilesystem( volume->fsType() );
 }
 
 MassStorageDeviceHandlerFactory::MassStorageDeviceHandlerFactory( )
@@ -118,31 +124,42 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr
     return 0;
 }
 
-DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Medium * m ) const
+DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi ) const
 {
-    QStringList ids = CollectionManager::instance()->sqlStorage()->query( QString( "SELECT id, label, lastmountpoint "
-                                                               "FROM devices WHERE type = 'uuid' "
-                                                               "AND uuid = '%1';" ).arg( m->id() ) );
-    if ( ids.size() == 3 )
+    DEBUG_BLOCK
+    SqlStorage *s = CollectionManager::instance()->sqlStorage();
+    const Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
+    const Solid::StorageAccess *volumeAccess = device.as<Solid::StorageAccess>();
+    if( !volume || !volumeAccess )
     {
-        debug() << "Found existing UUID config for ID " << ids[0] << " , uuid " << m->id();
-        CollectionManager::instance()->sqlStorage()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
-                                                  "id = %1;" ).arg( ids[0] ).arg( m->mountPoint() ) );
-        return new MassStorageDeviceHandler( ids[0].toInt(), m->mountPoint(), m->id() );
+        debug() << "Volume isn't valid, can't create a handler";
+        return 0;
+    }
+    if( volumeAccess->filePath().isEmpty() )
+        return 0; // It's not mounted, we can't do anything.
+    QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
+                                         "FROM devices WHERE type = 'uuid' "
+                                         "AND uuid = '%1';" ).arg( volume->uuid() ) );
+    if ( ids.size() == 7 )
+    {
+        debug() << "Found existing UUID config for ID " << ids[0] << " , uuid " << volume->uuid();
+        s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
+                            "id = %1;" ).arg( ids[0], volumeAccess->filePath() ) );
+        return new MassStorageDeviceHandler( ids[0].toInt(), volumeAccess->filePath(), volume->uuid() );
     }
     else
     {
-        int id = CollectionManager::instance()->sqlStorage()->insert( QString( "INSERT INTO devices( type, uuid, lastmountpoint ) "
-                                                            "VALUES ( 'uuid', '%1', '%2' );" )
-                                                            .arg( m->id() )
-                                                            .arg( m->mountPoint() ), "devices" );
+        const int id = s->insert( QString( "INSERT INTO devices( type, uuid, lastmountpoint ) "
+                                           "VALUES ( 'uuid', '%1', '%2' );" )
+                                           .arg( volume->uuid() )
+                                           .arg( volumeAccess->filePath() ), "devices" );
         if ( id == 0 )
         {
-            warning() << "Inserting into devices failed for type=uuid, uuid=" << m->id();
+            warning() << "Inserting into devices failed for type=uuid, uuid=" << volume->uuid();
             return 0;
         }
-        debug() << "Created new UUID device with ID " << id << " , uuid " << m->id();
-        return new MassStorageDeviceHandler( id, m->mountPoint(), m->id() );
+        debug() << "Created new UUID device with ID " << id << " , uuid " << volume->uuid();
+        return new MassStorageDeviceHandler( id, volumeAccess->filePath(), udi );
     }
 }
 
@@ -150,9 +167,9 @@ bool
 MassStorageDeviceHandlerFactory::excludedFilesystem( const QString &fstype ) const
 {
     return fstype.isEmpty() ||
-           fstype.find( "smb" ) != -1 ||
-           fstype.find( "cifs" ) != -1 ||
-           fstype.find( "nfs" ) != -1 ||
+           fstype.indexOf( "smb" ) != -1 ||
+           fstype.indexOf( "cifs" ) != -1 ||
+           fstype.indexOf( "nfs" ) != -1 ||
            fstype == "udf"  ||
            fstype == "iso9660" ;
 }

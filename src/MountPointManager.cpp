@@ -44,17 +44,28 @@
 #include <QStringList>
 #include <QTimer>
 
-typedef Medium::List MediumList;
-
 
 MountPointManager* MountPointManager::s_instance = 0;
+
+MountPointManager*
+MountPointManager::instance()
+{
+    if( !s_instance )
+        s_instance = new MountPointManager();
+    return s_instance;
+}
+
+void
+MountPointManager::destroy()
+{
+    delete s_instance;
+    s_instance = 0;
+}
+
 
 MountPointManager::MountPointManager()
     : QObject( 0 )
 {
-    AMAROK_NOTIMPLEMENTED
-
-    s_instance = this;
     setObjectName( "MountPointManager" );
 
     if ( !Amarok::config( "Collection" ).readEntry( "DynamicCollection", true ) )
@@ -99,21 +110,6 @@ MountPointManager::~MountPointManager()
 
 
 void
-MountPointManager::destroy()
-{
-    if (s_instance)
-    {
-        delete s_instance;
-        s_instance = 0;
-    }
-}
-
-MountPointManager * MountPointManager::instance()
-{
-    return s_instance ? s_instance : new MountPointManager();
-}
-
-void
 MountPointManager::init()
 {
     DEBUG_BLOCK
@@ -133,7 +129,13 @@ MountPointManager::init()
                 //FIXME max: better error message
                 debug() << "Unknown DeviceHandlerFactory";
         }
-        else debug() << "Plugin could not be loaded";
+        else
+            debug() << "Plugin could not be loaded";
+
+        Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume );
+        QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
+        foreach( const Solid::Device &device, devices )
+            createHandlerFromDevice( device, device.udi() );
     }
 }
 
@@ -164,17 +166,11 @@ MountPointManager::getIdForUrl( const KUrl &url )
     }
 }
 
-int
-MountPointManager::getIdForUrl( const QString &url )
-{
-    return getIdForUrl( KUrl( url ) );
-}
-
 bool
-MountPointManager::isMounted ( const int deviceId ) const
+MountPointManager::isMounted( const int deviceId ) const
 {
     m_handlerMapMutex.lock();
-    bool result = m_handlerMap.contains( deviceId );
+    const bool result = m_handlerMap.contains( deviceId );
     m_handlerMapMutex.unlock();
     return result;
 }
@@ -220,23 +216,22 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
     else
     {
         m_handlerMapMutex.unlock();
-        //FIXME: Port 2.0
-//         QStringList lastMountPoint = CollectionDB::instance()->query(
-//                                                  QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
-//                                                  .arg( deviceId ) );
-//         if ( lastMountPoint.count() == 0 )
-//         {
-//             //hmm, no device with that id in the DB...serious problem
-//             getAbsolutePath( -1, relativePath, absolutePath );
-//             warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path();
-//         }
-//         else
-//         {
-//             absolutePath.setPath( lastMountPoint.first() );
-//             absolutePath.addPath( relativePath.path() );
-//             absolutePath.cleanPath();
-//             debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
-//         }
+        const QStringList lastMountPoint = CollectionManager::instance()->sqlStorage()->query(
+                                                 QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
+                                                 .arg( deviceId ) );
+        if ( lastMountPoint.count() == 0 )
+        {
+            //hmm, no device with that id in the DB...serious problem
+            getAbsolutePath( -1, relativePath, absolutePath );
+            warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path();
+        }
+        else
+        {
+            absolutePath.setPath( lastMountPoint.first() );
+            absolutePath.addPath( relativePath.path() );
+            absolutePath.cleanPath();
+            debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path();
+        }
     }
 }
 
@@ -282,127 +277,61 @@ MountPointManager::getRelativePath( const int deviceId, const QString& absoluteP
     return url.path();
 }
 
-void
-MountPointManager::mediumChanged( const Medium *m )
-{
-    DEBUG_BLOCK
-    if ( !m ) return;
-    if ( m->isMounted() )
-    {
-        foreach( DeviceHandlerFactory *factory, m_mediumFactories )
-        {
-            if ( factory->canHandle ( m ) )
-            {
-                debug() << "found handler for " << m->id();
-                DeviceHandler *handler = factory->createHandler( m );
-                if( !handler )
-                {
-                    debug() << "Factory " << factory->type() << "could not create device handler";
-                    break;
-                }
-                int key = handler->getDeviceID();
-                m_handlerMapMutex.lock();
-                if ( m_handlerMap.contains( key ) )
-                {
-                    debug() << "Key " << key << " already exists in handlerMap, replacing";
-                    delete m_handlerMap[key];
-                    m_handlerMap.remove( key );
-                }
-                m_handlerMap.insert( key, handler );
-                m_handlerMapMutex.unlock();
-                debug() << "added device " << key << " with mount point " << m->mountPoint();
-                emit mediumConnected( key );
-                break;  //we found the added medium and don't have to check the other device handlers
-            }
-        }
-    }
-    else
-    {
-        m_handlerMapMutex.lock();
-        foreach( DeviceHandler *dh, m_handlerMap )
-        {
-            if ( dh->deviceIsMedium( m ) )
-            {
-                int key = m_handlerMap.key( dh );
-                m_handlerMap.remove( key );
-                delete dh;
-                debug() << "removed device " << key;
-                m_handlerMapMutex.unlock();
-                emit mediumRemoved( key );
-                //we found the medium which was removed, so we can abort the loop
-                return;
-            }
-        }
-        m_handlerMapMutex.unlock();
-    }
-}
-
-void
-MountPointManager::mediumRemoved( const Medium *m )
-{
-    DEBUG_BLOCK
-    if ( !m )
-    {
-        //reinit?
-    }
-    else
-    {
-        //this works for USB devices, special cases might be required for other devices
-        m_handlerMapMutex.lock();
-        foreach( DeviceHandler *dh, m_handlerMap )
-        {
-            if( dh->deviceIsMedium( m ) )
-            {
-                int key = m_handlerMap.key( dh );
-                m_handlerMap.remove( key );
-                delete dh;
-                debug() << "removed device " << key;
-                m_handlerMapMutex.unlock();
-                emit mediumRemoved( key );
-                //we found the medium which was removed, so we can abort the loop
-                return;
-            }
-        }
-        m_handlerMapMutex.unlock();
-    }
-}
-
-void
-MountPointManager::mediumAdded( const Medium *m )
-{
-    DEBUG_BLOCK
-    if ( !m ) return;
-    if ( m->isMounted() )
-    {
-        debug() << "Device added and mounted, checking handlers";
-        foreach( DeviceHandlerFactory *factory, m_mediumFactories )
-        {
-            if( factory->canHandle( m ) )
-            {
-                debug() << "found handler for " << m->id();
-                DeviceHandler *handler = factory->createHandler( m );
-                if( !handler )
-                {
-                    debug() << "Factory " << factory->type() << "could not create device handler";
-                    break;
-                }
-                int key = handler->getDeviceID();
-                m_handlerMapMutex.lock();
-                if( m_handlerMap.contains( key ) )
-                {
-                    debug() << "Key " << key << " already exists in handlerMap, replacing";
-                    delete m_handlerMap[key];
-                    m_handlerMap.remove( key );
-                }
-                m_handlerMap.insert( key, handler );
-                m_handlerMapMutex.unlock();
-                debug() << "added device " << key << " with mount point " << m->mountPoint();
-                emit mediumConnected( key );
-                break;  //we found the added medium and don't have to check the other device handlers
-            }
-        }
-    }
-}
+// void
+// MountPointManager::mediumChanged( const Medium *m )
+// {
+//     DEBUG_BLOCK
+//     if ( !m ) return;
+//     if ( m->isMounted() )
+//     {
+//         foreach( DeviceHandlerFactory *factory, m_mediumFactories )
+//         {
+//             if ( factory->canHandle ( m ) )
+//             {
+//                 debug() << "found handler for " << m->id();
+//                 DeviceHandler *handler = factory->createHandler( m );
+//                 if( !handler )
+//                 {
+//                     debug() << "Factory " << factory->type() << "could not create device handler";
+//                     break;
+//                 }
+//                 int key = handler->getDeviceID();
+//                 m_handlerMapMutex.lock();
+//                 if ( m_handlerMap.contains( key ) )
+//                 {
+//                     debug() << "Key " << key << " already exists in handlerMap, replacing";
+//                     delete m_handlerMap[key];
+//                     m_handlerMap.remove( key );
+//                 }
+//                 m_handlerMap.insert( key, handler );
+//                 m_handlerMapMutex.unlock();
+//                 debug() << "added device " << key << " with mount point " << m->mountPoint();
+//                 emit mediumConnected( key );
+//                 break;  //we found the added medium and don't have to check the other device handlers
+//             }
+//         }
+//     }
+//     else
+//     {
+//         m_handlerMapMutex.lock();
+//         foreach( DeviceHandler *dh, m_handlerMap )
+//         {
+//             if ( dh->deviceIsMedium( m ) )
+//             {
+//                 int key = m_handlerMap.key( dh );
+//                 m_handlerMap.remove( key );
+//                 delete dh;
+//                 debug() << "removed device " << key;
+//                 m_handlerMapMutex.unlock();
+//                 emit mediumRemoved( key );
+//                 //we found the medium which was removed, so we can abort the loop
+//                 return;
+//             }
+//         }
+//         m_handlerMapMutex.unlock();
+//     }
+// }
+//
 
 IdList
 MountPointManager::getMountedDeviceIds() const
@@ -425,7 +354,7 @@ MountPointManager::collectionFolders()
     IdList ids = getMountedDeviceIds();
     foreach( int id, ids )
     {
-        QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
+        const QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
         foreach( const QString &strIt, rpaths )
         {
             QString absPath;
@@ -475,9 +404,9 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     foreach( const QString &folder, folders )
     {
         int id = getIdForUrl( folder );
-        QString rpath = getRelativePath( id, folder );
-        if ( folderMap.contains( id ) ) {
-            if ( !folderMap[id].contains( rpath ) )
+        const QString rpath = getRelativePath( id, folder );
+        if( folderMap.contains( id ) ) {
+            if( !folderMap[id].contains( rpath ) )
                 folderMap[id].append( rpath );
         }
         else
@@ -545,21 +474,74 @@ MountPointManager::checkDeviceAvailability()
 void
 MountPointManager::deviceAdded( const QString &udi )
 {
+    DEBUG_BLOCK
     Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageVolume, "udi", udi );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
     //there'll be maximum one device because we are using the udi in the predicate
     if( !devices.isEmpty() )
     {
-        Solid::StorageVolume *volume = devices[0].as<Solid::StorageVolume>();
-        Q_UNUSED( volume );
+        Solid::Device device = devices[0];
+        createHandlerFromDevice( device, udi );
+        CollectionManager::instance()->primaryCollection()->collectionUpdated();
     }
 }
 
 void
 MountPointManager::deviceRemoved( const QString &udi )
 {
-    Q_UNUSED( udi );
+    DEBUG_BLOCK
+    m_handlerMapMutex.lock();
+    foreach( DeviceHandler *dh, m_handlerMap )
+    {
+        if( dh->deviceMatchesUdi( udi ) )
+        {
+            int key = m_handlerMap.key( dh );
+            m_handlerMap.remove( key );
+            delete dh;
+            debug() << "removed device " << key;
+            m_handlerMapMutex.unlock();
+            CollectionManager::instance()->primaryCollection()->collectionUpdated();
+            //we found the medium which was removed, so we can abort the loop
+            return;
+        }
+    }
+    m_handlerMapMutex.unlock();
 }
+
+void MountPointManager::createHandlerFromDevice( const Solid::Device& device, const QString &udi )
+{
+    if ( device.isValid() )
+    {
+        debug() << "Device added and mounted, checking handlers";
+        foreach( DeviceHandlerFactory *factory, m_mediumFactories )
+        {
+            if( factory->canHandle( device ) )
+            {
+                debug() << "found handler for " << udi;
+                DeviceHandler *handler = factory->createHandler( device, udi );
+                if( !handler )
+                {
+                    debug() << "Factory " << factory->type() << "could not create device handler";
+                    break;
+                }
+                int key = handler->getDeviceID();
+                m_handlerMapMutex.lock();
+                if( m_handlerMap.contains( key ) )
+                {
+                    debug() << "Key " << key << " already exists in handlerMap, replacing";
+                    delete m_handlerMap[key];
+                    m_handlerMap.remove( key );
+                }
+                m_handlerMap.insert( key, handler );
+                m_handlerMapMutex.unlock();
+//                 debug() << "added device " << key << " with mount point " << volumeAccess->mountPoint();
+//                 emit mediumConnected( key );
+                break;  //we found the added medium and don't have to check the other device handlers
+            }
+        }
+    }
+}
+
 
 //UrlUpdateJob
 
@@ -570,7 +552,7 @@ UrlUpdateJob::UrlUpdateJob( QObject *dependent )
 }
 
 void
-UrlUpdateJob::run( )
+UrlUpdateJob::run()
 {
     DEBUG_BLOCK
     updateStatistics();

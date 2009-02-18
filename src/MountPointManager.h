@@ -20,12 +20,12 @@
 
 #include "Amarok.h"
 #include "amarok_export.h"
-#include "medium.h"
 #include "plugin/plugin.h"
 #include "PluginManager.h"
 
 #include <KConfig>
 #include <KUrl>
+#include <solid/device.h>
 #include <threadweaver/Job.h>
 
 #include <QMap>
@@ -39,7 +39,6 @@ typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-
 class AMAROK_EXPORT DeviceHandlerFactory : public Amarok::Plugin
 {
 public:
@@ -48,11 +47,11 @@ public:
 
     /**
      * checks whether a DeviceHandler subclass can handle a given Medium.
-     * @param m the connected medium
+     * @param volume the connected solid volume
      * @return true if the DeviceHandler implementation can handle the medium,
      * false otherwise
      */
-    virtual bool canHandle( const Medium* m ) const = 0;
+    virtual bool canHandle( const Solid::Device &device ) const = 0;
 
     /**
      * tells the MountPointManager whether it makes sense to ask the factory to
@@ -63,10 +62,10 @@ public:
 
     /**
      * creates a DeviceHandler which represents the Medium.
-     * @param c the Medium for which a DeviceHandler is required
+     * @param volume the Volume for which a DeviceHandler is required
      * @return a DeviceHandler or 0 if the factory cannot handle the Medium
      */
-    virtual DeviceHandler* createHandler( const Medium* m ) const = 0;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi ) const = 0;
 
     virtual bool canCreateFromConfig() const = 0;
 
@@ -135,18 +134,16 @@ public:
      * @param m
      * @return true if the device handler handles the Medium m
      */
-    virtual bool deviceIsMedium( const Medium *m ) const = 0;
+    virtual bool deviceMatchesUdi( const QString &udi ) const = 0;
 };
 
 /**
  *	@author Maximilian Kossick <maximilian.kossick@googlemail.com>
  */
-class MountPointManager : public QObject {
+class MountPointManager : public QObject
+{
 Q_OBJECT
 
-signals:
-    void mediumConnected( int deviceid );
-    void mediumRemoved( int deviceid );
 
 public:
     //the methods of this class a called *very* often. make sure they are as fast as possible
@@ -168,8 +165,7 @@ public:
      * @param url
      * @return
      */
-    int getIdForUrl( const KUrl &url );
-    AMAROK_EXPORT int getIdForUrl( const QString &url );
+    AMAROK_EXPORT int getIdForUrl( const KUrl &url );
     /**
      *
      * @param id
@@ -203,13 +199,13 @@ public:
     void setCollectionFolders( const QStringList &folders );
 
 public slots:
-    void mediumAdded( const Medium *m );
-    /**
-     * initiates the update of the class' internal list of mounted mediums.
-     * @param m the medium whose status changed
-     */
-    void mediumChanged( const Medium* m );
-    void mediumRemoved( const Medium* m );
+//     void mediumAdded( const Medium *m );
+//     /**
+//      * initiates the update of the class' internal list of mounted mediums.
+//      * @param m the medium whose status changed
+//      */
+//     void mediumChanged( const Medium* m );
+//     void mediumRemoved( const Medium* m );
 
     void updateStatisticsURLs( bool changed = true );
 
@@ -241,6 +237,7 @@ private:
     FactoryList m_remoteFactories;
 
 //Solid specific
+    void createHandlerFromDevice( const Solid::Device &device, const QString &udi );
 private slots:
     void deviceAdded( const QString &udi );
     void deviceRemoved( const QString &udi );
