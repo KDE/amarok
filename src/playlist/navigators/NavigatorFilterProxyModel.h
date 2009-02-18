@@ -127,6 +127,9 @@ public:
     QString currentSearchTerm();
     int currentSearchFields();
 
+    int rowToSource( int row ) const;
+    int rowFromSource( int row ) const;
+
 protected:
     /**
      * Reimplemented from QSortFilterProxyModel. Used internally by the proxy to
@@ -183,9 +186,6 @@ private:
      * Destructor.
      */
     ~NavigatorFilterProxyModel();
-
-    int rowToSource( int row ) const;
-    int rowFromSource( int row ) const;
 
     bool m_passThrough;
 
