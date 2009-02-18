@@ -21,7 +21,6 @@ if(APPLE)
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
-add_subdirectory( device )
 add_subdirectory( collection )
 add_subdirectory( collectionscanner )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
@@ -35,7 +34,6 @@ add_subdirectory( themes )
 
 
 include_directories(
-#    analyzers
     amarokurls
     browsers/playlistbrowser
     browsers/servicebrowser
@@ -517,7 +515,6 @@ set(amaroklib_LIB_SRCS
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
-#services/lastfm/SimilarArtistsAction.cpp
     Systray.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp

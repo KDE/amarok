@@ -20,17 +20,19 @@
 
 #include <MountPointManager.h>
 
+#include <solid/device.h>
+
 class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
     MassStorageDeviceHandlerFactory();
     virtual ~MassStorageDeviceHandlerFactory();
 
-    virtual bool canHandle( const Medium* m ) const;
+    virtual bool canHandle( const Solid::Device &device ) const;
 
     virtual bool canCreateFromMedium() const;
 
-    virtual DeviceHandler* createHandler( const Medium* m ) const;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid ) const;
 
     virtual bool canCreateFromConfig() const;
 
@@ -59,13 +61,13 @@ public:
     virtual const QString &getDevicePath() const;
     virtual void getURL( KUrl &absolutePath, const KUrl &relativePath );
     virtual void getPlayableURL( KUrl &absolutePath, const KUrl &relativePath );
-    virtual bool deviceIsMedium( const Medium *m ) const;
+    virtual bool deviceMatchesUdi( const QString &udi ) const;
 
 private:
 
     int m_deviceID;
     const QString m_mountPoint;
-    QString m_uuid;
+    QString m_udi;
 
 };
 

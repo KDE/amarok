@@ -1,9 +1,6 @@
 #build-time only dependency in XesamDbus.h
 #remove at some point
 
-### uncomment three lines to get mysql-embedded: 18, 48, 60
-### don't forget to alter src/collection/sqlcollection/SqlCollection.cpp
-
 include_directories( ../..
         ../../plugin
         ../../meta
@@ -16,6 +13,8 @@ include_directories( ../..
         ${QT_INCLUDES}
         ${MYSQL_INCLUDE_DIR}
         )
+
+add_subdirectory( device )
 
 ########### next target ###############
 
