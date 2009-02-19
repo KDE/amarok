@@ -67,7 +67,7 @@ public:
     void metadataChanged( Meta::TrackPtr track );
 
 protected:
-    bool sourceRequested( const QString& name );
+    bool sourceRequestEvent( const QString& name );
 
 private:
     void update();    

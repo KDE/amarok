@@ -59,7 +59,7 @@ QStringList CurrentEngine::sources() const
     return m_sources; // we don't have sources, if connected, it is enabled.
 }
 
-bool CurrentEngine::sourceRequested( const QString& name )
+bool CurrentEngine::sourceRequestEvent( const QString& name )
 {
     DEBUG_BLOCK
     Q_UNUSED( name );

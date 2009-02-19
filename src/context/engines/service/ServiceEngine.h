@@ -56,7 +56,7 @@ public:
     void serviceInfoChanged( QVariantMap infoMap );
 
 protected:
-    bool sourceRequested( const QString& name );
+    bool sourceRequestEvent( const QString& name );
     
 private:
     void update();

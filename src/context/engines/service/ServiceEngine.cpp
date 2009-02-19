@@ -52,7 +52,7 @@ QStringList ServiceEngine::sources() const
     return m_sources; // we don't have sources, if connected, it is enabled.
 }
 
-bool ServiceEngine::sourceRequested( const QString& name )
+bool ServiceEngine::sourceRequestEvent( const QString& name )
 {
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/

@@ -39,7 +39,7 @@ QStringList LyricsEngine::sources() const
     return sourcesList;
 }
 
-bool LyricsEngine::sourceRequested( const QString& name )
+bool LyricsEngine::sourceRequestEvent( const QString& name )
 {
     Q_UNUSED( name )
 
