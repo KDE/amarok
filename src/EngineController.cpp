@@ -666,7 +666,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     DEBUG_BLOCK
 
     // Sanity checks:
-    if( newState == oldState || newState == Phonon::BufferingState )
+    if( newState == oldState )
         return;
 
     // The following check is an attempt to fix http://bugs.kde.org/show_bug.cgi?id=180339
