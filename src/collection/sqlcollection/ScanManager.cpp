@@ -652,7 +652,7 @@ XmlParseJob::run()
             m_reader.clear();
             continue;
         }
-    } while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError && m_reader.error() != QXmlStreamReader::NoError );
+    } while( m_reader.error() == QXmlStreamReader::PrematureEndOfDocumentError );
 
     if( m_abortRequested )
     {
