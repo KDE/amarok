@@ -44,23 +44,15 @@ QStringList WikipediaEngine::sources() const
     return m_sources;
 }
 
-bool WikipediaEngine::sourceRequestEvent( const QString& name )
+bool WikipediaEngine::sourceRequested( const QString& name )
 {
     DEBUG_BLOCK
     Q_UNUSED( name )
 
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ':' );
-    if( tokens.contains( "reload" ) )
-    {
-        reloadWikipedia();
-    }
-    else
-    {
-        removeAllData( name );
-        setData( name, QVariant());
-        update();
-    }
+    removeAllData( name );
+    setData( name, QVariant());
+    update();
 
     return true;
 }
@@ -381,7 +373,7 @@ WikipediaEngine::reloadWikipedia()
     DEBUG_BLOCK
         
     debug() << "wiki url: " << m_wikiCurrentUrl;
-    removeSource( "wikipedia" );
+
     setData( "wikipedia", "message", i18n( "Fetching content.." ) );
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
