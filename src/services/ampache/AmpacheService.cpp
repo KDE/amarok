@@ -162,8 +162,10 @@ AmpacheService::authenticate(KJob * job)
     if ( m_version > 350000 )
     {
         debug() << "Version Newer, checking for SHA256";
-        if(!QCA::isSupported("sha256"))
+        if(!QCA::isSupported("sha256")) {
             KMessageBox::error ( this, i18n( "SHA256 Required, and not found" ), i18n( "Authentication Error!" ) );
+	    return; 
+	}
     }
     
     //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
@@ -289,9 +291,7 @@ void AmpacheService::versionVerify(KJob * job)
     if( !job->error() == 0 )
     {
 	debug() << "Job Error" << job->error();
-	// Default the Version down if it didn't work 
-	m_version = 100000;
-        //TODO: error handling here
+	// If an error has occured, it's non-fatal unless they are using 3.5, as we default to 3.4 currently
         return;
     }
     QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
@@ -305,10 +305,13 @@ void AmpacheService::versionVerify(KJob * job)
     //is this an error?
 
     QDomElement error = root.firstChildElement("error");
+
+    // It's ok if we get a null response from the version, that just means we're dealing with an older version
     if ( !error.isNull() )
     {
+	// Default the Version down if it didn't work 
+	m_version = 100000;
 	debug() << "AmpacheService::versionVerify Error: " << error.text();
-        KMessageBox::error ( this, error.text(), i18n( "Authentication Error!" ) );
     }
     else
     {
