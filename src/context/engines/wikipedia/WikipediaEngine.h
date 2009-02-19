@@ -55,7 +55,7 @@ public:
     QString selection() { return m_currentSelection; }
     
 protected:
-    bool sourceRequested( const QString& name );
+    bool sourceRequestEvent( const QString& name );
     
 private slots:
     void wikiResult( KJob* );

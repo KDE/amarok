@@ -19,9 +19,13 @@
 #include "EngineController.h"
 
 #include <plasma/theme.h>
+#include <plasma/widgets/webview.h>
+#include <plasma/widgets/iconwidget.h>
 
+#include <KIcon>
 #include <KStandardDirs>
 
+#include <QAction>
 #include <QGraphicsSimpleTextItem>
 #include <QPainter>
 
@@ -34,6 +38,7 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
     , m_webView( 0 )
+    , m_reloadIcon( 0 )
 {
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -93,8 +98,41 @@ void WikipediaApplet::init()
     connectSource( "wikipedia" );
     connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
-            
+
+    QAction* reloadAction = new QAction( i18n( "Reload" ), this );
+    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setVisible( true );
+    reloadAction->setEnabled( false );
+    m_reloadIcon = addAction( reloadAction );
+
+    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );
+    
     constraintsEvent();
+}
+
+Plasma::IconWidget *
+WikipediaApplet::addAction( QAction *action )
+{
+    DEBUG_BLOCK
+    if ( !action ) {
+        debug() << "ERROR!!! PASSED INVALID ACTION";
+        return 0;
+    }
+    
+    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
+    tool->setAction( action );
+    tool->setText( "" );
+    tool->setToolTip( action->text() );
+    tool->setDrawBackground( false );
+    tool->setOrientation( Qt::Horizontal );
+    QSizeF iconSize = tool->sizeFromIconSize( 16 );
+    tool->setMinimumSize( iconSize );
+    tool->setMaximumSize( iconSize );
+    tool->resize( iconSize );
+
+    tool->setZValue( zValue() + 1 );
+
+    return tool;
 }
 
 void
@@ -137,6 +175,8 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 
     if ( infoSize.isValid() )
         m_webView->resize( infoSize );
+
+    m_reloadIcon->setPos( MARGIN, MARGIN );
 }
 
 bool WikipediaApplet::hasHeightForWidth() const
@@ -146,7 +186,7 @@ bool WikipediaApplet::hasHeightForWidth() const
 
 qreal WikipediaApplet::heightForWidth( qreal width ) const
 {
-    return width * m_aspectRatio;;
+    return width * m_aspectRatio;
 }
 
 void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
@@ -170,6 +210,13 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         m_title = data[ "title" ].toString();
     else
         m_title.clear();
+
+    if( !m_reloadIcon->action()->isEnabled() )
+    {        
+        m_reloadIcon->action()->setEnabled( true );
+        //for some reason when we enable the action suddenly the icon has the text "..."
+        m_reloadIcon->action()->setText( "" );  
+    }
 }
 
 void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -195,6 +242,13 @@ QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint 
     size.setWidth( QGraphicsWidget::sizeHint( which, constraint ).width() );
     size.setHeight( 450 );
     return size;
+}
+
+void
+WikipediaApplet::reloadWikipedia()
+{
+    DEBUG_BLOCK
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:reload" );
 }
 
 #include "WikipediaApplet.moc"
