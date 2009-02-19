@@ -22,11 +22,18 @@
 #include <qwebview.h>
 
 #include <plasma/framesvg.h>
-#include <plasma/widgets/webview.h>
 
-
+class QAction;
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
+
+namespace Plasma
+{
+    class WebView;
+    class IconWidget;
+}
+
+static const int MARGIN = 15;
 
 class WikipediaApplet : public Context::Applet
 {
@@ -49,6 +56,8 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
+    Plasma::IconWidget * addAction( QAction *action );
+
     Plasma::FrameSvg* m_theme;
     Context::Svg* m_header;
     qreal m_aspectRatio;
@@ -65,9 +74,12 @@ private:
     QString m_label;
     QString m_title;
 
+    Plasma::IconWidget *m_reloadIcon;
+
 private slots:
     void connectSource( const QString &source );
     void linkClicked( const QUrl &url );
+    void reloadWikipedia();
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )
