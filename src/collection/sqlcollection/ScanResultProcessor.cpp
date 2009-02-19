@@ -57,7 +57,6 @@ ScanResultProcessor::setScanType( ScanType type )
 void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
-    DEBUG_BLOCK
     if( dir.isEmpty() )
     {
         debug() << "got directory with no path from the scanner, not adding";
@@ -92,7 +91,7 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
     }
 }
 
-void 
+void
 ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, QString> > covers )
 {
     QList< QPair<QString,QString> >::ConstIterator it = covers.begin();
@@ -104,7 +103,7 @@ ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, 
 
         int artist = artistId( key.first );
         int album  = albumId( key.second, artist );
-       
+
         // Will automatically add the image path to the database if needed
         imageId( path, album );
     }
@@ -144,7 +143,7 @@ ScanResultProcessor::commit()
     debug() << "Sending changed signal";
     m_collection->sendChangedSignal();
 
-    connect( this, SIGNAL( changedTrackUrls( TrackUrls ) ), 
+    connect( this, SIGNAL( changedTrackUrls( TrackUrls ) ),
              CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrls( TrackUrls ) ) );
 
     emit changedTrackUrls( m_changedUrls );
@@ -296,12 +295,12 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     QStringList filters;
     filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma" << "*.m4a";
     dir.setNameFilters( filters );
-    
+
     int compilationId = 0;
-    
+
     //do not check existing albums if there is more than one file in the directory
     //see comments in checkExistingAlbums
-    
+
     //TODO: find a better way to ignore non-audio files than the extension matching above
     if( !m_filesInDirs.contains( dir.absolutePath() ) )
     {
@@ -505,7 +504,7 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
     return imageId;
 }
 
-int 
+int
 ScanResultProcessor::albumId( const QString &album, int artistId )
 {
     //artistId == 0 means no albumartist
@@ -514,7 +513,7 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
         return m_albums.value( key );
 
     QString query;
-    if( artistId == 0 ) 
+    if( artistId == 0 )
     {
         query = QString( "SELECT id FROM albums_temp WHERE artist IS NULL AND name = '%1';" )
                     .arg( m_collection->escape( album ) );
@@ -670,7 +669,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
             trackIds << trackId;
         }
     }
-    
+
     if( trackIds.isEmpty() )
     {
         return 0;
