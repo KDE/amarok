@@ -108,7 +108,7 @@ LyricsApplet::addAction( QAction *action )
     tool->setToolTip( action->text() );
     tool->setDrawBackground( false );
     tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 22 );
+    QSizeF iconSize = tool->sizeFromIconSize( 16 );
     tool->setMinimumSize( iconSize );
     tool->setMaximumSize( iconSize );
     tool->resize( iconSize );
@@ -145,7 +145,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 5 );
     
-    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 20, 5 ) );
+    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 20, 10 ) );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );

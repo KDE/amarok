@@ -33,7 +33,7 @@ namespace Plasma
     class IconWidget;
 }
 
-static const int MARGIN = 15;
+static const int MARGIN = 10;
 
 class WikipediaApplet : public Context::Applet
 {

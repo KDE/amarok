@@ -176,7 +176,7 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     if ( infoSize.isValid() )
         m_webView->resize( infoSize );
 
-    m_reloadIcon->setPos( MARGIN, MARGIN );
+    m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - MARGIN, MARGIN );
 }
 
 bool WikipediaApplet::hasHeightForWidth() const
