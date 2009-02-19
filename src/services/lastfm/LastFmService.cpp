@@ -43,6 +43,7 @@
 #include <lastfm/ws/WsRequestBuilder.h>
 
 #include <KLocale>
+#include <KPasswordDialog>
 #include <solid/networking.h>
 
 #include <QComboBox>
@@ -125,8 +126,8 @@ LastFmServiceFactory::createLastFmService()
     LastFmServiceConfig config;
 
     //  The user activated the service, but didn't fill the username/password? Don't start it.
-    if ( config.username().isEmpty() || config.password().isEmpty() )
-        return 0;
+//     if ( config.username().isEmpty() || config.password().isEmpty() )
+//         return 0;
 
     ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar() );
     return service;
@@ -156,8 +157,9 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, const QString& sessionKey, bool scrobble, bool fetchSimilar )
+LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar )
     : ServiceBase( name, parent, false ),
+      m_inited( false),
       m_scrobble( scrobble ),
       m_scrobbler( 0 ),
       m_polished( false ),
@@ -170,6 +172,30 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     Q_UNUSED( fetchSimilar ); // TODO implement..
 
+    setShortDescription( i18n( "Last.fm: The social music revolution." ) );
+    setIcon( KIcon( "view-services-lastfm-amarok" ) );
+
+    if( !username.isEmpty() && !password.isEmpty() )
+        init();
+
+}
+
+
+LastFmService::~LastFmService()
+{
+    DEBUG_BLOCK
+
+    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    ms_service = 0;
+    delete m_collection;
+}
+
+void
+LastFmService::init()
+{
+    LastFmServiceConfig config;
+    const QString password = config.password();
+    const QString sessionKey = config.sessionKey();
     // set the global static Lastfm::Ws stuff
     Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
     Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
@@ -177,7 +203,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     Ws::Username = qstrdup( m_userName.toLatin1().data() );
-    
+
 
     // set up proxy
     WsAccessManager* qnam = new KNetworkAccessManager( this );
@@ -198,15 +224,15 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
         .add( "api_key", Ws::ApiKey )
         .add( "api_sig", sign_key )
         .get();
-        
+
         connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
-        
+
     } else
     {
         debug() << "using saved sessionkey from last.fm";
         Ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
         m_sessionKey = sessionKey;
-        
+
         if( m_scrobble )
             m_scrobbler = new ScrobblerAdapter( this, "ark" );
         WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
@@ -217,14 +243,13 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
-    setShortDescription( i18n( "Last.fm: The social music revolution." ) );
-    setIcon( KIcon( "view-services-lastfm-amarok" ) );
+
 
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
 
-    //add the "play simmilar artists" action to all artist
+    //add the "play similar artists" action to all artist
     The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
     The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
 
@@ -238,17 +263,10 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     Q_ASSERT( ms_service == 0 );
     ms_service = this;
     m_serviceready = true;
+
+    m_inited = true;
 }
 
-
-LastFmService::~LastFmService()
-{
-    DEBUG_BLOCK
-
-    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
-    ms_service = 0;
-    delete m_collection;
-}
 
 void
 LastFmService::onAuthenticated( WsReply* reply )
@@ -264,7 +282,7 @@ LastFmService::onAuthenticated( WsReply* reply )
                 LastFmServiceConfig config;
                 config.setSessionKey( m_sessionKey );
                 config.save();
-                
+
                 if( m_scrobble )
                     m_scrobbler = new ScrobblerAdapter( this, "ark" );
                 WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
@@ -413,6 +431,23 @@ LastFmService::updateProfileInfo()
 void
 LastFmService::polish()
 {
+    if( !m_inited )
+    {
+        KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );
+        dlg.setPrompt( i18n( "Enter login information for Last.fm" ) );
+        if( !dlg.exec() )
+            return; //the user canceled
+
+            m_userName = dlg.username();
+        const QString password = dlg.password();
+        if( password.isEmpty() || m_userName.isEmpty() )
+            return; // We can't create the service if we don't get the details..
+        LastFmServiceConfig config;
+        config.setPassword( password );
+        config.setUsername( m_userName );
+        config.save();
+        init();
+    }
     if( !m_polished )
     {
         LastFmTreeView* view = new LastFmTreeView( this );
@@ -425,7 +460,7 @@ LastFmService::polish()
 
         //m_bottomPanel->setMaximumHeight( 300 );
         m_bottomPanel->hide();
-        
+
         m_topPanel->setMaximumHeight( 300 );
         KHBox * outerProfilebox = new KHBox( m_topPanel );
         outerProfilebox->setSpacing(1);

@@ -63,7 +63,7 @@ class LastFmService : public ServiceBase
     Q_OBJECT
 
 public:
-    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, const QString &password, const QString &sessionKey, bool scrobble, bool fetchSimilar );
+    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString &sessionKey, bool scrobble, bool fetchSimilar );
     virtual ~LastFmService();
 
     virtual void polish();
@@ -87,6 +87,9 @@ private slots:
     void onAvatarDownloaded( QPixmap );
 
 private:
+    void init();
+
+    bool m_inited;
     bool m_scrobble;
     ScrobblerAdapter *m_scrobbler;
     LastFmServiceCollection *m_collection;
@@ -106,7 +109,7 @@ private:
     QPushButton * m_customStationButton;
     QComboBox * m_customStationCombo;
 
-    const QString m_userName;
+    QString m_userName;
     QString m_sessionKey;
     QString m_station;
     QString m_age;
