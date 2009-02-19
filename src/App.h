@@ -51,7 +51,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
         static App *instance() { return static_cast<App*>( kapp ); }
 
         void setUniqueInstance( bool isUnique ) { m_isUniqueInstance = isUnique; }
-        bool isUniqueInstance() const { return m_isUniqueInstance; }
+        bool isNonUniqueInstance() const { return m_isUniqueInstance; }
 
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );

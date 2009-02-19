@@ -69,7 +69,7 @@ ScanManager::ScanManager( SqlCollection *parent )
     m_amarokCollectionScanDir = binDir.left( binDir.lastIndexOf( '/' ) + 1 );
 
     QTimer *watchFoldersTimer = new QTimer( this );
-    connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) ); 
+    connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) );
     watchFoldersTimer->start( WATCH_INTERVAL );
 }
 
@@ -146,10 +146,11 @@ void ScanManager::startIncrementalScan()
         m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
     }
     m_scanner = new AmarokProcess( this );
-    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i" << "--collectionid" << m_collection->collectionId();
+    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i"
+               << "--collectionid" << m_collection->collectionId() << "-p";
     if( AmarokConfig::scanRecursively() )
         *m_scanner << "-r";
-    if( pApp->isUniqueInstance() ) 
+    if( pApp->isNonUniqueInstance() )
         *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     *m_scanner << dirs;
     m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
@@ -292,7 +293,7 @@ ScanManager::getDirsToScan() const
         if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number( id );
     }
-    
+
     const QStringList values = m_collection->query(
             QString( "SELECT id, deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
             .arg( deviceIds ) );
@@ -397,7 +398,7 @@ ScanManager::restartScanner()
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
-        if( pApp->isUniqueInstance() )
+        if( pApp->isNonUniqueInstance() )
             *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
     }
 
@@ -487,7 +488,7 @@ XmlParseJob::run()
     {
         processor.setScanType( ScanResultProcessor::FullScan );
     }
-    
+
     do
     {
         m_abortMutex.lock();
@@ -496,7 +497,7 @@ XmlParseJob::run()
 
         if( abort )
             break;
-        
+
         //debug() << "Get new xml data or wait till new xml data is available";
 
         m_mutex.lock();
@@ -504,7 +505,7 @@ XmlParseJob::run()
         {
             m_wait.wait( &m_mutex );
         }
-        
+
         if( m_nextData.isEmpty() )
             break;
 
@@ -629,7 +630,7 @@ XmlParseJob::run()
                     // Deserialize CoverBundle list
                     QStringList list = attrs.value( "list" ).toString().split( "AMAROK_MAGIC" );
                     QList< QPair<QString, QString> > covers;
-                   
+
                     // Don't iterate if the list only has one element
                     if( list.size() > 1 )
                     {
@@ -648,7 +649,7 @@ XmlParseJob::run()
 
             // At this point, most likely the scanner has crashed and is about to get restarted.
             // Reset the XML-reader and try to get new data:
-            debug() << "Trying to restart the QXmlStreamReader.."; 
+            debug() << "Trying to restart the QXmlStreamReader..";
             m_reader.clear();
             continue;
         }
@@ -665,7 +666,7 @@ XmlParseJob::run()
         if( !directoryData.isEmpty() )
             processor.processDirectory( directoryData );
         processor.commit();
-    } 
+    }
 }
 
 void
