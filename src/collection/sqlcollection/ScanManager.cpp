@@ -171,7 +171,6 @@ void ScanManager::startIncrementalScan()
 bool
 ScanManager::isDirInCollection( QString path )
 {
-    Q_ASSERT( !path.isEmpty() );
     // In the database all directories have a trailing slash, so we must add that
     if( !path.endsWith( '/' ) )
         path += '/';
@@ -602,9 +601,9 @@ XmlParseJob::run()
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> list = attrs.toList();
 
-                    foreach( QXmlStreamAttribute l, list )
-                       debug() << " ATTRIBUTE: " << l.name().toString() << '\t' << l.value().toString() << '\n';
-                    debug() << "End FOLDER";
+//                     foreach( QXmlStreamAttribute l, list )
+//                        debug() << " ATTRIBUTE: " << l.name().toString() << '\t' << l.value().toString() << '\n';
+//                     debug() << "End FOLDER";
 
                     const QString folder = attrs.value( "path" ).toString();
                     const QFileInfo info( folder );

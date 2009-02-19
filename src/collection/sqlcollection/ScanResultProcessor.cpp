@@ -173,10 +173,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     QString album;
     bool multipleAlbums = false;
     if( !data.isEmpty() )
-    {
         album = data[0].value( Field::ALBUM ).toString();
-        debug() << "Album is: " << album;
-    }
 
     foreach( const QVariantMap &row, data )
     {
@@ -184,7 +181,6 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         if( row.value( Field::ALBUM ).toString() != album )
             multipleAlbums = true;
     }
-    debug() << "Artists: " << artists;
     if( multipleAlbums || album.isEmpty() || data.count() > 60 || artists.size() == 1 )
     {
         foreach( const QVariantMap &row, data )
