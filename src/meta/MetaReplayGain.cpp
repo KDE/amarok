@@ -32,6 +32,7 @@
 #include <apetag.h>
 #include <flacfile.h>
 #include <id3v2tag.h>
+#include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
@@ -330,6 +331,15 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
     {
         if ( file->tag() )
             map = readXiphTags( file->tag() );
+    }
+    else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
+    {
+        // This is NOT the correct way to get replay gain tags from MPC files, but
+        // taglib doesn't allow us access to the real information.
+        // This allows people to work around this issue by copying their replay gain
+        // information to the APE tag.
+        if ( file->APETag() )
+            map = readAPETags( file->APETag() );
     }
 #ifdef HAVE_MP4V2
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
