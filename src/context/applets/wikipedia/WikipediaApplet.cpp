@@ -95,10 +95,6 @@ void WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
-    connectSource( "wikipedia" );
-    connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
-             this, SLOT( connectSource( const QString & ) ) );
-
     QAction* reloadAction = new QAction( i18n( "Reload" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
@@ -106,7 +102,11 @@ void WikipediaApplet::init()
     m_reloadIcon = addAction( reloadAction );
 
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );
-    
+
+    connectSource( "wikipedia" );
+    connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
+             this, SLOT( connectSource( const QString & ) ) );
+
     constraintsEvent();
 }
 
