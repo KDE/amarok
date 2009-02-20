@@ -211,7 +211,7 @@ void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     else
         m_title.clear();
 
-    if( !m_reloadIcon->action()->isEnabled() )
+    if( m_reloadIcon->action() && !m_reloadIcon->action()->isEnabled() )
     {        
         m_reloadIcon->action()->setEnabled( true );
         //for some reason when we enable the action suddenly the icon has the text "..."
