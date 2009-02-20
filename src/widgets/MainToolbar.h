@@ -21,6 +21,7 @@
 #define MAINTOOLBAR_H
 
 #include "EngineObserver.h" //baseclass
+#include "SmartPointerList.h"
 
 #include <KHBox>
 
@@ -63,7 +64,7 @@ private:
     int m_addActionsOffsetX;
     bool m_ignoreCache;
 
-    QList<QAction *> m_additionalActions;
+    SmartPointerList m_additionalActions;
 };
 
 #endif

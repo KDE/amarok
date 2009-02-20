@@ -398,29 +398,26 @@ Amarok::TrayIcon::blendOverlay( const QPixmap &overlay )
 void
 Amarok::TrayIcon::setupMenu()
 {
-    foreach( QAction * action, m_extraActions )
-    {
-        if( action )
-            contextMenu()->removeAction( action );
-    }
+    for( int i = 0; i < m_extraActions.size(); i ++ )
+        contextMenu()->removeAction( (QAction*) m_extraActions[i] );
 
     if( !m_track )
         return;
 
-    m_extraActions = The::globalCurrentTrackActions()->actions();
+    m_extraActions.clear();
+    foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
+        m_extraActions.addPointer( action );
 
     if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
         Meta::CurrentTrackActionsCapability *cac = m_track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-
             QList<PopupDropperAction *> currentTrackActions = cac->customActions();
             foreach( PopupDropperAction *action, currentTrackActions )
-                m_extraActions.append( action );
+                m_extraActions.addPointer( action );
         }
     }
-
 
     if ( m_extraActions.count() > 0 )
     {
@@ -428,15 +425,15 @@ Amarok::TrayIcon::setupMenu()
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
-        foreach( QAction *action, m_extraActions )
-            contextMenu()->addAction( action );
+        for( int i = 0; i < m_extraActions.size(); i ++ )
+            contextMenu()->addAction( (QAction*) m_extraActions[i] );
+
         contextMenu()->addSeparator();
 
         // readd
             contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
     }
-
 }
 
 void

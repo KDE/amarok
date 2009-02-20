@@ -21,6 +21,7 @@
 
 #include "EngineObserver.h" //baseclass
 #include "meta/Meta.h"
+#include "SmartPointerList.h"
 
 #include <KAction>
 #include <KSystemTrayIcon> //baseclass
@@ -67,7 +68,7 @@ private:
 
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
     QPixmap m_playOverlay, m_pauseOverlay;
-    QList<QAction *> m_extraActions;
+    SmartPointerList m_extraActions;
 };
 
 }

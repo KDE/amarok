@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,41 +16,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
-#ifndef GLOBALNOWPLAYINGACTIONS_H
-#define GLOBALNOWPLAYINGACTIONS_H
 
-#include "amarok_export.h"
-#include "Meta.h"
-#include "SmartPointerList.h"
+#ifndef AMAROK_SMARTPOINTERLIST_H
+#define AMAROK_SMARTPOINTERLIST_H 
 
-#include <QAction>
-
-
-class GlobalCurrentTrackActions;
-
-namespace The {
-    AMAROK_EXPORT GlobalCurrentTrackActions* globalCurrentTrackActions();
-}
+#include <QList>    // baseclass
+#include <QObject>  // baseclass
 
 /**
-A global list of actions that is made available to all playing tracks.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    A QList for storing pointers to QObjects, that automatically removes the pointers when objects are deleted.
+    @author Mark Kretschmann <kretschmann@kde.org> 
 */
-class AMAROK_EXPORT GlobalCurrentTrackActions
+
+class SmartPointerList : public QObject, public QList<QObject*>
 {
-    friend GlobalCurrentTrackActions* The::globalCurrentTrackActions();
-    
+    Q_OBJECT
+
 public:
-    void addAction( QAction * action );
-    QList<QAction *> actions();
-    
-private:
-    GlobalCurrentTrackActions();
-    ~GlobalCurrentTrackActions();
-    
-    SmartPointerList m_actions;
+    SmartPointerList( QObject* parent = 0 );
+    ~SmartPointerList();
+
+    void addPointer( QObject* pointer );
+
+protected Q_SLOTS:
+    void removePointer( QObject* pointer ); 
 };
+
 
 #endif

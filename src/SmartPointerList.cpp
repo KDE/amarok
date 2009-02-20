@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,41 +16,46 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
-#ifndef GLOBALNOWPLAYINGACTIONS_H
-#define GLOBALNOWPLAYINGACTIONS_H
 
-#include "amarok_export.h"
-#include "Meta.h"
 #include "SmartPointerList.h"
 
-#include <QAction>
+#include "Debug.h"
 
 
-class GlobalCurrentTrackActions;
-
-namespace The {
-    AMAROK_EXPORT GlobalCurrentTrackActions* globalCurrentTrackActions();
+SmartPointerList::SmartPointerList( QObject* parent )
+    : QObject( parent )
+{
+    DEBUG_BLOCK
 }
 
-/**
-A global list of actions that is made available to all playing tracks.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class AMAROK_EXPORT GlobalCurrentTrackActions
+SmartPointerList::~SmartPointerList()
 {
-    friend GlobalCurrentTrackActions* The::globalCurrentTrackActions();
-    
-public:
-    void addAction( QAction * action );
-    QList<QAction *> actions();
-    
-private:
-    GlobalCurrentTrackActions();
-    ~GlobalCurrentTrackActions();
-    
-    SmartPointerList m_actions;
-};
+    DEBUG_BLOCK
+}
 
-#endif
+
+void
+SmartPointerList::addPointer( QObject* pointer )
+{
+    DEBUG_BLOCK
+
+    debug() << "Adding Pointer: " << pointer;
+    debug() << "Current size of list: " << size();
+    
+    connect( pointer, SIGNAL( destroyed( QObject* ) ), SLOT( removePointer( QObject* ) ) );
+    append( pointer );
+}
+
+void
+SmartPointerList::removePointer( QObject* pointer ) // SLOT
+{
+    DEBUG_BLOCK
+
+    debug() << "Current size of list: " << size();
+
+    removeAll( pointer );
+}
+
+
+#include "SmartPointerList.moc"
+

@@ -43,7 +43,7 @@ GlobalCurrentTrackActions::~GlobalCurrentTrackActions()
 
 void GlobalCurrentTrackActions::addAction( QAction * action )
 {
-    m_actions.append( action );
+    m_actions.addPointer( action );
 }
 
 QList< QAction * > GlobalCurrentTrackActions::actions()
@@ -52,16 +52,8 @@ QList< QAction * > GlobalCurrentTrackActions::actions()
 
     QList<QAction*> validActions;
 
-    foreach( QAction* action, m_actions )
-    {
-        if( action )
-            validActions.append( action );
-    }
-
-    m_actions.clear();
-
-    foreach( QAction* action, validActions )
-        m_actions.append( action );
+    for( int i = 0; i < m_actions.size(); i++ )
+        validActions.append( (QAction*) m_actions[i] );
 
     return validActions;
 }

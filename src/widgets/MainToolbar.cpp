@@ -125,25 +125,29 @@ void MainToolbar::engineNewMetaData( const QHash< qint64, QString > &newMetaData
 
 void MainToolbar::handleAddActions()
 {
-    foreach( QAction * action, m_additionalActions )
-        m_addControlsToolbar->removeAction( action );
+#if 0
+    foreach( QObject* action, m_additionalActions )
+        m_addControlsToolbar->removeAction( (QAction*) action );
+#endif
+    for( int i = 0; i < m_additionalActions.size(); i++ )
+        m_addControlsToolbar->removeAction( (QAction*) m_additionalActions[i] );
 
     m_additionalActions.clear();
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    m_additionalActions = The::globalCurrentTrackActions()->actions();
+    m_additionalActions.clear();
+    foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+        m_addControlsToolbar->addAction( action );
     
     if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
         Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-
             QList<PopupDropperAction *> currentTrackActions = cac->customActions();
             foreach( PopupDropperAction *action, currentTrackActions )
-                m_additionalActions.append( action );
-
+                m_additionalActions.addPointer( action );
 
             m_addControlsToolbar->adjustSize();
 
@@ -152,9 +156,12 @@ void MainToolbar::handleAddActions()
         }
     }
 
-
-    foreach( QAction *action, m_additionalActions )
-        m_addControlsToolbar->addAction( action );
+    for( int i = 0; i < m_additionalActions.size(); i++ )
+        m_addControlsToolbar->addAction( (QAction*) m_additionalActions[i] );
+#if 0
+    foreach( QObject* action, m_additionalActions )
+        m_addControlsToolbar->addAction( (QAction*) action );
+#endif
 
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }

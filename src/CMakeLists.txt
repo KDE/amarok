@@ -515,6 +515,7 @@ set(amaroklib_LIB_SRCS
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
+    SmartPointerList.cpp
     Systray.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
