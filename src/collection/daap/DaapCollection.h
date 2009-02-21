@@ -28,6 +28,7 @@
 #include <QMap>
 #include <QHash>
 #include <QHostInfo>
+#include <QPointer>
 #include <QtGlobal>
 
 #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
@@ -64,7 +65,7 @@ class DaapCollectionFactory : public Amarok::CollectionFactory
     private:
         DNSSD::ServiceBrowser* m_browser;
 
-        QMap<QString, DaapCollection*> m_collectionMap;
+        QMap<QString, QPointer<DaapCollection> > m_collectionMap;
 
         QHash<int, quint16> m_lookupHash;
 };

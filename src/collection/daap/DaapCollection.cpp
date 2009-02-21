@@ -73,6 +73,10 @@ DaapCollectionFactory::connectToManualServers()
     {
         debug() << "Adding server " << server;
         QStringList current = server.split( ':', QString::KeepEmptyParts );
+        //handle invalid urls gracefully
+        if( current.count() < 2 )
+            continue;
+            
         QString host = current.first();
         quint16 port = current.last().toUShort();
 
@@ -88,11 +92,18 @@ DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
     QString key =  serverKey( service.data()->hostName(), service.data()->port() );
     if( m_collectionMap.contains( key ) )
     {
-        DaapCollection* coll = m_collectionMap[ key ];
+        DaapCollection *coll = m_collectionMap[ key ];
         if( coll )
+        {
             coll->serverOffline();  //collection will be deleted by collectionmanager
+        }
         else
+        {
             warning() << "collection already null";
+        }
+        
+        m_collectionMap.remove( key );
+
     }
     else
         warning() << "removing non-existent service";
@@ -191,7 +202,7 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
     if( m_collectionMap.contains(serverKey( host, port )) ) //same server from multiple interfaces
         return;
 
-    DaapCollection *coll = new DaapCollection( host, ip, port );
+    QPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
     connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
     connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
     m_collectionMap.insert( serverKey( host, port ), coll );
