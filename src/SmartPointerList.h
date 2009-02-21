@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>             *
- *             (c) 2009 Ian Monroe <ian@monroe.nu>                         *
+ *   Copyright (c) 2009 Ian Monroe <ian@monroe.nu>                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -43,6 +43,7 @@ class AMAROK_EXPORT SmartPointerList : private QList<T>
         SmartPointerList();
         SmartPointerList( const SmartPointerList<T>& ); //only use for temp vars
         ~SmartPointerList();
+
         void append( const T& pointer );
 
         using QList<T>::count;
@@ -72,8 +73,10 @@ class SmartPointerListRemover : public QObject
     public:
         SmartPointerListRemover( QList<T>* list );
         ~SmartPointerListRemover();
+
     public Q_SLOTS:
         void removePointer( QObject* pointer ); 
+
     private:
         QList<T>* m_list;
 };
