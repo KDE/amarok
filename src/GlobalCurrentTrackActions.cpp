@@ -52,8 +52,8 @@ QList< QAction * > GlobalCurrentTrackActions::actions()
 
     QList<QAction*> validActions;
 
-    foreach( QObject* action, m_actions )
-        validActions.append( (QAction*) action );
+    foreach( QAction* action, m_actions )
+        validActions.append( action );
 
     return validActions;
 }
