@@ -238,7 +238,7 @@ App::~App()
     AmarokConfig::self()->writeConfig();
 
     mainWindow()->deleteBrowsers();
-    mainWindow()->deleteLater();
+    delete mainWindow();
 
     Playlist::Actions::destroy();
     Playlist::Model::destroy();
