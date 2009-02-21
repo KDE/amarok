@@ -50,7 +50,7 @@ private:
     GlobalCurrentTrackActions();
     ~GlobalCurrentTrackActions();
     
-    SmartPointerList m_actions;
+    SmartPointerList<QAction*> m_actions;
 };
 
 #endif

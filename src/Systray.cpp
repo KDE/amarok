@@ -398,15 +398,15 @@ Amarok::TrayIcon::blendOverlay( const QPixmap &overlay )
 void
 Amarok::TrayIcon::setupMenu()
 {
-    for( int i = 0; i < m_extraActions.size(); i ++ )
-        contextMenu()->removeAction( (QAction*) m_extraActions[i] );
+    foreach( QAction* action, m_extraActions )
+        contextMenu()->removeAction( action );
 
     if( !m_track )
         return;
 
     m_extraActions.clear();
     foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
-        m_extraActions.addPointer( action );
+        m_extraActions.append( action );
 
     if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
@@ -415,7 +415,7 @@ Amarok::TrayIcon::setupMenu()
         {
             QList<PopupDropperAction *> currentTrackActions = cac->customActions();
             foreach( PopupDropperAction *action, currentTrackActions )
-                m_extraActions.addPointer( action );
+                m_extraActions.append( action );
         }
     }
 
@@ -425,8 +425,8 @@ Amarok::TrayIcon::setupMenu()
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
-        for( int i = 0; i < m_extraActions.size(); i ++ )
-            contextMenu()->addAction( (QAction*) m_extraActions[i] );
+    foreach( QAction* action, m_extraActions )
+            contextMenu()->addAction( action );
 
         contextMenu()->addSeparator();
 

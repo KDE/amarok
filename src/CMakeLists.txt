@@ -515,7 +515,7 @@ set(amaroklib_LIB_SRCS
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
-    SmartPointerList.cpp
+    #SmartPointerList.cpp don't include this file, its a template!
     Systray.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp

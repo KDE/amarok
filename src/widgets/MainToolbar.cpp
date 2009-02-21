@@ -125,12 +125,8 @@ void MainToolbar::engineNewMetaData( const QHash< qint64, QString > &newMetaData
 
 void MainToolbar::handleAddActions()
 {
-#if 0
-    foreach( QObject* action, m_additionalActions )
-        m_addControlsToolbar->removeAction( (QAction*) action );
-#endif
-    for( int i = 0; i < m_additionalActions.size(); i++ )
-        m_addControlsToolbar->removeAction( (QAction*) m_additionalActions[i] );
+    foreach( QAction* action, m_additionalActions )
+        m_addControlsToolbar->removeAction( action );
 
     m_additionalActions.clear();
 
@@ -147,7 +143,7 @@ void MainToolbar::handleAddActions()
         {
             QList<PopupDropperAction *> currentTrackActions = cac->customActions();
             foreach( PopupDropperAction *action, currentTrackActions )
-                m_additionalActions.addPointer( action );
+                m_additionalActions.append( action );
 
             m_addControlsToolbar->adjustSize();
 
@@ -156,12 +152,8 @@ void MainToolbar::handleAddActions()
         }
     }
 
-    for( int i = 0; i < m_additionalActions.size(); i++ )
-        m_addControlsToolbar->addAction( (QAction*) m_additionalActions[i] );
-#if 0
-    foreach( QObject* action, m_additionalActions )
-        m_addControlsToolbar->addAction( (QAction*) action );
-#endif
+    foreach( QAction* action, m_additionalActions )
+        m_addControlsToolbar->addAction( action );
 
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }

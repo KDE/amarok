@@ -68,7 +68,7 @@ private:
 
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
     QPixmap m_playOverlay, m_pauseOverlay;
-    SmartPointerList m_extraActions;
+    SmartPointerList<QAction*> m_extraActions;
 };
 
 }

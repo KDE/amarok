@@ -64,7 +64,7 @@ private:
     int m_addActionsOffsetX;
     bool m_ignoreCache;
 
-    SmartPointerList m_additionalActions;
+    SmartPointerList<QAction*> m_additionalActions;
 };
 
 #endif

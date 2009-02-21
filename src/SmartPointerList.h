@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>             *
+ *             (c) 2009 Ian Monroe <ian@monroe.nu>                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,25 +23,61 @@
 
 #include <QList>    // baseclass
 #include <QObject>  // baseclass
+#include <QPointer>
+
+#include "amarok_export.h"
+
+template<typename T>
+class SmartPointerListRemover;
+
 
 /**
     A QList for storing pointers to QObjects, that automatically removes the pointers when objects are deleted.
     @author Mark Kretschmann <kretschmann@kde.org> 
 */
 
-class SmartPointerList : public QObject, public QList<QObject*>
+template<typename T>
+class AMAROK_EXPORT SmartPointerList : private QList<T>
 {
-    Q_OBJECT
+    public:
+        SmartPointerList();
+        SmartPointerList( const SmartPointerList<T>& ); //only use for temp vars
+        ~SmartPointerList();
+        void append( const T& pointer );
 
-public:
-    SmartPointerList( QObject* parent = 0 );
-    ~SmartPointerList();
-
-    void addPointer( QObject* pointer );
-
-protected Q_SLOTS:
-    void removePointer( QObject* pointer ); 
+        using QList<T>::count;
+        using QList<T>::size;
+        using QList<T>::const_iterator;
+        using QList<T>::begin;
+        using QList<T>::end;
+        using QList<T>::at;
+        using QList<T>::value;
+        
+        using QList<T>::clear; //no reason to bother disconnecting
+    private:
+        QPointer<SmartPointerListRemover<T> > m_remover;
+        bool m_ownsRemover; //under the theory that copy constructors are used in
+                            //'foreach' constructs and are quite temporary
 };
 
+template<typename T>
+class SmartPointerListRemover : public QObject
+{
+    public: //Q_OBJECT
+        static const QMetaObject staticMetaObject;
+        virtual const QMetaObject *metaObject() const;
+        virtual void *qt_metacast(const char *);
+        virtual int qt_metacall(QMetaObject::Call, int, void **);
+
+    public:
+        SmartPointerListRemover( QList<T>* list );
+        ~SmartPointerListRemover();
+    public Q_SLOTS:
+        void removePointer( QObject* pointer ); 
+    private:
+        QList<T>* m_list;
+};
+
+#include "SmartPointerList.cpp"
 
 #endif
