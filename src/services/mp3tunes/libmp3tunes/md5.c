@@ -46,7 +46,7 @@ char* md5_calc_file_signature(const char *filename)
 #ifdef HAVE_LIBGCRYPT
   gcry_md_hd_t md5;
   gcry_error_t err;
-  char* sig;
+  unsigned char* sig;
 #else
   MD5_CTX   md5;
   unsigned char sig[MD5_DIGEST_LENGTH];

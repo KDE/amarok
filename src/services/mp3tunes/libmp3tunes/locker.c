@@ -262,7 +262,7 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
 
     char *url;
     size_t url_size = asprintf(&url, "http://%s/%s?", server_url, path) +1;
-    name = first_name;
+    name = (char*) first_name;
     while (name) {
         char *url_part;
 
