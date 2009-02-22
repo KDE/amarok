@@ -33,7 +33,6 @@ class GrowlInterface : public EngineObserver , public Meta::Observer
         GrowlInterface( QString appName );
      
         void show( Meta::TrackPtr );
-        void show( QString text, CFDataRef );
      
     protected:
         // Reimplemented from EngineObserver
