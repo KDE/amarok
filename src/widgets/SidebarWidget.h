@@ -106,9 +106,10 @@ class SideBarWidget: public KVBox
     private:
         void updateShortcuts();
 
-        QList<SideBarButton*> m_buttons;
+        SmartPointerList<SideBarButton*> m_buttons;
         SmartPointerList<QAction*> m_actions;
         SmartPointerList<QAction*> m_shortcuts;
+
         QAction* m_closeShortcut;
         QList<int> m_visible;
 };
