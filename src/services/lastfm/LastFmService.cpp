@@ -185,9 +185,13 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
-    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    if( m_collection )
+    {
+        CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+        delete m_collection;
+        m_collection = 0;
+    }
     ms_service = 0;
-    delete m_collection;
 }
 
 void
