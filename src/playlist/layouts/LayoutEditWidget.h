@@ -20,9 +20,10 @@
 #ifndef PLAYLISTITEMEDITWIDGET_H
 #define PLAYLISTITEMEDITWIDGET_H
 
+#include "LayoutItemConfig.h"
+
 #include "FilenameLayoutWidget.h"
 #include "widgets/TokenWithLayout.h"
-#include "playlist/layouts/LayoutItemConfig.h"
 
 #include <KVBox>
 
@@ -34,28 +35,31 @@ class QSpinBox;
     A widget to define the layout of a single type of playlist item ( head, body or single )
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class PlaylistItemEditWidget : public KVBox
+
+namespace Playlist {
+
+class LayoutEditWidget : public KVBox
 {
     Q_OBJECT
-public:
-    PlaylistItemEditWidget( QWidget *parent = 0 );
 
-    ~PlaylistItemEditWidget();
+    public:
+        LayoutEditWidget( QWidget *parent );
+        ~LayoutEditWidget();
 
-    void readLayout( Playlist::LayoutItemConfig config );
-    Playlist::LayoutItemConfig config();
+        void readLayout( Playlist::LayoutItemConfig config );
+        Playlist::LayoutItemConfig config();
 
-private slots:
+    private slots:
+        void numberOfRowsChanged( int noOfRows );
 
-    void numberOfRowsChanged( int noOfRows );
+    private:
+        KVBox     *m_rowsBox;
+        QSpinBox  *m_noOfRowsSpinBox;
+        QCheckBox *m_showCoverCheckBox;
 
-private:
-
-    KVBox * m_rowsBox;
-    QSpinBox * m_noOfRowsSpinBox;
-    QCheckBox * m_showCoverCheckBox;
-
-    QMap<int, FilenameLayoutWidget*> m_rowMap;
+        QMap<int, FilenameLayoutWidget*> m_rowMap;
 };
+
+}
 
 #endif

@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#include "PlaylistItemEditWidget.h"
+#include "LayoutEditWidget.h"
 #include "playlist/PlaylistDefines.h"
 
 #include "Debug.h"
@@ -29,7 +29,7 @@
 
 using namespace Playlist;
 
-PlaylistItemEditWidget::PlaylistItemEditWidget( QWidget *parent )
+LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     : KVBox(parent)
 {
     m_rowsBox = new KVBox( this );
@@ -50,11 +50,11 @@ PlaylistItemEditWidget::PlaylistItemEditWidget( QWidget *parent )
 }
 
 
-PlaylistItemEditWidget::~PlaylistItemEditWidget()
+LayoutEditWidget::~LayoutEditWidget()
 {
 }
 
-void PlaylistItemEditWidget::numberOfRowsChanged( int noOfRows )
+void LayoutEditWidget::numberOfRowsChanged( int noOfRows )
 {
     int currentNoOfRows = m_rowMap.count();
     
@@ -82,7 +82,7 @@ void PlaylistItemEditWidget::numberOfRowsChanged( int noOfRows )
     }
 }
 
-void PlaylistItemEditWidget::readLayout( Playlist::LayoutItemConfig config )
+void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
     int rowCount = config.rows();
 
@@ -122,7 +122,7 @@ void PlaylistItemEditWidget::readLayout( Playlist::LayoutItemConfig config )
     }
 }
 
-Playlist::LayoutItemConfig PlaylistItemEditWidget::config()
+Playlist::LayoutItemConfig LayoutEditWidget::config()
 {
 
     LayoutItemConfig config;
@@ -171,5 +171,5 @@ Playlist::LayoutItemConfig PlaylistItemEditWidget::config()
 }
 
 
-#include "PlaylistItemEditWidget.moc"
+#include "LayoutEditWidget.moc"
 

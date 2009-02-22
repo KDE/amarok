@@ -20,39 +20,35 @@
 #ifndef PLAYLISTLAYOUTEDITDIALOG_H
 #define PLAYLISTLAYOUTEDITDIALOG_H
 
-#include "widgets/PlaylistItemEditWidget.h"
+#include "playlist/layouts/LayoutEditWidget.h"
 #include <QDialog>
 
 #include "ui_PlaylistLayoutEditDialog.h"
 
 /**
-Dialog for editing playlist layouts
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    Dialog for editing playlist layouts
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditDialog
 {
     Q_OBJECT
-public:
-    PlaylistLayoutEditDialog( QWidget *parent = 0 );
-    ~PlaylistLayoutEditDialog();
 
-    void setLayout( const QString &layoutName );
+    public:
+        PlaylistLayoutEditDialog( QWidget *parent = 0 );
+        ~PlaylistLayoutEditDialog();
 
-private slots:
+        void setLayout( const QString &layoutName );
 
-    void preview();
-    virtual void accept();
-        
+    private slots:
+        void preview();
+        virtual void accept();
 
-private:
+    private:
+        Playlist::LayoutEditWidget *m_headEdit;
+        Playlist::LayoutEditWidget *m_bodyEdit;
+        Playlist::LayoutEditWidget *m_singleEdit;
 
-    PlaylistItemEditWidget * m_headEdit;
-    PlaylistItemEditWidget * m_bodyEdit;
-    PlaylistItemEditWidget * m_singleEdit;
-
-    QString m_layoutName;
-
+        QString m_layoutName;
 };
 
 #endif

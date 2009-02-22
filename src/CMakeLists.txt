@@ -341,9 +341,10 @@ set(libplaylist_SRCS
     playlist/PlaylistModel.cpp
     playlist/PlaylistWidget.cpp
     playlist/UndoCommands.cpp
-    playlist/layouts/LayoutManager.cpp
+    playlist/layouts/LayoutEditWidget.cpp
     playlist/layouts/LayoutConfigWidget.cpp
     playlist/layouts/LayoutItemConfig.cpp
+    playlist/layouts/LayoutManager.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp
@@ -529,7 +530,6 @@ set(amaroklib_LIB_SRCS
     widgets/MainToolbar.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
-    widgets/PlaylistItemEditWidget.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressiveSearchWidget.cpp
     widgets/ProgressSlider.cpp
