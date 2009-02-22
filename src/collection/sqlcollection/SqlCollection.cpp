@@ -100,6 +100,8 @@ SqlCollection::init()
     {
         QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
     }
+    //perform a quick check of the database
+    m_updater->cleanupDatabase();
 }
 
 void

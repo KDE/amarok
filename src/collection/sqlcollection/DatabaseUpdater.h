@@ -44,6 +44,8 @@ public:
 
     void removeFilesInDir( int deviceid, const QString &rdir );
     void removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir );
+    
+    void cleanupDatabase();
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */

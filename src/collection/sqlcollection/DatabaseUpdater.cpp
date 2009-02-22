@@ -249,6 +249,17 @@ DatabaseUpdater::removeTemporaryTables()
 }
 
 void
+DatabaseUpdater::cleanupDatabase()
+{
+    QStringList result = m_collection->query( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE table_name like '%_temp';" );
+    if( result.count() > 0 && result.first().toInt() > 0 )
+    {
+        //looks like the temporary tables were not removed, probably because of a crash
+        removeTemporaryTables();
+    }
+}
+
+void
 DatabaseUpdater::copyToPermanentTables()
 {
     DEBUG_BLOCK
