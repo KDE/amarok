@@ -574,7 +574,8 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 else if( lcField.compare( "tracknumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "tracknumber" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
-                } else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
+                }
+                else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if( compare == QueryMaker::Equals ) // just do some basic string matching
                     {
@@ -592,8 +593,11 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                             dateCutOff = curTime.addMonths( -3 ).toTime_t();
                         
                         if( dateCutOff > 0 )
+                        {
                             ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, QueryMaker::GreaterThan );
-                    } else if( compare == QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                        }
+                    }
+                    else if( compare == QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
                     {
                         int months = 0, weeks = 0, days = 0;
                         QString tmp;
