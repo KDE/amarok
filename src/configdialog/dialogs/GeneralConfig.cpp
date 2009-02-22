@@ -27,6 +27,9 @@
 
 #include <KStandardDirs>
 
+#include <QHBoxLayout>
+#include <QLabel>
+
 
 GeneralConfig::GeneralConfig( QWidget* parent )
     : ConfigDialogBase( parent )
@@ -79,7 +82,18 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     connect( kcfg_ExternalBrowser, SIGNAL( editTextChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
     
     Playlist::LayoutConfigWidget *layoutWidget = new Playlist::LayoutConfigWidget( playlistBox );
-    playlistBox->layout()->addWidget( layoutWidget );
+    layoutWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+
+    QLabel *layoutLabel = new QLabel( i18n("Playlist layout:"), this );
+    layoutLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+    QWidget *layoutBox = new QWidget( this );
+    QHBoxLayout *layout = new QHBoxLayout( layoutBox );
+    layout->addWidget( layoutLabel );
+    layout->addWidget( layoutWidget );
+    layoutBox->setLayout( layout );
+
+    playlistBox->layout()->addWidget( layoutBox );
 }
 
 GeneralConfig::~GeneralConfig()
