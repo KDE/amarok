@@ -158,10 +158,14 @@ Context::AppletItemOverlay::paintEvent( QPaintEvent *event )
     int iconSize;
     QRect iconRect;
 
-    iconSize = qMin( qMin( height(), int( m_applet->size().width() ) ), 64 );
-    iconRect = QRect( rect().center() - QPoint( iconSize / 2, iconSize / 2 ), QSize( iconSize, iconSize ) );
+    if( m_applet )
+    {   // it's possible m_applet is null if we just opened amarok and it failed to load the applet plugin
+        // so the user is seeing a big red X and trying to get rid of item
+        iconSize = qMin( qMin( height(), int( m_applet->size().width() ) ), 64 );
+        iconRect = QRect( rect().center() - QPoint( iconSize / 2, iconSize / 2 ), QSize( iconSize, iconSize ) );
+        p.drawPixmap( iconRect, icon.pixmap( iconSize, iconSize ) );        
+    }
 
-    p.drawPixmap( iconRect, icon.pixmap( iconSize, iconSize ) );
     p.restore();
 }
 
