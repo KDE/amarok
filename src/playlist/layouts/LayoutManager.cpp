@@ -159,12 +159,12 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
     }
 }
 
-PrettyItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
+LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
 {
     const bool showCover = ( elem.attribute( "show_cover", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
     const int activeIndicatorRow = elem.attribute( "active_indicator_row", "0" ).toInt();
 
-    PrettyItemConfig config;
+    LayoutItemConfig config;
     config.setShowCover( showCover );
     config.setActiveIndicatorRow( activeIndicatorRow );
 
@@ -176,7 +176,7 @@ PrettyItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
         QDomNode rowNode = rows.item( index );
         index++;
 
-        PrettyItemConfigRow row;
+        LayoutItemConfigRow row;
 
         QDomNodeList elements = rowNode.toElement().elementsByTagName("element");
 
@@ -203,7 +203,7 @@ PrettyItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             else
                 alignment = Qt::AlignCenter| Qt::AlignVCenter;
 
-            row.addElement( PrettyItemConfigRowElement( value, size, bold, italic, alignment, prefix, sufix ) );
+            row.addElement( LayoutItemConfigRowElement( value, size, bold, italic, alignment, prefix, sufix ) );
         }
 
         config.addRow( row );
@@ -254,7 +254,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     out << doc.toString();
 }
 
-QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &name, const PrettyItemConfig & item ) const
+QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &name, const LayoutItemConfig & item ) const
 {
     QDomElement element = doc.createElement( name );
 
@@ -264,13 +264,13 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
 
     for( int i = 0; i < item.rows(); i++ )
     {
-        PrettyItemConfigRow row = item.row( i );
+        LayoutItemConfigRow row = item.row( i );
 
         QDomElement rowElement = doc.createElement( "row" );
         element.appendChild( rowElement );
 
         for( int j = 0; j < row.count(); j++ ) {
-            PrettyItemConfigRowElement element = row.element( j );
+            LayoutItemConfigRowElement element = row.element( j );
             QDomElement elementElement = doc.createElement( "element" );
 
             elementElement.setAttribute ( "value", columnNames[element.value()] );

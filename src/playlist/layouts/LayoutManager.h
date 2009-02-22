@@ -21,7 +21,7 @@
 #ifndef PLAYLISTLAYOUTMANAGER_H
 #define PLAYLISTLAYOUTMANAGER_H
 
-#include "PrettyItemConfig.h"
+#include "LayoutItemConfig.h"
 
 #include <QStringList>
 #include <QString>
@@ -70,9 +70,9 @@ private:
 
     void loadLayouts( const QString &fileName, bool user );
 
-    QDomElement createItemElement( QDomDocument doc, const QString &name,  const PrettyItemConfig &item ) const;
+    QDomElement createItemElement( QDomDocument doc, const QString &name, const LayoutItemConfig &item ) const;
     
-    PrettyItemConfig parseItemConfig( const QDomElement &elem ) const;
+    LayoutItemConfig parseItemConfig( const QDomElement &elem ) const;
 
     QMap<QString, PlaylistLayout> m_layouts;
     QString                       m_activeLayout;

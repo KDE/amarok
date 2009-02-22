@@ -82,7 +82,6 @@ void Playlist::LayoutConfigWidget::layoutListChanged()
     m_comboBox->addItems( LayoutManager::instance()->layouts() );
 }
 
-
 }
 
 #include "LayoutConfigWidget.moc"

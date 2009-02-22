@@ -17,11 +17,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#include "PrettyItemConfig.h"
+#include "LayoutItemConfig.h"
 
 namespace Playlist {
 
-    PrettyItemConfigRowElement::PrettyItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
+    LayoutItemConfigRowElement::LayoutItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
                                                             const QString &prefix , const QString &suffix )
     : m_value( value )
     , m_size( size )
@@ -33,54 +33,54 @@ namespace Playlist {
 {
 }
 
-int PrettyItemConfigRowElement::value() const
+int LayoutItemConfigRowElement::value() const
 {
     return m_value;
 }
 
-qreal PrettyItemConfigRowElement::size() const
+qreal LayoutItemConfigRowElement::size() const
 {
     return m_size;
 }
 
-bool PrettyItemConfigRowElement::bold() const
+bool LayoutItemConfigRowElement::bold() const
 {
     return m_bold;
 }
 
-bool Playlist::PrettyItemConfigRowElement::italic() const
+bool Playlist::LayoutItemConfigRowElement::italic() const
 {
     return m_italic;
 }
 
-Qt::Alignment PrettyItemConfigRowElement::alignment() const
+Qt::Alignment LayoutItemConfigRowElement::alignment() const
 {
     return m_alignment;
 }
 
-QString PrettyItemConfigRowElement::prefix() const
+QString LayoutItemConfigRowElement::prefix() const
 {
     return m_prefix;
 }
 
-QString PrettyItemConfigRowElement::suffix() const
+QString LayoutItemConfigRowElement::suffix() const
 {
     return m_suffix;
 }
 
 //////////////////////////////////////////////
 
-void PrettyItemConfigRow::addElement( PrettyItemConfigRowElement element )
+void LayoutItemConfigRow::addElement( LayoutItemConfigRowElement element )
 {
     m_elements.append( element );
 }
 
-int PrettyItemConfigRow::count()
+int LayoutItemConfigRow::count()
 {
     return m_elements.count();
 }
 
-PrettyItemConfigRowElement PrettyItemConfigRow::element( int at )
+LayoutItemConfigRowElement LayoutItemConfigRow::element( int at )
 {
     return m_elements.at( at );
 }
@@ -88,50 +88,50 @@ PrettyItemConfigRowElement PrettyItemConfigRow::element( int at )
 
 //////////////////////////////////////////////
 
-PrettyItemConfig::PrettyItemConfig()
+LayoutItemConfig::LayoutItemConfig()
     : m_showCover( false )
     , m_activeIndicatorRow( 0 )
 {
 }
 
-PrettyItemConfig::~PrettyItemConfig()
+LayoutItemConfig::~LayoutItemConfig()
 {
 }
 
-int PrettyItemConfig::rows() const
+int LayoutItemConfig::rows() const
 {
     return m_rows.size();
 }
 
 
-PrettyItemConfigRow Playlist::PrettyItemConfig::row( int at ) const
+LayoutItemConfigRow Playlist::LayoutItemConfig::row( int at ) const
 {
     return m_rows.at( at );
 }
 
-void Playlist::PrettyItemConfig::addRow( PrettyItemConfigRow row )
+void Playlist::LayoutItemConfig::addRow( LayoutItemConfigRow row )
 {
     m_rows.append( row );
 }
 
-bool PrettyItemConfig::showCover() const
+bool LayoutItemConfig::showCover() const
 {
     return m_showCover;
 }
 
-void Playlist::PrettyItemConfig::setShowCover( bool showCover )
+void Playlist::LayoutItemConfig::setShowCover( bool showCover )
 {
     m_showCover = showCover;
 }
 
 
 
-int Playlist::PrettyItemConfig::activeIndicatorRow() const
+int Playlist::LayoutItemConfig::activeIndicatorRow() const
 {
     return m_activeIndicatorRow;
 }
 
-void Playlist::PrettyItemConfig::setActiveIndicatorRow( int row )
+void Playlist::LayoutItemConfig::setActiveIndicatorRow( int row )
 {
     m_activeIndicatorRow = row;
 }
@@ -139,32 +139,32 @@ void Playlist::PrettyItemConfig::setActiveIndicatorRow( int row )
 //////////////////////////////////////////////
 
 
-PrettyItemConfig Playlist::PlaylistLayout::head() const
+LayoutItemConfig Playlist::PlaylistLayout::head() const
 {
     return m_head;
 }
 
-PrettyItemConfig Playlist::PlaylistLayout::body() const
+LayoutItemConfig Playlist::PlaylistLayout::body() const
 {
     return m_body;
 }
 
-PrettyItemConfig Playlist::PlaylistLayout::single() const
+LayoutItemConfig Playlist::PlaylistLayout::single() const
 {
     return m_single;
 }
 
-void Playlist::PlaylistLayout::setHead( PrettyItemConfig head )
+void Playlist::PlaylistLayout::setHead( LayoutItemConfig head )
 {
     m_head = head;
 }
 
-void Playlist::PlaylistLayout::setBody( PrettyItemConfig body )
+void Playlist::PlaylistLayout::setBody( LayoutItemConfig body )
 {
     m_body = body;
 }
 
-void Playlist::PlaylistLayout::setSingle( PrettyItemConfig single )
+void Playlist::PlaylistLayout::setSingle( LayoutItemConfig single )
 {
     m_single = single;
 }

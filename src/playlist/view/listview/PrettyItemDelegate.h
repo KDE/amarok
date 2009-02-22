@@ -22,7 +22,7 @@
 #ifndef PRETTYITEMDELEGATE_H
 #define PRETTYITEMDELEGATE_H
 
-#include "playlist/layouts/PrettyItemConfig.h"
+#include "playlist/layouts/LayoutItemConfig.h"
 
 #include "kratingpainter.h"
 
@@ -46,7 +46,7 @@ public:
     static bool insideItemHeader( const QPoint&, const QRect& );
 
 private:
-    void paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
+    void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
 

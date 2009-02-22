@@ -343,7 +343,7 @@ set(libplaylist_SRCS
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutManager.cpp
     playlist/layouts/LayoutConfigWidget.cpp
-    playlist/layouts/PrettyItemConfig.cpp
+    playlist/layouts/LayoutItemConfig.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp

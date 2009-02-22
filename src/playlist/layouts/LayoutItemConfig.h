@@ -32,10 +32,10 @@ enum
     ITEM_CENTER
 };
 
-class PrettyItemConfigRowElement
+class LayoutItemConfigRowElement
 {
     public:
-        PrettyItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
+        LayoutItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
                                     const QString &prefix = QString(), const QString &suffix = QString() );
 
         int value() const;
@@ -55,37 +55,37 @@ class PrettyItemConfigRowElement
         QString m_prefix, m_suffix;
 };
 
-class PrettyItemConfigRow
+class LayoutItemConfigRow
 {
     public:
-        void addElement( PrettyItemConfigRowElement element );
+        void addElement( LayoutItemConfigRowElement element );
         int count();
-        PrettyItemConfigRowElement element( int at );
+        LayoutItemConfigRowElement element( int at );
     private:
-        QList<PrettyItemConfigRowElement> m_elements;
+        QList<LayoutItemConfigRowElement> m_elements;
 };
 
 /**
-    This class wraps the data needed to paint a PrettyItemDelegate. It knows how many vertical 
+    This class wraps the data needed to paint a LayoutItemDelegate. It knows how many vertical 
     rows there should be, how many items in each row, whether an image should be displayed and so on.
 */
-class PrettyItemConfig
+class LayoutItemConfig
 {
     public:
-        PrettyItemConfig();
-        ~PrettyItemConfig();
+        LayoutItemConfig();
+        ~LayoutItemConfig();
 
         int rows() const;
-        PrettyItemConfigRow row( int at ) const;
+        LayoutItemConfigRow row( int at ) const;
         bool showCover() const;
         int activeIndicatorRow() const;
 
-        void addRow( PrettyItemConfigRow row );
+        void addRow( LayoutItemConfigRow row );
         void setShowCover( bool showCover );
         void setActiveIndicatorRow( int row );
     
     private:
-        QList<PrettyItemConfigRow> m_rows;
+        QList<LayoutItemConfigRow> m_rows;
         bool m_showCover;
         int m_activeIndicatorRow;
 };
@@ -94,20 +94,20 @@ class PrettyItemConfig
 class PlaylistLayout
 {
     public:
-        PrettyItemConfig head() const;
-        PrettyItemConfig body() const;
-        PrettyItemConfig single() const;
+        LayoutItemConfig head() const;
+        LayoutItemConfig body() const;
+        LayoutItemConfig single() const;
         bool isEditable() const;
 
-        void setHead( PrettyItemConfig head );
-        void setBody( PrettyItemConfig body );
-        void setSingle( PrettyItemConfig single );
+        void setHead( LayoutItemConfig head );
+        void setBody( LayoutItemConfig body );
+        void setSingle( LayoutItemConfig single );
         void setIsEditable( bool editable );
 
     private:
-        PrettyItemConfig m_head;
-        PrettyItemConfig m_body;
-        PrettyItemConfig m_single;
+        LayoutItemConfig m_head;
+        LayoutItemConfig m_body;
+        LayoutItemConfig m_single;
         bool m_isEditable;
 };
 

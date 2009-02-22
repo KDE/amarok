@@ -193,7 +193,7 @@ PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) con
 }
 
 
-void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker ) const
+void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker ) const
 {
     int rowCount = config.rows();
 
@@ -248,7 +248,7 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
 
     for ( int i = 0; i < rowCount; i++ )
     {
-        PrettyItemConfigRow row = config.row( i );
+        LayoutItemConfigRow row = config.row( i );
         qreal itemOffsetX = rowOffsetX;
 
         const int elementCount = row.count();
@@ -281,7 +281,7 @@ void Playlist::PrettyItemDelegate::paintItem( PrettyItemConfig config, QPainter*
 
         for ( int j = 0; j < elementCount; ++j )
         {
-            PrettyItemConfigRowElement element = row.element( j );
+            LayoutItemConfigRowElement element = row.element( j );
 
             int value = element.value();
 

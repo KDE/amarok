@@ -29,29 +29,26 @@ namespace Playlist {
 
 /**
     A widget containing the gui needed to define playlist layouts
-
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
 
 class LayoutConfigWidget : public KVBox
 {
-    Q_OBJECT
-public:
-    LayoutConfigWidget( QWidget * parent );
-    ~LayoutConfigWidget();
+        Q_OBJECT
 
-private slots:
+    public:
+        LayoutConfigWidget( QWidget * parent );
+        ~LayoutConfigWidget();
 
-    void setActiveLayout( const QString &layout );
-    void layoutListChanged();
-    void editItem( const QString &itemName );
-    void deleteItem( const QString &itemName );
+    private slots:
+        void setActiveLayout( const QString &layout );
+        void layoutListChanged();
+        void editItem( const QString &itemName );
+        void deleteItem( const QString &itemName );
 
-private:
-    PlaylistLayoutEditDialog * m_playlistEditDialog;
-
-    QComboBox *m_comboBox;
-
+    private:
+        PlaylistLayoutEditDialog * m_playlistEditDialog;
+        QComboBox *m_comboBox;
 };
 
 }

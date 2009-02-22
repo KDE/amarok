@@ -22,7 +22,7 @@
 
 #include "FilenameLayoutWidget.h"
 #include "widgets/TokenWithLayout.h"
-#include "playlist/layouts/PrettyItemConfig.h"
+#include "playlist/layouts/LayoutItemConfig.h"
 
 #include <KVBox>
 
@@ -31,9 +31,8 @@ class QCheckBox;
 class QSpinBox;
 
 /**
-A widget to define the layout of a single type of playlist item ( head, body or single )
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    A widget to define the layout of a single type of playlist item ( head, body or single )
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class PlaylistItemEditWidget : public KVBox
 {
@@ -43,8 +42,8 @@ public:
 
     ~PlaylistItemEditWidget();
 
-    void readLayout( Playlist::PrettyItemConfig config );
-    Playlist::PrettyItemConfig config();
+    void readLayout( Playlist::LayoutItemConfig config );
+    Playlist::LayoutItemConfig config();
 
 private slots:
 

@@ -97,7 +97,7 @@ void PlaylistLayoutEditDialog::preview()
 
     PlaylistLayout layout;
 
-    PrettyItemConfig headConfig = m_headEdit->config() ;
+    LayoutItemConfig headConfig = m_headEdit->config() ;
     headConfig.setActiveIndicatorRow( -1 );
     
     layout.setHead( headConfig );
@@ -105,30 +105,28 @@ void PlaylistLayoutEditDialog::preview()
     layout.setSingle( m_singleEdit->config() );
 
     LayoutManager::instance()->setPreviewLayout( layout );
-    
 }
 
 void PlaylistLayoutEditDialog::accept()
 {
     DEBUG_BLOCK
 
-    if ( LayoutManager::instance()->isDefaultLayout( nameEdit->text() ) ) {
-        KMessageBox::sorry( this,
-                            i18n( "The layout '%1' is one of the default layouts and cannot be overwritten. Please select a different name.", nameEdit->text() ), i18n( "Reserved Layout Name" ) );
+    if ( LayoutManager::instance()->isDefaultLayout( nameEdit->text() ) )
+    {
+        const QString msg = i18n( "The layout '%1' is one of the default layouts and cannot be overwritten. Please select a different name.",
+                nameEdit->text() );
+        KMessageBox::sorry( this, msg, i18n( "Reserved Layout Name" ) );
         return;
     }
             
     PlaylistLayout layout;
 
-    PrettyItemConfig headConfig = m_headEdit->config();
+    LayoutItemConfig headConfig = m_headEdit->config();
     headConfig.setActiveIndicatorRow( -1 );
-    
     
     layout.setHead( headConfig );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
-
-
     
     LayoutManager::instance()->addUserLayout( nameEdit->text(), layout );
     QDialog::accept();

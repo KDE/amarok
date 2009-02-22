@@ -82,7 +82,7 @@ void PlaylistItemEditWidget::numberOfRowsChanged( int noOfRows )
     }
 }
 
-void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
+void PlaylistItemEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
     int rowCount = config.rows();
 
@@ -98,7 +98,7 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
     for( int i = 0; i < rowCount; i++ )
     {
         //get the row config
-        Playlist::PrettyItemConfigRow rowConfig = config.row( i );
+        Playlist::LayoutItemConfigRow rowConfig = config.row( i );
         
         //get the row layout
         FilenameLayoutWidget * currentRow = m_rowMap.value( i );
@@ -110,7 +110,7 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
         
         for( int j = 0; j < elementCount; j++ )
         {
-            Playlist::PrettyItemConfigRowElement element = rowConfig.element( j );
+            Playlist::LayoutItemConfigRowElement element = rowConfig.element( j );
             TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
@@ -122,10 +122,10 @@ void PlaylistItemEditWidget::readLayout( Playlist::PrettyItemConfig config )
     }
 }
 
-Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
+Playlist::LayoutItemConfig PlaylistItemEditWidget::config()
 {
 
-    PrettyItemConfig config;
+    LayoutItemConfig config;
     config.setShowCover( m_showCoverCheckBox->isChecked() );
     
     int noOfRows = m_rowMap.count();
@@ -133,7 +133,7 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
     for( int i = 0; i < noOfRows; i++ )
     {
 
-        PrettyItemConfigRow currentRowConfig;
+        LayoutItemConfigRow currentRowConfig;
 
         FilenameLayoutWidget * currentLayoutWidget = m_rowMap.value( i );
         QList<Token *> tokens = currentLayoutWidget->currentTokenLayout();
@@ -161,7 +161,7 @@ Playlist::PrettyItemConfig PlaylistItemEditWidget::config()
                 alignment = Qt::AlignCenter;
             }
 
-            currentRowConfig.addElement( PrettyItemConfigRowElement( token->value(), size, bold, italic, alignment ) );
+            currentRowConfig.addElement( LayoutItemConfigRowElement( token->value(), size, bold, italic, alignment ) );
         }
 
         config.addRow( currentRowConfig );
