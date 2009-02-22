@@ -81,9 +81,9 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         void activate();
 
         SideBar *sideBar() const { return m_browsers; }
-        KMenu   *ToolsMenu() const { return m_toolsMenu; }
-        KMenu   *SettingsMenu() const { return m_settingsMenu; }
-		Playlist::Widget * playlistWidget() { return m_playlistWidget; }
+        QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
+        QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
+		QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
 
         QString activeBrowserName();
@@ -144,26 +144,26 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
         void setRating( int n );
         void showBrowser( const int index );
 
-        QMenuBar      *m_menubar;
-        KMenu         *m_toolsMenu;
-        KMenu         *m_settingsMenu;
-        QPointer<SideBar> m_browsers;
-        QStringList    m_browserNames;
-        KMenu         *m_searchMenu;
+        QPointer<QMenuBar>  m_menubar;
+        QPointer<KMenu>     m_toolsMenu;
+        QPointer<KMenu>     m_settingsMenu;
+        QPointer<SideBar>   m_browsers;
+        QStringList         m_browserNames;
+        QPointer<KMenu>     m_searchMenu;
+        QPointer<KVBox>     m_statusbarArea;
 
-        KVBox *m_statusbarArea;
+        QPointer<SearchWidget>     m_searchWidget;
+        QPointer<MainToolbar>      m_controlBar;
+        QPointer<Playlist::Widget> m_playlistWidget;
+        QPointer<QTimer>           m_timer;  //search filter timer
+        QPointer<QSplitter>        m_splitter;
 
-        SearchWidget     *m_searchWidget;
-        MainToolbar      *m_controlBar;
-        Playlist::Widget *m_playlistWidget;
-        QTimer           *m_timer;  //search filter timer
-        QSplitter        *m_splitter;
-        QByteArray        m_splitterState;
+        QByteArray                 m_splitterState;
 
-        ContextWidget *m_contextWidget;
-        Context::ContextScene *m_corona;
-        Context::ContextView *m_contextView;
-        Context::ToolbarView *m_contextToolbarView;
+        QPointer<ContextWidget>         m_contextWidget;
+        QPointer<Context::ContextScene> m_corona;
+        QPointer<Context::ContextView>  m_contextView;
+        QPointer<Context::ToolbarView>  m_contextToolbarView;
 
         PlaylistFileProvider *m_playlistFiles;
         Meta::TrackPtr m_currentTrack;
