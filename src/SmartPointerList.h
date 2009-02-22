@@ -46,15 +46,19 @@ class AMAROK_EXPORT SmartPointerList : private QList<T>
 
         void append( const T& pointer );
 
-        using QList<T>::count;
-        using QList<T>::size;
-        using QList<T>::const_iterator;
-        using QList<T>::begin;
-        using QList<T>::end;
         using QList<T>::at;
+        using QList<T>::begin;
+        using QList<T>::const_iterator;
+        using QList<T>::count;
+        using QList<T>::end;
+        using QList<T>::indexOf;
+        using QList<T>::size;
         using QList<T>::value;
+
+        using QList<T>::operator [];
         
         using QList<T>::clear; //no reason to bother disconnecting
+
     private:
         QPointer<SmartPointerListRemover<T> > m_remover;
         bool m_ownsRemover; //under the theory that copy constructors are used in

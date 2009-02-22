@@ -21,11 +21,11 @@
 #ifndef AMAROK_SIDEBARWIDGET_H
 #define AMAROK_SIDEBARWIDGET_H
 
+#include "SmartPointerList.h"
 #include "SvgHandler.h"
 
 #include <QAction>
 #include <QAbstractButton>
-#include <QList>
 
 #include <kvbox.h>
 
@@ -107,8 +107,8 @@ class SideBarWidget: public KVBox
         void updateShortcuts();
 
         QList<SideBarButton*> m_buttons;
-        QList<QAction*> m_actions;
-        QList<QAction*> m_shortcuts;
+        SmartPointerList<QAction*> m_actions;
+        SmartPointerList<QAction*> m_shortcuts;
         QAction* m_closeShortcut;
         QList<int> m_visible;
 };
