@@ -152,7 +152,8 @@ IpodCollectionFactory::checkDevicesForIpod()
             QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
             ipodDetected( mountpoint, udi );
 
-            MediaDeviceInfo *deviceinfo = new IpodDeviceInfo( mountpoint, udi );
+            //MediaDeviceInfo *deviceinfo =
+            new IpodDeviceInfo( mountpoint, udi );
             //emit ipodDetected( deviceinfo );
             // HACK: emit old signal to avoid refactor of applet yet
             emit tellIpodDetected( mountpoint, udi );
