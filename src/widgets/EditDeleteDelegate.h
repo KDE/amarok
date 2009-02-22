@@ -23,22 +23,19 @@
 #include <QStyledItemDelegate>
 
 /**
-A special delegate with buttons for editing and deleting the current entry.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    A special delegate with buttons for editing and deleting the current entry.
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class EditDeleteDelegate : public QStyledItemDelegate
 {
-public:
-    EditDeleteDelegate( QObject * parent = 0 );
-    ~EditDeleteDelegate();
+    public:
+        EditDeleteDelegate( QObject *parent );
 
-    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    virtual QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+        virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+        virtual QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-    static bool hitsEdit( const QPoint &point, const QRect &rect );
-    static bool hitsDelete( const QPoint &point, const QRect &rect );
-
+        static bool hitsEdit( const QPoint &point, const QRect &rect );
+        static bool hitsDelete( const QPoint &point, const QRect &rect );
 };
 
 #endif

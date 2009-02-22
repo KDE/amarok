@@ -35,11 +35,6 @@ EditDeleteDelegate::EditDeleteDelegate( QObject * parent )
 {
 }
 
-
-EditDeleteDelegate::~EditDeleteDelegate()
-{
-}
-
 void EditDeleteDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     int y = option.rect.y();
@@ -49,36 +44,29 @@ void EditDeleteDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
 
     int iconOffset = option.rect.width() - ( MARGIN * 3 + ICON_WIDTH * 2 );
 
-
-    if ( option.state & QStyle::State_Selected ) {
+    if ( option.state & QStyle::State_Selected )
+    {
         //paint our custom stuff in the leftover space
         //but only if this is the item that the mouse is over...
 
-        KIcon editIcon( "configure" );
-        KIcon deleteIcon( "edit-delete" );
+        const KIcon editIcon( "configure" );
+        const KIcon deleteIcon( "edit-delete" );
 
         QPixmap editPixmap = editIcon.pixmap( ICON_WIDTH, ICON_WIDTH );
         QPixmap deletePixmap = deleteIcon.pixmap( ICON_WIDTH, ICON_WIDTH );
 
         painter->drawPixmap( iconOffset + MARGIN, y, ICON_WIDTH, ICON_WIDTH, editPixmap );
         painter->drawPixmap( iconOffset + MARGIN *2 + ICON_WIDTH, y, ICON_WIDTH, ICON_WIDTH, deletePixmap );
-
     }
-
 }
 
 QSize EditDeleteDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    QSize orgSize = QStyledItemDelegate::sizeHint( option, index );
-    QSize addSize( MARGIN * 3 + ICON_WIDTH * 2, 0 );
+    const QSize orgSize = QStyledItemDelegate::sizeHint( option, index );
+    const QSize addSize( MARGIN * 3 + ICON_WIDTH * 2, 0 );
 
     return orgSize + addSize;
-    
 }
-
-
-
-
 
 bool EditDeleteDelegate::hitsEdit( const QPoint &point, const QRect &rect )
 {
@@ -97,3 +85,4 @@ bool EditDeleteDelegate::hitsDelete( const QPoint &point, const QRect &rect )
     int left = right - ICON_WIDTH;
     return ( point.x() > left ) && ( point.x() < right );
 }
+

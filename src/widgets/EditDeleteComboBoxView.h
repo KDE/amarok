@@ -23,25 +23,23 @@
 #include <QListView>
 
 /**
-A specialised QListView class needed for detecting mouse clicks on the "buttons" on the items in the popup.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    A specialised QListView class needed for detecting mouse clicks on the "buttons" 
+    on the items in the popup.
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class EditDeleteComboBoxView : public QListView
 {
     Q_OBJECT
-public:
-    EditDeleteComboBoxView( QWidget* parent = 0 );
-    ~EditDeleteComboBoxView();
 
-signals:
+    public:
+        EditDeleteComboBoxView( QWidget* parent = 0 );
 
-    void editItem( const QString &itemName );
-    void deleteItem( const QString &itemName );
+    signals:
+        void editItem( const QString &itemName );
+        void deleteItem( const QString &itemName );
 
-protected:
-    virtual void mousePressEvent( QMouseEvent* );
-
+    protected:
+        virtual void mousePressEvent( QMouseEvent* );
 };
 
 #endif

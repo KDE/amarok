@@ -30,11 +30,6 @@ EditDeleteComboBoxView::EditDeleteComboBoxView( QWidget* parent )
 {
 }
 
-
-EditDeleteComboBoxView::~EditDeleteComboBoxView()
-{
-}
-
 void EditDeleteComboBoxView::mousePressEvent( QMouseEvent *event )
 {
     DEBUG_BLOCK
@@ -50,7 +45,6 @@ void EditDeleteComboBoxView::mousePressEvent( QMouseEvent *event )
         emit( deleteItem( index.data().toString() ) );
 
     QListView::mousePressEvent( event );
-
 }
 
 #include "EditDeleteComboBoxView.moc"
