@@ -38,7 +38,12 @@ class MetaCue::Track::Private : public QObject//, public EngineObserver
 public:
     Private ( Track *t )
     //      : EngineObserver( The::engineController() )
-            : track ( t )
+            : title()
+            , artist()
+            , album()
+            , tracknumber( 0 )
+            , length( 0 )
+            , track ( t )
     {}
 
     QSet<Meta::Observer*> observers;

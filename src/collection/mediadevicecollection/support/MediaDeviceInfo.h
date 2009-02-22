@@ -22,7 +22,8 @@
 
 typedef enum {
     IPOD_T,
-    MTP_T
+    MTP_T,
+    UNK_T
 } device_info_t;
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceInfo : public QObject

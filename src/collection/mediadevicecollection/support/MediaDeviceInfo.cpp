@@ -16,9 +16,9 @@
 
 MediaDeviceInfo::MediaDeviceInfo()
 : QObject()
+, m_type( UNK_T )
+, m_udi()
 {
-//    m_type = type;
-//    m_udi = udi;
 }
 
 MediaDeviceInfo::~MediaDeviceInfo()
