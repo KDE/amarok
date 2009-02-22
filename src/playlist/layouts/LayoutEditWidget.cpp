@@ -141,9 +141,9 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
         foreach( Token * token, tokens ) {
             TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );
 
-            bool bold;
-            bool italic;
-            Qt::Alignment alignment;
+            bool bold = false;
+            bool italic = false;
+            Qt::Alignment alignment = Qt::AlignCenter;
             qreal size = 0.0;
             if ( twl )
             {
@@ -154,11 +154,6 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
                 if ( twl->size() > 0.01 ) {
                     size = twl->size();
                 }
-            }
-            else
-            {
-                bold = false;
-                alignment = Qt::AlignCenter;
             }
 
             currentRowConfig.addElement( LayoutItemConfigRowElement( token->value(), size, bold, italic, alignment ) );
