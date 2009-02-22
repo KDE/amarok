@@ -23,6 +23,7 @@
 
 #define TOOLBAR_X_OFFSET 2000
 
+
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )
     , m_applets( 0 )
@@ -32,26 +33,21 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
             
     m_applets = new VerticalAppletLayout( this );
     
-    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), 
-             this, SLOT( appletRemoved( Plasma::Applet* ) ) );
-    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), 
-             this, SIGNAL( geometryChanged() ) );
+    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), SLOT( appletRemoved( Plasma::Applet* ) ) );
+    connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), SIGNAL( geometryChanged() ) );
              
-    connect( m_applets,  SIGNAL( appletAdded( Plasma::Applet*, int ) ), 
-             this,      SIGNAL( appletAdded( Plasma::Applet*, int) ) ); // goes out to applet toolbar
-    connect( m_applets, SIGNAL(  appletAdded( Plasma::Applet*, int ) ), 
-             this, SIGNAL( geometryChanged() ) );
-            
+    connect( m_applets,  SIGNAL( appletAdded( Plasma::Applet*, int ) ), SIGNAL( appletAdded( Plasma::Applet*, int) ) ); // goes out to applet toolbar
+    connect( m_applets, SIGNAL(  appletAdded( Plasma::Applet*, int ) ), SIGNAL( geometryChanged() ) );
 }
 
 Context::VerticalToolbarContainment::~VerticalToolbarContainment()
-{
-    
-}
+{}
 
 void 
 Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints constraints )
 {
+    Q_UNUSED( constraints )
+
     m_applets->setGeometry( contentsRect() );
 }
 
@@ -62,20 +58,14 @@ Context::VerticalToolbarContainment::contextualActions()
 }
 
 void 
-Context::VerticalToolbarContainment::paintInterface(QPainter *painter,
-                                                      const QStyleOptionGraphicsItem *option,
-                                                      const QRect& contentsRect)
-{
-    
-}
-
+Context::VerticalToolbarContainment::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect)
+{}
 
 void
 Context::VerticalToolbarContainment::saveToConfig( KConfigGroup &conf )
 {
     m_applets->saveToConfig( conf );
 }
-
 
 void
 Context::VerticalToolbarContainment::loadConfig( const KConfigGroup &conf )
@@ -96,6 +86,7 @@ void
 Context::VerticalToolbarContainment::setView( ContextView* view )
 {
     DEBUG_BLOCK
+
     m_view = view;
     // kick the toolbar with a real corona no w
     emit updatedContainment( this );
@@ -117,11 +108,14 @@ Plasma::Applet*
 Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const int loc ) // SLOT
 {
     DEBUG_BLOCK
+
     Plasma::Applet* applet = Plasma::Containment::addApplet( pluginName );
+
     if( applet == 0 )
         debug() << "FAILED ADDING APPLET TO CONTAINMENT!! NOT FOUND!!";
     else
         m_applets->addApplet( applet, loc );
+
     return applet;
 }
 
@@ -130,7 +124,6 @@ Context::VerticalToolbarContainment::appletRemoved( Plasma::Applet* applet )
 {
     m_applets->appletRemoved( applet );
 }
-
 
 void
 Context::VerticalToolbarContainment::showApplet( Plasma::Applet* applet )
@@ -147,6 +140,8 @@ Context::VerticalToolbarContainment::moveApplet( Plasma::Applet* applet, int a, 
 void
 Context::VerticalToolbarContainment::wheelEvent( QGraphicsSceneWheelEvent* event )
 {
+    Q_UNUSED( event )
+
     //eat wheel events, we dont want scrolling
 }
 
