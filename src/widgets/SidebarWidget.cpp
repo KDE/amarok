@@ -242,7 +242,7 @@ SideBarWidget::~SideBarWidget()
 
     // Save index of active browser for session management
     int i;
-    for( i = 0; i < m_buttons.count() && !m_buttons[i]->isChecked(); i++ ) {}
+    for( i = 0; i < m_buttons.count() && !m_buttons.at( i )->isChecked(); i++ ) {}
     AmarokConfig::setActiveBrowser( i );
 
     // Save list of visible browsers for session management
@@ -268,8 +268,8 @@ void SideBarWidget::restoreSession()
 
     // Restore active browser
     const int index = AmarokConfig::activeBrowser();
-    if( index < m_buttons.count() && !m_buttons[index]->isChecked() )
-        m_buttons[index]->click();
+    if( index < m_buttons.count() && !m_buttons.at(index)->isChecked() )
+        m_buttons.at(index)->click();
 }
 
 int SideBarWidget::addSideBar( const QIcon &icon, const QString &text )

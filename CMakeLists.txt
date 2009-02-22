@@ -121,6 +121,7 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
 add_subdirectory( src )
+add_subdirectory( tests )
 
 macro_display_feature_log()
 

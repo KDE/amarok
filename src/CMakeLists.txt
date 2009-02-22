@@ -482,6 +482,7 @@ set(amaroklib_LIB_SRCS
     MediaDeviceMonitor.cpp
     PluginManager.cpp
     Sidebar.h
+    SmartPointerList.cpp
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
