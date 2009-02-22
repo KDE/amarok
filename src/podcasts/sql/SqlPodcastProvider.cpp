@@ -60,7 +60,9 @@ SqlPodcastProvider::SqlPodcastProvider()
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
+    QStringList values;
+    if ( sqlStorage )
+        values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
     if( values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
