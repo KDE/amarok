@@ -58,7 +58,7 @@ LayoutConfigWidget::~LayoutConfigWidget()
 {
 }
 
-void LayoutConfigWidget::setActiveLayout( const QString & layout )
+void LayoutConfigWidget::setActiveLayout( const QString &layout )
 {
     LayoutManager::instance()->setActiveLayout( layout );
 }

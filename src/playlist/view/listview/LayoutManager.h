@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *             (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,8 +33,7 @@ class QDomDocument;
 namespace Playlist {
 
 /**
-Class for keeping track of playlist layouts and loading/saving them to xml files
-
+    Class for keeping track of playlist layouts and loading/saving them to xml files
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class LayoutManager : public QObject
@@ -41,19 +41,20 @@ class LayoutManager : public QObject
     Q_OBJECT
 
 public:
-    static LayoutManager * instance();
+    static LayoutManager* instance();
 
-    QStringList layouts();
+    QStringList layouts() const;
     void setActiveLayout( const QString &layout );
     void setPreviewLayout( const PlaylistLayout &layout );
-    PlaylistLayout layout( const QString &layout );
-    PlaylistLayout activeLayout();
-    QString activeLayoutName();
+    PlaylistLayout layout( const QString &layout ) const;
+    PlaylistLayout activeLayout() const;
+    QString activeLayoutName() const;
 
     bool isDefaultLayout( const QString &layout ) const;
 
     void addUserLayout( const QString &name, PlaylistLayout layout );
     void deleteLayout( const QString &layout );
+    bool isDeleteable( const QString &layout ) const;
 
 signals:
     void activeLayoutChanged();
@@ -61,7 +62,8 @@ signals:
 
 private:
     LayoutManager();
-    ~LayoutManager();
+
+    static LayoutManager *s_instance;
 
     void loadDefaultLayouts();
     void loadUserLayouts();
@@ -70,13 +72,11 @@ private:
 
     QDomElement createItemElement( QDomDocument doc, const QString &name,  const PrettyItemConfig &item ) const;
     
-    PrettyItemConfig parseItemConfig( const QDomElement &elem );
-
-    static LayoutManager * s_instance;
+    PrettyItemConfig parseItemConfig( const QDomElement &elem ) const;
 
     QMap<QString, PlaylistLayout> m_layouts;
-    QString m_activeLayout;
-    PlaylistLayout m_previewLayout;
+    QString                       m_activeLayout;
+    PlaylistLayout                m_previewLayout;
 };
 
 }

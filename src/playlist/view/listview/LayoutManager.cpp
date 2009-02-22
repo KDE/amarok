@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *             (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -34,13 +35,13 @@
 
 namespace Playlist {
 
-LayoutManager * Playlist::LayoutManager::s_instance = 0;
+static const QString PREVIEW_LAYOUT = "%%PREVIEW%%";
+LayoutManager* LayoutManager::s_instance = 0;
 
-LayoutManager * Playlist::LayoutManager::instance()
+LayoutManager* LayoutManager::instance()
 {
-    if ( s_instance == 0 )
+    if( !s_instance )
         s_instance = new LayoutManager();
-
     return s_instance;
 }
 
@@ -56,36 +57,33 @@ LayoutManager::LayoutManager()
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
 }
 
-LayoutManager::~LayoutManager()
-{}
-
-QStringList Playlist::LayoutManager::layouts()
+QStringList LayoutManager::layouts() const
 {
     return m_layouts.keys();
 }
 
-void Playlist::LayoutManager::setActiveLayout( const QString &layout )
+void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
     Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
     emit( activeLayoutChanged() );
 }
 
-void Playlist::LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
+void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
 {
-    m_activeLayout = "%%PREVIEW%%";
+    m_activeLayout = PREVIEW_LAYOUT; 
     m_previewLayout = layout;
     emit( activeLayoutChanged() );
 }
 
-PlaylistLayout Playlist::LayoutManager::activeLayout()
+PlaylistLayout LayoutManager::activeLayout() const
 {
-    if ( m_activeLayout == "%%PREVIEW%%" )
+    if ( m_activeLayout == PREVIEW_LAYOUT )
         return m_previewLayout;
     return m_layouts.value( m_activeLayout );
 }
 
-void Playlist::LayoutManager::loadUserLayouts()
+void LayoutManager::loadUserLayouts()
 {
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
@@ -93,7 +91,7 @@ void Playlist::LayoutManager::loadUserLayouts()
 
     QStringList filters;
     filters << "*.xml" << "*.XML";
-    layoutsDir.setNameFilters(filters);
+    layoutsDir.setNameFilters( filters );
     layoutsDir.setSorting( QDir::Name );
 
     QFileInfoList list = layoutsDir.entryInfoList();
@@ -106,7 +104,7 @@ void Playlist::LayoutManager::loadUserLayouts()
     }
 }
 
-void Playlist::LayoutManager::loadDefaultLayouts()
+void LayoutManager::loadDefaultLayouts()
 {
     const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
     QString configFile = url.path() + "DefaultPlaylistLayouts.xml";
@@ -114,7 +112,7 @@ void Playlist::LayoutManager::loadDefaultLayouts()
 }
 
 
-void Playlist::LayoutManager::loadLayouts( const QString &fileName, bool user )
+void LayoutManager::loadLayouts( const QString &fileName, bool user )
 {
     QDomDocument doc( "layouts" );
 
@@ -161,7 +159,7 @@ void Playlist::LayoutManager::loadLayouts( const QString &fileName, bool user )
     }
 }
 
-PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &elem )
+PrettyItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
 {
     const bool showCover = ( elem.attribute( "show_cover", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
     const int activeIndicatorRow = elem.attribute( "active_indicator_row", "0" ).toInt();
@@ -214,12 +212,12 @@ PrettyItemConfig Playlist::LayoutManager::parseItemConfig( const QDomElement &el
     return config;
 }
 
-PlaylistLayout Playlist::LayoutManager::layout( const QString &layout )
+PlaylistLayout LayoutManager::layout( const QString &layout ) const
 {
     return m_layouts.value( layout );
 }
 
-void Playlist::LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
+void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 {
     layout.setIsEditable( true );
     m_layouts.insert( name, layout );
@@ -234,7 +232,6 @@ void Playlist::LayoutManager::addUserLayout( const QString &name, PlaylistLayout
 
     emit( layoutListChanged() );
 
-   
     QDomElement body = doc.createElement( "body" );
     QDomElement single = doc.createElement( "single" );
 
@@ -257,7 +254,7 @@ void Playlist::LayoutManager::addUserLayout( const QString &name, PlaylistLayout
     out << doc.toString();
 }
 
-QDomElement Playlist::LayoutManager::createItemElement( QDomDocument doc, const QString &name, const PrettyItemConfig & item ) const
+QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &name, const PrettyItemConfig & item ) const
 {
     QDomElement element = doc.createElement( name );
 
@@ -306,7 +303,7 @@ bool LayoutManager::isDefaultLayout( const QString & layout ) const
     return false;
 }
 
-QString LayoutManager::activeLayoutName()
+QString LayoutManager::activeLayoutName() const
 {
     return m_activeLayout;
 }
@@ -331,6 +328,11 @@ void LayoutManager::deleteLayout( const QString & layout )
     }
     else
         KMessageBox::sorry( 0, i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
+}
+
+bool LayoutManager::isDeleteable( const QString &layout ) const
+{
+    return m_layouts.value( layout ).isEditable();
 }
 
 } //namespace Playlist
