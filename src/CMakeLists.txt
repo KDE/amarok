@@ -3,7 +3,7 @@ ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 if(MP4V2_FOUND)
     ADD_DEFINITIONS(-DHAVE_MP4V2)
     include_directories( ${MP4V2_INCLUDE_DIR} )
-        endif(MP4V2_FOUND)
+endif(MP4V2_FOUND)
 
 if(APPLE)
     set(mac_SRCS
@@ -341,6 +341,9 @@ set(libplaylist_SRCS
     playlist/PlaylistModel.cpp
     playlist/PlaylistWidget.cpp
     playlist/UndoCommands.cpp
+    playlist/layouts/LayoutManager.cpp
+    playlist/layouts/LayoutConfigWidget.cpp
+    playlist/layouts/PrettyItemConfig.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp
@@ -353,9 +356,6 @@ set(libplaylist_SRCS
     playlist/view/classic/PlaylistClassicView.cpp
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
-    playlist/view/listview/PrettyItemConfig.cpp
-    playlist/view/listview/LayoutManager.cpp
-    playlist/view/listview/LayoutConfigWidget.cpp
 )
 
 #####################################################################
@@ -660,7 +660,7 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 
-install(FILES playlist/view/listview/DefaultPlaylistLayouts.xml
+install(FILES data/DefaultPlaylistLayouts.xml
               services/InfoParserLoading.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 

@@ -22,7 +22,7 @@
 #ifndef PRETTYITEMDELEGATE_H
 #define PRETTYITEMDELEGATE_H
 
-#include "PrettyItemConfig.h"
+#include "playlist/layouts/PrettyItemConfig.h"
 
 #include "kratingpainter.h"
 

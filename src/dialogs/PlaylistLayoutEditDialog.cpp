@@ -21,7 +21,7 @@
 
 #include "Debug.h"
 
-#include "playlist/view/listview/LayoutManager.h"
+#include "playlist/layouts/LayoutManager.h"
 #include "playlist/PlaylistDefines.h"
 
 #include <KMessageBox>

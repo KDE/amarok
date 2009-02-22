@@ -21,7 +21,7 @@
 #include "GeneralConfig.h"
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "playlist/view/listview/LayoutConfigWidget.h"
+#include "playlist/layouts/LayoutConfigWidget.h"
 
 #include <config-amarok.h>  
 

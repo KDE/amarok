@@ -22,7 +22,7 @@
 
 #include "FilenameLayoutWidget.h"
 #include "widgets/TokenWithLayout.h"
-#include "playlist/view/listview/PrettyItemConfig.h"
+#include "playlist/layouts/PrettyItemConfig.h"
 
 #include <KVBox>
 

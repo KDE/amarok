@@ -26,13 +26,13 @@
 
 #include "App.h"
 #include "Debug.h"
-#include "LayoutManager.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 #include "playlist/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/layouts/LayoutManager.h"
 
 #include <QFontMetricsF>
 #include <QPainter>
