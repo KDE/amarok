@@ -563,24 +563,23 @@ void PopupDropperItem::setHoverMsecs( const int msecs )
 
 void PopupDropperItem::hoverEntered()
 {
-    //qDebug() << "Starting hover timer for " << static_cast<QObject*>(this);
     if( d->hoverIndicatorRectItem && d->hoverIndicatorRectFillItem && d->hoverIndicatorShowStyle != PopupDropperItem::Never )
     {
         d->hoverIndicatorRectFillItem->show();
     }
     d->hoverTimer.stop();
     d->hoverTimer.setDirection( QTimeLine::Forward );
-    d->hoverTimer.start();
     d->hoveredOver = true;
+    d->hoverTimer.start();
 }
 
 void PopupDropperItem::hoverLeft()
 {
-    //qDebug() << "Stopping hover timer for " << static_cast<QObject*>(this);
     d->hoverTimer.stop();
     d->hoverTimer.setDirection( QTimeLine::Backward );
-    d->hoverTimer.start();
     d->hoveredOver = false;
+    if( d->hoverTimer.currentFrame() != 0 )
+        d->hoverTimer.start();
 }
 
 int PopupDropperItem::borderWidth() const
@@ -648,11 +647,10 @@ void PopupDropperItem::dropped( QDropEvent *event ) //virtual SLOT
 
 void PopupDropperItem::hoverFinished() //SLOT
 {
-    //qDebug() << "PopupDropperItem timeout";
     if( d->separator )
         return;
 
-    //qDebug() << d->hoverTimer.direction();;
+    //qDebug() << "direction = forwards ? " << ( d->hoverTimer.direction() == QTimeLine::Forward ? "yes" : "no" );
 
     if( d->action && d->hoverTimer.direction() == QTimeLine::Forward )
         d->action->activate( QAction::Hover );
@@ -679,6 +677,7 @@ void PopupDropperItem::hoverFrameChanged( int frame ) //SLOT
 {
     if( d->separator )
         return;
+    //qDebug() << "hoverFrameChanged for " << static_cast<QObject*>(this) << ", frame = " << frame;
     int range = d->hoverTimer.endFrame() - d->hoverTimer.startFrame();
     qreal multiplier = ( 1.0 * frame ) / range;
     int r = (int)( ( d->hoveredTextColor.red() - d->baseTextColor.red() ) * multiplier ) + d->baseTextColor.red();
