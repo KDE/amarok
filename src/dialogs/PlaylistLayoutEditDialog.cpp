@@ -62,9 +62,9 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
 
     //add an editor to each tab
-    m_headEdit = new PlaylistItemEditWidget( 0 );
-    m_bodyEdit = new PlaylistItemEditWidget( 0 );
-    m_singleEdit = new PlaylistItemEditWidget( 0 );
+    m_headEdit = new Playlist::LayoutEditWidget( this );
+    m_bodyEdit = new Playlist::LayoutEditWidget( this );
+    m_singleEdit = new Playlist::LayoutEditWidget( this );
 
     elementTabs->addTab( m_headEdit, i18n( "Head" ) );
     elementTabs->addTab( m_bodyEdit, i18n( "Body" ) );
@@ -73,7 +73,6 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     elementTabs->removeTab( 0 );
 
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
-
 }
 
 
@@ -94,7 +93,6 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )
 
 void PlaylistLayoutEditDialog::preview()
 {
-
     PlaylistLayout layout;
 
     LayoutItemConfig headConfig = m_headEdit->config() ;
