@@ -377,6 +377,8 @@ set(dbus_SRCS
     dbus/RootDBusHandler.cpp
     dbus/PlayerDBusHandler.cpp
     dbus/TracklistDBusHandler.cpp
+    dbus/CollectionDBusHandler.cpp
+    dbus/DBusQueryHelper.cpp
 )
 
 
@@ -551,6 +553,7 @@ set(amaroklib_LIB_SRCS
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.tracklist.xml TracklistDBusHandler.h Amarok::TracklistDBusHandler TracklistAdaptor TracklistAdaptor)
+qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.Collection.xml CollectionDBusHandler.h CollectionDBusHandler CollectionAdaptor CollectionAdaptor)
 
 set( amaroklib_DEPENDS "amarokpud" )
 
