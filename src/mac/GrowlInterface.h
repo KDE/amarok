@@ -24,8 +24,6 @@
 #include "EngineController.h" 
 #include "EngineObserver.h"
     
-#include <CoreFoundation/CFData.h>
-     
  // NOTE if not on mac, this whole file is useless, so not even going to try
 class GrowlInterface : public EngineObserver , public Meta::Observer
 {
