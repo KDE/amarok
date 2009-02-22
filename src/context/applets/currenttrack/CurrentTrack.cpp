@@ -263,7 +263,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
 
         QFontMetrics fm( m_tabBar->font() );
-        qreal tabTextWidth = qMin( fm.boundingRect( m_tabBar->tabText( 0 ) +  m_tabBar->tabText( 1 ) ).width() + 100.0, size().width() );
         m_tabBar->resize( QSizeF( contentsRect().width() - margin * 2 - 2, m_tabBar->size().height() ) ); 
         m_tabBar->setPos( size().width() / 2 - m_tabBar->size().width() / 2 - 1, 10 );
         m_tabBar->show();
