@@ -20,8 +20,6 @@
 #ifndef JAMENDOSERVICE_H
 #define JAMENDOSERVICE_H
 
-
-
 #include "ServiceBase.h"
 #include "JamendoDatabaseHandler.h"
 #include "ServiceSqlCollection.h"
@@ -31,8 +29,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-
-class JamendoServiceFactory: public ServiceFactory
+class JamendoServiceFactory : public ServiceFactory
 {
     Q_OBJECT
 
@@ -48,15 +45,9 @@ class JamendoServiceFactory: public ServiceFactory
         virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "jamendo.com", Qt::CaseInsensitive ); }
 };
 
-/**
-A service for displaying, previewing and downloading music from Jamendo.com
-
-	@author 
-*/
 class JamendoService : public ServiceBase
 {
-
-Q_OBJECT
+    Q_OBJECT
 public:
     JamendoService( JamendoServiceFactory* parent, const QString &name );
 
@@ -66,7 +57,6 @@ public:
     virtual Amarok::Collection * collection() { return m_collection; }
 
 private slots:
-
     void updateButtonClicked();
     void download();
     void downloadCurrentTrackAlbum();
@@ -83,7 +73,6 @@ private slots:
 
 
 private:
-
     void download( Meta::JamendoAlbum * album );
 
     //DatabaseDrivenContentModel * m_model;
