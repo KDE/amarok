@@ -46,7 +46,5 @@ class CollectionCapabilityIpod : public CollectionCapability
 
 
 };
-
 }
-
 #endif
