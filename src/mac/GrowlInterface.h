@@ -24,8 +24,6 @@
 #include "EngineController.h" 
 #include "EngineObserver.h"
     
-#include <CoreFoundation/CFData.h>
-     
  // NOTE if not on mac, this whole file is useless, so not even going to try
 class GrowlInterface : public EngineObserver , public Meta::Observer
 {
@@ -33,7 +31,6 @@ class GrowlInterface : public EngineObserver , public Meta::Observer
         GrowlInterface( QString appName );
      
         void show( Meta::TrackPtr );
-        void show( QString text, CFDataRef );
      
     protected:
         // Reimplemented from EngineObserver

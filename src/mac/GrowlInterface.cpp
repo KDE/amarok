@@ -14,26 +14,16 @@
 #include "GrowlInterface.h"
 
 #include "AmarokConfig.h"
+#include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "MetaUtility.h" // for secToPrettyTime
+#include "Systray.h"
  
-#include "lastfm/core/mac/CFStringToQString.h"
-#include <GrowlApplicationBridge-Carbon.h>
-#include <CoreFoundation/CFString.h>
-
-
-struct Growl_Delegate delegate;
-
 GrowlInterface::GrowlInterface( QString appName ) :
                 m_appName( appName )
               ,  EngineObserver( The::engineController() )
-{
-    CFStringRef app = QStringToCFString( appName );
-    InitGrowlDelegate(&delegate);
-    delegate.applicationName = CFSTR( "Amarok" );
-    Growl_SetDelegate(&delegate);
-}
+{}
  
 void 
 GrowlInterface::show( Meta::TrackPtr track )
@@ -64,23 +54,14 @@ GrowlInterface::show( Meta::TrackPtr track )
     if( text.isEmpty() ) //still
         text = i18n("No information available for this track");
 
-    QImage image;
-    if( track && track->album() )
-        image = track->album()->imageWithBorder( 100, 5 ).toImage();
-
-    CFDataRef imgData = CFDataCreate( kCFAllocatorDefault, image.bits(), image.numBytes() );
+    if( App::instance()->trayIcon() )
+    {
+        App::instance()->trayIcon()->setVisible( true );
+        if( track && track->album() )
+            App::instance()->trayIcon()->setIcon( QIcon( track->album()->imageWithBorder( 100, 5 ) ) );
+        App::instance()->trayIcon()->showMessage( "Amarok", text );
+    }
     
-    show( text, imgData );
-    
-    
-}
-
-void
-GrowlInterface::show( QString text, CFDataRef img )
-{
-    debug() << "is growl enabled:" << AmarokConfig::growlEnabled();
-    if( AmarokConfig::growlEnabled() )
-        Growl_NotifyWithTitleDescriptionNameIconPriorityStickyClickContext( CFSTR( "Amarok" ), QStringToCFString( text ), CFSTR( "Song Playing"), img, 0, false, 0 );
 }
 
 void 
@@ -102,8 +83,8 @@ GrowlInterface::engineStateChanged( Phonon::State state, Phonon::State oldState 
 {
     Q_UNUSED( oldState )
     DEBUG_BLOCK
-    if( state == Phonon::PausedState )
-        show( i18n( "Paused" ), 0 );
+  //  if( state == Phonon::PausedState )
+  //        show( i18n( "Paused" ) );
 }
 
 

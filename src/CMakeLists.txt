@@ -10,14 +10,8 @@ if(APPLE)
 		app_mac.cpp 
 		mac/GrowlInterface.cpp 
 		)
-		
-		include_directories ( services/lastfm/
-							  mac/Growl-WithInstaller.framework/Headers )
+		include_directories ( services/lastfm/ )
 		set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
-		set( GROWL_FRAMEWORK ${CMAKE_SOURCE_DIR}/src/mac/Growl-WithInstaller.framework )
-		set( GROWL_LIBRARIES "-framework Growl-WithInstaller -F${CMAKE_SOURCE_DIR}/src/mac" CACHE FILEPATH "Growl-WithInstaller framework" FORCE)
-		mark_as_advanced( GROWL_FRAMEWORK GROWL_LIBRARIES )
-		set( EXTRA_LIBS ${GROWL_LIBRARIES} amarok_service_liblastfm )
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
@@ -579,9 +573,6 @@ if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-	# also install growl to the app bundle
-	install(DIRECTORY ${GROWL_FRAMEWORK} DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/Frameworks)
-	install( FILES "${MAC_FILES_DIR}/Growl Registration Ticket.growlRegDict" DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/Resources )
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
