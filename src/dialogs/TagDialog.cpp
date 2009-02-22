@@ -233,10 +233,17 @@ TagDialog::dataQueryDone()
 
     m_dataQueryMaker->deleteLater();
     m_dataQueryMaker = 0;
+
+    // basically we want to ignore the fact that the fields are being
+    // edited because we do it not the user, so it results in empty
+    // tags being saved to files---data loss is BAD!
+    QMap< QString, bool > m_fieldEditedSave = m_fieldEdited;
+  
     //we simply clear the completion data of all comboboxes
     //then load the current track again. that's more work than necessary
     //but the performance impact should be negligible
-
+    // we do this because if we insert items and the contents of the textbox
+    // are not in the list, it clears the textbox. which is bad --lfranchi 2.22.09  
     QString saveText( ui->kComboBox_artist->lineEdit()->text() );
     ui->kComboBox_artist->clear();
     ui->kComboBox_artist->insertItems( 0, m_artists );
@@ -257,6 +264,8 @@ TagDialog::dataQueryDone()
     ui->kComboBox_genre->insertItems( 0, m_genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
+    m_fieldEdited = m_fieldEditedSave;
+    
     if( !m_queryMaker )  //track query complete or not necessary
     {
         if( m_perTrack )
