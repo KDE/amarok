@@ -25,7 +25,6 @@
 
 namespace Playlist {
 
-
 enum
 {
     ITEM_LEFT,
@@ -33,86 +32,83 @@ enum
     ITEM_CENTER
 };
 
-class PrettyItemConfigRowElement{
+class PrettyItemConfigRowElement
+{
+    public:
+        PrettyItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
+                                    const QString &prefix = QString(), const QString &suffix = QString() );
 
-public:
-    PrettyItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
-                                const QString &prefix = QString(), const QString &suffix = QString() );
-
-    int value() const;
-    qreal size() const;
-    bool bold() const;
-    bool italic() const;
-    Qt::Alignment alignment() const;
-    QString prefix() const;
-    QString suffix() const;
+        int value() const;
+        qreal size() const;
+        bool bold() const;
+        bool italic() const;
+        Qt::Alignment alignment() const;
+        QString prefix() const;
+        QString suffix() const;
     
-private:
-    int m_value;
-    qreal m_size;
-    bool m_bold;
-    bool m_italic;
-    Qt::Alignment m_alignment;
-    QString m_prefix, m_suffix;
+    private:
+        int m_value;
+        qreal m_size;
+        bool m_bold;
+        bool m_italic;
+        Qt::Alignment m_alignment;
+        QString m_prefix, m_suffix;
 };
 
-class PrettyItemConfigRow{
-
-public:
-    void addElement( PrettyItemConfigRowElement element );
-    int count();
-    PrettyItemConfigRowElement element( int at );
-private:
-    QList<PrettyItemConfigRowElement> m_elements;
+class PrettyItemConfigRow
+{
+    public:
+        void addElement( PrettyItemConfigRowElement element );
+        int count();
+        PrettyItemConfigRowElement element( int at );
+    private:
+        QList<PrettyItemConfigRowElement> m_elements;
 };
 
 /**
-This class wraps the data needed to paint a PrettyItemDelegate. It knows how many vertical rows there should be, how many items in each row, whether an image should be displayed and so on.
-
-	@author 
+    This class wraps the data needed to paint a PrettyItemDelegate. It knows how many vertical 
+    rows there should be, how many items in each row, whether an image should be displayed and so on.
 */
-class PrettyItemConfig{
-public:
-    PrettyItemConfig();
+class PrettyItemConfig
+{
+    public:
+        PrettyItemConfig();
+        ~PrettyItemConfig();
 
-    ~PrettyItemConfig();
+        int rows() const;
+        PrettyItemConfigRow row( int at ) const;
+        bool showCover() const;
+        int activeIndicatorRow() const;
 
-    int rows() const;
-    PrettyItemConfigRow row( int at ) const;
-    bool showCover() const;
-    int activeIndicatorRow() const;
-
-    void addRow( PrettyItemConfigRow row );
-    void setShowCover( bool showCover );
-    void setActiveIndicatorRow( int row );
+        void addRow( PrettyItemConfigRow row );
+        void setShowCover( bool showCover );
+        void setActiveIndicatorRow( int row );
     
-private:
-    QList<PrettyItemConfigRow> m_rows;
-    bool m_showCover;
-    int m_activeIndicatorRow;
+    private:
+        QList<PrettyItemConfigRow> m_rows;
+        bool m_showCover;
+        int m_activeIndicatorRow;
 };
 
 
-class PlaylistLayout{
+class PlaylistLayout
+{
+    public:
+        PrettyItemConfig head() const;
+        PrettyItemConfig body() const;
+        PrettyItemConfig single() const;
+        bool isEditable() const;
 
-public:
+        void setHead( PrettyItemConfig head );
+        void setBody( PrettyItemConfig body );
+        void setSingle( PrettyItemConfig single );
+        void setIsEditable( bool editable );
 
-    PrettyItemConfig head() const;
-    PrettyItemConfig body() const;
-    PrettyItemConfig single() const;
-    bool isEditable() const;
-
-    void setHead( PrettyItemConfig head );
-    void setBody( PrettyItemConfig body );
-    void setSingle( PrettyItemConfig single );
-    void setIsEditable( bool editable );
-
-private:
-
-    PrettyItemConfig m_head;
-    PrettyItemConfig m_body;
-    PrettyItemConfig m_single;
-    bool m_isEditable;
+    private:
+        PrettyItemConfig m_head;
+        PrettyItemConfig m_body;
+        PrettyItemConfig m_single;
+        bool m_isEditable;
 };
 
 }
