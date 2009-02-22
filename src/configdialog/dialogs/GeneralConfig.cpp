@@ -21,6 +21,8 @@
 #include "GeneralConfig.h"
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "playlist/view/listview/LayoutConfigWidget.h"
+
 #include <config-amarok.h>  
 
 #include <KStandardDirs>
@@ -67,19 +69,21 @@ GeneralConfig::GeneralConfig( QWidget* parent )
            )
     {
         kcfg_ExternalBrowser->setCurrentIndex( 0 );
-    } else {
+    }
+    else
+    {
         kcfg_ExternalBrowser->addItem( AmarokConfig::externalBrowser() );
         kcfg_ExternalBrowser->setCurrentIndex( kcfg_ExternalBrowser->count() - 1 );
     }
 
-
     connect( kcfg_ExternalBrowser, SIGNAL( editTextChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
-    //connect( kLineEdit_customBrowser, SIGNAL( textChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
+    
+    Playlist::LayoutConfigWidget *layoutWidget = new Playlist::LayoutConfigWidget( playlistBox );
+    playlistBox->layout()->addWidget( layoutWidget );
 }
 
 GeneralConfig::~GeneralConfig()
 {}
-
 
 ///////////////////////////////////////////////////////////////
 // REIMPLEMENTED METHODS from ConfigDialogBase
