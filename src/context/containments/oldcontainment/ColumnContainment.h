@@ -18,6 +18,7 @@
 
 #include "Containment.h"
 #include "ContextView.h"
+#include "SmartPointerList.h"
 #include "widgets/ContainmentSelectionLayer.h"
 #include "widgets/ToolBoxMenu.h"
 
@@ -98,7 +99,7 @@ private:
     
     Plasma::IconWidget* addAction( QAction* );
     
-    QList<QAction*> *m_actions;
+    SmartPointerList<QAction*> *m_actions;
     
     QGraphicsGridLayout *m_grid;
     
