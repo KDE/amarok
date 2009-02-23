@@ -41,4 +41,4 @@ INSTALL(TARGETS pud
 
 INSTALL( FILES  PopupDropper.h PopupDropperAction.h PopupDropperItem.h
     PopupDropperView.h PopupDropper_Export.h DESTINATION
-    ${INCLUDE_INSTALL_DIR}/popupdropper)
+    ${INCLUDE_INSTALL_DIR}/popupdropper COMPONENT Devel)
