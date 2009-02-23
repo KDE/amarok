@@ -25,6 +25,8 @@
 #include <kurl.h>
 
 #include <QDate>
+#include <time.h>
+
 /* used as PubDate for Podcasts module RSS
 ** Mon, 13 Mar 2006 23:37:46 +0000
 */
@@ -293,17 +295,16 @@ PodcastReader::read()
 QDateTime
 PodcastReader::parsePubDate( const QString &datestring )
 {
-    DEBUG_BLOCK
-    QString goodString = datestring.trimmed();
-    //first remove the day since that is locale dependant
-    QStringList parsedString = goodString.split(',');
-    if( parsedString.count() == 2 )
-        goodString = parsedString[1];
-    //slightly hackish: leftmost 21 characters should be everything minus the zone
-    //remove the whitespace with simplified() in case the date number was 1 long
-    goodString = goodString.left( 21 ).simplified();
-    QDateTime pubdate = QDateTime::fromString(goodString, RFC822_DATE_FORMAT);
-    return pubdate;
+    struct tm tmp;
+
+    if( datestring.contains( ',' ) )
+        strptime( datestring.toAscii().data(), "%a, %d %b %Y %H:%M:%S %z", &tmp );
+    else
+        strptime( datestring.toAscii().data(), "%d %b %Y %H:%M:%S %z", &tmp );
+
+    QDateTime pubDate = QDateTime::fromTime_t( mktime( &tmp ) );
+
+    return pubDate;
 }
 
 void
