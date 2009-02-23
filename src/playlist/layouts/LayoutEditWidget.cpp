@@ -18,6 +18,7 @@
  ***************************************************************************/
  
 #include "LayoutEditWidget.h"
+#include "DragStack.h"
 #include "playlist/PlaylistDefines.h"
 
 #include "Debug.h"
@@ -32,76 +33,32 @@ using namespace Playlist;
 LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     : KVBox(parent)
 {
-    m_rowsBox = new KVBox( this );
-
-    KHBox * bottomBox = new KHBox( this );
-
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , bottomBox );
-    m_noOfRowsSpinBox = new QSpinBox( bottomBox );
-
-    m_noOfRowsSpinBox->setPrefix( i18n( "No. of Rows: " ) );
-
-    m_noOfRowsSpinBox->setRange( 0, 5 );
-    m_noOfRowsSpinBox->setValue( 1 );
-    numberOfRowsChanged( 1 );
-
-    connect( m_noOfRowsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( numberOfRowsChanged( int ) ) );
-
+    m_tokenFactory = new TokenWithLayoutFactory;
+    m_dragstack = new DragStack( "application/x-amarok-tag-token", new QWidget(this) );
+    m_dragstack->setCustomTokenFactory( m_tokenFactory );
+    connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
+    
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
 }
 
 
 LayoutEditWidget::~LayoutEditWidget()
 {
-}
-
-void LayoutEditWidget::numberOfRowsChanged( int noOfRows )
-{
-    int currentNoOfRows = m_rowMap.count();
-    
-    if ( noOfRows > currentNoOfRows )
-    {
-        //we need to add rows...
-        int rowsToAdd = noOfRows - currentNoOfRows;
-
-        for( int i = currentNoOfRows; i < rowsToAdd + currentNoOfRows; i++ )
-        {
-            FilenameLayoutWidget * layoutWidget = new FilenameLayoutWidget( m_rowsBox );
-            layoutWidget->setCustomTokenFactory( new TokenWithLayoutFactory() );
-            m_rowMap.insert( i, layoutWidget );
-        }
-        
-    }
-    else if ( noOfRows < currentNoOfRows )
-    {
-        //we need to remove rows. We jsut drop the bottom ones for now
-        for( int i = noOfRows; i < currentNoOfRows; i++ )
-        {
-            FilenameLayoutWidget * layoutWidget = m_rowMap.take( i );
-            delete layoutWidget;
-        }
-    }
+//     delete m_tokenFactory; m_tokenFactory = 0;
 }
 
 void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
     int rowCount = config.rows();
 
-    //clear existing rows (if any)
-    numberOfRowsChanged( 0 );
-    
-    //create the needed rows
-    numberOfRowsChanged( rowCount );
-    m_noOfRowsSpinBox->setValue( rowCount );
-
     m_showCoverCheckBox->setChecked( config.showCover() );
-    
+
+    m_dragstack->clear();
+
     for( int i = 0; i < rowCount; i++ )
     {
         //get the row config
         Playlist::LayoutItemConfigRow rowConfig = config.row( i );
-        
-        //get the row layout
-        FilenameLayoutWidget * currentRow = m_rowMap.value( i );
 
         int elementCount = rowConfig.count();
 
@@ -115,11 +72,21 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
             token->setAlignment( element.alignment() );
-            currentRow->addToken( token );
-            token->setSize( element.size() * 100.0 );
+            m_dragstack->insertToken( token, i, j );
+            token->setWidth( element.size() * 100.0 );
         }
 
     }
+}
+
+QList<Token*> Playlist::LayoutEditWidget::tokens( int row ) const
+{
+    return m_dragstack->drags( row );
+}
+
+int Playlist::LayoutEditWidget::row( Token *token ) const
+{
+    return m_dragstack->row( token );
 }
 
 Playlist::LayoutItemConfig LayoutEditWidget::config()
@@ -128,35 +95,25 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
     LayoutItemConfig config;
     config.setShowCover( m_showCoverCheckBox->isChecked() );
     
-    int noOfRows = m_rowMap.count();
+    int noOfRows = m_dragstack->rows();
 
     for( int i = 0; i < noOfRows; i++ )
     {
 
         LayoutItemConfigRow currentRowConfig;
 
-        FilenameLayoutWidget * currentLayoutWidget = m_rowMap.value( i );
-        QList<Token *> tokens = currentLayoutWidget->currentTokenLayout();
+        QList<Token *> tokens = m_dragstack->drags( i );
 
         foreach( Token * token, tokens ) {
-            TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token );
-
-            bool bold = false;
-            bool italic = false;
-            Qt::Alignment alignment = Qt::AlignCenter;
-            qreal size = 0.0;
-            if ( twl )
+            if ( TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token ) )
             {
-                bold = twl->bold();
-                italic = twl->italic();
-                alignment = twl->alignment();
-
-                if ( twl->size() > 0.01 ) {
-                    size = twl->size();
+                qreal width = 0.0;
+                if ( twl->widthForced() && twl->width() > 0.01) {
+                    width = twl->width();
                 }
+                currentRowConfig.addElement( LayoutItemConfigRowElement( twl->value(), width, twl->bold(), twl->italic(),
+                                                                         twl->alignment(), twl->prefix(), twl->suffix() ) );
             }
-
-            currentRowConfig.addElement( LayoutItemConfigRowElement( token->value(), size, bold, italic, alignment ) );
         }
 
         config.addRow( currentRowConfig );

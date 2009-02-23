@@ -45,16 +45,23 @@ public:
     void setAlignment( Qt::Alignment alignment );
 
     bool bold() const;
-    void setBold( bool bold );
-
     bool italic() const;
-    void setItalic( bool italic );
-    qreal size() const;
+    inline qreal size() const { return width(); }
+    qreal width() const;
+    inline bool widthForced() const { return m_widthForced; }
+    inline QString prefix() const { return m_prefix; }
+    inline QString suffix() const { return m_suffix; }
 
-    
 public slots:
-
-    void setSize( int size );
+    void setAlignLeft( bool );
+    void setAlignCenter( bool );
+    void setAlignRight( bool );
+    void setBold( bool bold );
+    void setItalic( bool italic );
+    void setPrefix( const QString& );
+    void setSuffix( const QString& );
+    void setWidth( int width );
+    void setWidthForced( bool );
 
 protected:
     virtual void contextMenuEvent( QContextMenuEvent * event );
@@ -64,7 +71,9 @@ private:
     Qt::Alignment m_alignment;
     bool m_bold;
     bool m_italic;
-    qreal m_size;
+    bool m_widthForced;
+    qreal m_width;
+    QString m_prefix, m_suffix;
 
 };
 

@@ -19,7 +19,7 @@
 
 #include "TokenWithLayout.h"
 
-#include "FilenameLayoutWidget.h"
+#include "playlist/layouts/LayoutEditWidget.h"
 
 #include "Debug.h"
 
@@ -45,11 +45,13 @@ Token * TokenWithLayoutFactory::createToken(const QString &text, const QString &
 
 TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent )
     : Token( text, iconName, value, parent  )
-    , m_size( 0.0 )
+    , m_width( 0.0 )
 {
+    m_widthForced = m_width > 0.0;
     m_alignment = Qt::AlignCenter;
     m_bold = false;
     m_italic = false;
+    setFocusPolicy( Qt::ClickFocus );
 }
 
 
@@ -109,21 +111,38 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
     QSlider * slider = new QSlider( Qt::Horizontal, sliderBox );
     slider->setMaximum( 100 );
     slider->setMinimum( 0 );
-    slider->setValue( m_size * 100.0 );
+
+    // this should really not be done here as it makes upward assumptions
+    // it was however done in setWidth with similar upward assumptions as well
+    // solution: the popup stuff -iff- should be done in the dialog or the editWidget
+    if ( parentWidget() )
+    if ( Playlist::LayoutEditWidget *editWidget = qobject_cast<Playlist::LayoutEditWidget*>( parentWidget()->parentWidget() ) )
+    {
+        qreal spareWidth = 100.0;
+        int row = editWidget->row( this );
+        if ( row > -1 )
+        {
+            QList<Token*> tokens = editWidget->tokens( row );
+            foreach (Token *t, tokens)
+            {
+                if (t == this)
+                    continue;
+                if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( t ) )
+                    spareWidth -= twl->width() * 100.0;
+            }
+        }
+        slider->setMaximum( qMax( spareWidth, 0.0 ) );
+    }
+    slider->setValue( m_width * 100.0 );
 
     QLCDNumber * sizeLabel = new QLCDNumber( 3, sliderBox );
-    sizeLabel->display( m_size * 100.0 );
+    sizeLabel->display( m_width * 100.0 );
 
-
-       
 
     connect( slider, SIGNAL( valueChanged( int ) ), sizeLabel, SLOT( display( int ) ) );
-    connect( slider, SIGNAL( valueChanged( int ) ), this, SLOT( setSize( int ) ) );
+    connect( slider, SIGNAL( valueChanged( int ) ), this, SLOT( setWidth( int ) ) );
    
 
-
-    
-    
     menu.setFixedHeight( orgHeight + slider->height() );
 
     slider->setFixedWidth( menu.width() - 4 );
@@ -154,6 +173,24 @@ void TokenWithLayout::setAlignment( Qt::Alignment alignment )
     m_label->setAlignment( alignment );
 }
 
+void TokenWithLayout::setAlignLeft( bool b )
+{
+    if (b)
+        setAlignment( Qt::AlignLeft );
+}
+
+void TokenWithLayout::setAlignCenter( bool b )
+{
+    if (b)
+        setAlignment( Qt::AlignCenter );
+}
+
+void TokenWithLayout::setAlignRight( bool b )
+{
+    if (b)
+        setAlignment( Qt::AlignRight );
+}
+
 bool TokenWithLayout::bold() const
 {
     return m_bold;
@@ -167,36 +204,31 @@ void TokenWithLayout::setBold( bool bold )
     m_label->setFont( font );
 }
 
-void TokenWithLayout::setSize( int size )
+void TokenWithLayout::setPrefix( const QString& string )
 {
-
-    //lets try to stop the slider moving further than it is allowed...
-    //we need all the other items on this line...
-
-    int maxValue = 100;
-    FilenameLayoutWidget * flw = dynamic_cast<FilenameLayoutWidget *>( parentWidget() );
-    if ( flw ) {
-        foreach( Token * token, flw->currentTokenLayout() ) {
-            TokenWithLayout * twl = dynamic_cast<TokenWithLayout *>( token );
-            if ( twl && twl != this )
-                maxValue -= ( twl->size() * 100 );
-        }
-    }
-
-    if ( size <= maxValue )
-        m_size = ( (qreal) size ) / 100.0;
-    else
-    {
-        QSlider * slider = dynamic_cast<QSlider *>( sender() );
-        if ( slider )
-            slider->setValue( maxValue );
-        m_size = ( (qreal) maxValue ) / 100.0;
-    }
+    m_prefix = string;
 }
 
-qreal TokenWithLayout::size() const
+void TokenWithLayout::setSuffix( const QString& string )
 {
-    return m_size;
+    m_suffix = string;
+}
+
+void TokenWithLayout::setWidth( int size )
+{
+    m_width = qMax( qMin( 1.0, size/100.0 ), 0.0 ) ;
+    if ( (m_width) > 0.0 )
+        m_widthForced = true;
+}
+
+void TokenWithLayout::setWidthForced( bool on )
+{
+    m_widthForced = on;
+}
+
+qreal TokenWithLayout::width() const
+{
+    return m_width;
 }
 
 bool TokenWithLayout::italic() const

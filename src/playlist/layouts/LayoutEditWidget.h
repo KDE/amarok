@@ -30,6 +30,7 @@
 class KHBox;
 class QCheckBox;
 class QSpinBox;
+class DragStack;
 
 /**
     A widget to define the layout of a single type of playlist item ( head, body or single )
@@ -48,16 +49,16 @@ class LayoutEditWidget : public KVBox
 
         void readLayout( Playlist::LayoutItemConfig config );
         Playlist::LayoutItemConfig config();
+        int row( Token* ) const;
+        QList<Token*> tokens( int row = 0 ) const;
 
-    private slots:
-        void numberOfRowsChanged( int noOfRows );
+    signals:
+        void focussed ( QWidget* );
 
     private:
-        KVBox     *m_rowsBox;
-        QSpinBox  *m_noOfRowsSpinBox;
         QCheckBox *m_showCoverCheckBox;
-
-        QMap<int, FilenameLayoutWidget*> m_rowMap;
+        DragStack *m_dragstack;
+        TokenWithLayoutFactory *m_tokenFactory;
 };
 
 }

@@ -22,7 +22,8 @@
 
 #include <KColorScheme>
 #include <QHBoxLayout>
-
+#include <QPainter>
+#include <QPen>
 
 Token * TokenFactory::createToken(const QString & text, const QString & iconName, int value, QWidget * parent)
 {
@@ -31,12 +32,14 @@ Token * TokenFactory::createToken(const QString & text, const QString & iconName
 
 
 Token::Token( const QString &name, const QString &iconName, int value, QWidget *parent )
-    : QFrame( parent )
+    : QWidget( parent )
     , m_name( name )
     , m_icon( KIcon( iconName ) )
     , m_iconName( iconName )
     , m_value( value )
 {
+    setAttribute( Qt::WA_Hover );
+    
     m_label = new QLabel( this );
     m_label->setAlignment( Qt::AlignCenter );
     m_label->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
@@ -50,22 +53,12 @@ Token::Token( const QString &name, const QString &iconName, int value, QWidget *
     QPixmap pixmap = QPixmap( icon().pixmap( 16, 16 ) );
     m_iconContainer->setPixmap( pixmap );
 
-    setContentsMargins( 0, 0, 0, 0 );
+    setContentsMargins( 4, 2, 4, 2 );
 
     hlayout->setContentsMargins( 0, 0, 0, 0 );
     hlayout->addWidget( m_iconContainer );
     hlayout->addWidget( m_label );
     
-    const uint borderColor = static_cast<uint>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
-    const QString hexBorder = QString::number( borderColor, 16 ).remove( 0, 2 ); // remove the Alpha channel (first two hex bits)
-    
-    setStyleSheet( "Token {\
-        color: palette( Base );\
-        border: 2px solid #" + hexBorder + ";\
-        border-radius: 4px;\
-        padding: 2px;\
-    }" );
-
     QFontMetrics metric( font() );
     QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
     QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
@@ -95,6 +88,26 @@ Token::icon() const
 QString Token::iconName() const
 {
     return m_iconName;
+}
+
+void Token::paintEvent(QPaintEvent *pe)
+{
+    QPainter p( this );
+    p.setBrush( Qt::NoBrush );
+    p.setRenderHint( QPainter::Antialiasing );
+    QColor c;
+    if ( hasFocus() )
+    {
+        c = KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color();
+    }
+    else
+    {
+        c = palette().color( foregroundRole() );
+        c.setAlpha( c.alpha() * 0.5 );
+    }
+    p.setPen( QPen( c, 2 ) );
+    p.drawRoundedRect( rect().adjusted(1,1,-1,-1), 4, 4 );
+    p.end();
 }
 
 

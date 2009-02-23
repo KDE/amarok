@@ -20,7 +20,7 @@
 #define AMAROK_TOKEN_H
 
 #include <KIcon>
-#include <QFrame>
+#include <QWidget>
 #include <QLabel>
 #include <QPixmap>
 
@@ -35,7 +35,7 @@ public:
 };
 
 //Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
-class Token : public QFrame
+class Token : public QWidget
 {
         Q_OBJECT
 
@@ -47,6 +47,8 @@ class Token : public QFrame
         QString iconName() const;
         QString name() const;
         int value() const;
+    protected:
+        virtual void paintEvent(QPaintEvent *pe);
 
     protected:
 

@@ -25,6 +25,8 @@
 #include <QLabel>
 #include <QPaintEvent>
 
+class DragStack;
+
 // Handles the graphical representation of the target filename as a bar that contains tokens.
 class FilenameLayoutWidget : public QFrame
 {
@@ -32,44 +34,23 @@ class FilenameLayoutWidget : public QFrame
 
     public:
         FilenameLayoutWidget( QWidget *parent = 0 );
-        ~FilenameLayoutWidget();
 
         unsigned int getTokenCount() const;
-        
-        void paintEvent( QPaintEvent *event );
-
         QList<Token *> currentTokenLayout();
-
         void removeAllTokens();
-
         void setCustomTokenFactory( TokenFactory *factory );
-
-    protected:
-        void mouseMoveEvent( QMouseEvent *event );
-        void mousePressEvent( QMouseEvent *event );
-        void dragEnterEvent( QDragEnterEvent *event );
-        void dragMoveEvent( QDragMoveEvent *event );
-        void dropEvent( QDropEvent *event );     
-
-    public slots:
-        void addToken( Token* token, int index = -1 /* append */ );
     signals:
         void layoutChanged();
 
+    protected:
+        void paintEvent( QPaintEvent *event );
+
+    public slots:
+        void addToken( Token* token, int index = -1 /* append */ );
+
     private:
-
-        void performDrag( QMouseEvent *event );
-        void insertOverChild( Token *childUnder, Token *token, QDropEvent *event );
-
-
         QString      m_infoText;        // text in the back of the empty FilenameLayoutWidget
-        QHBoxLayout *m_layout;          // main layout that holds the tokens
-        
-        QPoint  m_startPos;             // needed for initiating the drag
-        uint    m_tokenCount;
-        QString m_parsableScheme;       // a string that TagGuesser will be able to use
-
-        TokenFactory *m_tokenFactory;
+        DragStack *m_dragstack;          // main layout that holds the tokens
 };
 
 #endif    //FILENAMELAYOUTWIDGET_H
