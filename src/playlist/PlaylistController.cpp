@@ -32,7 +32,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
-
+#include "meta/multi/MultiTrack.h"
 
 
 #include <algorithm> // STL
@@ -496,17 +496,25 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
             i.remove();
         else if ( The::playlistManager()->canExpand( track ) )
         {
+            
             Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job times out
             if ( playlist )
             {
-                Meta::TrackList newtracks = playlist->tracks();
+               /* Meta::TrackList newtracks = playlist->tracks();
                 i.remove();
                 foreach( Meta::TrackPtr t, newtracks )
                 {
                     if ( t != Meta::TrackPtr() )
                         i.insert( t );
-                }
+                }*/
+
+                //since this is a playlist masqueurading as a single track , make a MultiTrack out of it:
+                i.remove();
+                if ( playlist->tracks().count() > 0 )
+                    i.insert( Meta::TrackPtr( new Meta::MultiTrack( playlist ) ) );
             }
+
+            
         }
     }
 

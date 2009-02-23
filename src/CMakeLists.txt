@@ -220,6 +220,7 @@ set(meta_SRCS
     meta/capabilities/EditablePlaylistCapability.cpp
     meta/capabilities/LastFmCapability.cpp
     meta/capabilities/MultiPlayableCapability.cpp
+    meta/capabilities/MultiSourceCapability.cpp
     meta/capabilities/OrganiseCapability.cpp
     meta/capabilities/SourceInfoCapability.cpp
     meta/capabilities/StatisticsCapability.cpp
@@ -228,6 +229,7 @@ set(meta_SRCS
     meta/capabilities/TimecodeWriteCapability.cpp
     meta/capabilities/UpdateCapability.cpp
     meta/file/File.cpp
+    meta/multi/MultiTrack.cpp
     meta/cue/Cue.cpp
     meta/proxy/MetaProxy.cpp
     meta/stream/Stream.cpp

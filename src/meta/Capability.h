@@ -49,6 +49,7 @@ namespace Meta
                         , BookmarkThis = 14
                         , WriteTimecode = 15
                         , LoadTimecode = 16
+                        , MultiSource = 17
                       };
 
             virtual ~Capability();
