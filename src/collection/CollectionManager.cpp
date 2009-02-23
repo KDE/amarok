@@ -119,7 +119,7 @@ CollectionManager::init()
                 "it is likely that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
                 "$ cd /path/to/amarok/source-code/<br>"
                 "$ su -c \"make uninstall\"<br>"
-                "$ cmake -DCMAKE_INSTALL_PREFIX=`kde-config --prefix` && su -c \"make install\"<br>"
+                "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
                 "$ kbuildsycoca4 --noincremental<br>"
                 "$ amarok</pre>"
                 "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
