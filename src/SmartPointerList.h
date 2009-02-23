@@ -82,9 +82,9 @@ public:
     
     SmartPointerList& operator=( const SmartPointerList<T>& that )
     {    
-        QListIterator<T*> i( that );
+        QListIterator<T*> i( *this);
         while (i.hasNext())
-            disconnect( m_daddy, 0, i.next(), 0 );
+            QObject::disconnect( m_daddy, 0, i.next(), 0 );
 
         QList<T*>::operator=( that );
         
