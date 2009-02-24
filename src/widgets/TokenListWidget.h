@@ -27,11 +27,14 @@
 class TokenListWidget : public KListWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QString mimeType READ mimeType WRITE setMimeType)
     
     public:
         TokenListWidget( QWidget *parent = 0 );
         void addToken( Token * token );
     
+        QString mimeType() const;
+        void setMimeType( const QString& mimeType );
     protected:
         void mouseDoubleClickEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
@@ -46,6 +49,7 @@ class TokenListWidget : public KListWidget
     private:
         void performDrag( QMouseEvent *event );
         QPoint m_startPos;  //needed for starting the drag
+        QString m_mimeType;
 
         QMap<QListWidgetItem*,Token*> m_itemTokenMap;
 };

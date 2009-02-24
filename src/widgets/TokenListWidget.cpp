@@ -38,6 +38,18 @@ TokenListWidget::addToken( Token * token )
     m_itemTokenMap.insert( item, token );
 }
 
+QString
+TokenListWidget::mimeType() const
+{
+    return m_mimeType;
+}
+
+void
+TokenListWidget::setMimeType( const QString& mimeType )
+{
+    m_mimeType = mimeType;
+}
+
 // Executed on doubleclick of the TokenListWidget, emits signal onDoubleClick( QString )
 // that connects to FilenameLayoutWidget::addToken( QString )
 void
@@ -117,7 +129,7 @@ TokenListWidget::performDrag( QMouseEvent *event )
         dataStream << token->name() << token->iconName() << token->value() << QPoint( event->pos() - rect().topLeft() );
         
         QMimeData *mimeData = new QMimeData;
-        mimeData->setData( "application/x-amarok-tag-token", itemData );
+        mimeData->setData( m_mimeType, itemData );
         
         QDrag *drag = new QDrag( this );
         drag->setMimeData( mimeData );
@@ -126,3 +138,5 @@ TokenListWidget::performDrag( QMouseEvent *event )
         drag->exec( Qt::MoveAction | Qt::CopyAction, Qt::CopyAction );
     }
 }
+
+#include "TokenListWidget.moc"
