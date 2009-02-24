@@ -52,6 +52,7 @@ public:
     virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs );
 
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
+    virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
 
     virtual int validFilterMask();
     virtual QueryMaker* limitMaxResultSize( int size );
@@ -77,7 +78,8 @@ protected:
     QString m_sessionId;
     QString m_parentAlbumId;
     QString m_parentArtistId;
-
+    
+    uint m_dateFilter;
     QString m_artistFilter;
     QString m_lastArtistFilter;
 

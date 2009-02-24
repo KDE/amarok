@@ -69,6 +69,7 @@ AmpacheServiceQueryMaker::reset()
     m_parentArtistId.clear();
     m_parentAlbumId.clear();
     m_artistFilter.clear();
+    m_dateFilter = 0;
     //m_lastArtistFilter = QString(); this one really should survive a reset....
 
     return this;
@@ -569,6 +570,20 @@ AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool m
     }
     return this;
 }
+
+QueryMaker* 
+AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
+{
+    DEBUG_BLOCK
+    
+    if( value = valCreateDate && compare == QueryMaker::GreaterThan )
+    {
+        debug() << "asking to filter based on added date";
+        m_dateFilter = filter;
+    }
+    return this;
+}
+
 
 int
 AmpacheServiceQueryMaker::validFilterMask()
