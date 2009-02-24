@@ -17,8 +17,6 @@
  ******************************************************************************/
 
 #include "Token.h"
-#include "FilenameLayoutWidget.h"
-#include "Debug.h"
 
 #include <KColorScheme>
 #include <QHBoxLayout>

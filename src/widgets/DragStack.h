@@ -20,14 +20,16 @@
 #ifndef DRAGSTACK_H
 #define DRAGSTACK_H
 
-#include <QVBoxLayout>
+#include <QWidget>
 
+class QBoxLayout;
+class QHBoxLayout;
 class QDropEvent;
 class Token;
 class TokenDragger;
 class TokenFactory;
 
-class DragStack : public QVBoxLayout
+class DragStack : public QWidget
 {
     Q_OBJECT
 public:
@@ -39,7 +41,7 @@ public:
     virtual int count ( int row ) const;
     void insertToken( Token*, int row = -1, int col = -1 ); // -1 -> append to last row
     int row ( Token* ) const;
-    inline int rows() const { return QVBoxLayout::count() - 1; }
+    int rows() const;
     inline uint rowLimit() const { return m_limits[1]; }
     inline void setRowLimit( uint r ) { m_limits[1] = r; }
     void setCustomTokenFactory( TokenFactory * factory );

@@ -18,7 +18,7 @@
 #ifndef TOKENLISTWIDGET_H
 #define TOKENLISTWIDGET_H
 
-#include "FilenameLayoutWidget.h"
+#include "Token.h"
 
 #include <KListWidget>
 #include <QMap>

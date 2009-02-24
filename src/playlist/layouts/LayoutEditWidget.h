@@ -49,8 +49,6 @@ class LayoutEditWidget : public KVBox
 
         void readLayout( Playlist::LayoutItemConfig config );
         Playlist::LayoutItemConfig config();
-        int row( Token* ) const;
-        QList<Token*> tokens( int row = 0 ) const;
 
     signals:
         void focussed ( QWidget* );

@@ -36,13 +36,19 @@
 FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
     : QFrame( parent )
 {
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins( 0, 0, 0, 0 );
+
     m_dragstack = new DragStack( "application/x-amarok-tag-token", this );
     m_dragstack->setRowLimit( 1 );
-    m_dragstack->setContentsMargins( 1, 1, 1, 1 );
+    m_dragstack->layout()->setContentsMargins( 1, 1, 1, 1 );
     connect ( m_dragstack, SIGNAL( changed() ), this, SLOT( update() ) );
     connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( layoutChanged() ) );
 
     m_infoText = QString( i18n( "Drag tokens here to define a filename scheme." ) );
+
+    layout->addWidget( m_dragstack );
+    setLayout( layout );
 
     repaint();  //update m_infoText
 }

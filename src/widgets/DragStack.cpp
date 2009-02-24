@@ -21,6 +21,7 @@
 #include "DragStack.h"
 
 #include <QDropEvent>
+#include <QVBoxLayout>
 
 #include <QtDebug>
 
@@ -74,7 +75,7 @@ private:
             return false;
 
         bool ret = false;
-        bool stacked = token->parentWidget() && qobject_cast<DragStack*>( token->parentWidget()->layout() );
+        bool stacked = token->parentWidget() && qobject_cast<DragStack*>( token->parentWidget() );
         if (stacked)
             token->hide();
         
@@ -119,10 +120,11 @@ private:
 };
 
 
-DragStack::DragStack( const QString &mimeType, QWidget *parent ) : QVBoxLayout( parent ),
+DragStack::DragStack( const QString &mimeType, QWidget *parent ) : QWidget( parent ),
 m_tokenDragger( new TokenDragger( mimeType, this ) ),
 m_tokenFactory( new TokenFactory() )
 {
+    new QVBoxLayout( this );
     m_mimeType = mimeType;
     m_limits[0] = m_limits[1] = 0;
     // let daddy widget be droppable... ;)
@@ -132,9 +134,9 @@ m_tokenFactory( new TokenFactory() )
     parent->installEventFilter( this );
     
     // visual, maybe there should be spacing? however, frames etc. can have contentmargin.
-    setSpacing( 0 );
+    layout()->setSpacing( 0 );
     // top-align content
-    addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
+    layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
 }
 
 bool
@@ -162,15 +164,15 @@ DragStack::appendRow()
     QHBoxLayout *box = new QHBoxLayout;
     box->setSpacing( 0 );
     box->addStretch();
-    insertLayout( QVBoxLayout::count() - 1, box ); // last item is a spacer
+    static_cast<QVBoxLayout*>(layout())->insertLayout( layout()->count() - 1, box ); // last item is a spacer
     return box;
 }
 
 QWidget *
 DragStack::childAt( const QPoint &pos ) const
 {
-    for ( int row = 0; row < QVBoxLayout::count(); ++row )
-        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( itemAt( row )->layout() ) )
+    for ( int row = 0; row <= rows(); ++row )
+        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
             for ( int col = 0; col < rowBox->count(); ++col )
                 if ( QWidget *kid = rowBox->itemAt( col )->widget() )
                 if ( kid->geometry().contains( pos ) )
@@ -182,7 +184,7 @@ void
 DragStack::clear()
 {
     QLayoutItem *row, *col;
-    while( ( row = takeAt( 0 ) ) )
+    while( ( row = layout()->takeAt( 0 ) ) )
     {
         if ( QLayout *layout = row->layout() )
         {
@@ -195,15 +197,15 @@ DragStack::clear()
         delete row;
     }
     //readd our spacer
-    addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
+    layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
     emit changed();
 }
 
 int
 DragStack::count( int row ) const
 {
-    int lower = 0, upper = QVBoxLayout::count() - 1;
-    if ( row > -1 && row < QVBoxLayout::count() - 1 )
+    int lower = 0, upper = rows();
+    if ( row > -1 && row < rows() )
     {
         lower = row;
         upper = row + 1;
@@ -211,7 +213,7 @@ DragStack::count( int row ) const
     
     int c = 0;
     for ( row = lower; row < upper; ++row )
-        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( itemAt( row )->layout() ) )
+        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
             c += rowBox->count() - 1;
     return c;
 }
@@ -220,12 +222,12 @@ void
 DragStack::deleteEmptyRows()
 {
     QBoxLayout *box = 0;
-    for ( int row = 0; row < QVBoxLayout::count(); )
+    for ( int row = 0; row <= rows(); )
     {
-        box = qobject_cast<QBoxLayout*>( itemAt( row )->layout() );
+        box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( box && box->count() < 2 ) // sic! last is spacer
         {
-            removeItem( box );
+            layout()->removeItem( box );
             delete box;
         }
         else
@@ -236,8 +238,8 @@ DragStack::deleteEmptyRows()
 QList< Token *>
 DragStack::drags( int row )
 {
-    int lower = 0, upper = QVBoxLayout::count() - 1;
-    if ( row > -1 && row < QVBoxLayout::count() - 1 )
+    int lower = 0, upper = rows();
+    if ( row > -1 && row < rows() )
     {
         lower = row;
         upper = row + 1;
@@ -246,7 +248,7 @@ DragStack::drags( int row )
     QList< Token *> list;
     Token *token;
     for ( row = lower; row < upper; ++row )
-        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( itemAt( row )->layout() ) )
+        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
         {
             for ( int col = 0; col < rowBox->count() - 1; ++col )
                 if ( ( token = qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
@@ -279,8 +281,8 @@ DragStack::drop( Token *token, const QPoint &pos )
     }
     else
     {
-        if ( rowLimit() && QVBoxLayout::count() > (int)rowLimit() ) // we usually don't want more rows
-            box = qobject_cast<QBoxLayout*>( itemAt( QVBoxLayout::count() - 2 )->layout() );
+        if ( rowLimit() && rows() >= (int)rowLimit() ) // we usually don't want more rows
+            box = qobject_cast<QBoxLayout*>( layout()->itemAt( rows() - 1 )->layout() );
         
         if ( !box )
         {
@@ -326,7 +328,7 @@ DragStack::eventFilter( QObject *o, QEvent *ev )
                 dataStream >> tokenIconName;
                 dataStream >> tokenValue;
 
-                token = m_tokenFactory->createToken( tokenName, tokenIconName, tokenValue, parentWidget() );
+                token = m_tokenFactory->createToken( tokenName, tokenIconName, tokenValue, this );
                 token->removeEventFilter( m_tokenDragger );
                 token->installEventFilter( m_tokenDragger );
                 token->setCursor( Qt::OpenHandCursor );
@@ -342,10 +344,10 @@ void
 DragStack::insertToken( Token *token, int row, int col )
 {
     QBoxLayout *box = 0;
-    if ( row > QVBoxLayout::count() - 2 )
+    if ( row > rows() - 1 )
         box = appendRow();
     else
-        box = qobject_cast<QBoxLayout*>( itemAt( row )->layout() );
+        box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
     token->setParent( parentWidget() );
     if ( col < 0 || col > box->count() - 2 )
         col = box->count() - 1;
@@ -359,13 +361,19 @@ DragStack::insertToken( Token *token, int row, int col )
 int
 DragStack::row( Token *token ) const
 {
-    for ( int row = 0; row < QVBoxLayout::count(); ++row )
+    for ( int row = 0; row <= rows(); ++row )
     {
-        QBoxLayout *box = qobject_cast<QBoxLayout*>( itemAt( row )->layout() );
+        QBoxLayout *box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( box && ( box->indexOf( token ) ) > -1 )
             return row;
     }
     return -1;
+}
+
+int
+DragStack::rows() const
+{
+    return layout()->count() - 1;
 }
 
 QBoxLayout *
@@ -373,9 +381,9 @@ DragStack::rowBox( QWidget *w, QPoint *idx ) const
 {
     QBoxLayout *box = 0;
     int col;
-    for ( int row = 0; row < QVBoxLayout::count(); ++row )
+    for ( int row = 0; row <= rows(); ++row )
     {
-        box = qobject_cast<QBoxLayout*>( itemAt( row )->layout() );
+        box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( box && ( col = box->indexOf( w ) ) > -1 )
         {
             if ( idx )
@@ -393,9 +401,9 @@ QBoxLayout *
 DragStack::rowBox( const QPoint &pt ) const
 {
     QBoxLayout *box = 0;
-    for ( int row = 0; row < QVBoxLayout::count(); ++row )
+    for ( int row = 0; row <= rows(); ++row )
     {
-        box = qobject_cast<QBoxLayout*>( itemAt( row )->layout() );
+        box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
         if ( !box )
             continue;
         for ( int col = 0; col < box->count(); ++col )

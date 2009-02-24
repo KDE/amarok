@@ -19,9 +19,7 @@
 
 #include "TokenWithLayout.h"
 
-#include "playlist/layouts/LayoutEditWidget.h"
-
-#include "Debug.h"
+#include "DragStack.h"
 
 #include <KAction>
 #include <KHBox>
@@ -39,7 +37,6 @@
 
 Token * TokenWithLayoutFactory::createToken(const QString &text, const QString &iconName, int value, QWidget *parent)
 {
-    DEBUG_BLOCK
     return new TokenWithLayout( text, iconName, value, parent );
 }
 
@@ -116,13 +113,13 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
     // it was however done in setWidth with similar upward assumptions as well
     // solution: the popup stuff -iff- should be done in the dialog or the editWidget
     if ( parentWidget() )
-    if ( Playlist::LayoutEditWidget *editWidget = qobject_cast<Playlist::LayoutEditWidget*>( parentWidget()->parentWidget() ) )
+    if ( DragStack *editWidget = qobject_cast<DragStack*>( parentWidget() ) )
     {
         qreal spareWidth = 100.0;
         int row = editWidget->row( this );
         if ( row > -1 )
         {
-            QList<Token*> tokens = editWidget->tokens( row );
+            QList<Token*> tokens = editWidget->drags( row );
             foreach (Token *t, tokens)
             {
                 if (t == this)

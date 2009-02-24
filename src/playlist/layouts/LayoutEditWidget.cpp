@@ -34,7 +34,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     : KVBox(parent)
 {
     m_tokenFactory = new TokenWithLayoutFactory;
-    m_dragstack = new DragStack( "application/x-amarok-tag-token", new QWidget(this) );
+    m_dragstack = new DragStack( "application/x-amarok-tag-token", this );
     m_dragstack->setCustomTokenFactory( m_tokenFactory );
     connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
     
@@ -77,16 +77,6 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
         }
 
     }
-}
-
-QList<Token*> Playlist::LayoutEditWidget::tokens( int row ) const
-{
-    return m_dragstack->drags( row );
-}
-
-int Playlist::LayoutEditWidget::row( Token *token ) const
-{
-    return m_dragstack->row( token );
 }
 
 Playlist::LayoutItemConfig LayoutEditWidget::config()
