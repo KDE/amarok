@@ -5,7 +5,6 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
-
     * Ampache service: Add support for Ampache 3.5.x as well as 3.4.4.
     * Auto timecoding (position bookmarking) now exists for tracks with length
       greater than 10 minutes. (BR 148740)
@@ -64,8 +63,8 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
-    * The Bookmark Handler in the File Browser no longer causes a
-	  crash-on-exit, so it has been re-enabled. (BR 173634)
+    * The Bookmark Handler in the File Browser no longer causes a crash-on-exit,
+      so it has been re-enabled. (BR 173634)
     * Performance optimisation when loading large playlists, and hence faster
       application startup.
     * Many small visual tweaks for greater consistency and better use of screen
@@ -85,7 +84,7 @@ VERSION 2.1
     * Show the cover menu when right clicking on artwork in the Tag Dialog.
     * Don't remove queued tracks from the playlist when repopulating dynamic
       playlists.
-    * Major last.fm UI overhaul
+    * Major last.fm UI overhaul.
     * Progress indicator on system tray icon is back.
     * Now using KSystemTrayIcon.
     * QtScript: Importer.loadQtBinding returns a true or false depending on
@@ -94,7 +93,7 @@ VERSION 2.1
   BUGFIXES:
     * The collection scanner no longer sucks.
     * A full rescan is no longer necessary after disconnecting/reconnecting an external
-      harddrive
+      harddrive.
     * Fix issue with files being deleted when Organize Collection is run
       without selecting a collection root. (BR 184410)
     * Fix showing of book information from the LibriVox service.
@@ -119,6 +118,7 @@ VERSION 2.1
     * Don't show the rating widget for tracks which are not in the collection.
       (BR 180023)
     * The negation operator (the minus sign) works in the collection browser.
+
 
 VERSION 2.0.1.1
   BUGFIX:
