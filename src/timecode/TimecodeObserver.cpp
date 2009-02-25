@@ -48,7 +48,8 @@ TimecodeObserver::engineNewTrackPlaying()
         if ( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold )
         {
             Meta::TimecodeWriteCapability *tcw = m_currentTrack->as<Meta::TimecodeWriteCapability>();
-            tcw->writeTimecode ( m_currPos ); // save the timecode
+            if( tcw )
+                tcw->writeTimecode ( m_currPos ); // save the timecode
         }
     }
 
