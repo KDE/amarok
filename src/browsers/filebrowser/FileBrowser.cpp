@@ -66,6 +66,18 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
 
+    m_dirOperator = new MyDirOperator( QDir::home().path(), this );
+
+    QPalette p = m_dirOperator->palette();
+    QColor c = p.color( QPalette::Base );
+    c.setAlpha( 0 );
+    p.setColor( QPalette::Base, c );
+    m_dirOperator->setPalette( p );
+
+    connect( m_dirOperator, SIGNAL( viewChanged( QAbstractItemView * ) ), this, SLOT( selectorViewChanged( QAbstractItemView * ) ) );
+    setStretchFactor( m_dirOperator, 2 );
+    m_dirOperator->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding ) );
+
     KHBox* filterBox = new KHBox( this );
     m_filterButton = new QToolButton( filterBox );
     m_filterButton->setIcon( KIcon( "view-filter" ) );
@@ -78,18 +90,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     connect( m_filter, SIGNAL( activated( const QString& ) ), SLOT( slotFilterChange( const QString& ) ) );
     connect( m_filter, SIGNAL( editTextChanged( const QString& ) ), SLOT( slotFilterChange( const QString& ) ) );
     connect( m_filter, SIGNAL( returnPressed( const QString& ) ), m_filter, SLOT( addToHistory( const QString& ) ) );
-
-    m_dirOperator = new MyDirOperator( QDir::home().path(), this );
-
-    QPalette p = m_dirOperator->palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-    m_dirOperator->setPalette( p );
-
-    connect( m_dirOperator, SIGNAL( viewChanged( QAbstractItemView * ) ), this, SLOT( selectorViewChanged( QAbstractItemView * ) ) );
-    setStretchFactor( m_dirOperator, 2 );
-    m_dirOperator->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding ) );
 
     KActionCollection *coll = m_dirOperator->actionCollection();
     // some shortcuts of diroperator that clash with Kate
