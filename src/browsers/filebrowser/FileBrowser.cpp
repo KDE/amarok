@@ -68,12 +68,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
 
     m_dirOperator = new MyDirOperator( QDir::home().path(), this );
 
-    QPalette p = m_dirOperator->palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-    m_dirOperator->setPalette( p );
-
     connect( m_dirOperator, SIGNAL( viewChanged( QAbstractItemView * ) ), this, SLOT( selectorViewChanged( QAbstractItemView * ) ) );
     setStretchFactor( m_dirOperator, 2 );
     m_dirOperator->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding ) );
