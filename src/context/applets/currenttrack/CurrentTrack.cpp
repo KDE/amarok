@@ -137,7 +137,7 @@ void CurrentTrack::init()
         m_tracks[i] = new TrackWidget( this );
     }
     m_tabBar->addTab( i18n( "Last played" ) );
-    m_tabBar->addTab( i18n( "Favourite tracks" ) );
+    m_tabBar->addTab( i18n( "Favorite tracks" ) );
 
     connectSource( "current" );
     connect( m_tabBar, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
