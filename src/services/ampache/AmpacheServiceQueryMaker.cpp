@@ -49,6 +49,7 @@ AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * c
     , d( new Private )
     , m_server( server )
     , m_sessionId( sessionId )
+    , m_dateFilter ( -1 )
 {
     DEBUG_BLOCK
     m_collection = collection;
@@ -235,8 +236,18 @@ AmpacheServiceQueryMaker::fetchArtists()
 
         if ( !m_artistFilter.isEmpty() )
             urlString += QString( "&filter=" + m_artistFilter );
+        
+        if( m_dateFilter > 0 )
+        {
+            QDateTime from;
+            from.setTime_t( m_dateFilter );
+            urlString += QString( "&add=" + from.toString( Qt::ISODate ) );
+            debug() << "added date filter with time:" <<  from.toString( Qt::ISODate );
+        } else
+            debug() << "m_dateFilter is:" << m_dateFilter;
+        
         urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
-        //debug() << "Artist url: " << urlString;
+        debug() << "Artist url: " << urlString;
 
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
@@ -275,7 +286,14 @@ AmpacheServiceQueryMaker::fetchAlbums()
         urlString.replace( "<SESSION_ID>", m_sessionId);
         if( !m_parentArtistId.isEmpty() )
             urlString += QString( "&filter=" + m_parentArtistId );
-        //debug() << "request url: " << urlString;
+            
+        if( m_dateFilter > 0 )
+        {
+            QDateTime from;
+            from.setTime_t( m_dateFilter );
+            urlString += QString( "&add=" + from.toString( Qt::ISODate ) );
+        }
+        debug() << "request url: " << urlString;
         urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
@@ -326,6 +344,14 @@ AmpacheServiceQueryMaker::fetchTracks()
             urlString += QString( "&filter=" + m_parentAlbumId );
         else if( !m_parentArtistId.isEmpty() )
             urlString += QString( "&filter=" + m_parentArtistId );
+        if( m_dateFilter > 0 )
+        {
+            QDateTime from;
+            from.setTime_t( m_dateFilter );
+            urlString += QString( "&add=" + from.toString( Qt::ISODate ) );
+        }
+        debug() << "request url: " << urlString;
+        
         urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
 
         m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
@@ -580,6 +606,7 @@ AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMak
     {
         debug() << "asking to filter based on added date";
         m_dateFilter = filter;
+        debug() << "setting dateFilter to:" << m_dateFilter;
     }
     return this;
 }
