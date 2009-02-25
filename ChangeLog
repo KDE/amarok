@@ -63,6 +63,7 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
+    * Filebrowser UI has been tweaked for better usability.
     * The Bookmark Handler in the File Browser no longer causes a crash-on-exit,
       so it has been re-enabled. (BR 173634)
     * Performance optimisation when loading large playlists, and hence faster
