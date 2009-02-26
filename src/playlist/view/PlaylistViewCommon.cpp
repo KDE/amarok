@@ -67,6 +67,9 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
         menu->addAction( playAction );
     }
 
+    debug() << "state: " << index->data( Playlist::StateRole ).toInt();
+    debug() << "queued: " << Item::Queued;
+    
     const bool isQueued = index->data( Playlist::StateRole ).toInt() & Item::Queued;
     if( !isQueued )
         menu->addAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), parent, SLOT( queueSelection() ) );

@@ -437,7 +437,7 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
     PopupDropperAction *queueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     connect( queueAction, SIGNAL( triggered() ), this, SLOT( queueSelection() ) );
 
-    PopupDropperAction *dequeueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
+    PopupDropperAction *dequeueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Dequeue Track" ), this );
     connect( dequeueAction, SIGNAL( triggered() ), this, SLOT( dequeueSelection() ) );
 
     const bool isQueued = index.data( Playlist::StateRole ).toInt() & Item::Queued;
