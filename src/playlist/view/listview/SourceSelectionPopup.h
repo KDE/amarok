@@ -16,35 +16,45 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef PLAYLISTSOURCESELECTIONPOPUP_H
+#define PLAYLISTSOURCESELECTIONPOPUP_H
 
-
-#ifndef AMAROK_MULTISOURCECAPABILITYIMPL_P_H
-#define AMAROK_MULTISOURCECAPABILITYIMPL_P_H
+#include <QDialog>
 
 #include "meta/capabilities/MultiSourceCapability.h"
 
-#include "Debug.h"
-#include "MultiTrack.h"
+#include <QStringList>
 
+class QListWidget;
+class QListWidgetItem;
 
-class MultiSourceCapabilityImpl : public Meta::MultiSourceCapability
+namespace Playlist {
+
+/**
+A small popup to let the user choose between the sources for tracks or streams that might have several.
+
+	@author 
+*/
+class SourceSelectionPopup : public QDialog
 {
     Q_OBJECT
 public:
-    MultiSourceCapabilityImpl( Meta::MultiTrack * track );
+    SourceSelectionPopup( QWidget * parent, Meta::MultiSourceCapability * msc );
 
+    ~SourceSelectionPopup();
 
-    virtual KUrl first() { return m_track->first(); }
-    virtual KUrl next() { return m_track->next(); }
-    virtual int current() { return m_track->current(); }
-    virtual QStringList sources() { return m_track->sources(); }
-    virtual void setSource( int source );
+signals:
+    void sourceChanged( int source );
+
+protected slots:
+    void sourceSelected( QListWidgetItem * item );
 
 private:
-    Meta::MultiTrack * m_track;
-
+    QListWidget *m_listWidget;
+    Meta::MultiSourceCapability * m_msc;
 };
 
+}
+
 #endif
-
-

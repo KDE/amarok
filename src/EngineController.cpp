@@ -25,6 +25,7 @@
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/capabilities/MultiPlayableCapability.h"
+#include "meta/capabilities/MultiSourceCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
@@ -267,8 +268,10 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
         return;
 
     m_currentTrack = track;
-    delete m_multi;
-    m_multi = m_currentTrack->as<Meta::MultiPlayableCapability>();
+    delete m_multiPlayback;
+    delete m_multiSource;
+    m_multiPlayback = m_currentTrack->as<Meta::MultiPlayableCapability>();
+    m_multiSource  = m_currentTrack->as<Meta::MultiSourceCapability>();
 
     m_nextTrack.clear();
     m_nextUrl.clear();
@@ -276,11 +279,17 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
 
     m_currentTrack->prepareToPlay();
 
-    if( m_multi )
+    if( m_multiPlayback )
     {
         m_media->stop();
-        connect( m_multi, SIGNAL( playableUrlFetched( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
-        m_multi->fetchFirst();
+        connect( m_multiPlayback, SIGNAL( playableUrlFetched( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
+        m_multiPlayback->fetchFirst();
+    }
+    else if ( m_multiSource )
+    {
+        debug() << "Got a MultiSource Track with " <<  m_multiSource->sources().count() << " sources";
+        connect( m_multiSource, SIGNAL( urlChanged( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
+        playUrl( m_currentTrack->playableUrl(), offset );
     }
     else
     {
@@ -322,7 +331,7 @@ EngineController::stop( bool forceInstant ) //SLOT
     DEBUG_BLOCK
 
     // need to get a new instance of multi if played again
-    delete m_multi;
+    delete m_multiPlayback;
 
     m_mutex.lock();
     m_nextTrack.clear();
@@ -567,13 +576,13 @@ EngineController::slotAboutToFinish()
     debug() << "Track finished completely, updating statistics";
     if( m_currentTrack ) // not sure why this should not be the case, but sometimes happens. don't crash.
         m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
-    if( m_multi )
+    if( m_multiPlayback )
     {
         DEBUG_LINE_INFO
         m_mutex.lock();
         m_playWhenFetched = false;
         m_mutex.unlock();
-        m_multi->fetchNext();
+        m_multiPlayback->fetchNext();
         debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
     }
 
@@ -586,7 +595,7 @@ EngineController::slotQueueEnded()
 {
     DEBUG_BLOCK
 
-    if( m_currentTrack && !m_multi )
+    if( m_currentTrack && !m_multiPlayback )
     {
         m_currentTrack->finishedPlaying( 1.0 );
         emit trackFinished();
@@ -688,13 +697,13 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     if( newState == Phonon::ErrorState )  // If media is borked, skip to next track
     {
         warning() << "Phonon failed to play this URL. Error: " << m_media->errorString();
-        if( m_multi )
+        if( m_multiPlayback )
         {
             DEBUG_LINE_INFO
             m_mutex.lock();
             m_playWhenFetched = false;
             m_mutex.unlock();
-            m_multi->fetchNext();
+            m_multiPlayback->fetchNext();
             debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
         }
 

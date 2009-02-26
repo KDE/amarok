@@ -230,6 +230,7 @@ set(meta_SRCS
     meta/capabilities/UpdateCapability.cpp
     meta/file/File.cpp
     meta/multi/MultiTrack.cpp
+    meta/multi/MultiSourceCapabilityImpl.cpp
     meta/cue/Cue.cpp
     meta/proxy/MetaProxy.cpp
     meta/stream/Stream.cpp
@@ -354,6 +355,7 @@ set(libplaylist_SRCS
     playlist/view/classic/PlaylistClassicView.cpp
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
+    playlist/view/listview/SourceSelectionPopup.cpp
 )
 
 #####################################################################

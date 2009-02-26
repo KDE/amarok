@@ -17,34 +17,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-
-#ifndef AMAROK_MULTISOURCECAPABILITYIMPL_P_H
-#define AMAROK_MULTISOURCECAPABILITYIMPL_P_H
-
-#include "meta/capabilities/MultiSourceCapability.h"
-
-#include "Debug.h"
-#include "MultiTrack.h"
+#include "MultiSourceCapabilityImpl.h"
 
 
-class MultiSourceCapabilityImpl : public Meta::MultiSourceCapability
+MultiSourceCapabilityImpl::MultiSourceCapabilityImpl(Meta::MultiTrack * track)
+    : Meta::MultiSourceCapability()
+    , m_track( track )
 {
-    Q_OBJECT
-public:
-    MultiSourceCapabilityImpl( Meta::MultiTrack * track );
+    //forward from track, as there might  be several isntances of MultiSourceCapabilityImpl active for one track.
+    connect( m_track, SIGNAL( urlChanged( const KUrl &) ), this, SIGNAL( urlChanged( const KUrl &) ) );
+}
+
+void MultiSourceCapabilityImpl::setSource( int source )
+{
+    DEBUG_BLOCK
+    m_track->setSource( source );
+    const KUrl url = m_track->playableUrl();
+
+}
 
 
-    virtual KUrl first() { return m_track->first(); }
-    virtual KUrl next() { return m_track->next(); }
-    virtual int current() { return m_track->current(); }
-    virtual QStringList sources() { return m_track->sources(); }
-    virtual void setSource( int source );
 
-private:
-    Meta::MultiTrack * m_track;
-
-};
-
-#endif
-
-
+#include "MultiSourceCapabilityImpl.moc"

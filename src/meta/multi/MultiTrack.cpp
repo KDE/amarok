@@ -32,12 +32,25 @@ MultiTrack::MultiTrack( PlaylistPtr playlist )
 {
     DEBUG_BLOCK
     debug() << "playlist size: " << m_playlist->tracks().count();
-    m_currentTrack = m_playlist->tracks()[ 0 ];
+    setSource( 0 );
 }
 
 
 MultiTrack::~MultiTrack()
 {
+}
+
+void Meta::MultiTrack::setSource( int source )
+{
+    if( m_currentTrack )
+        unsubscribeFrom( m_currentTrack );
+    
+    m_index = source;
+    m_currentTrack = m_playlist->tracks()[ m_index ];
+    subscribeTo( m_currentTrack );
+    
+    notifyObservers();
+    emit urlChanged( playableUrl() );
 }
 
 
@@ -69,12 +82,12 @@ int Meta::MultiTrack::current()
     return m_index;
 }
 
-QStringList Meta::MultiTrack::tracks()
+QStringList Meta::MultiTrack::sources()
 {
     QStringList trackNames;
     foreach ( TrackPtr track, m_playlist->tracks() )
     {
-        trackNames << track->prettyName();
+        trackNames << track->prettyUrl();
     }
 
     return trackNames;
@@ -97,6 +110,13 @@ Meta::Capability * Meta::MultiTrack::asCapabilityInterface(Meta::Capability::Typ
 }
 
 }
+
+void Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
+{
+    //forward changes from active tracks
+    notifyObservers();
+}
+
 
 #include "MultiTrack.moc"
 

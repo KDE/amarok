@@ -33,6 +33,7 @@
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
 #include "playlist/GroupingProxy.h"
@@ -41,6 +42,7 @@
 #include "playlist/view/PlaylistViewCommon.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
+#include "SourceSelectionPopup.h"
 
 #include <KApplication>
 #include <KMenu>
@@ -141,6 +143,35 @@ Playlist::PrettyListView::dequeueSelection()
 {
     Actions::instance()->dequeue( selectedRows() );
 }
+
+void Playlist::PrettyListView::selectSource()
+{
+
+    DEBUG_BLOCK
+
+    QList<int> rows = selectedRows();
+
+    //for now, bail out of more than 1 row...
+    if ( rows.count() != 1 )
+        return;
+
+    //get the track...
+    QModelIndex index = GroupingProxy::instance()->index( rows.at( 0 ) );
+    Meta::TrackPtr track = index.data( Playlist::TrackRole ).value< Meta::TrackPtr >();
+
+    //get multiSource capability:
+
+    Meta::MultiSourceCapability * msc = qobject_cast<Meta::MultiSourceCapability *>( track->asCapabilityInterface( Meta::Capability::MultiSource ) );
+
+    if ( msc ) {
+        debug() << "sources: " << msc->sources();
+        SourceSelectionPopup * sourceSelector = new SourceSelectionPopup( this, msc );
+        sourceSelector->show();
+        //dialog deletes msc when done with it.
+    }
+    
+}
+
 
 void
 Playlist::PrettyListView::scrollToActiveTrack()
@@ -433,6 +464,14 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
         actions << pauseAction;
     else
         actions << playAction;
+    
+
+    const bool isMultiSource = index.data( Playlist::MultiSourceRole ).toBool();
+    if ( isMultiSource ) {
+        PopupDropperAction *selectSourceAction = new PopupDropperAction( KIcon( "media-playlist-repeat" ), i18n( "Select Source" ), this );
+        connect( selectSourceAction, SIGNAL( triggered() ), this, SLOT( selectSource() ) );
+        actions << selectSourceAction;
+    }
 
     PopupDropperAction *queueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     connect( queueAction, SIGNAL( triggered() ), this, SLOT( queueSelection() ) );
@@ -683,6 +722,7 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
     NavigatorFilterProxyModel::instance()->setPassThrough( !onlyMatches );
 }
+
 
 
 #include "PrettyListView.moc"

@@ -32,7 +32,7 @@ A track that wraps a playlist. This is useful, for instance, for adding radio st
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
-class MultiTrack : public QObject, public Track
+class MultiTrack : public QObject, public Track, public Meta::Observer
 {
     Q_OBJECT
 public:
@@ -43,7 +43,8 @@ public:
     KUrl next();
 
     int current();
-    QStringList tracks();
+    QStringList sources();
+    void setSource( int source );
 
     virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
     virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
@@ -81,6 +82,13 @@ public:
     virtual bool isPlayable() const { return m_currentTrack->isPlayable(); }
     virtual QString type() const { return m_currentTrack->type(); }
 
+    using Observer::metadataChanged;
+    virtual void metadataChanged( Meta::TrackPtr track );
+
+
+signals:
+    void urlChanged( const KUrl &url );
+    
 private:
     PlaylistPtr m_playlist;
     TrackPtr m_currentTrack;

@@ -28,7 +28,7 @@
 class QTimer;
 
 namespace KIO { class Job; }
-namespace Meta { class MultiPlayableCapability; }
+namespace Meta { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaObject; class VolumeFaderEffect; }
 
 /**
@@ -146,7 +146,8 @@ private:
     Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
-    QPointer<Meta::MultiPlayableCapability> m_multi;
+    QPointer<Meta::MultiPlayableCapability> m_multiPlayback;
+    QPointer<Meta::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
 

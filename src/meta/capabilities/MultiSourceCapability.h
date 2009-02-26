@@ -44,7 +44,11 @@ public:
     virtual KUrl first() = 0;
     virtual KUrl next() = 0;
     virtual int current() = 0;
-    virtual QStringList tracks() = 0;
+    virtual QStringList sources() = 0;
+    virtual void setSource( int source ) = 0;
+    
+signals:
+    void urlChanged( const KUrl &url );
 
 };
 
