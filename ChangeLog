@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Add support for showing a stream with multiple alternative servers as a
+      single item in the playlist and add GUI for manually selecting prefered
+      source.
     * Ampache service: Add support for Ampache 3.5.x as well as 3.4.4.
     * Auto timecoding (position bookmarking) now exists for tracks with length
       greater than 10 minutes. (BR 148740)
