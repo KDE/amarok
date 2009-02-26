@@ -47,7 +47,7 @@ class ScanManager : public QObject
         bool isFileInCollection( const QString &url );
 
         void setBlockScan( bool blockScan );
-        void readFullBatchFile();
+        bool readFullBatchFile();
 
     public slots:
         void startFullScan();

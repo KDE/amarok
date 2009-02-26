@@ -110,11 +110,7 @@ ScanManager::startFullScan()
     QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml" );
     debug() << "Checking for batch file in " << batchfileLocation;
     
-    if( QFile::exists( batchfileLocation ) )
-    {
-        readFullBatchFile();
-    }
-    else
+    if( !QFile::exists( batchfileLocation ) || !readFullBatchFile()  )
     {
         m_scanner = new AmarokProcess( this );
         *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
@@ -293,7 +289,7 @@ ScanManager::slotError( QProcess::ProcessError error )
     }
 }
 
-void
+bool
 ScanManager::readFullBatchFile()
 {
     DEBUG_BLOCK
@@ -302,7 +298,7 @@ ScanManager::readFullBatchFile()
     if( !file.open( QIODevice::ReadOnly ) )
     {
         debug() << "Couldn't open batchscan file, which does exist";
-        return;
+        return false;
     }
     
     QByteArray data;
@@ -336,6 +332,7 @@ ScanManager::readFullBatchFile()
 
     file.close();
     QFile::remove( fileLocation );
+    return true;
 }
 
 QStringList
