@@ -34,6 +34,7 @@ public:
     virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
     virtual void engineTrackPositionChanged( long position , bool userSeek );
     virtual void engineNewTrackPlaying();
+    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
 
     void skip();
     void love();

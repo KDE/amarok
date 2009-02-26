@@ -86,6 +86,36 @@ ScrobblerAdapter::engineNewTrackPlaying()
     }
 }
 
+
+void 
+ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    DEBUG_BLOCK
+    // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track &&
+        ( track->type() == "Stream" && ( !track->name().isEmpty() 
+          && track->artist() ) ) ) // got a stream, and it has enough info to be a new track
+    {
+        checkScrobble();
+        m_current.stamp();
+
+        m_current.setTitle( track->name() );
+        m_current.setArtist( track->artist()->name() );
+        if( track->album() )
+            m_current.setAlbum( track->album()->name() );
+
+        m_current.setSource( Track::Player );
+
+
+        if( !m_current.isNull() )
+        {
+            debug() << "scrobbler sending nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
+            m_scrobbler->nowPlaying( m_current );
+        }
+    }
+}
+
 void
 ScrobblerAdapter::enginePlaybackEnded( int finalPosition, int /*trackLength*/, PlaybackEndedReason /*reason*/ )
 {
