@@ -228,9 +228,6 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case CoverImage:
             {
-                debug() << "items count: " <<  m_items.count();
-                debug() << "track: " <<  m_items.at( row )->track()->name();
-                debug() << "track: " <<  m_items.at( row )->track()->album()->name();
                 if ( m_items.at( row )->track()->album() )
                     return m_items.at( row )->track()->album()->imageWithBorder( 100 ); //FIXME:size?
                 return QImage();
@@ -751,7 +748,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
         subscribeTo( track );
-        debug() << "track: " << track->name();
 
         if ( track->album() )
             subscribeTo( track->album() );
