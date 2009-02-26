@@ -97,9 +97,13 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
         ( track->type() == "Stream" && ( !track->name().isEmpty() 
           && track->artist() ) ) ) // got a stream, and it has enough info to be a new track
     {
-        checkScrobble();
+        // don't use checkScrobble as we don't need to check timestamps, it is a stream
+        m_scrobbler->cache( m_current );
+        m_scrobbler->submit();
+        resetVariables();
+        
         m_current.stamp();
-
+            
         m_current.setTitle( track->name() );
         m_current.setArtist( track->artist()->name() );
         if( track->album() )
