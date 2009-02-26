@@ -241,7 +241,7 @@ namespace Meta
             /** Returns the peak (after gain adjustment) for a given replay gain mode */
             virtual qreal replayPeakGain( ReplayGainMode mode ) const;
 
-            /** Returns the type of this track, e.g. "ogg", "mp3", "Stream" */
+            /** Returns the type of this track, e.g. "ogg", "mp3", "stream" */
             virtual QString type() const = 0;
             
             /** tell the track to perform any prerequisite
