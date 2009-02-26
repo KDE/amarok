@@ -93,10 +93,8 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
     DEBUG_BLOCK
     // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    QString title = track->name() ? track->name() : track->prettyName();
-
     if( track &&
-        ( track->type() == "stream" && ( !title.isEmpty() 
+        ( track->type() == "stream" && ( !track->name().isEmpty() 
           && track->artist() ) ) ) // got a stream, and it has enough info to be a new track
     {
         // don't use checkScrobble as we don't need to check timestamps, it is a stream
