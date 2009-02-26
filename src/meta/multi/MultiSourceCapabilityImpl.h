@@ -34,6 +34,8 @@ public:
 
     virtual KUrl first() { return m_track->first(); }
     virtual KUrl next() { return m_track->next(); }
+    virtual int current() { return m_track->current(); }
+    virtual QStringList tracks() { return m_track->tracks(); }
 
 private:
     MultiTrack * m_track;

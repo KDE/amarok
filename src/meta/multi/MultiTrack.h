@@ -42,6 +42,9 @@ public:
     KUrl first();
     KUrl next();
 
+    int current();
+    QStringList tracks();
+
     virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
     virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 

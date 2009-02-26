@@ -63,6 +63,23 @@ KUrl Meta::MultiTrack::next()
     return KUrl();
 }
 
+
+int Meta::MultiTrack::current()
+{
+    return m_index;
+}
+
+QStringList Meta::MultiTrack::tracks()
+{
+    QStringList trackNames;
+    foreach ( TrackPtr track, m_playlist->tracks() )
+    {
+        trackNames << track->prettyName();
+    }
+
+    return trackNames;
+}
+
 bool Meta::MultiTrack::hasCapabilityInterface(Meta::Capability::Type type) const
 {
     return type == Meta::Capability::MultiSource;
@@ -82,3 +99,4 @@ Meta::Capability * Meta::MultiTrack::asCapabilityInterface(Meta::Capability::Typ
 }
 
 #include "MultiTrack.moc"
+
