@@ -56,7 +56,9 @@ public:
                        bool recursive,
                        bool incremental,
                        bool importPlaylists,
-                       bool restart );
+                       bool restart,
+                       bool batch,
+                       const QString &rpath );
 
     ~CollectionScanner();
     int newInstance() { return 0; }
@@ -129,12 +131,14 @@ private:
         return fileName.section( '/', 0, -2 );
     }
 
+    const bool    m_batch;
     const bool    m_importPlaylists;
     QStringList   m_folders;
     const bool    m_recursively;
     const bool    m_incremental;
     const bool    m_restart;
     const QString m_logfile;
+    const QString m_rpath;
     QStringList   m_scannedFolders;
     QDBusInterface *m_amarokCollectionInterface;
 

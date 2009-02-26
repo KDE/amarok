@@ -76,14 +76,18 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool recursive,
                                       bool incremental,
                                       bool importPlaylists,
-                                      bool restart )
+                                      bool restart,
+                                      bool batch,
+                                      const QString& rpath )
         : KApplication( /*GUIenabled*/ false )
+        , m_batch( batch )
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
         , m_recursively( recursive )
         , m_incremental( incremental )
         , m_restart( restart )
-        , m_logfile( saveLocation() + "collection_scan.log"  )
+        , m_logfile( m_batch ? "./amarokcollectionscanner_batchscan.log" : saveLocation() + "collection_scan.log" )
+        , m_rpath( rpath )
 {
     kapp->setObjectName( "amarokcollectionscanner" );
     if( !restart )
@@ -133,7 +137,11 @@ CollectionScanner::doJob() //SLOT
             logFile.close();
         }
 
-        QFile folderFile( saveLocation()  + "collection_scan.files"   );
+        QFile folderFile;
+        if( !m_batch )
+            folderFile.setFileName( saveLocation()  + "collection_scan.files"   );
+        else
+            folderFile.setFileName( "./amarokcollectionscanner_batchscan.files" );
         if( folderFile.open( QIODevice::ReadOnly ) )
         {
             QTextStream folderStream;
@@ -157,14 +165,18 @@ CollectionScanner::doJob() //SLOT
             // Make sure that all paths are absolute, not relative
             if( QDir::isRelativePath( dir ) )
                 dir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
-
+ 
             if( !dir.endsWith( '/' ) )
                 dir += '/';
 
             readDir( dir, entries );
         }
 
-        QFile folderFile( saveLocation() + "collection_scan.files" );
+        QFile folderFile;
+        if( !m_batch )
+            folderFile.setFileName( saveLocation() + "collection_scan.files" );
+        else
+            folderFile.setFileName( "./amarokcollectionscanner_batchscan.files" );
         folderFile.open( QIODevice::WriteOnly );
         QTextStream stream( &folderFile );
         stream.setCodec( QTextCodec::codecForName("UTF-8") );
@@ -186,6 +198,12 @@ CollectionScanner::doJob() //SLOT
 
     std::cout << "</scanner>" << std::endl;
 
+    if( m_batch )
+    {
+        QFile::remove( "./amarokcollectionscanner_batchscan.files" );
+        QFile::remove( "./amarokcollectionscanner_batchscan.log" );
+    }
+    
     quit();
 }
 
@@ -201,7 +219,15 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     if( !d.exists() )
         return;
     AttributeHash attributes;
-    attributes["path"] = dir;
+    if( m_batch && !m_rpath.isEmpty() )
+    {
+        QString rdir = dir;
+        rdir.remove( QDir::cleanPath( QDir::currentPath() ) );
+        rdir.prepend( QDir::cleanPath( m_rpath + '/' ) );
+        attributes["path"] = rdir;
+    }
+    else
+        attributes["path"] = dir;
     writeElement( "folder", attributes );
     d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Readable );
     QFileInfoList list = d.entryInfoList();
@@ -265,13 +291,21 @@ CollectionScanner::scanFiles( const QStringList& entries )
             }
         }
 
-        if( validImages.contains( ext ) )
+        if( images.contains( ext ) )
             images += path;
 
         else if( m_importPlaylists && validPlaylists.contains( ext ) )
         {
             AttributeHash attributes;
-            attributes["path"] = path;
+            if( m_batch && !m_rpath.isEmpty() )
+            {
+                QString rpath = path;
+                rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
+                rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
+                attributes["path"] = rpath;
+            }
+            else
+                attributes["path"] = path;
             writeElement( "playlist", attributes );
         }
 
@@ -294,7 +328,15 @@ CollectionScanner::scanFiles( const QStringList& entries )
 //                 foreach( EmbeddedImage image, images )
 //                 {
 //                     AttributeHash attributes;
-//                     attributes["path"] = path;
+//                     if( m_batch && !m_rpath.isEmpty() )
+//                     {
+//                         QString rpath = path;
+//                         rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
+//                         rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
+//                         attributes["path"] = rpath;
+//                     }
+//                     else
+//                         attributes["path"] = path;
 //                     attributes["hash"] = image.hash();
 //                     attributes["description"] = image.description();
 //                     writeElement( "embed", attributes );
@@ -320,13 +362,29 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 }
 
                 AttributeHash attributes;
-                attributes["path"] = imagePath;
+                if( m_batch && !m_rpath.isEmpty() )
+                {
+                    QString rpath = imagePath;
+                    rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
+                    rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
+                    attributes["path"] = rpath;
+                }
+                else
+                    attributes["path"] = imagePath;
                 attributes["list"] = string;
                 writeElement( "image", attributes );
             }
 
             AttributeHash attributes;
-            attributes["path"] = dir;
+            if( m_batch && !m_rpath.isEmpty() )
+            {
+                QString rdir = dir;
+                rdir.remove( QDir::cleanPath( QDir::currentPath() ) );
+                rdir.prepend( QDir::cleanPath( m_rpath + '/' ) );
+                attributes["path"] = rdir;
+            }
+            else
+                attributes["path"] = dir;
             writeElement( "compilation", attributes );
 
             // clear now because we've processed them
@@ -676,7 +734,15 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         return attributes;
     }
 
-    attributes["path"]      = path;
+    if( m_batch && !m_rpath.isEmpty() )
+    {
+        QString rpath = path;
+        rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
+        rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
+        attributes["path"] = rpath;
+    }
+    else
+        attributes["path"] = path;
     attributes["filetype"]  = QString::number( fileType );
     const int bitrate = fileref.audioProperties()->bitrate();
     const int length = fileref.audioProperties()->length();

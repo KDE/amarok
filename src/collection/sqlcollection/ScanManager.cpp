@@ -96,16 +96,7 @@ ScanManager::startFullScan()
         return;
     }
     cleanTables();
-    m_scanner = new AmarokProcess( this );
-    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
-    if( AmarokConfig::scanRecursively() )
-        *m_scanner << "-r";
-    *m_scanner << MountPointManager::instance()->collectionFolders();
-    m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
-    connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-    connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
-    connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
-    m_scanner->start();
+
     if( m_parser )
     {
         stopParser();
@@ -115,6 +106,27 @@ ScanManager::startFullScan()
     m_isIncremental = false;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
+
+    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml" );
+    debug() << "Checking for batch file in " << batchfileLocation;
+    
+    if( QFile::exists( batchfileLocation ) )
+    {
+        readFullBatchFile();
+    }
+    else
+    {
+        m_scanner = new AmarokProcess( this );
+        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
+        if( AmarokConfig::scanRecursively() )
+            *m_scanner << "-r";
+        *m_scanner << MountPointManager::instance()->collectionFolders();
+        m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
+        connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+        connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
+        connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
+        m_scanner->start();
+    }
 }
 
 void ScanManager::startIncrementalScan()
@@ -279,6 +291,51 @@ ScanManager::slotError( QProcess::ProcessError error )
     {
         handleRestart();
     }
+}
+
+void
+ScanManager::readFullBatchFile()
+{
+    DEBUG_BLOCK
+    QString fileLocation = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
+    QFile file( fileLocation );
+    if( !file.open( QIODevice::ReadOnly ) )
+    {
+        debug() << "Couldn't open batchscan file, which does exist";
+        return;
+    }
+    
+    QByteArray data;
+    data = file.readAll();
+
+    if( !data.isEmpty() )
+    {
+        // amarokcollectionscanner outputs UTF-8 regardless of local encoding
+        QString newData = QTextCodec::codecForName( "UTF-8" )->toUnicode( data );
+        QStringList splitData = newData.split( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>", QString::SkipEmptyParts );
+        debug() << "splitData.size = " << splitData.size();
+        if( splitData.size() > 1 )
+        {
+            splitData.first().chop( 11 );
+            int n = 1;
+            while( n < splitData.size() - 1 )
+            {
+                splitData[n].remove( 0, 9 );
+                splitData[n].chop( 11 );
+                n++;
+            }
+            splitData[splitData.size()-1].remove( 0, 9 );
+        }
+        splitData.first().prepend( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" );
+        QString joinedData = splitData.join( QString() );
+        if( m_parser )
+            m_parser->addNewXmlData( joinedData );
+    }
+    else
+        debug() << "Empty read from file!";
+
+    file.close();
+    QFile::remove( fileLocation );
 }
 
 QStringList
@@ -488,7 +545,6 @@ XmlParseJob::run()
     {
         processor.setScanType( ScanResultProcessor::FullScan );
     }
-
     do
     {
         m_abortMutex.lock();

@@ -31,7 +31,7 @@ int main( int argc, char *argv[] )
     const KAboutData about( "amarokcollectionscanner", "amarok",
     ki18n( "Amarok Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." ), "0.1",
     ki18n( "Collection Scanner for Amarok" ), KAboutData::License_GPL,
-    ki18n( "(C) 2003-2008, The Amarok Developers" ),
+    ki18n( "(C) 2003-2009, The Amarok Developers" ),
     ki18n( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
 
@@ -48,6 +48,9 @@ int main( int argc, char *argv[] )
     options.add("importplaylists", ki18n( "Import playlist" ));
     options.add("s");
     options.add("restart", ki18n( "Restart the scanner at last position, after a crash" ));
+    options.add("b");
+    options.add("batch", ki18n( "Run the scanner in batch mode (currently full scan only)" ));
+    options.add("rpath <argument>", ki18n( "In batch mode, specifies the path to prepend to entries (default is current directory)" ));
     options.add("pid <argument>", ki18n( "PID of Amarok instance" ));
     options.add("collectionid <argument>", ki18n( "The SqlCollection instance to connect to. Must be set for incremental scans" ));
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
@@ -60,13 +63,15 @@ int main( int argc, char *argv[] )
         folders << args->arg( i );
 
     const bool recursive        = args->isSet( "recursive" );
-    const bool incremental      = args->isSet( "incremental" );
+    const bool batch            = args->isSet( "batch" );
+    const bool incremental      = ( batch ? false : args->isSet( "incremental" ) );
     const bool importplaylists  = args->isSet( "importplaylists" );
     const bool restart          = args->isSet( "restart" );
+    const QString rpath         = args->getOption( "rpath" );
     const QString pid           = args->getOption( "pid" );
     const QString collectionId  = args->getOption( "collectionid" );
 
-    CollectionScanner scanner( folders, pid, collectionId, recursive, incremental, importplaylists, restart );
+    CollectionScanner scanner( folders, pid, collectionId, recursive, incremental, importplaylists, restart, batch, rpath );
 
     registerTaglibPlugins();
 
