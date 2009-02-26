@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Scrobble tracks from streams that have title and artist metadata
     * Add support for showing a stream with multiple alternative servers as a
       single item in the playlist and add GUI for manually selecting prefered
       source.
