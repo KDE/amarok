@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright        : (C) 2007-2008 Ian Monroe <ian@monroe.nu>
- *                    (C) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *                    (C) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  *                    (C) 2008 Seb Ruiz <ruiz@kde.org>
  *                    (C) 2008 Soren Harward <stharward@gmail.com>
  *
@@ -182,6 +182,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
 
     else if ( role == InCollectionRole )
         return  m_items.at( row )->track()->inCollection();
+
+    else if ( role == MultiSourceRole )
+        return  m_items.at( row )->track()->hasCapabilityInterface( Meta::Capability::MultiSource );
 
     else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
     {
