@@ -22,7 +22,6 @@
 
 #include "CollectionScanner.h"
 
-#include "Amarok.h"
 #include "charset-detector/include/chardet.h"
 #include "../meta/MetaReplayGain.h"
 
