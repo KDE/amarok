@@ -602,7 +602,7 @@ AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMak
 {
     DEBUG_BLOCK
     
-    if( value = valCreateDate && compare == QueryMaker::GreaterThan )
+    if( value == valCreateDate && compare == QueryMaker::GreaterThan )
     {
         debug() << "asking to filter based on added date";
         m_dateFilter = filter;
