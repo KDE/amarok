@@ -107,7 +107,7 @@ ScanManager::startFullScan()
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 
-    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml" );
+    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml" );
     debug() << "Checking for batch file in " << batchfileLocation;
     
     if( !QFile::exists( batchfileLocation ) || !readFullBatchFile()  )
@@ -293,7 +293,7 @@ bool
 ScanManager::readFullBatchFile()
 {
     DEBUG_BLOCK
-    QString fileLocation = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
+    QString fileLocation = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml";
     QFile file( fileLocation );
     if( !file.open( QIODevice::ReadOnly ) )
     {

@@ -85,7 +85,8 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_recursively( recursive )
         , m_incremental( incremental )
         , m_restart( restart )
-        , m_logfile( m_batch ? "./amarokcollectionscanner_batchscan.log" : saveLocation() + "collection_scan.log" )
+        , m_logfile( batch ? ( incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
+                           : saveLocation() + "collection_scan.log" )
         , m_rpath( rpath )
 {
     kapp->setObjectName( "amarokcollectionscanner" );
@@ -139,8 +140,10 @@ CollectionScanner::doJob() //SLOT
         QFile folderFile;
         if( !m_batch )
             folderFile.setFileName( saveLocation()  + "collection_scan.files"   );
+        else if( m_incremental )
+            folderFile.setFileName( "amarokcollectionscanner_batchincrementalscan.files" );
         else
-            folderFile.setFileName( "./amarokcollectionscanner_batchscan.files" );
+            folderFile.setFileName( "amarokcollectionscanner_batchfullscan.files" );
         if( folderFile.open( QIODevice::ReadOnly ) )
         {
             QTextStream folderStream;
@@ -174,8 +177,10 @@ CollectionScanner::doJob() //SLOT
         QFile folderFile;
         if( !m_batch )
             folderFile.setFileName( saveLocation() + "collection_scan.files" );
+        else if( m_incremental )
+            folderFile.setFileName( "amarokcollectionscanner_batchincrementalscan.files" );
         else
-            folderFile.setFileName( "./amarokcollectionscanner_batchscan.files" );
+            folderFile.setFileName( "amarokcollectionscanner_batchfullscan.files" );
         folderFile.open( QIODevice::WriteOnly );
         QTextStream stream( &folderFile );
         stream.setCodec( QTextCodec::codecForName("UTF-8") );
@@ -199,8 +204,16 @@ CollectionScanner::doJob() //SLOT
 
     if( m_batch )
     {
-        QFile::remove( "./amarokcollectionscanner_batchscan.files" );
-        QFile::remove( "./amarokcollectionscanner_batchscan.log" );
+        if( m_incremental )
+        {
+            QFile::remove( "amarokcollectionscanner_batchincrementalscan.files" );
+            QFile::remove( "amarokcollectionscanner_batchincrementalscan.log" );
+        }
+        else
+        {
+            QFile::remove( "amarokcollectionscanner_batchfullscan.files" );
+            QFile::remove( "amarokcollectionscanner_batchfullscan.log" );
+        }
     }
     
     quit();
