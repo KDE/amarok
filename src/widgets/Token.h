@@ -47,6 +47,10 @@ class Token : public QWidget
         QString iconName() const;
         QString name() const;
         int value() const;
+
+    signals:
+        void changed();
+
     protected:
         virtual void paintEvent(QPaintEvent *pe);
 

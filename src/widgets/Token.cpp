@@ -1,6 +1,7 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
  *               2008-2009 Seb Ruiz <ruiz@kde.org>                            *
+ *               2009 Roman Jarosz <kedgedev@gmail.com>                       *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -23,6 +24,8 @@
 #include <QPainter>
 #include <QPen>
 
+#include "DragStack.h"
+
 Token * TokenFactory::createToken(const QString & text, const QString & iconName, int value, QWidget * parent)
 {
     return new Token( text, iconName, value, parent );
@@ -37,7 +40,12 @@ Token::Token( const QString &name, const QString &iconName, int value, QWidget *
     , m_value( value )
 {
     setAttribute( Qt::WA_Hover );
-    
+    if ( parent )
+    {
+        if ( DragStack *editWidget = qobject_cast<DragStack*>( parent ) )
+            connect( this, SIGNAL(changed()), editWidget, SIGNAL(changed()) );
+    }
+
     m_label = new QLabel( this );
     m_label->setAlignment( Qt::AlignCenter );
     m_label->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );

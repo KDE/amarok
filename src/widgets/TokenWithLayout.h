@@ -22,6 +22,7 @@
 
 #include <Token.h>
 
+class QMenu;
 
 class TokenWithLayoutFactory : public TokenFactory
 {
@@ -64,6 +65,8 @@ public slots:
     void setWidthForced( bool );
 
 protected:
+    virtual void fillMenu( QMenu * menu );
+    virtual void menuExecuted( const QAction* action );
     virtual void contextMenuEvent( QContextMenuEvent * event );
 
 private:

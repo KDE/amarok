@@ -228,6 +228,7 @@ DragStack::deleteEmptyRows()
         if ( box && box->count() < 2 ) // sic! last is spacer
         {
             layout()->removeItem( box );
+            emit changed();
             delete box;
         }
         else
