@@ -287,9 +287,10 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     }
     else if ( m_multiSource )
     {
+        m_media->stop();
         debug() << "Got a MultiSource Track with " <<  m_multiSource->sources().count() << " sources";
         connect( m_multiSource, SIGNAL( urlChanged( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
-        playUrl( m_currentTrack->playableUrl(), offset );
+        playUrl( m_currentTrack->playableUrl(), 0 );
     }
     else
     {
@@ -332,6 +333,7 @@ EngineController::stop( bool forceInstant ) //SLOT
 
     // need to get a new instance of multi if played again
     delete m_multiPlayback;
+    delete m_multiSource;
 
     m_mutex.lock();
     m_nextTrack.clear();
@@ -585,7 +587,26 @@ EngineController::slotAboutToFinish()
         m_multiPlayback->fetchNext();
         debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
     }
+    else if( m_multiSource )
+    {
+        debug() << "source finished, lets get the next one";
+        KUrl nextSource = m_multiSource->next();
 
+        if ( !nextSource.isEmpty() )
+        { //more sources
+            m_mutex.lock();
+            m_playWhenFetched = false;
+            m_mutex.unlock();
+            debug() << "playing next source: " << nextSource;
+            slotPlayableUrlFetched( nextSource );
+        }
+        else if( m_media->queue().isEmpty() )
+        { //go to next track
+            The::playlistActions()->requestNextTrack();
+            debug() << "no more sources, skip to next track";
+        }
+         
+    }
     else if( m_media->queue().isEmpty() )
         The::playlistActions()->requestNextTrack();
 }
@@ -595,7 +616,7 @@ EngineController::slotQueueEnded()
 {
     DEBUG_BLOCK
 
-    if( m_currentTrack && !m_multiPlayback )
+    if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
         m_currentTrack->finishedPlaying( 1.0 );
         emit trackFinished();
@@ -705,6 +726,22 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
             m_mutex.unlock();
             m_multiPlayback->fetchNext();
             debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
+        }
+        else if( m_multiSource )
+        {
+            debug() << "source error, lets get the next one";
+            KUrl nextSource = m_multiSource->next();
+
+            if ( !nextSource.isEmpty() )
+            { //more sources
+                m_mutex.lock();
+                m_playWhenFetched = false;
+                m_mutex.unlock();
+                debug() << "playing next source: " << nextSource;
+                slotPlayableUrlFetched( nextSource );
+            }
+            else if( m_media->queue().isEmpty() )
+                The::playlistActions()->requestNextTrack();
         }
 
         else if( m_media->queue().isEmpty() )

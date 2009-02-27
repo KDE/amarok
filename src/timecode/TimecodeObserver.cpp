@@ -54,6 +54,7 @@ TimecodeObserver::engineNewTrackPlaying()
     }
 
     // now update to the new track
+    debug() << "curent track name: " << currentTrack->prettyName();
     if ( currentTrack->hasCapabilityInterface ( Meta::Capability::WriteTimecode ) )
     {
         m_trackTimecodeable = true;

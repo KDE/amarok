@@ -56,9 +56,13 @@ void Meta::MultiTrack::setSource( int source )
 
 KUrl Meta::MultiTrack::first()
 {
+    if( m_currentTrack )
+        unsubscribeFrom( m_currentTrack );
+    
     m_index = 0;
     if ( m_playlist->tracks().count() > m_index ) {
         m_currentTrack = m_playlist->tracks()[ m_index ];
+        subscribeTo( m_currentTrack );
         return m_currentTrack->playableUrl();
     }
 
@@ -67,9 +71,14 @@ KUrl Meta::MultiTrack::first()
 
 KUrl Meta::MultiTrack::next()
 {
+    if( m_currentTrack )
+        unsubscribeFrom( m_currentTrack );
+    
     m_index++;
+    
     if ( m_playlist->tracks().count() > m_index ){
         m_currentTrack = m_playlist->tracks()[ m_index ];
+        subscribeTo( m_currentTrack );
         return m_currentTrack->playableUrl();
     }
 
