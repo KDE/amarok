@@ -63,7 +63,7 @@ SqlPodcastProvider::SqlPodcastProvider()
     QStringList values;
     if ( sqlStorage )
         values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
-    if( values.isEmpty() )
+    if( sqlStorage && values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
         createTables();
