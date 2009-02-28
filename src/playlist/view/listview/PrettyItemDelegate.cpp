@@ -232,18 +232,37 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         rowOffsetX = imageSize + MARGINH + PADDING * 2;
     }
 
+    int markerOffsetX = nominalImageRect.x();
+    
     if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
     {
         const int queuePosition = index.data( QueuePositionRole ).toInt();
         const int w = 16, h = 16;
-        const int x = nominalImageRect.x();
+        const int x = markerOffsetX;
         const int y = nominalImageRect.y() + ( imageSize - h );
         const QRect rect( x, y, w, h );
         painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
         painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
 
+        markerOffsetX += ( 16 + PADDING );
+
         if ( !config.showCover() )
-            rowOffsetX = 16 + MARGINH + PADDING * 2;
+            rowOffsetX = markerOffsetX;
+    }
+
+    if( index.data( MultiSourceRole ).toBool() && !ignoreQueueMarker )
+    {
+        const int queuePosition = index.data( QueuePositionRole ).toInt();
+        const int w = 16, h = 16;
+        const int x = markerOffsetX;
+        const int y = nominalImageRect.y() + ( imageSize - h );
+        const QRect rect( x, y, w, h );
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "multi_marker", w, h, "multi_marker" ) );
+
+        markerOffsetX += ( 16 + PADDING );
+
+        if ( !config.showCover() )
+            rowOffsetX += ( 16 + PADDING );
     }
 
     for ( int i = 0; i < rowCount; i++ )
