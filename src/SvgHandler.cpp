@@ -30,19 +30,7 @@
 #include <QHash>
 #include <QPainter>
 #include <QReadLocker>
-#include <QReadWriteLock>
 #include <QWriteLocker>
-
-class SvgHandler::Private
-{
-    public:
-        QHash<QString,KSvgRenderer*> renderers;
-        QReadWriteLock lock;
-
-        bool loadSvg( const QString& name );
-        QString themeFile;
-        bool customTheme;
-};
 
 
 namespace The {
@@ -51,7 +39,7 @@ namespace The {
     SvgHandler* svgHandler()
     {
         if( !s_SvgHandler_instance )
-            s_SvgHandler_instance = new SvgHandler( The::mainWindow() );
+            s_SvgHandler_instance = new SvgHandler();
 
         return s_SvgHandler_instance;
     }
@@ -61,67 +49,68 @@ namespace The {
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
     , m_cache( new KPixmapCache( "Amarok-pixmaps" ) )
-    , d( new Private() )
+    , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
+    , m_customTheme( false )
 {
-    //use default theme
-    d->themeFile = "amarok/images/default-theme-clean.svg";
-    d->customTheme = false;
+    DEBUG_BLOCK
 }
 
 SvgHandler::~SvgHandler()
 {
     DEBUG_BLOCK
 
+    m_cache->deleteCache( "Amarok-pixmaps" ); 
     delete m_cache;
-    delete d;
+
+    The::s_SvgHandler_instance = 0;
 }
 
 
-bool SvgHandler::Private::loadSvg( const QString& name )
+bool SvgHandler::loadSvg( const QString& name )
 {
     QString svgFilename;
     
-    if ( !customTheme )
+    if ( !m_customTheme )
         svgFilename = KStandardDirs::locate( "data", name );
     else
         svgFilename = name;
     
     KSvgRenderer *renderer = new KSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
 
-    if ( ! renderer->isValid() )
+    if ( !renderer->isValid() )
     {
         debug() << "Bluddy 'ell mateys, aye canna' load ya Ess Vee Gee at " << svgFilename;
         delete renderer;
         return false;
     }
-    QWriteLocker writeLocker( &lock );
+    QWriteLocker writeLocker( &m_lock );
 
-    if( renderers[name] )
-        delete renderers[name];
+    if( m_renderers[name] )
+        delete m_renderers[name];
 
-    renderers[name] = renderer;
+    m_renderers[name] = renderer;
     return true;
 }
 
 KSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
-    QReadLocker readLocker( &d->lock );
-    if( ! d->renderers[name] )
+    QReadLocker readLocker( &m_lock );
+    if( ! m_renderers[name] )
     {
         readLocker.unlock();
-        if( ! d->loadSvg( name ) )
+        if( !loadSvg( name ) )
         {
-            QWriteLocker writeLocker( &d->lock );
-            d->renderers[name] = new KSvgRenderer();
+            QWriteLocker writeLocker( &m_lock );
+            m_renderers[name] = new KSvgRenderer();
         }
         readLocker.relock();
     }
-    return d->renderers[name];
+    return m_renderers[name];
 }
 
 KSvgRenderer * SvgHandler::getRenderer()
 {
-    return getRenderer( d->themeFile );
+    return getRenderer( m_themeFile );
 }
 
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
@@ -129,11 +118,11 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
     QPixmap pixmap( width, height );
     pixmap.fill( Qt::transparent );
 
-    QReadLocker readLocker( &d->lock );
-    if( ! d->renderers[name] )
+    QReadLocker readLocker( &m_lock );
+    if( ! m_renderers[name] )
     {
         readLocker.unlock();
-        if( ! d->loadSvg( name ) )
+        if( !loadSvg( name ) )
             return pixmap;
         readLocker.relock();
     }
@@ -149,9 +138,9 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
 
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
-            d->renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
+            m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
         else
-            d->renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
+            m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
         m_cache->insert( key, pixmap );
     }
@@ -161,22 +150,22 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
 
 QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element)
 {
-    return renderSvg( d->themeFile, keyname, width, height, element );
+    return renderSvg( m_themeFile, keyname, width, height, element );
 }
 
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
 {
 
-    QString name = d->themeFile;
+    QString name = m_themeFile;
     
     QPixmap pixmap( width, height );
     pixmap.fill( Qt::transparent );
 
-    QReadLocker readLocker( &d->lock );
-    if( ! d->renderers[name] )
+    QReadLocker readLocker( &m_lock );
+    if( ! m_renderers[name] )
     {
         readLocker.unlock();
-        if( ! d->loadSvg( name ) )
+        if( ! loadSvg( name ) )
             return pixmap;
         readLocker.relock();
     }
@@ -192,16 +181,16 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
 
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
-            d->renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
+            m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
         else
-            d->renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
+            m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
 
 
         //add dividers. 5% spacing on each side
         int margin = width / 20;
         
-        d->renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
-        d->renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
+        m_renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
+        m_renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
     
         m_cache->insert( key, pixmap );
     }
@@ -214,29 +203,27 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
 void SvgHandler::reTint()
 {
     The::svgTinter()->init();
-    if ( !d->loadSvg( d->themeFile ))
-        warning() << "Unable to load theme file: " << d->themeFile;
+    if ( !loadSvg( m_themeFile ))
+        warning() << "Unable to load theme file: " << m_themeFile;
 }
 
 QString SvgHandler::themeFile()
 {
-    return d->themeFile;
+    return m_themeFile;
 }
 
 void SvgHandler::setThemeFile( const QString & themeFile )
 {
     DEBUG_BLOCK
     debug() << "got new theme file: " << themeFile;
-    d->themeFile = themeFile;
-    d->customTheme = true;
+    m_themeFile = themeFile;
+    m_customTheme = true;
     reTint();
     
     //redraw entire app....
     m_cache->discard();
     App::instance()->mainWindow()->update();
 }
-
-
 
 
 QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
@@ -247,11 +234,11 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     QPixmap pixmap( newWidth, newHeight );
     pixmap.fill( Qt::transparent );
     
-    QReadLocker readLocker( &d->lock );
-    if( !d->renderers[d->themeFile] )
+    QReadLocker readLocker( &m_lock );
+    if( !m_renderers[m_themeFile] )
     {
         readLocker.unlock();
-        if( !d->loadSvg( d->themeFile ) )
+        if( !loadSvg( m_themeFile ) )
             return pixmap;
         readLocker.relock();
     }
@@ -277,14 +264,14 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
 
         pt.drawPixmap( borderWidth, borderWidth, orgPixmap.width(), orgPixmap.height(), orgPixmap );
 
-        d->renderers[d->themeFile]->render( &pt, "cover_border_topleft", QRectF( 0, 0, borderWidth, borderWidth ) );
-        d->renderers[d->themeFile]->render( &pt, "cover_border_top", QRectF( borderWidth, 0, orgPixmap.width(), borderWidth ) );
-        d->renderers[d->themeFile]->render( &pt, "cover_border_topright", QRectF( newWidth - borderWidth , 0, borderWidth, borderWidth ) );
-        d->renderers[d->themeFile]->render( &pt, "cover_border_right", QRectF( newWidth - borderWidth, borderWidth, borderWidth, orgPixmap.height() ) );
-        d->renderers[d->themeFile]->render( &pt, "cover_border_bottomright", QRectF( newWidth - borderWidth, newHeight - borderWidth, borderWidth, borderWidth ) );
-        d->renderers[d->themeFile]->render( &pt, "cover_border_bottom", QRectF( borderWidth, newHeight - borderWidth, orgPixmap.width(), borderWidth ) );
-        d->renderers[d->themeFile]->render( &pt, "cover_border_bottomleft", QRectF( 0, newHeight - borderWidth, borderWidth, borderWidth ) );
-        d->renderers[d->themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_topleft", QRectF( 0, 0, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_top", QRectF( borderWidth, 0, orgPixmap.width(), borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_topright", QRectF( newWidth - borderWidth , 0, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_right", QRectF( newWidth - borderWidth, borderWidth, borderWidth, orgPixmap.height() ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_bottomright", QRectF( newWidth - borderWidth, newHeight - borderWidth, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_bottom", QRectF( borderWidth, newHeight - borderWidth, orgPixmap.width(), borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_bottomleft", QRectF( 0, newHeight - borderWidth, borderWidth, borderWidth ) );
+        m_renderers[m_themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
     
         m_cache->insert( key, pixmap );
     }

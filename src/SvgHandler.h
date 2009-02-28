@@ -21,12 +21,15 @@
 #ifndef SVGHANDLER_H
 #define SVGHANDLER_H
 
+#include "amarok_export.h"
+
+#include <KPixmapCache>
+#include <QReadWriteLock>
+#include <KSvgRenderer>
+
 #include <QPixmap>
 #include <QString>
-#include <KSvgRenderer>
-#include <KPixmapCache>
 
-#include "amarok_export.h"
 
 class SvgHandler;
 
@@ -44,6 +47,8 @@ class AMAROK_EXPORT SvgHandler : public QObject
     friend SvgHandler* The::svgHandler();
 
     public:
+        ~SvgHandler();
+
         KSvgRenderer* getRenderer( const QString &name );
         KSvgRenderer* getRenderer();
         QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString() );
@@ -73,19 +78,23 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         QPixmap addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
         
-        void reTint( );
+        void reTint();
 
         QString themeFile();
         void setThemeFile( const QString  & themeFile );
 
     private:
-        SvgHandler( QObject* parent );
-        ~SvgHandler();
+        SvgHandler( QObject* parent = 0 );
+
+        bool loadSvg( const QString& name );
 
         KPixmapCache * m_cache;
 
-        class Private;
-        Private * const d;
+        QHash<QString,KSvgRenderer*> m_renderers;
+        QReadWriteLock m_lock;
+
+        QString m_themeFile;
+        bool m_customTheme;
 };
 
 #endif
