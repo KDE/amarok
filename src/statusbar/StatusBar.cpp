@@ -102,6 +102,11 @@ StatusBar::StatusBar( QWidget * parent )
 StatusBar::~StatusBar()
 {
     DEBUG_BLOCK
+
+    delete m_progressBar;
+    m_progressBar = 0;
+
+    s_instance = 0;
 }
 
 ProgressBarNG * StatusBar::newProgressOperation( QObject * owner, const QString & description )

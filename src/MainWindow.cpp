@@ -173,6 +173,7 @@ MainWindow::~MainWindow()
     delete m_playlistFiles;
     delete m_contextView;
     delete m_corona;
+    delete The::statusBar();
 }
 
 
