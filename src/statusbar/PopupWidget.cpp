@@ -45,7 +45,9 @@ PopupWidget::PopupWidget( QWidget * anchor, const QString &name )
 }
 
 PopupWidget::~PopupWidget()
-{}
+{
+    DEBUG_BLOCK
+}
 
 void PopupWidget::reposition()
 {

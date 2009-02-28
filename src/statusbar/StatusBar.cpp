@@ -100,7 +100,9 @@ StatusBar::StatusBar( QWidget * parent )
 
 
 StatusBar::~StatusBar()
-{}
+{
+    DEBUG_BLOCK
+}
 
 ProgressBarNG * StatusBar::newProgressOperation( QObject * owner, const QString & description )
 {

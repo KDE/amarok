@@ -41,7 +41,9 @@ CompoundProgressBar::CompoundProgressBar( QWidget * parent )
 }
 
 CompoundProgressBar::~CompoundProgressBar()
-{}
+{
+    DEBUG_BLOCK
+}
 
 void CompoundProgressBar::addProgressBar( ProgressBarNG * childBar, QObject *owner )
 {
