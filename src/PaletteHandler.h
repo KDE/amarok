@@ -43,6 +43,7 @@ class AMAROK_EXPORT PaletteHandler : public QObject
 friend PaletteHandler* The::paletteHandler();
 
 public:
+    ~PaletteHandler();
 
     QPalette palette();
 
@@ -53,8 +54,7 @@ signals:
     void newPalette( const QPalette & palette );
     
 private:
-    PaletteHandler( QObject* parent );
-    ~PaletteHandler();
+    PaletteHandler( QObject* parent = 0 );
 
     QPalette m_palette;
 };

@@ -31,7 +31,7 @@ namespace The {
     PaletteHandler* paletteHandler()
     {
         if( !s_PaletteHandler_instance )
-            s_PaletteHandler_instance = new PaletteHandler( The::mainWindow() );
+            s_PaletteHandler_instance = new PaletteHandler();
 
         return s_PaletteHandler_instance;
     }
@@ -46,6 +46,8 @@ PaletteHandler::PaletteHandler( QObject* parent )
 PaletteHandler::~PaletteHandler()
 {
     DEBUG_BLOCK
+
+    The::s_PaletteHandler_instance = 0;
 }
 
 void PaletteHandler::setPalette( const QPalette & palette )

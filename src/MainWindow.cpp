@@ -175,6 +175,7 @@ MainWindow::~MainWindow()
     delete m_corona;
     delete The::statusBar();
     delete The::svgHandler();
+    delete The::paletteHandler();
 }
 
 
