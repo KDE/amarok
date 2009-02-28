@@ -78,7 +78,10 @@ class SideBar: public KHBox
             layout()->setContentsMargins( 0, 0, 0, 0 );
         }
 
-        ~SideBar() {}
+        ~SideBar()
+        {
+            DEBUG_BLOCK
+        }
 
         void deleteBrowsers()
         {
