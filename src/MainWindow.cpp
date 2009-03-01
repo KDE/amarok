@@ -171,11 +171,12 @@ MainWindow::~MainWindow()
     AmarokConfig::setPanelsSavedState( sPanels );
 
     delete m_playlistFiles;
-    delete m_contextView;
-    delete m_corona;
+    //delete m_corona;
+    //delete m_browsers;
+    //delete m_contextView;
+    delete m_splitter;
     delete The::statusBar();
     delete m_controlBar;
-    delete m_browsers;
     delete The::svgHandler();
     delete The::paletteHandler();
 }

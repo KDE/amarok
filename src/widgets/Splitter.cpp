@@ -55,7 +55,9 @@ Splitter::Splitter( Qt::Orientation orientation, QWidget * parent )
 
 
 Splitter::~Splitter()
-{}
+{
+    DEBUG_BLOCK
+}
 
 
 QSplitterHandle * Splitter::createHandle()
