@@ -87,6 +87,8 @@ Playlist::Actions::requestNextTrack()
 {
     if ( m_nextTrackCandidate != 0 )
         return;
+    if( m_trackError )
+        return;
     m_trackError = false;
     m_currentTrack = Model::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
