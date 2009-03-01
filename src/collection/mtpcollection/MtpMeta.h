@@ -150,7 +150,7 @@ class MtpTrack : public Meta::Track
 	virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //MtpTrack specific methods
-    
+
     public:
         // These methods are for MemoryMatcher to use
         void setAlbum( MtpAlbumPtr album );
@@ -178,7 +178,7 @@ class MtpTrack : public Meta::Track
         void setMtpComposerMap( const MtpComposerMap &mtpComposerMap ) { m_mtpComposerMap = mtpComposerMap; }
         void setMtpYearMap( const MtpYearMap &mtpYearMap ) { m_mtpYearMap = mtpYearMap; }
 
-    
+
         void setLength( int length );
 	void setPlayableUrl( const QString & url ) { m_playableUrl = url; }
     void setUrl ( const QString & url ) { m_url = url; }
@@ -269,7 +269,7 @@ class MtpAlbum : public Meta::Album
 
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
-        virtual void setImage( const QImage &image);
+        virtual void setImage( const QPixmap &pixmap );
 
         //MtpAlbum specific methods
         void addTrack( MtpTrackPtr track );

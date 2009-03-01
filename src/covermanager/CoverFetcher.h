@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
- 
+
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
@@ -74,7 +74,7 @@ public:
 
     QString amazonURL() const { return m_amazonURL; }
     QString asin() const { return m_asin; }
-    QImage image() const { return m_image; }
+    QPixmap image() const { return m_pixmap; }
 
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
@@ -106,7 +106,7 @@ private:
     bool    m_userCanEditQuery;
     QString m_userQuery; /// the query from the query edit dialog
     QString m_xml;
-    QImage  m_image;
+    QPixmap  m_pixmap;
     QString m_amazonURL;
     QString m_asin;
     int     m_size;

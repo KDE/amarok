@@ -428,9 +428,9 @@ MediaDeviceAlbum::canUpdateImage() const
 }
 
 void
-MediaDeviceAlbum::setImage( const QImage &image )
+MediaDeviceAlbum::setImage( const QPixmap &pixmap )
 {
-    Q_UNUSED(image);
+    Q_UNUSED(pixmap);
     //TODO
 }
 

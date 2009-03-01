@@ -88,7 +88,7 @@ public:
      * Set the cover image of thes album.
      * @param image The cover image.
      */
-    void setImage( const QImage & image );
+    void setImage( const QPixmap &image );
 
     /**
      * Notify album that the download of the cover has been cancelled.
@@ -113,7 +113,7 @@ public:
 
 protected:
 
-    mutable QImage m_cover;
+    mutable QPixmap m_cover;
     mutable bool m_hasFetchedCover;
     mutable bool m_isFetchingCover;
     QString m_coverDownloadPath;

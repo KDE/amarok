@@ -119,7 +119,7 @@ void SetCustomCoverAction::init()
     setText( i18n("Set Custom Cover") );
     setIcon( KIcon("document-open") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
-    
+
     // this action is enabled if any one of the albums can be updated
     bool enabled = false;
     foreach( Meta::AlbumPtr album, m_albums )
@@ -134,12 +134,12 @@ SetCustomCoverAction::slotTriggered()
     KUrl file = KFileDialog::getImageOpenUrl( startPath, qobject_cast<QWidget*>( parent() ), i18n( "Select Cover Image File" ) );
     if( !file.isEmpty() )
     {
-        QImage image( file.path() );
+        QPixmap pixmap( file.path() );
 
         foreach( Meta::AlbumPtr album, m_albums )
         {
             if( album->canUpdateImage() )
-                album->setImage( image );
+                album->setImage( pixmap );
         }
     }
 }

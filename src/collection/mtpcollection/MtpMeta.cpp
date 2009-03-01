@@ -944,9 +944,9 @@ MtpAlbum::canUpdateImage() const
 }
 
 void
-MtpAlbum::setImage( const QImage &image )
+MtpAlbum::setImage( const QPixmap &pixmap )
 {
-    Q_UNUSED(image);
+    Q_UNUSED(pixmap);
     //TODO
 }
 

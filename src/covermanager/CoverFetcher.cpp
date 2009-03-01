@@ -275,7 +275,7 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
-    
+
     if( m_userCanEditQuery )
         The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
 
@@ -427,7 +427,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
         return;
     }
 
-    if( !m_image.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) || m_image.width() <= 1 )
+    if( !m_pixmap.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) || m_pixmap.width() <= 1 )
     {
         //Amazon seems to offer images of size 1x1 sometimes
         //Amazon has nothing to offer us for the requested image size
@@ -611,7 +611,7 @@ CoverFetcher::getUserQuery( QString explanation )
     class CoverFoundDialog : public KDialog
     {
     public:
-        CoverFoundDialog( QWidget *parent, const QImage &cover, const QString &productname )
+        CoverFoundDialog( QWidget *parent, const QPixmap &cover, const QString &productname )
                 : KDialog( parent )
         {
             setButtons( None );
@@ -631,7 +631,7 @@ CoverFetcher::getUserQuery( QString explanation )
 
             labelPix ->setAlignment( Qt::AlignHCenter );
             labelName->setAlignment( Qt::AlignHCenter );
-            labelPix ->setPixmap( QPixmap::fromImage( cover ) );
+            labelPix ->setPixmap( cover );
             labelName->setText( productname );
 
             save->setDefault( true );
@@ -659,7 +659,7 @@ CoverFetcher::getUserQuery( QString explanation )
 void
 CoverFetcher::showCover()
 {
-    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_image, m_currentCoverName );
+    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_pixmap, m_currentCoverName );
 
     switch( dialog.exec() )
     {

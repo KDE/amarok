@@ -243,7 +243,7 @@ namespace Meta
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "stream" */
             virtual QString type() const = 0;
-            
+
             /** tell the track to perform any prerequisite
              * operations before playing */
             virtual void prepareToPlay();
@@ -331,7 +331,7 @@ namespace Meta
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
             /** updates the cover of the album */
-            virtual void setImage( const QImage &image) { Q_UNUSED( image ); } //TODO: choose parameter
+            virtual void setImage( const QPixmap &pixmap ) { Q_UNUSED( pixmap ); } //TODO: choose parameter
             /** removes the album art */
             virtual void removeImage() { }
 

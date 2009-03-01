@@ -91,30 +91,30 @@ class SqlTrack : public Meta::Track
 
         virtual QString comment() const { return m_comment; }
         virtual void setComment( const QString &newComment );
-        
+
         virtual double score() const { return m_score; }
         virtual void setScore( double newScore );
-        
+
         virtual int rating() const { return m_rating; }
         virtual void setRating( int newRating );
-        
+
         virtual int length() const { return m_length; }
         virtual int filesize() const { return m_filesize; }
         virtual int sampleRate() const { return m_sampleRate; }
         virtual int bitrate() const { return m_bitrate; }
-        
+
         virtual int trackNumber() const { return m_trackNumber; }
         virtual void setTrackNumber( int newTrackNumber );
-        
+
         virtual int discNumber() const { return m_discNumber; }
         virtual void setDiscNumber( int newDiscNumber );
-        
+
         virtual uint firstPlayed() const { return m_firstPlayed; }
         virtual void setFirstPlayed( const uint newTime );
-        
+
         virtual uint lastPlayed() const { return m_lastPlayed; }
         virtual void setLastPlayed( const uint newTime );
-        
+
         virtual int playCount() const { return m_playCount; }
         virtual void setPlayCount( const int newCount );
 
@@ -201,7 +201,7 @@ class SqlArtist : public Meta::Artist
     public:
         SqlArtist( SqlCollection* collection, int id, const QString &name );
         ~SqlArtist();
-        
+
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
         virtual QString sortableName() const;
@@ -260,7 +260,7 @@ class SqlAlbum : public Meta::Album
         virtual bool canUpdateImage() const { return true; }
         virtual QPixmap image( int size = 1 );
         virtual KUrl imageLocation( int size = 1 );
-        virtual void setImage( const QImage &image );
+        virtual void setImage( const QPixmap &pixmap );
         virtual void removeImage();
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;

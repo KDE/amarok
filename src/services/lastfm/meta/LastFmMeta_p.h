@@ -246,20 +246,20 @@ public:
                 size = 100;
             QString sizeKey = QString::number( size ) + '@';
 
-            QImage img;
+            QPixmap pixmap;
             QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
             if( cacheCoverDir.exists( sizeKey + "lastfm-default-cover.png" ) )
-                img = QImage( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
+                pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
             else
             {
-                QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimise this!
+                QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimise this!
                 //scaled() does not change the original image but returns a scaled copy
-                img = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-                img.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
+                pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+                pixmap.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
             }
 
             m_noCoverImage = true;
-            return QPixmap::fromImage( img );
+            return pixmap;
         }
 
 

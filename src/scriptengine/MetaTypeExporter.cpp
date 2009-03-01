@@ -300,7 +300,7 @@ void
 MetaTrackPrototype::setImageUrl(const QString& imageUrl )
 {
     GET_TRACK
-    if ( track && track->album() ) track->album()->setImage( QImage(imageUrl) );
+    if ( track && track->album() ) track->album()->setImage( QPixmap(imageUrl) );
 }
 
 #undef GET_TRACK

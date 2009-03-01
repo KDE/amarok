@@ -76,7 +76,7 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
 
             // Setup the remove action
 
-            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
+            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
                                                                     "delete", KIcon( "remove-amarok" ), i18n( "&Remove from iPod" ), 0 );
             debug() << "Remove-action created";
 
@@ -92,7 +92,7 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
             m_actions.append( removeAction );
 
             // Setup the disconnect action
-            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), 
+            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
                                                         "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the iPod" ), 0 );
             debug() << "Disconnect-action created";
 
@@ -104,7 +104,7 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
             m_actions.append( disconnectAction );
             debug() << "Disconnect action appended to local QList";
         }
-    
+
         virtual ~CustomActionsCapabilityIpod() {}
 
         virtual QList< PopupDropperAction *> customActions() const {
@@ -171,7 +171,7 @@ IpodTrack::IpodTrack( IpodCollection *collection )
 IpodTrack::~IpodTrack()
 {
     //nothing to do
-    
+
 }
 
 QString
@@ -504,10 +504,10 @@ IpodTrack::setAlbum( const QString &newAlbum )
         albumMap.remove( albumPtr->name() );
 
     // change to a new album
-    
+
     // check for the existence of the album to be set to,
     // if album exists, reuse, else create
-    
+
     if ( albumMap.contains( newAlbum ) )
     {
         albumPtr = IpodAlbumPtr::staticCast( albumMap.value( newAlbum ) );
@@ -548,10 +548,10 @@ IpodTrack::setArtist( const QString &newArtist )
         artistMap.remove( artistPtr->name() );
 
     // change to a new artist
-    
+
     // check for the existence of the artist to be set to,
     // if artist exists, reuse, else create
-    
+
     if ( artistMap.contains( newArtist ) )
     {
         artistPtr = IpodArtistPtr::staticCast( artistMap.value( newArtist ) );
@@ -592,10 +592,10 @@ IpodTrack::setGenre( const QString &newGenre )
         genreMap.remove( genrePtr->name() );
 
     // change to a new genre
-    
+
     // check for the existence of the genre to be set to,
     // if genre exists, reuse, else create
-    
+
     if ( genreMap.contains( newGenre ) )
     {
         genrePtr = IpodGenrePtr::staticCast( genreMap.value( newGenre ) );
@@ -636,10 +636,10 @@ IpodTrack::setComposer( const QString &newComposer )
         composerMap.remove( composerPtr->name() );
 
     // change to a new composer
-    
+
     // check for the existence of the composer to be set to,
     // if composer exists, reuse, else create
-    
+
     if ( composerMap.contains( newComposer ) )
     {
         composerPtr = IpodComposerPtr::staticCast( composerMap.value( newComposer ) );
@@ -680,10 +680,10 @@ IpodTrack::setYear( const QString &newYear )
         yearMap.remove( yearPtr->name() );
 
     // change to a new year
-    
+
     // check for the existence of the year to be set to,
     // if year exists, reuse, else create
-    
+
     if ( yearMap.contains( newYear ) )
     {
         yearPtr = IpodYearPtr::staticCast( yearMap.value( newYear ) );
@@ -758,7 +758,7 @@ IpodTrack::endMetaDataUpdate()
     // Update info in local ipod database struct
 
     m_collection->updateTags( this );
-    
+
 
     notifyObservers();
 }
@@ -873,8 +873,8 @@ IpodAlbum::image( int size )
 {
     //DEBUG_BLOCK
     if( m_hasCover )
-        return ( QPixmap::fromImage( m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio ) ) );
-    
+        return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+
     return Meta::Album::image( size );
 }
 
@@ -885,9 +885,9 @@ IpodAlbum::canUpdateImage() const
 }
 
 void
-IpodAlbum::setImage( const QImage &image )
+IpodAlbum::setImage( const QPixmap &pixmap )
 {
-    m_image = image;
+    m_image = pixmap;
     m_hasCover = true;
 }
 

@@ -267,7 +267,7 @@ SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
 {
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.uniqueid = '%3';";
-    query = query.arg( getTrackReturnValues(), getTrackJoinConditions(), 
+    query = query.arg( getTrackReturnValues(), getTrackJoinConditions(),
                        collection->escape( uid ) );
     QStringList result = collection->query( query );
     if( result.isEmpty() )
@@ -376,7 +376,7 @@ SqlTrack::fullPrettyName() const
         s = i18n("%1 - %2", m_artist->name(), name() );
 
     //TODO
-    if( s.isEmpty() ) 
+    if( s.isEmpty() )
         s = prettyTitle( m_url.fileName() );
 
     return s;
@@ -413,7 +413,7 @@ SqlTrack::setUrl( const QString &url )
     m_deviceid = MountPointManager::instance()->getIdForUrl( url );
     m_rpath = MountPointManager::instance()->getRelativePath( m_deviceid, url );
     if( m_batchUpdate )
-        m_cache.insert( Meta::Field::URL, MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) ); 
+        m_cache.insert( Meta::Field::URL, MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
     else
     {
         m_url = url;
@@ -442,7 +442,7 @@ SqlTrack::setArtist( const QString &newArtist )
 {
     if ( m_artist && m_artist->name() == newArtist )
         return;
-    
+
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::ARTIST, newArtist );
     else
@@ -1258,7 +1258,7 @@ SqlAlbum::image( int size )
     if( !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
         CoverFetcher::instance()->queueAlbum( KSharedPtr<Meta::Album>(this) );
 
-    // If the result image is empty then we didn't find any cached image, nor 
+    // If the result image is empty then we didn't find any cached image, nor
     // could we find the original cover to scale to the appropriate size. Hence,
     // the album cannot have a cover, for any size. In this case, we return the
     // default image
@@ -1280,31 +1280,31 @@ SqlAlbum::imageLocation( int size )
     QPixmap i = image( size );
     if( m_images.contains( size ) )
         return KUrl( m_images.value( size ) );
-    
+
     return KUrl();
 }
 
 void
-SqlAlbum::setImage( const QImage &image )
+SqlAlbum::setImage( const QPixmap &pixmap )
 {
-    if( image.isNull() )
+    if( pixmap.isNull() )
         return;
 
-    QByteArray widthKey = QString::number( image.width() ).toLocal8Bit() + '@';
+    QByteArray widthKey = QString::number( pixmap.width() ).toLocal8Bit() + '@';
     QString album = m_name;
     QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
 
     if( artist.isEmpty() && album.isEmpty() )
         return;
 
-    // removeImage() will destroy all scaled cached versions of the artwork 
+    // removeImage() will destroy all scaled cached versions of the artwork
     // and remove references from the database if required.
     if( hasImage( -1 ) ) // -1 is a dummy
         removeImage();
 
     QByteArray key = md5sum( artist, album, QString() );
     QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
-    image.save( path, "JPG" );
+    pixmap.save( path, "JPG" );
 
     updateImage( path );
 
@@ -1338,9 +1338,9 @@ SqlAlbum::removeImage()
     }
 
     // TODO: remove directory image ??
-    
+
     // Update the database image path
-    
+
     QString query = "SELECT images.id, count( images.id ) FROM images, albums "
                     "WHERE albums.image = images.id AND albums.id = %1 "
                     "GROUP BY images.id";
@@ -1389,7 +1389,7 @@ SqlAlbum::unsetImageId() const
         return m_unsetImageId;
 
     QString query = "SELECT id FROM images WHERE path = '%1'";
-    QStringList res = m_collection->query( query.arg( AMAROK_UNSET_MAGIC ) ); 
+    QStringList res = m_collection->query( query.arg( AMAROK_UNSET_MAGIC ) );
 
     // We already have the AMAROK_UNSET_MAGIC variable in the database
     if( !res.isEmpty() )
@@ -1479,7 +1479,7 @@ SqlAlbum::findLargeCachedImage() const
     {
         const QString filePath = largeCoverDir.filePath( key );
         updateImage( filePath ); // We found a previously downloaded large image, let's keep it for future reference.
-        return filePath; 
+        return filePath;
     }
     return QString();
 }
@@ -1510,7 +1510,7 @@ SqlAlbum::createScaledImage( QString path, int size ) const
             QImage img( path );
             if( img.isNull() )
                 return QString();
-           
+
             // resize and save the image
             img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cachedImagePath, "JPG" );
         }
@@ -1527,9 +1527,9 @@ SqlAlbum::findImage( int size )
         return m_images.value( size );
 
     QString fullsize;
-    
+
     // get the full size path from the cache if we have it
-    if( m_images.contains( 0 ) ) 
+    if( m_images.contains( 0 ) )
     {
         fullsize = m_images.value( 0 );
     }
@@ -1541,7 +1541,7 @@ SqlAlbum::findImage( int size )
         if( !res.isEmpty() )
         {
             fullsize = res.first();
-            if( !fullsize.isEmpty() ) 
+            if( !fullsize.isEmpty() )
                 m_images.insert( 0, fullsize ); // store the full size version
         }
     }
@@ -1616,13 +1616,13 @@ SqlAlbum::setCompilation( bool compilation )
         else
         {
             debug() << "User selected album as non-compilation";
-            
+
             QString select = "SELECT artist FROM tracks WHERE album = %1";
             QStringList artistid = m_collection->query( select.arg( m_id ) );
-            
+
             m_artistId = artistid[0].toInt();
             m_artist = this->tracks()[0]->artist();
-            
+
             QString update = "UPDATE albums SET artist = %1 WHERE id = %2;";
             update = update.arg( m_artistId ).arg( m_id );
             m_collection->query( update );
@@ -1655,7 +1655,7 @@ SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
         {
             QList<PopupDropperAction*> actions;
             actions.append( new CompilationAction( m_collection, this ) );
-            
+
             PopupDropperAction *separator          = new PopupDropperAction( m_collection );
             PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, Meta::AlbumPtr(this) );
             PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, Meta::AlbumPtr(this) );

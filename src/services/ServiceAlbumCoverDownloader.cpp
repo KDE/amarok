@@ -77,18 +77,18 @@ ServiceAlbumWithCover::image( int size )
         size = 100;
     QString sizeKey = QString::number( size ) + '@';
 
-    QImage img;
+    QPixmap pixmap;
 
     if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) )
     {
-        img = QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
-        return QPixmap::fromImage( img );
+        pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + coverName ) );
+        return pixmap;
     }
     else if ( m_hasFetchedCover && !m_cover.isNull() )
     {
-        img = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        img.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
-        return QPixmap::fromImage( img );
+        pixmap = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
+        return pixmap;
 
     }
     else if ( !m_isFetchingCover && !coverUrl().isEmpty() )
@@ -105,9 +105,9 @@ ServiceAlbumWithCover::image( int size )
 }
 
 void
-ServiceAlbumWithCover::setImage( const QImage & image )
+ServiceAlbumWithCover::setImage( const QPixmap& pixmap )
 {
-    m_cover = image;
+    m_cover = pixmap;
     m_hasFetchedCover = true;
     m_isFetchingCover = false;
 
@@ -175,7 +175,7 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return; //not the right job, so let's ignore it
 
-    const QImage cover = QImage( m_coverDownloadPath );
+    const QPixmap cover = QPixmap( m_coverDownloadPath );
     if ( cover.isNull() )
     {
         debug() << "file not a valid image";

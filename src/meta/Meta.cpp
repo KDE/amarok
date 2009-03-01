@@ -409,20 +409,20 @@ Meta::Album::image( int size )
         size = 100;
     QString sizeKey = QString::number( size ) + '@';
 
-    QImage img;
+    QPixmap pixmap;
     if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
-         img = QImage( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+         pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
     else
     {
-        QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimise this!
+        QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimise this!
         //scaled() does not change the original image but returns a scaled copy
-        img = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        img.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
     }
 
     m_noCoverImage = true;
 
-    return QPixmap::fromImage( img );
+    return pixmap;
 }
 
 
