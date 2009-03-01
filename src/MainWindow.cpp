@@ -106,7 +106,7 @@ class ContextWidget : public KVBox
 QPointer<MainWindow> MainWindow::s_instance = 0;
 
 MainWindow::MainWindow()
-    : KXmlGuiWindow( 0 )
+    : KMainWindow( 0 )
     , EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
 {
@@ -402,7 +402,7 @@ void
 MainWindow::keyPressEvent( QKeyEvent *e )
 {
     if( !( e->modifiers() & Qt::ControlModifier ) )
-        return KXmlGuiWindow::keyPressEvent( e );
+        return KMainWindow::keyPressEvent( e );
 
     int n = -1;
     switch( e->key() )
@@ -413,7 +413,7 @@ MainWindow::keyPressEvent( QKeyEvent *e )
         case Qt::Key_3: n = 3; break;
         case Qt::Key_4: n = 4; break;
         default:
-            return KXmlGuiWindow::keyPressEvent( e );
+            return KMainWindow::keyPressEvent( e );
     }
     if( n == 0 && m_browsers->currentIndex() >= 0 )
         m_browsers->showWidget( m_browsers->currentIndex() );
@@ -1012,6 +1012,17 @@ CollectionWidget * MainWindow::collectionBrowser()
 QString MainWindow::activeBrowserName()
 {
     return m_browserNames[ m_browsers->currentIndex() ];
+}
+
+KActionCollection * MainWindow::actionCollection()  // TODO: constify?
+{
+    if( !m_actionCollection )
+    {
+        m_actionCollection = new KActionCollection( this );
+        m_actionCollection->setObjectName( "Amarok-KActionCollection" );
+    }
+
+    return m_actionCollection;
 }
 
 PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()

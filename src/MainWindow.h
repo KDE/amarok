@@ -21,8 +21,9 @@
 #include "EngineObserver.h"
 #include "Sidebar.h"
 
+#include <KActionCollection>
+#include <KMainWindow>
 #include <KVBox>
-#include <KXmlGuiWindow>
 
 #include <QPointer>
 
@@ -59,7 +60,7 @@ namespace The {
   *
   * This is the main window widget.
   */
-class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, public Meta::Observer
+class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, public Meta::Observer
 {
     friend MainWindow* The::mainWindow();
 
@@ -86,6 +87,7 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
 		QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
 
+        KActionCollection *actionCollection();
         QString activeBrowserName();
 
         CollectionWidget * collectionBrowser();
@@ -143,6 +145,8 @@ class AMAROK_EXPORT MainWindow : public KXmlGuiWindow, public EngineObserver, pu
     private:
         void setRating( int n );
         void showBrowser( const int index );
+
+        QPointer<KActionCollection>  m_actionCollection;
 
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;

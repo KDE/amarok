@@ -656,20 +656,6 @@ void App::slotConfigShortcuts()
     AmarokConfig::self()->writeConfig();
 }
 
-void App::slotConfigToolBars()
-{
-    KEditToolBar dialog( Amarok::actionCollection(), mainWindow() );
-    dialog.setResourceFile( mainWindow()->xmlFile() );
-
-    dialog.showButton( KEditToolBar::Apply, false );
-
-//     if( dialog.exec() )
-//     {
-//         mainWindow()->reloadXML();
-//         mainWindow()->createGUI();
-//     }
-}
-
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
