@@ -654,7 +654,7 @@ install(FILES context/servicetypes/amarok_context_applet.desktop
               context/servicetypes/amarok_data_engine.desktop
               DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
-install(FILES  amarok.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
+install(FILES  amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
 install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
               dbus/org.freedesktop.MediaPlayer.player.xml
               dbus/org.freedesktop.MediaPlayer.tracklist.xml

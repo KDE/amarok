@@ -1,5 +1,5 @@
 # Code generation options for kconfig_compiler
-File=amarok.kcfg
+File=amarokconfig.kcfg
 ClassName=AmarokConfig
 Singleton=true
 Mutators=true
