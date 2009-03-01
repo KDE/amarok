@@ -249,6 +249,7 @@ App::~App()
     EngineController::destroy();
     CoverFetcher::destroy();
 
+
 #ifdef Q_WS_WIN
     // work around for KUniqueApplication being not completely implemented on windows
     QDBusConnectionInterface* dbusService;
@@ -836,6 +837,8 @@ namespace Amarok
 
     KActionCollection *actionCollection()
     {
+        Q_ASSERT( pApp->mainWindow() );  // Ensure that we don't dereference a 0-pointer if mainWindow() is dead
+
         return pApp->mainWindow()->actionCollection();
     }
 
