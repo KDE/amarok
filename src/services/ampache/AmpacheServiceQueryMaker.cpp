@@ -566,7 +566,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         {
            //debug() << "Found parent album " << albumPtr->name() ;
            ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
-           track->setAlbum( albumPtr );
+           track->setAlbumPtr( albumPtr );
            album->addTrack( trackPtr );
         }
 

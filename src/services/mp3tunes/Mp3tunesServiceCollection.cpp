@@ -138,7 +138,7 @@ void Mp3tunesServiceCollection::trackForUrlComplete( Mp3tunesLockerTrack &track 
 
     serviceAlbum->setCoverUrl(coverUrl);
     Meta::AlbumPtr albumPtr( serviceAlbum );
-    serviceTrack->setAlbum( albumPtr );
+    serviceTrack->setAlbumPtr( albumPtr );
 
     // Building a Meta::Artist
     QString name = track.artistName().isEmpty() ? "Unknown" :  track.artistName();

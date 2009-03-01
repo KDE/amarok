@@ -223,7 +223,7 @@ int ScriptableService::addTrack( ScriptableServiceTrack * track )
 
         ScriptableServiceAlbum * album = m_ssAlbumIdMap.value( albumId );
         track->setAlbum( album->prettyName() );
-        track->setAlbum( AlbumPtr( album ) );
+        track->setAlbumPtr( AlbumPtr( album ) );
         album->addTrack( trackPtr );
 
         artistId = album->artistId();

@@ -129,7 +129,7 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
     album->setCoverUrl( artElement.text() );
 
     album->addTrack( trackPtr );
-    m_urlTrack->setAlbum( AlbumPtr( album ) );
+    m_urlTrack->setAlbumPtr( AlbumPtr( album ) );
 
     QDomElement artistElement = song.firstChildElement("artist");
     ServiceArtist * artist = new ServiceArtist( artistElement.text() );

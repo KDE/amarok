@@ -81,7 +81,7 @@ ServiceSqlRegistry::getTrack( const QStringList &rowData )
         ServiceAlbum * album = static_cast<ServiceAlbum *> ( albumPtr.data() );
 
         album->addTrack( trackPtr );
-        track->setAlbum( albumPtr );
+        track->setAlbumPtr( albumPtr );
 
         m_albumMap.insert( track->albumId(), albumPtr );
 

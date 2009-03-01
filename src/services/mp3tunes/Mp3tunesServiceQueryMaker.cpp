@@ -463,7 +463,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
         if ( albumPtr.data() != 0 ) {
             debug() << "Found parent album";
             ServiceAlbum *album = dynamic_cast< ServiceAlbum * > ( albumPtr.data() );
-            serviceTrack->setAlbum( albumPtr );
+            serviceTrack->setAlbumPtr( albumPtr );
             album->addTrack( trackPtr );
         }
 

@@ -307,10 +307,10 @@ void Meta::MagnatuneTrack::purchase()
         mAlbum->store()->purchase( this );
 }
 
-void Meta::MagnatuneTrack::setAlbum( Meta::AlbumPtr album )
+void Meta::MagnatuneTrack::setAlbumPtr( Meta::AlbumPtr album )
 {
     DEBUG_BLOCK
-    ServiceTrack::setAlbum( album );
+    ServiceTrack::setAlbumPtr( album );
 
     //get year from magnatue album:
     MagnatuneAlbum * ma = dynamic_cast<MagnatuneAlbum *>( album.data() );

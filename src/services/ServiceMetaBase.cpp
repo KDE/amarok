@@ -470,7 +470,7 @@ ServiceTrack::type() const
 }
 
 void
-ServiceTrack::setAlbum( AlbumPtr album )
+ServiceTrack::setAlbumPtr( AlbumPtr album )
 {
     m_album = album;
 }
