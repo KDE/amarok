@@ -171,6 +171,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 {
     DEBUG_BLOCK
 
+    Q_UNUSED( sessionKey );
     Q_UNUSED( fetchSimilar ); // TODO implement..
 
     setShortDescription( i18n( "Last.fm: The social music revolution." ) );

@@ -90,7 +90,10 @@ ScrobblerAdapter::engineNewTrackPlaying()
 void 
 ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
+    Q_UNUSED( newMetaData )
+    Q_UNUSED( trackChanged )
     DEBUG_BLOCK
+
     // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track &&
