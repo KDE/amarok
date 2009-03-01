@@ -446,7 +446,7 @@ XmlQueryWriter::fieldName( qint64 val )
         case Meta::valScore:       return "score";
         case Meta::valRating:      return "rating";
         case Meta::valFirstPlayed: return "firstplay";
-        case Meta::valLastPlayed:  return "listplay";
+        case Meta::valLastPlayed:  return "lastplay";
         case Meta::valPlaycount:   return "playcount";
         default:                   return "";
     }
@@ -460,6 +460,6 @@ XmlQueryWriter::compareName( QueryMaker::NumberComparison compare )
     else if( compare == GreaterThan )
         return "greater";
     else
-        return "equal";
+        return "equals";
 }
 
