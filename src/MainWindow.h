@@ -21,7 +21,6 @@
 #include "EngineObserver.h"
 #include "Sidebar.h"
 
-#include <KActionCollection>
 #include <KMainWindow>
 #include <KVBox>
 
@@ -70,8 +69,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         MainWindow();
        ~MainWindow();
 
-        void init();
-
         //allows us to switch browsers from within other browsers etc
         void showBrowser( const QString& name );
         void addBrowser( const QString &name, QWidget *widget, const QString &text, const QString &icon );
@@ -87,7 +84,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 		QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
 
-        KActionCollection *actionCollection();
         QString activeBrowserName();
 
         CollectionWidget * collectionBrowser();
@@ -143,10 +139,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void setRating5() { setRating( 5 ); }
 
     private:
+        void init();
         void setRating( int n );
         void showBrowser( const int index );
-
-        QPointer<KActionCollection>  m_actionCollection;
 
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;

@@ -18,12 +18,14 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
+#include "amarok_export.h"
+
 #include <KActionCollection>
 #include <KConfig>
 #include <KIO/NetAccess>
 #include <KUrl> // recursiveUrlExpand
 
-#include "amarok_export.h"
+#include <QPointer>
 
 class QColor;
 class QDateTime;
@@ -42,6 +44,8 @@ namespace Amarok
     const int GUI_THREAD_ID = 0;
 
     extern QMutex globalDirsMutex; // defined in App.cpp
+    extern QPointer<KActionCollection> actionCollectionObject; // defined in App.cpp
+
 
     namespace ColorScheme
     {
@@ -71,9 +75,6 @@ namespace Amarok
 
     /**
      * @return the KActionCollection used by Amarok
-     * The KActionCollection is owned by the PlaylistWindow, so you must ensure
-     * you don't try to use this before then, but we've taken steps to prevent
-     * this eventuality - you should be safe.
      */
     KActionCollection *actionCollection(); //defined in App.cpp
 

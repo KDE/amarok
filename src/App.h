@@ -21,11 +21,13 @@
 #include <config-amarok.h>  
 
 #include "amarok_export.h"
+
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 
 #include <QByteArray>
 #include <QHash>
+#include <QPointer>
 #include <QString>
 
 namespace Amarok {

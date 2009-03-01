@@ -153,6 +153,8 @@ MainWindow::MainWindow()
 
     The::paletteHandler()->setPalette( palette() );
     setPlainCaption( i18n( AMAROK_CAPTION ) );
+
+    init();  // We could as well move the code from init() here, but meh.. getting a tad long
 }
 
 MainWindow::~MainWindow()
@@ -178,8 +180,6 @@ MainWindow::~MainWindow()
     delete m_controlBar;
     delete The::svgHandler();
     delete The::paletteHandler();
-
-    actionCollection()->clear();
 }
 
 
@@ -191,13 +191,10 @@ MainWindow::~MainWindow()
 void
 MainWindow::init()
 {
-    layout()->setContentsMargins( 0, 0, 0, 0 );
-    layout()->setSpacing( 0 );
     DEBUG_BLOCK
 
-    //this function is necessary because Amarok::actionCollection() returns our actionCollection
-    //via the App::m_pMainWindow pointer since App::m_pMainWindow is not defined until
-    //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
+    layout()->setContentsMargins( 0, 0, 0, 0 );
+    layout()->setSpacing( 0 );
 
     QBoxLayout * toolbarSpacer = new QHBoxLayout( this );
     toolbarSpacer->setContentsMargins( 0, 0, 0, 10 );
@@ -623,7 +620,7 @@ MainWindow::isReallyShown() const
 void
 MainWindow::createActions()
 {
-    KActionCollection* const ac = actionCollection();
+    KActionCollection* const ac = Amarok::actionCollection();
     const EngineController* const ec = The::engineController();
     const Playlist::Actions* const pa = The::playlistActions();
     const Playlist::Controller* const pc = The::playlistController();
@@ -838,61 +835,61 @@ MainWindow::createMenus()
     actionsMenu = new KMenu( m_menubar );
     actionsMenu->setTitle( i18n("&Amarok") );
 #endif
-    actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
-    actionsMenu->addAction( actionCollection()->action("play_audiocd") );
+    actionsMenu->addAction( Amarok::actionCollection()->action("playlist_playmedia") );
+    actionsMenu->addAction( Amarok::actionCollection()->action("play_audiocd") );
     actionsMenu->addSeparator();
-    actionsMenu->addAction( actionCollection()->action("prev") );
-    actionsMenu->addAction( actionCollection()->action("play_pause") );
-    actionsMenu->addAction( actionCollection()->action("stop") );
-    actionsMenu->addAction( actionCollection()->action("next") );
+    actionsMenu->addAction( Amarok::actionCollection()->action("prev") );
+    actionsMenu->addAction( Amarok::actionCollection()->action("play_pause") );
+    actionsMenu->addAction( Amarok::actionCollection()->action("stop") );
+    actionsMenu->addAction( Amarok::actionCollection()->action("next") );
 
 
 #ifndef Q_WS_MAC    // Avoid duplicate "Quit" in OS X dock menu
     actionsMenu->addSeparator();
-    actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
+    actionsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
 #endif
     //END Actions menu
 
     //BEGIN Playlist menu
     KMenu *playlistMenu = new KMenu( m_menubar );
     playlistMenu->setTitle( i18n("&Playlist") );
-    playlistMenu->addAction( actionCollection()->action("playlist_add") );
-    playlistMenu->addAction( actionCollection()->action("stream_add") );
-    playlistMenu->addAction( actionCollection()->action("playlist_save") );
-    playlistMenu->addAction( actionCollection()->action("playlist_burn") );
-    playlistMenu->addAction( actionCollection()->action("podcasts_update") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_add") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("stream_add") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_save") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_burn") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("podcasts_update") );
     playlistMenu->addSeparator();
-    playlistMenu->addAction( actionCollection()->action("playlist_undo") );
-    playlistMenu->addAction( actionCollection()->action("playlist_redo") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_undo") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_redo") );
     playlistMenu->addSeparator();
-    playlistMenu->addAction( actionCollection()->action("playlist_clear") );
-    playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_clear") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_shuffle") );
 
-    QAction *repeat = actionCollection()->action("repeat");
+    QAction *repeat = Amarok::actionCollection()->action("repeat");
     playlistMenu->addAction( repeat );
 
-    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
+    KSelectAction *random = static_cast<KSelectAction*>( Amarok::actionCollection()->action("random_mode") );
     playlistMenu->addAction( random );
     random->menu()->addSeparator();
-    random->menu()->addAction( actionCollection()->action("favor_tracks") );
+    random->menu()->addAction( Amarok::actionCollection()->action("favor_tracks") );
 
     playlistMenu->addSeparator();
     //FIXME: REENABLE When ported
-//     playlistMenu->addAction( actionCollection()->action("queue_selected") );
-    playlistMenu->addAction( actionCollection()->action("playlist_remove_duplicates") );
-    playlistMenu->addAction( actionCollection()->action("playlist_select_all") );
+//     playlistMenu->addAction( Amarok::actionCollection()->action("queue_selected") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_duplicates") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_select_all") );
 
     //END Playlist menu
 
     //BEGIN Tools menu
     m_toolsMenu = new KMenu( m_menubar );
     m_toolsMenu->setTitle( i18n("&Tools") );
-    m_toolsMenu->addAction( actionCollection()->action("cover_manager") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
 //FIXME: Reenable when ported//working
-//     m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    m_toolsMenu->addAction( actionCollection()->action("script_manager") );
+//     m_toolsMenu->addAction( Amarok::actionCollection()->action("queue_manager") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("script_manager") );
     m_toolsMenu->addSeparator();
-    m_toolsMenu->addAction( actionCollection()->action("update_collection") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
     //END Tools menu
 
     //BEGIN Settings menu
@@ -900,11 +897,11 @@ MainWindow::createMenus()
     m_settingsMenu->setTitle( i18n("&Settings") );
     //TODO use KStandardAction or KXmlGuiWindow
 
-    m_settingsMenu->addAction( actionCollection()->action("replay_gain_mode") );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
     //END Settings menu
 
     m_menubar->addMenu( actionsMenu );
@@ -1012,17 +1009,6 @@ CollectionWidget * MainWindow::collectionBrowser()
 QString MainWindow::activeBrowserName()
 {
     return m_browserNames[ m_browsers->currentIndex() ];
-}
-
-KActionCollection * MainWindow::actionCollection()  // TODO: constify?
-{
-    if( !m_actionCollection )
-    {
-        m_actionCollection = new KActionCollection( this );
-        m_actionCollection->setObjectName( "Amarok-KActionCollection" );
-    }
-
-    return m_actionCollection;
 }
 
 PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()

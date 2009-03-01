@@ -69,6 +69,7 @@ email                : markey@web.de
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
+QPointer<KActionCollection> Amarok::actionCollectionObject;
 
 int App::mainThreadId = 0;
 
@@ -571,10 +572,6 @@ App::continueInit()
 
     m_tray = new Amarok::TrayIcon( mainWindow() );
 
-    PERF_LOG( "Start init of MainWindow" )
-    mainWindow()->init(); //creates the playlist, browsers, etc.
-    PERF_LOG( "Init of MainWindow done" )
-
     PERF_LOG( "Creating DBus handlers" )
     new Amarok::RootDBusHandler();
     new Amarok::PlayerDBusHandler();
@@ -821,11 +818,15 @@ namespace Amarok
         return pApp->mainWindow();
     }
 
-    KActionCollection *actionCollection()
+    KActionCollection* actionCollection()  // TODO: constify?
     {
-        Q_ASSERT( pApp->mainWindow() );  // Ensure that we don't dereference a 0-pointer if mainWindow() is dead
+        if( !actionCollectionObject )
+        {
+            actionCollectionObject = new KActionCollection( pApp );
+            actionCollectionObject->setObjectName( "Amarok-KActionCollection" );
+        }
 
-        return pApp->mainWindow()->actionCollection();
+        return actionCollectionObject;
     }
 
     KConfigGroup config( const QString &group )
