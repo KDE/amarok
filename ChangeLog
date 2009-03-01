@@ -96,10 +96,12 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Don't crash if using an invalid codec name AmarokLyricsScript conversion
+      functions. (BR 185540)
     * Actually stop playback if we encounter too many errors.
     * The collection scanner no longer sucks quite as much.
-    * A full rescan is no longer necessary after disconnecting/reconnecting an external
-      harddrive.
+    * A full rescan is no longer necessary after disconnecting/reconnecting an 
+      external harddrive.
     * Fix issue with files being deleted when Organize Collection is run
       without selecting a collection root. (BR 184410)
     * Fix showing of book information from the LibriVox service.
