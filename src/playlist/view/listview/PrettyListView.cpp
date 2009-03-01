@@ -99,7 +99,7 @@ void
 Playlist::PrettyListView::engineNewTrackPlaying()
 {
     if( AmarokConfig::autoScrollPlaylist() )
-        scrollToActiveTrack(); 
+        scrollToActiveTrack();
 }
 
 void
@@ -161,15 +161,15 @@ void Playlist::PrettyListView::selectSource()
 
     //get multiSource capability:
 
-    Meta::MultiSourceCapability * msc = qobject_cast<Meta::MultiSourceCapability *>( track->asCapabilityInterface( Meta::Capability::MultiSource ) );
-
-    if ( msc ) {
+    Meta::MultiSourceCapability *msc = track->as<Meta::MultiSourceCapability>();
+    if ( msc )
+    {
         debug() << "sources: " << msc->sources();
         SourceSelectionPopup * sourceSelector = new SourceSelectionPopup( this, msc );
         sourceSelector->show();
         //dialog deletes msc when done with it.
     }
-    
+
 }
 
 
@@ -464,7 +464,7 @@ Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverAction
         actions << pauseAction;
     else
         actions << playAction;
-    
+
 
     const bool isMultiSource = index.data( Playlist::MultiSourceRole ).toBool();
     if ( isMultiSource ) {
