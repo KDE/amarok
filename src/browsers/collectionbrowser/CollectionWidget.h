@@ -44,7 +44,7 @@ class CollectionWidget : public KVBox
         QString filter() const;
 
         QList<int> levels();
-        
+
     public slots:
 
         void customFilter( QAction * );
@@ -54,19 +54,20 @@ class CollectionWidget : public KVBox
         void sortByGenreArtist();
         void sortByGenreArtistAlbum();
         void slotShowYears( bool checked );
+        void slotShowCovers( bool checked );
 
     private:
         SearchWidget        *m_searchWidget;
         CollectionTreeView  *m_treeView;
-        
+
         QAction             *m_firstLevelSelectedAction;
         QAction             *m_secondLevelSelectedAction;
         QAction             *m_thirdLevelSelectedAction;
-        
+
         QMenu               *m_firstLevel;
         QMenu               *m_secondLevel;
         QMenu               *m_thirdLevel;
-        
+
         QList<int>          m_levels;
 
         static CollectionWidget *s_instance;

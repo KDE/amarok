@@ -208,7 +208,7 @@ App::~App()
                 AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
             }
         }
-        else 
+        else
             AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
     }
 
@@ -236,7 +236,6 @@ App::~App()
     // Config is written. Go figure!
     AmarokConfig::setLastPlaying( Playlist::Model::instance()->rowForTrack( Playlist::Model::instance()->activeTrack() ) );
 
-    AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::self()->writeConfig();
 
     mainWindow()->deleteBrowsers();
@@ -366,9 +365,9 @@ App::handleCliArgs() //static
 
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
     const bool debugIsDisabled = !args->isSet( "debug" );
-    
+
     Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
- 
+
     // Debug output will only work from this point on. If Amarok was run without debug output before,
     // then a part of the output (until this point) will be missing. Inform the user about this:
     if( debugWasJustEnabled )
@@ -508,13 +507,13 @@ void App::applySettings( bool firstTime )
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
-    
+
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
     {
         PERF_LOG( "showing main window again" )
         main_window->show();
         PERF_LOG( "after showing mainWindow" )
-    } 
+    }
 
     { //<Engine>
         if( The::engineController()->volume() != AmarokConfig::masterVolume() )
@@ -535,7 +534,7 @@ void App::applySettings( bool firstTime )
 
     {   // delete unneeded cover images from cache
         PERF_LOG( "Begin cover handling" )
-        const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
+        const QString size = QString::number( 100 ) + '@';
         const QDir cacheDir = Amarok::saveLocation( "albumcovers/cache/" );
         const QStringList obsoleteCovers = cacheDir.entryList( QStringList("*") );
         foreach( const QString &it, obsoleteCovers )
@@ -849,7 +848,7 @@ namespace Amarok
             browser = "xdg-open";
 #endif
 
-        const QString cmd = KShell::quoteArg( browser ) 
+        const QString cmd = KShell::quoteArg( browser )
                             + ' ' + KShell::quoteArg( KUrl( url ).url() );
 
         return ( KRun::runCommand( cmd, 0L ) > 0 );
@@ -1000,7 +999,7 @@ namespace Amarok
         return s;
     }
 
-    /* Strip the common prefix of two strings from the first one and trim 
+    /* Strip the common prefix of two strings from the first one and trim
      * whitespaces from the beginning of the resultant string.
      * Case-insensitive.
      *
@@ -1015,7 +1014,7 @@ namespace Amarok
             if ( input.at( len ).toUpper() != ref.at( len ).toUpper() )
                 break;
         }
-        
+
         return input.right( input.length() - len ).trimmed();
     }
 

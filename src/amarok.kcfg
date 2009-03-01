@@ -9,16 +9,6 @@
 <kcfgfile name="amarokrc"/>
 
 <group name="General Options">
-    <entry key="Version" type="String">
-        <label>Amarok Version</label>
-        <whatsthis>Amarok version string, used to restart aRts in new installations.</whatsthis>
-        <default></default>
-    </entry>
-    <entry key="Follow Symlinks" type="Bool">
-        <label>Whether to follow symlinks while adding items to playlist recursively</label>
-        <whatsthis>If set, amarok follows symlinks when adding files or directories to the playlist.</whatsthis>
-        <default>true</default>
-    </entry>
     <entry key="Left Time Display Enabled" type="Bool">
         <label>Whether to display a second, left time label.</label>
         <whatsthis>Set this to display a second time label to the left of the seek slider in the player window.</whatsthis>
@@ -79,11 +69,6 @@
         <whatsthis>The title of the Dynamic Mode that was most recently loaded in the playlist</whatsthis>
         <default>Random Mix</default>
     </entry>
-    <entry key="Last Score Script" type="String">
-        <label>The most recently used scoring script</label>
-        <whatsthis>The name of the custom scoring script which was most recently loaded</whatsthis>
-        <default></default>
-    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for Amarok.</whatsthis>
@@ -94,16 +79,6 @@
         <whatsthis>Enable/Disable tray icon animation.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Cover Preview Size" type="Int">
-        <label>Size of the cover previews in Contextbrowser and Covermanager</label>
-        <whatsthis>Size of the cover previews in Contextbrowser and Covermanager</whatsthis>
-        <default>100</default>
-    </entry>
-    <entry key="Directories Recursively" type="Bool">
-        <label>Whether to add directories to playlist recursively</label>
-        <whatsthis>Enable/Disable recursive directory adding to the playlist.</whatsthis>
-        <default>true</default>
-    </entry>
     <entry key="Track Delay Length" type="Int">
         <label>Delay between tracks, in milliseconds</label>
         <whatsthis>Delay between tracks, in milliseconds.</whatsthis>
@@ -113,11 +88,6 @@
         <label>Number of undo levels in playlist</label>
         <whatsthis>The number of undo levels in the playlist.</whatsthis>
         <default>30</default>
-    </entry>
-    <entry key="Current Analyzer" type="Int">
-        <label>Index of current visual analyzer</label>
-        <whatsthis>The ID of the visual analyzer to display.</whatsthis>
-        <default>-1</default>
     </entry>
     <entry key="Show Splashscreen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
@@ -198,20 +168,16 @@
         <label>Filename of the external web browser to be invoked by Amarok.</label>
         <default>xdg-open</default>
     </entry>
-    <entry key="Collection Browser View Mode" type="Int">
-        <label>Whether the collection view is in the flat or tree view mode</label>
-        <default>0</default>
-    </entry>
-    <entry key="Use CoverBling" type="Bool">
-        <label>Whether to use the CoverBling album art visualization.</label>
-        <default>false</default>
-    </entry>
     <entry key="AutoGetCoverArt" type="Bool">
         <label>Whether to automatically attempt to fetch cover art as needed</label>
         <default>false</default>
     </entry>
     <entry key="AutoScrollPlaylist" type="Bool">
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
+        <default>true</default>
+    </entry>
+    <entry key="Show Album Art" type="Bool">
+        <label>Show Album art in the Collection Browser</label>
         <default>true</default>
     </entry>
 </group>

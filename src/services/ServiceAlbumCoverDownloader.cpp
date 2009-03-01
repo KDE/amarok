@@ -64,7 +64,7 @@ ServiceAlbumWithCover::image( int size )
         artist = albumArtist()->name();
     else
         artist = "NULL"; //no need to translate, only used as a caching key/temp filename
-    
+
     QString coverName = downloadPrefix() + '_' + artist+ '_' + name() + "_cover.png";
 
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
@@ -74,7 +74,7 @@ ServiceAlbumWithCover::image( int size )
         cacheCoverDir.mkpath( Amarok::saveLocation( "albumcovers/cache/" ) );
 
     if ( size <= 1 )
-        size = AmarokConfig::coverPreviewSize();
+        size = 100;
     QString sizeKey = QString::number( size ) + '@';
 
     QImage img;
@@ -159,12 +159,12 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover * album )
 void
 ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
-    
+
 
     if( !downloadJob || !downloadJob->error() == 0 )
     {
         debug() << "Download Job failed!";
-        
+
         //we could not download, so inform album
         if( m_album )
             m_album->imageDownloadCanceled();

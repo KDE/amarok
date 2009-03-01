@@ -96,7 +96,7 @@ class Track::Private : public QObject
             track = trackInfo.title();
             length = trackInfo.duration();
             trackPath = trackInfo.url();
-            
+
             // need to reset other items
             albumUrl = "";
             trackUrl = "";
@@ -111,7 +111,7 @@ class Track::Private : public QObject
                 .add( "track", track )
                 .add( "api_key", QString( Ws::ApiKey ) )
                 .get();
-                
+
                 connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( requestResult( WsReply* ) ) );
             }
         }
@@ -140,8 +140,9 @@ class Track::Private : public QObject
 
         void fetchImageFinished( KJob* job )
         {
-            if( job->error() == 0 ) {
-                const int size = AmarokConfig::coverPreviewSize();
+            if( job->error() == 0 )
+            {
+                const int size = 100;
 
                 QImage img = QImage::fromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
                 if( !img.isNull() )
@@ -242,7 +243,7 @@ public:
             //TODO improve this
 
             if ( size <= 1 )
-                size = AmarokConfig::coverPreviewSize();
+                size = 100;
             QString sizeKey = QString::number( size ) + '@';
 
             QImage img;
@@ -260,8 +261,8 @@ public:
             m_noCoverImage = true;
             return QPixmap::fromImage( img );
         }
-            
-            
+
+
         if( d->albumArt.width() != size && size > 0 )
             return d->albumArt.scaled( size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
         return d->albumArt;

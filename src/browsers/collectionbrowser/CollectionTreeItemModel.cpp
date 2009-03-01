@@ -21,6 +21,7 @@
 
 #include "CollectionTreeItemModel.h"
 
+#include <amarokconfig.h>
 #include "CollectionTreeItem.h"
 #include "Debug.h"
 #include "Amarok.h"
@@ -83,10 +84,13 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
             if ( level < m_levelType.count() ) {
                 if (  m_levelType[level] == CategoryId::Album )
                 {
-                    Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                    if( album )
-                        return album->imageWithBorder( 32, 2 );
-                    return iconForLevel( level  );
+                    if( AmarokConfig::showAlbumArt() )
+                    {
+                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+                        if( album )
+                            return album->imageWithBorder( 32, 2 );
+                        return iconForLevel( level  );
+                    }
                 }
                 return iconForLevel( level );
             }
@@ -157,7 +161,7 @@ CollectionTreeItemModel::collectionAdded( Amarok::Collection *newCollection )
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
     d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem ) ) );
     endInsertRows();
-    
+
     if( d->m_collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }

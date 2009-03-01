@@ -1,7 +1,7 @@
 /* This file is part of the Amarok project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org> 
+   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -406,7 +406,7 @@ Meta::Album::image( int size )
     // Return "nocover" until it's fetched.
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     if ( size <= 1 )
-        size = AmarokConfig::coverPreviewSize();
+        size = 100;
     QString sizeKey = QString::number( size ) + '@';
 
     QImage img;
@@ -421,7 +421,7 @@ Meta::Album::image( int size )
     }
 
     m_noCoverImage = true;
-    
+
     return QPixmap::fromImage( img );
 }
 
@@ -432,7 +432,7 @@ Meta::Album::imageWithBorder( int size, int borderWidth )
     QPixmap coverWithBorders;
 
     m_noCoverImage = false;
-    
+
     const int imageSize = size - borderWidth * 2;
     QPixmap cover = image( imageSize );
 

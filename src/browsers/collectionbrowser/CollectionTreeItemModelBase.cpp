@@ -79,20 +79,20 @@ Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) cons
     Qt::ItemFlags flags;
     flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
     return flags;
-    
+
 }
 
-bool 
+bool
 CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &value, int role )
 {
     Q_UNUSED( role )
-     
+
     if( !index.isValid() )
         return false;
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-    
+
     Meta::DataPtr data = item->data();
-    
+
     if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
     {
         if( !track->hasCapabilityInterface( Meta::Capability::Editable ) )
@@ -287,7 +287,7 @@ CollectionTreeItemModelBase::mimeData(const QModelIndexList & indices) const
 
     QList<CollectionTreeItem*> items;
 
-    foreach( const QModelIndex &index, indices ) 
+    foreach( const QModelIndex &index, indices )
     {
         if( index.isValid() )
             items << static_cast<CollectionTreeItem*>( index.internalPointer() );
@@ -343,7 +343,8 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
     switch( m_levelType[level] )
     {
         case CategoryId::Album :
-            icon = "view-media-album-amarok";
+//             icon = "view-media-album-amarok"; // Doesn't exist..
+            icon = "media-optical-amarok";
             break;
         case CategoryId::Artist :
             icon = "view-media-artist-amarok";
@@ -374,7 +375,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         }
         if ( level > m_levelType.count() )
             return;
-        
+
         if ( level == m_levelType.count() )
             qm->setQueryType( QueryMaker::Track );
         else
@@ -418,7 +419,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
             //ignore Various artists node (whichh will not have a data pointer
             if( tmpItem->data() )
                 qm->addMatch( tmpItem->data() );
-            
+
             tmpItem = tmpItem->parent();
         }
         addFilters( qm );
@@ -438,12 +439,12 @@ void
 CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 {
     int validFilters = qm->validFilterMask();
-    
+
     ParsedExpression parsed = ExpressionParser::parse ( m_currentFilter );
     foreach( const or_list &orList, parsed )
     {
         qm->beginOr();
-        
+
         foreach ( const expression_element &elem, orList )
         {
 #define ADD_OR_EXCLUDE_FILTER( VALUE, FILTER, MATCHBEGIN, MATCHEND ) \
@@ -526,7 +527,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 {
                     if ( ( validFilters & QueryMaker::AlbumFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valAlbum, elem.text, false, false );
-                } 
+                }
                 else if ( lcField.compare( "artist", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "artist" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::ArtistFilter ) == 0 ) continue;
@@ -591,7 +592,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                             dateCutOff = curTime.addMonths( -2 ).toTime_t();
                         else if( ( elem.text.compare( "three months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "three months ago" ), Qt::CaseInsensitive ) == 0 ) )
                             dateCutOff = curTime.addMonths( -3 ).toTime_t();
-                        
+
                         if( dateCutOff > 0 )
                         {
                             ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, QueryMaker::GreaterThan );
@@ -615,7 +616,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                                 weeks = 0 - 7 * QString( tmp ).toInt();
                                 tmp = "";
                             } else if( c == 'd' )
-                            {   
+                            {
                                 days = 0 - QString( tmp ).toInt();
                                 break;
                             }
@@ -638,7 +639,7 @@ CollectionTreeItemModelBase::queryDone()
     QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
     if( !qm )
         return;
-    
+
     CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 
     //reset icon for this item
@@ -658,13 +659,13 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 
     if ( data.count() == 0 )
         return;
-    
+
     //if we are expanding an item, we'll find the sender in m_childQueries
     //otherwise we are filtering all collections
     QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
     if( !qm )
         return;
-    
+
     if( d->m_childQueries.contains( qm ) )
     {
         CollectionTreeItem *parent = d->m_childQueries.value( qm );
@@ -721,18 +722,18 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
             beginInsertRows( parentIndex, 0, 0 );
             CollectionTreeItem *vaItem = new CollectionTreeItem( data, parent );
             endInsertRows();
-            
+
             CollectionTreeItem *tmp = parent;
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
-            
+
             if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
             {
                 debug() << "Expand vanode for collection " << collectionId;
                 QModelIndex vanode = createIndex( 0, 0, vaItem ); //we've just inserted the vaItem at row 0
                 emit expandIndex( vanode );
             }
-            
+
         }
     }
 }
@@ -760,7 +761,7 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
 {
     switch( m_levelType[level] )
     {
-        case CategoryId::Album      : return AmarokConfig::showYears() ? i18n( "Year - Album" ) : i18n( "Album" ); 	
+        case CategoryId::Album      : return AmarokConfig::showYears() ? i18n( "Year - Album" ) : i18n( "Album" );
         case CategoryId::Artist     : return i18n( "Artist" );
         case CategoryId::Composer   : return i18n( "Composer" );
         case CategoryId::Genre      : return i18n( "Genre" );
@@ -822,7 +823,7 @@ CollectionTreeItemModelBase::slotFilter()
 {
     if ( isQuerying() )
         return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
-            
+
     filterChildren();
     reset();
     if ( !m_expandedCollections.isEmpty() )
@@ -851,7 +852,7 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
             CollectionTreeItem *tmp = item->parent();
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
-            
+
             m_expandedVariousArtistsNodes.remove( tmp->parentCollection() );
         }
         else
@@ -876,7 +877,7 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
             CollectionTreeItem *tmp = item->parent();
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
-            
+
             debug() << "VA node for collection " << tmp->parentCollection()->collectionId() << " expanded";
             m_expandedVariousArtistsNodes.insert( tmp->parentCollection() );
         }

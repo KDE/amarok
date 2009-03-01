@@ -238,12 +238,12 @@ TagDialog::dataQueryDone()
     // edited because we do it not the user, so it results in empty
     // tags being saved to files---data loss is BAD!
     QMap< QString, bool > m_fieldEditedSave = m_fieldEdited;
-  
+
     //we simply clear the completion data of all comboboxes
     //then load the current track again. that's more work than necessary
     //but the performance impact should be negligible
     // we do this because if we insert items and the contents of the textbox
-    // are not in the list, it clears the textbox. which is bad --lfranchi 2.22.09  
+    // are not in the list, it clears the textbox. which is bad --lfranchi 2.22.09
     QString saveText( ui->kComboBox_artist->lineEdit()->text() );
     ui->kComboBox_artist->clear();
     ui->kComboBox_artist->insertItems( 0, m_artists );
@@ -265,7 +265,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
     m_fieldEdited = m_fieldEditedSave;
-    
+
     if( !m_queryMaker )  //track query complete or not necessary
     {
         if( m_perTrack )
@@ -335,7 +335,7 @@ TagDialog::nextTrack()
     {
         if ( m_currentTrack == m_trackIterator.peekNext() )
             m_trackIterator.next();
-    
+
         setCurrentTrack( m_trackIterator.next() );
     }
     loadTags( m_currentTrack );
@@ -376,63 +376,63 @@ TagDialog::enableItems()
     ui->pushButton_next->setEnabled( m_perTrack && m_trackIterator.hasNext() );
 }
 
-inline void 
+inline void
 TagDialog::composerModified()
 {
     m_fieldEdited[ "composer" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::artistModified()
 {
     m_fieldEdited[ "artist" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::albumModified()
 {
     m_fieldEdited[ "album" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::genreModified()
 {
     m_fieldEdited[ "genre" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::ratingModified()
 {
     m_fieldEdited[ "rating" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::yearModified()
 {
     m_fieldEdited[ "year" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::scoreModified()
 {
     m_fieldEdited[ "score" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::commentModified()
 {
     m_fieldEdited[ "comment" ] = true;
     checkModified();
 }
 
-inline void 
+inline void
 TagDialog::discNumberModified()
 {
     m_fieldEdited[ "discNumber" ] = true;
@@ -452,11 +452,11 @@ TagDialog::loadCover()
     if( !m_currentTrack->album() )
         return;
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( AmarokConfig::coverPreviewSize() ) );
+    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image() );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
     ui->pixmap_cover->setInformation( artist, m_currentTrack->album()->name() );
 
-    const int s = AmarokConfig::coverPreviewSize();
+    const int s = 100; // Image preview size
     ui->pixmap_cover->setMinimumSize( s, s );
     ui->pixmap_cover->setMaximumSize( s, s );
 }
@@ -472,7 +472,7 @@ TagDialog::guessFromFilename() //SLOT
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
     dialog->setMainWidget( widget );
-    
+
     const int dcode = dialog->exec();
     QString schemeFromDialog; //note to self: see where to put it from an old revision
     debug() << "FilenameLayoutDialog finished.";
@@ -489,8 +489,8 @@ TagDialog::guessFromFilename() //SLOT
                             //So there's a bunch of rotting unused code but I suggest leaving it like this for now so we can rollback to the old dialog if I don't manage to fix the
                             //new one before 2.0.
     schemes += schemeFromDialog;
-    
-    
+
+
     if( schemeFromDialog.isEmpty() )
     {
         //FIXME: remove this before release
@@ -626,7 +626,7 @@ void TagDialog::init()
         loadLabels( m_currentTrack );
         readTags();
     }
-    
+
     // Connects for modification check
     // only set to overwrite-on-save if the text has changed
     connect( ui->kLineEdit_title,     SIGNAL( textChanged( const QString& ) ),     SLOT(checkModified()) );
@@ -817,16 +817,16 @@ void TagDialog::readTags()
     const int len = ui->trackArtistAlbumLabel->width();
     QString curTrackAlbName;
     QString curArtistName;
-    
+
     QString curTrackName = fnt.elidedText( Qt::escape( m_currentTrack->name() ), Qt::ElideRight, len );
     QString curTrackPretName = fnt.elidedText( Qt::escape( m_currentTrack->prettyName() ), Qt::ElideRight, len );
-    
+
     if( m_currentTrack->album() )
         curTrackAlbName = fnt.elidedText( Qt::escape( m_currentTrack->album()->name() ), Qt::ElideRight, len );
     if( m_currentTrack->artist() )
         curArtistName = fnt.elidedText( Qt::escape( m_currentTrack->artist()->name() ), Qt::ElideRight, len );
-    
-    
+
+
     if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
     {
         if( !m_currentTrack->name().isEmpty() )
@@ -1124,7 +1124,7 @@ TagDialog::readMultipleTracks()
     }
 
     m_trackIterator.toFront();
-    
+
     setCurrentTrack( m_tracks.first() );
 
     ui->trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %1 files", songCount ) );
@@ -1259,7 +1259,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
             map.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
         if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
             map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
-        
+
         storedTags.remove( track );
         storedTags.insert( track, map );
     }
@@ -1475,7 +1475,7 @@ TagDialog::saveTags()
         }
 
         QString collId = track->collection()->collectionId();
-        
+
         if( !collectionsToUpdateMap.contains( collId ) )
             collectionsToUpdateMap.insert( collId, track );
     }
@@ -1510,55 +1510,55 @@ TagDialog::applyToAllTracks()
             data.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "album" ) && m_fieldEdited[ "album" ] )
         {
             data.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "genre" ) && m_fieldEdited[ "genre" ] )
         {
             data.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "comment" ) && m_fieldEdited[ "comment" ] )
         {
             data.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "composer" ) && m_fieldEdited[ "composer" ] )
         {
             data.insert( Meta::Field::COMPOSER, ui->kComboBox_composer->currentText() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "year" ) && m_fieldEdited[ "year" ] )
         {
             data.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "discNumber" ) && m_fieldEdited[ "discNumber" ] )
         {
             data.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "score" ) && m_fieldEdited[ "score" ] )
         {
             data.insert( Meta::Field::SCORE, ui->qSpinBox_score->value() );
             changed |= TagDialog::SCORECHANGED;
         }
-        
+
         if( m_fieldEdited.contains( "rating" ) && m_fieldEdited[ "rating" ] )
         {
             data.insert( Meta::Field::RATING, ui->ratingWidget->rating() );
             changed |= TagDialog::RATINGCHANGED;
         }
-        
+
         storeTags( track, changed, data );
 
         QStringList tmpLabels = labelsForTrack( track );
