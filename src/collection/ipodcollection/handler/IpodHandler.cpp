@@ -1343,8 +1343,8 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
         gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "png", NULL, ( char* ) NULL );
 
         // pull temporary file's image out as QImage
-        QImage image( tempImagePath );
-        track->album()->setImage( image );
+        QPixmap pixmap( tempImagePath );
+        track->album()->setImage( pixmap );
 
         // fix memleak
         gdk_pixbuf_unref ( gpixbuf );
