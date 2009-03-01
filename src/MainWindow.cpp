@@ -30,20 +30,16 @@
 #include "ScriptManager.h"
 #include "SearchWidget.h"
 #include "Sidebar.moc"
-#include "statusbar/StatusBar.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
-#include "services/ServicePluginManager.h"
-#include "services/scriptable/ScriptableService.h"
 #include "collection/CollectionManager.h"
 #include "context/ContextScene.h"
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
-#include <plasma/plasma.h>
 #include "covermanager/CoverManager.h" // for actions
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -53,28 +49,33 @@
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "queuemanager/QueueManager.h"
+#include "services/ServicePluginManager.h"
+#include "services/scriptable/ScriptableService.h"
+#include "statusbar/StatusBar.h"
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
 #include <QCheckBox>
 #include <QDesktopWidget>
 #include <QList>
-#include <QVBoxLayout>
 #include <QSizeGrip>
+#include <QVBoxLayout>
 
-#include <kabstractfilewidget.h> //savePlaylist()
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
 #include <KApplication>     //kapp
 #include <KFileDialog>      //savePlaylist(), openPlaylist()
 #include <KInputDialog>     //slotAddStream()
 #include <KLocale>
-#include <KMessageBox>      //savePlaylist()
 #include <KMenu>
 #include <KMenuBar>
+#include <KMessageBox>      //savePlaylist()
 #include <KPixmapCache>
 #include <KStandardAction>
 #include <KWindowSystem>
+#include <kabstractfilewidget.h> //savePlaylist()
+
+#include <plasma/plasma.h>
 
 #ifdef Q_WS_X11
 #include <fixx11h.h>
