@@ -84,7 +84,7 @@ namespace Amarok
             bool m_outside;
             int  m_prevValue;
             bool m_needsResize;
-            
+
             QPixmap m_topLeft;
             QPixmap m_topRight;
             QPixmap m_top;
@@ -149,7 +149,7 @@ namespace Amarok
 
         protected:
             virtual void paintEvent( QPaintEvent* );
-
+            virtual void mousePressEvent( QMouseEvent* );
             virtual void paletteChange( const QPalette& );
             virtual void resizeEvent(QResizeEvent * event);
 

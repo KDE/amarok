@@ -403,12 +403,21 @@ void Amarok::TimeSlider::clearTriangles()
     m_triangles.clear();
 }
 
+void Amarok::TimeSlider::mousePressEvent(QMouseEvent *event )
+{
+    if( !The::engineController()->phononMediaObject()->isSeekable() )
+        return; // Eat the event,, it's not possible to seek
+    Amarok::Slider::mousePressEvent( event );
+}
+
+
 void Amarok::Slider::paletteChange(const QPalette & oldPalette)
 {
     Q_UNUSED( oldPalette );
     The::svgHandler()->reTint();
     repaint( 0, 0, -1, -1 );
 }
+
 
 
 #include "SliderWidget.moc"
