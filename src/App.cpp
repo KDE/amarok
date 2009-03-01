@@ -241,11 +241,11 @@ App::~App()
     mainWindow()->deleteBrowsers();
     delete mainWindow();
 
+    CollectionManager::destroy();
+    MountPointManager::destroy();
     Playlist::Actions::destroy();
     Playlist::Model::destroy();
     PlaylistManager::destroy();
-    CollectionManager::destroy();
-    MountPointManager::destroy();
     EngineController::destroy();
     CoverFetcher::destroy();
 

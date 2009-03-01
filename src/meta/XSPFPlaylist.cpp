@@ -114,6 +114,7 @@ XSPFPlaylist::save( const QString &location, bool relative )
     DEBUG_BLOCK
     Q_UNUSED( relative );
 
+    QFile::remove( location );
     QFile file( location );
 
     if( !file.open( QIODevice::WriteOnly ) )
