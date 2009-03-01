@@ -523,10 +523,10 @@ set(amaroklib_LIB_SRCS
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
     widgets/kratingwidget.cpp
-    widgets/DragStack.cpp
+    widgets/TokenDropTarget.cpp
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
-    widgets/FilenameLayoutWidget.cpp
+    widgets/TokenLayoutWidget.cpp
     widgets/FlowLayout.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
@@ -539,7 +539,7 @@ set(amaroklib_LIB_SRCS
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp
-    widgets/TokenListWidget.cpp
+    widgets/TokenPool.cpp
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
     widgets/VolumeWidget.cpp

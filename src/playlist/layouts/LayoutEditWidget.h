@@ -22,7 +22,7 @@
 
 #include "LayoutItemConfig.h"
 
-#include "FilenameLayoutWidget.h"
+#include "TokenLayoutWidget.h"
 #include "widgets/TokenWithLayout.h"
 
 #include <KVBox>
@@ -30,7 +30,7 @@
 class KHBox;
 class QCheckBox;
 class QSpinBox;
-class DragStack;
+class TokenDropTarget;
 
 /**
     A widget to define the layout of a single type of playlist item ( head, body or single )
@@ -55,7 +55,7 @@ class LayoutEditWidget : public KVBox
 
     private:
         QCheckBox *m_showCoverCheckBox;
-        DragStack *m_dragstack;
+        TokenDropTarget *m_dragstack;
         TokenWithLayoutFactory *m_tokenFactory;
 };
 

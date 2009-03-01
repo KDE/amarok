@@ -46,7 +46,7 @@ static const QStringList typeElements = ( QStringList()
 
 
 
-//Holds the FilenameLayoutWidget and TokenListWidget and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
+//Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
 class FilenameLayoutDialog
     : public QWidget
     , private Ui::FilenameLayoutDialog

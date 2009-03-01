@@ -23,7 +23,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" >
    <item>
-    <widget class="TokenListWidget" name="tokenPool" >
+    <widget class="TokenPool" name="tokenPool" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
        <horstretch>0</horstretch>
@@ -161,7 +161,7 @@
       </widget>
      </item>
      <item>
-      <widget class="FilenameLayoutWidget" name="filenameLayout" >
+      <widget class="TokenLayoutWidget" name="filenameLayout" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
@@ -428,14 +428,14 @@
    <header>kpushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>TokenListWidget</class>
+   <class>TokenPool</class>
    <extends>QListWidget</extends>
-   <header location="global" >widgets/TokenListWidget.h</header>
+   <header location="global" >widgets/TokenPool.h</header>
   </customwidget>
   <customwidget>
-   <class>FilenameLayoutWidget</class>
+   <class>TokenLayoutWidget</class>
    <extends>QFrame</extends>
-   <header location="global" >widgets/FilenameLayoutWidget.h</header>
+   <header location="global" >widgets/TokenLayoutWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

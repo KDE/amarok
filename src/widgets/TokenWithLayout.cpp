@@ -20,7 +20,7 @@
 
 #include "TokenWithLayout.h"
 
-#include "DragStack.h"
+#include "TokenDropTarget.h"
 
 #include <KAction>
 #include <KHBox>
@@ -118,7 +118,7 @@ void TokenWithLayout::fillMenu( QMenu * menu )
     // solution: the popup stuff -iff- should be done in the dialog or the editWidget
     if ( parentWidget() )
     {
-        if ( DragStack *editWidget = qobject_cast<DragStack*>( parentWidget() ) )
+        if ( TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( parentWidget() ) )
         {
             qreal spareWidth = 100.0;
             int row = editWidget->row( this );

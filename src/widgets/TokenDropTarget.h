@@ -29,11 +29,11 @@ class Token;
 class TokenDragger;
 class TokenFactory;
 
-class DragStack : public QWidget
+class TokenDropTarget : public QWidget
 {
     Q_OBJECT
 public:
-    DragStack( const QString &mimeType, QWidget *parent = 0);
+    TokenDropTarget( const QString &mimeType, QWidget *parent = 0);
 
     QWidget *childAt( const QPoint &pos ) const;
     void clear();

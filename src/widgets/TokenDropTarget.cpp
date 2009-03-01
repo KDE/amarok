@@ -18,21 +18,21 @@
  ***************************************************************************/
 
 #include "Token.h"
-#include "DragStack.h"
+#include "TokenDropTarget.h"
 
 #include <QDropEvent>
 #include <QVBoxLayout>
 
 #include <QtDebug>
 
-/** TokenDragger - eventfilter that drags a token, designed to be a child of DragStack
-This is necessary, as if DragStack would QDrag::exec() itself, the eventFilter would be blocked
+/** TokenDragger - eventfilter that drags a token, designed to be a child of TokenDropTarget
+This is necessary, as if TokenDropTarget would QDrag::exec() itself, the eventFilter would be blocked
 and thus not be able to handle other events for the parenting widget, like e.g. dragEnter... */
 
 class TokenDragger : public QObject
 {
 public:
-    TokenDragger( const QString &mimeType, DragStack *parent ) : QObject(parent), m_mimeType( mimeType )
+    TokenDragger( const QString &mimeType, TokenDropTarget *parent ) : QObject(parent), m_mimeType( mimeType )
     {}
 protected:
     bool eventFilter( QObject *o, QEvent *e )
@@ -59,7 +59,7 @@ protected:
             return false;
         }
         else if ( e->type() == QEvent::FocusIn )
-            emit static_cast<DragStack*>( parent() )->focussed( qobject_cast<QWidget*>(o) );
+            emit static_cast<TokenDropTarget*>( parent() )->focussed( qobject_cast<QWidget*>(o) );
         else if ( e->type() == QEvent::Hide )
         {
             setCursor( qobject_cast<QWidget*>(o), Qt::OpenHandCursor );
@@ -75,7 +75,7 @@ private:
             return false;
 
         bool ret = false;
-        bool stacked = token->parentWidget() && qobject_cast<DragStack*>( token->parentWidget() );
+        bool stacked = token->parentWidget() && qobject_cast<TokenDropTarget*>( token->parentWidget() );
         if (stacked)
             token->hide();
         
@@ -104,7 +104,7 @@ private:
                 ret = true; // THIS IS IMPORTANT
             }
             // anyway, tell daddy to wipe empty rows NOW
-            static_cast<DragStack*>(parent())->deleteEmptyRows();
+            static_cast<TokenDropTarget*>(parent())->deleteEmptyRows();
         }
         return ret;
     }
@@ -120,7 +120,7 @@ private:
 };
 
 
-DragStack::DragStack( const QString &mimeType, QWidget *parent ) : QWidget( parent ),
+TokenDropTarget::TokenDropTarget( const QString &mimeType, QWidget *parent ) : QWidget( parent ),
 m_tokenDragger( new TokenDragger( mimeType, this ) ),
 m_tokenFactory( new TokenFactory() )
 {
@@ -140,7 +140,7 @@ m_tokenFactory( new TokenFactory() )
 }
 
 bool
-DragStack::accept( QDropEvent *de )
+TokenDropTarget::accept( QDropEvent *de )
 {
     if ( !de->mimeData()->hasFormat( m_mimeType ) )
     {
@@ -159,7 +159,7 @@ DragStack::accept( QDropEvent *de )
 }
 
 QHBoxLayout *
-DragStack::appendRow()
+TokenDropTarget::appendRow()
 {
     QHBoxLayout *box = new QHBoxLayout;
     box->setSpacing( 0 );
@@ -169,7 +169,7 @@ DragStack::appendRow()
 }
 
 QWidget *
-DragStack::childAt( const QPoint &pos ) const
+TokenDropTarget::childAt( const QPoint &pos ) const
 {
     for ( int row = 0; row <= rows(); ++row )
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
@@ -181,7 +181,7 @@ DragStack::childAt( const QPoint &pos ) const
 }
 
 void
-DragStack::clear()
+TokenDropTarget::clear()
 {
     QLayoutItem *row, *col;
     while( ( row = layout()->takeAt( 0 ) ) )
@@ -202,7 +202,7 @@ DragStack::clear()
 }
 
 int
-DragStack::count( int row ) const
+TokenDropTarget::count( int row ) const
 {
     int lower = 0, upper = rows();
     if ( row > -1 && row < rows() )
@@ -219,7 +219,7 @@ DragStack::count( int row ) const
 }
 
 void
-DragStack::deleteEmptyRows()
+TokenDropTarget::deleteEmptyRows()
 {
     QBoxLayout *box = 0;
     for ( int row = 0; row <= rows(); )
@@ -237,7 +237,7 @@ DragStack::deleteEmptyRows()
 }
 
 QList< Token *>
-DragStack::drags( int row )
+TokenDropTarget::drags( int row )
 {
     int lower = 0, upper = rows();
     if ( row > -1 && row < rows() )
@@ -260,7 +260,7 @@ DragStack::drags( int row )
 }
 
 void
-DragStack::drop( Token *token, const QPoint &pos )
+TokenDropTarget::drop( Token *token, const QPoint &pos )
 {
     if ( !token )
         return;
@@ -300,7 +300,7 @@ DragStack::drop( Token *token, const QPoint &pos )
 }
 
 bool
-DragStack::eventFilter( QObject *o, QEvent *ev )
+TokenDropTarget::eventFilter( QObject *o, QEvent *ev )
 {
 
     if ( ev->type() == QEvent::DragMove ||
@@ -342,7 +342,7 @@ DragStack::eventFilter( QObject *o, QEvent *ev )
 }
 
 void
-DragStack::insertToken( Token *token, int row, int col )
+TokenDropTarget::insertToken( Token *token, int row, int col )
 {
     QBoxLayout *box = 0;
     if ( row > rows() - 1 )
@@ -360,7 +360,7 @@ DragStack::insertToken( Token *token, int row, int col )
 }
 
 int
-DragStack::row( Token *token ) const
+TokenDropTarget::row( Token *token ) const
 {
     for ( int row = 0; row <= rows(); ++row )
     {
@@ -372,13 +372,13 @@ DragStack::row( Token *token ) const
 }
 
 int
-DragStack::rows() const
+TokenDropTarget::rows() const
 {
     return layout()->count() - 1;
 }
 
 QBoxLayout *
-DragStack::rowBox( QWidget *w, QPoint *idx ) const
+TokenDropTarget::rowBox( QWidget *w, QPoint *idx ) const
 {
     QBoxLayout *box = 0;
     int col;
@@ -399,7 +399,7 @@ DragStack::rowBox( QWidget *w, QPoint *idx ) const
 }
 
 QBoxLayout *
-DragStack::rowBox( const QPoint &pt ) const
+TokenDropTarget::rowBox( const QPoint &pt ) const
 {
     QBoxLayout *box = 0;
     for ( int row = 0; row <= rows(); ++row )
@@ -422,7 +422,7 @@ DragStack::rowBox( const QPoint &pt ) const
 }
 
 void
-DragStack::setCustomTokenFactory( TokenFactory * factory )
+TokenDropTarget::setCustomTokenFactory( TokenFactory * factory )
 {
     delete m_tokenFactory;
     m_tokenFactory = factory;

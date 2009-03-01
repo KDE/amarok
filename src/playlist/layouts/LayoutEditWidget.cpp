@@ -18,7 +18,7 @@
  ***************************************************************************/
  
 #include "LayoutEditWidget.h"
-#include "DragStack.h"
+#include "TokenDropTarget.h"
 #include "playlist/PlaylistDefines.h"
 
 #include "Debug.h"
@@ -34,7 +34,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     : KVBox(parent)
 {
     m_tokenFactory = new TokenWithLayoutFactory;
-    m_dragstack = new DragStack( "application/x-amarok-tag-token", this );
+    m_dragstack = new TokenDropTarget( "application/x-amarok-tag-token", this );
     m_dragstack->setCustomTokenFactory( m_tokenFactory );
     connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
     

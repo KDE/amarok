@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
-#include "TokenListWidget.h"
+#include "TokenPool.h"
 
 #include <KApplication>
 
 #include <QMouseEvent>
 
 
-TokenListWidget::TokenListWidget( QWidget *parent )
+TokenPool::TokenPool( QWidget *parent )
     : KListWidget( parent )
 {
     setAcceptDrops( true );
 }
 
 void
-TokenListWidget::addToken( Token * token )
+TokenPool::addToken( Token * token )
 {
 
     QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->name() );
@@ -39,21 +39,21 @@ TokenListWidget::addToken( Token * token )
 }
 
 QString
-TokenListWidget::mimeType() const
+TokenPool::mimeType() const
 {
     return m_mimeType;
 }
 
 void
-TokenListWidget::setMimeType( const QString& mimeType )
+TokenPool::setMimeType( const QString& mimeType )
 {
     m_mimeType = mimeType;
 }
 
-// Executed on doubleclick of the TokenListWidget, emits signal onDoubleClick( QString )
-// that connects to FilenameLayoutWidget::addToken( QString )
+// Executed on doubleclick of the TokenPool, emits signal onDoubleClick( QString )
+// that connects to TokenLayoutWidget::addToken( QString )
 void
-TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
+TokenPool::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *tokenItem = itemAt( event->pos() );
     if( tokenItem )
@@ -62,7 +62,7 @@ TokenListWidget::mouseDoubleClickEvent( QMouseEvent *event )
 
 //Executed on mouse press, handles start of drag.
 void
-TokenListWidget::mousePressEvent( QMouseEvent *event )
+TokenPool::mousePressEvent( QMouseEvent *event )
 {
     if( event->button() == Qt::LeftButton )
         m_startPos = event->pos();            //store the start position
@@ -71,7 +71,7 @@ TokenListWidget::mousePressEvent( QMouseEvent *event )
 
 //Executed on mouse move, handles start of drag.
 void
-TokenListWidget::mouseMoveEvent( QMouseEvent *event )
+TokenPool::mouseMoveEvent( QMouseEvent *event )
 {
     if( event->buttons() & Qt::LeftButton )
     {
@@ -82,9 +82,9 @@ TokenListWidget::mouseMoveEvent( QMouseEvent *event )
     KListWidget::mouseMoveEvent( event );
 }
 
-//This doesn't do much since TokenListWidget doesn't accept objects.
+//This doesn't do much since TokenPool doesn't accept objects.
 void
-TokenListWidget::dragEnterEvent( QDragEnterEvent *event )
+TokenPool::dragEnterEvent( QDragEnterEvent *event )
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );
     if ( source && source != this )
@@ -96,7 +96,7 @@ TokenListWidget::dragEnterEvent( QDragEnterEvent *event )
 
 //Same as above.
 void
-TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QListWidget's implementation
+TokenPool::dragMoveEvent( QDragMoveEvent *event )        //overrides QListWidget's implementation
 {
     QWidget *source = qobject_cast<QWidget *>( event->source() );
     if ( source && source != this )
@@ -108,15 +108,15 @@ TokenListWidget::dragMoveEvent( QDragMoveEvent *event )        //overrides QList
 
 //Same as above.
 void
-TokenListWidget::dropEvent( QDropEvent *event )
+TokenPool::dropEvent( QDropEvent *event )
 {
     Q_UNUSED( event )
     //does nothing, I want the item to be deleted and not dragged here
 }
 
-//Handles the creation of a QDrag object that carries the (text-only) QDataStream from an item in TokenListWidget
+//Handles the creation of a QDrag object that carries the (text-only) QDataStream from an item in TokenPool
 void
-TokenListWidget::performDrag( QMouseEvent *event )
+TokenPool::performDrag( QMouseEvent *event )
 {
     QListWidgetItem *item = currentItem();
 
@@ -139,4 +139,4 @@ TokenListWidget::performDrag( QMouseEvent *event )
     }
 }
 
-#include "TokenListWidget.moc"
+#include "TokenPool.moc"

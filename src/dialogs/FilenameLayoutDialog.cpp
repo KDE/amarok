@@ -183,7 +183,7 @@ FilenameLayoutDialog::onAccept()    //SLOT
     Amarok::config( "TagGuesser" ).writeEntry( "Replace underscores", getUnderscoreOptions() );
 }
 
-//Forwards the request for a scheme to FilenameLayoutWidget
+//Forwards the request for a scheme to TokenLayoutWidget
 QString
 FilenameLayoutDialog::getParsableScheme()
 {
@@ -286,7 +286,7 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
 
 
 
-// Iterates over the elements of the FilenameLayoutWidget bar 
+// Iterates over the elements of the TokenLayoutWidget bar 
 // (really over the elements of a QList that stores the indexes 
 // of the tokens) and generates a string that TagGuesser can digest.
 QString
@@ -398,7 +398,7 @@ FilenameLayoutDialog::inferScheme( const QString &s ) //SLOT
             else if( s.at(i) == '/' )
                 filenameLayout->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
             else
-                debug() << "'" << s.at(i) << "' can't be represented as FilenameLayoutWidget Token";
+                debug() << "'" << s.at(i) << "' can't be represented as TokenLayoutWidget Token";
             i++;
         }
     }

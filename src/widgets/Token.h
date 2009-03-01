@@ -34,7 +34,7 @@ public:
     virtual Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
 };
 
-//Defines a part of a filename, drag&droppable in the FilenameLayoutWidget bar from the TokenListWidget list.
+//Defines a part of a filename, drag&droppable in the TokenLayoutWidget bar from the TokenPool list.
 class Token : public QWidget
 {
         Q_OBJECT

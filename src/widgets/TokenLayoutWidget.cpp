@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-#include "FilenameLayoutWidget.h"
+#include "TokenLayoutWidget.h"
 #include "Debug.h"
-#include "DragStack.h"
+#include "TokenDropTarget.h"
 
 #include <KApplication>
 
@@ -33,33 +33,33 @@
 #include <QPainter>
 
 
-FilenameLayoutWidget::FilenameLayoutWidget( QWidget *parent )
+TokenLayoutWidget::TokenLayoutWidget( QWidget *parent )
     : QFrame( parent )
 {
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0 );
 
-    m_dragstack = new DragStack( "application/x-amarok-tag-token", this );
-    m_dragstack->setRowLimit( 1 );
-    m_dragstack->layout()->setContentsMargins( 1, 1, 1, 1 );
-    connect ( m_dragstack, SIGNAL( changed() ), this, SLOT( update() ) );
-    connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( layoutChanged() ) );
+    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", this );
+    m_dropTarget->setRowLimit( 1 );
+    m_dropTarget->layout()->setContentsMargins( 1, 1, 1, 1 );
+    connect ( m_dropTarget, SIGNAL( changed() ), this, SLOT( update() ) );
+    connect ( m_dropTarget, SIGNAL( changed() ), this, SIGNAL( layoutChanged() ) );
 
     m_infoText = QString( i18n( "Drag tokens here to define a filename scheme." ) );
 
-    layout->addWidget( m_dragstack );
+    layout->addWidget( m_dropTarget );
     setLayout( layout );
 
     repaint();  //update m_infoText
 }
 
 // Adds a token with caption text at the index-th place in the 
-// FilenameLayoutWidget bar and computes the parsable scheme 
-// currently defined by the FilenameLayoutWidget.
+// TokenLayoutWidget bar and computes the parsable scheme
+// currently defined by the TokenLayoutWidget.
 void
-FilenameLayoutWidget::addToken( Token *token, int index )   //SLOT
+TokenLayoutWidget::addToken( Token *token, int index )   //SLOT
 {
-    m_dragstack->insertToken( token, 0, index );
+    m_dropTarget->insertToken( token, 0, index );
     // why?
     token->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 }
@@ -67,22 +67,22 @@ FilenameLayoutWidget::addToken( Token *token, int index )   //SLOT
 
 //Access for m_tokenCount
 unsigned int
-FilenameLayoutWidget::getTokenCount() const
+TokenLayoutWidget::getTokenCount() const
 {
-    return m_dragstack->count( 0 );
+    return m_dropTarget->count( 0 );
 }
 
 
 void
-FilenameLayoutWidget::removeAllTokens()
+TokenLayoutWidget::removeAllTokens()
 {
-    m_dragstack->clear();
+    m_dropTarget->clear();
 }
 
 void
-FilenameLayoutWidget::paintEvent( QPaintEvent *event )
+TokenLayoutWidget::paintEvent( QPaintEvent *event )
 {
-    if( !m_dragstack->count() )
+    if( !m_dropTarget->count() )
     {
         QPainter p(this);
         p.drawText( rect().adjusted( 4, 4, -4, -4 ), Qt::AlignCenter,
@@ -94,12 +94,12 @@ FilenameLayoutWidget::paintEvent( QPaintEvent *event )
     QFrame::paintEvent( event );
 }
 
-QList< Token *> FilenameLayoutWidget::currentTokenLayout()
+QList< Token *> TokenLayoutWidget::currentTokenLayout()
 {
-    return m_dragstack->drags( 0 );
+    return m_dropTarget->drags( 0 );
 }
 
-void FilenameLayoutWidget::setCustomTokenFactory( TokenFactory * factory )
+void TokenLayoutWidget::setCustomTokenFactory( TokenFactory * factory )
 {
-    m_dragstack->setCustomTokenFactory( factory );
+    m_dropTarget->setCustomTokenFactory( factory );
 }

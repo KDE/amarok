@@ -1,6 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
- *               2009 Seb Ruiz <ruiz@kde.org>                                 *
+ *           (C) 2008 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -15,44 +15,42 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
-#ifndef TOKENLISTWIDGET_H
-#define TOKENLISTWIDGET_H
+#ifndef FILENAMELAYOUTWIDGET_H
+#define FILENAMELAYOUTWIDGET_H
 
 #include "Token.h"
 
-#include <KListWidget>
-#include <QMap>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPaintEvent>
 
-//Holds a number of icons representing parts of the filename that will become tokens when dropped on the FilenameLayoutWidget.
-class TokenListWidget : public KListWidget
+class TokenDropTarget;
+
+// Handles the graphical representation of the target filename as a bar that contains tokens.
+class TokenLayoutWidget : public QFrame
 {
     Q_OBJECT
-    Q_PROPERTY(QString mimeType READ mimeType WRITE setMimeType)
-    
+
     public:
-        TokenListWidget( QWidget *parent = 0 );
-        void addToken( Token * token );
-    
-        QString mimeType() const;
-        void setMimeType( const QString& mimeType );
-    protected:
-        void mouseDoubleClickEvent( QMouseEvent *event );
-        void mousePressEvent( QMouseEvent *event );
-        void mouseMoveEvent( QMouseEvent *event );
-        void dragEnterEvent( QDragEnterEvent *event );
-        void dragMoveEvent( QDragMoveEvent *event );
-        void dropEvent( QDropEvent *event );
+        TokenLayoutWidget( QWidget *parent = 0 );
 
+        unsigned int getTokenCount() const;
+        QList<Token *> currentTokenLayout();
+        void removeAllTokens();
+        void setCustomTokenFactory( TokenFactory *factory );
     signals:
-        void onDoubleClick( Token *token );     //connects to FilenameLayoutWidget::addToken( QString )
-    
-    private:
-        void performDrag( QMouseEvent *event );
-        QPoint m_startPos;  //needed for starting the drag
-        QString m_mimeType;
+        void layoutChanged();
 
-        QMap<QListWidgetItem*,Token*> m_itemTokenMap;
+    protected:
+        void paintEvent( QPaintEvent *event );
+
+    public slots:
+        void addToken( Token* token, int index = -1 /* append */ );
+
+    private:
+        QString      m_infoText;        // text in the back of the empty TokenLayoutWidget
+        TokenDropTarget *m_dropTarget;          // main layout that holds the tokens
 };
 
-#endif    //TOKENLISTWIDGET_H
-
+#endif    //FILENAMELAYOUTWIDGET_H

@@ -56,7 +56,7 @@
     </spacer>
    </item>
    <item row="1" column="0" colspan="4" >
-    <widget class="TokenListWidget" name="tokenPool" >
+    <widget class="TokenPool" name="tokenPool" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
        <horstretch>0</horstretch>
@@ -168,9 +168,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TokenListWidget</class>
+   <class>TokenPool</class>
    <extends>QListWidget</extends>
-   <header location="global" >widgets/TokenListWidget.h</header>
+   <header location="global" >widgets/TokenPool.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
