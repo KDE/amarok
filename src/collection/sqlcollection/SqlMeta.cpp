@@ -1621,7 +1621,8 @@ SqlAlbum::setCompilation( bool compilation )
             QStringList artistid = m_collection->query( select.arg( m_id ) );
 
             m_artistId = artistid[0].toInt();
-            m_artist = this->tracks()[0]->artist();
+            if( tracks().size() > 0 )
+                m_artist = this->tracks()[0]->artist();
 
             QString update = "UPDATE albums SET artist = %1 WHERE id = %2;";
             update = update.arg( m_artistId ).arg( m_id );
