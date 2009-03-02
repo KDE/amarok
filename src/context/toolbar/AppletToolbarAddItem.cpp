@@ -79,15 +79,13 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
 
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
 {
-
 }
 
 void
-Context::AppletToolbarAddItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+Context::AppletToolbarAddItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
     Q_UNUSED( option )
     Q_UNUSED( widget )
-  //  DEBUG_BLOCK
 
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );

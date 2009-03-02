@@ -58,18 +58,17 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
 
 Context::AppletToolbar::~AppletToolbar()
 {
-    
 }
 
-void 
-Context::AppletToolbar::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+void
+Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
-    //DEBUG_BLOCK
-    
-   // debug() << "drawing rect:" << boundingRect();
-    
     // draw translucent curved background
     painter->save();
+
+    QPalette p;
+    painter->fillRect( boundingRect(), p.brush( QPalette::Window ) );
+
     painter->setRenderHint( QPainter::Antialiasing );
     QColor fillColor( 176, 176, 176, 225 );
     QPainterPath path;
