@@ -422,6 +422,8 @@ MainWindow::keyPressEvent( QKeyEvent *e )
 void
 MainWindow::closeEvent( QCloseEvent *e )
 {
+    DEBUG_BLOCK
+
 #ifdef Q_WS_MAC
     Q_UNUSED( e );
     hide();
@@ -456,6 +458,8 @@ MainWindow::sizeHint() const
 void
 MainWindow::exportPlaylist() const //SLOT
 {
+    DEBUG_BLOCK
+
     KFileDialog fileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), 0 );
     QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
 
