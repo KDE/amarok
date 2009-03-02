@@ -96,6 +96,8 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * When turning on a dynamic playlist, automatically repopulate if The
+      Playlist is empty. (BR 183968)
     * Don't crash if using an invalid codec name AmarokLyricsScript conversion
       functions. (BR 185540)
     * Actually stop playback if we encounter too many errors.
