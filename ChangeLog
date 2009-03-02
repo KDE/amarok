@@ -86,8 +86,6 @@ VERSION 2.1
     * Major refactoring of the podcast model and view to allow custom actions
       per podcasts source.
     * Compilation fixed for the OpenSolaris Operating System.
-    * Show error messages when Wikipedia information or Lyrics are unable to
-      be displayed retrieved.
     * Show the cover menu when right clicking on artwork in the Tag Dialog.
     * Don't remove queued tracks from the playlist when repopulating dynamic
       playlists.
@@ -106,7 +104,6 @@ VERSION 2.1
       external harddrive.
     * Fix issue with files being deleted when Organize Collection is run
       without selecting a collection root. (BR 184410)
-    * Fix showing of book information from the LibriVox service.
     * Dynamic playlist weight's are now saved correctly. (BR 184304)
     * Fix using "Copy to Collection" to download Magnatune.com preview
       tracks. (BR 183328)
@@ -121,13 +118,34 @@ VERSION 2.1
       Such as when loading a playlist containing tracks from a scripted
       service.
     * Fixed crash on exit when collection scan has been aborted. (BR 176870)
-    * Open ogg files in Amarok when using Dolphin and other file managers.
-      Patch thanks to Lubos Lunak <l.lunak@kde.org>. (BR 180155)
     * Fixed an infinite loop bug when using title case conversion in Guess Tags.
       (BR 180164)
     * Don't show the rating widget for tracks which are not in the collection.
       (BR 180023)
     * The negation operator (the minus sign) works in the collection browser.
+
+
+VERSION 2.0.2
+  CHANGES:
+    * Show a statusbar message when loving a lastfm track.
+    * Show error message when Wikipedia information cannot be retrieved.
+
+  BUGFIXES:
+    * Fix showing of book information from the LibriVox service.
+    * Don't crash if a script has uncaught exceptions.
+    * Open ogg files in Amarok when using Dolphin and other file managers.
+      Patch thanks to Lubos Lunak <l.lunak@kde.org>. (BR 180155)
+    * Fix podcast episodes not ordered right because of incorrect parsing of
+      pubdate. (BR 181338)
+    * Fix crash in tagdialog when editing tracks without an artist. (BR 183180)
+    * Statistics were not calculated properly in all instances. (BR 182025)
+    * Compilation fixes on Open Solaris.
+    * Trim URL before adding a new podcast.
+    * Add Ok button to the podcast configuration dialog to improve usability.
+      (BR 181339)
+    * Add tooltips to now playing widget icons.
+    * Fix not possible to download episodes from newly added podcast channel.
+      (BR 180851)
 
 
 VERSION 2.0.1.1
