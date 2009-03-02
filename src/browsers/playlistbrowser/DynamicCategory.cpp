@@ -58,7 +58,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_onoffButton->setCheckable( true );
     m_onoffButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_onoffButton, SIGNAL(toggled(bool)), this, SLOT(OnOff(bool)) );
+    QObject::connect( m_onoffButton, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
 
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
     
@@ -69,7 +69,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_repopulateButton->setEnabled( enabled );
     m_repopulateButton->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_repopulateButton, SIGNAL(clicked(bool)), The::playlistActions(), SLOT(repopulateDynamicPlaylist()) );
+    QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
             
 
     KHBox* presetLayout = new KHBox( this );
@@ -82,14 +82,14 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     DynamicModel::instance()->loadPlaylists();
     m_presetComboBox->setModel( DynamicModel::instance() );
     
-    connect( DynamicModel::instance(), SIGNAL(changeActive(int)),
+    connect( DynamicModel::instance(), SIGNAL( changeActive( int ) ),
             m_presetComboBox, SLOT(setCurrentIndex(int)) );
 
-    connect( DynamicModel::instance(), SIGNAL(enableDynamicMode(bool)),
+    connect( DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ),
             SLOT(enableDynamicMode(bool)) );
 
-    connect( m_presetComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(playlistSelectionChanged(int) ) );
+    connect( m_presetComboBox, SIGNAL(currentIndexChanged( int ) ),
+            this, SLOT(playlistSelectionChanged( int ) ) );
 
     presetLabel->setBuddy( m_presetComboBox );
 
@@ -108,7 +108,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_saveButton->setToolTip( i18n( "Save the preset." ) );
     presetToolbar->addWidget( m_saveButton );
 
-    connect( m_saveButton, SIGNAL(clicked(bool)), SLOT(save()) );
+    connect( m_saveButton, SIGNAL( clicked( bool ) ), SLOT( save() ) );
 
 
     m_deleteButton = new QToolButton( presetToolbar );
@@ -203,6 +203,10 @@ DynamicCategory::On()
     m_repopulateButton->setEnabled( true );
     The::playlistActions()->playlistModeChanged();
 
+    //if the playlist is empty, repopulate while we are at it:
+
+    if ( The::playlistModel()->rowCount() == 0 )
+        The::playlistActions()->repopulateDynamicPlaylist();
 }
 
 void
