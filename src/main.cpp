@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok_export.h"
 #include "Amarok.h"
 #include "App.h"
 #include "metadata/tplugins.h"
@@ -25,8 +26,14 @@
 
 //#define AMAROK_USE_DRKONQI
 
-extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
 
+AMAROK_EXPORT static KAboutData aboutData( "amarok", 0,
+    ki18n( "Amarok2" ), APP_VERSION,
+    ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
+    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
+    ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
+             ( "http://amarok.kde.org" ) );
+ 
 
 int main( int argc, char *argv[] )
 {
@@ -109,7 +116,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n(( "Loads of stuff" )), "bochi@online.ms" );
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
+    KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
 
     App::initCliArgs();
     KUniqueApplication::addCmdLineOptions();
