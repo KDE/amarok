@@ -504,6 +504,7 @@ LastFmService::polish()
         choices << i18n( "Artist" ) << i18n( "Tag" ) << i18n( "User" );
         m_customStationCombo->insertItems(0, choices);
         m_customStationEdit = new KLineEdit;
+        m_customStationEdit->setClearButtonShown( true );
         updateEditHint( m_customStationCombo->currentIndex() );
         m_customStationButton = new QPushButton;
         m_customStationButton->setObjectName( "customButton" );
