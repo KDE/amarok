@@ -425,8 +425,10 @@ MainWindow::closeEvent( QCloseEvent *e )
     DEBUG_BLOCK
 
 #ifdef Q_WS_MAC
+
     Q_UNUSED( e );
     hide();
+
 #else
 
     //KDE policy states we should hide to tray and not quit() when the
@@ -438,14 +440,15 @@ MainWindow::closeEvent( QCloseEvent *e )
                 i18n( "<qt>Closing the main window will keep Amarok running in the System Tray. "
                       "Use <B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</qt>" ),
                 i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
+
         hide();
         e->ignore();
+        return;
     }
-    else
-    {
-        e->accept();
-        kapp->quit();
-    }
+
+    e->accept();
+    kapp->quit();
+
 #endif
 }
 
