@@ -31,10 +31,13 @@ LoveTrackAction::LoveTrackAction( LastFmService * service )
     setIcon( KIcon( "love-amarok") );
     setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
     setElementId( "lastfm" );
+
+    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 }
 
 void LoveTrackAction::slotTriggered()
 {
+    DEBUG_BLOCK
     m_service->love( track() );
 }
 
