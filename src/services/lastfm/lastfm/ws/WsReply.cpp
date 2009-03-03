@@ -65,7 +65,7 @@ WsReply::onFinished()
             QDomElement error = m_lfm.firstChildElement( "error" );
             uint const n = m_lfm.childNodes().count();
 
-            if (status == "failed" || n == 1 && !error.isNull())
+            if (status == "failed" || (n == 1 && !error.isNull()))
             {
                 if( error.isNull() )
                     qDebug() << "Error is null!";

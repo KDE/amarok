@@ -29,6 +29,7 @@
 #endif
 
 
+#ifdef WIN32
 static bool
 parsePacServer(const QString &s, QNetworkProxy &p)
 {
@@ -44,7 +45,6 @@ parsePacServer(const QString &s, QNetworkProxy &p)
 	}
 	return false;
 }
-
 
 static QList<QNetworkProxy>
 parsePacResult(const QString &pacResult)
@@ -65,6 +65,7 @@ parsePacResult(const QString &pacResult)
 	}
 	return result;
 }
+#endif
 
 
 ////////////////
@@ -135,6 +136,10 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 	// todo
 #elif defined(Q_WS_X11)
 	// todo
+	Q_UNUSED(url)
+	Q_UNUSED(userAgent)
+	Q_UNUSED(out)
+	Q_UNUSED(pacUrl)
 #endif
 	return result;
 }

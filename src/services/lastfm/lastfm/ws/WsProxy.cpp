@@ -91,6 +91,10 @@ WsProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetworkPr
 		out.setPort(url.port());
 		return true;
 	}
+#else
+	Q_UNUSED(url)
+	Q_UNUSED(userAgent)
+	Q_UNUSED(out)
 #endif
 
 	// direct

@@ -138,7 +138,9 @@ UniqueApplication::forward( const QStringList& args )
     if (args.isEmpty() || !m_alreadyRunning)
         return false;
     
+#if defined(Q_WS_MAC) || defined(WIN32)
     const uint timeout = 5000; //milliseconds    
+#endif
 
 	QByteArray message;
 	foreach (QString const arg, args)
