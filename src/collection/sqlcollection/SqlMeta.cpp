@@ -811,7 +811,7 @@ SqlTrack::updateStatisticsInDb()
     QString query = "SELECT urls.id FROM urls WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
     query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
     QStringList res = m_collection->query( query );
-    if( res.size() == 0 )
+    if( res.isEmpty() )
         return; // No idea why this happens.. but it does
     int urlId = res[0].toInt();
     QStringList count = m_collection->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
