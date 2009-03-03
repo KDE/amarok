@@ -28,6 +28,7 @@
 #include <iostream>
 #include <cassert>
 #include <cctype>
+#include <cstdio>
 
 #include <fcntl.h>
 

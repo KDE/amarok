@@ -27,6 +27,7 @@
 
 #include <tstring.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "wavfile.h"
 

@@ -23,6 +23,7 @@
 #include "taglib_audiblefile.h"
 
 #include <string.h>
+#include <stdio.h>
 
 TagLib::File *AudibleFileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,

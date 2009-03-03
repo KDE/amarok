@@ -28,6 +28,7 @@
 #include "../tfile_helper.h"
 #include <audioproperties.h>
 #include <tag.h>
+#include <stdio.h>
 
 namespace TagLib {
 ////////////////////////////////////////////////////////////////////////////////
