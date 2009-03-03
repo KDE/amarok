@@ -130,7 +130,6 @@ void CurrentTrack::init()
     m_noTrack->setText( m_noTrackText );
     
     m_tabBar = new Plasma::TabBar( this );
-    m_tabBar->setStyleSheet( "TabBar::tab { border-radius: 4px; }" ); // Makes the TabBar look differently, with round borders 
 
     for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
     {
@@ -263,7 +262,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
 
         QFontMetrics fm( m_tabBar->font() );
-        m_tabBar->resize( QSizeF( contentsRect().width() - margin * 2 - 2, m_tabBar->size().height() ) ); 
+        m_tabBar->resize( QSizeF( contentsRect().width() - margin * 2 - 2, m_tabBar->size().height() * 0.7 ) ); // Why is the height factor ignored?
         m_tabBar->setPos( size().width() / 2 - m_tabBar->size().width() / 2 - 1, 10 );
         m_tabBar->show();
         
