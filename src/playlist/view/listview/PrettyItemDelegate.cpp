@@ -252,7 +252,6 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
     if( index.data( MultiSourceRole ).toBool() && !ignoreQueueMarker )
     {
-        const int queuePosition = index.data( QueuePositionRole ).toInt();
         const int w = 16, h = 16;
         const int x = markerOffsetX;
         const int y = nominalImageRect.y() + ( imageSize - h );
