@@ -303,6 +303,7 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
 bool
 TokenDropTarget::eventFilter( QObject *o, QEvent *ev )
 {
+    Q_UNUSED( o )
 
     if ( ev->type() == QEvent::DragMove ||
          ev->type() == QEvent::DragEnter )

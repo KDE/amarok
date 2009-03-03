@@ -98,6 +98,8 @@ QString Token::iconName() const
 
 void Token::paintEvent(QPaintEvent *pe)
 {
+    Q_UNUSED( pe )
+
     QPainter p( this );
     p.setBrush( Qt::NoBrush );
     p.setRenderHint( QPainter::Antialiasing );
