@@ -143,3 +143,4 @@ WsAutoProxy::getProxyFor(const QString &url, const QByteArray &userAgent, QNetwo
 #endif
 	return result;
 }
+

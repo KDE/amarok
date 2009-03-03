@@ -109,3 +109,4 @@ void WsProxy::openSettingsWindow()
 	m_settingsWindow.open(w ? w->winId() : NULL);
 #endif
 }
+
