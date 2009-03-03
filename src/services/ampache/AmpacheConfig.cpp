@@ -40,6 +40,8 @@ AmpacheConfig::load()
     while ( config.hasKey( serverEntry ) )
     {
         QStringList list = config.readEntry(serverEntry, QStringList() );
+        if ( !list.isEmpty() )
+            continue;
 
         AmpacheServerEntry entry;
         entry.name = list.takeFirst();

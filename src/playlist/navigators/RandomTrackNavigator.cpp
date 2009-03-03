@@ -98,25 +98,26 @@ Playlist::RandomTrackNavigator::requestNextTrack()
             m_playedRows.clear();
         }
 
-        quint64 t;
+        quint64 requestedTrack = 0;
         // Respect queue priority over random track
         if( !m_queue.isEmpty() )
         {
-            t = m_queue.takeFirst();
+            requestedTrack = m_queue.takeFirst();
             // remove the id from the unplayed rows list
-            m_unplayedRows.removeAll( t );
+            m_unplayedRows.removeAll( requestedTrack );
         }
-        else
-            t = m_unplayedRows.takeFirst();
+        else if ( !m_unplayedRows.isEmpty() )
+            requestedTrack = m_unplayedRows.takeFirst();
         
-        if ( t == Model::instance()->activeId())
+        if ( requestedTrack == Model::instance()->activeId())
         {
-            m_playedRows.prepend( t );
-            t = m_unplayedRows.takeFirst();
+            m_playedRows.prepend( requestedTrack );
+            if ( !m_unplayedRows.isEmpty() )
+                requestedTrack = m_unplayedRows.takeFirst();
         }
 
-        m_playedRows.prepend( t );
-        return t;
+        m_playedRows.prepend( requestedTrack );
+        return requestedTrack;
     }
 }
 
@@ -135,16 +136,17 @@ Playlist::RandomTrackNavigator::requestLastTrack()
             m_unplayedRows.clear();
         }
 
-        quint64 t = m_playedRows.takeFirst();
+        quint64 requestedTrack =  !m_playedRows.isEmpty() ? m_playedRows.takeFirst() : 0;
         
-        if ( t == Model::instance()->activeId())
+        if ( requestedTrack == Model::instance()->activeId())
         {
-            m_unplayedRows.prepend( t );
-            t = m_playedRows.takeFirst();
+            m_unplayedRows.prepend( requestedTrack );
+            if ( !m_playedRows.isEmpty() )
+                requestedTrack = m_playedRows.takeFirst();
         }
         
-        m_unplayedRows.prepend( t );
-        return t;
+        m_unplayedRows.prepend( requestedTrack );
+        return requestedTrack;
     }
 }
 

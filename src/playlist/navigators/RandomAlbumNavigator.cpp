@@ -75,7 +75,7 @@ Playlist::RandomAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
     sortTheseAlbums( modifiedAlbums );
     std::random_shuffle( m_unplayedAlbums.begin(), m_unplayedAlbums.end() );
 
-    if ( m_currentAlbum == Meta::AlbumPtr() )
+    if ( m_currentAlbum == Meta::AlbumPtr() && !m_unplayedAlbums.isEmpty() )
     {
         m_currentAlbum = m_unplayedAlbums.takeFirst();
         m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
