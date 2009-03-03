@@ -51,7 +51,8 @@ extern char jp2CharContext[83][83];
 class JapaneseContextAnalysis
 {
 public:
-  JapaneseContextAnalysis() {Reset();};
+  JapaneseContextAnalysis() {Reset();}
+  virtual ~JapaneseContextAnalysis() {}
 
   void HandleData(const char* aBuf, PRUint32 aLen);
 
@@ -69,7 +70,7 @@ public:
     {
       mTotalRel++;
       //count this sequence to its category counter
-      mRelSample[jp2CharContext[mLastCharOrder][order]]++;
+      mRelSample[int(jp2CharContext[mLastCharOrder][order])]++;
     }
     mLastCharOrder = order;
   };
