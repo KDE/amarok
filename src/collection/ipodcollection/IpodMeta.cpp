@@ -277,7 +277,7 @@ IpodTrack::year() const
 QString
 IpodTrack::comment() const
 {
-    return QString();
+    return m_comment;
 }
 
 void
