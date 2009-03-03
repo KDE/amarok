@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
+
 #ifndef TOKENLAYOUTWIDGET_H
 #define TOKENLAYOUTWIDGET_H
 
@@ -53,4 +54,4 @@ class TokenLayoutWidget : public QFrame
         TokenDropTarget *m_dropTarget;          // main layout that holds the tokens
 };
 
-#endif    //FILENAMELAYOUTWIDGET_H
+#endif

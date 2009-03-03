@@ -73,4 +73,4 @@ private:
     TokenFactory *m_tokenFactory;
 };
 
-#endif //DRAGSTACK_H
+#endif

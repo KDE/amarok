@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License          *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
+
 #ifndef TOKENPOOL_H
 #define TOKENPOOL_H
 
@@ -54,5 +55,5 @@ class TokenPool : public KListWidget
         QMap<QListWidgetItem*,Token*> m_itemTokenMap;
 };
 
-#endif    //TOKENLISTWIDGET_H
+#endif
 
