@@ -16,9 +16,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
-#ifndef PLAYLISTPRETTYITEMCONFIG_H
-#define PLAYLISTPRETTYITEMCONFIG_H
+
+#ifndef LAYOUTITEMCONFIG_H
+#define LAYOUTITEMCONFIG_H
 
 #include <QList>
 #include <QString>

@@ -17,8 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Token.h"
 #include "TokenDropTarget.h"
+
+#include "Token.h"
 
 #include <QDropEvent>
 #include <QVBoxLayout>

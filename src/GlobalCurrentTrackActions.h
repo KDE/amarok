@@ -16,9 +16,9 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
-#ifndef GLOBALNOWPLAYINGACTIONS_H
-#define GLOBALNOWPLAYINGACTIONS_H
+
+#ifndef GLOBALCURRENTTRACKACTIONS_H
+#define GLOBALCURRENTTRACKACTIONS_H
 
 #include "amarok_export.h"
 #include "Meta.h"

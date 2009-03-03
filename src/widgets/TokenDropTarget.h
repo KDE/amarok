@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef DRAGSTACK_H
-#define DRAGSTACK_H
+#ifndef TOKENDROPTARGET_H
+#define TOKENDROPTARGET_H
 
 #include <QWidget>
 
