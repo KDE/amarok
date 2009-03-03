@@ -167,7 +167,8 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_avatarLabel( 0 ),
       m_profile( 0 ),
       m_userinfo( 0 ),
-      m_userName( username )
+      m_userName( username ),
+      m_sessionKey( sessionKey )
 {
     DEBUG_BLOCK
 
