@@ -72,7 +72,13 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
     elementTabs->removeTab( 0 );
 
+    layoutListWidget->addItems( LayoutManager::instance()->layouts() );
+    int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
+    layoutListWidget->setCurrentRow( index );
+    setLayout( layoutListWidget->currentItem()->text() );
+
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
+    connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
 }
 
 
@@ -80,7 +86,7 @@ PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 {
 }
 
-void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )
+void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
     m_layoutName = layoutName;
     nameEdit->setText( layoutName );

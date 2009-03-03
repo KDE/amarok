@@ -67,7 +67,6 @@ void LayoutConfigWidget::editItem( const QString &itemName )
 {
     if ( !m_playlistEditDialog )
         m_playlistEditDialog = new PlaylistLayoutEditDialog( this );
-    m_playlistEditDialog->setLayout( itemName );
     m_playlistEditDialog->show();
 }
 
