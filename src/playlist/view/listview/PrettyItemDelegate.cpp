@@ -34,6 +34,8 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
 
+#include "kratingpainter.h"
+
 #include <QFontMetricsF>
 #include <QPainter>
 
@@ -326,7 +328,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
                 size = element.size();
             else 
                 size = spacePerAutoSizeElem;
-            
+
             if ( size > 0.0001 )
             {
                 itemWidth = rowWidth * size;
@@ -337,7 +339,16 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
                     if( textIndex.data( InCollectionRole ).toBool() )
                     {
                         int rating = textIndex.data( Qt::DisplayRole ).toInt();
-                        m_ratingPainter.paint( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), rating, rating );
+
+                        Qt::Alignment ratingAlignment;
+                        if ( alignment & Qt::AlignLeft )
+                            ratingAlignment = Qt::AlignLeft;
+                        else if ( alignment & Qt::AlignRight )
+                            ratingAlignment = Qt::AlignRight;
+                        else
+                            ratingAlignment = Qt::AlignCenter;
+
+                        KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), ratingAlignment, rating, rating );
                     }
 
                 } else if ( value == Divider )
