@@ -33,6 +33,9 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
 {
     Q_OBJECT
 
+    public slots:
+        void setLayout( const QString &layoutName );
+
     public:
         PlaylistLayoutEditDialog( QWidget *parent = 0 );
         ~PlaylistLayoutEditDialog();
@@ -40,7 +43,6 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
     private slots:
         void preview();
         virtual void accept();
-        void setLayout( const QString &layoutName );
 
     private:
         Playlist::LayoutEditWidget *m_headEdit;

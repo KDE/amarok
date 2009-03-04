@@ -21,6 +21,7 @@
 #define PLAYLISTLAYOUTCONFIGWIDGET_H
 
 #include <KVBox>
+#include <KPushButton>
 
 class PlaylistLayoutEditDialog;
 class QComboBox;
@@ -32,7 +33,7 @@ namespace Playlist {
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
 
-class LayoutConfigWidget : public KVBox
+class LayoutConfigWidget : public KHBox
 {
         Q_OBJECT
 
@@ -43,12 +44,13 @@ class LayoutConfigWidget : public KVBox
     private slots:
         void setActiveLayout( const QString &layout );
         void layoutListChanged();
-        void editItem( const QString &itemName );
+        void configureLayouts();
         void deleteItem( const QString &itemName );
 
     private:
         PlaylistLayoutEditDialog * m_playlistEditDialog;
         QComboBox *m_comboBox;
+        KPushButton *m_configButton;
 };
 
 }

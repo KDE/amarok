@@ -24,9 +24,69 @@
      <property name="title" >
       <string>Available Layouts</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <layout class="QVBoxLayout" name="verticalLayout_3" >
       <item>
-       <widget class="QListWidget" name="layoutListWidget" />
+       <layout class="QHBoxLayout" name="horizontalLayout_5" >
+        <item>
+         <widget class="QListWidget" name="layoutListWidget" />
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2" >
+          <item>
+           <spacer name="verticalSpacer" >
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="KArrowButton" name="karrowbutton" />
+          </item>
+          <item>
+           <widget class="KArrowButton" name="karrowbutton_2" >
+            <property name="arrowType" stdset="0" >
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2" >
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4" >
+        <item>
+         <widget class="KIconButton" name="newLayoutButton" />
+        </item>
+        <item>
+         <widget class="KIconButton" name="copyLayoutButton" />
+        </item>
+        <item>
+         <widget class="KIconButton" name="deleteLayoutButton" />
+        </item>
+        <item>
+         <widget class="KPushButton" name="renameLayoutButton" />
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -197,6 +257,21 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>KArrowButton</class>
+   <extends></extends>
+   <header>karrowbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KIconButton</class>
+   <extends></extends>
+   <header>kicondialog.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KPushButton</class>
+   <extends></extends>
+   <header>kpushbutton.h</header>
+  </customwidget>
   <customwidget>
    <class>TokenPool</class>
    <extends>QListWidget</extends>

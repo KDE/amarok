@@ -33,6 +33,8 @@
 #include "navigators/NavigatorFilterProxyModel.h"
 #include "widgets/Widget.h"
 #include "widgets/ProgressiveSearchWidget.h"
+#include "layouts/LayoutConfigWidget.h"
+
 
 #include <KToolBarSpacerAction>
 
@@ -78,7 +80,7 @@ Playlist::Widget::Widget( QWidget* parent )
 
     layoutHolder->setMinimumWidth( 100 );
     layoutHolder->setMinimumHeight( 200 );
-
+    
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
 
@@ -99,6 +101,12 @@ Playlist::Widget::Widget( QWidget* parent )
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
 
+    KHBox *layoutWidgetBox = new KHBox( this );
+    layoutWidgetBox->setMargin( 0 );
+    QLabel *layoutLabel = new QLabel( i18n("Playlist layout:"), layoutWidgetBox );
+    Playlist::LayoutConfigWidget *layoutWidget = new Playlist::LayoutConfigWidget( layoutWidgetBox );
+    layoutWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
+    layoutLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
 
     KHBox *barBox = new KHBox( this );
     barBox->setMargin( 0 );

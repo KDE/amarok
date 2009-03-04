@@ -32,25 +32,26 @@ namespace Playlist
 {
 
 LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
-    : KVBox( parent )
+    : KHBox( parent )
     , m_playlistEditDialog( 0 )
 {
     m_comboBox = new QComboBox( this );
-    EditDeleteComboBoxView * comboView = new EditDeleteComboBoxView( m_comboBox );
-    comboView->setModel( m_comboBox->model() );
-    m_comboBox->setView( comboView );
-    m_comboBox->setItemDelegate( new EditDeleteDelegate( m_comboBox ) );
-
-    connect( comboView, SIGNAL( editItem( const QString & ) ), this, SLOT( editItem( const QString & ) ) );
-    connect( comboView, SIGNAL( deleteItem( const QString & ) ), this, SLOT( deleteItem( const QString & ) ) );
+    m_configButton = new KPushButton( this );
 
     m_comboBox->addItems( LayoutManager::instance()->layouts() );
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
     m_comboBox->setCurrentIndex( index );
+    m_comboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
     connect( m_comboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( setActiveLayout(const QString & ) ) );
 
     connect( LayoutManager::instance(), SIGNAL( layoutListChanged() ), this, SLOT( layoutListChanged() ) );
+
+    m_configButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    const KIcon configIcon( "configure" );
+    m_configButton->setIcon( configIcon );
+
+    connect( m_configButton, SIGNAL( clicked() ), this, SLOT( configureLayouts() ) );
 }
 
 
@@ -63,11 +64,12 @@ void LayoutConfigWidget::setActiveLayout( const QString &layout )
     LayoutManager::instance()->setActiveLayout( layout );
 }
 
-void LayoutConfigWidget::editItem( const QString &itemName )
+void LayoutConfigWidget::configureLayouts()
 {
     if ( !m_playlistEditDialog )
         m_playlistEditDialog = new PlaylistLayoutEditDialog( this );
     m_playlistEditDialog->show();
+    m_playlistEditDialog->setLayout( m_comboBox->currentText() );
 }
 
 void LayoutConfigWidget::deleteItem( const QString &itemName )
