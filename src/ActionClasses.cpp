@@ -29,6 +29,8 @@
 #include <KToolBar>
 
 
+extern KAboutData aboutData;
+
 namespace Amarok
 {
     bool repeatNone()     { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Off; }
@@ -142,7 +144,7 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 {
 
     if ( s_helpMenu == 0 )
-        s_helpMenu = new KHelpMenu( parent, KCmdLineArgs::aboutData(), Amarok::actionCollection() );
+        s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
 
     return s_helpMenu->menu();
 }
