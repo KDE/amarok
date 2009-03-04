@@ -227,6 +227,7 @@ bool LyricsApplet::hasHeightForWidth() const
 void
 LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
+    Q_UNUSED( p );
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
 }
