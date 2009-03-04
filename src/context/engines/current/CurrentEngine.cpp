@@ -31,10 +31,10 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     , ContextObserver( ContextView::self() )
     , m_coverWidth( 0 )
     , m_requested( true )
-    , m_currentArtist( 0 )
 	, m_qm( 0 )
 	, m_qmTracks( 0 )
 	, m_qmFavTracks( 0 )
+    , m_currentArtist( 0 )
 {
     DEBUG_BLOCK
     Q_UNUSED( args )
