@@ -35,7 +35,6 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_reloadIcon( 0 )
     , m_lyrics( 0 )
     , m_suggested( 0 )
-    , m_theme( 0 )
 {
     setHasConfigurationInterface( false );
 }
@@ -50,15 +49,6 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
-    m_theme = new Plasma::FrameSvg( this );
-    QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
-
-    kDebug() << "Loading theme file: " << imagePath;
-
-    m_theme->setImagePath( imagePath );
-    m_theme->setContainsMultipleImages( true );
-    m_theme->setEnabledBorders( Plasma::FrameSvg::AllBorders );
-    
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 4 );
@@ -96,7 +86,9 @@ Plasma::IconWidget*
 LyricsApplet::addAction( QAction *action )
 {
     DEBUG_BLOCK
-    if ( !action ) {
+
+    if ( !action )
+    {
         debug() << "ERROR!!! PASSED INVALID ACTION";
         return 0;
     }
@@ -137,11 +129,10 @@ void LyricsApplet::connectSource( const QString& source )
 void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
+
     prepareGeometryChange();
 
     m_suggested->setTextWidth( size().width() );
-
-    m_theme->resizeFrame( size().toSize() );
 
     m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 5 );
     
@@ -153,7 +144,6 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
     m_lyricsProxy->setPos( 10, 42 );
-    
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -239,16 +229,13 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 {
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
-
-    m_theme->resizeFrame( size().toSize() );
-
-    m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
 }
 
 QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
 {
     DEBUG_BLOCK
     Q_UNUSED( which );
+
  /*   if( m_lyrics )
     {
         debug() << "returning sizehint height of" << m_lyrics->sizeHint().height();
@@ -265,6 +252,7 @@ void
 LyricsApplet::suggestionChosen( const QString& link )
 {
     DEBUG_BLOCK
+
     debug() << "got link selected:" << link;
     QStringList pieces = link.split( '|' );
     ScriptManager::instance()->notifyFetchLyricsByUrl( pieces[ 1 ], pieces[ 0 ], pieces[ 2 ] );
@@ -275,8 +263,10 @@ LyricsApplet::refreshLyrics()
 {
     Meta::TrackPtr curtrack = The::engineController()->currentTrack();
     debug() << "checking for current track:";
+
     if( !curtrack )
         return;
+
     ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
 }
 

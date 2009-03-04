@@ -18,7 +18,6 @@
 #include "context/DataEngine.h"
 #include "context/Svg.h"
 
-#include <plasma/framesvg.h>
 #include <plasma/widgets/iconwidget.h>
 
 
@@ -29,6 +28,7 @@ class QTextEdit;
 class LyricsApplet : public Context::Applet
 {
     Q_OBJECT
+
 public:
     LyricsApplet( QObject* parent, const QVariantList& args );
     ~LyricsApplet();
@@ -61,8 +61,6 @@ private:
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextEdit* m_lyrics;
     QGraphicsTextItem* m_suggested;
-
-    Plasma::FrameSvg* m_theme;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )
