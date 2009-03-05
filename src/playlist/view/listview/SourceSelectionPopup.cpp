@@ -20,7 +20,10 @@
 #include "SourceSelectionPopup.h"
 
 #include <KIcon>
+#include <KLocale>
 
+#include <QPushButton>
+#include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QVBoxLayout>
@@ -32,13 +35,20 @@ namespace Playlist {
     , m_msc( msc )
 {
 
+    QLabel * label = new QLabel( i18n( "The following sources are available for this track:" ) );
+    label->setWordWrap( true );
+    
     m_listWidget = new QListWidget();
 
+    QPushButton * okButton = new QPushButton( i18n( "Ok" ) );
+    connect( okButton, SIGNAL( clicked() ), SLOT( accept() ) );
 
     connect( m_listWidget, SIGNAL( itemDoubleClicked( QListWidgetItem * ) ), this, SLOT( sourceSelected( QListWidgetItem * ) ) );
 
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget( label );
     layout->addWidget( m_listWidget );
+    layout->addWidget( okButton );
     setLayout( layout );
 
     int i = 0;
