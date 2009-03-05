@@ -98,6 +98,9 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * When editing info for multiple tracks, do not write to the files if only
+      editing info that is stored in the db and not in the actual files (such
+      as ratings). (BR 184823)
     * Paint Lyrics Applet correctly with dark color schemes. (BR 183037)
     * When turning on a dynamic playlist, automatically repopulate if The
       Playlist is empty. (BR 183968)
