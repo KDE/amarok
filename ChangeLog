@@ -68,6 +68,8 @@ VERSION 2.1
     * New applet toolbar in the Context View to arrange, select, and add applets.
 
   CHANGES:
+    * Remove score, last played and play count from the current track applet
+      for tracks that does not have any of them (mainly streams).
     * Don't Pretend to be able to seek if the source isn't seekable.
     * Filebrowser UI has been tweaked for better usability.
     * The Bookmark Handler in the File Browser no longer causes a crash-on-exit,
