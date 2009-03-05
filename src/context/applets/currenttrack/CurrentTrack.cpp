@@ -44,6 +44,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_trackLength( 0 )
     , m_tracksToShow( 0 )
     , m_tabBar( 0 )
+    , m_showStats( true )
 {
     setHasConfigurationInterface( false );
 }
@@ -338,29 +339,50 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_noTrack->setText( QString() );
     m_lastTracks.clear();
     m_favoriteTracks.clear();
-    
+
     m_currentInfo = data[ "current" ].toMap();
     m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), textRect ) );
-    
+
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), textRect ) );
-    
+
     const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     m_album->setText( truncateTextToFit( album, m_album->font(), textRect ) );
-    
+
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
-    
+
     const QString score = QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() );
-    m_score->setText( score );
-    
+
     m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
 
     QString playedLast = Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
     QString playedLastVerbose =  Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
-    m_playedLast->setText( playedLast  );
-
     QString numPlayed = m_currentInfo[ Meta::Field::PLAYCOUNT ].toString();
-    m_numPlayed->setText( numPlayed );
+
+    if ( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() == 0 &&
+         m_currentInfo[ Meta::Field::PLAYCOUNT ].toInt() == 0 &&
+         m_currentInfo[ Meta::Field::SCORE ].toInt() == 0 )
+    {
+        m_showStats = false;
+        m_scoreIconBox->setVisible( false );
+        m_numPlayedIconBox->setVisible( false );
+        m_playedLastIconBox->setVisible( false );
+
+        m_score->setText( QString() );
+        m_playedLast->setText( QString() );
+        m_numPlayed->setText( QString() );
+    }
+    else
+    {
+        m_showStats = true;
+        m_scoreIconBox->setVisible( true );
+        m_numPlayedIconBox->setVisible( true );
+        m_playedLastIconBox->setVisible( true );
+
+        m_score->setText( score );
+        m_playedLast->setText( playedLast );
+        m_numPlayed->setText( numPlayed );
+    }
     
     m_ratingWidget->setRating( m_rating );
 
@@ -476,10 +498,13 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
 
     const int label2X = contentsRect.width() - 53;
-    
-    m_theme->paint( p, QRectF( label2X, line1Y, 23, 23 ), "score_png_23" );
-    m_theme->paint( p, QRectF( label2X, line2Y, 23, 23 ), "times-played_png_23" );
-    m_theme->paint( p, QRectF( label2X, line3Y, 23, 23 ), "last-time_png_23" );
+
+    if ( m_showStats )
+    {
+        m_theme->paint( p, QRectF( label2X, line1Y, 23, 23 ), "score_png_23" );
+        m_theme->paint( p, QRectF( label2X, line2Y, 23, 23 ), "times-played_png_23" );
+        m_theme->paint( p, QRectF( label2X, line3Y, 23, 23 ), "last-time_png_23" );
+    }
 
     p->restore();
 

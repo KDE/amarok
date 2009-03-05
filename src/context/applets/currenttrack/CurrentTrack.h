@@ -123,6 +123,8 @@ private:
 
     Plasma::TabBar *m_tabBar;
 
+    bool m_showStats;
+
 };
 
 K_EXPORT_AMAROK_APPLET( currenttrack, CurrentTrack )
