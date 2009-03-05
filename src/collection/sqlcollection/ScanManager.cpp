@@ -360,6 +360,7 @@ ScanManager::getDirsToScan()
             .arg( deviceIds ) );
 
     QList<int> changedFolderIds;
+    QList<int> deletedFolderIds;
 
     QStringList result;
     for( QListIterator<QString> iter( values ); iter.hasNext(); )
@@ -382,8 +383,8 @@ ScanManager::getDirsToScan()
         else
         {
             // this folder has been removed
-            result << folder;
             changedFolderIds << id;
+            deletedFolderIds << id;
         }
     }
     {
@@ -410,6 +411,20 @@ ScanManager::getDirsToScan()
                 QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
                 m_collection->query( sql );
             }
+        }
+    }
+    {
+        QString ids;
+        foreach( int id, deletedFolderIds )
+        {
+            if( !ids.isEmpty() )
+                ids += ',';
+            ids += QString::number( id );
+        }
+        if( !ids.isEmpty() )
+        {
+            QString sql = QString( "DELETE FROM directories WHERE id IN ( %1 );" ).arg( ids );
+            m_collection->query( sql );
         }
     }
     //debug() << "Scanning the following dirs: " << result;
