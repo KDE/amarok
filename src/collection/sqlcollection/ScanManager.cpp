@@ -116,6 +116,9 @@ ScanManager::startFullScan()
         *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
+        debug() << "GOING TO SCAN:";
+        foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
+            debug() << "    " << dir;
         *m_scanner << MountPointManager::instance()->collectionFolders();
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -138,7 +141,7 @@ void ScanManager::startIncrementalScan()
         debug() << "scanning currently blocked";
         return;
     }
-    const QStringList dirs = getDirsToScan();
+    QStringList dirs = getDirsToScan();
 
     debug() << "GOING TO SCAN:";
     foreach( const QString &dir, dirs )
@@ -147,6 +150,7 @@ void ScanManager::startIncrementalScan()
     if( dirs.isEmpty() )
     {
         debug() << "Scanning nothing, return.";
+        writeBatchIncrementalInfoFile();
         return;
     }
     if( !m_dbusHandler )
@@ -274,6 +278,9 @@ ScanManager::slotFinished( )
         m_dbusHandler->deleteLater();
         m_dbusHandler = 0;
     }
+
+    if( m_isIncremental )
+        writeBatchIncrementalInfoFile();
 }
 
 void
@@ -336,7 +343,7 @@ ScanManager::readFullBatchFile()
 }
 
 QStringList
-ScanManager::getDirsToScan() const
+ScanManager::getDirsToScan()
 {
     DEBUG_BLOCK
 
@@ -365,6 +372,7 @@ ScanManager::getDirsToScan() const
         QFileInfo info( folder );
         if( info.exists() )
         {
+            m_incrementalDirs << folder;
             if( info.lastModified().toTime_t() != mtime )
             {
                 result << folder;
@@ -494,6 +502,21 @@ ScanManager::stopParser()
     }
 }
 
+void
+ScanManager::writeBatchIncrementalInfoFile()
+{
+    DEBUG_BLOCK
+    QString fileName = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true )
+        + "amarokcollectionscanner_batchincrementalinput.data";
+    QFile incrementalFile( fileName );
+    if( incrementalFile.open( QIODevice::WriteOnly ) )
+    {
+        QTextStream stream( &incrementalFile );
+        stream.setCodec( QTextCodec::codecForName("UTF-8") );
+        stream << m_incrementalDirs.join( "\n" );
+        incrementalFile.close();
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // class XmlParseJob

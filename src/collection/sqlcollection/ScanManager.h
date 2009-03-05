@@ -62,10 +62,11 @@ class ScanManager : public QObject
         void restartScanner();
 
     private:
-        QStringList getDirsToScan() const;
+        QStringList getDirsToScan();
         void handleRestart();
         void cleanTables();
         void stopParser();
+        void writeBatchIncrementalInfoFile();
 
     private:
         SqlCollection *m_collection;
@@ -79,6 +80,7 @@ class ScanManager : public QObject
         bool m_isIncremental;
         bool m_blockScan;
         QString m_amarokCollectionScanDir;
+        QStringList m_incrementalDirs;
 };
 
 class XmlParseJob : public ThreadWeaver::Job
