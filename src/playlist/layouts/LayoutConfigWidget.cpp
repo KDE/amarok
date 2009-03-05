@@ -46,6 +46,8 @@ LayoutConfigWidget::LayoutConfigWidget( QWidget * parent )
     connect( m_comboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( setActiveLayout(const QString & ) ) );
 
     connect( LayoutManager::instance(), SIGNAL( layoutListChanged() ), this, SLOT( layoutListChanged() ) );
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( onActiveLayoutChanged() ) );
+
 
     m_configButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     const KIcon configIcon( "configure" );
@@ -69,12 +71,6 @@ void LayoutConfigWidget::configureLayouts()
     if ( !m_playlistEditDialog )
         m_playlistEditDialog = new PlaylistLayoutEditDialog( this );
     m_playlistEditDialog->show();
-    m_playlistEditDialog->setLayout( m_comboBox->currentText() );
-}
-
-void LayoutConfigWidget::deleteItem( const QString &itemName )
-{
-    LayoutManager::instance()->deleteLayout( itemName );
 }
 
 void Playlist::LayoutConfigWidget::layoutListChanged()
@@ -82,6 +78,14 @@ void Playlist::LayoutConfigWidget::layoutListChanged()
     m_comboBox->clear();
     m_comboBox->addItems( LayoutManager::instance()->layouts() );
 }
+
+void LayoutConfigWidget::onActiveLayoutChanged()
+{
+    int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
+    if( index != m_comboBox->currentIndex() )
+        m_comboBox->setCurrentIndex( index );
+}
+
 
 }
 

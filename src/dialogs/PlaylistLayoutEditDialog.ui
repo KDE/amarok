@@ -26,7 +26,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3" >
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5" >
+       <layout class="QHBoxLayout" name="listHLayout" >
         <item>
          <widget class="QListWidget" name="layoutListWidget" />
         </item>
@@ -75,13 +75,13 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4" >
         <item>
-         <widget class="KIconButton" name="newLayoutButton" />
+         <widget class="KPushButton" name="newLayoutButton" />
         </item>
         <item>
-         <widget class="KIconButton" name="copyLayoutButton" />
+         <widget class="KPushButton" name="copyLayoutButton" />
         </item>
         <item>
-         <widget class="KIconButton" name="deleteLayoutButton" />
+         <widget class="KPushButton" name="deleteLayoutButton" />
         </item>
         <item>
          <widget class="KPushButton" name="renameLayoutButton" />
@@ -261,11 +261,6 @@
    <class>KArrowButton</class>
    <extends></extends>
    <header>karrowbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KIconButton</class>
-   <extends></extends>
-   <header>kicondialog.h</header>
   </customwidget>
   <customwidget>
    <class>KPushButton</class>

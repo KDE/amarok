@@ -73,18 +73,39 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     elementTabs->removeTab( 0 );
 
     layoutListWidget->addItems( LayoutManager::instance()->layouts() );
-    int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
-    layoutListWidget->setCurrentRow( index );
-    setLayout( layoutListWidget->currentItem()->text() );
+    onActiveLayoutChanged();
 
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( onActiveLayoutChanged() ) );
     connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
+    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleDeleteButton() ) );
+
+    const KIcon newIcon( "list-add" );
+    newLayoutButton->setIcon( newIcon );
+    
+    const KIcon copyIcon( "edit-copy" );
+    copyLayoutButton->setIcon( copyIcon );
+    
+    const KIcon deleteIcon( "edit-delete" );
+    deleteLayoutButton->setIcon( deleteIcon );
+    connect( deleteLayoutButton, SIGNAL( clicked() ), this, SLOT( deleteLayout() ) );
+    toggleDeleteButton();
+
+    const KIcon renameIcon( "edit-rename" );
+    renameLayoutButton->setIcon( renameIcon );
 }
 
 
 PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 {
 }
+
+void PlaylistLayoutEditDialog::deleteLayout()
+{
+    layoutListWidget->removeItemWidget( layoutListWidget->currentItem() );
+    LayoutManager::instance()->deleteLayout( layoutListWidget->currentItem()->text() );
+}
+
 
 void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
@@ -95,7 +116,20 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     m_headEdit->readLayout( layout.head() );
     m_bodyEdit->readLayout( layout.body() );
     m_singleEdit->readLayout( layout.single() );
+
+    LayoutManager::instance()->setActiveLayout( layoutName );
 }
+
+void PlaylistLayoutEditDialog::onActiveLayoutChanged()
+{
+    int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
+    if( index != layoutListWidget->currentRow() )
+    {
+        layoutListWidget->setCurrentRow( index );
+        setLayout( layoutListWidget->currentItem()->text() );
+    }
+}
+
 
 void PlaylistLayoutEditDialog::preview()
 {
@@ -111,11 +145,20 @@ void PlaylistLayoutEditDialog::preview()
     LayoutManager::instance()->setPreviewLayout( layout );
 }
 
+void PlaylistLayoutEditDialog::toggleDeleteButton()
+{
+    if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
+        deleteLayoutButton->setEnabled( 0 );
+    else
+        deleteLayoutButton->setEnabled( 1 );
+}
+
+
 void PlaylistLayoutEditDialog::accept()
 {
     DEBUG_BLOCK
 
-    if ( LayoutManager::instance()->isDefaultLayout( nameEdit->text() ) )
+    if ( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
     {
         const QString msg = i18n( "The layout '%1' is one of the default layouts and cannot be overwritten. Please select a different name.",
                 nameEdit->text() );

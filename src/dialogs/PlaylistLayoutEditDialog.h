@@ -43,6 +43,9 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
     private slots:
         void preview();
         virtual void accept();
+        void onActiveLayoutChanged();
+        void deleteLayout();
+        void toggleDeleteButton();
 
     private:
         Playlist::LayoutEditWidget *m_headEdit;

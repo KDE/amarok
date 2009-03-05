@@ -40,16 +40,16 @@ class LayoutConfigWidget : public KHBox
     public:
         LayoutConfigWidget( QWidget * parent );
         ~LayoutConfigWidget();
+        QComboBox *m_comboBox;
 
     private slots:
         void setActiveLayout( const QString &layout );
         void layoutListChanged();
         void configureLayouts();
-        void deleteItem( const QString &itemName );
+        void onActiveLayoutChanged();
 
     private:
         PlaylistLayoutEditDialog * m_playlistEditDialog;
-        QComboBox *m_comboBox;
         KPushButton *m_configButton;
 };
 
