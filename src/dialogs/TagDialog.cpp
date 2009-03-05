@@ -264,7 +264,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_genre->insertItems( 0, m_genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
-    m_fieldEdited = m_fieldEditedSave;
+   
 
     if( !m_queryMaker )  //track query complete or not necessary
     {
@@ -277,6 +277,8 @@ TagDialog::dataQueryDone()
             readMultipleTracks();
         }
     }
+
+    m_fieldEdited = m_fieldEditedSave;
 }
 
 void
@@ -428,6 +430,7 @@ TagDialog::scoreModified()
 inline void
 TagDialog::commentModified()
 {
+    DEBUG_BLOCK
     m_fieldEdited[ "comment" ] = true;
     checkModified();
 }
@@ -1440,26 +1443,40 @@ TagDialog::saveTags()
         }
 
         QVariantMap data = storedTags[ track ];
-        ec->beginMetaDataUpdate();
-        if( data.contains( Meta::Field::TITLE ) )
-            ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
-        if( data.contains( Meta::Field::COMMENT ) )
-            ec->setComment( data.value( Meta::Field::COMMENT ).toString() );
-        if( data.contains( Meta::Field::ARTIST ) )
-            ec->setArtist( data.value( Meta::Field::ARTIST ).toString() );
-        if( data.contains( Meta::Field::ALBUM ) )
-            ec->setAlbum( data.value( Meta::Field::ALBUM ).toString() );
-        if( data.contains( Meta::Field::GENRE ) )
-            ec->setGenre( data.value( Meta::Field::GENRE ).toString() );
-        if( data.contains( Meta::Field::COMPOSER ) )
-            ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
-        if( data.contains( Meta::Field::YEAR ) )
-            ec->setYear( data.value( Meta::Field::YEAR ).toString() );
-        if( data.contains( Meta::Field::TRACKNUMBER ) )
-            ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
-        if( data.contains( Meta::Field::DISCNUMBER ) )
-            ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
-        ec->endMetaDataUpdate();
+
+        //there is really no need to write to the file if only info stored in the db has changed
+
+        //the if from hell
+        if ( data.contains( Meta::Field::TITLE ) || data.contains( Meta::Field::COMMENT ) ||
+             data.contains( Meta::Field::ARTIST ) || data.contains( Meta::Field::ALBUM ) ||
+             data.contains( Meta::Field::GENRE ) || data.contains( Meta::Field::COMPOSER ) ||
+             data.contains( Meta::Field::YEAR ) || data.contains( Meta::Field::TRACKNUMBER ) ||
+             data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) )
+        {
+
+            debug() << "File info changed....";
+
+            ec->beginMetaDataUpdate();
+            if( data.contains( Meta::Field::TITLE ) )
+                ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
+            if( data.contains( Meta::Field::COMMENT ) )
+                ec->setComment( data.value( Meta::Field::COMMENT ).toString() );
+            if( data.contains( Meta::Field::ARTIST ) )
+                ec->setArtist( data.value( Meta::Field::ARTIST ).toString() );
+            if( data.contains( Meta::Field::ALBUM ) )
+                ec->setAlbum( data.value( Meta::Field::ALBUM ).toString() );
+            if( data.contains( Meta::Field::GENRE ) )
+                ec->setGenre( data.value( Meta::Field::GENRE ).toString() );
+            if( data.contains( Meta::Field::COMPOSER ) )
+                ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
+            if( data.contains( Meta::Field::YEAR ) )
+                ec->setYear( data.value( Meta::Field::YEAR ).toString() );
+            if( data.contains( Meta::Field::TRACKNUMBER ) )
+                ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
+            if( data.contains( Meta::Field::DISCNUMBER ) )
+                ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
+            ec->endMetaDataUpdate();
+        }
     }
 
     // build a map, such that at least one track represents a unique collection
@@ -1494,6 +1511,7 @@ void
 TagDialog::applyToAllTracks()
 {
     DEBUG_BLOCK
+            debug() << m_fieldEdited;
 
     generateDeltaForLabelList( labelListFromText( ui->kTextEdit_selectedLabels->toPlainText() ) );
 
