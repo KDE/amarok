@@ -908,17 +908,6 @@ void CollectionTreeView::slotQueueChildTracks()
     playChildTracks( m_currentItems, Playlist::Queue );
 }
 
-void CollectionTreeView::slotDeleteTracks()
-{
-    //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( m_currentItems, true );
-
-    qm->setQueryType( QueryMaker::Track );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( deleteResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( deleteQueryDone() ), Qt::QueuedConnection );
-    qm->run();
-}
-
 void CollectionTreeView::slotEditTracks()
 {
     editTracks( m_currentItems );
@@ -948,37 +937,6 @@ void CollectionTreeView::slotOrganize()
             organizeTracks( m_currentItems );
     }
 }
-
-
-void
-CollectionTreeView::deleteResultReady( const QString &collectionId, const Meta::TrackList &tracks )
-{
-    DEBUG_BLOCK
-    Q_UNUSED( collectionId )
-
-    foreach( Meta::TrackPtr d_track, tracks )
-    {
-        if ( d_track )
-            debug() << "Artist is: " << d_track->artist()->name();
-    }
-
-    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracks.count() ) );
-    const bool del = KMessageBox::warningContinueCancel(this,
-            text,
-            QString() ) == KMessageBox::Continue;
-
-    debug() << "Wants to delete: " << (del ? "Yes" : "No");
-}
-
-void
-CollectionTreeView::deleteQueryDone()
-{
-    DEBUG_BLOCK
-    QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
-    if( qm )
-        qm->deleteLater();
-}
-
 
 QSet<CollectionTreeItem*>
 CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )

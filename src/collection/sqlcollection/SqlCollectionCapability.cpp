@@ -68,7 +68,6 @@ SqlCollectionCapability::collectionActions ( const TrackList tracklist )
     QList< PopupDropperAction* > actions;
 
     return actions;
-
 }
 
 #include "SqlCollectionCapability.moc"

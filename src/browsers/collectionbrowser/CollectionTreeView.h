@@ -89,14 +89,10 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotPlayChildTracks();
         void slotAppendChildTracks();
         void slotQueueChildTracks();
-        void slotDeleteTracks();
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
         void slotOrganize();
-
-        void deleteResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-        void deleteQueryDone();
 
     private:
         // Utility function to play all items
