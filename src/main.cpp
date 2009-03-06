@@ -62,7 +62,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Greg Meyer"), ki18n(( "Live CD, Bug squashing (oggb4mp3)" )), "greg@gkmweb.com" );
     aboutData.addCredit( ki18n("Harald Sitter"), ki18n(( "Rokymoter (apachelogger)" )), "harald.sitter@kdemail.net" );
     aboutData.addCredit( ki18n("Kenneth Wesley Wimer II"), ki18n(( "Icons" )), "kwwii@bootsplash.org" );
-    aboutData.addCredit( ki18n("Kevin Funk"), ki18n(( "Rokymoter (KRF)" )), "krf@electrostorm.net" );
+    aboutData.addCredit( ki18n("Kevin Funk"), ki18n(( "Developer, Website theme (KRF)" )), "krf@electrostorm.net" );
     aboutData.addCredit( ki18n("Lee Olson"), ki18n(( "Artwork" )), "leetolson@gmail.com" );
     aboutData.addCredit( ki18n("Ljubomir Simin"), ki18n(( "Rokymoter (ljubomir)" )), "ljubomir.simin@gmail.com" );
     aboutData.addCredit( ki18n("Max Howell"), ki18n(( "Developer, Vision" )), "max.howell@methylblue.com" );
