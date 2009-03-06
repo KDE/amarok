@@ -253,6 +253,12 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
+            //The following D-Bus call is used to see if a found folder is new or not
+            //During an incremental scan the scanning isn't really recursive, as all folders
+            //are stored in the database (even folders implicitly selected by top-level directories)
+            //if recursive scanning is selected.  So we don't scan recursively because if any of those
+            //folders have updates ScanManager has already figured it out.  Hence why we only scan
+            //if isDirInCollection is false: it means the directory is new and we don't know about it
             bool isInCollection = false;
             if( m_incremental && m_amarokCollectionInterface )
             {
