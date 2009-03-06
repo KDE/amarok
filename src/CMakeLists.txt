@@ -340,7 +340,7 @@ set(libplaylist_SRCS
     playlist/PlaylistWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditWidget.cpp
-    playlist/layouts/LayoutConfigWidget.cpp
+    playlist/layouts/LayoutConfigAction.cpp
     playlist/layouts/LayoutItemConfig.cpp
     playlist/layouts/LayoutManager.cpp
     playlist/navigators/DynamicTrackNavigator.cpp

@@ -33,7 +33,7 @@
 #include "navigators/NavigatorFilterProxyModel.h"
 #include "widgets/Widget.h"
 #include "widgets/ProgressiveSearchWidget.h"
-#include "layouts/LayoutConfigWidget.h"
+#include "layouts/LayoutConfigAction.h"
 
 
 #include <KToolBarSpacerAction>
@@ -101,13 +101,6 @@ Playlist::Widget::Widget( QWidget* parent )
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
 
-    KHBox *layoutWidgetBox = new KHBox( this );
-    layoutWidgetBox->setMargin( 0 );
-    QLabel *layoutLabel = new QLabel( i18n("Playlist layout:"), layoutWidgetBox );
-    Playlist::LayoutConfigWidget *layoutWidget = new Playlist::LayoutConfigWidget( layoutWidgetBox );
-    layoutWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
-    layoutLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-
     KHBox *barBox = new KHBox( this );
     barBox->setMargin( 0 );
 
@@ -140,6 +133,13 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
+
+        Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
+        plBar->addAction( layoutConfigAction );
+        QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
+        if( tbutton )
+            tbutton->setPopupMode( QToolButton::InstantPopup );
+
 
         // Alternate playlist view disabled for 2.0
         //plBar->addSeparator();

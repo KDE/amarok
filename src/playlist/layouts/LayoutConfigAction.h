@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *             (c) 2009  Teo Mrnjavac <teo.mrnjavac@gmail.com>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,8 +21,9 @@
 #ifndef PLAYLISTLAYOUTCONFIGWIDGET_H
 #define PLAYLISTLAYOUTCONFIGWIDGET_H
 
-#include <KVBox>
+#include <KAction>
 #include <KPushButton>
+#include <KMenu>
 
 class PlaylistLayoutEditDialog;
 class QComboBox;
@@ -33,24 +35,25 @@ namespace Playlist {
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
 
-class LayoutConfigWidget : public KHBox
+class LayoutConfigAction : public KAction
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
-        LayoutConfigWidget( QWidget * parent );
-        ~LayoutConfigWidget();
+        LayoutConfigAction( QWidget * parent );
+        ~LayoutConfigAction();
 
     private slots:
-        void setActiveLayout( const QString &layout );
+        void setActiveLayout( QAction *layoutAction );
         void layoutListChanged();
         void configureLayouts();
         void onActiveLayoutChanged();
 
     private:
         PlaylistLayoutEditDialog * m_playlistEditDialog;
-        KPushButton *m_configButton;
-        QComboBox *m_comboBox;
+        KAction *m_configAction;
+        QActionGroup *m_layoutActions;
+        KMenu *m_layoutMenu;
 };
 
 }
