@@ -248,14 +248,9 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         if( !f.exists() )
             break;
 
-        while( f.isSymLink() )
-        {
-            if( QFileInfo( f.symLinkTarget() ).isSymLink() &&
-                QFileInfo( QFileInfo( f.symLinkTarget() ).symLinkTarget() ).canonicalFilePath() == f.canonicalFilePath() )
-                break;  //Infinite loop
+        if( f.isSymLink() )
             f = QFileInfo( f.symLinkTarget() );
-        }
-
+        
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
             //The following D-Bus call is used to see if a found folder is new or not
