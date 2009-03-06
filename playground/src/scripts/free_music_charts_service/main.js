@@ -48,7 +48,7 @@ Amarok.Window.addToolsMenu( "votingGui", "Free Music Charts Voting", "amarok" );
 
 script.populate.connect( onPopulate );
 script.customize.connect( onCustomize );
-Amarok.Window.ToolsMenu.votingGui.triggered.connect( onVote );
+Amarok.Window.ToolsMenu.votingGui['triggered()'].connect( onVote );
 
 /* Initialization of service */
 function FreeMusicCharts() {

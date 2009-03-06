@@ -1,6 +1,7 @@
 ==1.3.0 (2009-02-??)==
 * only download charts data when needed
 * simple filtering is now possible (and therefore also creating bookmarks in Amarok 2.1)
+* make it work with Qt 4.5
 
 ==1.2.0 (2009-02-03)==
 * show a warning when downloading of charts failed
