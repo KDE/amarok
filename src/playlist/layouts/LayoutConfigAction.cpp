@@ -108,9 +108,6 @@ void LayoutConfigAction::onActiveLayoutChanged()
     debug() << "Index in the LayoutManager of currently active layout, called " << LayoutManager::instance()->activeLayoutName() << ", is: " << index;
     if( m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
         m_layoutActions->actions()[ index ]->setChecked( TRUE );
-//     QString layout = LayoutManager::instance()->activeLayoutName();
-//     if( layout != m_layoutActions->checkedAction()->text() )
-//        m_layoutActions->actions()[ m_layoutActions->actions().indexOf( layout ) ]->setChecked( TRUE ); //WTF doesn't work
 }
 
 
