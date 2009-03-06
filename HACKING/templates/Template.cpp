@@ -32,4 +32,3 @@ Template::~Template()
 
 
 #include "Template.moc"
-
