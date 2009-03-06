@@ -251,7 +251,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         while( f.isSymLink() )
         {
             if( QFileInfo( f.symLinkTarget() ).isSymLink() &&
-                QFileInfo( f.symLinkTarget() ).canonicalFilePath() == f.canonicalFilePath() )
+                QFileInfo( QFileInfo( f.symLinkTarget() ).symLinkTarget() ).canonicalFilePath() == f.canonicalFilePath() )
                 break;  //Infinite loop
             f = QFileInfo( f.symLinkTarget() );
         }
