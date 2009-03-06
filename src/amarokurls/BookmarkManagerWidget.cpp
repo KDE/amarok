@@ -23,7 +23,7 @@
 #include "BookmarkModel.h"
 #include "NavigationUrlGenerator.h"
 #include "PlayUrlGenerator.h"
-#include "ProgressSlider.h"
+#include "ProgressWidget.h"
 
 #include <KAction>
 #include <KIcon>

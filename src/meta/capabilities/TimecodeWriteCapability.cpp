@@ -16,13 +16,14 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
+
 #include "TimecodeWriteCapability.h"
 
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/PlayUrlGenerator.h"
 #include "amarokurls/BookmarkModel.h"
 #include "Debug.h"
-#include "ProgressSlider.h"
+#include "ProgressWidget.h"
 #include "EngineController.h"
 
 namespace Meta

@@ -11,7 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ProgressSlider.h"
+#include "ProgressWidget.h"
 
 #include "Debug.h"
 #include "EngineController.h"
@@ -274,5 +274,4 @@ void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, Pl
     m_slider->clearTriangles();
 }
 
-#include "ProgressSlider.moc"
-
+#include "ProgressWidget.moc"

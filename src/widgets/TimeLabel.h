@@ -19,9 +19,9 @@
 #define AMAROK_TIMELABEL_H
 
 #include "ActionClasses.h"
-#include "EngineController.h"
-#include "ProgressSlider.h"
 #include "amarokconfig.h"
+#include "EngineController.h"
+#include "ProgressWidget.h"
 
 #include <QLabel>
 #include <kglobalsettings.h>

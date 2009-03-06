@@ -18,15 +18,15 @@
  ***************************************************************************/
 
 #include "BookmarkMetaActions.h"
-#include "AmarokUrlHandler.h"
-#include "SvgHandler.h"
 
+#include "AmarokUrlHandler.h"
 #include "BookmarkModel.h"
 #include "EngineController.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 #include "PlayUrlRunner.h"
 #include "PlayUrlGenerator.h"
-#include "ProgressSlider.h"
+#include "ProgressWidget.h"
+#include "SvgHandler.h"
 
 #include <KIcon>
 #include <KLocale>

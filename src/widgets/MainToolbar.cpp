@@ -26,7 +26,7 @@
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "MainControlsWidget.h"
-#include "ProgressSlider.h"
+#include "ProgressWidget.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "VolumeWidget.h"
