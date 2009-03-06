@@ -933,8 +933,10 @@ void CollectionTreeView::slotOrganize()
 {
     if( sender() ) {
         if( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+        {
             Q_UNUSED( action )
             organizeTracks( m_currentItems );
+        }
     }
 }
 
