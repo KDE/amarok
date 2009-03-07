@@ -124,11 +124,13 @@ CollectionScanner::~CollectionScanner()
 bool
 CollectionScanner::readBatchIncrementalFile()
 {
-    QStringList newFolders;
-    if( !QFile::exists( m_folders.first() ) )
+    QString filePath = m_folders.first();
+    if( !QFile::exists( filePath ) )
         return false;
 
-    QFile folderFile( m_folders.first() );
+    m_batchFolderTime = QFileInfo( filePath ).lastModified();
+    
+    QFile folderFile( filePath );
     if( !folderFile.open( QIODevice::ReadOnly ) )
         return false;
 
@@ -140,9 +142,14 @@ CollectionScanner::readBatchIncrementalFile()
     QString temp = folderStream.readLine();
     while( !temp.isEmpty() )
     {
-        //TODO: check mtimes here
+        QFileInfo info( temp );
+        if( info.exists() && info.isDir() )
+        {
+            QDateTime lastMod = info.lastModified();
+            if( lastMod > m_batchFolderTime )
+                m_folders << temp;
+        }
         //TODO: rpath substitution?
-        m_folders << temp;
         temp = folderStream.readLine();
     }
     
