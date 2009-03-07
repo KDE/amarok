@@ -82,12 +82,14 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_batch( batch )
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
+        , m_batchFolderTime()
         , m_recursively( recursive )
         , m_incremental( incremental )
         , m_restart( restart )
         , m_logfile( batch ? ( incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
                            : saveLocation() + "collection_scan.log" )
         , m_rpath( rpath )
+        , m_amarokCollectionInterface( 0 )
 {
     kapp->setObjectName( "amarokcollectionscanner" );
     if( !restart )
@@ -100,8 +102,13 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         else
             m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok-" + amarokPid, "/SqlCollection/" + collectionId );
     }
-    else
-        m_amarokCollectionInterface = 0;
+
+    if( m_batch && m_incremental )
+    {
+        bool success = readBatchIncrementalFile();
+        if( !success )
+            return;
+    }
 
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
@@ -112,6 +119,36 @@ CollectionScanner::~CollectionScanner()
     delete m_amarokCollectionInterface;
 }
 
+//Populates m_folders with folders from that pointed to file, but only if the mtime of the folder
+//is greater than the mtime of the file itself
+bool
+CollectionScanner::readBatchIncrementalFile()
+{
+    QStringList newFolders;
+    if( !QFile::exists( m_folders.first() ) )
+        return false;
+
+    QFile folderFile( m_folders.first() );
+    if( !folderFile.open( QIODevice::ReadOnly ) )
+        return false;
+
+    m_folders.clear();
+    
+    QTextStream folderStream;
+    folderStream.setDevice( &folderFile );
+
+    QString temp = folderStream.readLine();
+    while( !temp.isEmpty() )
+    {
+        //TODO: check mtimes here
+        //TODO: rpath substitution?
+        m_folders << temp;
+        temp = folderStream.readLine();
+    }
+    
+    folderFile.close();
+    return true;
+}
 
 void
 CollectionScanner::doJob() //SLOT

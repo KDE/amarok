@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <QDateTime>
 #include <QDBusInterface>
 #include <QHash>
 #include <QStringList>
@@ -76,6 +77,8 @@ private:
     };
 
     inline QString saveLocation() const { return KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true ); }
+
+    bool readBatchIncrementalFile();
 
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
@@ -134,6 +137,7 @@ private:
     const bool    m_batch;
     const bool    m_importPlaylists;
     QStringList   m_folders;
+    QDateTime     m_batchFolderTime;
     const bool    m_recursively;
     const bool    m_incremental;
     const bool    m_restart;
