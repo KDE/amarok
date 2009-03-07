@@ -20,7 +20,13 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 
 #this line has to be before add_defintions, but after the KDE4 cmake includes
 #because they are used to determine install locations
-add_subdirectory( src/scriptengine/generator )
+include(CheckQtScriptBindings)
+if( NOT QTSCRIPT_QT_BINDINGS_FOUND )
+#we're keeping the script generator in our code to give some
+#time to transition to depending on it seperate
+    add_subdirectory( src/scriptengine/generator )
+endif( QTSCRIPT_QT_BINDINGS_FOUND )
+
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 include(CheckLibraryExists)
