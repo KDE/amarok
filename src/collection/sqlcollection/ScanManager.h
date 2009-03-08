@@ -47,7 +47,6 @@ class ScanManager : public QObject
         bool isFileInCollection( const QString &url );
 
         void setBlockScan( bool blockScan );
-        bool readFullBatchFile();
 
     public slots:
         void startFullScan();
@@ -67,7 +66,8 @@ class ScanManager : public QObject
         void cleanTables();
         void stopParser();
         void writeBatchIncrementalInfoFile();
-
+        bool readBatchFile( QString fileLocation );
+        
     private:
         SqlCollection *m_collection;
         SqlCollectionDBusHandler *m_dbusHandler;
