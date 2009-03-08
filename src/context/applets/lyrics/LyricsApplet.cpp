@@ -65,8 +65,8 @@ void LyricsApplet::init()
     
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextEdit;
+    m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setReadOnly( true );
-    m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyricsProxy->setWidget( m_lyrics );
 
     // only show when we need to let the user

@@ -46,12 +46,6 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 
 WikipediaApplet::~ WikipediaApplet()
 {
-    //hacky stuff to keep QWebView from causing a crash
-   /* m_wikiPage->setWidget( 0 );
-    delete m_wikiPage;
-    m_wikiPage = 0;
-    delete m_webView;*/
-
     delete m_webView;
 }
 
@@ -77,16 +71,11 @@ void WikipediaApplet::init()
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
     m_webView = new Plasma::WebView( this );
-
+    m_webView->setAttribute( Qt::WA_NoSystemBackground );
+    
     m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
-
-    //make background transparent
-    QPalette p = m_webView->palette();
-    p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
-    p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
-    m_webView->setPalette( p );
 
     QFont labelFont;
     labelFont.setBold( true );
