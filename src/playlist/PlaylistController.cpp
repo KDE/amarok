@@ -110,6 +110,10 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     else if ( options & Queue )
     {
         firstItemAdded = m_model->activeRow() + 1;
+        // We want to add the newly queued items after any items which are already queued
+        while( m_model->stateOfRow( firstItemAdded ) & Item::Queued )
+            firstItemAdded++;
+
         insertionHelper( firstItemAdded, list );
         // Construct list of rows to be queued
         // NOTE: possible race condition here, if the rows get moved around?
@@ -496,25 +500,14 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
             i.remove();
         else if ( The::playlistManager()->canExpand( track ) )
         {
-            
             Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job times out
             if ( playlist )
             {
-               /* Meta::TrackList newtracks = playlist->tracks();
-                i.remove();
-                foreach( Meta::TrackPtr t, newtracks )
-                {
-                    if ( t != Meta::TrackPtr() )
-                        i.insert( t );
-                }*/
-
                 //since this is a playlist masqueurading as a single track , make a MultiTrack out of it:
                 i.remove();
                 if ( playlist->tracks().count() > 0 )
                     i.insert( Meta::TrackPtr( new Meta::MultiTrack( playlist ) ) );
             }
-
-            
         }
     }
 
