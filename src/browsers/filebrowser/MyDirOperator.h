@@ -78,10 +78,10 @@ private:
     void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
     Meta::TrackList tracksForEdit() const;
 
-    bool mCopyActivated;
-    bool mMoveActivated;
-    CollectionAction* mCopyAction;
-    CollectionAction* mMoveAction;
+    bool m_copyActivated;
+    bool m_moveActivated;
+    CollectionAction* m_copyAction;
+    CollectionAction* m_moveAction;
 };
 
 #endif

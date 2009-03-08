@@ -36,10 +36,10 @@
 
 MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
         : KDirOperator( url, parent )
-        , mCopyActivated ( false )
-        , mMoveActivated ( false )
-        , mCopyAction( 0 )
-        , mMoveAction( 0 )
+        , m_copyActivated ( false )
+        , m_moveActivated ( false )
+        , m_copyAction( 0 )
+        , m_moveAction( 0 )
 {
     DEBUG_BLOCK
 
@@ -113,43 +113,43 @@ void MyDirOperator::contextMenuAboutToShow( const KFileItem &item, QMenu *menu )
 void
 MyDirOperator::slotCopyTracks( const Meta::TrackList& tracks )
 {
-    if( !mCopyAction || !mCopyActivated )
+    if( !m_copyAction || !m_copyActivated )
         return;
 
     CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = mCopyAction->collection()->location();
+    CollectionLocation *destination = m_copyAction->collection()->location();
 
     source->prepareCopy( tracks, destination );
-    mCopyActivated = false;
-    mCopyAction = 0;
+    m_copyActivated = false;
+    m_copyAction = 0;
 }
 
 void
 MyDirOperator::slotMoveTracks( const Meta::TrackList& tracks )
 {
-    if( !mMoveAction || !mMoveActivated )
+    if( !m_moveAction || !m_moveActivated )
         return;
 
     CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = mMoveAction->collection()->location();
+    CollectionLocation *destination = m_moveAction->collection()->location();
 
     source->prepareMove( tracks, destination );
-    mMoveActivated = false;
-    mMoveAction = 0;
+    m_moveActivated = false;
+    m_moveAction = 0;
 }
 
 void
 MyDirOperator::slotPrepareMoveTracks()
 {
-    if( mMoveActivated )
+    if( m_moveActivated )
         return;
 
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
     if ( !action )
         return;
 
-    mMoveActivated = true;
-    mMoveAction = action;
+    m_moveActivated = true;
+    m_moveAction = action;
     
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
@@ -163,15 +163,15 @@ MyDirOperator::slotPrepareMoveTracks()
 void
 MyDirOperator::slotPrepareCopyTracks()
 {
-    if( mCopyActivated )
+    if( m_copyActivated )
         return;
 
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
     if ( !action )
         return;
 
-    mCopyActivated = true;
-    mCopyAction = action;
+    m_copyActivated = true;
+    m_copyAction = action;
     
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
