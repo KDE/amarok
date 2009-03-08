@@ -63,6 +63,8 @@ Context::AppletToolbar::~AppletToolbar()
 void
 Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
     // draw translucent curved background
     painter->save();
 
@@ -134,6 +136,7 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
 QSizeF
 Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
+    Q_UNUSED( which )
     return QSizeF( constraint.width(), 30 );
 }
 
@@ -141,7 +144,7 @@ Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF & constraint 
 void
 Context::AppletToolbar::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    DEBUG_BLOCK
+    Q_UNUSED( event )
 }
 /*
 void 
@@ -348,7 +351,8 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
         for( int i = 0; i < count; i++ )
             newAddItem( i * 2 );
             
-    } else
+    }
+    else
     {
         for( int i = 0; i < m_appletLayout->count(); i++ ) // tell each applet we are done configuring
         {

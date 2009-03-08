@@ -56,14 +56,15 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
 }
 
 Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
-{
-    
+{    
 }
 
 void 
-Context::AppletToolbarAppletItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+Context::AppletToolbarAppletItem::paint ( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-    //DEBUG_BLOCK
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
+    
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );
     QColor fillColor( 102, 102, 102, 210 );
@@ -71,7 +72,6 @@ Context::AppletToolbarAppletItem::paint ( QPainter * painter, const QStyleOption
     fillPath.addRoundedRect( boundingRect(), 5, 5 );
     painter->fillPath( fillPath ,fillColor );
     painter->restore();
-      
 }
 
 void 
@@ -81,9 +81,8 @@ Context::AppletToolbarAppletItem::setConfigEnabled( bool config )
     {
         // center over top-right corner
         m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1);
-     //   m_deleteIcon->show();
-
-    } else
+    }
+    else
         m_deleteIcon->hide();
     
     m_configEnabled = config;
@@ -102,8 +101,9 @@ Context::AppletToolbarAppletItem::delIconSceneRect()
 }
 
 void 
-Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent * event )
+Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
+    Q_UNUSED( event )
     if( m_configEnabled )
         m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1);
     m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
@@ -113,9 +113,9 @@ Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent * event
 
 
 QVariant 
-Context::AppletToolbarAppletItem::itemChange(GraphicsItemChange change, const QVariant &value)
+Context::AppletToolbarAppletItem::itemChange( GraphicsItemChange change, const QVariant &value )
 {
-    QVariant ret = QGraphicsWidget::itemChange(change, value);
+    QVariant ret = QGraphicsWidget::itemChange( change, value );
     
     if( change == ItemPositionHasChanged )
         emit geometryChanged();

@@ -122,6 +122,7 @@ Meta::Capability * Meta::MultiTrack::asCapabilityInterface(Meta::Capability::Typ
 
 void Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
 {
+    Q_UNUSED( track )
     //forward changes from active tracks
     notifyObservers();
 }

@@ -90,37 +90,37 @@ Context::ToolbarView::sizeHint() const
 }
 
 int 
-Context::ToolbarView::heightForWidth ( int w ) const
+Context::ToolbarView::heightForWidth( int w ) const
 {
+    Q_UNUSED( w )
     return m_height;
 } 
 
 
 void  
-Context::ToolbarView::resizeEvent( QResizeEvent * event )
+Context::ToolbarView::resizeEvent( QResizeEvent *event )
 {
+    Q_UNUSED( event )
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
     m_toolbar->setGeometry( sceneRect() );
 }
 
-
 void 
 Context::ToolbarView::dragEnterEvent( QDragEnterEvent *event )
 {
-    DEBUG_BLOCK
-    
+    Q_UNUSED( event )
 }
 
 void 
 Context::ToolbarView::dragMoveEvent( QDragMoveEvent *event )
 {
-    DEBUG_BLOCK
+    Q_UNUSED( event )
 }
 
 void 
 Context::ToolbarView::dragLeaveEvent( QDragLeaveEvent *event )
 {
-    DEBUG_BLOCK
+    Q_UNUSED( event )
 }
 
 void
