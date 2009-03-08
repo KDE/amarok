@@ -196,7 +196,13 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 void
 Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
-    QModelIndex index = indexAt( event->pos() );
+    DEBUG_BLOCK
+    QModelIndex filteredIndex = indexAt( event->pos() );
+    
+    //translate to real model as we might be looking at a filered list:
+    int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( filteredIndex.row() );
+
+    QModelIndex index = The::playlistModel()->index( sourceRow );
 
     if ( !index.isValid() )
         return;
@@ -572,7 +578,8 @@ Playlist::PrettyListView::selectedRows() const
     QList<int> rows;
     foreach( const QModelIndex &idx, selectedIndexes() )
     {
-        rows.append( idx.row() );
+        int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( idx.row() );
+        rows.append( sourceRow );
     }
     return rows;
 }

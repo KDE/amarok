@@ -205,37 +205,33 @@ Playlist::GroupingProxy::setCollapsed( int, bool ) const
 int
 Playlist::GroupingProxy::firstInGroup( int row ) const
 {
-    int filteredRow = m_model->rowFromSource( row );
+    if ( m_rowGroupMode.at( row ) == None )
+        return row;
 
-    if ( m_rowGroupMode.at( filteredRow ) == None )
-        return filteredRow;
-
-    while ( filteredRow >= 0 )
+    while ( row >= 0 )
     {
-        if ( m_rowGroupMode.at( filteredRow ) == Head )
-            return filteredRow;
-        filteredRow--;
+        if ( m_rowGroupMode.at( row ) == Head )
+            return row;
+        row--;
     }
     warning() << "No group head found for row" << row;
-    return filteredRow;
+    return row;
 }
 
 int
 Playlist::GroupingProxy::lastInGroup( int row ) const
 {
-    int filteredRow = m_model->rowFromSource( row );
-        
-    if ( m_rowGroupMode.at( filteredRow ) == None )
-        return filteredRow;
+    if ( m_rowGroupMode.at( row ) == None )
+        return row;
 
-    while ( filteredRow < rowCount() )
+    while ( row < rowCount() )
     {
-        if ( m_rowGroupMode.at( filteredRow ) == Tail )
-            return filteredRow;
-        filteredRow++;
+        if ( m_rowGroupMode.at( row ) == Tail )
+            return row;
+        row++;
     }
     warning() << "No group tail found for row" << row;
-    return filteredRow;
+    return row;
 }
 
 void
