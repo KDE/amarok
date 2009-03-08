@@ -62,7 +62,7 @@ public:
     ~MyDirOperator();
 
 private slots:
-    void aboutToShowContextMenu();
+    void contextMenuAboutToShow( const KFileItem &item, QMenu *menu );
     void fileSelected( const KFileItem & /*file*/ );
 
     void slotPrepareMoveTracks();
