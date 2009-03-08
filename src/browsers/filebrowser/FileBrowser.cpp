@@ -61,11 +61,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_filePlacesModel = new KFilePlacesModel( this );
     m_urlNav = new KUrlNavigator( m_filePlacesModel, KUrl( QDir::home().path() ), this );
 
-    setContentsMargins( 0, 0, 0, 0 );
-
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
-
     m_dirOperator = new MyDirOperator( QDir::home().path(), this );
 
     connect( m_dirOperator, SIGNAL( viewChanged( QAbstractItemView * ) ), this, SLOT( selectorViewChanged( QAbstractItemView * ) ) );
@@ -160,9 +155,6 @@ void FileBrowser::Widget::readConfig()
     debug() << "BEFORE view initialization.";
     // KDirOperator view configuration:
     m_dirOperator->setView( config.readEntry( "View Style" ) == "Detail" ? KFile::Detail : KFile::Simple );
-    m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    m_dirOperator->view()->setContentsMargins( 0, 0, 0, 0 );
-    m_dirOperator->view()->setFrameShape( QFrame::NoFrame );
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
     debug() << "AFTER  view initialization.";
     }
@@ -340,9 +332,6 @@ bool FileBrowser::Widget::eventFilter( QObject* o, QEvent *e )
 }
 
 //END Protected
-
-
-// kate: space-indent on; indent-width 4; replace-tabs on;
 
 #include "FileBrowser.moc"
 
