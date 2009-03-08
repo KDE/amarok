@@ -140,7 +140,7 @@ namespace AmarokScript
         emit CountChanged( The::playlistModel()->rowCount() );
     }
 	
-    QList<int> AmarokPlaylistScript::selectedIndizes()
+    QList<int> AmarokPlaylistScript::selectedIndexes()
     {
         DEBUG_BLOCK
 
@@ -153,10 +153,10 @@ namespace AmarokScript
         DEBUG_BLOCK
 
         QStringList fileNames;
-        const QList<int> indizes = selectedIndizes();
+        const QList<int> indexes = selectedIndexes();
 
-        for( int i=0; i < indizes.size(); i++ )
-            fileNames << The::playlistModel()->trackAt( indizes[i] )->prettyUrl();
+        for( int i=0; i < indexes.size(); i++ )
+            fileNames << The::playlistModel()->trackAt( indexes[i] )->prettyUrl();
 
         return fileNames;
     }

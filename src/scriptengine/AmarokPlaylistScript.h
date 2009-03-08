@@ -53,7 +53,7 @@ namespace AmarokScript
             void togglePlaylist();
             QStringList filenames();
             QVariant trackAt( int row );
-            QList<int> selectedIndizes();
+            QList<int> selectedIndexes();
             QStringList selectedFilenames();
 
         signals:

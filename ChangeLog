@@ -27,7 +27,7 @@ VERSION 2.1
     * Option to automatically scroll the playlist to the active item on track
       change.
     * New QtScript methods for accessing the playlist:
-      Amarok.Playlist.selectedFilenames() & Amarok.Playlist.selectedIndizes().
+      Amarok.Playlist.selectedFilenames() & Amarok.Playlist.selectedIndexes().
       Patch by Mathias Panzenböck <grosser.meister.morti@gmx.net>.
     * New QtScript method for the Track prototype: imagePixmap( size ). Returns
       a QPixmap of the given size, or the default if the size argument isn't
