@@ -269,7 +269,7 @@ PlaylistsInGroupsProxy::slotRenameGroup()
     DEBUG_BLOCK
     //get the name for this new group
     const QString newName = KInputDialog::getText( i18n("New name"),
-                i18n("Enter new group name:") );
+                i18nc("Enter a new name for a group that already exists", "Enter new group name:") );
 
     foreach( int originalRow, m_groupHash.values( m_selectedGroups.first().row() ) )
     {
