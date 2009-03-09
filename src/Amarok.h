@@ -79,13 +79,6 @@ namespace Amarok
     KActionCollection *actionCollection(); //defined in App.cpp
 
     /**
-     * Invoke the external web browser set in Amarok's configuration.
-     * @param url The URL to be opened in the browser.
-     * @return True if the browser could be started.
-     */
-    AMAROK_EXPORT bool invokeBrowser( const QString& url ); //defined in App.cpp
-
-    /**
      * Compute score for a track that has finished playing.
      */
     inline double computeScore( double oldScore, int playCount, double playedFraction )

@@ -55,7 +55,6 @@ email                : markey@web.de
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
-#include <KRun>                          //Amarok::invokeBrowser()
 #include <KShell>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KSplashScreen>
@@ -832,26 +831,6 @@ namespace Amarok
     {
         //Slightly more useful config() that allows setting the group simultaneously
         return KGlobal::config()->group( group );
-    }
-
-    bool invokeBrowser( const QString& url )
-    {
-        //URL can be in whatever forms KUrl understands - ie most.
-        QString browser = AmarokConfig::externalBrowser();
-
-        // HACK to get around KConfigDialog. See configdialog/dialogs/GeneralConfig.cpp
-#ifdef Q_WS_MAC
-        if( browser == i18n( "Default Browser" ) )
-            browser = "open";
-#else
-        if( browser == i18n( "Default KDE Browser" ) )
-            browser = "xdg-open";
-#endif
-
-        const QString cmd = KShell::quoteArg( browser )
-                            + ' ' + KShell::quoteArg( KUrl( url ).url() );
-
-        return ( KRun::runCommand( cmd, 0L ) > 0 );
     }
 
     namespace ColorScheme

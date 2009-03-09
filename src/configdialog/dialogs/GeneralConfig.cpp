@@ -34,51 +34,6 @@ GeneralConfig::GeneralConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this ); 
-
-    QStringList browsers;
-    browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany" << "safari" << "mozilla";
-
-#if 0
-    // Remove browsers which are not actually installed
-    for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {
-        if( KStandardDirs::findExe( *it ).isEmpty() )
-            it = browsers.erase( it );
-        else
-            ++it;
-    }
-#endif
-
-    // WARNING: if you change the strings here, remember to change them in Amarok::invokeBrowser
-    // as we need to hack around KConfigDialog saving translated text to the config file
-#ifdef Q_WS_MAC
-    if ( !KStandardDirs::findExe( "open" ).isEmpty() )
-        browsers.prepend( i18n( "Default Browser" ) );
-#else
-    if ( !KStandardDirs::findExe( "kfmclient" ).isEmpty() )
-        browsers.prepend( i18n( "Default KDE Browser" ) );
-#endif
-
-    kcfg_ExternalBrowser->insertItems( -1, browsers );
-    int index = browsers.indexOf( AmarokConfig::externalBrowser() );
-    if( index >= 0 )
-        kcfg_ExternalBrowser->setCurrentIndex( index );
-    else if( AmarokConfig::externalBrowser() ==
-#ifdef Q_WS_MAC
-             "open"
-#else
-             "xdg-open"
-#endif
-           )
-    {
-        kcfg_ExternalBrowser->setCurrentIndex( 0 );
-    }
-    else
-    {
-        kcfg_ExternalBrowser->addItem( AmarokConfig::externalBrowser() );
-        kcfg_ExternalBrowser->setCurrentIndex( kcfg_ExternalBrowser->count() - 1 );
-    }
-
-    connect( kcfg_ExternalBrowser, SIGNAL( editTextChanged( const QString& ) ), parent, SLOT( updateButtons() ) );
 }
 
 GeneralConfig::~GeneralConfig()

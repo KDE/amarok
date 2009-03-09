@@ -26,6 +26,7 @@
 #include <KStandardDirs>
 
 #include <QAction>
+#include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
 #include <QPainter>
 
@@ -135,8 +136,7 @@ void
 WikipediaApplet::linkClicked( const QUrl &url )
 {
     debug() << "URL: " << url;
-
-    Amarok::invokeBrowser( url.toString() );
+    QDesktopServices::openUrl( url.toString() );
 }
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
