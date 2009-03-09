@@ -72,7 +72,7 @@ class MetaStream::Track::Private : public QObject, public EngineObserver
                     const QStringList artist_title = title.split( " - " );
                     if( artist_title.size() >= 2 ) {
                         artist = artist_title[0];
-                        title  = artist_title[1];    
+                        title  = title.remove( 0, artist.length() + 3 );
                     }
                 }
 
