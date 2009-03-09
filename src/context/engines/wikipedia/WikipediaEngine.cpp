@@ -251,9 +251,11 @@ WikipediaEngine::wikiResult( KJob* job )
     }
 
     // Ok lets remove the top and bottom parts of the page
-    m_wiki = m_wiki.mid( m_wiki.indexOf( "<h1 id=\"firstHeading\"" ) );
+    m_wiki = m_wiki.mid( m_wiki.indexOf( "<!-- start content -->" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
-    // Adding back license information
+
+    // Adding back style and license information
+    m_wiki = "<div id=\"bodyContent\"" + m_wiki;
     m_wiki += copyright;
     m_wiki.append( "</div>" );
     m_wiki.remove( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>") );
