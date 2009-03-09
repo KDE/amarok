@@ -218,7 +218,7 @@ void MagnatuneStore::initTopPanel( )
 
     QMenu * actionsMenu = new QMenu( 0 );
 
-    action = actionsMenu->addAction( i18n( "Redownload" ) );
+    action = actionsMenu->addAction( i18n( "Re-download" ) );
     connect( action, SIGNAL( triggered( bool) ), SLOT( processRedownload() ) );
 
     m_updateAction = actionsMenu->addAction( i18n( "Update Database" ) );

@@ -58,7 +58,12 @@ JamendoXmlParser::run( )
 void
 JamendoXmlParser::completeJob( )
 {
-    The::statusBar()->longMessage( i18n( "Jamendo.com database update complete. Added %1 tracks on %2 albums from %3 artists",  m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), StatusBar::Information );
+    The::statusBar() ->longMessage(
+          i18ncp( "First part of: Jamendo.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "Jamendo.com database update complete. Added 1 track on ", "Jamendo.com database update complete. Added %1 tracks on ", m_nNumberOfTracks)
+        + i18ncp( "Middle part of: Jamendo.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "1 album from ", "%1 albums from ", m_nNumberOfAlbums)
+        + i18ncp( "Last part of: Jamendo.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "1 artist.", "%1 artists.", m_nNumberOfArtists )
+        , StatusBar::Information );
+
     debug() << "JamendoXmlParser: total number of artists: " << m_nNumberOfArtists;
     debug() << "JamendoXmlParser: total number of albums: " << m_nNumberOfAlbums;
     debug() << "JamendoXmlParser: total number of tracks: " << m_nNumberOfTracks;

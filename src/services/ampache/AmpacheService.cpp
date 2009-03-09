@@ -98,7 +98,7 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     DEBUG_BLOCK
 
 
-    setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server!" ) );
+    setShortDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server." ) );
     setIcon( KIcon( "view-services-ampache-amarok" ) );
 
     //we are using http queries later on, so we require
@@ -163,7 +163,7 @@ AmpacheService::authenticate(KJob * job)
     {
         debug() << "Version Newer, checking for SHA256";
         if(!QCA::isSupported("sha256")) {
-            KMessageBox::error ( this, i18n( "SHA256 Required, and not found" ), i18n( "Authentication Error!" ) );
+            KMessageBox::error ( this, i18n( "SHA256 Required, and not found" ), i18n( "Authentication Error" ) );
             return; 
         }
     }
@@ -257,7 +257,7 @@ void AmpacheService::authenticationComplete(KJob * job)
 
     if ( !error.isNull() )
     {
-        KMessageBox::error ( this, error.text(), i18n( "Authentication Error!" ) );
+        KMessageBox::error ( this, error.text(), i18n( "Authentication Error" ) );
     }
     else
     {

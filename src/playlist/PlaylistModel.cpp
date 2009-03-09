@@ -270,7 +270,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case GroupTracks:
             {
-                return i18n ( "%1 tracks", GroupingProxy::instance()->tracksInGroup( row ) );
+                return i18np ( "1 track", "%1 tracks", GroupingProxy::instance()->tracksInGroup( row ) );
             }
             case LastPlayed:
             {

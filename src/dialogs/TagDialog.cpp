@@ -877,8 +877,8 @@ void TagDialog::readTags()
 
     summaryText = "<table width=100%><tr><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Length:"), unknownSafe( Meta::secToPrettyTime( m_currentTrack->length() ) ) );
-    summaryText += body2cols.arg( i18n("Bitrate:"), unknownSafe( Meta::prettyBitrate( m_currentTrack->bitrate() ) ) );
-    summaryText += body2cols.arg( i18n("Samplerate:"), unknownSafe( QString::number( m_currentTrack->sampleRate() ) ) );
+    summaryText += body2cols.arg( i18n("Bit rate:"), unknownSafe( Meta::prettyBitrate( m_currentTrack->bitrate() ) ) );
+    summaryText += body2cols.arg( i18n("Sample rate:"), unknownSafe( QString::number( m_currentTrack->sampleRate() ) ) );
     summaryText += body2cols.arg( i18n("Size:"), unknownSafe( Meta::prettyFilesize( m_currentTrack->filesize() ) ) );
     summaryText += body2cols.arg( i18n("Format:"), unknownSafe( m_currentTrack->type() ) );
 

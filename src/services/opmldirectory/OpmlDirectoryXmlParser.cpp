@@ -60,7 +60,8 @@ void
 OpmlDirectoryXmlParser::completeJob( )
 {
     The::statusBar()->longMessage(
-        i18n( "OpmlDirectory update complete. Added %1 feeds in %2 categories", m_nNumberOfFeeds, m_nNumberOfCategories ),
+          i18ncp( "This string is the first part of the following example phrase: OpmlDirectory update complete. Added 4 feeds in 6 categories.", "OpmlDirectory update complete. Added 1 feed in ", "OpmlDirectory update complete. Added %1 feeds in ", m_nNumberOfFeeds)
+        + i18ncp( "This string is the second part of the following example phrase: OpmlDirectory update complete. Added 4 feeds in 6 categories.", "1 category.", "%1 categories.", m_nNumberOfCategories),
         StatusBar::Information );
 
 

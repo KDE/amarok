@@ -66,10 +66,10 @@
            </sizepolicy>
           </property>
           <property name="toolTip" >
-           <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+           <string>The time in milliseconds for which to show the OSD. The value must be between 500 ms and 10000 ms.</string>
           </property>
           <property name="whatsThis" >
-           <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+           <string>The time in milliseconds for which to show the OSD. The value must be between 500 ms and 10000 ms.</string>
           </property>
           <property name="buttonSymbols" >
            <enum>QAbstractSpinBox::UpDownArrows</enum>

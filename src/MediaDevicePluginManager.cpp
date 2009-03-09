@@ -281,8 +281,8 @@ MediaDevicePluginManager::slotNewDevice()
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?
-            The::statusBar()->longMessage( i18n("Sorry, you cannot define two devices\n"
-                                                                       "with the same name and mountpoint!") );
+            The::statusBar()->longMessage( i18n("Cannot define two devices\n"
+                                                                       "with the same name and mountpoint.") );
         }
         else
         {
@@ -373,10 +373,10 @@ ManualDeviceAdder::slotButtonClicked( int button )
     }
     else
     {
-        The::statusBar()->longMessage( i18n("Sorry, every device must have a name and\n"
-                                              "you cannot define two devices with the\n"
-                                              "same name. These names must be unique\n"
-                                              "across autodetected devices as well.\n") );
+        The::statusBar()->longMessage( i18n("Every device must have a name, and\n"
+                                              "two devices cannot have the same\n"
+                                              "name. These names must be unique\n"
+                                              "across auto-detected devices as well.\n") );
     }
 }
 
@@ -691,7 +691,7 @@ MediaDeviceVolumeMarkerDialog::slotOk()
                                           "Ensure that you have the correct permissions\n"
                                           "to create that file.",
                                           QString( mountPoint + "/.is_audio_player" ) ),
-                                    i18n( "Well, we tried..." )
+                                    i18n( "Error Creating File" )
                                   );
         }
         else
@@ -705,7 +705,7 @@ MediaDeviceVolumeMarkerDialog::slotOk()
                                           "Ensure that you have the correct permissions\n"
                                           "to remove that file.",
                                           QString( mountPoint + "/.is_audio_player" ) ),
-                                    i18n( "Well, we tried..." )
+                                    i18n( "Error Removing File" )
                                   );
             }
             else

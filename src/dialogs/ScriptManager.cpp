@@ -322,7 +322,7 @@ ScriptManager::slotInstallScript( const QString& path )
     if( m_installSuccess )
     {
         KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>"
-                                           "<p>Please restart Amarok to start the script!</p>" ) );
+                                           "<p>Please restart Amarok to start the script.</p>" ) );
         return true;
     }
     else
@@ -376,10 +376,10 @@ ScriptManager::slotRetrieveScript()
     }
     if ( installed )
         KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>"
-                                            "<p>Please restart Amarok to start the script!</p>" ) );
+                                            "<p>Please restart Amarok to start the script.</p>" ) );
     else if (  deleted )
         KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
-                                            "<p>Please restart Amarok to totally remove the script!</p>" ) );
+                                            "<p>Please restart Amarok to totally remove the script.</p>" ) );
 }
 
 void
@@ -410,7 +410,7 @@ ScriptManager::slotUninstallScript()
 
         m_scripts.remove( name );
         KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
-        "<p>Please restart Amarok to totally remove the script!</p>" ) );
+        "<p>Please restart Amarok to totally remove the script.</p>" ) );
     }
 }
 
@@ -447,7 +447,7 @@ ScriptManager::slotRunScript( QString name, bool silent )
             slotStopScript( name );
 
             if ( !silent )
-                KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script '%1'. Please refer to the log!", name ) );
+                KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script '%1'. Please refer to the log.", name ) );
 
             return false;
         }

@@ -74,7 +74,7 @@ int main( int argc, char *argv[] )
     options.add("+file(s)", ki18n( "Files/Directories to tag" ) );
     options.add("d").add("delete", ki18n( "Delete AFT IDs from the files") );
     options.add("n").add("newid", ki18n( "Generate a new ID even if an up-to-date one exists" ) );
-    options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use!" ) );
+    options.add("q").add("quiet", ki18n( "No prompts -- Indicates you agree to the terms of use." ) );
     options.add("r").add("recurse", ki18n( "Recursively process files and directories" ) );
     options.add("V").add("verbose", ki18n( "More verbose output" ) );
     KCmdLineArgs::addCmdLineOptions( options );

@@ -298,7 +298,7 @@ LastFmService::onAuthenticated( WsReply* reply )
 
                 break;
             } case Ws::AuthenticationFailed:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Sorry, we don't recognise that username, or you typed the password wrongly." ) );
+                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
                 break;
 
             default:

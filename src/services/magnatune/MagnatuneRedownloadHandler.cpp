@@ -57,8 +57,8 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
     if (previousDownloads.isEmpty()) {
 
         //No previously purchased track information found. No more to do here...
-        KMessageBox::information( m_parent, i18n( "No purchases found!" ) ,
-                                  i18n( "No previous purchases have been found. Nothing to redownload..." ) + '\n' );
+        KMessageBox::information( m_parent, i18n( "No purchases found." ) ,
+                                  i18n( "No previous purchases have been found. Nothing to re-download...." ) + '\n' );
         return;
     }
 
@@ -137,7 +137,7 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
     {
 
         KMessageBox::information( m_parent, i18n( "Could not re-download album" ),
-                                  i18n( "There seems to be a problem with the selected redownload info file." ) + '\n' );
+                                  i18n( "There seems to be a problem with the selected re-download info file." ) + '\n' );
 
     }
 

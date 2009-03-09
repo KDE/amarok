@@ -110,8 +110,8 @@
         <default>false</default>
     </entry>
     <entry key="Group Artists" type="Bool">
-        <label>Whether organize files will group artist starting in the same character.</label>
-        <whatsthis>If set, Organize files will group artist starting in the same character.</whatsthis>
+        <label>Whether organize files will group artists whose names start with the same character.</label>
+        <whatsthis>If set, Organize files will group artists whose names start with the same character.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Ignore The" type="Bool">
@@ -120,8 +120,8 @@
         <default>true</default>
     </entry>
     <entry key="Replace Space" type="Bool">
-        <label>Whether organize files will replace spaces in filenames by an underscore.</label>
-        <whatsthis>If set, Organize files will replace spaces in filenames by an underscore.</whatsthis>
+        <label>Whether organize files will replace spaces in filenames with underscores.</label>
+        <whatsthis>If set, Organize files will replace spaces in filenames with underscores.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Cover Icons" type="Bool">
@@ -316,7 +316,7 @@
         <default>#ffff00</default>
     </entry>
     <entry key="Osd Duration" type="Int">
-        <label>How many milliseconds the text should be displayed</label>
+        <label>How many milliseconds the text should be displayed for</label>
         <whatsthis>The time in milliseconds to show the OSD. A value of 0 means never hide. The default value is 5000 ms.</whatsthis>
         <default>5000</default>
         <min>0</min>

@@ -63,7 +63,10 @@ MagnatuneXmlParser::completeJob( )
 {
     DEBUG_BLOCK
     The::statusBar() ->longMessage(
-        i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists", m_nNumberOfTracks, m_nNumberOfAlbums, m_nNumberOfArtists ), StatusBar::Information );
+          i18ncp( "First part of: Magnatune.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "Magnatune.com database update complete. Added 1 track on ", "Magnatune.com database update complete. Added %1 tracks on ", m_nNumberOfTracks)
+        + i18ncp( "Middle part of: Magnatune.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "1 album from ", "%1 albums from ", m_nNumberOfAlbums)
+        + i18ncp( "Last part of: Magnatune.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "1 artist.", "%1 artists.", m_nNumberOfArtists )
+        , StatusBar::Information );
 
     emit doneParsing();
     deleteLater();
