@@ -29,7 +29,6 @@
 #include <iostream>
 #include <limits.h>    //PATH_MAX
 
-#include <QTextDocument> //Qt::escape
 #include <QByteArray>
 #include <QDBusReply>
 #include <QDir>
@@ -69,7 +68,8 @@
 #include <xiphcomment.h>
 
 
-CollectionScanner::CollectionScanner( const QStringList& folders,
+CollectionScanner::CollectionScanner( int &argc, char **argv,
+                                      const QStringList& folders,
                                       const QString& amarokPid,
                                       const QString& collectionId,
                                       bool recursive,
@@ -78,7 +78,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool restart,
                                       bool batch,
                                       const QString& rpath )
-        : KApplication( /*GUIenabled*/ false )
+        : QCoreApplication( argc, argv )
         , m_batch( batch )
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
@@ -91,7 +91,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_rpath( rpath )
         , m_amarokCollectionInterface( 0 )
 {
-    kapp->setObjectName( "amarokcollectionscanner" );
+    setObjectName( "amarokcollectionscanner" );
     if( !restart )
         QFile::remove( m_logfile );
 
@@ -843,7 +843,7 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
         // There are at least some characters that Qt cannot categorize which make the resulting
         // xml document ill-formed and prevent the parser from processing the remaining document.
         // Because of this we skip attributes containing characters not belonging to any category.
-        const QString data = Qt::escape( it.value() );
+        const QString data = escape( it.value() );
         const unsigned len = data.length();
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )
@@ -866,6 +866,32 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
     element.save( stream, 0 );
 
     std::cout << text.toUtf8().data() << std::endl;
+}
+
+// taken verbatim from Qt's sources, since it's stupidly in the QtGui module
+// the following function is subject to the following constraints:
+
+// Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
+// Contact: Qt Software Information (qt-info@nokia.com)
+
+// Code is being used under terms of the LGPL version 2.1
+
+QString
+CollectionScanner::escape( const QString& plain )
+{
+    QString rich;
+    rich.reserve(int(plain.length() * 1.1));
+    for (int i = 0; i < plain.length(); ++i) {
+        if (plain.at(i) == QLatin1Char('<'))
+            rich += QLatin1String("&lt;");
+        else if (plain.at(i) == QLatin1Char('>'))
+            rich += QLatin1String("&gt;");
+        else if (plain.at(i) == QLatin1Char('&'))
+            rich += QLatin1String("&amp;");
+        else
+            rich += plain.at(i);
+    }
+    return rich;
 }
 
 #include "CollectionScanner.moc"

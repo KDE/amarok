@@ -21,10 +21,11 @@
 #include "metadata/tplugins.h"
 
 
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <klocale.h>
-#include <kapplication.h>
+#include <KAboutData>
+#include <KCmdLineArgs>
+#include <KLocale>
+
+#include <QCoreApplication>
 
 int main( int argc, char *argv[] )
 {
@@ -71,7 +72,7 @@ int main( int argc, char *argv[] )
     const QString collectionId  = args->getOption( "collectionid" );
     const bool recursive        = ( ( batch && incremental ) ? false : args->isSet( "recursive" ) );
 
-    CollectionScanner scanner( folders, pid, collectionId, recursive, incremental, importplaylists, restart, batch, rpath );
+    CollectionScanner scanner( argc, argv, folders, pid, collectionId, recursive, incremental, importplaylists, restart, batch, rpath );
 
     registerTaglibPlugins();
 

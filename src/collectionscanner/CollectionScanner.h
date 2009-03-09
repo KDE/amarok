@@ -27,12 +27,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QDBusInterface>
 #include <QHash>
 #include <QStringList>
 
-#include <KApplication>
 #include <KStandardDirs>
 
 //Taglib includes..
@@ -46,12 +46,13 @@ typedef QHash<QString, QString> AttributeHash;
  * @short Scans directories and builds the Collection
  */
 
-class CollectionScanner : public KApplication
+class CollectionScanner : public QCoreApplication
 {
     Q_OBJECT
 
 public:
-    CollectionScanner( const QStringList& folders,
+    CollectionScanner( int &argc, char **argv,
+                       const QStringList& folders,
                        const QString &amarokPid,
                        const QString &collectionId,
                        bool recursive,
@@ -133,6 +134,8 @@ private:
     {
         return fileName.section( '/', 0, -2 );
     }
+
+    QString escape( const QString &plain );
 
     const bool    m_batch;
     const bool    m_importPlaylists;

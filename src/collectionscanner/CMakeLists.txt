@@ -48,8 +48,8 @@ kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS
 
 target_link_libraries(amarokcollectionscanner 
                       amarok_taglib
+                      ${KDE4_KDECORE_LIBS}
                       ${TAGLIB_LIBRARIES}
-                      ${KDE4_KDEUI_LIBS}
                       ${QT_QTXML_LIBRARY})
 
 if(APPLE)
