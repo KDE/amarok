@@ -98,6 +98,7 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * The Files browser now remembers its sorting order. (BR 186444)
     * When editing info for multiple tracks, do not write to the files if only
       editing info that is stored in the db and not in the actual files (such
       as ratings). (BR 184836)
