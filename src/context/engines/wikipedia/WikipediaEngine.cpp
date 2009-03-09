@@ -283,10 +283,6 @@ WikipediaEngine::wikiResult( KJob* job )
     m_wiki.remove( QRegExp( "<textarea[^>]*>" ) );
     m_wiki.remove( "</textarea>" );
 
-    //first we convert all the links with protocol to external, as they should all be External Links.
-    m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
-    m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + '#' );
-
     // Make sure that the relative links inside the wikipedia HTML is forcibly made into absolute links (yes, this is deep linking, but we're showing wikipedia data as wikipedia data, not stealing any credz here)
     m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" + wikiSiteUrl() );
     m_wiki.replace( QRegExp( "src= *\"/" ), "src=\"" + wikiSiteUrl() );
