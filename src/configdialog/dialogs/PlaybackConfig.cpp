@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2009 by Mark Kretschmann <kretschmann@kde.org>     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,12 +19,18 @@
 
 #include "PlaybackConfig.h"
 
+#include "Debug.h"
+
+#include <KCMultiDialog>
+
 
 PlaybackConfig::PlaybackConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this );
     kcfg_FadeoutOnExit->setHidden( true );
+
+    connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
 }
 
 PlaybackConfig::~PlaybackConfig()
@@ -49,13 +55,25 @@ PlaybackConfig::isDefault()
 
 void
 PlaybackConfig::updateSettings()
-{
-}
+{}
 
 
 ///////////////////////////////////////////////////////////////
 // PRIVATE METHODS 
 ///////////////////////////////////////////////////////////////
+
+void
+PlaybackConfig::configurePhonon() //SLOT
+{
+    DEBUG_BLOCK
+
+    KCMultiDialog* KCM = new KCMultiDialog();
+    KCM->setWindowTitle( i18n( "Configure Phonon - Amarok" ) );
+    KCM->addModule( "kcm_phonon" );
+    KCM->exec();
+
+    delete KCM;
+}
 
 
 #include "PlaybackConfig.moc"

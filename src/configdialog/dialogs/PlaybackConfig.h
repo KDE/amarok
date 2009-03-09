@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2007 by Mark Kretschmann <markey@web.de>           *
+ *   Copyright (C) 2004-2009 by Mark Kretschmann <kretschmann@kde.org>     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -35,6 +35,9 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
         virtual bool hasChanged();
         virtual bool isDefault();
         virtual void updateSettings();
+
+    private Q_SLOTS:
+        void configurePhonon();
 };
 
 
