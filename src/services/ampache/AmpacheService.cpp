@@ -164,8 +164,8 @@ AmpacheService::authenticate(KJob * job)
         debug() << "Version Newer, checking for SHA256";
         if(!QCA::isSupported("sha256")) {
             KMessageBox::error ( this, i18n( "SHA256 Required, and not found" ), i18n( "Authentication Error!" ) );
-	    return; 
-	}
+            return; 
+        }
     }
     
     //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
