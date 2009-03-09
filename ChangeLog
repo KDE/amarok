@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Phonon multimedia system can be configured directly from Amarok.
     * Cover art can now be disabled in the collection browser.
     * Scrobble tracks from streams that have title and artist metadata
     * Add support for showing a stream with multiple alternative servers as a
