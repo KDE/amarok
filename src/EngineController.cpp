@@ -108,7 +108,7 @@ EngineController::initializePhonon()
     // or with it in the pipeline. track playback stops every ~3-4 tracks, and on tracks >5min it
     // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
 #ifndef Q_WS_MAC
-        m_path.insertEffect( m_preamp );
+    m_path.insertEffect( m_preamp );
 #endif
 
     m_media->setTickInterval( 100 );
