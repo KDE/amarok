@@ -13,6 +13,7 @@
 
 #include "FastForwardImporterConfig.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 
 #include <QComboBox>
@@ -77,14 +78,31 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     databaseLayout->addWidget( m_databaseLocationLabel, 5, 0 );
     databaseLayout->addWidget( m_databaseLocationInput, 5, 1 );
 
+    gridHolder->setLayout( databaseLayout );
+
     connect( m_connectionCombo, SIGNAL( currentIndexChanged(int) ), SLOT( connectionChanged(int) ) );
     connectionChanged( m_connectionCombo->currentIndex() ); // Make sure we sync the UI as appropriate
 
     m_importArtworkCheck = new QCheckBox( i18n("Import downloaded artwork"), this );
     m_importArtworkCheck->setChecked( true );
-
-    gridHolder->setLayout( databaseLayout );
     
+    const QString oldCoverPath = Amarok::saveLocation( "albumcovers/large/" ).replace("kde4", "kde");
+
+    QWidget *artworkDirHolder = new QWidget( this );
+
+    QGridLayout *artworkDirLayout = new QGridLayout( artworkDirHolder );
+
+    QLabel *artworkDirLabel = new QLabel( i18n("Artwork directory"), artworkDirHolder );
+    m_importArtworkDirInput = new QLineEdit( artworkDirHolder );
+    m_importArtworkDirInput->setText( oldCoverPath );
+
+    artworkDirLayout->addWidget( artworkDirLabel, 0, 0 );
+    artworkDirLayout->addWidget( m_importArtworkDirInput, 0, 1 );
+
+    artworkDirHolder->setLayout( artworkDirLayout );
+
+    connect( m_importArtworkCheck, SIGNAL( stateChanged(int) ), SLOT( importArtworkChanged(int) ) );
+
     QWidget *spacer = new QWidget( this );
     spacer->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 }
@@ -147,6 +165,12 @@ FastForwardImporterConfig::connectionChanged( int index )
             m_databaseLocationInput->hide();
             break;
     }
+}
+
+void
+FastForwardImporterConfig::importArtworkChanged( int state )
+{
+    m_importArtworkDirInput->setEnabled( state == Qt::Checked );
 }
 
 #include "FastForwardImporterConfig.moc"
