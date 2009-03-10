@@ -21,7 +21,6 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
-#include "charset-detector/include/chardet.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
@@ -34,6 +33,7 @@
 #include <QString>
 #include <QTextCodec>
 
+#include <KEncodingProber>
 #include <KLocale>
 
 // Taglib Includes
@@ -210,17 +210,10 @@ void Track::Private::readMetaData()
             TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
             const char* buf = metaData.toCString();
             size_t len = strlen( buf );
-            int res = 0;
-            chardet_t det = NULL;
-            char encoding[CHARDET_MAX_ENCODING_NAME];
-            chardet_create( &det );
-            res = chardet_handle_data( det, buf, len );
-            chardet_data_end( det );
-            res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
-            chardet_destroy( det );
-
-            QString track_encoding = encoding;
-            if ( res == CHARDET_RESULT_OK )
+            KEncodingProber prober;
+            KEncodingProber::ProberState result = prober.feed( buf, len );
+            QString track_encoding( prober.encodingName() );
+            if ( result != KEncodingProber::NotMe )
             {
                 //http://doc.trolltech.com/4.4/qtextcodec.html
                 //http://www.mozilla.org/projects/intl/chardet.html

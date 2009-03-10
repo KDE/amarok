@@ -36,8 +36,6 @@ set(TAGLIB_MIN_VERSION "1.5")
 find_package(Taglib)
 macro_log_feature( TAGLIB_FOUND "taglib" "Read and write tags in audio files" "http://www.freshmeat.net/projects/taglib" TRUE "1.5.0" "")
 
-#find_package(CharDet REQUIRED)
-#macro_log_feature( CHARDET_FOUND "chardet" "Character set detector" "" TRUE "" "" )
 
 find_package(Strigi REQUIRED)
 macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
