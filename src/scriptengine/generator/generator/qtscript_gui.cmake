@@ -1,5 +1,4 @@
 set( Generated_QtGUI_cnv0_SRCS
-    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/main.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QAbstractButton.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QAbstractGraphicsShapeItem.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscript_QAbstractItemDelegate.cpp
@@ -564,6 +563,9 @@ set( Generated_QtGUI_cnv2_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QWizardPage.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QWorkspace.cpp )
 
+set( Generated_QtGUI_cnvmain_SRCS
+    ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/main.cpp
+)
 #This needs to be added to qt 4.5 builds:
 set( Generated_QtGUI_45
     ${CMAKE_CURRENT_BINARY_DIR}/generated_cpp/com_trolltech_qt_gui/qtscriptshell_QColorDialog.cpp
@@ -574,17 +576,18 @@ if(QTVERSION VERSION_GREATER "4.4.99")
     set( Generated_QtGUI_cnv2_SRCS ${Generated_QtGUI_cnv2_SRCS} ${Generated_QtGUI_45} )
 endif(QTVERSION VERSION_GREATER "4.4.99")
 
+set_source_files_properties( ${Generated_QtGUI_cnvmain_SRCS} PROPERTIES GENERATED true )
 set_source_files_properties( ${Generated_QtGUI_cnv0_SRCS} PROPERTIES GENERATED true )
 set_source_files_properties( ${Generated_QtGUI_cnv1_SRCS} PROPERTIES GENERATED true )
 set_source_files_properties( ${Generated_QtGUI_cnv2_SRCS} PROPERTIES GENERATED true )
 if( WIN32 )
     add_library( helperLibrary0 STATIC ${Generated_QtGUI_cnv0_SRCS} )
     add_library( helperLibrary1 STATIC ${Generated_QtGUI_cnv1_SRCS} )
-    add_library( qtscript_gui MODULE ${Generated_QtGUI_cnv2_SRCS} )
+    add_library( qtscript_gui MODULE ${Generated_QtGUI_cnvmain_SRCS} ${Generated_QtGUI_cnv2_SRCS} )
     add_dependencies( qtscript_gui generator )
     target_link_libraries( qtscript_gui helperLibrary0 helperLibrary1 )
 else( WIN32 )
-    add_library( qtscript_gui MODULE  ${Generated_QtGUI_cnv0_SRCS} ${Generated_QtGUI_cnv1_SRCS} ${Generated_QtGUI_cnv2_SRCS} )
+    add_library( qtscript_gui MODULE ${Generated_QtGUI_cnvmain_SRCS} ${Generated_QtGUI_cnv0_SRCS} ${Generated_QtGUI_cnv1_SRCS} ${Generated_QtGUI_cnv2_SRCS} )
     add_dependencies( qtscript_gui generator )
 endif( WIN32 )
 
