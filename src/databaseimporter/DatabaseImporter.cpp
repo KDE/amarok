@@ -33,7 +33,8 @@ DatabaseImporter::DatabaseImporter( QObject *parent )
     , m_importing( false )
     , m_count( 0 )
 {
-    connect( this, SIGNAL( importFinished() ), SLOT( importingFinished() ) );
+    connect( this, SIGNAL( importSucceeded() ), SLOT( importingFinished() ) );
+    connect( this, SIGNAL( importFailed() ), SLOT( importingFinished() ) );
     connect( this, SIGNAL( trackAdded( Meta::TrackPtr ) ), SLOT( trackImported( Meta::TrackPtr ) ) );
 }
 

@@ -62,7 +62,13 @@ FastForwardImporter::import()
     m_worker->setDriver( m_config->connectionType() );
     m_worker->setDatabaseLocation( m_config->databaseLocation() );
     m_worker->setDatabase( m_config->databaseName() );
-    m_worker->setHostname( m_config->databaseHost() );
+
+    // Work around strange QtSql DNS resolution bug. See bug #174269
+    QString host = m_config->databaseHost();
+    if( host == "localhost" && m_config->connectionType() == MySQL )
+        host = "127.0.0.1";
+
+    m_worker->setHostname( host );
     m_worker->setUsername( m_config->databaseUser() );
     m_worker->setPassword( m_config->databasePass() );
     m_worker->setImportArtwork( m_config->importArtwork() );

@@ -63,7 +63,7 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
 
     databaseLayout->addWidget( connectionLabel, 0, 0 );
     databaseLayout->addWidget( m_connectionCombo, 0, 1 );
-        
+
     databaseLayout->addWidget( m_usernameLabel, 1, 0 );
     databaseLayout->addWidget( m_usernameInput, 1, 1 );
     databaseLayout->addWidget( m_passwordLabel, 2, 0 );
