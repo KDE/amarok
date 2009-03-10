@@ -173,6 +173,7 @@ FastForwardWorker::run()
 
     if( tracksForInsert.size() > 0 )
     {
+        emit showMessage( i18n( "Synchronizing Amarok database..." ) );
         CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         location->insertTracks( tracksForInsert );
         location->insertStatistics( tracksForInsert );
