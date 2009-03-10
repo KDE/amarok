@@ -72,7 +72,7 @@ PlaybackConfig::configurePhonon() //SLOT
     KCM->addModule( "kcm_phonon" );
     KCM->exec();
 
-    delete KCM;
+    KCM->deleteLater();
 }
 
 
