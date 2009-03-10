@@ -100,16 +100,21 @@ EngineController::initializePhonon()
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
-    m_preamp = new Phonon::VolumeFaderEffect( this );
 
     m_path = Phonon::createPath( m_media, m_audio );
     
-    // the phonon-coreaudio  backend has major issues with either the VolumeFaderEffect itself
-    // or with it in the pipeline. track playback stops every ~3-4 tracks, and on tracks >5min it
-    // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
-#ifndef Q_WS_MAC
-    m_path.insertEffect( m_preamp );
+    // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
+    // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
+#ifdef Q_WS_MAC
+    AmarokConfig::setReplayGainMode( AmarokConfig::EnumReplayGainMode::Off );
 #endif
+
+    // only create pre-amp if we have replaygain on, preamp can cause phonon issues
+    if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
+    {   
+        m_preamp = new Phonon::VolumeFaderEffect( this );
+        m_path.insertEffect( m_preamp );
+    }
 
     m_media->setTickInterval( 100 );
     debug() << "Tick Interval (actual): " << m_media->tickInterval();
@@ -670,6 +675,12 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 
     if ( m_currentTrack && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
+        if( !m_preamp ) // replaygain was just turned on, and amarok was started with it off
+        {
+            m_preamp = new Phonon::VolumeFaderEffect( this );
+            m_path.insertEffect( m_preamp );
+        }
+        
         Meta::Track::ReplayGainMode mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
                                          ? Meta::Track::TrackReplayGain
                                          : Meta::Track::AlbumReplayGain;
@@ -687,7 +698,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         // a little confused about minus signs
         m_preamp->setVolume( exp( gain * log10over20 ) );
     }
-    else
+    else if( m_preamp )
         m_preamp->setVolumeDecibel( 0.0 );
 
     // state never changes if tracks are queued, but we need this to update the caption
