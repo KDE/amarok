@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2003-2006 Mark Kretschmann <kretschmann@kde.org>        *
+ *   Copyright (C) 2003-2008 Mark Kretschmann <kretschmann@kde.org>        *
+ *             (C) 2008-2009 Jeff Mitchell <mitchell@kde.org>              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

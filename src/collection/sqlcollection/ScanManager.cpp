@@ -3,6 +3,7 @@
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
  *  Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>
+ *  Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
