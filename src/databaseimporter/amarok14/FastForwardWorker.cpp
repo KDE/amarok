@@ -52,8 +52,19 @@ FastForwardWorker::databaseConnection()
     const bool isSqlite = m_driver == FastForwardImporter::SQLite;
 
     QString driver = driverName();
-    if (driver.isEmpty())
+    if( driver.isEmpty() )
+    {
+        emit importError( i18n("No database driver was selected") );
+        m_failed = true;
         return QSqlDatabase();
+    }
+
+    if( isSqlite && !QFile::exists( m_databaseLocation ) )
+    {
+        emit importError( i18n("Database could not be found at: %1", m_databaseLocation ) );
+        m_failed = true;
+        return QSqlDatabase();
+    }
 
     QSqlDatabase connection = QSqlDatabase::addDatabase( driver );
     connection.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
