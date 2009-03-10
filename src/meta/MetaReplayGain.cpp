@@ -40,15 +40,10 @@
 #include <trueaudiofile.h>
 #include <vorbisfile.h>
 #include <wavpackfile.h>
-#ifdef HAVE_MP4V2
-#include "metadata/mp4/mp4file.h"
-#include "metadata/mp4/mp4tag.h"
-#else
-#include "metadata/m4a/mp4file.h"
-#include "metadata/m4a/mp4itunestag.h"
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <asffile.h>
+#include <mp4file.h>
 #endif
-#include "metadata/asf/asffile.h"
-#include "metadata/asf/asftag.h"
 
 // converts a peak value from the normal digital scale form to the more useful decibel form
 // decibels are relative to the /adjusted/ waveform
@@ -236,6 +231,7 @@ static Meta::ReplayGainTagMap readXiphTags( TagLib::Ogg::XiphComment *tag )
     return outputMap;
 }
 
+#ifdef TAGLIB_EXTRAS_FOUND
 static Meta::ReplayGainTagMap readASFTags( TagLib::ASF::Tag *tag )
 {
     const TagLib::ASF::AttributeListMap &tagMap = tag->attributeListMap();
@@ -258,7 +254,6 @@ static Meta::ReplayGainTagMap readASFTags( TagLib::ASF::Tag *tag )
     return outputMap;
 }
 
-#ifdef HAVE_MP4V2
 static Meta::ReplayGainTagMap readMP4Tags( TagLib::MP4::Tag *tag )
 {
     Meta::ReplayGainTagMap outputMap;
@@ -277,7 +272,7 @@ static Meta::ReplayGainTagMap readMP4Tags( TagLib::MP4::Tag *tag )
 
     return outputMap;
 }
-#endif // HAVE_MP4V2
+#endif 
 
 Meta::ReplayGainTagMap
 Meta::readReplayGainTags( TagLib::FileRef fileref )
@@ -312,11 +307,6 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
         if ( file->tag() )
             map = readXiphTags( file->tag() );
     }
-    else if ( TagLib::ASF::File *file = dynamic_cast<TagLib::ASF::File *>( fileref.file() ) )
-    {
-        if ( file->tag() )
-            map = readASFTags( file->tag() );
-    }
     else if ( TagLib::WavPack::File *file = dynamic_cast<TagLib::WavPack::File *>( fileref.file() ) )
     {
         if ( file->APETag() )
@@ -341,13 +331,18 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
         if ( file->APETag() )
             map = readAPETags( file->APETag() );
     }
-#ifdef HAVE_MP4V2
+#ifdef TAGLIB_EXTRAS_FOUND
+    else if ( TagLib::ASF::File *file = dynamic_cast<TagLib::ASF::File *>( fileref.file() ) )
+    {
+        if ( file->tag() )
+            map = readASFTags( file->tag() );
+    }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
         if ( file->tag() )
             map = readMP4Tags( file->getMP4Tag() );
     }
-#endif // HAVE_MP4V2
+#endif
     return map;
 }
 

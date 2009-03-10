@@ -39,16 +39,11 @@
 #include <oggfile.h>
 #include <oggflacfile.h>
 #include <vorbisfile.h>
-#ifdef HAVE_MP4V2
-#include "metadata/mp4/mp4file.h"
-#include "metadata/mp4/mp4tag.h"
-#else
-#include "metadata/m4a/mp4file.h"
-#include "metadata/m4a/mp4itunestag.h"
-#endif
 #include <textidentificationframe.h>
 #include <xiphcomment.h>
-
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <mp4file.h>
+#endif
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
@@ -277,16 +272,6 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             }
         }
     }
-    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
-    {
-        if( changes.contains( Meta::Field::COMPOSER ) )
-        {
-            shouldSave = true;
-            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
-            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
-            mp4tag->setComposer( composer );
-        }
-    }
     else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
     {
         if( changes.contains( Meta::Field::COMPOSER ) )
@@ -332,6 +317,18 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             file->xiphComment()->addField("DISCNUMBER", disc);
         }
     }
+#ifdef TAGLIB_EXTRAS_FOUND
+    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+    {
+        if( changes.contains( Meta::Field::COMPOSER ) )
+        {
+            shouldSave = true;
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
+            mp4tag->setComposer( composer );
+        }
+    }
+#endif
     if( shouldSave )
         fileref.save();
 }

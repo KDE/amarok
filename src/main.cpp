@@ -17,7 +17,6 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "metadata/tplugins.h"
 
 #include <KAboutData>
 #include <KCmdLineArgs>

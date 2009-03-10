@@ -51,8 +51,6 @@
 #include <QPair>
 #include <QTimer>
 
-#include "metadata/tfile_helper.h" //TagLib::File::isWritable
-
 TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     : KDialog( parent )
     , m_currentCover()

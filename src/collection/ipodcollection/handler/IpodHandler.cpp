@@ -35,7 +35,6 @@ extern "C" {
 #endif
 
 #include "File.h" // for KIO file handling
-#include "taglib_audiblefile.h"
 
 #include <KIO/Job>
 #include <KIO/CopyJob>

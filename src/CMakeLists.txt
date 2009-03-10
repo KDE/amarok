@@ -21,7 +21,6 @@ add_subdirectory( collectionscanner )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
-add_subdirectory( metadata )
 add_subdirectory( services )
 add_subdirectory( scripts )
 add_subdirectory( strigi )
@@ -554,7 +553,6 @@ target_link_libraries(amaroklib
     ${QT_QTWEBKIT_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
-    amarok_taglib
     amarokpud
     mediadevicelib
 )

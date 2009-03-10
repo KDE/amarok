@@ -29,7 +29,6 @@ email                : markey@web.de
 #include "MainWindow.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
-#include "metadata/tplugins.h"
 #include "MountPointManager.h"
 #include "Osd.h"
 #include "PlayerDBusHandler.h"
@@ -65,6 +64,14 @@ email                : markey@web.de
 #include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
+
+#ifdef TAGLIB_EXTRAS_FOUND
+//TODO: Fix this list once the lib is separated out fully and can be tested against
+//#include <fileref.h>
+//#include <asffiletyperesolver.h>
+//#include <mp4filetyperesolver.h>
+//etc
+#endif
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
@@ -109,9 +116,15 @@ App::App()
         m_splash->show();
     }
 
+#ifdef TAGLIB_EXTRAS_FOUND
     PERF_LOG( "Registering taglib plugins" )
-    registerTaglibPlugins();
+    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
     PERF_LOG( "Done Registering taglib plugins" )
+#endif
 
     qRegisterMetaType<Meta::DataPtr>();
     qRegisterMetaType<Meta::DataList>();

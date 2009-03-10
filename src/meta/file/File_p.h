@@ -50,12 +50,8 @@
 #include <tstring.h>
 #include <vorbisfile.h>
 
-#ifdef HAVE_MP4V2
-#include "metadata/mp4/mp4file.h"
-#include "metadata/mp4/mp4tag.h"
-#else
-#include "metadata/m4a/mp4file.h"
-#include "metadata/m4a/mp4itunestag.h"
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <mp4file.h>
 #endif
 
 namespace MetaFile
@@ -265,7 +261,7 @@ void Track::Private::readMetaData()
                 disc = strip( flm[ "DISCNUMBER" ].front() );
         }
     }
-
+#ifdef TAGLIB_EXTRAS_FOUND
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileRef.file() ) )
     {
         TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
@@ -275,7 +271,7 @@ void Track::Private::readMetaData()
             disc = QString::number( mp4tag->disk() );
         }
     }
-
+#endif
     if( !disc.isEmpty() )
     {
         int i = disc.indexOf( '/' );

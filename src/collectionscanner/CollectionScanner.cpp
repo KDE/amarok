@@ -56,12 +56,9 @@
 #include <tstring.h>
 #include <vorbisfile.h>
 
-#ifdef HAVE_MP4V2
-#include "metadata/mp4/mp4file.h"
-#include "metadata/mp4/mp4tag.h"
-#else
-#include "metadata/m4a/mp4file.h"
-#include "metadata/m4a/mp4itunestag.h"
+#ifdef TAGLIB_EXTRAS_FOUND
+#include "mp4file.h"
+#include "mp4tag.h"
 #endif
 
 #include <textidentificationframe.h>
@@ -749,6 +746,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //             if ( images && file->ID3v2Tag() )
 //                 loadImagesFromTag( *file->ID3v2Tag(), *images );
         }
+#ifdef TAGLIB_EXTRAS_FOUND
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
             fileType = mp4;
@@ -764,6 +762,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
             }
         }
+#endif
 
         if ( !disc.isEmpty() )
         {

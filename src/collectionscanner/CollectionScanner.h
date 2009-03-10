@@ -22,8 +22,6 @@
 #ifndef COLLECTIONSCANNER_H
 #define COLLECTIONSCANNER_H
 
-#include "metadata/tfile_helper.h"
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

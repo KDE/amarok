@@ -19,8 +19,6 @@
  ***************************************************************************/
 
 #include "CollectionScanner.h"
-#include "metadata/tplugins.h"
-
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -75,7 +73,10 @@ int main( int argc, char *argv[] )
 
     CollectionScanner scanner( argc, argv, folders, pid, collectionId, recursive, incremental, importplaylists, restart, batch, rpath );
 
+#ifdef TAGLIB_EXTRAS_FOUND
+//TODO: Put appropriate headers above
     registerTaglibPlugins();
+#endif
 
     return scanner.exec();
 }
