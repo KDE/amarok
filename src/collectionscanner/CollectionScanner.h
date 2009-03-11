@@ -32,8 +32,6 @@
 #include <QHash>
 #include <QStringList>
 
-#include <KStandardDirs>
-
 //Taglib includes..
 #include <audioproperties.h>
 #include <fileref.h>
@@ -59,6 +57,7 @@ public:
                        bool importPlaylists,
                        bool restart,
                        bool batch,
+                       const QString &saveLocation,
                        const QString &rpath );
 
     ~CollectionScanner();
@@ -75,8 +74,6 @@ private:
         flac,
         mp4
     };
-
-    inline QString saveLocation() const { return KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true ); }
 
     bool readBatchIncrementalFile();
 
@@ -143,6 +140,7 @@ private:
     const bool    m_recursively;
     const bool    m_incremental;
     const bool    m_restart;
+    const QString m_saveLocation;
     const QString m_logfile;
     const QString m_rpath;
     QStringList   m_scannedFolders;

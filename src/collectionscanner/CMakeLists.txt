@@ -1,10 +1,10 @@
 
 include_directories( ../
-                     ../meta
                      charset-detector/include
                      charset-detector/src
                      charset-detector/src/tables
-                    ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
+                     qgetopts
+                     ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 add_definitions(${TAGLIB_CFLAGS})
 
@@ -40,11 +40,25 @@ set( libchardet_SRCS
     charset-detector/src/nsUTF8Prober.cpp
 )
 
+################################################
+
+set( qgetopts_SRCS
+    qgetopts/qoption.cpp
+    qgetopts/qoptions.cpp
+    )
+
+QT4_AUTOMOC(
+    qgetopts/qoption.cpp
+    qgetopts/qoptions.cpp
+    )
+
 ########### next target ###############
 
-set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp ../meta/MetaReplayGain.cpp)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
-kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
+set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp MetaReplayGain.cpp)
+
+add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${qgetopts_SRCS})
 
 target_link_libraries(amarokcollectionscanner 
                       ${KDE4_KDECORE_LIBS}

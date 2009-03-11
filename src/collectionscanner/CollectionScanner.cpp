@@ -24,7 +24,7 @@
 #include "CollectionScanner.h"
 
 #include "charset-detector/include/chardet.h"
-#include "../meta/MetaReplayGain.h"
+#include "MetaReplayGain.h"
 
 #include <cerrno>
 #include <iostream>
@@ -75,6 +75,7 @@ CollectionScanner::CollectionScanner( int &argc, char **argv,
                                       bool importPlaylists,
                                       bool restart,
                                       bool batch,
+                                      const QString& saveLocation,
                                       const QString& rpath )
         : QCoreApplication( argc, argv )
         , m_batch( batch )
@@ -84,8 +85,9 @@ CollectionScanner::CollectionScanner( int &argc, char **argv,
         , m_recursively( recursive )
         , m_incremental( incremental )
         , m_restart( restart )
+        , m_saveLocation( saveLocation )
         , m_logfile( batch ? ( incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
-                           : saveLocation() + "collection_scan.log" )
+                           : m_saveLocation + "collection_scan.log" )
         , m_rpath( rpath )
         , m_amarokCollectionInterface( 0 )
 {
@@ -181,7 +183,7 @@ CollectionScanner::doJob() //SLOT
 
         QFile folderFile;
         if( !m_batch )
-            folderFile.setFileName( saveLocation()  + "collection_scan.files"   );
+            folderFile.setFileName( m_saveLocation  + "collection_scan.files"   );
         else if( m_incremental )
             folderFile.setFileName( "amarokcollectionscanner_batchincrementalscan.files" );
         else
@@ -218,7 +220,7 @@ CollectionScanner::doJob() //SLOT
 
         QFile folderFile;
         if( !m_batch )
-            folderFile.setFileName( saveLocation() + "collection_scan.files" );
+            folderFile.setFileName( m_saveLocation + "collection_scan.files" );
         else if( m_incremental )
             folderFile.setFileName( "amarokcollectionscanner_batchincrementalscan.files" );
         else

@@ -52,6 +52,7 @@ int main( int argc, char *argv[] )
     options.add("batch", ki18n( "Run the scanner in batch mode (currently full scan only)" ));
     options.add("rpath <argument>", ki18n( "In batch mode, specifies the path to prepend to entries (default is current directory)" ));
     options.add("pid <argument>", ki18n( "PID of Amarok instance" ));
+    options.add("savelocation", ki18n( "Location to store temporary files; not used in batch mode" ));
     options.add("collectionid <argument>", ki18n( "The SqlCollection instance to connect to. Must be set for incremental scans" ));
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
 
@@ -69,9 +70,10 @@ int main( int argc, char *argv[] )
     const QString rpath         = args->getOption( "rpath" );
     const QString pid           = args->getOption( "pid" );
     const QString collectionId  = args->getOption( "collectionid" );
+    const QString saveLocation  = args->getOption( "savelocation" );
     const bool recursive        = ( ( batch && incremental ) ? false : args->isSet( "recursive" ) );
 
-    CollectionScanner scanner( argc, argv, folders, pid, collectionId, recursive, incremental, importplaylists, restart, batch, rpath );
+    CollectionScanner scanner( argc, argv, folders, pid, collectionId, recursive, incremental, importplaylists, restart, batch, rpath, saveLocation );
 
 #ifdef TAGLIB_EXTRAS_FOUND
 //TODO: Put appropriate headers above
