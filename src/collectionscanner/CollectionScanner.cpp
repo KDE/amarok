@@ -27,6 +27,7 @@
 #include "MetaReplayGain.h"
 
 #include <cerrno>
+#include <cstdlib>
 #include <iostream>
 #include <limits.h>    //PATH_MAX
 
@@ -1034,7 +1035,7 @@ CollectionScanner::displayHelp()
     qDebug() << tr( "-s, --restart         : Restart the scanner in its last position, after a crash" );
     qDebug() << tr( "-b, --batch           : Run in batch mode" );
     qDebug() << tr( "--rpath <path>        : In full-scan batch mode, specifies the path to prepend to entries (default is the current directory" );
-    quit();
+    ::exit(0);
 }
 
 #include "CollectionScanner.moc"
