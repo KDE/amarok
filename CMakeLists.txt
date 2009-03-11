@@ -6,7 +6,7 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 option(WITH_UTILITIES "Enable building of utilities" ON)
-option(WITH_APP "Enable building of main Amarok application" ON)
+option(WITH_PLAYER "Enable building of main Amarok application" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -20,7 +20,7 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
-if( WITH_APP )
+if( WITH_PLAYER )
 #We depend on kde4.2 now.. I believe this is the easiest way to do it.
     set(KDE_MIN_VERSION "4.2.0")
     find_package( KDE4 REQUIRED )
@@ -126,13 +126,13 @@ if( WITH_APP )
 
     macro_display_feature_log()
 
-else( WITH_APP )
+else( WITH_PLAYER )
 
     find_package( Qt4 REQUIRED )
     add_definitions(${QT_DEFINITIONS})
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${TAGLIB_INCLUDES})
 
-endif( WITH_APP )
+endif( WITH_PLAYER )
 
 if( WITH_UTILITIES )
     set(EXEC_INSTALL_PREFIX  ${CMAKE_INSTALL_PREFIX}       CACHE PATH  "Base directory for executables and libraries" FORCE)
