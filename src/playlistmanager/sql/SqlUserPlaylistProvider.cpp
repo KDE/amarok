@@ -94,7 +94,7 @@ SqlUserPlaylistProvider::slotRename()
     if( playlist.isNull() )
         return;
     //TODO: inline rename
-    const QString newName = KInputDialog::getText( i18n("New playlist name"),
+    const QString newName = KInputDialog::getText( i18n("Change playlist"),
                 i18n("Enter new name for playlist:"), playlist->name() );
     playlist->setName( newName.trimmed() );
 }
@@ -128,9 +128,11 @@ bool
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    //TODO: ask for name and folder to save in
     debug() << "saving " << tracks.count() << " tracks to db";
-    Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( "new playlist", tracks,
+    //TODO: inline rename
+    const QString name = KInputDialog::getText( i18n("Save playlist"),
+                i18n("Enter name for the new playlist:"), "new playlist" );
+    Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name.trimmed(), tracks,
             Meta::SqlPlaylistGroupPtr() ) );
     reloadFromDb();
     emit updated();

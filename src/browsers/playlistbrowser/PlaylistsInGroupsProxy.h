@@ -53,17 +53,19 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
     signals:
         void rowsInserted( const QModelIndex&, int, int );
         void rowsRemoved( const QModelIndex&, int, int );
+        void layoutAboutToBeChanged();
+        void layoutChanged();
 
     private slots:
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
         void modelRowsInserted( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
+        void buildTree();
 
         void slotDeleteGroup();
         void slotRenameGroup();
 
     private:
-        void buildTree();
         bool isGroup( const QModelIndex &index ) const;
         QModelIndexList mapToSource( const QModelIndexList& list ) const;
         QList<PopupDropperAction *> createGroupActions();

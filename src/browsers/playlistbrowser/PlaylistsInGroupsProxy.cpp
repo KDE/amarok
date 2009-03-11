@@ -43,6 +43,7 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistM
         SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
         this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_model, SIGNAL(layoutChanged()), SLOT(buildTree()) );
 
     buildTree();
 }
@@ -64,8 +65,11 @@ PlaylistsInGroupsProxy::buildTree()
     if( !m_model )
         return;
 
+    emit layoutAboutToBeChanged();
+
     m_groupHash.clear();
     m_groupNames.clear();
+    m_parentCreateList.clear();
 
     int max = m_model->rowCount();
     debug() << QString("building tree with %1 leafs.").arg( max );
@@ -89,6 +93,8 @@ PlaylistsInGroupsProxy::buildTree()
     for( int groupIndex = 0; groupIndex < m_groupNames.count(); groupIndex++ )
         debug() << m_groupNames[groupIndex] << ": " << m_groupHash.values( groupIndex );
     debug() << m_groupHash.values( -1 );
+
+    emit layoutChanged();
 }
 
 int
