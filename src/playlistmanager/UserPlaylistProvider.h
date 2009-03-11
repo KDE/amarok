@@ -49,6 +49,8 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
             @returns true if successful
         **/
         virtual bool save( const Meta::TrackList &tracks ) = 0;
+        
+        virtual bool save( const Meta::TrackList &tracks, const QString& name ) = 0;
 
         virtual bool supportsEmptyGroups() { return false; }
 

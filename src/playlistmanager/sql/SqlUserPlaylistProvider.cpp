@@ -128,6 +128,19 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
     return true; //assume insertion in db was successful
 }
 
+bool
+SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& name )
+{
+    DEBUG_BLOCK
+    debug() << "saving " << tracks.count() << " tracks to db with name" << name;
+    Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks,
+            Meta::SqlPlaylistGroupPtr() ) );
+    reloadFromDb();
+    emit updated();
+
+    return true; //assume insertion in db was successful
+}
+
 void
 SqlUserPlaylistProvider::reloadFromDb()
 {
