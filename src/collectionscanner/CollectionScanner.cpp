@@ -92,6 +92,7 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
     setObjectName( "amarokcollectionscanner" );
 
     readArgs();
+
     if( m_batch && m_incremental )
         m_recursively = false;
     
@@ -907,6 +908,8 @@ void
 CollectionScanner::readArgs()
 {
     QStringList argslist = arguments();
+    if( argslist.size() < 2 )
+        displayHelp();
     bool longopt = false;
     bool nomore = false;
     int argnum = 0;
@@ -938,7 +941,7 @@ CollectionScanner::readArgs()
                 else if( collectionidarg )
                     m_collectionId = arg;
                 else
-                    displayHelp();                    
+                    displayHelp();
                     
                 rpatharg = false;
                 pidarg = false;
