@@ -3,7 +3,6 @@ include_directories( ../
                      charset-detector/include
                      charset-detector/src
                      charset-detector/src/tables
-                     qgetopts
                      ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 add_definitions(${TAGLIB_CFLAGS})
@@ -44,7 +43,7 @@ set( libchardet_SRCS
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
-set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp MetaReplayGain.cpp)
+set(amarokcollectionscanner_SRCS CollectionScanner.cpp MetaReplayGain.cpp)
 
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
 

@@ -48,17 +48,7 @@ class CollectionScanner : public QCoreApplication
     Q_OBJECT
 
 public:
-    CollectionScanner( int &argc, char **argv,
-                       const QStringList& folders,
-                       const QString &amarokPid,
-                       const QString &collectionId,
-                       bool recursive,
-                       bool incremental,
-                       bool importPlaylists,
-                       bool restart,
-                       bool batch,
-                       const QString &saveLocation,
-                       const QString &rpath );
+    CollectionScanner( int &argc, char **argv );
 
     ~CollectionScanner();
     int newInstance() { return 0; }
@@ -132,17 +122,21 @@ private:
     }
 
     QString escape( const QString &plain );
+    void readArgs();
+    void displayHelp();
 
-    const bool    m_batch;
-    const bool    m_importPlaylists;
+    QString       m_collectionId;
+    QString       m_amarokPid;
+    bool          m_batch;
+    bool          m_importPlaylists;
     QStringList   m_folders;
     QDateTime     m_batchFolderTime;
-    const bool    m_recursively;
-    const bool    m_incremental;
-    const bool    m_restart;
-    const QString m_saveLocation;
-    const QString m_logfile;
-    const QString m_rpath;
+    bool          m_recursively;
+    bool          m_incremental;
+    bool          m_restart;
+    QString       m_saveLocation;
+    QString       m_logfile;
+    QString       m_rpath;
     QStringList   m_scannedFolders;
     QDBusInterface *m_amarokCollectionInterface;
 

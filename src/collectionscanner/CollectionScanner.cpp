@@ -36,11 +36,10 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
+#include <QtDebug>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QTimer>
-
-#include <KLocale>
 
 //Taglib:
 #include <apetag.h>
@@ -66,41 +65,48 @@
 #include <xiphcomment.h>
 
 
-CollectionScanner::CollectionScanner( int &argc, char **argv,
-                                      const QStringList& folders,
-                                      const QString& amarokPid,
-                                      const QString& collectionId,
-                                      bool recursive,
-                                      bool incremental,
-                                      bool importPlaylists,
-                                      bool restart,
-                                      bool batch,
-                                      const QString& saveLocation,
-                                      const QString& rpath )
+int
+main( int argc, char *argv[] )
+{
+
+#ifdef TAGLIB_EXTRAS_FOUND
+//TODO: Put appropriate headers above
+    registerTaglibPlugins();
+#endif
+
+    CollectionScanner scanner( argc, argv );
+    return scanner.exec();
+
+}
+
+CollectionScanner::CollectionScanner( int &argc, char **argv )
         : QCoreApplication( argc, argv )
-        , m_batch( batch )
-        , m_importPlaylists( importPlaylists )
-        , m_folders( folders )
+        , m_batch( false )
+        , m_importPlaylists( false )
         , m_batchFolderTime()
-        , m_recursively( recursive )
-        , m_incremental( incremental )
-        , m_restart( restart )
-        , m_saveLocation( saveLocation )
-        , m_logfile( batch ? ( incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
-                           : m_saveLocation + "collection_scan.log" )
-        , m_rpath( rpath )
+        , m_recursively( false )
+        , m_incremental( false )
+        , m_restart( false )
         , m_amarokCollectionInterface( 0 )
 {
     setObjectName( "amarokcollectionscanner" );
-    if( !restart )
+
+    readArgs();
+    if( m_batch && m_incremental )
+        m_recursively = false;
+    
+    m_logfile = ( m_batch ? ( m_incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
+                       : m_saveLocation + "collection_scan.log" );
+    
+    if( !m_restart )
         QFile::remove( m_logfile );
 
-    if( !collectionId.isEmpty() )
+    if( !m_collectionId.isEmpty() )
     {
-        if( amarokPid.isEmpty() )
-            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + collectionId );
+        if( m_amarokPid.isEmpty() )
+            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + m_collectionId );
         else
-            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok-" + amarokPid, "/SqlCollection/" + collectionId );
+            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok-" + m_amarokPid, "/SqlCollection/" + m_collectionId );
     }
 
     if( m_batch && m_incremental )
@@ -783,7 +789,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         if ( compilation.isEmpty() )
         {
             // well, it wasn't set, but if the artist is VA assume it's a compilation
-            if ( attributes["artist"] == i18n( "Various Artists" ) )
+            if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
                 attributes["compilation"] = QString::number( 1 );
         }
         else
@@ -895,6 +901,137 @@ CollectionScanner::escape( const QString& plain )
             rich += plain.at(i);
     }
     return rich;
+}
+
+void
+CollectionScanner::readArgs()
+{
+    QStringList argslist = arguments();
+    bool longopt = false;
+    bool nomore = false;
+    int argnum = 0;
+    bool rpatharg = false;
+    bool pidarg = false;
+    bool savelocationarg = false;
+    bool collectionidarg = false;
+    foreach( QString arg, argslist )
+    {
+        ++argnum;
+        if( arg.isEmpty() || argnum == 1 )
+            continue;
+        if( nomore )
+        {
+            m_folders.append( arg );
+        }
+        else if( longopt || arg.startsWith( "--" ) )
+        {
+            if( longopt )
+            {
+                longopt = false;
+
+                if( rpatharg )
+                    m_rpath = arg;
+                else if( pidarg )
+                    m_amarokPid = arg;
+                else if( savelocationarg )
+                    m_saveLocation = arg;
+                else if( collectionidarg )
+                    m_collectionId = arg;
+                else
+                    displayHelp();                    
+                    
+                rpatharg = false;
+                pidarg = false;
+                savelocationarg = false;
+                collectionidarg = false;
+            }
+            else
+            {
+                QString myarg = arg.remove( 0, 2 );
+                if( myarg == "rpath" )
+                {
+                    rpatharg = true;
+                    longopt = true;
+                }
+                else if( myarg == "pid" )
+                {
+                    pidarg = true;
+                    longopt = true;
+                }
+                else if( myarg == "savelocation" )
+                {
+                    savelocationarg = true;
+                    longopt = true;
+                }
+                else if( myarg == "collectionid" )
+                {
+                    collectionidarg = true;
+                    longopt = true;
+                }
+                else if( myarg == "recursive" )
+                    m_recursively = true;
+                else if( myarg == "incremental" )
+                    m_incremental = true;
+                else if( myarg == "importplaylists" )
+                    m_importPlaylists = true;
+                else if( myarg == "restart" )
+                    m_restart = true;
+                else if( myarg == "batch" )
+                {
+                    m_batch = true;
+                }
+                else
+                    displayHelp();
+            }
+            
+        }
+        else if( arg.startsWith( "-" ) )
+        {
+            QString myarg = arg.remove( 0, 1 );
+            int pos = 0;
+            while( pos < myarg.length() )
+            {
+                if( myarg[pos] == 'r' )
+                    m_recursively = true;
+                else if( myarg[pos] == 'i' )
+                    m_incremental = true;
+                else if( myarg[pos] == 'p' )
+                    m_importPlaylists = true;
+                else if( myarg[pos] == 's' )
+                    m_restart = true;
+                else if( myarg[pos] == 'b' )
+                    m_batch = true;
+                else
+                    displayHelp();
+                
+                ++pos;
+            }
+        }
+        else
+        {
+            nomore = true;
+            m_folders.append( arg );
+        }
+    }
+}
+
+void
+CollectionScanner::displayHelp()
+{
+    qDebug() << tr( "Amarok Collection Scanner\n\nNote: For debugging purposes this application can be invoked from the command line, but it will not actually build a collection this way." );
+    qDebug() << tr( "(C) 2003-2009, The Amarok Developers" );
+    qDebug() << tr( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" );
+    qDebug() << tr( "Usage: amarokcollectionscanner [options] +Folder(s)" );
+    qDebug() << tr( "\n\nUser-modifiable Options:" );
+    qDebug() << tr( "+Folder(s)            : Folders to scan; when using -b and -i, the path to the file generated by Amarok containing the list of folders" );
+    qDebug() << tr( "-h, --help            : This help text" );
+    qDebug() << tr( "-r, --recursive       : Scan folders recursively" );
+    qDebug() << tr( "-i, --incremental     : Incremental scan (modified folders only).  Only use this in batch mode." );
+    qDebug() << tr( "-p, --importplaylists : Import playlists" );
+    qDebug() << tr( "-s, --restart         : Restart the scanner in its last position, after a crash" );
+    qDebug() << tr( "-b, --batch           : Run in batch mode" );
+    qDebug() << tr( "--rpath <path>        : In full-scan batch mode, specifies the path to prepend to entries (default is the current directory" );
+    quit();
 }
 
 #include "CollectionScanner.moc"
