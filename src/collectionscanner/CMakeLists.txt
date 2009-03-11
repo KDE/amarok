@@ -40,25 +40,13 @@ set( libchardet_SRCS
     charset-detector/src/nsUTF8Prober.cpp
 )
 
-################################################
-
-set( qgetopts_SRCS
-    qgetopts/qoption.cpp
-    qgetopts/qoptions.cpp
-    )
-
-QT4_AUTOMOC(
-    qgetopts/qoption.cpp
-    qgetopts/qoptions.cpp
-    )
-
 ########### next target ###############
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
 set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp MetaReplayGain.cpp)
 
-add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${qgetopts_SRCS})
+add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
 
 target_link_libraries(amarokcollectionscanner 
                       ${KDE4_KDECORE_LIBS}
