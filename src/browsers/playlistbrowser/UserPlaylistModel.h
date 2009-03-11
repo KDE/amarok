@@ -78,6 +78,7 @@ class UserModel : public MetaPlaylistModel
 
         /* UserPlaylistModel specific methods */
         Meta::PlaylistList selectedPlaylists() { return m_selectedPlaylists; }
+        Meta::TrackList selectedTracks() { return m_selectedTracks; }
 
     public slots:
         void slotLoad();
@@ -102,6 +103,9 @@ class UserModel : public MetaPlaylistModel
 
         Meta::PlaylistList m_selectedPlaylists;
         Meta::PlaylistList selectedPlaylists( const QModelIndexList &list );
+        Meta::TrackList m_selectedTracks;
+        Meta::TrackList selectedTracks( const QModelIndexList &list );
+        Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
 };
 
 }

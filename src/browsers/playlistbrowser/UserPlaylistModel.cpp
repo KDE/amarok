@@ -34,6 +34,12 @@
 
 #include <typeinfo>
 
+//Playlist & Track index differentiator macros
+#define TRACK_MASK (0x1<<31)
+#define IS_TRACK(x) ((x.internalId()) & (TRACK_MASK))?true:false
+#define SET_TRACK_MASK(x) ((x) | (TRACK_MASK))
+#define REMOVE_TRACK_MASK(x) ((x) & ~(TRACK_MASK))
+
 namespace The
 {
     PlaylistBrowserNS::UserModel* userPlaylistModel()
@@ -88,7 +94,6 @@ PlaylistBrowserNS::UserModel::slotUpdate()
 void
 PlaylistBrowserNS::UserModel::loadPlaylists()
 {
-    DEBUG_BLOCK
     QList<Meta::PlaylistPtr> playlists =
     The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
     QListIterator<Meta::PlaylistPtr> i(playlists);
@@ -103,21 +108,47 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 QVariant
 PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 {
+    DEBUG_BLOCK
+    debug() << "index: " << index;
     if ( !index.isValid() )
         return QVariant();
 
-    Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
+    int row = REMOVE_TRACK_MASK(index.internalId());
+    debug() << "playlist at row: " << row;
+    Meta::PlaylistPtr playlist = m_playlists.value( row );
+
+    QVariant food;
+    QString name;
+    QString description;
+    KIcon icon;
+    QStringList groups;
+
+    if( IS_TRACK(index) )
+    {
+        Meta::TrackPtr track = playlist->tracks()[index.row()];
+        food = QVariant::fromValue( track );
+        name = track->prettyName();
+        icon = KIcon( "amarok_track" );
+    }
+    else
+    {
+        food = QVariant::fromValue( playlist );
+        name = playlist->name();
+        description = playlist->description();
+        icon = KIcon( "amarok_playlist" );
+        groups = playlist->groups();
+    }
 
     switch( role )
     {
-        case 0xf00d: return QVariant::fromValue( item );
+        case 0xf00d: return food;
         case Qt::DisplayRole:
-        case Qt::EditRole: return item->name();
+        case Qt::EditRole: return name;
         case DescriptionRole:
-        case Qt::ToolTipRole: return item->description();
+        case Qt::ToolTipRole: return description;
         case OriginRole: return QVariant(); //TODO return the provider name
-        case Qt::DecorationRole: return QVariant( KIcon( "amarok_playlist" ) );
-        case GroupRole: return item->groups();
+        case Qt::DecorationRole: return QVariant( icon );
+        case GroupRole: return groups;
         default: return QVariant();
     }
 }
@@ -128,27 +159,49 @@ PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & par
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
+    //if it has a parent it is a track
+    if( parent.isValid() )
+        return createIndex( row, column, SET_TRACK_MASK(parent.row()) );
     return createIndex( row, column, row );
 }
 
 QModelIndex
 PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 {
-    Q_UNUSED( index )
+    DEBUG_BLOCK
+    debug() << index;
+    if( IS_TRACK(index) )
+    {
+        debug() << " is a track.";
+        int row = REMOVE_TRACK_MASK(index.internalId());
+        debug() << "parent at row: " << row;
+        return this->index( row, index.column(), QModelIndex() );
+    }
+
     return QModelIndex();
 }
 
 int
 PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 {
+    DEBUG_BLOCK
+    debug() << "parent: " << parent;
     if (parent.column() > 0)
     {
         return 0;
     }
 
+    bool isTrack = IS_TRACK(parent);
+    debug() << (isTrack?"is a track":"is not a track");
     if (!parent.isValid())
     {
         return m_playlists.count();
+    }
+    else if( !IS_TRACK(parent) )
+    {
+        Meta::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
+        debug() << QString( "has %1 tracks.").arg(playlist->tracks().count());
+        return playlist->tracks().count();
     }
 
     return 0;
@@ -220,13 +273,18 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
     AmarokMimeData* mime = new AmarokMimeData();
 
     Meta::PlaylistList playlists;
+    Meta::TrackList tracks;
 
     foreach( const QModelIndex &index, indices )
     {
-        playlists << m_playlists.value( index.internalId() );
+        if( IS_TRACK(index) )
+            tracks << trackFromIndex( index );
+        else
+            playlists << m_playlists.value( index.internalId() );
     }
 
     mime->setPlaylists( playlists );
+    mime->setTracks( tracks );
 
     return mime;
 }
@@ -277,6 +335,8 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
     QList<PopupDropperAction *> actions;
     m_selectedPlaylists.clear();
     m_selectedPlaylists << selectedPlaylists( indices );
+    m_selectedTracks.clear();
+    m_selectedTracks << selectedTracks( indices );
 
     actions << createCommonActions( indices );
 
@@ -341,19 +401,25 @@ PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
 void
 PlaylistBrowserNS::UserModel::slotLoad()
 {
+    Meta::TrackList tracks;
+    foreach( Meta::TrackPtr track, selectedTracks() )
+            tracks << track;
     foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
-    {
-        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::LoadAndPlay );
-    }
+        tracks << playlist->tracks();
+    if( !tracks.isEmpty() )
+        The::playlistController()->insertOptioned( tracks, Playlist::LoadAndPlay );
 }
 
 void
 PlaylistBrowserNS::UserModel::slotAppend()
 {
+    Meta::TrackList tracks;
     foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
-    {
-        The::playlistController()->insertOptioned( playlist->tracks(), Playlist::AppendAndPlay );
-    }
+        tracks << playlist->tracks();
+    foreach( Meta::TrackPtr track, selectedTracks() )
+        tracks << track;
+    if( !tracks.isEmpty() )
+        The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
 }
 
 Meta::PlaylistList
@@ -361,8 +427,31 @@ PlaylistBrowserNS::UserModel::selectedPlaylists( const QModelIndexList &list )
 {
     Meta::PlaylistList playlists;
     foreach( const QModelIndex &index, list )
-        playlists << m_playlists.value( index.internalId() );
+    {
+        if( !IS_TRACK(index) )
+            playlists << m_playlists.value( index.internalId() );
+    }
     return playlists;
+}
+
+Meta::TrackList
+PlaylistBrowserNS::UserModel::selectedTracks( const QModelIndexList &list )
+{
+    Meta::TrackList tracks;
+    foreach( const QModelIndex &index, list )
+    {
+        if( IS_TRACK(index) )
+            tracks << trackFromIndex( index );
+    }
+    return tracks;
+}
+
+Meta::TrackPtr
+PlaylistBrowserNS::UserModel::trackFromIndex( const QModelIndex &index ) const
+{
+    Meta::PlaylistPtr playlist = m_playlists.value(
+            REMOVE_TRACK_MASK(index.internalId()) );
+    return playlist->tracks()[index.row()];
 }
 
 #include "UserPlaylistModel.moc"
