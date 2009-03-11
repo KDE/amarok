@@ -40,7 +40,7 @@
 #include <QTimer>
 
 #include <KLocale>
-#include <KMD5>
+#include "kcodecs.h"
 
 //Taglib:
 #include <apetag.h>
