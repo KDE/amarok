@@ -47,6 +47,9 @@ if( WITH_PLAYER )
 
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
+    find_package(Strigi REQUIRED)
+    macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
+
     find_package(MySQLAmarok REQUIRED)
     macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL" "http://www.mysql.com" TRUE "" "" )
 
