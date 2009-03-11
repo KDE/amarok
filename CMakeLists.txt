@@ -6,7 +6,8 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
                           ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 option(WITH_UTILITIES "Enable building of utilities" ON)
-option(WITH_PLAYER "Enable building of main Amarok application" ON)
+option(WITH_PLAYER "Enable building of main Amarok player" ON)
+option(WITH_MP3TUNES "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -80,24 +81,29 @@ if( WITH_PLAYER )
     #macro_optional_find_package(OpenGL)
     #macro_log_feature( OPENGL_FOUND "opengl" "Support for gl-accellerated visualization rendering" "" FALSE "" "")
 
-    find_package(CURL)
-    macro_log_feature( CURL_FOUND "curl" "cURL provides the necessary network libraries required by mp3tunes." "http://curl.haxx.se" FALSE "" "" )
+    if( WITH_MP3TUNES )
+        find_package(CURL)
+        macro_log_feature( CURL_FOUND "curl" "cURL provides the necessary network libraries required by mp3tunes." "http://curl.haxx.se" FALSE "" "" )
 
-    find_package(LibXml2)
-    macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by mp3tunes." "http://www.xmlsoft.org" FALSE "" "" )
+        find_package(LibXml2)
+        macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by mp3tunes." "http://www.xmlsoft.org" FALSE "" "" )
 
-    find_package(OpenSSL)
-    find_package(Libgcrypt)
-    if ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
-    set (_mp3tunes_crypto TRUE )
-    endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
-    macro_log_feature( _mp3tunes_crypto "openssl or libgcrypt" "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" FALSE "" "" )
+        find_package(OpenSSL)
+        find_package(Libgcrypt)
+        if ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
+            set (_mp3tunes_crypto TRUE )
+        endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
+        macro_log_feature( _mp3tunes_crypto "openssl or libgcrypt" "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" FALSE "" "" )
 
-    find_package(GObject)
-    macro_log_feature( GOBJECT_FOUND "gobject" "Required by mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
+        find_package(GObject)
+        macro_log_feature( GOBJECT_FOUND "gobject" "Required by mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
 
-    macro_optional_find_package(Loudmouth)
-    macro_log_feature( LOUDMOUTH_FOUND "loudmouth" "Loudmouth is the communication backend needed by mp3tunes for synching." "http://www.loudmouth-project.org" FALSE "" "" )
+        macro_optional_find_package(Loudmouth)
+        macro_log_feature( LOUDMOUTH_FOUND "loudmouth" "Loudmouth is the communication backend needed by mp3tunes for synching." "http://www.loudmouth-project.org" FALSE "" "" )
+
+        include(CheckQtGlib)
+        macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
+    endif( WITH_MP3TUNES )
 
     #find_package(KdeMultimedia)
     #macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
@@ -110,9 +116,6 @@ if( WITH_PLAYER )
 
     #macro_optional_find_package(LibLastFm)
     #macro_log_feature( LIBLASTFM_FOUND "liblastfm" "LibLastFM is needed for amarok to support last.fm." "http://www.last.fm" FALSE "" "" )
-
-    include(CheckQtGlib)
-    macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
 
     macro_optional_find_package(QCA2)
     macro_log_feature( QCA2_FOUND "Qt Cryptographic Architecture 2" "Requiered for building the Ampache service" "http://delta.affinix.com/download/qca/2.0/" FALSE "2.0" "")
