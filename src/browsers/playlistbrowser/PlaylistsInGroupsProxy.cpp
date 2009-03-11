@@ -165,26 +165,41 @@ PlaylistsInGroupsProxy::columnCount( const QModelIndex& index ) const
     return 1;
 }
 
+bool
+PlaylistsInGroupsProxy::isGroup( const QModelIndex &index ) const
+{
+    DEBUG_BLOCK
+    int parentRow = index.internalId();
+    if( parentRow == -1 && index.row() < m_groupNames.count() )
+        return true;
+    return false;
+}
+
 QModelIndex
 PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
 {
     DEBUG_BLOCK
+    debug() << "index: " << index;
     if( !index.isValid() )
         return QModelIndex();
 
-    int row = index.row();
-    int parentRow = index.internalId();
-    if( parentRow == -1 && row < m_groupNames.count() )
+    if( isGroup( index ) )
         return QModelIndex();
 
-    debug() << "parentRow = " << parentRow;
-    if( parentRow == -1 )
-        row = row - m_groupNames.count();
-    debug() << "need item from " << row;
-
-    row = m_groupHash.values( parentRow )[row];
-    debug() << "source row = " << row;
-    return m_model->index( row, 0, QModelIndex() );
+    QModelIndex proxyParent = index.parent();
+    debug() << "parent: " << proxyParent;
+    QModelIndex originalParent = mapToSource( proxyParent );
+    int originalRow = index.row();
+    if( !originalParent.isValid() )
+    {
+        int indexInGroup = index.row();
+        if( !proxyParent.isValid() )
+            indexInGroup -= m_groupNames.count();
+        debug() << "indexInGroup" << indexInGroup;
+        originalRow = m_groupHash.values( proxyParent.row() )[indexInGroup];
+        debug() << "originalRow: " << originalRow;
+    }
+    return m_model->index( originalRow, index.column(), originalParent );
 }
 
 QModelIndexList

@@ -64,6 +64,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
 
     private:
         void buildTree();
+        bool isGroup( const QModelIndex &index ) const;
         QModelIndexList mapToSource( const QModelIndexList& list ) const;
         QList<PopupDropperAction *> createGroupActions();
         bool isAGroupSelected( const QModelIndexList& list ) const;
