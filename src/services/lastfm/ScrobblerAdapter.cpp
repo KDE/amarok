@@ -101,20 +101,21 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
           && track->artist() ) ) ) // got a stream, and it has enough info to be a new track
     {
         // don't use checkScrobble as we don't need to check timestamps, it is a stream
+        debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
+        m_current.setDuration( QDateTime::currentDateTime().toTime_t() - m_current.timestamp().toTime_t() );
         m_scrobbler->cache( m_current );
         m_scrobbler->submit();
         resetVariables();
-        
-        m_current.stamp();
-            
+                    
         m_current.setTitle( track->name() );
         m_current.setArtist( track->artist()->name() );
-
-        m_current.setSource( Track::Player );
+        m_current.stamp();
+        
+        m_current.setSource( Track::NonPersonalisedBroadcast );
 
         if( !m_current.isNull() )
         {
-            debug() << "scrobbler sending nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
+            debug() << "nowPlaying: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
             m_scrobbler->nowPlaying( m_current );
         }
     }
