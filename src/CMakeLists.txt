@@ -17,7 +17,6 @@ endif(APPLE)
 
 # add_subdirectory( playlistmanager )
 add_subdirectory( collection )
-add_subdirectory( collectionscanner )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
