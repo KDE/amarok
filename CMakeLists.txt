@@ -24,7 +24,7 @@ include(CheckQtScriptBindings)
 if( NOT QTSCRIPT_QT_BINDINGS_FOUND )
 #we're keeping the script generator in our code to give some
 #time to transition to depending on it seperate
-    add_subdirectory( src/scriptengine/generator )
+#    add_subdirectory( src/scriptengine/generator )
 endif( NOT QTSCRIPT_QT_BINDINGS_FOUND )
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})

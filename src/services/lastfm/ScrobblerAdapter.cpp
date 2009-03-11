@@ -109,8 +109,6 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
             
         m_current.setTitle( track->name() );
         m_current.setArtist( track->artist()->name() );
-        if( track->album() )
-            m_current.setAlbum( track->album()->name() );
 
         m_current.setSource( Track::Player );
 
