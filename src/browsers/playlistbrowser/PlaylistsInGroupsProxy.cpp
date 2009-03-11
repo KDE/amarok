@@ -187,8 +187,7 @@ PlaylistsInGroupsProxy::data( const QModelIndex &index, int role ) const
 int
 PlaylistsInGroupsProxy::columnCount( const QModelIndex& index ) const
 {
-    Q_UNUSED( index );
-    return 1;
+    return m_model->columnCount( mapToSource( index ) );
 }
 
 bool
@@ -249,6 +248,7 @@ PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
     if( !index.isValid() )
         return QModelIndex();
 
+    //TODO: this needs to be extended to work for tree models as well
     int sourceRow = index.row();
     debug() << "source row = " << sourceRow;
     int parentRow = m_groupHash.key( sourceRow, -1 );
