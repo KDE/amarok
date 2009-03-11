@@ -1,6 +1,7 @@
 /***************************************************************************
  * Ported to Collection Framework: *
  * copyright            : (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com> 
+ * copyright            : (C) 2009 Seb Ruiz <ruiz@kde.org>
 
  * Original Work: *
  * copyright            : (C) 2005, 2006 by Martin Aumueller <aumuell@reserv.at>
@@ -82,17 +83,10 @@ struct PodcastInfo
         Q_OBJECT
 
         public:
-           /**
-            * Constructor
-            */
            IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject* parent );
-           /**
-            * Destructor
-            */
            ~IpodHandler();
 
            /* Get Methods */
-
            QString mountPoint() const { return m_mountPoint; }
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
            /**
@@ -131,7 +125,6 @@ struct PodcastInfo
            bool initializeIpod();
 
         private:
-
            /* Handler's Main Methods */
 
            /**
@@ -163,6 +156,7 @@ struct PodcastInfo
 
            /* Cover Art functions */
            #ifdef GDK_FOUND
+           QByteArray md5sum( const QString& artist, const QString& album ) const;
            void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
            #endif
            void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );

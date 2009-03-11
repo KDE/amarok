@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1
   FEATURES:
+    * Covers are shown for iPod collections.
     * Phonon multimedia system can be configured directly from Amarok.
     * Cover art can now be disabled in the collection browser.
     * Scrobble tracks from streams that have title and artist metadata

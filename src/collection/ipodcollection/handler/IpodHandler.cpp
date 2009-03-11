@@ -1,6 +1,7 @@
 /**************************************************************************
  * Ported to Collection Framework: *
  * copyright            : (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
+ * copyright            : (C) 2009 Seb Ruiz <ruiz@kde.org>
  *
  * Original Work: *
  * copyright            : (C) 2005, 2006 by Martin Aumueller <aumuell@reserv.at>
@@ -36,12 +37,12 @@ extern "C" {
 
 #include "File.h" // for KIO file handling
 
+#include <KCodecs> // KMD5
 #include <KIO/Job>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Scheduler>
 #include "kjob.h"
-#include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 #include <KUrl>
 
@@ -1273,35 +1274,46 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
 
 #ifdef GDK_FOUND
 
+QByteArray
+IpodHandler::md5sum( const QString& artist, const QString& album ) const
+{
+    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
+    return context.hexDigest();
+}
+
 void
 IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
 {
-    KTemporaryFile tempImageFile;
-
-    tempImageFile.setSuffix( ".png" ); // default suffix jpeg
-    QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
-    QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
-
-    GdkPixbuf *gpixbuf = NULL;
-
-    // pull image out of ipod
-
-    // NOTE: 0x01 = has, 0x02 = has not
-
-    if( ipodtrack->has_artwork == 0x01 )
-        gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, -1, -1 );
-
-    if(gpixbuf != NULL)
+    if( itdb_track_has_thumbnails( ipodtrack ) )
     {
-        // temporarily save to file
-        gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "png", NULL, ( char* ) NULL );
+        const QString artist = track->artist() ? track->artist()->name() : QString();
+        const QString album  = track->album()  ? track->album()->name()  : QString();
+        const QString imageKey = md5sum( artist, album );
+        const QString tempImagePath = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".jpg";
 
-        // pull temporary file's image out as QImage
-        QPixmap pixmap( tempImagePath );
-        track->album()->setImage( pixmap );
+        GdkPixbuf *gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, 200, 200 );
 
-        // fix memleak
-        gdk_pixbuf_unref ( gpixbuf );
+        if( gpixbuf )
+        {
+            // temporarily save to file
+            GError *error = 0;
+            const bool success = gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", &error, ( char* ) NULL );
+
+            if( !success && error )
+            {
+                debug() << "Couldn't read artwork from file, blame GNOME shite: " << error->message;
+                g_error_free( error );
+                return;
+            }
+            else if( !success )
+                return;
+
+            QPixmap pixmap( tempImagePath );
+            track->album()->setImage( pixmap );
+
+            // free stupid gnome shit
+            gdk_pixbuf_unref ( gpixbuf );
+        }
     }
 }
 
