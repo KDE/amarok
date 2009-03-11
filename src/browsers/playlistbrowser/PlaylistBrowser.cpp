@@ -63,6 +63,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
         addCategory( category );
     }
 
+    showCategory( Amarok::config( "Playlist Browser" ).readEntry( "Current Category", 1 ) );
 
     connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
     connect( The::playlistManager(), SIGNAL( showCategory( int ) ), SLOT( showCategory( int ) ) );
@@ -70,6 +71,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
 
 PlaylistBrowser::~PlaylistBrowser()
 {
+    Amarok::config( "Playlist Browser" ).writeEntry( "Current Category", m_toolBox->currentIndex() );
 }
 
 //SLOT
@@ -109,7 +111,6 @@ PlaylistBrowser::loadPodcastCategory()
     return The::podcastCategory();
 }
 
-
 QWidget*
 PlaylistBrowser::loadDynamicCategory()
 {
@@ -123,7 +124,6 @@ PlaylistBrowser::showCategory( int category )
     m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
 }
 
-
 int PlaylistBrowserNS::PlaylistBrowser::currentCategory()
 {
     return m_categoryIndexMap.value( m_toolBox->currentIndex() );
@@ -132,4 +132,3 @@ int PlaylistBrowserNS::PlaylistBrowser::currentCategory()
 }
 
 #include "PlaylistBrowser.moc"
-
