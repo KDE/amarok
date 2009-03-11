@@ -47,7 +47,6 @@ set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp ../meta/MetaRepl
 kde4_add_executable(amarokcollectionscanner NOGUI ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
 
 target_link_libraries(amarokcollectionscanner 
-                      amarok_taglib
                       ${KDE4_KDECORE_LIBS}
                       ${TAGLIB_LIBRARIES}
                       ${QT_QTXML_LIBRARY})
