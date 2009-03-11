@@ -308,7 +308,7 @@ MainWindow::init()
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
-        
+
         #undef addBrowserMacro
         PERF_LOG( "finished MainWindow::init" )
     }
@@ -337,7 +337,7 @@ MainWindow::createContextView( Plasma::Containment *containment )
             this, SLOT( createContextView( Plasma::Containment* ) ) );
     PERF_LOG( "Creating ContexView" )
     m_contextView = new Context::ContextView( containment, m_corona, m_contextWidget );
-    m_contextView->setFrameShape( QFrame::NoFrame );   
+    m_contextView->setFrameShape( QFrame::NoFrame );
     m_contextToolbarView = new Context::ToolbarView( containment, m_corona, m_contextWidget );
     m_contextToolbarView->setFrameShape( QFrame::NoFrame );
     m_contextView->showHome();
@@ -486,11 +486,10 @@ void
 MainWindow::savePlaylist() const
 {
     DEBUG_BLOCK
-    //TODO make a nice dialog for choosing name and potentially parent group
-    //if( !playlistName.isEmpty() )
-
-    QString playlistName( i18n("Playlist") );
-    The::playlistModel()->savePlaylist( playlistName );
+    //TODO: inline rename
+    const QString name = KInputDialog::getText( i18n("Save playlist"),
+            i18n("Enter name for the new playlist:"), i18n("Playlist") );
+    The::playlistModel()->savePlaylist( name.trimmed() );
 }
 
 
@@ -518,7 +517,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     dlg.setMode( KFile::Files /*| KFile::Directory */); // Directory mode is fucked up - selects the parent dir
     dlg.exec();
     files = dlg.selectedUrls();
-    
+
     if( files.isEmpty() )
         return;
 
@@ -666,7 +665,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    
+
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
 //     //update_podcasts->setIcon( KIcon("view-refresh-amarok") );
@@ -904,7 +903,7 @@ MainWindow::createMenus()
     m_settingsMenu = new KMenu( m_menubar );
     m_settingsMenu->setTitle( i18n("&Settings") );
     //TODO use KStandardAction or KXmlGuiWindow
-    
+
     // the phonon-coreaudio  backend has major issues with either the VolumeFaderEffect itself
     // or with it in the pipeline. track playback stops every ~3-4 tracks, and on tracks >5min it
     // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
