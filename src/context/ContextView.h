@@ -82,6 +82,7 @@ public slots:
 
 protected:
     void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+    void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
 
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);

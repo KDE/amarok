@@ -157,6 +157,21 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
         messageNotify( Home );
 }
 
+
+void
+ContextView::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    Q_UNUSED( newMetaData )
+    Q_UNUSED( trackChanged )
+    DEBUG_BLOCK
+
+
+    // if we are listening to a stream, take the new metadata as a "new track"
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track && track->type() == "stream" )
+        messageNotify( Current );
+}
+
 void ContextView::showHome()
 {
     DEBUG_BLOCK
