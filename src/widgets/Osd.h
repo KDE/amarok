@@ -18,7 +18,6 @@
 #include "EngineObserver.h"
 #include "meta/Meta.h"
 
-#include <QHash>
 #include <QImage>
 #include <QList>
 #include <QPixmap>
@@ -187,8 +186,6 @@ namespace Amarok
         ~OSD();
 
         static OSD* s_instance;
-        bool isMetaDataSpam( const QHash<qint64, QString>& );
-        QList<QHash<qint64, QString> > m_metaDataHistory;
         Meta::TrackPtr m_currentTrack;
     };
 }

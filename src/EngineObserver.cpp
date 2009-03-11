@@ -91,7 +91,7 @@ EngineSubject::EngineSubject()
 
 EngineSubject::~EngineSubject()
 {
-    //do not delete the observers, we don't ahve ownership of them!
+    //do not delete the observers, we don't have ownership of them!
 }
 
 
@@ -115,9 +115,16 @@ void EngineSubject::playbackEnded( int finalPosition, int trackLength, EngineObs
 }
 
 void
-EngineSubject::newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const
+EngineSubject::newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
     DEBUG_BLOCK
+
+    if( trackChanged )
+      m_metaDataHistory.clear();
+
+    if( isMetaDataSpam( newMetaData ) )
+      return;
+
     foreach( EngineObserver *observer, Observers )
         observer->engineNewMetaData( newMetaData, trackChanged );
 }
@@ -167,4 +174,24 @@ void EngineSubject::attach( EngineObserver *observer )
 void EngineSubject::detach( EngineObserver *observer )
 {
     Observers.remove( observer );
+}
+
+/* Try to detect MetaData spam in Streams. */
+bool EngineSubject::isMetaDataSpam( QHash<qint64, QString> newMetaData )
+{
+    // search for Metadata in history
+    for( int i = 0; i < m_metaDataHistory.size(); i++)
+    {
+        if( m_metaDataHistory.at( i ) == newMetaData ) // we already had that one -> spam!
+        {
+            m_metaDataHistory.move( i, 0 ); // move spam to the beginning of the list
+            return true;
+        }
+    }
+
+    if( m_metaDataHistory.size() == 12 )
+        m_metaDataHistory.removeLast();
+
+    m_metaDataHistory.insert( 0, newMetaData );
+    return false;
 }

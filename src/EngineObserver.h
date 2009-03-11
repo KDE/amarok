@@ -21,6 +21,7 @@ email                : fh@ez.no
 #include "amarok_export.h"
 
 #include <Phonon/MediaObject>
+#include <QHash>
 #include <QSet>
 
 class EngineSubject;
@@ -66,7 +67,7 @@ protected:
     virtual ~EngineSubject();
     void stateChangedNotify( Phonon::State newState, Phonon::State oldState );
     void playbackEnded( int /*finalPosition*/, int /*trackLength*/, EngineObserver::PlaybackEndedReason reason );
-    void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged ) const;
+    void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     void volumeChangedNotify( int /*percent*/ );
     /* userSeek means the position didn't change due to normal playback */
     void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
@@ -76,7 +77,9 @@ protected:
 private:
     void attach( EngineObserver *observer );
     void detach( EngineObserver *observer );
+    bool isMetaDataSpam( QHash<qint64, QString> newMetaData );
 
+    QList<QHash<qint64, QString> > m_metaDataHistory;
     QSet<EngineObserver*> Observers;
     Phonon::State m_realState; // To work around the buffering issue
 };

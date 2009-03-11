@@ -623,27 +623,6 @@ Amarok::OSD::engineVolumeChanged( int newVolume )
     volChanged( newVolume );
 }
 
-/* Try to detect MetaData spam in Streams. */
-bool
-Amarok::OSD::isMetaDataSpam( const QHash<qint64, QString> &newMetaData )
-{
-    // search for Metadata in history
-    for( int i = 0; i < m_metaDataHistory.size(); i++)
-    {
-        if( m_metaDataHistory.at( i ) == newMetaData ) // we already had that one -> spam!
-        {
-            m_metaDataHistory.move( i, 0 ); // move spam to the beginning of the list
-            return true;
-        }
-    }
-
-    if( m_metaDataHistory.size() == 12 )
-        m_metaDataHistory.removeLast();
-
-    m_metaDataHistory.insert( 0, newMetaData );
-    return false;
-}
-
 void
 Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
