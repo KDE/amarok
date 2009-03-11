@@ -9,10 +9,10 @@ add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 
 # needs things from playground/base/nepomuk-kde
-#if (Soprano_FOUND AND NEPOMUK_FOUND)
+#if (SOPRANO_FOUND AND NEPOMUK_FOUND)
 #    MESSAGE(STATUS "soprano and nepomuk found, building optional nepomuk collection")
 #    add_subdirectory(nepomukcollection)
-#endif (Soprano_FOUND AND NEPOMUK_FOUND)
+#endif (SOPRANO_FOUND AND NEPOMUK_FOUND)
 
 add_subdirectory( sqlcollection )
 #add_subdirectory( upnp )

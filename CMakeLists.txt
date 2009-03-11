@@ -8,6 +8,9 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3TUNES "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
+option(WITH_IPOD "Enable iPod functionality" ON)
+option(WITH_MTP "Enable MTP-based device functionality" ON)
+option(WITH_AMPACHE "Enable building collections from Ampache installations" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -44,9 +47,6 @@ if( WITH_PLAYER )
 
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
-    find_package(Strigi REQUIRED)
-    macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
-
     find_package(MySQLAmarok REQUIRED)
     macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL" "http://www.mysql.com" TRUE "" "" )
 
@@ -54,32 +54,26 @@ if( WITH_PLAYER )
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
 
-    #macro_optional_find_package(Njb)
-    #macro_log_feature( NJB_FOUND "libnjb" "Support Creative Labs nomad jukebox devices" "http://www.sf.net/projects/libnjb" FALSE "2.2.4" "" )
+    if( WITH_IPOD OR WITH_MP3TUNES )
+        macro_optional_find_package(GLIB2)
+        macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
+    endif( WITH_IPOD OR WITH_MP3TUNES )
 
-    #macro_optional_find_package(Ifp)
-    #macro_log_feature( IFP_FOUND "libifp" "Support iRiver iFP audio devices" "http://ifp-driver.sourceforge.net/libifp/" FALSE "1.0.0.2" "")
+    if( WITH_IPOD )
+        macro_optional_find_package(Ipod)
+        if(IPOD_FOUND)
+            macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_0_7)
+        endif(IPOD_FOUND)
+        macro_log_feature( IPOD_0_7 "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
+ 
+        macro_optional_find_package(Gdk)
+        macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
+    endif( WITH_IPOD )
 
-    macro_optional_find_package(GLIB2)
-    macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
-
-    macro_optional_find_package(Gdk)
-    macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
-
-    macro_optional_find_package(Ipod)
-    if(IPOD_FOUND)
-    macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_0_7)
-    endif(IPOD_FOUND)
-    macro_log_feature( IPOD_0_7 "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
-
-    #macro_optional_find_package(MySQL)
-    #macro_log_feature( MYSQL_FOUND "mysql" "Store Collection in a mysql database instead of a sqlite one" "http://www.mysql.com" FALSE "4.1.0" "" )
-
-    macro_optional_find_package(Mtp)
-    macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
-
-    #macro_optional_find_package(OpenGL)
-    #macro_log_feature( OPENGL_FOUND "opengl" "Support for gl-accellerated visualization rendering" "" FALSE "" "")
+    if( WITH_MTP )
+        macro_optional_find_package(Mtp)
+        macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
+    endif( WITH_MTP )
 
     if( WITH_MP3TUNES )
         find_package(CURL)
@@ -88,8 +82,8 @@ if( WITH_PLAYER )
         find_package(LibXml2)
         macro_log_feature( LIBXML2_FOUND "libxml2" "LibXML2 is an XML parser required by mp3tunes." "http://www.xmlsoft.org" FALSE "" "" )
 
-        find_package(OpenSSL)
-        find_package(Libgcrypt)
+        macro_optional_find_package(OpenSSL)
+        macro_optional_find_package(Libgcrypt)
         if ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
             set (_mp3tunes_crypto TRUE )
         endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
@@ -105,20 +99,16 @@ if( WITH_PLAYER )
         macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
     endif( WITH_MP3TUNES )
 
-    #find_package(KdeMultimedia)
-    #macro_log_feature( KDEMULTIMEDIA_FOUND "kdemultimedia" "Support for playing audio cds" "http://www.kde.org" FALSE "4.0" "")
+    #These two are currently unused
+    #macro_optional_find_package(Soprano)
+    #macro_log_feature( Soprano_FOUND "soprano" "Soprano is a RDF framework required by Nepomuk Collection" "http://soprano.sourceforge.net" FALSE "2.1.0" "")
+    #macro_optional_find_package(Nepomuk)
+    #macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomuk Collection (part of kdelibs)" "http://www.kde.org" FALSE "4.1" "")
 
-    macro_optional_find_package(Soprano)
-    macro_log_feature( Soprano_FOUND "soprano" "Soprano is a RDF framework required by Nepomuk Collection" "http://soprano.sourceforge.net" FALSE "2.1.0" "")
-
-    macro_optional_find_package(Nepomuk)
-    macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomuk Collection (part of kdelibs)" "http://www.kde.org" FALSE "4.1" "")
-
-    #macro_optional_find_package(LibLastFm)
-    #macro_log_feature( LIBLASTFM_FOUND "liblastfm" "LibLastFM is needed for amarok to support last.fm." "http://www.last.fm" FALSE "" "" )
-
-    macro_optional_find_package(QCA2)
-    macro_log_feature( QCA2_FOUND "Qt Cryptographic Architecture 2" "Requiered for building the Ampache service" "http://delta.affinix.com/download/qca/2.0/" FALSE "2.0" "")
+    if( WITH_AMPACHE )
+        macro_optional_find_package(QCA2)
+        macro_log_feature( QCA2_FOUND "Qt Cryptographic Architecture 2" "Requiered for building the Ampache service" "http://delta.affinix.com/download/qca/2.0/" FALSE "2.0" "")
+    endif( WITH_AMPACHE )
 
     macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
