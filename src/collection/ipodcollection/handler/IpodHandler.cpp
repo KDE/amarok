@@ -185,7 +185,7 @@ IpodHandler::initializeIpod()
 
     // initialize iPod
     m_itdb = itdb_new();
-    if( m_itdb == 0 )
+    if( !m_itdb )
         return false;
 
     // in order to get directories right
@@ -200,47 +200,36 @@ IpodHandler::initializeIpod()
     itdb_playlist_add(m_itdb, podcasts, -1);
     itdb_playlist_add(m_itdb, mpl, 0);
 
-    debug() << "Init 1";
-
     QString realPath;
     if(!pathExists( itunesDir(), &realPath) )
     {
-        dir.setPath(realPath);
-        dir.mkdir(dir.absolutePath());
+        dir.setPath( realPath );
+        dir.mkdir( dir.absolutePath() );
     }
-    if(!dir.exists())
+    if( !dir.exists() )
         return false;
 
-    debug() << "Init 2";
-
-    if(!pathExists( itunesDir( "Music" ), &realPath) )
+    if( !pathExists( itunesDir( "Music" ), &realPath ) )
     {
-        dir.setPath(realPath);
-        dir.mkdir(dir.absolutePath());
+        dir.setPath( realPath );
+        dir.mkdir( dir.absolutePath() );
     }
-    if(!dir.exists())
+    if( !dir.exists() )
         return false;
 
-    debug() << "Init 3";
-
-    if(!pathExists( itunesDir( "iTunes" ), &realPath) )
+    if( !pathExists( itunesDir( "iTunes" ), &realPath ) )
     {
-        dir.setPath(realPath);
-        dir.mkdir(dir.absolutePath());
+        dir.setPath( realPath );
+        dir.mkdir( dir.absolutePath() );
     }
-    if(!dir.exists())
+    if( !dir.exists() )
         return false;
 
-    debug() << "Init 4";
     // NOTE: writing itunes DB allowed to block since
     // initializing a device is rare, and requires focus
     // to minimize possible error
     if( !writeITunesDB( false ) )
         return false;
-
-
-
-    debug() << "Init 5";
 
     return true;
 }
@@ -357,11 +346,7 @@ IpodHandler::detectModel()
         if( m_needsFirewireGuid )
         {
             gchar *fwid = itdb_device_get_sysinfo( m_device, "FirewireGuid" );
-            if( !fwid )
-            {
-
-            }
-            else
+            if( fwid )
                g_free( fwid );
         }
     }
@@ -414,9 +399,9 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
     for( ; it != components.end(); ++it )
     {
         found = false;
-        for(uint i=0; i<curDir.count(); i++)
+        for( uint i = 0;i < curDir.count(); i++ )
         {
-            if( curDir[i].toLower() == (*it).toLower())
+            if( curDir[i].toLower() == (*it).toLower() )
             {
                 curPath += '/' + curDir[i];
                 curDir.cd( curPath );
@@ -494,19 +479,11 @@ IpodHandler::writeITunesDB( bool threaded )
             // Kill status bar only once DB is written
             emit endProgressOperation( this );
         }
-        else
-        {
-
-        }
 
         if( ok )
-        {
             m_dbChanged = false;
-        }
         else
-        {
             debug() << "Failed to write iPod database";
-        }
 
         return ok;
     }
@@ -772,10 +749,8 @@ IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         }
         while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
         debug() << "trying to create \"" << path << "\"";
-        if(!create.mkdir( create.absolutePath() ))
-        {
+        if( !create.mkdir( create.absolutePath() ) )
             break;
-        }
     }
     if ( !dir.exists() )
     {
@@ -786,9 +761,7 @@ IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     debug() << "About to copy from: " << track->playableUrl().path();
 
     if( !kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), url ) )
-    {
         return;
-    }
 
     // NOTE: PODCASTS NOT YET PORTED
 
@@ -810,9 +783,7 @@ IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     */
     insertTrackIntoDB( url, track );
     if( !m_trackCreated )
-    {
         debug() << "Track failed to create, aborting database write!";
-    }
 
     return;
 }
@@ -922,7 +893,6 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         ipodtrack->filetype = g_strdup( type.toUtf8() );
     }
 
-
     QString genre = track->genre()->name();
     if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
         audiobook = true;
@@ -937,11 +907,11 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
     ipodtrack->comment = g_strdup( track->comment().toUtf8() );
     ipodtrack->track_nr = track->trackNumber();
     ipodtrack->cd_nr = track->discNumber();
-// BPM isn't present in Amarok 2 at this time Jul. 8 2008
-//    ipodtrack->BPM = static_cast<int>( track->bpm() );
+    // BPM isn't present in Amarok 2 at this time Jul. 8 2008
+    // ipodtrack->BPM = static_cast<int>( track->bpm() );
     bool ok;
     int year = track->year()->name().toInt( &ok, 10 );
-    if(ok)
+    if( ok )
         ipodtrack->year = year;
     ipodtrack->size = track->filesize();
     if( ipodtrack->size == 0 )
@@ -1025,6 +995,7 @@ IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
 
     // TODO: podcasts NYI
     // if(podcastInfo)
+#if 0
     if( false )
     {
         Itdb_Playlist *podcasts = itdb_playlist_podcasts(m_itdb);
@@ -1037,6 +1008,7 @@ IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
         itdb_playlist_add_track(podcasts, ipodtrack, -1);
     }
     else
+#endif
     {
         // gtkpod 0.94 does not like if not all songs in the db are on the master playlist
         // but we try anyway
@@ -1064,18 +1036,14 @@ IpodHandler::removeDBTrack( Itdb_Track *track )
 
     Itdb_Playlist *mpl = itdb_playlist_mpl(m_itdb);
     while(itdb_playlist_contains_track(mpl, track))
-    {
         itdb_playlist_remove_track(mpl, track);
-    }
 
     GList *cur = m_itdb->playlists;
     while(cur)
     {
         Itdb_Playlist *pl = (Itdb_Playlist *)cur->data;
         while(itdb_playlist_contains_track(pl, track))
-        {
             itdb_playlist_remove_track(pl, track);
-        }
         cur = cur->next;
     }
 
@@ -1112,12 +1080,6 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         m_copyFailed = true;
         debug() << "file transfer failed: " << job->errorText();
     }
-    /*
-    else
-    {
-        m_copyFailed = false;
-    }
-*/
     m_wait = false;
 
     m_jobcounter--;
@@ -1143,7 +1105,6 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
             emit incrementProgress();
             emit copyTracksDone( !m_copyFailed );
         }
-
     }
 }
 
@@ -1214,8 +1175,8 @@ IpodHandler::ipodPath( const QString &realPath )
 {
     if( m_itdb )
     {
-        QString mp = QFile::decodeName(itdb_get_mountpoint(m_itdb));
-        if(realPath.startsWith(mp))
+        QString mp = QFile::decodeName( itdb_get_mountpoint(m_itdb) );
+        if( realPath.startsWith(mp) )
         {
             QString path = realPath;
             path = path.mid(mp.length());
@@ -1280,8 +1241,6 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     m_memColl->setComposerMap( composerMap );
     m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
-
-    return;
 }
 
 void
@@ -1310,8 +1269,6 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
 
     if( filetype == "mpeg" )
         track->setType( "mp3" );
-
-    return;
 }
 
 #ifdef GDK_FOUND
@@ -1332,9 +1289,7 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
     // NOTE: 0x01 = has, 0x02 = has not
 
     if( ipodtrack->has_artwork == 0x01 )
-    {
         gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, -1, -1 );
-    }
 
     if(gpixbuf != NULL)
     {
@@ -1348,8 +1303,6 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
         // fix memleak
         gdk_pixbuf_unref ( gpixbuf );
     }
-
-    return;
 }
 
 #endif
@@ -1362,8 +1315,6 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     Q_UNUSED( ipodtrack )
 
     // HACK: not setting cover art until working properly
-
-    return;
 #if 0
     KTemporaryFile tempImageFile; // create a temp file to save pixmap
     // use tempdir's path
@@ -1408,9 +1359,7 @@ IpodHandler::setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, Ar
     IpodArtistPtr artistPtr;
 
     if ( artistMap.contains( artist ) )
-    {
         artistPtr = IpodArtistPtr::staticCast( artistMap.value( artist ) );
-    }
     else
     {
         artistPtr = IpodArtistPtr( new IpodArtist( artist ) );
@@ -1429,7 +1378,6 @@ IpodHandler::setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, Alb
 
     if ( albumMap.contains( album ) )
         albumPtr = IpodAlbumPtr::staticCast( albumMap.value( album ) );
-
     else
     {
         albumPtr = IpodAlbumPtr( new IpodAlbum( album ) );
@@ -1466,9 +1414,7 @@ IpodHandler::setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, 
     IpodComposerPtr composerPtr;
 
     if ( composerMap.contains( composer ) )
-    {
         composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
-    }
     else
     {
         composerPtr = IpodComposerPtr( new IpodComposer( composer ) );

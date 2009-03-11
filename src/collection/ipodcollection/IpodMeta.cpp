@@ -756,10 +756,7 @@ void
 IpodTrack::endMetaDataUpdate()
 {
     // Update info in local ipod database struct
-
     m_collection->updateTags( this );
-
-
     notifyObservers();
 }
 
