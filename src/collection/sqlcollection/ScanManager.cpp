@@ -114,7 +114,7 @@ ScanManager::startFullScan()
     if( !QFile::exists( batchfileLocation ) || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
-        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
+        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
@@ -185,7 +185,7 @@ void ScanManager::startIncrementalScan()
             m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
         }
         m_scanner = new AmarokProcess( this );
-        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i"
+        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-i"
                 << "--collectionid" << m_collection->collectionId() << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
@@ -490,7 +490,7 @@ ScanManager::restartScanner()
     DEBUG_BLOCK
 
     m_scanner = new AmarokProcess( this );
-    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
+    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner";
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
