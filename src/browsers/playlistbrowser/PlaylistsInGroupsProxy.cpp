@@ -76,7 +76,7 @@ PlaylistsInGroupsProxy::buildTree()
         QString groupName = idx.data( PlaylistBrowserNS::UserModel::GroupRole ).toStringList().first();
         debug() << QString("index %1 belongs to groupName %2").arg( row ).arg( groupName );
 
-        qint64 groupIndex = m_groupNames.indexOf( groupName ); //groups are added to the end of the existing list
+        int groupIndex = m_groupNames.indexOf( groupName ); //groups are added to the end of the existing list
         if( groupIndex == -1 && !groupName.isEmpty() )
         {
             m_groupNames << groupName;
@@ -86,9 +86,28 @@ PlaylistsInGroupsProxy::buildTree()
         m_groupHash.insertMulti( groupIndex, row );
     }
     debug() << "m_groupHash: ";
-    for( qint64 groupIndex = 0; groupIndex < m_groupNames.count(); groupIndex++ )
+    for( int groupIndex = 0; groupIndex < m_groupNames.count(); groupIndex++ )
         debug() << m_groupNames[groupIndex] << ": " << m_groupHash.values( groupIndex );
     debug() << m_groupHash.values( -1 );
+}
+
+int
+PlaylistsInGroupsProxy::indexOfParentCreate( const QModelIndex &parent ) const
+{
+    if( !parent.isValid() )
+        return -1;
+
+    struct ParentCreate pc;
+    for( int i = 0 ; i < m_parentCreateList.size() ; i++ )
+    {
+        pc = m_parentCreateList[i];
+        if( pc.parentCreateIndex == parent.internalId() && pc.row == parent.row() )
+            return i;
+    }
+    pc.parentCreateIndex = parent.internalId();
+    pc.row = parent.row();
+    m_parentCreateList << pc;
+    return m_parentCreateList.size() - 1;
 }
 
 QModelIndex
@@ -97,22 +116,23 @@ PlaylistsInGroupsProxy::index( int row, int column, const QModelIndex& parent ) 
     if( !hasIndex(row, column, parent) )
         return QModelIndex();
 
-    int groupIndex = parent.row();
+    int parentCreateIndex = indexOfParentCreate( parent );
 
-    return createIndex( row, column, groupIndex );
+    return createIndex( row, column, parentCreateIndex );
 }
 
 QModelIndex
-PlaylistsInGroupsProxy::parent( const QModelIndex& index ) const
+PlaylistsInGroupsProxy::parent( const QModelIndex &index ) const
 {
     if (!index.isValid())
         return QModelIndex();
 
-    qint64 groupIndex = index.internalId();
-    if( groupIndex == -1 )
+    int parentCreateIndex = index.internalId();
+    if( parentCreateIndex == -1 )
         return QModelIndex();
 
-    return this->index( (int)groupIndex, 0, QModelIndex() );
+    struct ParentCreate pc = m_parentCreateList[parentCreateIndex];
+    return createIndex( pc.row, index.column(), pc.parentCreateIndex );
 }
 
 int
@@ -125,14 +145,17 @@ PlaylistsInGroupsProxy::rowCount( const QModelIndex& index ) const
         return rows;
     }
 
-    //if child of a group return 0
     //TODO:group in group support.
-    if( index.parent().isValid() )
-        return 0;
-
-    qint64 groupIndex = index.row();
-    int rows = m_groupHash.count( groupIndex );
-    return rows;
+    if( isGroup( index ) )
+    {
+        qint64 groupIndex = index.row();
+        return m_groupHash.count( groupIndex );
+    }
+    else
+    {
+        QModelIndex originalIndex = mapToSource( index );
+        return m_model->rowCount( originalIndex );
+    }
 }
 
 QVariant
@@ -142,16 +165,13 @@ PlaylistsInGroupsProxy::data( const QModelIndex &index, int role ) const
         return QVariant();
 
     int row = index.row();
-    if( index.internalId() == -1 )
+    if( isGroup( index ) )
     {
-        if( row < m_groupNames.count() )
+        switch( role )
         {
-            switch( role )
-            {
-                case Qt::DisplayRole: return QVariant( m_groupNames[row] );
-                case Qt::DecorationRole: return QVariant( KIcon( "folder" ) );
-                default: return QVariant();
-            }
+            case Qt::DisplayRole: return QVariant( m_groupNames[row] );
+            case Qt::DecorationRole: return QVariant( KIcon( "folder" ) );
+            default: return QVariant();
         }
     }
 
@@ -169,8 +189,8 @@ bool
 PlaylistsInGroupsProxy::isGroup( const QModelIndex &index ) const
 {
     DEBUG_BLOCK
-    int parentRow = index.internalId();
-    if( parentRow == -1 && index.row() < m_groupNames.count() )
+    int parentCreateIndex = index.internalId();
+    if( parentCreateIndex == -1 && index.row() < m_groupNames.count() )
         return true;
     return false;
 }
@@ -189,6 +209,7 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
     QModelIndex proxyParent = index.parent();
     debug() << "parent: " << proxyParent;
     QModelIndex originalParent = mapToSource( proxyParent );
+    debug() << "originalParent: " << originalParent;
     int originalRow = index.row();
     if( !originalParent.isValid() )
     {
@@ -196,7 +217,7 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
         if( !proxyParent.isValid() )
             indexInGroup -= m_groupNames.count();
         debug() << "indexInGroup" << indexInGroup;
-        originalRow = m_groupHash.values( proxyParent.row() )[indexInGroup];
+        originalRow = m_groupHash.values( proxyParent.row() ).at( indexInGroup );
         debug() << "originalRow: " << originalRow;
     }
     return m_model->index( originalRow, index.column(), originalParent );
@@ -326,9 +347,8 @@ PlaylistsInGroupsProxy::isAGroupSelected( const QModelIndexList& list ) const
 {
     foreach( const QModelIndex &index, list )
     {
-        if( index.internalId() < 0 )
-            if( m_groupHash.keys().contains( index.row() ) )
-                return true;
+        if( isGroup( index ) )
+            return true;
     }
     return false;
 }

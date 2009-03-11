@@ -74,8 +74,22 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         PopupDropperAction *m_renameAction;
         PopupDropperAction *m_deleteAction;
 
-        QMultiHash<qint64, int> m_groupHash;
+        QMultiHash<quint32, int> m_groupHash;
         QStringList m_groupNames;
+
+        /** "instuctions" how to create a item in the tree.
+        This is used by parent( QModelIndex )
+        */
+        struct ParentCreate
+        {
+            int parentCreateIndex;
+            int row;
+        };
+        mutable QList<struct ParentCreate> m_parentCreateList;
+        /** @returns index of the "instructions" to recreate the parent. Will create new if it doesn't exist yet.
+        */
+        int indexOfParentCreate( const QModelIndex &parent ) const;
+
         QModelIndexList m_selectedGroups;
 };
 
