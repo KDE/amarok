@@ -56,7 +56,7 @@ QT4_AUTOMOC(
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
-set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp MetaReplayGain.cpp kcodecs.cpp)
+set(amarokcollectionscanner_SRCS main.cpp CollectionScanner.cpp MetaReplayGain.cpp)
 
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${qgetopts_SRCS})
 

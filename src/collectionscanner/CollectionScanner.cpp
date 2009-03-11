@@ -31,6 +31,7 @@
 #include <limits.h>    //PATH_MAX
 
 #include <QByteArray>
+#include <QCryptographicHash>
 #include <QDBusReply>
 #include <QDir>
 #include <QDomDocument>
@@ -40,7 +41,6 @@
 #include <QTimer>
 
 #include <KLocale>
-#include "kcodecs.h"
 
 //Taglib:
 #include <apetag.h>
@@ -550,7 +550,8 @@ CollectionScanner::readUniqueId( const QString &path )
 
     TagLib::ByteVector bv = CollectionScanner::generatedUniqueIdHelper( fileref );
 
-    KMD5 md5( bv.data(), bv.size() );
+    QCryptographicHash md5( QCryptographicHash::Md5 );
+    md5.addData( bv.data(), bv.size() );
 
     QFile qfile( path );
 
@@ -563,10 +564,10 @@ CollectionScanner::readUniqueId( const QString &path )
     {
         if( ( readlen = qfile.read( databuf, 16384 ) ) > 0 )
         {
-            md5.update( databuf, readlen );
-            md5.update( size.setNum( qfile.size() ) );
+            md5.addData( databuf, readlen );
+            md5.addData( size.setNum( qfile.size() ) );
             qfile.close();
-            return QString( md5.hexDigest().data() );
+            return QString( md5.result().data() );
         }
         else
         {
