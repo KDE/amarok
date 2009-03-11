@@ -49,6 +49,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         Meta::SqlPlaylistGroupPtr group( const QString &name );
 
+        static Meta::SqlPlaylistList toSqlPlaylists( Meta::PlaylistList playlists );
+
     signals:
         void updated();
 
@@ -65,6 +67,9 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void checkTables();
         void loadFromDb();
 
+        Meta::SqlPlaylistList selectedPlaylists() const
+            { return m_selectedPlaylists; };
+        Meta::SqlPlaylistList m_selectedPlaylists;
         PopupDropperAction *m_deleteAction;
         PopupDropperAction *m_renameAction;
 };

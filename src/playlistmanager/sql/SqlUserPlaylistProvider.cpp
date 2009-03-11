@@ -29,6 +29,7 @@
 #include "UserPlaylistModel.h"
 
 #include <KIcon>
+#include <KInputDialog>
 #include <KUrl>
 
 #include <QMap>
@@ -88,7 +89,14 @@ void
 SqlUserPlaylistProvider::slotRename()
 {
     DEBUG_BLOCK
-    //TODO:inline rename
+    //only one playlist can be selected at this point
+    Meta::SqlPlaylistPtr playlist = selectedPlaylists().first();
+    if( playlist.isNull() )
+        return;
+    //TODO: inline rename
+    const QString newName = KInputDialog::getText( i18n("New playlist name"),
+                i18n("Enter new name for playlist:"), playlist->name() );
+    playlist->setName( newName.trimmed() );
 }
 
 QList<PopupDropperAction *>
@@ -97,6 +105,8 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
     Q_UNUSED( list )
     QList<PopupDropperAction *> actions;
 
+    m_selectedPlaylists.clear();
+    m_selectedPlaylists << toSqlPlaylists( list );
     if ( m_deleteAction == 0 )
     {
         m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
@@ -260,6 +270,20 @@ SqlUserPlaylistProvider::checkTables()
             sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
         }
     }
+}
+
+Meta::SqlPlaylistList
+SqlUserPlaylistProvider::toSqlPlaylists( Meta::PlaylistList playlists )
+{
+    Meta::SqlPlaylistList sqlPlaylists;
+    foreach( Meta::PlaylistPtr playlist, playlists )
+    {
+        Meta::SqlPlaylistPtr sqlPlaylist =
+            Meta::SqlPlaylistPtr::dynamicCast( playlist );
+        if( !sqlPlaylist.isNull() )
+            sqlPlaylists << sqlPlaylist;
+    }
+    return sqlPlaylists;
 }
 
 #include "SqlUserPlaylistProvider.moc"
