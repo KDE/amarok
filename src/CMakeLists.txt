@@ -22,9 +22,11 @@ add_subdirectory( context )
 add_subdirectory( images )
 add_subdirectory( services )
 add_subdirectory( scripts )
-add_subdirectory( strigi )
 add_subdirectory( themes )
 
+if( STRIGI_FOUND )
+    add_subdirectory( strigi )
+endif( STRIGI_FOUND )
 
 include_directories(
     amarokurls

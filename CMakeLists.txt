@@ -11,6 +11,7 @@ option(WITH_MP3TUNES "Enable mp3tunes in the Amarok player, requires multiple ex
 option(WITH_IPOD "Enable iPod functionality" ON)
 option(WITH_MTP "Enable MTP-based device functionality" ON)
 option(WITH_AMPACHE "Enable building collections from Ampache installations" ON)
+option(WITH_STRIGI "Enable gathering information from Strigi" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -47,15 +48,17 @@ if( WITH_PLAYER )
 
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
-    find_package(Strigi REQUIRED)
-    macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
-
     find_package(MySQLAmarok REQUIRED)
     macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL" "http://www.mysql.com" TRUE "" "" )
 
     # zlib is required for mysql embedded
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
+
+    if( WITH_STRIGI )
+        macro_optional_find_package(Strigi)
+        macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
+    endif( WITH_STRIGI )
 
     if( WITH_IPOD OR WITH_MP3TUNES )
         macro_optional_find_package(GLIB2)
