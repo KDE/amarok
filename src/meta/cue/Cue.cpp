@@ -29,12 +29,14 @@
 #include "amarokurls/BookmarkMetaActions.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 
+#include <KEncodingProber>
 #include <KSharedPtr>
 
 #include <QDir>
 #include <QFile>
 #include <QMapIterator>
 #include <QPointer>
+#include <QTextCodec>
 
 using namespace MetaCue;
 namespace MetaCue {
@@ -210,6 +212,15 @@ bool Track::load ( int mediaLength )
         {
             QTextStream stream ( &file );
             QString line;
+            KEncodingProber prober;
+
+            KEncodingProber::ProberState result = prober.feed( file.readAll() );
+            file.seek( 0 );
+
+            if( result != KEncodingProber::NotMe )
+                stream.setCodec( QTextCodec::codecForName( prober.encodingName() ) );
+
+            debug() << "Encoding: " << prober.encodingName();
 
             while ( !stream.atEnd() )
             {

@@ -100,6 +100,7 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Try to detect the charset of cue sheets. (BR 184769)
     * Make opening an external webbrowser working on Windows, too.
     * The Files browser now remembers its sorting order. (BR 186444)
     * When editing info for multiple tracks, do not write to the files if only
