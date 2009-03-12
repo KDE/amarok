@@ -1055,8 +1055,7 @@ CollectionScanner::readArgs()
 void
 CollectionScanner::displayHelp()
 {
-    s_textStream << qPrintable( tr( "Amarok Collection Scanner" ) ) << endl;
-    s_textStream << qPrintable( tr( "(C) 2003-2009 by Max Howell, Mark Kretschmann, Alexandre Oliveira, Dan Meltzer, Jeff Mitchell, and the other Amarok Developers" ) ) << endl << endl;
+    s_textStream << qPrintable( tr( "Amarok Collection Scanner" ) ) << endl << endl;
     s_textStream << qPrintable( tr( "Note: For debugging purposes this application can be invoked from the command line,\nbut it will not actually build a collection this way without the Amarok player." ) ) << endl << endl;
     s_textStream << qPrintable( tr( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ) ) << endl << endl;
     s_textStream << qPrintable( tr( "Usage: amarokcollectionscanner [options] +Folder(s)" ) ) << endl << endl;
