@@ -30,7 +30,7 @@ AMAROK_EXPORT_PLUGIN( ShoutcastServiceFactory )
 
 void ShoutcastServiceFactory::init()
 {
-    ServiceBase* service = new ShoutcastService( this, "Shoutcast.com" );
+    ServiceBase* service = new ShoutcastService( this, "Shoutcast.com", i18n( "Shoutcast Directory" ) );
     m_activeServices << service;
     m_initialized = true;
     connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
@@ -44,7 +44,7 @@ QString ShoutcastServiceFactory::name()
 
 KPluginInfo ShoutcastServiceFactory::info()
 {
-    KPluginInfo pluginInfo(  "amarok_service_shoutcast.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_shoutcast.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
 }
@@ -54,8 +54,8 @@ KConfigGroup ShoutcastServiceFactory::config()
     return Amarok::config( "Service_Shoutcast" );
 }
 
-ShoutcastService::ShoutcastService( ShoutcastServiceFactory* parent, const char *name )
-    : ServiceBase( "Shoutcast Directory", parent )
+ShoutcastService::ShoutcastService( ShoutcastServiceFactory* parent, const QString &name, const QString &prettyName )
+    : ServiceBase( "Shoutcast Directory", parent, true, prettyName )
     , m_collection( 0 )
 {
     setObjectName( name );
