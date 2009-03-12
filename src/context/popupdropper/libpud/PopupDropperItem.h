@@ -63,7 +63,6 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( bool customHoveredTextColor READ customHoveredTextColor )
     Q_PROPERTY( bool customHoveredBorderPen READ customHoveredBorderPen )
     Q_PROPERTY( bool customHoveredFillBrush READ customHoveredFillBrush )
-    Q_PROPERTY( PopupDropper* popupDropper WRITE setPopupDropper )
 
 public:
     enum HoverIndicatorShowStyle { Never, OnHover, AlwaysShow };
