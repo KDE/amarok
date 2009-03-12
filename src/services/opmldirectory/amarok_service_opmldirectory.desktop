@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KPluginInfo
-Icon=amarok_podcast
+Icon=view-services-opml-amarok
 Name=Podcast Directory
 Comment=Browse and subscribe to a huge list of podcasts
 Comment[bg]=Разглеждане и абониране за голям брой подкастове
