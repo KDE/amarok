@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include <QCoreApplication>
+#include <QCryptographicHash>
 #include <QDateTime>
 #include <QDBusInterface>
 #include <QHash>
@@ -83,6 +84,14 @@ private:
      * @return TagLib::ByteVector that contains the tag's render, if possible, and empty otherwise.
      */
     static const TagLib::ByteVector generatedUniqueIdHelper( const TagLib::FileRef &fileref );
+
+    /**
+     * Create a random AFT UID, to prevent ever returning an empty one (since much of A2 uses unique
+     * IDs of the various Meta types).
+     * @param md5 Contains the QCryptographicHash to update
+     * @return QString containing the uniqueID
+     */
+    static const QString randomUniqueId( QCryptographicHash &md5 );
 
     /**
      * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
