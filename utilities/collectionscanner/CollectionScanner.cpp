@@ -791,8 +791,10 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         if ( compilation.isEmpty() )
         {
             // well, it wasn't set, but if the artist is VA assume it's a compilation
-            if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
-                attributes["compilation"] = QString::number( 1 );
+            //TODO: If we get pure-Qt translation support, put this back in; else functionality moved to the processor
+	    //if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
+                //attributes["compilation"] = QString::number( 1 );
+	    attributes["compilation"] = "checkforvarious";
         }
         else
         {

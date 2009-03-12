@@ -649,6 +649,18 @@ XmlParseJob::run()
 //                        debug() << " TAG: " << l.name().toString() << '\t' << l.value().toString() << '\n';
 //                     debug() << "End FILE";
 
+                    //NOTE: compilation may not be used according to the comment below,
+                    //but this is functionality getting moved from the collection scanner
+                    //until (if ever) pure-Qt transations are supported
+                    QString compilationValue = attrs.value( "compilation" ).toString();
+                    if( compilationValue == "checkforvarious" )
+                    {
+                        if( attrs.value( "artist" ).toString() == i18n( "Various Artists" ) )
+                            compilationValue = QString::number( 1 );
+                        else
+                            compilationValue = QString();
+                    }                            
+
                     QVariantMap data;
                     data.insert( Meta::Field::URL, attrs.value( "path" ).toString() );
                     data.insert( Meta::Field::TITLE, attrs.value( "title" ).toString() );
@@ -662,6 +674,7 @@ XmlParseJob::run()
                     data.insert( Meta::Field::DISCNUMBER, attrs.value( "discnumber" ).toString() );
                     data.insert( Meta::Field::BPM, attrs.value( "bpm" ).toString() );
                     //filetype and uniqueid are missing in the fields, compilation is not used here
+
                     if( attrs.value( "audioproperties" ) == "true" )
                     {
                         data.insert( Meta::Field::BITRATE, attrs.value( "bitrate" ).toString() );
