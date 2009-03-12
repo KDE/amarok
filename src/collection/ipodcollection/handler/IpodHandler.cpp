@@ -1281,17 +1281,73 @@ IpodHandler::md5sum( const QString& artist, const QString& album ) const
     return context.hexDigest();
 }
 
-void
-IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
+static bool s_test = false;
+    
+QPixmap
+IpodHandler::getCoverArt( Itdb_Track *ipodtrack )
 {
-    if( itdb_track_has_thumbnails( ipodtrack ) )
+    /*
+    if( s_test )
+        return QPixmap();
+
+    DEBUG_BLOCK
+
+        debug() << "********** GREPME !@(*#Y!@(#$!Y$(*!@$Y!E";
+
+    int count = 0;
+    GList *it;
+
+    for (it = m_itdb->tracks; it != NULL; it = it->next) {
+        Itdb_Track *song = (Itdb_Track *)it->data;
+
+        g_print("lalalal");
+
+        if (song->artwork == NULL) {
+             continue;
+        }
+        GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( song->itdb->device,
+                                                     song->artwork, -1, -1);
+        if(pixbuf == NULL ) {
+            continue;
+        }
+        
+        g_print ("Track %d (%016"G_GINT64_MODIFIER"x) %s-%s-%s (%08x)\n",
+                 count, song->dbid,
+                 song->artist, song->album,
+                 song->title, song->mhii_link);
+
+        gint width;
+        gint height;
+        
+        g_object_get (G_OBJECT (pixbuf),
+                      "width", &width,
+                      "height", &height,
+                      NULL);
+
+        const QString imageKey = QString::number(count) + "_" + song->artist + "-" + song->album + "-" + song->title + "-" + width + "x" + height;
+        const QString tempImagePath = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
+
+        debug() << tempImagePath;
+
+        gdk_pixbuf_save (pixbuf, QFile::encodeName(tempImagePath), "png", NULL, NULL);
+        gdk_pixbuf_unref (pixbuf);
+
+        count++;
+    }
+
+    s_test = true;
+    */
+    if( m_supportsArtwork && ipodtrack->has_artwork == 0x01 )
     {
-        const QString artist = track->artist() ? track->artist()->name() : QString();
-        const QString album  = track->album()  ? track->album()->name()  : QString();
+        const QString artist = QString::fromUtf8( ipodtrack->artist );
+        const QString album  = QString::fromUtf8( ipodtrack->album  );
         const QString imageKey = md5sum( artist, album );
         const QString tempImagePath = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".jpg";
 
-        GdkPixbuf *gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, 200, 200 );
+        debug() << "trying to get pixbuf -- " << artist << " - " << QString::fromUtf8( ipodtrack->title ) << "(" << album << ")";
+        //GdkPixbuf *gpixbuf = (GdkPixbuf*) itdb_track_get_thumbnail( ipodtrack, -1, -1 );
+        GdkPixbuf *gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, 140, 140 );
+        debug() << "got pixbuf: " << gpixbuf << ", device: " << ipodtrack->itdb->device;
 
         if( gpixbuf )
         {
@@ -1303,18 +1359,20 @@ IpodHandler::getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
             {
                 debug() << "Couldn't read artwork from file, blame GNOME shite: " << error->message;
                 g_error_free( error );
-                return;
+                return QPixmap();
             }
             else if( !success )
-                return;
-
-            QPixmap pixmap( tempImagePath );
-            track->album()->setImage( pixmap );
+                return QPixmap();
 
             // free stupid gnome shit
-            gdk_pixbuf_unref ( gpixbuf );
+            gdk_pixbuf_unref( gpixbuf );
+
+            return QPixmap( tempImagePath ); 
         }
+        else
+            debug() << "libgpod returned a null gdkpixbuf";
     }
+    return QPixmap();
 }
 
 #endif
@@ -1488,16 +1546,6 @@ IpodHandler::parseTracks()
         setupGenreMap( ipodtrack, track, genreMap );
         setupComposerMap( ipodtrack, track, composerMap );
         setupYearMap( ipodtrack, track, yearMap );
-
-        /* cover art */
-
-        //debug() << "Supports artwork: " << ( m_supportsArtwork ? "true" : "false" );
-        #ifdef GDK_FOUND
-        if( m_supportsArtwork )
-            getCoverArt( ipodtrack, track );
-        #endif
-
-        //getCoverArt( ipodtrack, track );
 
         /* TrackMap stuff to be subordinated later */
         trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );

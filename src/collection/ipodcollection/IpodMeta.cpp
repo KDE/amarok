@@ -818,7 +818,7 @@ IpodAlbum::IpodAlbum( const QString &name )
     , m_tracks()
     , m_isCompilation( false )
     , m_hasCover( false )
-    , m_image()
+    , m_image( QPixmap() )
     , m_albumArtist( 0 )
 {
     //nothing to do
@@ -868,9 +868,31 @@ IpodAlbum::tracks()
 QPixmap
 IpodAlbum::image( int size )
 {
-    //DEBUG_BLOCK
-    if( m_hasCover )
-        return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+    if( m_name.isEmpty() )
+        return Meta::Album::image( size );
+
+    DEBUG_BLOCK
+    debug() << "Grabbing image for " << name();
+    {
+        if( !m_image.isNull() )
+            return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+
+        // Go over eaech track until we find an image
+        foreach( Meta::TrackPtr t, m_tracks )
+        {
+            debug() << "checking track: " << t->artist()->name() << " - " << t->name();
+            IpodTrackPtr track = IpodTrackPtr::dynamicCast( t );
+            Ipod::IpodHandler *handler = static_cast<IpodCollection*>(track->collection())->handler();
+            Itdb_Track *ipodTrack = track->getIpodTrack();
+            QPixmap cover = handler->getCoverArt( ipodTrack );
+            if( !cover.isNull() )
+            {
+                debug() << "Got a valid QPixmap for " << track->artist()->name() << " - " << track->name();
+                m_image = cover;
+                return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );;
+            }
+        }
+    }
 
     return Meta::Album::image( size );
 }
