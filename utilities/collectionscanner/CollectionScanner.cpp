@@ -57,8 +57,15 @@
 #include <vorbisfile.h>
 
 #ifdef TAGLIB_EXTRAS_FOUND
-#include "mp4file.h"
-#include "mp4tag.h"
+#include <mp4file.h>
+#include <mp4tag.h>
+#include <audiblefiletyperesolver.h>
+#include <asffiletyperesolver.h>
+#include <wavfiletyperesolver.h>
+#include <realmediafiletyperesolver.h>
+#include <mp4filetyperesolver.h>
+#endif
+
 #endif
 
 #include <textidentificationframe.h>
@@ -69,12 +76,6 @@
 int
 main( int argc, char *argv[] )
 {
-
-#ifdef TAGLIB_EXTRAS_FOUND
-//TODO: Put appropriate headers above
-    registerTaglibPlugins();
-#endif
-
     CollectionScanner scanner( argc, argv );
     return scanner.exec();
 
@@ -100,6 +101,14 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
     s_time.start();
 
     readArgs();
+
+#ifdef TAGLIB_EXTRAS_FOUND
+    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
+#endif
 
     if( m_batch && m_incremental )
         m_recursively = false;

@@ -253,7 +253,10 @@ static Meta::ReplayGainTagMap readASFTags( TagLib::ASF::Tag *tag )
 
     return outputMap;
 }
-
+#endif
+// Bad news: ReplayGain in MP4 is not actually standardized in any way.  Maybe reimplement at some point...maybe.  See
+// http://www.hydrogenaudio.org/forums/lofiversion/index.php/t14322.html
+#ifdef DO_NOT_USE_THIS_UNTIL_FIXED
 static Meta::ReplayGainTagMap readMP4Tags( TagLib::MP4::Tag *tag )
 {
     Meta::ReplayGainTagMap outputMap;
@@ -337,6 +340,9 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
         if ( file->tag() )
             map = readASFTags( file->tag() );
     }
+#endif
+// See comment above
+#ifdef DO_NOT_USE_THIS_UNTIL_FIXED
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
         if ( file->tag() )

@@ -66,11 +66,11 @@ email                : markey@web.de
 #include <QtDBus/QtDBus>
 
 #ifdef TAGLIB_EXTRAS_FOUND
-//TODO: Fix this list once the lib is separated out fully and can be tested against
-//#include <fileref.h>
-//#include <asffiletyperesolver.h>
-//#include <mp4filetyperesolver.h>
-//etc
+#include <audiblefiletyperesolver.h>
+#include <asffiletyperesolver.h>
+#include <wavfiletyperesolver.h>
+#include <realmediafiletyperesolver.h>
+#include <mp4filetyperesolver.h>
 #endif
 
 QMutex Debug::mutex;

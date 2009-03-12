@@ -4,7 +4,8 @@ include_directories( ../
                      charset-detector/src
                      charset-detector/src/tables
                      ${QT_INCLUDES}
-                     ${TAGLIB_INCLUDE_DIR}
+                     ${TAGLIB_INCLUDES}
+                     ${TAGLIB-EXTRAS_INCLUDES}
                      ${CMAKE_CURRENT_BINARY_DIR})
 
 add_definitions(${TAGLIB_CFLAGS})

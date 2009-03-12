@@ -52,7 +52,8 @@ include_directories(
     widgets
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
-    ${TAGLIB_INCLUDE_DIR}
+    ${TAGLIB_INCLUDES}
+    ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
 )
@@ -549,6 +550,7 @@ target_link_libraries(amaroklib
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${TAGLIB_LIBRARIES}
+    ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}

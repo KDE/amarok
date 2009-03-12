@@ -32,7 +32,9 @@
 // Taglib
 #include <taglib/tag.h>
 #include <tlist.h>
+#include <tmap.h>
 #include <tstring.h>
+#include <tstringlist.h>
 #include <flacfile.h>
 #include <id3v2tag.h>
 #include <mpegfile.h>
@@ -43,6 +45,9 @@
 #include <xiphcomment.h>
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <mp4file.h>
+#include <mp4item.h>
+#include <mp4tag.h>
+#include <asftag.h>
 #endif
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
@@ -325,7 +330,7 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             shouldSave = true;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
-            mp4tag->setComposer( composer );
+            mp4tag->itemListMap()["\xa9wrt"] = TagLib::StringList( composer );
         }
     }
 #endif
