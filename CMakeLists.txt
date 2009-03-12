@@ -111,11 +111,6 @@ if( WITH_PLAYER )
     #macro_optional_find_package(Nepomuk)
     #macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomuk Collection (part of kdelibs)" "http://www.kde.org" FALSE "4.1" "")
 
-    if( WITH_AMPACHE )
-        macro_optional_find_package(QCA2)
-        macro_log_feature( QCA2_FOUND "Qt Cryptographic Architecture 2" "Requiered for building the Ampache service" "http://delta.affinix.com/download/qca/2.0/" FALSE "2.0" "")
-    endif( WITH_AMPACHE )
-
     macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})

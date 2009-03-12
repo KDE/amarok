@@ -23,6 +23,7 @@
 #include "AmpacheConfig.h"
 #include "collection/CollectionManager.h"
 #include "Debug.h"
+#include "sha256/sha256.h"
 #include "statusbar/StatusBar.h"
 
 
@@ -30,11 +31,30 @@
 #include <kpassworddialog.h>
 #include <KMD5>
 
-#include <QtCrypto>
 
 #include <QDomDocument>
 
 AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
+
+QString sha256( QString in )
+{
+    unsigned char digest[ SHA512_DIGEST_SIZE];
+    unsigned char* toHash = (unsigned char*)in.toUtf8().data();
+    
+    sha256( toHash , qstrlen( ( char* )toHash ), digest );
+
+    // this part copied from main() in sha256.cpp
+    unsigned char output[2 * SHA512_DIGEST_SIZE + 1];
+    int i;
+
+    output[2 * SHA256_DIGEST_SIZE ] = '\0';
+
+    for (i = 0; i < SHA256_DIGEST_SIZE ; i++) {
+       sprintf((char *) output + 2*i, "%02x", digest[i]);
+    }
+    
+    return QString::fromAscii( (const char*)output );
+}
 
 void AmpacheServiceFactory::init()
 {
@@ -156,18 +176,6 @@ AmpacheService::authenticate(KJob * job)
 
     versionVerify(job); 
 
-    QCA::Initializer init;
-    // Check and see if we're using a newer version of ampache, if so we need sha256 support so we should check for it
-    debug() << "Authenticate::Version is:" << m_version; 
-    if ( m_version > 350000 )
-    {
-        debug() << "Version Newer, checking for SHA256";
-        if(!QCA::isSupported("sha256")) {
-            KMessageBox::error ( this, i18n( "SHA256 Required, and not found" ), i18n( "Authentication Error" ) );
-            return; 
-        }
-    }
-    
     //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
     if ( m_server.isEmpty() || m_password.isEmpty() )
     {
@@ -205,8 +213,10 @@ AmpacheService::authenticate(KJob * job)
     {
 	debug() << "New Password Scheme " << m_version; 
         authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>&version=350001";
-        rawHandshake = timestamp + QCA::Hash("sha256").hashToString(m_password.toUtf8());
-        passPhrase = QCA::Hash("sha256").hashToString(rawHandshake.toUtf8());
+
+        rawHandshake = timestamp + sha256( m_password );
+
+        passPhrase = sha256( rawHandshake );
 	debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
     }
     else { 
