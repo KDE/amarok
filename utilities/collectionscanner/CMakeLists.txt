@@ -52,7 +52,7 @@ set(amarokcollectionscanner_SRCS CollectionScanner.cpp MetaReplayGain.cpp)
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
 
 target_link_libraries(amarokcollectionscanner 
-                      ${QT_QTCORE_LIBS}
+                      ${QT_QTCORE_LIBRARY}
                       ${QT_QTXML_LIBRARY}
                       ${QT_QTDBUS_LIBRARY}
                       ${TAGLIB_LIBRARIES}
