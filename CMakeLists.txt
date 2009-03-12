@@ -8,7 +8,7 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3TUNES "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
-option(WITH_TAGLIB-EXTRAS "Enable extra tag reading/writing formats" ON)
+option(WITH_TAGLIB-EXTRAS "Enable extra tag reading/writing formats" Off)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
