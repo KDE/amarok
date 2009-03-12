@@ -55,7 +55,7 @@ class OpmlDirectoryService : public ServiceBase
 
 Q_OBJECT
 public:
-    OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &translatedName );
+    OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &prettyName );
 
     ~OpmlDirectoryService();
 

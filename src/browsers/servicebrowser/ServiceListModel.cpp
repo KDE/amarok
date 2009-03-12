@@ -48,7 +48,7 @@ ServiceListModel::data(const QModelIndex & index, int role) const
     switch( role )
     {
         case Qt::DisplayRole:
-            return QVariant( m_services[index.row()]->translatedName() );
+            return QVariant( m_services[index.row()]->prettyName() );
 
         case Qt::DecorationRole:
             return QVariant( m_services[index.row()]->icon() );

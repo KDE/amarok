@@ -63,8 +63,8 @@ KConfigGroup OpmlDirectoryServiceFactory::config()
 }
 
 
-OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &translatedName )
- : ServiceBase( name, parent, true, translatedName )
+OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &prettyName )
+ : ServiceBase( name, parent, true, prettyName )
  , m_currentFeed( 0 )
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );

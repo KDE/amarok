@@ -98,7 +98,7 @@ void ServiceFactory::slotServiceReady()
 
 ServiceBase *ServiceBase::s_instance = 0;
 
-ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &translatedName )
+ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
         : KVBox( 0 )
         , m_contentView ( 0 )
         , m_parentFactory( parent )
@@ -111,7 +111,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     DEBUG_BLOCK
 
     m_name = name;
-    m_translatedName = translatedName;
+    m_prettyName = prettyName;
 
     setContentsMargins( 1, 1, 1, 1 );
     setSpacing( 1 );
@@ -134,10 +134,10 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     QLabel * nameLabel = new QLabel( commonPanel );
     nameLabel->setMinimumSize( 230 , 28 );
-    if( !m_translatedName.isEmpty() )
-      nameLabel->setText( m_translatedName );
+    if( !m_prettyName.isEmpty() )
+        nameLabel->setText( m_prettyName );
     else
-      nameLabel->setText( m_name );
+        nameLabel->setText( m_name );
 
     QFont nameLabelFont = nameLabel->font();
     nameLabelFont.setBold( true );
@@ -199,10 +199,10 @@ ServiceBase::name() const
 }
 
 QString
-ServiceBase::translatedName() const
+ServiceBase::prettyName() const
 {
-    if( !m_translatedName.isEmpty() )
-      return m_translatedName;
+    if( !m_prettyName.isEmpty() )
+      return m_prettyName;
     return m_name;
 }
 
