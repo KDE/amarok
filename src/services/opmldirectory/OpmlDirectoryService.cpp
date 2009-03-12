@@ -37,7 +37,7 @@ AMAROK_EXPORT_PLUGIN( OpmlDirectoryServiceFactory )
 
 void OpmlDirectoryServiceFactory::init()
 {
-    ServiceBase* service = new OpmlDirectoryService( this, "OpmlDirectory" );
+    ServiceBase* service = new OpmlDirectoryService( this, "OpmlDirectory", i18n( "Podcast Directory" ) );
     m_activeServices << service;
     m_initialized = true;
     emit newService( service );
@@ -51,7 +51,7 @@ QString OpmlDirectoryServiceFactory::name()
 
 KPluginInfo OpmlDirectoryServiceFactory::info()
 {
-    KPluginInfo pluginInfo(  "amarok_service_opmldirectory.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_opmldirectory.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
 }
@@ -63,12 +63,11 @@ KConfigGroup OpmlDirectoryServiceFactory::config()
 }
 
 
-OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString & name )
- : ServiceBase( name, parent )
+OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &translatedName )
+ : ServiceBase( name, parent, true, translatedName )
  , m_currentFeed( 0 )
 {
-
-    setShortDescription(  i18n( "A large listing of podcasts" ) );
+    setShortDescription( i18n( "A large listing of podcasts" ) );
     setIcon( KIcon( "view-services-opml-amarok" ) );
     m_serviceready = true;
     emit( ready() );
@@ -145,7 +144,7 @@ void OpmlDirectoryService::updateButtonClicked()
 
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://www.digitalpodcast.com/opml/digitalpodcastnoadult.opml" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    The::statusBar() ->newProgressOperation( m_listDownloadJob, i18n( "Downloading OpmlDirectory Database" ) )
+    The::statusBar() ->newProgressOperation( m_listDownloadJob, i18n( "Downloading Podcast Directory Database" ) )
     ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
@@ -174,7 +173,7 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
     }
 
 
-    The::statusBar()->shortMessage( i18n( "Updating the local OPML database."  ) );
+    The::statusBar()->shortMessage( i18n( "Updating the local Podcast database."  ) );
     debug() << "OpmlDirectoryService: create xml parser";
     OpmlDirectoryXmlParser * parser = new OpmlDirectoryXmlParser( m_tempFileName );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
@@ -221,7 +220,7 @@ void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
         OpmlDirectoryFeed * feed = static_cast<OpmlDirectoryFeed *> ( dataPtr.data() );
         m_currentFeed = feed;
         m_subscribeButton->setEnabled( true );
-        
+
     } else {
 
         debug() << "is wrong type";
@@ -235,7 +234,6 @@ void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
 
 void OpmlDirectoryService::subscribe()
 {
-    
     PlaylistProvider *provider = The::playlistManager()->playlistProvider(
             PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
     if( provider )
