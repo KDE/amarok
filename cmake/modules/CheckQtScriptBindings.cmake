@@ -15,19 +15,28 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # 
 
+include(CheckCXXSourceRuns)
+
+file( READ "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/QtScriptBindingsTest.cpp" source )
 message(STATUS "Checking if the QtScript Qt Bindings are installed.")
-set(LINK_LIBRARIES "-lQtCore -lkdeui -lkdecore -lQtScript")
-#set(LINK_LIBRARIES "${QT_QTCORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} -${QT_QTSCRIPT_LIBS}")
-try_run(BINDINGS_RUN_RESULT BINDINGS_COMPILE_RESULT
-        ${PROJECT_BINARY_DIR}/CMakeTmp/generator
-        ${PROJECT_SOURCE_DIR}/cmake/modules/QtScriptBindingsTest.cpp 
-        CMAKE_FLAGS "-DCOMPILE_DEFINITIONS:STRING=${LINK_LIBRARIES}"
-        )
-if(BINDINGS_RUN_RESULT EQUAL 0)
+
+#set( BINDINGS_RUN_RESULT -10 )
+set(CMAKE_REQUIRED_DEFINTIONS ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
+set(CMAKE_REQUIRED_INCLUDES ${QT_QTCORE_INCLUDE_DIR} ${QT_QTSCRIPT_INCLUDE_DIR} ${KDE4_INCLUDES})
+set(CMAKE_REQUIRED_LIBRARIES QtScript kdeui)
+message( STATUS "includes ${CMAKE_REQUIRED_INCLUDES} libraries ${CMAKE_REQUIRED_LIBRARIES}" )
+CHECK_CXX_SOURCE_RUNS( "${source}" BINDINGS_RUN_RESULT)
+
+message(STATUS "bindings run result: ${BINDINGS_RUN_RESULT}")
+
+if(BINDINGS_RUN_RESULT EQUAL 1)
     message( STATUS "QtBindings found")
     set(QTSCRIPT_QT_BINDINGS_FOUND TRUE)
-else(BINDINGS_RUN_RESULT EQUAL 0)
-    MESSAGE(STATUS "QtBindings not found")
-    	set(QTSCRIPT_QT_BINDINGS_FOUND FALSE)
-endif(BINDINGS_RUN_RESULT EQUAL 0)
+else(BINDINGS_RUN_RESULT EQUAL 1)
+    message( STATUS "QtBindings not found")
+    set(QTSCRIPT_QT_BINDINGS_FOUND FALSE)
+endif(BINDINGS_RUN_RESULT EQUAL 1)
 
+set(CMAKE_REQUIRED_DEFINTIONS "" )
+set(CMAKE_REQUIRED_INCLUDES "")
+set(CMAKE_REQUIRED_LIBRARIES "")
