@@ -938,6 +938,7 @@ void TagDialog::readTags()
     m_labelCloud->view()->setEnabled( editable );
     ui->ratingWidget->setEnabled( editable );
     ui->qSpinBox_score->setEnabled( editable );
+    ui->pushButton_guessTags->setEnabled( editable );
 
     if( local )
         ui->pushButton_guessTags->show();
@@ -1437,6 +1438,7 @@ TagDialog::saveTags()
         if( !ec->isEditable() )
         {
             debug() << "Track not editable. Aborting loop.";
+            The::statusBar()->shortMessage( i18n( "Writing to file failed. Please check permissions and available disc space." ) );
             continue;
         }
 
