@@ -1,10 +1,5 @@
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
-if(MP4V2_FOUND)
-    ADD_DEFINITIONS(-DHAVE_MP4V2)
-    include_directories( ${MP4V2_INCLUDE_DIR} )
-endif(MP4V2_FOUND)
-
 if(APPLE)
     set(mac_SRCS
         app_mac.cpp

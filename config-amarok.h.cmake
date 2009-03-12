@@ -9,12 +9,6 @@
 /* have LIBVISUAL */
 #cmakedefine HAVE_LIBVISUAL 1
 
-/* have mp4v2 */
-/* #undef HAVE_MP4V2 */
-
-/* Define to 1 if you have the <mp4.h> header file. */
-/* #undef HAVE_MP4_H */
-
 /* have Qt with OpenGL support */
 /* #undef HAVE_QGLWIDGET */
 
