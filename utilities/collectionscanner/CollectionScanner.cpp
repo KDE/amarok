@@ -572,7 +572,6 @@ CollectionScanner::readUniqueId( const QString &path )
     QFile qfile( path );
     QByteArray size;
     md5.addData( size.setNum( qfile.size() ) );
-    return randomUniqueId( md5 );
 
     TagLib::FileRef fileref = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
 
