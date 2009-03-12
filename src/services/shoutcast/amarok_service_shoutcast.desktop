@@ -2,7 +2,7 @@
 Type=Service
 ServiceTypes=KPluginInfo
 Icon=network-wireless
-Name=Shoutcast
+Name=Shoutcast Directory
 Comment=A service that allows browsing of thousands of shoutcast stations
 Comment[bg]=Услуга за обзор на хиляди shoutcast радио станции
 Comment[ca]=Un servei que permet navegar per milers d'estacions de shoutcast
