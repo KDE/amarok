@@ -332,6 +332,13 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             const TagLib::String composer = Qt4QStringToTString( changes.value( Meta::Field::COMPOSER ).toString() );
             mp4tag->itemListMap()["\xa9wrt"] = TagLib::StringList( composer );
         }
+        if( changes.contains( Meta::Field::DISCNUMBER ) )
+        {
+            shouldSave = true;
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            int discnumber = changes.value( Meta::Field::DISCNUMBER ).toInt();
+            mp4tag->itemListMap()["disk"] = TagLib::MP4::Item( discnumber, 0 );
+        }
     }
 #endif
     if( shouldSave )

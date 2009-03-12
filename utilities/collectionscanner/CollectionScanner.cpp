@@ -59,13 +59,12 @@
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <mp4file.h>
 #include <mp4tag.h>
+#include <mp4item.h>
 #include <audiblefiletyperesolver.h>
 #include <asffiletyperesolver.h>
 #include <wavfiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
 #include <mp4filetyperesolver.h>
-#endif
-
 #endif
 
 #include <textidentificationframe.h>
@@ -803,10 +802,10 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
-                attributes["composer"] = TStringToQString( mp4tag->composer() );
-                attributes["bpm"] = QString::number( mp4tag->bpm() ).toFloat();
-                disc = QString::number( mp4tag->disk() );
-                compilation = QString::number( mp4tag->compilation() );
+                attributes["composer"] = TStringToQString( mp4tag->itemListMap()["\xa9wrt"].toStringList().front() );
+                attributes["bpm"] = QString::number( mp4tag->itemListMap()["tmpo"].toInt() );
+                disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
+                compilation = QString::number( mp4tag->itemListMap()["cpil"].toBool() ? '1' : '0' );
 
 //                 if ( images && mp4tag->cover().size() )
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );

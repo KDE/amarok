@@ -57,6 +57,7 @@ target_link_libraries(amarokcollectionscanner
                       ${QT_QTXML_LIBRARY}
                       ${QT_QTDBUS_LIBRARY}
                       ${TAGLIB_LIBRARIES}
+                      ${TAGLIB-EXTRAS_LIBRARIES}
                       )
 
 if(APPLE)
