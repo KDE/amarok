@@ -79,6 +79,8 @@ if( WITH_PLAYER )
         macro_optional_find_package(Libgcrypt)
         if ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
             set (_mp3tunes_crypto TRUE )
+        else ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
+            message( SEND_ERROR "Building with mp3tunes support REQUIRES either OpenSSL or GNU Libgcrypt" )
         endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
         macro_log_feature( _mp3tunes_crypto "openssl or libgcrypt" "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" FALSE "" "" )
 
