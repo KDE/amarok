@@ -197,6 +197,10 @@ SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 Meta::PodcastEpisodePtr
 SqlPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
 {
+    if( episode->channel()->fetchType() == 0 ) 
+    {
+        downloadEpisode( episode );
+    }
     return Meta::PodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 }
 
@@ -474,6 +478,7 @@ SqlPodcastProvider::updateAll()
     foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
     {
         update( channel );
+        
     }
 }
 
@@ -500,6 +505,15 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
     //PodcastReader will create a progress bar in The StatusBar.
 
     result = podcastReader->update( channel );
+
+    //Code to auto-download latest podcast
+    if( channel->fetchType() == 0 )
+    {
+      Meta::SqlPodcastEpisodePtr sqlEpisode
+                = Meta::SqlPodcastEpisodePtr::dynamicCast( channel->episodes().front() );  
+      if( sqlEpisode->localUrl().isEmpty() )
+          downloadEpisode( sqlEpisode );
+    }
 }
 
 void
