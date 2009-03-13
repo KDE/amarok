@@ -11,10 +11,11 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "FirstRunTutorial.h"
 
 #include "Debug.h"
+#include "FirstRunTutorialPage.h"
+#include "MainWindow.h"
 
 #include <QChar>
 #include <QString>
@@ -32,8 +33,7 @@ FirstRunTutorial::FirstRunTutorial( QWidget *parent )
     , m_framesMax( 60 )
     , m_itemSet()
     , m_pageNum( 0 )
-{
-}
+{}
 
 FirstRunTutorial::~FirstRunTutorial()
 {
@@ -46,6 +46,7 @@ void
 FirstRunTutorial::initOverlay() //SLOT
 {
     DEBUG_BLOCK
+
     m_scene = new QGraphicsScene( m_parent );
     m_view = new QGraphicsView( m_scene, m_parent );
     m_scene->setSceneRect( QRectF( m_parent->rect() ) );
@@ -71,6 +72,7 @@ FirstRunTutorial::initOverlay() //SLOT
     m_fadeHideTimer.setCurrentTime( 0 );
     m_fadeHideTimer.setFrameRange( 0, 60 );
     m_fadeHideTimer.setCurveShape( QTimeLine::EaseOutCurve );
+
     connect( &m_fadeShowTimer, SIGNAL( frameChanged(int) ), this, SLOT( fadeShowTimerFrameChanged(int) ) );
     connect( &m_fadeHideTimer, SIGNAL( frameChanged(int) ), this, SLOT( fadeHideTimerFrameChanged(int) ) );
     connect( &m_fadeShowTimer, SIGNAL( finished() ), this, SLOT( fadeShowTimerFinished() ) );
@@ -82,6 +84,7 @@ void
 FirstRunTutorial::fadeShowTimerFrameChanged( int frame ) //SLOT
 {
     DEBUG_BLOCK
+
     if( m_fadeShowTimer.state() == QTimeLine::Running && m_pageNum == 0 )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
@@ -97,6 +100,7 @@ void
 FirstRunTutorial::fadeShowTimerFinished() //SLOT
 {
     DEBUG_BLOCK
+
     if( m_pageNum == 0 )
     {
         QColor color = Qt::blue;
@@ -112,6 +116,7 @@ void
 FirstRunTutorial::fadeHideTimerFrameChanged( int frame ) //SLOT
 {
     DEBUG_BLOCK
+
     if( m_fadeHideTimer.state() == QTimeLine::Running && m_pageNum == 0 )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
@@ -127,6 +132,7 @@ void
 FirstRunTutorial::fadeHideTimerFinished() //SLOT
 {
     DEBUG_BLOCK
+
     if( m_pageNum == MAX_PAGE )
     {
         QColor color = Qt::blue;
@@ -163,7 +169,14 @@ where it just operates on the items currently in the set...reusability++
 void FirstRunTutorial::slotPage1() //SLOT
 {
     DEBUG_BLOCK
-    m_fadeHideTimer.start();
+
+    FirstRunTutorialPage* page = new FirstRunTutorialPage();
+    page->setGeometry( The::mainWindow()->geometry().adjusted( 200, 200, -200, -200 ) );
+
+    m_scene->addItem( page );
+    connect( page, SIGNAL( destroyed() ), &m_fadeHideTimer, SLOT( start() ) );
+
+    //m_fadeHideTimer.start();
 }
 
 #include "FirstRunTutorial.moc"

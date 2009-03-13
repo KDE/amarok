@@ -24,6 +24,7 @@
 class FirstRunTutorial : public QObject
 {
     Q_OBJECT
+
     public:
         FirstRunTutorial( QWidget *parent );
         ~FirstRunTutorial();

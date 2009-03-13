@@ -620,10 +620,12 @@ App::continueInit()
     m_splash = 0;
     PERF_LOG( "App init done" )
     KConfigGroup config = KGlobal::config()->group( "General" );
-    const bool firstruntut = config.readEntry( "FirstRunTutorial", false );
+
+    const bool firstruntut = config.readEntry( "FirstRunTutorial", true );
     debug() << "Checking whether to run first run tutorial..." << firstruntut;
     if( firstruntut )
     {
+        config.writeEntry( "FirstRunTutorial", false );
         debug() << "Starting first run tutorial";
         FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
         QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) );

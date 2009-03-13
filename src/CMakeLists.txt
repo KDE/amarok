@@ -475,6 +475,7 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
+    firstruntutorial/FirstRunTutorialPage.cpp
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
