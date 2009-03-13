@@ -24,22 +24,10 @@
 Amarok::Widget::Widget( QWidget * parent )
     : QWidget( parent )
 {
-    QPalette p = palette();
-    QColor c = p.color( QPalette::Window );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Window, c );
-    setPalette( p );
-
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 }
 
 void Amarok::Widget::newPalette( const QPalette & palette )
 {
-    QPalette p = palette;
-    QColor c = p.color( QPalette::Window );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Window, c );
-    setPalette( p );
 }
 
 #include "Widget.moc"
