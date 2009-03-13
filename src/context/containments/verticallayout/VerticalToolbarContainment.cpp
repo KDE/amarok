@@ -27,10 +27,14 @@
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )
     , m_applets( 0 )
-{    
+{
+    DEBUG_BLOCK
     setContainmentType( CustomContainment );
     setDrawWallpaper( false );
-            
+   // setScreen( -1 );
+    setImmutability( Plasma::Mutable );
+    
+    debug() << "applet containment has corona:" << corona();
     m_applets = new VerticalAppletLayout( this );
     
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), SLOT( appletRemoved( Plasma::Applet* ) ) );
@@ -46,7 +50,10 @@ Context::VerticalToolbarContainment::~VerticalToolbarContainment()
 void 
 Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints constraints )
 {
+    DEBUG_BLOCK
     Q_UNUSED( constraints )
+
+    debug() << "setting applets geom to" << contentsRect();
 
     m_applets->setGeometry( contentsRect() );
 }
@@ -59,7 +66,11 @@ Context::VerticalToolbarContainment::contextualActions()
 
 void 
 Context::VerticalToolbarContainment::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect)
-{}
+{
+    Q_UNUSED( painter );
+    Q_UNUSED( option );
+    Q_UNUSED( contentsRect );
+}
 
 void
 Context::VerticalToolbarContainment::saveToConfig( KConfigGroup &conf )

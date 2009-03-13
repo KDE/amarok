@@ -59,6 +59,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
    // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
+    setScreen( -1 );
 
     scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
     
@@ -236,8 +237,8 @@ void
 ContextView::updateContainmentsGeometry()
 {
   //  DEBUG_BLOCK
-
-  //  debug() << "cv rect: " << rect();
+    
+    debug() << "resizing containment to: " << rect();
 
     containment()->resize( rect().size() );
     containment()->setPos( rect().topLeft() );
