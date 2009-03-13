@@ -19,8 +19,6 @@
 #ifndef AMAROK_METAREPLAYGAIN_H
 #define AMAROK_METAREPLAYGAIN_H
 
-#include "amarok_export.h"
-
 #include <QMap>
 
 // Taglib
@@ -45,7 +43,7 @@ namespace Meta
     /**
      * Reads the replay gain tags from a taglib file.
      */
-    AMAROK_EXPORT ReplayGainTagMap readReplayGainTags( TagLib::FileRef fileref );
+    ReplayGainTagMap readReplayGainTags( TagLib::FileRef fileref );
 }
 
 #endif // AMAROK_METAREPLAYGAIN_H
