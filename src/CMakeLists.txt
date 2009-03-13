@@ -48,10 +48,13 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDES}
-    ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
 )
+
+if ( TAGLIB-EXTRAS_FOUND )
+    include_directories( ${include_directories} ${TAGLIB-EXTRAS_INCLUDES} )
+endif ( TAGLIB-EXTRAS_FOUND )
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )

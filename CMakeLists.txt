@@ -8,7 +8,7 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3TUNES "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
-option(WITH_TAGLIB-EXTRAS "Enable extra tag reading/writing formats" Off)
+option(WITH_TAGLIB-EXTRAS "Enable extra tag reading/writing formats" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -18,7 +18,7 @@ find_package(Taglib REQUIRED)
 
 if( WITH_TAGLIB-EXTRAS )
     set(TAGLIB-EXTRAS_MIN_VERSION "0.1")
-    find_package(TaglibExtras)
+    find_package(Taglib-Extras)
     if( TAGLIB-EXTRAS_FOUND )
         add_definitions( -DTAGLIB_EXTRAS_FOUND )
     endif( TAGLIB-EXTRAS_FOUND )
