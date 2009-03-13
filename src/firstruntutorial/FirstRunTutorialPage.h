@@ -37,6 +37,9 @@ public:
     FirstRunTutorialPage();
     ~FirstRunTutorialPage();
 
+signals:
+    void pageClosed();
+
 protected:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
      

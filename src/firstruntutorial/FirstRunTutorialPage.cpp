@@ -58,7 +58,7 @@ FirstRunTutorialPage::FirstRunTutorialPage()
 
     KPushButton* button = new KPushButton( i18n( "Close" ) );
     button->setAttribute( Qt::WA_NoSystemBackground );  // Removes ugly rectangular border
-    connect( button, SIGNAL( clicked() ), SLOT( deleteLater() ) );
+    connect( button, SIGNAL( clicked() ), this, SIGNAL( pageClosed() ) );
 
     m_closeButton = new QGraphicsProxyWidget( this );
     m_closeButton->setWidget( button);
@@ -73,6 +73,8 @@ FirstRunTutorialPage::~FirstRunTutorialPage()
 void
 FirstRunTutorialPage::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
     m_text->setTextWidth( size().width() - 50 ); // Important: Without it, <center> does not work in the HTML
 
     QString htmlText(  // TODO: Make this i18n() once the text is finalized
@@ -82,8 +84,9 @@ FirstRunTutorialPage::paint( QPainter *painter, const QStyleOptionGraphicsItem *
          "<br/>"
          "<h2>Welcome to Amarok 2.1!</h2>"
          "<p>"
-           "Amarok is a powerful music player for Linux and Unix, MacOS X and Windows with an intuitive interface. "
-           "It makes playing the music you love and discovering new music easier than ever before - and it looks good doing it!"
+         "Amarok is a powerful music player for Linux and Unix, MacOS X and Windows with an intuitive interface."
+         "<p>"
+         "It makes playing the music you love and discovering new music easier than ever before - and it looks good doing it!"
          "</p>"
          "<br/>"
          "<br/>"
@@ -107,7 +110,7 @@ FirstRunTutorialPage::paint( QPainter *painter, const QStyleOptionGraphicsItem *
 
     painter->setBrush( color );
     painter->setRenderHint( QPainter::Antialiasing );
-    painter->setOpacity( m_animOpacity );
+    painter->setOpacity( opacity() * m_animOpacity );
     painter->setPen( QPen( Qt::gray, 1 ) );
     painter->drawPath( innerRect );
     painter->restore();

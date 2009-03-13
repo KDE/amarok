@@ -83,8 +83,6 @@ FirstRunTutorial::initOverlay() //SLOT
 void
 FirstRunTutorial::fadeShowTimerFrameChanged( int frame ) //SLOT
 {
-    DEBUG_BLOCK
-
     if( m_fadeShowTimer.state() == QTimeLine::Running && m_pageNum == 0 )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
@@ -94,13 +92,15 @@ FirstRunTutorial::fadeShowTimerFrameChanged( int frame ) //SLOT
         p.setColor( QPalette::Window, color );
         m_view->setPalette( p );
     }
+    else
+    {
+        m_pages[m_pageNum]->setOpacity( ( frame * 1.0 ) / m_framesMax );
+    }
 }
 
 void
 FirstRunTutorial::fadeShowTimerFinished() //SLOT
 {
-    DEBUG_BLOCK
-
     if( m_pageNum == 0 )
     {
         QColor color = Qt::blue;
@@ -108,16 +108,19 @@ FirstRunTutorial::fadeShowTimerFinished() //SLOT
         QPalette p = m_view->palette();
         p.setColor( QPalette::Window, color );
         m_view->setPalette( p );
-        QTimer::singleShot( 2000, this, SLOT( setupPerms() ) );
+        m_pageNum++;
+        QTimer::singleShot( 1000, this, SLOT( nextPage() ) );
+    }
+    else
+    {
+        m_pages[m_pageNum]->setOpacity( 1.0 );
     }
 }
 
 void
 FirstRunTutorial::fadeHideTimerFrameChanged( int frame ) //SLOT
 {
-    DEBUG_BLOCK
-
-    if( m_fadeHideTimer.state() == QTimeLine::Running && m_pageNum == 0 )
+    if( m_fadeHideTimer.state() == QTimeLine::Running && m_pageNum > MAX_PAGE )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
         QColor color = Qt::blue;
@@ -126,14 +129,16 @@ FirstRunTutorial::fadeHideTimerFrameChanged( int frame ) //SLOT
         p.setColor( QPalette::Window, color );
         m_view->setPalette( p );
     }
+    else
+    {
+        m_pages[m_pageNum]->setOpacity( 1 - ( ( frame * 1.0 ) / m_framesMax ) );
+    }
 }
 
 void
 FirstRunTutorial::fadeHideTimerFinished() //SLOT
 {
-    DEBUG_BLOCK
-
-    if( m_pageNum == MAX_PAGE )
+    if( m_pageNum > MAX_PAGE )
     {
         QColor color = Qt::blue;
         color.setAlpha( 0 );
@@ -142,17 +147,29 @@ FirstRunTutorial::fadeHideTimerFinished() //SLOT
         m_view->setPalette( p );
         deleteLater();
     }
+    else
+    {
+        m_pages[m_pageNum]->setOpacity( 0 );
+        m_pages[m_pageNum]->deleteLater();
+        m_pages[m_pageNum] = 0;
+        m_pageNum++;
+        QTimer::singleShot( 1000, this, SLOT( nextPage() ) );
+    }
 }
 
-void FirstRunTutorial::setupPerms() //SLOT
+void FirstRunTutorial::nextPage() //SLOT
 {
-    //Set up permanent items here, like close button, next/prev...for now just cause it to exit
-    //m_fadeHideTimer.start();
-    //now start the first page...see below
-    m_pageNum++;
-    QString page( QString("1slotPage%1()").arg( m_pageNum ) );
-    //QMetaObject::invokeMethod( this, page.toAscii().constData() ); //this should work, but doesn't...asking on k-c-d
-    QTimer::singleShot( 0, this, page.toAscii().constData() );
+    DEBUG_BLOCK
+    debug() << "page is " << m_pageNum << " out of " << MAX_PAGE;
+    if( m_pageNum <= MAX_PAGE )
+    {
+        QString page( QString("1slotPage%1()").arg( m_pageNum ) );
+        QTimer::singleShot( 0, this, page.toAscii().constData() );
+    }
+    else
+    {
+        m_fadeHideTimer.start();        
+    }
 }
 
 /*
@@ -171,12 +188,14 @@ void FirstRunTutorial::slotPage1() //SLOT
     DEBUG_BLOCK
 
     FirstRunTutorialPage* page = new FirstRunTutorialPage();
-    page->setGeometry( The::mainWindow()->geometry().adjusted( 200, 200, -200, -200 ) );
+    m_pages[m_pageNum] = page;
+    page->setGeometry( The::mainWindow()->frameGeometry().adjusted( 200, 200, -200, -200 ) );
+    page->setOpacity( 0 );
 
     m_scene->addItem( page );
-    connect( page, SIGNAL( destroyed() ), &m_fadeHideTimer, SLOT( start() ) );
+    connect( page, SIGNAL( pageClosed() ), &m_fadeHideTimer, SLOT( start() ) );
 
-    //m_fadeHideTimer.start();
+    m_fadeShowTimer.start();
 }
 
 #include "FirstRunTutorial.moc"
