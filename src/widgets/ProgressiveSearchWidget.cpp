@@ -146,7 +146,7 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
     debug() << "New filter: " << filter;
 
     emit( filterChanged( filter, m_searchFieldsMask ) );
-    
+
     if( filter.isEmpty() )
     {
         m_nextAction->setEnabled( false );
@@ -155,6 +155,9 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
         QPalette p = m_searchEdit->palette();
         p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
         m_searchEdit->setPalette( p );
+
+        if( m_showOnlyMatches )
+            hideHiddenTracksWarning();
 
         emit( filterCleared() );
     }
