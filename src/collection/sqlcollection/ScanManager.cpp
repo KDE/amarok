@@ -40,6 +40,7 @@
 #include <QVariant>
 #include <QTextCodec>
 #include <QXmlStreamAttributes>
+#include <QDir>         //QDir::separator
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -66,8 +67,7 @@ ScanManager::ScanManager( SqlCollection *parent )
     DEBUG_BLOCK
 
     // If Amarok is not installed in standard directory
-    const QString binDir = KStandardDirs::findExe( "amarok" );
-    m_amarokCollectionScanDir = binDir.left( binDir.lastIndexOf( '/' ) + 1 );
+    m_amarokCollectionScanDir = App::instance()->applicationDirPath() + QDir::separator();
 
     QTimer *watchFoldersTimer = new QTimer( this );
     connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) );
