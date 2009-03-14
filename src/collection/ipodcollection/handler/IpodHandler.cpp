@@ -1251,7 +1251,7 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 }
 
 void
-IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track )
+IpodHandler::getBasicIpodTrackInfo( const Itdb_Track *ipodtrack, Meta::IpodTrackPtr track ) const
 {
     /* 1-liner info retrieval */
 
@@ -1272,17 +1272,20 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
     path = m_mountPoint + path;
     track->setPlayableUrl( path );
 
-    QString filetype = QString::fromUtf8( ipodtrack->filetype );
+    const QString filetype = QString::fromUtf8( ipodtrack->filetype );
 
     if( filetype == "mpeg" )
         track->setType( "mp3" );
 }
 
-QByteArray
-IpodHandler::md5sum( const QString& artist, const QString& album ) const
+QString
+IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 {
+    const QString artist = QString::fromUtf8( ipodtrack->artist );
+    const QString album  = QString::fromUtf8( ipodtrack->album  );
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
-    return context.hexDigest();
+    const QString imageKey = context.hexDigest();
+    return Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
 }
 
 // TODO: This is sloooow. Need to implement on-demand fetching.
@@ -1306,11 +1309,9 @@ IpodHandler::getIpodCoverArt() const
     {
         Itdb_Track *song = (Itdb_Track *)it->data;
 
-        const QString artist = QString::fromUtf8( song->artist );
-        const QString album  = QString::fromUtf8( song->album  );
-        const QString imageKey = md5sum( artist, album );
+        const QString filename = ipodArtFilename( song );
 
-        if( retrievedArt.contains(imageKey) )
+        if( retrievedArt.contains(filename) )
             continue;
 
         if( song->has_artwork == 0x02 )
@@ -1320,12 +1321,10 @@ IpodHandler::getIpodCoverArt() const
         if( !pixbuf )
             continue;
         
-        const QString filename = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
-
         gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, NULL);
         gdk_pixbuf_unref( pixbuf );
 
-        retrievedArt.insert( imageKey );
+        retrievedArt.insert( filename );
     }
 #endif
 }
@@ -1335,10 +1334,7 @@ IpodHandler::getCover( Meta::IpodTrackPtr track ) const
 {
 #ifdef GDK_FOUND
     const Itdb_Track *ipodTrack = track->getIpodTrack();
-    const QString artist = QString::fromUtf8( ipodTrack->artist );
-    const QString album  = QString::fromUtf8( ipodTrack->album  );
-    const QString imageKey = md5sum( artist, album );
-    const QString filename = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
+    const QString filename = ipodArtFilename( ipodTrack );
     return QPixmap( filename ); 
 #else
     Q_UNUSED( track );
@@ -1347,47 +1343,41 @@ IpodHandler::getCover( Meta::IpodTrackPtr track ) const
 }
 
 void
-IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
+IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path ) const
 {
+#ifdef GDK_FOUND
     DEBUG_BLOCK
-    Q_UNUSED( image )
-    Q_UNUSED( ipodtrack )
 
-    // HACK: not setting cover art until working properly
-#if 0
-    KTemporaryFile tempImageFile; // create a temp file to save pixmap
-    // use tempdir's path
-    tempImageFile.setPrefix( m_tempdir->name() );
-    tempImageFile.setSuffix( ".jpeg" ); // default suffix jpeg
-    // tempdir will nuke the file afterward anyway
-    tempImageFile.setAutoRemove( false);
-
-    if( !tempImageFile.open() )
-    {
-        debug() << "Failed to create temp file";
+    if( !m_supportsArtwork )
         return;
-    }
 
-    QFileInfo tempImageFileInfo( tempImageFile ); // get info for path
-    QString tempImagePath = tempImageFileInfo.absoluteFilePath(); // path
-    image.save( tempImagePath ); // temporarily save pixmap
+    itdb_artwork_remove_thumbnails( ipodtrack->artwork );
+    itdb_track_set_thumbnails( ipodtrack, QFile::encodeName(path) );
+    ipodtrack->has_artwork = 0x01;
+#else
+    Q_UNUSED( ipodtrack );
+    Q_UNUSED( path );
+#endif
+}
 
-    bool success = false;
+void
+IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const
+{
+#ifdef GDK_FOUND
+    DEBUG_BLOCK
 
-    debug() << "Adding image that's temporarily at: " << tempImagePath;
+    if( image.isNull() )
+        return;
 
-    success = itdb_track_set_thumbnails( ipodtrack, QFile::encodeName( tempImagePath ) );
+    const QString filename = ipodArtFilename( ipodtrack );
+    bool saved = image.save( filename );
+    if( !saved )
+        return;
 
-    if( success )
-    {
-        debug() << "Image added successfully!";
-        ipodtrack->has_artwork = 0x01;
-    }
-    else
-    {
-        debug() << "Image failed to add!";
-        ipodtrack->has_artwork = 0x02;
-    }
+    setCoverArt( ipodtrack, filename );
+#else
+    Q_UNUSED( ipodtrack );
+    Q_UNUSED( image );
 #endif
 }
 
