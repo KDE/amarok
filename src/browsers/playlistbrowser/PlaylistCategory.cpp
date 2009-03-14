@@ -42,7 +42,7 @@
 #include <typeinfo>
 
 PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
-    : Amarok::Widget( parent )
+    : QWidget( parent )
 {
     setContentsMargins(0,0,0,0);
     m_toolBar = new QToolBar( this );

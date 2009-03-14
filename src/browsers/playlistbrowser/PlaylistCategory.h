@@ -21,7 +21,6 @@
 #define PLAYLISTCATEGORY_H
 
 #include "UserPlaylistTreeView.h"
-#include "widgets/Widget.h"
 
 #include <KDialog>
 
@@ -43,7 +42,7 @@ The widget that displays playlists in the playlist browser
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class PlaylistCategory : public Amarok::Widget
+class PlaylistCategory : public QWidget
 {
 Q_OBJECT
 public:

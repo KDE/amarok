@@ -40,16 +40,16 @@ namespace PlaylistBrowserNS {
 
 
 DynamicCategory::DynamicCategory( QWidget* parent )
-    : Amarok::Widget( parent ), m_biasListView(0), m_biasModel(0), m_biasDelegate(0)
+    : QWidget( parent )
+    , m_biasListView( 0 )
+    , m_biasModel( 0 )
+    , m_biasDelegate( 0 )
 {
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins(0,0,0,0);
 
     m_vLayout = new QVBoxLayout( this );
-
-    //m_vLayout->setSizePolicy( 
-            //QSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored ) );
 
     m_onoffButton = new QPushButton( this );
     m_onoffButton->setIcon( KIcon( "dynamic-amarok" ) );

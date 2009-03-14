@@ -31,7 +31,6 @@
 #include "PlaylistModel.h"
 #include "layouts/LayoutManager.h"
 #include "navigators/NavigatorFilterProxyModel.h"
-#include "widgets/Widget.h"
 #include "widgets/ProgressiveSearchWidget.h"
 #include "layouts/LayoutConfigAction.h"
 
@@ -76,7 +75,7 @@ Playlist::Widget::Widget( QWidget* parent )
 
     connect( m_sortBox, SIGNAL( activated( int ) ), this, SLOT( sort( int ) ) );*/
     
-    Amarok::Widget * layoutHolder = new Amarok::Widget( this );
+    QWidget * layoutHolder = new QWidget( this );
 
     layoutHolder->setMinimumWidth( 100 );
     layoutHolder->setMinimumHeight( 200 );

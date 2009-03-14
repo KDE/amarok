@@ -18,8 +18,6 @@
 #ifndef DYNAMICCATEGORY_H
 #define DYNAMICCATEGORY_H
 
-#include "widgets/Widget.h"
-
 #include <QPushButton>
 #include <QToolButton>
 #include <QListView>
@@ -34,7 +32,7 @@ namespace PlaylistBrowserNS {
 
     /**
     */
-    class DynamicCategory : public Amarok::Widget
+    class DynamicCategory : public QWidget
     {
         Q_OBJECT
         public:
