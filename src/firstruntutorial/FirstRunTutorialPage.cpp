@@ -110,7 +110,8 @@ FirstRunTutorialPage::paint( QPainter *painter, const QStyleOptionGraphicsItem *
 
     painter->setBrush( color );
     painter->setRenderHint( QPainter::Antialiasing );
-    painter->setOpacity( opacity() * m_animOpacity );
+    //Qt 4.5
+    //painter->setOpacity( opacity() * m_animOpacity );
     painter->setPen( QPen( Qt::gray, 1 ) );
     painter->drawPath( innerRect );
     painter->restore();

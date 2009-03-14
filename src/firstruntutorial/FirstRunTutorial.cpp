@@ -94,7 +94,8 @@ FirstRunTutorial::fadeShowTimerFrameChanged( int frame ) //SLOT
     }
     else
     {
-        m_pages[m_pageNum]->setOpacity( ( frame * 1.0 ) / m_framesMax );
+        //Qt 4.5
+        //m_pages[m_pageNum]->setOpacity( ( frame * 1.0 ) / m_framesMax );
     }
 }
 
@@ -113,7 +114,8 @@ FirstRunTutorial::fadeShowTimerFinished() //SLOT
     }
     else
     {
-        m_pages[m_pageNum]->setOpacity( 1.0 );
+        //Qt 4.5
+        //m_pages[m_pageNum]->setOpacity( 1.0 );
     }
 }
 
@@ -131,7 +133,8 @@ FirstRunTutorial::fadeHideTimerFrameChanged( int frame ) //SLOT
     }
     else
     {
-        m_pages[m_pageNum]->setOpacity( 1 - ( ( frame * 1.0 ) / m_framesMax ) );
+        //Qt 4.5
+        //m_pages[m_pageNum]->setOpacity( 1 - ( ( frame * 1.0 ) / m_framesMax ) );
     }
 }
 
@@ -149,7 +152,8 @@ FirstRunTutorial::fadeHideTimerFinished() //SLOT
     }
     else
     {
-        m_pages[m_pageNum]->setOpacity( 0 );
+        //Qt 4.5
+        //m_pages[m_pageNum]->setOpacity( 0 );
         m_pages[m_pageNum]->deleteLater();
         m_pages[m_pageNum] = 0;
         m_pageNum++;
@@ -190,7 +194,8 @@ void FirstRunTutorial::slotPage1() //SLOT
     FirstRunTutorialPage* page = new FirstRunTutorialPage();
     m_pages[m_pageNum] = page;
     page->setGeometry( The::mainWindow()->frameGeometry().adjusted( 200, 200, -200, -200 ) );
-    page->setOpacity( 0 );
+    //Qt 4.5
+    //page->setOpacity( 0 );
 
     m_scene->addItem( page );
     connect( page, SIGNAL( pageClosed() ), &m_fadeHideTimer, SLOT( start() ) );
