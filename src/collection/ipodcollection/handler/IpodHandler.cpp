@@ -31,6 +31,7 @@
 
 #ifdef GDK_FOUND
 extern "C" {
+#include <glib-object.h> // g_type_init
 #include <gdk-pixbuf/gdk-pixbuf.h>
 }
 #endif
@@ -84,6 +85,8 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 {
     DEBUG_BLOCK
 
+    g_type_init();
+
     GError *err = 0;
     m_success = false;
 
@@ -93,10 +96,10 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
     if( err )
     {
+        debug() << "There was an error, attempting to free db: " << err->message;
         g_error_free( err );
         if ( m_itdb )
         {
-            debug() << "There was an error, attempting to free db";
             itdb_free( m_itdb );
             m_itdb = 0;
         }
@@ -111,6 +114,9 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 
         debug() << "Getting model information";
         detectModel(); // get relevant info about device
+
+        // TODO: this needs to be on demand per track
+        getIpodCoverArt();
 
         // set tempdir up
         m_tempdir->setAutoRemove( true );
@@ -1272,8 +1278,6 @@ IpodHandler::getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr tr
         track->setType( "mp3" );
 }
 
-#ifdef GDK_FOUND
-
 QByteArray
 IpodHandler::md5sum( const QString& artist, const QString& album ) const
 {
@@ -1281,101 +1285,66 @@ IpodHandler::md5sum( const QString& artist, const QString& album ) const
     return context.hexDigest();
 }
 
-static bool s_test = false;
-    
-QPixmap
-IpodHandler::getCoverArt( Itdb_Track *ipodtrack )
+// TODO: This is sloooow. Need to implement on-demand fetching.
+void
+IpodHandler::getIpodCoverArt() const
 {
-    /*
-    if( s_test )
-        return QPixmap();
-
+#ifdef GDK_FOUND
     DEBUG_BLOCK
 
-        debug() << "********** GREPME !@(*#Y!@(#$!Y$(*!@$Y!E";
+    if( !m_supportsArtwork )
+    {
+        debug() << "ipod at " << m_mountPoint << " does not support artwork, will not scan";
+        return;
+    }
 
-    int count = 0;
     GList *it;
 
-    for (it = m_itdb->tracks; it != NULL; it = it->next) {
+    QSet<QString> retrievedArt; // Don't keep fetching the same artwork over and over
+
+    for( it = m_itdb->tracks; it != NULL; it = it->next )
+    {
         Itdb_Track *song = (Itdb_Track *)it->data;
 
-        g_print("lalalal");
-
-        if (song->artwork == NULL) {
-             continue;
-        }
-        GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( song->itdb->device,
-                                                     song->artwork, -1, -1);
-        if(pixbuf == NULL ) {
-            continue;
-        }
-        
-        g_print ("Track %d (%016"G_GINT64_MODIFIER"x) %s-%s-%s (%08x)\n",
-                 count, song->dbid,
-                 song->artist, song->album,
-                 song->title, song->mhii_link);
-
-        gint width;
-        gint height;
-        
-        g_object_get (G_OBJECT (pixbuf),
-                      "width", &width,
-                      "height", &height,
-                      NULL);
-
-        const QString imageKey = QString::number(count) + "_" + song->artist + "-" + song->album + "-" + song->title + "-" + width + "x" + height;
-        const QString tempImagePath = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
-
-        debug() << tempImagePath;
-
-        gdk_pixbuf_save (pixbuf, QFile::encodeName(tempImagePath), "png", NULL, NULL);
-        gdk_pixbuf_unref (pixbuf);
-
-        count++;
-    }
-
-    s_test = true;
-    */
-    if( m_supportsArtwork && ipodtrack->has_artwork == 0x01 )
-    {
-        const QString artist = QString::fromUtf8( ipodtrack->artist );
-        const QString album  = QString::fromUtf8( ipodtrack->album  );
+        const QString artist = QString::fromUtf8( song->artist );
+        const QString album  = QString::fromUtf8( song->album  );
         const QString imageKey = md5sum( artist, album );
-        const QString tempImagePath = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".jpg";
 
-        debug() << "trying to get pixbuf -- " << artist << " - " << QString::fromUtf8( ipodtrack->title ) << "(" << album << ")";
-        //GdkPixbuf *gpixbuf = (GdkPixbuf*) itdb_track_get_thumbnail( ipodtrack, -1, -1 );
-        GdkPixbuf *gpixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( m_device, ipodtrack->artwork, 140, 140 );
-        debug() << "got pixbuf: " << gpixbuf << ", device: " << ipodtrack->itdb->device;
+        if( retrievedArt.contains(imageKey) )
+            continue;
 
-        if( gpixbuf )
-        {
-            // temporarily save to file
-            GError *error = 0;
-            const bool success = gdk_pixbuf_save( gpixbuf, QFile::encodeName( tempImagePath ), "jpeg", &error, ( char* ) NULL );
+        if( song->has_artwork == 0x02 )
+             continue;
 
-            if( !success && error )
-            {
-                debug() << "Couldn't read artwork from file, blame GNOME shite: " << error->message;
-                g_error_free( error );
-                return QPixmap();
-            }
-            else if( !success )
-                return QPixmap();
+        GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( song->itdb->device, song->artwork, -1, -1 );
+        if( !pixbuf )
+            continue;
+        
+        const QString filename = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
 
-            // free stupid gnome shit
-            gdk_pixbuf_unref( gpixbuf );
+        gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, NULL);
+        gdk_pixbuf_unref( pixbuf );
 
-            return QPixmap( tempImagePath ); 
-        }
-        else
-            debug() << "libgpod returned a null gdkpixbuf";
+        retrievedArt.insert( imageKey );
     }
-    return QPixmap();
+#endif
 }
 
+QPixmap
+IpodHandler::getCover( Meta::IpodTrackPtr track ) const
+{
+#ifdef GDK_FOUND
+    const Itdb_Track *ipodTrack = track->getIpodTrack();
+    const QString artist = QString::fromUtf8( ipodTrack->artist );
+    const QString album  = QString::fromUtf8( ipodTrack->album  );
+    const QString imageKey = md5sum( artist, album );
+    const QString filename = Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
+    return QPixmap( filename ); 
+#else
+    Q_UNUSED( track );
+    return QPixmap();
 #endif
+}
 
 void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )

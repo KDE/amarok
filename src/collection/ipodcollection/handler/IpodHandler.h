@@ -90,7 +90,7 @@ struct PodcastInfo
            QString mountPoint() const { return m_mountPoint; }
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
            
-           QPixmap getCoverArt( Itdb_Track *ipodtrack );
+           QPixmap getCover( Meta::IpodTrackPtr track ) const;
            
            /**
             * Successfully read Ipod database?
@@ -158,9 +158,8 @@ struct PodcastInfo
            QString realPath( const char *ipodPath );
 
            /* Cover Art functions */
-           #ifdef GDK_FOUND
            QByteArray md5sum( const QString& artist, const QString& album ) const;
-           #endif
+           void getIpodCoverArt() const;
            void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
 
            /* File I/O Methods */
