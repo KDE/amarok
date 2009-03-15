@@ -48,6 +48,7 @@ protected:
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
     virtual void engineVolumeChanged( int percent );
+    virtual void engineMuteStateChanged( bool mute );
 
     // get notified of 'highlight' color change
     virtual void paletteChange( const QPalette & oldPalette );

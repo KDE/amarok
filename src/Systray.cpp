@@ -132,7 +132,12 @@ Amarok::TrayIcon::setupToolTip()
 
         QStringList left, right;
 
-        right << QString("<i>%1%</i>").arg( The::engineController()->volume() );
+        QString volume;
+        if ( The::engineController()->isMuted() )
+            volume = i18n( "Muted" );
+        else
+            volume = QString( "%1%" ).arg( The::engineController()->volume() );
+        right << QString("<i>%1</i>").arg( volume );
         left << "<i>Volume</i>";
 
         const float score = m_track->score();
@@ -315,6 +320,14 @@ void
 Amarok::TrayIcon::engineVolumeChanged( int percent )
 {
     Q_UNUSED( percent );
+
+    setupToolTip();
+}
+
+void
+Amarok::TrayIcon::engineMuteStateChanged( bool mute )
+{
+    Q_UNUSED( mute );
 
     setupToolTip();
 }
