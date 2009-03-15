@@ -130,7 +130,7 @@ void CompoundProgressBar::setProgressStatus( const QObject * owner, const QStrin
 
 void CompoundProgressBar::childPercentageChanged()
 {
-    progresBar()->setValue( calcCompoundPercentage() );
+    progressBar()->setValue( calcCompoundPercentage() );
 }
 
 void CompoundProgressBar::childBarCancelled( ProgressBarNG * childBar )
@@ -163,7 +163,7 @@ void CompoundProgressBar::childBarCancelled( ProgressBarNG * childBar )
         return;
     }
 
-    progresBar()->setValue( calcCompoundPercentage() );
+    progressBar()->setValue( calcCompoundPercentage() );
 
     handleDetailsButton();
 }
@@ -197,7 +197,7 @@ void CompoundProgressBar::childBarComplete( ProgressBarNG * childBar )
         return;
     }
 
-    progresBar()->setValue( calcCompoundPercentage() );
+    progressBar()->setValue( calcCompoundPercentage() );
 
     handleDetailsButton();
 }

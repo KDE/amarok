@@ -53,9 +53,9 @@ public:
     {
         return m_cancelButton;
     }
-    QProgressBar *progresBar()
+    QProgressBar *progressBar()
     {
-        return m_progresBar;
+        return m_progressBar;
     }
     QLabel *descriptionLabel()
     {
@@ -69,16 +69,16 @@ public:
     void setValue( int value );
     void setMaximum( int max )
     {
-        m_progresBar->setMaximum( max );
+        m_progressBar->setMaximum( max );
     }
     int maximum()
     {
-        return  m_progresBar->maximum();
+        return  m_progressBar->maximum();
     }
     int percentage();
     int value()
     {
-        return m_progresBar->value();
+        return m_progressBar->value();
     }
 
 
@@ -97,7 +97,7 @@ signals:
 
 private:
     QToolButton *m_cancelButton;
-    QProgressBar *m_progresBar;
+    QProgressBar *m_progressBar;
     QLabel *m_descriptionLabel;
     KHBox *m_extraButtonSpace;
 

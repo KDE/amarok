@@ -44,11 +44,11 @@ ProgressBarNG::ProgressBarNG( QWidget * parent )
 
     m_cancelButton->setEnabled( false );
 
-    m_progresBar = new QProgressBar( this );
-    m_progresBar->setMinimum( 0 );
-    m_progresBar->setMaximum( 100 );
-    m_progresBar->setMaximumWidth( 300 );
-    m_progresBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_progressBar = new QProgressBar( this );
+    m_progressBar->setMinimum( 0 );
+    m_progressBar->setMaximum( 100 );
+    m_progressBar->setMaximumWidth( 300 );
+    m_progressBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
     m_descriptionLabel = new QLabel( this );
     m_descriptionLabel->setMinimumWidth( 300 );
@@ -102,12 +102,12 @@ void ProgressBarNG::cancel()
 
 void ProgressBarNG::setValue( int percentage )
 {
-    progresBar()->setValue( percentage );
+    progressBar()->setValue( percentage );
     emit( percentageChanged( percentage ) );
 
     //this safety check has to be removed as KJobs sometimes start out
     //by showing 100%, thus removing the progress info before it even gets started
-    /*if ( percentage == m_progresBar->maximum() )
+    /*if ( percentage == m_progressBar->maximum() )
         QTimer::singleShot( POST_COMPLETION_DELAY, this, SLOT( delayedDone() ) );*/
 
 }
@@ -119,12 +119,12 @@ void ProgressBarNG::delayedDone()
 
 int ProgressBarNG::percentage()
 {
-    if ( m_progresBar->maximum() == 100 )
-        return m_progresBar->value();
+    if ( m_progressBar->maximum() == 100 )
+        return m_progressBar->value();
     else
     {
 
-        return ( int )((( float ) m_progresBar->value() / ( float ) m_progresBar->maximum() ) * 100.0 );
+        return ( int )((( float ) m_progressBar->value() / ( float ) m_progressBar->maximum() ) * 100.0 );
 
     }
 }
