@@ -47,6 +47,7 @@ public:
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineVolumeChanged( int percent );
+    virtual void engineMuteStateChanged( bool mute );
     virtual void engineTrackPositionChanged( long position, bool userSeek );
     virtual void engineTrackLengthChanged( long seconds );
 
@@ -69,6 +70,7 @@ protected:
     void playbackEnded( int /*finalPosition*/, int /*trackLength*/, EngineObserver::PlaybackEndedReason reason );
     void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     void volumeChangedNotify( int /*percent*/ );
+    void muteStateChangedNotify( bool /*mute*/ );
     /* userSeek means the position didn't change due to normal playback */
     void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
     void trackLengthChangedNotify( long /*seconds*/ );

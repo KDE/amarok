@@ -14,6 +14,7 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "App.h"
 
 #include "Amarok.h"
@@ -536,6 +537,9 @@ void App::applySettings( bool firstTime )
             The::engineController()->setVolume( AmarokConfig::masterVolume() );
             Amarok::OSD::instance()->setEnabled( osdEnabled );
         }
+
+        if( The::engineController()->isMuted() != AmarokConfig::muteState() )
+            The::engineController()->setMuted( AmarokConfig::muteState() );
 
 #if 0
     // Audio CD is not currently supported

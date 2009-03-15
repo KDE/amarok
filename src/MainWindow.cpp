@@ -748,7 +748,7 @@ MainWindow::createActions()
     action = new KAction( i18n( "Mute Volume" ), this );
     ac->addAction( "mute", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( mute() ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( toggleMute() ) );
 
     action = new KAction( i18n( "Love Current Track" ), this );
     ac->addAction( "loveTrack", action );

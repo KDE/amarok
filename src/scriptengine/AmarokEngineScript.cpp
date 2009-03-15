@@ -110,7 +110,7 @@ namespace AmarokScript
 
     void AmarokEngineScript::Mute()
     {
-        The::engineController()->mute();
+        The::engineController()->toggleMute();
     }
 
     int AmarokEngineScript::trackPosition() const

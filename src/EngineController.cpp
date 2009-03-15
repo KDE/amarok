@@ -488,16 +488,20 @@ EngineController::isMuted() const
 }
 
 void
-EngineController::mute() //SLOT
+EngineController::setMuted( bool mute ) //SLOT
 {
-    // if it's already muted then we restore to previous value
-    int newPercent = m_audio->isMuted() ? volume() : 0;
+    m_audio->setMuted( mute ); // toggle mute
 
-    m_audio->setMuted( !isMuted() ); // toggle mute
+    AmarokConfig::setMuteState( mute );
+    muteStateChangedNotify( mute );
 
-    AmarokConfig::setMasterVolume( newPercent );
-    volumeChangedNotify( newPercent );
-    emit volumeChanged( newPercent );
+    emit muteStateChanged( mute );
+}
+
+void
+EngineController::toggleMute() //SLOT
+{
+    setMuted( !isMuted() );
 }
 
 Meta::TrackPtr

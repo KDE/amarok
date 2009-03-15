@@ -185,10 +185,15 @@
 <group name="Playback">
     <entry key="Master Volume" type="Int">
         <label>Master volume</label>
-        <whatsthis>The Amarok master volume, a value between 0 (muted) and 100.</whatsthis>
+        <whatsthis>The Amarok master volume, a value between 0 and 100.</whatsthis>
         <default>80</default>
         <min>0</min>
         <max>100</max>
+    </entry>
+    <entry key="Mute State" type="Bool">
+        <label>Mute state</label>
+        <whatsthis>Mute/Unmute sound.</whatsthis>
+        <default>false</default>
     </entry>
     <entry key="Crossfade" type="Bool">
         <label>Whether to crossfade between tracks</label>

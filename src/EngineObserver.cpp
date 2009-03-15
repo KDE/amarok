@@ -69,6 +69,12 @@ EngineObserver::engineVolumeChanged( int percent )
 }
 
 void
+EngineObserver::engineMuteStateChanged( bool mute )
+{
+    Q_UNUSED( mute );
+}
+
+void
 EngineObserver::engineTrackPositionChanged( long position , bool userSeek )
 {
     Q_UNUSED( position );
@@ -137,6 +143,13 @@ void EngineSubject::volumeChangedNotify( int percent )
     }
 }
 
+void EngineSubject::muteStateChangedNotify( bool mute )
+{
+        foreach( EngineObserver *observer, Observers )
+    {
+        observer->engineMuteStateChanged( mute );
+    }
+}
 
 void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 {

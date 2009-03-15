@@ -187,7 +187,7 @@ namespace Amarok
 
     void PlayerDBusHandler::Mute() const
     {
-        The::engineController()->mute();
+        The::engineController()->toggleMute();
     }
 
     QVariantMap PlayerDBusHandler::GetMetadata()
