@@ -30,8 +30,9 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     : Amarok::ToolBar( parent )
     , EngineObserver( The::engineController() )
 {
-    const KIcon volumeIcon( KStandardDirs::locate( "data", "amarok/images/volume_icon.png" ) );
-    m_button = new KAction( volumeIcon, i18n( "Mute" ), this );
+    m_icons << KStandardDirs::locate( "data", "amarok/images/volume_icon.png" );
+    m_icons << KStandardDirs::locate( "data", "amarok/images/volume_muted_icon.png" );
+    m_action = new KAction( KIcon( m_icons[ AmarokConfig::muteState() ] ), i18n( "Mute" ), this );
 
     m_slider = new Amarok::VolumeSlider( this, Amarok::VOLUME_MAX );
     m_slider->setObjectName( "ToolBarVolume" );
@@ -44,12 +45,13 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     m_label->setFont( KGlobalSettings::fixedFont() );
 
-    addAction( m_button );
+    addAction( m_action );
     addWidget( m_slider );
     addWidget( m_label );
 
     EngineController* const ec = The::engineController();
-    connect( m_slider, SIGNAL( sliderMoved( int )    ), ec, SLOT( setVolume( int ) ) );
+    connect( m_action, SIGNAL( triggered( bool ) ), ec, SLOT( toggleMute() ) );
+    connect( m_slider, SIGNAL( sliderMoved( int ) ), ec, SLOT( setVolume( int ) ) );
     connect( m_slider, SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
 
     connect( ec, SIGNAL( volumeChanged( int ) ), this, SLOT( engineVolumeChanged( int ) ) );
@@ -61,6 +63,12 @@ VolumeWidget::engineVolumeChanged( int value )
     if( value != m_slider->value() )
         m_slider->setValue( value );
     m_label->setText( QString::number( value ) + '%' );
+}
+
+void
+VolumeWidget::engineMuteStateChanged( bool mute )
+{
+    m_action->setIcon( KIcon( m_icons[ (bool)mute ] ) );
 }
 
 #include "VolumeWidget.moc"

@@ -23,6 +23,7 @@
 
 #include <QLabel>
 #include <QPointer>
+#include <QStringList>
 
 /**
 * A custom widget that serves as our volume slider within Amarok.
@@ -36,11 +37,13 @@ public:
 
 private slots:
     void engineVolumeChanged( int value );
+    void engineMuteStateChanged( bool mute );
 
 private:
     QPointer<Amarok::VolumeSlider> m_slider;
-    KAction *m_button;
+    KAction *m_action;
     QLabel *m_label;
+    QStringList m_icons;
 };
 
 #endif
