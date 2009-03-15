@@ -376,7 +376,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
             }
         }
 
-        if( images.contains( ext ) )
+        if( validImages.contains( ext ) )
             images += path;
 
         else if( m_importPlaylists && validPlaylists.contains( ext ) )
