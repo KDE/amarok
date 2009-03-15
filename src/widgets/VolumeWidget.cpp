@@ -19,23 +19,36 @@
 #include "EngineController.h"
 #include "SliderWidget.h"
 
-#include <klocale.h>
+#include <KLocale>
+#include <KGlobalSettings>
+#include <KStandardDirs>
+
+#include <QHBoxLayout>
+#include <QSlider>
 
 VolumeWidget::VolumeWidget( QWidget *parent )
-    : KHBox( parent )
+    : Amarok::ToolBar( parent )
     , EngineObserver( The::engineController() )
-    , m_slider( 0 )
 {
+    const KIcon volumeIcon( KStandardDirs::locate( "data", "amarok/images/volume_icon.png" ) );
+    m_button = new KAction( volumeIcon, i18n( "Mute" ), this );
+
     m_slider = new Amarok::VolumeSlider( this, Amarok::VOLUME_MAX );
     m_slider->setObjectName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
-    setContentsMargins( 0, 0, 0, 0 );
-
-    m_slider->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    //m_slider->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     m_slider->setToolTip( i18n( "Volume Control" ) );
 
+    m_label = new QLabel();
+    m_label->setFixedWidth( 40 ); // HACK to align correctly with progress slider
+    m_label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+    m_label->setFont( KGlobalSettings::fixedFont() );
+
+    addAction( m_button );
+    addWidget( m_slider );
+    addWidget( m_label );
+
     EngineController* const ec = The::engineController();
-    connect( m_slider, SIGNAL( mute()                ), ec, SLOT( mute() )           );
     connect( m_slider, SIGNAL( sliderMoved( int )    ), ec, SLOT( setVolume( int ) ) );
     connect( m_slider, SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
 
@@ -45,8 +58,9 @@ VolumeWidget::VolumeWidget( QWidget *parent )
 void
 VolumeWidget::engineVolumeChanged( int value )
 {
-    if( m_slider && value != m_slider->value() )
+    if( value != m_slider->value() )
         m_slider->setValue( value );
+    m_label->setText( QString::number( value ) + '%' );
 }
 
 #include "VolumeWidget.moc"

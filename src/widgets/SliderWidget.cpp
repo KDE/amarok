@@ -199,23 +199,14 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : Amarok::Slider( Qt::Horizontal, parent, max )
 {
     setFocusPolicy( Qt::NoFocus );
-    m_margin = 4;
-
-    QFontMetrics fm( KGlobalSettings::fixedFont() );
-    m_textHeight = fm.height();
-
+    m_marginRight = 2;
+    m_marginLeft = 2;
+    m_sliderHeight = 20;
 }
 
 void
 Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
 {
-    const QRect iconBox( 0, 0, m_iconHeight, m_iconWidth );
-    if( iconBox.contains( e->pos() ) && e->button() != Qt::RightButton )
-    {
-        emit mute();
-        return;
-    }
-
     if( e->button() != Qt::RightButton )
     {
         Amarok::Slider::mousePressEvent( e );
@@ -235,12 +226,11 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     menu.addAction(  i18n(    "20%" ) )->setData(  20 );
     menu.addAction(  i18n(     "0%" ) )->setData(   0 );
 
-    if( false ) //TODO phonon
-    {
-        menu.addSeparator();
-        menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )
-            ->setData( -1 );
-    }
+    /*
+    // TODO: Phonon
+    menu.addSeparator();
+    menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )->setData( -1 );
+    */
 
     QAction* a = menu.exec( mapToGlobal( e->pos() ) );
     if( a )
@@ -260,9 +250,9 @@ Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
     const int x = e->pos().x();
 
     //is event witin slider bounds?
-    if ( ( x >= m_sliderX ) && ( x <= m_sliderX + m_sliderWidth ) )
+    if ( ( x >= m_marginLeft ) && ( x <= m_marginLeft + m_sliderWidth ) )
     {
-        QSlider::setValue( QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x() - m_sliderX, m_sliderWidth-2 ) );
+        QSlider::setValue( QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x() - m_marginLeft, m_sliderWidth-2 ) );
     }
 }
 
@@ -278,36 +268,8 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
-    QPainter *p = new QPainter( this );
-
-    const int sliderY =  ( m_iconHeight -m_sliderHeight ) / 2;
-
-    paintCustomSlider( p, m_sliderX, sliderY, m_sliderWidth, m_sliderHeight );
-
-    //Using pre-rendered SVG for now, cause QtSvg renders the icon wrong
-    //p->drawPixmap( 0, 0, The::svgHandler()->renderSvg( "volume_icon", m_iconWidth, m_iconHeight, "volume_icon" ) ) ;
-
-    const QImage volumeIcon( KStandardDirs::locate( "data", "amarok/images/volume_icon.png" ) );
-    p->drawImage( 0, 0, volumeIcon.scaled( m_iconWidth, m_iconHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
-
-    if( underMouse() )
-    {
-        // Draw percentage number
-        p->setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
-        //QFont font;
-        //font.setPixelSize( 12 );
-        p->setFont( KGlobalSettings::fixedFont() );
-
-        p->setRenderHint( QPainter::TextAntialiasing, true );
-
-
-        const int yOffset =  sliderY + ( m_sliderHeight - m_textHeight ) / 2;
-
-        const QRect rect( m_iconWidth + m_sliderWidth + 4, yOffset, 40, m_textHeight );
-        p->drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
-    }
-
-    delete p;
+    QPainter p( this );
+    paintCustomSlider( &p, 0, (height() - m_sliderHeight) / 2, m_sliderWidth, m_sliderHeight );
 }
 
 void
@@ -319,15 +281,7 @@ Amarok::VolumeSlider::paletteChange( const QPalette& )
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
     Amarok::Slider::resizeEvent( event );
-    m_iconHeight = static_cast<int>( height() * 0.66 );
-    m_iconWidth  = static_cast<int>( m_iconHeight * 1.33 );
-    m_textWidth  = 40;
-    m_sliderWidth = width() - ( m_iconWidth + m_textWidth + m_margin  );
-    m_sliderHeight = 20;
-    if ( m_sliderHeight > height() )
-        m_sliderHeight = height();
-
-    m_sliderX = m_iconWidth + m_margin;
+    m_sliderWidth = width() - ( m_marginLeft + 16 ); // HACK to align correctly with progress slider
 }
 
 
@@ -419,6 +373,4 @@ void Amarok::Slider::paletteChange(const QPalette & oldPalette)
 }
 
 
-
 #include "SliderWidget.moc"
-

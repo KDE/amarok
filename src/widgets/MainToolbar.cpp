@@ -63,27 +63,32 @@ MainToolbar::MainToolbar( QWidget * parent )
     KVBox * vBox = new KVBox( hBox );
     vBox->setContentsMargins( 0, 6, 0, 0 );
 
-    KHBox * topHBox = new KHBox( vBox );
+    QWidget * topBar = new QWidget( vBox );
+    QHBoxLayout * layout = new QHBoxLayout( topBar );
 
-    m_addControlsToolbar = new Amarok::ToolBar( topHBox );
+    m_addControlsToolbar = new Amarok::ToolBar( topBar );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
-    m_addControlsToolbar->setFixedHeight( 22 );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
-
-    ProgressWidget *pWidget = new ProgressWidget( vBox );
-    pWidget->setMinimumSize( 100, 17 );
-    pWidget->setContentsMargins( 0, 2, 0, 0 );
 
     const int volumeRightMargin = 24; // margin to have the volume slider right-aligned with the progress slider
     const int volumeWidth = 340;
+    m_volumeWidget = new VolumeWidget( topBar );
+    m_volumeWidget->setIconDimensions( 16 );
+    m_volumeWidget->setContentsMargins( 0, 0, volumeRightMargin, 0);
+    m_volumeWidget->setFixedWidth( volumeWidth );
 
-    m_volumeWidget = new VolumeWidget( topHBox );
-    m_volumeWidget->setFixedSize( volumeWidth + volumeRightMargin, 24 );
-    m_volumeWidget->setContentsMargins( 0, 0, volumeRightMargin, 0 );
+    layout->addWidget( m_addControlsToolbar );
+    layout->addWidget( m_volumeWidget );
+    layout->setAlignment( m_volumeWidget, Qt::AlignRight );
+    topBar->setLayout( layout );
+
+    ProgressWidget *progressWidget = new ProgressWidget( vBox );
+    progressWidget->setMinimumSize( 100, 17 );
+    progressWidget->setContentsMargins( 0, 2, 0, 0 );
 
     kapp->installEventFilter( this );
 }
@@ -212,5 +217,3 @@ void MainToolbar::reRender()
     m_ignoreCache = true;
     update();
 }
-
-

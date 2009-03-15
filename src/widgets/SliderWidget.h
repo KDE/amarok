@@ -120,17 +120,9 @@ namespace Amarok
         private:
             Q_DISABLE_COPY( VolumeSlider )
 
-            ////////////////////////////////////////////////////////////////
-            int m_iconHeight;
-            int m_iconWidth;
-            int m_textWidth;
             int m_sliderWidth;
             int m_sliderHeight;
-            int m_sliderX;
-
-            int m_margin;
-
-            int m_textHeight;
+            int m_marginLeft, m_marginRight;
     };
 
     class TimeSlider : public Amarok::Slider
@@ -155,7 +147,6 @@ namespace Amarok
 
         private:
             Q_DISABLE_COPY( TimeSlider )
-            ////////////////////////////////////////////////////////////////
 
             QTimer *m_animTimer; // Used for a smooth progress.
             QList<BookmarkTriangle*> m_triangles;
