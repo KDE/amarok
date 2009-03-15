@@ -108,7 +108,6 @@ namespace Amarok
             virtual void paintEvent( QPaintEvent* );
 
             virtual void paletteChange( const QPalette& );
-            virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void contextMenuEvent( QContextMenuEvent* );
             virtual void wheelEvent( QWheelEvent *e );
@@ -117,9 +116,7 @@ namespace Amarok
         private:
             Q_DISABLE_COPY( VolumeSlider )
 
-            int m_sliderWidth;
             int m_sliderHeight;
-            int m_marginLeft, m_marginRight;
     };
 
     class TimeSlider : public Amarok::Slider

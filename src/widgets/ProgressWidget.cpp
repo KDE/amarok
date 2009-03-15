@@ -52,9 +52,10 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabelRight = new TimeLabel( this );
     m_timeLabelRight->setFixedWidth( 60 );
     m_timeLabelRight->setToolTip( i18n( "The amount of time remaining in current song" ) );
+    m_timeLabelRight->setAlignment( Qt::AlignRight );
 
     m_timeLabelLeft->setShowTime( false);
-    m_timeLabelLeft->setAlignment(Qt::AlignRight);
+    m_timeLabelLeft->setAlignment( Qt::AlignRight );
     m_timeLabelRight->setShowTime( false );
     m_timeLabelLeft->show();
     m_timeLabelRight->show();

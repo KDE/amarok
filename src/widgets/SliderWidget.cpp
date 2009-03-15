@@ -199,8 +199,6 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : Amarok::Slider( Qt::Horizontal, parent, max )
 {
     setFocusPolicy( Qt::NoFocus );
-    m_marginRight = 2;
-    m_marginLeft = 2;
     m_sliderHeight = 20;
 }
 
@@ -245,18 +243,6 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 }
 
 void
-Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
-{
-    const int x = e->pos().x();
-
-    //is event witin slider bounds?
-    if ( ( x >= m_marginLeft ) && ( x <= m_marginLeft + m_sliderWidth ) )
-    {
-        QSlider::setValue( QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x() - m_marginLeft, m_sliderWidth-2 ) );
-    }
-}
-
-void
 Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 {
     const uint step = e->delta() / Amarok::VOLUME_SENSITIVITY;
@@ -269,7 +255,7 @@ void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSlider( &p, 0, (height() - m_sliderHeight) / 2, m_sliderWidth, m_sliderHeight );
+    paintCustomSlider( &p, 0, (height() - m_sliderHeight) / 2, width(), m_sliderHeight );
 }
 
 void
@@ -281,9 +267,7 @@ Amarok::VolumeSlider::paletteChange( const QPalette& )
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
     Amarok::Slider::resizeEvent( event );
-    m_sliderWidth = width() - ( m_marginLeft + 16 ); // HACK to align correctly with progress slider
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -40,8 +40,8 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     //m_slider->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     m_slider->setToolTip( i18n( "Volume Control" ) );
 
-    m_label = new QLabel();
-    m_label->setFixedWidth( 40 ); // HACK to align correctly with progress slider
+    m_label = new QLabel( QString::number( AmarokConfig::masterVolume() ) + '%' );
+    m_label->setFixedWidth( 60 ); // HACK to align correctly with progress slider
     m_label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     m_label->setFont( KGlobalSettings::fixedFont() );
 
