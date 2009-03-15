@@ -30,11 +30,9 @@
 ProgressBarNG::ProgressBarNG( QWidget * parent )
         : KHBox( parent )
 {
-
     //setup the basics
 
     setSpacing( 4 );
-    setContentsMargins( 0, 2, 0, 2 );
 
     m_extraButtonSpace = new KHBox( this );
     m_extraButtonSpace->setSpacing( 0 );
@@ -56,19 +54,11 @@ ProgressBarNG::ProgressBarNG( QWidget * parent )
     m_descriptionLabel->setMinimumWidth( 300 );
     m_descriptionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
-    const int contentHeight = QFontMetrics( m_descriptionLabel->font() ).height();
-    const int barHeight = contentHeight + 6;
-
-    setFixedHeight( barHeight );
-
-    m_progresBar->setFixedHeight( barHeight - 4 );
-
     setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Fixed );
 
     /*setBackgroundRole( QPalette::Link );
     setAutoFillBackground ( true );
     */
-
 }
 
 
