@@ -1,0 +1,87 @@
+TIPS FOR CORRECT MEMORY MANAGEMENT WITH C++ AND QT
+==================================================
+
+
+1)
+Use of "Smart Pointers":
+A smart pointer in C++ means (in its most simple incarnation) a
+pointer that automatically sets itself to 0, when the object it points
+to is being destroyed (deleted).
+
+Advantages:
+
+No risk of "dangling pointers". A dangling pointer is a pointer that
+has been deleted, but still contains the memory address of the object
+that has been destroyed. What happens if you delete this again is
+called a "double-free", and almost always leads to a crash. With a
+smart pointer, you can delete the object safely again, because
+deleting a 0-pointer is defined as a safe (doing nothing) operation in
+the C++ standard.
+
+Example:
+
+WRONG:
+
+QWidget* foo = new QWidget();
+delete foo;
+delete foo;
+<BOOOOM>
+
+RIGHT:
+
+QPointer<QWidget> foo = new QWidget();
+delete foo;
+delete foo;
+<not nice, but no crash>
+
+
+2)
+Always make sure not to dereference a 0-pointer:
+
+This is _the_ single most common crash cause in Amarok 2 currently.
+It's easy to prevent, but unfortunately also easy to miss:
+
+Example:
+
+WRONG:
+
+Meta::TrackPtr foo;
+debug() << foo->prettyUrl();
+<BOOOOM>
+
+RIGHT:
+
+Meta::TrackPtr foo;
+if( foo )
+   debug() << foo->prettyUrl();
+<no output, and no crash>
+
+
+3)
+Never, ever, use private d-pointer classes in QObject derived subclasses:
+
+What can happen is that you do a "delete d;" in your destructor, and
+then Qt goes ahead and auto-deletes other QObject pointers contained
+in the private class again, through means of its automatic deleting of
+QObjects with a parent Object. -> <BOOOOM>
+
+Read more about this topic in Michael Pyne's interesting blog article:
+
+http://www.purinchu.net/wp/2009/02/04/another-programming-tidbit/
+
+
+4)
+Use Valgrind:
+
+This is one of the most advanced memory debugging tools available,
+it's free, and we even have found volunteers that run regular Valgrind
+checks (both for memory access bugs and memory leaks) on Amarok trunk.
+Reading the Valgrind logs correctly is a bit of an art in itself, but
+I'm willing to explain this in another posting, if there is a demand.
+
+
+Recommended reading on the topic of memory management is this page of
+the excellent "C++ FAQ Lite":
+
+http://www.parashift.com/c++-faq-lite/freestore-mgmt.html
+
