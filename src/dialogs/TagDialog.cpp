@@ -218,10 +218,14 @@ void
 TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genres )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::GenrePtr genre, genres )
     {
-        m_genres << genre->name();
+        if( !genre->name().isEmpty() )  // Where the heck do the empty genres come from?
+            m_genres << genre->name();
     }
+
+    m_genres.sort();
 }
 
 void
