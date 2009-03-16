@@ -132,6 +132,7 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
+        plBar->addSeparator();
 
         Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
         plBar->addAction( layoutConfigAction );
@@ -139,10 +140,6 @@ Playlist::Widget::Widget( QWidget* parent )
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
 
-
-        // Alternate playlist view disabled for 2.0
-        //plBar->addSeparator();
-        //plBar->addAction( Amarok::actionCollection()->action( "playlist_switch") );
         plBar->addAction( new KToolBarSpacerAction( this ) );
 
     } //END Playlist Toolbar
