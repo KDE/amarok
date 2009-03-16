@@ -99,18 +99,22 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
     const KIcon newIcon( "list-add" );
     newLayoutButton->setIcon( newIcon );
+    newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
     connect( newLayoutButton, SIGNAL( clicked() ), this, SLOT( newLayout() ) );
     
     const KIcon copyIcon( "edit-copy" );
     copyLayoutButton->setIcon( copyIcon );
+    copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
     
     const KIcon deleteIcon( "edit-delete" );
     deleteLayoutButton->setIcon( deleteIcon );
+    deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
     connect( deleteLayoutButton, SIGNAL( clicked() ), this, SLOT( deleteLayout() ) );
     toggleDeleteButton();
 
     const KIcon renameIcon( "edit-rename" );
     renameLayoutButton->setIcon( renameIcon );
+    renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
 }
 
 
