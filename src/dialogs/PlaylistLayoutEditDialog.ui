@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>PlaylistLayoutEditDialog</class>
- <widget class="QDialog" name="PlaylistLayoutEditDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="PlaylistLayoutEditDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,35 +10,35 @@
     <height>351</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_3" >
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Available Layouts</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3" >
+     <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <layout class="QHBoxLayout" name="listHLayout" >
+       <layout class="QHBoxLayout" name="listHLayout">
         <item>
-         <widget class="QListWidget" name="layoutListWidget" />
+         <widget class="QListWidget" name="layoutListWidget"/>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2" >
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <spacer name="verticalSpacer" >
-            <property name="orientation" >
+           <spacer name="verticalSpacer">
+            <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>40</height>
@@ -46,21 +47,21 @@
            </spacer>
           </item>
           <item>
-           <widget class="KArrowButton" name="karrowbutton" />
+           <widget class="KArrowButton" name="karrowbutton"/>
           </item>
           <item>
-           <widget class="KArrowButton" name="karrowbutton_2" >
-            <property name="arrowType" stdset="0" >
+           <widget class="KArrowButton" name="karrowbutton_2">
+            <property name="arrowType" stdset="0">
              <number>2</number>
             </property>
            </widget>
           </item>
           <item>
-           <spacer name="verticalSpacer_2" >
-            <property name="orientation" >
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>40</height>
@@ -73,18 +74,18 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4" >
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="KPushButton" name="newLayoutButton" />
+         <widget class="KPushButton" name="newLayoutButton"/>
         </item>
         <item>
-         <widget class="KPushButton" name="copyLayoutButton" />
+         <widget class="KPushButton" name="copyLayoutButton"/>
         </item>
         <item>
-         <widget class="KPushButton" name="deleteLayoutButton" />
+         <widget class="KPushButton" name="deleteLayoutButton"/>
         </item>
         <item>
-         <widget class="KPushButton" name="renameLayoutButton" />
+         <widget class="KPushButton" name="renameLayoutButton"/>
         </item>
        </layout>
       </item>
@@ -92,147 +93,101 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" >
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" >
-       <item>
-        <spacer name="horizontalSpacer_2" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0" >
-          <size>
-           <width>98</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label" >
-         <property name="layoutDirection" >
-          <enum>Qt::RightToLeft</enum>
-         </property>
-         <property name="text" >
-          <string>Layout name</string>
-         </property>
-         <property name="alignment" >
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="nameEdit" />
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0" >
-          <size>
-           <width>122</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="TokenPool" name="tokenPool" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
+      <widget class="TokenPool" name="tokenPool">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize" >
+       <property name="minimumSize">
         <size>
          <width>0</width>
          <height>0</height>
         </size>
        </property>
-       <property name="maximumSize" >
+       <property name="maximumSize">
         <size>
          <width>16777215</width>
          <height>100</height>
         </size>
        </property>
-       <property name="tabKeyNavigation" >
+       <property name="tabKeyNavigation">
         <bool>true</bool>
        </property>
-       <property name="selectionMode" >
+       <property name="selectionMode">
         <enum>QAbstractItemView::SingleSelection</enum>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>48</width>
          <height>48</height>
         </size>
        </property>
-       <property name="textElideMode" >
+       <property name="textElideMode">
         <enum>Qt::ElideNone</enum>
        </property>
-       <property name="movement" >
+       <property name="movement">
         <enum>QListView::Static</enum>
        </property>
-       <property name="isWrapping" stdset="0" >
+       <property name="isWrapping" stdset="0">
         <bool>false</bool>
        </property>
-       <property name="layoutMode" >
+       <property name="layoutMode">
         <enum>QListView::Batched</enum>
        </property>
-       <property name="gridSize" >
+       <property name="gridSize">
         <size>
          <width>72</width>
          <height>64</height>
         </size>
        </property>
-       <property name="viewMode" >
+       <property name="viewMode">
         <enum>QListView::IconMode</enum>
        </property>
-       <property name="modelColumn" >
+       <property name="modelColumn">
         <number>0</number>
        </property>
-       <property name="uniformItemSizes" >
+       <property name="uniformItemSizes">
         <bool>false</bool>
        </property>
-       <property name="wordWrap" >
+       <property name="wordWrap">
         <bool>true</bool>
        </property>
-       <property name="mimeType" stdset="0" >
+       <property name="mimeType" stdset="0">
         <string>application/x-amarok-tag-token</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QTabWidget" name="elementTabs" >
-       <property name="currentIndex" >
+      <widget class="QTabWidget" name="elementTabs">
+       <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="tab" >
-        <attribute name="title" >
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
          <string>Head</string>
         </attribute>
        </widget>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" >
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QPushButton" name="previewButton" >
-         <property name="text" >
+        <widget class="QPushButton" name="previewButton">
+         <property name="text">
           <string>Preview</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer" >
-         <property name="orientation" >
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>305</width>
            <height>21</height>
@@ -241,11 +196,11 @@
         </spacer>
        </item>
        <item>
-        <widget class="QDialogButtonBox" name="buttonBox" >
-         <property name="orientation" >
+        <widget class="QDialogButtonBox" name="buttonBox">
+         <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="standardButtons" >
+         <property name="standardButtons">
           <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
          </property>
         </widget>
@@ -270,7 +225,7 @@
   <customwidget>
    <class>TokenPool</class>
    <extends>QListWidget</extends>
-   <header location="global" >widgets/TokenPool.h</header>
+   <header location="global">widgets/TokenPool.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -281,11 +236,11 @@
    <receiver>PlaylistLayoutEditDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -297,11 +252,11 @@
    <receiver>PlaylistLayoutEditDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

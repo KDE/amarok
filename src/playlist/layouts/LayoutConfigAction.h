@@ -48,6 +48,7 @@ class LayoutConfigAction : public KAction
         void layoutListChanged();
         void configureLayouts();
         void onActiveLayoutChanged();
+        void layoutsConfigured();
 
     private:
         PlaylistLayoutEditDialog * m_playlistEditDialog;

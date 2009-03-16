@@ -148,7 +148,7 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
 
         QString layoutName = layout.toElement().attribute( "name", "" );
         PlaylistLayout currentLayout;
-        currentLayout.setIsEditable( user );
+        currentLayout.setEditable( user );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -219,7 +219,7 @@ PlaylistLayout LayoutManager::layout( const QString &layout ) const
 
 void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 {
-    layout.setIsEditable( true );
+    layout.setEditable( true );
     m_layouts.insert( name, layout );
 
     QDomDocument doc( "layouts" );

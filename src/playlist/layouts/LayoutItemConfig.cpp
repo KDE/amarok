@@ -174,9 +174,19 @@ bool Playlist::PlaylistLayout::isEditable() const
     return m_isEditable;
 }
 
-void Playlist::PlaylistLayout::setIsEditable( bool editable )
+bool Playlist::PlaylistLayout::isDirty() const
+{
+    return m_isDirty;
+}
+
+void Playlist::PlaylistLayout::setEditable( bool editable )
 {
     m_isEditable = editable;
+}
+
+void Playlist::PlaylistLayout::setDirty( bool dirty )
+{
+    m_isDirty = dirty;
 }
 
 }

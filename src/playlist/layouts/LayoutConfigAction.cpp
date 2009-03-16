@@ -41,10 +41,11 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     setIcon( actionIcon );
     m_layoutMenu = new KMenu( parent );
     setMenu( m_layoutMenu );
+    setText( i18n( "Playlist layouts" ) );
     m_configAction = new KAction( m_layoutMenu );
-    m_layoutMenu->addSeparator();
     
     m_layoutMenu->addAction( m_configAction );
+    m_layoutMenu->addSeparator();
     m_layoutActions = new QActionGroup( m_layoutMenu );
     m_layoutActions->setExclusive( TRUE );
 
@@ -55,6 +56,9 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     }
     m_layoutMenu->addActions( m_layoutActions->actions() );
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
+    debug() << "About to check layout at index " << index;
+    if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
+                        //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
     m_layoutActions->actions()[ index ]->setChecked( TRUE );
 
     connect( m_layoutActions, SIGNAL( triggered( QAction * ) ), this, SLOT( setActiveLayout( QAction * ) ) );
@@ -76,7 +80,6 @@ LayoutConfigAction::~LayoutConfigAction()
 
 void LayoutConfigAction::setActiveLayout( QAction *layoutAction )
 {
-    debug() << "About to set layout " << layoutAction->text();
     QString layoutName( layoutAction->text() );
     layoutName = layoutName.remove( QChar( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
     LayoutManager::instance()->setActiveLayout( layoutName );
@@ -84,19 +87,43 @@ void LayoutConfigAction::setActiveLayout( QAction *layoutAction )
 
 void LayoutConfigAction::configureLayouts()
 {
-    if ( !m_playlistEditDialog )
+    if( !m_playlistEditDialog )
         m_playlistEditDialog = new PlaylistLayoutEditDialog( The::mainWindow() );
+    connect( m_playlistEditDialog, SIGNAL( finished( int ) ), this, SLOT( layoutsConfigured() ) );
     m_playlistEditDialog->show();
 }
 
+void LayoutConfigAction::layoutsConfigured()
+{
+    disconnect( m_playlistEditDialog, SIGNAL( finished( int ) ), this, SLOT( layoutsConfigured() ) );
+    delete m_playlistEditDialog;
+    m_playlistEditDialog = 0;
+    layoutListChanged();
+}
+
+
 void Playlist::LayoutConfigAction::layoutListChanged()
 {
-    m_layoutActions->actions().clear();
+    m_layoutMenu->removeAction( m_configAction );
+    m_layoutMenu->clear();
+    m_layoutMenu->addAction( m_configAction );
+    m_layoutMenu->addSeparator();
+    foreach( QAction * action, m_layoutActions->actions() )
+    {
+        delete action;
+    }
     QStringList layoutsList( LayoutManager::instance()->layouts() );
+    debug() << "Layouts are " << layoutsList;
     foreach( QString iterator, layoutsList )
     {
-        m_layoutActions->addAction( iterator );
+        m_layoutActions->addAction( iterator )->setCheckable( TRUE );
     }
+    m_layoutMenu->addActions( m_layoutActions->actions() );
+    int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
+    debug() << "About to check layout at index " << index;
+    if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
+                        //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
+        m_layoutActions->actions()[ index ]->setChecked( TRUE );
 }
 
 void LayoutConfigAction::onActiveLayoutChanged()
@@ -104,12 +131,14 @@ void LayoutConfigAction::onActiveLayoutChanged()
     DEBUG_BLOCK
     QString layoutName( LayoutManager::instance()->activeLayoutName() );
     layoutName = layoutName.remove( QChar( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
-    int index = LayoutManager::instance()->layouts().indexOf( layoutName );
-    debug() << "Index in the LayoutManager of currently active layout, called " << LayoutManager::instance()->activeLayoutName() << ", is: " << index;
-    if( m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
-        m_layoutActions->actions()[ index ]->setChecked( TRUE );
+    if( layoutName != QString( "%%PREVIEW%%" ) )           //if it's not just a preview
+    {
+        int index = LayoutManager::instance()->layouts().indexOf( layoutName );
+        debug() << "Index in the LayoutManager of currently active layout, called " << LayoutManager::instance()->activeLayoutName() << ", is: " << index;
+        if( m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
+            m_layoutActions->actions()[ index ]->setChecked( TRUE );
+    }
 }
-
 
 }
 

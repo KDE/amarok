@@ -27,8 +27,14 @@
 
 #include <KMessageBox>
 
+#include <QInputDialog>
+
 using namespace Playlist;
 
+/**
+ * Constructor for PlaylistLayoutEditDialog.
+ * Populates the token pool, loads the available layouts from the LayoutManager in the right area and loads the configuration of the currently active layout.
+ */
 PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     : QDialog( parent )
 {
@@ -66,6 +72,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     m_headEdit = new Playlist::LayoutEditWidget( this );
     m_bodyEdit = new Playlist::LayoutEditWidget( this );
     m_singleEdit = new Playlist::LayoutEditWidget( this );
+    m_layoutsMap = new QMap<QString, PlaylistLayout>();
 
     elementTabs->addTab( m_headEdit, i18n( "Head" ) );
     elementTabs->addTab( m_bodyEdit, i18n( "Body" ) );
@@ -73,16 +80,26 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
     elementTabs->removeTab( 0 );
 
-    layoutListWidget->addItems( LayoutManager::instance()->layouts() );
-    onActiveLayoutChanged();
+    QStringList layoutNames = LayoutManager::instance()->layouts();
+    foreach( QString layoutName, layoutNames )
+    {
+        PlaylistLayout layout = LayoutManager::instance()->layout( layoutName );
+        layout.setDirty( false );
+        m_layoutsMap->insert( layoutName, layout );
+    }
+
+    layoutListWidget->addItems( layoutNames );
+
+    layoutListWidget->setCurrentRow( LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() ) );
+    setLayout( layoutListWidget->currentItem()->text() );
 
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( onActiveLayoutChanged() ) );
     connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
     connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleDeleteButton() ) );
 
     const KIcon newIcon( "list-add" );
     newLayoutButton->setIcon( newIcon );
+    connect( newLayoutButton, SIGNAL( clicked() ), this, SLOT( newLayout() ) );
     
     const KIcon copyIcon( "edit-copy" );
     copyLayoutButton->setIcon( copyIcon );
@@ -101,37 +118,74 @@ PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 {
 }
 
-void PlaylistLayoutEditDialog::deleteLayout()
+/**
+ * Creates a new PlaylistLayout with a given name and loads it in the right area to configure it.
+ * The new layout is not saved in the LayoutManager but in m_layoutsMap.
+ */
+void PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
-    layoutListWidget->removeItemWidget( layoutListWidget->currentItem() );
-    LayoutManager::instance()->deleteLayout( layoutListWidget->currentItem()->text() );
+    QString layoutName( "" );
+    while( layoutName == "" )
+    {
+        layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
+                    i18n( "Please enter a name for the playlist layout you are about to define:" ) );
+        if( layoutName == "" )
+            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Can't create a layout with no name." ) );
+    }
+    debug() << "Creating new layout " << layoutName;
+    layoutListWidget->addItem( layoutName );
+    layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly )).first() );
+    PlaylistLayout layout;
+    layout.setEditable( true );      //Should I use true, TRUE or 1?
+    layout.setDirty( true );
+
+    setLayout( layoutName );
+
+    LayoutItemConfig headConfig = m_headEdit->config() ;
+    headConfig.setActiveIndicatorRow( -1 );
+    layout.setHead( headConfig );
+    layout.setBody( m_bodyEdit->config() );
+    layout.setSingle( m_singleEdit->config() );
+    m_layoutsMap->insert( layoutName, layout );
 }
 
-
+/**
+ * Loads the configuration of the layout layoutName from the m_layoutsMap to the LayoutItemConfig area.
+ * @param layoutName the name of the PlaylistLayout to be loaded for configuration
+ */
 void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
     m_layoutName = layoutName;
-    nameEdit->setText( layoutName );
+    debug()<< "Trying to load layout for configuration " << layoutName;
 
-    PlaylistLayout layout = LayoutManager::instance()->layout( layoutName );
-    m_headEdit->readLayout( layout.head() );
-    m_bodyEdit->readLayout( layout.body() );
-    m_singleEdit->readLayout( layout.single() );
-
-    LayoutManager::instance()->setActiveLayout( layoutName );
-}
-
-void PlaylistLayoutEditDialog::onActiveLayoutChanged()
-{
-    int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
-    if( index != layoutListWidget->currentRow() )
+    if( m_layoutsMap->keys().contains( layoutName ) )   //is the layout exists in the list of loaded layouts
     {
-        layoutListWidget->setCurrentRow( index );
-        setLayout( layoutListWidget->currentItem()->text() );
+        PlaylistLayout layout = m_layoutsMap->value( layoutName );
+        m_headEdit->readLayout( layout.head() );
+        m_bodyEdit->readLayout( layout.body() );
+        m_singleEdit->readLayout( layout.single() );
+    }
+    else
+    {
+        debug() << "Empty layout, clearing config view";
+        //TODO: implement removing all the tokens
     }
 }
 
+/**
+ * Deletes the current layout selected in the layoutListWidget.
+ */
+void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
+{
+    m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
+    if( LayoutManager::instance()->layouts().contains( layoutListWidget->currentItem()->text() ) )  //if the layout is already saved in the LayoutManager
+        LayoutManager::instance()->deleteLayout( layoutListWidget->currentItem()->text() );         //delete it
+    delete layoutListWidget->currentItem();
+}
 
+/**
+ * Applies to the playlist a preview of the currently defined layout.
+ */
 void PlaylistLayoutEditDialog::preview()
 {
     PlaylistLayout layout;
@@ -146,7 +200,10 @@ void PlaylistLayoutEditDialog::preview()
     LayoutManager::instance()->setPreviewLayout( layout );
 }
 
-void PlaylistLayoutEditDialog::toggleDeleteButton()
+/**
+ * Disables the delete button if the selected layout is one of the default layouts and enables it otherwise.
+ */
+void PlaylistLayoutEditDialog::toggleDeleteButton() //SLOT
 {
     if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
         deleteLayoutButton->setEnabled( 0 );
@@ -154,30 +211,34 @@ void PlaylistLayoutEditDialog::toggleDeleteButton()
         deleteLayoutButton->setEnabled( 1 );
 }
 
-
+/**
+ * Saves the edited layouts from m_layoutMap to the LayoutManager and closes the dialog.
+ */
 void PlaylistLayoutEditDialog::accept()
 {
     DEBUG_BLOCK
 
-    if ( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
+    QMap<QString, PlaylistLayout>::Iterator i = m_layoutsMap->begin();
+    while( i != m_layoutsMap->end() )
     {
-        const QString msg = i18n( "The layout '%1' is one of the default layouts and cannot be overwritten. Please select a different name.",
-                nameEdit->text() );
-        KMessageBox::sorry( this, msg, i18n( "Reserved Layout Name" ) );
-        return;
+        debug() << "I'm on layout " << i.key();
+        if( i.value().isDirty() )   //TODO: do setDirty if tokens have been moved
+        {
+            debug() << "Layout " << i.key() << " has been modified and will be saved.";
+            if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
+            {
+                const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. \
+                Please select a different name to save a copy.", layoutListWidget->currentItem()->text() );
+                KMessageBox::sorry( this, msg, i18n( "Reserved Layout Name" ) );
+                //TODO: handle this on layout switch maybe? this is not the right time to tell users they needed to make a copy in the first place
+                return;
+            }
+            i.value().setDirty( 0 );
+            LayoutManager::instance()->addUserLayout( i.key(), i.value() );
+            debug() << "Layout " << i.key() << " saved to LayoutManager";
+        }
+        i++;
     }
-            
-    PlaylistLayout layout;
-
-    LayoutItemConfig headConfig = m_headEdit->config();
-    headConfig.setActiveIndicatorRow( -1 );
-    
-    layout.setHead( headConfig );
-    layout.setBody( m_bodyEdit->config() );
-    layout.setSingle( m_singleEdit->config() );
-    
-    LayoutManager::instance()->addUserLayout( nameEdit->text(), layout );
+    LayoutManager::instance()->setActiveLayout( layoutListWidget->currentItem()->text() );  //important to override the previewed layout if preview is used
     QDialog::accept();
 }
-
-

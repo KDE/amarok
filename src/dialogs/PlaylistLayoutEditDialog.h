@@ -22,6 +22,7 @@
 #define PLAYLISTLAYOUTEDITDIALOG_H
 
 #include "playlist/layouts/LayoutEditWidget.h"
+
 #include <QDialog>
 
 #include "ui_PlaylistLayoutEditDialog.h"
@@ -44,7 +45,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
     private slots:
         void preview();
         virtual void accept();
-        void onActiveLayoutChanged();
+        void newLayout();
         void deleteLayout();
         void toggleDeleteButton();
 
@@ -52,6 +53,8 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         Playlist::LayoutEditWidget *m_headEdit;
         Playlist::LayoutEditWidget *m_bodyEdit;
         Playlist::LayoutEditWidget *m_singleEdit;
+
+        QMap<QString, Playlist::PlaylistLayout> *m_layoutsMap;
 
         QString m_layoutName;
 };

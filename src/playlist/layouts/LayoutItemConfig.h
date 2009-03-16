@@ -98,17 +98,20 @@ class PlaylistLayout
         LayoutItemConfig body() const;
         LayoutItemConfig single() const;
         bool isEditable() const;
+        bool isDirty() const;
 
         void setHead( LayoutItemConfig head );
         void setBody( LayoutItemConfig body );
         void setSingle( LayoutItemConfig single );
-        void setIsEditable( bool editable );
+        void setEditable( bool editable );
+        void setDirty( bool dirty );
 
     private:
         LayoutItemConfig m_head;
         LayoutItemConfig m_body;
         LayoutItemConfig m_single;
         bool m_isEditable;
+        bool m_isDirty;
 };
 
 }
