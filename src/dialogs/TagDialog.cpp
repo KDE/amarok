@@ -188,30 +188,42 @@ void
 TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::AlbumPtr album, albums )
     {
-        m_albums << album->name();
+        if( !album->name().isEmpty() )
+            m_albums << album->name();
     }
+
+    m_albums.sort();
 }
 
 void
 TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::ArtistPtr artist, artists )
     {
-        m_artists << artist->name();
+        if( !artist->name().isEmpty() )
+            m_artists << artist->name();
     }
+
+    m_artists.sort();
 }
 
 void
 TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &composers )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::ComposerPtr composer, composers )
     {
-        m_composers << composer->name();
+        if( !composer->name().isEmpty() )
+            m_composers << composer->name();
     }
+
+    m_composers.sort();
 }
 
 void
