@@ -37,7 +37,6 @@
 #include <KApplication>
 #include <KVBox>
 
-#include <QPainter>
 #include <QResizeEvent>
 #include <QVBoxLayout>
 
@@ -49,8 +48,8 @@ MainToolbar::MainToolbar( QWidget * parent )
 {
     setObjectName( "MainToolbar" );
 
-    setMaximumSize( 20000, 67 );
-    setMinimumSize( 200, 67 );
+    setFixedHeight( 67 );
+    setMinimumWidth( 200 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setContentsMargins( 0, 0, 0, 0 );
     layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -74,12 +73,9 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
-    const int volumeRightMargin = 24; // margin to have the volume slider right-aligned with the progress slider
-    const int volumeWidth = 340;
     m_volumeWidget = new VolumeWidget( topBar );
     m_volumeWidget->setIconDimensions( 16 );
-    m_volumeWidget->setContentsMargins( 0, 0, volumeRightMargin, 0);
-    m_volumeWidget->setFixedWidth( volumeWidth );
+    m_volumeWidget->setFixedWidth( 340 );
 
     layout->addWidget( m_addControlsToolbar );
     layout->addWidget( m_volumeWidget );
@@ -88,7 +84,6 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     ProgressWidget *progressWidget = new ProgressWidget( vBox );
     progressWidget->setMinimumSize( 100, 17 );
-    progressWidget->setContentsMargins( 0, 2, 0, 0 );
 
     kapp->installEventFilter( this );
 }
@@ -96,17 +91,6 @@ MainToolbar::MainToolbar( QWidget * parent )
 MainToolbar::~MainToolbar()
 {
     DEBUG_BLOCK
-}
-
-void MainToolbar::paintEvent( QPaintEvent * )
-{
-    QPainter painter( this );
-
-    //const int watermarkWidth = height() * 1.36;
-
-    //painter.drawPixmap( width() - watermarkWidth, 0, The::svgHandler()->renderSvg( "volume_watermark", watermarkWidth, height(), "volume_watermark" ) );
-    
-    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
 }
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
