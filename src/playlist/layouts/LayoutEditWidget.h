@@ -48,6 +48,7 @@ class LayoutEditWidget : public KVBox
 
         void readLayout( Playlist::LayoutItemConfig config );
         Playlist::LayoutItemConfig config();
+        void clear();
 
     signals:
         void focussed ( QWidget* );

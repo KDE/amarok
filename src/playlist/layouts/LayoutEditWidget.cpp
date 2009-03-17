@@ -112,6 +112,10 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
     return config;
 }
 
+void LayoutEditWidget::clear()
+{
+    m_dragstack->clear();
+}
 
 #include "LayoutEditWidget.moc"
 

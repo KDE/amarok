@@ -172,7 +172,9 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     else
     {
         debug() << "Empty layout, clearing config view";
-        //TODO: implement removing all the tokens
+        m_headEdit->clear();
+        m_bodyEdit->clear();
+        m_singleEdit->clear();
     }
 }
 
