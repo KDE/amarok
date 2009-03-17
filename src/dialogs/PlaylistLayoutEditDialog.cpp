@@ -334,3 +334,7 @@ void PlaylistLayoutEditDialog::reject()
     LayoutManager::instance()->setActiveLayout( m_firstActiveLayout );
     QDialog::reject();
 }
+
+
+#include "PlaylistLayoutEditDialog.moc"
+
