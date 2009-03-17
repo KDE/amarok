@@ -38,7 +38,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            Slider( Qt::Orientation, QWidget*, uint max = 0 );
+            Slider( Qt::Orientation, uint max = 0, QWidget* parent = 0 );
 
             virtual void setValue( int );
 
@@ -102,7 +102,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            explicit VolumeSlider( QWidget *parent, uint max = 0 );
+            explicit VolumeSlider( uint max, QWidget *parent = 0 );
 
         protected:
             virtual void paintEvent( QPaintEvent* );

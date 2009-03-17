@@ -46,7 +46,7 @@
 #include <QStyleOptionComplex>
 
 
-Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
+Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     : QSlider( orientation, parent )
     , m_sliding( false )
     , m_outside( false )
@@ -195,8 +195,8 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
 /// CLASS VolumeSlider
 //////////////////////////////////////////////////////////////////////////////////////////
 
-Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
-    : Amarok::Slider( Qt::Horizontal, parent, max )
+Amarok::VolumeSlider::VolumeSlider( uint max, QWidget *parent )
+    : Amarok::Slider( Qt::Horizontal, max, parent )
 {
     setFocusPolicy( Qt::NoFocus );
     m_sliderHeight = 20;
@@ -275,7 +275,7 @@ void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 //////////////////////////////////////////////////////////////////////////////////////////
 
 Amarok::TimeSlider::TimeSlider( QWidget *parent )
-    : Amarok::Slider( Qt::Horizontal, parent )
+    : Amarok::Slider( Qt::Horizontal, 0, parent )
     , m_triangles()
     , m_knobX( 0.0 )
 {

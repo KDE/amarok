@@ -35,7 +35,7 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_icons << KStandardDirs::locate( "data", "amarok/images/volume_muted_icon.png" );
     m_action = new KAction( KIcon( m_icons[ AmarokConfig::muteState() ] ), i18n( "Mute" ), this );
 
-    m_slider = new Amarok::VolumeSlider( this, Amarok::VOLUME_MAX );
+    m_slider = new Amarok::VolumeSlider( Amarok::VOLUME_MAX, this );
     m_slider->setObjectName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
     m_slider->setToolTip( i18n( "Volume Control" ) );
