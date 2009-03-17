@@ -802,10 +802,17 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
-                attributes["composer"] = TStringToQString( mp4tag->itemListMap()["\xa9wrt"].toStringList().front() );
-                attributes["bpm"] = QString::number( mp4tag->itemListMap()["tmpo"].toInt() );
-                disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
-                compilation = QString::number( mp4tag->itemListMap()["cpil"].toBool() ? '1' : '0' );
+                if ( !mp4tag->itemListMap()["\xA9wrt"].toStringList().isEmpty() )
+                    attributes["composer"] = TStringToQString( mp4tag->itemListMap()["\xa9wrt"].toStringList().front() );
+
+                if ( !mp4tag->itemListMap()["tmpo"].toStringList().isEmpty() )
+                    attributes["bpm"] = QString::number( mp4tag->itemListMap()["tmpo"].toInt() );
+
+                if ( !mp4tag->itemListMap()["disk"].toStringList().isEmpty() )
+                    disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
+
+                if ( !mp4tag->itemListMap()["cpil"].toStringList().isEmpty() )
+                    compilation = QString::number( mp4tag->itemListMap()["cpil"].toBool() ? '1' : '0' );
 
 //                 if ( images && mp4tag->cover().size() )
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
