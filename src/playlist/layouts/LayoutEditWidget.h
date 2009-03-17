@@ -22,7 +22,6 @@
 
 #include "LayoutItemConfig.h"
 
-#include "TokenLayoutWidget.h"
 #include "widgets/TokenWithLayout.h"
 
 #include <KVBox>
