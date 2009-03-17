@@ -24,6 +24,8 @@
 
 #include <KHBox>
 
+#include <QFrame>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QProgressBar>
 #include <QToolButton>
@@ -37,7 +39,7 @@ A widget that encapsulates a progress bar, a description string and a cancel but
 
 	@author
 */
-class AMAROK_EXPORT ProgressBarNG : public KHBox
+class AMAROK_EXPORT ProgressBarNG : public QFrame
 {
 
     Q_OBJECT
@@ -65,6 +67,7 @@ public:
     {
         return m_extraButtonSpace;
     }
+
 
     void setValue( int value );
     void setMaximum( int max )
@@ -100,7 +103,6 @@ private:
     QProgressBar *m_progressBar;
     QLabel *m_descriptionLabel;
     KHBox *m_extraButtonSpace;
-
 };
 
 #endif

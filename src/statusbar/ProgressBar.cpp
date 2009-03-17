@@ -28,37 +28,41 @@
 #include <KLocale>
 
 ProgressBarNG::ProgressBarNG( QWidget * parent )
-        : KHBox( parent )
+        : QFrame( parent )
 {
-    //setup the basics
+    QHBoxLayout *box = new QHBoxLayout( this );
+    box->setMargin( 0 );
+    box->setSpacing( 0 );
 
-    setSpacing( 4 );
+    m_descriptionLabel = new QLabel( this );
+    m_descriptionLabel->setMinimumWidth( 50 );
+    //m_descriptionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    box->addWidget( m_descriptionLabel );
 
-    m_extraButtonSpace = new KHBox( this );
+    KHBox *progressBox = new KHBox( this );
+
+    m_extraButtonSpace = new KHBox( progressBox );
     m_extraButtonSpace->setSpacing( 0 );
-    m_extraButtonSpace->setContentsMargins( 0, 0, 0, 0 );
+    m_extraButtonSpace->setMargin( 0 );
 
-    m_cancelButton = new QToolButton( this );
+    m_cancelButton = new QToolButton( progressBox );
     m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
     m_cancelButton->setToolTip( i18n( "Abort" ) );
-
     m_cancelButton->setEnabled( false );
 
-    m_progressBar = new QProgressBar( this );
+    m_progressBar = new QProgressBar( progressBox );
     m_progressBar->setMinimum( 0 );
     m_progressBar->setMaximum( 100 );
+    m_progressBar->setMinimumWidth( 200 );
     m_progressBar->setMaximumWidth( 300 );
     m_progressBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
-    m_descriptionLabel = new QLabel( this );
-    m_descriptionLabel->setMinimumWidth( 300 );
-    m_descriptionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    box->addWidget( progressBox );
+    box->setAlignment( progressBox, Qt::AlignRight );
 
-    setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Fixed );
+    //setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Fixed );
 
-    /*setBackgroundRole( QPalette::Link );
-    setAutoFillBackground ( true );
-    */
+    setLayout( box );
 }
 
 

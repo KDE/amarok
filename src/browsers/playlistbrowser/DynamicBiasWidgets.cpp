@@ -192,7 +192,7 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
     m_controlLayout->addLayout( sliderLayout, 0, 1 );
 
     m_weightLabel = new QLabel( " 0%", m_controlFrame );
-    m_weightSelection = new Amarok::Slider( Qt::Horizontal, m_controlFrame, 100 );
+    m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, m_controlFrame );
     m_weightSelection->setToolTip(
             i18n( "This controls what portion of the playlist should match the criteria" ) );
     connect( m_weightSelection, SIGNAL(valueChanged(int)),
@@ -657,7 +657,7 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
     m_controlLayout->addLayout( sliderLayout, 0, 1 );
 
     m_scaleLabel = new QLabel( " 0%", m_controlFrame );
-    m_scaleSelection = new Amarok::Slider( Qt::Horizontal, m_controlFrame, 100 );
+    m_scaleSelection = new Amarok::Slider( Qt::Horizontal, 100, m_controlFrame );
     m_scaleSelection->setToolTip(
             i18n( "This controls how strictly to match the given value." ) );
     connect( m_scaleSelection, SIGNAL(valueChanged(int)),
