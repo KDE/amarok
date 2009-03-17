@@ -116,6 +116,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     const KIcon renameIcon( "edit-rename" );
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
+    connect( renameLayoutButton, SIGNAL( clicked() ), this, SLOT( renameLayout() ) );
 }
 
 
@@ -173,11 +174,11 @@ void PlaylistLayoutEditDialog::copyLayout()
                     i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
                     layoutListWidget->currentItem()->text() ) );
         if( layoutName == "" )
-            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Can't create a layout with no name." ) );
+            KMessageBox::sorry( this, i18n( "Can't create a layout with no name." ), i18n( "Layout name error" ) );
         if( m_layoutsMap->keys().contains( layoutName ) )
-            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Can't create a layout with the same name as an existing layout." ) );
+            KMessageBox::sorry( this, i18n( "Can't create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
     }
-    debug() << "Creating new layout " << layoutName;
+    debug() << "Copying layout " << layoutName;
     layoutListWidget->addItem( layoutName );
     layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly )).first() );
     PlaylistLayout layout;
@@ -189,6 +190,50 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setBody( bodyConfig );
     layout.setSingle( singleConfig );
     m_layoutsMap->insert( layoutName, layout );
+
+    setLayout( layoutName );
+}
+
+/**
+ * Deletes the current layout selected in the layoutListWidget.
+ */
+void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
+{
+    m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
+    if( LayoutManager::instance()->layouts().contains( layoutListWidget->currentItem()->text() ) )  //if the layout is already saved in the LayoutManager
+        LayoutManager::instance()->deleteLayout( layoutListWidget->currentItem()->text() );         //delete it
+    delete layoutListWidget->currentItem();
+}
+
+/**
+ * Renames the current layout selected in the layoutListWidget.
+ */
+void PlaylistLayoutEditDialog::renameLayout()
+{
+    PlaylistLayout layout = m_layoutsMap->value( layoutListWidget->currentItem()->text() );
+    
+    QString layoutName( "" );
+    while( layoutName == "" || m_layoutsMap->keys().contains( layoutName ) )
+    {
+        layoutName = QInputDialog::getText( this, i18n( "Choose a new name for the playlist layout" ),
+                    i18n( "Please enter a new name for the playlist layout you are about to rename:" ) );
+        if( LayoutManager::instance()->isDefaultLayout( layoutName ) )
+        {
+            KMessageBox::sorry( this, i18n( "Can't rename one of the default layouts." ), i18n( "Layout name error" ) );
+            return;
+        }
+        if( layoutName == "" )
+            KMessageBox::sorry( this, i18n( "Can't rename a layout with no name." ), i18n( "Layout name error" ) );
+        if( m_layoutsMap->keys().contains( layoutName ) )
+            KMessageBox::sorry( this, i18n( "Can't rename a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
+    }
+    debug() << "Renaming layout " << layoutName;
+    m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
+    if( LayoutManager::instance()->layouts().contains( layoutListWidget->currentItem()->text() ) )  //if the layout is already saved in the LayoutManager
+        LayoutManager::instance()->deleteLayout( layoutListWidget->currentItem()->text() );         //delete it
+    LayoutManager::instance()->addUserLayout( layoutName, layout );
+    m_layoutsMap->insert( layoutName, layout );
+    layoutListWidget->currentItem()->setText( layoutName );
 
     setLayout( layoutName );
 }
@@ -216,17 +261,6 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
         m_bodyEdit->clear();
         m_singleEdit->clear();
     }
-}
-
-/**
- * Deletes the current layout selected in the layoutListWidget.
- */
-void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
-{
-    m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
-    if( LayoutManager::instance()->layouts().contains( layoutListWidget->currentItem()->text() ) )  //if the layout is already saved in the LayoutManager
-        LayoutManager::instance()->deleteLayout( layoutListWidget->currentItem()->text() );         //delete it
-    delete layoutListWidget->currentItem();
 }
 
 /**

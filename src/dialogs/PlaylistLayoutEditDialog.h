@@ -48,6 +48,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         void newLayout();
         void copyLayout();
         void deleteLayout();
+        void renameLayout();
         void toggleDeleteButton();
 
     private:
