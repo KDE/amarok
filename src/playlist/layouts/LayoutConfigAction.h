@@ -25,7 +25,6 @@
 #include <KPushButton>
 #include <KMenu>
 
-class PlaylistLayoutEditDialog;
 class QComboBox;
 
 namespace Playlist {
@@ -48,10 +47,8 @@ class LayoutConfigAction : public KAction
         void layoutListChanged();
         void configureLayouts();
         void onActiveLayoutChanged();
-        void layoutsConfigured();
 
     private:
-        PlaylistLayoutEditDialog * m_playlistEditDialog;
         KAction *m_configAction;
         QActionGroup *m_layoutActions;
         KMenu *m_layoutMenu;

@@ -330,8 +330,10 @@ void PlaylistLayoutEditDialog::accept()
 void PlaylistLayoutEditDialog::reject()
 {
     DEBUG_BLOCK
+
     debug() << "Applying initial layout: " << m_firstActiveLayout;
     LayoutManager::instance()->setActiveLayout( m_firstActiveLayout );
+
     QDialog::reject();
 }
 

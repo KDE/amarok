@@ -35,7 +35,6 @@ namespace Playlist
 
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : KAction( parent )
-    , m_playlistEditDialog( 0 )
 {
     KIcon actionIcon( "configure" );    //TEMPORARY ICON
     setIcon( actionIcon );
@@ -75,8 +74,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
 
 
 LayoutConfigAction::~LayoutConfigAction()
-{
-}
+{}
 
 void LayoutConfigAction::setActiveLayout( QAction *layoutAction )
 {
@@ -87,20 +85,10 @@ void LayoutConfigAction::setActiveLayout( QAction *layoutAction )
 
 void LayoutConfigAction::configureLayouts()
 {
-    if( !m_playlistEditDialog )
-        m_playlistEditDialog = new PlaylistLayoutEditDialog( The::mainWindow() );
-    connect( m_playlistEditDialog, SIGNAL( finished( int ) ), this, SLOT( layoutsConfigured() ) );
-    m_playlistEditDialog->show();
-}
-
-void LayoutConfigAction::layoutsConfigured()
-{
-    disconnect( m_playlistEditDialog, SIGNAL( finished( int ) ), this, SLOT( layoutsConfigured() ) );
-    delete m_playlistEditDialog;
-    m_playlistEditDialog = 0;
+    PlaylistLayoutEditDialog layoutEditor( The::mainWindow() );
+    layoutEditor.exec();
     layoutListChanged();
 }
-
 
 void Playlist::LayoutConfigAction::layoutListChanged()
 {
