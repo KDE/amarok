@@ -43,3 +43,5 @@ Type=Service
 Icon=wikipedia
 X-KDE-Library=amarok_data_engine_wikipedia
 X-KDE-PluginInfo-Name=amarok-wikipedia
+X-KDE-ParentApp=Amarok
+

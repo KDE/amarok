@@ -92,17 +92,14 @@ ContextView::~ContextView()
     DEBUG_BLOCK
 
     // Unload and destroy all Amarok plasma-engines
-    const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines();
+    const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines( "Amarok" );
     foreach( const QString &engine, engines )
     {
-        if( engine.startsWith( "amarok-" ) )
-        {
-            debug() << "Unloading plasma engine: " << engine;
+        debug() << "Unloading plasma engine: " << engine;
 
-            // PlasmaDataEngineManager uses refcounting for the engines, so we need to unload until the refcount reaches 0
-            while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
-                Plasma::DataEngineManager::self()->unloadEngine( engine );
-        }
+        // PlasmaDataEngineManager uses refcounting for the engines, so we need to unload until the refcount reaches 0
+        while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
+            Plasma::DataEngineManager::self()->unloadEngine( engine );
     }
      
     clear( m_curState );

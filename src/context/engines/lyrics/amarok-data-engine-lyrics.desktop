@@ -43,3 +43,5 @@ Type=Service
 Icon=lyrics
 X-KDE-Library=amarok_data_engine_lyrics
 X-KDE-PluginInfo-Name=amarok-lyrics
+X-KDE-ParentApp=Amarok
+
