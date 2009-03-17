@@ -45,6 +45,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
     private slots:
         void preview();
         virtual void accept();
+        virtual void reject();
         void newLayout();
         void copyLayout();
         void deleteLayout();
@@ -59,6 +60,8 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         QMap<QString, Playlist::PlaylistLayout> *m_layoutsMap;
 
         QString m_layoutName;
+
+        QString m_firstActiveLayout;
 };
 
 #endif

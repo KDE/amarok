@@ -128,7 +128,6 @@ void Playlist::LayoutConfigAction::layoutListChanged()
 
 void LayoutConfigAction::onActiveLayoutChanged()
 {
-    DEBUG_BLOCK
     QString layoutName( LayoutManager::instance()->activeLayoutName() );
     layoutName = layoutName.remove( QChar( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
     if( layoutName != QString( "%%PREVIEW%%" ) )           //if it's not just a preview

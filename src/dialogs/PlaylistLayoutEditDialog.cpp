@@ -67,6 +67,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     tokenPool->addToken( new Token( columnNames[Type], iconNames[Type], Type ) );
     tokenPool->addToken( new Token( columnNames[Year], iconNames[Year], Year ) );
 
+    m_firstActiveLayout = LayoutManager::instance()->activeLayoutName();
 
     //add an editor to each tab
     m_headEdit = new Playlist::LayoutEditWidget( this );
@@ -321,4 +322,15 @@ void PlaylistLayoutEditDialog::accept()
     }
     LayoutManager::instance()->setActiveLayout( layoutListWidget->currentItem()->text() );  //important to override the previewed layout if preview is used
     QDialog::accept();
+}
+
+/**
+ * Closes the dialog without saving (almost) any changes.
+ */
+void PlaylistLayoutEditDialog::reject()
+{
+    DEBUG_BLOCK
+    debug() << "Applying initial layout: " << m_firstActiveLayout;
+    LayoutManager::instance()->setActiveLayout( m_firstActiveLayout );
+    QDialog::reject();
 }
