@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright     : (C) 2004 Mark Kretschmann <markey@web.de>               *
-                   (C) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>   *
+                   (C) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>     *
+                   (C) 2009 Kevin Funk <krf@electrostorm.net               *
  **************************************************************************/
 
  /***************************************************************************
