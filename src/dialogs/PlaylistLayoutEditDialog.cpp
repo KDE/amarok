@@ -105,6 +105,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     const KIcon copyIcon( "edit-copy" );
     copyLayoutButton->setIcon( copyIcon );
     copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
+    connect( copyLayoutButton, SIGNAL( clicked() ), this, SLOT( copyLayout() ) );
     
     const KIcon deleteIcon( "edit-delete" );
     deleteLayoutButton->setIcon( deleteIcon );
@@ -129,12 +130,14 @@ PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 void PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
     QString layoutName( "" );
-    while( layoutName == "" )
+    while( layoutName == "" || m_layoutsMap->keys().contains( layoutName ) )
     {
         layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
                     i18n( "Please enter a name for the playlist layout you are about to define:" ) );
         if( layoutName == "" )
             KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Can't create a layout with no name." ) );
+        if( m_layoutsMap->keys().contains( layoutName ) )
+            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Can't create a layout with the same name as an existing layout." ) );
     }
     debug() << "Creating new layout " << layoutName;
     layoutListWidget->addItem( layoutName );
@@ -145,12 +148,49 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
 
     setLayout( layoutName );
 
-    LayoutItemConfig headConfig = m_headEdit->config() ;
+    LayoutItemConfig headConfig = m_headEdit->config();
     headConfig.setActiveIndicatorRow( -1 );
     layout.setHead( headConfig );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
     m_layoutsMap->insert( layoutName, layout );
+}
+
+/**
+ * Creates a new PlaylistLayout with a given name as a copy of an existing layout and loads it in the right area to configure it.
+ * The new layout is not saved in the LayoutManager but in m_layoutsMap.
+ */
+void PlaylistLayoutEditDialog::copyLayout()
+{
+    LayoutItemConfig headConfig = m_headEdit->config();
+    LayoutItemConfig bodyConfig = m_bodyEdit->config();
+    LayoutItemConfig singleConfig = m_singleEdit->config();
+    
+    QString layoutName( "" );
+    while( layoutName == "" || m_layoutsMap->keys().contains( layoutName ) )
+    {
+        layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
+                    i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
+                    layoutListWidget->currentItem()->text() ) );
+        if( layoutName == "" )
+            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Can't create a layout with no name." ) );
+        if( m_layoutsMap->keys().contains( layoutName ) )
+            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Can't create a layout with the same name as an existing layout." ) );
+    }
+    debug() << "Creating new layout " << layoutName;
+    layoutListWidget->addItem( layoutName );
+    layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly )).first() );
+    PlaylistLayout layout;
+    layout.setEditable( true );      //Should I use true, TRUE or 1?
+    layout.setDirty( true );
+
+    headConfig.setActiveIndicatorRow( -1 );
+    layout.setHead( headConfig );
+    layout.setBody( bodyConfig );
+    layout.setSingle( singleConfig );
+    m_layoutsMap->insert( layoutName, layout );
+
+    setLayout( layoutName );
 }
 
 /**
