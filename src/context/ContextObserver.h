@@ -25,12 +25,13 @@ class ContextSubject;
 class AMAROK_EXPORT ContextObserver
 {
 public:
+    virtual void message( const Context::ContextState& ) {}
+    
+protected:
     ContextObserver();
     ContextObserver( ContextSubject* );
     virtual ~ContextObserver();
-    
-    virtual void message( const Context::ContextState& ) {}
-    
+
 private:
     ContextSubject *m_subject;
 };
