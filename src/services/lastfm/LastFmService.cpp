@@ -52,6 +52,7 @@
 #include <QPainter>
 #include <QImage>
 #include <QFrame>
+#include <QTextDocument>        //Qt::escape
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
 
@@ -425,13 +426,19 @@ LastFmService::updateEditHint( int index )
 void
 LastFmService::updateProfileInfo()
 {
-    if( m_userinfo && !m_age.isEmpty() && !m_gender.isEmpty()) {
-        QString ageinfo = " (" + m_age + ", " + m_gender + ')';
-        m_userinfo->setText( m_userName + ageinfo);
+    if( m_userinfo )
+    {
+        QString info;
+        info += "<b>" + i18n( "Username: ") + "</b>" + Qt::escape( m_userName ) + "<br>";
+        info += !m_age.isEmpty() ? "<b>" + i18n( "Age: " ) + "</b>" + m_age + "<br>" : QString();
+        info += !m_gender.isEmpty() ? "<b>" + i18n( "Gender: " ) + "</b>" + m_gender + "<br>" : QString();
+        m_userinfo->setText( info );
     }
-    if( m_profile && !m_playcount.isEmpty() ) {
+
+    if( m_profile && !m_playcount.isEmpty() )
+    {
         QString playcount = KGlobal::locale()->formatNumber( m_playcount, false );
-        m_profile->setText( playcount + i18n( " plays" ) );
+        m_profile->setText( "<b>" + i18n( "Play Count: " ) + "</b>" + playcount + i18n( " plays" ) );
     }
 }
 
