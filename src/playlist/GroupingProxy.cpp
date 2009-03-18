@@ -27,6 +27,7 @@
 #define DEBUG_PREFIX "Playlist::GroupingProxy"
 
 #include "GroupingProxy.h"
+#include "playlist/navigators/NavigatorFilterProxyModel.h"
 
 #include "Debug.h"
 #include "meta/Meta.h"
@@ -221,6 +222,8 @@ Playlist::GroupingProxy::firstInGroup( int row ) const
 int
 Playlist::GroupingProxy::lastInGroup( int row ) const
 {
+    DEBUG_BLOCK
+    debug() << "row: " << row << " of " << rowCount();
     if ( m_rowGroupMode.at( row ) == None )
         return row;
 
@@ -375,11 +378,19 @@ int Playlist::GroupingProxy::currentSearchFields()
 
 int Playlist::GroupingProxy::tracksInGroup( int row ) const
 {
+    //unfortunately we need to map this to row from source as it will
+    //otherwise mess up ( and crash ) when a filter is applied
+    row = NavigatorFilterProxyModel::instance()->rowFromSource( row );
+
     return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
 }
 
 int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
+    //unfortunately we need to map this to row from source as it will
+    //otherwise mess up ( and crash ) when a filter is applied
+    row = NavigatorFilterProxyModel::instance()->rowFromSource( row );
+    
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ ) {
         totalLenght += m_model->trackAt( i )->length();
