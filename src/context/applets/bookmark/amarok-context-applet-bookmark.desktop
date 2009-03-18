@@ -12,6 +12,7 @@ Name[pt]=Favoritos
 Name[pt_BR]=Favoritos
 Name[sv]=Bokmärken
 Name[uk]=Закладки
+Name[x-test]=xxBookmarksxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

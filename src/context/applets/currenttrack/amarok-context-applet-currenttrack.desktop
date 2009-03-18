@@ -12,6 +12,7 @@ Name[pt]=Faixa Actual
 Name[pt_BR]=Faixa Atual
 Name[sv]=Aktuellt spår
 Name[uk]=Поточна композиція
+Name[x-test]=xxCurrent Trackxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

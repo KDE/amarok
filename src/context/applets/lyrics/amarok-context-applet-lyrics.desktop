@@ -12,6 +12,7 @@ Name[pt]=Letras Musicais
 Name[pt_BR]=Letras
 Name[sv]=Sångtext
 Name[uk]=Текст пісні
+Name[x-test]=xxLyricsxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

@@ -13,6 +13,7 @@ Name[pt]='Applet' Programada
 Name[pt_BR]=Mini-aplicativo de Script
 Name[sv]=Miniprogram med skript
 Name[uk]=Аплет зі скриптами
+Name[x-test]=xxScripted Appletxx
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=chronometer

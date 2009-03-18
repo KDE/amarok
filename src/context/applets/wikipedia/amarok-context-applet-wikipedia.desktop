@@ -3,6 +3,7 @@ Name=Wikipedia
 Name[bg]=Уикипедия
 Name[ga]=Vicipéid
 Name[pt]=Wikipédia
+Name[x-test]=xxWikipediaxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

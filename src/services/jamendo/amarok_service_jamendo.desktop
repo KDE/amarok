@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-jamendo-amarok
 Name=Jamendo
+Name[x-test]=xxJamendoxx
 Comment=Listen to and download music uploaded by independent artists
 Comment[bg]=Слушане и сваляне на музика от независими изпълнители
 Comment[ca]=Escolta i baixa música pujada per artistes independents

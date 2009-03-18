@@ -12,6 +12,7 @@ Name[pt]=Serviços
 Name[pt_BR]=Serviços
 Name[sv]=Tjänster
 Name[uk]=Служби
+Name[x-test]=xxServicesxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

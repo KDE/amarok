@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-lastfm-amarok
 Name=Last.fm
+Name[x-test]=xxLast.fmxx
 Comment=A service that integrates last.fm functionality into Amarok
 Comment[bg]=Интеграция на last.fm с Amarok
 Comment[ca]=Un servei que integra la funcionalitat del last.fm en l'Amarok
