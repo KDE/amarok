@@ -222,8 +222,6 @@ Playlist::GroupingProxy::firstInGroup( int row ) const
 int
 Playlist::GroupingProxy::lastInGroup( int row ) const
 {
-    DEBUG_BLOCK
-    debug() << "row: " << row << " of " << rowCount();
     if ( m_rowGroupMode.at( row ) == None )
         return row;
 
