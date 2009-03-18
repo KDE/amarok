@@ -190,6 +190,7 @@ void
 DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
 {
     DEBUG_BLOCK
+    debug() << "got address:" << hostInfo.addresses() << "and lookup hash contains id" << hostInfo.lookupId() << "?" << m_lookupHash.contains(hostInfo.lookupId());
     if ( !m_lookupHash.contains(hostInfo.lookupId()) )
         return;
 
