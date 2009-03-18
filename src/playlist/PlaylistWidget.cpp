@@ -86,7 +86,7 @@ Playlist::Widget::Widget( QWidget* parent )
     m_playlistView = new PrettyListView( this );
     m_playlistView->show();
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int ) ), m_playlistView, SLOT( find( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int, bool ) ), m_playlistView, SLOT( find( const QString &, int, bool ) ) );
     connect( m_searchWidget, SIGNAL( next( const QString &, int ) ), m_playlistView, SLOT( findNext( const QString &, int ) ) );
     connect( m_searchWidget, SIGNAL( previous( const QString &, int ) ), m_playlistView, SLOT( findPrevious( const QString &, int ) ) );
     connect( m_searchWidget, SIGNAL( filterCleared() ), m_playlistView, SLOT( clearSearchTerm() ) );

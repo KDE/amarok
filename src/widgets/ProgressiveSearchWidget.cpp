@@ -143,9 +143,15 @@ ProgressiveSearchWidget::~ProgressiveSearchWidget()
 void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
 {
     DEBUG_BLOCK
+
+    //when the clear button is pressed, we get 2 calls to this slot... filter this out  as it messes with
+    //resetting the view:
+    if ( filter == m_lastFilter )
+        return;
+    
     debug() << "New filter: " << filter;
 
-    emit( filterChanged( filter, m_searchFieldsMask ) );
+    m_lastFilter = filter;
 
     if( filter.isEmpty() )
     {
@@ -160,7 +166,11 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
             hideHiddenTracksWarning();
 
         emit( filterCleared() );
+
+        return;
     }
+
+    emit( filterChanged( filter, m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotNext()
@@ -223,7 +233,7 @@ void ProgressiveSearchWidget::slotSearchTracks( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchTrack", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchArtists( bool search )
@@ -236,7 +246,7 @@ void ProgressiveSearchWidget::slotSearchArtists( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchArtist", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchAlbums( bool search )
@@ -249,7 +259,7 @@ void ProgressiveSearchWidget::slotSearchAlbums( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchAlbum", search );
     
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchGenre( bool search )
@@ -262,7 +272,7 @@ void ProgressiveSearchWidget::slotSearchGenre( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchGenre", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchComposers( bool search )
@@ -275,7 +285,7 @@ void ProgressiveSearchWidget::slotSearchComposers( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchComposer", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchYears( bool search )
@@ -288,7 +298,7 @@ void ProgressiveSearchWidget::slotSearchYears( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchYear", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::readConfig()

@@ -256,6 +256,13 @@ int Playlist::NavigatorFilterProxyModel::totalLength() const
 void Playlist::NavigatorFilterProxyModel::clearSearchTerm()
 {
     Model::instance()->clearSearchTerm();
+    
+    if ( !m_passThrough )
+    {
+        invalidateFilter();
+        emit( filterChanged() );
+        emit( layoutChanged() );
+    }
 }
 
 QString Playlist::NavigatorFilterProxyModel::currentSearchTerm()

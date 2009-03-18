@@ -62,7 +62,7 @@ signals:
      * @param filter The new search term.
      * @param filelds The mask containing the fields to match against.
      */
-    void filterChanged( const QString &filter, int fields );
+    void filterChanged( const QString &filter, int fields, bool showOnlyMatches );
     
     /**
      * Signal emitted when the search term is cleared.
@@ -184,6 +184,8 @@ private:
 
     int        m_searchFieldsMask;
     bool       m_showOnlyMatches;
+
+    QString    m_lastFilter;
 };
 
 #endif

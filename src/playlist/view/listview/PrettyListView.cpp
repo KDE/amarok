@@ -40,6 +40,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
+#include "playlist/navigators/NavigatorFilterProxyModel.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
@@ -593,7 +594,7 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
 
 
 
-void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
+void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter  )
 {
     DEBUG_BLOCK
 
@@ -606,13 +607,15 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
     {
         //select this track
 
-        QModelIndex index = model()->index( row, 0 );
-        QItemSelection selItems( index, index );
-        selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
+        if ( !filter ) {
+            QModelIndex index = model()->index( row, 0 );
+            QItemSelection selItems( index, index );
+            selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
-        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
-        if ( foundIndex.isValid() )
-            scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
+            QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+            if ( foundIndex.isValid() )
+                scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
+        }
 
         emit( found() );
     }
@@ -705,8 +708,26 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
 
 void Playlist::PrettyListView::clearSearchTerm()
 {
+    DEBUG_BLOCK
+            
+    //We really do not want to reset the view to the top when the search/filter is cleared, so
+    //we store the first shown row and scroll to that once the term is removed.
+    QModelIndex index = indexAt( QPoint( 0, 0 ) );
+
+     //ah... but we want the source row and not the one reported by the filter model(s)
+    int row = NavigatorFilterProxyModel::instance()->rowToSource( index.row() );
+
+    debug() << "first row in filtered list: " << index.row();
+    debug() << "source row: " << row;
+
     NavigatorFilterProxyModel::instance()->filterUpdated();
     GroupingProxy::instance()->clearSearchTerm();
+
+    //now scroll to the selected row again
+
+    QModelIndex sourceIndex = model()->index( row, 0, QModelIndex() );
+    if ( sourceIndex.isValid() )
+        scrollTo( sourceIndex, QAbstractItemView::PositionAtTop );
 }
 
 void Playlist::PrettyListView::startProxyUpdateTimeout()
