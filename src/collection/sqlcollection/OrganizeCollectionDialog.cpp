@@ -186,14 +186,14 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     //Bpm,Directory,Bitrate,SampleRate,Mood
     args["folder"] = ui->folderCombo->currentText();
     args["title"] = cleanPath( track->prettyName() );
-    args["composer"] = cleanPath( track->composer()->prettyName() );
-    args["year"] = cleanPath( track->year()->prettyName() );
-    args["album"] = cleanPath( track->album()->prettyName() );
+    args["composer"] = track->composer() ? cleanPath( track->composer()->prettyName() ) : QString();
+    args["year"] = track->year() ? cleanPath( track->year()->prettyName() ) : QString();
+    args["album"] = track->album() ? cleanPath( track->album()->prettyName() ) : QString();
 
     if( track->discNumber() )
         args["discnumber"] = QString::number( track->discNumber() );
 
-    args["genre"] = cleanPath( track->genre()->prettyName() );
+    args["genre"] = track->genre() ? cleanPath( track->genre()->prettyName() ) : QString();
     args["comment"] = cleanPath( track->comment() );
     args["artist"] = artist;
     args["albumartist"] = albumartist;
