@@ -58,7 +58,7 @@ CurrentEngine::~CurrentEngine()
     delete m_qmTracks;
     if( m_qmFavTracks )
         m_qmFavTracks->abortQuery();
-    delete m_qmFavTracks;me ope
+    delete m_qmFavTracks;
 }
 
 QStringList CurrentEngine::sources() const
