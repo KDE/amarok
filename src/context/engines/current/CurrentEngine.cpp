@@ -50,6 +50,15 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
 CurrentEngine::~CurrentEngine()
 {
     DEBUG_BLOCK
+    if( m_qm )
+        m_qm->abortQuery();
+    delete m_qm;
+    if( m_qmTracks )
+        m_qmTracks->abortQuery();
+    delete m_qmTracks;
+    if( m_qmFavTracks )
+        m_qmFavTracks->abortQuery();
+    delete m_qmFavTracks;me ope
 }
 
 QStringList CurrentEngine::sources() const
