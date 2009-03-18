@@ -189,6 +189,7 @@ DaapCollectionFactory::resolvedManualServerIp( QHostInfo hostInfo )
 void
 DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
 {
+    DEBUG_BLOCK
     if ( !m_lookupHash.contains(hostInfo.lookupId()) )
         return;
 
@@ -202,6 +203,7 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
     if( m_collectionMap.contains(serverKey( host, port )) ) //same server from multiple interfaces
         return;
 
+    debug() << "creating daap collection with" << host << ip << port;
     QPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
     connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
     connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
