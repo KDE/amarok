@@ -71,6 +71,9 @@ VERSION 2.1
       applets.
 
   CHANGES:
+    * Improvements to playlist searching and filtering. No longer reset view
+      to the top when clearing a search term. No longer scroll into the results
+      when the "show only matches" option is set.
     * Improved implementation of volume muting. Mute state doesnt change
       volume level any more. (BR 172392)
     * Remove score, last played and play count from the current track applet
