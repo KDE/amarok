@@ -121,7 +121,7 @@ DaapCollectionFactory::foundDaap( DNSSD::RemoteService::Ptr service )
 void
 DaapCollectionFactory::resolvedDaap( bool success )
 {
-    DEBUG_BLOCK
+  //  DEBUG_BLOCK
     const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
     if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
@@ -190,7 +190,7 @@ void
 DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
 {
     DEBUG_BLOCK
-    debug() << "got address:" << hostInfo.addresses() << "and lookup hash contains id" << hostInfo.lookupId() << "?" << m_lookupHash.contains(hostInfo.lookupId());
+   // debug() << "got address:" << hostInfo.addresses() << "and lookup hash contains id" << hostInfo.lookupId() << "?" << m_lookupHash.contains(hostInfo.lookupId());
     if ( !m_lookupHash.contains(hostInfo.lookupId()) )
         return;
 
@@ -201,10 +201,11 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
     QString ip = hostInfo.addresses().at(0).toString();
     quint16 port = m_lookupHash.value( hostInfo.lookupId() );
 
+   // debug() << "already added server?" << m_collectionMap.contains(serverKey( host, port ));
     if( m_collectionMap.contains(serverKey( host, port )) ) //same server from multiple interfaces
         return;
 
-    debug() << "creating daap collection with" << host << ip << port;
+   // debug() << "creating daap collection with" << host << ip << port;
     QPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
     connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
     connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
