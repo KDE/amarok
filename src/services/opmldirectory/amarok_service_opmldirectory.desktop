@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-opml-amarok
 Name=Podcast Directory
+Name[ga]=Eolaire Podchraoltaí
 Name[ja]=ポッドキャストディレクトリ
 Name[nds]=Podcast-Orner
 Name[pt]=Pasta de 'Podcasts'

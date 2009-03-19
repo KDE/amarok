@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=network-wireless
 Name=Shoutcast Directory
+Name[ga]=Eolaire Shoutcast
 Name[ja]=Shoutcast ディレクトリ
 Name[nds]=Shoutcast-Orner
 Name[pt]=Pasta do Shoutcast
