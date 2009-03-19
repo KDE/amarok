@@ -73,6 +73,9 @@ private slots:
     void slotAppendChildTracks();
     void slotEditTracks();
 
+protected:
+    bool eventFilter( QObject *, QEvent * );
+
 private:
     QList<QAction*> createBasicActions();
     void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );

@@ -239,6 +239,15 @@ MyDirOperator::slotEditTracks()
     }
 }
 
+bool
+MyDirOperator::eventFilter( QObject *object, QEvent *event )
+{
+    if( event->type() == QEvent::Wheel )
+        return true;
+
+    return KDirOperator::eventFilter( object, event );
+}
+
 QList<QAction*>
 MyDirOperator::createBasicActions()
 {
