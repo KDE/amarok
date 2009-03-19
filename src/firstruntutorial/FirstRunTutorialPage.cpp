@@ -126,6 +126,13 @@ FirstRunTutorialPage::paint( QPainter *painter, const QStyleOptionGraphicsItem *
     painter->restore();
 }
 
+void
+FirstRunTutorialPage::triggerResize( const QRectF& rect )
+{
+    DEBUG_BLOCK
+
+    setGeometry( rect );
+}
 
 #include "FirstRunTutorialPage.moc"
 

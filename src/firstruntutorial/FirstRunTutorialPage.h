@@ -37,6 +37,8 @@ public:
     FirstRunTutorialPage();
     ~FirstRunTutorialPage();
 
+    void triggerResize( const QRectF& rect );
+
 signals:
     void pageClosed();
 

@@ -22,6 +22,8 @@
 #include <QTimer>
 
 static int MAX_PAGE = 1;
+static int TUTORIAL_MARGIN = 200;
+
 
 FirstRunTutorial::FirstRunTutorial( QWidget *parent )
     : QObject( parent )
@@ -50,13 +52,15 @@ FirstRunTutorial::initOverlay() //SLOT
     m_scene = new QGraphicsScene( m_parent );
     m_view = new QGraphicsView( m_scene, m_parent );
     m_scene->setSceneRect( QRectF( m_parent->rect() ) );
-    m_view->setFixedSize( m_parent->size() );
+    m_view->resize( m_parent->size() );
     m_view->setLineWidth( 0 );
     m_view->setFrameStyle( QFrame::NoFrame );
     m_view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_view->setBackgroundRole( QPalette::Window );
     m_view->setAutoFillBackground( true );
+
+    m_parent->installEventFilter( this );
 
     QColor color = Qt::blue;
     color.setAlpha( 0 );
@@ -197,7 +201,7 @@ void FirstRunTutorial::slotPage1() //SLOT
 
     FirstRunTutorialPage* page = new FirstRunTutorialPage();
     m_pages[m_pageNum] = page;
-    page->setGeometry( The::mainWindow()->frameGeometry().adjusted( 200, 200, -200, -200 ) );
+    page->setGeometry( The::mainWindow()->frameGeometry().adjusted( TUTORIAL_MARGIN, TUTORIAL_MARGIN, -TUTORIAL_MARGIN, -TUTORIAL_MARGIN ) );
     #if QT_VERSION >= 0x040500
     page->setOpacity( 0 );
     #endif
@@ -207,6 +211,24 @@ void FirstRunTutorial::slotPage1() //SLOT
 
     m_fadeShowTimer.start();
 }
+
+
+bool FirstRunTutorial::eventFilter( QObject* watched, QEvent* event )
+{
+    if( watched == m_parent )
+    {
+        if( event->type() == QEvent::Resize )
+        {
+            debug() << "View resizeEvent";
+            m_pages[1]->triggerResize( m_parent->rect().adjusted( TUTORIAL_MARGIN, TUTORIAL_MARGIN, -TUTORIAL_MARGIN, -TUTORIAL_MARGIN ) );
+            return false;
+        }
+    }
+
+    return QObject::eventFilter( watched, event );
+}
+
+
 
 #include "FirstRunTutorial.moc"
 

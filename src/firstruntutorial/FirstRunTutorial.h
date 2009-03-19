@@ -43,6 +43,9 @@ class FirstRunTutorial : public QObject
 
         void slotPage1();
 
+    protected:
+        virtual bool eventFilter( QObject* watched, QEvent* event );
+
     private:
         QWidget* m_parent;
         QGraphicsScene *m_scene;
