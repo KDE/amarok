@@ -743,8 +743,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );
-        if( m_activeRow >= 0 )
-            newActiveRow += 1;
+        newActiveRow += ( ic.second <= m_activeRow ) ? 1 : 0;
     }
 
     // actually do the insertion
