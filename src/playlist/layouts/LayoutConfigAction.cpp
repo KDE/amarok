@@ -122,7 +122,7 @@ void LayoutConfigAction::onActiveLayoutChanged()
     {
         int index = LayoutManager::instance()->layouts().indexOf( layoutName );
         debug() << "Index in the LayoutManager of currently active layout, called " << LayoutManager::instance()->activeLayoutName() << ", is: " << index;
-        if( m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
+        if( index != -1 && m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
             m_layoutActions->actions()[ index ]->setChecked( TRUE );
     }
 }

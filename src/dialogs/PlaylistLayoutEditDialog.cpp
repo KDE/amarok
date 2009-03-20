@@ -92,7 +92,9 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     layoutListWidget->addItems( layoutNames );
 
     layoutListWidget->setCurrentRow( LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() ) );
-    setLayout( layoutListWidget->currentItem()->text() );
+
+    if ( layoutListWidget->currentItem() )
+        setLayout( layoutListWidget->currentItem()->text() );
 
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
     connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
@@ -148,13 +150,11 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
             KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Cannot create a layout with the same name as an existing layout." ) );
     }
     debug() << "Creating new layout " << layoutName;
-    layoutListWidget->addItem( layoutName );
-    layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly )).first() );
+    //layoutListWidget->addItem( layoutName );
+    
     PlaylistLayout layout;
     layout.setEditable( true );      //Should I use true, TRUE or 1?
     layout.setDirty( true );
-
-    setLayout( layoutName );
 
     LayoutItemConfig headConfig = m_headEdit->config();
     headConfig.setActiveIndicatorRow( -1 );
@@ -162,6 +162,16 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
     m_layoutsMap->insert( layoutName, layout );
+
+    LayoutManager::instance()->addUserLayout( layoutName, layout );
+    
+    //reload from manager:
+    layoutListWidget->clear();
+    layoutListWidget->addItems( LayoutManager::instance()->layouts() );
+
+    m_layoutsMap->insert( layoutName, layout );
+    layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
+    setLayout( layoutName );
 }
 
 /**
@@ -186,8 +196,7 @@ void PlaylistLayoutEditDialog::copyLayout()
             KMessageBox::sorry( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
     }
     debug() << "Copying layout " << layoutName;
-    layoutListWidget->addItem( layoutName );
-    layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly )).first() );
+    //layoutListWidget->addItem( layoutName );
     PlaylistLayout layout;
     layout.setEditable( true );      //Should I use true, TRUE or 1?
     layout.setDirty( true );
@@ -198,6 +207,14 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setSingle( singleConfig );
     m_layoutsMap->insert( layoutName, layout );
 
+    LayoutManager::instance()->addUserLayout( layoutName, layout );
+    
+    //reload from manager:
+    layoutListWidget->clear();
+    layoutListWidget->addItems( LayoutManager::instance()->layouts() );
+
+    m_layoutsMap->insert( layoutName, layout );
+    layoutListWidget->setCurrentItem( ( layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
     setLayout( layoutName );
 }
 

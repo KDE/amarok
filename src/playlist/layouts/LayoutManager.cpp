@@ -223,6 +223,9 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     layout.setEditable( true );
     m_layouts.insert( name, layout );
 
+    //new one goes to the bottom per default:
+    m_layoutNames.append( name );
+
     QDomDocument doc( "layouts" );
     QDomElement layouts_element = doc.createElement( "playlist_layouts" );
     QDomElement newLayout = doc.createElement( ("layout" ) );
@@ -309,7 +312,7 @@ QString LayoutManager::activeLayoutName() const
     return m_activeLayout;
 }
 
-void LayoutManager::deleteLayout( const QString & layout )
+void LayoutManager::deleteLayout( const QString &layout )
 {
     //check if layout is editable
     if ( m_layouts.value( layout ).isEditable() )
@@ -322,6 +325,7 @@ void LayoutManager::deleteLayout( const QString & layout )
             debug() << "error deleting file....";
 
         m_layouts.remove( layout );
+        m_layoutNames.removeAll( layout );
         emit( layoutListChanged() );
 
         if ( layout == m_activeLayout )
