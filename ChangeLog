@@ -117,6 +117,10 @@ VERSION 2.1
       success.
 
   BUGFIXES:
+    * Prevent playlist from showing a wrong playing song after adding tracks
+      above it. (BR 181947)
+    * Show the current playing song when resuming playback of a track not in
+      the collection. (BR 173912)
     * Fix crash when using ctrl+mousewheel on Files browser. Patch by Valentin
       Rouet <v.rouet@gmail.com>. (BR 175803)
     * Fix actions choosen from context menu in a filtered playlist getting

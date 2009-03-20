@@ -329,7 +329,12 @@ Playlist::Actions::engineNewTrackPlaying()
         else {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
             if ( model->activeTrack() != track )
-                model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+            {
+                if ( AmarokConfig::lastPlaying() > -1 )
+                    model->setActiveRow( AmarokConfig::lastPlaying() );
+                else
+                    model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+            }
         }
     }
     else

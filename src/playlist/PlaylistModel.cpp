@@ -735,6 +735,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         }
     }
 
+    int newActiveRow = m_activeRow;
     int min = m_items.size() + cmds.size();
     int max = 0;
     QList<quint64> newIds;
@@ -742,6 +743,8 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );
+        if( m_activeRow >= 0 )
+            newActiveRow += 1;
     }
 
     // actually do the insertion
@@ -777,6 +780,11 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
             }
         }
     }
+
+    if( m_activeRow >= 0 )
+        m_activeRow = newActiveRow;
+    else
+        m_activeRow = -1;
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );

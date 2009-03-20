@@ -219,10 +219,14 @@ App::~App()
             {
                 AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
                 AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
+                AmarokConfig::setLastPlaying( Playlist::Model::instance()->activeRow() );
             }
         }
         else
+        {
             AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
+            AmarokConfig::setLastPlaying( -1 );
+        }
     }
 
     The::engineController()->endSession(); //records final statistics
