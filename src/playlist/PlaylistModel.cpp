@@ -316,7 +316,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 }
                 else
                 {
-                    sourceName = m_items.at( row )->track()->collection()->prettyName();
+                    sourceName = m_items.at( row )->track()->collection() ? m_items.at( row )->track()->collection()->prettyName() : QString();
                 }
                 return sourceName;
             }
