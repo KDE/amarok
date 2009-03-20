@@ -59,7 +59,7 @@ else(TAGLIB-EXTRASCONFIG_EXECUTABLE)
     IF(NOT WIN32)
       # on non-win32 we don't need to take care about WIN32_DEBUG_POSTFIX
 
-      FIND_LIBRARY(TAGLIB-EXTRAS_LIBRARIES tag PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})
+      FIND_LIBRARY(TAGLIB-EXTRAS_LIBRARIES tag-extras PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})
 
     ELSE(NOT WIN32)
 
@@ -72,8 +72,8 @@ else(TAGLIB-EXTRASCONFIG_EXECUTABLE)
       LIST(LENGTH args listCount)
 
         # just one name
-        LIST(APPEND libnames_release "tag")
-        LIST(APPEND libnames_debug   "tagd")
+        LIST(APPEND libnames_release "tag-extras")
+        LIST(APPEND libnames_debug   "tag-extrasd")
 
         SET(newargs ${args})
 
