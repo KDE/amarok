@@ -46,6 +46,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         void preview();
         virtual void accept();
         virtual void reject();
+        void apply();
         void newLayout();
         void copyLayout();
         void deleteLayout();

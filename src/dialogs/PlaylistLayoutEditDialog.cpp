@@ -104,6 +104,11 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
     connect( moveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
 
+    buttonBox->button(QDialogButtonBox::Apply)->setIcon( KIcon( "dialog-ok-apply" ) );
+    buttonBox->button(QDialogButtonBox::Ok)->setIcon( KIcon( "dialog-ok" ) );
+    buttonBox->button(QDialogButtonBox::Cancel)->setIcon( KIcon( "dialog-cancel" ) );
+    connect( buttonBox->button(QDialogButtonBox::Apply), SIGNAL( clicked() ), this, SLOT( apply() ) );
+
     const KIcon newIcon( "list-add" );
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
@@ -347,12 +352,10 @@ void PlaylistLayoutEditDialog::toggleUpDownButtons()
 }
 
 /**
- * Saves the edited layouts from m_layoutMap to the LayoutManager and closes the dialog.
+ * Saves the edited layouts from m_layoutMap to the LayoutManager.
  */
-void PlaylistLayoutEditDialog::accept()
+void PlaylistLayoutEditDialog::apply()  //SLOT
 {
-    DEBUG_BLOCK
-
     QMap<QString, PlaylistLayout>::Iterator i = m_layoutsMap->begin();
     while( i != m_layoutsMap->end() )
     {
@@ -375,13 +378,21 @@ void PlaylistLayoutEditDialog::accept()
         i++;
     }
     LayoutManager::instance()->setActiveLayout( layoutListWidget->currentItem()->text() );  //important to override the previewed layout if preview is used
+}
+
+/**
+ * Saves the edited layouts from m_layoutMap to the LayoutManager and closes the dialog.
+ */
+void PlaylistLayoutEditDialog::accept()     //SLOT
+{
+    apply();
     QDialog::accept();
 }
 
 /**
  * Closes the dialog without saving (almost) any changes.
  */
-void PlaylistLayoutEditDialog::reject()
+void PlaylistLayoutEditDialog::reject()     //SLOT
 {
     DEBUG_BLOCK
 
@@ -391,6 +402,9 @@ void PlaylistLayoutEditDialog::reject()
     QDialog::reject();
 }
 
+/**
+ * Moves up the currently selected layout.
+ */
 void PlaylistLayoutEditDialog::moveUp()
 {
     int newRow = LayoutManager::instance()->moveUp( m_layoutName );
@@ -401,6 +415,9 @@ void PlaylistLayoutEditDialog::moveUp()
     layoutListWidget->setCurrentRow( newRow );
 }
 
+/**
+ * Moves down the currently selected layout.
+ */
 void PlaylistLayoutEditDialog::moveDown()
 {
     int newRow = LayoutManager::instance()->moveDown( m_layoutName );
