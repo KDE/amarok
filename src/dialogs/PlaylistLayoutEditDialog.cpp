@@ -98,6 +98,9 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
     connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleDeleteButton() ) );
 
+    connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
+    connect( moveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
+
     const KIcon newIcon( "list-add" );
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
@@ -286,7 +289,9 @@ void PlaylistLayoutEditDialog::preview()
  */
 void PlaylistLayoutEditDialog::toggleDeleteButton() //SLOT
 {
-    if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
+    if ( !layoutListWidget->currentItem() )
+        deleteLayoutButton->setEnabled( 0 );
+    else if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
         deleteLayoutButton->setEnabled( 0 );
     else
         deleteLayoutButton->setEnabled( 1 );
@@ -335,6 +340,26 @@ void PlaylistLayoutEditDialog::reject()
     LayoutManager::instance()->setActiveLayout( m_firstActiveLayout );
 
     QDialog::reject();
+}
+
+void PlaylistLayoutEditDialog::moveUp()
+{
+    int newRow = LayoutManager::instance()->moveUp( m_layoutName );
+
+    layoutListWidget->clear();
+    layoutListWidget->addItems( LayoutManager::instance()->layouts() );
+
+    layoutListWidget->setCurrentRow( newRow );
+}
+
+void PlaylistLayoutEditDialog::moveDown()
+{
+    int newRow = LayoutManager::instance()->moveDown( m_layoutName );
+
+    layoutListWidget->clear();
+    layoutListWidget->addItems( LayoutManager::instance()->layouts() );
+
+    layoutListWidget->setCurrentRow( newRow );
 }
 
 

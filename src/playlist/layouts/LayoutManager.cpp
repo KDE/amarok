@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
+ * Copyright (c) 2008-2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ *           (c) 2009  Seb Ruiz <ruiz@kde.org>                             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -52,6 +52,7 @@ LayoutManager::LayoutManager()
 
     loadDefaultLayouts();
     loadUserLayouts();
+    orderLayouts();
 
     KConfigGroup config = Amarok::config("Playlist Layout");
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
@@ -59,7 +60,7 @@ LayoutManager::LayoutManager()
 
 QStringList LayoutManager::layouts() const
 {
-    return m_layouts.keys();
+    return m_layoutNames;
 }
 
 void LayoutManager::setActiveLayout( const QString &layout )
@@ -335,4 +336,37 @@ bool LayoutManager::isDeleteable( const QString &layout ) const
     return m_layouts.value( layout ).isEditable();
 }
 
+int LayoutManager::moveUp( const QString &layout )
+{
+    int index = m_layoutNames.indexOf( layout );
+    if ( index > 0 ) {
+        m_layoutNames.swap ( index, index - 1 );
+        emit( layoutListChanged() );
+        return index - 1;
+    }
+
+    return index;
+}
+
+int LayoutManager::moveDown( const QString &layout )
+{
+    int index = m_layoutNames.indexOf( layout );
+    if ( index < m_layoutNames.size() -1 ) {
+        m_layoutNames.swap ( index, index + 1 );
+        emit( layoutListChanged() );
+        return index + 1;
+    }
+
+    return index;
+}
+
+void LayoutManager::orderLayouts()
+{
+    m_layoutNames = m_layouts.keys();
+}
+
 } //namespace Playlist
+
+
+
+

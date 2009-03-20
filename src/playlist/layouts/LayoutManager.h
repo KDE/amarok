@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
+ * Copyright (c) 2008-2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ *           (c) 2009  Seb Ruiz <ruiz@kde.org>                             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -56,6 +56,20 @@ public:
     void deleteLayout( const QString &layout );
     bool isDeleteable( const QString &layout ) const;
 
+    /**
+     * Move the named layout up one place if possible
+     * @param layout The name of he layout to move
+     * @return The new row of the layout
+     */
+    int moveUp( const QString &layout );
+
+    /**
+     * Move the named layout down one place if possible
+     * @param layout The name of he layout to move
+     * @return The new row of the layout
+     */
+    int moveDown( const QString &layout );
+
 signals:
     void activeLayoutChanged();
     void layoutListChanged();
@@ -67,6 +81,7 @@ private:
 
     void loadDefaultLayouts();
     void loadUserLayouts();
+    void orderLayouts();
 
     void loadLayouts( const QString &fileName, bool user );
 
@@ -75,6 +90,7 @@ private:
     LayoutItemConfig parseItemConfig( const QDomElement &elem ) const;
 
     QMap<QString, PlaylistLayout> m_layouts;
+    QStringList                   m_layoutNames;  //used to make a custom ordering of items 
     QString                       m_activeLayout;
     PlaylistLayout                m_previewLayout;
 };
