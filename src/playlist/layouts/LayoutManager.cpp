@@ -346,6 +346,7 @@ int LayoutManager::moveUp( const QString &layout )
     if ( index > 0 ) {
         m_layoutNames.swap ( index, index - 1 );
         emit( layoutListChanged() );
+        storeLayoutOrdering();
         return index - 1;
     }
 
@@ -358,6 +359,7 @@ int LayoutManager::moveDown( const QString &layout )
     if ( index < m_layoutNames.size() -1 ) {
         m_layoutNames.swap ( index, index + 1 );
         emit( layoutListChanged() );
+        storeLayoutOrdering();
         return index + 1;
     }
 
@@ -366,10 +368,47 @@ int LayoutManager::moveDown( const QString &layout )
 
 void LayoutManager::orderLayouts()
 {
-    m_layoutNames = m_layouts.keys();
+    KConfigGroup config = Amarok::config( "Playlist Layout" );
+    QString orderString = config.readEntry( "Order", "Default" );
+    
+    QStringList knownLayouts = m_layouts.keys();
+
+    QStringList orderingList = orderString.split( ';', QString::SkipEmptyParts );
+
+    foreach( QString layout, orderingList )
+    {
+        if ( knownLayouts.contains( layout ) )
+        {
+            //skip any layout names that are in config but that we dont know. Perhaps someone manually deleted a layout file
+            m_layoutNames.append( layout );
+            knownLayouts.removeAll( layout );
+        }
+    }
+
+    //now add any layouts that were not in the order config to end of list:
+    foreach( QString layout, knownLayouts )
+        m_layoutNames.append( layout );
 }
 
 } //namespace Playlist
+
+void Playlist::LayoutManager::storeLayoutOrdering()
+{
+
+    QString ordering;
+
+    foreach( QString name, m_layoutNames )
+    {
+        ordering += name;
+        ordering += ';';
+    }
+
+    if ( !ordering.isEmpty() )
+        ordering.chop( 1 ); //remove trailing;
+    
+    KConfigGroup config = Amarok::config("Playlist Layout");
+    config.writeEntry( "Order", ordering );
+}
 
 
 

@@ -83,6 +83,8 @@ private:
     void loadUserLayouts();
     void orderLayouts();
 
+    void storeLayoutOrdering();
+
     void loadLayouts( const QString &fileName, bool user );
 
     QDomElement createItemElement( QDomDocument doc, const QString &name, const LayoutItemConfig &item ) const;
