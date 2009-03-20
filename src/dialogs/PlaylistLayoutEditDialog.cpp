@@ -97,6 +97,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
     connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
     connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleDeleteButton() ) );
+    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleUpDownButtons() ) );
 
     connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
     connect( moveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
@@ -121,6 +122,8 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
     connect( renameLayoutButton, SIGNAL( clicked() ), this, SLOT( renameLayout() ) );
+
+    toggleUpDownButtons();
 }
 
 
@@ -297,6 +300,35 @@ void PlaylistLayoutEditDialog::toggleDeleteButton() //SLOT
         deleteLayoutButton->setEnabled( 1 );
 }
 
+void PlaylistLayoutEditDialog::toggleUpDownButtons()
+{
+    if ( !layoutListWidget->currentItem() )
+    {
+        moveUpButton->setEnabled( 0 );
+        moveDownButton->setEnabled( 0 );
+    }
+    else if ( layoutListWidget->currentRow() == 0 )
+    {
+        moveUpButton->setEnabled( 0 );
+        if ( layoutListWidget->currentRow() >= m_layoutsMap->size() -1 )
+            moveDownButton->setEnabled( 0 );
+        else
+            moveDownButton->setEnabled( 1 );
+    }
+    else if ( layoutListWidget->currentRow() >= m_layoutsMap->size() -1 )
+    {
+        moveDownButton->setEnabled( 0 );
+        moveUpButton->setEnabled( 1 ); //we already cheked that this is not row 0
+    }
+    else
+    {
+        moveDownButton->setEnabled( 1 );
+        moveUpButton->setEnabled( 1 );
+    }
+        
+    
+}
+
 /**
  * Saves the edited layouts from m_layoutMap to the LayoutManager and closes the dialog.
  */
@@ -361,6 +393,8 @@ void PlaylistLayoutEditDialog::moveDown()
 
     layoutListWidget->setCurrentRow( newRow );
 }
+
+
 
 
 #include "PlaylistLayoutEditDialog.moc"

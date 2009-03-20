@@ -53,6 +53,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         void moveUp();
         void moveDown();
         void toggleDeleteButton();
+        void toggleUpDownButtons();
 
     private:
         Playlist::LayoutEditWidget *m_headEdit;
