@@ -60,6 +60,7 @@ if(LIBXML2_FOUND AND CURL_FOUND)
                 ${LOUDMOUTH_LIBRARIES}
                 ${LIBXML2_LIBRARIES}
                 ${CURL_LIBRARIES}
+                ${TAGLIB-EXTRAS_LIBRARIES}
             )
 
             if(LIBGCRYPT_FOUND)
