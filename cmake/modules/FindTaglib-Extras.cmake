@@ -49,7 +49,7 @@ else(TAGLIB-EXTRASCONFIG_EXECUTABLE)
 
   find_path(TAGLIB-EXTRAS_INCLUDES
     NAMES
-    tag.h
+    tfile_helper.h
     PATH_SUFFIXES taglib-extras
     PATHS
     ${KDE4_INCLUDE_DIR}
