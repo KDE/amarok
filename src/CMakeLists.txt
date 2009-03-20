@@ -53,8 +53,6 @@ include_directories(
     ${QT_QTSCRIPT_INCLUDE_DIR}
 )
 
-message( STATUS "TAGLIB-EXTRAS_INCLUDES is ${TAGLIB-EXTRAS_INCLUDES}" )
-
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
 endif ( KDEMULTIMEDIA_FOUND )
@@ -556,8 +554,6 @@ target_link_libraries(amaroklib
     amarokpud
     mediadevicelib
 )
-
-message( STATUS "TAGLIB-EXTRAS_LIBRARIES is ${TAGLIB-EXTRAS_LIBRARIES}" )
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
