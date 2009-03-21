@@ -56,7 +56,9 @@ class AmpacheService : public ServiceBase
 
 Q_OBJECT
 public:
-    explicit AmpacheService( AmpacheServiceFactory* parent, const QString &name, const QString &url = QString(), const QString &username = QString(), const QString &password = QString() );
+    explicit AmpacheService( AmpacheServiceFactory* parent, const QString &name,
+                             const QString &url = QString(), const QString &username = QString(),
+                             const QString &password = QString() );
 
     ~AmpacheService();
 

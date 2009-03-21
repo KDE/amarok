@@ -26,6 +26,7 @@
 #include "support/MemoryCollection.h"
 #include "ServiceBase.h"
 
+#include <KIcon>
 
 #include <QtGlobal>
 
@@ -35,10 +36,8 @@ typedef QMap<int, Meta::AlbumPtr> AlbumIdMap;
 typedef QMap<int, Meta::GenrePtr> GenreIdMap;
 
 /**
-This is a specialized collection that can be used by services who dynamically
-fetch their data from somewhere ( a web service, an external program, etc....)
-
-    @author
+ *  This is a specialized collection that can be used by services who dynamically
+ *  fetch their data from somewhere ( a web service, an external program, etc....)
  */
 
 class AMAROK_EXPORT ServiceCollection : public Amarok::Collection, public MemoryCollection
@@ -54,6 +53,7 @@ class AMAROK_EXPORT ServiceCollection : public Amarok::Collection, public Memory
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+        virtual KIcon icon() const { return KIcon("action-view-services-scripted-amarok"); }
 
         virtual CollectionLocation* location() const;
 

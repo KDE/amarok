@@ -30,6 +30,8 @@
 #include <QtGlobal>
 #include <QMap>
 
+#include <KIcon>
+
 class MtpCollection;
 
 class MtpCollectionFactory : public Amarok::CollectionFactory
@@ -54,9 +56,7 @@ class MtpCollectionFactory : public Amarok::CollectionFactory
     void slotCollectionDisconnected( const QString & udi );
 
     private:
-
-    QMap<QString, MtpCollection*> m_collectionMap;
-
+        QMap<QString, MtpCollection*> m_collectionMap;
 };
 
 class MtpCollection : public Amarok::Collection, public MemoryCollection
@@ -71,7 +71,6 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
 
     void init(); // called by factory
 
- //   bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
     void removeTrack( const Meta::MtpTrackPtr &track );
 
     QString getTempFileName( const Meta::MtpTrackPtr track, const QString &tempDir );
@@ -93,6 +92,7 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
+    virtual KIcon icon() const { return KIcon("multimedia-player"); }
 
     virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
     virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
@@ -112,27 +112,23 @@ class MtpCollection : public Amarok::Collection, public MemoryCollection
 
     void copyTracksCompleted( bool success );
 
-    public slots:
-//    void deleteTrackToDelete();
-//    void deleteTrackSlot( Meta::MtpTrackPtr track);
+public slots:
     void deleteTracksSlot( Meta::TrackList tracklist );
     void slotDeleteTracksCompleted();
 
     void slotDisconnect();
 
-    private slots:
-        void slotCopyTracksCompleted( bool success );
+private slots:
+    void slotCopyTracksCompleted( bool success );
 
-        void handlerSucceeded();
-        void handlerFailed();
+    void handlerSucceeded();
+    void handlerFailed();
 
  private:
-
     Meta::MtpTrackPtr m_trackToDelete;
     QString           m_serial;
     QString           m_udi;
     Mtp::MtpHandler *m_handler;
-
 };
 
 #endif

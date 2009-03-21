@@ -26,6 +26,8 @@
 #include <QStringList>
 #include <QHash>
 
+#include <KIcon>
+
 #include <Soprano/Model>
 
 class KUrl;
@@ -52,6 +54,7 @@ public:
     virtual QString uidUrlProtocol() const;
     virtual QString collectionId() const;
     virtual QString prettyName() const;
+    virtual KIcon icon() const { return KIcon("nepomuk"); }
     
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
     virtual Meta::TrackPtr trackForUrl( const KUrl &url );

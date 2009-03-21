@@ -34,6 +34,8 @@ extern "C" {
 #include <QtGlobal>
 #include <QMap>
 
+#include <KIcon>
+
 class IpodCollection;
 
 class IpodCollectionFactory : public Amarok::CollectionFactory
@@ -92,6 +94,7 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+        virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );

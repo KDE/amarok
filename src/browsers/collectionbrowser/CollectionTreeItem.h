@@ -29,7 +29,8 @@ namespace CustomRoles
     enum CustomRolesId
     {
         SortRole = Qt::UserRole + 1,
-        FilterRole = Qt::UserRole + 2
+        FilterRole = Qt::UserRole + 2,
+        ByLineRole = Qt::UserRole + 3
     };
 }
 
@@ -43,17 +44,17 @@ class CollectionTreeItem
 
         ~CollectionTreeItem();
 
-        CollectionTreeItem* parent()  { return m_parent; }
+        CollectionTreeItem* parent() { return m_parent; }
 
-        void appendChild(CollectionTreeItem *child);
+        void appendChild( CollectionTreeItem *child );
         void removeChild( int index );
 
-        CollectionTreeItem *child(int row);
+        CollectionTreeItem *child( int row );
 
         int childCount() const { return m_childItems.count(); }
         int columnCount() const { return 1; }
 
-        QVariant data(int role) const;
+        QVariant data( int role ) const;
 
         int row() const;
 

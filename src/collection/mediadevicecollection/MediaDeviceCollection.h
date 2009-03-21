@@ -22,6 +22,8 @@
 #include "Collection.h"
 #include "MemoryCollection.h"
 
+#include <KIcon>
+
 #include <QtGlobal>
 
 class MediaDeviceCollectionFactory : public Amarok::CollectionFactory
@@ -55,6 +57,7 @@ class MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+        virtual KIcon icon() const { return KIcon("drive-removable-media-usb"); }
 
     signals:
         void collectionReady();
@@ -64,10 +67,6 @@ class MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 
     protected:
         MediaDevice::MediaDeviceHandler *m_handler;
-
-    private slots:
-
-
 };
 
 #endif

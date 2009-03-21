@@ -58,9 +58,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
         m_parent->m_childItems.insert( 0, this );
 
     foreach( Meta::DataPtr datap, data )
-    {
         new CollectionTreeItem( datap, this );
-    }
 }
 
 CollectionTreeItem::~CollectionTreeItem()
@@ -118,7 +116,7 @@ CollectionTreeItem::data( int role ) const
             QString name = m_data->prettyName();
             if( AmarokConfig::showTrackNumbers() )
             {
-                if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast(m_data ) )
+                if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
                 {
                     if( !track.isNull() )
                     {
@@ -142,7 +140,7 @@ CollectionTreeItem::data( int role ) const
             }
             return name;
         }
-        else if ( role == CustomRoles::SortRole )
+        else if( role == CustomRoles::SortRole )
             return m_data->sortableName();
 
         return QVariant();
@@ -153,8 +151,25 @@ CollectionTreeItem::data( int role ) const
             return i18n( "Various Artists" );
         return QVariant();
     }
-    else if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
-        return m_parentCollection->prettyName();
+    else if( m_parentCollection )
+    {
+        if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
+            return m_parentCollection->prettyName();
+        else if( role == Qt::DecorationRole )
+            return m_parentCollection->icon();
+        else if( role == CustomRoles::ByLineRole )
+        {
+            /*
+            QueryMaker *qm = m_parentCollection->queryMaker();
+            qm->setQueryType( QueryMaker::Custom );
+            qm->addReturnValue( Meta::valTitle );
+            qm->addReturnFunction( QueryMaker::Count );
+            qm->setAutoDelete( true );
+            */
+
+            return i18n("X Tracks");
+        }
+    }
 
     return QVariant();
 }
@@ -245,9 +260,7 @@ CollectionTreeItem::descendentTracks()
     else
     {
         foreach( CollectionTreeItem *child, m_childItems )
-        {
             descendentTracks << child->descendentTracks();
-        }
     }
     return descendentTracks;
 }
@@ -262,8 +275,10 @@ CollectionTreeItem::allDescendentTracksLoaded() const
     if( childrenLoaded() )
     {
         foreach( CollectionTreeItem *item, m_childItems )
+        {
             if( !item->allDescendentTracksLoaded() )
                 return false;
+        }
 
         return true;
     }

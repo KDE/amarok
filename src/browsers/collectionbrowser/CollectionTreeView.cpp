@@ -231,30 +231,57 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         menu.addMenu( moveMenu );
     }
 
-
-
     menu.exec( event->globalPos() );
+}
+
+void CollectionTreeView::mousePressEvent( QMouseEvent *event )
+{
+    QTreeView::mousePressEvent( event );
+#if 0
+    DEBUG_BLOCK
+
+    QModelIndex index;
+    if( m_filterModel )
+        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
+    else
+        index = indexAt( event->pos() );
+   
+    if( index.isValid() && !index.parent().isValid() ) // root item
+    {
+        expand( index );
+    }
+    else
+    {
+        // propagate to base class
+        QTreeView::mousePressEvent( event );
+    }
+#endif
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
+    DEBUG_BLOCK
+
     QModelIndex index;
     if( m_filterModel )
         index = m_filterModel->mapToSource( indexAt( event->pos() ) );
     else
         index = indexAt( event->pos() );
 
-    if( index.isValid() && index.internalPointer()  /*&& index.parent().isValid()*/ )
+    if( index.isValid() )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        if( !index.parent().isValid() ) // root item
+        {
+            debug() << "expanding root item";
+            setExpanded( index, isExpanded( index ) );
+        }
+        else if( index.internalPointer() )
+        {
+            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
-        playChildTracks( item, Playlist::AppendAndPlay );
+            playChildTracks( item, Playlist::AppendAndPlay );
+        }
     }
-}
-
-void CollectionTreeView::mousePressEvent( QMouseEvent *e )
-{
-    QTreeView::mousePressEvent( e );
 }
 
 void CollectionTreeView::keyPressEvent( QKeyEvent * event )
@@ -282,6 +309,7 @@ void CollectionTreeView::keyPressEvent( QKeyEvent * event )
         QTreeView::keyPressEvent( event );
         return;
     }
+
     QModelIndex current = currentIndex();
     switch( event->key() ) 
     {

@@ -28,6 +28,8 @@
 
 #include <QPointer>
 
+#include <KIcon>
+
 class SqlCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
@@ -59,6 +61,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         virtual QString uidUrlProtocol() const;
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+        virtual KIcon icon() const { return KIcon("drive-harddisk"); }
 
         SqlRegistry* registry() const;
         DatabaseUpdater* dbUpdater() const;
@@ -74,7 +77,6 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         virtual CollectionLocation* location() const;
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
-
 
         //sqlcollection internal methods
         void sendChangedSignal();

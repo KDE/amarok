@@ -64,7 +64,6 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     m_serviceListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 #endif
     
-
     m_serviceListView->setFrameShape( QFrame::NoFrame );
 
     m_proxyModel = new ServiceListSortFilterProxyModel( this );
@@ -78,7 +77,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     m_serviceListView->setSortingEnabled( true );
     m_serviceListView->setAlternatingRowColors( true );
     m_serviceListView->setModel( m_proxyModel );
-    connect(m_serviceListView, SIGNAL( clicked ( const QModelIndex & ) ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
+    connect( m_serviceListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
     m_scriptableServiceManager = 0;
 
     The::paletteHandler()->updateItemView( m_serviceListView );
@@ -143,9 +142,9 @@ ServiceBrowser::showService( const QString &name )
     if ( m_services.contains( name ) )
        service = m_services.value( name );
 
-    if ( service != 0 && service != m_currentService ) {
+    if ( service != 0 && service != m_currentService )
+    {
         //if a service is already shown, make damn sure to deactivate that one first...
-
         if ( m_currentService )
             m_currentService->setParent( 0 );
 
@@ -230,28 +229,23 @@ void ServiceBrowser::slotFilterNow()
 QString ServiceBrowser::activeServiceName()
 {
     DEBUG_BLOCK
-    if ( m_currentService ) {
-        debug() << "getting service name: " << m_currentService->name();
+    if ( m_currentService )
         return m_currentService->name();
-    }
-    else
-        return QString();
+    return QString();
 }
 
 QString ServiceBrowser::activeServiceFilter()
 {
     if ( m_currentService )
         return m_currentService->filter();
-    else
-        return QString();
+    return QString();
 }
 
 QList<int> ServiceBrowser::activeServiceLevels()
 {
     if ( m_currentService )
         return m_currentService->levels();
-    else
-        return QList<int>();
+    return QList<int>();
 }
 
 #include "ServiceBrowser.moc"

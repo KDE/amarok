@@ -25,6 +25,7 @@ kde4_add_plugin(amarok_collection-daapcollection WITH_PREFIX ${amarok_collection
 target_link_libraries(amarok_collection-daapcollection
     amaroklib
     ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KDNSSD_LIBS}
     ${QT_QTNETWORK_LIBRARY}

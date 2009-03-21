@@ -26,12 +26,13 @@ if (IPOD_FOUND AND IPOD_0_7)
 
 ########### set GDK var ################
      # Generate config-gdk.h.cmake
-     configure_file(config-gdk.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-gdk.h )
+     configure_file(config-gdk.h.cmake 
+         ${CMAKE_CURRENT_BINARY_DIR}/config-gdk.h )
 
 
 ########### next target ################
 
-	set(amarok_collection-ipodcollection_PART_SRCS
+    set(amarok_collection-ipodcollection_PART_SRCS
 	IpodMeta.cpp
 	IpodCollection.cpp
 	IpodCollectionLocation.cpp
@@ -39,7 +40,7 @@ if (IPOD_FOUND AND IPOD_0_7)
 	CollectionCapabilityIpod.cpp)
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
-	target_link_libraries(amarok_collection-ipodcollection
+    target_link_libraries(amarok_collection-ipodcollection
         mediadevicelib
         amaroklib
         amarokpud
@@ -54,10 +55,15 @@ if (IPOD_FOUND AND IPOD_0_7)
         ${IPOD_LIBRARIES} 
         )
 
-	install(TARGETS amarok_collection-ipodcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+    install(TARGETS 
+        amarok_collection-ipodcollection 
+        DESTINATION 
+        ${PLUGIN_INSTALL_DIR} )
 
+    ########### install files ###############
 
-	########### install files ###############
-
-	install( FILES amarok_collection-ipodcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+    install(FILES 
+        amarok_collection-ipodcollection.desktop 
+        DESTINATION 
+        ${SERVICES_INSTALL_DIR})
 endif (IPOD_FOUND AND IPOD_0_7)

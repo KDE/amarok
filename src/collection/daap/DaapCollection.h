@@ -31,6 +31,8 @@
 #include <QPointer>
 #include <QtGlobal>
 
+#include <KIcon>
+
 #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
 
 namespace DNSSD {
@@ -82,6 +84,7 @@ class DaapCollection : public Amarok::Collection, public MemoryCollection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
+        virtual KIcon icon() const { return KIcon("network-server"); }
 
         void serverOffline();
 

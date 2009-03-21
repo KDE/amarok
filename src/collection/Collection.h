@@ -28,8 +28,8 @@
 #include <QSharedData>
 #include <QString>
 
+#include <KIcon>
 #include <KUrl>
-
 
 class CollectionLocation;
  
@@ -150,6 +150,10 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
             @return a user visible name for this collection, to be displayed in the collectionbrowser and elsewhere
         */
         virtual QString prettyName() const = 0;
+        /**
+         * @return an icon representing this collection
+         */
+        virtual KIcon icon() const = 0;
 
         virtual void collectionUpdated() { emit updated(); }
 
