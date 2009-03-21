@@ -85,13 +85,7 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
              SLOT( copyOperationFinished( bool ) ) );
 
     // Copy list of tracks
-
     m_collection->copyTrackListToDevice( sources.keys() );
-
-//    m_collection->copyTracksCompleted();
-
-//    m_collection->collectionUpdated();
-//    slotCopyOperationFinished();
 }
 
 void
