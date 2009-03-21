@@ -161,7 +161,7 @@ struct PodcastInfo
 
            /* Cover Art functions */
            QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
-           void getIpodCoverArt() const;
+           void getCoverArt( const Itdb_Track *ipodtrack );
 
            /* File I/O Methods */
 
@@ -221,7 +221,6 @@ struct PodcastInfo
 
            /* libgpod variables */
            Itdb_iTunesDB    *m_itdb;
-           Itdb_Device      *m_device;
            Itdb_Playlist    *m_masterPlaylist;
 
            /* Lockers */
@@ -270,6 +269,7 @@ struct PodcastInfo
 
            // tempdir for covers
            KTempDir *m_tempdir;
+           QSet<QString> m_coverArt;
 
            // TODO: Implement lockfile
            // QFile *m_lockFile;

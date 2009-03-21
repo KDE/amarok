@@ -62,7 +62,6 @@ using namespace Meta;
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject *parent )
     : QObject( parent )
     , m_memColl( mc )
-    , m_device( 0 )
     , m_masterPlaylist( 0 )
     , m_jobcounter( 0 )
     , m_statusbar( 0 )
@@ -106,21 +105,12 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     }
     else
     {
-        getIpodCoverArt();
-
+        m_tempdir->setAutoRemove( true );
+        
         // read device info
-        debug() << "Grabbing device struct";
-        m_device = m_itdb->device;
-        debug() << "Reading device info";
-        itdb_device_read_sysinfo( m_device );
-
         debug() << "Getting model information";
         detectModel(); // get relevant info about device
 
-        // TODO: this needs to be on demand per track
-
-        // set tempdir up
-        m_tempdir->setAutoRemove( true );
         qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
         m_success = true;
@@ -152,26 +142,31 @@ IpodHandler::metadataChanged( TrackPtr track )
 
     updateTrackInDB( trackUrl, track, trackPtr->getIpodTrack() );
 }
+
 void
 IpodHandler::metadataChanged( ArtistPtr artist )
 {
     Q_UNUSED( artist );
 }
+
 void
 IpodHandler::metadataChanged( AlbumPtr album )
 {
     Q_UNUSED( album );
 }
+
 void
 IpodHandler::metadataChanged( GenrePtr genre )
 {
     Q_UNUSED( genre );
 }
+
 void
 IpodHandler::metadataChanged( ComposerPtr composer )
 {
     Q_UNUSED( composer );
 }
+
 void
 IpodHandler::metadataChanged( YearPtr year )
 {
@@ -258,14 +253,14 @@ IpodHandler::detectModel()
 
     // needs recent libgpod-0.3.3 from cvs
     bool guess = false;
-    if( m_itdb && m_device )
+    if( m_itdb && m_itdb->device )
     {
         debug() << "Attempting to get info...";
-        const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_device );
+        const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
         debug() << "Got ipodinfo";
         const gchar *modelString = 0;
         #ifdef GDK_FOUND
-        m_supportsArtwork = itdb_device_supports_artwork( m_device );
+        m_supportsArtwork = itdb_device_supports_artwork( m_itdb->device );
         #else
         m_supportsArtwork = false;
         #endif
@@ -353,7 +348,7 @@ IpodHandler::detectModel()
 
         if( m_needsFirewireGuid )
         {
-            gchar *fwid = itdb_device_get_sysinfo( m_device, "FirewireGuid" );
+            gchar *fwid = itdb_device_get_sysinfo( m_itdb->device, "FirewireGuid" );
             if( fwid )
                g_free( fwid );
         }
@@ -1291,36 +1286,30 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 
 // TODO: This is sloooow. Need to implement on-demand fetching.
 void
-IpodHandler::getIpodCoverArt() const
+IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
 {
 #ifdef GDK_FOUND
-    DEBUG_BLOCK
+    if( !ipodtrack )
+        return;
 
-    GList *it;
+    const QString filename = ipodArtFilename( ipodtrack );
 
-    QSet<QString> retrievedArt; // Don't keep fetching the same artwork over and over
+    if( m_coverArt.contains(filename) )
+        return; 
 
-    for( it = m_itdb->tracks; it != NULL; it = it->next )
-    {
-        Itdb_Track *song = (Itdb_Track *)it->data;
+    if( ipodtrack->has_artwork == 0x02 )
+        return;
 
-        const QString filename = ipodArtFilename( song );
+    GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
+    if( !pixbuf )
+        return;
 
-        if( retrievedArt.contains(filename) )
-            continue;
+    gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, NULL);
+    gdk_pixbuf_unref( pixbuf );
 
-        if( song->has_artwork == 0x02 )
-            continue;
-
-        GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( song->itdb->device, song->artwork, -1, -1 );
-        if( !pixbuf )
-            continue;
-        
-        gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, NULL);
-        gdk_pixbuf_unref( pixbuf );
-
-        retrievedArt.insert( filename );
-    }
+    m_coverArt.insert( filename );
+#else
+    Q_UNUSED(ipodtrack);
 #endif
 }
 
@@ -1361,7 +1350,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const
 #ifdef GDK_FOUND
     DEBUG_BLOCK
 
-    if( image.isNull() )
+    if( image.isNull() || !m_supportsArtwork )
         return;
 
     const QString filename = ipodArtFilename( ipodtrack );
@@ -1488,6 +1477,8 @@ IpodHandler::parseTracks()
         /* ipodtrack - provides libgpod itdb info */
         /* track - the new track whose data is being set up */
         Itdb_Track *ipodtrack = (Itdb_Track*) cur->data;
+
+        getCoverArt( ipodtrack );
 
         IpodTrackPtr track( new IpodTrack( m_memColl ) );
 
