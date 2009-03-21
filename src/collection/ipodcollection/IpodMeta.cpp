@@ -877,7 +877,6 @@ IpodAlbum::image( int size )
         if( !m_image.isNull() )
             return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
 
-        // Go over eaech track until we find an image
         IpodTrackPtr track = IpodTrackPtr::dynamicCast( m_tracks.first() );
         Ipod::IpodHandler *handler = static_cast<IpodCollection*>(track->collection())->handler();
         QPixmap cover = handler->getCover( track );

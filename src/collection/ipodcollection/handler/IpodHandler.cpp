@@ -106,6 +106,8 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     }
     else
     {
+        getIpodCoverArt();
+
         // read device info
         debug() << "Grabbing device struct";
         m_device = m_itdb->device;
@@ -116,7 +118,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
         detectModel(); // get relevant info about device
 
         // TODO: this needs to be on demand per track
-        getIpodCoverArt();
 
         // set tempdir up
         m_tempdir->setAutoRemove( true );
@@ -1295,12 +1296,6 @@ IpodHandler::getIpodCoverArt() const
 #ifdef GDK_FOUND
     DEBUG_BLOCK
 
-    if( !m_supportsArtwork )
-    {
-        debug() << "ipod at " << m_mountPoint << " does not support artwork, will not scan";
-        return;
-    }
-
     GList *it;
 
     QSet<QString> retrievedArt; // Don't keep fetching the same artwork over and over
@@ -1315,7 +1310,7 @@ IpodHandler::getIpodCoverArt() const
             continue;
 
         if( song->has_artwork == 0x02 )
-             continue;
+            continue;
 
         GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( song->itdb->device, song->artwork, -1, -1 );
         if( !pixbuf )
