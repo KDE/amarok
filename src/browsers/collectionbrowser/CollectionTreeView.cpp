@@ -330,7 +330,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
     if( m_pd && m_pd->isHidden() )
     {
-
         QModelIndexList indices = selectedIndexes();
         if( m_filterModel )
         {
@@ -366,7 +365,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         actions = createExtendedActions( indices );
 
         PopupDropper * morePud = 0;
-        if ( actions.count() > 1 )
+        if( actions.count() > 1 )
         {
             morePud = The::popupDropperFactory()->createPopupDropper( 0 );
 

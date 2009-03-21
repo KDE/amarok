@@ -64,59 +64,6 @@ class EditCapabilityIpod : public Meta::EditCapability
         KSharedPtr<IpodTrack> m_track;
 };
 
-class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
-{
-    Q_OBJECT
-    public:
-        CustomActionsCapabilityIpod( IpodTrack* track )
-            : Meta::CustomActionsCapability()
-            , m_track( track )
-        {
-            DEBUG_BLOCK
-
-            // Setup the remove action
-
-            PopupDropperAction *removeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                                                                    "delete", KIcon( "remove-amarok" ), i18n( "&Remove from iPod" ), 0 );
-            debug() << "Remove-action created";
-
-            IpodCollection *coll = dynamic_cast<IpodCollection*>( m_track->collection() );
-
-            // set track to be deleted
-            coll->setTrackToDelete( m_track );
-
-            // when action is selected, collection deletes track
-            connect( removeAction, SIGNAL( triggered() ), coll, SLOT(deleteTrackToDelete()) );
-
-            // Add the action to the list of custom actions
-            m_actions.append( removeAction );
-
-            // Setup the disconnect action
-            PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                                                        "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the iPod" ), 0 );
-            debug() << "Disconnect-action created";
-
-            // when action is selected, collection emits remove()
-            connect( disconnectAction, SIGNAL( triggered() ),
-                     coll, SLOT( slotDisconnect() ) );
-
-            // Add the action to the list of custom actions
-            m_actions.append( disconnectAction );
-            debug() << "Disconnect action appended to local QList";
-        }
-
-        virtual ~CustomActionsCapabilityIpod() {}
-
-        virtual QList< PopupDropperAction *> customActions() const {
-            return m_actions;
-        }
-
-    private:
-        QList< PopupDropperAction* > m_actions;
-        IpodTrackPtr m_track;
-
-};
-
 class UpdateCapabilityIpod : public Meta::UpdateCapability
 {
     Q_OBJECT
@@ -131,7 +78,6 @@ class UpdateCapabilityIpod : public Meta::UpdateCapability
             m_coll->collectionUpdated();
             m_coll->writeDatabase();
         }
-
 
     private:
         IpodCollection *m_coll;
@@ -473,9 +419,6 @@ IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::Editable:
             return new EditCapabilityIpod( this );
-        case Meta::Capability::CustomActions:
-            return 0;
-            //return new CustomActionsCapabilityIpod( this );
         case Meta::Capability::Updatable:
             return new UpdateCapabilityIpod( m_collection );
 
