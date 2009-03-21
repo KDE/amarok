@@ -150,8 +150,6 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
     }
 
     debug() << "Creating new layout " << layoutName;
-    //layoutListWidget->addItem( layoutName );
-    
     PlaylistLayout layout;
     layout.setEditable( true );      //Should I use true, TRUE or 1?
     layout.setDirty( true );
@@ -177,16 +175,18 @@ void PlaylistLayoutEditDialog::copyLayout()
     LayoutItemConfig bodyConfig = m_bodyEdit->config();
     LayoutItemConfig singleConfig = m_singleEdit->config();
     
-    QString layoutName( "" );
-    while( layoutName == "" || m_layoutsMap->keys().contains( layoutName ) )
-    {
-        layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
+    QString layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
                     i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
                     layoutListWidget->currentItem()->text() ) );
-        if( layoutName == "" )
-            KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
-        if( m_layoutsMap->keys().contains( layoutName ) )
-            KMessageBox::sorry( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
+    if( layoutName == "" )
+    {
+        KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
+        return;
+    }
+    if( m_layoutsMap->keys().contains( layoutName ) )
+    {
+        KMessageBox::sorry( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
+        return;
     }
     debug() << "Copying layout " << layoutName;
     //layoutListWidget->addItem( layoutName );
@@ -198,10 +198,9 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setHead( headConfig );
     layout.setBody( bodyConfig );
     layout.setSingle( singleConfig );
-    m_layoutsMap->insert( layoutName, layout );
 
     LayoutManager::instance()->addUserLayout( layoutName, layout );
-    
+
     //reload from manager:
     layoutListWidget->clear();
     layoutListWidget->addItems( LayoutManager::instance()->layouts() );
