@@ -96,9 +96,6 @@ private:
 
     void startProxyUpdateTimeout();
 
-    void trackMenu( QWidget *, const QModelIndex &, const QPoint &pos, bool coverActions = false );
-    QList<PopupDropperAction *> actionsFor( const QModelIndex &index, bool coverActions );
-
     QRect                 m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;
     bool                  m_mousePressInHeader;

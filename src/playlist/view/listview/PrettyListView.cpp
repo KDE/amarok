@@ -212,7 +212,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     if( event->modifiers() & Qt::ControlModifier )
         return;
 
-    trackMenu( this, index, event->globalPos(), true );
+    ViewCommon::trackMenu( this, &index, event->globalPos(), true );
     event->accept();
 }
 
@@ -414,12 +414,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions =
-                actionsFor( indices.first(), true );
+        QList<PopupDropperAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
 
-        foreach( PopupDropperAction * action, actions ) {
+        foreach( PopupDropperAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
-        }
 
         m_pd->show();
     }
@@ -434,109 +432,6 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         m_pd->hide();
     }
     ongoingDrags = false;
-}
-
-void
-Playlist::PrettyListView::trackMenu( QWidget *parent, const QModelIndex &index, const QPoint &pos, bool coverActions )
-{
-    DEBUG_BLOCK
-    KMenu *menu = new KMenu( parent );
-
-    QList<PopupDropperAction *> actions = actionsFor( index, coverActions );
-    foreach( PopupDropperAction *action, actions )
-    {
-        menu->addAction( action );
-    }
-    menu->exec( pos );
-}
-
-QList<PopupDropperAction *>
-Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverActions )
-{
-    DEBUG_BLOCK
-    QList<PopupDropperAction *> actions;
-
-    Meta::TrackPtr track = index.data( Playlist::TrackRole ).value< Meta::TrackPtr >();
-
-    const bool isCurrentTrack = index.data( Playlist::ActiveTrackRole ).toBool();
-
-    PopupDropperAction *playAction = new PopupDropperAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), this );
-    connect( playAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
-
-    PopupDropperAction *pauseAction = new PopupDropperAction( KIcon( "media-playback-pause-amarok" ), i18n( "&Pause" ), this );
-    connect( pauseAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
-
-    const bool isPaused = The::engineController()->isPaused();
-    if( isCurrentTrack && !isPaused )
-        actions << pauseAction;
-    else
-        actions << playAction;
-
-
-    const bool isMultiSource = index.data( Playlist::MultiSourceRole ).toBool();
-    if ( isMultiSource ) {
-        PopupDropperAction *selectSourceAction = new PopupDropperAction( KIcon( "media-playlist-repeat" ), i18n( "Select Source" ), this );
-        connect( selectSourceAction, SIGNAL( triggered() ), this, SLOT( selectSource() ) );
-        actions << selectSourceAction;
-    }
-
-    PopupDropperAction *queueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
-    connect( queueAction, SIGNAL( triggered() ), this, SLOT( queueSelection() ) );
-
-    PopupDropperAction *dequeueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Dequeue Track" ), this );
-    connect( dequeueAction, SIGNAL( triggered() ), this, SLOT( dequeueSelection() ) );
-
-    const bool isQueued = index.data( Playlist::StateRole ).toInt() & Item::Queued;
-    if( isQueued )
-        actions << dequeueAction;
-    else
-        actions << queueAction;
-
-    PopupDropperAction *stopAction = new PopupDropperAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), this );
-    connect( stopAction, SIGNAL( triggered() ), this, SLOT( stopAfterTrack() ) );
-    actions << stopAction;
-
-    PopupDropperAction *removeAction = new PopupDropperAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), this );
-    connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeSelection() ) );
-    actions << removeAction;
-
-    PopupDropperAction *editAction = new PopupDropperAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
-    connect( editAction, SIGNAL( triggered() ), this, SLOT( editTrackInformation() ) );
-    actions << editAction;
-
-    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-    if( isCurrentTrack )
-    {
-        QList<QAction *> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
-        foreach( QAction *action, globalCurrentTrackActions )
-            actions << PopupDropperAction::from( action );
-
-        if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
-        {
-            Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
-            if ( cac )
-            {
-                foreach( PopupDropperAction *action, cac->customActions() )
-                    actions << action;
-            }
-        }
-    }
-
-    if ( coverActions )
-    {
-        Meta::AlbumPtr album = track->album();
-        if ( album )
-        {
-            Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
-            if ( cac )
-            {
-                foreach( PopupDropperAction *action, cac->customActions() )
-                    actions << action;
-            }
-        }
-    }
-
-    return actions;
 }
 
 QItemSelectionModel::SelectionFlags
