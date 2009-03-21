@@ -320,6 +320,10 @@ namespace Meta
             /** returns all tracks on this album */
             virtual TrackList tracks() = 0;
 
+            /**
+             * A note about image sizes:
+             *  when size is <= 1, return the full size image
+             */
             /** returns true if the album has a cover set */
             virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return false; }
             /** returns the cover of the album */
