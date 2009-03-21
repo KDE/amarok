@@ -1281,7 +1281,7 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
     const QString album  = QString::fromUtf8( ipodtrack->album  );
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() );
     const QString imageKey = context.hexDigest();
-    return Amarok::saveLocation("albumcovers/tmp/ipod/") + imageKey + ".png";
+    return m_tempdir->name() + imageKey + ".png";
 }
 
 // TODO: This is sloooow. Need to implement on-demand fetching.
