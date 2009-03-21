@@ -9,7 +9,7 @@ include_directories( ../
                    )
 
 if ( TAGLIB-EXTRAS_FOUND )
-    include_directories( ${include_directories} ${TAGLIB-EXTRAS_INCLUDES} )
+    include_directories( ${include_directories} ${TAGLIB-EXTRAS_INCLUDE_DIR} )
 endif ( TAGLIB-EXTRAS_FOUND )
 
 add_definitions(${TAGLIB_CFLAGS})
