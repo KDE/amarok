@@ -10,7 +10,7 @@ VERSION 2.1
       graphical dependencies have been removed, allowing for headless, remote
       runs of collection scans.  A wiki page detailing how to do this will be
       made available shortly.
-    * Covers are shown for iPod collections.
+    * Covers are shown and written for iPod collections.
     * Phonon multimedia system can be configured directly from Amarok.
     * Cover art can now be disabled in the collection browser.
     * Scrobble tracks from streams that have title and artist metadata
