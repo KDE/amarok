@@ -38,14 +38,8 @@ if( WITH_PLAYER )
 
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.2.0" "" )
 
-    #this line has to be before add_defintions, but after the KDE4 cmake includes
-    #because they are used to determine install locations
-    include(CheckQtScriptBindings)
-    if( NOT QTSCRIPT_QT_BINDINGS_FOUND )
-        #we're keeping the script generator in our code to give some
-        #time to transition to depending on it seperate
-        add_subdirectory( src/scriptengine/generator )
-    endif( NOT QTSCRIPT_QT_BINDINGS_FOUND )
+    find_package( QtScriptQtBindings REQUIRED )
+    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
 
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 

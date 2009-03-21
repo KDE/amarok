@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 {
     KAboutData about( "findgeneratorplugins", "", ki18n("Generator Exists?"), "1.0", ki18n("Find if the QtScript Plugins Are Installed"), KAboutData::License_LGPL_V2 );
     KCmdLineArgs::init( argc, argv, &about );
-    KApplication app;
+    KApplication app( false ); //no gui pls
     
     QStringList allowedBindings;
     allowedBindings << "qt.core" << "qt.gui" << "qt.sql" << "qt.xml" << "qt.uitools" << "qt.network";
