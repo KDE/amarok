@@ -52,10 +52,10 @@ Playlist::GroupingProxy::destroy()
     }
 }
 
-Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( NavigatorFilterProxyModel::instance() )
+Playlist::GroupingProxy::GroupingProxy()
+    : QAbstractProxyModel( 0 )
+    , m_model( NavigatorFilterProxyModel::instance() )
 {
-    DEBUG_BLOCK
-
     setSourceModel( m_model );
     // signal proxies
     connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
@@ -66,9 +66,8 @@ Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( N
 
     int max = m_model->rowCount();
     for ( int i = 0; i < max; i++ )
-    {
         m_rowGroupMode.append( None );
-    }
+    
     regroupRows( 0, max - 1 );
 
     s_instance = this;
@@ -76,20 +75,14 @@ Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( N
 
 Playlist::GroupingProxy::~GroupingProxy()
 {
-    DEBUG_BLOCK
 }
 
 QModelIndex
 Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
 {
     if ( m_model->rowExists( r ) )
-    {
         return createIndex( r, c );
-    }
-    else
-    {
-        return QModelIndex();
-    }
+    return QModelIndex();
 }
 
 QModelIndex
@@ -131,21 +124,15 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
     int row = index.row();
 
     if ( role == Playlist::GroupRole )
-    {
         return m_rowGroupMode.at( row );
-    }
+    
     else if ( role == Playlist::GroupedTracksRole )
-    {
         return groupRowCount( row );
-    }
+    
     else if ( role == Playlist::GroupedAlternateRole )
-    {
         return ( row % 2 == 1 );
-    }
-    else
-    {
-        return m_model->data( index, role );
-    }
+    
+    return m_model->data( index, role );
 }
 
 int
@@ -157,7 +144,6 @@ Playlist::GroupingProxy::activeRow() const
 void
 Playlist::GroupingProxy::setActiveRow( int row ) const
 {
-    DEBUG_BLOCK
     m_model->setActiveRow( row );
 }
 
