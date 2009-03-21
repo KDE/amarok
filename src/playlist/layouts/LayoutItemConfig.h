@@ -29,7 +29,7 @@ enum
 {
     ITEM_LEFT,
     ITEM_RIGHT,
-    ITEM_RIGHT
+    ITEM_CENTER
 };
 
 /**
@@ -46,7 +46,7 @@ class LayoutItemConfigRowElement
          * item shares the space leftover by any non 0 items with all other items with size 0 on the same row.
          * @param bold Make the item text bold.
          * @param italic Make the item text italic.
-         * @param alignment the alignment of the item (ITEM_LEFT, ITEM_RIGHT or ITEM_RIGHT).
+         * @param alignment the alignment of the item (ITEM_LEFT, ITEM_RIGHT or ITEM_CENTER).
          * @param prefix Text to show before the actual value text.
          * @param suffix  Text to show after the actual value text.
          */

@@ -30,9 +30,9 @@ class QComboBox;
 namespace Playlist {
 
 /**
-    A widget containing the gui needed to define playlist layouts
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
- */
+ * A widget containing the gui needed to define playlist layouts
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+*/
 
 class LayoutConfigAction : public KAction
 {

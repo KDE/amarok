@@ -31,27 +31,54 @@ class QCheckBox;
 class QSpinBox;
 class TokenDropTarget;
 
-/**
-    A widget to define the layout of a single type of playlist item ( head, body or single )
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+
 
 namespace Playlist {
 
+/**
+ * A widget to define the layout of a single type of playlist item ( head, body or single )
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class LayoutEditWidget : public KVBox
 {
     Q_OBJECT
 
     public:
+        /**
+         * Constructor.
+         * @param parent The parent widget.
+         */
         LayoutEditWidget( QWidget *parent );
+
+        /**
+         * Destructor.
+         */
         ~LayoutEditWidget();
 
+        /**
+         * Setup the edit widget to represent an existing LayoutItemConfig.
+         * @param config The config to read.
+         */
         void readLayout( Playlist::LayoutItemConfig config );
+
+        /**
+         * Create and return a LayoutItemConfig corrosponding to the current state of the editor
+         * @return LayoutItemConfig matching the contents of the editor.
+         */
         Playlist::LayoutItemConfig config();
+
+        /**
+         * Clear the editor.
+         */
         void clear();
 
     signals:
-        void focussed ( QWidget* );
+
+        /**
+         * Signal emited when the token drop target recieves input focus.
+         * @param The widget that recieved the focus.
+         */
+        void focussed( QWidget* );
 
     private:
         QCheckBox *m_showCoverCheckBox;
