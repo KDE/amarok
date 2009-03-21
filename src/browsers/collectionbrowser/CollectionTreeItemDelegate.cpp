@@ -74,10 +74,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     
     painter->setRenderHint( QPainter::Antialiasing );
 
-    QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-
-    painter->drawPixmap( topLeft.x() + 2, topLeft.y(), background );
-
     const int iconYPadding = ( height - iconHeight ) / 2;
     painter->drawPixmap( topLeft + QPoint( iconPadX, iconYPadding ),
                          index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
