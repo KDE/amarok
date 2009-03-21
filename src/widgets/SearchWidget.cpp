@@ -119,6 +119,11 @@ void SearchWidget::showAdvancedButton(bool show)
     }
 }
 
+void SearchWidget::setClickMessage( QString message )
+{
+    m_sw->setClickMessage( message );
+}
+
 
 #include "SearchWidget.moc"
 

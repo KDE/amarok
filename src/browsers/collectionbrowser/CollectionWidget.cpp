@@ -52,6 +52,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     QMenu *filterMenu = new QMenu( this );
     KHBox *hbox = new KHBox( this );
     m_searchWidget = new SearchWidget( hbox );
+    m_searchWidget->setClickMessage( "Search collection" );
 
     m_treeView = new CollectionTreeView( this );
     m_treeView->setAlternatingRowColors( true );

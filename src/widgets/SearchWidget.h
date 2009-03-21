@@ -36,6 +36,12 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         QToolBar * toolBar();
 
         void showAdvancedButton( bool show );
+        
+        /**
+         * Sets the string that will be visible when the KLineEdit is empty.
+         * @param message the string that will be visible then the KLineEdit is empty.
+         */
+        void setClickMessage( QString message );
 
     signals:
 
