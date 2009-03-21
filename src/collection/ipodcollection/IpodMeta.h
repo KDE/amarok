@@ -240,7 +240,7 @@ class IpodArtist : public Meta::Artist
 class IpodAlbum : public Meta::Album
 {
     public:
-        IpodAlbum( const QString &name );
+        IpodAlbum( IpodCollection *collection, const QString &name );
         virtual ~IpodAlbum();
 
         virtual QString name() const;
@@ -254,7 +254,10 @@ class IpodAlbum : public Meta::Album
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
         virtual void setImage( const QPixmap &pixmap );
-        virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return m_hasCover; }
+        virtual bool hasImage( int size = 1 ) const;
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //IpodAlbum specific methods
 
@@ -266,13 +269,16 @@ class IpodAlbum : public Meta::Album
         void setImagePath( const QString &path );
 
     private:
-        QString m_name;
-        QString m_coverPath;
-        TrackList m_tracks;
-        bool m_isCompilation;
-        bool m_hasCover;
-        QPixmap m_image;
-        IpodArtistPtr m_albumArtist;
+        IpodCollection *m_collection;
+
+        QString         m_name;
+        QString         m_coverPath;
+        TrackList       m_tracks;
+        bool            m_isCompilation;
+        mutable bool    m_hasImage;
+        bool            m_hasImageChecked;
+        QPixmap         m_image;
+        IpodArtistPtr   m_albumArtist;
 };
 
 class IpodGenre : public Meta::Genre

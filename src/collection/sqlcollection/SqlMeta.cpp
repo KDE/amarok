@@ -1258,7 +1258,7 @@ SqlAlbum::image( int size )
     // subscribers. We use queueAlbum() because this runs the fetch as a
     // background job and doesn't give an intruding popup asking for confirmation
     if( !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
-        CoverFetcher::instance()->queueAlbum( KSharedPtr<Meta::Album>(this) );
+        CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
 
     // If the result image is empty then we didn't find any cached image, nor
     // could we find the original cover to scale to the appropriate size. Hence,

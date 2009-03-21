@@ -24,6 +24,7 @@
 #include "IpodCollection.h"
 #include "handler/IpodHandler.h"
 
+#include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
 #include "SvgHandler.h"
 #include "meta/capabilities/EditCapability.h"
@@ -454,7 +455,7 @@ IpodTrack::setAlbum( const QString &newAlbum )
     }
     else
     {
-        albumPtr = IpodAlbumPtr( new IpodAlbum( newAlbum ) );
+        albumPtr = IpodAlbumPtr( new IpodAlbum( m_collection, newAlbum ) );
         albumMap.insert( newAlbum, AlbumPtr::staticCast( albumPtr ) );
     }
 
@@ -466,7 +467,6 @@ IpodTrack::setAlbum( const QString &newAlbum )
     m_collection->acquireWriteLock();
     m_collection->setAlbumMap( albumMap );
     m_collection->releaseLock();
-
 }
 
 void
@@ -510,7 +510,6 @@ IpodTrack::setArtist( const QString &newArtist )
     m_collection->acquireWriteLock();
     m_collection->setArtistMap( artistMap );
     m_collection->releaseLock();
-
 }
 
 void
@@ -554,7 +553,6 @@ IpodTrack::setGenre( const QString &newGenre )
     m_collection->acquireWriteLock();
     m_collection->setGenreMap( genreMap );
     m_collection->releaseLock();
-
 }
 
 void
@@ -598,7 +596,6 @@ IpodTrack::setComposer( const QString &newComposer )
     m_collection->acquireWriteLock();
     m_collection->setComposerMap( composerMap );
     m_collection->releaseLock();
-
 }
 
 void
@@ -757,12 +754,16 @@ IpodArtist::remTrack( IpodTrackPtr track )
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
 
-IpodAlbum::IpodAlbum( const QString &name )
+//---------------IpodAlbum-----------------------------------
+
+IpodAlbum::IpodAlbum( IpodCollection *collection, const QString &name )
     : Meta::Album()
+    , m_collection( collection )
     , m_name( name )
     , m_tracks()
     , m_isCompilation( false )
-    , m_hasCover( false )
+    , m_hasImage( false )
+    , m_hasImageChecked( false )
     , m_image( QPixmap() )
     , m_albumArtist( 0 )
 {
@@ -818,14 +819,20 @@ IpodAlbum::image( int size )
     else
     {
         if( !m_image.isNull() )
+        {
+            if( !size )
+                return m_image;
             return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+        }
 
         IpodTrackPtr track = IpodTrackPtr::dynamicCast( m_tracks.first() );
-        Ipod::IpodHandler *handler = static_cast<IpodCollection*>(track->collection())->handler();
+        Ipod::IpodHandler *handler = m_collection->handler();
         QPixmap cover = handler->getCover( track );
         if( !cover.isNull() )
         {
             m_image = cover;
+            if( !size )
+                return m_image;
             return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );;
         }
     }
@@ -834,16 +841,24 @@ IpodAlbum::image( int size )
 }
 
 bool
+IpodAlbum::hasImage( int size ) const
+{
+    if( !m_hasImageChecked )
+        m_hasImage = ! const_cast<IpodAlbum*>( this )->image( size ).isNull();
+    return m_hasImage;
+}
+
+bool
 IpodAlbum::canUpdateImage() const
 {
-    return false;
+    return true;
 }
 
 void
 IpodAlbum::setImage( const QPixmap &pixmap )
 {
     m_image = pixmap;
-    m_hasCover = true;
+    m_hasImage = true;
     foreach( TrackPtr track, m_tracks )
         IpodTrackPtr::staticCast(track)->updateItdb();
 }
@@ -852,7 +867,7 @@ void
 IpodAlbum::setImagePath( const QString &path )
 {
     m_coverPath = path;
-    m_hasCover = true;
+    m_hasImage = true;
     foreach( TrackPtr track, m_tracks )
         IpodTrackPtr::staticCast(track)->updateItdb();
 }
@@ -881,7 +896,53 @@ IpodAlbum::setIsCompilation( bool compilation )
     m_isCompilation = compilation;
 }
 
-//IpodGenre
+bool
+IpodAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+            return true;
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+IpodAlbum::asCapabilityInterface( Meta::Capability::Type type )
+{
+    switch( type )
+    {
+        case Meta::Capability::CustomActions:
+        {
+            QList<PopupDropperAction*> actions;
+
+            PopupDropperAction *separator          = new PopupDropperAction( m_collection );
+            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, AlbumPtr::dynamicCast( IpodAlbumPtr(this) ) );
+            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, AlbumPtr::dynamicCast( IpodAlbumPtr(this) ) );
+            
+            separator->setSeparator( true );
+
+            actions.append( separator );
+            actions.append( displayCoverAction );
+            actions.append( new FetchCoverAction( m_collection, AlbumPtr::staticCast( IpodAlbumPtr(this) ) ) );
+            actions.append( new SetCustomCoverAction( m_collection, AlbumPtr::staticCast( IpodAlbumPtr(this) ) ) );
+            if( !hasImage() )
+            {
+                displayCoverAction->setEnabled( false );
+                unsetCoverAction->setEnabled( false );
+            }
+            actions.append( unsetCoverAction );
+
+            return new CustomActionsCapability( actions );
+        }
+
+        default:
+            return 0;
+    }
+}
+
+//---------------IpodGenre-----------------------------------
 
 IpodGenre::IpodGenre( const QString &name )
     : Meta::Genre()

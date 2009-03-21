@@ -455,7 +455,7 @@ IpodHandler::writeITunesDB( bool threaded )
                     if (error->message)
                         debug() << "itdb_write error: " << error->message;
                     else
-                        debug() << "itdb_write error: " << "error->message == 0!";
+                        debug() << "itdb_write error: error->message == 0!";
                     g_error_free (error);
                 }
                 error = 0;
@@ -472,7 +472,7 @@ IpodHandler::writeITunesDB( bool threaded )
                         if (error->message)
                             debug() << "itdb_shuffle_write error: " << error->message;
                         else
-                            debug() << "itdb_shuffle_write error: " << "error->message == 0!";
+                            debug() << "itdb_shuffle_write error: error->message == 0!";
                         g_error_free (error);
                     }
                     error = 0;
@@ -1390,7 +1390,7 @@ IpodHandler::setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, Alb
         albumPtr = IpodAlbumPtr::staticCast( albumMap.value( album ) );
     else
     {
-        albumPtr = IpodAlbumPtr( new IpodAlbum( album ) );
+        albumPtr = IpodAlbumPtr( new IpodAlbum( m_memColl, album ) );
         albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
     }
 
