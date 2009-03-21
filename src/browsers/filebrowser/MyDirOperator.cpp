@@ -50,8 +50,18 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
     connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
              this,   SLOT( fileSelected( const KFileItem& ) ) );
 
-    connect( this, SIGNAL( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ),
-             this,   SLOT( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ) );
+    //FIXME: This signal is only available under KDE4.2 libraries, so remove the ActionCollection hack
+    //when we bump kdelibs dep.
+    //connect( this, SIGNAL( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ),
+    //         this,   SLOT( contextMenuAboutToShow( const KFileItem &item, QMenu *menu ) ) );
+
+    //HACK: crafty method to hijack the context menu
+    KActionMenu *actionMenu = static_cast<KActionMenu*>( actionCollection()->action( "popupMenu" ) );
+    if ( actionMenu )
+    {
+        KMenu *menu = actionMenu->menu();
+        connect( menu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowContextMenu() ) );
+    }
 }
 
 MyDirOperator::~MyDirOperator()
@@ -63,11 +73,13 @@ void MyDirOperator::fileSelected( const KFileItem & /*file*/ )
     view()->selectionModel()->clear();
 }
 
-void MyDirOperator::contextMenuAboutToShow( const KFileItem &item, QMenu *menu )
+void MyDirOperator::aboutToShowContextMenu()
 {
     DEBUG_BLOCK
 
-    Q_UNUSED( item )
+    QMenu *menu = dynamic_cast<QMenu*>( sender() );
+    if ( !menu )
+        return;
 
     // Remove the "File Properties" action as it makes no sense to us. We'll show our own tag dialog instead.
     foreach( QAction *a, menu->actions() )
@@ -85,7 +97,9 @@ void MyDirOperator::contextMenuAboutToShow( const KFileItem &item, QMenu *menu )
     {
         Amarok::Collection *coll = it.key();
         if ( coll && coll->isWritable() )
+        {
             writableCollections.append( coll );
+        }
         ++it;
     }
     if ( !writableCollections.isEmpty() )
