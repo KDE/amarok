@@ -196,8 +196,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         // show pure html in the text area
         m_suggested->hide();
-        // we assume html lyrics take care of titles as well
-        m_titleLabel->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
     }
