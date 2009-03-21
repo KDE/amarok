@@ -21,9 +21,8 @@
 #include <QObject>
 
 /**
- * A class for
+ * A class for blah
  *
- * @author Foo Bar <foo@bar.com>
  **/
 class AMAROK_EXPORT Template : public QObject 
 {
