@@ -82,14 +82,15 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
-    //setAnimated( true );
+    #if QT_VERSION >= 0x040500
+        setAnimated( true );
+    #endif
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( this, SIGNAL( expanded( const QModelIndex & ) ), SLOT( slotExpanded( const QModelIndex & ) ) );
 }
-
 
 void CollectionTreeView::setModel(QAbstractItemModel * model)
 {
