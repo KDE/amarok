@@ -469,11 +469,12 @@ TagDialog::loadCover()
     if( !m_currentTrack->album() )
         return;
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image() );
+    const int s = 100; // Image preview size
+
+    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image(s) );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
     ui->pixmap_cover->setInformation( artist, m_currentTrack->album()->name() );
 
-    const int s = 100; // Image preview size
     ui->pixmap_cover->setMinimumSize( s, s );
     ui->pixmap_cover->setMaximumSize( s, s );
 }
