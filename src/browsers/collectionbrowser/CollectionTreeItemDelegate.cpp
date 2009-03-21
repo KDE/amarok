@@ -123,9 +123,4 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
     return QSize( width, height );
 }
 
-void
-CollectionTreeItemDelegate::paletteChange()
-{
-    The::svgHandler()->reTint();
-}
 

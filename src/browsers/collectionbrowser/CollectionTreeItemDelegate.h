@@ -37,8 +37,6 @@ class CollectionTreeItemDelegate : public QStyledItemDelegate
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
         QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
-        void paletteChange();
-
     private:
         QTreeView *m_view;
         QFont m_bigFont;
