@@ -76,10 +76,11 @@ VERSION 2.1
       applets.
 
   CHANGES:
-	* The collection scanner is now being provided in a separate package.
+    * Bring back animations in the browsers if built with Qt 4.5 or later.
+    * The collection scanner is now being provided in a separate package.
       Packagers should be packaging this (and soon other utilities) into an
       amarok-utils or amarok-utilities package.
-	* The TagLib plugins formerly provided by Amarok are now being provided in
+    * The TagLib plugins formerly provided by Amarok are now being provided in
       a separate package.  It should be available in most distributions as
       taglib-extras.
     * Improvements to playlist searching and filtering. No longer reset view
