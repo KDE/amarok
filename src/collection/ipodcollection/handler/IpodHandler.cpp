@@ -615,9 +615,7 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 
         if( !( format == "mp3" || format == "aac" || format == "mp4" ) )
         {
-            QString error;
-            error += "Unsupported Ipod format: ";
-            error += format;
+            QString error = "Unsupported Ipod format: " + format;
             m_tracksFailed.insert( track, error );
             continue;
         }
@@ -719,7 +717,6 @@ IpodHandler::copyNextTrackToDevice()
     m_tracksToCopy.removeFirst();
 
     // Copy the track
-
     privateCopyTrackToDevice( track );
 
     emit incrementProgress();
