@@ -161,17 +161,13 @@ IpodTrack::IpodTrack( IpodCollection *collection )
     , m_lastPlayed( 0 )
     , m_rating( 0 )
     , m_bpm( 0 )
-    , m_displayUrl()
     , m_playableUrl()
 {
-  //QString url = QString( "ipod://%1:%2/%3/%4.%5" )
-  //                .arg( host, QString::number( port ), dbId, itemId, format );
 }
 
 IpodTrack::~IpodTrack()
 {
     //nothing to do
-
 }
 
 QString
@@ -202,7 +198,8 @@ IpodTrack::uidUrl() const
 QString
 IpodTrack::prettyUrl() const
 {
-    return m_displayUrl;
+    KUrl url( m_playableUrl );
+    return url.path();
 }
 
 bool
@@ -756,8 +753,13 @@ void
 IpodTrack::endMetaDataUpdate()
 {
     // Update info in local ipod database struct
-    m_collection->updateTags( this );
     notifyObservers();
+}
+
+void
+IpodTrack::updateItdb()
+{
+    m_collection->updateTags( this );
 }
 
 //IpodArtist
@@ -900,6 +902,8 @@ IpodAlbum::setImage( const QPixmap &pixmap )
 {
     m_image = pixmap;
     m_hasCover = true;
+    foreach( TrackPtr track, m_tracks )
+        IpodTrackPtr::staticCast(track)->updateItdb();
 }
 
 void
@@ -907,6 +911,8 @@ IpodAlbum::setImagePath( const QString &path )
 {
     m_coverPath = path;
     m_hasCover = true;
+    foreach( TrackPtr track, m_tracks )
+        IpodTrackPtr::staticCast(track)->updateItdb();
 }
 
 void
