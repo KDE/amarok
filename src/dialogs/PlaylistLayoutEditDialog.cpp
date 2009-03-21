@@ -136,16 +136,19 @@ PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 
 void PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
-    QString layoutName( "" );
-    while( layoutName == "" || m_layoutsMap->keys().contains( layoutName ) )
-    {
-        layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
+    QString layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
                     i18n( "Please enter a name for the playlist layout you are about to define:" ) );
-        if( layoutName == "" )
-            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Cannot create a layout with no name." ) );
-        if( m_layoutsMap->keys().contains( layoutName ) )
-            KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Cannot create a layout with the same name as an existing layout." ) );
+    if( layoutName == "" )
+    {
+        KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Cannot create a layout with no name." ) );
+        return;
     }
+    if( m_layoutsMap->keys().contains( layoutName ) )
+    {
+        KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Cannot create a layout with the same name as an existing layout." ) );
+        return;
+    }
+
     debug() << "Creating new layout " << layoutName;
     //layoutListWidget->addItem( layoutName );
     
@@ -153,21 +156,18 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
     layout.setEditable( true );      //Should I use true, TRUE or 1?
     layout.setDirty( true );
 
-    LayoutItemConfig headConfig = m_headEdit->config();
-    headConfig.setActiveIndicatorRow( -1 );
-    layout.setHead( headConfig );
+    layoutListWidget->addItem( layoutName );
+    layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
+    m_headEdit->clear();
+    m_bodyEdit->clear();
+    m_singleEdit->clear();
+    layout.setHead( m_headEdit->config() );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
     m_layoutsMap->insert( layoutName, layout );
 
     LayoutManager::instance()->addUserLayout( layoutName, layout );
-    
-    //reload from manager:
-    layoutListWidget->clear();
-    layoutListWidget->addItems( LayoutManager::instance()->layouts() );
 
-    m_layoutsMap->insert( layoutName, layout );
-    layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
     setLayout( layoutName );
 }
 

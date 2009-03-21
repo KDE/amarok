@@ -46,7 +46,7 @@ class LayoutConfigAction : public KAction
         LayoutConfigAction( QWidget * parent );
 
         /**
-         * Destructor-
+         * Destructor.
          */
         ~LayoutConfigAction();
 
