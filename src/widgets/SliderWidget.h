@@ -61,8 +61,6 @@ namespace Amarok
             virtual void slideEvent( QMouseEvent* );
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
-            virtual void paletteChange( const QPalette & oldPalette );
-
             void paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
 
             bool m_sliding;
@@ -107,7 +105,6 @@ namespace Amarok
         protected:
             virtual void paintEvent( QPaintEvent* );
 
-            virtual void paletteChange( const QPalette& );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void contextMenuEvent( QContextMenuEvent* );
             virtual void wheelEvent( QWheelEvent *e );
@@ -136,7 +133,6 @@ namespace Amarok
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void mousePressEvent( QMouseEvent* );
-            virtual void paletteChange( const QPalette& );
             virtual void resizeEvent(QResizeEvent * event);
 
         private:

@@ -30,7 +30,6 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "SvgHandler.h"
-#include "SvgTinter.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -258,12 +257,6 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     paintCustomSlider( &p, 0, (height() - m_sliderHeight) / 2, width(), m_sliderHeight );
 }
 
-void
-Amarok::VolumeSlider::paletteChange( const QPalette& )
-{
-    The::svgHandler()->reTint();
-}
-
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
 {
     Amarok::Slider::resizeEvent( event );
@@ -296,12 +289,6 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
     paintCustomSlider( &p, 0, ( height() - m_sliderHeight ) / 2, width(), m_sliderHeight, m_knobX );
-}
-
-void
-Amarok::TimeSlider::paletteChange( const QPalette& )
-{
-    The::svgHandler()->reTint();
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
@@ -346,14 +333,6 @@ void Amarok::TimeSlider::mousePressEvent(QMouseEvent *event )
     if( !The::engineController()->phononMediaObject()->isSeekable() )
         return; // Eat the event,, it's not possible to seek
     Amarok::Slider::mousePressEvent( event );
-}
-
-
-void Amarok::Slider::paletteChange(const QPalette & oldPalette)
-{
-    Q_UNUSED( oldPalette );
-    The::svgHandler()->reTint();
-    repaint( 0, 0, -1, -1 );
 }
 
 

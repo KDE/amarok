@@ -77,11 +77,12 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
 
         QPixmap addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
-        
-        void reTint();
 
         QString themeFile();
         void setThemeFile( const QString  & themeFile );
+
+    public slots:
+        void reTint();
 
     private:
         SvgHandler( QObject* parent = 0 );

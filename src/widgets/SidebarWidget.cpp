@@ -25,8 +25,6 @@
 #include "Debug.h"
 #include "amarokconfig.h"
 
-#include "SvgTinter.h"
-
 #include <QAbstractItemDelegate>
 #include <QApplication>
 #include <QPainter>
@@ -214,9 +212,8 @@ QColor SideBarButton::blendColors( const QColor& color1, const QColor& color2, i
     return result;
 }
 
-void SideBarButton::paletteChange(const QPalette & /*oldPalette*/)
+void SideBarButton::paletteChange( const QPalette & /*oldPalette*/ )
 {
-    The::svgHandler()->reTint();
     repaint( 0, 0, -1,-1 );
 }
 

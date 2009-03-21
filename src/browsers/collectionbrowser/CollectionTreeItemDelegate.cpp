@@ -24,7 +24,6 @@
 
 #include "App.h"
 #include "Debug.h"
-#include "SvgTinter.h"
 
 #include <QApplication>
 #include <QFontMetrics>

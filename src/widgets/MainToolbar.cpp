@@ -28,7 +28,6 @@
 #include "MainControlsWidget.h"
 #include "ProgressWidget.h"
 #include "SvgHandler.h"
-#include "SvgTinter.h"
 #include "VolumeWidget.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
@@ -172,14 +171,6 @@ bool MainToolbar::eventFilter( QObject* object, QEvent* event )
     }
 
     return QWidget::eventFilter( object, event );
-}
-
-void MainToolbar::paletteChange( const QPalette & oldPalette )
-{
-    Q_UNUSED( oldPalette );
-
-    The::svgHandler()->reTint();
-    repaint( 0, 0, -1, -1 );
 }
 
 /*void MainToolbar::centerAddActions()

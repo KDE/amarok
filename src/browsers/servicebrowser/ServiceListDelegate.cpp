@@ -23,7 +23,6 @@
 #include "App.h"
 #include "Debug.h"
 #include "ServiceListModel.h"
-#include "SvgTinter.h"
 #include "services/ServiceBase.h"
 
 #include <QApplication>
@@ -117,9 +116,4 @@ ServiceListDelegate::sizeHint( const QStyleOptionViewItem & option, const QModel
     return QSize( width, height );
 }
 
-void
-ServiceListDelegate::paletteChange()
-{
-    The::svgHandler()->reTint();
-}
 

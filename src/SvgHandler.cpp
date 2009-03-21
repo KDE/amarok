@@ -23,12 +23,14 @@
 #include "App.h"
 #include "Debug.h"
 #include "MainWindow.h"
+#include "PaletteHandler.h"
 #include "SvgTinter.h"
 
 #include <KStandardDirs>
 
 #include <QHash>
 #include <QPainter>
+#include <QPalette>
 #include <QReadLocker>
 #include <QWriteLocker>
 
@@ -53,6 +55,7 @@ SvgHandler::SvgHandler( QObject* parent )
     , m_customTheme( false )
 {
     DEBUG_BLOCK
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( reTint() ) );
 }
 
 SvgHandler::~SvgHandler()
@@ -278,3 +281,5 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
 
     return pixmap;
 }
+
+#include "SvgHandler.moc"
