@@ -31,10 +31,6 @@
 
 using namespace Playlist;
 
-/**
- * Constructor for PlaylistLayoutEditDialog.
- * Populates the token pool, loads the available layouts from the LayoutManager in the right area and loads the configuration of the currently active layout.
- */
 PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     : QDialog( parent )
 {
@@ -138,10 +134,6 @@ PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 {
 }
 
-/**
- * Creates a new PlaylistLayout with a given name and loads it in the right area to configure it.
- * The new layout is not saved in the LayoutManager but in m_layoutsMap.
- */
 void PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
     QString layoutName( "" );
@@ -179,10 +171,6 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
     setLayout( layoutName );
 }
 
-/**
- * Creates a new PlaylistLayout with a given name as a copy of an existing layout and loads it in the right area to configure it.
- * The new layout is not saved in the LayoutManager but in m_layoutsMap.
- */
 void PlaylistLayoutEditDialog::copyLayout()
 {
     LayoutItemConfig headConfig = m_headEdit->config();
@@ -223,9 +211,6 @@ void PlaylistLayoutEditDialog::copyLayout()
     setLayout( layoutName );
 }
 
-/**
- * Deletes the current layout selected in the layoutListWidget.
- */
 void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
 {
     m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
@@ -234,9 +219,6 @@ void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
     delete layoutListWidget->currentItem();
 }
 
-/**
- * Renames the current layout selected in the layoutListWidget.
- */
 void PlaylistLayoutEditDialog::renameLayout()
 {
     PlaylistLayout layout = m_layoutsMap->value( layoutListWidget->currentItem()->text() );
@@ -292,9 +274,6 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     }
 }
 
-/**
- * Applies to the playlist a preview of the currently defined layout.
- */
 void PlaylistLayoutEditDialog::preview()
 {
     PlaylistLayout layout;
@@ -309,9 +288,6 @@ void PlaylistLayoutEditDialog::preview()
     LayoutManager::instance()->setPreviewLayout( layout );
 }
 
-/**
- * Disables the delete button if the selected layout is one of the default layouts and enables it otherwise.
- */
 void PlaylistLayoutEditDialog::toggleDeleteButton() //SLOT
 {
     if ( !layoutListWidget->currentItem() )
@@ -351,9 +327,6 @@ void PlaylistLayoutEditDialog::toggleUpDownButtons()
     
 }
 
-/**
- * Saves the edited layouts from m_layoutMap to the LayoutManager.
- */
 void PlaylistLayoutEditDialog::apply()  //SLOT
 {
     QMap<QString, PlaylistLayout>::Iterator i = m_layoutsMap->begin();
@@ -380,18 +353,12 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
     LayoutManager::instance()->setActiveLayout( layoutListWidget->currentItem()->text() );  //important to override the previewed layout if preview is used
 }
 
-/**
- * Saves the edited layouts from m_layoutMap to the LayoutManager and closes the dialog.
- */
 void PlaylistLayoutEditDialog::accept()     //SLOT
 {
     apply();
     QDialog::accept();
 }
 
-/**
- * Closes the dialog without saving (almost) any changes.
- */
 void PlaylistLayoutEditDialog::reject()     //SLOT
 {
     DEBUG_BLOCK
@@ -402,9 +369,6 @@ void PlaylistLayoutEditDialog::reject()     //SLOT
     QDialog::reject();
 }
 
-/**
- * Moves up the currently selected layout.
- */
 void PlaylistLayoutEditDialog::moveUp()
 {
     int newRow = LayoutManager::instance()->moveUp( m_layoutName );
@@ -415,9 +379,6 @@ void PlaylistLayoutEditDialog::moveUp()
     layoutListWidget->setCurrentRow( newRow );
 }
 
-/**
- * Moves down the currently selected layout.
- */
 void PlaylistLayoutEditDialog::moveDown()
 {
     int newRow = LayoutManager::instance()->moveDown( m_layoutName );

@@ -28,32 +28,98 @@
 #include "ui_PlaylistLayoutEditDialog.h"
 
 /**
-    Dialog for editing playlist layouts
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ *  Dialog for adding, deleting, copying and editing playlist layouts. The order in which the layouts are
+ *  shown can also be changed.
+ *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditDialog
 {
     Q_OBJECT
 
-    public slots:
-        void setLayout( const QString &layoutName );
-
     public:
+
+        /**
+         * Constructor for PlaylistLayoutEditDialog.
+         * Populates the token pool, loads the available layouts from the LayoutManager in the right area and loads the configuration of the currently active layout.
+         * @param parent The parent widget.
+         */
         PlaylistLayoutEditDialog( QWidget *parent = 0 );
+
+        /**
+         * Destructor.
+         */
         ~PlaylistLayoutEditDialog();
 
-    private slots:
+    public slots:
+
+        /**
+         * Set the currently selected layout.
+         * @param layoutName The name of the layout to select.
+         */
+        void setLayout( const QString &layoutName );
+
+    protected slots:
+
+        /**
+         * Previews the current layout in the playlist without saving it.
+         */
         void preview();
+
+        /**
+         * Accepts the currently changed layouts and stores them. Closes the dialog.
+         */
         virtual void accept();
+
+        /**
+         * Reject the changed layouts and close the dialog.
+         */
         virtual void reject();
+
+        /**
+         * Accepts the currently changed layouts and stores them.
+         */
         void apply();
+
+        /**
+         * Creates a new PlaylistLayout with a given name and loads it in the right area to configure it.
+         * The new layout is not saved in the LayoutManager but in m_layoutsMap.
+         */
         void newLayout();
+
+        /**
+         * Creates a new PlaylistLayout with a given name as a copy of an existing layout and loads it in the right area to configure it.
+         * The new layout is not saved in the LayoutManager but in m_layoutsMap.
+         */
         void copyLayout();
+
+        /**
+         * Deletes the current layout selected in the layoutListWidget.
+         */
         void deleteLayout();
+
+        /**
+         * Renames the current layout selected in the layoutListWidget.
+         */
         void renameLayout();
+
+        /**
+         * Moves the currently selected layout up one place (if not already at the top). This is applied immediately.
+         */
         void moveUp();
+
+        /**
+         * Moves the currently selected layout down one place (if not already at the bottom). This is applied immediately.
+         */
         void moveDown();
+
+        /**
+         * Disables the delete button if the selected layout is one of the default layouts and enables it otherwise.
+         */
         void toggleDeleteButton();
+
+        /**
+         * Activates/Deactivates the up and down buttons depending on whether the currently selected item can be moved up and or down.
+         */
         void toggleUpDownButtons();
 
     private:
