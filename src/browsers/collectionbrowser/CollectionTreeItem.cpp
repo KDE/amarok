@@ -32,7 +32,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_parentCollection( 0 )
     , m_childrenLoaded( false )
     , m_isVariousArtistsNode( false )
-    , m_trackCount( 0 )
+    , m_trackCount( -1 )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -44,7 +44,7 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_parentCollection( parentCollection )
     , m_childrenLoaded( false )
     , m_isVariousArtistsNode( false )
-    , m_trackCount( 0 )
+    , m_trackCount( -1 )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -56,7 +56,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_parentCollection( 0 )
     , m_childrenLoaded( true )
     , m_isVariousArtistsNode( true )
-    , m_trackCount( 0 )
+    , m_trackCount( -1 )
 {
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
@@ -163,21 +163,18 @@ CollectionTreeItem::data( int role ) const
             return m_parentCollection->icon();
         else if( role == CustomRoles::ByLineRole )
         {
-#if 0
+
             if( m_trackCount < 0 )
             {
                 QueryMaker *qm = m_parentCollection->queryMaker();
-                connect( qm, SIGNAL( newResultReady(int, StringList) ), SLOT( tracksCounted(int, QStringList) ) );
+                connect( qm, SIGNAL( newResultReady(QString, QStringList) ), SLOT( tracksCounted(QString, QStringList) ) );
 
                 qm->setAutoDelete( true )
                   ->setQueryType( QueryMaker::Custom )
-                  ->addReturnValue( Meta::valUrl )
-                  ->addReturnFunction( QueryMaker::Count, Meta::valTitle )
+                  ->addReturnFunction( QueryMaker::Count, Meta::valUrl )
                   ->run();
-
-                return QString();
             }
-#endif
+
             return i18np( "1 Track", "%1 Tracks", m_trackCount );
         }
     }
@@ -186,14 +183,14 @@ CollectionTreeItem::data( int role ) const
 }
 
 void
-CollectionTreeItem::tracksCounted( int collectionId, QStringList res )
+CollectionTreeItem::tracksCounted( QString collectionId, QStringList res )
 {
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
     if( !res.isEmpty() )
         m_trackCount = res.first().toInt();
     else
-        m_trackCount = 0;
+        m_trackCount = -1;
     debug() << "Track count for " << data( Qt::DisplayRole ).toString() << " is: " << m_trackCount;
     emit dataUpdated();
 }
