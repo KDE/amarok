@@ -42,7 +42,7 @@
 #include "nsCodingStateMachine.h"
 #include "CharDistribution.h"
 
-class nsBig5Prober: public nsCharSetProber {
+class nsBig5Prober: public nsCharSetProber, nsCharSetProberHelper {
 public:
   nsBig5Prober(void){mCodingSM = new nsCodingStateMachine(&Big5SMModel);
                       Reset();};
@@ -62,8 +62,6 @@ protected:
 
   //Big5ContextAnalysis mContextAnalyser;
   Big5DistributionAnalysis mDistributionAnalyser;
-  char mLastChar[2];
-
 };
 
 

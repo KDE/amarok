@@ -49,7 +49,7 @@
 #include "CharDistribution.h"
 
 
-class nsSJISProber: public nsCharSetProber {
+class nsSJISProber: public nsCharSetProber, nsCharSetProberHelper {
 public:
   nsSJISProber(void){mCodingSM = new nsCodingStateMachine(&SJISSMModel);
                       Reset();};
@@ -67,9 +67,6 @@ protected:
 
   SJISContextAnalysis mContextAnalyser;
   SJISDistributionAnalysis mDistributionAnalyser;
-
-  char mLastChar[2];
-
 };
 
 

@@ -48,7 +48,7 @@
 #include "JpCntx.h"
 #include "CharDistribution.h"
 
-class nsEUCJPProber: public nsCharSetProber {
+class nsEUCJPProber: public nsCharSetProber, nsCharSetProberHelper {
 public:
   nsEUCJPProber(void){mCodingSM = new nsCodingStateMachine(&EUCJPSMModel);
                       Reset();};
@@ -66,8 +66,6 @@ protected:
 
   EUCJPContextAnalysis mContextAnalyser;
   EUCJPDistributionAnalysis mDistributionAnalyser;
-
-  char mLastChar[2];
 };
 
 

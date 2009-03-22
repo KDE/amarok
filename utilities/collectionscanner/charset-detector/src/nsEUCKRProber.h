@@ -42,7 +42,7 @@
 #include "nsCodingStateMachine.h"
 #include "CharDistribution.h"
 
-class nsEUCKRProber: public nsCharSetProber {
+class nsEUCKRProber: public nsCharSetProber, nsCharSetProberHelper {
 public:
   nsEUCKRProber(void){mCodingSM = new nsCodingStateMachine(&EUCKRSMModel);
                       Reset();};
@@ -62,8 +62,6 @@ protected:
 
   //EUCKRContextAnalysis mContextAnalyser;
   EUCKRDistributionAnalysis mDistributionAnalyser;
-  char mLastChar[2];
-
 };
 
 

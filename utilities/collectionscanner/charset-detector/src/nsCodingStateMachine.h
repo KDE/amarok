@@ -61,6 +61,8 @@ class nsCodingStateMachine {
 public:
   nsCodingStateMachine(SMModel* sm){
           mCurrentState = eStart;
+          mCurrentCharLen = 0;
+          mCurrentBytePos = 0;
           mModel = sm;
         };
   nsSMState NextState(char c){

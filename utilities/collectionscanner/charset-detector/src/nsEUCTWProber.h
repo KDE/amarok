@@ -42,7 +42,7 @@
 #include "nsCodingStateMachine.h"
 #include "CharDistribution.h"
 
-class nsEUCTWProber: public nsCharSetProber {
+class nsEUCTWProber: public nsCharSetProber, nsCharSetProberHelper {
 public:
   nsEUCTWProber(void){mCodingSM = new nsCodingStateMachine(&EUCTWSMModel);
                       Reset();};
@@ -62,8 +62,6 @@ protected:
 
   //EUCTWContextAnalysis mContextAnalyser;
   EUCTWDistributionAnalysis mDistributionAnalyser;
-  char mLastChar[2];
-
 };
 
 

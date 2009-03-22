@@ -45,7 +45,8 @@
 class CharDistributionAnalysis
 {
 public:
-  CharDistributionAnalysis() {Reset();}
+  CharDistributionAnalysis() : mCharToFreqOrder(0), mTableSize(0)
+    , mTypicalDistributionRatio(0.0) {Reset();}
   virtual ~CharDistributionAnalysis() {}
 
   //feed a block of data and do distribution analysis

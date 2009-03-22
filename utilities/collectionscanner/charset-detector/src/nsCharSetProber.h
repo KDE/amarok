@@ -70,7 +70,12 @@ public:
   // Both functions return PR_FALSE in case of memory allocation failure.
   static PRBool FilterWithoutEnglishLetters(const char* aBuf, PRUint32 aLen, char** newBuf, PRUint32& newLen);
   static PRBool FilterWithEnglishLetters(const char* aBuf, PRUint32 aLen, char** newBuf, PRUint32& newLen);
-
 };
 
+class nsCharSetProberHelper {
+public:
+  nsCharSetProberHelper() { mLastChar[0] = mLastChar[1] = 0; }
+protected:
+  char mLastChar[2];
+};
 #endif /* nsCharSetProber_h__ */
