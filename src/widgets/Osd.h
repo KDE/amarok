@@ -99,8 +99,8 @@ class OSDWidget : public QWidget
         uint        m_y;
         bool        m_drawShadow;
         short       m_rating;
-        int         m_newvolume;
-        bool        m_volume;
+        int         m_volume;
+        bool        m_showVolume;
         QString     m_text;
         QImage      m_cover;
         QPixmap     m_scaledCover;

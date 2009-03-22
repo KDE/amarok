@@ -54,8 +54,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_y( MARGIN )
         , m_drawShadow( true )
         , m_rating( 0 )
-        , m_volume( false )
-        , m_newvolume( The::engineController()->volume() )
+        , m_showVolume( false )
+        , m_volume( The::engineController()->volume() )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -88,7 +88,7 @@ void
 OSDWidget::show( const QString &text, QImage newImage )
 {
     DEBUG_BLOCK
-    m_volume = false;
+    m_showVolume = false;
     if ( !newImage.isNull() )
     {
         m_cover = newImage;
@@ -128,10 +128,10 @@ OSDWidget::volumeChanged( int volume )
     if ( isEnabled() )
     {
         QString muteState = "";
-        m_volume = true;
-        m_newvolume = volume;
+        m_showVolume = true;
+        m_volume = volume;
 
-        m_text = i18n("Volume: %1% %2", m_newvolume, ( The::engineController()->isMuted() ? "(muted)" : "" ) );
+        m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? "(muted)" : "" ) );
 
         show();
     }
@@ -185,7 +185,7 @@ OSDWidget::determineMetrics( const int M )
             Qt::AlignCenter | Qt::TextWordWrap, m_text );
     rect.setHeight( rect.height() + M + M );
 
-    if( m_volume )
+    if( m_showVolume )
     {
         static const QString tmp = QString ("******").insert( 3,
             ( i18n("Volume: 100% (muted)" ) ) );
@@ -197,14 +197,14 @@ OSDWidget::determineMetrics( const int M )
 
         rect = tmpRect;
 
-        if( m_newvolume > 66 )
-            m_cover = KIcon( "audio-volume-high-amarok" ).pixmap( 100, 100 ).toImage();
-        else if ( m_newvolume > 33 )
-            m_cover = KIcon( "audio-volume-medium-amarok" ).pixmap( 100, 100 ).toImage();
-        else if ( m_newvolume > 0 )
-            m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
-        else
+        if ( The::engineController()->isMuted() )
             m_cover = KIcon( "audio-volume-muted-amarok" ).pixmap( 100, 100 ).toImage();
+        else if( m_volume > 66 )
+            m_cover = KIcon( "audio-volume-high-amarok" ).pixmap( 100, 100 ).toImage();
+        else if ( m_volume > 33 )
+            m_cover = KIcon( "audio-volume-medium-amarok" ).pixmap( 100, 100 ).toImage();
+        else
+            m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
     }
     // Don't show both volume and rating
     else if( m_rating )
@@ -313,7 +313,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     int graphicsHeight = 0;
 
-    if( !m_volume && m_rating > 0 && !m_paused )
+    if( !m_showVolume && m_rating > 0 && !m_paused )
     {
         QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
         QRect r( rect );
@@ -628,7 +628,7 @@ Amarok::OSD::engineVolumeChanged( int newVolume )
 void
 Amarok::OSD::engineMuteStateChanged( bool mute )
 {
-    volumeChanged( m_newvolume );
+    volumeChanged( m_volume );
 }
 
 void
