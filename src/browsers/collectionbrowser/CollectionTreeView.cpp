@@ -239,9 +239,7 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
 
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-   
-    if( item->isCollectionItem() ) 
+    if( index.isValid() && !index.parent().isValid() ) // root item
         setExpanded( index, !isExpanded( index ) );
     // propagate to base class
     else
@@ -258,9 +256,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-
-        if( item->isCollectionItem() )
+        if( !index.parent().isValid() ) // root item
         {
             QModelIndex index2 = indexAt( event->pos() );
             setExpanded( index2, !isExpanded( index2 ) );

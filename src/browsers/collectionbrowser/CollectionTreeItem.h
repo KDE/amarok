@@ -65,7 +65,6 @@ class CollectionTreeItem : public QObject
         bool isDataItem() const;
         bool isAlbumItem() const;
         bool isTrackItem() const;
-        bool isCollectionItem() const;
 
         QueryMaker* queryMaker() const;
 
