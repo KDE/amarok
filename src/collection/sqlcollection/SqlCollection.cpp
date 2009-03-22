@@ -352,7 +352,7 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
                                                      text,
                                                      files,
                                                      i18n("Delete Files"),
-                                                     KStandardGuiItem::del() ) == KMessageBox::Yes;
+                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
     if( !del )
         return;
 
