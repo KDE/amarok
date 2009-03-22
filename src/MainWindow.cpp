@@ -48,7 +48,6 @@
 #include "playlist/view/graphic/PlaylistGraphicsView.h"
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "queuemanager/QueueManager.h"
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
@@ -324,8 +323,6 @@ MainWindow::init()
         m_splitter->restoreState( sPanels );
     }
 
-    //Amarok::MessageQueue::instance()->sendMessages();
-
     The::amarokUrlHandler(); //Instantiate
 }
 
@@ -561,22 +558,6 @@ MainWindow::showScriptSelector() //SLOT
     ScriptManager::instance()->raise();
 }
 
-void
-MainWindow::showQueueManager() //SLOT
-{
-    if( QueueManagerNS::QueueManager::instance() )
-    {
-        QueueManagerNS::QueueManager::instance()->raise();
-        return;
-    }
-
-    QueueManagerNS::QueueManager dialog;
-    if( dialog.exec() == QDialog::Accepted )
-    {
-        // TODO: alter queue
-    }
-}
-
 /**
  * "Toggle Main Window" global shortcut connects to this slot
  */
@@ -685,10 +666,6 @@ MainWindow::createActions()
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
     ac->addAction( "script_manager", action );
-
-    action = new KAction( KIcon( "go-bottom-amarok"), i18n( "Queue Manager" ), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
-    ac->addAction( "queue_manager", action );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     ac->addAction( "seek_forward", action );

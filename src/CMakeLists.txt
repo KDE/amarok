@@ -304,14 +304,6 @@ set(libplaylistbrowser_SRCS
 )
 
 #####################################################################
-# QUEUEMANAGER
-#####################################################################
-set(libqueuemanager_SRCS
-    queuemanager/QueueManager.cpp
-    queuemanager/QueueModel.cpp
-)
-
-#####################################################################
 # PLAYLISTMANAGER
 #####################################################################
 set(libplaylistmanager_SRCS

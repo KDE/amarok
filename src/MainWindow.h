@@ -120,7 +120,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
-        void showQueueManager();
         void showScriptSelector();
 
     protected:
