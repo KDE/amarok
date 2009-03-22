@@ -48,7 +48,7 @@ class OSDWidget : public QWidget
         void show( const QString &text, QImage newImage = QImage() );
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
-        void volChanged( int volume );
+        void volumeChanged( int volume );
 
         /** reimplemented, shows the OSD */
         virtual void show();
@@ -168,6 +168,7 @@ namespace Amarok
     protected:
         // Reimplemented from EngineObserver
         virtual void engineVolumeChanged( int );
+        virtual void engineMuteStateChanged( bool );
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
 
         // Reimplemented from Meta::Observer
