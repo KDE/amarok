@@ -17,30 +17,26 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef KJOBPROGRESSBAR_H
-#define KJOBPROGRESSBAR_H
+#ifndef AMAROK_KJOB_PROGRESS_BAR_H
+#define AMAROK_KJOB_PROGRESS_BAR_H
 
 #include "statusbar/ProgressBar.h"
 
 #include <KJob>
 
 /**
-A specialized progress bar that takes a KJob in the constructor and keeps itself updated
-
-	@author
-*/
-class KJobProgressBar : public ProgressBarNG
+ * A specialized progress bar that takes a KJob in the constructor and keeps itself updated
+ */
+class KJobProgressBar : public ProgressBar
 {
     Q_OBJECT
-public:
-    KJobProgressBar( QWidget *parent, KJob * job );
 
-    ~KJobProgressBar();
+    public:
+        KJobProgressBar( QWidget *parent, KJob * job );
+        ~KJobProgressBar();
 
-private slots:
-
-    void updateJobStatus( KJob*, unsigned long );
-
+    private slots:
+        void updateJobStatus( KJob*, unsigned long );
 };
 
 #endif

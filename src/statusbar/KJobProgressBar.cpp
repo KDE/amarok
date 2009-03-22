@@ -20,7 +20,7 @@
 #include "KJobProgressBar.h"
 
 KJobProgressBar::KJobProgressBar( QWidget *parent, KJob * job )
-        : ProgressBarNG( parent )
+        : ProgressBar( parent )
 {
     connect( job, SIGNAL( percent( KJob*, unsigned long ) ),  SLOT( updateJobStatus( KJob *, unsigned long ) ) );
     connect( job, SIGNAL( result( KJob* ) ), SLOT( delayedDone() ) );

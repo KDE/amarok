@@ -27,7 +27,7 @@
 #include <KIcon>
 #include <KLocale>
 
-ProgressBarNG::ProgressBarNG( QWidget * parent )
+ProgressBar::ProgressBar( QWidget * parent )
         : QFrame( parent )
 {
     QHBoxLayout *box = new QHBoxLayout( this );
@@ -66,20 +66,20 @@ ProgressBarNG::ProgressBarNG( QWidget * parent )
 }
 
 
-ProgressBarNG::~ProgressBarNG()
+ProgressBar::~ProgressBar()
 {
 }
 
 void
-ProgressBarNG::setDescription( const QString & description )
+ProgressBar::setDescription( const QString & description )
 {
     DEBUG_BLOCK
     m_descriptionLabel->setText( description );
 
 }
 
-ProgressBarNG *
-ProgressBarNG::setAbortSlot( QObject * receiver, const char * slot )
+ProgressBar *
+ProgressBar::setAbortSlot( QObject * receiver, const char * slot )
 {
     DEBUG_BLOCK
 
@@ -96,7 +96,7 @@ ProgressBarNG::setAbortSlot( QObject * receiver, const char * slot )
     return this;
 }
 
-void ProgressBarNG::cancel()
+void ProgressBar::cancel()
 {
     DEBUG_BLOCK
     debug() << "cancelling operation: " << m_descriptionLabel->text();
@@ -104,7 +104,7 @@ void ProgressBarNG::cancel()
     emit( cancelled( this ) );
 }
 
-void ProgressBarNG::setValue( int percentage )
+void ProgressBar::setValue( int percentage )
 {
     progressBar()->setValue( percentage );
     emit( percentageChanged( percentage ) );
@@ -113,24 +113,18 @@ void ProgressBarNG::setValue( int percentage )
     //by showing 100%, thus removing the progress info before it even gets started
     /*if ( percentage == m_progressBar->maximum() )
         QTimer::singleShot( POST_COMPLETION_DELAY, this, SLOT( delayedDone() ) );*/
-
 }
 
-void ProgressBarNG::delayedDone()
+void ProgressBar::delayedDone()
 {
     emit( complete( this ) );
 }
 
-int ProgressBarNG::percentage()
+int ProgressBar::percentage()
 {
     if ( m_progressBar->maximum() == 100 )
         return m_progressBar->value();
-    else
-    {
-
-        return ( int )((( float ) m_progressBar->value() / ( float ) m_progressBar->maximum() ) * 100.0 );
-
-    }
+    return ( int )((( float ) m_progressBar->value() / ( float ) m_progressBar->maximum() ) * 100.0 );
 }
 
 

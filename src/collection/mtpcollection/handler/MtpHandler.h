@@ -169,7 +169,7 @@ namespace Mtp
             Meta::TrackPtr m_lastTrackCopied;
             QMap<Meta::TrackPtr, QString> m_tracksFailed;
 
-            ProgressBarNG *m_statusbar;
+            ProgressBar *m_statusbar;
 
         // mtp database
 

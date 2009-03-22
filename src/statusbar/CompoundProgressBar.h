@@ -27,11 +27,11 @@
 #include <QMap>
 
 /**
-A progress bar that wraps a number of simple progress ars and displays their overall progress. Also features an expanded mode that allows the user to view and canceld individual operations
-
-	@author
-*/
-class AMAROK_EXPORT CompoundProgressBar : public ProgressBarNG
+ * A progress bar that wraps a number of simple progress bars and displays their 
+ * overall progress. Also features an expanded mode that allows the user to view 
+ * and canceld individual operations
+ */
+class AMAROK_EXPORT CompoundProgressBar : public ProgressBar
 {
     Q_OBJECT
 public:
@@ -39,7 +39,7 @@ public:
 
     ~CompoundProgressBar();
 
-    void addProgressBar( ProgressBarNG * progressBar, QObject *owner );
+    void addProgressBar( ProgressBar * progressBar, QObject *owner );
     void endProgressOperation( const QObject * owner );
 
     void incrementProgress( const QObject *owner );
@@ -55,8 +55,8 @@ protected slots:
     void toggleDetails();
 
     void childPercentageChanged( );
-    void childBarCancelled( ProgressBarNG * progressBar );
-    void childBarComplete( ProgressBarNG * progressBar );
+    void childBarCancelled( ProgressBar * progressBar );
+    void childBarComplete( ProgressBar * progressBar );
 
 private:
     void showDetails();
@@ -66,7 +66,7 @@ private:
 
     int calcCompoundPercentage();
 
-    QMap<const QObject *, ProgressBarNG *> m_progressMap;
+    QMap<const QObject *, ProgressBar *> m_progressMap;
 
     QToolButton * m_showDetailsButton;
 

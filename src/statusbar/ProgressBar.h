@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef PROGRESSBARNG_H
-#define PROGRESSBARNG_H
+#ifndef PROGRESSBAR_H
+#define PROGRESSBAR_H
 
 #include "amarok_export.h"
 
@@ -30,79 +30,48 @@
 #include <QProgressBar>
 #include <QToolButton>
 
-
 #define POST_COMPLETION_DELAY 2000
 
-
 /**
-A widget that encapsulates a progress bar, a description string and a cancel button.
-
-	@author
-*/
-class AMAROK_EXPORT ProgressBarNG : public QFrame
+ * A widget that encapsulates a progress bar, a description string and a cancel button.
+ */
+class AMAROK_EXPORT ProgressBar : public QFrame
 {
-
     Q_OBJECT
-public:
-    ProgressBarNG( QWidget * parent );
 
-    ~ProgressBarNG();
+    public:
+        ProgressBar( QWidget *parent );
+        ~ProgressBar();
 
-    void setDescription( const QString &description );
-    ProgressBarNG * setAbortSlot( QObject *receiver, const char *slot );
+        void setDescription( const QString &description );
+        ProgressBar *setAbortSlot( QObject *receiver, const char *slot );
 
-    QToolButton *cancelButton()
-    {
-        return m_cancelButton;
-    }
-    QProgressBar *progressBar()
-    {
-        return m_progressBar;
-    }
-    QLabel *descriptionLabel()
-    {
-        return m_descriptionLabel;
-    }
-    KHBox* extrabuttonSpace()
-    {
-        return m_extraButtonSpace;
-    }
+        QToolButton *cancelButton() { return m_cancelButton; }
+        QProgressBar *progressBar() { return m_progressBar;  }
+        QLabel *descriptionLabel()  { return m_descriptionLabel; }
+        KHBox* extrabuttonSpace()   { return m_extraButtonSpace; }
 
+        int maximum()               { return  m_progressBar->maximum(); }
+        void setMaximum( int max )  { m_progressBar->setMaximum( max ); }
+        int value()                 { return m_progressBar->value(); }
+        void setValue( int value );
+        int percentage();
 
-    void setValue( int value );
-    void setMaximum( int max )
-    {
-        m_progressBar->setMaximum( max );
-    }
-    int maximum()
-    {
-        return  m_progressBar->maximum();
-    }
-    int percentage();
-    int value()
-    {
-        return m_progressBar->value();
-    }
+    public slots:
+        void cancel();
+        void delayedDone();
 
+    signals:
+        void cancelled( ProgressBar* );
+        void cancelled();
+        void complete( ProgressBar* );
+        void percentageChanged( int );
 
-public slots:
-
-    void cancel();
-    void delayedDone();
-
-signals:
-    void cancelled( ProgressBarNG * );
-    void cancelled();
-    void complete( ProgressBarNG * );
-    void percentageChanged( int );
-
-
-
-private:
-    QToolButton *m_cancelButton;
-    QProgressBar *m_progressBar;
-    QLabel *m_descriptionLabel;
-    KHBox *m_extraButtonSpace;
+    private:
+        QToolButton *m_cancelButton;
+        QProgressBar *m_progressBar;
+        QLabel *m_descriptionLabel;
+        KHBox *m_extraButtonSpace;
 };
 
 #endif

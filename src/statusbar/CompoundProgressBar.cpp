@@ -28,14 +28,13 @@
 #include <QLayout>
 
 CompoundProgressBar::CompoundProgressBar( QWidget * parent )
-        : ProgressBarNG( parent )
+        : ProgressBar( parent )
 {
     m_showDetailsButton = new QToolButton( extrabuttonSpace() );
     m_showDetailsButton->setIcon( KIcon( "arrow-up-double-amarok" ) );
 
     m_progressDetailsWidget = new PopupWidget( this );
     m_progressDetailsWidget->hide();
-    //connect( m_progressDetailsWidget, SIGNAL( finished ( int ) ), this, SLOT( detailsWindowClosed() ) );
     
     connect( m_showDetailsButton, SIGNAL( clicked() ), this, SLOT( toggleDetails() ) );
 }
@@ -48,28 +47,22 @@ CompoundProgressBar::~CompoundProgressBar()
     m_progressDetailsWidget = 0;
 }
 
-void CompoundProgressBar::addProgressBar( ProgressBarNG * childBar, QObject *owner )
+void CompoundProgressBar::addProgressBar( ProgressBar * childBar, QObject *owner )
 {
     DEBUG_BLOCK
 
     m_progressMap.insert( owner, childBar );
     m_progressDetailsWidget->layout()->addWidget( childBar );
     if ( m_progressDetailsWidget->width() < childBar->width() )
-    {
         m_progressDetailsWidget->setMinimumWidth( childBar->width() );
-    }
-
-    debug() << "setting fixed height: " << ( childBar->height() + 4 ) << " * " << m_progressMap.count() << " = " << childBar->height() * m_progressMap.count() + 8;
 
     m_progressDetailsWidget->setMinimumHeight( childBar->height() * m_progressMap.count()  + 8 );
 
     m_progressDetailsWidget->reposition();
 
-    debug() << "we now have " << m_progressMap.count() << " progress ops running";
-
     connect( childBar, SIGNAL( percentageChanged( int ) ), this, SLOT( childPercentageChanged() ) );
-    connect( childBar, SIGNAL( cancelled( ProgressBarNG * ) ), this, SLOT( childBarCancelled( ProgressBarNG * ) ) );
-    connect( childBar, SIGNAL( complete( ProgressBarNG * ) ), this, SLOT( childBarComplete( ProgressBarNG * ) ) );
+    connect( childBar, SIGNAL( cancelled( ProgressBar * ) ), this, SLOT( childBarCancelled( ProgressBar * ) ) );
+    connect( childBar, SIGNAL( complete( ProgressBar * ) ), this, SLOT( childBarComplete( ProgressBar * ) ) );
 
     if ( m_progressMap.count() == 1 )
     {
@@ -133,7 +126,7 @@ void CompoundProgressBar::childPercentageChanged()
     progressBar()->setValue( calcCompoundPercentage() );
 }
 
-void CompoundProgressBar::childBarCancelled( ProgressBarNG * childBar )
+void CompoundProgressBar::childBarCancelled( ProgressBar * childBar )
 {
     DEBUG_BLOCK
 
@@ -168,7 +161,7 @@ void CompoundProgressBar::childBarCancelled( ProgressBarNG * childBar )
     handleDetailsButton();
 }
 
-void CompoundProgressBar::childBarComplete( ProgressBarNG * childBar )
+void CompoundProgressBar::childBarComplete( ProgressBar * childBar )
 {
     DEBUG_BLOCK
 
@@ -204,24 +197,20 @@ void CompoundProgressBar::childBarComplete( ProgressBarNG * childBar )
 
 int CompoundProgressBar::calcCompoundPercentage()
 {
-
     int count = m_progressMap.count();
     int total = 0;
 
-    foreach( ProgressBarNG * currentBar, m_progressMap )
-    {
+    foreach( ProgressBar * currentBar, m_progressMap )
         total += currentBar->percentage();
-    }
 
     return total / count;
-
 }
 
 void CompoundProgressBar::cancelAll()
 {
     DEBUG_BLOCK
 
-    foreach( ProgressBarNG * currentBar, m_progressMap )
+    foreach( ProgressBar * currentBar, m_progressMap )
         currentBar->cancel();
 }
 

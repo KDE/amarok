@@ -233,7 +233,7 @@ struct PodcastInfo
            Meta::TrackList   m_tracksToDelete;
 
            /* Operation Progress Bar */
-           ProgressBarNG    *m_statusbar;
+           ProgressBar      *m_statusbar;
 
            /* Ipod Connection */
            bool              m_autoConnect;

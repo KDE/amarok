@@ -19,8 +19,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef STATUSBARNG_H
-#define STATUSBARNG_H
+#ifndef AMAROK_STATUS_BAR_H
+#define AMAROK_STATUS_BAR_H
 
 #include "EngineObserver.h"
 #include "MainWindow.h"
@@ -83,12 +83,12 @@ public slots:
      * @see incrementProgress( QObject* )
      * @see setProgressStatus( const QObject*, const QString& )
      */
-    ProgressBarNG *newProgressOperation( QObject *owner, const QString & description );
+    ProgressBar *newProgressOperation( QObject *owner, const QString & description );
 
     /**
      * Monitor progress for a KIO::Job, very handy.
      */
-    ProgressBarNG *newProgressOperation( KJob* job, const QString & description );
+    ProgressBar *newProgressOperation( KJob* job, const QString & description );
 
 
     //this stuff we just forward to the compound progress bar:

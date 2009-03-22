@@ -109,7 +109,7 @@ StatusBar::~StatusBar()
     s_instance = 0;
 }
 
-ProgressBarNG * StatusBar::newProgressOperation( QObject * owner, const QString & description )
+ProgressBar * StatusBar::newProgressOperation( QObject * owner, const QString & description )
 {
     //clear any short message currently being displayed and stop timer if running...
     clearMessage();
@@ -117,7 +117,7 @@ ProgressBarNG * StatusBar::newProgressOperation( QObject * owner, const QString 
 
     //also hide the now playing stuff:
     m_nowPlayingWidget->hide();
-    ProgressBarNG * newBar = new ProgressBarNG( 0 );
+    ProgressBar * newBar = new ProgressBar( 0 );
     newBar->setDescription( description );
     m_progressBar->addProgressBar( newBar, owner );
     m_progressBar->show();
@@ -126,7 +126,7 @@ ProgressBarNG * StatusBar::newProgressOperation( QObject * owner, const QString 
     return newBar;
 }
 
-ProgressBarNG * StatusBar::newProgressOperation( KJob * job, const QString & description )
+ProgressBar * StatusBar::newProgressOperation( KJob * job, const QString & description )
 {
     //clear any short message currently being displayed and stop timer if running...
     clearMessage();
