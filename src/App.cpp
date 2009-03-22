@@ -629,6 +629,8 @@ App::continueInit()
     PERF_LOG( "App init done" )
     KConfigGroup config = KGlobal::config()->group( "General" );
 
+    // NOTE: First Run Tutorial disabled for 2.1-beta1 release (too buggy / unfinished)
+#if 0
     const bool firstruntut = config.readEntry( "FirstRunTutorial", true );
     debug() << "Checking whether to run first run tutorial..." << firstruntut;
     if( firstruntut )
@@ -644,6 +646,7 @@ App::continueInit()
         slotConfigAmarok( "CollectionConfig" );
         config.writeEntry( "First Run", false );
     }
+#endif
 }
 
 void App::slotConfigEqualizer() //SLOT
