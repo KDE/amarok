@@ -112,7 +112,7 @@ CollectionManager::init()
     {
         debug() << "No Amarok plugins found, running kbuildsycoca4.";
         KRun::runCommand( "kbuildsycoca4", 0 );
-        ::sleep( 4 );  // kbuildsycoca4 forks, so we need to wait a bit
+        ::sleep( 10 );  // kbuildsycoca4 forks, so we need to wait a bit
 
         plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
         debug() << "Second attempt: Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
