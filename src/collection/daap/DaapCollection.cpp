@@ -254,7 +254,11 @@ DaapCollection::collectionId() const
 QString
 DaapCollection::prettyName() const
 {
-    return "daap://" + m_host;
+    QString host = m_host;
+    // No need to be overly verbose
+    if( host.endsWith( ".local" ) )
+        host = host.remove( QRegExp(".local$") );
+    return i18n("Music share at %1", host);
 }
 
 void
