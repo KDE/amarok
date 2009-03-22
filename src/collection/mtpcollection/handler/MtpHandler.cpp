@@ -48,20 +48,20 @@ using namespace Mtp;
 using namespace Meta;
 
 MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
-    : QObject( parent )
-    , m_memColl( mc )
-    , m_statusbar( 0 )
-    , m_device( 0 )
-    , m_default_parent_folder( 0 )
-    , m_folders( 0 )
-    , m_folderStructure()
-    , m_format()
-    , m_name()
-    , m_success( false )
-    , m_trackCreated( false )
-    , m_copyFailed( false )
-    , m_isCanceled( false )
-    , m_wait( false )
+        : QObject( parent )
+        , m_memColl( mc )
+        , m_statusbar( 0 )
+        , m_device( 0 )
+        , m_default_parent_folder( 0 )
+        , m_folders( 0 )
+        , m_folderStructure()
+        , m_format()
+        , m_name()
+        , m_success( false )
+        , m_trackCreated( false )
+        , m_copyFailed( false )
+        , m_isCanceled( false )
+        , m_wait( false )
 {
     DEBUG_BLOCK
 }
@@ -90,41 +90,42 @@ MtpHandler::init( const QString &serial )
 
     // get list of raw devices
     debug() << "Getting list of raw devices";
-    err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
+    err = LIBMTP_Detect_Raw_Devices( &rawdevices, &numrawdevices );
 
     debug() << "Error is: " << err;
 
-    switch(err) {
-        case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-            fprintf(stdout, "   No raw devices found.\n");
-            m_success = false;
-            break;
+    switch ( err )
+    {
+    case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
+        fprintf( stdout, "   No raw devices found.\n" );
+        m_success = false;
+        break;
 
-        case LIBMTP_ERROR_CONNECTING:
-            fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
-            m_success = false;
-            break;
+    case LIBMTP_ERROR_CONNECTING:
+        fprintf( stderr, "Detect: There has been an error connecting. Exiting\n" );
+        m_success = false;
+        break;
 
-        case LIBMTP_ERROR_MEMORY_ALLOCATION:
-            fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
-            m_success = false;
-            break;
+    case LIBMTP_ERROR_MEMORY_ALLOCATION:
+        fprintf( stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n" );
+        m_success = false;
+        break;
 
-        case LIBMTP_ERROR_NONE:
-        {
-            m_success = true;
-            break;
-        }
+    case LIBMTP_ERROR_NONE:
+    {
+        m_success = true;
+        break;
+    }
 
-        default:
-            debug() << "Unhandled mtp error";
-            m_success = false;
-            break;
+    default:
+        debug() << "Unhandled mtp error";
+        m_success = false;
+        break;
     }
 
 
 
-    if( m_success )
+    if ( m_success )
     {
         debug() << "Got mtp list, connecting to device using thread";
         ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, serial, this ) );
@@ -147,14 +148,15 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
     bool success = false;
 
     LIBMTP_mtpdevice_t *device = 0;
-            // test raw device for connectability
-    for(int i = 0; i < numrawdevices; i++)
+    // test raw device for connectability
+    for ( int i = 0; i < numrawdevices; i++ )
     {
 
-        debug() << "Opening raw device number: " << (i+1);
-        device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
-        if (device == NULL) {
-            debug() << "Unable to open raw device: " << (i+1);
+        debug() << "Opening raw device number: " << ( i + 1 );
+        device = LIBMTP_Open_Raw_Device( &rawdevices[i] );
+        if ( device == NULL )
+        {
+            debug() << "Unable to open raw device: " << ( i + 1 );
             success = false;
             continue;
         }
@@ -183,7 +185,8 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 
     m_device = device;
 
-    if( m_device == 0 ) {
+    if ( m_device == 0 )
+    {
         // TODO: error protection
         success = false;
         free( rawdevices );
@@ -212,7 +215,7 @@ MtpHandler::getDeviceInfo()
 
     failed = LIBMTP_Get_Batterylevel( m_device, &max, &curr );
 
-    if( !failed )
+    if ( !failed )
         debug() << "Battery at: " << curr << "/" << max;
     else
         debug() << "Unknown battery level";
@@ -229,7 +232,7 @@ MtpHandler::getDeviceInfo()
     if(! ownername.isEmpty() )
         if( modelname != ownername )
             m_name += " (" + ownername + ')';
-    
+
     else
         m_name += " (No Owner Name)";
 
@@ -245,18 +248,18 @@ MtpHandler::getDeviceInfo()
     uint16_t *filetypes;
     uint16_t filetypes_len;
     int ret = LIBMTP_Get_Supported_Filetypes( m_device, &filetypes, &filetypes_len );
-    if( ret == 0 )
+    if ( ret == 0 )
     {
         uint16_t i;
-        for( i = 0; i < filetypes_len; ++i )
+        for ( i = 0; i < filetypes_len; ++i )
             m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
     }
     // find supported image types (for album art).
-    if( m_supportedFiles.indexOf( "jpg" ) )
+    if ( m_supportedFiles.indexOf( "jpg" ) )
         m_format = "JPEG";
-    else if( m_supportedFiles.indexOf( "png" ) )
+    else if ( m_supportedFiles.indexOf( "png" ) )
         m_format = "PNG";
-    else if( m_supportedFiles.indexOf( "gif" ) )
+    else if ( m_supportedFiles.indexOf( "gif" ) )
         m_format = "GIF";
     free( filetypes );
 }
@@ -266,7 +269,7 @@ MtpHandler::terminate()
 {
     DEBUG_BLOCK
     // clear folder structure
-    if( m_folders != 0 )
+    if ( m_folders != 0 )
     {
 
         LIBMTP_destroy_folder_t( m_folders );
@@ -286,7 +289,7 @@ MtpHandler::terminate()
     }
 
     // release device
-    if( m_device != 0 )
+    if ( m_device != 0 )
     {
 
         LIBMTP_Release_Device( m_device );
@@ -309,7 +312,7 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
 {
     QString artistName;
     Meta::ArtistPtr artist = track->artist();
-    if( !artist || artist->prettyName().isEmpty() )
+    if ( !artist || artist->prettyName().isEmpty() )
         artistName = i18n( "Unknown Artist" );
     else
         artistName = artist->prettyName();
@@ -318,13 +321,13 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
 //         artist = i18n( "Various Artists" );
     QString albumName;
     Meta::AlbumPtr album = track->album();
-    if( !album || album->prettyName().isEmpty() )
+    if ( !album || album->prettyName().isEmpty() )
         albumName = i18n( "Unknown Album" );
     else
         albumName = album->prettyName();
     QString genreName;
     Meta::GenrePtr genre = track->genre();
-    if( !genre || genre->prettyName().isEmpty() )
+    if ( !genre || genre->prettyName().isEmpty() )
         genreName = i18n( "Unknown Genre" );
     else
         genreName = genre->prettyName();
@@ -332,23 +335,23 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
     uint32_t parent_id = getDefaultParentId();
     QStringList folders = m_folderStructure.split( '/' ); // use slash as a dir separator
     QString completePath;
-    for( QStringList::Iterator it = folders.begin(); it != folders.end(); ++it )
+    for ( QStringList::Iterator it = folders.begin(); it != folders.end(); ++it )
     {
-        if( (*it).isEmpty() )
+        if (( *it ).isEmpty() )
             continue;
         // substitute %a , %b , %g
-        (*it).replace( QRegExp( "%a" ), artistName )
-                .replace( QRegExp( "%b" ), albumName )
-                .replace( QRegExp( "%g" ), genreName );
+        ( *it ).replace( QRegExp( "%a" ), artistName )
+        .replace( QRegExp( "%b" ), albumName )
+        .replace( QRegExp( "%g" ), genreName );
         // check if it exists
-        uint32_t check_folder = subfolderNameToID( (*it).toUtf8(), m_folders, parent_id );
+        uint32_t check_folder = subfolderNameToID(( *it ).toUtf8(), m_folders, parent_id );
         // create if not exists (if requested)
-        if( check_folder == 0 )
+        if ( check_folder == 0 )
         {
-            if( create )
+            if ( create )
             {
-                check_folder = createFolder( (*it).toUtf8() , parent_id );
-                if( check_folder == 0 )
+                check_folder = createFolder(( *it ).toUtf8() , parent_id );
+                if ( check_folder == 0 )
                 {
                     return 0;
                 }
@@ -358,7 +361,7 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
                 return 0;
             }
         }
-        completePath += (*it).toUtf8() + '/';
+        completePath += ( *it ).toUtf8() + '/';
         // set new parent
         parent_id = check_folder;
     }
@@ -373,15 +376,15 @@ MtpHandler::getDefaultParentId( void )
     // Decide which folder to send it to:
     // If the device gave us a parent_folder setting, we use it
     uint32_t parent_id = 0;
-    if( m_default_parent_folder )
+    if ( m_default_parent_folder )
     {
         parent_id = m_default_parent_folder;
     }
     // Otherwise look for a folder called "Music"
-    else if( m_folders != 0 )
+    else if ( m_folders != 0 )
     {
         parent_id = folderNameToID( qstrdup( QString( "Music" ).toUtf8() ), m_folders );
-        if( !parent_id )
+        if ( !parent_id )
         {
             debug() << "Parent folder could not be found. Going to use top level.";
         }
@@ -403,15 +406,15 @@ MtpHandler::folderNameToID( char *name, LIBMTP_folder_t *folderlist )
 {
     uint32_t i;
 
-    if( folderlist == 0 )
+    if ( folderlist == 0 )
         return 0;
 
-    if( !strcasecmp( name, folderlist->name ) )
+    if ( !strcasecmp( name, folderlist->name ) )
         return folderlist->folder_id;
 
-    if( ( i = ( folderNameToID( name, folderlist->child ) ) ) )
+    if (( i = ( folderNameToID( name, folderlist->child ) ) ) )
         return i;
-    if( ( i = ( folderNameToID( name, folderlist->sibling ) ) ) )
+    if (( i = ( folderNameToID( name, folderlist->sibling ) ) ) )
         return i;
 
     return 0;
@@ -426,15 +429,15 @@ MtpHandler::subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, ui
 {
     uint32_t i;
 
-    if( folderlist == 0 )
+    if ( folderlist == 0 )
         return 0;
 
-    if( !strcasecmp( name, folderlist->name ) && folderlist->parent_id == parent_id )
+    if ( !strcasecmp( name, folderlist->name ) && folderlist->parent_id == parent_id )
         return folderlist->folder_id;
 
-    if( ( i = ( subfolderNameToID( name, folderlist->child, parent_id ) ) ) )
+    if (( i = ( subfolderNameToID( name, folderlist->child, parent_id ) ) ) )
         return i;
-    if( ( i = ( subfolderNameToID( name, folderlist->sibling, parent_id ) ) ) )
+    if (( i = ( subfolderNameToID( name, folderlist->sibling, parent_id ) ) ) )
         return i;
 
     return 0;
@@ -446,13 +449,13 @@ MtpHandler::subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, ui
 uint32_t
 MtpHandler::createFolder( const char *name, uint32_t parent_id )
 {
-    debug() << "Creating new folder '" << name << "' as a child of "<< parent_id;
+    debug() << "Creating new folder '" << name << "' as a child of " << parent_id;
     char *name_copy = qstrdup( name );
     // NOTE: api change, 0 refers to default storage_id
     uint32_t new_folder_id = LIBMTP_Create_Folder( m_device, name_copy, parent_id, 0 );
-    delete(name_copy);
+    delete( name_copy );
     debug() << "New folder ID: " << new_folder_id;
-    if( new_folder_id == 0 )
+    if ( new_folder_id == 0 )
     {
         debug() << "Attempt to create folder '" << name << "' failed.";
         return 0;
@@ -504,7 +507,7 @@ MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 
         /* If no song with same title, already not a dupe */
 
-        if( tempTrackList.isEmpty() )
+        if ( tempTrackList.isEmpty() )
         {
             debug() << "No tracks with same title, track not a dupe";
             m_tracksToCopy.append( track );
@@ -520,11 +523,11 @@ MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
         foreach( Meta::TrackPtr tempTrack, tempTrackList )
         {
 
-            if( ( tempTrack->artist()->name() != track->artist()->name() )
-                  && ( tempTrack->album()->name() != track->album()->name() )
-                  && ( tempTrack->genre()->name() != track->genre()->name() )
-                  && ( tempTrack->composer()->name() != track->composer()->name() )
-                  && ( tempTrack->year()->name() != track->year()->name() ) )
+            if (( tempTrack->artist()->name() != track->artist()->name() )
+                    && ( tempTrack->album()->name() != track->album()->name() )
+                    && ( tempTrack->genre()->name() != track->genre()->name() )
+                    && ( tempTrack->composer()->name() != track->composer()->name() )
+                    && ( tempTrack->year()->name() != track->year()->name() ) )
             {
                 debug() << "Same title, but other tags differ, not a dupe";
                 continue;
@@ -537,7 +540,7 @@ MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
             break;
         }
 
-        if( !isDupe )
+        if ( !isDupe )
             m_tracksToCopy.append( track );
         else
         {
@@ -548,7 +551,7 @@ MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
         }
     }
 
-    if( hasDupe )
+    if ( hasDupe )
         m_copyFailed = true;
 
     /* List ready, begin copying */
@@ -565,7 +568,7 @@ MtpHandler::copyTracksToDevice()
     // Do not bother copying 0 tracks
     // This could happen if all tracks to copy are dupes
 
-    if( m_tracksToCopy.size() == 0 )
+    if ( m_tracksToCopy.size() == 0 )
     {
         emit copyTracksDone( false );
         return;
@@ -579,7 +582,7 @@ MtpHandler::copyTracksToDevice()
 
     connect( this, SIGNAL( incrementProgress() ),
              The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+    connect( this, SIGNAL( endProgressOperation( const QObject* ) ),
              The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
 
     copyNextTrackToDevice();
@@ -592,7 +595,7 @@ MtpHandler::copyNextTrackToDevice()
     Meta::TrackPtr track;
 
     // If there are more tracks to copy, copy the next one
-    if( !m_tracksToCopy.isEmpty() )
+    if ( !m_tracksToCopy.isEmpty() )
     {
         // Pop the track off the front of the list
 
@@ -627,19 +630,19 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
     trackmeta->item_id = 0;
     debug() << "filetype : " << track->type();
-    if( track->type() == "mp3" )
+    if ( track->type() == "mp3" )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_MP3;
     }
-    else if( track->type() == "ogg" )
+    else if ( track->type() == "ogg" )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_OGG;
     }
-    else if( track->type() == "wma" )
+    else if ( track->type() == "wma" )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_WMA;
     }
-    else if( track->type() == "mp4" )
+    else if ( track->type() == "mp4" )
     {
         trackmeta->filetype = LIBMTP_FILETYPE_MP4;
     }
@@ -652,26 +655,26 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         const QString extension = track->type().toLower();
 
         int libmtp_type = m_supportedFiles.indexOf( extension );
-        if( libmtp_type >= 0 )
+        if ( libmtp_type >= 0 )
         {
             int keyIndex = mtpFileTypes.values().indexOf( extension );
             libmtp_type = mtpFileTypes.keys()[keyIndex];
-            trackmeta->filetype = (LIBMTP_filetype_t) libmtp_type;
+            trackmeta->filetype = ( LIBMTP_filetype_t ) libmtp_type;
             debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension;
         }
         else
         {
             debug() << "We do not support the extension ." << extension;
-         /*   The::statusBar()->shortLongMessage(
-            genericError,
-            i18n( "Cannot determine a valid file type" ),
-            StatusBar::Error
-                                              );*/
+            /*   The::statusBar()->shortLongMessage(
+               genericError,
+               i18n( "Cannot determine a valid file type" ),
+               StatusBar::Error
+                                                 );*/
             return false;
         }
     }
 
-    if( track->prettyName().isEmpty() )
+    if ( track->prettyName().isEmpty() )
     {
         trackmeta->title = qstrdup( i18n( "Unknown title" ).toUtf8() );
     }
@@ -680,7 +683,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         trackmeta->title = qstrdup( track->prettyName().toUtf8() );
     }
 
-    if( !track->album() )
+    if ( !track->album() )
     {
         trackmeta->album = qstrdup( i18n( "Unknown album" ).toUtf8() );
     }
@@ -689,7 +692,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         trackmeta->album = qstrdup( track->album()->prettyName().toUtf8() );
     }
 
-    if( !track->artist() )
+    if ( !track->artist() )
     {
         trackmeta->artist = qstrdup( i18n( "Unknown artist" ).toUtf8() );
     }
@@ -698,7 +701,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         trackmeta->artist = qstrdup( track->artist()->prettyName().toUtf8() );
     }
 
-    if( !track->genre() )
+    if ( !track->genre() )
     {
         trackmeta->genre = qstrdup( i18n( "Unknown genre" ).toUtf8() );
     }
@@ -711,7 +714,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     debug() << "Source track year: " << track->year();
 
-    if( track->year() > 0 )
+    if ( track->year() > 0 )
     {
         QString date;
         QTextStream dateout( &date );
@@ -726,19 +729,19 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
         trackmeta->date = qstrdup( "00010101T0000.0" );
     }
 
-    if( track->trackNumber() > 0 )
+    if ( track->trackNumber() > 0 )
     {
         trackmeta->tracknumber = track->trackNumber();
     }
-    debug() << "Has track length" << (track->length() > 0 ? "true" : "false");
-    if( track->length() > 0 )
+    debug() << "Has track length" << ( track->length() > 0 ? "true" : "false" );
+    if ( track->length() > 0 )
     {
         debug() << "Setting tracklength to: " << track->length() << "s";
         // Multiply by 1000 since this is in milliseconds
-        trackmeta->duration = (track->length() * 1000);
+        trackmeta->duration = ( track->length() * 1000 );
         debug() << "Track length is now: " << trackmeta->duration << "ms";
     }
-    if( !track->playableUrl().fileName().isEmpty() )
+    if ( !track->playableUrl().fileName().isEmpty() )
     {
         trackmeta->filename = qstrdup( track->playableUrl().fileName().toUtf8() );
     }
@@ -748,10 +751,10 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     // try and create the requested folder structure
     uint32_t parent_id = 0;
-    if( !m_folderStructure.isEmpty() )
+    if ( !m_folderStructure.isEmpty() )
     {
         parent_id = checkFolderStructure( track, true ); // true means create
-        if( parent_id == 0 )
+        if ( parent_id == 0 )
         {
             debug() << "Could not create new parent (" << m_folderStructure << ")";
             /*The::statusBar()->shortLongMessage(
@@ -788,7 +791,7 @@ MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
 
 
-    if( ret < 0 )
+    if ( ret < 0 )
     {
         debug() << "Could not write file " << ret;
         /*The::statusBar()->shortLongMessage(
@@ -828,10 +831,10 @@ MtpHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
 
     connect( this, SIGNAL( incrementProgress() ),
              The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+    connect( this, SIGNAL( endProgressOperation( const QObject* ) ),
              The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
 
-    while( !m_tracksToDelete.isEmpty() )
+    while ( !m_tracksToDelete.isEmpty() )
         deleteNextTrackFromDevice();
 
     emit incrementProgress();
@@ -873,18 +876,18 @@ MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 
     int status = LIBMTP_Delete_Object( m_device, object_id );
 
-    if( status != 0 )
+    if ( status != 0 )
     {
         debug() << "delete object failed";
         The::statusBar()->longMessage(
-                       i18n( "Delete failed" ),
-                             StatusBar::Error
-                                          );
- //       return false;
+            i18n( "Delete failed" ),
+            StatusBar::Error
+        );
+//       return false;
     }
     debug() << "object deleted";
 
- //   return true;
+//   return true;
 
     m_titlemap.remove( track->name(), Meta::TrackPtr::staticCast( track ) );
 
@@ -896,13 +899,13 @@ MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
     DEBUG_BLOCK
 
 //    The::statusBar()->shortMessage( i18n( "Loading Track" ) );
-/*
-    connect( this, SIGNAL( setProgress( int ) ),
-             The::statusBar(), SLOT( setProgress( int ) ) );
-    
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
-            */
+    /*
+        connect( this, SIGNAL( setProgress( int ) ),
+                 The::statusBar(), SLOT( setProgress( int ) ) );
+
+        connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+                 The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+                */
 
     return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), 0, 0 );
 }
@@ -911,19 +914,19 @@ int
 MtpHandler::progressCallback( uint64_t const sent, uint64_t const total, void const * const data )
 {
     DEBUG_BLOCK
-    MtpHandler *handler = (MtpHandler*)(data);
+    MtpHandler *handler = ( MtpHandler* )( data );
 
     // NOTE: setting max many times wastes cycles,
     // but how else to get total outside of callback?
 
-    debug() << "Setting max to: " << ((int) total);
+    debug() << "Setting max to: " << (( int ) total );
 
     debug() << "Device: " << handler->prettyName();
 
-    handler->setBarMaximum( (int) total );
-    handler->setBarProgress( (int) sent );
+    handler->setBarMaximum(( int ) total );
+    handler->setBarProgress(( int ) sent );
 
-    if( sent == total )
+    if ( sent == total )
         handler->endBarProgressOperation();
 
     return 0;
@@ -963,8 +966,8 @@ void
 MtpHandler::getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track )
 {
     track->setTitle( QString::fromUtf8( mtptrack->title ) );
-    if( mtptrack->duration > 0 )
-        track->setLength( ( mtptrack->duration ) / 1000 );
+    if ( mtptrack->duration > 0 )
+        track->setLength(( mtptrack->duration ) / 1000 );
     else
         track->setLength( 0 );
     track->setTrackNumber( mtptrack->tracknumber );
@@ -993,7 +996,7 @@ MtpHandler::getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr tr
 void
 MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr track )
 {
-    if( track->prettyName().isEmpty() )
+    if ( track->prettyName().isEmpty() )
     {
         trackmeta->title = qstrdup( i18n( "Unknown title" ).toUtf8() );
     }
@@ -1002,7 +1005,7 @@ MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr t
         trackmeta->title = qstrdup( track->prettyName().toUtf8() );
     }
 
-    if( !track->album() )
+    if ( !track->album() )
     {
         trackmeta->album = qstrdup( i18n( "Unknown album" ).toUtf8() );
     }
@@ -1011,7 +1014,7 @@ MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr t
         trackmeta->album = qstrdup( track->album()->prettyName().toUtf8() );
     }
 
-    if( !track->artist() )
+    if ( !track->artist() )
     {
         trackmeta->artist = qstrdup( i18n( "Unknown artist" ).toUtf8() );
     }
@@ -1020,7 +1023,7 @@ MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr t
         trackmeta->artist = qstrdup( track->artist()->prettyName().toUtf8() );
     }
 
-    if( !track->genre() )
+    if ( !track->genre() )
     {
         trackmeta->genre = qstrdup( i18n( "Unknown genre" ).toUtf8() );
     }
@@ -1029,7 +1032,7 @@ MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr t
         trackmeta->genre = qstrdup( track->genre()->prettyName().toUtf8() );
     }
 
-    if( track->year() > 0 )
+    if ( track->year() > 0 )
     {
         QString date;
         QTextStream( &date ) << track->year() << "0101T0000.0";
@@ -1040,16 +1043,16 @@ MtpHandler::setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr t
         trackmeta->date = qstrdup( "00010101T0000.0" );
     }
 
-    if( track->trackNumber() > 0 )
+    if ( track->trackNumber() > 0 )
     {
         trackmeta->tracknumber = track->trackNumber();
     }
-    if( track->length() > 0 )
+    if ( track->length() > 0 )
     {
         // Multiply by 1000 since this is in milliseconds
         trackmeta->duration = track->length();
     }
-    if( !track->playableUrl().fileName().isEmpty() )
+    if ( !track->playableUrl().fileName().isEmpty() )
     {
         trackmeta->filename = qstrdup( track->playableUrl().fileName().toUtf8() );
     }
@@ -1061,11 +1064,11 @@ MtpHandler::getFormat( LIBMTP_track_t *mtptrack )
 {
     QString format;
 
-    if( mtptrack->filetype == LIBMTP_FILETYPE_MP3 )
+    if ( mtptrack->filetype == LIBMTP_FILETYPE_MP3 )
         format = "mp3";
-    else if( mtptrack->filetype == LIBMTP_FILETYPE_WMA )
+    else if ( mtptrack->filetype == LIBMTP_FILETYPE_WMA )
         format = "wma";
-    else if( mtptrack->filetype == LIBMTP_FILETYPE_OGG )
+    else if ( mtptrack->filetype == LIBMTP_FILETYPE_OGG )
         format = "ogg";
     else
         format = "other";
@@ -1076,21 +1079,21 @@ MtpHandler::getFormat( LIBMTP_track_t *mtptrack )
 void
 MtpHandler::setupArtistMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, ArtistMap &artistMap )
 {
-    QString artist ( QString::fromUtf8( mtptrack->artist ) );
+    QString artist( QString::fromUtf8( mtptrack->artist ) );
     MtpArtistPtr artistPtr;
 
-    if (  artistMap.contains(  artist ) )
+    if ( artistMap.contains( artist ) )
     {
-        artistPtr = MtpArtistPtr::staticCast(  artistMap.value(  artist ) );
+        artistPtr = MtpArtistPtr::staticCast( artistMap.value( artist ) );
     }
     else
     {
-        artistPtr = MtpArtistPtr(  new MtpArtist(  artist ) );
-        artistMap.insert(  artist,  ArtistPtr::staticCast(  artistPtr ) );
+        artistPtr = MtpArtistPtr( new MtpArtist( artist ) );
+        artistMap.insert( artist,  ArtistPtr::staticCast( artistPtr ) );
     }
 
-    artistPtr->addTrack(  track );
-    track->setArtist(  artistPtr );
+    artistPtr->addTrack( track );
+    track->setArtist( artistPtr );
 }
 
 void
@@ -1100,16 +1103,16 @@ MtpHandler::setupAlbumMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, Al
     MtpAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
-        albumPtr = MtpAlbumPtr::staticCast(  albumMap.value(  album ) );
+        albumPtr = MtpAlbumPtr::staticCast( albumMap.value( album ) );
 
     else
     {
-        albumPtr = MtpAlbumPtr(  new MtpAlbum(  album ) );
-        albumMap.insert(  album,  AlbumPtr::staticCast(  albumPtr ) );
+        albumPtr = MtpAlbumPtr( new MtpAlbum( album ) );
+        albumMap.insert( album,  AlbumPtr::staticCast( albumPtr ) );
     }
 
-    albumPtr->addTrack(  track );
-    track->setAlbum(  albumPtr );
+    albumPtr->addTrack( track );
+    track->setAlbum( albumPtr );
 }
 
 void
@@ -1118,13 +1121,13 @@ MtpHandler::setupGenreMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, Ge
     QString genre = mtptrack->genre;
     MtpGenrePtr genrePtr;
 
-    if (  genreMap.contains(  genre ) )
-        genrePtr = MtpGenrePtr::staticCast(  genreMap.value(  genre ) );
+    if ( genreMap.contains( genre ) )
+        genrePtr = MtpGenrePtr::staticCast( genreMap.value( genre ) );
 
     else
     {
-        genrePtr = MtpGenrePtr(  new MtpGenre(  genre ) );
-        genreMap.insert(  genre,  GenrePtr::staticCast(  genrePtr ) );
+        genrePtr = MtpGenrePtr( new MtpGenre( genre ) );
+        genreMap.insert( genre,  GenrePtr::staticCast( genrePtr ) );
     }
 
     genrePtr->addTrack( track );
@@ -1134,7 +1137,7 @@ MtpHandler::setupGenreMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, Ge
 void
 MtpHandler::setupComposerMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, ComposerMap &composerMap )
 {
-    QString composer ( QString::fromUtf8( mtptrack->composer ) );
+    QString composer( QString::fromUtf8( mtptrack->composer ) );
     MtpComposerPtr composerPtr;
 
     if ( composerMap.contains( composer ) )
@@ -1155,23 +1158,23 @@ void
 MtpHandler::setupYearMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, YearMap &yearMap )
 {
     QString year;
-    year = year.setNum( ( QString::fromUtf8( mtptrack->date ) ).mid( 0, 4 ).toUInt() );
+    year = year.setNum(( QString::fromUtf8( mtptrack->date ) ).mid( 0, 4 ).toUInt() );
     MtpYearPtr yearPtr;
-    if (  yearMap.contains(  year ) )
-        yearPtr = MtpYearPtr::staticCast(  yearMap.value(  year ) );
+    if ( yearMap.contains( year ) )
+        yearPtr = MtpYearPtr::staticCast( yearMap.value( year ) );
     else
     {
-        yearPtr = MtpYearPtr(  new MtpYear(  year ) );
-        yearMap.insert(  year,  YearPtr::staticCast(  yearPtr ) );
+        yearPtr = MtpYearPtr( new MtpYear( year ) );
+        yearMap.insert( year,  YearPtr::staticCast( yearPtr ) );
     }
-    yearPtr->addTrack(  track );
-    track->setYear(  yearPtr );
+    yearPtr->addTrack( track );
+    track->setYear( yearPtr );
 }
 
 bool
 MtpHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
-        DEBUG_BLOCK
+    DEBUG_BLOCK
 
     KIO::FileCopyJob *job = KIO::file_copy( src, dst,
                                             -1 /* permissions */,
@@ -1180,7 +1183,7 @@ MtpHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( job, i18n(  "Transferring Tracks to MTP Device" )  );
+    The::statusBar()->newProgressOperation( job, i18n( "Transferring Tracks to MTP Device" ) );
     job->start();
 
     return true;
@@ -1210,14 +1213,14 @@ MtpHandler::parseTracks()
 
 
 
-    if( tracks == 0 )
+    if ( tracks == 0 )
     {
         return;
     }
 
     QMap<LIBMTP_track_t*, MtpTrackPtr> mtpTrackMap;
 
-/* iterate through tracklist and add to appropriate map */
+    /* iterate through tracklist and add to appropriate map */
     for ( ; tracks != 0; tracks = tracks->next )
     {
         /* mtptrack - provides libmtp info */
@@ -1254,12 +1257,12 @@ MtpHandler::parseTracks()
     // Finally, assign the created maps to the collection
 
     m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap(  trackMap );
-    m_memColl->setArtistMap(  artistMap );
-    m_memColl->setAlbumMap(  albumMap );
-    m_memColl->setGenreMap(  genreMap );
-    m_memColl->setComposerMap(  composerMap );
-    m_memColl->setYearMap(  yearMap );
+    m_memColl->setTrackMap( trackMap );
+    m_memColl->setArtistMap( artistMap );
+    m_memColl->setAlbumMap( albumMap );
+    m_memColl->setGenreMap( genreMap );
+    m_memColl->setComposerMap( composerMap );
+    m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
 }
 
@@ -1280,7 +1283,7 @@ MtpHandler::updateTrackInDB( const Meta::MtpTrackPtr track )
 
     int failed = LIBMTP_Update_Track_Metadata( m_device, mtptrack );
 
-    if( !failed )
+    if ( !failed )
         debug() << "Metadata update succeeded!";
 
     else
@@ -1301,11 +1304,11 @@ MtpHandler::addMtpTrackToCollection( LIBMTP_track_t *mtptrack )
 
     QString format;
 
-    if( mtptrack->filetype == LIBMTP_FILETYPE_MP3 )
+    if ( mtptrack->filetype == LIBMTP_FILETYPE_MP3 )
         format = "mp3";
-    else if( mtptrack->filetype == LIBMTP_FILETYPE_WMA )
+    else if ( mtptrack->filetype == LIBMTP_FILETYPE_WMA )
         format = "wma";
-    else if( mtptrack->filetype == LIBMTP_FILETYPE_OGG )
+    else if ( mtptrack->filetype == LIBMTP_FILETYPE_OGG )
         format = "ogg";
     else
         format = "other";
@@ -1337,12 +1340,12 @@ MtpHandler::addMtpTrackToCollection( LIBMTP_track_t *mtptrack )
     // Finally, assign the created maps to the collection
 
     m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap(  trackMap );
-    m_memColl->setArtistMap(  artistMap );
-    m_memColl->setAlbumMap(  albumMap );
-    m_memColl->setGenreMap(  genreMap );
-    m_memColl->setComposerMap(  composerMap );
-    m_memColl->setYearMap(  yearMap );
+    m_memColl->setTrackMap( trackMap );
+    m_memColl->setArtistMap( artistMap );
+    m_memColl->setAlbumMap( albumMap );
+    m_memColl->setGenreMap( genreMap );
+    m_memColl->setComposerMap( composerMap );
+    m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
 
     return;
@@ -1351,23 +1354,23 @@ MtpHandler::addMtpTrackToCollection( LIBMTP_track_t *mtptrack )
 void
 MtpHandler::fileTransferred( KJob *job )  //SLOT
 {
-        if ( job->error() )
-        {
-            m_copyFailed = true;
-            debug() << "file transfer failed: " << job->errorText();
-        }
-        else
-        {
-            m_copyFailed = false;
-        }
+    if ( job->error() )
+    {
+        m_copyFailed = true;
+        debug() << "file transfer failed: " << job->errorText();
+    }
+    else
+    {
+        m_copyFailed = false;
+    }
 
-        m_wait = false;
+    m_wait = false;
 }
 
 void
 MtpHandler::fileDeleted( KJob *job )  //SLOT
 {
-    if(job->error())
+    if ( job->error() )
     {
         debug() << "file deletion failed: " << job->errorText();
     }
@@ -1383,7 +1386,7 @@ void
 MtpHandler::slotDeviceMatchSucceeded( ThreadWeaver::Job* job )
 {
     DEBUG_BLOCK
-    if( job->success() )
+    if ( job->success() )
     {
         getDeviceInfo();
         debug() << "Device matches serial, emitting succeeded()";
@@ -1401,12 +1404,12 @@ MtpHandler::slotDeviceMatchFailed( ThreadWeaver::Job* job )
 }
 
 WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpHandler* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_numrawdevices( numrawdevices )
-    , m_rawdevices( rawdevices )
-    , m_serial( serial )
-    , m_handler( handler )
+        : ThreadWeaver::Job()
+        , m_success( false )
+        , m_numrawdevices( numrawdevices )
+        , m_rawdevices( rawdevices )
+        , m_serial( serial )
+        , m_handler( handler )
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchFailed( ThreadWeaver::Job* ) ) );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchSucceeded( ThreadWeaver::Job* ) ) );
@@ -1444,7 +1447,7 @@ MtpHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
 void
 MtpHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
 {
-    if( job->success() )
+    if ( job->success() )
     {
         emit incrementProgress();
     }
@@ -1459,10 +1462,10 @@ MtpHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
 }
 
 CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MtpHandler* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_track( track )
-    , m_handler( handler )
+        : ThreadWeaver::Job()
+        , m_success( false )
+        , m_track( track )
+        , m_handler( handler )
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ) );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ) );
