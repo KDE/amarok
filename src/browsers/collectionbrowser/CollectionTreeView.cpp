@@ -237,25 +237,15 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
-    QTreeView::mousePressEvent( event );
-#if 0
-    DEBUG_BLOCK
-    QModelIndex index;
-    if( m_filterModel )
-        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
-    else
-        index = indexAt( event->pos() );
+    QModelIndex index = indexAt( event->pos() );
+
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
    
-    if( index.isValid() && !index.parent().isValid() ) // root item
-    {
-        expand( index );
-    }
+    if( item->isCollectionItem() ) 
+        setExpanded( index, !isExpanded( index ) );
+    // propagate to base class
     else
-    {
-        // propagate to base class
         QTreeView::mousePressEvent( event );
-    }
-#endif
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
@@ -270,10 +260,12 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() )
     {
-        if( !index.parent().isValid() ) // root item
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+
+        if( item->isCollectionItem() )
         {
-            debug() << "expanding root item";
-            setExpanded( index, isExpanded( index ) );
+            QModelIndex index2 = indexAt( event->pos() );
+            setExpanded( index2, !isExpanded( index2 ) );
         }
         else if( index.internalPointer() )
         {
@@ -291,9 +283,7 @@ void CollectionTreeView::keyPressEvent( QKeyEvent * event )
     {
         QModelIndexList tmp;
         foreach( const QModelIndex &idx, indices )
-        {
             tmp.append( m_filterModel->mapToSource( idx ) );
-        }
         indices = tmp;
     }
 

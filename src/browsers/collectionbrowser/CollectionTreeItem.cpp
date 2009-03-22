@@ -235,6 +235,12 @@ CollectionTreeItem::isTrackItem() const
     return isDataItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
+bool
+CollectionTreeItem::isCollectionItem() const
+{
+    return m_parentCollection;
+}
+
 QueryMaker*
 CollectionTreeItem::queryMaker() const
 {
