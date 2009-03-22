@@ -460,13 +460,9 @@ int
 EngineController::setVolume( int percent ) //SLOT
 {
     if( percent < 0 ) percent = 0;
-    if( percent > 100 ) percent = 100;
+    else if( percent > 100 ) percent = 100;
 
-    // If we're explicitly setting the volume, then I think it's safe
-    // to assume that we don't want the audio stream muted
-    m_audio->setMuted( false );
-
-    qreal newVolume = percent / 100.0; //Phonon's volume is 0.0 - 1.0
+    qreal newVolume = percent / 100.0; // Phonon's volume is 0.0 - 1.0
     m_audio->setVolume( newVolume );
     AmarokConfig::setMasterVolume( percent );
     volumeChangedNotify( percent );
