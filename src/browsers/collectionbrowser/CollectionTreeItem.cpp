@@ -178,7 +178,7 @@ CollectionTreeItem::data( int role ) const
                 return QString();
             }
 #endif
-            return i18n( "%1 Tracks", QString::number( m_trackCount ) );
+            return i18np( "1 Track", "%1 Tracks", m_trackCount );
         }
     }
 
