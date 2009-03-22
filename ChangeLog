@@ -76,6 +76,7 @@ VERSION 2.1
       applets.
 
   CHANGES:
+    * Collection browser has been pimped.
     * Bring back animations in the browsers if built with Qt 4.5 or later.
     * The collection scanner is now being provided in a separate package.
       Packagers should be packaging this (and soon other utilities) into an
