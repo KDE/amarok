@@ -237,8 +237,9 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
+    QTreeView::mousePressEvent( event );
+#if 0
     DEBUG_BLOCK
-
     QModelIndex index;
     if( m_filterModel )
         index = m_filterModel->mapToSource( indexAt( event->pos() ) );
@@ -254,6 +255,7 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *event )
         // propagate to base class
         QTreeView::mousePressEvent( event );
     }
+#endif
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
