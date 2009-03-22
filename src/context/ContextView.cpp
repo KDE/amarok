@@ -93,6 +93,10 @@ ContextView::~ContextView()
 
     // Unload and destroy all Amarok plasma-engines
     const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines( "Amarok" );
+
+    // Assert added for tracing crash on exit, see BUG 187384
+    Q_ASSERT_X( !engines.isEmpty(), "Listing loaded Plasma engines", "List is empty (no engines loaded!?)" );
+
     foreach( const QString &engine, engines )
     {
         debug() << "Unloading plasma engine: " << engine;
