@@ -26,7 +26,10 @@
 
 
 AvatarDownloader::AvatarDownloader()
-: m_downloadJob( 0 )
+: m_url( 0 )
+, m_downloadPath()
+, m_downloadJob( 0 )
+, m_userName()
 {
     m_tempDir = new KTempDir();
     m_tempDir->setAutoRemove( false );
