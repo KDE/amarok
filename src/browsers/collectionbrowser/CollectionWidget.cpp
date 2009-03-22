@@ -57,7 +57,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_treeView = new CollectionTreeView( this );
     m_treeView->setAlternatingRowColors( true );
     m_treeView->setFrameShape( QFrame::NoFrame );
-//    m_treeView->setRootIsDecorated( false );
+    m_treeView->setRootIsDecorated( false );
 
     CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( m_treeView );
     m_treeView->setItemDelegate( delegate );
