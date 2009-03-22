@@ -583,8 +583,6 @@ MainWindow::showQueueManager() //SLOT
 void
 MainWindow::showHide() //SLOT
 {
-    DEBUG_BLOCK
-
     setVisible( !isVisible() );
 }
 
@@ -1010,8 +1008,6 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
 
 void MainWindow::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
 

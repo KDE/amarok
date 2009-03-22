@@ -85,8 +85,6 @@ void LyricsApplet::init()
 Plasma::IconWidget*
 LyricsApplet::addAction( QAction *action )
 {
-    DEBUG_BLOCK
-
     if ( !action )
     {
         debug() << "ERROR!!! PASSED INVALID ACTION";
@@ -114,8 +112,6 @@ LyricsApplet::addAction( QAction *action )
 
 void LyricsApplet::connectSource( const QString& source )
 {
-    DEBUG_BLOCK
-
     if( source == "lyrics" ) {
         dataEngine( "amarok-lyrics" )->connectSource( source, this );
         refreshLyrics(); // get data initally
@@ -149,7 +145,6 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     Q_UNUSED( name )
-    DEBUG_BLOCK
 
     if( data.size() == 0 ) return;
 
@@ -232,7 +227,6 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
 QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
 {
-    DEBUG_BLOCK
     Q_UNUSED( which );
 
  /*   if( m_lyrics )
@@ -250,9 +244,6 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
 void
 LyricsApplet::suggestionChosen( const QString& link )
 {
-    DEBUG_BLOCK
-
-    debug() << "got link selected:" << link;
     QStringList pieces = link.split( '|' );
     ScriptManager::instance()->notifyFetchLyricsByUrl( pieces[ 1 ], pieces[ 0 ], pieces[ 2 ] );
 }

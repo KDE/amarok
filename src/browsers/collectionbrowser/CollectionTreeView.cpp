@@ -250,8 +250,6 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    DEBUG_BLOCK
-
     QModelIndex index;
     if( m_filterModel )
         index = m_filterModel->mapToSource( indexAt( event->pos() ) );

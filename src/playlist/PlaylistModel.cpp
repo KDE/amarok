@@ -620,8 +620,6 @@ Playlist::Model::stateOfId( quint64 id ) const
 void
 Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     const int size = m_items.size();
     for ( int i = 0; i < size; i++ )
     {
@@ -636,13 +634,9 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
 void
 Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
-
     Meta::TrackList tracks = album->tracks();
     foreach( Meta::TrackPtr track, tracks )
-    {
         metadataChanged( track );
-    }
 }
 
 bool
