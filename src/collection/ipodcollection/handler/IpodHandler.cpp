@@ -1301,7 +1301,7 @@ IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
     if( !pixbuf )
         return;
 
-    gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, NULL);
+    gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, (const char*)(NULL));
     gdk_pixbuf_unref( pixbuf );
 
     m_coverArt.insert( filename );
