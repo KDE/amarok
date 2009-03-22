@@ -34,8 +34,10 @@ namespace CustomRoles
     };
 }
 
-class CollectionTreeItem
+class CollectionTreeItem : public QObject
 {
+    Q_OBJECT
+
     public:
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
         CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent );
@@ -78,6 +80,12 @@ class CollectionTreeItem
 
         bool allDescendentTracksLoaded() const;
 
+    signals:
+        void dataUpdated();
+
+    private slots:
+        void tracksCounted( int collectionId, QStringList res );
+
     private:
         QString albumYear() const;
 
@@ -88,6 +96,7 @@ class CollectionTreeItem
         QList<CollectionTreeItem*> m_childItems;
         bool m_childrenLoaded;
         bool m_isVariousArtistsNode;
+        int  m_trackCount;
 };
 
 #endif

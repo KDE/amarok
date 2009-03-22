@@ -21,6 +21,7 @@
 #include "CollectionTreeView.h"
 #include "CollectionWidget.h"
 #include "amarokconfig.h"
+#include "Debug.h"
 
 #include <KLocale>
 
@@ -31,6 +32,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_parentCollection( 0 )
     , m_childrenLoaded( false )
     , m_isVariousArtistsNode( false )
+    , m_trackCount( 0 )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -42,6 +44,7 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_parentCollection( parentCollection )
     , m_childrenLoaded( false )
     , m_isVariousArtistsNode( false )
+    , m_trackCount( 0 )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -53,6 +56,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_parentCollection( 0 )
     , m_childrenLoaded( true )
     , m_isVariousArtistsNode( true )
+    , m_trackCount( 0 )
 {
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
@@ -159,19 +163,39 @@ CollectionTreeItem::data( int role ) const
             return m_parentCollection->icon();
         else if( role == CustomRoles::ByLineRole )
         {
-            /*
-            QueryMaker *qm = m_parentCollection->queryMaker();
-            qm->setQueryType( QueryMaker::Custom );
-            qm->addReturnValue( Meta::valTitle );
-            qm->addReturnFunction( QueryMaker::Count );
-            qm->setAutoDelete( true );
-            */
+#if 0
+            if( m_trackCount < 0 )
+            {
+                QueryMaker *qm = m_parentCollection->queryMaker();
+                connect( qm, SIGNAL( newResultReady(int, StringList) ), SLOT( tracksCounted(int, QStringList) ) );
 
-            return i18n("X Tracks");
+                qm->setAutoDelete( true )
+                  ->setQueryType( QueryMaker::Custom )
+                  ->addReturnValue( Meta::valUrl )
+                  ->addReturnFunction( QueryMaker::Count, Meta::valTitle )
+                  ->run();
+
+                return QString();
+            }
+#endif
+            return i18n( "%1 Tracks", QString::number( m_trackCount ) );
         }
     }
 
     return QVariant();
+}
+
+void
+CollectionTreeItem::tracksCounted( int collectionId, QStringList res )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( collectionId );
+    if( !res.isEmpty() )
+        m_trackCount = res.first().toInt();
+    else
+        m_trackCount = 0;
+    debug() << "Track count for " << data( Qt::DisplayRole ).toString() << " is: " << m_trackCount;
+    emit dataUpdated();
 }
 
 int
@@ -295,4 +319,6 @@ CollectionTreeItem::setChildrenLoaded( bool loaded )
         m_childItems.clear();
     }
 }
+
+#include "CollectionTreeItem.moc"
 
