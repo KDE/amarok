@@ -56,7 +56,7 @@ class CollectionTreeItem : public QObject
         int childCount() const { return m_childItems.count(); }
         int columnCount() const { return 1; }
 
-        QVariant data( int role ) const;
+        QVariant data( int role );
 
         int row() const;
 

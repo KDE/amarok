@@ -111,7 +111,7 @@ CollectionTreeItem::albumYear() const
 }
 
 QVariant
-CollectionTreeItem::data( int role ) const
+CollectionTreeItem::data( int role )
 {
     if( !m_data.isNull() )
     {
@@ -163,6 +163,7 @@ CollectionTreeItem::data( int role ) const
             return m_parentCollection->icon();
         else if( role == CustomRoles::ByLineRole )
         {
+            m_trackCount = m_parentCollection->trackCount();
 
             if( m_trackCount < 0 )
             {

@@ -93,6 +93,7 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
         virtual CollectionLocation* location() const;
 
         virtual QString collectionId() const;
+        virtual int trackCount() { return trackMap().size(); }
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
 

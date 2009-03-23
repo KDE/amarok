@@ -146,6 +146,9 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
             @return A unique identifier for this type of collection
         */
         virtual QString collectionId() const = 0;
+
+        // virtual bool hasQueryMaker() const { return true; }
+        virtual int trackCount() { return -1; }
         /**
             @return a user visible name for this collection, to be displayed in the collectionbrowser and elsewhere
         */
