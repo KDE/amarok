@@ -256,17 +256,8 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
     if( index.isValid() )
     {
-        if( !index.parent().isValid() ) // root item
-        {
-            QModelIndex index2 = indexAt( event->pos() );
-            setExpanded( index2, !isExpanded( index2 ) );
-        }
-        else if( index.internalPointer() )
-        {
-            CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-
-            playChildTracks( item, Playlist::AppendAndPlay );
-        }
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        playChildTracks( item, Playlist::AppendAndPlay );
     }
 }
 
