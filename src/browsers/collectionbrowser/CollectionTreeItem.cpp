@@ -111,7 +111,7 @@ CollectionTreeItem::albumYear() const
 }
 
 QVariant
-CollectionTreeItem::data( int role )
+CollectionTreeItem::data( int role ) const
 {
     if( !m_data.isNull() )
     {
