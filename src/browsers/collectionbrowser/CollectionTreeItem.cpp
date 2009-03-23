@@ -179,7 +179,7 @@ CollectionTreeItem::data( int role )
                     m_trackCount = m_parentCollection->trackCount();
             }
 
-            return i18np( "1 Track", "%1 Tracks", m_trackCount );
+            return i18np( "1 Track", "%1 Tracks", KGlobal::locale()->formatNumber( m_trackCount, 0 ) );
         }
     }
 
