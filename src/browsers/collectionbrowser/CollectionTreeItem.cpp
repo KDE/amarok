@@ -165,8 +165,6 @@ CollectionTreeItem::data( int role )
         {
             if( m_trackCount < 0 )
             {
-                if ( m_parentCollection->trackCount() < 0 )
-                {
                 QueryMaker *qm = m_parentCollection->queryMaker();
                 connect( qm, SIGNAL( newResultReady(QString, QStringList) ), SLOT( tracksCounted(QString, QStringList) ) );
 
@@ -174,9 +172,6 @@ CollectionTreeItem::data( int role )
                   ->setQueryType( QueryMaker::Custom )
                   ->addReturnFunction( QueryMaker::Count, Meta::valUrl )
                   ->run();
-                }
-                else
-                    m_trackCount = m_parentCollection->trackCount();
             }
 
             return i18np( "1 Track", "%1 Tracks", KGlobal::locale()->formatNumber( m_trackCount, 0 ) );
