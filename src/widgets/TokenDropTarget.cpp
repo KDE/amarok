@@ -199,7 +199,6 @@ TokenDropTarget::clear()
     }
     //readd our spacer
     layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
-    emit changed();
 }
 
 int
@@ -358,7 +357,6 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     token->removeEventFilter( m_tokenDragger );
     token->installEventFilter( m_tokenDragger );
     token->setCursor( Qt::OpenHandCursor );
-    emit changed();
 }
 
 int

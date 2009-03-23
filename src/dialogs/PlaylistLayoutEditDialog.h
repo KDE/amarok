@@ -122,6 +122,8 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
          */
         void toggleUpDownButtons();
 
+        void setLayoutChanged();
+
     private:
         Playlist::LayoutEditWidget *m_headEdit;
         Playlist::LayoutEditWidget *m_bodyEdit;

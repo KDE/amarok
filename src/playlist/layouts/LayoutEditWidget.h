@@ -79,6 +79,7 @@ class LayoutEditWidget : public KVBox
          * @param The widget that recieved the focus.
          */
         void focussed( QWidget* );
+        void changed();
 
     private:
         QCheckBox *m_showCoverCheckBox;

@@ -37,6 +37,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     m_dragstack = new TokenDropTarget( "application/x-amarok-tag-token", this );
     m_dragstack->setCustomTokenFactory( m_tokenFactory );
     connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
+    connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
     
     m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
 }

@@ -127,6 +127,10 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( renameLayoutButton, SIGNAL( clicked() ), this, SLOT( renameLayout() ) );
 
     toggleUpDownButtons();
+
+    connect( m_headEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
+    connect( m_bodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
+    connect( m_singleEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
 }
 
 
@@ -332,7 +336,7 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
     while( i != m_layoutsMap->end() )
     {
         debug() << "I'm on layout " << i.key();
-        if( i.value().isDirty() )   //TODO: do setDirty if tokens have been moved
+        if( i.value().isDirty() )
         {
             debug() << "Layout " << i.key() << " has been modified and will be saved.";
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
@@ -343,7 +347,10 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
                 //TODO: handle this on layout switch maybe? this is not the right time to tell users they needed to make a copy in the first place
                 return;
             }
-            i.value().setDirty( 0 );
+            i.value().setHead( m_headEdit->config() );
+            i.value().setBody( m_bodyEdit->config() );
+            i.value().setSingle( m_singleEdit->config() );
+            i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( i.key(), i.value() );
             debug() << "Layout " << i.key() << " saved to LayoutManager";
         }
@@ -388,7 +395,17 @@ void PlaylistLayoutEditDialog::moveDown()
     layoutListWidget->setCurrentRow( newRow );
 }
 
-
+void PlaylistLayoutEditDialog::setLayoutChanged()
+{
+    QMap<QString, Playlist::PlaylistLayout>::iterator it = m_layoutsMap->find( m_layoutName );
+    if( it != m_layoutsMap->end() )
+    {
+        it->setHead( m_headEdit->config() );
+        it->setBody( m_bodyEdit->config() );
+        it->setSingle( m_singleEdit->config() );
+        it->setDirty( true );
+    }
+}
 
 
 #include "PlaylistLayoutEditDialog.moc"

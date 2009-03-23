@@ -221,10 +221,13 @@ PlaylistLayout LayoutManager::layout( const QString &layout ) const
 void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 {
     layout.setEditable( true );
+    if( m_layouts.find( name ) != m_layouts.end() )
+        m_layouts.remove( name );
+    else
+        m_layoutNames.append( name );
+
     m_layouts.insert( name, layout );
 
-    //new one goes to the bottom per default:
-    m_layoutNames.append( name );
 
     QDomDocument doc( "layouts" );
     QDomElement layouts_element = doc.createElement( "playlist_layouts" );
