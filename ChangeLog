@@ -3,7 +3,7 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 
-VERSION 2.1
+VERSION 2.1-beta1
   FEATURES:
     * The collection scanner is now able to be run in batch mode, allowing for
       automated scans of both full and incremental types.  In addition, all
