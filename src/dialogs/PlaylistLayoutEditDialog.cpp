@@ -347,9 +347,6 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
                 //TODO: handle this on layout switch maybe? this is not the right time to tell users they needed to make a copy in the first place
                 return;
             }
-            i.value().setHead( m_headEdit->config() );
-            i.value().setBody( m_bodyEdit->config() );
-            i.value().setSingle( m_singleEdit->config() );
             i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( i.key(), i.value() );
             debug() << "Layout " << i.key() << " saved to LayoutManager";
@@ -397,14 +394,10 @@ void PlaylistLayoutEditDialog::moveDown()
 
 void PlaylistLayoutEditDialog::setLayoutChanged()
 {
-    QMap<QString, Playlist::PlaylistLayout>::iterator it = m_layoutsMap->find( m_layoutName );
-    if( it != m_layoutsMap->end() )
-    {
-        it->setHead( m_headEdit->config() );
-        it->setBody( m_bodyEdit->config() );
-        it->setSingle( m_singleEdit->config() );
-        it->setDirty( true );
-    }
+    (*m_layoutsMap)[m_layoutName].setHead( m_headEdit->config() );
+    (*m_layoutsMap)[m_layoutName].setBody( m_bodyEdit->config() );
+    (*m_layoutsMap)[m_layoutName].setSingle( m_singleEdit->config() );
+    (*m_layoutsMap)[m_layoutName].setDirty( true );
 }
 
 
