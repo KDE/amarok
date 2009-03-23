@@ -63,9 +63,6 @@ Optional
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
 
-    * Ampache server integration requires:
-      * Qt Cryptographic Architecture 2 http://delta.affinix.com/download/qca/2.0/
-
 
 Please note, if compiling from source you must also install the devel versions
 of these packages.
