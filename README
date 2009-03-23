@@ -42,8 +42,18 @@ Required
       (Metadata tagging library)
       http://freshmeat.net/projects/taglib
 
+    * TagLib Extras 0.1.1
+      (Support for metadata reading of additional file types)
+      http://www.jefferai.com/taglib-extras/taglib-extras-0.1.1.tar.gz
+      svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
+
     * MySQL 5.0 (possibly 5.1.26rc) Embedded: libmysqld compiled with fPIC
       (In-process database support)
+
+    * QtScript Generator, Qt Bindings 0.1.0
+      (Qt Bindings for QtScript for Amarok's scripting system)
+      http://code.google.com/p/qtscriptgenerator/
+      git://labs.trolltech.com/qtscriptgenerator
 
 Optional
     * libgpod 0.4.2 (or newer)
