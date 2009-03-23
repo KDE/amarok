@@ -82,9 +82,10 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
-    #if QT_VERSION >= 0x040500
+    // Runtime check for Qt 4.5 here. Older versions produce graphical garbage with animation enabled.
+    const char* qtVersion = qVersion();
+    if( qtVersion[0] >= 4 && qtVersion[2] >= 5 ) 
         setAnimated( true );
-    #endif
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
 
