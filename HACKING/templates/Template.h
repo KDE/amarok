@@ -24,7 +24,7 @@
  * A class for blah
  *
  **/
-class AMAROK_EXPORT Template : public QObject 
+class /*AMAROK_EXPORT*/ Template : public QObject 
 {
     Q_OBJECT
 
