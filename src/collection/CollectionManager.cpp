@@ -36,10 +36,11 @@
 #include <QPair>
 #include <QTimer>
 
-#include <KService>
+#include <KBuildSycocaProgressDialog>
 #include <KGlobal>
 #include <KMessageBox>
 #include <KRun>
+#include <KService>
 
 #include <cstdlib>
 
@@ -111,8 +112,7 @@ CollectionManager::init()
     if( plugins.isEmpty() )
     {
         debug() << "No Amarok plugins found, running kbuildsycoca4.";
-        KRun::runCommand( "kbuildsycoca4", 0 );
-        ::sleep( 10 );  // kbuildsycoca4 forks, so we need to wait a bit
+        KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
 
         plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
         debug() << "Second attempt: Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
@@ -121,9 +121,7 @@ CollectionManager::init()
         {
             KMessageBox::error( 0, i18n(
                     "<p>Amarok could not find any collection plugins. "
-                    "Amarok is now updating the KDE configuration database. Please wait a couple of minutes, then restart Amarok.</p>"
-                    "<p>If this does not help, "
-                    "it is likely that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
+                    "it is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
                     "$ cd /path/to/amarok/source-code/<br>"
                     "$ su -c \"make uninstall\"<br>"
                     "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
