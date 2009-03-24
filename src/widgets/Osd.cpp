@@ -54,8 +54,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_y( MARGIN )
         , m_drawShadow( true )
         , m_rating( 0 )
-        , m_showVolume( false )
         , m_volume( The::engineController()->volume() )
+        , m_showVolume( false )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -628,6 +628,8 @@ Amarok::OSD::engineVolumeChanged( int newVolume )
 void
 Amarok::OSD::engineMuteStateChanged( bool mute )
 {
+    Q_UNUSED( mute )
+
     volumeChanged( m_volume );
 }
 
