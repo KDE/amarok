@@ -28,16 +28,23 @@
 #include "md5.h"
 
 static int staticHashDone = 0;
-static char staticHash_42[256*65] = {0};
-static char staticHash_45[256*65] = {0};
+static unsigned char staticHash_42[256*65] = {0};
+static unsigned char staticHash_45[256*65] = {0};
 
-static const char hexchars[] = "0123456789ABCDEF";
+static const unsigned char hexchars[] = "0123456789ABCDEF";
 static const char appleCopyright[] = "Copyright 2003 Apple Computer, Inc.";
 
-static void DigestToString(const unsigned char *digest, char *string)
+static size_t ustrlen(const unsigned char * str) {
+
+    size_t i;
+    for (i = 0; str[i] != '\0'; ++i) ;
+    return i;
+}
+
+static void DigestToString(const unsigned char *digest, unsigned char *string)
 {
     int i;
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 16; ++i)
     {
         unsigned char tmp = digest[i];
         string[i*2+1] = hexchars[tmp & 0x0f];
@@ -50,13 +57,13 @@ static void GenerateStatic_42()
     MD5_CTX ctx;
     unsigned char *p = staticHash_42;
     int i;
-    char buf[16];
+    unsigned char buf[16];
 
-    for (i = 0; i < 256; i++)
+    for (i = 0; i < 256; ++i)
     {
         OpenDaap_MD5Init(&ctx, 0);
 
-#define MD5_STRUPDATE(str) OpenDaap_MD5Update(&ctx, str, strlen(str))
+#define MD5_STRUPDATE(str) OpenDaap_MD5Update(&ctx, (const unsigned char*) str, strlen(str))
 
         if ((i & 0x80) != 0)
             MD5_STRUPDATE("Accept-Language");
@@ -110,13 +117,13 @@ static void GenerateStatic_45()
     MD5_CTX ctx;
     unsigned char *p = staticHash_45;
     int i;
-    char buf[16];
+    unsigned char buf[16];
 
-    for (i = 0; i < 256; i++)
+    for (i = 0; i < 256; ++i)
     {
         OpenDaap_MD5Init(&ctx, 1);
 
-#define MD5_STRUPDATE(str) OpenDaap_MD5Update(&ctx, str, strlen(str))
+#define MD5_STRUPDATE(str) OpenDaap_MD5Update(&ctx, (const unsigned char*) str, strlen(str))
 
         if ((i & 0x40) != 0)
             MD5_STRUPDATE("eqwsdxcqwesdc");
@@ -171,11 +178,11 @@ void GenerateHash(short version_major,
                   unsigned char *outhash,
                   int request_id)
 {
-    char buf[16];
+    unsigned char buf[16];
     MD5_CTX ctx;
 
-    char *hashTable = (version_major == 3) ?
-                      staticHash_45 : staticHash_42;
+    unsigned char *hashTable = (version_major == 3) ?
+                              staticHash_45 : staticHash_42;
 
     if (!staticHashDone)
     {
@@ -186,8 +193,8 @@ void GenerateHash(short version_major,
 
     OpenDaap_MD5Init(&ctx, (version_major == 3) ? 1 : 0);
 
-    OpenDaap_MD5Update(&ctx, url, strlen(url));
-    OpenDaap_MD5Update(&ctx, appleCopyright, strlen(appleCopyright));
+    OpenDaap_MD5Update(&ctx, url, ustrlen(url));
+    OpenDaap_MD5Update(&ctx, (const unsigned char*) appleCopyright, strlen(appleCopyright));
 
     OpenDaap_MD5Update(&ctx, &hashTable[hashSelect * 65], 32);
 
@@ -195,7 +202,7 @@ void GenerateHash(short version_major,
     {
         char scribble[20];
         sprintf(scribble, "%u", request_id);
-        OpenDaap_MD5Update(&ctx, scribble, strlen(scribble));
+        OpenDaap_MD5Update(&ctx, (unsigned char*) scribble, strlen(scribble));
     }
 
     OpenDaap_MD5Final(&ctx, buf);
