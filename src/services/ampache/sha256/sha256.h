@@ -40,15 +40,7 @@
 
 #define SHA256_BLOCK_SIZE  ( 512 / 8)
 
-#define HAVE_STDINT_H
-
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#else
-typedef unsigned char uint8_t;
-typedef unsigned int  uint32_t;
-typedef unsigned long long uint64_t;
-#endif
 
 #ifdef __cplusplus
 extern "C" {
