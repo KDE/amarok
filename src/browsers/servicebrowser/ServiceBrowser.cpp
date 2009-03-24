@@ -175,6 +175,14 @@ ServiceBrowser::home()
         // NOTE why does thic clear the CV? That is a damn good question....
         if ( m_usingContextView )
             Context::ContextView::self()->clear();
+
+        // Clear the search filter, preventing user confusion ("Where have my services gone?")
+        if( !m_currentFilter.isEmpty() )
+        {
+            m_currentFilter.clear();
+            slotFilterNow();
+            m_searchWidget->lineEdit()->clear();
+        }
     }
 }
 
