@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "SmartPointerList.h"
+#include "../src/SmartPointerList.h"
 #include <QtTest>
 
 // use a macro, as we don't want to test copy ctor early
