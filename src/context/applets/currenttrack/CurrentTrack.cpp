@@ -139,6 +139,9 @@ void CurrentTrack::init()
     m_tabBar->addTab( i18n( "Last played" ) );
     m_tabBar->addTab( i18n( "Favorite tracks" ) );
 
+    // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
+    m_tabBar->hide();
+
     connectSource( "current" );
     connect( m_tabBar, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
