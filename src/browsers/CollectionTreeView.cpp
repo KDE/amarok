@@ -26,7 +26,7 @@
 #include "Debug.h"
 #include "CollectionLocation.h"
 #include "CollectionManager.h"
-#include "browsers/collectionbrowser/CollectionTreeItemModel.h"
+#include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "GlobalCollectionActions.h"
 #include "Meta.h"

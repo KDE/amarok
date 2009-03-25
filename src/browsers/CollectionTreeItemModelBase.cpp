@@ -27,7 +27,6 @@
 #include "CollectionManager.h"
 #include "CollectionTreeItem.h"
 #include "CollectionTreeView.h"
-#include "CollectionWidget.h"
 #include "Debug.h"
 #include "Expression.h"
 #include "MetaConstants.h"

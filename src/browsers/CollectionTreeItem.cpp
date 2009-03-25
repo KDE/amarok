@@ -19,7 +19,6 @@
 #include "CollectionTreeItem.h"
 
 #include "CollectionTreeView.h"
-#include "CollectionWidget.h"
 #include "amarokconfig.h"
 #include "Debug.h"
 

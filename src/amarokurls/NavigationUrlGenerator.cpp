@@ -23,7 +23,7 @@
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
 #include "SourceInfoCapability.h"
-#include "browsers/collectionbrowser/CollectionTreeItemModelBase.h"
+#include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "collection/sqlcollection/SqlMeta.h"

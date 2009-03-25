@@ -20,7 +20,7 @@
 #ifndef SERVICECOLLECTIONTREEVIEW_H
 #define SERVICECOLLECTIONTREEVIEW_H
 
-#include "browsers/collectionbrowser/CollectionTreeView.h"
+#include "browsers/CollectionTreeView.h"
 
 /**
     A simple extension of the CollectionTreeView class that allows optional 

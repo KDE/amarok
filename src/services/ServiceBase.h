@@ -20,8 +20,8 @@
 #ifndef AMAROKSERVICEBASE_H
 #define AMAROKSERVICEBASE_H
 
-#include "browsers/collectionbrowser/CollectionTreeItem.h"
-#include "browsers/collectionbrowser/SingleCollectionTreeItemModel.h"
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "Amarok.h"
 #include "InfoParserBase.h"
 #include "ServiceCollectionTreeView.h"

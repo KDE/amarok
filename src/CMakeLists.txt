@@ -25,6 +25,7 @@ endif( STRIGI_FOUND )
 
 include_directories(
     amarokurls
+    browsers/
     browsers/playlistbrowser
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
@@ -150,18 +151,21 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/PlaybackConfig.ui
 )
 
+set(libbrowserframework_SRCS
+    browsers/CollectionSortFilterProxyModel.cpp
+    browsers/CollectionTreeItem.cpp
+    browsers/CollectionTreeItemDelegate.cpp
+    browsers/CollectionTreeItemModel.cpp
+    browsers/CollectionTreeItemModelBase.cpp
+    browsers/CollectionTreeView.cpp
+    browsers/SingleCollectionTreeItemModel.cpp
+)
+
 #####################################################################
 # COLLECTIONBROWSER
 #####################################################################
 set(libcollectionbrowser_SRCS
-    browsers/collectionbrowser/CollectionSortFilterProxyModel.cpp
-    browsers/collectionbrowser/CollectionTreeItem.cpp
-    browsers/collectionbrowser/CollectionTreeItemDelegate.cpp
-    browsers/collectionbrowser/CollectionTreeItemModel.cpp
-    browsers/collectionbrowser/CollectionTreeItemModelBase.cpp
-    browsers/collectionbrowser/CollectionTreeView.cpp
     browsers/collectionbrowser/CollectionWidget.cpp
-    browsers/collectionbrowser/SingleCollectionTreeItemModel.cpp
 )
 
 #####################################################################
@@ -406,6 +410,7 @@ set(libdynamic_SRCS
 set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
     ${libanalyzers_SRCS}
+    ${libbrowserframework_SRCS}
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
