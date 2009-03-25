@@ -241,7 +241,7 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
 
-    if( index.isValid() && !index.parent().isValid() ) // root item
+    if( index.isValid() && !index.parent().isValid() && index.child( 0, 0 ).isValid() ) // root item with at least one child
         setExpanded( index, !isExpanded( index ) );
     // propagate to base class
     else
