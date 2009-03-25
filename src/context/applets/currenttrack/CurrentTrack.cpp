@@ -260,17 +260,25 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     
     if( !m_lastTracks.isEmpty() )
     {                
-        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
+        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight * 1.2 ) ) );
 
+        // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
+#if 0
+        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
         QFontMetrics fm( m_tabBar->font() );
         m_tabBar->resize( QSizeF( contentsRect().width() - margin * 2 - 2, m_tabBar->size().height() * 0.7 ) ); // Why is the height factor ignored?
         m_tabBar->setPos( size().width() / 2 - m_tabBar->size().width() / 2 - 1, 10 );
+
         m_tabBar->show();
+#endif
         
         for( int i = 0; i < m_tracksToShow; i++ )
         {
             m_tracks[i]->resize( contentsRect().width() - margin * 2, textHeight * 1.2 );
-            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
+
+            // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
+            //m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
+            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 10 );
         }
     }        
     else if( !m_noTrackText.isEmpty() )
@@ -444,7 +452,11 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
         QList<QGraphicsItem*> children = QGraphicsItem::children();
         foreach ( QGraphicsItem *childItem, children )
             childItem->hide();
+
+        // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
+#if 0
         m_tabBar->show();
+#endif 
         for( int i = 0; i < m_tracksToShow; i++)
             m_tracks[i]->show();
         return;
