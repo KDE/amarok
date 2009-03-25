@@ -112,8 +112,6 @@ namespace Amarok
 
         private:
             Q_DISABLE_COPY( VolumeSlider )
-
-            int m_sliderHeight;
     };
 
     class TimeSlider : public Amarok::Slider
@@ -140,7 +138,6 @@ namespace Amarok
 
             QTimer *m_animTimer; // Used for a smooth progress.
             QList<BookmarkTriangle*> m_triangles;
-            int m_sliderHeight;
             double m_knobX; // The position of the current indicator.
     };
 }

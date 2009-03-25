@@ -53,6 +53,7 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     , m_needsResize( true )
 {
     setRange( 0, max );
+    setFixedHeight( 20 );
 }
 
 void
@@ -198,7 +199,6 @@ Amarok::VolumeSlider::VolumeSlider( uint max, QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, max, parent )
 {
     setFocusPolicy( Qt::NoFocus );
-    m_sliderHeight = 20;
 }
 
 void
@@ -254,7 +254,7 @@ void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSlider( &p, 0, (height() - m_sliderHeight) / 2, width(), m_sliderHeight );
+    paintCustomSlider( &p, 0, 0, width(), height() );
 }
 
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
@@ -273,7 +273,6 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     , m_knobX( 0.0 )
 {
     setFocusPolicy( Qt::NoFocus );
-    m_sliderHeight = 20;
 }
 
 void
@@ -288,16 +287,12 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSlider( &p, 0, ( height() - m_sliderHeight ) / 2, width(), m_sliderHeight, m_knobX );
+    paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 {
     Amarok::Slider::resizeEvent( event );
-    //m_sliderHeight = (int)width() / 25; //maintain sane aspect ratio
-    m_sliderHeight = 20;
-    if ( m_sliderHeight > height() )
-        m_sliderHeight = height();
 }
 
 void Amarok::TimeSlider::drawTriangle( const QString &name, int seconds )

@@ -45,7 +45,6 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_label->setFixedWidth( 60 ); // align correctly with the progress bar
     m_label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     m_label->setFont( KGlobalSettings::fixedFont() );
-    m_label->setBackgroundRole( QPalette::Text );
 
     addAction( m_action );
     addWidget( m_slider );
