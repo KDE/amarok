@@ -26,7 +26,7 @@ class QAction;
 class QMenu;
 
 class SearchWidget;
-class CollectionTreeView;
+class CollectionBrowserTreeView;
 
 class CollectionWidget : public KVBox
 {
@@ -34,7 +34,7 @@ class CollectionWidget : public KVBox
     public:
         CollectionWidget( const char* name , QWidget *parent );
         static CollectionWidget *instance() { return s_instance; }
-        CollectionTreeView *view() const { return m_treeView; }
+        CollectionBrowserTreeView *view() const { return m_treeView; }
 
         /**
          * Apply a filter to the tree view.
@@ -58,7 +58,7 @@ class CollectionWidget : public KVBox
 
     private:
         SearchWidget        *m_searchWidget;
-        CollectionTreeView  *m_treeView;
+        CollectionBrowserTreeView  *m_treeView;
 
         QAction             *m_firstLevelSelectedAction;
         QAction             *m_secondLevelSelectedAction;

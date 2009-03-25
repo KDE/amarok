@@ -23,7 +23,7 @@
 
 #include "CollectionTreeItemModel.h"
 #include "CollectionTreeItemDelegate.h"
-#include "CollectionTreeView.h"
+#include "CollectionBrowserTreeView.h"
 #include "Debug.h"
 #include "SearchWidget.h"
 #include <amarokconfig.h>
@@ -54,7 +54,7 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_searchWidget = new SearchWidget( hbox );
     m_searchWidget->setClickMessage( i18n( "Search collection" ) );
 
-    m_treeView = new CollectionTreeView( this );
+    m_treeView = new CollectionBrowserTreeView( this );
     m_treeView->setAlternatingRowColors( true );
     m_treeView->setFrameShape( QFrame::NoFrame );
     m_treeView->setRootIsDecorated( false );

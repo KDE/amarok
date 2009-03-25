@@ -165,6 +165,7 @@ set(libbrowserframework_SRCS
 # COLLECTIONBROWSER
 #####################################################################
 set(libcollectionbrowser_SRCS
+    browsers/collectionbrowser/CollectionBrowserTreeView.cpp
     browsers/collectionbrowser/CollectionWidget.cpp
 )
 
