@@ -59,10 +59,14 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_mainControlsWidget = new MainControlsWidget( hBox );
 
     KVBox * vBox = new KVBox( hBox );
-    vBox->setContentsMargins( 0, 6, 0, 0 );
+    vBox->setContentsMargins( 0, 3, 0, 0 );
 
     QWidget * topBar = new QWidget( vBox );
+
     QHBoxLayout * layout = new QHBoxLayout( topBar );
+    topBar->setLayout( layout );
+    layout->setMargin( 1 ); // align correctly with the progress bar
+    layout->setSpacing( 3 ); // here aswell
 
     m_addControlsToolbar = new Amarok::ToolBar( topBar );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -79,7 +83,6 @@ MainToolbar::MainToolbar( QWidget * parent )
     layout->addWidget( m_addControlsToolbar );
     layout->addWidget( m_volumeWidget );
     layout->setAlignment( m_volumeWidget, Qt::AlignRight );
-    topBar->setLayout( layout );
 
     ProgressWidget *progressWidget = new ProgressWidget( vBox );
     progressWidget->setMinimumSize( 100, 17 );

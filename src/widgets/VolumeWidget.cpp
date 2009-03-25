@@ -39,11 +39,13 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_slider->setObjectName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
     m_slider->setToolTip( i18n( "Volume Control" ) );
+    m_slider->setMaximumSize( 600000, 20 );
 
-    m_label = new QLabel( QString::number( AmarokConfig::masterVolume() ) + '%' );
-    m_label->setFixedWidth( 58 ); // HACK to align correctly with progress slider
+    m_label = new QLabel( QString::number( AmarokConfig::masterVolume() ) + '%' + ' ', this );
+    m_label->setFixedWidth( 60 ); // align correctly with the progress bar
     m_label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     m_label->setFont( KGlobalSettings::fixedFont() );
+    m_label->setBackgroundRole( QPalette::Text );
 
     addAction( m_action );
     addWidget( m_slider );
@@ -62,7 +64,7 @@ VolumeWidget::engineVolumeChanged( int value )
 {
     if( value != m_slider->value() )
         m_slider->setValue( value );
-    m_label->setText( QString::number( value ) + '%' );
+    m_label->setText( QString::number( value ) + '%' + ' ' ); // align correctly with the progress bar
 }
 
 void
