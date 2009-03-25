@@ -74,6 +74,8 @@ VERSION 2.1-beta1
       applets.
 
   CHANGES:
+    * Links in the lyrics applet are now clickable and open with the default
+      external web browser (BR 179396)
     * Collection browser has been pimped.
     * Bring back animations in the browsers if built with Qt 4.5 or later.
     * The collection scanner is now being provided in a separate package.

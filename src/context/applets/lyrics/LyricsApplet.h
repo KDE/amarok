@@ -23,7 +23,7 @@
 
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
-class QTextEdit;
+class QTextBrowser;
 
 class LyricsApplet : public Context::Applet
 {
@@ -59,7 +59,7 @@ private:
     
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
-    QTextEdit* m_lyrics;
+    QTextBrowser* m_lyrics;
     QGraphicsTextItem* m_suggested;
 };
 

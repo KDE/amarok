@@ -25,7 +25,7 @@
 #include <QAction>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsProxyWidget>
-#include <QTextEdit>
+#include <QTextBrowser>
 #include <QPainter>
 #include <QPoint>
 
@@ -64,9 +64,11 @@ void LyricsApplet::init()
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
     
     m_lyricsProxy = new QGraphicsProxyWidget( this );
-    m_lyrics = new QTextEdit;
+    m_lyrics = new QTextBrowser;
     m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setReadOnly( true );
+    m_lyrics->setOpenExternalLinks( true );
+    m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     m_lyricsProxy->setWidget( m_lyrics );
 
     // only show when we need to let the user
