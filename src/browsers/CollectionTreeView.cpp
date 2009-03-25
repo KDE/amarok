@@ -237,17 +237,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     menu.exec( event->globalPos() );
 }
 
-void CollectionTreeView::mousePressEvent( QMouseEvent *event )
-{
-    QModelIndex index = indexAt( event->pos() );
-
-    if( index.isValid() && !index.parent().isValid() && index.child( 0, 0 ).isValid() ) // root item with at least one child
-        setExpanded( index, !isExpanded( index ) );
-    // propagate to base class
-    else
-        QTreeView::mousePressEvent( event );
-}
-
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QModelIndex index;

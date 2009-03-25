@@ -71,7 +71,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotFilterNow();
 
     protected:
-        void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
         void keyPressEvent( QKeyEvent * event );
