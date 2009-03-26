@@ -50,6 +50,9 @@ public:
 
     void setDescription( const QString &description );
 
+    void setCustomValue( const QString &custom );
+    QString customValue();
+
 
     int numberOfArgs();
 
@@ -82,6 +85,9 @@ private:
     BookmarkGroupPtr m_parent;
     QString m_description;
     QString m_name;
+
+    //this value is used for storing application specific inoformation that should not be made user visible.
+    QString m_customValue;
 
 
 };

@@ -75,16 +75,16 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
 
     // Queries the database for bookmarks where the url field contains
     // the base64 encoded url (minus the '=').
-    QString query = "SELECT id, parent_id, name, url, description FROM bookmarks WHERE url LIKE '%%1%'";
+    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks WHERE url LIKE '%%1%'";
     query = query.arg ( track_encoded );
     debug() << "query: " << query;
     QStringList result = CollectionManager::instance()->sqlStorage()->query ( query );
 
-    int resultRows = result.count() / 5;
+    int resultRows = result.count() / 6;
 
     for ( int i = 0; i < resultRows; i++ )
     {
-        QStringList row = result.mid ( i*5, 5 );
+        QStringList row = result.mid ( i*6, 6 );
         list << AmarokUrlPtr ( new AmarokUrl ( row ) );
     }
     return list;

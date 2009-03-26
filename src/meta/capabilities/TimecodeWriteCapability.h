@@ -46,6 +46,13 @@ public:
     virtual bool writeTimecode ( int seconds ) = 0;
 
     /**
+     * Stores an auto timecode for the track and deletes any previously added auto timecodes
+     * @param seconds the position in seconds at which the timecide should be stored.
+     * @return  true if the write was successful, false if not.
+     */
+    virtual bool writeAutoTimecode ( int seconds ) = 0;
+
+    /**
     * Get the capabilityInterfaceType of this capability
     * @return The capabilityInterfaceType ( always Meta::Capability::WriteTimecode; )
     */
@@ -57,6 +64,7 @@ public:
 protected:
 
     bool writeTimecode( int seconds, Meta::TrackPtr track );
+    bool writeAutoTimecode( int seconds, Meta::TrackPtr track );
 };
 
 #endif // TIMECODEWRITECAPABILITY_H

@@ -49,7 +49,7 @@ TimecodeObserver::engineNewTrackPlaying()
         {
             Meta::TimecodeWriteCapability *tcw = m_currentTrack->as<Meta::TimecodeWriteCapability>();
             if( tcw )
-                tcw->writeTimecode ( m_currPos ); // save the timecode
+                tcw->writeAutoTimecode ( m_currPos ); // save the timecode
         }
     }
 
@@ -75,7 +75,7 @@ TimecodeObserver::enginePlaybackEnded ( int finalPosition, int trackLength, Engi
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
         Meta::TimecodeWriteCapability *tcw = currentTrack->as<Meta::TimecodeWriteCapability>();
         if( tcw )
-            tcw->writeTimecode ( finalPosition ); // save the timecode
+            tcw->writeAutoTimecode ( finalPosition ); // save the timecode
     }
 }
 

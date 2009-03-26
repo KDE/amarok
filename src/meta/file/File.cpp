@@ -99,6 +99,12 @@ class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
         return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
     }
 
+    virtual bool writeAutoTimecode ( int seconds )
+    {
+        DEBUG_BLOCK
+        return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+    }
+
     private:
         KSharedPtr<MetaFile::Track> m_track;
 };

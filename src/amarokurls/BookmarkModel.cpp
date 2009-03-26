@@ -34,7 +34,7 @@
 
 #include <typeinfo>
 
-static const int BOOKMARK_DB_VERSION = 2;
+static const int BOOKMARK_DB_VERSION = 3;
 static const QString key("AMAROK_BOOKMARKS");
 
 BookmarkModel * BookmarkModel::s_instance = 0;
@@ -369,7 +369,8 @@ void BookmarkModel::createTables()
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
             ", url " + sqlStorage->exactTextColumnType() +
-            ", description " + sqlStorage->textColumnType() + " );" ) );
+            ", description " + sqlStorage->exactTextColumnType() +
+            ", custom " + sqlStorage->textColumnType() + " );" ) );
 
 }
 
@@ -398,6 +399,11 @@ void BookmarkModel::checkTables()
         createTables();
         sqlStorage->query( "INSERT INTO admin(component,version) "
                 "VALUES('" + key + "'," + QString::number( BOOKMARK_DB_VERSION ) + ");" );
+    }
+    else if ( values.at( 0 ).toInt() == 2 )
+    {
+        upgradeTables();
+        sqlStorage->query( "UPDATE admin SET version=" + QString::number( BOOKMARK_DB_VERSION ) + " WHERE component=" + key + ";" );
     }
 }
 
@@ -445,6 +451,12 @@ BookmarkModel::createNewGroup()
         row++;
     }
 
+}
+
+void BookmarkModel::upgradeTables()
+{
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    sqlStorage->query( "ALTER TABLE bookmarks ADD custom " + sqlStorage->textColumnType() + ";" );
 } 
 
 

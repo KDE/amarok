@@ -47,6 +47,7 @@ AmarokUrl::AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent )
     m_name = resultRow[2];
     QString urlString = resultRow[3];
     m_description = resultRow[4];
+    m_customValue = resultRow[5];
 
     initFromString( urlString );
 }
@@ -152,8 +153,8 @@ bool AmarokUrl::saveToDb()
     {
         //update existing
         debug() << "Updating bookmark";
-        QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4' WHERE id=%5;";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( QString::number( m_id ) );
+        QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;";
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) ).arg( QString::number( m_id ) );
         CollectionManager::instance()->sqlStorage()->query( query );
 
     }
@@ -161,8 +162,8 @@ bool AmarokUrl::saveToDb()
     {
         //insert new
         debug() << "Creating new bookmark in the db";
-        QString query = "INSERT INTO bookmarks ( parent_id, name, url, description ) VALUES ( %1, '%2', '%3', '%4' );";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) );
+        QString query = "INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );";
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) );
         m_id = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
     }
     return true;
@@ -211,5 +212,15 @@ void AmarokUrl::reparent( BookmarkGroupPtr parent )
 {
     m_parent = parent;
     saveToDb();
+}
+
+void AmarokUrl::setCustomValue( const QString & custom )
+{
+    m_customValue = custom;
+}
+
+QString AmarokUrl::customValue()
+{
+    return m_customValue;
 }
 

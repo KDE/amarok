@@ -25,6 +25,7 @@
 #include "Debug.h"
 #include "ProgressWidget.h"
 #include "EngineController.h"
+#include "TimecodeLoadCapability.h"
 
 namespace Meta
 {
@@ -36,7 +37,7 @@ bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
     PlayUrlGenerator urlGenerator;
-    AmarokUrl url = urlGenerator.createTrackBookmark(track, seconds);
+    AmarokUrl url = urlGenerator.createTrackBookmark( track, seconds );
 
     // lets see if we are bookmarking the currently playing track, if so
     // we need to update the slider with another icon
@@ -55,5 +56,65 @@ bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
     BookmarkModel::instance()->reloadFromDb(); //Update bookmark manager view.
     return true;
 }
+
+bool Meta::TimecodeWriteCapability::writeAutoTimecode( int seconds, Meta::TrackPtr track )
+{
+    DEBUG_BLOCK
+
+    //first up, find and delete any previously added auto timecodes for this track
+
+    debug() << "deleting old auto timecodes";
+    if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+    {
+        TimecodeLoadCapability *tcl = track->as<TimecodeLoadCapability>();
+        BookmarkList list = tcl->loadTimecodes();
+        foreach( AmarokUrlPtr oldUrl, list )
+        {
+            if( oldUrl->command() == "play"  ) {
+                if( oldUrl->customValue() == "auto timecode" ) {
+                    debug() << "deleting: " << oldUrl->name();
+                    oldUrl->removeFromDb();
+                }
+            }
+        }
+    }
+
+    //create url
+
+    PlayUrlGenerator urlGenerator;
+    AmarokUrl url = urlGenerator.createTrackBookmark( track, seconds );
+
+    // lets see if we are bookmarking the currently playing track, if so
+    // we need to update the slider with another icon
+
+    Meta::TrackPtr currtrack = The::engineController()->currentTrack();
+    if( currtrack == track )
+    {
+        debug() << " current track";
+        ProgressWidget* pw = ProgressWidget::instance();
+        if( pw )
+            ProgressWidget::instance()->addBookmark( url.name(), url.arg(1).toInt() );
+        else
+            debug() << "ProgressWidget is NULL";
+    }
+
+    //change the name a little bit
+    url.setCustomValue( "auto timecode" );
+
+    QString date = QDateTime::currentDateTime().toString( "dd.MM.yyyy" );;
+    url.setName( i18n( "%1 - Playback stopped at %2" ).arg( track->prettyName() ).arg( date ) );
+
+    debug() << "creating new auto timecode: " << url.name();
+
+
+    //save it
+    url.saveToDb();
+    BookmarkModel::instance()->reloadFromDb(); //Update bookmark manager view.
+    return true;
 }
+
+}
+
+
+
 

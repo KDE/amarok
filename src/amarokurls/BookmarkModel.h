@@ -89,6 +89,7 @@ class BookmarkModel : public QAbstractItemModel
         void checkTables();
         void createTables();
         void deleteTables();
+        void upgradeTables();
 
         static BookmarkModel * s_instance;
 

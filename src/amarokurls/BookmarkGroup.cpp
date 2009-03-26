@@ -115,16 +115,16 @@ BookmarkList BookmarkGroup::childBookmarks() const
     //DEBUG_BLOCK
     //debug() << "my name: " << m_name << " my pointer: " << this;
     if ( !m_hasFetchedChildPlaylists ) {
-        QString query = "SELECT id, parent_id, name, url, description FROM bookmarks where parent_id=%1 ORDER BY name;";
+        QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
         //debug() << "Result: " << result;
-        int resultRows = result.count() / 5;
+        int resultRows = result.count() / 6;
 
         for( int i = 0; i < resultRows; i++ )
         {
-            QStringList row = result.mid( i*5, 5 );
+            QStringList row = result.mid( i*6, 6 );
             BookmarkGroup* mutableThis = const_cast<BookmarkGroup*>( this );
             m_childBookmarks << AmarokUrlPtr( new AmarokUrl( row, BookmarkGroupPtr( mutableThis ) ) );
         }
