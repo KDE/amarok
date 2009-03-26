@@ -173,7 +173,7 @@ CollectionTreeItem::data( int role ) const
                   ->run();
             }
 
-            return i18np( "1 Track", "%1 Tracks", KGlobal::locale()->formatNumber( m_trackCount, 0 ) );
+            return i18np( "1 Track", "%1 Tracks", m_trackCount );
         }
     }
 
