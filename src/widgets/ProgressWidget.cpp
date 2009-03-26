@@ -225,6 +225,26 @@ ProgressWidget::engineTrackLengthChanged( long seconds )
     //when skipping lst.fm tracks, so we need to know if we are still on the same track...
     if ( The::engineController()->currentTrack() )
         m_currentUrlId = The::engineController()->currentTrack()->uidUrl();
+
+    m_slider->clearTriangles();
+    if( The::engineController()->currentTrack() )
+    {
+        debug() << "here 1";
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+        {
+            debug() << "here 2";
+            Meta::TimecodeLoadCapability *tcl = track->as<Meta::TimecodeLoadCapability>();
+            BookmarkList list = tcl->loadTimecodes();
+            foreach( AmarokUrlPtr url, list )
+            {
+                if( url->command() == "play"  ) {
+                    debug() << "showing timecode: " << url->name() << " at " << url->arg(1).toInt() ;
+                    addBookmark( url->name(), url->arg(1).toInt() );
+                }
+            }
+        }
+    }
 }
 
 void
@@ -233,21 +253,6 @@ ProgressWidget::engineNewTrackPlaying()
     DEBUG_BLOCK
     m_slider->setEnabled( false );
     engineTrackLengthChanged( The::engineController()->trackLength() );
-    m_slider->clearTriangles();
-    if( The::engineController()->currentTrack() )
-    {
-        Meta::TrackPtr track = The::engineController()->currentTrack();
-        if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
-        {
-            Meta::TimecodeLoadCapability *tcl = track->as<Meta::TimecodeLoadCapability>();
-            BookmarkList list = tcl->loadTimecodes();
-            foreach( AmarokUrlPtr url, list )
-            {
-                if( url->command() == "play"  )
-                    addBookmark( url->name(), url->arg(1).toInt() );
-            }
-        }
-    }
 }
 
 QSize ProgressWidget::sizeHint() const
