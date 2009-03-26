@@ -226,6 +226,10 @@ ProgressWidget::engineTrackLengthChanged( long seconds )
     if ( The::engineController()->currentTrack() )
         m_currentUrlId = The::engineController()->currentTrack()->uidUrl();
 
+    redrawBookmarks();
+}
+
+void ProgressWidget::redrawBookmarks(){
     m_slider->clearTriangles();
     if( The::engineController()->currentTrack() )
     {

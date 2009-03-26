@@ -30,6 +30,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "SvgHandler.h"
+#include "ProgressWidget.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -293,6 +294,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 {
     Amarok::Slider::resizeEvent( event );
+    ProgressWidget::instance()->redrawBookmarks();
 }
 
 void Amarok::TimeSlider::drawTriangle( const QString &name, int seconds )
