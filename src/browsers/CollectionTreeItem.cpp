@@ -171,6 +171,8 @@ CollectionTreeItem::data( int role ) const
                   ->setQueryType( QueryMaker::Custom )
                   ->addReturnFunction( QueryMaker::Count, Meta::valUrl )
                   ->run();
+
+                  return i18n( "Loading" );
             }
 
             return i18np( "1 Track", "%1 Tracks", m_trackCount );
