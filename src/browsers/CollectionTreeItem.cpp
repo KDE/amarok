@@ -175,7 +175,7 @@ CollectionTreeItem::data( int role ) const
                   return i18n( "Counting" );
             }
 
-            return i18np( "1 Track", "%1 Tracks", m_trackCount );
+            return i18np( "1 track", "%1 tracks", m_trackCount );
         }
     }
 
