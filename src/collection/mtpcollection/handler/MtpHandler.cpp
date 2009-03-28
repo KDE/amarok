@@ -524,10 +524,10 @@ MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
         {
 
             if (( tempTrack->artist()->name() != track->artist()->name() )
-                    && ( tempTrack->album()->name() != track->album()->name() )
-                    && ( tempTrack->genre()->name() != track->genre()->name() )
-                    && ( tempTrack->composer()->name() != track->composer()->name() )
-                    && ( tempTrack->year()->name() != track->year()->name() ) )
+                    || ( tempTrack->album()->name() != track->album()->name() )
+                    || ( tempTrack->genre()->name() != track->genre()->name() )
+                    || ( tempTrack->composer()->name() != track->composer()->name() )
+                    || ( tempTrack->year()->name() != track->year()->name() ) )
             {
                 debug() << "Same title, but other tags differ, not a dupe";
                 continue;
