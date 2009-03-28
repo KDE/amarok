@@ -65,7 +65,7 @@ void LyricsEngine::metadataChanged( Meta::TrackPtr track )
 
     const bool hasChanged = track->name() != m_title || 
                             track->artist()->name() != m_artist;
-    
+
     if( hasChanged )
         update();
 }
@@ -85,7 +85,7 @@ void LyricsEngine::update()
     QString lyrics = currentTrack->cachedLyrics();
     
     // don't rely on caching for streams
-    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
+    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream() && ( currentTrack->name() == m_title ) && ( currentTrack->artist()->name() == m_artist );
     
     m_title = currentTrack->name();
     m_artist = currentTrack->artist()->name();
@@ -115,7 +115,7 @@ void LyricsEngine::update()
         }
     }
 
-    if( cached )
+    if( cached ) 
         LyricsManager::self()->lyricsResultHtml( lyrics.toUtf8(), true );
     else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
