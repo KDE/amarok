@@ -154,7 +154,6 @@ kde4_add_ui_files(libconfigdialog_SRCS
 set(libbrowserframework_SRCS
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
-    browsers/CollectionTreeItemDelegate.cpp
     browsers/CollectionTreeItemModel.cpp
     browsers/CollectionTreeItemModelBase.cpp
     browsers/CollectionTreeView.cpp
@@ -165,6 +164,7 @@ set(libbrowserframework_SRCS
 # COLLECTIONBROWSER
 #####################################################################
 set(libcollectionbrowser_SRCS
+    browsers/collectionbrowser/CollectionTreeItemDelegate.cpp
     browsers/collectionbrowser/CollectionBrowserTreeView.cpp
     browsers/collectionbrowser/CollectionWidget.cpp
 )
