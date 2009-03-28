@@ -49,10 +49,18 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
 
     if (m_currentDownloadInfo == 0) return;
 
-    m_currentDownloadInfo->setFormatSelection(formatComboBox->currentText());
+    QString format = formatComboBox->currentText();
+    QString path = downloadTargetURLRequester->url().url();;
+
+    //store to config for next download:
+    KConfigGroup config = Amarok::config("Service_Magnatune");
+    config.writeEntry( "Download Format", format );
+    config.writeEntry( "Download Path", path );
+    
+    m_currentDownloadInfo->setFormatSelection( format );
 
     KUrl unpackLocation = downloadTargetURLRequester->url();
-    unpackLocation.adjustPath(KUrl::AddTrailingSlash);
+    unpackLocation.adjustPath( KUrl::AddTrailingSlash );
     m_currentDownloadInfo->setUnpackUrl( unpackLocation.directory( KUrl::ObeyTrailingSlash ) );
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
@@ -77,6 +85,21 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
     }
 
     infoEdit->setText( info->getDownloadMessage() );
+
+    //restore format and path from last time, if any.
+    KConfigGroup config = Amarok::config("Service_Magnatune");
+    QString format = config.readEntry( "Download Format", QString() );
+    QString path = config.readEntry( "Download Path", QString() );
+
+    if ( !format.isEmpty() ) {
+        int index = formatComboBox->findText( format );
+        if ( index != -1 )
+            formatComboBox->setCurrentIndex( index );
+    }
+
+    if ( !path.isEmpty() ) {
+        downloadTargetURLRequester->setPath( path );
+    }
 
 }
 

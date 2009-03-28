@@ -74,6 +74,9 @@ VERSION 2.1-beta1
       applets.
 
   CHANGES:
+    * Magnatune.com store: When downloading albums (Either by purchasing or
+      free membership downloads) remember the file format and download 
+      location for next time.
     * Links in the lyrics applet are now clickable and open with the default
       external web browser (BR 179396)
     * Collection browser has been pimped.
