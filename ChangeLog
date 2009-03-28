@@ -119,6 +119,8 @@ VERSION 2.1-beta1
       success.
 
   BUGFIXES:
+    * Automatically update lyrics applet if the user edits relevant track
+      metadata. (BR 185237)
     * Fix tracks with some identical tags being detected as dupes and not
       getting copied onto MTP device.
     * Fix invisible and unintuitive selection in the playlist after deleting
