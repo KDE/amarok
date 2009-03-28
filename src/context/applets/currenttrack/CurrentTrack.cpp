@@ -47,6 +47,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_showStats( true )
 {
     setHasConfigurationInterface( false );
+  
 }
 
 CurrentTrack::~CurrentTrack()
@@ -73,20 +74,15 @@ void CurrentTrack::init()
     m_title        = new QGraphicsSimpleTextItem( this );
     m_artist       = new QGraphicsSimpleTextItem( this );
     m_album        = new QGraphicsSimpleTextItem( this );
-    m_score        = new QGraphicsSimpleTextItem( this );
-    m_numPlayed    = new QGraphicsSimpleTextItem( this );
-    m_playedLast   = new QGraphicsSimpleTextItem( this );
     m_noTrack      = new QGraphicsSimpleTextItem( this );
     m_albumCover   = new QGraphicsPixmapItem    ( this );
-
+    m_byText       = new QGraphicsSimpleTextItem( i18nc( "What artist is this track by", "By" ), this );
+    m_onText       = new QGraphicsSimpleTextItem( i18nc( "What album is this track on", "On" ), this );
+    
     m_scoreIconBox      = new QGraphicsRectItem( this );
     m_numPlayedIconBox  = new QGraphicsRectItem( this );
     m_playedLastIconBox = new QGraphicsRectItem( this );
-
-    m_score->setToolTip( i18n( "Score:" ) );
-    m_numPlayed->setToolTip( i18n( "Play Count:" ) );
-    m_playedLast->setToolTip( i18nc("a single item (singular)", "Last Played:") );
-
+    
     m_scoreIconBox->setToolTip( i18n( "Score:" ) );
     m_numPlayedIconBox->setToolTip( i18n( "Play Count:" ) );
     m_playedLastIconBox->setToolTip( i18nc("a single item (singular)", "Last Played:") );
@@ -100,10 +96,7 @@ void CurrentTrack::init()
 
     m_title->setBrush( brush );
     m_artist->setBrush( brush );
-    m_album->setBrush( brush );
-    m_score->setBrush( brush );
-    m_numPlayed->setBrush( brush );
-    m_playedLast->setBrush( brush );
+    m_album->setBrush( brush );;
     m_noTrack->setBrush( brush );
 
     QFont bigFont( labelFont );
@@ -117,10 +110,6 @@ void CurrentTrack::init()
     m_artist->setFont( labelFont );
     m_album->setFont( labelFont );
     
-    m_score->setFont( tinyFont );
-    m_numPlayed->setFont( tinyFont );
-    m_playedLast->setFont( tinyFont );
-
     // get natural aspect ratio, so we can keep it on resize
     m_theme->resize();
     m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
@@ -131,6 +120,11 @@ void CurrentTrack::init()
     m_noTrack->setText( m_noTrackText );
     
     m_tabBar = new Plasma::TabBar( this );
+
+    m_margin = 7;
+    m_playCountLabel = i18n( "Play count" );
+    m_scoreLabel = i18n( "Score" );
+    m_lastPlayedLabel = i18n( "Last Played" );
 
     for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
     {
@@ -203,59 +197,76 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     /*if( constraints & Plasma::SizeConstraint )
          m_theme->resize(size().toSize());*/
 
-    //bah! do away with trying to get postions from an svg as this is proving wildly inaccurate
-    const qreal margin = 14.0;
-    const qreal albumWidth = size().toSize().height() - 2.0 * margin;
-    resizeCover( m_bigCover, margin, albumWidth );
-
-    const qreal labelX = albumWidth + margin + 14.0;
+    // these all used to be based on fancy calculatons based on the height
+    // guess what: the height is fixed. so that's a waste of hard-working gerbils
     const qreal labelWidth = 15;
-    const qreal textX = labelX + labelWidth + margin;
+    const qreal textHeight = 30;
+    const qreal albumWidth = 130;
 
-    const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 ) ;
-    const qreal textWidth = size().toSize().width() - ( textX + margin + 53 ); // add 53 to ensure room for small label + their text
     
-
-    // here we put all of the text items into the correct locations    
+    //const qreal textX = labelX + labelWidth + m_margin;
     
-    m_title->setPos( QPointF( textX, margin + 2 ) );
-    m_artist->setPos(  QPointF( textX, margin * 2 + textHeight + 2  ) );
-    m_album->setPos( QPointF( textX, margin * 3 + textHeight * 2.0 + 2 ) );
+    resizeCover( m_bigCover, m_margin, albumWidth );
 
+    const qreal textX =  m_albumCover->pos().x() +  m_albumCover->boundingRect().width() + 6.0;
+    const qreal textWidth = size().toSize().width() - ( textX + m_margin * 2  );
+    const qreal textY = m_albumCover->pos().y() + 20;
+
+    // calculate font sizes
+    const QFont textFont = QFont( QString(), 14, QFont::Bold );
+    QFont tinyFont( QString(), 9 );
+
+    QFontMetrics fm( textFont );
+    qreal lineSpacing = fm.height() + 7;
+    m_maxTextWidth = textWidth;
+    //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
+
+    m_title->setFont( textFont );
+    m_artist->setFont( textFont );
+    m_album->setFont( textFont );
+    m_byText->setFont( tinyFont );
+    m_onText->setFont( tinyFont );
+
+    // align to either the album or artist line, depending of "On" or "By" is longer in this current translation
+    // i10n makes things complicated :P
+    if( m_byText->boundingRect().width() > m_onText->boundingRect().width() )
+    { // align to location of on text
+        m_byText->setPos( textX, textY + lineSpacing );
+        m_artist->setPos( m_byText->pos().x() + m_byText->boundingRect().width() + 5, 0 );
+        alignBottomToFirst( m_byText, m_artist );
+        m_album->setPos( m_artist->pos().x(), 0 );
+        m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + 2 * lineSpacing );
+        alignBottomToFirst( m_onText, m_album );
+
+    } else // align to location/width of by text
+    {
+        m_onText->setPos( textX, textY + 2 * lineSpacing );
+        m_album->setPos( m_onText->pos().x() + m_onText->boundingRect().width() + 5, 0 );
+        alignBottomToFirst( m_onText, m_album );
+        m_artist->setPos( m_album->pos().x(), 0 );
+        m_byText->setPos( m_artist->pos().x() - m_byText->boundingRect().width() - 5, textY + lineSpacing );
+        alignBottomToFirst( m_byText, m_artist );
+    }
+    
+    m_title->setPos( m_artist->pos().x(), textY );
+
+    
+    /*
     const int addLabelOffset = contentsRect().width() - 25;
 
-    m_score->setPos( QPointF( addLabelOffset, margin + 2 ) );
-    m_numPlayed->setPos( QPointF( addLabelOffset, margin * 2 + textHeight + 2 ) );
-    m_playedLast->setPos( QPointF( addLabelOffset, margin * 3 + textHeight * 2.0 + 2 ) );
+    m_score->setPos( QPointF( addLabelOffset,m_margin + 2 ) );
+    m_numPlayed->setPos( QPointF( addLabelOffset,m_margin * 2 + textHeight + 2 ) );
+    m_playedLast->setPos( QPointF( addLabelOffset,m_margin * 3 + textHeight * 2.0 + 2 ) );
 
-    m_scoreIconBox->setRect( addLabelOffset - 25, margin, 25, 22 );
-    m_numPlayedIconBox->setRect( addLabelOffset - 25, margin * 2 + textHeight, 25, 22 );
-    m_playedLastIconBox->setRect( addLabelOffset - 25, margin * 3 + textHeight * 2.0, 25, 22 );
+    m_scoreIconBox->setRect( addLabelOffset - 25,m_margin, 25, 22 );
+    m_numPlayedIconBox->setRect( addLabelOffset - 25, m_margin * 2 + textHeight, 25, 22 );
+    m_playedLastIconBox->setRect( addLabelOffset - 25, m_margin * 3 + textHeight * 2.0, 25, 22 );
+    */
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     const QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
-
-    const QFont textFont = shrinkTextSizeToFit( title, QRectF( 0, 0, textWidth, textHeight ) );
-    const QFont labeFont = textFont;
-    QFont tinyFont( textFont );
-
-    if ( tinyFont.pointSize() > 7 )
-        tinyFont.setPointSize( tinyFont.pointSize() - 2 );
-    else
-        tinyFont.setPointSize( 5 );
-
-    m_maxTextWidth = textWidth;
-    //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
-    
-    m_title->setFont( textFont );
-    m_artist->setFont( textFont );
-    m_album->setFont( textFont );
-    
-    m_score->setFont( textFont );
-    m_numPlayed->setFont( textFont );
-    m_playedLast->setFont( textFont );
 
     m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
     m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
@@ -269,7 +280,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 #if 0
         m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
         QFontMetrics fm( m_tabBar->font() );
-        m_tabBar->resize( QSizeF( contentsRect().width() - margin * 2 - 2, m_tabBar->size().height() * 0.7 ) ); // Why is the height factor ignored?
+        m_tabBar->resize( QSizeF( contentsRect().width() - m_margin * 2 - 2, m_tabBar->size().height() * 0.7 ) ); // Why is the height factor ignored?
         m_tabBar->setPos( size().width() / 2 - m_tabBar->size().width() / 2 - 1, 10 );
 
         m_tabBar->show();
@@ -277,7 +288,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         
         for( int i = 0; i < m_tracksToShow; i++ )
         {
-            m_tracks[i]->resize( contentsRect().width() - margin * 2, textHeight * 1.2 );
+            m_tracks[i]->resize( contentsRect().width() - m_margin * 2, textHeight * 1.2 );
 
             // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
             //m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
@@ -291,15 +302,18 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
                        size().toSize().height() / 2  - 30 );
     }
 
-    m_ratingWidget->setMinimumSize( contentsRect().width() / 5, textHeight );
-    m_ratingWidget->setMaximumSize( contentsRect().width() / 5, textHeight );
+    m_ratingWidget->setMinimumSize( m_albumCover->boundingRect().width() + 10, textHeight );
+    m_ratingWidget->setMaximumSize( m_albumCover->boundingRect().width() + 10, textHeight );
     
-    //lets center this widget
+    //place directly below the albumcover, centered
+    const qreal x = m_albumCover->pos().x() - 5;
+    const qreal y = m_albumCover->pos().y() + m_albumCover->boundingRect().height() + 3;
+    m_ratingWidget->setPos( x, y );
+    
+    //const int availableSpace = contentsRect().width() - labelX;
+    //const int offsetX = ( availableSpace - ( contentsRect().width() / 5 ) ) / 2;
 
-    const int availableSpace = contentsRect().width() - labelX;
-    const int offsetX = ( availableSpace - ( contentsRect().width() / 5 ) ) / 2;
-
-    m_ratingWidget->setPos( labelX + offsetX, margin * 4.0 + textHeight * 3.0 - 5.0 );    
+    //m_ratingWidget->setPos( labelX + offsetX, m_margin * 4.0 + textHeight * 3.0 - 5.0 );
     
     dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
 }
@@ -379,9 +393,9 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_numPlayedIconBox->setVisible( false );
         m_playedLastIconBox->setVisible( false );
 
-        m_score->setText( QString() );
-        m_playedLast->setText( QString() );
-        m_numPlayed->setText( QString() );
+        m_score = QString();
+        m_playedLast = QString();
+        m_numPlayed = QString();
     }
     else
     {
@@ -390,16 +404,12 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_numPlayedIconBox->setVisible( true );
         m_playedLastIconBox->setVisible( true );
 
-        m_score->setText( score );
-        m_playedLast->setText( playedLast );
-        m_numPlayed->setText( numPlayed );
+        m_score = score ;
+        m_playedLast = playedLast;
+        m_numPlayed = numPlayed;
     }
     
     m_ratingWidget->setRating( m_rating );
-
-    m_score->setToolTip( i18n( "Score:" ) + ' ' + score );
-    m_numPlayed->setToolTip( i18n( "Playcount:" ) + ' ' + numPlayed );
-    m_playedLast->setToolTip( i18nc("a single item (singular)", "Last Played:") + ' ' + playedLastVerbose );
 
     m_scoreIconBox->setToolTip( i18n( "Score:" ) + ' ' + score );
     m_numPlayedIconBox->setToolTip( i18n( "Playcount:" ) + ' ' + numPlayed );
@@ -411,12 +421,13 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 //     m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
 
 
-    if( !resizeCover( m_bigCover, 14.0, size().toSize().height() - 28.0 ) )
+ /*   if( !resizeCover( m_bigCover, m_margin, size().toSize().height() - 28.0 ) )
     {
         warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
-    }
+    } */
     // without that the rating doesn't get update for a playing track
     update();
+    updateConstraints();
 }
 
 
@@ -426,7 +437,7 @@ CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
     Q_UNUSED( which )
 
     if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-        return QSizeF( constraint.width(), 150 );
+        return QSizeF( constraint.width(), 180 );
 //         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
 
     return constraint;
@@ -435,6 +446,7 @@ CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
+    p->setRenderHint( QPainter::Antialiasing );
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
@@ -480,12 +492,11 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
             m_tracks[i]->hide();
     }
     
-    const qreal margin = 14.0;
-    const qreal albumWidth = size().toSize().height() - 2.0 * margin;
+    const qreal albumWidth = size().toSize().height() - 2.0 * m_margin;
 
-    const qreal labelX = albumWidth + margin + 14.0;
+    const qreal labelX = albumWidth + m_margin + 14.0;
 
-    const qreal textHeight = ( ( size().toSize().height() - 3 * margin )  / 5.0 );
+    const qreal textHeight = ( ( size().toSize().height() - 3 * m_margin )  / 5.0 );
 
     p->save();
     
@@ -500,31 +511,104 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
     //don't paint this until we have something better looking that also works with non square covers
     /*if( track && track->album() && track->album()->hasImage() )
-        m_theme->paint( p, QRect( margin - 5, margin, albumWidth + 12, albumWidth ), "cd-box" );*/
-
-    const int lineSpacing = margin + textHeight;
-    const int line1Y = margin + 1;
-    const int line2Y = line1Y + lineSpacing;
-    const int line3Y = line2Y + lineSpacing;
-    
-    m_theme->paint( p, QRectF( labelX, line1Y, 23, 23 ), "track_png_23" );
-    m_theme->paint( p, QRectF( labelX, line2Y , 23, 23 ), "artist_png_23" );
-    m_theme->paint( p, QRectF( labelX, line3Y, 23, 23 ), "album_png_23" );
-
-
-    const int label2X = contentsRect.width() - 53;
-
-    if ( m_showStats )
-    {
-        m_theme->paint( p, QRectF( label2X, line1Y, 23, 23 ), "score_png_23" );
-        m_theme->paint( p, QRectF( label2X, line2Y, 23, 23 ), "times-played_png_23" );
-        m_theme->paint( p, QRectF( label2X, line3Y, 23, 23 ), "last-time_png_23" );
-    }
-
+        m_theme->paint( p, QRect( m_margin - 5, m_margin, albumWidth + 12, albumWidth ), "cd-box" );*/
     p->restore();
 
-    // TODO get, and then paint, album pixmap
-    // constraintsEvent();
+    // tint the whole applet
+    p->save();
+    // hack for now
+    QLinearGradient gradient( contentsRect.topLeft(), contentsRect.bottomLeft() );
+    QColor highlight = App::instance()->palette().highlight().color();
+    highlight.setAlpha( 40 );
+    gradient.setColorAt( 0, highlight );
+    highlight.setAlpha( 200 );
+    gradient.setColorAt( 1, highlight );
+    QPainterPath path;
+    path.addRoundedRect( contentsRect, 5, 5 );
+    p->fillPath( path, gradient );
+
+    p->restore();
+    
+    // draw border around ratingwidget
+    p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+    QColor fillColor( 255, 255, 255, 90 );
+    QRectF borderRect = m_ratingWidget->boundingRect();
+    borderRect.moveTo( m_ratingWidget->pos() ) ;
+    QPainterPath toFill;
+    toFill.addRoundedRect( borderRect, 5, 5 );
+    //p->fillPath( toFill, fillColor );
+    p->restore();
+
+    p->save();
+    qreal leftEdge = qMax( m_onText->pos().x(), m_byText->pos().x() );
+    QColor topColor( 255, 255, 255, 120 );
+    QColor bottomColor( 255, 255, 255, 90 );
+    // draw the complete outline. lots of little steps :)
+    // at each corner, leave a 6x6 box. draw a quad bezier curve from the two ends of the lines, through  the original corner
+    QPainterPath statsPath;
+    statsPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
+    statsPath.lineTo( leftEdge + m_maxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+    statsPath.quadTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                    leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+    statsPath.lineTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
+    statsPath.quadTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
+                    leftEdge + m_maxTextWidth - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
+    statsPath.lineTo( m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() ); // way bottom left corner
+    statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
+                    m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 );
+    statsPath.lineTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + 6 ); // top left of rating widget
+    statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y(),
+                    m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() );
+    statsPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // joining of two rects
+    statsPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
+                    leftEdge, m_ratingWidget->pos().y() - 6 );
+    statsPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // back to start
+    statsPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                    leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
+
+    p->fillPath( statsPath, bottomColor );
+    // draw just the overlay which is the "header" row, to emphasize that we have 2 rows here
+    QPainterPath headerPath;
+    headerPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
+    headerPath.lineTo( leftEdge + m_maxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+    headerPath.quadTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                    leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+    headerPath.lineTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y()  ); // middle of the right side
+    headerPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // join spot, before quad curve
+    headerPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
+                        leftEdge, m_ratingWidget->pos().y() - 6 );
+    headerPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // curve back through start
+    headerPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                       leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
+                       
+    p->fillPath( headerPath, topColor );
+    p->restore();
+
+    // draw label text
+    p->save();
+    // draw "Play count"
+    QRectF rect = QRectF(leftEdge, // align vertically with track info text
+                         m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
+                         m_maxTextWidth / 3,
+                         m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
+    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
+    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
+
+    rect = QRectF( leftEdge,
+                   m_ratingWidget->pos().y() + 3,
+                   m_maxTextWidth / 3,
+                   m_ratingWidget->boundingRect().height() - 4 );
+    p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
+    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
+    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
+    p->restore();
+
 }
 
 void CurrentTrack::showConfigurationInterface()
@@ -548,20 +632,22 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
         qreal size = width;
         qreal pixmapRatio = (qreal)cover.width()/size;
 
-        qreal moveByX = 0.0;
+        // offset it by 20 so there is room for the ratings underneath to the left
+        qreal moveByX = 10.0;
         qreal moveByY = 0.0;
 
         //center the cover : if the cover is not squared, we get the missing pixels and center
         if( cover.height()/pixmapRatio > width )
         {
             cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
-            moveByX = qAbs( cover.rect().width() - cover.rect().height() ) / 2.0;
+            moveByX += qAbs( cover.rect().width() - cover.rect().height() ) / 2.0;
         }
         else
         {
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
-            moveByY = qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
+            moveByY += qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
         }
+        debug() << "placing album at X:" << margin << "+" << moveByX << " and Y:" << margin << moveByY;
         m_albumCover->setPos( margin + moveByX, margin + moveByY );
 //         m_sourceEmblem->setPos( margin + moveByX, margin + moveByY );
 
@@ -583,9 +669,6 @@ void CurrentTrack::paletteChanged( const QPalette & palette )
     m_title->setBrush( palette.text() );
     m_artist->setBrush( palette.text() );
     m_album->setBrush( palette.text() );
-    m_score->setBrush( palette.text() );
-    m_numPlayed->setBrush( palette.text() );
-    m_playedLast->setBrush( palette.text() );
     m_noTrack->setBrush( palette.text() );
 }
 
@@ -608,6 +691,16 @@ CurrentTrack::tabChanged( int index )
     for( i = 0; i < m_tracksToShow; i++ )
         m_tracks[i]->show();
     
+}
+
+
+void
+CurrentTrack::alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b )
+{
+    qreal guideY = a->pos().y() + a->boundingRect().height();
+    qreal newY = guideY - b->boundingRect().height() + 1; // just a bit off for some reason (when used w/ text)
+    b->setPos( b->x(), newY );
+
 }
 
 #include "CurrentTrack.moc"

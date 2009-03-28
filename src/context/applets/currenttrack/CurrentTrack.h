@@ -69,6 +69,11 @@ private slots:
 private:
     QList<QAction*> contextualActions();
 
+    bool resizeCover( QPixmap cover, qreal margin, qreal width );
+
+    // aligns the second QGI to be at the same level as the first (the bottom edges)
+    void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
+    
     QHBoxLayout* m_configLayout;
     QSpinBox* m_spinWidth;
     int m_width;
@@ -77,20 +82,12 @@ private:
 
     Context::Svg* m_theme;
 
-    QGraphicsSimpleTextItem* m_titleLabel;
-    QGraphicsSimpleTextItem* m_artistLabel;
-    QGraphicsSimpleTextItem* m_albumLabel;
-    QGraphicsPixmapItem* m_scoreLabel;
-    QGraphicsPixmapItem* m_numPlayedLabel;
-    QGraphicsPixmapItem* m_playedLastLabel;
-
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;
     QGraphicsSimpleTextItem* m_album;
-    QGraphicsSimpleTextItem* m_score;
-    QGraphicsSimpleTextItem* m_numPlayed;
-    QGraphicsSimpleTextItem* m_playedLast;
     QGraphicsSimpleTextItem* m_noTrack;
+    QGraphicsSimpleTextItem* m_byText;;
+    QGraphicsSimpleTextItem* m_onText;
 
     QGraphicsRectItem* m_scoreIconBox;
     QGraphicsRectItem* m_numPlayedIconBox;
@@ -107,10 +104,15 @@ private:
     RatingWidget* m_ratingWidget;
 
     QString m_noTrackText;
-
-    bool resizeCover( QPixmap cover, qreal margin, qreal width );
+    QString m_playCountLabel;
+    QString m_scoreLabel;
+    QString m_lastPlayedLabel;
+    QString m_score;
+    QString m_numPlayed;
+    QString m_playedLast;
 
     int m_maxTextWidth;
+    qreal m_margin;
 
 
     //keep this safe as we might need it when resizing
