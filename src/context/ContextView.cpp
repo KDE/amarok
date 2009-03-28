@@ -144,8 +144,6 @@ void ContextView::clear()
 
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
-    Q_UNUSED( oldState );
-    Q_UNUSED( state );
     DEBUG_BLOCK
     /*
     if( state == Phonon::PlayingState )
@@ -153,7 +151,7 @@ void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldStat
     else if( state == Phonon::StoppedState )
         debug() << "got state change to stopped"; 
     */    
-    if( state == Phonon::PlayingState )
+    if( state == Phonon::PlayingState && oldState != Phonon::PausedState )
         messageNotify( Current );
     else if( state == Phonon::StoppedState )
         messageNotify( Home );
