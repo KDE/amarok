@@ -102,6 +102,14 @@ private:
 
     // holds what is currently being shown
     ContextState m_curState;
+
+    //it seems we get a Phonon::PausedState before whe actually really start to play
+    //anything. Because we generally dont want to update the context view when moving from
+    //Paused to Playing state, this causes the CV to not get updated when starting Amarok
+    //with a track being resumed (Resume playback enabled in the options). To avoid this,
+     //we always kick the cv on the first play state we recieve, irregardless if the
+     //previous state was Paused.
+    bool m_firstPlayingState;
 };
 
 } // Context namespace

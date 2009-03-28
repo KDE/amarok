@@ -43,6 +43,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     : Plasma::View( cont, parent )
     , EngineObserver( The::engineController() )
     , m_curState( Home )
+    , m_firstPlayingState( true )
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
@@ -145,14 +146,27 @@ void ContextView::clear()
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     DEBUG_BLOCK
-    /*
+
+    /*if( oldState == Phonon::PlayingState )
+        debug() << "got state change from playing: state";
+    else if( oldState == Phonon::StoppedState )
+        debug() << "got state change from stopped";
+    else if( oldState == Phonon::PausedState )
+        debug() << "got state change from paused";
+            
     if( state == Phonon::PlayingState )
         debug() << "got state change to playing: state";
     else if( state == Phonon::StoppedState )
-        debug() << "got state change to stopped"; 
-    */    
-    if( state == Phonon::PlayingState && oldState != Phonon::PausedState )
+        debug() << "got state change to stopped";
+    else if( state == Phonon::PausedState )
+        debug() << "got state change to paused";
+    */
+    
+    if( state == Phonon::PlayingState && ( oldState != Phonon::PausedState || m_firstPlayingState ) )
+    {
         messageNotify( Current );
+        m_firstPlayingState = false;
+    }
     else if( state == Phonon::StoppedState )
         messageNotify( Home );
 }
