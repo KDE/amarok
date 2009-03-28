@@ -119,6 +119,8 @@ VERSION 2.1-beta1
       success.
 
   BUGFIXES:
+    * Fix tracks with some identical tags being detected as dupes and not
+      getting copied onto MTP device.
     * Fix invisible and unintuitive selection in the playlist after deleting
       one or more tracks. (BR 187871)
     * Prevent playlist from showing a wrong playing song after adding tracks
