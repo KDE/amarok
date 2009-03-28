@@ -209,7 +209,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     resizeCover( m_bigCover, m_margin, albumWidth );
 
     const qreal textX =  m_albumCover->pos().x() +  m_albumCover->boundingRect().width() + 6.0;
-    const qreal textWidth = size().toSize().width() - ( textX + m_margin * 2  );
+    const qreal textWidth = size().toSize().width() - ( textX + m_margin * 2 + 23 );
     const qreal textY = m_albumCover->pos().y() + 20;
 
     // calculate font sizes
@@ -219,7 +219,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     QFontMetrics fm( textFont );
     qreal lineSpacing = fm.height() + 7;
     m_maxTextWidth = textWidth;
-    //m_maxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
+    //localMaxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
 
     m_title->setFont( textFont );
     m_artist->setFont( textFont );
@@ -542,18 +542,19 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
     p->save();
     qreal leftEdge = qMax( m_onText->pos().x(), m_byText->pos().x() );
+    qreal localMaxTextWidth = m_maxTextWidth + qMax( m_onText->boundingRect().width(), m_byText->boundingRect().width() ) + 5;
     QColor topColor( 255, 255, 255, 120 );
     QColor bottomColor( 255, 255, 255, 90 );
     // draw the complete outline. lots of little steps :)
     // at each corner, leave a 6x6 box. draw a quad bezier curve from the two ends of the lines, through  the original corner
     QPainterPath statsPath;
     statsPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-    statsPath.lineTo( leftEdge + m_maxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-    statsPath.quadTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                    leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-    statsPath.lineTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
-    statsPath.quadTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
-                    leftEdge + m_maxTextWidth - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
+    statsPath.lineTo( leftEdge + localMaxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+    statsPath.quadTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                    leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+    statsPath.lineTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
+    statsPath.quadTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
+                    leftEdge + localMaxTextWidth - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
     statsPath.lineTo( m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() ); // way bottom left corner
     statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
                     m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 );
@@ -571,10 +572,10 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     // draw just the overlay which is the "header" row, to emphasize that we have 2 rows here
     QPainterPath headerPath;
     headerPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-    headerPath.lineTo( leftEdge + m_maxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-    headerPath.quadTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                    leftEdge + m_maxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-    headerPath.lineTo( leftEdge + m_maxTextWidth, m_ratingWidget->pos().y()  ); // middle of the right side
+    headerPath.lineTo( leftEdge + localMaxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+    headerPath.quadTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                    leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+    headerPath.lineTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y()  ); // middle of the right side
     headerPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // join spot, before quad curve
     headerPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
                         leftEdge, m_ratingWidget->pos().y() - 6 );
@@ -590,22 +591,22 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     // draw "Play count"
     QRectF rect = QRectF(leftEdge, // align vertically with track info text
                          m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
-                         m_maxTextWidth / 3,
+                         localMaxTextWidth / 3,
                          m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
-    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
-    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
 
     rect = QRectF( leftEdge,
                    m_ratingWidget->pos().y() + 3,
-                   m_maxTextWidth / 3,
+                   localMaxTextWidth / 3,
                    m_ratingWidget->boundingRect().height() - 4 );
     p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
-    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
-    rect.moveLeft( rect.topLeft().x() + m_maxTextWidth / 3 );
+    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
     p->restore();
 
