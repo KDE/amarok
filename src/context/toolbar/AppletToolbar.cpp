@@ -71,6 +71,7 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     painter->save();
 
     QPalette p;
+    painter->fillRect( boundingRect(), p.brush( QPalette::Window ) ); // remove white edges behind the toolbar
     painter->setRenderHint( QPainter::Antialiasing );
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
     QColor highlight = Amarok::highlightColor();
