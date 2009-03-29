@@ -385,7 +385,7 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
     m_bigCover = data[ "albumart" ].value<QPixmap>();
-//     m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
+    m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
 
 
  /*   if( !resizeCover( m_bigCover, m_margin, size().toSize().height() - 28.0 ) )
@@ -566,7 +566,18 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
     p->restore();
-
+    
+    // draw source emblem
+    if( !m_sourceEmblemPixmap.isNull() )
+    {
+        p->save();
+        QRectF target = QRectF( contentsRect.topRight().x() - m_sourceEmblemPixmap.rect().width() + m_margin, 
+                                m_sourceEmblemPixmap.rect().height() + m_margin,
+                                m_sourceEmblemPixmap.rect().width(),
+                                m_sourceEmblemPixmap.rect().height() );
+        p->drawPixmap( target, m_sourceEmblemPixmap, m_sourceEmblemPixmap.rect() );
+        p->restore();
+    }
 }
 
 void CurrentTrack::showConfigurationInterface()
@@ -604,15 +615,13 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
             moveByY += qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
         }
         debug() << "placing album at X:" << margin << "+" << moveByX << " and Y:" << margin << moveByY;
-        m_albumCover->setPos( margin + moveByX, margin + moveByY );
-//         m_sourceEmblem->setPos( margin + moveByX, margin + moveByY );
+        m_albumCover->setPos( margin + moveByX, margin + moveByY );       
 
 
         QPixmap coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, m_album->text(), true );
 
         
         m_albumCover->setPixmap( coverWithBorders );
-//         m_sourceEmblem->setPixmap( m_sourceEmblemPixmap );
         return true;
     }
     return false;

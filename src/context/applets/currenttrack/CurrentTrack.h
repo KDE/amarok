@@ -82,7 +82,6 @@ private:
     int m_trackLength;
 
     QGraphicsPixmapItem* m_albumCover;
-    QGraphicsPixmapItem* m_sourceEmblem;
     QPixmap m_bigCover;
     QPixmap m_sourceEmblemPixmap;
 
