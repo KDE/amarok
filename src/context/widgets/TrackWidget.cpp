@@ -117,7 +117,7 @@ TrackWidget::show()
     if( m_track )
     {
         const QString playedLast = Amarok::verboseTimeSince( m_track->lastPlayed() );
-        const QString fullText( i18n( "%1 - %2 ( %3 )", m_track->artist()->prettyName(), m_track->prettyName(), playedLast ) );
+        const QString fullText( i18n( "%1 - %2 (%3)", m_track->artist()->prettyName(), m_track->prettyName(), playedLast ) );
         const QFontMetricsF fm( font() );
 
         int rightMargin = m_scoreLabel->boundingRect().width() + m_scoreText->boundingRect().width() + \

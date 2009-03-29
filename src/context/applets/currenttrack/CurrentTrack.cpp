@@ -118,6 +118,10 @@ void CurrentTrack::init()
 
     // completely arbitrary yet necessary to kick start the layout before the user acts and resizes manually
     resize( 500, .75 );
+
+    // hide the items while we startup. as soon as the query is done, they'll be shown.
+    foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
+        childItem->hide();
 }
 
 void
