@@ -571,11 +571,9 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     if( !m_sourceEmblemPixmap.isNull() )
     {
         p->save();
-        QRectF target = QRectF( contentsRect.topRight().x() - m_sourceEmblemPixmap.rect().width() + m_margin, 
-                                m_sourceEmblemPixmap.rect().height() + m_margin,
-                                m_sourceEmblemPixmap.rect().width(),
-                                m_sourceEmblemPixmap.rect().height() );
-        p->drawPixmap( target, m_sourceEmblemPixmap, m_sourceEmblemPixmap.rect() );
+        p->drawPixmap(contentsRect.topRight().x() - m_sourceEmblemPixmap.rect().width() - m_margin,
+                      m_margin,
+                      m_sourceEmblemPixmap );
         p->restore();
     }
 }
