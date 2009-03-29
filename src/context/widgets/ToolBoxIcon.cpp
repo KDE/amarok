@@ -86,6 +86,7 @@ ToolBoxIcon::mousePressed( bool pressed )
 void
 ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
+    painter->setRenderHint( QPainter::Antialiasing );
     if( Plasma::IconWidget::drawBackground() )
     {
         if( m_text->text().isEmpty() )

@@ -86,6 +86,7 @@ TrackWidget::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 void
 TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
+    painter->setRenderHint( QPainter::Antialiasing );
     int ratingXPos = contentsRect().width() - PADDING - m_rating->size().width();
     m_rating->setPos( ratingXPos, contentsRect().height() / 2 - m_rating->size().height() / 2 - 2 );
     m_rating->setMinimumSize( contentsRect().width() / 5, contentsRect().height() - PADDING );
