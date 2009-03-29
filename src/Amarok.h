@@ -22,20 +22,19 @@
 #include "amarok_export.h"
 
 #include <KActionCollection>
-#include <KApplication>
 #include <KConfig>
 #include <KIO/NetAccess>
 #include <KUrl> // recursiveUrlExpand
 
-#include <QColor>
-#include <QPalette>
 #include <QPointer>
 
+class QColor;
 class QDateTime;
 class QEvent;
 class QMutex;
 class QPixmap;
 class QWidget;
+
 namespace KIO { class Job; }
 
 namespace Amarok
@@ -261,20 +260,11 @@ namespace Amarok
      */
     AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
 
-
     /**
      * Returns the highlight color which should be used instead of the color from KDE.
      * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
      */
-    inline QColor highlightColor()
-    {          
-        QColor highlight( kapp->palette().highlight().color() );
-        qreal saturation = highlight.saturation();
-        saturation *= 0.3; 
-        highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF() );
-
-        return highlight;
-    }
+    AMAROK_EXPORT QColor highlightColor();  //defined in App.cpp
 
 }
 
