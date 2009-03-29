@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2004-2005 Max Howell <max.howell@methylblue.com>
+    Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,13 +22,15 @@
 #include "amarok_export.h"
 
 #include <KActionCollection>
+#include <KApplication>
 #include <KConfig>
 #include <KIO/NetAccess>
 #include <KUrl> // recursiveUrlExpand
 
+#include <QColor>
+#include <QPalette>
 #include <QPointer>
 
-class QColor;
 class QDateTime;
 class QEvent;
 class QMutex;
@@ -257,6 +260,22 @@ namespace Amarok
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
     AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
+
+
+    /**
+     * Returns the highlight color which should be used instead of the color from KDE.
+     * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
+     */
+    inline QColor highlightColor()
+    {          
+        QColor highlight( kapp->palette().highlight().color() );
+        qreal saturation = highlight.saturation();
+        saturation *= 0.3; 
+        highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF() );
+
+        return highlight;
+    }
+
 }
 
 

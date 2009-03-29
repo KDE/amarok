@@ -13,6 +13,7 @@
 
 #include "AppletToolbar.h"
 
+#include "Amarok.h"
 #include "App.h"
 #include "AppletItemOverlay.h"
 #include "AppletToolbarAddItem.h"
@@ -72,7 +73,7 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     QPalette p;
     painter->setRenderHint( QPainter::Antialiasing );
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = App::instance()->palette().highlight().color();
+    QColor highlight = Amarok::highlightColor();
     highlight.setAlpha( 100 );
     gradient.setColorAt( 0, highlight );
     highlight.setAlpha( 160 );

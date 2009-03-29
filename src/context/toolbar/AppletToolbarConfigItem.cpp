@@ -13,6 +13,7 @@
 
 #include "AppletToolbarConfigItem.h"
 
+#include "Amarok.h"
 #include "App.h"
 
 #include <plasma/widgets/iconwidget.h>
@@ -64,7 +65,7 @@ Context::AppletToolbarConfigItem::paint( QPainter *painter, const QStyleOptionGr
 
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( App::instance()->palette().highlight().color() );
+    QColor fillColor( Amarok::highlightColor() );
     fillColor.setAlpha( 140 );
     QPainterPath fillPath;
     fillPath.addRoundedRect( boundingRect(), 5, 5 );
