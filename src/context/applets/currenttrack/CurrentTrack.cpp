@@ -44,6 +44,8 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_showStats( true )
 {
     setHasConfigurationInterface( false );
+    setConfigurationRequired( false );
+    setBackgroundHints( Plasma::Applet::NoBackground );
   
 }
 
@@ -412,15 +414,14 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
     // tint the whole applet
     p->save();
-    // hack for now
-    QLinearGradient gradient( contentsRect.topLeft(), contentsRect.bottomLeft() );
+    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
     QColor highlight = App::instance()->palette().highlight().color();
     highlight.setAlpha( 40 );
     gradient.setColorAt( 0, highlight );
     highlight.setAlpha( 200 );
     gradient.setColorAt( 1, highlight );
     QPainterPath path;
-    path.addRoundedRect( contentsRect, 5, 5 );
+    path.addRoundedRect( boundingRect(), 5, 5 );
     p->fillPath( path, gradient );
 
     p->restore();
