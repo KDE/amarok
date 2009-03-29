@@ -69,8 +69,8 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
     private:
         Meta::TrackPtr m_track;
         RatingWidget *m_rating;
-        Plasma::IconWidget *m_scoreIcon;
         QGraphicsSimpleTextItem *m_scoreText;
+        QGraphicsSimpleTextItem *m_scoreLabel;
 };
 
 #endif

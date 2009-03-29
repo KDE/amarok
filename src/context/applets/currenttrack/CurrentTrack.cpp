@@ -251,7 +251,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     
     if( !m_lastTracks.isEmpty() )
     {                
-        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight * 1.2 ) ) );
+        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight ) ) );
 
         // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
 #if 0
@@ -265,11 +265,11 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         
         for( int i = 0; i < m_tracksToShow; i++ )
         {
-            m_tracks[i]->resize( contentsRect().width() - m_margin * 2, textHeight * 1.2 );
+            m_tracks[i]->resize( contentsRect().width() - m_margin * 2, textHeight * .8 );
 
             // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
             //m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
-            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 10 );
+            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, ( textHeight * .8 + m_margin / 2 ) * i + 25 );
         }
     }        
     else if( !m_noTrackText.isEmpty() )

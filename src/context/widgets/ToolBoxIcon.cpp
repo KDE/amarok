@@ -14,6 +14,7 @@
 
 #include "ToolBoxIcon.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 
 #include <plasma/animator.h>
@@ -38,13 +39,11 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     m_text->setCursor( Qt::ArrowCursor ); // Don't show the carot, the text isn't editable.
 
     QFont font;
-    font.setBold( true );
-    font.setStyleHint( QFont::Times );
+    font.setBold( false );
     font.setPointSize( font.pointSize() - 2 );
     font.setStyleStrategy( QFont::PreferAntialias );
     
     m_text->setFont( font );
-    m_text->setBrush( Qt::white );
     m_text->show();
 }
 
@@ -96,23 +95,26 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         m_text->setPos( PADDING, size().height() / 2 - fm.boundingRect( m_text->text() ).height() / 2 );
         painter->save();
         
-        QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,
-                               Plasma::Theme::defaultTheme()->colorScheme() ).background().color();
-
-        painter->setBrush( color );
-        painter->setRenderHint( QPainter::Antialiasing );                        
+       // QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,
+       //                        Plasma::Theme::defaultTheme()->colorScheme() ).background().color();
         painter->setOpacity( m_animOpacity );
-        painter->setPen( QPen( Qt::gray, 1 ) );
-        painter->drawPath( shape() );
-        painter->restore();
 
-        painter->save();
-        painter->setRenderHint( QPainter::Antialiasing );
-        painter->setPen( QPen( Qt::white, 2 ) );
-        QSize innerRectSize(  size().width() - 7, size().height() - 7 );
-        QPainterPath innerRect( Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 2.5, 2.5 ), innerRectSize ), 8 ) );
-        painter->drawPath( innerRect );
-        painter->restore();
+       QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
+       QColor highlight = Amarok::highlightColor();
+       highlight.setAlpha( 120 );
+       gradient.setColorAt( 0, highlight );
+       highlight.setAlpha( 200 );
+       gradient.setColorAt( 1, highlight );
+       QPainterPath path;
+       path.addRoundedRect( boundingRect(), 5, 5 );
+       painter->fillPath( path, gradient );
+       painter->restore();
+
+       // draw border
+       painter->save();
+       painter->setPen( Amarok::highlightColor().darker( 150 ) );
+       painter->drawRoundedRect( boundingRect(), 5, 5 );
+       painter->restore();
     }
     else
         Plasma::IconWidget::paint( painter, option, widget );
@@ -188,6 +190,11 @@ ToolBoxIcon::text() const
     return m_text->text();
 }
 
+void
+ToolBoxIcon::setBrush( const QBrush& b )
+{
+    m_text->setBrush( b );
+}
 
 #include "ToolBoxIcon.moc"
 

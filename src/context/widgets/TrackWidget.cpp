@@ -32,23 +32,25 @@ TrackWidget::TrackWidget( QGraphicsItem *parent )
     , m_track( 0 )
     , m_rating( new RatingWidget( this ) )
 {
-    m_scoreIcon = new Plasma::IconWidget( KIcon( "emblem-favorite" ), "", this );
-    m_scoreIcon->setDrawBackground( false );
-    m_scoreIcon->resize( 14, 14 );
-    m_scoreIcon->setToolTip( i18n( "Score" ) );
-
+    m_scoreLabel = new QGraphicsSimpleTextItem( i18nc( "Score of a track", "Score:" ), this );
+    
     m_scoreText = new QGraphicsSimpleTextItem( this );
     m_scoreText->setCursor( Qt::ArrowCursor );
     
     QFont font;
-    font.setBold( true );
-    font.setStyleHint( QFont::Times );
+    font.setBold( false );
     font.setPointSize( font.pointSize() - 2 );
     font.setStyleStrategy( QFont::PreferAntialias );
 
     m_scoreText->setFont( font );
-    m_scoreText->setBrush( Qt::white );
+    m_scoreText->setBrush( Amarok::highlightColor().darker( 200 ) );
     m_scoreText->show();
+
+    m_scoreLabel->setFont( font );
+    m_scoreLabel->setBrush( Amarok::highlightColor().darker( 150 ) );
+    m_scoreLabel->show();
+
+    setBrush( Amarok::highlightColor().darker( 200 ) );
     
     setDrawBackground( true );
     m_rating->setSpacing( 2 );
@@ -89,11 +91,11 @@ TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     m_rating->setMinimumSize( contentsRect().width() / 5, contentsRect().height() - PADDING );
     m_rating->setMaximumSize( contentsRect().width() / 5, contentsRect().height() - PADDING );
 
+    QFontMetrics fm( m_scoreText->font() );
     m_scoreText->setPos( ratingXPos - m_scoreText->boundingRect().width() - PADDING,
-                         contentsRect().height() / 2 - m_scoreText->boundingRect().height() / 2 - 2 );
-
-    m_scoreIcon->setPos( ratingXPos - m_scoreIcon->boundingRect().width() - m_scoreText->boundingRect().width() - PADDING,
-                         contentsRect().height() / 2 - m_scoreIcon->boundingRect().height() / 2 - 2 );
+                         boundingRect().height() / 2 - fm.boundingRect( m_scoreText->text() ).height() / 2 );
+    m_scoreLabel->setPos( m_scoreText->pos().x() - m_scoreLabel->boundingRect().width() - PADDING,
+                          boundingRect().height() / 2 - fm.boundingRect( m_scoreLabel->text() ).height() / 2 );
     
 
     ToolBoxIcon::paint( painter, option, widget );
@@ -117,7 +119,7 @@ TrackWidget::show()
         const QString fullText( i18n( "%1 - %2 ( %3 )", m_track->artist()->prettyName(), m_track->prettyName(), playedLast ) );
         const QFontMetricsF fm( font() );
 
-        int rightMargin = m_scoreIcon->boundingRect().width() + m_scoreText->boundingRect().width() + \
+        int rightMargin = m_scoreLabel->boundingRect().width() + m_scoreText->boundingRect().width() + \
                             m_rating->size().width() + PADDING;
 
         setText( fm.elidedText( fullText, Qt::ElideRight, contentsRect().width() - rightMargin ) );

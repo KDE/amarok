@@ -46,6 +46,8 @@ public:
     void setText( const QString &text );
 
     QString text() const;
+
+    void setBrush( const QBrush& );
     
 protected:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
