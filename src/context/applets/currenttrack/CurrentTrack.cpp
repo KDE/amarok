@@ -209,12 +209,12 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         m_artist->setPos( m_byText->pos().x() + m_byText->boundingRect().width() + 5, 0 );
         alignBottomToFirst( m_byText, m_artist );
         m_album->setPos( m_artist->pos().x(), 0 );
-        m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + 2 * lineSpacing );
+        m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + fm.height() + lineSpacing );
         alignBottomToFirst( m_onText, m_album );
 
     } else // align to location/width of by text
     {
-        m_onText->setPos( textX, textY + 2 * lineSpacing );
+        m_onText->setPos( textX, textY + fm.height() + lineSpacing );
         m_album->setPos( m_onText->pos().x() + m_onText->boundingRect().width() + 5, 0 );
         alignBottomToFirst( m_onText, m_album );
         m_artist->setPos( m_album->pos().x(), 0 );
