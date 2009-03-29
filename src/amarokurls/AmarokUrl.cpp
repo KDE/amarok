@@ -27,6 +27,8 @@
 
 #include "AmarokUrlHandler.h"
 
+#include <QUrl>
+
 AmarokUrl::AmarokUrl()
     : m_id( -1 )
     , m_parent( 0 )
@@ -131,6 +133,10 @@ QString AmarokUrl::url()
         url += '/';
         url += field;
     }
+
+    //escape it
+    url = url.replace( " ", "%20" );
+    url = url.replace( "\"", "%22" );
 
     return url;
 }
