@@ -59,10 +59,12 @@ VERSION 2.1-beta1
     * Replay Gain support for most file formats that Amarok can read tags from.
       Reading Replay Gain tags from MP4 files requires libMP4v2.  Musepack
       (MPC) files are unsupported due to a limitation of TagLib.
+    * Bookmark Manager applet allowing for the creation, browsing, ordering and
+      deletion of Amarok urls of different kinds. (BR 173512)
     * Amarok urls. Amarok can now load and generate "amarok urls" that allows
       any "view" to be bookmarked and later retrieved. A protocol handler is
       also installed that will launch amarok into the correct state, or make
-      amarok show the correct view if already running if such a url is
+      amarok show the correct view, if already running, when such a url is
       activated system wide.
     * Customizable playlist layouts. The playlist is now rendered according to
       an xml layout, allowing the playlist to assume a variety of different
