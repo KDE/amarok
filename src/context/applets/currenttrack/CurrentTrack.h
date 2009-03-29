@@ -17,7 +17,6 @@
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include "context/Svg.h"
 #include <context/widgets/TrackWidget.h>
 #include <meta/Meta.h>
 
@@ -70,17 +69,8 @@ private:
     QList<QAction*> contextualActions();
 
     bool resizeCover( QPixmap cover, qreal margin, qreal width );
-
     // aligns the second QGI to be at the same level as the first (the bottom edges)
     void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
-    
-    QHBoxLayout* m_configLayout;
-    QSpinBox* m_spinWidth;
-    int m_width;
-
-    qreal m_aspectRatio;
-
-    Context::Svg* m_theme;
 
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;
@@ -88,11 +78,6 @@ private:
     QGraphicsSimpleTextItem* m_noTrack;
     QGraphicsSimpleTextItem* m_byText;;
     QGraphicsSimpleTextItem* m_onText;
-
-    QGraphicsRectItem* m_scoreIconBox;
-    QGraphicsRectItem* m_numPlayedIconBox;
-    QGraphicsRectItem* m_playedLastIconBox;
-
     int m_rating;
     int m_trackLength;
 

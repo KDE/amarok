@@ -37,9 +37,6 @@
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_configLayout( 0 )
-    , m_width( 0 )
-    , m_aspectRatio( 0.0 )
     , m_rating( -1 )
     , m_trackLength( 0 )
     , m_tracksToShow( 0 )
@@ -57,12 +54,6 @@ void CurrentTrack::init()
 {
     DEBUG_BLOCK
 
-    m_theme = new Context::Svg( this );
-    m_theme->setImagePath( "widgets/amarok-currenttrack" );
-    m_theme->setContainsMultipleImages( true );
- 
-    m_width = globalConfig().readEntry( "width", 500 );
-
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 1  );
 
@@ -78,19 +69,6 @@ void CurrentTrack::init()
     m_albumCover   = new QGraphicsPixmapItem    ( this );
     m_byText       = new QGraphicsSimpleTextItem( i18nc( "What artist is this track by", "By" ), this );
     m_onText       = new QGraphicsSimpleTextItem( i18nc( "What album is this track on", "On" ), this );
-    
-    m_scoreIconBox      = new QGraphicsRectItem( this );
-    m_numPlayedIconBox  = new QGraphicsRectItem( this );
-    m_playedLastIconBox = new QGraphicsRectItem( this );
-    
-    m_scoreIconBox->setToolTip( i18n( "Score:" ) );
-    m_numPlayedIconBox->setToolTip( i18n( "Play Count:" ) );
-    m_playedLastIconBox->setToolTip( i18nc("a single item (singular)", "Last Played:") );
-
-    m_scoreIconBox->setPen( QPen( Qt::NoPen ) );
-    m_numPlayedIconBox->setPen( QPen( Qt::NoPen ) );
-    m_playedLastIconBox->setPen( QPen( Qt::NoPen ) );
-    
 
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
 
@@ -109,11 +87,6 @@ void CurrentTrack::init()
     m_title->setFont( labelFont );
     m_artist->setFont( labelFont );
     m_album->setFont( labelFont );
-    
-    // get natural aspect ratio, so we can keep it on resize
-    m_theme->resize();
-    m_aspectRatio = (qreal)m_theme->size().height() / (qreal)m_theme->size().width();
-    resize( m_width, m_aspectRatio );
     
     m_noTrackText = i18n( "No track playing" );
     m_noTrack->hide();
@@ -140,6 +113,9 @@ void CurrentTrack::init()
     connect( m_tabBar, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+
+    // completely arbitrary yet necessary to kick start the layout before the user acts and resizes manually
+    resize( 500, .75 );
 }
 
 void
@@ -194,12 +170,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
 
-    /*if( constraints & Plasma::SizeConstraint )
-         m_theme->resize(size().toSize());*/
-
     // these all used to be based on fancy calculatons based on the height
     // guess what: the height is fixed. so that's a waste of hard-working gerbils
-    const qreal labelWidth = 15;
     const qreal textHeight = 30;
     const qreal albumWidth = 130;
 
@@ -315,7 +287,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     //m_ratingWidget->setPos( labelX + offsetX, m_margin * 4.0 + textHeight * 3.0 - 5.0 );
     
-    dataEngine( "amarok-current" )->setProperty( "coverWidth", m_theme->elementRect( "albumart" ).size().width() );
+    dataEngine( "amarok-current" )->setProperty( "coverWidth", albumWidth );
 }
 
 void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -389,9 +361,6 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
          m_currentInfo[ Meta::Field::SCORE ].toInt() == 0 )
     {
         m_showStats = false;
-        m_scoreIconBox->setVisible( false );
-        m_numPlayedIconBox->setVisible( false );
-        m_playedLastIconBox->setVisible( false );
 
         m_score = QString();
         m_playedLast = QString();
@@ -400,9 +369,6 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else
     {
         m_showStats = true;
-        m_scoreIconBox->setVisible( true );
-        m_numPlayedIconBox->setVisible( true );
-        m_playedLastIconBox->setVisible( true );
 
         m_score = score ;
         m_playedLast = playedLast;
@@ -410,10 +376,6 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
     
     m_ratingWidget->setRating( m_rating );
-
-    m_scoreIconBox->setToolTip( i18n( "Score:" ) + ' ' + score );
-    m_numPlayedIconBox->setToolTip( i18n( "Playcount:" ) + ' ' + numPlayed );
-    m_playedLastIconBox->setToolTip( i18nc("a single item (singular)", "Last Played:") + ' ' + playedLastVerbose );
 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
@@ -448,6 +410,21 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     Q_UNUSED( option );
     p->setRenderHint( QPainter::Antialiasing );
 
+    // tint the whole applet
+    p->save();
+    // hack for now
+    QLinearGradient gradient( contentsRect.topLeft(), contentsRect.bottomLeft() );
+    QColor highlight = App::instance()->palette().highlight().color();
+    highlight.setAlpha( 40 );
+    gradient.setColorAt( 0, highlight );
+    highlight.setAlpha( 200 );
+    gradient.setColorAt( 1, highlight );
+    QPainterPath path;
+    path.addRoundedRect( contentsRect, 5, 5 );
+    p->fillPath( path, gradient );
+
+    p->restore();
+    
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
     if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
@@ -492,12 +469,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
             m_tracks[i]->hide();
     }
     
-    const qreal albumWidth = size().toSize().height() - 2.0 * m_margin;
-
-    const qreal labelX = albumWidth + m_margin + 14.0;
-
-    const qreal textHeight = ( ( size().toSize().height() - 3 * m_margin )  / 5.0 );
-
     p->save();
     
     
@@ -508,24 +479,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
         m_ratingWidget->show();
     else
         m_ratingWidget->hide();
-
-    //don't paint this until we have something better looking that also works with non square covers
-    /*if( track && track->album() && track->album()->hasImage() )
-        m_theme->paint( p, QRect( m_margin - 5, m_margin, albumWidth + 12, albumWidth ), "cd-box" );*/
-    p->restore();
-
-    // tint the whole applet
-    p->save();
-    // hack for now
-    QLinearGradient gradient( contentsRect.topLeft(), contentsRect.bottomLeft() );
-    QColor highlight = App::instance()->palette().highlight().color();
-    highlight.setAlpha( 40 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
-    gradient.setColorAt( 1, highlight );
-    QPainterPath path;
-    path.addRoundedRect( contentsRect, 5, 5 );
-    p->fillPath( path, gradient );
 
     p->restore();
     
@@ -627,9 +580,7 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
     {
 
         width -= borderWidth * 2;
-        
-        //QSizeF rectSize = m_theme->elementRect( "albumart" ).size();
-        //QPointF rectPos = m_theme->elementRect( "albumart" ).topLeft();
+
         qreal size = width;
         qreal pixmapRatio = (qreal)cover.width()/size;
 
