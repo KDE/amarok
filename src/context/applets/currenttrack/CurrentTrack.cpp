@@ -187,8 +187,11 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const qreal textY = m_albumCover->pos().y() + 20;
 
     // calculate font sizes
-    const QFont textFont = QFont( QString(), 14, QFont::Bold );
-    QFont tinyFont( QString(), 9 );
+    QFont textFont = QFont( QString() );
+    textFont.setPointSize( textFont.pointSize() + 2 );
+    textFont.setBold( true );
+    QFont tinyFont = QFont( QString() );
+    tinyFont.setPointSize( tinyFont.pointSize() - 2 );
 
     QFontMetrics fm( textFont );
     qreal lineSpacing = fm.height() + 7;
