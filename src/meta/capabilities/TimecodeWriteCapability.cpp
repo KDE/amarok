@@ -106,6 +106,9 @@ bool Meta::TimecodeWriteCapability::writeAutoTimecode( int seconds, Meta::TrackP
 
     debug() << "creating new auto timecode: " << url.name();
 
+    //put in custom group to ensure that we do not clutter the list of bookmarks.
+    BookmarkGroupPtr parentPtr = BookmarkGroupPtr( new BookmarkGroup( i18n( "Playback Ended Markers" ), "auto_markers" ) );
+    url.reparent( parentPtr );
 
     //save it
     url.saveToDb();

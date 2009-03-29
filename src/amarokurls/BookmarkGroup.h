@@ -49,6 +49,8 @@ class BookmarkGroup : public BookmarkViewItem
         BookmarkGroup( const QStringList &dbResultRow, BookmarkGroupPtr parent );
         explicit BookmarkGroup( const QString &name, BookmarkGroupPtr parent = BookmarkGroupPtr() );
 
+        BookmarkGroup( const QString &name, const QString &customType );
+
         ~BookmarkGroup();
 
         int id() const;
@@ -78,6 +80,7 @@ class BookmarkGroup : public BookmarkViewItem
         BookmarkGroupPtr m_parent;
         QString m_name;
         QString m_description;
+        QString m_customType;
 
         mutable BookmarkGroupList m_childGroups;
         mutable BookmarkList m_childBookmarks;
