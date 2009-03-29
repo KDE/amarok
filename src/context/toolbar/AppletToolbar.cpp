@@ -73,7 +73,7 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     painter->setRenderHint( QPainter::Antialiasing );
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
     QColor highlight = App::instance()->palette().highlight().color();
-    highlight.setAlpha( 80 );
+    highlight.setAlpha( 100 );
     gradient.setColorAt( 0, highlight );
     highlight.setAlpha( 160 );
     gradient.setColorAt( 1, highlight );
