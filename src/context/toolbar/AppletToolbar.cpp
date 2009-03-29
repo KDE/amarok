@@ -13,6 +13,7 @@
 
 #include "AppletToolbar.h"
 
+#include "App.h"
 #include "AppletItemOverlay.h"
 #include "AppletToolbarAddItem.h"
 #include "AppletToolbarAppletItem.h"
@@ -69,13 +70,16 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     painter->save();
 
     QPalette p;
-    painter->fillRect( boundingRect(), p.brush( QPalette::Window ) );
-
     painter->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( 176, 176, 176, 225 );
+    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
+    QColor highlight = App::instance()->palette().highlight().color();
+    highlight.setAlpha( 80 );
+    gradient.setColorAt( 0, highlight );
+    highlight.setAlpha( 160 );
+    gradient.setColorAt( 1, highlight );
     QPainterPath path;
     path.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( path ,fillColor );
+    painter->fillPath( path, gradient );
     painter->restore();
 }
 

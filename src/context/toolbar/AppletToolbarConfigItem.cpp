@@ -13,6 +13,8 @@
 
 #include "AppletToolbarConfigItem.h"
 
+#include "App.h"
+
 #include <plasma/widgets/iconwidget.h>
 
 #include <KIcon>
@@ -62,7 +64,8 @@ Context::AppletToolbarConfigItem::paint( QPainter *painter, const QStyleOptionGr
 
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( 88, 88, 88, 225 );
+    QColor fillColor( App::instance()->palette().highlight().color() );
+    fillColor.setAlpha( 140 );
     QPainterPath fillPath;
     fillPath.addRoundedRect( boundingRect(), 5, 5 );
     painter->fillPath( fillPath ,fillColor );
