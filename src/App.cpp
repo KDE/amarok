@@ -861,9 +861,9 @@ namespace Amarok
 
     QColor highlightColor()
     {
-        QColor highlight( App::instance()->palette().highlight().color().toHsv() );
-        qreal saturation = highlight.saturation();
-        saturation *= 0.2;
+        QColor highlight( App::instance()->palette().highlight().color() );
+        qreal saturation = highlight.saturationF();
+        saturation *= 0.4;
         highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
 
         return highlight;
