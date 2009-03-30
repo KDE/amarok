@@ -286,9 +286,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_ratingWidget->setMinimumSize( m_albumCover->boundingRect().width() + 10, textHeight );
     m_ratingWidget->setMaximumSize( m_albumCover->boundingRect().width() + 10, textHeight );
     
-    //place directly below the albumcover, centered
+    //place directly above the bottom of the applet
     const qreal x = m_albumCover->pos().x() - 5;
-    const qreal y = m_albumCover->pos().y() + m_albumCover->boundingRect().height() + 3;
+    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - m_margin;
     m_ratingWidget->setPos( x, y );
     
     //const int availableSpace = contentsRect().width() - labelX;
@@ -609,12 +609,12 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
         if( cover.height()/pixmapRatio > width )
         {
             cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
-            moveByX += qAbs( cover.rect().width() - cover.rect().height() ) / 2.0;
+        //    moveByX += qAbs( cover.rect().width() - cover.rect().height() ) / 2.0;
         }
         else
         {
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
-            moveByY += qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
+        //    moveByY += qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
         }
         debug() << "placing album at X:" << margin << "+" << moveByX << " and Y:" << margin << moveByY;
         m_albumCover->setPos( margin + moveByX, margin + moveByY );       
