@@ -68,7 +68,7 @@ private slots:
 private:
     QList<QAction*> contextualActions();
 
-    bool resizeCover( QPixmap cover, qreal margin, qreal width );
+    bool resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
     // aligns the second QGI to be at the same level as the first (the bottom edges)
     void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
 

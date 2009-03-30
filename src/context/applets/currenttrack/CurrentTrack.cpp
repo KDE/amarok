@@ -180,15 +180,14 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     // guess what: the height is fixed. so that's a waste of hard-working gerbils
     const qreal textHeight = 30;
     const qreal albumWidth = 130;
+    const QPointF albumCoverPos( m_margin + 10, m_margin + 2 );
 
-    
-    //const qreal textX = labelX + labelWidth + m_margin;
-    
-    resizeCover( m_bigCover, m_margin, albumWidth );
+    resizeCover( m_bigCover, albumWidth, albumCoverPos );
 
-    const qreal textX =  m_albumCover->pos().x() +  m_albumCover->boundingRect().width() + 6.0;
+    /* this is the pos of the albumcover */
+    const qreal textX =  albumCoverPos.x() +  albumWidth + m_margin;
     const qreal textWidth = size().toSize().width() - ( textX + m_margin * 2 + 23 );
-    const qreal textY = m_albumCover->pos().y() + 20;
+    const qreal textY = albumCoverPos.y() + 20;
 
     // calculate font sizes
     QFont textFont = QFont( QString() );
@@ -283,11 +282,11 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
                        size().toSize().height() / 2  - 30 );
     }
 
-    m_ratingWidget->setMinimumSize( m_albumCover->boundingRect().width() + 10, textHeight );
-    m_ratingWidget->setMaximumSize( m_albumCover->boundingRect().width() + 10, textHeight );
+    m_ratingWidget->setMinimumSize( albumWidth + 10, textHeight );
+    m_ratingWidget->setMaximumSize( albumWidth + 10, textHeight );
     
     //place directly above the bottom of the applet
-    const qreal x = m_albumCover->pos().x() - 5;
+    const qreal x = albumCoverPos.x() - 5;
     const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - m_margin;
     m_ratingWidget->setPos( x, y );
     
@@ -589,7 +588,7 @@ void CurrentTrack::configAccepted() // SLOT
 {}
 
 
-bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
+bool CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
 {
     const int borderWidth = 5;
     
@@ -602,22 +601,20 @@ bool CurrentTrack::resizeCover( QPixmap cover,qreal margin, qreal width )
         qreal pixmapRatio = (qreal)cover.width()/size;
 
         // offset it by 20 so there is room for the ratings underneath to the left
-        qreal moveByX = 10.0;
-        qreal moveByY = 0.0;
+        qreal moveByX = albumCoverPos.x();
+        qreal moveByY = albumCoverPos.y();
 
         //center the cover : if the cover is not squared, we get the missing pixels and center
         if( cover.height()/pixmapRatio > width )
-        {
             cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
-        //    moveByX += qAbs( cover.rect().width() - cover.rect().height() ) / 2.0;
-        }
         else
-        {
             cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
-        //    moveByY += qAbs( cover.rect().height() - cover.rect().width() ) / 2.0;
-        }
-        debug() << "placing album at X:" << margin << "+" << moveByX << " and Y:" << margin << moveByY;
-        m_albumCover->setPos( margin + moveByX, margin + moveByY );       
+        // center
+        moveByX += ( width / 2 ) - cover.rect().width() / 2;
+        moveByY += ( width / 2 ) - cover.rect().height() / 2;
+        
+        debug() << "placing album at X:" << moveByX << " and Y:"  << moveByY;
+        m_albumCover->setPos( moveByX, moveByY );
 
 
         QPixmap coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, m_album->text(), true );
