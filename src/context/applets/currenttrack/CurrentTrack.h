@@ -53,13 +53,11 @@ public:
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
-    void showConfigurationInterface();
 
 protected:
     virtual void constraintsEvent( Plasma::Constraints constraints );
 
 private slots:
-    void configAccepted();
     void changeTrackRating( int rating );
     void connectSource( const QString &source );
     void paletteChanged( const QPalette & palette );

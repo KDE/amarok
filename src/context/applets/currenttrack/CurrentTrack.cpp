@@ -46,6 +46,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     setHasConfigurationInterface( false );
     setConfigurationRequired( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
+    setImmutability( Plasma::Mutable );
   
 }
 
@@ -145,6 +146,7 @@ void CurrentTrack::changeTrackRating( int rating )
 QList<QAction*>
 CurrentTrack::contextualActions()
 {
+    DEBUG_BLOCK
     QList<QAction*> actions;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -197,9 +199,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     tinyFont.setPointSize( tinyFont.pointSize() - 2 );
 
     QFontMetrics fm( textFont );
-    qreal lineSpacing = fm.height() + 7;
+    qreal lineSpacing = fm.height() + 4;
     m_maxTextWidth = textWidth;
-    //localMaxTextWidth = size().toSize().width() - m_title->pos().x() - 14;
 
     m_title->setFont( textFont );
     m_artist->setFont( textFont );
@@ -230,28 +231,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     
     m_title->setPos( m_artist->pos().x(), textY );
 
-    
-    /*
-    const int addLabelOffset = contentsRect().width() - 25;
-
-    m_score->setPos( QPointF( addLabelOffset,m_margin + 2 ) );
-    m_numPlayed->setPos( QPointF( addLabelOffset,m_margin * 2 + textHeight + 2 ) );
-    m_playedLast->setPos( QPointF( addLabelOffset,m_margin * 3 + textHeight * 2.0 + 2 ) );
-
-    m_scoreIconBox->setRect( addLabelOffset - 25,m_margin, 25, 22 );
-    m_numPlayedIconBox->setRect( addLabelOffset - 25, m_margin * 2 + textHeight, 25, 22 );
-    m_playedLastIconBox->setRect( addLabelOffset - 25, m_margin * 3 + textHeight * 2.0, 25, 22 );
-    */
-
-    const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
-    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    const QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
-
-    m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-    m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );    
-    m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-    
     if( !m_lastTracks.isEmpty() )
     {                
         m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight ) ) );
@@ -580,13 +559,6 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
         p->restore();
     }
 }
-
-void CurrentTrack::showConfigurationInterface()
-{}
-
-void CurrentTrack::configAccepted() // SLOT
-{}
-
 
 bool CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
 {
