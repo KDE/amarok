@@ -1,5 +1,5 @@
 /*****************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>          *
+ * copyright            : (C) 2007-2009 Leo Franchi <lfranchi@gmail.com>     *
  *                      : (C) 2008 William Viana Soares <vianasw@gmail.com>  *
  *****************************************************************************/
 

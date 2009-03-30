@@ -1,5 +1,6 @@
 /*******************************************************************************
 * copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
+* copyright		 : (C) 2009 Leo Franchi		 <lfranchi@kde.org>    *
 *                                                                              *
 ********************************************************************************/
 
@@ -102,10 +103,10 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
        QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
        QColor highlight = Amarok::highlightColor();
-       highlight.setAlpha( 120 );
-       gradient.setColorAt( 0, highlight );
-       highlight.setAlpha( 200 );
-       gradient.setColorAt( 1, highlight );
+       highlight.setAlpha( 160 );
+       gradient.setColorAt( 0, highlight.darker( 140 ) );
+       highlight.setAlpha( 220 );
+       gradient.setColorAt( 1, highlight.darker( 180 ) );
        QPainterPath path;
        path.addRoundedRect( boundingRect(), 5, 5 );
        painter->fillPath( path, gradient );
