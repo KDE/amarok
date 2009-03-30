@@ -76,6 +76,7 @@ VERSION 2.1-beta1
       applets.
 
   CHANGES:
+    * New splash screen by Wade Olson <wade@corefunction.com>.
     * Magnatune.com store: When downloading albums (Either by purchasing or
       free membership downloads) remember the file format and download 
       location for next time.
