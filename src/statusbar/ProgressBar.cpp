@@ -60,7 +60,11 @@ ProgressBar::ProgressBar( QWidget * parent )
     box->addWidget( progressBox );
     box->setAlignment( progressBox, Qt::AlignRight );
 
-    //setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Fixed );
+    // Fix multiple progressbars using all available vertical space
+    const int contentHeight = QFontMetrics( m_descriptionLabel->font() ).height();
+    const int barHeight = contentHeight + 6;
+    setFixedHeight( barHeight );
+    m_progressBar->setFixedHeight( barHeight - 4 );
 
     setLayout( box );
 }
