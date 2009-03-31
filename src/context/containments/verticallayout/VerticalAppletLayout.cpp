@@ -164,29 +164,29 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     
     qreal runningHeight = 0.0, currentHeight = 0.0;
     qreal width =  boundingRect().width();
-    debug() << "showing applet at index" << index;
-    debug() << "using applet width of " << width;
+    //debug() << "showing applet at index" << index;
+    //debug() << "using applet width of " << width;
     for( int i = index - 1; i >= 0; i-- ) // lay out backwards above the view
     {
-        debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
+        //debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
         currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
         runningHeight -= currentHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
-        debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
-        debug() << "UPWARDS got applet sizehint height:" << currentHeight;
+        //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
+        //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
         m_appletList[ i ]->show();
     }
     runningHeight = currentHeight = 0.0;
     for( int i = index; i < m_appletList.size(); i++ ) // now lay out desired item at top and rest below it
     {
-        debug() << "dealing with" << m_appletList[ i ]->name();
-        debug() << "putting applet #" << i << " at" << 0 << runningHeight;
+        //debug() << "dealing with" << m_appletList[ i ]->name();
+        //debug() << "putting applet #" << i << " at" << 0 << runningHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
         currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
         runningHeight += currentHeight;
-        debug() << "next applet will go at:" << runningHeight;
-        debug() << "got applet sizehint height:" << currentHeight;
+        //debug() << "next applet will go at:" << runningHeight;
+        //debug() << "got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
         m_appletList[ i ]->show();
     }
@@ -206,9 +206,9 @@ Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
     for( int i = loc; i >= 0; i-- )
     {    
         index = i;
-        debug() << "height:" << height;
+        //debug() << "height:" << height;
         qreal curHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( boundingRect().width(), -1 ) ).height();
-        debug() << "calculating:" << curHeight << " + " << height << " > " << boundingRect().height();
+        //debug() << "calculating:" << curHeight << " + " << height << " > " << boundingRect().height();
         if( ( curHeight + height ) > boundingRect().height() )
             break;
             
