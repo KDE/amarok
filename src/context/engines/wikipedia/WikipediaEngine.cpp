@@ -27,6 +27,7 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     , ContextObserver( ContextView::self() )
     , m_wikiJob( 0 )
     , m_currentSelection( "artist" )
+    , m_wikiLang( "en_US" )
     , m_requested( true )
     , m_sources( "current" )
     , m_triedRefinedSearch( false )
