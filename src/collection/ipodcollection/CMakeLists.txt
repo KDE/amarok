@@ -3,7 +3,7 @@ macro_optional_find_package(Ipod)
 macro_optional_find_package(Gdk)
 
 if(NOT GDK_FOUND)
-   SET(GDK_INCLUDE_DIR "")
+   SET(GDK_INCLUDE_DIRS "")
    SET(GDK_LIBRARIES "")
 endif(NOT GDK_FOUND)
 
@@ -17,7 +17,7 @@ if (IPOD_FOUND AND IPOD_0_7)
    ../mediadevicecollection/support
    handler
    ${GLIB2_INCLUDE_DIR}
-   ${GDK_INCLUDE_DIR}
+   ${GDK_INCLUDE_DIRS}
    ${IPOD_INCLUDE_DIRS}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
