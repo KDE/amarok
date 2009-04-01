@@ -30,7 +30,7 @@
 #include <kio/global.h>
 
 // Taglib
-#include <taglib/tag.h>
+#include <tag.h>
 #include <tlist.h>
 #include <tmap.h>
 #include <tstring.h>

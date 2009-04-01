@@ -27,7 +27,7 @@
 #include <QVariant>
 
 // Taglib
-#include <taglib/fileref.h>
+#include <fileref.h>
 
 namespace Meta
 {

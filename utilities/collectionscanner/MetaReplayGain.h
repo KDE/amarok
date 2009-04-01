@@ -22,7 +22,7 @@
 #include <QMap>
 
 // Taglib
-#include <taglib/fileref.h>
+#include <fileref.h>
 
 /* This file exists (rather than putting the method in MetaUtility.h and
  * MetaUtility.cpp) because we need to share the implementation between

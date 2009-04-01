@@ -25,7 +25,7 @@
 #include <cmath>
 
 // Taglib
-#include <taglib/tag.h>
+#include <tag.h>
 #include <tlist.h>
 #include <tstring.h>
 #include <textidentificationframe.h>
