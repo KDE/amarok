@@ -23,7 +23,9 @@ else (GDK_INCLUDE_DIR AND GDK_LIBRARIES)
     set(GDK_DEFINITIONS ${_GDKCflags})
   endif(NOT WIN32)
 
-  FIND_PATH(GDK_INCLUDE_DIR gdk-pixbuf/gdk-pixbuf.h /usr/include/gtk-2.0
+  FIND_PATH(GDK_INCLUDE_DIR gdk-pixbuf/gdk-pixbuf.h
+      /usr/include/gtk-2.0
+      /sw/include/gtk-2.0
     ${_GDKIncDir}
   )
   
