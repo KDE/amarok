@@ -19,11 +19,12 @@
 
 #include "SafeFileSaver.h"
 
-#include "taglib/fileref.h"
-#include "taglib/id3v2tag.h"
-#include "taglib/mpegfile.h"
-#include "taglib/tfile.h"
-#include "taglib/uniquefileidentifierframe.h"
+//Taglib
+#include <fileref.h>
+#include <id3v2tag.h>
+#include <mpegfile.h>
+#include <tfile.h>
+#include <uniquefileidentifierframe.h>
 
 #include <KAboutData>
 #include <KCmdLineArgs>
