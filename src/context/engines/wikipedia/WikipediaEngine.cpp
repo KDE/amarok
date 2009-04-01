@@ -27,7 +27,6 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
     , ContextObserver( ContextView::self() )
     , m_wikiJob( 0 )
     , m_currentSelection( "artist" )
-    , m_wikiLang( "en_US" )
     , m_requested( true )
     , m_sources( "current" )
     , m_triedRefinedSearch( false )
@@ -335,7 +334,11 @@ WikipediaEngine::wikiResult( KJob* job )
 inline QString
 WikipediaEngine::wikiLocale() const
 {
-	return m_wikiLang.name().split('_')[0];
+    // if there is no language set (QLocale::C) then return english as default
+	if( m_wikiLang.language() == QLocale::C )
+        return "en";
+    else
+        return m_wikiLang.name().split( "_" )[0];
 }
 
 inline QString
