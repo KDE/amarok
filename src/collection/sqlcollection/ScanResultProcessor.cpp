@@ -218,13 +218,9 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
             else
             {
                 if( artistCount.contains( tmp ) )
-                {
                     artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
-                }
                 else
-                {
                     artistCount.insert( tmp, 1 );
-                }
             }
         }
         else if( artist.contains( "feat." ) )
@@ -240,25 +236,17 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
             else
             {
                 if( artistCount.contains( tmp ) )
-                {
                     artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
-                }
                 else
-                {
                     artistCount.insert( tmp, 1 );
-                }
             }
         }
         else
         {
             if( artistCount.contains( artist ) )
-            {
                 artistCount.insert( artist, artistCount.value( artist ) + 1 );
-            }
             else
-            {
                 artistCount.insert( artist, 1 );
-            }
         }
     }
     QString albumArtist;
@@ -680,13 +668,9 @@ ScanResultProcessor::setupDatabase()
     {
         m_collection->dbUpdater()->createTemporaryTables();
         if( m_type == IncrementalScan )
-        {
             m_collection->dbUpdater()->prepareTemporaryTables();
-        }
         else
-        {
             m_collection->dbUpdater()->prepareTemporaryTablesForFullScan();
-        }
         m_setupComplete = true;
     }
 }
