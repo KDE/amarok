@@ -125,6 +125,9 @@ VERSION 2.1-beta1
       success.
 
   BUGFIXES:
+    * Improvements to compilation detection during the collection scanning
+      phase. Thanks to Michael Quinn <mike@quinnsoft.com> for laying the
+      groundwork. (BR 172953)
     * Do not reset lyrics applet to the top when pausing and then unpausing a
       track. (BR 182519)
     * Automatically update lyrics applet if the user edits relevant track
