@@ -291,31 +291,16 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
 
+    //TODO: find a better way to ignore non-audio files than the extension matching below
     //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
     QStringList filters;
     filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma" << "*.m4a";
     dir.setNameFilters( filters );
 
-    int compilationId = 0;
+    int compilationId = checkAlbumArtists( file, albumName, albumArtistId );
 
-    //do not check existing albums if there is more than one file in the directory
-    //see comments in checkExistingAlbums
-
-    //TODO: find a better way to ignore non-audio files than the extension matching above
-    if( !m_filesInDirs.contains( dir.absolutePath() ) )
-    {
-        m_filesInDirs.insert( dir.absolutePath(), dir.count() );
-    }
-
-    if( dir.count() == 1 )
-    {
-        compilationId = checkExistingAlbums( albumName );
-    }
-
-    if( 0 == compilationId )
-    {
+    if( compilationId == 0 )
         album = albumId( albumName, albumArtistId );
-    }
 
     int artist = artistId( trackData.value( Field::ARTIST ).toString() );
     int genre = genreId( trackData.value( Field::GENRE ).toString() );
@@ -639,54 +624,53 @@ ScanResultProcessor::directoryId( const QString &dir )
 }
 
 int
-ScanResultProcessor::checkExistingAlbums( const QString &album )
+ScanResultProcessor::checkAlbumArtists( const QFileInfo &file, const QString &album, int artistId )
 {
-    // "Unknown" albums shouldn't be handled as compilations
     if( album.isEmpty() )
         return 0;
 
-    //check if this album already exists, ignoring the albumartist
-    //if it does, and if each file of the album is alone in its directory
-    //it's probably a compilation.
-    QString query = "SELECT urls.deviceid,urls.rpath,tracks_temp.id,albums.id,albums.artist FROM urls_temp AS urls "
-                    "LEFT JOIN tracks_temp on urls.id = tracks_temp.url LEFT JOIN albums_temp AS albums ON "
-                    "tracks_temp.album = albums.id WHERE albums.name = '%1';";
-    query = query.arg( m_collection->escape( album ) );
+    //If the album has a track from another artist, it is a compilation
+    QString query = "SELECT u.deviceid, u.rpath, t.id, t.artist "
+                    "FROM tracks_temp t "
+                    "INNER JOIN albums_temp a "
+                      "ON a.id = t.album "
+                    "INNER JOIN urls_temp u "
+                      "ON u.id = t.url "
+                    "WHERE t.album = a.id "
+                      "AND a.name = '%1' "
+                      "AND t.artist <> '%2';";
+    query = query.arg( m_collection->escape( album ), QString::number( artistId ) );
     QStringList result = m_collection->query( query );
-    QList<QString> trackIds;
+
+    //No tracks in the album are from an artist other than the one specified
+    if( result.isEmpty() ) 
+        return 0;
+    
+    //Calculate a list of tracks with a different artist, same album and same directory
+    QStringList trackIds;
     for( QListIterator<QString> iter( result ); iter.hasNext(); )
     {
         int deviceid = iter.next().toInt();
         QString rpath = iter.next();
         QString trackId = iter.next();
-        QString albumId = iter.next();
-        QString albumArtistId = iter.next();
+        QString artistId = iter.next();
         QString currentPath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
         QFileInfo info( currentPath );
-        uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
-        if( dirCount == 1 )
-        {
+        if( info.dir() == file.dir() )
             trackIds << trackId;
-        }
     }
 
-    if( trackIds.isEmpty() )
-    {
-        return 0;
-    }
-    else
+    if( !trackIds.isEmpty() )
     {
         int compilationId = albumId( album, 0 );
-        QString trackIdsSql = "-1";
-        foreach( const QString &trackId, trackIds )
-        {
-            trackIdsSql += ',';
-            trackIdsSql += trackId;
-        }
-        QString update = "UPDATE tracks_temp SET album = %1 where id IN (%2);";
-        m_collection->query( update.arg( QString::number( compilationId ), trackIdsSql ) );
+        const QString trackIdsInAlbum = trackIds.join(",");;
+        query = "UPDATE tracks_temp SET album = %1 where id IN (%2);";
+        query = query.arg( QString::number( compilationId ), trackIdsInAlbum );
+        m_collection->query( query );
         return compilationId;
     }
+
+    return 0;
 }
 
 void
