@@ -102,6 +102,7 @@ private:
             {
                 // TODO: nice poof animation? ;-)
                 delete token;
+                emit static_cast<TokenDropTarget*>( parent() )->changed();
                 ret = true; // THIS IS IMPORTANT
             }
             // anyway, tell daddy to wipe empty rows NOW
@@ -228,7 +229,6 @@ TokenDropTarget::deleteEmptyRows()
         if ( box && box->count() < 2 ) // sic! last is spacer
         {
             layout()->removeItem( box );
-            emit changed();
             delete box;
         }
         else
