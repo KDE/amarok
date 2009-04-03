@@ -13,7 +13,7 @@
  
 #include "GrowlInterface.h"
 
-#include "AmarokConfig.h"
+#include "amarokconfig.h"
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
