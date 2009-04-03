@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>          *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -21,18 +22,17 @@
 #include "CollectionTreeView.h"
 
 /**
-Specialized CollectionTreeView that handles actions to top level items ( collections ) in a custom way.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ * Specialized CollectionTreeView that handles actions to top level items ( collections ) in a custom way.
+ */
 class CollectionBrowserTreeView : public CollectionTreeView 
 {
-public:
-    CollectionBrowserTreeView( QWidget *parent = 0 );
-    ~CollectionBrowserTreeView();
+    public:
+        CollectionBrowserTreeView( QWidget *parent = 0 );
+        ~CollectionBrowserTreeView();
 
-protected:
-    void mouseDoubleClickEvent( QMouseEvent *event );
+    protected:
+        void mouseDoubleClickEvent( QMouseEvent *event );
+        void mouseReleaseEvent( QMouseEvent *event );
 };
 
 #endif

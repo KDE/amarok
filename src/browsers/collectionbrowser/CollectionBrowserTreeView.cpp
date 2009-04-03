@@ -1,5 +1,6 @@
 /******************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>          *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -15,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
-
 #include "CollectionBrowserTreeView.h"
 
 #include <QMouseEvent>
@@ -30,14 +30,24 @@ CollectionBrowserTreeView::~CollectionBrowserTreeView()
 {
 }
 
-void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent * event )
+void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
     
     if( index.isValid() && !index.parent().isValid() ) // root item
         setExpanded( index, !isExpanded( index ) );
-    else  // propagate to base class
+    else // propagate to base class
         CollectionTreeView::mouseDoubleClickEvent( event );
 }
 
+// Reimplement release event to detect a single click.
+void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
+{
+    QModelIndex index = indexAt( event->pos() );
+
+    if( index.isValid() && !index.parent().isValid() ) // root item
+        setExpanded( index, !isExpanded( index ) );
+    else // propagate to base class
+        CollectionTreeView::mouseReleaseEvent( event );
+}
 
