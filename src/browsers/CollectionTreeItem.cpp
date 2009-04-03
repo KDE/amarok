@@ -1,6 +1,7 @@
 /******************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
  *           (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>  *
+ *           (c) 2009 Seb Ruiz <ruiz@kde.org>                                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -20,7 +21,6 @@
 
 #include "CollectionTreeView.h"
 #include "amarokconfig.h"
-#include "Debug.h"
 
 #include <KLocale>
 
@@ -32,6 +32,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_childrenLoaded( false )
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
+    , m_isCounting( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -44,6 +45,7 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_childrenLoaded( false )
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
+    , m_isCounting( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -56,6 +58,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_childrenLoaded( true )
     , m_isVariousArtistsNode( true )
     , m_trackCount( -1 )
+    , m_isCounting( false )
 {
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
@@ -162,8 +165,13 @@ CollectionTreeItem::data( int role ) const
             return m_parentCollection->icon();
         else if( role == CustomRoles::ByLineRole )
         {
+            static const QString counting = i18n( "Counting" );
+            if( m_isCounting )
+                  return counting;
             if( m_trackCount < 0 )
             {
+                m_isCounting = true;
+
                 QueryMaker *qm = m_parentCollection->queryMaker();
                 connect( qm, SIGNAL( newResultReady(QString, QStringList) ), SLOT( tracksCounted(QString, QStringList) ) );
 
@@ -172,7 +180,7 @@ CollectionTreeItem::data( int role ) const
                   ->addReturnFunction( QueryMaker::Count, Meta::valUrl )
                   ->run();
 
-                  return i18n( "Counting" );
+                return counting;
             }
 
             return i18np( "1 track", "%1 tracks", m_trackCount );
@@ -185,13 +193,12 @@ CollectionTreeItem::data( int role ) const
 void
 CollectionTreeItem::tracksCounted( QString collectionId, QStringList res )
 {
-    DEBUG_BLOCK
     Q_UNUSED( collectionId );
     if( !res.isEmpty() )
         m_trackCount = res.first().toInt();
     else
-        m_trackCount = -1;
-    debug() << "Track count for " << data( Qt::DisplayRole ).toString() << " is: " << m_trackCount;
+        m_trackCount = 0;
+    m_isCounting = false;
     emit dataUpdated();
 }
 

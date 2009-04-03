@@ -25,6 +25,8 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QList>
+#include <QPair>
 #include <QSet>
 #include <QStack>
 
@@ -62,6 +64,7 @@ struct MemoryQueryMaker::Private {
     QueryJob *job;
     int maxsize;
     QStack<ContainerMemoryFilter*> containerFilters;
+    QPair<ReturnFunction, qint64> returnFunction;
     bool usingFilters;
     bool randomize;
     KRandomSequence sequence;   //do not reset
@@ -97,6 +100,7 @@ MemoryQueryMaker::reset()
         delete d->containerFilters.first();
     d->containerFilters.clear();
     d->containerFilters.push( new AndContainerMemoryFilter() );
+    d->returnFunction = QPair<ReturnFunction, qint64>();
     d->usingFilters = false;
     d->randomize = false;
     return this;
@@ -112,7 +116,6 @@ MemoryQueryMaker::run()
     {
         //the worker thread seems to be running
         //TODO: wait or job to complete
-
     }
     else
     {
@@ -167,10 +170,39 @@ MemoryQueryMaker::runQuery()
 template <class PointerType, class ListType>
 void MemoryQueryMaker::emitProperResult( ListType& list )
 {
+    DEBUG_BLOCK
+    bool returnFuncApplied = true;
+    
+    int val = -1;
+    switch( d->returnFunction.first )
+    {
+        case QueryMaker::Count :
+            val = list.size();
+            break;
+
+        case QueryMaker::Sum :
+        case QueryMaker::Max :
+        case QueryMaker::Min :
+            // TODO
+            AMAROK_NOTIMPLEMENTED;
+
+        default:
+            returnFuncApplied = false;
+            return;
+    }
+    if( returnFuncApplied )
+    {
+        QStringList res;
+        res << QString::number( val );
+        emit newResultReady( m_collection->collectionId(), res );
+        return;
+    }
+
     if( d->randomize )
         d->sequence.randomize<PointerType>( list );
 
-    if ( d->returnDataPtrs ) {
+    if( d->returnDataPtrs )
+    {
         DataList data;
         foreach( PointerType p, list )
             data << DataPtr::staticCast( p );
@@ -187,6 +219,9 @@ MemoryQueryMaker::handleResult()
     //this gets called when we want to return all values for the given query type
     switch( d->type )
     {
+        case QueryMaker::Custom :
+            AMAROK_NOTIMPLEMENTED
+            warning() << "MemoryQueryMaker CustomType not fully implemented, falling back to all tracks";
         case QueryMaker::Track :
         {
             TrackList tracks = m_collection->trackMap().values();
@@ -235,9 +270,6 @@ MemoryQueryMaker::handleResult()
             emitProperResult<YearPtr, YearList>( years );
             break;
         }
-        case QueryMaker::Custom :
-            //TODO stub, fix this
-            break;
         case QueryMaker::None :
             //nothing to do
             break;
@@ -249,6 +281,8 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
 {
     switch( d->type )
     {
+        case QueryMaker::Custom :
+            AMAROK_NOTIMPLEMENTED
         case QueryMaker::Track :
         {
             TrackList newResult;
@@ -325,9 +359,6 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             emitProperResult<YearPtr, YearList>( list );
             break;
         }
-        case QueryMaker::Custom :
-            //hmm, not sure if this makes sense
-            break;
         case QueryMaker::None:
             //should never happen, but handle error anyway
             break;
@@ -369,7 +400,7 @@ MemoryQueryMaker::setQueryType( QueryType type )
         return this;
 
     case QueryMaker::Custom:
-        if ( d->type == QueryMaker::Custom )
+        if ( d->type == QueryMaker::None )
             d->type = QueryMaker::Custom;
         return this;
     case QueryMaker::None:
@@ -396,22 +427,8 @@ MemoryQueryMaker::addReturnValue( qint64 value )
 QueryMaker*
 MemoryQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
-    Q_UNUSED( value )
-    switch( function )
-    {
-        case QueryMaker::Count:
-            //TODO
-            break;
-        case QueryMaker::Sum:
-            //TODO
-            break;
-        case QueryMaker::Min:
-            //TODO
-            break;
-        case QueryMaker::Max:
-            //TODO
-            break;
-    }
+    d->returnFunction.first = function;
+    d->returnFunction.second = value;
     return this;
 }
 

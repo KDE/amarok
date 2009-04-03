@@ -97,6 +97,7 @@ class CollectionTreeItem : public QObject
         bool m_childrenLoaded;
         bool m_isVariousArtistsNode;
         int  m_trackCount;
+        mutable bool m_isCounting;
 };
 
 #endif
