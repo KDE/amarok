@@ -19,13 +19,13 @@ add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 # core
 
-if( APPLE )
+if( Q_WS_MAC )
     set( amarok_service_liblastfm_core_EXTRASRCS
         core/mac/AppleScript.cpp
         core/mac/Growl.cpp
         core/mac/CFStringToQString.cpp
         )
-endif( APPLE )
+endif( Q_WS_MAC )
 
 if( WIN32 )
     set( amarok_service_liblastfm_core_EXTRASRCS
