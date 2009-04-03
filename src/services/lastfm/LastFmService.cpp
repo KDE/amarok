@@ -176,7 +176,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     Q_UNUSED( sessionKey );
     Q_UNUSED( fetchSimilar ); // TODO implement..
 
-    setShortDescription( i18n( "Last.fm: The social music revolution." ) );
+    setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
 
     if( !username.isEmpty() && !password.isEmpty() )
