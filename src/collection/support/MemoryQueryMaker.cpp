@@ -65,6 +65,7 @@ struct MemoryQueryMaker::Private {
     int maxsize;
     QStack<ContainerMemoryFilter*> containerFilters;
     QPair<ReturnFunction, qint64> returnFunction;
+    bool applyReturnFunction;
     bool usingFilters;
     bool randomize;
     KRandomSequence sequence;   //do not reset
@@ -101,6 +102,7 @@ MemoryQueryMaker::reset()
     d->containerFilters.clear();
     d->containerFilters.push( new AndContainerMemoryFilter() );
     d->returnFunction = QPair<ReturnFunction, qint64>();
+    d->applyReturnFunction = false;
     d->usingFilters = false;
     d->randomize = false;
     return this;
@@ -171,29 +173,28 @@ template <class PointerType, class ListType>
 void MemoryQueryMaker::emitProperResult( ListType& list )
 {
     DEBUG_BLOCK
-    bool returnFuncApplied = true;
-    
-    int val = -1;
-    switch( d->returnFunction.first )
-    {
-        case QueryMaker::Count :
-            val = list.size();
-            break;
-
-        case QueryMaker::Sum :
-        case QueryMaker::Max :
-        case QueryMaker::Min :
-            // TODO
-            AMAROK_NOTIMPLEMENTED;
-
-        default:
-            returnFuncApplied = false;
-            return;
-    }
-    if( returnFuncApplied )
+   
+    if( d->applyReturnFunction )
     {
         QStringList res;
-        res << QString::number( val );
+        switch( d->returnFunction.first )
+        {
+            case QueryMaker::Count :
+                res << QString::number( list.size() );
+                break;
+
+            case QueryMaker::Sum :
+            case QueryMaker::Max :
+            case QueryMaker::Min :
+                // TODO
+                AMAROK_NOTIMPLEMENTED;
+                break;
+
+            default:
+                error() << "Told to apply return function, but none given";
+                break;
+        }
+
         emit newResultReady( m_collection->collectionId(), res );
         return;
     }
@@ -427,6 +428,7 @@ MemoryQueryMaker::addReturnValue( qint64 value )
 QueryMaker*
 MemoryQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
+    d->applyReturnFunction = true;
     d->returnFunction.first = function;
     d->returnFunction.second = value;
     return this;
