@@ -85,6 +85,7 @@ class CollectionTreeItem : public QObject
 
     private slots:
         void tracksCounted( QString collectionId, QStringList res );
+        void collectionUpdated();
 
     private:
         QString albumYear() const;

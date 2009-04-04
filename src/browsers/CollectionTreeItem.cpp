@@ -49,6 +49,8 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
 {
     if ( m_parent )
         m_parent->appendChild( this );
+
+    connect( parentCollection, SIGNAL( updated() ), SLOT( collectionUpdated() ) );
 }
 
 CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent )
@@ -200,6 +202,12 @@ CollectionTreeItem::tracksCounted( QString collectionId, QStringList res )
         m_trackCount = 0;
     m_isCounting = false;
     emit dataUpdated();
+}
+
+void
+CollectionTreeItem::collectionUpdated()
+{
+    m_trackCount = -1;
 }
 
 int
