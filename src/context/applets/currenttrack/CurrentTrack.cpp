@@ -41,7 +41,6 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_trackLength( 0 )
     , m_tracksToShow( 0 )
     , m_tabBar( 0 )
-    , m_showStats( true )
 {
     setHasConfigurationInterface( false );
     setConfigurationRequired( false );
@@ -303,7 +302,6 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     
     if( !m_lastTracks.isEmpty() )
     {
-        
         Meta::TrackList tracks;
         if( m_tabBar->currentIndex() == 0 )
             tracks = m_lastTracks;
@@ -353,24 +351,9 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     QString playedLastVerbose =  Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
     QString numPlayed = m_currentInfo[ Meta::Field::PLAYCOUNT ].toString();
 
-    if ( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() == 0 &&
-         m_currentInfo[ Meta::Field::PLAYCOUNT ].toInt() == 0 &&
-         m_currentInfo[ Meta::Field::SCORE ].toInt() == 0 )
-    {
-        m_showStats = false;
-
-        m_score = QString();
-        m_playedLast = QString();
-        m_numPlayed = QString();
-    }
-    else
-    {
-        m_showStats = true;
-
-        m_score = score ;
-        m_playedLast = playedLast;
-        m_numPlayed = numPlayed;
-    }
+    m_score = score ;
+    m_playedLast = playedLast;
+    m_numPlayed = numPlayed;
     
     m_ratingWidget->setRating( m_rating );
 
