@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>
              (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 
    This program is free software; you can redistribute it and/or
@@ -18,6 +18,7 @@
 */
 
 #include "MemoryQueryMaker.h"
+#include "MemoryCustomValue.h"
 #include "MemoryFilter.h"
 #include "MemoryMatcher.h"
 #include "Debug.h"
@@ -26,7 +27,6 @@
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QList>
-#include <QPair>
 #include <QSet>
 #include <QStack>
 
@@ -64,8 +64,8 @@ struct MemoryQueryMaker::Private {
     QueryJob *job;
     int maxsize;
     QStack<ContainerMemoryFilter*> containerFilters;
-    QPair<ReturnFunction, qint64> returnFunction;
-    bool applyReturnFunction;
+    QList<CustomReturnFunction*> returnFunctions;
+    QList<CustomReturnValue*> returnValues;
     bool usingFilters;
     bool randomize;
     KRandomSequence sequence;   //do not reset
@@ -101,10 +101,12 @@ MemoryQueryMaker::reset()
         delete d->containerFilters.first();
     d->containerFilters.clear();
     d->containerFilters.push( new AndContainerMemoryFilter() );
-    d->returnFunction = QPair<ReturnFunction, qint64>();
-    d->applyReturnFunction = false;
     d->usingFilters = false;
     d->randomize = false;
+    qDeleteAll( d->returnFunctions );
+    d->returnFunctions.clear();
+    qDeleteAll( d->returnValues );
+    d->returnValues.clear();
     return this;
 }
 
@@ -172,33 +174,6 @@ MemoryQueryMaker::runQuery()
 template <class PointerType, class ListType>
 void MemoryQueryMaker::emitProperResult( ListType& list )
 {
-    DEBUG_BLOCK
-   
-    if( d->applyReturnFunction )
-    {
-        QStringList res;
-        switch( d->returnFunction.first )
-        {
-            case QueryMaker::Count :
-                res << QString::number( list.size() );
-                break;
-
-            case QueryMaker::Sum :
-            case QueryMaker::Max :
-            case QueryMaker::Min :
-                // TODO
-                AMAROK_NOTIMPLEMENTED;
-                break;
-
-            default:
-                error() << "Told to apply return function, but none given";
-                break;
-        }
-
-        emit newResultReady( m_collection->collectionId(), res );
-        return;
-    }
-
     if( d->randomize )
         d->sequence.randomize<PointerType>( list );
 
@@ -221,8 +196,34 @@ MemoryQueryMaker::handleResult()
     switch( d->type )
     {
         case QueryMaker::Custom :
-            AMAROK_NOTIMPLEMENTED
-            warning() << "MemoryQueryMaker CustomType not fully implemented, falling back to all tracks";
+        {
+            QStringList result;
+            TrackList tracks = m_collection->trackMap().values();
+            if( !d->returnFunctions.empty() )
+            {
+                foreach( CustomReturnFunction *function, d->returnFunctions )
+                {
+                    result.append( function->value( tracks ) );
+                }
+            }
+            else if( !d->returnValues.empty() )
+            {
+                int count = 0;
+                foreach( const Meta::TrackPtr &track, tracks )
+                {
+                    if ( d->maxsize >= 0 && count == d->maxsize )
+                        break;
+                
+                    foreach( CustomReturnValue *value, d->returnValues )
+                    {
+                        result.append( value->value( track ) );
+                    }
+                    count++;
+                }
+            }
+            emit newResultReady( m_collection->collectionId(), result );
+            break;
+        }
         case QueryMaker::Track :
         {
             TrackList tracks = m_collection->trackMap().values();
@@ -283,7 +284,34 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
     switch( d->type )
     {
         case QueryMaker::Custom :
-            AMAROK_NOTIMPLEMENTED
+        {
+            QStringList result;
+            if( !d->returnFunctions.empty() )
+            {
+                foreach( CustomReturnFunction *function, d->returnFunctions )
+                {
+                    result.append( function->value( tracks ) );
+                }
+            }
+            else if( !d->returnValues.empty() )
+            {
+                //TODO:sort track list first
+                int count = 0;
+                foreach( const Meta::TrackPtr &track, tracks )
+                {
+                    if ( d->maxsize >= 0 && count == d->maxsize )
+                        break;
+                    
+                    foreach( CustomReturnValue *value, d->returnValues )
+                    {
+                        result.append( value->value( track ) );
+                    }
+                    count++;
+                }
+            }
+            emit newResultReady( m_collection->collectionId(), result );
+            break;
+        }
         case QueryMaker::Track :
         {
             TrackList newResult;
@@ -420,17 +448,26 @@ MemoryQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 QueryMaker*
 MemoryQueryMaker::addReturnValue( qint64 value )
 {
-    Q_UNUSED( value );
-    //TODO stub
+    //MQM can not deliver sensible results if both a custom return value and a return function is selected
+    if( d->returnFunctions.empty() )
+    {
+        CustomReturnValue *returnValue = CustomValueFactory::returnValue( value );
+        if( returnValue )
+            d->returnValues.append( returnValue );
+    }
     return this;
 }
 
 QueryMaker*
 MemoryQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
-    d->applyReturnFunction = true;
-    d->returnFunction.first = function;
-    d->returnFunction.second = value;
+    //MQM can not deliver sensible results if both a custom return value and a return function is selected
+    if( d->returnValues.empty() )
+    {
+        CustomReturnFunction *returnFunction = CustomValueFactory::returnFunction( function, value );
+        if( returnFunction )
+            d->returnFunctions.append( returnFunction );
+    }
     return this;
 }
 
@@ -438,6 +475,7 @@ QueryMaker*
 MemoryQueryMaker::orderBy( qint64 value, bool descending )
 {
     Q_UNUSED( value ); Q_UNUSED( descending );
+    AMAROK_NOTIMPLEMENTED
     //TODO stub
     return this;
 }

@@ -245,6 +245,7 @@ set(collection_SRCS
     collection/MetaQueryMaker.cpp
     collection/QueryMaker.cpp
     collection/TrackForUrlWorker.cpp
+    collection/support/MemoryCustomValue.cpp
     collection/support/MemoryFilter.cpp
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
