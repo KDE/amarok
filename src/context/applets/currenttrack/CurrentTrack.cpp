@@ -278,11 +278,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - m_margin;
     m_ratingWidget->setPos( x, y );
     
-    //const int availableSpace = contentsRect().width() - labelX;
-    //const int offsetX = ( availableSpace - ( contentsRect().width() / 5 ) ) / 2;
-
-    //m_ratingWidget->setPos( labelX + offsetX, m_margin * 4.0 + textHeight * 3.0 - 5.0 );
-    
     dataEngine( "amarok-current" )->setProperty( "coverWidth", albumWidth );
 }
 
@@ -343,18 +338,12 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
 
-    const QString score = QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() );
-
     m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
 
-    QString playedLast = Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
-    QString playedLastVerbose =  Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
-    QString numPlayed = m_currentInfo[ Meta::Field::PLAYCOUNT ].toString();
+    m_score = QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() );
+    m_playedLast = Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
+    m_numPlayed  = m_currentInfo[ Meta::Field::PLAYCOUNT ].toString();
 
-    m_score = score ;
-    m_playedLast = playedLast;
-    m_numPlayed = numPlayed;
-    
     m_ratingWidget->setRating( m_rating );
 
     //scale pixmap on demand
@@ -362,16 +351,10 @@ void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::D
     m_bigCover = data[ "albumart" ].value<QPixmap>();
     m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
 
-
- /*   if( !resizeCover( m_bigCover, m_margin, size().toSize().height() - 28.0 ) )
-    {
-        warning() << "album cover of current track is null, did you forget to call Meta::Album::image?";
-    } */
     // without that the rating doesn't get update for a playing track
     update();
     updateConstraints();
 }
-
 
 QSizeF 
 CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
