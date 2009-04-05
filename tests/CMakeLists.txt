@@ -1,7 +1,9 @@
 ENABLE_TESTING()
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
-set( SmartPointerListTest_SRCS TestSmartPointerList.cpp )
+set( SmartPointerListTest_SRCS TestSmartPointerList.cpp ../src/SmartPointerList.cpp )
+
+qt4_automoc( SmartPointerListTest_SRCS )
 
 kde4_add_unit_test( SmartPointerListTest
   TESTNAME General-SmartPointerListTest
