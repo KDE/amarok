@@ -99,14 +99,12 @@ LastFmServiceSettings::testLogin()
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 
     QString authToken =  md5( ( m_configDialog->kcfg_ScrobblerUsername->text() + md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) ).toUtf8() );
-    QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "authToken" + authToken + "methodauth.getMobileSession" + QString( Ws::SharedSecret ) ).toUtf8() );
     
     // now authenticate w/ last.fm and get our session key
     WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
     .add( "username", m_configDialog->kcfg_ScrobblerUsername->text() )
     .add( "authToken", authToken )
     .add( "api_key", Ws::ApiKey )
-    .add( "api_sig", sign_key )
     .get();
     
     connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );

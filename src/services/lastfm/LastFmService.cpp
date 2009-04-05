@@ -220,7 +220,6 @@ LastFmService::init()
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
-    QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "authToken" + authToken + "methodauth.getMobileSession" + QString( Ws::SharedSecret ) ).toUtf8() );
 
     // now authenticate w/ last.fm and get our session key if we dont have one
     if( sessionKey.isEmpty() )
@@ -230,7 +229,6 @@ LastFmService::init()
         .add( "username", m_userName )
         .add( "authToken", authToken )
         .add( "api_key", Ws::ApiKey )
-        .add( "api_sig", sign_key )
         .get();
 
         connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
