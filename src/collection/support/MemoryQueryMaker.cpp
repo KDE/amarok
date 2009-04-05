@@ -29,8 +29,10 @@
 #include <QList>
 #include <QSet>
 #include <QStack>
+#include <QtAlgorithms>
 
 #include <KRandomSequence>
+#include <KSortableList>
 
 using namespace Meta;
 
@@ -69,6 +71,9 @@ struct MemoryQueryMaker::Private {
     bool usingFilters;
     bool randomize;
     KRandomSequence sequence;   //do not reset
+    qint64 orderByField;
+    bool orderDescending;
+    bool orderByNumberField;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -107,6 +112,9 @@ MemoryQueryMaker::reset()
     d->returnFunctions.clear();
     qDeleteAll( d->returnValues );
     d->returnValues.clear();
+    d->orderByField = 0;
+    d->orderDescending = false;
+    d->orderByNumberField = false;
     return this;
 }
 
@@ -171,16 +179,20 @@ MemoryQueryMaker::runQuery()
     m_collection->releaseLock();
 }
 
-template <class PointerType, class ListType>
-void MemoryQueryMaker::emitProperResult( ListType& list )
+template <class PointerType>
+void MemoryQueryMaker::emitProperResult( const QList<PointerType>& list )
 {
+   QList<PointerType> resultList = list;
     if( d->randomize )
-        d->sequence.randomize<PointerType>( list );
+        d->sequence.randomize<PointerType>( resultList );
+
+    if ( d->maxsize >= 0 && resultList.count() > d->maxsize )
+        resultList = resultList.mid( 0, d->maxsize );
 
     if( d->returnDataPtrs )
     {
         DataList data;
-        foreach( PointerType p, list )
+        foreach( PointerType p, resultList )
             data << DataPtr::staticCast( p );
 
         emit newResultReady( m_collection->collectionId(), data );
@@ -188,6 +200,109 @@ void MemoryQueryMaker::emitProperResult( ListType& list )
     else
         emit newResultReady( m_collection->collectionId(), list );
 }
+
+template <class PointerType>
+QList<PointerType>
+MemoryQueryMaker::orderListByName( const QList<PointerType> &list, qint64 value ) const
+{
+    QList<PointerType> resultList = list;
+    if( d->orderByField == value )
+    {
+        KSortableList<PointerType, QString> sortList;
+        foreach( PointerType pointer, list )
+        {
+            sortList.insert( pointer->name(), pointer );
+        }
+        sortList.sort();
+        QList<PointerType> tmpList;
+        typedef KSortableItem<PointerType,QString> SortItem;
+        foreach( SortItem item, sortList )
+        {
+           tmpList.append( item.second );
+        }
+        if( d->orderDescending )
+        {
+            //KSortableList uses qSort, which orders a list in ascending order
+            resultList.clear();
+            qCopyBackward( tmpList.begin(), tmpList.end(), resultList.end() );
+        }
+        else
+        {
+            resultList = tmpList;
+        }
+    }
+    return resultList;
+}
+
+Meta::TrackList
+MemoryQueryMaker::orderListByString( const Meta::TrackList &tracks, qint64 value ) const
+{
+    Meta::TrackList resultList = tracks;
+    CustomReturnValue *crv = CustomValueFactory::returnValue( value );
+    if( crv )
+    {
+        KSortableList<Meta::TrackPtr, QString> sortList;
+        foreach( const Meta::TrackPtr &pointer, tracks )
+        {
+            sortList.insert( crv->value( pointer ), pointer );
+        }
+        sortList.sort();
+        Meta::TrackList tmpList;
+        typedef KSortableItem<Meta::TrackPtr,QString> SortItem;
+        foreach( SortItem item, sortList )
+        {
+           tmpList.append( item.second );
+        }
+        if( d->orderDescending )
+        {
+            //KSortableList uses qSort, which orders a list in ascending order
+            resultList.clear();
+            qCopyBackward( tmpList.begin(), tmpList.end(), resultList.end() );
+        }
+        else
+        {
+            resultList = tmpList;
+        }
+    }
+    delete crv;
+    return resultList;
+}
+
+Meta::TrackList
+MemoryQueryMaker::orderListByNumber( const Meta::TrackList &tracks, qint64 value ) const
+{
+    Meta::TrackList resultList = tracks;
+    CustomReturnValue *crv = CustomValueFactory::returnValue( value );
+    if( crv )
+    {
+        KSortableList<Meta::TrackPtr, double> sortList;
+        foreach( const Meta::TrackPtr &pointer, tracks )
+        {
+            sortList.insert( crv->value( pointer ).toDouble(), pointer );
+        }
+        sortList.sort();
+        Meta::TrackList tmpList;
+        typedef KSortableItem<Meta::TrackPtr,double> SortItem;
+        foreach( SortItem item, sortList )
+        {
+           tmpList.append( item.second );
+        }
+        if( d->orderDescending )
+        {
+            //KSortableList uses qSort, which orders a list in ascending order
+            resultList.clear();
+            qCopyBackward( tmpList.begin(), tmpList.end(), resultList.end() );
+        }
+        else
+        {
+            resultList = tmpList;
+        }
+    }
+    delete crv;
+    return resultList;
+}
+
+
 
 void
 MemoryQueryMaker::handleResult()
@@ -201,6 +316,7 @@ MemoryQueryMaker::handleResult()
             TrackList tracks = m_collection->trackMap().values();
             if( !d->returnFunctions.empty() )
             {
+                //no sorting necessary
                 foreach( CustomReturnFunction *function, d->returnFunctions )
                 {
                     result.append( function->value( tracks ) );
@@ -208,6 +324,16 @@ MemoryQueryMaker::handleResult()
             }
             else if( !d->returnValues.empty() )
             {
+                if( d-> orderByField )
+                {
+                    if( d->orderByNumberField )
+                        tracks = orderListByNumber( tracks, d->orderByField );
+                    else
+                        tracks = orderListByString( tracks, d->orderByField );
+                }
+                if( d->randomize )
+                    d->sequence.randomize<Meta::TrackPtr>( tracks );
+
                 int count = 0;
                 foreach( const Meta::TrackPtr &track, tracks )
                 {
@@ -227,49 +353,83 @@ MemoryQueryMaker::handleResult()
         case QueryMaker::Track :
         {
             TrackList tracks = m_collection->trackMap().values();
-            if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
-                tracks = tracks.mid( 0, d->maxsize );
-            emitProperResult<TrackPtr, TrackList>( tracks );
+
+            if( d->orderByField )
+            {
+                if( d->orderByNumberField )
+                    tracks = orderListByNumber( tracks, d->orderByField );
+                else
+                    tracks = orderListByString( tracks, d->orderByField );
+            }
+
+            emitProperResult<TrackPtr>( tracks );
             break;
         }
         case QueryMaker::Album :
         {
             AlbumList albums = m_collection->albumMap().values();
-            if ( d->maxsize >= 0 && albums.count() > d->maxsize )
-                albums = albums.mid( 0, d->maxsize );
-            emitProperResult<AlbumPtr, AlbumList>( albums );
+            albums = orderListByName<Meta::AlbumPtr>( albums, Meta::valAlbum );
+
+            emitProperResult<AlbumPtr>( albums );
             break;
         }
         case QueryMaker::Artist :
         {
             ArtistList artists = m_collection->artistMap().values();
-            if ( d->maxsize >= 0 && artists.count() > d->maxsize )
-                artists = artists.mid( 0, d->maxsize );
-            emitProperResult<ArtistPtr, ArtistList>( artists );
+            artists = orderListByName<Meta::ArtistPtr>( artists, Meta::valArtist );
+
+            emitProperResult<ArtistPtr>( artists );
             break;
         }
         case QueryMaker::Composer :
         {
             ComposerList composers = m_collection->composerMap().values();
-            if ( d->maxsize >= 0 && composers.count() > d->maxsize )
-                composers = composers.mid( 0, d->maxsize );
-            emitProperResult<ComposerPtr, ComposerList>( composers );
+            composers = orderListByName<Meta::ComposerPtr>( composers, Meta::valComposer );
+
+            emitProperResult<ComposerPtr>( composers );
             break;
         }
         case QueryMaker::Genre :
         {
             GenreList genres = m_collection->genreMap().values();
-            if ( d->maxsize >= 0 && genres.count() > d->maxsize )
-                genres = genres.mid( 0, d->maxsize );
-            emitProperResult<GenrePtr, GenreList>( genres );
+            genres = orderListByName<Meta::GenrePtr>( genres, Meta::valGenre );
+
+            emitProperResult<GenrePtr>( genres );
             break;
         }
         case QueryMaker::Year :
         {
             YearList years = m_collection->yearMap().values();
-            if ( d->maxsize >= 0 && years.count() > d->maxsize )
-                years = years.mid( 0, d->maxsize );
-            emitProperResult<YearPtr, YearList>( years );
+        
+            //this a special case which requires a bit of code duplication
+            //years have to be ordered as numbers, bu orderListByNumber does not work for Meta::YearPtrs
+            if( d->orderByField == Meta::valYear )
+            {
+                KSortableList<Meta::YearPtr, double> sortList;
+                foreach( Meta::YearPtr pointer, years )
+                {
+                    sortList.insert( pointer->name().toDouble(), pointer );
+                }
+                sortList.sort();
+                QList<Meta::YearPtr> tmpList;
+                typedef KSortableItem<Meta::YearPtr,double> SortItem;
+                foreach( SortItem item, sortList )
+                {
+                    tmpList.append( item.second );
+                }
+                if( d->orderDescending )
+                {
+                    //KSortableList uses qSort, which orders a list in ascending order
+                    years.clear();
+                    qCopyBackward( tmpList.begin(), tmpList.end(), years.end() );
+                }
+                else
+                {
+                    years = tmpList;                    
+                }
+            }
+
+            emitProperResult<YearPtr>( years );
             break;
         }
         case QueryMaker::None :
@@ -288,6 +448,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QStringList result;
             if( !d->returnFunctions.empty() )
             {
+                //no sorting necessary
                 foreach( CustomReturnFunction *function, d->returnFunctions )
                 {
                     result.append( function->value( tracks ) );
@@ -295,9 +456,19 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             }
             else if( !d->returnValues.empty() )
             {
-                //TODO:sort track list first
+                Meta::TrackList resultTracks = tracks;
+                if( d->orderByField )
+                {
+                    if( d->orderByNumberField )
+                        resultTracks = orderListByNumber( resultTracks, d->orderByField );
+                    else
+                        resultTracks = orderListByString( resultTracks, d->orderByField );
+                }
+                if( d->randomize )
+                    d->sequence.randomize<Meta::TrackPtr>( resultTracks );
+
                 int count = 0;
-                foreach( const Meta::TrackPtr &track, tracks )
+                foreach( const Meta::TrackPtr &track, resultTracks )
                 {
                     if ( d->maxsize >= 0 && count == d->maxsize )
                         break;
@@ -315,12 +486,16 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
         case QueryMaker::Track :
         {
             TrackList newResult;
-            if ( d->maxsize < 0 || tracks.count() <= d->maxsize )
-                newResult = tracks;
-            else
-                newResult = tracks.mid( 0, d->maxsize );
 
-            emitProperResult<TrackPtr, TrackList>( newResult );
+            if( d->orderByField )
+            {
+                if( d->orderByNumberField )
+                    newResult = orderListByNumber( tracks, d->orderByField );
+                else
+                    newResult = orderListByString( tracks, d->orderByField );
+            }
+
+            emitProperResult<TrackPtr>( newResult );
             break;
         }
         case QueryMaker::Album :
@@ -328,12 +503,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<AlbumPtr> albumSet;
             foreach( TrackPtr track, tracks )
             {
-                if ( d->maxsize >= 0 && albumSet.count() == d->maxsize )
-                    break;
                 albumSet.insert( track->album() );
             }
             AlbumList albumList = albumSet.toList();
-            emitProperResult<AlbumPtr, AlbumList>( albumList );
+            albumList = orderListByName<Meta::AlbumPtr>( albumList, Meta::valAlbum );
+            emitProperResult<AlbumPtr>( albumList );
             break;
         }
         case QueryMaker::Artist :
@@ -341,12 +515,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<ArtistPtr> artistSet;
             foreach( TrackPtr track, tracks )
             {
-                if ( d->maxsize >= 0 && artistSet.count() == d->maxsize )
-                    break;
                 artistSet.insert( track->artist() );
             }
             ArtistList list = artistSet.toList();
-            emitProperResult<ArtistPtr, ArtistList>( list );
+            list = orderListByName<Meta::ArtistPtr>( list, Meta::valArtist );
+            emitProperResult<ArtistPtr>( list );
             break;
         }
         case QueryMaker::Genre :
@@ -354,12 +527,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<GenrePtr> genreSet;
             foreach( TrackPtr track, tracks )
             {
-                if ( d->maxsize >= 0 && genreSet.count() == d->maxsize )
-                    break;
                 genreSet.insert( track->genre() );
             }
             GenreList list = genreSet.toList();
-            emitProperResult<GenrePtr, GenreList>( list );
+            list = orderListByName<Meta::GenrePtr>( list, Meta::valGenre );
+            emitProperResult<GenrePtr>( list );
             break;
         }
         case QueryMaker::Composer :
@@ -367,12 +539,11 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<ComposerPtr> composerSet;
             foreach( TrackPtr track, tracks )
             {
-                if ( d->maxsize >= 0 && composerSet.count() == d->maxsize )
-                    break;
                 composerSet.insert( track->composer() );
             }
             ComposerList list = composerSet.toList();
-            emitProperResult<ComposerPtr, ComposerList>( list );
+            list = orderListByName<Meta::ComposerPtr>( list, Meta::valComposer );
+            emitProperResult<ComposerPtr>( list );
             break;
         }
         case QueryMaker::Year :
@@ -380,12 +551,38 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<YearPtr> yearSet;
             foreach( TrackPtr track, tracks )
             {
-                if ( d->maxsize >= 0 && yearSet.count() == d->maxsize )
-                    break;
                 yearSet.insert( track->year() );
             }
-            YearList list = yearSet.toList();
-            emitProperResult<YearPtr, YearList>( list );
+            YearList years = yearSet.toList();
+                        //this a special case which requires a bit of code duplication
+            //years have to be ordered as numbers, bu orderListByNumber does not work for Meta::YearPtrs
+            if( d->orderByField == Meta::valYear)
+            {
+                KSortableList<Meta::YearPtr, double> sortList;
+                foreach( Meta::YearPtr pointer, years )
+                {
+                    sortList.insert( pointer->name().toDouble(), pointer );
+                }
+                sortList.sort();
+                QList<Meta::YearPtr> tmpList;
+                typedef KSortableItem<Meta::YearPtr,double> SortItem;
+                foreach( SortItem item, sortList )
+                {
+                    tmpList.append( item.second );
+                }
+                if( d->orderDescending )
+                {
+                    //KSortableList uses qSort, which orders a list in ascending order
+                    years.clear();
+                    qCopyBackward( tmpList.begin(), tmpList.end(), years.end() );
+                }
+                else
+                {
+                    years = tmpList;                    
+                }
+            }
+
+            emitProperResult<YearPtr>( years );
             break;
         }
         case QueryMaker::None:
@@ -474,9 +671,29 @@ MemoryQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 QueryMaker*
 MemoryQueryMaker::orderBy( qint64 value, bool descending )
 {
-    Q_UNUSED( value ); Q_UNUSED( descending );
-    AMAROK_NOTIMPLEMENTED
-    //TODO stub
+    d->orderByField = value;
+    d->orderDescending = descending;
+    switch( value )
+    {
+        case Meta::valYear:
+        case Meta::valDiscNr:
+        case Meta::valTrackNr:
+        case Meta::valScore:
+        case Meta::valRating:
+        case Meta::valPlaycount:
+        case Meta::valFilesize:
+        case Meta::valSamplerate:
+        case Meta::valBitrate:
+        case Meta::valLength:
+        {
+            d->orderByNumberField = true;
+            break;
+        }
+        //TODO: what about Meta::valFirstPlayed, Meta::valCreateDate or Meta::valLastPlayed??
+
+        default:
+            d->orderByNumberField = false;
+    }
     return this;
 }
 
