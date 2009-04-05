@@ -201,6 +201,16 @@ void MemoryQueryMaker::emitProperResult( const QList<PointerType>& list )
         emit newResultReady( m_collection->collectionId(), list );
 }
 
+template<typename T>
+static inline QList<T> reverse(const QList<T> &l)
+{
+    QList<T> ret;
+    for (int i=l.size() - 1; i>=0; --i)
+        ret.append(l.at(i));
+    return ret;
+}
+
+
 template <class PointerType>
 QList<PointerType>
 MemoryQueryMaker::orderListByName( const QList<PointerType> &list, qint64 value ) const
@@ -223,8 +233,7 @@ MemoryQueryMaker::orderListByName( const QList<PointerType> &list, qint64 value 
         if( d->orderDescending )
         {
             //KSortableList uses qSort, which orders a list in ascending order
-            resultList.clear();
-            qCopyBackward( tmpList.begin(), tmpList.end(), resultList.end() );
+            resultList = reverse<PointerType>( tmpList );
         }
         else
         {
@@ -256,8 +265,7 @@ MemoryQueryMaker::orderListByString( const Meta::TrackList &tracks, qint64 value
         if( d->orderDescending )
         {
             //KSortableList uses qSort, which orders a list in ascending order
-            resultList.clear();
-            qCopyBackward( tmpList.begin(), tmpList.end(), resultList.end() );
+            resultList = reverse<Meta::TrackPtr>( tmpList );
         }
         else
         {
@@ -290,8 +298,7 @@ MemoryQueryMaker::orderListByNumber( const Meta::TrackList &tracks, qint64 value
         if( d->orderDescending )
         {
             //KSortableList uses qSort, which orders a list in ascending order
-            resultList.clear();
-            qCopyBackward( tmpList.begin(), tmpList.end(), resultList.end() );
+            resultList = reverse<Meta::TrackPtr>( tmpList );
         }
         else
         {
@@ -420,8 +427,7 @@ MemoryQueryMaker::handleResult()
                 if( d->orderDescending )
                 {
                     //KSortableList uses qSort, which orders a list in ascending order
-                    years.clear();
-                    qCopyBackward( tmpList.begin(), tmpList.end(), years.end() );
+                    years = reverse<Meta::YearPtr>( tmpList );
                 }
                 else
                 {
@@ -573,8 +579,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 if( d->orderDescending )
                 {
                     //KSortableList uses qSort, which orders a list in ascending order
-                    years.clear();
-                    qCopyBackward( tmpList.begin(), tmpList.end(), years.end() );
+                    years = reverse<Meta::YearPtr>( tmpList );
                 }
                 else
                 {
