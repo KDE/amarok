@@ -35,7 +35,6 @@ BookmarkGroup::BookmarkGroup( const QStringList & dbResultRow, BookmarkGroupPtr 
     m_name = dbResultRow[2];
     m_description = dbResultRow[3];
     m_customType = QString();
-
 }
 
 BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
@@ -49,7 +48,8 @@ BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
     , m_hasFetchedChildPlaylists( false )
 {
 
-    if ( parent.isNull() ) {
+    if ( parent.isNull() )
+    {
         //root item
         m_dbId = -1;
     }
@@ -87,8 +87,6 @@ BookmarkGroup::BookmarkGroup( const QString &name, const QString &customType )
         m_dbId = -1;
         save();
     }
-    
-    
 }
 
 
@@ -102,6 +100,7 @@ BookmarkGroup::~BookmarkGroup()
 void BookmarkGroup::save()
 {
     DEBUG_BLOCK
+
     int parentId = -1;
     if ( m_parent )
         parentId = m_parent->id();
@@ -111,22 +110,22 @@ void BookmarkGroup::save()
         QString query = "UPDATE bookmark_groups SET parent_id=%1, name='%2', description='%3', custom='%4%' WHERE id=%5;";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( m_customType ).arg( QString::number( m_dbId ) );
         CollectionManager::instance()->sqlStorage()->query( query );
-
-    } else {
+    }
+    else
+    {
         //insert new
-
         QString query = "INSERT INTO bookmark_groups ( parent_id, name, description, custom) VALUES ( %1, '%2', '%3', '%4' );";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg( m_description ).arg( m_customType );
         m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
 
     }
-
 }
 
 BookmarkGroupList BookmarkGroup::childGroups() const
 {
     //DEBUG_BLOCK
-    if ( !m_hasFetchedChildGroups ) {
+    if ( !m_hasFetchedChildGroups )
+    {
 
         QString query = "SELECT id, parent_id, name, description FROM bookmark_groups where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
@@ -169,6 +168,7 @@ BookmarkList BookmarkGroup::childBookmarks() const
         }
         m_hasFetchedChildPlaylists = true;
     }
+
     return m_childBookmarks;
 }
 
@@ -204,8 +204,6 @@ void BookmarkGroup::clear()
     m_hasFetchedChildGroups = false;
     m_hasFetchedChildPlaylists = false;
 }
-
-
 
 void BookmarkGroup::rename(const QString & name)
 {
