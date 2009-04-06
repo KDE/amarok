@@ -55,11 +55,11 @@ email                : markey@web.de
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
-#include <KShell>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KSplashScreen>
 #include <KStandardDirs>
 
+#include <QByteArray>
 #include <QFile>
 #include <KPixmapCache>
 #include <QStringList>

@@ -25,7 +25,6 @@
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 
-#include <QByteArray>
 #include <QHash>
 #include <QPointer>
 #include <QString>
