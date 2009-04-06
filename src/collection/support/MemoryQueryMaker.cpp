@@ -500,6 +500,8 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 else
                     newResult = orderListByString( tracks, d->orderByField );
             }
+            else
+                newResult = tracks;
 
             emitProperResult<TrackPtr>( newResult );
             break;
