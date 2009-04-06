@@ -44,9 +44,9 @@ BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
     , m_parent( parent )
     , m_name( name )
     , m_description( QString() )
+    , m_customType( QString() )
     , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
-    , m_customType( QString() )
 {
 
     if ( parent.isNull() ) {
