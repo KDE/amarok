@@ -864,9 +864,15 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     else
         attributes["path"] = path;
     attributes["filetype"]  = QString::number( fileType );
-    const int bitrate = fileref.audioProperties()->bitrate();
-    const int length = fileref.audioProperties()->length();
-    const int samplerate = fileref.audioProperties()->sampleRate();
+    int bitrate = -2;
+    int length = -2;
+    int samplerate = -2;
+    if( fileref.audioProperties() )
+    {
+        bitrate = fileref.audioProperties()->bitrate();
+        length = fileref.audioProperties()->length();
+        samplerate = fileref.audioProperties()->sampleRate();
+    }
     static const int Undetermined = -2;
     if ( bitrate == Undetermined || length == Undetermined || samplerate == Undetermined )
         attributes["audioproperties"] = "false";

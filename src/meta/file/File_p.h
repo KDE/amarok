@@ -165,9 +165,12 @@ void Track::Private::readMetaData()
     }
     if( !fileRef.isNull() )
     {
-        m_data.bitRate = fileRef.audioProperties()->bitrate();
-        m_data.sampleRate = fileRef.audioProperties()->sampleRate();
-        m_data.length = fileRef.audioProperties()->length();
+        if( fileRef.audioProperties() )
+        {
+            m_data.bitRate = fileRef.audioProperties()->bitrate();
+            m_data.sampleRate = fileRef.audioProperties()->sampleRate();
+            m_data.length = fileRef.audioProperties()->length();
+        }
 
         Meta::ReplayGainTagMap map = Meta::readReplayGainTags( fileRef );
         if ( map.contains( Meta::ReplayGain_Track_Gain ) )
