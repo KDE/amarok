@@ -46,7 +46,6 @@ class SqlPodcastEpisode : public PodcastEpisode
         ~SqlPodcastEpisode();
 
         //Track Methods
-        QString type() const { return i18n("SQL Podcast"); };
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
@@ -57,7 +56,6 @@ class SqlPodcastEpisode : public PodcastEpisode
         void deleteFromDb();
 
     private:
-
         bool m_batchUpdate;
 
         int m_dbId; //database ID

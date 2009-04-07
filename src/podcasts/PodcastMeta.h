@@ -161,7 +161,11 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual uint lastPlayed() const { return 0; }
         virtual int playCount() const { return 0; }
 
-        virtual QString type() const { return i18n( "Podcast" ); }
+        virtual QString type() const
+        {
+            const QString fileName = playableUrl().fileName();
+            return fileName.mid( fileName.lastIndexOf( '.' ) + 1 );
+        }
 
         virtual void beginMetaDataUpdate() {}
         virtual void endMetaDataUpdate() {}
