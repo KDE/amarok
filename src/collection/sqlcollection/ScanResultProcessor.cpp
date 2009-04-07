@@ -633,8 +633,20 @@ ScanResultProcessor::checkAlbumArtists( const QFileInfo &file, const QString &al
     //No tracks in the album are from an artist other than the one specified
     if( result.isEmpty() ) 
         return 0;
+
+    //Include tracks with same artist in update--some VA albums have >1 track by 1 artist
+    query = "SELECT u.deviceid, u.rpath, t.id, t.artist "
+                    "FROM tracks_temp t "
+                    "INNER JOIN albums_temp a "
+                      "ON a.id = t.album "
+                    "INNER JOIN urls_temp u "
+                      "ON u.id = t.url "
+                    "WHERE t.album = a.id "
+                      "AND a.name = '%1' ;";
+    query = query.arg( m_collection->escape( album ) );
+    result = m_collection->query( query );
     
-    //Calculate a list of tracks with a different artist, same album and same directory
+    //Calculate a list of tracks with same album and same directory
     QStringList trackIds;
     for( QListIterator<QString> iter( result ); iter.hasNext(); )
     {
@@ -651,7 +663,7 @@ ScanResultProcessor::checkAlbumArtists( const QFileInfo &file, const QString &al
     if( !trackIds.isEmpty() )
     {
         int compilationId = albumId( album, 0 );
-        const QString trackIdsInAlbum = trackIds.join(",");;
+        const QString trackIdsInAlbum = trackIds.join(",");
         query = "UPDATE tracks_temp SET album = %1 where id IN (%2);";
         query = query.arg( QString::number( compilationId ), trackIdsInAlbum );
         m_collection->query( query );
