@@ -19,6 +19,7 @@
 #ifndef PODCASTMETA_H
 #define PODCASTMETA_H
 
+#include "Amarok.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 
@@ -164,7 +165,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual QString type() const
         {
             const QString fileName = playableUrl().fileName();
-            return fileName.mid( fileName.lastIndexOf( '.' ) + 1 );
+            return Amarok::extension( fileName );
         }
 
         virtual void beginMetaDataUpdate() {}
