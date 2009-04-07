@@ -138,30 +138,35 @@ OSDWidget::volumeChanged( int volume )
 }
 
 void
-OSDWidget::show() //virtual
+OSDWidget::setVisible( bool visible )
 {
-    if ( !isEnabled() || m_text.isEmpty() )
-        return;
-
-    const uint M = fontMetrics().width( 'x' );
-
-    const QRect oldGeometry = QRect( pos(), size() );
-    const QRect newGeometry = determineMetrics( M );
-
-    if( newGeometry.width() > 0 && newGeometry.height() > 0 )
+    if ( visible )
     {
-        m_m = M;
-        m_size = newGeometry.size();
-        setGeometry( newGeometry );
-        QWidget::show();
+        if ( !isEnabled() || m_text.isEmpty() )
+            return;
 
-        if( m_duration ) //duration 0 -> stay forever
-            m_timer->start( m_duration ); //calls hide()
+        const uint M = fontMetrics().width( 'x' );
+
+        const QRect oldGeometry = QRect( pos(), size() );
+        const QRect newGeometry = determineMetrics( M );
+
+        if( newGeometry.width() > 0 && newGeometry.height() > 0 )
+        {
+            m_m = M;
+            m_size = newGeometry.size();
+            setGeometry( newGeometry );
+            QWidget::setVisible( visible );
+
+            if( m_duration ) //duration 0 -> stay forever
+                m_timer->start( m_duration ); //calls hide()
+        }
+        else
+            warning() << "Attempted to make an invalid sized OSD\n";
+
+        update();
     }
-    else
-        warning() << "Attempted to make an invalid sized OSD\n";
-
-    update();
+    else 
+        QWidget::setVisible( visible );
 }
 
 QRect
@@ -427,7 +432,8 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     f.setPointSize( 16 );
     setFont( f );
     setTranslucent( AmarokConfig::osdUseTranslucency() );
-    show( m_text, m_cover );
+    setText( m_text );
+    setImage( m_cover );
 }
 
 void

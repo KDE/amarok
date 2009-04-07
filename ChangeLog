@@ -9,6 +9,8 @@ VERSION 2.1-beta2
   CHANGES:
 
   BUGFIXES:
+    * Don't flash the OSD when opening the settings dialog. Patch thanks
+      to Andreas Heider <andreas@meetr.de>.
     * Podcast file formats are correctly displayed.
     * Don't crash when pressing Delete on empty playlist. (BR 189021)
 

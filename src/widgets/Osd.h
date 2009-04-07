@@ -51,7 +51,8 @@ class OSDWidget : public QWidget
         void volumeChanged( int volume );
 
         /** reimplemented, shows the OSD */
-        virtual void show();
+        virtual void show() { QWidget::show(); };
+        virtual void setVisible( bool visible );
 
         /**
          * For the sake of simplicity, when these settings are

@@ -58,7 +58,7 @@ OsdConfig::OsdConfig( QWidget* parent )
     connect( kcfg_OsdScreen,          SIGNAL( activated( int ) ),
              m_osdPreview,            SLOT( setScreen( int ) ) );
     connect( kcfg_OsdEnabled,         SIGNAL( toggled( bool ) ),
-             m_osdPreview,            SLOT( setShown( bool ) ) );
+             m_osdPreview,            SLOT( setVisible( bool ) ) );
     connect( kcfg_OsdUseTranslucency, SIGNAL( toggled( bool ) ),
              m_osdPreview,            SLOT( setTranslucent( bool ) ) );
 
