@@ -129,13 +129,16 @@ void
 Playlist::PrettyListView::removeSelection()
 {
     QList<int> sr = selectedRows();
-    qSort( sr );
-    int firstRow = sr.first();
-    Controller::instance()->removeRows( sr );
+    if( !sr.isEmpty() )
+    {
+        qSort( sr );
+        int firstRow = sr.first();
+        Controller::instance()->removeRows( sr );
 
-    //select the track immediately above the cleared are as this is the one that ow has internal focus.
-    firstRow = qBound( 0, firstRow, model()->rowCount() -1 );
-    selectionModel()->select( model()->index( firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+        //select the track immediately above the cleared are as this is the one that ow has internal focus.
+        firstRow = qBound( 0, firstRow, model()->rowCount() -1 );
+        selectionModel()->select( model()->index( firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+    }
 }
 
 void
