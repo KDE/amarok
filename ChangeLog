@@ -29,7 +29,7 @@ VERSION 2.1-beta1
     * Add support for showing a stream with multiple alternative servers as a
       single item in the playlist and add GUI for manually selecting prefered
       source.
-    * Ampache service: Add support for Ampache 3.5.x as well as 3.4.4.
+    * Ampache service: Add support for Ampache 3.4.4 and 3.5.x.
     * Auto timecoding (position bookmarking) now exists for tracks with length
       greater than 10 minutes. (BR 148740)
     * Add a animated "loading..." screen when dynamically fetching info about
@@ -65,7 +65,7 @@ VERSION 2.1-beta1
       By left clicking in the url it's copied to the clipboard. (BR 180853)
     * The Playlist Browser can now show playlists from multiple sources,
       including media devices.
-    * The last.fm service now allows for the playing of all types of user
+    * The Last.fm service now allows for the playing of all types of user
       stations (personal, loved tracks, recommendations, and neighborhood).
     * Arbitrary Tags can now be played in the last.fm service. (BR 139802)
     * Replay Gain support for most file formats that Amarok can read tags from.
@@ -89,18 +89,16 @@ VERSION 2.1-beta1
 
   CHANGES:
     * New splash screen by Wade Olson <wade@corefunction.com>.
-    * Magnatune.com store: When downloading albums (Either by purchasing or
+    * Magnatune.com store: When downloading albums (either by purchasing or
       free membership downloads) remember the file format and download 
       location for next time.
     * Links in the lyrics applet are now clickable and open with the default
       external web browser (BR 179396)
     * Collection browser has been pimped.
-    * Bring back animations in the browsers if built with Qt 4.5 or later.
+    * Bring back animations in the browsers if Qt 4.5 or later is detected.
     * The collection scanner is now being provided in a separate package.
-      Packagers should be packaging this (and soon other utilities) into an
-      amarok-utils or amarok-utilities package.
     * The TagLib plugins formerly provided by Amarok are now being provided in
-      a separate package.  It should be available in most distributions as
+      a separate package. It should be available in most distributions as
       taglib-extras.
     * Improvements to playlist searching and filtering. No longer reset view
       to the top when clearing a search term. No longer scroll into the results
@@ -109,8 +107,8 @@ VERSION 2.1-beta1
       volume level any more. (BR 172392)
     * Remove score, last played and play count from the current track applet
       for tracks that does not have any of them (mainly streams).
-    * Don't Pretend to be able to seek if the source isn't seekable.
-    * Filebrowser UI has been tweaked for better usability.
+    * Don't pretend to be able to seek if the source isn't seekable.
+    * File Browser UI has been tweaked for better usability.
     * The Bookmark Handler in the File Browser no longer causes a crash-on-exit,
       so it has been re-enabled. (BR 173634)
     * Performance optimisation when loading large playlists, and hence faster
@@ -120,13 +118,12 @@ VERSION 2.1-beta1
     * Increased width of volume slider for greater precision.
     * Use the speex, trueaudio and wavpack support in TagLib 1.5, rather than
       our own plugins.
-    * Doubleclick on a podcast channel appends all it's child episodes to the
-      playlist.
+    * Double click on a podcast channel appends all episodes to the playlist.
     * Delete and download actions will only be shown when relevant to the
       selected podcast episode.
     * Major refactoring of the podcast model and view to allow custom actions
       per podcasts source.
-    * Compilation fixed for the OpenSolaris Operating System.
+    * Compilation fixed for OpenSolaris.
     * Show the cover menu when right clicking on artwork in the Tag Dialog.
     * Don't remove queued tracks from the playlist when repopulating dynamic
       playlists.
@@ -152,19 +149,19 @@ VERSION 2.1-beta1
       above it. (BR 181947)
     * Show the current playing song when resuming playback of a track not in
       the collection. (BR 173912)
-    * Fix crash when using ctrl+mousewheel on Files browser. Patch by Valentin
+    * Fix crash when using ctrl+mousewheel in the File Browser. Patch by Valentin
       Rouet <v.rouet@gmail.com>. (BR 175803)
     * Fix actions choosen from context menu in a filtered playlist getting
       applied to wrong track(s). (BR 186573) (BR 185054)
     * Try to detect the charset of cue sheets. (BR 184769)
     * Make opening an external webbrowser working on Windows, too.
-    * The Files browser now remembers its sorting order. (BR 186444)
+    * The File Browser now remembers its sort order. (BR 186444)
     * When editing info for multiple tracks, do not write to the files if only
       editing info that is stored in the db and not in the actual files (such
       as ratings). (BR 184836)
-    * Paint Lyrics Applet correctly with dark color schemes. (BR 183037)
-    * When turning on a dynamic playlist, automatically repopulate if The
-      Playlist is empty. (BR 183968)
+    * Render the lyrics applet correctly with dark color schemes. (BR 183037)
+    * When turning on a dynamic playlist, automatically populate the playlist if
+      it is empty. (BR 183968)
     * Don't crash if using an invalid codec name AmarokLyricsScript conversion
       functions. (BR 185540)
     * Actually stop playback if we encounter too many errors.
@@ -181,7 +178,7 @@ VERSION 2.1-beta1
       album) tags.
     * QtScript correctly writes the tags of tracks metadata it changes. 
       (BR 182667)
-    * Fix "Stop Playing After Track". It is working now. (BR 180486)
+    * Fix "Stop Playing After Track". (BR 180486)
     * Fix switching tracks in random tracks mode. (BR 176019)
     * Fix grouping of Stream and File meta objects. This affects many cases,
       Such as when loading a playlist containing tracks from a scripted
@@ -191,7 +188,7 @@ VERSION 2.1-beta1
       (BR 180164)
     * Don't show the rating widget for tracks which are not in the collection.
       (BR 180023)
-    * The negation operator (the minus sign) works in the collection browser.
+    * The negation operator works in the collection browser filter.
 
 
 VERSION 2.0.2
