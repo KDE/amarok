@@ -33,9 +33,8 @@ class SumReturnFunction : public CustomReturnFunction
             
             double sum = 0.0;
             foreach( const Meta::TrackPtr &track, tracks )
-            {
                 sum += returnValue->value( track ).toDouble();
-            }
+            
             return QString::number( sum );
         }
     
@@ -51,19 +50,13 @@ class MinimumReturnFunction : public CustomReturnFunction
         
         QString value( const Meta::TrackList &tracks ) const
         {
-            double min = 0.0;
             if( tracks.empty() || !returnValue )
-            {
                 return QString::number( 0 );
-            }
-            else
-            {
-                min = returnValue->value( tracks.first() ).toDouble();
-            }
+            
+            double min = returnValue->value( tracks.first() ).toDouble();
             foreach( const Meta::TrackPtr &track, tracks )
-            {
                 min = qMin( min, returnValue->value( track ).toDouble() );
-            }
+            
             return QString::number( min );
         }
     
@@ -79,19 +72,13 @@ class MaximumReturnFunction : public CustomReturnFunction
         
         QString value( const Meta::TrackList &tracks ) const
         {
-            double max = 0.0;
             if( tracks.empty() || !returnValue )
-            {
                 return QString::number( 0 );
-            }
-            else
-            {
-                max = returnValue->value( tracks.first() ).toDouble();
-            }
+
+            double max = returnValue->value( tracks.first() ).toDouble();
             foreach( const Meta::TrackPtr &track, tracks )
-            {
                 max = qMax( max, returnValue->value( track ).toDouble() );
-            }
+
             return QString::number( max );
         }
     
