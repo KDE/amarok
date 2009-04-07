@@ -9,8 +9,8 @@ VERSION 2.1-beta2
   CHANGES:
 
   BUGFIXES:
+    * Podcast file formats are correctly displayed.
     * Don't crash when pressing Delete on empty playlist. (BR 189021)
-
 
 
 VERSION 2.1-beta1
