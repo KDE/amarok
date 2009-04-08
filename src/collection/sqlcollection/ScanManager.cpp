@@ -314,6 +314,20 @@ ScanManager::slotError( QProcess::ProcessError error )
     {
         handleRestart();
     }
+    else
+    {
+        debug() << "Unknown error: reseting scan manager state";
+        slotReadReady(); //make sure that we read the complete buffer
+
+        disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+        disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
+        disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
+        m_scanner->deleteLater();
+        m_scanner = 0;
+        
+        m_parser->deleteLater();
+        m_parser = 0;
+    }
 }
 
 bool
