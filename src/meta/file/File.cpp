@@ -20,6 +20,7 @@
 #include "File.h"
 #include "File_p.h"
 
+#include "Amarok.h"
 #include "BookmarkMetaActions.h"
 #include "Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
@@ -495,7 +496,7 @@ Track::replayPeakGain( Meta::Track::ReplayGainMode mode ) const
 QString
 Track::type() const
 {
-    return d->url.fileName().mid( d->url.fileName().lastIndexOf( '.' ) + 1 );
+    return Amarok::extension( d->url.fileName() );
 }
 
 void
