@@ -74,9 +74,9 @@ class ScanResultProcessor : public QObject
         void updateAftPermanentTablesUrlString( const QString &url, const QString &uid );
         void updateAftPermanentTablesUidString( const QString &url, const QString &uid );
 
-        int checkAlbumArtists( const QFileInfo &file, const QString &album, int artistId );
+        int checkExistingAlbums( const QString &album );
 
-        QString findAlbumArtist( const QSet<QString> &artists ) const;
+        QString findAlbumArtist( const QSet<QString> &artists, int trackCount ) const;
         void setupDatabase();
 
     private:
@@ -90,6 +90,8 @@ class ScanResultProcessor : public QObject
         QMap<QPair<QString, int>, int> m_albums;
         QMap<QPair<QString, int>, int> m_images;
         QMap<QString, int> m_directories;
+
+        QHash<QString, uint> m_filesInDirs;
 
         TrackUrls m_changedUrls;
 

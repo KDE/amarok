@@ -158,6 +158,7 @@ ScanResultProcessor::rollback()
 void
 ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 {
+    DEBUG_BLOCK
     setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
@@ -188,10 +189,11 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     }
     else
     {
-        QString albumArtist = findAlbumArtist( artists );
+        QString albumArtist = findAlbumArtist( artists, data.count() );
         //an empty string means that no albumartist was found
         int artist = albumArtist.isEmpty() ? 0 : artistId( albumArtist );
 
+        debug() << "albumartist " << albumArtist << "for artists" << artists;
         foreach( const QVariantMap &row, data )
         {
             addTrack( row, artist );
@@ -200,7 +202,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 }
 
 QString
-ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
+ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCount ) const
 {
     QMap<QString, int> artistCount;
     foreach( const QString &artist, artists )
@@ -259,7 +261,8 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
             count = artistCount.value( key );
         }
     }
-    return albumArtist;
+    //if an artist is the primary artist of each track in the directory, assume the artist is the albumartist
+    return count == trackCount ? albumArtist : QString();
 }
 
 void
@@ -279,16 +282,31 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     QDir dir = file.dir();
     dir.setFilter( QDir::Files );
 
-    //TODO: find a better way to ignore non-audio files than the extension matching below
     //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
     QStringList filters;
     filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma" << "*.m4a";
     dir.setNameFilters( filters );
 
-    int compilationId = checkAlbumArtists( file, albumName, albumArtistId );
+    int compilationId = 0;
 
-    if( compilationId == 0 )
+    //do not check existing albums if there is more than one file in the directory
+    //see comments in checkExistingAlbums
+
+    //TODO: find a better way to ignore non-audio files than the extension matching above
+    if( !m_filesInDirs.contains( dir.absolutePath() ) )
+    {
+        m_filesInDirs.insert( dir.absolutePath(), dir.count() );
+    }
+
+    if( dir.count() == 1 )
+    {
+        compilationId = checkExistingAlbums( albumName );
+    }
+
+    if( 0 == compilationId )
+    {
         album = albumId( albumName, albumArtistId );
+    }
 
     int artist = artistId( trackData.value( Field::ARTIST ).toString() );
     int genre = genreId( trackData.value( Field::GENRE ).toString() );
@@ -612,65 +630,55 @@ ScanResultProcessor::directoryId( const QString &dir )
 }
 
 int
-ScanResultProcessor::checkAlbumArtists( const QFileInfo &file, const QString &album, int artistId )
+ScanResultProcessor::checkExistingAlbums( const QString &album )
 {
+    // "Unknown" albums shouldn't be handled as compilations
     if( album.isEmpty() )
         return 0;
 
-    //If the album has a track from another artist, it is a compilation
-    QString query = "SELECT u.deviceid, u.rpath, t.id, t.artist "
-                    "FROM tracks_temp t "
-                    "INNER JOIN albums_temp a "
-                      "ON a.id = t.album "
-                    "INNER JOIN urls_temp u "
-                      "ON u.id = t.url "
-                    "WHERE t.album = a.id "
-                      "AND a.name = '%1' "
-                      "AND t.artist <> '%2';";
-    query = query.arg( m_collection->escape( album ), QString::number( artistId ) );
-    QStringList result = m_collection->query( query );
-
-    //No tracks in the album are from an artist other than the one specified
-    if( result.isEmpty() ) 
-        return 0;
-
-    //Include tracks with same artist in update--some VA albums have >1 track by 1 artist
-    query = "SELECT u.deviceid, u.rpath, t.id, t.artist "
-                    "FROM tracks_temp t "
-                    "INNER JOIN albums_temp a "
-                      "ON a.id = t.album "
-                    "INNER JOIN urls_temp u "
-                      "ON u.id = t.url "
-                    "WHERE t.album = a.id "
-                      "AND a.name = '%1' ;";
+    //check if this album already exists, ignoring the albumartist
+    //if it does, and if each file of the album is alone in its directory
+    //it's probably a compilation.
+    //this handles A1 compilations that were automatically organized by Amarok
+    QString query = "SELECT urls.deviceid,urls.rpath,tracks_temp.id,albums.id,albums.artist FROM urls_temp AS urls "
+                    "LEFT JOIN tracks_temp on urls.id = tracks_temp.url LEFT JOIN albums_temp AS albums ON "
+                    "tracks_temp.album = albums.id WHERE albums.name = '%1';";
     query = query.arg( m_collection->escape( album ) );
-    result = m_collection->query( query );
-    
-    //Calculate a list of tracks with same album and same directory
-    QStringList trackIds;
+    QStringList result = m_collection->query( query );
+    QList<QString> trackIds;
     for( QListIterator<QString> iter( result ); iter.hasNext(); )
     {
         int deviceid = iter.next().toInt();
         QString rpath = iter.next();
         QString trackId = iter.next();
-        QString artistId = iter.next();
+        QString albumId = iter.next();
+        QString albumArtistId = iter.next();
         QString currentPath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
         QFileInfo info( currentPath );
-        if( info.dir() == file.dir() )
+        uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
+        if( dirCount == 1 )
+        {
             trackIds << trackId;
+        }
     }
 
-    if( !trackIds.isEmpty() )
+    if( trackIds.isEmpty() )
+    {
+        return 0;
+    }
+    else
     {
         int compilationId = albumId( album, 0 );
-        const QString trackIdsInAlbum = trackIds.join(",");
-        query = "UPDATE tracks_temp SET album = %1 where id IN (%2);";
-        query = query.arg( QString::number( compilationId ), trackIdsInAlbum );
-        m_collection->query( query );
+        QString trackIdsSql = "-1";
+        foreach( const QString &trackId, trackIds )
+        {
+            trackIdsSql += ',';
+            trackIdsSql += trackId;
+        }
+        QString update = "UPDATE tracks_temp SET album = %1 where id IN (%2);";
+        m_collection->query( update.arg( QString::number( compilationId ), trackIdsSql ) );
         return compilationId;
     }
-
-    return 0;
 }
 
 void
@@ -680,9 +688,13 @@ ScanResultProcessor::setupDatabase()
     {
         m_collection->dbUpdater()->createTemporaryTables();
         if( m_type == IncrementalScan )
+        {
             m_collection->dbUpdater()->prepareTemporaryTables();
+        }
         else
+        {
             m_collection->dbUpdater()->prepareTemporaryTablesForFullScan();
+        }
         m_setupComplete = true;
     }
 }
