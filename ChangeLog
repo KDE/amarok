@@ -9,6 +9,11 @@ VERSION 2.1-beta2
   CHANGES:
 
   BUGFIXES:
+    * Detect iPhones as iPods. (BR 184744)
+    * Clicking on "Stop after current track" disables the flag if it is
+      already enabled.
+    * Show a track marker when the "stop after current track" flag is set.
+      (BR 185888)
     * Don't flash the OSD when opening the settings dialog. Patch thanks
       to Andreas Heider <andreas@meetr.de>.
     * Podcast file formats are correctly displayed.
