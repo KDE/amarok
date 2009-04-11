@@ -177,7 +177,7 @@ MediaDeviceMonitor::isIpod( const QString &udi )
     }
 
     /* if iPod or iPhone found, return true */
-    return device.product() == "iPod" || device.product == "iPhone";
+    return device.product() == "iPod" || device.product() == "iPhone";
 }
 
 bool
