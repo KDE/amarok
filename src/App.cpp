@@ -382,12 +382,15 @@ App::handleCliArgs() //static
 
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
     const bool debugIsDisabled = !args->isSet( "debug" );
+    //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
+    const bool forceDebug = Amarok::config().readEntry( "Force Debug", false );
+    
 
-    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+    Amarok::config().writeEntry( "Debug Enabled", forceDebug ? true : args->isSet( "debug" ) );
 
     // Debug output will only work from this point on. If Amarok was run without debug output before,
     // then a part of the output (until this point) will be missing. Inform the user about this:
-    if( debugWasJustEnabled )
+    if( debugWasJustEnabled || forceDebug )
     {
         debug() << "************************************************************************************************************";
         debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
