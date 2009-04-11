@@ -62,7 +62,8 @@ enum DataRoles
     ActiveTrackRole,
     QueuePositionRole,
     InCollectionRole,
-    MultiSourceRole
+    MultiSourceRole,
+    StopAfterTrackRole
 };
 
 class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer

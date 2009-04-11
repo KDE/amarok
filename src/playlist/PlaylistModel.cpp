@@ -186,6 +186,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == MultiSourceRole )
         return  m_items.at( row )->track()->hasCapabilityInterface( Meta::Capability::MultiSource );
 
+    else if ( role == StopAfterTrackRole )
+        return Actions::instance()->willStopAfterTrack( idAt( row ) );
+
     else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
     {
         switch ( index.column() )

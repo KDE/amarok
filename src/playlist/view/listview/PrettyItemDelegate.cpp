@@ -266,6 +266,20 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             rowOffsetX += ( 16 + PADDING );
     }
 
+    if( index.data( StopAfterTrackRole ).toBool() )
+    {
+        const int w = 16, h = 16;
+        const int x = markerOffsetX;
+        const int y = nominalImageRect.y() + ( imageSize - h );
+        const QRect rect( x, y, w, h );
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "stop_button", w, h, "stop_button" ) );
+
+        markerOffsetX += ( 16 + PADDING );
+
+        if ( !config.showCover() )
+            rowOffsetX += ( 16 + PADDING );
+    }
+
     for ( int i = 0; i < rowCount; i++ )
     {
         LayoutItemConfigRow row = config.row( i );

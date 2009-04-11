@@ -85,6 +85,7 @@ namespace Playlist
             StopAfterMode stopAfterMode() const { return m_stopAfterMode; }
             void setStopAfterMode( StopAfterMode m ) { m_stopAfterMode = m; }
             void setTrackToBeLast( quint64 id ) { m_trackToBeLast = id; }
+            bool willStopAfterTrack( const quint64 id ) const { return m_trackToBeLast == id; }
 
             // This shouldn't be in Actions, it doesn't make sense
             int queuePosition( quint64 id );
