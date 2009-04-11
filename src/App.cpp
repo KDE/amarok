@@ -33,6 +33,8 @@ email                : markey@web.de
 #include "MountPointManager.h"
 #include "Osd.h"
 #include "PlayerDBusHandler.h"
+#include "Playlist.h"
+#include "PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
@@ -717,9 +719,18 @@ bool App::event( QEvent *event )
         case QEvent::FileOpen:
         {
             QString file = static_cast<QFileOpenEvent*>( event )->file();
+            //we are only going to receive local files here
             KUrl url( file );
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-            The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+            if( PlaylistManager::instance()->isPlaylist( url ) )
+            {
+                Meta::PlaylistPtr playlist = Meta::loadPlaylist( url );
+                The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
+            }
+            else
+            {
+                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+            }
             return true;
         }
         default:

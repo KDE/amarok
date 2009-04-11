@@ -134,6 +134,23 @@
             <key>CFBundleTypeRole</key>
             <string>Viewer</string>
         </dict>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>m3u</string>
+            </array>
+            <key>CFBundleTypeOSTypes</key>
+            <array>
+            </array>
+            <key>CFBundleTypeMIMETypes</key>
+            <array>
+                <string>audio/x-mpegurl</string>
+            </array>
+            <key>CFBundleTypeName</key>
+            <string>M3UAudioPlaylist</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+        </dict>
     </array>
     <key>CFBundleURLTypes</key>
     <array>
