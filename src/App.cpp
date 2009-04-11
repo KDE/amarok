@@ -710,7 +710,7 @@ void App::quit()
 
 bool App::event( QEvent *event )
 {
-    
+
     switch( event->type() )
     {
         //allows Amarok to open files from the finder on OS X

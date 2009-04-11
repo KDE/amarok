@@ -782,7 +782,8 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     else
         m_activeRow = -1;
 
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+    if( Amarok::actionCollection()->action( "playlist_clear" ) )
+        Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 }
 
