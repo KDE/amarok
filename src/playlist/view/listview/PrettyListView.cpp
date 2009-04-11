@@ -236,10 +236,19 @@ void
 Playlist::PrettyListView::stopAfterTrack()
 {
     DEBUG_BLOCK
-    debug()<<"set stop after queue on track "<<currentIndex().data(UniqueIdRole).value<quint64>()<<endl;
-    Actions::instance()->setStopAfterMode( StopAfterQueue );
-    Actions::instance()->setTrackToBeLast( currentIndex().data( UniqueIdRole ).value<quint64>() );
+    const qreal id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    if( Actions::instance()->willStopAfterTrack( id ) )
+    {
+        Actions::instance()->setStopAfterMode( StopNever );
+        Actions::instance()->setTrackToBeLast( 0 );
+    }
+    else
+    {
+        Actions::instance()->setStopAfterMode( StopAfterQueue );
+        Actions::instance()->setTrackToBeLast( id );
+    }
 }
+
 void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
