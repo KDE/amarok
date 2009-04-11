@@ -62,15 +62,15 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
     DEBUG_BLOCK
     OSErr error = noErr;
     Size actualSize = 0;
-    DescType descType = typeChar;
+    DescType descType = typeUTF8Text;
     if( ( error = AESizeOfParam( ae, keyDirectObject, &descType, &actualSize ) ) == noErr )
     {
         QByteArray ba;
         ba.resize( actualSize + 1 );
-        error = AEGetParamPtr( ae, keyDirectObject, typeChar, 0, ba.data(), actualSize, &actualSize );
+        error = AEGetParamPtr( ae, keyDirectObject, typeUTF8Text, 0, ba.data(), actualSize, &actualSize );
         if( error == noErr )
         {
-            KUrl url( ba );
+            KUrl url( QString::fromUtf8( ba.data() ) );
             if( url.protocol() == "amarok" )
             {
                 AmarokUrl aUrl( url.url() );
