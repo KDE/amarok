@@ -63,16 +63,13 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
     OSErr error = noErr;
     Size actualSize = 0;
     DescType descType = typeChar;
-    debug() << "getting parameter size";
     if( ( error = AESizeOfParam( ae, keyDirectObject, &descType, &actualSize ) ) == noErr )
     {
         QByteArray ba;
         ba.resize( actualSize + 1 );
-        debug() << "getting data";
         error = AEGetParamPtr( ae, keyDirectObject, typeChar, 0, ba.data(), actualSize, &actualSize );
         if( error == noErr )
         {
-            debug() << "url is " << ba;
             KUrl url( ba );
             if( url.protocol() == "amarok" )
             {
@@ -90,8 +87,6 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
                 The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
             }
         }
-        else
-            debug() << "getting data failed, error was" << error;
     }
     return error;
 }
