@@ -705,6 +705,25 @@ void App::quit()
     KApplication::quit();
 }
 
+bool App::event( QEvent *event )
+{
+    
+    switch( event->type() )
+    {
+        //allows Amarok to open files from the finder on OS X
+        case QEvent::FileOpen:
+        {
+            QString file = static_cast<QFileOpenEvent*>( event )->file();
+            KUrl url( file );
+            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+            The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+            return true;
+        }
+        default:
+            return KUniqueApplication::event( event );
+    }
+}
+
 namespace Amarok
 {
     /// @see amarok.h

@@ -82,6 +82,9 @@ class AMAROK_EXPORT App : public KUniqueApplication
         KIO::Job *trashFiles( const KUrl::List &files );
         void quit();
 
+    protected:
+        bool event( QEvent *event );
+
     private slots:
         void slotTrashResult( KJob *job );
 
