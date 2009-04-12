@@ -30,7 +30,7 @@
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
     : Meta::PodcastEpisode( Meta::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_batchUpdate( false )
-    , m_sqlChannel( sqlChannel )
+    , m_channel( sqlChannel )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
@@ -58,9 +58,9 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     , m_dbId( 0 )
 {
     m_url = KUrl( episode->uidUrl() );
-    m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
+    m_channel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
-    if ( !m_sqlChannel && episode->channel()) {
+    if ( !m_channel && episode->channel()) {
         debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
         debug() <<  episode->channel()->title();
     }
@@ -138,7 +138,7 @@ Meta::SqlPodcastEpisode::updateInDb()
     QString command = m_dbId ? update : insert;
 
     command = command.arg( escape(m_url.url()) ); //%1
-    command = command.arg( m_sqlChannel->dbId() ); //%2
+    command = command.arg( m_channel->dbId() ); //%2
     command = command.arg( escape(m_localUrl.url()) ); //%3
     command = command.arg( escape(m_guid) ); //%4
     command = command.arg( escape(m_title) ); //%5
@@ -209,20 +209,16 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 
     updateInDb();
 
-    m_episodes = channel->episodes();
-
     foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
         episode->setChannel( PodcastChannelPtr( this ) );
         SqlPodcastEpisode * sqlEpisode = new SqlPodcastEpisode( episode );
 
-        m_episodes << PodcastEpisodePtr( sqlEpisode );
-        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
+        m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
 }
 
 Meta::SqlPodcastChannel::~SqlPodcastChannel()
 {
-    m_sqlEpisodes.clear();
     m_episodes.clear();
 }
 
@@ -236,16 +232,33 @@ Meta::SqlPodcastChannel::sqlEpisodesToTracks( Meta::SqlPodcastEpisodeList episod
     return tracks;
 }
 
-void
+Meta::PodcastEpisodeList
+Meta::SqlPodcastChannel::sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes )
+{
+    Meta::PodcastEpisodeList sqlEpisodes;
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
+        sqlEpisodes << Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
+
+    return sqlEpisodes;
+}
+
+Meta::PodcastEpisodeList
+Meta::SqlPodcastChannel::episodes()
+{
+    return sqlEpisodesToPodcastEpisodes( m_episodes );
+}
+
+Meta::PodcastEpisodePtr
 Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
     debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
-    m_episodes << episode;
-    addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) );
+    SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
+    m_episodes << sqlEpisode;
 
     //reload from db to get episodes ordered right
-    loadEpisodes();
+//    loadEpisodes();
+    return PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
 
 void
@@ -295,11 +308,10 @@ void
 Meta::SqlPodcastChannel::deleteFromDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, m_sqlEpisodes )
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, m_episodes )
     {
        sqlEpisode->deleteFromDb();
-       m_sqlEpisodes.removeOne( sqlEpisode );
-       m_episodes.removeOne( Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode ) );
+       m_episodes.removeOne( sqlEpisode );
     }
 
     sqlStorage->query(
@@ -309,7 +321,6 @@ Meta::SqlPodcastChannel::deleteFromDb()
 void
 Meta::SqlPodcastChannel::loadEpisodes()
 {
-    m_sqlEpisodes.clear();
     m_episodes.clear();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -337,9 +348,8 @@ Meta::SqlPodcastChannel::loadEpisodes()
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList episodesResult = results.mid( i, rowLength );
-        SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
-        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
-        m_episodes << PodcastEpisodePtr( sqlEpisode );
+        SqlPodcastEpisode *episode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
+        m_episodes << SqlPodcastEpisodePtr( episode );
     }
 }
 

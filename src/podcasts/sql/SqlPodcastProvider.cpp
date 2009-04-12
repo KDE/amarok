@@ -217,11 +217,20 @@ SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 Meta::PodcastEpisodePtr
 SqlPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
 {
-    if( episode->channel()->fetchType() == 0 ) 
+    DEBUG_BLOCK
+    Meta::SqlPodcastEpisodePtr sqlEpisode
+            = Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+    if( sqlEpisode.isNull() )
+        return Meta::PodcastEpisodePtr();
+    if( sqlEpisode->channel().isNull() )
     {
-        downloadEpisode( episode );
+        debug() << "channel is null";
+        return Meta::PodcastEpisodePtr();
     }
-    return Meta::PodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
+
+    if( sqlEpisode->channel()->fetchType() == Meta::PodcastChannel::DownloadWhenAvailable )
+        downloadEpisode( sqlEpisode );
+    return Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
 
 Meta::PodcastChannelList
@@ -344,6 +353,9 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode
                 = Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        if( sqlEpisode.isNull() )
+            break;
+
         if( !sqlEpisode->localUrl().isEmpty() )
         {
             hasDownloaded = true;
@@ -592,11 +604,12 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
         if( --m_updatingChannels == 0 )
         {
             //reload to make sure all objects are valid BUG:180851
-            loadPodcasts();
+//           loadPodcasts();
         }
     }
 
     podcastReader->deleteLater();
+    emit( updated() );
 }
 
 void

@@ -176,6 +176,11 @@ PodcastReader::read()
                             m_channel = new Meta::PodcastChannel();
                             m_channel->setUrl( m_url );
                             m_channel->setSubscribeDate( QDate::currentDate() );
+                            /* add this new channel to the provider, we get a pointer to a
+                            * PodcastChannelPtr of the correct type which we will use from now on.
+                            */
+                            m_channel = m_podcastProvider->addChannel( m_channel );
+
                             m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
                     }
@@ -350,15 +355,7 @@ void
 PodcastReader::commitChannel()
 {
     Q_ASSERT( m_channel );
-
-    if( m_podcastProvider->channels().contains( m_channel ) )
-        return;
-
-    debug() << "commit new Podcast Channel " << m_channel->title();
-//     m_podcastProvider->acquireReadLock();
-    m_channel = m_podcastProvider->addChannel( PodcastChannelPtr( m_channel ) );
-//     m_podcastProvider->releaseLock();
-
+    //TODO: we probably need to notify the provider here to we are done updating the channel
 //     emit finished( this, true );
 }
 
@@ -380,7 +377,13 @@ PodcastReader::commitEpisode()
 //     }
 
     if( !m_podcastProvider->possiblyContainsTrack( item->uidUrl() ) )
-        m_channel->addEpisode( PodcastEpisodePtr( item ) );
+    {
+        Meta::PodcastEpisodePtr episode = PodcastEpisodePtr( item );
+        episode = m_channel->addEpisode( episode );
+        //also let the provider know an episode has been added
+        //TODO: change into a signal
+        m_podcastProvider->addEpisode( episode );
+    }
 
     m_current = static_cast<PodcastMetaCommon *>( m_channel.data() );
 }

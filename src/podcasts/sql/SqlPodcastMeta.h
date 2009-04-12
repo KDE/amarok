@@ -45,6 +45,9 @@ class SqlPodcastEpisode : public PodcastEpisode
 
         ~SqlPodcastEpisode();
 
+        //PodcastEpisode methods
+        PodcastChannelPtr channel() { return PodcastChannelPtr::dynamicCast( m_channel ); }
+
         //Track Methods
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
@@ -59,13 +62,14 @@ class SqlPodcastEpisode : public PodcastEpisode
         bool m_batchUpdate;
 
         int m_dbId; //database ID
-        SqlPodcastChannelPtr m_sqlChannel; //the parent of this episode
+        SqlPodcastChannelPtr m_channel; //the parent of this episode
 };
 
 class SqlPodcastChannel : public PodcastChannel
 {
     public:
         static TrackList sqlEpisodesToTracks( SqlPodcastEpisodeList episodes );
+        static PodcastEpisodeList sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes );
 
         SqlPodcastChannel( const QStringList &queryResult );
 
@@ -74,18 +78,21 @@ class SqlPodcastChannel : public PodcastChannel
         SqlPodcastChannel( PodcastChannelPtr channel );
 
         ~SqlPodcastChannel();
-        // Mets::Playlist methods
-        TrackList tracks() { return sqlEpisodesToTracks( m_sqlEpisodes ); }
+        // Meta::Playlist methods
+        TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
 
-        void addEpisode( PodcastEpisodePtr episode );
+        //Meta::PodcastChannel methods
+        Meta::PodcastEpisodeList episodes();
+
+        PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; }
-        void addEpisode( SqlPodcastEpisodePtr episode ) { m_sqlEpisodes << episode; }
+        void addEpisode( SqlPodcastEpisodePtr episode ) { m_episodes << episode; }
 
         void updateInDb();
         void deleteFromDb();
 
-        const SqlPodcastEpisodeList sqlEpisodes() { return m_sqlEpisodes; }
+        const SqlPodcastEpisodeList sqlEpisodes() { return m_episodes; }
 
         void loadEpisodes();
 
@@ -93,7 +100,7 @@ class SqlPodcastChannel : public PodcastChannel
 
         int m_dbId; //database ID
 
-        SqlPodcastEpisodeList m_sqlEpisodes;
+        SqlPodcastEpisodeList m_episodes;
 };
 
 }

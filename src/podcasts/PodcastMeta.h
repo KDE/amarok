@@ -182,21 +182,21 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         int podcastType() { return EpisodeType; }
 
         //PodcastEpisode methods
-        KUrl localUrl() const { return m_localUrl; }
+        virtual KUrl localUrl() const { return m_localUrl; }
         void setLocalUrl( const KUrl &url ) { m_localUrl = url; }
-        QDateTime pubDate() const { return m_pubDate; }
-        int duration() const { return m_duration; }
-        QString guid() const { return m_guid; }
+        virtual QDateTime pubDate() const { return m_pubDate; }
+        virtual int duration() const { return m_duration; }
+        virtual QString guid() const { return m_guid; }
 
         void setUidUrl( const KUrl &url ) { m_url = url; }
         void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
         void setDuration( int duration ) { m_duration = duration; }
         void setGuid( const QString &guid ) { m_guid = guid; }
 
-        int sequenceNumber() const { return m_sequenceNumber; }
+        virtual int sequenceNumber() const { return m_sequenceNumber; }
         void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }
 
-        PodcastChannelPtr channel() { return m_channel; }
+        virtual PodcastChannelPtr channel() { return m_channel; }
         void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; }
 
     protected:
@@ -266,7 +266,8 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         void addLabel( const QString &label ) { m_labels << label; }
         void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
-        virtual void addEpisode( PodcastEpisodePtr episode ) { m_episodes << episode; }
+        virtual Meta::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode )
+                { m_episodes << episode; return episode; }
         virtual PodcastEpisodeList episodes() { return m_episodes; }
 
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
