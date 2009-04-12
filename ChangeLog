@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1-beta2
   FEATURES:
+    * New Script method to get current track time in milliseconds. (BR 177073)
 
   CHANGES:
 

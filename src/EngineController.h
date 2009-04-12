@@ -49,6 +49,9 @@ public:
     /* returns track position (elapsed time) in seconds */
     int trackPosition() const;
 
+    /* returns track position (elapsed time) in milliseconds */
+    int trackPositionMs() const;
+
     /**
      * Returns the current track that is loaded into the engine.
      * @return a Meta::TrackPtr which is either the track, or empty if phonon

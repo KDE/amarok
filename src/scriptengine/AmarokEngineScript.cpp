@@ -118,6 +118,11 @@ namespace AmarokScript
         return The::engineController()->trackPosition();
     }
 
+    int AmarokEngineScript::trackPositionMs() const
+    {
+        return The::engineController()->trackPositionMs();
+    }
+
     int AmarokEngineScript::engineState() const
     {
         switch( The::engineController()->state() )

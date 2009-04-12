@@ -25,7 +25,6 @@
 
 namespace AmarokScript
 {
-
     class AmarokEngineScript : public QObject
     {
         Q_OBJECT
@@ -57,6 +56,7 @@ namespace AmarokScript
             int  DecreaseVolume( int ticks = 100/25 );
             void Mute();
             int  trackPosition() const;
+            int  trackPositionMs() const;
             int  engineState() const;
             QVariant currentTrack() const;
 
