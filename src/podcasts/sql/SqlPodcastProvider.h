@@ -87,9 +87,10 @@ class SqlPodcastProvider : public PodcastProvider
         void slotDownloadEpisodes();
         void slotConfigureChannel();
         void slotRemoveChannels();
+        void slotUpdateChannels();
 
     signals:
-            void updated();
+        void updated();
 
     private:
         /** creates all the necessary tables, indexes etc. for the database */
@@ -109,6 +110,7 @@ class SqlPodcastProvider : public PodcastProvider
         PopupDropperAction * m_downloadAction;
         PopupDropperAction * m_removeAction; //remove a subscription
         PopupDropperAction * m_renameAction; //rename a Channel or Episode
+        PopupDropperAction * m_updateAction;
 };
 
 #endif

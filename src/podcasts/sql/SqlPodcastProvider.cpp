@@ -55,6 +55,7 @@ SqlPodcastProvider::SqlPodcastProvider()
     , m_downloadAction( 0 )
     , m_removeAction( 0 )
     , m_renameAction( 0 )
+    , m_updateAction( 0 )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
 
@@ -417,6 +418,19 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
     }
     actions << m_removeAction;
 
+    if( m_updateAction == 0 )
+    {
+        m_updateAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "update",
+            KIcon( "view-refresh-amarok" ),
+            i18n( "&Update Channel" ),
+            this
+        );
+        connect( m_updateAction, SIGNAL( triggered() ), this, SLOT( slotUpdateChannels() ) );
+    }
+    actions << m_updateAction;
+
     return actions;
 }
 
@@ -461,8 +475,22 @@ SqlPodcastProvider::slotRemoveChannels()
     {
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
-//         if( !sqlChannel )
-            removeSubscription( channel );
+
+        //TODO:request confirmation and ask if the files have to be deleted as well
+        removeSubscription( channel );
+    }
+}
+
+void
+SqlPodcastProvider::slotUpdateChannels()
+{
+    DEBUG_BLOCK
+    foreach( Meta::PodcastChannelPtr channel, The::podcastModel()->selectedChannels() )
+    {
+        Meta::SqlPodcastChannelPtr sqlChannel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+        if( !sqlChannel.isNull() )
+            update( channel );
     }
 }
 
