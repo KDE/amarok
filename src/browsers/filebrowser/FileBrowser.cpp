@@ -100,8 +100,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     // Connect the bookmark handler
     connect( m_bookmarkHandler, SIGNAL( openUrl( const KUrl& ) ), this, SLOT( setDir( const KUrl& ) ) );
 
-    waitingUrl.clear();
-
     // whatsthis help
     m_urlNav->setWhatsThis( i18n( "<p>Here you can enter a path for a folder to display.</p>"
                                   "<p>To go to a folder previously entered, press the arrow on "
@@ -149,9 +147,8 @@ void FileBrowser::Widget::readConfig()
 
     m_filter->setHistoryItems( config.readEntry( "Filter History", QStringList() ), true );
 
-    lastFilter = config.readEntry( "Last Filter" );
+    m_lastFilter = config.readEntry( "Last Filter" );
 }
-
 
 void FileBrowser::Widget::writeConfig()
 {
@@ -163,18 +160,11 @@ void FileBrowser::Widget::writeConfig()
     config.writeEntry( "Sorting", QString::number( static_cast<QDir::SortFlags>( m_dirOperator->sorting() ) ) );
     config.writeEntry( "Filter History Length", m_filter->maxCount() );
     config.writeEntry( "Filter History", m_filter->historyItems() );
-    config.writeEntry( "Last Filter", lastFilter );
+    config.writeEntry( "Last Filter", m_lastFilter );
 
     // Writes some settings from KDirOperator
     m_dirOperator->writeConfig( config );
 }
-
-
-void FileBrowser::Widget::initialDirChangeHack()
-{
-    setDir( waitingDir );
-}
-
 
 void FileBrowser::Widget::setupToolbar()
 {
@@ -204,18 +194,18 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
     QString f = nf.trimmed();
     const bool empty = f.isEmpty() || f == "*";
 
-    if ( empty )
+    if( empty )
     {
         m_dirOperator->clearFilter();
         m_filter->lineEdit()->setText( QString() );
-        m_filterButton->setToolTip( i18n( "Apply last filter (\"%1\")", lastFilter ) ) ;
+        m_filterButton->setToolTip( i18n( "Apply last filter (\"%1\")", m_lastFilter ) ) ;
     }
     else
     {
         if ( !f.startsWith( '*' ) && !f.endsWith( '*' ) )
             f = '*' + f + '*'; // add regexp matches surrounding the filter
         m_dirOperator->setNameFilter( f );
-        lastFilter = f;
+        m_lastFilter = f;
         m_filterButton->setToolTip( i18n( "Clear filter" ) );
     }
 
@@ -223,7 +213,7 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
     m_dirOperator->updateDir(); //FIXME Crashes here, see http://bugs.kde.org/show_bug.cgi?id=177981
 
     // this will be never true after the filter has been used;)
-    m_filterButton->setEnabled( !( empty && lastFilter.isEmpty() ) );
+    m_filterButton->setEnabled( !( empty && m_lastFilter.isEmpty() ) );
 }
 
 namespace FileBrowser
@@ -290,8 +280,8 @@ void FileBrowser::Widget::filterButtonClicked()
     }
     else
     {
-        m_filter->lineEdit()->setText( lastFilter );
-        slotFilterChange( lastFilter );
+        m_filter->lineEdit()->setText( m_lastFilter );
+        slotFilterChange( m_lastFilter );
     }
 }
 

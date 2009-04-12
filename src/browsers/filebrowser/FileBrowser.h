@@ -84,18 +84,16 @@ private:
     void readConfig();
     void writeConfig();
 
-    KToolBar *m_toolbar;
+    KToolBar          *m_toolbar;
     KActionCollection *m_actionCollection;
-    KBookmarkHandler *m_bookmarkHandler;
-    KUrlNavigator *m_urlNav;
-    KFilePlacesModel *m_filePlacesModel;
-    MyDirOperator * m_dirOperator;
-    KHistoryComboBox * m_filter;
-    QToolButton *m_filterButton;
+    KBookmarkHandler  *m_bookmarkHandler;
+    KUrlNavigator     *m_urlNav;
+    KFilePlacesModel  *m_filePlacesModel;
+    MyDirOperator     *m_dirOperator;
+    KHistoryComboBox  *m_filter;
+    QToolButton       *m_filterButton;
 
-    QString lastFilter;
-    QString waitingUrl; // maybe display when we gets visible
-    QString waitingDir;
+    QString            m_lastFilter;
 };
 
 }
