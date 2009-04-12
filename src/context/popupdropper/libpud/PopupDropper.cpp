@@ -61,8 +61,11 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     , allItems()
     , quitOnDragLeave( false )
     , onTop( true )
+    , widgetSize()
     , q( parent )
 {
+    if( widget )
+        widgetRect = widget->rect();
 	windowBackgroundBrush.setColor( windowColor );
 	hoveredBorderPen.setColor( Qt::blue );
     hoveredBorderPen.setWidth( 2 );
@@ -409,6 +412,13 @@ void PopupDropper::show()
     {
         //qDebug() << "No shared renderer set!";
         return;
+    }
+    if( d->widget && d->widget->rect() != d->widgetRect )
+    {
+        d->widgetRect = d->widget->rect();
+        d->scene->setSceneRect( d->widget->rect() );
+        d->view->setFixedSize( d->widget->size() );
+        update();
     }
     //qDebug() << "Showing PopupDropper";
     d->fadeShowTimer.stop();

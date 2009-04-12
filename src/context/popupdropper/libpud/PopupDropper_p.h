@@ -23,6 +23,7 @@
 #include <QList>
 #include <QMap>
 #include <QObject>
+#include <QRectF>
 #include <QTimeLine>
 #include <QTimer>
 
@@ -72,6 +73,7 @@ public:
     QList<QGraphicsItem*> allItems;
     bool quitOnDragLeave;
     bool onTop;
+    QRectF widgetRect;
 
     void dragLeft();
     void dragEntered();
