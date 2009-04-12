@@ -254,10 +254,23 @@ Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     DEBUG_BLOCK
     debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
     SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
-    m_episodes << sqlEpisode;
 
-    //reload from db to get episodes ordered right
-//    loadEpisodes();
+    //episodes are sorted on pubDate high to low
+    SqlPodcastEpisodeList::iterator i;
+    for( i = m_episodes.begin() ; i != m_episodes.end() ; ++i )
+    {
+        if( sqlEpisode->pubDate() > (*i)->pubDate() )
+        {
+            m_episodes.insert( i, sqlEpisode );
+            break;
+        }
+    }
+
+    //insert in case the list is empty or at the end of the list
+    if( i == m_episodes.end() )
+        m_episodes << sqlEpisode;
+
+
     return PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
 

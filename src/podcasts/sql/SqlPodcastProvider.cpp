@@ -631,8 +631,7 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
         //decrement the counter and load podcasts if needed.
         if( --m_updatingChannels == 0 )
         {
-            //reload to make sure all objects are valid BUG:180851
-//           loadPodcasts();
+            //TODO: start downloading episodes here.
         }
     }
 
