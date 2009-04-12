@@ -623,17 +623,6 @@ void PopupDropper::setDeleteTimeout( int msecs )
     d->deleteTimeout = msecs;
 }
 
-void PopupDropper::textUpdated()
-{
-    //qDebug() << "In textUpdated";
-    foreach( PopupDropperItem *pdi, d->pdiItems )
-    {
-        //qDebug() << "Setting " << pdi->textItem()->toPlainText() << " to " << pdi->action()->text();
-        pdi->textItem()->setPlainText( pdi->action()->text() );
-    }
-    updateAllOverlays();
-}
-
 QColor PopupDropper::windowColor() const
 {
     return d->windowColor;
@@ -864,9 +853,19 @@ void PopupDropper::addSeparator( PopupDropperAction* separator )
         //qDebug() << "Action is not a separator!";
         return;
     }
+
+    if( separator && separator->separatorStyle() == PopupDropperAction::TextSeparator )
+    {
+        //qDebug() << "Separator style is text";
+        PopupDropperItem* pdi = new PopupDropperItem();
+        pdi->setAction( separator );
+        addItem( pdi );
+    }
+
+    //qDebug() << "Separator style is line";
     QPen linePen;
-    if( separator && separator->hasSeparatorPen() )
-        linePen = separator->separatorPen();
+    if( separator && separator->hasLineSeparatorPen() )
+        linePen = separator->lineSeparatorPen();
     else
     {
         linePen.setWidth( 2 );

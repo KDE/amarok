@@ -86,6 +86,7 @@ public:
 
     QString text() const;
     void setText( const QString &text );
+    void setHtmlText( const QString &text );
     QFont font() const;
     void setFont( const QFont &font );
     QColor baseTextColor() const;

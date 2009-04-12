@@ -117,6 +117,8 @@ PopupDropperAction* PopupDropperItem::action() const
 //and element id, if they exist in the action!
 void PopupDropperItem::setAction( PopupDropperAction *action )
 {
+    if( !action )
+        return;
     //note that this also sets the text
     d->action = action;
     d->text = action->text();
@@ -213,6 +215,18 @@ QString PopupDropperItem::text() const
 void PopupDropperItem::setText( const QString &text )
 {
     d->text = text;
+    if( d->textItem )
+        d->textItem->setPlainText( text );
+    reposTextItem();
+}
+
+//Note: constructor assumes plain text; this function must be called later
+void PopupDropperItem::setHtmlText( const QString &text )
+{
+    d->text = text;
+    if( d->textItem )
+        d->textItem->setPlainText( text );
+    reposTextItem();
 }
 
 QFont PopupDropperItem::font() const
@@ -383,6 +397,13 @@ void PopupDropperItem::scaleAndReposSvgItem()
     if( !d->svgItem || !d->borderRectItem )
         return;
 
+    if( d->separator )
+    {
+        d->svgItem->scale( 0, 0 );
+        d->svgItem->setPos( 0, 0 );
+        return;
+    }
+
     //Need to scale if it is too tall or wide
     qreal maxheight = d->svgElementRect.height() - ( d->borderRectItem ? ( 2 * d->borderRectItem->pen().width() ) : 0 );
     qreal maxwidth = d->svgElementRect.width() - ( d->borderRectItem ? ( 2 * d->borderRectItem->pen().width() ) : 0 );
@@ -418,7 +439,21 @@ void PopupDropperItem::reposTextItem()
     if( !d->textItem || !d->borderRectItem )
         return;
     
+    d->textItem->setFont( d->font );
+
     qreal item_vert_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
+
+    if( d->separator )
+    {
+        if( d->text.isEmpty() )
+            return;
+        qreal width = d->textItem->textWidth();
+        if( width > d->borderRectItem->sceneBoundingRect().width() )
+            d->textItem->setTextWidth( d->borderRectItem->sceneBoundingRect().width() );
+        qreal offset = ( d->borderRectItem->sceneBoundingRect().width() - width ) / 2;
+        d->textItem->setPos( offset, item_vert_center - ( d->textItem->sceneBoundingRect().height()  / 2 ) );
+        return;
+    }
 
     int rightside;
     if( !d->pd || d->pd->viewSize().width() == 0 )
@@ -433,13 +468,19 @@ void PopupDropperItem::reposTextItem()
                 : d->borderRectItem->sceneBoundingRect().width() - offsetPos - d->textItem->sceneBoundingRect().width()
             )
         , item_vert_center - ( d->textItem->sceneBoundingRect().height() / 2 ) ); 
-    d->textItem->setFont( d->font );
 }
 
 void PopupDropperItem::reposHoverFillRects()
 {
     if( !d->hoverIndicatorRectItem || !d->hoverIndicatorRectFillItem || !d->textItem || !d->borderRectItem )
         return;
+
+    if( d->separator )
+    {
+        d->hoverIndicatorRectItem->setRect( 0, 0, 0, 0 );
+        d->hoverIndicatorRectFillItem->setRect( 0, 0, 0, 0 );
+        return;
+    }
 
     //qDebug() << "\n\nPUDItem boundingRect().width() = " << boundingRect().width();
     qreal startx, starty, endx, endy, item_center;

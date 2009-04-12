@@ -98,8 +98,6 @@ public:
     void setDeleteTimeout( int msecs );
     int deleteTimeout() const;
     
-    void textUpdated();
-
     QColor windowColor() const;
     void setWindowColor( const QColor &window );    
     QBrush windowBackgroundBrush() const;

@@ -33,8 +33,9 @@ public:
         , elementId( QString() )
         , ownRenderer( false )
         , separator( false )
-        , hasSeparatorPen( false )
-        , separatorPen()
+        , separatorStyle( PopupDropperAction::TextSeparator )
+        , hasLineSeparatorPen( false )
+        , lineSeparatorPen()
     {}
 
     ~PopupDropperActionPrivate()
@@ -47,8 +48,9 @@ public:
     QString elementId;
     bool ownRenderer;
     bool separator;
-    bool hasSeparatorPen;
-    QPen separatorPen;
+    PopupDropperAction::SeparatorStyle separatorStyle;
+    bool hasLineSeparatorPen;
+    QPen lineSeparatorPen;
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -63,12 +65,14 @@ PopupDropperAction::PopupDropperAction( const QString & text, QObject * parent )
     : QAction( text, parent )
     , d( new PopupDropperActionPrivate )
 {
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( const QIcon & icon, const QString & text, QObject * parent )
     : QAction( icon, text, parent )
     , d( new PopupDropperActionPrivate )
 {
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( const QString &elementId, const QString &text, QObject *parent )
@@ -76,6 +80,7 @@ PopupDropperAction::PopupDropperAction( const QString &elementId, const QString 
     , d( new PopupDropperActionPrivate )
 {
     d->elementId = elementId;
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( const QString &elementId, const QIcon &icon, const QString &text, QObject *parent )
@@ -83,6 +88,7 @@ PopupDropperAction::PopupDropperAction( const QString &elementId, const QIcon &i
     , d( new PopupDropperActionPrivate )
 {
     d->elementId = elementId;
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &text, QObject *parent )
@@ -90,6 +96,7 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &t
     , d( new PopupDropperActionPrivate )
 {
     d->renderer = renderer;
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QIcon &icon, const QString &text, QObject *parent )
@@ -97,6 +104,7 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QIcon &ico
     , d( new PopupDropperActionPrivate )
 {
     d->renderer = renderer;
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 //note that the elementId cannot be used by this directly; it is only here so that you can use it as a reference
@@ -107,6 +115,7 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &e
 {
     d->renderer = renderer;
     d->elementId = elementId;
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 //note that the elementId cannot be used by this directly; it is only here so that you can use it as a reference
@@ -117,6 +126,7 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &e
 {
     d->renderer = renderer;
     d->elementId = elementId;
+    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::~PopupDropperAction()
@@ -158,6 +168,12 @@ void PopupDropperAction::setElementId( const QString &id )
     d->elementId = id;;
 }
 
+void PopupDropperAction::setText( const QString &text )
+{
+    QAction::setText( text );
+    d->separatorStyle = PopupDropperAction::TextSeparator;
+}
+
 bool PopupDropperAction::isSeparator() const
 {
     return d->separator;
@@ -169,26 +185,37 @@ void PopupDropperAction::setSeparator( bool separator )
     QAction::setSeparator( separator );
 }
 
-bool PopupDropperAction::hasSeparatorPen() const
+PopupDropperAction::SeparatorStyle PopupDropperAction::separatorStyle() const
 {
-    return d->hasSeparatorPen;
+    return d->separatorStyle;
 }
 
-QPen PopupDropperAction::separatorPen() const
+void PopupDropperAction::setSeparatorStyle( PopupDropperAction::SeparatorStyle style )
 {
-    return d->separatorPen;
+    d->separatorStyle = style;
 }
 
-void PopupDropperAction::setSeparatorPen( const QPen &pen )
+bool PopupDropperAction::hasLineSeparatorPen() const
 {
-    d->hasSeparatorPen = true;
-    d->separatorPen = pen;
+    return d->hasLineSeparatorPen;
+}
+
+QPen PopupDropperAction::lineSeparatorPen() const
+{
+    return d->lineSeparatorPen;
+}
+
+void PopupDropperAction::setLineSeparatorPen( const QPen &pen )
+{
+    d->hasLineSeparatorPen = true;
+    d->lineSeparatorPen = pen;
+    d->separatorStyle = PopupDropperAction::LineSeparator;
 }
 
 void PopupDropperAction::clearSeparatorPen()
 {
-    d->hasSeparatorPen = false;
-    d->separatorPen = QPen();
+    d->hasLineSeparatorPen = false;
+    d->lineSeparatorPen = QPen();
 }
 
 PopupDropperAction* PopupDropperAction::from( QAction* action )

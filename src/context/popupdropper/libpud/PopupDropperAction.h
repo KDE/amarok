@@ -39,10 +39,14 @@ class POPUPDROPPER_EXPORT PopupDropperAction : public QAction
     Q_PROPERTY( QSvgRenderer* renderer READ renderer WRITE setRenderer )
     Q_PROPERTY( QString elementId READ elementId WRITE setElementId )
     Q_PROPERTY( bool separator READ isSeparator WRITE setSeparator )
-    Q_PROPERTY( bool hasSeparatorPen READ hasSeparatorPen )
-    Q_PROPERTY( QPen separatorPen READ separatorPen WRITE setSeparatorPen )
+    Q_PROPERTY( PopupDropperAction::SeparatorStyle separatorStyle READ separatorStyle WRITE setSeparatorStyle )
+    Q_PROPERTY( bool hasLineSeparatorPen READ hasLineSeparatorPen )
+    Q_PROPERTY( QPen lineSeparatorPen READ lineSeparatorPen WRITE setLineSeparatorPen )
 
 public:
+    enum SeparatorStyle{TextSeparator, LineSeparator};
+    Q_ENUMS( separatorStyle )
+
     PopupDropperAction( QObject *parent );
     PopupDropperAction( const QString &text, QObject *parent );
     PopupDropperAction( const QIcon &icon, const QString &text, QObject *parent );
@@ -61,13 +65,17 @@ public:
     void setRenderer( const QByteArray &contents );
     QString elementId() const;
     void setElementId( const QString &id );
+    void setText( const QString &text );
 
     bool isSeparator() const;
     void setSeparator( bool separator );
 
-    bool hasSeparatorPen() const;
-    QPen separatorPen() const;
-    void setSeparatorPen( const QPen &pen );
+    PopupDropperAction::SeparatorStyle separatorStyle() const;
+    void setSeparatorStyle( PopupDropperAction::SeparatorStyle style );
+
+    bool hasLineSeparatorPen() const;
+    QPen lineSeparatorPen() const;
+    void setLineSeparatorPen( const QPen &pen );
     void clearSeparatorPen();
 
     //quick and dirty function for getting a PopupDropperAction from a QAction.
