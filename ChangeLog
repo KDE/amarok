@@ -10,6 +10,9 @@ VERSION 2.1-beta2
   CHANGES:
 
   BUGFIXES:
+    * Podcast episodes are loaded correctly when restoring a playlist on
+      startup. This means the local file will be played if downloaded.
+      (BR 189328)
     * Next button in the main toolbar no longer has a clipped shadow.
       (BR 176031)
     * Fix slider mouse events in RTL layouts. (BR 185465)
