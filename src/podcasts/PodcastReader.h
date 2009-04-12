@@ -73,12 +73,12 @@ class PodcastReader : public QObject, public QXmlStreamReader
         QString m_linkString;
         QString m_descriptionString;
         QString m_urlString;
-//         KUrl readUrl();
         QString m_guidString;
         QString m_pubDateString;
+
+        bool m_parsingImage;
+
         void readUnknownElement();
-    //     void readImage();
-    //     void readCopyright();
 
         QDateTime parsePubDate( const QString &datestring );
 

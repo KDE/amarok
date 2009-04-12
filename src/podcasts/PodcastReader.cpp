@@ -33,6 +33,7 @@ PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
         : QXmlStreamReader()
         , m_podcastProvider( podcastProvider )
         , m_current( 0 )
+        , m_parsingImage( false )
 {}
 
 PodcastReader::~PodcastReader()
@@ -206,6 +207,10 @@ PodcastReader::read()
                 {
                     m_urlString = QXmlStreamReader::attributes().value( QString(), QString("url") ).toString();
                 }
+                else if( QXmlStreamReader::name() == "image" )
+                {
+                    m_parsingImage = true;
+                }
                 m_currentTag = QXmlStreamReader::name().toString();
             }
             else if( isEndElement() )
@@ -222,7 +227,9 @@ PodcastReader::read()
                 }
                 else if( QXmlStreamReader::name() == "title")
                 {
-                    m_current->setTitle( m_titleString );
+                    if( !m_parsingImage )
+                        m_current->setTitle( m_titleString );
+                    //TODO save image data
                     m_titleString.clear();
                 }
                 else if( QXmlStreamReader::name() == "description" )
@@ -237,13 +244,14 @@ PodcastReader::read()
                 }
                 else if( QXmlStreamReader::name() == "enclosure" )
                 {
-//                     debug() << "enclosure: url = " << m_urlString;
                     static_cast<PodcastEpisode *>(m_current)->setUidUrl( KUrl( m_urlString ) );
                     m_urlString.clear();
                 }
                 else if( QXmlStreamReader::name() == "link" )
                 {
-                    m_channel->setWebLink( KUrl( m_linkString ) );
+                    if( !m_parsingImage )
+                        m_channel->setWebLink( KUrl( m_linkString ) );
+                    //TODO save image data
                     m_linkString.clear();
                 }
                 else if( QXmlStreamReader::name() == "pubDate")
@@ -252,6 +260,10 @@ PodcastReader::read()
                     if( episode )
                         episode->setPubDate( parsePubDate( m_pubDateString ) );
                     m_pubDateString.clear();
+                }
+                else if( QXmlStreamReader::name() == "image" )
+                {
+                    m_parsingImage = false;
                 }
             }
             else if( isCharacters() && !isWhitespace() )
