@@ -61,7 +61,7 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     , allItems()
     , quitOnDragLeave( false )
     , onTop( true )
-    , widgetSize()
+    , widgetRect()
     , q( parent )
 {
     if( widget )
