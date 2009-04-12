@@ -111,18 +111,29 @@ Amarok::Slider::slideEvent( QMouseEvent *e )
     QStyleOptionComplex complex;
     QRect rect = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
 
-    QSlider::setValue( orientation() == Qt::Horizontal
-        ? ((QApplication::isRightToLeft())
-          ? QStyle::sliderValueFromPosition( minimum(), maximum(), width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
-          : QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
-        : QStyle::sliderValueFromPosition( minimum(), maximum(), e->pos().y() - rect.height()/2, height() - rect.height() ) );
+    int position;
+    int span;
+
+    if( orientation() == Qt::Horizontal )
+    {
+        position = e->pos().x() - rect.width() / 2;
+        span = width() - rect.width();
+    }
+    else
+    {
+        position = e->pos().y() - rect.height() / 2;
+        span = height() - rect.height();
+    }
+
+    const int val = QStyle::sliderValueFromPosition( minimum(), maximum(), position, span );
+    QSlider::setValue( val );
 }
 
 void
 Amarok::Slider::mousePressEvent( QMouseEvent *e )
 {
     QStyleOptionComplex complex;
-    QRect rect = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
+    QRect rect  = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
     m_sliding   = true;
     m_prevValue = QSlider::value();
 
@@ -153,21 +164,30 @@ Amarok::Slider::setValue( int newValue )
 
 void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
 {
-
     const QString prefix = "slider_bg_";
+
+    const QString topleft = prefix + "topleft";
+    const QString top = prefix + "top";
+    const QString topright = prefix + "topright";
+    const QString right = prefix + "right";
+    const QString bottomright = prefix + "bottomright";
+    const QString bottom = prefix + "bottom";
+    const QString bottomleft = prefix + "bottomleft";
+    const QString left = prefix + "left";
 
     if( m_needsResize )
     {
-        m_topLeft = The::svgHandler()->renderSvg( prefix + "topleft", m_borderWidth, m_borderHeight, prefix + "topleft" );
-        m_top = The::svgHandler()->renderSvg( prefix + "top", width - ( 2 * m_borderWidth ), m_borderHeight, prefix + "top" );
-        m_topRight = The::svgHandler()->renderSvg( prefix + "topright", m_borderWidth, m_borderHeight, prefix + "topright" );
-        m_right = The::svgHandler()->renderSvg( prefix + "right", m_borderWidth, height - ( 2 * m_borderHeight ), prefix + "right" );
-        m_bottomRight = The::svgHandler()->renderSvg( prefix + "bottomright", m_borderWidth, m_borderHeight, prefix + "bottomright" );
-        m_bottom = The::svgHandler()->renderSvg( prefix + "bottom", width - 2 * m_borderWidth, m_borderHeight, prefix + "bottom" );
-        m_bottomLeft = The::svgHandler()->renderSvg( prefix + "bottomleft", m_borderWidth, m_borderHeight, prefix + "bottomleft" );
-        m_left = The::svgHandler()->renderSvg( prefix + "left", m_borderWidth, height - 2 * m_borderHeight, prefix + "left" );
+        m_topLeft = The::svgHandler()->renderSvg( topleft, m_borderWidth, m_borderHeight, topleft );
+        m_top = The::svgHandler()->renderSvg( top, width - ( 2 * m_borderWidth ), m_borderHeight, top );
+        m_topRight = The::svgHandler()->renderSvg( topright, m_borderWidth, m_borderHeight, topright );
+        m_right = The::svgHandler()->renderSvg( right, m_borderWidth, height - ( 2 * m_borderHeight ), right );
+        m_bottomRight = The::svgHandler()->renderSvg( bottomright, m_borderWidth, m_borderHeight, bottomright );
+        m_bottom = The::svgHandler()->renderSvg( bottom, width - 2 * m_borderWidth, m_borderHeight, bottom );
+        m_bottomLeft = The::svgHandler()->renderSvg( bottomleft, m_borderWidth, m_borderHeight, bottomleft );
+        m_left = The::svgHandler()->renderSvg( left, m_borderWidth, height - 2 * m_borderHeight, left );
         m_needsResize = false;
     }
+
     p->drawPixmap( x, y, m_topLeft );
     p->drawPixmap( x + m_borderWidth, y, m_top );
     p->drawPixmap( x + ( width - m_borderWidth ), y, m_topRight );
@@ -183,11 +203,15 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRightWidth = sliderLeftWidth;
 
-        int knobX = ( ( ( double ) value() - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width - ( sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2 ) );
+        int knobX = ( ((double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
 
-        p->drawPixmap( x + m_sliderInsertX, y + m_sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_left",sliderLeftWidth , sliderHeight, "slider_bar_left" ) );
-        p->drawPixmap( x + m_sliderInsertX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_center", knobX, sliderHeight, "slider_bar_center" ) );
-        p->drawPixmap( x + m_sliderInsertX + knobX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( "slider_bar_right", sliderRightWidth, sliderHeight, "slider_bar_right" ) );
+        const QString barLeft = "slider_bar_left";
+        const QString barCenter = "slider_bar_center";
+        const QString barRight = "slider_bar_right";
+
+        p->drawPixmap( x + m_sliderInsertX, y + m_sliderInsertY, The::svgHandler()->renderSvg( barLeft, sliderLeftWidth , sliderHeight, barLeft ) );
+        p->drawPixmap( x + m_sliderInsertX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barCenter, knobX, sliderHeight, barCenter ) );
+        p->drawPixmap( x + m_sliderInsertX + knobX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barRight, sliderRightWidth, sliderHeight, barRight ) );
     }
 }
 

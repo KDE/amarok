@@ -10,6 +10,7 @@ VERSION 2.1-beta2
   CHANGES:
 
   BUGFIXES:
+    * Fix slider mouse events in RTL layouts. (BR 185465)
     * Detect iPhones as iPods. (BR 184744)
     * Clicking on "Stop after current track" disables the flag if it is
       already enabled.
