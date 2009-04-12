@@ -27,11 +27,6 @@
 #include <QDate>
 #include <time.h>
 
-/* used as PubDate for Podcasts module RSS
-** Mon, 13 Mar 2006 23:37:46 +0000
-*/
-#define RFC822_DATE_FORMAT "d MMM yyyy HH:mm:ss"
-
 using namespace Meta;
 
 PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
@@ -53,7 +48,7 @@ bool PodcastReader::read ( QIODevice *device )
 }
 
 bool
-PodcastReader::read(const KUrl &url)
+PodcastReader::read( const KUrl &url )
 {
     DEBUG_BLOCK
 
@@ -105,7 +100,7 @@ PodcastReader::update( PodcastChannelPtr channel )
 }
 
 void
-PodcastReader::slotAddData( KIO::Job *, const QByteArray & data)
+PodcastReader::slotAddData( KIO::Job *, const QByteArray & data )
 {
     DEBUG_BLOCK
 
@@ -343,7 +338,7 @@ PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
 
 void
 PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
-        const KUrl & toUrl)
+        const KUrl & toUrl )
 {
     DEBUG_BLOCK
     Q_UNUSED( job ); Q_UNUSED( fromUrl );
@@ -389,7 +384,7 @@ PodcastReader::commitEpisode()
 }
 
 Meta::PodcastEpisodePtr
-PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
+PodcastReader::podcastEpisodeCheck( Meta::PodcastEpisodePtr episode )
 {
 //     DEBUG_BLOCK
     Meta::PodcastEpisodePtr episodeMatch = episode;
@@ -425,4 +420,3 @@ PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
 }
 
 #include "PodcastReader.moc"
-
