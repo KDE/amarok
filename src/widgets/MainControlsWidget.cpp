@@ -35,7 +35,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     : QGraphicsView( parent )
 {
     setFixedHeight( 67 );
-    setFixedWidth( 180 );
+    setFixedWidth( 183 );
     setContentsMargins( 0, 0, 0, 0 );
 
     setFrameStyle( QFrame::NoFrame );
