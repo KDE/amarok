@@ -86,6 +86,11 @@ Playlist::Model::Model()
 
     ServicePluginManager::instance();
 
+    /* The PlaylistManager needs to be loaded or podcast episodes and other
+     * non-collection Tracks will not be loaded correctly.
+     */
+    The::playlistManager();
+
     if ( QFile::exists( defaultPlaylistPath() ) )
     {
         Meta::TrackList tracks = Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) )->tracks();

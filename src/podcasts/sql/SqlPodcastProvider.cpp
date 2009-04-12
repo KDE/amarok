@@ -135,10 +135,30 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 }
 
 Meta::TrackPtr
-SqlPodcastProvider::trackForUrl(const KUrl & url)
+SqlPodcastProvider::trackForUrl( const KUrl & url )
 {
-    Q_UNUSED( url );
-    return TrackPtr();
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    QString command = "SELECT id,channel FROM podcastepisodes WHERE url='%1';";
+    command = command.arg( sqlStorage->escape( url.url() ) );
+    QStringList dbResult = sqlStorage->query( command );
+
+    int episodeId = dbResult[0].toInt();
+    int channelId = dbResult[1].toInt();
+    Meta::SqlPodcastChannelPtr channel;
+    foreach( channel, m_channels )
+        if( channel->dbId() == channelId )
+            break;
+
+    if( channel.isNull() )
+        return TrackPtr();
+
+    Meta::SqlPodcastEpisodePtr episode;
+    foreach( episode, channel->sqlEpisodes() )
+        if( episode->dbId() == episodeId )
+            break;
+
+    return Meta::TrackPtr::dynamicCast( episode );
 }
 
 Meta::PlaylistList
