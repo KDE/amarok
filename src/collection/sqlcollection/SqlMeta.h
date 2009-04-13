@@ -262,6 +262,8 @@ class SqlAlbum : public Meta::Album
         virtual KUrl imageLocation( int size = 1 );
         virtual void setImage( const QPixmap &pixmap );
         virtual void removeImage();
+        virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }
+        virtual bool suppressImageAutoFetch() const { return m_suppressAutoFetch; }
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
@@ -294,6 +296,7 @@ class SqlAlbum : public Meta::Album
         static const QString AMAROK_UNSET_MAGIC;
         mutable QHash<int, QString> m_images; // Cache mapping size -> path. hash used for O(1) insertion and O(1) lookup
         bool m_tracksLoaded;
+        bool m_suppressAutoFetch;
         Meta::ArtistPtr m_artist;
         Meta::TrackList m_tracks;
         //QReadWriteLock does not support lock upgrades :(

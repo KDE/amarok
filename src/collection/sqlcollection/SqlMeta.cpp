@@ -1148,6 +1148,7 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     , m_hasImageChecked( false )
     , m_unsetImageId( -1 )
     , m_tracksLoaded( false )
+    , m_suppressAutoFetch( false )
     , m_artist()
     , m_mutex( QMutex::Recursive )
     , m_bookmarkAction( 0 )
@@ -1263,7 +1264,7 @@ SqlAlbum::image( int size )
     // then updateImage() gets called which updates the cache and alerts the
     // subscribers. We use queueAlbum() because this runs the fetch as a
     // background job and doesn't give an intruding popup asking for confirmation
-    if( !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
+    if( !m_suppressAutoFetch && !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
         CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
 
     // If the result image is empty then we didn't find any cached image, nor

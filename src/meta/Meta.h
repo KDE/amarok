@@ -307,8 +307,9 @@ namespace Meta
         Q_PROPERTY( TrackList tracks READ tracks )
         Q_PROPERTY( bool hasImage READ hasImage )
         Q_PROPERTY( QPixmap image READ image WRITE setImage )
-        public:
+        Q_PROPERTY( bool supressImageAutoFetch READ suppressImageAutoFetch WRITE setSuppressImageAutoFetch )
 
+        public:
             Album() : m_noCoverImage( false ) {}
             virtual ~Album() {}
             virtual bool isCompilation() const = 0;
@@ -338,6 +339,10 @@ namespace Meta
             virtual void setImage( const QPixmap &pixmap ) { Q_UNUSED( pixmap ); } //TODO: choose parameter
             /** removes the album art */
             virtual void removeImage() { }
+            /** don't automatically fetch artwork */
+            virtual void setSuppressImageAutoFetch( const bool suppress ) { Q_UNUSED( suppress ); }
+            /** should automatic artwork retrieval be suppressed? */
+            virtual bool suppressImageAutoFetch() const { return false; }
 
             virtual void addMatchTo( QueryMaker* qm );
 
