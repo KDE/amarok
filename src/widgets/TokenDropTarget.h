@@ -33,7 +33,7 @@ class TokenDropTarget : public QWidget
 {
     Q_OBJECT
 public:
-    TokenDropTarget( const QString &mimeType, QWidget *parent = 0);
+    explicit TokenDropTarget( const QString &mimeType, QWidget *parent = 0);
 
     QWidget *childAt( const QPoint &pos ) const;
     void clear();

@@ -142,7 +142,7 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
     QString layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
                     i18n( "Please enter a name for the playlist layout you are about to define:" ) );
-    if( layoutName == "" )
+    if( layoutName.isEmpty() )
     {
         KMessageBox::sorry( this, i18n( "Layout name error" ), i18n( "Cannot create a layout with no name." ) );
         return;
@@ -182,7 +182,7 @@ void PlaylistLayoutEditDialog::copyLayout()
     QString layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
                     i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
                     layoutListWidget->currentItem()->text() ) );
-    if( layoutName == "" )
+    if( layoutName.isEmpty() )
     {
         KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
         return;
@@ -226,8 +226,8 @@ void PlaylistLayoutEditDialog::renameLayout()
 {
     PlaylistLayout layout = m_layoutsMap->value( layoutListWidget->currentItem()->text() );
     
-    QString layoutName( "" );
-    while( layoutName == "" || m_layoutsMap->keys().contains( layoutName ) )
+    QString layoutName;
+    while( layoutName.isEmpty() || m_layoutsMap->keys().contains( layoutName ) )
     {
         layoutName = QInputDialog::getText( this, i18n( "Choose a new name for the playlist layout" ),
                     i18n( "Please enter a new name for the playlist layout you are about to rename:" ) );
@@ -236,7 +236,7 @@ void PlaylistLayoutEditDialog::renameLayout()
             KMessageBox::sorry( this, i18n( "Cannot rename one of the default layouts." ), i18n( "Layout name error" ) );
             return;
         }
-        if( layoutName == "" )
+        if( layoutName.isEmpty() )
             KMessageBox::sorry( this, i18n( "Cannot rename a layout to have no name." ), i18n( "Layout name error" ) );
         if( m_layoutsMap->keys().contains( layoutName ) )
             KMessageBox::sorry( this, i18n( "Cannot rename a layout to have the same name as an existing layout." ), i18n( "Layout name error" ) );
