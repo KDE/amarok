@@ -737,7 +737,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         }
     }
 
-    int newActiveRow = m_activeRow;
+    int activeShift = 0;
     int min = m_items.size() + cmds.size();
     int max = 0;
     QList<quint64> newIds;
@@ -745,7 +745,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );
-        newActiveRow += ( ic.second <= m_activeRow ) ? 1 : 0;
+        activeShift += ( ic.second <= m_activeRow + cmds.size() ) ? 1 : 0;
     }
 
     // actually do the insertion
@@ -783,7 +783,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
 
     if( m_activeRow >= 0 )
-        m_activeRow = newActiveRow;
+        m_activeRow += activeShift;
     else
         m_activeRow = -1;
 
