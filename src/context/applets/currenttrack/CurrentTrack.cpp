@@ -46,7 +46,6 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     setConfigurationRequired( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
     setImmutability( Plasma::Mutable );
-  
 }
 
 CurrentTrack::~CurrentTrack()
@@ -102,9 +101,8 @@ void CurrentTrack::init()
     m_lastPlayedLabel = i18n( "Last Played" );
 
     for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
-    {
         m_tracks[i] = new TrackWidget( this );
-    }
+ 
     m_tabBar->addTab( i18n( "Last played" ) );
     m_tabBar->addTab( i18n( "Favorite tracks" ) );
 
@@ -542,7 +540,6 @@ bool CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPo
     
     if( !cover.isNull() )
     {
-
         width -= borderWidth * 2;
 
         qreal size = width;
@@ -602,9 +599,7 @@ CurrentTrack::tabChanged( int index )
     }
     for( i = 0; i < m_tracksToShow; i++ )
         m_tracks[i]->show();
-    
 }
-
 
 void
 CurrentTrack::alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b )
@@ -612,7 +607,6 @@ CurrentTrack::alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b )
     qreal guideY = a->pos().y() + a->boundingRect().height();
     qreal newY = guideY - b->boundingRect().height() + 1; // just a bit off for some reason (when used w/ text)
     b->setPos( b->x(), newY );
-
 }
 
 #include "CurrentTrack.moc"
