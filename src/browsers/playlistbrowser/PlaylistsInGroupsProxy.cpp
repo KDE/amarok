@@ -72,13 +72,13 @@ PlaylistsInGroupsProxy::buildTree()
     m_parentCreateList.clear();
 
     int max = m_model->rowCount();
-    debug() << QString("building tree with %1 leafs.").arg( max );
+    //debug() << QString("building tree with %1 leafs.").arg( max );
     for ( int row = 0; row < max; row++ )
     {
         QModelIndex idx = m_model->index( row, 0, QModelIndex() );
         //Playlists can be in multiple groups but we only use the first TODO: multigroup
         QString groupName = idx.data( PlaylistBrowserNS::UserModel::GroupRole ).toStringList().first();
-        debug() << QString("index %1 belongs to groupName %2").arg( row ).arg( groupName );
+        //debug() << QString("index %1 belongs to groupName %2").arg( row ).arg( groupName );
 
         int groupIndex = m_groupNames.indexOf( groupName ); //groups are added to the end of the existing list
         if( groupIndex == -1 && !groupName.isEmpty() )
@@ -89,10 +89,10 @@ PlaylistsInGroupsProxy::buildTree()
 
         m_groupHash.insertMulti( groupIndex, row );
     }
-    debug() << "m_groupHash: ";
+    //debug() << "m_groupHash: ";
     for( int groupIndex = 0; groupIndex < m_groupNames.count(); groupIndex++ )
-        debug() << m_groupNames[groupIndex] << ": " << m_groupHash.values( groupIndex );
-    debug() << m_groupHash.values( -1 );
+        //debug() << m_groupNames[groupIndex] << ": " << m_groupHash.values( groupIndex );
+    //debug() << m_groupHash.values( -1 );
 
     emit layoutChanged();
 }
@@ -204,7 +204,7 @@ QModelIndex
 PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
 {
     DEBUG_BLOCK
-    debug() << "index: " << index;
+    //debug() << "index: " << index;
     if( !index.isValid() )
         return QModelIndex();
 
@@ -212,18 +212,18 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
         return QModelIndex();
 
     QModelIndex proxyParent = index.parent();
-    debug() << "parent: " << proxyParent;
+    //debug() << "parent: " << proxyParent;
     QModelIndex originalParent = mapToSource( proxyParent );
-    debug() << "originalParent: " << originalParent;
+    //debug() << "originalParent: " << originalParent;
     int originalRow = index.row();
     if( !originalParent.isValid() )
     {
         int indexInGroup = index.row();
         if( !proxyParent.isValid() )
             indexInGroup -= m_groupNames.count();
-        debug() << "indexInGroup" << indexInGroup;
+        //debug() << "indexInGroup" << indexInGroup;
         originalRow = m_groupHash.values( proxyParent.row() ).at( indexInGroup );
-        debug() << "originalRow: " << originalRow;
+        //debug() << "originalRow: " << originalRow;
     }
     return m_model->index( originalRow, index.column(), originalParent );
 }
@@ -250,9 +250,9 @@ PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
 
     //TODO: this needs to be extended to work for tree models as well
     int sourceRow = index.row();
-    debug() << "source row = " << sourceRow;
+    //debug() << "source row = " << sourceRow;
     int parentRow = m_groupHash.key( sourceRow, -1 );
-    debug() << "parentRow = " << parentRow;
+    //debug() << "parentRow = " << parentRow;
 
     QModelIndex parent = QModelIndex();
     int proxyRow = sourceRow - m_groupHash.count() - m_groupNames.count();
@@ -262,7 +262,7 @@ PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
         proxyRow = m_groupHash.values( parentRow ).indexOf( sourceRow );
     }
 
-    debug() << "proxyRow = " << proxyRow;
+    //debug() << "proxyRow = " << proxyRow;
     return this->index( proxyRow, 0, parent );
 }
 
@@ -379,7 +379,7 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
     if( playlistSelected )
     {
         QModelIndexList originalList = mapToSource( list );
-        debug() << originalList.count() << "original indices";
+        //debug() << originalList.count() << "original indices";
         if( !originalList.isEmpty() )
         {
             actions << m_model->actionsFor( originalList );
