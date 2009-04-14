@@ -140,7 +140,15 @@ void FileBrowser::Widget::readConfig()
     setDir( config.readEntry( "Current Directory" ) );
 
     // KDirOperator view configuration:
-    m_dirOperator->setView( config.readEntry( "View Style", "Simple" ) == "Detail" ? KFile::Detail : KFile::Simple );
+    QString viewStyle = config.readEntry( "View Style", "Simple" );
+    if( viewStyle == "Detail" )
+        m_dirOperator->setView( KFile::Detail );
+    else if( viewStyle == "Tree" )
+        m_dirOperator->setView( KFile::Tree );
+    else if( viewStyle == "DetailTree" )
+        m_dirOperator->setView( KFile::DetailTree );
+    else
+        m_dirOperator->setView( KFile::Simple );
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
     if( config.hasKey( "Sorting" ) )
         m_dirOperator->setSorting( static_cast<QDir::SortFlags>( config.readEntry( "Sorting" ).toInt() ) );
