@@ -163,7 +163,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
     m_bottomPanel = new KVBox( this );
-    m_bottomPanel->setFixedHeight( 50 );
+    //m_bottomPanel->setFixedHeight( 50 );
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
     m_bottomPanel->setSpacing( 2 );
