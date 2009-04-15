@@ -66,6 +66,7 @@ EngineController::destroy()
 EngineController::EngineController()
     : m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
+    , m_volume( 0 )
 {
     DEBUG_BLOCK
 
@@ -460,7 +461,8 @@ int
 EngineController::setVolume( int percent ) //SLOT
 {
     percent = qBound( 0, percent, 100 );
-
+    m_volume = percent; 
+    
     // Phonon stays completely mute if the volume is lower than 0.05, so we shift and limit the range 
     qreal newVolume =  ( percent + 4 ) / 100.0;
     newVolume = qBound( 0.04, newVolume, 1.0 );
@@ -476,7 +478,7 @@ EngineController::setVolume( int percent ) //SLOT
 int
 EngineController::volume() const
 {
-    return static_cast<int>( m_audio->volume() * 100.0 );
+    return m_volume;
 }
 
 bool

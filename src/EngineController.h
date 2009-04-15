@@ -155,6 +155,7 @@ private:
     QPointer<Meta::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
+    int m_volume;
 
     QMutex m_mutex;
 };
