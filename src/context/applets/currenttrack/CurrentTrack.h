@@ -74,7 +74,7 @@ private:
     QGraphicsSimpleTextItem* m_artist;
     QGraphicsSimpleTextItem* m_album;
     QGraphicsSimpleTextItem* m_noTrack;
-    QGraphicsSimpleTextItem* m_byText;;
+    QGraphicsSimpleTextItem* m_byText;
     QGraphicsSimpleTextItem* m_onText;
     int m_rating;
     int m_trackLength;
