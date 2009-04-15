@@ -368,7 +368,7 @@ WikipediaEngine::wikiTrackPostfix()
 inline QString
 WikipediaEngine::wikiUrl( const QString &item ) const
 {
-    return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" );
+    return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" ).toLower();
 }
 
 inline QString
