@@ -459,8 +459,7 @@ EngineController::decreaseVolume( int ticks ) //SLOT
 int
 EngineController::setVolume( int percent ) //SLOT
 {
-    if( percent < 0 ) percent = 0;
-    else if( percent > 100 ) percent = 100;
+    percent = qBound( 0, percent, 100 );
 
     qreal newVolume = percent / 100.0; // Phonon's volume is 0.0 - 1.0
     m_audio->setVolume( newVolume );
