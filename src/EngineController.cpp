@@ -461,12 +461,15 @@ EngineController::setVolume( int percent ) //SLOT
 {
     percent = qBound( 0, percent, 100 );
 
-    qreal newVolume = percent / 100.0; // Phonon's volume is 0.0 - 1.0
+    // Phonon stays completely mute if the volume is lower than 0.05, so we shift and limit the range 
+    qreal newVolume =  ( percent + 4 ) / 100.0;
+    newVolume = qBound( 0.04, newVolume, 1.0 );
     m_audio->setVolume( newVolume );
+    
     AmarokConfig::setMasterVolume( percent );
     volumeChangedNotify( percent );
-
     emit volumeChanged( percent );
+
     return percent;
 }
 
