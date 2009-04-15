@@ -11,6 +11,8 @@ VERSION 2.1-beta2
     * Podcast titles are stripped of unnecessary whitespace. (BR 177403)
 
   BUGFIXES:
+    * Set the value of the slider to the actual scale when loading a fuzzy
+      Bias playlist, instead of 100% in every case
     * Don't fetch all coverless albums automatically when opening the Cover
       Manager. (BR 176170)
     * Podcast episodes are loaded correctly when restoring a playlist on

@@ -662,7 +662,6 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
             i18n( "This controls how strictly to match the given value." ) );
     connect( m_scaleSelection, SIGNAL(valueChanged(int)),
             SLOT(scaleChanged(int)) );
-    m_scaleSelection->setValue( (int)(m_nbias->scale() * 100.0) );
 
     m_fieldSelection = new KComboBox( m_controlFrame );
     m_fieldSelection->setPalette( QApplication::palette() );

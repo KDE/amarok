@@ -222,7 +222,7 @@ Dynamic::GlobalBias::xml() const
     e.setAttribute( "type", "global" );
 
     QDomElement weight = doc.createElement( "weight" );
-    weight.setAttribute( "value", QString::number( m_weight, 'f', 16 ) );
+    weight.setAttribute( "value", QString::number( m_weight ) );
 
     e.appendChild( weight );
     e.appendChild( m_qm->getDomElement() );
@@ -448,7 +448,6 @@ void
 Dynamic::NormalBias::setField( qint64 field )
 {
     m_field = field;
-    m_scale = sigmaFromScale( m_scale );
     setDefaultMu();
 }
 
