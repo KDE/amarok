@@ -126,6 +126,7 @@ static const QStringList internalColumnNames = ( QStringList()
         << "Rating"
         << "Sample rate"
         << "Score"
+        << "Source"
         << "SourceEmblem"
         << "Title"
         << "Title (with track number)"
