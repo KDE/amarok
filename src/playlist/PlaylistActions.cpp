@@ -290,7 +290,7 @@ void
 Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State )
 {
     static int failures = 0;
-    const int maxFailures = 4;
+    const int maxFailures = 10;
 
     if ( currentState == Phonon::ErrorState )
     {
