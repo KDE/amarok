@@ -187,7 +187,7 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             QDomNode elementNode = elements.item( index2 );
             index2++;
 
-            int value = columnNames.indexOf( elementNode.toElement().attribute( "value", "Title" ) );
+            int value = internalColumnNames.indexOf( elementNode.toElement().attribute( "value", "Title" ) );
             QString prefix = elementNode.toElement().attribute( "prefix", QString() );
             QString sufix = elementNode.toElement().attribute( "suffix", QString() );
             qreal size = elementNode.toElement().attribute( "size", "0.0" ).toDouble();
@@ -280,7 +280,7 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
             LayoutItemConfigRowElement element = row.element( j );
             QDomElement elementElement = doc.createElement( "element" );
 
-            elementElement.setAttribute ( "value", columnNames[element.value()] );
+            elementElement.setAttribute ( "value", internalColumnNames[element.value()] );
             elementElement.setAttribute ( "size", QString::number( element.size() ) );
             elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
             elementElement.setAttribute ( "italic", element.italic() ? "true" : "false" );

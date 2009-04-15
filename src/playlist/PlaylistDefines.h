@@ -64,38 +64,74 @@ enum Column
     NUM_COLUMNS
 };
 
-static const QStringList columnNames = ( QStringList()
-        << i18n( "placeholder" )
-        << i18n( "Album" )
-        << i18n( "Album artist" )
-        << i18n( "Artist" )
-        << i18n( "Bitrate" )
-        << i18n( "Bpm" )
-        << i18n( "Comment" )
-        << i18n( "Composer" )
-        << i18n( "Cover image" )
-        << i18n( "Directory" )
-        << i18n( "Disc number" )
-        << i18n( "Divider" )
-        << i18n( "File name" )
-        << i18n( "File size" )
-        << i18n( "Genre" )
-        << i18n( "Group length" )
-        << i18n( "Group tracks" )
-        << i18n( "Last played" )
-        << i18n( "Length" )
-        << i18n( "Mood" )
-        << i18n( "Play count" )
-        << i18n( "Rating" )
-        << i18n( "Sample rate" )
-        << i18n( "Score" )
-        << i18n( "Source" )
-        << i18n( "SourceEmblem" )
-        << i18n( "Title" )
-        << i18n( "Title (with track number)" )
-        << i18n( "Track number" )
-        << i18n( "Type" )
-        << i18n( "Year" ) );
+//this is the list of user visible token nemes and hence needs to be translated
+static const QList<const char *> columnNames = ( QList<const char *>()
+        << I18N_NOOP2( "Empty placeholder token used for spacing in playlist layouts", "Placeholder" )
+        << I18N_NOOP2( "'Album' playlist column name and token for playlist layouts", "Album" )
+        << I18N_NOOP2( "'Album artist' playlist column name and token for playlist layouts", "Album artist" )
+        << I18N_NOOP2( "'Artist' playlist column name and token for playlist layouts", "Artist" )
+        << I18N_NOOP2( "'Bitrate' playlist column name and token for playlist layouts", "Bitrate" )
+        << I18N_NOOP2( "'Beats per minute' playlist column name and token for playlist layouts, if in doubt, dont expand as it needs to be short!!", "Bpm" )
+        << I18N_NOOP2( "'Comment' playlist column name and token for playlist layouts", "Comment" )
+        << I18N_NOOP2( "'Composer' playlist column name and token for playlist layouts", "Composer" )
+        << I18N_NOOP2( "'Cover image' playlist column name and token for playlist layouts", "Cover image" )
+        << I18N_NOOP2( "'Directory' playlist column name and token for playlist layouts", "Directory" )
+        << I18N_NOOP2( "'Disc number' playlist column name and token for playlist layouts", "Disc number" )
+        << I18N_NOOP2( "'Divider' token for playlist layouts representing a small visual divider", "Divider" )
+        << I18N_NOOP2( "'File name' playlist column name and token for playlist layouts", "File name" )
+        << I18N_NOOP2( "'File size' playlist column name and token for playlist layouts", "File size" )
+        << I18N_NOOP2( "'Genre' playlist column name and token for playlist layouts", "Genre" )
+        << I18N_NOOP2( "'Group length' (total play time of group) playlist column name and token for playlist layouts", "Group length" )
+        << I18N_NOOP2( "'Group tracks' (number of tracks in group) playlist column name and token for playlist layouts", "Group tracks" )
+        << I18N_NOOP2( "'Last played' (when was track last played) playlist column name and token for playlist layouts", "Last played" )
+        << I18N_NOOP2( "'Length' (track length) playlist column name and token for playlist layouts", "Length" )
+        << I18N_NOOP2( "'Mood' playlist column name and token for playlist layouts", "Mood" )
+        << I18N_NOOP2( "'Play count' playlist column name and token for playlist layouts", "Play count" )
+        << I18N_NOOP2( "'Rating' playlist column name and token for playlist layouts", "Rating" )
+        << I18N_NOOP2( "'Sample rate' playlist column name and token for playlist layouts", "Sample rate" )
+        << I18N_NOOP2( "'Score' playlist column name and token for playlist layouts", "Score" )
+        << I18N_NOOP2( "'Source' (local collection, Magnatune.com, last.fm, ... ) playlist column name and token for playlist layouts", "Source" )
+        << I18N_NOOP2( "'SourceEmblem' playlist column name and token for playlist layouts", "SourceEmblem" )
+        << I18N_NOOP2( "'Title' (track name) playlist column name and token for playlist layouts", "Title" )
+        << I18N_NOOP2( "'Title (with track number)' (track name prefixed with the track number) playlist column name and token for playlist layouts", "Title (with track number)" )
+        << I18N_NOOP2( "'Track number' playlist column name and token for playlist layouts", "Track number" )
+        << I18N_NOOP2( "'Type' (file format) playlist column name and token for playlist layouts", "Type" )
+        << I18N_NOOP2( "'Year' playlist column name and token for playlist layouts", "Year" ) );
+
+
+//this list is used internally and for reading writing config files and sths shoudl not be translated!
+//must be kept in sunch with the above list though!
+static const QStringList internalColumnNames = ( QStringList()
+        << "Placeholder"
+        << "Album"
+        << "Album artist"
+        << "Artist"
+        << "Bitrate"
+        << "Bpm"
+        << "Comment"
+        << "Composer"
+        << "Cover image"
+        << "Directory"
+        << "Disc number"
+        << "Divider"
+        << "File name"
+        << "File size"
+        << "Genre"
+        << "Group length"
+        << "Group tracks"
+        << "Last played"
+        << "Length"
+        << "Mood"
+        << "Play count"
+        << "Rating"
+        << "Sample rate"
+        << "Score"
+        << "SourceEmblem"
+        << "Title"
+        << "Title (with track number)"
+        << "Track number"
+        << "Type"
+        << "Year" );
 
 static const QStringList iconNames = ( QStringList()
         << "filename-space-amarok"
