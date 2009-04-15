@@ -228,7 +228,10 @@ PodcastReader::read()
                 else if( QXmlStreamReader::name() == "title")
                 {
                     if( !m_parsingImage )
-                        m_current->setTitle( m_titleString );
+                    {
+                        // Remove redundant whitespace from the title.
+                        m_current->setTitle( m_titleString.simplified() );
+                    }
                     //TODO save image data
                     m_titleString.clear();
                 }
