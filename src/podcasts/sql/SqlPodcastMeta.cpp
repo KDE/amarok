@@ -19,13 +19,86 @@
 #include "SqlPodcastMeta.h"
 
 #include "amarokurls/BookmarkMetaActions.h"
+#include "amarokurls/PlayUrlRunner.h"
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "meta/capabilities/TimecodeWriteCapability.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 
 #include <QDate>
+#include <QFile>
+
+// Taglib Includes
+#include <fileref.h>
+#include <tag.h>
+#include <flacfile.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <mpcfile.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <tlist.h>
+#include <tstring.h>
+#include <vorbisfile.h>
+
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <mp4file.h>
+#endif
+
+class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
+{
+    public:
+        TimecodeWriteCapabilityImpl( Meta::PodcastEpisode *episode )
+            : Meta::TimecodeWriteCapability()
+            , m_episode( episode )
+        {}
+
+    virtual bool writeTimecode ( int seconds )
+    {
+        DEBUG_BLOCK
+        return Meta::TimecodeWriteCapability::writeTimecode( seconds,
+                Meta::TrackPtr::dynamicCast( m_episode ) );
+    }
+
+    virtual bool writeAutoTimecode ( int seconds )
+    {
+        DEBUG_BLOCK
+        return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds,
+                Meta::TrackPtr::dynamicCast( m_episode ) );
+    }
+
+    private:
+        Meta::PodcastEpisodePtr m_episode;
+};
+
+class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+{
+    public:
+        TimecodeLoadCapabilityImpl( Meta::PodcastEpisode *episode )
+        : Meta::TimecodeLoadCapability()
+        , m_episode( episode )
+        {}
+
+        virtual bool hasTimecodes()
+        {
+            if ( loadTimecodes().size() > 0 )
+                return true;
+            return false;
+        }
+
+        virtual BookmarkList loadTimecodes()
+        {
+            BookmarkList list = PlayUrlRunner::bookmarksFromUrl( m_episode->playableUrl() );
+            return list;
+        }
+
+    private:
+        Meta::PodcastEpisodePtr m_episode;
+};
 
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
     : Meta::PodcastEpisode( Meta::PodcastChannelPtr::staticCast( sqlChannel ) )
@@ -78,17 +151,45 @@ Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 {
 }
 
+int
+Meta::SqlPodcastEpisode::length() const
+{
+    //if downloaded get the duration from the file, else use the value read from the feed
+    if( m_localUrl.isEmpty() )
+        return m_duration;
+
+    int length;
+
+    #ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+    #else
+    QByteArray fileName = QFile::encodeName( m_localUrl.path() );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+    #endif
+    TagLib::FileRef fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
+
+
+    if( !fileRef.isNull() )
+        if( fileRef.audioProperties() )
+            length = fileRef.audioProperties()->length();
+
+    if( length == -2 /*Undetermined*/ )
+        return 0;
+
+    return length;
+}
+
 bool
 Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     switch( type )
     {
-        //TODO: for download, delete, etc
-        //case Meta::Capability::CustomActions:
         case Meta::Capability::CurrentTrackActions:
+        case Meta::Capability::WriteTimecode:
+        case Meta::Capability::LoadTimecode:
             //only downloaded episodes can be position marked
-            return !localUrl().isEmpty();
-
+//            return !localUrl().isEmpty();
+            return true;
             //TODO: downloaded episodes can be edited
 //         case Meta::Capability::Editable:
 //             return isEditable();
@@ -111,7 +212,10 @@ Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );
         }
-
+        case Meta::Capability::WriteTimecode:
+            return new TimecodeWriteCapabilityImpl( this );
+        case Meta::Capability::LoadTimecode:
+            return new TimecodeLoadCapabilityImpl( this );
         default:
             return 0;
     }

@@ -49,6 +49,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         PodcastChannelPtr channel() { return PodcastChannelPtr::dynamicCast( m_channel ); }
 
         //Track Methods
+        virtual int length() const;
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
