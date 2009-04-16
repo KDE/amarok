@@ -674,6 +674,8 @@ SqlPodcastProvider::downloadResult( KJob * job )
         {
             debug() << "successfully written Podcast Episode " << sqlEpisode->title() << " to " << localUrl.path();
             sqlEpisode->setLocalUrl( localUrl );
+            //force an update so the icon can be updated in the PlaylistBrowser
+            emit( updated() );
         }
         else
         {
