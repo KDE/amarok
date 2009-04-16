@@ -419,7 +419,7 @@
         <whatsthis>The username to use for connecting to Audioscrobbler</whatsthis>
         <default/>
     </entry>
-    <entry key="ScrobblerPassword" type="String">
+    <entry key="ScrobblerPassword" type="Password">
         <label>Password</label>
         <whatsthis>The password to use for connecting to Audioscrobbler</whatsthis>
         <default/>
