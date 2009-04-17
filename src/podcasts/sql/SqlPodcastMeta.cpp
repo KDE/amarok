@@ -81,7 +81,10 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
         TimecodeLoadCapabilityImpl( Meta::PodcastEpisode *episode )
         : Meta::TimecodeLoadCapability()
         , m_episode( episode )
-        {}
+        {
+            DEBUG_BLOCK
+            debug() << "episode: " << m_episode->name();
+        }
 
         virtual bool hasTimecodes()
         {
@@ -92,8 +95,14 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 
         virtual BookmarkList loadTimecodes()
         {
-            BookmarkList list = PlayUrlRunner::bookmarksFromUrl( m_episode->playableUrl() );
-            return list;
+            DEBUG_BLOCK
+            if ( m_episode && m_episode->playableUrl().isValid() )
+            {
+                BookmarkList list = PlayUrlRunner::bookmarksFromUrl( m_episode->playableUrl() );
+                return list;
+            }
+            else
+                return BookmarkList();
         }
 
     private:
@@ -202,6 +211,7 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) c
 Meta::Capability*
 Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
 {
+    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::CurrentTrackActions:
@@ -213,8 +223,10 @@ Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
             return new Meta::CurrentTrackActionsCapability( actions );
         }
         case Meta::Capability::WriteTimecode:
+            debug() << "returning TimecodeWriteCapabilityImpl";
             return new TimecodeWriteCapabilityImpl( this );
         case Meta::Capability::LoadTimecode:
+            debug() << "returning TimecodeLoadCapabilityImpl";
             return new TimecodeLoadCapabilityImpl( this );
         default:
             return 0;

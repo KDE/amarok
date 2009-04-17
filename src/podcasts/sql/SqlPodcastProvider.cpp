@@ -126,9 +126,10 @@ SqlPodcastProvider::loadPodcasts()
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
+    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QString command = "SELECT title FROM podcastepisodes WHERE url='%1';";
+    QString command = "SELECT title FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
 
     QStringList dbResult = sqlStorage->query( command );
@@ -138,9 +139,11 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 Meta::TrackPtr
 SqlPodcastProvider::trackForUrl( const KUrl & url )
 {
+    DEBUG_BLOCK
+            
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QString command = "SELECT id,channel FROM podcastepisodes WHERE url='%1';";
+    QString command = "SELECT id,channel FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
     QStringList dbResult = sqlStorage->query( command );
 
@@ -156,8 +159,13 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
 
     Meta::SqlPodcastEpisodePtr episode;
     foreach( episode, channel->sqlEpisodes() )
+    {
         if( episode->dbId() == episodeId )
+        {
+            debug() << "found it!";
             break;
+        }
+    }
 
     return Meta::TrackPtr::dynamicCast( episode );
 }
