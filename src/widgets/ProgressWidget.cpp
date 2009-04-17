@@ -229,8 +229,11 @@ ProgressWidget::engineTrackLengthChanged( long seconds )
     redrawBookmarks();
 }
 
-void ProgressWidget::redrawBookmarks(){
+void
+ProgressWidget::redrawBookmarks()
+{
     m_slider->clearTriangles();
+
     if( The::engineController()->currentTrack() )
     {
         debug() << "here 1";
