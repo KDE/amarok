@@ -141,6 +141,7 @@ void MainToolbar::handleAddActions()
             //centerAddActions();
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
         }
+        delete cac;
     }
 
     foreach( QAction* action, m_additionalActions )
