@@ -247,6 +247,7 @@ void ProgressWidget::redrawBookmarks(){
                     addBookmark( url->name(), url->arg(1).toInt() );
                 }
             }
+            delete tcl;
         }
     }
 }
