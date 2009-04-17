@@ -49,10 +49,10 @@
 #include <mp4file.h>
 #endif
 
-class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
+class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
 {
     public:
-        TimecodeWriteCapabilityImpl( Meta::PodcastEpisode *episode )
+        TimecodeWriteCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
             : Meta::TimecodeWriteCapability()
             , m_episode( episode )
         {}
@@ -75,10 +75,10 @@ class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
         Meta::PodcastEpisodePtr m_episode;
 };
 
-class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
+class TimecodeLoadCapabilityPodcastImpl : public Meta::TimecodeLoadCapability
 {
     public:
-        TimecodeLoadCapabilityImpl( Meta::PodcastEpisode *episode )
+        TimecodeLoadCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
         : Meta::TimecodeLoadCapability()
         , m_episode( episode )
         {
@@ -223,11 +223,11 @@ Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
             return new Meta::CurrentTrackActionsCapability( actions );
         }
         case Meta::Capability::WriteTimecode:
-            debug() << "returning TimecodeWriteCapabilityImpl";
-            return new TimecodeWriteCapabilityImpl( this );
+            debug() << "returning TimecodeWriteCapabilityPodcastImpl";
+            return new TimecodeWriteCapabilityPodcastImpl( this );
         case Meta::Capability::LoadTimecode:
-            debug() << "returning TimecodeLoadCapabilityImpl";
-            return new TimecodeLoadCapabilityImpl( this );
+            debug() << "returning TimecodeLoadCapabilityPodcastImpl";
+            return new TimecodeLoadCapabilityPodcastImpl( this );
         default:
             return 0;
     }
