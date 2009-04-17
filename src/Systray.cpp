@@ -430,6 +430,7 @@ Amarok::TrayIcon::setupMenu()
             foreach( PopupDropperAction *action, currentTrackActions )
                 m_extraActions.append( action );
         }
+        delete cac;
     }
 
     if ( m_extraActions.count() > 0 )
