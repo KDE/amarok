@@ -631,9 +631,11 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
             {
                 item = item->parent();
             }
-            Amarok::Collection *collection = item->parentCollection();
 
-            if( collection->location()->isOrganizable() )
+            Amarok::Collection *collection = item->parentCollection();
+            const CollectionLocation* location = collection->location();
+
+            if( location->isOrganizable() )
             {
                 bool onlyOneCollection = true;
                 foreach( const QModelIndex &index, indices )
@@ -659,6 +661,7 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                     actions.append( m_organizeAction );
                 }
             }
+            delete location;
         }
 
 
