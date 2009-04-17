@@ -331,6 +331,8 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
         return false;
 
     playlist->save( location, AmarokConfig::relativePlaylist() );
+    delete playlist;
+
     return true;
 }
 
