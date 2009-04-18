@@ -905,7 +905,12 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
 //                         .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
     QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
                         .arg( m_collection->escape(m_rpath) );
-    QStringList queryResult = m_collection->query( query );
+
+    const QStringList queryResult = m_collection->query( query );
+
+    if( queryResult.isEmpty() )
+        return;
+
     if( queryResult[0].toInt() == 0 )
     {
         QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
