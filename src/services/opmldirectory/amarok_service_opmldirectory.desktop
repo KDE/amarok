@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-opml-amarok
 Name=Podcast Directory
+Name[da]=Podcast-liste
 Name[et]=Podcastide kataloog
 Name[eu]=Podcast direktorioa
 Name[ga]=Eolaire Podchraoltaí

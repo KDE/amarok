@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=network-wireless
 Name=Shoutcast Directory
+Name[da]=Shoutcast-liste
 Name[et]=Shoutcasti kataloog
 Name[eu]=Shoutcast direktorioa
 Name[ga]=Eolaire Shoutcast
