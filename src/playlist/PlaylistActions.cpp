@@ -78,7 +78,8 @@ Playlist::Actions::Actions()
 Playlist::Actions::~Actions()
 {
     DEBUG_BLOCK
-    m_navigator->deleteLater();
+
+    delete m_navigator;
 }
 
 void
