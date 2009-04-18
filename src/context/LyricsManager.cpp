@@ -171,10 +171,11 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     if( The::engineController()->currentTrack() )
     {
         sendNewLyricsHtml( lyricsHTML );
+
+        // cache the Html anyway.
+        if( The::engineController()->currentTrack()->cachedLyrics().isEmpty() )
+            The::engineController()->currentTrack()->setCachedLyrics( lyricsHTML );
     }
-    // cache the Html anyway.
-    if( The::engineController()->currentTrack()->cachedLyrics().isEmpty() )
-        The::engineController()->currentTrack()->setCachedLyrics( lyricsHTML );
 }
 
 void
