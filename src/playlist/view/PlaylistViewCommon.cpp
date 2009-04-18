@@ -121,6 +121,7 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
                 foreach( PopupDropperAction *action, actions )
                     actions << action;
             }
+            delete cac;
         }
     }
 
@@ -139,6 +140,7 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
                 foreach( PopupDropperAction *customAction, customActions )
                     actions << customAction;
             }
+            delete cac;
         }
     }
 
