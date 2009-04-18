@@ -456,6 +456,7 @@ void Track::slotResultReady( WsReply *reply )
     {
         init();
     }
+    reply->deleteLater();
 }
 
 

@@ -132,6 +132,7 @@ LastFmServiceSettings::onAuthenticated( WsReply *reply )
             debug() << "Unhandled WsReply state, probably not important";
             return;
     }
+    reply->deleteLater();
 }
 
 void 

@@ -314,6 +314,7 @@ LastFmService::onAuthenticated( WsReply* reply )
     {
         qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
     }
+    reply->deleteLater();
 }
 
 void
@@ -360,6 +361,7 @@ LastFmService::onGetUserInfo( WsReply* reply )
     {
         qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
     }
+    reply->deleteLater();
 }
 
 void

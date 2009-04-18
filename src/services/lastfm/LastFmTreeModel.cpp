@@ -79,6 +79,7 @@ LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Neighbors);
+    reply->deleteLater();
 }
 
 void
@@ -101,6 +102,7 @@ LastFmTreeModel::slotAddFriends ( WsReply* reply )
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Friends);
+    reply->deleteLater();
 }
 
 void
@@ -127,6 +129,7 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
         mMyTopArtists->appendChild ( artist );
     }
     emitRowChanged(LastFm::TopArtists);
+    reply->deleteLater();
 }
 
 void
@@ -146,6 +149,7 @@ LastFmTreeModel::slotAddTags ( WsReply* reply )
     mTags.clear();
     sortTags ( Tag::list ( reply ), Qt::DescendingOrder ) ;
     emitRowChanged(LastFm::MyTags);
+    reply->deleteLater();
 }
 
 void

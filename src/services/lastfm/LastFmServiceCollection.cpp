@@ -149,6 +149,7 @@ void LastFmServiceCollection::slotAddNeighboursLoved( WsReply* reply )
         m_neighborsLoved->addTrack( trackPtr );
         addTrack( trackPtr );
     }
+    reply->deleteLater();
 }
 
 void LastFmServiceCollection::slotAddNeighboursPersonal( WsReply* reply )
@@ -164,6 +165,7 @@ void LastFmServiceCollection::slotAddNeighboursPersonal( WsReply* reply )
         m_neighborsPersonal->addTrack( trackPtr );
         addTrack( trackPtr );
     }
+    reply->deleteLater();
 }
 
 void LastFmServiceCollection::slotAddFriendsLoved( WsReply* reply )
@@ -179,6 +181,7 @@ void LastFmServiceCollection::slotAddFriendsLoved( WsReply* reply )
         m_friendsLoved->addTrack( trackPtr );
         addTrack( trackPtr );
     }
+    reply->deleteLater();
 }
 
 void LastFmServiceCollection::slotAddFriendsPersonal( WsReply* reply )
@@ -194,6 +197,7 @@ void LastFmServiceCollection::slotAddFriendsPersonal( WsReply* reply )
         m_friendsPersonal->addTrack( trackPtr );
         addTrack( trackPtr );
     }
+    reply->deleteLater();
 }
 
 QueryMaker*
