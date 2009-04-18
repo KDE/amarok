@@ -120,11 +120,11 @@ TagDialog::~TagDialog()
     // if tags have changed.
 
     if ( !m_tracks.isEmpty() )
-    {
         delete m_labelCloud;
-    }
     else
         debug() << "Empty tracklist?  Must mean TreeView has not been updated!";
+
+    delete ui;
 }
 
 void
