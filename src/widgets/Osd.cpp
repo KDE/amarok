@@ -54,7 +54,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_y( MARGIN )
         , m_drawShadow( true )
         , m_rating( 0 )
-        , m_volume( The::engineController()->volume() )
+        , m_volume( 0 )
         , m_showVolume( false )
 {
     Qt::WindowFlags flags;
@@ -125,11 +125,12 @@ OSDWidget::ratingChanged( const short rating )
 void
 OSDWidget::volumeChanged( int volume )
 {
+    m_volume = volume;
+
     if ( isEnabled() )
     {
         QString muteState = "";
         m_showVolume = true;
-        m_volume = volume;
 
         m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? "(muted)" : "" ) );
 
