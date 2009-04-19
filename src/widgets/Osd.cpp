@@ -70,7 +70,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
     setBackgroundRole( QPalette::ToolTipBase );
-    setAutoFillBackground (true);
+    setAutoFillBackground( true );
     unsetColors();
 
     m_timer->setSingleShot( true );
@@ -367,10 +367,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
     //p.setPen( Qt::white ); // This too.
     p.setFont( font() );
     p.drawText( rect, align, m_text );
-
-    // Draw a black border around the widget
-    p.setPen( Qt::black );
-    p.drawRect( 0, 0, width(), height() );
 
     m_paused = false;
 }
