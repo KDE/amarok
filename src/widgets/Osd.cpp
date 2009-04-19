@@ -69,8 +69,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setWindowFlags( flags );
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    setBackgroundRole( QPalette::ToolTipBase );
-    setAutoFillBackground( true );
     unsetColors();
 
     m_timer->setSingleShot( true );
