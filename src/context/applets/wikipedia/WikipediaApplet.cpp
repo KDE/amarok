@@ -213,6 +213,21 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     path.addRoundedRect( titleRect.adjusted( -3, 0, 3, 0 ), 5, 5 );
     p->fillPath( path, gradient2 );
     p->restore();
+
+    //draw background of wiki text
+    // is overwritten when we ahve a page, but when we don't the large expanse of background is weird
+    p->save();
+    highlight = QColor( App::instance()->palette().highlight().color() );
+    qreal saturation = highlight.saturationF();
+    saturation *= 0.3;
+    qreal value = highlight.valueF();
+    value *= 1.1;
+    highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
+
+    QRectF wikiRect = m_webView->boundingRect();
+    wikiRect.moveTopLeft( m_webView->pos() );
+    p->fillRect( wikiRect , highlight );
+    p->restore();
     
 }
 
