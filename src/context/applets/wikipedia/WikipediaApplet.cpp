@@ -34,8 +34,6 @@
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_theme( 0 )
-    , m_header( 0 )
     , m_aspectRatio( 0 )
     , m_headerAspectRatio( 0.0 )
     , m_size( QSizeF() )
@@ -56,23 +54,6 @@ WikipediaApplet::~ WikipediaApplet()
 
 void WikipediaApplet::init()
 {
-    m_theme = new Plasma::FrameSvg( this );
-    QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
-
-    debug() << "Loading theme file: " << imagePath;
-    
-    m_theme->setImagePath( imagePath );
-    m_theme->setContainsMultipleImages( true );
-    m_theme->setEnabledBorders( Plasma::FrameSvg::AllBorders );
-
-    m_header = new Context::Svg( this );
-    m_header->setImagePath( "widgets/amarok-wikipedia" );
-    m_header->setContainsMultipleImages( false );
-    
-    m_header->resize();
-    m_aspectRatio = (qreal)m_header->size().height() / (qreal)m_header->size().width();
-    m_size = m_header->size();
-
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
     m_webView = new Plasma::WebView( this );
@@ -85,8 +66,7 @@ void WikipediaApplet::init()
     connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
     QFont labelFont;
-    labelFont.setBold( true );
-    labelFont.setPointSize( labelFont.pointSize() + 3 );
+    labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_wikipediaLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
@@ -147,29 +127,16 @@ WikipediaApplet::linkClicked( const QUrl &url )
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    if( !m_header )
-        return;
 
     prepareGeometryChange();
-    if ( constraints & Plasma::SizeConstraint )
-        m_header->resize( size().toSize() );
-
-    m_theme->resizeFrame(size().toSize());
-
-    m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
 
     float textWidth = m_wikipediaLabel->boundingRect().width();
-    float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
-    float offsetX =  ( totalWidth - textWidth ) / 2;
+    float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
-    m_wikipediaLabel->setPos( offsetX, m_header->elementRect( "wikipedialabel" ).topLeft().y() );
+    m_wikipediaLabel->setPos( offsetX, 6 );
 
-    m_webView->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
-
-    QSizeF infoSize( m_header->elementRect( "wikipediainformation" ).bottomRight().x() - m_header->elementRect( "wikipediainformation" ).topLeft().x(), m_header->elementRect( "wikipediainformation" ).bottomRight().y() - m_header->elementRect( "wikipediainformation" ).topLeft().y() );
-
-    if ( infoSize.isValid() )
-        m_webView->resize( infoSize );
+    m_webView->setPos( 6, 30 );
+    m_webView->resize( boundingRect().width() - 12, 415 );
 
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - MARGIN, MARGIN );
 }
@@ -218,9 +185,8 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
+    p->setRenderHint( QPainter::Antialiasing );
 
-    m_header->resize(size().toSize());
-    m_theme->resizeFrame(size().toSize());
     p->save();
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
     QColor highlight = Amarok::highlightColor();
@@ -231,8 +197,23 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     QPainterPath path;
     path.addRoundedRect( boundingRect(), 3, 3 );
     p->fillPath( path, gradient );
-
     p->restore();
+
+        // draw rounded rect around title
+    p->save();
+    QColor topColor( 255, 255, 255, 120 );
+    QLinearGradient gradient2( m_wikipediaLabel->boundingRect().topLeft(), m_wikipediaLabel->boundingRect().bottomLeft() );
+    topColor.setAlpha( 120 );
+    gradient2.setColorAt( 0, topColor );
+    topColor.setAlpha( 200 );
+    gradient2.setColorAt( 1, topColor );
+    path = QPainterPath();
+    QRectF titleRect = m_wikipediaLabel->boundingRect();
+    titleRect.moveTopLeft( m_wikipediaLabel->pos() );
+    path.addRoundedRect( titleRect.adjusted( -3, 0, 3, 0 ), 5, 5 );
+    p->fillPath( path, gradient2 );
+    p->restore();
+    
 }
 
 QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
@@ -264,13 +245,22 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
+        QColor highlight( App::instance()->palette().highlight().color() );
+        qreal saturation = highlight.saturationF();
+        saturation *= 0.3;
+        qreal value = highlight.valueF();
+        value *= 1.1;
+        debug() << "value:" << highlight.valueF();
+        highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
+        
         QString contents = QString( file.readAll() );
         //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
-        contents.replace( "{background_color}", palette.brush( QPalette::ToolTipBase ).color().name() );
+        contents.replace( "{background_color}", highlight.name() );
         contents.replace( "{text_color}", palette.brush( QPalette::Text ).color().name() );
         contents.replace( "{link_color}", palette.link().color().name() );
         contents.replace( "{link_hover_color}", palette.link().color().darker( 200 ).name() );
-        contents.replace( "{shaded_text_background_color}", palette.brush( QPalette::ToolTipBase ).color().darker( 140 ).name() );
+        highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
+        contents.replace( "{shaded_text_background_color}", highlight.name() );
 
         delete m_css;
         m_css = new KTemporaryFile();

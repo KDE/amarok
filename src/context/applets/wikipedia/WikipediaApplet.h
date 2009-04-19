@@ -59,8 +59,6 @@ public slots:
 private:
     Plasma::IconWidget * addAction( QAction *action );
 
-    Plasma::FrameSvg* m_theme;
-    Context::Svg* m_header;
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
     QSizeF m_size;

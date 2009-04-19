@@ -2,8 +2,8 @@ first { element: is; completely: ignored; }
 
 body
 {
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
   color: gray;
   background-color: {background_color};
   font-size: 11pt;
