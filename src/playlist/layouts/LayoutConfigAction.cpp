@@ -46,19 +46,19 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     m_layoutMenu->addAction( m_configAction );
     m_layoutMenu->addSeparator();
     m_layoutActions = new QActionGroup( m_layoutMenu );
-    m_layoutActions->setExclusive( TRUE );
+    m_layoutActions->setExclusive( true );
 
     QStringList layoutsList( LayoutManager::instance()->layouts() );
     foreach( QString iterator, layoutsList )
     {
-        m_layoutActions->addAction( iterator )->setCheckable( TRUE );
+        m_layoutActions->addAction( iterator )->setCheckable( true );
     }
     m_layoutMenu->addActions( m_layoutActions->actions() );
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
     debug() << "About to check layout at index " << index;
     if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
-    m_layoutActions->actions()[ index ]->setChecked( TRUE );
+    m_layoutActions->actions()[ index ]->setChecked( true );
 
     connect( m_layoutActions, SIGNAL( triggered( QAction * ) ), this, SLOT( setActiveLayout( QAction * ) ) );
 
@@ -104,14 +104,14 @@ void Playlist::LayoutConfigAction::layoutListChanged()
     debug() << "Layouts are " << layoutsList;
     foreach( QString iterator, layoutsList )
     {
-        m_layoutActions->addAction( iterator )->setCheckable( TRUE );
+        m_layoutActions->addAction( iterator )->setCheckable( true );
     }
     m_layoutMenu->addActions( m_layoutActions->actions() );
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
     debug() << "About to check layout at index " << index;
     if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
-        m_layoutActions->actions()[ index ]->setChecked( TRUE );
+        m_layoutActions->actions()[ index ]->setChecked( true );
 }
 
 void LayoutConfigAction::onActiveLayoutChanged()
@@ -123,7 +123,7 @@ void LayoutConfigAction::onActiveLayoutChanged()
         int index = LayoutManager::instance()->layouts().indexOf( layoutName );
         debug() << "Index in the LayoutManager of currently active layout, called " << LayoutManager::instance()->activeLayoutName() << ", is: " << index;
         if( index != -1 && m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
-            m_layoutActions->actions()[ index ]->setChecked( TRUE );
+            m_layoutActions->actions()[ index ]->setChecked( true );
     }
 }
 
