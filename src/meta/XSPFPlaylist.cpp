@@ -573,6 +573,8 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
                 APPENDNODE( title, streamInfo->streamName() )
             if( !streamInfo->streamSource().isEmpty() )
                 APPENDNODE( creator, streamInfo->streamSource() )
+
+            delete streamInfo;
         }
         else
         {
