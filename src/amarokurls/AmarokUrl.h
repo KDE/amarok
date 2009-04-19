@@ -27,10 +27,9 @@
 #include <QString>
 #include <QStringList>
 
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem{
+
+class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem
+{
 public:
     AmarokUrl();
     explicit AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
@@ -47,12 +46,10 @@ public:
 
     void setName( const QString &name );
 
-
     void setDescription( const QString &description );
 
     void setCustomValue( const QString &custom );
     QString customValue();
-
 
     int numberOfArgs();
 
@@ -76,9 +73,7 @@ public:
     virtual void removeFromDb();
     virtual void rename( const QString &name );
 
-
 private:
-
     QStringList m_fields;
 
     int m_id;
@@ -88,8 +83,6 @@ private:
 
     //this value is used for storing application specific inoformation that should not be made user visible.
     QString m_customValue;
-
-
 };
 
 #endif

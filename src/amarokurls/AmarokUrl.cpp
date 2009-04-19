@@ -18,22 +18,19 @@
  ***************************************************************************/
  
 #include "AmarokUrl.h"
-#include "BookmarkGroup.h"
-
-#include "CollectionManager.h"
-#include "Debug.h"
-
-#include "SqlStorage.h"
 
 #include "AmarokUrlHandler.h"
+#include "BookmarkGroup.h"
+#include "CollectionManager.h"
+#include "Debug.h"
+#include "SqlStorage.h"
 
 #include <QUrl>
 
 AmarokUrl::AmarokUrl()
     : m_id( -1 )
     , m_parent( 0 )
-{
-}
+{}
 
 AmarokUrl::AmarokUrl( const QString & urlString, BookmarkGroupPtr parent )
     : m_id( -1 )
@@ -47,17 +44,15 @@ AmarokUrl::AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent )
 {
     m_id = resultRow[0].toInt();
     m_name = resultRow[2];
-    QString urlString = resultRow[3];
+    const QString urlString = resultRow[3];
     m_description = resultRow[4];
     m_customValue = resultRow[5];
 
     initFromString( urlString );
 }
 
-
 AmarokUrl::~AmarokUrl()
-{
-}
+{}
 
 void AmarokUrl::initFromString( const QString & urlString )
 {
@@ -67,13 +62,11 @@ void AmarokUrl::initFromString( const QString & urlString )
 
     strippedUrlString = strippedUrlString.replace( "amarok://", "" );
 
-    //some poor mans unescaping
+    //some poor man's unescaping
     strippedUrlString = strippedUrlString.replace( "%22", "\"" );
     strippedUrlString = strippedUrlString.replace( "%20", " " );
     
-    
     m_fields = strippedUrlString.split( '/' );
-    
 }
 
 void AmarokUrl::setCommand( const QString & command )
@@ -84,7 +77,6 @@ void AmarokUrl::setCommand( const QString & command )
         m_fields << command;
 }
 
-
 QString AmarokUrl::command()
 {
     if ( m_fields.count() != 0 )
@@ -92,8 +84,6 @@ QString AmarokUrl::command()
     else
         return QString();
 }
-
-
 
 int AmarokUrl::numberOfArgs()
 {
@@ -125,7 +115,6 @@ bool AmarokUrl::run()
     return The::amarokUrlHandler()->run( *this );
 }
 
-
 QString AmarokUrl::url()
 {
     QString url = "amarok:/";
@@ -148,12 +137,9 @@ bool AmarokUrl::saveToDb()
     if ( isNull() )
         return false;
 
-    int parentId = -1;
-    if ( m_parent )
-        parentId = m_parent->id();
+    const int parentId = m_parent ? m_parent->id() : -1;
 
     SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
-
 
     if( m_id != -1 )
     {
@@ -162,7 +148,6 @@ bool AmarokUrl::saveToDb()
         QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;";
         query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) ).arg( QString::number( m_id ) );
         CollectionManager::instance()->sqlStorage()->query( query );
-
     }
     else
     {
@@ -172,6 +157,7 @@ bool AmarokUrl::saveToDb()
         query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) );
         m_id = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
     }
+
     return true;
 }
 
