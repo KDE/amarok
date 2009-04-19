@@ -331,8 +331,6 @@ LyricsApplet::paletteChanged( const QPalette & palette )
     Q_UNUSED( palette )
 
     QColor highlight = Amarok::highlightColor().darker( 200 );
-    if( m_titleLabel )
-        m_titleLabel->setBrush( highlight );    
     if( m_lyrics )
         m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
                                                                                                               .arg( Amarok::highlightColor().darker( 400 ).name() ) );
