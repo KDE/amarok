@@ -53,12 +53,12 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
-    QColor highlight = Amarok::highlightColor().darker( 200 );
+    QColor highlight = Amarok::highlightColor().darker( 300 );
 
     
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
-    bigger.setPointSize( bigger.pointSize() + 4 );
+    bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
     m_titleLabel->setBrush( highlight );
@@ -78,9 +78,17 @@ void LyricsApplet::init()
     m_lyrics->setOpenExternalLinks( true );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     m_lyricsProxy->setWidget( m_lyrics );
-    debug() << "seettngi stylesheet:" << QString( "QTextBrowser { background-color: %1; border-radius: 10px; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() );
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 2px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
-                                                                                                                .arg( Amarok::highlightColor().darker( 250 ).name() ) );
+    QPalette pal;
+    QBrush brush(  Amarok::highlightColor().lighter( 200 ) );
+    brush.setStyle( Qt::SolidPattern );
+    pal.setBrush( QPalette::Active, QPalette::Base, brush );
+    pal.setBrush( QPalette::Inactive, QPalette::Base, brush );
+    pal.setBrush( QPalette::Disabled, QPalette::Base, brush );
+    pal.setBrush( QPalette::Window, brush );
+    m_lyrics->setPalette( pal );
+    debug() << "setting stylesheet:" << QString( "QTextBrowser { background-color: %1; border-radius: 10px; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() );
+    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
+                                                                                                              .arg( Amarok::highlightColor().darker( 300 ).name() ) );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -144,16 +152,16 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
-    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 5 );
+    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 10 );
     
-    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 20, 10 ) );
+    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 35, 10 ) );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    QSize lyricsSize( size().width() - 20, size().height() - 48 );
+    QSize lyricsSize( size().width() - 20, size().height() - 10 );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
-    m_lyricsProxy->setPos( 10, 42 );
+    m_lyricsProxy->setPos( 10, 5 );
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -165,16 +173,17 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     //debug() << "lyrics applet got name:" << name << "and lyrics: " << data;
 
     m_titleLabel->show();
+    QString padding = "\n\n";
     if( data.contains( "noscriptrunning" ) )
     {
         m_suggested->hide();
-        m_lyrics->show();m_lyrics->setPlainText( i18n( "No lyrics script is running." ) );
+        m_lyrics->show();m_lyrics->setPlainText( padding + i18n( "No lyrics script is running." ) );
     }
     else if( data.contains( "fetching" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
-        m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
+        m_lyrics->setPlainText( padding + i18n( "Lyrics are being fetched." ) );
     }
     else if( data.contains( "error" ) )
     {
@@ -216,7 +225,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
         m_titleLabel->setText( QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() ) );
         //  need padding for title
-        m_lyrics->setPlainText( "\n\n" + lyrics[ 3 ].toString().trimmed() );
+        m_lyrics->setPlainText( padding + lyrics[ 3 ].toString().trimmed() );
     }
     else if( data.contains( "notfound" ) )
     {
@@ -244,9 +253,9 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     p->save();
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
     QColor highlight = Amarok::highlightColor();
-    highlight.setAlpha( 80 );
+    highlight.setAlpha( 70 );
     gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
+    highlight.setAlpha( 220 );
     gradient.setColorAt( 1, highlight );
     QPainterPath path;
     path.addRoundedRect( boundingRect(), 5, 5 );
@@ -295,14 +304,14 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
 void
 LyricsApplet::paletteChanged( const QPalette & palette )
 {
-    DEBUG_BLOCK
+    Q_UNUSED( palette )
 
     QColor highlight = Amarok::highlightColor().darker( 200 );
     if( m_titleLabel )
         m_titleLabel->setBrush( highlight );    
     if( m_lyrics )
-        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 2px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
-                                                                                                                .arg( Amarok::highlightColor().darker( 250 ).name() ) );
+        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
+                                                                                                                  .arg( Amarok::highlightColor().darker( 300 ).name() ) );
     
 }
 
