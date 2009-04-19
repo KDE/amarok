@@ -514,8 +514,9 @@ int
 EngineController::trackLength() const
 {
     const qint64 phononLength = m_media->totalTime(); //may return -1
-    if( phononLength <= 0 && m_currentTrack ) //this is useful for stuff like last.fm streams
-        return m_currentTrack->length();      //where Meta::Track knows the length, but phonon doesn't
+
+    if( m_currentTrack && m_currentTrack->length() > 0 )   //When starting a last.fm stream, Phonon still shows the old track's length--trust Meta::Track over Phonon
+        return m_currentTrack->length();
     else
         return static_cast<int>( phononLength / 1000 );
 }
@@ -822,6 +823,10 @@ void
 EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
     DEBUG_BLOCK
+
+    //Phonon reports bad info on streams, so call trackLength() to verify
+    milliseconds = trackLength() * 1000;
+
     if( milliseconds != 0 ) //don't notify for 0 seconds, it's probably just a stream
         trackLengthChangedNotify( static_cast<long>( milliseconds ) / 1000 );
 }

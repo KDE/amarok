@@ -11,6 +11,8 @@ VERSION 2.1-beta2
     * Podcast titles are stripped of unnecessary whitespace. (BR 177403)
 
   BUGFIXES:
+    * Fixed problem with Amarok showing wrong track length for Last.fm 
+      streams. Patch by Michael Quinn <mike@quinnsoft.com>. (BR 188512)
     * Fixed several memory leaks.
     * Set the value of the slider to the actual scale when loading a fuzzy
       Bias playlist, instead of 100% in every case
