@@ -102,7 +102,7 @@ NavigationUrlRunner::run( AmarokUrl url )
                 service->sortByArtist();
             else if ( groupMode == "genre-artist-album" )
                 service->sortByGenreArtistAlbum();
-            else if ( groupMode != "" ) //allow for not specifying any sort mode ( remain the same )
+            else if ( !groupMode.isEmpty() ) //allow for not specifying any sort mode ( remain the same )
                 return false;
 
             service->setFilter( filter );
