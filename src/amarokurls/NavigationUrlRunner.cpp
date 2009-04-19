@@ -24,16 +24,15 @@
 #include "AmarokUrlHandler.h"
 
 #include "MainWindow.h"
-#include "services/ServiceBase.h"
-#include "browsers/servicebrowser/ServiceBrowser.h"
+#include "PlaylistManager.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
-#include "PlaylistManager.h"
+#include "browsers/servicebrowser/ServiceBrowser.h"
+#include "services/ServiceBase.h"
 
 NavigationUrlRunner::NavigationUrlRunner()
     : AmarokUrlRunnerBase()
-{
-}
+{}
 
 
 NavigationUrlRunner::~NavigationUrlRunner()
@@ -46,8 +45,8 @@ NavigationUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK;
     
-    if ( url.numberOfArgs() > 0 ) {
-        
+    if ( url.numberOfArgs() > 0 )
+    {
         QString type = url.arg( 0 );
 
         QString collection;
@@ -79,9 +78,10 @@ NavigationUrlRunner::run( AmarokUrl url )
 
         The::mainWindow()->showBrowser( type );
 
-        if ( type ==  "Internet" ) {
-
-            if ( collection.isEmpty() ) {
+        if ( type ==  "Internet" )
+        {
+            if ( collection.isEmpty() )
+            {
                 ServiceBrowser::instance()->home();
                 return true;
             }
@@ -121,11 +121,10 @@ NavigationUrlRunner::run( AmarokUrl url )
             The::mainWindow()->raise();
             The::mainWindow()->activateWindow();
 
-
             return true;
-
-        } else  if ( type ==  "CollectionBrowser" ) {
-
+        }
+        else if ( type ==  "CollectionBrowser" )
+        {
             debug() << "get collection browser";
 
             CollectionWidget * collectionBrowser = The::mainWindow()->collectionBrowser();
@@ -157,11 +156,10 @@ NavigationUrlRunner::run( AmarokUrl url )
             The::mainWindow()->raise();
             The::mainWindow()->activateWindow();
 
-
             return true;
-
-        } else  if ( type ==  "PlaylistBrowser" ) {
-
+        }
+        else if ( type ==  "PlaylistBrowser" )
+        {
             debug() << "Show playlist category: " << collection;
             QList<int> categories = The::playlistManager()->availableCategories();
 
@@ -179,14 +177,11 @@ NavigationUrlRunner::run( AmarokUrl url )
             
             return true;
         }
-        else  if ( type ==  "FileBrowser::Widget" ) {
+        else if ( type ==  "FileBrowser::Widget" )
             return true;
-        }
-
     }
     
     return false;
-
 }
 
 QString NavigationUrlRunner::command() const

@@ -23,9 +23,7 @@
 #include "AmarokUrl.h"
 #include "AmarokUrlRunnerBase.h"
 
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
+
 class NavigationUrlRunner : public AmarokUrlRunnerBase
 {
 public:
