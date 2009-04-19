@@ -63,7 +63,7 @@ void LyricsApplet::init()
     bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
-    m_titleLabel->setBrush( highlight );
+   // m_titleLabel->setBrush( highlight );
     
     QAction* reloadAction = new QAction( i18n( "Reload Lyrics" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
