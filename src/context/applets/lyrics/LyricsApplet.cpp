@@ -163,10 +163,10 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    QSize lyricsSize( size().width() - 12, size().height() - 35 );
+    m_lyricsProxy->setPos( 6, m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + 3 );
+    QSize lyricsSize( size().width() - 12, boundingRect().height() - m_lyricsProxy->pos().y() - 6 );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
-    m_lyricsProxy->setPos( 6, 30 );
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )

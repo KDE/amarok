@@ -135,8 +135,8 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_wikipediaLabel->setPos( offsetX, 6 );
 
-    m_webView->setPos( 6, 30 );
-    m_webView->resize( boundingRect().width() - 12, 415 );
+    m_webView->setPos( 6, m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + 3 );
+    m_webView->resize( boundingRect().width() - 12, boundingRect().height() - m_webView->pos().y() - 6 );
 
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - MARGIN, MARGIN );
 }
