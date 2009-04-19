@@ -21,11 +21,11 @@
 
 #include "SingleCollectionTreeItemModel.h"
 
-#include "CollectionTreeItem.h"
-#include "Debug.h"
 #include "Amarok.h"
 #include "Collection.h"
 #include "CollectionManager.h"
+#include "CollectionTreeItem.h"
+#include "Debug.h"
 #include "QueryMaker.h"
 
 #include <KLocale>
@@ -40,12 +40,11 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Amarok::Collection
     setLevels( levelType );
 
     connect( collection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-
 }
 
-
 void
-SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
+SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
+{
     delete m_rootItem; //clears the whole tree!
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0 );
@@ -58,17 +57,13 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType ) {
     reset(); //resets the whole model, as the data changed
 }
 
-
-
 QVariant
 SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
-
-    //DEBUG_BLOCK
     if (!index.isValid())
         return QVariant();
 
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
 
     if ( item->isDataItem() )
     {
@@ -78,17 +73,16 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
             //check if the item being queried is currently being populated
 
-            int level = item->level();
+            const int level = item->level();
 
-            if ( d->m_childQueries.values().contains( item ) ) {
+            if ( d->m_childQueries.values().contains( item ) )
+            {
                 if ( level < m_levelType.count() )
                     return m_currentAnimPixmap;
             }
 
-
             if ( level < m_levelType.count() )
             {
-
                 if (  m_levelType[level] == CategoryId::Album ) 
                 {
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
@@ -115,10 +109,10 @@ SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
 }
 
 bool
-SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const {
-    //DEBUG_BLOCK
+SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const
+{
     CollectionTreeItem *item;
-     if (!parent.isValid())
+    if ( !parent.isValid() )
         item = m_rootItem;  // must be root item!
     else
         item = static_cast<CollectionTreeItem*>(parent.internalPointer());
@@ -126,20 +120,18 @@ SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const 
     //we added the collection level so we have to be careful with the item level
     //return item->childrenLoaded() || item->level() == m_levelType.count();  //that's track level
     return item->level() < m_levelType.count();
-
-
 }
 
 void
-SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const {
-    if ( !item->childrenLoaded() ) {
+SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const
+{
+    if ( !item->childrenLoaded() )
         listForLevel( item->level() +1, item->queryMaker(), item );
-    }
 }
 
 bool
-SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
-    //DEBUG_BLOCK
+SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const
+{
     if ( !parent.isValid() )
        return !m_rootItem->childrenLoaded();
 
@@ -148,13 +140,14 @@ SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const {
 }
 
 void
-SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent ) {
-    //DEBUG_BLOCK
+SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent )
+{
     CollectionTreeItem *item;
     if ( parent.isValid() )
         item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     else
         item = m_rootItem;
+
     ensureChildrenLoaded( item );
 }
 

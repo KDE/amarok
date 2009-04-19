@@ -27,15 +27,15 @@
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QPair>
-#include <QPixmap>
 
 class CollectionTreeItem;
 class Collection;
 //typedef QPair<Collection*, CollectionTreeItem* > CollectionRoot;
 
+
 class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemModelBase 
 {
-Q_OBJECT
+    Q_OBJECT
 
     public:
         SingleCollectionTreeItemModel( Amarok::Collection * collection,  const QList<int> &levelType );
@@ -51,14 +51,10 @@ Q_OBJECT
         virtual void filterChildren();
 
     private:
-
         void ensureChildrenLoaded( CollectionTreeItem *item ) const;
 
         Amarok::Collection* m_collection;
         QueryMaker* m_queryMaker;
-
-
-
 };
 
 #endif
