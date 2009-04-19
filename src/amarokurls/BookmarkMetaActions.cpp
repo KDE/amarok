@@ -22,14 +22,13 @@
 #include "AmarokUrlHandler.h"
 #include "BookmarkModel.h"
 #include "EngineController.h"
-#include "meta/capabilities/TimecodeWriteCapability.h"
-#include "PlayUrlRunner.h"
-#include "PlayUrlGenerator.h"
 #include "ProgressWidget.h"
 #include "SvgHandler.h"
+#include "meta/capabilities/TimecodeWriteCapability.h"
 
 #include <KIcon>
 #include <KLocale>
+
 
 BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album )
     : PopupDropperAction( i18n( "Bookmark this Album" ), parent )
@@ -41,7 +40,8 @@ BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album 
     setElementId( "lastfm" );
 }
 
-void BookmarkAlbumAction::slotTriggered()
+void
+BookmarkAlbumAction::slotTriggered()
 {
     The::amarokUrlHandler()->bookmarkAlbum( m_album );
 }
@@ -57,7 +57,8 @@ BookmarkArtistAction::BookmarkArtistAction( QObject *parent, Meta::ArtistPtr art
     setElementId( "lastfm" );
 }
 
-void BookmarkArtistAction::slotTriggered()
+void
+BookmarkArtistAction::slotTriggered()
 {
     The::amarokUrlHandler()->bookmarkArtist( m_artist );
 }
@@ -73,9 +74,10 @@ void
 BookmarkCurrentTrackPositionAction::slotTriggered()
 {
     DEBUG_BLOCK
-    PlayUrlGenerator urlGenerator;
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    int seconds = The::engineController()->trackPosition();
+    const int seconds = The::engineController()->trackPosition();
+
     if ( track && track->hasCapabilityInterface( Meta::Capability::WriteTimecode ) )
     {
         debug() << " has WriteTimecode  ";

@@ -24,12 +24,11 @@
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Meta.h"
 
-/**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+
 class AMAROK_EXPORT BookmarkAlbumAction : public PopupDropperAction
 {
     Q_OBJECT
+
 public:
     BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album );
 
@@ -38,12 +37,13 @@ public:
 
     private:
         Meta::AlbumPtr m_album;
-
 };
+
 
 class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
 {
     Q_OBJECT
+
     public:
         BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist );
 
@@ -52,14 +52,13 @@ class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
 
     private:
         Meta::ArtistPtr m_artist;
-
 };
-
 
 
 class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public PopupDropperAction
 {
     Q_OBJECT
+
     public:
         explicit BookmarkCurrentTrackPositionAction( QObject *parent );
 
