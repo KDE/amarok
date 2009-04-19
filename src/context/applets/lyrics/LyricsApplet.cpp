@@ -86,9 +86,9 @@ void LyricsApplet::init()
     pal.setBrush( QPalette::Disabled, QPalette::Base, brush );
     pal.setBrush( QPalette::Window, brush );
     m_lyrics->setPalette( pal );
-    debug() << "setting stylesheet:" << QString( "QTextBrowser { background-color: %1; border-radius: 10px; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() );
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
-                                                                                                              .arg( Amarok::highlightColor().darker( 300 ).name() ) );
+    m_lyricsProxy->setPalette( pal );
+    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
+                                                                                                              .arg( Amarok::highlightColor().darker( 400 ).name() ) );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -154,14 +154,14 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 10 );
     
-    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 35, 10 ) );
+    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 10, 10 ) );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    QSize lyricsSize( size().width() - 20, size().height() - 10 );
+    QSize lyricsSize( size().width() - 20, size().height() - 43 );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
-    m_lyricsProxy->setPos( 10, 5 );
+    m_lyricsProxy->setPos( 10, 35 );
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -173,17 +173,16 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     //debug() << "lyrics applet got name:" << name << "and lyrics: " << data;
 
     m_titleLabel->show();
-    QString padding = "\n\n";
     if( data.contains( "noscriptrunning" ) )
     {
         m_suggested->hide();
-        m_lyrics->show();m_lyrics->setPlainText( padding + i18n( "No lyrics script is running." ) );
+        m_lyrics->show();m_lyrics->setPlainText( i18n( "No lyrics script is running." ) );
     }
     else if( data.contains( "fetching" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
-        m_lyrics->setPlainText( padding + i18n( "Lyrics are being fetched." ) );
+        m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
     }
     else if( data.contains( "error" ) )
     {
@@ -225,7 +224,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
         m_titleLabel->setText( QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() ) );
         //  need padding for title
-        m_lyrics->setPlainText( padding + lyrics[ 3 ].toString().trimmed() );
+        m_lyrics->setPlainText( lyrics[ 3 ].toString().trimmed() );
     }
     else if( data.contains( "notfound" ) )
     {
@@ -248,17 +247,18 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 {
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
+    p->setRenderHint( QPainter::Antialiasing );
 
     // tint the whole applet
     p->save();
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
     QColor highlight = Amarok::highlightColor();
-    highlight.setAlpha( 70 );
+    highlight.setAlpha( 40 );
     gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 220 );
+    highlight.setAlpha( 180 );
     gradient.setColorAt( 1, highlight );
     QPainterPath path;
-    path.addRoundedRect( boundingRect(), 5, 5 );
+    path.addRoundedRect( boundingRect(), 3, 3 );
     p->fillPath( path, gradient );
 
     p->restore();
@@ -310,8 +310,8 @@ LyricsApplet::paletteChanged( const QPalette & palette )
     if( m_titleLabel )
         m_titleLabel->setBrush( highlight );    
     if( m_lyrics )
-        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
-                                                                                                                  .arg( Amarok::highlightColor().darker( 300 ).name() ) );
+        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
+                                                                                                              .arg( Amarok::highlightColor().darker( 400 ).name() ) );
     
 }
 
