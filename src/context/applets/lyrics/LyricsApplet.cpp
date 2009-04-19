@@ -22,6 +22,7 @@
 #include "PaletteHandler.h"
 #include "Theme.h"
 
+#include <KGlobalSettings>
 #include <KStandardDirs>
 
 #include <QAction>
@@ -291,7 +292,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     //draw background of lyrics text
     p->save();
-    highlight = QColor( App::instance()->palette().highlight().color() );
+    highlight = KGlobalSettings::activeTitleColor();
     qreal saturation = highlight.saturationF();
     saturation *= 0.3;
     qreal value = highlight.valueF();

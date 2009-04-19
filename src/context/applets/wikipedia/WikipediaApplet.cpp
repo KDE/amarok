@@ -20,6 +20,7 @@
 #include "EngineController.h"
 #include "PaletteHandler.h"
 
+#include <KGlobalSettings>
 #include <plasma/theme.h>
 #include <plasma/widgets/webview.h>
 #include <plasma/widgets/iconwidget.h>
@@ -260,7 +261,7 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QColor highlight( App::instance()->palette().highlight().color() );
+        QColor highlight = KGlobalSettings::activeTitleColor();
         qreal saturation = highlight.saturationF();
         saturation *= 0.3;
         qreal value = highlight.valueF();

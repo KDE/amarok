@@ -53,6 +53,7 @@ email                : markey@web.de
 #include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
 #include <KEditToolBar>                  //slotConfigToolbars()
+#include <KGlobalSettings>
 #include <KIO/CopyJob>
 #include <KJob>
 #include <KJobUiDelegate>
@@ -894,7 +895,7 @@ namespace Amarok
 
     QColor highlightColor()
     {
-        QColor highlight( App::instance()->palette().highlight().color() );
+        QColor highlight = KGlobalSettings::activeTitleColor();
         qreal saturation = highlight.saturationF();
         saturation *= 0.6;
         highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
