@@ -18,10 +18,11 @@
 #include "context/DataEngine.h"
 #include "context/Svg.h"
 
+#include <ktemporaryfile.h>
+#include <plasma/framesvg.h>
+
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
-
-#include <plasma/framesvg.h>
 
 class QAction;
 class QGraphicsSimpleTextItem;
@@ -76,10 +77,14 @@ private:
 
     Plasma::IconWidget *m_reloadIcon;
 
+    KTemporaryFile* m_css;
+
 private slots:
     void connectSource( const QString &source );
     void linkClicked( const QUrl &url );
     void reloadWikipedia();
+    void paletteChanged( const QPalette & palette );
+
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )

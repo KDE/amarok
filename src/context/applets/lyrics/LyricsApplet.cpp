@@ -79,7 +79,7 @@ void LyricsApplet::init()
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     m_lyricsProxy->setWidget( m_lyrics );
     QPalette pal;
-    QBrush brush(  Amarok::highlightColor().lighter( 200 ) );
+    QBrush brush(  Amarok::highlightColor().lighter( 170 ) );
     brush.setStyle( Qt::SolidPattern );
     pal.setBrush( QPalette::Active, QPalette::Base, brush );
     pal.setBrush( QPalette::Inactive, QPalette::Base, brush );

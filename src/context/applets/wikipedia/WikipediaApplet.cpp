@@ -14,9 +14,11 @@
 #include "WikipediaApplet.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "Debug.h"
 #include "context/Svg.h"
 #include "EngineController.h"
+#include "PaletteHandler.h"
 
 #include <plasma/theme.h>
 #include <plasma/widgets/webview.h>
@@ -40,6 +42,7 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , m_wikipediaLabel( 0 )
     , m_webView( 0 )
     , m_reloadIcon( 0 )
+    , m_css( 0 )
 {
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -48,6 +51,7 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 WikipediaApplet::~ WikipediaApplet()
 {
     delete m_webView;
+    delete m_css;
 }
 
 void WikipediaApplet::init()
@@ -73,8 +77,10 @@ void WikipediaApplet::init()
 
     m_webView = new Plasma::WebView( this );
     m_webView->setAttribute( Qt::WA_NoSystemBackground );
-    
-    m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+
+    paletteChanged( App::instance()->palette() );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
@@ -216,8 +222,15 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     m_header->resize(size().toSize());
     m_theme->resizeFrame(size().toSize());
     p->save();
-
-    m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() )/*, "header" */);
+    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
+    QColor highlight = Amarok::highlightColor();
+    highlight.setAlpha( 80 );
+    gradient.setColorAt( 0, highlight );
+    highlight.setAlpha( 200 );
+    gradient.setColorAt( 1, highlight );
+    QPainterPath path;
+    path.addRoundedRect( boundingRect(), 3, 3 );
+    p->fillPath( path, gradient );
 
     p->restore();
 }
@@ -238,6 +251,40 @@ WikipediaApplet::reloadWikipedia()
 {
     DEBUG_BLOCK
     dataEngine( "amarok-wikipedia" )->query( "wikipedia:reload" );
+}
+
+void
+WikipediaApplet::paletteChanged( const QPalette & palette )
+{
+
+  //  m_webView->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
+  //                                                                                                            .arg( Amarok::highlightColor().darker( 400 ).name() ) );
+    //m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+    // read css, replace color placeholders, write to file, load into page
+    QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+    if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    {
+        QString contents = QString( file.readAll() );
+        //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
+        contents.replace( "{background_color}", palette.brush( QPalette::ToolTipBase ).color().name() );
+        contents.replace( "{text_color}", palette.brush( QPalette::Text ).color().name() );
+        contents.replace( "{link_color}", palette.link().color().name() );
+        contents.replace( "{link_hover_color}", palette.link().color().darker( 200 ).name() );
+        contents.replace( "{shaded_text_background_color}", palette.brush( QPalette::ToolTipBase ).color().darker( 140 ).name() );
+
+        delete m_css;
+        m_css = new KTemporaryFile();
+        m_css->setSuffix( ".css" );
+        if( m_css->open() )
+        {
+            m_css->write( contents.toLatin1() );
+
+            QString filename = m_css->fileName();
+            m_css->close(); // flush buffer to disk
+            debug() << "set user stylesheet to:" << "file://" + filename;
+            m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + filename );
+        }
+    }
 }
 
 #include "WikipediaApplet.moc"

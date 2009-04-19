@@ -5,12 +5,12 @@ body
   margin: 0;
   padding: 0;
   color: gray;
-  background-color: white;
+  background-color: {background_color};
   font-size: 11pt;
 }
 h1, h2, h3, h4, h5, h6
 {
-  color: black;
+  color: {text_color};
   border-bottom: 1px dotted silver;
   font-weight: 100;
   margin: 0;
@@ -52,23 +52,23 @@ ul li
 }
 ul li a
 {
-  color: #424280;
+  color: {link_color};
   text-decoration: none;
 }
 ul li a:hover
 {
-  color: #7E7EFF;
+  color: {link_hover_color};
   text-decoration: underline;
 }
 
 div#bodyContent
 {
   border-bottom: 1px solid silver;
-  color: black;
+  color: {text_color};
 }
 div#bodyContent *
 {
-  color: black;
+  color: {text_color};
 }
 
 /* Bullet list definition gracefully gottened from wikipedia - since we're showing their data, we should really present it like it was intended. So, we use their bullet. */
@@ -86,12 +86,12 @@ div#bodyContent ul li
 }
 div#bodyContent a
 {
-  color: #424280;
+  color: {link_color};
   text-decoration: none;
 }
 div#bodyContent a:hover
 {
-  color: #7E7EFF;
+  color: {link_hover_color};
   text-decoration: underline;
 }
 
@@ -116,8 +116,8 @@ table.infobox
 table.infobox th
 {
   font-weight: 100;
-  color: black;
-  background-color: silver;
+  color: {text_color};
+  background-color: {shaded_text_background_color};
   vertical-align: top;
   text-align: left;
   padding: 2pt;
@@ -180,7 +180,7 @@ div#jump-to-nav
 }
 div#contentSub a, div#jump-to-nav a, div.dablink a
 {
-  color: #7E7EFF;
+  color: {link_hover_color};
 }
 
 div#stub
@@ -226,7 +226,7 @@ table.navbox td
 
 div.thumb
 {
-  border: 1px solid #e0e0e0;
+  border: 1px solid {shaded_text_background_color};
   margin: 3pt;
   padding: 2pt;
 }
