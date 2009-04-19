@@ -18,6 +18,7 @@
 #include "EngineController.h"
 #include "dialogs/ScriptManager.h"
 #include "meta/Meta.h"
+#include "PaletteHandler.h"
 #include "Theme.h"
 
 #include <KStandardDirs>
@@ -25,6 +26,7 @@
 #include <QAction>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsProxyWidget>
+#include <QLinearGradient>
 #include <QTextBrowser>
 #include <QPainter>
 #include <QPoint>
@@ -37,6 +39,8 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_suggested( 0 )
 {
     setHasConfigurationInterface( false );
+    setBackgroundHints( Plasma::Applet::NoBackground );
+
 }
 
 LyricsApplet::~ LyricsApplet()
@@ -49,12 +53,16 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
+    QColor highlight = Amarok::highlightColor().darker( 200 );
+
+    
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 4 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
-
+    m_titleLabel->setBrush( highlight );
+    
     QAction* reloadAction = new QAction( i18n( "Reload Lyrics" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
@@ -70,6 +78,9 @@ void LyricsApplet::init()
     m_lyrics->setOpenExternalLinks( true );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     m_lyricsProxy->setWidget( m_lyrics );
+    debug() << "seettngi stylesheet:" << QString( "QTextBrowser { background-color: %1; border-radius: 10px; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() );
+    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 2px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
+                                                                                                                .arg( Amarok::highlightColor().darker( 250 ).name() ) );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -79,6 +90,7 @@ void LyricsApplet::init()
     m_suggested->hide();
     
     connect( dataEngine( "amarok-lyrics" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
     constraintsEvent();
     connectSource( "lyrics" );
@@ -202,8 +214,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         QVariantList lyrics  = data[ "lyrics" ].toList();
 
+        m_titleLabel->setText( QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() ) );
         //  need padding for title
-        m_lyrics->setPlainText( "\n\n" + lyrics[ 3 ].toString() );
+        m_lyrics->setPlainText( "\n\n" + lyrics[ 3 ].toString().trimmed() );
     }
     else if( data.contains( "notfound" ) )
     {
@@ -212,6 +225,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
     }
     setPreferredSize( (int)size().width(), (int)size().height() );
+    updateConstraints();
+    update();
 }
 
 bool LyricsApplet::hasHeightForWidth() const
@@ -222,9 +237,41 @@ bool LyricsApplet::hasHeightForWidth() const
 void
 LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
-    Q_UNUSED( p );
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
+
+    // tint the whole applet
+    p->save();
+    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
+    QColor highlight = Amarok::highlightColor();
+    highlight.setAlpha( 80 );
+    gradient.setColorAt( 0, highlight );
+    highlight.setAlpha( 200 );
+    gradient.setColorAt( 1, highlight );
+    QPainterPath path;
+    path.addRoundedRect( boundingRect(), 5, 5 );
+    p->fillPath( path, gradient );
+
+    p->restore();
+
+    // draw rounded rect around title
+    p->save();
+    QLinearGradient gradient2( m_titleLabel->boundingRect().topLeft(), m_titleLabel->boundingRect().bottomLeft() );
+    highlight.setAlpha( 40 );
+    gradient2.setColorAt( 0, highlight );
+    highlight.setAlpha( 200 );
+    gradient2.setColorAt( 1, highlight );
+    path = QPainterPath();
+    path.addRoundedRect( mapRectFromItem( m_titleLabel, m_titleLabel->boundingRect() ).adjusted( -3, 0, 3, 0 ), 5, 5 );
+    p->fillPath( path, gradient2 );
+    p->restore();
+
+    p->save();
+    highlight.darker( 300 );
+    p->setPen( highlight );
+    p->drawPath( path );
+    p->restore();
+    
 }
 
 QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
@@ -243,6 +290,22 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
     return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), 500 );
     
 }
+
+
+void
+LyricsApplet::paletteChanged( const QPalette & palette )
+{
+    DEBUG_BLOCK
+
+    QColor highlight = Amarok::highlightColor().darker( 200 );
+    if( m_titleLabel )
+        m_titleLabel->setBrush( highlight );    
+    if( m_lyrics )
+        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 2px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 250 ).name() )
+                                                                                                                .arg( Amarok::highlightColor().darker( 250 ).name() ) );
+    
+}
+
 void
 LyricsApplet::suggestionChosen( const QString& link )
 {

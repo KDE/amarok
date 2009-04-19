@@ -49,6 +49,8 @@ public slots:
     void suggestionChosen( const QString& link );
     void refreshLyrics();
     
+private slots:
+    void paletteChanged( const QPalette & palette );
 
 private:
     void calculateHeight();

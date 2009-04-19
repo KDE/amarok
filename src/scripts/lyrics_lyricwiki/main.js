@@ -24,6 +24,9 @@
 **************************************************************************/
 
 Importer.loadQtBinding( "qt.core" );
+Importer.loadQtBinding( "qt.xml" );
+
+xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
 
 function onFinished( dat )
 {
@@ -32,7 +35,14 @@ function onFinished( dat )
         if( dat.length == 0 )
             Amarok.Lyrics.showLyricsError( "Unable to contact server" ); // TODO: this should be i18n able
         else
-            Amarok.Lyrics.showLyricsHtml( dat );
+        {
+            doc = new QDomDocument();
+            doc.setContent( dat );
+            newxml = xml.replace( "{artist}", doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() );
+            newxml = newxml.replace( "{title}", doc.elementsByTagName( "song" ).at( 0 ).toElement().text() );
+            newxml = newxml.replace( "{lyrics}", doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text() );
+            Amarok.Lyrics.showLyrics( newxml );
+        }
     }
     catch( err )
     {
@@ -49,6 +59,7 @@ function getLyrics( artist, title, url )
         url.addQueryItem( "func", "getSong" );
         url.addQueryItem( "artist", artist );
         url.addQueryItem( "song", title );
+        url.addQueryItem( "fmt", "xml" );
         Amarok.debug( "request URL: " + url.toString() );
 
         new Downloader( url, onFinished );

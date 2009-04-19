@@ -45,7 +45,6 @@ void
 AmarokLyricsScript::showLyrics( const QString& lyrics ) const
 {
     DEBUG_BLOCK
-    AMAROK_DEPRECATED
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
