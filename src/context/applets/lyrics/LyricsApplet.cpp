@@ -14,6 +14,7 @@
 #include "LyricsApplet.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "dialogs/ScriptManager.h"
@@ -33,6 +34,7 @@
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , m_titleText( i18n( "Lyrics" ) )
     , m_titleLabel( 0 )
     , m_reloadIcon( 0 )
     , m_lyrics( 0 )
@@ -152,16 +154,19 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
-    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 10 );
+    QRectF rect = boundingRect();
+    rect.setWidth( rect.width() - 30 );
+    m_titleLabel->setText( truncateTextToFit( m_titleText, m_titleLabel->font(), rect ) );
+    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 6 );
     
     m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 10, 10 ) );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    QSize lyricsSize( size().width() - 20, size().height() - 43 );
+    QSize lyricsSize( size().width() - 12, size().height() - 35 );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
-    m_lyricsProxy->setPos( 10, 35 );
+    m_lyricsProxy->setPos( 6, 30 );
 }
 
 void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
@@ -222,7 +227,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         QVariantList lyrics  = data[ "lyrics" ].toList();
 
-        m_titleLabel->setText( QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() ) );
+        m_titleText = QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
         //  need padding for title
         m_lyrics->setPlainText( lyrics[ 3 ].toString().trimmed() );
     }
@@ -265,11 +270,12 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     // draw rounded rect around title
     p->save();
+    QColor topColor( 255, 255, 255, 120 );
     QLinearGradient gradient2( m_titleLabel->boundingRect().topLeft(), m_titleLabel->boundingRect().bottomLeft() );
-    highlight.setAlpha( 40 );
-    gradient2.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
-    gradient2.setColorAt( 1, highlight );
+    topColor.setAlpha( 120 );
+    gradient2.setColorAt( 0, topColor );
+    topColor.setAlpha( 200 );
+    gradient2.setColorAt( 1, topColor );
     path = QPainterPath();
     QRectF titleRect = m_titleLabel->boundingRect();
     titleRect.moveTopLeft( m_titleLabel->pos() );
@@ -281,6 +287,22 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     highlight.darker( 300 );
     p->setPen( highlight );
     p->drawPath( path );
+    p->restore();
+
+    //draw background of lyrics text
+    p->save();
+    highlight = QColor( App::instance()->palette().highlight().color() );
+    qreal saturation = highlight.saturationF();
+    saturation *= 0.3;
+    qreal value = highlight.valueF();
+    value *= 1.1;
+    highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
+
+    QRectF lyricsRect = m_lyricsProxy->boundingRect();
+    lyricsRect.moveTopLeft( m_lyricsProxy->pos() );
+    path = QPainterPath();
+    path.addRoundedRect( lyricsRect, 5, 5 );
+    p->fillPath( path , highlight );
     p->restore();
     
 }

@@ -56,6 +56,7 @@ private:
     void calculateHeight();
     Plasma::IconWidget* addAction( QAction *action );
 
+    QString m_titleText;
     QGraphicsSimpleTextItem* m_titleLabel;
     Plasma::IconWidget* m_reloadIcon;
     
