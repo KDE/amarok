@@ -183,12 +183,16 @@ Playlist::RepeatAlbumNavigator::dump()
     debug() << "album groups are as follows:";
     foreach( Meta::AlbumPtr album, m_albumGroups.keys() )
     {
-        debug() << "   in" << album->prettyName();
-        ItemList atl = m_albumGroups.value( album );
-        foreach( quint64 id, atl )
+        if( album )
         {
-            Meta::TrackPtr track = model->trackForId( id );
-            debug() << "      " << track->trackNumber() << track->prettyName() << id;
+            debug() << "   in" << album->prettyName();
+            ItemList atl = m_albumGroups.value( album );
+            foreach( quint64 id, atl )
+            {
+                Meta::TrackPtr track = model->trackForId( id );
+                debug() << "      " << track->trackNumber() << track->prettyName() << id;
+            }
         }
     }
 }
+
