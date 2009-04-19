@@ -271,7 +271,9 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     highlight.setAlpha( 200 );
     gradient2.setColorAt( 1, highlight );
     path = QPainterPath();
-    path.addRoundedRect( mapRectFromItem( m_titleLabel, m_titleLabel->boundingRect() ).adjusted( -3, 0, 3, 0 ), 5, 5 );
+    QRectF titleRect = m_titleLabel->boundingRect();
+    titleRect.moveTopLeft( m_titleLabel->pos() );
+    path.addRoundedRect( titleRect.adjusted( -3, 0, 3, 0 ), 5, 5 );
     p->fillPath( path, gradient2 );
     p->restore();
 
