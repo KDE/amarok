@@ -24,31 +24,34 @@
 #include "EngineController.h"
 #include "MetaUtility.h"
 
+
 PlayUrlGenerator::PlayUrlGenerator()
-{
-}
+{}
 
 
 PlayUrlGenerator::~PlayUrlGenerator()
-{
-}
+{}
 
-AmarokUrl PlayUrlGenerator::createCurrentTrackBookmark()
+AmarokUrl
+PlayUrlGenerator::createCurrentTrackBookmark()
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    int seconds = The::engineController()->trackPosition();
+    const int seconds = The::engineController()->trackPosition();
+
     return createTrackBookmark( track, seconds );
 }
 
-AmarokUrl PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QString name )
+AmarokUrl
+PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QString name )
 {
     AmarokUrl url;
     if( !track )
         return url;
-    url.setCommand ( "play" );
-    QString track_url = track->playableUrl().toEncoded().toBase64();
-    url.appendArg ( track_url );
-    url.appendArg ( QString::number ( seconds ) );
+
+    const QString trackUrl = track->playableUrl().toEncoded().toBase64();
+    url.setCommand( "play" );
+    url.appendArg( trackUrl );
+    url.appendArg( QString::number( seconds ) );
 
     if( name.isEmpty() )
         url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );
@@ -58,3 +61,4 @@ AmarokUrl PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int secon
     debug() << "concocted url: " << url.url();
     return url;
 }
+
