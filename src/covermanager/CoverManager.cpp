@@ -116,6 +116,7 @@ CoverManager::CoverManager()
 
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
+    qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Artist );
     qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
@@ -439,6 +440,7 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
 
     QueryMaker *qm = coll->queryMaker();
+    qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Album );
     qm->orderBy( Meta::valAlbum );
     if( item != m_artistView->invisibleRootItem()->child( 0 ) )
