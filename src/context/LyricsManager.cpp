@@ -158,7 +158,6 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     }
 }
 
-
 void
 LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 {
@@ -168,13 +167,14 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     // we assume the script has called showLyrics if they could
     // be suggestions. this is for HTML display only
 
-    if( The::engineController()->currentTrack() )
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( currentTrack )
     {
         sendNewLyricsHtml( lyricsHTML );
 
         // cache the Html anyway.
-        if( The::engineController()->currentTrack()->cachedLyrics().isEmpty() )
-            The::engineController()->currentTrack()->setCachedLyrics( lyricsHTML );
+        if( currentTrack->cachedLyrics().isEmpty() )
+            currentTrack->setCachedLyrics( lyricsHTML );
     }
 }
 
