@@ -116,7 +116,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     p->restore();
 
     p->save();
-    QColor col = PaletteHandler::highlightColor( 0.3, .8 );
+    QColor col = PaletteHandler::highlightColor( 0.3, .7 );
     p->setPen( col );
     p->drawRoundedRect( boundingRect().adjusted( 2, 2, -2, -2 ), 3, 3 );
     p->restore(); 
