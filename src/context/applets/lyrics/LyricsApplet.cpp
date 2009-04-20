@@ -154,6 +154,8 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
+    int padding = 8;
+    
     QRectF rect = boundingRect();
     rect.setWidth( rect.width() - 30 );
     m_titleLabel->setText( truncateTextToFit( m_titleText, m_titleLabel->font(), rect ) );
@@ -163,8 +165,8 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    m_lyricsProxy->setPos( 6, m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + 6 );
-    QSize lyricsSize( size().width() - 12, boundingRect().height() - m_lyricsProxy->pos().y() - 6 );
+    m_lyricsProxy->setPos( padding, m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + padding );
+    QSize lyricsSize( size().width() - 2 * padding, boundingRect().height() - m_lyricsProxy->pos().y() - padding );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
 }

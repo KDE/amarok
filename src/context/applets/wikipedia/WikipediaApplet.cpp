@@ -131,13 +131,15 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
 
+    int padding = 8;
+    
     float textWidth = m_wikipediaLabel->boundingRect().width();
     float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
     m_wikipediaLabel->setPos( offsetX, 9 );
 
-    m_webView->setPos( 6, m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + 6 );
-    m_webView->resize( boundingRect().width() - 12, boundingRect().height() - m_webView->pos().y() - 6 );
+    m_webView->setPos( padding, m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + padding );
+    m_webView->resize( boundingRect().width() - 2 * padding, boundingRect().height() - m_webView->pos().y() - padding );
 
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - MARGIN, MARGIN );
 }
