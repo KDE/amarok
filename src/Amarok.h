@@ -266,6 +266,14 @@ namespace Amarok
      */
     AMAROK_EXPORT QColor highlightColor();  //defined in App.cpp
 
+    /**
+     * Returns the highlight color which should be used instead of the color from KDE.
+     * @param  Decimal percentage to saturate the highlight color. Will reduce (or magnify) the saturation in HSV representation of the color.
+     * @param  Decimal percentage to multiply the value of the HSV color with.
+     * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
+     */
+    AMAROK_EXPORT QColor highlightColor( qreal percentSaturation, qreal percentValue );  //defined in App.cpp
+
 }
 
 
