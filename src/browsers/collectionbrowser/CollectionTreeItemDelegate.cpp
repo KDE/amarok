@@ -37,7 +37,6 @@ CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
 {
     DEBUG_BLOCK
 
-    //m_bigFont.setPointSize( m_bigFont.pointSize() );
     m_bigFont.setBold( true );
     m_smallFont.setPointSize( m_smallFont.pointSize() - 1 );
 }
@@ -74,12 +73,16 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setRenderHint( QPainter::Antialiasing );
 
     const int iconYPadding = ( height - iconHeight ) / 2;
-    painter->drawPixmap( topLeft + QPoint( iconPadX, iconYPadding ),
+    QPoint iconPos( topLeft + QPoint( iconPadX, iconYPadding ) );
+    if( QApplication::isRightToLeft() )
+        iconPos = QPoint( width - iconWidth - iconPadX, iconYPadding );
+
+    painter->drawPixmap( iconPos,
                          index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     QRectF titleRect;
-    titleRect.setLeft( iconRight );
+    titleRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
     titleRect.setTop( option.rect.top() + iconYPadding );
     titleRect.setWidth( width - iconRight );
     titleRect.setHeight( height );
@@ -92,7 +95,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QFontMetrics bigFm( m_bigFont );
 
     QRectF textRect;
-    textRect.setLeft( iconRight );
+    textRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
     textRect.setTop( option.rect.top() + iconYPadding + bigFm.boundingRect( collectionName ).height() );
     textRect.setWidth( width - iconPadX * 2 );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
