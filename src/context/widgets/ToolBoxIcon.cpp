@@ -15,8 +15,8 @@
 
 #include "ToolBoxIcon.h"
 
-#include "Amarok.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <plasma/animator.h>
 #include <plasma/paintutils.h>
@@ -102,7 +102,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         painter->setOpacity( m_animOpacity );
 
        QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-       QColor highlight = Amarok::highlightColor();
+       QColor highlight = PaletteHandler::highlightColor();
        highlight.setAlpha( 160 );
        gradient.setColorAt( 0, highlight.darker( 140 ) );
        highlight.setAlpha( 220 );
@@ -114,7 +114,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
        // draw border
        painter->save();
-       painter->setPen( Amarok::highlightColor().darker( 150 ) );
+       painter->setPen( PaletteHandler::highlightColor().darker( 150 ) );
        painter->drawRoundedRect( boundingRect(), 5, 5 );
        painter->restore();
     }

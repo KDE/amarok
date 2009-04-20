@@ -16,6 +16,7 @@
 #include "Amarok.h"
 #include "App.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <plasma/applet.h>
 #include <plasma/widgets/iconwidget.h>
@@ -70,7 +71,7 @@ Context::AppletToolbarAppletItem::paint ( QPainter *painter, const QStyleOptionG
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor();
+    QColor highlight = PaletteHandler::highlightColor();
     highlight.setAlpha( 80 );
     gradient.setColorAt( 0, highlight );
     highlight.setAlpha( 160 );

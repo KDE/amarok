@@ -13,8 +13,7 @@
 
 #include "Applet.h"
 
-#include "Amarok.h"
-
+#include "PaletteHandler.h"
 #include <plasma/animator.h>
 
 #include <QGraphicsLayout>
@@ -111,13 +110,13 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     QPainterPath path;
     path.addRoundedRect( boundingRect().adjusted( 0, 1, -1, -1 ), 3, 3 );
     //p->fillPath( path, gradient );
-    QColor highlight = Amarok::highlightColor( 0.15, 1.05 );
+    QColor highlight = PaletteHandler::highlightColor( 0.2, 1.05 );
     highlight.setAlpha( 120 );
     p->fillPath( path, highlight );
     p->restore();
 
     p->save();
-    QColor col = Amarok::highlightColor( 0.3, .8 );
+    QColor col = PaletteHandler::highlightColor( 0.3, .8 );
     p->setPen( col );
     p->drawRoundedRect( boundingRect().adjusted( 2, 2, -2, -2 ), 3, 3 );
     p->restore(); 

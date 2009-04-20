@@ -893,28 +893,6 @@ namespace Amarok
         return KGlobal::config()->group( group );
     }
 
-    QColor highlightColor()
-    {
-        QColor highlight( App::instance()->palette().highlight().color() );
-        qreal saturation = highlight.saturationF();
-        saturation *= 0.3;
-        highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
-
-        return highlight;
-    }
-
-    QColor highlightColor( qreal saturationPercent, qreal valuePercent )
-    {
-        QColor highlight( App::instance()->palette().highlight().color() );
-        qreal saturation = highlight.saturationF();
-        saturation *= saturationPercent;
-        qreal value = highlight.valueF();
-        value *= valuePercent;
-        highlight.setHsvF( highlight.hueF(), saturation, value, highlight.alphaF() );
-
-        return highlight;
-    }
-    
     namespace ColorScheme
     {
         QColor Base;

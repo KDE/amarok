@@ -21,9 +21,11 @@
 #include "AppletToolbarConfigItem.h"
 #include "Containment.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <QGraphicsScene>
 #include <QPainter>
+#include <QPalette>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneResizeEvent>
 #include <QGraphicsLinearLayout>
@@ -74,7 +76,7 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     painter->fillRect( boundingRect(), p.brush( QPalette::Window ) ); // remove white edges behind the toolbar
     painter->setRenderHint( QPainter::Antialiasing );
     QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor();
+    QColor highlight = PaletteHandler::highlightColor();
     highlight.setAlpha( 100 );
     gradient.setColorAt( 0, highlight );
     highlight.setAlpha( 160 );
@@ -83,6 +85,7 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     path.addRoundedRect( boundingRect(), 5, 5 );
     painter->fillPath( path, gradient );
     painter->restore();
+
 }
 
 void

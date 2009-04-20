@@ -19,6 +19,7 @@
  
 #include "PaletteHandler.h"
 
+#include "App.h"
 #include "Debug.h"
 #include "MainWindow.h"
 
@@ -50,13 +51,15 @@ PaletteHandler::~PaletteHandler()
     The::s_PaletteHandler_instance = 0;
 }
 
-void PaletteHandler::setPalette( const QPalette & palette )
+void
+PaletteHandler::setPalette( const QPalette & palette )
 {
     m_palette = palette;
     emit( newPalette( m_palette ) );
 }
 
-void PaletteHandler::updateItemView( QAbstractItemView * view )
+void
+PaletteHandler::updateItemView( QAbstractItemView * view )
 {
 
     QPalette p = m_palette;
@@ -73,11 +76,37 @@ void PaletteHandler::updateItemView( QAbstractItemView * view )
     
 }
 
-QPalette PaletteHandler::palette()
+QPalette
+PaletteHandler::palette()
 {
     return m_palette;
 }
 
+QColor
+PaletteHandler::highlightColor()
+{
+    QColor highlight = App::instance()->palette().highlight().color();
+    qreal saturation = highlight.saturationF();
+    saturation *= 0.3;
+    highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
+
+    return highlight;
+}
+
+QColor
+PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
+{
+    QColor highlight = QColor( App::instance()->palette().highlight().color() );
+    qreal saturation = highlight.saturationF();
+    saturation *= saturationPercent;
+    qreal value = highlight.valueF();
+    value *= valuePercent;
+    highlight.setHsvF( highlight.hueF(), saturation, value, highlight.alphaF() );
+
+    return highlight;
+}
+
+    
 #include "PaletteHandler.moc"
 
 

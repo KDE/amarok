@@ -56,7 +56,7 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
-    QColor highlight = Amarok::highlightColor().darker( 300 );
+    QColor highlight = PaletteHandler::highlightColor().darker( 300 );
     
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
@@ -81,7 +81,7 @@ void LyricsApplet::init()
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     m_lyricsProxy->setWidget( m_lyrics );
     QPalette pal;
-    QBrush brush(  Amarok::highlightColor().lighter( 170 ) );
+    QBrush brush(  PaletteHandler::highlightColor().lighter( 170 ) );
     brush.setStyle( Qt::SolidPattern );
     pal.setBrush( QPalette::Active, QPalette::Base, brush );
     pal.setBrush( QPalette::Inactive, QPalette::Base, brush );
@@ -89,8 +89,8 @@ void LyricsApplet::init()
     pal.setBrush( QPalette::Window, brush );
     m_lyrics->setPalette( pal );
     m_lyricsProxy->setPalette( pal );
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( Amarok::highlightColor().darker( 400 ).name() ) );
+    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
+                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -297,10 +297,10 @@ LyricsApplet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
 
-    QColor highlight = Amarok::highlightColor().darker( 200 );
+    QColor highlight = PaletteHandler::highlightColor().darker( 200 );
     if( m_lyrics )
-        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( Amarok::highlightColor().darker( 400 ).name() ) );
+        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
+                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
     
 }
 

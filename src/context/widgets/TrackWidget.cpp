@@ -18,6 +18,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "meta/MetaUtility.h"
+#include "PaletteHandler.h"
 #include "playlist/PlaylistController.h"
 
 #include <plasma/widgets/iconwidget.h>
@@ -44,14 +45,14 @@ TrackWidget::TrackWidget( QGraphicsItem *parent )
     font.setStyleStrategy( QFont::PreferAntialias );
 
     m_scoreText->setFont( font );
-    m_scoreText->setBrush( Amarok::highlightColor().darker( 200 ) );
+    m_scoreText->setBrush( PaletteHandler::highlightColor().darker( 200 ) );
     m_scoreText->show();
 
     m_scoreLabel->setFont( font );
-    m_scoreLabel->setBrush( Amarok::highlightColor().darker( 150 ) );
+    m_scoreLabel->setBrush( PaletteHandler::highlightColor().darker( 150 ) );
     m_scoreLabel->show();
 
-    setBrush( Amarok::highlightColor().darker( 200 ) );
+    setBrush( PaletteHandler::highlightColor().darker( 200 ) );
     
     setDrawBackground( true );
     m_rating->setSpacing( 2 );
