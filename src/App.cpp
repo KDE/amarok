@@ -895,7 +895,7 @@ namespace Amarok
 
     QColor highlightColor()
     {
-        QColor highlight = QColor( App::instance()->palette().highlight().color() );
+        QColor highlight( App::instance()->palette().highlight().color() );
         qreal saturation = highlight.saturationF();
         saturation *= 0.3;
         highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
@@ -905,7 +905,7 @@ namespace Amarok
 
     QColor highlightColor( qreal saturationPercent, qreal valuePercent )
     {
-        QColor highlight = QColor( App::instance()->palette().highlight().color() );
+        QColor highlight( App::instance()->palette().highlight().color() );
         qreal saturation = highlight.saturationF();
         saturation *= saturationPercent;
         qreal value = highlight.valueF();

@@ -197,7 +197,7 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     //draw background of wiki text
     // is overwritten when we ahve a page, but when we don't the large expanse of background is weird
     p->save();
-    QColor highlight = QColor( App::instance()->palette().highlight().color() );
+    QColor highlight( App::instance()->palette().highlight().color() );
     qreal saturation = highlight.saturationF();
     saturation *= 0.3;
     qreal value = highlight.valueF();
@@ -240,7 +240,7 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QColor highlight = QColor( App::instance()->palette().highlight().color() );
+        QColor highlight( App::instance()->palette().highlight().color() );
         highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
         
         QString contents = QString( file.readAll() );

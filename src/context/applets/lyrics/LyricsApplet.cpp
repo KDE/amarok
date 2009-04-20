@@ -57,7 +57,6 @@ LyricsApplet::~ LyricsApplet()
 void LyricsApplet::init()
 {
     QColor highlight = Amarok::highlightColor().darker( 300 );
-
     
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
@@ -263,7 +262,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     //draw background of lyrics text
     p->save();
-    QColor highlight = QColor( App::instance()->palette().highlight().color() );
+    QColor highlight( App::instance()->palette().highlight().color() );
     highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
 
     QRectF lyricsRect = m_lyricsProxy->boundingRect();
