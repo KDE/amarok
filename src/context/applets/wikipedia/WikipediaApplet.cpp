@@ -241,7 +241,7 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
         QColor highlight( App::instance()->palette().highlight().color() );
-        highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
+        highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
         
         QString contents = QString( file.readAll() );
         //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();

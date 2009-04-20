@@ -263,7 +263,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     //draw background of lyrics text
     p->save();
     QColor highlight( App::instance()->palette().highlight().color() );
-    highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
+    highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
 
     QRectF lyricsRect = m_lyricsProxy->boundingRect();
     lyricsRect.moveTopLeft( m_lyricsProxy->pos() );

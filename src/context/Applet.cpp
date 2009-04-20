@@ -110,7 +110,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     QPainterPath path;
     path.addRoundedRect( boundingRect().adjusted( 0, 1, -1, -1 ), 3, 3 );
     //p->fillPath( path, gradient );
-    QColor highlight = PaletteHandler::highlightColor( 0.2, 1.05 );
+    QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
     highlight.setAlpha( 120 );
     p->fillPath( path, highlight );
     p->restore();
