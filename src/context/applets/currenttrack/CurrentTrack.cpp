@@ -372,18 +372,7 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     p->setRenderHint( QPainter::Antialiasing );
 
     // tint the whole applet
-    p->save();
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor(); 
-    highlight.setAlpha( 40 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
-    gradient.setColorAt( 1, highlight );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 5, 5 );
-    p->fillPath( path, gradient );
-
-    p->restore();
+    addGradientToAppletBackground( p );
     
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely

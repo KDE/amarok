@@ -22,6 +22,8 @@
 #include <QRectF>
 #include <QString>
 
+class QPainter;
+
 namespace Context
 {
 
@@ -34,6 +36,9 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         //helper functions
         QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
         QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
+
+        void drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t );
+        void addGradientToAppletBackground( QPainter* p );
         
     public Q_SLOTS:
         virtual void destroy();

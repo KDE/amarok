@@ -215,32 +215,11 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
 
     p->setRenderHint( QPainter::Antialiasing );
 
-    p->save();
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor();
-    highlight.setAlpha( 80 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
-    gradient.setColorAt( 1, highlight );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 3, 3 );
-    p->fillPath( path, gradient );
-    p->restore();
+    // tint the whole applet
+    addGradientToAppletBackground( p );
 
-         // draw rounded rect around title
-    p->save();
-    QColor topColor( 255, 255, 255, 120 );
-    QLinearGradient gradient2( m_headerText->boundingRect().topLeft(), m_headerText->boundingRect().bottomLeft() );
-    topColor.setAlpha( 120 );
-    gradient2.setColorAt( 0, topColor );
-    topColor.setAlpha( 200 );
-    gradient2.setColorAt( 1, topColor );
-    path = QPainterPath();
-    QRectF titleRect = m_headerText->boundingRect();
-    titleRect.moveTopLeft( m_headerText->pos() );
-    path.addRoundedRect( titleRect.adjusted( -3, 0, 3, 0 ), 5, 5 );
-    p->fillPath( path, gradient2 );
-    p->restore();
+    // draw rounded rect around title
+    drawRoundedRectAroundText( p, m_headerText );
 
 }
 

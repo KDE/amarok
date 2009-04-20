@@ -134,9 +134,9 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     float textWidth = m_wikipediaLabel->boundingRect().width();
     float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
-    m_wikipediaLabel->setPos( offsetX, 6 );
+    m_wikipediaLabel->setPos( offsetX, 9 );
 
-    m_webView->setPos( 6, m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + 3 );
+    m_webView->setPos( 6, m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + 6 );
     m_webView->resize( boundingRect().width() - 12, boundingRect().height() - m_webView->pos().y() - 6 );
 
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - MARGIN, MARGIN );
@@ -188,37 +188,16 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     Q_UNUSED( contentsRect )
     p->setRenderHint( QPainter::Antialiasing );
 
-    p->save();
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor();
-    highlight.setAlpha( 80 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
-    gradient.setColorAt( 1, highlight );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 3, 3 );
-    p->fillPath( path, gradient );
-    p->restore();
+    addGradientToAppletBackground( p );
 
-        // draw rounded rect around title
-    p->save();
-    QColor topColor( 255, 255, 255, 120 );
-    QLinearGradient gradient2( m_wikipediaLabel->boundingRect().topLeft(), m_wikipediaLabel->boundingRect().bottomLeft() );
-    topColor.setAlpha( 120 );
-    gradient2.setColorAt( 0, topColor );
-    topColor.setAlpha( 200 );
-    gradient2.setColorAt( 1, topColor );
-    path = QPainterPath();
-    QRectF titleRect = m_wikipediaLabel->boundingRect();
-    titleRect.moveTopLeft( m_wikipediaLabel->pos() );
-    path.addRoundedRect( titleRect.adjusted( -3, 0, 3, 0 ), 5, 5 );
-    p->fillPath( path, gradient2 );
-    p->restore();
+    // draw rounded rect around title
+    drawRoundedRectAroundText( p, m_wikipediaLabel );
+
 
     //draw background of wiki text
     // is overwritten when we ahve a page, but when we don't the large expanse of background is weird
     p->save();
-    highlight = QColor( App::instance()->palette().highlight().color() );
+    QColor highlight = QColor( App::instance()->palette().highlight().color() );
     qreal saturation = highlight.saturationF();
     saturation *= 0.3;
     qreal value = highlight.valueF();
@@ -261,12 +240,7 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QColor highlight = KGlobalSettings::activeTitleColor();
-        qreal saturation = highlight.saturationF();
-        saturation *= 0.3;
-        qreal value = highlight.valueF();
-        value *= 1.1;
-        debug() << "value:" << highlight.valueF();
+        QColor highlight = QColor( App::instance()->palette().highlight().color() );
         highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
         
         QString contents = QString( file.readAll() );

@@ -158,13 +158,13 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     QRectF rect = boundingRect();
     rect.setWidth( rect.width() - 30 );
     m_titleLabel->setText( truncateTextToFit( m_titleText, m_titleLabel->font(), rect ) );
-    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 6 );
+    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 9 );
     
     m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 10, 10 ) );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    m_lyricsProxy->setPos( 6, m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + 3 );
+    m_lyricsProxy->setPos( 6, m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + 6 );
     QSize lyricsSize( size().width() - 12, boundingRect().height() - m_lyricsProxy->pos().y() - 6 );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
@@ -256,52 +256,19 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     p->setRenderHint( QPainter::Antialiasing );
 
     // tint the whole applet
-    p->save();
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor();
-    highlight.setAlpha( 40 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 180 );
-    gradient.setColorAt( 1, highlight );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 3, 3 );
-    p->fillPath( path, gradient );
-
-    p->restore();
+    addGradientToAppletBackground( p );
 
     // draw rounded rect around title
-    p->save();
-    QColor topColor( 255, 255, 255, 120 );
-    QLinearGradient gradient2( m_titleLabel->boundingRect().topLeft(), m_titleLabel->boundingRect().bottomLeft() );
-    topColor.setAlpha( 120 );
-    gradient2.setColorAt( 0, topColor );
-    topColor.setAlpha( 200 );
-    gradient2.setColorAt( 1, topColor );
-    path = QPainterPath();
-    QRectF titleRect = m_titleLabel->boundingRect();
-    titleRect.moveTopLeft( m_titleLabel->pos() );
-    path.addRoundedRect( titleRect.adjusted( -3, 0, 3, 0 ), 5, 5 );
-    p->fillPath( path, gradient2 );
-    p->restore();
-
-    p->save();
-    highlight.darker( 300 );
-    p->setPen( highlight );
-    p->drawPath( path );
-    p->restore();
+    drawRoundedRectAroundText( p, m_titleLabel );
 
     //draw background of lyrics text
     p->save();
-    highlight = KGlobalSettings::activeTitleColor();
-    qreal saturation = highlight.saturationF();
-    saturation *= 0.3;
-    qreal value = highlight.valueF();
-    value *= 1.1;
+    QColor highlight = QColor( App::instance()->palette().highlight().color() );
     highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
 
     QRectF lyricsRect = m_lyricsProxy->boundingRect();
     lyricsRect.moveTopLeft( m_lyricsProxy->pos() );
-    path = QPainterPath();
+    QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
     p->fillPath( path , highlight );
     p->restore();
