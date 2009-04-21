@@ -193,10 +193,17 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     actions += createExtendedActions( indices );
     actions += createCollectionActions( indices );
 
-    KMenu menu;
+    KMenu* menu = new KMenu( this );
+
+    // Destroy the menu when the model is reset (collection update), so that we don't operate on invalid data.
+    // see BUG 190056
+    connect( m_treeModel, SIGNAL( modelReset() ), menu, SLOT( deleteLater() ) );
+
+    // Destroy menu after hiding it
+    connect( menu, SIGNAL( aboutToHide() ), menu, SLOT( deleteLater() ) );
 
     foreach( PopupDropperAction * action, actions )
-        menu.addAction( action );
+        menu->addAction( action );
 
     m_currentCopyDestination = getCopyActions( indices );
     m_currentMoveDestination = getMoveActions( indices );
@@ -208,33 +215,32 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
             m_cmSeperator = new PopupDropperAction( this );
             m_cmSeperator->setSeparator ( true );
         }
-        menu.addAction( m_cmSeperator );
+        menu->addAction( m_cmSeperator );
     }
-
 
     if ( !m_currentCopyDestination.empty() )
     {
-        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
+        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), menu );
         foreach( PopupDropperAction *action, m_currentCopyDestination.keys() ) 
         {
             action->setParent( copyMenu );
             copyMenu->addAction( action );
         }
-        menu.addMenu( copyMenu );
+        menu->addMenu( copyMenu );
     }
 
     if ( !m_currentMoveDestination.empty() )
     {
-        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
+        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), menu );
         foreach( PopupDropperAction * action, m_currentCopyDestination.keys() )
         {
             action->setParent( moveMenu );
             moveMenu->addAction( action );
         }
-        menu.addMenu( moveMenu );
+        menu->addMenu( moveMenu );
     }
 
-    menu.exec( event->globalPos() );
+    menu->exec( event->globalPos() );
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )

@@ -11,6 +11,7 @@ VERSION 2.1-beta2
     * Podcast titles are stripped of unnecessary whitespace. (BR 177403)
 
   BUGFIXES:
+    * Fixed crash when using context menu after collection update. (BR 190056)
     * Fixed problem with Amarok showing wrong track length for Last.fm 
       streams. Patch by Michael Quinn <mike@quinnsoft.com>. (BR 188512)
     * Fixed several memory leaks.
