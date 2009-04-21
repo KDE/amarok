@@ -103,6 +103,10 @@ public:
         , batchUpdate( false )
         , album()
         , artist()
+        , score(0)
+        , rating(0)
+        , lastPlayed(0)
+        , firstPlayed(0)
         , playCount(0)
         , track( t )
     {}
