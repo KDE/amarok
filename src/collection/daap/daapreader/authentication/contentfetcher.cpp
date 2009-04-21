@@ -60,7 +60,9 @@ ContentFetcher::results()
     {
         QBuffer* bytes = new QBuffer( &read );
         QIODevice* stream = KFilterDev::device( bytes, "application/x-gzip", false );
-        stream->open( QIODevice::ReadOnly );
+        if ( !stream->open( QIODevice::ReadOnly ) )
+            return read;
+
         //do not assign directly to read, see the documentation of the QBuffer ctor
         QByteArray filteredRead = stream->readAll();
         delete stream;

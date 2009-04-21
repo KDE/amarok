@@ -132,7 +132,13 @@ ITunesImporterWorker::run()
         m_failed = true;
         return;
     }
-    file->open( QIODevice::ReadOnly );
+    if ( !file->open( QIODevice::ReadOnly ) )
+    {
+        debug() << "COULDN'T OPEN DB FILE!";
+        emit importError( "" );
+        m_failed = true;
+        return;
+    }
     setDevice( file );
   
     //debug() << "got element:" << name().toString();

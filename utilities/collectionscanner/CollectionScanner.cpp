@@ -248,11 +248,13 @@ CollectionScanner::doJob() //SLOT
             folderFile.setFileName( "amarokcollectionscanner_batchincrementalscan.files" );
         else
             folderFile.setFileName( "amarokcollectionscanner_batchfullscan.files" );
-        folderFile.open( QIODevice::WriteOnly );
-        QTextStream stream( &folderFile );
-        stream.setCodec( QTextCodec::codecForName("UTF-8") );
-        stream << entries.join( "\n" );
-        folderFile.close();
+        if ( folderFile.open( QIODevice::WriteOnly ) )
+        {
+            QTextStream stream( &folderFile );
+            stream.setCodec( QTextCodec::codecForName("UTF-8") );
+            stream << entries.join( "\n" );
+            folderFile.close();
+        }
     }
 
     if( !entries.isEmpty() )
