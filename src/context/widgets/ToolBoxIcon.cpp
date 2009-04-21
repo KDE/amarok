@@ -108,14 +108,14 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
        highlight.setAlpha( 220 );
        gradient.setColorAt( 1, highlight.darker( 180 ) );
        QPainterPath path;
-       path.addRoundedRect( boundingRect(), 5, 5 );
+       path.addRoundedRect( boundingRect(), 3, 3 );
        painter->fillPath( path, gradient );
        painter->restore();
 
        // draw border
        painter->save();
        painter->setPen( PaletteHandler::highlightColor().darker( 150 ) );
-       painter->drawRoundedRect( boundingRect(), 5, 5 );
+       painter->drawRoundedRect( boundingRect(), 3, 3 );
        painter->restore();
     }
     else
