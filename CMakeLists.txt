@@ -115,8 +115,8 @@ if( WITH_PLAYER )
 
     #Do not remove or modify these.  The release script substitutes in for these
     #comments with appropriate doc and translation directories.
-    #DOC_SUBDIR
     #PO_SUBDIR
+    #DOC_SUBDIR
 
 else( WITH_PLAYER )
 
