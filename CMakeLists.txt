@@ -113,6 +113,11 @@ if( WITH_PLAYER )
 
     macro_display_feature_log()
 
+    #Do not remove or modify these.  The release script substitutes in for these
+    #comments with appropriate doc and translation directories.
+    #DOC_SUBDIR
+    #PO_SUBDIR
+
 else( WITH_PLAYER )
 
     find_package( Qt4 REQUIRED )
