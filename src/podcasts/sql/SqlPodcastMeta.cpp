@@ -167,7 +167,7 @@ Meta::SqlPodcastEpisode::length() const
     if( m_localUrl.isEmpty() )
         return m_duration;
 
-    int length;
+    int length = -2;
 
     #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
