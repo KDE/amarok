@@ -204,7 +204,7 @@ void Track::Private::readMetaData()
                 m_data.artist = strip( flm[ "TPE2" ].front()->toString() );
 
         }
-        else if ( file->ID3v1Tag() )
+        else if ( file->ID3v1Tag() && tag )
         {
             TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
             const char* buf = metaData.toCString();

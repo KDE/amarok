@@ -179,9 +179,12 @@ XSPFPlaylist::tracks()
             if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
             {
                 MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
-                streamTrack->setTitle( track.title );
-                streamTrack->setAlbum( track.album );
-                streamTrack->setArtist( track.creator );
+                if ( streamTrack )
+                {
+                    streamTrack->setTitle( track.title );
+                    streamTrack->setAlbum( track.album );
+                    streamTrack->setArtist( track.creator );
+                }
             } 
             tracks << trackPtr;
         }

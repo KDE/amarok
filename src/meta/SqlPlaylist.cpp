@@ -83,10 +83,12 @@ Meta::SqlPlaylist::setGroups( const QStringList &groups )
     debug() << groups;
     //HACK: fix this to use m_provider;
     SqlUserPlaylistProvider *provider = dynamic_cast<SqlUserPlaylistProvider *>(The::playlistManager()->defaultUserPlaylists());
-    m_parent = provider->group( groups.first() );
-    saveToDb();
-
-    m_parent->clear();
+    if (provider)
+    {
+        m_parent = provider->group( groups.first() );
+        saveToDb();
+        m_parent->clear();
+    }
 }
 
 bool
