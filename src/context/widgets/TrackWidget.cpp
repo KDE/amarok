@@ -79,6 +79,22 @@ TrackWidget::hide()
 }
 
 void
+TrackWidget::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
+{
+    m_scoreText->setBrush( The::paletteHandler()->palette().highlightedText() );
+    m_scoreLabel->setBrush( The::paletteHandler()->palette().highlightedText() );
+    ToolBoxIcon::hoverEnterEvent( event );
+}
+
+void
+TrackWidget::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
+{
+    m_scoreText->setBrush( PaletteHandler::highlightColor().darker( 200 ) );
+    m_scoreLabel->setBrush( PaletteHandler::highlightColor().darker( 150 ) );
+    ToolBoxIcon::hoverLeaveEvent( event );
+}
+
+void
 TrackWidget::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
     Q_UNUSED( event )
@@ -99,8 +115,6 @@ TrackWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
                          boundingRect().height() / 2 - fm.boundingRect( m_scoreText->text() ).height() / 2 );
     m_scoreLabel->setPos( m_scoreText->pos().x() - m_scoreLabel->boundingRect().width() - PADDING,
                           boundingRect().height() / 2 - fm.boundingRect( m_scoreLabel->text() ).height() / 2 );
-    
-
     ToolBoxIcon::paint( painter, option, widget );
 }
 

@@ -133,10 +133,11 @@ ToolBoxIcon::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     if( m_animHighlightId )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
-
+    
     m_hovering = true;
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve, this, "animateHighlight" );
-
+    m_defaultTextBrush = m_text->brush();
+    m_text->setBrush( The::paletteHandler()->palette().highlightedText() );
     Plasma::IconWidget::hoverEnterEvent( event );
 }
 
@@ -148,7 +149,7 @@ ToolBoxIcon::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     
     m_hovering = false;
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve, this, "animateHighlight" );
-
+    m_text->setBrush( m_defaultTextBrush );
     Plasma::IconWidget::hoverLeaveEvent( event );
 }
 

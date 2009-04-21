@@ -69,6 +69,7 @@ private:
     int m_animHighlightId;
 
     QGraphicsSimpleTextItem *m_text;
+    QBrush m_defaultTextBrush;
 };
 
 #endif
