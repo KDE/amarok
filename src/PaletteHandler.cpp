@@ -87,7 +87,7 @@ PaletteHandler::highlightColor()
 {
     QColor highlight = App::instance()->palette().highlight().color();
     qreal saturation = highlight.saturationF();
-    saturation *= 0.3;
+    saturation *= 0.5;
     highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
 
     return highlight;
