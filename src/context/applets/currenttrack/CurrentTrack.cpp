@@ -80,7 +80,7 @@ void CurrentTrack::init()
     bigFont.setBold( true );
     
     QFont tinyFont;
-    tinyFont.setPointSize( tinyFont.pointSize() - 2 );
+    //tinyFont.setPointSize( tinyFont.pointSize() - 2 );
 
     m_noTrack->setFont( bigFont );
     m_title->setFont( bigFont );
@@ -197,20 +197,20 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     // i10n makes things complicated :P
     if( m_byText->boundingRect().width() > m_onText->boundingRect().width() )
     { // align to location of on text
-        m_byText->setPos( textX, textY + lineSpacing + 6  );
+        m_byText->setPos( textX, textY + lineSpacing + 3  );
         m_artist->setPos( m_byText->pos().x() + m_byText->boundingRect().width() + 5, 0 );
         alignBottomToFirst( m_byText, m_artist );
         m_album->setPos( m_artist->pos().x(), 0 );
-        m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + lineSpacing * 2 + 6 );
+        m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + lineSpacing * 2 + 3 );
         alignBottomToFirst( m_onText, m_album );
 
     } else // align to location/width of by text
     {
-        m_onText->setPos( textX, textY + lineSpacing * 2 + 6 );
+        m_onText->setPos( textX, textY + lineSpacing * 2 + 3 );
         m_album->setPos( m_onText->pos().x() + m_onText->boundingRect().width() + 5, 0 );
         alignBottomToFirst( m_onText, m_album );
         m_artist->setPos( m_album->pos().x(), 0 );
-        m_byText->setPos( m_artist->pos().x() - m_byText->boundingRect().width() - 5, textY + lineSpacing + 6 );
+        m_byText->setPos( m_artist->pos().x() - m_byText->boundingRect().width() - 5, textY + lineSpacing + 3 );
         alignBottomToFirst( m_byText, m_artist );
     }
     
