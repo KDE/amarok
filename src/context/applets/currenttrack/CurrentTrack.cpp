@@ -55,9 +55,6 @@ void CurrentTrack::init()
 {
     DEBUG_BLOCK
 
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 1  );
-
     m_ratingWidget = new RatingWidget( this );
     m_ratingWidget->setSpacing( 2 );
 
@@ -78,16 +75,19 @@ void CurrentTrack::init()
     m_album->setBrush( brush );;
     m_noTrack->setBrush( brush );
 
-    QFont bigFont( labelFont );
-    bigFont.setPointSize( bigFont.pointSize() +  2 );
+    QFont bigFont;
+    bigFont.setPointSize( bigFont.pointSize() +  3 );
+    bigFont.setBold( true );
     
-    QFont tinyFont( labelFont );
-    tinyFont.setPointSize( tinyFont.pointSize() - 4 );
+    QFont tinyFont;
+    tinyFont.setPointSize( tinyFont.pointSize() - 2 );
 
     m_noTrack->setFont( bigFont );
-    m_title->setFont( labelFont );
-    m_artist->setFont( labelFont );
-    m_album->setFont( labelFont );
+    m_title->setFont( bigFont );
+    m_artist->setFont( bigFont );
+    m_album->setFont( bigFont );
+    m_byText->setFont( tinyFont );
+    m_onText->setFont( tinyFont );
     
     m_noTrackText = i18n( "No track playing" );
     m_noTrack->hide();
@@ -189,21 +189,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const qreal textY = albumCoverPos.y() + 20;
 
     // calculate font sizes
-    QFont textFont = QFont( QString() );
-    textFont.setPointSize( textFont.pointSize() + 2 );
-    textFont.setBold( true );
-    QFont tinyFont = QFont( QString() );
-    tinyFont.setPointSize( tinyFont.pointSize() - 2 );
-
-    QFontMetrics fm( textFont );
+    QFontMetrics fm( m_title->font() );
     qreal lineSpacing = fm.height() + 4;
     m_maxTextWidth = textWidth;
-
-    m_title->setFont( textFont );
-    m_artist->setFont( textFont );
-    m_album->setFont( textFont );
-    m_byText->setFont( tinyFont );
-    m_onText->setFont( tinyFont );
 
     // align to either the album or artist line, depending of "On" or "By" is longer in this current translation
     // i10n makes things complicated :P
