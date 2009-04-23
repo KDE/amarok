@@ -144,6 +144,10 @@ SqlRegistry::getArtist( const QString &name, int id )
                 id = res[0].toInt();
             }
         }
+
+        if( m_artistMap.contains( id ) )
+            return m_artistMap.value( id );
+
         ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
         m_artistMap.insert( id, artist );
         return artist;
@@ -172,6 +176,10 @@ SqlRegistry::getGenre( const QString &name, int id )
                 id = res[0].toInt();
             }
         }
+
+        if( m_genreMap.contains( id ) )
+            return m_genreMap.value( id );
+
         GenrePtr genre( new SqlGenre( m_collection, id, name ) );
         m_genreMap.insert( id, genre );
         return genre;
@@ -200,6 +208,10 @@ SqlRegistry::getComposer( const QString &name, int id )
                 id = res[0].toInt();
             }
         }
+
+        if( m_composerMap.contains( id ) )
+            return m_composerMap.value( id );
+
         ComposerPtr composer( new SqlComposer( m_collection, id, name ) );
         m_composerMap.insert( id, composer );
         return composer;
@@ -228,6 +240,10 @@ SqlRegistry::getYear( const QString &name, int id )
                 id = res[0].toInt();
             }
         }
+
+        if( m_yearMap.contains( id ) )
+            return m_yearMap.value( id );
+
         YearPtr year( new SqlYear( m_collection, id, name ) );
         m_yearMap.insert( id, year );
         return year;
@@ -264,6 +280,10 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
                 id = res[0].toInt();
             }
         }
+
+        if( m_albumMap.contains( id ) )
+            return m_albumMap.value( id );
+
         AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
         m_albumMap.insert( id, album );
         return album;
