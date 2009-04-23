@@ -25,7 +25,9 @@ BookmarkManagerWidgetProxy::BookmarkManagerWidgetProxy( QGraphicsWidget *parent 
     , m_manager( 0 )
 {
     m_manager = new BookmarkManagerWidget( );
+    m_manager->setAttribute( Qt::WA_NoSystemBackground );
     setWidget( m_manager );
+    setAttribute( Qt::WA_NoSystemBackground );
     
     connect( m_manager, SIGNAL( showMenu( KMenu*, const QPointF& ) ), this, SLOT( showMenu( KMenu*, const QPointF& ) ) );
 }

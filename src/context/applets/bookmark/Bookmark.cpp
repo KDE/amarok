@@ -60,7 +60,7 @@ void Bookmark::init()
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
 
     m_bookmarkWidget = new BookmarkManagerWidgetProxy( this );
-
+    
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
@@ -74,7 +74,7 @@ void Bookmark::constraintsEvent( Plasma::Constraints constraints )
     /*if( constraints & Plasma::SizeConstraint )
          m_theme->resize(size().toSize());*/
 
-    m_bookmarkWidget->setGeometry( QRectF( 10, 10, size().toSize().width() - 20 , size().toSize().height() - 20 ) );
+    m_bookmarkWidget->setGeometry( QRectF( standardPadding(), standardPadding(), size().toSize().width() - 2 * standardPadding() , size().toSize().height() - 2 * standardPadding() ) );
 }
 
 QSizeF
@@ -105,6 +105,11 @@ void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *opti
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
             childItem->show();
     }
+
+    p->setRenderHint( QPainter::Antialiasing );
+
+    // tint the whole applet
+    addGradientToAppletBackground( p );
 }
 
 
