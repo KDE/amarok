@@ -319,7 +319,7 @@ LyricsApplet::refreshLyrics()
     Meta::TrackPtr curtrack = The::engineController()->currentTrack();
     debug() << "checking for current track:";
 
-    if( !curtrack )
+    if( !curtrack || !curtrack->artist() )
         return;
 
     ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
