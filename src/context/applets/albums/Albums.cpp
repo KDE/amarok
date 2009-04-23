@@ -70,8 +70,6 @@ void Albums::init()
     m_model = new AlbumsModel();
     m_model->setColumnCount( 1 );
     m_albumsView->setModel( m_model );
-    m_albumsView->resize( size().width() - 28, size().height() - 28 );
-    m_albumsView->setPos( 7, 42 );
     m_albumsView->show();
     resize( m_width, m_height );
 
@@ -96,14 +94,12 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints )
     DEBUG_BLOCK
 
-    //bah! do away with trying to get postions from an svg as this is proving wildly inaccurate
-    const qreal margin = 14.0;
-
     // here we put all of the text items into the correct locations
-    m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, margin );
+    m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
     
     debug() << "Updating constraints for " << m_albumCount << " album rows";
-    m_albumsView->resize( size().toSize().width() - margin , size().toSize().height() - margin * 4 );
+    m_albumsView->resize( size().toSize().width() - 2 * standardPadding() , size().toSize().height() - m_headerText->boundingRect().height() - 3 * standardPadding()  );
+    m_albumsView->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
 
 }
 

@@ -154,19 +154,17 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
-    int padding = 8;
-    
     QRectF rect = boundingRect();
     rect.setWidth( rect.width() - 30 );
     m_titleLabel->setText( truncateTextToFit( m_titleText, m_titleLabel->font(), rect ) );
-    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, 9 );
+    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, standardPadding() + 2 );
     
-    m_reloadIcon->setPos( QPointF( size().width() - m_reloadIcon->size().width() - 10, 10 ) );
+    m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - standardPadding(), standardPadding() );
     m_reloadIcon->show();
     
     //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
-    m_lyricsProxy->setPos( padding, m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + padding );
-    QSize lyricsSize( size().width() - 2 * padding, boundingRect().height() - m_lyricsProxy->pos().y() - padding );
+    m_lyricsProxy->setPos( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() );
+    QSize lyricsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_lyricsProxy->pos().y() - standardPadding() );
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
 }

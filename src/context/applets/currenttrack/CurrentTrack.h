@@ -94,8 +94,6 @@ private:
     QString m_playedLast;
 
     int m_maxTextWidth;
-    qreal m_margin;
-
 
     //keep this safe as we might need it when resizing
     QVariantMap m_currentInfo;

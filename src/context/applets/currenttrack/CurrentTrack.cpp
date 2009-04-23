@@ -95,7 +95,6 @@ void CurrentTrack::init()
     
     m_tabBar = new Plasma::TabBar( this );
 
-    m_margin = 7;
     m_playCountLabel = i18n( "Play count" );
     m_scoreLabel = i18n( "Score" );
     m_lastPlayedLabel = i18n( "Last Played" );
@@ -178,14 +177,22 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     // these all used to be based on fancy calculatons based on the height
     // guess what: the height is fixed. so that's a waste of hard-working gerbils
     const qreal textHeight = 30;
-    const qreal albumWidth = 130;
-    const QPointF albumCoverPos( m_margin + 10, m_margin + 2 );
+    const qreal albumWidth = 135;
+    const QPointF albumCoverPos( standardPadding() + 5, standardPadding() );
 
     resizeCover( m_bigCover, albumWidth, albumCoverPos );
 
+    m_ratingWidget->setMinimumSize( albumWidth + 10, textHeight );
+    m_ratingWidget->setMaximumSize( albumWidth + 10, textHeight );
+
+    //place directly above the bottom of the applet
+    const qreal x = standardPadding();
+    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - standardPadding();
+    m_ratingWidget->setPos( x, y );
+    
     /* this is the pos of the albumcover */
-    const qreal textX =  albumCoverPos.x() +  albumWidth + m_margin;
-    const qreal textWidth = size().toSize().width() - ( textX + m_margin * 2 + 23 );
+    const qreal textX =  albumCoverPos.x() +  albumWidth + standardPadding();
+    const qreal textWidth = size().toSize().width() - ( textX + standardPadding() * 2 + 23 );
     const qreal textY = albumCoverPos.y() + 20;
 
     // calculate font sizes
@@ -242,11 +249,11 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         
         for( int i = 0; i < m_tracksToShow; i++ )
         {
-            m_tracks[i]->resize( contentsRect().width() - m_margin * 2, textHeight * .8 );
+            m_tracks[i]->resize( contentsRect().width() - standardPadding() * 2, textHeight * .8 );
 
             // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
             //m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
-            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, ( textHeight * .8 + m_margin / 2 ) * i + 25 );
+            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, ( textHeight * .8 + standardPadding() / 2 ) * i + 25 );
         }
     }        
     else if( !m_noTrackText.isEmpty() )
@@ -255,14 +262,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
                        size().toSize().height() / 2  - 30 );
     }
-
-    m_ratingWidget->setMinimumSize( albumWidth + 10, textHeight );
-    m_ratingWidget->setMaximumSize( albumWidth + 10, textHeight );
-    
-    //place directly above the bottom of the applet
-    const qreal x = albumCoverPos.x() - 5;
-    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - m_margin;
-    m_ratingWidget->setPos( x, y );
     
     dataEngine( "amarok-current" )->setProperty( "coverWidth", albumWidth );
 }
@@ -435,16 +434,17 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     qreal localMaxTextWidth = m_maxTextWidth + qMax( m_onText->boundingRect().width(), m_byText->boundingRect().width() ) + 5;
     QColor topColor( 255, 255, 255, 120 );
     QColor bottomColor( 255, 255, 255, 90 );
+    qreal leftX = boundingRect().size().width() - standardPadding();
     // draw the complete outline. lots of little steps :)
     // at each corner, leave a 6x6 box. draw a quad bezier curve from the two ends of the lines, through  the original corner
     QPainterPath statsPath;
     statsPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-    statsPath.lineTo( leftEdge + localMaxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-    statsPath.quadTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                    leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-    statsPath.lineTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
-    statsPath.quadTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
-                    leftEdge + localMaxTextWidth - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
+    statsPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+    statsPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                    leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+    statsPath.lineTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
+    statsPath.quadTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
+                    leftX - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
     statsPath.lineTo( m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() ); // way bottom left corner
     statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
                     m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 );
@@ -462,10 +462,10 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     // draw just the overlay which is the "header" row, to emphasize that we have 2 rows here
     QPainterPath headerPath;
     headerPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-    headerPath.lineTo( leftEdge + localMaxTextWidth - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-    headerPath.quadTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                    leftEdge + localMaxTextWidth, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-    headerPath.lineTo( leftEdge + localMaxTextWidth, m_ratingWidget->pos().y()  ); // middle of the right side
+    headerPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+    headerPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                    leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+    headerPath.lineTo( leftX, m_ratingWidget->pos().y()  ); // middle of the right side
     headerPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // join spot, before quad curve
     headerPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
                         leftEdge, m_ratingWidget->pos().y() - 6 );
@@ -504,8 +504,8 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     if( !m_sourceEmblemPixmap.isNull() )
     {
         p->save();
-        p->drawPixmap(contentsRect.topRight().x() - m_sourceEmblemPixmap.rect().width() - m_margin,
-                      m_margin,
+        p->drawPixmap(contentsRect.topRight().x() - m_sourceEmblemPixmap.rect().width() - standardPadding(),
+                      standardPadding(),
                       m_sourceEmblemPixmap );
         p->restore();
     }
@@ -522,7 +522,6 @@ bool CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPo
         qreal size = width;
         qreal pixmapRatio = (qreal)cover.width()/size;
 
-        // offset it by 20 so there is room for the ratings underneath to the left
         qreal moveByX = albumCoverPos.x();
         qreal moveByY = albumCoverPos.y();
 

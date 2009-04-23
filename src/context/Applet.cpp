@@ -29,6 +29,7 @@ namespace Context
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_transient( 0 )
+    , m_standardPadding( 6.0 )
 {}
 
 QFont
@@ -121,6 +122,13 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     p->drawRoundedRect( boundingRect().adjusted( 2, 2, -2, -2 ), 3, 3 );
     p->restore(); 
 }
+
+qreal
+Context::Applet::standardPadding()
+{
+    return  m_standardPadding;
+}
+
 
 void
 Context::Applet::destroy()

@@ -39,6 +39,11 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
         void drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t );
         void addGradientToAppletBackground( QPainter* p );
+
+        /**
+          * Returns a standard CV-wide padding that applets can use for consistency.
+          */
+        qreal standardPadding();
         
     public Q_SLOTS:
         virtual void destroy();
@@ -47,6 +52,8 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void cleanUpAndDelete();
 
         bool m_transient;
+        qreal m_standardPadding;
+        
 };
 
 } // Context namespace
