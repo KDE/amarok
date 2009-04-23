@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Vertical Context Containment
 Name[bg]=Вертикален контекст
+Name[ca]=Contenidor vertical de context
 Name[da]=Lodret kontekstbeholder
 Name[el]=Υποδοχέας κατακόρυφου περιεχομένου
 Name[es]=Contenedor de contexto vertical
@@ -25,6 +26,7 @@ Name[uk]=Вертикальний контейнер вмісту
 Name[x-test]=xxVertical Context Containmentxx
 Comment=A vertical containment for the Amarok Context
 Comment[bg]=Вертикален контекст на Amarok
+Comment[ca]=Un contenidor vertical per a l'Amarok Context
 Comment[da]=En lodret beholder til Amarok-kontekst
 Comment[el]=Ένας κατακόρυφος υποδοχέας για το περιεχόμενο Amarok
 Comment[es]=Un contenedor vertical para el contexto de Amarok
