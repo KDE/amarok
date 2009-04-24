@@ -44,7 +44,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     if( m_applet )
        m_label->setText( m_applet->name() );
     else
-        m_label->setText( "no applet name" );
+        m_label->setText( i18n("no applet name") );
         
     QAction* delApplet = new QAction( i18n( "Remove Applet" ), this );
     delApplet->setIcon( KIcon( "edit-delete" ) );
