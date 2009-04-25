@@ -18,7 +18,10 @@
  ***************************************************************************/
 
 #include "ServiceInfoProxy.h"
+
+#include "App.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <KStandardDirs>
 
@@ -154,6 +157,24 @@ ServiceInfoProxy::loadHomePage()
     QString imagePath = imageUrl.url();
 
     html.replace( "_PATH_", imagePath );
+
+    QColor highlight( App::instance()->palette().highlight().color() );
+    highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
+
+    //paletteChanged( App::instance()->palette() );
+
+    //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
+    html.replace( "{background_color}", PaletteHandler::highlightColor( 0.12, 1 ).name() );
+    //contents.replace( "{text_background_color}", highlight.name() );
+    html.replace( "{border_color}", highlight.name() );
+    html.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
+//    contents.replace( "{link_color}", palette.link().color().name() );
+//    contents.replace( "{link_hover_color}", palette.link().color().darker( 200 ).name() );
+//    highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
+//    contents.replace( "{shaded_text_background_color}", highlight.name() );
+//    contents.replace( "{table_background_color}", highlight.name() );
+//    contents.replace( "{headings_background_color}", highlight.name() );
+
 
     m_storedInfo["service_name"] =  i18n( "Home" );
     m_storedInfo["main_info"] = html;
