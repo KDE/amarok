@@ -218,7 +218,7 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
     }
 
     m_filterButton->setChecked( !empty );
-    m_dirOperator->updateDir(); //FIXME Crashes here, see http://bugs.kde.org/show_bug.cgi?id=177981
+    m_dirOperator->updateDir();
 
     // this will be never true after the filter has been used;)
     m_filterButton->setEnabled( !( empty && m_lastFilter.isEmpty() ) );
