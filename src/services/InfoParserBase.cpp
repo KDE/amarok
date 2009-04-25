@@ -18,11 +18,15 @@
  ***************************************************************************/
 
 #include "InfoParserBase.h"
+
+#include "App.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <KStandardDirs>
 
 #include <QFile>
+#include <QPalette>
 
 QString InfoParserBase::s_loadingBaseHtml = QString();
 
@@ -68,6 +72,12 @@ void InfoParserBase::showLoading( const QString &message )
     currentHtml = currentHtml.replace( "%%IMAGEPATH%%", url.url() );
     currentHtml = currentHtml.replace( "%%TEXT%%", message );
 
+    QColor highlight( App::instance()->palette().highlight().color() );
+    highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
+    currentHtml = currentHtml.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
+    currentHtml = currentHtml.replace( "{content_background_color}", highlight.name() );
+    currentHtml = currentHtml.replace( "{background_color}", PaletteHandler::highlightColor().lighter( 150 ).name());
+    currentHtml = currentHtml.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
     debug() << "showing html: " << currentHtml;
     emit ( info( currentHtml ) );
 
