@@ -19,8 +19,6 @@
 #ifndef MYDIROPERATOR_H
 #define MYDIROPERATOR_H
 
-#include "MyDirLister.h"
-
 #include "collection/Collection.h"
 #include "playlist/PlaylistController.h"
 #include "SvgHandler.h"

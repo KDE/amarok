@@ -43,9 +43,7 @@ MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
 {
     DEBUG_BLOCK
 
-    MyDirLister *dirlister = new MyDirLister( true );
-    dirlister->setMainWindow( The::mainWindow() );
-    setDirLister( dirlister );
+    dirLister()->setAutoUpdate( true );
 
     connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
              this,   SLOT( fileSelected( const KFileItem& ) ) );
