@@ -153,7 +153,7 @@ CurrentEngine::stoppedState()
     m_qmTracks->run();
 
     // Get the favorite tracks:
-
+    /* commenting out for now, we disabled the tabbar so this is just taking up CPU cycles
     if( m_qmFavTracks )
 		m_qmFavTracks->reset();
 	else
@@ -168,6 +168,7 @@ CurrentEngine::stoppedState()
     connect( m_qmFavTracks, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
              SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( m_qmFavTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
+    */
 }
 
 void CurrentEngine::metadataChanged( Meta::AlbumPtr album )
