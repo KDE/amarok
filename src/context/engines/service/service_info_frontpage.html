@@ -6,17 +6,17 @@ body
 {
 	margin: 0;
 	padding: 0;
-	
-    border: 8px solid #aac4f0;
-	-webkit-border-radius: 8px;
-	-khtml-border-radius: 8px;	
+/*    border: 8px solid #bbd2f6;*/
+    border: 4px solid {border_color};
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
 	-moz-border-radius: 8px;
-    border-radius: 8px;
-/*	background-color: #fdfdfd;*/
-/*	color: #333;*/
+    border-radius: 4px;
 	font-size: small;
 	font-family: Verdana, sans-serif;
 	text-align: justify;
+/*    background-color: #aac4f0;*/
+    background-color: {background_color};
 	color: {text_color};
 }
 
@@ -36,9 +36,9 @@ body
 	height: 106px;
 	padding: 8px 8px 0px 0px;
 	float: center;
-/*    background: #001529 url(_PATH_/service_info_frontpage_bg.png) bottom left repeat-x;*/
-/*    background: #dee8f9 url(_PATH_/service_info_frontpage_bg.png) bottom left repeat-x;*/
-    background: {border_color} url(_PATH_/service_info_frontpage_bg.png) bottom left repeat-x;*/
+/*      background: #bbd2f6 url(_PATH_/service_info_frontpage_bg.png) bottom left repeat-x;*/*/
+//      background: {border_color} url(_PATH_/service_info_frontpage_bg.png) bottom left repeat-x;
+    background-color: {background_color};
 }
 
 #logo,
@@ -47,20 +47,20 @@ body
 
 #content
 {
-
 	clear: both;
-	margin: 0;
+	margin: 4;
 	padding: 20px 20px 0 20px;
-    /*border: 4px solid #bbd2f6;*/
-    border: 4px solid {background_color};
-/*	color: #666;*/
-	color: black;
-/*	background: #fdfdfd url(_PATH_/service_info_frontpage_shadow.png) top left repeat-x;*/
-/*	background: #bbd2f6 url(_PATH_/service_info_frontpage_shadow.png) top left repeat-x;*/
-	background: {background_color} url(_PATH_/service_info_frontpage_shadow.png) top left repeat-x;
-/*	line-height: 1.5em;*/
-
+/*      border: 4px solid #dee8f9;*/
+      border: 4px solid {header_background_color};
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;	
+	-moz-border-radius: 4px;
+      border-radius: 4px;
+/*	background: #dee8f9 url(_PATH_/service_info_frontpage_shadow.png) top left repeat-x;*/
+//	background: {headings_background_color} url(_PATH_/service_info_frontpage_shadow.png) top left repeat-x;
+    background-color: {header_background_color};
 }
+
 </style>
 
     <body>
@@ -68,7 +68,6 @@ body
 	    <div id="logonnavi">
         <img id="logo" src="_PATH_/service_info_frontpage_logo.png" alt="Amarok" />
 	    </div>
-
 	    <div id="content">
 	    This is the Amarok 2 service info applet. This will display info from the services as you browse through them and their content. <p>
         Try out some of these services to get you started: <br>
@@ -80,7 +79,6 @@ body
         <a href="amarok://navigate/service/Librivox.org/artist-album/Jules%20Verne">Jules Verne</a> <p>
         You can also browse and subscribe to a huge list of <a href="amarok://navigate/service/OpmlDirectory/album">podcasts</a> and <a href="amarok://navigate/service/Shoutcast Directory">radio stations</a>.
 	    </div>
-
 	</div>
     </body>
 </html>

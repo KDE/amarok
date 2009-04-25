@@ -22,6 +22,7 @@
 #include <KStandardDirs>
 
 #include <QPainter>
+#include <PaletteHandler.h>
 
 
 QString ServiceInfo::s_defaultHtml = "<html>"
@@ -51,9 +52,6 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
     m_webView->setPalette( p );
 
-    //some css voodoo to make sure the background of the page is a sane color
-    m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/ServiceInfoCustomStyle.css" ) );
-    
     //m_serviceMainInfo->setWidget( m_webView );
 
     connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
@@ -129,19 +127,10 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
         }
     }
 
+
     p->setRenderHint( QPainter::Antialiasing );
-    // draw gradient
-    p->save();
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor();
-    highlight.setAlpha( 80 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
-    gradient.setColorAt( 1, highlight );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 3, 3 );
-    p->fillPath( path, gradient );
-    p->restore();
+
+    addGradientToAppletBackground( p );
 
 }
 
