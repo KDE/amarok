@@ -349,7 +349,7 @@ WikipediaEngine::wikiArtistPostfix()
     else if( wikiLocale() == "de" )
         return " (Band)";
     else if( wikiLocale() == "pl" )
-        return " (Kapela)";
+        return " (grupa muzyczna)";
     return QString();
 }
 
