@@ -17,10 +17,7 @@
 #include "Amarok.h"
 #include "amarokurls/AmarokUrl.h"
 #include "Debug.h"
-#include "context/Svg.h"
 #include "playlist/PlaylistController.h"
-
-#include <plasma/theme.h>
 
 #include <KStandardDirs>
 
@@ -38,11 +35,6 @@ QString ServiceInfo::s_defaultHtml = "<html>"
 
 ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_config( 0 )
-    , m_configLayout( 0 )
-    , m_width( 0 )
-    , m_aspectRatio( 0 )
-    , m_size( QSizeF() )
     , m_initialized( false )
     , m_currentPlaylist( 0 )
 
@@ -51,24 +43,6 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     dataEngine( "amarok-service" )->connectSource( "service", this );
-
-    m_theme = new Plasma::FrameSvg( this );
-    QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
-
-    kDebug() << "Loading theme file: " << imagePath;
-
-    m_theme->setImagePath( imagePath );
-    m_theme->setContainsMultipleImages( true );
-    m_theme->setEnabledBorders( Plasma::FrameSvg::AllBorders );
-
-    m_header = new Context::Svg( this );
-    m_header->setImagePath( "widgets/amarok-serviceinfo" );
-    m_header->setContainsMultipleImages( false );
-    m_header->resize( m_size );
-    m_width = globalConfig().readEntry( "width", 500 );
-
-    //m_serviceMainInfo = new QGraphicsProxyWidget( this );
-    //m_webView = new QWebView( 0 );
 
     m_webView = new Plasma::WebView( this );
 
@@ -84,39 +58,27 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
     connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
-    // get natural aspect ratio, so we can keep it on resize
-    m_header->resize();
-    m_aspectRatio = (qreal)m_header->size().height() / (qreal)m_header->size().width();
-    resize( m_width, m_aspectRatio );
-
     constraintsEvent();
 }
 
 ServiceInfo::~ServiceInfo()
 {
-    //hacky stuff to keep QWebView from causing a crash
-    /*m_serviceMainInfo->setWidget( 0 );
-    delete m_serviceMainInfo;
-    m_serviceMainInfo = 0;*/
     delete m_webView;
 
 }
 
 void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 {
-    if( !m_header )
-        return;
-
+    Q_UNUSED( constraints )
+    
     prepareGeometryChange();
 
-    if( constraints & Plasma::SizeConstraint )
-        m_header->resize( size().toSize() );
+    //QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
+    
+    m_webView->setPos( 6, 6 );
+    m_webView->resize( boundingRect().width() - 12, 438 );
 
-    m_theme->resizeFrame( size().toSize() );
-
-    QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
-
-    m_webView->resize( infoSize );
+    
 
     m_initialized = true;
 
@@ -144,7 +106,7 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
             m_webView->setHtml( html );
         }
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-        constraintsEvent();
+        updateConstraints();
     }
 
 }
@@ -166,53 +128,21 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
             childItem->show();
         }
     }
-    
-    m_header->resize(size().toSize());
-    m_theme->resizeFrame(size().toSize());
+
+    p->setRenderHint( QPainter::Antialiasing );
+    // draw gradient
     p->save();
-//     m_header->paint( p, contentsRect );
-    m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() ) );
+    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
+    QColor highlight = Amarok::highlightColor();
+    highlight.setAlpha( 80 );
+    gradient.setColorAt( 0, highlight );
+    highlight.setAlpha( 200 );
+    gradient.setColorAt( 1, highlight );
+    QPainterPath path;
+    path.addRoundedRect( boundingRect(), 3, 3 );
+    p->fillPath( path, gradient );
     p->restore();
 
-    QPointF pos( m_header->elementRect( "main_info" ).topLeft() );
-    //m_serviceMainInfo->setPos( pos.x() + 7, pos.y() );
-    m_webView->setPos( pos.x() + 7, pos.y() + 5 );
-
-    QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
-    //infoSize.setHeight(  infoSize.height() - 50 );
-
-    /*m_serviceMainInfo->setMinimumSize( infoSize );
-    m_serviceMainInfo->setMaximumSize( infoSize );
-    m_serviceMainInfo->show();
-*/
-    m_webView->resize( infoSize );
-    
-
-}
-
-void ServiceInfo::showConfigurationInterface()
-{
-
-}
-
-void ServiceInfo::configAccepted() // SLOT
-{
-
-}
-
-void ServiceInfo::resize( qreal newWidth, qreal aspectRatio )
-{
-    Q_UNUSED( newWidth ); Q_UNUSED( aspectRatio );
-}
-
-bool ServiceInfo::hasHeightForWidth() const
-{
-    return true;
-}
-
-qreal ServiceInfo::heightForWidth(qreal width) const
-{
-    return width * m_aspectRatio;
 }
 
 QSizeF 

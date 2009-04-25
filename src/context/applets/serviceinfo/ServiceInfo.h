@@ -47,35 +47,16 @@ public:
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
-    bool hasHeightForWidth() const;
-    qreal heightForWidth( qreal width ) const;
-
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
     virtual void trackListChanged( Meta::Playlist* playlist );
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
-    void showConfigurationInterface();
-
 private slots:
-    void configAccepted();
     void linkClicked( const QUrl & url );
 
 private:
-    void resize( qreal newWidth, qreal aspectRatio );
-
-    KDialog* m_config;
-    QHBoxLayout* m_configLayout;
-    QSpinBox* m_spinWidth;
-    int m_width;
-
-    qreal m_aspectRatio;
-
-    Context::Svg* m_header;
-    Plasma::FrameSvg *m_theme;
-    QSizeF m_size;
-
     Plasma::WebView * m_webView;
     bool m_initialized;
     Meta::XSPFPlaylist * m_currentPlaylist;
