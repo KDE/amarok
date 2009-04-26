@@ -21,9 +21,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef AMAROK_GROUPINGPROXY_H
-#define AMAROK_GROUPINGPROXY_H
-
 #define DEBUG_PREFIX "Playlist::GroupingProxy"
 
 #include "GroupingProxy.h"
@@ -382,11 +379,3 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 
     return totalLenght;
 }
-
-#endif
-
-
-
-
-
-
