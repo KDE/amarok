@@ -65,8 +65,13 @@ QString md5( const QByteArray& src )
 void
 LastFmServiceFactory::init()
 {
-    if( Solid::Networking::status() == Solid::Networking::Unknown ) // No working solid network backend, so force creation of the service
-    {
+   /* Fancy network detection is nice, but buggy if you're stepping outside your currently selected
+    * backend -- and since this is currently the only service using it, it makes it seem like there's just
+    * a last.fm bug.  Disable until such a time as *all* the Internet services go away and are replaced by
+    * helpful text describing how to change your backend if your network is actually running.
+    */
+   // if( Solid::Networking::status() == Solid::Networking::Unknown ) // No working solid network backend, so force creation of the service
+    //{
         ServiceBase *service = createLastFmService();
         if( service )
         {
@@ -74,7 +79,7 @@ LastFmServiceFactory::init()
             m_initialized = true;
             emit newService( service );
         }
-    }
+   /* }
     else
     {
         if( Solid::Networking::status() == Solid::Networking::Connected )
@@ -92,7 +97,7 @@ LastFmServiceFactory::init()
                     this, SLOT( slotCreateLastFmService() ) );
             connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
                         this, SLOT( slotRemoveLastFmService() ) );
-    }
+    } */
 }
 
 void
