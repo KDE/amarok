@@ -374,8 +374,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     }
 
 
-    //We itterate through the items in reverse order, as this allows us to keep the target row constant
-    //( remember that the item that was origianlly on the target row is pushed down )
+    // We iterate through the items in reverse order, as this allows us to keep the target row constant
+    // (remember that the item that was originally on the target row is pushed down)
     QList<int>::const_iterator f_iter = from.end();
     while( f_iter != from.begin() )
     {
@@ -503,7 +503,7 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
             Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job times out
             if ( playlist )
             {
-                //since this is a playlist masqueurading as a single track , make a MultiTrack out of it:
+                //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
                 i.remove();
                 if ( playlist->tracks().count() > 0 )
                     i.insert( Meta::TrackPtr( new Meta::MultiTrack( playlist ) ) );
