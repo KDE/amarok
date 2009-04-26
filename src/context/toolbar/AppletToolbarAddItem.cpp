@@ -32,7 +32,7 @@
 #define TOOLBAR_X_OFFSET 2000
 
 Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Context::Containment* cont, bool fixedAdd )
-    : QGraphicsWidget( parent )
+    : AppletToolbarBase( parent )
     , m_iconPadding( 0 )
     , m_fixedAdd( fixedAdd )
     , m_cont( cont )
@@ -83,40 +83,6 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
 {
 }
-
-void
-Context::AppletToolbarAddItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
-{
-    Q_UNUSED( option )
-    Q_UNUSED( widget )
-
-    painter->save();
-    painter->setRenderHint( QPainter::Antialiasing );
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = PaletteHandler::highlightColor();
-    highlight.setAlpha( 80 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 160 );
-    gradient.setColorAt( 1, highlight.darker( 150 ) );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( path, gradient );
-    painter->restore();
-}
-
-/*
-QRectF
-Context::AppletToolbarAddItem::boundingRect() const
-{
-    return QRectF( pos(), size() );
-}
-
-QRectF
-Context::AppletToolbarAddItem::geometry() const
-{
-    return boundingRect();
-}
-*/
 
 void 
 Context::AppletToolbarAddItem::hideMenu()

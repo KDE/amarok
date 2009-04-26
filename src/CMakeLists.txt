@@ -273,6 +273,7 @@ set( libcontextview_SRCS
     context/toolbar/AppletToolbar.cpp
     context/toolbar/AppletToolbarAddItem.cpp
     context/toolbar/AppletToolbarAppletItem.cpp
+    context/toolbar/AppletToolbarBase.cpp
     context/toolbar/AppletToolbarConfigItem.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/ToolBoxIcon.cpp

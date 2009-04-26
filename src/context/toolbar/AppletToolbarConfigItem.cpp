@@ -26,7 +26,7 @@
 #include <QStyleOptionGraphicsItem>
 
 Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent )
-    : QGraphicsWidget( parent )
+    : AppletToolbarBase( parent )
     , m_iconPadding( 2 )
     , m_icon( 0 )
 {
@@ -56,22 +56,6 @@ Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent
 
 Context::AppletToolbarConfigItem::~AppletToolbarConfigItem()
 {}
-
-void 
-Context::AppletToolbarConfigItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
-{
-    Q_UNUSED( option )
-    Q_UNUSED( widget )
-
-    painter->save();
-    painter->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( PaletteHandler::highlightColor() );
-    fillColor.setAlpha( 140 );
-    QPainterPath fillPath;
-    fillPath.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( fillPath ,fillColor );
-    painter->restore();
-}
    
 void 
 Context::AppletToolbarConfigItem::resizeEvent( QGraphicsSceneResizeEvent * event )

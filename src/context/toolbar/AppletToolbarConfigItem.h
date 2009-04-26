@@ -15,6 +15,7 @@
 #define AMAROK_APPLET_TOOLBAR_CONFIG_ITEM_H
 
 #include <QGraphicsWidget>
+#include "AppletToolbarBase.h"
 
 
 class QPainter;
@@ -29,15 +30,13 @@ namespace Plasma
 namespace Context
 {
 
-class AppletToolbarConfigItem : public QGraphicsWidget
+class AppletToolbarConfigItem : public AppletToolbarBase
 {
     Q_OBJECT
     public:
         AppletToolbarConfigItem( QGraphicsItem* parent = 0 );
         ~AppletToolbarConfigItem();
-        
-        virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-                
+                        
     signals:
         void triggered();
         

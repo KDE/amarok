@@ -20,6 +20,7 @@
 #include <plasma/widgets/iconwidget.h>
 
 #include <QGraphicsWidget>
+#include "AppletToolbarBase.h"
 
 class QGraphicsItem;
 class QGraphicsSceneResizeEvent;
@@ -33,20 +34,12 @@ namespace Context
 class AmarokToolBoxMenu;
 class Containment;
 
-class AppletToolbarAddItem : public QGraphicsWidget
+class AppletToolbarAddItem : public AppletToolbarBase
 {
     Q_OBJECT
     public:
         explicit AppletToolbarAddItem( QGraphicsItem* parent = 0, Containment* cont = 0, bool fixedAdd = false );
         ~AppletToolbarAddItem();
-        
-        virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-        
-        // these two below are a hack, we shouldn't need to implement them.
-        // however, for some reason this widget is getting a size/rect/geom of (0,0 0x0)
-        // and i can't figure out why. so i'm forcing it to be the real size
-    //    virtual QRectF boundingRect () const;
-    //    virtual QRectF geometry () const;
         
     signals:
         void addApplet( const QString&, AppletToolbarAddItem*  );

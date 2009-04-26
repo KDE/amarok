@@ -33,7 +33,7 @@
 
 
 Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent, Plasma::Applet* applet )
-    : QGraphicsWidget( parent )
+    : AppletToolbarBase( parent )
     , m_applet( applet )
     , m_label( 0 )
     , m_deleteIcon( 0 )
@@ -60,26 +60,6 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
 
 Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
 {    
-}
-
-void 
-Context::AppletToolbarAppletItem::paint ( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
-{
-    Q_UNUSED( option )
-    Q_UNUSED( widget )
-    
-    painter->save();
-    painter->setRenderHint( QPainter::Antialiasing );
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = PaletteHandler::highlightColor();
-    highlight.setAlpha( 80 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 160 );
-    gradient.setColorAt( 1, highlight.darker( 150 ) );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( path, gradient );
-    painter->restore();
 }
 
 void 

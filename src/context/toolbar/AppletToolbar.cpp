@@ -69,22 +69,30 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
 {
     Q_UNUSED( option )
     Q_UNUSED( widget )
-    // draw translucent curved background
-    painter->save();
 
+    painter->setRenderHint( QPainter::Antialiasing );
+
+    painter->save();
     QPalette p;
     painter->fillRect( boundingRect(), p.brush( QPalette::Window ) ); // remove white edges behind the toolbar
-    painter->setRenderHint( QPainter::Antialiasing );
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = PaletteHandler::highlightColor();
-    highlight.setAlpha( 170 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 220 );
-    gradient.setColorAt( 1, highlight );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( path, gradient );
+    QColor col = PaletteHandler::highlightColor();
+    qreal radius = 6;
+    
+    QPainterPath outline;
+    outline.moveTo( 0, 0);
+    outline.lineTo( boundingRect().width(), 0 );
+    outline.lineTo( boundingRect().width(), boundingRect().height() - radius );
+    outline.quadTo( boundingRect().width(), boundingRect().height(),
+                    boundingRect().width() - radius, boundingRect().height() );
+    outline.lineTo( radius, boundingRect().height() );
+    outline.quadTo( 0, boundingRect().height() ,
+                    0, boundingRect().height() - radius );
+    outline.lineTo( 0, 0 );
+
+    painter->fillPath( outline, col );
+
     painter->restore();
+    
 
 }
 
