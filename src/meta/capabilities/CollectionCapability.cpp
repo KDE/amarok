@@ -25,13 +25,11 @@
 #include "QueryMaker.h"
 
 Meta::CollectionCapabilityHelper::CollectionCapabilityHelper( QueryMaker *qm )
-    :  QObject(), m_tracklist( 0 ), m_querymaker ( qm )
+    :  QObject()
+    , m_querymaker ( qm )
 {
     DEBUG_BLOCK
 }
-
-Meta::CollectionCapabilityHelper::CollectionCapabilityHelper( TrackList *tracklist )
-    : QObject(), m_tracklist ( tracklist ), m_querymaker( 0 ) {}
 
 Meta::CollectionCapabilityHelper::~CollectionCapabilityHelper()
 {
@@ -58,10 +56,7 @@ Meta::CollectionCapabilityHelper::newResultReady( QString collId, Meta::TrackLis
 {
     Q_UNUSED( collId );
     DEBUG_BLOCK
-    if( !m_tracklist )
-        m_tracklist = new QList<Meta::TrackPtr>();
-    *m_tracklist << tracklist;
-    debug() << "m_tracklist size " << m_tracklist->size();
+    m_tracklist << tracklist;
 }
 
 void
@@ -76,7 +71,7 @@ Meta::CollectionCapabilityHelper::runQuery()
 void
 Meta::CollectionCapabilityHelper::tracklistReadySlot()
 {
-    emit tracklistReady( *m_tracklist );
+    emit tracklistReady( m_tracklist );
 }
 
 Meta::CollectionCapability::~CollectionCapability()

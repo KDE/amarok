@@ -40,7 +40,6 @@ a context menu.
 
 namespace Meta
 {
-
     class AMAROK_EXPORT CollectionCapabilityHelper : public QObject
     {
         Q_OBJECT
@@ -62,7 +61,7 @@ namespace Meta
             void tracklistReadySlot();
 
         private:
-            TrackList  *m_tracklist;
+            TrackList  m_tracklist;
             QueryMaker *m_querymaker;
     };
 
@@ -77,9 +76,6 @@ namespace Meta
             virtual QList<PopupDropperAction *>  collectionActions( QueryMaker *qm ) = 0;
             // if tracklist passed in, Helper made, action's triggered calls helper's triggered calls slot
             virtual QList<PopupDropperAction *>  collectionActions( const TrackList tracklist ) = 0;
-
-
-
     };
 }
 
