@@ -46,7 +46,6 @@ namespace Meta
 
         public:
             CollectionCapabilityHelper( QueryMaker *qm );
-            CollectionCapabilityHelper( TrackList *tracklist );
 
             ~CollectionCapabilityHelper();
 
