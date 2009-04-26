@@ -124,7 +124,7 @@ QString AmarokUrl::url()
     }
 
     //escape it
-    url = url.replace( " ", "%20" );
+    url = url.replace( ' ', "%20" );
     url = url.replace( "\"", "%22" );
 
     return url;

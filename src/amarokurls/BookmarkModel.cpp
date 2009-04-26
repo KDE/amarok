@@ -404,7 +404,7 @@ void BookmarkModel::checkTables()
     else if ( values.at( 0 ).toInt() < 4 )
     {
         upgradeTables( values.at( 0 ).toInt() );
-        sqlStorage->query( "UPDATE admin SET version=" + QString::number( BOOKMARK_DB_VERSION ) + " WHERE component=" + key + ";" );
+        sqlStorage->query( "UPDATE admin SET version=" + QString::number( BOOKMARK_DB_VERSION ) + " WHERE component=" + key + ';' );
     }
 }
 
@@ -459,10 +459,10 @@ void BookmarkModel::upgradeTables( int from )
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     
     if ( from == 2 ) {
-        sqlStorage->query( "ALTER TABLE bookmarks ADD custom " + sqlStorage->textColumnType() + ";" );
+        sqlStorage->query( "ALTER TABLE bookmarks ADD custom " + sqlStorage->textColumnType() + ';' );
     }
 
-    sqlStorage->query( "ALTER TABLE bookmark_groups ADD custom " + sqlStorage->textColumnType() + ";" );
+    sqlStorage->query( "ALTER TABLE bookmark_groups ADD custom " + sqlStorage->textColumnType() + ';' );
 } 
 
 

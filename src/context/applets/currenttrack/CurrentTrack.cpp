@@ -573,7 +573,7 @@ CurrentTrack::tabChanged( int index )
         m_tracks[i]->setTrack( track );
         i++;
     }
-    for( i = 0; i < m_tracksToShow; i++ )
+    for( i = 0; i < m_tracksToShow; ++i )
         m_tracks[i]->show();
 }
 

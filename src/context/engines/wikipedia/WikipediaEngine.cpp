@@ -338,7 +338,7 @@ WikipediaEngine::wikiLocale() const
 	if( m_wikiLang.language() == QLocale::C )
         return "en";
     else
-        return m_wikiLang.name().split( "_" )[0];
+        return m_wikiLang.name().split( '_' )[0];
 }
 
 inline QString
