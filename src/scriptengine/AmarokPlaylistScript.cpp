@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
+#define DEBUG_PREFIX "AmarokScript::Playlist"
+
 #include "AmarokPlaylistScript.h"
 
 #include "App.h"
@@ -37,8 +39,8 @@ namespace AmarokScript
         , m_scriptEngine( scriptEngine )
     {
         m_wrapperList = wrapperList;
-        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged() ) );
-        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged() ) );
+        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
+        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
         connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
     }
 
@@ -135,11 +137,6 @@ namespace AmarokScript
         return QVariant::fromValue( track );;
     }
 
-    void AmarokPlaylistScript::slotCountChanged()
-    {
-        emit CountChanged( The::playlistModel()->rowCount() );
-    }
-	
     QList<int> AmarokPlaylistScript::selectedIndexes()
     {
         DEBUG_BLOCK
@@ -160,7 +157,21 @@ namespace AmarokScript
 
         return fileNames;
     }
+
+    // PlaylistModel inserts only one track at a time
+    void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int row, int )
+    {
+        Meta::TrackPtr t = The::playlistModel()->trackAt( row );
+        debug() << "inserted" << t->prettyName() << "at" << row;
+        emit trackInserted( QVariant::fromValue( t ), row );
+    }
+
+    // PlaylistModel removes only one track at a time
+    void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int row, int )
+    {
+        debug() << "removed track at" << row;
+        emit trackRemoved( row );
+    }
 }
 
 #include "AmarokPlaylistScript.moc"
-

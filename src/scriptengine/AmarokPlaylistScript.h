@@ -57,11 +57,13 @@ namespace AmarokScript
             QStringList selectedFilenames();
 
         signals:
-            void CountChanged( int newCount );
             void activeRowChanged( int row );
+            void trackInserted( QVariant track, int row );
+            void trackRemoved( int row );
 
         private slots:
-            void slotCountChanged();
+            void slotTrackInserted( const QModelIndex&, int, int );
+            void slotTrackRemoved( const QModelIndex&, int, int );
 
         private:
             QList<QObject*>* m_wrapperList;
