@@ -170,7 +170,7 @@ OrContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 
     foreach( MemoryFilter *filter, m_filters )
     {
-        if( filter->filterMatches( track ) )
+        if( filter && filter->filterMatches( track ) )
             return true;
     }
     return false;
