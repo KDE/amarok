@@ -49,7 +49,9 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 }
 
 CurrentTrack::~CurrentTrack()
-{}
+{
+    dataEngine( "amarok-current" )->disconnectSource( "current", this );
+}
 
 void CurrentTrack::init()
 {

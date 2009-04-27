@@ -74,7 +74,7 @@ private:
     
     int m_coverWidth;
     QStringList m_sources;
-    bool m_requested;
+    QMap< QString, bool > m_requested;
     Meta::TrackPtr m_currentTrack;
     QTimer *m_timer;
     
