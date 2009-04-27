@@ -236,7 +236,7 @@ void
 Playlist::PrettyListView::stopAfterTrack()
 {
     DEBUG_BLOCK
-    const qreal id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
     if( Actions::instance()->willStopAfterTrack( id ) )
     {
         Actions::instance()->setStopAfterMode( StopNever );
