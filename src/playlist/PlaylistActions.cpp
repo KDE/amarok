@@ -92,7 +92,10 @@ Playlist::Actions::requestNextTrack()
     m_trackError = false;
     m_currentTrack = Model::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
+    {
         setStopAfterMode( StopAfterCurrent );
+        m_trackToBeLast = 0;
+    }
     
     m_nextTrackCandidate = m_navigator->requestNextTrack();
     m_currentTrack = m_nextTrackCandidate;
