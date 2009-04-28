@@ -66,6 +66,13 @@ void WikipediaApplet::init()
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
+    // make transparent so we can use qpainter translucency to draw the  background
+    QPalette palette = m_webView->palette();
+    palette.setBrush(QPalette::Base, Qt::transparent);
+    m_webView->page()->setPalette(palette);
+    m_webView->setAttribute(Qt::WA_OpaquePaintEvent, false);
+    
+    
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_wikipediaLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
@@ -195,19 +202,15 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
 
     //draw background of wiki text
-    // is overwritten when we ahve a page, but when we don't the large expanse of background is weird
     p->save();
-    QColor highlight( App::instance()->palette().highlight().color() );
-    qreal saturation = highlight.saturationF();
-    saturation *= 0.3;
-    qreal value = highlight.valueF();
-    value *= 1.1;
-    highlight.setHsvF( highlight.hueF(), 0.05, 1, highlight.alphaF() );
-
+    QColor bg( App::instance()->palette().highlight().color() );
+    bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
     QRectF wikiRect = m_webView->boundingRect();
     wikiRect.moveTopLeft( m_webView->pos() );
-    p->fillRect( wikiRect , highlight );
-    p->restore();
+    QPainterPath round;
+    round.addRoundedRect( wikiRect, 3, 3 );
+    p->fillPath( round , bg  );
+    p->restore(); 
     
 }
 
