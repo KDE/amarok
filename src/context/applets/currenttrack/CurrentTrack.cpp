@@ -53,7 +53,8 @@ CurrentTrack::~CurrentTrack()
     dataEngine( "amarok-current" )->disconnectSource( "current", this );
 }
 
-void CurrentTrack::init()
+void
+CurrentTrack::init()
 {
     DEBUG_BLOCK
 
@@ -133,7 +134,8 @@ CurrentTrack::connectSource( const QString &source )
     }
 }
 
-void CurrentTrack::changeTrackRating( int rating )
+void
+CurrentTrack::changeTrackRating( int rating )
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -268,7 +270,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     dataEngine( "amarok-current" )->setProperty( "coverWidth", albumWidth );
 }
 
-void CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
+void
+CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     DEBUG_BLOCK
     Q_UNUSED( name );
@@ -355,7 +358,8 @@ CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
     return constraint;
 }
 
-void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+void
+CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
     p->setRenderHint( QPainter::Antialiasing );
@@ -506,14 +510,16 @@ void CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
     if( !m_sourceEmblemPixmap.isNull() )
     {
         p->save();
-        p->drawPixmap(contentsRect.topRight().x() - m_sourceEmblemPixmap.rect().width() - standardPadding(),
+        p->setOpacity( .5 );
+        p->drawPixmap(boundingRect().topRight().x() - m_sourceEmblemPixmap.rect().width() - standardPadding(),
                       standardPadding(),
                       m_sourceEmblemPixmap );
         p->restore();
     }
 }
 
-bool CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
+bool
+CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
 {
     const int borderWidth = 5;
     
@@ -549,7 +555,8 @@ bool CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPo
     return false;
 }
 
-void CurrentTrack::paletteChanged( const QPalette & palette )
+void
+CurrentTrack::paletteChanged( const QPalette & palette )
 {
     DEBUG_BLOCK
 
