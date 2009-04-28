@@ -91,6 +91,9 @@ Context::VerticalToolbarContainment::loadConfig( const KConfigGroup &conf )
         debug() << "Adding applet: " << plugin;
         addApplet( plugin, -1 );
     }
+
+    int showing = conf.readEntry( "firstShowingApplet", 0 );
+    m_applets->showAtIndex( showing );
 }
 
 void 

@@ -51,6 +51,8 @@ class VerticalAppletLayout : public QGraphicsWidget
         
         void refresh();
         QSizeF totalSize();
+
+        void showAtIndex( int index );
         
     signals:
         void appletAdded( Plasma::Applet* applet, int location );
@@ -65,7 +67,6 @@ class VerticalAppletLayout : public QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
     private:
         int minIndexWithAppletOnScreen( int loc );
-        void showAtIndex( int index );
         
         QList< Plasma::Applet* > m_appletList;
         int m_showingIndex;
