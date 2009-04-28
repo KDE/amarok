@@ -82,6 +82,8 @@ LastFmServiceSettings::save()
 void
 LastFmServiceSettings::testLogin()
 {
+    DEBUG_BLOCK
+
     m_configDialog->testLogin->setEnabled( false );
     m_configDialog->testLogin->setText( i18n( "Testing..." ) );
     // set the global static Lastfm::Ws stuff
@@ -113,13 +115,18 @@ LastFmServiceSettings::testLogin()
 void
 LastFmServiceSettings::onAuthenticated( WsReply *reply )
 {
+    DEBUG_BLOCK
+
     switch( reply->error() )
     {
         case Ws::NoError:
+             debug() << "NoError";
              m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
              m_configDialog->testLogin->setEnabled( false );
              break;
+
          case Ws::AuthenticationFailed:
+            debug() << "AuthenticationFailed";
             KMessageBox::error( this, i18n( "Either the username or the password is incorrect, please correct and try again" ), i18n( "Failed" ) );
             m_configDialog->testLogin->setText( i18n( "Test Login" ) );
             m_configDialog->testLogin->setEnabled( true );
