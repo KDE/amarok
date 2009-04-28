@@ -75,37 +75,31 @@ Context::Applet::truncateTextToFit( QString text, const QFont& font, const QRect
 void
 Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t )
 {
-    p->save();
-    QColor topColor( 255, 255, 255, 120 );
-    QLinearGradient gradient2( t->boundingRect().topLeft(), t->boundingRect().bottomLeft() );
-    topColor.setAlpha( 120 );
-    gradient2.setColorAt( 0, topColor );
-    topColor.setAlpha( 200 );
-    gradient2.setColorAt( 1, topColor );
-    QPainterPath path = QPainterPath();
-    QRectF rect = t->boundingRect();
-    rect.moveTopLeft( t->pos() );
-    path.addRoundedRect( rect.adjusted( -5, -2, 5, 2 ), 5, 5 );
-    p->fillPath( path, gradient2 );
-    p->restore();
+
+   p->setRenderHint( QPainter::Antialiasing );
+   QColor col = PaletteHandler::highlightColor().lighter( 150 );
+   p->save();
+   QRectF rect = t->boundingRect();
+   rect.moveTopLeft( t->pos() );
+   QPainterPath path;
+   path.addRoundedRect( rect.adjusted( -5, -2, 5, 2 ), 3, 3 );
+
+   p->fillPath( path, col );
+   p->restore();
+   // draw outline around textbox
+   p->save();
+   col = PaletteHandler::highlightColor( 0.3, .5 );
+   p->setPen( col );
+   rect = t->boundingRect();
+   rect.moveTopLeft( t->pos() );
+   p->drawRoundedRect( rect.adjusted( -5, -2, 5, 2 ), 3, 3 );
+   p->restore(); 
 }
 
 void
 Context::Applet::addGradientToAppletBackground( QPainter* p )
 {
         // tint the whole applet
-/*    p->save();
-    QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
-    QColor highlight = Amarok::highlightColor();
-    highlight.setAlpha( 80 );
-    gradient.setColorAt( 0, highlight );
-    highlight.setAlpha( 200 );
-    gradient.setColorAt( 1, highlight ); 
-    QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 1, 1, -1, -1 ), 3, 3 );
-    p->fillPath( path, gradient );
-    p->restore(); */
-
     // draw non-gradient backround. going for elegance and style
     p->save();
     QPainterPath path;
