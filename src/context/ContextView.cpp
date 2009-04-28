@@ -50,7 +50,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
 
     s_self = this;
 
-//     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
+    scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
     setTransformationAnchor( QGraphicsView::NoAnchor );
@@ -61,8 +61,6 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
    // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
     setScreen( -1 );
-
-    scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
     
     //make background transparent
     QPalette p = palette();
@@ -202,7 +200,7 @@ void ContextView::loadConfig()
     contextScene()->clearContainments();    
 
     int numContainments = contextScene()->containments().size();
-    KConfig conf( "amarok_homerc", KConfig::SimpleConfig );
+    KConfig conf( "amarok_homerc", KConfig::FullConfig );
     for( int i = 0; i < numContainments; i++ )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );

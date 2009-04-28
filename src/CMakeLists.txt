@@ -631,6 +631,8 @@ install(FILES data/DefaultPlaylistLayouts.xml
               services/InfoParserLoading.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
+install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
+
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 
 ############# AFT Tagger ##############
