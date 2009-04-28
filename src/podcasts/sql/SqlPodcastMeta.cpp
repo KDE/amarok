@@ -170,7 +170,7 @@ Meta::SqlPodcastEpisode::length() const
     int length = -2;
 
     #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(m_localUrl.path().utf16());
     #else
     QByteArray fileName = QFile::encodeName( m_localUrl.path() );
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
