@@ -557,13 +557,14 @@ ScanManager::writeBatchIncrementalInfoFile()
     QString fileName = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true )
         + "amarokcollectionscanner_batchincrementalinput.data";
     QFile incrementalFile( fileName );
-    if( incrementalFile.open( QIODevice::WriteOnly ) )
+    if( incrementalFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
         QTextStream stream( &incrementalFile );
         stream.setCodec( QTextCodec::codecForName("UTF-8") );
         stream << m_incrementalDirs.join( "\n" );
         incrementalFile.close();
     }
+    m_incrementalDirs.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
