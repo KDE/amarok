@@ -82,9 +82,11 @@ IpodCollectionFactory::init()
 void
 IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &udi )
 {
+    DEBUG_BLOCK
     IpodCollection* coll = 0;
     if( !m_collectionMap.contains( udi ) )
     {
+        debug() << "New Ipod not seen before";
         coll = new IpodCollection( mountPoint, udi );
         if( coll )
         {
