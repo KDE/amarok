@@ -127,18 +127,23 @@ CollectionTreeView::~CollectionTreeView()
 void
 CollectionTreeView::setLevels( const QList<int> &levels )
 {
-    m_treeModel->setLevels( levels );
+    if( m_treeModel )
+        m_treeModel->setLevels( levels );
 }
 
 QList< int > CollectionTreeView::levels()
 {
-    return m_treeModel->levels();
+    if( m_treeModel )
+        return m_treeModel->levels();
+    return QList<int>();
 }
 
 
 void
 CollectionTreeView::setLevel( int level, int type )
 {
+    if( !m_treeModel )
+        return;
     QList<int> levels = m_treeModel->levels();
     if ( type == CategoryId::None )
     {
@@ -163,6 +168,9 @@ CollectionTreeView::filterModel() const
 void
 CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 {
+    if( !m_treeModel )
+        return;
+
     PopupDropperAction separator( this );
     separator.setSeparator( true );
 
@@ -425,7 +433,8 @@ CollectionTreeView::slotSetFilterTimeout()
     KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
     if( lineEdit )
     {
-        m_treeModel->setCurrentFilter( lineEdit->text() );
+        if( m_treeModel )
+            m_treeModel->setCurrentFilter( lineEdit->text() );
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }
@@ -446,6 +455,8 @@ CollectionTreeView::slotExpand( const QModelIndex &index )
 void
 CollectionTreeView::slotCollapsed( const QModelIndex &index )
 {
+    if( !m_treeModel )
+        return;
     if( m_filterModel )
         m_treeModel->slotCollapsed( m_filterModel->mapToSource( index ) );
     else
@@ -455,6 +466,8 @@ CollectionTreeView::slotCollapsed( const QModelIndex &index )
 void
 CollectionTreeView::slotExpanded( const QModelIndex &index )
 {
+    if( !m_treeModel )
+        return;
     if( m_filterModel )
         m_treeModel->slotExpanded( m_filterModel->mapToSource( index ));
     else
@@ -473,6 +486,8 @@ CollectionTreeView::playChildTracks( CollectionTreeItem *item, Playlist::AddOpti
 void
 CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode )
 {
+    if( !m_treeModel )
+        return;
     //Ensure that if a parent and child are both selected we ignore the child
     QSet<CollectionTreeItem*> parents( cleanItemSet( items ) );
 
@@ -508,7 +523,9 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
-
+    if( !qm )
+        return;
+    
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
     {
@@ -542,6 +559,8 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
+    if( !qm )
+        return;
 
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
@@ -574,13 +593,16 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 {
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
+    if( !qm )
+        return;
 
     (void)new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
 void CollectionTreeView::slotFilterNow()
 {
-    m_treeModel->slotFilter();
+    if( m_treeModel )
+        m_treeModel->slotFilter();
     setFocus( Qt::OtherFocusReason );
 }
 
@@ -751,6 +773,8 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
     // This will fetch TrackList, pass TrackList to appropriate function with done signal
 
     QueryMaker *qm = createMetaQueryFromItems( m_currentItems, true );
+    if( !qm )
+        return QList<PopupDropperAction*>();
 
     qm->setQueryType( QueryMaker::Track );
 
@@ -968,6 +992,9 @@ CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )
 QueryMaker*
 CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems ) const
 {
+    if( !m_treeModel )
+        return 0;
+
     QSet<CollectionTreeItem*> parents = cleanItems ? cleanItemSet( items ) : items;
 
     QList<QueryMaker*> queryMakers;
