@@ -79,6 +79,16 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );*/
 
     PERF_LOG( "Before adding actions" );
+
+    #ifdef Q_WS_MAC
+    // Add these functions to the dock icon menu in OS X
+    extern void qt_mac_set_dock_menu(QMenu *);
+    qt_mac_set_dock_menu( contextMenu() );
+    contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
+    contextMenu()->addAction( ac->action( "play_audiocd" ) );
+    contextMenu()->addSeparator();
+    #endif
+
     contextMenu()->addAction( ac->action( "prev"       ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
@@ -93,6 +103,19 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     setupToolTip();
 
     connect( this, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), SLOT( slotActivated( QSystemTrayIcon::ActivationReason ) ) );
+    #ifdef Q_WS_MAC
+    KSystemTrayIcon::setVisible( false );
+    #endif
+}
+
+void
+Amarok::TrayIcon::setVisible( bool visible )
+{
+    #ifdef Q_WS_MAC
+    Q_UNUSED( visible )
+    #else
+    KSystemTrayIcon:.setVisible( visible );
+    #endif
 }
 
 void

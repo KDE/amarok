@@ -40,6 +40,8 @@ class TrayIcon : public KSystemTrayIcon, public EngineObserver
 public:
     TrayIcon( QWidget *widget );
     friend class ::App;
+    
+    void setVisible( bool visible );
 
 protected:
     // reimplemented from engineobserver

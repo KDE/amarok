@@ -808,8 +808,8 @@ MainWindow::createMenus()
     m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
     actionsMenu = new KMenu( m_menubar );
     // Add these functions to the dock icon menu in OS X
-    extern void qt_mac_set_dock_menu(QMenu *);
-    qt_mac_set_dock_menu(actionsMenu);
+    //extern void qt_mac_set_dock_menu(QMenu *);
+    //qt_mac_set_dock_menu(actionsMenu);
     // Change to avoid duplicate menu titles in OS X
     actionsMenu->setTitle( i18n("&Music") );
 #else
