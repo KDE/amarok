@@ -23,6 +23,8 @@
 #include "meta/Meta.h"
 #include "SmartPointerList.h"
 
+#include <QPointer>
+
 #include <KAction>
 #include <KSystemTrayIcon> //baseclass
 
@@ -72,6 +74,7 @@ private:
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
     QPixmap m_playOverlay, m_pauseOverlay;
     SmartPointerList<QAction> m_extraActions;
+    QPointer<QAction> m_separator;
 };
 
 }

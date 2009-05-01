@@ -67,6 +67,7 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTrayIcon( playerWidget )
         , EngineObserver( The::engineController() )
         , m_trackLength( 0 )
+        , m_separator( 0 )
 {
     DEBUG_BLOCK
 
@@ -436,6 +437,10 @@ Amarok::TrayIcon::setupMenu()
 {
     foreach( QAction* action, m_extraActions )
         contextMenu()->removeAction( action );
+    
+    contextMenu()->removeAction( m_separator );
+    
+    delete m_separator;
 
     if( !m_track )
         return;
@@ -462,13 +467,12 @@ Amarok::TrayIcon::setupMenu()
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
-    foreach( QAction* action, m_extraActions )
+        foreach( QAction* action, m_extraActions )
             contextMenu()->addAction( action );
 
-        contextMenu()->addSeparator();
-
+        m_separator = contextMenu()->addSeparator();
         // readd
-            contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
+        contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
     }
 }
