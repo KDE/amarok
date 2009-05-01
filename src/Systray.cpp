@@ -115,7 +115,7 @@ Amarok::TrayIcon::setVisible( bool visible )
     #ifdef Q_WS_MAC
     Q_UNUSED( visible )
     #else
-    KSystemTrayIcon:.setVisible( visible );
+    KSystemTrayIcon::setVisible( visible );
     #endif
 }
 
