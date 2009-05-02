@@ -280,11 +280,25 @@ set showtabline=2  "Makes the status bar always show, also for just one tab
 
 autocmd FileType ruby set shiftwidth=2 tabstop=2
 
-Git aware prompt
+Git and SVN aware prompt
 ----------------
 The following prompt shows the current git branch if sitting in a git repository.
 Random crap courtesy of shell colours.
 export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[01;33m\]`git branch 2>/dev/null|cut -f2 -d\* -s`\[\033[00m\]\$ '
+
+This is an even more colorful configuration for .bashrc that displays the
+current git branch if sitting in a git repository and the current SVN revision
+if sitting in an SVN checkout.
+svn_prompt() {
+	SVNBRANCH=`svn info 2>/dev/null | grep Revision: | cut -f 2 -d " "`
+	if [ -n "$SVNBRANCH" ]; then
+		BRANCH=" (r$SVNBRANCH)";
+	else
+		BRANCH="";
+	fi
+    echo "$BRANCH"
+}
+export PS1='\[\e[0;32m\]\u@\h\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\033[01;33m\]`__git_ps1`\[\e[m\]\[\e[01;35m\]`svn_prompt`\[\e[m\]\[\033[00m\]  \[\e[1;32m\]\$ \[\e[m\]\[\e[1;37m\] '
 
 Copyright
 ---------
