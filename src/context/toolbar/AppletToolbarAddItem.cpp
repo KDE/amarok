@@ -135,7 +135,10 @@ Context::AppletToolbarAddItem::sizeHint( Qt::SizeHint which, const QSizeF & cons
     //    return QSizeF( m_icon->size().width() + 2 * m_iconPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
         return QGraphicsWidget::sizeHint(which, constraint);
     else
-        return QSizeF( m_icon->size().width() + 2 * m_iconPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
+        if( which == Qt::MinimumSize )
+            return QSizeF();
+        else
+            return QSizeF( m_icon->size().width() + 2 * m_iconPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
     
 }
 

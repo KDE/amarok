@@ -92,8 +92,23 @@ void
 Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
     Q_UNUSED( event )
+    QFontMetrics fm( m_label->font() );
     if( m_configEnabled )
+    {
         m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1);
+
+        if( fm.width( m_applet->name() ) + m_deleteIcon->boundingRect().width() > boundingRect().width() )
+            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() - m_deleteIcon->boundingRect().width() ) );
+        else
+            m_label->setText( m_applet->name() );
+    } else
+    {
+        if( fm.width( m_applet->name() ) > boundingRect().width() )
+            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() ) );
+        else
+            m_label->setText( m_applet->name() );
+    }
+    
     m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
     
     emit geometryChanged();
@@ -114,8 +129,10 @@ Context::AppletToolbarAppletItem::itemChange( GraphicsItemChange change, const Q
 QSizeF 
 Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
+    Q_UNUSED( constraint )
     if( which == Qt::MinimumSize )
-        return QSizeF( m_label->boundingRect().width() + 2 * m_labelPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
+    //    return QSizeF( m_label->boundingRect().width() + 2 * m_labelPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
+        return QSizeF();
     else
        // return QGraphicsWidget::sizeHint( which, constraint );
         return QSizeF( 10000, 10000 );
