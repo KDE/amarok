@@ -646,7 +646,6 @@ kde4_add_executable(amarok_afttagger ${amarok_afttagger_SRCS} )
 
 target_link_libraries(amarok_afttagger
     ${KDE4_KDECORE_LIBS}
-    ${QT_QTCORE_LIBS}
     ${TAGLIB_LIBRARIES}
 )
 
