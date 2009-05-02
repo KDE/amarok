@@ -310,7 +310,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
     Meta::PodcastEpisodeList episodes = this->podcastEpisodes();
     if( !tracks.isEmpty() )
     {
-        if( mimeType == "text/uri-list" && type == QVariant::List )
+        if( mimeType == "text/uri-list" && (type == QVariant::List || type == QVariant::ByteArray) )
         {
             QList<QVariant> list;
             foreach( Meta::TrackPtr track, tracks )
@@ -331,7 +331,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             }
             return QVariant( list );
         }
-        if( mimeType == "text/plain" && type == QVariant::String )
+        if( mimeType == "text/plain" && (type == QVariant::String || type == QVariant::ByteArray) )
         {
             QString result;
             foreach( Meta::TrackPtr track, tracks )
