@@ -80,7 +80,16 @@ CurrentEngine::sourceRequestEvent( const QString& name )
     setData( name, QVariant() );
     m_requested[ name ] = true;
     if( The::engineController()->currentTrack() )
+    {
+        if( m_qm )
+            m_qm->abortQuery();
+        if( m_qmTracks )
+            m_qmTracks->abortQuery();
+        if( m_qmFavTracks )
+            m_qmFavTracks->abortQuery();
         update();
+
+    }
     else
         m_timer->start();
 
@@ -94,8 +103,9 @@ CurrentEngine::message( const ContextState& state )
     
     if( state == Current )
     {
-        update();
         m_timer->stop();
+        
+        update();
     }
     else if( state == Home )
     {
