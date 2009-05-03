@@ -339,6 +339,11 @@ MainWindow::createContextView( Plasma::Containment *containment )
     m_contextToolbarView->setFrameShape( QFrame::NoFrame );
     m_contextView->showHome();
     PERF_LOG( "ContexView created" )
+
+
+    KConfigGroup config = Amarok::config();
+    bool show = config.readEntry( "Show Context View", true );
+    showContextView( show );
 }
 
 void
@@ -1003,9 +1008,27 @@ PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()
     return qobject_cast<PlaylistBrowserNS::PlaylistBrowser *>( m_browsers->at( 2 ) );
 }
 
+void MainWindow::toggleContectView()
+{
+    if( m_contextWidget->isVisible() )
+        showContextView( false );
+    else
+        showContextView( true );
+}
+
+void MainWindow::showContextView( bool visible )
+{
+    DEBUG_BLOCK
+    if ( visible )
+        m_contextWidget->show();
+    else 
+        m_contextWidget->hide();
+}
+
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
+
 
 #include "MainWindow.moc"
 

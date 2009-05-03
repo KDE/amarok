@@ -180,6 +180,10 @@
         <label>Show Album art in the Collection Browser</label>
         <default>true</default>
     </entry>
+    <entry key="Show Context View" type="Bool">
+        <label>Show the Context View</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Playback">
