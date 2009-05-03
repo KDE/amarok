@@ -116,7 +116,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         PopupDropper* m_pd;
         PopupDropperAction* m_appendAction;
         PopupDropperAction* m_loadAction;
-        PopupDropperAction* m_queueAction;
         PopupDropperAction* m_editAction;
         PopupDropperAction* m_organizeAction;
 
