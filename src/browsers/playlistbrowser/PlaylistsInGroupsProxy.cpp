@@ -72,13 +72,13 @@ PlaylistsInGroupsProxy::buildTree()
     m_parentCreateList.clear();
 
     int max = m_model->rowCount();
-    //debug() << QString("building tree with %1 leafs.").arg( max );
+    debug() << QString("building tree with %1 leafs.").arg( max );
     for ( int row = 0; row < max; row++ )
     {
         QModelIndex idx = m_model->index( row, 0, QModelIndex() );
         //Playlists can be in multiple groups but we only use the first TODO: multigroup
         QString groupName = idx.data( PlaylistBrowserNS::UserModel::GroupRole ).toStringList().first();
-        //debug() << QString("index %1 belongs to groupName %2").arg( row ).arg( groupName );
+        debug() << QString("index %1 belongs to groupName %2").arg( row ).arg( groupName );
 
         int groupIndex = m_groupNames.indexOf( groupName ); //groups are added to the end of the existing list
         if( groupIndex == -1 && !groupName.isEmpty() )
@@ -89,10 +89,10 @@ PlaylistsInGroupsProxy::buildTree()
 
         m_groupHash.insertMulti( groupIndex, row );
     }
-    //debug() << "m_groupHash: ";
+    debug() << "m_groupHash: ";
     for( int groupIndex = 0; groupIndex < m_groupNames.count(); groupIndex++ )
-        //debug() << m_groupNames[groupIndex] << ": " << m_groupHash.values( groupIndex );
-    //debug() << m_groupHash.values( -1 );
+        debug() << m_groupNames[groupIndex] << ": " << m_groupHash.values( groupIndex );
+    debug() << m_groupHash.values( -1 );
 
     emit layoutChanged();
 }
@@ -193,7 +193,6 @@ PlaylistsInGroupsProxy::columnCount( const QModelIndex& index ) const
 bool
 PlaylistsInGroupsProxy::isGroup( const QModelIndex &index ) const
 {
-    DEBUG_BLOCK
     int parentCreateIndex = index.internalId();
     if( parentCreateIndex == -1 && index.row() < m_groupNames.count() )
         return true;
@@ -203,7 +202,7 @@ PlaylistsInGroupsProxy::isGroup( const QModelIndex &index ) const
 QModelIndex
 PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     //debug() << "index: " << index;
     if( !index.isValid() )
         return QModelIndex();
@@ -244,7 +243,7 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndexList& list ) const
 QModelIndex
 PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( !index.isValid() )
         return QModelIndex();
 
@@ -269,7 +268,6 @@ PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
 Qt::ItemFlags
 PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 {
-    DEBUG_BLOCK
     if( index.isValid() )
         return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
@@ -310,6 +308,7 @@ PlaylistsInGroupsProxy::slotRenameGroup()
 {
     DEBUG_BLOCK
     //get the name for this new group
+    //TODO: do inline rename
     const QString newName = KInputDialog::getText( i18n("New name"),
                 i18nc("Enter a new name for a group that already exists", "Enter new group name:") );
 
@@ -379,7 +378,7 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
     if( playlistSelected )
     {
         QModelIndexList originalList = mapToSource( list );
-        //debug() << originalList.count() << "original indices";
+        debug() << originalList.count() << "original indices";
         if( !originalList.isEmpty() )
         {
             actions << m_model->actionsFor( originalList );
@@ -407,7 +406,6 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 void
 PlaylistsInGroupsProxy::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
 {
-    DEBUG_BLOCK
     QModelIndexList originalList = mapToSource( list );
 
     m_model->loadItems( originalList, insertMode );
