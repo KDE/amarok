@@ -45,6 +45,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         QModelIndex mapToSource( const QModelIndex& ) const;
         QModelIndex mapFromSource( const QModelIndex& ) const;
         QVariant data( const QModelIndex &index, int role ) const;
+        virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
         QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
 
@@ -55,11 +56,13 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         void rowsRemoved( const QModelIndex&, int, int );
         void layoutAboutToBeChanged();
         void layoutChanged();
+        void renameIndex( QModelIndex idx );
 
     private slots:
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
         void modelRowsInserted( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
+        void slotRename( QModelIndex idx );
         void buildTree();
 
         void slotDeleteGroup();

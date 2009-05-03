@@ -43,7 +43,8 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistM
         SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
         this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
-    connect( m_model, SIGNAL(layoutChanged()), SLOT(buildTree()) );
+    connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
+    connect( m_model, SIGNAL( layoutChanged() ), SLOT( buildTree() ) );
 
     buildTree();
 }
@@ -184,6 +185,17 @@ PlaylistsInGroupsProxy::data( const QModelIndex &index, int role ) const
     return mapToSource( index ).data( role );
 }
 
+bool
+PlaylistsInGroupsProxy::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+    DEBUG_BLOCK
+    if( isGroup( index ) )
+        return false;
+
+    QModelIndex originalIdx = mapToSource( index );
+    return m_model->setData( originalIdx, value, role );
+}
+
 int
 PlaylistsInGroupsProxy::columnCount( const QModelIndex& index ) const
 {
@@ -243,35 +255,32 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndexList& list ) const
 QModelIndex
 PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
 {
-    //DEBUG_BLOCK
     if( !index.isValid() )
         return QModelIndex();
 
     //TODO: this needs to be extended to work for tree models as well
     int sourceRow = index.row();
-    //debug() << "source row = " << sourceRow;
     int parentRow = m_groupHash.key( sourceRow, -1 );
-    //debug() << "parentRow = " << parentRow;
 
     QModelIndex parent = QModelIndex();
-    int proxyRow = sourceRow - m_groupHash.count() - m_groupNames.count();
+    int proxyRow = m_groupNames.count() + m_groupHash.values( -1 ).indexOf( sourceRow );
     if( parentRow != -1 )
     {
         parent = this->index( parentRow, 0, QModelIndex() );
         proxyRow = m_groupHash.values( parentRow ).indexOf( sourceRow );
     }
 
-    //debug() << "proxyRow = " << proxyRow;
     return this->index( proxyRow, 0, parent );
 }
 
 Qt::ItemFlags
 PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 {
-    if( index.isValid() )
+    if( isGroup( index ) )
         return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-    return 0;
+    QModelIndex originalIdx = mapToSource( index );
+    return m_model->flags( originalIdx );
 }
 
 void
@@ -295,6 +304,13 @@ PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex& index, int start, i
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
+}
+
+void
+PlaylistsInGroupsProxy::slotRename( QModelIndex sourceIdx )
+{
+    QModelIndex proxyIdx = mapFromSource( sourceIdx );
+    emit renameIndex( proxyIdx );
 }
 
 void

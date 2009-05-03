@@ -49,10 +49,10 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
 
-//    m_groupedProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
+    m_groupedProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
 
-//    m_playlistView = new UserPlaylistTreeView( m_groupedProxy, this );
-    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
+    m_playlistView = new UserPlaylistTreeView( m_groupedProxy, this );
+//    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins(0,0,0,0);
     m_playlistView->header()->hide();
