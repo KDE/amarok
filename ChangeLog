@@ -12,6 +12,7 @@ VERSION 2.1-beta2
     * New Script method to get current track time in milliseconds. (BR 177073)
 
   CHANGES:
+    * When clearing the playlist, also reset the search/filter text.
     * Podcast titles are stripped of unnecessary whitespace. (BR 177403)
 
   BUGFIXES:

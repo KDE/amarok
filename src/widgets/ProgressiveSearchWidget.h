@@ -103,6 +103,11 @@ public slots:
      */
     void noMatch();
 
+    /**
+     * Clear the filter..
+     */
+    void slotFilterClear();
+
 protected slots:
     /**
      * Notify widget that the text in the search edit has changed.

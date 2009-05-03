@@ -134,6 +134,9 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
     toolbar->setFixedHeight( m_searchEdit->sizeHint().height() );
+
+    //make sure that this edit is cleared when the playlist is cleared:
+    connect( Amarok::actionCollection()->action( "playlist_clear" ), SIGNAL( triggered() ), this, SLOT( slotFilterClear() ) );
 }
 
 
@@ -354,6 +357,11 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
         event->ignore();
         KHBox::keyPressEvent( event );
     }
+}
+
+void ProgressiveSearchWidget::slotFilterClear()
+{
+    m_searchEdit->setText( QString() );
 }
 
 #include "ProgressiveSearchWidget.moc"
