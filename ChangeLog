@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.1-beta2
   FEATURES:
+    * Add config option to amarokrc for completely hiding the context view. In
+      the "General" group, setting "Show Context View=false" will cause the 
+      Context View to not be shown at all. Due to string freeze this is not 
+      exposed to the GUI yet.
     * New Script method to get current track time in milliseconds. (BR 177073)
 
   CHANGES:
