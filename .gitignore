@@ -1,4 +1,6 @@
 .kdev4
 amarok.kdev4
 CMakeLists.txt.user
-*.*~
+*~
+*.patch
+Doxyfile
