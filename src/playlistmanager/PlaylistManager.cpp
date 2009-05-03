@@ -241,17 +241,21 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
 {
     Q_UNUSED( name )
     Q_UNUSED( fromLocation )
-    SqlUserPlaylistProvider *sqlProvider = dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
-    bool saveSuccessful = sqlProvider ? sqlProvider->save( tracks, name ) : false;
+    SqlUserPlaylistProvider *sqlProvider =
+            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
+    if( !sqlProvider )
+        return false;
 
-    if ( editNow )
-    {
-        The::mainWindow()->showBrowser( "PlaylistBrowser" );
-        emit( showCategory( UserPlaylist - 1 ) );
-//         PlaylistBrowserNS::UserModel::instance()->editPlaylist( newId );
-    }
+    Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
+    if( name.isEmpty() || editNow )
+        playlist = sqlProvider->save( tracks );
+    else
+        playlist = sqlProvider->save( tracks, name );
 
-    return saveSuccessful;
+    emit( showCategory( UserPlaylist ) );
+    emit( renamePlaylist( playlist ) );
+
+    return !playlist.isNull();
 }
 
 bool

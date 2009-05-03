@@ -46,11 +46,11 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         /**
             Save a list of tracks as a playlist in the database.
-            @returns true if successful
+            @returns a non-null Meta::PlaylistPtr if successful
         **/
-        virtual bool save( const Meta::TrackList &tracks ) = 0;
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks ) = 0;
         
-        virtual bool save( const Meta::TrackList &tracks, const QString& name ) = 0;
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) = 0;
 
         virtual bool supportsEmptyGroups() { return false; }
 

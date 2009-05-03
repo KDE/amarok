@@ -76,6 +76,8 @@ PlaylistBrowserNS::UserModel::UserModel()
     loadPlaylists();
 
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()) );
+    connect( The::playlistManager(), SIGNAL(renamePlaylist( Meta::PlaylistPtr )),
+             SLOT(slotRenamePlaylist( Meta::PlaylistPtr )) );
 }
 
 PlaylistBrowserNS::UserModel::~UserModel()
@@ -92,13 +94,33 @@ PlaylistBrowserNS::UserModel::slotUpdate()
 }
 
 void
+PlaylistBrowserNS::UserModel::slotRenamePlaylist( Meta::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+    //search index of this Playlist
+    int row = -1;
+    foreach( const Meta::PlaylistPtr p, m_playlists )
+    {
+        row++;
+        if( p->name() == playlist->name() )
+            break;
+    }
+    if( row == -1 )
+        return;
+
+    QModelIndex index = this->index( row, 0, QModelIndex() );
+    debug() << index;
+    emit( renameIndex( index ) );
+}
+
+void
 PlaylistBrowserNS::UserModel::loadPlaylists()
 {
     QList<Meta::PlaylistPtr> playlists =
     The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
     QListIterator<Meta::PlaylistPtr> i(playlists);
     m_playlists.clear();
-    while (i.hasNext())
+    while( i.hasNext() )
     {
         Meta::PlaylistPtr playlist = Meta::PlaylistPtr::staticCast( i.next() );
         m_playlists << playlist;

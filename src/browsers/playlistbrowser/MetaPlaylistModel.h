@@ -44,6 +44,9 @@ class MetaPlaylistModel : public QAbstractItemModel
 
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode ) = 0;
 
+    signals:
+        void rename( QModelIndex idx );
+
 };
 
 }

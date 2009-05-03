@@ -57,6 +57,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel
     QPalette p = The::paletteHandler()->palette();
     QColor c = p.color( QPalette::Base );
     setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
+
+    connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
 }
 
 
@@ -139,19 +141,22 @@ void
 PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
     Q_UNUSED( event )
-    AMAROK_NOTIMPLEMENTED
 
-//     switch( event->key() )
-//     {
+     switch( event->key() )
+     {
 //         case Qt::Key_Delete:
 //             slotDelete();
 //             return;
-//
-//         case Qt::Key_F2:
-//             slotRename();
-//             return;
-//     }
-//     QTreeView::keyPressEvent( event );
+
+         case Qt::Key_F2:
+            //can only rename if one is selected
+            if( selectedIndexes().count() != 1 )
+                return;
+            event->accept();
+            edit( selectedIndexes().first() );
+            return;
+     }
+     QTreeView::keyPressEvent( event );
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEvent * event )

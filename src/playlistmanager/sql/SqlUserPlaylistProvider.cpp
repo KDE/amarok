@@ -124,33 +124,25 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
     return actions;
 }
 
-bool
+Meta::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    debug() << "saving " << tracks.count() << " tracks to db";
-    //TODO: inline rename
-    const QString name = KInputDialog::getText( i18n("Save playlist"),
-                i18n("Enter name for the new playlist:"), "new playlist" );
-    Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name.trimmed(), tracks,
-            Meta::SqlPlaylistGroupPtr() ) );
-    reloadFromDb();
-    emit updated();
-
-    return true; //assume insertion in db was successful
+    return save( tracks,
+          QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
 }
 
-bool
+Meta::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& name )
 {
     DEBUG_BLOCK
     debug() << "saving " << tracks.count() << " tracks to db with name" << name;
-    Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks,
+    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks,
             Meta::SqlPlaylistGroupPtr() ) );
     reloadFromDb();
     emit updated();
 
-    return true; //assume insertion in db was successful
+    return Meta::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
 }
 
 void

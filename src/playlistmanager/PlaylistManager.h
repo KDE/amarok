@@ -146,6 +146,8 @@ class PlaylistManager : public QObject
         void categoryAdded( int category );
         void showCategory( int category );
 
+        void renamePlaylist( Meta::PlaylistPtr playlist );
+
     private slots:
         void slotUpdated( /*PlaylistProvider * provider*/ );
         void downloadComplete( KJob *job );

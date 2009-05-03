@@ -141,7 +141,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
 
         // methods to save playlist to file
         bool exportPlaylist( const QString &path ) const;
-        bool savePlaylist( const QString &name ) const;
         void setPlaylistName( const QString &name, bool proposeOverwriting = false );
         void proposePlaylistName( const QString &name, bool proposeOverwriting = false );
         const QString& playlistName() const { return m_playlistName; }
@@ -206,6 +205,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
          * @return The current search fields.
          */
         int currentSearchFields() { return m_currentSearchFields; }
+
+    public slots:
+        bool savePlaylist() const;
 
     signals:
         void insertedIds( const QList<quint64>& );

@@ -65,10 +65,10 @@
 #include <KApplication>     //kapp
 #include <KFileDialog>      //savePlaylist(), openPlaylist()
 #include <KInputDialog>     //slotAddStream()
+#include <KMessageBox>
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
-#include <KMessageBox>      //savePlaylist()
 #include <KPixmapCache>
 #include <KStandardAction>
 #include <KWindowSystem>
@@ -487,14 +487,8 @@ MainWindow::exportPlaylist() const //SLOT
 void
 MainWindow::savePlaylist() const
 {
-    DEBUG_BLOCK
-    //TODO: inline rename
-    const QString name = KInputDialog::getText( i18n("Save playlist"),
-            i18n("Enter name for the new playlist:"), i18n("Playlist") );
-    The::playlistModel()->savePlaylist( name.trimmed() );
+    The::playlistModel()->savePlaylist();
 }
-
-
 
 void
 MainWindow::slotShowCoverManager() const //SLOT

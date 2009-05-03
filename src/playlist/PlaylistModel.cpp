@@ -658,9 +658,10 @@ Playlist::Model::exportPlaylist( const QString &path ) const
 }
 
 bool
-Playlist::Model::savePlaylist( const QString & name ) const
+Playlist::Model::savePlaylist() const //SLOT
 {
     DEBUG_BLOCK
+    QString name = QString();
 
     Meta::TrackList tl;
     foreach( Item* item, m_items )

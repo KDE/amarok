@@ -86,9 +86,10 @@ class UserModel : public MetaPlaylistModel
 
         void createNewGroup();
         void slotUpdate();
+        void slotRenamePlaylist( Meta::PlaylistPtr playlist );
 
     signals:
-        void editIndex( const QModelIndex & index );
+        void renameIndex( const QModelIndex & index );
 
     private:
         UserModel();
