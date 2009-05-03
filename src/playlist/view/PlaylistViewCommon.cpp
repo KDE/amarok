@@ -59,26 +59,6 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
     separator->setSeparator( true );
     
     const bool isCurrentTrack = index->data( Playlist::ActiveTrackRole ).toBool();
-    
-    if( isCurrentTrack )
-    {
-        const bool isPaused = The::engineController()->isPaused();
-        const KIcon   icon = isPaused ? KIcon( "media-playback-start-amarok" ) : KIcon( "media-playback-pause-amarok" );
-        const QString text = isPaused ? i18n( "&Play" ) : i18n( "&Pause");
-
-        PopupDropperAction *playPauseAction = new PopupDropperAction( icon, text, parent );
-        QObject::connect( playPauseAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
-
-        actions << playPauseAction;
-    }
-    else
-    {
-        PopupDropperAction *playAction = new PopupDropperAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), parent );
-        playAction->setData( index->row() );
-        QObject::connect( playAction, SIGNAL( triggered() ), parent, SLOT( playTrack() ) );
-
-        actions << playAction;
-    }
 
     PopupDropperAction *stopAction = new PopupDropperAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
     QObject::connect( stopAction, SIGNAL( triggered() ), parent, SLOT( stopAfterTrack() ) );
