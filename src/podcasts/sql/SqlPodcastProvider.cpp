@@ -357,7 +357,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
         );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
     }
-    bool hasDownloaded;
+    bool hasDownloaded = false;
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode
