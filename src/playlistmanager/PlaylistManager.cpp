@@ -18,6 +18,7 @@
 
 #include "PlaylistManager.h"
 
+#include "amarokurls/AmarokUrl.h"
 #include "amarokconfig.h"
 #include "App.h"
 #include "statusbar/StatusBar.h"
@@ -252,7 +253,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
     else
         playlist = sqlProvider->save( tracks, name );
 
-    emit( showCategory( UserPlaylist ) );
+    AmarokUrl("amarok://navigate/playlists/My Playlists").run();
     emit( renamePlaylist( playlist ) );
 
     return !playlist.isNull();
