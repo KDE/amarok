@@ -627,14 +627,6 @@ PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndex
         }
 
         actions.append( m_loadAction );
-
-        if( m_queueAction == 0 )
-        {
-            m_queueAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "queue", KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), this );
-            connect( m_queueAction, SIGNAL( triggered() ), this, SLOT( slotQueueChildTracks() ) );
-        }
-
-        actions.append( m_queueAction );
     }
 
     return actions;
