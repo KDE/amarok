@@ -46,7 +46,7 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     policy.setHeightForWidth( true );
     setSizePolicy( policy );
     setAutoFillBackground( true );
-    
+
     setFrameStyle(QFrame::NoFrame);
     //setAutoFillBackground(true);
     //setDragMode(QGraphicsView::RubberBandDrag);
@@ -61,10 +61,10 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     m_toolbar->setZValue( m_toolbar->zValue() + 1000 );
     // scene()->addItem( m_toolbar );
     m_toolbar->setPos( TOOLBAR_X_OFFSET, 0 );
-  
+
    connect( m_toolbar, SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
    connect( m_toolbar, SIGNAL( installApplets() ), this, SLOT( installApplets() ) );
-   
+
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
    {
@@ -75,12 +75,12 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
        connect( m_toolbar, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
        connect( m_toolbar, SIGNAL( addAppletToContainment( const QString&, int ) ), cont, SLOT( addApplet( const QString&, int ) ) );
    }
-    
+
 }
 
 Context::ToolbarView::~ToolbarView()
 {
-    
+
 }
 
 QSize
@@ -89,15 +89,15 @@ Context::ToolbarView::sizeHint() const
     return QSize( size().width(), m_height );
 }
 
-int 
+int
 Context::ToolbarView::heightForWidth( int w ) const
 {
     Q_UNUSED( w )
     return m_height;
-} 
+}
 
 
-void  
+void
 Context::ToolbarView::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
@@ -105,19 +105,19 @@ Context::ToolbarView::resizeEvent( QResizeEvent *event )
     m_toolbar->setGeometry( sceneRect() );
 }
 
-void 
+void
 Context::ToolbarView::dragEnterEvent( QDragEnterEvent *event )
 {
     Q_UNUSED( event )
 }
 
-void 
+void
 Context::ToolbarView::dragMoveEvent( QDragMoveEvent *event )
 {
     Q_UNUSED( event )
 }
 
-void 
+void
 Context::ToolbarView::dragLeaveEvent( QDragLeaveEvent *event )
 {
     Q_UNUSED( event )
@@ -136,15 +136,15 @@ Context::ToolbarView::toggleConfigMode()
         QPalette p( palette() );
         p.setBrush( QPalette::Window, overlayBrush );
       /* for( int i = 0; i < m_toolbar->appletLayout()->count(); i++ )
-        {    
+        {
             debug() << "item" << i << "has geometry:" << m_toolbar->appletLayout()->itemAt( i )->geometry();
             Context::AppletToolbarAddItem* item = dynamic_cast< Context::AppletToolbarAddItem* >( m_toolbar->appletLayout()->itemAt( i ) );
             if( item )
                 debug() << "add item has boundingRect:" << item->boundingRect() << "and geom:" << item->geometry() << "and sizehint" << item->effectiveSizeHint( Qt::PreferredSize );
         } */
-            
+
         for( int i = 0; i < m_toolbar->appletLayout()->count(); i++ )
-        {        
+        {
             debug() << "creating a move overlay";
             Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar->appletLayout()->itemAt( i ) );
             if( item )
@@ -159,7 +159,7 @@ Context::ToolbarView::toggleConfigMode()
                 m_moveOverlays << moveOverlay;
                 debug() << moveOverlay << moveOverlay->geometry();
             }
-           
+
         }
     } else
     {
@@ -168,7 +168,7 @@ Context::ToolbarView::toggleConfigMode()
             moveOverlay->deleteLater();
         m_moveOverlays.clear();
     }
-        
+
 }
 
 void
@@ -187,19 +187,19 @@ Context::ToolbarView::appletRemoved( Plasma::Applet* applet )
     applet->deleteLater();
 }
 
-void 
+void
 Context::ToolbarView::appletAdded( Plasma::Applet* applet, int loc )
 {
     DEBUG_BLOCK
     Q_UNUSED( applet )
     Q_UNUSED( loc )
-    
+
     if( m_toolbar->configEnabled() )
         recreateOverlays();
 }
 
 
-void 
+void
 Context::ToolbarView::refreshOverlays()
 {
     m_toolbar->refreshAddIcons();
@@ -211,15 +211,15 @@ Context::ToolbarView::recreateOverlays()
     DEBUG_BLOCK
     foreach( Context::AppletItemOverlay *moveOverlay, m_moveOverlays )
         moveOverlay->deleteLater();
-        
+
     m_moveOverlays.clear();
-    
+
     QColor overlayColor( Plasma::Theme::defaultTheme()->color( Plasma::Theme::BackgroundColor ) );
     QBrush overlayBrush( overlayColor );
     QPalette p( palette() );
     p.setBrush( QPalette::Window, overlayBrush );
     for( int i = 0; i < m_toolbar->appletLayout()->count(); i++ )
-    {        
+    {
         debug() << "creating a move overlay";
         Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar->appletLayout()->itemAt( i ) );
         if( item )
@@ -234,7 +234,7 @@ Context::ToolbarView::recreateOverlays()
             m_moveOverlays << moveOverlay;
             debug() << moveOverlay << moveOverlay->geometry();
         }
-       
+
     }
 }
 
@@ -244,15 +244,22 @@ Context::ToolbarView::installApplets()
     DEBUG_BLOCK
     // TODO this hsould open the GHNS dialog, for now just allow user to specify package
     QString appletFile = KFileDialog::getOpenFileName( KUrl(), "*.amarokapplet.zip", this, "Please select Amarok Applet to install" );
-    
+
     debug() << "installing amarok applet file:" << appletFile;
     QString packageRoot = "plasma/plasmoids/";
     packageRoot = KStandardDirs::locateLocal("data", packageRoot);
-    
+
     Plasma::PackageStructure* installer = new Plasma::PackageStructure();
     installer->setServicePrefix( "amarok-context-applet-" );
-    installer->installPackage( appletFile, packageRoot );
-    
+    // always uninstall before installing, as it doesn't auto overwrite.
+    installer->setPath( appletFile );
+    Plasma::PackageMetadata metadata = installer->metadata();
+    installer->uninstallPackage( metadata.pluginName(), packageRoot );
+    if( !installer->installPackage( appletFile, packageRoot ) )
+    {
+        debug() << "ERROR in trying to install the package.";
+    }
+
     QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
     dbus.call(QDBus::Block, "recreate");
 }
