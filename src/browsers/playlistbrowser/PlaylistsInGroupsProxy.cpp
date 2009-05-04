@@ -32,7 +32,6 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistM
     , m_model( model )
     , m_renameAction( 0 )
     , m_deleteAction( 0 )
-    , m_addToGroupAction( 0 )
 {
     // signal proxies
     connect( m_model,
@@ -449,18 +448,7 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
         QModelIndexList originalList = mapToSource( list );
         debug() << originalList.count() << "original indices";
         if( !originalList.isEmpty() )
-        {
             actions << m_model->actionsFor( originalList );
-            if( m_addToGroupAction == 0 )
-            {
-                 m_addToGroupAction = new PopupDropperAction(
-                         The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                         "add_to_group", KIcon( "folder" ), i18n( "&Add to group" ), this
-                );
-                connect( m_addToGroupAction, SIGNAL( triggered() ), this, SLOT( slotAddToGroup() ) );
-            }
-            actions << m_addToGroupAction;
-        }
     }
     else if( groupSelected )
     {

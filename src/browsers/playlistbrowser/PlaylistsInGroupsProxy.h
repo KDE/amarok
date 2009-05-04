@@ -82,7 +82,6 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         MetaPlaylistModel *m_model;
         PopupDropperAction *m_renameAction;
         PopupDropperAction *m_deleteAction;
-        PopupDropperAction *m_addToGroupAction;
 
         QMultiHash<quint32, int> m_groupHash;
         QStringList m_groupNames;
