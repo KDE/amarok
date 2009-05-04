@@ -46,6 +46,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         QModelIndex mapFromSource( const QModelIndex& ) const;
         QVariant data( const QModelIndex &index, int role ) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+        virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
         QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
 
@@ -78,6 +79,8 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         bool isAGroupSelected( const QModelIndexList& list ) const;
         bool isAPlaylistSelected( const QModelIndexList& list ) const;
         bool changeGroupName( const QString &from, const QString &to );
+
+        void deleteGroup( const QModelIndex &groupIdx );
 
         MetaPlaylistModel *m_model;
         PopupDropperAction *m_renameAction;

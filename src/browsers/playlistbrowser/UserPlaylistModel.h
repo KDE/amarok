@@ -63,6 +63,7 @@ class UserModel : public MetaPlaylistModel
         virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+        virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
         virtual Qt::DropActions supportedDropActions() const{
             return Qt::MoveAction;

@@ -286,6 +286,14 @@ PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant 
     return true;
 }
 
+bool
+PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+    DEBUG_BLOCK
+    debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
+    return false;
+}
+
 QStringList
 PlaylistBrowserNS::UserModel::mimeTypes() const
 {

@@ -142,19 +142,24 @@ PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
     Q_UNUSED( event )
 
-     switch( event->key() )
-     {
-//         case Qt::Key_Delete:
-//             slotDelete();
-//             return;
+    switch( event->key() )
+    {
+        case Qt::Key_Delete:
+        {
+            QModelIndex selectedIdx = selectedIndexes().first();
+            m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
+            return;
+        }
 
-         case Qt::Key_F2:
+        case Qt::Key_F2:
+        {
             //can only rename if one is selected
             if( selectedIndexes().count() != 1 )
                 return;
             event->accept();
             edit( selectedIndexes().first() );
             return;
+        }
      }
      QTreeView::keyPressEvent( event );
 }

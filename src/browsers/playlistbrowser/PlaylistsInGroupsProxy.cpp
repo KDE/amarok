@@ -201,6 +201,21 @@ PlaylistsInGroupsProxy::setData( const QModelIndex &index, const QVariant &value
     return m_model->setData( originalIdx, value, role );
 }
 
+bool
+PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &parent )
+{
+    DEBUG_BLOCK
+    debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
+    QModelIndex idx = index( row, 0, parent );
+    if( isGroup( idx ) )
+    {
+        deleteGroup( idx );
+        return true;
+    }
+    QModelIndex originalIdx = mapToSource( idx );
+    return m_model->removeRow( originalIdx.row(), originalIdx.parent() );
+}
+
 int
 PlaylistsInGroupsProxy::columnCount( const QModelIndex& index ) const
 {
@@ -322,6 +337,11 @@ void
 PlaylistsInGroupsProxy::slotDeleteGroup()
 {
     DEBUG_BLOCK
+    if( m_selectedGroups.count() == 0 )
+        return;
+
+    QModelIndex groupIdx = m_selectedGroups.first();
+    deleteGroup( groupIdx );
 }
 
 void
@@ -422,6 +442,23 @@ PlaylistsInGroupsProxy::changeGroupName( const QString &from, const QString &to 
     m_groupNames[groupRow] = to;
     buildTree();
     return 0;
+}
+
+void
+PlaylistsInGroupsProxy::deleteGroup( const QModelIndex &groupIdx )
+{
+    DEBUG_BLOCK
+    //TODO: ask the user for configmation to delete children
+    for( int i = 0; i < m_groupHash.values( groupIdx.row() ).count(); i++ )
+    {
+        QModelIndex proxyIdx = index( i, 0, groupIdx );
+        if( !proxyIdx.isValid() )
+            continue;
+        QModelIndex sourceIdx = mapToSource( proxyIdx );
+        m_model->removeRow( sourceIdx.row(), sourceIdx.parent() );
+    }
+    m_groupNames.removeAt( groupIdx.row() );
+    buildTree();
 }
 
 QList<PopupDropperAction *>
