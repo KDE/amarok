@@ -84,7 +84,6 @@ class UserModel : public MetaPlaylistModel
         void slotLoad();
         void slotAppend();
 
-        void createNewGroup();
         void slotUpdate();
         void slotRenamePlaylist( Meta::PlaylistPtr playlist );
 

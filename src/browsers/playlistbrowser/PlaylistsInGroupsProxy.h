@@ -51,6 +51,8 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
+        QModelIndex createNewGroup( const QString &groupName );
+
     signals:
         void rowsInserted( const QModelIndex&, int, int );
         void rowsRemoved( const QModelIndex&, int, int );

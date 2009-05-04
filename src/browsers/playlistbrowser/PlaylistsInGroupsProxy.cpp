@@ -68,10 +68,15 @@ PlaylistsInGroupsProxy::buildTree()
         return;
 
     emit layoutAboutToBeChanged();
+    QStringList emptyGroups;
+    for( int i = 0; i < m_groupNames.count(); i++ )
+        if( m_groupHash.values( i ).count() == 0 )
+            emptyGroups << m_groupNames[i];
 
     m_groupHash.clear();
     m_groupNames.clear();
     m_parentCreateList.clear();
+    m_groupNames = emptyGroups;
 
     int max = m_model->rowCount();
     debug() << QString("building tree with %1 leafs.").arg( max );
@@ -402,11 +407,12 @@ bool
 PlaylistsInGroupsProxy::changeGroupName( const QString &from, const QString &to )
 {
     DEBUG_BLOCK
-    debug() << "to: " << to << " from:" << from;
-    if( m_groupNames.contains( from ) )
+    debug() << " from:" << from << "to: " << to;
+    if( !m_groupNames.contains( from ) )
         return false;
 
     int groupRow = m_groupNames.indexOf( from );
+    debug() << "row to change: " << groupRow;
     QModelIndex groupIdx = this->index( groupRow, 0, QModelIndex() );
     foreach( int childRow, m_groupHash.values( groupRow ) )
     {
@@ -414,6 +420,7 @@ PlaylistsInGroupsProxy::changeGroupName( const QString &from, const QString &to 
         QModelIndex originalIdx = mapToSource( childIndex );
         m_model->setData( originalIdx, to, PlaylistBrowserNS::UserModel::GroupRole );
     }
+    m_groupNames[groupRow] = to;
     buildTree();
     return 0;
 }
@@ -480,6 +487,14 @@ PlaylistsInGroupsProxy::loadItems( QModelIndexList list, Playlist::AddOptions in
     QModelIndexList originalList = mapToSource( list );
 
     m_model->loadItems( originalList, insertMode );
+}
+
+QModelIndex
+PlaylistsInGroupsProxy::createNewGroup( const QString &groupName )
+{
+    m_groupNames << groupName;
+    emit layoutChanged();
+    return index( m_groupNames.count() - 1, 0, QModelIndex() );
 }
 
 #include "PlaylistsInGroupsProxy.moc"

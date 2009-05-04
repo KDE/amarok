@@ -261,15 +261,25 @@ bool
 PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
     DEBUG_BLOCK
-    if (role != Qt::EditRole)
-        return false;
-    if ( index.column() != 0 )
-        return false;
-
-//    debug() << "setting name of item " << index.internalId() << " to " << value.toString();
-    Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
-
-    item->setName( value.toString() );
+    switch( role )
+    {
+        case Qt::EditRole:
+        {
+            debug() << "setting name of item " << index.internalId() << " to " << value.toString();
+            Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
+            item->setName( value.toString() );
+            break;
+        }
+        case GroupRole:
+        {
+            debug() << "changing group of item " << index.internalId() << " to " << value.toString();
+            Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
+            item->setGroups( QStringList( value.toString() ) );
+            break;
+        }
+        default:
+            return false;
+    }
 
     //call update reload playlists and emit signals
     slotUpdate();
@@ -310,7 +320,8 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
 }
 
 bool
-PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
+PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row,
+        int column, const QModelIndex & parent ) //reimplemented
 {
     Q_UNUSED( column );
     Q_UNUSED( row );
@@ -339,13 +350,6 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
     }
 
     return false;
-}
-
-void
-PlaylistBrowserNS::UserModel::createNewGroup()
-{
-    DEBUG_BLOCK
-    //TODO: create the group in default provider if that supports empty groups.
 }
 
 QList<PopupDropperAction *>

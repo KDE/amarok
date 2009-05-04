@@ -42,6 +42,9 @@ public:
 
     void setNewGroupAction( KAction * action );
 
+public slots:
+    void createNewGroup();
+
 protected:
     void keyPressEvent( QKeyEvent *event );
     void mousePressEvent( QMouseEvent *event );

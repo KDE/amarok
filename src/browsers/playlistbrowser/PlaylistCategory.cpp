@@ -74,45 +74,15 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
-//TODO:     connect( m_addGroupAction, SIGNAL( triggered( bool ) ), m_groupedProxy, SLOT( createNewGroup() ) );
+    connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
+             m_playlistView, SLOT( createNewGroup() ) );
 
     m_playlistView->setNewGroupAction( m_addGroupAction );
-
-//     KAction* addStreamAction = new KAction( KIcon("list-add"), i18n("Add Stream"), this );
-//     m_toolBar->addAction( addStreamAction );
-//     connect( addStreamAction, SIGNAL( triggered( bool ) ), this, SLOT( showAddStreamDialog() ) );
 }
-
 
 PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
 {
 }
-
-/*
-void
-PlaylistBrowserNS::PlaylistCategory::showAddStreamDialog()
-{
-    KDialog *dialog = new PlaylistBrowserNS::treamEditor( this );
-    connect( dialog, SIGNAL( okClicked() ), this, SLOT( streamDialogConfirmed() ) );
-}*/
-/*
-void
-PlaylistBrowserNS::PlaylistCategory::streamDialogConfirmed()
-{
-    PlaylistBrowserNS::StreamEditor* dialog = qobject_cast<PlaylistBrowserNS::StreamEditor*>( sender() );
-    if( !dialog )
-        return;
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl(  dialog->streamUrl() );
-    if( !track.isNull() )
-    {
-        m_model->createNewStream(  dialog->streamName(), track );
-    }
-    else
-    {
-        The::statusBar()->longMessage( i18n("The stream URL provided was not valid.") );
-    }
-}
-*/
 
 PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
     : KDialog( parent )

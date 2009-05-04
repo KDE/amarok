@@ -161,8 +161,6 @@ PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 
 void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEvent * event )
 {
-    DEBUG_BLOCK
-
     QModelIndexList indices = selectionModel()->selectedIndexes();
 
     KMenu menu;
@@ -181,10 +179,17 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
     menu.exec( mapToGlobal( event->pos() ) );
 }
 
-void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
+void
+PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
 {
     m_addGroupAction = action;
 }
 
-#include "UserPlaylistTreeView.moc"
+void
+PlaylistBrowserNS::UserPlaylistTreeView::createNewGroup()
+{
+    QModelIndex idx = m_model->createNewGroup( QString("New Folder") );
+    edit( idx );
+}
 
+#include "UserPlaylistTreeView.moc"

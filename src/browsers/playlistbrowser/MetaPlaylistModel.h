@@ -37,16 +37,17 @@ class MetaPlaylistModel : public QAbstractItemModel
             DescriptionRole = Qt::UserRole + 1,
             //Where is this Playlist from i.e. which PlaylistProvider
             OriginRole = Qt::UserRole + 2,
-            GroupRole = Qt::UserRole + 3 //What is the name of the group this Playlist is in.
+            //What is the name of the group this Playlist is in.
+            GroupRole = Qt::UserRole + 3
         };
 
         virtual QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes ) = 0;
 
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode ) = 0;
+        virtual QModelIndex createNewGroup( const QString &groupName ) { Q_UNUSED(groupName) return QModelIndex(); }
 
     signals:
         void rename( QModelIndex idx );
-
 };
 
 }
