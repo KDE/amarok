@@ -186,6 +186,13 @@ MetaTrackPrototype::imageUrl() const
     return ( track && track->album() ) ? track->album()->imageLocation().prettyUrl() : QString();
 }
 
+QString
+MetaTrackPrototype::url() const
+{
+    GET_TRACK
+    return track ? track->playableUrl().url() : QString();
+}
+
 QScriptValue
 MetaTrackPrototype::imagePixmap( int size ) const
 {

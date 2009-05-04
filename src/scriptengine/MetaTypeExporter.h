@@ -52,6 +52,7 @@ class MetaTrackPrototype : public QObject, protected QScriptable
     Q_PROPERTY( bool isEditable READ isEditable )
     Q_PROPERTY( QString lyrics WRITE setLyrics READ lyrics )
     Q_PROPERTY( QString imageUrl WRITE setImageUrl READ imageUrl )
+    Q_PROPERTY( QString url READ url )
 
     public:
         MetaTrackPrototype();
@@ -85,6 +86,7 @@ class MetaTrackPrototype : public QObject, protected QScriptable
         QString lyrics() const;
         QString title() const;
         QString imageUrl() const;
+        QString url() const;
 
         void setScore( double score );
         void setRating( int rating );
