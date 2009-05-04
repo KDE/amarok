@@ -293,6 +293,7 @@ MainWindow::init()
 
         PERF_LOG( "Creating PlaylistBrowser" )
         addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), "view-media-playlist-amarok" )
+        playlistBrowser()->showCategory( PlaylistManager::UserPlaylist );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
         PERF_LOG( "Creating FileBrowser" )
