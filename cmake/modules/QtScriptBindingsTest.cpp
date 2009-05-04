@@ -21,6 +21,7 @@
 #include <KDE/KCmdLineArgs>
 #include <QtScript/QScriptEngine>
 #include <QtCore/QStringList>
+#include <QtCore/QDebug>
 
 #define FAIL 0xA
 
@@ -37,7 +38,7 @@ int main(int argc, char **argv)
     {
         if( !engine.importExtension( binding ).isUndefined() )
         { // undefined indiciates success
-            qDebug( binding.toLatin1() +  " not found" );
+            qDebug() << binding <<  " not found";
             return FAIL;
         }
     }
