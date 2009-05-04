@@ -32,6 +32,7 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistM
     , m_model( model )
     , m_renameAction( 0 )
     , m_deleteAction( 0 )
+    , m_addToGroupAction( 0 )
 {
     // signal proxies
     connect( m_model,
@@ -190,7 +191,7 @@ PlaylistsInGroupsProxy::setData( const QModelIndex &index, const QVariant &value
 {
     DEBUG_BLOCK
     if( isGroup( index ) )
-        return false;
+        return changeGroupName( index.data( Qt::DisplayRole ).toString(), value.toString() );
 
     QModelIndex originalIdx = mapToSource( index );
     return m_model->setData( originalIdx, value, role );
@@ -277,7 +278,7 @@ Qt::ItemFlags
 PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 {
     if( isGroup( index ) )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
     QModelIndex originalIdx = mapToSource( index );
     return m_model->flags( originalIdx );
@@ -341,6 +342,23 @@ PlaylistsInGroupsProxy::slotRenameGroup()
     emit layoutChanged();
 }
 
+void
+PlaylistsInGroupsProxy::slotAddToGroup()
+{
+    DEBUG_BLOCK
+    const QString name = KInputDialog::getText( i18n("New name"),
+                i18n("Enter new group name:") );
+    foreach( QModelIndex index, m_selectedPlaylists )
+    {
+        Meta::PlaylistPtr playlist = index.data( 0xf00d ).value<Meta::PlaylistPtr>();
+        QStringList groups;
+        groups << name;
+        if( playlist )
+            playlist->setGroups( groups );
+    }
+    buildTree();
+}
+
 QList<PopupDropperAction *>
 PlaylistsInGroupsProxy::createGroupActions()
 {
@@ -380,6 +398,26 @@ PlaylistsInGroupsProxy::isAPlaylistSelected( const QModelIndexList& list ) const
     return mapToSource( list ).count() > 0;
 }
 
+bool
+PlaylistsInGroupsProxy::changeGroupName( const QString &from, const QString &to )
+{
+    DEBUG_BLOCK
+    debug() << "to: " << to << " from:" << from;
+    if( m_groupNames.contains( from ) )
+        return false;
+
+    int groupRow = m_groupNames.indexOf( from );
+    QModelIndex groupIdx = this->index( groupRow, 0, QModelIndex() );
+    foreach( int childRow, m_groupHash.values( groupRow ) )
+    {
+        QModelIndex childIndex = this->index( childRow, 0, groupIdx );
+        QModelIndex originalIdx = mapToSource( childIndex );
+        m_model->setData( originalIdx, to, PlaylistBrowserNS::UserModel::GroupRole );
+    }
+    buildTree();
+    return 0;
+}
+
 QList<PopupDropperAction *>
 PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 {
@@ -389,15 +427,32 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 
     QList<PopupDropperAction *> actions;
     m_selectedGroups.clear();
+    m_selectedPlaylists.clear();
 
     //only playlists selected
     if( playlistSelected )
     {
+        foreach( const QModelIndex &index, list )
+        {
+            QModelIndexList tempList;
+            tempList << index;
+            if( isAPlaylistSelected( tempList ) )
+                m_selectedPlaylists << index;
+        }
         QModelIndexList originalList = mapToSource( list );
         debug() << originalList.count() << "original indices";
         if( !originalList.isEmpty() )
         {
             actions << m_model->actionsFor( originalList );
+            if( m_addToGroupAction == 0 )
+            {
+                 m_addToGroupAction = new PopupDropperAction(
+                         The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                         "add_to_group", KIcon( "folder" ), i18n( "&Add to group" ), this
+                );
+                connect( m_addToGroupAction, SIGNAL( triggered() ), this, SLOT( slotAddToGroup() ) );
+            }
+            actions << m_addToGroupAction;
         }
     }
     else if( groupSelected )

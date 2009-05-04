@@ -67,6 +67,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
 
         void slotDeleteGroup();
         void slotRenameGroup();
+        void slotAddToGroup();
 
     private:
         bool isGroup( const QModelIndex &index ) const;
@@ -74,10 +75,12 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         QList<PopupDropperAction *> createGroupActions();
         bool isAGroupSelected( const QModelIndexList& list ) const;
         bool isAPlaylistSelected( const QModelIndexList& list ) const;
+        bool changeGroupName( const QString &from, const QString &to );
 
         MetaPlaylistModel *m_model;
         PopupDropperAction *m_renameAction;
         PopupDropperAction *m_deleteAction;
+        PopupDropperAction *m_addToGroupAction;
 
         QMultiHash<quint32, int> m_groupHash;
         QStringList m_groupNames;
@@ -96,6 +99,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         int indexOfParentCreate( const QModelIndex &parent ) const;
 
         QModelIndexList m_selectedGroups;
+        QModelIndexList m_selectedPlaylists;
 };
 
 #endif //AMAROK_PLAYLISTSINGROUPSPROXY_H
