@@ -188,18 +188,17 @@ Meta::SqlPlaylist::saveTracks()
 Meta::TrackList
 Meta::SqlPlaylist::tracks()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if ( !m_tracksLoaded )
         loadTracks();
 
-    debug() << "track count: " << m_tracks.count();
+    //debug() << "track count: " << m_tracks.count();
     return m_tracks;
 }
 
 void
 Meta::SqlPlaylist::loadTracks()
 {
-    DEBUG_BLOCK
     QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
     query = query.arg( QString::number( m_dbId ) );
 
@@ -211,7 +210,7 @@ Meta::SqlPlaylist::loadTracks()
     {
         QStringList row = result.mid( i*7, 7 );
         KUrl url = KUrl( row[2] );
-        debug() << "url: " << url.url();
+        //debug() << "url: " << url.url();
 
         Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
 
@@ -232,7 +231,7 @@ Meta::SqlPlaylist::loadTracks()
             }
 
             m_tracks << trackPtr;
-            debug() << "added track: " << trackPtr->name();
+            //debug() << "added track: " << trackPtr->name();
 
         }
 

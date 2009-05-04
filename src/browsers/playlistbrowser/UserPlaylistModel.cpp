@@ -130,13 +130,12 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 QVariant
 PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 {
-    DEBUG_BLOCK
-    debug() << "index: " << index;
+//    debug() << "index: " << index;
     if ( !index.isValid() )
         return QVariant();
 
     int row = REMOVE_TRACK_MASK(index.internalId());
-    debug() << "playlist at row: " << row;
+//    debug() << "playlist at row: " << row;
     Meta::PlaylistPtr playlist = m_playlists.value( row );
 
     QVariant food;
@@ -194,9 +193,9 @@ PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
     debug() << index;
     if( IS_TRACK(index) )
     {
-        debug() << " is a track.";
+//        debug() << " is a track.";
         int row = REMOVE_TRACK_MASK(index.internalId());
-        debug() << "parent at row: " << row;
+//        debug() << "parent at row: " << row;
         return this->index( row, index.column(), QModelIndex() );
     }
 
@@ -206,15 +205,14 @@ PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 int
 PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 {
-    DEBUG_BLOCK
-    debug() << "parent: " << parent;
+//    debug() << "parent: " << parent;
     if (parent.column() > 0)
     {
         return 0;
     }
 
     bool isTrack = IS_TRACK(parent);
-    debug() << (isTrack?"is a track":"is not a track");
+//    debug() << (isTrack?"is a track":"is not a track");
     if (!parent.isValid())
     {
         return m_playlists.count();
@@ -222,7 +220,7 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
     else if( !IS_TRACK(parent) )
     {
         Meta::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
-        debug() << QString( "has %1 tracks.").arg(playlist->tracks().count());
+        //debug() << QString( "has %1 tracks.").arg(playlist->tracks().count());
         return playlist->tracks().count();
     }
 
@@ -268,7 +266,7 @@ PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant 
     if ( index.column() != 0 )
         return false;
 
-    debug() << "setting name of item " << index.internalId() << " to " << value.toString();
+//    debug() << "setting name of item " << index.internalId() << " to " << value.toString();
     Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
 
     item->setName( value.toString() );
