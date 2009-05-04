@@ -347,6 +347,17 @@ Playlist::Actions::engineNewTrackPlaying()
     m_nextTrackCandidate = 0;
 }
 
+
+void
+Playlist::Actions::normalizeDynamicPlayist()
+{
+    if ( typeid( *m_navigator ) == typeid( DynamicTrackNavigator ) )
+    {
+        static_cast<DynamicTrackNavigator*>(m_navigator)->appendUpcoming();
+    }
+}
+
+
 namespace The
 {
     AMAROK_EXPORT Playlist::Actions* playlistActions() { return Playlist::Actions::instance(); }

@@ -41,6 +41,8 @@ namespace Playlist
         public:
             DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p ) ;
             ~DynamicTrackNavigator();
+            
+            void appendUpcoming();
 
         public slots:
             void repopulate();
@@ -51,7 +53,6 @@ namespace Playlist
             void trackChanged();
 
         private:
-            void appendUpcoming();
             void removePlayed();
 
             bool m_waitingForNext;
