@@ -249,12 +249,15 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
 
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
     if( name.isEmpty() || editNow )
+    {
         playlist = sqlProvider->save( tracks );
+        AmarokUrl("amarok://navigate/playlists/My Playlists").run();
+        emit( renamePlaylist( playlist ) );
+    }
     else
+    {
         playlist = sqlProvider->save( tracks, name );
-
-    AmarokUrl("amarok://navigate/playlists/My Playlists").run();
-    emit( renamePlaylist( playlist ) );
+    }
 
     return !playlist.isNull();
 }
