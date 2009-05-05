@@ -32,7 +32,7 @@ if(NOT WIN32)
         message( STATUS "QtBindings found")
         set(QTSCRIPTQTBINDINGS_FOUND TRUE)
     else(BINDINGS_RUN_RESULT EQUAL 1)
-        message( STATUS "QtBindings not found")
+        message( STATUS "QtBindings not found. run `make bindingstest && ./bindingstest && echo $?` to see what is missing. If it only prints '0' then you're actually fine.")
         set(QTSCRIPTQTBINDINGS_FOUND FALSE)
     endif(BINDINGS_RUN_RESULT EQUAL 1)
 
