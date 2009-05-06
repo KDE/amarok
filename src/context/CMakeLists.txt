@@ -1,6 +1,3 @@
-# NOTE we link libplasma here instead of in the CMakeLists in plasma/ because we need control over the installation of header files and library name
-# this requires periodic syncing of this file with plasma/CMakeLists.txt as it changes, but thats better than the alternative. (the only option really.)
-
 add_subdirectory( applets )
 add_subdirectory( engines )
 add_subdirectory( containments )
@@ -8,7 +5,6 @@ add_subdirectory( containments )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..
-                    plasma
                     ${OPENGL_INCLUDE_DIR}
                     ${CMAKE_CURRENT_BINARY_DIR}/..)
 
