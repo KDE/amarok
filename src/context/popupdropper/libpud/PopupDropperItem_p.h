@@ -66,6 +66,7 @@ public:
     int textOffset;
     PopupDropperItem::HoverIndicatorShowStyle hoverIndicatorShowStyle;
     PopupDropperItem::Orientation orientation;
+    PopupDropperItem::TextProtection textProtection;
     PopupDropper* pd;
 
 private:

@@ -39,6 +39,7 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
 
     Q_PROPERTY( HoverIndicatorShowStyle hoverIndicatorShowStyle READ hoverIndicatorShowStyle WRITE setHoverIndicatorShowStyle )
     Q_PROPERTY( Orientation orientation READ orientation WRITE setOrientation )
+    Q_PROPERTY( TextProtection textProtection READ textProtection WRITE setTextProtection )
     Q_PROPERTY( PopupDropperAction* action READ action WRITE setAction )
     Q_PROPERTY( QString text READ text WRITE setText )
     Q_PROPERTY( QFont font READ font WRITE setFont )
@@ -69,6 +70,8 @@ public:
     Q_ENUMS( HoverIndicatorShowStyle )
     enum Orientation { Left, Right };
     Q_ENUMS( Orientation )
+    enum TextProtection { NoProtection, MultiLine, ScaleFont };
+    Q_ENUMS( TextProtection )
 
     PopupDropperItem( QGraphicsItem *parent = 0 );
     explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
@@ -83,10 +86,11 @@ public:
     void setHoverIndicatorShowStyle( HoverIndicatorShowStyle hover );
     Orientation orientation() const;
     void setOrientation( Orientation orientation );
+    TextProtection textProtection() const;
+    void setTextProtection( TextProtection protection );
 
     QString text() const;
     void setText( const QString &text );
-    void setHtmlText( const QString &text );
     QFont font() const;
     void setFont( const QFont &font );
     QColor baseTextColor() const;

@@ -60,6 +60,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , textOffset( 30 )
     , hoverIndicatorShowStyle( PopupDropperItem::Never )
     , orientation( PopupDropperItem::Left )
+    , textProtection( PopupDropperItem::ScaleFont )
     , pd( 0 )
     , q( parent )
     {
@@ -100,7 +101,6 @@ PopupDropperItem::PopupDropperItem( const QString &file, QGraphicsItem *parent )
 
 PopupDropperItem::~PopupDropperItem()
 {
-    //qDebug() << "Deleting popupdropperitem with text = " << d->text;
     delete d;
 }
 
@@ -207,6 +207,17 @@ void PopupDropperItem::setOrientation( const Orientation orientation )
     fullUpdate();
 }
 
+PopupDropperItem::TextProtection PopupDropperItem::textProtection() const
+{
+    return d->textProtection;
+}
+
+void PopupDropperItem::setTextProtection( const TextProtection textProtection )
+{
+    d->textProtection = textProtection;
+    fullUpdate();
+}
+
 QString PopupDropperItem::text() const
 {
     return d->text;
@@ -216,16 +227,7 @@ void PopupDropperItem::setText( const QString &text )
 {
     d->text = text;
     if( d->textItem )
-        d->textItem->setPlainText( text );
-    reposTextItem();
-}
-
-//Note: constructor assumes plain text; this function must be called later
-void PopupDropperItem::setHtmlText( const QString &text )
-{
-    d->text = text;
-    if( d->textItem )
-        d->textItem->setPlainText( text );
+        d->textItem->setHtml( text );
     reposTextItem();
 }
 
@@ -239,6 +241,7 @@ void PopupDropperItem::setFont( const QFont &font )
     d->font = font;
     if( d->textItem )
         d->textItem->setFont( font );
+    reposTextItem();
 }
 
 QColor PopupDropperItem::baseTextColor() const
@@ -359,6 +362,8 @@ QGraphicsTextItem* PopupDropperItem::textItem() const
 void PopupDropperItem::setTextItem( QGraphicsTextItem *textItem )
 {
     d->textItem = textItem;
+    if( d->textItem )
+        d->textItem->setHtml( d->text );   
 }
 
 QGraphicsRectItem* PopupDropperItem::borderRectItem() const
@@ -438,7 +443,7 @@ void PopupDropperItem::reposTextItem()
 {
     if( !d->textItem || !d->borderRectItem )
         return;
-    
+ 
     d->textItem->setFont( d->font );
 
     qreal item_vert_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
@@ -465,9 +470,32 @@ void PopupDropperItem::reposTextItem()
     d->textItem->setPos(
             ( d->orientation == PopupDropperItem::Left
                 ? offsetPos
-                : d->borderRectItem->sceneBoundingRect().width() - offsetPos - d->textItem->sceneBoundingRect().width()
+                : 0
             )
         , item_vert_center - ( d->textItem->sceneBoundingRect().height() / 2 ) ); 
+
+    if( d->textProtection == PopupDropperItem::ScaleFont )
+    {
+        QFontMetrics fm( d->textItem->font() );
+        qreal desiredWidth = d->borderRectItem->sceneBoundingRect().width() - offsetPos;
+        while( fm.width( d->textItem->toPlainText() ) > desiredWidth ||
+               fm.height() > d->textItem->boundingRect().height() )
+        {
+            QFont font = d->textItem->font();
+            font.setPointSize( font.pointSize() - 1 );
+            d->textItem->setFont( font );
+            fm = QFontMetrics( font );
+        }
+    }
+    else if( d->textProtection == PopupDropperItem::MultiLine &&
+             ( d->textItem->textWidth() == -1 ||
+               d->textItem->textWidth() > ( d->borderRectItem->sceneBoundingRect().width() - offsetPos )
+             )
+           )
+    {
+        d->textItem->setTextWidth( d->borderRectItem->sceneBoundingRect().width() - offsetPos );
+        reposTextItem();
+    }
 }
 
 void PopupDropperItem::reposHoverFillRects()
