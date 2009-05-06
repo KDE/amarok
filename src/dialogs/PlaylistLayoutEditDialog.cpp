@@ -106,7 +106,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     buttonBox->button(QDialogButtonBox::Cancel)->setIcon( KIcon( "dialog-cancel" ) );
     connect( buttonBox->button(QDialogButtonBox::Apply), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
-    const KIcon newIcon( "list-add" );
+    const KIcon newIcon( "document-new" );
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
     connect( newLayoutButton, SIGNAL( clicked() ), this, SLOT( newLayout() ) );
