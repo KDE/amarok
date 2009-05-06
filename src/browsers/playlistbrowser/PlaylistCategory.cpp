@@ -72,7 +72,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setAlternatingRowColors( true );
 
-    m_addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
+    m_addGroupAction = new KAction( KIcon("folder-new" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
              m_playlistView, SLOT( createNewGroup() ) );
