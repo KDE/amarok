@@ -28,6 +28,12 @@ Importer.loadQtBinding( "qt.xml" );
 
 xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
 
+
+function escapeString( str )
+{
+    return str.replace( '&', "&amp;" ).replace( '<', "&lt;" ).replace( ">", "&gt;" ).replace( "\"", "&quot;" ).replace( "'", "&apos;" )
+}
+
 function onFinished( dat )
 {
     try
@@ -38,10 +44,11 @@ function onFinished( dat )
         {
             doc = new QDomDocument();
             doc.setContent( dat );
-            newxml = xml.replace( "{artist}", doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() );
-            newxml = newxml.replace( "{title}", doc.elementsByTagName( "song" ).at( 0 ).toElement().text() );
-            newxml = newxml.replace( "{lyrics}", doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text() );
-            Amarok.Lyrics.showLyrics( Amarok.Lyrics.fromUtf8( newxml, "UTF-8" ) );
+            newxml = xml.replace( "{artist}", escapeString( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) );
+            newxml = newxml.replace( "{title}", escapeString( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
+            newxml = newxml.replace( "{lyrics}", escapeString( doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text() ) );
+            Amarok.debug( "showing:" + newxml );
+            Amarok.Lyrics.showLyrics( newxml );
         }
     }
     catch( err )

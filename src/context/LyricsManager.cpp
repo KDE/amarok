@@ -19,7 +19,6 @@
 
 #include <QDomDocument>
 
-
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver
 ///////////////////////////////////////////////////////////////
@@ -97,12 +96,11 @@ void LyricsSubject::detach( LyricsObserver *obs )
 LyricsManager* LyricsManager::s_self = 0;
 
 void
-LyricsManager::lyricsResult( const QByteArray& lyricsXML, bool cached ) //SLOT
+LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( cached );
 
-    debug() << "got lyrics result:" << lyricsXML;
     QDomDocument doc;
     if( !doc.setContent( lyricsXML ) )
     {

@@ -36,8 +36,7 @@ public:
     ~AmarokLyricsScript();
 
 public slots:
-    // takes a UTF-8 encoded string (in raw data form for portability or something)
-    void showLyrics( const QByteArray& lyrics ) const;
+    void showLyrics( const QString& lyrics ) const;
     
     void showLyricsHtml( const QString& lyrics ) const;
     void showLyricsError( const QString& error ) const;

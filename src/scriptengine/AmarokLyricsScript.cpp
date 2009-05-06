@@ -45,7 +45,7 @@ AmarokLyricsScript::~AmarokLyricsScript()
 }
 
 void
-AmarokLyricsScript::showLyrics( const QByteArray& lyrics ) const
+AmarokLyricsScript::showLyrics( const QString& lyrics ) const
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
