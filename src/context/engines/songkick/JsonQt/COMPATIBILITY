@@ -1,0 +1,11 @@
+The 0.1.0 API is aimed to be the 1.0.0 API.
+
+From 1.0.0, JsonQt will follow the normal standards for API and ABI
+compatability between versions:
+
+- Anything built against a specific version should work with any later version
+	with the same major version; for example, something built against 1.0.0
+	should work with 1.1.0.
+- New features that don't break backwards compatability will result in a bump of
+	the minor version; this should mean that anything built against version
+	a.b.c will work with any a.b.* version.
