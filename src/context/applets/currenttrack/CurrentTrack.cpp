@@ -80,7 +80,6 @@ CurrentTrack::init()
 
     QFont bigFont;
     bigFont.setPointSize( bigFont.pointSize() +  3 );
-    bigFont.setBold( true );
     
     QFont tinyFont;
     //tinyFont.setPointSize( tinyFont.pointSize() - 2 );
