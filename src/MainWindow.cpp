@@ -518,7 +518,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     if( files.isEmpty() )
         return;
 
-    The::playlistController()->insertOptioned( files , Playlist::Append );
+    The::playlistController()->insertOptioned( files , Playlist::AppendAndPlayImmediately );
 }
 
 void
