@@ -18,9 +18,10 @@
 #ifndef DYNAMICCATEGORY_H
 #define DYNAMICCATEGORY_H
 
+#include <QCheckBox>
+#include <QListView>
 #include <QPushButton>
 #include <QToolButton>
-#include <QListView>
 #include <QVBoxLayout>
 
 #include <KComboBox>
@@ -55,7 +56,7 @@ namespace PlaylistBrowserNS {
 
             QVBoxLayout* m_vLayout;
 
-            QPushButton *m_onoffButton;
+            QCheckBox *m_onOffCheckbox;
             QPushButton *m_repopulateButton;
 
             KComboBox *m_presetComboBox;

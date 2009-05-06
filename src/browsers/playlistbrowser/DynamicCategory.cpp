@@ -51,14 +51,14 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_vLayout = new QVBoxLayout( this );
 
-    m_onoffButton = new QPushButton( this );
-    m_onoffButton->setIcon( KIcon( "dynamic-amarok" ) );
-    m_onoffButton->setText( i18n( "On" ) );
-    m_onoffButton->setToolTip( i18n( "Turn dynamic mode on." ) );
-    m_onoffButton->setCheckable( true );
-    m_onoffButton->setSizePolicy( 
+    m_onOffCheckbox = new QCheckBox( this );
+    m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
+    m_onOffCheckbox->setText( i18n( "On" ) );
+    m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
+    m_onOffCheckbox->setCheckable( true );
+    m_onOffCheckbox->setSizePolicy( 
             QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
-    QObject::connect( m_onoffButton, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
+    QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
 
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
     
@@ -139,7 +139,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
     m_biasListView->setItemDelegate( m_biasDelegate );
 
-    m_vLayout->addWidget( m_onoffButton );
+    m_vLayout->addWidget( m_onOffCheckbox );
     m_vLayout->addWidget( m_repopulateButton );
     m_vLayout->addWidget( presetLayout );
     m_vLayout->addWidget( m_biasListView );
@@ -162,7 +162,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
         playlistSelectionChanged( 0 );
     }
 
-    m_onoffButton->setChecked( AmarokConfig::dynamicMode() );
+    m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
 }
 
 
@@ -229,7 +229,7 @@ DynamicCategory::playlistCleared() // SLOT
         // TODO: should we restore the state of other modes?
         AmarokConfig::self()->writeConfig();
         m_repopulateButton->setEnabled( false );
-        m_onoffButton->setChecked( false );
+        m_onOffCheckbox->setChecked( false );
         The::playlistActions()->playlistModeChanged();
     }
 }
