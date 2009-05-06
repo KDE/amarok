@@ -753,7 +753,7 @@ XmlParseJob::run()
                 {
                     //TODO check for duplicates
                     //debug() << "Saving playlist with path: " << m_reader.attributes().value( "path" ).toString();
-                    The::playlistManager()->save( m_reader.attributes().value( "path" ).toString() );
+                    The::playlistManager()->import( m_reader.attributes().value( "path" ).toString() );
                 }
                 else if( localname == "image" )
                 {

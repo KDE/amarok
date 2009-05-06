@@ -32,9 +32,7 @@
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
-// #include "meta/SqlPlaylist.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
-// #include "browsers/playlistbrowser/SqlPlaylistGroup.h"
 
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
@@ -263,38 +261,17 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
 }
 
 bool
-PlaylistManager::save( const QString& fromLocation )
+PlaylistManager::import( const QString& fromLocation )
 {
     DEBUG_BLOCK
-
-    KUrl url( fromLocation );
-    Meta::Playlist* playlist = 0;
-    Meta::Format format = Meta::getFormat( fromLocation );
-
-    switch( format )
+    SqlUserPlaylistProvider *sqlProvider =
+            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
+    if( !sqlProvider )
     {
-        case Meta::PLS:
-            playlist = new Meta::PLSPlaylist( url );
-            break;
-        case Meta::M3U:
-            playlist = new Meta::M3UPlaylist( url );
-            break;
-        case Meta::XSPF:
-            playlist = new Meta::XSPFPlaylist( url );
-            break;
-
-        default:
-            debug() << "unknown type, cannot save playlist!";
-            return false;
-    }
-    Meta::TrackList tracks = playlist->tracks();
-    QString name = playlist->name().split('.')[0];
-
-    if( tracks.isEmpty() )
+        debug() << "ERROR: sqlUserPlaylistProvider was null";
         return false;
-
-    save( tracks, name, false, fromLocation );
-    return true;
+    }
+    return sqlProvider->import( fromLocation );
 }
 
 bool
@@ -304,8 +281,6 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
     DEBUG_BLOCK
 
     KUrl url( location );
-    //TODO: Meta::Format playlistFormat = Meta::getFormat( location );
-//     Meta::M3UPlaylistPtr playlist( new Meta::M3UPlaylist( tracks ) );
     Meta::Playlist *playlist = 0;
 
     Meta::Format format = Meta::getFormat( location );

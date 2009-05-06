@@ -48,6 +48,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
 
         Meta::SqlPlaylistGroupPtr group( const QString &name );
+        bool import( const QString& fromLocation );
 
         static Meta::SqlPlaylistList toSqlPlaylists( Meta::PlaylistList playlists );
 

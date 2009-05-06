@@ -24,6 +24,10 @@
 #include "CollectionManager.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
+#include "meta/M3UPlaylist.h"
+#include "meta/PLSPlaylist.h"
+#include "meta/XSPFPlaylist.h"
+#include "PlaylistFileSupport.h"
 #include "SqlStorage.h"
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
@@ -143,6 +147,58 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
     emit updated();
 
     return Meta::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
+}
+
+bool
+SqlUserPlaylistProvider::import( const QString& fromLocation )
+{
+    DEBUG_BLOCK
+    debug() << "importing playlist " << fromLocation;
+    QString query = "SELECT id, parent_id, name, description, urlid FROM \
+                playlists where urlid='%1';";
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    query = query.arg( sql->escape( fromLocation ) );
+    QStringList result = sql->query( query );
+    if( result.count() != 0 )
+    {
+        debug() << "Playlist was already imported";
+        return false;
+    }
+
+
+    KUrl url( fromLocation );
+    Meta::Playlist* playlist = 0;
+    Meta::Format format = Meta::getFormat( fromLocation );
+
+    switch( format )
+    {
+        case Meta::PLS:
+            playlist = new Meta::PLSPlaylist( url );
+            break;
+        case Meta::M3U:
+            playlist = new Meta::M3UPlaylist( url );
+            break;
+        case Meta::XSPF:
+            playlist = new Meta::XSPFPlaylist( url );
+            break;
+
+        default:
+            debug() << "unknown type, cannot save playlist!";
+            return false;
+    }
+    Meta::TrackList tracks = playlist->tracks();
+    QString name = playlist->name().split('.')[0];
+    debug() << name << QString(" has %1 tracks.").arg( tracks.count() );
+    if( tracks.isEmpty() )
+        return false;
+
+    Meta::SqlPlaylistPtr sqlPlaylist =
+        Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( playlist->name(), tracks,
+                                                     Meta::SqlPlaylistGroupPtr(), fromLocation ) );
+    reloadFromDb();
+    emit updated();
+
+    return true;
 }
 
 void
