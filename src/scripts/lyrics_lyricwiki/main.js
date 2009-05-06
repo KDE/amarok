@@ -41,7 +41,7 @@ function onFinished( dat )
             newxml = xml.replace( "{artist}", doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() );
             newxml = newxml.replace( "{title}", doc.elementsByTagName( "song" ).at( 0 ).toElement().text() );
             newxml = newxml.replace( "{lyrics}", doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text() );
-            Amarok.Lyrics.showLyrics( newxml );
+            Amarok.Lyrics.showLyrics( Amarok.Lyrics.fromUtf8( newxml, "UTF-8" ) );
         }
     }
     catch( err )

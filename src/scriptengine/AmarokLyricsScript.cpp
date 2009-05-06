@@ -28,6 +28,8 @@
 
 #include <KApplication>
 
+#include <QByteArray>
+
 namespace AmarokScript
 {
 
@@ -43,7 +45,7 @@ AmarokLyricsScript::~AmarokLyricsScript()
 }
 
 void
-AmarokLyricsScript::showLyrics( const QString& lyrics ) const
+AmarokLyricsScript::showLyrics( const QByteArray& lyrics ) const
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
