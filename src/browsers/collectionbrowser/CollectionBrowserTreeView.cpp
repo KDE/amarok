@@ -18,7 +18,12 @@
 
 #include "CollectionBrowserTreeView.h"
 
+#include "Debug.h"
+
+#include <KGlobalSettings>
+
 #include <QMouseEvent>
+
 
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
     : CollectionTreeView( parent )
@@ -32,10 +37,17 @@ CollectionBrowserTreeView::~CollectionBrowserTreeView()
 
 void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
+    DEBUG_BLOCK
     QModelIndex index = indexAt( event->pos() );
     
-    if( index.isValid() && !index.parent().isValid() ) // root item
-        setExpanded( index, !isExpanded( index ) );
+
+    if( index.isValid() )
+    {
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        debug() << "is track item? " << item->isTrackItem();
+        if( !KGlobalSettings::singleClick() && !item->isTrackItem() ) 
+            setExpanded( index, !isExpanded( index ) );
+    }
     else // propagate to base class
         CollectionTreeView::mouseDoubleClickEvent( event );
 }
@@ -43,10 +55,16 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 // Reimplement release event to detect a single click.
 void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
+    DEBUG_BLOCK
     QModelIndex index = indexAt( event->pos() );
 
-    if( index.isValid() && !index.parent().isValid() ) // root item
-        setExpanded( index, !isExpanded( index ) );
+    if( index.isValid() )
+    {
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        debug() << "is track item? " << item->isTrackItem();
+        if( KGlobalSettings::singleClick() && !item->isTrackItem() )
+            setExpanded( index, !isExpanded( index ) );
+    }
     else // propagate to base class
         CollectionTreeView::mouseReleaseEvent( event );
 }
