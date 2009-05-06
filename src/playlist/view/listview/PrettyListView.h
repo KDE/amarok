@@ -70,6 +70,8 @@ public slots:
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
 
+    void itemsAdded( int firstRow );
+
     virtual void engineNewTrackPlaying(); // from EngineObserver
 
 protected slots:

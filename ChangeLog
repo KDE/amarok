@@ -8,6 +8,7 @@ VERSION 2.1-beta2
     * New Script method to get current track time in milliseconds. (BR 177073)
 
   CHANGES:
+    * Always scroll to newly inserted tracks in the Playlist.
     * When removing upcoming tracks from an active dynamic playlist, add a
       simmilar number of new ones to keep if from "drying up".
     * Some action cleanup in the playlist context menu.

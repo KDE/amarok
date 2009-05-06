@@ -769,6 +769,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
     emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
     emit insertedIds( newIds );
+    emit itemsAdded( min );
 
     const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
 

@@ -92,6 +92,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     m_proxyUpdateTimer->setSingleShot( true );
 
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
+
+    connect( The::playlistModel(), SIGNAL( itemsAdded( int ) ), this, SLOT( itemsAdded( int ) ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -663,6 +665,22 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     NavigatorFilterProxyModel::instance()->setPassThrough( !onlyMatches );
 }
 
+void Playlist::PrettyListView::itemsAdded( int firstRow )
+{
+    DEBUG_BLOCK
+
+    QModelIndex index = model()->index( NavigatorFilterProxyModel::instance()->rowFromSource( firstRow ) , 0 );
+    if( !index.isValid() )
+        return;
+
+    debug() << "index has row: " << index.row();
+    //scrollTo( firstItem/*, QAbstractItemView::PositionAtCenter*/ );
+    scrollTo( index, QAbstractItemView::PositionAtCenter );
+    
+}
+
 
 
 #include "PrettyListView.moc"
+
+
