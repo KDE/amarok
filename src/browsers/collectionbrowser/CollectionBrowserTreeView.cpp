@@ -82,7 +82,8 @@ void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
         return;
     }
     */
-    setItemsExpandable( false );
+    if( KGlobalSettings::singleClick() )
+        setItemsExpandable( false );
     CollectionTreeView::mousePressEvent( event );
     update();
 }
