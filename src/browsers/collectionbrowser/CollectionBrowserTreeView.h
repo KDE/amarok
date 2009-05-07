@@ -22,6 +22,7 @@
 #include "CollectionTreeView.h"
 
 #include <QModelIndex>
+#include <QPoint>
 #include <QTimer>
 
 /**
@@ -39,12 +40,14 @@ class CollectionBrowserTreeView : public CollectionTreeView
         void mouseDoubleClickEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
+        void mouseMoveEvent( QMouseEvent *event );
 
     protected slots:
         void slotClickTimeout();
 
     private:
         QModelIndex m_index;
+        QPoint m_clickLocation;
         QTimer m_clickTimer;
         bool m_justDoubleClicked;
 };

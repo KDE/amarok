@@ -27,7 +27,9 @@
 
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
     : CollectionTreeView( parent )
+    , m_justDoubleClicked( false )
 {
+    setMouseTracking( true );
     connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
 
@@ -51,7 +53,7 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         //but CollectionTreeItem::isTrackItem() doesn't seem to work, nor does
         //counting children, which theoretically should work here if the number wasn't
         //always random and negative...
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
         if( false ) //detect if item is track
         {
             CollectionTreeView::mouseDoubleClickEvent( event );
@@ -92,7 +94,23 @@ void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
     m_index = index;
     KConfigGroup cg( KGlobal::config(), "KDE" );
     m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
+    m_clickLocation = event->pos();
     event->accept();
+}
+
+void CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
+{
+    QPoint point = event->pos() - m_clickLocation;
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
+    {
+        m_clickTimer.stop();
+        slotClickTimeout();
+        event->accept();
+        return;
+    }
+    else
+        CollectionTreeView::mouseMoveEvent( event );
 }
 
 void CollectionBrowserTreeView::slotClickTimeout()
