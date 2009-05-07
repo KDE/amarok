@@ -81,7 +81,7 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     return m_currentAnimPixmap;
             }
 
-            if ( level < m_levelType.count() ) {
+            if ( level >= 0 && level < m_levelType.count() ) {
                 if (  m_levelType[level] == CategoryId::Album )
                 {
                     if( AmarokConfig::showAlbumArt() )

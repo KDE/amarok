@@ -877,7 +877,8 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
 
-            debug() << "VA node for collection " << tmp->parentCollection()->collectionId() << " expanded";
+            if( tmp->parentCollection() )
+                debug() << "VA node for collection " << tmp->parentCollection()->collectionId() << " expanded";
             m_expandedVariousArtistsNodes.insert( tmp->parentCollection() );
         }
     }

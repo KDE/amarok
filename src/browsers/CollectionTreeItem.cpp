@@ -256,7 +256,9 @@ CollectionTreeItem::queryMaker() const
     CollectionTreeItem *tmp = m_parent;
     while( tmp->isDataItem() )
         tmp = tmp->parent();
-    QueryMaker *qm = tmp->parentCollection()->queryMaker();
+    QueryMaker *qm = 0;
+    if( tmp->parentCollection() )
+        qm = tmp->parentCollection()->queryMaker();
     return qm;
 }
 
