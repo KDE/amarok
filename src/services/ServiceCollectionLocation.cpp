@@ -34,7 +34,6 @@ ServiceCollectionLocation::ServiceCollectionLocation( const ServiceCollection* p
 
 ServiceCollectionLocation::~ServiceCollectionLocation()
 {
-    DEBUG_BLOCK
 }
 
 QString ServiceCollectionLocation::prettyLocation() const
