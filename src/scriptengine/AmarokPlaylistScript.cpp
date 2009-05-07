@@ -162,14 +162,12 @@ namespace AmarokScript
     void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int row, int )
     {
         Meta::TrackPtr t = The::playlistModel()->trackAt( row );
-        debug() << "inserted" << t->prettyName() << "at" << row;
         emit trackInserted( QVariant::fromValue( t ), row );
     }
 
     // PlaylistModel removes only one track at a time
     void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int row, int )
     {
-        debug() << "removed track at" << row;
         emit trackRemoved( row );
     }
 }
