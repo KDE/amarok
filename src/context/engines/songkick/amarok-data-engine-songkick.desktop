@@ -39,3 +39,4 @@ Type=Service
 Icon=songkick
 X-KDE-Library=amarok_data_engine_songkick
 X-KDE-PluginInfo-Name=amarok-songkick
+X-KDE-ParentApp=Amarok
