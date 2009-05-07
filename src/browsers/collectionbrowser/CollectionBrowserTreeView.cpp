@@ -39,12 +39,10 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
     
-    if( index.isValid() )
+    if( index.isValid() && !KGlobalSettings::singleClick() )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        debug() << "is track item? " << item->isTrackItem();
-        if( !KGlobalSettings::singleClick() && !item->isTrackItem() ) 
-            setExpanded( index, !isExpanded( index ) );
+        setExpanded( index, !isExpanded( index ) );
+        event->accept();
     }
     else // propagate to base class
         CollectionTreeView::mouseDoubleClickEvent( event );
@@ -52,22 +50,25 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 {
-    //do nothing, because we don't want + to automatically expand anything
-    //but rather take care of it in the release event below
-    event->accept();
+    DEBUG_BLOCK
+    //If using single click do nothing, because we don't want + to automatically
+    //expand anything but rather take care of it in the release event below
+    if( KGlobalSettings::singleClick() )
+        event->accept();
+    else
+        CollectionTreeView::mousePressEvent( event );
 }
 
 // Reimplement release event to detect a single click.
 void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
+    DEBUG_BLOCK
     QModelIndex index = indexAt( event->pos() );
 
-    if( index.isValid() )
+    if( index.isValid() && KGlobalSettings::singleClick() )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        debug() << "is track item? " << item->isTrackItem();
-        if( KGlobalSettings::singleClick() && !item->isTrackItem() )
-            setExpanded( index, !isExpanded( index ) );
+        setExpanded( index, !isExpanded( index ) );
+        event->accept();
     }
     else // propagate to base class
         CollectionTreeView::mouseReleaseEvent( event );
