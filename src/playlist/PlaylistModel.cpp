@@ -751,9 +751,9 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     }
 
     // actually do the insertion
+    beginInsertRows( QModelIndex(), min, max );
     foreach( const InsertCmd &ic, cmds )
     {
-        beginInsertRows( QModelIndex(), ic.second, ic.second );
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
         subscribeTo( track );
@@ -765,8 +765,8 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_items.insert( ic.second, newitem );
         m_itemIds.insert( newitem->id(), newitem );
         newIds.append( newitem->id() );
-        endInsertRows();
     }
+    endInsertRows();
     emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
     emit insertedIds( newIds );
     emit itemsAdded( min );
