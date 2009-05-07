@@ -39,9 +39,10 @@ CollectionBrowserTreeView::~CollectionBrowserTreeView()
 
 void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    if( event->button() != Qt::LeftButton )
+    if( event->button() != Qt::LeftButton || event->modifiers() )
     {
         CollectionTreeView::mouseDoubleClickEvent( event );
+        update();
         return;
     }
     m_clickTimer.stop();
@@ -75,28 +76,27 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 {
-    if( event->button() != Qt::LeftButton )
+    /*if( event->button() != Qt::LeftButton || event->modifiers() )
     {
         CollectionTreeView::mousePressEvent( event );
         return;
     }
- 
-    //If using single click do nothing, because we don't want + to automatically
-    //expand anything but rather take care of it in the release event below
-    if( KGlobalSettings::singleClick() )
-        event->accept();
-    else
-        CollectionTreeView::mousePressEvent( event );
+    */
+    CollectionTreeView::mousePressEvent( event );
+    update();
 }
 
 void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
-    if( event->button() != Qt::LeftButton )
+    if( event->button() != Qt::LeftButton
+            || event->modifiers()
+            || selectedIndexes().size() > 1)
     {
         CollectionTreeView::mouseReleaseEvent( event );
+        update();
         return;
     }
- 
+
     if( m_clickTimer.isActive() || m_justDoubleClicked )
     {
         //it's a double-click...so ignore it
@@ -117,6 +117,12 @@ void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
 {
+    if( event->buttons() || event->modifiers() )
+    {
+        CollectionTreeView::mouseMoveEvent( event );
+        update();
+        return;
+    }
     QPoint point = event->pos() - m_clickLocation;
     KConfigGroup cg( KGlobal::config(), "KDE" );
     if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
@@ -124,10 +130,8 @@ void CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
         m_clickTimer.stop();
         slotClickTimeout();
         event->accept();
-        return;
     }
-    else
-        CollectionTreeView::mouseMoveEvent( event );
+    CollectionTreeView::mouseMoveEvent( event );
 }
 
 void CollectionBrowserTreeView::slotClickTimeout()
