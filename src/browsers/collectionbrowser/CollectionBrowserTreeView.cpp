@@ -82,12 +82,14 @@ void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
         return;
     }
     */
+    setItemsExpandable( false );
     CollectionTreeView::mousePressEvent( event );
     update();
 }
 
 void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
+    setItemsExpandable( true );
     if( event->button() != Qt::LeftButton
             || event->modifiers()
             || selectedIndexes().size() > 1)
