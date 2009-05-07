@@ -37,10 +37,8 @@ CollectionBrowserTreeView::~CollectionBrowserTreeView()
 
 void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    DEBUG_BLOCK
     QModelIndex index = indexAt( event->pos() );
     
-
     if( index.isValid() )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
@@ -52,10 +50,16 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         CollectionTreeView::mouseDoubleClickEvent( event );
 }
 
+void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
+{
+    //do nothing, because we don't want + to automatically expand anything
+    //but rather take care of it in the release event below
+    event->accept();
+}
+
 // Reimplement release event to detect a single click.
 void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
-    DEBUG_BLOCK
     QModelIndex index = indexAt( event->pos() );
 
     if( index.isValid() )

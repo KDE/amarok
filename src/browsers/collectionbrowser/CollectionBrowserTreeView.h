@@ -32,6 +32,7 @@ class CollectionBrowserTreeView : public CollectionTreeView
 
     protected:
         void mouseDoubleClickEvent( QMouseEvent *event );
+        void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
 };
 
