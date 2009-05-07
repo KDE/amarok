@@ -28,8 +28,8 @@
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
     : CollectionTreeView( parent )
 {
+    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
-
 
 CollectionBrowserTreeView::~CollectionBrowserTreeView()
 {
@@ -37,12 +37,30 @@ CollectionBrowserTreeView::~CollectionBrowserTreeView()
 
 void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
+    m_clickTimer.stop();
+    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
+    //comes through, but after the mouseDoubleClickEvent, so we need to tell
+    //mouseReleaseEvent to ignore that one event
+    m_justDoubleClicked = true;
+
     QModelIndex index = indexAt( event->pos() );
-    
     if( index.isValid() && !KGlobalSettings::singleClick() )
     {
-        setExpanded( index, !isExpanded( index ) );
-        event->accept();
+        //This is where you would want to detect if it is a track and if so
+        //send the event to the base class so it can be added to the playlist...
+        //but CollectionTreeItem::isTrackItem() doesn't seem to work, nor does
+        //counting children, which theoretically should work here if the number wasn't
+        //always random and negative...
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
+        if( false ) //detect if item is track
+        {
+            CollectionTreeView::mouseDoubleClickEvent( event );
+        }
+        else
+        {
+            setExpanded( index, !isExpanded( index ) );
+            event->accept();
+        }
     }
     else // propagate to base class
         CollectionTreeView::mouseDoubleClickEvent( event );
@@ -50,7 +68,6 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 {
-    DEBUG_BLOCK
     //If using single click do nothing, because we don't want + to automatically
     //expand anything but rather take care of it in the release event below
     if( KGlobalSettings::singleClick() )
@@ -59,18 +76,33 @@ void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
         CollectionTreeView::mousePressEvent( event );
 }
 
-// Reimplement release event to detect a single click.
 void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
-    DEBUG_BLOCK
-    QModelIndex index = indexAt( event->pos() );
-
-    if( index.isValid() && KGlobalSettings::singleClick() )
+    if( m_clickTimer.isActive() || m_justDoubleClicked )
     {
-        setExpanded( index, !isExpanded( index ) );
+        //it's a double-click...so ignore it
+        m_clickTimer.stop();
+        m_justDoubleClicked = false;
+        m_index = QModelIndex();
         event->accept();
+        return;
     }
-    else // propagate to base class
-        CollectionTreeView::mouseReleaseEvent( event );
+
+    QModelIndex index = indexAt( event->pos() );
+    m_index = index;
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
+    event->accept();
 }
 
+void CollectionBrowserTreeView::slotClickTimeout()
+{
+    m_clickTimer.stop();
+    if( m_index.isValid() && KGlobalSettings::singleClick() )
+    {
+        setExpanded( m_index, !isExpanded( m_index ) );
+    }
+    m_index = QModelIndex();
+}
+
+#include "CollectionBrowserTreeView.moc"
