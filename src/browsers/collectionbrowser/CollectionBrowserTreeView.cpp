@@ -39,6 +39,11 @@ CollectionBrowserTreeView::~CollectionBrowserTreeView()
 
 void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
+    if( event->button() != Qt::LeftButton )
+    {
+        CollectionTreeView::mouseDoubleClickEvent( event );
+        return;
+    }
     m_clickTimer.stop();
     //m_justDoubleClicked is necessary because the mouseReleaseEvent still
     //comes through, but after the mouseDoubleClickEvent, so we need to tell
@@ -70,6 +75,12 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 {
+    if( event->button() != Qt::LeftButton )
+    {
+        CollectionTreeView::mousePressEvent( event );
+        return;
+    }
+ 
     //If using single click do nothing, because we don't want + to automatically
     //expand anything but rather take care of it in the release event below
     if( KGlobalSettings::singleClick() )
@@ -80,6 +91,12 @@ void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 
 void CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
+    if( event->button() != Qt::LeftButton )
+    {
+        CollectionTreeView::mouseReleaseEvent( event );
+        return;
+    }
+ 
     if( m_clickTimer.isActive() || m_justDoubleClicked )
     {
         //it's a double-click...so ignore it
