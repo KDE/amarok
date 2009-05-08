@@ -209,7 +209,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
                 warning() << "Could not create directory " << dir;
                 //TODO: might be shown to the user at some point
                 //i18n-ify
-                source->transferError( track, "Could not create directory " + dir.absolutePath() );
+                source()->transferError( track, "Could not create directory " + dir.absolutePath() );
                 continue;
             }
         }
