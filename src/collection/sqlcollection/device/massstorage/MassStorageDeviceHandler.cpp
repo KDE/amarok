@@ -137,12 +137,10 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
     }
     if( volumeAccess->filePath().isEmpty() )
         return 0; // It's not mounted, we can't do anything.
-    QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint, uuid "
+    QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'uuid' "
                                          "AND uuid = '%1';" ).arg( volume->uuid() ) );
-    debug() << "Size of ids returned = " << ids.size();
-    debug() << "Values returned from database: " << ids;
-    if ( ids.size() == 7 )
+    if ( ids.size() == 3 )
     {
         debug() << "Found existing UUID config for ID " << ids[0] << " , uuid " << volume->uuid();
         s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "

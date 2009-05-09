@@ -23,7 +23,7 @@
 #include "SqlCollection.h"
 #include <KMessageBox>
 
-static const int DB_VERSION = 2;
+static const int DB_VERSION = 3;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -47,6 +47,7 @@ DatabaseUpdater::update()
 {
     DEBUG_BLOCK
     int dbVersion = adminValue( "DB_VERSION" );
+    debug() << "Database version: " << dbVersion;
     if( dbVersion == 0 )
     {
         createTables();
@@ -60,11 +61,11 @@ DatabaseUpdater::update()
             upgradeVersion1to2();
             dbVersion = 2;
         }
-        //if ( dbVersion == 2 )
-        //{
-        //    upgradeVersion2to3();
-        //    dbVersion = 3;
-        //}
+        if ( dbVersion == 2 )
+        {
+            upgradeVersion2to3();
+            dbVersion = 3;
+        }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
         m_collection->startFullScan();
