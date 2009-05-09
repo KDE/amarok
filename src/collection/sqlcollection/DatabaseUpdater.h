@@ -38,8 +38,10 @@ public:
     void removeTemporaryTables();
     void copyToPermanentTables();
     void cleanPermanentTables();
-    void upgradeVersion1to2();
 
+    void upgradeVersion1to2();
+    void upgradeVersion2to3();
+    
     void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
 
     void removeFilesInDir( int deviceid, const QString &rdir );

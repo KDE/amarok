@@ -60,7 +60,13 @@ DatabaseUpdater::update()
             upgradeVersion1to2();
             dbVersion = 2;
         }
-        m_collection->query( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
+        //if ( dbVersion == 2 )
+        //{
+        //    upgradeVersion2to3();
+        //    dbVersion = 3;
+        //}
+        QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
+        m_collection->query( query );
         m_collection->startFullScan();
     }
     else if( dbVersion > DB_VERSION )
@@ -85,6 +91,28 @@ DatabaseUpdater::upgradeVersion1to2()
                          "ADD COLUMN albumpeakgain FLOAT, "
                          "ADD COLUMN trackgain FLOAT,"
                          "ADD COLUMN trackpeakgain FLOAT;" );
+}
+
+void
+DatabaseUpdater::upgradeVersion2to3()
+{
+    DEBUG_BLOCK
+
+    m_collection->query( "DROP TABLE devices;" );
+
+    QString create = "CREATE TABLE devices "
+                     "(id " + m_collection->idType() +
+                     ",type " + m_collection->textColumnType() +
+                     ",label " + m_collection->textColumnType() +
+                     ",lastmountpoint " + m_collection->textColumnType() +
+                     ",uuid " + m_collection->textColumnType() +
+                     ",servername " + m_collection->textColumnType() +
+                     ",sharename " + m_collection->textColumnType() + ");";
+    m_collection->query( create );
+    m_collection->query( "CREATE INDEX devices_type ON devices( type );" );
+    m_collection->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
+    m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+
 }
 
 void
@@ -369,7 +397,7 @@ DatabaseUpdater::createTables() const
                          ",sharename " + m_collection->textColumnType() + ");";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX devices_type ON devices( type );" );
-        m_collection->query( "CREATE INDEX devices_uuid ON devices( uuid );" );
+        m_collection->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
         m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
     }
     {
