@@ -62,6 +62,7 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     , quitOnDragLeave( false )
     , onTop( true )
     , widgetRect()
+    , queuedHide( false )
     , q( parent )
 {
     if( widget )
@@ -460,7 +461,11 @@ void PopupDropper::hide()
 
     if( d->fadeShowTimer.state() == QTimeLine::Running )
     {
-        QTimer::singleShot( 0, this, SLOT( hide() ) );
+        if( !d->queuedHide )
+        {
+            QTimer::singleShot( 0, this, SLOT( hide() ) );
+            d->queuedHide = true;
+        }
         return;
     }
 
@@ -481,9 +486,15 @@ void PopupDropper::hide()
         d->fadeHideTimer.setCurveShape( QTimeLine::LinearCurve );
         d->fadeHideTimer.start();
         //qDebug() << "Timer started";
+        return;
     }
-    else 
+    if( !d->queuedHide )
+    {
+        //make sure weird issues with the timeline don't cause this to trigger twice
+        d->queuedHide = true;
         QTimer::singleShot( 0, d, SLOT( fadeHideTimerFinished() ) );
+        return;
+    }
 }
 
 void PopupDropper::hideAllOverlays()

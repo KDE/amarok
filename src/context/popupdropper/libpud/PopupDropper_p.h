@@ -75,6 +75,9 @@ public:
     bool onTop;
     QRectF widgetRect;
 
+    //queuedHide: To prevent multiple hide() from being sent if it's already being hidden
+    bool queuedHide;
+
     void dragLeft();
     void dragEntered();
     void startDeleteTimer();
