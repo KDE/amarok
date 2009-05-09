@@ -60,7 +60,7 @@ DatabaseUpdater::update()
             upgradeVersion1to2();
             dbVersion = 2;
         }
-        m_collection->query( "UPDATE admin SET version = 2 WHERE component = 'DB_VERSION';" );
+        m_collection->query( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->startFullScan();
     }
     else if( dbVersion > DB_VERSION )
