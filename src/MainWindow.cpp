@@ -45,7 +45,6 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
-#include "playlist/view/graphic/PlaylistGraphicsView.h"
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h"
