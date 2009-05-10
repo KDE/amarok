@@ -38,7 +38,7 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         static const QString TRACK_MIME;
         static const QString PLAYLIST_MIME;
 
-//         static const QString PLAYLISTBROWSERGROUP_MIME;
+        static const QString PLAYLISTBROWSERGROUP_MIME;
 
         static const QString PODCASTCHANNEL_MIME;
         static const QString PODCASTEPISODE_MIME;
@@ -60,9 +60,9 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void setPlaylists( const Meta::PlaylistList &playlists );
         void addPlaylists( const Meta::PlaylistList &playlists );
 
-//         SqlPlaylistGroupList sqlPlaylistsGroups() const;
-//         void setPlaylistGroups( const SqlPlaylistGroupList &groups );
-//         void addPlaylistGroups( const SqlPlaylistGroupList &groups );
+        QStringList playlistGroups() const;
+        void setPlaylistGroups( const QStringList &groups );
+        void addPlaylistGroup( const QString &group );
 
         Meta::PodcastChannelList podcastChannels() const;
         void setPodcastChannels( const Meta::PodcastChannelList &channels );

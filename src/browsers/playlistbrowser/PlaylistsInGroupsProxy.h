@@ -47,6 +47,11 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         QVariant data( const QModelIndex &index, int role ) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
         virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+        virtual Qt::DropActions supportedDropActions() const { return Qt::MoveAction; }
+        virtual QStringList mimeTypes() const;
+        virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                   int row, int column, const QModelIndex &parent );
 
         QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
 

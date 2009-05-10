@@ -27,7 +27,7 @@
 
 const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
 const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlists";
-// const QString AmarokMimeData::PLAYLISTBROWSERGROUP_MIME = "application/x-amarok-playlistbrowsergroup";
+const QString AmarokMimeData::PLAYLISTBROWSERGROUP_MIME = "application/x-amarok-playlistbrowsergroup";
 const QString AmarokMimeData::PODCASTCHANNEL_MIME = "application/x-amarok-podcastchannel";
 const QString AmarokMimeData::PODCASTEPISODE_MIME = "application/x-amarok-podcastepisode";
 const QString AmarokMimeData::AMAROKURL_MIME = "application/x-amarok-amarokurl";
@@ -48,7 +48,7 @@ public:
 
     Meta::TrackList tracks;
     Meta::PlaylistList playlists;
-//     SqlPlaylistGroupList playlistGroups;
+    QStringList playlistGroups;
     Meta::PodcastChannelList m_podcastChannels;
     Meta::PodcastEpisodeList m_podcastEpisodes;
     QList<QueryMaker*> queryMakers;
@@ -80,11 +80,11 @@ AmarokMimeData::formats() const
     DEBUG_BLOCK
 
     QStringList formats( QMimeData::formats() );
-    if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty() /*|| !d->playlistGroups.isEmpty()*/ || !d->bookmarks.isEmpty() || !d->bookmarkGroups.isEmpty() )
+    if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty() || !d->playlistGroups.isEmpty() || !d->bookmarks.isEmpty() || !d->bookmarkGroups.isEmpty() )
     {
         formats.append( TRACK_MIME );
         formats.append( PLAYLIST_MIME );
-//         formats.append( PLAYLISTBROWSERGROUP_MIME );
+        formats.append( PLAYLISTBROWSERGROUP_MIME );
         formats.append( PODCASTCHANNEL_MIME );
         formats.append( PODCASTEPISODE_MIME );
         formats.append( BOOKMARKGROUP_MIME );
@@ -107,8 +107,8 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
         return !d->tracks.isEmpty() || !d->queryMakers.isEmpty();
     else if( mimeType == PLAYLIST_MIME )
         return !d->playlists.isEmpty() || !d->queryMakers.isEmpty();
-//     else if( mimeType == PLAYLISTBROWSERGROUP_MIME )
-//         return !d->playlistGroups.isEmpty();
+    else if( mimeType == PLAYLISTBROWSERGROUP_MIME )
+        return !d->playlistGroups.isEmpty();
     else if( mimeType == PODCASTCHANNEL_MIME )
         return !d->m_podcastChannels.isEmpty();
     else if( mimeType == PODCASTEPISODE_MIME )
@@ -181,11 +181,6 @@ AmarokMimeData::playlists() const
         QCoreApplication::instance()->processEvents( QEventLoop::AllEvents );
     }
     Meta::PlaylistList result = d->playlists;
-//     foreach( QueryMaker *qm, d->queryMakers )
-//     {
-//         if( d->trackMap.contains( qm ) )
-//             result << d->trackMap.value( qm );
-//     }
     return result;
 }
 
@@ -200,21 +195,24 @@ AmarokMimeData::addPlaylists( const Meta::PlaylistList &playlists )
 {
     d->playlists << playlists;
 }
-/*
-SqlPlaylistGroupList AmarokMimeData::sqlPlaylistsGroups() const
+
+QStringList
+AmarokMimeData::playlistGroups() const
 {
     return d->playlistGroups;
 }
 
-void AmarokMimeData::setPlaylistGroups( const SqlPlaylistGroupList & groups )
+void
+AmarokMimeData::setPlaylistGroups( const QStringList &groups )
 {
     d->playlistGroups = groups;
 }
 
-void AmarokMimeData::addPlaylistGroups(const SqlPlaylistGroupList & groups)
+void
+AmarokMimeData::addPlaylistGroup( const QString &group )
 {
-    d->playlistGroups << groups;
-}*/
+    d->playlistGroups << group;
+}
 
 Meta::PodcastChannelList
 AmarokMimeData::podcastChannels() const

@@ -18,6 +18,7 @@
 
 #include "PlaylistsInGroupsProxy.h"
 
+#include "AmarokMimeData.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
 #include "meta/Playlist.h"
@@ -216,6 +217,66 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
     return m_model->removeRow( originalIdx.row(), originalIdx.parent() );
 }
 
+QStringList
+PlaylistsInGroupsProxy::mimeTypes() const
+{
+    DEBUG_BLOCK
+    return QStringList();
+}
+
+QMimeData *
+PlaylistsInGroupsProxy::mimeData( const QModelIndexList &indexes ) const
+{
+    DEBUG_BLOCK
+    AmarokMimeData* mime = new AmarokMimeData();
+    QModelIndexList sourceIndexes;
+    foreach( const QModelIndex &idx, indexes )
+    {
+        debug() << idx;
+        if( isGroup( idx ) )
+        {
+            debug() << "is a group, add mimeData of all children";
+        }
+        else
+        {
+            debug() << "is original item, add mimeData from source model";
+            sourceIndexes << mapToSource( idx );
+        }
+    }
+
+    if( !sourceIndexes.isEmpty() )
+        return m_model->mimeData( sourceIndexes );
+
+    return mime;
+}
+
+bool
+PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                   int row, int column, const QModelIndex &parent )
+{
+    DEBUG_BLOCK
+    if( action == Qt::IgnoreAction )
+        return true;
+
+    QModelIndex idx = index( row, column, parent );
+
+    if( isGroup( idx ) )
+    {
+        if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+        {
+            debug() << "playlist dropped on group";
+        }
+        else if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
+        {
+            debug() << "playlistgroup dropped on group";
+            //TODO: multilevel group support
+            debug() << "ignore drop until we have multilevel group support";
+        }
+    }
+
+    return false;
+}
+
 int
 PlaylistsInGroupsProxy::columnCount( const QModelIndex& index ) const
 {
@@ -297,7 +358,8 @@ Qt::ItemFlags
 PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 {
     if( isGroup( index ) )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
+                 Qt::ItemIsDropEnabled );
 
     QModelIndex originalIdx = mapToSource( index );
     return m_model->flags( originalIdx );
