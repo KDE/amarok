@@ -56,7 +56,6 @@ signals:
     // these slots are used by the ContextMenu
 public slots:
     void editTrackInformation();
-    void playTrack();
     void playFirstSelected();
     void dequeueSelection();
     void queueSelection();

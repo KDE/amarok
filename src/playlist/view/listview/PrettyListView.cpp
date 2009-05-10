@@ -122,12 +122,6 @@ Playlist::PrettyListView::editTrackInformation()
 }
 
 void
-Playlist::PrettyListView::playTrack()
-{
-    trackActivated( currentIndex() );
-}
-
-void
 Playlist::PrettyListView::playFirstSelected()
 {
     QModelIndexList selected = selectedIndexes();
