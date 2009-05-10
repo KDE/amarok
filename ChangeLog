@@ -24,6 +24,7 @@ VERSION 2.1-beta2
 
   BUGFIXES:
     * Fixed incorrect track counts in the collection.
+    * Fixed duplicate scanning of playlists during collection scan
     * Fixed drag and drop to other applications. (BR 177415)
     * Fixed the filter widget in the Files browser. (BR 176139)
     * Fixed crash when using context menu after collection update. (BR 190056)
