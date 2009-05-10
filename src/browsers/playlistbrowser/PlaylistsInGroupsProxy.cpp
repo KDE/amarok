@@ -345,7 +345,7 @@ QModelIndex
 PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
 {
     //DEBUG_BLOCK
-    //debug() << "index: " << index;
+//    debug() << "index: " << index;
     if( !index.isValid() )
         return QModelIndex();
 
@@ -353,18 +353,22 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
         return QModelIndex();
 
     QModelIndex proxyParent = index.parent();
-    //debug() << "parent: " << proxyParent;
+//    debug() << "proxyParent: " << proxyParent;
     QModelIndex originalParent = mapToSource( proxyParent );
-    //debug() << "originalParent: " << originalParent;
+//    debug() << "originalParent: " << originalParent;
     int originalRow = index.row();
     if( !originalParent.isValid() )
     {
         int indexInGroup = index.row();
         if( !proxyParent.isValid() )
             indexInGroup -= m_groupNames.count();
-        //debug() << "indexInGroup" << indexInGroup;
-        originalRow = m_groupHash.values( proxyParent.row() ).at( indexInGroup );
-        //debug() << "originalRow: " << originalRow;
+//        debug() << "indexInGroup" << indexInGroup;
+        QList<int> childRows = m_groupHash.values( proxyParent.row() );
+        if( childRows.isEmpty() || indexInGroup >= childRows.count() )
+            return QModelIndex();
+
+        originalRow = childRows.at( indexInGroup );
+//        debug() << "originalRow: " << originalRow;
     }
     return m_model->index( originalRow, index.column(), originalParent );
 }
