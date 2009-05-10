@@ -49,7 +49,6 @@ function onFinished( dat )
             newxml = xml.replace( "{artist}", escapeString( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) );
             newxml = newxml.replace( "{title}", escapeString( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
             newxml = newxml.replace( "{lyrics}", escapeString( parsedContent ) );
-            Amarok.debug( "showing:" + newxml );
             Amarok.Lyrics.showLyrics( newxml );
         }
     }
