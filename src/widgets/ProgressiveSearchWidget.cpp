@@ -352,6 +352,11 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
         event->accept();
         slotPrevious();
     }
+    else if( event->key() == Qt::Key_Escape )
+    {
+        event->accept();
+        m_searchEdit->clear();
+    }
     else
     {
         event->ignore();
