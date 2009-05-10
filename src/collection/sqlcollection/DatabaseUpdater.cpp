@@ -51,7 +51,8 @@ DatabaseUpdater::update()
     if( dbVersion == 0 )
     {
         createTables();
-        m_collection->query( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', 2);" );
+        QString query = QString( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', %1);" ).arg( DB_VERSION );
+        m_collection->query( query );
     }
     else if( dbVersion < DB_VERSION )
     {
