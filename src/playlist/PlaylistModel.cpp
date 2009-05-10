@@ -798,8 +798,15 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
 void
 Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 {
+    DEBUG_BLOCK
     if ( cmds.size() < 1 )
         return;
+
+    if ( cmds.size() == m_items.size() )
+    {
+        clearCommand();
+        return;
+    }
 
     int min = m_items.size();
     int max = 0;
@@ -886,6 +893,24 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     //make sure that there are enough tracks if we just removed from a dynamic playlist.
     Playlist::Actions::instance()->normalizeDynamicPlayist();
 }
+
+
+void Playlist::Model::clearCommand()
+{
+    int noOfRows = m_items.size();
+
+    QList<quint64> delIds = m_itemIds.keys();
+
+    beginRemoveRows( QModelIndex(), 0, noOfRows - 1);
+    qDeleteAll( m_items );
+    m_items.clear();
+    m_itemIds.clear();
+    endRemoveRows();
+
+    emit removedIds( delIds );
+
+}
+
 
 void
 Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
@@ -1081,3 +1106,4 @@ bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
     }
     return false;
 }
+

@@ -230,6 +230,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         void insertTracksCommand( const InsertCmdList& );
         void removeTracksCommand( const RemoveCmdList& );
         void moveTracksCommand( const MoveCmdList&, bool reverse = false );
+        void clearCommand();
         void setStateOfRow( int row, Item::State state ) { m_items.at( row )->setState( state ); }
 
         /**
