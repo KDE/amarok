@@ -146,8 +146,11 @@ Playlist::Actions::play()
 void
 Playlist::Actions::play( const QModelIndex& index )
 {
-    m_nextTrackCandidate = index.data( UniqueIdRole ).value<quint64>();
-    play( m_nextTrackCandidate );
+    if( index.isValid() )
+    {
+        m_nextTrackCandidate = index.data( UniqueIdRole ).value<quint64>();
+        play( m_nextTrackCandidate );
+    }
 }
 
 void

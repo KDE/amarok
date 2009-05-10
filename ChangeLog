@@ -8,6 +8,8 @@ VERSION 2.1-beta2
     * New Script method to get current track time in milliseconds. (BR 177073)
 
   CHANGES:
+    * Pressing the return key in the playlist search activates the selected
+      result. (BR 192126)
     * Pressing the escape key in the playlist search clears it's contents.
       (BR 192123)
     * Optimizations to the insertion and removal of large numbers of tracks 

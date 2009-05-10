@@ -90,6 +90,12 @@ signals:
      */
     void showOnlyMatches( bool onlyMatches );
 
+    /**
+     * Signal emitted when the user presses the return key, signifying that the matched
+     * item in the playlist should be activated
+     */
+    void activateFilterResult();
+
 public slots:
     /**
      * Notify the widget that there are matches (at least one), so the next and previous actions

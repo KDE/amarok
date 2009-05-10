@@ -57,6 +57,7 @@ signals:
 public slots:
     void editTrackInformation();
     void playTrack();
+    void playFirstSelected();
     void dequeueSelection();
     void queueSelection();
     void removeSelection();

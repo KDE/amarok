@@ -357,6 +357,12 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
         event->accept();
         m_searchEdit->clear();
     }
+    else if( event->key() == Qt::Key_Return )
+    {
+        DEBUG_BLOCK
+        event->accept();
+        emit activateFilterResult();
+    }
     else
     {
         event->ignore();

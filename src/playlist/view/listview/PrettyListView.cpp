@@ -128,6 +128,14 @@ Playlist::PrettyListView::playTrack()
 }
 
 void
+Playlist::PrettyListView::playFirstSelected()
+{
+    QModelIndexList selected = selectedIndexes();
+    if( !selected.isEmpty() )
+        trackActivated( selected.first() );
+}
+
+void
 Playlist::PrettyListView::removeSelection()
 {
     QList<int> sr = selectedRows();
