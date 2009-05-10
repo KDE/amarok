@@ -345,7 +345,6 @@ set(libplaylist_SRCS
     playlist/navigators/TrackNavigator.cpp
     playlist/navigators/NavigatorFilterProxyModel.cpp
     playlist/view/PlaylistViewCommon.cpp
-    playlist/view/classic/PlaylistClassicView.cpp
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/SourceSelectionPopup.cpp
