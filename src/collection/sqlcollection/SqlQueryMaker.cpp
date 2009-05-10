@@ -575,10 +575,15 @@ SqlQueryMaker::linkTables()
     if( !d->linkedTables )
         return;
 
-    if( d->linkedTables & Private::TAGS_TAB )
-        d->queryFrom += "tracks";
     if( d->linkedTables & Private::URLS_TAB )
-        d->queryFrom += " INNER JOIN urls ON tracks.id = urls.id";
+        d->queryFrom += " urls";
+    if( d->linkedTables & Private::TAGS_TAB )
+    {
+        if( d->linkedTables & Private::URLS_TAB )
+            d->queryFrom += " LEFT JOIN tracks ON urls.id = tracks.url";
+        else
+            d->queryFrom += " tracks";
+    }
     if( d->linkedTables & Private::ARTIST_TAB )
         d->queryFrom += " LEFT JOIN artists ON tracks.artist = artists.id";
     if( d->linkedTables & Private::ALBUM_TAB )
