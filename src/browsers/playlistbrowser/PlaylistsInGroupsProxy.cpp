@@ -23,6 +23,7 @@
 #include "Debug.h"
 #include "meta/Playlist.h"
 #include "SvgHandler.h"
+    //ret << "text/uri-list"; //we do accept urls
 #include "UserPlaylistModel.h"
 
 #include <KIcon>
@@ -221,7 +222,9 @@ QStringList
 PlaylistsInGroupsProxy::mimeTypes() const
 {
     DEBUG_BLOCK
-    return QStringList();
+    QStringList mimeTypes = m_model->mimeTypes();
+    mimeTypes << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
+    return mimeTypes;
 }
 
 QMimeData *
@@ -255,16 +258,41 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
                                    int row, int column, const QModelIndex &parent )
 {
     DEBUG_BLOCK
+    Q_UNUSED( row );
+    Q_UNUSED( column );
+    debug() << "droped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
+    debug() << parent;
     if( action == Qt::IgnoreAction )
-        return true;
-
-    QModelIndex idx = index( row, column, parent );
-
-    if( isGroup( idx ) )
     {
+        debug() << "ignored";
+        return true;
+    }
+
+    if( isGroup( parent ) )
+    {
+        debug() << "dropped on a group";
         if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
         {
             debug() << "playlist dropped on group";
+            if( parent.row() < 0 || parent.row() >= m_groupNames.count() )
+            {
+                debug() << "ERROR: something went seriously wrong in " << __FILE__ << __LINE__;
+                return false;
+            }
+            //apply the new groupname to the source index
+            QString groupName = m_groupNames.value( parent.row() );
+            debug() << QString("apply the new groupname %1 to the source index").arg( groupName );
+            const AmarokMimeData *amarokMime = dynamic_cast<const AmarokMimeData *>(data);
+            if( amarokMime == 0 )
+            {
+                debug() << "ERROR: could not cast to amarokMimeData at " << __FILE__ << __LINE__;
+                return false;
+            }
+            Meta::PlaylistList playlists = amarokMime->playlists();
+            foreach( Meta::PlaylistPtr playlist, playlists )
+                playlist->setGroups( QStringList( groupName ) );
+            buildTree();
+            return true;
         }
         else if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
         {
@@ -272,6 +300,13 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
             //TODO: multilevel group support
             debug() << "ignore drop until we have multilevel group support";
         }
+    }
+    else
+    {
+        debug() << "not dropped on a group";
+        QModelIndex sourceIndex = mapToSource( parent );
+        return m_model->dropMimeData( data, action, sourceIndex.row(), sourceIndex.column(),
+                               sourceIndex.parent() );
     }
 
     return false;
