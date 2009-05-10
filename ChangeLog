@@ -19,7 +19,8 @@ VERSION 2.1-beta2
     * Podcast titles are stripped of unnecessary whitespace. (BR 177403)
 
   BUGFIXES:
-    * Fix drag and drop to other applications. (BR 177415)
+    * Fixed incorrect track counts in the collection.
+    * Fixed drag and drop to other applications. (BR 177415)
     * Fixed the filter widget in the Files browser. (BR 176139)
     * Fixed crash when using context menu after collection update. (BR 190056)
     * Fixed problem with Amarok showing wrong track length for Last.fm 
