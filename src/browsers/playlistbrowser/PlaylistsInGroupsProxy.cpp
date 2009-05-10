@@ -85,7 +85,8 @@ PlaylistsInGroupsProxy::buildTree()
     {
         QModelIndex idx = m_model->index( row, 0, QModelIndex() );
         //Playlists can be in multiple groups but we only use the first TODO: multigroup
-        QString groupName = idx.data( PlaylistBrowserNS::UserModel::GroupRole ).toStringList().first();
+        QStringList groups = idx.data( PlaylistBrowserNS::UserModel::GroupRole ).toStringList();
+        QString groupName = groups.isEmpty() ? QString() : groups.first();
         debug() << QString("index %1 belongs to groupName %2").arg( row ).arg( groupName );
 
         int groupIndex = m_groupNames.indexOf( groupName ); //groups are added to the end of the existing list
@@ -142,7 +143,7 @@ PlaylistsInGroupsProxy::parent( const QModelIndex &index ) const
         return QModelIndex();
 
     int parentCreateIndex = index.internalId();
-    if( parentCreateIndex == -1 )
+    if( parentCreateIndex == -1 || parentCreateIndex >= m_parentCreateList.count() )
         return QModelIndex();
 
     struct ParentCreate pc = m_parentCreateList[parentCreateIndex];
@@ -268,6 +269,22 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
         return true;
     }
 
+    if( !parent.isValid() )
+    {
+        debug() << "dropped on the root";
+        const AmarokMimeData *amarokMime = dynamic_cast<const AmarokMimeData *>(data);
+        if( amarokMime == 0 )
+        {
+            debug() << "ERROR: could not cast to amarokMimeData at " << __FILE__ << __LINE__;
+            return false;
+        }
+        Meta::PlaylistList playlists = amarokMime->playlists();
+        foreach( Meta::PlaylistPtr playlist, playlists )
+            playlist->setGroups( QStringList() );
+        buildTree();
+        return true;
+    }
+
     if( isGroup( parent ) )
     {
         debug() << "dropped on a group";
@@ -299,17 +316,14 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
             debug() << "playlistgroup dropped on group";
             //TODO: multilevel group support
             debug() << "ignore drop until we have multilevel group support";
+            return false;
         }
     }
-    else
-    {
-        debug() << "not dropped on a group";
-        QModelIndex sourceIndex = mapToSource( parent );
-        return m_model->dropMimeData( data, action, sourceIndex.row(), sourceIndex.column(),
-                               sourceIndex.parent() );
-    }
 
-    return false;
+    debug() << "not dropped on the root or on a group";
+    QModelIndex sourceIndex = mapToSource( parent );
+    return m_model->dropMimeData( data, action, sourceIndex.row(), sourceIndex.column(),
+                           sourceIndex.parent() );
 }
 
 int

@@ -274,7 +274,7 @@ PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant 
         {
             debug() << "changing group of item " << index.internalId() << " to " << value.toString();
             Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
-            item->setGroups( QStringList( value.toString() ) );
+            item->setGroups( value.toStringList() );
             break;
         }
         default:
@@ -297,10 +297,9 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 QStringList
 PlaylistBrowserNS::UserModel::mimeTypes() const
 {
-    QStringList ret; // = QAbstractListModel::mimeTypes();
-//     ret << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
+    QStringList ret;
     ret << AmarokMimeData::PLAYLIST_MIME;
-    //ret << "text/uri-list"; //we do accept urls
+    ret << "text/uri-list"; //we do accept urls
     return ret;
 }
 
@@ -316,9 +315,15 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
     foreach( const QModelIndex &index, indices )
     {
         if( IS_TRACK(index) )
+        {
+            debug() << "track";
             tracks << trackFromIndex( index );
+        }
         else
+        {
+            debug() << "playlist";
             playlists << m_playlists.value( index.internalId() );
+        }
     }
 
     mime->setPlaylists( playlists );
