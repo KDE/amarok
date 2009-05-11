@@ -23,7 +23,6 @@
 #include "Debug.h"
 #include "meta/Playlist.h"
 #include "SvgHandler.h"
-    //ret << "text/uri-list"; //we do accept urls
 #include "UserPlaylistModel.h"
 
 #include <KIcon>
