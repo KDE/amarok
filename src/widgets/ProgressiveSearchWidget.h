@@ -21,9 +21,9 @@
 #define PROGRESSIVESEARCHWIDGET_H
 
 #include <KVBox>
+#include "LineEdit.h"
 
 class KAction;
-class KLineEdit;
 
 class QKeyEvent;
 class QLabel;
@@ -187,7 +187,7 @@ private:
     void hideHiddenTracksWarning();
     void showHiddenTracksWarning();
 
-    KLineEdit *m_searchEdit;
+    Amarok::LineEdit *m_searchEdit;
     KAction   *m_nextAction;
     KAction   *m_previousAction;
     QMenu     *m_menu;

@@ -488,6 +488,7 @@ set(amaroklib_LIB_SRCS
     widgets/EditDeleteDelegate.cpp
     widgets/TokenLayoutWidget.cpp
     widgets/FlowLayout.cpp
+    widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
     widgets/MainToolbar.cpp

@@ -25,7 +25,6 @@
 #include <KAction>
 #include <KColorScheme>
 #include <KHBox>
-#include <KLineEdit>
 #include <KLocale>
 
 #include <QKeyEvent>
@@ -45,7 +44,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_warningLabel = new QLabel( i18n("Warning: tracks have been hidden in the playlist"), this );
     hideHiddenTracksWarning();
 
-    m_searchEdit = new KLineEdit( searchBox );
+    m_searchEdit = new Amarok::LineEdit( searchBox );
     m_searchEdit->setClickMessage( i18n( "Search playlist" ) );
     m_searchEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_searchEdit->setClearButtonShown( true );
@@ -351,11 +350,6 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
     {
         event->accept();
         slotPrevious();
-    }
-    else if( event->key() == Qt::Key_Escape )
-    {
-        event->accept();
-        m_searchEdit->clear();
     }
     else if( event->key() == Qt::Key_Return )
     {
