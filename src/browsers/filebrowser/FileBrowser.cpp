@@ -26,9 +26,9 @@
 #include "collection/CollectionManager.h"
 #include "browsers/filebrowser/MyDirOperator.h"
 #include "browsers/filebrowser/kbookmarkhandler.h"
+#include "widgets/LineEdit.h"
 
 #include <QDir>
-#include <QLineEdit>
 #include <QListWidget>
 #include <QToolButton>
 
@@ -73,6 +73,11 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_filterButton->setCheckable( true );
     m_filter = new KHistoryComboBox( true, filterBox );
     m_filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+
+    Amarok::LineEdit *lineEdit = new Amarok::LineEdit( m_filter );
+    lineEdit->setClickMessage( i18n( "Enter search terms here" ) );
+    m_filter->setLineEdit( lineEdit );
+
     filterBox->setStretchFactor( m_filter, 2 );
     connect( m_filterButton, SIGNAL( clicked() ), this, SLOT( filterButtonClicked() ) );
 
