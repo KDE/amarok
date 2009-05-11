@@ -279,6 +279,7 @@ DynamicCategory::save()
     }
 
     DynamicModel::instance()->saveActive( title );
+    playlistSelectionChanged( DynamicModel::instance()->playlistIndex( title ) );
 }
 
 }
