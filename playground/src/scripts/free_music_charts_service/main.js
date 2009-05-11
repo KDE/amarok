@@ -249,7 +249,15 @@ function onPopulate( level, callbackData, filter ) {
       item.infoHtml = "<div style=\"background-color:#999999\"><center><b>Chart positions of<br/>";
       item.infoHtml = item.infoHtml + elt.firstChildElement( "name" ).text() + "</div>";
       item.infoHtml = item.infoHtml + "</b></center><div style=\"color:#153860\">";
-      item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() ) + "</div>";
+
+      item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() );
+
+      item.infoHtml = item.infoHtml + "<br/><br/><center>";
+      item.infoHtml = item.infoHtml + "<a style=\"text-decoration:none;\"";
+      item.infoHtml = item.infoHtml + "href=\"amarok://navigate/service/Jamendo.com/artist-album/artist:%22";
+      item.infoHtml = item.infoHtml + songArtistTitle[0] + "%22\">";
+      item.infoHtml = item.infoHtml + songArtistTitle[0] + " on Jamendo</a></center>";
+      item.infoHtml = item.infoHtml + "</div>";
 
       elt = elt.nextSiblingElement( "song" );
       if( addAll || isFilterMatch( item.itemName ) )
