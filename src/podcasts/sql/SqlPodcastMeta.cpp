@@ -211,7 +211,6 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) c
 Meta::Capability*
 Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
 {
-    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::CurrentTrackActions:
@@ -219,14 +218,11 @@ Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
             QList< PopupDropperAction * > actions;
             PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
             actions << flag;
-            debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );
         }
         case Meta::Capability::WriteTimecode:
-            debug() << "returning TimecodeWriteCapabilityPodcastImpl";
             return new TimecodeWriteCapabilityPodcastImpl( this );
         case Meta::Capability::LoadTimecode:
-            debug() << "returning TimecodeLoadCapabilityPodcastImpl";
             return new TimecodeLoadCapabilityPodcastImpl( this );
         default:
             return 0;
