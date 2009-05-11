@@ -53,6 +53,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
+    connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SIGNAL( activateFilterResult() ) );
 
     QToolBar *toolbar = new QToolBar( searchBox );
 
@@ -350,12 +351,6 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
     {
         event->accept();
         slotPrevious();
-    }
-    else if( event->key() == Qt::Key_Return )
-    {
-        DEBUG_BLOCK
-        event->accept();
-        emit activateFilterResult();
     }
     else
     {
