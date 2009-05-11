@@ -33,9 +33,9 @@
 #include "PixmapViewer.h"
 #include "playlist/PlaylistController.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "widgets/LineEdit.h"
 
 #include <KIO/NetAccess>
-#include <KLineEdit>
 #include <KLocale>
 #include <KMenu>    //showCoverMenu()
 #include <KPushButton>
@@ -169,13 +169,14 @@ CoverManager::slotContinueConstruction() //SLOT
     hbox->setSpacing( 4 );
 
     { //<Search LineEdit>
-        m_searchEdit = new KLineEdit( hbox );
+        m_searchEdit = new Amarok::LineEdit( hbox );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         m_searchEdit->setFrame( true );
 
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_searchEdit->setClearButtonShown( true );
 
+        // TODO FIX FUCKED UP ENGLISH
         m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the albums" ) );
 
         hbox->setStretchFactor( m_searchEdit, 1 );

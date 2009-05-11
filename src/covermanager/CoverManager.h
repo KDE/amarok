@@ -28,10 +28,11 @@
 #include <QListWidgetItem>
 #include <QPixmap>
 
+namespace Amarok { class LineEdit; }
+
 class CoverViewItem;
 class QTreeWidget;
 class QTreeWidgetItem;
-class KLineEdit;
 class KPushButton;
 class KMenu;
 class QToolButton;
@@ -112,16 +113,16 @@ class CoverManager : public QSplitter, public Meta::Observer
         void loadCover( const QString &, const QString & );
         QList<CoverViewItem*> selectedItems();
 
-        QTreeWidget    *m_artistView;
-        CoverView      *m_coverView;
-        KLineEdit      *m_searchEdit;
-        KPushButton    *m_fetchButton;
-        KMenu          *m_amazonLocaleMenu;
-        KMenu          *m_viewMenu;
-        QToolButton    *m_amazonLocaleButton;
-        QToolButton    *m_viewButton;
-        int             m_currentLocale;
-        int             m_currentView;
+        QTreeWidget      *m_artistView;
+        CoverView        *m_coverView;
+        Amarok::LineEdit *m_searchEdit;
+        KPushButton      *m_fetchButton;
+        KMenu            *m_amazonLocaleMenu;
+        KMenu            *m_viewMenu;
+        QToolButton      *m_amazonLocaleButton;
+        QToolButton      *m_viewButton;
+        int               m_currentLocale;
+        int               m_currentView;
 
         Meta::ArtistList m_artistList;
         QList< QTreeWidgetItem* > m_items;

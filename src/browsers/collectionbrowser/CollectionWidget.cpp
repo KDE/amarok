@@ -30,7 +30,6 @@
 
 #include <KAction>
 #include <KIcon>
-#include <KLineEdit>
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>

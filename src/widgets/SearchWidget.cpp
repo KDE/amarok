@@ -16,7 +16,6 @@
 #include <QVBoxLayout>
 
 #include <KIcon>
-#include <KLineEdit>
 #include <KLocale>
 #include <KHBox>
 #include <KPushButton>
@@ -58,7 +57,7 @@ SearchWidget::init( QWidget *parent, bool advanced )
     KHBox *searchBox = new KHBox( this );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
-    m_sw = new KLineEdit( searchBox );
+    m_sw = new Amarok::LineEdit( searchBox );
     m_sw->setClickMessage( i18n( "Enter search terms here" ) );
     m_sw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_sw->setClearButtonShown( true );
@@ -120,7 +119,7 @@ void SearchWidget::showAdvancedButton(bool show)
     }
 }
 
-void SearchWidget::setClickMessage( QString message )
+void SearchWidget::setClickMessage( const QString &message )
 {
     m_sw->setClickMessage( message );
 }

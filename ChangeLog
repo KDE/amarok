@@ -6,6 +6,7 @@ VERSION 2.1-beta3
   FEATURES:
   
   CHANGES:
+    * Escape clears most search filters throughout Amarok. (BR 192254)
 
   BUGFIXES:
 

@@ -14,11 +14,11 @@
 #define SEARCHWIDGET_H
 
 #include "amarok_export.h"
+#include "LineEdit.h"
 
 #include <QToolBar>
 #include <QWidget>
 
-class KLineEdit;
 class KPushButton;
 // A Custom Widget that can be used globally to implement
 // searching a treeview.
@@ -29,7 +29,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
     public:
         explicit SearchWidget( QWidget *parent, bool advanced = true );
         SearchWidget( QWidget *parent, QWidget *caller, bool advanced = true  );
-        KLineEdit *lineEdit() { return m_sw; }
+        Amarok::LineEdit *lineEdit() { return m_sw; }
         void setup( QObject* caller );
         void setSearchString( const QString &searchString );
 
@@ -38,25 +38,23 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         void showAdvancedButton( bool show );
         
         /**
-         * Sets the string that will be visible when the KLineEdit is empty.
-         * @param message the string that will be visible then the KLineEdit is empty.
+         * Sets the string that will be visible when the LineEdit is empty.
+         * @param message the string that will be visible then the LineEdit is empty.
          */
-        void setClickMessage( QString message );
+        void setClickMessage( const QString &message );
 
     signals:
-
         void filterNow();
 
     private slots:
-
         void slotShowFilterEditor();
 
     private:
         void init( QWidget *parent, bool advanced );
 
-        KLineEdit   *m_sw;
-        QAction *m_filterAction;
-        QToolBar * m_toolBar;
+        Amarok::LineEdit *m_sw;
+        QAction          *m_filterAction;
+        QToolBar         *m_toolBar;
 };
 
 #endif
