@@ -30,7 +30,7 @@ Importer.loadQtBinding( "qt.gui" );     // for QPixmap
 Importer.loadQtBinding( "qt.xml" );
 
 service_name = "Free Music Charts";
-html = "<div style=\"background-color:#999999\"><center><b>Free Music Charts</b></center></div><div style=\"color:#153860\"><br/>The rules for the Darkerradio.com Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. Only open music is allowed to take part, since February 2009 a song can stay in the charts for a time of six months max. You have up to five votes.<br/><br/>You can cast your votes by going to the menu bar: <i>Tools -> Free Music Charts Voting</i></div>";
+html = "<div style=\"background-color:#e6f3ff; height: 100%;\"><div style=\"background-color:#aacef3;\"><center><b>Free Music Charts</b></center><br/>The rules for the Darkerradio.com Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. Only open music is allowed to take part, since February 2009 a song can stay in the charts for a time of six months max. You have up to five votes.<br/><br/>You can cast your votes by going to the menu bar: <i>Tools -> Free Music Charts Voting</i></div></div>";
 
 votingUrl = new QUrl( "http://www.darkerradio.com/free-music-charts/free-music-charts-voting/" );
 xmlUrl    = new QUrl( "http://krohlas.de/fmc.xml" );
@@ -75,9 +75,10 @@ function fmcShowsXmlParser( reply ) {
     var showTitles = new Array( shows.length() );
 
     elt  = shows.at( 0 ); // latest show
-    html = html + "<div style=\"color:#153860\"><br/>The next radio show airs on Tuesday, ";
+    html = html.replace( /<\/div><\/div>/g, "" );
+    html = html + "<br/><br/>The next radio show airs on Tuesday, ";
     html = html + elt.firstChildElement( "nextdate" ).text() + ". ";
-    html = html + "The voting ends the day before.</div>";
+    html = html + "The voting ends the day before.</div></div>";
 
     item             = Amarok.StreamItem;
     item.level       = 1;
@@ -246,9 +247,10 @@ function onPopulate( level, callbackData, filter ) {
 
       elt2 = elt.firstChildElement( "url" );
       item.playableUrl = elt2.text();
-      item.infoHtml = "<div style=\"background-color:#999999\"><center><b>Chart positions of<br/>";
+      item.infoHtml = "<div style=\"background-color:#e6f3ff; height:100%; margin: 0; padding: 0;\">";
+      item.infoHtml = item.infoHtml + "<div style=\"background-color:#aacef3;\"><center><b>Chart positions of<br/>";
       item.infoHtml = item.infoHtml + elt.firstChildElement( "name" ).text() + "</div>";
-      item.infoHtml = item.infoHtml + "</b></center><div style=\"color:#153860\">";
+      item.infoHtml = item.infoHtml + "</b></center><br/><div style=\"background-color:#aacef3;\">";
 
       item.infoHtml = item.infoHtml + fmcTracksXmlParser( elt2.text() );
 
@@ -257,7 +259,7 @@ function onPopulate( level, callbackData, filter ) {
       item.infoHtml = item.infoHtml + "href=\"amarok://navigate/service/Jamendo.com/artist-album/artist:%22";
       item.infoHtml = item.infoHtml + songArtistTitle[0] + "%22\">";
       item.infoHtml = item.infoHtml + songArtistTitle[0] + " on Jamendo</a></center>";
-      item.infoHtml = item.infoHtml + "</div>";
+      item.infoHtml = item.infoHtml + "</div></div>";
 
       elt = elt.nextSiblingElement( "song" );
       if( addAll || isFilterMatch( item.itemName ) )
