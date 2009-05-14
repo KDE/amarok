@@ -7,7 +7,7 @@ if(NOT GDK_FOUND)
    SET(GDK_LIBRARIES "")
 endif(NOT GDK_FOUND)
 
-if (IPOD_FOUND AND IPOD_0_7)
+if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
    include_directories( ../..
    ../../plugin
    ../../meta
@@ -66,4 +66,4 @@ if (IPOD_FOUND AND IPOD_0_7)
         amarok_collection-ipodcollection.desktop 
         DESTINATION 
         ${SERVICES_INSTALL_DIR})
-endif (IPOD_FOUND AND IPOD_0_7)
+endif (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
