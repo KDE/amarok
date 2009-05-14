@@ -460,7 +460,8 @@ CoverFetcher::attemptAnotherFetch()
         KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(finishedImageFetch( KJob* )) );
 
-        The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
+        if( m_userCanEditQuery )
+            The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
 
         m_coverUrls.pop_front();
 
