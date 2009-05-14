@@ -112,12 +112,9 @@ JamendoService::polish()
 
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
     connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( download() ) );
+    updateButtonClicked() // Automatically fetch the database on polish.
 
     setInfoParser( new JamendoInfoParser() );
-
-    //m_model = new DatabaseDrivenContentModel();
-    //m_dbHandler = new JamendoDatabaseHandler();
-    //m_model->setDbHandler( m_dbHandler );
 
     QList<int> levels;
     levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;

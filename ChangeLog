@@ -6,6 +6,7 @@ VERSION 2.1-beta3
   FEATURES:
   
   CHANGES:
+    * Automatically fetch the database for Jamendo/Opml on first load.
     * Escape clears most search filters throughout Amarok. (BR 192254)
 
   BUGFIXES:

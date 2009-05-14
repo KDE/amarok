@@ -80,9 +80,9 @@ OpmlDirectoryService::~OpmlDirectoryService()
 
 void OpmlDirectoryService::polish()
 {
-
     generateWidgetInfo();
-    if ( m_polished ) return;
+    if ( m_polished )
+        return;
 
     //do not allow this content to get added to the playlist. At least not for now
     setPlayableTracks( false );
@@ -107,12 +107,9 @@ void OpmlDirectoryService::polish()
 
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
     connect( m_subscribeButton, SIGNAL( clicked() ), this, SLOT( subscribe() ) );
+    updateButtonClicked(); // Update when loaded.
 
     setInfoParser( new OpmlDirectoryInfoParser() );
-
-    //m_model = new DatabaseDrivenContentModel();
-    //m_dbHandler = new OpmlDirectoryDatabaseHandler();
-    //m_model->setDbHandler( m_dbHandler );
 
     QList<int> levels;
     levels << CategoryId::Album;
