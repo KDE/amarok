@@ -383,6 +383,7 @@ App::handleCliArgs() //static
     }
     */
 
+    static bool firstTime = true;
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
     const bool debugIsDisabled = !args->isSet( "debug" );
     //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
@@ -399,7 +400,7 @@ App::handleCliArgs() //static
         debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
         debug() << "************************************************************************************************************";
     }
-    else if( debugIsDisabled )
+    else if( firstTime && debugIsDisabled )
     {
         Amarok::config().writeEntry( "Debug Enabled", true );
         debug() << "**********************************************************************************************";
@@ -409,7 +410,6 @@ App::handleCliArgs() //static
         Amarok::config().writeEntry( "Debug Enabled", false );
     }
 
-    static bool firstTime = true;
     if( !firstTime && !haveArgs )
         pApp->mainWindow()->activate();
     firstTime = false;
