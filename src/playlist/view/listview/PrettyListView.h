@@ -80,8 +80,10 @@ protected slots:
 private slots:
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
+    void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
 
 private:
+    void showEvent( QShowEvent* );
     void contextMenuEvent( QContextMenuEvent* );
     void dragLeaveEvent( QDragLeaveEvent* );
     void dragMoveEvent( QDragMoveEvent* );

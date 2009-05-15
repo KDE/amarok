@@ -207,6 +207,37 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 }
 
 void
+Playlist::PrettyListView::showEvent( QShowEvent* event )
+{
+    QTimer::singleShot( 0, this, SLOT( fixInvisible() ) );
+
+    QListView::showEvent( event ); 
+}
+
+// This method is a workaround for BUG 184714.
+//
+// It prevents the playlist from becoming invisible (clear) after changing the model, while Amarok is hidden in the tray.
+// Without this workaround the playlist stays invisible when the application is restored from the tray.
+// This is especially a problem with the Dynamic Playlist mode, which modifies the model without user interaction.
+//
+// The bug only seems to happen with Qt 4.5.x, so it might actually be a bug in Qt. 
+void
+Playlist::PrettyListView::fixInvisible() //SLOT
+{
+    DEBUG_BLOCK
+
+    // Part 1: Palette change
+    newPalette( palette() );
+
+    // Part 2: Change item selection
+    const QItemSelection oldSelection( selectionModel()->selection() );
+    selectionModel()->clear();
+    selectionModel()->select( oldSelection, QItemSelectionModel::SelectCurrent );
+
+    // NOTE: A simple update() call is not sufficient, but in fact the above two steps are required.
+}
+
+void
 Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
     DEBUG_BLOCK
@@ -401,6 +432,8 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 void
 Playlist::PrettyListView::paintEvent( QPaintEvent* event )
 {
+    DEBUG_BLOCK
+
     QPoint offset( 6, 0 );
     if ( !m_dropIndicator.size().isEmpty() ) {
         QPalette p = KApplication::palette();
