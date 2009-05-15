@@ -447,8 +447,10 @@ ScriptManager::slotRunScript( QString name, bool silent )
             slotStopScript( name );
 
             if ( !silent )
+            {
                 KMessageBox::sorry( 0, i18n( "There are exceptions caught in the script '%1'. Please refer to the log.", name ) );
-
+                debug() << "The Log For the script that is the borked: " << m_scripts[name].log;
+            }
             return false;
         }
 

@@ -25,6 +25,7 @@
 #include "JamendoInfoParser.h"
 #include "JamendoXmlParser.h"
 #include "ServiceSqlRegistry.h"
+#include "widgets/SearchWidget.h"
 
 #include <KMenuBar>
 #include <KRun>
@@ -35,6 +36,7 @@
 #include <QAction>
 
 #include <typeinfo>
+#include <KAction>
 
 using namespace Meta;
 
@@ -123,30 +125,34 @@ JamendoService::polish()
 
     connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
 
+    QMenu *filterMenu = new QMenu( 0 );
 
-    //disabling the first 3 options for now as they cause all sorts of havoc with the mysql db. (BR 174851)
-    
-    /*QAction *action = new QAction( i18n("Artist"), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
-    m_filterMenu->addAction( action );
+//     QAction *action = filterMenu->addAction( i18n("Artist") );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
+// 
+//     action = filterMenu->addAction( i18n( "Artist / Album" ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
+// 
+//     action = filterMenu->addAction( i18n( "Album" ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
 
-    action = new QAction( i18n( "Artist / Album" ), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
-    m_filterMenu->addAction( action );
-
-    action = new QAction( i18n( "Album" ), m_menubar );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
-    m_filterMenu->addAction( action );*/
-
-    QAction *action = new QAction( i18n( "Genre / Artist" ), m_menubar );
+    QAction *action = filterMenu->addAction( i18n( "Genre / Artist" ) );
     connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
-    m_filterMenu->addAction( action );
 
-    action = new QAction( i18n( "Genre / Artist / Album" ), m_menubar );
+    action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
-    m_filterMenu->addAction( action );
 
-    m_menubar->show();
+    KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+    filterMenuAction->setMenu( filterMenu );
+
+    m_searchWidget->toolBar()->addSeparator();
+    m_searchWidget->toolBar()->addAction( filterMenuAction );
+
+    QToolButton *tbutton = qobject_cast< QToolButton* >( m_searchWidget->toolBar()->widgetForAction( filterMenuAction ) );
+    if( tbutton )
+        tbutton->setPopupMode( QToolButton::InstantPopup );
+
+//     m_menubar->show();
 
     m_polished = true;
 }
@@ -164,7 +170,7 @@ JamendoService::updateButtonClicked()
     if( !tempFile.open() )
         return; //error
     m_tempFileName = tempFile.fileName();
-    m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump.en.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump_artistalbumtrack.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
     The::statusBar()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com Database" ) )
             ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
@@ -232,7 +238,7 @@ JamendoService::itemSelected( CollectionTreeItem * selectedItem )
     //be an album or a track
     DataPtr dataPtr = selectedItem->data();
 
-    if ( typeid( * dataPtr.data() ) == typeid( JamendoTrack ) )
+    if ( typeid( *dataPtr.data() ) == typeid( JamendoTrack ) )
     {
         debug() << "is right type (track)";
         JamendoTrack * track = static_cast<JamendoTrack *> ( dataPtr.data() );

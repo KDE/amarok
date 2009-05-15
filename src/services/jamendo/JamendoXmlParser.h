@@ -28,6 +28,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include <QXmlStreamReader>
 
 /**
 * Parser for the XML file from http://img.jamendo.com/data/dbdump.en.xml.gz
@@ -83,7 +84,7 @@ private slots:
 private:
 
     JamendoDatabaseHandler * m_dbHandler;
-
+    QXmlStreamReader m_reader;
     QString m_sFileName;
 
     QMap<int, QStringList> albumTags; //used for applying genres to individual tracks
@@ -93,49 +94,25 @@ private:
     int m_nNumberOfArtists;
 
     /**
-     * Parses a DOM element
-     * @param e The element to parse
+     * Read a DOM element representing an artist
      */
-    void parseElement( const  QDomElement &e );
-
+    void readArtist();
     /**
-     * Parses all children of a DOM element
-     * @param e The element whose children is to be parsed
+     * Read a DOM element representing an album
      */
-    void parseChildren( const  QDomElement &e );
-
+    void readAlbum();
     /**
-     * Parse a DOM element representing an artist
-     * @param e The artist element to parse
+     * Read a DOM element representing a track
      */
-    void parseArtist( const  QDomElement &e );
-
-    /**
-     * Parse a DOM element representing an album
-     * @param e The album element to parse
-     */
-    void parseAlbum( const  QDomElement &e );
-
-    /**
-     * Parse a DOM element representing a track
-     * @param e The track element to parse
-     */
-    void parseTrack( const  QDomElement &e );
-
-
-    
-    /**
-     * Parse a jamendo <Covers> tag and get the cover of a specific size
-     * if possible, otherwise return an empty string
-     * @param e the node to parse
-     * @param size the desired size of the cover
-     */
-    QString getCoverUrl( const QDomElement &e, int size );
+    void readTrack();
 
     void countTransaction();
+    int m_currentArtistId;
+    int m_currentAlbumId;
 
     int n_numberOfTransactions;
     int n_maxNumberOfTransactions;
+    QHash< int, QString > m_id3GenreHash;
     QMap<int, int> m_albumArtistMap;
 };
 

@@ -23,7 +23,6 @@
 #include "Debug.h"
 #include "statusbar/StatusBar.h"
 
-#include <QDomDocument>
 #include <QFile>
 
 #include <KFilterDev>
@@ -31,12 +30,98 @@
 
 using namespace Meta;
 
+static const QString COVERURL_BASE = "http://api.jamendo.com/get2/image/album/redirect/?id=%1&imagesize=100";
+static const QString TORRENTURL_BASE = "http://api.jamendo.com/get2/bittorrent/file/plain/?album_id=%1&type=archive&class=%2";
+
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
     : ThreadWeaver::Job()
     , n_numberOfTransactions ( 0 )
     , n_maxNumberOfTransactions ( 5000 )
 {
     DEBUG_BLOCK
+
+    // From: http://www.linuxselfhelp.com/HOWTO/MP3-HOWTO-13.html#ss13.3
+    m_id3GenreHash.insert(  0, "Blues"             );
+    m_id3GenreHash.insert(  1, "Classic Rock"      );
+    m_id3GenreHash.insert(  2, "Country"           );
+    m_id3GenreHash.insert(  3, "Dance"             );
+    m_id3GenreHash.insert(  4, "Disco"             );
+    m_id3GenreHash.insert(  5, "Funk"              );
+    m_id3GenreHash.insert(  6, "Grunge"            );
+    m_id3GenreHash.insert(  7, "Hip-Hop"           );
+    m_id3GenreHash.insert(  8, "Jazz"              );
+    m_id3GenreHash.insert(  9, "Metal"             );
+    m_id3GenreHash.insert( 10, "New Age"           );
+    m_id3GenreHash.insert( 11, "Oldies"            );
+    m_id3GenreHash.insert( 12, "Other"             );
+    m_id3GenreHash.insert( 13, "Pop"               );
+    m_id3GenreHash.insert( 14, "R&B"               );
+    m_id3GenreHash.insert( 15, "Rap"               );
+    m_id3GenreHash.insert( 16, "Reggae"            );
+    m_id3GenreHash.insert( 17, "Rock"              );
+    m_id3GenreHash.insert( 18, "Techno"            );
+    m_id3GenreHash.insert( 19, "Industrial"        );
+    m_id3GenreHash.insert( 20, "Alternative"       );
+    m_id3GenreHash.insert( 21, "Ska"               );
+    m_id3GenreHash.insert( 22, "Death Metal"       );
+    m_id3GenreHash.insert( 23, "Pranks"            );
+    m_id3GenreHash.insert( 24, "Soundtrack"        );
+    m_id3GenreHash.insert( 25, "Euro-Techno"       );
+    m_id3GenreHash.insert( 26, "Ambient"           );
+    m_id3GenreHash.insert( 27, "Trip-Hop"          );
+    m_id3GenreHash.insert( 28, "Vocal"             );
+    m_id3GenreHash.insert( 29, "Jazz+Funk"         );
+    m_id3GenreHash.insert( 30, "Fusion"            );
+    m_id3GenreHash.insert( 31, "Trance"            );
+    m_id3GenreHash.insert( 32, "Classical"         );
+    m_id3GenreHash.insert( 33, "Instrumental"      );
+    m_id3GenreHash.insert( 34, "Acid"              );
+    m_id3GenreHash.insert( 35, "House"             );
+    m_id3GenreHash.insert( 36, "Game"              );
+    m_id3GenreHash.insert( 37, "Sound Clip"        );
+    m_id3GenreHash.insert( 38, "Gospel"            );
+    m_id3GenreHash.insert( 39, "Noise"             );
+    m_id3GenreHash.insert( 40, "AlternRock"        );
+    m_id3GenreHash.insert( 41, "Bass"              );
+    m_id3GenreHash.insert( 42, "Soul"              );
+    m_id3GenreHash.insert( 43, "Punk"              );
+    m_id3GenreHash.insert( 44, "Space"             );
+    m_id3GenreHash.insert( 45, "Meditative"        );
+    m_id3GenreHash.insert( 46, "Instrumental Pop"  );
+    m_id3GenreHash.insert( 47, "Instrumental Rock" );
+    m_id3GenreHash.insert( 48, "Ethnic"            );
+    m_id3GenreHash.insert( 49, "Gothic"            );
+    m_id3GenreHash.insert( 50, "Darkwave"          );
+    m_id3GenreHash.insert( 51, "Techno-Industrial" );
+    m_id3GenreHash.insert( 52, "Electronic"        );
+    m_id3GenreHash.insert( 53, "Pop-Folk"          );
+    m_id3GenreHash.insert( 54, "Eurodance"         );
+    m_id3GenreHash.insert( 55, "Dream"             );
+    m_id3GenreHash.insert( 56, "Southern Rock"     );
+    m_id3GenreHash.insert( 57, "Comedy"            );
+    m_id3GenreHash.insert( 58, "Cult"              );
+    m_id3GenreHash.insert( 59, "Gangsta"           );
+    m_id3GenreHash.insert( 60, "Top 40"            );
+    m_id3GenreHash.insert( 61, "Christian Rap"     );
+    m_id3GenreHash.insert( 62, "Pop/Funk"          );
+    m_id3GenreHash.insert( 63, "Jungle"            );
+    m_id3GenreHash.insert( 64, "Native American"   );
+    m_id3GenreHash.insert( 65, "Cabaret"           );
+    m_id3GenreHash.insert( 66, "New Wave"          );
+    m_id3GenreHash.insert( 67, "Psychadelic"       );
+    m_id3GenreHash.insert( 68, "Rave"              );
+    m_id3GenreHash.insert( 69, "Showtunes"         );
+    m_id3GenreHash.insert( 70, "Trailer"           );
+    m_id3GenreHash.insert( 71, "Lo-Fi"             );
+    m_id3GenreHash.insert( 72, "Tribal"            );
+    m_id3GenreHash.insert( 73, "Acid Punk"         );
+    m_id3GenreHash.insert( 74, "Acid Jazz"         );
+    m_id3GenreHash.insert( 75, "Polka"             );
+    m_id3GenreHash.insert( 76, "Retro"             );
+    m_id3GenreHash.insert( 77, "Musical"           );
+    m_id3GenreHash.insert( 78, "Rock & Roll"       );
+    m_id3GenreHash.insert( 79, "Hard Rock"         );
+
     m_sFileName = filename;
     albumTags.clear();
     m_dbHandler = new JamendoDatabaseHandler();
@@ -88,118 +173,107 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     }
 
     QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-gzip", true );
+
     if( !file || !file->open( QIODevice::ReadOnly ) )
     {
         debug() << "JamendoXmlParser::readConfigFile error reading file";
         return;
     }
-    if ( !doc.setContent( file ) )
-    {
-        debug() << "JamendoXmlParser::readConfigFile error parsing file";
-        file->close();
-        return ;
-    }
-    file->close();
-    delete file;
 
-    QFile::remove( filename );
-
+    m_reader.setDevice( file );
+    
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
-    //run through all the elements
-    QDomElement docElem = doc.documentElement();
+    while( !m_reader.atEnd() )
+    {
+        m_reader.readNext();
+        if( m_reader.isStartElement() )
+        {
+            QStringRef localname = m_reader.name();
+            if( localname == "artist" )
+            {
+                readArtist();
+            }
+        }
+    }
+
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
-    debug() << "begin parsing content";
-    parseElement( docElem );
-    debug() << "finishing transaction";
     m_dbHandler->commit(); //complete transaction
     //as genres are jsut user tags, remove any that are not applied to at least 10 albums to weed out the worst crap
     //perhaps make this a config option
     m_dbHandler->trimGenres( 10 );
+
+    file->close();
+    delete file;
+    QFile::remove( filename );
 }
 
 void
-JamendoXmlParser::parseElement( const  QDomElement &e )
+JamendoXmlParser::readArtist()
 {
-    QString sElementName = e.tagName();
+    Q_ASSERT( m_reader.isStartElement() && m_reader.name() == "artist" );
 
-    if (sElementName == "artist" )
-         parseArtist( e );
-    else if (sElementName == "album" )
-        parseAlbum( e );
-    else if (sElementName == "track" )
-        parseTrack( e );
-    else
-        parseChildren( e );
-}
-
-void
-JamendoXmlParser::parseChildren( const  QDomElement &e )
-{
-    QDomNode n = e.firstChild();
-
-    while ( !n.isNull() )
-    {
-        if ( n.isElement() )
-            parseElement( n.toElement() );
-
-        n = n.nextSibling();
-    }
-}
-
-void
-JamendoXmlParser::parseArtist( const  QDomElement &e )
-{
-    //debug() << "Found artist: ";
+//     debug() << "Found artist: ";
     m_nNumberOfArtists++;
 
     QString name;
-    //QString genre;
     QString description;
+    QString imageUrl;
+    QString jamendoUrl;
+    
 
-    QDomNode n = e.firstChild();
-
-    while ( !n.isNull() )
+    while ( !m_reader.atEnd() )
     {
-        if ( n.isElement() )
+        m_reader.readNext();
+        
+        if( m_reader.isEndElement() && m_reader.name() == "artist" )
+            break;
+        if( m_reader.isStartElement() )
         {
-            QDomElement currentChildElement = n.toElement();
-
-            if ( currentChildElement.tagName() == "dispname" )
-                name = currentChildElement.text();
-            else if ( currentChildElement.tagName() == "genre" )
-                ;
-            else if ( currentChildElement.tagName() == "description" )
-                 description = currentChildElement.text();
-
-            n = n.nextSibling();
+            QStringRef localname = m_reader.name();
+            if( localname == "id" )
+                m_currentArtistId = m_reader.readElementText().toInt();
+            else if ( localname == "name" )
+                name = m_reader.readElementText();
+            else if( localname == "url" )
+                jamendoUrl = m_reader.readElementText();
+            else if( localname == "image" )
+                imageUrl = m_reader.readElementText();
+//             else if( localname == "genre" )
+//                 ;
+//             else if ( localname == "description" )
+//                  description = currentChildElement.text();
+            else if( localname == "album" )
+                readAlbum();
         }
     }
 
     JamendoArtist currentArtist( name );
     currentArtist.setDescription( description );
 
-    currentArtist.setId( e.attribute( "id", "0" ).toInt() );
-    currentArtist.setPhotoURL( e.attribute( "image", "UNDEFINED" ) );
-    currentArtist.setJamendoURL( e.attribute( "link", "UNDEFINED" ) );
-    currentArtist.setHomeURL( e.attribute( "homepage", "UNDEFINED" ) );
+    currentArtist.setId( m_currentArtistId );
+    currentArtist.setPhotoURL( imageUrl );
+    currentArtist.setJamendoURL( jamendoUrl );
+//     currentArtist.setHomeURL( e.attribute( "homepage", "UNDEFINED" ) );
 
     m_dbHandler->insertArtist( &currentArtist );
     countTransaction();
 
-    /*debug() << "    Name:       " << currentArtist.getName();
-    debug() << "    Id:         " << currentArtist.getId();
-    //debug() << "    Photo:      " << currentArtist.getPhotoURL();
-    debug() << "    J_url:      " << currentArtist.getJamendoURL();
-    debug() << "    H_url:      " << currentArtist.getHomeURL();
-    debug() << "    Decription: " << currentArtist.getDescription();
-*/
+//     debug() << "    Name:       " << currentArtist.name();
+//     debug() << "    Id:         " << currentArtist.id();
+//     debug() << "    Photo:      " << currentArtist.photoURL();
+//     debug() << "    J_url:      " << currentArtist.jamendoURL();
+//     debug() << "    H_url:      " << currentArtist.homeURL();
+//     debug() << "    Decription: " << currentArtist.description();
+
 }
 
 void
-JamendoXmlParser::parseAlbum( const  QDomElement &e)
+JamendoXmlParser::readAlbum()
 {
+    Q_ASSERT( m_reader.isStartElement() && m_reader.name() == "album" );
+
     //debug() << "Found album: ";
     m_nNumberOfAlbums++;
 
@@ -210,112 +284,102 @@ JamendoXmlParser::parseAlbum( const  QDomElement &e)
     QString coverUrl;
     QString mp3TorrentUrl;
     QString oggTorrentUrl;
+    QString releaseDate;
 
-    QDomNode n = e.firstChild();
-
-    while( !n.isNull() )
+   while ( !m_reader.atEnd() )
     {
-        if( n.isElement() )
-        {
-            QDomElement currentChildElement = n.toElement();
+        m_reader.readNext();
 
-            if ( currentChildElement.tagName() == "dispname" )
-                name = currentChildElement.text();
-            else if ( currentChildElement.tagName() == "genre" )
-                genre = currentChildElement.text();
-            else if ( currentChildElement.tagName() == "description" )
-                 description = currentChildElement.text();
+        if( m_reader.isEndElement() && m_reader.name() == "album" )
+            break;
+        if( m_reader.isStartElement() )
+        {
+            QStringRef localname = m_reader.name();
+
+            if( localname == "id" )
+                m_currentAlbumId = m_reader.readElementText().toInt();
+            else if ( localname == "name" )
+                name = m_reader.readElementText();
+            else if( localname == "id3genre" )
+                genre = m_id3GenreHash.value( m_reader.readElementText().toInt() );
+            else if( localname == "releasedate" )
+                releaseDate = m_reader.readElementText();
+            else if( localname == "track" )
+                readTrack();
+//             else if ( currentChildElement.tagName() == "description" )
+//                  description = currentChildElement.text();
             //we use tags instad of genres for creating genres in the database, as the
             //Jamendo.com genres are messy at best
-            else if ( currentChildElement.tagName() == "tags" )
-                tags = currentChildElement.text().split(' ', QString::SkipEmptyParts);
-            else if ( currentChildElement.tagName() == "Covers" )
-                coverUrl = getCoverUrl( currentChildElement, 100 );
-            else if ( currentChildElement.tagName() == "P2PLinks" )
-            {
-                QDomNode m = currentChildElement.firstChild();
-                while ( !m.isNull() )
-                {
-                    if ( m.isElement() )
-                    {
-                        QDomElement p2pElement = m.toElement();
-
-                        if ( p2pElement.tagName() == "p2plink" )
-                        {
-                            if ( p2pElement.attribute( "network", "" ) == "bittorrent" )
-                            {  //ignore edonkey stuff
-                                if ( p2pElement.attribute( "audioEncoding", "" ) == "ogg3" )
-                                {
-                                    oggTorrentUrl = p2pElement.text();
-                                }
-                                else if ( p2pElement.attribute( "audioEncoding", "" ) == "mp32" )
-                                {
-                                    mp3TorrentUrl = p2pElement.text();
-                                }
-                            }
-                        }
-                    }
-                    m = m.nextSibling();
-                }
-            }
-            n = n.nextSibling();
+//             else if ( currentChildElement.tagName() == "tags" )
+//                 tags = currentChildElement.text().split(' ', QString::SkipEmptyParts);
+//             n = n.nextSibling();
         }
     }
 
     JamendoAlbum currentAlbum( name );
     currentAlbum.setGenre( genre );
     currentAlbum.setDescription( description );
-    currentAlbum.setId( e.attribute( "id", "0" ).toInt() );
-    currentAlbum.setArtistId( e.attribute( "artistID", "0" ).toInt() );
-    currentAlbum.setLaunchYear( 1000 );
-    currentAlbum.setCoverUrl( coverUrl );
-    currentAlbum.setMp3TorrentUrl( mp3TorrentUrl );
-    currentAlbum.setOggTorrentUrl( oggTorrentUrl );
+    currentAlbum.setId( m_currentAlbumId );
+    currentAlbum.setArtistId( m_currentArtistId );
+    currentAlbum.setLaunchYear( releaseDate.left( 4 ).toInt() );
+    currentAlbum.setCoverUrl( COVERURL_BASE.arg( m_currentAlbumId ) );
+    currentAlbum.setMp3TorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "mp32" ) );
+    currentAlbum.setOggTorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "ogg3" ) );
     m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
 
     int newId = m_dbHandler->insertAlbum( &currentAlbum );
     countTransaction();
 
-    foreach( const QString &genreName, tags )
-    {
-        //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName;
-        ServiceGenre currentGenre( genreName );
-        currentGenre.setAlbumId( newId );
-        m_dbHandler->insertGenre( &currentGenre );
-        countTransaction();
-    }
+    //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName;
+    ServiceGenre currentGenre( genre );
+    currentGenre.setAlbumId( newId );
+    m_dbHandler->insertGenre( &currentGenre );
+    countTransaction();
 }
 
 void
-JamendoXmlParser::parseTrack( const  QDomElement &e)
+JamendoXmlParser::readTrack()
 {
+    Q_ASSERT( m_reader.isStartElement() && m_reader.name() == "track" );
     //debug() << "Found track: ";
     m_nNumberOfTracks++;
 
     QString name;
+    QString id;
+    QString length;
+    QString trackNumber;
+    QString genre;
 
-    QDomNode n = e.firstChild();
-
-    while ( !n.isNull() )
+    while ( !m_reader.atEnd() )
     {
-        if ( n.isElement() )
+        m_reader.readNext();
+
+        if( m_reader.isEndElement() && m_reader.name() == "track" )
+            break;
+        if( m_reader.isStartElement() )
         {
-            QDomElement currentChildElement = n.toElement();
-            if ( currentChildElement.tagName() == "dispname" )
-                name = currentChildElement.text();
-            //skip lyrics, license and url for now
-            n = n.nextSibling();
+            QStringRef localname = m_reader.name();
+            if ( localname == "name" )
+                name = m_reader.readElementText();
+            else if( localname == "id" )
+                id = m_reader.readElementText();
+            else if( localname == "duration" )
+                length == m_reader.readElementText();
+            else if ( localname == "numalbum" )
+                trackNumber == m_reader.readElementText();
+            else if ( localname == "id3genre" )
+                genre = m_id3GenreHash.value( m_reader.readElementText().toInt() );
         }
     }
-    int id = e.attribute( "id", "0" ).toInt();
-    QString uidUrl = "http://www.jamendo.com/get/track/id/track/audio/redirect/" +  QString::number( id ) + "/?aue=ogg2";
-    JamendoTrack currentTrack ( name );
-    currentTrack.setId( id );
-    currentTrack.setUidUrl( uidUrl );
-    currentTrack.setAlbumId( e.attribute( "albumID", "0" ).toInt() );
-    //currentTrack.setArtistId( e.attribute( "artistID", "0" ).toInt() );
-    currentTrack.setLength(  e.attribute( "lengths", "0" ).toInt() );
-    currentTrack.setTrackNumber(  e.attribute( "trackno", "0" ).toInt() );
+    static QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
+    JamendoTrack currentTrack( name );
+    currentTrack.setId( id.toInt() );
+    currentTrack.setUidUrl( previewUrl.arg( id ) );
+    currentTrack.setAlbumId( m_currentAlbumId );
+//     currentTrack.setArtistId( m_currentArtistId );
+    currentTrack.setLength( length.toInt() );
+    currentTrack.setTrackNumber( trackNumber.toInt() );
+    currentTrack.setGenre( genre );
 
     if( m_albumArtistMap.contains( currentTrack.albumId() ) )
         currentTrack.setArtistId( m_albumArtistMap.value( currentTrack.albumId() ) );
@@ -324,25 +388,6 @@ JamendoXmlParser::parseTrack( const  QDomElement &e)
 
     m_dbHandler->insertTrack( &currentTrack );
     countTransaction();
-}
-
-QString JamendoXmlParser::getCoverUrl( const QDomElement &e, int size)
-{
-    QDomNode n = e.firstChild();
-    while ( !n.isNull() )
-    {
-        if ( n.isElement() )
-        {
-            QDomElement currentChildElement = n.toElement();
-            if ( currentChildElement.tagName() == "cover" )
-            {
-                if ( currentChildElement.attribute( "res", "0" ).toInt() == size)
-                    return currentChildElement.text();
-            }
-            n = n.nextSibling();
-        }
-    }
-    return QString();
 }
 
 void
