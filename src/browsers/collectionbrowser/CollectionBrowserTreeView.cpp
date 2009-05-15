@@ -59,8 +59,10 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         //but CollectionTreeItem::isTrackItem() doesn't seem to work, nor does
         //counting children, which theoretically should work here if the number wasn't
         //always random and negative...
+        //Note that using CollectionTreeItem::level causes crashes.
         //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        if( false ) //detect if item is track
+        //debug() << "Item's level = " << ( item ? item->level() : -99 );
+        if( false  ) //detect if item is track
         {
             CollectionTreeView::mouseDoubleClickEvent( event );
         }
@@ -76,12 +78,6 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
 {
-    /*if( event->button() != Qt::LeftButton || event->modifiers() )
-    {
-        CollectionTreeView::mousePressEvent( event );
-        return;
-    }
-    */
     if( KGlobalSettings::singleClick() )
         setItemsExpandable( false );
     CollectionTreeView::mousePressEvent( event );
