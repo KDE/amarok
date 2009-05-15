@@ -339,7 +339,7 @@ JamendoXmlParser::readTrack()
 
     QString name;
     QString id;
-    QString length;
+    int     length;
     QString trackNumber;
     QString genre;
 
@@ -357,9 +357,9 @@ JamendoXmlParser::readTrack()
             else if( localname == "id" )
                 id = m_reader.readElementText();
             else if( localname == "duration" )
-                length == m_reader.readElementText();
+                length = m_reader.readElementText().toInt();
             else if ( localname == "numalbum" )
-                trackNumber == m_reader.readElementText();
+                trackNumber = m_reader.readElementText();
             else if ( localname == "id3genre" )
                 genre = m_id3GenreHash.value( m_reader.readElementText().toInt() );
         }
@@ -371,7 +371,7 @@ JamendoXmlParser::readTrack()
     currentTrack.setUidUrl( previewUrl.arg( id ) );
     currentTrack.setAlbumId( m_currentAlbumId );
     currentTrack.setArtistId( m_currentArtistId );
-    currentTrack.setLength( length.toInt() );
+    currentTrack.setLength( length );
     currentTrack.setTrackNumber( trackNumber.toInt() );
     currentTrack.setGenre( genre );
 
