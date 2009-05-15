@@ -87,7 +87,7 @@ ServiceAlbumWithCover::image( int size )
         pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + coverName ) );
         return pixmap;
     }
-    else if ( m_hasFetchedCover && m_cover && m_cover->isNull() )
+    else if ( m_hasFetchedCover && m_cover && !m_cover->isNull() )
     {
         pixmap = m_cover->scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         pixmap.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
