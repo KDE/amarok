@@ -22,30 +22,32 @@
 #include "Debug.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 
-int TimecodeObserver::m_threshold = 600; //!< 600s = 10 minutes
 
-TimecodeObserver::TimecodeObserver()    : EngineObserver ( The::engineController() )
-        , m_trackTimecodeable ( false )
-        , m_currentTrack ( 0 )
-        , m_currPos ( 0 )
-{
-}
+const int TimecodeObserver::m_threshold = 600; // 600s = 10 minutes
+
+
+TimecodeObserver::TimecodeObserver()
+    : EngineObserver( The::engineController() )
+    , m_trackTimecodeable ( false )
+    , m_currentTrack ( 0 )
+    , m_currPos ( 0 )
+{}
 
 TimecodeObserver::~TimecodeObserver()
-{
-}
+{}
 
 void
 TimecodeObserver::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
+
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if ( currentTrack == m_currentTrack ) // no change, so do nothing
+    if( currentTrack == m_currentTrack ) // no change, so do nothing
         return;
 
-    if ( m_currentTrack ) // this is really the track _just_ played
+    if( m_currentTrack ) // this is really the track _just_ played
     {
-        if ( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold && m_currPos > 60 )
+        if( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold && m_currPos > 60 )
         {
             Meta::TimecodeWriteCapability *tcw = m_currentTrack->as<Meta::TimecodeWriteCapability>();
             if( tcw )
@@ -57,23 +59,24 @@ TimecodeObserver::engineNewTrackPlaying()
     }
 
     // now update to the new track
-    if ( currentTrack && currentTrack->hasCapabilityInterface ( Meta::Capability::WriteTimecode ) )
+    if( currentTrack && currentTrack->hasCapabilityInterface( Meta::Capability::WriteTimecode ) )
     {
         debug() << "curent track name: " << currentTrack->prettyName();
         m_trackTimecodeable = true;
         debug() << "Track timecodeable";
     }
+
     m_currentTrack = currentTrack;
     m_currPos = 0;
 }
 
 void
-TimecodeObserver::enginePlaybackEnded ( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason )
+TimecodeObserver::enginePlaybackEnded( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason )
 {
     Q_UNUSED ( reason )
     DEBUG_BLOCK
 
-    if ( m_trackTimecodeable && finalPosition != trackLength && trackLength > m_threshold && finalPosition > 60 )
+    if( m_trackTimecodeable && finalPosition != trackLength && trackLength > m_threshold && finalPosition > 60 )
     {
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
         if( currentTrack )
@@ -88,12 +91,10 @@ TimecodeObserver::enginePlaybackEnded ( int finalPosition, int trackLength, Engi
     }
 }
 
-void TimecodeObserver::engineTrackPositionChanged ( long position, bool userSeek )
+void TimecodeObserver::engineTrackPositionChanged( long position, bool userSeek )
 {
     Q_UNUSED ( userSeek )
+
     m_currPos = position / 1000; // <------ ARGH
-    // god damn the fucking controller and
-    // it's fucking schizo behavior when it
-    // comes to milliseconds and seconds </rant>
 }
 

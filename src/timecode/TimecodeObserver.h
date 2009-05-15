@@ -21,7 +21,6 @@
 #define TIMECODEOBSERVER_H
 
 #include "EngineController.h"
-#include "EngineObserver.h"
 
 
 /**
@@ -29,20 +28,20 @@
  * After the current track's position has crossed an arbitrary threshold
  * when the user stops playing the track (before the ending) a timecode
  * will be created.
- * @author Casey Link
  */
 class TimecodeObserver : public EngineObserver
 {
 public:
     TimecodeObserver();
     virtual ~TimecodeObserver();
+
     virtual void engineNewTrackPlaying();
     virtual void enginePlaybackEnded ( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason );
     virtual void engineTrackPositionChanged ( long position, bool userSeek );
 
 private:
     bool m_trackTimecodeable; //!< stores if current track has the writetimecode capability
-    static int m_threshold;  //!< the arbitrary minum tracklength threshold in seconds
+    static const int m_threshold;  //!< the arbitrary minum tracklength threshold in seconds
     Meta::TrackPtr m_currentTrack; //!< The current/just played track
     long m_currPos; //!< the position the current track is at
 };
