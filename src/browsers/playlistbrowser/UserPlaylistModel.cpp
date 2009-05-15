@@ -211,8 +211,6 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
         return 0;
     }
 
-    bool isTrack = IS_TRACK(parent);
-//    debug() << (isTrack?"is a track":"is not a track");
     if (!parent.isValid())
     {
         return m_playlists.count();
@@ -294,7 +292,12 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    return false;
+    int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
+    debug() << "playlist at row: " << playlistRow;
+    Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
+    for( int i = row; i < row + count; i++ )
+        playlist->removeTrack( i );
+    return true;
 }
 
 QStringList
@@ -356,12 +359,13 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
-            int row = REMOVE_TRACK_MASK(parent.internalId());
-            debug() << "playlist at row: " << row;
-            Meta::PlaylistPtr playlist = m_playlists.value( row );
+            int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
+            debug() << "playlist at row: " << playlistRow;
+            Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
             foreach( Meta::TrackPtr track, dragList->tracks() )
             {
                 debug() << track->prettyName() << "dropped on " << playlist->prettyName();
+                playlist->addTrack( track, row );
             }
             return true;
         }

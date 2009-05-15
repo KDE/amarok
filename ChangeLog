@@ -9,12 +9,14 @@ VERSION 2.1-beta3
   CHANGES:
     * Automatically fetch the database for Jamendo/Opml on first load.
     * Escape clears most search filters throughout Amarok. (BR 192254)
+    * Tracks of saved playlists are again shown in the playlistbrowser. They can be added and
+      sorted using drag and drop. (BR 187256, BR 184597)
 
   BUGFIXES:
     * After clicking on the Current Track applet, the menu bar at the top was
-      no longer working. (BUG 190923) 
+      no longer working. (BR 190923)
     * Fixed playlist sometimes becoming invisible when Amarok is restored from
-      the system tray. (BUG 184714)
+      the system tray. (BR 184714)
 
 
 VERSION 2.1-beta2

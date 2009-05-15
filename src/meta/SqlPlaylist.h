@@ -66,6 +66,8 @@ class SqlPlaylist : public Playlist
 
         /** returns all tracks in this playlist */
         virtual TrackList tracks();
+        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+        virtual void removeTrack( int position );
 
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
         Capability* asCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }

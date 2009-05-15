@@ -208,13 +208,12 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    QModelIndex idx = index( row, 0, parent );
-    if( isGroup( idx ) )
+    if( isGroup( parent ) )
     {
-        deleteGroup( idx );
+        deleteGroup( parent );
         return true;
     }
-    QModelIndex originalIdx = mapToSource( idx );
+    QModelIndex originalIdx = mapToSource( parent );
     return m_model->removeRows( row, count, originalIdx );
 }
 

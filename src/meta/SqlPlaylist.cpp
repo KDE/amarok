@@ -212,6 +212,21 @@ Meta::SqlPlaylist::tracks()
 }
 
 void
+Meta::SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
+{
+    DEBUG_BLOCK
+    int insertAt = (position == -1) ? m_tracks.length() : position;
+    m_tracks.insert( insertAt, track );
+}
+
+void
+Meta::SqlPlaylist::removeTrack( int position )
+{
+    DEBUG_BLOCK
+    m_tracks.removeAt( position );
+}
+
+void
 Meta::SqlPlaylist::loadTracks()
 {
     QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";

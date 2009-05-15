@@ -50,7 +50,7 @@ namespace Meta
             /** This method is called when  a playlist has changed.
              */
             virtual void trackListChanged( Playlist* playlist ) = 0;
-            virtual ~PlaylistObserver() {};
+            virtual ~PlaylistObserver() {}
     };
 
     class AMAROK_EXPORT Playlist : public virtual QSharedData
@@ -66,11 +66,14 @@ namespace Meta
 
             /** returns all tracks in this playlist */
             virtual TrackList tracks() = 0;
+            virtual void addTrack( Meta::TrackPtr track, int position = -1 )
+                    { Q_UNUSED(track); Q_UNUSED(position); }
+            virtual void removeTrack( int position ) { Q_UNUSED(position); }
 
             virtual void subscribe( PlaylistObserver *observer )
-                    { if( observer ) m_observers.insert( observer ); };
+                    { if( observer ) m_observers.insert( observer ); }
             virtual void unsubscribe( PlaylistObserver *observer )
-                    { m_observers.remove( observer ); };
+                    { m_observers.remove( observer ); }
 
             virtual QStringList groups() { return QStringList(); }
 
@@ -93,7 +96,7 @@ namespace Meta
             virtual KUrl retrievableUrl() { return KUrl(); }
 
             virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
-            virtual bool save( const QString &location, bool relative ) { Q_UNUSED( location); Q_UNUSED( relative); return false; };
+            virtual bool save( const QString &location, bool relative ) { Q_UNUSED( location); Q_UNUSED( relative); return false; }
 
             /**
              * Retrieves a specialized interface which represents a capability of this
@@ -122,7 +125,7 @@ namespace Meta
             virtual void notifyObservers() const {
                 foreach( PlaylistObserver *observer, m_observers )
                     observer->trackListChanged( const_cast<Meta::Playlist*>( this ) );
-            };
+            }
 
         protected:
             QSet<Meta::PlaylistObserver*> m_observers;
