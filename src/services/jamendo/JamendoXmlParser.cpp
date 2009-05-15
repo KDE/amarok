@@ -166,7 +166,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
 
     QDomDocument doc( "config" );
 
-    if ( !QFile::exists( filename ) )
+    if( !QFile::exists( filename ) )
     {
         debug() << "jamendo xml file does not exist";
         return;
@@ -185,6 +185,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
+    m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     while( !m_reader.atEnd() )
     {
         m_reader.readNext();
@@ -198,7 +199,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
         }
     }
 
-    m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
+
     m_dbHandler->commit(); //complete transaction
     //as genres are jsut user tags, remove any that are not applied to at least 10 albums to weed out the worst crap
     //perhaps make this a config option
@@ -222,8 +223,7 @@ JamendoXmlParser::readArtist()
     QString imageUrl;
     QString jamendoUrl;
     
-
-    while ( !m_reader.atEnd() )
+    while( !m_reader.atEnd() )
     {
         m_reader.readNext();
         
@@ -240,10 +240,6 @@ JamendoXmlParser::readArtist()
                 jamendoUrl = m_reader.readElementText();
             else if( localname == "image" )
                 imageUrl = m_reader.readElementText();
-//             else if( localname == "genre" )
-//                 ;
-//             else if ( localname == "description" )
-//                  description = currentChildElement.text();
             else if( localname == "album" )
                 readAlbum();
         }
@@ -255,7 +251,6 @@ JamendoXmlParser::readArtist()
     currentArtist.setId( m_currentArtistId );
     currentArtist.setPhotoURL( imageUrl );
     currentArtist.setJamendoURL( jamendoUrl );
-//     currentArtist.setHomeURL( e.attribute( "homepage", "UNDEFINED" ) );
 
     m_dbHandler->insertArtist( &currentArtist );
     countTransaction();
@@ -286,7 +281,7 @@ JamendoXmlParser::readAlbum()
     QString oggTorrentUrl;
     QString releaseDate;
 
-   while ( !m_reader.atEnd() )
+   while( !m_reader.atEnd() )
     {
         m_reader.readNext();
 
@@ -350,7 +345,7 @@ JamendoXmlParser::readTrack()
     QString trackNumber;
     QString genre;
 
-    while ( !m_reader.atEnd() )
+    while( !m_reader.atEnd() )
     {
         m_reader.readNext();
 
@@ -359,7 +354,7 @@ JamendoXmlParser::readTrack()
         if( m_reader.isStartElement() )
         {
             QStringRef localname = m_reader.name();
-            if ( localname == "name" )
+            if( localname == "name" )
                 name = m_reader.readElementText();
             else if( localname == "id" )
                 id = m_reader.readElementText();
@@ -371,12 +366,13 @@ JamendoXmlParser::readTrack()
                 genre = m_id3GenreHash.value( m_reader.readElementText().toInt() );
         }
     }
-    static QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
+    static const QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
+    
     JamendoTrack currentTrack( name );
     currentTrack.setId( id.toInt() );
     currentTrack.setUidUrl( previewUrl.arg( id ) );
     currentTrack.setAlbumId( m_currentAlbumId );
-//     currentTrack.setArtistId( m_currentArtistId );
+    currentTrack.setArtistId( m_currentArtistId );
     currentTrack.setLength( length.toInt() );
     currentTrack.setTrackNumber( trackNumber.toInt() );
     currentTrack.setGenre( genre );
