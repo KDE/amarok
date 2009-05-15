@@ -42,7 +42,7 @@ Required
       (Metadata tagging library)
       http://freshmeat.net/projects/taglib
 
-    * TagLib Extras 0.1.1
+    * TagLib Extras 0.1.1 (or newer)
       (Support for metadata reading of additional file types)
       http://www.jefferai.com/taglib-extras/taglib-extras-0.1.1.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
