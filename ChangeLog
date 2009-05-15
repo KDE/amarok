@@ -11,6 +11,8 @@ VERSION 2.1-beta3
     * Escape clears most search filters throughout Amarok. (BR 192254)
 
   BUGFIXES:
+    * After clicking on the Current Track applet, the menu bar at the top was
+      no longer working. (BUG 190923) 
     * Fixed playlist sometimes becoming invisible when Amarok is restored from
       the system tray. (BUG 184714)
 

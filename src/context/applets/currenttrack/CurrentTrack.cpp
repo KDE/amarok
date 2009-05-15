@@ -46,6 +46,10 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     setConfigurationRequired( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
     setImmutability( Plasma::Mutable );
+
+    // Fix for BUG 190923:
+    // If the widget receives focus, somehow this makes it impossible to open the Amarok menu. Reason unclear.
+    setFocusPolicy( Qt::NoFocus );
 }
 
 CurrentTrack::~CurrentTrack()
