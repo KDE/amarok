@@ -49,14 +49,17 @@ TimecodeObserver::engineNewTrackPlaying()
         {
             Meta::TimecodeWriteCapability *tcw = m_currentTrack->as<Meta::TimecodeWriteCapability>();
             if( tcw )
+            {
                 tcw->writeAutoTimecode ( m_currPos ); // save the timecode
+                delete tcw;
+            }
         }
     }
 
     // now update to the new track
-    debug() << "curent track name: " << currentTrack->prettyName();
-    if ( currentTrack->hasCapabilityInterface ( Meta::Capability::WriteTimecode ) )
+    if ( currentTrack && currentTrack->hasCapabilityInterface ( Meta::Capability::WriteTimecode ) )
     {
+        debug() << "curent track name: " << currentTrack->prettyName();
         m_trackTimecodeable = true;
         debug() << "Track timecodeable";
     }
@@ -73,9 +76,15 @@ TimecodeObserver::enginePlaybackEnded ( int finalPosition, int trackLength, Engi
     if ( m_trackTimecodeable && finalPosition != trackLength && trackLength > m_threshold && finalPosition > 60 )
     {
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-        Meta::TimecodeWriteCapability *tcw = currentTrack->as<Meta::TimecodeWriteCapability>();
-        if( tcw )
-            tcw->writeAutoTimecode ( finalPosition ); // save the timecode
+        if( currentTrack )
+        {
+            Meta::TimecodeWriteCapability *tcw = currentTrack->as<Meta::TimecodeWriteCapability>();
+            if( tcw )
+            {
+                tcw->writeAutoTimecode ( finalPosition ); // save the timecode
+                delete tcw;
+            }
+        }
     }
 }
 
@@ -87,3 +96,4 @@ void TimecodeObserver::engineTrackPositionChanged ( long position, bool userSeek
     // it's fucking schizo behavior when it
     // comes to milliseconds and seconds </rant>
 }
+
