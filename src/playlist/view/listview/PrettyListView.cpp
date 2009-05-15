@@ -432,16 +432,16 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 void
 Playlist::PrettyListView::paintEvent( QPaintEvent* event )
 {
-    DEBUG_BLOCK
-
-    QPoint offset( 6, 0 );
-    if ( !m_dropIndicator.size().isEmpty() ) {
-        QPalette p = KApplication::palette();
-        QPen pen( p.color( QPalette::Highlight ), 6, Qt::SolidLine, Qt::RoundCap );
+    if ( !m_dropIndicator.size().isEmpty() )
+    {
+        const QPoint offset( 6, 0 );
+        const QPalette p = KApplication::palette();
+        const QPen pen( p.color( QPalette::Highlight ), 6, Qt::SolidLine, Qt::RoundCap );
         QPainter painter( viewport() );
         painter.setPen( pen );
         painter.drawLine( m_dropIndicator.topLeft() + offset, m_dropIndicator.topRight() - offset );
     }
+
     QListView::paintEvent( event );
 }
 
