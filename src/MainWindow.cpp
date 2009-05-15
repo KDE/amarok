@@ -195,16 +195,9 @@ MainWindow::init()
     layout()->setContentsMargins( 0, 0, 0, 0 );
     layout()->setSpacing( 0 );
 
-    QBoxLayout * toolbarSpacer = new QHBoxLayout( this );
-    toolbarSpacer->setContentsMargins( 0, 0, 0, 10 );
-
     m_controlBar = new MainToolbar( 0 );
     m_controlBar->layout()->setContentsMargins( 0, 0, 0, 0 );
     m_controlBar->layout()->setSpacing( 0 );
-
-    toolbarSpacer->addSpacing( 3 );
-    toolbarSpacer->addWidget( m_controlBar, 20);
-    toolbarSpacer->addSpacing( 3 );
 
     PERF_LOG( "Create sidebar" )
     m_browsers = new SideBar( this, new KVBox );
@@ -232,12 +225,6 @@ MainWindow::init()
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
     PERF_LOG( "ContextScene created" )
-#if 0
-    {
-        if( AmarokConfig::useCoverBling() && QGLFormat::hasOpenGL() )
-            new CoverBling( m_contextWidget );
-    }
-#endif
 
     PERF_LOG( "Loading default contextScene" )
     m_corona->loadDefaultSetup(); // this method adds our containment to the scene
@@ -249,6 +236,13 @@ MainWindow::init()
     mainLayout->setContentsMargins( 0, 0, 0, 0 );
     mainLayout->setSpacing( 0 );
 
+    QBoxLayout *toolbarSpacer = new QHBoxLayout;
+    toolbarSpacer->setContentsMargins( 0, 0, 0, 10 );
+    toolbarSpacer->addSpacing( 3 );
+    toolbarSpacer->addWidget( m_controlBar, 20);
+    toolbarSpacer->addSpacing( 3 );
+
+    
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );
 
@@ -817,7 +811,6 @@ MainWindow::createMenus()
     actionsMenu->setTitle( i18n("&Amarok") );
 #endif
     actionsMenu->addAction( Amarok::actionCollection()->action("playlist_playmedia") );
-    actionsMenu->addAction( Amarok::actionCollection()->action("play_audiocd") );
     actionsMenu->addSeparator();
     actionsMenu->addAction( Amarok::actionCollection()->action("prev") );
     actionsMenu->addAction( Amarok::actionCollection()->action("play_pause") );
@@ -837,14 +830,11 @@ MainWindow::createMenus()
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_add") );
     playlistMenu->addAction( Amarok::actionCollection()->action("stream_add") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_save") );
-    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_burn") );
-    playlistMenu->addAction( Amarok::actionCollection()->action("podcasts_update") );
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_undo") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_redo") );
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_clear") );
-    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_shuffle") );
 
     QAction *repeat = Amarok::actionCollection()->action("repeat");
     playlistMenu->addAction( repeat );
@@ -855,11 +845,6 @@ MainWindow::createMenus()
     random->menu()->addAction( Amarok::actionCollection()->action("favor_tracks") );
 
     playlistMenu->addSeparator();
-    //FIXME: REENABLE When ported
-//     playlistMenu->addAction( Amarok::actionCollection()->action("queue_selected") );
-    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_duplicates") );
-    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_select_all") );
-
     //END Playlist menu
 
     //BEGIN Tools menu
@@ -887,7 +872,6 @@ MainWindow::createMenus()
     m_settingsMenu->addSeparator();
 #endif
 
-    m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
     //END Settings menu

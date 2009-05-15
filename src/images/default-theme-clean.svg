@@ -245,12 +245,6 @@
     </filter>
     <clipPath
        id="clipPath5163">
-      <circle
-         style="fill:url(#linearGradient5167);fill-opacity:1"
-         id="circle5165"
-         r="36"
-         cy="92"
-         cx="343.99899" />
     </clipPath>
     <linearGradient
        id="linearGradient4296">
@@ -5478,27 +5472,8 @@
                offset="1"
                style="stop-color:#000000" />
           </linearGradient>
-          <use
-             xlink:href="#XMLID_7_"
-             id="use53"
-             style="fill:url(#linearGradient8993)"
-             inkscape:r_cx="true"
-             inkscape:r_cy="true"
-             x="0"
-             y="0"
-             width="274.28799"
-             height="84.453003" />
           <clipPath
              id="clipPath5740">
-            <use
-               xlink:href="#XMLID_7_"
-               id="use56"
-               inkscape:r_cx="true"
-               inkscape:r_cy="true"
-               x="0"
-               y="0"
-               width="274.28799"
-               height="84.453003" />
           </clipPath>
         </g>
         <g
@@ -5982,53 +5957,6 @@
              cy="104.9858"
              cx="0"
              id="radialGradient3962">
-            <stop
-               id="stop3964"
-               style="stop-color:#DDDDDD;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0" />
-            <stop
-               id="stop3966"
-               style="stop-color:#B1AEBB;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.264" />
-            <stop
-               id="stop3968"
-               style="stop-color:#7E7A88;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.7416" />
-            <stop
-               id="stop3970"
-               style="stop-color:#514F55;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.882" />
-            <stop
-               id="stop3972"
-               style="stop-color:#201F22;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="1" />
-            <a:midPointStop
-               style="stop-color:#DDDDDD;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0" />
-            <a:midPointStop
-               style="stop-color:#DDDDDD;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.5" />
-            <a:midPointStop
-               style="stop-color:#B1AEBB;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.264" />
-            <a:midPointStop
-               style="stop-color:#B1AEBB;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.5" />
-            <a:midPointStop
-               style="stop-color:#7E7A88;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.7416" />
-            <a:midPointStop
-               style="stop-color:#7E7A88;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.5" />
-            <a:midPointStop
-               style="stop-color:#514F55;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.882" />
-            <a:midPointStop
-               style="stop-color:#514F55;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="0.5" />
-            <a:midPointStop
-               style="stop-color:#201F22;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               offset="1" />
           </radialGradient>
           <use
              height="84.453003"
@@ -6042,16 +5970,6 @@
              xlink:href="#XMLID_22_" />
           <clipPath
              id="clipPath3976">
-            <use
-               style="fill:url(#radialGradient3986);fill-opacity:1"
-               height="84.453003"
-               width="274.28799"
-               y="0"
-               x="0"
-               inkscape:r_cy="true"
-               inkscape:r_cx="true"
-               id="use3978"
-               xlink:href="#XMLID_22_" />
           </clipPath>
         </g>
         <g
@@ -6390,27 +6308,8 @@
                style="stop-color:#000000"
                offset="1" />
           </linearGradient>
-          <use
-             height="84.453003"
-             width="274.28799"
-             y="0"
-             x="0"
-             inkscape:r_cy="true"
-             inkscape:r_cx="true"
-             style="fill:url(#linearGradient11745)"
-             id="use5895"
-             xlink:href="#XMLID_7_" />
           <clipPath
              id="clipPath5897">
-            <use
-               height="84.453003"
-               width="274.28799"
-               y="0"
-               x="0"
-               inkscape:r_cy="true"
-               inkscape:r_cx="true"
-               id="use5899"
-               xlink:href="#XMLID_7_" />
           </clipPath>
         </g>
         <g
@@ -6858,53 +6757,6 @@
              fy="104.9858"
              gradientTransform="matrix(76.0112,0,0,-76.0112,73.1887,7978.753)"
              gradientUnits="userSpaceOnUse">
-            <stop
-               offset="0"
-               style="stop-color:#DDDDDD;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               id="stop6035" />
-            <stop
-               offset="0.264"
-               style="stop-color:#B1AEBB;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               id="stop6037" />
-            <stop
-               offset="0.7416"
-               style="stop-color:#7E7A88;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               id="stop6039" />
-            <stop
-               offset="0.882"
-               style="stop-color:#514F55;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               id="stop6041" />
-            <stop
-               offset="1"
-               style="stop-color:#201F22;fill-opacity:1.0;fill:url(#radialGradient3986)"
-               id="stop6043" />
-            <a:midPointStop
-               offset="0"
-               style="stop-color:#DDDDDD;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="0.5"
-               style="stop-color:#DDDDDD;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="0.264"
-               style="stop-color:#B1AEBB;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="0.5"
-               style="stop-color:#B1AEBB;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="0.7416"
-               style="stop-color:#7E7A88;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="0.5"
-               style="stop-color:#7E7A88;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="0.882"
-               style="stop-color:#514F55;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="0.5"
-               style="stop-color:#514F55;fill-opacity:1.0;fill:url(#radialGradient3986)" />
-            <a:midPointStop
-               offset="1"
-               style="stop-color:#201F22;fill-opacity:1.0;fill:url(#radialGradient3986)" />
           </radialGradient>
           <use
              xlink:href="#XMLID_22_"
@@ -6918,16 +6770,6 @@
              height="84.453003" />
           <clipPath
              id="clipPath6047">
-            <use
-               xlink:href="#XMLID_22_"
-               id="use6049"
-               inkscape:r_cx="true"
-               inkscape:r_cy="true"
-               x="0"
-               y="0"
-               width="274.28799"
-               height="84.453003"
-               style="fill:url(#radialGradient3986);fill-opacity:1" />
           </clipPath>
         </g>
         <g

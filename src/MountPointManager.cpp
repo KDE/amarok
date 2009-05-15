@@ -88,7 +88,6 @@ MountPointManager::MountPointManager()
 //         connect( this, SIGNAL( mediumConnected( int ) ), SLOT( migrateStatistics() ) );
 //         QTimer::singleShot( 0, this, SLOT( migrateStatistics() ) );
 //     }
-    connect( this, SIGNAL( mediumConnected( int ) ), SLOT( updateStatisticsURLs() ) );
     updateStatisticsURLs();
 }
 
