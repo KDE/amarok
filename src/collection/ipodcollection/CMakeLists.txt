@@ -1,4 +1,4 @@
-macro_optional_find_package(IPOD)
+macro_optional_find_package(Ipod)
 #macro_optional_find_package(Gtk2)
 macro_optional_find_package(Gdk)
 
