@@ -206,7 +206,7 @@ void MagnatuneStore::initTopPanel( )
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByGenreArtistAlbum() ) );
 
-    KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
+    KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
 
     m_searchWidget->toolBar()->addSeparator();

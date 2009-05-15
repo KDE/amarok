@@ -164,8 +164,6 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     m_nNumberOfAlbums = 0;
     m_nNumberOfArtists = 0;
 
-    QDomDocument doc( "config" );
-
     if( !QFile::exists( filename ) )
     {
         debug() << "jamendo xml file does not exist";
