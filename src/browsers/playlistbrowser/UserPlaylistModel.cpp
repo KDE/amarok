@@ -189,8 +189,8 @@ PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & par
 QModelIndex
 PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 {
-    DEBUG_BLOCK
-    debug() << index;
+//    DEBUG_BLOCK
+//    debug() << index;
     if( IS_TRACK(index) )
     {
 //        debug() << " is a track.";
@@ -239,8 +239,11 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
     if (!index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
+    if( IS_TRACK(index) )
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+
     //item is a playlist
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 }
 
 QVariant
@@ -333,17 +336,37 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
 }
 
 bool
-PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row,
-        int column, const QModelIndex & parent ) //reimplemented
+PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropAction action, int row,
+        int column, const QModelIndex &parent ) //reimplemented
 {
-    Q_UNUSED( column );
-    Q_UNUSED( row );
-    Q_UNUSED( parent )
+    DEBUG_BLOCK
+    debug() << "droped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
+    debug() << parent;
 
     if( action == Qt::IgnoreAction )
         return true;
 
-    if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+    //drop on track is not possible
+    if( IS_TRACK(parent) )
+            return false;
+
+    if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
+    {
+        debug() << "Found track mime type";
+        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        if( dragList )
+        {
+            int row = REMOVE_TRACK_MASK(parent.internalId());
+            debug() << "playlist at row: " << row;
+            Meta::PlaylistPtr playlist = m_playlists.value( row );
+            foreach( Meta::TrackPtr track, dragList->tracks() )
+            {
+                debug() << track->prettyName() << "dropped on " << playlist->prettyName();
+            }
+            return true;
+        }
+    }
+    else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "Found playlist mime type";
 
@@ -355,7 +378,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
 
             foreach( Meta::PlaylistPtr playlistPtr, playlists )
             {
-                //TODO: found out if it dropped on a group and add the group to the playlists
+                //TODO: figure out what to do when a plalist is dropped onto onother playlist
             };
 
             return true;

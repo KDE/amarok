@@ -215,13 +215,12 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
         return true;
     }
     QModelIndex originalIdx = mapToSource( idx );
-    return m_model->removeRow( originalIdx.row(), originalIdx.parent() );
+    return m_model->removeRows( row, count, originalIdx );
 }
 
 QStringList
 PlaylistsInGroupsProxy::mimeTypes() const
 {
-    DEBUG_BLOCK
     QStringList mimeTypes = m_model->mimeTypes();
     mimeTypes << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
     return mimeTypes;
@@ -318,11 +317,15 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
             return false;
         }
     }
+    else
+    {
+        debug() << "not dropped on the root or on a group";
+        QModelIndex sourceIndex = mapToSource( parent );
+        return m_model->dropMimeData( data, action, row, column,
+                               sourceIndex );
+    }
 
-    debug() << "not dropped on the root or on a group";
-    QModelIndex sourceIndex = mapToSource( parent );
-    return m_model->dropMimeData( data, action, sourceIndex.row(), sourceIndex.column(),
-                           sourceIndex.parent() );
+    return false;
 }
 
 int
@@ -414,7 +417,10 @@ PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
                  Qt::ItemIsDropEnabled );
 
     QModelIndex originalIdx = mapToSource( index );
-    return m_model->flags( originalIdx );
+    Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
+
+    //make the original one drag enabled if it didn't have it yet. We can drag it on a group.
+    return originalItemFlags | Qt::ItemIsDragEnabled;
 }
 
 void
