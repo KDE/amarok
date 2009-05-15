@@ -113,11 +113,11 @@ public:
 
 protected:
 
-    mutable QPixmap m_cover;
+    mutable QPixmap *m_cover;
     mutable bool m_hasFetchedCover;
     mutable bool m_isFetchingCover;
     QString m_coverDownloadPath;
-    mutable ServiceAlbumCoverDownloader * m_coverDownloader;
+    mutable ServiceAlbumCoverDownloader *m_coverDownloader;
 };
 
 
