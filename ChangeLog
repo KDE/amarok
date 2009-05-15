@@ -7,12 +7,20 @@ VERSION 2.1-beta3
   FEATURES:
   
   CHANGES:
+    * Single-click/double-click behavior in the Collection Browser now follows
+      the preference set in KDE System Settings.
     * Automatically fetch the database for Jamendo/Opml on first load.
     * Escape clears most search filters throughout Amarok. (BR 192254)
-    * Tracks of saved playlists are again shown in the playlistbrowser. They can be added and
-      sorted using drag and drop. (BR 187256, BR 184597)
+    * Tracks of saved playlists are again shown in the playlistbrowser. They
+      can be added and sorted using drag and drop. (BR 187256, BR 184597)
 
   BUGFIXES:
+    * Fixed bug that variably caused Collection folders to be "forgotten",
+      lots of entries to show up in Amarok's config file, and some other
+      oddities. (BR 187126, BR 178973)
+    * Fixed large memleak when subsequent collection scans were performed.
+      (BR 186842)
+	* Fixed possible startup crash. (BR 187126)
     * After clicking on the Current Track applet, the menu bar at the top was
       no longer working. (BR 190923)
     * Fixed playlist sometimes becoming invisible when Amarok is restored from
@@ -33,7 +41,7 @@ VERSION 2.1-beta2
       300 times faster.
     * Always scroll to newly inserted tracks in the Playlist.
     * When removing upcoming tracks from an active dynamic playlist, add a
-      simmilar number of new ones to keep if from "drying up".
+      similar number of new ones to keep if from "drying up".
     * Some action cleanup in the playlist context menu.
     * When clearing the playlist, also reset the search/filter text.
     * Podcast titles are stripped of unnecessary whitespace. (BR 177403)
