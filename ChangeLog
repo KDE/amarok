@@ -15,6 +15,8 @@ VERSION 2.1-beta3
       can be added and sorted using drag and drop. (BR 187256, BR 184597)
 
   BUGFIXES:
+    * On Screen Display settings are now immediately applied, without
+      requiring an application restart.
     * Fixed bug that variably caused Collection folders to be "forgotten",
       lots of entries to show up in Amarok's config file, and some other
       oddities. (BR 187126, BR 178973)

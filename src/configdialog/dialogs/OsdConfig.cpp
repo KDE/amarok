@@ -117,6 +117,8 @@ OsdConfig::updateSettings()
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
     AmarokConfig::setOsdYOffset( m_osdPreview->y() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
+
+    emit settingsChanged( QString() );
 }
 
 

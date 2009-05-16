@@ -598,6 +598,8 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 void
 Amarok::OSD::applySettings()
 {
+    DEBUG_BLOCK
+
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setDuration( AmarokConfig::osdDuration() );
     setEnabled( AmarokConfig::osdEnabled() );
