@@ -32,17 +32,17 @@ using namespace Meta;
 
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
     : ServiceAlbum( name )
+    , m_cover( 0 )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
-    , m_cover( 0 )
     , m_coverDownloader( 0 )
 {}
 
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow )
     : ServiceAlbum( resultRow )
+    , m_cover( 0 )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
-    , m_cover( 0 )
     , m_coverDownloader( 0 )
 {}
 
