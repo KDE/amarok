@@ -115,9 +115,17 @@ void LyricsEngine::update()
         }
     }
 
-    if( cached ) 
-        LyricsManager::self()->lyricsResultHtml( lyrics.toUtf8(), true );
-    else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
+    if( cached )
+    {
+        if( lyrics.contains( "<html>" ) )
+            newLyricsHtml( lyrics );
+        else
+        {
+            QStringList info;
+            info << m_title << m_artist << QString() <<  lyrics;
+            newLyrics( info );
+        }
+    } else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
