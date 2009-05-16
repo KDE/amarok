@@ -54,6 +54,8 @@ if( WITH_PLAYER )
     macro_optional_find_package(Strigi)
     macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
 
+    macro_optional_find_package(Ipod)
+
     if (WITH_IPOD})
       FIND_PACKAGE(Ipod)
     else (WITH_IPOD)
