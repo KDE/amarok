@@ -93,6 +93,8 @@ private:
     QString m_numPlayed;
     QString m_playedLast;
 
+    bool m_showStatistics;
+
     int m_maxTextWidth;
 
     //keep this safe as we might need it when resizing

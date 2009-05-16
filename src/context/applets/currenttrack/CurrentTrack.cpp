@@ -39,6 +39,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_rating( -1 )
     , m_trackLength( 0 )
+    , m_showStatistics( true )
     , m_tracksToShow( 0 )
     , m_tabBar( 0 )
 {
@@ -421,10 +422,16 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     // Only show the ratings widget if the current track is in the collection
     if( track && track->inCollection() )
+    {
         m_ratingWidget->show();
+        m_showStatistics = true;
+    }
     else
+    {
         m_ratingWidget->hide();
-
+        m_showStatistics = false;
+    }
+    
     p->restore();
     
     // draw border around ratingwidget
@@ -446,67 +453,72 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     qreal leftX = boundingRect().size().width() - standardPadding();
     // draw the complete outline. lots of little steps :)
     // at each corner, leave a 6x6 box. draw a quad bezier curve from the two ends of the lines, through  the original corner
-    QPainterPath statsPath;
-    statsPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-    statsPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-    statsPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                    leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-    statsPath.lineTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
-    statsPath.quadTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
-                    leftX - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
-    statsPath.lineTo( m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() ); // way bottom left corner
-    statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
-                    m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 );
-    statsPath.lineTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + 6 ); // top left of rating widget
-    statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y(),
-                    m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() );
-    statsPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // joining of two rects
-    statsPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
-                    leftEdge, m_ratingWidget->pos().y() - 6 );
-    statsPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // back to start
-    statsPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                    leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
-
-    p->fillPath( statsPath, bottomColor );
-    // draw just the overlay which is the "header" row, to emphasize that we have 2 rows here
-    QPainterPath headerPath;
-    headerPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-    headerPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-    headerPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                    leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-    headerPath.lineTo( leftX, m_ratingWidget->pos().y()  ); // middle of the right side
-    headerPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // join spot, before quad curve
-    headerPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
+    if( m_showStatistics )
+    {
+        QPainterPath statsPath;
+        statsPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
+        statsPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+        statsPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                        leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+        statsPath.lineTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
+        statsPath.quadTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
+                        leftX - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
+        statsPath.lineTo( m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() ); // way bottom left corner
+        statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
+                        m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 );
+        statsPath.lineTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + 6 ); // top left of rating widget
+        statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y(),
+                        m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() );
+        statsPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // joining of two rects
+        statsPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
                         leftEdge, m_ratingWidget->pos().y() - 6 );
-    headerPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // curve back through start
-    headerPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                       leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
-                       
-    p->fillPath( headerPath, topColor );
-    p->restore();
+        statsPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // back to start
+        statsPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                        leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
 
-    // draw label text
-    p->save();
-    // draw "Play count"
-    QRectF rect = QRectF(leftEdge, // align vertically with track info text
-                         m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
-                         localMaxTextWidth / 3,
-                         m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
-    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
-    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
-    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
-    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
-    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
+        p->fillPath( statsPath, bottomColor );
 
-    rect = QRectF( leftEdge,
-                   m_ratingWidget->pos().y() + 3,
-                   localMaxTextWidth / 3,
-                   m_ratingWidget->boundingRect().height() - 4 );
-    p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
-    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
-    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
-    rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
-    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
+        // draw just the overlay which is the "header" row, to emphasize that we have 2 rows here
+        QPainterPath headerPath;
+        headerPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
+        headerPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
+        headerPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                        leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
+        headerPath.lineTo( leftX, m_ratingWidget->pos().y()  ); // middle of the right side
+        headerPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // join spot, before quad curve
+        headerPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
+                            leftEdge, m_ratingWidget->pos().y() - 6 );
+        headerPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // curve back through start
+        headerPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
+                        leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
+        
+        p->fillPath( headerPath, topColor );
+
+        // draw label text
+        p->save();
+        // draw "Play count"
+
+        QRectF rect = QRectF(leftEdge, // align vertically with track info text
+                            m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
+                            localMaxTextWidth / 3,
+                            m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
+        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
+
+        rect = QRectF( leftEdge,
+                    m_ratingWidget->pos().y() + 3,
+                    localMaxTextWidth / 3,
+                    m_ratingWidget->boundingRect().height() - 4 );
+        p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
+        p->restore();
+    }
     p->restore();
     
     // draw source emblem
