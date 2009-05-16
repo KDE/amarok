@@ -916,7 +916,7 @@ IpodAlbum::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::CustomActions:
         {
             QList<PopupDropperAction*> actions;
-
+#if 0 // Uncomment once setting covers for ipod albums actually works
             PopupDropperAction *separator          = new PopupDropperAction( m_collection );
             PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, AlbumPtr::dynamicCast( IpodAlbumPtr(this) ) );
             PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, AlbumPtr::dynamicCast( IpodAlbumPtr(this) ) );
@@ -933,7 +933,7 @@ IpodAlbum::asCapabilityInterface( Meta::Capability::Type type )
                 unsetCoverAction->setEnabled( false );
             }
             actions.append( unsetCoverAction );
-
+#endif
             return new CustomActionsCapability( actions );
         }
 
