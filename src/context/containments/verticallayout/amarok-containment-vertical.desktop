@@ -25,6 +25,7 @@ Name[sv]=Vertikal sammanhangsinneslutning
 Name[th]=ส่วนบรรจุสำหรับคอนเท็กซ์ของแอมอะร็อก
 Name[tr]=Dikey İçerik Kapsayıcı
 Name[uk]=Вертикальний контейнер вмісту
+Name[wa]=Contneu d' astampé do contecse
 Name[x-test]=xxVertical Context Containmentxx
 Comment=A vertical containment for the Amarok Context
 Comment[bg]=Вертикален контекст на Amarok
@@ -52,6 +53,7 @@ Comment[sv]=En vertikal inneslutning för Amaroks Sammanhang
 Comment[th]=ส่วนบรรจุทางแนวตั้งสำหรับคอนเท็กซ์ของแอมอะร็อก
 Comment[tr]=Amarok İçeriği için bir dikey kapsayıcı
 Comment[uk]=Вертикальний контейнер для контексту Amarok
+Comment[wa]=On contneu d' astampé po l' contecse d' Amarok
 Comment[x-test]=xxA vertical containment for the Amarok Contextxx
 
 Icon=

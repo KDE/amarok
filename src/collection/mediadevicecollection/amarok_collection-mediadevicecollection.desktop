@@ -40,6 +40,7 @@ Name[sv]=Mediaenhetssamling
 Name[th]=คลังดนตรีของอุปกรณ์เล่นสื่อ
 Name[tr]=Ortam Aygıtı Koleksiyonu
 Name[uk]=Збірка на носіях інформації
+Name[wa]=Ramexhnêye d' éndjin media
 Name[x-test]=xxMedia Device Collectionxx
 Name[zh_CN]=媒体设备收藏
 Comment=Media Device collection plugin for Amarok
@@ -81,6 +82,7 @@ Comment[sv]=Insticksprogram med mediaenhetssamling för Amarok
 Comment[th]=ส่วนเสริมของแอมอะร็อก สำหรับจัดการคลังดนตรีของอุปกรณ์เล่นสื่อ
 Comment[tr]=Amarok için Ortam Aygıtı koleksiyonu eklentisi
 Comment[uk]=Втулка збірки на носіях інформації для Amarok
+Comment[wa]=Tchôke-divins di ramexhnêye d' éndjin media po Amarok
 Comment[x-test]=xxMedia Device collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的媒体设备收藏插件
 

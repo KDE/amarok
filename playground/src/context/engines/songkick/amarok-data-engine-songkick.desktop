@@ -34,6 +34,7 @@ Name[sv]=Songkick datagränssnitt
 Name[th]=กลไกข้อมูล Songkick
 Name[tr]=Songkick Veri Motoru
 Name[uk]=Рушій даних Songkick
+Name[wa]=Éndjin d' dinêyes Songkick
 Name[x-test]=xxSongkick Data Enginexx
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service

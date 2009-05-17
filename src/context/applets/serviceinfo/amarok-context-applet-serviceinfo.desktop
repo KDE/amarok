@@ -23,6 +23,7 @@ Name[ru]=Службы
 Name[sv]=Tjänster
 Name[tr]=Servisler
 Name[uk]=Служби
+Name[wa]=Siervices
 Name[x-test]=xxServicesxx
 Type=Service
 ServiceTypes=Plasma/Applet

@@ -22,6 +22,7 @@ Name[ru]=Текущая дорожка
 Name[sv]=Aktuellt spår
 Name[tr]=Geçerli Parça
 Name[uk]=Поточна композиція
+Name[wa]=Boket do moumint
 Name[x-test]=xxCurrent Trackxx
 Type=Service
 ServiceTypes=Plasma/Applet

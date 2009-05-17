@@ -21,6 +21,7 @@ Name[ru]=Каталог Shoutcast
 Name[sv]=Shoutcast-katalog
 Name[tr]=Shoutcast Dizini
 Name[uk]=Каталог Shoutcast
+Name[wa]=Ridant des shoutcasts
 Name[x-test]=xxShoutcast Directoryxx
 Comment=A service that allows browsing of thousands of shoutcast stations
 Comment[bg]=Услуга за обзор на хиляди shoutcast радио станции
@@ -58,6 +59,7 @@ Comment[sv]=En tjänst som gör det möjligt att bläddra igenom tusentals Shout
 Comment[th]=บริการที่อนุญาตให้ทำการเรียกดูสถานี shoutcast นับพัน ๆ สถานี
 Comment[tr]=Binlerce shoutcast radyo istasyonuna göz atmanıza izin veren bir hizmet
 Comment[uk]=Служба, що дозволяє вам прослуховувати тисячі станцій shoutcast
+Comment[wa]=On siervice ki vs permet d' foyter dins des meyes di ståcions di shoutacst
 Comment[x-test]=xxA service that allows browsing of thousands of shoutcast stationsxx
 Comment[zh_CN]=一种允许浏览数千个 Shoutcast 站点的服务
 
