@@ -15,6 +15,7 @@ VERSION 2.1-beta3
       can be added and sorted using drag and drop. (BR 187256, BR 184597)
 
   BUGFIXES:
+    * Allow selecting directories from the "Add Media" dialog. (BR 192225)
     * On Screen Display settings are now immediately applied, without
       requiring an application restart.
     * Fixed bug that variably caused Collection folders to be "forgotten",

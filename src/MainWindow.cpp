@@ -242,7 +242,7 @@ MainWindow::init()
     toolbarSpacer->addWidget( m_controlBar, 20);
     toolbarSpacer->addSpacing( 3 );
 
-    
+
     QWidget *centralWidget = new QWidget( this );
     centralWidget->setLayout( mainLayout );
 
@@ -504,7 +504,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     KUrl::List files;
     KFileDialog dlg( KUrl(QString()), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
-    dlg.setMode( KFile::Files /*| KFile::Directory */); // Directory mode is fucked up - selects the parent dir
+    dlg.setMode( KFile::Files | KFile::Directory );
     dlg.exec();
     files = dlg.selectedUrls();
 
@@ -999,7 +999,7 @@ void MainWindow::showContextView( bool visible )
     DEBUG_BLOCK
     if ( visible )
         m_contextWidget->show();
-    else 
+    else
         m_contextWidget->hide();
 }
 
