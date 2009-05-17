@@ -121,7 +121,7 @@ PopupDropperActionList LastFmTreeView::createBasicActions( const QModelIndexList
 
             if ( m_loadAction == 0 )
             {
-                m_loadAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "load", KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Load" ), this );
+                m_loadAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "load", KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
                 connect ( m_loadAction, SIGNAL ( triggered() ), this, SLOT ( slotPlayChildTracks() ) );
             }
             actions.append ( m_loadAction );
