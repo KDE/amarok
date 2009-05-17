@@ -23,6 +23,8 @@ VERSION 2.1-beta3
     * Fixed large memleak when subsequent collection scans were performed.
       (BR 186842)
 	* Fixed possible startup crash. (BR 187126)
+    * The context menu (right click) in the Current Track applet works again.
+      (BR 176169)
     * After clicking on the Current Track applet, the menu bar at the top was
       no longer working. (BR 190923)
     * Fixed playlist sometimes becoming invisible when Amarok is restored from
