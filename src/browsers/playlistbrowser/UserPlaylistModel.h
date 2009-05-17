@@ -65,8 +65,12 @@ class UserModel : public MetaPlaylistModel
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
         virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
-        virtual Qt::DropActions supportedDropActions() const{
-            return Qt::MoveAction;
+        virtual Qt::DropActions supportedDropActions() const {
+            return Qt::CopyAction;
+        }
+
+        virtual Qt::DropActions supportedDragActions() const {
+            return Qt::MoveAction | Qt::CopyAction;
         }
 
         virtual QStringList mimeTypes() const;
@@ -90,6 +94,7 @@ class UserModel : public MetaPlaylistModel
 
     signals:
         void renameIndex( const QModelIndex & index );
+        void rowsInserted( const QModelIndex & parent, int start, int end );
 
     private:
         UserModel();

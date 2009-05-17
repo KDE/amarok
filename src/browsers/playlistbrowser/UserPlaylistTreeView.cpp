@@ -50,6 +50,9 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel
 {
     setModel( model );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setDragDropMode( QAbstractItemView::DragDrop );
+    setAcceptDrops( true );
+
     The::paletteHandler()->updateItemView( this );
 
     //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,

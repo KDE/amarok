@@ -305,6 +305,7 @@ PlaylistBrowserNS::UserModel::mimeTypes() const
 {
     QStringList ret;
     ret << AmarokMimeData::PLAYLIST_MIME;
+    ret << AmarokMimeData::TRACK_MIME;
     ret << "text/uri-list"; //we do accept urls
     return ret;
 }
@@ -357,36 +358,38 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
     {
         debug() << "Found track mime type";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
-        if( dragList )
+        if( !dragList )
+            return false;
+
+        emit layoutAboutToBeChanged();
+        int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
+        debug() << "playlist at row: " << playlistRow;
+        Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
+        int insertAt = (row == -1) ? playlist->tracks().count() : row;
+        foreach( Meta::TrackPtr track, dragList->tracks() )
         {
-            int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
-            debug() << "playlist at row: " << playlistRow;
-            Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
-            foreach( Meta::TrackPtr track, dragList->tracks() )
-            {
-                debug() << track->prettyName() << "dropped on " << playlist->prettyName();
-                playlist->addTrack( track, row );
-            }
-            return true;
+            debug() << track->prettyName() << "dropped on " << playlist->prettyName() << "insert at " << insertAt;
+            playlist->addTrack( track, insertAt++ );
         }
+        emit rowsInserted( parent, row, insertAt );
+
+        return true;
     }
-    else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+
+    if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "Found playlist mime type";
 
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
+            return false;
+
+        foreach( Meta::PlaylistPtr playlistPtr, dragList->playlists() )
         {
-
-            Meta::PlaylistList playlists = dragList->playlists();
-
-            foreach( Meta::PlaylistPtr playlistPtr, playlists )
-            {
-                //TODO: figure out what to do when a plalist is dropped onto onother playlist
-            };
-
-            return true;
+            //TODO: figure out what to do when a playlist is dropped onto onother playlist
         }
+
+        return true;
     }
 
     return false;

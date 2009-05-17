@@ -327,6 +327,20 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
     return false;
 }
 
+Qt::DropActions
+PlaylistsInGroupsProxy::supportedDropActions() const
+{
+    //always add MoveAction because playlists can be put into a different group
+    return m_model->supportedDropActions() | Qt::MoveAction;
+}
+
+Qt::DropActions
+PlaylistsInGroupsProxy::supportedDragActions() const
+{
+    //always add MoveAction because playlists can be put into a different group
+    return m_model->supportedDragActions() | Qt::MoveAction;
+}
+
 int
 PlaylistsInGroupsProxy::columnCount( const QModelIndex& index ) const
 {
