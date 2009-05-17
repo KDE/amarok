@@ -78,6 +78,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
     m_filenameLayoutDialog->hide();
+    connect( this, SIGNAL( accepted() ),
+             m_filenameLayoutDialog, SLOT( onAccept() ) );
     ui->verticalLayout->insertWidget( 3, m_filenameLayoutDialog );
     ui->ignoreTheCheck->show();
 

@@ -490,6 +490,8 @@ TagDialog::guessFromFilename() //SLOT
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
     dialog->setMainWidget( widget );
+    connect( dialog, SIGNAL( accepted() ),
+             widget, SLOT( onAccept() ) );
 
     const int dcode = dialog->exec();
     QString schemeFromDialog; //note to self: see where to put it from an old revision

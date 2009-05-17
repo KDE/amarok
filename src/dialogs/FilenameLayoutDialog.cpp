@@ -40,8 +40,6 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
-    connect( parent, SIGNAL( accepted() ),
-             this, SLOT( onAccept() ) );
     connect( tokenPool, SIGNAL( onDoubleClick( Token * ) ),
              filenameLayout, SLOT( addToken( Token* ) ) );
     connect( kpbAdvanced, SIGNAL( clicked() ),

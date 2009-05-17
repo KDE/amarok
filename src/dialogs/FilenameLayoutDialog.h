@@ -85,12 +85,14 @@ class FilenameLayoutDialog
         int getWhitespaceOptions();
         int getUnderscoreOptions();
 
+    public slots:
+        void onAccept();
+
     signals:
         void schemeChanged();
 
     private slots:
         void editStateEnable( bool checked );
-        void onAccept();
         void toggleAdvancedMode();
     
     private:
