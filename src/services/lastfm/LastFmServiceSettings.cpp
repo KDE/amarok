@@ -120,10 +120,18 @@ LastFmServiceSettings::onAuthenticated( WsReply *reply )
     switch( reply->error() )
     {
         case Ws::NoError:
-             debug() << "NoError";
-             m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
-             m_configDialog->testLogin->setEnabled( false );
-             break;
+            debug() << "NoError";
+            if( reply->lfm().text().contains( "Invalid authentication token" ) )
+            {
+                KMessageBox::error( this, i18n( "Either the username or the password is incorrect, please correct and try again" ), i18n( "Failed" ) );
+                m_configDialog->testLogin->setText( i18n( "Test Login" ) );
+                m_configDialog->testLogin->setEnabled( true );
+            } else
+            {
+                m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
+                m_configDialog->testLogin->setEnabled( false );
+            }
+            break;
 
          case Ws::AuthenticationFailed:
             debug() << "AuthenticationFailed";
