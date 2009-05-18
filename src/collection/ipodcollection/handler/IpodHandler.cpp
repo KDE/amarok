@@ -611,8 +611,7 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
     {
         /* Check for compatible formats: MP3/AAC/MP4 */
 
-        format = track->type();
-        format = format.toLower();
+        format = track->type().toLower();
 
         if( !( format == "mp3" || format == "aac" || format == "mp4" ) )
         {
