@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Video Clip Data Engine
+Name[fr]=Moteur de données pour clip vidéo
+X-KDE-ServiceTypes=Plasma/DataEngine
+X-KDE-ParentApp=Amarok
+Type=Service
+Icon=VideoClip
+X-KDE-Library=amarok_data_engine_videoclip
+X-KDE-PluginInfo-Name=amarok-videoclip
