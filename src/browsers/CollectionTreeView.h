@@ -77,6 +77,8 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void startDrag( Qt::DropActions supportedActions );
         //void changeEvent ( QEvent * event );
 
+        void getIndexForEvent( QMouseEvent *event, QModelIndex &index );
+
     protected slots:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotExpand( const QModelIndex &index );

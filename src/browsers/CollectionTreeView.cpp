@@ -407,6 +407,14 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     m_dragMutex.unlock();
 }
 
+void CollectionTreeView::getIndexForEvent( QMouseEvent *event, QModelIndex &index )
+{
+    if( m_filterModel )
+        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
+    else
+        index = indexAt( event->pos() );
+}
+
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
     Q_UNUSED( deselected )

@@ -51,26 +51,23 @@ void CollectionBrowserTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     //mouseReleaseEvent to ignore that one event
     m_justDoubleClicked = true;
 
-    QModelIndex index = indexAt( event->pos() );
-    if( index.isValid() && !KGlobalSettings::singleClick() )
+    QModelIndex origIndex = indexAt( event->pos() );
+    QModelIndex filteredIndex;
+    CollectionTreeView::getIndexForEvent( event, filteredIndex );
+
+    if( filteredIndex.isValid() && !KGlobalSettings::singleClick() )
     {
-        //This is where you would want to detect if it is a track and if so
-        //send the event to the base class so it can be added to the playlist...
-        //but CollectionTreeItem::isTrackItem() doesn't seem to work, nor does
-        //counting children, which theoretically should work here if the number wasn't
-        //always random and negative...
-        //Note that using CollectionTreeItem::level causes crashes.
-        //CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        //debug() << "Item's level = " << ( item ? item->level() : -99 );
-        if( false  ) //detect if item is track
+        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
+        if( item->isTrackItem() ) //detect if item is track
         {
             CollectionTreeView::mouseDoubleClickEvent( event );
         }
         else
         {
-            setExpanded( index, !isExpanded( index ) );
+            setExpanded( origIndex, !isExpanded( origIndex ) );
             event->accept();
         }
+        m_clickTimer.stop();
     }
     else // propagate to base class
         CollectionTreeView::mouseDoubleClickEvent( event );
@@ -130,7 +127,8 @@ void CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
         slotClickTimeout();
         event->accept();
     }
-    CollectionTreeView::mouseMoveEvent( event );
+    else
+        CollectionTreeView::mouseMoveEvent( event );
 }
 
 void CollectionBrowserTreeView::slotClickTimeout()
