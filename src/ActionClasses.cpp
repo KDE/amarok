@@ -142,11 +142,17 @@ Menu::instance()
 KMenu*
 Menu::helpMenu( QWidget *parent ) //STATIC
 {
-
     if ( s_helpMenu == 0 )
         s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
 
-    return s_helpMenu->menu();
+    KMenu* menu = s_helpMenu->menu();
+
+
+    // NOTE: We hide the "Amarok Handbook" entry until the handbook actually exists (WIP)
+    s_helpMenu->action( KHelpMenu::menuHelpContents )->setVisible( false );
+
+
+    return menu;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

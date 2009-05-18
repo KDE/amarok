@@ -7,6 +7,8 @@ VERSION 2.1-beta3
   FEATURES:
   
   CHANGES:
+    * Removed the "Amarok Handbook" menu entry until the handbook actually
+      exists (work in progress).
     * Single-click/double-click behavior in the Collection Browser now follows
       the preference set in KDE System Settings.
     * Automatically fetch the database for Jamendo/Opml on first load.
