@@ -1,5 +1,6 @@
-include_directories( ../../..
-                     ../../../context
+include_directories(  ../../../../../src/
+		     ../../../../../src/context
+
 					   ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
 					   )
 
