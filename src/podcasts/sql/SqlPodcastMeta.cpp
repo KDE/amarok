@@ -237,36 +237,64 @@ Meta::SqlPodcastEpisode::updateInDb()
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
     #define escape(x) sqlStorage->escape(x)
-    QString insert = "INSERT INTO podcastepisodes("
-    "url,channel,localurl,guid,title,subtitle,sequencenumber,description,"
-    "mimetype,pubdate,duration,filesize,isnew) "
-    "VALUES ( '%1','%2','%3','%4','%5','%6',%7,'%8','%9','%10',%11,%12,%13 );";
-
-    QString update = "UPDATE podcastepisodes "
-    "SET url='%1',channel=%2,localurl='%3',guid='%4',title='%5',subtitle='%6',"
-    "sequencenumber=%7,description='%8',mimetype='%9',pubdate='%10',"
-    "duration=%11,filesize=%12,isnew=%13 WHERE id=%14;";
-    //if we don't have a database ID yet we should insert
-    QString command = m_dbId ? update : insert;
-
-    command = command.arg( escape(m_url.url()) ); //%1
-    command = command.arg( m_channel->dbId() ); //%2
-    command = command.arg( escape(m_localUrl.url()) ); //%3
-    command = command.arg( escape(m_guid) ); //%4
-    command = command.arg( escape(m_title) ); //%5
-    command = command.arg( escape(m_subtitle) ); //%6
-    command = command.arg( QString::number(m_sequenceNumber) ); //%7
-    command = command.arg( escape(m_description) ); //%8
-    command = command.arg( escape(m_mimeType) ); //%9
-    command = command.arg( escape(m_pubDate.toString(Qt::ISODate)) ); //%10
-    command = command.arg( QString::number(m_duration) ); //%11
-    command = command.arg( QString::number(m_fileSize) ); //%12
-    command = command.arg( m_isNew ? boolTrue : boolFalse ); //%13
-
+    QString command;
+    QTextStream stream( &command );
     if( m_dbId )
-        sqlStorage->query( command.arg( m_dbId ) );
+    {
+        stream << "UPDATE podcastepisodes ";
+        stream << "SET url='";
+        stream << escape(m_url.url());
+        stream << "', channel=";
+        stream << m_channel->dbId();
+        stream << ", localurl='";
+        stream << escape(m_localUrl.url());
+        stream << "', guid='";
+        stream << escape(m_guid);
+        stream << "', title='";
+        stream << escape(m_title);
+        stream << "', subtitle='";
+        stream << escape(m_subtitle);
+        stream << "', sequencenumber=";
+        stream << m_sequenceNumber;
+        stream << ", description='";
+        stream << escape(m_description);
+        stream << "', mimetype='";
+        stream << escape(m_mimeType);
+        stream << "', pubdate='";
+        stream << escape(m_pubDate.toString(Qt::ISODate));
+        stream << "', duration=";
+        stream << m_duration;
+        stream << ", filesize=";
+        stream << m_fileSize;
+        stream << ", isnew=";
+        stream << (m_isNew ? boolTrue : boolFalse);
+        stream << " WHERE id=";
+        stream << m_dbId;
+        stream << ";";
+        sqlStorage->query( command );
+    }
     else
+    {
+        stream << "INSERT INTO podcastepisodes (";
+        stream << "url,channel,localurl,guid,title,subtitle,sequencenumber,description,";
+        stream << "mimetype,pubdate,duration,filesize,isnew) ";
+        stream << "VALUES ( '";
+        stream << escape(m_url.url()) << "', ";
+        stream << m_channel->dbId() << ", '";
+        stream << escape(m_localUrl.url()) << "', '";
+        stream << escape(m_guid) << "', '";
+        stream << escape(m_title) << "', '";
+        stream << escape(m_subtitle) << "', ";
+        stream << m_sequenceNumber << ", '";
+        stream << escape(m_description) << "', '";
+        stream << escape(m_mimeType) << "', '";
+        stream << escape(m_pubDate.toString(Qt::ISODate)) << "', ";
+        stream << m_duration << ", ";
+        stream << m_fileSize << ", ";
+        stream << (m_isNew ? boolTrue : boolFalse);
+        stream << ");";
         m_dbId = sqlStorage->insert( command, "podcastepisodes" );
+    }
 }
 
 void

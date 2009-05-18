@@ -34,7 +34,8 @@ VERSION 2.1-beta3
       no longer working. (BR 190923)
     * Fixed playlist sometimes becoming invisible when Amarok is restored from
       the system tray. (BR 184714)
-
+    * Fix saving podcast episodes to the database when the metadata contains percent signs.
+      (BR 189104)
 
 VERSION 2.1-beta2
   FEATURES:
