@@ -109,9 +109,6 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
     TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
 #endif
 
-    if( m_batch && m_incremental )
-        m_recursively = false;
-    
     m_logfile = ( m_batch ? ( m_incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
                        : m_saveLocation + "collection_scan.log" );
     
@@ -1090,9 +1087,9 @@ CollectionScanner::displayHelp()
     s_textStream << qPrintable( tr( "-r, --recursive       : Scan folders recursively" ) ) << endl;
     s_textStream << qPrintable( tr( "-i, --incremental     : Incremental scan (modified folders only)." ) ) << endl;
     s_textStream << qPrintable( tr( "-p, --importplaylists : Import playlists" ) ) << endl;
-    s_textStream << qPrintable( tr( "-s, --restart         : Restart the scanner in its last position, after a crash" ) ) << endl;
+    s_textStream << qPrintable( tr( "-s, --restart         : After a crash, restart the scanner in its last position" ) ) << endl;
     s_textStream << qPrintable( tr( "-b, --batch           : Run in batch mode" ) ) << endl;
-    s_textStream << qPrintable( tr( "--rpath <path>        : In full-scan batch mode, specifies the path to prepend to entries (default is the current directory" ) ) << endl;
+    s_textStream << qPrintable( tr( "--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to prepend to entries (default is the current directory)" ) ) << endl;
     s_textStream.flush();
     ::exit(0);
 }
