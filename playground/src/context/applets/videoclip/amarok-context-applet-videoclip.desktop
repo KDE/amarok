@@ -1,11 +1,10 @@
 [Desktop Entry]
 Name=Videoclip
-Name[fr]=Vidéo-clip
 Type=Service
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_videoclip
 X-KDE-PluginInfo-Author=Simon Esneault
-X-KDE-PluginInfo-Email=simon.esneault@gmail.com 
+X-KDE-PluginInfo-Email=simon.esneault@gmail.com
 X-KDE-PluginInfo-Name=videoclip
 X-KDE-PluginInfo-Version=pre0.1
 X-KDE-PluginInfo-Website=

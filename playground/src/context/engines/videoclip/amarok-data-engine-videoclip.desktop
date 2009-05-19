@@ -1,6 +1,5 @@
 [Desktop Entry]
 Name=Video Clip Data Engine
-Name[fr]=Moteur de données pour clip vidéo
 X-KDE-ServiceTypes=Plasma/DataEngine
 X-KDE-ParentApp=Amarok
 Type=Service
