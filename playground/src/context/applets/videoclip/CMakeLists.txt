@@ -1,5 +1,5 @@
-include_directories( ../..
-                    ../../.. )
+include_directories( ../../../../../src
+                    ../../../../../src/context )
 
 set( videoclip_applet_SRCS
     VideoclipApplet.cpp
