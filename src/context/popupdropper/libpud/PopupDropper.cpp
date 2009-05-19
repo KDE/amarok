@@ -133,13 +133,14 @@ void PopupDropperPrivate::fadeShowTimerFrameChanged( int frame ) //SLOT
 void PopupDropperPrivate::fadeHideTimerFinished() //SLOT
 {
     view->hide();
-    //qDebug() << "Emitting fadeHideFinished";
+    //qDebug() << "Emitting fadeHideFinished in d pointer " << this;
     emit q->fadeHideFinished();
 }
 
 void PopupDropperPrivate::fadeShowTimerFinished() //SLOT
 {
     q->setPalette( windowColor ); 
+    queuedHide = false;
 }
 
 void PopupDropperPrivate::dragEntered()
@@ -261,6 +262,7 @@ int PopupDropper::overlayLevel() const
 void PopupDropper::initOverlay( QWidget* parent, PopupDropperPrivate* priv )
 {
     PopupDropperPrivate *pdp = priv ? priv : d;
+    //qDebug() << "PUD Overlay being created, d pointer is " << d;
     pdp->scene->setSceneRect( QRectF( parent->rect() ) );
     //qDebug() << "Scene width = " << pdp->scene->width();
     pdp->scene->setItemIndexMethod( QGraphicsScene::NoIndex );
@@ -283,6 +285,7 @@ void PopupDropper::addOverlay()
     d = new PopupDropperPrivate( this, false, old_d->view );
     d->onTop = true;
     d->sharedRenderer = old_d->sharedRenderer;
+    //qDebug() << "Adding overlay: ";
     initOverlay( old_d->view );
     setColors( d->windowColor, d->baseTextColor, d->hoveredTextColor, d->hoveredBorderPen.color(), d->hoveredFillBrush.color() );
     d->quitOnDragLeave = true;
@@ -311,10 +314,11 @@ void PopupDropper::addOverlay( PopupDropperPrivate* newD )
 //with hide() (which will hide just one level)
 bool PopupDropper::subtractOverlay()
 {
-    //qDebug() << "subtractOverlay";
-    disconnect( this, SIGNAL( fadeHideFinished() ), this, SLOT( subtractOverlay() ) );
+    //qDebug() << "subtractOverlay, with d pointer " << d;
+    disconnect( this, SLOT( subtractOverlay() ) );
     while( !isHidden() && d->fadeHideTimer.state() == QTimeLine::Running )
     {
+        //qDebug() << "singleshotting subtractOverlay";
         QTimer::singleShot( 0, this, SLOT( subtractOverlay() ) );
         return false;
     }
@@ -452,46 +456,47 @@ void PopupDropper::showAllOverlays()
 //returns immediately! 
 void PopupDropper::hide()
 {
-    //qDebug() << "PopupDropper::hide entered, isHidden = " << (isHidden() ? "true":"false");
+    //qDebug() << "PopupDropper::hide entered, d pointer is = " << d;
+
+    //if hide is called and the view is already hidden, it's likely spurious
     if( isHidden() )
     {
-        emit fadeHideFinished();
+        //qDebug() << "ishidden, returning";
         return;
     }
 
+    //queuedHide is to make sure that fadeShowTimerFinished executes before this next hide()
     if( d->fadeShowTimer.state() == QTimeLine::Running )
     {
-        if( !d->queuedHide )
-        {
-            QTimer::singleShot( 0, this, SLOT( hide() ) );
-            d->queuedHide = true;
-        }
+        //qDebug() << "show timer running, queueing hide";
+        d->fadeShowTimer.stop();
+        d->queuedHide = true;
+        QTimer::singleShot( 0, d, SLOT( fadeShowTimerFinished() ) );
+        QTimer::singleShot( 0, this, SLOT( hide() ) );
         return;
     }
 
-    if( d->fadeHideTimer.state() == QTimeLine::Running )
-        return;
-
-    bool wasRunning = false;
-    if( d->fadeHideTimer.state() == QTimeLine::Running )
+    //queuedHide will be set to false from fadeShowTimerFinished...so if this came up first,
+    //then wait
+    if( d->fadeHideTimer.state() == QTimeLine::Running || d->queuedHide )
     {
-        d->fadeHideTimer.stop();
-        wasRunning = true;
+        //qDebug() << "hide timer running or queued hide";
+        QTimer::singleShot( 0, this, SLOT( hide() ) );
+        return;
     }
+
     if( ( d->fade == PopupDropper::FadeOut || d->fade == PopupDropper::FadeInOut ) && d->fadeOutTime > 0 )
     {
+        //qDebug() << "Starting fade out";
         d->fadeHideTimer.setDuration( d->fadeOutTime );
-        if( !wasRunning )
-            d->fadeHideTimer.setCurrentTime( d->fadeOutTime );
         d->fadeHideTimer.setCurveShape( QTimeLine::LinearCurve );
         d->fadeHideTimer.start();
         //qDebug() << "Timer started";
         return;
     }
-    if( !d->queuedHide )
+    else  //time is zero, or no fade
     {
-        //make sure weird issues with the timeline don't cause this to trigger twice
-        d->queuedHide = true;
+        //qDebug() << "time is zero, or no fade";
         QTimer::singleShot( 0, d, SLOT( fadeHideTimerFinished() ) );
         return;
     }
@@ -499,25 +504,25 @@ void PopupDropper::hide()
 
 void PopupDropper::hideAllOverlays()
 {
-    qDebug() << "Entered hideAllOverlays";
+    //qDebug() << "Entered hideAllOverlays";
     connect( this, SIGNAL( fadeHideFinished() ), this, SLOT( slotHideAllOverlays() ) );
     hide();
-    qDebug() << "Leaving hideAllOverlays";
+    //qDebug() << "Leaving hideAllOverlays";
 }
 
 void PopupDropper::slotHideAllOverlays()
 {
-    qDebug() << "Entered slotHideAllOverlays()";
+    //qDebug() << "Entered slotHideAllOverlays()";
     disconnect( this, SIGNAL( fadeHideFinished() ), this, SLOT( slotHideAllOverlays() ) );
-    qDebug() << "m_viewStack.size() = " << m_viewStack.size();
+    //qDebug() << "m_viewStack.size() = " << m_viewStack.size();
     for( int i = m_viewStack.size() - 1; i >= 0; --i )
     {
         PopupDropperPrivate* pdp = m_viewStack.at( i );
-        qDebug() << "checking pdp = " << (QObject*)pdp << ", d is " << (QObject*)d;
+        //qDebug() << "checking pdp = " << (QObject*)pdp << ", d is " << (QObject*)d;
         if( pdp != d )
             pdp->view->hide();
     }
-    qDebug() << "Leaving slotHideAllOverlays";
+    //qDebug() << "Leaving slotHideAllOverlays";
 }
 
 void PopupDropper::update()
@@ -549,8 +554,7 @@ void PopupDropper::clear()
         return;
     }
     //qDebug() << "Clear happening!";
-    disconnect( &d->fadeHideTimer, SIGNAL( finished() ), this, SLOT( clear() ) );
-    disconnect( &d->fadeShowTimer, SIGNAL( finished() ), this, SLOT( clear() ) );
+    disconnect( this, SLOT( clear() ) );
     do
     {
         foreach( QGraphicsItem* item, d->allItems )
