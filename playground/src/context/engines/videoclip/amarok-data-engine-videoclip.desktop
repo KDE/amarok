@@ -1,5 +1,11 @@
 [Desktop Entry]
 Name=Video Clip Data Engine
+Name[et]=Videoklipi andmete mootor
+Name[pt]=Motor de Dados de 'Clips' de Vídeo
+Name[pt_BR]=Motor de Dados de 'Clips' de Vídeo
+Name[sv]=Datagränssnitt för videoklipp
+Name[uk]=Рушій даних відеокліпів
+Name[wa]=Éndjin d' dinêyes Clip Videyo
 X-KDE-ServiceTypes=Plasma/DataEngine
 X-KDE-ParentApp=Amarok
 Type=Service

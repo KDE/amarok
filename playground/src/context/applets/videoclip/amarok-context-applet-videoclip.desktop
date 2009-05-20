@@ -1,5 +1,11 @@
 [Desktop Entry]
 Name=Videoclip
+Name[et]=Videoklipp
+Name[pt]='Clip' de Vídeo
+Name[pt_BR]='Clip' de Vídeo
+Name[sv]=Videoklipp
+Name[uk]=Відеокліп
+Name[wa]=Clip videyo
 Type=Service
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_videoclip
