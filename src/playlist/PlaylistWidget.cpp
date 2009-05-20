@@ -77,8 +77,8 @@ Playlist::Widget::Widget( QWidget* parent )
     
     QWidget * layoutHolder = new QWidget( this );
 
-    layoutHolder->setMinimumWidth( 100 );
-    layoutHolder->setMinimumHeight( 200 );
+    //layoutHolder->setMinimumWidth( 50 );
+    //layoutHolder->setMinimumHeight( 50 );
     
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
     mainPlaylistlayout->setContentsMargins( 0, 0, 0, 0 );
