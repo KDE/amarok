@@ -562,6 +562,7 @@ PlaylistBrowserNS::PodcastModel::deleteItems( QModelIndexList list )
         }
         else if( pmc->podcastType() ==  Meta::ChannelType )
         {
+            //TODO: put something here or take this if clause out
             // ignore
         }
     }
