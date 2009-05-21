@@ -47,12 +47,6 @@ BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
     , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
 {
-
-    if ( parent.isNull() )
-    {
-        //root item
-        m_dbId = -1;
-    }
 }
 
 BookmarkGroup::BookmarkGroup( const QString &name, const QString &customType )
