@@ -132,10 +132,10 @@ void PopupDropperItem::setAction( PopupDropperAction *action )
             else
                 d->svgItem = new QGraphicsSvgItem( this );
         }
-        if( d->svgItem && pudaction->renderer() && pudaction->renderer()->isValid() )
+        if( pudaction->renderer() && pudaction->renderer()->isValid() )
             d->svgItem->setSharedRenderer( pudaction->renderer() );
 
-        if( d->svgItem && !pudaction->elementId().isEmpty() )
+        if( !pudaction->elementId().isEmpty() )
             d->svgItem->setElementId( pudaction->elementId() );
 
         if( d->svgItem->renderer() && d->svgItem->renderer()->elementExists( pudaction->elementId() ) )
@@ -377,7 +377,7 @@ void PopupDropperItem::setBorderRectItem( QGraphicsRectItem *borderRectItem )
         return;
 
     d->borderRectItem = borderRectItem;
-    if( d->borderRectItem && !d->hoveredOver  )
+    if( !d->hoveredOver  )
     {
         QPen pen = d->hoveredBorderPen;
         QColor color = pen.color();
@@ -410,8 +410,8 @@ void PopupDropperItem::scaleAndReposSvgItem()
     }
 
     //Need to scale if it is too tall or wide
-    qreal maxheight = d->svgElementRect.height() - ( d->borderRectItem ? ( 2 * d->borderRectItem->pen().width() ) : 0 );
-    qreal maxwidth = d->svgElementRect.width() - ( d->borderRectItem ? ( 2 * d->borderRectItem->pen().width() ) : 0 );
+    qreal maxheight = d->svgElementRect.height() - ( 2 * d->borderRectItem->pen().width() );
+    qreal maxwidth = d->svgElementRect.width() - ( 2 * d->borderRectItem->pen().width() ) );
     qreal vertScaleValue = maxheight / d->svgItem->sceneBoundingRect().height();
     qreal horizScaleValue = maxwidth / d->svgItem->sceneBoundingRect().width();
     qreal scaleValue = vertScaleValue < horizScaleValue ? vertScaleValue : horizScaleValue;
