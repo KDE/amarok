@@ -21,35 +21,15 @@
 
 #include "CollectionTreeView.h"
 
-#include <QModelIndex>
-#include <QPoint>
-#include <QTimer>
-
 /**
  * Specialized CollectionTreeView that handles actions to top level items ( collections ) in a custom way.
  */
 class CollectionBrowserTreeView : public CollectionTreeView 
 {
-    Q_OBJECT
-
     public:
         CollectionBrowserTreeView( QWidget *parent = 0 );
         ~CollectionBrowserTreeView();
 
-    protected:
-        void mouseDoubleClickEvent( QMouseEvent *event );
-        void mousePressEvent( QMouseEvent *event );
-        void mouseReleaseEvent( QMouseEvent *event );
-        void mouseMoveEvent( QMouseEvent *event );
-
-    protected slots:
-        void slotClickTimeout();
-
-    private:
-        QModelIndex m_index;
-        QPoint m_clickLocation;
-        QTimer m_clickTimer;
-        bool m_justDoubleClicked;
 };
 
 #endif

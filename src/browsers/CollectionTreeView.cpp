@@ -46,8 +46,10 @@
 
 #include <QContextMenuEvent>
 #include <QHash>
+#include <QMouseEvent>
 #include <QSet>
 
+#include <KGlobalSettings>
 #include <KIcon>
 #include <KLineEdit>
 #include <KMenu>
@@ -66,7 +68,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_cmSeperator( 0 )
     , m_dragMutex()
     , m_ongoingDrag( false )
+    , m_justDoubleClicked( false )
 {
+    setMouseTracking( true );
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -91,6 +95,8 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( this, SIGNAL( expanded( const QModelIndex & ) ), SLOT( slotExpanded( const QModelIndex & ) ) );
+
+    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
 
 void CollectionTreeView::setModel(QAbstractItemModel * model)
@@ -252,20 +258,114 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    QModelIndex index;
+    QModelIndex origIndex = indexAt( event->pos() );
+    QModelIndex filteredIndex;
     if( m_filterModel )
-        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
+        filteredIndex = m_filterModel->mapToSource( indexAt( event->pos() ) );
     else
-        index = indexAt( event->pos() );
+        filteredIndex = indexAt( event->pos() );
 
-    if( index.isValid() )
+    if( !filteredIndex.isValid() )
     {
-        CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        playChildTracks( item, Playlist::AppendAndPlay );
+        event->accept();
+        return;
     }
+
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
+    
+    if( event->button() != Qt::LeftButton || event->modifiers()
+        || KGlobalSettings::singleClick() || ( item && item->isTrackItem() ) )
+    {
+        playChildTracks( item, Playlist::AppendAndPlay );
+        update();
+        event->accept();
+        return;
+    }
+
+    m_clickTimer.stop();
+    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
+    //comes through, but after the mouseDoubleClickEvent, so we need to tell
+    //mouseReleaseEvent to ignore that one event
+    m_justDoubleClicked = true;
+    setExpanded( origIndex, !isExpanded( origIndex ) );
+    event->accept();
 }
 
-void CollectionTreeView::keyPressEvent( QKeyEvent * event )
+void CollectionTreeView::mousePressEvent( QMouseEvent *event )
+{
+    if( KGlobalSettings::singleClick() )
+        setItemsExpandable( false );
+    update();
+    Amarok::PrettyTreeView::mousePressEvent( event );
+}
+
+void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
+{
+    if( m_pd )
+    {
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        m_pd->hide();
+    }
+    m_pd = 0;
+
+    setItemsExpandable( true );
+    if( event->button() != Qt::LeftButton
+            || event->modifiers()
+            || selectedIndexes().size() > 1)
+    {
+        Amarok::PrettyTreeView::mousePressEvent( event );
+        update();
+        return;
+    }
+
+    if( m_clickTimer.isActive() || m_justDoubleClicked )
+    {
+        //it's a double-click...so ignore it
+        m_clickTimer.stop();
+        m_justDoubleClicked = false;
+        m_savedClickIndex = QModelIndex();
+        event->accept();
+        return;
+    }
+
+    m_savedClickIndex = indexAt( event->pos() );
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
+    m_clickLocation = event->pos();
+    event->accept();
+}
+
+void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
+{
+    if( event->buttons() || event->modifiers() )
+    {
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
+        update();
+        return;
+    }
+    QPoint point = event->pos() - m_clickLocation;
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
+    {
+        m_clickTimer.stop();
+        slotClickTimeout();
+        event->accept();
+    }
+    else
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
+}
+
+void CollectionTreeView::slotClickTimeout()
+{
+    m_clickTimer.stop();
+    if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
+    {
+        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
+    }
+    m_savedClickIndex = QModelIndex();
+}
+
+void CollectionTreeView::keyPressEvent( QKeyEvent *event )
 {
     QModelIndexList indices = selectedIndexes();
     if( m_filterModel )
@@ -405,14 +505,6 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     m_dragMutex.lock();
     m_ongoingDrag = false;
     m_dragMutex.unlock();
-}
-
-void CollectionTreeView::getIndexForEvent( QMouseEvent *event, QModelIndex &index )
-{
-    if( m_filterModel )
-        index = m_filterModel->mapToSource( indexAt( event->pos() ) );
-    else
-        index = indexAt( event->pos() );
 }
 
 void CollectionTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
@@ -904,18 +996,6 @@ Amarok::Collection * CollectionTreeView::getCollection( const QModelIndex & inde
     }
 
     return collection;
-}
-
-void CollectionTreeView::mouseReleaseEvent( QMouseEvent * event )
-{
-    if( m_pd )
-    {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
-        m_pd->hide();
-    }
-    m_pd = 0;
-
-    QTreeView::mouseReleaseEvent( event );
 }
 
 void CollectionTreeView::slotPlayChildTracks()
