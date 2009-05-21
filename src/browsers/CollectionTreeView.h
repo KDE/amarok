@@ -85,6 +85,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
 
+        void slotCheckAutoExpand();
         void slotPlayChildTracks();
         void slotAppendChildTracks();
         void slotQueueChildTracks();
@@ -136,6 +137,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
     signals:
         void itemSelected( CollectionTreeItem * item );
+        void leavingTree();
 };
 
 #endif

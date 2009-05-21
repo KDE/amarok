@@ -101,6 +101,7 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
+    connect( m_treeModel, SIGNAL( queryFinished() ), SLOT( slotCheckAutoExpand() ));
 
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
@@ -297,6 +298,11 @@ void CollectionTreeView::keyPressEvent( QKeyEvent * event )
             slotAppendChildTracks();
             return;
         case Qt::Key_Up:
+            if ( current.parent() == QModelIndex() && current.row() == 0 )
+            {
+                emit leavingTree();
+                return;
+            }
         case Qt::Key_Down:
             QAbstractItemView::keyPressEvent( event );
             return;
@@ -479,6 +485,34 @@ CollectionTreeView::slotExpanded( const QModelIndex &index )
         m_treeModel->slotExpanded( m_filterModel->mapToSource( index ));
     else
         m_treeModel->slotExpanded( index );
+}
+
+void
+CollectionTreeView::slotCheckAutoExpand()
+{
+    if( m_filterModel )
+    {
+        // Cases where root is not collections but
+        // for example magnatunes's plethora of genres, don't expand by default
+        if( m_filterModel->rowCount() > 6 )
+            return;
+
+        QModelIndexList indicesToCheck;
+        for( int i = 0; i < m_filterModel->rowCount(); i++ ) //need something to start for'ing with
+            indicesToCheck += m_filterModel->index( i, 0 ); //lowest level is fine for that
+
+        QModelIndex current;
+        for( int j = 0; j < indicesToCheck.size(); j++)
+        {
+            current = indicesToCheck.at( j );
+            if( m_filterModel->rowCount( current ) < 4 )
+            { //don't expand if many results
+                expand( current );
+                for( int i = 0; i < m_filterModel->rowCount( current ); i++ )
+                    indicesToCheck += m_filterModel->index( i, 0, current );
+            }
+        }
+    }
 }
 
 void
