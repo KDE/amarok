@@ -541,12 +541,8 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
     reset();
 }
 
-
-
-void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter  )
+void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter )
 {
-    DEBUG_BLOCK
-
     bool updateProxy = false;
     if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
@@ -556,12 +552,14 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     {
         //select this track
 
-        if ( !filter ) {
+        if ( !filter )
+        {
             QModelIndex index = model()->index( row, 0 );
             QItemSelection selItems( index, index );
             selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
             QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+            setCurrentIndex( foundIndex );
             if ( foundIndex.isValid() )
                 scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
         }
@@ -594,8 +592,6 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
     if( selected.size() > 0 )
         currentRow = selected.last();
 
-    debug() << "current row is: " << currentRow;
-
     int row = GroupingProxy::instance()->findNext( searchTerm, currentRow, fields );
     if( row != -1 )
     {
@@ -606,6 +602,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
         QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
@@ -631,8 +628,6 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     if( selected.size() > 0 )
         currentRow = selected.first();
 
-    debug() << "current row is: " << currentRow;
-
     int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow, fields );
     if( row != -1 )
     {
@@ -643,6 +638,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
         QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 

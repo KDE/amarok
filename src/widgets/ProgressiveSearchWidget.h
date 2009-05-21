@@ -96,6 +96,11 @@ signals:
      */
     void activateFilterResult();
 
+    /**
+     * Signal emitted when the down key is pressed. Forwarded on from Amarok::LineEdit
+     */
+    void downPressed();
+
 public slots:
     /**
      * Notify the widget that there are matches (at least one), so the next and previous actions
