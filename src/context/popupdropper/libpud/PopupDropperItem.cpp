@@ -411,7 +411,7 @@ void PopupDropperItem::scaleAndReposSvgItem()
 
     //Need to scale if it is too tall or wide
     qreal maxheight = d->svgElementRect.height() - ( 2 * d->borderRectItem->pen().width() );
-    qreal maxwidth = d->svgElementRect.width() - ( 2 * d->borderRectItem->pen().width() ) );
+    qreal maxwidth = d->svgElementRect.width() - ( 2 * d->borderRectItem->pen().width() );
     qreal vertScaleValue = maxheight / d->svgItem->sceneBoundingRect().height();
     qreal horizScaleValue = maxwidth / d->svgItem->sceneBoundingRect().width();
     qreal scaleValue = vertScaleValue < horizScaleValue ? vertScaleValue : horizScaleValue;
