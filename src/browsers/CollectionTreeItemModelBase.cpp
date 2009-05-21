@@ -651,10 +651,7 @@ CollectionTreeItemModelBase::queryDone()
 
     //reset icon for this item
     if( item && item != m_rootItem )
-    {
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
-        emit ( queryFinished() );
-    }
 
     //stop timer if there are no more animations active
     if( d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
@@ -719,13 +716,15 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     {
         CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
         QModelIndex parentIndex;
-        if( parent )
-        {
+        if( parent ) {
             if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
+            {
                 parentIndex = QModelIndex();
+            }
             else
+            {
                 parentIndex = createIndex( parent->row(), 0, parent );
-
+            }
             //we only insert the "Various Artists" node
             beginInsertRows( parentIndex, 0, 0 );
             CollectionTreeItem *vaItem = new CollectionTreeItem( data, parent );
@@ -736,7 +735,11 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
                 tmp = tmp->parent();
 
             if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
-                createIndex( 0, 0, vaItem ); //we've just inserted the vaItem at row 0
+            {
+                debug() << "Expand vanode for collection " << collectionId;
+                QModelIndex vanode = createIndex( 0, 0, vaItem ); //we've just inserted the vaItem at row 0
+                emit expandIndex( vanode );
+            }
 
         }
     }

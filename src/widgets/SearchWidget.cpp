@@ -46,8 +46,6 @@ SearchWidget::setup( QObject* caller )
     connect( this, SIGNAL( filterNow() ), caller,
              SLOT( slotFilterNow() ) );
     connect( m_sw, SIGNAL( returnPressed() ), caller, SLOT( slotFilterNow() ) );
-    connect( m_sw, SIGNAL( downPressed() ), caller, SLOT( setFocus() ) );
-    connect( caller, SIGNAL( leavingTree() ), m_sw, SLOT( setFocus() ) );
 }
 
 ///Private

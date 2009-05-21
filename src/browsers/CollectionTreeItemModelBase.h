@@ -96,7 +96,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     signals:
         void expandIndex( const QModelIndex &index );
-        void queryFinished();
 
     public slots:
         virtual void queryDone();

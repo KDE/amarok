@@ -5,9 +5,6 @@ Amarok ChangeLog
 
 VERSION 2.1-beta3
   FEATURES:
-    * Automatically expand collection browser search results and make the
-      results keyboard accessible. Patch thanks to Tuomas Nurmi
-      <tuomas@norsumanageri.org>. (BR 172379)
     * Add file path to default search criteria. Patch thanks to Andreas
       Hartmetz <ahartmetz@gmail.com>.
   

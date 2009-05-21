@@ -28,20 +28,14 @@ namespace Amarok
      * The Amarok::LineEdit class implements a few enhancements to KLineEdit
      * Namely:
      *   1. Pressing the escape key clears the contents
-     *   2. Pressing down emits the downPressed signal
      */
     class LineEdit : public KLineEdit
     {
-        Q_OBJECT
-
         public:
             LineEdit( QWidget *parent = 0 );
             virtual ~LineEdit() {};
 
             void keyPressEvent( QKeyEvent *event );
-
-        signals:
-            void downPressed();
     };
 }
 
