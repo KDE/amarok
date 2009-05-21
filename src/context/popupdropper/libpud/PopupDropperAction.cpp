@@ -65,14 +65,12 @@ PopupDropperAction::PopupDropperAction( const QString & text, QObject * parent )
     : QAction( text, parent )
     , d( new PopupDropperActionPrivate )
 {
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( const QIcon & icon, const QString & text, QObject * parent )
     : QAction( icon, text, parent )
     , d( new PopupDropperActionPrivate )
 {
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( const QString &elementId, const QString &text, QObject *parent )
@@ -80,7 +78,6 @@ PopupDropperAction::PopupDropperAction( const QString &elementId, const QString 
     , d( new PopupDropperActionPrivate )
 {
     d->elementId = elementId;
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( const QString &elementId, const QIcon &icon, const QString &text, QObject *parent )
@@ -88,7 +85,6 @@ PopupDropperAction::PopupDropperAction( const QString &elementId, const QIcon &i
     , d( new PopupDropperActionPrivate )
 {
     d->elementId = elementId;
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &text, QObject *parent )
@@ -96,7 +92,6 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &t
     , d( new PopupDropperActionPrivate )
 {
     d->renderer = renderer;
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QIcon &icon, const QString &text, QObject *parent )
@@ -104,7 +99,6 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QIcon &ico
     , d( new PopupDropperActionPrivate )
 {
     d->renderer = renderer;
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 //note that the elementId cannot be used by this directly; it is only here so that you can use it as a reference
@@ -115,7 +109,6 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &e
 {
     d->renderer = renderer;
     d->elementId = elementId;
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 //note that the elementId cannot be used by this directly; it is only here so that you can use it as a reference
@@ -126,7 +119,6 @@ PopupDropperAction::PopupDropperAction( QSvgRenderer* renderer, const QString &e
 {
     d->renderer = renderer;
     d->elementId = elementId;
-    d->separatorStyle = PopupDropperAction::TextSeparator;
 }
 
 PopupDropperAction::~PopupDropperAction()
