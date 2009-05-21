@@ -283,7 +283,6 @@ void PopupDropper::addOverlay()
     m_viewStack.push( d );
     PopupDropperPrivate* old_d = d;
     d = new PopupDropperPrivate( this, false, old_d->view );
-    d->onTop = true;
     d->sharedRenderer = old_d->sharedRenderer;
     //qDebug() << "Adding overlay: ";
     initOverlay( old_d->view );
