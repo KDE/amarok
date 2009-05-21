@@ -113,6 +113,9 @@ PopupDropperItem * PopupDropperFactory::createItem( PopupDropperAction * action 
 
 void PopupDropperFactory::adjustSubmenuItem( PopupDropperItem *item )
 {
+    if( !item )
+        return;
+
     QFont font;
     font.setPointSize( 16 );
     font.setBold( true );
