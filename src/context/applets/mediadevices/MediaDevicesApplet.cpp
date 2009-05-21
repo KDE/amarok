@@ -476,7 +476,7 @@ MediaDevicesApplet::redraw()
 
     if( m_infoMap.size() == 0 )
     {
-
+        //TODO
     }
 
 
