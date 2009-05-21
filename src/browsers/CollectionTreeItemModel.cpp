@@ -191,7 +191,8 @@ CollectionTreeItemModel::filterChildren()
     for ( int i = 0; i < count; i++ )
     {
         CollectionTreeItem *item = m_rootItem->child( i );
-        item->setChildrenLoaded( false );
+        if( item )
+            item->setChildrenLoaded( false );
     }
 }
 
