@@ -564,7 +564,6 @@ SqlPodcastProvider::autoUpdate()
 void
 SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 {
-    bool result = false;
     m_updatingChannels++;
     PodcastReader * podcastReader = new PodcastReader( this );
 
