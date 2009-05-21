@@ -287,7 +287,6 @@ Playlist::PrettyListView::stopAfterTrack()
 void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
-    QPoint mousept = event->pos() + QPoint( horizontalOffset(), verticalOffset() );
     QModelIndex index = indexAt( event->pos() );
     if ( index.isValid() ) {
         m_dropIndicator = visualRect( index );

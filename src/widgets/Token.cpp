@@ -66,7 +66,6 @@ Token::Token( const QString &name, const QString &iconName, int value, QWidget *
     hlayout->addWidget( m_label );
     
     QFontMetrics metric( font() );
-    QSize size = metric.size( Qt::TextSingleLine, m_label->text() );
     QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_label->setSizePolicy( sizePolicy );
     

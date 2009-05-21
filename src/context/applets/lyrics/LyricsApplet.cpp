@@ -56,14 +56,11 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
-    QColor highlight = PaletteHandler::highlightColor().darker( 300 );
-    
     m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
-   // m_titleLabel->setBrush( highlight );
     
     QAction* reloadAction = new QAction( i18n( "Reload Lyrics" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -297,7 +294,6 @@ LyricsApplet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
 
-    QColor highlight = PaletteHandler::highlightColor().darker( 200 );
     if( m_lyrics )
         m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
                                                                                                               .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
