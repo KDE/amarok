@@ -162,8 +162,7 @@ AmpacheTrackForUrlWorker::run()
     //send url_to_song to Ampache
 
     QString requestUrl = QString( "%1/server/xml.server.php?action=url_to_song&auth=%2&url=%3")
-    . arg( m_server, m_sessionId, mUrl.url() );
-
+    . arg(  m_server,  m_sessionId,  QUrl::toPercentEncoding( mUrl.url() ) );
     //     debug() << "request url: " << requestUrl;
 
     m_storedTransferJob = KIO::storedGet(  KUrl( requestUrl ), KIO::NoReload, KIO::HideProgressInfo );
