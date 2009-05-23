@@ -189,6 +189,8 @@ void Playlist::PrettyListView::selectSource()
 void
 Playlist::PrettyListView::scrollToActiveTrack()
 {
+    DEBUG_BLOCK
+        debug() << "skipping scroll?" << m_skipAutoScroll;
     if( m_skipAutoScroll )
     {
         m_skipAutoScroll = false;
@@ -202,6 +204,7 @@ Playlist::PrettyListView::scrollToActiveTrack()
 void
 Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 {
+    DEBUG_BLOCK
     m_skipAutoScroll = true; // we don't want to do crazy view changes when selecting an item in the view
     Actions::instance()->play( idx );
 }
