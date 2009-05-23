@@ -498,17 +498,9 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 }
 
                 //always add track filter ( if supported..)
-                if( ( validFilters & QueryMaker::TitleFilter ) != 0 )
-                {
+                if ( ( validFilters & QueryMaker::TitleFilter ) != 0 ) {
                     qm->beginOr();
                     ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false ); //always filter for track title too
-                    qm->endAndOr();
-                }
-                //same for URL filter
-                if( ( validFilters & QueryMaker::URLFilter ) != 0 )
-                {
-                    qm->beginOr();
-                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
                     qm->endAndOr();
                 }
             }

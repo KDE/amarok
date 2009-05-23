@@ -44,7 +44,6 @@ class AMAROK_EXPORT QueryMaker : public QObject
                             GenreFilter     =     8,
                             ComposerFilter  =    16,
                             YearFilter      =    32,
-                            URLFilter       =    64,
                             AllFilters      = 65535 };
 
         enum ReturnFunction { Count = 0,
