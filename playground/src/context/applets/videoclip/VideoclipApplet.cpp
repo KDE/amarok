@@ -70,9 +70,6 @@ void VideoclipApplet::init()
     m_pixYoutube = new QPixmap( KStandardDirs::locate("data","amarok/images/amarok-videoclip-youtube.png" ) );
     m_pixDailymotion = new QPixmap( KStandardDirs::locate("data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
     m_pixVimeo = new QPixmap( KStandardDirs::locate("data", "amarok/images/amarok-videoclip-vimeo.png" ) );
-
-  //  debug()<< "SIMON | yeah" <<m_pixDailymotion->size().width();
-
     
     // Create label
     QFont labelFont;
@@ -188,11 +185,13 @@ void VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         for (int i=0; i<data["title"].toStringList().size();i++)
         {
             debug() << "VideoclipApplet::dataUpdated: "<< data["id"].toStringList().at(i);
-
+            
             // create image
             QLabel *icon = new QLabel();
             icon->setPixmap(The::svgHandler()->addBordersToPixmap(
             data["coverpix"].toHash()[data["cover"].toStringList().at(i)].value<QPixmap>(), 5, "Thumbnail", true ).scaledToHeight(90));
+            icon->setToolTip(QString("<html><body><a href=\"")+data["fulllink"].toStringList().at(i)+
+            QString("\">")+data["fulllink"].toStringList().at(i)+QString("</a><br>")+data["description"].toStringList().at(i));
 
             // create link (and resize, no more than 3 lines long)
             QString title(data["title"].toStringList().at(i));
