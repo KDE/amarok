@@ -27,28 +27,25 @@
 #include "context/Svg.h"
 #include "EngineObserver.h"
 
+#include "widgets/kratingwidget.h"
 
 #include <KDialog>
 #include <Phonon/VideoWidget>
 #include <Phonon/VideoPlayer>
 #include <Phonon/Path>
-
 #include <Plasma/Label>
-#include <Plasma/GroupBox>
 
 #include <QGraphicsProxyWidget>
 #include <QTimeLine>
 #include <QWidget>
 
-
-class QGraphicsPixmapItem;
 class QGraphicsLinearLayout;
 class QGraphicsProxyWidget;
-class QLabel;
 class QHBoxLayout;
-class QSpinBox;
-class QCheckBox;
 class QGraphicsWidget;
+class KratingWidget;
+class KratingPainter;
+class QHBoxLayout;
 
 
 class VideoclipApplet : public Context::Applet, public EngineObserver
@@ -61,6 +58,7 @@ public:
 
     void init();
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
+    
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
 
@@ -72,17 +70,20 @@ protected:
     void EngineNewTrackPlaying();
 
 private:
-    QGraphicsLinearLayout *m_layout;
-    Phonon::MediaObject *m_mediaObject;
-    Phonon::VideoWidget *m_videoWidget;
-    Phonon::Path path;
+  //  Phonon::MediaObject *m_mediaObject;
+  //  Phonon::VideoWidget *m_videoWidget;
+  //  Phonon::Path path;
 
+    // The two big container, only one who need a resize
     QGraphicsSimpleTextItem *m_headerText;
-    QGraphicsWidget         *m_widget;
-
-//    QList<Plasma::Label>m_labelUrl;
-    QList<Plasma::GroupBox *>m_vidGroup;
-    QStringList m_titleList, m_idList, m_coverList, m_durationList, m_descList;
+    QGraphicsProxyWidget    *m_widget;
+    QHBoxLayout             *m_layout;
+    QList<QWidget *>m_layoutWidgetList;
+    
+    int m_height;
+    QPixmap     *m_pixYoutube;
+    QPixmap     *m_pixDailymotion;
+    QPixmap     *m_pixVimeo;
 
 
 };

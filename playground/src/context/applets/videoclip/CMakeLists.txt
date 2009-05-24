@@ -3,6 +3,8 @@ include_directories( ../../../../../src
 
 set( videoclip_applet_SRCS
     VideoclipApplet.cpp
+	../../../../../src/widgets/kratingwidget.cpp
+    ../../../../../src/widgets/kratingpainter.cpp
 )
 
 
@@ -11,3 +13,6 @@ target_link_libraries( amarok_context_applet_videoclip amaroklib ${KDE4_PLASMA_L
 
 install( TARGETS amarok_context_applet_videoclip DESTINATION ${PLUGIN_INSTALL_DIR} )
 install( FILES amarok-context-applet-videoclip.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+install( FILES amarok-videoclip-youtube.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install( FILES amarok-videoclip-dailymotion.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install( FILES amarok-videoclip-vimeo.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
