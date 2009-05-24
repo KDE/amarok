@@ -9,7 +9,6 @@ X-KDE-Submenu[hne]=अमाराक
 X-KDE-Submenu[ne]=अमारोक
 X-KDE-Submenu[pa]=ਅਮਰੋਕ
 X-KDE-Submenu[th]=แอมอะร็อก
-X-KDE-Submenu[uk]=Амарок
 X-KDE-Submenu[x-test]=xxAmarokxx
 
 [Desktop Action appendToPlaylist]
@@ -107,7 +106,7 @@ Name[sl]=Dodaj in predvajaj
 Name[sv]=Lägg till och spela
 Name[th]=เพิ่มและเล่น
 Name[tr]=Parça Listesine Ekle ve Çal
-Name[uk]=Додати і програти
+Name[uk]=Додати і відтворити
 Name[wa]=Mete dins l' djivêye eyet djouwer
 Name[x-test]=xxAppend & Playxx
 Name[zh_CN]=追加并播放
@@ -159,7 +158,7 @@ Name[sl]=Dodaj skladbo v vrsto
 Name[sv]=Köa spår
 Name[th]=ส่งเพลงเข้าคิวรอเล่น
 Name[tr]=Parçayı Sıraya Ekle
-Name[uk]=Поставити доріжку в чергу
+Name[uk]=Поставити композицію в чергу
 Name[wa]=Mete boket el cawêye
 Name[x-test]=xxQueue Trackxx
 Name[zh_CN]=音轨排队
