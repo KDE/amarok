@@ -80,10 +80,13 @@ private:
     QString    m_title;
     QString    m_artist;
 
+    int m_nbYoutube;
+    int m_nbDailymotion;
+    int m_nbVimeo;
+    
     // stores what features are enabled
     bool m_requested;
-
-
+    //will store all the result
     QStringList vid_title, vid_id, vid_cover, vid_duration, vid_desc, vid_views, vid_rating;
     QHash<QString, QVariant> vid_coverpix;
 };

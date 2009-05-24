@@ -32,6 +32,9 @@ VideoclipEngine::VideoclipEngine( QObject* parent, const QList<QVariant>& /*args
     , m_jobYoutube( 0 )
     , m_jobDailymotion( 0 )
     , m_jobVimeo( 0 )
+    , m_nbYoutube( -1 )
+    , m_nbDailymotion( -1 )
+    , m_nbVimeo( -1 )
     , m_requested( true )
 {
     m_sources << "youtube" << "dailymotion" << "vimeo" ;
@@ -50,7 +53,7 @@ QStringList VideoclipEngine::sources() const
 
 bool VideoclipEngine::sourceRequestEvent( const QString& name )
 {
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     removeAllData( name );
@@ -67,7 +70,7 @@ void VideoclipEngine::message( const ContextState& state )
 
 void VideoclipEngine::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
     const bool hasChanged = track->name() != m_title || track->artist()->name() != m_artist;
     if( hasChanged )
         update();    
@@ -75,7 +78,7 @@ void VideoclipEngine::metadataChanged( Meta::TrackPtr track )
 
 void VideoclipEngine::update()
 {
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
     QString tmpYoutStr;
       // prevent
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -101,6 +104,11 @@ void VideoclipEngine::update()
         vid_views.clear();
         vid_rating.clear();
         vid_coverpix.clear();
+        m_nbVimeo=m_nbDailymotion=m_nbYoutube=-1;
+        
+
+        // Show the information
+        setData( "videoclip", "message", i18n( "Fetching content.." ) );
         
         // Query youtube, order by rating, 10 max
         KUrl youtubeUrl(QString("http://gdata.youtube.com/feeds/videos?q=")+m_artist+QString(" ")+m_title+QString("&orderby=rating&max-results=10"));
@@ -123,12 +131,11 @@ void VideoclipEngine::update()
 void VideoclipEngine::resultYoutube( KJob* job )
 {
     if( !m_jobYoutube ){return;} //track changed while we were fetching
-
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     if( job->error() != KJob::NoError && job == m_jobYoutube ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Youtube information: %1", job->errorString() ) );
-        debug() << "VideoclipEngine | youtube shit: ";
+        debug() << "VideoclipEngine | Unable to retrieve Youtube information: "<<job->errorString();
         m_jobYoutube = 0; // clear job
         return;
     }
@@ -159,25 +166,27 @@ void VideoclipEngine::resultYoutube( KJob* job )
         KJob* job = KIO::storedGet( KUrl(cov), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(resultImageFetcher( KJob* )) );
     }
-    debug() << "VideoclipEngine | youtube fetch : "<< xmlNodeList.length()<< " songs ";
-//     debug() << "VideoclipEngine | youtube title : "<<vid_title;
-//     debug() << "VideoclipEngine | youtube id : "<<vid_id;
-//     debug() << "VideoclipEngine | youtube cover : "<<vid_cover;
-//     debug() << "VideoclipEngine | youtube duration : "<<vid_duration;
-//     debug() << "VideoclipEngine | youtube views : "<<vid_views;
-//     debug() << "VideoclipEngine | youtube description : "<<vid_desc;
-//     debug() << "VideoclipEngine | youtube rating : "<<vid_rating;
+    // Check how many clip we've find and send message if all the job are finished but no clip were find
+    m_nbYoutube=xmlNodeList.length();    
+    debug() << "VideoclipEngine | youtube fetch : "<< m_nbYoutube<< " songs ";
+
+    if (m_nbYoutube>0) removeData( "videoclip", "message");
+    if (m_nbDailymotion == 0 && m_nbYoutube == 0 && m_nbVimeo == 0 )
+    {
+        debug() << "VideoclipEngine | No Video clip found";
+        setData( "videoclip", "message", i18n( "No video clip found..."));
+    }
     m_jobYoutube = 0;
 }
 
 void VideoclipEngine::resultDailymotion( KJob* job )
 {
     if( !m_jobDailymotion ) return; //track changed while we were fetching
-
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
     if( job->error() != KJob::NoError && job == m_jobDailymotion ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Dailymotion information: %1", job->errorString() ) );
+        debug() << "VideoclipEngine | Unable to retrieve Dailymotion information: "<<job->errorString();
         m_jobDailymotion = 0; // clear job
         return;
     }
@@ -204,15 +213,16 @@ void VideoclipEngine::resultDailymotion( KJob* job )
         // Send a job to get every pixmap
         KJob* job = KIO::storedGet( KUrl(cov), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(resultImageFetcher( KJob* )) );
+    }  
+    // Check how many clip we've find and send message if all the job are finished but no clip were find
+    m_nbDailymotion=xmlNodeList.length();
+    debug() << "VideoclipEngine | dailymotion fetch : "<< m_nbDailymotion<< " songs ";
+    if (m_nbDailymotion>0) removeData( "videoclip", "message");
+    if (m_nbDailymotion == 0 && m_nbYoutube == 0 && m_nbVimeo == 0 )
+    {
+        debug() << "VideoclipEngine | No Video clip found";
+        setData( "videoclip", "message", i18n( "No video clip found..."));
     }
-     debug() << "VideoclipEngine | dailymotion fetch : "<< xmlNodeList.length()<< " songs ";
-//     debug() << "VideoclipEngine | daily title : "<<vid_title;
-//     debug() << "VideoclipEngine | daily id : "<<vid_id;
-//     debug() << "VideoclipEngine | daily cover : "<<vid_cover;
-//     debug() << "VideoclipEngine | daily duration : "<<vid_duration;
-//     debug() << "VideoclipEngine | daily views : "<<vid_views;
-//     debug() << "VideoclipEngine | daily description : "<<vid_desc;
-//     debug() << "VideoclipEngine | daily rating : "<<vid_rating;
     m_jobDailymotion = 0;
 }
 
@@ -221,10 +231,11 @@ void VideoclipEngine::resultVimeo( KJob* job )
 {
     if( !m_jobVimeo ) return; //track changed while we were fetching
         
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
     if( job->error() != KJob::NoError && job == m_jobVimeo ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Vimeo information: %1", job->errorString() ) );
+        debug() << "VideoclipEngine | Unable to retrieve Vimeo information: "<<job->errorString();
         m_jobVimeo = 0; // clear job
         return;
     }
@@ -240,17 +251,24 @@ void VideoclipEngine::resultVimeo( KJob* job )
         page=page.mid(page.indexOf(regex)+regex.size());
         
         KUrl vimeoURL(QString("http://vimeo.com/api/clip/")+page.mid(0, page.indexOf("\""))+QString(".xml"));
-        debug() <<" SIMON | "<<vimeoURL.toMimeDataString();
         KJob *jobVimeo = KIO::storedGet( vimeoURL, KIO::NoReload, KIO::HideProgressInfo );
         connect( jobVimeo, SIGNAL( result( KJob* ) ), SLOT( resultVimeoBis( KJob* ) ) );
     }
-    debug() << "VideoclipEngine | vimeo fetch : "<< count<< " songs ";
+    // Check how many clip we've find and send message if all the job are finished but no clip were find
+    m_nbVimeo=count;
+    debug() << "VideoclipEngine | vimeo fetch : "<< m_nbVimeo<< " songs ";
+    if (m_nbVimeo>0) removeData( "videoclip", "message");
+    if (m_nbDailymotion == 0 && m_nbYoutube == 0 && m_nbVimeo == 0 )
+    {
+        debug() << "VideoclipEngine | No Video clip found";
+        setData( "videoclip", "message", i18n( "No video clip found..."));
+    }
     m_jobVimeo = 0;
 }
 
 void VideoclipEngine::resultVimeoBis( KJob *job)
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     if( job->error() != KJob::NoError)
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve one Vimeo song information: %1", job->errorString() ) );
@@ -309,10 +327,10 @@ void VideoclipEngine::resultImageFetcher( KJob *job)
     {
         debug() << "VideoclipEngine | Fetched : " << vid_views.size()<< " entries";
 
+        DEBUG_BLOCK
 
         //We can here try
 
-        
         // here we can do something fancy
         setData( "videoclip", "title", vid_title );
         setData( "videoclip", "id", vid_id );
