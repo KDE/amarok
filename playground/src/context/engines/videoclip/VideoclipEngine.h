@@ -56,11 +56,14 @@ protected:
 
 private slots:
     void resultYoutube( KJob* );
+    void resultYoutubeGetLink( KJob* );
     void resultDailymotion( KJob* );
+    void resultDailymotionGetLink( KJob* );
     void resultVimeo( KJob* );
     void resultVimeoBis( KJob* );
     
     void resultImageFetcher( KJob * );
+    void resultFinalize();
     
 private:
     void update();
@@ -87,7 +90,7 @@ private:
     // stores what features are enabled
     bool m_requested;
     //will store all the result
-    QStringList vid_title, vid_id, vid_cover, vid_duration, vid_desc, vid_views, vid_rating;
+    QStringList vid_title, vid_id, vid_cover, vid_duration, vid_desc, vid_views, vid_rating, vid_fulllink;
     QHash<QString, QVariant> vid_coverpix;
 };
 

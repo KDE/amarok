@@ -104,6 +104,7 @@ void VideoclipEngine::update()
         vid_views.clear();
         vid_rating.clear();
         vid_coverpix.clear();
+        vid_fulllink.clear();
         m_nbVimeo=m_nbDailymotion=m_nbYoutube=-1;
         
 
@@ -161,7 +162,11 @@ void VideoclipEngine::resultYoutube( KJob* job )
         std::ostringstream stm;
         stm<<(float)rat/100.;
         vid_rating << QString(stm.str().c_str());
-        
+
+        // Send a job to get the downloadable link
+        KJob *jobu = KIO::storedGet( KUrl(vid_id.at(i)), KIO::NoReload, KIO::HideProgressInfo );
+        connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultYoutubeGetLink( KJob* ) ) );
+
         // Send a job to get every pixmap 
         KJob* job = KIO::storedGet( KUrl(cov), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(resultImageFetcher( KJob* )) );
@@ -169,14 +174,32 @@ void VideoclipEngine::resultYoutube( KJob* job )
     // Check how many clip we've find and send message if all the job are finished but no clip were find
     m_nbYoutube=xmlNodeList.length();    
     debug() << "VideoclipEngine | youtube fetch : "<< m_nbYoutube<< " songs ";
-
-    if (m_nbYoutube>0) removeData( "videoclip", "message");
     if (m_nbDailymotion == 0 && m_nbYoutube == 0 && m_nbVimeo == 0 )
     {
         debug() << "VideoclipEngine | No Video clip found";
         setData( "videoclip", "message", i18n( "No video clip found..."));
     }
     m_jobYoutube = 0;
+}
+
+void VideoclipEngine::resultYoutubeGetLink( KJob* job )
+{
+    if( job->error() != KJob::NoError ) return; //track changed while we were fetching
+//    DEBUG_BLOCK
+     // Get the result
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    QString page=storedJob->data();
+    QString regex("&t=");
+    QString url(storedJob->url().toMimeDataString());
+    url.replace("watch?v", "get_video?video_id");
+    if ( page.indexOf(regex) != -1 )
+    {
+        page=page.mid(page.indexOf(regex)+regex.size());
+        vid_fulllink<<url+QString("&t=")+page.mid(0, page.indexOf("&"));
+        debug () <<" SIMON | youtube "<<vid_fulllink.back();
+    }
+    resultFinalize();
+    job=0;
 }
 
 void VideoclipEngine::resultDailymotion( KJob* job )
@@ -210,6 +233,10 @@ void VideoclipEngine::resultDailymotion( KJob* job )
         vid_desc << xmlNode.firstChildElement("itunes:summary").text();
         vid_rating << xmlNode.firstChildElement("dm:videorating").text();;
 
+        // Send a job to get the downloadable link
+        KJob *joba = KIO::storedGet( KUrl(QString("http://keepvid.com/?url=")+vid_id.at(i)), KIO::NoReload, KIO::HideProgressInfo );
+        connect( joba, SIGNAL( result( KJob* ) ), SLOT( resultDailymotionGetLink(KJob*) ) );
+
         // Send a job to get every pixmap
         KJob* job = KIO::storedGet( KUrl(cov), KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(resultImageFetcher( KJob* )) );
@@ -217,7 +244,6 @@ void VideoclipEngine::resultDailymotion( KJob* job )
     // Check how many clip we've find and send message if all the job are finished but no clip were find
     m_nbDailymotion=xmlNodeList.length();
     debug() << "VideoclipEngine | dailymotion fetch : "<< m_nbDailymotion<< " songs ";
-    if (m_nbDailymotion>0) removeData( "videoclip", "message");
     if (m_nbDailymotion == 0 && m_nbYoutube == 0 && m_nbVimeo == 0 )
     {
         debug() << "VideoclipEngine | No Video clip found";
@@ -226,6 +252,23 @@ void VideoclipEngine::resultDailymotion( KJob* job )
     m_jobDailymotion = 0;
 }
 
+void VideoclipEngine::resultDailymotionGetLink( KJob* job )
+{
+    if( job->error() != KJob::NoError ) return; //track changed while we were fetching
+//    DEBUG_BLOCK
+     // Get the result
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    QString page=storedJob->data();
+    QString regex("</script><br /><br /><a href=\"");
+    if ( page.indexOf(regex) != -1 )
+    {
+        page=page.mid(page.indexOf(regex)+regex.size());
+        vid_fulllink<<page.mid(0, page.indexOf("\""));
+        debug () <<" SIMON | daily "<<vid_fulllink.back();
+    }
+    resultFinalize();
+    job=0;
+}
 
 void VideoclipEngine::resultVimeo( KJob* job )
 {
@@ -257,7 +300,6 @@ void VideoclipEngine::resultVimeo( KJob* job )
     // Check how many clip we've find and send message if all the job are finished but no clip were find
     m_nbVimeo=count;
     debug() << "VideoclipEngine | vimeo fetch : "<< m_nbVimeo<< " songs ";
-    if (m_nbVimeo>0) removeData( "videoclip", "message");
     if (m_nbDailymotion == 0 && m_nbYoutube == 0 && m_nbVimeo == 0 )
     {
         debug() << "VideoclipEngine | No Video clip found";
@@ -294,26 +336,21 @@ void VideoclipEngine::resultVimeoBis( KJob *job)
     vid_desc << xmlNode.firstChildElement("caption").text();
     vid_rating << 0;
 
+    vid_fulllink << QString("http://www.vimeo.com/moogaloop/play/clip:")+xmlNode.firstChildElement("clip_id").text()+QString("///video.flv?q=");
+    debug () <<" SIMON | vimeo "<<vid_fulllink.back();
+
     // Send a job to get every pixmap
     KJob* jab = KIO::storedGet( KUrl(cov), KIO::NoReload, KIO::HideProgressInfo );
     connect( jab, SIGNAL(result( KJob* )), SLOT(resultImageFetcher( KJob* )) );
-
-//     debug() << "VideoclipEngine | vimeo title : "<<vid_title;
-//     debug() << "VideoclipEngine | vimeo id : "<<vid_id;
-//     debug() << "VideoclipEngine | vimeo cover : "<<vid_cover;
-//     debug() << "VideoclipEngine | vimeo duration : "<<vid_duration;
-//     debug() << "VideoclipEngine | vimeo views : "<<vid_views;
-//     debug() << "VideoclipEngine | vimeo description : "<<vid_desc;
-//     debug() << "VideoclipEngine | vimeo rating : "<<vid_rating;
+    job=0;
 }
+
+
 
 void VideoclipEngine::resultImageFetcher( KJob *job)
 {
 //    DEBUG_BLOCK
-    if(job->error() != KJob::NoError)
-    {
-        return;
-    }
+    if(job->error() != KJob::NoError) return;
     
     KIO::StoredTransferJob* jobi =static_cast<KIO::StoredTransferJob*>( job );
     QString url(jobi->url().toMimeDataString());
@@ -322,14 +359,19 @@ void VideoclipEngine::resultImageFetcher( KJob *job)
     if (!pix.loadFromData( jobi->data() ) || pix.width() <= 1 ){;}
     else {vid_coverpix[url]=QVariant(pix); }
 
-    // If all the image are downloaded, we send the information
-    if ((vid_coverpix.size()==vid_cover.size()) && !vid_coverpix.empty())
+    resultFinalize();
+    job=0;
+}
+
+void VideoclipEngine::resultFinalize()
+{
+    // If all the image are downloaded, and all the link founds, we send the information
+    if ((vid_coverpix.size()==vid_cover.size()) && !vid_coverpix.empty() && (vid_fulllink.size()==vid_id.size()))
     {
-        debug() << "VideoclipEngine | Fetched : " << vid_views.size()<< " entries";
-
         DEBUG_BLOCK
-
-        //We can here try
+        removeData( "videoclip", "message");
+        debug() << "VideoclipEngine | Fetched : " << vid_views.size()<< " entries";
+        // Ordering need to be done here
 
         // here we can do something fancy
         setData( "videoclip", "title", vid_title );
@@ -339,24 +381,18 @@ void VideoclipEngine::resultImageFetcher( KJob *job)
         setData( "videoclip", "description", vid_desc );
         setData( "videoclip", "views", vid_views );
         setData( "videoclip", "rating", vid_rating );
+        setData( "videoclip", "fulllink", vid_fulllink );        
         setData( "videoclip", "coverpix", QVariant(vid_coverpix));
     }
 }
 
+//     debug() << "VideoclipEngine | vimeo title : "<<vid_title;
+//     debug() << "VideoclipEngine | vimeo id : "<<vid_id;
+//     debug() << "VideoclipEngine | vimeo cover : "<<vid_cover;
+//     debug() << "VideoclipEngine | vimeo duration : "<<vid_duration;
+//     debug() << "VideoclipEngine | vimeo views : "<<vid_views;
+//     debug() << "VideoclipEngine | vimeo description : "<<vid_desc;
+//     debug() << "VideoclipEngine | vimeo rating : "<<vid_rating;
 
-
-/*
-void
-VideoclipEngine::reloadVideoClip()
-{
-    DEBUG_BLOCK
-    
-    debug() << "wiki url: " << m_wikiCurrentUrl;
-    removeSource( "youtube" );
-    setData( "youtube", "message", i18n( "Fetching content.." ) );
-    m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_wikiJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
-}
-*/
 #include "VideoclipEngine.moc"
 
