@@ -17,6 +17,7 @@ VERSION 2.1-beta3
       can be added and sorted using drag and drop. (BR 187256, BR 184597)
 
   BUGFIXES:
+    * Fix incorrect escaping of artist title in lyrics applet.
     * Fix oddly capitalized format/extensions from being incorrectly
       not recognized for copy of track to/from iPod. (BR 188249)
     * Allow selecting directories from the "Add Media" dialog. (BR 192225)
