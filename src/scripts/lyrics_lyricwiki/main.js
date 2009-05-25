@@ -31,7 +31,18 @@ xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" tit
 
 function escapeString( str )
 {
-    return str.replace( '&', "&amp;" ).replace( '<', "&lt;" ).replace( ">", "&gt;" ).replace( "\"", "&quot;" ).replace( "'", "&apos;" )
+    if( str.indexOf( "&amp;" ) == -1 )
+        str = str.replace( '&', "&amp;" );
+    if( str.indexOf( "&lt;" ) == -1 )
+        str = str.replace( '<', "&lt;" );
+    if( str.indexOf( "&gt;" ) == -1 )
+        str = str.replace( '>', "&gt;" );
+    if( str.indexOf( "&quot;" ) == -1 )
+        str = str.replace( "\"", "&quot;" );
+    if( str.indexOf( "&apos;" ) == -1 )
+        str = str.replace( "'", "&apos;" );
+
+    return str;
 }
 
 function onFinished( dat )
@@ -46,8 +57,8 @@ function onFinished( dat )
             doc.setContent( dat );
             parsedContent = doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text();
             parsedContent = parsedContent.replace( "<lyrics>", "" ).replace( "</lyrics>", "" ); // some lyrics have 2 lyrics in them...wtf?
-            newxml = xml.replace( "{artist}", escapeString( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) );
-            newxml = newxml.replace( "{title}", escapeString( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
+            newxml = xml.replace( "{artist}", doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ); // don't escape title and artist, they already come escaped
+            newxml = newxml.replace( "{title}", doc.elementsByTagName( "song" ).at( 0 ).toElement().text() );
             newxml = newxml.replace( "{lyrics}", escapeString( parsedContent ) );
             Amarok.Lyrics.showLyrics( newxml );
         }
