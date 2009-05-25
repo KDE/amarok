@@ -115,7 +115,10 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     debug() << "Received" << m_albums.count() << "albums";
 
     m_headerText->setText( data[ "headerText" ].toString() );
-    
+
+    //Update the applet (render properly the header)
+    update();
+
     m_model->clear();
        
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
