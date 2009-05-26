@@ -254,6 +254,12 @@ WikipediaEngine::wikiResult( KJob* job )
     m_wiki = m_wiki.mid( m_wiki.indexOf( "<!-- start content -->" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
 
+    // lets remove the warning box
+    QString mbox = "<table class=\"metadata plainlinks";
+    QString mboxend = "</table>";
+    if ( m_wiki.indexOf( mbox ) != -1 )
+        m_wiki.remove( m_wiki.indexOf( mbox ), m_wiki.mid( m_wiki.indexOf( mbox ) ).indexOf( mboxend ) + mboxend.size() );
+    
     // Adding back style and license information
     m_wiki = "<div id=\"bodyContent\"" + m_wiki;
     m_wiki += copyright;
@@ -350,6 +356,8 @@ WikipediaEngine::wikiArtistPostfix()
         return " (Band)";
     else if( wikiLocale() == "pl" )
         return " (grupa muzyczna)";
+    else if( wikiLocale() == "fr" )
+        return " (groupe)";    
     return QString();
 }
 
