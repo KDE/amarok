@@ -87,7 +87,7 @@ DatabaseUpdater::update()
                 "Database Type Unknown");
         // FIXME: maybe we should tell them how to delete the database?
         // FIXME: exit() may be a little harsh, but QCoreApplication::exit() doesn't seem to work
-        //exit(1);
+        exit(1);
     }
 }
 
