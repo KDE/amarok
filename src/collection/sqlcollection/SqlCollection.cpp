@@ -367,6 +367,15 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
     emit updated();
 }
 
+void
+SqlCollection::dumpDatabaseContent()
+{
+    QStringList tables = query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
+    foreach( const QString &table, tables )
+    {
+        m_updater->writeCSVFile( table, table, true );
+    }
+}
 
 #include "SqlCollection.moc"
 

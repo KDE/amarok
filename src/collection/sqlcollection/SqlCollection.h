@@ -108,6 +108,8 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         void updateTrackUrls( TrackUrls changedUrls );
         void deleteTracksSlot( Meta::TrackList tracklist );
 
+        void dumpDatabaseContent();
+
     signals:
         void scanFinished();
 

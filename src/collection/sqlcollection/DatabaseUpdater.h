@@ -49,6 +49,8 @@ public:
     
     void cleanupDatabase();
 
+    void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
+
 private:
     /** creates all the necessary tables, indexes etc. for the database */
     void createTables() const;
@@ -56,6 +58,7 @@ private:
     int adminValue( const QString &key ) const;
 
     SqlCollection *m_collection;
+    bool m_debugDatabaseContent;
 
 };
 

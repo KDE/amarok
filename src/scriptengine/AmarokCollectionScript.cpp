@@ -138,6 +138,16 @@ namespace AmarokScript
         }
         return false;
     }
+
+    void
+    AmarokCollectionScript::dumpDatabaseContent() const
+    {
+        //this method assumes that CollectionManager::primaryCollection() returns the
+        //SqlCollection instance. It then uses Qt magic to dump the whole database to CSV files
+        //in the user's home directory.
+        //for debugging purposes only! do not ever use code like this for anything else
+        QTimer::singleShot( 0, CollectionManager::instance()->primaryCollection(), SLOT( dumpDatabaseContent() ) );
+    }
 }
 
 #include "AmarokCollectionScript.moc"

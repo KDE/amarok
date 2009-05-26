@@ -21,14 +21,22 @@
 #include "Debug.h"
 #include "MountPointManager.h"
 #include "SqlCollection.h"
+
+#include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+
+#include <KGlobal>
 #include <KMessageBox>
 
 static const int DB_VERSION = 3;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
+    , m_debugDatabaseContent( false )
 {
-    //nothing to do
+    m_debugDatabaseContent = KGlobal::config()->group( "SqlCollection" ).readEntry( "DebugDatabaseContent", false );
 }
 
 DatabaseUpdater::~DatabaseUpdater()
@@ -79,7 +87,7 @@ DatabaseUpdater::update()
                 "Database Type Unknown");
         // FIXME: maybe we should tell them how to delete the database?
         // FIXME: exit() may be a little harsh, but QCoreApplication::exit() doesn't seem to work
-        exit(1);
+        //exit(1);
     }
 }
 
@@ -294,6 +302,23 @@ DatabaseUpdater::copyToPermanentTables()
 {
     DEBUG_BLOCK
 
+    writeCSVFile( "artists_temp", "artists_temp" );
+    writeCSVFile( "albums_temp", "albums_temp" );
+    writeCSVFile( "tracks_temp", "tracks_temp" );
+    writeCSVFile( "genres_temp", "genres_temp" );
+    writeCSVFile( "years_temp", "years_temp" );
+    writeCSVFile( "composers_temp", "composers_temp" );
+    writeCSVFile( "urls_temp", "urls_temp" );
+
+    writeCSVFile( "artists", "artists_before" );
+    writeCSVFile( "albums", "albums_before" );
+    writeCSVFile( "tracks", "tracks_before" );
+    writeCSVFile( "genres", "genres_before" );
+    writeCSVFile( "years", "years_before" );
+    writeCSVFile( "composers", "composers_before" );
+    writeCSVFile( "urls", "urls_before" );
+
+
     //handle artists before albums
     QStringList artistIdList = m_collection->query( "SELECT artists.id FROM artists;" );
     QString artistIds = "-1";
@@ -375,6 +400,14 @@ DatabaseUpdater::copyToPermanentTables()
         trackIds += trackId;
     }
     m_collection->insert( QString( "REPLACE INTO tracks SELECT * FROM tracks_temp;" ), QString() );
+
+    writeCSVFile( "artists", "artists_after" );
+    writeCSVFile( "albums", "albums_after" );
+    writeCSVFile( "tracks", "tracks_after" );
+    writeCSVFile( "genres", "genres_after" );
+    writeCSVFile( "years", "years_after" );
+    writeCSVFile( "composers", "composers_after" );
+    writeCSVFile( "urls", "urls_after" );
 
     m_collection->sendChangedSignal();
 }
@@ -623,6 +656,59 @@ DatabaseUpdater::removeFilesInDirFromTemporaryTables( int deviceid, const QStrin
         }
         QString drop = QString( "DELETE FROM tracks_temp WHERE id IN (%1);" ).arg( ids );
         m_collection->query( drop );
+    }
+}
+
+void
+DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bool forceDebug )
+{
+    if( !forceDebug && !m_debugDatabaseContent )
+        return;
+
+    QStringList columns = m_collection->query(
+            QString( "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE table_schema='amarok' and table_name='%1'" )
+            .arg( m_collection->escape( table ) ) );
+
+    if( columns.isEmpty() )
+        return; //no table with that name
+
+    QString select;
+    foreach( const QString &column, columns )
+    {
+        if( !select.isEmpty() )
+            select.append( ',' );
+        select.append( column );
+    }
+
+    QString query = "SELECT %1 FROM amarok.%2";
+
+    QStringList result = m_collection->query( query.arg( select, m_collection->escape( table ) ) );
+    QString filePath =
+            QDir::home().absoluteFilePath( filename + '-' + QDateTime::currentDateTime().toString( Qt::ISODate ) + ".csv" );
+    QFile::remove( filePath );
+    QFile file( filePath );
+    if( file.open( QFile::WriteOnly | QFile::Text ) )
+    {
+        QTextStream stream( &file );
+        int i = 0;
+        QString line;
+        //write header
+        foreach( const QString &column, columns )
+        {
+            stream << column;
+            stream << ';';
+        }
+        stream << '\n';
+
+        foreach( const QString &data, result )
+        {
+            stream << data;
+            stream << ';';
+            ++i;
+            if( i % columns.count() == 0 )
+                stream << '\n';
+        }
+        file.close();
     }
 }
 

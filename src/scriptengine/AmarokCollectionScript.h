@@ -44,6 +44,10 @@ namespace AmarokScript
             void scanCollectionChanges() const;
             bool isDirInCollection( const QString& path ) const;
 
+            //this method will dump the database content into the user's home directory
+            //debugging only! this is not part of the supported scripting API
+            void dumpDatabaseContent() const;
+
            //TODO: make this a more object oriented way, could make a wrapper class for both the Collection and Collection Manager class.
            //TODO: probably leave this to Amarok 2.1
         signals:
