@@ -16,25 +16,18 @@
 #define AMAROK_VIDEOCLIP_ENGINE
 
 #include "ContextObserver.h"
+#include "context/DataEngine.h"
 #include "meta/Meta.h"
 
-#include <context/DataEngine.h>
-
 #include <KIO/Job>
-#include <QLocale>
-#include <QString>
-#include <QHash>
 
-/**
-    This class provide video clip from youtube and dailymotion data for use in Context applets.
-
-NOTE: The QVariant data is structured like this:
-           * the key name is the artist
-           * the data is a QSTring containing the link of the video
-*/
+typedef QMap< QString, QString> VideoItem;
 
 using namespace Context;
 
+ /**
+   *   This class provide video clip from youtube and dailymotion data for use in Context applets.
+   */
 class VideoclipEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT        
@@ -58,9 +51,9 @@ private slots:
     void resultYoutube( KJob* );
     void resultYoutubeGetLink( KJob* );
     void resultDailymotion( KJob* );
-    void resultDailymotionGetLink( KJob* );
     void resultVimeo( KJob* );
     void resultVimeoBis( KJob* );
+    void resultVimeoTrice( KJob* );
     
     void resultImageFetcher( KJob * );
     void resultFinalize();
@@ -90,8 +83,10 @@ private:
     // stores what features are enabled
     bool m_requested;
     //will store all the result
+
+    QHash < QString, VideoItem > m_VideoItemHash;
     QStringList vid_title, vid_id, vid_cover, vid_duration, vid_desc, vid_views, vid_rating, vid_fulllink;
-    QHash<QString, QVariant> vid_coverpix;
+    QHash< QString, QVariant > vid_coverpix;
 };
 
 K_EXPORT_AMAROK_DATAENGINE( videoclip, VideoclipEngine )
