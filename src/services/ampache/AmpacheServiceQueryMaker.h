@@ -23,6 +23,7 @@
 #include "DynamicServiceQueryMaker.h"
 
 #include "AmpacheServiceCollection.h"
+#include "AmpacheService.h"
 
 #include <kio/jobclasses.h>
 
@@ -78,6 +79,7 @@ protected:
     QString m_sessionId;
     QString m_parentAlbumId;
     QString m_parentArtistId;
+    QString m_parentService;
     
     uint m_dateFilter;
     QString m_artistFilter;

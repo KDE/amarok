@@ -63,6 +63,7 @@ public:
     ~AmpacheService();
 
     void polish();
+    void reauthenticate();
 
     virtual Amarok::Collection * collection() { return m_collection; }
 

@@ -170,6 +170,24 @@ AmpacheService::polish()
 }
 
 void
+AmpacheService::reauthenticate()
+{
+    DEBUG_BLOCK
+
+    debug() << " I am trying to re-authenticate"; 
+
+    // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
+    QString versionString = "<server>/server/xml.server.php?action=ping";
+
+    versionString.replace(QString("<server>"), m_server);
+
+    debug() << "Verifying Ampache Version Using: " << versionString;
+
+    m_xmlVersionJob = KIO::storedGet( versionString, KIO::Reload, KIO::HideProgressInfo );
+    connect( m_xmlVersionJob, SIGNAL(result(KJob *)), this, SLOT( authenticate(KJob *) ) );
+}
+
+void
 AmpacheService::authenticate(KJob * job)
 {
     DEBUG_BLOCK

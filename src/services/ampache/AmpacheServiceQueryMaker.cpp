@@ -381,6 +381,23 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("root");
 
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning 
+    QDomElement error = root.firstChildElement("error"); 
+
+    if ( !error.isNull() ) 
+    {
+        debug () << "Error getting Artist List" << error.text();
+        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
+        if ( m_parentService == 0 ) 
+        {
+                return;
+        }
+        else 
+        {
+            m_parentService->reauthenticate();
+        }
+    }
+
     QDomNode n = root.firstChild();
     while( !n.isNull() )
     {
@@ -437,6 +454,22 @@ AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement( "root" );
 
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning 
+    QDomElement error = root.firstChildElement("error");
+
+    if ( !error.isNull() )
+    {
+        debug () << "Error getting Album List" << error.text();
+        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
+        if ( m_parentService == 0 )
+        {
+                return;
+        }
+        else
+        {
+            m_parentService->reauthenticate();
+        }
+    }
 
     QDomNode n = root.firstChild();
     while( !n.isNull() )
@@ -513,6 +546,23 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
     QDomDocument doc( "reply" );
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("root");
+
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning 
+    QDomElement error = root.firstChildElement("error");
+
+    if ( !error.isNull() )
+    {
+        debug () << "Error getting Track Download " << error.text();
+        AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
+        if ( m_parentService == 0 )
+        {
+                return;
+        }
+        else
+        {
+            m_parentService->reauthenticate();
+        }
+    }
 
     QDomNode n = root.firstChild();
     while( !n.isNull() )
