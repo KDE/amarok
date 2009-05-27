@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Video Clip Data Engine
+Name[ca]=Motor de dades de video clip
 Name[et]=Videoklipi andmete mootor
 Name[it]=Motore dati Video Clip
 Name[km]=ម៉ាស៊ីន​ទិន្នន័យ​ឈុត​វីដេអូ
@@ -7,6 +8,7 @@ Name[nl]=Videoclip-gegevensengine
 Name[pl]=Moduł danych klipów wideo
 Name[pt]=Motor de Dados de 'Clips' de Vídeo
 Name[pt_BR]=Motor de dados de clipe de vídeo
+Name[sl]=Podatkovni pogon za video posnetke
 Name[sv]=Datagränssnitt för videoklipp
 Name[uk]=Рушій даних відеокліпів
 Name[wa]=Éndjin d' dinêyes Clip Videyo
