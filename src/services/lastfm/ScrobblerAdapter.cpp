@@ -27,7 +27,8 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
       EngineObserver( The::engineController() ),
       m_scrobbler( new Scrobbler( clientId ) ),
-      m_clientId( clientId )
+      m_clientId( clientId ),
+      m_lastSaved( 0 )
 {
     resetVariables();
 
@@ -48,6 +49,8 @@ ScrobblerAdapter::engineNewTrackPlaying()
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
+        m_lastSaved = m_lastPosition; // HACK engineController is broken :(
+    
         debug() << "track type:" << track->type();
         const bool isRadio = ( track->type() == "stream/lastfm" );
         
@@ -124,6 +127,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 void
 ScrobblerAdapter::enginePlaybackEnded( int finalPosition, int /*trackLength*/, PlaybackEndedReason /*reason*/ )
 {
+    DEBUG_BLOCK
     engineTrackPositionChanged( finalPosition, false );
     checkScrobble();
     resetVariables();
@@ -133,11 +137,23 @@ ScrobblerAdapter::enginePlaybackEnded( int finalPosition, int /*trackLength*/, P
 void
 ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
 {
+    // HACK enginecontroller is fscked. it sends engineTrackPositionChanged messages
+    // with info for the last track even after engineNewTrackPlaying. this means that
+    // we think we've played the whole new track even though we really haven't. so, temporary
+    // workaround for 2.1.0 until i can rewrite this class properly to not need to do it
+    // this way.
+    //debug() << "m_lastPosition:" << m_lastPosition << "position:" << position << "m_lastSaved:" << m_lastSaved;
+    if( m_lastPosition == 0 && m_lastSaved != 0 && position > m_lastSaved ) // this is probably when the fucked up info came through, ignore
+        return;
+    m_lastSaved = 0;
+    
     // note: in the 1.2 protocol, it's OK to submit if the user seeks
     // so long as they meet the half file played requirement.
+    //debug() << "userSeek" << userSeek << "position:" << position << "m_lastPosition" << m_lastPosition << "m_totalPlayed" << m_totalPlayed;
     if( !userSeek && position > m_lastPosition )
         m_totalPlayed += position - m_lastPosition;
     m_lastPosition = position;
+    //debug() << "userSeek" << userSeek << "position:" << position << "m_lastPosition" << m_lastPosition << "m_totalPlayed" << m_totalPlayed;
 }
 
 
@@ -208,6 +224,7 @@ ScrobblerAdapter::checkScrobble()
 {
     DEBUG_BLOCK
     // note: in the 1.2 protocol submits are always done at end of file
+    debug() << "total played" << m_totalPlayed << "duration" << m_current.duration() * 1000 / 2 << "isNull" << m_current.isNull() << "submit?" << AmarokConfig::submitPlayedSongs();
     if( ( m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isNull() && AmarokConfig::submitPlayedSongs() )
     {
         debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();

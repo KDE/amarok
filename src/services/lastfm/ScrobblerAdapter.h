@@ -55,6 +55,8 @@ private:
     long m_lastPosition;
     uint m_totalPlayed;
     QString m_clientId;
+
+    long int m_lastSaved;
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H
