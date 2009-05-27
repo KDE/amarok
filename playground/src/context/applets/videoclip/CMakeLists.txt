@@ -1,12 +1,15 @@
-include_directories( ../../../../../src
-                    ../../../../../src/context )
-
-set( videoclip_applet_SRCS
-    VideoclipApplet.cpp
-	../../../../../src/widgets/kratingwidget.cpp
-    ../../../../../src/widgets/kratingpainter.cpp
+include_directories( ../../../../.. 
+					 ../../../../../src
+                     ../../../../../src/context
+					 ../../../../../src/meta
 )
 
+set( videoclip_applet_SRCS
+     VideoclipApplet.cpp
+	 ../../../../../src/widgets/kratingwidget.cpp
+     ../../../../../src/widgets/kratingpainter.cpp
+)
+configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
 kde4_add_plugin(amarok_context_applet_videoclip ${videoclip_applet_SRCS})
 target_link_libraries( amarok_context_applet_videoclip amaroklib ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS})

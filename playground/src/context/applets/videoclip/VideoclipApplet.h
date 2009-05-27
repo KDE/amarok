@@ -24,71 +24,61 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "context/Svg.h"
 #include "EngineObserver.h"
 
-#include "widgets/kratingwidget.h"
-
-#include <KDialog>
+#include <Phonon/MediaObject>
 #include <Phonon/VideoWidget>
-#include <Phonon/VideoPlayer>
-#include <Phonon/Path>
-#include <Plasma/Label>
 
-#include <QGraphicsProxyWidget>
-#include <QTimeLine>
-#include <QWidget>
-
-class QGraphicsLinearLayout;
-class QGraphicsProxyWidget;
-class QHBoxLayout;
-class QGraphicsWidget;
 class KratingWidget;
 class KratingPainter;
+class QGraphicsLinearLayout;
+class QGraphicsProxyWidget;
+class QGraphicsWidget;
 class QHBoxLayout;
 
-
+ /** VideoclipApplet will display videoclip from internet, relatively to the current playing song
+   * If a video is detected in the playlist, it will also play trhe video inside the a VideoWidget.
+   */
 class VideoclipApplet : public Context::Applet, public EngineObserver
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    VideoclipApplet( QObject* parent, const QVariantList& args );
-    ~VideoclipApplet();
+    public:
+        VideoclipApplet( QObject* parent, const QVariantList& args );
+        ~VideoclipApplet();
 
-    void init();
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-    
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-    QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+        void    init();
+        void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
-public slots:
-    void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );    
-    void connectSource( const QString &source );
-    
-protected:
-    void EngineNewTrackPlaying();
+        void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+        QSizeF  sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
 
-private:
-  //  Phonon::MediaObject *m_mediaObject;
-  //  Phonon::VideoWidget *m_videoWidget;
-  //  Phonon::Path path;
+    public slots:
+        void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+        void    connectSource( const QString &source );
+        void    appendVideoClip( );
 
-    // The two big container, only one who need a resize
-    QGraphicsSimpleTextItem *m_headerText;
-    QGraphicsProxyWidget    *m_widget;
-    QHBoxLayout             *m_layout;
-    QList<QWidget *>m_layoutWidgetList;
-    
-    int m_height;
-    QPixmap     *m_pixYoutube;
-    QPixmap     *m_pixDailymotion;
-    QPixmap     *m_pixVimeo;
+    protected:
+        void    EngineNewTrackPlaying();
 
+    private:
+        Phonon::MediaObject *m_mediaObject;
+        Phonon::VideoWidget *m_videoWidget;
+
+        // The two big container, only one who need a resize
+        QGraphicsSimpleTextItem *m_headerText;
+        QGraphicsProxyWidget    *m_widget;
+        QHBoxLayout             *m_layout;
+        QList<QWidget *>m_layoutWidgetList;
+        
+        int m_height;
+        QPixmap     *m_pixYoutube;
+        QPixmap     *m_pixDailymotion;
+        QPixmap     *m_pixVimeo;
 
 };
 
 K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 
-#endif
+#endif /* VIDEOCLIP_APPLET_H */
 
