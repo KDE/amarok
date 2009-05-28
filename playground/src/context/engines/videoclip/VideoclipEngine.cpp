@@ -68,6 +68,7 @@ bool VideoclipEngine::sourceRequestEvent( const QString& name )
 
 void VideoclipEngine::message( const ContextState& state )
 {
+    DEBUG_BLOCK
     if ( state == Current && m_requested )
         update();
 }
@@ -82,7 +83,7 @@ void VideoclipEngine::metadataChanged( Meta::TrackPtr track )
 
 void VideoclipEngine::update()
 {
-//   DEBUG_BLOCK
+    DEBUG_BLOCK
     QString tmpYoutStr;
     // prevent
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();

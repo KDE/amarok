@@ -52,14 +52,16 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         QSizeF  sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-
+        
+        // inherited from EngineObserver
+        virtual void engineNewTrackPlaying();
+        virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+        
+        
     public slots:
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
         void    appendVideoClip( );
-
-    protected:
-        void    EngineNewTrackPlaying();
 
     private:
         Phonon::MediaObject *m_mediaObject;

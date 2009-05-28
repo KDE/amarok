@@ -58,8 +58,9 @@ VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( false );
-    m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
-
+    
+    if( The::engineController() )
+        m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
 }
 
 
@@ -116,17 +117,41 @@ void VideoclipApplet::init()
     connect( dataEngine( "amarok-videoclip" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
 
+    engineNewTrackPlaying();// kickstart
 }
 
 VideoclipApplet::~VideoclipApplet()
 {
     DEBUG_BLOCK
-//    delete m_videoWidget;
+    delete m_videoWidget;
 }
 
-void EngineNewTrackPlaying()
+void 
+VideoclipApplet::engineNewTrackPlaying()
 {
-   // DEBUG_BLOCK
+    DEBUG_BLOCK
+    if( The::engineController() && !m_mediaObject )
+        m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
+    if ( m_videoWidget && m_mediaObject && m_mediaObject->hasVideo() )
+    {
+        debug() << " VideoclipApplet | Show VideoWidget";
+        m_videoWidget->show();
+    }
+    else if( m_videoWidget )
+    {
+        m_videoWidget->hide();
+    }
+}
+
+void 
+VideoclipApplet::enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason )
+{
+    Q_UNUSED( finalPosition )
+    Q_UNUSED( trackLength )
+    Q_UNUSED( reason )
+    
+    if( m_videoWidget )
+        m_videoWidget->hide();
 }
 
 void VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
@@ -173,16 +198,6 @@ void VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 {
     DEBUG_BLOCK
     Q_UNUSED( name )
-     // HACK
-    if ( m_mediaObject->hasVideo() )
-    {
-        debug() << " VideoclipApplet | Show VideoWidget";
-        m_videoWidget->show();
-    }
-    else
-    {
-        m_videoWidget->hide();
-    }
     
     int width = 130;
     // Properly delete previsouly allocated item
@@ -192,7 +207,7 @@ void VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         m_layout->removeWidget( m_layoutWidgetList.front() );
         m_layoutWidgetList.pop_front();
     }
-
+    
     // if we get a message, show it
     if ( data.contains( "message" ) )
     {
