@@ -146,9 +146,7 @@ namespace Debug
             return;
         }
         QString str = QString( "MARK: %1: %2 %3" ).arg( KCmdLineArgs::appName(), func, message );
-        //Below, access is used, and the return value is ignored; however, access is used to check a path
-        //and what's being passed in is an arbitrary string...why is this here?
-        //access( str.toLocal8Bit().data(), F_OK );
+        access( str.toLocal8Bit().data(), F_OK );
 #endif
     }
 }
