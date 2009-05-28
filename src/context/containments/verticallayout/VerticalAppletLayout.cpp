@@ -175,6 +175,7 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
         //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
+        m_appletList[ i ]->updateConstraints();
         m_appletList[ i ]->show();
     }
     runningHeight = currentHeight = 0.0;
@@ -188,6 +189,7 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         //debug() << "next applet will go at:" << runningHeight;
         //debug() << "got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
+        m_appletList[ i ]->updateConstraints();
         m_appletList[ i ]->show();
     }
     
