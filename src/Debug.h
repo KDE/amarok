@@ -233,7 +233,12 @@ namespace Debug
 
             mutex.lock();
             timeval end;
-            gettimeofday( &end, 0 );
+            int result = gettimeofday( &end, 0 );
+            if( !result )
+            {
+                mutex.unlock();
+                return;
+            }
 
             end.tv_sec -= m_start.tv_sec;
             if( end.tv_usec < m_start.tv_usec) {
