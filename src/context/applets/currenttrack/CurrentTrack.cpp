@@ -355,12 +355,9 @@ CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
     Q_UNUSED( which )
 
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-        return QSizeF( constraint.width(), 180 );
-//         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-
-    return constraint;
+    return QSizeF( constraint.width(), 180 );
 }
+
 
 void
 CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

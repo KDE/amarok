@@ -38,15 +38,9 @@ Context::VerticalAppletLayout::~VerticalAppletLayout()
 void 
 Context::VerticalAppletLayout::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
-  //  DEBUG_BLOCK
-    
- //   debug() << "drawing rect:" << boundingRect();
-  /*  painter->save();
-    painter->setPen( QColor( Qt::green ) );   
-    painter->setOpacity( 0.75 ); 
-    painter->drawRect( boundingRect() );
-    painter->restore();
-    */
+    Q_UNUSED( painter )
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
 }
 
 void
@@ -176,28 +170,55 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     for( int i = index - 1; i >= 0; i-- ) // lay out backwards above the view
     {
         //debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
-        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
+        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
         runningHeight -= currentHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
         //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
         //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
         m_appletList[ i ]->updateConstraints();
-        m_appletList[ i ]->show();
+        m_appletList[ i ]->hide();
     }
     runningHeight = currentHeight = 0.0;
-    for( int i = index; i < m_appletList.size(); i++ ) // now lay out desired item at top and rest below it
+
+    /**
+      * If an applet has a vertical sizeHint of < 0 (which means effectiveSizeHint < 15  ), then it means it wants to be laid out to maxmize vertical space.
+      * Otherwise, give it the space it asks for.
+      */
+    int lastShown = m_appletList.size();
+    for( int i = index; i < lastShown; i++ ) // now lay out desired item at top and rest below it
     {
         //debug() << "dealing with" << m_appletList[ i ]->name();
         //debug() << "putting applet #" << i << " at" << 0 << runningHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
-        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
-        runningHeight += currentHeight;
+        qreal height = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
+        debug() << "applet has sizeHinte height of:" << height << "preferred  height:" << m_appletList[ i ]->preferredHeight() ;
+        if( height < 15 ) // maximise its space
+        {
+            qreal heightLeft = boundingRect().height() - runningHeight;
+            debug() << "layout has boundingRectL" << boundingRect() ;
+            m_appletList[ i ]->resize( width, heightLeft );
+            m_appletList[ i ]->show();
+            lastShown = i;
+        } else
+        {
+            runningHeight += height;
+            m_appletList[ i ]->resize( width, height );
+            m_appletList[ i ]->show();
+        }
         //debug() << "next applet will go at:" << runningHeight;
         //debug() << "got applet sizehint height:" << currentHeight;
+<<<<<<< HEAD:src/context/containments/verticallayout/VerticalAppletLayout.cpp
         m_appletList[ i ]->resize( width, currentHeight );
         m_appletList[ i ]->updateConstraints();
         m_appletList[ i ]->show();
+=======
+    }
+    // hide the ones that we can't see below
+    for( int i = lastShown + 1; i < m_appletList.size(); i++ )
+    {
+        m_appletList[ i ]->hide();
+>>>>>>> allow applets to ask for the "rest of the remaining height". these:src/context/containments/verticallayout/VerticalAppletLayout.cpp
     }
     
     m_showingIndex = index;

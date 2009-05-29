@@ -234,7 +234,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
     }
-    setPreferredSize( (int)size().width(), (int)size().height() );
+    //setPreferredSize( (int)size().width(), (int)size().height() );
     updateConstraints();
     update();
 }
@@ -275,16 +275,8 @@ QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) con
 {
     Q_UNUSED( which );
 
- /*   if( m_lyrics )
-    {
-        debug() << "returning sizehint height of" << m_lyrics->sizeHint().height();
-    //     return QSizeF( constraint.width(), m_lyricsProxy->sizeHint().height() );
-        if( m_textHeight > 0 )
-            return QGraphicsWidget::sizeHint( which, constraint );
-
-    } else
-        return QGraphicsWidget::sizeHint( which, constraint ); */
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), 500 );
+    // ask for rest of CV height
+    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), -1 );
     
 }
 

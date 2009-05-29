@@ -216,13 +216,8 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
 QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
-    // TODO hardcoding for now.
-    // i want to have a system where an applet can ask
-    // for a full "CV pane" of size, but for now this will stop the crash
-    QSizeF size;
-    size.setWidth( QGraphicsWidget::sizeHint( which, constraint ).width() );
-    size.setHeight( 450 );
-    return size;
+        // ask for rest of CV height
+    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), -1 );
 }
 
 void
