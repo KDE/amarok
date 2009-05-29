@@ -2,6 +2,19 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+VERSION 2.1.1
+  FEATURES:
+    * Applets are now laid out according to two criteria: either fixed height
+      or flowing to fill the CV. No more slivers of applets visible at the
+      bottom.
+    * Load contents of an m3u file if specified when running amarok from the
+      command line. File must be local.
+    * Add large source emblem in current track applet.
+  CHANGES:
+    * Show info box in CV if no applets are visible.
+
+  BUGFIXES:
+
 
 VERSION 2.1
   CHANGES:
