@@ -64,7 +64,8 @@ VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
 }
 
 
-void VideoclipApplet::init()
+void 
+VideoclipApplet::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
 
@@ -154,7 +155,8 @@ VideoclipApplet::enginePlaybackEnded( int finalPosition, int trackLength, Playba
         m_videoWidget->hide();
 }
 
-void VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
+void 
+VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
     prepareGeometryChange();
@@ -169,7 +171,8 @@ void VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
 }
 
 
-void VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+void 
+VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( p );
     Q_UNUSED( option );
@@ -181,23 +184,31 @@ void VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     drawRoundedRectAroundText( p, m_headerText );
  }
 
-QSizeF VideoclipApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
+QSizeF 
+VideoclipApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     // hardcoding for now
     return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), m_height );
 }
 
 
-void VideoclipApplet::connectSource( const QString &source )
+void 
+VideoclipApplet::connectSource( const QString &source )
 {
     if ( source == "videoclip" )
         dataEngine( "amarok-videoclip" )->connectSource( "videoclip", this );
 }
 
-void VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
+void 
+VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( name )
+    
+    // HACK sometimes it takes longer for amarok to realize that a stream has video,
+    // so when engineNewTrackPlaying is called it doesn't know about it yet. however
+    // by the time this gets called, more has been downloaded and phonon figures it outs
+    engineNewTrackPlaying();
     
     int width = 130;
     // Properly delete previsouly allocated item
@@ -299,7 +310,8 @@ void VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 }
 
 
-void VideoclipApplet::appendVideoClip( )
+void 
+VideoclipApplet::appendVideoClip( )
 {
     QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
     if ( button )
