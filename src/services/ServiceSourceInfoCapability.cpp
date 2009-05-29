@@ -49,3 +49,10 @@ ServiceSourceInfoCapability::emblem()
     return m_sourceInfoProvider->emblem();
 }
 
+
+QString
+ServiceSourceInfoCapability::scalableEmblem()
+{
+    return m_sourceInfoProvider->scalableEmblem();
+}
+

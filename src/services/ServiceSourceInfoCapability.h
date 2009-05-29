@@ -39,7 +39,8 @@ public:
     QString sourceName();
     QString sourceDescription();
     QPixmap emblem();
-
+    QString scalableEmblem();
+    
 private:
     SourceInfoProvider * m_sourceInfoProvider;
 

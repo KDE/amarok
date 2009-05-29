@@ -184,6 +184,12 @@ Meta::JamendoTrack::emblem()
     return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-jamendo.png" ) );
 }
 
+
+QString JamendoTrack::scalableEmblem()
+{
+    return KStandardDirs::locate( "data", "amarok/images/emblem-jamendo-scalable.svgz" );
+}
+
 void
 Meta::JamendoTrack::setService(JamendoService * service)
 {

@@ -81,7 +81,7 @@ private:
 
     QGraphicsPixmapItem* m_albumCover;
     QPixmap m_bigCover;
-    QPixmap m_sourceEmblemPixmap;
+    QString m_sourceEmblemPath;
 
     RatingWidget* m_ratingWidget;
 

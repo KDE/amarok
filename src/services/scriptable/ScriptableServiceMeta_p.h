@@ -48,15 +48,18 @@ class ScriptableServiceInternalMetaItem
         QString serviceName() { return m_serviceName; }
         QString serviceDescription() { return m_serviceDescription; }
         QPixmap serviceEmblem() { return m_serviceEmblem; }
+        QString serviceScalableEmblem() { return m_serviceScalableEmblem; }
 
         void setServiceName( const QString &name ) { m_serviceName = name; }
         void setServiceDescription( const QString &description ) { m_serviceDescription = description; }
         void setServiceEmblem( const QPixmap &emblem ) { m_serviceEmblem = emblem; }
+        void setServiceScalableEmblem( const QString &emblemPath ) { m_serviceScalableEmblem = emblemPath; }
 
     protected:
         QString m_serviceName;
         QString m_serviceDescription;
         QPixmap m_serviceEmblem;
+        QString m_serviceScalableEmblem;
 };
 
 
@@ -72,6 +75,8 @@ class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Meta:
         QString sourceName() { return m_sourceInfoProvider->serviceName(); }
         QString sourceDescription() { return m_sourceInfoProvider->serviceDescription(); }
         QPixmap emblem() { return m_sourceInfoProvider->serviceEmblem(); }
+        QString scalableEmblem() { return m_sourceInfoProvider->serviceScalableEmblem(); }
+        
 
     private:
         ScriptableServiceInternalMetaItem * m_sourceInfoProvider;

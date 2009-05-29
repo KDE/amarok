@@ -248,7 +248,6 @@ CurrentEngine::update()
 
         if( m_currentTrack->album() )
         {
-            //add a source info emblem ( if available ) to the cover
             QPixmap art = m_currentTrack->album()->image( width );
             setData( "current", "albumart",  QVariant( art ) );
         }
@@ -263,7 +262,7 @@ CurrentEngine::update()
             //is the source defined
             const QString source = sic->sourceName();
             if( !source.isEmpty() )
-                setData( "current", "source_emblem",  QVariant( sic->emblem() ) );
+                setData( "current", "source_emblem", sic->scalableEmblem() );
 
             delete sic;
         }

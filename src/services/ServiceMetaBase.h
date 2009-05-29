@@ -104,6 +104,7 @@ class AMAROK_EXPORT SourceInfoProvider
         virtual QString sourceName() { return QString(); }
         virtual QString sourceDescription() { return QString(); }
         virtual QPixmap emblem()  { return QPixmap(); }
+        virtual QString scalableEmblem()  { return QString(); }
         virtual bool hasSourceInfo() const { return true; }
 };
 

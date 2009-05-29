@@ -65,6 +65,10 @@ void Meta::ScriptableServiceMetaItem::setServiceEmblem( const QPixmap & emblem )
     m_serviceEmblem = emblem;
 }
 
+void Meta::ScriptableServiceMetaItem::setServiceScalableEmblem ( const QString& emblemPath )
+{
+    m_serviceScalableEmblem = emblemPath;
+}
 
 
 /* ScriptableServiceTrack */
@@ -117,6 +121,7 @@ void Meta::ScriptableServiceTrack::setAlbumName( const QString &newAlbum )
         intAlbum->setServiceName( m_serviceName );
         intAlbum->setServiceDescription( m_serviceDescription );
         intAlbum->setServiceEmblem( m_serviceEmblem );
+        intAlbum->setServiceScalableEmblem( m_serviceScalableEmblem );
         albumPtr = Meta::AlbumPtr( intAlbum );
         Meta::PrivateMetaRegistry::instance()->insertAlbum( m_serviceName, newAlbum, albumPtr );
     }
@@ -132,6 +137,7 @@ void Meta::ScriptableServiceTrack::setArtistName( const QString &newArtist )
         intArtist->setServiceName( m_serviceName );
         intArtist->setServiceDescription( m_serviceDescription );
         intArtist->setServiceEmblem( m_serviceEmblem );
+        intArtist->setServiceScalableEmblem( m_serviceScalableEmblem );
         artistPtr = Meta::ArtistPtr( intArtist );
         Meta::PrivateMetaRegistry::instance()->insertArtist( m_serviceName, newArtist, artistPtr );
     }
@@ -147,6 +153,7 @@ void Meta::ScriptableServiceTrack::setGenreName( const QString &newGenre )
         intGenre->setServiceName( m_serviceName );
         intGenre->setServiceDescription( m_serviceDescription );
         intGenre->setServiceEmblem( m_serviceEmblem );
+        intGenre->setServiceScalableEmblem( m_serviceScalableEmblem );
         genrePtr = Meta::GenrePtr( intGenre );
         Meta::PrivateMetaRegistry::instance()->insertGenre( m_serviceName, newGenre, genrePtr );
     }
@@ -162,6 +169,7 @@ void Meta::ScriptableServiceTrack::setComposerName( const QString &newComposer )
         intComposer->setServiceName( m_serviceName );
         intComposer->setServiceDescription( m_serviceDescription );
         intComposer->setServiceEmblem( m_serviceEmblem );
+        intComposer->setServiceScalableEmblem( m_serviceScalableEmblem );
         composerPtr = Meta::ComposerPtr( intComposer );
         Meta::PrivateMetaRegistry::instance()->insertComposer( m_serviceName, newComposer, composerPtr );
     }
@@ -179,6 +187,7 @@ void Meta::ScriptableServiceTrack::setYearNumber( int newYear )
         intYear->setServiceName( m_serviceName );
         intYear->setServiceDescription( m_serviceDescription );
         intYear->setServiceEmblem( m_serviceEmblem );
+        intYear->setServiceScalableEmblem( m_serviceScalableEmblem );
         yearPtr = Meta::YearPtr( intYear );
         Meta::PrivateMetaRegistry::instance()->insertYear( m_serviceName, yearString, yearPtr );
     }
@@ -215,7 +224,10 @@ QPixmap Meta::ScriptableServiceTrack::emblem()
     return m_serviceEmblem;
 }
 
-
+QString Meta::ScriptableServiceTrack::scalableEmblem()
+{
+    return  m_serviceScalableEmblem;
+}
 
 
 /* DynamicScriptableAlbum */
@@ -242,6 +254,11 @@ QString Meta::ScriptableServiceAlbum::sourceDescription()
 QPixmap Meta::ScriptableServiceAlbum::emblem()
 {
     return m_serviceEmblem;
+}
+
+QString Meta::ScriptableServiceAlbum::scalableEmblem()
+{
+    return  m_serviceScalableEmblem;
 }
 
 bool Meta::ScriptableServiceAlbum::isBookmarkable()
@@ -295,6 +312,11 @@ QPixmap Meta::ScriptableServiceArtist::emblem()
     return m_serviceEmblem;
 }
 
+QString Meta::ScriptableServiceArtist::scalableEmblem()
+{
+    return  m_serviceScalableEmblem;
+}
+
 bool Meta::ScriptableServiceArtist::isBookmarkable()
 {
     ScriptableService * service = The::scriptableServiceManager()->service( m_serviceName );
@@ -342,6 +364,10 @@ QPixmap Meta::ScriptableServiceGenre::emblem()
     return m_serviceEmblem;
 }
 
+QString Meta::ScriptableServiceGenre::scalableEmblem()
+{
+    return  m_serviceScalableEmblem;
+}
 
 
 

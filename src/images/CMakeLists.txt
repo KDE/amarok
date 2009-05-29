@@ -10,11 +10,15 @@ install(
         default-theme-clean.svg
         emblem-default.png
         emblem-jamendo.png
+	emblem-jamendo-scalable.svgz
         emblem-lastfm.png
+	emblem-lastfm-scalable.svg
         emblem-magnatune.png
         emblem-mp3tunes.png
         emblem-ampache.png
+	emblem-ampache-scalable.svgz
         emblem-scripted.png
+	emblem-scripted-scalable.svgz
         lastfm-default-cover.png
         loading1.png
         loading2.png

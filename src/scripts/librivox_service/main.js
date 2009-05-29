@@ -63,6 +63,7 @@ function onCustomize()
 
     var emblemPixmap = new QPixmap( currentDir + "LibrivoxEmblem.png" );
     script.setEmblem( emblemPixmap );
+    script.setScalableEmblem( currentDir + "LibrivoxScalableEmblem.svgz" );
 }
 
 function bookFetchResult( reply )

@@ -200,27 +200,23 @@ Context::VerticalAppletLayout::showAtIndex( int index )
             qreal heightLeft = boundingRect().height() - runningHeight;
             debug() << "layout has boundingRectL" << boundingRect() ;
             m_appletList[ i ]->resize( width, heightLeft );
+            m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
             lastShown = i;
         } else
         {
             runningHeight += height;
             m_appletList[ i ]->resize( width, height );
+            m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
         }
         //debug() << "next applet will go at:" << runningHeight;
         //debug() << "got applet sizehint height:" << currentHeight;
-<<<<<<< HEAD:src/context/containments/verticallayout/VerticalAppletLayout.cpp
-        m_appletList[ i ]->resize( width, currentHeight );
-        m_appletList[ i ]->updateConstraints();
-        m_appletList[ i ]->show();
-=======
     }
     // hide the ones that we can't see below
     for( int i = lastShown + 1; i < m_appletList.size(); i++ )
     {
         m_appletList[ i ]->hide();
->>>>>>> allow applets to ask for the "rest of the remaining height". these:src/context/containments/verticallayout/VerticalAppletLayout.cpp
     }
     
     m_showingIndex = index;

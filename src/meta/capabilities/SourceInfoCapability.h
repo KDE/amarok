@@ -23,7 +23,7 @@
 #include "amarok_export.h"
 #include "meta/Capability.h"
 
-#include <QPixmap>
+class QPixmap;
 
 namespace Meta
 {
@@ -61,6 +61,11 @@ namespace Meta
              * @return The source emblem
              */
             virtual QPixmap emblem() = 0;
+
+            /**
+             * Get a path to a scalable (svg) version of the source emblem.
+             */
+            virtual QString scalableEmblem() = 0;
 
             /**
              * Get the capabilityInterfaceType of this capability

@@ -521,6 +521,14 @@ QPixmap LastFm::Track::emblem()
     else
         return QPixmap();
 }
+ 
+QString LastFm::Track::scalableEmblem()
+{
+    if ( !d->track.isEmpty() )
+        return KStandardDirs::locate( "data", "amarok/images/emblem-lastfm-scalable.svg" );
+    else
+        return QString();
+}
 
 QList< PopupDropperAction * > LastFm::Track::nowPlayingActions() const
 {

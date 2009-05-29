@@ -99,6 +99,7 @@ namespace LastFm
             virtual QString sourceName();
             virtual QString sourceDescription();
             virtual QPixmap emblem();
+            virtual QString scalableEmblem();
 
             QList< PopupDropperAction * > nowPlayingActions() const;
 

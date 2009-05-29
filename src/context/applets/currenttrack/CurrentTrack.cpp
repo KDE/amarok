@@ -343,7 +343,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
     m_bigCover = data[ "albumart" ].value<QPixmap>();
-    m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
+    m_sourceEmblemPath = data[ "source_emblem" ].toString();
 
     // without that the rating doesn't get update for a playing track
     update();
@@ -519,13 +519,19 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     p->restore();
     
     // draw source emblem
-    if( !m_sourceEmblemPixmap.isNull() )
+    if( !m_sourceEmblemPath.isEmpty() )
     {
         p->save();
-        p->setOpacity( .5 );
-        p->drawPixmap(boundingRect().topRight().x() - m_sourceEmblemPixmap.rect().width() - standardPadding(),
-                      standardPadding(),
-                      m_sourceEmblemPixmap );
+        p->setOpacity( .4 );
+        KSvgRenderer svg( m_sourceEmblemPath );
+
+        // paint the emblem half as tall as the applet, anchored at the top-right
+        // assume it is a square emblem
+        qreal height = boundingRect().height() / 2;
+        QRectF rect( boundingRect().width() - standardPadding() - height, ( boundingRect().height() / 2 - ( height / 2 ) ),
+                     height, height );
+        svg.render( p, rect );
+        
         p->restore();
     }
 }

@@ -78,6 +78,7 @@ public:
     virtual QString sourceName();
     virtual QString sourceDescription();
     virtual QPixmap emblem();
+    virtual QString scalableEmblem();
 
     virtual bool isBookmarkable() { return true; }
     virtual QString collectionName() { return "Jamendo.com"; }

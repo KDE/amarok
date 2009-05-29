@@ -49,6 +49,7 @@ class ScriptableServiceMetaItem
         void setServiceName( const QString &name );
         void setServiceDescription( const QString &description );
         void setServiceEmblem( const QPixmap &emblem );
+        void setServiceScalableEmblem( const QString &emblemPath );
 
     protected:
         /*
@@ -60,6 +61,7 @@ class ScriptableServiceMetaItem
         QString m_serviceName;
         QString m_serviceDescription;
         QPixmap m_serviceEmblem;
+        QString m_serviceScalableEmblem;
 
         Meta::AlbumPtr m_albumPtr;
         Meta::ArtistPtr m_artistPtr;
@@ -78,6 +80,7 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         virtual QString sourceName();
         virtual QString sourceDescription();
         virtual QPixmap emblem();
+        virtual QString scalableEmblem();
 
         virtual Meta::AlbumPtr album() const;
         virtual Meta::ArtistPtr artist() const;
@@ -112,6 +115,7 @@ class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public Script
         virtual QString sourceName();
         virtual QString sourceDescription();
         virtual QPixmap emblem();
+        virtual QString scalableEmblem();
 
         virtual bool isBookmarkable();
         virtual QString collectionName() { return m_serviceName; }
@@ -134,6 +138,7 @@ class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableSer
         virtual QString sourceName();
         virtual QString sourceDescription();
         virtual QPixmap emblem();
+        virtual QString scalableEmblem();
 
         virtual bool isBookmarkable();
         virtual QString collectionName() { return m_serviceName; }
@@ -156,6 +161,7 @@ class ScriptableServiceGenre : public Meta::ServiceGenre, public ScriptableServi
         virtual QString sourceName();
         virtual QString sourceDescription();
         virtual QPixmap emblem();
+        virtual QString scalableEmblem();
 
     private:
         QString m_description;
