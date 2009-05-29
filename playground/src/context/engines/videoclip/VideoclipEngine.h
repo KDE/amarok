@@ -21,12 +21,29 @@
 
 #include <KIO/Job>
 
-typedef QMap< QString, QString> VideoItem;
+#include <QVariant>
+
+//! Struct VideoInfo, contain all the info
+struct VideoInfo {
+    QString url;        // Url for the browser (http://www.youtube.com/watch?v=153d9tc3Oao )
+    QString title;      
+    QString coverurl;   
+    QString duration;   // formatted as a QString(mm:ss)
+    QString desc;       // full description
+    QPixmap cover;      // Image data
+    QString views;      
+    float rating;       // rating should be beetween 0 to 5
+    QString videolink;  // direct video link to the downloadable file
+    QString source;     // "youtub" or "dailymotion" or "vimeo" or whatever
+    int relevancy;      // used to filter and order the files
+    int length;
+};
 
 using namespace Context;
 
  /**
-   *   This class provide video clip from youtube and dailymotion data for use in Context applets.
+   *   This class provide video-clip youtube, dailymotion and vimeo data 
+   *   for the Video-clip context applet
    */
 class VideoclipEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
@@ -53,8 +70,8 @@ private slots:
     void resultDailymotion( KJob* );
     void resultVimeo( KJob* );
     void resultVimeoBis( KJob* );
-    void resultVimeoTrice( KJob* );
-    
+    void resultVimeoGetLink( KJob* );
+
     void resultImageFetcher( KJob * );
     void resultFinalize();
     
@@ -66,6 +83,9 @@ private:
     KJob* m_jobDailymotion;
     KJob* m_jobVimeo;
     
+    int m_nbJobs;
+    int m_nbVidsPerService;
+    
     QStringList m_sources;
 
     Meta::TrackPtr m_currentTrack;
@@ -75,20 +95,16 @@ private:
     // composer etc).
     QString    m_title;
     QString    m_artist;
-
-    int m_nbYoutube;
-    int m_nbDailymotion;
-    int m_nbVimeo;
-    
+    int        m_length;
     // stores what features are enabled
     bool m_requested;
-    //will store all the result
+    
+    // List containing all the info
+    QList < VideoInfo *> m_video;
 
-    QHash < QString, VideoItem > m_VideoItemHash;
-    QStringList vid_title, vid_id, vid_cover, vid_duration, vid_desc, vid_views, vid_rating, vid_fulllink;
-    QHash< QString, QVariant > vid_coverpix;
 };
 
+Q_DECLARE_METATYPE ( VideoInfo );
 K_EXPORT_AMAROK_DATAENGINE( videoclip, VideoclipEngine )
 
 #endif
