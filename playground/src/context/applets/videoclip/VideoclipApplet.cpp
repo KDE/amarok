@@ -130,6 +130,7 @@ VideoclipApplet::~VideoclipApplet()
 void 
 VideoclipApplet::engineNewTrackPlaying()
 {
+    
     DEBUG_BLOCK
     if( The::engineController() && !m_mediaObject )
         m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
@@ -210,100 +211,103 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
     // by the time this gets called, more has been downloaded and phonon figures it outs
     engineNewTrackPlaying();
     
-    int width = 130;
-    // Properly delete previsouly allocated item
-    while ( !m_layoutWidgetList.empty() )
+    if ( !m_videoWidget->isVisible() )
     {
-        m_layoutWidgetList.front()->hide();
-        m_layout->removeWidget( m_layoutWidgetList.front() );
-        m_layoutWidgetList.pop_front();
-    }
-    
-    // if we get a message, show it
-    if ( data.contains( "message" ) )
-    {
-        QLabel *mess = new QLabel( data["message"].toString() );
-        m_layout->addWidget( mess, Qt::AlignTop );
-        m_layoutWidgetList.push_back( mess );
-    }
-    if ( data.contains( "title" ) )
-    {
-        for ( int i = 0; i < data["title"].toStringList().size();i++ )
+        int width = 130;
+        // Properly delete previsouly allocated item
+        while ( !m_layoutWidgetList.empty() )
         {
-            debug() << "VideoclipApplet::dataUpdated: " << data["id"].toStringList().at( i );
-
-            // HACK
-              // create image
-            QPixmap pix( The::svgHandler()->addBordersToPixmap(
-                data["coverpix"].toHash()[data["cover"].toStringList().at( i )].value<QPixmap>(), 5, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
-            QToolButton *icon = new QToolButton();
-            icon->setText( data["fulllink"].toStringList().at( i ) );
-            icon->setToolButtonStyle( Qt::ToolButtonIconOnly );
-            icon->setAutoRaise( true );
-            icon->setIcon( QIcon( pix ) );
-            icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-            icon->resize( pix.size() );
-            icon->setIconSize( pix.size() ) ;
-            icon->setToolTip( QString( "<html><body><a href=\"" ) + data["fulllink"].toStringList().at( i ) +
-                QString( "\">" ) + data["fulllink"].toStringList().at( i ) + QString( "</a><br>" ) + data["description"].toStringList().at( i ) );
-
-            connect ( icon, SIGNAL( clicked( bool ) ), this, SLOT ( appendVideoClip( ) ) );
-            
-            // create link (and resize, no more than 3 lines long)
-            QString title( data["title"].toStringList().at( i ) );
-            if ( title.size() > 45 ) title.resize( 45 );
-            QLabel *link = new QLabel( QString( "<html><body><a href=\"" ) + data["id"].toStringList().at( i ) + QString( "\">" ) + title + QString( "</a>" ) );
-            link->setOpenExternalLinks( true );
-            link->setWordWrap( true );
-
-            QLabel *duration =  new QLabel( data["duration"].toStringList().at( i ) + QString( "<br>" ) + data["views"].toStringList().at( i ) + QString( " views" ) );
-
-            KRatingWidget* rating = new KRatingWidget;
-            rating->setRating(( int )( data["rating"].toStringList().at( i ).toFloat()*2. ) );
-            rating->setMaximumWidth(( int )(( width / 3 )*2 ) );
-            rating->setMinimumWidth(( int )(( width / 3 )*2 ) );
-
-            QLabel *webi = new QLabel;
-            if ( data["id"].toStringList().at( i ).contains( "youtube" ) )
-                webi->setPixmap( *m_pixYoutube );
-            else if ( data["id"].toStringList().at( i ).contains( "dailymotion" ) )
-                webi->setPixmap( *m_pixDailymotion );
-            else if ( data["id"].toStringList().at( i ).contains( "vimeo" ) )
-                webi->setPixmap( *m_pixVimeo );
-
-
-            QGridLayout *grid = new QGridLayout;
-            grid->setHorizontalSpacing( 5 );
-            grid->setVerticalSpacing( 2 );
-            grid->setRowMinimumHeight( 1, 65 );
-            grid->setColumnStretch( 0, 0 );
-            grid->setColumnStretch( 1, 1 );
-            grid->addWidget( icon, 0, 0, 1, -1, Qt::AlignCenter );
-            grid->addWidget( link, 1, 0, 1, -1, Qt::AlignCenter | Qt::AlignTop );
-            grid->addWidget( webi, 2, 0, Qt::AlignCenter );
-            grid->addWidget( duration, 2, 1, Qt::AlignLeft );
-            grid->addWidget( rating, 3, 0, 1, -1, Qt::AlignCenter );
-
-            // Add The Widget
-            QWidget *widget = new QWidget();
-            widget->setLayout( grid );
-            widget->resize( width, m_height - m_headerText->boundingRect().height() - 2*standardPadding() );
-            widget->setMaximumWidth( width );
-            widget->setMinimumWidth( width );
-            widget->setMinimumHeight( m_height - ( m_headerText->boundingRect().height() + 10 * standardPadding() ) );
-            widget->setMaximumHeight( m_height - ( m_headerText->boundingRect().height() + 10 * standardPadding() ) );
-            m_layout->addWidget( widget, Qt::AlignLeft );
-            m_layoutWidgetList.push_back( widget );
-
-            if ( i < data["title"].toStringList().size() - 1 )
+            m_layoutWidgetList.front()->hide();
+            m_layout->removeWidget( m_layoutWidgetList.front() );
+            m_layoutWidgetList.pop_front();
+        }
+        
+        // if we get a message, show it
+        if ( data.contains( "message" ) )
+        {
+            QLabel *mess = new QLabel( data["message"].toString() );
+            m_layout->addWidget( mess, Qt::AlignTop );
+            m_layoutWidgetList.push_back( mess );
+        }
+        else  
+        {
+            for (int i=0; i< data.size(); i++ )
             {
-                QFrame *line = new QFrame();
-                line->setFrameStyle( QFrame::VLine );
-                line->setAutoFillBackground( false );
-                line->setMaximumHeight( m_height - ( m_headerText->boundingRect().height() + 2 * standardPadding() ) );
-                m_layout->addWidget( line, Qt::AlignLeft );
-                m_layoutWidgetList.push_back( line );
+                
+                VideoInfo item = data[ QString().setNum(i) ].value<VideoInfo>() ;
+                  // Create a pixmap with nice border
+                QPixmap pix( The::svgHandler()->addBordersToPixmap( item.cover, 5, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
+                
+                // Prepare the QtoolButon, we will send all the information to the callback via the text
+                QToolButton *icon = new QToolButton();
+                icon->setText( item.videolink + QString (" | ") + item.title + QString (" | ") + item.source);
+                icon->setToolButtonStyle( Qt::ToolButtonIconOnly );
+                icon->setAutoRaise( true );
+                icon->setIcon( QIcon( pix ) );
+                icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+                icon->resize( pix.size() );
+                icon->setIconSize( pix.size() ) ;
+                icon->setToolTip( QString( "<html><body>" ) + item.desc + QString( "</body></html>" ) );
+
+                connect ( icon, SIGNAL( clicked( bool ) ), this, SLOT ( appendVideoClip( ) ) );
+                
+                // create link (and resize, no more than 3 lines long)
+                QString title( item.title );
+                if ( title.size() > 45 ) title.resize( 45 );
+                QLabel *link = new QLabel( QString( "<html><body><a href=\"" ) + item.url + QString( "\">" ) + title + QString( "</a>" ) );
+                link->setOpenExternalLinks( true );
+                link->setWordWrap( true );
+
+                QLabel *duration =  new QLabel( item.duration + QString( "<br>" ) + item.views + QString( " views" ) );
+
+                KRatingWidget* rating = new KRatingWidget;
+                rating->setRating(( int )( item.rating * 2. ) );
+                rating->setMaximumWidth(( int )(( width / 3 )*2 ) );
+                rating->setMinimumWidth(( int )(( width / 3 )*2 ) );
+
+                QLabel *webi = new QLabel;
+                if ( item.source == QString( "youtube" ) )
+                    webi->setPixmap( *m_pixYoutube );
+                else if ( item.source == QString( "dailymotion" ) )
+                    webi->setPixmap( *m_pixDailymotion );
+                else if ( item.source == QString( "vimeo" ) )
+                    webi->setPixmap( *m_pixVimeo );
+
+
+                QGridLayout *grid = new QGridLayout;
+                grid->setHorizontalSpacing( 5 );
+                grid->setVerticalSpacing( 2 );
+                grid->setRowMinimumHeight( 1, 65 );
+                grid->setColumnStretch( 0, 0 );
+                grid->setColumnStretch( 1, 1 );
+                grid->addWidget( icon, 0, 0, 1, -1, Qt::AlignCenter );
+                grid->addWidget( link, 1, 0, 1, -1, Qt::AlignCenter | Qt::AlignTop );
+                grid->addWidget( webi, 2, 0, Qt::AlignCenter );
+                grid->addWidget( duration, 2, 1, Qt::AlignLeft );
+                grid->addWidget( rating, 3, 0, 1, -1, Qt::AlignCenter );
+
+                // Add The Widget
+                QWidget *widget = new QWidget();
+                widget->setLayout( grid );
+                widget->resize( width, m_height - m_headerText->boundingRect().height() - 2*standardPadding() );
+                widget->setMaximumWidth( width );
+                widget->setMinimumWidth( width );
+                widget->setMinimumHeight( m_height - ( m_headerText->boundingRect().height() + 10 * standardPadding() ) );
+                widget->setMaximumHeight( m_height - ( m_headerText->boundingRect().height() + 10 * standardPadding() ) );
+                m_layout->addWidget( widget, Qt::AlignLeft );
+                m_layoutWidgetList.push_back( widget );
+
+                if ( i < data.size() - 1 )
+                {
+                    QFrame *line = new QFrame();
+                    line->setFrameStyle( QFrame::VLine );
+                    line->setAutoFillBackground( false );
+                    line->setMaximumHeight( m_height - ( m_headerText->boundingRect().height() + 2 * standardPadding() ) );
+                    m_layout->addWidget( line, Qt::AlignLeft );
+                    m_layoutWidgetList.push_back( line );
+                }
             }
+        
         }
     }
     updateConstraints();
@@ -316,76 +320,31 @@ VideoclipApplet::appendVideoClip( )
     QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
     if ( button )
     {
+        QStringList lst = button->text().split(" | ");
+    
+        MetaStream::Track *tra = new MetaStream::Track(KUrl( lst.at( 0 ) ) );
+        tra->setTitle( lst.at( 1 ) );
+        tra->setAlbum( lst.at( 2 ) );
+        tra->setArtist( "stream" );
+        tra->album()->setImage( button->icon().pixmap( button->iconSize() ) );
+        Meta::TrackPtr track( tra );
+      
         //append to the playlist the newly retrieved
-        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( button->text() ) );
         The::playlistController()->insertOptioned(track , Playlist::Append );
     }
 }
 
-// Tentative désepéré
-
-//   MetaStream::Track * track = dynamic_cast<MetaStream::Track *>( CollectionManager::instance()->trackForUrl( KUrl( button->text() ) ).data() );
-//    if (!track)
-//    debug() << " c'est normal ";//  return;
-
-//     Meta::TrackPtr tracku(dynamic_cast<Meta::Track *>( track ));
-//   track->setAlbum("testing");
-//CollectionManager::instance()->trackForUrl()or/home/simon/Playground/amarok/src/context/applets/videoclip/VideoclipApplet.cpp:298: erreur: cannot dynamic_cast ‘CollectionManager::trackForUrl(const KUrl&)(((const KUrl&)((const KUrl*)(& KUrl(((const QString&)((const QString*)(& QAbstractButton::text() const()))))))))’ (of type ‘class Meta::TrackPtr’) to type ‘class MetaStream::Track*’ (source is not a pointer)
-//   dynamic_cast<MetaStream::Track>(  ) );
-//     track->album()->setImage( button->icon().pixmap( button->iconSize() ) );
-//track->setArtist("Tentative");
-//track->artist()->hasCapabilityInterface(Meta::Capability::StreamInfo)
-//   Meta::EditCapability *ec = track->as<Meta::EditCapability>();
-//Meta::TrackPtr track2( Meta::Track(track));
 
 //     for (int i=0; i<data["title"].toStringList().size();i++)
 //     {
-//         debug() << "VideoclipApplet::title: " << data[ "title" ].toStringList().at(i);
-//         debug() << "VideoclipApplet::id: " << data[ "id" ].toStringList().at(i);
-//          debug() << "VideoclipApplet::cover: " << data[ "cover" ].toStringList().at(i);
-//          debug() << "VideoclipApplet::duration: " << data[ "duration" ].toStringList().at(i);
-//          debug() << "VideoclipApplet::views: " << data[ "views" ].toStringList().at(i);
-//          debug() << "VideoclipApplet::description: " << data[ "description" ].toStringList().at(i);
+//             debug() << "VideoclipApplet::title: " << data[ "title" ].toStringList().at(i);
+//             debug() << "VideoclipApplet::id: " << data[ "id" ].toStringList().at(i);
+//             debug() << "VideoclipApplet::cover: " << data[ "cover" ].toStringList().at(i);
+//             debug() << "VideoclipApplet::duration: " << data[ "duration" ].toStringList().at(i);
+//             debug() << "VideoclipApplet::views: " << data[ "views" ].toStringList().at(i);
+//             debug() << "VideoclipApplet::description: " << data[ "description" ].toStringList().at(i);
 //     }
 
-
-/*   if (i==0)
-       {
-           player=true;
-               debug() << "VideoclipApplet::dataUpdated: SIMON "<< data["id"].toStringList().at(i);
-           m_videoWidget = new Phonon::VideoWidget( this->view()->viewport());
-           //  QWidget* view =self()->viewport();
-           m_videoWidget->resize(200, 150);
-           m_videoWidget->setScaleMode(Phonon::VideoWidget::FitInView);
-           m_videoWidget->setFocusPolicy(Qt::StrongFocus);
-           m_videoWidget->setParent( this->view()->viewport());//group->nativeWidget());
-           grid->addWidget(m_videoWidget,0,1);
-
-           m_mediaObject=new Phonon::MediaObject(this);
-           m_mediaObject->setCurrentSource(Phonon::MediaSource("/home/simon/video.flv"));
-
-
-           Phonon::Path path = Phonon::createPath( m_mediaObject, m_videoWidget );
-
-           m_videoWidget->show();
-           m_mediaObject->play();
-
-           if( !path.isValid() ) { debug() << "Phonon path is invalid."; }
-           else { debug()<<"Path is valid, where else is the pb ...t"; }
-       }*/
-
-
-/*    if (title.size()>45) title.resize(45);
-    if (title.size()<15)
-        link = new QLabel(QString("<html><body><a href=\"")+data["id"].toStringList().at(i)+QString("\">")
-        +title+QString("</a>"));//("</a><br><br>"));
-    else if (title.size()<30)
-        link = new QLabel(QString("<html><body><a href=\"")+data["id"].toStringList().at(i)+QString("\">")
-        +title.mid(0,15)+QString("<br>")+title.mid(15,30)+QString("</a><br>"));
-    else
-        link = new QLabel(QString("<html><body><a href=\"")+data["id"].toStringList().at(i)+QString("\">")
-        +title.mid(0,15)+QString("<br>")+title.mid(15,30)+QString("<br>")+title.mid(30,44)+QString("</a>"));*/
-//        link->setMaximumWidth(110);
 
 #include "VideoclipApplet.moc"
 

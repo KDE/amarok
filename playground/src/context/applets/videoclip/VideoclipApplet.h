@@ -36,6 +36,21 @@ class QGraphicsProxyWidget;
 class QGraphicsWidget;
 class QHBoxLayout;
 
+//! Struct VideoInfo, contain all the info
+struct VideoInfo {
+    QString url;        // Url for the browser (http://www.youtube.com/watch?v=153d9tc3Oao )
+    QString title;      
+    QString coverurl;   
+    QString duration;   // formatted as a QString(mm:ss)
+    QString desc;       // full description
+    QPixmap cover;      // Image data
+    QString views;      
+    float rating;       // rating should be beetween 0 to 5
+    QString videolink;  // direct video link to the downloadable file
+    QString source;     // "youtub" or "dailymotion" or "vimeo" or whatever
+    int relavancy;      // used to filter and order the files
+};
+
  /** VideoclipApplet will display videoclip from internet, relatively to the current playing song
    * If a video is detected in the playlist, it will also play trhe video inside the a VideoWidget.
    */
@@ -80,6 +95,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 };
 
+Q_DECLARE_METATYPE ( VideoInfo );
 K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 
 #endif /* VIDEOCLIP_APPLET_H */
