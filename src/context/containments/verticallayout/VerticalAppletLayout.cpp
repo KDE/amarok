@@ -171,6 +171,8 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     {
         //debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
         currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
+        if( currentHeight < 15 )
+            currentHeight = 250; // if it is one of the expanding applets, give it room for its header
         runningHeight -= currentHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
         //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
