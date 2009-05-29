@@ -226,7 +226,7 @@ Meta::MetaBase::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-Meta::MetaBase::asCapabilityInterface( Meta::Capability::Type type )
+Meta::MetaBase::createCapabilityInterface( Meta::Capability::Type type )
 {
     Q_UNUSED( type );
     return 0;

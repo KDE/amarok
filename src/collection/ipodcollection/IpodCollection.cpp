@@ -237,7 +237,7 @@ IpodCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-IpodCollection::asCapabilityInterface( Meta::Capability::Type type )
+IpodCollection::createCapabilityInterface( Meta::Capability::Type type )
 {
     DEBUG_BLOCK
     switch( type )

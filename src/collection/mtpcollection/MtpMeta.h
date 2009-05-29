@@ -147,7 +147,7 @@ class MtpTrack : public Meta::Track
         virtual Amarok::Collection* collection() const;
 
 	virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-	virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+	virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         //MtpTrack specific methods
 

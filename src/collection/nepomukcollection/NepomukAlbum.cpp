@@ -270,7 +270,7 @@ NepomukAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-NepomukAlbum::asCapabilityInterface( Meta::Capability::Type type )
+NepomukAlbum::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {

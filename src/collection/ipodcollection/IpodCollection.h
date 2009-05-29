@@ -97,7 +97,7 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
         virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
 

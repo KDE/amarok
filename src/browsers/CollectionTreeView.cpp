@@ -809,7 +809,7 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                 Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
                 if( data )
                 {
-                    Meta::CustomActionsCapability *cac = data->as<Meta::CustomActionsCapability>();
+                    Meta::CustomActionsCapability *cac = data->create<Meta::CustomActionsCapability>();
                     if( cac )
                     {
                         if ( m_caSeperator == 0 ) {
@@ -828,7 +828,7 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                         delete cac;
                     }
                     //check if this item can be bookmarked...
-                    Meta::BookmarkThisCapability *btc = data->as<Meta::BookmarkThisCapability>();
+                    Meta::BookmarkThisCapability *btc = data->create<Meta::BookmarkThisCapability>();
                     if( btc )
                     {
                         if( btc->isBookmarkable() ) {
@@ -881,7 +881,7 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 
     // Generate CollectionCapability, test for existence
 
-    Meta::CollectionCapability *cc = collection->as<Meta::CollectionCapability>();
+    Meta::CollectionCapability *cc = collection->create<Meta::CollectionCapability>();
 
     if( cc )
     {

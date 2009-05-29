@@ -131,7 +131,7 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
         if( album )
         {
             Meta::AlbumPtr albumPtr = album->album();
-            Meta::CustomActionsCapability *cac = albumPtr->as<Meta::CustomActionsCapability>();
+            Meta::CustomActionsCapability *cac = albumPtr->create<Meta::CustomActionsCapability>();
             if( cac )
             {
                 QList<PopupDropperAction *> actions = cac->customActions();

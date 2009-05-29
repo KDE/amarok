@@ -51,7 +51,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         //Track Methods
         virtual int length() const;
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         //SqlPodcastEpisode specific methods
         int dbId() const { return m_dbId; };

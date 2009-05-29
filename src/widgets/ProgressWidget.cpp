@@ -241,7 +241,7 @@ ProgressWidget::redrawBookmarks()
         if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
         {
             debug() << "here 2";
-            Meta::TimecodeLoadCapability *tcl = track->as<Meta::TimecodeLoadCapability>();
+            Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
             foreach( AmarokUrlPtr url, list )
             {

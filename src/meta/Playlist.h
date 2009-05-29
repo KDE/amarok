@@ -91,7 +91,7 @@ namespace Meta
             */
             virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const = 0;
 
-            virtual Capability* asCapabilityInterface( Capability::Type type ) = 0;
+            virtual Capability* createCapabilityInterface( Capability::Type type ) = 0;
 
             virtual KUrl retrievableUrl() { return KUrl(); }
 
@@ -104,10 +104,10 @@ namespace Meta
              *
              * @returns a pointer to the capability interface if it exists, 0 otherwise
              */
-            template <class CapIface> CapIface *as()
+            template <class CapIface> CapIface *create()
             {
                 Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-                Meta::Capability *iface = asCapabilityInterface(type);
+                Meta::Capability *iface = createCapabilityInterface(type);
                 return qobject_cast<CapIface *>(iface);
             }
 

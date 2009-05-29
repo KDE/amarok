@@ -414,7 +414,7 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-IpodTrack::asCapabilityInterface( Meta::Capability::Type type )
+IpodTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {
@@ -909,7 +909,7 @@ IpodAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-IpodAlbum::asCapabilityInterface( Meta::Capability::Type type )
+IpodAlbum::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {

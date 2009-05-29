@@ -179,7 +179,7 @@ PLSPlaylist::loadPls( QTextStream &stream )
 
             if ( currentTrack.data() != 0 && currentTrack->is<Meta::EditCapability>() )
             {
-                Meta::EditCapability *ec = currentTrack->as<Meta::EditCapability>();
+                Meta::EditCapability *ec = currentTrack->create<Meta::EditCapability>();
                 if( ec )
                     ec->setTitle( tmp );
                 delete ec;

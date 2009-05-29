@@ -61,7 +61,7 @@ Amarok::CollectionBase::hasCapabilityInterface( Meta::Capability::Type type ) co
 }
 
 Meta::Capability*
-Amarok::CollectionBase::asCapabilityInterface( Meta::Capability::Type type )
+Amarok::CollectionBase::createCapabilityInterface( Meta::Capability::Type type )
 {
     Q_UNUSED( type );
     return 0;

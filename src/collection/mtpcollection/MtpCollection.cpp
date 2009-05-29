@@ -199,7 +199,7 @@ MtpCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-MtpCollection::asCapabilityInterface( Meta::Capability::Type type )
+MtpCollection::createCapabilityInterface( Meta::Capability::Type type )
 {
     DEBUG_BLOCK
             switch( type )

@@ -81,7 +81,7 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
     if ( track && track->hasCapabilityInterface( Meta::Capability::WriteTimecode ) )
     {
         debug() << " has WriteTimecode  ";
-        Meta::TimecodeWriteCapability *tcw = track->as<Meta::TimecodeWriteCapability>();
+        Meta::TimecodeWriteCapability *tcw = track->create<Meta::TimecodeWriteCapability>();
         tcw->writeTimecode( seconds );
         delete tcw;
     }

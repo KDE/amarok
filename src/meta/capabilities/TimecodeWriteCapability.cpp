@@ -66,7 +66,7 @@ bool Meta::TimecodeWriteCapability::writeAutoTimecode( int seconds, Meta::TrackP
     debug() << "deleting old auto timecodes";
     if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
     {
-        TimecodeLoadCapability *tcl = track->as<TimecodeLoadCapability>();
+        TimecodeLoadCapability *tcl = track->create<TimecodeLoadCapability>();
         BookmarkList list = tcl->loadTimecodes();
         foreach( AmarokUrlPtr oldUrl, list )
         {

@@ -235,7 +235,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                    ( type == Meta::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
         {
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
@@ -319,7 +319,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
                     ( type == Meta::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
         {
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
@@ -390,7 +390,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
                     ( type == Meta::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
         {
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
@@ -471,7 +471,7 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
                     ( type == Meta::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
         {
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
@@ -527,7 +527,7 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
                     ( type == Meta::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
         {
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );
@@ -570,7 +570,7 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
                     ( type == Meta::Capability::BookmarkThis );
         }
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type )
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
         {
             if ( type == Meta::Capability::CustomActions )
                 return new ServiceCustomActionsCapability( this );

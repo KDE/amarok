@@ -820,7 +820,7 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
         Meta::AlbumPtr album = item->albumPtr();
         if( album )
         {
-            Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
+            Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
             if( cac )
             {
                 QList<PopupDropperAction *> actions = cac->customActions();

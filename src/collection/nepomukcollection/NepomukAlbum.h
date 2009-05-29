@@ -55,7 +55,7 @@ class NepomukAlbum : public Album
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         // for plugin internal use only
 

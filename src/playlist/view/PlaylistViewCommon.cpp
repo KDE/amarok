@@ -93,7 +93,7 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
         
         if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {
-            Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
+            Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
             if ( cac )
             {
                 QList<PopupDropperAction *> actions = cac->customActions();
@@ -112,7 +112,7 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
         Meta::AlbumPtr album = track->album();
         if ( album )
         {
-            Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
+            Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
             if ( cac )
             {
                 QList<PopupDropperAction *> customActions = cac->customActions();

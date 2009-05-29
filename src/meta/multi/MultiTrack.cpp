@@ -107,7 +107,7 @@ bool Meta::MultiTrack::hasCapabilityInterface(Meta::Capability::Type type) const
     return type == Meta::Capability::MultiSource;
 }
 
-Meta::Capability * Meta::MultiTrack::asCapabilityInterface(Meta::Capability::Type type)
+Meta::Capability * Meta::MultiTrack::createCapabilityInterface(Meta::Capability::Type type)
 {
     switch( type )
     {

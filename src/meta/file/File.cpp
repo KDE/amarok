@@ -552,7 +552,7 @@ Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-Track::asCapabilityInterface( Meta::Capability::Type type )
+Track::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {

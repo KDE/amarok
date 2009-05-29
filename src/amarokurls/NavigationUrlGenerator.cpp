@@ -186,7 +186,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 {
     AmarokUrl url;
 
-    Meta::BookmarkThisCapability *btc = album->as<Meta::BookmarkThisCapability>();
+    Meta::BookmarkThisCapability *btc = album->create<Meta::BookmarkThisCapability>();
     if( btc )
     {
         if( btc->isBookmarkable() ) {
@@ -242,7 +242,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 
     AmarokUrl url;
 
-    Meta::BookmarkThisCapability *btc = artist->as<Meta::BookmarkThisCapability>();
+    Meta::BookmarkThisCapability *btc = artist->create<Meta::BookmarkThisCapability>();
     if( btc )
     {
         if( btc->isBookmarkable() ) {

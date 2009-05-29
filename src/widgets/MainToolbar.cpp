@@ -129,7 +129,7 @@ void MainToolbar::handleAddActions()
     
     if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
+        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
             QList<PopupDropperAction *> currentTrackActions = cac->customActions();

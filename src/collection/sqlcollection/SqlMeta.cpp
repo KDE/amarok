@@ -950,7 +950,7 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-SqlTrack::asCapabilityInterface( Meta::Capability::Type type )
+SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {
@@ -1097,7 +1097,7 @@ SqlArtist::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-SqlArtist::asCapabilityInterface( Meta::Capability::Type type )
+SqlArtist::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {
@@ -1662,7 +1662,7 @@ SqlAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-SqlAlbum::asCapabilityInterface( Meta::Capability::Type type )
+SqlAlbum::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {

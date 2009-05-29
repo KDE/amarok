@@ -209,7 +209,7 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) c
 }
 
 Meta::Capability*
-Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
+Meta::SqlPodcastEpisode::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {

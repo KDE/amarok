@@ -73,7 +73,7 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                     Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
                     if( data )
                     {
-                        Meta::CustomActionsCapability *cac = data->as<Meta::CustomActionsCapability>();
+                        Meta::CustomActionsCapability *cac = data->create<Meta::CustomActionsCapability>();
                         if( cac )
                         {
                             QList<PopupDropperAction*> actions = cac->customActions();

@@ -60,7 +60,7 @@ class M3UPlaylist : public Playlist
             */
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; };
 
-        Capability* asCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; };
+        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; };
 
         KUrl retrievableUrl() { return m_url; };
 

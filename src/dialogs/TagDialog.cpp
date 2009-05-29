@@ -1452,7 +1452,7 @@ TagDialog::saveTags()
             emit lyricsChanged( track->uidUrl() );
         }
 
-        Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+        Meta::EditCapability *ec = track->create<Meta::EditCapability>();
         if( !ec )
         {
             debug() << "Track does not have Meta::EditCapability. Aborting loop.";
@@ -1508,7 +1508,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        Meta::UpdateCapability *uc = track->as<Meta::UpdateCapability>();
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
         if( !uc )
         {
             continue;
@@ -1524,7 +1524,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, collectionsToUpdateMap.values() )
     {
-        Meta::UpdateCapability *uc = track->as<Meta::UpdateCapability>();
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
 
         uc->collectionUpdated();
     }

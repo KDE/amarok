@@ -272,7 +272,7 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
         bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
-        Meta::Capability* asCapabilityInterface( Meta::Capability::Type type ) { Q_UNUSED( type ); return static_cast<Meta::Capability *>( 0 ); }
+        Meta::Capability* createCapabilityInterface( Meta::Capability::Type type ) { Q_UNUSED( type ); return static_cast<Meta::Capability *>( 0 ); }
 
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 

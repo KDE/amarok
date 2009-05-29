@@ -282,8 +282,8 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     m_currentTrack = track;
     delete m_multiPlayback;
     delete m_multiSource;
-    m_multiPlayback = m_currentTrack->as<Meta::MultiPlayableCapability>();
-    m_multiSource  = m_currentTrack->as<Meta::MultiSourceCapability>();
+    m_multiPlayback = m_currentTrack->create<Meta::MultiPlayableCapability>();
+    m_multiSource  = m_currentTrack->create<Meta::MultiSourceCapability>();
 
     m_nextTrack.clear();
     m_nextUrl.clear();

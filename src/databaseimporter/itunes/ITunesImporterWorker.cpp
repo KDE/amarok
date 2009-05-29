@@ -93,7 +93,7 @@ ITunesImporterWorker::readTrackElement()
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     if( track )
     {
-        Meta::StatisticsCapability *ec = track->as<Meta::StatisticsCapability>();
+        Meta::StatisticsCapability *ec = track->create<Meta::StatisticsCapability>();
         if( ec )
         {   
             ec->beginStatisticsUpdate();

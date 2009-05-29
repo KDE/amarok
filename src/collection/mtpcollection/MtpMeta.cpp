@@ -531,7 +531,7 @@ MtpTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-MtpTrack::asCapabilityInterface( Meta::Capability::Type type )
+MtpTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
         DEBUG_BLOCK
         switch( type )

@@ -451,7 +451,7 @@ Amarok::TrayIcon::setupMenu()
 
     if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = m_track->as<Meta::CurrentTrackActionsCapability>();
+        Meta::CurrentTrackActionsCapability *cac = m_track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
             QList<PopupDropperAction *> currentTrackActions = cac->customActions();

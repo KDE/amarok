@@ -174,7 +174,7 @@ void Playlist::PrettyListView::selectSource()
 
     //get multiSource capability:
 
-    Meta::MultiSourceCapability *msc = track->as<Meta::MultiSourceCapability>();
+    Meta::MultiSourceCapability *msc = track->create<Meta::MultiSourceCapability>();
     if ( msc )
     {
         debug() << "sources: " << msc->sources();

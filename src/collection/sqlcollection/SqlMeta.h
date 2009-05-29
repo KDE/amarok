@@ -140,7 +140,7 @@ class SqlTrack : public Meta::Track
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         //SqlTrack specific methods
         int deviceid() const { return m_deviceid; }
@@ -215,7 +215,7 @@ class SqlArtist : public Meta::Artist
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -267,7 +267,7 @@ class SqlAlbum : public Meta::Album
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         //SQL specific methods
         int id() const { return m_id; }

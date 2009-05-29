@@ -135,7 +135,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     if( !track || !track->hasCapabilityInterface( Meta::Capability::Editable ) )
         return;
 
-    Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
     if( !ec || !ec->isEditable() )
         return;
     ec->beginMetaDataUpdate();

@@ -113,7 +113,7 @@ public:
 
     KUrl retrievableUrl() { return m_url; }
 
-    Capability* asCapabilityInterface( Capability::Type type );
+    Capability* createCapabilityInterface( Capability::Type type );
 
 private:
     XSPFTrackList trackList();

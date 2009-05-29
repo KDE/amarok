@@ -514,7 +514,7 @@ void MagnatuneStore::purchaseCurrentTrackAlbum()
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
     //check if this is indeed a magnatune track
-    Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
+    Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
     if( sic )
     {
         //is the source defined

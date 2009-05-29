@@ -43,7 +43,7 @@ PlaylistFileProvider::PlaylistFileProvider()
         if( playlist->is<Meta::EditablePlaylistCapability>() )
         {
             QString title = configEntry[0];
-            playlist->as<Meta::EditablePlaylistCapability>()->setTitle( title );
+            playlist->create<Meta::EditablePlaylistCapability>()->setTitle( title );
         }
         m_playlists << playlist;
     }

@@ -442,10 +442,10 @@ MetaProxy::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-MetaProxy::Track::asCapabilityInterface( Meta::Capability::Type type )
+MetaProxy::Track::createCapabilityInterface( Meta::Capability::Type type )
 {
     if( d->realTrack )
-        return d->realTrack->asCapabilityInterface( type );
+        return d->realTrack->createCapabilityInterface( type );
     else
         if( type == Meta::Capability::Editable )
             return new EditCapabilityProxy( this );

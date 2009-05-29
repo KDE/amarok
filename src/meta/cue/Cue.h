@@ -160,7 +160,7 @@ public:
     virtual void setTrackNumber ( int newTrackNumber );
 
     virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
 private:
     typedef KSharedPtr<Track> TrackPtr;

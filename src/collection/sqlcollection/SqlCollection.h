@@ -102,7 +102,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         virtual void vacuum() const;
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
     public slots:
         void updateTrackUrls( TrackUrls changedUrls );

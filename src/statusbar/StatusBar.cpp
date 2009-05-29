@@ -276,7 +276,7 @@ void StatusBar::updateInfo( Meta::TrackPtr track )
 
     // check if we have any source info:
 
-    Meta::SourceInfoCapability *sic = track->as<Meta::SourceInfoCapability>();
+    Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
     if ( sic )
     {
         //is the source defined

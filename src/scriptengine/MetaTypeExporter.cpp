@@ -23,7 +23,7 @@
 
 #define GET_TRACK  Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() );
 #define GET_TRACK_EC( X ) Meta::TrackPtr track = qscriptvalue_cast<Meta::TrackPtr>( thisObject() ); \
-Meta::EditCapability* ec = track->as<Meta::EditCapability>(); \
+Meta::EditCapability* ec = track->create<Meta::EditCapability>(); \
 if( ec ) \
 { \
     ec->beginMetaDataUpdate(); \
@@ -217,7 +217,7 @@ bool
 MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
-    Meta::EditCapability* ec = track->as<Meta::EditCapability>();
+    Meta::EditCapability* ec = track->create<Meta::EditCapability>();
     return ( ec && ec->isEditable() );
 }
 
