@@ -47,7 +47,7 @@ class VerticalToolbarContainment : public Containment
         
         virtual void setView( ContextView* view);
         virtual ContextView *view();
-        
+
         QRectF boundingRect () const;
     public slots:
         Applet* addApplet( const QString& pluginName, const int );
@@ -62,9 +62,15 @@ class VerticalToolbarContainment : public Containment
         void updatedContainment( Containment* );
         void appletAdded( Plasma::Applet*, int );
         
+    private slots:
+        void showEmptyText( bool );
+
     private:
         ContextView* m_view;
         VerticalAppletLayout* m_applets;
+        
+        bool m_noApplets;
+        QGraphicsTextItem* m_noAppletText;
 };
 
 K_EXPORT_PLASMA_APPLET( amarok_containment_vertical, VerticalToolbarContainment )

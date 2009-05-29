@@ -111,7 +111,8 @@ ContextView::~ContextView()
 }
 
 
-void ContextView::clear( const ContextState& state )
+void
+ContextView::clear( const ContextState& state )
 {
     Q_UNUSED( state )
     DEBUG_BLOCK
@@ -133,12 +134,6 @@ void ContextView::clear( const ContextState& state )
             containment->saveToConfig( cg );
     }
     contextScene()->clearContainments();
-}
-
-//TODO: remove all references to this function
-void ContextView::clear()
-{
-    
 }
 
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
@@ -195,7 +190,8 @@ void ContextView::showHome()
 
 
 // loads applets onto the ContextScene from saved data, using m_curState
-void ContextView::loadConfig()
+void
+ContextView::loadConfig()
 {
     contextScene()->clearContainments();    
 
@@ -212,7 +208,8 @@ void ContextView::loadConfig()
     }
 }
 
-Plasma::Applet* ContextView::addApplet( const QString& name, const QStringList& args )
+Plasma::Applet*
+ContextView::addApplet( const QString& name, const QStringList& args )
 {
     QVariantList argList;
     QStringListIterator i(args);
@@ -225,13 +222,14 @@ Plasma::Applet* ContextView::addApplet( const QString& name, const QStringList& 
     return containment()->addApplet( name, argList );
 }
 
-ContextScene* ContextView::contextScene()
+ContextScene*
+ContextView::contextScene()
 {
     return static_cast<ContextScene*>( scene() );
 }
 
-
-void ContextView::resizeEvent( QResizeEvent* event )
+void
+ContextView::resizeEvent( QResizeEvent* event )
 {
   //  DEBUG_BLOCK
     Q_UNUSED( event )
@@ -256,7 +254,8 @@ ContextView::updateContainmentsGeometry()
 
 }
 
-void ContextView::wheelEvent( QWheelEvent* event )
+void
+ContextView::wheelEvent( QWheelEvent* event )
 {
     if( event->orientation() != Qt::Horizontal )
         QGraphicsView::wheelEvent( event );

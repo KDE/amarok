@@ -15,6 +15,7 @@
 
 #include "ContextView.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 #include "VerticalAppletLayout.h"
 
 #include <KConfig>
@@ -27,6 +28,8 @@
 Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent, const QVariantList &args )
     : Containment( parent, args )
     , m_applets( 0 )
+    , m_noApplets( true )
+    , m_noAppletText( 0 )
 {
     DEBUG_BLOCK
     setContainmentType( CustomContainment );
@@ -42,6 +45,15 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
              
     connect( m_applets,  SIGNAL( appletAdded( Plasma::Applet*, int ) ), SIGNAL( appletAdded( Plasma::Applet*, int) ) ); // goes out to applet toolbar
     connect( m_applets, SIGNAL(  appletAdded( Plasma::Applet*, int ) ), SIGNAL( geometryChanged() ) );
+    
+    connect( m_applets, SIGNAL( noApplets( bool ) ), SLOT( showEmptyText( bool ) ) );
+
+    m_noAppletText = new QGraphicsTextItem( this );
+    m_noAppletText->setHtml( QString( "<html>  <style type=\"text/css\"> body { background-color: %1; } </style> \
+                                        <body> <p align=\"center\"> %3 </p></body></html>" )
+                                       .arg( PaletteHandler::highlightColor().name() )
+                                       .arg( i18n( "Please add some applets from the toolbar at the bottom of the context view." ) ) );
+                                       
 }
 
 Context::VerticalToolbarContainment::~VerticalToolbarContainment()
@@ -70,6 +82,16 @@ Context::VerticalToolbarContainment::paintInterface(QPainter *painter, const QSt
     Q_UNUSED( painter );
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
+
+    if( m_noApplets ) // draw help text
+    {
+        QRectF masterRect = view()->rect();
+
+        m_noAppletText->setTextWidth( masterRect.width() * .4 );
+        QPointF topLeft( ( masterRect.width() / 2 ) - ( m_noAppletText->boundingRect().width() / 2 ), ( masterRect.height() / 2 ) - ( m_noAppletText->boundingRect().height() / 2 ) );
+        m_noAppletText->setPos( topLeft );
+
+    }
 }
 
 void
@@ -157,6 +179,16 @@ Context::VerticalToolbarContainment::wheelEvent( QGraphicsSceneWheelEvent* event
     Q_UNUSED( event )
 
     //eat wheel events, we dont want scrolling
+}
+
+void
+Context::VerticalToolbarContainment::showEmptyText( bool toShow ) // SLOT
+{
+    m_noApplets = toShow;
+    if( toShow )
+        m_noAppletText->show();
+    else
+        m_noAppletText->hide();
 }
 
 #include "VerticalToolbarContainment.moc"

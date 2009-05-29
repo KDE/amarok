@@ -64,11 +64,6 @@ public:
         config file using as a key the string parameter.
     */
     void clear( const ContextState& name );
-
-    /**
-        Clear the context scene of all items, discarding any data/widgets currently on the scene.
-    */
-    void clear();
     
     /** 
         Shows the home state. Loads applets from config file.
@@ -86,7 +81,6 @@ protected:
 
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
-//     void mousePressEvent( QMouseEvent* event );
 
 private:
     static ContextView* s_self;

@@ -64,6 +64,9 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
 {
     DEBUG_BLOCK
     debug() << "layout told to add applet at" << location;
+    if( m_appletList.size() == 0 )
+        emit noApplets( false );
+    
     if( location < 0 ) // being told to add at end
     {
         m_appletList << applet;
@@ -151,6 +154,10 @@ Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
     if( m_showingIndex > removedIndex )
         m_showingIndex--;
     showAtIndex( minIndexWithAppletOnScreen( m_showingIndex ) );
+
+    debug() << "got " << m_appletList.size() << " applets left";
+    if( m_appletList.size() == 0 )
+        emit noApplets( true );
 }
 
 void
