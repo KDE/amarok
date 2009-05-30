@@ -40,7 +40,7 @@ fetch_doc unless $options[:doc] == false
 
 create_tag if $options[:tag] == true
 
-custom unless $options[:app] == false or not self.respond_to?("custom")
+custom unless $options[:app] == false or not respond_to?("custom", true)
 
 create_tar unless $options[:tar] == false
 
