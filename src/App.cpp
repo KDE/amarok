@@ -104,7 +104,7 @@ App::App()
     PERF_LOG( "Begin Application ctor" )
 
     // required for last.fm plugin to grab app version
-    setApplicationVersion( "2.1-SVN" );
+    setApplicationVersion( APP_VERSION );
 
     if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
