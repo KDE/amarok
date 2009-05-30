@@ -38,8 +38,6 @@ namespace AmarokScript
         , m_wrapperList( wrapperList )
         , m_scriptEngine( scriptEngine )
     {
-        qRegisterMetaType<QList<QUrl> >( "QList<QUrl>" ); //Needed for addMediaList()
-
         connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
         connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
         connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
@@ -71,11 +69,11 @@ namespace AmarokScript
         The::playlistController()->insertOptioned( track, Playlist::Append );
     }
 
-    void AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
+	void AmarokPlaylistScript::addMediaList( const QVariantList &urls )
     {
         KUrl::List list;
-        foreach( const QUrl &url, urls )
-            list << url;
+        foreach( const QVariant &url, urls )
+            list << url.toUrl();
         Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
         The::playlistController()->insertOptioned( tracks, Playlist::Append );
     }

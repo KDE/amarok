@@ -26,13 +26,14 @@
 #include <QObject>
 #include <QUrl>
 #include <QtScript>
+#include <QVariant>
 
 namespace AmarokScript
 {
     class AmarokPlaylistScript : public QObject
     {
         Q_OBJECT
-
+		
         public:
             AmarokPlaylistScript( QScriptEngine* ScriptEngine, QList<QObject*>* wrapperList );
             ~AmarokPlaylistScript();
@@ -42,7 +43,7 @@ namespace AmarokScript
             int totalTrackCount();
             QString saveCurrentPlaylist();
             void addMedia( const QUrl &url );
-            void addMediaList( const QList<QUrl> &urls );
+            void addMediaList( const QVariantList &urls );
             void clearPlaylist();
             void playByIndex( int index );
             void playMedia( const QUrl &url );
