@@ -38,6 +38,8 @@ namespace AmarokScript
         , m_wrapperList( wrapperList )
         , m_scriptEngine( scriptEngine )
     {
+        qRegisterMetaType<QList<QUrl> >( "QList<QUrl>" );
+
         connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
         connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
         connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
