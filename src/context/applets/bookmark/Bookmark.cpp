@@ -81,11 +81,8 @@ QSizeF
 Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
     Q_UNUSED( which )
+    return QSizeF( constraint.width(), 350 );
 
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-        return QSizeF( constraint.width(), 350 );
-
-    return QGraphicsWidget::sizeHint( which, constraint );
 }
 
 void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
