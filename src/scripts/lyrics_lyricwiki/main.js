@@ -57,9 +57,10 @@ function onFinished( dat )
             doc.setContent( dat );
             parsedContent = doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text();
             parsedContent = parsedContent.replace( "<lyrics>", "" ).replace( "</lyrics>", "" ); // some lyrics have 2 lyrics in them...wtf?
-            newxml = xml.replace( "{artist}", doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ); // don't escape title and artist, they already come escaped
-            newxml = newxml.replace( "{title}", doc.elementsByTagName( "song" ).at( 0 ).toElement().text() );
+            newxml = xml.replace( "{artist}", escapeString( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) ); 
+            newxml = newxml.replace( "{title}", escapeString( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
             newxml = newxml.replace( "{lyrics}", escapeString( parsedContent ) );
+            //Amarok.debug( "showing lyrics:" + newxml );
             Amarok.Lyrics.showLyrics( newxml );
         }
     }

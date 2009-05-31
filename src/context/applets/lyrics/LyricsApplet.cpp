@@ -75,6 +75,7 @@ void LyricsApplet::init()
     m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setReadOnly( true );
     m_lyrics->setOpenExternalLinks( true );
+    m_lyrics->setWordWrapMode( QTextOption::WordWrap );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     m_lyricsProxy->setWidget( m_lyrics );
     QPalette pal;
