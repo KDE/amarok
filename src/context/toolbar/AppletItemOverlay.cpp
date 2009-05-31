@@ -421,7 +421,8 @@ Context::AppletItemOverlay::syncGeometry()
 
     if( m_index > 1 ) 
     {
-        m_prevGeom = m_layout->itemAt( m_index - 2 )->geometry();
+        if( m_layout->itemAt( m_index - 2 ) )
+            m_prevGeom = m_layout->itemAt( m_index - 2 )->geometry();
     } else 
     {
         m_prevGeom = QRectF();
@@ -429,7 +430,8 @@ Context::AppletItemOverlay::syncGeometry()
 
     if( m_index < m_layout->count() - 2  ) 
     {
-        m_nextGeom = m_layout->itemAt( m_index + 2 )->geometry();
+        if( m_layout->itemAt( m_index + 2 ) )
+            m_nextGeom = m_layout->itemAt( m_index + 2 )->geometry();
     } else 
     {
         m_nextGeom = QRectF();
