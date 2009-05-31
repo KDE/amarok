@@ -232,7 +232,7 @@ namespace Debug
             mutex.lock();
             timeval end;
             int result = gettimeofday( &end, 0 );
-            if( !result )
+            if( result == -1 )
             {
                 mutex.unlock();
                 return;
