@@ -62,11 +62,14 @@ Context::VerticalToolbarContainment::~VerticalToolbarContainment()
 void 
 Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints constraints )
 {
-    DEBUG_BLOCK
     Q_UNUSED( constraints )
 
     debug() << "setting applets geom to" << contentsRect();
-
+    
+    QRectF masterRect = view()->rect();
+    if( m_noAppletText)
+        m_noAppletText->setTextWidth( masterRect.width() * .4 );
+    
     m_applets->setGeometry( contentsRect() );
 }
 
@@ -83,11 +86,10 @@ Context::VerticalToolbarContainment::paintInterface(QPainter *painter, const QSt
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
 
+    
     if( m_noApplets ) // draw help text
     {
         QRectF masterRect = view()->rect();
-
-        m_noAppletText->setTextWidth( masterRect.width() * .4 );
         QPointF topLeft( ( masterRect.width() / 2 ) - ( m_noAppletText->boundingRect().width() / 2 ), ( masterRect.height() / 2 ) - ( m_noAppletText->boundingRect().height() / 2 ) );
         m_noAppletText->setPos( topLeft );
 
@@ -189,6 +191,7 @@ Context::VerticalToolbarContainment::showEmptyText( bool toShow ) // SLOT
         m_noAppletText->show();
     else
         m_noAppletText->hide();
+    update();
 }
 
 #include "VerticalToolbarContainment.moc"
