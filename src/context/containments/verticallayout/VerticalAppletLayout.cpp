@@ -165,18 +165,18 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     
     qreal runningHeight = 0.0, currentHeight = 0.0;
     qreal width =  boundingRect().width();
-    debug() << "showing applet at index" << index;
-    debug() << "using applet width of " << width;
+    //debug() << "showing applet at index" << index;
+    //debug() << "using applet width of " << width;
     for( int i = index - 1; i >= 0; i-- ) // lay out backwards above the view
     {
-        debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
+        //debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
         currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
         if( currentHeight < 15 )
             currentHeight = 250; // if it is one of the expanding applets, give it room for its header
         runningHeight -= currentHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
-        debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
-        debug() << "UPWARDS got applet sizehint height:" << currentHeight;
+        //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
+        //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
         m_appletList[ i ]->updateConstraints();
         m_appletList[ i ]->hide();
@@ -187,36 +187,44 @@ Context::VerticalAppletLayout::showAtIndex( int index )
       * If an applet has a vertical sizeHint of < 0 (which means effectiveSizeHint < 15  ), then it means it wants to be laid out to maxmize vertical space.
       * Otherwise, give it the space it asks for.
       */
+    //debug() << "total of" << m_appletList.size() << "applets";
     int lastShown = m_appletList.size();
     for( int i = index; i < lastShown; i++ ) // now lay out desired item at top and rest below it
     {
-        debug() << "dealing with" << m_appletList[ i ]->name();
-        debug() << "putting applet #" << i << " at" << 0 << runningHeight;
+        //debug() << "dealing with" << m_appletList[ i ]->name();
+        //debug() << "putting applet #" << i << " at" << 0 << runningHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
         qreal height = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
-        debug() << "applet has sizeHinte height of:" << height << "preferred  height:" << m_appletList[ i ]->preferredHeight() ;
+        //debug() << "applet has sizeHinte height of:" << height << "preferred  height:" << m_appletList[ i ]->preferredHeight() ;
         if( height < 15 ) // maximise its space
         {
             qreal heightLeft = boundingRect().height() - runningHeight;
-            debug() << "layout has boundingRectL" << boundingRect() ;
+            //debug() << "layout has boundingRect FLOWING" << boundingRect() ;
             m_appletList[ i ]->resize( width, heightLeft );
             m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
             lastShown = i;
         } else
         {
+            //debug() << "normal applet, moving on with the next one";
             runningHeight += height;
             m_appletList[ i ]->resize( width, height );
             m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
+            
+            //debug() << "next applet will go at:" << runningHeight;
+            //debug() << "got applet sizehint height:" << currentHeight;
         }
-        debug() << "next applet will go at:" << runningHeight;
-        debug() << "got applet sizehint height:" << currentHeight;
     }
     // hide the ones that we can't see below
     for( int i = lastShown + 1; i < m_appletList.size(); i++ )
     {
+        //debug() << "HIDING NOT VISIBLE APPLET AT INDEX:" << i;
+        // hiding an applet does not hide it's children
+        // so in order to make sure that the applet is not visible,
+        // in the case of misbehaving applets, we also move them out of the way. 
         m_appletList[ i ]->hide();
+        m_appletList[ i ]->setPos( 0, boundingRect().height() );
     }
     
     m_showingIndex = index;
