@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-ampache-amarok
 Name=Ampache
+Name[pa]=ਅਮਪਾਂਚੇ
 Name[x-test]=xxAmpachexx
 Comment=Listen to music from an Ampache server
 Comment[bg]=Слушане на музика от Ampache
