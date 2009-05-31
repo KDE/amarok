@@ -1,6 +1,6 @@
 /******************************************************************************
  * Copyright (C) 2003-2005 Max Howell <max.howell@methylblue.com>             *
- *           (C) 2007 Mark Kretschmann <kretschmann@kde.org>                  *
+ *           (C) 2007-2009 Mark Kretschmann <kretschmann@kde.org>             *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -75,11 +75,11 @@
 
 namespace Debug
 {
-    extern AMAROK_EXPORT QMutex mutex; // defined in app.cpp
+    extern AMAROK_EXPORT QMutex mutex; // defined in App.cpp
 
-    // we can't use a statically instantiated QCString for the indent, because
+    // we can't use a statically instantiated QString for the indent, because
     // static namespaces are unique to each dlopened library. So we piggy back
-    // the QCString on the KApplication instance
+    // the QString on the KApplication instance
 
     #define qOApp reinterpret_cast<QObject*>(qApp)
     class Indent : QObject
@@ -220,7 +220,7 @@ namespace Debug
 
             mutex.lock();
 
-            dbgstream() << "amarok: BEGIN:" << label;
+            dbgstream() << qPrintable( "amarok: " + indent() +  "BEGIN:" + label );
             Debug::modifieableIndent() += "  ";
             mutex.unlock();
         }
@@ -249,8 +249,7 @@ namespace Debug
             double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
-            dbgstream() << "amarok: END__:" << m_label
-                        << "- Took" << qPrintable( QString::number( duration, 'g', 2 ) + "s" );
+            dbgstream() << qPrintable( "amarok: " + indent() + "END__:" + m_label + "- Took" + QString::number( duration, 'g', 2 ) + "s" );
             mutex.unlock();
         }
     };
