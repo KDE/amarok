@@ -220,7 +220,7 @@ namespace Debug
 
             mutex.lock();
 
-            dbgstream() << qPrintable( "amarok: " + indent() +  "BEGIN:" + label );
+            dbgstream() << qPrintable( "amarok: " + indent() + "BEGIN: " + label );
             Debug::modifieableIndent() += "  ";
             mutex.unlock();
         }
@@ -249,7 +249,7 @@ namespace Debug
             double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
-            dbgstream() << qPrintable( "amarok: " + indent() + "END__:" + m_label + "- Took" + QString::number( duration, 'g', 2 ) + "s" );
+            dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" );
             mutex.unlock();
         }
     };
