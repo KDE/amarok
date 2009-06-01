@@ -56,7 +56,6 @@ QStringList VideoclipEngine::sources() const
 
 bool VideoclipEngine::sourceRequestEvent( const QString& name )
 {
-//   DEBUG_BLOCK
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     removeAllData( name );
@@ -67,14 +66,12 @@ bool VideoclipEngine::sourceRequestEvent( const QString& name )
 
 void VideoclipEngine::message( const ContextState& state )
 {
-    DEBUG_BLOCK
     if ( state == Current && m_requested )
         update();
 }
 
 void VideoclipEngine::metadataChanged( Meta::TrackPtr track )
 {
-//   DEBUG_BLOCK
     const bool hasChanged = track->name() != m_title || track->artist()->name() != m_artist;
     if ( hasChanged )
         update();
@@ -131,13 +128,14 @@ void VideoclipEngine::update()
 
 void VideoclipEngine::resultYoutube( KJob* job )
 {
+    DEBUG_BLOCK
     if ( !m_jobYoutube ) //track changed while we were fetching
         return;
- //   DEBUG_BLOCK
+
     if ( job->error() != KJob::NoError && job == m_jobYoutube ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Youtube information: %1", job->errorString() ) );
-        debug() << "VideoclipEngine | Unable to retrieve Youtube information: " << job->errorString();
+        debug() << "Unable to retrieve Youtube information: " << job->errorString();
         m_jobYoutube = 0; // clear job
         return;
     }
@@ -177,7 +175,7 @@ void VideoclipEngine::resultYoutube( KJob* job )
         m_nbJobs+=2;
     }
     // Check how many clip we've find and send message if all the job are finished but no clip were find
-    debug() << "VideoclipEngine | youtube fetch : " << xmlNodeList.length() << " songs ";
+    debug() << "Youtube fetch : " << xmlNodeList.length() << " songs ";
     
     resultFinalize();
     m_jobYoutube = 0;
@@ -188,7 +186,7 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
 //   DEBUG_BLOCK
     if ( job->error() != KJob::NoError )
     {
-        debug() << "VideoclipEngine | Unable to retrieve Youtube direct videolink: " ;
+    //    debug() << "VideoclipEngine | Unable to retrieve Youtube direct videolink: " ;
         job=0;
         return;
     }
@@ -217,13 +215,15 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
 
 void VideoclipEngine::resultDailymotion( KJob* job )
 {
+	DEBUG_BLOCK
+	
     if ( !m_jobDailymotion ) 
         return; //track changed while we were fetching
-//    DEBUG_BLOCK
+    
     if ( job->error() != KJob::NoError && job == m_jobDailymotion ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Dailymotion information: %1", job->errorString() ) );
-        debug() << "VideoclipEngine | Unable to retrieve Dailymotion information: " << job->errorString();
+        debug() << "Unable to retrieve Dailymotion information: " << job->errorString();
         m_jobDailymotion = 0; // clear job
         return;
     }
@@ -265,7 +265,7 @@ void VideoclipEngine::resultDailymotion( KJob* job )
     }
     
     // Check how many clip we've find and send message if all the job are finished but no clip were find
-    debug() << "VideoclipEngine | dailymotion fetch : " << nb << " songs ";
+    debug() << "Dailymotion fetch : " << nb << " songs ";
 
     resultFinalize();
     m_jobDailymotion = 0;
@@ -273,14 +273,16 @@ void VideoclipEngine::resultDailymotion( KJob* job )
 
 void VideoclipEngine::resultVimeo( KJob* job )
 {
-    if ( !m_jobVimeo ) 
+    DEBUG_BLOCK
+	
+	if ( !m_jobVimeo ) 
         return; //track changed while we were fetching
 
- //   DEBUG_BLOCK
+
     if ( job->error() != KJob::NoError && job == m_jobVimeo ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Vimeo information: %1", job->errorString() ) );
-        debug() << "VideoclipEngine | Unable to retrieve Vimeo information: " << job->errorString();
+        debug() << "Unable to retrieve Vimeo information: " << job->errorString();
         m_jobVimeo = 0; // clear job
         return;
     }
@@ -302,7 +304,7 @@ void VideoclipEngine::resultVimeo( KJob* job )
         connect( jobVimeo, SIGNAL( result( KJob* ) ), SLOT( resultVimeoBis( KJob* ) ) );
         m_nbJobs+=1;
     }
-    debug() << "VideoclipEngine | vimeo fetch : " << count << " songs ";
+    debug() << "Vimeo fetch : " << count << " songs ";
     resultFinalize();
     m_jobVimeo = 0;
 }
@@ -382,7 +384,6 @@ void VideoclipEngine::resultVimeoGetLink( KJob *job )
 
 void VideoclipEngine::resultImageFetcher( KJob *job )
 {
-    DEBUG_BLOCK
     if ( job->error() != KJob::NoError )
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve an image information") );
@@ -409,18 +410,17 @@ void VideoclipEngine::resultImageFetcher( KJob *job )
 
 void VideoclipEngine::resultFinalize()
 {
+	//DEBUG_BLOCK
     if ( m_video.empty())
     {
-        debug() << "VideoclipEngine | No Video clip found";
+ //       debug() << "No Video clip found";
         setData( "videoclip", "message", i18n( "No video clip found..." ) );
         return;
     }
     // Check that all the jobs are finished
     if ( m_nbJobs == 0 )
-    {
-        DEBUG_BLOCK
-       
-        debug() << "VideoclipEngine | Fetched : " << m_video.size() << " entries";
+    { 
+  //      debug() << "Fetched : " << m_video.size() << " entries";
        
         // Ordering need to be done here   
         foreach ( VideoInfo *item, m_video )
