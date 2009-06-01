@@ -16,6 +16,8 @@ VERSION 2.1.1
     * Show info box in CV if no applets are visible.
 
   BUGFIXES:
+    * Fix problem with supported filetypes not being copied over to MTP device
+      (BR 186835)
     * Fix problem with playlist names containing '/' not being saved (BR 975995)
     * Allow cancelling of rename input box in playlist layout dialog (BR 976409)
     * Loading playlists from the command line works again. (BR 191347)

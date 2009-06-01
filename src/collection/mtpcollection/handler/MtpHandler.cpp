@@ -75,6 +75,36 @@ MtpHandler::~MtpHandler()
 void
 MtpHandler::init( const QString &serial )
 {
+    mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
+    mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
+    mtpFileTypes[LIBMTP_FILETYPE_WMA] = "wma";
+    mtpFileTypes[LIBMTP_FILETYPE_OGG] = "ogg";
+    mtpFileTypes[LIBMTP_FILETYPE_AUDIBLE] = "aa"; // audible
+    mtpFileTypes[LIBMTP_FILETYPE_MP4] = "mp4";
+    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_AUDIO] = "undef-audio";
+    mtpFileTypes[LIBMTP_FILETYPE_WMV] = "wmv";
+    mtpFileTypes[LIBMTP_FILETYPE_AVI] = "avi";
+    mtpFileTypes[LIBMTP_FILETYPE_MPEG] = "mpg";
+    mtpFileTypes[LIBMTP_FILETYPE_ASF] = "asf";
+    mtpFileTypes[LIBMTP_FILETYPE_QT] = "mov";
+    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_VIDEO] = "undef-video";
+    mtpFileTypes[LIBMTP_FILETYPE_JPEG] = "jpg";
+    mtpFileTypes[LIBMTP_FILETYPE_JFIF] = "jpg";
+    mtpFileTypes[LIBMTP_FILETYPE_TIFF] = "tiff";
+    mtpFileTypes[LIBMTP_FILETYPE_BMP] = "bmp";
+    mtpFileTypes[LIBMTP_FILETYPE_GIF] = "gif";
+    mtpFileTypes[LIBMTP_FILETYPE_PICT] = "pict";
+    mtpFileTypes[LIBMTP_FILETYPE_PNG] = "png";
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR1] = "vcs"; // vcal1
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR2] = "vcs"; // vcal2
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD2] = "vcf"; // vcard2
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD3] = "vcf"; // vcard3
+    mtpFileTypes[LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT] = "wim"; // windows image format
+    mtpFileTypes[LIBMTP_FILETYPE_WINEXEC] = "exe";
+    mtpFileTypes[LIBMTP_FILETYPE_TEXT] = "txt";
+    mtpFileTypes[LIBMTP_FILETYPE_HTML] = "html";
+    mtpFileTypes[LIBMTP_FILETYPE_UNKNOWN] = "unknown";
+
     QString genericError = i18n( "Could not connect to MTP Device" );
 
     m_success = false;
@@ -252,7 +282,10 @@ MtpHandler::getDeviceInfo()
     {
         uint16_t i;
         for ( i = 0; i < filetypes_len; ++i )
+        {
+            debug() << "Device supports: " << mtpFileTypes[ filetypes[ i ] ];
             m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
+        }
     }
     // find supported image types (for album art).
     if ( m_supportedFiles.indexOf( "jpg" ) )
