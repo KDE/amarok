@@ -39,6 +39,7 @@
 #include <KStandardDirs>
 #include <KVBox>
 #include <Plasma/Theme>
+#include <Plasma/BusyWidget>
 
 // Qt
 #include <QGraphicsLinearLayout>
@@ -219,18 +220,26 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         {
             m_layoutWidgetList.front()->hide();
             m_layout->removeWidget( m_layoutWidgetList.front() );
+			delete m_layoutWidgetList.front();
             m_layoutWidgetList.pop_front();
         }
         
         // if we get a message, show it
-        if ( data.contains( "message" ) )
+        if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
         {
-            QLabel *mess = new QLabel( data["message"].toString() );
-            m_layout->addWidget( mess, Qt::AlignTop );
-            m_layoutWidgetList.push_back( mess );
+			setBusy( true );
+			
         }
+		else if ( data.contains( "message" ) )
+		{
+			QLabel *mess = new QLabel( data["message"].toString() );
+            m_layout->addWidget( mess, Qt::AlignTop );
+            m_layoutWidgetList.push_back( mess );		
+			setBusy( false );
+		}
         else  
         {
+			setBusy(false);
             for (int i=0; i< data.size(); i++ )
             {
                 
@@ -274,7 +283,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                     webi->setPixmap( *m_pixVimeo );
 
 
-                QGridLayout *grid = new QGridLayout;
+                QGridLayout *grid = new QGridLayout();
                 grid->setHorizontalSpacing( 5 );
                 grid->setVerticalSpacing( 2 );
                 grid->setRowMinimumHeight( 1, 65 );
@@ -317,6 +326,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 void 
 VideoclipApplet::appendVideoClip( )
 {
+	DEBUG_BLOCK
     QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
     if ( button )
     {
@@ -326,7 +336,8 @@ VideoclipApplet::appendVideoClip( )
         tra->setTitle( lst.at( 1 ) );
         tra->setAlbum( lst.at( 2 ) );
         tra->setArtist( "stream" );
-        tra->album()->setImage( button->icon().pixmap( button->iconSize() ) );
+		//debug () << "Image size"<<button->iconSize().height();
+        tra->album()->setImage( *m_pixYoutube );
         Meta::TrackPtr track( tra );
       
         //append to the playlist the newly retrieved
