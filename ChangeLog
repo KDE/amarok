@@ -16,6 +16,7 @@ VERSION 2.1.1
     * Show info box in CV if no applets are visible.
 
   BUGFIXES:
+    * Loading playlists from the command line works again. (BR 191347)
     * Fixed formatting of the debug output when using the -d option.
 
 
