@@ -348,8 +348,7 @@ App::handleCliArgs() //static
         if( args->isSet( "play" ) )
             options |= Playlist::DirectPlay;
 
-        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
-        The::playlistController()->insertOptioned( tracks, options );
+        The::playlistController()->insertOptioned( list, options );
     }
 
     //we shouldn't let the user specify two of these since it is pointless!
