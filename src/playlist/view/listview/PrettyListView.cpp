@@ -42,7 +42,6 @@
 #include "playlist/view/PlaylistViewCommon.h"
 #include "playlist/navigators/NavigatorFilterProxyModel.h"
 #include "PopupDropperFactory.h"
-#include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
 
@@ -150,12 +149,6 @@ void
 Playlist::PrettyListView::queueSelection()
 {
     Actions::instance()->queue( selectedRows() );
-
-    //Remove 'stop after track' - the logic being if you are queueing a track
-    //you generally want to hear it.
-    Actions::instance()->setStopAfterMode( StopNever );
-    Actions::instance()->setTrackToBeLast( 0 );
-    The::statusBar()->longMessage( "\"Stop after this track\" disabled due to queued tracks." );
 }
 
 void
