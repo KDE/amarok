@@ -411,7 +411,7 @@ void VideoclipEngine::resultImageFetcher( KJob *job )
 void VideoclipEngine::resultFinalize()
 {
 	//DEBUG_BLOCK
-    if ( m_video.empty())
+    if ( m_video.empty() && m_nbJobs == 0)
     {
  //       debug() << "No Video clip found";
         setData( "videoclip", "message", i18n( "No video clip found..." ) );
@@ -462,7 +462,6 @@ void VideoclipEngine::resultFinalize()
             sorting << QPair < int, QString> (item->relevancy, item->url) ;
         qSort(sorting.begin(), sorting.end(), qGreater<QPair < int, QString> >());
 
-        
         // remove previous message
         removeData( "videoclip", "message" );
         
