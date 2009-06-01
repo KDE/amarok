@@ -2,6 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+
 VERSION 2.1.1
   FEATURES:
     * Applets are now laid out according to two criteria: either fixed height
@@ -9,11 +10,13 @@ VERSION 2.1.1
       bottom.
     * Load contents of an m3u file if specified when running amarok from the
       command line. File must be local.
-    * Add large source emblem in current track applet.
+    * Added large source emblem in current track applet.
+
   CHANGES:
     * Show info box in CV if no applets are visible.
 
   BUGFIXES:
+    * Fixed formatting of the debug output when using the -d option.
 
 
 VERSION 2.1
