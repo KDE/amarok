@@ -309,7 +309,7 @@ App::handleCliArgs() //static
                 AmarokUrl aUrl( url.url() );
                 aUrl.run();
 
-            } else if( url.fileName().endsWith( "m3u" ) )  { // append tracks in m3u to playlist
+            } /*else if( url.fileName().endsWith( "m3u" ) )  { // append tracks in m3u to playlist
             // just iterate over the lines, if they don't contain # then get a trackForUrl and append to the playlist
                 if( url.isLocalFile() )
                 {
@@ -331,7 +331,7 @@ App::handleCliArgs() //static
                     // TODO fetch remotely
                     // we can't start a KJob because we can't use signals/slots, we're in a static method :-/
                 }
-            } else {
+            }*/ else {
                 list << url;
                 DEBUG_LINE_INFO
             }
