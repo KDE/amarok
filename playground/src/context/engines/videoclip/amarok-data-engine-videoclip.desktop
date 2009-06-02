@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Video Clip Data Engine
+Name[bg]=Ядро за видеоклип
 Name[ca]=Motor de dades de video clip
 Name[et]=Videoklipi andmete mootor
 Name[it]=Motore dati Video Clip
@@ -9,8 +10,10 @@ Name[pa]=ਵੀਡਿਓ ਕਲਿੱਪ ਡਾਟਾ ਇੰਜਣ
 Name[pl]=Moduł danych klipów wideo
 Name[pt]=Motor de Dados de 'Clips' de Vídeo
 Name[pt_BR]=Motor de dados de clipe de vídeo
+Name[ru]=Движок данных для видеоклипов
 Name[sl]=Podatkovni pogon za video posnetke
 Name[sv]=Datagränssnitt för videoklipp
+Name[tr]=Video Klibi Veri Motoru
 Name[uk]=Рушій даних відеокліпів
 Name[wa]=Éndjin d' dinêyes Clip Videyo
 X-KDE-ServiceTypes=Plasma/DataEngine

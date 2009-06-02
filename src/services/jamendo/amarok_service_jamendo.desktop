@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-jamendo-amarok
 Name=Jamendo
+Name[bg]=Услуга Jamendo
 Name[pa]=ਜਾਮੀਂਡੋ
 Name[x-test]=xxJamendoxx
 Comment=Listen to and download music uploaded by independent artists

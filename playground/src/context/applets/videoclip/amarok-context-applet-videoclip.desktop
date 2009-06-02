@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Videoclip
+Name[bg]=Видеоклип
 Name[ca]=Vídeoclip
 Name[et]=Videoklipp
 Name[km]=ឈុត​វីដេអូ
@@ -7,8 +8,10 @@ Name[pa]=ਵੀਡਿਓਕਲਿੱਪ
 Name[pl]=Klip Wideo
 Name[pt]='Clip' de Vídeo
 Name[pt_BR]=Clipe de vídeo
+Name[ru]=Видеоклип
 Name[sl]=Video posnetek
 Name[sv]=Videoklipp
+Name[tr]=Video Klibi
 Name[uk]=Відеокліп
 Name[wa]=Clip videyo
 Type=Service
