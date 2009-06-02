@@ -48,6 +48,7 @@ Scrobbler::~Scrobbler()
     delete m_handshake;
     delete m_np;
     delete m_submitter;
+    delete m_netEvent;
 }
 
 
