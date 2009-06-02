@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.1.1
   FEATURES:
+    * Option to hide the context view.
     * Applets are now laid out according to two criteria: either fixed height
       or flowing to fill the CV. No more slivers of applets visible at the
       bottom.
