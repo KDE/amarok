@@ -570,6 +570,9 @@ void App::applySettings( bool firstTime )
         PERF_LOG( "done cover handling" )
     }
 
+    // show or hide CV
+    if( mainWindow() )
+        mainWindow()->hideContextView( AmarokConfig::hideContextView() );
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME

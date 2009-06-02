@@ -74,6 +74,11 @@
         <whatsthis>Enable/Disable tray icon for Amarok.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="HideContextView" type="Bool">
+        <label>Whether to hide the context view.</label>
+        <whatsthis>Enable/Disable context view in Amarok.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Animate Tray Icon" type="Bool">
         <label>Whether to animate the systray icon</label>
         <whatsthis>Enable/Disable tray icon animation.</whatsthis>
@@ -178,10 +183,6 @@
     </entry>
     <entry key="Show Album Art" type="Bool">
         <label>Show Album art in the Collection Browser</label>
-        <default>true</default>
-    </entry>
-    <entry key="Show Context View" type="Bool">
-        <label>Show the Context View</label>
         <default>true</default>
     </entry>
 </group>

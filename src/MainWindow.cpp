@@ -334,10 +334,8 @@ MainWindow::createContextView( Plasma::Containment *containment )
     m_contextView->showHome();
     PERF_LOG( "ContexView created" )
 
-
-    KConfigGroup config = Amarok::config();
-    bool show = config.readEntry( "Show Context View", true );
-    showContextView( show );
+    bool hide = AmarokConfig::hideContextView();
+    hideContextView( hide );
 }
 
 void
@@ -989,18 +987,18 @@ PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()
 void MainWindow::toggleContectView()
 {
     if( m_contextWidget->isVisible() )
-        showContextView( false );
+        hideContextView( false );
     else
-        showContextView( true );
+        hideContextView( true );
 }
 
-void MainWindow::showContextView( bool visible )
+void MainWindow::hideContextView( bool hide )
 {
     DEBUG_BLOCK
-    if ( visible )
-        m_contextWidget->show();
-    else
+    if ( hide )
         m_contextWidget->hide();
+    else
+        m_contextWidget->show();
 }
 
 namespace The {
