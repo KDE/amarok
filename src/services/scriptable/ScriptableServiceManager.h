@@ -90,6 +90,8 @@ class ScriptableServiceManager : public QObject
         void setIcon( const QString &serviceName, const QPixmap &icon );
 
         void setEmblem( const QString &serviceName, const QPixmap &emblem );
+        
+        void setScalableEmblem( const QString &serviceName, const QString &emblemPath );
 
         void setCurrentInfo( const QString &serviceName, const QString &info );
 

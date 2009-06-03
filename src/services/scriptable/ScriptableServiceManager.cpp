@@ -143,6 +143,19 @@ void ScriptableServiceManager::setEmblem( const QString & serviceName, const QPi
     emit( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
+
+void ScriptableServiceManager::setScalableEmblem ( const QString& serviceName, const QString& emblemPath )
+{
+    if ( !m_serviceMap.contains( serviceName ) ) {
+        //invalid service name
+        return;
+    }
+    
+    m_serviceMap[serviceName]->setCustomScalableEmblem( emblemPath );
+    emit( serviceUpdated( m_serviceMap[serviceName] ) );
+}
+
+
 ScriptableService * ScriptableServiceManager::service(const QString &name)
 {
     

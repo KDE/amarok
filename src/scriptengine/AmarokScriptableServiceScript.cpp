@@ -251,6 +251,11 @@ void ScriptableServiceScript::setEmblem( const QPixmap &emblem )
     The::scriptableServiceManager()->setEmblem( m_serviceName, emblem );
 }
 
+void ScriptableServiceScript::setScalableEmblem ( const QString& emblemPath )
+{
+    The::scriptableServiceManager()->setScalableEmblem( m_serviceName, emblemPath );
+}
+
 void ScriptableServiceScript::setCurrentInfo( const QString &infoHtml )
 {
     The::scriptableServiceManager()->setCurrentInfo( m_serviceName, infoHtml );

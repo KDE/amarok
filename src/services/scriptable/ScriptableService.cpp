@@ -109,6 +109,11 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             else
                 track->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
 
+            if ( !m_customScalableEmblem.isEmpty() )
+                track->setServiceScalableEmblem( m_customScalableEmblem );
+            else
+                track->setServiceEmblem( KStandardDirs::locate( "data", "amarok/images/emblem-scripted-scalable.svgz" ) );
+            
             if ( !albumOverride.isEmpty() )
                 track->setAlbumName( albumOverride );
             if ( !artistOverride.isEmpty() )
@@ -145,6 +150,11 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                 album->setServiceEmblem( m_customEmblem );
             else
                 album->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+
+            if ( !m_customScalableEmblem.isEmpty() )
+                album->setServiceScalableEmblem( m_customScalableEmblem );
+            else
+                album->setServiceEmblem( KStandardDirs::locate( "data", "amarok/images/emblem-scripted-scalable.svgz" ) );
             
             return addAlbum( album );
             
@@ -166,6 +176,12 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                 artist->setServiceEmblem( m_customEmblem );
             else
                 artist->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+
+            if ( !m_customScalableEmblem.isEmpty() )
+                artist->setServiceScalableEmblem( m_customScalableEmblem );
+            else
+                artist->setServiceEmblem( KStandardDirs::locate( "data", "amarok/images/emblem-scripted-scalable.svgz" ) );
+
             
             return addArtist( artist );
             
@@ -187,6 +203,12 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                 genre->setServiceEmblem( m_customEmblem );
             else
                 genre->setServiceEmblem( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-scripted.png" ) ) );
+
+            if ( !m_customScalableEmblem.isEmpty() )
+                genre->setServiceScalableEmblem( m_customScalableEmblem );
+            else
+                genre->setServiceEmblem( KStandardDirs::locate( "data", "amarok/images/emblem-scripted-scalable.svgz" ) );
+
             
             return addGenre( genre );
             
@@ -371,6 +393,20 @@ QPixmap ScriptableService::customEmblem()
 {
     return m_customEmblem;
 }
+
+
+QString ScriptableService::customScalableEmblem()
+{
+    return m_customScalableEmblem;
+}
+
+
+void ScriptableService::setCustomScalableEmblem ( const QString& emblemPath )
+{
+    m_customScalableEmblem = emblemPath;
+}
+
+
 
 void ScriptableService::setCurrentInfo( const QString & info )
 {

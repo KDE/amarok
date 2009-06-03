@@ -75,6 +75,10 @@ public:
     void setCustomEmblem( const QPixmap &emblem );
     QPixmap customEmblem();
 
+    
+    void setCustomScalableEmblem( const QString &emblemPath );
+    QString customScalableEmblem();
+    
     void setCurrentInfo( const QString & info );
 
     int levels() { return m_levels; }
@@ -114,6 +118,7 @@ private:
     ScriptableServiceGenreIdMap m_ssGenreIdMap;
 
     QPixmap m_customEmblem;
+    QString m_customScalableEmblem;
     
 };
 

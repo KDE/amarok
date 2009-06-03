@@ -110,6 +110,7 @@ class ScriptableServiceScript : public QObject, public QScriptable
 
         void setIcon( const QPixmap &icon );
         void setEmblem( const QPixmap &icon );
+        void setScalableEmblem( const QString &emblemPath );
 
     private:
         QScriptEngine* m_scriptEngine;
