@@ -91,7 +91,11 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
         if ( orientation() == Qt::Horizontal && !rect.contains( e->pos() ) )
         {
             if ( !m_outside )
+            {
                 QSlider::setValue( m_prevValue );
+                //if mouse released outside of slider, emit sliderMoved to previous value
+                emit sliderMoved( m_prevValue );
+            }
             m_outside = true;
         }
         else
