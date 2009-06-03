@@ -210,17 +210,17 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCou
     {
         featuring = false;
         trackArtists.clear();
-        if( artist.contains( " featuring " ) )
+        if( artist.contains( "featuring" ) )
         {
             featuring = true;
             trackArtists = artist.split( "featuring" );
         }
-        else if( artist.contains( " feat. " ) )
+        else if( artist.contains( "feat." ) )
         {
             featuring = true;
             trackArtists = artist.split( "feat." );
         }
-        else if( artist.contains( " f. " ) )
+        else if( artist.contains( "f." ) )
         {
             featuring = true;
             trackArtists = artist.split( "f." );
