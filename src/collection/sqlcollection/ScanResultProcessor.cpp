@@ -204,30 +204,32 @@ QString
 ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCount ) const
 {
     QMap<QString, int> artistCount;
+    bool featuring;
+    QStringList trackArtists;
     foreach( const QString &artist, artists )
     {
-        //this needs to be improved
-        if( artist.contains( "featuring" ) )
+        featuring = false;
+        trackArtists.clear();
+        if( artist.contains( " featuring " ) )
         {
-            QStringList trackArtists = artist.split( "featuring" );
-            //always use the first artist
-            QString tmp = trackArtists[0].simplified();
-            if( tmp.isEmpty() )
-            {
-                //TODO error handling
-            }
-            else
-            {
-                if( artistCount.contains( tmp ) )
-                    artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
-                else
-                    artistCount.insert( tmp, 1 );
-            }
+            featuring = true;
+            trackArtists = artist.split( "featuring" );
         }
-        else if( artist.contains( "feat." ) )
+        else if( artist.contains( " feat. " ) )
         {
-            //FIXME code duplication, refactor!
-            QStringList trackArtists = artist.split( "feat." );
+            featuring = true;
+            trackArtists = artist.split( "feat." );
+        }
+        else if( artist.contains( " f. " ) )
+        {
+            featuring = true;
+            trackArtists = artist.split( "f." );
+        }
+
+        //this needs to be improved
+
+        if( featuring )
+        {
             //always use the first artist
             QString tmp = trackArtists[0].simplified();
             if( tmp.isEmpty() )
