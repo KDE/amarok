@@ -28,23 +28,6 @@ Importer.loadQtBinding( "qt.xml" );
 
 xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
 
-
-function escapeString( str )
-{
-    if( str.indexOf( "&amp;" ) == -1 )
-        str = str.replace( '&', "&amp;" );
-    if( str.indexOf( "&lt;" ) == -1 )
-        str = str.replace( '<', "&lt;" );
-    if( str.indexOf( "&gt;" ) == -1 )
-        str = str.replace( '>', "&gt;" );
-    if( str.indexOf( "&quot;" ) == -1 )
-        str = str.replace( "\"", "&quot;" );
-    if( str.indexOf( "&apos;" ) == -1 )
-        str = str.replace( "'", "&apos;" );
-
-    return str;
-}
-
 function onFinished( dat )
 {
     try
@@ -57,9 +40,9 @@ function onFinished( dat )
             doc.setContent( dat );
             parsedContent = doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text();
             parsedContent = parsedContent.replace( "<lyrics>", "" ).replace( "</lyrics>", "" ); // some lyrics have 2 lyrics in them...wtf?
-            newxml = xml.replace( "{artist}", escapeString( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) ); 
-            newxml = newxml.replace( "{title}", escapeString( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
-            newxml = newxml.replace( "{lyrics}", escapeString( parsedContent ) );
+            newxml = xml.replace( "{artist}", Amarok.Lyrics.escape( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) );
+            newxml = newxml.replace( "{title}", Amarok.Lyrics.escape( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
+            newxml = newxml.replace( "{lyrics}", Amarok.Lyrics.escape( parsedContent ) );
             //Amarok.debug( "showing lyrics:" + newxml );
             Amarok.Lyrics.showLyrics( newxml );
         }

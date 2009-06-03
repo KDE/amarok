@@ -41,6 +41,8 @@ public slots:
     void showLyricsHtml( const QString& lyrics ) const;
     void showLyricsError( const QString& error ) const;
 
+    QString escape( const QString& str );
+
     void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
     QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
     QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
