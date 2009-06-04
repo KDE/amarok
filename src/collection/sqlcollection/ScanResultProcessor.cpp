@@ -161,7 +161,6 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
-    //if more than 60 files are in the dir, use the artist of each track as albumartist
     //if all tracks have the same artist, use it as albumartist
     //try to find the albumartist A: tracks must have the artist A or A feat. B (and variants)
     //if no albumartist could be found, it's a compilation
@@ -178,7 +177,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         if( row.value( Field::ALBUM ).toString() != album )
             multipleAlbums = true;
     }
-    if( multipleAlbums || album.isEmpty() || data.count() > 60 || artists.size() == 1 )
+    if( multipleAlbums || album.isEmpty() || artists.size() == 1 )
     {
         foreach( const QVariantMap &row, data )
         {
