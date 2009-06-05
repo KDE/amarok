@@ -566,6 +566,9 @@ ScriptManager::loadScript( const QString& path )
 {
     DEBUG_BLOCK
 
+	QStringList SupportAPIVersion;
+	SupportAPIVersion << "API V1.0.0" << "API V1.0.1";
+	QString ScriptVersion;
     if( !path.isEmpty() )
     {
         QFileInfo info( path );
@@ -578,8 +581,21 @@ ScriptManager::loadScript( const QString& path )
             item.info = KPluginInfo( specPath );
             if ( !item.info.isValid() ) return false;
             if ( ( item.info.name() == "" ) || ( item.info.version() == "" ) || ( item.info.category() == "" ) ) return false;
+
+            //assume it is API V1.0.0 if there is no "API V" prefix found
+            if ( !item.info.dependencies().at(0).startsWith("API V") )
+                ScriptVersion = "API V1.0.0";
+            else
+                ScriptVersion = item.info.dependencies().at(0);
+
+            if ( !SupportAPIVersion.contains( ScriptVersion ) )
+            {
+                debug() << "script API version not compatible with Amarok.";
+                return false;
+            }
+
             if ( m_scripts.contains( item.info.name() ) ) return false; //check if script is already loaded...
-            debug() << "script info:" << item.info.name() << " " << item.info.version() << " " << item.info.category();
+            debug() << "script info:" << item.info.name() << " " << item.info.version() << " " << item.info.category() << " " << item.info.dependencies().at(0);
             item.info.setConfig( KGlobal::config()->group( item.info.name() ) );
             item.url = url;
             item.running = false;
