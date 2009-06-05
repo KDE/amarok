@@ -1154,7 +1154,7 @@ TagDialog::readMultipleTracks()
 
     ui->trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %1 files", songCount ) );
 
-    const QString body = "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>";
+    const QString body = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
     QString statisticsText = "<table>";
 
     statisticsText += body.arg( i18n( "Rated Songs:" ) , QString::number( ratingCount )  );
