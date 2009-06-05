@@ -711,37 +711,40 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //                 if( images )
 //                     loadImagesFromTag( *file->ID3v2Tag(), *images );
             }
-            TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
-            const char* buf = metaData.toCString();
-            size_t len = strlen( buf );
-            int res = 0;
-            chardet_t det = NULL;
-            char encoding[CHARDET_MAX_ENCODING_NAME];
-            chardet_create( &det );
-            res = chardet_handle_data( det, buf, len );
-            chardet_data_end( det );
-            res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
-            chardet_destroy( det );
+			if( tag )
+			{
+                TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
+                const char* buf = metaData.toCString();
+                size_t len = strlen( buf );
+                int res = 0;
+                chardet_t det = NULL;
+                char encoding[CHARDET_MAX_ENCODING_NAME];
+                chardet_create( &det );
+                res = chardet_handle_data( det, buf, len );
+                chardet_data_end( det );
+                res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
+                chardet_destroy( det );
 
-            QString track_encoding = encoding;
+                QString track_encoding = encoding;
 
-            if ( res == CHARDET_RESULT_OK )
-            {
-                /*  for further infomation please refer to:
-                 http://doc.trolltech.com/4.4/qtextcodec.html
-                 http://www.mozilla.org/projects/intl/chardet.html
-                 */
-                if ( ( !track_encoding.isEmpty() ) && ( track_encoding.toUtf8() != "UTF-8" ) )
+                if ( res == CHARDET_RESULT_OK )
                 {
-                    QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
-                    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-                    QTextCodec::setCodecForCStrings( utf8codec );
-                    if ( codec != 0 )
+                    /*  for further infomation please refer to:
+                     http://doc.trolltech.com/4.4/qtextcodec.html
+                     http://www.mozilla.org/projects/intl/chardet.html
+                     */
+                    if ( ( !track_encoding.isEmpty() ) && ( track_encoding.toUtf8() != "UTF-8" ) )
                     {
-                        attributes["title"] = codec->toUnicode( strip( tag->title() ).toLatin1() );
-                        attributes["artist"] = codec->toUnicode( strip( tag->artist() ).toLatin1() );
-                        attributes["album"] = codec->toUnicode( strip( tag->album() ).toLatin1() );
-                        attributes["comment"] = codec->toUnicode( strip( tag->comment() ).toLatin1() );
+                        QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
+                        QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
+                        QTextCodec::setCodecForCStrings( utf8codec );
+                        if ( codec != 0 )
+                        {
+                            attributes["title"] = codec->toUnicode( strip( tag->title() ).toLatin1() );
+                            attributes["artist"] = codec->toUnicode( strip( tag->artist() ).toLatin1() );
+                            attributes["album"] = codec->toUnicode( strip( tag->album() ).toLatin1() );
+                            attributes["comment"] = codec->toUnicode( strip( tag->comment() ).toLatin1() );
+                        }
                     }
                 }
             }

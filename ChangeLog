@@ -18,6 +18,7 @@ VERSION 2.1.1
     * Show info box in CV if no applets are visible.
 
   BUGFIXES:
+    * Fixed non-UTF8 MPEG tag wrongly shown.
     * Fix problem with supported filetypes not being copied over to MTP device
       (BR 186835)
     * Fix problem with playlist names containing '/' not being saved (BR 975995)
