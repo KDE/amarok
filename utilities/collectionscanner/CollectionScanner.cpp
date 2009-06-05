@@ -711,8 +711,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //                 if( images )
 //                     loadImagesFromTag( *file->ID3v2Tag(), *images );
             }
-			if( tag )
-			{
+            if( tag )
+            {
                 TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
                 const char* buf = metaData.toCString();
                 size_t len = strlen( buf );
