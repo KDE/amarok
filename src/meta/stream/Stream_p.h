@@ -28,6 +28,7 @@
 
 #include <QList>
 #include <QObject>
+#include <QPixmap>
 
 using namespace MetaStream;
 
@@ -168,8 +169,7 @@ public:
     StreamAlbum( MetaStream::Track::Private *dptr )
         : Meta::Album()
         , d( dptr )
-    {
-    }
+    {}
 
     bool isCompilation() const
     {
@@ -203,16 +203,33 @@ public:
         return name();
     }
 
-    QPixmap image( int size )
+    void setImage( const QPixmap &pixmap )
     {
-        return Meta::Album::image( size );
+        m_cover = pixmap;
     }
 
+    QPixmap image( int size )
+    {
+        if ( m_cover.isNull() )
+            return Meta::Album::image( size );
+
+        //only cache during session
+        if ( m_coverSizeMap.contains( size ) )
+            return m_coverSizeMap.value( size );
+
+        QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
+        m_coverSizeMap.insert( size, scaled );
+        return scaled;
+    }
+ 
     bool operator==( const Meta::Album &other ) const {
         return name() == other.name();
     }
 
     MetaStream::Track::Private * const d;
+    QMap <int, QPixmap> m_coverSizeMap;
+    QPixmap m_cover;
 };
 
 
