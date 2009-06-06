@@ -1,6 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
+ * copyright   : (C) 2009 Simon Esneault <simon.esneault@gmail.com>        *
  **************************************************************************/
 
 /***************************************************************************
@@ -27,6 +26,7 @@
 // Standard
 #include <sstream>
 
+#define DEBUG_PREFIX "VideoclipEngine"
 
 using namespace Context;
 
@@ -36,6 +36,9 @@ VideoclipEngine::VideoclipEngine( QObject* parent, const QList<QVariant>& /*args
         , m_jobYoutube( 0 )
         , m_jobDailymotion( 0 )
         , m_jobVimeo( 0 )
+        , m_nbYoutube( -1 )
+        , m_nbDailymotion( -1 )
+        , m_nbVimeo( -1 )
         , m_nbJobs( 0 )
         , m_nbVidsPerService( 7 )
         , m_requested( true )
@@ -47,6 +50,9 @@ VideoclipEngine::VideoclipEngine( QObject* parent, const QList<QVariant>& /*args
 VideoclipEngine::~VideoclipEngine()
 {
     DEBUG_BLOCK
+    foreach ( VideoInfo *info, m_video )
+        delete info;
+    m_video.clear();
 }
 
 QStringList VideoclipEngine::sources() const
@@ -97,9 +103,12 @@ void VideoclipEngine::update()
         m_length = currentTrack->length();
 
         // Clean stuff
-        removeAllData( "videoclip" );
         foreach ( VideoInfo *info, m_video )
             delete info;
+            
+        m_nbYoutube=m_nbDailymotion=m_nbVimeo=-1;
+            
+        removeAllData( "videoclip" );
         m_video.clear();
         m_nbJobs = 0;
         
@@ -126,18 +135,53 @@ void VideoclipEngine::update()
     }
 }
 
+bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
+{
+    item->relevancy=0;
+    // title contain artist AND title
+    if ( item->title.contains( m_artist, Qt::CaseInsensitive )) 
+        item->relevancy+=10;
+    else
+        item->relevancy-=10;
+
+    if ( item->title.contains( m_title, Qt::CaseInsensitive ) )
+        item->relevancy+=10;
+    else
+        item->relevancy-=10;                
+
+    // if it contains both of them : good we add 30 more points
+    if (item->relevancy == 20 )
+        item->relevancy+=30;
+
+    bool bArtistDesc = item->desc.contains( m_artist, Qt::CaseInsensitive );
+    bool bTitleDesc = item->desc.contains( m_title, Qt::CaseInsensitive );
+
+    // if we have both of them in the description, good !
+    if ( bArtistDesc && bTitleDesc )
+        item->relevancy+=20;
+
+    // time to remove bad choices. If we don't have artist nor thant title in the name of the vid, 
+    // and no artist in the desc, simply remove this item.
+    if ( !bArtistDesc && item->relevancy==-20 ) 
+        return false;
+    else
+        return true;
+}
+
 void VideoclipEngine::resultYoutube( KJob* job )
 {
-    DEBUG_BLOCK
+
     if ( !m_jobYoutube ) //track changed while we were fetching
         return;
 
+    DEBUG_BLOCK
     if ( job->error() != KJob::NoError && job == m_jobYoutube ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Youtube information: %1", job->errorString() ) );
         debug() << "Unable to retrieve Youtube information: " << job->errorString();
         m_jobYoutube = 0; // clear job
-        return;
+        m_nbYoutube = 0; //say that we didn't fetch any youtube songs (which is true !)
+        resultFinalize();
     }
     // Get the result
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
@@ -146,6 +190,7 @@ void VideoclipEngine::resultYoutube( KJob* job )
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "entry" );
 
     QTime tim, time( 0, 0 );
+    m_nbYoutube = 0;
     for ( uint i = 0; i < xmlNodeList.length() ; i++ )
     {
         QDomNode xmlNode = xmlNodeList.at( i );  
@@ -162,23 +207,36 @@ void VideoclipEngine::resultYoutube( KJob* job )
         item->source = QString( "youtube" );
         item->views = xmlNode.firstChildElement( "yt:statistics" ).attribute( "viewCount" );
    
-        // Push the VideoInfo in the main list
-        m_video << item;   
-   
-        // Send a job to get the downloadable link
-        KJob *jobu = KIO::storedGet( KUrl( item->url ), KIO::NoReload, KIO::HideProgressInfo );
-        connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultYoutubeGetLink( KJob* ) ) );
-        
-        // Send a job to get every pixmap
-        KJob* job = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
-        connect( job, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
-        m_nbJobs+=2;
+        // only add if it's valid (no useless jobs)
+        if ( isVideoInfoValid(item) )
+        {   
+            // Insert the item in the list
+            m_video << item;   
+            
+            // Send a job to get the downloadable link
+            KJob *jobu = KIO::storedGet( KUrl( item->url ), KIO::NoReload, KIO::HideProgressInfo );
+            connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultYoutubeGetLink( KJob* ) ) );
+            m_nbJobs++;
+            connect( jobu, SIGNAL( finished( KJob* ) ), SLOT( finishHandler( KJob* ) ) );
+
+            // Send a job to get every pixmap
+            KJob* job = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
+            connect( job, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
+            m_nbJobs++;
+            connect( job, SIGNAL( finished( KJob* ) ), SLOT( finishHandler( KJob* ) ) );
+        }
+        else
+        {
+            delete item;
+            m_nbYoutube--;       
+        }
     }
+    m_nbYoutube += xmlNodeList.length();
     // Check how many clip we've find and send message if all the job are finished but no clip were find
-    debug() << "Youtube fetch : " << xmlNodeList.length() << " songs ";
+    debug() << "Youtube fetch : " << m_nbYoutube << " songs ";
     
-    resultFinalize();
     m_jobYoutube = 0;
+    resultFinalize();
 }
 
 void VideoclipEngine::resultYoutubeGetLink( KJob* job )
@@ -187,7 +245,7 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
     if ( job->error() != KJob::NoError )
     {
     //    debug() << "VideoclipEngine | Unable to retrieve Youtube direct videolink: " ;
-        job=0;
+        job=0;		
         return;
     }
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
@@ -201,30 +259,27 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
     if ( page.indexOf( regex ) != -1 )
     {
         page = page.mid( page.indexOf( regex ) + regex.size() );
-        vidlink = url + QString( "&t=" ) + page.mid( 0, page.indexOf( "&" ) );
-        m_nbJobs-=1;        
+        vidlink = url + QString( "&t=" ) + page.mid( 0, page.indexOf( "&" ) );        
     }
     
     foreach (VideoInfo *item, m_video )
         if ( item->url == url2 )
             item->videolink = vidlink;
-
-    resultFinalize();
     job = 0;
 }
 
 void VideoclipEngine::resultDailymotion( KJob* job )
 {
-	DEBUG_BLOCK
-	
     if ( !m_jobDailymotion ) 
         return; //track changed while we were fetching
-    
+    DEBUG_BLOCK
     if ( job->error() != KJob::NoError && job == m_jobDailymotion ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Dailymotion information: %1", job->errorString() ) );
         debug() << "Unable to retrieve Dailymotion information: " << job->errorString();
         m_jobDailymotion = 0; // clear job
+        m_nbDailymotion = 0; //say that we didn't fetch any youtube songs (which is true !)
+        resultFinalize();
         return;
     }
     // Get the result
@@ -233,9 +288,10 @@ void VideoclipEngine::resultDailymotion( KJob* job )
     xmlDoc.setContent( storedJob->data() );
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "item" );
     
-    int nb = m_nbVidsPerService < (int)xmlNodeList.length() ? m_nbVidsPerService : (int)xmlNodeList.length();
+    int tmp = m_nbVidsPerService < (int)xmlNodeList.length() ? m_nbVidsPerService : (int)xmlNodeList.length();
+    m_nbDailymotion = tmp;
     QTime tim, time( 0, 0 );
-    for ( int i = 0; i < nb; i++ )
+    for ( int i = 0; i < tmp; i++ )
     {
         QDomNode xmlNode = xmlNodeList.at( i );
         VideoInfo *item = new VideoInfo;
@@ -250,40 +306,49 @@ void VideoclipEngine::resultDailymotion( KJob* job )
         item->desc = xmlNode.firstChildElement( "itunes:summary" ).text();
         item->rating = xmlNode.firstChildElement( "dm:videorating" ).text().toFloat();
         item->source = QString( "dailymotion" );
-        
         // remove one line makes it easier
         xmlNode.firstChildElement( "media:group" ).removeChild( xmlNode.firstChildElement( "media:group" ).firstChildElement( "media:content" ) );
         item->videolink = QString (xmlNode.firstChildElement( "media:group" ).firstChildElement( "media:content" ).attribute( "url" ) ).replace( "80x60" , "320x240" );
 
-        // Push the VideoInfo in the main list
-        m_video << item;
+        // only add if it's valid (no useless jobs)
+        if ( isVideoInfoValid(item) )
+        {   
+            // Push the VideoInfo in the main list
+            m_video << item;
 
-        // Send a job to get the pixmap
-        KJob* job = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
-        connect( job, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
-        m_nbJobs+=1;
+            // Send a job to get the pixmap
+            KJob* job = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
+            connect( job, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
+            m_nbJobs++;
+            connect( job, SIGNAL( finished( KJob* ) ), SLOT( finishHandler( KJob* ) ) );
+            
+        }
+        else
+        {
+            delete item;
+            m_nbDailymotion--;
+        }
     }
     
     // Check how many clip we've find and send message if all the job are finished but no clip were find
-    debug() << "Dailymotion fetch : " << nb << " songs ";
+    debug() << "Dailymotion fetch : " << m_nbDailymotion << " songs ";
 
-    resultFinalize();
     m_jobDailymotion = 0;
+    resultFinalize();
 }
 
 void VideoclipEngine::resultVimeo( KJob* job )
 {
-    DEBUG_BLOCK
-	
 	if ( !m_jobVimeo ) 
         return; //track changed while we were fetching
-
-
+    DEBUG_BLOCK
     if ( job->error() != KJob::NoError && job == m_jobVimeo ) // It's the correct job but it errored out
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve Vimeo information: %1", job->errorString() ) );
         debug() << "Unable to retrieve Vimeo information: " << job->errorString();
         m_jobVimeo = 0; // clear job
+        m_nbVimeo = 0; // say that we didn't fetch any vimeo songs (which is true !)
+        resultFinalize();
         return;
     }
     // Get the result
@@ -291,10 +356,10 @@ void VideoclipEngine::resultVimeo( KJob* job )
     QString page = storedJob->data();
     
     QString regex( "<div class=\"title\"><a href=\"/" );
-    int count = 0;
-    while ( ( page.indexOf( regex ) != -1) && ( count < m_nbVidsPerService ) )
+    m_nbVimeo = 0;
+    while ( ( page.indexOf( regex ) != -1) && ( m_nbVimeo < m_nbVidsPerService ) )
     {
-        count++;
+        m_nbVimeo++;
         page = page.mid( page.indexOf( regex ) + regex.size() );
         QString id = QString( page.mid( 0, page.indexOf( "\"" ) ) ) ;
 
@@ -302,20 +367,22 @@ void VideoclipEngine::resultVimeo( KJob* job )
         KUrl vimeoURL( QString( "http://vimeo.com/api/clip/" ) + id + QString( ".xml" ) );
         KJob *jobVimeo = KIO::storedGet( vimeoURL, KIO::Reload, KIO::HideProgressInfo );
         connect( jobVimeo, SIGNAL( result( KJob* ) ), SLOT( resultVimeoBis( KJob* ) ) );
-        m_nbJobs+=1;
+        m_nbJobs++;
+        connect( jobVimeo, SIGNAL( finished( KJob* ) ), SLOT( finishHandler( KJob* ) ) );
     }
-    debug() << "Vimeo fetch : " << count << " songs ";
-    resultFinalize();
+    debug() << "Vimeo fetch : " << m_nbVimeo << " songs ";
     m_jobVimeo = 0;
+    resultFinalize();    
 }
 
 void VideoclipEngine::resultVimeoBis( KJob *job )
 {   
- //   DEBUG_BLOCK
+//    DEBUG_BLOCK
     if ( job->error() != KJob::NoError )
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve one Vimeo song information: %1", job->errorString() ) );
-        job = 0; // clear job
+        job = 0; // clear job      
+        resultFinalize();        
         return;
     }
     // Get the result
@@ -336,28 +403,40 @@ void VideoclipEngine::resultVimeoBis( KJob *job )
     item->source = QString( "vimeo" );
     item->rating = 0;
     
-    // Push the VideoInfo in the main list
-    m_video << item;
-    m_nbJobs-=1;
-   // send a job to get the full link
-    KJob *jobVimeoBis = KIO::storedGet( QString( "http://www.vimeo.com/moogaloop/load/clip:" ) + xmlNode.firstChildElement( "clip_id" ).text(), 
-        KIO::Reload, KIO::HideProgressInfo );
-    connect( jobVimeoBis, SIGNAL( result( KJob* ) ), SLOT( resultVimeoGetLink( KJob* ) ) );
-    
-    // Send a job to get every pixmap
-    KJob* jab = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
-    connect( jab, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
-    m_nbJobs+=2;
+    // only add if it's valid (no useless jobs)
+    if ( isVideoInfoValid(item) )
+    {  
+        // Push the VideoInfo in the main list
+        m_video << item;
+        // send a job to get the full link
+        KJob *jobVimeoBis = KIO::storedGet( QString( "http://www.vimeo.com/moogaloop/load/clip:" ) + xmlNode.firstChildElement( "clip_id" ).text(), 
+            KIO::Reload, KIO::HideProgressInfo );
+        connect( jobVimeoBis, SIGNAL( result( KJob* ) ), SLOT( resultVimeoGetLink( KJob* ) ) );
+        m_nbJobs++;
+        connect( jobVimeoBis, SIGNAL( finished( KJob* ) ), SLOT( finishHandler( KJob* ) ) );
+        
+        // Send a job to get every pixmap
+        KJob* jab = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
+        connect( jab, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
+        m_nbJobs++;
+        connect( jab, SIGNAL( finished( KJob* ) ), SLOT( finishHandler( KJob* ) ) );
+    }
+    else
+    {
+        delete item;
+        m_nbVimeo--;
+    }
     job = 0;
+    resultFinalize();    
 }
 
 void VideoclipEngine::resultVimeoGetLink( KJob *job )
 {
-//   DEBUG_BLOCK
+//  DEBUG_BLOCK
     if ( job->error() != KJob::NoError )
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve one Vimeo song information: %1", job->errorString() ) );
-        job = 0; // clear job
+        job = 0; // clear job    
         return;
     }
     // Get the result
@@ -375,70 +454,61 @@ void VideoclipEngine::resultVimeoGetLink( KJob *job )
       
     foreach (VideoInfo *item, m_video )
         if ( item->url == urlclean )
-        {
             item->videolink = vidlink;
-            m_nbJobs-=1; 
-        }
-    job = 0;
+
+    job = 0; 
 }
 
 void VideoclipEngine::resultImageFetcher( KJob *job )
 {
+ //   DEBUG_BLOCK
     if ( job->error() != KJob::NoError )
     {
         setData( "videoclip", "message", i18n( "Unable to retrieve an image information") );
-        m_nbJobs-=1;
         job = 0; // clear job
         return;
     }
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     QString url( storedJob->url().toMimeDataString() );
 
-    QPixmap pix;
-    if ( pix.loadFromData( storedJob->data() ) ) { ; }
+    QPixmap *pix = new QPixmap;
+    if ( pix->loadFromData( storedJob->data() ) ) { ; }
     
     foreach ( VideoInfo *item, m_video )
         if (item->coverurl == url )
-        {
-            item->cover =  pix ;
-            m_nbJobs-=1;
-        }
-    
-    resultFinalize();
+            item->cover = pix ;
     job = 0;
 }
 
+void VideoclipEngine::finishHandler( KJob *job )
+{
+ //   DEBUG_BLOCK 
+ //   KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+ //   QString url( storedJob->url().toMimeDataString() );
+ //   debug() <<" url "<<m_nbJobs<<" "<< url;
+    Q_UNUSED( job );
+    m_nbJobs--;
+    resultFinalize();
+}
+
+
 void VideoclipEngine::resultFinalize()
 {
-	//DEBUG_BLOCK
-    if ( m_video.empty() && m_nbJobs == 0)
+    // if 3 websites have been called, but no video :
+    if ( m_nbYoutube==0 && m_nbDailymotion==0 && m_nbVimeo==0 )
     {
- //       debug() << "No Video clip found";
+        DEBUG_BLOCK
+        debug() << "No Video clip found";
         setData( "videoclip", "message", i18n( "No video clip found..." ) );
         return;
     }
-    // Check that all the jobs are finished
-    if ( m_nbJobs == 0 )
-    { 
-  //      debug() << "Fetched : " << m_video.size() << " entries";
-       
-        // Ordering need to be done here   
+    // else if nb job finished and they have been called 
+    else if ( m_nbJobs == 0 && m_nbYoutube!=-1 && m_nbDailymotion!=-1 && m_nbVimeo!=-1 )
+    {      
+        DEBUG_BLOCK
+        // add some more point with stupid criteria
         foreach ( VideoInfo *item, m_video )
         {
-            item->relevancy=0;
-            // title contain artist AND title
-            if ( item->title.contains( m_artist, Qt::CaseInsensitive )) 
-                item->relevancy+=10;
-                
-            if ( item->title.contains( m_title, Qt::CaseInsensitive ) )
-                item->relevancy+=10;
-                
-            if (item->relevancy == 20 )
-                item->relevancy+=30;
-            
-            if ( item->desc.contains( m_artist, Qt::CaseInsensitive ) && item->desc.contains( m_title, Qt::CaseInsensitive ) )
-                item->relevancy+=20;
-               
             if ( item->title.contains( "Official video" , Qt::CaseInsensitive) && !item->title.contains( "non" , Qt::CaseInsensitive) )
                 item->relevancy+=40;
             
@@ -451,10 +521,14 @@ void VideoclipEngine::resultFinalize()
             if ( item->desc.contains( "Promo video" , Qt::CaseInsensitive) )
                 item->relevancy+=30;
             
+            // Danger, MATHS inside
             if ( m_length  != 0 )
                 item->relevancy+= (int)( ( (float)( 1 - abs( m_length - item->length ) / (float)m_length ) ) * 30. ) ;
-
+            
+            item->artist=m_artist;
         }
+        
+        debug() << "VideoClipEngine total Fetched : " << m_video.size() << " entries";
         
         // sort against relevancy
         QList < QPair <int, QString > > sorting;
@@ -476,7 +550,7 @@ void VideoclipEngine::resultFinalize()
                 {
                     
                     QVariant var;
-                    var.setValue<VideoInfo>(*item);
+                    var.setValue<VideoInfo *>(item);
                     setData( "videoclip", QString().setNum(pos) , var );
                     pos++;
                 }
