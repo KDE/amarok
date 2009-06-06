@@ -1,7 +1,8 @@
 /***************************************************************************
- *   Plasma applet for showing video in the context view.                  *
+ *   Plasma applet for showing video from youtube dailymotion and          *
+ *   vimeo in the context view.                                            *
  *                                                                         *
- *   Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>             *
+ *   Copyright 2009 Simon Esneault <simon.esneault@gmail.com>              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -36,19 +37,21 @@ class QGraphicsProxyWidget;
 class QGraphicsWidget;
 class QHBoxLayout;
 
-//! Struct VideoInfo, contain all the info
+//!  Struct VideoInfo, contain all the info vor a video
 struct VideoInfo {
     QString url;        // Url for the browser (http://www.youtube.com/watch?v=153d9tc3Oao )
-    QString title;      
-    QString coverurl;   
+    QString title;      // Name of the video
+    QString coverurl;   // url of the cover
     QString duration;   // formatted as a QString(mm:ss)
     QString desc;       // full description
-    QPixmap cover;      // Image data
-    QString views;      
+    QPixmap * cover;    // Image data
+    QString views;      // number of view of the video
     float rating;       // rating should be beetween 0 to 5
     QString videolink;  // direct video link to the downloadable file
-    QString source;     // "youtub" or "dailymotion" or "vimeo" or whatever
-    int relavancy;      // used to filter and order the files
+    QString source;     // "youtube" or "dailymotion" or "vimeo" or whatever
+    int relevancy;      // used to filter and order the files
+    int length;         // length in seconds 
+    QString artist;     // The artist just to show it in the artist name
 };
 
  /** VideoclipApplet will display videoclip from internet, relatively to the current playing song
@@ -95,7 +98,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 };
 
-Q_DECLARE_METATYPE ( VideoInfo );
+Q_DECLARE_METATYPE ( VideoInfo *);
 K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 
 #endif /* VIDEOCLIP_APPLET_H */

@@ -52,6 +52,7 @@
 #include <QToolButton>
 #include <QScrollArea>
 
+#define DEBUG_PREFIX "VideoclipApplet"
 
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
@@ -72,9 +73,14 @@ VideoclipApplet::init()
 
     // HACK
     m_height = 300;
+    
+    // TODO inherit a phonon VideoWidget to unable mouse interaction (double click full screen etc ...)
     m_videoWidget = new Phonon::VideoWidget();
     m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
     m_videoWidget->hide();
+	// For this we should inherit the videowidget in a separate class
+//	connect(m_videoWidget, SIGNAL( mouseDoubleClickEvent() ), m_videoWidget, SLOT( setFullScreen( m_videoWidget->fullScreen() ) ) );
+	
     Phonon::Path path = Phonon::createPath( m_mediaObject, m_videoWidget );
     if ( !path.isValid() )
         warning() << "Phonon path is invalid.";
@@ -138,10 +144,12 @@ VideoclipApplet::engineNewTrackPlaying()
     if ( m_videoWidget && m_mediaObject && m_mediaObject->hasVideo() )
     {
         debug() << " VideoclipApplet | Show VideoWidget";
+		m_widget->hide();
         m_videoWidget->show();
     }
-    else if( m_videoWidget )
+    else if( m_videoWidget && m_widget )
     {
+		m_widget->show();
         m_videoWidget->hide();
     }
 }
@@ -154,7 +162,10 @@ VideoclipApplet::enginePlaybackEnded( int finalPosition, int trackLength, Playba
     Q_UNUSED( reason )
     
     if( m_videoWidget )
+	{
+		m_widget->show();
         m_videoWidget->hide();
+	}
 }
 
 void 
@@ -169,7 +180,7 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
     m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
     m_videoWidget->setGeometry( QRect(
         pos().toPoint()+QPoint( 2 * standardPadding(), m_headerText->boundingRect().height() + 3 * standardPadding() ),
-        size().toSize()-QSize( 4 * standardPadding(),  m_headerText->boundingRect().height() + 6 * standardPadding() ) ) );
+        size().toSize()-QSize( 4 * standardPadding(),  m_headerText->boundingRect().height() + 5 * standardPadding() ) ) );
 }
 
 
@@ -226,13 +237,11 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         
         // if we get a message, show it
         if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
-        {
 			setBusy( true );
-			
-        }
 		else if ( data.contains( "message" ) )
 		{
 			QLabel *mess = new QLabel( data["message"].toString() );
+            mess->setAlignment(Qt::AlignTop);
             m_layout->addWidget( mess, Qt::AlignTop );
             m_layoutWidgetList.push_back( mess );		
 			setBusy( false );
@@ -243,43 +252,44 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             for (int i=0; i< data.size(); i++ )
             {
                 
-                VideoInfo item = data[ QString().setNum(i) ].value<VideoInfo>() ;
+                VideoInfo *item = data[ QString().setNum(i) ].value<VideoInfo *>() ;
                   // Create a pixmap with nice border
-                QPixmap pix( The::svgHandler()->addBordersToPixmap( item.cover, 5, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
+                QPixmap pix( The::svgHandler()->addBordersToPixmap( *item->cover, 5, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
                 
                 // Prepare the QtoolButon, we will send all the information to the callback via the text
                 QToolButton *icon = new QToolButton();
-                icon->setText( item.videolink + QString (" | ") + item.title + QString (" | ") + item.source);
+                icon->setText( item->videolink + QString (" | ") + item->title + QString (" | ") + item->source 
+                    + QString (" | ") + item->artist);
                 icon->setToolButtonStyle( Qt::ToolButtonIconOnly );
                 icon->setAutoRaise( true );
                 icon->setIcon( QIcon( pix ) );
                 icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
                 icon->resize( pix.size() );
                 icon->setIconSize( pix.size() ) ;
-                icon->setToolTip( QString( "<html><body>" ) + item.desc + QString( "</body></html>" ) );
+                icon->setToolTip( QString( "<html><body>" ) + item->desc + QString( "</body></html>" ) );
 
                 connect ( icon, SIGNAL( clicked( bool ) ), this, SLOT ( appendVideoClip( ) ) );
                 
                 // create link (and resize, no more than 3 lines long)
-                QString title( item.title );
+                QString title( item->title );
                 if ( title.size() > 45 ) title.resize( 45 );
-                QLabel *link = new QLabel( QString( "<html><body><a href=\"" ) + item.url + QString( "\">" ) + title + QString( "</a>" ) );
+                QLabel *link = new QLabel( QString( "<html><body><a href=\"" ) + item->url + QString( "\">" ) + title + QString( "</a>" ) );
                 link->setOpenExternalLinks( true );
                 link->setWordWrap( true );
 
-                QLabel *duration =  new QLabel( item.duration + QString( "<br>" ) + item.views + QString( " views" ) );
+                QLabel *duration =  new QLabel( item->duration + QString( "<br>" ) + item->views + QString( " views" ) );
 
                 KRatingWidget* rating = new KRatingWidget;
-                rating->setRating(( int )( item.rating * 2. ) );
+                rating->setRating(( int )( item->rating * 2. ) );
                 rating->setMaximumWidth(( int )(( width / 3 )*2 ) );
                 rating->setMinimumWidth(( int )(( width / 3 )*2 ) );
 
                 QLabel *webi = new QLabel;
-                if ( item.source == QString( "youtube" ) )
+                if ( item->source == QString( "youtube" ) )
                     webi->setPixmap( *m_pixYoutube );
-                else if ( item.source == QString( "dailymotion" ) )
+                else if ( item->source == QString( "dailymotion" ) )
                     webi->setPixmap( *m_pixDailymotion );
-                else if ( item.source == QString( "vimeo" ) )
+                else if ( item->source == QString( "vimeo" ) )
                     webi->setPixmap( *m_pixVimeo );
 
 
@@ -335,27 +345,13 @@ VideoclipApplet::appendVideoClip( )
         MetaStream::Track *tra = new MetaStream::Track(KUrl( lst.at( 0 ) ) );
         tra->setTitle( lst.at( 1 ) );
         tra->setAlbum( lst.at( 2 ) );
-        tra->setArtist( "stream" );
-		//debug () << "Image size"<<button->iconSize().height();
-        tra->album()->setImage( *m_pixYoutube );
+        tra->setArtist( lst.at( 3 ) );
+        tra->album()->setImage( button->icon().pixmap( button->iconSize().height() ) );
         Meta::TrackPtr track( tra );
-      
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::Append );
     }
 }
-
-
-//     for (int i=0; i<data["title"].toStringList().size();i++)
-//     {
-//             debug() << "VideoclipApplet::title: " << data[ "title" ].toStringList().at(i);
-//             debug() << "VideoclipApplet::id: " << data[ "id" ].toStringList().at(i);
-//             debug() << "VideoclipApplet::cover: " << data[ "cover" ].toStringList().at(i);
-//             debug() << "VideoclipApplet::duration: " << data[ "duration" ].toStringList().at(i);
-//             debug() << "VideoclipApplet::views: " << data[ "views" ].toStringList().at(i);
-//             debug() << "VideoclipApplet::description: " << data[ "description" ].toStringList().at(i);
-//     }
-
 
 #include "VideoclipApplet.moc"
 
