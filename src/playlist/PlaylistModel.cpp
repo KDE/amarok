@@ -805,6 +805,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     if ( cmds.size() == m_items.size() )
     {
         clearCommand();
+        m_totalLength = 0;
         return;
     }
 
