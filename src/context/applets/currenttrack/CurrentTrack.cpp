@@ -494,25 +494,61 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         // draw label text
         p->save();
         // draw "Play count"
+        QString playCountText = i18n( "Play count" );
+        QString scoreText = i18n( "Score" );
+        QString lastPlayedText = i18n( "Last Played" );
+        
+        //Align labels taking into account the string widths for each label
+        QFontMetrics fm( this->font() );
+        qreal totalWidth = fm.width( playCountText ) + fm.width( scoreText ) + fm.width( lastPlayedText );
+        qreal factor, prevFactor;
+        factor = fm.width( playCountText ) / totalWidth;
+        prevFactor = factor;
 
         QRectF rect = QRectF(leftEdge, // align vertically with track info text
                             m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
-                            localMaxTextWidth / 3,
+                            localMaxTextWidth * factor,
                             m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
+
+        
+        m_playCountLabel = truncateTextToFit( playCountText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+
+        factor = fm.width( scoreText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        prevFactor = factor;
+
+        m_scoreLabel = truncateTextToFit( scoreText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+
+        factor = fm.width( lastPlayedText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        
+        m_lastPlayedLabel = truncateTextToFit( lastPlayedText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
 
+        factor = fm.width( playCountText ) / totalWidth;
+        prevFactor = factor;
         rect = QRectF( leftEdge,
                     m_ratingWidget->pos().y() + 3,
-                    localMaxTextWidth / 3,
+                    localMaxTextWidth * factor,
                     m_ratingWidget->boundingRect().height() - 4 );
         p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+        
+        factor = fm.width( scoreText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        prevFactor = factor;
+
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+
+        factor = fm.width( lastPlayedText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+
+        m_playedLast = truncateTextToFit( Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ), this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
         p->restore();
     }
