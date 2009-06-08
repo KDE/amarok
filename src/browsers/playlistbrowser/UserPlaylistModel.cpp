@@ -376,21 +376,23 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         return true;
     }
 
+#if 0
     if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "Found playlist mime type";
 
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
-        if( dragList )
+        if( !dragList )
             return false;
 
         foreach( Meta::PlaylistPtr playlistPtr, dragList->playlists() )
         {
-            //TODO: figure out what to do when a playlist is dropped onto onother playlist
+            //TODO: figure out what to do when a playlist is dropped onto another playlist
         }
 
         return true;
     }
+#endif
 
     return false;
 }
