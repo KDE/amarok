@@ -19,6 +19,8 @@ VERSION 2.1.1
 
   BUGFIXES:
     * Reset total playlist time when the playlist is cleared. (BR 153160)
+    * Don't crash when starting a collection scan after another scan had been
+      aborted. (BR 195242)
     * Fixed non-UTF8 MPEG tag wrongly shown.
     * Fix problem with supported filetypes not being copied over to MTP device
       (BR 186835)
