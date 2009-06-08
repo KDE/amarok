@@ -144,8 +144,9 @@ namespace Amarok
         SelectAction* repeatAction = qobject_cast<SelectAction*>( Amarok::actionCollection()->action( "repeat" ) );
         Q_ASSERT(repeatAction);
 
-        repeatAction->setCurrentItem( on ? (int)AmarokConfig::EnumRepeat::Track
-                                         : (int)AmarokConfig::EnumRepeat::Off );
+        if (repeatAction)
+            repeatAction->setCurrentItem( on ? int(AmarokConfig::EnumRepeat::Track)
+                                             : int(AmarokConfig::EnumRepeat::Off) );
     }
 
     //position is specified in milliseconds
