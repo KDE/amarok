@@ -48,6 +48,7 @@ class ScanManager : public QObject
         bool isFileInCollection( const QString &url );
 
         void setBlockScan( bool blockScan );
+        void abort( const QString &reason );
 
     public slots:
         void startFullScan();
@@ -103,6 +104,7 @@ class XmlParseJob : public ThreadWeaver::Job
         void incrementProgress();
 
     private:
+        ScanManager *m_scanManager;
         SqlCollection *m_collection;
 
         bool m_abortRequested;

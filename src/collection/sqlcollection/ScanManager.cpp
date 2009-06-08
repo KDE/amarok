@@ -268,7 +268,8 @@ ScanManager::slotReadReady()
 {
     QByteArray line;
     QString newData;
-    line = m_scanner->readLine();
+    if( m_scanner )
+        line = m_scanner->readLine();
 
     while( !line.isEmpty() )
     {
@@ -315,19 +316,26 @@ ScanManager::slotError( QProcess::ProcessError error )
         handleRestart();
     }
     else
-    {
-        debug() << "Unknown error: reseting scan manager state";
-        slotReadReady(); //make sure that we read the complete buffer
+        abort( "Unknown error: reseting scan manager state" );
+}
 
-        disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-        disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
-        disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
-        m_scanner->deleteLater();
-        m_scanner = 0;
-        
-        m_parser->deleteLater();
-        m_parser = 0;
-    }
+void
+ScanManager::abort( const QString &reason )
+{
+    if( !reason.isEmpty() )
+        debug() << "Scan error: " << reason;
+    else
+        debug() << "Unknown error: reseting scan manager state";
+    
+    slotReadReady(); //make sure that we read the complete buffer
+
+    disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+    disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
+    disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
+    m_scanner->deleteLater();
+    m_scanner = 0;
+    
+    stopParser();
 }
 
 bool
@@ -579,7 +587,7 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
 {
     DEBUG_BLOCK
     The::statusBar()->newProgressOperation( this, i18n( "Scanning music" ) )
-        ->setAbortSlot( parent, SLOT( deleteLater() ) );
+        ->setAbortSlot( parent, SLOT( abort() ) );
 
     connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
 }

@@ -44,8 +44,6 @@ public:
 #include <klocale.h>
 #include <KIcon>
 #include <KMessageBox> // TODO put the delete confirmation code somewhere else?
-
-#include <QPointer>
 #include <QTimer>
 
 AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
@@ -77,6 +75,7 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
     , m_registry( new SqlRegistry( this ) )
     , m_updater( new DatabaseUpdater( this ) )
+    , m_scanManager( new ScanManager( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
@@ -92,6 +91,12 @@ void
 SqlCollection::init()
 {
     QTimer::singleShot( 0, this, SLOT( initXesam() ) );
+    if( !m_updater )
+    {
+        debug() << "Could not load updater!";
+        return;
+    }
+
     if( m_updater->needsUpdate() )
         m_updater->update();
     QStringList result = query( "SELECT count(*) FROM tracks" );
@@ -100,7 +105,7 @@ SqlCollection::init()
     // (e.g. deleted collection.db)
     if( !result.isEmpty() && result.first().toInt() == 0 )
     {
-        QTimer::singleShot( 0, scanManager(), SLOT( startFullScan() ) );
+        QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
     }
     //perform a quick check of the database
     m_updater->cleanupDatabase();
@@ -109,13 +114,15 @@ SqlCollection::init()
 void
 SqlCollection::startFullScan()
 {
-    scanManager()->startFullScan();
+    if( m_scanManager )
+        m_scanManager->startFullScan();
 }
 
 void
 SqlCollection::startIncrementalScan()
 {
-    scanManager()->startIncrementalScan();
+    if( m_scanManager )
+        m_scanManager->startIncrementalScan();
 }
 
 void
@@ -123,7 +130,8 @@ SqlCollection::stopScan()
 {
     DEBUG_BLOCK
 
-    delete scanManager();
+    if( m_scanManager )
+        m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
 }
 
 QString
@@ -163,14 +171,9 @@ SqlCollection::dbUpdater() const
 }
 
 ScanManager*
-SqlCollection::scanManager()
+SqlCollection::scanManager() const
 {
-    static QPointer<ScanManager> s_scanManager;
-
-    if( !s_scanManager )
-        s_scanManager = new ScanManager( this );
-
-    return s_scanManager;
+    return m_scanManager;
 }
 
 void
@@ -182,13 +185,13 @@ SqlCollection::removeCollection()
 bool
 SqlCollection::isDirInCollection( QString path )
 {
-    return scanManager()->isDirInCollection( path );
+    return m_scanManager->isDirInCollection( path );
 }
 
 bool
 SqlCollection::isFileInCollection( const QString &url )
 {
-    return scanManager()->isFileInCollection( url );
+    return m_scanManager->isFileInCollection( url );
 }
 
 bool
