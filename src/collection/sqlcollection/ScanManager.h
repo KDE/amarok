@@ -103,7 +103,6 @@ class XmlParseJob : public ThreadWeaver::Job
         void incrementProgress();
 
     private:
-        ScanManager *m_scanManager;
         SqlCollection *m_collection;
 
         bool m_abortRequested;

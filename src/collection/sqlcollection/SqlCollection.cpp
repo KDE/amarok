@@ -44,6 +44,8 @@ public:
 #include <klocale.h>
 #include <KIcon>
 #include <KMessageBox> // TODO put the delete confirmation code somewhere else?
+
+#include <QPointer>
 #include <QTimer>
 
 AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
@@ -75,7 +77,6 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
     , m_registry( new SqlRegistry( this ) )
     , m_updater( new DatabaseUpdater( this ) )
-    , m_scanManager( new ScanManager( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
@@ -99,7 +100,7 @@ SqlCollection::init()
     // (e.g. deleted collection.db)
     if( !result.isEmpty() && result.first().toInt() == 0 )
     {
-        QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
+        QTimer::singleShot( 0, scanManager(), SLOT( startFullScan() ) );
     }
     //perform a quick check of the database
     m_updater->cleanupDatabase();
@@ -108,13 +109,13 @@ SqlCollection::init()
 void
 SqlCollection::startFullScan()
 {
-    m_scanManager->startFullScan();
+    scanManager()->startFullScan();
 }
 
 void
 SqlCollection::startIncrementalScan()
 {
-    m_scanManager->startIncrementalScan();
+    scanManager()->startIncrementalScan();
 }
 
 void
@@ -122,7 +123,7 @@ SqlCollection::stopScan()
 {
     DEBUG_BLOCK
 
-    delete m_scanManager;
+    delete scanManager();
 }
 
 QString
@@ -162,9 +163,14 @@ SqlCollection::dbUpdater() const
 }
 
 ScanManager*
-SqlCollection::scanManager() const
+SqlCollection::scanManager()
 {
-    return m_scanManager;
+    static QPointer<ScanManager> s_scanManager;
+
+    if( !s_scanManager )
+        s_scanManager = new ScanManager( this );
+
+    return s_scanManager;
 }
 
 void
@@ -176,13 +182,13 @@ SqlCollection::removeCollection()
 bool
 SqlCollection::isDirInCollection( QString path )
 {
-    return m_scanManager->isDirInCollection( path );
+    return scanManager()->isDirInCollection( path );
 }
 
 bool
 SqlCollection::isFileInCollection( const QString &url )
 {
-    return m_scanManager->isFileInCollection( url );
+    return scanManager()->isFileInCollection( url );
 }
 
 bool
