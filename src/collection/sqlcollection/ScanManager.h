@@ -48,11 +48,11 @@ class ScanManager : public QObject
         bool isFileInCollection( const QString &url );
 
         void setBlockScan( bool blockScan );
-        void abort( const QString &reason );
 
     public slots:
         void startFullScan();
         void startIncrementalScan();
+        void abort( const QString &reason = QString() );
 
     private slots:
         void slotWatchFolders();
