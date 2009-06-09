@@ -18,6 +18,8 @@ VERSION 2.1.1
     * Show info box in CV if no applets are visible.
 
   BUGFIXES:
+    * Fixed the layout of the "Edit Track Details" dialog, which came up
+      broken under some circumstances. (BR 195081)
     * Reset total playlist time when the playlist is cleared. (BR 153160)
     * Don't crash when starting a collection scan after another scan had been
       aborted. (BR 195242)
