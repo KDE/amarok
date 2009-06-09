@@ -506,7 +506,24 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
     //artistId == 0 means no albumartist
     QPair<QString, int> key( album, artistId );
     if( m_albums.contains( key ) )
-        return m_albums.value( key );
+    {
+        // if we already have the key but the artist == 0,
+        // UPDATE the image field so that we won't forget the cover for a compilation
+        int id = m_albums.value( key );
+        if ( artistId == 0 )
+        {
+            QString select = QString( "SELECT MAX(image) FROM albums_temp WHERE name = '%1';" )
+                .arg( m_collection->escape( album ) );
+            QStringList res = m_collection->query( select );
+            if( !res.isEmpty() )
+            {
+                QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
+                    .arg( res[0] , QString::number( id ) );
+                m_collection->query( update );
+            }
+        }
+        return id;
+    }
 
     QString query;
     if( artistId == 0 )
