@@ -15,6 +15,7 @@ Name[sv]=Videoklipp
 Name[tr]=Video Klibi
 Name[uk]=Відеокліп
 Name[wa]=Clip videyo
+Name[x-test]=xxVideoclipxx
 Type=Service
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_videoclip
