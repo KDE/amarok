@@ -1,6 +1,6 @@
 <ui version="4.0" >
  <class>TagDialogBase</class>
- <widget class="QDialog" name="TagDialogBase" >
+ <widget class="QWidget" name="TagDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>

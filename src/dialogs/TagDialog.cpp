@@ -63,7 +63,8 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
 
     setCurrentTrack( m_tracks.first() );
 
-    ui->setupUi( this );
+    ui->setupUi( mainWidget() );
+    resize( minimumSizeHint() ); 
     init();
     startDataQuery();
 }
@@ -83,7 +84,8 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     m_tracks.append( track );
     //we changed the list after creating the iterator, so create a new iterator
     m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
-    ui->setupUi( this );
+    ui->setupUi( mainWidget() );
+    resize( minimumSizeHint() ); 
     init();
     startDataQuery();
 }
@@ -99,7 +101,8 @@ TagDialog::TagDialog( QueryMaker *qm )
 {
     DEBUG_BLOCK
 
-    ui->setupUi( this );
+    ui->setupUi( mainWidget() );
+    resize( minimumSizeHint() ); 
     startDataQuery();
     qm->setQueryType( QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
