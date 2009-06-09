@@ -43,7 +43,6 @@ static const QString key("AMAROK_USERPLAYLIST");
 
 SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
-    , m_deleteAction( 0 )
     , m_renameAction( 0 )
 {
     checkTables();
@@ -111,12 +110,6 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
 
     m_selectedPlaylists.clear();
     m_selectedPlaylists << toSqlPlaylists( list );
-    if ( m_deleteAction == 0 )
-    {
-        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
-    }
-    actions << m_deleteAction;
 
     if ( m_renameAction == 0 )
     {
