@@ -255,9 +255,9 @@ WikipediaEngine::wikiResult( KJob* job )
     m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
 
     // lets remove the warning box
-    QString mbox = "<table class=\"metadata plainlinks";
+    QString mbox = "<table class=\"metadata plainlinks ambox";
     QString mboxend = "</table>";
-    if ( m_wiki.indexOf( mbox ) != -1 )
+    while ( m_wiki.indexOf( mbox ) != -1 )
         m_wiki.remove( m_wiki.indexOf( mbox ), m_wiki.mid( m_wiki.indexOf( mbox ) ).indexOf( mboxend ) + mboxend.size() );
     
     // Adding back style and license information
@@ -341,7 +341,7 @@ inline QString
 WikipediaEngine::wikiLocale() const
 {
     // if there is no language set (QLocale::C) then return english as default
-	if( m_wikiLang.language() == QLocale::C )
+    if( m_wikiLang.language() == QLocale::C )
         return "en";
     else
         return m_wikiLang.name().split( '_' )[0];
