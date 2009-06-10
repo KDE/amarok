@@ -37,13 +37,12 @@ ScrobblerHandshake::request()
 {
     QString timestamp = QString::number( QDateTime::currentDateTime().toTime_t() );
     QString auth_token = Qt::md5( (Ws::SharedSecret + timestamp).toUtf8() );
-
     QString query_string = QString() +
         "?hs=true" +
         "&p=1.2.1"
         "&c=" + m_clientId +
         "&v=" + qApp->applicationVersion() +
-        "&u=" + QString(QUrl::toPercentEncoding( Ws::Username )) +
+        "&u=" + Ws::Username +
         "&t=" + timestamp +
         "&a=" + auth_token +
         "&api_key=" + Ws::ApiKey +

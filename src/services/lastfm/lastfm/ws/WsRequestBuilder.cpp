@@ -68,10 +68,17 @@ WsRequestBuilder::start()
             QList<Pair> params = this->params;
 			foreach (Pair param, params)
 			{
-				query += QUrl::toPercentEncoding( param.first, "!$&'()*+,;=:@/?" )
+				if ( param.first == "u" ) 
+				{
+					query += param.first.toUtf8() + "=" + param.second.toUtf8() + "&";
+				}
+				else
+				{
+					query += QUrl::toPercentEncoding( param.first, "!$&'()*+,;=:@/?" )
 					  + "="
 					  + QUrl::toPercentEncoding( param.second, "!$&'()*+,;=:@/?" )
 					  + "&";
+				}
 			}
 			return new WsReply( nam->post( request, query ) );
 		}
