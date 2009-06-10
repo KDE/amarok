@@ -20,6 +20,7 @@
 
 #include "TokenWithLayout.h"
 
+#include "Debug.h"
 #include "TokenDropTarget.h"
 
 #include <KAction>
@@ -62,6 +63,7 @@ TokenWithLayout::~TokenWithLayout()
 
 void TokenWithLayout::fillMenu( QMenu * menu )
 {
+    DEBUG_BLOCK
     KAction *boldAction = new KAction( KIcon( "format-text-bold"), i18n( "Bold" ), menu );
     boldAction->setObjectName( ActionBoldName );
     boldAction->setCheckable( true );
@@ -133,7 +135,14 @@ void TokenWithLayout::fillMenu( QMenu * menu )
                         spareWidth -= twl->width() * 100.0;
                 }
             }
-            slider->setMaximum( qMax( spareWidth, 0.0 ) );
+
+            int max = qMax( spareWidth, 0.0 );
+            debug() << "slider max value: " << max;
+
+            if ( max >= m_width * 100.0 )
+                slider->setMaximum( qMax( spareWidth, 0.0 ) );
+            else
+                slider->setMaximum( m_width * 100.0 );
         }
     }
     slider->setValue( m_width * 100.0 );
@@ -146,7 +155,6 @@ void TokenWithLayout::fillMenu( QMenu * menu )
 
     menu->setFixedHeight( orgHeight + slider->height() );
 
-    slider->setFixedWidth( menu->width() - 4 );
 }
 
 void TokenWithLayout::menuExecuted( const QAction* action )
