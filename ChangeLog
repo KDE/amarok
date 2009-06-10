@@ -38,6 +38,7 @@ VERSION 2.1.1
     * Allow cancelling of rename input box in playlist layout dialog (BR 976409)
     * Loading playlists from the command line works again. (BR 191347)
     * Fixed formatting of the debug output when using the -d option.
+    * Detection of compilation cover during the scan works again. (BR 172953)
 
 
 VERSION 2.1
