@@ -101,11 +101,14 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     DEBUG_BLOCK
     Q_UNUSED( cached );
 
+    debug() << "lyrics xml: " << lyricsXML;
+
     QDomDocument doc;
     if( !doc.setContent( lyricsXML ) )
     {
         debug() << "could not read the xml of lyrics, malformed";
         lyricsError( i18n("Lyrics data could not be parsed") );
+        //TODO: how about showing chached lyrics then?
         return;
     }
 
@@ -143,8 +146,31 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             return;
 
         lyrics = el.text();
-        debug() << "setting cached lyrics";
-        The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
+
+        if ( lyrics != "Not found" ) //I dont know if this will work with translated stuff, different scripts...
+        {
+
+            //BAAAD thing to do indisciminately as you might be overwriting cached lyric with nothing!
+            debug() << "setting cached lyrics: ";
+            The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
+
+            //TODO: what is the sane thing to do if we get a valid lyrics result but there is cached lyrics set already?
+            //this entire system needs to be thought through a little better I think -nhn
+
+        } else if ( !The::engineController()->currentTrack()->cachedLyrics().isEmpty() &&
+                     The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
+        {
+            //we found nothing, so if we have cached lyrics, use it!
+            lyrics = The::engineController()->currentTrack()->cachedLyrics();
+            //debug() << "using cached lyrics: " << lyrics;
+
+            if( lyrics.contains( "<html>" , Qt::CaseInsensitive) )
+            {
+                //we have stored html lyrics, so use that directly
+                sendNewLyricsHtml( lyrics );
+                return;
+            }
+        }
 
         const QString title = el.attribute( "title" );
 
@@ -161,6 +187,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 void
 LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 {
+    DEBUG_BLOCK
     Q_UNUSED( cached )
 
     // we don't need to deal with suggestions here, because
