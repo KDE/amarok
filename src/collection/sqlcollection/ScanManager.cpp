@@ -586,7 +586,8 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
     , m_isIncremental( false )
 {
     DEBUG_BLOCK
-    The::statusBar()->newProgressOperation( this, i18n( "Scanning music" ) )
+    if( The::statusBar() )
+        The::statusBar()->newProgressOperation( this, i18n( "Scanning music" ) )
         ->setAbortSlot( parent, SLOT( abort() ) );
 
     connect( this, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
@@ -595,7 +596,8 @@ XmlParseJob::XmlParseJob( ScanManager *parent, SqlCollection *collection )
 XmlParseJob::~XmlParseJob()
 {
     DEBUG_BLOCK
-    The::statusBar()->endProgressOperation( this );
+    if( The::statusBar() )
+        The::statusBar()->endProgressOperation( this );
 }
 
 void
@@ -660,7 +662,8 @@ XmlParseJob::run()
                 if( localname == "itemcount" )
                 {
 //                     debug() << "Got an itemcount with value: " << localname.toString();
-                    The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
+                    if( The::statusBar() )
+                        The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {
