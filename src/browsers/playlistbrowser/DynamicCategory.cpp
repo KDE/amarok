@@ -56,8 +56,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_onOffCheckbox->setText( i18n( "On" ) );
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
     m_onOffCheckbox->setCheckable( true );
-    m_onOffCheckbox->setSizePolicy( 
-            QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    m_onOffCheckbox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
     QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
 
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
