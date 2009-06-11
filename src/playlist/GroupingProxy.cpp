@@ -373,8 +373,13 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
     row = NavigatorFilterProxyModel::instance()->rowFromSource( row );
     
     int totalLenght = 0;
-    for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ ) {
-        totalLenght += m_model->trackAt( i )->length();
+    for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )
+    {
+        Meta::TrackPtr track = m_model->trackAt( i );
+        if ( track )
+            totalLenght += track->length();
+        else
+            warning() << "Playlist::GroupingProxy::lengthOfGroup(): TrackPtr is 0!  i = " << i << ", rowCount = " << m_model->rowCount();
     }
 
     return totalLenght;
