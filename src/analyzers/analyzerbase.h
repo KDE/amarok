@@ -49,7 +49,7 @@
 #define QGLWidget QWidget
 #endif
 
-#include <qimage.h> //for bitBlt
+#include <QImage> //for bitBlt
 
 class QEvent;
 class QPaintEvent;

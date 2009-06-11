@@ -25,7 +25,7 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
-#include <qapplication.h>
+#include <QApplication>
 #include <QtDebug>
 
 int main( int argc, char *argv[] )

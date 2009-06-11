@@ -19,7 +19,7 @@
 #define BLOCKANALYZER_H
 
 #include "analyzerbase.h"
-#include <qcolor.h>
+#include <QColor>
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QMouseEvent>
