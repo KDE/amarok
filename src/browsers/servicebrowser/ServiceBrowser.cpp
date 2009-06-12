@@ -45,6 +45,11 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
     , m_usingContextView( false )
 {
     debug() << "ServiceBrowser starting...";
+
+    setLongDescription( i18n( "The Internet browser lets you browse online sources of content that integrates directly into Amarok. Amarok ships with a number of these sources, but many more can be added using scripts." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "applications-internet", -128, true ) );
 }
 
 
