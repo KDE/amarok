@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
+   Copyright (C) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
