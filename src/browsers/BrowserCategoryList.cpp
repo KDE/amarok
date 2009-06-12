@@ -34,7 +34,9 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     , m_categoryListModel( new BrowserCategoryListModel() )
 {
     setObjectName( name );
-    debug() << "BrowserCategoryList starting...";
+    setParent( parent );
+    
+    debug() << "BrowserCategoryList named " << name << " starting...";
 
     m_searchWidget = new SearchWidget( this, this, false );
 

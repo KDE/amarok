@@ -51,6 +51,7 @@
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
+#include "SvgHandler.h"
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
@@ -270,7 +271,7 @@ MainWindow::init()
         m_collectionBrowser->setPrettyName( i18n( "Collections" ) );
         m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
         m_collectionBrowser->setShortDescription( i18n( "The list of available collections" ) );
-        m_browsers->addCategory( m_collectionBrowser );
+        m_browsers->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
 
                 
@@ -280,7 +281,7 @@ MainWindow::init()
         internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
         internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
         internetContentServiceBrowser->setShortDescription( i18n( "Sources  of online content" ) );
-        m_browsers->addCategory( internetContentServiceBrowser );
+        m_browsers->list()->addCategory( internetContentServiceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
         m_playlistFiles = new PlaylistFileProvider();
@@ -291,7 +292,7 @@ MainWindow::init()
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
         m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
         m_playlistBrowser->setShortDescription( i18n( "Differnt kinds of playlists" ) );
-        m_browsers->addCategory( m_playlistBrowser );
+        m_browsers->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
                 
@@ -300,10 +301,10 @@ MainWindow::init()
         fileBrowser->setPrettyName( i18n("Files") );
         fileBrowser->setIcon( KIcon( "folder-amarok" ) );
         fileBrowser->setShortDescription( i18n( "Browse local files" ) );
-        m_browsers->addCategory( fileBrowser );
+        m_browsers->list()->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
 
-        sideBar()->sideBarWidget()->restoreSession();
+        //sideBar()->sideBarWidget()->restoreSession();
 
         PERF_LOG( "Initialising ServicePluginManager" )
         ServicePluginManager::instance()->init();
@@ -359,8 +360,8 @@ MainWindow::slotShrinkBrowsers( int index )
         m_splitterState = m_splitter->saveState();
 
         QList<int> sizes;
-        sizes << m_browsers->sideBarWidget()->width() // browser bar
-              << m_splitter->sizes()[1] + m_splitter->sizes()[0] - m_browsers->sideBarWidget()->width() // context view
+        sizes << m_browsers->backButton()->width() // browser bar
+              << m_splitter->sizes()[1] + m_splitter->sizes()[0] - m_browsers->backButton()->width() // context view
               << m_splitter->sizes()[2]; // playlist
         m_splitter->setSizes( sizes );
     }
@@ -970,8 +971,8 @@ CollectionWidget * MainWindow::collectionBrowser()
 
 QString MainWindow::activeBrowserName()
 {
-    if ( m_browsers->activeCategory() )
-        return m_browsers->activeCategory()->name();
+    if ( m_browsers->list()->activeCategory() )
+        return m_browsers->list()->activeCategory()->name();
     else
         return QString();
 }

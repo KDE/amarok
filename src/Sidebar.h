@@ -23,14 +23,14 @@
 #include "browsers/BrowserCategoryList.h"
 
 #include "Debug.h"
-#include "widgets/SidebarWidget.h"
 
 #include <KHBox>
+#include <KIcon>
 
+#include <QPushButton>
 #include <QIcon>
-#include <QFrame>
-#include <QLayout>
 #include <QPointer>
+#include <QWidget>
 #include <QStackedWidget>
 
 /**
@@ -40,9 +40,9 @@
  *
  * @author Gábor Lehel <illissius@gmail.com>
 */
-class SideBar: public BrowserCategoryList
+class SideBar: public KHBox
 {
-    typedef BrowserCategoryList super;
+    typedef KHBox super;
     Q_OBJECT
 
     public:
@@ -53,19 +53,32 @@ class SideBar: public BrowserCategoryList
          * @param contentsWidget The widget that this sidebar places all of its children in
          */
         explicit SideBar( QWidget *parent )
-            : super( parent, QString() )
-            , m_bar( new SideBarWidget( this ) )
-        {}
+            : KHBox( parent )
+        {
+            m_backButton = new QPushButton( this );
+            m_categoryList = new BrowserCategoryList( this, "root list" );
+            
+            m_backButton->setFixedWidth( 20 );
+            m_backButton->setIcon( KIcon( "navigate-back" ) );
+            
+            m_categoryList->setMinimumSize( 100, 1000 );
+            
+            m_backButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+            //m_categoryList->setSizePolicy( QSizePolicy::Expanding );
+        }
 
         ~SideBar()
         {
             DEBUG_BLOCK
         }
 
-        SideBarWidget *sideBarWidget() const { return m_bar; }
+        QPushButton *backButton() const { return m_backButton; }
+        BrowserCategoryList *list() const { return m_categoryList; }
 
     private:
-        QPointer<SideBarWidget> m_bar;
+        QPointer<QPushButton> m_backButton;
+        QPointer<BrowserCategoryList> m_categoryList;
+
 
 };
 
