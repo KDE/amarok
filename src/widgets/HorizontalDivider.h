@@ -17,57 +17,26 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#include "BrowserWidget.h"
+#ifndef HORIZONTALDIVIDER_H
+#define HORIZONTALDIVIDER_H
 
-#include "Debug.h"
-#include "widgets/HorizontalDivider.h"
+#include <QWidget>
 
-#include "KIcon"
+/**
+A simple divider widget that draws the svg divider elements.
 
-BrowserWidget::BrowserWidget( QWidget * parent )
- : KVBox( parent )
+	@author 
+*/
+class HorizontalDivider : public QWidget
 {
+public:
+    HorizontalDivider( QWidget * parent );
 
-    m_breadcrumbWidget = new BreadcrumbWidget( this );
-    new HorizontalDivider( this );
-    
-    m_categoryList = new BrowserCategoryList( this, "root list" );
-    m_categoryList->setPrettyName( i18n( "Home" ) );
-    m_categoryList->setIcon( KIcon( "user-home" ) );
+    ~HorizontalDivider();
 
-    m_breadcrumbWidget->setRootList( m_categoryList );
+protected:
+    virtual void paintEvent ( QPaintEvent* event );
 
-    m_categoryList->setMinimumSize( 100, 300 );
+};
 
-    connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
-    connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
-
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
-
-}
-
-
-BrowserWidget::~BrowserWidget()
-{
-}
-
-BrowserCategoryList * BrowserWidget::list() const
-{
-    return m_categoryList;
-}
-
-void
-BrowserWidget::navigate( const QString & target )
-{
-    m_categoryList->navigate( target );
-}
-
-void
-BrowserWidget::home()
-{
-    DEBUG_BLOCK
-    m_categoryList->home();
-}
-
-#include "BrowserWidget.moc"
+#endif

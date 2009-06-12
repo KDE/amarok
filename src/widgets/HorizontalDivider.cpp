@@ -17,57 +17,28 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#include "BrowserWidget.h"
+#include "HorizontalDivider.h"
+#include "SvgHandler.h"
 
-#include "Debug.h"
-#include "widgets/HorizontalDivider.h"
+#include <QPainter>
 
-#include "KIcon"
-
-BrowserWidget::BrowserWidget( QWidget * parent )
- : KVBox( parent )
+HorizontalDivider::HorizontalDivider( QWidget * parent )
+    : QWidget( parent )
 {
+    setFixedHeight( 2 );
+}
 
-    m_breadcrumbWidget = new BreadcrumbWidget( this );
-    new HorizontalDivider( this );
+
+HorizontalDivider::~HorizontalDivider()
+{
+}
+
+void HorizontalDivider::paintEvent( QPaintEvent * event )
+{
+    QPainter p( this );
     
-    m_categoryList = new BrowserCategoryList( this, "root list" );
-    m_categoryList->setPrettyName( i18n( "Home" ) );
-    m_categoryList->setIcon( KIcon( "user-home" ) );
-
-    m_breadcrumbWidget->setRootList( m_categoryList );
-
-    m_categoryList->setMinimumSize( 100, 300 );
-
-    connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
-    connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
-
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
-
+    p.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "divider_bottom", rect().width(),  1, "divider_bottom" ) );
+    p.drawPixmap( 0, 1, The::svgHandler()->renderSvg( "divider_top", rect().width(), 1, "divider_top" ) );
 }
 
 
-BrowserWidget::~BrowserWidget()
-{
-}
-
-BrowserCategoryList * BrowserWidget::list() const
-{
-    return m_categoryList;
-}
-
-void
-BrowserWidget::navigate( const QString & target )
-{
-    m_categoryList->navigate( target );
-}
-
-void
-BrowserWidget::home()
-{
-    DEBUG_BLOCK
-    m_categoryList->home();
-}
-
-#include "BrowserWidget.moc"
