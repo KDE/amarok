@@ -35,7 +35,7 @@ SortWidget::SortWidget( QWidget *parent ) : KHBox( parent )
 void
 SortWidget::applySortingScheme()
 {
-    SortProxy::instance()->sort( Playlist::Length );        //18 = length
+    //SortProxy::instance()->sort( Playlist::Length );        //18 = length
 }
 
 

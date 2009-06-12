@@ -24,11 +24,13 @@
 #include "FilterProxy.h"
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistSortScheme.h"
 
 #include <QSortFilterProxyModel>
 
 namespace Playlist
 {
+
 /**
  * A ProxyModel that implements multilevel sorting for the Playlist.
  * This proxy should sit above the FilterProxy and below the GroupingProxy.
@@ -43,6 +45,10 @@ public:
      * @return the class instance.
      */
     static SortProxy *instance();
+
+    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
+
+    void sort( const SortScheme &scheme );
 
     // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
     // Please keep them sorted alphabetically.
@@ -180,9 +186,10 @@ private:
 
     FilterProxy *m_belowModel;    //! The Proxy or Model that's right below this one in the stack of Models/Proxies.
 
+    SortScheme *m_currentSortScheme;
+
     static SortProxy *s_instance;   //! Instance member.
 };
-
 
 }   //namespace Playlist
 

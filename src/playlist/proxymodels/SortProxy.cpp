@@ -44,12 +44,24 @@ SortProxy::SortProxy()
     , m_belowModel(  FilterProxy::instance() )
 {
     setSourceModel( m_belowModel );
-
+    //m_sortScheme << foo...
 }
 
 SortProxy::~SortProxy()
 {
+    delete m_currentSortScheme;
 }
+
+bool SortProxy::lessThan(const QModelIndex& left, const QModelIndex& right) const
+{
+    //return QSortFilterProxyModel::lessThan(left, right);
+}
+
+void SortProxy::sort( const SortScheme &scheme )
+{
+
+}
+
 
 // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
 // Please keep them sorted alphabetically.

@@ -702,7 +702,7 @@ void Playlist::PrettyListView::itemsAdded( int firstRow )
 {
     DEBUG_BLOCK
 
-    QModelIndex index = model()->index( NavigatorFilterProxyModel::instance()->rowFromSource( firstRow ) , 0 );
+    QModelIndex index = model()->index( FilterProxy::instance()->rowFromSource( firstRow ) , 0 );
     if( !index.isValid() )
         return;
 
