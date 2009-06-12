@@ -25,6 +25,8 @@
 
 #include <KHBox>
 
+#include <QToolBar>
+
 class KToolBar;
 class MainControlsWidget;
 class PopupDropperAction;
@@ -35,7 +37,7 @@ class VolumeWidget;
     adding any additional controls needed by individual tracks
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MainToolbar : public KHBox, public EngineObserver
+class MainToolbar : public QToolBar, public EngineObserver
 {
 
 public:

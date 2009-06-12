@@ -57,6 +57,7 @@
 
 #include <QCheckBox>
 #include <QDesktopWidget>
+#include <QDockWidget>
 #include <QList>
 #include <QSizeGrip>
 #include <QVBoxLayout>
@@ -168,15 +169,15 @@ MainWindow::~MainWindow()
 
     QList<int> sPanels;
 
-    foreach( int a, m_splitter->saveState() )
-        sPanels.append( a );
+    //foreach( int a, m_splitter->saveState() )
+    //    sPanels.append( a );
 
     AmarokConfig::setPanelsSavedState( sPanels );
 
     delete m_playlistFiles;
     delete m_contextView;
     delete m_corona;
-    delete m_splitter;
+    //delete m_splitter;
     delete The::statusBar();
     delete m_controlBar;
     delete The::svgHandler();
@@ -201,14 +202,29 @@ MainWindow::init()
     m_controlBar->layout()->setContentsMargins( 0, 0, 0, 0 );
     m_controlBar->layout()->setSpacing( 0 );
 
+    addToolBar( Qt::TopToolBarArea, m_controlBar );
+
     PERF_LOG( "Create sidebar" )
     m_browsers = new BrowserWidget( this );
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
+
+    QDockWidget * browsersDock = new QDockWidget( this );
+    browsersDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    browsersDock->setWidget( m_browsers );
+    browsersDock->setAllowedAreas( Qt::LeftDockWidgetArea );
+    
+
     PERF_LOG( "Create Playlist" )
-    m_playlistWidget = new Playlist::Widget( this );
+    m_playlistWidget = new Playlist::Widget( 0 );
     m_playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
     m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
+
+    QDockWidget * playlistDock = new QDockWidget( this );
+    playlistDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    playlistDock->setWidget( m_playlistWidget );
+    playlistDock->setAllowedAreas( Qt::LeftDockWidgetArea );
+    
     PERF_LOG( "Playlist created" )
 
     createMenus();
@@ -225,6 +241,11 @@ MainWindow::init()
     m_corona = new Context::ContextScene( this );
     connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
             this, SLOT( createContextView( Plasma::Containment* ) ) );
+
+    QDockWidget * contextDock = new QDockWidget( this );
+    contextDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    contextDock->setWidget( m_contextWidget );
+    contextDock->setAllowedAreas( Qt::LeftDockWidgetArea );
 
     PERF_LOG( "ContextScene created" )
 
@@ -244,17 +265,13 @@ MainWindow::init()
 
 
     QWidget *centralWidget = new QWidget( this );
-    centralWidget->setLayout( mainLayout );
 
-    m_splitter = new Amarok::Splitter( Qt::Horizontal, centralWidget );
-    m_splitter->setHandleWidth( 0 );
-    m_splitter->addWidget( m_browsers );
-    m_splitter->addWidget( m_contextWidget );
-    m_splitter->addWidget( m_playlistWidget );
+    setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks );
+    
+    addDockWidget( Qt::LeftDockWidgetArea, browsersDock );
+    addDockWidget( Qt::LeftDockWidgetArea, contextDock );
+    addDockWidget( Qt::LeftDockWidgetArea, playlistDock );
 
-
-    mainLayout->addLayout( toolbarSpacer );
-    mainLayout->addWidget( m_splitter );
     mainLayout->addWidget( m_statusbarArea);
 
     setCentralWidget( centralWidget );
@@ -316,15 +333,15 @@ MainWindow::init()
     }
     //</Browsers>
 
-    if( AmarokConfig::panelsSavedState().size() > 0 && AmarokConfig::panelsSavedState()[0] != -1 )
+    /*if( AmarokConfig::panelsSavedState()[0] != -1 )
     {
         QByteArray sPanels;
 
         foreach( int a, AmarokConfig::panelsSavedState() )
             sPanels.append( a );
 
-        m_splitter->restoreState( sPanels );
-    }
+        //m_splitter->restoreState( sPanels );
+    }*/
 
     The::amarokUrlHandler(); //Instantiate
 }
@@ -353,7 +370,7 @@ MainWindow::slotShrinkBrowsers( int index )
     DEBUG_BLOCK
 
     // Because QSplitter sucks and will not recompute sizes if a pane is shrunk and not hidden.
-    if( index == -1 )
+   /* if( index == -1 )
     {
         m_splitterState = m_splitter->saveState();
 
@@ -365,7 +382,7 @@ MainWindow::slotShrinkBrowsers( int index )
     else
     {
         m_splitter->restoreState( m_splitterState );
-    }
+    }*/
 }
 
 void
@@ -915,7 +932,7 @@ QPoint MainWindow::globalBackgroundOffset()
 QRect MainWindow::contextRectGlobal()
 {
     //debug() << "pos of context vidget within main window is: " << m_contextWidget->pos();
-    QPoint contextPos = m_splitter->mapToGlobal( m_contextWidget->pos() );
+    QPoint contextPos = mapToGlobal( m_contextWidget->pos() );
     return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
 }
 

@@ -40,21 +40,27 @@
 #include <QVBoxLayout>
 
 MainToolbar::MainToolbar( QWidget * parent )
-    : KHBox( parent )
+    : QToolBar( parent )
     , EngineObserver( The::engineController() )
     , m_addActionsOffsetX( 0 )
     , m_ignoreCache( false )
 {
     setObjectName( "MainToolbar" );
 
-    setFixedHeight( 67 );
-    setMinimumWidth( 200 );
-    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setContentsMargins( 0, 0, 0, 0 );
-    layout()->setContentsMargins( 0, 0, 0, 0 );
+    setFixedHeight( 67 );
+    setMinimumWidth( 600 );
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    
+    KHBox * mainBox = new KHBox( this );
+    mainBox->setFixedHeight( 67 );
+    mainBox->setMinimumWidth( 600 );
+    mainBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    mainBox->setContentsMargins( 0, 0, 0, 0 );
     setAutoFillBackground ( false );
 
-    KHBox * hBox = new KHBox( this );
+
+    KHBox * hBox = new KHBox( mainBox );
 
     m_mainControlsWidget = new MainControlsWidget( hBox );
 
