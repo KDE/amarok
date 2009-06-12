@@ -13,7 +13,7 @@ include_directories(
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
-        #${LIBLASTFM_INCLUDE_DIR}/.. # so lastfm/foo/bar.h references work
+        ${LIBLASTFM_INCLUDE_DIR}/.. # so lastfm/foo/bar.h references work
         ${LIBLASTFM_INCLUDE_DIR}
         )
 

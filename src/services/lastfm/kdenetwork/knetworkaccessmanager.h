@@ -25,11 +25,11 @@
 
 #include <kdemacros.h>
 
-#include "lastfm/WsAccessManager"
-
 #include <KDE/KIO/MetaData>
 
-class KDE_EXPORT KNetworkAccessManager : public WsAccessManager
+#include <QNetworkAccessManager>
+
+class KDE_EXPORT KNetworkAccessManager : public QNetworkAccessManager
 {
     Q_OBJECT
 public:

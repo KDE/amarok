@@ -36,7 +36,7 @@
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
-#include <lastfm/Scrobbler> // from liblastfm
+#include <lastfm/Audioscrobbler> // from liblastfm
 #include <lastfm/WsAccessManager>
 #include <lastfm/WsKeys>
 #include <lastfm/WsReply>
@@ -49,6 +49,7 @@
 #include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
+#include <QNetworkAccessManager>
 #include <QPainter>
 #include <QImage>
 #include <QFrame>
@@ -224,8 +225,8 @@ LastFmService::init()
 
 
     // set up proxy
-    WsAccessManager* qnam = new KNetworkAccessManager( this );
-//    WsRequestBuilder::setWAM( qnam );
+    QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
+    WsRequestBuilder::setNetworkAccessManager( qnam );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 

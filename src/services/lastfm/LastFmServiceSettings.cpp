@@ -19,12 +19,13 @@
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
-#include <lastfm/Scrobbler> // from liblastfm
+#include <lastfm/Audioscrobbler> // from liblastfm
 #include <lastfm/WsKeys>
 #include <lastfm/WsReply>
 #include <lastfm/WsRequestBuilder>
 
 #include <QCryptographicHash>
+#include <QNetworkAccessManager>
 #include <QVBoxLayout>
 #include <QRegExpValidator>
 
@@ -95,8 +96,8 @@ LastFmServiceSettings::testLogin()
     // NOTE yes we instantiate two KNAMs here, one in this kcm module and one in the servce itself.
     // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
     // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
-    WsAccessManager* qnam = new KNetworkAccessManager( this );
-    //WsRequestBuilder::setWAM( qnam );
+    QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
+    WsRequestBuilder::setNetworkAccessManager( qnam );
     
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 

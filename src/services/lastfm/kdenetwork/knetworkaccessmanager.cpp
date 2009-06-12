@@ -25,6 +25,7 @@
 
 #include "knetworkreply.h"
 
+#include <QBuffer>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -38,7 +39,7 @@ public:
 };
 
 KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
-    : WsAccessManager(parent), d(new KNetworkAccessManager::KNetworkAccessManagerPrivate())
+    : QNetworkAccessManager(parent), d(new KNetworkAccessManager::KNetworkAccessManagerPrivate())
 {
 }
 
@@ -74,13 +75,10 @@ QNetworkReply *KNetworkAccessManager::createRequest(Operation op, const QNetwork
             break;
         }
         case PostOperation: {
-        /*    kDebug() << "PostOperation:" << req.url();
-            kDebug() << "post data:" << dynamic_cast<QBuffer*>(outgoingData)->data();
+            kDebug() << "PostOperation:" << req.url();
             kioJob = KIO::http_post(req.url(), outgoingData->readAll(), KIO::HideProgressInfo);
-        
-            break;  */ 
-           return WsAccessManager::createRequest( op, req, outgoingData );
-            
+            kioJob->addMetaData("content-type", "Content-Type: application/x-www-form-urlencoded" );
+            break;            
         }
         default:
             kDebug() << "Unknown operation";
