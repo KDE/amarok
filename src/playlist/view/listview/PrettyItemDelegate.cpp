@@ -350,20 +350,17 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
                 //special case for painting the rating...
                 if ( value == Rating )
                 {
-                    if( textIndex.data( InCollectionRole ).toBool() )
-                    {
-                        int rating = textIndex.data( Qt::DisplayRole ).toInt();
+                    int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
-                        Qt::Alignment ratingAlignment;
-                        if ( alignment & Qt::AlignLeft )
-                            ratingAlignment = Qt::AlignLeft;
-                        else if ( alignment & Qt::AlignRight )
-                            ratingAlignment = Qt::AlignRight;
-                        else
-                            ratingAlignment = Qt::AlignCenter;
+                    Qt::Alignment ratingAlignment;
+                    if ( alignment & Qt::AlignLeft )
+                        ratingAlignment = Qt::AlignLeft;
+                    else if ( alignment & Qt::AlignRight )
+                        ratingAlignment = Qt::AlignRight;
+                    else
+                        ratingAlignment = Qt::AlignCenter;
 
-                        KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), ratingAlignment, rating, rating );
-                    }
+                    KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), ratingAlignment, rating, rating );
 
                 } else if ( value == Divider )
                 {

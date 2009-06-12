@@ -418,7 +418,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
     // Only show the ratings widget if the current track is in the collection
-    if( track && track->inCollection() )
+    if( track )
     {
         m_ratingWidget->show();
         m_showStatistics = true;
