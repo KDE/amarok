@@ -170,12 +170,12 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
     if( data.contains( "fetching" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( i18n("Concert information is being fetched.") );
+        m_songkick->setPlainText( ("Concert information is being fetched.") );
     }
     else if( data.contains( "error" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( i18n( "Songkick was not able to be downloaded. Please check your internet connection: %1", data["error"].toString() ) );
+        m_songkick->setPlainText( QString( "Songkick was not able to be downloaded. Please check your internet connection: %1").arg( data["error"].toString() ) );
     }
     else if( data.contains( "suggested" ) )
     {
@@ -214,7 +214,7 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
     else if( data.contains( "notfound" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( i18n("There was no information found for this track" ));
+        m_songkick->setPlainText( ("There was no information found for this track" ));
     }
     setPreferredSize( (int)size().width(), (int)size().height() );
     updateConstraints();
