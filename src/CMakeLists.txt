@@ -491,6 +491,7 @@ set(amaroklib_LIB_SRCS
     widgets/TokenDropTarget.cpp
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
+    widgets/ElidingButton.cpp
     widgets/TokenLayoutWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
