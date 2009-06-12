@@ -1,9 +1,15 @@
+include( KDELibsDependencies ) # for KDE version
+
 add_subdirectory( applets )
 add_subdirectory( engines )
 add_subdirectory( containments )
 add_subdirectory( tools )
-add_subdirectory( scriptengine/javascript )
 
+# only compile the javascript engine on KDE >=4.3, as it's tied in pretty
+# closely. will need to investigate possible solutions
+if( KDE_VERSION GREATER "4.2.70" )
+	add_subdirectory( scriptengine/javascript )
+endif( KDE_VERSION GREATER "4.2.70" )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..
