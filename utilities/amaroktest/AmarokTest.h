@@ -62,6 +62,7 @@ public slots:
      * @testName Human readable name of the test.
      * @expected Human readable expected test result.
      * @actualResult Human readable actual result of the test.
+     * @expectedToFail Indicates weather this test should fail. Default: false.
      */
     void testResult( QString testName, QString expected, QString actualResult, bool expectedToFail = false );
 
