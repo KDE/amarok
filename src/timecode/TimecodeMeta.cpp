@@ -18,6 +18,8 @@
  ***************************************************************************/
 
 #include "TimecodeMeta.h"
+
+#include "Debug.h"
 #include "meta/Capability.h"
 #include "meta/capabilities/BoundedPlaybackCapability.h"
 
@@ -42,10 +44,14 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     : m_name( name )
     , m_start( start )
     , m_end( end )
-    , m_length( end - start )
+    , m_length( ( end - start ) / 1000 )
     , m_playableUrl( url )
 {
+    DEBUG_BLOCK
     m_displayUrl = url + ":" + QString::number( start / 1000 ) + "-" + QString::number( end / 1000 );
+
+    debug() << "created with length: " << m_length;
+    
 }
 
 TimecodeTrack::~ TimecodeTrack()
@@ -212,7 +218,7 @@ TimecodeTrack::filesize() const
 int
 TimecodeTrack::length() const
 {
-    m_length;
+    return m_length;
 }
 
 void
