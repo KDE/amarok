@@ -30,8 +30,23 @@ FormatSelectionDialog::FormatSelectionDialog( QWidget *parent )
     connect( flacButton, SIGNAL( toggled( bool ) ), this, SLOT( selectionChanged( bool ) ) );
     connect( wavButton, SIGNAL( toggled( bool ) ), this, SLOT( selectionChanged( bool ) ) );
     connect( mp3Button, SIGNAL( toggled( bool ) ), this, SLOT( selectionChanged( bool ) ) );
-    
-    oggButton->setChecked( true );
+
+
+    //read default selection from config:
+
+
+    //restore format from last time, if any.
+    KConfigGroup config = Amarok::config("Audio Cd Collection");
+    QString format = config.readEntry( "Import Format", "ogg" );
+
+    if ( format.compare( "ogg", Qt::CaseInsensitive ) == 0 )
+        oggButton->setChecked( true );
+    else if ( format.compare( "flac", Qt::CaseInsensitive ) == 0 )
+        flacButton->setChecked( true );
+    else if ( format.compare( "wav", Qt::CaseInsensitive ) == 0 )
+        wavButton->setChecked( true );
+    else if ( format.compare( "mp3", Qt::CaseInsensitive ) == 0 )
+        mp3Button->setChecked( true );
 }
 
 
@@ -73,6 +88,23 @@ void FormatSelectionDialog::selectionChanged( bool checked )
 
 void FormatSelectionDialog::accept()
 {
+
+    //store to config for next download:
+
+    QString format;
+    
+    if( m_selectedFormat == AudioCdCollection::OGG )
+        format = "ogg";
+    else if( m_selectedFormat == AudioCdCollection::FLAC )
+        format = "flac";
+    else if( m_selectedFormat == AudioCdCollection::WAV )
+        format = "wav";
+    else if( m_selectedFormat == AudioCdCollection::MP3 )
+        format = "mp3";
+
+    KConfigGroup config = Amarok::config("Audio Cd Collection");
+    config.writeEntry( "Import Format", format );
+    
     emit formatSelected( m_selectedFormat );
     QDialog::accept();
 }
