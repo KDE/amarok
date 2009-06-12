@@ -119,7 +119,7 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
     config->setParent( this );
 
     m_currentConfig = config;
-    m_layout->addWidget( config, 2, 0, 1, 3, Qt::AlignCenter );
+    m_layout->addWidget( config, 2, 0, 1, 3, 0 );
     m_cbias->setCurrentEntry( chosen );
 }
 

@@ -19,8 +19,10 @@
 #include "EngineController.h"
 #include "Meta.h"
 #include "QueryMaker.h"
+#include "playlist/PlaylistModel.h"
 
 #include <kio/job.h>
+#include <KComboBox>
 
 #include <QDomDocument>
 #include <QVBoxLayout>
@@ -77,9 +79,9 @@ Dynamic::EchoNestBiasFactory::newCustomBias( QDomElement e, double weight )
 Dynamic::EchoNestBias::EchoNestBias( double weight )
 : Dynamic::CustomBiasEntry( weight )
 , EngineObserver( The::engineController() )
-, m_artistNameQuery( 0 )
 , m_artistSuggestedQuery( 0 )
 , m_qm( 0 )
+, m_currentOnly( true )
 {
     DEBUG_BLOCK
     engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
@@ -102,13 +104,24 @@ Dynamic::EchoNestBias::configWidget( QWidget* parent )
 {
     DEBUG_BLOCK
     QFrame * frame = new QFrame( parent );
-    QHBoxLayout* layout = new QHBoxLayout( frame );
+    QGridLayout* layout = new QGridLayout( frame );
+
+    layout->addWidget( new QLabel( i18n( "Match:" ), frame ), 0, 0 );
+
+    m_fieldSelection = new KComboBox( parent );
+    m_fieldSelection->addItem( i18n( "Current Track" ), "current" );
+    m_fieldSelection->addItem( i18n( "Playlist" ), "playlist" );
+    m_fieldSelection->setPalette( QApplication::palette() );
     
-    QLabel * label = new QLabel( i18n( "Adds songs related to currently playing track, recommended by EchoNest." ), parent );
+    connect( m_fieldSelection, SIGNAL( currentIndexChanged(int) ), this, SLOT( selectionChanged( int ) ) );
+
+    layout->addWidget( m_fieldSelection, 0, 1, Qt::AlignLeft );
+    
+    QLabel * label = new QLabel( i18n( "Recommendations by EchoNest." ), parent );
     label->setWordWrap( true );
     label->setAlignment( Qt::AlignCenter );
-    layout->addWidget( label, Qt::AlignCenter );
-    
+    layout->addWidget( label, 1, 0, 1, 2, 0 );
+
     return frame;
 }
 
@@ -122,17 +135,45 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
     {
         m_currentArtist = track->artist()->name(); // save for sure
         // if already saved, don't re-fetch
-        if( !m_savedArtists.contains( track->artist()->name() ) )
+        if( !m_savedArtists.contains( track->artist()->name() ) || !m_currentOnly )
         {
-            QMap< QString, QString > params;
-            
-            params[ "query" ] = m_currentArtist;
-            params[ "exact" ] = 'Y';
-            params[ "sounds_like" ] = 'N'; // mutually exclusive with exact
+            if( m_currentOnly )
+            {
+                QMap< QString, QString > params;
 
-            m_artistNameQuery = KIO::storedGet( createUrl( "search_artists", params ) );
-            
-            connect( m_artistNameQuery, SIGNAL( result( KJob* ) ), this, SLOT( artistNameQueryDone( KJob* ) ) );
+                params[ "query" ] = m_currentArtist;
+                params[ "exact" ] = 'Y';
+                params[ "sounds_like" ] = 'N'; // mutually exclusive with exact
+
+                KIO::StoredTransferJob* job = KIO::storedGet( createUrl( "search_artists", params ), KIO::NoReload, KIO::HideProgressInfo );
+                m_artistNameQueries[ job ] = m_currentArtist;
+
+                connect( job, SIGNAL( result( KJob* ) ), this, SLOT( artistNameQueryDone( KJob* ) ) );
+            } else
+            { // mode is set to whole playlist, so check if any tracks in the playlist aren't saved as Ids yet and query those
+                for( int i = 0; i < The::playlistModel()->rowCount(); i++ )
+                {
+                    Meta::TrackPtr track = The::playlistModel()->trackAt( i );
+                    if( !m_artistIds.contains( track->artist()->name() ) ) // don't have it yet
+                    {
+                        debug() << "searching for artistL" << track->artist()->name();
+                        QMap< QString, QString > params;
+                        
+                        params[ "query" ] =  track->artist()->name();
+                        params[ "exact" ] = 'Y';
+                        params[ "sounds_like" ] = 'N'; // mutually exclusive with exact
+
+                        KIO::StoredTransferJob* job = KIO::storedGet( createUrl( "search_artists", params ), KIO::NoReload, KIO::HideProgressInfo );
+                        m_artistNameQueries[ job ] = track->artist()->name();
+                        
+                        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( artistNameQueryDone( KJob* ) ) );
+
+                        m_artistIds[ track->artist()->name() ] = "-1"; // mark as not being searched for
+                    }
+                }
+                // TODO also go through it to remove any tracks that we don't have
+                
+            }
         }
     }
 }
@@ -151,16 +192,20 @@ void
 Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
 {
     DEBUG_BLOCK
-    if( job != m_artistNameQuery )
+    KIO::StoredTransferJob* stjob = static_cast< KIO::StoredTransferJob* >( job );
+    
+    if( !m_artistNameQueries.contains( stjob ) )
     {
         debug() << "job was deleted before the slot was called..wtf?";
         return;
     }
+    
+    QStringList toQuery;
 
     QDomDocument doc;
-    if( ! doc.setContent( m_artistNameQuery->data() ) )
+    if( ! doc.setContent( stjob->data() ) )
     {
-        debug() << "Got invalid XML from EchoNest on artist name query!";
+        debug() << "Got invalid XML from EchoNest on solo artist name query!";
         return;
     }
 
@@ -181,18 +226,39 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
             return;
         }
 
-        m_artistId = id;
-
-        // now do our second query
-        QMap< QString, QString > params;
-        params[ "id" ] = id;
+        m_artistIds[ m_artistNameQueries[ stjob ] ] = id;
         
-        m_artistSuggestedQuery = KIO::storedGet( createUrl( "get_similar", params ) );
+        if( ! m_currentOnly )
+        {
+            // check our map, see if there are any we are still waiting for. if not, do the query
+            foreach( QString result, m_artistIds.values() )
+            {
+                if( result == "-1" ) // still waiting
+                {
+                    //debug() << "NOT DONE YET WITH QUERY!";
+                    //debug() << m_artistIds;
+                    job->deleteLater();
+                    return;
+                }
+            }
+            foreach( QString key, m_artistIds.keys() )
+                toQuery << key;
+            // ok we're not, update our list and do it!
+        } else
+            toQuery << m_artistNameQueries[ stjob ];
         
-        connect( m_artistSuggestedQuery, SIGNAL( result( KJob* ) ), this, SLOT( artistSuggestedQueryDone( KJob* ) ) );
-
-        job->deleteLater();
     }
+
+    
+    // now do our second query
+    QMultiMap< QString, QString > params;
+    foreach( QString name, toQuery )
+    {
+        params.insert("id", m_artistIds[ name ] );
+    }
+    m_artistSuggestedQuery = KIO::storedGet( createUrl( "get_similar", params ), KIO::NoReload, KIO::HideProgressInfo );
+    connect( m_artistSuggestedQuery, SIGNAL( result( KJob* ) ), this, SLOT( artistSuggestedQueryDone( KJob* ) ) );
+    job->deleteLater();
 }
 
 void
@@ -240,7 +306,7 @@ Dynamic::EchoNestBias::artistSuggestedQueryDone( KJob* job ) // slot
     {
         QDomNode n = rel.at( i );
         QString artistname = n.firstChildElement( "name" ).text();
-        //debug() << "addng related artist:" << artistname;
+        debug() << "addng related artist:" << artistname;
         m_qm->addFilter( Meta::valArtist, artistname, true, true );
         
     }
@@ -353,18 +419,20 @@ Dynamic::EchoNestBias::xml( QDomDocument doc ) const
 }
 
 // this method shamelessly inspired by liblastfm/src/ws/ws.cpp
-KUrl Dynamic::EchoNestBias::createUrl( QString method, QMap< QString, QString > params )
+KUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
 {
 
-    params[ "api_key" ] = "DD9P0OV9OYFH1LCAE";
-    params[ "version" ] = '3';
-    
+    params.insert( "api_key", "DD9P0OV9OYFH1LCAE" );
+    params.insert( "version", "3" );
+
+    debug() << "got param map:" << params;
 
     KUrl url;
     url.setScheme( "http" );
     url.setHost( "developer.echonest.com" );
     url.setPath( "/api/" + method );
     
+    // take care of the ID possibility  manually
     // Qt setQueryItems doesn't encode a bunch of stuff, so we do it manually
     QMapIterator<QString, QString> i( params );
     while ( i.hasNext() ) {
@@ -406,5 +474,16 @@ double Dynamic::EchoNestBiasCollectionFilterCapability::weight() const
 {
     return m_bias->weight();
 }
+
+void
+Dynamic::EchoNestBias::selectionChanged( int which )
+{
+    if( m_fieldSelection->itemData( which ).toString() == "playlist" )
+        m_currentOnly = false;
+    else
+        m_currentOnly = true;
+
+}
+
 
 #include "EchoNest.moc"

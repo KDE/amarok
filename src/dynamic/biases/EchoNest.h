@@ -30,6 +30,8 @@ namespace Amarok
 namespace KIO {
     class StoredTransferJob;
 }
+
+class KComboBox;
 class KJob;
 
 namespace Dynamic
@@ -78,20 +80,24 @@ namespace Dynamic
             void updateReady ( QString collectionId, QStringList );
             void updateFinished();
             void collectionUpdated();
+            void selectionChanged( int );
             
         private:
-            KUrl createUrl( QString method, QMap< QString, QString > params );
+            KUrl createUrl( QString method, QMultiMap< QString, QString > params );
             
             QString m_currentArtist;
-            QString m_artistId;
+            QMap< QString, QString > m_artistIds;
             
-            KIO::StoredTransferJob* m_artistNameQuery;
+            QMap< KIO::StoredTransferJob*, QString> m_artistNameQueries;
             KIO::StoredTransferJob* m_artistSuggestedQuery;
             QueryMaker* m_qm; // stored so it can be refreshed
             // if the collection changes
             Amarok::Collection* m_collection; // null => all queryable collections
             bool m_needsUpdating;
             QMutex m_mutex;
+            
+            KComboBox* m_fieldSelection;
+            bool m_currentOnly;
             
             QMap< QString, QSet< QByteArray > > m_savedArtists; // populated as queries come in
             // we do some caching here so multiple
