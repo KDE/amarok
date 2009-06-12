@@ -221,7 +221,7 @@ MediaDeviceMonitor::isMtp( const QString &udi )
     return pmp->supportedProtocols().contains( "mtp" );
 }
 
-bool MediaDeviceMonitor::isAudioCd(const QString & udi)
+bool MediaDeviceMonitor::isAudioCd( const QString & udi )
 {
     DEBUG_BLOCK
 
@@ -265,6 +265,25 @@ void
 MediaDeviceMonitor::disconnectMtp( const QString &udi )
 {
     emit mtpReadyToDisconnect( udi );
+}
+
+QString MediaDeviceMonitor::isCdPresent()
+{
+    DEBUG_BLOCK
+
+    QStringList udiList = getDevices();
+
+    /* poll udi list for supported devices */
+    foreach( const QString &udi, udiList )
+    {
+        debug() << "udi: " << udi;
+        if ( isAudioCd( udi ) )
+        {
+            return udi;
+        }
+    }
+
+    return QString();
 }
 
 

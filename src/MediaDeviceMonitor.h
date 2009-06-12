@@ -61,6 +61,8 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     void checkDevicesForIpod();
     void checkDevicesForCd();
 
+    QString isCdPresent();
+
  //   void fetchDevices(); // emits device info for each device present
 
     signals:

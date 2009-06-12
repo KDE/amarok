@@ -46,6 +46,18 @@ void AudioCdCollectionFactory::init()
     DEBUG_BLOCK
     connect( MediaDeviceMonitor::instance(), SIGNAL( audioCdDetected( const QString & ) ), this, SLOT( audioCdAdded( const QString & ) ) );
     connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), this, SLOT( deviceRemoved( const QString & ) ) );
+
+    //check if there is a cd in the drive already:
+
+    QString uid = MediaDeviceMonitor::instance()->isCdPresent();
+
+    if ( !uid.isEmpty() )
+    {
+        m_currentUid = uid;
+        m_collection = new AudioCdCollection();
+        emit newCollection( m_collection );
+    }
+
 }
 
 void AudioCdCollectionFactory::audioCdAdded( const QString & uid )
