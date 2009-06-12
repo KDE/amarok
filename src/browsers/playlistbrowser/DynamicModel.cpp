@@ -69,10 +69,14 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     connect( CollectionManager::instance(),
             SIGNAL(collectionDataChanged(Amarok::Collection*)),
             SLOT(universeNeedsUpdate()) );
+
+    connect( this, SIGNAL( activeChanged() ), this, SLOT( savePlaylists() ) );
 }
+
 
 PlaylistBrowserNS::DynamicModel::~DynamicModel()
 {
+    savePlaylists( true );
 }
 
 void
@@ -314,7 +318,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
     }
 
     QDomElement lastOpen = m_savedPlaylistsRoot.lastChildElement( "current" );
-    if( ! lastOpen.isNull() )
+    if( ! lastOpen.isNull() && m_playlistHash.contains( lastOpen.attribute( "title" ) ) )
     {
         setActivePlaylist( lastOpen.attribute( "title" ) );
     } else
@@ -451,6 +455,7 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 void
 PlaylistBrowserNS::DynamicModel::savePlaylists( bool final )
 {
+    DEBUG_BLOCK
 
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::WriteOnly ) )
@@ -581,7 +586,7 @@ PlaylistBrowserNS::DynamicModel::removeActive()
         //debug() << m_savedPlaylists.toString();
         m_savedPlaylistsRoot.removeChild( m_playlistElements.takeAt( m_activePlaylist ) );
         //debug() << m_savedPlaylists.toString();
-        savePlaylists();
+        savePlaylists( false );
     }
 
     endRemoveRows();

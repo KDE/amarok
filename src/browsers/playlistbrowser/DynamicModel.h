@@ -91,12 +91,12 @@ class DynamicModel : public QAbstractItemModel
 
     private slots:
         void universeNeedsUpdate();
+        void savePlaylists( bool final = true );
 
     private:
         Dynamic::DynamicPlaylistPtr createDefaultPlaylist();
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
         void computeUniverseSet();
-        void savePlaylists( bool final = false );
         void loadAutoSavedPlaylist();
         
         DynamicModel();
