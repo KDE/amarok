@@ -19,10 +19,12 @@
 #include "DynamicCategory.h"
 
 #include "Amarok.h"
+#include "CustomBias.h"
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "DynamicBiasDelegate.h"
 #include "DynamicBiasModel.h"
+#include "dynamic/biases/EchoNest.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
@@ -175,6 +177,10 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     }
 
     m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
+
+    
+    /// HERE WE ADD ALL GENERAL CUSTOM BIASES
+    Dynamic::CustomBias::registerNewBiasFactory( new Dynamic::EchoNestBiasFactory() );
 }
 
 

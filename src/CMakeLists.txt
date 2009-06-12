@@ -419,6 +419,9 @@ set(libdynamic_SRCS
     dynamic/BiasSolver.cpp
     dynamic/TrackSet.cpp
     dynamic/gsl/gauss.c
+
+    # biases
+    dynamic/biases/EchoNest.cpp
 )
 
 #####################################################################

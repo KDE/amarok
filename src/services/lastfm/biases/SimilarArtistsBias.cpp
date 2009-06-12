@@ -46,7 +46,7 @@ QString
 Dynamic::SimilarArtistsBiasFactory::name() const
 {
 
-    return i18n( "Similar Artists" );
+    return i18n( "Last.Fm Similar Artists" );
 }
 
 QString
@@ -105,7 +105,7 @@ Dynamic::SimilarArtistsBias::configWidget( QWidget* parent )
     QFrame * frame = new QFrame( parent );
     QHBoxLayout* layout = new QHBoxLayout( frame );
 
-    QLabel * label = new QLabel( i18n( "Adds songs related to currently playing track" ), parent );
+    QLabel * label = new QLabel( i18n( "Adds songs related to currently playing track, recommended by Last.Fm" ), parent );
     label->setWordWrap( true );
     label->setAlignment( Qt::AlignCenter );
     layout->addWidget( label, Qt::AlignCenter );
