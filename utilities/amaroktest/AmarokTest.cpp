@@ -85,7 +85,7 @@ AmarokTest::AmarokTest( int &argc, char **argv )
     m_log << "</testrun>\n";
 
     QString linkLocation = logsLocation + "LATEST";
-    #ifdef Q_WS_WIN
+    #ifdef Q_WS_WIN /** .lnk extension is required for links on Windows */
     linkLocation = linkLocation + ".lnk";
     #endif
 
