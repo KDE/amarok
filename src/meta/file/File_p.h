@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>
    Copyright (C) 2008 Peter ZHOU         <peterzhoulei@gmail.com>
    Copyright (C) 2008 Seb Ruiz           <ruiz@kde.org>
 
@@ -25,6 +25,7 @@
 #include "Meta.h"
 #include "MetaUtility.h"
 #include "MetaReplayGain.h"
+#include "meta/StatisticsProvider.h"
 
 #include <QFile>
 #include <QObject>
@@ -103,11 +104,7 @@ public:
         , batchUpdate( false )
         , album()
         , artist()
-        , score(0)
-        , rating(0)
-        , lastPlayed(0)
-        , firstPlayed(0)
-        , playCount(0)
+        , provider( 0 )
         , track( t )
     {}
 
@@ -119,17 +116,12 @@ public:
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
+    Meta::StatisticsProvider *provider;
 
     void readMetaData();
     QVariantMap changes;
     void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( getFileRef(), changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
-
-    int score;
-    int rating;
-    uint lastPlayed;
-    uint firstPlayed;
-    int playCount;
 
 private:
     TagLib::FileRef getFileRef();

@@ -28,6 +28,7 @@
 #include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
+#include "meta/support/PermanentUrlStatisticsProvider.h"
 #include "MetaUtility.h"
 #include "amarokurls/PlayUrlRunner.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
@@ -140,6 +141,7 @@ Track::Track( const KUrl &url )
     , d( new Track::Private( this ) )
 {
     d->url = url;
+    d->provider = new PermanentUrlStatisticsProvider( url.url() );
     d->readMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
@@ -150,6 +152,7 @@ Track::Track( const KUrl &url )
 
 Track::~Track()
 {
+    delete d->provider;
     delete d;
 }
 
@@ -351,25 +354,34 @@ Track::setComment( const QString& newComment )
 double
 Track::score() const
 {
-    return 0.0;
+
+    if( d->provider )
+        return d->provider->score();
+    else
+        return 0.0;
 }
 
 void
 Track::setScore( double newScore )
 {
-    d->score = newScore; 
+    if( d->provider )
+        d->provider->setScore( newScore );
 }
 
 int
 Track::rating() const
 {
-    return 0;
+    if( d->provider )
+        return d->provider->rating();
+    else
+        return 0;
 }
 
 void
 Track::setRating( int newRating )
 {
-    d->rating = newRating;
+    if( d->provider )
+        d->provider->setRating( newRating );
 }
 
 int
@@ -444,37 +456,49 @@ Track::bitrate() const
 uint
 Track::lastPlayed() const
 {
-    return d->lastPlayed;
+    if( d->provider )
+        return d->provider->lastPlayed().toTime_t();
+    else
+        return 0;
 }
 
 void
 Track::setLastPlayed( uint newTime )
 {
-    d->lastPlayed = newTime;
+    if( d->provider )
+        d->provider->setLastPlayed( QDateTime::fromTime_t( newTime ) );
 }
 
 uint
 Track::firstPlayed() const
 {
-    return d->firstPlayed;
+    if( d->provider )
+        return d->provider->firstPlayed().toTime_t();
+    else
+        return 0;
 }
 
 void
 Track::setFirstPlayed( uint newTime )
 {
-    d->firstPlayed = newTime;
+    if( d->provider )
+        d->provider->setFirstPlayed( QDateTime::fromTime_t( newTime ) );
 }
 
 int
 Track::playCount() const
 {
-    return d->playCount;
+    if( d->provider )
+        return d->provider->playCount();
+    else
+        return 0;
 }
 
 void
 Track::setPlayCount( int newCount )
 {
-    d->playCount = newCount;
+    if( d->provider )
+        d->provider->setPlayCount( newCount );
 }
 
 qreal
@@ -525,8 +549,8 @@ Track::abortMetaDataUpdate()
 void
 Track::finishedPlaying( double playedFraction )
 {
-    Q_UNUSED( playedFraction );
-    //TODO
+    if( d->provider )
+        d->provider->played( playedFraction );
 }
 
 bool
