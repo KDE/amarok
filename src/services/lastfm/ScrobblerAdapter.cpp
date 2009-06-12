@@ -32,7 +32,6 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
 {
     resetVariables();
 
-    connect( m_scrobbler, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
     connect( The::mainWindow(), SIGNAL( loveTrack(Meta::TrackPtr) ), SLOT( loveTrack(Meta::TrackPtr) ) );
 }
 
@@ -202,14 +201,6 @@ ScrobblerAdapter::ban()
 
     m_current.ban();
 }
-
-
-void
-ScrobblerAdapter::statusChanged( int statusCode, QVariant /*data*/ )
-{
-    debug() << "statusChanged: statusCode=" << statusCode;
-}
-
 
 void
 ScrobblerAdapter::resetVariables()

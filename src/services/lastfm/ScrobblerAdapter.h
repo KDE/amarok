@@ -44,9 +44,6 @@ public:
 public slots:
     void loveTrack( Meta::TrackPtr );
 
-private slots:
-    void statusChanged( int statusCode, QVariant data );
-
 private:
     void resetVariables();
     void checkScrobble();
