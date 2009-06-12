@@ -28,6 +28,7 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     : PlaylistBrowserNS::BiasWidget( bias, parent )
     , m_cbias( bias )
 {
+    DEBUG_BLOCK
     // create widget with combobox, on selection, update with
     // delegate widget.
     QFrame* frame = new QFrame( parent );
@@ -65,9 +66,10 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
         m_fieldSelection->addItem( entry->name(), data );
     }
 
-    connect( m_fieldSelection, SIGNAL( currentIndexChanged( int) ),
+    connect( m_fieldSelection, SIGNAL( currentIndexChanged( int ) ),
             this, SLOT( selectionChanged( int ) ) );
     m_fieldSelection->setCurrentIndex( 0 );
+    selectionChanged( 0 );
     
 }
 
@@ -93,17 +95,16 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
         return;
     }
     // remove last item (old config widget) and add new one
-    if( m_layout->count() != 2 )
+    if( m_layout->count() == 2 )
     {
-        debug() << "got more than 2 items in the layout! Whats going on?";
-        return;
+        // remove old widget
+        
+        QLayoutItem* oldW = m_layout->itemAt( 1 );
+        m_layout->removeItem( oldW );
+        delete oldW;
     }
 
     entryConfig->setParent( this );
-
-    QLayoutItem* oldW = m_layout->itemAt( 1 );
-    m_layout->removeItem( oldW );
-    delete oldW;
     
     m_layout->addWidget( entryConfig );
     m_cbias->setCurrentEntry( chosen );
@@ -144,8 +145,12 @@ Dynamic::CustomBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 
     Q_UNUSED( context );
 
-    double satisfiedCount = m_currentEntry->numTracksThatSatisfy( playlist );
-
+    double satisfiedCount = 0;
+    if( m_currentEntry )
+        satisfiedCount = m_currentEntry->numTracksThatSatisfy( playlist );
+    else
+        warning() << "WHY is there no set type of BIAS?!";
+    
     return  m_weight - (satisfiedCount / (double)playlist.size());
     
 }

@@ -147,7 +147,7 @@ PlaylistBrowserNS::DynamicBiasModel::appendCustomBias()
 {
     Dynamic::CustomBias* cb = Dynamic::CustomBias::self();
     
-    cb->setActive( false );
+    cb->setActive( true );
     appendBias( cb );
 }
 

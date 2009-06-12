@@ -56,9 +56,9 @@ Dynamic::LastFmBias::engineNewTrackPlaying()
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    if( track && !track->artist().isNull() )
+    if( track && track->artist() && !track->artist()->name().isEmpty() )
     {
-        m_currentArtist = track->artist();
+        m_currentArtist = track->artist()->name();
         QMap< QString, QString > params;
         params[ "method" ] = "artist.getSimilar";
         params[ "limit" ] = "70";
@@ -83,6 +83,7 @@ Dynamic::LastFmBias::artistQueryDone() // slot
 
     QMap< int, QString > similar =  lastfm::Artist::getSimilar( m_artistQuery );
     // for now we are ignoring the similarity taking as yes/no
+    debug() << "just saved similar artists:" << m_currentArtist << ":" << similar.values();
     m_savedArtists[ m_currentArtist ] = similar.values();
 
     m_artistQuery->deleteLater();
@@ -92,9 +93,9 @@ Dynamic::LastFmBias::artistQueryDone() // slot
 bool
 Dynamic::LastFmBias::trackSatisfies( const Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
-    debug() << "checking if " << track->name() << "by" << track->artist()->name() << "is in suggested:" << m_savedArtists[ m_currentArtist ] << "of" << m_currentArtist;
+    //debug() << "checking if " << track->name() << "by" << track->artist()->name() << "is in suggested:" << m_savedArtists[ m_currentArtist ] << "of" << m_currentArtist;
     if( m_savedArtists.keys().contains( m_currentArtist ) )
         return m_savedArtists[ m_currentArtist ].contains( track->artist()->name() );
     else
