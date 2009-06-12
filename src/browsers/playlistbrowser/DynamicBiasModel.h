@@ -68,6 +68,7 @@ namespace PlaylistBrowserNS
             void removeBias( Dynamic::Bias* );
             void biasChanged( Dynamic::Bias* );
             void appendGlobalBias();
+            void appendCustomBias();
             void appendNormalBias();
 
         private:

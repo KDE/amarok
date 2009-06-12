@@ -26,7 +26,7 @@
 
 Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias, QWidget* parent)
     : PlaylistBrowserNS::BiasWidget( bias, parent )
-    , m_bias( bias )
+    , m_cbias( bias )
 {
     // create widget with combobox, on selection, update with
     // delegate widget.
@@ -58,7 +58,7 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     sliderLayout->addWidget( m_weightSelection );
     sliderLayout->addWidget( m_weightLabel );
 
-    foreach( Dynamic::CustomBiasEntry* entry, m_bias->currentEntries() )
+    foreach( Dynamic::CustomBiasEntry* entry, m_cbias->currentEntries() )
     {
         QVariant data;
         data.setValue( entry );
@@ -101,15 +101,16 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
 
     m_layout->removeWidget( chosen->configWidget() );
     m_layout->addWidget( entryConfig );
-    m_bias->setCurrentEntry( chosen );
+    m_cbias->setCurrentEntry( chosen );
 }
 
 void
 Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
 {
-    m_bias->setWeight( amount );
+    m_cbias->setWeight( amount );
 }
 
+Dynamic::CustomBias* Dynamic::CustomBias::s_self = 0;
 
 Dynamic::CustomBias::CustomBias()
     : m_weight( .75 )

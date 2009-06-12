@@ -38,7 +38,7 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
         void weightChanged( int amount );
         
     private:
-        CustomBias* m_bias;
+        CustomBias* m_cbias;
         
         QGridLayout* m_layout;        
         Amarok::Slider* m_weightSelection;
@@ -100,6 +100,15 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         CustomBias();
         ~CustomBias() {}
 
+
+        static CustomBias* self()
+        {
+            if( !s_self )
+                s_self = new CustomBias();
+
+            return s_self;
+        }
+        
         // reimplement from Dynamic::Bias
         virtual PlaylistBrowserNS::BiasWidget* widget(QWidget* parent = 0);
         virtual QDomElement xml() const;
@@ -127,7 +136,8 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         CustomBiasEntry* m_currentEntry;
 
         double m_weight; // slider for percent
-        
+
+        static CustomBias* s_self;
 };
 
 }

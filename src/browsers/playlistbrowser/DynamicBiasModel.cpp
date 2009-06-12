@@ -22,6 +22,7 @@
 
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
+#include "CustomBias.h"
 #include "BiasedPlaylist.h"
 
 #include <QVariant>
@@ -76,7 +77,7 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         }
 
         // add the bias adding widgets
-
+        // add Proportional bias
         PlaylistBrowserNS::BiasAddWidget* globalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
                     i18n( "Proportional Bias" ),
@@ -92,8 +93,25 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         m_widgets.append( globalAdder );
         connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
                 this, SLOT(widgetChanged(QWidget*)) );
+                
+        // add Custom bias
+        PlaylistBrowserNS::BiasAddWidget* customAdder =
+            new PlaylistBrowserNS::BiasAddWidget(
+                    i18n( "Custom Bias" ),
+                    i18n( "Match a certain portion of the playlist to a custom field." ),
+                    m_listView->viewport() );
+        if( !m_widgets.isEmpty() )
+            customAdder->setAlternate( !m_widgets.back()->alternate() );
 
 
+        connect( customAdder, SIGNAL(addBias()),
+                SLOT(appendCustomBias()) );
+
+        m_widgets.append( customAdder );
+        connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
+                this, SLOT(widgetChanged(QWidget*)) );
+
+        // add fuzzy bias
         PlaylistBrowserNS::BiasAddWidget* normalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
                     i18n( "Fuzzy Bias" ),
@@ -122,6 +140,15 @@ PlaylistBrowserNS::DynamicBiasModel::appendGlobalBias()
         new Dynamic::GlobalBias( 0.0, XmlQueryReader::Filter() );
     gb->setActive( false );
     appendBias( gb );
+}
+
+void
+PlaylistBrowserNS::DynamicBiasModel::appendCustomBias()
+{
+    Dynamic::CustomBias* cb = Dynamic::CustomBias::self();
+    
+    cb->setActive( false );
+    appendBias( cb );
 }
 
 void
