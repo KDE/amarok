@@ -24,8 +24,10 @@
 #include "PaletteHandler.h"
 #include "AmarokUrl.h"
 #include "BookmarkGroup.h"
+#include "playlist/PlaylistController.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
+#include "timecode/TimecodeMeta.h"
 
 #include <KAction>
 #include <KMenu>
@@ -44,6 +46,7 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     , m_loadAction( 0 )
     , m_deleteAction( 0 )
     , m_renameAction( 0 )
+    , m_createTimecodeTrackAction( 0 )
     , m_addGroupAction( 0 )
 {
 
@@ -106,6 +109,7 @@ BookmarkTreeView::keyPressEvent( QKeyEvent *event )
 QList<KAction *>
 BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
+    DEBUG_BLOCK
 
     QList< KAction * > actions;
     
@@ -124,7 +128,14 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     if ( m_renameAction == 0 )
     {
         m_renameAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
+    }
+
+    if ( m_createTimecodeTrackAction == 0 )
+    {
+        debug() << "creating m_createTimecodeTrackAction";
+        m_createTimecodeTrackAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
+        connect( m_createTimecodeTrackAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
     }
     
     if ( indices.count() > 0 )
@@ -137,6 +148,12 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
 
     if ( indices.count() == 1 )
         actions << m_renameAction;
+
+    if ( indices.count() == 2 ) {
+        debug() << "adding m_createTimecodeTrackAction";
+        actions << m_createTimecodeTrackAction;
+
+    }
 
 
     return actions;
@@ -257,6 +274,67 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
     }
     
     return menu;
+}
+
+void BookmarkTreeView::slotCreateTimecodeTrack()
+{
+
+    //TODO: Factor into seperate class
+    
+    QList<BookmarkViewItemPtr> list = selectedItems().toList();
+    if ( list.count() != 2 )
+        return;
+
+    const AmarokUrl * url1 = dynamic_cast<const AmarokUrl *>( list.at( 0 ).data() );
+
+    if ( url1 == 0 )
+        return;
+    if ( url1->command() != "play" )
+        return;
+
+    const AmarokUrl * url2 = dynamic_cast<const AmarokUrl *>( list.at( 1 ).data() );
+
+    if ( url2 == 0 )
+        return;
+    if ( url2->command() != "play" )
+        return;
+
+    if ( url1->arg( 0 ) != url2->arg( 0 ) )
+        return;
+
+    //ok, so we actually have to timecodes from the same base url, not get the
+    //minimum and maximum time:
+
+    int start = qMin( url1->arg( 1 ).toInt(), url2->arg( 1 ).toInt() ) * 1000;
+    int end = qMax( url1->arg( 1 ).toInt(), url2->arg( 1 ).toInt() ) * 1000;
+
+    //Now we really should pop up a menu to get the user to enter some info about this
+    //new track, but for now, just fake it as this is just for testing anyway
+
+    QString url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->arg ( 0 ).toUtf8() ) ).toString();
+    
+    Meta::TimecodeTrackPtr track = Meta::TimecodeTrackPtr( new Meta::TimecodeTrack( "timecode test", url, start, end ) );
+    Meta::TimecodeAlbumPtr album = Meta::TimecodeAlbumPtr( new Meta::TimecodeAlbum( "Dummy Album" ) );
+    Meta::TimecodeArtistPtr artist = Meta::TimecodeArtistPtr( new Meta::TimecodeArtist( "Dummy Artist" ) );
+    Meta::TimecodeGenrePtr genre = Meta::TimecodeGenrePtr( new Meta::TimecodeGenre( "Dummy Genre" ) );
+
+    
+    album->addTrack( track );
+    artist->addTrack( track );
+    genre->addTrack( track );
+
+    track->setAlbum( album );
+    track->setArtist( artist );
+    track->setGenre( genre );
+
+    album->setAlbumArtist( artist );
+    album->setIsCompilation( false );
+
+    //now add it to the playlist
+
+    The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::AppendAndPlay );
+
+    
 }
 
 #include "BookmarkTreeView.moc"

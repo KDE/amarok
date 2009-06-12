@@ -53,6 +53,9 @@ protected slots:
     void slotDelete();
     void slotRename();
 
+    //for testing...
+    void slotCreateTimecodeTrack();
+
     void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
 
 signals:
@@ -66,6 +69,9 @@ private:
     KAction *m_loadAction;
     KAction *m_deleteAction;
     KAction *m_renameAction;
+
+    //for testing...
+    KAction *m_createTimecodeTrackAction;
 
     KAction *m_addGroupAction;
 };
