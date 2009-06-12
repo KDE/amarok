@@ -333,7 +333,6 @@ set(libplaylistmanager_SRCS
 # PLAYLIST
 #####################################################################
 set(libplaylist_SRCS
-    playlist/proxymodels/GroupingProxy.cpp
     playlist/PlaylistActions.cpp
     playlist/PlaylistController.cpp
     playlist/PlaylistHeader.cpp
@@ -357,6 +356,8 @@ set(libplaylist_SRCS
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/SourceSelectionPopup.cpp
     playlist/proxymodels/FilterProxy.cpp
+    playlist/proxymodels/GroupingProxy.cpp
+    playlist/proxymodels/SortProxy.cpp
 )
 
 #####################################################################
