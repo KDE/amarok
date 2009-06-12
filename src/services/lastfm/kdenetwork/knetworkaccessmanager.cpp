@@ -77,7 +77,6 @@ QNetworkReply *KNetworkAccessManager::createRequest(Operation op, const QNetwork
         case PostOperation: {
             kDebug() << "PostOperation:" << req.url();
             kioJob = KIO::http_post(req.url(), outgoingData->readAll(), KIO::HideProgressInfo);
-            kioJob->addMetaData("content-type", "Content-Type: application/x-www-form-urlencoded" );
             break;            
         }
         default:
@@ -88,6 +87,9 @@ QNetworkReply *KNetworkAccessManager::createRequest(Operation op, const QNetwork
     KNetworkReply *reply = new KNetworkReply(req, kioJob, this);
 
     kioJob->addMetaData(metaDataForRequest(req));
+
+    if ( op == PostOperation && !kioJob->metaData().contains("content-type"))
+        kioJob->addMetaData("content-type", "Content-Type: application/x-www-form-urlencoded" );
 
     connect(kioJob, SIGNAL(data(KIO::Job *, const QByteArray &)),
         reply, SLOT(appendData(KIO::Job *, const QByteArray &)));
@@ -119,7 +121,13 @@ KIO::MetaData KNetworkAccessManager::metaDataForRequest(QNetworkRequest request)
         const QByteArray value = request.rawHeader(headerKey);
         if (value.isNull())
             continue;
-
+// createRequest() checks later for existence "content-type" metadata
+        if (headerKey=="Content-Type")
+        {
+            metaData.insert("content-type", value);
+            continue;
+        }
+        
         if (additionHeaders.length() > 0) {
             additionHeaders += "\r\n";
         }
