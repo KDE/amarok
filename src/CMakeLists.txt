@@ -215,6 +215,7 @@ set(meta_SRCS
     meta/MetaReplayGain.cpp
     meta/PLSPlaylist.cpp
     meta/SqlPlaylist.cpp
+    meta/StatisticsProvider.cpp
     meta/PlaylistFileSupport.cpp
     meta/PrivateMetaRegistry.cpp
     meta/XSPFPlaylist.cpp
@@ -241,6 +242,8 @@ set(meta_SRCS
     meta/cue/Cue.cpp
     meta/proxy/MetaProxy.cpp
     meta/stream/Stream.cpp
+    meta/support/PermanentUrlStatisticsProvider.cpp
+    meta/support/TagStatisticsProvider.cpp
 )
 
 #####################################################################
@@ -643,6 +646,7 @@ install(FILES  amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
 install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
               dbus/org.freedesktop.MediaPlayer.player.xml
               dbus/org.freedesktop.MediaPlayer.tracklist.xml
+              dbus/org.kde.amarok.Collection.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 

@@ -1,0 +1,72 @@
+/*
+ *  Copyright 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
+#include "PermanentUrlStatisticsProvider.h"
+
+#include "collection/CollectionManager.h"
+#include "collection/SqlStorage.h"
+
+PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &permanentUrl )
+        : StatisticsProvider()
+        , m_permanentUrl( permanentUrl )
+{
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+
+    const QString query = "SELECT firstPlayed, lastPlayed, score, rating, playcount FROM "
+                          "statistics_permanent WHERE url = '%1'";
+    QStringList result = sql->query( query.arg( sql->escape( permanentUrl ) ) );
+    if( !result.isEmpty() )
+    {
+        m_firstPlayed = QDateTime::fromTime_t( result.value( 0 ).toUInt() );
+        m_lastPlayed = QDateTime::fromTime_t( result.value( 1 ).toUInt() );
+        m_score = result.value( 2 ).toDouble();
+        m_rating = result.value( 3 ).toInt();
+        m_playCount = result.value( 4 ).toInt();
+    }
+}
+
+void
+PermanentUrlStatisticsProvider::save()
+{
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+
+    const QString check = "SELECT COUNT(*) FROM statistics_permanent WHERE url = '%1'";
+    QStringList rsCheck = sql->query( check.arg( sql->escape( m_permanentUrl ) ) );
+    if( !rsCheck.isEmpty() )
+    {
+        QString sqlString;
+        if( rsCheck.first().toInt() )
+        {
+            sqlString = "UPDATE statistics_permanent SET firstPlayed = %1,lastPlayed = %2,"
+                        "score = %3,rating = %4,playcount=%5 WHERE url = '%6'";
+        }
+        else
+        {
+            sqlString = "INSERT INTO statistics_permanent(firstPlayed,lastPlayed,score,"
+                        "rating,playcount,url) VALUE (%1,%2,%3,%4,%5,'%6')";
+        }
+        sqlString = sqlString.arg( QString::number( m_firstPlayed.toTime_t() ),
+                                   QString::number( m_lastPlayed.toTime_t() ),
+                                   QString::number( m_score ),
+                                   QString::number( m_rating ),
+                                   QString::number( m_playCount ),
+                                   sql->escape( m_permanentUrl ) );
+        sql->query( sqlString );
+    }
+}
+
