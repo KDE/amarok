@@ -30,6 +30,7 @@
 
 #include <KAction>
 #include <KIcon>
+#include <KIconLoader>
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
@@ -262,8 +263,11 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
-    //TODO: we have a really nice opportunity to make thse info blurbs both helpful and pretty
-    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and cd's" ) );
+    //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
+    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and cd's." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "collection-amarok", -128, true ) );
 
 }
 

@@ -93,6 +93,9 @@ public:
      */
     QIcon icon() const;
 
+    void setImagePath( const QString &path );
+    QString imagePath();
+
     BrowserCategoryList * parentList();
     void setParentList( BrowserCategoryList * parent );
 
@@ -109,6 +112,7 @@ private:
     QString m_shortDescription;
     QString m_longDescription;
     QIcon   m_icon;
+    QString m_imagePath;
     BrowserCategoryList * m_parentList;
 
     BreadcrumbItem * m_breadcrumb;

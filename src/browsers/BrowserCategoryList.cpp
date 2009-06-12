@@ -324,10 +324,15 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         infoHtml += "<div align=\"center\"><strong>";
         infoHtml += category->prettyName();
         infoHtml += "</strong><p><em>";
+        if ( !category->imagePath().isEmpty() )
+        {
+            infoHtml += "<img src=\"" + category->imagePath() +
+                    "\" align=\"middle\" border=\"0\"><p>";
+        }
         infoHtml += category->longDescription();
         infoHtml += "</em><br><br>";
-        //infoHtml += "<img src=\"" + magnatuneAlbum->coverUrl() +
-          //      "\" align=\"middle\" border=\"1\">";
+
+
 
         infoHtml += "</p></div>";
         infoHtml += "</BODY></HTML>";

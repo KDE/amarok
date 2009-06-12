@@ -124,4 +124,14 @@ BreadcrumbItem * BrowserCategory::breadcrumb()
     return m_breadcrumb;
 }
 
+void BrowserCategory::setImagePath( const QString & path )
+{
+    m_imagePath = path;
+}
+
+QString BrowserCategory::imagePath()
+{
+    return m_imagePath;
+}
+
 #include "BrowserCategory.moc"
