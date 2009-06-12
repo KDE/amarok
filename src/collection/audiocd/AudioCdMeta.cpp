@@ -1,5 +1,6 @@
 /* This file is part of the KDE project
    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   Copyright (C) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -23,7 +24,7 @@
 
 using namespace Meta;
 
-AudioCdTrack::AudioCdTrack(AudioCdCollection *collection, const QString &name, const QString &url  )
+AudioCdTrack::AudioCdTrack( AudioCdCollection *collection, const QString &name, const QString &url )
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )
@@ -32,6 +33,7 @@ AudioCdTrack::AudioCdTrack(AudioCdCollection *collection, const QString &name, c
     , m_composer( 0 )
     , m_year( 0 )
     , m_name( name)
+    , m_type( "wav" )
     , m_length( 0 )
     , m_trackNumber( 0 )
     , m_displayUrl( url )
@@ -60,7 +62,6 @@ KUrl
 AudioCdTrack::playableUrl() const
 {
     KUrl url( m_playableUrl );
-    url.setProtocol( "http" );
     return url;
 }
 
@@ -411,6 +412,8 @@ AudioCdAlbum::albumArtist() const
 TrackList
 AudioCdAlbum::tracks()
 {
+    DEBUG_BLOCK
+    debug() << "number of tracks: " << m_tracks.count();
     return m_tracks;
 }
 
@@ -445,7 +448,9 @@ AudioCdAlbum::setImage( const QPixmap &pixmap )
 void
 AudioCdAlbum::addTrack( AudioCdTrackPtr track )
 {
+    DEBUG_BLOCK
     m_tracks.append( TrackPtr::staticCast( track ) );
+    debug() << "number of tracks: " << m_tracks.count();
 }
 
 void

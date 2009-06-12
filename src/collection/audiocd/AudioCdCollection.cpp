@@ -101,7 +101,10 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
         }
 
         AudioCdArtistPtr artistPtr = AudioCdArtistPtr( new  AudioCdArtist( artist ) );
+        addArtist( ArtistPtr::staticCast( artistPtr ) );
         AudioCdAlbumPtr albumPtr = AudioCdAlbumPtr( new  AudioCdAlbum( album ) );
+        albumPtr->setAlbumArtist( artistPtr );
+        addAlbum( AlbumPtr::staticCast( albumPtr ) );
 
 
         startIndex = cddbInfo.indexOf( "DYEAR=", 0 );
@@ -113,6 +116,7 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
         }
 
         AudioCdYearPtr yearPtr = AudioCdYearPtr( new AudioCdYear( year ) );
+        addYear( YearPtr::staticCast( yearPtr ) );
 
 
         startIndex = cddbInfo.indexOf( "DGENRE=", 0 );
@@ -124,6 +128,7 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
         }
 
         AudioCdGenrePtr genrePtr = AudioCdGenrePtr( new  AudioCdGenre( genre ) );
+        addGenre( GenrePtr::staticCast( genrePtr ) );
 
         startIndex = cddbInfo.indexOf( "DISCID=", 0 );
         if ( startIndex != -1 )
@@ -132,12 +137,6 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
             endIndex = cddbInfo.indexOf( "\n", startIndex );
             m_discCddbId = cddbInfo.mid( startIndex, endIndex - startIndex );
         }
-
-
-        addAlbum( AlbumPtr::staticCast( albumPtr ) );
-        addArtist( ArtistPtr::staticCast( artistPtr ) );
-        addYear( YearPtr::staticCast( yearPtr ) );
-        addGenre( GenrePtr::staticCast( genrePtr ) );
 
         //get the list of tracknames
         startIndex = cddbInfo.indexOf( "TTITLE0=", 0 );
@@ -164,7 +163,7 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
 
                 debug() << "Track url: " << baseUrl;
 
-                AudioCdTrackPtr trackPtr =  AudioCdTrackPtr( new  AudioCdTrack( this, trackName, baseUrl ) );
+                AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
 
                 trackPtr->setTrackNumber( i + 1 );
                 
@@ -183,12 +182,10 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
                 trackPtr->setYear( yearPtr );
                 
             }
-            
         }
 
-        //lets see if we can find a cover for this album:
+        //lets see if we can find a cover for the album:
         The::coverFetcher()->queueAlbum( AlbumPtr::staticCast( albumPtr ) );
-       
 
     }
 
