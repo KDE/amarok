@@ -24,6 +24,8 @@ VERSION 2.1.1
     * Show info box in CV if no applets are visible.
 
   BUGFIXES:
+    * Don't hide the "On/Off" button for Dynamic Playlists if the window is
+      not tall enough. (BR 195886)
     * Make it possible to change the width of a playlist layout element if the 
       combined width of items in the row exceeds 100% (BR 195846)
     * Keep width slider and width display from overlapping when setting
