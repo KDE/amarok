@@ -47,7 +47,7 @@ MainToolbar::MainToolbar( QWidget * parent )
 {
     setObjectName( "MainToolbar" );
 
-    setContentsMargins( 20, 3, 3, 3 );
+    setContentsMargins( 0, 0, 0, 0 );
     setFixedHeight( 67 );
     setMinimumWidth( 600 );
     setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
@@ -59,7 +59,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     //hBox->setFixedHeight( 67 );
     //hBox->setMinimumWidth( 594 );
     hBox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-    hBox->setContentsMargins( 20, 3, 3, 3 );
+    hBox->setContentsMargins( 0, 0, 0, 0 );
 
     m_mainControlsWidget = new MainControlsWidget( hBox );
 

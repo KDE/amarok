@@ -201,7 +201,7 @@ MainWindow::init()
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
 
-    QDockWidget * browsersDock = new QDockWidget( this );
+    QDockWidget * browsersDock = new QDockWidget( i18n( "Browsers" ), this );
     browsersDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     browsersDock->setWidget( m_browsers );
     browsersDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
@@ -212,7 +212,7 @@ MainWindow::init()
     m_playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
     m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
 
-    QDockWidget * playlistDock = new QDockWidget( this );
+    QDockWidget * playlistDock = new QDockWidget( i18n( "Playlist" ), this );
     playlistDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     playlistDock->setWidget( m_playlistWidget );
     playlistDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
@@ -235,7 +235,7 @@ MainWindow::init()
     connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
-    QDockWidget * contextDock = new QDockWidget( this );
+    QDockWidget * contextDock = new QDockWidget( i18n( "Context" ), this );
     contextDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     contextDock->setWidget( m_contextWidget );
     contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
