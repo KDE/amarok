@@ -267,7 +267,7 @@ MainWindow::init()
 
 
         PERF_LOG( "Creating CollectionWidget" )
-        m_collectionBrowser = new CollectionWidget( "CollectionBrowser", 0 );
+        m_collectionBrowser = new CollectionWidget( "collections", 0 );
         m_collectionBrowser->setPrettyName( i18n( "Collections" ) );
         m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
         m_collectionBrowser->setShortDescription( i18n( "The list of available collections" ) );
@@ -288,7 +288,7 @@ MainWindow::init()
         The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );
 
         PERF_LOG( "Creating PlaylistBrowser" )
-        m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "PlaylistBrowser", 0 );
+        m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "playlists", 0 );
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
         m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
         m_playlistBrowser->setShortDescription( i18n( "Differnt kinds of playlists" ) );
@@ -297,7 +297,7 @@ MainWindow::init()
 
                 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowser::Widget * fileBrowser = new FileBrowser::Widget( "FileBrowser::Widget", 0 );
+        FileBrowser::Widget * fileBrowser = new FileBrowser::Widget( "files", 0 );
         fileBrowser->setPrettyName( i18n("Files") );
         fileBrowser->setIcon( KIcon( "folder-amarok" ) );
         fileBrowser->setShortDescription( i18n( "Browse local files" ) );

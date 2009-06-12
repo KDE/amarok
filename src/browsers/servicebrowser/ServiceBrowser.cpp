@@ -34,7 +34,7 @@ ServiceBrowser * ServiceBrowser::s_instance = 0;
 ServiceBrowser * ServiceBrowser::instance()
 {
     if ( s_instance == 0 )
-        s_instance = new ServiceBrowser( 0, "Internet Content" );
+        s_instance = new ServiceBrowser( 0, "internet" );
 
     return s_instance;
 }

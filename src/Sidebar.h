@@ -84,6 +84,8 @@ class SideBar: public KHBox
         QPushButton *backButton() const { return m_backButton; }
         BrowserCategoryList *list() const { return m_categoryList; }
 
+        void navigate( const QString &target ) { m_categoryList->navigate( target ); }
+
     private slots:
         void categoryChanged()
         {

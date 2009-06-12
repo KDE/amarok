@@ -47,7 +47,7 @@ NavigationUrlRunner::run( AmarokUrl url )
     
     if ( url.numberOfArgs() > 0 )
     {
-        QString type = url.arg( 0 );
+        QString baseTarget = url.arg( 0 );
 
         QString collection;
         QString groupMode;
@@ -60,38 +60,39 @@ NavigationUrlRunner::run( AmarokUrl url )
         if ( url.numberOfArgs() == 4 )
             filter = url.arg( 3 );
 
-        debug() << "type: " << type;
+        debug() << "baseTarget: " << baseTarget;
         debug() << "collection: " << collection;
         debug() << "groupMode: " << groupMode;
         debug() << "filter: " << filter;
 
-        if ( type == "service" || type == "Internet" )
-            type = "Internet";
-        else if ( type == "collection" )
-            type = "CollectionBrowser";
-        else if ( type == "playlists" )
-            type = "PlaylistBrowser";
-        else if ( type == "files" )
-            type = "FileBrowser::Widget";
-        else
-            return false;
-
-        The::mainWindow()->showBrowser( type );
-
-        if ( type ==  "Internet" )
-        {
-            if ( collection.isEmpty() )
-            {
-                ServiceBrowser::instance()->home();
-                return true;
-            }
+        QString target = baseTarget;
         
+        if ( !collection.isEmpty() )
+        {
+            target += ( '/' + collection );
+        }
+
+        The::mainWindow()->sideBar()->navigate( target );
+
+        if ( The::mainWindow()->isHidden() )
+            The::mainWindow()->show();
+        if ( The::mainWindow()->isMinimized() )
+            The::mainWindow()->showNormal();
+
+        The::mainWindow()->raise();
+        The::mainWindow()->activateWindow();
+
+        if ( baseTarget == "internet" )
+        {
+
             ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( collection ) );
 
             if ( service == 0 ) return false;
 
-            service->polish(); //ensure that everything we need is initialized ( especially if
-                               //amarok is launched just to handle this url ).
+            //ensure that everything we need is initialized ( especially if
+            //amarok is launched just to handle this url ).
+            service->polish();
+
             if ( groupMode == "artist-album" )
                 service->sortByArtistAlbum();
             else if ( groupMode == "genre-artist" )
@@ -108,25 +109,11 @@ NavigationUrlRunner::run( AmarokUrl url )
             service->setFilter( filter );
             debug() << "setting filter";
 
-            debug() << "showing service";
-            ServiceBrowser::instance()->showCategory( collection );
-
-            //ensure that the Amarok window is activated and on top
-
-            if ( The::mainWindow()->isHidden() )
-                The::mainWindow()->show();
-            if ( The::mainWindow()->isMinimized() )
-                The::mainWindow()->showNormal();
-
-            The::mainWindow()->raise();
-            The::mainWindow()->activateWindow();
-
             return true;
         }
-        else if ( type ==  "CollectionBrowser" )
+        else if ( baseTarget ==  "Collections" )
         {
             debug() << "get collection browser";
-
             CollectionWidget * collectionBrowser = The::mainWindow()->collectionBrowser();
             if ( collectionBrowser == 0 ) return false;
 
@@ -148,37 +135,16 @@ NavigationUrlRunner::run( AmarokUrl url )
 
             debug() << "done";
 
-            if ( The::mainWindow()->isHidden() )
-                The::mainWindow()->show();
-            if ( The::mainWindow()->isMinimized() )
-                The::mainWindow()->showNormal();
-
-            The::mainWindow()->raise();
-            The::mainWindow()->activateWindow();
-
             return true;
         }
-        else if ( type ==  "PlaylistBrowser" )
+        else if ( baseTarget ==  "playlists" )
         {
-            debug() << "Show playlist category: " << collection;
-            QList<int> categories = The::playlistManager()->availableCategories();
-
-            int cat = -1;
-
-            foreach( int currentCat, categories ) {
-                if ( The::playlistManager()->typeName( currentCat ) == collection ) {
-                    cat = currentCat;
-                    break;
-                }
-            }
-            debug() << "got cat: " << cat;
-            if ( cat != -1 )
-                The::mainWindow()->playlistBrowser()->showCategory( cat );
-            
             return true;
         }
-        else if ( type ==  "FileBrowser::Widget" )
+        else if ( baseTarget ==  "files" )
+        {
             return true;
+        }
     }
     
     return false;

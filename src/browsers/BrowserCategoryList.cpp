@@ -231,8 +231,43 @@ void BrowserCategoryList::childViewChanged()
     emit( viewChanged() );
 }
 
+void BrowserCategoryList::navigate( const QString & target )
+{
+    QStringList categories = target.split( '/' );
+    if ( categories.size() == 0 )
+        return;
+
+    QString childName = categories.at( 0 );
+    if ( !m_categories.contains( childName ) )
+        return;
+
+    showCategory( childName );
+
+    //check if this category is also BrowserCategoryList.target
+    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+
+    if ( childList == 0 )
+        return;
+
+    //check if there are more arguments in the navigate string.
+    if ( categories.size() == 1 )
+    {
+        //only one name, but since the category we switched to is also
+        //a category lsit, mke sure that it is reset to home
+        childList->home();
+        return;
+    }
+
+    int firstArgLength = childName.length() + 1;
+
+    QString subTarget = target;
+    subTarget.remove( 0 , firstArgLength );
+
+    childList->navigate( subTarget );
+
+}
+
 
 #include "BrowserCategoryList.moc"
-
 
 
