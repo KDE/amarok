@@ -70,13 +70,19 @@ DatabaseUpdater::update()
             upgradeVersion1to2();
             dbVersion = 2;
         }
-        if ( dbVersion == 2 )
+        if( dbVersion == 2 )
         {
             upgradeVersion2to3();
             dbVersion = 3;
         }
+        if( dbVersion == 3 )
+        {
+            upgradeVersion3to4();
+            dbVersion = 4;
+        }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
+
         m_collection->startFullScan();
     }
     else if( dbVersion > DB_VERSION )
@@ -123,6 +129,30 @@ DatabaseUpdater::upgradeVersion2to3()
     m_collection->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
     m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
 
+}
+
+void
+DatabaseUpdater::upgradeVersion3to4()
+{
+    m_collection->query( "CREATE TABLE statistics_permanent "
+                         "(url " + m_collection->exactTextColumnType() +
+                         ",createdate INTEGER"
+                         ",accessdate INTEGER"
+                         ",score FLOAT"
+                         ",rating INTEGER DEFAULT 0"
+                         ",playcount INTEGER)" );
+    m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(url)" );
+
+    m_collection->query( "CREATE TABLE statistics_tag "
+                         "(name " + m_collection->textColumnType() +
+                         ",artist " + m_collection->textColumnType() +
+                         ",album " + m_collection->textColumnType() +
+                         ",createdate INTEGER"
+                         ",accessdate INTEGER"
+                         ",score FLOAT"
+                         ",rating INTEGER DEFAULT 0"
+                         ",playcount INTEGER)" );
+    m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(name,artist,album)" );
 }
 
 void
