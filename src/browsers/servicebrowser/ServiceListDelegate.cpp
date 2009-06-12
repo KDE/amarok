@@ -1,6 +1,7 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>*
  *   Copyright (c) 2008  Mark Kretschmann <kretschmann@kde.org>            *
+ *   Copyright (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -32,12 +33,12 @@
 
 
 ServiceListDelegate::ServiceListDelegate( QTreeView *view )
-    : QAbstractItemDelegate()
+    : QStyledItemDelegate()
     , m_view( view )
 {
     DEBUG_BLOCK
-
-    m_bigFont.setPointSize( m_bigFont.pointSize() + 4 );
+    
+    m_bigFont.setBold( true );
     m_smallFont.setPointSize( m_smallFont.pointSize() - 1 );
 }
 
@@ -47,13 +48,19 @@ ServiceListDelegate::~ServiceListDelegate()
 void
 ServiceListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    //DEBUG_BLOCK
-    
+
+    if( index.parent().isValid() ) // not a root item
+    {
+        QStyledItemDelegate::paint( painter, option, index );
+        return;
+    }
+   
+    const QPoint topLeft = option.rect.topLeft();
     const int width = m_view->viewport()->size().width() - 4;
     const int height = sizeHint( option, index ).height();
     const int iconWidth = 32;
     const int iconHeight = 32;
-    const int iconPadX = 8;
+    const int iconPadX = 4;
     const int iconPadY = 4;
 
     painter->save();
@@ -67,30 +74,36 @@ ServiceListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & opt
     
     painter->setRenderHint( QPainter::Antialiasing );
 
-    QPixmap background;
+    const int iconYPadding = ( height - iconHeight ) / 2;
+    QPoint iconPos( topLeft + QPoint( iconPadX, iconYPadding ) );
+    if( QApplication::isRightToLeft() )
+        iconPos = QPoint( width - iconWidth - iconPadX, iconYPadding );
 
-    background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
+    painter->drawPixmap( iconPos,
+                         index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
-    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y(), background );
-    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ) , index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
-
+    const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     QRectF titleRect;
-    titleRect.setLeft( option.rect.topLeft().x() );
-    titleRect.setTop( option.rect.top() );
-    titleRect.setWidth( width );
-    titleRect.setHeight( iconHeight + iconPadY );
+    titleRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
+    titleRect.setTop( option.rect.top() + iconYPadding );
+    titleRect.setWidth( width - iconRight );
+    titleRect.setHeight( height );
+
+    const QString collectionName = index.data( Qt::DisplayRole ).toString();
 
     painter->setFont( m_bigFont );
-    painter->drawText ( titleRect, Qt::AlignHCenter | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
+    painter->drawText( titleRect, Qt::AlignLeft, collectionName );
+
+    QFontMetrics bigFm( m_bigFont );
 
     QRectF textRect;
-    textRect.setLeft( option.rect.topLeft().x() + iconPadX );
-    textRect.setTop( option.rect.top() + iconHeight + iconPadY * 2 );
+    textRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
+    textRect.setTop( option.rect.top() + iconYPadding + bigFm.boundingRect( collectionName ).height() );
     textRect.setWidth( width - iconPadX * 2 );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
     painter->setFont( m_smallFont );
-    painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignHCenter, index.data( CustomServiceRoles::ShortDescriptionRole ).toString() );
+    painter->drawText( textRect, Qt::TextWordWrap, index.data( CustomServiceRoles::ShortDescriptionRole ).toString() );
 
     painter->restore();
 }
@@ -98,10 +111,9 @@ ServiceListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & opt
 QSize
 ServiceListDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    Q_UNUSED( option );
-    Q_UNUSED( index );
 
-    //DEBUG_BLOCK
+    if( index.parent().isValid() )
+        return QStyledItemDelegate::sizeHint( option, index );
 
     int width = m_view->viewport()->size().width() - 4;
     int height;
@@ -109,9 +121,9 @@ ServiceListDelegate::sizeHint( const QStyleOptionViewItem & option, const QModel
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
     
-    height  =  bigFm.boundingRect( 0, 0, width, 50, Qt::AlignCenter, index.data( Qt::DisplayRole ).toString() ).height();
-    height +=  smallFm.boundingRect( 0, 0, width, 50, Qt::AlignCenter, index.data( CustomServiceRoles::ShortDescriptionRole ).toString() ).height(); 
-    height +=  40;
+    height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( Qt::DisplayRole ).toString() ).height()
+            + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( CustomRoles::ByLineRole ).toString() ).height()
+            + 20;
 
     return QSize( width, height );
 }

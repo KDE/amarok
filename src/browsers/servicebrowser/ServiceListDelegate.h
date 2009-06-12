@@ -23,14 +23,14 @@
 
 #include "SvgHandler.h"
 
-#include <QAbstractItemDelegate>
+#include <QStyledItemDelegate>
 #include <QFont>
 #include <QTreeView>
 
 
 /** A delegate for displaying a nice overview of a service */
 
-class ServiceListDelegate : public QAbstractItemDelegate
+class ServiceListDelegate : public QStyledItemDelegate
 {
 public:
     ServiceListDelegate( QTreeView *view );
