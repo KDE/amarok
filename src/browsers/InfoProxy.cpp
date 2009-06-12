@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "ServiceInfoProxy.h"
+#include "InfoProxy.h"
 
 #include "App.h"
 #include "Debug.h"
@@ -27,17 +27,17 @@
 
 #include <QFile>
 
-ServiceInfoProxy * ServiceInfoProxy::m_instance = 0;
+InfoProxy * InfoProxy::m_instance = 0;
 
-ServiceInfoProxy * ServiceInfoProxy::instance()
+InfoProxy * InfoProxy::instance()
 {
     if ( m_instance == 0 )
-        m_instance = new ServiceInfoProxy();
+        m_instance = new InfoProxy();
 
     return m_instance;
 }
 
-ServiceInfoProxy::ServiceInfoProxy()
+InfoProxy::InfoProxy()
 {
     DEBUG_BLOCK;
     //for testing
@@ -57,13 +57,13 @@ ServiceInfoProxy::ServiceInfoProxy()
     loadHomePage();
 }
 
-ServiceInfoProxy::~ServiceInfoProxy()
+InfoProxy::~InfoProxy()
 {
 }
 
 
 void
-ServiceInfoProxy::subscribe( ServiceInfoObserver * observer )
+InfoProxy::subscribe( InfoObserver * observer )
 {
     DEBUG_BLOCK;
     if( observer )
@@ -74,7 +74,7 @@ ServiceInfoProxy::subscribe( ServiceInfoObserver * observer )
 }
 
 void
-ServiceInfoProxy::subscribeForCloud( ServiceInfoObserver * observer )
+InfoProxy::subscribeForCloud( InfoObserver * observer )
 {
     DEBUG_BLOCK;
     if( observer )
@@ -85,28 +85,28 @@ ServiceInfoProxy::subscribeForCloud( ServiceInfoObserver * observer )
 }
 
 void
-ServiceInfoProxy::unsubscribe( ServiceInfoObserver * observer )
+InfoProxy::unsubscribe( InfoObserver * observer )
 {
     m_observers.remove( observer );
     m_cloudObservers.remove( observer );
 }
 
 void
-ServiceInfoProxy::notifyObservers( const QVariantMap &infoMap ) const
+InfoProxy::notifyObservers( const QVariantMap &infoMap ) const
 {
-    foreach( ServiceInfoObserver *observer, m_observers )
+    foreach( InfoObserver *observer, m_observers )
         observer->serviceInfoChanged( infoMap );
 }
 
 void
-ServiceInfoProxy::notifyCloudObservers( const QVariantMap &cloudMap ) const
+InfoProxy::notifyCloudObservers( const QVariantMap &cloudMap ) const
 {
-    foreach( ServiceInfoObserver *observer, m_cloudObservers )
+    foreach( InfoObserver *observer, m_cloudObservers )
         observer->serviceInfoChanged( cloudMap );
 }
 
 void
-ServiceInfoProxy::setInfo( const QVariantMap &infoMap )
+InfoProxy::setInfo( const QVariantMap &infoMap )
 {
     DEBUG_BLOCK;
     m_storedInfo = infoMap;
@@ -114,7 +114,7 @@ ServiceInfoProxy::setInfo( const QVariantMap &infoMap )
 }
 
 void
-ServiceInfoProxy::setCloud( const QVariantMap &cloudMap )
+InfoProxy::setCloud( const QVariantMap &cloudMap )
 {
     DEBUG_BLOCK;
     m_storedCloud = cloudMap;
@@ -122,19 +122,19 @@ ServiceInfoProxy::setCloud( const QVariantMap &cloudMap )
 }
 
 QVariantMap
-ServiceInfoProxy::info()
+InfoProxy::info()
 {
     return m_storedInfo;
 }
 
 QVariantMap
-ServiceInfoProxy::cloud()
+InfoProxy::cloud()
 {
     return m_storedCloud;
 }
 
 void
-ServiceInfoProxy::loadHomePage()
+InfoProxy::loadHomePage()
 {
     DEBUG_BLOCK
 
@@ -174,6 +174,6 @@ ServiceInfoProxy::loadHomePage()
 
 
 namespace The {
-    AMAROK_EXPORT ServiceInfoProxy* serviceInfoProxy() { return ServiceInfoProxy::instance(); }
+    AMAROK_EXPORT InfoProxy* infoProxy() { return InfoProxy::instance(); }
 }
 

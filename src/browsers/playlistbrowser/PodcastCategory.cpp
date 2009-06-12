@@ -28,7 +28,7 @@
 #include "Debug.h"
 #include "PodcastModel.h"
 #include "PopupDropperFactory.h"
-#include "services/ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
 
@@ -160,7 +160,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
     QVariantMap map;
     map["service_name"] = "Podcasts";
     map["main_info"] = description;
-    The::serviceInfoProxy()->setInfo( map );
+    The::infoProxy()->setInfo( map );
 }
 
 ViewKicker::ViewKicker( QTreeView * treeView )

@@ -17,19 +17,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICEINFOPROXY_H
-#define SERVICEINFOPROXY_H
+#ifndef INFOPROXY_H
+#define INFOPROXY_H
 
 #include "amarok_export.h"
-#include "ServiceInfoObserver.h"
+#include "InfoObserver.h"
 
 #include <QVariant>
 #include <QSet>
 
-class ServiceInfoProxy;
+class InfoProxy;
 
 namespace The {
-    AMAROK_EXPORT ServiceInfoProxy* serviceInfoProxy();
+    AMAROK_EXPORT InfoProxy* infoProxy();
 }
 
 /**
@@ -37,17 +37,17 @@ A proxy class for relaying information from the currently active service to the 
 
     Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT ServiceInfoProxy
+class AMAROK_EXPORT InfoProxy
 {
-    friend ServiceInfoProxy* serviceInfoProxy();
+    friend InfoProxy* infoProxy();
 
     public:
-        static ServiceInfoProxy * instance();
-        ~ServiceInfoProxy();
+        static InfoProxy * instance();
+        ~InfoProxy();
 
-        void subscribe( ServiceInfoObserver *observer );
-        void subscribeForCloud( ServiceInfoObserver *observer );
-        void unsubscribe( ServiceInfoObserver *observer );
+        void subscribe( InfoObserver *observer );
+        void subscribeForCloud( InfoObserver *observer );
+        void unsubscribe( InfoObserver *observer );
 
         void setInfo( const QVariantMap &infoMap );
         void setCloud( const QVariantMap &cloudMap );
@@ -61,13 +61,13 @@ class AMAROK_EXPORT ServiceInfoProxy
         void paletteChanged( const QPalette & palette );
     
     private:
-        ServiceInfoProxy();
+        InfoProxy();
         void notifyObservers( const QVariantMap &infoMap ) const;
         void notifyCloudObservers( const QVariantMap &cloudMap ) const;
-        QSet<ServiceInfoObserver *> m_observers;
-        QSet<ServiceInfoObserver *> m_cloudObservers;
+        QSet<InfoObserver *> m_observers;
+        QSet<InfoObserver *> m_cloudObservers;
 
-        static ServiceInfoProxy * m_instance;
+        static InfoProxy * m_instance;
 
         QVariantMap m_storedInfo;
         QVariantMap m_storedCloud;

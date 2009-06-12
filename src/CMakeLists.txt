@@ -80,7 +80,6 @@ set(libserviceframework_SRCS
     services/ServiceCollectionTreeView.cpp
     services/ServiceCurrentTrackActionsCapability.cpp
     services/ServiceCustomActionsCapability.cpp
-    services/ServiceInfoProxy.cpp
     services/ServiceMetaBase.cpp
     services/ServicePluginManager.cpp
     services/ServiceSourceInfoCapability.cpp
@@ -163,6 +162,7 @@ set(libbrowserframework_SRCS
     browsers/CollectionTreeItemModel.cpp
     browsers/CollectionTreeItemModelBase.cpp
     browsers/CollectionTreeView.cpp
+    browsers/InfoProxy.cpp
     browsers/SingleCollectionTreeItemModel.cpp
 )
 

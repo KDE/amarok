@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef SERVICEINFOOBSERVER_H
-#define SERVICEINFOOBSERVER_H
+#ifndef INFOOBSERVER_H
+#define INFOOBSERVER_H
 
 #include "amarok_export.h"
 
@@ -29,10 +29,10 @@ An abstract base class for observers that wants to be notified when here is new 
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT ServiceInfoObserver{
+class AMAROK_EXPORT InfoObserver{
 public:
     virtual void serviceInfoChanged( QVariantMap infoMap ) = 0;
-    virtual ~ServiceInfoObserver() {};
+    virtual ~InfoObserver() {};
 };
 
 #endif

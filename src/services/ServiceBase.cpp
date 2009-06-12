@@ -25,7 +25,7 @@
 
 #include "Collection.h"
 #include "SearchWidget.h"
-#include "ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
 
 #include <khbox.h>
 #include <KLineEdit>
@@ -224,7 +224,7 @@ ServiceBase::infoChanged( const QString &infoHtml )
     QVariantMap map;
     map["service_name"] = prettyName();
     map["main_info"] = infoHtml;
-    The::serviceInfoProxy()->setInfo( map );
+    The::infoProxy()->setInfo( map );
 }
 
 void
@@ -249,7 +249,7 @@ ServiceBase::generateWidgetInfo( const QString &html ) const
     QVariantMap map;
     map["service_name"] = prettyName();
     map["main_info"] = html;
-    The::serviceInfoProxy()->setInfo( map );
+    The::infoProxy()->setInfo( map );
 }
 
 void

@@ -22,7 +22,7 @@
 #define AMAROK_SERVICE_ENGINE
 
 #include "ContextObserver.h"
-#include "services/ServiceInfoObserver.h"
+#include "browsers/InfoObserver.h"
 #include "context/DataEngine.h"
 
 /**
@@ -39,7 +39,7 @@
 */
 
 class ServiceEngine : public Context::DataEngine, 
-                      public ServiceInfoObserver,
+                      public InfoObserver,
                       public ContextObserver
 {
     Q_OBJECT

@@ -24,7 +24,7 @@
 #include "Debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
-#include "services/ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
 
 #include <QVariant>
 
@@ -39,12 +39,12 @@ ServiceEngine::ServiceEngine( QObject* parent, const QList<QVariant>& args )
     m_sources = QStringList();
     m_sources << "service";
 
-    The::serviceInfoProxy()->subscribe( this );
+    The::infoProxy()->subscribe( this );
 }
 
 ServiceEngine::~ ServiceEngine()
 {
-    The::serviceInfoProxy()->unsubscribe( this );
+    The::infoProxy()->unsubscribe( this );
 }
 
 QStringList ServiceEngine::sources() const
@@ -66,7 +66,7 @@ void ServiceEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK;
     if( state == Current && m_requested ) {
-        m_storedInfo = The::serviceInfoProxy()->info();
+        m_storedInfo = The::infoProxy()->info();
         update();
     }
 }

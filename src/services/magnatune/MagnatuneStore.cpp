@@ -27,7 +27,7 @@
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
 #include "MagnatuneInfoParser.h"
-#include "../ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
 #include "../ServiceSqlRegistry.h"
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -498,7 +498,7 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     variantMap["cloud_weights"] = QVariant( weights );
     variantMap["cloud_actions"] = QVariant( dbusActions );
     
-    The::serviceInfoProxy()->setCloud( variantMap );
+    The::infoProxy()->setCloud( variantMap );
 }
 
 
