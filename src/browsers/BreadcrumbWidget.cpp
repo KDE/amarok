@@ -82,7 +82,8 @@ BreadcrumbItem::~BreadcrumbItem()
     DEBUG_BLOCK
 }
 
-void BreadcrumbItem::setBold( bool bold )
+void
+BreadcrumbItem::setBold( bool bold )
 {
     QFont font = m_mainButton->font();
     font.setBold( true );
@@ -112,17 +113,19 @@ BreadcrumbWidget::~BreadcrumbWidget()
 {
 }
 
-void BreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
+void
+BreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
 {
     m_rootList = rootList;
 
     //update the breadcrumbs every time the view changes.
     connect( m_rootList, SIGNAL( viewChanged() ), this, SLOT( updateBreadcrumbs() ) );
-    
+
     updateBreadcrumbs();
 }
 
-void BreadcrumbWidget::updateBreadcrumbs()
+void
+BreadcrumbWidget::updateBreadcrumbs()
 {
     DEBUG_BLOCK
 
@@ -141,7 +144,8 @@ void BreadcrumbWidget::updateBreadcrumbs()
     m_spacer->setParent( this );
 }
 
-void BreadcrumbWidget::addLevel( BrowserCategoryList * list )
+void
+BreadcrumbWidget::addLevel( BrowserCategoryList * list )
 {
 
     DEBUG_BLOCK
@@ -176,10 +180,4 @@ void BreadcrumbWidget::addLevel( BrowserCategoryList * list )
     }
 }
 
-
-
-
-
-
 #include "BreadcrumbWidget.moc"
-

@@ -52,17 +52,17 @@ BrowserCategoryList * BrowserWidget::list() const
     return m_categoryList;
 }
 
-void BrowserWidget::navigate( const QString & target )
+void
+BrowserWidget::navigate( const QString & target )
 {
     m_categoryList->navigate( target );
 }
 
-void BrowserWidget::home()
+void
+BrowserWidget::home()
 {
     DEBUG_BLOCK
     m_categoryList->home();
 }
 
 #include "BrowserWidget.moc"
-
-
