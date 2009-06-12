@@ -26,7 +26,11 @@
 #include <QSizePolicy>
 
 /**
-This is a reimplementaiton of a QPushButton that elides text if stretched below its optimal width.  The icon (if any) will always remain visible
+ * This is a reimplementaiton of a QPushButton that elides text if stretched below
+ * its optimal width. The icon (if any) will always remain visible.
+ *
+ * This whole thing is a hack in so many ways... But I am sure it will also be useful
+ * elsewhere as it is really something I think that QPushButton should support by default
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
@@ -43,13 +47,16 @@ public:
 
     virtual void resizeEvent ( QResizeEvent * event );
 
+
+    //These 4 needs to be short circuited as _something, somewhere_ in the
+    //Qt stack calls these at will and makes it impossible to change the
+    //size of a QPushButton...
     void setFixedHeight ( int h );
     void setFixedSize ( const QSize & s );
     void setFixedSize ( int w, int h );
     void setFixedWidth ( int w );
 
 signals:
-
     void sizePolicyChanged();
 
 private:

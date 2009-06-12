@@ -69,11 +69,11 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
         menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
+    m_mainButton = new ElidingButton( category->icon(), category->prettyName(), this );
 
-    m_mainButton = new QPushButton( category->icon(), category->prettyName(), this );
-    m_mainButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
-    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    //setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
     
     //if this is a list, make cliking on this item cause us
     //to navigate to its home.
@@ -84,6 +84,8 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
     }
 
     hide();
+
+    updateSizePolicy();
 
 }
 
@@ -99,5 +101,16 @@ BreadcrumbItem::setBold( bool bold )
     font.setBold( bold );
     m_mainButton->setFont( font );
 }
+
+QSizePolicy BreadcrumbItem::sizePolicy() const
+{
+    return m_mainButton->sizePolicy();
+}
+
+void BreadcrumbItem::updateSizePolicy()
+{
+    setSizePolicy( m_mainButton->sizePolicy() );
+}
+
 
 

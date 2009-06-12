@@ -20,6 +20,7 @@
 #ifndef BREADCRUMBITEM_H
 #define BREADCRUMBITEM_H
 
+#include "widgets/ElidingButton.h"
 
 #include <KHBox>
 
@@ -42,10 +43,15 @@ public:
 
     void setBold( bool bold );
 
+    QSizePolicy sizePolicy () const;
+
+protected slots:
+    void updateSizePolicy();
+
 private:
     BrowserCategory * m_category;
     QPushButton * m_menuButton;
-    QPushButton * m_mainButton;
+    ElidingButton * m_mainButton;
 };
 
 #endif
