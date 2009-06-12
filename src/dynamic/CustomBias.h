@@ -61,14 +61,19 @@ class AMAROK_EXPORT CustomBiasEntry
          */
         virtual double numTracksThatSatisfy( const Meta::TrackList& ) = 0;
 
+        /**
+         * If your custom bias operates on the collection (that is, represents a subset of the collection
+         * at any given point in time, and you also want to filter/control the initial generation of the
+         * playlist, you can implement this capability.
+         */
+        virtual bool hasCollectionFilterCapability() = 0;
 
         /**
-         * Controls whether this custom bias wants to affect the filter for
-         * the initial selection of tracks for the collection. PLEASE READ 
-         * THE API DOCS FOR Bias::filterFromCollection for the full explanation
-         * of this function.
-         */
-        virtual bool filterFromCollection() = 0;
+        * Returns a QSet< QByteArray > of track uids that match this bias. Used when building the
+        * initial playlists, this must be implemented if your bias returns true for filterFromCollection.
+        * See APIDOX for Bias.h for more explanation.
+        */
+        virtual CollectionFilterCapability* collectionFilterCapability() { return 0; }
 
 };
 
@@ -102,7 +107,9 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
    
         virtual double energy(const Meta::TrackList& playlist, const Meta::TrackList& context);
         virtual double reevaluate(double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context);
-        virtual bool filterFromCollection();
+        virtual bool hasCollectionFilterCapability();
+        virtual CollectionFilterCapability* collectionFilterCapability();
+            
         
         /**
          * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.

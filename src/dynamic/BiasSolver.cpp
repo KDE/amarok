@@ -588,6 +588,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     if( s_universe.isEmpty() )
     {
         optimal = false;
+        debug() << "Empty collection when trying to generate initial playlist...";
         return Meta::TrackList();
     }
 
@@ -599,6 +600,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             playlist += getRandomTrack( m_domain );
 
         optimal = m_biases.isEmpty();
+        debug() << "No collection filters, returning random initial playlist";
         return playlist;
     }
 
@@ -613,7 +615,8 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
         movingWeights[i] = m_feasibleCollectionFilters[i]->weight();
 
-
+    debug() << "Just set movingWeights to:" << movingWeights;
+    
     // We use this array of indexes to randomize the order the biases are looked
     // at. That way we get reasonable results when the system is infeasible.
     // That is, specifying 100% of two mutually exclusive artists, will get you
@@ -657,6 +660,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
             // Decide whether we should 'accept' or 'reject' a bias.
             decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+            debug() << "decider is set to:" << decider << "movingWeights is:" << movingWeights[ i ];
             if( decider < movingWeights[i] )
             {
                 branches.setBit( i, true );
@@ -672,6 +676,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             // empty set. If that's the case, we have to choose the other
             // branch, even if it does defy the probability. (This is how we
             // deal with infeasible systems.)
+            debug() << "after set intersection/substraction, R has size:" << R.size();
             if( R.size() == 0 )
                 branches.toggleBit( i );
             else
@@ -754,30 +759,33 @@ Dynamic::BiasSolver::trackForUid( const QByteArray& uid )
 void
 Dynamic::BiasSolver::computeDomain()
 {
+    DEBUG_BLOCK
     foreach( Dynamic::Bias* b, m_biases )
     {
-        if( b->filterFromCollection() )
+        if( b->hasCollectionFilterCapability() )
         {
-            Dynamic::CollectionFilterBias* cfb = dynamic_cast< Dynamic::CollectionFilterBias* >( b );
-            if( cfb )
+            debug() << "Got a bias which says it wants to filter from collection.";
+            Dynamic::CollectionFilterCapability* fc = b->collectionFilterCapability();
+            if( fc )
             {
-                debug() << "property size: " << cfb->propertySet().size();
+                debug() << "and got a proper collectionfiltercapability from it";
+                debug() << "property size: " << fc->propertySet().size();
 
                 // if the bias is infeasible (i.e. size = 0), just ignore it
-                if( cfb->propertySet().size() == 0 )
+                if( fc->propertySet().size() == 0 )
                 {
                     debug() << "infeasible bias detected"; // ugly but we're using the higher cast as they don't share a root parent
                     b->setActive(false);
                 }
                 else
                 {
-                    m_feasibleCollectionFilters.append( cfb );
-                    m_feasibleCollectionFilterSets.append( TrackSet( cfb->propertySet() ) );
+                    m_feasibleCollectionFilters.append( fc );
+                    m_feasibleCollectionFilterSets.append( TrackSet( fc->propertySet() ) );
                 }
             }
         }
     }
-
+    
     TrackSet subset;
     subset.setUniverseSet();
 

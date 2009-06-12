@@ -49,7 +49,6 @@ namespace Dynamic
 
             void setTracks( const QList<QByteArray>& );
             void addTracks( const QList<QByteArray>& );
-
             void setTracks( const QSet<QByteArray>& );
             void addTracks( const QSet<QByteArray>& );
 

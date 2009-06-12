@@ -260,6 +260,18 @@ Dynamic::GlobalBias::setWeight( double weight )
         m_weight = weight;
 }
 
+bool
+Dynamic::GlobalBias::hasCollectionFilterCapability()
+{
+    return true;
+}
+
+Dynamic::CollectionFilterCapability* Dynamic::GlobalBias::collectionFilterCapability()
+{
+    return new Dynamic::GlobalBiasFilterCapability( this );
+}
+
+
 void
 Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
 {

@@ -65,7 +65,7 @@ Dynamic::LastFmBias::engineNewTrackPlaying()
         m_currentArtist = track->artist()->name();
         QMap< QString, QString > params;
         params[ "method" ] = "artist.getSimilar";
-        params[ "limit" ] = "50";
+     //   params[ "limit" ] = "70";
         params[ "artist" ] = m_currentArtist;
 
         m_artistQuery = lastfm::ws::get( params );
@@ -84,18 +84,6 @@ Dynamic::LastFmBias::update()
     m_qm->run();
 }
 
-const QSet< QByteArray >& Dynamic::LastFmBias::propertySet()
-{
-    if( m_savedArtists.keys().contains( m_currentArtist ) )
-        return m_savedArtists[ m_currentArtist ];
-    else
-    { // we don't want to return a reference to a temporary, so just create a stub entry
-        return m_savedArtists[ "foobar" ]; // default-constructed value of this QSet should
-                                           // just  be a QByteArray(), which should be safe.
-    }
-}
-
-
 void
 Dynamic::LastFmBias::artistQueryDone() // slot
 {
@@ -113,14 +101,19 @@ Dynamic::LastFmBias::artistQueryDone() // slot
     // ok we have the list, now figure out what we've got in the collection
 
     m_collection = CollectionManager::instance()->primaryCollection();
+    if( !m_collection )
+        return;
     m_qm = m_collection->queryMaker();
     
+    if( !m_qm ) // maybe this is during startup and we don't have a QM for some reason yet
+        return;
+    
+    m_qm->beginOr();
     foreach( QString artist, similar.values() )
     {
-        m_qm->beginOr();
-        m_qm->addFilter( Meta::valArtist, artist );
-        m_qm->endAndOr();
+        m_qm->addFilter( Meta::valArtist, artist, false, false );
     }
+    m_qm->endAndOr();
     
     m_qm->setQueryType( QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
@@ -161,7 +154,7 @@ Dynamic::LastFmBias::updateReady( QString collectionId, QStringList uids )
     int protocolLength =
         ( QString( m_collection->uidUrlProtocol() ) + "://" ).length();
 
-    debug() << "setting cache of related artist UIDs for artist:" << m_currentArtist << "to:" << uids;
+    //debug() << "setting cache of related artist UIDs for artist:" << m_currentArtist << "to:" << uids;
     //m_savedArtists[ m_currentArtist ].clear();
     //m_savedArtists[ m_currentArtist ].reserve( uids.size() );
     QByteArray uid;
@@ -185,8 +178,10 @@ Dynamic::LastFmBias::trackSatisfies( const Meta::TrackPtr track )
     QByteArray uid = QByteArray::fromHex( uidString.toAscii() );
     
     if( m_savedArtists.keys().contains( m_currentArtist ) )
+    {
+        debug() << "saying:" <<  m_savedArtists[ m_currentArtist ].contains( uid ) << "for" << track->artist()->name();
         return m_savedArtists[ m_currentArtist ].contains( uid );
-    else
+    } else
         debug() << "DIDN'T HAVE ARTIST SUGGESTIONS SAVED FOR THIS ARTIST:" << m_currentArtist;
 
     return false;
@@ -216,6 +211,16 @@ Dynamic::LastFmBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
 
     return satisfy;
 
+}
+
+bool Dynamic::LastFmBias::hasCollectionFilterCapability()
+{
+    return true;
+}
+
+Dynamic::CollectionFilterCapability* Dynamic::LastFmBias::collectionFilterCapability()
+{
+    return new Dynamic::LastFmCollectionFilterCapability( this );
 }
 
 #include "LastFmBiases.moc"

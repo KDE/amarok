@@ -116,7 +116,7 @@ Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
     double fval = (double)amount;
     m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
     
-    m_cbias->setWeight( amount );
+    m_cbias->setWeight( fval / 100 );
 
     emit biasChanged( m_bias );
 }
@@ -172,25 +172,35 @@ Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPla
     double offset = 1.0 / (double)oldPlaylist.size();
 
     bool prevSatisfied = m_currentEntry->trackSatisfies( oldPlaylist[newTrackPos] );
-
-    if( m_currentEntry->trackSatisfies( newTrack ) && !prevSatisfied )
-        return oldEnergy - offset;
-    else if( !m_currentEntry->trackSatisfies( newTrack ) && prevSatisfied )
-        return oldEnergy + offset;
-    else
-        return oldEnergy;
     
+    if( m_currentEntry->trackSatisfies( newTrack ) && !prevSatisfied )
+    {
+        debug() << "new satisfies and old doesn't:" << oldEnergy - offset;
+        return oldEnergy - offset;
+    } else if( !m_currentEntry->trackSatisfies( newTrack ) && prevSatisfied )
+    {
+        debug() << "new doesn't satisfy and old did:" << oldEnergy + offset;
+        return oldEnergy + offset;
+    } else
+    {
+        debug() << "no change:" << oldEnergy;
+        return oldEnergy;
+    }
 }
 
-bool
-Dynamic::CustomBias::filterFromCollection()
+bool Dynamic::CustomBias::hasCollectionFilterCapability()
+{
+    return m_currentEntry && m_currentEntry->hasCollectionFilterCapability();
+}
+
+
+Dynamic::CollectionFilterCapability* Dynamic::CustomBias::collectionFilterCapability()
 {
     if( m_currentEntry )
-        return m_currentEntry->filterFromCollection();
+        return m_currentEntry->collectionFilterCapability();
     else
-        return false;
+        return 0;
 }
-
 
 void
 Dynamic::CustomBias::registerNewBiasEntry( Dynamic::CustomBiasEntry* entry )

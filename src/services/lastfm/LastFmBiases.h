@@ -30,42 +30,31 @@ namespace Amarok
 
 namespace Dynamic
 {
-
+    
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-class LastFmBias : public QObject, public Dynamic::CollectionFilterBias, public CustomBiasEntry, public EngineObserver
+class LastFmBias : public QObject, public CustomBiasEntry, public EngineObserver
 {
     Q_OBJECT
     public:
         LastFmBias();
 //        ~LastFmBias();
 
+        // reimplemented from CustomBiasEntry
         virtual QString name();
         virtual QWidget* configWidget();
 
         virtual bool trackSatisfies( const Meta::TrackPtr track );
         virtual double numTracksThatSatisfy( const Meta::TrackList& tracks );
 
+        virtual bool hasCollectionFilterCapability();
+        virtual CollectionFilterCapability* collectionFilterCapability();
+        
+        // reimplemented from EngineObserver
         virtual void engineNewTrackPlaying();
 
         void update();
 
-        virtual const QSet<QByteArray>& propertySet();
-
-        virtual bool filterFromCollection() { return true; }
-
-        /**
-         * This is a bit screwy due to the levels of abstraction that we have.
-         * CustomBias makes no demands on it's sub-biases, but this bias in particular
-         * is a CollectionFilterBias, which means it needs to know the value of its slider.
-         * However, this slider is owned and operated by CustomBiasEntry (tm), and we don't  have
-         * access to it. However, when CustomBiasEntry notifies CustomBias, we hop onboard and also
-         * change our local weight variable to be the same. This way when the BiasSolver asks us for
-         * the value of the slider we can truthfully answer.
-         *
-         * And there was much rejoicing.
-         */
-        virtual double weight() const { return m_weight; }
-
+        
     public slots:
         void weightChanged( double weight ) { m_weight = weight; }
         
@@ -89,7 +78,23 @@ class LastFmBias : public QObject, public Dynamic::CollectionFilterBias, public 
         QMap< QString, QSet< QByteArray > > m_savedArtists; // populated as queries come in
                                                             // we do some caching here so multiple
                                                             // queries of the same artist are cheap
-        
+        friend class LastFmCollectionFilterCapability; // so it can report the property and weight
+};
+
+
+class LastFmCollectionFilterCapability : public Dynamic::CollectionFilterCapability
+{
+    public:
+        LastFmCollectionFilterCapability( LastFmBias* bias ) : m_bias( bias ) {}
+
+        // re-implemented
+        virtual const QSet<QByteArray>& propertySet() { return m_bias->m_savedArtists[ m_bias->m_currentArtist ];; }
+        virtual double weight() const { return m_bias->m_weight; }
+
+
+    private:
+        LastFmBias* m_bias;
+
 };
 
 }
