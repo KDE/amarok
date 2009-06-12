@@ -6,7 +6,7 @@ add_subdirectory( daap )
 add_subdirectory( audiocd )
 
 add_subdirectory( mediadevicecollection )
-#add_subdirectory( ipodcollection )
+add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 
 # needs things from playground/base/nepomuk-kde
