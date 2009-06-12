@@ -42,12 +42,12 @@
 #include <typeinfo>
 
 PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
-    : QWidget( parent )
+    : BrowserCategory( "user playlists" )
 {
+    setPrettyName( i18n( "User Playlists" ) );
     setContentsMargins(0,0,0,0);
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-
 
     m_groupedProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
 

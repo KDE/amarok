@@ -19,7 +19,7 @@
 #ifndef PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 #define PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 
-#include "BrowserCategory.h"
+#include "BrowserCategoryList.h"
 
 #include <KVBox>
 
@@ -36,7 +36,7 @@ class PodcastCategory;
 /**
 	@author Bart Cerneels
 */
-class PlaylistBrowser : public BrowserCategory
+class PlaylistBrowser : public BrowserCategoryList
 {
 Q_OBJECT
 public:
@@ -52,10 +52,9 @@ public slots:
     void showCategory( int category );
 
 private:
-    QWidget * loadPodcastCategory();
-    QWidget * loadDynamicCategory();
+    BrowserCategory * loadPodcastCategory();
+    BrowserCategory * loadDynamicCategory();
 
-    QToolBox *m_toolBox;
     PodcastCollection *m_localPodcasts;
     PodcastCategory * m_podcastCategory;
     QMap<int, int> m_categoryIndexMap;

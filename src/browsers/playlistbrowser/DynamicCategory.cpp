@@ -40,11 +40,13 @@ namespace PlaylistBrowserNS {
 
 
 DynamicCategory::DynamicCategory( QWidget* parent )
-    : QWidget( parent )
+    : BrowserCategory( "dynamic category" )
     , m_biasListView( 0 )
     , m_biasModel( 0 )
     , m_biasDelegate( 0 )
 {
+
+    setPrettyName( i18n( "Dynamic Playlists" ) );
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins(0,0,0,0);

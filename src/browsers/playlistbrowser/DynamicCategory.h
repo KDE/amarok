@@ -18,6 +18,8 @@
 #ifndef DYNAMICCATEGORY_H
 #define DYNAMICCATEGORY_H
 
+#include "browsers/BrowserCategory.h"
+
 #include <QCheckBox>
 #include <QListView>
 #include <QPushButton>
@@ -33,7 +35,7 @@ namespace PlaylistBrowserNS {
 
     /**
     */
-    class DynamicCategory : public QWidget
+    class DynamicCategory : public BrowserCategory
     {
         Q_OBJECT
         public:

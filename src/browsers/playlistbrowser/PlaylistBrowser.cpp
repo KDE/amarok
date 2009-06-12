@@ -37,14 +37,13 @@
 namespace PlaylistBrowserNS {
 
 PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
- : BrowserCategory( name )
+ : BrowserCategoryList( parent, name )
 {
     DEBUG_BLOCK
 
     //setStyleSheet("QToolBox::tab { border-radius: 5px; border-color: red; border-style: solid }");
 
     setObjectName( name );
-    m_toolBox = new QToolBox( this );
 
     //m_toolBox->setStyleSheet( "{}" );
 
@@ -71,7 +70,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
 
 PlaylistBrowser::~PlaylistBrowser()
 {
-    Amarok::config( "Playlist Browser" ).writeEntry( "Current Category", m_toolBox->currentIndex() );
+    //Amarok::config( "Playlist Browser" ).writeEntry( "Current Category", m_toolBox->currentIndex() );
 }
 
 //SLOT
@@ -80,7 +79,7 @@ PlaylistBrowser::addCategory( int category )
 {
     DEBUG_BLOCK
     QString typeName = The::playlistManager()->typeName( category );
-    QWidget *widget = 0;
+    BrowserCategory *bCategory = 0;
 
     //TODO: PlaylistBrowser::iconForCategory( int playlistCategory )
     KIcon icon = KIcon( "view-media-playlist-amarok" );
@@ -90,43 +89,43 @@ PlaylistBrowser::addCategory( int category )
         //we don't show the current playlist in the PlaylistBrowser (yet)
         case PlaylistManager::CurrentPlaylist: return;
         //TODO: add the UserPlaylistCategory widget
-        case PlaylistManager::UserPlaylist: widget = new PlaylistCategory( m_toolBox ); break;
-        case PlaylistManager::PodcastChannel: widget = loadPodcastCategory(); break;
-        case PlaylistManager::Dynamic: widget = loadDynamicCategory(); break;
+        case PlaylistManager::UserPlaylist: bCategory = new PlaylistCategory( 0 ); break;
+        case PlaylistManager::PodcastChannel: bCategory = loadPodcastCategory(); break;
+        case PlaylistManager::Dynamic: bCategory = loadDynamicCategory(); break;
         //TODO: add the SmartPlaylistCategory widget
-        case PlaylistManager::SmartPlaylist: widget = new QTreeView( m_toolBox ); break;
+        //case PlaylistManager::SmartPlaylist: widget = new QTreeView( m_toolBox ); break;
         //This must be a custom category
         default: break;//TODO: widget = loadCustomCategory( int category );
     }
 
-    m_toolBox->addItem( widget, icon, typeName );
+    BrowserCategoryList::addCategory( bCategory );
 
-    m_categoryIndexMap.insert( m_toolBox->count() - 1, category );
+    //m_categoryIndexMap.insert( m_toolBox->count() - 1, category );
 
 }
 
-QWidget *
+BrowserCategory *
 PlaylistBrowser::loadPodcastCategory()
 {
     return The::podcastCategory();
 }
 
-QWidget*
+BrowserCategory*
 PlaylistBrowser::loadDynamicCategory()
 {
-    return new DynamicCategory( m_toolBox );
+    return new DynamicCategory( 0 );
 }
 
 void
 PlaylistBrowser::showCategory( int category )
 {
     DEBUG_BLOCK;
-    m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
+    //m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
 }
 
 int PlaylistBrowserNS::PlaylistBrowser::currentCategory()
 {
-    return m_categoryIndexMap.value( m_toolBox->currentIndex() );
+    //return m_categoryIndexMap.value( m_toolBox->currentIndex() );
 }
 
 }

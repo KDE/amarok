@@ -19,6 +19,7 @@
 #ifndef PODCASTCATEGORY_H
 #define PODCASTCATEGORY_H
 
+#include "browsers/BrowserCategory.h"
 #include "playlist/PlaylistModel.h"
 #include "PodcastModel.h"
 #include "widgets/PrettyTreeView.h"
@@ -44,7 +45,7 @@ class ViewKicker;
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PodcastCategory : public QWidget
+class PodcastCategory : public BrowserCategory
 {
     Q_OBJECT
     public:

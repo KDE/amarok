@@ -80,9 +80,12 @@ PodcastCategory::destroy()
 }
 
 PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
-    : QWidget()
+    : BrowserCategory( "podcast category" )
     , m_podcastModel( podcastModel )
 {
+
+    setPrettyName( i18n( "Podcasts" ) );
+    
     resize(339, 574);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);

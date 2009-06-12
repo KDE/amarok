@@ -20,7 +20,9 @@
 #ifndef PLAYLISTCATEGORY_H
 #define PLAYLISTCATEGORY_H
 
+
 #include "UserPlaylistTreeView.h"
+#include "browsers/BrowserCategory.h"
 
 #include <KDialog>
 
@@ -42,7 +44,7 @@ The widget that displays playlists in the playlist browser
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class PlaylistCategory : public QWidget
+class PlaylistCategory : public BrowserCategory
 {
 Q_OBJECT
 public:
