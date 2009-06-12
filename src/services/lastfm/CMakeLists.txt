@@ -9,6 +9,9 @@ include_directories(
         ../../statusbar
         ../../widgets
         ../../context
+        ../../dynamic # for CustomBias.h
+        ../../browsers/playlistbrowser # for DynamicBiasWidgets
+        liblastfm/
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
@@ -22,6 +25,7 @@ include_directories(
         add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
         set(amarok_service_lastfm_PART_SRCS
+            LastFmBiases.cpp
             LastFmService.cpp
             LastFmServiceCollection.cpp
             LastFmServiceConfig.cpp

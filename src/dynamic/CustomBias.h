@@ -26,27 +26,6 @@ namespace Dynamic
 
 class CustomBias;
     
-class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
-{
-    Q_OBJECT
-    public:
-        explicit CustomBiasEntryWidget( CustomBias*, QWidget* parent = 0 );
-
-
-    private slots:
-        void selectionChanged( int index );
-        void weightChanged( int amount );
-        
-    private:
-        CustomBias* m_cbias;
-        
-        QGridLayout* m_layout;        
-        Amarok::Slider* m_weightSelection;
-        QLabel*         m_weightLabel;
-        QLabel*         m_withLabel;
-        KComboBox*      m_fieldSelection;
-};
-
 /**
  *  This is the object that the singleton CustomBias can register. A service, or anything
  *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
@@ -126,6 +105,8 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
          */
         void removeBiasEntry( CustomBiasEntry* );
 
+        
+        // these are used by the CustomBiasWidget. This public coupling sucks, but that's how daniel designed it...
         void setCurrentEntry( CustomBiasEntry* );
         QList< CustomBiasEntry* > currentEntries();
 
@@ -139,6 +120,30 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
 
         static CustomBias* s_self;
 };
+
+// this should not be subclassed by implementing biases. this will call the widget() function
+// of the CustomBiasEntry set on the CustomBias. 
+class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
+{
+    Q_OBJECT
+    public:
+        explicit CustomBiasEntryWidget( CustomBias*, QWidget* parent = 0 );
+
+
+    private slots:
+        void selectionChanged( int index );
+        void weightChanged( int amount );
+
+    private:
+        CustomBias* m_cbias;
+
+        QGridLayout* m_layout;
+        Amarok::Slider* m_weightSelection;
+        QLabel*         m_weightLabel;
+        QLabel*         m_withLabel;
+        KComboBox*      m_fieldSelection;
+};
+
 
 }
 

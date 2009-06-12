@@ -99,7 +99,12 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
         return;
     }
 
-    m_layout->removeWidget( chosen->configWidget() );
+    entryConfig->setParent( this );
+
+    QLayoutItem* oldW = m_layout->itemAt( 1 );
+    m_layout->removeItem( oldW );
+    delete oldW;
+    
     m_layout->addWidget( entryConfig );
     m_cbias->setCurrentEntry( chosen );
 }
