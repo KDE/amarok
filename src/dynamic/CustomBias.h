@@ -1,0 +1,112 @@
+/*****************************************************************************
+* copyright            : (C) 2009 Leo Franchi <lfranchi@kde.org>             *
+******************************************************************************/
+
+/***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
+
+#ifndef DYNAMIC_CUSTOM_BIAS_H
+#define DYNAMIC_CUSTOM_BIAS_H
+
+#include "Bias.h"
+
+class QComboBox;
+class QVBoxLayout;
+
+namespace Dynamic
+{
+
+/**
+ *  This is the object that the singleton CustomBias can register. A service, or anything
+ *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
+ */
+class CustomBiasEntry : public QObject
+{
+    Q_OBJECT
+    public:
+        CustomBiasEntry();
+        ~CustomBiasEntry();
+
+        /**
+         *   Returns the name of the type of bias. eg. "Last.fm"
+         */
+        virtual QString name() = 0;
+
+        /**
+         * Returns the widget that will configure this bias. It will be placed in
+         * a vertical layout, and will already have its label be shown. Minimize
+         * vertical space if possible.
+         */
+        virtual QWidget* configWidget() = 0;
+
+        /**
+         * Returns if the given track satisfies this bias' conditions.
+         */
+        virtual bool trackSatisfies( Meta::TrackPtr ) = 0;
+
+        /**
+         * Convenience method. Returns number of tracks that satisfy
+         * from the list. Preferred when there are multiple tracks to
+         * check to allow the Bias to do more local caching of expensive
+         * (read: web) lookups.
+         */
+        virtual int numTracksThatSatisfy( Meta::TrackList ) = 0;
+
+};
+
+/**
+ * This is a meta bias that allows for different sorts of biases to be plugged
+ * in, and the user to select from them. This bias is meant to be modeled on the
+ * Proportional bias---so the pluggable biases are binary ones, that operate on
+ * individual tracks only.
+ *
+ * There is only one bias type chosen by the user at a time per bias.
+ */
+class CustomBias : public QObject, public Bias
+{
+    Q_OBJECT
+    public:
+        CustomBias();
+        ~CustomBias() {}
+
+        // reimplement from Dynamic::Bias
+        virtual PlaylistBrowserNS::BiasWidget* widget(QWidget* parent = 0);
+        virtual QDomElement xml() const;
+   
+        virtual double energy(const Meta::TrackList& playlist, const Meta::TrackList& context);
+        virtual double reevaluate(double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context);
+
+        /**
+         * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.
+         */
+        void registerNewBiasEntry( CustomBiasEntry* );
+
+        /**
+         * Remove CustomBiasEntry from the list of bias types that the user can select.
+         */
+        void removeBiasEntry( CustomBiasEntry* );
+
+    private slots:
+        void selectionChanged( int index );
+        
+    private:
+        QList< CustomBiasEntry* > m_biasEntries;
+        CustomBiasEntry* m_currentEntry;
+
+        QComboBox* m_biasTypes;
+        QVBoxLayout* m_layout;
+};
+
+}
+
+Q_DECLARE_METATYPE( Dynamic::CustomBiasEntry* )
+
+
+
+#endif

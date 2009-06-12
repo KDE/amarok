@@ -413,6 +413,7 @@ set(libdynamic_SRCS
     dynamic/BiasedPlaylist.cpp
     dynamic/DynamicPlaylist.cpp
     dynamic/Bias.cpp
+    dynamic/CustomBias.cpp
     dynamic/BiasSolver.cpp
     dynamic/TrackSet.cpp
     dynamic/gsl/gauss.c
