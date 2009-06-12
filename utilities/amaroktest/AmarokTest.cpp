@@ -193,7 +193,18 @@ AmarokTest::runScript()
         s_textStream << qPrintable( tr( "Uncaught exception in test script: " ) ) << m_currentlyRunning << endl;
         s_textStream << qPrintable( tr( "Line: " ) ) << m_engine.uncaughtExceptionLineNumber() << endl;
         s_textStream << qPrintable( tr( "Exception: " ) ) << m_engine.uncaughtException().toString() << endl;
-        //s_textStream << qPrintable( tr( "Backtrace: " ) ) << m_engine.uncaughtExceptionBacktrace() << endl;
+
+        s_textStream << qPrintable( tr( "Backtrace: " ) ) << endl;
+        QStringList backtrace = m_engine.uncaughtExceptionBacktrace();
+
+        int i = 0;
+        while( i < backtrace.size() )
+        {
+            s_textStream << "  " << backtrace.at( i ) << endl;
+            i++;
+        }
+
+        s_textStream << endl;
     }
 
     testScript.close();
