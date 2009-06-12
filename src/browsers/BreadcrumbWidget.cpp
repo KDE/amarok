@@ -75,12 +75,32 @@ void BreadcrumbWidget::updateBreadcrumbs()
     m_items.clear();
 
     m_spacer->setParent( 0 );
+
+    QPushButton * label = 0;
     
     foreach( QString item, m_currentPath )
     {
-        QPushButton * label = new QPushButton( item + " / ", this );
+        label = new QPushButton( item + " / ", this );
         label->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
         m_items.append( label );
+    }
+
+    if ( label )
+    {
+        //make currently active item have a bold text
+        QFont font = label->font();
+        font.setBold( true );
+        label->setFont( font );
+
+        font = m_rootItem->font();
+        font.setBold( false );
+        m_rootItem->setFont( font );
+    }
+    else
+    {
+        QFont font = m_rootItem->font();
+        font.setBold( true );
+        m_rootItem->setFont( font );
     }
 
     m_spacer->setParent( this );
