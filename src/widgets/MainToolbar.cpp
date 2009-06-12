@@ -47,20 +47,19 @@ MainToolbar::MainToolbar( QWidget * parent )
 {
     setObjectName( "MainToolbar" );
 
-    setContentsMargins( 3, 0, 3, 0 );
+    setContentsMargins( 20, 3, 3, 3 );
     setFixedHeight( 67 );
     setMinimumWidth( 600 );
-    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    
-    KHBox * mainBox = new KHBox( this );
-    mainBox->setFixedHeight( 67 );
-    mainBox->setMinimumWidth( 600 );
-    mainBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    mainBox->setContentsMargins( 0, 0, 0, 0 );
+    setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+
     setAutoFillBackground ( false );
 
-
-    KHBox * hBox = new KHBox( mainBox );
+    KHBox * hBox = new KHBox( 0 );
+    addWidget( hBox );
+    //hBox->setFixedHeight( 67 );
+    //hBox->setMinimumWidth( 594 );
+    hBox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+    hBox->setContentsMargins( 20, 3, 3, 3 );
 
     m_mainControlsWidget = new MainControlsWidget( hBox );
 
