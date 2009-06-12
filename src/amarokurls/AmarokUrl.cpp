@@ -77,7 +77,7 @@ void AmarokUrl::setCommand( const QString & command )
         m_fields << command;
 }
 
-QString AmarokUrl::command()
+QString AmarokUrl::command() const
 {
     if ( m_fields.count() != 0 )
         return m_fields[0];
@@ -85,7 +85,7 @@ QString AmarokUrl::command()
         return QString();
 }
 
-int AmarokUrl::numberOfArgs()
+int AmarokUrl::numberOfArgs() const
 {
     if ( m_fields.count() != 0 )
         return m_fields.count() - 1;
@@ -101,7 +101,7 @@ void AmarokUrl::appendArg( const QString & arg )
         m_fields << QString() << arg; //reserve space for command
 }
 
-QString AmarokUrl::arg( int arg )
+QString AmarokUrl::arg( int arg ) const
 {
     if ( m_fields.count() != 0 )
         return m_fields[arg + 1];
@@ -115,7 +115,7 @@ bool AmarokUrl::run()
     return The::amarokUrlHandler()->run( *this );
 }
 
-QString AmarokUrl::url()
+QString AmarokUrl::url() const
 {
     QString url = "amarok:/";
     foreach( const QString &field, m_fields ) {
@@ -211,7 +211,7 @@ void AmarokUrl::setCustomValue( const QString & custom )
     m_customValue = custom;
 }
 
-QString AmarokUrl::customValue()
+QString AmarokUrl::customValue() const
 {
     return m_customValue;
 }

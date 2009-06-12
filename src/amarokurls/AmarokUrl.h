@@ -42,23 +42,23 @@ public:
     void initFromString( const QString & urlString );
 
     void setCommand( const QString &command );
-    QString command();
+    QString command() const;
 
     void setName( const QString &name );
 
     void setDescription( const QString &description );
 
     void setCustomValue( const QString &custom );
-    QString customValue();
+    QString customValue() const;
 
-    int numberOfArgs();
+    int numberOfArgs() const;
 
     void appendArg( const QString &arg );
-    QString arg( int );
+    QString arg( int ) const;
 
     bool run();
 
-    QString url();
+    QString url() const;
 
     bool saveToDb();
 
