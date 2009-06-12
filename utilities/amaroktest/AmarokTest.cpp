@@ -28,7 +28,12 @@
 
 #include <QDateTime>
 #include <QFile>
+#include <QObject>
+#include <QScriptValue>
+#include <QTextStream>
 
+
+static QTextStream s_textStream( stderr );
 
 int
 main( int argc, char *argv[] )
@@ -47,8 +52,8 @@ AmarokTest::AmarokTest( int &argc, char **argv )
     QFile logFile( logsLocation + currentTime + ".log" );
 
     if( !logFile.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
-        ::debug() << "Unable to open log!";
-            ::exit( 1 );
+        s_textStream << qPrintable( tr(  "Unable to open log!" ) );
+        ::exit( 1 );
     }
 
     m_log.setDevice( &logFile );
@@ -92,7 +97,7 @@ AmarokTest::AmarokTest( int &argc, char **argv )
     QFile symlink( linkLocation );
     symlink.remove();
     if( !logFile.link( linkLocation ) )
-        ::debug() << "Unable to create link to log!";
+        s_textStream << qPrintable( tr( "Unable to create link to log!" ) );
 
     logFile.close();
     ::exit( 0 );
@@ -167,6 +172,11 @@ AmarokTest::prepareTestEngine()
     m_engine.importExtension( "qt.xml" );
 
     m_engine.setProcessEventsInterval( 100 );
+
+    /** Access to our test framework is a nice thing, too */
+    QObject *amarokTestObject = this;
+    QScriptValue amarokTestValue = m_engine.newQObject( amarokTestObject );
+    m_engine.globalObject().setProperty( "AmarokTest", amarokTestValue );
 }
 
 
@@ -180,10 +190,10 @@ AmarokTest::runScript()
     m_engine.evaluate( testScript.readAll() );
 
     if( m_engine.hasUncaughtException() ) {
-        ::debug() << "Uncaught exception in test script: " << m_currentlyRunning;
-        ::debug() << "Line: " << m_engine.uncaughtExceptionLineNumber();
-        ::debug() << "Exception: " << m_engine.uncaughtException().toString();
-        ::debug() << "Backtrace: " << m_engine.uncaughtExceptionBacktrace();
+        s_textStream << qPrintable( tr( "Uncaught exception in test script: " ) ) << m_currentlyRunning << endl;
+        s_textStream << qPrintable( tr( "Line: " ) ) << m_engine.uncaughtExceptionLineNumber() << endl;
+        s_textStream << qPrintable( tr( "Exception: " ) ) << m_engine.uncaughtException().toString() << endl;
+        //s_textStream << qPrintable( tr( "Backtrace: " ) ) << m_engine.uncaughtExceptionBacktrace() << endl;
     }
 
     testScript.close();

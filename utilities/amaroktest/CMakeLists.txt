@@ -25,3 +25,5 @@ if(APPLE)
 else(APPLE)
 	install(TARGETS amaroktest RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
 endif(APPLE)
+
+add_subdirectory( tests )
