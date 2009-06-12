@@ -7,9 +7,9 @@ add_subdirectory( tools )
 
 # only compile the javascript engine on KDE >=4.3, as it's tied in pretty
 # closely. will need to investigate possible solutions
-if( KDE_VERSION GREATER "4.2.70" )
+if( KDE_VERSION VERSION_GREATER "4.2.70" )
 	add_subdirectory( scriptengine/javascript )
-endif( KDE_VERSION GREATER "4.2.70" )
+endif( KDE_VERSION VERSION_GREATER "4.2.70" )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
                     ..
