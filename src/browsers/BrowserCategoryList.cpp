@@ -151,6 +151,11 @@ BrowserCategoryList::home()
 {
     if ( m_currentCategory != 0 )
     {
+
+        BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+        if ( childList )
+            childList->home();
+        
         m_currentCategory->setParent( 0 );
         m_categoryListView->setParent( this );
         m_currentCategory = 0; // remove any context stuff we might have added
