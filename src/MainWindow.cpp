@@ -291,7 +291,7 @@ MainWindow::init()
         m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "playlists", 0 );
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
         m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
-        m_playlistBrowser->setShortDescription( i18n( "Differnt kinds of playlists" ) );
+        m_playlistBrowser->setShortDescription( i18n( "Different kinds of playlists" ) );
         m_browsers->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
