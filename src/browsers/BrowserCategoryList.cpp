@@ -63,7 +63,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setSortingEnabled( true );
     m_categoryListView->setAlternatingRowColors( true );
     m_categoryListView->setModel( m_proxyModel );
-    connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( serviceActivated( const QModelIndex & ) ) );
+    connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
 
     The::paletteHandler()->updateItemView( m_categoryListView );
 
