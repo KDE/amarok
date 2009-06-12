@@ -191,8 +191,15 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         CustomBias( Dynamic::CustomBiasEntry* entry, double weight );
         void refreshWidgets();
 
+        // the static members deal with all currently managed biases
         static QList< CustomBiasFactory* > s_biasFactories;
+        /// if we are told to load a bias but don't yet have that factory registered e.g. on startup,
+        /// remember that, so when we do get that factory we can set the proper bias type
+        static QMap< QString, CustomBias* > s_failedMap;
+        static QMap< QString, QDomElement > s_failedMapXml;
+           
         static QList< CustomBias* > s_biases;
+        
         CustomBiasEntry* m_currentEntry;
 
         double m_weight; // slider for percent

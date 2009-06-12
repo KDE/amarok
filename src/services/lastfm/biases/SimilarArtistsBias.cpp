@@ -60,6 +60,7 @@ Dynamic::SimilarArtistsBiasFactory::pluginName() const
 Dynamic::CustomBiasEntry*
 Dynamic::SimilarArtistsBiasFactory::newCustomBias()
 {
+    debug() << "CREATING SIMILAR BIAS";
     return new SimilarArtistsBias();
 }
 
@@ -68,6 +69,7 @@ Dynamic::SimilarArtistsBiasFactory::newCustomBias(QDomElement e)
 {
     // we don't save anything, so just load a fresh one
     Q_UNUSED( e )
+    debug() << "CREATING SIMILAR BIAS 2";
     return new SimilarArtistsBias();
 }
 

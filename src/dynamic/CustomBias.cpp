@@ -13,6 +13,8 @@
 
 #include "CustomBias.h"
 
+#define DEBUG_PREFIX "CustomBias"
+
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "SliderWidget.h"
@@ -71,7 +73,7 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
 
     connect( m_cbias, SIGNAL( biasFactoriesChanged() ), this, SLOT( reloadBiases() ) );
 
-    connect( m_fieldSelection, SIGNAL( currentIndexChanged( int ) ),
+    connect( m_fieldSelection, SIGNAL( activated( int ) ),
             this, SLOT( selectionChanged( int ) ) );
     m_fieldSelection->setCurrentIndex( 0 );
     m_weightSelection->setValue( m_cbias->weight() * 100 );
@@ -89,6 +91,8 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
     DEBUG_BLOCK
     if( !m_fieldSelection )
         return;
+
+    debug() << "selection changed to index: " << index;
     Dynamic::CustomBiasFactory* chosenFactory = m_fieldSelection->itemData( index ).value<  Dynamic::CustomBiasFactory* >();
 
     if( !chosenFactory )
@@ -143,7 +147,11 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
         QVariant data;
         data.setValue( entry );
         if( !m_fieldSelection->contains( entry->name() ) )
+        {
+            debug() << "found new bias factory that wasn't in the list, so appending";
+            debug() << "size of list before appending: " << m_fieldSelection->count() << "current index:" << m_fieldSelection->currentIndex();
             m_fieldSelection->addItem( entry->name(), data );
+        }
     }
     // remove and stale ones
     for( int i = 0; i < m_fieldSelection->count(); i++ )
@@ -152,6 +160,7 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
                 m_fieldSelection->itemData( i ).value<  Dynamic::CustomBiasFactory* >() ) )
         {
             // ok, we lost one. not sure why. try to clean up sanely.
+            debug() << "a bias factory was removed, updating list to reflect!";
             m_fieldSelection->removeItem( i );
         }
     }
@@ -174,9 +183,12 @@ Dynamic::CustomBiasEntry::weight()
 
 // CLASS CustomBias
 
-QList< Dynamic::CustomBiasFactory* > Dynamic::CustomBias::s_biasFactories = QList< CustomBiasFactory* >();
-QList< Dynamic::CustomBias* > Dynamic::CustomBias::s_biases = QList< CustomBias* >();
+QList< Dynamic::CustomBiasFactory* > Dynamic::CustomBias::s_biasFactories = QList< Dynamic::CustomBiasFactory* >();
+QList< Dynamic::CustomBias* > Dynamic::CustomBias::s_biases = QList< Dynamic::CustomBias* >();
+QMap< QString, Dynamic::CustomBias* > Dynamic::CustomBias::s_failedMap = QMap< QString, Dynamic::CustomBias* >();
+QMap< QString, QDomElement > Dynamic::CustomBias::s_failedMapXml = QMap< QString, QDomElement >();
 
+        
 Dynamic::CustomBias::CustomBias()
     : m_currentEntry( 0 )
     , m_weight( 0 )
@@ -298,6 +310,20 @@ Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasFactory* entry )
     if( !s_biasFactories.contains( entry ) )
         s_biasFactories.append( entry );
 
+    foreach( QString name, s_failedMap.keys() )
+    {
+        if( name == entry->pluginName() ) // lazy loading!
+        {
+            debug() << "found entry loaded without proper custombiasentry. fixing now, with  old weight of" << s_failedMap[ name ]->weight() ;
+            //  need to manually set the weight, as we set it on the old widget which is now being thrown away
+            Dynamic::CustomBiasEntry* cbe = entry->newCustomBias( s_failedMapXml[ name ]);
+            cbe->setWeight( s_failedMap[ name ]->weight() * 100 );
+            s_failedMap[ name ]->setCurrentEntry( cbe );
+            s_failedMap.remove( name );
+            s_failedMapXml.remove( name );
+        }
+    }
+    
     foreach( Dynamic::CustomBias* bias, s_biases )
         bias->refreshWidgets();
 }
@@ -337,11 +363,14 @@ Dynamic::CustomBias::fromXml(QDomElement e)
                     return createBias(  factory->newCustomBias( biasNode.firstChild().toElement() ), weight );
                 }
             }
+            // didn't find a factory for the bias, but we at leasst get a weight, so set that and remember
+            Dynamic::CustomBias* b = createBias( 0, weight );
+            s_failedMap[ pluginName ] = b;
+            s_failedMapXml[ pluginName ] = biasNode.firstChild().toElement();
+            return b;
         }
-        // didn't find a factory for the bias, but we at leasst get a weight, so set that.
-        return createBias( 0, weight );
     }
-    // couldn't load the xml at all. so instead of crashing we'll return a default custom bias
+    // couldn't load the xml at all. so instead of crashing we'll return a default custom bias. shouldn't ever be here...
     return createBias();
 }
 
