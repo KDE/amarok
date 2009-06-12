@@ -44,6 +44,7 @@ namespace Playlist
 
         public slots:
             void sort( int field );
+            void showDynamicHint( bool enabled );
 
         protected:
             QSize sizeHint() const;
@@ -52,6 +53,8 @@ namespace Playlist
             PrettyListView* m_playlistView;
             ProgressiveSearchWidget * m_searchWidget;
             QComboBox * m_sortBox;
+            QWidget* m_dynamicHintWidget;
+
     };
 }
 

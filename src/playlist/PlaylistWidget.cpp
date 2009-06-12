@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
+ * copyright            : (C) 2009 Leo Franchi <lfranchi@kde.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,6 +24,7 @@
 #include "ActionClasses.h"
 #include "App.h"
 #include "Debug.h"
+#include "DynamicModel.h"
 #include "MainWindow.h"
 #include "ToolBar.h"
 #include "PlaylistController.h"
@@ -39,10 +41,12 @@
 #include <KToolBarSpacerAction>
 
 #include <QHBoxLayout>
+#include <amarokconfig.h>
 
 Playlist::Widget::Widget( QWidget* parent )
         : KVBox( parent )
 {
+    DEBUG_BLOCK
     setContentsMargins( 1, 1, 1, 1 );
 
     m_searchWidget = new ProgressiveSearchWidget( this );
@@ -77,6 +81,12 @@ Playlist::Widget::Widget( QWidget* parent )
     m_sortBox->insertItem( 33, "Year", Year );
 
     connect( m_sortBox, SIGNAL( activated( int ) ), this, SLOT( sort( int ) ) );*/
+
+    // show visual indication of dynamic playlists  being enabled
+    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );
+    m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), this );
+    m_dynamicHintWidget->show();
+    showDynamicHint( AmarokConfig::dynamicMode() );
     
     QWidget * layoutHolder = new QWidget( this );
 
@@ -156,7 +166,8 @@ Playlist::Widget::sizeHint() const
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
 }
 
-void Playlist::Widget::sort( int index )
+void
+Playlist::Widget::sort( int index )
 {
     DEBUG_BLOCK
     int field = m_sortBox->itemData( index ).toInt();
@@ -165,4 +176,14 @@ void Playlist::Widget::sort( int index )
     FilterProxy::instance()->sort( field );
 }
 
+void
+Playlist::Widget::showDynamicHint( bool enabled )
+{
+    DEBUG_BLOCK
+    if( enabled )
+        m_dynamicHintWidget->show();
+    else
+        m_dynamicHintWidget->hide();
+    
+}
 
