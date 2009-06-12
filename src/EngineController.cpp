@@ -286,8 +286,10 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
         return;
 
     m_currentTrack = track;
+    delete m_boundedPlayback;
     delete m_multiPlayback;
     delete m_multiSource;
+    m_currentTrack->create<Meta::BoundedPlaybackCapability>();
     m_multiPlayback = m_currentTrack->create<Meta::MultiPlayableCapability>();
     m_multiSource  = m_currentTrack->create<Meta::MultiSourceCapability>();
 
@@ -309,6 +311,10 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
         debug() << "Got a MultiSource Track with " <<  m_multiSource->sources().count() << " sources";
         connect( m_multiSource, SIGNAL( urlChanged( const KUrl & ) ), this, SLOT( slotPlayableUrlFetched( const KUrl & ) ) );
         playUrl( m_currentTrack->playableUrl(), 0 );
+    }
+    else if ( m_boundedPlayback )
+    {
+        playUrl( m_currentTrack->playableUrl(), m_boundedPlayback->startPosition() );
     }
     else
     {
@@ -640,7 +646,22 @@ EngineController::trackPositionMs() const
 void
 EngineController::slotTick( qint64 position )
 {
-    trackPositionChangedNotify( static_cast<long>( position ), false ); //it expects milliseconds
+   
+
+    if ( m_boundedPlayback )
+    {
+        trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
+        
+        //dont go beyound the stop point
+        if ( position >= m_boundedPlayback->endPosition() )
+        {
+            slotQueueEnded();
+        }
+    }
+    else
+    {
+        trackPositionChangedNotify( static_cast<long>( position ), false ); //it expects milliseconds
+    }
 }
 
 

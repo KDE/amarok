@@ -14,6 +14,7 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
+#include "meta/capabilities/BoundedPlaybackCapability.h"
 #include "EngineObserver.h"
 #include "meta/Meta.h"
 
@@ -160,6 +161,7 @@ private:
     Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
+    QPointer<Meta::BoundedPlaybackCapability> m_boundedPlayback;
     QPointer<Meta::MultiPlayableCapability> m_multiPlayback;
     QPointer<Meta::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
