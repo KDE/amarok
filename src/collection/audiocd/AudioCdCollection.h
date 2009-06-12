@@ -58,13 +58,23 @@ class AudioCdCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
 public:
+
+    enum { VAW, FLAC, OGG, MP3 } EncodingFormat;
+
     AudioCdCollection();
     ~AudioCdCollection();
+
+    QString encodingFormat() const;
+    QString copyableBasePath() const;
+
+    void setEncodingFormat( int format );
 
     virtual QueryMaker * queryMaker();
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     virtual KIcon icon() const;
+
+    virtual CollectionLocation* location() const;
 
     void cdRemoved();
 
@@ -83,6 +93,7 @@ private:
 
     QString m_cdName;
     QString m_discCddbId;
+    int m_encodingFormat;
 
     
 };

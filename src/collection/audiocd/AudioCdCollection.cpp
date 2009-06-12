@@ -19,6 +19,7 @@
  
 #include "AudioCdCollection.h"
 
+#include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
 #include "AudioCdQueryMaker.h"
 #include "covermanager/CoverFetcher.h"
@@ -79,6 +80,7 @@ void AudioCdCollectionFactory::deviceRemoved( const QString & uid )
 AudioCdCollection::AudioCdCollection()
    : Collection()
    , MemoryCollection()
+   , m_encodingFormat( OGG )
 {
     DEBUG_BLOCK
     readCd();
@@ -196,13 +198,16 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
 
                 QString padding = i < 10 ? "0" : QString();
 
-                QString baseUrl = "audiocd:/" + artist + " - " + padding  + QString::number( i + 1 ) + " - " + trackName + ".wav";
+                QString baseFileName = artist + " - " + padding  + QString::number( i + 1 ) + " - " + trackName;
+
+                QString baseUrl = "audiocd:/" + baseFileName + ".wav";
 
                 debug() << "Track url: " << baseUrl;
 
                 AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
 
                 trackPtr->setTrackNumber( i + 1 );
+                trackPtr->setFileNameBase( baseFileName );
                 
                 addTrack( TrackPtr::staticCast( trackPtr ) );
 
@@ -252,6 +257,44 @@ KIcon AudioCdCollection::icon() const
 void AudioCdCollection::cdRemoved()
 {
     emit remove();
+}
+
+QString AudioCdCollection::encodingFormat() const
+{
+    switch( m_encodingFormat ) {
+        case VAW:
+            return "vaw";
+        case FLAC:
+            return "flac";
+        case OGG:
+            return "ogg";
+        case MP3:
+            return "mp3";
+    }
+}
+
+QString AudioCdCollection::copyableBasePath() const
+{
+    switch( m_encodingFormat ) {
+        case VAW:
+            return "audiocd:/";
+        case FLAC:
+            return "audiocd:/FLAC/";
+        case OGG:
+            return "audiocd:/Ogg Vorbis/";
+        case MP3:
+            return "audiocd:/MP3/";
+    }
+}
+
+void AudioCdCollection::setEncodingFormat( int format )
+{
+    m_encodingFormat = format;
+}
+
+CollectionLocation * AudioCdCollection::location() const
+{
+    return new AudioCdCollectionLocation( this );
 }
 
 

@@ -116,6 +116,9 @@ class AudioCdTrack : public Meta::Track
 
         void setLength( int length );
 
+        void setFileNameBase( const QString &fileNameBase );
+        QString fileNameBase();
+
     private:
         AudioCdCollection *m_collection;
 
@@ -126,11 +129,11 @@ class AudioCdTrack : public Meta::Track
         AudioCdYearPtr m_year;
 
         QString m_name;
-        QString m_type;
         int m_length;
         int m_trackNumber;
         QString m_displayUrl;
         QString m_playableUrl;
+        QString m_fileNameBase;
 };
 
 class AudioCdArtist : public Meta::Artist

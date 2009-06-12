@@ -13,7 +13,8 @@ include_directories( ../..
         set(amarok_collection-audiocdcollection_PART_SRCS
         AudioCdCollection.cpp
         AudioCdMeta.cpp
-        AudioCdQueryMaker.cpp)
+        AudioCdQueryMaker.cpp
+        AudioCdCollectionLocation.cpp)
 
 
         kde4_add_plugin(amarok_collection-audiocdcollection WITH_PREFIX ${amarok_collection-audiocdcollection_PART_SRCS})

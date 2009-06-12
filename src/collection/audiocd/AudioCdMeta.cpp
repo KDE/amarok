@@ -33,7 +33,6 @@ AudioCdTrack::AudioCdTrack( AudioCdCollection *collection, const QString &name, 
     , m_composer( 0 )
     , m_year( 0 )
     , m_name( name)
-    , m_type( "wav" )
     , m_length( 0 )
     , m_trackNumber( 0 )
     , m_displayUrl( url )
@@ -248,7 +247,7 @@ AudioCdTrack::lastPlayed() const
 QString
 AudioCdTrack::type() const
 {
-    return m_type;
+    return m_collection->encodingFormat();
 }
 
 void
@@ -316,6 +315,17 @@ AudioCdTrack::setLength( int length )
 {
     m_length = length;
 }
+
+void Meta::AudioCdTrack::setFileNameBase( const QString & fileNameBase )
+{
+    m_fileNameBase = fileNameBase;
+}
+
+QString Meta::AudioCdTrack::fileNameBase()
+{
+    return m_fileNameBase;
+}
+
 
 //AudioCdArtist
 
@@ -578,3 +588,6 @@ AudioCdYear::addTrack( AudioCdTrackPtr track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
+
+
+
