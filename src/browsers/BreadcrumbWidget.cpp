@@ -26,9 +26,21 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
     : KHBox( parent)
 {
     setFixedHeight( 28 );
+
+    setStyleSheet( "QPushButton { border: none; }"
+                   "QPushButton:hover { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde); }"
+                 );
+
+    
     m_rootItem = new QPushButton( i18n( "Home / " ), this );
+    m_rootItem->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
     connect( m_rootItem, SIGNAL( clicked( bool ) ), this, SLOT( rootItemClicked() ) );
+
+    setContentsMargins( 0, 0, 0, 0 );
+    setSpacing( 0 );
+
+    m_spacer = new QWidget( 0 );
 }
 
 
@@ -62,11 +74,16 @@ void BreadcrumbWidget::updateBreadcrumbs()
     qDeleteAll( m_items );
     m_items.clear();
 
+    m_spacer->setParent( 0 );
+    
     foreach( QString item, m_currentPath )
     {
         QPushButton * label = new QPushButton( item + " / ", this );
+        label->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
         m_items.append( label );
     }
+
+    m_spacer->setParent( this );
 }
 
 void BreadcrumbWidget::rootItemClicked()

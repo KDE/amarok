@@ -54,6 +54,7 @@ private:
 
     QPushButton * m_rootItem;
     QList<QPushButton *> m_items;
+    QWidget * m_spacer;
 
 };
 
