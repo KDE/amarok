@@ -17,7 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-/* Test script to test our test framework itself                           */
+/* Test for SmartPointerList class                                         */
+/* Made by Copyright (c) 2009 Max Howell <max@last.fm>                     */
+/* Ported to QtScript 2009 by Sven Krohlas <sven@getamarok.com>            */
 
 /* Initialisation stuff that should not be taken into account for          *
  * performance measuring.                                                  *
@@ -32,9 +34,4 @@ AmarokTest.startTimer();
 
 
 /* The tests                                                               */
-AmarokTest.testResult( "AmarokTest: Successful test", "OK", "OK" );
-AmarokTest.testResult( "AmarokTest: Failed test",     "OK", "not OK", true );
-AmarokTest.testResult( "AmarokTest: Successful integer test",  1,    1 );
-AmarokTest.testResult( "AmarokTest: Failed integer test",     23,   42, true );
-AmarokTest.testResult( "AmarokTest: Successful FP test", 3.14,   3.14 );
-AmarokTest.testResult( "AmarokTest: Failed FP test",     3.14,   2.71, true );
+

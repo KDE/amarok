@@ -139,12 +139,12 @@ AmarokTest::startTimer() // Slot
 
 
 void
-AmarokTest::testResult( QString testName, QString expected, QString actualResult ) // Slot
+        AmarokTest::testResult( QString testName, QString expected, QString actualResult, bool expectedToFail ) // Slot
 {
     m_log << "  <test>" << endl;
     m_log << "    <name>" << testName << "</name>" << endl;
 
-    if( expected != actualResult )
+    if( ( !expectedToFail && ( expected != actualResult ) ) || ( expectedToFail && ( expected == actualResult ) ) )
     {
         m_log << "    <status>FAILED</status>" << endl;
         m_log << "    <expected>" << expected << "</expected>" << endl;

@@ -63,7 +63,7 @@ public slots:
      * @expected Human readable expected test result.
      * @actualResult Human readable actual result of the test.
      */
-    void testResult( QString testName, QString expected, QString actualResult );
+    void testResult( QString testName, QString expected, QString actualResult, bool expectedToFail = false );
 
 private:
     /**
