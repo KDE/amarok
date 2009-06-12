@@ -39,7 +39,9 @@ public:
 
     qint64 map( qint64 sourceRow );
 
-    void insertRows( qint64 startRowInSource, qint64 rowCount );
+    void insertRows( qint64 startRowInSource, qint64 endRowInSource );
+
+    void deleteRows( qint64 stareRowInSource, qint64 endRowInSource );
 
     bool isSorted(){ return m_sorted; };
 

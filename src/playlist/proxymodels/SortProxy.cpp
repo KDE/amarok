@@ -49,18 +49,19 @@ SortProxy::SortProxy()
     setSourceModel( m_belowModel );
     m_map = new SortMap( m_belowModel->rowCount() );
 
-    //m_sortScheme << foo...
-    //connect( m_belowModel, SIGNAL( filterChanged() ), this,
+    //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
+    //by sorting, they may be just blindly forwarded
+    connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
+    connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
 
-    /*connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
-    connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );*/
+    
     connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
 
     //NOTE to self by Téo: when rows are inserted, and that I'll know thanks to the signals
-    // in FilterProxy, they must be added to the m_map but the sorting map but the map must
+    // in FilterProxy, they must be added to the m_map but the map must
     // be declared invalid m_sorted = 0;
 
-    //NOTE to self by Téo:
+    //NOTE to self by Téo: dataChanged could already be implemented by QAbstractProxyModel
     /*
     needed by GroupingProxy:
     connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
