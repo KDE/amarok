@@ -156,13 +156,24 @@ MainWindow::~MainWindow()
     KConfigGroup config = Amarok::config();
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
+    config.writeEntry( "MainWindow Layout", saveState( 1 ) );
+    
 
     QList<int> sPanels;
 
     //foreach( int a, m_splitter->saveState() )
     //    sPanels.append( a );
 
-    AmarokConfig::setPanelsSavedState( sPanels );
+
+    //save layout to file. Does not go into to rc as it is binary data.
+    QFile file( Amarok::saveLocation() + "layout" );
+    if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered ) )
+    {
+        file.write( saveState( 1 ) );
+        file.close();
+    }
+
+    //AmarokConfig::setPanelsSavedState( sPanels );
 
     delete m_playlistFiles;
     delete m_contextView;
@@ -202,6 +213,7 @@ MainWindow::init()
 
 
     m_browsersDock = new QDockWidget( i18n( "Browsers" ), this );
+    m_browsersDock->setObjectName( "Browsers" );
     m_browsersDock->setWidget( m_browsers );
     m_browsersDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     
@@ -212,6 +224,7 @@ MainWindow::init()
     m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
 
     m_playlistDock = new QDockWidget( i18n( "Playlist" ), this );
+    m_playlistDock->setObjectName( "Playlist" );
     m_playlistDock->setWidget( m_playlistWidget );
     m_playlistDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     
@@ -234,6 +247,7 @@ MainWindow::init()
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
     m_contextDock = new QDockWidget( i18n( "Context" ), this );
+    m_contextDock->setObjectName( "Context" );
     m_contextDock->setWidget( m_contextWidget );
     m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
 
@@ -310,19 +324,19 @@ MainWindow::init()
         #undef addBrowserMacro
         PERF_LOG( "finished MainWindow::init" )
     }
-    //</Browsers>
-
-    /*if( AmarokConfig::panelsSavedState()[0] != -1 )
-    {
-        QByteArray sPanels;
-
-        foreach( int a, AmarokConfig::panelsSavedState() )
-            sPanels.append( a );
-
-        //m_splitter->restoreState( sPanels );
-    }*/
 
     The::amarokUrlHandler(); //Instantiate
+
+    //save layout to file. Does not go into to rc as it is binary data.
+    QFile file( Amarok::saveLocation() + "layout" );
+    if ( file.open( QIODevice::ReadOnly ) )
+    {
+        QByteArray layout = file.readAll();
+        file.close();
+
+        debug() << "got saved layout" << layout;
+        restoreState( layout, 1 );
+    }
 }
 
 void
