@@ -21,6 +21,8 @@
 
 #include "AudioCdCollection.h"
 
+#include <KCMultiDialog>
+
 FormatSelectionDialog::FormatSelectionDialog( QWidget *parent )
     : QDialog( parent )
 {
@@ -31,8 +33,7 @@ FormatSelectionDialog::FormatSelectionDialog( QWidget *parent )
     connect( wavButton, SIGNAL( toggled( bool ) ), this, SLOT( selectionChanged( bool ) ) );
     connect( mp3Button, SIGNAL( toggled( bool ) ), this, SLOT( selectionChanged( bool ) ) );
 
-
-    //read default selection from config:
+    connect( advancedButton, SIGNAL( clicked( bool ) ), this, SLOT( showAdvancedSettings() ) );
 
 
     //restore format from last time, if any.
@@ -107,6 +108,16 @@ void FormatSelectionDialog::accept()
     
     emit formatSelected( m_selectedFormat );
     QDialog::accept();
+}
+
+void FormatSelectionDialog::showAdvancedSettings()
+{
+    KCMultiDialog* KCM = new KCMultiDialog();
+    KCM->setWindowTitle( i18n( "Audiocd settings - Amarok" ) );
+    KCM->addModule( "audiocd" );
+    KCM->exec();
+
+    KCM->deleteLater();
 }
 
 

@@ -42,6 +42,8 @@ public:
 public slots:
     virtual void accept();
 
+    virtual void showAdvancedSettings();
+
 signals:
     void formatSelected( int );
 
