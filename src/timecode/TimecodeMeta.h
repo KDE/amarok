@@ -217,8 +217,9 @@ private:
     TrackList m_tracks;
 };
 
-class TimecodeAlbum : public Meta::Album
+class TimecodeAlbum : public QObject, public Meta::Album
 {
+Q_OBJECT
 public:
     TimecodeAlbum( const QString &name );
     virtual ~TimecodeAlbum();
@@ -234,6 +235,9 @@ public:
     virtual QPixmap image( int size = 1 );
     virtual bool canUpdateImage() const;
     virtual void setImage( const QPixmap &pixmap );
+
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
     //TimecodeAlbum specific methods
     void addTrack( TimecodeTrackPtr track );

@@ -20,7 +20,10 @@
 #include "TimecodeMeta.h"
 
 #include "Debug.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "covermanager/CoverFetchingActions.h"
 #include "covermanager/CoverFetcher.h"
+#include "meta/capabilities/CustomActionsCapability.h"
 #include "meta/Capability.h"
 #include "meta/capabilities/BoundedPlaybackCapability.h"
 
@@ -559,7 +562,8 @@ TimecodeArtist::addTrack( TimecodeTrackPtr track )
 ////////////////// ALBUM //////////////////
 
 TimecodeAlbum::TimecodeAlbum( const QString & name )
-    : m_name( name )
+    : QObject()
+    , m_name( name )
     , m_isCompilation( false )
 {
 }
@@ -621,7 +625,7 @@ TimecodeAlbum::image( int size )
 bool
 TimecodeAlbum::canUpdateImage() const
 {
-    return false;
+    return true;
 }
 
 void
@@ -644,6 +648,42 @@ void TimecodeAlbum::setAlbumArtist( TimecodeArtistPtr artist )
 void TimecodeAlbum::setIsCompilation( bool compilation )
 {
     m_isCompilation = compilation;
+}
+
+bool TimecodeAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    return type == Meta::Capability::CustomActions;
+}
+
+Meta::Capability* TimecodeAlbum::asCapabilityInterface( Meta::Capability::Type type )
+{
+    if( type == Meta::Capability::CustomActions )
+    {
+        QList<PopupDropperAction*> actions;
+
+        PopupDropperAction *separator          = new PopupDropperAction( this );
+        PopupDropperAction *displayCoverAction = new DisplayCoverAction( this, AlbumPtr( this ) );
+        PopupDropperAction *fetchCoverAction   = new FetchCoverAction( this, AlbumPtr( this ) );
+        PopupDropperAction *setCustomCoverAction = new SetCustomCoverAction( this, AlbumPtr( this ) );
+        PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( this, AlbumPtr( this ) );
+
+        separator->setSeparator( true );
+
+        actions.append( separator );
+        actions.append( displayCoverAction );
+        actions.append( fetchCoverAction );
+        actions.append( setCustomCoverAction );
+        if( m_cover.isNull() )
+        {
+            displayCoverAction->setEnabled( false );
+            unsetCoverAction->setEnabled( false );
+        }
+        actions.append( unsetCoverAction );
+
+        return new CustomActionsCapability( actions );
+    }
+
+    return 0;
 }
 
 ////////////////// GENRE //////////////////
