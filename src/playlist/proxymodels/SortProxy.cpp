@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright © 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>       *
- *             © 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                *
+ *             © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -26,8 +26,8 @@
 
 namespace Playlist
 {
-//Attention coding style police guys: this is very WiP and if you see notes to self and
-//debug spam here pretty please let it be until I remove it.
+//Téo 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
+//to self and debug spam here pretty please let it be until I remove it.
 
 SortProxy* SortProxy::s_instance = 0;
 

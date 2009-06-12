@@ -29,6 +29,7 @@
 #include "PlaylistDefines.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
+#include "PlaylistSortWidget.h"
 #include "layouts/LayoutManager.h"
 #include "proxymodels/FilterProxy.h"
 #include "widgets/ProgressiveSearchWidget.h"
@@ -45,6 +46,8 @@ Playlist::Widget::Widget( QWidget* parent )
     setContentsMargins( 1, 1, 1, 1 );
 
     m_searchWidget = new ProgressiveSearchWidget( this );
+
+    Playlist::SortWidget *sortWidget = new Playlist::SortWidget( this );
 
     //this is really only useful for debugging at the moment, so dont show it to users and testers
     /*m_sortBox = new QComboBox( this );
