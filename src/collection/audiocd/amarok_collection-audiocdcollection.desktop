@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Service
+Name=AudioCd Collection
+Comment=AudioCd collection plugin for Amarok
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Library=libamarok_collection-audiocdcollection
+
+X-KDE-Amarok-authors=Nikolaj Hald Nielsen
+X-KDE-Amarok-email=anhnFreespirit@gmail.com
+X-KDE-Amarok-framework-version=39
+X-KDE-Amarok-name=audiocd-collection
+X-KDE-Amarok-plugintype=collection
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1
