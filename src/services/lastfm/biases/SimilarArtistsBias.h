@@ -14,7 +14,7 @@
 #ifndef SIMILAR_ARTISTS_BIAS_H
 #define SIMILAR_ARTISTS_BIAS_H
 
-#include "CustomBias.h"
+#include "CustomBiasEntry.h"
 #include <QNetworkReply>
 #include "EngineObserver.h"
 
