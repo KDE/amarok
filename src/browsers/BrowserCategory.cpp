@@ -33,6 +33,7 @@ BrowserCategory::BrowserCategory( const QString &name )
     , m_parentList( 0 )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    setFrameShape( QFrame::NoFrame );
 }
 
 BrowserCategory::~BrowserCategory()

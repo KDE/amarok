@@ -262,8 +262,6 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
 
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
 }
 
 void
