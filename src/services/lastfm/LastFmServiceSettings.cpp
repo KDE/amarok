@@ -53,6 +53,11 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     m_configDialog->setupUi( w );
     l->addWidget( w );
 
+    // whenever this gets opened, we'll assume the user wants to change something,
+    // so blow away the saved session key
+    m_config.setSessionKey( "" );
+    m_config.save();
+
     connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_SubmitPlayedSongs, SIGNAL( stateChanged( int ) ), this, SLOT( settingsChanged() ) );
@@ -127,7 +132,7 @@ LastFmServiceSettings::onAuthenticated()
              if( lfm.children( "error" ).size() > 0 )
              {
                  debug() << "ERROR from last.fm:" << lfm.text();
-                 m_configDialog->testLogin->setText( i18nc( "The operation was rejected by the server", "Error!" ) );
+                 m_configDialog->testLogin->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
                  m_configDialog->testLogin->setEnabled( true );
 
              } else
