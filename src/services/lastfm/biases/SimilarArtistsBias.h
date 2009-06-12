@@ -36,9 +36,11 @@ class SimilarArtistsBiasFactory : public CustomBiasFactory
     public:
         SimilarArtistsBiasFactory();
         ~SimilarArtistsBiasFactory();
-
-        virtual QString name();
+        
+        virtual QString name() const;
+        virtual QString pluginName() const;
         virtual CustomBiasEntry* newCustomBias();
+        virtual CustomBiasEntry* newCustomBias( QDomElement e );
 };
 
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
@@ -50,8 +52,7 @@ public:
     ~SimilarArtistsBias();
 
     // reimplemented from CustomBiasEntry
-    virtual QString name();
-    virtual QString pluginName();
+    virtual QString pluginName() const;
     virtual QWidget* configWidget ( QWidget* parent );
 
     virtual bool trackSatisfies ( const Meta::TrackPtr track );

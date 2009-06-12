@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright         : (C) 2008 Daniel Caleb Jones <danielcjones@gmail.com>
+ * copyright            : (C) 2009 Leo Franchi  <lfranchi@kde.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -145,7 +146,7 @@ PlaylistBrowserNS::DynamicBiasModel::appendGlobalBias()
 void
 PlaylistBrowserNS::DynamicBiasModel::appendCustomBias()
 {
-    Dynamic::CustomBias* cb = new Dynamic::CustomBias();
+    Dynamic::CustomBias* cb = Dynamic::CustomBias::createBias();
     
     cb->setActive( true );
     appendBias( cb );

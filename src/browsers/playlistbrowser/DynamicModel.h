@@ -55,6 +55,7 @@ class DynamicModel : public QAbstractItemModel
 
         Dynamic::DynamicPlaylistPtr defaultPlaylist();
         Dynamic::DynamicPlaylistPtr activePlaylist();
+        int activePlaylistIndex();
 
         int playlistIndex( const QString& ) const;
 

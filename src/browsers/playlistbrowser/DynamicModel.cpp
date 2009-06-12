@@ -151,6 +151,11 @@ PlaylistBrowserNS::DynamicModel::activePlaylist()
         return Dynamic::DynamicPlaylistPtr();
 }
 
+int
+PlaylistBrowserNS::DynamicModel::activePlaylistIndex()
+{
+    return m_activePlaylist;
+}
 
 
 Dynamic::DynamicPlaylistPtr
@@ -481,7 +486,8 @@ PlaylistBrowserNS::DynamicModel::saveCurrent()
 
 void
 PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
-{   
+{
+    DEBUG_BLOCK
 
     // create the empty default random playlist
     Dynamic::DynamicPlaylistPtr playlist = createDefaultPlaylist();
@@ -503,6 +509,7 @@ PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
 
     QDomDocument loadedPlaylist;
 
+    //debug() << "got RAW dynamic_current:" << raw;
     QString errorMsg;
     int errorLine, errorColumn;
     if( !loadedPlaylist.setContent( raw, &errorMsg, &errorLine, &errorColumn ) )
@@ -528,8 +535,7 @@ PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
                     Dynamic::DynamicPlaylistPtr np( bp );
                     insertPlaylist( np );
                     m_playlistElements.append( e );
-                    m_activePlaylist = m_playlistList.indexOf( np );
-                    emit( activeChanged() );
+                    setActivePlaylist( m_playlistList.indexOf( np ) );
                 }
             }
         }

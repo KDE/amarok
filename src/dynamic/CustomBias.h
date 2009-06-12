@@ -41,12 +41,24 @@ class AMAROK_EXPORT CustomBiasFactory
         /**
          *   Returns the name of the type of bias. eg. "Last.fm Similar Artists"
          */
-        virtual QString name() = 0;
+        virtual QString name() const = 0;
 
+        /**
+         * Returns an internal non-translatable name for this custom bias type.
+         */
+        virtual QString pluginName() const = 0;
+        
         /**
          * Create the custom bias. The caller takes owner of the pointer
          */
         virtual CustomBiasEntry* newCustomBias() = 0;
+
+        /**
+         * Creates a new custom bias from the saved settings in the xml doc.
+         * The XML should be saved in CustomBiasEntry::xml().
+         */
+        virtual CustomBiasEntry* newCustomBias( QDomElement e ) = 0;
+
 };
 
 /**
@@ -60,15 +72,11 @@ class AMAROK_EXPORT CustomBiasEntry
         virtual ~CustomBiasEntry() {}
 
         /**
-         *   Returns the name of the type of bias. eg. "Last.fm Similar Artists"
+         * Returns an internal non-translatable name for this custom bias type.
+         * Must be the same as what the associated CustoPluginFactory::pluginName
+         * returns.
          */
-        virtual QString name() = 0;
-
-        /**
-         * Returns an internal plugin name, which is not translated and used
-         * for loading/saving.
-         */
-        virtual QString pluginName() = 0;
+        virtual QString pluginName() const = 0;
         
         /**
          * Returns the widget that will configure this bias. It will be placed in
@@ -123,9 +131,7 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
 {
     Q_OBJECT
     public:
-        CustomBias();
         virtual ~CustomBias();
-
 
         /**
          * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.
@@ -146,6 +152,10 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
          * Returns all the current registered factories for this CustomBias
          */
         static QList< CustomBiasFactory* > currentFactories();
+
+        /// These are used to create new biases. They register the new bias with the static class
+        static CustomBias* createBias(); /// so they can send it messages. 
+        static CustomBias* createBias( Dynamic::CustomBiasEntry* entry, double weight );
         
         // reimplement from Dynamic::Bias
         virtual PlaylistBrowserNS::BiasWidget* widget(QWidget* parent = 0);
@@ -168,7 +178,12 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         void biasFactoriesChanged();
         
     private:
+        CustomBias();
+        CustomBias( Dynamic::CustomBiasEntry* entry, double weight );
+        void refreshWidgets();
+
         static QList< CustomBiasFactory* > s_biasFactories;
+        static QList< CustomBias* > s_biases;
         CustomBiasEntry* m_currentEntry;
 
         double m_weight; // slider for percent
@@ -183,6 +198,9 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
     public:
         explicit CustomBiasEntryWidget( CustomBias*, QWidget* parent = 0 );
 
+    public slots:
+        void refreshBiasFactories();
+    
     private slots:
         void selectionChanged( int index );
         void weightChanged( int amount );

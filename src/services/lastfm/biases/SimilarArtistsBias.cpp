@@ -43,10 +43,18 @@ Dynamic::SimilarArtistsBiasFactory::~SimilarArtistsBiasFactory()
 }
 
 QString
-Dynamic::SimilarArtistsBiasFactory::name()
+Dynamic::SimilarArtistsBiasFactory::name() const
 {
+
     return i18n( "Similar Artists" );
 }
+
+QString
+Dynamic::SimilarArtistsBiasFactory::pluginName() const
+{
+    return "lastfm_similarartists";
+}
+
 
 
 Dynamic::CustomBiasEntry*
@@ -55,11 +63,22 @@ Dynamic::SimilarArtistsBiasFactory::newCustomBias()
     return new SimilarArtistsBias();
 }
 
+Dynamic::CustomBiasEntry*
+Dynamic::SimilarArtistsBiasFactory::newCustomBias(QDomElement e)
+{
+    // we don't save anything, so just load a fresh one
+    Q_UNUSED( e )
+    return new SimilarArtistsBias();
+}
+
+
+/// class SimilarArtistsBias 
 
 Dynamic::SimilarArtistsBias::SimilarArtistsBias()
     : Dynamic::CustomBiasEntry()
     , EngineObserver( The::engineController() )
     , m_artistQuery( 0 )
+    , m_qm( 0 )
 {
     DEBUG_BLOCK
     engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
@@ -72,19 +91,10 @@ Dynamic::SimilarArtistsBias::~SimilarArtistsBias()
 
 
 QString
-Dynamic::SimilarArtistsBias::name()
-{
-    DEBUG_BLOCK
-    
-    return i18n( "Similar Artists" );
-}
-
-QString
-Dynamic::SimilarArtistsBias::pluginName()
+Dynamic::SimilarArtistsBias::pluginName() const
 {
     return "lastfm_similarartists";
 }
-
 
 QWidget*
 Dynamic::SimilarArtistsBias::configWidget( QWidget* parent )
@@ -268,6 +278,7 @@ Dynamic::SimilarArtistsBias::numTracksThatSatisfy( const Meta::TrackList& tracks
 QDomElement
 Dynamic::SimilarArtistsBias::xml( QDomDocument doc ) const
 {
+    Q_UNUSED( doc )
     DEBUG_BLOCK
 
     return QDomElement();

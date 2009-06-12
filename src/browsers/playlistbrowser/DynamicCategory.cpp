@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>
+    Copyright (c) 2009 Leo Franchi  <lfranchi@kde.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -151,8 +152,15 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
     m_biasListView->setItemDelegate( m_biasDelegate );
 
-    int index = DynamicModel::instance()->playlistIndex( 
-            AmarokConfig::lastDynamicMode() );
+    m_vLayout->addWidget( m_onOffCheckbox );
+    m_vLayout->addWidget( m_repopulateButton );
+    m_vLayout->addWidget( presetLayout );
+    m_vLayout->addWidget( m_biasListView );
+
+    this->setLayout( m_vLayout );
+
+
+    int index = DynamicModel::instance()->activePlaylistIndex();
 
     debug() << "Setting index: " << index;
     if( index >= 0 )
