@@ -153,7 +153,6 @@ set(libbrowserframework_SRCS
     browsers/BreadcrumbItem.cpp
     browsers/BreadcrumbWidget.cpp
     browsers/BrowserCategory.cpp
-    browsers/BrowserCategory.cpp
     browsers/BrowserCategoryList.cpp
     browsers/BrowserCategoryListDelegate.cpp
     browsers/BrowserCategoryListModel.cpp
