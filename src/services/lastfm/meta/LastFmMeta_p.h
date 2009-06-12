@@ -25,6 +25,8 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "meta/Meta.h"
+#include "meta/StatisticsProvider.h"
+#include "meta/support/TagStatisticsProvider.h"
 
 #include <lastfm/Track>
 #include <lastfm/ws.h>
@@ -76,9 +78,15 @@ class Track::Private : public QObject
 
         QNetworkReply* trackFetch;
         QNetworkReply* wsReply;
+
+        Meta::StatisticsProvider *statisticsProvider;
+        uint currentTrackStartTime;
+
     public:
         Private()
             : lastFmUri( QUrl() )
+            , statisticsProvider( 0 )
+            , currentTrackStartTime( 0 )
         {
             artist = QString ( "Last.fm" );
         }
@@ -91,6 +99,12 @@ class Track::Private : public QObject
 
         void setTrackInfo( const lastfm::Track &trackInfo )
         {
+            DEBUG_BLOCK
+            bool newTrackInfo = artist != trackInfo.artist() ||
+                                album != trackInfo.album() ||
+                                track != trackInfo.title();
+
+
             lastFmTrack = trackInfo;
             artist = trackInfo.artist();
             album = trackInfo.album();
@@ -102,6 +116,13 @@ class Track::Private : public QObject
             albumUrl = "";
             trackUrl = "";
             albumArt = QPixmap();
+
+            if( newTrackInfo )
+            {
+                delete statisticsProvider;
+                statisticsProvider = new TagStatisticsProvider( track, artist, album );
+                currentTrackStartTime = QDateTime::currentDateTime().toTime_t();
+            }
 
             notifyObservers();
 

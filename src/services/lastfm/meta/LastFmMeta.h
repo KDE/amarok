@@ -81,6 +81,7 @@ namespace LastFm
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual uint lastPlayed() const;
+            virtual uint firstPlayed() const;
             virtual int playCount() const;
 
             virtual QString type() const;

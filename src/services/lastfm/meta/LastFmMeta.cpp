@@ -227,25 +227,39 @@ Track::comment() const
 double
 Track::score() const
 {
-    return 0.0;
+    if( d->statisticsProvider )
+        return d->statisticsProvider->score();
+    else
+        return 0.0;
 }
 
 void
 Track::setScore( double newScore )
 {
-    Q_UNUSED( newScore ); //stream
+    if( d->statisticsProvider )
+    {
+        d->statisticsProvider->setScore( newScore );
+        notifyObservers();
+    }
 }
 
 int
 Track::rating() const
 {
-    return 0;
+    if( d->statisticsProvider )
+        return d->statisticsProvider->rating();
+    else
+        return 0;
 }
 
 void
 Track::setRating( int newRating )
 {
-    Q_UNUSED( newRating ); //stream
+    if( d->statisticsProvider )
+    {
+        d->statisticsProvider->setRating( newRating );
+        notifyObservers();
+    }
 }
 
 int
@@ -287,13 +301,38 @@ Track::bitrate() const
 uint
 Track::lastPlayed() const
 {
-    return 0; //TODO do we need this?
+    if( d->statisticsProvider )
+    {
+        QDateTime dt = d->statisticsProvider->lastPlayed();
+        if( dt.isValid() )
+            return dt.toTime_t();
+        else
+            return 0;
+    }
+    else
+        return 0;
+}
+
+uint
+Track::firstPlayed() const
+{
+    if( d->statisticsProvider )
+    {
+        QDateTime dt = d->statisticsProvider->firstPlayed();
+        if( dt.isValid() )
+            return dt.toTime_t();
+        else
+            return 0;
+    }
+    else
+        return 0;
 }
 
 int
 Track::playCount() const
 {
-    return 0; //TODO do we need this?
+    if( d->statisticsProvider )
+        return d->statisticsProvider->playCount();
 }
 
 QString
@@ -304,8 +343,11 @@ Track::type() const
 void
 Track::finishedPlaying( double playedFraction )
 {
-    Q_UNUSED( playedFraction );
-    //TODO
+    if( d->statisticsProvider )
+    {
+        d->statisticsProvider->played( playedFraction );
+        notifyObservers();
+    }
 }
 
 bool
