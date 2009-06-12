@@ -20,6 +20,7 @@
 #ifndef AMAROK_PLAYLISTSORTWIDGET_H
 #define AMAROK_PLAYLISTSORTWIDGET_H
 
+#include <KComboBox>
 #include <KHBox>
 
 namespace Playlist
@@ -36,6 +37,8 @@ class SortWidget : public KHBox
 
     private slots:
         void applySortingScheme();
+        private:
+        KComboBox* m_sortCombo;
 };
 
 }   //namespace Playlist

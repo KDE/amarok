@@ -18,8 +18,9 @@
 ***************************************************************************/
 
 #include "PlaylistSortWidget.h"
-#include "playlist/proxymodels/SortProxy.h"
 
+#include "playlist/proxymodels/SortProxy.h"
+#include "Debug.h"
 
 #include <KPushButton>
 
@@ -28,14 +29,33 @@ namespace Playlist
 
 SortWidget::SortWidget( QWidget *parent ) : KHBox( parent )
 {
+    DEBUG_BLOCK
+    m_sortCombo = new KComboBox( this );
     KPushButton *btnSort = new KPushButton( "Just sort it!", this );
+
+
+    m_sortCombo->addItem( "Artist/Album/Track add" );
+    m_sortCombo->addItem( "Artist/Title da" );
+
     connect(btnSort, SIGNAL( clicked() ), this, SLOT( applySortingScheme() ) );
 }
 
 void
 SortWidget::applySortingScheme()
 {
-    //SortProxy::instance()->sort( Playlist::Length );        //18 = length
+    DEBUG_BLOCK
+    SortScheme *schemeAaAdTd = new SortScheme();
+    schemeAaAdTd->addLevel( SortLevel( Artist, Qt::AscendingOrder ) );
+    schemeAaAdTd->addLevel( SortLevel( Album, Qt::DescendingOrder ) );
+    schemeAaAdTd->addLevel( SortLevel( TrackNumber, Qt::DescendingOrder ) );
+    SortScheme *schemeAdTa = new SortScheme();
+    schemeAdTa->addLevel( SortLevel( Artist, Qt::DescendingOrder ) );
+    schemeAdTa->addLevel( SortLevel( Title, Qt::AscendingOrder ) );
+
+    if( m_sortCombo->currentText() == "Artist/Album/Track add" )
+        SortProxy::instance()->updateSortMap( schemeAaAdTd );
+    if( m_sortCombo->currentText() =="Artist/Title da" )
+        SortProxy::instance()->updateSortMap( schemeAdTa );
 }
 
 

@@ -214,7 +214,7 @@ public:
     bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
 public slots:
-    void updateSortMap( SortScheme &scheme );
+    void updateSortMap( SortScheme *scheme );
     
 signals:
     /**

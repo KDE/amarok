@@ -20,15 +20,17 @@
 #include "SortMap.h"
 
 #include "Debug.h"
+#include "FilterProxy.h"
 
 namespace Playlist
 {
 
-SortMap::SortMap( qint64 rowCount )
+SortMap::SortMap( FilterProxy *sourceProxy )
     : m_sorted( 0 )
 {
     DEBUG_BLOCK
-    m_rowCount = rowCount;
+    m_sourceProxy = sourceProxy;    //FilterProxy::instance();
+    m_rowCount = m_sourceProxy->rowCount();
     m_map = new QMap< qint64, qint64 >();
     for( qint64 i = 0; i < m_rowCount; i++ )
         m_map->insert( i, i ); //identical function
@@ -53,9 +55,17 @@ SortMap::map( qint64 sourceRow )
 }
 
 void
-SortMap::sort( const SortScheme &scheme )
+SortMap::sort( SortScheme *scheme )
 {
-    //sorting
+    DEBUG_BLOCK
+    debug()<< "about to call qStableSort()";
+    //MultilevelLessThan multilevelLessThan( m_sourceProxy, scheme );
+    QList< qint64 > testlist;
+    /*qint64 j;
+    j = 6400000;
+    testlist.insert( j, 25 );*/
+    debug()<< "FOO" << "    sizeofint " << sizeof(int);
+    //qStableSort< QMap >( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
     m_sorted = 1;
 }
 
@@ -70,6 +80,47 @@ void
 SortMap::deleteRows( qint64 stareRowInSource, qint64 endRowInSource )
 {
 
+}
+
+
+bool
+MultilevelLessThan::operator()(qint64 rowA, qint64 rowB)
+{
+    quint8 verdict;  //0 = false  1 = true  2 = nextIteration
+    for( int i = 0; i < m_scheme->length(); i++ )
+    {
+        int currentCategory = m_scheme->level( i ).category();  //see enum Column in PlaylistDefines.h
+        Qt::SortOrder currentOrder = m_scheme->level( i ).order();
+        QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();
+        QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();
+        if( m_scheme->level( i ).isString() )
+        {
+            if( dataA.toString() < dataB.toString() )
+            {
+                verdict = 1;
+            }
+            else if( dataA.toString() > dataB.toString() )
+            {
+                verdict = 0;
+            }
+            verdict = 2;
+        }
+        else //if it's not a string ==> it's a number
+        {
+            if( dataA.toInt() < dataB.toInt() )
+            {
+                verdict = 1;
+            }
+            else if( dataA.toInt() > dataB.toInt() )
+            {
+                verdict = 0;
+            }
+            verdict = 2;
+        }
+        if( verdict != 2 )
+            break;
+    }
+    return static_cast<bool>( verdict );
 }
 
 }   //namespace Playlist

@@ -47,7 +47,7 @@ SortProxy::SortProxy()
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
     setSourceModel( m_belowModel );
-    m_map = new SortMap( m_belowModel->rowCount() );
+    m_map = new SortMap( m_belowModel );
 
     //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
     //by sorting, they may be just blindly forwarded
@@ -111,11 +111,11 @@ SortProxy::mapToSource( const QModelIndex& proxyIndex ) const
     return m_belowModel->index( m_map->inv( proxyIndex.row() ), proxyIndex.column() );
 }
 
-void SortProxy::updateSortMap(Playlist::SortScheme& scheme)
+void SortProxy::updateSortMap( SortScheme *scheme)
 {
     DEBUG_BLOCK
     //APPLY THE SORTING
-    //m_map->setSorted or something like that;
+    m_map->sort( scheme );
 }
 
 // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE

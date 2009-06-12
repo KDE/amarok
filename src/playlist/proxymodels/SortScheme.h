@@ -41,6 +41,8 @@ class SortLevel     //data structure for each sorting level, ends up in a qstack
         Qt::SortOrder order();
         void setCategory( int sortCategory );
         void setOrder( Qt::SortOrder sortOrder );
+        bool isComparable();
+        bool isString();
     private:
         int m_category;     //Column from PlaylistDefines.h
         Qt::SortOrder m_order;
@@ -59,7 +61,7 @@ class SortScheme
         void addLevel( const SortLevel & level );
         void trimToLevel( int lastLevel );        //deletes all the levels up to level # length
         int length();
-        
+
     private:
         QStack< SortLevel > *m_scheme;
 };

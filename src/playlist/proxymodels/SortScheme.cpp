@@ -58,6 +58,32 @@ SortLevel::setOrder( Qt::SortOrder sortOrder )
     m_order = sortOrder;
 }
 
+bool SortLevel::isComparable()
+{
+    QList< int > intCategories;
+    QList< int > strCategories;
+    intCategories << Bitrate << DiscNumber << Filesize << GroupLength << GroupTracks << Length
+        << PlayCount << Rating << SampleRate << TrackNumber << Type;
+    strCategories << Album << AlbumArtist << Artist << Comment << Composer << Directory << Filename
+        << Genre << Title << Year;
+    if( intCategories.contains( category() ) || strCategories.contains( category() ) )
+        return true;
+    return false;
+}
+
+bool SortLevel::isString()
+{
+    QList< int > intCategories;
+    QList< int > strCategories;
+    intCategories << Bitrate << DiscNumber << Filesize << GroupLength << GroupTracks << Length
+    << PlayCount << Rating << SampleRate << TrackNumber << Type;
+    strCategories << Album << AlbumArtist << Artist << Comment << Composer << Directory << Filename
+    << Genre << Title << Year;
+    if( isComparable() && strCategories.contains( category() ) )
+        return true;
+    return false;
+}
+
 
 // BEGIN SortScheme
 

@@ -20,9 +20,11 @@
 #ifndef AMAROK_PLAYLISTSORTMAP_H
 #define AMAROK_PLAYLISTSORTMAP_H
 
+#include "FilterProxy.h"
 #include "SortScheme.h"
 
 #include <QVector>
+#include <QtAlgorithms>
 
 namespace Playlist
 {
@@ -39,7 +41,7 @@ public:
      * Constructor.
      * @param rowCount number of rows to be handled.
      */
-    SortMap( qint64 rowCount );
+    SortMap( FilterProxy *sourceProxy );
 
     /**
      * Destructor.
@@ -83,7 +85,7 @@ public:
      * Converts a sorting scheme to a permutation of source rows.
      * @param scheme the SortScheme from which to generate the map.
      */
-    void sort( const SortScheme& scheme );
+    void sort( SortScheme *scheme );
 
     /**
      * Checks if the current mapping applies a sorting scheme.
@@ -94,7 +96,30 @@ public:
 private:
     QMap< qint64, qint64 > *m_map;
     qint64 m_rowCount;
+    FilterProxy *m_sourceProxy;
     bool m_sorted;
+};
+
+/**
+ * Comparison functor used by qSort() or qStableSort().
+ */
+struct MultilevelLessThan
+{
+    MultilevelLessThan( FilterProxy *sourceProxy, SortScheme *scheme )
+        : m_sourceProxy( sourceProxy )
+        , m_scheme( scheme )
+        {};
+    /**
+     * Takes two row numbers from the proxy and compares the corresponding indexes based on
+     * a number of chosen criteria (columns).
+     * @param rowA the first row.
+     * @param rowB the second row.
+     * @return true if rowA is to be placed before rowB, false otherwise.
+     */
+    bool operator()( qint64 rowA, qint64 rowB );
+private:
+    FilterProxy *m_sourceProxy;
+    SortScheme *m_scheme;
 };
 
 }   //namespace Playlist
