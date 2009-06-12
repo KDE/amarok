@@ -22,7 +22,7 @@
 #include "AudioCdCollectionCapability.h"
 #include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
-#include "AudioCdQueryMaker.h"
+#include "collection/support/MemoryQueryMaker.h"
 #include "covermanager/CoverFetcher.h"
 #include "Debug.h"
 #include "MediaDeviceMonitor.h"
@@ -31,6 +31,9 @@
 
 #include <kio/job.h>
 #include <kio/netaccess.h>
+
+#include <KConfigGroup>
+#include <KSharedConfig>
 
 #include <QDir>
 
@@ -101,6 +104,8 @@ AudioCdCollection::AudioCdCollection( const QString &udi )
    , m_udi( udi )
 {
     DEBUG_BLOCK
+
+    readAudioCdSettings();
 
     m_ejectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
     "eject", KIcon( "media-eject" ), i18n( "&Eject" ), 0 );
@@ -220,15 +225,37 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
                 debug() << "prefix: " << prefix;
                 QString trackName = tracksBlockList.at( i );
                 trackName = trackName.replace( prefix, "" );
+
+                QString trackArtist;
+                //check if a track artist is included in the track name:
+
+                if ( trackName.contains( " / " ) )
+                {
+                    QStringList trackArtistList = trackName.split( " / " );
+                    trackName = trackArtistList.at( 1 );
+                    trackArtist = trackArtistList.at( 0 );
+
+                }
+
                 debug() << "Track name: " << trackName;
 
                 QString padding = i < 10 ? "0" : QString();
 
-                QString baseFileName = artist + " - " + padding  + QString::number( i + 1 ) + " - " + trackName;
+                QString baseFileName = m_fileNamePattern;
+                debug() << "Track Base File Name (before): " << baseFileName;
+                
+                baseFileName.replace( "%{title}", trackName, Qt::CaseInsensitive );
+                baseFileName.replace( "%{number}", padding  + QString::number( i + 1 ), Qt::CaseInsensitive );
+                baseFileName.replace( "%{albumtitle}", album, Qt::CaseInsensitive );
+                baseFileName.replace( "%{trackartist}", trackArtist, Qt::CaseInsensitive );
+                baseFileName.replace( "%{albumartist}", artist, Qt::CaseInsensitive );
+                baseFileName.replace( "%{year}", year, Qt::CaseInsensitive );
+                baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
                 //we hack the url so the engine controller knows what track on the cd to play..
                 QString baseUrl = "audiocd:/" + QString::number( i + 1 );
 
+                debug() << "Track Base File Name (after): " << baseFileName;
                 debug() << "Track url: " << baseUrl;
 
                 AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
@@ -239,7 +266,17 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
                 addTrack( TrackPtr::staticCast( trackPtr ) );
 
                 artistPtr->addTrack( trackPtr );
-                trackPtr->setArtist( artistPtr );
+
+                if ( trackArtist.isEmpty() )
+                    trackPtr->setArtist( artistPtr );
+                else
+                {
+                    albumPtr->setIsCompilation( true );
+
+                    AudioCdArtistPtr trackArtistPtr = AudioCdArtistPtr( new  AudioCdArtist( trackArtist ) );
+                    trackArtistPtr->addTrack( trackPtr );
+                    trackPtr->setArtist( trackArtistPtr );
+                }
 
                 albumPtr->addTrack( trackPtr );
                 trackPtr->setAlbum( albumPtr );
@@ -263,7 +300,7 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
 
 QueryMaker * AudioCdCollection::queryMaker()
 {
-    return new AudioCdQueryMaker( this, collectionId() );
+    return new MemoryQueryMaker( this, collectionId() );
 }
 
 QString AudioCdCollection::collectionId() const
@@ -406,6 +443,15 @@ void AudioCdCollection::noInfoAvailable()
 
     emit ( updated() );
     
+}
+
+void AudioCdCollection::readAudioCdSettings()
+{
+    KSharedConfigPtr conf = KSharedConfig::openConfig( "kcmaudiocdrc" );
+    KConfigGroup filenameConf = conf->group( "FileName" );
+
+    m_fileNamePattern = filenameConf.readEntry( "file_name_template", "%{trackartist} - %{number} - %{title}" );
+    m_albumNamePattern = filenameConf.readEntry( "album_name_template", "%{albumartist} - %{albumtitle}" );
 }
 
 

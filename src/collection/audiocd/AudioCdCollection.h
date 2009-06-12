@@ -44,9 +44,10 @@ private slots:
     void deviceRemoved( const QString &uid );
 
 private:
+
     QString m_currentUid;
     AudioCdCollection * m_collection;
-
+    
 };
 
 
@@ -90,6 +91,8 @@ public slots:
 
 private:
 
+    void readAudioCdSettings();
+    
     /**
      * Clear collection and read the cd currently in the drive, adding Artist, Album,
      * Genre, Year and whatnot as detected by audiocd using CDDB.
@@ -106,6 +109,10 @@ private:
     mutable int m_encodingFormat;
 
     PopupDropperAction * m_ejectAction;
+
+    QString m_fileNamePattern;
+    QString m_albumNamePattern;
+
 
     
 };
