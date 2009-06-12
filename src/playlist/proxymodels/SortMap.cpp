@@ -117,6 +117,43 @@ A A'   should be:
         //NOTE TO SELF: and if I just use a sorting algorithm that does well with partially sorted lists (adaptive sort)? Could be almost O(n).
 }
 
+template< class T >
+void
+kAdaptiveStableSort( T begin, T end, MultilevelLessThan lessThan)
+{
+    for( T i = begin + 1; i != end; ++i )
+        for( T j = i; j != begin && lessThan( *j, *( j - 1 ) ); --j )
+            qSwap( *j, *( j - 1 ) );
+    /*
+    for( int j = 2; j <= n; j++ )
+    {
+        int i = j - 1;
+        int t = list[j];
+        while( t < list[i] )
+        {
+            list[ i + 1 ] = list[ i ];
+            i++;
+        }
+        list[ i + 1 ] = t;
+    }*/
+    /* pseudopascal
+    procedure Straight Insertion Sort (X, n):
+    X[0] := − ∞;
+    for j := 2 to n do
+    begin
+        i := j − 1;
+        t := X[j];
+        while t < X[i] do
+        begin
+            X[i + 1] := X[i];
+            i := i + 1
+        end;
+        X[i + 1] := t;
+    end;
+    */
+    
+}
+
 bool
 MultilevelLessThan::operator()(int rowA, int rowB)
 {
@@ -126,8 +163,8 @@ MultilevelLessThan::operator()(int rowA, int rowB)
         int currentCategory = m_scheme->level( i ).category();  //see enum Column in PlaylistDefines.h
         QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();  //FIXME: are you sure you need to do comparisons on sourceProxy indexes?
         QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
-        if( m_scheme->level( i ).isString() )
-        {
+        if( m_scheme->level( i ).isString() )   // OH ~fuck, the sorting algoritm does SUBSTITUTIONS, not ASSIGNMENTS. this means that a proper scheme can only be obtained
+        {                                       // AFTER a QList that defines an identity function!!!
             if( dataA.toString() < dataB.toString() )
                 verdict = 1;
             else if( dataA.toString() > dataB.toString() )
