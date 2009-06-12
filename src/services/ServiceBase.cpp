@@ -99,7 +99,7 @@ void ServiceFactory::slotServiceReady()
 ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
-    : BrowserCategory( !prettyName.isEmpty() ? prettyName : name )
+    : BrowserCategory( name )
     , m_contentView ( 0 )
     , m_parentFactory( parent )
     , m_polished( false )
@@ -110,7 +110,8 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 {
     DEBUG_BLOCK
 
-    m_name = name;
+    if ( !prettyName.isEmpty() )
+        setPrettyName( prettyName );
 
     setContentsMargins( 1, 1, 1, 1 );
     setSpacing( 1 );
@@ -189,12 +190,6 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 ServiceBase::~ServiceBase()
 {
     delete m_infoParser;
-}
-
-QString
-ServiceBase::name() const
-{
-    return m_name;
 }
 
 ServiceFactory*

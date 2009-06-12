@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,77 +16,41 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
-#include "BrowserCategory.h"
 
-BrowserCategory::BrowserCategory( const QString &name )
-    : KVBox( 0 )
-    , m_name( name )
-    , m_prettyName( QString() )
-    , m_shortDescription( QString() )
-    , m_longDescription( QString() )
+#include "BrowserCategoryListSortFilterProxyModel.h"
+#include "BrowserCategoryListModel.h"
+
+#include "Debug.h"
+
+#include <QVariant>
+
+BrowserCategoryListSortFilterProxyModel::BrowserCategoryListSortFilterProxyModel(  QObject * parent )
+    : QSortFilterProxyModel( parent )
 {
+    setSortLocaleAware( true );
+    setSortCaseSensitivity( Qt::CaseInsensitive );
+    setSortRole( CustomCategoryRoles::SortRole );
+
+    setDynamicSortFilter( true );
+
+    setFilterCaseSensitivity( Qt::CaseInsensitive );
 }
 
-BrowserCategory::~BrowserCategory()
+BrowserCategoryListSortFilterProxyModel::~BrowserCategoryListSortFilterProxyModel()
+{}
+
+bool
+BrowserCategoryListSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
+    const QVariant leftData = sourceModel()->data( left, Qt::DisplayRole );
+    const QVariant rightData = sourceModel()->data( right, Qt::DisplayRole );
+
+    const QString leftString = leftData.toString();
+    const QString rightString = rightData.toString();
+
+    //debug() << "left : " << leftString;
+    //debug() << "right: " << rightString;
+
+    return leftString.compare( rightString, Qt::CaseInsensitive ) > 0;
 }
-
-QString
-BrowserCategory::name() const
-{
-    return m_name;
-}
-
-void
-BrowserCategory::setPrettyName( const QString & prettyName )
-{
-    m_prettyName = prettyName;
-}
-
-
-QString
-BrowserCategory::prettyName() const
-{
-    return !m_prettyName.isEmpty() ? m_prettyName : name();
-}
-
-void
-BrowserCategory::setShortDescription( const QString &shortDescription )
-{
-    m_shortDescription = shortDescription;
-}
-
-QString
-BrowserCategory::shortDescription() const
-{
-    return m_shortDescription;
-}
-
-void
-BrowserCategory::setLongDescription( const QString &longDescription )
-{
-    m_longDescription = longDescription;
-}
-
-QString
-BrowserCategory::longDescription() const
-{
-    return m_longDescription;
-}
-
-void
-BrowserCategory::setIcon( const QIcon & icon )
-{
-    m_icon = icon;
-}
-
-QIcon
-BrowserCategory::icon() const
-{
-    return m_icon;
-}
-
-
-
 

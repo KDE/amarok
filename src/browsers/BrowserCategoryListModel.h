@@ -16,77 +16,49 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
+
+#ifndef BROWSERCATEGORYLISTMODEL_H
+#define BROWSERCATEGORYLISTMODEL_H
+
 #include "BrowserCategory.h"
 
-BrowserCategory::BrowserCategory( const QString &name )
-    : KVBox( 0 )
-    , m_name( name )
-    , m_prettyName( QString() )
-    , m_shortDescription( QString() )
-    , m_longDescription( QString() )
+#include <QAbstractListModel>
+
+#include <QList>
+
+Q_DECLARE_METATYPE( BrowserCategory * )
+
+namespace CustomCategoryRoles
 {
+    enum CustomCategoryRolesId {
+        ShortDescriptionRole = Qt::UserRole + 1,
+        LongDescriptionRole = Qt::UserRole + 2,
+        CategoryRole = Qt::UserRole + 3,
+        AlternateRowRole = Qt::UserRole + 4,
+        SortRole = Qt::UserRole + 5
+    };
 }
 
-BrowserCategory::~BrowserCategory()
+/**
+A very simple model to hold the available categories
+
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+*/
+class BrowserCategoryListModel : public QAbstractListModel
 {
-}
+public:
 
-QString
-BrowserCategory::name() const
-{
-    return m_name;
-}
+    BrowserCategoryListModel ();
+    ~BrowserCategoryListModel();
 
-void
-BrowserCategory::setPrettyName( const QString & prettyName )
-{
-    m_prettyName = prettyName;
-}
+    int rowCount( const QModelIndex & parent = QModelIndex() ) const;
+    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
+    void addCategory( BrowserCategory * category );
+    void removeCategory( BrowserCategory * category );
 
-QString
-BrowserCategory::prettyName() const
-{
-    return !m_prettyName.isEmpty() ? m_prettyName : name();
-}
+private:
+    QList<BrowserCategory * > m_categories;
+};
 
-void
-BrowserCategory::setShortDescription( const QString &shortDescription )
-{
-    m_shortDescription = shortDescription;
-}
-
-QString
-BrowserCategory::shortDescription() const
-{
-    return m_shortDescription;
-}
-
-void
-BrowserCategory::setLongDescription( const QString &longDescription )
-{
-    m_longDescription = longDescription;
-}
-
-QString
-BrowserCategory::longDescription() const
-{
-    return m_longDescription;
-}
-
-void
-BrowserCategory::setIcon( const QIcon & icon )
-{
-    m_icon = icon;
-}
-
-QIcon
-BrowserCategory::icon() const
-{
-    return m_icon;
-}
-
-
-
-
+#endif

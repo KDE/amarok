@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,77 +16,24 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
-#include "BrowserCategory.h"
 
-BrowserCategory::BrowserCategory( const QString &name )
-    : KVBox( 0 )
-    , m_name( name )
-    , m_prettyName( QString() )
-    , m_shortDescription( QString() )
-    , m_longDescription( QString() )
+#ifndef BROWSERCATEGORYLISTSORTFILTERPROXYMODEL_H
+#define BROWSERCATEGORYLISTSORTFILTERPROXYMODEL_H
+
+#include <QSortFilterProxyModel>
+
+#include "meta/Meta.h"
+
+
+class BrowserCategoryListSortFilterProxyModel : public QSortFilterProxyModel
 {
-}
+    public:
+        BrowserCategoryListSortFilterProxyModel( QObject * parent = 0 );
 
-BrowserCategory::~BrowserCategory()
-{
-}
+        virtual ~BrowserCategoryListSortFilterProxyModel();
 
-QString
-BrowserCategory::name() const
-{
-    return m_name;
-}
+    protected:
+        virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+};
 
-void
-BrowserCategory::setPrettyName( const QString & prettyName )
-{
-    m_prettyName = prettyName;
-}
-
-
-QString
-BrowserCategory::prettyName() const
-{
-    return !m_prettyName.isEmpty() ? m_prettyName : name();
-}
-
-void
-BrowserCategory::setShortDescription( const QString &shortDescription )
-{
-    m_shortDescription = shortDescription;
-}
-
-QString
-BrowserCategory::shortDescription() const
-{
-    return m_shortDescription;
-}
-
-void
-BrowserCategory::setLongDescription( const QString &longDescription )
-{
-    m_longDescription = longDescription;
-}
-
-QString
-BrowserCategory::longDescription() const
-{
-    return m_longDescription;
-}
-
-void
-BrowserCategory::setIcon( const QIcon & icon )
-{
-    m_icon = icon;
-}
-
-QIcon
-BrowserCategory::icon() const
-{
-    return m_icon;
-}
-
-
-
-
+#endif

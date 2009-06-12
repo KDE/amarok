@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Mark Kretschmann <kretschmann@kde.org>            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,77 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
- 
-#include "BrowserCategory.h"
 
-BrowserCategory::BrowserCategory( const QString &name )
-    : KVBox( 0 )
-    , m_name( name )
-    , m_prettyName( QString() )
-    , m_shortDescription( QString() )
-    , m_longDescription( QString() )
+#ifndef BROWSERCATEGORYLISTDELEGATE_H
+#define BROWSERCATEGORYLISTDELEGATE_H
+
+#include "SvgHandler.h"
+
+#include <QStyledItemDelegate>
+#include <QFont>
+#include <QTreeView>
+
+
+/** A delegate for displaying a nice overview of a service */
+
+class BrowserCategoryListDelegate : public QStyledItemDelegate
 {
-}
+public:
+    BrowserCategoryListDelegate( QTreeView *view );
+    ~BrowserCategoryListDelegate();
 
-BrowserCategory::~BrowserCategory()
-{
-}
+    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-QString
-BrowserCategory::name() const
-{
-    return m_name;
-}
+private:
+    QTreeView *m_view;
+    QFont m_bigFont;
+    QFont m_smallFont;
+};
 
-void
-BrowserCategory::setPrettyName( const QString & prettyName )
-{
-    m_prettyName = prettyName;
-}
-
-
-QString
-BrowserCategory::prettyName() const
-{
-    return !m_prettyName.isEmpty() ? m_prettyName : name();
-}
-
-void
-BrowserCategory::setShortDescription( const QString &shortDescription )
-{
-    m_shortDescription = shortDescription;
-}
-
-QString
-BrowserCategory::shortDescription() const
-{
-    return m_shortDescription;
-}
-
-void
-BrowserCategory::setLongDescription( const QString &longDescription )
-{
-    m_longDescription = longDescription;
-}
-
-QString
-BrowserCategory::longDescription() const
-{
-    return m_longDescription;
-}
-
-void
-BrowserCategory::setIcon( const QIcon & icon )
-{
-    m_icon = icon;
-}
-
-QIcon
-BrowserCategory::icon() const
-{
-    return m_icon;
-}
-
-
-
-
+#endif

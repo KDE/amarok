@@ -153,6 +153,11 @@ kde4_add_ui_files(libconfigdialog_SRCS
 
 set(libbrowserframework_SRCS
     browsers/BrowserCategory.cpp
+    browsers/BrowserCategory.cpp
+    browsers/BrowserCategoryList.cpp
+    browsers/BrowserCategoryListDelegate.cpp
+    browsers/BrowserCategoryListModel.cpp
+    browsers/BrowserCategoryListSortFilterProxyModel.cpp
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
     browsers/CollectionTreeItemModel.cpp

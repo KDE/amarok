@@ -35,10 +35,18 @@ The base class of browsers, services, categories or any other widget that can be
 class AMAROK_EXPORT BrowserCategory : public KVBox
 {
 public:
-    BrowserCategory( const QString &prettyName );
+    BrowserCategory( const QString &name );
 
     ~BrowserCategory();
 
+    QString name() const;
+
+    /**
+     * Set the user visible name of this category
+     * @param prettyName The user visible name.
+     */
+    void setPrettyName( const QString &prettyName );
+    
     /**
      * Get the user visible name of this category.
      * @return The name of the service.
@@ -81,7 +89,10 @@ public:
      */
     QIcon icon() const;
 
+    virtual void polish() = 0;
+
 private:
+    QString m_name;
     QString m_prettyName;
     QString m_shortDescription;
     QString m_longDescription;

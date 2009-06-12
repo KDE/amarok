@@ -167,12 +167,6 @@ public:
     ~ServiceBase();
 
     /**
-     * Get the internal name of this service.
-     * @return The name of the service.
-     */
-    QString name() const;
-
-    /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.
      * @param model The model.
      */
