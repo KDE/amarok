@@ -151,9 +151,17 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
                 connect( job, SIGNAL( result( KJob* ) ), this, SLOT( artistNameQueryDone( KJob* ) ) );
             } else
             { // mode is set to whole playlist, so check if any tracks in the playlist aren't saved as Ids yet and query those
+                QList< Meta::TrackPtr > playlist;
+                m_currentPlaylist.clear(); // for searching in later
                 for( int i = 0; i < The::playlistModel()->rowCount(); i++ )
                 {
-                    Meta::TrackPtr track = The::playlistModel()->trackAt( i );
+                    Meta::TrackPtr t = The::playlistModel()->trackAt( i );
+                    playlist << t;
+                    m_currentPlaylist << t->artist()->name();
+                }
+                // first get any new tracks
+                foreach( Meta::TrackPtr track, playlist )
+                {
                     if( !m_artistIds.contains( track->artist()->name() ) ) // don't have it yet
                     {
                         debug() << "searching for artistL" << track->artist()->name();
@@ -171,8 +179,13 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
                         m_artistIds[ track->artist()->name() ] = "-1"; // mark as not being searched for
                     }
                 }
-                // TODO also go through it to remove any tracks that we don't have
-                
+                // also go through it to remove any tracks that we don't have
+                foreach( QString name, m_artistIds.keys() )
+                {
+                    if( !m_currentPlaylist.contains( name ) )
+                        m_artistIds.remove( name );
+                }
+                // save list of artists
             }
         }
     }
@@ -350,15 +363,20 @@ Dynamic::EchoNestBias::updateReady( QString collectionId, QStringList uids )
     
     int protocolLength =
     ( QString( m_collection->uidUrlProtocol() ) + "://" ).length();
-    
-    //  debug() << "setting cache of related artist UIDs for artist:" << m_currentArtist << "to:" << uids;
-    m_savedArtists[ m_currentArtist ].clear();
-    m_savedArtists[ m_currentArtist ].reserve( uids.size() );
+
+    QString key;
+    if( m_currentOnly )
+        key = m_currentArtist;
+    else // save as keyed to list of artists
+        key = m_currentPlaylist.join( "|" );
+        
+    m_savedArtists[ key ].clear();
+    m_savedArtists[ key ].reserve( uids.size() );
     QByteArray uid;
     foreach( const QString &uidString, uids )
     {
         uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
-        m_savedArtists[ m_currentArtist ].insert( uid );
+        m_savedArtists[ key ].insert( uid );
     }
 }
 
@@ -372,11 +390,16 @@ Dynamic::EchoNestBias::trackSatisfies( const Meta::TrackPtr track )
     //debug() << "checking if " << track->name() << "by" << track->artist()->name() << "is in suggested:" << m_savedArtists[ m_currentArtist ] << "of" << m_currentArtist;
     QString uidString = track->uidUrl().mid( track->uidUrl().lastIndexOf( '/' ) );
     QByteArray uid = QByteArray::fromHex( uidString.toAscii() );
-    
-    if( m_savedArtists.keys().contains( m_currentArtist ) )
+
+    QString key;
+    if( m_currentOnly )
+        key = m_currentArtist;
+    else // save as keyed to list of artists
+        key = m_currentPlaylist.join( "|" );
+    if( m_savedArtists.keys().contains( key ) )
     {
-        debug() << "saying:" <<  m_savedArtists[ m_currentArtist ].contains( uid ) << "for" << track->artist()->name();
-        return m_savedArtists[ m_currentArtist ].contains( uid );
+        debug() << "saying:" <<  m_savedArtists[ key ].contains( uid ) << "for" << track->artist()->name();
+        return m_savedArtists[ key ].contains( uid );
     } else
         debug() << "DIDN'T HAVE ARTIST SUGGESTIONS SAVED FOR THIS ARTIST:" << m_currentArtist;
     
@@ -391,14 +414,19 @@ Dynamic::EchoNestBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
     QMutexLocker locker( &m_mutex );
     
     int satisfy = 0;
-    if( m_savedArtists.keys().contains( m_currentArtist ) )
+    QString key;
+    if( m_currentOnly )
+        key = m_currentArtist;
+    else // save as keyed to list of artists
+        key = m_currentPlaylist.join( "|" );
+    if( m_savedArtists.keys().contains( key ) )
     {
         foreach( const Meta::TrackPtr track, tracks )
         {
             QString uidString = track->uidUrl().mid( track->uidUrl().lastIndexOf( '/' ) );
             QByteArray uid = QByteArray::fromHex( uidString.toAscii() );
             
-            if( m_savedArtists[ m_currentArtist ].contains(uid ) )
+            if( m_savedArtists[ key ].contains(uid ) )
                 satisfy++;
             
         }
@@ -466,8 +494,13 @@ Dynamic::EchoNestBias::collectionFilterCapability()
 const QSet< QByteArray >&
 Dynamic::EchoNestBiasCollectionFilterCapability::propertySet()
 {
-    debug() << "returning matching set for artist: " << m_bias->m_currentArtist << "of size:" << m_bias->m_savedArtists[ m_bias->m_currentArtist ].size();
-    return m_bias->m_savedArtists[ m_bias->m_currentArtist ];
+    QString key;
+    if( m_bias->m_currentOnly )
+        key = m_bias->m_currentArtist;
+    else // save as keyed to list of artists
+        key = m_bias->m_currentPlaylist.join( "|" );
+    debug() << "returning matching set for artist: " << key << "of size:" << m_bias->m_savedArtists[ key ].size();
+    return m_bias->m_savedArtists[ key ];
 }
 
 double Dynamic::EchoNestBiasCollectionFilterCapability::weight() const

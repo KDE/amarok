@@ -86,6 +86,7 @@ namespace Dynamic
             KUrl createUrl( QString method, QMultiMap< QString, QString > params );
             
             QString m_currentArtist;
+            QStringList m_currentPlaylist;
             QMap< QString, QString > m_artistIds;
             
             QMap< KIO::StoredTransferJob*, QString> m_artistNameQueries;
