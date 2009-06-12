@@ -113,12 +113,6 @@ protected slots:
      */
     void purchase();
 
-    //use credit card to purchase album
-    void useCc();
-
-    //use gift card to purchase album
-    void useGc();
-
     /**
      * Slot for recieving notification when the cancel button is pressed.
      */

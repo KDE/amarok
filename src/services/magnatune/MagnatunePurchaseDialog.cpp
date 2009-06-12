@@ -40,10 +40,6 @@ MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* n
     setObjectName( name );
     setupUi( this );
 
-    connect( ccRadioButton, SIGNAL( clicked() ), this, SLOT( useCc() ) );
-    connect( gcRadioButton, SIGNAL( clicked() ), this, SLOT( useGc() ) );
-
-    ccRadioButton->setChecked ( true );
 }
 
 MagnatunePurchaseDialog::~MagnatunePurchaseDialog()
@@ -74,10 +70,7 @@ void MagnatunePurchaseDialog::purchase( )
     {
         setEnabled( false ); //to prevent accidental double purchases
 
-        if ( ccRadioButton->isChecked() )
-            emit( makePurchase( ccEdit->text(), expYearEdit->text(), expMonthEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
-        else
-            emit( makeGiftCardPurchase( gcEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
+        emit( makeGiftCardPurchase( gcEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
     }
 }
 
@@ -96,58 +89,15 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 {
     // check all the entries for validity
 
-    //credit card entries
+    //check the gift card code
+    QString ccString = gcEdit->text();
+    ccString.trimmed ();
+    QRegExp ccExp( "^[\\d]{10,20}$" );
 
-    if ( ccRadioButton->isChecked() ) {
-
-        //cc number:
-        QString ccString = ccEdit->text();
-        ccString.trimmed();
-        QRegExp ccExp( "^[\\d]{10,20}$" );
-
-        if ( !ccExp.exactMatch( ccString ) )
-        {
-            KMessageBox::information( this, i18n("The credit card number entered does not appear to be valid"),
-                                    i18n("Invalid credit card number"));
-            return false;
-        }
-
-        //month
-        QString monthString = expMonthEdit->text();
-        monthString.trimmed ();
-        QRegExp monthExp( "^\\d{2}$" );
-
-        if ( !monthExp.exactMatch( monthString ) )
-        {
-            KMessageBox::information( this, i18n("The credit card expiration month does not appear to be valid"), 
-                                    i18n("Invalid expiration month"));
-            return false;
-        }
-
-        //year
-        QString yearString = expYearEdit->text();
-        yearString.trimmed ();
-        QRegExp yearExp( "^\\d{2}$" );
-
-        if ( !yearExp.exactMatch( yearString ) )
-        {
-            KMessageBox::information( this,i18n("The credit card expiration year does not appear to be valid"), i18n("Invalid expiration year"));
-
-            return false;
-        }
-
-
-    } else {
-        //check the gift card code
-        QString ccString = gcEdit->text();
-        ccString.trimmed ();
-        QRegExp ccExp( "^[\\d]{10,20}$" );
-
-        if ( !ccExp.exactMatch( ccString ) )
-        {
-            KMessageBox::information( this, i18n("The gift card code entered does not appear to be valid"), i18n("Invalid gift card code"));
-            return false;
-        }
+    if ( !ccExp.exactMatch( ccString ) )
+    {
+        KMessageBox::information( this, i18n("The gift card code entered does not appear to be valid"), i18n("Invalid gift card code"));
+        return false;
     }
 
     //email
@@ -172,20 +122,6 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 void MagnatunePurchaseDialog::metadataChanged( AlbumPtr album )
 {
     coverPixmapLabel->setPixmap( album->image( 200 ) );
-}
-
-
-/*$SPECIALIZATION$*/
-
-void MagnatunePurchaseDialog::useCc()
-{
-    paymentWidget->setCurrentIndex( 0 );
-
-}
-
-void MagnatunePurchaseDialog::useGc()
-{
-    paymentWidget->setCurrentIndex( 1 );
 }
 
 
