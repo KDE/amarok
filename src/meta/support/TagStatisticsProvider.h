@@ -21,7 +21,7 @@
 
 #include "meta/StatisticsProvider.h"
 
-#include "amarok.h"
+#include "Amarok.h"
 
 #include <QString>
 

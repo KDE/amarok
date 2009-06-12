@@ -19,7 +19,7 @@
 #include "StatisticsProvider.h"
 
 #include "Amarok.h"
-#include "debug.h"
+#include "Debug.h"
 
 Meta::StatisticsProvider::StatisticsProvider()
         : m_score( 0.0 )
