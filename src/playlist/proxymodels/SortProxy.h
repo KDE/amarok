@@ -232,10 +232,19 @@ signals:
     void removedIds( const QList<quint64>& );
     
     /**
-     * Signal forwarded from the FilterProxy.
-     * Signal emitted when the proxy changes its filtering.
+     * Signal forwarded from the FilterProxy, emitted when the proxy changes its filtering.
      */
     void filterChanged();
+
+    /**
+     * Signal forwarded from the FilterProxy, emitted when the playlist layout is changed.
+     */
+    void layoutChanged();
+
+    void dataChanged( const QModelIndex& start, const QModelIndex& end );
+    void rowsInserted( const QModelIndex& idx, int start, int end );
+    void rowsRemoved( const QModelIndex& idx, int start, int end );
+
 
 private:
     /**
@@ -253,6 +262,11 @@ private:
     SortMap *m_map;                     //! Permutation function between the set of source indexes and the set of indexes to be forwarded.
 
     static SortProxy *s_instance;       //! Instance member.
+
+private slots:
+    void onDataChanged( const QModelIndex& start, const QModelIndex& end );
+    void onRowsInserted( const QModelIndex& idx, int start, int end );
+    void onRowsRemoved( const QModelIndex& idx, int start, int end );
 };
 
 }   //namespace Playlist

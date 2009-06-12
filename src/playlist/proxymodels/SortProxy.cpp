@@ -54,8 +54,13 @@ SortProxy::SortProxy()
     connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
     connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
 
+    connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( onDataChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( onRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( onRowsRemoved( const QModelIndex&, int, int ) ) );
     
+    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
+    connect( m_belowModel, SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
 
     //NOTE to self by Téo: when rows are inserted, and that I'll know thanks to the signals
     // in FilterProxy, they must be added to the m_map but the map must
@@ -64,10 +69,6 @@ SortProxy::SortProxy()
     //NOTE to self by Téo: dataChanged could already be implemented by QAbstractProxyModel
     /*
     needed by GroupingProxy:
-    connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
-    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
     connect( m_belowModel, SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
     */
 }
@@ -80,54 +81,72 @@ SortProxy::~SortProxy()
 QModelIndex
 SortProxy::index( int row, int column, const QModelIndex &parent ) const
 {
-    DEBUG_BLOCK
     if ( m_belowModel->rowExists( m_map->inv( row ) ) )
     {
         debug() << "the row exists!";
         return createIndex( row, column );
     }
-    debug() << "bad model, no row for you!";
+    debug() << "bad model, no row for you! rowInProxy=" << row;
     return QModelIndex();
 }
 
 QModelIndex
 SortProxy::parent( const QModelIndex& index ) const
 {
-    DEBUG_BLOCK
     return m_belowModel->parent( index );
 }
 
 QModelIndex
 SortProxy::mapFromSource( const QModelIndex& sourceIndex ) const
 {
-    DEBUG_BLOCK
+    debug() << "mapFromSource row=" << sourceIndex.row();
     return createIndex( m_map->map( sourceIndex.row() ), sourceIndex.column() );
 }
 
 QModelIndex
 SortProxy::mapToSource( const QModelIndex& proxyIndex ) const
 {
-    DEBUG_BLOCK
+    debug() << "mapToSource row=" << proxyIndex.row();
     return m_belowModel->index( m_map->inv( proxyIndex.row() ), proxyIndex.column() );
 }
 
-void SortProxy::updateSortMap( SortScheme *scheme)
+void
+SortProxy::updateSortMap( SortScheme *scheme)
 {
-    DEBUG_BLOCK
     //APPLY THE SORTING
     m_map->sort( scheme );
 }
 
-// PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
-// Please keep them sorted alphabetically.
+void
+SortProxy::onDataChanged( const QModelIndex& start, const QModelIndex& end )
+{
+    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );
+}
+
+void
+SortProxy::onRowsInserted( const QModelIndex& idx, int start, int end )
+{
+    m_map->insertRows( start, end );
+    emit rowsInserted( mapFromSource( idx ), rowFromSource( start ), rowFromSource( end ) );
+}
+
+void
+SortProxy::onRowsRemoved( const QModelIndex& idx, int start, int end )
+{
+    m_map->deleteRows( start, end );
+    emit rowsRemoved( mapFromSource( idx ), rowFromSource( start ), rowFromSource( end ) );
+}
+
+// Pass-through methods, basically identical to those in Playlist::FilterProxy, that pretty
+// much just forward stuff through the stack of proxies start here.
+// Please keep them sorted alphabetically.  - Téo
 
 int
 SortProxy::activeRow() const
 {
-    // we map the active row form the source to this model. if the active row is not in the items
-    // exposed by this proxy, just point to our first item.
-    //return rowFromSource( m_model->activeRow() ); //from FIlterProxy
-    return rowFromSource( m_belowModel->activeRow() );   //TODO: this will need to be adjusted when this proxy starts doing some actual permutation
+    // We map the active row form the source to this model.
+    // As in FilterProxy: return rowFromSource( m_model->activeRow() );
+    return rowFromSource( m_belowModel->activeRow() );
 }
 
 void

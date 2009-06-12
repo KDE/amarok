@@ -51,30 +51,45 @@ SortMap::inv( int proxyRow )
 int
 SortMap::map( int sourceRow )
 {
-    return m_map->at( sourceRow );   //note that if sourceRow>= size(), bad things will happen.
+    debug() << "SortMap: map sourceRow=" << sourceRow;
+    return m_map->value( sourceRow );   //note that if sourceRow>= size(), bad things will happen.
 }
 
 void
 SortMap::sort( SortScheme *scheme )
 {
-    DEBUG_BLOCK
     debug()<< "about to call qStableSort()";
     //MultilevelLessThan multilevelLessThan( m_sourceProxy, scheme );
     qStableSort( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
     m_sorted = 1;
+
+    debug() << "Behold the mighty sorting map spamming your terminal:";
+    debug() << "  source  sortProxy";
+    for( int i = 0; i < m_map->length(); i++ )
+    {
+        debug() << "   " << i << "   " << m_map->value( i );
+    }
 }
 
 void
 SortMap::insertRows( int startRowInSource, int endRowInSource )
 {
-
+    //TODO: implement adding
+    debug() << "Here I should be adding to the map sourceRows from " << startRowInSource << " to " << endRowInSource;
     m_sorted = 0;   //inserting rows surely invalidates the sorting.
 }
 
 void
-SortMap::deleteRows( int stareRowInSource, int endRowInSource )
+SortMap::deleteRows( int startRowInSource, int endRowInSource )
 {
-
+    debug() << "Removing from the map sourceRows from " << startRowInSource << " to " << endRowInSource;
+    for( int i = startRowInSource; i <= endRowInSource; i++ )
+    {
+        m_map->removeAt( i );
+        debug() << "          Removing from map row=" << i;
+        // this is no good, I need to keep the values an uninterrupted sequence of integers between 0 and m_map->length() too!!!
+        // the complexity of this is going to hell :(
+    }
 }
 
 
@@ -86,8 +101,8 @@ MultilevelLessThan::operator()(int rowA, int rowB)
     {
         int currentCategory = m_scheme->level( i ).category();  //see enum Column in PlaylistDefines.h
         Qt::SortOrder currentOrder = m_scheme->level( i ).order();
-        QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();
-        QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();
+        QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();  //FIXME: are you sure you need to do comparisons on sourceProxy indexes?
+        QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
         if( m_scheme->level( i ).isString() )
         {
             if( dataA.toString() < dataB.toString() )

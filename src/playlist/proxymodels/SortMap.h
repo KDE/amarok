@@ -70,7 +70,7 @@ public:
      * @param startRowInSource the position of the first row.
      * @param rowCount the number of added rows.
      */
-    void insertRows( int startRowInSource, int rowCount );
+    void insertRows( int startRowInSource, int endRowInSource );
 
     //NOTE to self by Téo: isn't it true that by just removing rows the sorting should be preserved?
     /**
@@ -79,7 +79,7 @@ public:
      * @param startRowInSource the position of the first row.
      * @param rowCount the number of removed rows.
      */
-    void deleteRows( int startRowInSource, int rowCount );
+    void deleteRows( int startRowInSource, int endRowInSource );
 
     /**
      * Converts a sorting scheme to a permutation of source rows.
