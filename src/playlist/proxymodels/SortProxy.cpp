@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>         *
- *             2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                  *
+ *   Copyright © 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>       *
+ *             © 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -40,9 +40,13 @@ SortProxy::instance()
 SortProxy::SortProxy()
     : QSortFilterProxyModel()
     , m_sourceModel( Model::instance() )
-    , m_belowModel( qobject_cast<FilterProxy*>( FilterProxy::instance() ) )
+    , m_belowModel(  FilterProxy::instance() )
 {
+    setSourceModel( m_belowModel );
 
+    //these need to end up somewhere :-/
+    //connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
+    //connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
 }
 
 SortProxy::~SortProxy()

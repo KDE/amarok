@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>         *
- *             2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                  *
+ *   Copyright © 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>       *
+ *             © 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,9 +21,10 @@
 #ifndef AMAROK_PLAYLISTSORTPROXY_H
 #define AMAROK_PLAYLISTSORTPROXY_H
 
-#include <QSortFilterProxyModel>
 #include "FilterProxy.h"
 #include <playlist/PlaylistModel.h>
+
+#include <QSortFilterProxyModel>
 
 namespace Playlist
 {

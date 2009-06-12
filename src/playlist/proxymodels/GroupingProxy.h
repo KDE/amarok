@@ -136,7 +136,7 @@ private:
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
 
-    FilterProxy *m_model;
+    FilterProxy *m_belowModel;
 
     static GroupingProxy* s_instance;
 };

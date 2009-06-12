@@ -51,17 +51,17 @@ Playlist::GroupingProxy::destroy()
 
 Playlist::GroupingProxy::GroupingProxy()
     : QAbstractProxyModel( 0 )
-    , m_model( FilterProxy::instance() )
+    , m_belowModel( FilterProxy::instance() )
 {
-    setSourceModel( m_model );
+    setSourceModel( m_belowModel );
     // signal proxies
-    connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( m_model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
-    connect( m_model, SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
-    connect( m_model, SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
+    connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
+    connect( m_belowModel, SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
 
-    int max = m_model->rowCount();
+    int max = m_belowModel->rowCount();
     for ( int i = 0; i < max; i++ )
         m_rowGroupMode.append( None );
     
@@ -77,7 +77,7 @@ Playlist::GroupingProxy::~GroupingProxy()
 QModelIndex
 Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
 {
-    if ( m_model->rowExists( r ) )
+    if ( m_belowModel->rowExists( r ) )
         return createIndex( r, c );
     return QModelIndex();
 }
@@ -109,7 +109,7 @@ Playlist::GroupingProxy::mapToSource( const QModelIndex& i ) const
 QModelIndex
 Playlist::GroupingProxy::mapFromSource( const QModelIndex& i ) const
 {
-    return m_model->index( i.row(), i.column() );
+    return m_belowModel->index( i.row(), i.column() );
 }
 
 QVariant
@@ -129,55 +129,55 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
     else if ( role == Playlist::GroupedAlternateRole )
         return ( row % 2 == 1 );
     
-    return m_model->data( index, role );
+    return m_belowModel->data( index, role );
 }
 
 int
 Playlist::GroupingProxy::activeRow() const
 {
-    return m_model->activeRow();
+    return m_belowModel->activeRow();
 }
 
 void
 Playlist::GroupingProxy::setActiveRow( int row ) const
 {
-    m_model->setActiveRow( row );
+    m_belowModel->setActiveRow( row );
 }
 
 Meta::TrackPtr
 Playlist::GroupingProxy::trackAt( int row ) const
 {
-    return m_model->trackAt( row );
+    return m_belowModel->trackAt( row );
 }
 
 Qt::DropActions
 Playlist::GroupingProxy::supportedDropActions() const
 {
-    return m_model->supportedDropActions();
+    return m_belowModel->supportedDropActions();
 }
 
 Qt::ItemFlags
 Playlist::GroupingProxy::flags( const QModelIndex &index ) const
 {
-    return m_model->flags( index );
+    return m_belowModel->flags( index );
 }
 
 QStringList
 Playlist::GroupingProxy::mimeTypes() const
 {
-    return m_model->mimeTypes();
+    return m_belowModel->mimeTypes();
 }
 
 QMimeData*
 Playlist::GroupingProxy::mimeData( const QModelIndexList& indexes ) const
 {
-    return m_model->mimeData( indexes );
+    return m_belowModel->mimeData( indexes );
 }
 
 bool
 Playlist::GroupingProxy::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
-    return m_model->dropMimeData( data, action, row, column, parent );
+    return m_belowModel->dropMimeData( data, action, row, column, parent );
 }
 
 void
@@ -269,11 +269,11 @@ Playlist::GroupingProxy::regroupRows( int first, int last )
      */
 
     first = ( first > 0 ) ? ( first - 1 ) : first;
-    last = ( last < ( m_model->rowCount() - 1 ) ) ? ( last + 1 ) : last;
+    last = ( last < ( m_belowModel->rowCount() - 1 ) ) ? ( last + 1 ) : last;
 
     for ( int row = first; row <= last; row++ )
     {
-        Meta::TrackPtr thisTrack = m_model->trackAt( row );
+        Meta::TrackPtr thisTrack = m_belowModel->trackAt( row );
 
         if (( thisTrack == Meta::TrackPtr() ) || ( thisTrack->album() == Meta::AlbumPtr() ) )
         {
@@ -283,13 +283,13 @@ Playlist::GroupingProxy::regroupRows( int first, int last )
 
         int beforeRow = row - 1;
         bool matchBefore = false;
-        Meta::TrackPtr beforeTrack = m_model->trackAt( beforeRow );
+        Meta::TrackPtr beforeTrack = m_belowModel->trackAt( beforeRow );
         if ( beforeTrack != Meta::TrackPtr() )
             matchBefore = shouldBeGrouped( beforeTrack, thisTrack );
 
         int afterRow = row + 1;
         bool matchAfter = false;
-        Meta::TrackPtr afterTrack = m_model->trackAt( afterRow );
+        Meta::TrackPtr afterTrack = m_belowModel->trackAt( afterRow );
         if ( afterTrack != Meta::TrackPtr() )
             matchAfter = shouldBeGrouped( afterTrack, thisTrack );
 
@@ -324,44 +324,44 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
 
 int Playlist::GroupingProxy::find( const QString &searchTerm, int fields  )
 {
-    return m_model->find( searchTerm, fields );
+    return m_belowModel->find( searchTerm, fields );
 }
 
 int Playlist::GroupingProxy::findNext( const QString &searchTerm, int selectedRow, int fields  )
 {
-    return m_model->findNext( searchTerm, selectedRow, fields );
+    return m_belowModel->findNext( searchTerm, selectedRow, fields );
 }
 
 int Playlist::GroupingProxy::findPrevious( const QString &searchTerm, int selectedRow, int fields  )
 {
-    return m_model->findPrevious( searchTerm, selectedRow, fields );
+    return m_belowModel->findPrevious( searchTerm, selectedRow, fields );
 }
 
 int Playlist::GroupingProxy::totalLength()
 {
-    return m_model->totalLength();
+    return m_belowModel->totalLength();
 }
 
 void Playlist::GroupingProxy::clearSearchTerm()
 {
-    m_model->clearSearchTerm();
+    m_belowModel->clearSearchTerm();
 }
 
 QString Playlist::GroupingProxy::currentSearchTerm()
 {
-    return m_model->currentSearchTerm();
+    return m_belowModel->currentSearchTerm();
 }
 
 int Playlist::GroupingProxy::currentSearchFields()
 {
-    return m_model->currentSearchFields();
+    return m_belowModel->currentSearchFields();
 }
 
 int Playlist::GroupingProxy::tracksInGroup( int row ) const
 {
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
-    row = FilterProxy::instance()->rowFromSource( row );
+    row = m_belowModel->rowFromSource( row );
 
     return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
 }
@@ -370,7 +370,7 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
-    row = FilterProxy::instance()->rowFromSource( row );
+    row = m_belowModel->rowFromSource( row );
     
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )

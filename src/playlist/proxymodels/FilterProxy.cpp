@@ -20,7 +20,6 @@
 #include "FilterProxy.h"
 
 #include "Debug.h"
-#include "playlist/PlaylistModel.h"
 
 namespace Playlist {
 
@@ -35,11 +34,12 @@ FilterProxy* FilterProxy::instance()
 
 FilterProxy::FilterProxy()
     : QSortFilterProxyModel( Model::instance() )
+    , m_model( Model::instance() )
 {
-    setSourceModel( Model::instance() );
+    setSourceModel( m_model );
 
-    connect( Model::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
-    connect( Model::instance(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
+    connect( m_model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
+    connect( m_model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
     m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
@@ -58,7 +58,7 @@ bool FilterProxy::filterAcceptsRow( int row, const QModelIndex & source_parent )
     if ( m_passThrough )
         return true;
 
-    const bool match = Model::instance()->matchesCurrentSearchTerm( row );
+    const bool match = m_model->matchesCurrentSearchTerm( row );
     return match;
 }
 
@@ -66,15 +66,14 @@ int FilterProxy::activeRow() const
 {
     // we map the active row form the source to this model. if the active row is not in the items
     // exposed by this proxy, just point to our first item.
-    Model * model = Model::instance();
-    return rowFromSource( model->activeRow() );
+    return rowFromSource( m_model->activeRow() );
 }
 
 quint64 FilterProxy::idAt( const int row ) const
 {
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
-    return Model::instance()->idAt( sourceIndex.row() );
+    return m_model->idAt( sourceIndex.row() );
 }
 
 void FilterProxy::filterUpdated()
@@ -89,17 +88,16 @@ void FilterProxy::filterUpdated()
 
 int FilterProxy::firstMatchAfterActive()
 {
-    Model * model = Model::instance();
-    int activeSourceRow = model->activeRow();
+    int activeSourceRow = m_model->activeRow();
 
     if ( m_passThrough )
         return activeSourceRow + 1;
 
     int matchRow = -1;
     int nextRow = activeSourceRow + 1;
-    while ( model->rowExists( nextRow ) )
+    while ( m_model->rowExists( nextRow ) )
     {
-        if ( model->matchesCurrentSearchTerm( nextRow ) ) {
+        if ( m_model->matchesCurrentSearchTerm( nextRow ) ) {
             matchRow = nextRow;
             break;
         }
@@ -115,17 +113,16 @@ int FilterProxy::firstMatchAfterActive()
 
 int FilterProxy::firstMatchBeforeActive()
 {
-    Model * model = Model::instance();
-    int activeSourceRow = model->activeRow();
+    int activeSourceRow = m_model->activeRow();
 
     if ( m_passThrough )
         return activeSourceRow - 1;
 
     int matchRow = -1;
     int previousRow = activeSourceRow - 1;
-    while ( model->rowExists( previousRow ) )
+    while ( m_model->rowExists( previousRow ) )
     {
-        if ( model->matchesCurrentSearchTerm( previousRow ) ) {
+        if ( m_model->matchesCurrentSearchTerm( previousRow ) ) {
             matchRow = previousRow;
             break;
         }
@@ -141,12 +138,10 @@ int FilterProxy::firstMatchBeforeActive()
 
 void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
 {
-    Model * model = Model::instance();
-
     QList< quint64 > proxyIds;
     foreach( quint64 id, ids )
     {
-        if ( model->matchesCurrentSearchTerm( model->rowForId( id ) ) )
+        if ( m_model->matchesCurrentSearchTerm( m_model->rowForId( id ) ) )
             proxyIds << id;
     }
 
@@ -156,12 +151,10 @@ void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
 
 void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 {
-    Model *model = Model::instance();
-
     QList<quint64> proxyIds;
     foreach( quint64 id, ids ) {
-        const int row = model->rowForId( id );
-        if ( row == -1 || model->matchesCurrentSearchTerm( row ) ) {
+        const int row = m_model->rowForId( id );
+        if ( row == -1 || m_model->matchesCurrentSearchTerm( row ) ) {
             proxyIds << id;
         }
     }
@@ -172,12 +165,12 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 
 Item::State FilterProxy::stateOfRow( int row ) const
 {
-    return Model::instance()->stateOfRow( rowToSource( row ) );
+    return m_model->stateOfRow( rowToSource( row ) );
 }
 
 Item::State FilterProxy::stateOfId( quint64 id ) const
 {
-    return Model::instance()->stateOfId( id );
+    return m_model->stateOfId( id );
 }
 
 void FilterProxy::setPassThrough( bool passThrough )
@@ -203,8 +196,7 @@ int FilterProxy::rowToSource( int row ) const
 
 int FilterProxy::rowFromSource( int row ) const
 {
-    Model * model = Model::instance();
-    QModelIndex sourceIndex = model->index( row, 0 );
+    QModelIndex sourceIndex = m_model->index( row, 0 );
     QModelIndex index = mapFromSource( sourceIndex );
 
     if ( !index.isValid() )
@@ -221,37 +213,37 @@ bool FilterProxy::rowExists( int row ) const
 
 void FilterProxy::setActiveRow( int row )
 {
-    Model::instance()->setActiveRow( rowToSource( row ) );
+    m_model->setActiveRow( rowToSource( row ) );
 }
 
 Meta::TrackPtr FilterProxy::trackAt(int row) const
 {
-    return Model::instance()->trackAt( rowToSource( row ) );
+    return m_model->trackAt( rowToSource( row ) );
 }
 
 int FilterProxy::find( const QString &searchTerm, int searchFields )
 {
-    return rowFromSource( Model::instance()->find( searchTerm, searchFields ) );
+    return rowFromSource( m_model->find( searchTerm, searchFields ) );
 }
 
 int FilterProxy::findNext( const QString & searchTerm, int selectedRow, int searchFields )
 {
-    return rowFromSource( Model::instance()->findNext( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( m_model->findNext( searchTerm, selectedRow, searchFields ) );
 }
 
 int FilterProxy::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
 {
-    return rowFromSource( Model::instance()->findPrevious( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( m_model->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
 int FilterProxy::totalLength() const
 {
-    return Model::instance()->totalLength();
+    return m_model->totalLength();
 }
 
 void FilterProxy::clearSearchTerm()
 {
-    Model::instance()->clearSearchTerm();
+    m_model->clearSearchTerm();
     
     if ( !m_passThrough )
     {
@@ -263,12 +255,12 @@ void FilterProxy::clearSearchTerm()
 
 QString FilterProxy::currentSearchTerm()
 {
-    return Model::instance()->currentSearchTerm();
+    return m_model->currentSearchTerm();
 }
 
 int FilterProxy::currentSearchFields()
 {
-    return Model::instance()->currentSearchFields();
+    return m_model->currentSearchFields();
 }
 
 QVariant FilterProxy::data( const QModelIndex & index, int role ) const
@@ -277,43 +269,43 @@ QVariant FilterProxy::data( const QModelIndex & index, int role ) const
     QModelIndex newIndex = this->index( index.row(), index.column() );
 
     QModelIndex sourceIndex = mapToSource( newIndex );
-    return Model::instance()->data( sourceIndex, role );
+    return m_model->data( sourceIndex, role );
 }
 
 
 Qt::DropActions FilterProxy::supportedDropActions() const
 {
-    return Model::instance()->supportedDropActions();
+    return m_model->supportedDropActions();
 }
 
 Qt::ItemFlags FilterProxy::flags( const QModelIndex &index ) const
 {
-    return Model::instance()->flags( index );
+    return m_model->flags( index );
 }
 
 QStringList FilterProxy::mimeTypes() const
 {
-    return Model::instance()->mimeTypes();
+    return m_model->mimeTypes();
 }
 
 QMimeData * FilterProxy::mimeData( const QModelIndexList &index ) const
 {
-    return Model::instance()->mimeData( index );
+    return m_model->mimeData( index );
 }
 
 bool FilterProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
-    return Model::instance()->dropMimeData( data, action, row, column, parent );
+    return m_model->dropMimeData( data, action, row, column, parent );
 }
 
 void FilterProxy::setRowQueued( int row )
 {
-    Model::instance()->setRowQueued( rowToSource( row ) );
+    m_model->setRowQueued( rowToSource( row ) );
 }
 
 void FilterProxy::setRowDequeued( int row )
 {
-    Model::instance()->setRowDequeued( rowToSource( row ) );
+    m_model->setRowDequeued( rowToSource( row ) );
 }
 
 }

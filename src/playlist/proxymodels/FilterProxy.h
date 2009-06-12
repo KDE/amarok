@@ -20,9 +20,10 @@
 #ifndef AMAROK_PLAYLISTFILTERPROXY_H
 #define AMAROK_PLAYLISTFILTERPROXY_H
 
-#include <QSortFilterProxyModel>
-
 #include "playlist/PlaylistItem.h"
+#include "playlist/PlaylistModel.h"
+
+#include <QSortFilterProxyModel>
 
 namespace Playlist
 {
@@ -188,6 +189,8 @@ private:
     ~FilterProxy();
 
     bool m_passThrough;
+
+    Model *m_model;
 
     static FilterProxy* s_instance;      //! instance variable
 };
