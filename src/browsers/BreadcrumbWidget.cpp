@@ -63,15 +63,14 @@ BreadcrumbWidget::updateBreadcrumbs()
     if ( !m_rootList )
         return;
 
-    debug() << "going to delete " << m_items.size() << " items";
-    qDeleteAll( m_items );
+    foreach(  BreadcrumbItem * item, m_items )
+    {
+        item->setParent( 0 );
+    }
+    
     m_items.clear();
-    debug() << "deleted!";
-
     m_spacer->setParent( 0 );
-
     addLevel( m_rootList );
-
     m_spacer->setParent( this );
 }
 
@@ -80,15 +79,14 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
 {
 
     DEBUG_BLOCK
-    QString prettyName = list->prettyName();
+    BreadcrumbItem * item = list->breadcrumb();
+    item->setParent( this );
+    m_items.append( item );
 
     BrowserCategory * childCategory = list->activeCategory();
 
     if ( childCategory )
     {
-        BreadcrumbItem * branch = new BreadcrumbItem( prettyName, list, this );
-        m_items.append( branch );
-        
         //check if this is also a list
         BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( childCategory );
         if ( childList )
@@ -97,16 +95,15 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
         }
         else
         {
-            BreadcrumbItem * leaf = new BreadcrumbItem( childCategory->prettyName(), childCategory, this );
-            m_items.append( leaf );
-
+            BreadcrumbItem * leaf = childCategory->breadcrumb();
+            leaf->setParent( this );
             leaf->setBold( true );
+            
+            m_items.append( leaf );
         }
     }
     else
     {
-        BreadcrumbItem * item = new BreadcrumbItem( prettyName, list, this );
-        m_items.append( item );
         item->setBold( true );
     }
 }

@@ -37,7 +37,7 @@ class BreadcrumbItem : public KHBox
 {
     Q_OBJECT
 public:
-    BreadcrumbItem( const QString &name, BrowserCategory * category, QWidget * parent );
+    BreadcrumbItem( BrowserCategory * category );
     ~BreadcrumbItem();
 
     void setBold( bool bold );

@@ -27,6 +27,7 @@
 
 #include <QIcon>
 
+class BreadcrumbItem;
 class BrowserCategoryList;
 
 /**
@@ -95,6 +96,8 @@ public:
     BrowserCategoryList * parentList();
     void setParentList( BrowserCategoryList * parent );
 
+    BreadcrumbItem * breadcrumb();
+
     virtual void polish() {};
 
 public slots:
@@ -107,6 +110,8 @@ private:
     QString m_longDescription;
     QIcon   m_icon;
     BrowserCategoryList * m_parentList;
+
+    BreadcrumbItem * m_breadcrumb;
     
 
 };

@@ -18,6 +18,8 @@
  ***************************************************************************/
  
 #include "BrowserCategory.h"
+
+#include "BreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 
 #include "Debug.h"
@@ -31,6 +33,7 @@ BrowserCategory::BrowserCategory( const QString &name )
     , m_shortDescription( QString() )
     , m_longDescription( QString() )
     , m_parentList( 0 )
+    , m_breadcrumb( 0 )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
@@ -38,6 +41,7 @@ BrowserCategory::BrowserCategory( const QString &name )
 
 BrowserCategory::~BrowserCategory()
 {
+    delete m_breadcrumb;
 }
 
 QString
@@ -111,6 +115,17 @@ void BrowserCategory::activate()
     DEBUG_BLOCK
     if ( parentList() )
         parentList()->activate( this );
+}
+
+BreadcrumbItem * BrowserCategory::breadcrumb()
+{
+
+    if ( m_breadcrumb == 0 )
+    {
+        m_breadcrumb = new BreadcrumbItem( this );
+    }
+
+    return m_breadcrumb;
 }
 
 #include "BrowserCategory.moc"

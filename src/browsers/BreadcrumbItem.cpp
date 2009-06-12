@@ -24,10 +24,10 @@
 
 #include <QMenu>
 
-BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category, QWidget * parent )
-    : KHBox( parent )
-        , m_category( category )
-        , m_menuButton( 0 )
+BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
+    : KHBox( 0 )
+    , m_category( category )
+    , m_menuButton( 0 )
 {
 
     //figure out if we want to add a menu to this item. A menu allows you to select
@@ -63,7 +63,7 @@ BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category
     }
 
 
-    m_mainButton = new QPushButton( category->icon(), name, this );
+    m_mainButton = new QPushButton( category->icon(), category->prettyName(), this );
     m_mainButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
