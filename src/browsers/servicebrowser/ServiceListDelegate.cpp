@@ -89,13 +89,14 @@ ServiceListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & opt
     titleRect.setWidth( width - iconRight );
     titleRect.setHeight( height );
 
-    const QString collectionName = index.data( Qt::DisplayRole ).toString();
+    QFontMetrics bigFm( m_bigFont );
+    QFontMetrics smallFm( m_smallFont );
+
+    QString collectionName = index.data( Qt::DisplayRole ).toString();
+    collectionName = bigFm.elidedText( collectionName, Qt::ElideRight, titleRect.width() );
 
     painter->setFont( m_bigFont );
     painter->drawText( titleRect, Qt::AlignLeft, collectionName );
-
-    QFontMetrics bigFm( m_bigFont );
-    QFontMetrics smallFm( m_smallFont );
 
     QRectF textRect;
     textRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
