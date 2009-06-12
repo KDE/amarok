@@ -146,6 +146,8 @@ class BrowserCategoryList : public BrowserCategory
         void slotSetFilterTimeout();
         void slotFilterNow();
 
+        QString css();
+
 };
 
 

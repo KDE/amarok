@@ -320,15 +320,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         //icon into a nice html page.
 
         QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
-                "CONTENT=\"text/html; charset=utf-8\">"
-                "<style type='text/css'>"
-                "body"
-        "{"
-        "    text-align:center;"
-        "    background-color: {background_color};"
-        "}"
-        "</style></HEAD><BODY>";
-
+                "CONTENT=\"text/html; charset=utf-8\">" + css() + "</HEAD><BODY>";
         infoHtml += "<div align=\"center\"><strong>";
         infoHtml += category->prettyName();
         infoHtml += "</strong><p><em>";
@@ -345,6 +337,42 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         debug() << "setting info: " << category->longDescription();
         The::infoProxy()->setInfo( variantMap );
     }
+}
+
+QString BrowserCategoryList::css()
+{
+    QString style =
+            "<style type='text/css'>"
+            "body"
+            "{"
+            "    text-align:center;"
+            "    background-color: {background_color};"
+            "}"
+            "#main"
+            "    {"
+            "        text-align: center;"
+            "    }"
+            ""
+            "#text-border"
+            "    {"
+            "        display: block;"
+            "        margin-left: 0;"
+            "        margin-right: 0;"
+            "        padding: 4px;"
+            "        border: 4px solid {border_color};"
+            "        -webkit-border-radius: 4px;"
+            "        -khtml-border-radius: 4px;"
+            "        -moz-border-radius: 4px;"
+            "        border-radius: 4px;"
+            "        font-size: 94%;"
+            "        text-align: center;"
+            "        word-wrap: normal;"
+            "        background-color: {content_background_color};"
+            "        color: {text_color};"
+            "    }"
+            "</style>";
+
+    return style;
 }
 
 
