@@ -369,6 +369,7 @@
   <tabstop>launchDateEdit</tabstop>
   <tabstop>nameEdit</tabstop>
   <tabstop>emailEdit</tabstop>
+  <tabstop>gcEdit</tabstop>
   <tabstop>amountComboBox</tabstop>
   <tabstop>purchaseButton</tabstop>
   <tabstop>cancelButton</tabstop>
