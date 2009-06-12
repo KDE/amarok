@@ -312,8 +312,8 @@ AmarokToolBoxMenu::show( bool refreshApplets )
     m_hideIcon->show();
     setZValue( zValue() + 10000 );
     
-    //m_installScriptedApplet->setPos( 30, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
-    //m_installScriptedApplet->show();
+    m_installScriptedApplet->setPos( 30, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
+    m_installScriptedApplet->show();
     
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {
