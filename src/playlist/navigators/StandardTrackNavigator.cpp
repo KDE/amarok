@@ -21,7 +21,7 @@
  **************************************************************************/
 
 #include "StandardTrackNavigator.h"
-#include "NavigatorFilterProxyModel.h"
+#include "playlist/proxymodels/FilterProxy.h"
 
 #include "playlist/PlaylistModel.h"
 #include <QDebug>
@@ -29,7 +29,7 @@
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+    FilterProxy* model = FilterProxy::instance();
 
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
@@ -53,7 +53,7 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 quint64
 Playlist::StandardTrackNavigator::requestLastTrack()
 {
-    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+    FilterProxy* model = FilterProxy::instance();
 
     
     int activeRow = model->activeRow();

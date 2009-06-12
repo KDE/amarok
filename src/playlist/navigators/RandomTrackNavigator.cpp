@@ -27,7 +27,7 @@
 #include "Debug.h"
 #include "playlist/PlaylistItem.h"
 #include "playlist/PlaylistModel.h"
-#include "NavigatorFilterProxyModel.h"
+#include "playlist/proxymodels/FilterProxy.h"
 
 #include <KRandom>
 
@@ -35,7 +35,7 @@
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
-    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+    FilterProxy* model = FilterProxy::instance();
     connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
     connect( model, SIGNAL( filterChanged() ), this, SLOT( reset() ) );
@@ -46,7 +46,7 @@ Playlist::RandomTrackNavigator::RandomTrackNavigator()
 void
 Playlist::RandomTrackNavigator::recvInsertedIds( const QList<quint64>& list )
 {
-    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+    FilterProxy* model = FilterProxy::instance();
     foreach( quint64 t, list )
     {
         if ( ( model->stateOfId( t ) == Item::Unplayed ) || ( model->stateOfId( t ) == Item::NewlyAdded ) )
@@ -153,7 +153,7 @@ Playlist::RandomTrackNavigator::requestLastTrack()
 void Playlist::RandomTrackNavigator::reset()
 {
     DEBUG_BLOCK
-    NavigatorFilterProxyModel* model = NavigatorFilterProxyModel::instance();
+    FilterProxy* model = FilterProxy::instance();
 
     m_unplayedRows.clear();
     m_playedRows.clear();

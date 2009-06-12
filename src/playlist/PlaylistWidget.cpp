@@ -30,7 +30,7 @@
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
 #include "layouts/LayoutManager.h"
-#include "navigators/NavigatorFilterProxyModel.h"
+#include "proxymodels/FilterProxy.h"
 #include "widgets/ProgressiveSearchWidget.h"
 #include "layouts/LayoutConfigAction.h"
 
@@ -159,7 +159,7 @@ void Playlist::Widget::sort( int index )
     int field = m_sortBox->itemData( index ).toInt();
     debug() << "Field: " << field;
     //The::playlistModel()->sort( field );
-    NavigatorFilterProxyModel::instance()->sort( field );
+    FilterProxy::instance()->sort( field );
 }
 
 

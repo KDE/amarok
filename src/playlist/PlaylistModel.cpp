@@ -39,7 +39,7 @@
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h" // used in constructor
-#include "GroupingProxy.h"
+#include "proxymodels/GroupingProxy.h"
 
 #include <KGlobal>
 #include <KUrl>

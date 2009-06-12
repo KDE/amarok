@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef PLAYLISTNAVIGATORFILTERPROXYMODEL_H
-#define PLAYLISTNAVIGATORFILTERPROXYMODEL_H
+#ifndef AMAROK_PLAYLISTFILTERPROXY_H
+#define AMAROK_PLAYLISTFILTERPROXY_H
 
 #include <QSortFilterProxyModel>
 
@@ -35,7 +35,7 @@ a search term is active and the currently playing track is not in the subset rep
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class NavigatorFilterProxyModel : public QSortFilterProxyModel
+class FilterProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
@@ -44,7 +44,7 @@ public:
      * Accessor function for singleton pattern.
      * @return The class instance.
      */
-    static NavigatorFilterProxyModel* instance();
+    static FilterProxy* instance();
 
     /**
      * Return the currently active row, translated to proxy rows
@@ -180,16 +180,16 @@ private:
     /**
      * Constructor.
      */
-    NavigatorFilterProxyModel();
+    FilterProxy();
 
     /**
      * Destructor.
      */
-    ~NavigatorFilterProxyModel();
+    ~FilterProxy();
 
     bool m_passThrough;
 
-    static NavigatorFilterProxyModel* s_instance;      //! instance variable
+    static FilterProxy* s_instance;      //! instance variable
 };
 
 }

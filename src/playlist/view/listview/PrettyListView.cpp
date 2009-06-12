@@ -36,11 +36,11 @@
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
-#include "playlist/GroupingProxy.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
-#include "playlist/navigators/NavigatorFilterProxyModel.h"
+#include "playlist/proxymodels/FilterProxy.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
@@ -247,7 +247,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     QModelIndex filteredIndex = indexAt( event->pos() );
     
     //translate to real model as we might be looking at a filered list:
-    int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( filteredIndex.row() );
+    int sourceRow = FilterProxy::instance()->rowToSource( filteredIndex.row() );
 
     QModelIndex index = The::playlistModel()->index( sourceRow );
 
@@ -530,7 +530,7 @@ Playlist::PrettyListView::selectedRows() const
     QList<int> rows;
     foreach( const QModelIndex &idx, selectedIndexes() )
     {
-        int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( idx.row() );
+        int sourceRow = FilterProxy::instance()->rowToSource( idx.row() );
         rows.append( sourceRow );
     }
     return rows;
@@ -614,7 +614,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         emit( notFound() );
 
     if ( updateProxy )
-        NavigatorFilterProxyModel::instance()->filterUpdated();
+        FilterProxy::instance()->filterUpdated();
 }
 
 void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fields )
@@ -650,7 +650,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         emit( notFound() );
 
     if ( updateProxy )
-        NavigatorFilterProxyModel::instance()->filterUpdated();
+        FilterProxy::instance()->filterUpdated();
 }
 
 void Playlist::PrettyListView::clearSearchTerm()
@@ -662,12 +662,12 @@ void Playlist::PrettyListView::clearSearchTerm()
     QModelIndex index = indexAt( QPoint( 0, 0 ) );
 
      //ah... but we want the source row and not the one reported by the filter model(s)
-    int row = NavigatorFilterProxyModel::instance()->rowToSource( index.row() );
+    int row = FilterProxy::instance()->rowToSource( index.row() );
 
     debug() << "first row in filtered list: " << index.row();
     debug() << "source row: " << row;
 
-    NavigatorFilterProxyModel::instance()->filterUpdated();
+    FilterProxy::instance()->filterUpdated();
     GroupingProxy::instance()->clearSearchTerm();
 
     //now scroll to the selected row again
@@ -690,12 +690,12 @@ void Playlist::PrettyListView::startProxyUpdateTimeout()
 void Playlist::PrettyListView::updateProxyTimeout()
 {
     DEBUG_BLOCK
-    NavigatorFilterProxyModel::instance()->filterUpdated();
+    FilterProxy::instance()->filterUpdated();
 }
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
-    NavigatorFilterProxyModel::instance()->setPassThrough( !onlyMatches );
+    FilterProxy::instance()->setPassThrough( !onlyMatches );
 }
 
 void Playlist::PrettyListView::itemsAdded( int firstRow )

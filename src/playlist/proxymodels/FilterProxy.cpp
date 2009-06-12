@@ -17,23 +17,23 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "NavigatorFilterProxyModel.h"
+#include "FilterProxy.h"
 
 #include "Debug.h"
 #include "playlist/PlaylistModel.h"
 
 namespace Playlist {
 
-NavigatorFilterProxyModel* NavigatorFilterProxyModel::s_instance = 0;
+FilterProxy* FilterProxy::s_instance = 0;
 
-NavigatorFilterProxyModel* NavigatorFilterProxyModel::instance()
+FilterProxy* FilterProxy::instance()
 {
     if ( s_instance == 0 )
-        s_instance = new NavigatorFilterProxyModel();
+        s_instance = new FilterProxy();
     return s_instance;
 }
 
-NavigatorFilterProxyModel::NavigatorFilterProxyModel()
+FilterProxy::FilterProxy()
     : QSortFilterProxyModel( Model::instance() )
 {
     setSourceModel( Model::instance() );
@@ -47,11 +47,11 @@ NavigatorFilterProxyModel::NavigatorFilterProxyModel()
     //setDynamicSortFilter( true );
 }
 
-NavigatorFilterProxyModel::~NavigatorFilterProxyModel()
+FilterProxy::~FilterProxy()
 {
 }
 
-bool NavigatorFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
+bool FilterProxy::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
 {
     Q_UNUSED( source_parent );
 
@@ -62,7 +62,7 @@ bool NavigatorFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & s
     return match;
 }
 
-int NavigatorFilterProxyModel::activeRow() const
+int FilterProxy::activeRow() const
 {
     // we map the active row form the source to this model. if the active row is not in the items
     // exposed by this proxy, just point to our first item.
@@ -70,14 +70,14 @@ int NavigatorFilterProxyModel::activeRow() const
     return rowFromSource( model->activeRow() );
 }
 
-quint64 NavigatorFilterProxyModel::idAt( const int row ) const
+quint64 FilterProxy::idAt( const int row ) const
 {
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
     return Model::instance()->idAt( sourceIndex.row() );
 }
 
-void NavigatorFilterProxyModel::filterUpdated()
+void FilterProxy::filterUpdated()
 {
     if ( !m_passThrough )
     {
@@ -87,7 +87,7 @@ void NavigatorFilterProxyModel::filterUpdated()
     }
 }
 
-int NavigatorFilterProxyModel::firstMatchAfterActive()
+int FilterProxy::firstMatchAfterActive()
 {
     Model * model = Model::instance();
     int activeSourceRow = model->activeRow();
@@ -113,7 +113,7 @@ int NavigatorFilterProxyModel::firstMatchAfterActive()
     return rowFromSource( matchRow );
 }
 
-int NavigatorFilterProxyModel::firstMatchBeforeActive()
+int FilterProxy::firstMatchBeforeActive()
 {
     Model * model = Model::instance();
     int activeSourceRow = model->activeRow();
@@ -139,7 +139,7 @@ int NavigatorFilterProxyModel::firstMatchBeforeActive()
     return rowFromSource( matchRow );
 }
 
-void NavigatorFilterProxyModel::slotInsertedIds( const QList< quint64 > &ids )
+void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
 {
     Model * model = Model::instance();
 
@@ -154,7 +154,7 @@ void NavigatorFilterProxyModel::slotInsertedIds( const QList< quint64 > &ids )
         emit( insertedIds( proxyIds ) );
 }
 
-void NavigatorFilterProxyModel::slotRemovedIds( const QList< quint64 > &ids )
+void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 {
     Model *model = Model::instance();
 
@@ -170,17 +170,17 @@ void NavigatorFilterProxyModel::slotRemovedIds( const QList< quint64 > &ids )
         emit removedIds( proxyIds );
 }
 
-Item::State NavigatorFilterProxyModel::stateOfRow( int row ) const
+Item::State FilterProxy::stateOfRow( int row ) const
 {
     return Model::instance()->stateOfRow( rowToSource( row ) );
 }
 
-Item::State NavigatorFilterProxyModel::stateOfId( quint64 id ) const
+Item::State FilterProxy::stateOfId( quint64 id ) const
 {
     return Model::instance()->stateOfId( id );
 }
 
-void NavigatorFilterProxyModel::setPassThrough( bool passThrough )
+void FilterProxy::setPassThrough( bool passThrough )
 {
     m_passThrough = passThrough;
 
@@ -191,7 +191,7 @@ void NavigatorFilterProxyModel::setPassThrough( bool passThrough )
     emit( layoutChanged() );
 }
 
-int NavigatorFilterProxyModel::rowToSource( int row ) const
+int FilterProxy::rowToSource( int row ) const
 {
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
@@ -201,7 +201,7 @@ int NavigatorFilterProxyModel::rowToSource( int row ) const
     return sourceIndex.row();
 }
 
-int NavigatorFilterProxyModel::rowFromSource( int row ) const
+int FilterProxy::rowFromSource( int row ) const
 {
     Model * model = Model::instance();
     QModelIndex sourceIndex = model->index( row, 0 );
@@ -212,44 +212,44 @@ int NavigatorFilterProxyModel::rowFromSource( int row ) const
     return index.row();
 }
 
-bool NavigatorFilterProxyModel::rowExists( int row ) const
+bool FilterProxy::rowExists( int row ) const
 {
 
     QModelIndex index = this->index( row, 0 );
     return index.isValid();
 }
 
-void NavigatorFilterProxyModel::setActiveRow( int row )
+void FilterProxy::setActiveRow( int row )
 {
     Model::instance()->setActiveRow( rowToSource( row ) );
 }
 
-Meta::TrackPtr NavigatorFilterProxyModel::trackAt(int row) const
+Meta::TrackPtr FilterProxy::trackAt(int row) const
 {
     return Model::instance()->trackAt( rowToSource( row ) );
 }
 
-int NavigatorFilterProxyModel::find( const QString &searchTerm, int searchFields )
+int FilterProxy::find( const QString &searchTerm, int searchFields )
 {
     return rowFromSource( Model::instance()->find( searchTerm, searchFields ) );
 }
 
-int NavigatorFilterProxyModel::findNext( const QString & searchTerm, int selectedRow, int searchFields )
+int FilterProxy::findNext( const QString & searchTerm, int selectedRow, int searchFields )
 {
     return rowFromSource( Model::instance()->findNext( searchTerm, selectedRow, searchFields ) );
 }
 
-int NavigatorFilterProxyModel::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
+int FilterProxy::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
 {
     return rowFromSource( Model::instance()->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
-int NavigatorFilterProxyModel::totalLength() const
+int FilterProxy::totalLength() const
 {
     return Model::instance()->totalLength();
 }
 
-void NavigatorFilterProxyModel::clearSearchTerm()
+void FilterProxy::clearSearchTerm()
 {
     Model::instance()->clearSearchTerm();
     
@@ -261,17 +261,17 @@ void NavigatorFilterProxyModel::clearSearchTerm()
     }
 }
 
-QString NavigatorFilterProxyModel::currentSearchTerm()
+QString FilterProxy::currentSearchTerm()
 {
     return Model::instance()->currentSearchTerm();
 }
 
-int NavigatorFilterProxyModel::currentSearchFields()
+int FilterProxy::currentSearchFields()
 {
     return Model::instance()->currentSearchFields();
 }
 
-QVariant NavigatorFilterProxyModel::data( const QModelIndex & index, int role ) const
+QVariant FilterProxy::data( const QModelIndex & index, int role ) const
 {
      //HACK around incomplete index causing a crash...
     QModelIndex newIndex = this->index( index.row(), index.column() );
@@ -281,41 +281,41 @@ QVariant NavigatorFilterProxyModel::data( const QModelIndex & index, int role ) 
 }
 
 
-Qt::DropActions NavigatorFilterProxyModel::supportedDropActions() const
+Qt::DropActions FilterProxy::supportedDropActions() const
 {
     return Model::instance()->supportedDropActions();
 }
 
-Qt::ItemFlags NavigatorFilterProxyModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags FilterProxy::flags( const QModelIndex &index ) const
 {
     return Model::instance()->flags( index );
 }
 
-QStringList NavigatorFilterProxyModel::mimeTypes() const
+QStringList FilterProxy::mimeTypes() const
 {
     return Model::instance()->mimeTypes();
 }
 
-QMimeData * NavigatorFilterProxyModel::mimeData( const QModelIndexList &index ) const
+QMimeData * FilterProxy::mimeData( const QModelIndexList &index ) const
 {
     return Model::instance()->mimeData( index );
 }
 
-bool NavigatorFilterProxyModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
+bool FilterProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
     return Model::instance()->dropMimeData( data, action, row, column, parent );
 }
 
-void NavigatorFilterProxyModel::setRowQueued( int row )
+void FilterProxy::setRowQueued( int row )
 {
     Model::instance()->setRowQueued( rowToSource( row ) );
 }
 
-void NavigatorFilterProxyModel::setRowDequeued( int row )
+void FilterProxy::setRowDequeued( int row )
 {
     Model::instance()->setRowDequeued( rowToSource( row ) );
 }
 
 }
 
-#include "NavigatorFilterProxyModel.moc"
+#include "FilterProxy.moc"

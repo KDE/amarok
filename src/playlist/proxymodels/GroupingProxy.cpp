@@ -24,7 +24,7 @@
 #define DEBUG_PREFIX "Playlist::GroupingProxy"
 
 #include "GroupingProxy.h"
-#include "playlist/navigators/NavigatorFilterProxyModel.h"
+#include "FilterProxy.h"
 
 #include "Debug.h"
 #include "meta/Meta.h"
@@ -51,7 +51,7 @@ Playlist::GroupingProxy::destroy()
 
 Playlist::GroupingProxy::GroupingProxy()
     : QAbstractProxyModel( 0 )
-    , m_model( NavigatorFilterProxyModel::instance() )
+    , m_model( FilterProxy::instance() )
 {
     setSourceModel( m_model );
     // signal proxies
@@ -361,7 +361,7 @@ int Playlist::GroupingProxy::tracksInGroup( int row ) const
 {
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
-    row = NavigatorFilterProxyModel::instance()->rowFromSource( row );
+    row = FilterProxy::instance()->rowFromSource( row );
 
     return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
 }
@@ -370,7 +370,7 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
-    row = NavigatorFilterProxyModel::instance()->rowFromSource( row );
+    row = FilterProxy::instance()->rowFromSource( row );
     
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )

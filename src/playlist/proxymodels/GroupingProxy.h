@@ -21,11 +21,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef GROUPINGPROXY_H
-#define GROUPINGPROXY_H
+#ifndef AMAROK_PLAYLISTGROUPINGPROXY_H
+#define AMAROK_PLAYLISTGROUPINGPROXY_H
 
 #include "meta/Meta.h"
-#include "playlist/navigators/NavigatorFilterProxyModel.h"
+#include "FilterProxy.h"
 
 #include <QAbstractProxyModel>
 #include <QHash>
@@ -136,7 +136,7 @@ private:
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
 
-    NavigatorFilterProxyModel *m_model;
+    FilterProxy *m_model;
 
     static GroupingProxy* s_instance;
 };

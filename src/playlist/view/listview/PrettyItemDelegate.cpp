@@ -30,7 +30,7 @@
 #include "SvgTinter.h"
 #include "meta/Meta.h"
 #include "meta/capabilities/SourceInfoCapability.h"
-#include "playlist/GroupingProxy.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
 
