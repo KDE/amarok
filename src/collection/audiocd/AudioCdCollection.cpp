@@ -19,6 +19,7 @@
  
 #include "AudioCdCollection.h"
 
+#include "AudioCdCollectionCapability.h"
 #include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
 #include "AudioCdQueryMaker.h"
@@ -26,6 +27,7 @@
 #include "Debug.h"
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
+#include "SvgHandler.h"
 
 #include <kio/job.h>
 
@@ -54,7 +56,7 @@ void AudioCdCollectionFactory::init()
     if ( !uid.isEmpty() )
     {
         m_currentUid = uid;
-        m_collection = new AudioCdCollection();
+        m_collection = new AudioCdCollection( uid );
         emit newCollection( m_collection );
     }
 
@@ -62,6 +64,7 @@ void AudioCdCollectionFactory::init()
 
 void AudioCdCollectionFactory::audioCdAdded( const QString & uid )
 {
+    DEBUG_BLOCK
     if ( m_collection )
     {
         delete m_collection;
@@ -69,7 +72,7 @@ void AudioCdCollectionFactory::audioCdAdded( const QString & uid )
     }
 
     m_currentUid = uid;
-    m_collection = new AudioCdCollection();
+    m_collection = new AudioCdCollection( uid );
     emit newCollection( m_collection );
 }
 
@@ -89,18 +92,26 @@ void AudioCdCollectionFactory::deviceRemoved( const QString & uid )
 
 ////////////////////////////
 
-AudioCdCollection::AudioCdCollection()
+AudioCdCollection::AudioCdCollection( const QString &udi )
    : Collection()
    , MemoryCollection()
    , m_encodingFormat( OGG )
+   , m_udi( udi )
 {
     DEBUG_BLOCK
+
+    m_ejectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+    "eject", KIcon( "media-eject" ), i18n( "&Eject" ), 0 );
+
+    connect( m_ejectAction, SIGNAL( triggered() ), this, SLOT( eject() ) );
+
     readCd();
 }
 
 
 AudioCdCollection::~AudioCdCollection()
 {
+    delete m_ejectAction;
 }
 
 void AudioCdCollection::readCd()
@@ -307,6 +318,30 @@ void AudioCdCollection::setEncodingFormat( int format ) const
 CollectionLocation * AudioCdCollection::location() const
 {
     return new AudioCdCollectionLocation( this );
+}
+
+void AudioCdCollection::eject()
+{
+    DEBUG_BLOCK
+    MediaDeviceMonitor::instance()->ejectCd( m_udi );
+}
+
+PopupDropperAction * AudioCdCollection::ejectAction()
+{
+    return m_ejectAction;
+}
+
+bool AudioCdCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    return type ==  Meta::Capability::Collection;
+}
+
+Meta::Capability * AudioCdCollection::asCapabilityInterface( Meta::Capability::Type type )
+{
+    if ( type == Meta::Capability::Collection )
+        return new Meta::AudioCdCollectionCapability( this );
+    else
+        return 0;
 }
 
 

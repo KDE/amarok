@@ -62,6 +62,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     void checkDevicesForCd();
 
     QString isCdPresent();
+    void ejectCd( const QString &udi );
 
  //   void fetchDevices(); // emits device info for each device present
 

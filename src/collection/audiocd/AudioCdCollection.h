@@ -21,6 +21,7 @@
 #define AUDIOCDCOLLECTION_H
 
 #include "Collection.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "MemoryCollection.h"
 
 #include <kio/jobclasses.h>
@@ -61,7 +62,7 @@ public:
 
     enum { WAV, FLAC, OGG, MP3 } EncodingFormat;
 
-    AudioCdCollection();
+    AudioCdCollection( const QString &udi );
     ~AudioCdCollection();
 
     QString encodingFormat() const;
@@ -76,10 +77,16 @@ public:
 
     virtual CollectionLocation* location() const;
 
+    PopupDropperAction * ejectAction();
+
     void cdRemoved();
+
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
 public slots:
     void infoFetchComplete( KJob *job );
+    void eject();
 
 private:
 
@@ -93,7 +100,10 @@ private:
 
     QString m_cdName;
     QString m_discCddbId;
+    QString m_udi;
     mutable int m_encodingFormat;
+
+    PopupDropperAction * m_ejectAction;
 
     
 };

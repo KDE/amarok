@@ -27,11 +27,13 @@
 
 //solid specific includes
 #include <solid/devicenotifier.h>
+
 #include <solid/device.h>
 #include <solid/opticaldisc.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
 #include <solid/portablemediaplayer.h>
+#include <solid/opticaldrive.h>
 
 MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
 
@@ -284,6 +286,31 @@ QString MediaDeviceMonitor::isCdPresent()
     }
 
     return QString();
+}
+
+void MediaDeviceMonitor::ejectCd( const QString & udi )
+{
+    DEBUG_BLOCK
+    debug() << "trying to eject udi: " << udi;
+    Solid::Device device = Solid::Device( udi ).parent();
+
+    if ( !device.isValid() ) {
+        debug() << "invalid device, cannot eject";
+        return;
+    }
+
+
+    debug() << "lets tryto get an OpticalDrive out of this thing";
+    if( device.is<Solid::OpticalDrive>() )
+    {
+        debug() << "claims to be an OpticalDrive";
+        Solid::OpticalDrive * drive = device.as<Solid::OpticalDrive>();
+        if ( drive )
+        {
+            debug() << "ejecting the bugger";
+            drive->eject();
+        }
+    }
 }
 
 
