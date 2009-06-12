@@ -22,7 +22,6 @@
 
 // Amarok includes
 #include "../../src/Amarok.h"
-#include "../../src/Debug.h"
 
 #include <KStandardDirs>
 
@@ -31,6 +30,8 @@
 #include <QObject>
 #include <QScriptValue>
 #include <QTextStream>
+
+// add includes needed for tests here
 
 
 static QTextStream s_errStream( stderr );
@@ -106,11 +107,6 @@ AmarokTest::AmarokTest( int &argc, char **argv )
     ::exit( 0 );
 }
 
-
-// AmarokTest::~AmarokTest()
-// {
-//  // cleanup
-// }
 
 
 /**
