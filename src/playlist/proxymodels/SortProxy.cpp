@@ -81,6 +81,7 @@ SortProxy::~SortProxy()
 QModelIndex
 SortProxy::index( int row, int column, const QModelIndex &parent ) const
 {
+    Q_UNUSED( parent );
     if ( m_belowModel->rowExists( m_map->inv( row ) ) )
     {
         //debug() << "the row exists!";

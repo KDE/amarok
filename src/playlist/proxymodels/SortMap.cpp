@@ -23,6 +23,8 @@
 #include "FilterProxy.h"
 #include "SortProxy.h"
 
+#include <QPair>
+
 /**
  * Implements straight insertion sort.
  * A sorting algorithm falls into the adaptive sort family if it takes advantage of existing
@@ -141,6 +143,7 @@ SortMap::insertRows( int startRowInSource, int endRowInSource )
 void
 SortMap::deleteRows( int startRowInSource, int endRowInSource )
 {
+    DEBUG_BLOCK
     debug() << "Removing from the map sourceRows from " << startRowInSource << " to " << endRowInSource;
     QList< int >::iterator startIterator = m_map->begin() + startRowInSource;
     QList< int >::iterator endIterator = m_map->begin() + endRowInSource + 1;   //erase() wants the first item that *won't* be deleted as the end row
@@ -148,23 +151,7 @@ SortMap::deleteRows( int startRowInSource, int endRowInSource )
     m_rowCount = m_sourceProxy->rowCount();
     // Let's now restore codomain elements consistency.
     // We have to make it so that the set of keys has the same elements as the set of values,
-    // and the existing order has to be preserved.  -- Téo
-/*
-  Definition of the problem:
-A A'
-0 1
-1 3
-2 5
-3 2
-4 0
-5 4
-what if I remove [3..4]?
-A A'   should be:
-0 1     0   (-1)
-1 3     1   (-2)
-2 5     3   (-2)
-3 4     2   (-2)
-*/
+    // and the existing order has to be preserved.
     //FIXME: Really unclean solution.
     //       To restore elements consistency after performing an insertion/deletion of tracks
     //       without sorting everything again I would need to keep track of the codomain
@@ -178,16 +165,51 @@ A A'   should be:
     //       We will just suppose for now that the user won't add/remove many tracks all at
     //       once.
     //                      -- Téo
-    m_map->clear();
-    for( int i = 0; i < m_rowCount; i++ )   //defining an identity
-        m_map->append( i );     //this should give me amortized O(1)
+
     //With a small enough input and a low number of inversions, this sorting is as close to
     //O(n) as it gets.
-    //kAdaptiveStableSort( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
-    //oh ffs this might be a bad idea after all
-    //who says that the m_map before deleting was consistent with a scheme?
+    QList< QPair< int, int > > *tempConsistencyMap = new QList< QPair< int, int > >();
+    //I copy the contents of m_map in a QList< QPair< int, int > >
+    {
+        QList< int >::iterator it = m_map->begin();
+        for( int i = 0; i < m_rowCount; i++ )   //defining an identity
+        {
+            tempConsistencyMap->append( QPair< int, int >( i, *it ) );     //this should give me amortized O(1)
+            ++it;
+        }
+    }
 
-    //NOTE: possible solution:
+    //I do a normal stable adaptive sort.
+    for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin() + 1; i != tempConsistencyMap->end(); ++i )
+        for( QList< QPair< int, int > >::iterator j = i; j != tempConsistencyMap->begin() && j->second < ( j - 1 )->second; --j )
+            qSwap( *j, *( j - 1 ) );
+
+    //I clear the second column with an identity.
+    {
+        int j = 0;
+        for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin(); i != tempConsistencyMap->end(); ++i )
+        {
+            i->second = j;
+            ++j;
+        }
+    }
+
+    //Finally I sort again to obtain a coherent sortMap.
+    for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin() + 1; i != tempConsistencyMap->end(); ++i )
+        for( QList< QPair< int, int > >::iterator j = i; j != tempConsistencyMap->begin() && j->first < ( j - 1 )->first; --j )
+            qSwap( *j, *( j - 1 ) );
+
+    //And I copy it over to m_map.
+    m_map->clear();
+    for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin(); i != tempConsistencyMap->end(); ++i )
+        m_map->append( i->second );     //this should give me amortized O(1)
+
+    debug() << "Map consistency restored.";
+    debug() << "  source  sortProxy";   //column headers
+    for( int i = 0; i < m_map->length(); i++ )
+    {
+        debug() << "   " << i << "   " << m_map->value( i );
+    }
     /*
     I get an inconsistent n-tuple of codomain indexes, such as (5 2 3)
     Why not just do a normal nlogn sort, but this time it's a simple sort that doesn't use
@@ -205,6 +227,10 @@ A A'   should be:
     2   1   2
     3   2   3
     1   3   5
+    remove third column and put identity as second==>
+    2   1
+    3   2
+    1   3
     sort wrt column I==>
     1   3   5
     2   1   2
