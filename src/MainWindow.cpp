@@ -201,6 +201,8 @@ MainWindow::init()
     m_controlBar = new MainToolbar( 0 );
     m_controlBar->layout()->setContentsMargins( 0, 0, 0, 0 );
     m_controlBar->layout()->setSpacing( 0 );
+    m_controlBar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_controlBar->setMovable ( true );
 
     addToolBar( Qt::TopToolBarArea, m_controlBar );
 
@@ -212,7 +214,7 @@ MainWindow::init()
     QDockWidget * browsersDock = new QDockWidget( this );
     browsersDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     browsersDock->setWidget( m_browsers );
-    browsersDock->setAllowedAreas( Qt::LeftDockWidgetArea );
+    browsersDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     
 
     PERF_LOG( "Create Playlist" )
@@ -223,7 +225,7 @@ MainWindow::init()
     QDockWidget * playlistDock = new QDockWidget( this );
     playlistDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     playlistDock->setWidget( m_playlistWidget );
-    playlistDock->setAllowedAreas( Qt::LeftDockWidgetArea );
+    playlistDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     
     PERF_LOG( "Playlist created" )
 
@@ -232,10 +234,11 @@ MainWindow::init()
     PERF_LOG( "Creating ContextWidget" )
     m_contextWidget = new ContextWidget( this );
     PERF_LOG( "ContextWidget created" )
-    m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+    m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_contextWidget->setSpacing( 0 );
     m_contextWidget->setFrameShape( QFrame::NoFrame );
     m_contextWidget->setFrameShadow( QFrame::Sunken );
+    m_contextWidget->setMinimumSize( 100, 100 );
     PERF_LOG( "Creating ContexScene" )
 
     m_corona = new Context::ContextScene( this );
@@ -245,7 +248,7 @@ MainWindow::init()
     QDockWidget * contextDock = new QDockWidget( this );
     contextDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     contextDock->setWidget( m_contextWidget );
-    contextDock->setAllowedAreas( Qt::LeftDockWidgetArea );
+    contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
 
     PERF_LOG( "ContextScene created" )
 
@@ -253,28 +256,15 @@ MainWindow::init()
     m_corona->loadDefaultSetup(); // this method adds our containment to the scene
     PERF_LOG( "Loaded default contextScene" )
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setContentsMargins( 0, 0, 0, 0 );
-    mainLayout->setSpacing( 0 );
-
-    QBoxLayout *toolbarSpacer = new QHBoxLayout;
-    toolbarSpacer->setContentsMargins( 0, 0, 0, 10 );
-    toolbarSpacer->addSpacing( 3 );
-    toolbarSpacer->addWidget( m_controlBar, 20);
-    toolbarSpacer->addSpacing( 3 );
-
-
-    QWidget *centralWidget = new QWidget( this );
+    connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks );
     
     addDockWidget( Qt::LeftDockWidgetArea, browsersDock );
     addDockWidget( Qt::LeftDockWidgetArea, contextDock );
-    addDockWidget( Qt::LeftDockWidgetArea, playlistDock );
+    addDockWidget( Qt::RightDockWidgetArea, playlistDock );
 
-    mainLayout->addWidget( m_statusbarArea);
-
-    setCentralWidget( centralWidget );
+    //setCentralWidget( m_contextWidget );
 
     //<Browsers>
     {

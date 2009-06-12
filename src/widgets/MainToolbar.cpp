@@ -47,7 +47,7 @@ MainToolbar::MainToolbar( QWidget * parent )
 {
     setObjectName( "MainToolbar" );
 
-    setContentsMargins( 0, 0, 0, 0 );
+    setContentsMargins( 3, 0, 3, 0 );
     setFixedHeight( 67 );
     setMinimumWidth( 600 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
