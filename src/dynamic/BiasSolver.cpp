@@ -660,7 +660,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
             // Decide whether we should 'accept' or 'reject' a bias.
             decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
-            //debug() << "decider is set to:" << decider << "movingWeights is:" << movingWeights[ i ];
+            debug() << "decider is set to:" << decider << "movingWeights is:" << movingWeights[ i ];
             if( decider < movingWeights[i] )
             {
                 debug() << "chose track from bias";

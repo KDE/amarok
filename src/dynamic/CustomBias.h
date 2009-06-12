@@ -65,8 +65,9 @@ class AMAROK_EXPORT CustomBiasFactory
  *  This is the object that the singleton CustomBias can register. A service, or anything
  *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
  */
-class AMAROK_EXPORT CustomBiasEntry
+class AMAROK_EXPORT CustomBiasEntry : public QObject
 {
+    Q_OBJECT
     public:
         CustomBiasEntry() {}
         virtual ~CustomBiasEntry() {}
@@ -116,6 +117,14 @@ class AMAROK_EXPORT CustomBiasEntry
         * See APIDOX for Bias.h for more explanation.
         */
         virtual CollectionFilterCapability* collectionFilterCapability() { return 0; }
+
+        double weight();
+
+    public slots:
+        void setWeight( int weight );
+        
+    private:
+        double m_weight;
 
 };
 
@@ -198,6 +207,9 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
     public:
         explicit CustomBiasEntryWidget( CustomBias*, QWidget* parent = 0 );
 
+    signals:
+        void weightChangedInt( int );
+        
     public slots:
         void refreshBiasFactories();
     

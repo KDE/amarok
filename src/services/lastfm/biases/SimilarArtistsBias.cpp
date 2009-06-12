@@ -294,6 +294,8 @@ Dynamic::SimilarArtistsBias::hasCollectionFilterCapability()
 Dynamic::CollectionFilterCapability*
 Dynamic::SimilarArtistsBias::collectionFilterCapability()
 {
+    DEBUG_BLOCK
+    debug() << "returning new cfb with weight:" << weight();
     return new Dynamic::LastFmCollectionFilterCapability( this );
 }
 
@@ -302,6 +304,11 @@ Dynamic::LastFmCollectionFilterCapability::propertySet()
 {
     debug() << "returning matching set for artist: " << m_bias->m_currentArtist << "of size:" << m_bias->m_savedArtists[ m_bias->m_currentArtist ].size();
     return m_bias->m_savedArtists[ m_bias->m_currentArtist ];
+}
+
+double Dynamic::LastFmCollectionFilterCapability::weight() const
+{
+    return m_bias->weight();
 }
 
 #include "SimilarArtistsBias.moc"

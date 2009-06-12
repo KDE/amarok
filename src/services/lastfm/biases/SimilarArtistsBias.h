@@ -44,7 +44,7 @@ class SimilarArtistsBiasFactory : public CustomBiasFactory
 };
 
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-class SimilarArtistsBias : public QObject, public CustomBiasEntry, public EngineObserver
+class SimilarArtistsBias : public CustomBiasEntry, public EngineObserver
 {
     Q_OBJECT
 public:
@@ -68,13 +68,6 @@ public:
 
     void update();
 
-
-public slots:
-    void weightChanged ( double weight )
-    {
-        m_weight = weight;
-    }
-
 private Q_SLOTS:
     void artistQueryDone();
     void updateReady ( QString collectionId, QStringList );
@@ -90,8 +83,6 @@ private:
     bool m_needsUpdating;
     QMutex m_mutex;
 
-    double m_weight;
-
     QMap< QString, QSet< QByteArray > > m_savedArtists; // populated as queries come in
     // we do some caching here so multiple
     // queries of the same artist are cheap
@@ -106,10 +97,7 @@ public:
 
     // re-implemented
     virtual const QSet<QByteArray>& propertySet();
-    virtual double weight() const
-    {
-        return m_bias->m_weight;
-    }
+    virtual double weight() const;
 
 
 private:

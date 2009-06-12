@@ -46,6 +46,8 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
             i18n( "This controls what portion of the playlist should match the criteria" ) );
     connect( m_weightSelection, SIGNAL( valueChanged( int ) ),
             this, SLOT( weightChanged( int ) ) );
+    connect( m_weightSelection, SIGNAL( valueChanged( int ) ),
+             this, SIGNAL( weightChangedInt(int) ) );
 
     m_fieldSelection = new KComboBox( frame );
     m_fieldSelection->setPalette( QApplication::palette() );
@@ -155,6 +157,19 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
     }
 }
 
+// CLASS CustomBiasEntry
+
+void
+Dynamic::CustomBiasEntry::setWeight(int weight)
+{
+    m_weight = (double)weight / 100;
+}
+
+double
+Dynamic::CustomBiasEntry::weight()
+{
+    return m_weight;
+}
 
 
 // CLASS CustomBias
@@ -173,7 +188,7 @@ Dynamic::CustomBias::CustomBias( Dynamic::CustomBiasEntry* entry, double weight 
     : m_currentEntry( entry )
     , m_weight( weight )
 {
-    //debug() << "CREATING NEW CUSTOM BIAS!!!";
+    debug() << "CREATING NEW CUSTOM BIAS!!! with:" << entry << weight;
 }
 
 Dynamic::CustomBias::~CustomBias()
@@ -189,6 +204,7 @@ Dynamic::CustomBias::widget( QWidget* parent )
 
     debug() << "custombias with weight: " << m_weight << "returning new widget";
     Dynamic::CustomBiasEntryWidget* w = new Dynamic::CustomBiasEntryWidget( this, parent );
+    connect( w, SIGNAL( weightChangedInt( int ) ), m_currentEntry, SLOT( setWeight( int ) ) );
     connect( this, SIGNAL( biasFactoriesChanged() ), w, SLOT( refreshBiasFactories() ) );
     return w;
 }
