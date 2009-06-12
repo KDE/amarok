@@ -50,6 +50,10 @@ BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category
 
         foreach( QString siblingName, siblingNames )
         {
+            //no point in adding ourselves to this menu
+            if ( siblingName == m_category->name() )
+                continue;
+            
             QAction * action = menu->addAction( siblingMap.value( siblingName )->prettyName() );
             connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
         }
