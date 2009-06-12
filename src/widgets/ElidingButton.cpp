@@ -29,7 +29,7 @@ ElidingButton::ElidingButton( const QString & text, QWidget * parent )
     , m_fullText( text )
     , m_isElided( false )
 {
-    setMinimumWidth( 20 );
+    setMinimumWidth( iconSize().width() );
 }
 
 ElidingButton::ElidingButton(const QIcon & icon, const QString & text, QWidget * parent)
@@ -37,7 +37,7 @@ ElidingButton::ElidingButton(const QIcon & icon, const QString & text, QWidget *
     , m_fullText( text )
     , m_isElided( false )
 {
-    setMinimumWidth( 20 );
+    setMinimumWidth( iconSize().width() );
 }
 
 ElidingButton::~ElidingButton()
@@ -70,7 +70,11 @@ void ElidingButton::resizeEvent( QResizeEvent * event )
     int width = event->size().width();
     int iconWidth = iconSize().width();
 
-    int textWidth = width - iconWidth;
+    int left, top, right, bottom;
+    getContentsMargins ( &left, &top, &right, &bottom );
+    int padding = left + right + 4;
+
+    int textWidth = width - ( iconWidth + padding );
 
     QFontMetrics fm( font() );
     QString elidedText = fm.elidedText( m_fullText, Qt::ElideRight, textWidth );
