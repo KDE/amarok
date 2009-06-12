@@ -15,7 +15,7 @@ VERSION 2.1.1
     * Added large source emblem in current track applet.
 
   CHANGES:
-    * Remove option to puirchase Magnatuen.com albums using a Credit Card as
+    * Removed option to purchase Magnatune.com albums using a Credit Card as
       this is unfortunately no longer supported by Magnatune.com. It is still
       possible to purchase albums using pre paid gift card codes, and all
       membership features still work.
