@@ -23,34 +23,39 @@
 #include "dbus/DBusQueryHelper.h"
 #include "Debug.h"
 
-#include <QUuid>
-
 class QueryMaker;
 
 CollectionDBusHandler::CollectionDBusHandler( QObject *parent )
     : QObject( parent )
+    , QDBusContext()
 {
     setObjectName("CollectionDBusHandler");
+    qDBusRegisterMetaType<VariantMapList>();
     
     new CollectionAdaptor( this );
-    QDBusConnection::sessionBus().registerObject("/Collection", this);
+    bool result = QDBusConnection::sessionBus().registerObject("/Collection", this);
+    debug() << "Register object: " << result;
 }
 
-QString
-CollectionDBusHandler::query( const QString &xmlQuery )
+VariantMapList
+CollectionDBusHandler::Query( const QString &xmlQuery )
 {
+    if( !calledFromDBus() )
+        return VariantMapList();
+
     QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
     
     //probably invalid XML
     if( !qm )
     {
         debug() << "Invalid XML query: " << xmlQuery;
-        return QString();
+        sendErrorReply( QDBusError::InvalidArgs, "Invalid XML: " + xmlQuery );
+        return VariantMapList();
     }
-        
-    const QString token = QUuid::createUuid().toString();
-    DBusQueryHelper *helper = new DBusQueryHelper( this, qm, token );
-    connect( helper, SIGNAL( queryResult( QString, QList<QMap<QString, QVariant> > ) ), this, SIGNAL( queryResult( QString, QList<QMap<QString, QVariant> > ) ) );
+
+    setDelayedReply( true );
+
+    new DBusQueryHelper( this, qm, connection(), message() );
     
-    return token;
+    return VariantMapList();
 }

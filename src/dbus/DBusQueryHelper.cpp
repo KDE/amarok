@@ -17,13 +17,17 @@
  */
  
 #include "DBusQueryHelper.h"
- 
+
+#include "debug.h"
 #include "collection/QueryMaker.h"
 #include "meta/MetaUtility.h"
+
+Q_DECLARE_METATYPE( VariantMapList )
  
-DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QString &token )
+DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg )
     : QObject( parent )
-    , m_token( token )
+    , m_connection( conn )
+    , m_message( msg )
 {
     qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Track );
@@ -45,6 +49,11 @@ DBusQueryHelper::slotResultReady( const QString &collectionId, const Meta::Track
 void
 DBusQueryHelper::slotQueryDone()
 {
+    DEBUG_BLOCK
     deleteLater();
-    emit queryResult( m_token, m_result );
+
+    QDBusMessage reply = m_message.createReply( QVariant::fromValue( m_result ) );
+    bool success = m_connection.send( reply );
+    if( !success )
+        debug() << "sending async reply failed";
 }

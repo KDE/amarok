@@ -19,13 +19,18 @@
 #ifndef COLLECTIONDBUSHANDLER_H
 #define COLLECTIONDBUSHANDLER_H
 
+#include <QDBusArgument>
+#include <QDBusContext>
 #include <QList>
 #include <QMap>
+#include <QMetaType>
 #include <QObject>
 #include <QString>
 #include <QVariant>
 
-class CollectionDBusHandler : public QObject
+typedef QList<QVariantMap> VariantMapList;
+
+class CollectionDBusHandler : public QObject, protected QDBusContext
 {
     Q_OBJECT
     Q_CLASSINFO( "Collection D-Bus Interface", "org.kde.amarok.Collection" )
@@ -40,11 +45,10 @@ class CollectionDBusHandler : public QObject
          * that uniquely identifies the query. It will also be the first parameter of the queryResult() signal
          * for the result of the query. Will return an empty string if the XML query is invalid.
          */
-        QString query( const QString &xmlQuery );
-        
-    signals:
-        void queryResult( const QString& token, const QList<QMap<QString, QVariant> > &result );
+    VariantMapList Query( const QString &xmlQuery );
         
 };
+
+Q_DECLARE_METATYPE( VariantMapList )
 
 #endif

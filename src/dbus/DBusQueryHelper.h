@@ -21,31 +21,33 @@
 
 #include "meta/Meta.h"
 
-#include<QList>
-#include<QMap>
-#include<QObject>
-#include<QString>
-
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QList>
+#include <QMap>
+#include <QObject>
+#include <QString>
+#include <QVariant>
 class QueryMaker;
+
+typedef QList<QVariantMap> VariantMapList;
 
 class DBusQueryHelper : public QObject
 {
     Q_OBJECT
     
     public:
-        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QString &token );
+        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg );
         
     private slots:
         void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );
         
         void slotQueryDone();
-    
-    signals:
-        void queryResult( const QString &token, const QList<QMap<QString, QVariant> > &result );
         
     private:
-        QString m_token;
-        QList<QMap<QString, QVariant> > m_result;
+        QDBusConnection m_connection;
+        QDBusMessage m_message;
+        VariantMapList m_result;
 };
 
 #endif
