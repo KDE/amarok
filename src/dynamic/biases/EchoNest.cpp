@@ -157,7 +157,8 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
                 {
                     Meta::TrackPtr t = The::playlistModel()->trackAt( i );
                     playlist << t;
-                    m_currentPlaylist << t->artist()->name();
+                    if( !m_currentPlaylist.contains( t->artist()->name() ) )
+                        m_currentPlaylist << t->artist()->name();
                 }
                 // first get any new tracks
                 foreach( Meta::TrackPtr track, playlist )
@@ -185,6 +186,7 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
                     if( !m_currentPlaylist.contains( name ) )
                         m_artistIds.remove( name );
                 }
+                debug() << "current playlist:" << m_currentPlaylist;
                 // save list of artists
             }
         }
@@ -369,7 +371,9 @@ Dynamic::EchoNestBias::updateReady( QString collectionId, QStringList uids )
         key = m_currentArtist;
     else // save as keyed to list of artists
         key = m_currentPlaylist.join( "|" );
-        
+
+    //debug() << "saving found similar tracks to key:" << key;
+    //debug() << "current playlist:" << m_currentPlaylist;
     m_savedArtists[ key ].clear();
     m_savedArtists[ key ].reserve( uids.size() );
     QByteArray uid;
@@ -515,6 +519,7 @@ Dynamic::EchoNestBias::selectionChanged( int which )
         m_currentOnly = false;
     else
         m_currentOnly = true;
+    engineNewTrackPlaying(); // refresh
 
 }
 
