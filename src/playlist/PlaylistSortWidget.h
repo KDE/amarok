@@ -20,6 +20,8 @@
 #ifndef AMAROK_PLAYLISTSORTWIDGET_H
 #define AMAROK_PLAYLISTSORTWIDGET_H
 
+#include "playlist/proxymodels/SortProxy.h"
+
 #include <KComboBox>
 #include <KHBox>
 
@@ -37,8 +39,9 @@ class SortWidget : public KHBox
 
     private slots:
         void applySortingScheme();
-        private:
+    private:
         KComboBox* m_sortCombo;
+        QList< SortScheme *> *m_schemeList;
 };
 
 }   //namespace Playlist
