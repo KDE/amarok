@@ -33,7 +33,7 @@ IpodCollectionFactory.
 #ifndef AMAROK_MEDIADEVICEMONITOR_H
 #define AMAROK_MEDIADEVICEMONITOR_H
 
-#include "MediaDeviceInfo.h"
+#include "collection/mediadevicecollection/support/MediaDeviceInfo.h"
 
 #include "amarok_export.h"
 
@@ -59,6 +59,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     void checkDevices(); // scans for supported devices
     void checkDevicesForMtp();
     void checkDevicesForIpod();
+    void checkDevicesForCd();
 
  //   void fetchDevices(); // emits device info for each device present
 
@@ -66,6 +67,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         void deviceRemoved( const QString &udi );
         void ipodDetected( const QString &mountPoint, const QString &udi );
         void mtpDetected( const QString &serial, const QString &udi );
+        void audioCdDetected( const QString &udi );
 
         void ipodReadyToConnect( const QString &mountpoint, const QString &udi );
         void ipodReadyToDisconnect( const QString &udi );
@@ -94,6 +96,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
         bool isIpod( const QString &udi );
         bool isMtp( const QString &udi );
+        bool isAudioCd( const QString &udi );
 
         
 

@@ -27,14 +27,29 @@
 
 #include <QObject>
 
+class AudioCdCollection;
+
 class AudioCdCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
     public:
-        AudioCdCollectionFactory() {};
+        AudioCdCollectionFactory();
         virtual ~AudioCdCollectionFactory() {};
 
         virtual void init();
+
+    private slots:
+
+        void audioCdAdded( const QString &uid );
+        void deviceRemoved( const QString &uid );
+
+    private:
+
+        QString m_currentUid;
+        AudioCdCollection * m_collection;
+            
+
+   
 };
 
 
@@ -54,6 +69,8 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     virtual KIcon icon() const;
+
+    void cdRemoved();
 
 public slots:
     void infoFetchComplete( KJob *job );

@@ -27,6 +27,7 @@
 //solid specific includes
 #include <solid/devicenotifier.h>
 #include <solid/device.h>
+#include <solid/opticaldisc.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
 #include <solid/portablemediaplayer.h>
@@ -77,6 +78,7 @@ MediaDeviceMonitor::checkDevices()
 
     checkDevicesForMtp();
     checkDevicesForIpod();
+    checkDevicesForCd();
 }
 
 void
@@ -113,6 +115,23 @@ MediaDeviceMonitor::checkDevicesForMtp()
             // HACK: Usability: Force auto-connection of device upon detection
             connectMtp( serial, udi );
             emit mtpDetected( serial, udi );
+        }
+    }
+}
+
+void MediaDeviceMonitor::checkDevicesForCd()
+{
+    DEBUG_BLOCK
+
+    QStringList udiList = getDevices();
+
+    /* poll udi list for supported devices */
+    foreach(const QString &udi, udiList )
+    {
+        debug() << "udi: " << udi;
+        if ( isAudioCd( udi ) )
+        {
+            emit audioCdDetected( udi );
         }
     }
 }
@@ -201,6 +220,28 @@ MediaDeviceMonitor::isMtp( const QString &udi )
     return pmp->supportedProtocols().contains( "mtp" );
 }
 
+bool MediaDeviceMonitor::isAudioCd(const QString & udi)
+{
+    DEBUG_BLOCK
+
+    Solid::Device device;
+
+    device = Solid::Device( udi );
+    if( device.is<Solid::OpticalDisc>() )
+    {
+        debug() << "OpticalDisc";
+        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+        if ( opt->availableContent() & Solid::OpticalDisc::Audio )
+        {
+            debug() << "AudioCd";
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 void
 MediaDeviceMonitor::connectIpod( const QString &mountpoint, const QString &udi )
 {
@@ -224,4 +265,7 @@ MediaDeviceMonitor::disconnectMtp( const QString &udi )
 {
     emit mtpReadyToDisconnect( udi );
 }
+
+
+
 

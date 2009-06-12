@@ -27,6 +27,7 @@
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
+#include <solid/opticaldisc.h>
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
@@ -80,8 +81,16 @@ MediaDeviceCache::refreshCache()
     {
         debug() << "Found Solid::DeviceInterface::StorageAccess with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+        
         Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
-        if( ssa )
+        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+
+        if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
+        {
+            m_type[ device.udi() ] = MediaDeviceCache::SolidAudioCdType;
+            m_name[ device.udi() ] = device.vendor() + " - " + device.product();
+        } 
+        else if( ssa )
         {
             if( !m_volumes.contains( device.udi() ) )
             {
@@ -121,12 +130,23 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     debug() << "Found new Solid device with udi = " << device.udi();
     debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
     Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
+
+    Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+
+            
     if( m_type.contains( udi ) )
     {
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
-    if( device.as<Solid::StorageDrive>() )
+
+    if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
+    {
+        debug() << "device is an Audio Cd";
+        m_type[udi] = MediaDeviceCache::SolidAudioCdType;
+        m_name[udi] = device.vendor() + " - " + device.product();
+    }
+    else if( device.as<Solid::StorageDrive>() )
     {
         debug() << "Storage drive found, will wait for the volume";
         return;

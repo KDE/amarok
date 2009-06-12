@@ -23,6 +23,7 @@
 #include "AudioCdQueryMaker.h"
 #include "covermanager/CoverFetcher.h"
 #include "Debug.h"
+#include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 
 #include <kio/job.h>
@@ -31,13 +32,50 @@
 AMAROK_EXPORT_PLUGIN( AudioCdCollectionFactory )
 
 using namespace Meta;
-        
+
+AudioCdCollectionFactory::AudioCdCollectionFactory()
+    : Amarok::CollectionFactory()
+    , m_collection( 0 )
+    , m_currentUid( QString() )
+{
+}
+
 void AudioCdCollectionFactory::init()
 {
     DEBUG_BLOCK
-    AudioCdCollection * collection = new AudioCdCollection();
-    emit newCollection( collection );
+    connect( MediaDeviceMonitor::instance(), SIGNAL( audioCdDetected( const QString & ) ), this, SLOT( audioCdAdded( const QString & ) ) );
+    connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), this, SLOT( deviceRemoved( const QString & ) ) );
 }
+
+void AudioCdCollectionFactory::audioCdAdded( const QString & uid )
+{
+    if ( m_collection )
+    {
+        delete m_collection;
+        m_collection = 0;
+    }
+
+    m_currentUid = uid;
+    m_collection = new AudioCdCollection();
+    emit newCollection( m_collection );
+}
+
+void AudioCdCollectionFactory::deviceRemoved( const QString & uid )
+{
+    DEBUG_BLOCK
+    debug() << "uid: " << uid;
+    debug() << "m_currentUid: " << m_currentUid;
+    if ( m_currentUid == uid )
+    {
+        m_collection->cdRemoved();
+        delete m_collection;
+        m_collection = 0;
+        m_currentUid = QString();
+    }
+}
+
+
+////////////////////////////
 
 AudioCdCollection::AudioCdCollection()
    : Collection()
@@ -211,6 +249,12 @@ KIcon AudioCdCollection::icon() const
 {
     return KIcon( "media-optical-audio");
 }
+
+void AudioCdCollection::cdRemoved()
+{
+    emit remove();
+}
+
 
 
 #include "AudioCdCollection.moc"
