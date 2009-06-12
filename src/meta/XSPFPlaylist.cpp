@@ -29,6 +29,7 @@
 #include "meta/stream/Stream.h"
 #include "meta/file/File.h"
 #include "PlaylistManager.h"
+#include "timecode/TimecodeMeta.h"
 
 #include <kurl.h>
 #include <KMessageBox>
@@ -185,7 +186,20 @@ XSPFPlaylist::tracks()
                     streamTrack->setAlbum( track.album );
                     streamTrack->setArtist( track.creator );
                 }
-            } 
+            }
+            else if ( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
+            {
+                Meta::TimecodeTrack * timecodeTrack = dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
+                if ( timecodeTrack )
+                { 
+                    timecodeTrack->beginMetaDataUpdate();
+                    timecodeTrack->setTitle( track.title );
+                    timecodeTrack->setAlbum( track.album );
+                    timecodeTrack->setArtist( track.creator );
+                    timecodeTrack->endMetaDataUpdate();
+                }
+            }
+            
             tracks << trackPtr;
         }
 
