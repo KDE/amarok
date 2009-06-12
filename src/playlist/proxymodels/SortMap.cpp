@@ -186,6 +186,31 @@ A A'   should be:
     //kAdaptiveStableSort( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
     //oh ffs this might be a bad idea after all
     //who says that the m_map before deleting was consistent with a scheme?
+
+    //NOTE: possible solution:
+    /*
+    I get an inconsistent n-tuple of codomain indexes, such as (5 2 3)
+    Why not just do a normal nlogn sort, but this time it's a simple sort that doesn't use
+    MultilevelLessThan() but just gives
+    1   5
+    2   2
+    3   4
+    4   1
+    5   3
+    ==>
+    1   5
+    2   2
+    3   3
+    sort wrt column II==>
+    2   1   2
+    3   2   3
+    1   3   5
+    sort wrt column I==>
+    1   3   5
+    2   1   2
+    3   2   3
+    ==> return column II
+    */
     m_sorted = 1;
 }
 
