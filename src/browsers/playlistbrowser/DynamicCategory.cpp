@@ -154,14 +154,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
     m_biasListView->setItemDelegate( m_biasDelegate );
 
-    m_vLayout->addWidget( m_onOffCheckbox );
-    m_vLayout->addWidget( m_repopulateButton );
-    m_vLayout->addWidget( presetLayout );
-    m_vLayout->addWidget( m_biasListView );
-
-    this->setLayout( m_vLayout );
-
-
     int index = DynamicModel::instance()->activePlaylistIndex();
 
     debug() << "Setting index: " << index;

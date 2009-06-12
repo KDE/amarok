@@ -59,8 +59,6 @@ namespace PlaylistBrowserNS {
 
             void saveOnExit();
             
-            QVBoxLayout* m_vLayout;
-
             QCheckBox *m_onOffCheckbox;
             QPushButton *m_repopulateButton;
 
