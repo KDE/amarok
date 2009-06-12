@@ -176,11 +176,15 @@ CollectionLocation::abort()
 void
 CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
+    DEBUG_BLOCK
     QMap<Meta::TrackPtr, KUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
         if( track->isPlayable() )
+        {
             urls.insert( track, track->playableUrl() );
+            debug() << "adding url " << track->playableUrl();
+        }
     }
 
     slotGetKIOCopyableUrlsDone( urls );

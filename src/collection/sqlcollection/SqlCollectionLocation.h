@@ -54,10 +54,13 @@ class SqlCollectionLocation : public CollectionLocation
         void slotJobFinished( KJob *job );
 
     private:
+        bool startNextJob();
+        
         QMap<QString, uint> updatedMtime( const QStringList &urls );
 
         SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
+        QMap<Meta::TrackPtr, KUrl> m_sources;
         bool m_overwriteFiles;
         QMap<KJob*, Meta::TrackPtr> m_jobs;
 };

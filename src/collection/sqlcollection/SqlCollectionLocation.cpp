@@ -173,76 +173,25 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
     }
     m_jobs.remove( job );
     job->deleteLater();
-    if( m_jobs.isEmpty() )
+    
+    if( !startNextJob() )
     {
         insertTracks( m_destinations );
         insertStatistics( m_destinations );
         m_collection->scanManager()->setBlockScan( false );
         slotCopyOperationFinished();
     }
+        
 }
 
 void
 SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are coyping stuff
-    bool jobsCreated = false;
-    foreach( const Meta::TrackPtr &track, sources.keys() )
-    {
-        KIO::FileCopyJob *job = 0;
-        KUrl dest = m_destinations[ track ];
-        dest.cleanPath();
-        KUrl src = sources[ track ];
-        src.cleanPath();
-        debug() << "copying from " << src << " to " << dest;
-        KIO::JobFlags flags = KIO::HideProgressInfo;
-        if( m_overwriteFiles )
-        {
-            flags |= KIO::Overwrite;
-        }
-        QFileInfo info( dest.pathOrUrl() );
-        QDir dir = info.dir();
-        if( !dir.exists() )
-        {
-            if( !dir.mkpath( "." ) )
-            {
-                warning() << "Could not create directory " << dir;
-                //TODO: might be shown to the user at some point
-                //i18n-ify
-                source()->transferError( track, "Could not create directory " + dir.absolutePath() );
-                continue;
-            }
-        }
-        if( src == dest) {
-            //no changes, so leave the database alone, and don't erase anything
-            source()->setMovedByDestination( track, false );
-            continue;
-        }
-        //we should only move it directly if we're moving within the same collection
-        else if( isGoingToRemoveSources() && source()->collection() == collection() )
-        {
-            job = KIO::file_move( src, dest, -1, flags );
-            source()->setMovedByDestination( track, true );  //remove old location from tracks table
-        }
-        else
-        {
-            //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            job = KIO::file_copy( src, dest, -1, flags );
-        }
-        if( job )   //just to be safe
-        {
-            connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
-            QString name = track->prettyName();
-            if( track->artist() )
-                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
-            m_jobs.insert( job, track );
-            job->start();
-            jobsCreated = true;
-        }
-    }
-    if( !jobsCreated ) //this signal needs to be called no matter what, even if there are no job finishes to call it
+    m_sources = sources;
+
+    if( !startNextJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
         slotCopyOperationFinished();
 }
 
@@ -344,6 +293,67 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
                     QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
         m_collection->insert( insert.arg( data ), "statistics" );
     }
+}
+
+bool SqlCollectionLocation::startNextJob()
+{
+    DEBUG_BLOCK
+    if ( !m_sources.isEmpty() )
+    {
+        Meta::TrackPtr track = m_sources.keys().first();
+        KUrl src = m_sources.take( track );
+        
+        bool jobsCreated = false;
+        KIO::FileCopyJob *job = 0;
+        KUrl dest = m_destinations[ track ];
+        dest.cleanPath();
+        
+        src.cleanPath();
+        debug() << "copying from " << src << " to " << dest;
+        KIO::JobFlags flags = KIO::HideProgressInfo;
+        if( m_overwriteFiles )
+        {
+            flags |= KIO::Overwrite;
+        }
+        QFileInfo info( dest.pathOrUrl() );
+        QDir dir = info.dir();
+        if( !dir.exists() )
+        {
+            if( !dir.mkpath( "." ) )
+            {
+                warning() << "Could not create directory " << dir;
+                return false;
+            }
+        }
+        if( src == dest) {
+        //no changes, so leave the database alone, and don't erase anything
+            source()->setMovedByDestination( track, false );
+            return false;
+        }
+    //we should only move it directly if we're moving within the same collection
+        else if( isGoingToRemoveSources() && source()->collection() == collection() )
+        {
+            job = KIO::file_move( src, dest, -1, flags );
+            source()->setMovedByDestination( track, true );  //remove old location from tracks table
+        }
+        else
+        {
+        //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
+            job = KIO::file_copy( src, dest, -1, flags );
+        }
+        if( job )   //just to be safe
+        {
+            connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
+            QString name = track->prettyName();
+            if( track->artist() )
+                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+
+            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
+            m_jobs.insert( job, track );
+            return true;
+        }
+    }
+    return false;
 }
 
 #include "SqlCollectionLocation.moc"
