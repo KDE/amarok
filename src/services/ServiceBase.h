@@ -20,6 +20,7 @@
 #ifndef AMAROKSERVICEBASE_H
 #define AMAROKSERVICEBASE_H
 
+#include "browsers/BrowserCategory.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "Amarok.h"
@@ -149,7 +150,7 @@ A composite widget used as a base for building service browsers. It contains a h
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT ServiceBase : public KVBox
+class AMAROK_EXPORT ServiceBase : public BrowserCategory
 {
     Q_OBJECT
 
@@ -170,48 +171,6 @@ public:
      * @return The name of the service.
      */
     QString name() const;
-
-    /**
-     * Get the user visible name of this service.
-     * @return The name of the service.
-     */
-    QString prettyName() const;
-
-    /**
-     * Set a short description string for this service. This string is used to describe the service in the service browser.
-     * @param shortDescription The description.
-     */
-    void setShortDescription( const QString &shortDescription );
-
-    /**
-     * Get the short description of this service.
-     * @return The short description.
-     */
-    QString shortDescription() const;
-
-    /**
-     * Set a long description of the service. This is for allowing users to get more detailed info a about a service.
-     * @param longDescription The long description.
-     */
-    void setLongDescription( const QString &longDescription );
-
-    /**
-     * Get the long description of this service.
-     * @return The long description.
-     */
-    QString longDescription() const;
-
-    /**
-     * Set the icon that will be used to identify this service.
-     * @param icon The icon to use.
-     */
-    void setIcon( const QIcon &icon );
-
-    /**
-     * Get the icon of this service.
-     * @return The icon
-     */
-    QIcon icon() const;
 
     /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.

@@ -99,7 +99,7 @@ void ServiceFactory::slotServiceReady()
 ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
-        : KVBox( 0 )
+    : BrowserCategory( prettyName )
         , m_contentView ( 0 )
         , m_parentFactory( parent )
         , m_polished( false )
@@ -198,55 +198,10 @@ ServiceBase::name() const
     return m_name;
 }
 
-QString
-ServiceBase::prettyName() const
-{
-    if( !m_prettyName.isEmpty() )
-      return m_prettyName;
-    return m_name;
-}
-
 ServiceFactory*
 ServiceBase::parent() const
 {
     return m_parentFactory;
-}
-
-void
-ServiceBase::setShortDescription( const QString &shortDescription )
-{
-    m_shortDescription = shortDescription;
-}
-
-QString
-ServiceBase::shortDescription( ) const
-{
-    return m_shortDescription;
-}
-
-void
-ServiceBase::setLongDescription( const QString &longDescription )
-{
-    m_longDescription = longDescription;
-}
-
-QString
-ServiceBase::longDescription() const
-{
-    return m_longDescription;
-}
-
-void
-ServiceBase::setIcon( const QIcon &icon )
-{
-    DEBUG_BLOCK
-    m_icon = icon;
-}
-
-QIcon
-ServiceBase::icon() const
-{
-    return m_icon;
 }
 
 void
