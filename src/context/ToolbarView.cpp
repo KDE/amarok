@@ -268,7 +268,35 @@ Context::ToolbarView::installApplets()
     if (engine.init("amarokapplets.knsrc")) {
         KNS::Entry::List entries = engine.downloadDialogModal(this);
 
-        if (entries.size() > 0) {
+        if (entries.size() > 0)
+        {
+            
+            // go through and manually install/uninstall
+            foreach( KNS::Entry* entry, entries )
+            {
+                if( entry->status() == KNS::Entry::Installed )
+                {
+                    debug() << "got an entry called: " << entry->name().translated( "en" ) << "with installed files:" << entry->installedFiles();
+
+                    QString packageRoot = "plasma/plasmoids/";
+                    packageRoot = KStandardDirs::locateLocal("data", packageRoot);
+
+                    Plasma::PackageStructure* installer = new Plasma::PackageStructure();
+                    installer->setServicePrefix( "amarok-context-applet-" );
+                    // always uninstall before installing, as it doesn't auto overwrite.
+                    //installer->setPath( appletFile );
+                    Plasma::PackageMetadata metadata = installer->metadata();
+                    installer->uninstallPackage( metadata.pluginName(), packageRoot );
+                    if( !installer->installPackage( entry->installedFiles()[ 0 ], packageRoot ) )
+                    {
+                        debug() << "ERROR in trying to install the package.";
+                    }
+                } else if( entry->status() == KNS::Entry::Deleted )
+                {
+                    debug() << "got an entry called: " << entry->name().translated( "en" ) << "with uninstalled files:" << entry->uninstalledFiles();
+                }
+
+            }
         // do something with the modified entries here if you want
 
             // such as rescaning your data folder or whatnot

@@ -1,9 +1,6 @@
 [KNewStuff2]
 ProvidersUrl=http://download.kde.org/khotnewstuff/amarokapplets-providers.xml
-InstallationCommand=plasmapkg -i %f
-UninstallationCommand=plasmapkg -r %f
-Uncompress=always
+Uncompress=never
 Checksumpolicy=ifpossible
 SignaturePolicy=ifpossible
 StandardResource=tmp
-
