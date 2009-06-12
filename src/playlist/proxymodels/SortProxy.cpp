@@ -56,7 +56,8 @@ SortProxy::SortProxy()
     connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( onDataChanged( const QModelIndex&, const QModelIndex& ) ) );
     connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( onRowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( onRowsRemoved( const QModelIndex&, int, int ) ) );
-    
+    // ^ rowsRemoved is currently used as rowsRemoved( start, start ), one item at a time
+
     connect( m_belowModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
     connect( m_belowModel, SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
@@ -119,14 +120,14 @@ SortProxy::updateSortMap( SortScheme *scheme)
 void
 SortProxy::onDataChanged( const QModelIndex& start, const QModelIndex& end )
 {
-    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );
+    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );   //see on RowsRemoved
 }
 
 void
 SortProxy::onRowsInserted( const QModelIndex& idx, int start, int end )
 {
     m_map->insertRows( start, end );
-    emit rowsInserted( mapFromSource( idx ), rowFromSource( start ), rowFromSource( end ) );
+    emit rowsInserted( mapFromSource( idx ), rowFromSource( start ), rowFromSource( end ) );    //see onRowsRemoved
 }
 
 void
@@ -134,6 +135,7 @@ SortProxy::onRowsRemoved( const QModelIndex& idx, int start, int end )
 {
     m_map->deleteRows( start, end );
     emit rowsRemoved( mapFromSource( idx ), rowFromSource( start ), rowFromSource( end ) );
+    //this is NOT GOOD because the removed tracks might not be a contiguous list in a sorted model
 }
 
 // Pass-through methods, basically identical to those in Playlist::FilterProxy, that pretty

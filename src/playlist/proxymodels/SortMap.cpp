@@ -84,13 +84,37 @@ void
 SortMap::deleteRows( int startRowInSource, int endRowInSource )
 {
     debug() << "Removing from the map sourceRows from " << startRowInSource << " to " << endRowInSource;
-    for( int i = startRowInSource; i <= endRowInSource; i++ )
+    QList< int >::iterator startIterator = m_map->begin();
+    QList< int >::iterator endIterator = m_map->begin();
+    startIterator += startRowInSource;
+    endIterator += endRowInSource + 1;  //erase() wants the first item that *won't* be deleted as the end row
+    m_map->erase( startIterator, endIterator ); //yay this should be O(1)
+    // Let's now restore codomain elements consistency.
+    // We have to make it so that the set of keys has the same elements as the set of values,
+    // and the existing order has to be preserved.  -- Téo
+    for( startIterator = m_map->begin(); startIterator != m_map->end(); ++startIterator )
     {
-        m_map->removeAt( i );
-        debug() << "          Removing from map row=" << i;
-        // this is no good, I need to keep the values an uninterrupted sequence of integers between 0 and m_map->length() too!!!
-        // the complexity of this is going to hell :(
+        if( *startIterator >= *endIterator )    //if the codomain index is 
+        {
+/*
+A A'
+0 1
+1 3
+2 5
+3 2
+4 0
+5 4
+what if I remove [3..4]?
+A A'   should be:
+0 1     0   (-1)
+1 3     1   (-2)
+2 5     3   (-2)
+3 4     2   (-2)
+*/
+        }
     }
+        // this is no good, I need to keep the values an uninterrupted sequence of integers between 0 and m_map->length() too!!!
+        //NOTE TO SELF: and if I just use a sorting algorithm that does well with partially sorted lists (adaptive sort)? Could be almost O(n).
 }
 
 bool
