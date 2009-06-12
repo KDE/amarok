@@ -39,8 +39,8 @@ class SimilarArtistsBiasFactory : public CustomBiasFactory
         
         virtual QString name() const;
         virtual QString pluginName() const;
-        virtual CustomBiasEntry* newCustomBias();
-        virtual CustomBiasEntry* newCustomBias( QDomElement e );
+        virtual CustomBiasEntry* newCustomBias( double weight );
+        virtual CustomBiasEntry* newCustomBias( QDomElement e, double weight );
 };
 
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
@@ -48,7 +48,7 @@ class SimilarArtistsBias : public CustomBiasEntry, public EngineObserver
 {
     Q_OBJECT
 public:
-    SimilarArtistsBias();
+    SimilarArtistsBias( double weight );
     ~SimilarArtistsBias();
 
     // reimplemented from CustomBiasEntry

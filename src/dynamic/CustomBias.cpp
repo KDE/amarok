@@ -101,7 +101,7 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
         return;
     }
 
-    Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBias();
+    Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBias( m_cbias->weight() );
     
     QWidget* entryConfig = chosen->configWidget( this );
     if( !entryConfig )
@@ -167,6 +167,11 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
 }
 
 // CLASS CustomBiasEntry
+Dynamic::CustomBiasEntry::CustomBiasEntry( double wieght )
+    : m_weight( wieght )
+{
+
+}
 
 void
 Dynamic::CustomBiasEntry::setWeight(int weight)
@@ -316,8 +321,7 @@ Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasFactory* entry )
         {
             debug() << "found entry loaded without proper custombiasentry. fixing now, with  old weight of" << s_failedMap[ name ]->weight() ;
             //  need to manually set the weight, as we set it on the old widget which is now being thrown away
-            Dynamic::CustomBiasEntry* cbe = entry->newCustomBias( s_failedMapXml[ name ]);
-            cbe->setWeight( s_failedMap[ name ]->weight() * 100 );
+            Dynamic::CustomBiasEntry* cbe = entry->newCustomBias( s_failedMapXml[ name ], s_failedMap[ name ]->weight() );
             s_failedMap[ name ]->setCurrentEntry( cbe );
             s_failedMap.remove( name );
             s_failedMapXml.remove( name );
@@ -360,10 +364,11 @@ Dynamic::CustomBias::fromXml(QDomElement e)
                 if( factory->pluginName() == pluginName )
                 {
                     debug() << "found matching bias type! creating :D";
-                    return createBias(  factory->newCustomBias( biasNode.firstChild().toElement() ), weight );
+                    return createBias(  factory->newCustomBias( biasNode.firstChild().toElement(), weight ), weight );
                 }
             }
             // didn't find a factory for the bias, but we at leasst get a weight, so set that and remember
+            debug() << "size of s_failedMap:" << s_failedMap.keys().size();
             Dynamic::CustomBias* b = createBias( 0, weight );
             s_failedMap[ pluginName ] = b;
             s_failedMapXml[ pluginName ] = biasNode.firstChild().toElement();

@@ -51,13 +51,13 @@ class AMAROK_EXPORT CustomBiasFactory
         /**
          * Create the custom bias. The caller takes owner of the pointer
          */
-        virtual CustomBiasEntry* newCustomBias() = 0;
+        virtual CustomBiasEntry* newCustomBias( double weight ) = 0;
 
         /**
          * Creates a new custom bias from the saved settings in the xml doc.
          * The XML should be saved in CustomBiasEntry::xml().
          */
-        virtual CustomBiasEntry* newCustomBias( QDomElement e ) = 0;
+        virtual CustomBiasEntry* newCustomBias( QDomElement e , double weight ) = 0;
 
 };
 
@@ -69,7 +69,7 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
 {
     Q_OBJECT
     public:
-        CustomBiasEntry() {}
+        CustomBiasEntry( double wieght );
         virtual ~CustomBiasEntry() {}
 
         /**
@@ -121,6 +121,7 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
         double weight();
 
     public slots:
+        // takes an int 0-100 as it is connected to the slider
         void setWeight( int weight );
         
     private:

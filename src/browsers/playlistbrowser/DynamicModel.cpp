@@ -298,17 +298,18 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
         QDomElement e = m_savedPlaylistsRoot.childNodes().at(i).toElement();
         if( e.tagName() == "playlist" )
         {
-            Dynamic::DynamicPlaylistPtr newPlaylist( Dynamic::BiasedPlaylist::fromXml(e) );
-            if( newPlaylist )
+            // we first need to make sure we didn't auto-restore this from last exit
+            if( !m_playlistHash.contains( Dynamic::BiasedPlaylist::nameFromXml( e ) ) )
             {
-                if( !m_playlistHash.keys().contains( newPlaylist->title() ) ) // we may have restored this from last exit, don't duplicate
+                Dynamic::DynamicPlaylistPtr newPlaylist( Dynamic::BiasedPlaylist::fromXml(e) );
+                if( newPlaylist )
                 {
                     insertPlaylist( newPlaylist );
                     m_playlistElements.append( e );
                 }
+                else
+                    m_savedPlaylistsRoot.removeChild( e );
             }
-            else
-                m_savedPlaylistsRoot.removeChild( e );
         }
         // otherwise it shouldn't exist
         else
@@ -495,7 +496,8 @@ PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
     insertPlaylist( playlist );
     m_playlistElements.append( QDomElement() );
     m_activePlaylist = m_defaultPlaylist = 0;
-    
+
+#if 0
     QFile file( Amarok::saveLocation() + "dynamic_current.xml" );
     if( !file.open( QIODevice::ReadWrite ) )
     {
@@ -540,6 +542,7 @@ PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
             }
         }
     }
+#endif
 }
 
 void
@@ -551,11 +554,16 @@ PlaylistBrowserNS::DynamicModel::removeActive()
         return;
 
     beginRemoveRows( QModelIndex(), m_activePlaylist, m_activePlaylist );
-        
+
+    debug() << "playlistHash has keys:" << m_playlistHash.keys() << "playlistList has size:" << m_playlistList.size() << "m_activePlaylist:" << m_activePlaylist;
     m_playlistHash.remove( m_playlistList.takeAt( m_activePlaylist )->title() );
     if( !m_activeUnsaved )
     {
+        debug() << "size of m_playlistElements:" <<  m_playlistElements.size();
+        debug() << "one we are removing:" << m_playlistElements[ m_activePlaylist ].text();
+        //debug() << m_savedPlaylists.toString();
         m_savedPlaylistsRoot.removeChild( m_playlistElements.takeAt( m_activePlaylist ) );
+        //debug() << m_savedPlaylists.toString();
         savePlaylists();
     }
 

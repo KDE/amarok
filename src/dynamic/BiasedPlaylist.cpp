@@ -61,6 +61,17 @@ Dynamic::BiasedPlaylist::fromXml( QDomElement e )
     return new Dynamic::BiasedPlaylist( title, biases );
 }
 
+QString
+Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
+{
+    if( e.tagName() != "playlist" )
+        return 0;
+
+    QString title = e.attribute( "title" );
+
+    return title;
+}
+
 
 Dynamic::BiasedPlaylist::BiasedPlaylist(
         QString title,

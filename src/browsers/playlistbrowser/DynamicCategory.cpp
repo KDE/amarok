@@ -249,6 +249,7 @@ DynamicCategory::playlistCleared() // SLOT
 void
 DynamicCategory::playlistSelectionChanged( int index )
 {
+    DEBUG_BLOCK
     Dynamic::DynamicPlaylistPtr playlist =
         DynamicModel::instance()->setActivePlaylist( index );
 

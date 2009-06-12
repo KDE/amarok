@@ -58,26 +58,26 @@ Dynamic::SimilarArtistsBiasFactory::pluginName() const
 
 
 Dynamic::CustomBiasEntry*
-Dynamic::SimilarArtistsBiasFactory::newCustomBias()
+Dynamic::SimilarArtistsBiasFactory::newCustomBias( double weight )
 {
     debug() << "CREATING SIMILAR BIAS";
-    return new SimilarArtistsBias();
+    return new SimilarArtistsBias( weight );
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::SimilarArtistsBiasFactory::newCustomBias(QDomElement e)
+Dynamic::SimilarArtistsBiasFactory::newCustomBias( QDomElement e, double weight )
 {
     // we don't save anything, so just load a fresh one
     Q_UNUSED( e )
     debug() << "CREATING SIMILAR BIAS 2";
-    return new SimilarArtistsBias();
+    return new SimilarArtistsBias( weight );
 }
 
 
 /// class SimilarArtistsBias 
 
-Dynamic::SimilarArtistsBias::SimilarArtistsBias()
-    : Dynamic::CustomBiasEntry()
+Dynamic::SimilarArtistsBias::SimilarArtistsBias( double weight )
+    : Dynamic::CustomBiasEntry( weight )
     , EngineObserver( The::engineController() )
     , m_artistQuery( 0 )
     , m_qm( 0 )
