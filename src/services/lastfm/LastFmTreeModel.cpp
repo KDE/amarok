@@ -23,11 +23,11 @@
 
 #include "AvatarDownloader.h"
 #include "CollectionManager.h"
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/types/Tag.h>
-#include <lastfm/core/WeightedStringList.h>
+
+#include <lastfm/WsRequestBuilder>
+#include <lastfm/WsReply>
+#include <lastfm/WsKeys>
+#include <lastfm/Tag>
 
 #include <KIcon>
 #include <KLocale>
@@ -65,7 +65,7 @@ LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
-    foreach( const CoreDomElement &e, reply->lfm() [ "neighbours" ].children ( "user" ) )
+    foreach( const WsDomElement &e, reply->lfm() [ "neighbours" ].children ( "user" ) )
     {
         QString name = e[ "name" ].text();
         mNeighbors << name;
@@ -88,7 +88,7 @@ LastFmTreeModel::slotAddFriends ( WsReply* reply )
     DEBUG_BLOCK
     // iterate through each friend
     QMap<QString, QString> avatarlist;
-    foreach( const CoreDomElement &e, reply->lfm() [ "friends" ].children ( "user" ) )
+    foreach( const WsDomElement &e, reply->lfm() [ "friends" ].children ( "user" ) )
     {
         QString name = e[ "name" ].text();
         mFriends << name;
@@ -112,7 +112,7 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
     WeightedStringList list;
-    foreach( const CoreDomElement &e, reply->lfm() [ "topartists" ].children ( "artist" ) )
+    foreach( const WsDomElement &e, reply->lfm() [ "topartists" ].children ( "artist" ) )
     {
         QString name = e[ "name" ].text();
         QString weight = e[ "playcount" ].text();
@@ -147,7 +147,11 @@ LastFmTreeModel::slotAddTags ( WsReply* reply )
 {
     DEBUG_BLOCK
     mTags.clear();
-    sortTags ( Tag::list ( reply ), Qt::DescendingOrder ) ;
+    QMap< int, QString > listWithWeights = lastfm::Tag::list ( reply );
+    WeightedStringList weighted;
+    foreach( int w, listWithWeights.keys() )
+        weighted << WeightedString( listWithWeights[ w ], w );
+    sortTags ( weighted, Qt::DescendingOrder ) ;
     emitRowChanged(LastFm::MyTags);
     reply->deleteLater();
 }

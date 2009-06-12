@@ -1,5 +1,5 @@
 
-add_subdirectory( lastfm )
+#add_subdirectory( lastfm )
 
 include_directories(
         ../
@@ -9,13 +9,12 @@ include_directories(
         ../../statusbar
         ../../widgets
         ../../context
-        liblastfm/
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
         #${LIBLASTFM_INCLUDE_DIR}/.. # so lastfm/foo/bar.h references work
-        #${LIBLASTFM_INCLUDE_DIR}
+        ${LIBLASTFM_INCLUDE_DIR}
         )
 
 ########### next target ###############
@@ -48,7 +47,7 @@ include_directories(
         target_link_libraries(amarok_service_lastfm
             amaroklib
             amarokpud
-            amarok_service_liblastfm
+            ${LIBLASTFM_LIBRARY}
             ${KDE4_KDECORE_LIBS}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
@@ -80,7 +79,7 @@ include_directories(
 
         target_link_libraries( kcm_amarok_service_lastfm
             amaroklib
-            amarok_service_liblastfm
+            ${LIBLASTFM_LIBRARY}
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KUTILS_LIBS}
             ${KDE4_KIO_LIBS}

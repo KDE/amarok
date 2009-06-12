@@ -71,7 +71,7 @@ ScrobblerAdapter::engineNewTrackPlaying()
         // TODO also set fingerprint... whatever that is :)
         // m_current.setFingerprintId( qstring );
         
-        m_current.setSource( isRadio ? Track::LastFmRadio : Track::Player );
+        m_current.setSource( isRadio ? lastfm::Track::LastFmRadio : lastfm::Track::Player );
         
 
         if( !m_current.isNull() )
@@ -82,7 +82,7 @@ ScrobblerAdapter::engineNewTrackPlaying()
             // When playing Last.fm Radio, we need to submit twice, once in Radio mode and once in Player mode
             // TODO check with mxcl if this is still required
             if( isRadio ) {
-                m_current.setSource( Track::Player );
+                m_current.setSource( lastfm::Track::Player );
                 m_scrobbler->nowPlaying( m_current );
             }
         }
@@ -114,7 +114,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
         m_current.setArtist( track->artist()->name() );
         m_current.stamp();
         
-        m_current.setSource( Track::NonPersonalisedBroadcast );
+        m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
 
         if( !m_current.isNull() )
         {
@@ -183,7 +183,7 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
 
     if( track )
     {
-        MutableTrack trackInfo;
+        lastfm::MutableTrack trackInfo;
         trackInfo.setTitle( track->name() );
         if( track->artist() )
             trackInfo.setArtist( track->artist()->name() );
@@ -214,7 +214,7 @@ ScrobblerAdapter::statusChanged( int statusCode, QVariant /*data*/ )
 void
 ScrobblerAdapter::resetVariables()
 {
-    m_current = MutableTrack();
+    m_current = lastfm::MutableTrack();
     m_totalPlayed = m_lastPosition = 0;
 }
 

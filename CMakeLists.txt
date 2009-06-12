@@ -53,6 +53,11 @@ if( WITH_PLAYER )
     macro_optional_find_package(Strigi)
     macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
 
+    macro_optional_find_package(LibLastFm)
+    if(LIBLASTFM_FOUND)
+        macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling song submissions" FALSE "0.2" "" )
+    endif(LIBLASTFM_FOUND)
+    
     macro_optional_find_package(Ipod)
     if(IPOD_FOUND)
         macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_0_7)

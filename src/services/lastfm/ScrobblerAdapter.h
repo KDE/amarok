@@ -18,8 +18,8 @@
 #include "EngineObserver.h"
 #include "meta/Meta.h"
 
-#include <lastfm/Scrobbler.h>
-#include <lastfm/types/Track.h>
+#include <lastfm/Scrobbler>
+#include <lastfm/Track>
 
 #include <QVariant>
 
@@ -51,7 +51,7 @@ private:
     void checkScrobble();
 
     Scrobbler *m_scrobbler;
-    MutableTrack m_current;
+    lastfm::MutableTrack m_current;
     long m_lastPosition;
     uint m_totalPlayed;
     QString m_clientId;

@@ -25,7 +25,7 @@
 
 #include <kdemacros.h>
 
-#include "lastfm/ws/WsAccessManager.h"
+#include "lastfm/WsAccessManager"
 
 #include <KDE/KIO/MetaData>
 

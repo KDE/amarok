@@ -40,10 +40,10 @@
 #include <KSharedPtr>
 #include <KStandardDirs>
 
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/types/Track.h>
+#include <lastfm/WsKeys>
+#include <lastfm/WsReply>
+#include <lastfm/WsRequestBuilder>
+#include <lastfm/Track>
 
 namespace LastFm {
 
@@ -65,7 +65,7 @@ Track::Track( const QString &lastFmUri )
     init();
 }
 
-Track::Track( ::Track track )
+Track::Track( lastfm::Track track )
     : QObject()
     , Meta::Track()
     , d( new Private() )
@@ -323,7 +323,7 @@ Track::collection() const
 }
 
 void
-Track::setTrackInfo( const ::Track &track )
+Track::setTrackInfo( const lastfm::Track &track )
 {
     d->setTrackInfo( track );
 }
@@ -420,7 +420,7 @@ Track::love()
     DEBUG_BLOCK
 
     debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
-    WsReply* reply = MutableTrack( d->lastFmTrack ).love();
+    WsReply* reply = lastfm::MutableTrack( d->lastFmTrack ).love();
     connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
 }
 
@@ -428,7 +428,7 @@ void
 Track::ban()
 {
     DEBUG_BLOCK
-    WsReply* reply = MutableTrack( d->lastFmTrack ).ban();
+    WsReply* reply = lastfm::MutableTrack( d->lastFmTrack ).ban();
     connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
     emit( skipTrack() );
 

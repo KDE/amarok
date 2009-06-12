@@ -21,7 +21,9 @@
 #define LASTFMTREEMODEL_H
 
 #include "Meta.h"
-#include <lastfm/types/User.h>
+#include "WeightedStringList.h"
+
+#include <lastfm/User>
 
 #include <QAbstractItemModel>
 #include <QHash>
@@ -84,11 +86,14 @@ enum SortOrder
     AscendingOrder,
     DescendingOrder
 };
+
+
 }
+
 class LastFmTreeItem;
 class KUrl;
 class WsReply;
-class WeightedStringList;
+
 
 class LastFmTreeModel : public QAbstractItemModel
 {
@@ -129,7 +134,7 @@ private:
     LastFmTreeItem *mMyTopArtists;
 
     QString mUserName;
-    AuthenticatedUser mUser;
+    lastfm::AuthenticatedUser mUser;
 
     QStringList mFriends;
     QStringList mNeighbors;

@@ -17,67 +17,32 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Tag.h"
-#include "User.h"
-#include "../core/CoreUrl.h"
-#include "../ws/WsRequestBuilder.h"
+#ifndef LASTFM_WEIGHTED_STRING_H
+#define LASTFM_WEIGHTED_STRING_H
 
-QUrl
-Tag::www() const
+#include <QString>
+
+
+class WeightedString : public QString
 {
-	return CoreUrl( "http://www.last.fm/tag/" + CoreUrl::encode( m_name ) ).localised();
-}
+    float m_weighting;
+
+public:
+    WeightedString()
+	{
+		m_weighting = -1.0f;
+	}
+    
+	explicit WeightedString( const QString& name, float w = -1.0f ) : QString( name ), m_weighting( w ) 
+	{}
+
+    int weighting() const { return m_weighting; }
+
+	bool operator<( const WeightedString& that ) const
+	{
+		return this->weighting() < that.weighting();
+	}
+};
 
 
-QUrl
-Tag::www( const User& user ) const
-{
-	return CoreUrl( "http://www.last.fm/" + CoreUrl::encode( user ) + "/tags/" + CoreUrl::encode( m_name ) ).localised();
-}
-
-
-WsReply*
-Tag::search() const
-{
-	return WsRequestBuilder( "tag.search" ).add( "tag", m_name ).get();
-}
-
-
-QStringList /* static */
-Tag::search( WsReply* r )
-{
-	QStringList tags;
-    try {
-        foreach( CoreDomElement e, r->lfm().children( "tag" ))
-            tags += e["name"].text();
-    }
-    catch( CoreDomElement::Exception& e )
-    {
-        qWarning() << e;
-    }    
-	return tags;
-}
-
-
-WeightedStringList //static
-Tag::list( WsReply* r )
-{
-	WeightedStringList tags;
-    try
-    {
-        foreach (CoreDomElement e, r->lfm().children( "tag" ))
-        {
-            int const weight = e.optional("count").text().toInt();
-            
-            // we toLower always as otherwise it is ugly mixed case, as first
-            // ever tag decides case, and Last.fm is case insensitive about it 
-            // anyway
-            tags += WeightedString( e["name"].text().toLower(), weight );
-        }
-    }
-    catch( CoreDomElement::Exception& e)
-    {
-        qWarning() << e;
-    }
-    return tags;
-}
+#endif

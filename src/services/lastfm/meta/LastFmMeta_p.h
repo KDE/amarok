@@ -26,11 +26,11 @@
 #include "amarokconfig.h"
 #include "meta/Meta.h"
 
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/types/Track.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/radio/Tuner.h>
+#include <lastfm/WsKeys>
+#include <lastfm/Track>
+#include <lastfm/WsReply>
+#include <lastfm/WsRequestBuilder>
+#include <lastfm/RadioTuner>
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -53,7 +53,7 @@ class Track::Private : public QObject
 
     public:
         Track *t;
-        ::Track lastFmTrack; // this is how we love, ban, etc
+        lastfm::Track lastFmTrack; // this is how we love, ban, etc
         QUrl trackPath;
         QUrl lastFmUri;
 
@@ -88,7 +88,7 @@ class Track::Private : public QObject
 
         void notifyObservers();
 
-        void setTrackInfo( const ::Track &trackInfo )
+        void setTrackInfo( const lastfm::Track &trackInfo )
         {
             lastFmTrack = trackInfo;
             artist = trackInfo.artist();

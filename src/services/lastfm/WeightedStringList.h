@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   This program is distributed in the hope that itw ill be useful,       *
+ *   This program is distributed in the hope that it will be useful,       *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU General Public License for more details.                          *
@@ -17,28 +17,54 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef NDIS_EVENTS_H
-#define NDIS_EVENTS_H
+#ifndef LASTFM_WEIGHTED_STRING_LIST_H
+#define LASTFM_WEIGHTED_STRING_LIST_H
 
-#include <windows.h>
-#include <atlbase.h>
-#include <WbemCli.h>
+#include "WeightedString.h"
 
-class NdisEvents
+#include <QtAlgorithms>
+#include <QStringList>
+
+
+class WeightedStringList : public QList<WeightedString>
 {
+	void reverse()
+	{
+		int const N = count();
+		int const n = N/2;
+		for (int i = 0; i < n; ++i)
+			swap( i, N-i-1 );
+	}
+	
 public:
-    NdisEvents();
-    ~NdisEvents();
-    HRESULT registerForNdisEvents();
+    WeightedStringList()
+	{}
 
-	virtual void onConnectionUp(BSTR name) = 0;
-	virtual void onConnectionDown(BSTR name) = 0;
+    WeightedStringList( QList<WeightedString> list ) : QList<WeightedString>( list )
+	{}
 
-private:
-    CComPtr<IWbemLocator> m_pLocator;
-    CComPtr<IWbemServices> m_pServices;
-    class WmiSink *m_pSink;
+    operator QStringList()
+    {
+        QStringList strings;
+        QListIterator<WeightedString> i( *this );
+        while (i.hasNext())
+            strings += i.next();
+        return strings;
+    }
+
+    void weightedSort( Qt::SortOrder order = Qt::AscendingOrder ) 
+    {
+        qSort( begin(), end() );
+		if (order == Qt::DescendingOrder)
+			reverse();
+    }
+    
+    void sort( Qt::SortOrder order = Qt::AscendingOrder )
+    {
+        qSort( begin(), end(), qLess<QString>() );
+		if (order == Qt::DescendingOrder)
+			reverse();
+    }
 };
 
 #endif
-

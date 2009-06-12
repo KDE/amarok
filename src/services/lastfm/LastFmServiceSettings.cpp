@@ -19,10 +19,10 @@
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
-#include <lastfm/Scrobbler.h> // from liblastfm
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
+#include <lastfm/Scrobbler> // from liblastfm
+#include <lastfm/WsKeys>
+#include <lastfm/WsReply>
+#include <lastfm/WsRequestBuilder>
 
 #include <QCryptographicHash>
 #include <QVBoxLayout>
@@ -96,7 +96,7 @@ LastFmServiceSettings::testLogin()
     // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
     // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
     WsAccessManager* qnam = new KNetworkAccessManager( this );
-    WsRequestBuilder::setWAM( qnam );
+    //WsRequestBuilder::setWAM( qnam );
     
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 

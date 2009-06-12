@@ -22,9 +22,9 @@
 
 #include "collection/support/MemoryQueryMaker.h"
 
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsKeys.h>
+#include <lastfm/WsRequestBuilder>
+#include <lastfm/WsReply>
+#include <lastfm/WsKeys>
 
 #include <KLocale>
 
@@ -140,7 +140,7 @@ void LastFmServiceCollection::slotAddNeighboursLoved( WsReply* reply )
 {
     DEBUG_BLOCK
     // iterate through each neighbour
-    foreach( const CoreDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
+    foreach( const WsDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
         //debug() << "got neighbour!!! - " << name;
@@ -156,7 +156,7 @@ void LastFmServiceCollection::slotAddNeighboursPersonal( WsReply* reply )
 {
     DEBUG_BLOCK
     // iterate through each neighbour
-    foreach( const CoreDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
+    foreach( const WsDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
         //debug() << "got neighbour!!! - " << name;
@@ -172,7 +172,7 @@ void LastFmServiceCollection::slotAddFriendsLoved( WsReply* reply )
 {
     DEBUG_BLOCK
     // iterate through each friend
-    foreach( const CoreDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
+    foreach( const WsDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
         //debug() << "got friend!!! - " << name;
@@ -188,7 +188,7 @@ void LastFmServiceCollection::slotAddFriendsPersonal( WsReply* reply )
 {
     DEBUG_BLOCK
     // iterate through each friend
-    foreach( const CoreDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
+    foreach( const WsDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
         //debug() << "got neighbour!!! - " << name;

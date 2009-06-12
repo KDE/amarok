@@ -24,11 +24,8 @@
 #include "Meta.h"
 #include "meta/capabilities/MultiPlayableCapability.h"
 
-#include <lastfm/types/Track.h>
-#include <lastfm/radio/Tuner.h>
-
-#include <QQueue>
-#include <QCryptographicHash>
+#include <lastfm/Track>
+#include <lastfm/RadioTuner>
 
 class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public Meta::Observer
 {
@@ -38,7 +35,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             : Meta::MultiPlayableCapability()
             , m_url( track->internalUrl() )
             , m_track( track )
-            , m_currentTrack( Track() )
+            , m_currentTrack( lastfm::Track() )
         {
             Meta::TrackPtr trackptr( track );
             subscribeTo( trackptr );
@@ -52,40 +49,17 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         virtual void fetchFirst()
         {
             DEBUG_BLOCK
-            // first play, so we need to fetch tracks and start playing
-            // tuner needs md5 hashed password...
-            LastFmServiceConfig config;
-            QString pw = config.password();
+            m_tuner = new lastfm::RadioTuner( lastfm::RadioStation( m_track->uidUrl() ) );
             
-            QByteArray const digest = QCryptographicHash::hash( pw.toUtf8(), QCryptographicHash::Md5 );
-            pw = QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
-            
-            m_tuner = new lastfm::legacy::Tuner( RadioStation( m_track->uidUrl() ), pw );
-            
-            connect( m_tuner, SIGNAL( tracks( const QList< Track >& ) ), this, SLOT( slotNewTracks( const QList< Track >& ) ) );
-
-            //m_tuner->fetchFiveMoreTracks();
+            connect( m_tuner, SIGNAL( trackAvailable() ), this, SLOT( slotNewTrackAvailable() ) );
         }
         
         virtual void fetchNext()
         {
             DEBUG_BLOCK
-            if( m_upcomingTracks.size() == 0 ) // out of tracks, stop
-            {
-                debug() << "OUT OF TRACKS, STOP ME HERE";
-                return;
-            } else if( m_upcomingTracks.size() == 1 ) // fetch more after we start playing
-            {
-                m_currentTrack = m_upcomingTracks.dequeue();
-                debug() << "getting more tracks, first playing this: " << m_currentTrack;
-                m_track->setTrackInfo( m_currentTrack );
-                m_tuner->fetchFiveMoreTracks();
-            } else
-            {
-                m_currentTrack = m_upcomingTracks.dequeue();
-                debug() << "i have" << m_upcomingTracks.size() << "more stored tracks, next up: " << m_currentTrack;
-                m_track->setTrackInfo( m_currentTrack );
-            }
+            m_currentTrack = m_tuner->takeNextTrack();
+            m_track->setTrackInfo( m_currentTrack );
+
         }
         
         using Observer::metadataChanged;
@@ -106,17 +80,12 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         }
 
     public slots:
-        
-        void slotNewTracks( const QList< Track >& tracks )
-        {
-            DEBUG_BLOCK
-            foreach( Track track,  tracks )
-                m_upcomingTracks.enqueue( track );
 
-            if( m_currentTrack.isNull() ) // start playing
+        void slotNewTrackAvailable()
+        {
+            if( m_currentTrack.isNull() ) // we only force a track change at the beginning
             {
-                m_currentTrack = m_upcomingTracks.dequeue();
-                debug() << "first track starting:" << m_currentTrack.url();
+                m_currentTrack = m_tuner->takeNextTrack();
                 m_track->setTrackInfo( m_currentTrack );
             }
         }
@@ -135,9 +104,8 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         LastFm::TrackPtr m_track;
 
         
-        Track m_currentTrack;
-        QQueue< Track > m_upcomingTracks;
-        lastfm::legacy::Tuner* m_tuner;
+        lastfm::Track m_currentTrack;
+        lastfm::RadioTuner* m_tuner;
 };
 
 #endif

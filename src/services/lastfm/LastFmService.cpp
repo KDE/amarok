@@ -36,11 +36,11 @@
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
-#include <lastfm/Scrobbler.h> // from liblastfm
-#include <lastfm/ws/WsAccessManager.h>
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
+#include <lastfm/Scrobbler> // from liblastfm
+#include <lastfm/WsAccessManager>
+#include <lastfm/WsKeys>
+#include <lastfm/WsReply>
+#include <lastfm/WsRequestBuilder>
 
 #include <KLocale>
 #include <KPasswordDialog>
@@ -225,7 +225,7 @@ LastFmService::init()
 
     // set up proxy
     WsAccessManager* qnam = new KNetworkAccessManager( this );
-    WsRequestBuilder::setWAM( qnam );
+//    WsRequestBuilder::setWAM( qnam );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 
@@ -320,7 +320,7 @@ LastFmService::onAuthenticated( WsReply* reply )
                 break;
         }
     }
-    catch (CoreDomElement::Exception& e)
+    catch (Ws::Error& e)
     {
         qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
     }
@@ -367,7 +367,7 @@ LastFmService::onGetUserInfo( WsReply* reply )
                 break;
         }
     }
-    catch (CoreDomElement::Exception& e)
+    catch (Ws::Error& e)
     {
         qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
     }

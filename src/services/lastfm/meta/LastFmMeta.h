@@ -26,7 +26,7 @@
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
 
 
-#include <lastfm/types/Track.h>
+#include <lastfm/Track>
 
 
 #include <QObject>
@@ -42,7 +42,7 @@ namespace LastFm
             class Private;
 
             Track( const QString &lastFmUri );
-            Track( ::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
+            Track( lastfm::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
             virtual ~Track();
 
         //methods inherited from Meta::MetaBase
@@ -94,7 +94,7 @@ namespace LastFm
 
             virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
-            void setTrackInfo( const ::Track &trackInfo );
+            void setTrackInfo( const lastfm::Track &trackInfo );
 
             virtual QString sourceName();
             virtual QString sourceDescription();
