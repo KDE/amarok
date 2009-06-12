@@ -56,7 +56,6 @@ BrowserCategory::setPrettyName( const QString & prettyName )
     m_prettyName = prettyName;
 }
 
-
 QString
 BrowserCategory::prettyName() const
 {
@@ -99,7 +98,6 @@ BrowserCategory::icon() const
     return m_icon;
 }
 
-
 void BrowserCategory::setParentList( BrowserCategoryList * parent )
 {
     m_parentList = parent;
@@ -119,12 +117,10 @@ void BrowserCategory::activate()
 
 BreadcrumbItem * BrowserCategory::breadcrumb()
 {
-
     if ( m_breadcrumb == 0 )
     {
         m_breadcrumb = new BreadcrumbItem( this );
     }
-
     return m_breadcrumb;
 }
 

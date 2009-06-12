@@ -66,6 +66,7 @@ BreadcrumbWidget::updateBreadcrumbs()
     foreach(  BreadcrumbItem * item, m_items )
     {
         item->setParent( 0 );
+        item->hide();
     }
     
     m_items.clear();
@@ -81,6 +82,7 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
     DEBUG_BLOCK
     BreadcrumbItem * item = list->breadcrumb();
     item->setParent( this );
+    item->show();
     m_items.append( item );
 
     BrowserCategory * childCategory = list->activeCategory();
@@ -97,6 +99,7 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
         {
             BreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( this );
+            leaf->show();
             leaf->setBold( true );
             
             m_items.append( leaf );

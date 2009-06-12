@@ -76,6 +76,8 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
         connect( m_mainButton, SIGNAL( clicked( bool ) ), list, SLOT( home() ) );
     }
 
+    hide();
+
 }
 
 BreadcrumbItem::~BreadcrumbItem()
