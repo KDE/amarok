@@ -3,7 +3,8 @@ plasmoid.drawStandardBackground = true;
 plasmoid.dataUpdate = function(a, b)
 {
     print( "DOING SOMETHING" );
-    label.text = "Playing " + b.current[ "xesam:title" ] + " from " + b.current[ "xesam:author" ] + " on " + b.current[ "xesam:album" ];
+    if ( b.current )
+      label.text = "Playing " + b.current[ "xesam:title" ] + " from " + b.current[ "xesam:author" ] + " on " + b.current[ "xesam:album" ];
 }
 
 

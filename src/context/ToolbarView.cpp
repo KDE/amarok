@@ -19,6 +19,7 @@
 #include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 
+#include <knewstuff2/engine.h>
 #include <kfiledialog.h>
 #include <kstandarddirs.h>
 #include <plasma/applet.h>
@@ -242,6 +243,8 @@ void
 Context::ToolbarView::installApplets()
 {
     DEBUG_BLOCK
+
+    /*
     // TODO this hsould open the GHNS dialog, for now just allow user to specify package
     QString appletFile = KFileDialog::getOpenFileName( KUrl(), "*.amarokapplet.zip", this, "Please select Amarok Applet to install" );
 
@@ -259,7 +262,20 @@ Context::ToolbarView::installApplets()
     {
         debug() << "ERROR in trying to install the package.";
     }
+    */
 
+    KNS::Engine engine(0);
+    if (engine.init("amarokapplets.knsrc")) {
+        KNS::Entry::List entries = engine.downloadDialogModal(this);
+
+        if (entries.size() > 0) {
+        // do something with the modified entries here if you want
+
+            // such as rescaning your data folder or whatnot
+            //m_model->reload();
+        }
+    }
+    
     QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
     dbus.call(QDBus::Block, "recreate");
 }
