@@ -26,7 +26,7 @@
 namespace Meta
 {
     class AMAROK_EXPORT StatisticsProvider
-    {
+    {                
         public:
             StatisticsProvider();
             virtual ~StatisticsProvider();

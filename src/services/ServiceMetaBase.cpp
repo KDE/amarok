@@ -132,6 +132,7 @@ ServiceTrack::ServiceTrack( const QString & name )
     , SourceInfoProvider()
     , CurrentTrackActionsProvider()
     , BookmarkThisProvider()
+    , m_provider( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
@@ -156,6 +157,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , SourceInfoProvider()
     , CurrentTrackActionsProvider()
     , BookmarkThisProvider()
+    , m_provider( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
@@ -175,7 +177,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
 
 ServiceTrack::~ServiceTrack()
 {
-    //nothing to do
+    delete m_provider;
 }
 
 void
@@ -381,25 +383,33 @@ ServiceTrack::setDescription( const QString &newDescription )
 double
 ServiceTrack::score() const
 {
-    return 0.0;
+    if( m_provider )
+        return m_provider->score();
+    else
+        return 0.0;
 }
 
 void
 ServiceTrack::setScore( double newScore )
 {
-    Q_UNUSED( newScore )
+    if( m_provider )
+        m_provider->setScore( newScore );
 }
 
 int
 ServiceTrack::rating() const
 {
-    return 0;
+    if( m_provider )
+        return m_provider->rating();
+    else
+        return 0;
 }
 
 void
 ServiceTrack::setRating( int newRating )
 {
-    Q_UNUSED( newRating )
+    if( m_provider )
+        m_provider->setRating( newRating );
 }
 
 int
@@ -453,13 +463,38 @@ ServiceTrack::setDiscNumber( int newDiscNumber )
 int
 ServiceTrack::playCount() const
 {
-    return 0;
+    if( m_provider )
+        return m_provider->playCount();
+    else
+        return 0;
 }
 
 uint
 ServiceTrack::lastPlayed() const
 {
-    return 0;
+    if( m_provider )
+        return m_provider->lastPlayed().toTime_t();
+    else
+        return 0;
+}
+
+uint
+ServiceTrack::firstPlayed() const
+{
+    if( m_provider )
+        return m_provider->firstPlayed().toTime_t();
+    else
+        return 0;
+}
+
+void
+ServiceTrack::finishedPlaying( double playedFraction )
+{
+    if( m_provider )
+    {
+        m_provider->played( playedFraction );
+        notifyObservers();
+    }
 }
 
 QString
@@ -497,6 +532,15 @@ void
 ServiceTrack::setYear( YearPtr year )
 {
     m_year = year;
+}
+
+void
+ServiceTrack::setStatisticsProvider( StatisticsProvider *provider )
+{
+    if( m_provider )
+        delete m_provider;
+
+    m_provider = provider;
 }
 
 void

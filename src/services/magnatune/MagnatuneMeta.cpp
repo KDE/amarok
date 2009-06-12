@@ -23,6 +23,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "MagnatunePurchaseAction.h"
+#include "meta/support/PermanentUrlStatisticsProvider.h"
 #include "SvgHandler.h"
 
 #include <KLocale>
@@ -80,6 +81,7 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
     } else if (  m_streamType == LOFI ) {
         track->setUidUrl( track->lofiUrl() );
     }
+    track->setStatisticsProvider( new PermanentUrlStatisticsProvider( track->uidUrl() ) );
 
     if ( !m_membershipPrefix.isEmpty() ) {
         QString url = track->uidUrl();

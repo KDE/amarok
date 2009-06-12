@@ -25,6 +25,7 @@
 #include "Debug.h"
 #include "InfoParserBase.h"
 #include "meta/proxy/MetaProxy.h"
+#include "meta/StatisticsProvider.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 #include "ServiceBookmarkThisCapability.h"
@@ -218,7 +219,10 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual void setDiscNumber( int newDiscNumber );
 
         virtual uint lastPlayed() const;
+        virtual uint firstPlayed() const;
         virtual int playCount() const;
+
+        virtual void finishedPlaying( double playedFraction );
 
         virtual QString type() const;
 
@@ -256,6 +260,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setComposer( Meta::ComposerPtr composer );
         void setGenre( Meta::GenrePtr genre );
         void setYear( Meta::YearPtr year );
+        void setStatisticsProvider( StatisticsProvider *provider );
 
         void setLength( int length );
 
@@ -271,6 +276,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void update( Meta::TrackPtr track );
 
     private:
+        StatisticsProvider* m_provider;
         ArtistPtr   m_artist;
         AlbumPtr    m_album;
         GenrePtr    m_genre;
