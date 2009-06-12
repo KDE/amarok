@@ -45,7 +45,7 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_length( end - start )
     , m_playableUrl( url )
 {
-    m_displayUrl = url + ":" + QString::number( start ) + "-" + QString::number( end );
+    m_displayUrl = url + ":" + QString::number( start / 1000 ) + "-" + QString::number( end / 1000 );
 }
 
 TimecodeTrack::~ TimecodeTrack()
