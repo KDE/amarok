@@ -261,6 +261,9 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
+    
+    //TODO: we have a really nice opportunity to make thse info blurbs both helpful and pretty
+    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and cd's" ) );
 
 }
 
