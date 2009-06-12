@@ -126,19 +126,6 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     KHBox * commonPanel = new KHBox ( m_topPanel );
 
-    QLabel * nameLabel = new QLabel( commonPanel );
-    nameLabel->setMinimumSize( 230 , 28 );
-    if( !prettyName.isEmpty() )
-        nameLabel->setText( prettyName );
-    else
-        nameLabel->setText( name );
-
-    QFont nameLabelFont = nameLabel->font();
-    nameLabelFont.setBold( true );
-    nameLabelFont.setPointSize( nameLabelFont.pointSize() + 2 );
-    nameLabel->setFont( nameLabelFont );
-    nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
-
     if( useCollectionTreeView ) {
         m_contentView = new ServiceCollectionTreeView( this );
         m_contentView->setFrameShape( QFrame::NoFrame );

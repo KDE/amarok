@@ -28,6 +28,7 @@ BrowserWidget::BrowserWidget( QWidget * parent )
     m_breadcrumbWidget = new BreadcrumbWidget( this );
     
     m_categoryList = new BrowserCategoryList( this, "root list" );
+    m_categoryList->setPrettyName( i18n( "Home" ) );
 
     m_breadcrumbWidget->setRootList( m_categoryList );
 
