@@ -174,6 +174,8 @@ private:
     qint64 m_end;
     int m_length;
     int m_trackNumber;
+    int m_discNumber;
+    QString m_comment;
     QString m_displayUrl;
     QString m_playableUrl;
 

@@ -125,6 +125,9 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_start( start )
     , m_end( end )
     , m_length( ( end - start ) / 1000 )
+    , m_trackNumber( 0 )
+    , m_discNumber( 0 )
+    , m_comment( QString() )
     , m_playableUrl( url )
 {
     DEBUG_BLOCK
@@ -213,8 +216,7 @@ TimecodeTrack::year() const
 QString
 TimecodeTrack::comment() const
 {
-    //TODO: might be nice for this kind of user generated track
-    return QString();
+    return m_comment;
 }
 
 double
@@ -274,7 +276,7 @@ TimecodeTrack::trackNumber() const
 int
 TimecodeTrack::discNumber() const
 {
-    return 0;
+    return m_discNumber;
 }
 
 uint
@@ -412,25 +414,25 @@ void TimecodeTrack::endMetaDataUpdate()
     if ( m_updatedFields | TITLE_UPDATED )
     {
         //create a new album:
-        setTitle( m_fields.value( TITLE_UPDATED ) );
+        m_name = m_fields.value( TITLE_UPDATED );
     }
 
     if ( m_updatedFields | COMMENT_UPDATED )
     {
         //create a new album:
-        setComment( m_fields.value( COMMENT_UPDATED ) );
+        m_comment = m_fields.value( COMMENT_UPDATED );
     }
 
     if ( m_updatedFields | TRACKNUMBER_UPDATED )
     {
         //create a new album:
-        setTrackNumber( m_fields.value( TRACKNUMBER_UPDATED ).toInt() );
+        m_trackNumber = m_fields.value( TRACKNUMBER_UPDATED ).toInt();
     }
 
     if ( m_updatedFields | DISCNUMBER_UPDATED )
     {
         //create a new album:
-        setDiscNumber( m_fields.value( DISCNUMBER_UPDATED ).toInt() );
+        m_discNumber = m_fields.value( DISCNUMBER_UPDATED ).toInt();
     }
 
     m_updatedFields = 0;
