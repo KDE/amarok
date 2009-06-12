@@ -32,6 +32,7 @@ BrowserWidget::BrowserWidget( QWidget * parent )
     m_categoryList->setMinimumSize( 100, 300 );
 
     connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
+    connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
 
     setFrameShape( QFrame::StyledPanel );
     setFrameShadow( QFrame::Sunken );
@@ -58,6 +59,12 @@ void BrowserWidget::categoryChanged()
 {
     DEBUG_BLOCK
     m_breadcrumbWidget->setPath( m_categoryList->path() );
+}
+
+void BrowserWidget::home()
+{
+    DEBUG_BLOCK
+    m_categoryList->home();
 }
 
 #include "BrowserWidget.moc"

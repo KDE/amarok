@@ -46,6 +46,7 @@ public:
 
 private slots:
     void categoryChanged();
+    void home();
 
 private:
 

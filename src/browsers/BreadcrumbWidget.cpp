@@ -27,6 +27,8 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
 {
     setFixedHeight( 28 );
     m_rootItem = new QPushButton( i18n( "Home / " ), this );
+
+    connect( m_rootItem, SIGNAL( clicked( bool ) ), this, SLOT( rootItemClicked() ) );
 }
 
 
@@ -39,11 +41,18 @@ void BreadcrumbWidget::setPath( const QString &path )
     DEBUG_BLOCK
     debug() << "got path: " << path;
 
-    //remove name of the root item as we provide our own.
-    QString modifiedPath = path;
-    modifiedPath.replace( "root list/", "" );
-    
-    m_currentPath = modifiedPath.split( '/' );
+    if ( path == "root list" )
+    {
+        m_currentPath.clear();
+    }
+    else
+    {
+        //remove name of the root item as we provide our own.
+        QString modifiedPath = path;
+        modifiedPath.replace( "root list/", "" );
+        m_currentPath = modifiedPath.split( '/' );
+    }
+
     updateBreadcrumbs();
 }
 
@@ -60,4 +69,11 @@ void BreadcrumbWidget::updateBreadcrumbs()
     }
 }
 
+void BreadcrumbWidget::rootItemClicked()
+{
+    DEBUG_BLOCK
+    emit toHome();
+}
+
+#include "BreadcrumbWidget.moc"
 

@@ -39,8 +39,12 @@ public:
 
     ~BreadcrumbWidget();
 
+signals:
+    void toHome();
+    
 public slots:
     void setPath( const QString &path );
+    void rootItemClicked();
 
 private:
 
