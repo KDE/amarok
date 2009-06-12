@@ -17,18 +17,20 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-/* Test script to test our test framework itself */
+/* Test script to test our test framework itself                           */
 
-/* Initialisation stuff that should not be taken intoa ccount for performance    */
-/* measuring.                                                                    */
+/* Initialisation stuff that should not be taken into account for          *
+ * performance measuring.                                                  *
+ *                                                                         */
 
 // none
 
 
-/* Measure passed time between each call to AmarokTest.testResult() from now on. */
+/* Measure passed time between each call to AmarokTest.testResult() from   *
+ * now on.                                                                 */
 AmarokTest.startTimer();
 
 
-/* The tests */
+/* The tests                                                               */
 AmarokTest.testResult( "AmarokTest: Successful test", "OK", "OK" );
 AmarokTest.testResult( "AmarokTest: Failed test",     "OK", "not OK" );
