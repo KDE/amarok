@@ -43,9 +43,7 @@ public:
     BrowserCategoryList *list() const;
     void navigate( const QString &target );
 
-
 private slots:
-    void categoryChanged();
     void home();
 
 private:

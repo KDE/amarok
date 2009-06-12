@@ -16,6 +16,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+
+#include "BrowserCategoryList.h"
  
 #ifndef BREADCRUMBWIDGET_H
 #define BREADCRUMBWIDGET_H
@@ -25,6 +27,20 @@
 #include <QPushButton>
 #include <QList>
 #include <QStringList>
+
+
+class BreadcrumbItem : public QPushButton
+{
+    Q_OBJECT
+public:
+    BreadcrumbItem( const QString &name, BrowserCategory * category, QWidget * parent );
+    ~BreadcrumbItem();
+
+private:
+    BrowserCategory * m_category;
+        
+};
+
 
 /**
 A widget for displaying th ecurrent state of, and navigating, the browser dig down interface.
@@ -39,21 +55,28 @@ public:
 
     ~BreadcrumbWidget();
 
+    void setRootList( BrowserCategoryList * rootList );
+
 signals:
     void toHome();
     
 public slots:
-    void setPath( const QString &path );
-    void rootItemClicked();
+    void updateBreadcrumbs();
 
 private:
 
-    void updateBreadcrumbs();
+    
+    /**
+     * Recursive function that traverses the tree of BrowserCategoryList's
+     * and adds each one as a level in the breadcrumb.
+     * @param level the root level BrowserCategoryList.
+     */
+    void addLevel( BrowserCategoryList * list );
 
-    QStringList m_currentPath;
+    //QStringList m_currentPath;
+    BrowserCategoryList * m_rootList;
 
-    QPushButton * m_rootItem;
-    QList<QPushButton *> m_items;
+    QList<BreadcrumbItem *> m_items;
     QWidget * m_spacer;
 
 };

@@ -233,6 +233,7 @@ void BrowserCategoryList::back()
 
 void BrowserCategoryList::childViewChanged()
 {
+    DEBUG_BLOCK
     emit( viewChanged() );
 }
 

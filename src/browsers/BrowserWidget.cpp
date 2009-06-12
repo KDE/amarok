@@ -29,6 +29,8 @@ BrowserWidget::BrowserWidget( QWidget * parent )
     
     m_categoryList = new BrowserCategoryList( this, "root list" );
 
+    m_breadcrumbWidget->setRootList( m_categoryList );
+
     m_categoryList->setMinimumSize( 100, 300 );
 
     connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
@@ -52,13 +54,6 @@ BrowserCategoryList * BrowserWidget::list() const
 void BrowserWidget::navigate( const QString & target )
 {
     m_categoryList->navigate( target );
-    m_breadcrumbWidget->setPath( target );
-}
-
-void BrowserWidget::categoryChanged()
-{
-    DEBUG_BLOCK
-    m_breadcrumbWidget->setPath( m_categoryList->path() );
 }
 
 void BrowserWidget::home()
