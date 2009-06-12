@@ -48,7 +48,7 @@ AmarokTest::AmarokTest( int &argc, char **argv )
 
     if( !logFile.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
         ::debug() << "Unable to open log!";
-        exit( 1 );
+            ::exit( 1 );
     }
 
     m_log.setDevice( &logFile );
@@ -95,7 +95,7 @@ AmarokTest::AmarokTest( int &argc, char **argv )
         ::debug() << "Unable to create link to log!";
 
     logFile.close();
-    exit( 0 );
+    ::exit( 0 );
 }
 
 
