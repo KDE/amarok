@@ -637,6 +637,7 @@ void
 TimecodeAlbum::setImage( const QPixmap & pixmap )
 {
     m_cover = pixmap;
+    notifyObservers();
 }
 
 void
