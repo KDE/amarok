@@ -49,7 +49,8 @@ AudioCdCollectionFactory::AudioCdCollectionFactory()
 {
 }
 
-void AudioCdCollectionFactory::init()
+void
+AudioCdCollectionFactory::init()
 {
     DEBUG_BLOCK
     connect( MediaDeviceMonitor::instance(), SIGNAL( audioCdDetected( const QString & ) ), this, SLOT( audioCdAdded( const QString & ) ) );
@@ -69,7 +70,8 @@ void AudioCdCollectionFactory::init()
 
 }
 
-void AudioCdCollectionFactory::audioCdAdded( const QString & uid )
+void
+AudioCdCollectionFactory::audioCdAdded( const QString &uid )
 {
     DEBUG_BLOCK
     if ( m_collection )
@@ -84,7 +86,8 @@ void AudioCdCollectionFactory::audioCdAdded( const QString & uid )
     emit newCollection( m_collection );
 }
 
-void AudioCdCollectionFactory::deviceRemoved( const QString & uid )
+void
+AudioCdCollectionFactory::deviceRemoved( const QString &uid )
 {
     DEBUG_BLOCK
     debug() << "uid: " << uid;
@@ -126,7 +129,8 @@ AudioCdCollection::~AudioCdCollection()
     delete m_ejectAction;
 }
 
-void AudioCdCollection::readCd()
+void
+AudioCdCollection::readCd()
 {
     DEBUG_BLOCK
 
@@ -137,7 +141,8 @@ void AudioCdCollection::readCd()
     
 }
 
-void AudioCdCollection::infoFetchComplete( KJob * job )
+void
+AudioCdCollection::infoFetchComplete( KJob *job )
 {
     DEBUG_BLOCK
     if( job->error() )
@@ -308,32 +313,38 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
     updateProxyTracks();
 }
 
-QueryMaker * AudioCdCollection::queryMaker()
+QueryMaker *
+AudioCdCollection::queryMaker()
 {
     return new MemoryQueryMaker( this, collectionId() );
 }
 
-QString AudioCdCollection::collectionId() const
+QString
+AudioCdCollection::collectionId() const
 {
     return "AudioCd";
 }
 
-QString AudioCdCollection::prettyName() const
+QString
+AudioCdCollection::prettyName() const
 {
     return "Audio Cd";
 }
 
-KIcon AudioCdCollection::icon() const
+KIcon
+AudioCdCollection::icon() const
 {
     return KIcon( "media-optical-audio");
 }
 
-void AudioCdCollection::cdRemoved()
+void
+AudioCdCollection::cdRemoved()
 {
     emit remove();
 }
 
-QString AudioCdCollection::encodingFormat() const
+QString
+AudioCdCollection::encodingFormat() const
 {
     switch( m_encodingFormat ) {
         case WAV:
@@ -347,7 +358,8 @@ QString AudioCdCollection::encodingFormat() const
     }
 }
 
-QString AudioCdCollection::copyableBasePath() const
+QString
+AudioCdCollection::copyableBasePath() const
 {
     switch( m_encodingFormat ) {
         case WAV:
@@ -361,33 +373,39 @@ QString AudioCdCollection::copyableBasePath() const
     }
 }
 
-void AudioCdCollection::setEncodingFormat( int format ) const
+void
+AudioCdCollection::setEncodingFormat( int format ) const
 {
     m_encodingFormat = format;
 }
 
-CollectionLocation * AudioCdCollection::location() const
+CollectionLocation *
+AudioCdCollection::location() const
 {
     return new AudioCdCollectionLocation( this );
 }
 
-void AudioCdCollection::eject()
+void
+AudioCdCollection::eject()
 {
     DEBUG_BLOCK
     MediaDeviceMonitor::instance()->ejectCd( m_udi );
 }
 
-PopupDropperAction * AudioCdCollection::ejectAction()
+PopupDropperAction *
+AudioCdCollection::ejectAction()
 {
     return m_ejectAction;
 }
 
-bool AudioCdCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+bool
+AudioCdCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     return type ==  Meta::Capability::Collection;
 }
 
-Meta::Capability * AudioCdCollection::asCapabilityInterface( Meta::Capability::Type type )
+Meta::Capability *
+AudioCdCollection::asCapabilityInterface( Meta::Capability::Type type )
 {
     if ( type == Meta::Capability::Collection )
         return new Meta::AudioCdCollectionCapability( this );
@@ -395,7 +413,8 @@ Meta::Capability * AudioCdCollection::asCapabilityInterface( Meta::Capability::T
         return 0;
 }
 
-void AudioCdCollection::noInfoAvailable()
+void
+AudioCdCollection::noInfoAvailable()
 {
 
     DEBUG_BLOCK
@@ -460,7 +479,8 @@ void AudioCdCollection::noInfoAvailable()
     
 }
 
-void AudioCdCollection::readAudioCdSettings()
+void
+AudioCdCollection::readAudioCdSettings()
 {
     KSharedConfigPtr conf = KSharedConfig::openConfig( "kcmaudiocdrc" );
     KConfigGroup filenameConf = conf->group( "FileName" );
@@ -469,7 +489,8 @@ void AudioCdCollection::readAudioCdSettings()
     m_albumNamePattern = filenameConf.readEntry( "album_name_template", "%{albumartist} - %{albumtitle}" );
 }
 
-bool AudioCdCollection::possiblyContainsTrack(const KUrl & url) const
+bool
+AudioCdCollection::possiblyContainsTrack(const KUrl & url) const
 {
     DEBUG_BLOCK;
     debug() << "match: " << url.url().startsWith( "audiocd:/" );
@@ -477,7 +498,8 @@ bool AudioCdCollection::possiblyContainsTrack(const KUrl & url) const
     return url.url().startsWith( "audiocd:/" );
 }
 
-Meta::TrackPtr AudioCdCollection::trackForUrl( const KUrl & url )
+Meta::TrackPtr
+AudioCdCollection::trackForUrl( const KUrl & url )
 {
     DEBUG_BLOCK;
 
@@ -525,7 +547,8 @@ Meta::TrackPtr AudioCdCollection::trackForUrl( const KUrl & url )
 
 }
 
-void AudioCdCollection::updateProxyTracks()
+void
+AudioCdCollection::updateProxyTracks()
 {
     foreach( KUrl url, m_proxyMap.keys() )
     {

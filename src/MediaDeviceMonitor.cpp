@@ -124,7 +124,8 @@ MediaDeviceMonitor::checkDevicesForMtp()
     }
 }
 
-void MediaDeviceMonitor::checkDevicesForCd()
+void
+MediaDeviceMonitor::checkDevicesForCd()
 {
     DEBUG_BLOCK
 
@@ -225,7 +226,8 @@ MediaDeviceMonitor::isMtp( const QString &udi )
     return pmp->supportedProtocols().contains( "mtp" );
 }
 
-bool MediaDeviceMonitor::isAudioCd( const QString & udi )
+bool
+MediaDeviceMonitor::isAudioCd( const QString & udi )
 {
     DEBUG_BLOCK
 
@@ -271,7 +273,8 @@ MediaDeviceMonitor::disconnectMtp( const QString &udi )
     emit mtpReadyToDisconnect( udi );
 }
 
-QString MediaDeviceMonitor::isCdPresent()
+QString
+MediaDeviceMonitor::isCdPresent()
 {
     DEBUG_BLOCK
 
@@ -290,7 +293,8 @@ QString MediaDeviceMonitor::isCdPresent()
     return QString();
 }
 
-void MediaDeviceMonitor::ejectCd( const QString & udi )
+void
+MediaDeviceMonitor::ejectCd( const QString & udi )
 {
     DEBUG_BLOCK
     debug() << "trying to eject udi: " << udi;
@@ -315,12 +319,14 @@ void MediaDeviceMonitor::ejectCd( const QString & udi )
     }
 }
 
-QString MediaDeviceMonitor::currentCdId()
+QString
+MediaDeviceMonitor::currentCdId()
 {
     return m_currentCdId;
 }
 
-void MediaDeviceMonitor::setCurrentCdId( const QString & id )
+void
+MediaDeviceMonitor::setCurrentCdId( const QString & id )
 {
     m_currentCdId = id;
 }
