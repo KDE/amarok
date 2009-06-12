@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "PlaylistSortScheme.h"
+#include "SortScheme.h"
 
 #include "Debug.h"
 
@@ -70,25 +70,7 @@ SortScheme::SortScheme()
 SortLevel &
 SortScheme::level( int i )
 {
-    return m_scheme->value( i, SortLevel( PlaceHolder ) );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
-}
-
-SortLevel &
-SortScheme::operator[]( int i )
-{
-    return m_scheme->value( i, SortLevel( PlaceHolder ) );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
-}
-
-const SortLevel &
-SortScheme::level( int i ) const
-{
-    return m_scheme->value( i, SortLevel( PlaceHolder ) );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
-}
-
-const SortLevel &
-SortScheme::operator[]( int i ) const
-{
-    return m_scheme->value( i, SortLevel( PlaceHolder ) );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
+    return m_scheme->operator[]( i );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
 }
 
 void
@@ -106,7 +88,7 @@ SortScheme::length()
 void
 SortScheme::trimToLevel( int lastLevel )
 {
-    for( int i = length - 1; i < lastLevel; i--)
+    for( int i = length() - 1; i < lastLevel; i--)
         m_scheme->pop();
 }
 

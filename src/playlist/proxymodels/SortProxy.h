@@ -24,7 +24,7 @@
 #include "FilterProxy.h"
 #include "meta/Meta.h"
 #include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistSortScheme.h"
+#include "SortMap.h"
 
 #include <QAbstractProxyModel>
 
@@ -213,7 +213,27 @@ public:
     QMimeData* mimeData( const QModelIndexList& ) const;
     bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
+public slots:
+    void updateSortMap( SortScheme &scheme );
+    
 signals:
+    /**
+     * Signal forwarded from the source model.
+     * @param the list of id's added that are also represented by this proxy.
+     */
+    void insertedIds( const QList<quint64>& );
+    
+    /**
+     * Signal forwarded from the source model.
+     * @param the list of id's removed that are also represented by this proxy.
+     */
+    void removedIds( const QList<quint64>& );
+    
+    /**
+     * Signal forwarded from the FilterProxy.
+     * Signal emitted when the proxy changes its filtering.
+     */
+    void filterChanged();
 
 private:
     /**
@@ -228,9 +248,7 @@ private:
 
     FilterProxy *m_belowModel;          //! The Proxy or Model that's right below this one in the stack of Models/Proxies.
 
-    SortScheme *m_currentSortScheme;    //! The sorting scheme that's currently used.
-
-    QMap< qint64, qint64 > *m_map;             //! Permutation function between the set of source indexes and the set of indexes to be forwarded.
+    SortMap *m_map;                     //! Permutation function between the set of source indexes and the set of indexes to be forwarded.
 
     static SortProxy *s_instance;       //! Instance member.
 };

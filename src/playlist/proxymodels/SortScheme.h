@@ -20,7 +20,7 @@
 #ifndef AMAROK_PLAYLISTSORTSCHEME_H
 #define AMAROK_PLAYLISTSORTSCHEME_H
 
-#include "PlaylistDefines.h"
+#include "playlist/PlaylistDefines.h"
 
 #include <QSortFilterProxyModel>
 #include <QStack>
@@ -56,9 +56,6 @@ class SortScheme
     public:
         SortScheme();
         SortLevel & level( int i );
-        SortLevel & operator[]( int i );
-        const SortLevel & level( int i ) const;
-        const SortLevel & operator[]( int i ) const;   //same as level(i)
         void addLevel( const SortLevel & level );
         void trimToLevel( int lastLevel );        //deletes all the levels up to level # length
         int length();

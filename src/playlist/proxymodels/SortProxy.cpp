@@ -47,22 +47,40 @@ SortProxy::SortProxy()
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
     setSourceModel( m_belowModel );
-    m_map = new QMap< qint64, qint64 >();
-    for( int i = 0; i < m_belowModel->rowCount() ; i++ )
-        m_map->insert( i, i ); //identical function
+    m_map = new SortMap( m_belowModel->rowCount() );
+
     //m_sortScheme << foo...
+    //connect( m_belowModel, SIGNAL( filterChanged() ), this,
+
+    /*connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
+    connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );*/
+    connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
+
+    //NOTE to self by Téo: when rows are inserted, and that I'll know thanks to the signals
+    // in FilterProxy, they must be added to the m_map but the sorting map but the map must
+    // be declared invalid m_sorted = 0;
+
+    //NOTE to self by Téo:
+    /*
+    needed by GroupingProxy:
+    connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
+    connect( m_belowModel, SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
+    */
 }
 
 SortProxy::~SortProxy()
 {
-    delete m_currentSortScheme;
+    delete m_map;
 }
 
 QModelIndex
 SortProxy::index( int row, int column, const QModelIndex &parent ) const
 {
     DEBUG_BLOCK
-    if ( m_belowModel->rowExists( m_map->key( row ) ) )     //should I use rowToSource for this??
+    if ( m_belowModel->rowExists( m_map->inv( row ) ) )
     {
         debug() << "the row exists!";
         return createIndex( row, column );
@@ -82,17 +100,22 @@ QModelIndex
 SortProxy::mapFromSource( const QModelIndex& sourceIndex ) const
 {
     DEBUG_BLOCK
-    return createIndex( m_map->value( sourceIndex.row() ), sourceIndex.column() );
+    return createIndex( m_map->map( sourceIndex.row() ), sourceIndex.column() );
 }
 
 QModelIndex
 SortProxy::mapToSource( const QModelIndex& proxyIndex ) const
 {
     DEBUG_BLOCK
-    return m_belowModel->index( m_map->key( proxyIndex.row() ), proxyIndex.column() );
+    return m_belowModel->index( m_map->inv( proxyIndex.row() ), proxyIndex.column() );
 }
 
-
+void SortProxy::updateSortMap(Playlist::SortScheme& scheme)
+{
+    DEBUG_BLOCK
+    //APPLY THE SORTING
+    //m_map->setSorted or something like that;
+}
 
 // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
 // Please keep them sorted alphabetically.
