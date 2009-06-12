@@ -45,6 +45,20 @@ public:
     static SortProxy *instance();
 
     /**
+     * Comparison function used by sort(). It wraps around a common LessThan-style functor
+     * that could be used with any Qt sort algorithm, which implements a multilevel less
+     * than comparison.
+     * @param left the first index to compare.
+     * @param right the second index to compare.
+     * @return true if left is to be placed before right, false otherwise.
+     */
+    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
+
+// Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
+// pretty much just forward stuff through the stack of proxies start here.
+// Please keep them sorted alphabetically.  -- Téo
+
+    /**
      * Returns the currently active row, translated to proxy rows
      * (or -1 if the current row is not represented by this proxy).
      * @return The currently active (playing) row in proxy terms.
@@ -76,6 +90,18 @@ public:
      * @return the data from the model.
      */
     QVariant data( const QModelIndex& index, int role ) const;
+
+    /**
+     * Handles the data supplied by a drag and drop operation that ended with the given
+     * action.
+     * @param data the MIME data.
+     * @param action the drop action of the current drag and drop operation.
+     * @param row the row where the operation ended.
+     * @param column the column where the operation ended.
+     * @param parent the parent index.
+     * @return true if the data and action can be handled by the model; otherwise false.
+     */
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
     /**
      * Get the current search term.
@@ -121,6 +147,26 @@ public:
     int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
 
     /**
+     * Returns the item flags for the given index.
+     * @param index the index to retrieve the flags for.
+     * @return the item flags.
+     */
+    Qt::ItemFlags flags( const QModelIndex& index ) const;
+
+    /**
+     * Returns an object that contains serialized items of data corresponding to the list of indexes specified.
+     * @param indexes a list of indexes.
+     * @return the MIME data corresponding to the indexes.
+     */
+    QMimeData* mimeData( const QModelIndexList &indexes ) const;
+
+    /**
+     * Returns a list of MIME types that can be used to describe a list of model indexes.
+     * @return a QStringList of MIME types.
+     */
+    QStringList mimeTypes() const;
+
+    /**
      * Forwards the number of rows from the FilterProxy as SortProxy by definition shouldn't
      * change the row count.
      * @param parent the parent of the rows to count.
@@ -158,6 +204,12 @@ public:
     void setActiveRow( int row );
 
     /**
+     * Returns the drop actions supported by this model.
+     * @return the drop actions.
+     */
+    Qt::DropActions supportedDropActions() const;
+
+    /**
      * Asks the model sitting below the total length of the playlist.
      * @return the total length of the playlist.
      */
@@ -170,17 +222,11 @@ public:
      */
     Meta::TrackPtr trackAt( int row ) const;
 
-    //TODO: document me
-    //these methods just forward stuff straight to the model/proxy under them
-    Qt::DropActions supportedDropActions() const;
-    Qt::ItemFlags flags( const QModelIndex& ) const;
-    QStringList mimeTypes() const;
-    QMimeData* mimeData( const QModelIndexList& ) const;
-    bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
-
-    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
-
 public slots:
+    /**
+     * Applies a sorting scheme to the playlist.
+     * @param scheme the sorting scheme that will be applied.
+     */
     void updateSortMap( SortScheme *scheme );
 
 signals:
@@ -214,11 +260,10 @@ private:
      */
     ~SortProxy();
 
-    FilterProxy *m_belowModel;          //! The Proxy or Model that's right below this one in the stack of Models/Proxies.
-
     static SortProxy *s_instance;       //! Instance member.
 
-    SortScheme *m_scheme;
+    FilterProxy *m_belowModel;          //! The proxy or model that's right below this one in the stack of models/proxies.
+    SortScheme *m_scheme;               //! The current sorting scheme.
 };
 
 }   //namespace Playlist

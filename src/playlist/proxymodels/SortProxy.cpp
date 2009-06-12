@@ -80,9 +80,9 @@ SortProxy::updateSortMap( SortScheme *scheme)
 }
 
 
-// Pass-through methods, basically identical to those in Playlist::FilterProxy, that pretty
-// much just forward stuff through the stack of proxies start here.
-// Please keep them sorted alphabetically.  - Téo
+// Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
+// pretty much just forward stuff through the stack of proxies start here.
+// Please keep them sorted alphabetically.  -- Téo
 
 int
 SortProxy::activeRow() const
@@ -130,25 +130,25 @@ SortProxy::data( const QModelIndex & index, int role ) const
 bool
 SortProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
-    return m_belowModel->dropMimeData( data, action, row, column, parent );
+    return m_belowModel->dropMimeData( data, action, row, column, parent ); //TODO: this might need rowToSource
 }
 
 int
 SortProxy::find( const QString &searchTerm, int searchFields )
 {
-    return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );  //DONE: see SortProxy::activeRow()
+    return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );
 }
 
 int
 SortProxy::findNext( const QString &searchTerm, int selectedRow, int searchFields )
 {
-    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );  //DONE: see SortProxy::activeRow()
+    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );
 }
 
 int
 SortProxy::findPrevious( const QString &searchTerm, int selectedRow, int searchFields )
 {
-    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );  //DONE: see SortProxy::activeRow()
+    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
 Qt::ItemFlags
@@ -160,9 +160,9 @@ SortProxy::flags( const QModelIndex &index ) const
 }
 
 QMimeData *
-SortProxy::mimeData( const QModelIndexList &index ) const
+SortProxy::mimeData( const QModelIndexList &indexes ) const
 {
-    return m_belowModel->mimeData( index );     //TODO: probably needs mapToSource!!!
+    return m_belowModel->mimeData( indexes );     //TODO: probably needs mapToSource!!!
 }
 
 QStringList
@@ -227,7 +227,7 @@ SortProxy::totalLength() const
 Meta::TrackPtr
 SortProxy::trackAt(int row) const
 {
-    return m_belowModel->trackAt( rowToSource( row ) );    //DONE: see SortProxy::activeRow()
+    return m_belowModel->trackAt( rowToSource( row ) );
 }
 
 }   //namespace Playlist

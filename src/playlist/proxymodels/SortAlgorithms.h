@@ -56,8 +56,8 @@ struct multilevelLessThan
     bool operator()( int rowA, int rowB );
 
     private:
-        FilterProxy *m_sourceProxy;
-        SortScheme *m_scheme;
+        FilterProxy *m_sourceProxy;     //! The proxy or model which holds the rows that need to be sorted.
+        SortScheme *m_scheme;           //! The current sorting scheme.
 };
 
 }   //namespace Playlist
