@@ -96,6 +96,8 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
 
     if ( childCategory )
     {
+        item->setBold( false );
+        
         //check if this is also a list
         BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( childCategory );
         if ( childList )

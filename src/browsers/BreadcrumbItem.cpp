@@ -93,10 +93,10 @@ BreadcrumbItem::~BreadcrumbItem()
 }
 
 void
-        BreadcrumbItem::setBold( bool bold )
+BreadcrumbItem::setBold( bool bold )
 {
     QFont font = m_mainButton->font();
-    font.setBold( true );
+    font.setBold( bold );
     m_mainButton->setFont( font );
 }
 
