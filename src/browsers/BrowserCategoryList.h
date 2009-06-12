@@ -78,6 +78,10 @@ class BrowserCategoryList : public BrowserCategory
         QString activeCategoryName();
         BrowserCategory *activeCategory();
 
+    signals:
+
+        void viewChanged();
+
     public slots:
         /**
          * Add a category.
@@ -94,6 +98,8 @@ class BrowserCategoryList : public BrowserCategory
          * Slot called when the we need to move up one level. Forwarded to child lists as needed
          */
         void back();
+
+        void childViewChanged();
 
     private:
 

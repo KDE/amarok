@@ -1,5 +1,6 @@
 /*
   Copyright (c) 2006 Gábor Lehel <illissius@gmail.com>
+  Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Library General Public
@@ -66,8 +67,13 @@ class SideBar: public KHBox
             m_backButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
 
             connect( m_backButton, SIGNAL( clicked( bool ) ), m_categoryList, SLOT( back() ) );
+
+            connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
+            
             setFrameShape( QFrame::StyledPanel );
             setFrameShadow( QFrame::Sunken );
+
+            m_backButton->setEnabled( false );
         }
 
         ~SideBar()
@@ -78,6 +84,15 @@ class SideBar: public KHBox
         QPushButton *backButton() const { return m_backButton; }
         BrowserCategoryList *list() const { return m_categoryList; }
 
+    private slots:
+        void categoryChanged()
+        {
+            if( m_categoryList->activeCategory() == 0 )
+                m_backButton->setEnabled( false );
+            else
+                m_backButton->setEnabled( true );
+        }
+        
     private:
         QPointer<QPushButton> m_backButton;
         QPointer<BrowserCategoryList> m_categoryList;

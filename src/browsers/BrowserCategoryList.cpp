@@ -92,6 +92,13 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
     m_categories[category->name()] = category;
     m_categoryListModel->addCategory( category );
     connect( category, SIGNAL( home() ), this, SLOT( home() ) );
+
+    //if this is also a category list, watch it for changes as we need to report
+    //these down the tree
+
+    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( category );
+    if ( childList )
+        connect( childList, SIGNAL( viewChanged() ), this, SLOT( childViewChanged() ) );
 }
 
 void
@@ -109,6 +116,7 @@ BrowserCategoryList::categoryActivated( const QModelIndex & index )
     {
         debug() << "Show service: " <<  category->name();
         showCategory( category->name() );
+        emit( viewChanged() );
     }
 }
 
@@ -134,6 +142,8 @@ BrowserCategoryList::showCategory( const QString &name )
     }
 
     m_searchWidget->hide();
+
+    emit( viewChanged() );
 }
 
 void
@@ -145,6 +155,8 @@ BrowserCategoryList::home()
         m_categoryListView->setParent( this );
         m_currentCategory = 0; // remove any context stuff we might have added
         m_searchWidget->show();
+
+        emit( viewChanged() );
     }
 }
 
@@ -212,6 +224,11 @@ void BrowserCategoryList::back()
     }
 
     home();
+}
+
+void BrowserCategoryList::childViewChanged()
+{
+    emit( viewChanged() );
 }
 
 
