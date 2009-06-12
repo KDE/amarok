@@ -21,10 +21,14 @@
 #include "AmarokTest.moc"
 
 // Amarok includes
+#include "../../src/Amarok.h"
 #include "../../src/Debug.h"
 
-#include <QDirIterator>
+#include <KStandardDirs>
+
+#include <QDateTime>
 #include <QFile>
+
 
 int
 main( int argc, char *argv[] )
@@ -37,13 +41,36 @@ main( int argc, char *argv[] )
 AmarokTest::AmarokTest( int &argc, char **argv )
         : QCoreApplication( argc, argv )
 {
+    int i;
+    m_logsLocation  = Amarok::saveLocation( "testresults/" );
+    m_logsLocation += QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + ".log";
+    m_allTests = KGlobal::dirs()->findAllResources( "data", "amarok/tests/*.js", KStandardDirs::Recursive );
+
     prepareTestEngine();
 
-   /** run given test */
-   m_currentlyRunning = "";
+    if( arguments().size() == 1 ) /** only our own program name: run all available tests */
+    {
+        i = 0;
+        while( i < m_allTests.size() ) {
+            m_currentlyRunning = m_allTests.at( i );
+            runScript();
+            i++;
+        }
+    }
 
-   /** run all tests */
-   m_currentlyRunning = "";
+    else /** run given test(s) */
+    {
+        i = 1;
+
+        while( i < arguments().size() )
+        {
+            m_currentlyRunning = arguments().at( i );
+            runScript();
+            i++;
+        }
+    }
+
+    exit();
 }
 
 
@@ -53,21 +80,70 @@ AmarokTest::AmarokTest( int &argc, char **argv )
 // }
 
 
+/**
+ * Utility functions for test scripts: public slots
+ */
+
+void
+AmarokTest::debug( const QString& text ) const // Slot
+{
+    ::debug() << "SCRIPT" << m_currentlyRunning << ": " << text;
+}
+
+
+void
+AmarokTest::testResult( QString testName, QString expected, QString actualResult ) // Slot
+{
+    if( expected != actualResult ) // only log failed tests
+        writeTestResult( false, testName, expected, actualResult );
+//     else
+//         writeTestResult( true, testName, expected, actualResult );
+}
+
+
+/**
+ * Private
+ */
+
+
 void
 AmarokTest::prepareTestEngine()
 {
     /** Give test scripts access to everything in qt they might need */
     m_engine.importExtension( "qt.core" );
     m_engine.importExtension( "qt.gui" );
+    m_engine.importExtension( "qt.network" );
     m_engine.importExtension( "qt.sql" );
+    m_engine.importExtension( "qt.uitools" );
     m_engine.importExtension( "qt.webkit" );
     m_engine.importExtension( "qt.xml" );
-    m_engine.importExtension( "qt.uitools" );
-    m_engine.importExtension( "qt.network" );
+
+    m_engine.setProcessEventsInterval( 100 );
 }
 
+
 void
-AmarokTest::debug( const QString& text ) const
+AmarokTest::runScript()
 {
-    ::debug() << "SCRIPT" << m_currentlyRunning << ": " << text;
+    QFile testScript;
+
+    testScript.setFileName( m_currentlyRunning );
+    testScript.open( QIODevice::ReadOnly );
+    m_engine.evaluate( testScript.readAll() );
+
+    if( m_engine.hasUncaughtException() ) {
+        ::debug() << "Uncaught exception in test script: " << m_currentlyRunning;
+        ::debug() << "Line: " << m_engine.uncaughtExceptionLineNumber();
+        ::debug() << "Exception: " << m_engine.uncaughtException().toString();
+        ::debug() << "Backtrace: " << m_engine.uncaughtExceptionBacktrace();
+    }
+
+    testScript.close();
+}
+
+
+void
+AmarokTest::writeTestResult( bool success, QString testName, QString expected, QString actualResult )
+{
+    
 }

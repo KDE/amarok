@@ -23,6 +23,7 @@
 #include <QCoreApplication>
 #include <QScriptEngine>
 #include <QString>
+#include <QStringList>
 
 /**
  * @class AmarokTest
@@ -31,7 +32,7 @@
 
 class AmarokTest : public QCoreApplication
 {
-    Q_OBJECT // for slots
+    Q_OBJECT
 
 public:
     AmarokTest( int &argc, char **argv );
@@ -47,12 +48,33 @@ public slots:
      */
     void debug( const QString& text ) const;
 
+    /**
+     * Writes the results of a test to the log
+     * @testName Human readable name of the test.
+     * @expected Human readable expected test result.
+     * @actualResult Human readable actual result of the test.
+     */
+    void testResult( QString testName, QString expected, QString actualResult );
 
 private:
+    /**
+     * Actually runs a test script.
+     */
+    void runScript();
+
     /**
      * Prepares the engine for usage: adds bindings, etc.
      */
     void prepareTestEngine();
+
+    /**
+     * Writes the results of a test to the log
+     * @success Indicates weather the test has been passed. true for yes, false for no.
+     * @testName Human readable name of the test.
+     * @expected Human readable expected test result.
+     * @actualResult Human readable actual result of the test.
+     */
+    void writeTestResult( bool success, QString testName, QString expected = "", QString actualResult = "" );
 
     // Disable copy constructor and assignment
     AmarokTest( const AmarokTest& );
@@ -60,8 +82,8 @@ private:
 
     QScriptEngine m_engine;
     QString       m_currentlyRunning;
-
+    QString       m_logsLocation;
+    QStringList   m_allTests;
 };
-
 
 #endif // AMAROKTEST_H
