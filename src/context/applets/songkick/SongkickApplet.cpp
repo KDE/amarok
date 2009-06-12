@@ -175,7 +175,7 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
     else if( data.contains( "error" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( i18n( "Songkick were not able to be downloaded. Please check your internet connection: %1", data["error"].toString() ) );
+        m_songkick->setPlainText( i18n( "Songkick was not able to be downloaded. Please check your internet connection: %1", data["error"].toString() ) );
     }
     else if( data.contains( "suggested" ) )
     {
@@ -214,7 +214,7 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
     else if( data.contains( "notfound" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( i18n("There were no lyrics found for this track" ));
+        m_songkick->setPlainText( i18n("There was no information found for this track" ));
     }
     setPreferredSize( (int)size().width(), (int)size().height() );
     updateConstraints();
