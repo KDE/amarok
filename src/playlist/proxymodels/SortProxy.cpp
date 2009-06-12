@@ -100,7 +100,7 @@ SortProxy::parent( const QModelIndex& index ) const
 QModelIndex
 SortProxy::mapFromSource( const QModelIndex& sourceIndex ) const
 {
-    debug() << "mapFromSource row=" << sourceIndex.row();
+    //debug() << "mapFromSource row=" << sourceIndex.row();
     return createIndex( m_map->map( sourceIndex.row() ), sourceIndex.column() );
 }
 

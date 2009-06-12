@@ -23,8 +23,7 @@
 #include "FilterProxy.h"
 #include "SortScheme.h"
 
-#include <QVector>
-#include <QtAlgorithms>
+#include <QList>
 
 namespace Playlist
 {
@@ -70,7 +69,7 @@ public:
      * @param startRowInSource the position of the first row.
      * @param rowCount the number of added rows.
      */
-    void insertRows( int startRowInSource, int endRowInSource );
+    void insertRows( int startRowInProxy, int endRowInProxy );
 
     //NOTE to self by Téo: isn't it true that by just removing rows the sorting should be preserved?
     /**
@@ -79,7 +78,7 @@ public:
      * @param startRowInSource the position of the first row.
      * @param rowCount the number of removed rows.
      */
-    void deleteRows( int startRowInSource, int endRowInSource );
+    void deleteRows( int startRowInProxy, int endRowInProxy );
 
     /**
      * Converts a sorting scheme to a permutation of source rows.
@@ -98,30 +97,6 @@ private:
     int m_rowCount;
     FilterProxy *m_sourceProxy;
     bool m_sorted;
-    SortScheme *m_scheme;
-};
-/**
- * Comparison functor used by qSort() or qStableSort().
- */
-struct MultilevelLessThan
-{
-    /**
-     * Constructor.
-     */
-    MultilevelLessThan( FilterProxy *sourceProxy, SortScheme *scheme )
-        : m_sourceProxy( sourceProxy )
-        , m_scheme( scheme )
-        {};
-    /**
-     * Takes two row numbers from the proxy and compares the corresponding indexes based on
-     * a number of chosen criteria (columns).
-     * @param rowA the first row.
-     * @param rowB the second row.
-     * @return true if rowA is to be placed before rowB, false otherwise.
-     */
-    bool operator()( int rowA, int rowB );
-private:
-    FilterProxy *m_sourceProxy;
     SortScheme *m_scheme;
 };
 
