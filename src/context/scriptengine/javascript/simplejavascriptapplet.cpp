@@ -36,7 +36,6 @@
 #include <Plasma/Svg>
 #include <Plasma/FrameSvg>
 #include <Plasma/Package>
-#include <Plasma/VideoWidget>
 
 #include "appletinterface.h"
 
@@ -65,10 +64,6 @@ QScriptValue constructQRectFClass(QScriptEngine *engine);
 QScriptValue constructQPointClass(QScriptEngine *engine);
 QScriptValue constructQSizeFClass(QScriptEngine *engine);
 
-
-//typedef VideoWidget::Control Control;
-Q_DECLARE_FLAGS(Controls, VideoWidget::Control)
-Q_DECLARE_METATYPE(Controls)
 
 class DummyService : public Service
 {
@@ -127,37 +122,6 @@ QScriptValue variantToScriptValue(QScriptEngine *engine, QVariant var)
     return qScriptValueFromValue(engine, var);
 }
 
-QScriptValue qScriptValueFromControls(QScriptEngine *engine, const Controls &controls)
-{
-    return QScriptValue(engine, controls);
-}
-
-void controlsFromScriptValue(const QScriptValue& obj, Controls &controls)
-{
-    int flagValue = obj.toInteger();
-    //FIXME: it has to be a less ugly way to do that :)
-    if (flagValue&VideoWidget::Play) {
-        controls |= VideoWidget::Play;
-    }
-    if (flagValue&VideoWidget::Pause) {
-        controls |= VideoWidget::Pause;
-    }
-    if (flagValue&VideoWidget::Stop) {
-        controls |= VideoWidget::Stop;
-    }
-    if (flagValue&VideoWidget::PlayPause) {
-        controls |= VideoWidget::PlayPause;
-    }
-    if (flagValue&VideoWidget::Progress) {
-        controls |= VideoWidget::Progress;
-    }
-    if (flagValue&VideoWidget::Volume) {
-        controls |= VideoWidget::Volume;
-    }
-    if (flagValue&VideoWidget::OpenFile) {
-        controls |= VideoWidget::OpenFile;
-    }
-}
 
 QScriptValue qScriptValueFromData(QScriptEngine *engine, const DataEngine::Data &data)
 {
@@ -844,11 +808,6 @@ QScriptValue SimpleJavaScriptApplet::createWidget(QScriptContext *context, QScri
 
     //register enums will be accessed for instance as frame.Sunken for Frame shadow...
     registerEnums(engine, fun, *w->metaObject());
-
-    //FIXME: still don't have a better approach than try to cast for every widget that could have flags..
-    if (qobject_cast<VideoWidget *>(w)) {
-        qScriptRegisterMetaType<Controls>(engine, qScriptValueFromControls, controlsFromScriptValue, QScriptValue());
-    }
 
     return fun;
 }
