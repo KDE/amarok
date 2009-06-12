@@ -45,6 +45,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     : BrowserCategory( "user playlists" )
 {
     setPrettyName( i18n( "User Playlists" ) );
+    setShortDescription( i18n( "User generated and imported playlists" ) );
     setContentsMargins(0,0,0,0);
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );

@@ -85,6 +85,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 {
 
     setPrettyName( i18n( "Podcasts" ) );
+    setShortDescription( i18n( "List of subscribed podcasts and episodes" ) );
     
     resize(339, 574);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

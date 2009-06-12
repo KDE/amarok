@@ -47,6 +47,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 {
 
     setPrettyName( i18n( "Dynamic Playlists" ) );
+    setShortDescription( i18n( "Dynamically updating parameter based playlists" ) );
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins(0,0,0,0);
