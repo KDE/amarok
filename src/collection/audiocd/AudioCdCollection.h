@@ -96,6 +96,8 @@ private:
      */
     void readCd();
 
+    void noInfoAvailable();
+
     KIO::StoredTransferJob * m_cdInfoJob;
 
     QString m_cdName;

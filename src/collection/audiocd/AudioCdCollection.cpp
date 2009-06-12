@@ -30,7 +30,9 @@
 #include "SvgHandler.h"
 
 #include <kio/job.h>
+#include <kio/netaccess.h>
 
+#include <QDir>
 
 AMAROK_EXPORT_PLUGIN( AudioCdCollectionFactory )
 
@@ -132,6 +134,7 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
     {
         error() << job->error();
         m_cdInfoJob->deleteLater();
+        noInfoAvailable();
     }
     else
     {
@@ -343,6 +346,66 @@ Meta::Capability * AudioCdCollection::asCapabilityInterface( Meta::Capability::T
         return new Meta::AudioCdCollectionCapability( this );
     else
         return 0;
+}
+
+void AudioCdCollection::noInfoAvailable()
+{
+
+    DEBUG_BLOCK
+    
+    QString artist = i18n( "Unknown" );
+    QString album = i18n( "Unknown" );
+    QString year = i18n( "Unknown" );
+    QString genre = i18n( "Unknown" );
+
+    AudioCdArtistPtr artistPtr = AudioCdArtistPtr( new  AudioCdArtist( artist ) );
+    addArtist( ArtistPtr::staticCast( artistPtr ) );
+    AudioCdAlbumPtr albumPtr = AudioCdAlbumPtr( new  AudioCdAlbum( album ) );
+    albumPtr->setAlbumArtist( artistPtr );
+    addAlbum( AlbumPtr::staticCast( albumPtr ) );
+    AudioCdYearPtr yearPtr = AudioCdYearPtr( new AudioCdYear( year ) );
+    addYear( YearPtr::staticCast( yearPtr ) );
+    AudioCdGenrePtr genrePtr = AudioCdGenrePtr( new  AudioCdGenre( genre ) );
+    addGenre( GenrePtr::staticCast( genrePtr ) );
+
+
+    int i = 1;
+    QString prefix = i < 10 ? "0" : ""; 
+    QString trackName = "Track " + prefix + QString::number( i );
+
+    while( KIO::NetAccess::exists( "audiocd:/" + trackName + ".wav", KIO::NetAccess::SourceSide,0 ) )
+    {
+
+        debug() << "got track: " << "audiocd:/" + trackName + ".wav";
+
+        QString baseUrl = "audiocd:/" + QString::number( i );
+        
+        AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
+
+        trackPtr->setTrackNumber( i );
+        trackPtr->setFileNameBase( trackName );
+                
+        addTrack( TrackPtr::staticCast( trackPtr ) );
+
+        artistPtr->addTrack( trackPtr );
+        trackPtr->setArtist( artistPtr );
+
+        albumPtr->addTrack( trackPtr );
+        trackPtr->setAlbum( albumPtr );
+
+        genrePtr->addTrack( trackPtr );
+        trackPtr->setGenre( genrePtr );
+
+        yearPtr->addTrack( trackPtr );
+        trackPtr->setYear( yearPtr );
+
+        i++;
+        prefix = i < 10 ? "0" : "";
+        trackName = "Track " + prefix + QString::number( i );
+    }
+
+    emit ( updated() );
+    
 }
 
 
