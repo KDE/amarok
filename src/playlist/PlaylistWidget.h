@@ -53,7 +53,7 @@ namespace Playlist
             PrettyListView* m_playlistView;
             ProgressiveSearchWidget * m_searchWidget;
             QComboBox * m_sortBox;
-            QWidget* m_dynamicHintWidget;
+            QLabel* m_dynamicHintWidget;
 
     };
 }

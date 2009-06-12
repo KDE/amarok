@@ -27,6 +27,7 @@
 #include "DynamicModel.h"
 #include "MainWindow.h"
 #include "ToolBar.h"
+#include "PaletteHandler.h"
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
 #include "PlaylistHeader.h"
@@ -85,7 +86,8 @@ Playlist::Widget::Widget( QWidget* parent )
     // show visual indication of dynamic playlists  being enabled
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), this );
-    m_dynamicHintWidget->show();
+    m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
+    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; } " ).arg( PaletteHandler::highlightColor().name() ) );
     showDynamicHint( AmarokConfig::dynamicMode() );
     
     QWidget * layoutHolder = new QWidget( this );

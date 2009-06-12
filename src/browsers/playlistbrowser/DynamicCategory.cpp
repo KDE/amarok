@@ -217,6 +217,7 @@ DynamicCategory::On()
 
     //if the playlist is empty, repopulate while we are at it:
 
+    DynamicModel::instance()->enable( true );
     if ( The::playlistModel()->rowCount() == 0 )
         The::playlistActions()->repopulateDynamicPlaylist();
 }
@@ -227,6 +228,7 @@ DynamicCategory::Off()
     AmarokConfig::setDynamicMode( false );
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
+    DynamicModel::instance()->enable( false );
     m_repopulateButton->setEnabled( false );
     The::playlistActions()->playlistModeChanged();
 }
