@@ -245,6 +245,9 @@ private:
     TrackList m_tracks;
     bool m_isCompilation;
     TimecodeArtistPtr m_albumArtist;
+
+    QPixmap m_cover;
+    QMap<int, QPixmap> m_coverSizeMap;
 };
 
 class TimecodeGenre : public Meta::Genre

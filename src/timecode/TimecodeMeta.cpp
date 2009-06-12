@@ -20,6 +20,7 @@
 #include "TimecodeMeta.h"
 
 #include "Debug.h"
+#include "covermanager/CoverFetcher.h"
 #include "meta/Capability.h"
 #include "meta/capabilities/BoundedPlaybackCapability.h"
 
@@ -369,6 +370,8 @@ void TimecodeTrack::beginMetaDataUpdate()
 void TimecodeTrack::endMetaDataUpdate()
 {
 
+    bool updateCover = false;
+
     if ( m_updatedFields | ALBUM_UPDATED )
     {
         //create a new album:
@@ -385,6 +388,7 @@ void TimecodeTrack::endMetaDataUpdate()
         m_artist->addTrack( TimecodeTrackPtr( this ) );
         setArtist( m_artist );
         m_album->setAlbumArtist( m_artist );
+        updateCover = true;
     }
 
     if ( m_updatedFields | COMPOSER_UPDATED )
@@ -415,6 +419,7 @@ void TimecodeTrack::endMetaDataUpdate()
     {
         //create a new album:
         m_name = m_fields.value( TITLE_UPDATED );
+        updateCover = true;
     }
 
     if ( m_updatedFields | COMMENT_UPDATED )
@@ -434,6 +439,9 @@ void TimecodeTrack::endMetaDataUpdate()
         //create a new album:
         m_discNumber = m_fields.value( DISCNUMBER_UPDATED ).toInt();
     }
+
+    if ( updateCover )
+        The::coverFetcher()->queueAlbum( AlbumPtr::staticCast( m_album ) );
 
     m_updatedFields = 0;
     m_fields.clear();
@@ -597,7 +605,17 @@ TimecodeAlbum::tracks()
 QPixmap
 TimecodeAlbum::image( int size )
 {
-    return Meta::Album::image( size );
+    if ( m_cover.isNull() )
+        return Meta::Album::image( size );
+
+    //only cache during session
+    if ( m_coverSizeMap.contains( size ) )
+         return m_coverSizeMap.value( size );
+
+    QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
+    m_coverSizeMap.insert( size, scaled );
+    return scaled;
 }
 
 bool
@@ -609,7 +627,7 @@ TimecodeAlbum::canUpdateImage() const
 void
 TimecodeAlbum::setImage( const QPixmap & pixmap )
 {
-    Q_UNUSED(pixmap);
+    m_cover = pixmap;
 }
 
 void
