@@ -25,6 +25,8 @@
 #include "meta/capabilities/EditCapability.h"
 
 
+class PopupDropperAction;
+
 namespace Meta {
 
     class TimecodeTrack;
@@ -252,6 +254,12 @@ private:
 
     QPixmap m_cover;
     QMap<int, QPixmap> m_coverSizeMap;
+
+    PopupDropperAction *m_separator;
+    PopupDropperAction *m_displayCoverAction;
+    PopupDropperAction *m_fetchCoverAction;
+    PopupDropperAction *m_setCustomCoverAction;
+    PopupDropperAction *m_unsetCoverAction;
 };
 
 class TimecodeGenre : public Meta::Genre

@@ -565,6 +565,11 @@ TimecodeAlbum::TimecodeAlbum( const QString & name )
     : QObject()
     , m_name( name )
     , m_isCompilation( false )
+    , m_separator( 0 )
+    , m_displayCoverAction( 0 )
+    , m_fetchCoverAction( 0 )
+    , m_setCustomCoverAction( 0 )
+    , m_unsetCoverAction( 0 )
 {
 }
 
@@ -661,24 +666,33 @@ Meta::Capability* TimecodeAlbum::asCapabilityInterface( Meta::Capability::Type t
     {
         QList<PopupDropperAction*> actions;
 
-        PopupDropperAction *separator          = new PopupDropperAction( this );
-        PopupDropperAction *displayCoverAction = new DisplayCoverAction( this, AlbumPtr( this ) );
-        PopupDropperAction *fetchCoverAction   = new FetchCoverAction( this, AlbumPtr( this ) );
-        PopupDropperAction *setCustomCoverAction = new SetCustomCoverAction( this, AlbumPtr( this ) );
-        PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( this, AlbumPtr( this ) );
+        if ( m_separator == 0 )
+        {
+            m_separator          = new PopupDropperAction( this );
+            m_displayCoverAction = new DisplayCoverAction( this, AlbumPtr( this ) );
+            m_fetchCoverAction   = new FetchCoverAction( this, AlbumPtr( this ) );
+            m_setCustomCoverAction = new SetCustomCoverAction( this, AlbumPtr( this ) );
+            m_unsetCoverAction   = new UnsetCoverAction( this, AlbumPtr( this ) );
+        }
 
-        separator->setSeparator( true );
+        m_separator->setSeparator( true );
 
-        actions.append( separator );
-        actions.append( displayCoverAction );
-        actions.append( fetchCoverAction );
-        actions.append( setCustomCoverAction );
+        actions.append( m_separator );
+        actions.append( m_displayCoverAction );
+        actions.append( m_fetchCoverAction );
+        actions.append( m_setCustomCoverAction );
+        actions.append( m_unsetCoverAction );
+
         if( m_cover.isNull() )
         {
-            displayCoverAction->setEnabled( false );
-            unsetCoverAction->setEnabled( false );
+            m_displayCoverAction->setEnabled( false );
+            m_unsetCoverAction->setEnabled( false );
         }
-        actions.append( unsetCoverAction );
+        else
+        {
+            m_displayCoverAction->setEnabled( true );
+            m_unsetCoverAction->setEnabled( true );
+        }
 
         return new CustomActionsCapability( actions );
     }
