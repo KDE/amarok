@@ -275,6 +275,7 @@ Playlist::Controller::removeRows( QList<int>& rows )
     RemoveCmdList cmds;
     foreach( int r, rows )
     {
+        debug() << "Removing row " << r;
         if (( r >= 0 ) && ( r < m_model->rowCount() ) )
             cmds.append( RemoveCmd( m_model->trackAt( r ), r ) );
         else

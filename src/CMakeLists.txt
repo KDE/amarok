@@ -361,7 +361,6 @@ set(libplaylist_SRCS
     playlist/proxymodels/SortAlgorithms.cpp
     playlist/proxymodels/SortProxy.cpp
     playlist/proxymodels/SortScheme.cpp
-    playlist/proxymodels/SortMap.cpp
 )
 
 #####################################################################

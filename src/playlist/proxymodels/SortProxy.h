@@ -22,11 +22,9 @@
 #define AMAROK_PLAYLISTSORTPROXY_H
 
 #include "FilterProxy.h"
-#include "meta/Meta.h"
-#include "playlist/PlaylistModel.h"
-#include "SortMap.h"
+#include "SortScheme.h"
 
-#include <QAbstractProxyModel>
+#include <QSortFilterProxyModel>
 
 namespace Playlist
 {
@@ -36,7 +34,7 @@ namespace Playlist
  * This proxy should sit above the FilterProxy and below the GroupingProxy.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class SortProxy : public QAbstractProxyModel
+class SortProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
@@ -46,38 +44,6 @@ public:
      */
     static SortProxy *instance();
 
-    /**
-     * Returns the index of the item in the model specified by the given row, column and parent index.
-     * @param row the row of the item to look for.
-     * @param column the column of the item to look for.
-     * @param parent the index of the parent item.
-     * @return the index of the item in the model specified by the row, column and parent index.
-     */
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-
-    /**
-     * Returns the parent of the model item with the given index, or QModelIndex() if it has no parent.
-     * @param index the index of the item.
-     * @return the index of the parent of the item or QModelIndex() if the item has no parent.
-     */
-    QModelIndex parent( const QModelIndex &index ) const;
-
-    /**
-     * Returns the model index in the Playlist::SortProxy given the sourceIndex from the source model.
-     * @param sourceIndex the item's index in the source model.
-     * @return the item's index in this model.
-     */
-    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
-
-    /**
-     * Returns the source model index corresponding to the given proxyIndex from Playlist::SortProxy.
-     * @param proxyIndex the item's index in this model.
-     * @return the item's index in the source model.
-     */
-    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
-
-    // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
-    // Please keep them sorted alphabetically.
     /**
      * Returns the currently active row, translated to proxy rows
      * (or -1 if the current row is not represented by this proxy).
@@ -97,7 +63,7 @@ public:
      * @return the number of columns.
      */
     int columnCount( const QModelIndex & parent = QModelIndex() ) const;
-    
+
     /**
      * Get the current search fields bitmask.
      * @return The current search fields.
@@ -105,17 +71,17 @@ public:
     int currentSearchFields();
 
     /**
-     * Get the current search term.
-     * @return The curent search term.
-     */
-    QString currentSearchTerm();
-
-    /**
      * Forwards the request down the proxy stack and gets the data at an index.
      * @param index the index for which to retrieve the data from the model.
      * @return the data from the model.
      */
     QVariant data( const QModelIndex& index, int role ) const;
+
+    /**
+     * Get the current search term.
+     * @return The curent search term.
+     */
+    QString currentSearchTerm();
 
     /**
      * Forwards a search down through the stack of ProxyModels.
@@ -169,7 +135,6 @@ public:
      */
     bool rowExists( int row ) const;
 
-    //these will (should) be used all the time to translate the indexes depending on the sorting scheme
     /**
      * Converts a row index that's valid in the proxy below this one to a row index valid
      * in this proxy, with sanity checks.
@@ -197,7 +162,7 @@ public:
      * @return the total length of the playlist.
      */
     int totalLength() const;
-    
+
     /**
      * Returns a pointer to the track at a given row.
      * @param row the row to return the track pointer for.
@@ -213,9 +178,11 @@ public:
     QMimeData* mimeData( const QModelIndexList& ) const;
     bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
+    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
+
 public slots:
     void updateSortMap( SortScheme *scheme );
-    
+
 signals:
     /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
@@ -223,30 +190,19 @@ signals:
      * @param the list of id's added that are also represented by this proxy.
      */
     void insertedIds( const QList<quint64>& );
-    
+
     /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
      * by this proxy.
      * @param the list of id's removed that are also represented by this proxy.
      */
     void removedIds( const QList<quint64>& );
-    
+
     /**
      * Signal forwarded from the FilterProxy, emitted when the proxy changes its filtering.
      */
     void filterChanged();
-
-    /**
-     * Signal forwarded from the FilterProxy, emitted when the playlist layout is changed.
-     */
-    void layoutChanged();
-
-    void dataChanged( const QModelIndex& start, const QModelIndex& end );
-    void rowsInserted( const QModelIndex& idx, int start, int end );
-    void rowsRemoved( const QModelIndex& idx, int start, int end );
-
-    void sortChanged();
-
+    
 private:
     /**
      * Constructor.
@@ -260,14 +216,9 @@ private:
 
     FilterProxy *m_belowModel;          //! The Proxy or Model that's right below this one in the stack of Models/Proxies.
 
-    SortMap *m_map;                     //! Permutation function between the set of source indexes and the set of indexes to be forwarded.
-
     static SortProxy *s_instance;       //! Instance member.
 
-private slots:
-    void onDataChanged( const QModelIndex& start, const QModelIndex& end );
-    void onRowsInserted( const QModelIndex& idx, int start, int end );
-    void onRowsRemoved( const QModelIndex& idx, int start, int end );
+    SortScheme *m_scheme;
 };
 
 }   //namespace Playlist

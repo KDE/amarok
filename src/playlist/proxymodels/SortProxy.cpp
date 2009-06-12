@@ -21,8 +21,7 @@
 #include "SortProxy.h"
 
 #include "Debug.h"
-#include "playlist/PlaylistModel.h"
-#include "FilterProxy.h"
+#include "SortAlgorithms.h"
 
 namespace Playlist
 {
@@ -40,105 +39,46 @@ SortProxy::instance()
 }
 
 SortProxy::SortProxy()
-    : QAbstractProxyModel()
+    : QSortFilterProxyModel()
     , m_belowModel( FilterProxy::instance() )
 {
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
     setSourceModel( m_belowModel );
-    m_map = new SortMap( m_belowModel );
+    setDynamicSortFilter( false );
 
     //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
     //by sorting, they may be just blindly forwarded
     connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
     connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
 
-    connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( onDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( onRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( onRowsRemoved( const QModelIndex&, int, int ) ) );
-    // ^ rowsRemoved is currently used as rowsRemoved( start, start ), one item at a time
-
+    //needed by GroupingProxy:
     connect( m_belowModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-    connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );    //FIXME: probably nobody connects to this
+    connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
     connect( m_belowModel, SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
-
-    //NOTE to self by Téo: when rows are inserted, and that I'll know thanks to the signals
-    // in FilterProxy, they must be added to the m_map but the map must
-    // be declared invalid m_sorted = 0;
-
-    //NOTE to self by Téo: dataChanged could already be implemented by QAbstractProxyModel
-    /*
-    needed by GroupingProxy:
-    connect( m_belowModel, SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
-    */
 }
 
 SortProxy::~SortProxy()
-{
-    delete m_map;
-}
+{}
 
-QModelIndex
-SortProxy::index( int row, int column, const QModelIndex &parent ) const
+bool
+SortProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
 {
-    Q_UNUSED( parent );
-    if ( m_belowModel->rowExists( m_map->inv( row ) ) )
-    {
-        //debug() << "the row exists!";
-        return createIndex( row, column );
-    }
-    debug() << "bad model, no row for you! rowInProxy=" << row;
-    return QModelIndex();
-}
-
-QModelIndex
-SortProxy::parent( const QModelIndex& index ) const
-{
-    return m_belowModel->parent( index );
-}
-
-QModelIndex
-SortProxy::mapFromSource( const QModelIndex& sourceIndex ) const
-{
-    //debug() << "mapFromSource row=" << sourceIndex.row();
-    return createIndex( m_map->map( sourceIndex.row() ), sourceIndex.column() );
-}
-
-QModelIndex
-SortProxy::mapToSource( const QModelIndex& proxyIndex ) const
-{
-    //debug() << "mapToSource row=" << proxyIndex.row();
-    return m_belowModel->index( m_map->inv( proxyIndex.row() ), proxyIndex.column() );
+    int rowA = left.row();
+    int rowB = right.row();
+    multilevelLessThan mlt = multilevelLessThan( m_belowModel, m_scheme );
+    return mlt( rowA, rowB );
 }
 
 void
 SortProxy::updateSortMap( SortScheme *scheme)
 {
-    //APPLY THE SORTING
-    m_map->sort( scheme );
-    emit sortChanged();
+    emit layoutAboutToBeChanged();  //NOTE to self: do I need this or sort() takes care of it?
+    m_scheme = scheme;
+    sort( 0 );  //0 is a dummy column
+    emit layoutChanged();
 }
 
-void
-SortProxy::onDataChanged( const QModelIndex& start, const QModelIndex& end )
-{
-    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );   //see on RowsRemoved
-}
-
-void
-SortProxy::onRowsInserted( const QModelIndex& idx, int start, int end )
-{
-    m_map->insertRows( start, end );
-    emit rowsInserted( mapFromSource( idx ), rowFromSource( start ), rowFromSource( end ) );    //see onRowsRemoved
-}
-
-void
-SortProxy::onRowsRemoved( const QModelIndex& idx, int start, int end )
-{
-    m_map->deleteRows( start, end );
-    emit rowsRemoved( mapFromSource( idx ), rowFromSource( start ), rowFromSource( end ) );
-    //this is NOT GOOD because the removed tracks might not be a contiguous list in a sorted model
-}
 
 // Pass-through methods, basically identical to those in Playlist::FilterProxy, that pretty
 // much just forward stuff through the stack of proxies start here.
@@ -182,7 +122,7 @@ SortProxy::data( const QModelIndex & index, int role ) const
     //HACK around incomplete index causing a crash...
     //note to self by Téo: is this still needed?
     QModelIndex newIndex = this->index( index.row(), index.column() );
-    
+
     QModelIndex sourceIndex = mapToSource( newIndex );
     return m_belowModel->data( sourceIndex, role );
 }
@@ -214,7 +154,9 @@ SortProxy::findPrevious( const QString &searchTerm, int selectedRow, int searchF
 Qt::ItemFlags
 SortProxy::flags( const QModelIndex &index ) const
 {
-    return m_belowModel->flags( mapToSource( index ) );
+    //FIXME: This call is the same in all proxies but I think it should use a mapToSource()
+    //       every time. Needs to be checked.       --Téo
+    return m_belowModel->flags( index );
 }
 
 QMimeData *
@@ -229,6 +171,12 @@ SortProxy::mimeTypes() const
     return m_belowModel->mimeTypes();
 }
 
+int
+SortProxy::rowCount(const QModelIndex& parent) const
+{
+    return m_belowModel->rowCount( parent );
+}
+
 bool
 SortProxy::rowExists( int row ) const
 {
@@ -237,17 +185,11 @@ SortProxy::rowExists( int row ) const
 }
 
 int
-SortProxy::rowCount(const QModelIndex& parent) const
-{
-    return m_belowModel->rowCount( parent );
-}
-
-int
 SortProxy::rowFromSource( int row ) const
 {
     QModelIndex sourceIndex = m_belowModel->index( row, 0 );
     QModelIndex index = mapFromSource( sourceIndex );
-    
+
     if ( !index.isValid() )
         return -1;
     return index.row();
@@ -258,7 +200,7 @@ SortProxy::rowToSource( int row ) const
 {
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
-    
+
     if ( !sourceIndex.isValid() )
         return -1;
     return sourceIndex.row();
@@ -267,7 +209,7 @@ SortProxy::rowToSource( int row ) const
 void
 SortProxy::setActiveRow( int row )
 {
-    m_belowModel->setActiveRow( rowToSource( row ) );  //DONE: see SortProxy::activeRow()
+    m_belowModel->setActiveRow( rowToSource( row ) );
 }
 
 Qt::DropActions
@@ -279,7 +221,7 @@ SortProxy::supportedDropActions() const
 int
 SortProxy::totalLength() const
 {
-    return m_belowModel->totalLength();     //this should not need changes by definition
+    return m_belowModel->totalLength();
 }
 
 Meta::TrackPtr
