@@ -101,26 +101,25 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
 
     Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBias( m_cbias->weight() );
 
-    QWidget* entryConfig = chosen->configWidget( this );
-    if( !entryConfig )
+    QWidget* config  = chosen->configWidget( this );
+    if( !config )
     {
         debug() << "got an invalid config widget from bias type!";
         return;
     }
 
     // remove last item (old config widget) and old bias and add new one
-    if( m_layout->count() == 2 )
+    if( m_layout->rowCount() == 3 )
     {
         // remove old widget
-
-        QLayoutItem* oldW = m_layout->itemAt( 1 );
-        m_layout->removeItem( oldW );
-        delete oldW;
+        m_layout->removeWidget( m_currentConfig );
+        delete m_currentConfig;
     }
 
-    entryConfig->setParent( this );
+    config->setParent( this );
 
-    m_layout->addWidget( entryConfig, 2, 0, 1, 3, Qt::AlignCenter );
+    m_currentConfig = config;
+    m_layout->addWidget( config, 2, 0, 1, 3, Qt::AlignCenter );
     m_cbias->setCurrentEntry( chosen );
 }
 

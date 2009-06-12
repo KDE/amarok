@@ -42,6 +42,7 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
 
     private:
         CustomBias* m_cbias;
+        QWidget* m_currentConfig;
 
         QGridLayout* m_layout;
         Amarok::Slider* m_weightSelection;

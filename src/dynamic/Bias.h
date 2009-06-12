@@ -169,7 +169,7 @@ namespace Dynamic
              * This is the list of tracks from the collection that fit the Bias.
              * The QSet is a set of bytearray UIDs from the collection itself. 
              */
-            virtual const QSet<QByteArray>& propertySet() = 0;
+            virtual const QSet< QByteArray> & propertySet() = 0;
             
             /**
              * All collection filter biases must also share a weight to
