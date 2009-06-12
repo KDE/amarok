@@ -341,12 +341,6 @@ protected:
     KVBox       *m_bottomPanel;
     bool         m_polished;
 
-    QString      m_name;
-    QString      m_prettyName;
-    QString      m_shortDescription;
-    QString      m_longDescription;
-    QIcon        m_icon;
-
     bool m_serviceready;
     bool m_useCollectionTreeView;
 

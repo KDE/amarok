@@ -128,10 +128,10 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     QLabel * nameLabel = new QLabel( commonPanel );
     nameLabel->setMinimumSize( 230 , 28 );
-    if( !m_prettyName.isEmpty() )
-        nameLabel->setText( m_prettyName );
+    if( !prettyName.isEmpty() )
+        nameLabel->setText( prettyName );
     else
-        nameLabel->setText( m_name );
+        nameLabel->setText( name );
 
     QFont nameLabelFont = nameLabel->font();
     nameLabelFont.setBold( true );
@@ -242,7 +242,7 @@ ServiceBase::infoChanged( const QString &infoHtml )
 {
     DEBUG_BLOCK
     QVariantMap map;
-    map["service_name"] = m_name;
+    map["service_name"] = prettyName();
     map["main_info"] = infoHtml;
     The::serviceInfoProxy()->setInfo( map );
 }
@@ -267,7 +267,7 @@ void
 ServiceBase::generateWidgetInfo( const QString &html ) const
 {
     QVariantMap map;
-    map["service_name"] = m_name;
+    map["service_name"] = prettyName();
     map["main_info"] = html;
     The::serviceInfoProxy()->setInfo( map );
 }
