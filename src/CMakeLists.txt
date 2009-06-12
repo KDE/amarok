@@ -504,7 +504,6 @@ set(amaroklib_LIB_SRCS
     widgets/ProgressiveSearchWidget.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
-    widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp
     widgets/TokenPool.cpp
     widgets/Token.cpp
