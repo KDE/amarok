@@ -246,6 +246,10 @@ public:
     void setAlbumArtist( TimecodeArtistPtr artist );
     void setIsCompilation( bool compilation );
 
+    bool operator==( const Meta::Album &other ) const {
+        return name() == other.name();
+    }
+
 private:
     QString m_name;
     TrackList m_tracks;
