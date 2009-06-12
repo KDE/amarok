@@ -26,7 +26,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistSortScheme.h"
 
-#include <QSortFilterProxyModel>
+#include <QAbstractProxyModel>
 
 namespace Playlist
 {
@@ -36,7 +36,7 @@ namespace Playlist
  * This proxy should sit above the FilterProxy and below the GroupingProxy.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class SortProxy : public QSortFilterProxyModel
+class SortProxy : public QAbstractProxyModel
 {
     Q_OBJECT
 public:
@@ -46,17 +46,21 @@ public:
      */
     static SortProxy *instance();
 
-    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
-    void sort( const SortScheme &scheme );
+    QModelIndex parent( const QModelIndex &index ) const;   //see note in at docs about reimplementing
+
+    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
+    
+    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 
     // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
     // Please keep them sorted alphabetically.
     /**
-    * Returns the currently active row, translated to proxy rows
-    * (or -1 if the current row is not represented by this proxy).
-    * @return The currently active (playing) row in proxy terms.
-    */
+     * Returns the currently active row, translated to proxy rows
+     * (or -1 if the current row is not represented by this proxy).
+     * @return The currently active (playing) row in proxy terms.
+     */
     int activeRow() const;
 
     /**
@@ -64,6 +68,14 @@ public:
      */
     void clearSearchTerm();
 
+    /**
+     * Forwards the number of columns from the FilterProxy as SortProxy by definition shouldn't
+     * change the column count.
+     * @param parent the parent of the columns to count.
+     * @return the number of columns.
+     */
+    int columnCount( const QModelIndex & parent = QModelIndex() ) const;
+    
     /**
      * Get the current search fields bitmask.
      * @return The current search fields.
@@ -119,7 +131,15 @@ public:
      * @return The row of the first found match above the offset, -1 if no match is found.
      */
     int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
-    
+
+    /**
+     * Forwards the number of rows from the FilterProxy as SortProxy by definition shouldn't
+     * change the row count.
+     * @param parent the parent of the rows to count.
+     * @return the number of rows.
+     */
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
     /**
      * Checks if a row exists in the ProxyModel.
      * @param row the row in the Proxy.
@@ -184,11 +204,13 @@ private:
      */
     ~SortProxy();
 
-    FilterProxy *m_belowModel;    //! The Proxy or Model that's right below this one in the stack of Models/Proxies.
+    FilterProxy *m_belowModel;          //! The Proxy or Model that's right below this one in the stack of Models/Proxies.
 
-    SortScheme *m_currentSortScheme;
+    SortScheme *m_currentSortScheme;    //! The sorting scheme that's currently used.
 
-    static SortProxy *s_instance;   //! Instance member.
+    QMap< qint64, qint64 > *m_map;             //! Permutation function between the set of source indexes and the set of indexes to be forwarded.
+
+    static SortProxy *s_instance;       //! Instance member.
 };
 
 }   //namespace Playlist

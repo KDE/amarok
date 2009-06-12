@@ -40,10 +40,14 @@ SortProxy::instance()
 }
 
 SortProxy::SortProxy()
-    : QSortFilterProxyModel()
+    : QAbstractProxyModel()
     , m_belowModel(  FilterProxy::instance() )
 {
     setSourceModel( m_belowModel );
+    m_map = new QMap< qint64, qint64 >();
+    for( int i = 0; i < m_belowModel->rowCount() ; i++ )
+        m_map->insert( i, i ); //identical function
+        
     //m_sortScheme << foo...
 }
 
@@ -52,15 +56,12 @@ SortProxy::~SortProxy()
     delete m_currentSortScheme;
 }
 
-bool SortProxy::lessThan(const QModelIndex& left, const QModelIndex& right) const
+QModelIndex
+SortProxy::mapFromSource(const QModelIndex& sourceIndex) const
 {
-    //return QSortFilterProxyModel::lessThan(left, right);
+    
 }
 
-void SortProxy::sort( const SortScheme &scheme )
-{
-
-}
 
 
 // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
@@ -79,6 +80,12 @@ void
 SortProxy::clearSearchTerm()
 {
     m_belowModel->clearSearchTerm();
+}
+
+int
+SortProxy::columnCount(const QModelIndex& parent) const
+{
+    return m_belowModel->columnCount( parent );
 }
 
 int
@@ -151,6 +158,12 @@ SortProxy::rowExists( int row ) const
 {
     QModelIndex index = this->index( row, 0 );
     return index.isValid();
+}
+
+int
+SortProxy::rowCount(const QModelIndex& parent) const
+{
+    m_belowModel->rowCount( parent );
 }
 
 int
