@@ -33,6 +33,7 @@
 #include <QPalette>
 #include <QSizePolicy>
 #include <QWidget>
+#include <QTimer>
 
 #define TOOLBAR_X_OFFSET 2000
 
@@ -250,8 +251,9 @@ Context::ToolbarView::installApplets()
     }
     
     QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
-    dbus.call(QDBus::Block, "recreate");
+    dbus.call(QDBus::NoBlock, "recreate");
 
-    recreateOverlays();
+    // give it some time to run, but not too long
+    QTimer::singleShot( 3000, this, SLOT( recreateOverlays() ) );
 }
 #include "ToolbarView.moc"

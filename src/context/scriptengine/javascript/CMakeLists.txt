@@ -13,7 +13,8 @@ set(simple_javascript_engine_SRCS
     qtgui/url.cpp
 )
 
-include_directories(${PHONON_INCLUDES})
+include_directories( ../../..  # PaletteHandler.h
+	            ${PHONON_INCLUDES})
 
 
 kde4_add_plugin(amarok_appletscript_simple_javascript
@@ -25,13 +26,14 @@ target_link_libraries(amarok_appletscript_simple_javascript
                        ${QT_QTSCRIPT_LIBRARY}
                        ${QT_QTUITOOLS_LIBRARY}
                        ${QT_QTXML_LIBRARY}
+		       amaroklib
                        )
-
+ 
 install(TARGETS amarok_appletscript_simple_javascript DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-scriptengine-applet-simple-javascript.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
 
 set(javascript_runner_engine_SRCS
-    javascriptrunner.cpp
+    javascriptrunner.cpp 
 )
 
 kde4_add_plugin(amarok_runnerscript_javascript ${javascript_runner_engine_SRCS})

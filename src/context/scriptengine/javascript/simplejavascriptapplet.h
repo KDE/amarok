@@ -78,6 +78,7 @@ private:
     static QScriptValue print(QScriptContext *context, QScriptEngine *engine);
     static QScriptValue createPrototype( QScriptEngine *engine, const QString &name );
 
+
 private:
     static KSharedPtr<UiLoader> s_widgetLoader;
     QScriptEngine *m_engine;

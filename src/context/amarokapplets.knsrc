@@ -1,7 +1,5 @@
 [KNewStuff2]
 ProvidersUrl=http://download.kde.org/khotnewstuff/amarokapplets-providers.xml
-Checksumpolicy=ifpossible
-SignaturePolicy=ifpossible
 StandardResource=tmp
 InstallationCommand=amarokpkg -i %f
 UninstallationCommand=amarokpkg -r %f

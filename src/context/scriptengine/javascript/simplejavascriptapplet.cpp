@@ -18,10 +18,13 @@
 
 #include "simplejavascriptapplet.h"
 
+#include "PaletteHandler.h"
+
 #include <QScriptEngine>
 #include <QFile>
 #include <QUiLoader>
 #include <QGraphicsLayout>
+#include <QPainter>
 #include <QWidget>
 
 #include <KDebug>
@@ -325,6 +328,34 @@ void SimpleJavaScriptApplet::paintInterface(QPainter *p, const QStyleOptionGraph
         AppletScript::paintInterface(p, option, contentsRect);
         return;
     }
+    
+    QScriptValue drawB = m_self.property("drawAppletBackground");
+    if (drawB.isFunction()) {
+        kDebug() << "Script: drawB is defined, " << fun.toString();
+        QScriptContext *ctx = m_engine->pushContext();
+        ctx->setActivationObject(m_self);
+        QScriptValue ret = fun.call(m_self);
+        m_engine->popContext();
+        if( ret.toBool() )
+        { // told to draw standard background
+            kDebug() << "told to draw bg";
+            p->save();
+            QPainterPath path;
+            path.addRoundedRect( applet()->boundingRect().adjusted( 0, 1, -1, -1 ), 3, 3 );
+            //p->fillPath( path, gradient );
+            QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
+            highlight.setAlpha( 120 );
+            p->fillPath( path, highlight );
+            p->restore();
+
+            p->save();
+            QColor col = PaletteHandler::highlightColor( 0.3, .7 );
+            p->setPen( col );
+            p->drawRoundedRect( applet()->boundingRect().adjusted( 2, 2, -2, -2 ), 3, 3 );
+            p->restore();
+        }
+    }
+
 
     QScriptValueList args;
     args << m_engine->toScriptValue(p);
@@ -744,6 +775,7 @@ QScriptValue SimpleJavaScriptApplet::newPlasmaFrameSvg(QScriptContext *context, 
     frameSvg->setImagePath(parentedToApplet ? filename : findSvg(engine, filename));
     return engine->newQObject(frameSvg);
 }
+
 
 void SimpleJavaScriptApplet::installWidgets(QScriptEngine *engine)
 {

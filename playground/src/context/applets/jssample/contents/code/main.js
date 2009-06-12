@@ -1,4 +1,8 @@
-plasmoid.drawStandardBackground = true;
+
+plasmoid.drawAppletBackground = function()
+{
+  return true;
+}
 
 plasmoid.dataUpdate = function(a, b)
 {
