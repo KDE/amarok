@@ -22,6 +22,7 @@
 
 #include "meta/Meta.h"
 #include "meta/capabilities/BoundedPlaybackCapability.h"
+#include "meta/capabilities/EditCapability.h"
 
 
 namespace Meta {
@@ -42,6 +43,7 @@ namespace Meta {
 
 class BoundedPlaybackCapabilityImpl : public BoundedPlaybackCapability
 {
+Q_OBJECT
 public:
     BoundedPlaybackCapabilityImpl( TimecodeTrack * track )
         : m_track( track )
@@ -55,201 +57,249 @@ private:
 
 };
 
+class TimecodeEditCapabilityImpl : public EditCapability
+{
+Q_OBJECT
+public:
+    TimecodeEditCapabilityImpl( TimecodeTrack * track );
+    ~TimecodeEditCapabilityImpl() {}
+
+    static Type capabilityInterfaceType() { return Meta::Capability::Editable; }
+
+    virtual bool isEditable() const { return true; }
+    virtual void setAlbum( const QString &newAlbum );
+    virtual void setArtist( const QString &newArtist );
+    virtual void setComposer( const QString &newComposer );
+    virtual void setGenre( const QString &newGenre );
+    virtual void setYear( const QString &newYear );
+    virtual void setTitle( const QString &newTitle );
+    virtual void setComment( const QString &newComment );
+    virtual void setTrackNumber( int newTrackNumber );
+    virtual void setDiscNumber( int newDiscNumber );
+
+    virtual void beginMetaDataUpdate();
+    virtual void endMetaDataUpdate();
+    virtual void abortMetaDataUpdate();
+
+private:
+    TimecodeTrack * m_track;
+};
+
 class TimecodeTrack : public Track
 {
-    public:
-        TimecodeTrack( const QString &name, const QString &url, qint64 start, qint64 end );
-        virtual ~TimecodeTrack();
+public:
+    TimecodeTrack( const QString &name, const QString &url, qint64 start, qint64 end );
+    virtual ~TimecodeTrack();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
+    virtual QString name() const;
+    virtual QString prettyName() const;
 
-        virtual KUrl playableUrl() const;
-        virtual QString uidUrl() const;
-        virtual QString prettyUrl() const;
+    virtual KUrl playableUrl() const;
+    virtual QString uidUrl() const;
+    virtual QString prettyUrl() const;
 
-        virtual bool isPlayable() const;
-        virtual bool isEditable() const;
+    virtual bool isPlayable() const;
+    virtual bool isEditable() const;
 
-        virtual AlbumPtr album() const;
-        virtual ArtistPtr artist() const;
-        virtual GenrePtr genre() const;
-        virtual ComposerPtr composer() const;
-        virtual YearPtr year() const;
+    virtual AlbumPtr album() const;
+    virtual ArtistPtr artist() const;
+    virtual GenrePtr genre() const;
+    virtual ComposerPtr composer() const;
+    virtual YearPtr year() const;
 
-        virtual void setAlbum ( const QString &newAlbum );
-        virtual void setArtist ( const QString &newArtist );
-        virtual void setGenre ( const QString &newGenre );
-        virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( const QString &newYear );
+    virtual void setAlbum ( const QString &newAlbum );
+    virtual void setArtist ( const QString &newArtist );
+    virtual void setGenre ( const QString &newGenre );
+    virtual void setComposer ( const QString &newComposer );
+    virtual void setYear ( const QString &newYear );
 
-        virtual void setTitle( const QString &newTitle );
+    virtual void setTitle( const QString &newTitle );
 
-        virtual QString comment() const;
-        virtual void setComment ( const QString &newComment );
+    virtual QString comment() const;
+    virtual void setComment ( const QString &newComment );
 
-        virtual double score() const;
-        virtual void setScore ( double newScore );
+    virtual double score() const;
+    virtual void setScore ( double newScore );
 
-        virtual int rating() const;
-        virtual void setRating ( int newRating );
+    virtual int rating() const;
+    virtual void setRating ( int newRating );
 
-        virtual int length() const;
+    virtual int length() const;
 
-        virtual int filesize() const;
-        virtual int sampleRate() const;
-        virtual int bitrate() const;
+    virtual int filesize() const;
+    virtual int sampleRate() const;
+    virtual int bitrate() const;
 
-        virtual int trackNumber() const;
-        virtual void setTrackNumber ( int newTrackNumber );
+    virtual int trackNumber() const;
+    virtual void setTrackNumber ( int newTrackNumber );
 
-        virtual int discNumber() const;
-        virtual void setDiscNumber ( int newDiscNumber );
+    virtual int discNumber() const;
+    virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual uint lastPlayed() const;
-        virtual int playCount() const;
+    virtual uint lastPlayed() const;
+    virtual int playCount() const;
 
-        virtual QString type() const;
+    virtual QString type() const;
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
-        //TimecodeTrack specific methods
-        void setAlbum( TimecodeAlbumPtr album );
-        void setArtist( TimecodeArtistPtr artist );
-        void setComposer( TimecodeComposerPtr composer );
-        void setGenre( TimecodeGenrePtr genre );
-        void setYear( TimecodeYearPtr year );
+    void beginMetaDataUpdate();
+    void endMetaDataUpdate();
+    void abortMetaDataUpdate();
 
-        qint64 start();
-        qint64 end();
+    //TimecodeTrack specific methods
+    void setAlbum( TimecodeAlbumPtr album );
+    void setArtist( TimecodeArtistPtr artist );
+    void setComposer( TimecodeComposerPtr composer );
+    void setGenre( TimecodeGenrePtr genre );
+    void setYear( TimecodeYearPtr year );
+
+    qint64 start();
+    qint64 end();
 
 
-    private:
-        //TimecodeCollection *m_collection;
+private:
+    //TimecodeCollection *m_collection;
 
-        TimecodeArtistPtr m_artist;
-        TimecodeAlbumPtr m_album;
-        TimecodeGenrePtr m_genre;
-        TimecodeComposerPtr m_composer;
-        TimecodeYearPtr m_year;
+    TimecodeArtistPtr m_artist;
+    TimecodeAlbumPtr m_album;
+    TimecodeGenrePtr m_genre;
+    TimecodeComposerPtr m_composer;
+    TimecodeYearPtr m_year;
 
-        QString m_name;
-        QString m_type;
-        qint64 m_start;
-        qint64 m_end;
-        int m_length;
-        int m_trackNumber;
-        QString m_displayUrl;
-        QString m_playableUrl;
+    QString m_name;
+    QString m_type;
+    qint64 m_start;
+    qint64 m_end;
+    int m_length;
+    int m_trackNumber;
+    QString m_displayUrl;
+    QString m_playableUrl;
+
+    int m_updatedFields;
+    QMap<int, QString> m_fields;
+
+    enum
+    {
+        ALBUM_UPDATED = 1,
+        ARTIST_UPDATED = 2,
+        COMPOSER_UPDATED = 4,
+        GENRE_UPDATED = 8,
+        YEAR_UPDATED = 16,
+        TITLE_UPDATED = 32,
+        COMMENT_UPDATED = 64,
+        TRACKNUMBER_UPDATED = 128,
+        DISCNUMBER_UPDATED = 256
+    };
 };
 
 class TimecodeArtist : public Meta::Artist
 {
-    public:
-        TimecodeArtist( const QString &name );
-        virtual ~TimecodeArtist();
+public:
+    TimecodeArtist( const QString &name );
+    virtual ~TimecodeArtist();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
+    virtual QString name() const;
+    virtual QString prettyName() const;
 
-        virtual TrackList tracks();
+    virtual TrackList tracks();
 
-        virtual AlbumList albums();
+    virtual AlbumList albums();
 
-        //TimecodeArtist specific methods
-        void addTrack( TimecodeTrackPtr track );
+    //TimecodeArtist specific methods
+    void addTrack( TimecodeTrackPtr track );
 
-    private:
-        QString m_name;
-        TrackList m_tracks;
+private:
+    QString m_name;
+    TrackList m_tracks;
 };
 
 class TimecodeAlbum : public Meta::Album
 {
-    public:
-        TimecodeAlbum( const QString &name );
-        virtual ~TimecodeAlbum();
+public:
+    TimecodeAlbum( const QString &name );
+    virtual ~TimecodeAlbum();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
+    virtual QString name() const;
+    virtual QString prettyName() const;
 
-        virtual bool isCompilation() const;
-        virtual bool hasAlbumArtist() const;
-        virtual ArtistPtr albumArtist() const;
-        virtual TrackList tracks();
+    virtual bool isCompilation() const;
+    virtual bool hasAlbumArtist() const;
+    virtual ArtistPtr albumArtist() const;
+    virtual TrackList tracks();
 
-        virtual QPixmap image( int size = 1 );
-        virtual bool canUpdateImage() const;
-        virtual void setImage( const QPixmap &pixmap );
+    virtual QPixmap image( int size = 1 );
+    virtual bool canUpdateImage() const;
+    virtual void setImage( const QPixmap &pixmap );
 
-        //TimecodeAlbum specific methods
-        void addTrack( TimecodeTrackPtr track );
-        void setAlbumArtist( TimecodeArtistPtr artist );
-        void setIsCompilation( bool compilation );
+    //TimecodeAlbum specific methods
+    void addTrack( TimecodeTrackPtr track );
+    void setAlbumArtist( TimecodeArtistPtr artist );
+    void setIsCompilation( bool compilation );
 
-    private:
-        QString m_name;
-        TrackList m_tracks;
-        bool m_isCompilation;
-        TimecodeArtistPtr m_albumArtist;
+private:
+    QString m_name;
+    TrackList m_tracks;
+    bool m_isCompilation;
+    TimecodeArtistPtr m_albumArtist;
 };
 
 class TimecodeGenre : public Meta::Genre
 {
-    public:
-        TimecodeGenre( const QString &name );
-        virtual ~TimecodeGenre();
+public:
+    TimecodeGenre( const QString &name );
+    virtual ~TimecodeGenre();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
+    virtual QString name() const;
+    virtual QString prettyName() const;
 
-        virtual TrackList tracks();
+    virtual TrackList tracks();
 
-        //TimecodeGenre specific methods
-        void addTrack( TimecodeTrackPtr track );
+    //TimecodeGenre specific methods
+    void addTrack( TimecodeTrackPtr track );
 
-    private:
-        QString m_name;
-        TrackList m_tracks;
+private:
+    QString m_name;
+    TrackList m_tracks;
 };
 
 class TimecodeComposer : public Meta::Composer
 {
-    public:
-        TimecodeComposer( const QString &name );
-        virtual ~TimecodeComposer();
+public:
+    TimecodeComposer( const QString &name );
+    virtual ~TimecodeComposer();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
+    virtual QString name() const;
+    virtual QString prettyName() const;
 
-        virtual TrackList tracks();
+    virtual TrackList tracks();
 
-        //TimecodeComposer specific methods
-        void addTrack( TimecodeTrackPtr track );
+    //TimecodeComposer specific methods
+    void addTrack( TimecodeTrackPtr track );
 
-    private:
-        QString m_name;
-        TrackList m_tracks;
+private:
+    QString m_name;
+    TrackList m_tracks;
 };
 
 class TimecodeYear : public Meta::Year
 {
-    public:
-        TimecodeYear( const QString &name );
-        virtual ~TimecodeYear();
+public:
+    TimecodeYear( const QString &name );
+    virtual ~TimecodeYear();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
+    virtual QString name() const;
+    virtual QString prettyName() const;
 
-        virtual TrackList tracks();
+    virtual TrackList tracks();
 
-        //TimecodeYear specific methods
-        void addTrack( TimecodeTrackPtr track );
+    //TimecodeYear specific methods
+    void addTrack( TimecodeTrackPtr track );
 
-    private:
-        QString m_name;
-        TrackList m_tracks;
+private:
+    QString m_name;
+    TrackList m_tracks;
 };
 
 }

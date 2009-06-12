@@ -38,6 +38,86 @@ qint64 BoundedPlaybackCapabilityImpl::endPosition()
     return m_track->end();
 }
 
+////////////////// TimecodeEditCapabilityImpl //////////////////
+
+TimecodeEditCapabilityImpl::TimecodeEditCapabilityImpl( TimecodeTrack * track )
+{
+    m_track = track;
+}
+
+void
+TimecodeEditCapabilityImpl::setAlbum( const QString &newAlbum )
+{
+   m_track->setAlbum( newAlbum );
+}
+
+void
+TimecodeEditCapabilityImpl::setArtist( const QString &newArtist )
+{
+     m_track->setArtist( newArtist );
+}
+
+void
+TimecodeEditCapabilityImpl::setComposer( const QString &newComposer )
+{
+    m_track->setComposer( newComposer );
+}
+
+void
+TimecodeEditCapabilityImpl::setGenre( const QString &newGenre )
+{
+     m_track->setGenre( newGenre );
+}
+
+void
+TimecodeEditCapabilityImpl::setYear( const QString &newYear )
+{
+     m_track->setYear( newYear );
+}
+
+void
+TimecodeEditCapabilityImpl::setTitle( const QString &newTitle )
+{
+     m_track->setTitle( newTitle );
+}
+
+void
+TimecodeEditCapabilityImpl::setComment( const QString &newComment )
+{
+     m_track->setComment( newComment );
+}
+
+void
+TimecodeEditCapabilityImpl::setTrackNumber( int newTrackNumber )
+{
+     m_track->setTrackNumber( newTrackNumber );
+}
+
+void
+TimecodeEditCapabilityImpl::setDiscNumber( int newDiscNumber )
+{
+    m_track->setDiscNumber( newDiscNumber );
+}
+
+
+void
+TimecodeEditCapabilityImpl::beginMetaDataUpdate()
+{
+    m_track->beginMetaDataUpdate();
+}
+
+void
+TimecodeEditCapabilityImpl::endMetaDataUpdate()
+{
+    m_track->endMetaDataUpdate();
+}
+
+void
+TimecodeEditCapabilityImpl::abortMetaDataUpdate()
+{
+    m_track->abortMetaDataUpdate();
+}
+
 ////////////////// TRACK //////////////////
 
 TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 start, qint64 end )
@@ -130,53 +210,11 @@ TimecodeTrack::year() const
     return YearPtr::staticCast( m_year );;
 }
 
-void
-TimecodeTrack::setAlbum( const QString & newAlbum )
-{
-    Q_UNUSED( newAlbum );
-}
-
-void
-TimecodeTrack::setTitle( const QString & newTitle )
-{
-    Q_UNUSED( newTitle );
-}
-
-void
-TimecodeTrack::setYear( const QString & newYear )
-{
-    Q_UNUSED( newYear );
-}
-
-void
-TimecodeTrack::setComposer( const QString & newComposer )
-{
-    Q_UNUSED( newComposer )
-}
-
-void
-TimecodeTrack::setGenre( const QString & newGenre )
-{
-    Q_UNUSED( newGenre )
-}
-
-void
-TimecodeTrack::setArtist( const QString & newArtist )
-{
-    Q_UNUSED( newArtist )
-}
-
 QString
 TimecodeTrack::comment() const
 {
     //TODO: might be nice for this kind of user generated track
     return QString();
-}
-
-void
-TimecodeTrack::setComment( const QString & newComment )
-{
-    Q_UNUSED( newComment )
 }
 
 double
@@ -233,22 +271,10 @@ TimecodeTrack::trackNumber() const
     return m_trackNumber;
 }
 
-void
-TimecodeTrack::setTrackNumber( int newTrackNumber )
-{
-    m_trackNumber = newTrackNumber;
-}
-
 int
 TimecodeTrack::discNumber() const
 {
     return 0;
-}
-
-void
-TimecodeTrack::setDiscNumber( int newDiscNumber )
-{
-    Q_UNUSED( newDiscNumber )
 }
 
 uint
@@ -267,6 +293,156 @@ QString
 TimecodeTrack::type() const
 {
     return QString();
+}
+
+void
+TimecodeTrack::setAlbum( const QString &newAlbum )
+{
+    m_updatedFields &= ALBUM_UPDATED;
+    m_fields.insert( ALBUM_UPDATED, newAlbum );
+}
+
+void
+TimecodeTrack::setArtist( const QString &newArtist )
+{
+    m_updatedFields &= ARTIST_UPDATED;
+    m_fields.insert( ARTIST_UPDATED, newArtist );
+}
+
+void
+TimecodeTrack::setComposer( const QString &newComposer )
+{
+    m_updatedFields &= COMPOSER_UPDATED;
+    m_fields.insert( COMPOSER_UPDATED, newComposer );
+}
+
+void
+TimecodeTrack::setGenre( const QString &newGenre )
+{
+    m_updatedFields &= GENRE_UPDATED;
+    m_fields.insert( GENRE_UPDATED, newGenre );
+}
+
+void
+TimecodeTrack::setYear( const QString &newYear )
+{
+    m_updatedFields &= YEAR_UPDATED;
+    m_fields.insert( YEAR_UPDATED, newYear );
+}
+
+void
+TimecodeTrack::setTitle( const QString &newTitle )
+{
+    m_updatedFields &= TITLE_UPDATED;
+    m_fields.insert( TITLE_UPDATED, newTitle );
+}
+
+void
+TimecodeTrack::setComment( const QString &newComment )
+{
+    m_updatedFields &= COMMENT_UPDATED;
+    m_fields.insert( COMMENT_UPDATED, newComment );
+}
+
+void
+TimecodeTrack::setTrackNumber( int newTrackNumber )
+{
+    m_updatedFields &= TRACKNUMBER_UPDATED;
+    m_fields.insert( TRACKNUMBER_UPDATED, QString::number( newTrackNumber ) );
+}
+
+void
+TimecodeTrack::setDiscNumber( int newDiscNumber )
+{
+    m_updatedFields &= DISCNUMBER_UPDATED;
+    m_fields.insert( DISCNUMBER_UPDATED, QString::number( newDiscNumber ) );
+}
+
+void TimecodeTrack::beginMetaDataUpdate()
+{
+    m_updatedFields = 0;
+    m_fields.clear();
+}
+
+void TimecodeTrack::endMetaDataUpdate()
+{
+
+    if ( m_updatedFields | ALBUM_UPDATED )
+    {
+        //create a new album:
+        m_album = TimecodeAlbumPtr( new TimecodeAlbum( m_fields.value( ALBUM_UPDATED ) ) );
+        m_album->addTrack( TimecodeTrackPtr( this ) );
+        setAlbum( m_album );
+        m_album->setAlbumArtist( m_artist );
+    }
+
+    if ( m_updatedFields | ARTIST_UPDATED )
+    {
+        //create a new album:
+        m_artist = TimecodeArtistPtr( new TimecodeArtist( m_fields.value( ARTIST_UPDATED ) ) );
+        m_artist->addTrack( TimecodeTrackPtr( this ) );
+        setArtist( m_artist );
+        m_album->setAlbumArtist( m_artist );
+    }
+
+    if ( m_updatedFields | COMPOSER_UPDATED )
+    {
+        //create a new album:
+        m_composer = TimecodeComposerPtr( new TimecodeComposer( m_fields.value( COMPOSER_UPDATED ) ) );
+        m_composer->addTrack( TimecodeTrackPtr( this ) );
+        setComposer( m_composer );
+    }
+
+    if ( m_updatedFields | GENRE_UPDATED )
+    {
+        //create a new album:
+        m_genre = TimecodeGenrePtr( new TimecodeGenre( m_fields.value( GENRE_UPDATED ) ) );
+        m_genre->addTrack( TimecodeTrackPtr( this ) );
+        setGenre( m_genre );
+    }
+
+    if ( m_updatedFields | YEAR_UPDATED )
+    {
+        //create a new album:
+        m_year = TimecodeYearPtr( new TimecodeYear( m_fields.value( YEAR_UPDATED ) ) );
+        m_year->addTrack( TimecodeTrackPtr( this ) );
+        setYear( m_year );
+    }
+
+    if ( m_updatedFields | TITLE_UPDATED )
+    {
+        //create a new album:
+        setTitle( m_fields.value( TITLE_UPDATED ) );
+    }
+
+    if ( m_updatedFields | COMMENT_UPDATED )
+    {
+        //create a new album:
+        setComment( m_fields.value( COMMENT_UPDATED ) );
+    }
+
+    if ( m_updatedFields | TRACKNUMBER_UPDATED )
+    {
+        //create a new album:
+        setTrackNumber( m_fields.value( TRACKNUMBER_UPDATED ).toInt() );
+    }
+
+    if ( m_updatedFields | DISCNUMBER_UPDATED )
+    {
+        //create a new album:
+        setDiscNumber( m_fields.value( DISCNUMBER_UPDATED ).toInt() );
+    }
+
+    m_updatedFields = 0;
+    m_fields.clear();
+
+    notifyObservers();
+}
+
+void TimecodeTrack::abortMetaDataUpdate()
+{
+    m_updatedFields = 0;
+    m_fields.clear();
 }
 
 void
@@ -303,7 +479,8 @@ TimecodeTrack::setArtist( TimecodeArtistPtr artist )
 bool
 TimecodeTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::BoundedPlayback;
+    return type == Meta::Capability::BoundedPlayback
+           || type == Meta::Capability::Editable;
 }
 
 Meta::Capability *
@@ -311,6 +488,8 @@ TimecodeTrack::asCapabilityInterface( Meta::Capability::Type type )
 {
     if ( type == Meta::Capability::BoundedPlayback )
         return new BoundedPlaybackCapabilityImpl( this );
+    else if( type == Meta::Capability::Editable )
+        return new TimecodeEditCapabilityImpl( this );
     else
         return 0;
 }
