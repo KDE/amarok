@@ -250,10 +250,20 @@ Context::ToolbarView::installApplets()
         KNS::Entry::List entries = engine.downloadDialogModal(this);
     }
     
-    QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
-    dbus.call(QDBus::NoBlock, "recreate");
-
     // give it some time to run, but not too long
-    QTimer::singleShot( 3000, this, SLOT( recreateOverlays() ) );
+    QTimer::singleShot( 0, this, SLOT( refreshSycoca() ) );
 }
+
+void
+Context::ToolbarView::refreshSycoca()
+{
+
+    QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
+    dbus.call(QDBus::Block, "recreate");
+
+    recreateOverlays();
+
+}
+
+
 #include "ToolbarView.moc"

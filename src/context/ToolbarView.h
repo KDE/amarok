@@ -54,6 +54,7 @@ class ToolbarView : public QGraphicsView
         void refreshOverlays();
         void recreateOverlays();
         void installApplets();
+        void refreshSycoca();
     
     private:
         int m_height;

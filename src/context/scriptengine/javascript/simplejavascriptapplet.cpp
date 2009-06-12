@@ -321,25 +321,18 @@ void SimpleJavaScriptApplet::paintInterface(QPainter *p, const QStyleOptionGraph
     Q_UNUSED(option)
     Q_UNUSED(contentsRect)
 
-    //kDebug() << "paintInterface() (c++)";
-    QScriptValue fun = m_self.property("paintInterface");
-    if (!fun.isFunction()) {
-        //kDebug() << "Script: paintInterface is not a function, " << fun.toString();
-        AppletScript::paintInterface(p, option, contentsRect);
-        return;
-    }
-    
     QScriptValue drawB = m_self.property("drawAppletBackground");
     if (drawB.isFunction()) {
-        kDebug() << "Script: drawB is defined, " << fun.toString();
+        //kDebug() << "Script: drawB is defined, " << drawB.toString();
         QScriptContext *ctx = m_engine->pushContext();
         ctx->setActivationObject(m_self);
-        QScriptValue ret = fun.call(m_self);
+        QScriptValue ret = drawB.call(m_self);
         m_engine->popContext();
         if( ret.toBool() )
         { // told to draw standard background
-            kDebug() << "told to draw bg";
+            //kDebug() << "told to draw bg";
             p->save();
+            p->setRenderHint( QPainter::Antialiasing );
             QPainterPath path;
             path.addRoundedRect( applet()->boundingRect().adjusted( 0, 1, -1, -1 ), 3, 3 );
             //p->fillPath( path, gradient );
@@ -349,6 +342,7 @@ void SimpleJavaScriptApplet::paintInterface(QPainter *p, const QStyleOptionGraph
             p->restore();
 
             p->save();
+            p->setRenderHint( QPainter::Antialiasing );
             QColor col = PaletteHandler::highlightColor( 0.3, .7 );
             p->setPen( col );
             p->drawRoundedRect( applet()->boundingRect().adjusted( 2, 2, -2, -2 ), 3, 3 );
@@ -356,6 +350,13 @@ void SimpleJavaScriptApplet::paintInterface(QPainter *p, const QStyleOptionGraph
         }
     }
 
+    //kDebug() << "paintInterface() (c++)";
+    QScriptValue fun = m_self.property("paintInterface");
+    if (!fun.isFunction()) {
+        //kDebug() << "Script: paintInterface is not a function, " << fun.toString();
+        AppletScript::paintInterface(p, option, contentsRect);
+        return;
+    }
 
     QScriptValueList args;
     args << m_engine->toScriptValue(p);

@@ -13,6 +13,10 @@ plasmoid.dataUpdate = function(a, b)
 
 
 layout = new LinearLayout( plasmoid );
+layout.setAlignment( 2 );
+label1 = new Label( );
+label1.text = "This is a javascript applet. Just to show off that we can get data from c++ dataengines, here's info on the currently playing track:";
+layout.addItem( label1 );
 label = new Label();
 layout.addItem( label );
 
