@@ -122,6 +122,11 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_actionCollection->addAssociatedWidget( this );
     foreach( QAction* action, m_actionCollection->actions() )
     action->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+
+    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of wheter these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "folder-amarok", -128, true ) );
 }
 
 FileBrowser::Widget::~Widget()
