@@ -19,6 +19,8 @@
 #ifndef PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 #define PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 
+#include "BrowserCategory.h"
+
 #include <KVBox>
 
 #include <QMap>
@@ -34,7 +36,7 @@ class PodcastCategory;
 /**
 	@author Bart Cerneels
 */
-class PlaylistBrowser : public KVBox
+class PlaylistBrowser : public BrowserCategory
 {
 Q_OBJECT
 public:

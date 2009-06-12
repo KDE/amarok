@@ -20,6 +20,7 @@
 #ifndef AMAROKBROWSERCATEGORYLIST_H
 #define AMAROKBROWSERCATEGORYLIST_H
 
+#include "BrowserCategory.h"
 #include "BrowserCategoryListModel.h"
 #include "BrowserCategoryListSortFilterProxyModel.h"
 
@@ -38,7 +39,7 @@ class SearchWidget;
  *
  *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
-class BrowserCategoryList : public KVBox
+class BrowserCategoryList : public BrowserCategory
 {
     Q_OBJECT
 

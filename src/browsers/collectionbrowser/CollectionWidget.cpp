@@ -41,7 +41,7 @@
 CollectionWidget *CollectionWidget::s_instance = 0;
 
 CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
-    : KVBox(parent)
+    : BrowserCategory( name )
 {
     s_instance = this;
     setObjectName( name );

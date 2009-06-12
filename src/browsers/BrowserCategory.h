@@ -89,7 +89,7 @@ public:
      */
     QIcon icon() const;
 
-    virtual void polish() = 0;
+    virtual void polish() {};
 
 private:
     QString m_name;

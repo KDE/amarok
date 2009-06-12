@@ -20,6 +20,7 @@
 #ifndef AMAROK_COLLECTION_WIDGET
 #define AMAROK_COLLECTION_WIDGET
 
+#include "BrowserCategory.h"
 #include <KVBox>
 
 class QAction;
@@ -28,7 +29,7 @@ class QMenu;
 class SearchWidget;
 class CollectionBrowserTreeView;
 
-class CollectionWidget : public KVBox
+class CollectionWidget : public BrowserCategory
 {
     Q_OBJECT
     public:

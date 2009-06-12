@@ -24,6 +24,8 @@
 #ifndef FILEBROWSER_H
 #define FILEBROWSER_H
 
+#include "BrowserCategory.h"
+
 #include <KUrl>
 #include <KVBox>
 
@@ -54,7 +56,7 @@ class MyDirOperator;
 namespace FileBrowser
 {
 
-class Widget : public KVBox
+class Widget : public BrowserCategory
 {
     Q_OBJECT
 

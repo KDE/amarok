@@ -29,7 +29,7 @@
 #include <KLineEdit>
 
 BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name )
-    : KVBox( parent )
+    : BrowserCategory( name )
     , m_currentCategory( 0 )
     , m_categoryListModel( new BrowserCategoryListModel() )
 {

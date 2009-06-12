@@ -47,7 +47,7 @@
 
 
 FileBrowser::Widget::Widget( const char * name , QWidget *parent )
-    : KVBox( parent )
+    : BrowserCategory( name )
     , m_bookmarkHandler( 0 )
 {
     DEBUG_BLOCK
