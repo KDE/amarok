@@ -29,6 +29,7 @@
 #include "meta/stream/Stream.h"
 #include "PluginManager.h"
 #include "SqlStorage.h"
+#include "timecode/TimecodeTrackProvider.h"
 
 #include <QList>
 #include <QMetaEnum>
@@ -152,6 +153,11 @@ CollectionManager::init()
             }
         }
     }
+
+    //register the timceode track provider now, as it needs to get added before loading
+    //the stored playlist...
+    TimecodeTrackProvider * provider = new TimecodeTrackProvider();
+    addTrackProvider( provider );
 }
 
 void
@@ -349,6 +355,8 @@ CollectionManager::tracksForUrls( const KUrl::List &urls )
 Meta::TrackPtr
 CollectionManager::trackForUrl( const KUrl &url )
 {
+    DEBUG_BLOCK;
+    debug() << "url" << url.url(); 
     //TODO method stub
     //check all collections
     //might be a podcast, in that case we'll have additional meta information
@@ -356,6 +364,7 @@ CollectionManager::trackForUrl( const KUrl &url )
     //or a file which is not in any collection
     if( !url.isValid() )
     {
+        debug() << "invalid"; 
         return Meta::TrackPtr( 0 );
     }
 

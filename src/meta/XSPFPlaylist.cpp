@@ -511,6 +511,7 @@ XSPFPlaylist::trackList()
         subNode = subNode.nextSibling();
     }
 
+    debug() << "returning " << list.size() << "tracks";
     return list;
 }
 

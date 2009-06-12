@@ -19,6 +19,7 @@
 
 #include "TimecodeObserver.h"
 
+#include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 

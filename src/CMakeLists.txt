@@ -114,6 +114,7 @@ set(libamarokurl_SRCS
     amarokurls/BookmarkMetaActions.cpp
     timecode/TimecodeObserver.cpp
     timecode/TimecodeMeta.cpp
+    timecode/TimecodeTrackProvider.cpp
 )
 
 #####################################################################
