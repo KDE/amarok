@@ -51,7 +51,7 @@ def custom
 #    remover(["src/mac"])
 end
 
-$options = {:barrier=>75}
+$options = {:barrier=>70, :docs=>false, :tag=>true, :user=>"lydia", :branch=>"trunk", :protocol=>"svn+ssh"}
 
 # get things started
 require 'lib/starter'
