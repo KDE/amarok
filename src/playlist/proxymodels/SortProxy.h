@@ -46,12 +46,34 @@ public:
      */
     static SortProxy *instance();
 
+    /**
+     * Returns the index of the item in the model specified by the given row, column and parent index.
+     * @param row the row of the item to look for.
+     * @param column the column of the item to look for.
+     * @param parent the index of the parent item.
+     * @return the index of the item in the model specified by the row, column and parent index.
+     */
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
-    QModelIndex parent( const QModelIndex &index ) const;   //see note in at docs about reimplementing
+    /**
+     * Returns the parent of the model item with the given index, or QModelIndex() if it has no parent.
+     * @param index the index of the item.
+     * @return the index of the parent of the item or QModelIndex() if the item has no parent.
+     */
+    QModelIndex parent( const QModelIndex &index ) const;
 
+    /**
+     * Returns the model index in the Playlist::SortProxy given the sourceIndex from the source model.
+     * @param sourceIndex the item's index in the source model.
+     * @return the item's index in this model.
+     */
     QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
-    
+
+    /**
+     * Returns the source model index corresponding to the given proxyIndex from Playlist::SortProxy.
+     * @param proxyIndex the item's index in this model.
+     * @return the item's index in the source model.
+     */
     QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 
     // PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
