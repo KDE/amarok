@@ -52,6 +52,8 @@ public slots:
 
     /**
      * Lets a script tell us that from now on time critival tasks are being performed.
+     * From now on the rime between each call to testResult(...) will be measured until
+     * the script ends.
      */
     void startTimer();
 
@@ -77,6 +79,8 @@ private:
     // Disable copy constructor and assignment
     AmarokTest( const AmarokTest& );
     AmarokTest& operator= ( const AmarokTest& );
+
+    bool          m_measurePerf;
 
     QScriptEngine m_engine;
     QString       m_currentlyRunning;

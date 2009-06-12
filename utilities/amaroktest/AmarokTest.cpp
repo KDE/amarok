@@ -51,6 +51,8 @@ AmarokTest::AmarokTest( int &argc, char **argv )
     QString currentTime = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
     QFile logFile( logsLocation + currentTime + ".log" );
 
+    m_measurePerf = false;
+
     if( !logFile.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
         s_textStream << qPrintable( tr(  "Unable to open log!" ) );
         ::exit( 1 );
@@ -126,6 +128,8 @@ AmarokTest::startTimer() // Slot
 {
     // TODO: this measures real time, which is quite inaccurate
     //       find sth portable which gives us the cpu time
+    m_measurePerf = true;
+
     if( m_testTime.isNull() )
         m_testTime.start();
     else
@@ -149,7 +153,9 @@ AmarokTest::testResult( QString testName, QString expected, QString actualResult
     else
         m_log << "    <status>PASSED</status>" << endl;
 
-    m_log << "    <time>" << m_testTime.elapsed() << "</time>" << endl; // in milliseconds
+    if( m_measurePerf )
+        m_log << "    <time>" << m_testTime.elapsed() << "</time>" << endl; // in milliseconds
+
     m_log << "  </test>" << endl;
 
     m_testTime.restart();
@@ -210,4 +216,5 @@ AmarokTest::runScript()
     }
 
     testScript.close();
+    m_measurePerf = false;
 }
