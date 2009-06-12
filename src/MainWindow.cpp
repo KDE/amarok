@@ -3,6 +3,7 @@
   copyright            : (C) Mark Kretschmann <markey@web.de>
                        : (C) Max Howell <max.howell@methylblue.com>
                        : (C) G??bor Lehel <illissius@gmail.com>
+                       : (C) Nikolaj Hald Nielsen
 ***************************************************************************/
 
 /***************************************************************************
@@ -200,7 +201,7 @@ MainWindow::init()
     m_controlBar->layout()->setSpacing( 0 );
 
     PERF_LOG( "Create sidebar" )
-    m_browsers = new SideBar( this, new KVBox );
+    m_browsers = new SideBar( this );
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
     PERF_LOG( "Create Playlist" )
@@ -229,8 +230,6 @@ MainWindow::init()
     PERF_LOG( "Loading default contextScene" )
     m_corona->loadDefaultSetup(); // this method adds our containment to the scene
     PERF_LOG( "Loaded default contextScene" )
-
-    connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -263,34 +262,45 @@ MainWindow::init()
     {
         Debug::Block block( "Creating browsers. Please report long start times!" );
 
-        #define addBrowserMacro( Type, name, text, icon ) { \
-            Debug::Block block( name ); \
-             m_browsers->addWidget( KIcon( icon ), text, new Type( name , m_browsers ) ); \
-             m_browserNames.append( name ); }
+
 
 
         PERF_LOG( "Creating CollectionWidget" )
-        addBrowserMacro( CollectionWidget, "CollectionBrowser", i18n("Collection"), "collection-amarok" )
+        m_collectionBrowser = new CollectionWidget( "CollectionBrowser", 0 );
+        m_collectionBrowser->setPrettyName( i18n( "Collections" ) );
+        m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
+        m_collectionBrowser->setShortDescription( i18n( "The list of available collections" ) );
+        m_browsers->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
 
-        //cant use macros here since we need access to the browsers directly
+                
         PERF_LOG( "Creating ServiceBrowser" )
         ServiceBrowser *internetContentServiceBrowser = ServiceBrowser::instance();
-        internetContentServiceBrowser->setParent( this );
-        m_browsers->addWidget( KIcon( "applications-internet" ), i18n("Internet"), internetContentServiceBrowser );
-        m_browserNames.append( "Internet" );
+        internetContentServiceBrowser->setParent( 0 );
+        internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
+        internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
+        internetContentServiceBrowser->setShortDescription( i18n( "Sources  of online content" ) );
+        m_browsers->addCategory( internetContentServiceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
         m_playlistFiles = new PlaylistFileProvider();
         The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );
 
         PERF_LOG( "Creating PlaylistBrowser" )
-        addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), "view-media-playlist-amarok" )
-        playlistBrowser()->showCategory( PlaylistManager::Dynamic );
+        m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "PlaylistBrowser", 0 );
+        m_playlistBrowser->setPrettyName( i18n("Playlists") );
+        m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
+        m_playlistBrowser->setShortDescription( i18n( "Differnt kinds of playlists" ) );
+        m_browsers->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
+                
         PERF_LOG( "Creating FileBrowser" )
-        addBrowserMacro( FileBrowser::Widget, "FileBrowser::Widget",  i18n("Files"), "folder-amarok" )
+        FileBrowser::Widget * fileBrowser = new FileBrowser::Widget( "FileBrowser::Widget", 0 );
+        fileBrowser->setPrettyName( i18n("Files") );
+        fileBrowser->setIcon( KIcon( "folder-amarok" ) );
+        fileBrowser->setShortDescription( i18n( "Browse local files" ) );
+        m_browsers->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
 
         sideBar()->sideBarWidget()->restoreSession();
@@ -339,12 +349,6 @@ MainWindow::createContextView( Plasma::Containment *containment )
 }
 
 void
-MainWindow::deleteBrowsers()
-{
-    m_browsers->deleteBrowsers();
-}
-
-void
 MainWindow::slotShrinkBrowsers( int index )
 {
     DEBUG_BLOCK
@@ -367,16 +371,6 @@ MainWindow::slotShrinkBrowsers( int index )
 }
 
 void
-MainWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
-{
-    if( !m_browserNames.contains( name ) )
-    {
-        m_browsers->addWidget( KIcon( icon ), text, browser );
-        m_browserNames.append( name );
-    }
-}
-
-void
 MainWindow::showBrowser( const QString &name )
 {
     const int index = m_browserNames.indexOf( name );
@@ -386,8 +380,8 @@ MainWindow::showBrowser( const QString &name )
 void
 MainWindow::showBrowser( const int index )
 {
-    if( index >= 0 && index != m_browsers->currentIndex() )
-        m_browsers->showWidget( index );
+    //if( index >= 0 && index != m_browsers->currentIndex() )
+    //    m_browsers->showWidget( index );
 }
 
 void
@@ -396,7 +390,7 @@ MainWindow::keyPressEvent( QKeyEvent *e )
     if( !( e->modifiers() & Qt::ControlModifier ) )
         return KMainWindow::keyPressEvent( e );
 
-    int n = -1;
+    /*int n = -1;
     switch( e->key() )
     {
         case Qt::Key_0: n = 0; break;
@@ -410,7 +404,7 @@ MainWindow::keyPressEvent( QKeyEvent *e )
     if( n == 0 && m_browsers->currentIndex() >= 0 )
         m_browsers->showWidget( m_browsers->currentIndex() );
     else if( n > 0 )
-        showBrowser( n - 1 ); // map from human to computer counting
+        showBrowser( n - 1 ); // map from human to computer counting*/
 }
 
 void
@@ -971,17 +965,20 @@ void MainWindow::metadataChanged( Meta::TrackPtr track )
 
 CollectionWidget * MainWindow::collectionBrowser()
 {
-    return qobject_cast<CollectionWidget *>( m_browsers->at( 0 ) );
+    return m_collectionBrowser;
 }
 
 QString MainWindow::activeBrowserName()
 {
-    return m_browserNames[ m_browsers->currentIndex() ];
+    if ( m_browsers->activeCategory() )
+        return m_browsers->activeCategory()->name();
+    else
+        return QString();
 }
 
 PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()
 {
-    return qobject_cast<PlaylistBrowserNS::PlaylistBrowser *>( m_browsers->at( 2 ) );
+    return m_playlistBrowser;
 }
 
 void MainWindow::hideContextView( bool hide )

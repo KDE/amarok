@@ -143,6 +143,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void setRating( int n );
         void showBrowser( const int index );
 
+        CollectionWidget * m_collectionBrowser;
+        PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
+
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;
         QPointer<KMenu>     m_settingsMenu;
