@@ -25,7 +25,7 @@
 #define AMAROK_PLAYLISTGROUPINGPROXY_H
 
 #include "meta/Meta.h"
-#include "FilterProxy.h"
+#include "SortProxy.h"
 
 #include <QAbstractProxyModel>
 #include <QHash>
@@ -136,7 +136,7 @@ private:
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
 
-    FilterProxy *m_belowModel;
+    SortProxy *m_belowModel;
 
     static GroupingProxy* s_instance;
 };

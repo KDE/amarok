@@ -26,6 +26,8 @@
 
 namespace Playlist
 {
+//Attention coding style police guys: this is very WiP and if you see notes to self and
+//debug spam here pretty please let it be until I remove it.
 
 SortProxy* SortProxy::s_instance = 0;
 
@@ -39,18 +41,150 @@ SortProxy::instance()
 
 SortProxy::SortProxy()
     : QSortFilterProxyModel()
-    , m_sourceModel( Model::instance() )
     , m_belowModel(  FilterProxy::instance() )
 {
     setSourceModel( m_belowModel );
 
-    //these need to end up somewhere :-/
-    //connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
-    //connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
 }
 
 SortProxy::~SortProxy()
 {
 }
 
+// PASS-THROUGH METHODS THAT PRETTY MUCH JUST FORWARD STUFF THROUGH THE STACK OF PROXIES START HERE
+// Please keep them sorted alphabetically.
+
+int
+SortProxy::activeRow() const
+{
+    // we map the active row form the source to this model. if the active row is not in the items
+    // exposed by this proxy, just point to our first item.
+    //return rowFromSource( m_model->activeRow() ); //from FIlterProxy
+    return m_belowModel->activeRow();   //TODO: this will need to be adjusted when this proxy starts doing some actual permutation
 }
+
+void
+SortProxy::clearSearchTerm()
+{
+    m_belowModel->clearSearchTerm();
+}
+
+int
+SortProxy::currentSearchFields()
+{
+    return m_belowModel->currentSearchFields();
+}
+
+QString
+SortProxy::currentSearchTerm()
+{
+    return m_belowModel->currentSearchTerm();
+}
+
+QVariant
+SortProxy::data( const QModelIndex & index, int role ) const
+{
+    //HACK around incomplete index causing a crash...
+    //note to self by Téo: no idea what this does but I seem to need it
+    QModelIndex newIndex = this->index( index.row(), index.column() );
+    
+    QModelIndex sourceIndex = mapToSource( newIndex );
+    return m_belowModel->data( sourceIndex, role );
+}
+
+bool
+SortProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
+{
+    return m_belowModel->dropMimeData( data, action, row, column, parent );
+}
+
+int
+SortProxy::find( const QString &searchTerm, int searchFields )
+{
+    return m_belowModel->find( searchTerm, searchFields );  //TODO: see SortProxy::activeRow()
+}
+
+int
+SortProxy::findNext( const QString &searchTerm, int selectedRow, int searchFields )
+{
+    return m_belowModel->findNext( searchTerm, selectedRow, searchFields );  //TODO: see SortProxy::activeRow()
+}
+
+int
+SortProxy::findPrevious( const QString &searchTerm, int selectedRow, int searchFields )
+{
+    return m_belowModel->findPrevious( searchTerm, selectedRow, searchFields );  //TODO: see SortProxy::activeRow()
+}
+
+Qt::ItemFlags
+SortProxy::flags( const QModelIndex &index ) const
+{
+    return m_belowModel->flags( index );
+}
+
+QMimeData *
+SortProxy::mimeData( const QModelIndexList &index ) const
+{
+    return m_belowModel->mimeData( index );
+}
+
+QStringList
+SortProxy::mimeTypes() const
+{
+    return m_belowModel->mimeTypes();
+}
+
+bool
+SortProxy::rowExists( int row ) const
+{
+    QModelIndex index = this->index( row, 0 );
+    return index.isValid();
+}
+
+int
+SortProxy::rowFromSource( int row ) const
+{
+    QModelIndex sourceIndex = m_belowModel->index( row, 0 );
+    QModelIndex index = mapFromSource( sourceIndex );
+    
+    if ( !index.isValid() )
+        return -1;
+    return index.row();
+}
+
+int
+SortProxy::rowToSource( int row ) const
+{
+    QModelIndex index = this->index( row, 0 );
+    QModelIndex sourceIndex = mapToSource( index );
+    
+    if ( !sourceIndex.isValid() )
+        return -1;
+    return sourceIndex.row();
+}
+
+void
+SortProxy::setActiveRow( int row )
+{
+    m_belowModel->setActiveRow( row );  //TODO: see SortProxy::activeRow()
+}
+
+Qt::DropActions
+SortProxy::supportedDropActions() const
+{
+    return m_belowModel->supportedDropActions();
+}
+
+int
+SortProxy::totalLength() const
+{
+    return m_belowModel->totalLength();     //this might not need changes
+}
+
+Meta::TrackPtr
+SortProxy::trackAt(int row) const
+{
+    return m_belowModel->trackAt( row );    //TODO: see SortProxy::activeRow()
+}
+
+}   //namespace Playlist

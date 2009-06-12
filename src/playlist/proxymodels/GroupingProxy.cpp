@@ -24,7 +24,6 @@
 #define DEBUG_PREFIX "Playlist::GroupingProxy"
 
 #include "GroupingProxy.h"
-#include "FilterProxy.h"
 
 #include "Debug.h"
 #include "meta/Meta.h"
@@ -51,7 +50,7 @@ Playlist::GroupingProxy::destroy()
 
 Playlist::GroupingProxy::GroupingProxy()
     : QAbstractProxyModel( 0 )
-    , m_belowModel( FilterProxy::instance() )
+    , m_belowModel( SortProxy::instance() )
 {
     setSourceModel( m_belowModel );
     // signal proxies
