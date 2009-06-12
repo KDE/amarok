@@ -17,40 +17,39 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef AUDIOCDCOLLECTIONLOCATION_H
-#define AUDIOCDCOLLECTIONLOCATION_H
+#ifndef FORMATSELECTIONDIALOG_H
+#define FORMATSELECTIONDIALOG_H
 
-#include "CollectionLocation.h"
+#include <QDialog>
 
-#include "AudioCdCollection.h"
+#include "ui_FormatSelectionDialog.h"
 
 /**
-A custom CollectionLocation handling the encoding file type and so on for AudioCd collections
+A dialog for selecting the format of of tracks imported from a AudioCdCollection
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author 
 */
-class AudioCdCollectionLocation : public CollectionLocation
+class FormatSelectionDialog
+    : public QDialog
+    , private Ui::FormatSelectionDialog
 {
     Q_OBJECT
 public:
-    AudioCdCollectionLocation( const AudioCdCollection* parentCollection );
-    ~AudioCdCollectionLocation();
+    FormatSelectionDialog( QWidget *parent = 0 );
 
-    virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
+    ~FormatSelectionDialog();
 
-    virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
+public slots:
+    virtual void accept();
+
+signals:
+    void formatSelected( int );
 
 private slots:
+    void selectionChanged( bool checked );
 
-    void formatSelected( int format );
-    void formatSelectionCancelled();
-
-    void onFormatSelected( int format );
-    void onCancel();
-    
 private:
-
-    const AudioCdCollection * m_collection;
+    int m_selectedFormat;
 
 };
 

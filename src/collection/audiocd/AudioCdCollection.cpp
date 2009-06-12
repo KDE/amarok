@@ -262,7 +262,7 @@ void AudioCdCollection::cdRemoved()
 QString AudioCdCollection::encodingFormat() const
 {
     switch( m_encodingFormat ) {
-        case VAW:
+        case WAV:
             return "vaw";
         case FLAC:
             return "flac";
@@ -276,7 +276,7 @@ QString AudioCdCollection::encodingFormat() const
 QString AudioCdCollection::copyableBasePath() const
 {
     switch( m_encodingFormat ) {
-        case VAW:
+        case WAV:
             return "audiocd:/";
         case FLAC:
             return "audiocd:/FLAC/";
@@ -287,7 +287,7 @@ QString AudioCdCollection::copyableBasePath() const
     }
 }
 
-void AudioCdCollection::setEncodingFormat( int format )
+void AudioCdCollection::setEncodingFormat( int format ) const
 {
     m_encodingFormat = format;
 }

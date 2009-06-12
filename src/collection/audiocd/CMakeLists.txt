@@ -14,7 +14,10 @@ include_directories( ../..
         AudioCdCollection.cpp
         AudioCdMeta.cpp
         AudioCdQueryMaker.cpp
-        AudioCdCollectionLocation.cpp)
+        AudioCdCollectionLocation.cpp
+        FormatSelectionDialog.cpp)
+
+        kde4_add_ui_files(amarok_collection-audiocdcollection_PART_SRCS FormatSelectionDialog.ui)
 
 
         kde4_add_plugin(amarok_collection-audiocdcollection WITH_PREFIX ${amarok_collection-audiocdcollection_PART_SRCS})

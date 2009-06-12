@@ -21,6 +21,7 @@
 
 #include "AudioCdMeta.h"
 #include "Debug.h"
+#include "FormatSelectionDialog.h"
 
 AudioCdCollectionLocation::AudioCdCollectionLocation( const AudioCdCollection* parentCollection )
     : CollectionLocation( parentCollection )
@@ -51,5 +52,40 @@ void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & trac
 
     slotGetKIOCopyableUrlsDone( resultMap );
 }
+
+void AudioCdCollectionLocation::showSourceDialog(const Meta::TrackList & tracks, bool removeSources)
+{
+    DEBUG_BLOCK
+    FormatSelectionDialog * dlg = new FormatSelectionDialog();
+
+    connect( dlg, SIGNAL( formatSelected( int ) ), this, SLOT( onFormatSelected( int ) ) );
+    connect( dlg, SIGNAL( rejected () ), this, SLOT( onCancel() ) );
+    
+    dlg->show();
+}
+
+void AudioCdCollectionLocation::formatSelected(int format)
+{
+}
+
+void AudioCdCollectionLocation::formatSelectionCancelled()
+{
+}
+
+void AudioCdCollectionLocation::onFormatSelected( int format )
+{
+    DEBUG_BLOCK
+    m_collection->setEncodingFormat( format );
+    slotShowSourceDialogDone();
+}
+
+void AudioCdCollectionLocation::onCancel()
+{
+    DEBUG_BLOCK
+    abort();
+}
+
+
+#include "AudioCdCollectionLocation.moc"
 
 
