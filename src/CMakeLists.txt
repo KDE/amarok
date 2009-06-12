@@ -149,12 +149,14 @@ kde4_add_ui_files(libconfigdialog_SRCS
 )
 
 set(libbrowserframework_SRCS
+    browsers/BreadcrumbWidget.cpp
     browsers/BrowserCategory.cpp
     browsers/BrowserCategory.cpp
     browsers/BrowserCategoryList.cpp
     browsers/BrowserCategoryListDelegate.cpp
     browsers/BrowserCategoryListModel.cpp
     browsers/BrowserCategoryListSortFilterProxyModel.cpp
+    browsers/BrowserWidget.cpp
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
     browsers/CollectionTreeItemModel.cpp
@@ -448,7 +450,6 @@ set(amaroklib_LIB_SRCS
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
     PluginManager.cpp
-    Sidebar.h
     SmartPointerList.cpp
     StarManager.cpp
     SvgHandler.cpp

@@ -267,7 +267,24 @@ void BrowserCategoryList::navigate( const QString & target )
 
 }
 
+QString BrowserCategoryList::path()
+{
+    QString pathString = prettyName();
+
+    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+
+    if ( childList )
+        pathString += "/" + childList->path();
+    else if ( m_currentCategory )
+        pathString += "/" + m_currentCategory->prettyName();
+
+    return pathString;
+    
+}
+
 
 #include "BrowserCategoryList.moc"
+
+
 
 

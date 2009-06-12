@@ -72,7 +72,7 @@ NavigationUrlRunner::run( AmarokUrl url )
             target += ( '/' + collection );
         }
 
-        The::mainWindow()->sideBar()->navigate( target );
+        The::mainWindow()->browserWidget()->navigate( target );
 
         if ( The::mainWindow()->isHidden() )
             The::mainWindow()->show();

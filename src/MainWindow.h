@@ -19,7 +19,7 @@
 #include "amarok_export.h"
 #include "meta/Meta.h"
 #include "EngineObserver.h"
-#include "Sidebar.h"
+#include "browsers/BrowserWidget.h"
 
 #include <KMainWindow>
 #include <KVBox>
@@ -78,7 +78,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         void activate();
 
-        SideBar *sideBar() const { return m_browsers; }
+        BrowserWidget *browserWidget() const { return m_browsers; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
 		QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
@@ -149,7 +149,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;
         QPointer<KMenu>     m_settingsMenu;
-        QPointer<SideBar>   m_browsers;
+        QPointer<BrowserWidget>   m_browsers;
         QStringList         m_browserNames;
         QPointer<KMenu>     m_searchMenu;
         QPointer<KVBox>     m_statusbarArea;

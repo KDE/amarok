@@ -89,6 +89,8 @@ class BrowserCategoryList : public BrowserCategory
          */
         void navigate( const QString &target );
 
+        QString path();
+
     signals:
 
         void viewChanged();

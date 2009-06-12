@@ -30,9 +30,9 @@
 #include "PaletteHandler.h"
 #include "ScriptManager.h"
 #include "SearchWidget.h"
-#include "Sidebar.moc"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrlHandler.h"
+
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
@@ -202,7 +202,7 @@ MainWindow::init()
     m_controlBar->layout()->setSpacing( 0 );
 
     PERF_LOG( "Create sidebar" )
-    m_browsers = new SideBar( this );
+    m_browsers = new BrowserWidget( this );
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
     PERF_LOG( "Create Playlist" )
@@ -304,8 +304,6 @@ MainWindow::init()
         m_browsers->list()->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
 
-        //sideBar()->sideBarWidget()->restoreSession();
-
         PERF_LOG( "Initialising ServicePluginManager" )
         ServicePluginManager::instance()->init();
         PERF_LOG( "Initialised ServicePluginManager" )
@@ -318,7 +316,7 @@ MainWindow::init()
     }
     //</Browsers>
 
-    if( AmarokConfig::panelsSavedState()[0] != -1 )
+    if( AmarokConfig::panelsSavedState().size() > 0 && AmarokConfig::panelsSavedState()[0] != -1 )
     {
         QByteArray sPanels;
 
@@ -360,8 +358,7 @@ MainWindow::slotShrinkBrowsers( int index )
         m_splitterState = m_splitter->saveState();
 
         QList<int> sizes;
-        sizes << m_browsers->backButton()->width() // browser bar
-              << m_splitter->sizes()[1] + m_splitter->sizes()[0] - m_browsers->backButton()->width() // context view
+        sizes << m_splitter->sizes()[1] + m_splitter->sizes()[0]  // context view
               << m_splitter->sizes()[2]; // playlist
         m_splitter->setSizes( sizes );
     }
