@@ -655,7 +655,7 @@ EngineController::slotTick( qint64 position )
         //dont go beyound the stop point
         if ( position >= m_boundedPlayback->endPosition() )
         {
-            slotQueueEnded();
+            slotAboutToFinish();
         }
     }
     else
@@ -699,7 +699,12 @@ EngineController::slotAboutToFinish()
             The::playlistActions()->requestNextTrack();
             debug() << "no more sources, skip to next track";
         }
-         
+    }
+    else if ( m_boundedPlayback )
+    {
+        debug() << "finished a track that consistst of part of another track, go to next track even if this url is technically not done yet";
+        The::playlistActions()->requestNextTrack();
+        slotQueueEnded();
     }
     else if ( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
     {
