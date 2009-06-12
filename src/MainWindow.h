@@ -142,7 +142,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void init();
         void setRating( int n );
         void showBrowser( const int index );
-        void toggleContectView();
 
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;

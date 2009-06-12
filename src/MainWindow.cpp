@@ -984,14 +984,6 @@ PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()
     return qobject_cast<PlaylistBrowserNS::PlaylistBrowser *>( m_browsers->at( 2 ) );
 }
 
-void MainWindow::toggleContectView()
-{
-    if( m_contextWidget->isVisible() )
-        hideContextView( false );
-    else
-        hideContextView( true );
-}
-
 void MainWindow::hideContextView( bool hide )
 {
     DEBUG_BLOCK
