@@ -108,7 +108,7 @@ LastFmServiceSettings::testLogin()
     query[ "method" ] = "auth.getMobileSession";
     query[ "username" ] = m_configDialog->kcfg_ScrobblerUsername->text();
     query[ "authToken" ] = authToken;
-    m_authQuery = lastfm::ws::get( query );
+    m_authQuery = lastfm::ws::post( query );
 
     connect( m_authQuery, SIGNAL( finished() ), SLOT( onAuthenticated() ) );
 }
@@ -118,21 +118,25 @@ LastFmServiceSettings::onAuthenticated()
 {
     DEBUG_BLOCK
 
+    lastfm::XmlQuery lfm = lastfm::XmlQuery( m_authQuery->readAll() );
+
     switch( m_authQuery->error() )
     {
         case QNetworkReply::NoError:
-            debug() << "NoError";
-            if( reply->lfm().text().contains( "Invalid authentication token" ) )
-            {
-                KMessageBox::error( this, i18n( "Either the username or the password is incorrect, please correct and try again" ), i18n( "Failed" ) );
-                m_configDialog->testLogin->setText( i18n( "Test Login" ) );
-                m_configDialog->testLogin->setEnabled( true );
-            } else
-            {
-                m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
-                m_configDialog->testLogin->setEnabled( false );
-            }
-            break;
+             debug() << "NoError";
+             if( lfm.children( "error" ).size() > 0 )
+             {
+                 debug() << "ERROR from last.fm:" << lfm.text();
+                 m_configDialog->testLogin->setText( i18nc( "The operation was rejected by the server", "Error!" ) );
+                 m_configDialog->testLogin->setEnabled( true );
+
+             } else
+             {
+                 m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
+                 m_configDialog->testLogin->setEnabled( false );
+             }
+             break;
+
         case QNetworkReply::AuthenticationRequiredError:
             debug() << "AuthenticationFailed";
             KMessageBox::error( this, i18n( "Either the username or the password is incorrect, please correct and try again" ), i18n( "Failed" ) );

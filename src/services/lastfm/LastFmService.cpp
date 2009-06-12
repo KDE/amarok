@@ -242,7 +242,7 @@ LastFmService::init()
         query[ "method" ] = "auth.getMobileSession";
         query[ "username" ] = m_userName;
         query[ "authToken" ] = authToken;
-        m_jobs[ "auth" ] = lastfm::ws::get( query );
+        m_jobs[ "auth" ] = lastfm::ws::post( query );
 
         connect( m_jobs[ "auth" ], SIGNAL( finished() ), SLOT( onAuthenticated() ) );
 

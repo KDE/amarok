@@ -23,6 +23,7 @@
 #include "LastFmServiceConfig.h"
 #include "Meta.h"
 #include "meta/capabilities/MultiPlayableCapability.h"
+#include "StatusBar.h"
 
 #include <lastfm/Track>
 #include <lastfm/RadioTuner>
@@ -52,6 +53,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             m_tuner = new lastfm::RadioTuner( lastfm::RadioStation( m_track->uidUrl() ) );
             
             connect( m_tuner, SIGNAL( trackAvailable() ), this, SLOT( slotNewTrackAvailable() ) );
+            connect( m_tuner, SIGNAL( error( lastfm::ws::Error ) ), this, SLOT( error( lastfm::ws::Error ) ) );
         }
         
         virtual void fetchNext()
@@ -96,6 +98,17 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             // now we force a new signal to be emitted to kick the enginecontroller to moving on
             //KUrl url = m_track->playableUrl();
             //emit playableUrlFetched( url );
+        }
+        
+        void error( lastfm::ws::Error e )
+        {
+            if( lastfm::ws::SubscribersOnly )
+            {
+                The::statusBar()->longMessage( i18n( "Unfortunately, Last.Fm radio streams are only functional for Last.Fm subscribers. All the other Last.Fm features are unaffected." ) );
+            } else
+            {
+                The::statusBar()->longMessage( i18n( "Error starting track from Last.Fm radio" )   );
+            }
         }
 
 

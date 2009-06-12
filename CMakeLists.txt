@@ -55,7 +55,9 @@ if( WITH_PLAYER )
 
     macro_optional_find_package(LibLastFm)
     if(LIBLASTFM_FOUND)
-        macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling song submissions" FALSE "0.2" "" )
+        macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm
+	service, including scrobbling, song submissions, and suggested song
+	dynamic playlists" FALSE "0.2" "" )
     endif(LIBLASTFM_FOUND)
     
     macro_optional_find_package(Ipod)
