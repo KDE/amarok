@@ -631,7 +631,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Script", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
-    
+
     objectPtr = new InfoScript( m_scripts[name].url );
     QScriptValue infoContext = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Info", infoContext );
@@ -654,7 +654,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Lyrics", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
-    
+
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "ServicePluginManager", scriptObject );
