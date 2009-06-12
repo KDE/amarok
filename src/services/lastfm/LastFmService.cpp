@@ -309,17 +309,20 @@ LastFmService::onAuthenticated()
     {
         case QNetworkReply::NoError:
         {
-            try
-            {
-                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "auth" ] );
-                m_sessionKey = lfm[ "session" ][ "key" ].text();
 
-            } catch( lastfm::ws::ParseError& e )
-            {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
-            }
-            lastfm::ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+            lastfm::XmlQuery lfm = lastfm::XmlQuery( m_jobs[ "auth" ]->readAll() );
             LastFmServiceConfig config;
+
+            if( lfm.children( "error" ).size() > 0 )
+            {
+                debug() << "error from authenticating with last.fm service:" << lfm.text();
+                config.setSessionKey( "" );
+                config.save();
+                break;
+            }
+            m_sessionKey = lfm[ "session" ][ "key" ].text();
+
+            lastfm::ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
             config.setSessionKey( m_sessionKey );
             config.save();
 
@@ -333,8 +336,8 @@ LastFmService::onAuthenticated()
 
             break;
         } case QNetworkReply::AuthenticationRequiredError:
-        The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
-        break;
+            The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
+            break;
 
         default:
             The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
