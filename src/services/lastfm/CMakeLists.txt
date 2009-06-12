@@ -24,7 +24,6 @@ include_directories(
         add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
         set(amarok_service_lastfm_PART_SRCS
-            LastFmBiases.cpp
             LastFmService.cpp
             LastFmServiceCollection.cpp
             LastFmServiceConfig.cpp
@@ -36,6 +35,8 @@ include_directories(
 
             meta/LastFmMeta.cpp
             meta/LastFmStreamInfoCapability.cpp
+
+	    biases/SimilarArtistsBias.cpp
 
             kdenetwork/knetworkreply.cpp
             kdenetwork/knetworkaccessmanager.cpp

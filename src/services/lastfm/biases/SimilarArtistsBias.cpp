@@ -11,7 +11,7 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "LastFmBiases.h"
+#include "SimilarArtistsBias.h"
 
 #include "Collection.h"
 #include "CollectionManager.h"
@@ -28,7 +28,7 @@
 #include <QFrame>
 #include <QLabel>
 
-Dynamic::LastFmBias::LastFmBias()
+Dynamic::SimilarArtistsBias::SimilarArtistsBias()
     : Dynamic::CustomBiasEntry()
     , EngineObserver( The::engineController() )
     , m_artistQuery( 0 )
@@ -37,34 +37,37 @@ Dynamic::LastFmBias::LastFmBias()
     engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
 }
 
-Dynamic::LastFmBias::~LastFmBias()
+Dynamic::SimilarArtistsBias::~SimilarArtistsBias()
 {
     delete m_qm;
 }
 
 
 QString
-Dynamic::LastFmBias::name()
+Dynamic::SimilarArtistsBias::name()
 {
     DEBUG_BLOCK
     
-    return i18n( "LastFm Biases" );
+    return i18n( "Similar Artists" );
 }
 
 QWidget*
-Dynamic::LastFmBias::configWidget( QWidget* parent )
+Dynamic::SimilarArtistsBias::configWidget( QWidget* parent )
 {
     DEBUG_BLOCK
     QFrame * frame = new QFrame( parent );
-    QVBoxLayout* layout = new QVBoxLayout( frame );
+    QHBoxLayout* layout = new QHBoxLayout( frame );
 
-    layout->addWidget( new QLabel( "Foo", parent ) );
+    QLabel * label = new QLabel( i18n( "Adds songs related to currently playing track" ), parent );
+    label->setWordWrap( true );
+    label->setAlignment( Qt::AlignCenter );
+    layout->addWidget( label, Qt::AlignCenter );
 
     return frame;
 }
 
 void
-Dynamic::LastFmBias::engineNewTrackPlaying()
+Dynamic::SimilarArtistsBias::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -88,7 +91,7 @@ Dynamic::LastFmBias::engineNewTrackPlaying()
 }
 
 void
-Dynamic::LastFmBias::update()
+Dynamic::SimilarArtistsBias::update()
 {
     DEBUG_BLOCK
     if( !m_needsUpdating )
@@ -98,7 +101,7 @@ Dynamic::LastFmBias::update()
 }
 
 void
-Dynamic::LastFmBias::artistQueryDone() // slot
+Dynamic::SimilarArtistsBias::artistQueryDone() // slot
 {
     DEBUG_BLOCK
 
@@ -145,7 +148,7 @@ Dynamic::LastFmBias::artistQueryDone() // slot
 }
 
 void
-Dynamic::LastFmBias::updateFinished()
+Dynamic::SimilarArtistsBias::updateFinished()
 {
     DEBUG_BLOCK
 
@@ -154,13 +157,13 @@ Dynamic::LastFmBias::updateFinished()
 }
 
 void
-Dynamic::LastFmBias::collectionUpdated()
+Dynamic::SimilarArtistsBias::collectionUpdated()
 {
     m_needsUpdating = true;
 }
 
 void
-Dynamic::LastFmBias::updateReady( QString collectionId, QStringList uids )
+Dynamic::SimilarArtistsBias::updateReady( QString collectionId, QStringList uids )
 {
     DEBUG_BLOCK
 
@@ -183,7 +186,7 @@ Dynamic::LastFmBias::updateReady( QString collectionId, QStringList uids )
 
 
 bool
-Dynamic::LastFmBias::trackSatisfies( const Meta::TrackPtr track )
+Dynamic::SimilarArtistsBias::trackSatisfies( const Meta::TrackPtr track )
 {
     //DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
@@ -204,7 +207,7 @@ Dynamic::LastFmBias::trackSatisfies( const Meta::TrackPtr track )
 }
 
 double
-Dynamic::LastFmBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
+Dynamic::SimilarArtistsBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
 {
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
@@ -229,13 +232,13 @@ Dynamic::LastFmBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
 }
 
 bool
-Dynamic::LastFmBias::hasCollectionFilterCapability()
+Dynamic::SimilarArtistsBias::hasCollectionFilterCapability()
 {
     return true;
 }
 
 Dynamic::CollectionFilterCapability*
-Dynamic::LastFmBias::collectionFilterCapability()
+Dynamic::SimilarArtistsBias::collectionFilterCapability()
 {
     return new Dynamic::LastFmCollectionFilterCapability( this );
 }
@@ -247,4 +250,4 @@ Dynamic::LastFmCollectionFilterCapability::propertySet()
     return m_bias->m_savedArtists[ m_bias->m_currentArtist ];
 }
 
-#include "LastFmBiases.moc"
+#include "SimilarArtistsBias.moc"

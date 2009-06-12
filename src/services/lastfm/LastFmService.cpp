@@ -17,7 +17,7 @@
 
 #include "AvatarDownloader.h"
 #include "EngineController.h"
-#include "LastFmBiases.h"
+#include "biases/SimilarArtistsBias.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"
@@ -265,7 +265,7 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    Dynamic::LastFmBias* bias = new Dynamic::LastFmBias();
+    Dynamic::SimilarArtistsBias* bias = new Dynamic::SimilarArtistsBias();
     connect( Dynamic::CustomBias::self(), SIGNAL( weightChanged(double) ), bias, SLOT( weightChanged( double ) ) );
     Dynamic::CustomBias::self()->registerNewBiasEntry( bias );
 
