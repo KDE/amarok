@@ -167,7 +167,7 @@ MainWindow::~MainWindow()
     QFile file( Amarok::saveLocation() + "layout" );
     if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered ) )
     {
-        file.write( saveState( 1 ) );
+        file.write( saveState( 0 ) );
         file.close();
     }
 
@@ -333,15 +333,18 @@ MainWindow::init()
 
     The::amarokUrlHandler(); //Instantiate
 
-    //save layout to file. Does not go into to rc as it is binary data.
+    //load layout from file
     QFile file( Amarok::saveLocation() + "layout" );
     if ( file.open( QIODevice::ReadOnly ) )
     {
+
+        debug() << "Reading layout file";
         QByteArray layout = file.readAll();
         file.close();
 
-        debug() << "got saved layout" << layout;
-        restoreState( layout, 1 );
+        debug() << "got saved layout " << QString( layout );
+        debug() << "size: " << layout.count();
+        debug() << "sucess: " << restoreState( layout, 0 );
     }
 }
 
