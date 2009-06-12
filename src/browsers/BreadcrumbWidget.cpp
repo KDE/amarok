@@ -62,7 +62,7 @@ BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category
     }
 
 
-    m_mainButton = new QPushButton( name, this );
+    m_mainButton = new QPushButton( category->icon(), name, this );
     m_mainButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
