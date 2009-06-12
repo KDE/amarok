@@ -156,7 +156,7 @@ MainWindow::~MainWindow()
     KConfigGroup config = Amarok::config();
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
-    config.writeEntry( "MainWindow Layout", saveState( 1 ) );
+    config.writeEntry( "Lock Layout", isLayoutLocked() );
     
 
     QList<int> sPanels;
@@ -272,7 +272,10 @@ MainWindow::init()
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
     addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
 
-    setLayoutLocked( true );
+    KConfigGroup config = Amarok::config();
+    const bool locked = config.readEntry( "Lock Layout", true );
+
+    setLayoutLocked( locked );
 
     //<Browsers>
     {
@@ -1032,11 +1035,20 @@ void MainWindow::setLayoutLocked( bool locked )
         m_contextDock->setTitleBarWidget( 0 );
         m_playlistDock->setTitleBarWidget( 0 );
     }
+
+    m_layoutLocked = locked;
 }
+
+bool MainWindow::isLayoutLocked()
+{
+    return m_layoutLocked;
+}
+
 
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
+
 
 
 #include "MainWindow.moc"

@@ -185,6 +185,10 @@
         <label>Show Album art in the Collection Browser</label>
         <default>true</default>
     </entry>
+    <entry key="Lock Layout" type="Bool">
+        <label>Show the Context View</label>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="Playback">

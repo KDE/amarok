@@ -96,6 +96,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QRect contextRectGlobal();
         QPoint globalBackgroundOffset();
 
+        bool isLayoutLocked();
+
     signals:
         void loveTrack( Meta::TrackPtr );
 
@@ -187,6 +189,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         int     m_searchField;
 
         static QPointer<MainWindow> s_instance;
+
+        bool m_layoutLocked;
 
     private slots:
         void createContextView( Plasma::Containment *c );
