@@ -74,6 +74,7 @@ struct MemoryQueryMaker::Private {
     qint64 orderByField;
     bool orderDescending;
     bool orderByNumberField;
+    AlbumQueryMode albumQueryMode;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -115,6 +116,7 @@ MemoryQueryMaker::reset()
     d->orderByField = 0;
     d->orderDescending = false;
     d->orderByNumberField = false;
+    d->albumQueryMode = AllAlbums;
     return this;
 }
 
@@ -359,7 +361,17 @@ MemoryQueryMaker::handleResult()
         }
         case QueryMaker::Track :
         {
-            TrackList tracks = m_collection->trackMap().values();
+            TrackList tracks;
+
+            foreach( TrackPtr track, m_collection->trackMap().values() )
+            {
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    tracks.append( track );
+                }
+            }
 
             if( d->orderByField )
             {
@@ -374,7 +386,19 @@ MemoryQueryMaker::handleResult()
         }
         case QueryMaker::Album :
         {
-            AlbumList albums = m_collection->albumMap().values();
+
+            AlbumList albums;
+            foreach( AlbumPtr album, m_collection->albumMap().values() )
+            {
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && album->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !album->isCompilation()) )
+                {
+                    albums.append( album );
+                    break;
+                }
+            }
+ 
             albums = orderListByName<Meta::AlbumPtr>( albums, Meta::valAlbum );
 
             emitProperResult<AlbumPtr>( albums );
@@ -382,15 +406,44 @@ MemoryQueryMaker::handleResult()
         }
         case QueryMaker::Artist :
         {
-            ArtistList artists = m_collection->artistMap().values();
-            artists = orderListByName<Meta::ArtistPtr>( artists, Meta::valArtist );
+            ArtistList artists;
+            foreach( ArtistPtr artist, m_collection->artistMap().values() )
+            {
+                TrackList tracks = artist->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        artists.append( artist );
+                        break;
+                    }
+                }
+            }
 
+            artists = orderListByName<Meta::ArtistPtr>( artists, Meta::valArtist );
             emitProperResult<ArtistPtr>( artists );
             break;
         }
         case QueryMaker::Composer :
         {
-            ComposerList composers = m_collection->composerMap().values();
+            ComposerList composers;
+            foreach( ComposerPtr composer, m_collection->composerMap().values() )
+            {
+                TrackList tracks = composer->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        composers.append( composer );
+                        break;
+                    }
+                }
+            }
+
             composers = orderListByName<Meta::ComposerPtr>( composers, Meta::valComposer );
 
             emitProperResult<ComposerPtr>( composers );
@@ -398,7 +451,22 @@ MemoryQueryMaker::handleResult()
         }
         case QueryMaker::Genre :
         {
-            GenreList genres = m_collection->genreMap().values();
+            GenreList genres;
+            foreach( GenrePtr genre, m_collection->genreMap().values() )
+            {
+                TrackList tracks = genre->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        genres.append( genre );
+                        break;
+                    }
+                }
+            }
+            
             genres = orderListByName<Meta::GenrePtr>( genres, Meta::valGenre );
 
             emitProperResult<GenrePtr>( genres );
@@ -406,7 +474,21 @@ MemoryQueryMaker::handleResult()
         }
         case QueryMaker::Year :
         {
-            YearList years = m_collection->yearMap().values();
+            YearList years;
+            foreach( YearPtr year, m_collection->yearMap().values() )
+            {
+                TrackList tracks = year->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        years.append( year );
+                        break;
+                    }
+                }
+            }
         
             //this a special case which requires a bit of code duplication
             //years have to be ordered as numbers, bu orderListByNumber does not work for Meta::YearPtrs
@@ -511,7 +593,12 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<AlbumPtr> albumSet;
             foreach( TrackPtr track, tracks )
             {
-                albumSet.insert( track->album() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    albumSet.insert( track->album() );
+                }
             }
             AlbumList albumList = albumSet.toList();
             albumList = orderListByName<Meta::AlbumPtr>( albumList, Meta::valAlbum );
@@ -523,7 +610,12 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<ArtistPtr> artistSet;
             foreach( TrackPtr track, tracks )
             {
-                artistSet.insert( track->artist() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    artistSet.insert( track->artist() );
+                }
             }
             ArtistList list = artistSet.toList();
             list = orderListByName<Meta::ArtistPtr>( list, Meta::valArtist );
@@ -535,7 +627,12 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<GenrePtr> genreSet;
             foreach( TrackPtr track, tracks )
             {
-                genreSet.insert( track->genre() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    genreSet.insert( track->genre() );
+                }
             }
             GenreList list = genreSet.toList();
             list = orderListByName<Meta::GenrePtr>( list, Meta::valGenre );
@@ -547,7 +644,12 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<ComposerPtr> composerSet;
             foreach( TrackPtr track, tracks )
             {
-                composerSet.insert( track->composer() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    composerSet.insert( track->composer() );
+                }
             }
             ComposerList list = composerSet.toList();
             list = orderListByName<Meta::ComposerPtr>( list, Meta::valComposer );
@@ -903,6 +1005,11 @@ MemoryQueryMaker::done( ThreadWeaver::Job *job )
     job->deleteLater();
     d->job = 0;
     emit queryDone();
+}
+
+QueryMaker * MemoryQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
+{
+    d->albumQueryMode = mode;
 }
 
 #include "MemoryQueryMaker.moc"

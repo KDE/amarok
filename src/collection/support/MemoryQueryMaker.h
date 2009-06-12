@@ -74,6 +74,8 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
+        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
         //MemoryQueryMaker specific methods
         void runQuery();
         void handleResult();
