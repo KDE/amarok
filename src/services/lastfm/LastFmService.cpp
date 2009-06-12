@@ -266,8 +266,7 @@ LastFmService::init()
 
     // enable custom bias
     Dynamic::SimilarArtistsBias* bias = new Dynamic::SimilarArtistsBias();
-    connect( Dynamic::CustomBias::self(), SIGNAL( weightChanged(double) ), bias, SLOT( weightChanged( double ) ) );
-    Dynamic::CustomBias::self()->registerNewBiasEntry( bias );
+    Dynamic::CustomBias::registerNewBiasEntry( bias );
 
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );

@@ -37,10 +37,16 @@ class AMAROK_EXPORT CustomBiasEntry
         virtual ~CustomBiasEntry() {}
 
         /**
-         *   Returns the name of the type of bias. eg. "Last.fm"
+         *   Returns the name of the type of bias. eg. "Last.fm Similar Artists"
          */
         virtual QString name() = 0;
 
+        /**
+         * Returns an internal plugin name, which is not translated and used
+         * for loading/saving.
+         */
+        virtual QString pluginName() = 0;
+        
         /**
          * Returns the widget that will configure this bias. It will be placed in
          * a vertical layout, and will already have its label be shown. Minimize
@@ -48,6 +54,11 @@ class AMAROK_EXPORT CustomBiasEntry
          */
         virtual QWidget* configWidget( QWidget* parent ) = 0;
 
+        /**
+         * Returns an XML representation of the bias so it can be saved to disk.
+         */
+        virtual QDomElement xml( QDomDocument doc ) const = 0;
+        
         /**
          * Returns if the given track satisfies this bias' conditions.
          */
@@ -93,13 +104,22 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         ~CustomBias() {}
 
 
-        static CustomBias* self()
-        {
-            if( !s_self )
-                s_self = new CustomBias();
+        /**
+         * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.
+         */
+        static void registerNewBiasEntry( CustomBiasEntry* );
 
-            return s_self;
-        }
+        /**
+         * Remove CustomBiasEntry from the list of bias types that the user can select.
+         */
+        static void removeBiasEntry( CustomBiasEntry* );
+
+        /**
+         * Tries to create a new CustomBias from given XML. Will search to see if any of the loaded biases can handle this bias type.
+         */
+        static CustomBias* fromXml( QDomElement e );
+
+        QList< CustomBiasEntry* > currentEntries();
         
         // reimplement from Dynamic::Bias
         virtual PlaylistBrowserNS::BiasWidget* widget(QWidget* parent = 0);
@@ -109,22 +129,9 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         virtual double reevaluate(double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context);
         virtual bool hasCollectionFilterCapability();
         virtual CollectionFilterCapability* collectionFilterCapability();
-            
-        
-        /**
-         * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.
-         */
-        void registerNewBiasEntry( CustomBiasEntry* );
-
-        /**
-         * Remove CustomBiasEntry from the list of bias types that the user can select.
-         */
-        void removeBiasEntry( CustomBiasEntry* );
-
         
         // these are used by the CustomBiasWidget. This public coupling sucks, but that's how daniel designed it...
         void setCurrentEntry( CustomBiasEntry* );
-        QList< CustomBiasEntry* > currentEntries();
 
         virtual double weight() const { return m_weight; }
         void setWeight( double );
@@ -133,12 +140,11 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         void weightChanged( double );
         
     private:
-        QList< CustomBiasEntry* > m_biasEntries;
+        static QList< CustomBiasEntry* > s_biasEntries;
         CustomBiasEntry* m_currentEntry;
 
         double m_weight; // slider for percent
 
-        static CustomBias* s_self;
 };
 
 // this should not be subclassed by implementing biases. this will call the widget() function

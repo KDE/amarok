@@ -24,6 +24,7 @@
 #include "lastfm/ws.h"
 #include "lastfm/XmlQuery"
 
+#include <QDomDocument>
 #include <QVBoxLayout>
 #include <QFrame>
 #include <QLabel>
@@ -50,6 +51,13 @@ Dynamic::SimilarArtistsBias::name()
     
     return i18n( "Similar Artists" );
 }
+
+QString
+Dynamic::SimilarArtistsBias::pluginName()
+{
+    return "lastfm_similarartists";
+}
+
 
 QWidget*
 Dynamic::SimilarArtistsBias::configWidget( QWidget* parent )
@@ -229,6 +237,15 @@ Dynamic::SimilarArtistsBias::numTracksThatSatisfy( const Meta::TrackList& tracks
     return satisfy;
 
 }
+
+QDomElement
+Dynamic::SimilarArtistsBias::xml( QDomDocument doc ) const
+{
+    DEBUG_BLOCK
+
+    return QDomElement();
+}
+
 
 bool
 Dynamic::SimilarArtistsBias::hasCollectionFilterCapability()

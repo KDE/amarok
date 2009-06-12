@@ -145,7 +145,7 @@ PlaylistBrowserNS::DynamicBiasModel::appendGlobalBias()
 void
 PlaylistBrowserNS::DynamicBiasModel::appendCustomBias()
 {
-    Dynamic::CustomBias* cb = Dynamic::CustomBias::self();
+    Dynamic::CustomBias* cb = new Dynamic::CustomBias();
     
     cb->setActive( true );
     appendBias( cb );

@@ -24,6 +24,7 @@
 
 #include "Collection.h"
 #include "CollectionManager.h"
+#include "CustomBias.h"
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicModel.h"
@@ -87,6 +88,11 @@ Dynamic::Bias::fromXml( QDomElement e )
         }
 
         return new Dynamic::GlobalBias( weight, filter );
+    }
+    else if( type == "custom" )
+    {
+        // handle whichever type this actually is, pass it off to the CustomBias builder
+        return Dynamic::CustomBias::fromXml( e );
     }
     else if( type == "normal" )
     {
@@ -286,7 +292,7 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     qm = m_collection->queryMaker();
 
     m_qm = new XmlQueryWriter( qm,
-            PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc() );
+            QDomDocument() );
 
     if( filter.field != 0 )
     {

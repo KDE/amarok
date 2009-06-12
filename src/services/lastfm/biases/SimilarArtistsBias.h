@@ -41,11 +41,14 @@ public:
 
     // reimplemented from CustomBiasEntry
     virtual QString name();
+    virtual QString pluginName();
     virtual QWidget* configWidget ( QWidget* parent );
 
     virtual bool trackSatisfies ( const Meta::TrackPtr track );
     virtual double numTracksThatSatisfy ( const Meta::TrackList& tracks );
 
+    virtual QDomElement xml( QDomDocument doc ) const;
+    
     virtual bool hasCollectionFilterCapability();
     virtual CollectionFilterCapability* collectionFilterCapability();
 

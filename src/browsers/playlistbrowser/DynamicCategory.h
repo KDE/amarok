@@ -56,6 +56,10 @@ namespace PlaylistBrowserNS {
             void On();
             void Off();
 
+            void saveOnExit();
+            
+            QVBoxLayout* m_vLayout;
+
             QCheckBox *m_onOffCheckbox;
             QPushButton *m_repopulateButton;
 
@@ -66,6 +70,7 @@ namespace PlaylistBrowserNS {
             QListView   *m_biasListView;
             DynamicBiasModel *m_biasModel;
             DynamicBiasDelegate *m_biasDelegate;
+
     };
 
 }

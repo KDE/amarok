@@ -172,7 +172,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
 DynamicCategory::~DynamicCategory() 
 {
-
+    saveOnExit();
 }
 
 
@@ -286,7 +286,15 @@ DynamicCategory::save()
     playlistSelectionChanged( DynamicModel::instance()->playlistIndex( title ) );
 }
 
+void
+DynamicCategory::saveOnExit()
+{
+    DEBUG_BLOCK
+
+    DynamicModel::instance()->saveCurrent();
 }
+
+} // namespace
 
 void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
 {
@@ -294,7 +302,6 @@ void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
     The::paletteHandler()->updateItemView( m_biasListView );
     m_biasListView->reset();
 }
-
 
 #include "DynamicCategory.moc"
 

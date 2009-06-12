@@ -14,6 +14,7 @@
 #include "CustomBias.h"
 
 #include "Debug.h"
+#include "DynamicModel.h"
 #include "SliderWidget.h"
 
 #include <KComboBox>
@@ -121,8 +122,6 @@ Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
     emit biasChanged( m_bias );
 }
 
-Dynamic::CustomBias* Dynamic::CustomBias::s_self = 0;
-
 Dynamic::CustomBias::CustomBias()
     : m_weight( .75 )
 {
@@ -137,6 +136,10 @@ Dynamic::CustomBias::widget( QWidget* parent )
     return new Dynamic::CustomBiasEntryWidget( this, parent );
     
 }
+
+// CLASS CustomBias
+
+QList< Dynamic::CustomBiasEntry* > Dynamic::CustomBias::s_biasEntries = QList< CustomBiasEntry* >();
 
 double
 Dynamic::CustomBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context )
@@ -158,9 +161,24 @@ Dynamic::CustomBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 QDomElement Dynamic::CustomBias::xml() const
 {
     DEBUG_BLOCK
-    AMAROK_NOTIMPLEMENTED
 
-    return QDomElement();
+    if( m_currentEntry )
+    {
+
+        QDomDocument doc = PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc();
+
+        QDomElement e = doc.createElement( "bias" );
+        e.setAttribute( "type", "custom" );
+        QDomElement child = doc.createElement( "custombias" );
+        child.setAttribute( "name", m_currentEntry->pluginName() );
+        child.setAttribute( "weight", m_weight );
+
+        e.appendChild( child );
+        child.appendChild( m_currentEntry->xml( doc ) );
+        
+        return e;
+    } else
+        return QDomElement();
 }
 
 double
@@ -188,13 +206,15 @@ Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPla
     }
 }
 
-bool Dynamic::CustomBias::hasCollectionFilterCapability()
+bool
+Dynamic::CustomBias::hasCollectionFilterCapability()
 {
     return m_currentEntry && m_currentEntry->hasCollectionFilterCapability();
 }
 
 
-Dynamic::CollectionFilterCapability* Dynamic::CustomBias::collectionFilterCapability()
+Dynamic::CollectionFilterCapability*
+Dynamic::CustomBias::collectionFilterCapability()
 {
     if( m_currentEntry )
         return m_currentEntry->collectionFilterCapability();
@@ -206,8 +226,8 @@ void
 Dynamic::CustomBias::registerNewBiasEntry( Dynamic::CustomBiasEntry* entry )
 {
     DEBUG_BLOCK
-    if( !m_biasEntries.contains( entry ) )
-        m_biasEntries.append( entry );
+    if( !s_biasEntries.contains( entry ) )
+        s_biasEntries.append( entry );
 }
 
 
@@ -216,14 +236,24 @@ Dynamic::CustomBias::removeBiasEntry( Dynamic::CustomBiasEntry* entry )
 {
     DEBUG_BLOCK
 
-    if( m_biasEntries.contains( entry ) )
-        m_biasEntries.removeAll( entry );
+    if( s_biasEntries.contains( entry ) )
+        s_biasEntries.removeAll( entry );
 }
+
+Dynamic::CustomBias*
+Dynamic::CustomBias::fromXml(QDomElement e)
+{
+    DEBUG_BLOCK
+
+    
+    return 0;
+}
+
 
 QList< Dynamic::CustomBiasEntry* >
 Dynamic::CustomBias::currentEntries()
 {
-    return m_biasEntries;
+    return s_biasEntries;
 }
 
 void

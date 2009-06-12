@@ -62,12 +62,9 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     : QAbstractItemModel()
     , m_activeUnsaved(false)
 {
-    Dynamic::DynamicPlaylistPtr randomPlaylist = createDefaultPlaylist();
+    DEBUG_BLOCK
 
-    insertPlaylist( randomPlaylist );
-    m_playlistElements.append( QDomElement() );
-    m_activePlaylist = m_defaultPlaylist = 0;
-
+    loadAutoSavedPlaylist();
 
     connect( CollectionManager::instance(),
             SIGNAL(collectionDataChanged(Amarok::Collection*)),
@@ -148,7 +145,10 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::activePlaylist()
 {
-    return m_playlistList[m_activePlaylist];
+    if( m_activePlaylist >= 0 )
+        return m_playlistList[m_activePlaylist];
+    else
+        return Dynamic::DynamicPlaylistPtr();
 }
 
 
@@ -296,8 +296,11 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
             Dynamic::DynamicPlaylistPtr newPlaylist( Dynamic::BiasedPlaylist::fromXml(e) );
             if( newPlaylist )
             {
-                insertPlaylist( newPlaylist );
-                m_playlistElements.append( e );
+                if( !m_playlistHash.keys().contains( newPlaylist->title() ) ) // we may have restored this from last exit, don't duplicate
+                {
+                    insertPlaylist( newPlaylist );
+                    m_playlistElements.append( e );
+                }
             }
             else
                 m_savedPlaylistsRoot.removeChild( e );
@@ -445,7 +448,92 @@ PlaylistBrowserNS::DynamicModel::savePlaylists()
 
     QTextStream stream( &file );
     stream.setCodec( "UTF-8" );
+    
     m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+}
+
+void
+PlaylistBrowserNS::DynamicModel::saveCurrent()
+{
+    DEBUG_BLOCK
+        
+    QFile file( Amarok::saveLocation() + "dynamic_current.xml" );
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        error() << "Can not open dynamic_current.xml.";
+        return;
+    }
+
+    QTextStream stream( &file );
+    stream.setCodec( "UTF-8" );
+    QDomDocument doc;
+    QDomElement root = doc.createElement( "biasedplaylists" );
+
+    if( m_activePlaylist != m_defaultPlaylist )
+    {
+        QDomElement e = m_playlistList[m_activePlaylist]->xml();
+        root.appendChild( e );
+    }
+    doc.appendChild( root );
+    doc.save( stream, 2, QDomNode::EncodingFromTextStream );
+    file.close();
+}
+
+void
+PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
+{   
+
+    // create the empty default random playlist
+    Dynamic::DynamicPlaylistPtr playlist = createDefaultPlaylist();
+
+    insertPlaylist( playlist );
+    m_playlistElements.append( QDomElement() );
+    m_activePlaylist = m_defaultPlaylist = 0;
+    
+    QFile file( Amarok::saveLocation() + "dynamic_current.xml" );
+    if( !file.open( QIODevice::ReadWrite ) )
+    {
+        error() << "Can not open dynamic_current.xml";
+        return;
+    }
+
+    QTextStream stream( &file );
+    stream.setAutoDetectUnicode( true );
+    QString raw = stream.readAll();
+
+    QDomDocument loadedPlaylist;
+
+    QString errorMsg;
+    int errorLine, errorColumn;
+    if( !loadedPlaylist.setContent( raw, &errorMsg, &errorLine, &errorColumn ) )
+    {
+        error() << "Can not parse dynamic_current.xml, must not have had one saved";
+    } else
+    {
+        QDomElement root = loadedPlaylist.firstChildElement( "biasedplaylists" );
+        if( !root.isNull() ) // ok we actually have a saved playlist
+        {
+            QDomElement e = root.firstChildElement();
+            //debug() << "got root and first child element:" << e.text();
+            if( e.tagName() == "playlist" )
+            {
+                Dynamic::BiasedPlaylist* bp = Dynamic::BiasedPlaylist::fromXml(e);
+
+                //debug() << "got playlist xml, creating new BiasedPlaylist";
+                if( bp )
+                {
+                    //debug() << "successfully restored new biasedplaylist";
+                    if( bp->title() == i18n( "Random" ) )
+                        bp->setTitle( i18n( "Random (modified)" ) );
+                    Dynamic::DynamicPlaylistPtr np( bp );
+                    insertPlaylist( np );
+                    m_playlistElements.append( e );
+                    m_activePlaylist = m_playlistList.indexOf( np );
+                    emit( activeChanged() );
+                }
+            }
+        }
+    }
 }
 
 void
