@@ -167,8 +167,7 @@ MainWindow::~MainWindow()
     QFile file( Amarok::saveLocation() + "layout" );
     if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered | QIODevice::Truncate ) )
     {
-        debug() << "writing layout state"; 
-        file.write( saveState() );
+        file.write( saveState( 0 ) );
         file.close();
     }
 
@@ -339,19 +338,10 @@ MainWindow::init()
     if ( file.open( QIODevice::ReadOnly ) )
     {
 
-        debug() << "Reading layout file";
         QByteArray layout = file.readAll();
         file.close();
 
-        debug() << "got saved layout ";
-
-        for( int i = 0; i < layout.count(); i++ )
-        {
-            debug() << layout.at( i );
-        }
-        
-        debug() << "size: " << layout.count();
-        debug() << "sucess: " << restoreState( layout );
+        restoreState( layout, 0 );
     }
 }
 
