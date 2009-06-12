@@ -165,9 +165,10 @@ MainWindow::~MainWindow()
 
     //save layout to file. Does not go into to rc as it is binary data.
     QFile file( Amarok::saveLocation() + "layout" );
-    if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered ) )
+    if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered | QIODevice::Truncate ) )
     {
-        file.write( saveState( 0 ) );
+        debug() << "writing layout state"; 
+        file.write( saveState() );
         file.close();
     }
 
@@ -218,7 +219,7 @@ MainWindow::init()
     m_playlistDummyTitleBarWidget = new QWidget();
 
     m_browsersDock = new QDockWidget( i18n( "Browsers" ), this );
-    m_browsersDock->setObjectName( "Browsers" );
+    m_browsersDock->setObjectName( "Browsers dock" );
     m_browsersDock->setWidget( m_browsers );
     m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
     
@@ -229,7 +230,7 @@ MainWindow::init()
     m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
 
     m_playlistDock = new QDockWidget( i18n( "Playlist" ), this );
-    m_playlistDock->setObjectName( "Playlist" );
+    m_playlistDock->setObjectName( "Playlist dock" );
     m_playlistDock->setWidget( m_playlistWidget );
     m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
     
@@ -252,7 +253,7 @@ MainWindow::init()
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
     m_contextDock = new QDockWidget( i18n( "Context" ), this );
-    m_contextDock->setObjectName( "Context" );
+    m_contextDock->setObjectName( "Context dock" );
     m_contextDock->setWidget( m_contextWidget );
     m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
 
@@ -342,9 +343,15 @@ MainWindow::init()
         QByteArray layout = file.readAll();
         file.close();
 
-        debug() << "got saved layout " << QString( layout );
+        debug() << "got saved layout ";
+
+        for( int i = 0; i < layout.count(); i++ )
+        {
+            debug() << layout.at( i );
+        }
+        
         debug() << "size: " << layout.count();
-        debug() << "sucess: " << restoreState( layout, 0 );
+        debug() << "sucess: " << restoreState( layout );
     }
 }
 
