@@ -3,9 +3,10 @@ include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 set(AMAROK_COLLECTION_SUPPORT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/support)
 
 add_subdirectory( daap )
+add_subdirectory( audiocd )
 
 add_subdirectory( mediadevicecollection )
-add_subdirectory( ipodcollection )
+#add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 
 # needs things from playground/base/nepomuk-kde
