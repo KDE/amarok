@@ -27,13 +27,13 @@ PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &p
 {
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
 
-    const QString query = "SELECT firstPlayed, lastPlayed, score, rating, playcount FROM "
+    const QString query = "SELECT firstplayed, lastplayed, score, rating, playcount FROM "
                           "statistics_permanent WHERE url = '%1'";
     QStringList result = sql->query( query.arg( sql->escape( permanentUrl ) ) );
     if( !result.isEmpty() )
     {
-        m_firstPlayed = QDateTime::fromTime_t( result.value( 0 ).toUInt() );
-        m_lastPlayed = QDateTime::fromTime_t( result.value( 1 ).toUInt() );
+        m_firstPlayed = QDateTime::fromString( result.value( 0 ), "yy-MM-dd hh:mm:ss" );
+        m_lastPlayed = QDateTime::fromString( result.value( 1 ), "yy-MM-dd hh:mm:ss" );
         m_score = result.value( 2 ).toDouble();
         m_rating = result.value( 3 ).toInt();
         m_playCount = result.value( 4 ).toInt();
@@ -52,16 +52,16 @@ PermanentUrlStatisticsProvider::save()
         QString sqlString;
         if( rsCheck.first().toInt() )
         {
-            sqlString = "UPDATE statistics_permanent SET firstPlayed = %1,lastPlayed = %2,"
+            sqlString = "UPDATE statistics_permanent SET firstplayed = '%1',lastplayed = '%2',"
                         "score = %3,rating = %4,playcount=%5 WHERE url = '%6'";
         }
         else
         {
-            sqlString = "INSERT INTO statistics_permanent(firstPlayed,lastPlayed,score,"
-                        "rating,playcount,url) VALUE (%1,%2,%3,%4,%5,'%6')";
+            sqlString = "INSERT INTO statistics_permanent(firstplayed,lastplayed,score,"
+                        "rating,playcount,url) VALUE ('%1','%2',%3,%4,%5,'%6')";
         }
-        sqlString = sqlString.arg( QString::number( m_firstPlayed.toTime_t() ),
-                                   QString::number( m_lastPlayed.toTime_t() ),
+        sqlString = sqlString.arg( m_firstPlayed.toString( "yy-MM-dd hh:mm:ss" ),
+                                   m_lastPlayed.toString( "yy-MM-dd hh:mm:ss" ),
                                    QString::number( m_score ),
                                    QString::number( m_rating ),
                                    QString::number( m_playCount ),

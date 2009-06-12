@@ -36,8 +36,8 @@ TagStatisticsProvider::TagStatisticsProvider( const QString &name, const QString
                                                 sql->escape( album ) ) );
     if( !result.isEmpty() )
     {
-        m_firstPlayed = QDateTime::fromTime_t( result.value( 0 ).toUInt() );
-        m_lastPlayed = QDateTime::fromTime_t( result.value( 1 ).toUInt() );
+        m_firstPlayed = QDateTime::fromString( result.value( 0 ), "yy-MM-dd hh:mm:ss" );
+        m_lastPlayed = QDateTime::fromString( result.value( 1 ), "yy-MM-dd hh:mm:ss" );
         m_score = result.value( 2 ).toDouble();
         m_rating = result.value( 3 ).toInt();
         m_playCount = result.value( 4 ).toInt();
@@ -59,7 +59,7 @@ TagStatisticsProvider::save()
         QString sqlString;
         if( rsCheck.first().toInt() )
         {
-            sqlString = "UPDATE statistics_tag SET firstPlayed = %1,lastPlayed = %2,"
+            sqlString = "UPDATE statistics_tag SET firstPlayed = '%1',lastPlayed = '%2',"
                         "score = %3,rating = %4,playcount=%5 WHERE name = '%6' "
                         "AND artist = '%7' AND album = '%8'";
         }
@@ -67,10 +67,10 @@ TagStatisticsProvider::save()
         {
             sqlString = "INSERT INTO statistics_tag(firstPlayed,lastPlayed,score,"
                         "rating,playcount,name,artist,album) "
-                        "VALUE (%1,%2,%3,%4,%5,'%6','%7','%8')";
+                        "VALUE ('%1','%2',%3,%4,%5,'%6','%7','%8')";
         }
-        sqlString = sqlString.arg( QString::number( m_firstPlayed.toTime_t() ),
-                                   QString::number( m_lastPlayed.toTime_t() ),
+        sqlString = sqlString.arg( m_firstPlayed.toString( "yy-MM-dd hh:mm:ss" ),
+                                   m_lastPlayed.toString( "yy-MM-dd hh:mm:ss" ),
                                    QString::number( m_score ),
                                    QString::number( m_rating ),
                                    QString::number( m_playCount ),

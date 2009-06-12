@@ -30,7 +30,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 3;
+static const int DB_VERSION = 4;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -136,8 +136,8 @@ DatabaseUpdater::upgradeVersion3to4()
 {
     m_collection->query( "CREATE TABLE statistics_permanent "
                          "(url " + m_collection->exactTextColumnType() +
-                         ",createdate INTEGER"
-                         ",accessdate INTEGER"
+                         ",firstplayed DATETIME"
+                         ",lastplayed DATETIME"
                          ",score FLOAT"
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
@@ -147,8 +147,8 @@ DatabaseUpdater::upgradeVersion3to4()
                          "(name " + m_collection->textColumnType() +
                          ",artist " + m_collection->textColumnType() +
                          ",album " + m_collection->textColumnType() +
-                         ",createdate INTEGER"
-                         ",accessdate INTEGER"
+                         ",firstplayed DATETIME"
+                         ",lastplayed DATETIME"
                          ",score FLOAT"
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
@@ -627,6 +627,27 @@ DatabaseUpdater::createTables() const
     }
     m_collection->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
+    {
+         m_collection->query( "CREATE TABLE statistics_permanent "
+                            "(url " + m_collection->exactTextColumnType() +
+                            ",firstplayed DATETIME"
+                            ",lastplayed DATETIME"
+                            ",score FLOAT"
+                            ",rating INTEGER DEFAULT 0"
+                            ",playcount INTEGER)" );
+        m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(url)" );
+
+        m_collection->query( "CREATE TABLE statistics_tag "
+                             "(name " + m_collection->textColumnType() +
+                             ",artist " + m_collection->textColumnType() +
+                             ",album " + m_collection->textColumnType() +
+                             ",firstplayed DATETIME"
+                             ",lastplayed DATETIME"
+                             ",score FLOAT"
+                             ",rating INTEGER DEFAULT 0"
+                             ",playcount INTEGER)" );
+        m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(name,artist,album)" );
+    }
 }
 
 int

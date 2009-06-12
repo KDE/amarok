@@ -19,6 +19,7 @@
 #include "StatisticsProvider.h"
 
 #include "Amarok.h"
+#include "debug.h"
 
 Meta::StatisticsProvider::StatisticsProvider()
         : m_score( 0.0 )
@@ -34,8 +35,11 @@ Meta::StatisticsProvider::~StatisticsProvider()
 void
 Meta::StatisticsProvider::played( double playedFraction )
 {
+    DEBUG_BLOCK
+
+    debug() << "called with playedFraction = " << playedFraction;
     m_lastPlayed = QDateTime::currentDateTime();
-    if( !m_firstPlayed.isNull() )
+    if( !m_firstPlayed.isValid() )
     {
         m_firstPlayed = QDateTime::currentDateTime();
     }
