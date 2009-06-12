@@ -34,6 +34,12 @@ class GeneralConfig : public ConfigDialogBase, public Ui_GeneralConfig
         virtual bool hasChanged();
         virtual bool isDefault();
         virtual void updateSettings();
+
+    public slots:
+        void lockStateChanged( int );
+        
+    signals:
+        void lockLayout( bool );
 };
 
 #endif

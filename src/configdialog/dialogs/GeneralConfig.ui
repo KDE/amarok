@@ -43,23 +43,17 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QCheckBox" name="kcfg_AutoGetCoverArt">
         <property name="text">
          <string>Automatically retrieve cover art</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="kcfg_HideContextView">
-        <property name="toolTip">
-         <string>Check to hide the context view.</string>
-        </property>
-        <property name="whatsThis">
-         <string>Check to hide the context view.</string>
-        </property>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="kcfg_LockLayout">
         <property name="text">
-         <string>Hide context view</string>
+         <string>Lock layout</string>
         </property>
        </widget>
       </item>

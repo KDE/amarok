@@ -156,8 +156,6 @@ MainWindow::~MainWindow()
     KConfigGroup config = Amarok::config();
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
-    config.writeEntry( "Lock Layout", isLayoutLocked() );
-    
 
     QList<int> sPanels;
 
@@ -272,7 +270,7 @@ MainWindow::init()
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
     addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
 
-    KConfigGroup config = Amarok::config();
+    KConfigGroup config = Amarok::config( "General Options" );
     const bool locked = config.readEntry( "Lock Layout", true );
 
     setLayoutLocked( locked );
@@ -1008,9 +1006,10 @@ void MainWindow::hideContextView( bool hide )
 
 void MainWindow::setLayoutLocked( bool locked )
 {
+    DEBUG_BLOCK
     if ( locked )
     {
-
+        debug() << "locked!";
         const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
 
         m_browsersDock->setFeatures( features );
@@ -1024,7 +1023,7 @@ void MainWindow::setLayoutLocked( bool locked )
     }
     else
     {
-
+        debug() << "unlocked!";
         const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
         
         m_browsersDock->setFeatures( features );

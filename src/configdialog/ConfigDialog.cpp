@@ -25,6 +25,7 @@
 
 #include "CollectionConfig.h"
 #include "GeneralConfig.h"
+#include "MainWindow.h"
 //#include "MediadeviceConfig.h"
 #include "OsdConfig.h"
 #include "PlaybackConfig.h"
@@ -49,6 +50,9 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* services    = new ServiceConfig( this );
     ConfigDialogBase* playback    = new PlaybackConfig( this );
     ConfigDialogBase* osd         = new OsdConfig( this );
+
+    connect( general, SIGNAL( lockLayout( bool ) ), The::mainWindow(), SLOT ( setLayoutLocked( bool ) ) );
+    
 //    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
