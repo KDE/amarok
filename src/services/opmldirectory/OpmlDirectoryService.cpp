@@ -69,6 +69,13 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );
     setIcon( KIcon( "view-services-opml-amarok" ) );
+
+
+    setLongDescription( i18n( "A comprehensive list of searchable podcasts from www.digitalpodcast.com that you can subscribe to directly from within Amarok." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "view-services-opml-amarok", -128, true ) );
+    
     m_serviceready = true;
     emit( ready() );
 }
