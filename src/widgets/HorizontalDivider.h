@@ -25,7 +25,7 @@
 /**
 A simple divider widget that draws the svg divider elements.
 
-	@author 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class HorizontalDivider : public QWidget
 {

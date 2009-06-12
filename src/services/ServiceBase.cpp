@@ -113,16 +113,9 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     if ( !prettyName.isEmpty() )
         setPrettyName( prettyName );
 
-    setContentsMargins( 1, 1, 1, 1 );
     setSpacing( 1 );
 
     m_topPanel = new KVBox( this );
-
-    m_topPanel->setLineWidth( 2 );
-    m_topPanel->setSpacing( 2 );
-    m_topPanel->setMargin( 2 );
-
-    //m_topPanel->setFixedHeight( 50 );
 
     KHBox * commonPanel = new KHBox ( m_topPanel );
 
