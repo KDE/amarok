@@ -42,19 +42,31 @@ AmarokTest::AmarokTest( int &argc, char **argv )
         : QCoreApplication( argc, argv )
 {
     int i;
-    m_logsLocation  = Amarok::saveLocation( "testresults/" );
-    m_logsLocation += QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + ".log";
-    m_allTests = KGlobal::dirs()->findAllResources( "data", "amarok/tests/*.js", KStandardDirs::Recursive );
+    QString logsLocation = Amarok::saveLocation( "testresults/" );
+    QString currentTime = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
+    QFile logFile( logsLocation + currentTime + ".log" );
+
+    if( !logFile.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
+        ::debug() << "Unable to open log!";
+        exit( 1 );
+    }
+
+    m_log.setDevice( &logFile );
+    m_log << "<testrun>" << endl;
 
     prepareTestEngine();
 
     if( arguments().size() == 1 ) /** only our own program name: run all available tests */
     {
+        m_allTests = KGlobal::dirs()->findAllResources( "data", "amarok/tests/*.js", KStandardDirs::Recursive );
         i = 0;
+
         while( i < m_allTests.size() ) {
             m_currentlyRunning = m_allTests.at( i );
+            m_log << "<testscript name=\"" << m_currentlyRunning << "\">" << endl;
             runScript();
             i++;
+            m_log << "</teststript>" << endl << endl;
         }
     }
 
@@ -70,7 +82,20 @@ AmarokTest::AmarokTest( int &argc, char **argv )
         }
     }
 
-    exit();
+    m_log << "</testrun>\n";
+
+    QString linkLocation = logsLocation + "LATEST";
+    #ifdef Q_WS_WIN
+    linkLocation = linkLocation + ".lnk";
+    #endif
+
+    QFile symlink( linkLocation );
+    symlink.remove();
+    if( !logFile.link( linkLocation ) )
+        ::debug() << "Unable to create link to log!";
+
+    logFile.close();
+    exit( 0 );
 }
 
 
@@ -92,12 +117,35 @@ AmarokTest::debug( const QString& text ) const // Slot
 
 
 void
+AmarokTest::startTimer() // Slot
+{
+    if( m_testTime.isNull() )
+        m_testTime.start();
+    else
+        m_testTime.restart();
+}
+
+
+void
 AmarokTest::testResult( QString testName, QString expected, QString actualResult ) // Slot
 {
-    if( expected != actualResult ) // only log failed tests
-        writeTestResult( false, testName, expected, actualResult );
-//     else
-//         writeTestResult( true, testName, expected, actualResult );
+    m_log << "  <test>" << endl;
+    m_log << "    <name>" << testName << "</name>" << endl;
+
+    if( expected != actualResult )
+    {
+        m_log << "    <status>FAILED</status>" << endl;
+        m_log << "    <expected>" << expected << "</expected>" << endl;
+        m_log << "    <result>" << actualResult << "</result>" << endl;
+    }
+
+    else
+        m_log << "    <status>PASSED</status>" << endl;
+
+    m_log << "    <time>" << m_testTime.elapsed() << "</time>" << endl; // in milliseconds
+    m_log << "  </test>" << endl;
+
+    m_testTime.restart();
 }
 
 
@@ -139,11 +187,4 @@ AmarokTest::runScript()
     }
 
     testScript.close();
-}
-
-
-void
-AmarokTest::writeTestResult( bool success, QString testName, QString expected, QString actualResult )
-{
-    
 }

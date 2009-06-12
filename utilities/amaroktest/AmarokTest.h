@@ -24,6 +24,8 @@
 #include <QScriptEngine>
 #include <QString>
 #include <QStringList>
+#include <QTextStream>
+#include <QTime>
 
 /**
  * @class AmarokTest
@@ -49,6 +51,11 @@ public slots:
     void debug( const QString& text ) const;
 
     /**
+     * Lets a script tell us that from now on time critival tasks are being performed.
+     */
+    void startTimer();
+
+    /**
      * Writes the results of a test to the log
      * @testName Human readable name of the test.
      * @expected Human readable expected test result.
@@ -67,15 +74,6 @@ private:
      */
     void prepareTestEngine();
 
-    /**
-     * Writes the results of a test to the log
-     * @success Indicates weather the test has been passed. true for yes, false for no.
-     * @testName Human readable name of the test.
-     * @expected Human readable expected test result.
-     * @actualResult Human readable actual result of the test.
-     */
-    void writeTestResult( bool success, QString testName, QString expected = "", QString actualResult = "" );
-
     // Disable copy constructor and assignment
     AmarokTest( const AmarokTest& );
     AmarokTest& operator= ( const AmarokTest& );
@@ -84,6 +82,8 @@ private:
     QString       m_currentlyRunning;
     QString       m_logsLocation;
     QStringList   m_allTests;
+    QTextStream   m_log;
+    QTime         m_testTime;
 };
 
 #endif // AMAROKTEST_H
