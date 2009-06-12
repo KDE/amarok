@@ -28,24 +28,68 @@ namespace Playlist
 {
 
 /**
- *
+ * This class defines a correspondence between source rows and sorted rows, and handles the
+ * generation of the correspondence from a Playlist::SortScheme.
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 class SortMap
 {
 public:
+    /**
+     * Constructor.
+     * @param rowCount number of rows to be handled.
+     */
     SortMap( qint64 rowCount );
 
+    /**
+     * Destructor.
+     */
+    ~SortMap();
+
+    /**
+     * Applies the inverse mapping of a row in the proxy to the corresponding row in the
+     * source model.
+     * @param proxyRow a row in the proxy model.
+     * @return the corresponding row in the source model.
+     */
     qint64 inv( qint64 proxyRow );
 
+    /**
+     * Applies the mapping of a row in the source model to the corresponding row in the
+     * proxy.
+     * @param sourceRow a row in the source model.
+     * @return the corresponding row in the proxy.
+     */
     qint64 map( qint64 sourceRow );
 
-    void insertRows( qint64 startRowInSource, qint64 endRowInSource );
+    /**
+     * Adds a number of newly inserted rows to the map. The map is kept in sync with the
+     * proxy but isn't sorted.
+     * @param startRowInSource the position of the first row.
+     * @param rowCount the number of added rows.
+     */
+    void insertRows( qint64 startRowInSource, qint64 rowCount );
 
-    void deleteRows( qint64 stareRowInSource, qint64 endRowInSource );
+    //NOTE to self by Téo: isn't it true that by just removing rows the sorting should be preserved?
+    /**
+     * Removes a number of newly deleted rows from the map. The map is kept in sync with the
+     * proxy.
+     * @param startRowInSource the position of the first row.
+     * @param rowCount the number of removed rows.
+     */
+    void deleteRows( qint64 startRowInSource, qint64 rowCount );
 
-    bool isSorted(){ return m_sorted; };
+    /**
+     * Converts a sorting scheme to a permutation of source rows.
+     * @param scheme the SortScheme from which to generate the map.
+     */
+    void sort( const SortScheme& scheme );
 
-    void setRowCount( qint64 rowCount ){ m_rowCount = rowCount; };
+    /**
+     * Checks if the current mapping applies a sorting scheme.
+     * @return true if the map is sorted, false otherwise.
+     */
+    inline bool isSorted(){ return m_sorted; };
 
 private:
     QMap< qint64, qint64 > *m_map;

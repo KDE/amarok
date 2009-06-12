@@ -35,6 +35,11 @@ SortMap::SortMap( qint64 rowCount )
 
 }
 
+SortMap::~SortMap()
+{
+    delete m_map;
+}
+
 qint64
 SortMap::inv( qint64 proxyRow )
 {
@@ -47,5 +52,24 @@ SortMap::map( qint64 sourceRow )
     return m_map->value( sourceRow );   //note that if sourceRow>= size(), bad things will happen.
 }
 
+void
+SortMap::sort( const SortScheme &scheme )
+{
+    //sorting
+    m_sorted = 1;
+}
+
+void
+SortMap::insertRows( qint64 startRowInSource, qint64 endRowInSource )
+{
+
+    m_sorted = 0;   //inserting rows surely invalidates the sorting.
+}
+
+void
+SortMap::deleteRows( qint64 stareRowInSource, qint64 endRowInSource )
+{
+
+}
 
 }   //namespace Playlist
