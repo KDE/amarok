@@ -59,7 +59,7 @@ SortProxy::SortProxy()
     // ^ rowsRemoved is currently used as rowsRemoved( start, start ), one item at a time
 
     connect( m_belowModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-    connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
+    connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );    //FIXME: probably nobody connects to this
     connect( m_belowModel, SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
 
     //NOTE to self by Téo: when rows are inserted, and that I'll know thanks to the signals
@@ -115,6 +115,7 @@ SortProxy::updateSortMap( SortScheme *scheme)
 {
     //APPLY THE SORTING
     m_map->sort( scheme );
+    emit sortChanged();
 }
 
 void

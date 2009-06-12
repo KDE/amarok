@@ -41,6 +41,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
 #include "playlist/proxymodels/FilterProxy.h"
+#include "playlist/proxymodels/SortProxy.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
@@ -94,6 +95,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
 
     connect( The::playlistModel(), SIGNAL( itemsAdded( int ) ), this, SLOT( itemsAdded( int ) ) );
+
+    connect( Playlist::SortProxy::instance(), SIGNAL( sortChanged() ), this, SLOT( reset() ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}

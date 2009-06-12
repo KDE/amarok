@@ -245,6 +245,7 @@ signals:
     void rowsInserted( const QModelIndex& idx, int start, int end );
     void rowsRemoved( const QModelIndex& idx, int start, int end );
 
+    void sortChanged();
 
 private:
     /**

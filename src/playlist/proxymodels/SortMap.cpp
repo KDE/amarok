@@ -23,6 +23,54 @@
 #include "FilterProxy.h"
 #include "SortProxy.h"
 
+/**
+ * Implements straight insertion sort.
+ * A sorting algorithm falls into the adaptive sort family if it takes advantage of existing
+ * order in its input. Straight insertion sort is adaptive and stable, and it is a variant
+ * of the classic insertion sort algorithm.
+ * Straight insertion sort takes O(n^2), so it's quite inefficient on large inputs, but if
+ * the input list has a high presortedness (hence a low number of inversions), the algorithm
+ * can perform noticeably faster than an optimal worst-case O(n*logn) algorithm.
+ * @param begin STL-style iterator that points to the beginning of the input container
+ * @param end STL-style iterator that points to the end of the input container
+ * @param lessThan functor used instead of operator<()
+ */
+template< class T >
+void
+kAdaptiveStableSort( T begin, T end, Playlist::MultilevelLessThan lessThan)
+{
+    for( T i = begin + 1; i != end; ++i )
+        for( T j = i; j != begin && lessThan( *j, *( j - 1 ) ); --j )
+            qSwap( *j, *( j - 1 ) );
+    /* move version:
+    for( int j = 2; j <= n; j++ )
+    {
+        int i = j - 1;
+        int t = list[j];
+        while( t < list[i] )
+        {
+            list[ i + 1 ] = list[ i ];
+            i++;
+        }
+        list[ i + 1 ] = t;
+    }*/
+    /* pseudopascal
+    procedure Straight Insertion Sort (X, n):
+    X[0] := − ∞;
+    for j := 2 to n do
+    begin
+        i := j − 1;
+        t := X[j];
+        while t < X[i] do
+        begin
+            X[i + 1] := X[i];
+            i := i + 1
+        end;
+        X[i + 1] := t;
+    end;
+    */
+}
+
 namespace Playlist
 {
 
@@ -59,12 +107,22 @@ void
 SortMap::sort( SortScheme *scheme )
 {
     debug()<< "about to call qStableSort()";
-    //MultilevelLessThan multilevelLessThan( m_sourceProxy, scheme );
+    //FIXME: Really unclean solution.
+    //       As qStableSort() swaps values rather than setting them, it only sorts nicely
+    //       when starting from an identity function. This behavior *must* be fixed, but
+    //       until then we just use a very inefficient workaround and make sure that
+    //       qStableSort() always starts from an identity map.
+    //       This preloading takes O(n).
+    //                      -- Téo
+    m_map->clear();
+    for( int i = 0; i < m_rowCount; i++ )   //defining an identity
+        m_map->append( i );     //this should give me amortized O(1)
+    //qStableSort() is a merge sort and takes Θ(n*logn) in any case.
     qStableSort( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
     m_sorted = 1;
 
     debug() << "Behold the mighty sorting map spamming your terminal:";
-    debug() << "  source  sortProxy";
+    debug() << "  source  sortProxy";   //column headers
     for( int i = 0; i < m_map->length(); i++ )
     {
         debug() << "   " << i << "   " << m_map->value( i );
@@ -77,25 +135,22 @@ SortMap::insertRows( int startRowInSource, int endRowInSource )
     //TODO: implement adding
     debug() << "Here I should be adding to the map sourceRows from " << startRowInSource << " to " << endRowInSource;
     m_sorted = 0;   //inserting rows surely invalidates the sorting.
+    m_rowCount = m_sourceProxy->rowCount();
 }
 
 void
 SortMap::deleteRows( int startRowInSource, int endRowInSource )
 {
     debug() << "Removing from the map sourceRows from " << startRowInSource << " to " << endRowInSource;
-    QList< int >::iterator startIterator = m_map->begin();
-    QList< int >::iterator endIterator = m_map->begin();
-    startIterator += startRowInSource;
-    endIterator += endRowInSource + 1;  //erase() wants the first item that *won't* be deleted as the end row
-    m_map->erase( startIterator, endIterator ); //yay this should be O(1)
+    QList< int >::iterator startIterator = m_map->begin() + startRowInSource;
+    QList< int >::iterator endIterator = m_map->begin() + endRowInSource + 1;   //erase() wants the first item that *won't* be deleted as the end row
+    m_map->erase( startIterator, endIterator );     //yay this should take O(1)
+    m_rowCount = m_sourceProxy->rowCount();
     // Let's now restore codomain elements consistency.
     // We have to make it so that the set of keys has the same elements as the set of values,
     // and the existing order has to be preserved.  -- Téo
-    for( startIterator = m_map->begin(); startIterator != m_map->end(); ++startIterator )
-    {
-        if( *startIterator >= *endIterator )    //if the codomain index is 
-        {
 /*
+  Definition of the problem:
 A A'
 0 1
 1 3
@@ -110,47 +165,28 @@ A A'   should be:
 2 5     3   (-2)
 3 4     2   (-2)
 */
-        }
-    }
-        // this is no good, I need to keep the values an uninterrupted sequence of integers between 0 and m_map->length() too!!!
-        //NOTE TO SELF: and if I just use a sorting algorithm that does well with partially sorted lists (adaptive sort)? Could be almost O(n).
-}
-
-template< class T >
-void
-kAdaptiveStableSort( T begin, T end, MultilevelLessThan lessThan)
-{
-    for( T i = begin + 1; i != end; ++i )
-        for( T j = i; j != begin && lessThan( *j, *( j - 1 ) ); --j )
-            qSwap( *j, *( j - 1 ) );
-    /*
-    for( int j = 2; j <= n; j++ )
-    {
-        int i = j - 1;
-        int t = list[j];
-        while( t < list[i] )
-        {
-            list[ i + 1 ] = list[ i ];
-            i++;
-        }
-        list[ i + 1 ] = t;
-    }*/
-    /* pseudopascal
-    procedure Straight Insertion Sort (X, n):
-    X[0] := − ∞;
-    for j := 2 to n do
-    begin
-        i := j − 1;
-        t := X[j];
-        while t < X[i] do
-        begin
-            X[i + 1] := X[i];
-            i := i + 1
-        end;
-        X[i + 1] := t;
-    end;
-    */
-    
+    //FIXME: Really unclean solution.
+    //       To restore elements consistency after performing an insertion/deletion of tracks
+    //       without sorting everything again I would need to keep track of the codomain
+    //       indexes (list values) and correct them. There might be another data structure
+    //       that I could use instead of a QList< int > that would possibly allow me to keep
+    //       the consistency of the indexes, but I need to do further research.
+    //       In the meantime, I'll use a quick, dirty and a bit inefficient solution and
+    //       resort everything. To do that, I first need to clear the existing sorting map
+    //       and apply an identity map (see SortMap::sort()). After that I'll use a special
+    //       adaptive sorting algorithm (kAdaptiveStableSort()).
+    //       We will just suppose for now that the user won't add/remove many tracks all at
+    //       once.
+    //                      -- Téo
+    m_map->clear();
+    for( int i = 0; i < m_rowCount; i++ )   //defining an identity
+        m_map->append( i );     //this should give me amortized O(1)
+    //With a small enough input and a low number of inversions, this sorting is as close to
+    //O(n) as it gets.
+    //kAdaptiveStableSort( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
+    //oh ffs this might be a bad idea after all
+    //who says that the m_map before deleting was consistent with a scheme?
+    m_sorted = 1;
 }
 
 bool
@@ -162,8 +198,8 @@ MultilevelLessThan::operator()(int rowA, int rowB)
         int currentCategory = m_scheme->level( i ).category();  //see enum Column in PlaylistDefines.h
         QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();  //FIXME: are you sure you need to do comparisons on sourceProxy indexes?
         QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
-        if( m_scheme->level( i ).isString() )   // OH ~fuck, the sorting algoritm does SUBSTITUTIONS, not ASSIGNMENTS. this means that a proper scheme can only be obtained
-        {                                       // AFTER a QList that defines an identity function!!!
+        if( m_scheme->level( i ).isString() )
+        {
             if( dataA.toString() < dataB.toString() )
                 verdict = 1;
             else if( dataA.toString() > dataB.toString() )

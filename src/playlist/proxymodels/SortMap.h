@@ -98,6 +98,7 @@ private:
     int m_rowCount;
     FilterProxy *m_sourceProxy;
     bool m_sorted;
+    SortScheme *m_scheme;
 };
 /**
  * Comparison functor used by qSort() or qStableSort().
