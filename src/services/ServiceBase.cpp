@@ -99,19 +99,18 @@ void ServiceFactory::slotServiceReady()
 ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
-    : BrowserCategory( prettyName )
-        , m_contentView ( 0 )
-        , m_parentFactory( parent )
-        , m_polished( false )
-        , m_serviceready( false )
-        , m_useCollectionTreeView( useCollectionTreeView )
-        , m_infoParser( 0 )
-        , m_model( 0 )
+    : BrowserCategory( !prettyName.isEmpty() ? prettyName : name )
+    , m_contentView ( 0 )
+    , m_parentFactory( parent )
+    , m_polished( false )
+    , m_serviceready( false )
+    , m_useCollectionTreeView( useCollectionTreeView )
+    , m_infoParser( 0 )
+    , m_model( 0 )
 {
     DEBUG_BLOCK
 
     m_name = name;
-    m_prettyName = prettyName;
 
     setContentsMargins( 1, 1, 1, 1 );
     setSpacing( 1 );
