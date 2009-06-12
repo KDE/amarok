@@ -33,9 +33,8 @@ SortMap::SortMap( FilterProxy *sourceProxy )
     m_sourceProxy = sourceProxy;    //FilterProxy::instance();
     m_rowCount = m_sourceProxy->rowCount();
     m_map = new QList< int >();
-    for( int i = 0; i < m_rowCount; i++ )
-        m_map->insert( i, i ); //identical function
-
+    for( int i = 0; i < m_rowCount; i++ )   //defining an identity
+        m_map->append( i );     //this should give me amortized O(1)
 }
 
 SortMap::~SortMap()
