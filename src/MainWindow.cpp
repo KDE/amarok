@@ -1020,6 +1020,9 @@ void MainWindow::setLayoutLocked( bool locked )
         m_browsersDock->setTitleBarWidget( m_contextDummyTitleBarWidget );
         m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
 
+        m_controlBar->setFloatable( false );
+        m_controlBar->setMovable( false );
+
     }
     else
     {
@@ -1033,6 +1036,9 @@ void MainWindow::setLayoutLocked( bool locked )
         m_browsersDock->setTitleBarWidget( 0 );
         m_contextDock->setTitleBarWidget( 0 );
         m_playlistDock->setTitleBarWidget( 0 );
+
+        m_controlBar->setFloatable( true );
+        m_controlBar->setMovable( true );
     }
 
     m_layoutLocked = locked;
