@@ -49,8 +49,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
 
     setMargin( 0 );
     setContentsMargins(0,0,0,0);
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
 
     addCategory( PlaylistManager::Dynamic );
 
