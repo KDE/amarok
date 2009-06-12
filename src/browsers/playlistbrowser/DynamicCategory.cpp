@@ -49,6 +49,17 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     setPrettyName( i18n( "Dynamic Playlists" ) );
     setShortDescription( i18n( "Dynamically updating parameter based playlists" ) );
     setIcon( KIcon( "dynamic-amarok" ) );
+
+    setLongDescription( i18n( "With a dynamic playlist, Amarok becomes your own personal dj, automatically selecting tracks for you, based on a number of parameters that you select." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "dynamic-amarok", -128, true ) );
+
+
+
+
+
+    
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins(0,0,0,0);
