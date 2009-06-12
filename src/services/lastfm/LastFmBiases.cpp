@@ -243,7 +243,7 @@ Dynamic::LastFmBias::collectionFilterCapability()
 const QSet< QByteArray >&
 Dynamic::LastFmCollectionFilterCapability::propertySet()
 {
- //   debug() << "returning matching set for artist: " << m_bias->m_currentArtist << "of size:" << m_bias->m_savedArtists[ m_bias->m_currentArtist ].size();
+    debug() << "returning matching set for artist: " << m_bias->m_currentArtist << "of size:" << m_bias->m_savedArtists[ m_bias->m_currentArtist ].size();
     return m_bias->m_savedArtists[ m_bias->m_currentArtist ];
 }
 

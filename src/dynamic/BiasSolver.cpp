@@ -660,14 +660,16 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
             // Decide whether we should 'accept' or 'reject' a bias.
             decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
-            debug() << "decider is set to:" << decider << "movingWeights is:" << movingWeights[ i ];
+            //debug() << "decider is set to:" << decider << "movingWeights is:" << movingWeights[ i ];
             if( decider < movingWeights[i] )
             {
+                debug() << "chose track from bias";
                 branches.setBit( i, true );
                 R.intersect( m_feasibleCollectionFilterSets[i] );
             }
             else
             {
+                debug() << "bias NOT chosen.";
                 branches.setBit( i, false );
                 R.subtract( m_feasibleCollectionFilterSets[i] );
             }
@@ -676,7 +678,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             // empty set. If that's the case, we have to choose the other
             // branch, even if it does defy the probability. (This is how we
             // deal with infeasible systems.)
-            debug() << "after set intersection/substraction, R has size:" << R.size();
+            //debug() << "after set intersection/substraction, R has size:" << R.size();
 
             if( R.size() == 0 )
                 branches.toggleBit( i );
@@ -730,7 +732,7 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
     int giveup = 50;
     while( giveup-- && !track )
         track = trackForUid( subset[ KRandom::random() % subset.size() ] );
-
+    debug() << "track selected:" << track->name() << track->artist()->name();
     return track;
 }
 

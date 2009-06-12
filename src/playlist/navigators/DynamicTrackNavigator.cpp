@@ -104,6 +104,7 @@ Playlist::DynamicTrackNavigator::trackChanged()
 void
 Playlist::DynamicTrackNavigator::repopulate()
 {
+    DEBUG_BLOCK
     if ( !m_mutex.tryLock() )
         return;
 

@@ -169,6 +169,7 @@ Dynamic::BiasedPlaylist::requestTracks( int n )
 void
 Dynamic::BiasedPlaylist::recalculate()
 {
+    DEBUG_BLOCK
     if ( AmarokConfig::dynamicMode() ) {
         m_buffer.clear();
         if ( m_backbufferMutex.tryLock() ) {
@@ -197,6 +198,7 @@ Dynamic::BiasedPlaylist::biases() const
 void
 Dynamic::BiasedPlaylist::handleRequest()
 {
+    DEBUG_BLOCK
     if( m_buffer.isEmpty() )
     {
         m_backbufferMutex.lock();
