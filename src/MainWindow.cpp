@@ -1012,16 +1012,47 @@ void MainWindow::setLayoutLocked( bool locked )
         debug() << "locked!";
         const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
 
-        m_browsersDock->setFeatures( features );
-        m_contextDock->setFeatures( features );
-        m_playlistDock->setFeatures( features );
+        //There is a bit of logic here to make sure that if you lock the layout with one or more
+        //floating elements, they will behave sanely.
+        
+        if ( !m_browsersDock->isFloating () )
+        {
+            m_browsersDock->setFeatures( features );
+            m_browsersDock->setTitleBarWidget( m_browserDummyTitleBarWidget );
+        }
+        else
+        {
+            m_browsersDock->setAllowedAreas( Qt::NoDockWidgetArea );
+        } 
+        
+        if ( !m_contextDock->isFloating () )
+        {
+            m_contextDock->setFeatures( features );
+            m_contextDock->setTitleBarWidget( m_contextDummyTitleBarWidget );
+        }
+        else
+        {
+            m_contextDock->setAllowedAreas( Qt::NoDockWidgetArea );
+        }
+        
+        if ( !m_playlistDock->isFloating () )
+        {
+            m_playlistDock->setFeatures( features );
+            m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
+        }
+        else
+        {
+            m_playlistDock->setAllowedAreas( Qt::NoDockWidgetArea );
+        } 
 
-        m_contextDock->setTitleBarWidget( m_browserDummyTitleBarWidget );
-        m_browsersDock->setTitleBarWidget( m_contextDummyTitleBarWidget );
-        m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
-
-        m_controlBar->setFloatable( false );
-        m_controlBar->setMovable( false );
+        if ( !m_controlBar->isFloating () ) {
+            m_controlBar->setFloatable( false );
+            m_controlBar->setMovable( false );
+        }
+        else
+        {
+            m_controlBar->setAllowedAreas(  Qt::NoToolBarArea );
+        }
 
     }
     else
@@ -1033,12 +1064,18 @@ void MainWindow::setLayoutLocked( bool locked )
         m_contextDock->setFeatures( features );
         m_playlistDock->setFeatures( features );
 
+        m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+        m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+        m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+
         m_browsersDock->setTitleBarWidget( 0 );
         m_contextDock->setTitleBarWidget( 0 );
         m_playlistDock->setTitleBarWidget( 0 );
 
         m_controlBar->setFloatable( true );
         m_controlBar->setMovable( true );
+
+        m_controlBar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     }
 
     m_layoutLocked = locked;
