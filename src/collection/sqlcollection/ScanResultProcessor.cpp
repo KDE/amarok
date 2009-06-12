@@ -130,7 +130,10 @@ ScanResultProcessor::commit()
     {
         m_collection->dbUpdater()->cleanPermanentTables();
     }
+    debug() << "temp_tracks: " << m_collection->query("select count(*) from tracks_temp");
+    debug() << "tracks before commit: " << m_collection->query("select count(*) from tracks");
     m_collection->dbUpdater()->copyToPermanentTables();
+    debug() << "tracks after commit: " << m_collection->query("select count(*) from tracks");
     m_collection->dbUpdater()->removeTemporaryTables();
     if( m_type == ScanResultProcessor::IncrementalScan )
     {
