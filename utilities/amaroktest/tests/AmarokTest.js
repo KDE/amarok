@@ -34,3 +34,7 @@ AmarokTest.startTimer();
 /* The tests                                                               */
 AmarokTest.testResult( "AmarokTest: Successful test", "OK", "OK" );
 AmarokTest.testResult( "AmarokTest: Failed test",     "OK", "not OK" );
+AmarokTest.testResult( "AmarokTest: Successful integer test",  1,    1 );
+AmarokTest.testResult( "AmarokTest: Failed integer test",     23,   42 );
+AmarokTest.testResult( "AmarokTest: Successful FP test", 3.14,   3.14 );
+AmarokTest.testResult( "AmarokTest: Failed FP test",     3.14,   2.71 );

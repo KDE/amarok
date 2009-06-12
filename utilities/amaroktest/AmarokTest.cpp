@@ -124,6 +124,8 @@ AmarokTest::debug( const QString& text ) const // Slot
 void
 AmarokTest::startTimer() // Slot
 {
+    // TODO: this measures real time, which is quite inaccurate
+    //       find sth portable which gives us the cpu time
     if( m_testTime.isNull() )
         m_testTime.start();
     else
