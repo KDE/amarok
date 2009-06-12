@@ -120,7 +120,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_installScriptedApplet = new ToolBoxIcon( this );
     m_installScriptedApplet->setDrawBackground( true );
     m_installScriptedApplet->setOrientation( Qt::Horizontal );
-    m_installScriptedApplet->setText( i18n( "Install Applets" ) );
+    m_installScriptedApplet->setText( i18n( "Install New Applets" ) );
     const QSizeF size( ENTRY_WIDTH - 60, ENTRY_HEIGHT - 9 );
     m_installScriptedApplet->setMinimumSize( size );
     m_installScriptedApplet->setMaximumSize( size );

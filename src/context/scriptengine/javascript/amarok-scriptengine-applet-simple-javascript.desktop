@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Amarok JavaScript Applet
+Comment=Native Amarok applet written in JavaScript
+X-KDE-ServiceTypes=Plasma/ScriptEngine
+Type=Service
+Icon=text-x-script
+X-KDE-Library=amarok_appletscript_simple_javascript
+X-Plasma-API=amarok_javascript
+X-Plasma-ComponentTypes=Applet

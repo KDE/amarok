@@ -244,67 +244,14 @@ Context::ToolbarView::installApplets()
 {
     DEBUG_BLOCK
 
-    /*
-    // TODO this hsould open the GHNS dialog, for now just allow user to specify package
-    QString appletFile = KFileDialog::getOpenFileName( KUrl(), "*.amarokapplet.zip", this, "Please select Amarok Applet to install" );
-
-    debug() << "installing amarok applet file:" << appletFile;
-    QString packageRoot = "plasma/plasmoids/";
-    packageRoot = KStandardDirs::locateLocal("data", packageRoot);
-
-    Plasma::PackageStructure* installer = new Plasma::PackageStructure();
-    installer->setServicePrefix( "amarok-context-applet-" );
-    // always uninstall before installing, as it doesn't auto overwrite.
-    installer->setPath( appletFile );
-    Plasma::PackageMetadata metadata = installer->metadata();
-    installer->uninstallPackage( metadata.pluginName(), packageRoot );
-    if( !installer->installPackage( appletFile, packageRoot ) )
-    {
-        debug() << "ERROR in trying to install the package.";
-    }
-    */
-
     KNS::Engine engine(0);
     if (engine.init("amarokapplets.knsrc")) {
         KNS::Entry::List entries = engine.downloadDialogModal(this);
-
-        if (entries.size() > 0)
-        {
-            
-            // go through and manually install/uninstall
-            foreach( KNS::Entry* entry, entries )
-            {
-                if( entry->status() == KNS::Entry::Installed )
-                {
-                    debug() << "got an entry called: " << entry->name().translated( "en" ) << "with installed files:" << entry->installedFiles();
-
-                    QString packageRoot = "plasma/plasmoids/";
-                    packageRoot = KStandardDirs::locateLocal("data", packageRoot);
-
-                    Plasma::PackageStructure* installer = new Plasma::PackageStructure();
-                    installer->setServicePrefix( "amarok-context-applet-" );
-                    // always uninstall before installing, as it doesn't auto overwrite.
-                    //installer->setPath( appletFile );
-                    Plasma::PackageMetadata metadata = installer->metadata();
-                    installer->uninstallPackage( metadata.pluginName(), packageRoot );
-                    if( !installer->installPackage( entry->installedFiles()[ 0 ], packageRoot ) )
-                    {
-                        debug() << "ERROR in trying to install the package.";
-                    }
-                } else if( entry->status() == KNS::Entry::Deleted )
-                {
-                    debug() << "got an entry called: " << entry->name().translated( "en" ) << "with uninstalled files:" << entry->uninstalledFiles();
-                }
-
-            }
-        // do something with the modified entries here if you want
-
-            // such as rescaning your data folder or whatnot
-            //m_model->reload();
-        }
     }
     
     QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
     dbus.call(QDBus::Block, "recreate");
+
+    recreateOverlays();
 }
 #include "ToolbarView.moc"

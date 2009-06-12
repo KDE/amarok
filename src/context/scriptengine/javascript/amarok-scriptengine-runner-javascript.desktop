@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Amarok JavaScript Runner
+X-KDE-ServiceTypes=Plasma/ScriptEngine
+Type=Service
+Icon=text-x-script
+X-KDE-Library=amarok_runnerscript_javascript
+X-Plasma-API=amarok_javascript
+X-Plasma-ComponentTypes=Runner
