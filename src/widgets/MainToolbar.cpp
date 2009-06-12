@@ -40,7 +40,7 @@
 #include <QVBoxLayout>
 
 MainToolbar::MainToolbar( QWidget * parent )
-    : QToolBar( parent )
+    : QToolBar( i18n( "Main Toolbar" ), parent )
     , EngineObserver( The::engineController() )
     , m_addActionsOffsetX( 0 )
     , m_ignoreCache( false )

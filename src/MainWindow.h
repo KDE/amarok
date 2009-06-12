@@ -105,6 +105,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void playAudioCD();
         void hideContextView( bool hide );
 
+        void setLayoutLocked( bool locked );
+
     protected:
         //Reimplemented from EngineObserver
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
@@ -169,6 +171,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         PlaylistFileProvider *m_playlistFiles;
         Meta::TrackPtr m_currentTrack;
+
+        QDockWidget * m_browsersDock;
+        QDockWidget * m_contextDock;
+        QDockWidget * m_playlistDock;
+
 
         void    createActions();
         void    createMenus();

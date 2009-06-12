@@ -201,10 +201,9 @@ MainWindow::init()
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
 
-    QDockWidget * browsersDock = new QDockWidget( i18n( "Browsers" ), this );
-    browsersDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
-    browsersDock->setWidget( m_browsers );
-    browsersDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    m_browsersDock = new QDockWidget( i18n( "Browsers" ), this );
+    m_browsersDock->setWidget( m_browsers );
+    m_browsersDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     
 
     PERF_LOG( "Create Playlist" )
@@ -212,10 +211,9 @@ MainWindow::init()
     m_playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
     m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
 
-    QDockWidget * playlistDock = new QDockWidget( i18n( "Playlist" ), this );
-    playlistDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
-    playlistDock->setWidget( m_playlistWidget );
-    playlistDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    m_playlistDock = new QDockWidget( i18n( "Playlist" ), this );
+    m_playlistDock->setWidget( m_playlistWidget );
+    m_playlistDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     
     PERF_LOG( "Playlist created" )
 
@@ -235,10 +233,9 @@ MainWindow::init()
     connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
-    QDockWidget * contextDock = new QDockWidget( i18n( "Context" ), this );
-    contextDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
-    contextDock->setWidget( m_contextWidget );
-    contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+    m_contextDock = new QDockWidget( i18n( "Context" ), this );
+    m_contextDock->setWidget( m_contextWidget );
+    m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
 
     PERF_LOG( "ContextScene created" )
 
@@ -250,9 +247,11 @@ MainWindow::init()
 
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks );
     
-    addDockWidget( Qt::LeftDockWidgetArea, browsersDock );
-    addDockWidget( Qt::LeftDockWidgetArea, contextDock );
-    addDockWidget( Qt::RightDockWidgetArea, playlistDock );
+    addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
+    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
+    addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
+
+    setLayoutLocked( false );
 
     //setCentralWidget( m_contextWidget );
 
@@ -985,12 +984,37 @@ void MainWindow::hideContextView( bool hide )
         m_contextWidget->show();
 }
 
+void MainWindow::setLayoutLocked( bool locked )
+{
+    if ( locked )
+    {
+
+        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
+        m_browsersDock->setFeatures( features );
+        //m_browsersDock->setTitleBarWidget( 0 );
+        m_browsersDock->setStyleSheet (  "QDockWidget::title { background: pink; font-size: 1px;   }" );
+
+        
+        m_contextDock->setFeatures( features );
+        m_contextDock->setTitleBarWidget( 0 );
+        m_playlistDock->setFeatures( features );
+        m_playlistDock->setTitleBarWidget( 0 );
+    }
+    else
+    {
+
+        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
+        
+        m_browsersDock->setFeatures( features );
+        m_contextDock->setFeatures( features );
+        m_playlistDock->setFeatures( features );
+    }
+}
+
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
 
 
 #include "MainWindow.moc"
-
-
-
+                 
