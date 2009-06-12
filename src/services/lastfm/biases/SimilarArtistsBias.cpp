@@ -298,17 +298,17 @@ Dynamic::SimilarArtistsBias::collectionFilterCapability()
 {
     DEBUG_BLOCK
     debug() << "returning new cfb with weight:" << weight();
-    return new Dynamic::LastFmCollectionFilterCapability( this );
+    return new Dynamic::SimilarArtistsBiasCollectionFilterCapability( this );
 }
 
 const QSet< QByteArray >&
-Dynamic::LastFmCollectionFilterCapability::propertySet()
+Dynamic::SimilarArtistsBiasCollectionFilterCapability::propertySet()
 {
     debug() << "returning matching set for artist: " << m_bias->m_currentArtist << "of size:" << m_bias->m_savedArtists[ m_bias->m_currentArtist ].size();
     return m_bias->m_savedArtists[ m_bias->m_currentArtist ];
 }
 
-double Dynamic::LastFmCollectionFilterCapability::weight() const
+double Dynamic::SimilarArtistsBiasCollectionFilterCapability::weight() const
 {
     return m_bias->weight();
 }

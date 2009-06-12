@@ -86,14 +86,14 @@ private:
     QMap< QString, QSet< QByteArray > > m_savedArtists; // populated as queries come in
     // we do some caching here so multiple
     // queries of the same artist are cheap
-    friend class LastFmCollectionFilterCapability; // so it can report the property and weight
+    friend class SimilarArtistsBiasCollectionFilterCapability; // so it can report the property and weight
 };
 
 
-class LastFmCollectionFilterCapability : public Dynamic::CollectionFilterCapability
+class SimilarArtistsBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
 {
 public:
-    LastFmCollectionFilterCapability ( SimilarArtistsBias* bias ) : m_bias ( bias ) {}
+    SimilarArtistsBiasCollectionFilterCapability ( SimilarArtistsBias* bias ) : m_bias ( bias ) {}
 
     // re-implemented
     virtual const QSet<QByteArray>& propertySet();
