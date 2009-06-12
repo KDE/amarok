@@ -1013,7 +1013,7 @@ SqlQueryMaker::handleYears( const QStringList &result )
 QString
 SqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
 {
-    return m_collection->escape( text );;
+    return m_collection->escape( text );
 }
 
 QString
@@ -1042,7 +1042,7 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
     }
     else
     {
-        return QString( " = '%1' " ).arg( text );
+        return QString( " = '%1' " ).arg( escape( text ) );
     }
 }
 

@@ -154,9 +154,6 @@ class AMAROK_EXPORT QueryMaker : public QObject
 
         /**
             Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
-
-            Note that SqlQueryMaker does NOT escape/sanitize queries if doing exact queries (both matchBegin and matchEnd are true).
-            You can call SqlCollection::escape or do your own escaping should you wish (and you do wish).
             @return this
         */
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;

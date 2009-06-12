@@ -129,7 +129,6 @@ Dynamic::SimilarArtistsBias::artistQueryDone() // slot
     m_qm->beginOr();
     foreach( QString artist, similar.values() )
     {
-        artist.replace( "\'", "''" ); // exact matching DOESN'T ESCAPE?!?!?!?! WTF?!?!
         m_qm->addFilter( Meta::valArtist, artist, true, true );
     }
     m_qm->endAndOr();
