@@ -412,8 +412,6 @@ AudioCdAlbum::albumArtist() const
 TrackList
 AudioCdAlbum::tracks()
 {
-    DEBUG_BLOCK
-    debug() << "number of tracks: " << m_tracks.count();
     return m_tracks;
 }
 
@@ -448,9 +446,7 @@ AudioCdAlbum::setImage( const QPixmap &pixmap )
 void
 AudioCdAlbum::addTrack( AudioCdTrackPtr track )
 {
-    DEBUG_BLOCK
     m_tracks.append( TrackPtr::staticCast( track ) );
-    debug() << "number of tracks: " << m_tracks.count();
 }
 
 void
