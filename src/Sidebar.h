@@ -61,7 +61,7 @@ class SideBar: public KHBox
             m_backButton->setFixedWidth( 20 );
             m_backButton->setIcon( KIcon( "go-previous-amarok" ) );
             
-            m_categoryList->setMinimumSize( 100, 1000 );
+            m_categoryList->setMinimumSize( 100, 300 );
             
             m_backButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
             //m_categoryList->setSizePolicy( QSizePolicy::Expanding );
