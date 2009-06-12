@@ -430,7 +430,7 @@ ScriptManager::slotRunScript( QString name, bool silent )
     m_scripts[name].evaluating = true;
     if( m_scripts[name].info.category() == "Lyrics" )
         m_lyricsScript = name;
-   
+
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->setProcessEventsInterval( 100 );
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
@@ -459,9 +459,6 @@ ScriptManager::slotRunScript( QString name, bool silent )
     }
     else
         slotStopScript( name );
-
-
-
 
     return true;
 }
