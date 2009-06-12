@@ -38,6 +38,7 @@
 #include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>
 #include <Phonon/MediaObject>
+#include <Phonon/MediaController>
 #include <Phonon/VolumeFaderEffect>
 
 #include <QTimer>
@@ -318,7 +319,22 @@ EngineController::playUrl( const KUrl &url, uint offset )
     slotStopFadeout();
 
     debug() << "URL: " << url.url();
-    m_media->setCurrentSource( url );
+
+    if ( url.url().startsWith( "audiocd:/" ) )
+    {
+        QString trackNumberString = url.url();
+        trackNumberString = trackNumberString.replace( "audiocd:/", QString() );
+        int trackNumber = trackNumberString.toInt();
+        
+        m_media->setCurrentSource( Phonon::Cd );
+        Phonon::MediaController mc( m_media );
+        mc.setCurrentTitle( trackNumber );
+        
+    }
+    else
+    {
+        m_media->setCurrentSource( url );
+    }
 
     m_nextTrack.clear();
     m_nextUrl.clear();

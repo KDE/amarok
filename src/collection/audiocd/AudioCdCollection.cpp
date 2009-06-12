@@ -223,7 +223,8 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
 
                 QString baseFileName = artist + " - " + padding  + QString::number( i + 1 ) + " - " + trackName;
 
-                QString baseUrl = "audiocd:/" + baseFileName + ".wav";
+                //we hack the url so the engine controller knows what track on the cd to play..
+                QString baseUrl = "audiocd:/" + QString::number( i + 1 );
 
                 debug() << "Track url: " << baseUrl;
 
