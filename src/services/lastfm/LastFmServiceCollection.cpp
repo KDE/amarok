@@ -91,14 +91,15 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     m_jobs[ "user.getNeighbours" ] = lastfm::ws::post( params );
 
     connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursLoved() ) );
-    connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursPersonal() ) );
-
+    //connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursPersonal() ) );
+    // TODO TMP HACK why do i get exceptions there...!?
+    
     params[ "method" ] = "user.getFriends";
     m_jobs[ "user.getFriends" ] = lastfm::ws::post( params );
 
     
     connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsLoved() ) );
-    connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsPersonal() ) );
+    //connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsPersonal() ) );
     
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }
@@ -145,16 +146,23 @@ void LastFmServiceCollection::slotAddNeighboursLoved()
         debug() << "BAD! got no result object";
         return;
     }
-    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
-    
-    foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+    try
     {
-        QString name = e[ "name" ].text();
-        //debug() << "got neighbour!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
-        Meta::TrackPtr trackPtr( track );
-        m_neighborsLoved->addTrack( trackPtr );
-        addTrack( trackPtr );
+        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+
+        foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+        {
+            QString name = e[ "name" ].text();
+            //debug() << "got neighbour!!! - " << name;
+            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
+            Meta::TrackPtr trackPtr( track );
+            m_neighborsLoved->addTrack( trackPtr );
+            addTrack( trackPtr );
+        }
+
+    } catch( lastfm::ws::ParseError& e )
+    {
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     m_jobs[ "user.getNeighbours" ]->deleteLater();
 }
@@ -163,25 +171,34 @@ void LastFmServiceCollection::slotAddNeighboursPersonal()
 {
     DEBUG_BLOCK
     // iterate through each neighbour
-    if( !m_jobs[ "user.getNeighbours" ] )
+    try
     {
-        debug() << "BAD! got no result object";
-        return;
-    }
-    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
-    
-    // iterate through each neighbour
-    foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+
+        if( !m_jobs[ "user.getNeighbours" ] )
+        {
+            debug() << "BAD! got no result object";
+            return;
+        }
+        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+
+        // iterate through each neighbour
+        foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+        {
+            QString name = e[ "name" ].text();
+            debug() << "got neighbour!!! - " << name;
+            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
+            Meta::TrackPtr trackPtr( track );
+            m_neighborsPersonal->addTrack( trackPtr );
+            addTrack( trackPtr );
+        }
+
+
+        // should be safe, as both slots SHOULD get called before we return to the event loop...
+        m_jobs[ "user.getNeighbours" ]->deleteLater();
+    } catch( lastfm::ws::ParseError& e )
     {
-        QString name = e[ "name" ].text();
-        debug() << "got neighbour!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
-        Meta::TrackPtr trackPtr( track );
-        m_neighborsPersonal->addTrack( trackPtr );
-        addTrack( trackPtr );
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
-    // should be safe, as both slots SHOULD get called before we return to the event loop...
-    m_jobs[ "user.getNeighbours" ]->deleteLater();
 }
 
 void LastFmServiceCollection::slotAddFriendsLoved()
@@ -192,16 +209,23 @@ void LastFmServiceCollection::slotAddFriendsLoved()
         debug() << "BAD! got no result object";
         return;
     }
-    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
-    
-    foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+    try
     {
-        QString name = e[ "name" ].text();
-        debug() << "got friend!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
-        Meta::TrackPtr trackPtr( track );
-        m_friendsLoved->addTrack( trackPtr );
-        addTrack( trackPtr );
+        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+
+        foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+        {
+            QString name = e[ "name" ].text();
+            debug() << "got friend!!! - " << name;
+            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
+            Meta::TrackPtr trackPtr( track );
+            m_friendsLoved->addTrack( trackPtr );
+            addTrack( trackPtr );
+        }
+
+    } catch( lastfm::ws::ParseError& e )
+    {
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     m_jobs[ "user.getFriends" ]->deleteLater();
 }
@@ -214,17 +238,26 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
         debug() << "BAD! got no result object";
         return;
     }
-    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
 
-    foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+    try
     {
-        QString name = e[ "name" ].text();
-        debug() << "got neighbour!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
-        Meta::TrackPtr trackPtr( track );
-        m_friendsPersonal->addTrack( trackPtr );
-        addTrack( trackPtr );
+        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+    
+        foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+        {
+            QString name = e[ "name" ].text();
+            debug() << "got neighbour!!! - " << name;
+            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
+            Meta::TrackPtr trackPtr( track );
+            m_friendsPersonal->addTrack( trackPtr );
+            addTrack( trackPtr );
+        }
+
+    } catch( lastfm::ws::ParseError& e )
+    {
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
+    
     m_jobs[ "user.getFriends" ]->deleteLater();
 }
 

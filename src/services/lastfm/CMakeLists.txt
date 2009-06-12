@@ -11,7 +11,6 @@ include_directories(
         ../../context
         ../../dynamic # for CustomBias.h
         ../../browsers/playlistbrowser # for DynamicBiasWidgets
-        liblastfm/
         ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
@@ -44,8 +43,6 @@ include_directories(
             LoveTrackAction.cpp
 
         )
-
-        # add_definitions(-DUNICORN_DLLEXPORT_PRO -DMOOSE_DLLEXPORT_PRO -DQT_XML_LIB)
 
         kde4_add_plugin(amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS})
         target_link_libraries(amarok_service_lastfm

@@ -68,19 +68,26 @@ LastFmTreeModel::slotAddNeighbors ()
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
-
-    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getNeighbours" ] );
-    foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
+    
+    try
     {
-        QString name = e[ "name" ].text();
-        mNeighbors << name;
-        LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, mMyNeighbors );
-        mMyNeighbors->appendChild ( neighbor );
-        appendUserStations ( neighbor, name );
-        if ( !e[ "image size=large" ].text().isEmpty() )
+        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getNeighbours" ] );
+        foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
         {
-            avatarlist.insert ( name, e[ "image size=large" ].text() );
+            QString name = e[ "name" ].text();
+            mNeighbors << name;
+            LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, mMyNeighbors );
+            mMyNeighbors->appendChild ( neighbor );
+            appendUserStations ( neighbor, name );
+            if ( !e[ "image size=large" ].text().isEmpty() )
+            {
+                avatarlist.insert ( name, e[ "image size=large" ].text() );
+            }
         }
+
+    } catch( lastfm::ws::ParseError& e )
+    {
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Neighbors);
@@ -93,18 +100,25 @@ LastFmTreeModel::slotAddFriends ()
     DEBUG_BLOCK
     // iterate through each friend
     QMap<QString, QString> avatarlist;
-    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getFriends" ] );
-    foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
+    try
     {
-        QString name = e[ "name" ].text();
-        mFriends << name;
-        LastFmTreeItem* afriend = new LastFmTreeItem ( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
-        mMyFriends->appendChild ( afriend );
-        appendUserStations ( afriend, name );
-        if ( !e[ "image size=large" ].text().isEmpty() )
+        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getFriends" ] );
+        foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
         {
-            avatarlist.insert ( name, e[ "image size=large" ].text() );
+            QString name = e[ "name" ].text();
+            mFriends << name;
+            LastFmTreeItem* afriend = new LastFmTreeItem ( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
+            mMyFriends->appendChild ( afriend );
+            appendUserStations ( afriend, name );
+            if ( !e[ "image size=large" ].text().isEmpty() )
+            {
+                avatarlist.insert ( name, e[ "image size=large" ].text() );
+            }
         }
+
+    } catch( lastfm::ws::ParseError& e )
+    {
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Friends);
@@ -118,23 +132,30 @@ LastFmTreeModel::slotAddTopArtists ()
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
     WeightedStringList list;
-    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getTopArtists" ] );
+    try
+    {
+        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getTopArtists" ] );
 
-    foreach( lastfm::XmlQuery e, lfm[ "topartists" ].children ( "artist" ) )
+        foreach( lastfm::XmlQuery e, lfm[ "topartists" ].children ( "artist" ) )
+        {
+            QString name = e[ "name" ].text();
+            QString weight = e[ "playcount" ].text();
+            WeightedString s(name, weight.toFloat() );
+            list << s;
+        }
+        list.weightedSort(Qt::DescendingOrder);
+        for ( int i = 0; i < list.count(); i++ )
+        {
+            list[i] += " (" + QVariant ( list.at ( i ).weighting() ).toString() + " plays)";
+            QString actual = list[i];
+            actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
+            LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, actual ), LastFm::ArtistsChild, list[i], mMyTopArtists );
+            mMyTopArtists->appendChild ( artist );
+        }
+
+    } catch( lastfm::ws::ParseError& e )
     {
-        QString name = e[ "name" ].text();
-        QString weight = e[ "playcount" ].text();
-        WeightedString s(name, weight.toFloat() );
-        list << s;
-    }
-    list.weightedSort(Qt::DescendingOrder);
-    for ( int i = 0; i < list.count(); i++ )
-    {
-        list[i] += " (" + QVariant ( list.at ( i ).weighting() ).toString() + " plays)";
-        QString actual = list[i];
-        actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
-        LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, actual ), LastFm::ArtistsChild, list[i], mMyTopArtists );
-        mMyTopArtists->appendChild ( artist );
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     emitRowChanged(LastFm::TopArtists);
     m_jobs[ "getTopArtists" ]->deleteLater();

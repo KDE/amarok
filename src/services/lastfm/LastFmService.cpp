@@ -17,6 +17,7 @@
 
 #include "AvatarDownloader.h"
 #include "EngineController.h"
+#include "LastFmBiases.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"
@@ -33,6 +34,7 @@
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
+#include "CustomBias.h"
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
@@ -262,6 +264,8 @@ LastFmService::init()
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
 
+    // enable custom bias
+    Dynamic::CustomBias::self()->registerNewBiasEntry( new Dynamic::LastFmBias() );
 
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
@@ -299,9 +303,15 @@ LastFmService::onAuthenticated()
     {
         case QNetworkReply::NoError:
         {
-            lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "auth" ] );
-            m_sessionKey = lfm[ "session" ][ "key" ].text();
+            try
+            {
+                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "auth" ] );
+                m_sessionKey = lfm[ "session" ][ "key" ].text();
 
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
             lastfm::ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
             LastFmServiceConfig config;
             config.setSessionKey( m_sessionKey );
@@ -340,24 +350,31 @@ LastFmService::onGetUserInfo()
     {
         case QNetworkReply::NoError:
         {
-            lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getUserInfo" ] );
-            
-            m_country = lfm["user"]["country"].text();
-            m_age = lfm["user"]["age"].text();
-            m_gender = lfm["user"]["gender"].text();
-            m_playcount = lfm["user"]["playcount"].text();
-            m_subscriber = lfm["user"]["subscriber"].text() == "1";
-            
-            debug() << "profile info "  << m_country << " " << m_age << " " << m_gender << " " << m_playcount << " " << m_subscriber;
-            if( !lfm["user"][ "image" ].text().isEmpty() )
+            try
             {
-                debug() << "profile avatar: " <<lfm["user"][ "image" ].text();
-                AvatarDownloader* downloader = new AvatarDownloader();
-                KUrl url( lfm["user"][ "image" ].text() );
-                downloader->downloadAvatar( m_userName,  url);
-                connect( downloader, SIGNAL( signalAvatarDownloaded( QPixmap ) ), SLOT( onAvatarDownloaded( QPixmap ) ) );
+                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getUserInfo" ] );
+
+                m_country = lfm["user"]["country"].text();
+                m_age = lfm["user"]["age"].text();
+                m_gender = lfm["user"]["gender"].text();
+                m_playcount = lfm["user"]["playcount"].text();
+                m_subscriber = lfm["user"]["subscriber"].text() == "1";
+
+                debug() << "profile info "  << m_country << " " << m_age << " " << m_gender << " " << m_playcount << " " << m_subscriber;
+                if( !lfm["user"][ "image" ].text().isEmpty() )
+                {
+                    debug() << "profile avatar: " <<lfm["user"][ "image" ].text();
+                    AvatarDownloader* downloader = new AvatarDownloader();
+                    KUrl url( lfm["user"][ "image" ].text() );
+                    downloader->downloadAvatar( m_userName,  url);
+                    connect( downloader, SIGNAL( signalAvatarDownloaded( QPixmap ) ), SLOT( onAvatarDownloaded( QPixmap ) ) );
+                }
+                updateProfileInfo();
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
             }
-            updateProfileInfo();
             break;
         } case QNetworkReply::AuthenticationRequiredError:
             debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password wrongly.";

@@ -444,14 +444,20 @@ void Track::slotResultReady()
 {
     if( d->trackFetch->error() == QNetworkReply::NoError )
     {
+        try
+        {
+            lastfm::XmlQuery lfm = lastfm::ws::parse( d->trackFetch );
+            QString id = lfm[ "track" ][ "id" ].text();
+            QString streamable = lfm[ "track" ][ "streamable" ].text();
+            if( streamable.toInt() == 1 )
+                init( id.toInt() );
+            else
+                init();
 
-        lastfm::XmlQuery lfm = lastfm::ws::parse( d->trackFetch );
-        QString id = lfm[ "track" ][ "id" ].text();
-        QString streamable = lfm[ "track" ][ "streamable" ].text();
-        if( streamable.toInt() == 1 )
-            init( id.toInt() );
-        else
-            init();
+        } catch( lastfm::ws::ParseError& e )
+        {
+            debug() << "Got exception in parsing from last.fm:" << e.what();
+        }
     } else
     {
         init();
