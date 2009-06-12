@@ -126,12 +126,6 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     KHBox * commonPanel = new KHBox ( m_topPanel );
 
-    m_homeButton = new QPushButton( commonPanel );
-    m_homeButton->setIcon( KIcon("go-previous-amarok") );
-    m_homeButton->setIconSize( QSize( 16, 16 ) );
-    m_homeButton->setFixedSize( 28, 28 );
-    connect( m_homeButton, SIGNAL( clicked( bool ) ), this, SLOT( homeButtonClicked( ) ) );
-
     QLabel * nameLabel = new QLabel( commonPanel );
     nameLabel->setMinimumSize( 230 , 28 );
     if( !m_prettyName.isEmpty() )
@@ -196,12 +190,6 @@ ServiceFactory*
 ServiceBase::parent() const
 {
     return m_parentFactory;
-}
-
-void
-ServiceBase::homeButtonClicked( ) 
-{
-    emit( home() );
 }
 
 void

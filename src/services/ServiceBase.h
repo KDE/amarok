@@ -314,11 +314,6 @@ signals:
 
 protected slots:
     /**
-     * Slot called when the home button has been clicked
-     */
-    void homeButtonClicked();
-
-    /**
      * Slot called when an intem in the tree view has been activated
      * @param index The index of the activated item
      */
@@ -341,8 +336,6 @@ protected:
     static ServiceBase *s_instance;
     QTreeView *m_contentView;
     ServiceFactory *m_parentFactory;
-
-    QPushButton *m_homeButton;
 
     KVBox       *m_topPanel;
     KVBox       *m_bottomPanel;

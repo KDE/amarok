@@ -59,7 +59,7 @@ class SideBar: public KHBox
             m_categoryList = new BrowserCategoryList( this, "root list" );
             
             m_backButton->setFixedWidth( 20 );
-            m_backButton->setIcon( KIcon( "navigate-back" ) );
+            m_backButton->setIcon( KIcon( "go-previous-amarok" ) );
             
             m_categoryList->setMinimumSize( 100, 1000 );
             
