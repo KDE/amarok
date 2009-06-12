@@ -36,7 +36,7 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     frame->setLayout( m_layout );
 
     QHBoxLayout* sliderLayout = new QHBoxLayout();
-    m_layout->addLayout( sliderLayout, 0, 1 );
+    m_layout->addLayout( sliderLayout, 0, 1 ); 
 
     m_weightLabel = new QLabel( " 0%", frame );
     m_weightSelection = new Amarok::Slider( Qt::Horizontal, 100, frame );
@@ -112,7 +112,12 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
 void
 Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
 {
+    double fval = (double)amount;
+    m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
+    
     m_cbias->setWeight( amount );
+
+    emit biasChanged( m_bias );
 }
 
 Dynamic::CustomBias* Dynamic::CustomBias::s_self = 0;

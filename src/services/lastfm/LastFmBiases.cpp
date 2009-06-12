@@ -28,6 +28,12 @@ Dynamic::LastFmBias::LastFmBias()
 {
     
 }
+/*
+Dynamic::LastFmBias::~LastFmBias()
+{
+
+}*/
+
 
 QString
 Dynamic::LastFmBias::name()

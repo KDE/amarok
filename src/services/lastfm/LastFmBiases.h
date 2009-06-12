@@ -31,6 +31,7 @@ class LastFmBias : public CustomBiasEntry, public EngineObserver
     Q_OBJECT
     public:
         LastFmBias();
+//        ~LastFmBias();
 
         virtual QString name();
         virtual QWidget* configWidget();

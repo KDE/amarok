@@ -34,7 +34,7 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
 {
     Q_OBJECT
     public:
-        CustomBiasEntry();
+        CustomBiasEntry() {}
         virtual ~CustomBiasEntry() {}
 
         /**
@@ -128,7 +128,6 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
     Q_OBJECT
     public:
         explicit CustomBiasEntryWidget( CustomBias*, QWidget* parent = 0 );
-
 
     private slots:
         void selectionChanged( int index );
