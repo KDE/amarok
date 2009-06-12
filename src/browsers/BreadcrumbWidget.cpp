@@ -39,7 +39,6 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
     m_spacer = new QWidget( 0 );
 }
 
-
 BreadcrumbWidget::~BreadcrumbWidget()
 {
 }

@@ -39,6 +39,7 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
     if ( parentList )
     {
         m_menuButton = new QPushButton( " > ", this );
+        m_menuButton->setFixedWidth( 14 );
         m_menuButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
         QMenu * menu = new QMenu( this );
@@ -57,9 +58,15 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
             
             QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
             connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
+            
         }
 
         m_menuButton->setMenu( menu );
+
+        //do a little magic to line up items in the menu with the current item
+        int offset = 6;
+
+        menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
 
