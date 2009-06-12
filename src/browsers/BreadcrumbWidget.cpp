@@ -54,7 +54,9 @@ BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category
             if ( siblingName == m_category->name() )
                 continue;
             
-            QAction * action = menu->addAction( siblingMap.value( siblingName )->prettyName() );
+            BrowserCategory * siblingCategory = siblingMap.value( siblingName );
+            
+            QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
             connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
         }
 
