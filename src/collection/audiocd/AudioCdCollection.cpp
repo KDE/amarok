@@ -67,8 +67,7 @@ void AudioCdCollectionFactory::deviceRemoved( const QString & uid )
     debug() << "m_currentUid: " << m_currentUid;
     if ( m_currentUid == uid )
     {
-        m_collection->cdRemoved();
-        delete m_collection;
+        m_collection->cdRemoved(); //deleted by col. manager
         m_collection = 0;
         m_currentUid = QString();
     }

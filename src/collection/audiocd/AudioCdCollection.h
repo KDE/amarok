@@ -32,24 +32,20 @@ class AudioCdCollection;
 class AudioCdCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
-    public:
-        AudioCdCollectionFactory();
-        virtual ~AudioCdCollectionFactory() {};
+public:
+    AudioCdCollectionFactory();
+    virtual ~AudioCdCollectionFactory() {};
 
-        virtual void init();
+    virtual void init();
 
-    private slots:
+private slots:
+    void audioCdAdded( const QString &uid );
+    void deviceRemoved( const QString &uid );
 
-        void audioCdAdded( const QString &uid );
-        void deviceRemoved( const QString &uid );
+private:
+    QString m_currentUid;
+    AudioCdCollection * m_collection;
 
-    private:
-
-        QString m_currentUid;
-        AudioCdCollection * m_collection;
-            
-
-   
 };
 
 
