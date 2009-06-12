@@ -77,6 +77,11 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
     setIcon( KIcon( "view-services-jamendo-amarok" ) );
 
+    setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The sites allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents fmor within Amarok." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "view-services-jamendo-amarok", -128, true ) );
+
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
