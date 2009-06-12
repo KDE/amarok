@@ -104,7 +104,7 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
                    "QPushButton::menu-indicator { image: none; width: 0px;}"
                  );
 
-    setContentsMargins( 0, 0, 0, 0 );
+    setContentsMargins( 3, 0, 3, 0 );
     setSpacing( 0 );
 
     m_spacer = new QWidget( 0 );
