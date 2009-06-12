@@ -95,16 +95,20 @@ ServiceListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & opt
     painter->drawText( titleRect, Qt::AlignLeft, collectionName );
 
     QFontMetrics bigFm( m_bigFont );
+    QFontMetrics smallFm( m_smallFont );
 
     QRectF textRect;
     textRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
     textRect.setTop( option.rect.top() + iconYPadding + bigFm.boundingRect( collectionName ).height() );
-    textRect.setWidth( width - iconPadX * 2 );
+    textRect.setWidth( width - iconRight );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
     painter->setFont( m_smallFont );
-    painter->drawText( textRect, Qt::TextWordWrap, index.data( CustomServiceRoles::ShortDescriptionRole ).toString() );
 
+    QString shortDescription = index.data( CustomServiceRoles::ShortDescriptionRole ).toString();
+    shortDescription = smallFm.elidedText( shortDescription, Qt::ElideRight, textRect.width() );
+
+    painter->drawText( textRect, shortDescription );
     painter->restore();
 }
 
