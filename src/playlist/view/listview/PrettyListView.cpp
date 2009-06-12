@@ -1,5 +1,6 @@
 /***************************************************************************
- * copyright            : (C) 2008 Soren Harward <stharward@gmail.com>
+ * Copyright © 2008 Soren Harward <stharward@gmail.com>
+ *           © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -135,16 +136,33 @@ Playlist::PrettyListView::playFirstSelected()
 void
 Playlist::PrettyListView::removeSelection()
 {
-    QList<int> sr = selectedRows();
+    QList<int> sr = selectedRows(); //these are in the source model
     if( !sr.isEmpty() )
     {
-        qSort( sr );
-        int firstRow = sr.first();
+        // To select the right track after the removal, we need to get the first row in the
+        // order defined by the topmost proxy.
+        QList<int> selectedRowsInTopmostProxy;
+        foreach( const QModelIndex &idx, selectedIndexes() )
+        {
+            int proxyRow = idx.row();
+            selectedRowsInTopmostProxy.append( proxyRow );
+        }
+
+        // Now that we have the list of selected rows in the topmost proxy, we can perform the
+        // removal.
         Controller::instance()->removeRows( sr );
 
-        //select the track immediately above the cleared are as this is the one that ow has internal focus.
-        firstRow = qBound( 0, firstRow, model()->rowCount() -1 );
-        selectionModel()->select( model()->index( firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+        // Next, we look for the first row.
+        int firstRow = selectedRowsInTopmostProxy.first();
+        foreach( int i, selectedRowsInTopmostProxy )
+        {
+            if( i < firstRow )
+                firstRow = i;
+        }
+        
+        // Select the track immediately above the cleared are as this is the one that has internal focus.
+        firstRow = qBound( 0, firstRow, SortProxy::instance()->rowCount() -1 );
+        selectionModel()->select( model()->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
     }
 }
 
@@ -247,10 +265,10 @@ void
 Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
     DEBUG_BLOCK
-    QModelIndex filteredIndex = indexAt( event->pos() );
+    QModelIndex sortFilteredIndex = indexAt( event->pos() );
     
     //translate to real model as we might be looking at a filered list:
-    int sourceRow = FilterProxy::instance()->rowToSource( filteredIndex.row() );
+    int sourceRow = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( sortFilteredIndex.row() ) );
 
     QModelIndex index = The::playlistModel()->index( sourceRow );
 
@@ -533,7 +551,7 @@ Playlist::PrettyListView::selectedRows() const
     QList<int> rows;
     foreach( const QModelIndex &idx, selectedIndexes() )
     {
-        int sourceRow = FilterProxy::instance()->rowToSource( idx.row() );
+        int sourceRow = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( idx.row() ) );
         rows.append( sourceRow );
     }
     return rows;
@@ -665,7 +683,7 @@ void Playlist::PrettyListView::clearSearchTerm()
     QModelIndex index = indexAt( QPoint( 0, 0 ) );
 
      //ah... but we want the source row and not the one reported by the filter model(s)
-    int row = FilterProxy::instance()->rowToSource( index.row() );
+    int row = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( index.row() ) );
 
     debug() << "first row in filtered list: " << index.row();
     debug() << "source row: " << row;
@@ -705,7 +723,7 @@ void Playlist::PrettyListView::itemsAdded( int firstRow )
 {
     DEBUG_BLOCK
 
-    QModelIndex index = model()->index( FilterProxy::instance()->rowFromSource( firstRow ) , 0 );
+    QModelIndex index = model()->index( FilterProxy::instance()->rowFromSource( SortProxy::instance()->rowToSource( firstRow ) ) , 0 );
     if( !index.isValid() )
         return;
 
