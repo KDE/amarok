@@ -206,7 +206,7 @@ int FilterProxy::rowFromSource( int row ) const
 
 bool FilterProxy::rowExists( int row ) const
 {
-
+    DEBUG_BLOCK
     QModelIndex index = this->index( row, 0 );
     return index.isValid();
 }

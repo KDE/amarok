@@ -34,6 +34,7 @@ SortProxy* SortProxy::s_instance = 0;
 SortProxy*
 SortProxy::instance()
 {
+    DEBUG_BLOCK
     if ( s_instance == 0 )
         s_instance = new SortProxy();
     return s_instance;
@@ -41,13 +42,14 @@ SortProxy::instance()
 
 SortProxy::SortProxy()
     : QAbstractProxyModel()
-    , m_belowModel(  FilterProxy::instance() )
+    , m_belowModel( FilterProxy::instance() )
 {
+    DEBUG_BLOCK
+    debug() << "Instantiating SortProxy";
     setSourceModel( m_belowModel );
     m_map = new QMap< qint64, qint64 >();
     for( int i = 0; i < m_belowModel->rowCount() ; i++ )
         m_map->insert( i, i ); //identical function
-        
     //m_sortScheme << foo...
 }
 
@@ -57,9 +59,37 @@ SortProxy::~SortProxy()
 }
 
 QModelIndex
-SortProxy::mapFromSource(const QModelIndex& sourceIndex) const
+SortProxy::index( int row, int column, const QModelIndex &parent ) const
 {
-    
+    DEBUG_BLOCK
+    if ( m_belowModel->rowExists( m_map->key( row ) ) )     //should I use rowToSource for this??
+    {
+        debug() << "the row exists!";
+        return createIndex( row, column );
+    }
+    debug() << "bad model, no row for you!";
+    return QModelIndex();
+}
+
+QModelIndex
+SortProxy::parent( const QModelIndex& index ) const
+{
+    DEBUG_BLOCK
+    return m_belowModel->parent( index );
+}
+
+QModelIndex
+SortProxy::mapFromSource( const QModelIndex& sourceIndex ) const
+{
+    DEBUG_BLOCK
+    return createIndex( m_map->value( sourceIndex.row() ), sourceIndex.column() );
+}
+
+QModelIndex
+SortProxy::mapToSource( const QModelIndex& proxyIndex ) const
+{
+    DEBUG_BLOCK
+    return m_belowModel->index( m_map->key( proxyIndex.row() ), proxyIndex.column() );
 }
 
 
@@ -73,7 +103,7 @@ SortProxy::activeRow() const
     // we map the active row form the source to this model. if the active row is not in the items
     // exposed by this proxy, just point to our first item.
     //return rowFromSource( m_model->activeRow() ); //from FIlterProxy
-    return m_belowModel->activeRow();   //TODO: this will need to be adjusted when this proxy starts doing some actual permutation
+    return rowFromSource( m_belowModel->activeRow() );   //TODO: this will need to be adjusted when this proxy starts doing some actual permutation
 }
 
 void
@@ -104,7 +134,7 @@ QVariant
 SortProxy::data( const QModelIndex & index, int role ) const
 {
     //HACK around incomplete index causing a crash...
-    //note to self by Téo: no idea what this does but I seem to need it
+    //note to self by Téo: is this still needed?
     QModelIndex newIndex = this->index( index.row(), index.column() );
     
     QModelIndex sourceIndex = mapToSource( newIndex );
@@ -120,31 +150,31 @@ SortProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, i
 int
 SortProxy::find( const QString &searchTerm, int searchFields )
 {
-    return m_belowModel->find( searchTerm, searchFields );  //TODO: see SortProxy::activeRow()
+    return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );  //DONE: see SortProxy::activeRow()
 }
 
 int
 SortProxy::findNext( const QString &searchTerm, int selectedRow, int searchFields )
 {
-    return m_belowModel->findNext( searchTerm, selectedRow, searchFields );  //TODO: see SortProxy::activeRow()
+    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );  //DONE: see SortProxy::activeRow()
 }
 
 int
 SortProxy::findPrevious( const QString &searchTerm, int selectedRow, int searchFields )
 {
-    return m_belowModel->findPrevious( searchTerm, selectedRow, searchFields );  //TODO: see SortProxy::activeRow()
+    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );  //DONE: see SortProxy::activeRow()
 }
 
 Qt::ItemFlags
 SortProxy::flags( const QModelIndex &index ) const
 {
-    return m_belowModel->flags( index );
+    return m_belowModel->flags( mapToSource( index ) );
 }
 
 QMimeData *
 SortProxy::mimeData( const QModelIndexList &index ) const
 {
-    return m_belowModel->mimeData( index );
+    return m_belowModel->mimeData( index );     //TODO: probably needs mapToSource!!!
 }
 
 QStringList
@@ -163,12 +193,13 @@ SortProxy::rowExists( int row ) const
 int
 SortProxy::rowCount(const QModelIndex& parent) const
 {
-    m_belowModel->rowCount( parent );
+    return m_belowModel->rowCount( parent );
 }
 
 int
 SortProxy::rowFromSource( int row ) const
 {
+    DEBUG_BLOCK
     QModelIndex sourceIndex = m_belowModel->index( row, 0 );
     QModelIndex index = mapFromSource( sourceIndex );
     
@@ -180,6 +211,7 @@ SortProxy::rowFromSource( int row ) const
 int
 SortProxy::rowToSource( int row ) const
 {
+    DEBUG_BLOCK
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
     
@@ -191,7 +223,7 @@ SortProxy::rowToSource( int row ) const
 void
 SortProxy::setActiveRow( int row )
 {
-    m_belowModel->setActiveRow( row );  //TODO: see SortProxy::activeRow()
+    m_belowModel->setActiveRow( rowToSource( row ) );  //DONE: see SortProxy::activeRow()
 }
 
 Qt::DropActions
@@ -203,13 +235,13 @@ SortProxy::supportedDropActions() const
 int
 SortProxy::totalLength() const
 {
-    return m_belowModel->totalLength();     //this might not need changes
+    return m_belowModel->totalLength();     //this should not need changes by definition
 }
 
 Meta::TrackPtr
 SortProxy::trackAt(int row) const
 {
-    return m_belowModel->trackAt( row );    //TODO: see SortProxy::activeRow()
+    return m_belowModel->trackAt( rowToSource( row ) );    //DONE: see SortProxy::activeRow()
 }
 
 }   //namespace Playlist
