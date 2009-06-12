@@ -15,6 +15,7 @@
 #include "ServiceInfo.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "amarokurls/AmarokUrl.h"
 #include "Debug.h"
 #include "playlist/PlaylistController.h"
@@ -95,7 +96,17 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 
         if ( !data[ "main_info" ].toString().isEmpty() )
         {
-            m_webView->setHtml( data[ "main_info" ].toString(), KUrl( QString() ) );
+
+            QString currentHtml = data[ "main_info" ].toString();
+            
+            QColor highlight( App::instance()->palette().highlight().color() );
+            highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
+            currentHtml = currentHtml.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
+            currentHtml = currentHtml.replace( "{content_background_color}", highlight.name() );
+            currentHtml = currentHtml.replace( "{background_color}", PaletteHandler::highlightColor().lighter( 150 ).name());
+            currentHtml = currentHtml.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
+            
+            m_webView->setHtml( currentHtml, KUrl( QString() ) );
         }
         else
         {

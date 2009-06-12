@@ -315,8 +315,33 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 
     if ( category )
     {
+
+        //instead of just throwing out raw text, let's format the long description and the
+        //icon into a nice html page.
+
+        QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
+                "CONTENT=\"text/html; charset=utf-8\">"
+                "<style type='text/css'>"
+                "body"
+        "{"
+        "    text-align:center;"
+        "    background-color: {background_color};"
+        "}"
+        "</style></HEAD><BODY>";
+
+        infoHtml += "<div align=\"center\"><strong>";
+        infoHtml += category->prettyName();
+        infoHtml += "</strong><p><em>";
+        infoHtml += category->longDescription();
+        infoHtml += "</em><br><br>";
+        //infoHtml += "<img src=\"" + magnatuneAlbum->coverUrl() +
+          //      "\" align=\"middle\" border=\"1\">";
+
+        infoHtml += "</p></div>";
+        infoHtml += "</BODY></HTML>";
+
         QVariantMap variantMap;
-        variantMap["main_info"] = QVariant( category->longDescription() );
+        variantMap["main_info"] = QVariant( infoHtml );
         debug() << "setting info: " << category->longDescription();
         The::infoProxy()->setInfo( variantMap );
     }

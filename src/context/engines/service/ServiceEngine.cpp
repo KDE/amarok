@@ -72,7 +72,7 @@ void ServiceEngine::message( const ContextState& state )
 }
 
 
-void ServiceEngine::serviceInfoChanged(QVariantMap infoMap)
+void ServiceEngine::serviceInfoChanged( QVariantMap infoMap )
 {
     m_storedInfo = infoMap;
     update();
