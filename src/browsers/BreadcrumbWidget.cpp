@@ -41,6 +41,14 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
 
 BreadcrumbWidget::~BreadcrumbWidget()
 {
+
+    //these items will get deleted by their BrowserCategory, so set parent to 0
+    //or they will get double deleted, causing a crash
+    foreach(  BreadcrumbItem * item, m_items )
+    {
+        item->setParent( 0 );
+        item->hide();
+    }
 }
 
 void
