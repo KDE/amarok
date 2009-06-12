@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROKSERVICEBROWSER_H
-#define AMAROKSERVICEBROWSER_H
+#ifndef AMAROKBROWSERCATEGORYLIST_H
+#define AMAROKBROWSERCATEGORYLIST_H
 
 #include "BrowserCategoryListModel.h"
 #include "BrowserCategoryListSortFilterProxyModel.h"
@@ -75,6 +75,7 @@ class BrowserCategoryList : public KVBox
         void showCategory( const QString &name );
 
         QString activeCategoryName();
+        BrowserCategory *activeCategory();
 
     public slots:
         /**
@@ -107,10 +108,11 @@ class BrowserCategoryList : public KVBox
 
     private slots:
         /**
-         * Slot called when an item in the service list has been activated and the corrosponding service should be shown.
+         * Slot called when an item in the list has been activated and the
+         * corrosponding category should be shown.
          * @param index The index that was activated
          */
-        void serviceActivated( const QModelIndex &index );
+        void categoryActivated( const QModelIndex &index );
 
         void slotSetFilterTimeout();
         void slotFilterNow();

@@ -94,7 +94,7 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
 }
 
 void
-BrowserCategoryList::serviceActivated( const QModelIndex & index )
+BrowserCategoryList::categoryActivated( const QModelIndex & index )
 {
     DEBUG_BLOCK
     BrowserCategory * category = 0;
@@ -191,6 +191,11 @@ QString BrowserCategoryList::activeCategoryName()
     if ( m_currentCategory )
         return m_currentCategory->name();
     return QString();
+}
+
+BrowserCategory * BrowserCategoryList::activeCategory()
+{
+    return m_currentCategory;
 }
 
 

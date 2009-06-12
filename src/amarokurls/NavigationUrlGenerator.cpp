@@ -53,7 +53,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 
         browser = "service";
 
-        QString serviceName = ServiceBrowser::instance()->activeServiceName();
+        QString serviceName = ServiceBrowser::instance()->activeCategoryName();
         debug() << "serviceName: " << serviceName;
         
         QString filter = ServiceBrowser::instance()->activeServiceFilter();

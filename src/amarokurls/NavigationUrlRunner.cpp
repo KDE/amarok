@@ -86,7 +86,7 @@ NavigationUrlRunner::run( AmarokUrl url )
                 return true;
             }
         
-            ServiceBase * service = ServiceBrowser::instance()->services().value( collection );
+            ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( collection ) );
 
             if ( service == 0 ) return false;
 
@@ -109,7 +109,7 @@ NavigationUrlRunner::run( AmarokUrl url )
             debug() << "setting filter";
 
             debug() << "showing service";
-            ServiceBrowser::instance()->showService( collection );
+            ServiceBrowser::instance()->showCategory( collection );
 
             //ensure that the Amarok window is activated and on top
 

@@ -21,27 +21,27 @@
 #define AMAROKSERVICEBROWSER_H
 
 
+
+#include "browsers/BrowserCategoryList.h"
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "services/ServiceBase.h"
-#include "ServiceListModel.h"
 
 #include <KVBox>
 
 #include <QTimer>
 #include <QTreeView>
 #include <QMap>
-#include "ServiceListSortFilterProxyModel.h"
 
-class ServiceListDelegate;
-class SearchWidget;
 
 /**
- *  A browser for selecting and displaying a service in the style of the first imbedded Magnatune store from a list of available services. Allows many services to be shown as a single tab.
+ *  A browser for selecting and displaying a service in the style of the first
+ *  imbedded Magnatune store from a list of available services. Allows
+ *  many services to be shown as a single category.
  *  Implemented as a singleton.
  *
  *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
-class ServiceBrowser : public KVBox
+class ServiceBrowser : public BrowserCategoryList
 {
     Q_OBJECT
 
@@ -58,50 +58,21 @@ class ServiceBrowser : public KVBox
         ~ServiceBrowser();
 
         /**
-         * Get a map of the loaded services.
-         * @return the map of services.
-         */
-        QMap<QString,ServiceBase*> services();
-
-        /**
-         * Remove a named service from the service browser.
-         * @param name The name of the service to remove.
-         */
-        void removeService( const QString &name );
-
-        /**
          * Reset a service and make it reload configuration. Not fully implemented..
          * @param name The name of the service to reset.
          */
         void resetService( const QString &name );
-    
-        /**
-         * Make a service show. Hide any other active service if needed.
-         * @param name the service to show.
-         */
-        void showService( const QString &name );
 
-        QString activeServiceName();
         QString activeServiceFilter();
         QList<int> activeServiceLevels();
 
     public slots:
-        /**
-         * Add a service.
-         * @param service The service to add.
-         */
-        void addService( ServiceBase *service );
 
         /**
          * Set a scriptable service manager to handle scripted services.
          * @param scriptableServiceManager The scriptable service manager to set.
          */
         void setScriptableServiceManager( ScriptableServiceManager *scriptableServiceManager );
-
-        /**
-         * Slot called when the active service should be hidden the service selection list shown again.
-         */
-        void home();
 
     private:
         /**
@@ -117,28 +88,12 @@ class ServiceBrowser : public KVBox
 
         QTreeView                *m_serviceListView;
 
-        QMap<QString,ServiceBase*> m_services;
-        ServiceBase              *m_currentService;
-
         ScriptableServiceManager *m_scriptableServiceManager;
         bool                      m_usingContextView;
-        ServiceListModel         *m_serviceListModel;
-        ServiceListSortFilterProxyModel* m_proxyModel;
-        ServiceListDelegate      *m_delegate;
 
         QTimer m_filterTimer;
 
         QString m_currentFilter;
-
-    private slots:
-        /**
-         * Slot called when an item in the service list has been activated and the corrosponding service should be shown.
-         * @param index The index that was activated
-         */
-        void serviceActivated( const QModelIndex &index );
-
-        void slotSetFilterTimeout();
-        void slotFilterNow();
 
 };
 

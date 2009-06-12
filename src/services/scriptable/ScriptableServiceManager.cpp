@@ -114,7 +114,7 @@ void ScriptableServiceManager::removeRunningScript(const QString & name)
     m_serviceMap.take( name );
 
     //service gets deleted by serviceBrowser
-    ServiceBrowser::instance()->removeService( name );
+    ServiceBrowser::instance()->removeCategory( name );
 }
 
 void ScriptableServiceManager::setIcon( const QString & serviceName, const QPixmap & icon )

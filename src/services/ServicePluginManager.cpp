@@ -112,14 +112,14 @@ void
 ServicePluginManager::slotNewService( ServiceBase *newService )
 {
     DEBUG_BLOCK
-    m_serviceBrowser->addService( newService );
+    m_serviceBrowser->addCategory( newService );
 }
 
 void
 ServicePluginManager::slotRemoveService( ServiceBase *removedService )
 {
     DEBUG_BLOCK
-    m_serviceBrowser->removeService( removedService->name() );
+    m_serviceBrowser->removeCategory( removedService->name() );
 }
 
 QMap<QString, ServiceFactory*>
@@ -132,7 +132,7 @@ void
 ServicePluginManager::settingsChanged()
 {
     //for now, just delete and reload everything....
-    QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
+    QMap<QString, BrowserCategory *> activeServices =  m_serviceBrowser->categories();
     QList<QString> names = activeServices.keys();
 
     foreach( ServiceFactory * factory,  m_factories )
@@ -142,7 +142,7 @@ ServicePluginManager::settingsChanged()
 
     foreach( const QString &serviceName, names )
     {
-        m_serviceBrowser->removeService( serviceName );
+        m_serviceBrowser->removeCategory( serviceName );
     }
 
     m_loadedServices.clear();
@@ -194,7 +194,7 @@ void ServicePluginManager::settingsChanged( const QString & pluginName )
     foreach( ServiceBase * service, factory->activeServices() ) {
 
         debug() << "removing service: " << service->name();
-        m_serviceBrowser->removeService( service->name() );
+        m_serviceBrowser->removeCategory( service->name() );
     }
 
     factory->clearActiveServices();
@@ -218,20 +218,23 @@ ServicePluginManager::loadedServices()
 QStringList
 ServicePluginManager::loadedServiceNames()
 {
-    return m_serviceBrowser->services().keys();
+    return m_serviceBrowser->categories().keys();
 }
 
 QString
 ServicePluginManager::serviceDescription( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
         return i18n( "No service named %1 is curretly loaded", serviceName );
     }
 
-    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
 
+    if ( service == 0 )
+        return QString();
+    
     return service->shortDescription();
 }
 
@@ -239,12 +242,15 @@ QString
 ServicePluginManager::serviceMessages( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
         return i18n( "No service named %1 is curretly loaded", serviceName );
     }
 
-    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
+
+    if ( service == 0 )
+        return QString();
 
     return service->messages();
 }
@@ -252,12 +258,15 @@ ServicePluginManager::serviceMessages( const QString & serviceName )
 QString ServicePluginManager::sendMessage( const QString & serviceName, const QString & message )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
         return i18n( "No service named %1 is curretly loaded", serviceName );
     }
 
-    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
+
+    if ( service == 0 )
+        return QString();
 
     return service->sendMessage( message );
 }
@@ -280,7 +289,7 @@ void ServicePluginManager::checkEnabledStates()
             debug() << "Active services: " << factory->activeServices().count();
             foreach( ServiceBase * service, factory->activeServices() ) {
                 debug() << "removing service: " << service->name();
-                m_serviceBrowser->removeService( service->name() );
+                m_serviceBrowser->removeCategory( service->name() );
             }
             factory->clearActiveServices();
         }
