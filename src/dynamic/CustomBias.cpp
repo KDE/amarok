@@ -60,12 +60,14 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     sliderLayout->addWidget( m_weightSelection );
     sliderLayout->addWidget( m_weightLabel );
 
-    foreach( Dynamic::CustomBiasEntry* entry, m_cbias->currentEntries() )
+    foreach( Dynamic::CustomBiasFactory* entry, m_cbias->currentFactories() )
     {
         QVariant data;
         data.setValue( entry );
         m_fieldSelection->addItem( entry->name(), data );
     }
+
+    connect( m_cbias, SIGNAL( biasFactoriesChanged() ), this, SLOT( reloadBiases() ) );
 
     connect( m_fieldSelection, SIGNAL( currentIndexChanged( int ) ),
             this, SLOT( selectionChanged( int ) ) );
@@ -81,21 +83,24 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
     DEBUG_BLOCK
     if( !m_fieldSelection )
         return;
-    Dynamic::CustomBiasEntry* chosen = m_fieldSelection->itemData( index ).value<  Dynamic::CustomBiasEntry* >();
+    Dynamic::CustomBiasFactory* chosenFactory = m_fieldSelection->itemData( index ).value<  Dynamic::CustomBiasFactory* >();
 
-    if( !chosen )
+    if( !chosenFactory )
     {
-        debug() << "found a non-CustomBiasEntry in the drop-down..something bad just happened";
+        debug() << "found a non-CustomBiasFactory in the drop-down..something bad just happened";
         return;
     }
 
+    Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBias();
+    
     QWidget* entryConfig = chosen->configWidget( this );
     if( !entryConfig )
     {
         debug() << "got an invalid config widget from bias type!";
         return;
     }
-    // remove last item (old config widget) and add new one
+    
+    // remove last item (old config widget) and old bias and add new one
     if( m_layout->count() == 2 )
     {
         // remove old widget
@@ -122,11 +127,27 @@ Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
     emit biasChanged( m_bias );
 }
 
+// CLASS CustomBias
+
+QList< Dynamic::CustomBiasFactory* > Dynamic::CustomBias::s_biasFactories = QList< CustomBiasFactory* >();
+
 Dynamic::CustomBias::CustomBias()
     : m_weight( .75 )
+    , m_currentEntry( 0 )
 {
-
+    DEBUG_BLOCK
+    // on new creation, if we have at least one factory just create it
+   /* if( s_biasFactories.size() > 0 )
+    {
+        m_currentEntry = s_biasFactories[ 0 ].newCustomBias();
+    } */
 }
+
+Dynamic::CustomBias::~CustomBias()
+{
+    delete m_currentEntry;
+}
+
 
 PlaylistBrowserNS::BiasWidget*
 Dynamic::CustomBias::widget( QWidget* parent )
@@ -136,10 +157,6 @@ Dynamic::CustomBias::widget( QWidget* parent )
     return new Dynamic::CustomBiasEntryWidget( this, parent );
     
 }
-
-// CLASS CustomBias
-
-QList< Dynamic::CustomBiasEntry* > Dynamic::CustomBias::s_biasEntries = QList< CustomBiasEntry* >();
 
 double
 Dynamic::CustomBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context )
@@ -223,21 +240,25 @@ Dynamic::CustomBias::collectionFilterCapability()
 }
 
 void
-Dynamic::CustomBias::registerNewBiasEntry( Dynamic::CustomBiasEntry* entry )
+Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasFactory* entry )
 {
     DEBUG_BLOCK
-    if( !s_biasEntries.contains( entry ) )
-        s_biasEntries.append( entry );
+    if( !s_biasFactories.contains( entry ) )
+        s_biasFactories.append( entry );
+
+//    emit( biasFactoriesChanged() );
 }
 
 
 void
-Dynamic::CustomBias::removeBiasEntry( Dynamic::CustomBiasEntry* entry )
+Dynamic::CustomBias::removeBiasFactory( Dynamic::CustomBiasFactory* entry )
 {
     DEBUG_BLOCK
 
-    if( s_biasEntries.contains( entry ) )
-        s_biasEntries.removeAll( entry );
+    if( s_biasFactories.contains( entry ) )
+        s_biasFactories.removeAll( entry );
+
+//    emit( biasFactoriesChanged() );
 }
 
 Dynamic::CustomBias*
@@ -250,16 +271,24 @@ Dynamic::CustomBias::fromXml(QDomElement e)
 }
 
 
-QList< Dynamic::CustomBiasEntry* >
-Dynamic::CustomBias::currentEntries()
+QList< Dynamic::CustomBiasFactory* >
+Dynamic::CustomBias::currentFactories()
 {
-    return s_biasEntries;
+    return s_biasFactories;
 }
 
 void
 Dynamic::CustomBias::setCurrentEntry( Dynamic::CustomBiasEntry* entry )
 {
+    if( m_currentEntry )
+        delete m_currentEntry;
     m_currentEntry = entry;
+}
+
+Dynamic::CustomBiasEntry*
+Dynamic::CustomBias::currentEntry()
+{
+    return m_currentEntry;
 }
 
 void

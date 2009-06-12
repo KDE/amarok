@@ -29,6 +29,33 @@
 #include <QFrame>
 #include <QLabel>
 
+// CUSTOM BIAS FACTORY
+
+Dynamic::SimilarArtistsBiasFactory::SimilarArtistsBiasFactory()
+    : CustomBiasFactory()
+{
+
+}
+
+Dynamic::SimilarArtistsBiasFactory::~SimilarArtistsBiasFactory()
+{
+
+}
+
+QString
+Dynamic::SimilarArtistsBiasFactory::name()
+{
+    return i18n( "Similar Artists" );
+}
+
+
+Dynamic::CustomBiasEntry*
+Dynamic::SimilarArtistsBiasFactory::newCustomBias()
+{
+    return new SimilarArtistsBias();
+}
+
+
 Dynamic::SimilarArtistsBias::SimilarArtistsBias()
     : Dynamic::CustomBiasEntry()
     , EngineObserver( The::engineController() )

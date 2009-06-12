@@ -31,6 +31,16 @@ class Collection;
 namespace Dynamic
 {
 
+class SimilarArtistsBiasFactory : public CustomBiasFactory
+{
+    public:
+        SimilarArtistsBiasFactory();
+        ~SimilarArtistsBiasFactory();
+
+        virtual QString name();
+        virtual CustomBiasEntry* newCustomBias();
+};
+
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
 class SimilarArtistsBias : public QObject, public CustomBiasEntry, public EngineObserver
 {

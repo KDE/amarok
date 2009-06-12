@@ -25,7 +25,30 @@ namespace Dynamic
 {
 
 class CustomBias;
-    
+class CustomBiasEntry;
+
+/**
+ * The factory which creates custom bias entries on demand. As the user can create any number
+ * of biases from from the bias addition widget, new custom biass types need to be able to be
+ * generated on command and at runtime.
+ **/
+class AMAROK_EXPORT CustomBiasFactory
+{
+    public:
+        CustomBiasFactory() {}
+        virtual ~CustomBiasFactory() {}
+
+        /**
+         *   Returns the name of the type of bias. eg. "Last.fm Similar Artists"
+         */
+        virtual QString name() = 0;
+
+        /**
+         * Create the custom bias. The caller takes owner of the pointer
+         */
+        virtual CustomBiasEntry* newCustomBias() = 0;
+};
+
 /**
  *  This is the object that the singleton CustomBias can register. A service, or anything
  *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
@@ -101,25 +124,28 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
     Q_OBJECT
     public:
         CustomBias();
-        ~CustomBias() {}
+        virtual ~CustomBias();
 
 
         /**
          * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.
          */
-        static void registerNewBiasEntry( CustomBiasEntry* );
+        static void registerNewBiasFactory( CustomBiasFactory* );
 
         /**
          * Remove CustomBiasEntry from the list of bias types that the user can select.
          */
-        static void removeBiasEntry( CustomBiasEntry* );
+        static void removeBiasFactory( CustomBiasFactory* );
 
         /**
          * Tries to create a new CustomBias from given XML. Will search to see if any of the loaded biases can handle this bias type.
          */
         static CustomBias* fromXml( QDomElement e );
 
-        QList< CustomBiasEntry* > currentEntries();
+        /**
+         * Returns all the current registered factories for this CustomBias
+         */
+        static QList< CustomBiasFactory* > currentFactories();
         
         // reimplement from Dynamic::Bias
         virtual PlaylistBrowserNS::BiasWidget* widget(QWidget* parent = 0);
@@ -132,15 +158,17 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         
         // these are used by the CustomBiasWidget. This public coupling sucks, but that's how daniel designed it...
         void setCurrentEntry( CustomBiasEntry* );
+        CustomBiasEntry* currentEntry();
 
         virtual double weight() const { return m_weight; }
         void setWeight( double );
 
     signals:
         void weightChanged( double );
+        void biasFactoriesChanged();
         
     private:
-        static QList< CustomBiasEntry* > s_biasEntries;
+        static QList< CustomBiasFactory* > s_biasFactories;
         CustomBiasEntry* m_currentEntry;
 
         double m_weight; // slider for percent
@@ -172,6 +200,7 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
 
 }
 
+Q_DECLARE_METATYPE( Dynamic::CustomBiasFactory* )
 Q_DECLARE_METATYPE( Dynamic::CustomBiasEntry* )
 
 

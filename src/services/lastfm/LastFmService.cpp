@@ -265,8 +265,8 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    Dynamic::SimilarArtistsBias* bias = new Dynamic::SimilarArtistsBias();
-    Dynamic::CustomBias::registerNewBiasEntry( bias );
+    Dynamic::SimilarArtistsBiasFactory* biasFactory = new Dynamic::SimilarArtistsBiasFactory();
+    Dynamic::CustomBias::registerNewBiasFactory( biasFactory );
 
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
