@@ -119,7 +119,9 @@ AmarokTest::AmarokTest( int &argc, char **argv )
 void
 AmarokTest::debug( const QString& text ) const // Slot
 {
+    Amarok::config().writeEntry( "Debug Enabled", true );
     ::debug() << "SCRIPT" << m_currentlyRunning << ": " << text;
+    Amarok::config().writeEntry( "Debug Enabled", false );
 }
 
 
