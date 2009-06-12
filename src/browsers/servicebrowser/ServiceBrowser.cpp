@@ -20,7 +20,6 @@
 #include "ServiceBrowser.h"
 
 #include "Debug.h"
-#include "ServiceListDelegate.h"
 #include "context/ContextView.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
