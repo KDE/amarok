@@ -163,7 +163,11 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     if( !m_playlist )
         return;
 
-    beginInsertRows( QModelIndex(), rowCount()-2, rowCount()-2 );
+    // HARDCODED HACK took me a while to figure out---the number of
+    // bias add widgets is hardcoded
+    int numAddBiasWidgets = 3;
+    
+    beginInsertRows( QModelIndex(), rowCount() - numAddBiasWidgets, rowCount() - numAddBiasWidgets );
     m_playlist->biases().append( b );
 
     PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
@@ -175,14 +179,14 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     connect( widget, SIGNAL(biasChanged(Dynamic::Bias*)),
             SLOT(biasChanged(Dynamic::Bias*)) );
 
-    if( m_widgets.size() > 2 )
+    if( m_widgets.size() > numAddBiasWidgets )
         widget->setAlternate( !m_widgets.at( m_widgets.size() - 3 )->alternate() );
 
     // toggle the 'add bias' dialog background
-    for( int i = rowCount()-2; i < rowCount(); ++i )
+    for( int i = rowCount()-numAddBiasWidgets; i < rowCount(); ++i )
         m_widgets[i]->toggleAlternate();
 
-    m_widgets.insert( rowCount()-2, widget );
+    m_widgets.insert( rowCount()-numAddBiasWidgets, widget );
     endInsertRows();
 
     // fix a render bug
