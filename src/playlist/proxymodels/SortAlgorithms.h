@@ -52,6 +52,13 @@ enum PairElement
     second
 };
 
+/**
+ * This struct defines a comparison functor that can be used by qSort(), qStableSort(), or
+ * other sorting algorithms with a similar interface.
+ * The functor is generic and operates a comparison for the first or the second element of
+ * a QPair<>.
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ */
 template< typename T >
 struct pairLessThan
 {
@@ -63,6 +70,15 @@ struct pairLessThan
         : m_position( position )
     {}
 
+    /**
+     * Takes two items of type T which can be any QPair< C1, C2 >, as long as C1 and C2
+     * implement operator<(), and compares them according to the first or the second element,
+     * as chosen in the constructor.
+     * @param t1 the first QPair.
+     * @param t2 the second QPair.
+     * @return true if the first or second element of t1 is to be placed before the same
+     * element of t2, false otherwise.
+     */
     bool operator()( const T &t1, const T &t2 )
     {
         return ( m_position == first ) ? ( t1.first < t2.first ) : ( t1.second < t2.second );
@@ -78,8 +94,9 @@ namespace Playlist
 /**
  * This struct defines a comparison functor that can be used by qSort(), qStableSort(), or
  * other sorting algorithms with a similar interface.
- * It is specific for this problem and wouldn't probably do any good for sorting anything
- * else than tracks.
+ * The comparison is operated on multiple levels of a Playlist::SortScheme.
+ * @warning This functor is specific for this particular problem and wouldn't probably do
+ * any good for sorting anything else than tracks.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 struct multilevelLessThan
@@ -93,7 +110,7 @@ struct multilevelLessThan
         : m_sourceProxy( sourceProxy )
         , m_scheme( scheme )
     {}
-    
+
     /**
      * Takes two row numbers from the proxy and compares the corresponding indexes based on
      * a number of chosen criteria (columns).
@@ -102,7 +119,7 @@ struct multilevelLessThan
      * @return true if rowA is to be placed before rowB, false otherwise.
      */
     bool operator()( int rowA, int rowB );
-    
+
     private:
         FilterProxy *m_sourceProxy;
         SortScheme *m_scheme;

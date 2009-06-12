@@ -37,7 +37,7 @@ SortMap::SortMap( FilterProxy *sourceProxy )
     m_sourceProxy = sourceProxy;    //FilterProxy::instance();
     m_rowCount = m_sourceProxy->rowCount();
     m_map = new QList< int >();
-    for ( int i = 0; i < m_rowCount; i++ )  //defining an identity
+    for( int i = 0; i < m_rowCount; i++ )  //defining an identity
         m_map->append( i );     //this should give me amortized O(1)
 }
 
@@ -71,7 +71,7 @@ SortMap::sort( SortScheme *scheme )
     //       This preloading takes O(n).
     //                      -- Téo
     m_map->clear();
-    for ( int i = 0; i < m_rowCount; i++ )  //defining an identity
+    for( int i = 0; i < m_rowCount; i++ )  //defining an identity
         m_map->append( i );     //this should give me amortized O(1)
     //qStableSort() is a merge sort and takes Θ(n*logn) in any case.
     qStableSort( m_map->begin(), m_map->end(), multilevelLessThan( m_sourceProxy, scheme) );
@@ -79,7 +79,7 @@ SortMap::sort( SortScheme *scheme )
 
     debug() << "Behold the mighty sorting map spamming your terminal:";
     debug() << "  source  sortProxy";   //column headers
-    for ( int i = 0; i < m_map->length(); i++ )
+    for( int i = 0; i < m_map->length(); i++ )
     {
         debug() << "   " << i << "   " << m_map->value( i );
     }
@@ -100,11 +100,21 @@ SortMap::deleteRows( int startRowInProxy, int endRowInProxy )
     DEBUG_BLOCK
     //FIXME: this is probably all good except for one thing: startRow and endRow are *NOT* in source!!!!!
     //       USE nhn's patch for this
+    for( QList< int >::iterator i = m_map->begin(); i != m_map->end(); )
+    {
+        if( *i >= startRowInProxy && *i <= endRowInProxy )
+        {
+            debug() << "erasing " << *i << " which on source is " << m_map->indexOf( *i );
+            i = m_map->erase( i );
+        }
+        else
+            ++i;
+    }
+
     debug() << "Removing from the map sourceRows from " << startRowInProxy << " to " << endRowInProxy;
-    QList< int >::iterator startIterator = m_map->begin() + startRowInProxy;
-    QList< int >::iterator endIterator = m_map->begin() + endRowInProxy + 1;   //erase() wants the first item that *won't* be deleted as the end row
-    m_map->erase( startIterator, endIterator );     //yay this should take O(1)
+
     m_rowCount = m_sourceProxy->rowCount();
+
     // Let's now restore codomain elements consistency.
     // We have to make it so that the set of keys has the same elements as the set of values,
     // and the existing order has to be preserved.
@@ -128,7 +138,7 @@ SortMap::deleteRows( int startRowInProxy, int endRowInProxy )
     //I copy the contents of m_map in a QList< QPair< int, int > >
     {
         QList< int >::iterator it = m_map->begin();
-        for ( int i = 0; i < m_rowCount; i++ )  //defining an identity
+        for( int i = 0; i < m_rowCount; i++ )  //defining an identity
         {
             tempConsistencyMap->append( QPair< int, int >( i, *it ) );     //this should give me amortized O(1)
             ++it;
@@ -136,14 +146,14 @@ SortMap::deleteRows( int startRowInProxy, int endRowInProxy )
     }
 
     //I do a normal stable adaptive sort.
-    for ( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin() + 1; i != tempConsistencyMap->end(); ++i )
-        for ( QList< QPair< int, int > >::iterator j = i; j != tempConsistencyMap->begin() && j->second < ( j - 1 )->second; --j )
+    for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin() + 1; i != tempConsistencyMap->end(); ++i )
+        for( QList< QPair< int, int > >::iterator j = i; j != tempConsistencyMap->begin() && j->second < ( j - 1 )->second; --j )
             qSwap( *j, *( j - 1 ) );
 
     //I clear the second column with an identity.
     {
         int j = 0;
-        for ( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin(); i != tempConsistencyMap->end(); ++i )
+        for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin(); i != tempConsistencyMap->end(); ++i )
         {
             i->second = j;
             ++j;
@@ -151,18 +161,18 @@ SortMap::deleteRows( int startRowInProxy, int endRowInProxy )
     }
 
     //Finally I sort again to obtain a coherent sortMap.
-    for ( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin() + 1; i != tempConsistencyMap->end(); ++i )
-        for ( QList< QPair< int, int > >::iterator j = i; j != tempConsistencyMap->begin() && j->first < ( j - 1 )->first; --j )
+    for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin() + 1; i != tempConsistencyMap->end(); ++i )
+        for( QList< QPair< int, int > >::iterator j = i; j != tempConsistencyMap->begin() && j->first < ( j - 1 )->first; --j )
             qSwap( *j, *( j - 1 ) );
 
     //And I copy it over to m_map.
     m_map->clear();
-    for ( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin(); i != tempConsistencyMap->end(); ++i )
+    for( QList< QPair< int, int > >::iterator i = tempConsistencyMap->begin(); i != tempConsistencyMap->end(); ++i )
         m_map->append( i->second );     //this should give me amortized O(1)
 
     debug() << "Map consistency restored.";
     debug() << "  source  sortProxy";   //column headers
-    for ( int i = 0; i < m_map->length(); i++ )
+    for( int i = 0; i < m_map->length(); i++ )
     {
         debug() << "   " << i << "   " << m_map->value( i );
     }
