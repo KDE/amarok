@@ -200,6 +200,8 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
         AudioCdGenrePtr genrePtr = AudioCdGenrePtr( new  AudioCdGenre( genre ) );
         addGenre( GenrePtr::staticCast( genrePtr ) );
 
+        m_discCddbId = "unknown";
+        
         startIndex = cddbInfo.indexOf( "DISCID=", 0 );
         if ( startIndex != -1 )
         {
@@ -253,7 +255,7 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
                 baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
                 //we hack the url so the engine controller knows what track on the cd to play..
-                QString baseUrl = "audiocd:/" + QString::number( i + 1 );
+                QString baseUrl = "audiocd:/" + m_discCddbId + "/" + QString::number( i + 1 );
 
                 debug() << "Track Base File Name (after): " << baseFileName;
                 debug() << "Track url: " << baseUrl;
@@ -389,7 +391,9 @@ void AudioCdCollection::noInfoAvailable()
 {
 
     DEBUG_BLOCK
-    
+
+    m_discCddbId = "unknown";
+            
     QString artist = i18n( "Unknown" );
     QString album = i18n( "Unknown" );
     QString year = i18n( "Unknown" );
@@ -415,7 +419,7 @@ void AudioCdCollection::noInfoAvailable()
 
         debug() << "got track: " << "audiocd:/" + trackName + ".wav";
 
-        QString baseUrl = "audiocd:/" + QString::number( i );
+        QString baseUrl = "audiocd:/" + m_discCddbId + "/" + QString::number( i );
         
         AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
 

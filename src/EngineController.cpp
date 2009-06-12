@@ -332,7 +332,14 @@ EngineController::playUrl( const KUrl &url, uint offset )
         debug() << "play track from cd";
         QString trackNumberString = url.url();
         trackNumberString = trackNumberString.replace( "audiocd:/", QString() );
-        int trackNumber = trackNumberString.toInt();
+
+        QStringList parts = trackNumberString.split( "/" );
+
+        if ( parts.count() != 2 )
+            return;
+        
+        QString discId = parts.at( 0 );
+        int trackNumber = parts.at( 1 ).toInt();
 
         debug() << "3.2.1...";
         m_media->clear();
