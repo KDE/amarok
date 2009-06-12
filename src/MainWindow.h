@@ -152,7 +152,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QPointer<BrowserWidget>   m_browsers;
         QStringList         m_browserNames;
         QPointer<KMenu>     m_searchMenu;
-        QPointer<KVBox>     m_statusbarArea;
+        //QPointer<KVBox>     m_statusbarArea;
 
         QPointer<SearchWidget>     m_searchWidget;
         QPointer<MainToolbar>      m_controlBar;

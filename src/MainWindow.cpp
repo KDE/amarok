@@ -121,20 +121,10 @@ MainWindow::MainWindow()
     QSizeGrip* grip = new QSizeGrip( this );
     GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
 #endif
-    //create this object now as we might run into issues if anyone tries to use it during initialization
-    //make room for a full width statusbar at the bottom of everything
-    m_statusbarArea = new KVBox( this );
-    //figure out the needed height based on system font settings
-    //do make sure that it is at least 26 pixels tall though
-    //or progress bars will not fit...
-    QFont currentFont = font();
-    currentFont.setBold( true );
-    QFontMetrics fm( currentFont );
-    int fontHeight = qMax( 26, fm.height() );
-    m_statusbarArea->setMinimumHeight( fontHeight );
-    m_statusbarArea->setMaximumHeight( fontHeight );
 
-    new ::StatusBar( m_statusbarArea );
+    StatusBar * statusBar = new StatusBar( this );
+
+    setStatusBar( statusBar );
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
