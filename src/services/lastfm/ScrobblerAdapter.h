@@ -51,7 +51,7 @@ private:
     void resetVariables();
     void checkScrobble();
 
-    Audioscrobbler *m_scrobbler;
+    lastfm::Audioscrobbler *m_scrobbler;
     lastfm::MutableTrack m_current;
     long m_lastPosition;
     uint m_totalPlayed;
