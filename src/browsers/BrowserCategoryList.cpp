@@ -69,8 +69,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
 
     The::paletteHandler()->updateItemView( m_categoryListView );
 
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
+    setFrameShape( QFrame::NoFrame );
 }
 
 
