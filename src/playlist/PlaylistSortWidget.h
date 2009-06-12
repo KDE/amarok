@@ -33,6 +33,9 @@ class SortWidget : public KHBox
     Q_OBJECT
     public:
         SortWidget( QWidget* parent = 0 );
+
+    private slots:
+        void applySortingScheme();
 };
 
 }   //namespace Playlist

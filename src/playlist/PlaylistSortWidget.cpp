@@ -18,6 +18,9 @@
 ***************************************************************************/
 
 #include "PlaylistSortWidget.h"
+#include "playlist/proxymodels/SortProxy.h"
+
+
 #include <KPushButton>
 
 namespace Playlist
@@ -26,6 +29,13 @@ namespace Playlist
 SortWidget::SortWidget( QWidget *parent ) : KHBox( parent )
 {
     KPushButton *btnSort = new KPushButton( "Just sort it!", this );
+    connect(btnSort, SIGNAL( clicked() ), this, SLOT( applySortingScheme() ) );
+}
+
+void
+SortWidget::applySortingScheme()
+{
+    SortProxy::instance()->sort( Playlist::Length );        //18 = length
 }
 
 
