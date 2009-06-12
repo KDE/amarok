@@ -470,9 +470,18 @@ EngineController::seek( int ms ) //SLOT
 
     if( m_media->isSeekable() )
     {
-        m_media->seek( static_cast<qint64>( ms ) );
-        trackPositionChangedNotify( ms, true ); /* User seek */
-        emit trackSeeked( ms );
+
+        debug() << "ssek to: " << ms;
+        int seekTo;
+        
+        if ( m_boundedPlayback )
+            seekTo = m_boundedPlayback->startPosition() + ms;
+        else
+           seekTo = ms;
+
+        m_media->seek( static_cast<qint64>( seekTo ) );
+        trackPositionChangedNotify( seekTo, true ); /* User seek */
+        emit trackSeeked( seekTo );
     }
     else
         debug() << "Stream is not seekable.";
