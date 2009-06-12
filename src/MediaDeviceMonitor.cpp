@@ -37,7 +37,9 @@
 
 MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
 
-MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
+MediaDeviceMonitor::MediaDeviceMonitor()
+    : QObject()
+    , m_currentCdId( QString() )
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -311,6 +313,16 @@ void MediaDeviceMonitor::ejectCd( const QString & udi )
             drive->eject();
         }
     }
+}
+
+QString MediaDeviceMonitor::currentCdId()
+{
+    return m_currentCdId;
+}
+
+void MediaDeviceMonitor::setCurrentCdId( const QString & id )
+{
+    m_currentCdId = id;
 }
 
 

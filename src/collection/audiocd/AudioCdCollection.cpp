@@ -122,6 +122,7 @@ AudioCdCollection::AudioCdCollection( const QString &udi )
 
 AudioCdCollection::~AudioCdCollection()
 {
+    MediaDeviceMonitor::instance()->setCurrentCdId( QString() );
     delete m_ejectAction;
 }
 
@@ -213,6 +214,8 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
             endIndex = cddbInfo.indexOf( "\n", startIndex );
             m_discCddbId = cddbInfo.mid( startIndex, endIndex - startIndex );
         }
+
+        MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
 
         //get the list of tracknames
         startIndex = cddbInfo.indexOf( "TTITLE0=", 0 );
@@ -398,6 +401,8 @@ void AudioCdCollection::noInfoAvailable()
     DEBUG_BLOCK
 
     m_discCddbId = "unknown";
+
+    MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
             
     QString artist = i18n( "Unknown" );
     QString album = i18n( "Unknown" );

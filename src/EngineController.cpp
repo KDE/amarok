@@ -22,6 +22,7 @@
 #include "statusbar/StatusBar.h"
 #include "Debug.h"
 #include "MainWindow.h"
+#include "MediaDeviceMonitor.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/capabilities/MultiPlayableCapability.h"
@@ -339,6 +340,15 @@ EngineController::playUrl( const KUrl &url, uint offset )
             return;
         
         QString discId = parts.at( 0 );
+        
+        //we really only want to play it if it is the disc that is currently present.
+        //In the case of cds for which we dont have any id, any "unknown" cds will
+        //be considdered equal.
+
+        if ( MediaDeviceMonitor::instance()->currentCdId() != discId )
+            return;
+
+        
         int trackNumber = parts.at( 1 ).toInt();
 
         debug() << "3.2.1...";

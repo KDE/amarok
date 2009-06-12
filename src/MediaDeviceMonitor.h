@@ -64,6 +64,9 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     QString isCdPresent();
     void ejectCd( const QString &udi );
 
+    QString currentCdId();
+    void setCurrentCdId( const QString &id );
+
  //   void fetchDevices(); // emits device info for each device present
 
     signals:
@@ -100,6 +103,8 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         bool isIpod( const QString &udi );
         bool isMtp( const QString &udi );
         bool isAudioCd( const QString &udi );
+
+        QString m_currentCdId;
 
         
 
