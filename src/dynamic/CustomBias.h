@@ -14,6 +14,8 @@
 #ifndef DYNAMIC_CUSTOM_BIAS_H
 #define DYNAMIC_CUSTOM_BIAS_H
 
+#include "amarok_export.h"
+#include "DynamicBiasWidgets.h"
 #include "Bias.h"
 
 class QComboBox;
@@ -22,16 +24,39 @@ class QVBoxLayout;
 namespace Dynamic
 {
 
+class CustomBias;
+    
+class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
+{
+    Q_OBJECT
+    public:
+        explicit CustomBiasEntryWidget( CustomBias*, QWidget* parent = 0 );
+
+
+    private slots:
+        void selectionChanged( int index );
+        void weightChanged( int amount );
+        
+    private:
+        CustomBias* m_bias;
+        
+        QGridLayout* m_layout;        
+        Amarok::Slider* m_weightSelection;
+        QLabel*         m_weightLabel;
+        QLabel*         m_withLabel;
+        KComboBox*      m_fieldSelection;
+};
+
 /**
  *  This is the object that the singleton CustomBias can register. A service, or anything
  *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
  */
-class CustomBiasEntry : public QObject
+class AMAROK_EXPORT CustomBiasEntry : public QObject
 {
     Q_OBJECT
     public:
         CustomBiasEntry();
-        ~CustomBiasEntry();
+        virtual ~CustomBiasEntry() {}
 
         /**
          *   Returns the name of the type of bias. eg. "Last.fm"
@@ -48,7 +73,7 @@ class CustomBiasEntry : public QObject
         /**
          * Returns if the given track satisfies this bias' conditions.
          */
-        virtual bool trackSatisfies( Meta::TrackPtr ) = 0;
+        virtual bool trackSatisfies( const Meta::TrackPtr ) = 0;
 
         /**
          * Convenience method. Returns number of tracks that satisfy
@@ -56,7 +81,7 @@ class CustomBiasEntry : public QObject
          * check to allow the Bias to do more local caching of expensive
          * (read: web) lookups.
          */
-        virtual int numTracksThatSatisfy( Meta::TrackList ) = 0;
+        virtual double numTracksThatSatisfy( const Meta::TrackList& ) = 0;
 
 };
 
@@ -68,7 +93,7 @@ class CustomBiasEntry : public QObject
  *
  * There is only one bias type chosen by the user at a time per bias.
  */
-class CustomBias : public QObject, public Bias
+class AMAROK_EXPORT CustomBias : public QObject, public Bias
 {
     Q_OBJECT
     public:
@@ -92,15 +117,17 @@ class CustomBias : public QObject, public Bias
          */
         void removeBiasEntry( CustomBiasEntry* );
 
-    private slots:
-        void selectionChanged( int index );
+        void setCurrentEntry( CustomBiasEntry* );
+        QList< CustomBiasEntry* > currentEntries();
+
+        void setWeight( double );
         
     private:
         QList< CustomBiasEntry* > m_biasEntries;
         CustomBiasEntry* m_currentEntry;
 
-        QComboBox* m_biasTypes;
-        QVBoxLayout* m_layout;
+        double m_weight; // slider for percent
+        
 };
 
 }
