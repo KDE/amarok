@@ -90,6 +90,11 @@ class BrowserCategoryList : public BrowserCategory
          */
         void home();
 
+        /**
+         * Slot called when the we need to move up one level. Forwarded to child lists as needed
+         */
+        void back();
+
     private:
 
         SearchWidget             *m_searchWidget;

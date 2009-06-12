@@ -199,6 +199,21 @@ BrowserCategory * BrowserCategoryList::activeCategory()
     return m_currentCategory;
 }
 
+void BrowserCategoryList::back()
+{
+    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+    if ( childList )
+    {
+        if ( childList->activeCategory() != 0 )
+        {
+            childList->back();
+            return;
+        }
+    }
+
+    home();
+}
+
 
 #include "BrowserCategoryList.moc"
 

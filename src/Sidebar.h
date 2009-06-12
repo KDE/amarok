@@ -66,6 +66,7 @@ class SideBar: public KHBox
             m_backButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
             //m_categoryList->setSizePolicy( QSizePolicy::Expanding );
 
+            connect( m_backButton, SIGNAL( clicked( bool ) ), m_categoryList, SLOT( back() ) );
             setFrameShape( QFrame::StyledPanel );
             setFrameShadow( QFrame::Sunken );
         }
