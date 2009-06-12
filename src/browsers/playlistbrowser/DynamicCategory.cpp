@@ -51,8 +51,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     setContentsMargins(0,0,0,0);
 
-    m_vLayout = new QVBoxLayout( this );
-
     m_onOffCheckbox = new QCheckBox( this );
     m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
     m_onOffCheckbox->setText( i18n( "On" ) );
@@ -139,14 +137,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
     m_biasListView->setItemDelegate( m_biasDelegate );
-
-    m_vLayout->addWidget( m_onOffCheckbox );
-    m_vLayout->addWidget( m_repopulateButton );
-    m_vLayout->addWidget( presetLayout );
-    m_vLayout->addWidget( m_biasListView );
-
-    this->setLayout( m_vLayout );
-
 
     int index = DynamicModel::instance()->playlistIndex( 
             AmarokConfig::lastDynamicMode() );

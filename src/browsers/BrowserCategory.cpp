@@ -19,6 +19,8 @@
  
 #include "BrowserCategory.h"
 
+#include <QWidget>
+
 BrowserCategory::BrowserCategory( const QString &name )
     : KVBox( 0 )
     , m_name( name )
@@ -26,6 +28,7 @@ BrowserCategory::BrowserCategory( const QString &name )
     , m_shortDescription( QString() )
     , m_longDescription( QString() )
 {
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 }
 
 BrowserCategory::~BrowserCategory()

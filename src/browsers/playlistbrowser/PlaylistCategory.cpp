@@ -65,11 +65,6 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
-    QVBoxLayout *vLayout = new QVBoxLayout( this );
-    vLayout->setContentsMargins(0,0,0,0);
-    vLayout->addWidget( m_toolBar );
-    vLayout->addWidget( m_playlistView );
-
     m_playlistView->setAlternatingRowColors( true );
 
     m_addGroupAction = new KAction( KIcon("folder-new" ), i18n( "Add Folder" ), this  );

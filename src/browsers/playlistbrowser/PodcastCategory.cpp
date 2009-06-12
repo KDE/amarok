@@ -95,9 +95,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     setContentsMargins(0,0,0,0);
 
-    QVBoxLayout *vLayout = new QVBoxLayout( this );
-    vLayout->setContentsMargins(0,0,0,0);
-
     QToolBar *toolBar = new QToolBar( this );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
@@ -110,8 +107,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     toolBar->addAction( updateAllAction );
     connect( updateAllAction, SIGNAL(triggered( bool )),
              m_podcastModel, SLOT(refreshPodcasts()) );
-
-    vLayout->addWidget( toolBar );
 
     m_podcastTreeView = new PodcastView( podcastModel, this );
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
@@ -143,8 +138,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     sizePolicy1.setVerticalStretch(0);
     sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
     m_podcastTreeView->setSizePolicy(sizePolicy1);
-
-    vLayout->addWidget( m_podcastTreeView );
 
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
