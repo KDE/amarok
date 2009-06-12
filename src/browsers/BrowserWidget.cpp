@@ -21,6 +21,8 @@
 
 #include "Debug.h"
 
+#include "KIcon"
+
 BrowserWidget::BrowserWidget( QWidget * parent )
  : KVBox( parent )
 {
@@ -29,6 +31,7 @@ BrowserWidget::BrowserWidget( QWidget * parent )
     
     m_categoryList = new BrowserCategoryList( this, "root list" );
     m_categoryList->setPrettyName( i18n( "Home" ) );
+    m_categoryList->setIcon( KIcon( "user-home" ) );
 
     m_breadcrumbWidget->setRootList( m_categoryList );
 
