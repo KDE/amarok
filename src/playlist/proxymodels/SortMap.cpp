@@ -31,8 +31,8 @@ SortMap::SortMap( FilterProxy *sourceProxy )
     DEBUG_BLOCK
     m_sourceProxy = sourceProxy;    //FilterProxy::instance();
     m_rowCount = m_sourceProxy->rowCount();
-    m_map = new QMap< qint64, qint64 >();
-    for( qint64 i = 0; i < m_rowCount; i++ )
+    m_map = new QList< int >();
+    for( int i = 0; i < m_rowCount; i++ )
         m_map->insert( i, i ); //identical function
 
 }
@@ -42,16 +42,16 @@ SortMap::~SortMap()
     delete m_map;
 }
 
-qint64
-SortMap::inv( qint64 proxyRow )
+int
+SortMap::inv( int proxyRow )
 {
-    return m_map->key( proxyRow );
+    return m_map->indexOf( proxyRow );
 }
 
-qint64
-SortMap::map( qint64 sourceRow )
+int
+SortMap::map( int sourceRow )
 {
-    return m_map->value( sourceRow );   //note that if sourceRow>= size(), bad things will happen.
+    return m_map->at( sourceRow );   //note that if sourceRow>= size(), bad things will happen.
 }
 
 void
@@ -60,31 +60,26 @@ SortMap::sort( SortScheme *scheme )
     DEBUG_BLOCK
     debug()<< "about to call qStableSort()";
     //MultilevelLessThan multilevelLessThan( m_sourceProxy, scheme );
-    QList< qint64 > testlist;
-    /*qint64 j;
-    j = 6400000;
-    testlist.insert( j, 25 );*/
-    debug()<< "FOO" << "    sizeofint " << sizeof(int);
-    //qStableSort< QMap >( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
+    qStableSort( m_map->begin(), m_map->end(), MultilevelLessThan( m_sourceProxy, scheme) );
     m_sorted = 1;
 }
 
 void
-SortMap::insertRows( qint64 startRowInSource, qint64 endRowInSource )
+SortMap::insertRows( int startRowInSource, int endRowInSource )
 {
 
     m_sorted = 0;   //inserting rows surely invalidates the sorting.
 }
 
 void
-SortMap::deleteRows( qint64 stareRowInSource, qint64 endRowInSource )
+SortMap::deleteRows( int stareRowInSource, int endRowInSource )
 {
 
 }
 
 
 bool
-MultilevelLessThan::operator()(qint64 rowA, qint64 rowB)
+MultilevelLessThan::operator()(int rowA, int rowB)
 {
     quint8 verdict;  //0 = false  1 = true  2 = nextIteration
     for( int i = 0; i < m_scheme->length(); i++ )

@@ -54,7 +54,7 @@ public:
      * @param proxyRow a row in the proxy model.
      * @return the corresponding row in the source model.
      */
-    qint64 inv( qint64 proxyRow );
+    int inv( int proxyRow );
 
     /**
      * Applies the mapping of a row in the source model to the corresponding row in the
@@ -62,7 +62,7 @@ public:
      * @param sourceRow a row in the source model.
      * @return the corresponding row in the proxy.
      */
-    qint64 map( qint64 sourceRow );
+    int map( int sourceRow );
 
     /**
      * Adds a number of newly inserted rows to the map. The map is kept in sync with the
@@ -70,7 +70,7 @@ public:
      * @param startRowInSource the position of the first row.
      * @param rowCount the number of added rows.
      */
-    void insertRows( qint64 startRowInSource, qint64 rowCount );
+    void insertRows( int startRowInSource, int rowCount );
 
     //NOTE to self by Téo: isn't it true that by just removing rows the sorting should be preserved?
     /**
@@ -79,7 +79,7 @@ public:
      * @param startRowInSource the position of the first row.
      * @param rowCount the number of removed rows.
      */
-    void deleteRows( qint64 startRowInSource, qint64 rowCount );
+    void deleteRows( int startRowInSource, int rowCount );
 
     /**
      * Converts a sorting scheme to a permutation of source rows.
@@ -94,8 +94,8 @@ public:
     inline bool isSorted(){ return m_sorted; };
 
 private:
-    QMap< qint64, qint64 > *m_map;
-    qint64 m_rowCount;
+    QList< int > *m_map;
+    int m_rowCount;
     FilterProxy *m_sourceProxy;
     bool m_sorted;
 };
@@ -105,6 +105,9 @@ private:
  */
 struct MultilevelLessThan
 {
+    /**
+     * Constructor.
+     */
     MultilevelLessThan( FilterProxy *sourceProxy, SortScheme *scheme )
         : m_sourceProxy( sourceProxy )
         , m_scheme( scheme )
@@ -116,7 +119,7 @@ struct MultilevelLessThan
      * @param rowB the second row.
      * @return true if rowA is to be placed before rowB, false otherwise.
      */
-    bool operator()( qint64 rowA, qint64 rowB );
+    bool operator()( int rowA, int rowB );
 private:
     FilterProxy *m_sourceProxy;
     SortScheme *m_scheme;
