@@ -39,10 +39,14 @@ namespace Meta
             void setRating( int newRating );
             /** Returns the time the song was last played, or 0 if it has not been played yet */
             QDateTime lastPlayed() const;
+            void setLastPlayed( const QDateTime &dt );
             /** Returns the time the song was first played, or 0 if it has not been played yet */
             QDateTime firstPlayed() const;
+            void setFirstPlayed( const QDateTime &dt );
+
             /** Returns the number of times the track was played (what about unknown?)*/
             int playCount() const;
+            void setPlayCount( int playCount );
             /** indicate to the statistics provider that a song was played */
             void played( double playedFraction );
 

@@ -54,16 +54,37 @@ Meta::StatisticsProvider::firstPlayed() const
     return m_firstPlayed;
 }
 
+void
+Meta::StatisticsProvider::setFirstPlayed( const QDateTime &dt )
+{
+    m_firstPlayed = dt;
+    save();
+}
+
 QDateTime
 Meta::StatisticsProvider::lastPlayed() const
 {
     return m_lastPlayed;
 }
 
+void
+Meta::StatisticsProvider::setLastPlayed( const QDateTime &dt )
+{
+    m_lastPlayed = dt;
+    save();
+}
+
 int
 Meta::StatisticsProvider::playCount() const
 {
     return m_playCount;
+}
+
+void
+Meta::StatisticsProvider::setPlayCount( int playCount )
+{
+    m_playCount = playCount;
+    save();
 }
 
 int
