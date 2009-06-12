@@ -677,6 +677,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             // branch, even if it does defy the probability. (This is how we
             // deal with infeasible systems.)
             debug() << "after set intersection/substraction, R has size:" << R.size();
+
             if( R.size() == 0 )
                 branches.toggleBit( i );
             else

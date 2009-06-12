@@ -37,11 +37,11 @@ class LastFmBias : public QObject, public CustomBiasEntry, public EngineObserver
     Q_OBJECT
     public:
         LastFmBias();
-//        ~LastFmBias();
+       ~LastFmBias();
 
         // reimplemented from CustomBiasEntry
         virtual QString name();
-        virtual QWidget* configWidget();
+        virtual QWidget* configWidget( QWidget* parent );
 
         virtual bool trackSatisfies( const Meta::TrackPtr track );
         virtual double numTracksThatSatisfy( const Meta::TrackList& tracks );
@@ -88,7 +88,7 @@ class LastFmCollectionFilterCapability : public Dynamic::CollectionFilterCapabil
         LastFmCollectionFilterCapability( LastFmBias* bias ) : m_bias( bias ) {}
 
         // re-implemented
-        virtual const QSet<QByteArray>& propertySet() { return m_bias->m_savedArtists[ m_bias->m_currentArtist ];; }
+        virtual const QSet<QByteArray>& propertySet();
         virtual double weight() const { return m_bias->m_weight; }
 
 

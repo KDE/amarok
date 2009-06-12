@@ -24,6 +24,10 @@
 #include "lastfm/ws.h"
 #include "lastfm/XmlQuery"
 
+#include <QVBoxLayout>
+#include <QFrame>
+#include <QLabel>
+
 Dynamic::LastFmBias::LastFmBias()
     : Dynamic::CustomBiasEntry()
     , EngineObserver( The::engineController() )
@@ -32,11 +36,11 @@ Dynamic::LastFmBias::LastFmBias()
     DEBUG_BLOCK
     engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
 }
-/*
+
 Dynamic::LastFmBias::~LastFmBias()
 {
-
-}*/
+    delete m_qm;
+}
 
 
 QString
@@ -48,10 +52,15 @@ Dynamic::LastFmBias::name()
 }
 
 QWidget*
-Dynamic::LastFmBias::configWidget()
+Dynamic::LastFmBias::configWidget( QWidget* parent )
 {
     DEBUG_BLOCK
-    return new QWidget();
+    QFrame * frame = new QFrame( parent );
+    QVBoxLayout* layout = new QVBoxLayout( frame );
+
+    layout->addWidget( new QLabel( "Foo", parent ) );
+
+    return frame;
 }
 
 void
@@ -60,17 +69,21 @@ Dynamic::LastFmBias::engineNewTrackPlaying()
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    if( track && track->artist() && !track->artist()->name().isEmpty() && !m_savedArtists.contains( track->artist()->name() ) )
+    if( track && track->artist() && !track->artist()->name().isEmpty() )
     {
-        m_currentArtist = track->artist()->name();
-        QMap< QString, QString > params;
-        params[ "method" ] = "artist.getSimilar";
-     //   params[ "limit" ] = "70";
-        params[ "artist" ] = m_currentArtist;
+        m_currentArtist = track->artist()->name(); // save for sure
+        // if already saved, don't re-fetch
+        if( !m_savedArtists.contains( track->artist()->name() ) )
+        {
+            QMap< QString, QString > params;
+            params[ "method" ] = "artist.getSimilar";
+            //   params[ "limit" ] = "70";
+            params[ "artist" ] = m_currentArtist;
 
-        m_artistQuery = lastfm::ws::get( params );
+            m_artistQuery = lastfm::ws::get( params );
 
-        connect( m_artistQuery, SIGNAL( finished() ), this, SLOT( artistQueryDone() ) );
+            connect( m_artistQuery, SIGNAL( finished() ), this, SLOT( artistQueryDone() ) );
+        }
     }
 }
 
@@ -107,11 +120,14 @@ Dynamic::LastFmBias::artistQueryDone() // slot
     
     if( !m_qm ) // maybe this is during startup and we don't have a QM for some reason yet
         return;
-    
+
+  //  debug() << "got similar artists:" << similar.values();
+
     m_qm->beginOr();
     foreach( QString artist, similar.values() )
     {
-        m_qm->addFilter( Meta::valArtist, artist, false, false );
+        artist.replace( "\'", "''" ); // exact matching DOESN'T ESCAPE?!?!?!?! WTF?!?!
+        m_qm->addFilter( Meta::valArtist, artist, true, true );
     }
     m_qm->endAndOr();
     
@@ -154,16 +170,15 @@ Dynamic::LastFmBias::updateReady( QString collectionId, QStringList uids )
     int protocolLength =
         ( QString( m_collection->uidUrlProtocol() ) + "://" ).length();
 
-    //debug() << "setting cache of related artist UIDs for artist:" << m_currentArtist << "to:" << uids;
-    //m_savedArtists[ m_currentArtist ].clear();
-    //m_savedArtists[ m_currentArtist ].reserve( uids.size() );
+  //  debug() << "setting cache of related artist UIDs for artist:" << m_currentArtist << "to:" << uids;
+    m_savedArtists[ m_currentArtist ].clear();
+    m_savedArtists[ m_currentArtist ].reserve( uids.size() );
     QByteArray uid;
     foreach( const QString &uidString, uids )
     {
         uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
         m_savedArtists[ m_currentArtist ].insert( uid );
     }
-
 }
 
 
@@ -213,14 +228,23 @@ Dynamic::LastFmBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
 
 }
 
-bool Dynamic::LastFmBias::hasCollectionFilterCapability()
+bool
+Dynamic::LastFmBias::hasCollectionFilterCapability()
 {
     return true;
 }
 
-Dynamic::CollectionFilterCapability* Dynamic::LastFmBias::collectionFilterCapability()
+Dynamic::CollectionFilterCapability*
+Dynamic::LastFmBias::collectionFilterCapability()
 {
     return new Dynamic::LastFmCollectionFilterCapability( this );
+}
+
+const QSet< QByteArray >&
+Dynamic::LastFmCollectionFilterCapability::propertySet()
+{
+ //   debug() << "returning matching set for artist: " << m_bias->m_currentArtist << "of size:" << m_bias->m_savedArtists[ m_bias->m_currentArtist ].size();
+    return m_bias->m_savedArtists[ m_bias->m_currentArtist ];
 }
 
 #include "LastFmBiases.moc"

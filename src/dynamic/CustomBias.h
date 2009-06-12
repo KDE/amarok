@@ -46,7 +46,7 @@ class AMAROK_EXPORT CustomBiasEntry
          * a vertical layout, and will already have its label be shown. Minimize
          * vertical space if possible.
          */
-        virtual QWidget* configWidget() = 0;
+        virtual QWidget* configWidget( QWidget* parent ) = 0;
 
         /**
          * Returns if the given track satisfies this bias' conditions.

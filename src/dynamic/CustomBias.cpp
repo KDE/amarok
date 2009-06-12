@@ -88,7 +88,7 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
         return;
     }
 
-    QWidget* entryConfig = chosen->configWidget();
+    QWidget* entryConfig = chosen->configWidget( this );
     if( !entryConfig )
     {
         debug() << "got an invalid config widget from bias type!";
