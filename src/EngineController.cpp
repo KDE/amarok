@@ -712,6 +712,10 @@ EngineController::slotAboutToFinish()
     else if ( m_boundedPlayback )
     {
         debug() << "finished a track that consistst of part of another track, go to next track even if this url is technically not done yet";
+
+        //stop this track, now, as the source track mig go on and on, and
+        //there might not be any more tracks in the playlist...
+        stop( true );
         The::playlistActions()->requestNextTrack();
         slotQueueEnded();
     }
