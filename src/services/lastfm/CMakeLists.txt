@@ -37,6 +37,7 @@ include_directories(
             meta/LastFmStreamInfoCapability.cpp
 
 	    biases/SimilarArtistsBias.cpp
+	    biases/WeeklyTopBias.cpp
 
             kdenetwork/knetworkreply.cpp
             kdenetwork/knetworkaccessmanager.cpp

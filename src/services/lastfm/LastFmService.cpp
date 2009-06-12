@@ -18,6 +18,7 @@
 #include "AvatarDownloader.h"
 #include "EngineController.h"
 #include "biases/SimilarArtistsBias.h"
+#include "biases/WeeklyTopBias.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"
@@ -265,9 +266,13 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    Dynamic::SimilarArtistsBiasFactory* biasFactory = new Dynamic::SimilarArtistsBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( biasFactory );
+    Dynamic::SimilarArtistsBiasFactory* similarF = new Dynamic::SimilarArtistsBiasFactory();
+    Dynamic::CustomBias::registerNewBiasFactory( similarF );
 
+    // disable till i figure out how to get what I want from last.fm
+    //Dynamic::WeeklyTopBiasFactory* weeklyF = new Dynamic::WeeklyTopBiasFactory();
+    //Dynamic::CustomBias::registerNewBiasFactory( weeklyF );
+    
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
