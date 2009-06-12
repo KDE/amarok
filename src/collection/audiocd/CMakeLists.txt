@@ -13,7 +13,6 @@ include_directories( ../..
         set(amarok_collection-audiocdcollection_PART_SRCS
         AudioCdCollection.cpp
         AudioCdMeta.cpp
-        AudioCdQueryMaker.cpp
         AudioCdCollectionLocation.cpp
         FormatSelectionDialog.cpp
         AudioCdCollectionCapability.cpp)
