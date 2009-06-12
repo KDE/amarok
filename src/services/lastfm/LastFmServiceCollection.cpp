@@ -22,9 +22,10 @@
 
 #include "collection/support/MemoryQueryMaker.h"
 
-#include <lastfm/WsRequestBuilder>
-#include <lastfm/WsReply>
-#include <lastfm/WsKeys>
+#include <lastfm/ws.h>
+#include <lastfm/XmlQuery>
+
+#include <QNetworkReply>
 
 #include <KLocale>
 
@@ -84,21 +85,20 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
         addTrack( trackPtr );
     }
 
-    WsReply* reply = WsRequestBuilder( "user.getNeighbours" )
-                        .add( "user", userName )
-                        .add( "api_key", QString( Ws::ApiKey ) )
-                        .get();
+    QMap< QString, QString > params;
+    params[ "method" ] = "user.getNeighbours";
+    params[ "user" ] = userName;
+    m_jobs[ "user.getNeighbours" ] = lastfm::ws::post( params );
 
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddNeighboursLoved( WsReply* ) ) );
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddNeighboursPersonal( WsReply* ) ) );
+    connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursLoved() ) );
+    connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursPersonal() ) );
+
+    params[ "method" ] = "user.getFriends";
+    m_jobs[ "user.getFriends" ] = lastfm::ws::post( params );
+
     
-    reply = WsRequestBuilder( "user.getFriends" )
-    .add( "user", userName )
-    .add( "api_key", QString( Ws::ApiKey ) )
-    .get();
-    
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddFriendsLoved( WsReply* ) ) );
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddFriendsPersonal( WsReply* ) ) );
+    connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsLoved() ) );
+    connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsPersonal() ) );
     
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }
@@ -136,11 +136,18 @@ LastFmServiceCollection::prettyName() const
     return i18n( "last.fm" );
 }
 
-void LastFmServiceCollection::slotAddNeighboursLoved( WsReply* reply )
+void LastFmServiceCollection::slotAddNeighboursLoved()
 {
     DEBUG_BLOCK
     // iterate through each neighbour
-    foreach( const WsDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
+    if( !m_jobs[ "user.getNeighbours" ] )
+    {
+        debug() << "BAD! got no result object";
+        return;
+    }
+    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+    
+    foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
         //debug() << "got neighbour!!! - " << name;
@@ -149,55 +156,76 @@ void LastFmServiceCollection::slotAddNeighboursLoved( WsReply* reply )
         m_neighborsLoved->addTrack( trackPtr );
         addTrack( trackPtr );
     }
-    reply->deleteLater();
+    m_jobs[ "user.getNeighbours" ]->deleteLater();
 }
 
-void LastFmServiceCollection::slotAddNeighboursPersonal( WsReply* reply )
+void LastFmServiceCollection::slotAddNeighboursPersonal()
 {
     DEBUG_BLOCK
     // iterate through each neighbour
-    foreach( const WsDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
+    if( !m_jobs[ "user.getNeighbours" ] )
+    {
+        debug() << "BAD! got no result object";
+        return;
+    }
+    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+    
+    // iterate through each neighbour
+    foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
-        //debug() << "got neighbour!!! - " << name;
+        debug() << "got neighbour!!! - " << name;
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_neighborsPersonal->addTrack( trackPtr );
         addTrack( trackPtr );
     }
-    reply->deleteLater();
+    // should be safe, as both slots SHOULD get called before we return to the event loop...
+    m_jobs[ "user.getNeighbours" ]->deleteLater();
 }
 
-void LastFmServiceCollection::slotAddFriendsLoved( WsReply* reply )
+void LastFmServiceCollection::slotAddFriendsLoved()
 {
     DEBUG_BLOCK
-    // iterate through each friend
-    foreach( const WsDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
+    if( !m_jobs[ "user.getFriends" ] )
+    {
+        debug() << "BAD! got no result object";
+        return;
+    }
+    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+    
+    foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
-        //debug() << "got friend!!! - " << name;
+        debug() << "got friend!!! - " << name;
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
         Meta::TrackPtr trackPtr( track );
         m_friendsLoved->addTrack( trackPtr );
         addTrack( trackPtr );
     }
-    reply->deleteLater();
+    m_jobs[ "user.getFriends" ]->deleteLater();
 }
 
-void LastFmServiceCollection::slotAddFriendsPersonal( WsReply* reply )
+void LastFmServiceCollection::slotAddFriendsPersonal()
 {
     DEBUG_BLOCK
-    // iterate through each friend
-    foreach( const WsDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
+    if( !m_jobs[ "user.getFriends" ] )
+    {
+        debug() << "BAD! got no result object";
+        return;
+    }
+    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+
+    foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
     {
         QString name = e[ "name" ].text();
-        //debug() << "got neighbour!!! - " << name;
+        debug() << "got neighbour!!! - " << name;
         LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
         Meta::TrackPtr trackPtr( track );
         m_friendsPersonal->addTrack( trackPtr );
         addTrack( trackPtr );
     }
-    reply->deleteLater();
+    m_jobs[ "user.getFriends" ]->deleteLater();
 }
 
 QueryMaker*

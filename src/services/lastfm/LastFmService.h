@@ -24,7 +24,7 @@ class ScrobblerAdapter;
 class LastFmService;
 class LastFmServiceCollection;
 
-class WsReply;
+class QNetworkReply;
 
 class KHBox;
 
@@ -82,8 +82,8 @@ private slots:
     void playCustomStation();
     void updateEditHint( int index );
 
-    void onAuthenticated( WsReply* );
-    void onGetUserInfo( WsReply* );
+    void onAuthenticated();
+    void onGetUserInfo();
     void onAvatarDownloaded( QPixmap );
 
 private:
@@ -119,6 +119,7 @@ private:
     QPixmap m_avatar;
     bool m_subscriber;
 
+    QMap< QString, QNetworkReply* > m_jobs;
     static LastFmService *ms_service;
 
     friend LastFmService *The::lastFmService();

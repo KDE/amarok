@@ -24,15 +24,15 @@
 #include "AvatarDownloader.h"
 #include "CollectionManager.h"
 
-#include <lastfm/WsRequestBuilder>
-#include <lastfm/WsReply>
-#include <lastfm/WsKeys>
+#include <lastfm/ws.h>
 #include <lastfm/Tag>
+#include <lastfm/XmlQuery>
 
 #include <KIcon>
 #include <KLocale>
 
 #include <QMap>
+#include <QNetworkReply>
 #include <QPainter>
 
 using namespace LastFm;
@@ -43,14 +43,17 @@ LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
 //     rootData << "Title" << "Summary";
     rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
     setupModelData ( rootItem );
-    WsReply* reply = mUser.getNeighbours();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddNeighbors ( WsReply* ) ) );
-    reply = mUser.getFriends();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddFriends ( WsReply* ) ) );
-    reply = mUser.getTopTags();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddTags ( WsReply* ) ) );
-    reply = WsRequestBuilder("user.getTopArtists").add("user", username).add("period", "overall").get();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddTopArtists ( WsReply* ) ) );
+    m_jobs[ "getNeighbours" ] = mUser.getNeighbours();
+    connect ( m_jobs[ "getNeighbours" ], SIGNAL ( finished () ), this, SLOT ( slotAddNeighbors () ) );
+    
+    m_jobs[ "getFriends" ] = mUser.getFriends();
+    connect ( m_jobs[ "getFriends" ], SIGNAL ( finished () ), this, SLOT ( slotAddFriends () ) );
+    
+    m_jobs[ "getTopTags" ] = mUser.getTopTags();
+    connect ( m_jobs[ "getTopTags" ], SIGNAL ( finished () ), this, SLOT ( slotAddTags () ) );
+    
+    m_jobs[ "getTopArtists" ] = mUser.getTopArtists(); 
+    connect ( m_jobs[ "getTopArtists" ], SIGNAL ( finished () ), this, SLOT ( slotAddTopArtists () ) );
 
 }
 
@@ -60,12 +63,14 @@ LastFmTreeModel::~LastFmTreeModel()
 }
 
 void
-LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
+LastFmTreeModel::slotAddNeighbors ()
 {
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
-    foreach( const WsDomElement &e, reply->lfm() [ "neighbours" ].children ( "user" ) )
+
+    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getNeighbours" ] );
+    foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
     {
         QString name = e[ "name" ].text();
         mNeighbors << name;
@@ -79,16 +84,17 @@ LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Neighbors);
-    reply->deleteLater();
+    m_jobs[ "getNeighbours" ]->deleteLater();
 }
 
 void
-LastFmTreeModel::slotAddFriends ( WsReply* reply )
+LastFmTreeModel::slotAddFriends ()
 {
     DEBUG_BLOCK
     // iterate through each friend
     QMap<QString, QString> avatarlist;
-    foreach( const WsDomElement &e, reply->lfm() [ "friends" ].children ( "user" ) )
+    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getFriends" ] );
+    foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
     {
         QString name = e[ "name" ].text();
         mFriends << name;
@@ -102,17 +108,19 @@ LastFmTreeModel::slotAddFriends ( WsReply* reply )
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Friends);
-    reply->deleteLater();
+    m_jobs[ "getFriends" ]->deleteLater();
 }
 
 void
-LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
+LastFmTreeModel::slotAddTopArtists ()
 {
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
     WeightedStringList list;
-    foreach( const WsDomElement &e, reply->lfm() [ "topartists" ].children ( "artist" ) )
+    lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getTopArtists" ] );
+
+    foreach( lastfm::XmlQuery e, lfm[ "topartists" ].children ( "artist" ) )
     {
         QString name = e[ "name" ].text();
         QString weight = e[ "playcount" ].text();
@@ -129,7 +137,7 @@ LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
         mMyTopArtists->appendChild ( artist );
     }
     emitRowChanged(LastFm::TopArtists);
-    reply->deleteLater();
+    m_jobs[ "getTopArtists" ]->deleteLater();
 }
 
 void
@@ -143,17 +151,17 @@ LastFmTreeModel::appendUserStations ( LastFmTreeItem* item, const QString &user 
     item->appendChild ( neigh );
 }
 void
-LastFmTreeModel::slotAddTags ( WsReply* reply )
+LastFmTreeModel::slotAddTags ()
 {
     DEBUG_BLOCK
     mTags.clear();
-    QMap< int, QString > listWithWeights = lastfm::Tag::list ( reply );
+    QMap< int, QString > listWithWeights = lastfm::Tag::list ( m_jobs[ "getTopTags" ] );
     WeightedStringList weighted;
     foreach( int w, listWithWeights.keys() )
         weighted << WeightedString( listWithWeights[ w ], w );
     sortTags ( weighted, Qt::DescendingOrder ) ;
     emitRowChanged(LastFm::MyTags);
-    reply->deleteLater();
+    m_jobs[ "getTopTags" ]->deleteLater();
 }
 
 void

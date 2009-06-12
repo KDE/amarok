@@ -17,7 +17,7 @@
 
 #include <ServiceCollection.h>
 
-class WsReply;
+class QNetworkReply;
 
 namespace Meta
 {
@@ -40,12 +40,13 @@ public:
     virtual QueryMaker* queryMaker();
 
 private slots:
-    void slotAddNeighboursLoved( WsReply* reply );
-    void slotAddNeighboursPersonal( WsReply* reply );
-    void slotAddFriendsLoved( WsReply* reply );
-    void slotAddFriendsPersonal( WsReply* reply );
+    void slotAddNeighboursLoved();
+    void slotAddNeighboursPersonal();
+    void slotAddFriendsLoved();
+    void slotAddFriendsPersonal();
     
 private:
+    QMap< QString, QNetworkReply* > m_jobs;
     QString m_userName;
     Meta::ServiceGenre *m_neighborsLoved;
     Meta::ServiceGenre *m_neighborsPersonal;

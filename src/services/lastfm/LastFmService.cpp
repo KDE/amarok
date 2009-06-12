@@ -37,10 +37,8 @@
 #include "kdenetwork/knetworkaccessmanager.h"
 
 #include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/WsAccessManager>
-#include <lastfm/WsKeys>
-#include <lastfm/WsReply>
-#include <lastfm/WsRequestBuilder>
+#include <lastfm/NetworkAccessManager>
+#include <lastfm/XmlQuery>
 
 #include <KLocale>
 #include <KPasswordDialog>
@@ -50,6 +48,7 @@
 #include <QCryptographicHash>
 #include <QGroupBox>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QPainter>
 #include <QImage>
 #include <QFrame>
@@ -216,19 +215,19 @@ LastFmService::init()
     const QString password = config.password();
     const QString sessionKey = config.sessionKey();
     // set the global static Lastfm::Ws stuff
-    Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
-    Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
+    lastfm::ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     // testing w/ official keys
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
-    Ws::Username = qstrdup( m_userName.toLatin1().data() );
+    lastfm::ws::Username = qstrdup( m_userName.toLatin1().data() );
 
 
     // set up proxy
     QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
-    WsRequestBuilder::setNetworkAccessManager( qnam );
-
-    debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
+    lastfm::setNetworkAccessManager( qnam );
+    
+    debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
 
@@ -236,25 +235,27 @@ LastFmService::init()
     if( sessionKey.isEmpty() )
     {
         debug() << "got no saved session key, authenticating with last.fm";
-        WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
-        .add( "username", m_userName )
-        .add( "authToken", authToken )
-        .add( "api_key", Ws::ApiKey )
-        .get();
+        QMap<QString, QString> query;
+        query[ "method" ] = "auth.getMobileSession";
+        query[ "username" ] = m_userName;
+        query[ "authToken" ] = authToken;
+        m_jobs[ "auth" ] = lastfm::ws::get( query );
 
-        connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
+        connect( m_jobs[ "auth" ], SIGNAL( finished() ), SLOT( onAuthenticated() ) );
 
     } else
     {
         debug() << "using saved sessionkey from last.fm";
-        Ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
+        lastfm::ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
         m_sessionKey = sessionKey;
 
         if( m_scrobble )
             m_scrobbler = new ScrobblerAdapter( this, "ark" );
-        WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
+        QMap< QString, QString > params;
+        params[ "method" ] = "user.getInfo";
+        m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
 
-        connect( getinfo, SIGNAL( finished( WsReply* ) ), SLOT( onGetUserInfo( WsReply* ) ) );
+        connect( m_jobs[ "getUserInfo" ], SIGNAL( finished() ), SLOT( onGetUserInfo() ) );
     }
 
 
@@ -286,93 +287,88 @@ LastFmService::init()
 
 
 void
-LastFmService::onAuthenticated( WsReply* reply )
+LastFmService::onAuthenticated()
 {
-    try
+    if( !m_jobs[ "auth" ] )
     {
-        switch (reply->error())
+        debug() << "WARNING: GOT RESULT but no object";
+        return;
+    }
+
+    switch ( m_jobs[ "auth" ]->error() )
+    {
+        case QNetworkReply::NoError:
         {
-            case Ws::NoError:
-            {
-                m_sessionKey = reply->lfm()["session"]["key"].nonEmptyText();
-                Ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
-                LastFmServiceConfig config;
-                config.setSessionKey( m_sessionKey );
-                config.save();
+            lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "auth" ] );
+            m_sessionKey = lfm[ "session" ][ "key" ].text();
 
-                if( m_scrobble )
-                    m_scrobbler = new ScrobblerAdapter( this, "ark" );
-                WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
+            lastfm::ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+            LastFmServiceConfig config;
+            config.setSessionKey( m_sessionKey );
+            config.save();
 
-                connect( getinfo, SIGNAL( finished( WsReply* ) ), SLOT( onGetUserInfo( WsReply* ) ) );
+            if( m_scrobble )
+                m_scrobbler = new ScrobblerAdapter( this, "ark" );
+            QMap< QString, QString > params;
+            params[ "method" ] = "user.getInfo";
+            m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
 
-                break;
-            } case Ws::AuthenticationFailed:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
-                break;
+            connect( m_jobs[ "getUserInfo" ], SIGNAL( finished() ), SLOT( onGetUserInfo() ) );
 
-            default:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
-                break;
+            break;
+        } case QNetworkReply::AuthenticationRequiredError:
+        The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
+        break;
 
-            case Ws::UrProxyIsFuckedLol:
-            case Ws::UrLocalNetworkIsFuckedLol:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Last.fm cannot be reached. Please check your firewall settings." ) );
-                break;
-        }
+        default:
+            The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
+            break;
     }
-    catch (Ws::Error& e)
-    {
-        qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
-    }
-    reply->deleteLater();
+    m_jobs[ "auth" ]->deleteLater();
 }
 
 void
-LastFmService::onGetUserInfo( WsReply* reply )
+LastFmService::onGetUserInfo()
 {
     DEBUG_BLOCK
-    try
+    if( !m_jobs[ "getUserInfo" ] )
     {
-        switch (reply->error())
+        debug() << "GOT RESULT FROM USER QUERY, but no object..!";
+        return;
+    }
+    switch (m_jobs[ "getUserInfo" ]->error())
+    {
+        case QNetworkReply::NoError:
         {
-            case Ws::NoError:
+            lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getUserInfo" ] );
+            
+            m_country = lfm["user"]["country"].text();
+            m_age = lfm["user"]["age"].text();
+            m_gender = lfm["user"]["gender"].text();
+            m_playcount = lfm["user"]["playcount"].text();
+            m_subscriber = lfm["user"]["subscriber"].text() == "1";
+            
+            debug() << "profile info "  << m_country << " " << m_age << " " << m_gender << " " << m_playcount << " " << m_subscriber;
+            if( !lfm["user"][ "image" ].text().isEmpty() )
             {
-                m_country = reply->lfm()["user"]["country"].nonEmptyText();
-                m_age = reply->lfm()["user"]["age"].nonEmptyText();
-                m_gender = reply->lfm()["user"]["gender"].nonEmptyText();
-                m_playcount = reply->lfm()["user"]["playcount"].nonEmptyText();
-                m_subscriber = reply->lfm()["user"]["subscriber"].nonEmptyText() == "1";
-                debug() << "profile info "  << m_country << " " << m_age << " " << m_gender << " " << m_playcount << " " << m_subscriber;
-                if( !reply->lfm()["user"][ "image" ].text().isEmpty() )
-                {
-                    debug() << "profile avatar: " << reply->lfm()["user"][ "image" ].text();
-                    AvatarDownloader* downloader = new AvatarDownloader();
-                    KUrl url( reply->lfm()["user"][ "image" ].text() );
-                    downloader->downloadAvatar( m_userName,  url);
-                    connect( downloader, SIGNAL( signalAvatarDownloaded( QPixmap ) ), SLOT( onAvatarDownloaded( QPixmap ) ) );
-                }
-                updateProfileInfo();
-                break;
-            } case Ws::AuthenticationFailed:
-//             debug() << "Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly.";
+                debug() << "profile avatar: " <<lfm["user"][ "image" ].text();
+                AvatarDownloader* downloader = new AvatarDownloader();
+                KUrl url( lfm["user"][ "image" ].text() );
+                downloader->downloadAvatar( m_userName,  url);
+                connect( downloader, SIGNAL( signalAvatarDownloaded( QPixmap ) ), SLOT( onAvatarDownloaded( QPixmap ) ) );
+            }
+            updateProfileInfo();
+            break;
+        } case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password wrongly.";
             break;
 
-            default:
-//                 debug() << "Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later.";
-                break;
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
+    }
 
-            case Ws::UrProxyIsFuckedLol:
-            case Ws::UrLocalNetworkIsFuckedLol:
-//                 debug() <<  "Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings.";
-                break;
-        }
-    }
-    catch (Ws::Error& e)
-    {
-        qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
-    }
-    reply->deleteLater();
+    m_jobs[ "getUserInfo" ]->deleteLater();
 }
 
 void

@@ -114,8 +114,8 @@ namespace LastFm
             void skip();
 
         private slots:
-            void slotResultReady( WsReply* );
-            void slotWsReply( WsReply* );
+            void slotResultReady();
+            void slotWsReply();
             
         signals:
             void skipTrack(); // needed for communication with multiplayablecapability

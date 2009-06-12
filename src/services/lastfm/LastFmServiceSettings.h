@@ -18,7 +18,7 @@
 
 #include <kcmodule.h>
 
-class WsReply;
+class QNetworkReply;
 
 namespace Ui { class LastFmConfigWidget; }
 
@@ -37,11 +37,12 @@ public:
 
 private slots:
     void testLogin();
-    void onAuthenticated( WsReply *reply );
+    void onAuthenticated();
 private:
     Ui::LastFmConfigWidget *m_configDialog;
     LastFmServiceConfig     m_config;
 
+    QNetworkReply* m_authQuery;
 
 private slots:
     void settingsChanged();

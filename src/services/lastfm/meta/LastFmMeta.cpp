@@ -40,9 +40,6 @@
 #include <KSharedPtr>
 #include <KStandardDirs>
 
-#include <lastfm/WsKeys>
-#include <lastfm/WsReply>
-#include <lastfm/WsRequestBuilder>
 #include <lastfm/Track>
 
 namespace LastFm {
@@ -73,13 +70,14 @@ Track::Track( lastfm::Track track )
     d->t = this;
     d->track = track.title();
     d->lastFmTrack = track;
-    WsReply* reply = WsRequestBuilder( "track.getInfo" )
-      .add( "artist", track.artist() )
-      .add( "track", track.title() )
-      .add( "api_key", Ws::ApiKey )
-      .get();
+    QMap< QString, QString > params;
+    params[ "method" ] = "track.getInfo";
+    params[ "artist" ] = track.artist();
+    params[ "track" ]  = track.title();
 
-      connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( slotResultReady( WsReply* ) ) );
+    d->trackFetch = lastfm::ws::post( params );
+
+    connect( d->trackFetch, SIGNAL( finished() ), SLOT( slotResultReady() ) );
 }
 
 
@@ -420,16 +418,16 @@ Track::love()
     DEBUG_BLOCK
 
     debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
-    WsReply* reply = lastfm::MutableTrack( d->lastFmTrack ).love();
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
+    d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).love();
+    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
 }
 
 void
 Track::ban()
 {
     DEBUG_BLOCK
-    WsReply* reply = lastfm::MutableTrack( d->lastFmTrack ).ban();
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
+    d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
+    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
     emit( skipTrack() );
 
 }
@@ -442,12 +440,14 @@ Track::skip()
     emit( skipTrack() );
 }
 
-void Track::slotResultReady( WsReply *reply )
+void Track::slotResultReady()
 {
-    if( reply->error() == Ws::NoError )
+    if( d->trackFetch->error() == QNetworkReply::NoError )
     {
-        QString id = reply->lfm()[ "track" ][ "id" ].nonEmptyText();
-        QString streamable = reply->lfm()[ "track" ][ "streamable" ].nonEmptyText();
+
+        lastfm::XmlQuery lfm = lastfm::ws::parse( d->trackFetch );
+        QString id = lfm[ "track" ][ "id" ].text();
+        QString streamable = lfm[ "track" ][ "streamable" ].text();
         if( streamable.toInt() == 1 )
             init( id.toInt() );
         else
@@ -456,19 +456,19 @@ void Track::slotResultReady( WsReply *reply )
     {
         init();
     }
-    reply->deleteLater();
+    d->trackFetch->deleteLater();
 }
 
 
 void
-Track::slotWsReply( WsReply *reply )
+Track::slotWsReply()
 {
-    if( reply->error() == Ws::NoError )
+    if( d->wsReply->error() == QNetworkReply::NoError )
     {
         //debug() << "successfully completed WS transaction";
     } else
     {
-        debug() << "ERROR in last.fm skip or ban!" << reply->error();
+        debug() << "ERROR in last.fm skip or ban!" << d->wsReply->error();
     }
 }
 

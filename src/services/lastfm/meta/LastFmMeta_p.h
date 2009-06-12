@@ -26,11 +26,10 @@
 #include "amarokconfig.h"
 #include "meta/Meta.h"
 
-#include <lastfm/WsKeys>
 #include <lastfm/Track>
-#include <lastfm/WsReply>
-#include <lastfm/WsRequestBuilder>
+#include <lastfm/ws.h>
 #include <lastfm/RadioTuner>
+#include <lastfm/XmlQuery>
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -75,6 +74,8 @@ class Track::Private : public QObject
         Meta::ComposerPtr composerPtr;
         Meta::YearPtr yearPtr;
 
+        QNetworkReply* trackFetch;
+        QNetworkReply* wsReply;
     public:
         Private()
             : lastFmUri( QUrl() )
@@ -106,29 +107,32 @@ class Track::Private : public QObject
 
             if( !trackInfo.isNull() )
             {
-                WsReply* reply = WsRequestBuilder( "track.getInfo" )
-                .add( "artist",artist)
-                .add( "track", track )
-                .add( "api_key", QString( Ws::ApiKey ) )
-                .get();
+                QMap< QString, QString > params;
+                params[ "method" ] = "track.getInfo";
+                params[ "artist" ] = artist;
+                params[ "track" ] = track;
 
-                connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( requestResult( WsReply* ) ) );
+                m_userFetch = lastfm::ws::post( params );
+
+                connect( m_userFetch, SIGNAL( finished() ), SLOT( requestResult() ) );
             }
         }
 
     public slots:
-        void requestResult( WsReply *reply )
+        void requestResult( )
         {
-
-            if( reply->error() == Ws::NoError )
+            if( !m_userFetch )
+                return;
+            if( m_userFetch->error() == QNetworkReply::NoError )
             {
-                albumUrl = reply->lfm()[ "track" ][ "album" ][ "url" ].text();
-                trackUrl = reply->lfm()[ "track" ][ "url" ].text();
-                artistUrl = reply->lfm()[ "track" ][ "artist" ][ "url" ].text();
+                lastfm::XmlQuery lfm = lastfm::ws::parse( m_userFetch );
+                albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
+                trackUrl = lfm[ "track" ][ "url" ].text();
+                artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
 
                 notifyObservers();
 
-                imageUrl = reply->lfm()[ "track" ][ "album" ][ "image size=large" ].text();
+                imageUrl = lfm[ "track" ][ "album" ][ "image size=large" ].text();
 
                 if( !imageUrl.isEmpty() )
                 {
@@ -161,6 +165,9 @@ class Track::Private : public QObject
             }
             notifyObservers();
         }
+        
+    private:
+        QNetworkReply* m_userFetch;
 
 };
 

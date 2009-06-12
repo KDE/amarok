@@ -33,7 +33,7 @@
 #include <QPixmap>
 #include <QVariant>
 
-
+class QNetworkReply;
 
 namespace LastFm
 {
@@ -118,10 +118,10 @@ public:
 
 private slots:
     void onAvatarDownloaded ( QPixmap );
-    void slotAddNeighbors ( WsReply* reply );
-    void slotAddFriends ( WsReply* reply );
-    void slotAddTags ( WsReply* reply );
-    void slotAddTopArtists ( WsReply* reply );
+    void slotAddNeighbors ();
+    void slotAddFriends ();
+    void slotAddTags ();
+    void slotAddTopArtists ();
 
 private:
     void setupModelData ( LastFmTreeItem *parent );
@@ -143,6 +143,8 @@ private:
     QPixmap mAvatar;
     QMap<QString, QString> m_avatarQueue;
     QHash<QString, QIcon> m_avatars;
+
+    QMap< QString, QNetworkReply* > m_jobs;
 
     void queueAvatarsDownload ( const QMap<QString, QString>& urls );
     void downloadAvatar ( const QString& user, const KUrl& url );
@@ -181,7 +183,6 @@ private:
     LastFmTreeItem *parentItem;
     QVariant itemData;
     QString mUrl;
-
 
 };
 
