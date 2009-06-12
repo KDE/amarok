@@ -97,8 +97,13 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     DEBUG_BLOCK
     //initTopPanel( );
 
-    setShortDescription( i18n( "The friendly record company with the motto \"We are not evil!\"" ) );
+    setShortDescription( i18n( "\"Fair trade\" online music store." ) );
     setIcon( KIcon( "view-services-magnatune-amarok" ) );
+
+    setLongDescription( i18n( "Magnatune.com is a different kind of record company with the motto \"We are not evil!\" 50% of every purchase goes directly to the artist and if you purchase an album through Amarok, the Amarok project recieves a 10% commision. Magnatune.com also offers \"all you can eat\" memberships that lets you download as much of their music as you like." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "view-services-magnatune-amarok", -128, true ) );
 
     debug() << "Magnatune browser starting...";
 

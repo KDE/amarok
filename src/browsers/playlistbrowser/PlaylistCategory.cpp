@@ -48,7 +48,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     setShortDescription( i18n( "User generated and imported playlists" ) );
     setIcon( KIcon( "amarok_playlist" ) );
 
-    setLongDescription( i18n( "Create, edit, organize and load playlists. Amarok automatically adds any playlists found when scanning you collection, and any playlists that you save also ends up here " ) );
+    setLongDescription( i18n( "Create, edit, organize and load playlists. Amarok automatically adds any playlists found when scanning you collection, and any playlists that you save are also shown here." ) );
 
     KIconLoader loader;
     setImagePath( loader.iconPath( "view-media-playlist", -128, true ) );
