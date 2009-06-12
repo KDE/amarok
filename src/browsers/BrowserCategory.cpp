@@ -18,6 +18,9 @@
  ***************************************************************************/
  
 #include "BrowserCategory.h"
+#include "BrowserCategoryList.h"
+
+#include "Debug.h"
 
 #include <QWidget>
 
@@ -27,6 +30,7 @@ BrowserCategory::BrowserCategory( const QString &name )
     , m_prettyName( QString() )
     , m_shortDescription( QString() )
     , m_longDescription( QString() )
+    , m_parentList( 0 )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 }
@@ -91,5 +95,21 @@ BrowserCategory::icon() const
 }
 
 
+void BrowserCategory::setParentList( BrowserCategoryList * parent )
+{
+    m_parentList = parent;
+}
 
+BrowserCategoryList * BrowserCategory::parentList()
+{
+    return m_parentList;
+}
 
+void BrowserCategory::activate()
+{
+    DEBUG_BLOCK
+    if ( parentList() )
+        parentList()->activate( this );
+}
+
+#include "BrowserCategory.moc"

@@ -88,6 +88,8 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
     if( !category )
         return;
 
+    category->setParentList( this );
+
     //insert service into service map
     m_categories[category->name()] = category;
     m_categoryListModel->addCategory( category );
@@ -123,6 +125,7 @@ BrowserCategoryList::categoryActivated( const QModelIndex & index )
 void
 BrowserCategoryList::showCategory( const QString &name )
 {
+    DEBUG_BLOCK
     BrowserCategory * category = 0;
     if ( m_categories.contains( name ) )
         category = m_categories.value( name );
@@ -285,12 +288,13 @@ QString BrowserCategoryList::path()
         pathString += "/" + m_currentCategory->prettyName();
 
     return pathString;
-    
+}
+
+void BrowserCategoryList::activate( BrowserCategory * category )
+{
+    DEBUG_BLOCK
+    showCategory( category->name() );
 }
 
 
 #include "BrowserCategoryList.moc"
-
-
-
-

@@ -20,12 +20,13 @@
 #ifndef BROWSERCATEGORYLISTMODEL_H
 #define BROWSERCATEGORYLISTMODEL_H
 
-#include "BrowserCategory.h"
+
 
 #include <QAbstractListModel>
 
 #include <QList>
 
+class BrowserCategory;
 Q_DECLARE_METATYPE( BrowserCategory * )
 
 namespace CustomCategoryRoles

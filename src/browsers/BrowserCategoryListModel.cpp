@@ -17,6 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "BrowserCategory.h"
 #include "BrowserCategoryListModel.h"
 #include "Debug.h"
 

@@ -22,10 +22,12 @@
 
 #include "amarok_export.h"
 
+
 #include <KVBox>
 
 #include <QIcon>
 
+class BrowserCategoryList;
 
 /**
 The base class of browsers, services, categories or any other widget that can be inserted into a CategoryList
@@ -34,6 +36,7 @@ The base class of browsers, services, categories or any other widget that can be
 */
 class AMAROK_EXPORT BrowserCategory : public KVBox
 {
+    Q_OBJECT
 public:
     BrowserCategory( const QString &name );
 
@@ -89,7 +92,13 @@ public:
      */
     QIcon icon() const;
 
+    BrowserCategoryList * parentList();
+    void setParentList( BrowserCategoryList * parent );
+
     virtual void polish() {};
+
+public slots:
+    void activate();
 
 private:
     QString m_name;
@@ -97,6 +106,7 @@ private:
     QString m_shortDescription;
     QString m_longDescription;
     QIcon   m_icon;
+    BrowserCategoryList * m_parentList;
     
 
 };

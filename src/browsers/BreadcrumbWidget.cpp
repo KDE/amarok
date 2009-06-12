@@ -22,6 +22,8 @@
 
 #include <KLocale>
 
+#include <QMenu>
+
 
 BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category, QWidget * parent )
     : QPushButton( name, parent )
@@ -36,10 +38,36 @@ BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category
     }
 
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+
+
+    //figure out if we want to add a menu to this item. A menu allows you to select
+    //any of the _sibling_ items. (yes, I know, this is different from how Dolphin
+    //does it, but I find the Dolphin way amazingly unintuitive and I always get it
+    //wrong when using it...)
+
+    BrowserCategoryList * parentList = category->parentList();
+    if ( parentList )
+    {
+
+        QMenu * menu = new QMenu( this );
+        
+        QMap<QString,BrowserCategory *> siblingMap =  parentList->categories();
+
+        QStringList siblingNames = siblingMap.keys();
+
+        foreach( QString siblingName, siblingNames )
+        {
+            QAction * action = menu->addAction( siblingName );
+            connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
+        }
+
+        setMenu( menu );
+    }
 }
 
-BreadcrumbItem::~ BreadcrumbItem()
+BreadcrumbItem::~BreadcrumbItem()
 {
+    DEBUG_BLOCK
 }
 
 BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
@@ -79,9 +107,11 @@ void BreadcrumbWidget::updateBreadcrumbs()
 
     if ( !m_rootList )
         return;
-            
+
+    debug() << "going to delete " << m_items.size() << " items";
     qDeleteAll( m_items );
     m_items.clear();
+    debug() << "deleted!";
 
     m_spacer->setParent( 0 );
 
