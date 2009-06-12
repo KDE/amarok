@@ -96,7 +96,7 @@ class DynamicModel : public QAbstractItemModel
         Dynamic::DynamicPlaylistPtr createDefaultPlaylist();
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
         void computeUniverseSet();
-        void savePlaylists();
+        void savePlaylists( bool final = false );
         void loadAutoSavedPlaylist();
         
         DynamicModel();

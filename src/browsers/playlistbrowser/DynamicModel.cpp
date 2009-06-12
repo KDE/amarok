@@ -311,10 +311,17 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
                     m_savedPlaylistsRoot.removeChild( e );
             }
         }
-        // otherwise it shouldn't exist
-        else
-            m_savedPlaylistsRoot.removeChild( e );
     }
+
+    QDomElement lastOpen = m_savedPlaylistsRoot.lastChildElement( "current" );
+    if( ! lastOpen.isNull() )
+    {
+        setActivePlaylist( lastOpen.attribute( "title" ) );
+    } else
+    {
+        debug() << "got null last saved node";
+    }
+        
 }
 
 
@@ -438,11 +445,11 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
         }
     }
 
-    savePlaylists();
+    savePlaylists( true );
 }
 
 void
-PlaylistBrowserNS::DynamicModel::savePlaylists()
+PlaylistBrowserNS::DynamicModel::savePlaylists( bool final )
 {
 
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
@@ -454,8 +461,18 @@ PlaylistBrowserNS::DynamicModel::savePlaylists()
 
     QTextStream stream( &file );
     stream.setCodec( "UTF-8" );
-    
-    m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+
+    if( final )
+    {
+        QDomElement cur = m_savedPlaylists.createElement( "current" );
+        cur.setAttribute( "title", m_playlistList.at( m_activePlaylist )->title() );
+        m_savedPlaylistsRoot.appendChild( cur );
+
+        m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+        m_savedPlaylistsRoot.removeChild( cur );
+    } else
+        m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+
 }
 
 void
