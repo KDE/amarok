@@ -176,6 +176,10 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QDockWidget * m_contextDock;
         QDockWidget * m_playlistDock;
 
+        QWidget *     m_browserDummyTitleBarWidget;
+        QWidget *     m_contextDummyTitleBarWidget;
+        QWidget *     m_playlistDummyTitleBarWidget;
+
 
         void    createActions();
         void    createMenus();

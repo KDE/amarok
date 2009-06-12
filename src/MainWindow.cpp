@@ -175,6 +175,10 @@ MainWindow::~MainWindow()
 
     //AmarokConfig::setPanelsSavedState( sPanels );
 
+    delete m_browserDummyTitleBarWidget;
+    delete m_contextDummyTitleBarWidget;
+    delete m_playlistDummyTitleBarWidget;
+    
     delete m_playlistFiles;
     delete m_contextView;
     delete m_corona;
@@ -211,6 +215,9 @@ MainWindow::init()
     m_browsers = new BrowserWidget( this );
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
+    m_browserDummyTitleBarWidget = new QWidget();
+    m_contextDummyTitleBarWidget = new QWidget();
+    m_playlistDummyTitleBarWidget = new QWidget();
 
     m_browsersDock = new QDockWidget( i18n( "Browsers" ), this );
     m_browsersDock->setObjectName( "Browsers" );
@@ -265,9 +272,7 @@ MainWindow::init()
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
     addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
 
-    setLayoutLocked( false );
-
-    //setCentralWidget( m_contextWidget );
+    setLayoutLocked( true );
 
     //<Browsers>
     {
@@ -1004,15 +1009,15 @@ void MainWindow::setLayoutLocked( bool locked )
     {
 
         const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
-        m_browsersDock->setFeatures( features );
-        //m_browsersDock->setTitleBarWidget( 0 );
-        m_browsersDock->setStyleSheet (  "QDockWidget::title { background: pink; font-size: 1px;   }" );
 
-        
+        m_browsersDock->setFeatures( features );
         m_contextDock->setFeatures( features );
-        m_contextDock->setTitleBarWidget( 0 );
         m_playlistDock->setFeatures( features );
-        m_playlistDock->setTitleBarWidget( 0 );
+
+        m_contextDock->setTitleBarWidget( m_browserDummyTitleBarWidget );
+        m_browsersDock->setTitleBarWidget( m_contextDummyTitleBarWidget );
+        m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
+
     }
     else
     {
@@ -1022,6 +1027,10 @@ void MainWindow::setLayoutLocked( bool locked )
         m_browsersDock->setFeatures( features );
         m_contextDock->setFeatures( features );
         m_playlistDock->setFeatures( features );
+
+        m_browsersDock->setTitleBarWidget( 0 );
+        m_contextDock->setTitleBarWidget( 0 );
+        m_playlistDock->setTitleBarWidget( 0 );
     }
 }
 
