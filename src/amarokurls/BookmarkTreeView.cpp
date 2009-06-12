@@ -21,6 +21,7 @@
 
 #include "BookmarkModel.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "dialogs/TagDialog.h"
 #include "PaletteHandler.h"
 #include "AmarokUrl.h"
 #include "BookmarkGroup.h"
@@ -329,6 +330,14 @@ void BookmarkTreeView::slotCreateTimecodeTrack()
 
     album->setAlbumArtist( artist );
     album->setIsCompilation( false );
+
+    //make the user give us some info about this item...
+
+    Meta::TrackList tl;
+    tl.append( Meta::TrackPtr::staticCast( track ) );
+    TagDialog *dialog = new TagDialog( tl, 0 );
+    dialog->show();
+
 
     //now add it to the playlist
 
