@@ -20,14 +20,19 @@
 #ifndef BROWSERCATEGORY_H
 #define BROWSERCATEGORY_H
 
-#include <QWidget>
+#include "amarok_export.h"
+
+#include <KVBox>
+
+#include <QIcon>
+
 
 /**
 The base class of browsers, services, categories or any other widget that can be inserted into a CategoryList
 
-	@author 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class BrowserCategory : public QWidget
+class AMAROK_EXPORT BrowserCategory : public KVBox
 {
 public:
     BrowserCategory( const QString &prettyName );
@@ -64,10 +69,23 @@ public:
      */
     QString longDescription() const;
 
+    /**
+     * Set the icon that will be used to identify this service.
+     * @param icon The icon to use.
+     */
+    void setIcon( const QIcon &icon );
+
+    /**
+     * Get the icon of this service.
+     * @return The icon
+     */
+    QIcon icon() const;
+
 private:
     QString m_prettyName;
     QString m_shortDescription;
     QString m_longDescription;
+    QIcon   m_icon;
     
 
 };

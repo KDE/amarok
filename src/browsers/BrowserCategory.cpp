@@ -20,7 +20,8 @@
 #include "BrowserCategory.h"
 
 BrowserCategory::BrowserCategory( const QString &prettyName )
-    : m_prettyName( prettyName )
+    : KVBox( 0 )
+    , m_prettyName( prettyName )
 {
 }
 
@@ -56,6 +57,18 @@ QString
 BrowserCategory::longDescription() const
 {
     return m_longDescription;
+}
+
+void
+BrowserCategory::setIcon( const QIcon & icon )
+{
+    m_icon = icon;
+}
+
+QIcon
+BrowserCategory::icon() const
+{
+    return m_icon;
 }
 
 
