@@ -87,7 +87,7 @@
 #if defined(Q_WS_MAC) || defined(Q_WS_WIN)
 #define AMAROK_CAPTION "Amarok 2 beta"
 #else
-#define AMAROK_CAPTION "Amarok 2"
+#define AMAROK_CAPTION "Amarok"
 #endif
 
 class ContextWidget : public KVBox
