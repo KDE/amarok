@@ -23,8 +23,10 @@
 #include "Collection.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "MemoryCollection.h"
+#include "meta/proxy/MetaProxy.h"
 
 #include <kio/jobclasses.h>
+#include <KUrl>
 
 #include <QObject>
 
@@ -78,6 +80,9 @@ public:
 
     virtual CollectionLocation* location() const;
 
+    bool possiblyContainsTrack( const KUrl &url ) const;
+    Meta::TrackPtr trackForUrl( const KUrl &url );
+
     PopupDropperAction * ejectAction();
 
     void cdRemoved();
@@ -101,6 +106,8 @@ private:
 
     void noInfoAvailable();
 
+    void updateProxyTracks();
+
     KIO::StoredTransferJob * m_cdInfoJob;
 
     QString m_cdName;
@@ -112,6 +119,8 @@ private:
 
     QString m_fileNamePattern;
     QString m_albumNamePattern;
+
+    QMap<KUrl, MetaProxy::Track*> m_proxyMap;
 
 
     

@@ -22,6 +22,7 @@
 #include "AudioCdCollectionCapability.h"
 #include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
+#include "collection/CollectionManager.h"
 #include "collection/support/MemoryQueryMaker.h"
 #include "covermanager/CoverFetcher.h"
 #include "Debug.h"
@@ -62,6 +63,7 @@ void AudioCdCollectionFactory::init()
     {
         m_currentUid = uid;
         m_collection = new AudioCdCollection( uid );
+        CollectionManager::instance()->addTrackProvider( m_collection );
         emit newCollection( m_collection );
     }
 
@@ -78,6 +80,7 @@ void AudioCdCollectionFactory::audioCdAdded( const QString & uid )
 
     m_currentUid = uid;
     m_collection = new AudioCdCollection( uid );
+    CollectionManager::instance()->addTrackProvider( m_collection );
     emit newCollection( m_collection );
 }
 
@@ -88,6 +91,7 @@ void AudioCdCollectionFactory::deviceRemoved( const QString & uid )
     debug() << "m_currentUid: " << m_currentUid;
     if ( m_currentUid == uid )
     {
+        CollectionManager::instance()->removeTrackProvider( m_collection );
         m_collection->cdRemoved(); //deleted by col. manager
         m_collection = 0;
         m_currentUid = QString();
@@ -298,6 +302,7 @@ void AudioCdCollection::infoFetchComplete( KJob * job )
     }
 
     emit ( updated() );
+    updateProxyTracks();
 }
 
 QueryMaker * AudioCdCollection::queryMaker()
@@ -446,6 +451,7 @@ void AudioCdCollection::noInfoAvailable()
     }
 
     emit ( updated() );
+    updateProxyTracks();
     
 }
 
@@ -458,8 +464,94 @@ void AudioCdCollection::readAudioCdSettings()
     m_albumNamePattern = filenameConf.readEntry( "album_name_template", "%{albumartist} - %{albumtitle}" );
 }
 
+bool AudioCdCollection::possiblyContainsTrack(const KUrl & url) const
+{
+    DEBUG_BLOCK;
+    debug() << "match: " << url.url().startsWith( "audiocd:/" );
+
+    return url.url().startsWith( "audiocd:/" );
+}
+
+Meta::TrackPtr AudioCdCollection::trackForUrl( const KUrl & url )
+{
+    DEBUG_BLOCK;
+
+    debug() << "Disk id: " << m_discCddbId;
+
+    if ( !m_discCddbId.isEmpty() )
+    {
+    
+        QString urlString = url.url().replace( "audiocd:/", "" );
+
+        QStringList parts = urlString.split( "/" );
+
+        if ( parts.count() != 2 )
+            return TrackPtr();
+            
+        QString discId = parts.at( 0 );
+
+        if ( discId != m_discCddbId )
+            return TrackPtr();
+        
+        int trackNumber = parts.at( 1 ).toInt();
+
+        foreach( TrackPtr track, trackMap().values() )
+        {
+            if ( track->trackNumber() == trackNumber )
+                return track;
+        }
+
+        return TrackPtr();
+
+    }
+    else
+    {
+        if ( m_proxyMap.contains( url ) )
+        {
+            return TrackPtr( m_proxyMap.value( url ) );
+        }
+        else
+        {
+            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
+            m_proxyMap.insert( url, ptrack );
+            return TrackPtr( ptrack );
+        }
+    }
+
+}
+
+void AudioCdCollection::updateProxyTracks()
+{
+    foreach( KUrl url, m_proxyMap.keys() )
+    {
+
+        QString urlString = url.url().replace( "audiocd:/", "" );
+        QStringList parts = urlString.split( "/" );
+
+        if ( parts.count() != 2 )
+            continue;
+            
+        QString discId = parts.at( 0 );
+
+        if ( discId != m_discCddbId )
+            continue;
+        
+        int trackNumber = parts.at( 1 ).toInt();
+
+        foreach( TrackPtr track, trackMap().values() )
+        {
+            if ( track->trackNumber() == trackNumber )
+            {
+                m_proxyMap.value( url )->updateTrack( track );
+            }
+        }
+
+    }
+
+    m_proxyMap.clear();
+}
+
 
 
 #include "AudioCdCollection.moc"
-
 
