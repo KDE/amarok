@@ -46,6 +46,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 {
     setPrettyName( i18n( "User Playlists" ) );
     setShortDescription( i18n( "User generated and imported playlists" ) );
+    setIcon( KIcon( "amarok_playlist" ) );
     setContentsMargins(0,0,0,0);
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
