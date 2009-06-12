@@ -149,6 +149,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
 )
 
 set(libbrowserframework_SRCS
+    browsers/BreadcrumbItem.cpp
     browsers/BreadcrumbWidget.cpp
     browsers/BrowserCategory.cpp
     browsers/BrowserCategory.cpp
