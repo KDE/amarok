@@ -22,6 +22,7 @@
 #include "Debug.h"
 #include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
+#include "InfoProxy.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
 #include "widgets/SearchWidget.h"
@@ -65,7 +66,11 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setSortingEnabled( true );
     m_categoryListView->setAlternatingRowColors( true );
     m_categoryListView->setModel( m_proxyModel );
+    m_categoryListView->setMouseTracking ( true );
+    
     connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
+
+    connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
 
     The::paletteHandler()->updateItemView( m_categoryListView );
 
@@ -294,6 +299,27 @@ void BrowserCategoryList::activate( BrowserCategory * category )
 {
     DEBUG_BLOCK
     showCategory( category->name() );
+}
+
+void BrowserCategoryList::categoryEntered( const QModelIndex & index )
+{
+    //get ther long description for this item and pass it it to info proxy.
+
+    DEBUG_BLOCK
+    BrowserCategory * category = 0;
+
+    if ( index.data( CustomCategoryRoles::CategoryRole ).canConvert<BrowserCategory *>() )
+        category = index.data( CustomCategoryRoles::CategoryRole ).value<BrowserCategory *>();
+    else
+        return;
+
+    if ( category )
+    {
+        QVariantMap variantMap;
+        variantMap["main_info"] = QVariant( category->longDescription() );
+        debug() << "setting info: " << category->longDescription();
+        The::infoProxy()->setInfo( variantMap );
+    }
 }
 
 

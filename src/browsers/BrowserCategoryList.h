@@ -141,6 +141,8 @@ class BrowserCategoryList : public BrowserCategory
          */
         void categoryActivated( const QModelIndex &index );
 
+        void categoryEntered ( const QModelIndex & index );
+
         void slotSetFilterTimeout();
         void slotFilterNow();
 

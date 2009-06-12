@@ -24,7 +24,7 @@
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
 #include "widgets/SearchWidget.h"
-#include "services/ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
 
 #include <KLineEdit>
 
