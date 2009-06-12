@@ -50,6 +50,7 @@ namespace Meta
                         , WriteTimecode = 15
                         , LoadTimecode = 16
                         , MultiSource = 17
+                        , BoundedPlayback = 18
                       };
 
             virtual ~Capability();

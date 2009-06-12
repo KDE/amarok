@@ -113,6 +113,7 @@ set(libamarokurl_SRCS
     amarokurls/BookmarkTreeView.cpp
     amarokurls/BookmarkMetaActions.cpp
     timecode/TimecodeObserver.cpp
+    timecode/TimecodeMeta.cpp
 )
 
 #####################################################################
@@ -218,6 +219,7 @@ set(meta_SRCS
     meta/PrivateMetaRegistry.cpp
     meta/XSPFPlaylist.cpp
     meta/capabilities/BookmarkThisCapability.cpp
+    meta/capabilities/BoundedPlaybackCapability.cpp
     meta/capabilities/CollectionCapability.cpp
     meta/capabilities/CurrentTrackActionsCapability.cpp
     meta/capabilities/CustomActionsCapability.cpp
