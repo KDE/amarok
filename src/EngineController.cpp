@@ -38,7 +38,6 @@
 #include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>
 #include <Phonon/MediaObject>
-#include <Phonon/MediaController>
 #include <Phonon/VolumeFaderEffect>
 
 #include <QTimer>
@@ -96,6 +95,7 @@ EngineController::initializePhonon()
     DEBUG_BLOCK
 
     delete m_media;
+    delete m_controller;
     delete m_audio;
     delete m_preamp;
 
@@ -104,6 +104,8 @@ EngineController::initializePhonon()
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_path = Phonon::createPath( m_media, m_audio );
+
+    m_controller = new Phonon::MediaController( m_media );
     
     // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
     // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
@@ -132,6 +134,8 @@ EngineController::initializePhonon()
     connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
+
+    connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
     
     //TODO: The xine engine does not support crossfading. Cannot get the gstreamer engine to work, will test this once I do.
@@ -322,13 +326,23 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
+        //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
+        disconnect( m_controller, SIGNAL( titleChanged( int ) ), this, SLOT( slotTitleChanged( int ) ) );
+        
+        debug() << "play track from cd";
         QString trackNumberString = url.url();
         trackNumberString = trackNumberString.replace( "audiocd:/", QString() );
         int trackNumber = trackNumberString.toInt();
-        
+
+        debug() << "3.2.1...";
+        m_media->clear();
         m_media->setCurrentSource( Phonon::Cd );
-        Phonon::MediaController mc( m_media );
-        mc.setCurrentTitle( trackNumber );
+        debug() << "boom?";
+        m_controller->setCurrentTitle( trackNumber );
+        debug() << "no boom?";
+
+        //reconnect it
+        connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
         
     }
     else
@@ -540,7 +554,11 @@ EngineController::trackLength() const
 void
 EngineController::setNextTrack( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
+
+    debug() << "goin to lock mutex";
     QMutexLocker locker( &m_mutex );
+    debug() << "locked!";
 
     if( !track )
         return;
@@ -644,6 +662,13 @@ EngineController::slotAboutToFinish()
             debug() << "no more sources, skip to next track";
         }
          
+    }
+    else if ( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
+    {
+        debug() << "finished a cd track, dont care if queue is not empty, just get new track...";
+        //m_media->stop();
+        The::playlistActions()->requestNextTrack();
+        slotQueueEnded();
     }
     else if( m_media->queue().isEmpty() )
         The::playlistActions()->requestNextTrack();
@@ -910,5 +935,14 @@ EngineController::slotStopFadeout() //SLOT
     }
 }
 
+void EngineController::slotTitleChanged( int titleNumber )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( titleNumber );
+    slotAboutToFinish();
+}
+
 #include "EngineController.moc"
+
+
 

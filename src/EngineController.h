@@ -23,6 +23,7 @@
 #include <QPointer>
 
 #include <Phonon/Path>
+#include <Phonon/MediaController>
 #include <Phonon/MediaSource> //Needed for the slot
 
 class QTimer;
@@ -134,6 +135,13 @@ private slots:
     void slotMetaDataChanged();
     void slotStopFadeout(); //called after the fade-out has finished
 
+    /**
+     *  Notify the engine that a new title has been reached when playing a cd. This
+     *  is needed as a cd counts as basically one lone track, and we want to be able
+     *  to play something else once one track has finished 
+     */
+    void slotTitleChanged( int titleNumber );
+
 private:
     static EngineController* s_instance;
     EngineController();
@@ -145,6 +153,7 @@ private:
     QPointer<Phonon::VolumeFaderEffect> m_preamp;
     QPointer<Phonon::AudioOutput>       m_audio;
     QPointer<Phonon::VolumeFaderEffect> m_fader;
+    QPointer<Phonon::MediaController>   m_controller;
     Phonon::Path                        m_path;
 
     Meta::TrackPtr  m_currentTrack;
