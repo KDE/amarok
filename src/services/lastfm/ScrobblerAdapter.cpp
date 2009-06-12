@@ -27,7 +27,7 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
       EngineObserver( The::engineController() ),
       m_scrobbler( new lastfm::Audioscrobbler( clientId ) ),
-      m_clientId( clientId )
+      m_clientId( clientId ),
       m_lastSaved( 0 )
 {
     resetVariables();
