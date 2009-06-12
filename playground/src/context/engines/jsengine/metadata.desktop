@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=JS Sample Engine
+Comment=Javascript Sample Engine
+Type=Service
+Icon=preferences-system-time
+ServiceTypes=Plasma/DataEngine
+X-Plasma-API=javascript
+ 
+X-KDE-PluginInfo-Author=Leo Franchi
+X-KDE-PluginInfo-Email=lfranchi@kde.org
+X-KDE-PluginInfo-Name=amarok-dataengine-jstest
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=http://amarok.kde.org/
+X-KDE-PluginInfo-Category=Javascript Test Engine
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=LGPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
