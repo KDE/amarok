@@ -581,7 +581,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
     // this algorithm will produce an optimal solution unless there are
     // non global biases in the system.
-    optimal = (m_biases.size() == m_feasibleGlobalBiases.size());
+    optimal = (m_biases.size() == m_feasibleCollectionFilters.size());
     Meta::TrackList playlist;
 
     // Empty collection
@@ -592,7 +592,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     }
 
     // No feasible global biases
-    if( m_feasibleGlobalBiases.size() == 0 )
+    if( m_feasibleCollectionFilters.size() == 0 )
     {
         int n = m_n;
         while( n-- )
@@ -609,17 +609,17 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     // As we build up the playlist the weights for each bias will change to
     // reflect what proportion of the tracks that remain to be chosen should
     // have the property in question.
-    double* movingWeights = new double[m_feasibleGlobalBiases.size()];
-    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
-        movingWeights[i] = m_feasibleGlobalBiases[i]->weight();
+    double* movingWeights = new double[m_feasibleCollectionFilters.size()];
+    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
+        movingWeights[i] = m_feasibleCollectionFilters[i]->weight();
 
 
     // We use this array of indexes to randomize the order the biases are looked
-    // at. That was we get reasonable results when the system is infeasible.
+    // at. That way we get reasonable results when the system is infeasible.
     // That is, specifying 100% of two mutually exclusive artists, will get you
     // about 50% of each.
     QList<int> indexes;
-    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
+    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
         indexes.append( i );
 
 
@@ -635,7 +635,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
 
         // Randomize the order.
-        int m = m_feasibleGlobalBiases.size();
+        int m = m_feasibleCollectionFilters.size();
         while( m > 1 )
         {
             int k = KRandom::random() % m;
@@ -645,11 +645,11 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
 
         // The bit array represents the choice made at each branch.
-        QBitArray branches( m_feasibleGlobalBiases.size(), 0x0 );
+        QBitArray branches( m_feasibleCollectionFilters.size(), 0x0 );
 
         S.setUniverseSet();
 
-        for( int _i = 0; _i < m_feasibleGlobalBiases.size(); ++_i )
+        for( int _i = 0; _i < m_feasibleCollectionFilters.size(); ++_i )
         {
             int i = indexes[_i];
 
@@ -660,12 +660,12 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             if( decider < movingWeights[i] )
             {
                 branches.setBit( i, true );
-                R.intersect( m_feasibleGlobalBiasSets[i] );
+                R.intersect( m_feasibleCollectionFilterSets[i] );
             }
             else
             {
                 branches.setBit( i, false );
-                R.subtract( m_feasibleGlobalBiasSets[i] );
+                R.subtract( m_feasibleCollectionFilterSets[i] );
             }
 
             // Now we have to make sure our decision doesn't land us with an
@@ -756,22 +756,24 @@ Dynamic::BiasSolver::computeDomain()
 {
     foreach( Dynamic::Bias* b, m_biases )
     {
-        Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
-
-        if( gb )
+        if( b->filterFromCollection() )
         {
-            debug() << "property size: " << gb->propertySet().size();
+            Dynamic::CollectionFilterBias* cfb = dynamic_cast< Dynamic::CollectionFilterBias* >( b );
+            if( cfb )
+            {
+                debug() << "property size: " << cfb->propertySet().size();
 
-            // if the bias is infeasible (i.e. size = 0), just ignore it
-            if( gb->propertySet().size() == 0 )
-            {
-                debug() << "infeasible bias detected";
-                gb->setActive(false);
-            }
-            else
-            {
-                m_feasibleGlobalBiases.append( gb );
-                m_feasibleGlobalBiasSets.append( TrackSet( gb->propertySet() ) );
+                // if the bias is infeasible (i.e. size = 0), just ignore it
+                if( cfb->propertySet().size() == 0 )
+                {
+                    debug() << "infeasible bias detected"; // ugly but we're using the higher cast as they don't share a root parent
+                    b->setActive(false);
+                }
+                else
+                {
+                    m_feasibleCollectionFilters.append( cfb );
+                    m_feasibleCollectionFilterSets.append( TrackSet( cfb->propertySet() ) );
+                }
             }
         }
     }
@@ -779,13 +781,13 @@ Dynamic::BiasSolver::computeDomain()
     TrackSet subset;
     subset.setUniverseSet();
 
-    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
+    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
     {
-        if( m_feasibleGlobalBiases.at(i)->weight() == 1.0 )
-            subset.intersect( m_feasibleGlobalBiasSets.at(i) );
+        if( m_feasibleCollectionFilters.at(i)->weight() == 1.0 )
+            subset.intersect( m_feasibleCollectionFilterSets.at(i) );
 
-        if( m_feasibleGlobalBiases.at(i)->weight() == 0.0 )
-            subset.subtract( m_feasibleGlobalBiasSets.at(i) );
+        if( m_feasibleCollectionFilters.at(i)->weight() == 0.0 )
+            subset.subtract( m_feasibleCollectionFilterSets.at(i) );
     }
 
     m_domain = subset.uidList();

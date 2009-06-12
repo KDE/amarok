@@ -265,7 +265,9 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    Dynamic::CustomBias::self()->registerNewBiasEntry( new Dynamic::LastFmBias() );
+    Dynamic::LastFmBias* bias = new Dynamic::LastFmBias();
+    connect( Dynamic::CustomBias::self(), SIGNAL( weightChanged(double) ), bias, SLOT( weightChanged( double ) ) );
+    Dynamic::CustomBias::self()->registerNewBiasEntry( bias );
 
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );

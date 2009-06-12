@@ -30,9 +30,8 @@ class CustomBias;
  *  This is the object that the singleton CustomBias can register. A service, or anything
  *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
  */
-class AMAROK_EXPORT CustomBiasEntry : public QObject
+class AMAROK_EXPORT CustomBiasEntry
 {
-    Q_OBJECT
     public:
         CustomBiasEntry() {}
         virtual ~CustomBiasEntry() {}
@@ -61,6 +60,15 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
          * (read: web) lookups.
          */
         virtual double numTracksThatSatisfy( const Meta::TrackList& ) = 0;
+
+
+        /**
+         * Controls whether this custom bias wants to affect the filter for
+         * the initial selection of tracks for the collection. PLEASE READ 
+         * THE API DOCS FOR Bias::filterFromCollection for the full explanation
+         * of this function.
+         */
+        virtual bool filterFromCollection() = 0;
 
 };
 
@@ -94,7 +102,8 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
    
         virtual double energy(const Meta::TrackList& playlist, const Meta::TrackList& context);
         virtual double reevaluate(double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context);
-
+        virtual bool filterFromCollection();
+        
         /**
          * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.
          */
@@ -110,7 +119,11 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         void setCurrentEntry( CustomBiasEntry* );
         QList< CustomBiasEntry* > currentEntries();
 
+        virtual double weight() const { return m_weight; }
         void setWeight( double );
+
+    signals:
+        void weightChanged( double );
         
     private:
         QList< CustomBiasEntry* > m_biasEntries;

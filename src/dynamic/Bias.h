@@ -92,6 +92,22 @@ namespace Dynamic
             virtual double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
                     Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
 
+            /**
+             * This returns whether or not this bias operates on the collection in such a way
+             * that it wants to filter the tracks to be used to generate the initial playlists.
+             * An example of this is the GlobalBias---which modifies the creation of playlists to
+             * optimized.
+             *
+             * If if this is false, and there are no biases that return true for this turned on, the
+             * BiasSolver selects a completely random playlist from the collection, then tries to
+             * optimize it by calling energy() on mutations.
+             *
+             * Classes that return true here should also implement CollectionFilterBias, as that
+             * is what exposes the property set to the BiasSolver.
+             *
+             */
+            virtual bool filterFromCollection() = 0;
+            
         protected:
             bool m_active;
             QString m_description;
@@ -129,13 +145,32 @@ namespace Dynamic
             QMutex m_mutex;
     };
 
+    /**
+     * This is a bias that operates on and expects to filter the collection. It stores
+     * the currently matching tracks in a QSet of uids, and shares them with the BiasSolver
+     * when asked in order to generate initial starting playlists.
+     */
+    class CollectionFilterBias
+    {
+        public:
+            CollectionFilterBias() {}
+            virtual ~CollectionFilterBias() {}
 
+            virtual const QSet< QByteArray >& propertySet() = 0;
+            /**
+             * All collection filter biases must also share a weight to
+             * be read, as it is used by the solver to compute something.
+             * (what? I have no fucking clue. go hire a math ph.d)
+             */
+            virtual double weight() const = 0;
+    };
+    
     /**
      * This a bias in which the order and size of the playlist are not
      * considered. Instead we want a given proportion (weight) of the tracks to
      * have a certain property (or belong to a certain set).
      */
-    class GlobalBias : public CollectionDependantBias
+    class GlobalBias : public CollectionDependantBias, public CollectionFilterBias
     {
         Q_OBJECT
                 
@@ -156,14 +191,15 @@ namespace Dynamic
             double reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
                     Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context );
 
-            const QSet<QByteArray>& propertySet() { return m_property; }
+            virtual const QSet<QByteArray>& propertySet() { return m_property; }
             bool trackSatisfies( Meta::TrackPtr );
             void update();
 
-            double weight() const;
+            virtual double weight() const;
             void setWeight( double );
 
-
+            virtual bool filterFromCollection() { return true; }
+            
         private slots:
             void updateReady( QString collectionId, QStringList );
             void updateFinished();
@@ -213,6 +249,8 @@ namespace Dynamic
              */
             void setScale( double );
             double scale();
+
+            virtual bool filterFromCollection() { return false; }
 
         private:
             double sigmaFromScale( double scale );

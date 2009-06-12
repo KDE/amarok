@@ -247,8 +247,8 @@ namespace Dynamic
              * sets are non-empty). Set by computeDomain, but stored here so
              * generateInitialPlaylist can make use of it.
              */
-            QList<GlobalBias*> m_feasibleGlobalBiases;
-            QList<TrackSet> m_feasibleGlobalBiasSets;
+            QList<CollectionFilterBias*> m_feasibleCollectionFilters;
+            QList<TrackSet> m_feasibleCollectionFilterSets;
 
             bool m_abortRequested; //! flag set when the thread is aborted
 

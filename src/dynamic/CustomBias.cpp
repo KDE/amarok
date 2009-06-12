@@ -182,6 +182,15 @@ Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPla
     
 }
 
+bool
+Dynamic::CustomBias::filterFromCollection()
+{
+    if( m_currentEntry )
+        return m_currentEntry->filterFromCollection();
+    else
+        return false;
+}
+
 
 void
 Dynamic::CustomBias::registerNewBiasEntry( Dynamic::CustomBiasEntry* entry )
@@ -217,6 +226,7 @@ void
 Dynamic::CustomBias::setWeight( double weight )
 {
     m_weight = weight;
+    emit weightChanged( m_weight );
 }
 
 #include "CustomBias.moc"
