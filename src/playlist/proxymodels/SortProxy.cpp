@@ -34,7 +34,6 @@ SortProxy* SortProxy::s_instance = 0;
 SortProxy*
 SortProxy::instance()
 {
-    DEBUG_BLOCK
     if ( s_instance == 0 )
         s_instance = new SortProxy();
     return s_instance;
@@ -83,7 +82,7 @@ SortProxy::index( int row, int column, const QModelIndex &parent ) const
 {
     if ( m_belowModel->rowExists( m_map->inv( row ) ) )
     {
-        debug() << "the row exists!";
+        //debug() << "the row exists!";
         return createIndex( row, column );
     }
     debug() << "bad model, no row for you! rowInProxy=" << row;
@@ -106,7 +105,7 @@ SortProxy::mapFromSource( const QModelIndex& sourceIndex ) const
 QModelIndex
 SortProxy::mapToSource( const QModelIndex& proxyIndex ) const
 {
-    debug() << "mapToSource row=" << proxyIndex.row();
+    //debug() << "mapToSource row=" << proxyIndex.row();
     return m_belowModel->index( m_map->inv( proxyIndex.row() ), proxyIndex.column() );
 }
 
@@ -242,7 +241,6 @@ SortProxy::rowCount(const QModelIndex& parent) const
 int
 SortProxy::rowFromSource( int row ) const
 {
-    DEBUG_BLOCK
     QModelIndex sourceIndex = m_belowModel->index( row, 0 );
     QModelIndex index = mapFromSource( sourceIndex );
     
@@ -254,7 +252,6 @@ SortProxy::rowFromSource( int row ) const
 int
 SortProxy::rowToSource( int row ) const
 {
-    DEBUG_BLOCK
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
     

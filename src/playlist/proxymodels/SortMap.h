@@ -99,7 +99,6 @@ private:
     FilterProxy *m_sourceProxy;
     bool m_sorted;
 };
-
 /**
  * Comparison functor used by qSort() or qStableSort().
  */
