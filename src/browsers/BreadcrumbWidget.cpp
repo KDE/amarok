@@ -26,28 +26,21 @@
 
 
 BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category, QWidget * parent )
-    : QPushButton( name, parent )
+    : KHBox( parent )
     , m_category( category )
+    , m_menuButton( 0 )
 {
-    //if this is a list, make cliking on this item cause us
-    //to navigate to its home.
-    BrowserCategoryList *list = dynamic_cast<BrowserCategoryList*>( category );
-    if ( list )
-    {
-        connect( this, SIGNAL( clicked( bool ) ), list, SLOT( home() ) );
-    }
-
-    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-
 
     //figure out if we want to add a menu to this item. A menu allows you to select
     //any of the _sibling_ items. (yes, I know, this is different from how Dolphin
     //does it, but I find the Dolphin way amazingly unintuitive and I always get it
     //wrong when using it...)
-
+    
     BrowserCategoryList * parentList = category->parentList();
     if ( parentList )
     {
+        m_menuButton = new QPushButton( " > ", this );
+        m_menuButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
         QMenu * menu = new QMenu( this );
         
@@ -57,18 +50,41 @@ BreadcrumbItem::BreadcrumbItem( const QString & name, BrowserCategory * category
 
         foreach( QString siblingName, siblingNames )
         {
-            QAction * action = menu->addAction( siblingName );
+            QAction * action = menu->addAction( siblingMap.value( siblingName )->prettyName() );
             connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
         }
 
-        setMenu( menu );
+        m_menuButton->setMenu( menu );
     }
+
+
+    m_mainButton = new QPushButton( name, this );
+    m_mainButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+
+    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    
+    //if this is a list, make cliking on this item cause us
+    //to navigate to its home.
+    BrowserCategoryList *list = dynamic_cast<BrowserCategoryList*>( category );
+    if ( list )
+    {
+        connect( m_mainButton, SIGNAL( clicked( bool ) ), list, SLOT( home() ) );
+    }
+
 }
 
 BreadcrumbItem::~BreadcrumbItem()
 {
     DEBUG_BLOCK
 }
+
+void BreadcrumbItem::setBold( bool bold )
+{
+    QFont font = m_mainButton->font();
+    font.setBold( true );
+    m_mainButton->setFont( font );
+}
+
 
 BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
     : KHBox( parent)
@@ -78,6 +94,7 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
 
     setStyleSheet( "QPushButton { border: none; }"
                    "QPushButton:hover { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde); }"
+                   "QPushButton::menu-indicator { image: none; width: 0px;}"
                  );
 
     setContentsMargins( 0, 0, 0, 0 );
@@ -130,8 +147,6 @@ void BreadcrumbWidget::addLevel( BrowserCategoryList * list )
 
     if ( childCategory )
     {
-        //we are going to add more, so add a seperator
-        prettyName += " / ";
         BreadcrumbItem * branch = new BreadcrumbItem( prettyName, list, this );
         m_items.append( branch );
         
@@ -146,22 +161,18 @@ void BreadcrumbWidget::addLevel( BrowserCategoryList * list )
             BreadcrumbItem * leaf = new BreadcrumbItem( childCategory->prettyName(), childCategory, this );
             m_items.append( leaf );
 
-            QFont font = leaf->font();
-            font.setBold( true );
-            leaf->setFont( font );
+            leaf->setBold( true );
         }
     }
     else
     {
         BreadcrumbItem * item = new BreadcrumbItem( prettyName, list, this );
-
         m_items.append( item );
-        
-        QFont font = item->font();
-        font.setBold( true );
-        item->setFont( font );
+        item->setBold( true );
     }
 }
+
+
 
 
 

@@ -29,16 +29,19 @@
 #include <QStringList>
 
 
-class BreadcrumbItem : public QPushButton
+class BreadcrumbItem : public KHBox
 {
     Q_OBJECT
 public:
     BreadcrumbItem( const QString &name, BrowserCategory * category, QWidget * parent );
     ~BreadcrumbItem();
 
+    void setBold( bool bold );
+
 private:
     BrowserCategory * m_category;
-        
+    QPushButton * m_menuButton;
+    QPushButton * m_mainButton;
 };
 
 
