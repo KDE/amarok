@@ -201,7 +201,24 @@ void MagnatuneInfoParser::frontPageDownloadComplete(KJob * downLoadJob)
 
 
     QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+
+    //insert menu
+    infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
+    
     emit ( info( infoString ) );
+}
+
+QString MagnatuneInfoParser::generateMemberMenu()
+{
+    QString homeUrl = "amarok://service_magnatune/show_home";
+    QString favoritesUrl = "amarok://service_magnatune/show_favorites";
+
+    QString menu = "<div align='right'>"
+                       "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
+                       "[<a href='" + favoritesUrl + "' >Favorites</a>]&nbsp;"
+                    "</div>";
+
+    return menu;
 }
 
 

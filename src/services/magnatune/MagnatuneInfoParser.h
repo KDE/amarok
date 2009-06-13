@@ -53,16 +53,18 @@ public:
     void getFrontPage();
     void getFavoritesPage();
 
-private:
-
-    KJob * m_infoDownloadJob;
-    KJob * m_frontPageDownloadJob;
-    
-    QString extractArtistInfo( const QString &artistPage );
 private slots:
 
     void artistInfoDownloadComplete( KJob *downLoadJob );
     void frontPageDownloadComplete( KJob *downLoadJob );
+
+private:
+
+    KJob * m_infoDownloadJob;
+    KJob * m_frontPageDownloadJob;
+
+    QString extractArtistInfo( const QString &artistPage );
+    QString generateMemberMenu();
 
 };
 
