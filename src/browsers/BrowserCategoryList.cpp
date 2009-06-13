@@ -286,14 +286,14 @@ void BrowserCategoryList::navigate( const QString & target )
 QString BrowserCategoryList::path()
 {
     DEBUG_BLOCK
-    QString pathString = prettyName();
+    QString pathString = name();
 
     BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
 
     if ( childList )
         pathString += "/" + childList->path();
     else if ( m_currentCategory )
-        pathString += "/" + m_currentCategory->prettyName();
+        pathString += "/" + m_currentCategory->name();
 
     debug() << "path: " << pathString;
     return pathString;

@@ -51,7 +51,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     QStringList pathParts = path.split( '/' );
 
     //we dont use the "Home" part in navigation urls
-    if ( pathParts.at( 0 ) == "Home" )
+    if ( pathParts.at( 0 ) == "root list" )
         pathParts.removeFirst();
     
     foreach( QString part, pathParts )
