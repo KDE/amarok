@@ -959,6 +959,7 @@ MemoryQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker * MemoryQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     d->albumQueryMode = mode;
+    return this;
 }
 
 #include "MemoryQueryMaker.moc"
