@@ -41,7 +41,7 @@ class SortWidget : public KHBox
         void applySortingScheme();
     private:
         KComboBox* m_sortCombo;
-        QList< SortScheme *> *m_schemeList;
+        QList< SortScheme *> m_schemeList;
 };
 
 }   //namespace Playlist
