@@ -55,12 +55,14 @@ VideoclipEngine::~VideoclipEngine()
     m_video.clear();
 }
 
-QStringList VideoclipEngine::sources() const
+QStringList 
+VideoclipEngine::sources() const
 {
     return m_sources;
 }
 
-bool VideoclipEngine::sourceRequestEvent( const QString& name )
+bool 
+VideoclipEngine::sourceRequestEvent( const QString& name )
 {
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
@@ -70,20 +72,23 @@ bool VideoclipEngine::sourceRequestEvent( const QString& name )
     return true;
 }
 
-void VideoclipEngine::message( const ContextState& state )
+void 
+VideoclipEngine::message( const ContextState& state )
 {
     if ( state == Current && m_requested )
         update();
 }
 
-void VideoclipEngine::metadataChanged( Meta::TrackPtr track )
+void 
+VideoclipEngine::metadataChanged( Meta::TrackPtr track )
 {
     const bool hasChanged = track->name() != m_title || track->artist()->name() != m_artist;
     if ( hasChanged )
         update();
 }
 
-void VideoclipEngine::update()
+void 
+VideoclipEngine::update()
 {
     DEBUG_BLOCK
     QString tmpYoutStr;
@@ -135,7 +140,8 @@ void VideoclipEngine::update()
     }
 }
 
-bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
+bool 
+VideoclipEngine::isVideoInfoValid( VideoInfo *item )
 {
     item->relevancy=0;
     // title contain artist AND title
@@ -168,7 +174,8 @@ bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
         return true;
 }
 
-void VideoclipEngine::resultYoutube( KJob* job )
+void 
+VideoclipEngine::resultYoutube( KJob* job )
 {
 
     if ( !m_jobYoutube ) //track changed while we were fetching
@@ -239,7 +246,8 @@ void VideoclipEngine::resultYoutube( KJob* job )
     resultFinalize();
 }
 
-void VideoclipEngine::resultYoutubeGetLink( KJob* job )
+void 
+VideoclipEngine::resultYoutubeGetLink( KJob* job )
 {
 //   DEBUG_BLOCK
     if ( job->error() != KJob::NoError )
