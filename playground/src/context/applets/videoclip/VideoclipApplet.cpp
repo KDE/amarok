@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Plasma applet for showing videoclip in the context view.              *
  *                                                                         *
- *   Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org              *
+ *   Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -78,8 +78,6 @@ VideoclipApplet::init()
     m_videoWidget = new Phonon::VideoWidget();
     m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
     m_videoWidget->hide();
-	// For this we should inherit the videowidget in a separate class
-//	connect(m_videoWidget, SIGNAL( mouseDoubleClickEvent() ), m_videoWidget, SLOT( setFullScreen( m_videoWidget->fullScreen() ) ) );
 	
     Phonon::Path path = Phonon::createPath( m_mediaObject, m_videoWidget );
     if ( !path.isValid() )
@@ -144,12 +142,10 @@ VideoclipApplet::engineNewTrackPlaying()
     if ( m_videoWidget && m_mediaObject && m_mediaObject->hasVideo() )
     {
         debug() << " VideoclipApplet | Show VideoWidget";
-		m_widget->hide();
         m_videoWidget->show();
     }
-    else if( m_videoWidget && m_widget )
+    else if( m_videoWidget )
     {
-		m_widget->show();
         m_videoWidget->hide();
     }
 }
@@ -174,15 +170,13 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
-    //VideoTrick
     m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
     m_widget->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
     m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
     m_videoWidget->setGeometry( QRect(
-        pos().toPoint()+QPoint( 2 * standardPadding(), m_headerText->boundingRect().height() + 3 * standardPadding() ),
-        size().toSize()-QSize( 4 * standardPadding(),  m_headerText->boundingRect().height() + 5 * standardPadding() ) ) );
+        pos().toPoint()+QPoint( standardPadding(), m_headerText->boundingRect().height() + 2.5 * standardPadding() ),
+        size().toSize()-QSize( 2 * standardPadding(),  m_headerText->boundingRect().height() + 3.5 * standardPadding() ) ) );
 }
-
 
 void 
 VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
