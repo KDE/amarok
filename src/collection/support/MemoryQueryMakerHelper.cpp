@@ -18,6 +18,8 @@
 
 #include "MemoryQueryMakerHelper.h"
 
+#include "meta/Meta.h"
+
 #include <QList>
 #include <QSet>
 #include <QStack>
@@ -90,3 +92,9 @@ MemoryQueryMakerHelper::reverse(const QList<T> &l)
         ret.append(l.at(i));
     return ret;
 }
+
+template QList<Meta::AlbumPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::AlbumPtr > &list, qint64, bool );
+template QList<Meta::ArtistPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ArtistPtr > &list, qint64, bool );
+template QList<Meta::GenrePtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::GenrePtr > &list, qint64, bool );
+template QList<Meta::ComposerPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ComposerPtr > &list, qint64, bool );
+
