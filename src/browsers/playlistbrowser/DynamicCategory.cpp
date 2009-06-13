@@ -58,11 +58,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     KIconLoader loader;
     setImagePath( loader.iconPath( "dynamic-amarok", -128, true ) );
 
-
-
-
-
-    
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins(0,0,0,0);
