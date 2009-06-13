@@ -27,7 +27,7 @@ namespace MemoryQueryMakerHelper
     template <class PointerType>
     QList<PointerType > orderListByName( const QList<PointerType > &list, qint64 value, bool descendingOrder );
 
-    //Meta::ArtistList orderListByName( const Meta::ArtistList, qint64 value, bool descendingOrder );
+    Meta::YearList orderListByYear ( const Meta::YearList &list, bool descendingOrder );
 
     template<typename T>
     QList<T> reverse(const QList<T> &l);

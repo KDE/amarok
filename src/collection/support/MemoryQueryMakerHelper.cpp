@@ -55,6 +55,32 @@ MemoryQueryMakerHelper::orderListByName( const QList<PointerType> &list, qint64 
     return resultList;
 }
 
+Meta::YearList
+MemoryQueryMakerHelper::orderListByYear( const Meta::YearList &list, bool descendingOrder )
+{
+    KSortableList<Meta::YearPtr, double> sortList;
+    foreach( Meta::YearPtr pointer, list )
+    {
+        sortList.insert( pointer->name().toDouble(), pointer );
+    }
+    sortList.sort();
+    QList<Meta::YearPtr> tmpList;
+    typedef KSortableItem<Meta::YearPtr,double> SortItem;
+    foreach( SortItem item, sortList )
+    {
+        tmpList.append( item.second );
+    }
+    if( descendingOrder )
+    {
+        //KSortableList uses qSort, which orders a list in ascending order
+        return reverse<Meta::YearPtr>( tmpList );
+    }
+    else
+    {
+        return tmpList;
+    }
+}
+
 template<typename T>
 QList<T>
 MemoryQueryMakerHelper::reverse(const QList<T> &l)

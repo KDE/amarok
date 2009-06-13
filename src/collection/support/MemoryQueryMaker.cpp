@@ -460,30 +460,10 @@ MemoryQueryMaker::handleResult()
             }
         
             //this a special case which requires a bit of code duplication
-            //years have to be ordered as numbers, bu orderListByNumber does not work for Meta::YearPtrs
+            //years have to be ordered as numbers, but orderListByNumber does not work for Meta::YearPtrs
             if( d->orderByField == Meta::valYear )
             {
-                KSortableList<Meta::YearPtr, double> sortList;
-                foreach( Meta::YearPtr pointer, years )
-                {
-                    sortList.insert( pointer->name().toDouble(), pointer );
-                }
-                sortList.sort();
-                QList<Meta::YearPtr> tmpList;
-                typedef KSortableItem<Meta::YearPtr,double> SortItem;
-                foreach( SortItem item, sortList )
-                {
-                    tmpList.append( item.second );
-                }
-                if( d->orderDescending )
-                {
-                    //KSortableList uses qSort, which orders a list in ascending order
-                    years = reverse<Meta::YearPtr>( tmpList );
-                }
-                else
-                {
-                    years = tmpList;                    
-                }
+                years = MemoryQueryMakerHelper::orderListByYear( years, d->orderDescending );
             }
 
             emitProperResult<YearPtr>( years );
