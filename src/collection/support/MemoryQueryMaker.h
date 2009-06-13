@@ -88,9 +88,6 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         template <class PointerType>
         void emitProperResult( const QList<PointerType > &list );
         
-        template <class PointerType>
-        QList<PointerType > orderListByName( const QList<PointerType > &list, qint64 value ) const;
-        
         Meta::TrackList orderListByString( const Meta::TrackList &tracks, qint64 value ) const;
         Meta::TrackList orderListByNumber( const Meta::TrackList &tracks, qint64 value ) const;
 

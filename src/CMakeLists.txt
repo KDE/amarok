@@ -260,6 +260,7 @@ set(collection_SRCS
     collection/support/MemoryFilter.cpp
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
+    collection/support/MemoryQueryMakerHelper.cpp
     collection/support/XmlQueryReader.cpp
     collection/support/XmlQueryWriter.cpp
     collection/support/FileCollectionLocation.cpp

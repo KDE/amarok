@@ -21,6 +21,7 @@
 #include "MemoryCustomValue.h"
 #include "MemoryFilter.h"
 #include "MemoryMatcher.h"
+#include "MemoryQueryMakerHelper.h"
 #include "Debug.h"
 
 #include <threadweaver/Job.h>
@@ -213,37 +214,7 @@ static inline QList<T> reverse(const QList<T> &l)
 }
 
 
-template <class PointerType>
-QList<PointerType>
-MemoryQueryMaker::orderListByName( const QList<PointerType> &list, qint64 value ) const
-{
-    QList<PointerType> resultList = list;
-    if( d->orderByField == value )
-    {
-        KSortableList<PointerType, QString> sortList;
-        foreach( PointerType pointer, list )
-        {
-            sortList.insert( pointer->name(), pointer );
-        }
-        sortList.sort();
-        QList<PointerType> tmpList;
-        typedef KSortableItem<PointerType,QString> SortItem;
-        foreach( SortItem item, sortList )
-        {
-           tmpList.append( item.second );
-        }
-        if( d->orderDescending )
-        {
-            //KSortableList uses qSort, which orders a list in ascending order
-            resultList = reverse<PointerType>( tmpList );
-        }
-        else
-        {
-            resultList = tmpList;
-        }
-    }
-    return resultList;
-}
+
 
 Meta::TrackList
 MemoryQueryMaker::orderListByString( const Meta::TrackList &tracks, qint64 value ) const
@@ -399,7 +370,7 @@ MemoryQueryMaker::handleResult()
                 }
             }
  
-            albums = orderListByName<Meta::AlbumPtr>( albums, Meta::valAlbum );
+            albums = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albums, Meta::valAlbum, d->orderDescending );
 
             emitProperResult<AlbumPtr>( albums );
             break;
@@ -421,8 +392,7 @@ MemoryQueryMaker::handleResult()
                     }
                 }
             }
-
-            artists = orderListByName<Meta::ArtistPtr>( artists, Meta::valArtist );
+            artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, Meta::valArtist, d->orderDescending );
             emitProperResult<ArtistPtr>( artists );
             break;
         }
@@ -443,8 +413,7 @@ MemoryQueryMaker::handleResult()
                     }
                 }
             }
-
-            composers = orderListByName<Meta::ComposerPtr>( composers, Meta::valComposer );
+            composers = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( composers, Meta::valComposer, d->orderDescending );
 
             emitProperResult<ComposerPtr>( composers );
             break;
@@ -467,7 +436,7 @@ MemoryQueryMaker::handleResult()
                 }
             }
             
-            genres = orderListByName<Meta::GenrePtr>( genres, Meta::valGenre );
+            genres = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( genres, Meta::valGenre, d->orderDescending );
 
             emitProperResult<GenrePtr>( genres );
             break;
@@ -601,7 +570,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 }
             }
             AlbumList albumList = albumSet.toList();
-            albumList = orderListByName<Meta::AlbumPtr>( albumList, Meta::valAlbum );
+            albumList = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albumList, Meta::valAlbum, d->orderDescending );
             emitProperResult<AlbumPtr>( albumList );
             break;
         }
@@ -618,7 +587,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 }
             }
             ArtistList list = artistSet.toList();
-            list = orderListByName<Meta::ArtistPtr>( list, Meta::valArtist );
+            list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, Meta::valArtist, d->orderDescending );
             emitProperResult<ArtistPtr>( list );
             break;
         }
@@ -635,7 +604,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 }
             }
             GenreList list = genreSet.toList();
-            list = orderListByName<Meta::GenrePtr>( list, Meta::valGenre );
+            list = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( list, Meta::valGenre, d->orderDescending );
             emitProperResult<GenrePtr>( list );
             break;
         }
@@ -652,7 +621,7 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 }
             }
             ComposerList list = composerSet.toList();
-            list = orderListByName<Meta::ComposerPtr>( list, Meta::valComposer );
+            list = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( list, Meta::valComposer, d->orderDescending );
             emitProperResult<ComposerPtr>( list );
             break;
         }
