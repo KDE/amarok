@@ -146,6 +146,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void init();
         void setRating( int n );
         void showBrowser( const int index );
+        
+        /**
+         * Try to restore saved layout, if this fails, try to use the default layout.
+         */
+        void restoreLayout();
 
         CollectionWidget * m_collectionBrowser;
         PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;

@@ -73,6 +73,7 @@
 #include <KMenuBar>
 #include <KPixmapCache>
 #include <KStandardAction>
+#include <KStandardDirs>
 #include <KWindowSystem>
 #include <kabstractfilewidget.h> //savePlaylist()
 
@@ -333,16 +334,9 @@ MainWindow::init()
 
     The::amarokUrlHandler(); //Instantiate
 
-    //load layout from file
-    QFile file( Amarok::saveLocation() + "layout" );
-    if ( file.open( QIODevice::ReadOnly ) )
-    {
+    //restore the layout
+    restoreLayout();
 
-        QByteArray layout = file.readAll();
-        file.close();
-
-        restoreState( layout, 0 );
-    }
 }
 
 void
@@ -1052,10 +1046,43 @@ bool MainWindow::isLayoutLocked()
     return m_layoutLocked;
 }
 
+void MainWindow::restoreLayout()
+{
+
+    QFile file( Amarok::saveLocation() + "layout" );
+
+    bool loadDefault = true;
+    if ( file.open( QIODevice::ReadOnly ) )
+    {
+
+        QByteArray layout = file.readAll();
+        file.close();
+
+        loadDefault = !restoreState( layout, 0 );
+    }
+
+    if ( loadDefault )
+    {
+
+        const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+        QFile defaultFile( url.path() + "DefaultDockLayout" );
+
+        if ( defaultFile.open( QIODevice::ReadOnly ) )
+        {
+            QByteArray defaultLayout = defaultFile.readAll();
+            defaultFile.close();
+
+            restoreState( defaultLayout, 0 );
+        }
+    }
+}
+
+
 
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
+
 
 
 

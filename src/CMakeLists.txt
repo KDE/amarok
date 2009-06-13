@@ -652,6 +652,7 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
 
 
 install(FILES data/DefaultPlaylistLayouts.xml
+              data/DefaultDockLayout
               services/InfoParserLoading.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
