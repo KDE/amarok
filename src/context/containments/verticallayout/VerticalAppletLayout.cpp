@@ -222,9 +222,11 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         //debug() << "HIDING NOT VISIBLE APPLET AT INDEX:" << i;
         // hiding an applet does not hide it's children
         // so in order to make sure that the applet is not visible,
-        // in the case of misbehaving applets, we also move them out of the way. 
+        // in the case of misbehaving applets, we also move them out of the way.
+        
         m_appletList[ i ]->hide();
         m_appletList[ i ]->setPos( 0, boundingRect().height() );
+        m_appletList[ i ]->updateConstraints();
     }
     
     m_showingIndex = index;
