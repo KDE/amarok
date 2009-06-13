@@ -168,7 +168,7 @@ MainWindow::~MainWindow()
     QFile file( Amarok::saveLocation() + "layout" );
     if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered | QIODevice::Truncate ) )
     {
-        file.write( saveState( 0 ) );
+        file.write( saveState( LAYOUT_VERSION ) );
         file.close();
     }
 
@@ -1058,7 +1058,7 @@ void MainWindow::restoreLayout()
         QByteArray layout = file.readAll();
         file.close();
 
-        loadDefault = !restoreState( layout, 0 );
+        loadDefault = !restoreState( layout, LAYOUT_VERSION );
     }
 
     if ( loadDefault )
@@ -1072,7 +1072,7 @@ void MainWindow::restoreLayout()
             QByteArray defaultLayout = defaultFile.readAll();
             defaultFile.close();
 
-            restoreState( defaultLayout, 0 );
+            restoreState( defaultLayout, LAYOUT_VERSION );
         }
     }
 }
