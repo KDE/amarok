@@ -103,6 +103,12 @@ public:
 
     virtual void polish() {};
 
+    //These 2 functions are forwarded to simplifiy the creation of urls
+    //even though they might not be needed in many cases.
+    virtual QString filter() { return QString(); }
+    virtual QList<int> levels() { return QList<int>(); }
+   
+
 public slots:
     void activate();
 

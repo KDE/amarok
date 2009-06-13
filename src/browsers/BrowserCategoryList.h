@@ -93,6 +93,10 @@ class BrowserCategoryList : public BrowserCategory
 
         QString path();
 
+        virtual QString filter();
+
+        BrowserCategory * activeCategoryRecursive();
+
     signals:
 
         void viewChanged();

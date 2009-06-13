@@ -41,145 +41,66 @@ NavigationUrlGenerator::~NavigationUrlGenerator()
 AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 {
     DEBUG_BLOCK
-    //first, which browser is active?
-
-    QString browser = The::mainWindow()->activeBrowserName();
-
 
     AmarokUrl url;
     url.setCommand( "navigate" );
 
-    if ( browser == "Internet" ) {
+    //get the path
+    QString path = The::mainWindow()->browserWidget()->list()->path();
 
-        browser = "service";
+    QStringList pathParts = path.split( '/' );
 
-        QString serviceName = ServiceBrowser::instance()->activeCategoryName();
-        debug() << "serviceName: " << serviceName;
-        
-        QString filter = ServiceBrowser::instance()->activeServiceFilter();
-        debug() << "filter: " <<  filter;
-        
-        QList<int> levels = ServiceBrowser::instance()->activeServiceLevels();
-        QString sortMode;
-        
-        foreach( int level, levels ) {
-            switch( level ) {
-                case CategoryId::Genre:
-                    sortMode += "genre-";
-                    break;
-                case CategoryId::Artist:
-                    sortMode += "artist-";
-                    break;
-                case CategoryId::Album:
-                    sortMode += "album-";
-                    break;
-                case CategoryId::Composer:
-                    sortMode += "composer-";
-                    break;
-                case CategoryId::Year:
-                    sortMode += "year-";
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        //we have left a trailing '-' in there, get rid of it!
-        if ( sortMode.size() > 0 )
-            sortMode = sortMode.left( sortMode.size() - 1 );
-
-        debug() << "sortMode: " <<  sortMode;
-
-
-        url.appendArg( browser );
-
-        if ( !serviceName.isEmpty() )
-            url.appendArg( serviceName );
-
-        if ( !sortMode.isEmpty() )
-            url.appendArg( sortMode );
-
-        if ( !filter.isEmpty() )
-            url.appendArg( filter );
-        
-        return url;
+    //we dont use the "Home" part in navigation urls
+    if ( pathParts.at( 0 ) == "Home" )
+        pathParts.removeFirst();
     
+    foreach( QString part, pathParts )
+    {
+        url.appendArg( part );
+    }
 
-    } else if ( browser == "CollectionBrowser" ) {
-        
-        browser = "collection";
+    QString filter = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->filter();
+    debug() << "filter: " <<  filter;
 
-        QString collection; //empty for now... we keep this space reserved if we later want to be able to specify a specific colletion.
+    QList<int> levels = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->levels();
+    QString sortMode;
 
-        QString filter = The::mainWindow()->collectionBrowser()->filter();
-        debug() << "filter: " <<  filter;
-        
-        QList<int> levels = The::mainWindow()->collectionBrowser()->levels();
-        QString sortMode;
-        
-        foreach( int level, levels ) {
-            switch( level ) {
-                case CategoryId::Genre:
-                    sortMode += "genre-";
-                    break;
-                case CategoryId::Artist:
-                    sortMode += "artist-";
-                    break;
-                case CategoryId::Album:
-                    sortMode += "album-";
-                    break;
-                case CategoryId::Composer:
-                    sortMode += "composer-";
-                    break;
-                case CategoryId::Year:
-                    sortMode += "year-";
-                    break;
-                default:
-                    break;
-            }
+    foreach( int level, levels ) {
+        switch( level ) {
+            case CategoryId::Genre:
+                sortMode += "genre-";
+                break;
+            case CategoryId::Artist:
+                sortMode += "artist-";
+                break;
+            case CategoryId::Album:
+                sortMode += "album-";
+                break;
+            case CategoryId::Composer:
+                sortMode += "composer-";
+                break;
+            case CategoryId::Year:
+                sortMode += "year-";
+                break;
+            default:
+                break;
         }
-
-        //we have left a trailing '-' in there, get rid of it!
-        if ( sortMode.size() > 0 )
-            sortMode = sortMode.left( sortMode.size() - 1 );
-
-        debug() << "sortMode: " <<  sortMode;
-
-        url.appendArg( browser );
-
-        if ( !sortMode.isEmpty() || !filter.isEmpty() )
-            url.appendArg( collection );
-        
-        if ( !sortMode.isEmpty() )
-            url.appendArg( sortMode );
-
-        if ( !filter.isEmpty() )
-            url.appendArg( filter );
-        
-        return url;
-
     }
-    else if ( browser == "PlaylistBrowser" )
-    {
-        browser = "playlists";
-        url.appendArg( browser );
 
-        int cat = The::mainWindow()->playlistBrowser()->currentCategory();
-        QString catName = The::playlistManager()->typeName( cat );
+    //we have left a trailing '-' in there, get rid of it!
+    if ( sortMode.size() > 0 )
+        sortMode = sortMode.left( sortMode.size() - 1 );
 
-        url.appendArg( catName );
-        
-        return url;
+    debug() << "sortMode: " <<  sortMode;
 
-    }
-    else if ( browser == "FileBrowser::Widget" )
-    {
-        browser = "files";
-        url.appendArg( browser );
-        return url;
-    }
+    if ( !sortMode.isEmpty() )
+        url.appendArg( sortMode );
+
+    if ( !filter.isEmpty() )
+        url.appendArg( filter );
 
     return url;
+
 }
 
 AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )

@@ -247,6 +247,8 @@ void BrowserCategoryList::childViewChanged()
 
 void BrowserCategoryList::navigate( const QString & target )
 {
+    DEBUG_BLOCK
+    debug() << "target: " << target;
     QStringList categories = target.split( '/' );
     if ( categories.size() == 0 )
         return;
@@ -283,6 +285,7 @@ void BrowserCategoryList::navigate( const QString & target )
 
 QString BrowserCategoryList::path()
 {
+    DEBUG_BLOCK
     QString pathString = prettyName();
 
     BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
@@ -292,6 +295,7 @@ QString BrowserCategoryList::path()
     else if ( m_currentCategory )
         pathString += "/" + m_currentCategory->prettyName();
 
+    debug() << "path: " << pathString;
     return pathString;
 }
 
@@ -378,6 +382,28 @@ QString BrowserCategoryList::css()
             "</style>";
 
     return style;
+}
+
+QString BrowserCategoryList::filter()
+{
+    return m_currentFilter;
+}
+
+BrowserCategory * BrowserCategoryList::activeCategoryRecursive()
+{
+    BrowserCategory * category = activeCategory();
+
+    if ( !category )
+        return this;
+
+    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+
+    if ( childList )
+    {
+        return childList->activeCategoryRecursive();
+    }
+
+    return category;
 }
 
 

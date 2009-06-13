@@ -81,7 +81,7 @@ public:
     
     void setCurrentInfo( const QString & info );
 
-    int levels() { return m_levels; }
+    int contentLevels() { return m_levels; }
     bool hasSearchBar() { return m_hasSearchBar; }
 
 private slots:
