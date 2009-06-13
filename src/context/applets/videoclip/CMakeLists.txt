@@ -1,13 +1,12 @@
-include_directories( ../../../../.. 
-					 ../../../../../src
-                     ../../../../../src/context
-					 ../../../../../src/meta
+include_directories( ../.. 
+					 ../../..
+					 ../../../meta
 )
 
 set( videoclip_applet_SRCS
      VideoclipApplet.cpp
-	 ../../../../../src/widgets/kratingwidget.cpp
-     ../../../../../src/widgets/kratingpainter.cpp
+	 ../../../widgets/kratingwidget.cpp
+     ../../../widgets/kratingpainter.cpp
 )
 configure_file(${CMAKE_SOURCE_DIR}/config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 

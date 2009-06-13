@@ -1,7 +1,7 @@
-include_directories( ../../../../../src
-                    ../../../../../src/context
-                    ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
-					   )
+include_directories( ../..
+                    ../../..
+                    ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h
+)
 
 set( videoclip_engine_SRCS
     VideoclipEngine.cpp
