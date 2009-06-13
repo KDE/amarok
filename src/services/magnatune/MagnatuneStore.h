@@ -42,6 +42,8 @@
 #include <kvbox.h>
 
 
+class MagnatuneInfoParser;
+
 class MagnatuneServiceFactory : public ServiceFactory
 {
     Q_OBJECT
@@ -106,6 +108,9 @@ public slots:
     void purchase( Meta::MagnatuneTrack * track );
 
     void purchase( Meta::MagnatuneAlbum * album );
+
+    void showFavoritesPage();
+    void showHomePage();
     
 private slots:
     /**
@@ -226,6 +231,8 @@ private:
 
     qulonglong m_magnatuneTimestamp;
     ServiceSqlRegistry * m_registry;
+
+    MagnatuneInfoParser * m_magnatuneInfoParser;
 };
 
 

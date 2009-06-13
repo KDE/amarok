@@ -21,6 +21,7 @@
 #include "MagnatuneStore.h"
 
 #include "Amarok.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "statusbar/StatusBar.h"
 #include "statusbar/ProgressBar.h"
 #include "EngineController.h"
@@ -28,6 +29,8 @@
 #include "MagnatuneDatabaseWorker.h"
 #include "MagnatuneInfoParser.h"
 #include "browsers/InfoProxy.h"
+#include "MagnatuneUrlRunner.h"
+
 #include "../ServiceSqlRegistry.h"
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -439,11 +442,22 @@ void MagnatuneStore::polish()
 
         QList<int> levels;
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+
+        m_magnatuneInfoParser = new MagnatuneInfoParser();
         
-        setInfoParser( new MagnatuneInfoParser() );
+        setInfoParser( m_magnatuneInfoParser );
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
         connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+
+        //add a custom url runner
+
+        MagnatuneUrlRunner * runner = new MagnatuneUrlRunner();
+
+        connect( runner, SIGNAL( showFavorites() ), this, SLOT( showFavoritesPage() ) );
+        connect( runner, SIGNAL( showHome() ), this, SLOT( showHomePage() ) );
+        
+        The::amarokUrlHandler()->registerRunner( runner, "service_magnatune" );
     }
 
     const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
@@ -638,6 +652,18 @@ QString MagnatuneStore::sendMessage( const QString & message )
     }
 
     return i18n( "ERROR: Unknown argument." );
+}
+
+void MagnatuneStore::showFavoritesPage()
+{
+    DEBUG_BLOCK
+    m_magnatuneInfoParser->getFavoritesPage();
+}
+
+void MagnatuneStore::showHomePage()
+{
+    DEBUG_BLOCK
+    m_magnatuneInfoParser->getFrontPage();
 }
 
 

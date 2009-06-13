@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,57 +14,34 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+ 
+#ifndef MAGNATUNEURLRUNNER_H
+#define MAGNATUNEURLRUNNER_H
 
-#ifndef MAGNATUNEINFOPARSER_H
-#define MAGNATUNEINFOPARSER_H
+#include <QObject>
 
-#include "../InfoParserBase.h"
-
-#include "MagnatuneMeta.h"
-
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-
-class MagnatuneStore;
+#include "amarokurls/AmarokUrlRunnerBase.h"
 
 /**
-Handles the fetching and processing of Jamendo specific information for meta items
-
-	@author
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class MagnatuneInfoParser : public InfoParserBase
+class MagnatuneUrlRunner : public QObject, public AmarokUrlRunnerBase
 {
-Q_OBJECT
-
+    Q_OBJECT
 public:
-    MagnatuneInfoParser()
-       : InfoParserBase() {}
+    MagnatuneUrlRunner();
 
-    ~MagnatuneInfoParser() {}
+    virtual ~MagnatuneUrlRunner();
 
+    virtual QString command() const;
+    virtual bool run( AmarokUrl url );
 
-    
-    virtual void getInfo( Meta::ArtistPtr artist );
-    virtual void getInfo( Meta::AlbumPtr album );
-    virtual void getInfo( Meta::TrackPtr track );
-
-    void getFrontPage();
-    void getFavoritesPage();
-
-private:
-
-    KJob * m_infoDownloadJob;
-    KJob * m_frontPageDownloadJob;
-    
-    QString extractArtistInfo( const QString &artistPage );
-private slots:
-
-    void artistInfoDownloadComplete( KJob *downLoadJob );
-    void frontPageDownloadComplete( KJob *downLoadJob );
+signals:
+    void showFavorites();
+    void showHome();
 
 };
 
 #endif
-

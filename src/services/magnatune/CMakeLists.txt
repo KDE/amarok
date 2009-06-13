@@ -14,29 +14,32 @@
 ########### next target ###############
 
         set(amarok_service_magnatune_PART_SRCS
-            MagnatuneInfoParser.cpp
-            MagnatuneStore.cpp
+            MagnatuneAlbumDownloader.cpp
+            MagnatuneCollectionLocation.cpp
+            MagnatuneConfig.cpp
+            MagnatuneDatabaseHandler.cpp
+            MagnatuneDatabaseWorker.cpp
             MagnatuneDownloadDialog.cpp
+            MagnatuneDownloadInfo.cpp
+            MagnatuneInfoParser.cpp
+            MagnatuneMeta.cpp
+            MagnatunePurchaseAction.cpp
             MagnatunePurchaseDialog.cpp
             MagnatunePurchaseHandler.cpp
-            MagnatuneMeta.cpp
-            MagnatuneXmlParser.cpp
-            MagnatuneDatabaseHandler.cpp
             MagnatuneRedownloadDialog.cpp
             MagnatuneRedownloadHandler.cpp
-            MagnatuneDownloadInfo.cpp
-            MagnatuneAlbumDownloader.cpp
-            MagnatuneConfig.cpp
-            MagnatuneDatabaseWorker.cpp
             MagnatuneSqlCollection.cpp
-            MagnatuneCollectionLocation.cpp
-            MagnatunePurchaseAction.cpp
+            MagnatuneStore.cpp
+            MagnatuneUrlRunner.cpp
+            MagnatuneXmlParser.cpp
+
         )
 
         kde4_add_ui_files( amarok_service_magnatune_PART_SRCS
             MagnatuneDownloadDialogBase.ui
-            MagnatuneRedownloadDialogBase.ui
             MagnatunePurchaseDialogBase.ui
+            MagnatuneRedownloadDialogBase.ui
+
         )
 
         kde4_add_plugin(amarok_service_magnatunestore ${amarok_service_magnatune_PART_SRCS})

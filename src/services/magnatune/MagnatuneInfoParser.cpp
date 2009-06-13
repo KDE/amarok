@@ -20,6 +20,7 @@
 #include "MagnatuneInfoParser.h"
 
 #include "Debug.h"
+#include "MagnatuneConfig.h"
 #include "statusbar/StatusBar.h"
 
 #include <KLocale>
@@ -160,6 +161,30 @@ void MagnatuneInfoParser::getFrontPage()
     
     m_frontPageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
     The::statusBar()->newProgressOperation( m_frontPageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
+    connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );
+}
+
+void MagnatuneInfoParser::getFavoritesPage()
+{
+    DEBUG_BLOCK
+
+    MagnatuneConfig config;
+
+    if ( !config.isMember() )
+        return;
+    
+    showLoading( i18n( "Loading your Magnatune.com favorites page..." ) );
+
+    QString type = config.membershipType();
+    QString user = config.username();
+    QString password = config.password();
+
+    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_favorites.php";
+   
+    debug() << "loading url: " << url;
+
+    m_frontPageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_frontPageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
     connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );
 }
 

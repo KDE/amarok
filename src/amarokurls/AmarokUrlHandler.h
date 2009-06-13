@@ -40,7 +40,7 @@ A singleton class for handling and delegating all amarok:// urls
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AmarokUrlHandler : public QObject
+class AMAROK_EXPORT AmarokUrlHandler : public QObject
 {
     Q_OBJECT
     friend AmarokUrlHandler* The::amarokUrlHandler();
