@@ -5,7 +5,7 @@ Type=Service
 Icon=preferences-system-time
 ServiceTypes=Plasma/DataEngine
 X-Plasma-API=javascript
- 
+
 X-KDE-PluginInfo-Author=Leo Franchi
 X-KDE-PluginInfo-Email=lfranchi@kde.org
 X-KDE-PluginInfo-Name=amarok-dataengine-jstest
