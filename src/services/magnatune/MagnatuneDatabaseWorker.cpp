@@ -38,12 +38,16 @@ MagnatuneDatabaseWorker::~MagnatuneDatabaseWorker()
 void
 MagnatuneDatabaseWorker::run()
 {
+    DEBUG_BLOCK
     switch ( m_task ) {
         case FETCH_MODS:
             doFetchMoodMap();
             break;
         case FETCH_MOODY_TRACKS:
             doFetchTrackswithMood();
+            break;
+        case ALBUM_BY_SKU:
+            doFetchAlbumBySku();
             break;
         default:
             break;
@@ -52,12 +56,16 @@ MagnatuneDatabaseWorker::run()
 
 void MagnatuneDatabaseWorker::completeJob()
 {
+    DEBUG_BLOCK
     switch ( m_task ) {
         case FETCH_MODS:
             emit( gotMoodMap( m_moodMap ) );
             break;
         case FETCH_MOODY_TRACKS:
             emit( gotMoodyTracks( m_moodyTracks ) );
+            break;
+        case ALBUM_BY_SKU:
+            emit( gotAlbumBySku( m_album ) );
             break;
         default:
             break;
@@ -85,6 +93,14 @@ void MagnatuneDatabaseWorker::fetchTrackswithMood( const QString &mood, int noOf
     m_moodyTracks.clear();
 }
 
+void MagnatuneDatabaseWorker::fetchAlbumBySku( const QString & sku, ServiceSqlRegistry * registry )
+{
+    DEBUG_BLOCK
+    m_task = ALBUM_BY_SKU;
+    m_sku = sku;
+    m_registry = registry;
+}
+
 
 void MagnatuneDatabaseWorker::doFetchMoodMap()
 {
@@ -108,7 +124,7 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
 
 
 
-    //ok, a huge joing turned out to be _really_ slow, so lets chop up the query a bit...
+    //ok, a huge join turned out to be _really_ slow, so lets chop up the query a bit...
 
     QString queryString = "SELECT DISTINCT track_id FROM magnatune_moods WHERE mood =\"" + m_mood + "\"  ORDER BY RANDOM() LIMIT " + QString::number( m_noOfTracks, 10 ) + ';';
 
@@ -153,6 +169,36 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
         }
     }
 
+}
+
+void MagnatuneDatabaseWorker::doFetchAlbumBySku()
+{
+    DEBUG_BLOCK
+
+    ServiceMetaFactory * metaFactory = m_registry->factory();
+
+    QString rows = metaFactory->getAlbumSqlRows()
+                 + ','
+                 + metaFactory->getArtistSqlRows();
+    
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    QString queryString = "SELECT " + rows + " FROM magnatune_albums LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id WHERE album_code = '" + m_sku + "';";
+    debug() << "Querying for album: " << queryString;
+    QStringList result = sqlDb->query( queryString );
+    debug() << "result: " << result;
+
+    if ( result.count() == metaFactory->getAlbumSqlRowCount() + metaFactory->getArtistSqlRowCount() )
+    {
+        Meta::AlbumPtr albumPtr = m_registry->getAlbum( result );
+        //make a magnatune album out of this...
+
+        m_album = dynamic_cast<Meta::MagnatuneAlbum *>( albumPtr.data() );
+
+    }
+    else
+    {
+        m_album = 0;
+    }
 }
 
 #include "MagnatuneDatabaseWorker.moc"

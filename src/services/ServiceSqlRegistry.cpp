@@ -189,7 +189,7 @@ ServiceSqlRegistry::getYear( const QString &name, int id )
 }*/
 
 AlbumPtr
-ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
+ServiceSqlRegistry::getAlbum( const QStringList &rowData )
 {
     DEBUG_BLOCK
     int id = rowData[0].toInt();
@@ -200,7 +200,7 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
     {
         int index = 0; 
         
-        QStringList testString = rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() );
+        QStringList testString = rowData.mid( index, m_metaFactory->getAlbumSqlRowCount() );
 
         AlbumPtr albumPtr = m_metaFactory->createAlbum( rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() ) );
         m_albumMap.insert( id, albumPtr );
@@ -211,7 +211,7 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
 
         ArtistPtr artistPtr;
 
-        // we need to set the artist for thsi album
+        // we need to set the artist for this album
         if ( m_artistMap.contains( album->artistId() ) )
             artistPtr = m_artistMap.value( album->artistId() );
         else

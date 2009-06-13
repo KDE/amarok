@@ -456,6 +456,7 @@ void MagnatuneStore::polish()
 
         connect( runner, SIGNAL( showFavorites() ), this, SLOT( showFavoritesPage() ) );
         connect( runner, SIGNAL( showHome() ), this, SLOT( showHomePage() ) );
+        connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( purchase( const QString & ) ) );
         
         The::amarokUrlHandler()->registerRunner( runner, "service_magnatune" );
     }
@@ -664,6 +665,17 @@ void MagnatuneStore::showHomePage()
 {
     DEBUG_BLOCK
     m_magnatuneInfoParser->getFrontPage();
+}
+
+void MagnatuneStore::purchase( const QString &sku )
+{
+    DEBUG_BLOCK
+    debug() << "sku: " << sku;
+    MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
+    databaseWorker->fetchAlbumBySku( sku, m_registry );
+    connect( databaseWorker, SIGNAL( gotAlbumBySku( Meta::MagnatuneAlbum * ) ), this, SLOT( purchase( Meta::MagnatuneAlbum * ) ) );
+    
+    ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
 
 

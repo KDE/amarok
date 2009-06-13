@@ -117,6 +117,8 @@ private slots:
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
     void purchase();
+
+    void purchase( const QString &sku );
     
     void purchaseCurrentTrackAlbum();
 

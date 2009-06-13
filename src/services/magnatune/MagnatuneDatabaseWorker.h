@@ -44,11 +44,13 @@ public:
 
     void fetchMoodMap();
     void fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry );
+    void fetchAlbumBySku( const QString &sku, ServiceSqlRegistry * registry );
 
 signals:
 
     void gotMoodMap( QMap<QString, int> map );
     void gotMoodyTracks( Meta::TrackList tracks );
+    void gotAlbumBySku( Meta::MagnatuneAlbum * album );
 
 private slots:
     void completeJob();
@@ -57,8 +59,9 @@ private:
 
     void doFetchMoodMap();
     void doFetchTrackswithMood();
+    void doFetchAlbumBySku();
     
-    enum taskType { FETCH_MODS, FETCH_MOODY_TRACKS };
+    enum taskType { FETCH_MODS, FETCH_MOODY_TRACKS, ALBUM_BY_SKU };
 
     int m_task;
 
@@ -66,7 +69,9 @@ private:
     Meta::TrackList m_moodyTracks;
 
     QString m_mood;
+    QString m_sku;
     int m_noOfTracks;
+    Meta::MagnatuneAlbum * m_album;
 
     ServiceSqlRegistry * m_registry;
     
