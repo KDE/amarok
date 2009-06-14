@@ -333,6 +333,7 @@ Track::playCount() const
 {
     if( d->statisticsProvider )
         return d->statisticsProvider->playCount();
+    return 0;
 }
 
 QString
