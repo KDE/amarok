@@ -23,6 +23,8 @@
 
 #include <QFontMetrics>
 
+namespace Amarok {
+
 ElidingButton::ElidingButton( QWidget *parent )
     : QPushButton( parent )
     , m_isElided( false )
@@ -123,6 +125,8 @@ void ElidingButton::setFixedSize( int w, int h )
 void ElidingButton::setFixedWidth( int w )
 {
     Q_UNUSED( w );
+}
+
 }
 
 #include "ElidingButton.moc"

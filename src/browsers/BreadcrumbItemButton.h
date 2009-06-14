@@ -35,7 +35,7 @@ class KUrlNavigator;
  * Each button of the URL navigator contains an URL, which
  * is set as soon as the button has been clicked.
  */
-class BreadcrumbItemButton : public ElidingButton
+class BreadcrumbItemButton : public Amarok::ElidingButton
 {
     Q_OBJECT
 

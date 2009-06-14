@@ -33,13 +33,13 @@
 #include <QStyleOptionFocusRect>
 
 BreadcrumbItemButton::BreadcrumbItemButton( QWidget *parent )
-    : ElidingButton( parent )
+    : Amarok::ElidingButton( parent )
 {
     init( parent );
 }
 
 BreadcrumbItemButton::BreadcrumbItemButton( const QIcon &icon, const QString &text, QWidget *parent )
-    : ElidingButton( icon, text, parent )
+    : Amarok::ElidingButton( icon, text, parent )
 {
     init( parent );
 }
