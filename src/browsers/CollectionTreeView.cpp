@@ -136,7 +136,7 @@ CollectionTreeView::setLevels( const QList<int> &levels )
         m_treeModel->setLevels( levels );
 }
 
-QList< int > CollectionTreeView::levels()
+QList< int > CollectionTreeView::levels() const
 {
     if( m_treeModel )
         return m_treeModel->levels();

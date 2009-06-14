@@ -259,8 +259,8 @@ public:
      */
      ServiceFactory* parent() const;
 
-     virtual QString filter();
-     virtual QList<int> levels();
+     virtual QString filter() const;
+     virtual QList<int> levels() const;
 
 public slots:
     //void treeViewSelectionChanged( const QItemSelection & selected );

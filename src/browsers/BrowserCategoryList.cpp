@@ -384,7 +384,7 @@ QString BrowserCategoryList::css()
     return style;
 }
 
-QString BrowserCategoryList::filter()
+QString BrowserCategoryList::filter() const
 {
     return m_currentFilter;
 }

@@ -359,8 +359,8 @@ CollectionWidget::filter() const
     return m_searchWidget->lineEdit()->text();
 }
 
-QList< int >
-CollectionWidget::levels()
+QList<int>
+CollectionWidget::levels() const
 {
     return m_treeView->levels();
 }

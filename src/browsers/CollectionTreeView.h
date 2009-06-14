@@ -52,7 +52,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         QSortFilterProxyModel* filterModel() const;
 
         AMAROK_EXPORT void setLevels( const QList<int> &levels );
-        QList<int> levels();
+        QList<int> levels() const;
         
         void setLevel( int level, int type );
 

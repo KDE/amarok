@@ -43,7 +43,7 @@ class CollectionWidget : public BrowserCategory
          */
         void setFilter( const QString &filter );
         virtual QString filter() const;
-        virtual QList<int> levels();
+        virtual QList<int> levels() const;
 
     public slots:
 

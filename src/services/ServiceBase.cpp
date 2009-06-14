@@ -340,15 +340,15 @@ ServiceBase::sendMessage( const QString & message )
     return i18n( "ERROR: unknown message" );
 }
 
-QString ServiceBase::filter()
+QString ServiceBase::filter() const
 {
     return m_searchWidget->lineEdit()->text();
 }
 
-QList<int> ServiceBase::levels()
+QList<int> ServiceBase::levels() const
 {
     CollectionTreeView *contentView = qobject_cast<CollectionTreeView*>(m_contentView);
-    if( contentView != 0 )
+    if( contentView )
         return contentView->levels();
     return QList<int>();
 }

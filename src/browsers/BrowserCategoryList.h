@@ -93,7 +93,7 @@ class BrowserCategoryList : public BrowserCategory
 
         QString path();
 
-        virtual QString filter();
+        virtual QString filter() const;
 
         BrowserCategory * activeCategoryRecursive();
 
