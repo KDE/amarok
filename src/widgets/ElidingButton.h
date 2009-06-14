@@ -38,31 +38,32 @@ namespace Amarok
     class ElidingButton : public QPushButton
     {
         Q_OBJECT
-    public:
-        ElidingButton( QWidget *parent = 0 );
-        ElidingButton( const QString & text, QWidget * parent = 0 );
-        ElidingButton( const QIcon & icon, const QString & text, QWidget * parent = 0 );
 
-        ~ElidingButton();
+        public:
+            ElidingButton( QWidget *parent = 0 );
+            ElidingButton( const QString & text, QWidget * parent = 0 );
+            ElidingButton( const QIcon & icon, const QString & text, QWidget * parent = 0 );
 
-        QSizePolicy sizePolicy () const;
+            ~ElidingButton();
 
-        virtual void resizeEvent ( QResizeEvent * event );
+            QSizePolicy sizePolicy () const;
 
-        //These 4 needs to be short circuited as _something, somewhere_ in the
-        //Qt stack calls these at will and makes it impossible to change the
-        //size of a QPushButton...
-        void setFixedHeight ( int h );
-        void setFixedSize ( const QSize & s );
-        void setFixedSize ( int w, int h );
-        void setFixedWidth ( int w );
+            virtual void resizeEvent ( QResizeEvent * event );
 
-    signals:
-        void sizePolicyChanged();
+            //These 4 needs to be short circuited as _something, somewhere_ in the
+            //Qt stack calls these at will and makes it impossible to change the
+            //size of a QPushButton...
+            void setFixedHeight ( int h );
+            void setFixedSize ( const QSize & s );
+            void setFixedSize ( int w, int h );
+            void setFixedWidth ( int w );
 
-    private:
-        QString m_fullText;
-        bool m_isElided;
+        signals:
+            void sizePolicyChanged();
+
+        private:
+            QString m_fullText;
+            bool m_isElided;
     };
 }
 
