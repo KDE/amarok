@@ -309,15 +309,14 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 {
     //get ther long description for this item and pass it it to info proxy.
 
-    DEBUG_BLOCK
-    BrowserCategory * category = 0;
+    BrowserCategory *category = 0;
 
     if ( index.data( CustomCategoryRoles::CategoryRole ).canConvert<BrowserCategory *>() )
         category = index.data( CustomCategoryRoles::CategoryRole ).value<BrowserCategory *>();
     else
         return;
 
-    if ( category )
+    if( category )
     {
 
         //instead of just throwing out raw text, let's format the long description and the
@@ -343,7 +342,6 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 
         QVariantMap variantMap;
         variantMap["main_info"] = QVariant( infoHtml );
-        debug() << "setting info: " << category->longDescription();
         The::infoProxy()->setInfo( variantMap );
     }
 }
@@ -389,19 +387,17 @@ QString BrowserCategoryList::filter() const
     return m_currentFilter;
 }
 
-BrowserCategory * BrowserCategoryList::activeCategoryRecursive()
+BrowserCategory *BrowserCategoryList::activeCategoryRecursive()
 {
-    BrowserCategory * category = activeCategory();
+    BrowserCategory *category = activeCategory();
 
-    if ( !category )
+    if( !category )
         return this;
 
     BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
 
-    if ( childList )
-    {
+    if( childList )
         return childList->activeCategoryRecursive();
-    }
 
     return category;
 }
