@@ -42,8 +42,7 @@ BrowserWidget::BrowserWidget( QWidget * parent )
     connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
     connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
 
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
+    setFrameShape( QFrame::NoFrame );
 
 }
 
