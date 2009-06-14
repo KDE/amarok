@@ -18,6 +18,7 @@
  ***************************************************************************/
  
 #include "BreadcrumbItem.h"
+#include "BreadcrumbItemButton.h"
 
 #include "BrowserCategoryList.h"
 #include "Debug.h"
@@ -38,11 +39,8 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
     BrowserCategoryList * parentList = category->parentList();
     if ( parentList )
     {
-        m_menuButton = new QPushButton( " > ", this );
-        m_menuButton->setFixedWidth( 14 );
-        m_menuButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-
-        QMenu * menu = new QMenu( this );
+        m_menuButton = new BreadcrumbItemMenuButton( this );
+        QMenu *menu = new QMenu( this );
         
         QMap<QString,BrowserCategory *> siblingMap =  parentList->categories();
 
@@ -69,12 +67,10 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
         menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
-    m_mainButton = new ElidingButton( category->icon(), category->prettyName(), this );
+    m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
 
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
-    //setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
-    
     //if this is a list, make cliking on this item cause us
     //to navigate to its home.
     BrowserCategoryList *list = dynamic_cast<BrowserCategoryList*>( category );
@@ -86,7 +82,6 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
     hide();
 
     updateSizePolicy();
-
 }
 
 BreadcrumbItem::~BreadcrumbItem()
@@ -95,11 +90,9 @@ BreadcrumbItem::~BreadcrumbItem()
 }
 
 void
-BreadcrumbItem::setBold( bool bold )
+BreadcrumbItem::setActive( bool active )
 {
-    QFont font = m_mainButton->font();
-    font.setBold( bold );
-    m_mainButton->setFont( font );
+    m_mainButton->setActive( active );
 }
 
 QSizePolicy BreadcrumbItem::sizePolicy() const

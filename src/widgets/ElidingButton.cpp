@@ -23,6 +23,12 @@
 
 #include <QFontMetrics>
 
+ElidingButton::ElidingButton( QWidget *parent )
+    : QPushButton( parent )
+    , m_isElided( false )
+{
+    setMinimumWidth( iconSize().width() );
+}
 
 ElidingButton::ElidingButton( const QString & text, QWidget * parent )
     : QPushButton( text, parent )
@@ -32,7 +38,7 @@ ElidingButton::ElidingButton( const QString & text, QWidget * parent )
     setMinimumWidth( iconSize().width() );
 }
 
-ElidingButton::ElidingButton(const QIcon & icon, const QString & text, QWidget * parent)
+ElidingButton::ElidingButton( const QIcon & icon, const QString & text, QWidget * parent )
     : QPushButton( icon, text, parent )
     , m_fullText( text )
     , m_isElided( false )
@@ -53,10 +59,10 @@ QSizePolicy ElidingButton::sizePolicy() const
     //then the button has all the space it needs and should really not try to expand beyond this.
     //Since the size hint depends on the actual text shown (which is very short when elided) we
     //cannot depend on this for making the button grow again...
-    if ( !m_isElided )
+    if( !m_isElided )
         return QSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
-    else
-        return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+
+    return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 }
 
 void ElidingButton::resizeEvent( QResizeEvent * event )
@@ -82,6 +88,11 @@ void ElidingButton::resizeEvent( QResizeEvent * event )
 
     bool elided = ( elidedText != m_fullText );
     
+    if ( m_isElided )
+        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    else
+        setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+
     if ( m_isElided != elided )
     {
         m_isElided = elided;
@@ -89,12 +100,6 @@ void ElidingButton::resizeEvent( QResizeEvent * event )
     }
 
     debug() << "m_isElided: " << m_isElided;
-
-
-    if ( m_isElided )
-        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    else
-        setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 
     QPushButton::resizeEvent( event );
 }

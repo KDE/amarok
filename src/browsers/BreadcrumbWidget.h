@@ -51,7 +51,7 @@ public slots:
     void updateBreadcrumbs();
 
 private:
-
+    void clearCrumbs();
     
     /**
      * Recursive function that traverses the tree of BrowserCategoryList's

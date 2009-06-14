@@ -118,9 +118,7 @@ void BrowserCategory::activate()
 BreadcrumbItem * BrowserCategory::breadcrumb()
 {
     if ( m_breadcrumb == 0 )
-    {
         m_breadcrumb = new BreadcrumbItem( this );
-    }
     return m_breadcrumb;
 }
 

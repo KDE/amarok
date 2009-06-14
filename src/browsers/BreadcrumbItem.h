@@ -24,15 +24,14 @@
 
 #include <KHBox>
 
-#include <QPushButton>
-
 class BrowserCategory;
+class BreadcrumbItemButton;
+class BreadcrumbItemMenuButton;
 
 /**
-A widget representing a single "breadcrumb" item
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ *  A widget representing a single "breadcrumb" item
+ *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 
 class BreadcrumbItem : public KHBox
 {
@@ -41,7 +40,7 @@ public:
     BreadcrumbItem( BrowserCategory * category );
     ~BreadcrumbItem();
 
-    void setBold( bool bold );
+    void setActive( bool active );
 
     QSizePolicy sizePolicy () const;
 
@@ -49,9 +48,9 @@ protected slots:
     void updateSizePolicy();
 
 private:
-    BrowserCategory * m_category;
-    QPushButton * m_menuButton;
-    ElidingButton * m_mainButton;
+    BrowserCategory          *m_category;
+    BreadcrumbItemMenuButton *m_menuButton;
+    BreadcrumbItemButton     *m_mainButton;
 };
 
 #endif

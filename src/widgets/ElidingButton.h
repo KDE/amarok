@@ -31,13 +31,13 @@
  *
  * This whole thing is a hack in so many ways... But I am sure it will also be useful
  * elsewhere as it is really something I think that QPushButton should support by default
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class ElidingButton : public QPushButton
 {
     Q_OBJECT
 public:
+    ElidingButton( QWidget *parent = 0 );
     ElidingButton( const QString & text, QWidget * parent = 0 );
     ElidingButton( const QIcon & icon, const QString & text, QWidget * parent = 0 );
 
@@ -46,7 +46,6 @@ public:
     QSizePolicy sizePolicy () const;
 
     virtual void resizeEvent ( QResizeEvent * event );
-
 
     //These 4 needs to be short circuited as _something, somewhere_ in the
     //Qt stack calls these at will and makes it impossible to change the

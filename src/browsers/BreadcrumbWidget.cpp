@@ -27,12 +27,6 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
     , m_rootList( 0 )
 {
     setFixedHeight( 28 );
-
-    setStyleSheet( "QPushButton { border: none; }"
-                   "QPushButton:hover { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f6f7fa, stop: 1 #dadbde); }"
-                   "QPushButton::menu-indicator { image: none; width: 0px;}"
-                 );
-
     setContentsMargins( 3, 0, 3, 0 );
     setSpacing( 0 );
 
@@ -41,14 +35,20 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
 
 BreadcrumbWidget::~BreadcrumbWidget()
 {
+    clearCrumbs();
+}
 
+void
+BreadcrumbWidget::clearCrumbs()
+{
     //these items will get deleted by their BrowserCategory, so set parent to 0
     //or they will get double deleted, causing a crash
-    foreach(  BreadcrumbItem * item, m_items )
+    foreach( BreadcrumbItem *item, m_items )
     {
-        item->setParent( 0 );
         item->hide();
+        item->setParent( 0 );
     }
+    m_items.clear();
 }
 
 void
@@ -67,16 +67,10 @@ BreadcrumbWidget::updateBreadcrumbs()
 {
     DEBUG_BLOCK
 
-    if ( !m_rootList )
+    if( !m_rootList )
         return;
 
-    foreach(  BreadcrumbItem * item, m_items )
-    {
-        item->setParent( 0 );
-        item->hide();
-    }
-    
-    m_items.clear();
+    clearCrumbs();
     m_spacer->setParent( 0 );
     addLevel( m_rootList );
     m_spacer->setParent( this );
@@ -85,22 +79,21 @@ BreadcrumbWidget::updateBreadcrumbs()
 void
 BreadcrumbWidget::addLevel( BrowserCategoryList * list )
 {
-
     DEBUG_BLOCK
-    BreadcrumbItem * item = list->breadcrumb();
+    BreadcrumbItem *item = list->breadcrumb();
     item->setParent( this );
     item->show();
     m_items.append( item );
 
-    BrowserCategory * childCategory = list->activeCategory();
+    BrowserCategory *childCategory = list->activeCategory();
 
-    if ( childCategory )
+    if( childCategory )
     {
-        item->setBold( false );
+        item->setActive( false );
         
         //check if this is also a list
         BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( childCategory );
-        if ( childList )
+        if( childList )
         {
             addLevel( childList );
         }
@@ -109,14 +102,14 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
             BreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( this );
             leaf->show();
-            leaf->setBold( true );
+            leaf->setActive( true );
             
             m_items.append( leaf );
         }
     }
     else
     {
-        item->setBold( true );
+        item->setActive( true );
     }
 }
 
