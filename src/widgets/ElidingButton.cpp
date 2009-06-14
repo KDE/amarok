@@ -54,7 +54,19 @@ void ElidingButton::init()
 {
     m_isElided = false;
     setMinimumWidth( iconSize().width() );
-    setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+}
+
+QSizePolicy ElidingButton::sizePolicy() const
+{
+    //This has got to be the mother of all hacks...
+    //If the text is currently elided, the button should try to get more space. If not elided
+    //then the button has all the space it needs and should really not try to expand beyond this.
+    //Since the size hint depends on the actual text shown (which is very short when elided) we
+    //cannot depend on this for making the button grow again...
+    if( !m_isElided )
+        return QSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    
+    return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 }
 
 bool ElidingButton::isElided() const
@@ -88,10 +100,20 @@ void ElidingButton::elideText( const QSize &widgetSize )
 
     QFontMetrics fm( font() );
     QString elidedText = fm.elidedText( m_fullText, Qt::ElideRight, textWidth );
-
-    m_isElided = elidedText != m_fullText;
-
     QPushButton::setText( elidedText );
+
+    bool elided = ( elidedText != m_fullText );
+
+    if ( m_isElided )
+        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    else
+        setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+
+    if ( m_isElided != elided )
+    {
+        m_isElided = elided;
+        emit( sizePolicyChanged() );
+    }
 }
 
 }

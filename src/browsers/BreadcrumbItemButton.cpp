@@ -35,33 +35,40 @@
 BreadcrumbItemButton::BreadcrumbItemButton( QWidget *parent )
     : Amarok::ElidingButton( parent )
 {
-    init( parent );
+    init();
 }
 
 BreadcrumbItemButton::BreadcrumbItemButton( const QIcon &icon, const QString &text, QWidget *parent )
     : Amarok::ElidingButton( icon, text, parent )
 {
-    init( parent );
+    init();
 }
 
-void BreadcrumbItemButton::init( QWidget *parent )
+void BreadcrumbItemButton::init()
 {
-    setFocusPolicy(Qt::NoFocus);
-    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-    setMinimumHeight(parent->minimumHeight());
+    setFocusPolicy( Qt::NoFocus );
 }
 
 BreadcrumbItemButton::~BreadcrumbItemButton()
 {
 }
 
+void BreadcrumbItemButton::setActive( const bool active )
+{
+    setDisplayHintEnabled( ActiveHint, active );
+    
+    QFont f = font();
+    f.setBold( active );
+    setFont( f );
+}
+
 void BreadcrumbItemButton::setDisplayHintEnabled(DisplayHint hint, bool enable)
 {
-    if (enable) {
+    if( enable )
         m_displayHint = m_displayHint | hint;
-    } else {
+    else
         m_displayHint = m_displayHint & ~hint;
-    }
+    
     update();
 }
 
@@ -72,15 +79,15 @@ bool BreadcrumbItemButton::isDisplayHintEnabled(DisplayHint hint) const
 
 void BreadcrumbItemButton::enterEvent(QEvent* event)
 {
-    QPushButton::enterEvent(event);
-    setDisplayHintEnabled(HoverHint, true);
+    QPushButton::enterEvent( event );
+    setDisplayHintEnabled( HoverHint, true );
     update();
 }
 
 void BreadcrumbItemButton::leaveEvent(QEvent* event)
 {
-    QPushButton::leaveEvent(event);
-    setDisplayHintEnabled(HoverHint, false);
+    QPushButton::leaveEvent( event );
+    setDisplayHintEnabled( HoverHint, false );
     update();
 }
 
@@ -112,13 +119,6 @@ void BreadcrumbItemButton::paintEvent(QPaintEvent* event)
     const int iconTop = ( (buttonHeight - top - bottom) - iconHeight ) / 2;
     const QRect iconRect( left + padding, iconTop, iconWidth, iconHeight );
     painter.drawPixmap( iconRect, icon().pixmap( iconSize() ) );
-
-    if( isDisplayHintEnabled(ActiveHint) )
-    {
-        QFont f = painter.font();
-        f.setBold( true );
-        painter.setFont( f );
-    }
 
     painter.setPen(fgColor);
     const QRect textRect( left + (padding * 2) + iconWidth, top, buttonWidth, buttonHeight);
@@ -152,6 +152,14 @@ QColor BreadcrumbItemButton::foregroundColor() const
         foregroundColor.setAlpha( 60 );
 
     return foregroundColor;
+}
+
+QSize BreadcrumbItemButton::sizeHint() const
+{
+    QSize size = Amarok::ElidingButton::sizeHint();
+    QFontMetrics fm( font() );
+    size.setWidth( fm.width( text() ) + iconSize().width() + 8 );
+    return size;
 }
 
 QSize BreadcrumbItemMenuButton::sizeHint() const

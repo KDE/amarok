@@ -31,24 +31,22 @@ namespace Amarok
     /**
      * This is a reimplementaiton of a QPushButton that elides text if stretched below
      * its optimal width. The icon (if any) will always remain visible.
-     *
-     * This whole thing is a hack in so many ways... But I am sure it will also be useful
-     * elsewhere as it is really something I think that QPushButton should support by default
      */
     class ElidingButton : public QPushButton
     {
         Q_OBJECT
 
         public:
-            ElidingButton( QWidget *parent = 0 );
-            ElidingButton( const QString & text, QWidget * parent = 0 );
-            ElidingButton( const QIcon & icon, const QString & text, QWidget * parent = 0 );
+            ElidingButton( QWidget *parent );
+            ElidingButton( const QString & text, QWidget *parent );
+            ElidingButton( const QIcon & icon, const QString & text, QWidget *parent );
             ~ElidingButton();
 
             bool isElided() const;
+            QSizePolicy sizePolicy() const;
 
             virtual void setText( const QString &text );
-            virtual void resizeEvent ( QResizeEvent * event );
+            virtual void resizeEvent( QResizeEvent *event );
 
         signals:
             void sizePolicyChanged();

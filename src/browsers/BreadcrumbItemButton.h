@@ -39,50 +39,51 @@ class BreadcrumbItemButton : public Amarok::ElidingButton
 {
     Q_OBJECT
 
-public:
-    BreadcrumbItemButton( QWidget* parent );
-    BreadcrumbItemButton( const QIcon &icon, const QString &text, QWidget *parent );
-    virtual ~BreadcrumbItemButton();
+    public:
+        BreadcrumbItemButton( QWidget* parent );
+        BreadcrumbItemButton( const QIcon &icon, const QString &text, QWidget *parent );
+        virtual ~BreadcrumbItemButton();
 
-    void setActive( const bool active ) { setDisplayHintEnabled( ActiveHint, active ); }
+        void setActive( const bool active );
 
-protected:
-    enum DisplayHint
-    {
-        ActiveHint = 1,
-        HoverHint = 2
-    };
+        virtual QSize sizeHint() const;
 
-    void setDisplayHintEnabled(DisplayHint hint, bool enable);
-    bool isDisplayHintEnabled(DisplayHint hint) const;
+    protected:
+        enum DisplayHint
+        {
+            ActiveHint = 1,
+            HoverHint = 2
+        };
 
-    virtual void enterEvent(QEvent* event);
-    virtual void leaveEvent(QEvent* event);
+        void setDisplayHintEnabled(DisplayHint hint, bool enable);
+        bool isDisplayHintEnabled(DisplayHint hint) const;
 
-    virtual void paintEvent(QPaintEvent* event);
-    void drawHoverBackground(QPainter* painter);
+        virtual void enterEvent(QEvent* event);
+        virtual void leaveEvent(QEvent* event);
 
-    /** Returns the foreground color by respecting the current display hint. */
-    QColor foregroundColor() const;
+        virtual void paintEvent(QPaintEvent* event);
+        void drawHoverBackground(QPainter* painter);
 
-private:
-    void init( QWidget *parent );
-    int m_displayHint;
+        /** Returns the foreground color by respecting the current display hint. */
+        QColor foregroundColor() const;
+
+    private:
+        void init();
+        int m_displayHint;
 };
 
 class BreadcrumbItemMenuButton : public BreadcrumbItemButton
 {
     Q_OBJECT
 
-public:
-    explicit BreadcrumbItemMenuButton(QWidget* parent) : BreadcrumbItemButton(parent) { };
-    virtual ~BreadcrumbItemMenuButton() { }
+    public:
+        explicit BreadcrumbItemMenuButton(QWidget* parent) : BreadcrumbItemButton(parent) { };
+        virtual ~BreadcrumbItemMenuButton() { }
 
-    /** @see QWidget::sizeHint() */
-    virtual QSize sizeHint() const;
+        virtual QSize sizeHint() const;
 
-protected:
-    virtual void paintEvent(QPaintEvent* event);
+    protected:
+        virtual void paintEvent(QPaintEvent* event);
 };
 
 #endif
