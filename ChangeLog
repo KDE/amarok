@@ -2,12 +2,19 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
-
-VERSION 2.1.1
+VERSION 2.2
   FEATURES:
     * Automatically expand collection browser search results and make the
       results keyboard accessible. Patch thanks to Tuomas Nurmi
       <tuomas@norsumanageri.org>. (BR 172379)
+
+  CHANGES:
+
+  BUGFIXES:
+
+
+VERSION 2.1.1
+  FEATURES:
     * Compilations with more than 60 artists are supported.
     * Option to hide the context view.
     * Applets are now laid out according to two criteria: either fixed height
