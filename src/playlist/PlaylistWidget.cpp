@@ -158,8 +158,7 @@ Playlist::Widget::Widget( QWidget* parent )
 
     } //END Playlist Toolbar
 
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
+    setFrameShape( QFrame::NoFrame );
 }
 
 QSize
