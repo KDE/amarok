@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=JS Sample Engine
+Name[uk]=Зразок рушія JS
 Comment=Javascript Sample Engine
+Comment[uk]=Зразок рушія Javascript
 Type=Service
 Icon=preferences-system-time
 ServiceTypes=Plasma/DataEngine

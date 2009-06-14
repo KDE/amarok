@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Amarok JavaScript Applet
+Name[uk]=Аплет JavaScript Amarok
 Comment=Native Amarok applet written in JavaScript
+Comment[uk]=Аплет Amarok написаний на JavaScript
 X-KDE-ServiceTypes=Plasma/ScriptEngine
 Type=Service
 Icon=text-x-script

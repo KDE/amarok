@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Service
 Name=AudioCd Collection
+Name[uk]=Збірка звукових КД
 Comment=AudioCd collection plugin for Amarok
+Comment[uk]=Додаток збірки звукових КД для Amarok
 
 ServiceTypes=Amarok/Plugin
 

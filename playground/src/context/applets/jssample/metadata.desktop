@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Javascript Applet
+Name[uk]=Аплет Javascript
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=chronometer
