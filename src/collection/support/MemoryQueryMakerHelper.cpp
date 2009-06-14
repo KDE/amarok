@@ -18,6 +18,7 @@
 
 #include "MemoryQueryMakerHelper.h"
 
+#include "collection/support/MemoryCustomValue.h"
 #include "meta/Meta.h"
 
 #include <QList>
@@ -30,7 +31,7 @@
 
 template <class PointerType>
 QList<PointerType>
-MemoryQueryMakerHelper::orderListByName( const QList<PointerType> &list, qint64 value, bool descendingOrder )
+MemoryQueryMakerHelper::orderListByName( const QList<PointerType> &list, bool descendingOrder )
 {
     QList<PointerType> resultList = list;
     KSortableList<PointerType, QString> sortList;
@@ -93,8 +94,74 @@ MemoryQueryMakerHelper::reverse(const QList<T> &l)
     return ret;
 }
 
-template QList<Meta::AlbumPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::AlbumPtr > &list, qint64, bool );
-template QList<Meta::ArtistPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ArtistPtr > &list, qint64, bool );
-template QList<Meta::GenrePtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::GenrePtr > &list, qint64, bool );
-template QList<Meta::ComposerPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ComposerPtr > &list, qint64, bool );
+Meta::TrackList
+MemoryQueryMakerHelper::orderListByString( const Meta::TrackList &tracks, qint64 value, bool orderDescending )
+{
+    Meta::TrackList resultList = tracks;
+    CustomReturnValue *crv = CustomValueFactory::returnValue( value );
+    if( crv )
+    {
+        KSortableList<Meta::TrackPtr, QString> sortList;
+        foreach( const Meta::TrackPtr &pointer, tracks )
+        {
+            sortList.insert( crv->value( pointer ), pointer );
+        }
+        sortList.sort();
+        Meta::TrackList tmpList;
+        typedef KSortableItem<Meta::TrackPtr,QString> SortItem;
+        foreach( SortItem item, sortList )
+        {
+           tmpList.append( item.second );
+        }
+        if( orderDescending )
+        {
+            //KSortableList uses qSort, which orders a list in ascending order
+            resultList = reverse<Meta::TrackPtr>( tmpList );
+        }
+        else
+        {
+            resultList = tmpList;
+        }
+    }
+    delete crv;
+    return resultList;
+}
+
+Meta::TrackList
+MemoryQueryMakerHelper::orderListByNumber( const Meta::TrackList &tracks, qint64 value, bool orderDescending )
+{
+    Meta::TrackList resultList = tracks;
+    CustomReturnValue *crv = CustomValueFactory::returnValue( value );
+    if( crv )
+    {
+        KSortableList<Meta::TrackPtr, double> sortList;
+        foreach( const Meta::TrackPtr &pointer, tracks )
+        {
+            sortList.insert( crv->value( pointer ).toDouble(), pointer );
+        }
+        sortList.sort();
+        Meta::TrackList tmpList;
+        typedef KSortableItem<Meta::TrackPtr,double> SortItem;
+        foreach( SortItem item, sortList )
+        {
+           tmpList.append( item.second );
+        }
+        if( orderDescending )
+        {
+            //KSortableList uses qSort, which orders a list in ascending order
+            resultList = reverse<Meta::TrackPtr>( tmpList );
+        }
+        else
+        {
+            resultList = tmpList;
+        }
+    }
+    delete crv;
+    return resultList;
+}
+
+template QList<Meta::AlbumPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::AlbumPtr > &list, bool );
+template QList<Meta::ArtistPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ArtistPtr > &list, bool );
+template QList<Meta::GenrePtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::GenrePtr > &list, bool );
+template QList<Meta::ComposerPtr> MemoryQueryMakerHelper::orderListByName( const QList<Meta::ComposerPtr > &list, bool );
 
