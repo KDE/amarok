@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -33,7 +34,6 @@ namespace Amarok
      *
      * This whole thing is a hack in so many ways... But I am sure it will also be useful
      * elsewhere as it is really something I think that QPushButton should support by default
-     * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
      */
     class ElidingButton : public QPushButton
     {
@@ -43,25 +43,20 @@ namespace Amarok
             ElidingButton( QWidget *parent = 0 );
             ElidingButton( const QString & text, QWidget * parent = 0 );
             ElidingButton( const QIcon & icon, const QString & text, QWidget * parent = 0 );
-
             ~ElidingButton();
 
-            QSizePolicy sizePolicy () const;
+            bool isElided() const;
 
+            virtual void setText( const QString &text );
             virtual void resizeEvent ( QResizeEvent * event );
-
-            //These 4 needs to be short circuited as _something, somewhere_ in the
-            //Qt stack calls these at will and makes it impossible to change the
-            //size of a QPushButton...
-            void setFixedHeight ( int h );
-            void setFixedSize ( const QSize & s );
-            void setFixedSize ( int w, int h );
-            void setFixedWidth ( int w );
 
         signals:
             void sizePolicyChanged();
 
         private:
+            void init();
+            void elideText( const QSize &widgetSize );
+
             QString m_fullText;
             bool m_isElided;
     };

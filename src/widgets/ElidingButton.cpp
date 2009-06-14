@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -27,104 +28,70 @@ namespace Amarok {
 
 ElidingButton::ElidingButton( QWidget *parent )
     : QPushButton( parent )
-    , m_isElided( false )
 {
-    setMinimumWidth( iconSize().width() );
+    init();
 }
 
 ElidingButton::ElidingButton( const QString & text, QWidget * parent )
     : QPushButton( text, parent )
     , m_fullText( text )
-    , m_isElided( false )
 {
-    setMinimumWidth( iconSize().width() );
+    init();
 }
 
 ElidingButton::ElidingButton( const QIcon & icon, const QString & text, QWidget * parent )
     : QPushButton( icon, text, parent )
     , m_fullText( text )
-    , m_isElided( false )
 {
-    setMinimumWidth( iconSize().width() );
+    init();
 }
 
 ElidingButton::~ElidingButton()
 {
 }
 
-QSizePolicy ElidingButton::sizePolicy() const
+void ElidingButton::init()
 {
-    DEBUG_BLOCK
+    m_isElided = false;
+    setMinimumWidth( iconSize().width() );
+    setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+}
 
-    //This has got to be the mother of all hacks... 
-    //If the text is currently elided, the button should try to get more space. If not elided
-    //then the button has all the space it needs and should really not try to expand beyond this.
-    //Since the size hint depends on the actual text shown (which is very short when elided) we
-    //cannot depend on this for making the button grow again...
-    if( !m_isElided )
-        return QSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
-
-    return QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+bool ElidingButton::isElided() const
+{
+    return m_isElided;
 }
 
 void ElidingButton::resizeEvent( QResizeEvent * event )
 {
-    DEBUG_BLOCK
-    debug() << "old size: " << event->oldSize();
-    debug() << "suggested new size: " << event->size();
+    elideText( event->size() );
+    QPushButton::resizeEvent( event );
+}
 
-    //elide text...
+void ElidingButton::setText( const QString &text )
+{
+    m_fullText = text;
+    elideText( size() );
+    // elideText will call QPushButton::setText()
+}
 
-    int width = event->size().width();
-    int iconWidth = iconSize().width();
+void ElidingButton::elideText( const QSize &widgetSize )
+{
+    const int width = widgetSize.width();
+    const int iconWidth = iconSize().width();
 
     int left, top, right, bottom;
-    getContentsMargins ( &left, &top, &right, &bottom );
+    getContentsMargins( &left, &top, &right, &bottom );
     int padding = left + right + 4;
 
     int textWidth = width - ( iconWidth + padding );
 
     QFontMetrics fm( font() );
     QString elidedText = fm.elidedText( m_fullText, Qt::ElideRight, textWidth );
-    setText( elidedText );
 
-    bool elided = ( elidedText != m_fullText );
-    
-    if ( m_isElided )
-        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    else
-        setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    m_isElided = elidedText != m_fullText;
 
-    if ( m_isElided != elided )
-    {
-        m_isElided = elided;
-        emit( sizePolicyChanged() );
-    }
-
-    debug() << "m_isElided: " << m_isElided;
-
-    QPushButton::resizeEvent( event );
-}
-
-void ElidingButton::setFixedHeight( int h )
-{
-    Q_UNUSED( h );
-}
-
-void ElidingButton::setFixedSize( const QSize &s )
-{
-    Q_UNUSED( s );
-}
-
-void ElidingButton::setFixedSize( int w, int h )
-{
-    Q_UNUSED( w );
-    Q_UNUSED( h );
-}
-
-void ElidingButton::setFixedWidth( int w )
-{
-    Q_UNUSED( w );
+    QPushButton::setText( elidedText );
 }
 
 }
