@@ -108,7 +108,6 @@ InfoProxy::notifyCloudObservers( const QVariantMap &cloudMap ) const
 void
 InfoProxy::setInfo( const QVariantMap &infoMap )
 {
-    DEBUG_BLOCK;
     m_storedInfo = infoMap;
     notifyObservers( m_storedInfo );
 }
@@ -116,7 +115,6 @@ InfoProxy::setInfo( const QVariantMap &infoMap )
 void
 InfoProxy::setCloud( const QVariantMap &cloudMap )
 {
-    DEBUG_BLOCK;
     m_storedCloud = cloudMap;
     notifyCloudObservers( m_storedCloud );
 }
