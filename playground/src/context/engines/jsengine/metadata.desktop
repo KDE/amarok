@@ -1,7 +1,11 @@
 [Desktop Entry]
 Name=JS Sample Engine
+Name[km]=ម៉ាស៊ីន​គំរូ JS
+Name[sv]=Javascript-exempelgränssnitt
 Name[uk]=Зразок рушія JS
 Comment=Javascript Sample Engine
+Comment[km]=ម៉ាស៊ីន​គំរូ Javascript
+Comment[sv]=Javascript-exempelgränssnitt
 Comment[uk]=Зразок рушія Javascript
 Type=Service
 Icon=preferences-system-time

@@ -1,5 +1,7 @@
 [Desktop Entry]
 Name=Amarok JavaScript Runner
+Name[km]=កម្មវិធី​រត់ JavaScript របស់ Amarok
+Name[sv]=Amarok Javascript-körprogram
 Name[uk]=Інструмент запуску JavaScript Amarok
 X-KDE-ServiceTypes=Plasma/ScriptEngine
 Type=Service
