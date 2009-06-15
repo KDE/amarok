@@ -104,6 +104,14 @@ void ElidingButton::elideText( const QSize &widgetSize )
 
     bool elided = ( elidedText != m_fullText );
 
+    // If there is no tooltip set, then we set it to be the full text when elided,
+    // and clear it if the button is no longer elided.
+    const QString tip = toolTip();
+    if( elided && tip.isEmpty() )
+        setToolTip( m_fullText );
+    else if( !elided && tip == m_fullText )
+        setToolTip( QString() );
+
     if ( m_isElided )
         setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     else
