@@ -355,18 +355,13 @@ CollectionManager::tracksForUrls( const KUrl::List &urls )
 Meta::TrackPtr
 CollectionManager::trackForUrl( const KUrl &url )
 {
-    DEBUG_BLOCK;
-    debug() << "url" << url.url(); 
     //TODO method stub
     //check all collections
     //might be a podcast, in that case we'll have additional meta information
     //might be a lastfm track, another stream
     //or a file which is not in any collection
     if( !url.isValid() )
-    {
-        debug() << "invalid"; 
         return Meta::TrackPtr( 0 );
-    }
 
     foreach( Amarok::TrackProvider *provider, d->trackProviders )
     {
@@ -384,11 +379,8 @@ CollectionManager::trackForUrl( const KUrl &url )
     if( url.protocol() == "file" && EngineController::canDecode( url ) )
     {
         KUrl cuesheet = MetaCue::Track::locateCueSheet( url );
-        if( !cuesheet.isEmpty() ) {
-            debug() << "Creating MetaCue::Track";
+        if( !cuesheet.isEmpty() )
             return Meta::TrackPtr( new MetaCue::Track( url, cuesheet ) );
-        }
-        debug() << "Creating MetaFile::Track";
         return Meta::TrackPtr( new MetaFile::Track( url ) );
     }
 

@@ -27,7 +27,6 @@
 
 TimecodeTrackProvider::TimecodeTrackProvider()
 {
-    DEBUG_BLOCK
 }
 
 
@@ -37,38 +36,25 @@ TimecodeTrackProvider::~TimecodeTrackProvider()
 
 bool TimecodeTrackProvider::possiblyContainsTrack( const KUrl & url ) const
 {
-    DEBUG_BLOCK;
-    
-    QString urlString = url.url();
-    debug() << "got url: " << urlString;
-    debug() << "contains ':\\d+-\\d+$' " << urlString.contains( QRegExp(":\\d+-\\d+$") );
-    return urlString.contains( QRegExp(":\\d+-\\d+$") );
+    return url.url().contains( QRegExp(":\\d+-\\d+$") );
 }
 
 Meta::TrackPtr TimecodeTrackProvider::trackForUrl( const KUrl & url )
 {
-    DEBUG_BLOCK;
-    
     QString urlString = url.url();
-    debug() << "got url: " << urlString;
 
     QRegExp rx;
     rx.setPattern( "^(.+):(\\d+)-(\\d+)$" );
-    if (rx.indexIn( urlString ) != -1) {
+    if( rx.indexIn( urlString ) != -1 )
+    {
         QString baseUrl = rx.cap(1);
         int start = rx.cap(2).toInt();
         int end = rx.cap(3).toInt();
 
-        debug() << "Base: " << baseUrl;
-        debug() << "Start: " << start;
-        debug() << "End: " << end;
-
         Meta::TimecodeTrack * track = new Meta::TimecodeTrack( "TimecodeTrack", baseUrl, start * 1000, end * 1000 );
         return Meta::TrackPtr( track );
-
     }
-    else
-        return Meta::TrackPtr();
+    return Meta::TrackPtr();
 }
 
 
