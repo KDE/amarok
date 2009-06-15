@@ -611,19 +611,16 @@ XmlParseJob::run()
 {
     DEBUG_BLOCK
 
-    QList<QVariantMap > directoryData;
+    QList<QVariantMap> directoryData;
     bool firstTrack = true;
     QString currentDir;
 
     ScanResultProcessor processor( m_collection );
     if( m_isIncremental )
-    {
         processor.setScanType( ScanResultProcessor::IncrementalScan );
-    }
     else
-    {
         processor.setScanType( ScanResultProcessor::FullScan );
-    }
+
     do
     {
         m_abortMutex.lock();
@@ -637,9 +634,7 @@ XmlParseJob::run()
 
         m_mutex.lock();
         if( m_nextData.isEmpty() )
-        {
             m_wait.wait( &m_mutex );
-        }
 
         if( m_nextData.isEmpty() )
             break;
@@ -778,7 +773,7 @@ XmlParseJob::run()
 
                     // Deserialize CoverBundle list
                     QStringList list = attrs.value( "list" ).toString().split( "AMAROK_MAGIC" );
-                    QList< QPair<QString, QString> > covers;
+                    QList<QPair<QString, QString> > covers;
 
                     // Don't iterate if the list only has one element
                     if( list.size() > 1 )
@@ -793,7 +788,7 @@ XmlParseJob::run()
         }
         if( m_reader.error() != QXmlStreamReader::PrematureEndOfDocumentError && m_reader.error() != QXmlStreamReader::NoError )
         {
-            debug() << "do-while done with error: " << m_reader.error();
+            error() << "Collection scanner abort error: " << m_reader.error();
             //the error cannot be PrematureEndOfDocumentError, so handle an unrecoverable error here
 
             // At this point, most likely the scanner has crashed and is about to get restarted.

@@ -27,6 +27,7 @@
 
 #include <KApplication>
 #include <KIcon>
+#include <KWindowSystem>
 
 #include <QDesktopWidget>
 #include <QMouseEvent>

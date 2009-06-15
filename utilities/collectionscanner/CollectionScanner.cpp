@@ -77,7 +77,6 @@ main( int argc, char *argv[] )
 {
     CollectionScanner scanner( argc, argv );
     return scanner.exec();
-
 }
 
 static QTextStream s_textStream( stderr );
@@ -826,13 +825,15 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             attributes["discnumber"] = QString::number( discnumber );
         }
 
+        // Sometimes the file is explicitly tagged with compilation details. When it is not,
+        // then we need to delegate checking whether this files is in a compilation to Amarok.
         if ( compilation.isEmpty() )
         {
             // well, it wasn't set, but if the artist is VA assume it's a compilation
             //TODO: If we get pure-Qt translation support, put this back in; else functionality moved to the processor
-	    //if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
-                //attributes["compilation"] = QString::number( 1 );
-	    attributes["compilation"] = "checkforvarious";
+            //if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
+            //    attributes["compilation"] = QString::number( 1 );
+            attributes["compilation"] = "checkforvarious";
         }
         else
         {
