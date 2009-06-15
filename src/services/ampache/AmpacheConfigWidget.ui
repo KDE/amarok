@@ -48,7 +48,7 @@
       <item row="2" column="0" >
        <widget class="QLabel" name="label_6" >
         <property name="text" >
-         <string comment="The username to use for logins to an Amapche server" >Username:</string>
+         <string comment="The username to use for logins to an Ampache server" >Username:</string>
         </property>
        </widget>
       </item>
