@@ -3,3 +3,4 @@ if( WITH_PLAYER )
 endif( WITH_PLAYER )
 
 add_subdirectory( collectionscanner )
+add_subdirectory( afttagger )

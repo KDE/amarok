@@ -45,7 +45,7 @@ private:
     QString m_origPath;
     QString m_tempSavePath;
     QString m_origRenamedSavePath;
-    QByteArray m_tempSaveDigest;
+    QString m_tempSaveDigest;
     bool m_cleanupNeeded;
     bool m_verbose;
     QString m_prefix;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>
+ *  Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,10 +18,8 @@
 
 #include "SafeFileSaver.h"
 
-#include <KRandom>
-#include <KMD5>
-
 #include <QtDebug>
+#include <QCryptographicHash>
 #include <QFile>
 #include <QFileInfo>
 #include <QString>
@@ -56,7 +54,7 @@ SafeFileSaver::prepareToSave()
     if( m_verbose )
         qDebug() << "prepareToSave start";
     m_cleanupNeeded = true;
-    KMD5 md5sum;
+    QCryptographicHash md5sum( QCryptographicHash::Md5 ); 
 
     QString pid;
 #ifdef Q_WS_WIN
@@ -65,7 +63,20 @@ SafeFileSaver::prepareToSave()
     pid.setNum( getpid() );
 #endif
 
-    QString randomString = KRandom::randomString( 8 );
+    int length = 8;
+    //The following snippet of code is copied from kdelibs, and is copyright Matthias Kalle Dalheimer, Charles Samuels, Joseph Wenninger, and maybe more
+    QString str; str.resize( length );
+    int i = 0;
+    while( length-- )
+    {
+        int r = random() % 62;
+        r+=48;
+        if( r > 57 ) r+=7;
+        if( r > 90 ) r+=6;
+        str[i++] = char( r );
+    }
+
+    QString randomString = str;
 
     m_tempSavePath = m_origPath + '.' + m_prefix + "temp.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
     m_origRenamedSavePath = m_origPath + '.' + m_prefix + "original.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
@@ -90,15 +101,8 @@ SafeFileSaver::prepareToSave()
         return QString();
     }
 
-    if( !md5sum.update( tempFile ) )
-    {
-        if( m_verbose )
-            qDebug() << "Could not get checksum of temp file!";
-        tempFile.close();
-        return QString();
-    }
-    
-    m_tempSaveDigest = md5sum.hexDigest();
+    md5sum.addData( tempFile.readLine() );
+    m_tempSaveDigest = md5sum.result().toHex();
 
     tempFile.close();
 
@@ -109,7 +113,7 @@ SafeFileSaver::prepareToSave()
     //We've calculated the md5sum of the original file
 
     if( m_verbose )
-        qDebug() << "MD5 sum of temp file: " << m_tempSaveDigest.data();
+        qDebug() << "MD5 sum of temp file: " << m_tempSaveDigest;
 
     //Now, we have a MD5 sum of the original file at the time of copying saved in m_tempSaveDigest
 
@@ -127,9 +131,9 @@ SafeFileSaver::doSave()
 
     m_cleanupNeeded = true;
 
-    KMD5 md5sum;
+    QCryptographicHash md5sum( QCryptographicHash::Md5 ); 
 
-    QByteArray origRenamedDigest;
+    QString origRenamedDigest;
 
     if( m_tempSavePath.isEmpty() || m_tempSaveDigest.isEmpty() || m_origRenamedSavePath.isEmpty() )
     {
@@ -161,22 +165,12 @@ SafeFileSaver::doSave()
         return false;
     }
 
-    
-    if( !md5sum.update( origRenamedFile ) )
-    {
-        if( m_verbose )
-            qDebug() << "Error during checksumming temp file!";
-        origRenamedFile.close();
-        failRemoveCopy( true );
-        return false;
-    }
-
-    origRenamedDigest = md5sum.hexDigest();
-
+    md5sum.addData( origRenamedFile.readLine() );
+    origRenamedDigest = md5sum.result().toHex();
     origRenamedFile.close();
 
     if( m_verbose )
-        qDebug() << "md5sum of original renamed file: " << origRenamedDigest.data();
+        qDebug() << "md5sum of original renamed file: " << origRenamedDigest;
 
     if( origRenamedDigest != m_tempSaveDigest )
     {

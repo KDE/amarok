@@ -661,25 +661,10 @@ install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 
-############# AFT Tagger ##############
-
-set(amarok_afttagger_SRCS
-    afttagger/SafeFileSaver.cpp
-    afttagger/afttagger_main.cpp
-)
-
-kde4_add_executable(amarok_afttagger ${amarok_afttagger_SRCS} )
-
-target_link_libraries(amarok_afttagger
-    ${KDE4_KDECORE_LIBS}
-    ${TAGLIB_LIBRARIES}
-)
-
-install(TARGETS amarok_afttagger ${INSTALL_TARGETS_DEFAULT_ARGS})
-
 ############ amarok protocol handler ###########
 
 install( FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR} )
+
 
 
 
