@@ -110,7 +110,7 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
 
     m_logfile = ( m_batch ? ( m_incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
                        : m_saveLocation + "collection_scan.log" );
-    
+
     if( !m_restart )
         QFile::remove( m_logfile );
 
@@ -148,13 +148,13 @@ CollectionScanner::readBatchIncrementalFile()
         return false;
 
     m_batchFolderTime = QFileInfo( filePath ).lastModified();
-    
+
     QFile folderFile( filePath );
     if( !folderFile.open( QIODevice::ReadOnly ) )
         return false;
 
     m_folders.clear();
-    
+
     QTextStream folderStream;
     folderStream.setDevice( &folderFile );
 
@@ -171,7 +171,7 @@ CollectionScanner::readBatchIncrementalFile()
         //TODO: rpath substitution?
         temp = folderStream.readLine();
     }
-    
+
     folderFile.close();
     return true;
 }
@@ -230,7 +230,7 @@ CollectionScanner::doJob() //SLOT
             // Make sure that all paths are absolute, not relative
             if( QDir::isRelativePath( dir ) )
                 dir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
- 
+
             if( !dir.endsWith( '/' ) )
                 dir += '/';
 
@@ -280,7 +280,7 @@ CollectionScanner::doJob() //SLOT
             QFile::remove( "amarokcollectionscanner_batchfullscan.log" );
         }
     }
-    
+
     quit();
 }
 
@@ -315,7 +315,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
         if( f.isSymLink() )
             f = QFileInfo( f.symLinkTarget() );
-        
+
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
             //The following D-Bus call is used to see if a found folder is new or not
@@ -439,7 +439,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
 
-                for( QList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
+                for( QList<CoverBundle>::ConstIterator it2 = covers.constBegin(); it2 != covers.constEnd(); ++it2 )
                 {
                     string += ( string.isEmpty() ? "" : "AMAROK_MAGIC" ) + (*it2).first + "AMAROK_MAGIC" + (*it2).second;
                 }
@@ -993,7 +993,7 @@ CollectionScanner::readArgs()
                     m_collectionId = arg;
                 else
                     displayHelp();
-                    
+
                 rpatharg = false;
                 pidarg = false;
                 savelocationarg = false;
@@ -1037,7 +1037,7 @@ CollectionScanner::readArgs()
                 else
                     displayHelp();
             }
-            
+
         }
         else if( arg.startsWith( "-" ) )
         {
@@ -1057,7 +1057,7 @@ CollectionScanner::readArgs()
                     m_batch = true;
                 else
                     displayHelp();
-                
+
                 ++pos;
             }
         }
