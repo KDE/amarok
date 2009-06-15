@@ -16,6 +16,9 @@ add_executable(amaroktest ${amaroktest_SRCS})
 
 target_link_libraries(amaroktest
                       amaroklib
+                      ${QT_QTCORE_LIBRARY}
+                      ${QT_QTSCRIPT_LIBRARY}
+                      ${KDE4_KDECORE_LIBRARY}
                      )
 
 if(APPLE)
