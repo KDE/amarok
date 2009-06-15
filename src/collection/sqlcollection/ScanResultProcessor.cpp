@@ -518,7 +518,7 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
             QString select = QString( "SELECT MAX(image) FROM albums_temp WHERE name = '%1';" )
                 .arg( m_collection->escape( album ) );
             QStringList res = m_collection->query( select );
-            if( !res.isEmpty() )
+            if( !res.isEmpty() && !res[0].isEmpty() )
             {
                 QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
                     .arg( res[0] , QString::number( id ) );
