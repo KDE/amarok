@@ -9,6 +9,9 @@ VERSION 2.2
       <tuomas@norsumanageri.org>. (BR 172379)
 
   CHANGES:
+    * The OSD registers itself as a notification window type on relevant
+      platforms. Patch thanks to Danny Baumann <dannybaumann@web.de>.
+      (BR 194517)
 
   BUGFIXES:
 
