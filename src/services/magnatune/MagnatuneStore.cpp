@@ -103,6 +103,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     setShortDescription( i18n( "\"Fair trade\" online music store." ) );
     setIcon( KIcon( "view-services-magnatune-amarok" ) );
 
+    // xgettext: no-c-format
     setLongDescription( i18n( "Magnatune.com is a different kind of record company with the motto \"We are not evil!\" 50% of every purchase goes directly to the artist and if you purchase an album through Amarok, the Amarok project receives a 10% commission. Magnatune.com also offers \"all you can eat\" memberships that lets you download as much of their music as you like." ) );
 
     KIconLoader loader;
