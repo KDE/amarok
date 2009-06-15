@@ -1,6 +1,7 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- **************************************************************************/
+* copyright      : (C) 2007 Leo Franchi <lfranchi@gmail.com>               *
+* copyright      : (C) 2009 Simon Esneault <simon.esneault@gmail.com>      *
+****************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -17,21 +18,31 @@
 #include "App.h"
 #include "Debug.h"
 #include "context/Svg.h"
+#include "context/ContextView.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
 
-#include <KGlobalSettings>
-#include <plasma/theme.h>
+
+#include <Plasma/Theme>
 #include <plasma/widgets/webview.h>
 #include <plasma/widgets/iconwidget.h>
+#include <plasma/widgets/iconwidget.h>
+#include <plasma/widgets/iconwidget.h>
+#include <plasma/widgets/pushbutton.h>
 
 #include <KIcon>
+#include <KGlobalSettings>
+#include <KConfigDialog>
+#include <KPushButton>
 #include <KStandardDirs>
 
 #include <QAction>
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
 #include <QPainter>
+#include <QMenu>
+#include <QWebHistory>
+#include <QWebPage>
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -40,10 +51,19 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
     , m_webView( 0 )
+    , m_backwardIcon( 0 )
+    , m_forwardIcon( 0 )
+    , m_artistIcon( 0 )
+    , m_albumIcon( 0 )
+    , m_trackIcon( 0 )
+    , m_langIcon( 0 )
     , m_reloadIcon( 0 )
     , m_css( 0 )
+    , m_current( "" )
+    , m_wikiPreferredLang( QString() )
+    , m_gotMessage( 0 )
 {
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
@@ -53,8 +73,9 @@ WikipediaApplet::~ WikipediaApplet()
     delete m_css;
 }
 
-void WikipediaApplet::init()
-{
+void
+WikipediaApplet::init()
+{   
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
     m_webView = new Plasma::WebView( this );
@@ -69,7 +90,7 @@ void WikipediaApplet::init()
     // make transparent so we can use qpainter translucency to draw the  background
     QPalette palette = m_webView->palette();
     palette.setBrush(QPalette::Base, Qt::transparent);
-    m_webView->page()->setPalette(palette);
+    m_webView->page()->setPalette(palette);   
     m_webView->setAttribute(Qt::WA_OpaquePaintEvent, false);
     
     
@@ -79,19 +100,66 @@ void WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
+    QAction* backwardAction = new QAction( i18n( "Previous" ), this );
+    backwardAction->setIcon( KIcon( "go-previous" ) );
+    backwardAction->setVisible( true );
+    backwardAction->setEnabled( false );
+    m_backwardIcon = addAction( backwardAction );
+    connect( backwardAction, SIGNAL( activated() ), this, SLOT( goBackward() ) );
+    
+    QAction* forwardAction = new QAction( i18n( "Next" ), this );
+    forwardAction->setIcon( KIcon( "go-next" ) );
+    forwardAction->setVisible( true );
+    forwardAction->setEnabled( false );
+    m_forwardIcon = addAction( forwardAction );
+    connect( m_forwardIcon, SIGNAL( activated() ), this, SLOT( goForward() ) );
+
+    QAction* artistAction = new QAction( i18n( "Artist" ), this );
+    artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
+    artistAction->setVisible( true );
+    artistAction->setEnabled( false );
+    m_artistIcon = addAction( artistAction );
+    connect( m_artistIcon, SIGNAL( activated() ), this, SLOT( gotoArtist() ) );
+    
+    QAction* albumAction = new QAction( i18n( "Album" ), this );
+    albumAction->setIcon( KIcon( "filename-album-amarok" ) );
+    albumAction->setVisible( true );
+    albumAction->setEnabled( false );
+    m_albumIcon = addAction( albumAction );
+    connect( m_albumIcon, SIGNAL( activated() ), this, SLOT( gotoAlbum() ) );
+
+    QAction* trackAction = new QAction( i18n( "Track" ), this );
+    trackAction->setIcon( KIcon( "filename-title-amarok" ) );
+    trackAction->setVisible( true );
+    trackAction->setEnabled( false );
+    m_trackIcon = addAction( trackAction );
+    connect( m_trackIcon, SIGNAL( activated() ), this, SLOT( gotoTrack() ) );
+
+    QAction* langAction = new QAction( i18n( "Lang" ), this );
+    langAction->setIcon( KIcon( "amarok_change_language" ) );
+    langAction->setVisible( true );
+    langAction->setEnabled( true );
+    m_langIcon = addAction( langAction );
+    connect( m_langIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
+    
     QAction* reloadAction = new QAction( i18n( "Reload" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( false );
     m_reloadIcon = addAction( reloadAction );
-
-    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );
+    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );    
 
     connectSource( "wikipedia" );
     connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
-
+    
     constraintsEvent();
+
+    // Read config and inform the engine.
+    KConfigGroup config = Amarok::config("Wikipedia Applet");
+    m_wikiPreferredLang = config.readEntry( "PreferredLang", "aut" );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+
 }
 
 Plasma::IconWidget *
@@ -113,7 +181,6 @@ WikipediaApplet::addAction( QAction *action )
     tool->setMinimumSize( iconSize );
     tool->setMaximumSize( iconSize );
     tool->resize( iconSize );
-
     tool->setZValue( zValue() + 1 );
 
     return tool;
@@ -127,17 +194,11 @@ WikipediaApplet::connectSource( const QString &source )
 }
 
 void
-WikipediaApplet::linkClicked( const QUrl &url )
+WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    debug() << "URL: " << url;
-    QDesktopServices::openUrl( url.toString() );
-}
-
-void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
-{
-
-    prepareGeometryChange();
+    Q_UNUSED( constraints );
     
+    prepareGeometryChange();
     float textWidth = m_wikipediaLabel->boundingRect().width();
     float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
@@ -145,51 +206,96 @@ void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_webView->setPos( standardPadding(), m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + standardPadding() );
     m_webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - m_webView->pos().y() - standardPadding() );
+    
+    // Icon positionning
+    float iconWidth = m_backwardIcon->size().width();
+    m_backwardIcon->setPos( size().width() - 7 * iconWidth - 6 * standardPadding(), standardPadding() );
+    m_forwardIcon->setPos( size().width() - 6 * iconWidth - 6 * standardPadding(), standardPadding() );
+    
+    m_artistIcon->setPos( size().width() - 5 * iconWidth - 4 * standardPadding(), standardPadding() );
+    m_albumIcon->setPos( size().width() - 4 * iconWidth - 4 * standardPadding(), standardPadding() );
+    m_trackIcon->setPos( size().width() - 3 * iconWidth - 4 * standardPadding(), standardPadding() );
 
-    m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - standardPadding(), standardPadding() );
+    m_langIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );    
+    m_reloadIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
 }
 
-bool WikipediaApplet::hasHeightForWidth() const
+bool
+WikipediaApplet::hasHeightForWidth() const
 {
     return true;
 }
 
-qreal WikipediaApplet::heightForWidth( qreal width ) const
+qreal
+WikipediaApplet::heightForWidth( qreal width ) const
 {
     return width * m_aspectRatio;
 }
 
-void WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
+void
+WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
-    debug() << "WikipediaApplet::dataUpdated: " << name;
 
     if( data.size() == 0 ) return;
 
+    if( data.contains("busy") )
+    {
+        m_webView->hide();
+        setBusy( true );
+        return;
+    }
+    else
+    {
+        m_webView->show();
+        setBusy( false );
+    }
+    
     if( data.contains( "page" ) )
-        m_webView->setHtml( data[ "page" ].toString(), KUrl( QString() ) );
-    else
-        m_webView->setHtml( data[ data.keys()[ 0 ] ].toString(), KUrl( QString() ) ); // set data
+    {
+        if ( m_current == data[ "page" ].toString() && !m_gotMessage)
+            return;
+        
+        // save last page, usefull when u where reading but the song change
+        if ( m_current != "" )
+        {
+            m_histoBack.push_front( m_current );
+            while ( m_histoBack.size() > 20 )
+                m_histoBack.pop_back();
 
-    if( data.contains( "label" ) )
-        m_label = data[ "label" ].toString() + ':';
-    else
-        m_label.clear();
+            if ( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
+                m_backwardIcon->action()->setEnabled( true );
+        }
+        m_current = data[ "page" ].toString();
+        m_webView->setHtml( m_current, KUrl( QString() ) );
+        m_gotMessage = false;
+        m_histoFor.clear();
+        if ( m_forwardIcon->action() && m_forwardIcon->action()->isEnabled() )
+            m_forwardIcon->action()->setEnabled( false );
+    }
+    
+    if( data.contains( "message" ) )
+    {
+        m_webView->setHtml( data[ "message" ].toString(), KUrl( QString() ) ); // set data
+        m_gotMessage = true; // we have a message and don't want to save it in history
+    }
 
-    if( data.contains( "title" ) )
-        m_title = data[ "title" ].toString();
-    else
-        m_title.clear();
 
     if( m_reloadIcon->action() && !m_reloadIcon->action()->isEnabled() )
-    {        
         m_reloadIcon->action()->setEnabled( true );
-        //for some reason when we enable the action suddenly the icon has the text "..."
-        m_reloadIcon->action()->setText( "" );  
-    }
+
+    if( m_artistIcon->action() && !m_artistIcon->action()->isEnabled() )
+        m_artistIcon->action()->setEnabled( true );
+
+    if( m_albumIcon->action() && !m_albumIcon->action()->isEnabled() )
+        m_albumIcon->action()->setEnabled( true );
+
+    if( m_trackIcon->action() && !m_trackIcon->action()->isEnabled() )
+        m_trackIcon->action()->setEnabled( true );
 }
 
-void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+void
+WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
@@ -199,7 +305,6 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_wikipediaLabel );
-
 
     //draw background of wiki text
     p->save();
@@ -214,10 +319,91 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     
 }
 
-QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
+QSizeF
+WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
         // ask for rest of CV height
     return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), -1 );
+}
+
+void
+WikipediaApplet::goBackward()
+{
+    DEBUG_BLOCK
+    if( !m_histoBack.empty() )
+    {
+        
+        m_histoFor.push_front( m_current );
+        m_current =  m_histoBack.front();
+        m_histoBack.pop_front();
+        m_webView->setHtml( m_current , KUrl( QString() ) );
+        if( m_forwardIcon->action() && !m_forwardIcon->action()->isEnabled() )
+            m_forwardIcon->action()->setEnabled( true );
+
+        if ( m_histoBack.empty() && m_backwardIcon->action()->isEnabled() )
+            m_backwardIcon->action()->setEnabled( false );
+    }
+}
+
+void
+WikipediaApplet::goForward()
+{
+    DEBUG_BLOCK
+
+    if( !m_histoFor.empty() )
+    {
+        m_histoBack.push_front( m_current );
+        m_current = m_histoFor.front();
+        m_histoFor.pop_front();
+        m_webView->setHtml( m_current , KUrl( QString() ) );
+        
+        if( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
+            m_backwardIcon->action()->setEnabled( true );
+        
+        if ( m_histoFor.empty() && m_forwardIcon->action()->isEnabled() )
+            m_forwardIcon->action()->setEnabled( false );
+        
+    }
+}
+
+void
+WikipediaApplet::gotoArtist()
+{
+    DEBUG_BLOCK
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:artist" );
+}
+
+void
+WikipediaApplet::gotoAlbum()
+{
+    DEBUG_BLOCK
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:album" );
+}
+
+void
+WikipediaApplet::gotoTrack()
+{
+    DEBUG_BLOCK
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:track" );
+}
+
+void
+WikipediaApplet::linkClicked( const QUrl &url )
+{
+    DEBUG_BLOCK
+    if ( url.toString().contains( "wikipedia.org/" ) )
+    {
+        dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:get:" ) + url.toString() );
+        if( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
+            m_backwardIcon->action()->setEnabled( true );
+
+        m_histoFor.clear();
+        if( m_forwardIcon->action() && m_forwardIcon->action()->isEnabled() )
+            m_forwardIcon->action()->setEnabled( false );
+
+    }
+    else
+        QDesktopServices::openUrl( url.toString() );
 }
 
 void
@@ -225,6 +411,58 @@ WikipediaApplet::reloadWikipedia()
 {
     DEBUG_BLOCK
     dataEngine( "amarok-wikipedia" )->query( "wikipedia:reload" );
+}
+
+void
+WikipediaApplet::switchLang()
+{
+    DEBUG_BLOCK
+    showConfigurationInterface();
+}
+
+void
+WikipediaApplet::switchToLang(QString lang)
+{
+    DEBUG_BLOCK
+    // TODO change this b/c it's BAAADDD !!!
+    if (lang == i18n("Automatic") )
+        m_wikiPreferredLang = "aut";
+    
+    else if (lang == i18n("English") )
+        m_wikiPreferredLang = "en";
+    
+    else if (lang == i18n("French") )
+        m_wikiPreferredLang = "fr";
+    
+    else if (lang == i18n("German") )
+        m_wikiPreferredLang = "de";
+
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+
+    KConfigGroup config = Amarok::config("Wikipedia Applet");
+    config.writeEntry( "PreferredLang", m_wikiPreferredLang );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+}
+
+void
+WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
+{
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    ui_Settings.setupUi( settings );
+
+    // TODO bad, it's done manually ...
+    if ( m_wikiPreferredLang == "aut" )
+        ui_Settings.comboBox->setCurrentIndex( 0 );
+    else if ( m_wikiPreferredLang == "en" )
+        ui_Settings.comboBox->setCurrentIndex( 1 );
+    else if ( m_wikiPreferredLang == "fr" )
+        ui_Settings.comboBox->setCurrentIndex( 2 );
+    else if ( m_wikiPreferredLang == "de" )
+        ui_Settings.comboBox->setCurrentIndex( 3 );
+    
+    parent->addPage( settings, i18n( "Wikipedia Settings" ), "amarok_change_language");
+    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
 }
 
 void

@@ -1,6 +1,7 @@
 /***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- **************************************************************************/
+ * copyright      : (C) 2007 Leo Franchi <lfranchi@gmail.com>              *
+ * copyright      : (C) 2009 Simon Esneault <simon.esneault@gmail.com>     *
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -24,9 +25,13 @@
 #include <QGraphicsProxyWidget>
 #include <qwebview.h>
 
+#include <ui_wikipediaSettings.h>
+
 class QAction;
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
+class KDialog;
+class KConfigDialog;
 
 namespace Plasma
 {
@@ -50,6 +55,11 @@ public:
     qreal heightForWidth( qreal width ) const;
 
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
+
+protected:
+    void createConfigurationInterface(KConfigDialog *parent);
+
+
     
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
@@ -62,23 +72,47 @@ private:
     QSizeF m_size;
 
     QGraphicsSimpleTextItem* m_wikipediaLabel;
-    //QGraphicsSimpleTextItem* m_currentLabel;
-    //QGraphicsSimpleTextItem* m_currentTitle;
 
-    //QGraphicsProxyWidget* m_wikiPage;
     Plasma::WebView * m_webView;
 
     QString m_label;
     QString m_title;
 
+    Plasma::IconWidget *m_backwardIcon;
+    Plasma::IconWidget *m_forwardIcon;
+    Plasma::IconWidget *m_artistIcon;
+    Plasma::IconWidget *m_albumIcon;
+    Plasma::IconWidget *m_trackIcon;
+    Plasma::IconWidget *m_langIcon;
     Plasma::IconWidget *m_reloadIcon;
 
+    Ui::wikipediaSettings ui_Settings;
+    
+    
     KTemporaryFile* m_css;
 
+    QList <QString> m_histoBack;
+    QList <QString> m_histoFor;
+    QString m_current;
+
+    QString m_wikiPreferredLang;
+
+    bool m_gotMessage;
+    
 private slots:
     void connectSource( const QString &source );
     void linkClicked( const QUrl &url );
+    
+    void goBackward();    
+    void goForward();
+    void gotoArtist();
+    void gotoAlbum();
+    void gotoTrack();
+
+    void switchLang();
+    void switchToLang(QString lang);
     void reloadWikipedia();
+    
     void paletteChanged( const QPalette & palette );
 
 };
