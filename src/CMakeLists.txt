@@ -636,7 +636,10 @@ install(FILES amarok_append.desktop DESTINATION ${SERVICES_INSTALL_DIR}/ServiceM
 install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES context/amarokapplets.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
-install(FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+if(LIBLASTFM_FOUND)
+  install(FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+endif(LIBLASTFM_FOUND)
+
 #install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 #install(FILES amarokpcast.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 
