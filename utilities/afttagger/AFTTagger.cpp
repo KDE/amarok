@@ -73,7 +73,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
                 "This program has been extensively tested and errs on the side of safety wherever possible.\n\n"
                 "With that being said, since this program can modify thousands or hundreds of thousands of files\n"
                 "at a time, here is the obligatory warning text:\n\n"
-                "This program makes use of multiple libraries not written by the author, and as such neither the\n"
+                "This program makes use of multiple libraries not written by the author, and as such neither\n"
                 "the author nor the Amarok project can or do take any responsibility for any damage that may\n"
                 "occur to your files through the use of this program.\n\n"
                 "If you want more information, please see http://amarok.kde.org/wiki/AFT\n\n"
@@ -86,7 +86,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
 
         if( response != "y" && response != "Y")
         {
-            qDebug() << "INFO: Terms not accepted; exiting...";
+            m_textStream << qPrintable( tr( "INFO: Terms not accepted; exiting..." ) ) << endl;
             ::exit( 1 );
         }
     }
@@ -94,8 +94,11 @@ AFTTagger::AFTTagger( int &argc, char **argv )
     srandom( (unsigned)time( 0 ) );
     m_time.start();
 
-    for(int i = 0; i < m_fileFolderList.count(); i++) // Counting start at 0!
-        processPath( m_fileFolderList.at( i ) );
+    foreach( const QString &path, m_fileFolderList )
+        processPath( path );
+
+    m_textStream << qPrintable( tr( "INFO: All done, exiting..." ) ) << endl;
+    ::exit( 0 );
 }
 
 void
@@ -131,7 +134,6 @@ AFTTagger::processPath( const QString &path )
     {
         QString filePath = info.absoluteFilePath();
 
-        QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
         
 #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t *encodedName = reinterpret_cast< const wchar_t *>(filePath.utf16());
@@ -145,11 +147,11 @@ AFTTagger::processPath( const QString &path )
         if( fileRef.isNull() )
         {
             if( m_verbose )
-                qDebug() << "INFO: file " << filePath << " not able to be opened by TagLib";
+                m_textStream << qPrintable( tr( "INFO: file %1 not able to be opened by TagLib" ).arg( filePath ) ) << endl;
             return;
         }
 
-        qDebug() << "INFO: Processing file " << filePath;
+        m_textStream << qPrintable( tr( "INFO: Processing file %1" ).arg( filePath ) ) << endl;
 
         SafeFileSaver sfs( filePath );
         sfs.setVerbose( false );
@@ -161,149 +163,163 @@ AFTTagger::processPath( const QString &path )
             return;
         }
 
-        QString uid = createCurrentUID( path );
-        bool newUid = false;
+        if( m_verbose )
+            m_textStream << qPrintable( tr( "INFO: Temporary file is at %1").arg( tempFilePath ) ) << endl;
+
 #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t *encodedName = reinterpret_cast< const wchar_t * >(tempFilePath.utf16());
 #else
     QByteArray tempFileName = QFile::encodeName( tempFilePath );
     const char *tempEncodedName = tempFileName.constData();
 #endif
+
+        bool saveNecessary = false;
+
         TagLib::FileRef tempFileRef = TagLib::FileRef( tempEncodedName, true, TagLib::AudioProperties::Fast );
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( tempFileRef.file() ) )
-        {
-            if( m_verbose )
-                qDebug() << "INFO: File is a MPEG file, opening...";
-            if ( file->ID3v2Tag( true ) )
-            {
-                if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
-                {
-                    if( m_verbose )
-                        qDebug() << "INFO: No UFID frames found";
-                    if( m_delete )
-                    {
-                        sfs.cleanupSave();
-                        return;
-                    }
-                    newUid = true;
-                }
-                else
-                {
-                    if( m_verbose )
-                        qDebug() << "INFO: Found existing UFID frames, parsing";
-                    TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
-                    TagLib::ID3v2::FrameList::Iterator iter;
-                    if( m_verbose )
-                        qDebug() << "INFO: Frame list size is " << frameList.size();
-                    for( iter = frameList.begin(); iter != frameList.end(); ++iter )
-                    {
-                        TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
-                        if( currFrame )
-                        {
-                            QString owner = TStringToQString( currFrame->owner() );
-                            if( owner.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
-                            {
-                                if( m_verbose )
-                                    qDebug() << "INFO: Removing old-style ATF identifier";
-
-                                iter = frameList.erase( iter );
-                                file->ID3v2Tag()->removeFrame( currFrame );
-                                file->save();
-                                if( !m_delete )
-                                    newUid = true;
-                                else
-                                    continue;
-                            }
-                            if( owner.startsWith( "Amarok 2 AFT" ) )
-                            {
-                                if( m_verbose )
-                                    qDebug() << "INFO: Found an existing AFT identifier";
-
-                                if( m_delete )
-                                {
-                                    iter = frameList.erase( iter );
-                                    if( m_verbose )
-                                        qDebug() << "INFO: Removing current AFT frame";
-                                    file->ID3v2Tag()->removeFrame( currFrame );
-                                    file->save();
-                                    continue;
-                                }
-
-                                int version = owner.at( 13 ).digitValue();
-                                if( version < s_currentVersion )
-                                {
-                                    if( m_verbose )
-                                        qDebug() << "INFO: Upgrading AFT identifier from version " << version << " to version " << s_currentVersion;
-                                    uid = upgradeUID( version, TStringToQString( TagLib::String( currFrame->identifier() ) ) );
-                                    if( m_verbose )
-                                        qDebug() << "INFO: Removing current AFT frame";
-                                    iter = frameList.erase( iter );
-                                    file->ID3v2Tag()->removeFrame( currFrame );
-                                    newUid = true;
-                                }
-                                else if( version == s_currentVersion && m_newid )
-                                {
-                                    if( m_verbose )
-                                        qDebug() << "INFO: new IDs specified to be generated, doing so";
-                                    iter = frameList.erase( iter );
-                                    file->ID3v2Tag()->removeFrame( currFrame );
-                                    newUid = true;
-                                }
-                                else
-                                {
-                                    if( m_verbose )
-                                        qDebug() << "INFO: ID is current";
-                                }
-                            }
-                        }
-                    }
-                }
-                if( newUid )
-                {
-                    if( m_verbose )
-                        qDebug() << "INFO: Adding new frame and saving file";
-                    file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                        QStringToTString( ourId ), QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
-                    file->save();
-                }
-            }
-        }
+            saveNecessary = handleMPEG( file );
         else
         {
             if( m_verbose )
-            qDebug() << "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG files), cleaning up temp file";
+            m_textStream << qPrintable( tr( "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG files), cleaning up temp file" ) ) << endl;
             if( !sfs.cleanupSave() )
-                qWarning() << "WARNING: file at " << filePath << " could not be cleaned up; check for strays";
+                m_textStream << qPrintable( tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) ) << endl;
             return;
         }
-        if( m_newid || m_delete )
+        if( saveNecessary )
         {
             if( m_verbose )
-                qDebug() << "INFO: Safe-saving file";
+                m_textStream << qPrintable( tr( "INFO: Safe-saving file" ) ) << endl;
             if( !sfs.doSave() )
-                qWarning() << "WARNING: file at " << filePath << " could not be saved";
+                m_textStream << qPrintable( tr( "WARNING: file at %1 could not be saved" ).arg( filePath ) ) << endl;
         }
         if( m_verbose )
-            qDebug() << "INFO: Cleaning up...";
+            m_textStream << qPrintable( tr( "INFO: Cleaning up..." ) ) << endl;
         if( !sfs.cleanupSave() )
-            qWarning() << "WARNING: file at " << filePath << " could not be cleaned up; check for strays";
+            m_textStream << qPrintable( tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) ) << endl;
         return;
     }
 }
 
-QString
-AFTTagger::createCurrentUID( const QString &path )
+bool
+AFTTagger::handleMPEG( TagLib::MPEG::File *file )
 {
-    return createV1UID( path );
+    QString uid;
+    bool newUid = false;
+    if( m_verbose )
+        m_textStream << qPrintable( tr( "INFO: File is a MPEG file, opening..." ) ) << endl;
+    if ( file->ID3v2Tag( true ) )
+    {
+        if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
+        {
+            if( m_verbose )
+                m_textStream << qPrintable( tr( "INFO: No UFID frames found" ) ) << endl;
+
+            if( m_delete )
+                return false;
+
+            newUid = true;
+        }
+        else
+        {
+            if( m_verbose )
+                m_textStream << qPrintable( tr( "INFO: Found existing UFID frames, parsing" ) )  << endl;
+            TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
+            TagLib::ID3v2::FrameList::Iterator iter;
+            if( m_verbose )
+                m_textStream << qPrintable( tr( "INFO: Frame list size is %1" ).arg( frameList.size() ) ) << endl;
+            for( iter = frameList.begin(); iter != frameList.end(); ++iter )
+            {
+                TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
+                if( currFrame )
+                {
+                    QString owner = TStringToQString( currFrame->owner() );
+                    if( owner.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+                    {
+                        if( m_verbose )
+                            m_textStream << qPrintable( tr( "INFO: Removing old-style ATF identifier" ) ) << endl;
+
+                        iter = frameList.erase( iter );
+                        file->ID3v2Tag()->removeFrame( currFrame );
+                        file->save();
+                        if( !m_delete )
+                            newUid = true;
+                        else
+                            return true;
+                    }
+                    if( owner.startsWith( "Amarok 2 AFT" ) )
+                    {
+                        if( m_verbose )
+                            m_textStream << qPrintable( tr( "INFO: Found an existing AFT identifier: %1" ).arg( TStringToQString( TagLib::String( currFrame->identifier() ) ) ) ) << endl;
+
+                        if( m_delete )
+                        {
+                            iter = frameList.erase( iter );
+                            if( m_verbose )
+                                m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                            file->ID3v2Tag()->removeFrame( currFrame );
+                            file->save();
+                            return true;
+                        }
+
+                        int version = owner.at( 13 ).digitValue();
+                        if( version < s_currentVersion )
+                        {
+                            if( m_verbose )
+                                m_textStream << qPrintable( tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) ) << endl;
+                            uid = upgradeUID( version, TStringToQString( TagLib::String( currFrame->identifier() ) ) );
+                            if( m_verbose )
+                                m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                            iter = frameList.erase( iter );
+                            file->ID3v2Tag()->removeFrame( currFrame );
+                            newUid = true;
+                        }
+                        else if( version == s_currentVersion && m_newid )
+                        {
+                            if( m_verbose )
+                                m_textStream << qPrintable( tr( "INFO: New IDs specified to be generated, doing so" ) ) << endl;
+                            iter = frameList.erase( iter );
+                            file->ID3v2Tag()->removeFrame( currFrame );
+                            newUid = true;
+                        }
+                        else
+                        {
+                            if( m_verbose )
+                                m_textStream << qPrintable( tr( "INFO: ID is current" ) ) << endl;
+                        }
+                    }
+                }
+            }
+        }
+        if( newUid )
+        {
+            QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+            if( uid.isEmpty() )
+                uid = createCurrentUID( file );
+            if( m_verbose )
+                m_textStream << qPrintable( tr( "INFO: Adding new frame and saving file with UID: %1" ).arg( uid ) ) << endl;
+            file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
+                QStringToTString( ourId ), QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
+            file->save();
+            return true;
+        }
+    }
+    return false;
+}
+
+
+QString
+AFTTagger::createCurrentUID( TagLib::File *file )
+{
+    return createV1UID( file );
 }
 
 QString
-AFTTagger::createV1UID( const QString &path )
+AFTTagger::createV1UID( TagLib::File *file )
 {
     QCryptographicHash md5( QCryptographicHash::Md5 );
-    QFile qfile( path );
     QByteArray size;
-    md5.addData( size.setNum( qfile.size() ) );
+    md5.addData( size.setNum( (qulonglong)(file->length()) ) );
     md5.addData( QString::number( m_time.elapsed() ).toAscii() );
     md5.addData( QString::number( random() ).toAscii() );
     md5.addData( QString::number( random() ).toAscii() );

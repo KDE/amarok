@@ -20,6 +20,9 @@
 #ifndef AFTTAGGER_H
 #define AFTTAGGER_H
 
+#include <mpegfile.h>
+#include <tfile.h>
+
 #include <QCoreApplication>
 #include <QStringList>
 #include <QTime>
@@ -39,8 +42,9 @@ public:
     ~AFTTagger() {};
 
     void processPath( const QString &path );
-    QString createCurrentUID( const QString &path );
-    QString createV1UID( const QString &path );
+    bool handleMPEG( TagLib::MPEG::File *file );
+    QString createCurrentUID( TagLib::File *file );
+    QString createV1UID( TagLib::File *file );
     QString upgradeUID( int version, QString currValue );
     void readArgs();
     void displayHelp();
