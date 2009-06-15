@@ -8,7 +8,6 @@ set( videoclip_applet_SRCS
 	 ../../../widgets/kratingwidget.cpp
      ../../../widgets/kratingpainter.cpp
 )
-configure_file(${CMAKE_SOURCE_DIR}/config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
 kde4_add_plugin(amarok_context_applet_videoclip ${videoclip_applet_SRCS})
 target_link_libraries( amarok_context_applet_videoclip amaroklib ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS})
