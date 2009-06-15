@@ -347,7 +347,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     DEBUG_BLOCK
     if ( from.size() <= 0 )
         return to;
-    
+
     to = ( to == qBound( 0, to, m_model->rowCount() ) ) ? to : m_model->rowCount();
 
     qSort( from.begin(), from.end() );
@@ -366,7 +366,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     }
 
     int originalTo = to;
-    
+
     foreach ( int f, from )
     {
         if ( f < originalTo )
@@ -377,8 +377,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
 
     // We iterate through the items in reverse order, as this allows us to keep the target row constant
     // (remember that the item that was originally on the target row is pushed down)
-    QList<int>::const_iterator f_iter = from.end();
-    while( f_iter != from.begin() )
+    QList<int>::const_iterator f_iter = from.constEnd();
+    while( f_iter != from.constBegin() )
     {
         --f_iter;
         source.insert( ( to - min ), *f_iter );

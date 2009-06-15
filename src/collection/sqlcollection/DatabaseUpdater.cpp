@@ -162,7 +162,7 @@ DatabaseUpdater::createTemporaryTables()
 
     //debug stuff
     //removeTemporaryTables();
-            
+
     //this is a copy of the relevant code in createTables()
     //TODO refactor this to make it easier to keep the tables created by those methods in sync
     {
@@ -180,7 +180,7 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE directories_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() + 
+                         ",dir " + m_collection->exactTextColumnType() +
                          ",changedate INTEGER);";
         m_collection->query( create );
     }
@@ -358,7 +358,7 @@ DatabaseUpdater::copyToPermanentTables()
         artistIds += artistId;
     }
     m_collection->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN ( %1 );" ).arg( artistIds ), QString() );
-   
+
     //handle images before albums
     m_collection->query( "DELETE FROM images;" );
     m_collection->insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
@@ -469,7 +469,7 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE urls "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactTextColumnType() + 
+                         ",rpath " + m_collection->exactTextColumnType() +
                          ",directory INTEGER"
                          ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE);";
         m_collection->query( create );
@@ -480,7 +480,7 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE directories "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() + 
+                         ",dir " + m_collection->exactTextColumnType() +
                          ",changedate INTEGER);";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX directories_deviceid ON directories(deviceid);" );
@@ -582,7 +582,7 @@ DatabaseUpdater::createTables() const
                     ",score FLOAT"
                     ",rating INTEGER DEFAULT 0"
                     ",playcount INTEGER"
-                    ",deleted BOOL DEFAULT " + m_collection->boolFalse() + 
+                    ",deleted BOOL DEFAULT " + m_collection->boolFalse() +
                     ");";
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
@@ -676,7 +676,7 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
     {
         QString id;
         QString ids;
-        QStringList::ConstIterator it = idResult.begin(), end = idResult.end();
+        QStringList::ConstIterator it = idResult.constBegin(), end = idResult.constEnd();
         while( it != end )
         {
             id = (*(it++));

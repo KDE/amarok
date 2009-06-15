@@ -150,7 +150,7 @@ PLSPlaylist::loadPls( QTextStream &stream )
     /* Now iterate through all beautified lines in the buffer
     * and parse the playlist data.
     */
-    QStringList::const_iterator i = lines.begin(), end = lines.end();
+    QStringList::const_iterator i = lines.constBegin(), end = lines.constEnd();
     for ( ; i != end; ++i) {
         if (!inPlaylistSection && havePlaylistSection) {
             /* The playlist begins with the "[playlist]" tag.

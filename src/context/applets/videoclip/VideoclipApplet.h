@@ -50,7 +50,7 @@ struct VideoInfo {
     QString videolink;  // direct video link to the downloadable file
     QString source;     // "youtube" or "dailymotion" or "vimeo" or whatever
     int relevancy;      // used to filter and order the files
-    int length;         // length in seconds 
+    int length;         // length in seconds
     QString artist;     // The artist just to show it in the artist name
 };
 
@@ -70,12 +70,12 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
         QSizeF  sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-        
+
         // inherited from EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
-        
-        
+
+
     public slots:
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
@@ -90,7 +90,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         QGraphicsProxyWidget    *m_widget;
         QHBoxLayout             *m_layout;
         QList<QWidget *>m_layoutWidgetList;
-        
+
         int m_height;
         QPixmap     *m_pixYoutube;
         QPixmap     *m_pixDailymotion;
@@ -98,7 +98,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 };
 
-Q_DECLARE_METATYPE ( VideoInfo *);
+Q_DECLARE_METATYPE ( VideoInfo *)
 K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 
 #endif /* VIDEOCLIP_APPLET_H */
