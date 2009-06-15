@@ -1,7 +1,8 @@
-/***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
- **************************************************************************/
+ /**************************************************************************
+ * copyright         : (C) 2007 Leo Franchi <lfranchi@gmail.com>           *
+ * copyright         : (C) 2008 Mark Kretschmann <kretschmann@kde.org>     *
+ * copyright         : (C) 2009 Simon Esneault <simon.esneault@gmail.com>  *
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -22,6 +23,7 @@
 
 #include <KIO/Job>
 #include <QLocale>
+
 
 /**
     This class provide Wikipedia data for use in Context applets. 
@@ -69,6 +71,8 @@ private:
     QString wikiSiteUrl();
     QString wikiUrl( const QString& item ) const;
     QString wikiLocale() const;
+
+    QString wikiParse();
     
     void reloadWikipedia();
     
@@ -77,15 +81,16 @@ private:
     Meta::TrackPtr m_currentTrack;
         
     QString m_currentSelection;
+    bool m_requested;
+    QStringList m_sources;
     QString m_wiki;
     QString m_wikiCurrentEntry;
     QString m_wikiCurrentUrl;
     QString m_wikiLanguages;
     QLocale m_wikiLang;
-    // stores what features are enabled
-    bool m_requested;
-    QStringList m_sources;
-    bool m_triedRefinedSearch;
+    QString m_wikiWideLang;
+    short m_triedRefinedSearch;
+
 };
 
 K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )
