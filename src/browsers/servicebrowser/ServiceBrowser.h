@@ -74,6 +74,8 @@ class ServiceBrowser : public BrowserCategoryList
          */
         void setScriptableServiceManager( ScriptableServiceManager *scriptableServiceManager );
 
+        void addService ( ServiceBase * );
+
     private:
         /**
          * Private constructor ( Singleton pattern )

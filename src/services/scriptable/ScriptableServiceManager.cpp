@@ -59,6 +59,7 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
     service->init( levels, rootHtml, showSearchBar );
     m_rootHtml = rootHtml;
 
+    debug() << "emitting scripted service " << name;
     emit addService( service );
 
     return true;

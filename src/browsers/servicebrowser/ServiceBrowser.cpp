@@ -95,6 +95,12 @@ QList<int> ServiceBrowser::activeServiceLevels()
     return QList<int>();
 }
 
+void ServiceBrowser::addService( ServiceBase * service )
+{
+    DEBUG_BLOCK
+    addCategory( service );
+}
+
 #include "ServiceBrowser.moc"
 
 

@@ -39,6 +39,8 @@ ScriptableService::ScriptableService( const QString & name )
     , m_artistIdCounter( 0 )
     , m_genreIdCounter( 0 )
 {
+    DEBUG_BLOCK
+    debug() << "creating ScriptableService " << name;
     m_collection = 0;
     m_bottomPanel->hide();
 
@@ -74,9 +76,9 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
                                    const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,
                                    const QString & composerOverride, int yearOverride, const QString &coverUrl  )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
 
-    /*debug() << "level: " << level;
+    debug() << "level: " << level;
     debug() << "parentId: " << parentId;
     debug() << "name: " << name;
     debug() << "infoHtml: " << infoHtml;
@@ -85,7 +87,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
     debug() << "albumOverride: " << albumOverride;
     debug() << "artistOverride: " << artistOverride;
-    debug() << "coverUrl: " << coverUrl;*/
+    debug() << "coverUrl: " << coverUrl;
 
     if ( ( level +1 > m_levels ) || level < 0 )
         return -1;
