@@ -24,7 +24,7 @@
 # * Svn mkdir
 # * Svn cp from the downloaded source (librelease)
 def tag_source
-    base_dir
+    src_dir
 
     @tag1 = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}"
 
@@ -42,7 +42,7 @@ end
 def tag_l10n
     @name = NAME.split("-").join
 
-    base_dir
+    src_dir
     `svn co -N #{@tag1} tagging`
 
     tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/po"
@@ -66,7 +66,7 @@ end
 # * Svn mkdir doc
 # * Svn cp DOC for all DOCS (provided by libl10n. So, if no translation fetching did happen, it's going o break here)
 def tag_docs
-    base_dir
+    src_dir
     `svn co -N #{@tag1} tagging`
 
     tag = "#{@protocol}://#{@user}.kde.org/home/kde/tags/#{NAME}/#{@version}/po"
