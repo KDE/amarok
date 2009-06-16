@@ -377,7 +377,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     m_collection->query( sql );
 
-    m_changedUrls.insert( uid, trackData.value( Field::URL ).toString() );
+    m_changedUrls.insert( uid, path );
 }
 
 int
