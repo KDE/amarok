@@ -22,6 +22,9 @@
 
 #include <QVariant>
 
+#include <iostream>
+#include <sstream>
+
 //!  Struct VideoInfo, contain all the info vor a video
 struct VideoInfo {
     QString url;        // Url for the browser (http://www.youtube.com/watch?v=153d9tc3Oao )
@@ -122,11 +125,6 @@ private slots:
    */
     void resultFinalize();
 
-  /**
-   *   Some job get lost so instead of connecting them only to the slot result() we also connect them
-   *   to the slot finished() and count down the number of job
-   */
-    void finishHandler( KJob * );
 
 private:
   /**
@@ -153,7 +151,8 @@ private:
     int m_nbYoutube;
     int m_nbDailymotion;
     int m_nbVimeo;
-    int m_nbJobs;
+
+    QList < QString > m_listJob;
     int m_nbVidsPerService;
 
     QStringList m_sources;
