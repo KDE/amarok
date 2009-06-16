@@ -27,8 +27,13 @@
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
 
-#include <Phonon/MediaObject>
-#include <Phonon/VideoWidget>
+// forward
+namespace Phonon
+{
+    class MediaObject;
+    class VideoWidget;
+    class Path;
+}
 
 class KratingWidget;
 class KratingPainter;
@@ -37,7 +42,7 @@ class QGraphicsProxyWidget;
 class QGraphicsWidget;
 class QHBoxLayout;
 
-//!  Struct VideoInfo, contain all the info vor a video
+//!  Struct VideoInfo, contain all the info for a video
 struct VideoInfo {
     QString url;        // Url for the browser (http://www.youtube.com/watch?v=153d9tc3Oao )
     QString title;      // Name of the video
@@ -79,11 +84,18 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
     public slots:
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
-        void    appendVideoClip( );
+
+        // right click context menu
+        void    appendVideoClip( VideoInfo *info );
+        void    queueVideoClip( VideoInfo *info );
+        void    appendPlayVideoClip( VideoInfo *info );
+
+        void    videoMenu( QPoint );
 
     private:
         Phonon::MediaObject *m_mediaObject;
         Phonon::VideoWidget *m_videoWidget;
+        Phonon::Path        m_path;
 
         // The two big container, only one who need a resize
         QGraphicsSimpleTextItem *m_headerText;
@@ -98,8 +110,4 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 };
 
-Q_DECLARE_METATYPE ( VideoInfo *)
-K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
-
 #endif /* VIDEOCLIP_APPLET_H */
-

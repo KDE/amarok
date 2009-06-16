@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "VideoclipApplet.h" 
+#include "VideoItemButton.h"
 
 // Amarok
 #include "Amarok.h"
@@ -35,11 +36,17 @@
 #include "widgets/kratingwidget.h"
 
 // KDE
+#include <KAction>
 #include <KColorScheme>
+#include <KMenu>
 #include <KStandardDirs>
 #include <KVBox>
 #include <Plasma/Theme>
 #include <Plasma/BusyWidget>
+#include <Phonon/MediaObject>
+#include <Phonon/Path>
+#include <Phonon/VideoWidget>
+
 
 // Qt
 #include <QGraphicsLinearLayout>
@@ -53,6 +60,10 @@
 #include <QScrollArea>
 
 #define DEBUG_PREFIX "VideoclipApplet"
+
+Q_DECLARE_METATYPE ( VideoInfo *)
+K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
+
 
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
@@ -78,9 +89,9 @@ VideoclipApplet::init()
     m_videoWidget = new Phonon::VideoWidget();
     m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
     m_videoWidget->hide();
-	
-    Phonon::Path path = Phonon::createPath( m_mediaObject, m_videoWidget );
-    if ( !path.isValid() )
+
+    m_path = Phonon::createPath( m_mediaObject, m_videoWidget );
+    if ( !m_path.isValid() )
         warning() << "Phonon path is invalid.";
 
     // Load pixmap
@@ -142,14 +153,17 @@ VideoclipApplet::engineNewTrackPlaying()
     if ( m_videoWidget && m_mediaObject && m_mediaObject->hasVideo() )
     {
         debug() << " VideoclipApplet | Show VideoWidget";
-        Phonon::Path path = Phonon::createPath( m_mediaObject, m_videoWidget );
-        if ( !path.isValid() )
+        m_path.reconnect( m_mediaObject, m_videoWidget );
+        if ( !m_path.isValid() )
             warning() << "Phonon path is invalid.";
         m_videoWidget->show();
     }
     else if( m_videoWidget )
     {
         m_videoWidget->hide();
+        m_path.reconnect( m_mediaObject, m_videoWidget );
+        if ( !m_path.isValid() )
+            warning() << "Phonon path is invalid.";        
     }
 }
 
@@ -253,22 +267,13 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 VideoInfo *item = data[ QString ("item:" )+QString().setNum(i) ].value<VideoInfo *>() ;
                 if( item->url != "" ) // prevent some weird stuff ...
                 {
-                    // Create a pixmap with nice border
-                    QPixmap pix( The::svgHandler()->addBordersToPixmap( *item->cover, 5, "Thumbnail", true ).scaledToHeight( 85 ) ) ;
 
-                    // Prepare the QtoolButon, we will send all the information to the callback via the text
-                    QToolButton *icon = new QToolButton();
-                    icon->setText( item->videolink + QString (" | ") + item->title + QString (" | ") + item->source
-                        + QString (" | ") + item->artist);
-                    icon->setToolButtonStyle( Qt::ToolButtonIconOnly );
-                    icon->setAutoRaise( true );
-                    icon->setIcon( QIcon( pix ) );
-                    icon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-                    icon->resize( pix.size() );
-                    icon->setIconSize( pix.size() ) ;
-                    icon->setToolTip( QString( "<html><body>" ) + item->desc + QString( "</body></html>" ) );
-
-                    connect ( icon, SIGNAL( clicked( bool ) ), this, SLOT ( appendVideoClip( ) ) );
+                    VideoItemButton *vidButton = new VideoItemButton();
+                    vidButton->setVideoInfo( item );
+                    
+                    connect ( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );
+                    connect ( vidButton, SIGNAL( queueRequested( VideoInfo* ) ), this, SLOT ( queueVideoClip( VideoInfo * ) ) );
+                    connect ( vidButton, SIGNAL( appendPlayRequested( VideoInfo * ) ), this, SLOT ( appendPlayVideoClip( VideoInfo * ) ) );
 
                     // create link (and resize, no more than 3 lines long)
                     QString title( item->title );
@@ -299,7 +304,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                     grid->setRowMinimumHeight( 1, 65 );
                     grid->setColumnStretch( 0, 0 );
                     grid->setColumnStretch( 1, 1 );
-                    grid->addWidget( icon, 0, 0, 1, -1, Qt::AlignCenter );
+                    grid->addWidget( vidButton, 0, 0, 1, -1, Qt::AlignCenter );
                     grid->addWidget( link, 1, 0, 1, -1, Qt::AlignCenter | Qt::AlignTop );
                     grid->addWidget( webi, 2, 0, Qt::AlignCenter );
                     grid->addWidget( duration, 2, 1, Qt::AlignLeft );
@@ -332,9 +337,8 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
     updateConstraints();
 }
 
-
 void 
-VideoclipApplet::appendVideoClip( )
+VideoclipApplet::appendVideoClip( VideoInfo *info )
 {
 	DEBUG_BLOCK
     QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
@@ -342,15 +346,75 @@ VideoclipApplet::appendVideoClip( )
     {
         QStringList lst = button->text().split(" | ");
     
-        MetaStream::Track *tra = new MetaStream::Track(KUrl( lst.at( 0 ) ) );
-        tra->setTitle( lst.at( 1 ) );
-        tra->setAlbum( lst.at( 2 ) );
-        tra->setArtist( lst.at( 3 ) );
-        tra->album()->setImage( button->icon().pixmap( button->iconSize().height() ) );
+        MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
+        tra->setTitle( info->title );
+        tra->setAlbum( info->source );
+        tra->setArtist( info->artist );
+        tra->album()->setImage( *info->cover );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::Append );
     }
+}
+
+void
+VideoclipApplet::queueVideoClip( VideoInfo *info )
+{
+    DEBUG_BLOCK
+    QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
+    if ( button )
+    {
+        QStringList lst = button->text().split(" | ");
+        
+        MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
+        tra->setTitle( info->title );
+        tra->setAlbum( info->source );
+        tra->setArtist( info->artist );
+        tra->album()->setImage( *info->cover );
+        Meta::TrackPtr track( tra );
+        //append to the playlist the newly retrieved
+        The::playlistController()->insertOptioned(track , Playlist::Queue );
+    }
+}
+
+void
+VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
+{
+    DEBUG_BLOCK
+    QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
+    if ( button )
+    {
+        QStringList lst = button->text().split(" | ");
+        
+        MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
+        tra->setTitle( info->title );
+        tra->setAlbum( info->source );
+        tra->setArtist( info->artist );
+        tra->album()->setImage( *info->cover );
+        Meta::TrackPtr track( tra );
+        //append to the playlist the newly retrieved
+        The::playlistController()->insertOptioned(track , Playlist::AppendAndPlayImmediately );
+    }
+}
+
+void
+VideoclipApplet::videoMenu( QPoint point )
+{
+    debug()<<" caca boudin" ;
+    KMenu *men = new KMenu(m_videoWidget);
+    if ( !m_videoWidget->isFullScreen() )
+    {
+        KAction *toggle = new KAction( KIcon( "view-fullscreen" ), i18n( "Enter &fullscreen" ), this );
+        men->addAction( toggle );
+        connect( toggle, SIGNAL( triggered(bool) ), m_videoWidget, SLOT( exitFullScreen() ) );
+    }
+    else
+    {
+        KAction *toggle = new KAction( KIcon( "edit-undo" ), i18n( "E&xit fullscreen" ), this );
+        men->addAction( toggle );
+        connect( toggle, SIGNAL( triggered(bool) ), m_videoWidget, SLOT( exitFullScreen() ) );
+    }   
+    men->exec( m_videoWidget->mapToGlobal( point ) );
 }
 
 #include "VideoclipApplet.moc"

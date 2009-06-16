@@ -5,6 +5,7 @@ include_directories( ../..
 
 set( videoclip_applet_SRCS
      VideoclipApplet.cpp
+     VideoItemButton.cpp
 	 ../../../widgets/kratingwidget.cpp
      ../../../widgets/kratingpainter.cpp
 )
