@@ -43,6 +43,7 @@ Name[uk]=Події Last.Fm
 Name[wa]=Evenmints Last.Fm
 Name[x-test]=xxLast.Fm Eventsxx
 Name[zh_CN]=Last.Fm 事件
+Name[zh_TW]=Last.Fm 事件
 Type=Service
 ServiceTypes=Plasma/Applet
 

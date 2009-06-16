@@ -1,9 +1,11 @@
 [Desktop Entry]
 Name=Amarok JavaScript Applet
+Name[et]=Amaroki JavaScripti aplett
 Name[km]=អាប់ភ្លេត​ JavaScript របស់​ Amarok
 Name[sv]=Amarok Javascript-miniprogram
 Name[uk]=Аплет JavaScript Amarok
 Comment=Native Amarok applet written in JavaScript
+Comment[et]=Amaroki omaaplett JavaScriptis
 Comment[km]=អាប់ភ្លេត​ដើម​របស់ Amarok បាន​សរសេរ​នៅ​ក្នុង JavaScript
 Comment[sv]=Eget Amarok miniprogram skrivet i Javascript
 Comment[uk]=Аплет Amarok написаний на JavaScript

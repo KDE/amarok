@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Service
 Name=AudioCd Collection
+Name[et]=Heli-CD kogu
 Name[km]=សម្រាំងស៊ីឌី​អូឌីយ៉ូ
 Name[sv]=Ljudcd-samling
 Name[uk]=Збірка звукових КД
 Comment=AudioCd collection plugin for Amarok
+Comment[et]=Amaroki heli-CD kogu plugin
 Comment[km]=កម្មវិធី​ជំនួយ​សម្រាំង​ស៊ីឌី​អូឌីយ៉ូ​​សម្រាប់ Amarok
 Comment[sv]=Insticksprogram med ljudcd-samling för Amarok
 Comment[uk]=Додаток збірки звукових КД для Amarok

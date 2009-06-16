@@ -1,9 +1,11 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Javascript Applet
+Name[et]=Javascripti aplett
 Name[km]=អាប់ភ្លេត Javascript
 Name[sv]=Javascript-miniprogram
 Name[uk]=Аплет Javascript
+Name[zh_TW]=Javascript 小程式
 Type=Service
 ServiceTypes=Plasma/Applet
 Icon=chronometer
