@@ -86,8 +86,12 @@ class BrowserCategoryList : public BrowserCategory
          * in the target string, and the category activcated is itself a category list,
          * it will strip the first category name and / from the targe string and pass
          * the rest to the navigate() method of the active category list.
+         * 
+         * @return this method will navigate as far as the target makes sense. Any parts
+         * of the target that does not match up with child categories will be returned
+         * as this might be additional arguments that are usable elsewhere.
          */
-        void navigate( const QString &target );
+        QString navigate( const QString &target );
 
         void activate( BrowserCategory * category );
 

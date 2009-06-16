@@ -44,110 +44,21 @@ bool
 NavigationUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK;
+
+    QString target;
     
-    if ( url.numberOfArgs() > 0 )
+    for( int i = 0; i < url.numberOfArgs(); i++ )
     {
-        QString baseTarget = url.arg( 0 );
-
-        QString collection;
-        QString groupMode;
-        QString filter;
-
-        if ( url.numberOfArgs() > 1 )
-            collection = url.arg( 1 );
-        if ( url.numberOfArgs() > 2 )
-            groupMode = url.arg( 2 );
-        if ( url.numberOfArgs() == 4 )
-            filter = url.arg( 3 );
-
-        debug() << "baseTarget: " << baseTarget;
-        debug() << "collection: " << collection;
-        debug() << "groupMode: " << groupMode;
-        debug() << "filter: " << filter;
-
-        QString target = baseTarget;
-        
-        if ( !collection.isEmpty() )
-        {
-            target += ( '/' + collection );
-        }
-
-        The::mainWindow()->browserWidget()->navigate( target );
-
-        if ( The::mainWindow()->isHidden() )
-            The::mainWindow()->show();
-        if ( The::mainWindow()->isMinimized() )
-            The::mainWindow()->showNormal();
-
-        The::mainWindow()->raise();
-        The::mainWindow()->activateWindow();
-
-        if ( baseTarget == "internet" )
-        {
-
-            ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( collection ) );
-
-            if ( service == 0 ) return false;
-
-            //ensure that everything we need is initialized ( especially if
-            //amarok is launched just to handle this url ).
-            service->polish();
-
-            if ( groupMode == "artist-album" )
-                service->sortByArtistAlbum();
-            else if ( groupMode == "genre-artist" )
-                service->sortByGenreArtist();
-            else if ( groupMode == "album" )
-                service->sortByAlbum();
-            else if ( groupMode == "artist" )
-                service->sortByArtist();
-            else if ( groupMode == "genre-artist-album" )
-                service->sortByGenreArtistAlbum();
-            else if ( !groupMode.isEmpty() ) //allow for not specifying any sort mode ( remain the same )
-                return false;
-
-            service->setFilter( filter );
-            debug() << "setting filter";
-
-            return true;
-        }
-        else if ( baseTarget ==  "Collections" )
-        {
-            debug() << "get collection browser";
-            CollectionWidget * collectionBrowser = The::mainWindow()->collectionBrowser();
-            if ( collectionBrowser == 0 ) return false;
-
-            debug() << "apply sort mode";
-
-            if ( groupMode == "artist-album" )
-                collectionBrowser->sortByArtistAlbum();
-            else if ( groupMode == "genre-artist" )
-                collectionBrowser->sortByGenreArtist();
-            else if ( groupMode == "album" )
-                collectionBrowser->sortByAlbum();
-            else if ( groupMode == "artist" )
-                collectionBrowser->sortByArtist();
-            else if ( groupMode == "genre-artist-album" )
-                collectionBrowser->sortByGenreArtistAlbum();
-
-            debug() << "setting filter";
-            collectionBrowser->setFilter( filter );
-
-            debug() << "done";
-
-            return true;
-        }
-        else if ( baseTarget ==  "playlists" )
-        {
-            return true;
-        }
-        else if ( baseTarget ==  "files" )
-        {
-            return true;
-        }
+        target += url.arg( i );
+        target += "/";
     }
-    
-    return false;
+    target.chop( 1 );
+ 
+    QString leftover = The::mainWindow()->browserWidget()->list()->navigate( target );
+
+    debug() << "leftover: " << leftover;
+
+    return true;
 }
 
 QString NavigationUrlRunner::command() const
