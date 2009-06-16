@@ -152,7 +152,7 @@ DatabaseUpdater::upgradeVersion3to4()
                          ",score FLOAT"
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
-    m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(name,artist,album)" );
+    m_collection->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
 }
 
 void
@@ -646,7 +646,7 @@ DatabaseUpdater::createTables() const
                              ",score FLOAT"
                              ",rating INTEGER DEFAULT 0"
                              ",playcount INTEGER)" );
-        m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(name,artist,album)" );
+        m_collection->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
     }
 }
 
