@@ -494,7 +494,10 @@ PlaylistBrowserNS::UserModel::slotAppend()
 {
     Meta::TrackList tracks;
     foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
-        tracks << playlist->tracks();
+    {
+        if( playlist )
+            tracks << playlist->tracks();
+    }
     foreach( Meta::TrackPtr track, selectedTracks() )
         tracks << track;
     if( !tracks.isEmpty() )
