@@ -129,6 +129,7 @@ PlaylistBrowser::showCategory( int category )
 int PlaylistBrowserNS::PlaylistBrowser::currentCategory()
 {
     //return m_categoryIndexMap.value( m_toolBox->currentIndex() );
+    return 0;
 }
 
 }

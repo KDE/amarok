@@ -64,6 +64,7 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
         }
 
     }
+    return true;
 }
 
 
