@@ -257,7 +257,7 @@ MyDirOperator::eventFilter( QObject *object, QEvent *event )
     // TODO: This is a workaround for a crash in KDElibs (?). Should be removed at some later point.
     // See: https://bugs.kde.org/show_bug.cgi?id=175803
 
-    if( ( event->type() == QEvent::Wheel ) && ( QApplication::keyboardModifiers() == Qt::ControlModifier ) )
+    if( ( event->type() == QEvent::Wheel ) && ( QApplication::keyboardModifiers() & Qt::ControlModifier ) )
         return true;
 
     return KDirOperator::eventFilter( object, event );
