@@ -20,8 +20,11 @@
 #ifndef AFTTAGGER_H
 #define AFTTAGGER_H
 
+#include <flacfile.h>
 #include <mpegfile.h>
+#include <oggfile.h>
 #include <tfile.h>
+#include <xiphcomment.h>
 
 #include <QCoreApplication>
 #include <QStringList>
@@ -43,6 +46,9 @@ public:
 
     void processPath( const QString &path );
     bool handleMPEG( TagLib::MPEG::File *file );
+    bool handleOgg( TagLib::Ogg::File *file );
+    bool handleFLAC( TagLib::FLAC::File *file );
+    bool handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *file );
     QString createCurrentUID( TagLib::File *file );
     QString createV1UID( TagLib::File *file );
     QString upgradeUID( int version, QString currValue );

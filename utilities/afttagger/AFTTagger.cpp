@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>
- *  QStringToTString and TStringToQString macros Copyright 2002-2008 by Scott Wheeler, wheeler@kde.org, licensed under LGPL 2.1
+ *  Qt4QStringToTString and TStringToQString macros Copyright 2002-2008 by Scott Wheeler, wheeler@kde.org, licensed under LGPL 2.1
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,10 +22,17 @@
 
 //Taglib
 #include <fileref.h>
+#include <flacfile.h>
 #include <id3v2tag.h>
 #include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <speexfile.h>
+#include <tstringlist.h>
 #include <tfile.h>
 #include <uniquefileidentifierframe.h>
+#include <vorbisfile.h>
+#include <xiphcomment.h>
 
 #include <QtDebug>
 #include <QCryptographicHash>
@@ -37,10 +44,7 @@
 #include <iostream>
 
 //QT4-happy versions
-#undef QStringToTString
-#define QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
-#undef TStringToQString
-#define TStringToQString(s) QString::fromUtf8(s.toCString(true))
+#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
 static int s_currentVersion = 1;
 
@@ -176,12 +180,16 @@ AFTTagger::processPath( const QString &path )
         bool saveNecessary = false;
 
         TagLib::FileRef tempFileRef = TagLib::FileRef( tempEncodedName, true, TagLib::AudioProperties::Fast );
-        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( tempFileRef.file() ) )
+        if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( tempFileRef.file() ) )
             saveNecessary = handleMPEG( file );
+        else if( TagLib::Ogg::File *file = dynamic_cast<TagLib::Ogg::File *>( tempFileRef.file() ) )
+            saveNecessary = handleOgg( file );
+        else if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( tempFileRef.file() ) )
+            saveNecessary = handleFLAC( file );
         else
         {
             if( m_verbose )
-            m_textStream << qPrintable( tr( "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG files), cleaning up temp file" ) ) << endl;
+                m_textStream << qPrintable( tr( "INFO: File not able to be parsed by TagLib or wrong kind (currently this program only supports MPEG, Ogg, and FLAC files), cleaning up temp file" ) ) << endl;
             if( !sfs.cleanupSave() )
                 m_textStream << qPrintable( tr( "WARNING: file at %1 could not be cleaned up; check for strays" ).arg( filePath ) ) << endl;
             return;
@@ -204,6 +212,12 @@ AFTTagger::processPath( const QString &path )
 bool
 AFTTagger::handleMPEG( TagLib::MPEG::File *file )
 {
+    if( file->readOnly() )
+    {
+        m_textStream << qPrintable( tr( "ERROR: File is read-only or could not be opened" ) ) << endl;
+        return false;
+    }
+    
     QString uid;
     bool newUid = false;
     if( m_verbose )
@@ -299,13 +313,171 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
             if( m_verbose )
                 m_textStream << qPrintable( tr( "INFO: Adding new frame and saving file with UID: %1" ).arg( uid ) ) << endl;
             file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                QStringToTString( ourId ), QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
+                Qt4QStringToTString( ourId ), Qt4QStringToTString( uid ).data( TagLib::String::Latin1 ) ) );
             file->save();
             return true;
         }
     }
     return false;
 }
+
+bool
+AFTTagger::handleOgg( TagLib::Ogg::File *file )
+{
+    if( file->readOnly() )
+    {
+        m_textStream << qPrintable( tr( "ERROR: File is read-only or could not be opened" ) ) << endl;
+        return false;
+    }
+    
+    TagLib::Ogg::XiphComment *comment = 0;
+    if( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )
+        comment = ( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )->tag();
+    else if( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )
+        comment = ( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )->tag();
+    else if( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )
+        comment = ( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )->tag();
+
+    if( !comment )
+        return false;
+
+    if( handleXiphComment( comment, file ) )
+    {
+        file->save();
+        return true;
+    }
+    
+    return false;
+}
+
+bool
+AFTTagger::handleFLAC( TagLib::FLAC::File *file )
+{
+    if( file->readOnly() )
+    {
+        m_textStream << qPrintable( tr( "ERROR: File is read-only or could not be opened" ) ) << endl;
+        return false;
+    }
+    
+    TagLib::Ogg::XiphComment *comment = file->xiphComment( true );
+    if( !comment )
+        return false;
+
+    if( handleXiphComment( comment, file ) )
+    {
+        file->save();
+        return true;
+    }
+    
+    return false;
+}
+
+bool
+AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *file )
+{
+    QString uid;
+    bool newUid = false;
+    bool nothingfound = true;
+    TagLib::StringList toRemove;
+    if( m_verbose )
+        m_textStream << qPrintable( tr( "INFO: File has a XiphComment, opening..." ) ) << endl;
+
+    if( comment->fieldListMap().isEmpty() )
+    {
+        if( m_verbose )
+            m_textStream << qPrintable( tr( "INFO: No fields found in XiphComment" ) ) << endl;
+
+        if( m_delete )
+            return false;
+    }
+    else
+    {
+        if( m_verbose )
+            m_textStream << qPrintable( tr( "INFO: Found existing XiphComment frames, parsing" ) )  << endl;
+        TagLib::Ogg::FieldListMap fieldListMap = comment->fieldListMap();
+        
+        if( m_verbose )
+            m_textStream << qPrintable( tr( "INFO: fieldListMap size is %1" ).arg( fieldListMap.size() ) ) << endl;
+        
+        TagLib::Ogg::FieldListMap::Iterator iter;
+        for( iter = fieldListMap.begin(); iter != fieldListMap.end(); ++iter )
+        {
+            TagLib::String key = iter->first;
+            QString qkey = TStringToQString( key ).toUpper();
+            if( qkey.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+            {
+                nothingfound = false;
+                
+                if( m_verbose )
+                    m_textStream << qPrintable( tr( "INFO: Removing old-style ATF identifier %1" ).arg( qkey ) ) << endl;
+
+                toRemove.append( key );
+                if( !m_delete )
+                    newUid = true;
+            }
+            else if( qkey.startsWith( "AMAROK 2 AFT" ) )
+            {
+                nothingfound = false;
+                
+                if( m_verbose )
+                    m_textStream << qPrintable( tr( "INFO: Found an existing AFT identifier: %1" ).arg( qkey ) ) << endl;
+
+                if( m_delete )
+                {
+                    toRemove.append( key );
+                    if( m_verbose )
+                        m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                }
+                else
+                {
+                    int version = qkey.at( 13 ).digitValue();
+                    if( m_verbose )
+                        m_textStream << qPrintable( tr( "INFO: AFT identifier is version %1" ).arg( version ) ) << endl;
+                    if( version < s_currentVersion )
+                    {
+                        if( m_verbose )
+                            m_textStream << qPrintable( tr( "INFO: Upgrading AFT identifier from version %1 to version %2" ).arg( version, s_currentVersion ) ) << endl;
+                        uid = upgradeUID( version, TStringToQString( fieldListMap[key].front() ) );
+                        if( m_verbose )
+                            m_textStream << qPrintable( tr( "INFO: Removing current AFT frame" ) ) << endl;
+                        toRemove.append( key );
+                        newUid = true;
+                    }
+                    else if( version == s_currentVersion && m_newid )
+                    {
+                        if( m_verbose )
+                            m_textStream << qPrintable( tr( "INFO: New IDs specified to be generated, doing so" ) ) << endl;
+                        toRemove.append( key );
+                        newUid = true;
+                    }
+                    else
+                    {
+                        if( m_verbose )
+                            m_textStream << qPrintable( tr( "INFO: ID is current" ) ) << endl;
+                        return false;
+                    }
+                }
+            }
+        }        
+        for( TagLib::StringList::ConstIterator iter = toRemove.begin(); iter != toRemove.end(); ++iter )
+            comment->removeField( *iter );
+    }
+    if( newUid || ( nothingfound && !m_delete ) )
+    {
+        QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+        if( uid.isEmpty() )
+            uid = createCurrentUID( file );
+        if( m_verbose )
+            m_textStream << qPrintable( tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) ) << endl;
+        comment->addField( Qt4QStringToTString( ourId ), Qt4QStringToTString( uid ) );
+        return true;
+    }
+    else if( toRemove.size() )
+        return true;
+    
+    return false;
+}
+
 
 
 QString

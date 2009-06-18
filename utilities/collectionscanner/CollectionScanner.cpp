@@ -52,6 +52,7 @@
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
+#include <speexfile.h>
 #include <tlist.h>
 #include <tstring.h>
 #include <vorbisfile.h>
@@ -71,6 +72,7 @@
 #include <uniquefileidentifierframe.h>
 #include <xiphcomment.h>
 
+#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
 int
 main( int argc, char *argv[] )
@@ -481,11 +483,11 @@ const QString
 CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
 {
     int currentVersion = 1; //TODO: Make this more global?
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
+    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         if( !file->ID3v2Tag( false ) )
             return QString();
-        QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
         if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
             return QString();
         TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
@@ -496,15 +498,40 @@ CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
             if( currFrame )
             {
                 QString owner = TStringToQString( currFrame->owner() );
-                if( owner.startsWith( "Amarok 2 AFT" ) )
+                if( owner.compare( ourId, Qt::CaseInsensitive ) == 0 )
                 {
-                    int version = owner.at( 13 ).digitValue();
-                    if( version == currentVersion )
-                        return TStringToQString( TagLib::String( currFrame->identifier() ) );
+                    qDebug() << "Found MP3 identifier: " << TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+                    return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
                 }
             }
         }
     }
+    //from here below assumes a file with a XiphComment; put non-conforming formats up above...
+    TagLib::Ogg::XiphComment *comment = 0;
+    if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        comment = file->xiphComment( false );
+        if( !comment )
+            return QString();
+    }
+    else if( TagLib::Ogg::File *file = dynamic_cast<TagLib::Ogg::File *>( fileref.file() ) )
+    {
+        if( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )
+            comment = ( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )->tag();
+        else if( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )
+            comment = ( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )->tag();
+        else if( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )
+            comment = ( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )->tag();
+        if( !comment )
+            return QString();
+    }
+    if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
+    {
+        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
+        qDebug() << "Found Ogg or FLAC identifier: " << identifier;
+        return identifier;
+    }
+        
     return QString();
 }
 
@@ -525,19 +552,24 @@ CollectionScanner::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
         if( file->tag() )
             return file->tag()->render();
     }
-    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    else if ( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
     {
-        if( file->ID3v2Tag() )
-            return file->ID3v2Tag()->render();
-        else if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->xiphComment() )
-            return file->xiphComment()->render();
+        if( file->tag() )
+            return file->tag()->render();
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
     {
         if( file->tag() )
             return file->tag()->render();
+    }
+    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->xiphComment() )
+            return file->xiphComment()->render();
+        else if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->ID3v2Tag() )
+            return file->ID3v2Tag()->render();
     }
     else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
     {
