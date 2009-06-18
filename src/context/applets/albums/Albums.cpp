@@ -174,6 +174,10 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             if( currentTrack == trackPtr )
                 trackItem->italicise();
 
+            // If compilation and same artist, then make bold, but only if there's a current track
+            if( currentTrack && currentTrack->artist() == trackPtr->artist() && albumPtr->isCompilation() )
+                trackItem->bold();           
+            
             albumItem->setChild( childRow++, trackItem );
         }
         

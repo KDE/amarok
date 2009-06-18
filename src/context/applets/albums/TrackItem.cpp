@@ -13,6 +13,7 @@
 ********************************************************************************/
 
 #include "TrackItem.h"
+#include "meta/MetaUtility.h"
 
 #include <QFont>
 
@@ -38,13 +39,23 @@ TrackItem::metadataChanged( Meta::TrackPtr track )
 {
     int trackNumber = track->trackNumber();
     QString trackName = track->prettyName();
+    QString trackArtist = track->artist()->prettyName();
+    QString trackTime = Meta::secToPrettyTime( track->length() );
+    bool isCompilation = track->album()->isCompilation();
 
     QString text;
 
-    if( trackNumber > 0 )
-        text = QString( "%1\t%2" ).arg( QString::number( trackNumber ), trackName );
-    else
-        text = QString( "\t%1" ).arg( trackName );
+    if( isCompilation ) {
+        if( trackNumber > 0 )
+            text = QString( "%1  %2 - %3 (%4)" ).arg( QString::number( trackNumber ), 4, ' ').arg(trackArtist).arg(trackName).arg(trackTime);
+        else
+            text = QString( "    %1 - %2 (%3)" ).arg( trackArtist, trackName, trackTime );
+    } else {
+        if( trackNumber > 0 )
+            text = QString( "%1  %2 (%3)" ).arg( QString::number( trackNumber ), 4, ' ').arg(trackName).arg(trackTime);
+        else
+            text = QString( "    %1 (%2)" ).arg( trackName, trackTime );
+    }
 
     setText( text );
 }
@@ -57,3 +68,10 @@ TrackItem::italicise()
     setFont( f );
 }
 
+void
+TrackItem::bold()
+{
+    QFont f = font();
+    f.setBold( true );
+    setFont( f );
+}

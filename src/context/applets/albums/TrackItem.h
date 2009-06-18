@@ -40,10 +40,16 @@ class TrackItem : public QStandardItem, public Meta::Observer
         Meta::TrackPtr track() const { return m_track; }
 
         /**
-         * Applies an italic style if the track is the currently 
+         * Applies an italic style if the track is the currently
          * playing track
          */
         void italicise();
+	
+	/**
+	 * Applies a bold style if the track is owned by the currently
+         * playing artist
+         */
+        void bold();
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
