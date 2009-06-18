@@ -289,6 +289,7 @@ set( libcontextview_SRCS
     context/toolbar/AppletToolbarBase.cpp
     context/toolbar/AppletToolbarConfigItem.cpp
     context/widgets/RatingWidget.cpp
+    context/widgets/TextScrollingWidget.cpp    
     context/widgets/ToolBoxIcon.cpp
     context/widgets/ContainmentArrow.cpp
     context/widgets/ContainmentSelectionLayer.cpp
