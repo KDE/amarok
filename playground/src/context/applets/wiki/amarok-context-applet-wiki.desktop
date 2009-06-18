@@ -1,15 +1,5 @@
 [Desktop Entry]
 Name=Wiki-MetaApplet
-Name[bg]=Уикипедия
-Name[ca]=Viquipèdia
-Name[ga]=Vicipéid
-Name[km]=វីគីភីឌៀ
-Name[pa]=ਵਿਕਿਪੀਡਿਆ
-Name[pt]=Wikipédia
-Name[ru]=Википедия
-Name[sl]=Wikipedija
-Name[uk]=Вікіпедія
-Name[x-test]=xxWikipedia-MetaAppletxx
 Type=Service
 ServiceTypes=Plasma/Applet
 
