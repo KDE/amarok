@@ -39,8 +39,6 @@ TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
     , m_animating( false )
 {
     setAcceptHoverEvents( true );
-    // we set the zValue at -1 so the item won't overlap with someother while moving
-    setZValue( zValue() - 1 ); 
 }
 
 void
@@ -52,8 +50,13 @@ TextScrollingWidget::setScrollingText( const QString text, QRectF rect )
     m_rect = rect;
     m_text = text;
     m_currentDelta = 0;
-    m_delta = m_fm->boundingRect( m_text ).width() > m_rect.width() ? m_fm->boundingRect( m_text ).width() + 5 - m_rect.width() : 0;
 
+    // reset the animation and stuff
+    Plasma::Animator::self()->stopCustomAnimation( m_animback );
+    Plasma::Animator::self()->stopCustomAnimation( m_animfor );
+    m_animating = false ;
+        
+    m_delta = m_fm->boundingRect( m_text ).width() + 5 > m_rect.width() ? m_fm->boundingRect( m_text ).width() + 8 - m_rect.width() : 0;
     setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)m_rect.width() ) );
 }
 
@@ -68,12 +71,13 @@ TextScrollingWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 void
 TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
 {
-    DEBUG_BLOCK
-    Q_UNUSED( e );
-    if ( !m_animating )
+    Q_UNUSED( e );    
+    if ( !m_animating && m_delta )
     {
+        DEBUG_BLOCK
+        
         m_animating = true ;
-        m_animfor = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*10, Plasma::Animator::EaseInCurve, this, "animate");
+        m_animfor = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*10, Plasma::Animator::EaseInCurve, this, "animate" );
         connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animationFinished( int ) ) );
     }
 }
@@ -81,11 +85,10 @@ TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
 void
 TextScrollingWidget::animationFinished( int id )
 {
-    // DEBUG_BLOCK
     if ( id == m_animfor )
     {
         Plasma::Animator::self()->stopCustomAnimation( m_animfor );
-        QTimer::singleShot(100, this, SLOT(startAnimBack()));
+        QTimer::singleShot(250, this, SLOT(startAnimBack()));
     }
     else if ( id == m_animback )
     {
@@ -97,7 +100,7 @@ TextScrollingWidget::animationFinished( int id )
 void
 TextScrollingWidget::startAnimBack()
 {
-    m_animback = Plasma::Animator::self()->customAnimation( m_delta, m_delta*5, Plasma::Animator::EaseInCurve, this, "animateBack");
+    m_animback = Plasma::Animator::self()->customAnimation( m_delta, m_delta*5, Plasma::Animator::EaseInCurve, this, "animateBack" );
 }
 
 void
