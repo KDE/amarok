@@ -17,11 +17,10 @@
 #include "amarok_export.h"
 
 #include <QGraphicsSimpleTextItem>
-#include <QGraphicsItem>
-#include <plasma/animator.h>
 
-
+//forward
 class QFontMetrics;
+class QPainter;
 namespace Plasma
 {
     class Animator;
@@ -36,6 +35,7 @@ namespace Plasma
 *
 * \author Simon Esneault <simon.esneault@gmail.com>
 */
+
 class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimpleTextItem
 {
     Q_OBJECT
@@ -47,34 +47,34 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
         * Set the Text and more important the QRectF which will define the scrolling area
         */
         void setScrollingText( const QString, QRectF );
-
-
-        /**
-        * Handle animation
-        */
-        void startScrollAnimation( void );
-            
     
     public slots:
         void animate( qreal anim );
+        void animateBack( qreal anim );
+        
+        void animationFinished(int);
+        void startAnimBack();
 
     protected :
         /**
-        * Reimplement hover mouse event
+        * Reimplement mouse hover enter event
         */
-        virtual void hoverEnterEvent( QGraphicsSceneHoverEvent* e );
-        virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent* e );
-    
+        virtual void hoverEnterEvent( QGraphicsSceneHoverEvent* );
 
+        /**
+        * Reimplement paint in order to clip the widget
+        */
+        virtual void paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+        
     private:
-        QRectF            m_rect;     // box size
-        QFontMetrics     *m_fm;
-        QString           m_text;
-        int               m_delta;
-        int               m_id;
-
+        QRectF            m_rect;           // box size
+        QFontMetrics     *m_fm;             // font metrics wich will cut the text.
+        QString           m_text;           // full sentence
+        int               m_delta;          // complete delta
+        float             m_currentDelta;   // current delta
+        int               m_animfor;        // anim id for
+        int               m_animback;       // anim id back
+        bool              m_animating;      // boolean !
 };
-
-
 
 #endif

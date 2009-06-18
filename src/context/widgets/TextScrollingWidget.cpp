@@ -19,80 +19,103 @@
 #include <QFontMetrics>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsWidget>
+#include <QPainter>
+#include <QTimer>
 
 #include <Plasma/Animator>
 
 #define DEBUG_PREFIX "TextScrollingWidget"
+
 
 TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
     : QGraphicsSimpleTextItem( parent )
     , m_fm( 0 )
     , m_text( 0 )
     , m_delta( 0 )
-    , m_id( 0 )
+    , m_currentDelta( 0. )
+    , m_animfor( 0 )
+    , m_animback( 0 )
+    , m_animating( false )
 {
     setAcceptHoverEvents( true );
+    // we set the zValue at -1 so the item won't overlap with someother while moving
+    setZValue( zValue() - 1 ); 
 }
 
 void
 TextScrollingWidget::setScrollingText( const QString text, QRectF rect )
 {
-    DEBUG_BLOCK
+ //   DEBUG_BLOCK
     if ( !m_fm )
         m_fm = new QFontMetrics( font() );
     m_rect = rect;
     m_text = text;
-    debug () << "m_text "<<m_text;
-    debug () << "m_rect "<<rect.width()<<" "<<rect.height()<<" "<<rect.left()<<" "<<rect.right();
-
-    // we store the delta;
-    m_delta = m_fm->boundingRect( m_text ).width() > m_rect.width() ? m_fm->boundingRect( m_text ).width() - m_rect.width() : 0;
-    debug()<<" delta = " <<m_delta;
+    m_currentDelta = 0;
+    m_delta = m_fm->boundingRect( m_text ).width() > m_rect.width() ? m_fm->boundingRect( m_text ).width() + 5 - m_rect.width() : 0;
 
     setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)m_rect.width() ) );
 }
 
+void
+TextScrollingWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    // clip the widget.
+    painter->setClipRegion( QRegion( boundingRect().translated( m_currentDelta, 0 ).toRect() ) );
+    QGraphicsSimpleTextItem::paint( painter, option, widget );
+}
 
 void
 TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
 {
-    Q_UNUSED( e );
-    
-    debug()<< "Entering hover ";
-    startScrollAnimation();
-}
-
-void
-TextScrollingWidget::hoverLeaveEvent( QGraphicsSceneHoverEvent* e)
-{
-    Q_UNUSED( e );
-    debug() << "Leaving hover ";
-}
-
-void
-TextScrollingWidget::startScrollAnimation( void )
-{
     DEBUG_BLOCK
-  
-    m_id = Plasma::Animator::self()->customAnimation( 50, 2, Plasma::Animator::LinearCurve, this, "animate");
-  //  m_id =Plasma::Animator::self()->moveItem( this, Plasma::Animator::SlideOutMovement, QPoint(m_rect.left()-m_delta, y() ) );
+    Q_UNUSED( e );
+    if ( !m_animating )
+    {
+        m_animating = true ;
+        m_animfor = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*10, Plasma::Animator::EaseInCurve, this, "animate");
+        connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animationFinished( int ) ) );
+    }
 }
 
+void
+TextScrollingWidget::animationFinished( int id )
+{
+    // DEBUG_BLOCK
+    if ( id == m_animfor )
+    {
+        Plasma::Animator::self()->stopCustomAnimation( m_animfor );
+        QTimer::singleShot(100, this, SLOT(startAnimBack()));
+    }
+    else if ( id == m_animback )
+    {
+        Plasma::Animator::self()->stopCustomAnimation( m_animback );
+        m_animating = false;
+    }
+}
+
+void
+TextScrollingWidget::startAnimBack()
+{
+    m_animback = Plasma::Animator::self()->customAnimation( m_delta, m_delta*5, Plasma::Animator::EaseInCurve, this, "animateBack");
+}
 
 void
 TextScrollingWidget::animate( qreal anim )
 {
-    DEBUG_BLOCK
-    debug()<<"ho yeah";
-    setPos( pos()-QPointF((float)(m_delta/10.)*anim, 0 ) );
-    update();
-
+//    DEBUG_BLOCK
+    m_currentDelta = ( float )( anim * ( m_delta ) );
+    setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)( m_rect.width() + m_currentDelta ) ) );
+    setPos( m_rect.left() - m_currentDelta, pos().y() );
 }
 
-// we don't want to mess things
-//  if ( x() == m_rect.left() )
-// first move the widget ;
-//  debug ()<< " m_delta*10 " << m_delta*10;
-//debug ()<< " m_delta/2 " << m_delta/2;
+void
+TextScrollingWidget::animateBack( qreal anim )
+{
+    // DEBUG_BLOCK
+    m_currentDelta = m_delta - ( float )( anim * ( m_delta ) );
+    setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)( m_rect.width() + m_currentDelta ) ) );
+    setPos( m_rect.left() - m_currentDelta, pos().y() );
+}
 
 #include "TextScrollingWidget.moc"
