@@ -91,7 +91,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
         }
     }
     
-    srandom( (unsigned)time( 0 ) );
+    qsrand(QDateTime::currentDateTime().toTime_t());
     m_time.start();
 
     foreach( const QString &path, m_fileFolderList )
@@ -321,11 +321,11 @@ AFTTagger::createV1UID( TagLib::File *file )
     QByteArray size;
     md5.addData( size.setNum( (qulonglong)(file->length()) ) );
     md5.addData( QString::number( m_time.elapsed() ).toAscii() );
-    md5.addData( QString::number( random() ).toAscii() );
-    md5.addData( QString::number( random() ).toAscii() );
-    md5.addData( QString::number( random() ).toAscii() );
-    md5.addData( QString::number( random() ).toAscii() );
-    md5.addData( QString::number( random() ).toAscii() );
+    md5.addData( QString::number( qrand() ).toAscii() );
+    md5.addData( QString::number( qrand() ).toAscii() );
+    md5.addData( QString::number( qrand() ).toAscii() );
+    md5.addData( QString::number( qrand() ).toAscii() );
+    md5.addData( QString::number( qrand() ).toAscii() );
     md5.addData( QString::number( m_time.elapsed() ).toAscii() );
     return QString( md5.result().toHex() );
 }

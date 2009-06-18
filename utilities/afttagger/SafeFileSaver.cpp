@@ -69,7 +69,7 @@ SafeFileSaver::prepareToSave()
     int i = 0;
     while( length-- )
     {
-        int r = random() % 62;
+        int r = qrand() % 62;
         r+=48;
         if( r > 57 ) r+=7;
         if( r > 90 ) r+=6;
