@@ -23,6 +23,7 @@
 #include <QAction>
 #include <QList>
 
+class TextScrollingWidget;
 class RatingWidget;
 class QCheckBox;
 class QGraphicsPixmapItem;
@@ -70,9 +71,9 @@ private:
     // aligns the second QGI to be at the same level as the first (the bottom edges)
     void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
 
-    QGraphicsSimpleTextItem* m_title;
-    QGraphicsSimpleTextItem* m_artist;
-    QGraphicsSimpleTextItem* m_album;
+    TextScrollingWidget* m_title;
+    TextScrollingWidget* m_artist;
+    TextScrollingWidget* m_album;
     QGraphicsSimpleTextItem* m_noTrack;
     QGraphicsSimpleTextItem* m_byText;
     QGraphicsSimpleTextItem* m_onText;

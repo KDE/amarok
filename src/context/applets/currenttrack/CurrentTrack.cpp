@@ -24,6 +24,7 @@
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include <context/widgets/RatingWidget.h>
+#include "context/widgets/TextScrollingWidget.h"
 
 #include <plasma/theme.h>
 #include <plasma/widgets/tabbar.h>
@@ -47,7 +48,6 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     setConfigurationRequired( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
     setImmutability( Plasma::Mutable );
-
     // Fix for BUG 190923:
     // If the widget receives focus, somehow this makes it impossible to open the Amarok menu. Reason unclear.
     setFocusPolicy( Qt::NoFocus );
@@ -68,16 +68,17 @@ CurrentTrack::init()
 
     connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
 
-    m_title        = new QGraphicsSimpleTextItem( this );
-    m_artist       = new QGraphicsSimpleTextItem( this );
-    m_album        = new QGraphicsSimpleTextItem( this );
+    // TextScrollingWidget is a QGraphicsSimpleTextItem which will scroll is content on mouse hover
+    m_title        = new TextScrollingWidget( this );
+    m_artist       = new TextScrollingWidget( this );
+    m_album        = new TextScrollingWidget( this );
     m_noTrack      = new QGraphicsSimpleTextItem( this );
     m_albumCover   = new QGraphicsPixmapItem    ( this );
     m_byText       = new QGraphicsSimpleTextItem( i18nc( "What artist is this track by", "By" ), this );
     m_onText       = new QGraphicsSimpleTextItem( i18nc( "What album is this track on", "On" ), this );
 
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
-
+    
     m_title->setBrush( brush );
     m_artist->setBrush( brush );
     m_album->setBrush( brush );;
@@ -236,9 +237,9 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
     const QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
 
-    m_artist->setText( truncateTextToFit( artist, m_artist->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-    m_title->setText( truncateTextToFit( title, m_title->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-    m_album->setText( truncateTextToFit( album, m_album->font(), QRectF( 0, 0, textWidth, 30 ) ) );
+    m_title->setScrollingText( title, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
+    m_artist->setScrollingText( artist, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
+    m_album->setScrollingText( album, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
 
 
     if( !m_lastTracks.isEmpty() )
@@ -322,13 +323,11 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_favoriteTracks.clear();
 
     m_currentInfo = data[ "current" ].toMap();
-    m_title->setText( truncateTextToFit( m_currentInfo[ Meta::Field::TITLE ].toString(), m_title->font(), textRect ) );
-
+    m_title->setScrollingText( m_currentInfo[ Meta::Field::TITLE ].toString(), textRect );
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    m_artist->setText( truncateTextToFit( artist, m_artist->font(), textRect ) );
-
+    m_artist->setScrollingText( artist, textRect );
     const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    m_album->setText( truncateTextToFit( album, m_album->font(), textRect ) );
+    m_album->setScrollingText( album, textRect );
 
     m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
 
@@ -602,8 +601,11 @@ CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
 
         QPixmap coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, m_album->text(), true );
 
-        
+        // HACK to make it "on top always !"
+        m_albumCover->setCacheMode(NoCache);
         m_albumCover->setPixmap( coverWithBorders );
+        m_albumCover->update();
+        m_albumCover->setCacheMode(ItemCoordinateCache);
         return true;
     }
     return false;
