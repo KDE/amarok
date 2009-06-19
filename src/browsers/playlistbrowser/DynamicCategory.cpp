@@ -167,8 +167,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     
     /// HERE WE ADD ALL GENERAL CUSTOM BIASES
-    // disabling while i work with the echonest guys to implement a real auth system
-    // Dynamic::CustomBias::registerNewBiasFactory( new Dynamic::EchoNestBiasFactory() );
+    Dynamic::CustomBias::registerNewBiasFactory( new Dynamic::EchoNestBiasFactory() );
 }
 
 

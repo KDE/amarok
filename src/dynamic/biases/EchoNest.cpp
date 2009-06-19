@@ -46,7 +46,7 @@ QString
 Dynamic::EchoNestBiasFactory::name() const
 {
     
-    return i18n( "EchoNest Similar Artists" );
+    return i18n( "Echo Nest Similar Artists" );
 }
 
 QString
@@ -117,7 +117,7 @@ Dynamic::EchoNestBias::configWidget( QWidget* parent )
 
     layout->addWidget( m_fieldSelection, 0, 1, Qt::AlignLeft );
     
-    QLabel * label = new QLabel( i18n( "Recommendations by EchoNest." ), parent );
+    QLabel * label = new QLabel( i18n( "Recommendations by Echo Nest." ), parent );
     label->setWordWrap( true );
     label->setAlignment( Qt::AlignCenter );
     layout->addWidget( label, 1, 0, 1, 2, 0 );
