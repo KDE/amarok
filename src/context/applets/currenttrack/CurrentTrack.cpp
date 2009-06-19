@@ -25,6 +25,7 @@
 #include "SvgHandler.h"
 #include <context/widgets/RatingWidget.h>
 #include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/DropPixmapItem.h"
 
 #include <plasma/theme.h>
 #include <plasma/widgets/tabbar.h>
@@ -73,9 +74,11 @@ CurrentTrack::init()
     m_artist       = new TextScrollingWidget( this );
     m_album        = new TextScrollingWidget( this );
     m_noTrack      = new QGraphicsSimpleTextItem( this );
-    m_albumCover   = new QGraphicsPixmapItem    ( this );
+    m_albumCover   = new DropPixmapItem    ( this );
     m_byText       = new QGraphicsSimpleTextItem( i18nc( "What artist is this track by", "By" ), this );
     m_onText       = new QGraphicsSimpleTextItem( i18nc( "What album is this track on", "On" ), this );
+
+    connect( m_albumCover, SIGNAL( imageDropped( QPixmap) ), this, SLOT( coverDropped( QPixmap ) ) );
 
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
     
@@ -609,6 +612,22 @@ CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
         return true;
     }
     return false;
+}
+
+void
+CurrentTrack::coverDropped( QPixmap cover )
+{
+    DEBUG_BLOCK
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !track )
+        return;
+    
+    Meta::AlbumPtr album = track->album();
+    if( !album )
+        return;
+
+    if ( !cover.isNull() )
+        album->setImage( cover );
 }
 
 void

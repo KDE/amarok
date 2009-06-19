@@ -24,6 +24,7 @@
 #include <QList>
 
 class TextScrollingWidget;
+class DropPixmapItem;
 class RatingWidget;
 class QCheckBox;
 class QGraphicsPixmapItem;
@@ -63,6 +64,7 @@ private slots:
     void connectSource( const QString &source );
     void paletteChanged( const QPalette & palette );
     void tabChanged( int index );
+    void coverDropped( QPixmap cover );
 
 private:
     QList<QAction*> contextualActions();
@@ -80,7 +82,7 @@ private:
     int m_rating;
     int m_trackLength;
 
-    QGraphicsPixmapItem* m_albumCover;
+    DropPixmapItem* m_albumCover;
     QPixmap m_bigCover;
     QString m_sourceEmblemPath;
 
