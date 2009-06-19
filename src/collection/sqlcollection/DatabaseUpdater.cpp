@@ -25,6 +25,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QMultiMap>
 #include <QTextStream>
 
 #include <KGlobal>
@@ -163,16 +164,25 @@ DatabaseUpdater::upgradeVersion3to4()
 void
 DatabaseUpdater::upgradeVersion4to5()
 {
+    DEBUG_BLOCK
     //first the database
     m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8" );
 
     //now the tables
+
+    //first, drop tables that can easily be recreated by doing an update
+    QStringList dropTables;
+    dropTables << "jamendo_albums" << "jamendo_artists" << "jamendo_genre" << "jamendo_tracks";
+    dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
+    dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
+
+    foreach( QString table, dropTables )
+        m_collection->query( "DROP TABLE " + table );
+
+    //now, the rest of them
     QStringList tables;
     tables << "admin" << "amazon" << "bookmark_groups" << "bookmarks" << "devices" << "directories";
-    tables << "jamendo_albums" << "jamendo_artists" << "jamendo_genre" << "jamendo_tracks";
-    tables << "labels" << "lyrics" << "magnatune_albums" << "magnatune_artists";
-    tables << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
-    tables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
+    tables << "labels" << "lyrics";
     tables << "playlist_groups" << "playlist_tracks" << "playlists";
     tables << "podcastchannels" << "podcastepisodes";
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
@@ -182,7 +192,80 @@ DatabaseUpdater::upgradeVersion4to5()
         m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8" );
 
     //now the columns (ugh)
+    //first, varchar
+    typedef QPair<QString, int> vcpair;
+    QMultiMap<QString, vcpair> columns;
+    columns.insert( "admin", vcpair( "component", 255 ) );
+    columns.insert( "amazon", vcpair( "asin", 20 ) );
+    columns.insert( "amazon", vcpair( "locale", 2 ) );
+    columns.insert( "amazon", vcpair( "filename", 33 ) );
+    columns.insert( "bookmark_groups", vcpair( "name", 255 ) );
+    columns.insert( "bookmark_groups", vcpair( "description", 255 ) );
+    columns.insert( "bookmark_groups", vcpair( "custom", 255 ) );
+    columns.insert( "bookmarks", vcpair( "name", 255 ) );
+    columns.insert( "bookmarks", vcpair( "url", 1024 ) );
+    columns.insert( "bookmarks", vcpair( "description", 1024 ) );
+    columns.insert( "bookmarks", vcpair( "custom", 255 ) );
+    columns.insert( "devices", vcpair( "type", 255 ) );
+    columns.insert( "devices", vcpair( "label", 255 ) );
+    columns.insert( "devices", vcpair( "lastmountpoint", 255 ) );
+    columns.insert( "devices", vcpair( "uuid", 255 ) );
+    columns.insert( "devices", vcpair( "servername", 255 ) );
+    columns.insert( "devices", vcpair( "sharename", 255 ) );
+    columns.insert( "directories", vcpair( "dir", 1024 ) );
+    columns.insert( "labels", vcpair( "label", 255 ) );
+    columns.insert( "lyrics", vcpair( "url", 1024 ) );
+    columns.insert( "playlist_groups", vcpair( "name", 255 ) );
+    columns.insert( "playlist_groups", vcpair( "description", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "url", 1024 ) );
+    columns.insert( "playlist_tracks", vcpair( "title", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "album", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "artist", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "url", 128 ) );
+    columns.insert( "playlists", vcpair( "name", 255 ) );
+    columns.insert( "playlists", vcpair( "description", 255 ) );
+    columns.insert( "playlists", vcpair( "urlid", 1024 ) );
+    columns.insert( "podcastchannels", vcpair( "copyright", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "directory", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "labels", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "subscribedate", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "guid", 1024 ) );
+    columns.insert( "podcastepisodes", vcpair( "mimetype", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "pubdate", 255 ) );
+    columns.insert( "statistics_permanent", vcpair( "url", 1024 ) );
+    columns.insert( "statistics_tag", vcpair( "name", 255 ) );
+    columns.insert( "statistics_tag", vcpair( "artist", 255 ) );
+    columns.insert( "urls", vcpair( "rpath", 1024 ) );
+    columns.insert( "urls", vcpair( "uniqueid", 128 ) );
 
+    QMultiMap<QString, vcpair>::const_iterator i;
+
+    for( i = columns.begin(); i != columns.end(); ++i )
+    {
+        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET binary" );
+        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 NOT NULL" );
+    }
+
+    columns.clear();
+    
+    //text fields, not varchars
+    columns.insert( "lyrics", vcpair( "lyrics", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "url", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "title", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "weblink", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "image", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "description", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "url", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "localurl", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "title", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "subtitle", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "description", 0 ) );
+
+    for( i = columns.begin(); i != columns.end(); ++i )
+    {
+        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET binary" );
+        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 NOT NULL" );
+    }
 }
 
 void
