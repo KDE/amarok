@@ -1,5 +1,11 @@
 [Desktop Entry]
 Name=Wiki Data Engine
+Name[km]=ម៉ាស៊ីន​ទិន្នន័យ​វីគី
+Name[pt]=Motor de Dados de Wikis
+Name[pt_BR]=Motor de Dados de Wikis
+Name[sv]=Datagränssnitt för Webbjournal
+Name[uk]=Рушій даних Вікі
+Name[x-test]=xxWiki Data Enginexx
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 X-KDE-Library=amarok_data_engine_wiki
