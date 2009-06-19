@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>
+ *  Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,67 +27,10 @@
 #include <QThreadStorage>
 #include <QVarLengthArray>
 
-
 #include <mysql.h>
 
-/**
- * This class is used by MySqlEmbeddedCollection to fulfill mysql's thread
- * requirements. In every function, that calls mysql_*, an init() method of
- * this class must be invoked.
- */
-class ThreadInitializer
-{
-    static int threadsCount;
-    static QMutex countMutex;
-    static QThreadStorage< ThreadInitializer* > storage;
-
-    /**
-     * This should be called ONLY by init()
-     */
-    ThreadInitializer()
-    {
-        mysql_thread_init();
-
-        countMutex.lock();
-        threadsCount++;
-        countMutex.unlock();
-
-        debug() << "Initialized thread, count==" << threadsCount;
-    }
-
-public:
-    /**
-     * This is called by QThreadStorage when a thread is destroyed
-     */
-    ~ThreadInitializer()
-    {
-        mysql_thread_end();
-
-        countMutex.lock();
-        threadsCount--;
-        countMutex.unlock();
-
-        debug() << "Deinitialized thread, count==" << threadsCount;
-
-        if( threadsCount == 0 )
-            mysql_library_end();
-    }
-
-    static void init()
-    {
-        if( !storage.hasLocalData() )
-            storage.setLocalData( new ThreadInitializer() );
-    }
-};
-
-int ThreadInitializer::threadsCount = 0;
-QMutex ThreadInitializer::countMutex;
-QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
-
-
 MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QString &prettyName )
-    : SqlCollection( id, prettyName )
-    , m_db( 0 )
+    : MySqlCollection( id, prettyName )
 {
     const QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" ); 
     const QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
@@ -109,7 +53,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
         dir.mkpath( "." );
     }
 
-    static const int num_elements = 8;
+    static const int num_elements = 9;
     char **server_options = new char* [ num_elements + 1 ];
     server_options[0] = const_cast<char*>( "amarokmysqld" );
     server_options[1] = defaultsLine;
@@ -121,6 +65,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     server_options[5] = const_cast<char*>( "--loose-skip-innodb" );
     server_options[6] = const_cast<char*>( "--skip-grant-tables" );
     server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
+    server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
     server_options[num_elements] = 0;
 
     char **server_groups = new char* [ 3 ];
@@ -167,7 +112,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
             debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
         }
     
-        ThreadInitializer::init();
+        MySqlCollection::initThreadInitializer();
         init();
     }
 }
@@ -175,124 +120,6 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
 MySqlEmbeddedCollection::~MySqlEmbeddedCollection()
 {
     DEBUG_BLOCK
-
-    mysql_close(m_db);
-}
-
-QStringList MySqlEmbeddedCollection::query( const QString& statement )
-{
-    //DEBUG_BLOCK
-    //debug() << "[ATTN!] MySqlEmbedded::query( " << statement << " )";
-
-    ThreadInitializer::init();
-    QMutexLocker locker( &m_mutex );
-
-    QStringList values;
-    if( !m_db )
-    {
-        error() << "Tried to perform query on uninitialized MySQLe";
-        return values;
-    }
-
-    int res = mysql_query( m_db, statement.toUtf8() ); 
-    
-    if( res )
-    {
-        reportError( statement );
-        return values;
-    }
-
-    MYSQL_RES *pres = mysql_store_result( m_db );
-    if( !pres ) // No results... check if any were expected
-    {
-        if( mysql_field_count( m_db ) )
-            reportError( statement );
-        return values;
-    }
-    
-    int number = mysql_num_fields( pres );
-    if( number <= 0 )
-    {
-        warning() << "Errr... query returned but with no fields";
-    }
-
-    MYSQL_ROW row = mysql_fetch_row( pres );
-    while( row )
-    {
-        for( int i = 0; i < number; i++ )
-        {
-            values << QString::fromUtf8( (const char*) row[i] );
-        }
-    
-        row = mysql_fetch_row( pres );
-    }
-
-    mysql_free_result( pres );
-    
-    return values;
-}
-
-int MySqlEmbeddedCollection::insert( const QString& statement, const QString& /* table */ )
-{
-    //DEBUG_BLOCK
-    //debug() << "[ATTN!] MySqlEmbedded::insert( " << statement << " )";
-
-    ThreadInitializer::init();
-    QMutexLocker locker( &m_mutex );
-
-    if( !m_db )
-    {
-        error() << "Tried to perform insert on uninitialized MySQLe";
-        return 0;
-    }
-
-    int res = mysql_query( m_db, statement.toUtf8() ); 
-    if( res )
-    {
-        reportError( statement );
-        return 0;
-    }
-
-    MYSQL_RES *pres = mysql_store_result( m_db );
-    if( pres )
-    {
-        warning() << "[IMPORTANT!] insert returned data";
-        mysql_free_result( pres );
-    }
-
-    res = mysql_insert_id( m_db ); 
-    
-    return res;
-}
-
-QString
-MySqlEmbeddedCollection::escape( QString text ) const
-{
-    if( !m_db )
-    {
-        error() << "Tried to perform escape() on uninitialized MySQLe";
-        return QString();
-    }
-
-    const QByteArray utfText = text.toUtf8();
-    const int length = utfText.length() * 2 + 1;
-    QVarLengthArray<char, 1024> outputBuffer( length );
-
-    mysql_real_escape_string( m_db, outputBuffer.data(), utfText.constData(), utfText.length() );
-
-    return QString::fromUtf8( outputBuffer.constData() );
-}
-
-QString
-MySqlEmbeddedCollection::randomFunc() const
-{
-    return "RAND()";
-}
-
-void
-MySqlEmbeddedCollection::reportError( const QString& message )
-{
-    error() << "GREPME MySQLe query failed!" << mysql_error( m_db ) << " on " << message;
 }
 
 QString

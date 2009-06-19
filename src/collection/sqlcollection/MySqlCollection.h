@@ -1,5 +1,6 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>
+ *  Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,33 +21,38 @@
 #define AMAROK_COLLECTION_MYSQLCOLLECTION_H
 
 #include "SqlCollection.h"
-#include <mysql/mysql.h>
-#include <mysql/mysql_version.h>
 
-class MySqlCollection : public SqlCollection
+#include <QMutex>
+
+struct st_mysql;
+typedef struct st_mysql MYSQL;
+
+/**
+ * Implements a SqlCollection using a MySQL backend
+ */
+class MySqlCollection: public SqlCollection
 {
+    Q_OBJECT
+
     public:
         MySqlCollection( const QString &id, const QString &prettyName );
         virtual ~MySqlCollection();
 
-        virtual QueryMaker* queryMaker();
-
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table );
 
-        virtual QString type() const;
-
         virtual QString escape( QString text ) const;
+        virtual QString randomFunc() const;
 
-        virtual QueryMaker* orderByRandom();
+        virtual QString type() const = 0;
 
-    private:
-        bool m_initialized;
+    protected:
+        void reportError( const QString& message );
 
-        void setMysqlError();
+        void initThreadInitializer();
+
         MYSQL* m_db;
-        bool m_connected;
-        QString m_error;
+        QMutex m_mutex;
 };
 
 #endif

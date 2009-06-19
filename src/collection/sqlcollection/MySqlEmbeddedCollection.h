@@ -1,5 +1,6 @@
 /*
  *  Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>
+ *  Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,17 +20,12 @@
 #ifndef AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 
-#include "SqlCollection.h"
-
-#include <QMutex>
-
-struct st_mysql;
-typedef struct st_mysql MYSQL;
+#include "MySqlCollection.h"
 
 /**
- * Implements a SqlCollection using a MySQL Embedded Server
+ * Implements a MySqlCollection using a MySQL Embedded Server
  */
-class MySqlEmbeddedCollection : public SqlCollection
+class MySqlEmbeddedCollection : public MySqlCollection
 {
     Q_OBJECT
 
@@ -37,19 +33,7 @@ class MySqlEmbeddedCollection : public SqlCollection
         MySqlEmbeddedCollection( const QString &id, const QString &prettyName );
         virtual ~MySqlEmbeddedCollection();
 
-        virtual QStringList query( const QString &query );
-        virtual int insert( const QString &statement, const QString &table );
-
-        virtual QString escape( QString text ) const;
-        virtual QString randomFunc() const;
-
         virtual QString type() const;
-
-    private:
-        void reportError( const QString& message );
-
-        MYSQL* m_db;
-        QMutex m_mutex;
 };
 
 #endif

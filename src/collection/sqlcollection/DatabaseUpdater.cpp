@@ -65,20 +65,25 @@ DatabaseUpdater::update()
     else if( dbVersion < DB_VERSION )
     {
         debug() << "Database out of date: database version is" << dbVersion << ", current version is" << DB_VERSION;
-        if ( dbVersion == 1 )
+        if ( dbVersion == 1 && dbVersion <= DB_VERSION )
         {
             upgradeVersion1to2();
             dbVersion = 2;
         }
-        if( dbVersion == 2 )
+        if( dbVersion == 2 && dbVersion <= DB_VERSION )
         {
             upgradeVersion2to3();
             dbVersion = 3;
         }
-        if( dbVersion == 3 )
+        if( dbVersion == 3 && dbVersion <= DB_VERSION )
         {
             upgradeVersion3to4();
             dbVersion = 4;
+        }
+        if( dbVersion == 4 && dbVersion <= DB_VERSION )
+        {
+            upgradeVersion4to5();
+            dbVersion = 5;
         }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
@@ -153,6 +158,31 @@ DatabaseUpdater::upgradeVersion3to4()
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
     m_collection->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
+}
+
+void
+DatabaseUpdater::upgradeVersion4to5()
+{
+    //first the database
+    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8" );
+
+    //now the tables
+    QStringList tables;
+    tables << "admin" << "amazon" << "bookmark_groups" << "bookmarks" << "devices" << "directories";
+    tables << "jamendo_albums" << "jamendo_artists" << "jamendo_genre" << "jamendo_tracks";
+    tables << "labels" << "lyrics" << "magnatune_albums" << "magnatune_artists";
+    tables << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
+    tables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
+    tables << "playlist_groups" << "playlist_tracks" << "playlists";
+    tables << "podcastchannels" << "podcastepisodes";
+    tables << "statistics" << "statistics_permanent" << "statistics_tag";
+    tables << "urls" << "urls_labels";
+
+    foreach( QString table, tables )
+        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8" );
+
+    //now the columns (ugh)
+
 }
 
 void
