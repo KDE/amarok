@@ -509,11 +509,7 @@ CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     //from here below assumes a file with a XiphComment; put non-conforming formats up above...
     TagLib::Ogg::XiphComment *comment = 0;
     if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-    {
         comment = file->xiphComment( false );
-        if( !comment )
-            return QString();
-    }
     else if( TagLib::Ogg::File *file = dynamic_cast<TagLib::Ogg::File *>( fileref.file() ) )
     {
         if( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )
@@ -522,10 +518,12 @@ CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
             comment = ( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )->tag();
         else if( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )
             comment = ( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )->tag();
-        if( !comment )
-            return QString();
     }
-    if( comment && comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
+
+    if( !comment )
+        return QString();
+
+    if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
         qDebug() << "Found Ogg or FLAC identifier: " << identifier;
