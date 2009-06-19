@@ -247,7 +247,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                 TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
                 if( currFrame )
                 {
-                    QString owner = TStringToQString( currFrame->owner() );
+                    QString owner = TStringToQString( currFrame->owner() ).toUpper();
                     if( owner.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
                     {
                         if( m_verbose )
@@ -261,7 +261,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                         else
                             return true;
                     }
-                    if( owner.startsWith( "Amarok 2 AFT" ) )
+                    if( owner.startsWith( "AMAROK 2 AFT" ) )
                     {
                         if( m_verbose )
                             m_textStream << qPrintable( tr( "INFO: Found an existing AFT identifier: %1" ).arg( TStringToQString( TagLib::String( currFrame->identifier() ) ) ) ) << endl;
