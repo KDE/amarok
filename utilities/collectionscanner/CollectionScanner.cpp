@@ -525,7 +525,7 @@ CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
         if( !comment )
             return QString();
     }
-    if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
+    if( comment && comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
         qDebug() << "Found Ogg or FLAC identifier: " << identifier;
