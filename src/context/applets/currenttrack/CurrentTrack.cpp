@@ -563,7 +563,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         // paint the emblem half as tall as the applet, anchored at the top-right
         // assume it is a square emblem
         qreal height = boundingRect().height() / 2;
-        QRectF rect( boundingRect().width() - standardPadding() - height, ( boundingRect().height() / 2 - ( height / 2 ) ),
+        QRectF rect( boundingRect().width() - standardPadding() - height, standardPadding(),
                      height, height );
         svg.render( p, rect );
         
