@@ -53,7 +53,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
         dir.mkpath( "." );
     }
 
-    static const int num_elements = 9;
+    static const int num_elements = 10;
     char **server_options = new char* [ num_elements + 1 ];
     server_options[0] = const_cast<char*>( "amarokmysqld" );
     server_options[1] = defaultsLine;
@@ -66,6 +66,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     server_options[6] = const_cast<char*>( "--skip-grant-tables" );
     server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
     server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
+    server_options[9] = const_cast<char*>( "--collation-server=utf8_general_ci" );
     server_options[num_elements] = 0;
 
     char **server_groups = new char* [ 3 ];

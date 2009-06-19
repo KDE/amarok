@@ -166,7 +166,7 @@ DatabaseUpdater::upgradeVersion4to5()
 {
     DEBUG_BLOCK
     //first the database
-    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8" );
+    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" );
 
     //now the tables
 
@@ -181,24 +181,26 @@ DatabaseUpdater::upgradeVersion4to5()
 
     //now, the rest of them
     QStringList tables;
-    tables << "admin" << "amazon" << "bookmark_groups" << "bookmarks" << "devices" << "directories";
-    tables << "labels" << "lyrics";
+    tables << "admin" << "albums" << "amazon" << "artists" << "bookmark_groups" << "bookmarks";
+    tables << "composers" << "devices" << "directories" << "genres" << "images" << "labels" << "lyrics";
     tables << "playlist_groups" << "playlist_tracks" << "playlists";
     tables << "podcastchannels" << "podcastepisodes";
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
-    tables << "urls" << "urls_labels";
+    tables << "tracks" << "urls" << "urls_labels" << "years";
 
     foreach( QString table, tables )
-        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8" );
+        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci" );
 
     //now the columns (ugh)
     //first, varchar
     typedef QPair<QString, int> vcpair;
     QMultiMap<QString, vcpair> columns;
     columns.insert( "admin", vcpair( "component", 255 ) );
+    columns.insert( "albums", vcpair( "name", 255 ) );
     columns.insert( "amazon", vcpair( "asin", 20 ) );
     columns.insert( "amazon", vcpair( "locale", 2 ) );
     columns.insert( "amazon", vcpair( "filename", 33 ) );
+    columns.insert( "artists", vcpair( "name", 255 ) );
     columns.insert( "bookmark_groups", vcpair( "name", 255 ) );
     columns.insert( "bookmark_groups", vcpair( "description", 255 ) );
     columns.insert( "bookmark_groups", vcpair( "custom", 255 ) );
@@ -206,6 +208,7 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "bookmarks", vcpair( "url", 1024 ) );
     columns.insert( "bookmarks", vcpair( "description", 1024 ) );
     columns.insert( "bookmarks", vcpair( "custom", 255 ) );
+    columns.insert( "composers", vcpair( "name", 255 ) );
     columns.insert( "devices", vcpair( "type", 255 ) );
     columns.insert( "devices", vcpair( "label", 255 ) );
     columns.insert( "devices", vcpair( "lastmountpoint", 255 ) );
@@ -213,6 +216,8 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "devices", vcpair( "servername", 255 ) );
     columns.insert( "devices", vcpair( "sharename", 255 ) );
     columns.insert( "directories", vcpair( "dir", 1024 ) );
+    columns.insert( "genres", vcpair( "name", 255 ) );
+    columns.insert( "images", vcpair( "path", 255 ) );
     columns.insert( "labels", vcpair( "label", 255 ) );
     columns.insert( "lyrics", vcpair( "url", 1024 ) );
     columns.insert( "playlist_groups", vcpair( "name", 255 ) );
@@ -235,15 +240,18 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "statistics_permanent", vcpair( "url", 1024 ) );
     columns.insert( "statistics_tag", vcpair( "name", 255 ) );
     columns.insert( "statistics_tag", vcpair( "artist", 255 ) );
+    columns.insert( "tracks", vcpair( "title", 255 ) );
     columns.insert( "urls", vcpair( "rpath", 1024 ) );
     columns.insert( "urls", vcpair( "uniqueid", 128 ) );
+    columns.insert( "years", vcpair( "name", 255 ) );
 
     QMultiMap<QString, vcpair>::const_iterator i;
 
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET binary" );
-        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 NOT NULL" );
+        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ")" );
+        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+            " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL" );
     }
 
     columns.clear();
@@ -260,12 +268,19 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "podcastepisodes", vcpair( "title", 0 ) );
     columns.insert( "podcastepisodes", vcpair( "subtitle", 0 ) );
     columns.insert( "podcastepisodes", vcpair( "description", 0 ) );
+    columns.insert( "tracks", vcpair( "comment", 0 ) );
 
+    m_collection->query( "DROP INDEX url_podchannel ON podcastchannels" );
+    m_collection->query( "DROP INDEX url_podepisode ON podcastepisodes" );
+    m_collection->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );   
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET binary" );
+        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
         m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 NOT NULL" );
     }
+    m_collection->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
+    m_collection->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
+    m_collection->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );" );
 }
 
 void
