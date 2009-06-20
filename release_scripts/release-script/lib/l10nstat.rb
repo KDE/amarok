@@ -21,6 +21,8 @@
 # TODO: there are some rough edges :-S
 # TODO: needs to go to seperate file
 
+require 'enumerator'
+
 def l10nstat
 @stats   = {}
 @sorter  = {}
