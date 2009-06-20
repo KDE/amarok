@@ -50,6 +50,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     : BrowserCategory( name )
     , m_bookmarkHandler( 0 )
 {
+    Q_UNUSED( parent )
     DEBUG_BLOCK
 
     setObjectName( name );
