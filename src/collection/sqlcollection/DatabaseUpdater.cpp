@@ -88,8 +88,6 @@ DatabaseUpdater::update()
         }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
-
-        m_collection->startFullScan();
     }
     else if( dbVersion > DB_VERSION )
     {
