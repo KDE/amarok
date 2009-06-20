@@ -1,7 +1,6 @@
 include_directories( ../
                      ${QT_INCLUDES}             
                      ${TAGLIB_INCLUDES}         
-                     #${CMAKE_CURRENT_BINARY_DIR}
                    )                            
 
 if ( TAGLIB-EXTRAS_FOUND )
@@ -23,5 +22,11 @@ target_link_libraries(amarok_afttagger
                      )
 
 
-install(TARGETS amarok_afttagger ${INSTALL_TARGETS_DEFAULT_ARGS})
+if(APPLE)
+    SET_TARGET_PROPERTIES(amarokcollectionscanner PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    # install to app bundle on os x, otherwise amarok fails to load it
+    install(TARGETS amarokcollectionscanner DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
+else(APPLE)
+    install(TARGETS amarokcollectionscanner RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
+endif(APPLE)
 
