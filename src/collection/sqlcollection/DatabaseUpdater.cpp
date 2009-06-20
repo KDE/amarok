@@ -88,6 +88,9 @@ DatabaseUpdater::update()
         }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
+
+        //NOTE: A rescan will be triggered automatically as a result of an upgrade.  Don't trigger it here, as the 
+        //collection isn't fully initialized and this will trigger a crash/assert.
     }
     else if( dbVersion > DB_VERSION )
     {
