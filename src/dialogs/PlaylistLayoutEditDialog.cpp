@@ -27,8 +27,8 @@
 
 #include <KMessageBox>
 
-#include <QInputDialog>
-
+#include <KInputDialog>
+#include <QLineEdit>
 using namespace Playlist;
 
 PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
@@ -141,8 +141,11 @@ PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 
 void PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
-    QString layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
-                    i18n( "Please enter a name for the playlist layout you are about to define:" ) );
+    bool ok;
+    QString layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
+                    i18n( "Please enter a name for the playlist layout you are about to define:" ),QString(), &ok, this );
+    if( !ok )
+	return;
     if( layoutName.isEmpty() )
     {
         KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
@@ -184,10 +187,13 @@ void PlaylistLayoutEditDialog::copyLayout()
     LayoutItemConfig headConfig = m_headEdit->config();
     LayoutItemConfig bodyConfig = m_bodyEdit->config();
     LayoutItemConfig singleConfig = m_singleEdit->config();
-    
-    QString layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
+   
+    bool ok; 
+    QString layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
                     i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
-                    layoutListWidget->currentItem()->text() ) );
+                    layoutListWidget->currentItem()->text() ),QString(), &ok, this );
+    if( !ok) 
+	return;
     if( layoutName.isEmpty() )
     {
         KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
@@ -236,9 +242,9 @@ void PlaylistLayoutEditDialog::renameLayout()
     while( layoutName.isEmpty() || m_layoutsMap->keys().contains( layoutName ) )
     {
         bool ok;
-        layoutName = QInputDialog::getText( this, i18n( "Choose a new name for the playlist layout" ),
+        layoutName = KInputDialog::getText( i18n( "Choose a new name for the playlist layout" ),
                     i18n( "Please enter a new name for the playlist layout you are about to rename:" ),
-                    QLineEdit::Normal, layoutListWidget->currentItem()->text(), &ok);
+                    layoutListWidget->currentItem()->text(), &ok, this);
         if ( !ok )
         {
             //Cancelled so just return
