@@ -98,7 +98,7 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
     }
 
     if ( !path.isEmpty() ) {
-        downloadTargetURLRequester->setPath( path );
+        downloadTargetURLRequester->setUrl( KUrl(path) );
     }
 
 }
