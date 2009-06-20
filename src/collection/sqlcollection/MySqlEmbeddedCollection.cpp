@@ -106,7 +106,8 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
         else
         {
     
-            mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS amarok" );
+            mysql_query( m_db, "SET NAMES 'utf8'" );
+            mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
             mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS mysql" );
             mysql_query( m_db, "USE amarok" );
 
