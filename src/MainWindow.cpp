@@ -297,7 +297,7 @@ MainWindow::init()
         internetContentServiceBrowser->setParent( 0 );
         internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
         internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
-        internetContentServiceBrowser->setShortDescription( i18n( "Sources  of online content" ) );
+        internetContentServiceBrowser->setShortDescription( i18n( "Sources of online content" ) );
         m_browsers->list()->addCategory( internetContentServiceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
