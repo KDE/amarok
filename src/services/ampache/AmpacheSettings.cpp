@@ -45,7 +45,7 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
     connect ( m_configDialog->removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
     connect ( m_configDialog->modifyButton, SIGNAL( clicked() ), this, SLOT( modify() ) );
     connect ( m_configDialog->serverList, SIGNAL ( currentTextChanged ( const QString & ) ), this, SLOT( selectedItemChanged( const QString & ) ) );
-
+    connect ( m_configDialog->nameEdit, SIGNAL( textChanged ( const QString & )), this,SLOT(serverNameChanged( const QString & )));
     load();
 }
 
@@ -53,6 +53,11 @@ AmpacheSettings::~AmpacheSettings()
 {
 }
 
+void
+AmpacheSettings::serverNameChanged(const QString & text)
+{
+   m_configDialog->addButton->setEnabled( !text.isEmpty() );
+}
 
 void
 AmpacheSettings::save()
@@ -87,6 +92,8 @@ AmpacheSettings::add()
 
     AmpacheServerEntry server;
     server.name = m_configDialog->nameEdit->text();
+    if( server.name.isEmpty())
+        return;
     server.url = m_configDialog->serverEdit->text();
     server.username = m_configDialog->userEdit->text();
     server.password = m_configDialog->passEdit->text();

@@ -54,7 +54,7 @@ private slots:
     void remove();
     void modify();
     void selectedItemChanged ( const QString & name );
-
+    void serverNameChanged(const QString & text);
 };
 
 #endif
