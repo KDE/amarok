@@ -31,7 +31,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 4;
+static const int DB_VERSION = 5;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -66,22 +66,22 @@ DatabaseUpdater::update()
     else if( dbVersion < DB_VERSION )
     {
         debug() << "Database out of date: database version is" << dbVersion << ", current version is" << DB_VERSION;
-        if ( dbVersion == 1 && dbVersion <= DB_VERSION )
+        if ( dbVersion == 1 && dbVersion < DB_VERSION )
         {
             upgradeVersion1to2();
             dbVersion = 2;
         }
-        if( dbVersion == 2 && dbVersion <= DB_VERSION )
+        if( dbVersion == 2 && dbVersion < DB_VERSION )
         {
             upgradeVersion2to3();
             dbVersion = 3;
         }
-        if( dbVersion == 3 && dbVersion <= DB_VERSION )
+        if( dbVersion == 3 && dbVersion < DB_VERSION )
         {
             upgradeVersion3to4();
             dbVersion = 4;
         }
-        if( dbVersion == 4 && dbVersion <= DB_VERSION )
+        if( dbVersion == 4 && dbVersion < DB_VERSION )
         {
             upgradeVersion4to5();
             dbVersion = 5;
