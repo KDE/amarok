@@ -137,7 +137,7 @@ OSDWidget::volumeChanged( int volume )
         QString muteState = "";
         m_showVolume = true;
 
-        m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? "(muted)" : "" ) );
+        m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? i18n("(muted)") : "" ) );
 
         show();
     }
