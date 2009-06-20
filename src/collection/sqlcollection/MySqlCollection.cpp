@@ -96,7 +96,12 @@ MySqlCollection::~MySqlCollection()
 {
     DEBUG_BLOCK
 
-    mysql_close(m_db);
+    if( m_db )
+    {
+        mysql_close( m_db );
+        m_db = 0;
+    }
+    mysql_library_end();
 }
 
 QStringList MySqlCollection::query( const QString& statement )

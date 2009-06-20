@@ -25,6 +25,7 @@
 #include "DatabaseUpdater.h"
 #include "Debug.h"
 #include "MySqlEmbeddedCollection.h"
+#include "MySqlServerCollection.h"
 #include "ScanManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
@@ -67,7 +68,12 @@ SqlCollectionFactory::init()
     }
     */
 
-    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+    if( Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+        collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (via database at %1)").arg( 
+            Amarok::config( "MySQL" ).readEntry( "host" ) ) );
+    else
+        collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+
     emit newCollection( collection );
 }
 

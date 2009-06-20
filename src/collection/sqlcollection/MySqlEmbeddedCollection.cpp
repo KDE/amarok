@@ -90,43 +90,37 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     if( !m_db )
     {
         error() << "MySQLe initialization failed";
+        return;
+    }
+
+    mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" );
+    mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL );
+
+    if( !mysql_real_connect( m_db, NULL,NULL,NULL, 0, 0,NULL, 0 ) )
+    {
+        error() << "Could not connect to mysql!";
+        reportError( "na" );
+        mysql_close( m_db );
+        m_db = 0;
     }
     else
     {
-        mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" );
-        mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL );
-    
-        if( !mysql_real_connect( m_db, NULL,NULL,NULL, 0, 0,NULL, 0 ) )
-        {
-            error() << "Could not connect to mysql!";
-            reportError( "na" );
-            mysql_close( m_db );
-            m_db = 0;
-        }
-        else
-        {
-    
-            mysql_query( m_db, "SET NAMES 'utf8'" );
-            mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
-            mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS mysql" );
-            mysql_query( m_db, "USE amarok" );
 
-            debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
-        }
-    
-        MySqlCollection::initThreadInitializer();
-        init();
+        mysql_query( m_db, "SET NAMES 'utf8'" );
+        mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
+        mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS mysql" );
+        mysql_query( m_db, "USE amarok" );
+
+        debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
     }
+
+    MySqlCollection::initThreadInitializer();
+    init();
 }
 
 MySqlEmbeddedCollection::~MySqlEmbeddedCollection()
 {
     DEBUG_BLOCK
-    if( m_db )
-    {
-        mysql_close( m_db );
-        m_db = 0;
-    }
 }
 
 QString
