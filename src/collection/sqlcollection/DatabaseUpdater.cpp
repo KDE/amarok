@@ -166,7 +166,7 @@ DatabaseUpdater::upgradeVersion4to5()
 {
     DEBUG_BLOCK
     //first the database
-    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" );
+    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
 
     //now the tables
 
@@ -189,7 +189,7 @@ DatabaseUpdater::upgradeVersion4to5()
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
     foreach( QString table, tables )
-        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci" );
+        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
 
     //now the columns (ugh)
     //first, varchar
@@ -251,7 +251,7 @@ DatabaseUpdater::upgradeVersion4to5()
     {
         m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ")" );
         m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
-            " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL" );
+            " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL" );
     }
 
     columns.clear();
