@@ -101,7 +101,6 @@ MySqlCollection::~MySqlCollection()
         mysql_close( m_db );
         m_db = 0;
     }
-    mysql_library_end();
 }
 
 QStringList MySqlCollection::query( const QString& statement )
