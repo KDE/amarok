@@ -159,7 +159,9 @@ void FileBrowser::Widget::readConfig()
         m_dirOperator->setView( KFile::DetailTree );
     else
         m_dirOperator->setView( KFile::Simple );
+
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
+
     if( config.hasKey( "Sorting" ) )
         m_dirOperator->setSorting( static_cast<QDir::SortFlags>( config.readEntry( "Sorting" ).toInt() ) );
 
@@ -182,6 +184,8 @@ void FileBrowser::Widget::writeConfig()
 
     // Writes some settings from KDirOperator
     m_dirOperator->writeConfig( config );
+
+    config.sync();
 }
 
 void FileBrowser::Widget::setupToolbar()
