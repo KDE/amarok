@@ -148,6 +148,7 @@ DatabaseUpdater::upgradeVersion3to4()
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
     m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(url)" );
+    //Note: the above index query is invalid, but kept here for posterity
 
     m_collection->query( "CREATE TABLE statistics_tag "
                          "(name " + m_collection->textColumnType() +
@@ -159,6 +160,7 @@ DatabaseUpdater::upgradeVersion3to4()
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
     m_collection->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
+    //Note: the above index query is invalid, but kept here for posterity
 }
 
 void
@@ -278,9 +280,9 @@ DatabaseUpdater::upgradeVersion4to5()
         m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
         m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 NOT NULL" );
     }
-    m_collection->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
-    m_collection->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
-    m_collection->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+    m_collection->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )" );
+    m_collection->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )" );
+    m_collection->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )" );
 }
 
 void
@@ -763,6 +765,8 @@ DatabaseUpdater::createTables() const
                             ",score FLOAT"
                             ",rating INTEGER DEFAULT 0"
                             ",playcount INTEGER)" );
+
+        //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
         m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(url)" );
 
         m_collection->query( "CREATE TABLE statistics_tag "
@@ -774,6 +778,8 @@ DatabaseUpdater::createTables() const
                              ",score FLOAT"
                              ",rating INTEGER DEFAULT 0"
                              ",playcount INTEGER)" );
+
+        //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
         m_collection->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
     }
 }
