@@ -79,8 +79,9 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    d->sqlDatabase = 0;
+    d->primaryCollection = 0;
     s_instance = this;
-
 
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     init();
@@ -103,9 +104,6 @@ void
 CollectionManager::init()
 {
     DEBUG_BLOCK
-
-    d->sqlDatabase = 0;
-    d->primaryCollection = 0;
 
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
