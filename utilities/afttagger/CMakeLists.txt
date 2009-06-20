@@ -27,6 +27,6 @@ if(APPLE)
     # install to app bundle on os x, otherwise amarok fails to load it
     install(TARGETS amarok_afttagger DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
 else(APPLE)
-    install(TARGETS amarok_afttaggerRUNTIME DESTINATION ${BIN_INSTALL_DIR} )
+    install(TARGETS amarok_afttagger RUNTIME DESTINATION ${BIN_INSTALL_DIR} )
 endif(APPLE)
 
