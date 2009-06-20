@@ -122,6 +122,11 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
 MySqlEmbeddedCollection::~MySqlEmbeddedCollection()
 {
     DEBUG_BLOCK
+    if( m_db )
+    {
+        mysql_close( m_db );
+        m_db = 0;
+    }
 }
 
 QString
