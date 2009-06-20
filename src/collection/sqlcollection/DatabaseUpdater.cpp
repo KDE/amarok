@@ -229,7 +229,7 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "playlist_tracks", vcpair( "title", 255 ) );
     columns.insert( "playlist_tracks", vcpair( "album", 255 ) );
     columns.insert( "playlist_tracks", vcpair( "artist", 255 ) );
-    columns.insert( "playlist_tracks", vcpair( "url", 128 ) );
+    columns.insert( "playlist_tracks", vcpair( "uniqueid", 128 ) );
     columns.insert( "playlists", vcpair( "name", 255 ) );
     columns.insert( "playlists", vcpair( "description", 255 ) );
     columns.insert( "playlists", vcpair( "urlid", 1024 ) );
