@@ -47,13 +47,17 @@ Required
       http://www.kollide.net/~jefferai/taglib-extras-0.1.3.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
-    * MySQL 5.0 (possibly 5.1.26rc) Embedded: libmysqld compiled with fPIC
+    * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
       (In-process database support)
 
     * QtScript Generator, Qt Bindings 0.1.0
       (Qt Bindings for QtScript for Amarok's scripting system)
       http://code.google.com/p/qtscriptgenerator/
       git://labs.trolltech.com/qtscriptgenerator
+
+    * Liblastfm 0.3: for scrobbling, internet radio, and artist info.
+      http://github.com/mxcl/liblastfm/tree/master
+      http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
 
 Optional
     * libgpod 0.4.2 (or newer)
