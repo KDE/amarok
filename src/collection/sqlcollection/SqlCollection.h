@@ -24,39 +24,10 @@
 #include "DatabaseUpdater.h"
 #include "SqlRegistry.h"
 #include "SqlStorage.h"
-#include "amarok_export.h"
 
 #include <QPointer>
 
 #include <KIcon>
-
-#ifdef MYSQLSERVER
-
-class MySqlServerCollectionFactory : public Amarok::CollectionFactory
-{
-    Q_OBJECT
-
-    public:
-        MySqlServerCollectionFactory() {}
-        virtual ~MySqlServerCollectionFactory() {}
-
-        virtual void init();
-};
-
-#else
-
-class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
-{
-    Q_OBJECT
-
-    public:
-        MySqlEmbeddedCollectionFactory() {}
-        virtual ~MySqlEmbeddedCollectionFactory() {}
-
-        virtual void init();
-};
-
-#endif
 
 class CollectionLocation;
 class XesamCollectionBuilder;

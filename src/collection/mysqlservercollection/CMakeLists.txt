@@ -15,8 +15,6 @@ include_directories(
         ${MYSQL_INCLUDE_DIR}
         )
 
-add_definitions( "-DMYSQLSERVER" )
-
 if (NOT WIN32)
  set (extra_src
     ../sqlcollection/XesamDbus.cpp
@@ -38,7 +36,7 @@ set(amarok_collection-mysqlservercollection_PART_SRCS
     ../sqlcollection/SqlQueryMaker.cpp
     ../sqlcollection/SqlRegistry.cpp
     ../sqlcollection/SqlMeta.cpp
-    ../sqlcollection/MySqlCollection.cpp
+    ../mysql-shared/MySqlCollection.cpp
     MySqlServerCollection.cpp
     ${extra_src}
  )

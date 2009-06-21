@@ -21,6 +21,19 @@
 #define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 
 #include "sqlcollection/MySqlCollection.h"
+#include "Collection.h"
+#include "amarok_export.h"
+
+class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
+{
+    Q_OBJECT
+
+    public:
+        MySqlEmbeddedCollectionFactory() {}
+        virtual ~MySqlEmbeddedCollectionFactory() {}
+
+        virtual void init();
+};
 
 /**
  * Implements a MySqlCollection using a MySQL Embedded Server

@@ -45,40 +45,6 @@ public:
 #include <KMessageBox> // TODO put the delete confirmation code somewhere else?
 #include <QTimer>
 
-#ifdef MYSQLSERVER
-
-#include "mysqlservercollection/MySqlServerCollection.h"
-
-AMAROK_EXPORT_PLUGIN( MySqlServerCollectionFactory )
-
-void
-MySqlServerCollectionFactory::init()
-{
-    Amarok::Collection* collection;
-
-    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (via database at %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host" ) ) );
-
-    emit newCollection( collection );
-}
-
-#else
-
-#include "mysqlecollection/MySqlEmbeddedCollection.h"
-
-AMAROK_EXPORT_PLUGIN( MySqlEmbeddedCollectionFactory )
-
-void
-MySqlEmbeddedCollectionFactory::init()
-{
-    Amarok::Collection* collection;
-
-    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
-
-    emit newCollection( collection );
-}
-
-#endif
-
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
     , m_registry( new SqlRegistry( this ) )

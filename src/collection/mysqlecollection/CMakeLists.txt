@@ -36,7 +36,7 @@ set(amarok_collection-mysqlecollection_PART_SRCS
     ../sqlcollection/SqlQueryMaker.cpp
     ../sqlcollection/SqlRegistry.cpp
     ../sqlcollection/SqlMeta.cpp
-    ../sqlcollection/MySqlCollection.cpp
+    ../mysql-shared/MySqlCollection.cpp
     MySqlEmbeddedCollection.cpp
     ${extra_src}
  )

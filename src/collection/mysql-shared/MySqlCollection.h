@@ -20,7 +20,7 @@
 #ifndef AMAROK_COLLECTION_MYSQLCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLCOLLECTION_H
 
-#include "SqlCollection.h"
+#include "sqlcollection/SqlCollection.h"
 
 #include <QMutex>
 

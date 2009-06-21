@@ -29,6 +29,18 @@
 
 #include <mysql.h>
 
+AMAROK_EXPORT_PLUGIN( MySqlServerCollectionFactory )
+
+void
+MySqlServerCollectionFactory::init()
+{
+    Amarok::Collection* collection;
+
+    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (via database at %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host" ) ) );
+
+    emit newCollection( collection );
+}
+
 MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &prettyName )
     : MySqlCollection( id, prettyName )
 {

@@ -29,6 +29,18 @@
 
 #include <mysql.h>
 
+AMAROK_EXPORT_PLUGIN( MySqlEmbeddedCollectionFactory )
+
+void
+MySqlEmbeddedCollectionFactory::init()
+{
+    Amarok::Collection* collection;
+
+    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+
+    emit newCollection( collection );
+}
+
 MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QString &prettyName )
     : MySqlCollection( id, prettyName )
 {
