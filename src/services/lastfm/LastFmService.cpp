@@ -462,16 +462,14 @@ LastFmService::updateProfileInfo()
     if( m_userinfo )
     {
         QString info;
-        info += "<b>" + i18n( "Username: ") + "</b>" + Qt::escape( m_userName ) + "<br>";
-        info += !m_age.isEmpty() ? "<b>" + i18n( "Age: " ) + "</b>" + m_age + "<br>" : QString();
-        info += !m_gender.isEmpty() ? "<b>" + i18n( "Gender: " ) + "</b>" + m_gender + "<br>" : QString();
+        info += "" + i18n( "Username: ") + "" + Qt::escape( m_userName ) + "";
         m_userinfo->setText( info );
     }
 
     if( m_profile && !m_playcount.isEmpty() )
     {
         QString playcount = KGlobal::locale()->formatNumber( m_playcount, false );
-        m_profile->setText( "<b>" + i18n( "Play Count: " ) + "</b>" + playcount + i18n( " plays" ) );
+        m_profile->setText( "" + i18n( "Play Count: " ) + "" + playcount + i18n( " plays" ) );
     }
 }
 
@@ -523,21 +521,20 @@ LastFmService::polish()
         {
             m_avatarLabel->setPixmap( m_avatar );
             m_avatarLabel->setFixedSize( m_avatar.width(), m_avatar.height() );
+            m_avatarLabel->setMargin( 5 );
         }
 
 
         debug() << m_avatarLabel->margin();
         KVBox * innerProfilebox = new KVBox( outerProfilebox );
-        innerProfilebox->setSpacing(1);
-        innerProfilebox->setMargin(0);
+        innerProfilebox->setSpacing(0);
+        innerProfilebox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
         m_userinfo = new QLabel(innerProfilebox);
         m_userinfo->setText( m_userName );
-        m_userinfo->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
-        m_userinfo->setMinimumSize( 230 , 28 );
         m_profile = new QLabel(innerProfilebox);
         m_profile->setText(QString());
-        m_profile->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
         updateProfileInfo();
+
 
         QGroupBox *customStation = new QGroupBox( i18n( "Create a Custom Last.fm Station" ), m_topPanel );
         m_customStationCombo = new QComboBox;
