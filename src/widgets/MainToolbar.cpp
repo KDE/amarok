@@ -75,7 +75,7 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     m_addControlsToolbar = new Amarok::ToolBar( topBar );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    m_addControlsToolbar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
