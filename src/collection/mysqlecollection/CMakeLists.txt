@@ -66,6 +66,7 @@ target_link_libraries(amarok_collection-mysqlecollection
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${MYSQL_EMBEDDED_LIBRARIES}
+    ${MYSQL_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}
 )
