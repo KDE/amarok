@@ -152,7 +152,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget, public EngineObserver, public Meta::Observer
+    class OSD : public OSDWidget, public EngineObserver
     {
         Q_OBJECT
 
@@ -171,10 +171,6 @@ namespace Amarok
         virtual void engineVolumeChanged( int );
         virtual void engineMuteStateChanged( bool );
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
-
-        // Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track );
 
     public slots:
         /**

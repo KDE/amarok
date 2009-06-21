@@ -659,10 +659,8 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
     switch( state )
     {
         case Phonon::PlayingState:
-            unsubscribeFrom( m_currentTrack );
             m_currentTrack = track;
-            subscribeTo( track );
-            metadataChanged( track );
+            show( m_currentTrack );
             m_paused = false;
             break;
 
@@ -675,15 +673,6 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
         default:
             break;
     }
-}
-
-void
-Amarok::OSD::metadataChanged( Meta::TrackPtr track )
-{
-    Q_UNUSED( track )
-    DEBUG_BLOCK
-
-    show( m_currentTrack );
 }
 
 
