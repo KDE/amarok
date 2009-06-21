@@ -6,13 +6,15 @@
 # LIBLASTFM_FOUND, whether liblastfm was found
 
 
-find_path(LIBLASTFM_INCLUDE_DIR Audioscrobbler
-   ~/usr/include/lastfm
-   /opt/local/include/lastfm
-   /usr/include/lastfm
-   /usr/local/include/lastfm
-   /opt/kde4/include/lastfm
-   ${KDE4_INCLUDE_DIR}/lastfm
+find_path(LIBLASTFM_INCLUDE_DIR NAMES Audioscrobbler
+   HINTS
+   ~/usr/include
+   /opt/local/include
+   /usr/include
+   /usr/local/include
+   /opt/kde4/include
+   ${KDE4_INCLUDE_DIR}
+   PATH_SUFFIXES lastfm
 )
 
 find_library( LIBLASTFM_LIBRARY NAMES lastfm
