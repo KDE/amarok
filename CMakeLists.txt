@@ -53,10 +53,8 @@ if( WITH_PLAYER )
     macro_optional_find_package(Strigi)
     macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
 
-    macro_optional_find_package(LibLastFm)
-    if(LIBLASTFM_FOUND)
-        macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
-    endif(LIBLASTFM_FOUND)
+    find_package(LibLastFm REQUIRED)
+    macro_log_feature( LibLastFm_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
     
     macro_optional_find_package(Ipod)
     if(IPOD_FOUND)
