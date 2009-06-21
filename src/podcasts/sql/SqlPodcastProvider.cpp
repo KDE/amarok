@@ -126,7 +126,6 @@ SqlPodcastProvider::loadPodcasts()
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
-    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString command = "SELECT title FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
