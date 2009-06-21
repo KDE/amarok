@@ -20,7 +20,7 @@
 #ifndef AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 
-#include "MySqlCollection.h"
+#include "sqlcollection/MySqlCollection.h"
 
 /**
  * Implements a MySqlCollection using a MySQL Embedded Server

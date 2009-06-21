@@ -32,6 +32,7 @@
 MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QString &prettyName )
     : MySqlCollection( id, prettyName )
 {
+    DEBUG_BLOCK
     const QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" ); 
     const QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
 
@@ -93,8 +94,10 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
         return;
     }
 
-    mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" );
-    mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL );
+    if( mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" ) )
+        reportError( "Error setting options for READ_DEFAULT_GROUP" );
+    if( mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL ) )
+        reportError( "Error setting option to use embedded connection" );
 
     if( !mysql_real_connect( m_db, NULL,NULL,NULL, 0, 0,NULL, 0 ) )
     {
@@ -106,13 +109,13 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     else
     {
 
-        if( mysql_query( m_db, "SET NAMES 'utf8'" ) )
+        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
             reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ) )
+        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ).toUtf8() ) )
             reportError( "Could not create amarok database" );
-        if( mysql_query( m_db, "CREATE DATABASE IF NOT EXISTS mysql" ) )
+        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS mysql" ).toUtf8() ) )
             reportError( "Could not create mysql database" );
-        if( mysql_query( m_db, "USE amarok" ) )
+        if( mysql_query( m_db, QString( "USE amarok" ).toUtf8() ) )
             reportError( "Could not select database" );
 
         debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );

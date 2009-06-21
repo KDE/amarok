@@ -134,6 +134,13 @@ CollectionManager::init()
 
     foreach( KService::Ptr service, plugins )
     {
+        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqlserver-collection" &&
+           !Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+                continue;
+        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqle-collection" &&
+            Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+                continue;
+
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
         if ( plugin )
         {

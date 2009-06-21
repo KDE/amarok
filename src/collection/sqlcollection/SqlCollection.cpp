@@ -24,8 +24,6 @@
 #include "SqlCollectionCapability.h"
 #include "DatabaseUpdater.h"
 #include "Debug.h"
-#include "MySqlEmbeddedCollection.h"
-#include "MySqlServerCollection.h"
 #include "ScanManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
@@ -47,35 +45,39 @@ public:
 #include <KMessageBox> // TODO put the delete confirmation code somewhere else?
 #include <QTimer>
 
-AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
+#ifdef MYSQLSERVER
+
+#include "mysqlservercollection/MySqlServerCollection.h"
+
+AMAROK_EXPORT_PLUGIN( MySqlServerCollectionFactory )
 
 void
-SqlCollectionFactory::init()
+MySqlServerCollectionFactory::init()
 {
-   Amarok::Collection* collection;
-    /*  
-    switch( CollectionDB::instance()->getDbConnectionType() )
-    {
-        case DbConnection::sqlite :
-            collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
-            break;
-        case DbConnection::mysql :
-            collection = new MySqlCollection( "localCollection", i18n( "Local Collection" ) );
-            break;
-        default :
-            collection = new SqlCollection( "localCollection", i18n( "Local Collection" ) );
-            break;
-    }
-    */
+    Amarok::Collection* collection;
 
-    if( Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
-        collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (via database at %1)").arg( 
-            Amarok::config( "MySQL" ).readEntry( "host" ) ) );
-    else
-        collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (via database at %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host" ) ) );
 
     emit newCollection( collection );
 }
+
+#else
+
+#include "mysqlecollection/MySqlEmbeddedCollection.h"
+
+AMAROK_EXPORT_PLUGIN( MySqlEmbeddedCollectionFactory )
+
+void
+MySqlEmbeddedCollectionFactory::init()
+{
+    Amarok::Collection* collection;
+
+    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+
+    emit newCollection( collection );
+}
+
+#endif
 
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()

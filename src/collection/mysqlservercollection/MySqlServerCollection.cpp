@@ -48,11 +48,11 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     }
 
     if( !mysql_real_connect( m_db,
-                Amarok::config( "MySQL" ).readEntry( "host" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "user" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "password" ).toUtf8(),
+                Amarok::config( "MySQL" ).readEntry( "Host" ).toUtf8(),
+                Amarok::config( "MySQL" ).readEntry( "User" ).toUtf8(),
+                Amarok::config( "MySQL" ).readEntry( "Password" ).toUtf8(),
                 NULL,
-                Amarok::config( "MySQL" ).readEntry( "port" ).toInt(),
+                Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
                 NULL,
                 CLIENT_COMPRESS )
         )
@@ -65,8 +65,8 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     }
     else
     {
-        QString databaseName = Amarok::config( "MySQL" ).readEntry( "database", "amarok" );
-        if( mysql_query( m_db, "SET NAMES 'utf8'" ) )
+        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarok" );
+        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
             reportError( "SET NAMES 'utf8' died" );
         if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ).arg( databaseName ).toUtf8() ) )
             reportError( QString( "Could not create %1 database" ).arg( databaseName ) );

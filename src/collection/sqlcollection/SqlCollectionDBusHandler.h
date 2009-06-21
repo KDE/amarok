@@ -26,6 +26,7 @@ class SqlCollection;
 class SqlCollectionDBusHandler : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO( "SQL Collection D-Bus Interface", "org.kde.amarok.SqlCollection" )
     public:
         SqlCollectionDBusHandler( SqlCollection *coll );
 

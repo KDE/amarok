@@ -30,7 +30,9 @@ SqlCollectionDBusHandler::SqlCollectionDBusHandler( SqlCollection *coll )
     setObjectName("SqlCollectionDBusHandler");
 
     new SqlCollectionAdaptor( this );
-    QDBusConnection::sessionBus().registerObject("/SqlCollection/" + coll->collectionId(), this);
+    bool result = QDBusConnection::sessionBus().registerObject( "/SqlCollection", this );
+    //-" + coll->collectionId() + "-" + QString::number( QApplication::applicationPid() ), this);
+    debug() << "Register object: " << result;
 }
 
 bool

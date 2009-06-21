@@ -181,9 +181,7 @@ void ScanManager::startIncrementalScan()
     if( !batchfileExists || !readBatchFile( batchfileLocation )  )
     {
         if( !m_dbusHandler )
-        {
             m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
-        }
         m_scanner = new AmarokProcess( this );
         *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-i"
                 << "--collectionid" << m_collection->collectionId() << "-p";

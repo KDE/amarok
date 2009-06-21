@@ -30,16 +30,33 @@
 
 #include <KIcon>
 
-class SqlCollectionFactory : public Amarok::CollectionFactory
+#ifdef MYSQLSERVER
+
+class MySqlServerCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
 
     public:
-        SqlCollectionFactory() {}
-        virtual ~SqlCollectionFactory() {}
+        MySqlServerCollectionFactory() {}
+        virtual ~MySqlServerCollectionFactory() {}
 
         virtual void init();
 };
+
+#else
+
+class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
+{
+    Q_OBJECT
+
+    public:
+        MySqlEmbeddedCollectionFactory() {}
+        virtual ~MySqlEmbeddedCollectionFactory() {}
+
+        virtual void init();
+};
+
+#endif
 
 class CollectionLocation;
 class XesamCollectionBuilder;

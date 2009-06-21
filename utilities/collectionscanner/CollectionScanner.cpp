@@ -86,6 +86,8 @@ static QTime s_time;
 
 CollectionScanner::CollectionScanner( int &argc, char **argv )
         : QCoreApplication( argc, argv )
+        , m_collectionId() //UNUSED, problems with DBus
+        , m_amarokPid() //UNUSED, problems with DBus
         , m_batch( false )
         , m_importPlaylists( false )
         , m_batchFolderTime()
@@ -116,13 +118,7 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
     if( !m_restart )
         QFile::remove( m_logfile );
 
-    if( !m_collectionId.isEmpty() )
-    {
-        if( m_amarokPid.isEmpty() )
-            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + m_collectionId );
-        else
-            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok-" + m_amarokPid, "/SqlCollection/" + m_collectionId );
-    }
+    m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection" );
 
     if( m_batch && m_incremental )
     {
