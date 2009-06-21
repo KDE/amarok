@@ -20,7 +20,7 @@
 #ifndef AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 
-#include "sqlcollection/MySqlCollection.h"
+#include "mysql-shared/MySqlCollection.h"
 #include "Collection.h"
 #include "amarok_export.h"
 
