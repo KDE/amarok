@@ -238,18 +238,24 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
     
     if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
     {
+        // Check that the queue position is actually valid
         const int queuePosition = index.data( QueuePositionRole ).toInt();
-        const int w = 16, h = 16;
-        const int x = markerOffsetX;
-        const int y = nominalImageRect.y() + ( imageSize - h );
-        const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
-        painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+        if( queuePosition > 0 )
+        {
+            const int w = 16, h = 16;
+            const int x = markerOffsetX;
+            const int y = nominalImageRect.y() + ( imageSize - h );
+            const QRect rect( x, y, w, h );
+            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
+            painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
 
-        markerOffsetX += ( 16 + PADDING );
+            markerOffsetX += ( 16 + PADDING );
 
-        if ( !config.showCover() )
-            rowOffsetX = markerOffsetX;
+            if ( !config.showCover() )
+                rowOffsetX = markerOffsetX;
+        }
+        else
+            warning() << "discrepancy: Item::Queued but queuePosition == 0";
     }
 
     if( index.data( MultiSourceRole ).toBool() && !ignoreQueueMarker )
