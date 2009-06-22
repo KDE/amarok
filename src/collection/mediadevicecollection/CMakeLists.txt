@@ -12,8 +12,9 @@ include_directories( ../..
 ########### next target ###############
 
 	set(mediadevicelib_LIB_SRCS
-    support/MediaDeviceInfo.cpp
-	support/IpodDeviceInfo.cpp)
+	support/MediaDeviceInfo.cpp
+	support/IpodDeviceInfo.cpp
+	support/ConnectionAssistant.cpp)
 	
 	kde4_add_library(mediadevicelib SHARED ${mediadevicelib_LIB_SRCS})
 

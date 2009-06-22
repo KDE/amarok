@@ -14,8 +14,10 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
    ../../meta/file
    ../../collection
    ../../metadata/audible
+   ../mediadevicecollection
    ../mediadevicecollection/support
    handler
+   support
    ${GLIB2_INCLUDE_DIR}
    ${GDK_INCLUDE_DIRS}
    ${IPOD_INCLUDE_DIRS}
@@ -37,6 +39,7 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
 	IpodCollection.cpp
 	IpodCollectionLocation.cpp
 	handler/IpodHandler.cpp
+	support/IpodConnectionAssistant.cpp
 	CollectionCapabilityIpod.cpp)
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
