@@ -32,6 +32,7 @@
 
 class MediaDeviceCollection;
 
+
 /** HACK: Base and Factory are separate because Q_OBJECT does not work directly with templates.
 Templates used to reduce duplicated code in subclasses.
 */
@@ -121,8 +122,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         /** Capability-related methods */
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        //virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        //virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         /** MediaDeviceCollection methods */
 
@@ -130,9 +131,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         QString udi() const;
 
-        MediaDevice::MediaDeviceHandler* handler() { return m_handler; }
+        //MediaDevice::MediaDeviceHandler* handler() { return m_handler; }
 
-        void updateTags( Meta::MediaDeviceTrack *track);
+        //void updateTags( Meta::MediaDeviceTrack *track);
         void writeDatabase(); // threaded
 
         /** MediaDeviceCollection-specific */
@@ -150,15 +151,15 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual void connectDevice() = 0;
 
         // TODO: these two could be merged somehow
-        void disconnectDevice();
-        void slotDisconnect();
+        //void disconnectDevice();
+        //void slotDisconnect();
 
     protected:
         MediaDeviceCollection();
 
     private:
         QString                          m_udi;
-        MediaDevice::MediaDeviceHandler *m_handler;
+ //       MediaDevice::MediaDeviceHandler *m_handler;
 };
 
 

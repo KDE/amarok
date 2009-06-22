@@ -130,14 +130,21 @@ MediaDeviceCollection::queryMaker()
     return new MemoryQueryMaker( this, collectionId() );
 }
 
+QString MediaDeviceCollection::collectionId() const {
+    return QString();
+}
+
+
 void
 MediaDeviceCollection::startFullScan()
 {
+    /*
     if( m_handler->succeeded() )
     {
         m_handler->parseTracks();
         emit collectionReady();
     }
+    */
 }
 
 
