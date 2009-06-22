@@ -113,6 +113,7 @@ class MediaDeviceTrack : public Meta::Track
         void setPlayCount( const int newCount );
 
         virtual QString type() const;
+        virtual void prepareToPlay();
 
         virtual void beginMetaDataUpdate() { DEBUG_BLOCK }
         virtual void endMetaDataUpdate();

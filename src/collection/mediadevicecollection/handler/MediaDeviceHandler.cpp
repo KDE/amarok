@@ -42,6 +42,9 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 
         connect( this, SIGNAL( canDeleteMoreTracks()),
                  this, SLOT( removeNextTrackFromDevice() ) );
+
+        connect( this, SIGNAL( attemptConnectionDone(bool)),
+                 m_memColl, SLOT( slotAttemptConnectionDone(bool) ) );
 }
 
 bool

@@ -9,8 +9,8 @@ add_subdirectory( daap )
 #add_subdirectory( mediadevicecollection )
 add_subdirectory( ipodcollection )
 
-# temporarily disabled to test new devices framework on ipodcollection first
-#add_subdirectory( mtpcollection )
+
+add_subdirectory( mtpcollection )
 
 add_subdirectory( device )
 

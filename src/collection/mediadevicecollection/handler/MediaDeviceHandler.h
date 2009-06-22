@@ -87,6 +87,16 @@ namespace Meta {
            void incrementProgress();
            void endProgressOperation( const QObject *owner );
 
+           void copyTracksDone( bool success );
+           void removeTracksDone();
+           void libCopyTrackDone( const Meta::TrackPtr &track );
+           void libCopyTrackFailed( const Meta::TrackPtr &track );
+           void libRemoveTrackDone( const Meta::TrackPtr &track );
+           void canCopyMoreTracks(); // subclass tells this class that it can copy more tracks
+           void canDeleteMoreTracks(); // subclass tells this class that it can delete more tracks
+
+           void attemptConnectionDone( bool success );
+
            /**
             * Parses MediaDevice DB and creates a Meta::MediaDeviceTrack
             * for each track in the DB
@@ -95,6 +105,8 @@ namespace Meta {
         public:
            void parseTracks();// NOTE: used by Collection
            virtual void writeDatabase() { slotDatabaseWritten( true );}// NOTE: used by Collection
+
+           virtual QString prettyName() const { return QString(); } // NOTE: used by Collection
 
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
            virtual void removeTrackListFromDevice( const Meta::TrackList &tracks );
@@ -157,17 +169,17 @@ namespace Meta {
            /// left to the subclass in this method.  NOTE: this function should set
            /// some private variable that can later be used to libSetPlayableUrl
 
-           virtual void findPathToCopy( const Meta::TrackPtr &track ) = 0;
+           virtual void findPathToCopy( const Meta::TrackPtr &track ) { Q_UNUSED( track ) }
 
            /// libCopyTrack does the actual file copying.  For Ipods, it uses KIO,
            /// for MTPs this uses a libmtp call
            
-           virtual bool libCopyTrack( const Meta::TrackPtr &track ) = 0;
+           virtual bool libCopyTrack( const Meta::TrackPtr &track ) { Q_UNUSED( track ) return false; }
 
            /// libDeleteTrack does the actual file deleting.  For Ipods, it uses KIO,
            /// for MTPs this uses a libmtp call.
 
-           virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) return false; }
 
            /// Creates a new track struct particular to the library of the device
            /// e.g. LIBMTP_new_track_t(), and associates it with @param track for
@@ -207,12 +219,6 @@ namespace Meta {
            /// it has been removed from the collection
 
            void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
-
-           /// setCopyTrackForParse makes it so that a call to getBasicMediaDeviceTrackInfo
-           /// will use the track struct recently created and filled with info, to fill up
-           /// the Meta::MediaDeviceTrackPtr.
-
-           virtual void setCopyTrackForParse() = 0;
 
            /// Uses wrapped libGet methods to fill a track with information from device
            void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
@@ -275,14 +281,13 @@ namespace Meta {
 
            //virtual void    libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap& image ) {}
 
-           signals:
-           void copyTracksDone( bool success );
-           void removeTracksDone();
-           void libCopyTrackDone( const Meta::TrackPtr &track );
-           void libCopyTrackFailed( const Meta::TrackPtr &track );
-           void libRemoveTrackDone( const Meta::TrackPtr &track );
-           void canCopyMoreTracks(); // subclass tells this class that it can copy more tracks
-           void canDeleteMoreTracks(); // subclass tells this class that it can delete more tracks
+           /// This function is called just before a track in the playlist is to be played, and gives
+           /// a chance for e.g. MTP to copy the track to a temporary location, set a playable url,
+           /// to emulate the track actually being played off the device
+
+           virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) }
+
+      
            #if 0
 
         public slots:

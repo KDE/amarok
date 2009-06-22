@@ -22,11 +22,7 @@
 #include "IpodHandler.h"
 
 #include "IpodCollection.h"
-#include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
-
-#include "MetaQueryMaker.h"
-#include "QueryMaker.h"
 
 #ifdef GDK_FOUND
 extern "C" {
@@ -967,7 +963,7 @@ IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
     if( QString::fromUtf8( m_itdbtrackhash[ track ]->filetype ) == "mpeg" )
         return "mp3";
 
-    return "";
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->filetype );
 }
 
 QString
@@ -1151,12 +1147,6 @@ void
 IpodHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
 {
     m_itdbtrackhash[ track ] = itdb_track_new();
-}
-
-void
-IpodHandler::setCopyTrackForParse()
-{
-    m_currtrack = m_libtrack;
 }
 
 #if 0

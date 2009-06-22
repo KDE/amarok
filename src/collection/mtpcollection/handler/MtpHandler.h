@@ -27,83 +27,40 @@
 
 #include <libmtp.h>
 
-#include "Meta.h"
-#include "MemoryCollection.h"
-#include "MtpMeta.h"
-#include "../../../statusbar/StatusBar.h"
+#include "MediaDeviceMeta.h"
+#include "MediaDeviceHandler.h"
 
-#include "kjob.h"
+#include <KIO/Job>
+#include <KTempDir>
+#include <KTemporaryFile>
 #include <threadweaver/Job.h>
 
 #include <QObject>
 #include <QMap>
 #include <QMultiMap>
 #include <QMutex>
+#include <QSet>
 
 class QString;
-class QFile;
-class QDateTime;
 class QMutex;
 class QStringList;
 
 class MtpCollection;
 
-namespace Mtp
+namespace Meta
 {
 typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
 /* The libmtp backend for all Mtp calls */
-class MtpHandler : public QObject
+class MtpHandler : public MediaDeviceHandler
 {
-    Q_OBJECT
 
-public:
-    MtpHandler( MtpCollection *mc, QObject* parent );
-    ~MtpHandler();
+#if 0
 
-    void init( const QString &serial ); // called by collection
-    void getDeviceInfo();
 
-    // thread-related functions
-    bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial );
-    bool privateCopyTrackToDevice( const Meta::TrackPtr &track );
 
-    // external functions
-    void copyTrackListToDevice( const Meta::TrackList tracklist );
-//       bool deleteTrackFromDevice( const Meta::MtpTrackPtr &track );
-    void deleteTracksFromDevice( const Meta::TrackList &tracks );
-    int getTrackToFile( const uint32_t id, const QString & filename );
-    void parseTracks();
-    void updateTrackInDB( const Meta::MtpTrackPtr track );
-    QString prettyName() const;
-    void terminate();
-    bool succeeded() const
-    {
-        return m_success;
-    }
 
-    QMap<Meta::TrackPtr, QString> tracksFailed() const
-    {
-        return m_tracksFailed;
-    }
 
-    // Some internal stuff that must be public due to libmtp being in C
-
-    static int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
-    // Progress Bar functions
-
-    void setBarMaximum( int total );
-    void setBarProgress( int steps );
-    void endBarProgressOperation();
-
-private:
-    // file-copying related functions
-    uint32_t checkFolderStructure( const Meta::TrackPtr track, bool create );
-    uint32_t getDefaultParentId( void );
-    uint32_t folderNameToID( char *name, LIBMTP_folder_t *folderlist );
-    uint32_t subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
-    uint32_t createFolder( const char *name, uint32_t parent_id );
-    void updateFolders( void );
 
     // file io functions
     bool kioCopyTrack( const KUrl &src, const KUrl &dst );
@@ -145,34 +102,145 @@ signals:
     void incrementProgress();
     void endProgressOperation( const QObject *owner );
 
-private slots:
-    void slotDeviceMatchSucceeded( ThreadWeaver::Job* job );
-    void slotDeviceMatchFailed( ThreadWeaver::Job* job );
+
 
     void slotCopyNextTrackFailed( ThreadWeaver::Job* job );
     void slotCopyNextTrackToDevice( ThreadWeaver::Job* job );
 
     void copyNextTrackToDevice();
 
+
+#endif
+    Q_OBJECT
+public:
+    MtpHandler( MtpCollection *mc );
+    virtual ~MtpHandler();
+
+    // mtp-specific functions
+
+    // connection
+    void init();
+    bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices );
+    void getDeviceInfo();
+
+    void terminate();
+
+    // information-gathering
+
+    int getTrackToFile( const uint32_t id, const QString & filename );
+    virtual QString prettyName() const;
+
+/*
+    QMap<Meta::TrackPtr, QString> tracksFailed() const
+    {
+        return m_tracksFailed;
+    }
+*/
+    // Some internal stuff that must be public due to libmtp being in C
+
+    static int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
+    // Progress Bar functions
+
 private:
+    // file-copying related functions
+    uint32_t checkFolderStructure( const Meta::TrackPtr track, bool create );
+    uint32_t getDefaultParentId( void );
+    uint32_t folderNameToID( char *name, LIBMTP_folder_t *folderlist );
+    uint32_t subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
+    uint32_t createFolder( const char *name, uint32_t parent_id );
+    void updateFolders( void );
 
-    void copyTracksToDevice();
+    public:
+
+    
+
+               /// Methods that wrap get/set of information using libmtp
+
+           virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
+           virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
+           virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+
+           virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
+           virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
+           virtual void    libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+           virtual void    libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
+           virtual void    libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
+           virtual void    libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
+           virtual void    libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
+           virtual void    libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
+           virtual void    libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
+           virtual void    libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
+           virtual void    libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
+           virtual void    libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
+           virtual void    libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
+           virtual void    libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
+           virtual void    libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
+           virtual void    libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed);
+           virtual void    libSetRating( Meta::MediaDeviceTrackPtr &track, int rating );
+           virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
+           virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+
+           //void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+
+           /// Create new track
+
+           virtual void libCreateTrack(const Meta::MediaDeviceTrackPtr& track );
+           //virtual void findPathToCopy( const Meta::TrackPtr &track ) { Q_UNUSED( track ) }
+           //virtual bool libCopyTrack( const Meta::TrackPtr &track ) { Q_UNUSED( track ) return false; }
+           //virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
+
+           //virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) {};
+           virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track );
+           //virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
+
+           virtual void databaseChanged();
+
+           /// Parse iteration methods
+
+           virtual void prepareToParse();
+           virtual bool isEndOfParseList();
+           virtual void prepareToParseNextTrack();
+           virtual void nextTrackToParse();
+           virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
+
+           virtual QStringList supportedFormats();
+
+           virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track );
+           QString setTempFile( Meta::MediaDeviceTrackPtr &track, const QString &format );
+
+           // libmtp-specific
+
+           
 
 
-    MtpCollection *m_memColl;
+           private slots:
+    void slotDeviceMatchSucceeded( ThreadWeaver::Job* job );
+    void slotDeviceMatchFailed( ThreadWeaver::Job* job );
 
-    TitleMap m_titlemap;
-
-    void deleteNextTrackFromDevice();
-    void privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track );
+    private:
+/*
     Meta::TrackList m_tracksToCopy;
     Meta::TrackList m_tracksToDelete;
 
     Meta::TrackPtr m_lastTrackCopied;
     QMap<Meta::TrackPtr, QString> m_tracksFailed;
-
-    ProgressBar *m_statusbar;
-
+*/
     // mtp database
 
     LIBMTP_mtpdevice_t      *m_device;
@@ -188,15 +256,28 @@ private:
 
     QMutex                  m_critical_mutex;
 
+
     bool m_success; // tells if connecting worked or not
     bool             m_trackCreated;
 
     // KIO-related Vars (to be moved elsewhere eventually)
-
+/*
     bool m_copyFailed;
+*/
     bool m_isCanceled;
     bool m_wait;
+    bool m_dbChanged;
+    LIBMTP_track_t *m_currtracklist;
+    
+    LIBMTP_track_t *m_currtrack;
 
+    // Hash that associates an LIBMTP_track_t* to every Track*
+
+    QHash<Meta::MediaDeviceTrackPtr, LIBMTP_track_t*> m_mtptrackhash;
+
+    // Keeps track of which tracks have been copied/cached for playing
+
+    QHash<Meta::MediaDeviceTrackPtr, KTemporaryFile*> m_cachedtracks;
 
 };
 
@@ -204,7 +285,7 @@ class WorkerThread : public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
-    WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpHandler* handler );
+    WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, MtpHandler* handler );
     virtual ~WorkerThread();
 
     virtual bool success() const;
@@ -216,10 +297,12 @@ private:
     bool m_success;
     int m_numrawdevices;
     LIBMTP_raw_device_t* m_rawdevices;
-    QString m_serial;
+//    QString m_serial;
     MtpHandler *m_handler;
-};
 
+
+};
+/*
 class CopyWorkerThread : public ThreadWeaver::Job
 {
     Q_OBJECT
@@ -237,6 +320,6 @@ private:
     Meta::TrackPtr m_track;
     MtpHandler *m_handler;
 };
-
+*/
 }
 #endif

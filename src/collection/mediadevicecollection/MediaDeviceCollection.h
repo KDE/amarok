@@ -149,7 +149,12 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         void collectionReady();
         void collectionDisconnected( const QString &udi );
 
+        void attemptConnectionDone( bool success );
+
         void copyTracksCompleted( bool success );
+
+    public slots:
+        void slotAttemptConnectionDone( bool success );
 
     protected:
         MediaDeviceCollection();

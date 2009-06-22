@@ -387,6 +387,13 @@ MediaDeviceTrack::setType( const QString & type )
     m_type = type;
 }
 
+void
+MediaDeviceTrack::prepareToPlay()
+{
+    Meta::MediaDeviceTrackPtr ptr = Meta::MediaDeviceTrackPtr( this );
+    m_collection->handler()->prepareToPlay( ptr );
+}
+
 // TODO: employ observers (e.g. Handler) to take care of updated
 // data
 /*

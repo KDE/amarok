@@ -10,8 +10,11 @@ if (MTP_FOUND)
    ../../meta
    ../../meta/file
    ../../collection
+   ../mediadevicecollection
    ../mediadevicecollection/support
+   ../mediadevicecollection/handler
    handler
+   support
    ${GLIB2_INCLUDE_DIR}
    ${MTP_INCLUDE_DIR}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
@@ -23,11 +26,10 @@ if (MTP_FOUND)
 ########### next target ###############
 
 	set(amarok_collection-mtpcollection_PART_SRCS
-	MtpMeta.cpp
 	MtpCollection.cpp
-	MtpCollectionLocation.cpp
 	handler/MtpHandler.cpp
-	CollectionCapabilityMtp.cpp)	
+	support/MtpDeviceInfo.cpp
+	support/MtpConnectionAssistant.cpp)
 	kde4_add_plugin(amarok_collection-mtpcollection WITH_PREFIX ${amarok_collection-mtpcollection_PART_SRCS})
 
 	target_link_libraries(amarok_collection-mtpcollection
@@ -35,7 +37,11 @@ if (MTP_FOUND)
         amarokpud
         ${KDE4_KDECORE_LIBS}
         ${KDE4_KIO_LIBS}
+        ${KDE4_KDEUI_LIBS}
+        ${KDE4_SOLID_LIBRARY}
         ${KDE4_THREADWEAVER_LIBRARIES}
+        ${QT_QTGUI_LIBRARY}
+#        ${KDE4_THREADWEAVER_LIBRARIES}
         ${GLIB2_LIBRARIES}
         ${MTP_LIBRARIES}
         )

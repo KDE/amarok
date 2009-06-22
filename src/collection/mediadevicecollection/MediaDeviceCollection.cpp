@@ -126,6 +126,8 @@ MediaDeviceCollection::MediaDeviceCollection()
 : Collection()
 , MemoryCollection()
 {
+    connect( this, SIGNAL( attemptConnectionDone(bool)),
+             this, SLOT( slotAttemptConnectionDone(bool)) );
 }
 
 
@@ -150,12 +152,9 @@ MediaDeviceCollection::startFullScan()
 {
     DEBUG_BLOCK
     // If handler successfully connected to device
-    if( m_handler->succeeded() )
-    {
-        debug() << "parsing tracks";
-        m_handler->parseTracks();
-        emit collectionReady();
-    }
+
+    m_handler->parseTracks();
+    emit collectionReady();
 }
 
 Meta::MediaDeviceHandler*
@@ -182,6 +181,17 @@ MediaDeviceCollection::disconnectDevice()
     m_handler->writeDatabase();
 }
 
+void
+MediaDeviceCollection::slotAttemptConnectionDone( bool success )
+{
+    if( success )
+    {
+        debug() << "starting full scan";
+        // TODO: thread the track parsing?
+        startFullScan();
+
+    }
+}
 
 #include "MediaDeviceCollection.moc"
 

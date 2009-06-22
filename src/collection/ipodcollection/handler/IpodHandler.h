@@ -146,8 +146,6 @@ namespace Meta {
            
            virtual void databaseChanged();
 
-           virtual void setCopyTrackForParse();
-
            /// Parse iteration methods
 
            virtual void prepareToParse();
@@ -162,18 +160,12 @@ namespace Meta {
            void setCoverArt( Itdb_Track *ipodtrack, const QString &filename ) const;
 */
            
-           /**
-            * Successfully read Ipod database?
-            */
-           //bool succeeded() const { return m_success; }
-
            /* Set Methods */
 
            void setMountPoint( const QString &mp) { m_mountPoint = mp; }
 
            /* Methods Provided for Collection */
 
-           // TODO: abstract copy/delete/database methods
 #if 0
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
            void deleteTrackListFromDevice( const Meta::TrackList &tracks );
@@ -261,7 +253,6 @@ namespace Meta {
            QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
 
            Itdb_Track       *m_libtrack;
-           //KUrl              m_copyurl;
 
            /* Ipod Connection */
            bool              m_autoConnect;

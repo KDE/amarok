@@ -27,30 +27,25 @@
 #include "MtpHandler.h"
 
 #include "MtpCollection.h"
-#include "MtpMeta.h"
-#include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
 #include "File.h" // for KIO file handling
 
-#include <KUniqueApplication> // needed for KIO processes
 #include <KIO/Job>
 #include <KIO/DeleteJob>
 #include "kjob.h"
 #include <threadweaver/ThreadWeaver.h>
 #include <KUrl>
 
+#include <QFileInfo>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
 
-using namespace Mtp;
 using namespace Meta;
 
-MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
-        : QObject( parent )
-        , m_memColl( mc )
-        , m_statusbar( 0 )
+MtpHandler::MtpHandler( MtpCollection *mc )
+        : MediaDeviceHandler( mc )
         , m_device( 0 )
         , m_default_parent_folder( 0 )
         , m_folders( 0 )
@@ -59,11 +54,11 @@ MtpHandler::MtpHandler( MtpCollection *mc, QObject *parent )
         , m_name()
         , m_success( false )
         , m_trackCreated( false )
-        , m_copyFailed( false )
         , m_isCanceled( false )
         , m_wait( false )
 {
     DEBUG_BLOCK
+    init();    
 }
 
 MtpHandler::~MtpHandler()
@@ -73,7 +68,7 @@ MtpHandler::~MtpHandler()
 }
 
 void
-MtpHandler::init( const QString &serial )
+MtpHandler::init()
 {
     mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
     mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
@@ -158,12 +153,12 @@ MtpHandler::init( const QString &serial )
     if ( m_success )
     {
         debug() << "Got mtp list, connecting to device using thread";
-        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, serial, this ) );
+        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, this ) );
     }
     else
     {
         free( rawdevices );
-        emit failed();
+//        emit failed();
     }
 
 }
@@ -171,7 +166,7 @@ MtpHandler::init( const QString &serial )
 
 // this function is threaded
 bool
-MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial )
+MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices )
 {
     DEBUG_BLOCK
 
@@ -191,7 +186,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
             continue;
         }
 
-        debug() << "Testing serial number";
+//        debug() << "Testing serial number";
 
         // HACK: not checking serial to confirm the right device is in place
         // this is not incorrect, and long-term goal is to remove serial number from use altogether
@@ -225,7 +220,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 
     //QString serial = QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
 
-    debug() << "Serial is: " << serial;
+//    debug() << "Serial is: " << serial;
 
     debug() << "Success is: " << ( success ? "true" : "false" );
 
@@ -312,7 +307,7 @@ MtpHandler::terminate()
     }
 
     // Delete temporary files
-
+/*
     TrackMap trackMap = m_memColl->trackMap();
 
     foreach( Meta::TrackPtr track,  trackMap.values() )
@@ -320,7 +315,7 @@ MtpHandler::terminate()
         Meta::MtpTrackPtr mtptrack = Meta::MtpTrackPtr::staticCast( track );
         mtptrack->deleteTempFile();
     }
-
+*/
     // release device
     if ( m_device != 0 )
     {
@@ -508,7 +503,7 @@ MtpHandler::updateFolders( void )
     m_folders = 0;
     m_folders = LIBMTP_Get_Folder_List( m_device );
 }
-
+#if 0
 void
 MtpHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
 {
@@ -925,7 +920,7 @@ MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     m_titlemap.remove( track->name(), Meta::TrackPtr::staticCast( track ) );
 
 }
-
+#endif
 int
 MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
 {
@@ -947,6 +942,7 @@ int
 MtpHandler::progressCallback( uint64_t const sent, uint64_t const total, void const * const data )
 {
     DEBUG_BLOCK
+    Q_UNUSED( sent );
     MtpHandler *handler = ( MtpHandler* )( data );
 
     // NOTE: setting max many times wastes cycles,
@@ -955,16 +951,17 @@ MtpHandler::progressCallback( uint64_t const sent, uint64_t const total, void co
     debug() << "Setting max to: " << (( int ) total );
 
     debug() << "Device: " << handler->prettyName();
-
+/*
     handler->setBarMaximum(( int ) total );
     handler->setBarProgress(( int ) sent );
 
     if ( sent == total )
         handler->endBarProgressOperation();
+    */
 
     return 0;
 }
-
+#if 0
 void
 MtpHandler::setBarMaximum( int total )
 {
@@ -1408,23 +1405,518 @@ MtpHandler::fileDeleted( KJob *job )  //SLOT
         debug() << "file deletion failed: " << job->errorText();
     }
 }
-
+#endif
 QString
 MtpHandler::prettyName() const
 {
     return m_name;
 }
 
+/// Begin MediaDeviceHandler overrides
+/*
+void
+MtpHandler::findPathToCopy( const Meta::TrackPtr &track )
+{
+        debug() << "Mountpoint is: " << mountPoint();
+
+    KUrl url = determineURLOnDevice(track);
+
+    debug() << "Url's path is: " << url.path();
+
+    // check if path exists and make it if needed
+    QFileInfo finfo( url.path() );
+    QDir dir = finfo.dir();
+    while ( !dir.exists() )
+    {
+        QString path = dir.absolutePath();
+        QDir parentdir;
+        QDir create;
+        do
+        {
+            create.setPath(path);
+            path = path.section('/', 0, path.indexOf('/')-1);
+            parentdir.setPath(path);
+        }
+        while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
+        debug() << "trying to create \"" << path << "\"";
+        if( !create.mkdir( create.absolutePath() ) )
+            break;
+    }
+    if ( !dir.exists() )
+    {
+        debug() << "Creating directory failed";
+        return;
+    }
+
+    debug() << "About to copy from: " << track->playableUrl().path();
+
+    m_trackdesturl[ track ] = url;
+}
+
+bool
+MtpHandler::libCopyTrack( const Meta::TrackPtr &track )
+{
+    DEBUG_BLOCK
+    KUrl srcurl = KUrl::fromPath( track->playableUrl().path() );
+    m_trackscopying[ srcurl ] = track;
+    return kioCopyTrack( srcurl, m_trackdesturl[ track ] );
+}
+*/
+
+// TODO: nyi
+/*
+void
+MtpHandler::writeDatabase()
+{
+    return;
+    //ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
+}
+*/
+/*
+bool
+MtpHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+
+    // delete file
+    KUrl url;
+    url.setPath( realPath( ipodtrack->ipod_path ) );
+    Meta::TrackPtr trackptr = Meta::TrackPtr::staticCast( track );
+    m_tracksdeleting[ url ] = trackptr;
+    deleteFile( url );
+
+    return true;
+
+}
+
+*/
+void
+MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    LIBMTP_track_struct *mtptrack = m_mtptrackhash[ track ];
+
+    m_mtptrackhash.remove( track );
+
+    u_int32_t object_id = mtptrack->item_id;
+
+    QString genericError = i18n( "Could not delete item" );
+
+    debug() << "delete this id : " << object_id;
+
+
+    int status = LIBMTP_Delete_Object( m_device, object_id );
+
+    if ( status != 0 )
+    {
+        debug() << "delete object failed";
+        /*
+        The::statusBar()->longMessage(
+            i18n( "Delete failed" ),
+            StatusBar::Error
+            */
+        //);
+//       return false;
+    }
+    else
+        debug() << "object deleted";
+}
+
+void
+MtpHandler::databaseChanged()
+{
+    m_dbChanged = true;
+}
+
+
+void
+MtpHandler::prepareToParse()
+{
+    m_currtracklist = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
+}
+
+bool
+MtpHandler::isEndOfParseList()
+{
+    return (m_currtracklist ? false : true);
+}
+
+void
+MtpHandler::prepareToParseNextTrack()
+{
+    m_currtracklist = m_currtracklist->next;
+}
+
+void
+MtpHandler::nextTrackToParse()
+{
+    m_currtrack = m_currtracklist;
+}
+
+void
+MtpHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
+{
+    m_mtptrackhash[ track ] = m_currtrack;
+}
+
+QStringList
+MtpHandler::supportedFormats()
+{
+    return m_supportedFiles;
+}
+
+
+QString
+MtpHandler::libGetTitle( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_mtptrackhash[ track ]->title );
+}
+
+QString
+MtpHandler::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_mtptrackhash[ track ]->album );
+}
+
+QString
+MtpHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_mtptrackhash[ track ]->artist );
+}
+
+QString
+MtpHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_mtptrackhash[ track ]->composer );
+}
+
+QString
+MtpHandler::libGetGenre( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_mtptrackhash[ track ]->genre );
+}
+
+int
+MtpHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_mtptrackhash[ track ]->date ).mid( 0, 4 ).toUInt();
+}
+
+int
+MtpHandler::libGetLength( const Meta::MediaDeviceTrackPtr &track )
+{
+    if ( m_mtptrackhash[ track ]->duration > 0 )
+        return ( ( m_mtptrackhash[ track ]->duration ) / 1000 );
+    else
+        return 0;
+}
+
+int
+MtpHandler::libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_mtptrackhash[ track ]->tracknumber;
+}
+
+QString
+MtpHandler::libGetComment( const Meta::MediaDeviceTrackPtr &track )
+{
+    // NOTE: defaulting, since not provided
+    Q_UNUSED( track );
+    return QString();
+}
+
+int
+MtpHandler::libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track )
+{
+    Q_UNUSED( track );
+    // NOTE: defaulting, since not provided
+    return 1;
+}
+
+int
+MtpHandler::libGetBitrate( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_mtptrackhash[ track ]->bitrate;
+}
+
+int
+MtpHandler::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_mtptrackhash[ track ]->samplerate;
+}
+
+float
+MtpHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
+{
+    Q_UNUSED( track );
+    // NOTE: defaulting, since not provided
+    return 0.0;
+}
+int
+MtpHandler::libGetFileSize( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_mtptrackhash[ track ]->filesize;
+}
+int
+MtpHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_mtptrackhash[ track ]->usecount;
+}
+uint
+MtpHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
+{
+    Q_UNUSED( track );
+    // NOTE: defaulting, since not provided
+    return 0;
+}
+
+// TODO: implement rating
+int
+MtpHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
+{
+    return ( m_mtptrackhash[ track ]->rating / 10 );
+}
+QString
+MtpHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
+{
+    return mtpFileTypes[ m_mtptrackhash[ track ]->filetype ];
+}
+
+QString
+MtpHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
+{
+    Q_UNUSED( track )
+    // NOTE: defaulting, since not provided
+    return QString();
+}
+
+/// Sets
+
+void
+MtpHandler::libSetTitle( Meta::MediaDeviceTrackPtr& track, const QString& title )
+{
+    m_mtptrackhash[ track ]->title = ( title.isEmpty() ? qstrdup( i18n( "Unknown title" ).toUtf8() ) : qstrdup( title.toUtf8() ) );
+}
+void
+MtpHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album )
+{
+    m_mtptrackhash[ track ]->album = ( album.isEmpty() ? qstrdup( i18n( "Unknown album" ).toUtf8() ) : qstrdup( album.toUtf8() ) );
+}
+void
+MtpHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
+{
+    m_mtptrackhash[ track ]->artist = ( artist.isEmpty() ? qstrdup( i18n( "Unknown artist" ).toUtf8() ) : qstrdup( artist.toUtf8() ) );
+}
+void
+MtpHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
+{
+    m_mtptrackhash[ track ]->composer = ( composer.isEmpty() ? qstrdup( i18n( "Unknown composer" ).toUtf8() ) : qstrdup( composer.toUtf8() ) );
+}
+void
+MtpHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre )
+{
+    m_mtptrackhash[ track ]->genre = ( genre.isEmpty() ? qstrdup( i18n( "Unknown genre" ).toUtf8() ) : qstrdup( genre.toUtf8() ) );
+}
+void
+MtpHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
+{
+    if( year.toInt() > 0 )
+    {
+        QString date;
+        QTextStream( &date ) << year.toInt() << "0101T0000.0";
+        m_mtptrackhash[ track ]->date = qstrdup( date.toUtf8() );
+    }
+    else
+        m_mtptrackhash[ track ]->date = qstrdup( "00010101T0000.0" );
+}
+void
+MtpHandler::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
+{
+    m_mtptrackhash[ track ]->duration = ( length > 0 ? length*1000 : 0 );
+}
+void
+MtpHandler::libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum )
+{
+    m_mtptrackhash[ track ]->tracknumber = tracknum;
+}
+void
+MtpHandler::libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment )
+{
+    // NOTE: defaulting, since not provided
+    Q_UNUSED( track )
+    Q_UNUSED( comment )
+}
+void
+MtpHandler::libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum )
+{
+    // NOTE: defaulting, since not provided
+    Q_UNUSED( track )
+    Q_UNUSED( discnum )
+}
+void
+MtpHandler::libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate )
+{
+    m_mtptrackhash[ track ]->bitrate = bitrate;
+}
+void
+MtpHandler::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate )
+{
+    m_mtptrackhash[ track ]->samplerate = samplerate;
+}
+void
+MtpHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
+{
+    // NOTE: defaulting, since not provided
+    Q_UNUSED( track )
+    Q_UNUSED( bpm )
+}
+void
+MtpHandler::libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize )
+{
+    m_mtptrackhash[ track ]->filesize = filesize;
+}
+void
+MtpHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
+{
+    m_mtptrackhash[ track ]->usecount = playcount;
+}
+void
+MtpHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
+{
+    Q_UNUSED( track )
+    Q_UNUSED( lastplayed )
+}
+void
+MtpHandler::libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )
+{
+    m_mtptrackhash[ track ]->rating = ( rating * 10 );
+}
+void
+MtpHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
+{
+    debug() << "filetype : " << type;
+    if ( type == "mp3" )
+    {
+        m_mtptrackhash[ track ]->filetype = LIBMTP_FILETYPE_MP3;
+    }
+    else if ( type == "ogg" )
+    {
+        m_mtptrackhash[ track ]->filetype = LIBMTP_FILETYPE_OGG;
+    }
+    else if ( type == "wma" )
+    {
+        m_mtptrackhash[ track ]->filetype = LIBMTP_FILETYPE_WMA;
+    }
+    else if ( type == "mp4" )
+    {
+        m_mtptrackhash[ track ]->filetype = LIBMTP_FILETYPE_MP4;
+    }
+    else
+    {
+        // Couldn't recognise an Amarok filetype.
+        // fallback to checking the extension (e.g. .wma, .ogg, etc)
+        debug() << "No filetype found by Amarok filetype";
+
+        const QString extension = type.toLower();
+
+        int libmtp_type = m_supportedFiles.indexOf( extension );
+        if ( libmtp_type >= 0 )
+        {
+            int keyIndex = mtpFileTypes.values().indexOf( extension );
+            libmtp_type = mtpFileTypes.keys()[keyIndex];
+            m_mtptrackhash[ track ]->filetype = ( LIBMTP_filetype_t ) libmtp_type;
+            debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension;
+        }
+        else
+        {
+            debug() << "We do not support the extension ." << extension;
+            /*   The::statusBar()->shortLongMessage(
+               genericError,
+               i18n( "Cannot determine a valid file type" ),
+               StatusBar::Error
+                                                 );*/
+        }
+    }
+}
+
+void
+MtpHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack )
+{
+    if( !srcTrack->playableUrl().fileName().isEmpty() )
+        m_mtptrackhash[ destTrack ]->filename = qstrdup( srcTrack->playableUrl().fileName().toUtf8() );
+}
+
+void
+MtpHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
+{
+    m_mtptrackhash[ track ] = LIBMTP_new_track_t();
+    m_mtptrackhash[ track ]->item_id = 0;
+}
+
+void
+MtpHandler::prepareToPlay( Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    KUrl url;
+    if( m_cachedtracks.contains( track ) )
+    {
+        debug() << "File is already copied, simply return";
+        //m_playableUrl = KUrl::fromPath( m_playableUrl );
+    }
+    else
+    {
+        QString tempPath = setTempFile( track, libGetType( track ) );
+        track->setPlayableUrl( tempPath );
+
+        debug() << "Beginning temporary file copy";
+//        m_tempfile.open();
+        bool success = !(getTrackToFile( m_mtptrackhash[ track ]->item_id , track->playableUrl().path() ) );
+        debug() << "File transfer complete";
+        if( success )
+        {
+            debug() << "File transfer successful!";
+            //m_playableUrl = KUrl::fromPath( m_playableUrl );
+        }
+        else
+        {
+            debug() << "File transfer failed!";
+            //m_playableUrl = KUrl::fromPath( "" );
+            m_cachedtracks.remove( track );
+        }
+    }
+}
+
+QString
+MtpHandler::setTempFile( Meta::MediaDeviceTrackPtr &track, const QString &format )
+{
+    m_cachedtracks[ track ] = new KTemporaryFile();
+    m_cachedtracks[ track ]->setSuffix( ('.' + format) ); // set suffix based on info from libmtp
+    if (!m_cachedtracks[ track ]->open())
+        return QString();
+
+    QFileInfo tempFileInfo( *(m_cachedtracks[ track ]) ); // get info for path
+    QString tempPath = tempFileInfo.absoluteFilePath(); // path
+
+    m_cachedtracks[ track ]->setAutoRemove( true );
+
+    return tempPath;
+}
+
+
 void
 MtpHandler::slotDeviceMatchSucceeded( ThreadWeaver::Job* job )
 {
     DEBUG_BLOCK
+
     if ( job->success() )
     {
         getDeviceInfo();
-        debug() << "Device matches serial, emitting succeeded()";
-        emit succeeded();
+//        debug() << "Device matches serial, emitting succeeded()";
+        emit attemptConnectionDone( true );
     }
+    else
+        emit attemptConnectionDone( false );
 }
 
 void
@@ -1433,15 +1925,14 @@ MtpHandler::slotDeviceMatchFailed( ThreadWeaver::Job* job )
     DEBUG_BLOCK
     debug() << "Running slot device match failed";
     disconnect( job, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDeviceMatchSucceeded() ) );
-    emit failed();
+    emit attemptConnectionDone( false );
 }
 
-WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, const QString &serial, MtpHandler* handler )
+WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices,  MtpHandler* handler )
         : ThreadWeaver::Job()
         , m_success( false )
         , m_numrawdevices( numrawdevices )
         , m_rawdevices( rawdevices )
-        , m_serial( serial )
         , m_handler( handler )
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDeviceMatchFailed( ThreadWeaver::Job* ) ) );
@@ -1463,9 +1954,9 @@ WorkerThread::success() const
 void
 WorkerThread::run()
 {
-    m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices, m_serial );
+    m_success = m_handler->iterateRawDevices( m_numrawdevices, m_rawdevices );
 }
-
+/*
 void
 MtpHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
 {
@@ -1521,3 +2012,4 @@ CopyWorkerThread::run()
 {
     m_success = m_handler->privateCopyTrackToDevice( m_track );
 }
+*/
