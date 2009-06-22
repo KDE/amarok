@@ -131,7 +131,7 @@ MediaDeviceCollection::queryMaker()
 }
 
 QString MediaDeviceCollection::collectionId() const {
-    return QString();
+    return m_udi;
 }
 
 

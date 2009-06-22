@@ -101,7 +101,6 @@ struct PodcastInfo
 
            /* Set Methods */
 
-           void setRating( const int newrating );
            void setMountPoint( const QString &mp) { m_mountPoint = mp; }
 
            /* Methods Provided for Collection */

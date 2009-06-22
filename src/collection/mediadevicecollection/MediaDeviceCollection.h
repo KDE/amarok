@@ -98,8 +98,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         subclasses simply define a protocol prefix, e.g. ipod
 
         */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const = 0; 
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
+        virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED(url); return false;} // TODO: NYI
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
         virtual QueryMaker* queryMaker();
         virtual void startFullScan(); // TODO: this will replace connectDevice() call to parsetracks in handler
@@ -112,13 +112,13 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
             This has to be overridden for every device type, e.g. ipod://
         */
-        virtual QString uidUrlProtocol() const = 0;
-        virtual QString collectionId() const; // TODO: perhaps use UDI?  makes sense
+        virtual QString uidUrlProtocol() const { return QString(); } // TODO: NYI
+        virtual QString collectionId() const; // uses udi
 
         virtual QString prettyName() const = 0; // NOTE: must be overridden based on device type
         virtual KIcon icon() const = 0; // NOTE: must be overridden based on device type
 
-        virtual CollectionLocation* location() const = 0; // NOTE: must be overridden based on device type
+        virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(); } // NOTE: location will have same method calls always, no need to redo each time
 
         /** Capability-related methods */
 
@@ -127,14 +127,16 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         /** MediaDeviceCollection methods */
 
-        void deviceRemoved() { emit remove(); }
+        //void parseDevice();
 
-        QString udi() const;
+        //void deviceRemoved() { emit remove(); }
+
+        //QString udi() const;
 
         //MediaDevice::MediaDeviceHandler* handler() { return m_handler; }
 
         //void updateTags( Meta::MediaDeviceTrack *track);
-        void writeDatabase(); // threaded
+        //void writeDatabase(); // threaded
 
         /** MediaDeviceCollection-specific */
 
@@ -145,10 +147,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         void copyTracksCompleted( bool success );
 
     public slots:
-        // NOTE: must be overridden.  Creates handler, parses tracks on successful handler.
-        // Perhaps the DeviceInfo the handler needs could be passed, and the handler unpacks this
-        // to keep it generic?
-        virtual void connectDevice() = 0;
+        // NOTE: must be overridden.  Parses tracks on successful handler connection.
+
+        void connectDevice() = 0;
 
         // TODO: these two could be merged somehow
         //void disconnectDevice();
@@ -159,7 +160,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
     private:
         QString                          m_udi;
- //       MediaDevice::MediaDeviceHandler *m_handler;
+        MediaDevice::MediaDeviceHandler *m_handler;
 };
 
 
