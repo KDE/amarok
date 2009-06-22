@@ -114,6 +114,35 @@ namespace Meta {
            virtual QString libGetType() const;
            virtual QString libGetPlayableUrl() const;
 
+           virtual void    libSetTitle( const QString& title );
+           virtual void    libSetAlbum( const QString& album );
+           virtual void    libSetArtist( const QString& artist );
+           virtual void    libSetComposer( const QString& composer );
+           virtual void    libSetGenre( const QString& genre );
+           virtual void    libSetYear( const QString& year );
+           virtual void    libSetLength( int length );
+           virtual void    libSetTrackNumber( int tracknum );
+           virtual void    libSetComment( const QString& comment );
+           virtual void    libSetDiscNumber( int discnum );
+           virtual void    libSetBitrate( int bitrate );
+           virtual void    libSetSamplerate( int samplerate );
+           virtual void    libSetBpm( float bpm );
+           virtual void    libSetFileSize( int filesize );
+           virtual void    libSetPlayCount( int playcount );
+           virtual void    libSetLastPlayed( uint lastplayed);
+           virtual void    libSetRating( int rating );
+           virtual void    libSetType( const QString& type );
+           virtual void    libSetPlayableUrl();
+
+           /// Create new track
+
+           virtual void libCreateTrack();
+           virtual void findPathToCopy( const Meta::TrackPtr &track );
+           virtual bool libCopyTrack( const Meta::TrackPtr &track );
+           virtual void addTrackInDB();
+
+           virtual void setCopyTrackForParse();
+
            /// Parse iteration methods
 
            virtual void prepareToParse();
@@ -121,6 +150,10 @@ namespace Meta {
            virtual void prepareToParseNextTrack();
            virtual void nextTrackToParse();
            virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
+
+           
+
+           virtual QStringList supportedFormats();
            
            //QPixmap getCover( Meta::MediaDeviceTrackPtr track ) const;
            //void setCoverArt( Itdb_Track *ipodtrack, const QString &filename ) const;
@@ -166,6 +199,8 @@ namespace Meta {
         private:
            /* Handler's Main Methods */
 
+           virtual void prepareToCopy();
+
            /**
             * @param ipodtrack - track being read from
             * @param track - track being written to
@@ -188,7 +223,7 @@ namespace Meta {
            /* libgpod Information Extraction Methods */
 
            void detectModel();
-           //KUrl determineURLOnDevice( const Meta::TrackPtr &track );
+           KUrl determineURLOnDevice( const Meta::TrackPtr &track );
            QString itunesDir( const QString &path = QString() ) const;
            QString ipodPath( const QString &realPath );
            bool pathExists( const QString &ipodPath, QString *realPath=0 );
@@ -200,17 +235,14 @@ namespace Meta {
 
            /* File I/O Methods */
            // TODO: abstract copy/delete methods (not too bad)
+           bool kioCopyTrack( const KUrl &src, const KUrl &dst );
 /*
-           void copyTracksToDevice();
-
-           void copyNextTrackToDevice();
            void deleteNextTrackFromDevice();
 
-           void privateCopyTrackToDevice( const Meta::TrackPtr &track );
            void privateDeleteTrackFromDevice( const Meta::TrackPtr &track );
 
            void deleteFile( const KUrl &url );
-           bool kioCopyTrack( const KUrl &src, const KUrl &dst );
+           
 */
            /* Observer Methods */
 #if 0
@@ -248,6 +280,9 @@ namespace Meta {
            /* Copy/Delete Variables */
            Meta::TrackList   m_tracksToCopy;
            Meta::TrackList   m_tracksToDelete;
+
+           Itdb_Track       *m_libtrack;
+           KUrl              m_copyurl;
 
            /* Operation Progress Bar */
            ProgressBar      *m_statusbar;
@@ -300,7 +335,7 @@ namespace Meta {
            // Itdb_Playlist* m_podcastPlaylist;
 
         private slots:
-          //void fileTransferred( KJob *job );
+          void fileTransferred( KJob *job );
           //void fileDeleted( KJob *job );
 
           void slotDBWriteFailed( ThreadWeaver::Job* job );

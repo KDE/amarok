@@ -26,7 +26,9 @@ include_directories( ../..
 	target_link_libraries(amarok_collection-mediadevicecollection
 	  amaroklib
 	  ${QT_QTGUI_LIBRARY}
-	  ${KDE4_KUTILS_LIBS})
+	  ${KDE4_KUTILS_LIBS}
+	  ${KDE4_THREADWEAVER_LIBRARIES})
+	
 
 	install(TARGETS 
 	  amarok_collection-mediadevicecollection

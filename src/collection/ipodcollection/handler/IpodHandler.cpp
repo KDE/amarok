@@ -587,158 +587,13 @@ IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
 
     m_titlemap.remove( track->name(), track );
 }
+#endif
 
+/// Finds path to copy track to on Ipod, sets m_copyurl for later
 void
-IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
+IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
 {
-    DEBUG_BLOCK
-
-    bool isDupe;
-    bool hasDupe;
-    QString format;
-    TrackMap trackMap = m_memColl->trackMap();
-
-    Meta::TrackList tempTrackList;
-
-    // HACK: Copy is said to fail if >=1 tracks isn't copied to device.
-    // This is so that a move operation doesn't attempt to delete
-    // the tracks from the original collection, as some of these tracks
-    // would not have been copied to the device.
-
-    m_copyFailed = false;
-
-    hasDupe = false;
-
-    m_tracksFailed.clear();
-
-    /* Clear Transfer queue */
-
-    m_tracksToCopy.clear();
-
-    /* Check for same tags, don't copy if same tags */
-    /* Also check for compatible format */
-
-    foreach( Meta::TrackPtr track, tracklist )
-    {
-        /* Check for compatible formats: MP3/AAC/MP4 */
-
-        format = track->type().toLower();
-
-        if( !( format == "mp3" || format == "aac" || format == "mp4" ) )
-        {
-            QString error = "Unsupported Ipod format: " + format;
-            m_tracksFailed.insert( track, error );
-            continue;
-        }
-
-        tempTrackList = m_titlemap.values( track->name() );
-
-        /* If no song with same title, already not a dupe */
-
-        if( tempTrackList.isEmpty() )
-        {
-            debug() << "No tracks with same title, track not a dupe";
-            m_tracksToCopy.append( track );
-            continue;
-        }
-
-        /* Songs with same title present, check other tags */
-
-        debug() << "Same title present, checking other tags";
-
-        isDupe = false;
-
-        foreach( Meta::TrackPtr tempTrack, tempTrackList )
-        {
-
-            if( ( tempTrack->artist()->name() != track->artist()->name() )
-                || ( tempTrack->album()->name() != track->album()->name() )
-                || ( tempTrack->genre()->name() != track->genre()->name() )
-                || ( tempTrack->composer()->name() != track->composer()->name() )
-                || ( tempTrack->year()->name() != track->year()->name() ) )
-            {
-                debug() << "Same title, but other tags differ, not a dupe";
-                continue;
-            }
-
-            /* Track is already on there, break */
-
-            isDupe = true;
-            hasDupe = true;
-            break;
-        }
-
-        if( !isDupe )
-            m_tracksToCopy.append( track );
-        else
-        {
-            debug() << "Track " << track->name() << " is a dupe!";
-
-            QString error = "Already on device";
-            m_tracksFailed.insert( track, error );
-        }
-    }
-
-    // NOTE: see comment at top of copyTrackListToDevice
-
-    if( hasDupe )
-        m_copyFailed = true;
-
-    /* List ready, begin copying */
-
-    copyTracksToDevice();
-}
-
-void
-IpodHandler::copyTracksToDevice()
-{
-    DEBUG_BLOCK
-
-    // Do not bother copying 0 tracks
-    // This could happen if all tracks to copy are dupes
-
-    if( m_tracksToCopy.size() == 0 )
-    {
-        emit copyTracksDone( false );
-        return;
-    }
-    debug() << "Copying " << m_tracksToCopy.size() << " tracks";
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to iPod" ) );
-
-    m_statusbar->setMaximum( m_tracksToCopy.size() );
-
-    connect( this, SIGNAL( incrementProgress() ),
-            The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-            The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
-
-    m_jobcounter = 0;
-
-    copyNextTrackToDevice();
-}
-
-void
-IpodHandler::copyNextTrackToDevice()
-{
-    DEBUG_BLOCK
-    Meta::TrackPtr track;
-
-    track = m_tracksToCopy.first();
-    m_tracksToCopy.removeFirst();
-
-    // Copy the track
-    privateCopyTrackToDevice( track );
-
-    emit incrementProgress();
-}
-
-void
-IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
-{
-    DEBUG_BLOCK
-
-    debug() << "Mountpoint is: " << mountPoint();
+        debug() << "Mountpoint is: " << mountPoint();
 
     KUrl url = determineURLOnDevice(track);
 
@@ -771,241 +626,28 @@ IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     debug() << "About to copy from: " << track->playableUrl().path();
 
-    if( !kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), url ) )
-        return;
-
-    // NOTE: PODCASTS NOT YET PORTED
-
-//    PodcastInfo *podcastInfo = 0;
-
-
-    /*
-    if( bundle.podcastBundle() )
-    {
-    PodcastEpisodeBundle *peb = bundle.podcastBundle();
-    podcastInfo = new PodcastInfo;
-    podcastInfo->url = peb->url().url();
-    podcastInfo->description = peb->description();
-    podcastInfo->author = peb->author();
-    podcastInfo->rss = peb->parent().url();
-    podcastInfo->date = peb->dateTime();
-    podcastInfo->listened = !peb->isNew();
-}
-    */
-    insertTrackIntoDB( url, track );
-    if( !m_trackCreated )
-        debug() << "Track failed to create, aborting database write!";
-
-    return;
+    m_copyurl = url;
 }
 
-void
-IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
+bool
+IpodHandler::libCopyTrack( const Meta::TrackPtr &track )
 {
-    DEBUG_BLOCK
-    Itdb_Track *ipodtrack = itdb_track_new();
-
-    updateTrackInDB( url, track, ipodtrack ); // get information from track
-
-    if( m_trackCreated )
-    {
-        debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
-        addTrackInDB( ipodtrack );
-
-        // add track to collection
-        addIpodTrackToCollection( ipodtrack );
-    }
-    else
-        debug() << "Failed to create track, aborting insertion!";
+    return kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), m_copyurl );
 }
 
-void
-IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack )
-{
-    DEBUG_BLOCK
-    if( !m_itdb )
-        return;
-
-    m_trackCreated = true;
-
-    QString pathname = url.path();
-
-    Itdb_Track *ipodtrack = 0;
-    if( !existingIpodTrack )
-    {
-        // NOTE: This should never happen!
-        debug() << "No track passed in, failure!";
-        m_trackCreated = false;
-        return;
-    }
-    else
-        ipodtrack = existingIpodTrack;
-
-    QString type = pathname.section('.', -1).toLower();
-    type = type.toLower();
-
-    debug() << "Path before put in ipod_path: " << pathname;
-
-    ipodtrack->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
-    debug() << "on iPod: " << ipodtrack->ipod_path;
-
-    if( !track->name().isEmpty() )
-        ipodtrack->title = g_strdup( track->name().toUtf8() );
-    else
-        ipodtrack->title = g_strdup( KUrl::fromPath( track->uidUrl() ).fileName().toUtf8() );
-
-    ipodtrack->album = g_strdup( track->album()->name().toUtf8() );
-    ipodtrack->artist = g_strdup( track->artist()->name().toUtf8() );
-    ipodtrack->genre = g_strdup( track->genre()->name().toUtf8() );
-
-    ipodtrack->mediatype = ITDB_MEDIATYPE_AUDIO;
-    bool audiobook = false;
-    if(type=="wav")
-    {
-        ipodtrack->filetype = g_strdup( "wav" );
-    }
-    else if(type=="mp3" || type=="mpeg")
-    {
-        ipodtrack->filetype = g_strdup( "mpeg" );
-    }
-    else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
-    {
-        ipodtrack->filetype = g_strdup( "mp4" );
-    }
-    else if(type=="m4b")
-    {
-        audiobook = true;
-        ipodtrack->filetype = g_strdup( "mp4" );
-    }
-    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
-    {
-        ipodtrack->filetype = g_strdup( "m4v video" );
-        ipodtrack->movie_flag = 0x01; // for videos
-        ipodtrack->mediatype = ITDB_MEDIATYPE_MOVIE;
-    }
-    // TODO: NYI, TagLib calls need to be ported
-    /*
-    else if(type=="aa")
-    {
-        audiobook = true;
-        ipodtrack->filetype = g_strdup( "audible" );
-
-        TagLib::Audible::File f( QFile::encodeName( url.path() ) );
-        TagLib::Audible::Tag *t = f.getAudibleTag();
-        if( t )
-            ipodtrack->drm_userid = t->userID();
-        // libgpod also tries to set those, but this won't work
-        ipodtrack->unk126 = 0x01;
-        ipodtrack->unk144 = 0x0029;
-
-    }
-    */
-    else
-    {
-        ipodtrack->filetype = g_strdup( type.toUtf8() );
-    }
-
-    QString genre = track->genre()->name();
-    if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
-        audiobook = true;
-    if( audiobook )
-    {
-        ipodtrack->remember_playback_position |= 0x01;
-        ipodtrack->skip_when_shuffling |= 0x01;
-        ipodtrack->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
-    }
-
-    ipodtrack->composer = g_strdup( track->composer()->name().toUtf8() );
-    ipodtrack->comment = g_strdup( track->comment().toUtf8() );
-    ipodtrack->track_nr = track->trackNumber();
-    ipodtrack->cd_nr = track->discNumber();
-    // BPM isn't present in Amarok 2 at this time Jul. 8 2008
-    // ipodtrack->BPM = static_cast<int>( track->bpm() );
-    bool ok;
-    int year = track->year()->name().toInt( &ok, 10 );
-    if( ok )
-        ipodtrack->year = year;
-    ipodtrack->size = track->filesize();
-    if( ipodtrack->size == 0 )
-    {
-        debug() << "filesize is zero for " << ipodtrack->ipod_path << ", expect strange problems with your ipod";
-    }
-    ipodtrack->bitrate = track->bitrate();
-    ipodtrack->samplerate = track->sampleRate();
-    ipodtrack->tracklen = track->length()*1000;
-
-    // set playcount and rating
-
-    ipodtrack->playcount = track->playCount();
-    // 1 star = 20 internally
-    ipodtrack->rating = ( track->rating() * ITDB_RATING_STEP / 2 );
-
-    m_dbChanged = true;
-
-// TODO: podcasts/compilations NYI
-    /*
-    if(podcastInfo)
-    {
-        ipodtrack->skip_when_shuffling = 0x01; // skip  when shuffling
-        ipodtrack->remember_playback_position = 0x01; // remember playback position
-        // FIXME: ipodtrack->unk176 = 0x00020000; // for podcasts
-        ipodtrack->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
-        ipodtrack->mediatype =
-                ipodtrack->mediatype==ITDB_MEDIATYPE_MOVIE
-                ?  ITDB_MEDIATYPE_PODCAST | ITDB_MEDIATYPE_MOVIE
-            : ITDB_MEDIATYPE_PODCAST;
-
-        ipodtrack->flag4 = 0x01; // also show description on iPod
-        QString plaindesc = podcastInfo->description;
-        plaindesc.remove( QRegExp("<[^>]*>") );
-        ipodtrack->description = g_strdup( plaindesc.toUtf8() );
-        ipodtrack->subtitle = g_strdup( plaindesc.toUtf8() );
-        ipodtrack->podcasturl = g_strdup( podcastInfo->url.toUtf8() );
-        ipodtrack->podcastrss = g_strdup( podcastInfo->rss.toUtf8() );
-        //ipodtrack->category = g_strdup( i18n( "Unknown" ) );
-        ipodtrack->time_released = itdb_time_host_to_mac( podcastInfo->date.toTime_t() );
-        //ipodtrack->compilation = 0x01; // this should have made the ipod play a sequence of podcasts
-    }
-    else
-    {
-        if( metaBundle.compilation() == MetaBundle::CompilationYes )
-        {
-            ipodtrack->compilation = 0x01;
-        }
-        else
-        {
-            ipodtrack->compilation = 0x00;
-        }
-    }
-    */
-        // TODO: implement cover art when ported to new system
-        /*
-    if( track->album()->hasImage() )
-    {
-
-        QPixmap image = track->album()->image();
-        debug() << "Got image of height: " << image.height() << "and width: " << image.width();
-        setCoverArt( ipodtrack, image );
-    }
-    else
-        debug() << "No image available";
-*/
-    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
-}
-#endif
 void
 IpodHandler::writeDatabase()
 {
     ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
-#if 0
+
 void
-IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
+IpodHandler::addTrackInDB()
 {
     DEBUG_BLOCK
 
-    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
-    itdb_track_add(m_itdb, ipodtrack, -1);
+    debug() << "Adding " << QString::fromUtf8( m_libtrack->artist) << " - " << QString::fromUtf8( m_libtrack->title );
+    itdb_track_add(m_itdb, m_libtrack, -1);
 
     // TODO: podcasts NYI
     // if(podcastInfo)
@@ -1033,10 +675,10 @@ IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
             itdb_playlist_add( m_itdb, mpl, -1 );
             itdb_playlist_set_mpl( mpl );
         }
-        itdb_playlist_add_track(mpl, ipodtrack, -1);
+        itdb_playlist_add_track(mpl, m_libtrack, -1);
     }
 }
-
+#if 0
 bool
 IpodHandler::removeDBTrack( Itdb_Track *track )
 {
@@ -1066,7 +708,7 @@ IpodHandler::removeDBTrack( Itdb_Track *track )
 
     return true;
 }
-
+#endif
 bool
 IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
@@ -1121,7 +763,7 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         }
     }
 }
-
+#if 0
 void
 IpodHandler::deleteFile( const KUrl &url )
 {
@@ -1144,7 +786,7 @@ IpodHandler::fileDeleted( KJob *job )  //SLOT
 
     deleteNextTrackFromDevice();
 }
-
+#endif
 KUrl
 IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 {
@@ -1183,7 +825,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 
     return realpath;
 }
-#endif
+
 QString
 IpodHandler::ipodPath( const QString &realPath )
 {
@@ -1304,7 +946,7 @@ IpodHandler::libGetTrackNumber() const
 {
     return m_currtrack->track_nr;
 }
- 
+
 QString
 IpodHandler::libGetComment() const
 {
@@ -1322,7 +964,7 @@ IpodHandler::libGetBitrate() const
 {
     return m_currtrack->bitrate;
 }
-    
+
 int
 IpodHandler::libGetSamplerate() const
 {
@@ -1365,6 +1007,184 @@ QString
 IpodHandler::libGetPlayableUrl() const
 {
     return (m_mountPoint + QString( m_currtrack->ipod_path ).split( ':' ).join( "/" ));
+}
+
+/// Sets
+
+void
+IpodHandler::libSetTitle( const QString& title )
+{
+    m_libtrack->title = g_strdup( title.toUtf8() );
+}
+void
+IpodHandler::libSetAlbum( const QString& album )
+{
+    m_libtrack->album = g_strdup( album.toUtf8() );
+}
+void
+IpodHandler::libSetArtist( const QString& artist )
+{
+    m_libtrack->artist = g_strdup( artist.toUtf8() );
+}
+void
+IpodHandler::libSetComposer( const QString& composer )
+{
+    m_libtrack->composer = g_strdup( composer.toUtf8() );
+}
+void
+IpodHandler::libSetGenre( const QString& genre )
+{
+    if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
+    {
+        m_libtrack->remember_playback_position |= 0x01;
+        m_libtrack->skip_when_shuffling |= 0x01;
+        m_libtrack->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
+    }
+}
+void
+IpodHandler::libSetYear( const QString& year )
+{
+    bool ok;
+    int yr = year.toInt( &ok, 10 );
+    if( ok )
+        m_libtrack->year = yr;
+}
+void
+IpodHandler::libSetLength( int length )
+{
+    m_libtrack->tracklen = length*1000;
+}
+void
+IpodHandler::libSetTrackNumber( int tracknum )
+{
+    m_libtrack->track_nr = tracknum;
+}
+void
+IpodHandler::libSetComment( const QString& comment )
+{
+    m_libtrack->comment = g_strdup( comment.toUtf8() );
+}
+void
+IpodHandler::libSetDiscNumber( int discnum )
+{
+    m_libtrack->cd_nr = discnum;
+}
+void
+IpodHandler::libSetBitrate( int bitrate )
+{
+    m_libtrack->bitrate = bitrate;
+}
+void
+IpodHandler::libSetSamplerate( int samplerate )
+{
+    m_libtrack->samplerate = samplerate;
+}
+void
+IpodHandler::libSetBpm( float bpm )
+{
+    m_libtrack->BPM = static_cast<int>( bpm );
+}
+void
+IpodHandler::libSetFileSize( int filesize )
+{
+    m_libtrack->size = filesize;
+}
+void
+IpodHandler::libSetPlayCount( int playcount )
+{
+    m_libtrack->playcount = playcount;
+}
+void
+IpodHandler::libSetLastPlayed( uint lastplayed)
+{
+}
+void
+IpodHandler::libSetRating( int rating )
+{
+    m_libtrack->rating = ( rating * ITDB_RATING_STEP / 2 );
+}
+void
+IpodHandler::libSetType( const QString& type )
+{
+    m_libtrack->mediatype = ITDB_MEDIATYPE_AUDIO;
+    bool audiobook = false;
+    if(type=="wav")
+    {
+        m_libtrack->filetype = g_strdup( "wav" );
+    }
+    else if(type=="mp3" || type=="mpeg")
+    {
+        m_libtrack->filetype = g_strdup( "mpeg" );
+    }
+    else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
+    {
+        m_libtrack->filetype = g_strdup( "mp4" );
+    }
+    else if(type=="m4b")
+    {
+        audiobook = true;
+        m_libtrack->filetype = g_strdup( "mp4" );
+    }
+    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
+    {
+        m_libtrack->filetype = g_strdup( "m4v video" );
+        m_libtrack->movie_flag = 0x01; // for videos
+        m_libtrack->mediatype = ITDB_MEDIATYPE_MOVIE;
+    }
+    // TODO: NYI, TagLib calls need to be ported
+    /*
+    else if(type=="aa")
+    {
+        audiobook = true;
+        m_libtrack->filetype = g_strdup( "audible" );
+
+        TagLib::Audible::File f( QFile::encodeName( url.path() ) );
+        TagLib::Audible::Tag *t = f.getAudibleTag();
+        if( t )
+            m_libtrack->drm_userid = t->userID();
+        // libgpod also tries to set those, but this won't work
+        m_libtrack->unk126 = 0x01;
+        m_libtrack->unk144 = 0x0029;
+
+    }
+    */
+    else
+    {
+        m_libtrack->filetype = g_strdup( type.toUtf8() );
+    }
+
+    if( audiobook )
+    {
+        m_libtrack->remember_playback_position |= 0x01;
+        m_libtrack->skip_when_shuffling |= 0x01;
+        m_libtrack->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
+    }
+}
+
+void
+IpodHandler::libSetPlayableUrl()
+{
+    QString pathname = m_copyurl.path();
+
+    QString type = pathname.section('.', -1).toLower();
+    type = type.toLower();
+
+    debug() << "Path before put in ipod_path: " << pathname;
+
+    m_libtrack->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
+    debug() << "on iPod: " << m_libtrack->ipod_path;
+}
+
+void
+IpodHandler::libCreateTrack()
+{
+    m_libtrack = itdb_track_new();
+}
+
+void
+IpodHandler::setCopyTrackForParse()
+{
+    m_currtrack = m_libtrack;
 }
 
 /*
@@ -1492,8 +1312,26 @@ IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
     m_itdbtrackhash[ track ] = m_currtrack;
 }
 
+QStringList
+IpodHandler::supportedFormats()
+{
+    QStringList formats;
+
+    formats << "mp3" << "aac" << "mp4";
+
+    return formats;
+}
+
 
 /* Private Functions */
+
+void
+IpodHandler::prepareToCopy()
+{
+    // Initialize job counter to prepare to keep track of how many
+    // copy jobs are going on at once
+    m_jobcounter = 0;
+}
 
 void
 IpodHandler::slotDBWriteFailed( ThreadWeaver::Job* job )

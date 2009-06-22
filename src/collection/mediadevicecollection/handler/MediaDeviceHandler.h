@@ -28,7 +28,7 @@
 
 #include "kjob.h"
 #include <KTempDir>
-//#include <threadweaver/Job.h>
+#include <threadweaver/Job.h>
 
 #include <QObject>
 #include <QMap>
@@ -87,16 +87,20 @@ namespace Meta {
             void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
             void databaseWritten( bool success );
 
+           void deleteTracksDone();
+           void incrementProgress();
+           void endProgressOperation( const QObject *owner );
+
            #if 0
 
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; } // NOTE: to be used for error-handling later
-
+           #endif
            /** Methods Provided for Collection, i.e. wrappers */
 
-           virtual void copyTrackListToDevice( const Meta::TrackList tracklist );// NOTE: used by Collection
-           virtual void deleteTrackListFromDevice( const Meta::TrackList &tracks );// NOTE: used by Collection
+           //virtual void copyTrackListToDevice( const Meta::TrackList tracklist );// NOTE: used by Collection
+           //virtual void deleteTrackListFromDevice( const Meta::TrackList &tracks );// NOTE: used by Collection
 
-           #endif
+
            /**
             * Parses MediaDevice DB and creates a Meta::MediaDeviceTrack
             * for each track in the DB
@@ -140,6 +144,65 @@ namespace Meta {
 
            virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track ) = 0;
 
+           /// Returns a list of formats supported by the device, all in lowercase
+           /// For example mp3, mpeg, aac.  This is used to avoid copying unsupported
+           /// types to a particular device.
+
+           virtual QStringList supportedFormats() = 0;
+
+           /// These copy methods are invoked in order:
+           /// findPathToCopy
+           /// libCopyTrack
+           /// libCreateTrack
+           /// setBasicMediaDeviceTrackInfo (all the libSets)
+           /// addTrackInDB
+           /// addMediaDeviceTrackToCollection
+
+           /// findPathToCopy resolves some kind of address to put the track onto on
+           /// the device.  For Ipods, this is a url, but for MTPs, this is finding
+           /// the right place in the folder structure, so the details of this are
+           /// left to the subclass in this method.  NOTE: this function should set
+           /// some private variable that can later be used to libSetPlayableUrl
+
+           virtual void findPathToCopy( const Meta::TrackPtr &track ) = 0;
+
+           /// libCopyTrack does the actual file copying.  For Ipods, it uses KIO
+           /// for MTPs this uses a libmtp call
+           
+           virtual bool libCopyTrack( const Meta::TrackPtr &track ) = 0;
+
+           /// Creates a new track struct particular to the library of the device
+           /// e.g. LIBMTP_new_track_t(), and assigns a pointer to it, so that
+           /// calls to libSet functions will set the values of this new track
+
+           virtual void libCreateTrack() = 0;
+
+           /// Adds the newly created track struct now populated with info into the
+           /// database struct of the particular device, e.g. into the itdb for Ipods.
+           /// MTP devices automatically add the track into the database upon copying,
+           /// so MTP would do nothing.
+
+           virtual void addTrackInDB() = 0;
+
+           /// Creates a MediaDeviceTrack based on the latest track struct created as a
+           /// result of a copy to the device, and adds it into the collection to reflect
+           /// that it has been copied.
+
+           void addMediaDeviceTrackToCollection();
+
+           /// setCopyTrackForParse makes it so that a call to getBasicMediaDeviceTrackInfo
+           /// will use the track struct recently created and filled with info, to fill up
+           /// the Meta::MediaDeviceTrackPtr.
+
+           virtual void setCopyTrackForParse() = 0;
+
+           /// Uses wrapped libGet methods to fill a track with information from device
+           void getBasicMediaDeviceTrackInfo( Meta::MediaDeviceTrackPtr track ) const;
+
+           /// Uses wrapped libSet methods to fill a track struct of the particular library
+           /// with information from a Meta::Track
+
+           void setBasicMediaDeviceTrackInfo( Meta::TrackPtr track );
 
            /// Methods that wrap get/set of information using given library (e.g. libgpod)
            /// Subclasses of MediaDeviceHandler must keep a pointer to the current
@@ -150,7 +213,7 @@ namespace Meta {
            virtual QString libGetArtist() const = 0;
            virtual QString libGetComposer() const = 0;
            virtual QString libGetGenre() const = 0;
-           virtual int libGetYear() const = 0;
+           virtual int     libGetYear() const = 0;
            virtual int     libGetLength() const = 0;
            virtual int     libGetTrackNumber() const = 0;
            virtual QString libGetComment() const = 0;
@@ -165,21 +228,30 @@ namespace Meta {
            virtual QString libGetType() const = 0;
            virtual QString libGetPlayableUrl() const = 0;
 
-           /// Uses wrapped methods to fill a track with information from device
-           void getBasicMediaDeviceTrackInfo( Meta::MediaDeviceTrackPtr track ) const;
+           virtual void    libSetTitle( const QString& title ) = 0;
+           virtual void    libSetAlbum( const QString& album ) = 0;
+           virtual void    libSetArtist( const QString& artist ) = 0;
+           virtual void    libSetComposer( const QString& composer ) = 0;
+           virtual void    libSetGenre( const QString& genre ) = 0;
+           virtual void    libSetYear( const QString& year ) = 0;
+           virtual void    libSetLength( int length ) = 0;
+           virtual void    libSetTrackNumber( int tracknum ) = 0;
+           virtual void    libSetComment( const QString& comment ) = 0;
+           virtual void    libSetDiscNumber( int discnum ) = 0;
+           virtual void    libSetBitrate( int bitrate ) = 0;
+           virtual void    libSetSamplerate( int samplerate ) = 0;
+           virtual void    libSetBpm( float bpm ) = 0;
+           virtual void    libSetFileSize( int filesize ) = 0;
+           virtual void    libSetPlayCount( int playcount ) = 0;
+           virtual void    libSetLastPlayed( uint lastplayed) = 0;
+           virtual void    libSetRating( int rating )  = 0;
+           virtual void    libSetType( const QString& type ) = 0;
+           virtual void    libSetPlayableUrl() = 0;
 
            signals:
            void copyTracksDone( bool success );
            #if 0
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingMediaDeviceTrack );// NOTE: used by Collection
-
-
-
-
-        signals:
-           void deleteTracksDone();// NOTE: used by Collection
-           void incrementProgress();
-           void endProgressOperation( const QObject *owner );
 
         public slots:
            bool initializeMediaDevice();
@@ -216,15 +288,6 @@ namespace Meta {
            void addTrackInDB( Itdb_Track *ipodtrack );
            void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
            bool removeDBTrack( Itdb_Track *track );
-
-           /* libgpod Information Extraction Methods */
-
-           void detectModel();
-           KUrl determineURLOnDevice( const Meta::TrackPtr &track );
-           QString itunesDir( const QString &path = QString() ) const;
-           QString ipodPath( const QString &realPath );
-           bool pathExists( const QString &ipodPath, QString *realPath=0 );
-           QString realPath( const char *ipodPath );
 
            /* Cover Art functions */
            QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
@@ -265,6 +328,19 @@ namespace Meta {
            void setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap &composerMap );
            void setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap &yearMap );
 
+           /* File I/O Methods */
+
+           void copyNextTrackToDevice();
+           bool privateCopyTrackToDevice( const Meta::TrackPtr& track );
+
+        private:
+
+
+           /// This function is called just before copying tracks begin and allows
+           /// a subclass to prepare to copy, e.g. for Ipods it would initialize
+           /// the job counter to 0.
+           virtual void prepareToCopy() {}
+
            #if 0
 
            /* Observer Methods */
@@ -281,6 +357,11 @@ namespace Meta {
            /**
             * Handler Variables
             */
+
+           private slots:
+
+    void slotCopyNextTrackFailed( ThreadWeaver::Job* job );
+    void slotCopyNextTrackToDevice( ThreadWeaver::Job* job );
 
            /* Collection Variables */
         private:
@@ -351,6 +432,20 @@ namespace Meta {
 
 #endif
 
+        bool m_copyFailed;
+
+           // tracks that failed to copy
+
+           QMap<Meta::TrackPtr, QString> m_tracksFailed;
+
+           Meta::TrackList   m_tracksToCopy;
+           Meta::TrackPtr m_lastTrackCopied;
+
+           TitleMap          m_titlemap;
+
+           ProgressBar      *m_statusbar;
+           int               m_jobcounter; // keeps track of copy jobs present
+
         protected:
             bool m_success;
     };
@@ -374,6 +469,25 @@ namespace Meta {
     };
 #endif
 
-}
 
+
+class CopyWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHandler* handler );
+    virtual ~CopyWorkerThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    bool m_success;
+    Meta::TrackPtr m_track;
+    MediaDeviceHandler *m_handler;
+};
+
+}
 #endif
