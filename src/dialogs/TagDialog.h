@@ -148,12 +148,12 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 
         QString m_lyrics;
         bool m_perTrack;
-        QMap<Meta::TrackPtr, QVariantMap > storedTags;
-        QMap<Meta::TrackPtr, double> storedScores;
-        QMap<Meta::TrackPtr, int> storedRatings;
-        QMap<Meta::TrackPtr, QString> storedLyrics;
-        QMap<Meta::TrackPtr, QStringList> newLabels;
-        QMap<Meta::TrackPtr, QStringList> originalLabels;
+        QMap<Meta::TrackPtr, QVariantMap > m_storedTags;
+        QMap<Meta::TrackPtr, double> m_storedScores;
+        QMap<Meta::TrackPtr, int> m_storedRatings;
+        QMap<Meta::TrackPtr, QString> m_storedLyrics;
+        QMap<Meta::TrackPtr, QStringList> m_newLabels;
+        QMap<Meta::TrackPtr, QStringList> m_originalLabels;
         QString m_path;
         QString m_currentCover;
         QStringList m_labels;

@@ -462,8 +462,8 @@ TagDialog::discNumberModified()
 inline void
 TagDialog::checkModified() //SLOT
 {
-    ui->pushButton_ok->setEnabled( hasChanged() || storedTags.count() > 0 || storedScores.count() > 0
-                               || storedLyrics.count() > 0 || storedRatings.count() > 0 || newLabels.count() > 0 );
+    ui->pushButton_ok->setEnabled( hasChanged() || m_storedTags.count() > 0 || m_storedScores.count() > 0
+                               || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0 || m_newLabels.count() > 0 );
 }
 
 void
@@ -977,9 +977,9 @@ void TagDialog::readTags()
     else
         ui->pushButton_open->setEnabled( false );
 
-    ui->pushButton_ok->setEnabled( storedTags.count() > 0 || storedScores.count() > 0
-                              || storedLyrics.count() > 0 || storedRatings.count() > 0
-                              || newLabels.count() > 0 );
+    ui->pushButton_ok->setEnabled( m_storedTags.count() > 0 || m_storedScores.count() > 0
+                              || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0
+                              || m_newLabels.count() > 0 );
 
     //PORT 2.0
 //     if( m_playlistItem ) {
@@ -1288,21 +1288,21 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
             map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
 
-        storedTags.remove( track );
-        storedTags.insert( track, map );
+        m_storedTags.remove( track );
+        m_storedTags.insert( track, map );
     }
     if( result & TagDialog::SCORECHANGED )
     {
         debug() << "TagDialog::SCORECHANGED";
-        storedScores.remove( track );
-        storedScores.insert( track, ui->qSpinBox_score->value() );
+        m_storedScores.remove( track );
+        m_storedScores.insert( track, ui->qSpinBox_score->value() );
     }
 
     if( result & TagDialog::RATINGCHANGED )
     {
         debug() << "TagDialog::RATINGCHANGED";
-        storedRatings.remove( track );
-        storedRatings.insert( track, ui->ratingWidget->rating() );
+        m_storedRatings.remove( track );
+        m_storedRatings.insert( track, ui->ratingWidget->rating() );
     }
 
     if( result & TagDialog::LYRICSCHANGED )
@@ -1311,13 +1311,13 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
 
         if ( ui->kTextEdit_lyrics->toHtml().isEmpty() )
         {
-            storedLyrics.remove( track );
-            storedLyrics.insert( track, QString() );
+            m_storedLyrics.remove( track );
+            m_storedLyrics.insert( track, QString() );
         }
         else
         {
-            storedLyrics.remove( track );
-            storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
+            m_storedLyrics.remove( track );
+            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
         }
     }
 }
@@ -1327,23 +1327,23 @@ TagDialog::storeTags( const Meta::TrackPtr &track, int changes, const QVariantMa
 {
     if( changes & TagDialog::TAGSCHANGED )
     {
-        storedTags.insert( track, data );
+        m_storedTags.insert( track, data );
     }
     if( changes & TagDialog::SCORECHANGED )
     {
-        storedScores.insert( track, data.value( Meta::Field::SCORE ).toDouble() );
+        m_storedScores.insert( track, data.value( Meta::Field::SCORE ).toDouble() );
     }
     if( changes & TagDialog::RATINGCHANGED )
     {
-        storedRatings.insert( track, data.value( Meta::Field::RATING ).toInt() );
+        m_storedRatings.insert( track, data.value( Meta::Field::RATING ).toInt() );
     }
 }
 
 void
 TagDialog::storeLabels( const Meta::TrackPtr &track, const QStringList &labels )
 {
-    newLabels.remove( track );
-    newLabels.insert( track, labels );
+    m_newLabels.remove( track );
+    m_newLabels.insert( track, labels );
 }
 
 
@@ -1377,8 +1377,8 @@ TagDialog::loadLabels( const Meta::TrackPtr &track )
 QVariantMap
 TagDialog::dataForTrack( const Meta::TrackPtr &track )
 {
-    if( storedTags.contains( track ) )
-        return storedTags[ track ];
+    if( m_storedTags.contains( track ) )
+        return m_storedTags[ track ];
 
     return Meta::Field::mapFromTrack( track );
 }
@@ -1386,8 +1386,8 @@ TagDialog::dataForTrack( const Meta::TrackPtr &track )
 double
 TagDialog::scoreForTrack( const Meta::TrackPtr &track )
 {
-    if( storedScores.contains( track ) )
-        return storedScores[ track ];
+    if( m_storedScores.contains( track ) )
+        return m_storedScores[ track ];
 
     return track->score();
 }
@@ -1395,8 +1395,8 @@ TagDialog::scoreForTrack( const Meta::TrackPtr &track )
 int
 TagDialog::ratingForTrack( const Meta::TrackPtr &track )
 {
-    if( storedRatings.contains( track ) )
-        return storedRatings[ track ];
+    if( m_storedRatings.contains( track ) )
+        return m_storedRatings[ track ];
 
     return track->rating();
 }
@@ -1404,8 +1404,8 @@ TagDialog::ratingForTrack( const Meta::TrackPtr &track )
 QString
 TagDialog::lyricsForTrack( const Meta::TrackPtr &track )
 {
-    if( storedLyrics.contains( track ) )
-        return storedLyrics[ track ];
+    if( m_storedLyrics.contains( track ) )
+        return m_storedLyrics[ track ];
 
     return track->cachedLyrics();
 }
@@ -1414,14 +1414,14 @@ QStringList
 TagDialog::labelsForTrack( const Meta::TrackPtr &track )
 {
     AMAROK_NOTIMPLEMENTED
-    if( newLabels.contains( track ) )
-        return newLabels[ track ];
-    if( originalLabels.contains( track ) )
-        return originalLabels[ track ];
+    if( m_newLabels.contains( track ) )
+        return m_newLabels[ track ];
+    if( m_originalLabels.contains( track ) )
+        return m_originalLabels[ track ];
     //TODO: port 2.0
     //QStringList tmp = CollectionDB::instance()->getLabels( url.path(), CollectionDB::typeUser );
     QStringList tmp;
-    originalLabels[ track ] = tmp;
+    m_originalLabels[ track ] = tmp;
     return tmp;
 }
 
@@ -1441,17 +1441,17 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        if( storedScores.contains( track ) )
+        if( m_storedScores.contains( track ) )
         {
-            track->setScore( storedScores[ track ] );
+            track->setScore( m_storedScores[ track ] );
         }
-        if( storedRatings.contains( track ) )
+        if( m_storedRatings.contains( track ) )
         {
-            track->setRating( storedRatings[ track ] );
+            track->setRating( m_storedRatings[ track ] );
         }
-        if( storedLyrics.contains( track ) )
+        if( m_storedLyrics.contains( track ) )
         {
-            track->setCachedLyrics( storedLyrics[ track ] );
+            track->setCachedLyrics( m_storedLyrics[ track ] );
             emit lyricsChanged( track->uidUrl() );
         }
 
@@ -1468,9 +1468,9 @@ TagDialog::saveTags()
             continue;
         }
 
-        QVariantMap data = storedTags[ track ];
+        QVariantMap data = m_storedTags[ track ];
 
-        //there is really no need to write to the file if only info stored in the db has changed
+        //there is really no need to write to the file if only info m_stored in the db has changed
 
         //the if from hell
         if ( data.contains( Meta::Field::TITLE ) || data.contains( Meta::Field::COMMENT ) ||
