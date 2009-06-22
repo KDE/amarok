@@ -48,61 +48,35 @@ class IpodCollection : public MediaDeviceCollection
     Q_OBJECT
     public:
         // inherited methods
-        
+
         IpodCollection( MediaDeviceInfo* info );
         virtual ~IpodCollection();
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        /// TODO: commented out, will be inherited
-
-        //virtual void deviceRemoved();
-
         virtual QString collectionId() const;
-        
+
         //virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         //virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
 
         //virtual void updateTags( Meta::Track *track); // NOTE: TODO: forward call to handler, have it extract needed info
-        
+
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
 
         // HACK: this function will be deleted later
         void writeDatabase() { m_handler->writeDatabase(); }
 
-    signals:
-        //void collectionReady();
-        //void collectionDisconnected( const QString &udi );
-
-        //void copyTracksCompleted( bool success );
-
-    public slots:
-        //void connectDevice();
-        //void disconnectDevice();
-        //void deleteTracksSlot( Meta::TrackList tracklist );
-
-        //void slotDisconnect();
-
-    private slots:
-        //void slotCopyTracksCompleted( bool success );
-        //void slotDeleteTracksCompleted();
-
-
      /** IpodCollection-specific stuff */
 
     public:
 
-        //void removeTrack( const Meta::IpodTrackPtr &track );
 
     private:
-        //Meta::IpodTrackPtr m_trackToDelete;
         QString            m_mountPoint;
-        //QString            m_udi;
-        //Ipod::IpodHandler *m_handler;
 };
 
 #endif

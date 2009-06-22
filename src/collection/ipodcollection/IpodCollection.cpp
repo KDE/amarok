@@ -119,15 +119,6 @@ IpodCollection::createCapabilityInterface( Meta::Capability::Type type )
 }
 
 void
-IpodCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
-{
-    DEBUG_BLOCK
-    connect( m_handler, SIGNAL( copyTracksDone( bool  ) ),
-             SLOT( slotCopyTracksCompleted( bool ) ), Qt::QueuedConnection );
-    m_handler->copyTrackListToDevice( tracklist );
-}
-
-void
 IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
 {
     DEBUG_BLOCK
@@ -204,35 +195,12 @@ IpodCollection::updateTags( Meta::Track *track )
     m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
 }
 
-void
-IpodCollection::writeDatabase()
-{
-    m_handler->writeDatabase();
-}
 */
 IpodCollection::~IpodCollection()
 {
     DEBUG_BLOCK
 }
-/*
-void
-IpodCollection::deviceRemoved()
-{
-    emit remove();
-}
 
-void
-IpodCollection::startFullScan()
-{
-    //ignore
-}
-
-QueryMaker*
-IpodCollection::queryMaker()
-{
-    return new MemoryQueryMaker( this, collectionId() );
-}
-*/
 QString
 IpodCollection::collectionId() const
 {
@@ -245,12 +213,6 @@ IpodCollection::prettyName() const
     return "Ipod at " + m_mountPoint;
 }
 /*
-QString
-IpodCollection::udi() const
-{
-    return m_udi;
-}
-
 
 void
 IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
@@ -277,61 +239,6 @@ IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
     emit updated();
 }
 
-void
-IpodCollection::slotDisconnect()
-{
-    emit collectionDisconnected( m_udi );
-    emit remove();
-}
-
-void
-IpodCollection::slotCopyTracksCompleted( bool success )
-{
-    DEBUG_BLOCK
-
-    // HACK: write database regardless
-    // See note about "success" in IpodHandler::copyTrackListToDevice
-    debug() << "Trying to write iTunes database";
-    m_handler->writeDatabase();
-
-    // inform collection location that copying is done
-
-    emit copyTracksCompleted( success );
-
-    // inform treeview collection has updated
-
-    emit updated();
-}
-
-void
-IpodCollection::slotDeleteTracksCompleted()
-{
-    DEBUG_BLOCK
-    debug() << "Trying to write iTunes database";
-
-    m_handler->writeDatabase();
-
-    // inform treeview collection has updated
-    emit updated();
-}
-
-void
-IpodCollection::connectDevice()
-{
-    m_handler = new MediaDevice::IpodHandler( this, m_mountPoint );
-
-    if( m_handler->succeeded() )
-    {
-        m_handler->parseTracks();
-        emit collectionReady();
-    }
-}
-
-void
-IpodCollection::disconnectDevice()
-{
-    slotDisconnect();
-}
 */
 
 #include "IpodCollection.moc"
