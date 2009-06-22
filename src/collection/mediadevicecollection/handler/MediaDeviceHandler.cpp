@@ -264,7 +264,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     /* Clear Transfer queue */
 
     m_tracksToCopy.clear();
-    
+
 
     /* Check for same tags, don't copy if same tags */
     /* Also check for compatible format */
@@ -370,6 +370,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     m_numTracksToCopy = m_tracksToCopy.count();
     m_tracksCopying.clear();
+    m_trackSrcDst.clear();
 
     // begin copying tracks to device
 
@@ -380,19 +381,9 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     else
     {
-
-        ThreadWeaver::JobCollection* jobcoll = new ThreadWeaver::JobCollection();
-
-        foreach( Meta::TrackPtr track, m_tracksToCopy )
-        {
-            jobcoll->addJob( new CopyWorkerThread( track, this ));
-        }
-
-        ThreadWeaver::Weaver::instance()->setMaximumNumberOfThreads( 10 );
-        ThreadWeaver::Weaver::instance()->enqueue( jobcoll );
-
+        enqueueNextCopyThread();
     }
-    
+
     return;
 }
 
@@ -428,30 +419,14 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     bool success = false;
 
-    // Find path on device to copy to
-
-    findPathToCopy( track );
-
-    // When internal copy method is done, keep going by creating track struct
-    // and adding to db etc.
-
-    // Copy the file to the device
-
-    success = libCopyTrack( track );
-
-    return success;
-}
-
-/// @param track is the source track from which we are copying
-void
-MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
-{
-    DEBUG_BLOCK
-    //m_tracksCopying.removeOne( track );
     // Create new destTrack that will go into the device collection, based on source track
 
     Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
-    
+
+    // find path to copy to
+
+    findPathToCopy( track );
+
     // Create a track struct, associate it to destTrack
 
     libCreateTrack( destTrack );
@@ -463,6 +438,24 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
     // set up the play url
 
     libSetPlayableUrl( destTrack, track );
+
+    m_trackSrcDst[ track ] = destTrack; // associate source with destination, for finalizing copy
+
+    // Copy the file to the device
+
+    success = libCopyTrack( track, destTrack );
+
+    return success;
+}
+
+/// @param track is the source track from which we are copying
+void
+MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
+{
+    DEBUG_BLOCK
+    //m_tracksCopying.removeOne( track );
+
+    Meta::MediaDeviceTrackPtr destTrack = m_trackSrcDst[ track ];
 
     // Add the track struct into the database, if the library needs to
 
@@ -489,6 +482,15 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
         {
             The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
+        // clear maps/hashes used
+
+        m_tracksCopying.clear();
+        m_trackSrcDst.clear();
+        m_tracksFailed.clear();
+        m_tracksToCopy.clear();
+
+        // copying done
+
         emit copyTracksDone( true );
     }
 }
@@ -498,7 +500,7 @@ MediaDeviceHandler::slotCopyTrackFailed( const Meta::TrackPtr & track )
 {
     DEBUG_BLOCK
     emit incrementProgress();
-    
+
 
 
     m_numTracksToCopy--;
@@ -506,7 +508,7 @@ MediaDeviceHandler::slotCopyTrackFailed( const Meta::TrackPtr & track )
     QString error = i18n( "The track failed to copy to the device" );
 
     m_tracksFailed.insert( track, error );
-    
+
 }
 
 void
@@ -562,7 +564,7 @@ MediaDeviceHandler::privateRemoveTrackFromDevice( const Meta::TrackPtr &track )
     DEBUG_BLOCK
 
     Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
-    
+
     // Remove the physical file from the device, perhaps using a libcall, or KIO
 
     libDeleteTrackFile( devicetrack );
@@ -814,25 +816,53 @@ MediaDeviceHandler::parseTracks()
 }
 
 void
-MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
+MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track )
 {
     Q_UNUSED( job );
+    enqueueNextCopyThread();
     m_copyFailed = true;
     QString error = "Job Failed";
+    slotCopyTrackFailed( track );
 }
 
 void
 MediaDeviceHandler::slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track )
 {
     Q_UNUSED( track )
+    enqueueNextCopyThread();
     if ( job->success() )
-    {   
+    {
+        slotFinalizeTrackCopy( track );
     }
     else
     {
         m_copyFailed = true;
         QString error = "Copy error";
+        slotCopyTrackFailed( track );
     }
+}
+
+void
+MediaDeviceHandler::enqueueNextCopyThread()
+{
+    Meta::TrackPtr track;
+
+    // If there are more tracks to copy, copy the next one
+        if (  !m_tracksToCopy.isEmpty() )
+        {
+            // Pop the track off the front of the list
+
+            track = m_tracksToCopy.first();
+            m_tracksToCopy.removeFirst();
+
+            // Copy the track
+
+//            m_lastTrackCopied = track;
+
+            ThreadWeaver::Weaver::instance()->enqueue(  new CopyWorkerThread( track,  this ) );
+
+        }
+
 }
 
 void
@@ -846,7 +876,7 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
     emit endProgressOperation( this );
 
     // Inform CollectionLocation that copying is done
-    
+
     emit copyTracksDone( true );
 }
 
@@ -901,13 +931,14 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHand
         , m_handler( handler )
 {
     /*
-    
+
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 */
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( slotDoneFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( copyTrackFailed(ThreadWeaver::Job*, const Meta::TrackPtr&)), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job*, const Meta::TrackPtr&) ) );
     connect( this, SIGNAL( copyTrackDone(ThreadWeaver::Job*, const Meta::TrackPtr&)), m_handler, SLOT( slotCopyNextTrackDone( ThreadWeaver::Job*, const Meta::TrackPtr&) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDone(ThreadWeaver::Job*)) );
-    
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDoneSuccess(ThreadWeaver::Job*)) );
+
     //connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
@@ -925,13 +956,21 @@ CopyWorkerThread::success() const
 void
 CopyWorkerThread::run()
 {
+    debug() << "running";
     m_success = m_handler->privateCopyTrackToDevice( m_track );
+    debug() << "thread run";
 }
 
 void
-CopyWorkerThread::slotDone( ThreadWeaver::Job* )
+CopyWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
 {
     emit copyTrackDone( this, m_track );
+}
+
+void
+CopyWorkerThread::slotDoneFailed( ThreadWeaver::Job* )
+{
+    emit copyTrackFailed( this, m_track );
 }
 
 

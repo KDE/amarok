@@ -513,12 +513,14 @@ IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
 }
 
 bool
-IpodHandler::libCopyTrack( const Meta::TrackPtr &track )
+IpodHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack )
 {
+    Q_UNUSED( destTrack )
     DEBUG_BLOCK
-    KUrl srcurl = KUrl::fromPath( track->playableUrl().path() );
-    m_trackscopying[ srcurl ] = track;
-    return kioCopyTrack( srcurl, m_trackdesturl[ track ] );
+//    findPathToCopy( srcTrack );
+    KUrl srcurl = KUrl::fromPath( srcTrack->playableUrl().path() );
+    m_trackscopying[ srcurl ] = srcTrack;
+    return kioCopyTrack( srcurl, m_trackdesturl[ srcTrack ] );
 }
 
 void
@@ -572,7 +574,7 @@ IpodHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
 {
     DEBUG_BLOCK
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
-    
+
     // delete file
     KUrl url;
     url.setPath( realPath( ipodtrack->ipod_path ) );
@@ -722,7 +724,7 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
 
     DEBUG_BLOCK
     Meta::TrackPtr track = m_trackscopying[from];
-    
+
     if( job->error() )
     {
         emit libCopyTrackFailed( track );
@@ -731,7 +733,7 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
     {
         emit libCopyTrackDone( track  );
     }
-    
+
 }
 
 void
@@ -746,7 +748,7 @@ IpodHandler::deleteFile( const KUrl &url )
 
     if( m_jobcounter < 150 )
         emit canDeleteMoreTracks();
-    
+
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
 

@@ -150,7 +150,6 @@ namespace Meta {
            virtual QStringList supportedFormats() = 0;
 
            /// The copy methods are invoked in order:
-           /// findPathToCopy
            /// libCopyTrack
            /// libCreateTrack
            /// setBasicMediaDeviceTrackInfo (all the libSets)
@@ -163,18 +162,13 @@ namespace Meta {
            /// libDeleteTrack
            /// removeMediaDeviceTrackFromCollection
 
-           /// findPathToCopy resolves some kind of address to put the track onto on
-           /// the device.  For Ipods, this is a url, but for MTPs, this is finding
-           /// the right place in the folder structure, so the details of this are
-           /// left to the subclass in this method.  NOTE: this function should set
-           /// some private variable that can later be used to libSetPlayableUrl
-
-           virtual void findPathToCopy( const Meta::TrackPtr &track ) { Q_UNUSED( track ) }
+	   virtual void findPathToCopy( const Meta::TrackPtr &track ) { Q_UNUSED( track ) }
 
            /// libCopyTrack does the actual file copying.  For Ipods, it uses KIO,
            /// for MTPs this uses a libmtp call
+           /// Copy the file associate with srcTrack to destTrack
            
-           virtual bool libCopyTrack( const Meta::TrackPtr &track ) { Q_UNUSED( track ) return false; }
+           virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack ) { Q_UNUSED( srcTrack ) Q_UNUSED( destTrack ) return false; }
 
            /// libDeleteTrack does the actual file deleting.  For Ipods, it uses KIO,
            /// for MTPs this uses a libmtp call.
@@ -366,7 +360,7 @@ namespace Meta {
 
            private slots:
 
-    void slotCopyNextTrackFailed( ThreadWeaver::Job* job );
+    void slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
     void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
 
     void slotCopyTrackJobsDone( ThreadWeaver::Job* job );
@@ -375,6 +369,8 @@ namespace Meta {
     void slotFinalizeTrackRemove( const Meta::TrackPtr & track );
 
     void slotDatabaseWritten( bool success );
+
+    void enqueueNextCopyThread();
 
            /* Collection Variables */
         private:
@@ -389,6 +385,7 @@ namespace Meta {
            // tracks that failed to copy
 
            QMap<Meta::TrackPtr, QString> m_tracksFailed;
+           QHash<Meta::TrackPtr, Meta::MediaDeviceTrackPtr> m_trackSrcDst; // points source to destTracks, for completion of addition to collection
 
            Meta::TrackList   m_tracksToCopy;
            Meta::TrackList   m_tracksCopying;
@@ -418,9 +415,11 @@ public:
 
     signals:
         void copyTrackDone( ThreadWeaver::Job*, const Meta::TrackPtr& track);
+        void copyTrackFailed( ThreadWeaver::Job*, const Meta::TrackPtr& track);
 
     private slots:
-        void slotDone( ThreadWeaver::Job* );
+        void slotDoneSuccess( ThreadWeaver::Job* );
+        void slotDoneFailed( ThreadWeaver::Job* );
 
 protected:
     virtual void run();

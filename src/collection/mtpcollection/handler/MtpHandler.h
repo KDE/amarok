@@ -116,6 +116,8 @@ public:
     MtpHandler( MtpCollection *mc );
     virtual ~MtpHandler();
 
+    virtual bool isWritable() const;
+
     // mtp-specific functions
 
     // connection
@@ -126,6 +128,8 @@ public:
     void terminate();
 
     // information-gathering
+
+    virtual void getCopyableUrls( const Meta::TrackList &tracks );
 
     int getTrackToFile( const uint32_t id, const QString & filename );
     virtual QString prettyName() const;
@@ -201,8 +205,8 @@ private:
            /// Create new track
 
            virtual void libCreateTrack(const Meta::MediaDeviceTrackPtr& track );
-           //virtual void findPathToCopy( const Meta::TrackPtr &track ) { Q_UNUSED( track ) }
-           //virtual bool libCopyTrack( const Meta::TrackPtr &track ) { Q_UNUSED( track ) return false; }
+           void findPathToCopyMtp( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack );
+           virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
            //virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
 
            //virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) {};
@@ -278,6 +282,10 @@ private:
     // Keeps track of which tracks have been copied/cached for playing
 
     QHash<Meta::MediaDeviceTrackPtr, KTemporaryFile*> m_cachedtracks;
+
+    // Used as temporary location for copying files from mtp
+
+    KTempDir m_tempdir;
 
 };
 

@@ -137,7 +137,7 @@ namespace Meta {
 
            virtual void libCreateTrack(const Meta::MediaDeviceTrackPtr& track );
            virtual void findPathToCopy( const Meta::TrackPtr &track );
-           virtual bool libCopyTrack( const Meta::TrackPtr &track );
+           virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
            virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
 
            virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track );
