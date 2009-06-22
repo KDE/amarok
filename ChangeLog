@@ -7,7 +7,10 @@ VERSION 2.2
     * Automatically expand collection browser search results and make the
       results keyboard accessible. Patch thanks to Tuomas Nurmi
       <tuomas@norsumanageri.org>. (BR 172379)
-    * Audio CD support
+    * Audio CD support. Audio CD's now show up as a seprate collection and
+      tracks can be freely mixed with other tracks in the playlist. Using the
+      "Copy to Collection" menu its possible to copy (rip) tracks directly to
+      the local (or any other writable) collection. 
     * Sortable playlist
     * Improved media device support
     * Video applet to show videos from YouTube and other video sites
