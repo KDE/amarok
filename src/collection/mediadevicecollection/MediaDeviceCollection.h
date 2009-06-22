@@ -20,6 +20,8 @@
 #define MEDIADEVICECOLLECTION_H
 
 #include "ConnectionAssistant.h"
+#include "MediaDeviceHandler.h"
+#include "MediaDeviceCollectionLocation.h"
 
 #include "Collection.h"
 #include "MemoryCollection.h"
@@ -118,7 +120,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual QString prettyName() const = 0; // NOTE: must be overridden based on device type
         virtual KIcon icon() const = 0; // NOTE: must be overridden based on device type
 
-        virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(); } // NOTE: location will have same method calls always, no need to redo each time
+        virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(this); } // NOTE: location will have same method calls always, no need to redo each time
 
         /** Capability-related methods */
 
@@ -149,7 +151,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
     public slots:
         // NOTE: must be overridden.  Parses tracks on successful handler connection.
 
-        void connectDevice() = 0;
+        void connectDevice() {}
 
         // TODO: these two could be merged somehow
         //void disconnectDevice();

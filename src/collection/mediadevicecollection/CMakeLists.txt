@@ -4,6 +4,7 @@ include_directories( ../..
    ../../meta/file
    ../../collection
    ../../collection/support
+   handler
    support
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
@@ -14,10 +15,11 @@ include_directories( ../..
 ########### next target ###############
 
 	set(amarok_collection-mediadevicecollection_PART_SRCS
+#	handler/MediaDeviceHandler.cpp
 	support/MediaDeviceInfo.cpp
-#	support/IpodDeviceInfo.cpp
 	support/ConnectionAssistant.cpp
-	MediaDeviceCollection.cpp)
+	MediaDeviceCollection.cpp
+	MediaDeviceCollectionLocation.cpp)
 	
 	kde4_add_plugin(amarok_collection-mediadevicecollection WITH_PREFIX ${amarok_collection-mediadevicecollection_PART_SRCS})
 

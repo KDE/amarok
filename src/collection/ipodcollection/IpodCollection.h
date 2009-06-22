@@ -104,11 +104,11 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
         QString            m_udi;
         Ipod::IpodHandler *m_handler;
 };
-
+/*
 class SomeDeviceCollection : public MediaDeviceCollection {
 
     SomeDeviceCollection();
     virtual ~SomeDeviceCollection();
 }
-
+*/
 #endif

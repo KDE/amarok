@@ -16,6 +16,7 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
    ../../metadata/audible
    ../mediadevicecollection
    ../mediadevicecollection/support
+   ../mediadevicecollection/handler
    handler
    support
    ${GLIB2_INCLUDE_DIR}

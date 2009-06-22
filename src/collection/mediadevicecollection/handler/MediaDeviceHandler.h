@@ -21,13 +21,13 @@
 #define MEDIADEVICEHANDLER_H
 
 #include "Meta.h"
-#include "MemoryCollection.h"
-#include "MediaDeviceMeta.h"
+//#include "MemoryCollection.h"
+//#include "MediaDeviceMeta.h"
 #include "../../../statusbar/StatusBar.h"
 
 #include "kjob.h"
 #include <KTempDir>
-#include <threadweaver/Job.h>
+//#include <threadweaver/Job.h>
 
 #include <QObject>
 #include <QMap>
@@ -50,14 +50,14 @@ namespace MediaDevice
     calls to be isolated here.
     */
 
-    class MEDIADEVICE_EXPORT MediaDeviceHandler : public QObject, public Meta::Observer
+    class MediaDeviceHandler : public QObject, public Meta::Observer
     {
         Q_OBJECT
 
         public:
-           MediaDeviceHandler( MediaDeviceCollection *mc );
-           virtual ~MediaDeviceHandler();
-
+           MediaDeviceHandler( MediaDeviceCollection *mc ) { Q_UNUSED(mc) }
+	virtual ~MediaDeviceHandler() {}
+#if 0
            /** Status Checking Methods */
 
            /**
@@ -252,8 +252,11 @@ namespace MediaDevice
 
           void slotDBWriteFailed( ThreadWeaver::Job* job );
           void slotDBWriteSucceeded( ThreadWeaver::Job* job );
+
+#endif
     };
 
+#if 0
     class DBWorkerThread : public ThreadWeaver::Job
     {
         Q_OBJECT
@@ -270,5 +273,6 @@ namespace MediaDevice
             bool m_success;
             MediaDeviceHandler *m_handler;
     };
+#endif
 }
 #endif

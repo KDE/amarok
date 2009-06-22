@@ -31,6 +31,7 @@ include_directories(
     browsers/servicebrowser/scriptableservice
     collection
     collection/support
+    collection/mediadevicecollection/handler # for Handler
     collection/mediadevicecollection/support # for MediaDeviceInfo
     configdialog
     configdialog/dialogs
@@ -74,6 +75,7 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
   collection/mediadevicecollection/MediaDeviceCollection.cpp
+  collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
 )
 
 #####################################################################
