@@ -138,15 +138,18 @@ QString MediaDeviceCollection::collectionId() const {
 void
 MediaDeviceCollection::startFullScan()
 {
-    /*
     if( m_handler->succeeded() )
     {
         m_handler->parseTracks();
         emit collectionReady();
     }
-    */
 }
 
+MediaDeviceHandler*
+MediaDeviceCollection::handler()
+{
+    return m_handler;
+}
 
 #include "MediaDeviceCollection.moc"
 

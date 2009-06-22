@@ -56,12 +56,10 @@ extern "C" {
 #include <QStringList>
 #include <QTime>
 
-using namespace Ipod;
 using namespace Meta;
 
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
-    : QObject( mc )
-    , m_memColl( mc )
+    : MediaDeviceHandler( mc )
     , m_masterPlaylist( 0 )
     , m_jobcounter( 0 )
     , m_statusbar( 0 )

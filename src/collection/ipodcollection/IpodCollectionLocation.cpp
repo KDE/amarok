@@ -81,17 +81,24 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &
 {
     DEBUG_BLOCK
 
+// NOTE: will be implemented in parent class, likely
+    Q_UNUSED( sources );
+/*
     connect( m_collection, SIGNAL( copyTracksCompleted( bool ) ),
              SLOT( copyOperationFinished( bool ) ) );
 
     // Copy list of tracks
     m_collection->copyTrackListToDevice( sources.keys() );
+    */
 }
 
 void
 IpodCollectionLocation::copyOperationFinished( bool success )
 {
     DEBUG_BLOCK
+
+    // NOTE: will be reimplemented in parent class
+    /*
     if( !success )
     {
         QMap<Meta::TrackPtr, QString> failedTracks = m_collection->handler()->tracksFailed();
@@ -103,7 +110,7 @@ IpodCollectionLocation::copyOperationFinished( bool success )
                 source()->transferError( track, failedTracks[ track ] );
             }
     }
-
+*/
     slotCopyOperationFinished();
 }
 

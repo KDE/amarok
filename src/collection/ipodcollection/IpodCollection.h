@@ -43,66 +43,79 @@ class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection
         virtual ~IpodCollectionFactory();
 };
 
-class IpodCollection : public Amarok::Collection, public MemoryCollection
+class IpodCollection : public MediaDeviceCollection
 {
     Q_OBJECT
     public:
+        // inherited methods
+        
         IpodCollection( MediaDeviceInfo* info );
         virtual ~IpodCollection();
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
+
+
+        /// TODO: commented out, will be inherited
+
         void copyTrackListToDevice( const Meta::TrackList tracklist );
-        void removeTrack( const Meta::IpodTrackPtr &track );
 
-        void setTrackToDelete( const Meta::IpodTrackPtr &track );
+        //virtual void deviceRemoved();
 
-        virtual void deviceRemoved();
+        //virtual void startFullScan();
+        //virtual QueryMaker* queryMaker();
 
-        virtual void startFullScan();
-        virtual QueryMaker* queryMaker();
-
-        QString udi() const;
+        //QString udi() const;
 
         virtual CollectionLocation* location() const;
 
         virtual QString collectionId() const;
+        
+        //virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        //virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
+        //virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
+
+
+        //Ipod::IpodHandler* handler() { return m_handler; }
+
+
+        //virtual void updateTags( Meta::Track *track); // NOTE: TODO: forward call to handler, have it extract needed info
+        void writeDatabase();
+        
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
 
-        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
-
-        virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
-
-        Ipod::IpodHandler* handler() { return m_handler; }
-
-        void updateTags( Meta::IpodTrack *track);
-        void writeDatabase();
-
     signals:
-        void collectionReady();
-        void collectionDisconnected( const QString &udi );
+        //void collectionReady();
+        //void collectionDisconnected( const QString &udi );
 
-        void copyTracksCompleted( bool success );
+        //void copyTracksCompleted( bool success );
 
     public slots:
-        void connectDevice();
-        void disconnectDevice();
-        void deleteTracksSlot( Meta::TrackList tracklist );
+        //void connectDevice();
+        //void disconnectDevice();
+        //void deleteTracksSlot( Meta::TrackList tracklist );
 
-        void slotDisconnect();
+        //void slotDisconnect();
 
     private slots:
-        void slotCopyTracksCompleted( bool success );
-        void slotDeleteTracksCompleted();
+        //void slotCopyTracksCompleted( bool success );
+        //void slotDeleteTracksCompleted();
+
+
+     /** IpodCollection-specific stuff */
+
+    public:
+
+        //void removeTrack( const Meta::IpodTrackPtr &track );
 
     private:
-        Meta::IpodTrackPtr m_trackToDelete;
+        //Meta::IpodTrackPtr m_trackToDelete;
         QString            m_mountPoint;
-        QString            m_udi;
-        Ipod::IpodHandler *m_handler;
+        //QString            m_udi;
+        //Ipod::IpodHandler *m_handler;
 };
 /*
 class SomeDeviceCollection : public MediaDeviceCollection {

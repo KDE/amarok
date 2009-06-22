@@ -20,6 +20,7 @@
 #define AMAROK_MEDIADEVICECOLLECTIONLOCATION_H
 
 #include "CollectionLocation.h"
+#include "MediaDeviceHandler.h"
 
 #include <QSet>
 #include <QMap>
@@ -42,29 +43,12 @@ class MediaDeviceCollectionLocation : public CollectionLocation
     protected:
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
 
-    signals:
-        void addDevice( const QString &udi );
-
     private slots:
-        void slotJobFinished( KJob *job );
         void copyOperationFinished( bool success );
 
     private:
-
-        void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
-        //QMap<QString, uint> updatedMtime( const QStringList &urls );
-        void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );
-        //called by the destination location if it detects that we are organizing the collection
-        //because the source does not need to remove the files, that was done by the destination
-     //   void movedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
-
         MediaDeviceCollection *m_collection;
-        QMap<Meta::TrackPtr, QString> m_destinations;
-        bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
-        bool m_overwriteFiles;
-        QSet<KJob*> m_jobs;
-        QStringList m_ignoredDestinations;  //these tracks were not copied/moved because source and destination url were the same
-        QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;    //used in the source when organizing the collection
+        MediaDeviceHandler *m_handler;
 };
 
 #endif

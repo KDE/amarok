@@ -699,7 +699,9 @@ IpodTrack::endMetaDataUpdate()
 void
 IpodTrack::updateItdb()
 {
-    m_collection->updateTags( this );
+    // NOTE: temporarily disabled for port to
+    // new infrastructure
+    //m_collection->updateTags( this );
 }
 
 //IpodArtist
@@ -814,6 +816,9 @@ IpodAlbum::tracks()
 QPixmap
 IpodAlbum::image( int size )
 {
+    // NOTE: commented out while porting to
+    // new infrastructure
+    #if 0
     if( m_name.isEmpty() )
         return Meta::Album::image( size );
     else
@@ -836,7 +841,7 @@ IpodAlbum::image( int size )
             return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );;
         }
     }
-
+#endif
     return Meta::Album::image( size );
 }
 

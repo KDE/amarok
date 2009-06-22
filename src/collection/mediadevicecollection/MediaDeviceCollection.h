@@ -133,7 +133,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         //void deviceRemoved() { emit remove(); }
 
-        //QString udi() const;
+        QString udi() const { return m_udi; }
 
         //MediaDevice::MediaDeviceHandler* handler() { return m_handler; }
 
@@ -141,6 +141,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         //void writeDatabase(); // threaded
 
         /** MediaDeviceCollection-specific */
+
+    public:
+        MediaDeviceHandler* handler();
 
     signals:
         void collectionReady();
@@ -160,9 +163,11 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
     protected:
         MediaDeviceCollection();
 
-    private:
         QString                          m_udi;
-        MediaDevice::MediaDeviceHandler *m_handler;
+        MediaDeviceHandler *m_handler;
+
+    private:
+
 };
 
 

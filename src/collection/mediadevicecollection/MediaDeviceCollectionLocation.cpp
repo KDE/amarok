@@ -38,8 +38,7 @@ using namespace Meta;
 MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( MediaDeviceCollection const *collection )
     : CollectionLocation()
     , m_collection( const_cast<MediaDeviceCollection*>( collection ) )
-    , m_removeSources( false )
-    , m_overwriteFiles( false )
+    , m_handler( m_collection->handler() )
 {
     //nothing to do
 }
@@ -56,24 +55,23 @@ MediaDeviceCollectionLocation::prettyLocation() const
     return collection()->prettyName();
 }
 
+// NOTE: must be overridden by child class if
+// it is writeable
 bool
 MediaDeviceCollectionLocation::isWritable() const
 {
-    return true;
+    return false;
 }
 
 bool
 MediaDeviceCollectionLocation::remove( const Meta::TrackPtr &track )
 {
+    // TODO: call handler's method to delete a track
+    // that doesn't write to database.  Writing will
+    // be handled at the end of the removal of a list
+    // of tracks, instead of just one
     Q_UNUSED( track );
     return false;
-}
-
-void
-MediaDeviceCollectionLocation::slotJobFinished( KJob *job )
-{
-    DEBUG_BLOCK
-    Q_UNUSED(job);
 }
 
 void
@@ -88,12 +86,19 @@ MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, 
     // Copy list of tracks
     m_collection->copyTrackListToDevice( sources.keys() );
     */
+
+    // TODO: call handler's method for copying a list of
+    // tracks to the device.  At the end, if successful,
+    // write to database, and any unsuccessful track
+    // copies will generate warning/error messages
 }
 
 void
 MediaDeviceCollectionLocation::copyOperationFinished( bool success )
 {
     Q_UNUSED( success );
+    // TODO: will be replaced with a more powerful method
+    // which deals with particular reasons for failed copies
     /*
     DEBUG_BLOCK
     if( !success )
@@ -110,20 +115,6 @@ MediaDeviceCollectionLocation::copyOperationFinished( bool success )
 
     slotCopyOperationFinished();
     */
-}
-
-void
-MediaDeviceCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap )
-{
-    // NOTE: MediaDeviceHandler doing this right now
-    Q_UNUSED(trackMap);
-}
-
-void
-MediaDeviceCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap )
-{
-    DEBUG_BLOCK
-    Q_UNUSED(trackMap);
 }
 
 #include "MediaDeviceCollectionLocation.moc"

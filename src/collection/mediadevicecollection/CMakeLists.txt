@@ -15,7 +15,7 @@ include_directories( ../..
 ########### next target ###############
 
 	set(amarok_collection-mediadevicecollection_PART_SRCS
-#	handler/MediaDeviceHandler.cpp
+	handler/MediaDeviceHandler.cpp
 	support/MediaDeviceInfo.cpp
 	support/ConnectionAssistant.cpp
 	MediaDeviceCollection.cpp

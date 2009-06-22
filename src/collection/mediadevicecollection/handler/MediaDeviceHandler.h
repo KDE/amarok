@@ -25,6 +25,8 @@
 //#include "MediaDeviceMeta.h"
 #include "../../../statusbar/StatusBar.h"
 
+#include "mediadevicecollection_export.h"
+
 #include "kjob.h"
 #include <KTempDir>
 //#include <threadweaver/Job.h>
@@ -40,8 +42,7 @@ class QMutex;
 
 class MediaDeviceCollection;
 
-namespace MediaDevice
-{
+
     typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
     /**
@@ -50,14 +51,14 @@ namespace MediaDevice
     calls to be isolated here.
     */
 
-    class MediaDeviceHandler : public QObject, public Meta::Observer
+    class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public Meta::Observer
     {
         Q_OBJECT
 
         public:
-           MediaDeviceHandler( MediaDeviceCollection *mc ) { Q_UNUSED(mc) }
+	MediaDeviceHandler( QObject *parent );
 	virtual ~MediaDeviceHandler() {}
-#if 0
+
            /** Status Checking Methods */
 
            /**
@@ -65,7 +66,9 @@ namespace MediaDevice
            */
            // NOTE: used by Collection
            // TODO: to be replaced when connection of device gets thread support
-           virtual bool succeeded() const { return m_success; }
+           bool succeeded() const { return m_success; }
+
+           #if 0
 
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; } // NOTE: to be used for error-handling later
 
@@ -73,13 +76,17 @@ namespace MediaDevice
 
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );// NOTE: used by Collection
            virtual void deleteTrackListFromDevice( const Meta::TrackList &tracks );// NOTE: used by Collection
+
+           #endif
            /**
             * Parses MediaDevice DB and creates a Meta::MediaDeviceTrack
             * for each track in the DB
             */
-           void parseTracks();// NOTE: used by Collection
+           virtual void parseTracks() = 0;// NOTE: used by Collection
+           virtual void writeDatabase() = 0;// NOTE: used by Collection
+           #if 0
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingMediaDeviceTrack );// NOTE: used by Collection
-           void writeDatabase();// NOTE: used by Collection
+
 
 
 
@@ -254,6 +261,9 @@ namespace MediaDevice
           void slotDBWriteSucceeded( ThreadWeaver::Job* job );
 
 #endif
+
+        private:
+            bool m_success;
     };
 
 #if 0
@@ -274,5 +284,5 @@ namespace MediaDevice
             MediaDeviceHandler *m_handler;
     };
 #endif
-}
+
 #endif

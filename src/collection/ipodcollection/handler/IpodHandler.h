@@ -37,6 +37,7 @@ extern "C" {
 #include "Meta.h"
 #include "MemoryCollection.h"
 #include "IpodMeta.h"
+#include "MediaDeviceHandler.h"
 #include "../../../statusbar/StatusBar.h"
 
 #include "kjob.h"
@@ -55,8 +56,7 @@ class QMutex;
 
 class IpodCollection;
 
-namespace Ipod
-{
+
     typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
 // NOTE: podcasts NYI
@@ -78,13 +78,13 @@ struct PodcastInfo
 */
 
 /* The libgpod backend for all Ipod calls */
-    class IpodHandler : public QObject, public Meta::Observer
+    class IpodHandler : public MediaDeviceHandler
     {
         Q_OBJECT
 
         public:
            IpodHandler( IpodCollection *mc, const QString& mountPoint );
-           ~IpodHandler();
+           virtual ~IpodHandler();
 
            /* Get Methods */
            QString mountPoint() const { return m_mountPoint; }
@@ -113,7 +113,7 @@ struct PodcastInfo
             */
            void parseTracks();
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
-           void writeDatabase();
+           virtual void writeDatabase();
 
            // NOTE: do not use writeITunesDB,
            // use the threaded writeDatabase
@@ -301,5 +301,5 @@ struct PodcastInfo
             bool m_success;
             IpodHandler *m_handler;
     };
-}
+
 #endif

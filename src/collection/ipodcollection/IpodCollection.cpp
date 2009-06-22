@@ -42,6 +42,7 @@ AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 IpodCollectionFactory::IpodCollectionFactory()
     : MediaDeviceCollectionFactory<IpodCollection> ( new IpodConnectionAssistant() )
 {
+    DEBUG_BLOCK
     //nothing to do
 }
 
@@ -53,23 +54,23 @@ IpodCollectionFactory::~IpodCollectionFactory()
 //IpodCollection
 
 IpodCollection::IpodCollection(MediaDeviceInfo* info)
-: Collection()
-, MemoryCollection()
-, m_handler( 0 )
+: MediaDeviceCollection()
 {
+    DEBUG_BLOCK
     /** Fetch Info needed to construct IpodCollection */
+    debug() << "Getting ipod info";
     IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
 
+    debug() << "Getting mountpoint";
     m_mountPoint = ipodinfo->mountpoint();
+    debug() << "Getting udi";
     m_udi = ipodinfo->udi();
 
-    m_handler = new Ipod::IpodHandler( this, m_mountPoint );
+    debug() << "constructing handler";
 
-    if( m_handler->succeeded() )
-    {
-        m_handler->parseTracks();
-        emit collectionReady();
-    }
+    m_handler = new IpodHandler( this, m_mountPoint );
+
+    startFullScan();// parse tracks
 }
 
 
@@ -89,7 +90,7 @@ IpodCollection::trackForUrl( const KUrl &url )
     Meta::TrackPtr ipodTrack = m_trackMap.value( uid );
     return ipodTrack ? ipodTrack : Collection::trackForUrl(url);
 }
-
+/*
 bool
 IpodCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
@@ -192,7 +193,7 @@ IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
 }
 
 void
-IpodCollection::updateTags( Meta::IpodTrack *track )
+IpodCollection::updateTags( Meta::Track *track )
 {
     DEBUG_BLOCK
     Meta::IpodTrackPtr trackPtr( track );
@@ -202,7 +203,7 @@ IpodCollection::updateTags( Meta::IpodTrack *track )
 
     m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
 }
-
+*/
 void
 IpodCollection::writeDatabase()
 {
@@ -213,7 +214,7 @@ IpodCollection::~IpodCollection()
 {
     DEBUG_BLOCK
 }
-
+/*
 void
 IpodCollection::deviceRemoved()
 {
@@ -231,7 +232,7 @@ IpodCollection::queryMaker()
 {
     return new MemoryQueryMaker( this, collectionId() );
 }
-
+*/
 QString
 IpodCollection::collectionId() const
 {
@@ -249,18 +250,13 @@ IpodCollection::prettyName() const
 {
     return "Ipod at " + m_mountPoint;
 }
-
+/*
 QString
 IpodCollection::udi() const
 {
     return m_udi;
 }
 
-void
-IpodCollection::setTrackToDelete( const Meta::IpodTrackPtr &track )
-{
-    m_trackToDelete = track;
-}
 
 void
 IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
@@ -276,12 +272,12 @@ IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
     // remove the tracks from the device
     m_handler->deleteTrackListFromDevice( tracklist );
 
-/*
-    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
-    const bool del = KMessageBox::warningContinueCancel(this,
-            text,
-            QString() ) == KMessageBox::Continue;
-*/
+
+//    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
+  //  const bool del = KMessageBox::warningContinueCancel(this,
+    //        text,
+      //      QString() ) == KMessageBox::Continue;
+
 
     // inform treeview collection has updated
     emit updated();
@@ -328,7 +324,7 @@ IpodCollection::slotDeleteTracksCompleted()
 void
 IpodCollection::connectDevice()
 {
-    m_handler = new Ipod::IpodHandler( this, m_mountPoint );
+    m_handler = new MediaDevice::IpodHandler( this, m_mountPoint );
 
     if( m_handler->succeeded() )
     {
@@ -342,6 +338,7 @@ IpodCollection::disconnectDevice()
 {
     slotDisconnect();
 }
+*/
 
 #include "IpodCollection.moc"
 
