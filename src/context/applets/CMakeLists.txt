@@ -4,6 +4,7 @@ add_subdirectory( currenttrack )
 add_subdirectory( lyrics )
 add_subdirectory( serviceinfo )
 add_subdirectory( wikipedia )
-add_subdirectory( mediadevices )
 add_subdirectory( videoclip )
 #add_subdirectory( songkick )
+# disabled, soon to be replaced
+#add_subdirectory( mediadevices )

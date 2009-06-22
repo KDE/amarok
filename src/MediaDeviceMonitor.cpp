@@ -75,17 +75,6 @@ MediaDeviceMonitor::getDevices()
 
 }
 
-void
-MediaDeviceMonitor::checkDevices()
-{
-    DEBUG_BLOCK
-    /* poll udi list for supported devices */
-
-    checkDevicesForMtp();
-    checkDevicesForIpod();
-    checkDevicesForCd();
-}
-
 void MediaDeviceMonitor::checkDevice(const QString& udi)
 {
     foreach( ConnectionAssistant* assistant, m_assistants )
@@ -105,9 +94,6 @@ void MediaDeviceMonitor::checkDevice(const QString& udi)
     }
 
 }
-
-
-
 
 void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
 {
@@ -130,54 +116,6 @@ void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
         }
     }
 
-}
-
-void MediaDeviceMonitor::checkDevicesForAll()
-{
-    foreach( ConnectionAssistant* assistant, m_assistants )
-    {
-        checkDevicesFor( assistant );
-    }
-}
-
-
-
-void
-MediaDeviceMonitor::checkDevicesForIpod()
-{
-    QStringList udiList = getDevices();
-
-    /* poll udi list for supported devices */
-    foreach(const QString &udi, udiList )
-    {
-        /* if ipod device found, emit signal */
-        if( isIpod( udi ) )
-        {
-            // HACK: Usability: Force auto-connection of device upon detection
-            connectIpod( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
-            emit ipodDetected( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
-        }
-    }
-}
-
-void
-MediaDeviceMonitor::checkDevicesForMtp()
-{
-    QStringList udiList = getDevices();
-
-    /* poll udi list for supported devices */
-    foreach(const QString &udi, udiList )
-    {
-        if( isMtp( udi ) )
-        {
-            Solid::PortableMediaPlayer* pmp = Solid::Device( udi ).as<Solid::PortableMediaPlayer>();
-            QString serial = pmp->driverHandle( "mtp" ).toString();
-            debug() << "Serial is: " << serial;
-            // HACK: Usability: Force auto-connection of device upon detection
-            connectMtp( serial, udi );
-            emit mtpDetected( serial, udi );
-        }
-    }
 }
 
 void
@@ -230,32 +168,7 @@ MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & u
         deviceAdded( udi );
 }
 
-bool
-MediaDeviceMonitor::isIpod( const QString &udi )
-{
-    DEBUG_BLOCK
-
-    Solid::Device device;
-
-    device = Solid::Device(udi);
-    /* going until we reach a vendor, e.g. Apple */
-    while ( device.isValid() && device.vendor().isEmpty() )
-    {
-        device = Solid::Device( device.parentUdi() );
-    }
-
-    debug() << "Device udi: " << udi;
-    debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
-    debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
-    if ( device.isValid() )
-    {
-        debug() << "vendor: " << device.vendor() << ", product: " << device.product();
-    }
-
-    /* if iPod or iPhone found, return true */
-    return device.product() == "iPod" || device.product() == "iPhone";
-}
-
+/*
 bool
 MediaDeviceMonitor::isMtp( const QString &udi )
 {
@@ -276,112 +189,3 @@ MediaDeviceMonitor::isMtp( const QString &udi )
 
     return pmp->supportedProtocols().contains( "mtp" );
 }
-
-bool
-MediaDeviceMonitor::isAudioCd( const QString & udi )
-{
-    DEBUG_BLOCK
-
-    Solid::Device device;
-
-    device = Solid::Device( udi );
-    if( device.is<Solid::OpticalDisc>() )
-    {
-        debug() << "OpticalDisc";
-        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
-        if ( opt->availableContent() & Solid::OpticalDisc::Audio )
-        {
-            debug() << "AudioCd";
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
-void
-MediaDeviceMonitor::connectIpod( const QString &mountpoint, const QString &udi )
-{
-    emit ipodReadyToConnect( mountpoint, udi );
-}
-
-void
-MediaDeviceMonitor::disconnectIpod( const QString &udi )
-{
-    emit ipodReadyToDisconnect( udi );
-}
-
-void
-MediaDeviceMonitor::connectMtp( const QString &serial, const QString &udi )
-{
-    emit mtpReadyToConnect( serial, udi );
-}
-
-void
-MediaDeviceMonitor::disconnectMtp( const QString &udi )
-{
-    emit mtpReadyToDisconnect( udi );
-}
-
-QString
-MediaDeviceMonitor::isCdPresent()
-{
-    DEBUG_BLOCK
-
-    QStringList udiList = getDevices();
-
-    /* poll udi list for supported devices */
-    foreach( const QString &udi, udiList )
-    {
-        debug() << "udi: " << udi;
-        if ( isAudioCd( udi ) )
-        {
-            return udi;
-        }
-    }
-
-    return QString();
-}
-
-void
-MediaDeviceMonitor::ejectCd( const QString & udi )
-{
-    DEBUG_BLOCK
-    debug() << "trying to eject udi: " << udi;
-    Solid::Device device = Solid::Device( udi ).parent();
-
-    if ( !device.isValid() ) {
-        debug() << "invalid device, cannot eject";
-        return;
-    }
-
-
-    debug() << "lets tryto get an OpticalDrive out of this thing";
-    if( device.is<Solid::OpticalDrive>() )
-    {
-        debug() << "claims to be an OpticalDrive";
-        Solid::OpticalDrive * drive = device.as<Solid::OpticalDrive>();
-        if ( drive )
-        {
-            debug() << "ejecting the bugger";
-            drive->eject();
-        }
-    }
-}
-
-QString
-MediaDeviceMonitor::currentCdId()
-{
-    return m_currentCdId;
-}
-
-void
-MediaDeviceMonitor::setCurrentCdId( const QString & id )
-{
-    m_currentCdId = id;
-}
-
-
-
-

@@ -24,8 +24,8 @@ The MediaDeviceMonitor connects to the MediaDeviceCache, monitoring the connecti
 for devices known to Amarok, and if it finds them, sends a signal that the appropriate CollectionFactory is connected to,
 which triggers the creation of the associated Collection.  Similar behaviour for when a device is disconnected.
 
-All new MediaDeviceCollection-type classes must add the detection of their device to this class, and have their CollectionFactory
-connect to the right signals to properly build/delete the associated Collection.  An example of this is seen in the
+All new MediaDeviceCollection-type classes must register their ConnectionAssistant of their device with this class, and have
+it connect to the right signals to properly build/delete the associated Collection.  An example of this is seen in the
 IpodCollectionFactory.
 
 */
@@ -58,22 +58,22 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     void init(); // connect to MediaDeviceCache
 
-
     QStringList getDevices(); // get list of devices
-    void checkDevices(); // scans for supported devices
+
+    /**
+
+    checkDevice checks if @param udi is a known device
+    and if so attempts to connect it
+
+    checkDevicesFor checks if the device type described
+    by @param assistant matches any of the udi's in the
+    MediaDeviceCache, and if so, attempts to connect to
+    it
+
+    */
 
     void checkDevice( const QString &udi );
     void checkDevicesFor( ConnectionAssistant* assistant );
-    void checkDevicesForAll();
-    void checkDevicesForMtp();
-    void checkDevicesForIpod();
-    void checkDevicesForCd();
-
-    QString isCdPresent();
-    void ejectCd( const QString &udi );
-
-    QString currentCdId();
-    void setCurrentCdId( const QString &id );
 
     /**
 
@@ -84,31 +84,12 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     */
     void registerDeviceType( ConnectionAssistant *assistant );
 
- //   void fetchDevices(); // emits device info for each device present
-
     signals:
-        void deviceRemoved( const QString &udi );
-        void ipodDetected( const QString &mountPoint, const QString &udi );
-        void mtpDetected( const QString &serial, const QString &udi );
-        void audioCdDetected( const QString &udi );
-
-        void ipodReadyToConnect( const QString &mountpoint, const QString &udi );
-        void ipodReadyToDisconnect( const QString &udi );
-        void mtpReadyToConnect( const QString &serial, const QString &udi );
-        void mtpReadyToDisconnect( const QString &udi );
-
         void deviceDetected( const MediaDeviceInfo &deviceinfo );
-
-    public slots:
-
-        void connectIpod( const QString &mountpoint, const QString &udi );
-        void disconnectIpod( const QString &udi );
-        void connectMtp( const QString &serial, const QString &udi );
-        void disconnectMtp( const QString &udi );
+        void deviceRemoved( const QString &udi );
 
 
     private slots:
-
 
         void deviceAdded( const QString &udi );
         void slotDeviceRemoved( const QString &udi );
@@ -116,14 +97,6 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
 
     private:
-
-        bool isIpod( const QString &udi );
-        bool isMtp( const QString &udi );
-        bool isAudioCd( const QString &udi );
-
-        QString m_currentCdId;
-
-        
 
         static MediaDeviceMonitor* s_instance;
 
