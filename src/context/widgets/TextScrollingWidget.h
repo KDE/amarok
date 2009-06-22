@@ -53,6 +53,7 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
         void animateBack( qreal anim );
         
         void animationFinished(int);
+        void startAnimFor();
         void startAnimBack();
 
     protected :

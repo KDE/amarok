@@ -39,6 +39,7 @@ TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
     , m_animating( false )
 {
     setAcceptHoverEvents( true );
+    connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animationFinished( int ) ) );
 }
 
 void
@@ -64,7 +65,10 @@ void
 TextScrollingWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     // clip the widget.
-    painter->setClipRegion( QRegion( boundingRect().translated( m_currentDelta, 0 ).toRect() ) );
+    QRect rec( boundingRect().translated( m_currentDelta, 0 ).toRect() );
+    rec.setWidth( m_rect.width() );
+    
+    painter->setClipRegion( QRegion( rec ) );
     QGraphicsSimpleTextItem::paint( painter, option, widget );
 }
 
@@ -77,8 +81,8 @@ TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
         DEBUG_BLOCK
         
         m_animating = true ;
-        m_animfor = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*10, Plasma::Animator::EaseInCurve, this, "animate" );
-        connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animationFinished( int ) ) );
+        setText( m_text );
+        QTimer::singleShot( 0, this, SLOT( startAnimFor() ) );
     }
 }
 
@@ -88,19 +92,35 @@ TextScrollingWidget::animationFinished( int id )
     if ( id == m_animfor )
     {
         Plasma::Animator::self()->stopCustomAnimation( m_animfor );
-        QTimer::singleShot(250, this, SLOT(startAnimBack()));
+        QTimer::singleShot( 250, this, SLOT( startAnimBack() ) );
     }
     else if ( id == m_animback )
     {
         Plasma::Animator::self()->stopCustomAnimation( m_animback );
-        m_animating = false;
+        // Scroll again if the mouse is still over.
+        if ( isUnderMouse() )
+        {
+            m_animating = true ;
+            QTimer::singleShot(250, this, SLOT( startAnimFor() ) );
+        }
+        else
+        {
+            m_animating = false;
+            setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)( m_rect.width() ) ) );
+        }
     }
+}
+
+void
+TextScrollingWidget::startAnimFor()
+{
+    m_animfor = Plasma::Animator::self()->customAnimation( m_delta*2, m_delta*15, Plasma::Animator::EaseInOutCurve, this, "animate" );
 }
 
 void
 TextScrollingWidget::startAnimBack()
 {
-    m_animback = Plasma::Animator::self()->customAnimation( m_delta, m_delta*5, Plasma::Animator::EaseInCurve, this, "animateBack" );
+    m_animback = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*5, Plasma::Animator::EaseInOutCurve, this, "animateBack" );
 }
 
 void
@@ -108,7 +128,6 @@ TextScrollingWidget::animate( qreal anim )
 {
 //    DEBUG_BLOCK
     m_currentDelta = ( float )( anim * ( m_delta ) );
-    setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)( m_rect.width() + m_currentDelta ) ) );
     setPos( m_rect.left() - m_currentDelta, pos().y() );
 }
 
@@ -117,7 +136,6 @@ TextScrollingWidget::animateBack( qreal anim )
 {
     // DEBUG_BLOCK
     m_currentDelta = m_delta - ( float )( anim * ( m_delta ) );
-    setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)( m_rect.width() + m_currentDelta ) ) );
     setPos( m_rect.left() - m_currentDelta, pos().y() );
 }
 
