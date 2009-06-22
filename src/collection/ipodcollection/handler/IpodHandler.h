@@ -136,12 +136,15 @@ namespace Meta {
            virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
            virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
+           //void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+
            /// Create new track
 
            virtual void libCreateTrack(const Meta::MediaDeviceTrackPtr& track );
            virtual void findPathToCopy( const Meta::TrackPtr &track );
            virtual bool libCopyTrack( const Meta::TrackPtr &track );
            virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
+           virtual void databaseChanged();
 
            virtual void setCopyTrackForParse();
 
@@ -154,10 +157,10 @@ namespace Meta {
            virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
 
            virtual QStringList supportedFormats();
-           
-           //QPixmap getCover( Meta::MediaDeviceTrackPtr track ) const;
-           //void setCoverArt( Itdb_Track *ipodtrack, const QString &filename ) const;
-           //void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const;
+           /*
+           QPixmap getCover( Meta::MediaDeviceTrackPtr track ) const;
+           void setCoverArt( Itdb_Track *ipodtrack, const QString &filename ) const;
+*/
            
            /**
             * Successfully read Ipod database?
@@ -218,9 +221,10 @@ namespace Meta {
            QString realPath( const char *ipodPath );
 
            /* Cover Art functions */
-           //QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
-           //void getCoverArt( const Itdb_Track *ipodtrack );
-
+           /*
+           QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
+           void getCoverArt( const Itdb_Track *ipodtrack );
+*/
            /* File I/O Methods */
            // TODO: abstract copy/delete methods (not too bad)
            bool kioCopyTrack( const KUrl &src, const KUrl &dst );

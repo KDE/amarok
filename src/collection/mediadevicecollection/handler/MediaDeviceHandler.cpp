@@ -73,6 +73,7 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
 void
 MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack, MediaDeviceTrackPtr destTrack )
 {
+    DEBUG_BLOCK
            libSetTitle( destTrack, srcTrack->name() );
            libSetAlbum( destTrack, srcTrack->album()->name() );
            libSetArtist( destTrack, srcTrack->artist()->name() );
@@ -91,7 +92,11 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
            libSetLastPlayed( destTrack, srcTrack->lastPlayed() );
            libSetRating( destTrack, srcTrack->rating() );
            libSetType( destTrack, srcTrack->type() );
-           libSetPlayableUrl( destTrack, srcTrack );
+           //libSetPlayableUrl( destTrack, srcTrack );
+/*
+           if( srcTrack->album()->hasImage() )
+               libSetCoverArt( destTrack, srcTrack->album()->image() );
+           */
 }
 
 void
@@ -397,9 +402,17 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
     setBasicMediaDeviceTrackInfo( track, destTrack );
 
+    // set up the play url
+
+    libSetPlayableUrl( destTrack, track );
+
     // Add the track struct into the database, if the library needs to
 
     addTrackInDB( destTrack );
+
+    // Inform subclass that a track has been added to the db
+
+    databaseChanged();
 
     // Add the new Meta::MediaDeviceTrackPtr into the device collection
 
@@ -603,6 +616,8 @@ MediaDeviceHandler::parseTracks()
 
         // Subscribe to Track for metadata updates
 
+
+
         subscribeTo( Meta::TrackPtr::staticCast( track ) );
 
         //debug() << "Subscribed";
@@ -663,6 +678,7 @@ MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
 void
 MediaDeviceHandler::slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track )
 {
+    Q_UNUSED( track )
     if ( job->success() )
     {
         //emit incrementProgress();
@@ -691,6 +707,50 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
     // Inform CollectionLocation that copying is done
     
     emit copyTracksDone( true );
+}
+
+/** Observer Methods **/
+void
+MediaDeviceHandler::metadataChanged( TrackPtr track )
+{
+    DEBUG_BLOCK
+
+    Meta::MediaDeviceTrackPtr trackPtr = Meta::MediaDeviceTrackPtr::staticCast( track );
+    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
+
+    setBasicMediaDeviceTrackInfo( track, trackPtr );
+
+    databaseChanged();
+}
+
+void
+MediaDeviceHandler::metadataChanged( ArtistPtr artist )
+{
+    Q_UNUSED( artist );
+}
+
+void
+MediaDeviceHandler::metadataChanged( AlbumPtr album )
+{
+    Q_UNUSED( album );
+}
+
+void
+MediaDeviceHandler::metadataChanged( GenrePtr genre )
+{
+    Q_UNUSED( genre );
+}
+
+void
+MediaDeviceHandler::metadataChanged( ComposerPtr composer )
+{
+    Q_UNUSED( composer );
+}
+
+void
+MediaDeviceHandler::metadataChanged( YearPtr year )
+{
+    Q_UNUSED( year );
 }
 
 CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHandler* handler )

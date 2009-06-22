@@ -460,9 +460,9 @@ IpodHandler::writeITunesDB( bool threaded )
         return ok;
     }
 
-    debug() << "writeItunesDB is returning true";
+    debug() << "writeItunesDB is returning false because db wasn't changed";
 
-    return true;
+    return false;
 }
 
 QString
@@ -639,8 +639,15 @@ IpodHandler::addTrackInDB(const Meta::MediaDeviceTrackPtr& track)
         itdb_playlist_add_track(mpl, m_itdbtrackhash[ track ], -1);
     }
 
+
+}
+
+void
+IpodHandler::databaseChanged()
+{
     m_dbChanged = true;
 }
+
 #if 0
 bool
 IpodHandler::removeDBTrack( Itdb_Track *track )
@@ -1157,7 +1164,7 @@ IpodHandler::setCopyTrackForParse()
     m_currtrack = m_libtrack;
 }
 
-/*
+#if 0
 QString
 IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 {
@@ -1196,24 +1203,24 @@ IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
     Q_UNUSED(ipodtrack);
 #endif
 }
-*/
-/*
+
+
 QPixmap
-IpodHandler::getCover( Meta::MediaDeviceTrackPtr trackk ) const
+IpodHandler::libGetCoverArt( Meta::MediaDeviceTrackPtr track ) const
 {
 #ifdef GDK_FOUND
-    const Itdb_Track *ipodTrack = track->getIpodTrack();
-    const QString filename = ipodArtFilename( ipodTrack );
+
+    getCoverArt( m_itdbtrackhash[ track ];
     return QPixmap( filename );
 #else
     Q_UNUSED( track );
     return QPixmap();
 #endif
 }
-*/
-/*
+
+
 void
-IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path ) const
+IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path )
 {
 #ifdef GDK_FOUND
     DEBUG_BLOCK
@@ -1231,7 +1238,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path ) const
 }
 
 void
-IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const
+IpodHandler::libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
 {
 #ifdef GDK_FOUND
     DEBUG_BLOCK
@@ -1250,7 +1257,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const
     Q_UNUSED( image );
 #endif
 }
-*/
+#endif
 
 void
 IpodHandler::prepareToParse()
@@ -1318,8 +1325,13 @@ void
 IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
 {
     Q_UNUSED( job );
-    debug() << "Writing to DB succeeded!";
-    emit databaseWritten( true );
+    if( job->success() )
+    {
+        debug() << "Writing to DB succeeded!";
+        emit databaseWritten( true );
+    }
+    else
+        debug() << "Writing to DB did not happen or failed";
 }
 
 DBWorkerThread::DBWorkerThread( IpodHandler* handler )

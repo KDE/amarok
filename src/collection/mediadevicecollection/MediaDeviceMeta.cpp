@@ -389,6 +389,7 @@ MediaDeviceTrack::setType( const QString & type )
 
 // TODO: employ observers (e.g. Handler) to take care of updated
 // data
+/*
 void
 MediaDeviceTrack::subscribe( Observer *observer )
 {
@@ -400,7 +401,7 @@ MediaDeviceTrack::unsubscribe( Observer *observer )
 {
     Q_UNUSED( observer )    //read only
 }
-
+*/
 // TODO: implement this for MediaDeviceCollectionLocation
 bool
 MediaDeviceTrack::inCollection() const
@@ -713,7 +714,9 @@ MediaDeviceTrack::setLength( int length )
 void
 MediaDeviceTrack::endMetaDataUpdate()
 {
+    DEBUG_BLOCK
     // Update info in local mediadevice database struct
+    debug() << "Observer number: " << m_observers.count();
     notifyObservers();
 }
 

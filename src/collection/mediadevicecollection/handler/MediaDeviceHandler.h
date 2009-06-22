@@ -184,6 +184,11 @@ namespace Meta {
 
            virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
+           /// Indicates to the subclass that the database has been updated
+           /// For ipods, just sets m_dbchanged = true
+
+           virtual void databaseChanged() {}
+
            /// Creates a MediaDeviceTrack based on the latest track struct created as a
            /// result of a copy to the device, and adds it into the collection to reflect
            /// that it has been copied.
@@ -230,6 +235,8 @@ namespace Meta {
            virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
            virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
+
+
            /// Each libSet function sets the private track struct associated with @param track
            /// to the second value passed into the function.
 
@@ -252,6 +259,8 @@ namespace Meta {
            virtual void    libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )  = 0;
            virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type ) = 0;
            virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack ) = 0;
+
+           //virtual void    libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap& image ) {}
 
            signals:
            void copyTracksDone( bool success );
@@ -351,7 +360,7 @@ namespace Meta {
            /// the job counter to 0.
            virtual void prepareToCopy() {}
 
-           #if 0
+
 
            /* Observer Methods */
 
@@ -363,7 +372,7 @@ namespace Meta {
            virtual void metadataChanged( Meta::ComposerPtr composer );
            virtual void metadataChanged( Meta::YearPtr year );
 
-#endif
+
            /**
             * Handler Variables
             */

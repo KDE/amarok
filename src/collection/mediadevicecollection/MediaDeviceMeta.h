@@ -117,10 +117,10 @@ class MediaDeviceTrack : public Meta::Track
         virtual void beginMetaDataUpdate() { DEBUG_BLOCK }
         virtual void endMetaDataUpdate();
         virtual void abortMetaDataUpdate() { DEBUG_BLOCK }
-
+/*
         virtual void subscribe ( Observer *observer );
         virtual void unsubscribe ( Observer *observer );
-
+*/
         virtual bool inCollection() const;
         virtual Amarok::Collection* collection() const;
 
