@@ -57,6 +57,7 @@ class IpodCollectionFactory : public Amarok::CollectionFactory
 
     private slots:
         void ipodDetected( const QString &mountPoint, const QString &udi );
+        void deviceDetected( MediaDeviceInfo* info );
         void deviceRemoved( const QString &udi );
         void slotCollectionReady();
         void slotCollectionDisconnected( const QString & udi );

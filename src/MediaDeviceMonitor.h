@@ -37,7 +37,11 @@ IpodCollectionFactory.
 
 #include "amarok_export.h"
 
+#include <QHash>
+#include <QList>
 #include <QObject>
+
+class ConnectionAssistant;
 
 class QStringList;
 
@@ -57,6 +61,8 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     QStringList getDevices(); // get list of devices
     void checkDevices(); // scans for supported devices
+
+    void checkDevicesFor( ConnectionAssistant* assistant );
     void checkDevicesForMtp();
     void checkDevicesForIpod();
     void checkDevicesForCd();
@@ -66,6 +72,15 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     QString currentCdId();
     void setCurrentCdId( const QString &id );
+
+    /**
+
+    registerDeviceType adds the device type described by @param assistant to the list
+    of known device types by the MDM, and then checks the list of known devices
+    for a match with this type
+
+    */
+    void registerDeviceType( ConnectionAssistant *assistant );
 
  //   void fetchDevices(); // emits device info for each device present
 
@@ -109,6 +124,11 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         
 
         static MediaDeviceMonitor* s_instance;
+
+        // keeps track of which CA to contact for which udi
+        QHash<QString,ConnectionAssistant*> m_udiAssistants;
+        // holds all registered assistants
+        QList<ConnectionAssistant*> m_assistants;
 
 
 };

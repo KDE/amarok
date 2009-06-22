@@ -37,4 +37,11 @@ ConnectionAssistant::deviceInfo( const QString& udi )
     return info;
 }
 
+void
+ConnectionAssistant::tellIdentified( const QString &udi )
+{
+    emit identified( deviceInfo( udi ) );
+}
+
+
 #include "ConnectionAssistant.moc"

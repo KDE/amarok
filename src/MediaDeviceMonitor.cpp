@@ -20,6 +20,7 @@
 #define DEBUG_PREFIX "MediaDeviceMonitor"
 
 #include "MediaDeviceMonitor.h"
+#include "ConnectionAssistant.h"
 
 #include "Debug.h"
 
@@ -37,9 +38,8 @@
 
 MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
 
-MediaDeviceMonitor::MediaDeviceMonitor()
-    : QObject()
-    , m_currentCdId( QString() )
+MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
+ , m_assistants()
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -86,6 +86,26 @@ MediaDeviceMonitor::checkDevices()
     checkDevicesForCd();
 }
 
+void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
+{
+    DEBUG_BLOCK
+
+    QStringList udiList = getDevices();
+
+    foreach( const QString &udi, udiList )
+    {
+        if( assistant->identify( udi ) )
+        {
+            // keep track of which assistant deals with which device
+            m_udiAssistants.insert( udi, assistant );
+            // inform factory of new device identified
+            assistant->tellIdentified( udi );
+        }
+    }
+
+}
+
+
 void
 MediaDeviceMonitor::checkDevicesForIpod()
 {
@@ -125,24 +145,17 @@ MediaDeviceMonitor::checkDevicesForMtp()
 }
 
 void
-MediaDeviceMonitor::checkDevicesForCd()
+MediaDeviceMonitor::registerDeviceType( ConnectionAssistant* assistant )
 {
     DEBUG_BLOCK
 
-    QStringList udiList = getDevices();
+    // keep track of this type of device from now on
+    m_assistants << assistant;
 
-    /* poll udi list for supported devices */
-    foreach(const QString &udi, udiList )
-    {
-        debug() << "udi: " << udi;
-        if ( isAudioCd( udi ) )
-        {
-            emit audioCdDetected( udi );
-        }
-    }
+    // run an initial check on devices for a potential match with this new type
+    checkDevicesFor( assistant );
+
 }
-
-
 
 void
 MediaDeviceMonitor::deviceAdded(  const QString &udi )

@@ -19,6 +19,8 @@
 #include "IpodConnectionAssistant.h"
 #include "IpodDeviceInfo.h"
 
+#include "MediaDeviceCache.h" // for mountpoint
+
 #include "Debug.h"
 
 #include <QString>
@@ -44,8 +46,9 @@ IpodConnectionAssistant::identify( const QString& udi )
     }
 
     debug() << "Device udi: " << udi;
-    //debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
-    //debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
+    debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
+    debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
+
     if ( device.isValid() )
     {
         debug() << "vendor: " << device.vendor() << ", product: " << device.product();
@@ -55,11 +58,14 @@ IpodConnectionAssistant::identify( const QString& udi )
     return device.product() == "iPod" || device.product() == "iPhone";
 }
 
+
 MediaDeviceInfo*
 IpodConnectionAssistant::deviceInfo( const QString& udi )
 {
-    Q_UNUSED( udi );
-    MediaDeviceInfo* info = new IpodDeviceInfo();
+
+    QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
+    
+    MediaDeviceInfo* info = new IpodDeviceInfo( mountpoint, udi );
     return info;
 }
 

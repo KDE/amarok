@@ -19,6 +19,7 @@
 #define DEBUG_PREFIX "IpodCollection"
 
 #include "IpodCollection.h"
+#include "IpodConnectionAssistant.h"
 #include "IpodDeviceInfo.h"
 
 #include "meta/capabilities/CollectionCapability.h"
@@ -62,7 +63,7 @@ IpodCollectionFactory::init()
 
  //   connect( this, SIGNAL( ipodDetected( const MediaDeviceInfo & ) ),
 //             MediaDeviceMonitor::instance(), SIGNAL( deviceDetected( const MediaDeviceInfo & ) ) );
-
+/*
     connect( MediaDeviceMonitor::instance(), SIGNAL( ipodReadyToConnect( const QString &, const QString & ) ),
              SLOT( ipodDetected( const QString &, const QString & ) ) );
 
@@ -77,6 +78,17 @@ IpodCollectionFactory::init()
 
     // HACK: Usability: Force auto-connection of device upon detection
     checkDevicesForIpod();
+    */
+
+    // Create assistant
+    ConnectionAssistant *assistant = new IpodConnectionAssistant();
+
+    // When assistant identifies an Ipod, Factory will attempt to build Collection
+    connect( assistant, SIGNAL( identified(MediaDeviceInfo*) )
+    , SLOT( deviceDetected( MediaDeviceInfo* ) ) );
+
+    // Register the device type with the Monitor
+    MediaDeviceMonitor::instance()->registerDeviceType( assistant );
 }
 
 void
@@ -99,6 +111,19 @@ IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &u
         }
     }
 }
+
+void IpodCollectionFactory::deviceDetected( MediaDeviceInfo* info )
+{
+    IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
+
+    QString mountPoint = ipodinfo->mountpoint();
+    QString udi = ipodinfo->udi();
+
+    // connect ipod
+
+    ipodDetected( mountPoint, udi );
+}
+
 
 void
 IpodCollectionFactory::deviceRemoved( const QString &udi )

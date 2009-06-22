@@ -7,7 +7,9 @@ add_subdirectory( audiocd )
 
 add_subdirectory( mediadevicecollection )
 add_subdirectory( ipodcollection )
-add_subdirectory( mtpcollection )
+
+# temporarily disabled to test new devices framework on ipodcollection first
+#add_subdirectory( mtpcollection )
 
 add_subdirectory( device )
 

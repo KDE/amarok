@@ -60,6 +60,19 @@ public:
     */
 
     virtual MediaDeviceInfo* deviceInfo( const QString& udi );
+
+    // Simply emit identified( info )
+    virtual void tellIdentified( const QString &udi );
+
+signals:
+
+    /**
+
+    identified is emitted when identify returns true, and the device type's Factory
+    has a slot that then attempts to connect to the device
+
+    */
+     void identified( MediaDeviceInfo* info );
     
 };
 
