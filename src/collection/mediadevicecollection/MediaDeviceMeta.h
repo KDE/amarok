@@ -1,50 +1,55 @@
-/* This file is part of the KDE project
+/*
+   Copyright (C) 2009 Alejandro Wainzinger
+   <aikawarazuni@gmail.com>
 
-Note: Mostly taken from Daap code:
-Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
 #ifndef MEDIADEVICEMETA_H
 #define MEDIADEVICEMETA_H
 
+#include "Debug.h"
 #include "Meta.h"
 
+#include <QMultiMap>
+
 class MediaDeviceCollection;
+class PopupDropperAction;
 
 namespace Meta
 {
 
-    class MediaDeviceTrack;
-    class MediaDeviceAlbum;
-    class MediaDeviceArtist;
-    class MediaDeviceGenre;
-    class MediaDeviceComposer;
-    class MediaDeviceYear;
+class MediaDeviceTrack;
+class MediaDeviceAlbum;
+class MediaDeviceArtist;
+class MediaDeviceGenre;
+class MediaDeviceComposer;
+class MediaDeviceYear;
 
-    typedef KSharedPtr<MediaDeviceTrack> MediaDeviceTrackPtr;
-    typedef KSharedPtr<MediaDeviceArtist> MediaDeviceArtistPtr;
-    typedef KSharedPtr<MediaDeviceAlbum> MediaDeviceAlbumPtr;
-    typedef KSharedPtr<MediaDeviceGenre> MediaDeviceGenrePtr;
-    typedef KSharedPtr<MediaDeviceComposer> MediaDeviceComposerPtr;
-    typedef KSharedPtr<MediaDeviceYear> MediaDeviceYearPtr;
+typedef KSharedPtr<MediaDeviceTrack> MediaDeviceTrackPtr;
+typedef KSharedPtr<MediaDeviceArtist> MediaDeviceArtistPtr;
+typedef KSharedPtr<MediaDeviceAlbum> MediaDeviceAlbumPtr;
+typedef KSharedPtr<MediaDeviceGenre> MediaDeviceGenrePtr;
+typedef KSharedPtr<MediaDeviceComposer> MediaDeviceComposerPtr;
+typedef KSharedPtr<MediaDeviceYear> MediaDeviceYearPtr;
 
-    class MediaDeviceTrack : public Meta::Track
-    {
+class MediaDeviceTrack : public Meta::Track
+{
+
     public:
+        MediaDeviceTrack( MediaDeviceCollection *collection );
         virtual ~MediaDeviceTrack();
 
         virtual QString name() const;
@@ -69,6 +74,7 @@ namespace Meta
         virtual void setComposer ( const QString &newComposer );
         virtual void setYear ( const QString &newYear );
 
+        virtual QString title() const;
         virtual void setTitle( const QString &newTitle );
 
         virtual QString comment() const;
@@ -82,9 +88,17 @@ namespace Meta
 
         virtual int length() const;
 
+        void setFileSize( int newFileSize );
         virtual int filesize() const;
-        virtual int sampleRate() const;
+
         virtual int bitrate() const;
+        virtual void setBitrate( int newBitrate );
+
+        virtual int sampleRate() const;
+        virtual void setSamplerate( int newSamplerate );
+
+        virtual float bpm() const;
+        virtual void setBpm( float newBpm );
 
         virtual int trackNumber() const;
         virtual void setTrackNumber ( int newTrackNumber );
@@ -93,13 +107,16 @@ namespace Meta
         virtual void setDiscNumber ( int newDiscNumber );
 
         virtual uint lastPlayed() const;
+        void setLastPlayed( const uint newTime );
+
         virtual int playCount() const;
+        void setPlayCount( const int newCount );
 
         virtual QString type() const;
 
-        virtual void beginMetaDataUpdate() {}    //read only
-        virtual void endMetaDataUpdate() {}      //read only
-        virtual void abortMetaDataUpdate() {}    //read only
+        virtual void beginMetaDataUpdate() { DEBUG_BLOCK }
+        virtual void endMetaDataUpdate();
+        virtual void abortMetaDataUpdate() { DEBUG_BLOCK }
 
         virtual void subscribe ( Observer *observer );
         virtual void unsubscribe ( Observer *observer );
@@ -107,21 +124,55 @@ namespace Meta
         virtual bool inCollection() const;
         virtual Amarok::Collection* collection() const;
 
-        //MediaDeviceTrack specific methods
-        virtual void setAlbum( MediaDeviceAlbumPtr album );
-        virtual void setArtist( MediaDeviceArtistPtr artist );
-        virtual void setComposer( MediaDeviceComposerPtr composer );
-        virtual void setGenre( MediaDeviceGenrePtr genre );
-        virtual void setYear( MediaDeviceYearPtr year );
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
-        virtual void setLength( int length );
+        //MediaDeviceTrack specific methods
+
+        // These methods are for Handler
+        void setAlbum( MediaDeviceAlbumPtr album );
+        void setArtist( MediaDeviceArtistPtr artist );
+        void setComposer( MediaDeviceComposerPtr composer );
+        void setGenre( MediaDeviceGenrePtr genre );
+        void setYear( MediaDeviceYearPtr year );
+
+        void setType( const QString & type );
+
+        void setLength( int length );
+    void setPlayableUrl( QString url ) { m_playableUrl = url; }
 
     private:
+        MediaDeviceCollection *m_collection;
 
-    };
+        MediaDeviceArtistPtr m_artist;
+        MediaDeviceAlbumPtr m_album;
+        MediaDeviceGenrePtr m_genre;
+        MediaDeviceComposerPtr m_composer;
+        MediaDeviceYearPtr m_year;
 
-    class MediaDeviceArtist : public Meta::Artist
-    {
+        // For MediaDeviceTrack-specific use
+
+        QImage m_image;
+
+        QString m_comment;
+        QString m_name;
+        QString m_type;
+        int m_bitrate;
+        int m_filesize;
+        int m_length;
+        int m_discNumber;
+        int m_samplerate;
+        int m_trackNumber;
+        int m_playCount;
+        uint m_lastPlayed;
+        int m_rating;
+        float m_bpm;
+        QString m_displayUrl;
+        QString m_playableUrl;
+};
+
+class MediaDeviceArtist : public Meta::Artist
+{
     public:
         MediaDeviceArtist( const QString &name );
         virtual ~MediaDeviceArtist();
@@ -130,68 +181,64 @@ namespace Meta
         virtual QString prettyName() const;
 
         virtual TrackList tracks();
-
         virtual AlbumList albums();
 
         //MediaDeviceArtist specific methods
         void addTrack( MediaDeviceTrackPtr track );
+        void remTrack( MediaDeviceTrackPtr track );
 
     private:
         QString m_name;
         TrackList m_tracks;
-    };
+};
 
-    class MediaDeviceAlbum : public Meta::Album
-    {
+class MediaDeviceAlbum : public Meta::Album
+{
     public:
-        MediaDeviceAlbum( const QString &name );
+        MediaDeviceAlbum( MediaDeviceCollection *collection, const QString &name );
         virtual ~MediaDeviceAlbum();
 
         virtual QString name() const;
         virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
+        void setIsCompilation( bool compilation );
+
         virtual bool hasAlbumArtist() const;
         virtual ArtistPtr albumArtist() const;
         virtual TrackList tracks();
 
+        virtual bool hasImage( int size = 1 ) const;
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
         virtual void setImage( const QPixmap &pixmap );
+        void setImagePath( const QString &path );
+        virtual void removeImage();
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
         //MediaDeviceAlbum specific methods
+
         void addTrack( MediaDeviceTrackPtr track );
+        void remTrack( MediaDeviceTrackPtr track );
         void setAlbumArtist( MediaDeviceArtistPtr artist );
-        void setIsCompilation( bool compilation );
 
     private:
-        QString m_name;
-        TrackList m_tracks;
-        bool m_isCompilation;
-        MediaDeviceArtistPtr m_albumArtist;
-    };
+        MediaDeviceCollection *m_collection;
 
-    class MediaDeviceGenre : public Meta::Genre
-    {
-    public:
-        MediaDeviceGenre( const QString &name );
-        virtual ~MediaDeviceGenre();
+        QString         m_name;
+        QString         m_coverPath;
+        TrackList       m_tracks;
+        bool            m_isCompilation;
+        mutable bool    m_hasImage;
+        bool            m_hasImageChecked;
+        QPixmap         m_image;
+        MediaDeviceArtistPtr   m_albumArtist;
+};
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
-
-        virtual TrackList tracks();
-
-        //MediaDeviceGenre specific methods
-        void addTrack( MediaDeviceTrackPtr track );
-
-    private:
-        QString m_name;
-        TrackList m_tracks;
-    };
-
-    class MediaDeviceComposer : public Meta::Composer
-    {
+class MediaDeviceComposer : public Meta::Composer
+{
     public:
         MediaDeviceComposer( const QString &name );
         virtual ~MediaDeviceComposer();
@@ -203,14 +250,36 @@ namespace Meta
 
         //MediaDeviceComposer specific methods
         void addTrack( MediaDeviceTrackPtr track );
+        void remTrack( MediaDeviceTrackPtr track );
 
     private:
         QString m_name;
         TrackList m_tracks;
-    };
+};
 
-    class MediaDeviceYear : public Meta::Year
-    {
+class MediaDeviceGenre : public Meta::Genre
+{
+    public:
+        MediaDeviceGenre( const QString &name );
+        virtual ~MediaDeviceGenre();
+
+        virtual QString name() const;
+        virtual QString prettyName() const;
+
+        virtual TrackList tracks();
+
+        //MediaDeviceGenre specific methods
+        void addTrack( MediaDeviceTrackPtr track );
+        void remTrack( MediaDeviceTrackPtr track );
+    private:
+        QString m_name;
+        TrackList m_tracks;
+};
+
+
+
+class MediaDeviceYear : public Meta::Year
+{
     public:
         MediaDeviceYear( const QString &name );
         virtual ~MediaDeviceYear();
@@ -222,11 +291,12 @@ namespace Meta
 
         //MediaDeviceYear specific methods
         void addTrack( MediaDeviceTrackPtr track );
+        void remTrack( MediaDeviceTrackPtr track );
 
     private:
         QString m_name;
         TrackList m_tracks;
-    };
+};
 
 }
 

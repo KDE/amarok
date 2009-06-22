@@ -79,7 +79,7 @@ class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
                  , m_track( track )
              {
                  DEBUG_BLOCK
-                 IpodCollection *coll = dynamic_cast<IpodCollection*>( m_track->collection() );
+                 
 
                  
                  

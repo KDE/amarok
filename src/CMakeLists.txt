@@ -72,11 +72,12 @@ set(libplugin_SRCS
 # MEDIADEVICEFRAMEWORK
 #####################################################################
 set(libmediadeviceframework_SRCS
+  collection/mediadevicecollection/MediaDeviceCollection.cpp
+  collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
+  collection/mediadevicecollection/MediaDeviceMeta.cpp  
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
-  collection/mediadevicecollection/MediaDeviceCollection.cpp
-  collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
 )
 
 #####################################################################

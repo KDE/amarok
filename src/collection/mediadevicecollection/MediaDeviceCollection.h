@@ -134,7 +134,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         QString udi() const { return m_udi; }
 
         //void updateTags( Meta::MediaDeviceTrack *track);
-        //void writeDatabase(); // threaded
+        virtual void writeDatabase() = 0; // threaded
 
         /** MediaDeviceCollection-specific */
 
