@@ -51,21 +51,19 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Ama
         MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant );
 
     public slots:
-        // convenience slot
-        void removeDevice( const QString &udi ) { deviceRemoved( udi ); }
 
     protected slots:
-        virtual void deviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
+        virtual void slotDeviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
 
     private slots:
-                void deviceRemoved( const QString &udi );
+                void slotDeviceDisconnected( const QString &udi );
 
     private:
 
-        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info ) = 0;
+        virtual MediaDeviceCollection* createCollection( MediaDeviceInfo* info ) = 0;
 
         ConnectionAssistant* m_assistant;
-        QMap<QString, Amarok::Collection*> m_collectionMap;
+        QMap<QString, MediaDeviceCollection*> m_collectionMap;
 };
 
 template <class CollType>
@@ -76,7 +74,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public MediaDe
         : MediaDeviceCollectionFactoryBase( assistant ) {}
         virtual ~MediaDeviceCollectionFactory() {}
     private:
-        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info )
+        virtual MediaDeviceCollection* createCollection( MediaDeviceInfo* info )
         {
             return new CollType( info );
         }
@@ -135,8 +133,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         QString udi() const { return m_udi; }
 
-        //MediaDevice::MediaDeviceHandler* handler() { return m_handler; }
-
         //void updateTags( Meta::MediaDeviceTrack *track);
         //void writeDatabase(); // threaded
 
@@ -144,6 +140,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
     public:
         MediaDeviceHandler* handler();
+
+        void disconnectDevice();
 
         
 
@@ -153,22 +151,11 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         void copyTracksCompleted( bool success );
 
-    public slots:
-        // NOTE: must be overridden.  Parses tracks on successful handler connection.
-
-        void connectDevice() {}
-
-        // TODO: these two could be merged somehow
-        //void disconnectDevice();
-        //void slotDisconnect();
-
     protected:
         MediaDeviceCollection();
 
-        QString                          m_udi;
+        QString             m_udi;
         MediaDeviceHandler *m_handler;
-
-    private:
 
 };
 

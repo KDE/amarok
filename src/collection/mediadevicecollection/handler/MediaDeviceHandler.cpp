@@ -25,6 +25,13 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     DEBUG_BLOCK
 }
 
+bool
+MediaDeviceHandler::isWritable() const
+{
+    return false;
+}
+
+
 void
 MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 {

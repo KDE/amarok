@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

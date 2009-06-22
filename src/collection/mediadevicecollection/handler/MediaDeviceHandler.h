@@ -61,6 +61,10 @@ class MediaDeviceCollection;
 
            /** Status Checking Methods */
 
+           /// Device can be written to?
+
+           virtual bool isWritable() const;
+
            /**
            * Successfully read MediaDevice database?
            */
@@ -81,6 +85,7 @@ class MediaDeviceCollection;
 
         signals:
             void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
+            void databaseWritten( bool success );
 
            #if 0
 

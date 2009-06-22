@@ -123,14 +123,22 @@ IpodHandler::~IpodHandler()
     DEBUG_BLOCK
     delete m_tempdir;
     // Write to DB before closing, for ratings updates etc.
-    debug() << "Writing to Ipod DB";
-    writeDatabase();
+    //debug() << "Writing to Ipod DB";
+    //writeDatabase();
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
 
     debug() << "End of destructor reached";
 }
+
+bool
+IpodHandler::isWritable() const
+{
+    // TODO: check if read-only
+    return true;
+}
+
 
 /** Observer Methods **/
 void
@@ -1550,6 +1558,7 @@ IpodHandler::slotDBWriteFailed( ThreadWeaver::Job* job )
 {
     Q_UNUSED( job );
     debug() << "Writing to DB failed!";
+    emit databaseWritten( false );
 }
 
 void
@@ -1557,6 +1566,7 @@ IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
 {
     Q_UNUSED( job );
     debug() << "Writing to DB succeeded!";
+    emit databaseWritten( true );
 }
 
 DBWorkerThread::DBWorkerThread( IpodHandler* handler )

@@ -60,7 +60,7 @@ MediaDeviceCollectionLocation::prettyLocation() const
 bool
 MediaDeviceCollectionLocation::isWritable() const
 {
-    return false;
+    return m_handler->isWritable();
 }
 
 bool

@@ -52,7 +52,6 @@ MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAs
 
 MediaDeviceCollectionFactoryBase::~MediaDeviceCollectionFactoryBase()
 {
-  //    delete m_browser;
 }
 
 void
@@ -62,44 +61,54 @@ MediaDeviceCollectionFactoryBase::init()
 
     // When assistant identifies a device, Factory will attempt to build Collection
     connect( m_assistant, SIGNAL( identified(MediaDeviceInfo*) )
-    , SLOT( deviceDetected( MediaDeviceInfo* ) ) );
+    , SLOT( slotDeviceDetected( MediaDeviceInfo* ) ) );
+
+    // When assistant told to disconnect, Factory will disconnect
+    // the device, and have the Collection destroyed
+    connect( m_assistant, SIGNAL( disconnected(QString))
+    , SLOT( slotDeviceDisconnected(QString)) );
 
     // Register the device type with the Monitor
     MediaDeviceMonitor::instance()->registerDeviceType( m_assistant );
 
 }
 
-void MediaDeviceCollectionFactoryBase::deviceDetected(MediaDeviceInfo* info) {
-    Amarok::Collection* coll = 0;
+void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
+{
+    MediaDeviceCollection* coll = 0;
+    // If device not already connected to
     if( !m_collectionMap.contains( info->udi() ) )
     {
-        //coll = createCollection( info );
+        // create the collection using the info provided
         coll = createCollection( info );
+        // if collection successfully created,
+        // aka device connected to, then...
         if( coll )
         {
-            // TODO: connect to MediaDeviceMonitor signals
- //           connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-//                     this, SLOT( slotCollectionDisconnected( const QString & ) ) );
+            // insert it into the map of known collections
             m_collectionMap.insert( info->udi(), coll );
-            //debug() << "emitting new ipod collection";
             emit newCollection( coll );
         }
     }
 }
 
-
-// NOTE: NYI
 void
-MediaDeviceCollectionFactoryBase::deviceRemoved( const QString &udi )
+MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
 {
     //DEBUG_BLOCK
+    // If device is known about
     if( m_collectionMap.contains( udi ) )
     {
-        Amarok::Collection* coll = m_collectionMap[ udi ];
+        // Pull collection for the udi out of map
+        MediaDeviceCollection* coll = m_collectionMap[ udi ];
+        // If collection exists/found
         if( coll )
         {
-            m_collectionMap.remove( udi ); // remove from map
-            //coll->deviceRemoved();  //collection will be deleted by collectionmanager
+            // Remove collection from map
+            m_collectionMap.remove( udi );
+            // Have Collection disconnect device
+            // and destroy itself
+            coll->disconnectDevice();
         }
 //        else
             //warning() << "collection already null";
@@ -130,7 +139,8 @@ MediaDeviceCollection::queryMaker()
     return new MemoryQueryMaker( this, collectionId() );
 }
 
-QString MediaDeviceCollection::collectionId() const {
+QString MediaDeviceCollection::collectionId() const
+{
     return m_udi;
 }
 
@@ -139,6 +149,7 @@ void
 MediaDeviceCollection::startFullScan()
 {
     DEBUG_BLOCK
+    // If handler successfully connected to device
     if( m_handler->succeeded() )
     {
         debug() << "parsing tracks";
@@ -152,6 +163,25 @@ MediaDeviceCollection::handler()
 {
     return m_handler;
 }
+
+/// disconnectDevice is called when ConnectionAssistant
+/// is told it is to be disconnected.  This could be
+/// because another part of Amarok (e.g. applet) told it to
+/// or because the MediaDeviceMonitor noticed it disconnect
+void
+MediaDeviceCollection::disconnectDevice()
+{
+    // First, attempt to write to database,
+    // and regardless of success remove
+    // the collection.
+    // NOTE: this also calls the handler's destructor
+    // which gives it a chance to do last-minute cleanup
+    connect( m_handler, SIGNAL( databaseWritten( bool ) )
+    , SIGNAL( remove() ) );
+
+    m_handler->writeDatabase();
+}
+
 
 #include "MediaDeviceCollection.moc"
 

@@ -203,13 +203,13 @@ IpodCollection::updateTags( Meta::Track *track )
 
     m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
 }
-*/
+
 void
 IpodCollection::writeDatabase()
 {
     m_handler->writeDatabase();
 }
-
+*/
 IpodCollection::~IpodCollection()
 {
     DEBUG_BLOCK
@@ -237,12 +237,6 @@ QString
 IpodCollection::collectionId() const
 {
      return m_mountPoint;
-}
-
-CollectionLocation*
-IpodCollection::location() const
-{
-    return new IpodCollectionLocation( this );
 }
 
 QString

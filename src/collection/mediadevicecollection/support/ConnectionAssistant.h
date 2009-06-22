@@ -63,6 +63,7 @@ public:
 
     // Simply emit identified( info )
     virtual void tellIdentified( const QString &udi );
+    virtual void tellDisconnected( const QString &udi );
 
 signals:
 
@@ -73,6 +74,16 @@ signals:
 
     */
      void identified( MediaDeviceInfo* info );
+
+     /**
+
+     disconnected is emitted when a device with a given @param udi
+     has been disconnected.  The device type's factory should then
+     destroy the Collection appropriately
+
+     */
+
+     void disconnected( const QString &udi );
 
 };
 

@@ -46,4 +46,11 @@ ConnectionAssistant::tellIdentified( const QString &udi )
     emit identified( deviceInfo( udi ) );
 }
 
+void
+ConnectionAssistant::tellDisconnected( const QString& udi )
+{
+    emit disconnected( udi );
+}
+
+
 #include "ConnectionAssistant.moc"

@@ -38,7 +38,7 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
     set(amarok_collection-ipodcollection_PART_SRCS
 	IpodMeta.cpp
 	IpodCollection.cpp
-	IpodCollectionLocation.cpp
+#	IpodCollectionLocation.cpp
 	handler/IpodHandler.cpp
 	support/IpodDeviceInfo.cpp
 	support/IpodConnectionAssistant.cpp

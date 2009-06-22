@@ -86,6 +86,8 @@ struct PodcastInfo
            IpodHandler( IpodCollection *mc, const QString& mountPoint );
            virtual ~IpodHandler();
 
+           virtual bool isWritable() const;
+
            /* Get Methods */
            QString mountPoint() const { return m_mountPoint; }
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }

@@ -55,20 +55,9 @@ class IpodCollection : public MediaDeviceCollection
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-
-
         /// TODO: commented out, will be inherited
 
-        void copyTrackListToDevice( const Meta::TrackList tracklist );
-
         //virtual void deviceRemoved();
-
-        //virtual void startFullScan();
-        //virtual QueryMaker* queryMaker();
-
-        //QString udi() const;
-
-        virtual CollectionLocation* location() const;
 
         virtual QString collectionId() const;
         
@@ -77,15 +66,13 @@ class IpodCollection : public MediaDeviceCollection
 
         //virtual void collectionUpdated() { DEBUG_BLOCK emit updated(); }
 
-
-        //Ipod::IpodHandler* handler() { return m_handler; }
-
-
         //virtual void updateTags( Meta::Track *track); // NOTE: TODO: forward call to handler, have it extract needed info
-        void writeDatabase();
         
         virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
+
+        // HACK: this function will be deleted later
+        void writeDatabase() { m_handler->writeDatabase(); }
 
     signals:
         //void collectionReady();
@@ -117,11 +104,5 @@ class IpodCollection : public MediaDeviceCollection
         //QString            m_udi;
         //Ipod::IpodHandler *m_handler;
 };
-/*
-class SomeDeviceCollection : public MediaDeviceCollection {
 
-    SomeDeviceCollection();
-    virtual ~SomeDeviceCollection();
-}
-*/
 #endif
