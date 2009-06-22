@@ -59,8 +59,8 @@ extern "C" {
 using namespace Ipod;
 using namespace Meta;
 
-IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject *parent )
-    : QObject( parent )
+IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
+    : QObject( mc )
     , m_memColl( mc )
     , m_masterPlaylist( 0 )
     , m_jobcounter( 0 )

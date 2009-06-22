@@ -63,7 +63,7 @@ IpodCollection::IpodCollection(MediaDeviceInfo* info)
     m_mountPoint = ipodinfo->mountpoint();
     m_udi = ipodinfo->udi();
 
-    m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
+    m_handler = new Ipod::IpodHandler( this, m_mountPoint );
 
     if( m_handler->succeeded() )
     {
@@ -328,7 +328,7 @@ IpodCollection::slotDeleteTracksCompleted()
 void
 IpodCollection::connectDevice()
 {
-    m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
+    m_handler = new Ipod::IpodHandler( this, m_mountPoint );
 
     if( m_handler->succeeded() )
     {

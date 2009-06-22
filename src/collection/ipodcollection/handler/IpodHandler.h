@@ -83,7 +83,7 @@ struct PodcastInfo
         Q_OBJECT
 
         public:
-           IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject* parent );
+           IpodHandler( IpodCollection *mc, const QString& mountPoint );
            ~IpodHandler();
 
            /* Get Methods */
