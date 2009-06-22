@@ -53,7 +53,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
 
     private:
         MediaDeviceCollection *m_collection;
-        MediaDeviceHandler *m_handler;
+        Meta::MediaDeviceHandler *m_handler;
 };
 
 #endif

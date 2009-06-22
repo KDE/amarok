@@ -31,6 +31,7 @@ include_directories(
     browsers/servicebrowser/scriptableservice
     collection
     collection/support
+    collection/mediadevicecollection
     collection/mediadevicecollection/handler # for Handler
     collection/mediadevicecollection/support # for MediaDeviceInfo
     configdialog

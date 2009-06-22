@@ -60,7 +60,7 @@ using namespace Meta;
 
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
-    , m_memColl( mc )
+    //, m_memColl( mc )
     , m_masterPlaylist( 0 )
     , m_jobcounter( 0 )
     , m_statusbar( 0 )
@@ -139,7 +139,7 @@ IpodHandler::isWritable() const
     return true;
 }
 
-
+#if 0
 /** Observer Methods **/
 void
 IpodHandler::metadataChanged( TrackPtr track )
@@ -149,7 +149,8 @@ IpodHandler::metadataChanged( TrackPtr track )
     Meta::IpodTrackPtr trackPtr = Meta::IpodTrackPtr::staticCast( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
-    updateTrackInDB( trackUrl, track, trackPtr->getIpodTrack() );
+    // TODO: database methods abstraction needed
+    //updateTrackInDB( trackUrl, track, trackPtr->getIpodTrack() );
 }
 
 void
@@ -181,7 +182,7 @@ IpodHandler::metadataChanged( YearPtr year )
 {
     Q_UNUSED( year );
 }
-
+#endif
 bool
 IpodHandler::initializeIpod()
 {
@@ -240,8 +241,9 @@ IpodHandler::initializeIpod()
     // NOTE: writing itunes DB allowed to block since
     // initializing a device is rare, and requires focus
     // to minimize possible error
-    if( !writeITunesDB( false ) )
-        return false;
+    // TODO: database methods abstraction needed
+    //if( !writeITunesDB( false ) )
+     //   return false;
 
     return true;
 }
@@ -516,7 +518,7 @@ IpodHandler::itunesDir(const QString &p) const
         base += ':';
     return base + p;
 }
-
+#if 0
 void
 IpodHandler::deleteTrackListFromDevice( const Meta::TrackList &tracks )
 {
@@ -976,25 +978,27 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         }
     }
     */
-
+        // TODO: implement cover art when ported to new system
+        /*
     if( track->album()->hasImage() )
     {
+
         QPixmap image = track->album()->image();
         debug() << "Got image of height: " << image.height() << "and width: " << image.width();
         setCoverArt( ipodtrack, image );
     }
     else
         debug() << "No image available";
-
+*/
     debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
 }
-
+#endif
 void
 IpodHandler::writeDatabase()
 {
     ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
-
+#if 0
 void
 IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
 {
@@ -1179,7 +1183,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 
     return realpath;
 }
-
+#endif
 QString
 IpodHandler::ipodPath( const QString &realPath )
 {
@@ -1210,7 +1214,7 @@ IpodHandler::realPath( const char *ipodPath )
 
     return path;
 }
-
+#if 0
 void
 IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 {
@@ -1252,35 +1256,118 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
     m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
 }
-
-void
-IpodHandler::getBasicIpodTrackInfo( const Itdb_Track *ipodtrack, Meta::IpodTrackPtr track ) const
+#endif
+QString
+IpodHandler::libGetTitle() const
 {
-    /* 1-liner info retrieval */
-
-    track->setTitle( QString::fromUtf8( ipodtrack->title ) );
-    track->setLength( ( ipodtrack->tracklen ) / 1000 );
-    track->setTrackNumber( ipodtrack->track_nr );
-    track->setComment( QString::fromUtf8( ipodtrack->comment ) );
-    track->setDiscNumber( ipodtrack->cd_nr );
-    track->setBitrate( ipodtrack->bitrate );
-    track->setSamplerate( ipodtrack->samplerate );
-    track->setBpm( ipodtrack->BPM );
-    track->setFileSize( ipodtrack->size );
-    track->setPlayCount( ipodtrack->playcount );
-    track->setLastPlayed( ipodtrack->time_played );
-    track->setRating( ipodtrack->rating / ITDB_RATING_STEP * 2 );
-
-    QString path = QString( ipodtrack->ipod_path ).split( ':' ).join( "/" );
-    path = m_mountPoint + path;
-    track->setPlayableUrl( path );
-
-    const QString filetype = QString::fromUtf8( ipodtrack->filetype );
-
-    if( filetype == "mpeg" )
-        track->setType( "mp3" );
+    return QString::fromUtf8( m_currtrack->title );
 }
 
+QString
+IpodHandler::libGetAlbum() const
+{
+    return QString::fromUtf8( m_currtrack->album );
+}
+
+QString
+IpodHandler::libGetArtist() const
+{
+    return QString::fromUtf8( m_currtrack->artist );
+}
+
+QString
+IpodHandler::libGetComposer() const
+{
+    return QString::fromUtf8( m_currtrack->composer );
+}
+
+QString
+IpodHandler::libGetGenre() const
+{
+    return QString::fromUtf8( m_currtrack->genre );
+}
+
+int
+IpodHandler::libGetYear() const
+{
+    return m_currtrack->year;
+}
+
+int
+IpodHandler::libGetLength() const
+{
+    return ( ( m_currtrack->tracklen ) / 1000 );
+}
+
+int
+IpodHandler::libGetTrackNumber() const
+{
+    return m_currtrack->track_nr;
+}
+ 
+QString
+IpodHandler::libGetComment() const
+{
+    return QString::fromUtf8( m_currtrack->comment );
+}
+
+int
+IpodHandler::libGetDiscNumber() const
+{
+    return m_currtrack->cd_nr;
+}
+
+int
+IpodHandler::libGetBitrate() const
+{
+    return m_currtrack->bitrate;
+}
+    
+int
+IpodHandler::libGetSamplerate() const
+{
+    return m_currtrack->samplerate;
+}
+
+float
+IpodHandler::libGetBpm() const
+{
+    return m_currtrack->BPM;
+}
+int
+IpodHandler::libGetFileSize() const
+{
+    return m_currtrack->size;
+}
+int
+IpodHandler::libGetPlayCount() const
+{
+    return m_currtrack->playcount;
+}
+uint
+IpodHandler::libGetLastPlayed() const
+{
+    return m_currtrack->time_played;
+}
+int
+IpodHandler::libGetRating() const
+{
+    return ( m_currtrack->rating / ITDB_RATING_STEP * 2 );
+}
+QString
+IpodHandler::libGetType() const
+{
+    if( QString::fromUtf8( m_currtrack->filetype ) == "mpeg" )
+        return "mp3";
+}
+
+QString
+IpodHandler::libGetPlayableUrl() const
+{
+    return (m_mountPoint + QString( m_currtrack->ipod_path ).split( ':' ).join( "/" ));
+}
+
+/*
 QString
 IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 {
@@ -1319,9 +1406,10 @@ IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
     Q_UNUSED(ipodtrack);
 #endif
 }
-
+*/
+/*
 QPixmap
-IpodHandler::getCover( Meta::IpodTrackPtr track ) const
+IpodHandler::getCover( Meta::MediaDeviceTrackPtr trackk ) const
 {
 #ifdef GDK_FOUND
     const Itdb_Track *ipodTrack = track->getIpodTrack();
@@ -1332,7 +1420,8 @@ IpodHandler::getCover( Meta::IpodTrackPtr track ) const
     return QPixmap();
 #endif
 }
-
+*/
+/*
 void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path ) const
 {
@@ -1371,185 +1460,38 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const
     Q_UNUSED( image );
 #endif
 }
+*/
 
 void
-IpodHandler::setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap )
+IpodHandler::prepareToParse()
 {
-    QString artist( QString::fromUtf8( ipodtrack->artist ) );
-    IpodArtistPtr artistPtr;
+    m_currtracklist = m_itdb->tracks;
+}
 
-    if ( artistMap.contains( artist ) )
-        artistPtr = IpodArtistPtr::staticCast( artistMap.value( artist ) );
-    else
-    {
-        artistPtr = IpodArtistPtr( new IpodArtist( artist ) );
-        artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
-    }
-
-    artistPtr->addTrack( track );
-    track->setArtist( artistPtr );
+bool
+IpodHandler::isEndOfParseList()
+{
+    return (m_currtracklist ? false : true);
 }
 
 void
-IpodHandler::setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap )
+IpodHandler::prepareToParseNextTrack()
 {
-    QString album( QString::fromUtf8( ipodtrack->album ) );
-    IpodAlbumPtr albumPtr;
-
-    if ( albumMap.contains( album ) )
-        albumPtr = IpodAlbumPtr::staticCast( albumMap.value( album ) );
-    else
-    {
-        albumPtr = IpodAlbumPtr( new IpodAlbum( m_memColl, album ) );
-        albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
-    }
-
-    albumPtr->addTrack( track );
-    track->setAlbum( albumPtr );
+    m_currtracklist = m_currtracklist->next;
 }
 
 void
-IpodHandler::setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap )
+IpodHandler::nextTrackToParse()
 {
-    QString genre = ipodtrack->genre;
-    IpodGenrePtr genrePtr;
-
-    if ( genreMap.contains( genre ) )
-        genrePtr = IpodGenrePtr::staticCast( genreMap.value( genre ) );
-
-    else
-    {
-        genrePtr = IpodGenrePtr( new IpodGenre( genre ) );
-        genreMap.insert( genre, GenrePtr::staticCast( genrePtr ) );
-    }
-
-    genrePtr->addTrack( track );
-    track->setGenre( genrePtr );
+    m_currtrack = (Itdb_Track*) m_currtracklist->data;
 }
 
 void
-IpodHandler::setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap )
+IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
-    QString composer ( QString::fromUtf8( ipodtrack->composer ) );
-    IpodComposerPtr composerPtr;
-
-    if ( composerMap.contains( composer ) )
-        composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
-    else
-    {
-        composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
-        composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
-    }
-
-    composerPtr->addTrack( track );
-    track->setComposer( composerPtr );
+    m_itdbtrackhash[ track ] = m_currtrack;
 }
 
-void
-IpodHandler::setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap )
-{
-    QString year;
-    year = year.setNum( ipodtrack->year );
-    IpodYearPtr yearPtr;
-    if ( yearMap.contains( year ) )
-        yearPtr = IpodYearPtr::staticCast( yearMap.value( year ) );
-    else
-    {
-        yearPtr = IpodYearPtr( new IpodYear( year ) );
-        yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
-    }
-    yearPtr->addTrack( track );
-    track->setYear( yearPtr );
-}
-
-void
-IpodHandler::parseTracks()
-{
-    DEBUG_BLOCK
-
-    TrackMap trackMap;
-    ArtistMap artistMap;
-    AlbumMap albumMap;
-    GenreMap genreMap;
-    ComposerMap composerMap;
-    YearMap yearMap;
-
-    QMap<Itdb_Track*, IpodTrackPtr> ipodTrackMap;
-
-    GList *cur;
-
-    /* iterate through tracklist and add to appropriate map */
-    for( cur = m_itdb->tracks; cur; cur = cur->next )
-    {
-        /* ipodtrack - provides libgpod itdb info */
-        /* track - the new track whose data is being set up */
-        Itdb_Track *ipodtrack = (Itdb_Track*) cur->data;
-
-        getCoverArt( ipodtrack );
-
-        IpodTrackPtr track( new IpodTrack( m_memColl ) );
-
-        getBasicIpodTrackInfo( ipodtrack, track );
-
-        /* map-related info retrieval */
-
-        setupArtistMap( ipodtrack, track, artistMap );
-        setupAlbumMap( ipodtrack, track, albumMap );
-        setupGenreMap( ipodtrack, track, genreMap );
-        setupComposerMap( ipodtrack, track, composerMap );
-        setupYearMap( ipodtrack, track, yearMap );
-
-        /* TrackMap stuff to be subordinated later */
-        trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
-
-        m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
-
-        track->setIpodTrack( ipodtrack ); // convenience pointer
-        ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
-
-        // Subscribe to Track for metadata updates
-
-        subscribeTo( Meta::TrackPtr::staticCast( track ) );
-    }
-
-    // Iterate through ipod's playlists to set track's playlists
-
-    GList *member = 0;
-
-    for ( cur = m_itdb->playlists; cur; cur = cur->next )
-    {
-        Itdb_Playlist *ipodplaylist = ( Itdb_Playlist * ) cur->data;
-        for ( member = ipodplaylist->members; member; member = member->next )
-        {
-            Itdb_Track *ipodtrack = ( Itdb_Track * )member->data;
-            IpodTrackPtr track = ipodTrackMap.value( ipodtrack );
-            track->addIpodPlaylist( ipodplaylist );
-        }
-    }
-
-    // Finally, assign the created maps to the collection
-
-    debug() << "Setting memcoll stuff";
-
-    
-    m_memColl->acquireWriteLock();
-    debug() << "Debug 1";
-    m_memColl->setTrackMap( trackMap );
-    debug() << "Debug 2";
-    m_memColl->setArtistMap( artistMap );
-    debug() << "Debug 3";
-    m_memColl->setAlbumMap( albumMap );
-    debug() << "Debug 4";
-    m_memColl->setGenreMap( genreMap );
-    debug() << "Debug 5";
-    m_memColl->setComposerMap( composerMap );
-    debug() << "Debug 6";
-    m_memColl->setYearMap( yearMap );
-    debug() << "Debug 7";
-    m_memColl->releaseLock();
-
-    debug() << "Done setting memcoll stuff";
-}
 
 /* Private Functions */
 

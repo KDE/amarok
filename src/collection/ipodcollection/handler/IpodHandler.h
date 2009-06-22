@@ -34,9 +34,9 @@ extern "C" {
   #include <gpod/itdb.h>
 }
 
-#include "Meta.h"
+#include "MediaDeviceMeta.h"
 #include "MemoryCollection.h"
-#include "IpodMeta.h"
+//#include "IpodMeta.h"
 #include "MediaDeviceHandler.h"
 #include "../../../statusbar/StatusBar.h"
 
@@ -76,7 +76,7 @@ struct PodcastInfo
     PodcastInfo() { listened = false; }
 };
 */
-
+namespace Meta {
 /* The libgpod backend for all Ipod calls */
     class IpodHandler : public MediaDeviceHandler
     {
@@ -91,10 +91,40 @@ struct PodcastInfo
            /* Get Methods */
            QString mountPoint() const { return m_mountPoint; }
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
+
+           /// Methods that wrap get/set of information using libgpod
+
+           virtual QString libGetTitle() const;
+           virtual QString libGetAlbum() const;
+           virtual QString libGetArtist() const;
+           virtual QString libGetComposer() const;
+           virtual QString libGetGenre() const;
+           virtual int libGetYear() const;
+           virtual int     libGetLength() const;
+           virtual int     libGetTrackNumber() const;
+           virtual QString libGetComment() const;
+           virtual int     libGetDiscNumber() const;
+           virtual int     libGetBitrate() const;
+           virtual int     libGetSamplerate() const;
+           virtual float   libGetBpm() const;
+           virtual int     libGetFileSize() const;
+           virtual int     libGetPlayCount() const;
+           virtual uint    libGetLastPlayed() const;
+           virtual int     libGetRating() const;
+           virtual QString libGetType() const;
+           virtual QString libGetPlayableUrl() const;
+
+           /// Parse iteration methods
+
+           virtual void prepareToParse();
+           virtual bool isEndOfParseList();
+           virtual void prepareToParseNextTrack();
+           virtual void nextTrackToParse();
+           virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
            
-           QPixmap getCover( Meta::IpodTrackPtr track ) const;
-           void setCoverArt( Itdb_Track *ipodtrack, const QString &filename ) const;
-           void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const;
+           //QPixmap getCover( Meta::MediaDeviceTrackPtr track ) const;
+           //void setCoverArt( Itdb_Track *ipodtrack, const QString &filename ) const;
+           //void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const;
            
            /**
             * Successfully read Ipod database?
@@ -107,15 +137,19 @@ struct PodcastInfo
 
            /* Methods Provided for Collection */
 
+           // TODO: abstract copy/delete/database methods
+#if 0
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
            void deleteTrackListFromDevice( const Meta::TrackList &tracks );
            /**
             * Parses Ipod DB and creates a Meta::IpodTrack
             * for each track in the DB
             */
-           virtual void parseTracks();
+           //virtual void parseTracks();
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
+           #endif
            virtual void writeDatabase();
+           
 
            // NOTE: do not use writeITunesDB,
            // use the threaded writeDatabase
@@ -138,33 +172,35 @@ struct PodcastInfo
             * Extracts track information from ipodtrack
             * and puts it in track
             */
-           void getBasicIpodTrackInfo( const Itdb_Track *ipodtrack, Meta::IpodTrackPtr track ) const;
+           //void getBasicIpodTrackInfo( Meta::MediaDeviceTrackPtr ipodtrack ) const;
 
            /* Handler's Collection Methods */
 
-           void addIpodTrackToCollection( Itdb_Track *ipodtrack );
+           //void addIpodTrackToCollection( Itdb_Track *ipodtrack );
 
            /* libgpod DB Methods */
-
+           // TODO: abstract database methods
+/*
            void addTrackInDB( Itdb_Track *ipodtrack );
            void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
            bool removeDBTrack( Itdb_Track *track );
-
+*/
            /* libgpod Information Extraction Methods */
 
            void detectModel();
-           KUrl determineURLOnDevice( const Meta::TrackPtr &track );
+           //KUrl determineURLOnDevice( const Meta::TrackPtr &track );
            QString itunesDir( const QString &path = QString() ) const;
            QString ipodPath( const QString &realPath );
            bool pathExists( const QString &ipodPath, QString *realPath=0 );
            QString realPath( const char *ipodPath );
 
            /* Cover Art functions */
-           QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
-           void getCoverArt( const Itdb_Track *ipodtrack );
+           //QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
+           //void getCoverArt( const Itdb_Track *ipodtrack );
 
            /* File I/O Methods */
-
+           // TODO: abstract copy/delete methods (not too bad)
+/*
            void copyTracksToDevice();
 
            void copyNextTrackToDevice();
@@ -175,30 +211,9 @@ struct PodcastInfo
 
            void deleteFile( const KUrl &url );
            bool kioCopyTrack( const KUrl &src, const KUrl &dst );
-
-           /* Convenience methods to avoid repetitive code */
-
-           /**
-            * Pulls out meta information (e.g. artist string)
-            * from ipodtrack, inserts into appropriate map
-            * (e.g. ArtistMap).  Sets track's meta info
-            * (e.g. artist string) to that extracted from
-            * ipodtrack's.
-            * @param ipodtrack - track being read from
-            * @param track - track being written to
-            * @param Map - map where meta information is
-            * associated to appropriate meta pointer
-            * (e.g. QString artist, ArtistPtr )
-            */
-
-           void setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap );
-           void setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap );
-           void setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap );
-           void setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap );
-           void setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap );
-
+*/
            /* Observer Methods */
-
+#if 0
            /** These methods are called when the metadata of a track has changed. They invoke an Ipod DB update */
            virtual void metadataChanged( Meta::TrackPtr track );
            virtual void metadataChanged( Meta::ArtistPtr artist );
@@ -206,7 +221,7 @@ struct PodcastInfo
            virtual void metadataChanged( Meta::GenrePtr genre );
            virtual void metadataChanged( Meta::ComposerPtr composer );
            virtual void metadataChanged( Meta::YearPtr year );
-
+#endif
 
            /**
             * Handler Variables
@@ -215,13 +230,15 @@ struct PodcastInfo
            /* Collection Variables */
 
            // Associated collection
-           IpodCollection   *m_memColl;
+           //IpodCollection   *m_memColl;
            // Map of titles, used to check for duplicate tracks
            TitleMap          m_titlemap;
 
            /* libgpod variables */
            Itdb_iTunesDB    *m_itdb;
            Itdb_Playlist    *m_masterPlaylist;
+           GList            *m_currtracklist;
+           Itdb_Track       *m_currtrack;
 
            /* Lockers */
            QMutex            m_dbLocker; // DB only written by 1 thread at a time
@@ -263,6 +280,10 @@ struct PodcastInfo
 
            /* Miscellaneous Variables */
 
+           // Hash that associates an Itdb_Track* to every Track*
+
+           QHash<Meta::MediaDeviceTrackPtr, Itdb_Track*> m_itdbtrackhash;
+
            // tracks that failed to copy
 
            QMap<Meta::TrackPtr, QString> m_tracksFailed;
@@ -279,8 +300,8 @@ struct PodcastInfo
            // Itdb_Playlist* m_podcastPlaylist;
 
         private slots:
-          void fileTransferred( KJob *job );
-          void fileDeleted( KJob *job );
+          //void fileTransferred( KJob *job );
+          //void fileDeleted( KJob *job );
 
           void slotDBWriteFailed( ThreadWeaver::Job* job );
           void slotDBWriteSucceeded( ThreadWeaver::Job* job );
@@ -302,5 +323,5 @@ struct PodcastInfo
             bool m_success;
             IpodHandler *m_handler;
     };
-
+}
 #endif

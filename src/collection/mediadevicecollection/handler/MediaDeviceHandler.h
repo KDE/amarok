@@ -20,9 +20,8 @@
 #ifndef MEDIADEVICEHANDLER_H
 #define MEDIADEVICEHANDLER_H
 
-#include "Meta.h"
-//#include "MemoryCollection.h"
-//#include "MediaDeviceMeta.h"
+#include "MediaDeviceMeta.h"
+#include "MemoryCollection.h"
 #include "../../../statusbar/StatusBar.h"
 
 #include "mediadevicecollection_export.h"
@@ -42,6 +41,7 @@ class QMutex;
 
 class MediaDeviceCollection;
 
+namespace Meta {
 
     typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
@@ -103,10 +103,70 @@ class MediaDeviceCollection;
             */
 
         public:
-           virtual void parseTracks() = 0;// NOTE: used by Collection
+           void parseTracks();// NOTE: used by Collection
            virtual void writeDatabase() = 0;// NOTE: used by Collection
 
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
+
+           /// This method initializes iteration over some list of track structs
+           /// e.g. with libgpod, this initializes a GList to the beginning of
+           /// the list of tracks
+
+           virtual void prepareToParse() = 0;
+
+           /// This method runs a test to see if we have reached the end of
+           /// the list of tracks to be parsed on the device, e.g. in libgpod
+           /// this tests if cur != NULL, i.e. if(cur)
+
+           virtual bool isEndOfParseList() = 0;
+
+           /// This method moves the iterator to the next track on the list of
+           /// track structs, e.g. with libgpod, cur = cur->next where cur
+           /// is a GList*
+
+           virtual void prepareToParseNextTrack() = 0;
+
+           /// This method attempts to access the special struct of the
+           /// next track, so that information can then be parsed from it.
+           /// For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
+
+           virtual void nextTrackToParse() = 0;
+
+           /// This method must create an association of the current Meta::Track
+           /// to the special struct provided by the library to read/write information.
+           /// For example, for libgpod one would associate Itdb_Track*.  It makes
+           /// the most sense to use a QHash since it is fastest lookup and order
+           /// does not matter.
+
+           virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track ) = 0;
+
+
+           /// Methods that wrap get/set of information using given library (e.g. libgpod)
+           /// Subclasses of MediaDeviceHandler must keep a pointer to the current
+           /// track in question, and these methods are executed on that track
+
+           virtual QString libGetTitle() const = 0;
+           virtual QString libGetAlbum() const = 0;
+           virtual QString libGetArtist() const = 0;
+           virtual QString libGetComposer() const = 0;
+           virtual QString libGetGenre() const = 0;
+           virtual int libGetYear() const = 0;
+           virtual int     libGetLength() const = 0;
+           virtual int     libGetTrackNumber() const = 0;
+           virtual QString libGetComment() const = 0;
+           virtual int     libGetDiscNumber() const = 0;
+           virtual int     libGetBitrate() const = 0;
+           virtual int     libGetSamplerate() const = 0;
+           virtual float   libGetBpm() const = 0;
+           virtual int     libGetFileSize() const = 0;
+           virtual int     libGetPlayCount() const = 0;
+           virtual uint    libGetLastPlayed() const = 0;
+           virtual int     libGetRating() const  = 0;
+           virtual QString libGetType() const = 0;
+           virtual QString libGetPlayableUrl() const = 0;
+
+           /// Uses wrapped methods to fill a track with information from device
+           void getBasicMediaDeviceTrackInfo( Meta::MediaDeviceTrackPtr track ) const;
 
            signals:
            void copyTracksDone( bool success );
@@ -185,24 +245,27 @@ class MediaDeviceCollection;
 
            /* Convenience methods to avoid repetitive code */
 
+           #endif
            /**
             * Pulls out meta information (e.g. artist string)
-            * from ipodtrack, inserts into appropriate map
+            * from track struct, inserts into appropriate map
             * (e.g. ArtistMap).  Sets track's meta info
             * (e.g. artist string) to that extracted from
-            * ipodtrack's.
-            * @param ipodtrack - track being read from
+            * track struct's.
             * @param track - track being written to
             * @param Map - map where meta information is
             * associated to appropriate meta pointer
             * (e.g. QString artist, ArtistPtr )
             */
 
-           void setupArtistMap( Itdb_Track *ipodtrack, Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap );
-           void setupAlbumMap( Itdb_Track *ipodtrack, Meta::MediaDeviceTrackPtr track, AlbumMap &albumMap );
-           void setupGenreMap( Itdb_Track *ipodtrack, Meta::MediaDeviceTrackPtr track, GenreMap &genreMap );
-           void setupComposerMap( Itdb_Track *ipodtrack, Meta::MediaDeviceTrackPtr track, ComposerMap &composerMap );
-           void setupYearMap( Itdb_Track *ipodtrack, Meta::MediaDeviceTrackPtr track, YearMap &yearMap );
+        public:
+           void setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap );
+           void setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap &albumMap );
+           void setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap &genreMap );
+           void setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap &composerMap );
+           void setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap &yearMap );
+
+           #if 0
 
            /* Observer Methods */
 
@@ -214,16 +277,17 @@ class MediaDeviceCollection;
            virtual void metadataChanged( Meta::ComposerPtr composer );
            virtual void metadataChanged( Meta::YearPtr year );
 
-
+#endif
            /**
             * Handler Variables
             */
 
            /* Collection Variables */
-
+        private:
            // Associated collection
            MediaDeviceCollection   *m_memColl;
            // Map of titles, used to check for duplicate tracks
+#if 0
            TitleMap          m_titlemap;
 
            /* libgpod variables */
@@ -309,5 +373,7 @@ class MediaDeviceCollection;
             MediaDeviceHandler *m_handler;
     };
 #endif
+
+}
 
 #endif

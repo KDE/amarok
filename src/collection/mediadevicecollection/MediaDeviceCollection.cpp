@@ -158,7 +158,7 @@ MediaDeviceCollection::startFullScan()
     }
 }
 
-MediaDeviceHandler*
+Meta::MediaDeviceHandler*
 MediaDeviceCollection::handler()
 {
     return m_handler;

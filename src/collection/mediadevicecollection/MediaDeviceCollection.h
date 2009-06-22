@@ -139,7 +139,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         /** MediaDeviceCollection-specific */
 
     public:
-        MediaDeviceHandler* handler();
+        Meta::MediaDeviceHandler* handler();
 
         void disconnectDevice();
 
@@ -155,7 +155,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         MediaDeviceCollection();
 
         QString             m_udi;
-        MediaDeviceHandler *m_handler;
+        Meta::MediaDeviceHandler *m_handler;
 
 };
 
