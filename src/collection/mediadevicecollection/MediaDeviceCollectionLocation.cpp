@@ -109,9 +109,11 @@ MediaDeviceCollectionLocation::copyOperationFinished( bool success )
 {
     // TODO: should connect database written signal to
     // to this slot
-    m_collection->collectionUpdated();
+
     if( success )
+    {
         m_handler->writeDatabase();
+    }
     // TODO: will be replaced with a more powerful method
     // which deals with particular reasons for failed copies
     /*
@@ -146,7 +148,7 @@ void
 MediaDeviceCollectionLocation::removeOperationFinished()
 {
     DEBUG_BLOCK
-    m_collection->collectionUpdated();
+    
     m_handler->writeDatabase();
 
     slotRemoveOperationFinished();

@@ -647,6 +647,8 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 
     emit endProgressOperation( this );
     The::statusBar()->shortMessage( i18n( "Operation complete!" ) );
+
+    m_memColl->collectionUpdated();
 }
 
 
