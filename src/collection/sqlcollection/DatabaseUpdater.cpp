@@ -718,7 +718,7 @@ DatabaseUpdater::createTables() const
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
         QStringList indices;
-        indices << "createdate" << "accessdate" << "score" << "rating" << "playcount" << "uniqueid";
+        indices << "createdate" << "accessdate" << "score" << "rating" << "playcount";
         foreach( const QString &index, indices )
         {
             QString q = QString( "CREATE INDEX statistics_%1 ON statistics(%2);" ).arg( index, index );
