@@ -32,6 +32,11 @@
 
 class MediaDeviceCollection;
 
+/** HACK: Base and Factory are separate because Q_OBJECT does not work directly with templates.
+Templates used to reduce duplicated code in subclasses.
+*/
+
+
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Amarok::CollectionFactory
 {
     Q_OBJECT
