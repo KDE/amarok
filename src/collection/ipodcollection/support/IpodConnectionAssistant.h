@@ -33,7 +33,7 @@ public:
     virtual ~IpodConnectionAssistant();
 
     virtual bool identify( const QString& udi );
-    virtual DeviceInfo* deviceInfo();
+    virtual MediaDeviceInfo* deviceInfo( const QString& udi );
 
 };
 

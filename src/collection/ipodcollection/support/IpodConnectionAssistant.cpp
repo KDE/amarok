@@ -55,10 +55,10 @@ IpodConnectionAssistant::identify( const QString& udi )
     return device.product() == "iPod" || device.product() == "iPhone";
 }
 
-DeviceInfo*
-IpodConnectionAssistant::deviceInfo()
+MediaDeviceInfo*
+IpodConnectionAssistant::deviceInfo( const QString& udi )
 {
-    DeviceInfo* info = 0;
+    MediaDeviceInfo* info = new IpodDeviceInfo();
     return info;
 }
 

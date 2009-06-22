@@ -29,10 +29,11 @@ ConnectionAssistant::identify(const QString& udi)
     return false;
 }
 
-DeviceInfo*
-ConnectionAssistant::deviceInfo()
+MediaDeviceInfo*
+ConnectionAssistant::deviceInfo( const QString& udi )
 {
-    DeviceInfo *info = 0;
+    Q_UNUSED( udi );
+    MediaDeviceInfo *info = 0;
     return info;
 }
 

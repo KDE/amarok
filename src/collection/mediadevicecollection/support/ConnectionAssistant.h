@@ -23,7 +23,7 @@
 
 #include <QObject>
 
-class DeviceInfo;
+class MediaDeviceInfo;
 
 class QString;
 
@@ -32,7 +32,7 @@ class QString;
 
 The ConnectionAssistant (CA) serves as a way for MediaDeviceCollectionFactory to register its
 device type with the MediaDeviceMonitor (MDM). Once registered, the MDM can use the CA to
-attempt to identify a newly plugged-in device, and retrieve the DeviceInfo object necessary
+attempt to identify a newly plugged-in device, and retrieve the MediaDeviceInfo object necessary
 for the Factory to connect to it.
 
 */
@@ -54,12 +54,12 @@ public:
 
     /**
 
-    deviceInfo returns a pointer to a new DeviceInfo of the type of device
+    deviceInfo returns a pointer to a new MediaDeviceInfo of the type of device
     described by this ConnectionAssistant
 
     */
 
-    virtual DeviceInfo* deviceInfo();
+    virtual MediaDeviceInfo* deviceInfo( const QString& udi );
     
 };
 
