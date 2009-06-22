@@ -69,48 +69,6 @@ IpodCollectionFactory::createCollection(MediaDeviceInfo* info)
     return coll;
 }
 
-
-
-/*
-void
-IpodCollectionFactory::deviceRemoved( const QString &udi )
-{
-    DEBUG_BLOCK
-    if( m_collectionMap.contains( udi ) )
-    {
-        IpodCollection* coll = m_collectionMap[ udi ];
-        if( coll )
-        {
-            m_collectionMap.remove( udi ); // remove from map
-            coll->deviceRemoved();  //collection will be deleted by collectionmanager
-        }
-        else
-            warning() << "collection already null";
-    }
-    else
-        warning() << "removing non-existent device";
-
-    return;
-}
-
-void
-IpodCollectionFactory::slotCollectionDisconnected( const QString & udi)
-{
-    m_collectionMap.remove( udi ); // remove from map
-}
-
-void
-IpodCollectionFactory::slotCollectionReady()
-{
-    DEBUG_BLOCK
-    IpodCollection *collection = dynamic_cast<IpodCollection*>( sender() );
-    if( collection )
-    {
-        debug() << "emitting ipod collection newcollection";
-        emit newCollection( collection );
-    }
-}
-*/
 //IpodCollection
 
 IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )

@@ -56,9 +56,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public Amarok:
 
     protected slots:
         virtual void deviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
-        //void deviceRemoved( const QString &udi ); // remove device
-        //void slotCollectionReady();
-        //void slotCollectionDisconnected( const QString & udi );
 
     private slots:
                 void deviceRemoved( const QString &udi );
