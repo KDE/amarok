@@ -144,6 +144,11 @@ namespace Meta {
            virtual void findPathToCopy( const Meta::TrackPtr &track );
            virtual bool libCopyTrack( const Meta::TrackPtr &track );
            virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
+
+           virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track );
+           virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track );
+           virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
+           
            virtual void databaseChanged();
 
            virtual void setCopyTrackForParse();
@@ -202,15 +207,16 @@ namespace Meta {
            /* Handler's Main Methods */
 
            virtual void prepareToCopy();
+           virtual void prepareToDelete();
 
            /* Handler's Collection Methods */
 
            /* libgpod DB Methods */
            // TODO: abstract database methods
-/*
+
 
            bool removeDBTrack( Itdb_Track *track );
-*/
+
            /* libgpod Information Extraction Methods */
 
            void detectModel();
@@ -228,14 +234,9 @@ namespace Meta {
            /* File I/O Methods */
            // TODO: abstract copy/delete methods (not too bad)
            bool kioCopyTrack( const KUrl &src, const KUrl &dst );
-/*
-           void deleteNextTrackFromDevice();
-
-           void privateDeleteTrackFromDevice( const Meta::TrackPtr &track );
 
            void deleteFile( const KUrl &url );
-           
-*/
+
            /**
             * Handler Variables
             */
@@ -261,6 +262,8 @@ namespace Meta {
 
            QMap<KUrl, Meta::TrackPtr> m_trackscopying; // associates source url to track of source url
            QMap<Meta::TrackPtr, KUrl> m_trackdesturl; // keeps track of destination url for new tracks, mapped from source track
+
+           QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
 
            Itdb_Track       *m_libtrack;
            //KUrl              m_copyurl;
@@ -314,7 +317,7 @@ namespace Meta {
 
         private slots:
           void fileTransferred( KJob *job );
-          //void fileDeleted( KJob *job );
+          void fileDeleted( KJob *job );
 
           void slotDBWriteFailed( ThreadWeaver::Job* job );
           void slotDBWriteSucceeded( ThreadWeaver::Job* job );

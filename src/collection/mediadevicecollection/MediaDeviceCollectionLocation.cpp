@@ -66,10 +66,6 @@ MediaDeviceCollectionLocation::isWritable() const
 bool
 MediaDeviceCollectionLocation::remove( const Meta::TrackPtr &track )
 {
-    // TODO: call handler's method to delete a track
-    // that doesn't write to database.  Writing will
-    // be handled at the end of the removal of a list
-    // of tracks, instead of just one
     Q_UNUSED( track );
     return false;
 }
@@ -134,6 +130,26 @@ MediaDeviceCollectionLocation::copyOperationFinished( bool success )
     */
     slotCopyOperationFinished();
 
+}
+
+void
+MediaDeviceCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources )
+{
+    DEBUG_BLOCK
+    connect( m_handler, SIGNAL( removeTracksDone()),
+             this, SLOT( removeOperationFinished() ) );
+
+    m_handler->removeTrackListFromDevice( sources );
+}
+
+void
+MediaDeviceCollectionLocation::removeOperationFinished()
+{
+    DEBUG_BLOCK
+    m_collection->collectionUpdated();
+    m_handler->writeDatabase();
+
+    slotRemoveOperationFinished();
 }
 
 #include "MediaDeviceCollectionLocation.moc"

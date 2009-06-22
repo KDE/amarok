@@ -17,6 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
+
 #include "CollectionLocation.h"
 #include "Collection.h"
 #include "Debug.h"
@@ -272,8 +274,24 @@ void
 CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    Q_UNUSED( tracks )
-    slotShowRemoveDialogDone();
+    
+    QStringList files;
+    foreach( Meta::TrackPtr track, tracks )
+        files << track->prettyUrl();
+    
+    // NOTE: taken from SqlCollection
+    // TODO put the delete confirmation code somewhere else?
+    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracks.count()\
+ ) );
+    const bool del = KMessageBox::warningContinueCancelList(0,
+                                                     text,
+                                                     files,
+                                                     i18n("Delete Files"),
+                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
+    if( !del )
+        slotFinishRemove();
+    else
+        slotShowRemoveDialogDone();
 }
 
 void

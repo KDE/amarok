@@ -38,6 +38,12 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 
         connect( this, SIGNAL( canCopyMoreTracks()),
                  this, SLOT( copyNextTrackToDevice()) );
+
+        connect( this, SIGNAL( libRemoveTrackDone( const Meta::TrackPtr & ) ),
+                 this, SLOT( slotFinalizeTrackRemove( const Meta::TrackPtr & ) ) );
+
+        connect( this, SIGNAL( canDeleteMoreTracks()),
+                 this, SLOT( removeNextTrackFromDevice() ) );
 }
 
 bool
@@ -149,6 +155,82 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& t
     m_memColl->releaseLock();
 
     return;
+}
+
+void
+MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track )
+{
+        DEBUG_BLOCK
+
+    // get pointers
+
+    TrackMap trackMap = m_memColl->trackMap();
+    ArtistMap artistMap = m_memColl->artistMap();
+    AlbumMap albumMap = m_memColl->albumMap();
+    GenreMap genreMap = m_memColl->genreMap();
+    ComposerMap composerMap = m_memColl->composerMap();
+    YearMap yearMap = m_memColl->yearMap();
+
+    Meta::MediaDeviceArtistPtr artist = Meta::MediaDeviceArtistPtr::dynamicCast( track->artist() );
+    Meta::MediaDeviceAlbumPtr album = Meta::MediaDeviceAlbumPtr::dynamicCast( track->album() );
+    Meta::MediaDeviceGenrePtr genre = Meta::MediaDeviceGenrePtr::dynamicCast( track->genre() );
+    Meta::MediaDeviceComposerPtr composer = Meta::MediaDeviceComposerPtr::dynamicCast( track->composer() );
+    Meta::MediaDeviceYearPtr year = Meta::MediaDeviceYearPtr::dynamicCast( track->year() );
+
+    // remove track from metadata's tracklists
+
+    debug() << "Artist name: " << artist->name();
+
+    artist->remTrack( track );
+    album->remTrack( track );
+    genre->remTrack( track );
+    composer->remTrack( track );
+    year->remTrack( track );
+
+    // if empty, get rid of metadata in general
+
+    if( artist->tracks().isEmpty() )
+    {
+        artistMap.remove( artist->name() );
+        debug() << "Artist still in artist map: " << ( artistMap.contains( artist->name() ) ? "yes" : "no");
+        m_memColl->acquireWriteLock();
+        m_memColl->setArtistMap( artistMap );
+        m_memColl->releaseLock();
+    }
+    if( album->tracks().isEmpty() )
+    {
+        albumMap.remove( album->name() );
+        m_memColl->acquireWriteLock();
+        m_memColl->setAlbumMap( albumMap );
+        m_memColl->releaseLock();
+    }
+    if( genre->tracks().isEmpty() )
+    {
+        genreMap.remove( genre->name() );
+        m_memColl->acquireWriteLock();
+        m_memColl->setGenreMap( genreMap );
+        m_memColl->releaseLock();
+    }
+    if( composer->tracks().isEmpty() )
+    {
+        composerMap.remove( composer->name() );
+        m_memColl->acquireWriteLock();
+        m_memColl->setComposerMap( composerMap );
+        m_memColl->releaseLock();
+    }
+    if( year->tracks().isEmpty() )
+    {
+        yearMap.remove( year->name() );
+        m_memColl->acquireWriteLock();
+        m_memColl->setYearMap( yearMap );
+        m_memColl->releaseLock();
+    }
+
+    // remove from trackmap
+   trackMap.remove( track->name() );
+   m_memColl->acquireWriteLock();
+   m_memColl->setTrackMap( trackMap );
+   m_memColl->releaseLock();
 }
 
 void
@@ -452,6 +534,109 @@ MediaDeviceHandler::slotCopyTrackFailed( const Meta::TrackPtr & track )
 }
 
 void
+MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+
+    // Init the list of tracks to be deleted
+
+    m_tracksToDelete = tracks;
+
+    // Set up statusbar for deletion operation
+
+    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Removing Tracks from Device" ) );
+
+    m_statusbar->setMaximum( tracks.size() );
+
+    connect( this, SIGNAL( incrementProgress() ),
+            The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+
+     connect( this, SIGNAL( databaseWritten(bool)),
+              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
+
+    prepareToDelete();
+
+    m_numTracksToRemove = m_tracksToDelete.count();
+
+    removeNextTrackFromDevice();
+}
+
+void
+MediaDeviceHandler::removeNextTrackFromDevice()
+{
+    DEBUG_BLOCK
+    Meta::TrackPtr track;
+    // If there are more tracks to remove, remove the next one
+    if( !m_tracksToDelete.isEmpty() )
+    {
+        // Pop the track off the front of the list
+
+        track = m_tracksToDelete.first();
+        m_tracksToDelete.removeFirst();
+
+        // Remove the track
+
+        privateRemoveTrackFromDevice( track );
+    }
+}
+
+void
+MediaDeviceHandler::privateRemoveTrackFromDevice( const Meta::TrackPtr &track )
+{
+    DEBUG_BLOCK
+
+    Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
+    
+    // Remove the physical file from the device, perhaps using a libcall, or KIO
+
+    libDeleteTrackFile( devicetrack );
+
+
+}
+
+void
+MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
+{
+    DEBUG_BLOCK
+    Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
+
+    // Remove the track struct from the db, references to it
+
+    removeTrackFromDB( devicetrack );
+
+    // delete the struct associated with this track
+
+    libDeleteTrack( devicetrack );
+
+    // remove from titlemap
+
+    m_titlemap.remove( track->name(), track );
+
+    // remove from collection
+
+    removeMediaDeviceTrackFromCollection( devicetrack );
+
+    // Inform subclass that a track has been removed from
+
+    databaseChanged();
+
+    emit incrementProgress();
+
+    m_numTracksToRemove--;
+
+    if( m_numTracksToRemove == 0 )
+    {
+        /*
+        if( m_tracksFailed.size() > 0 )
+        {
+            The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+        }
+        */
+        emit removeTracksDone();
+    }
+}
+
+void
 MediaDeviceHandler::slotDatabaseWritten( bool success )
 {
     DEBUG_BLOCK
@@ -461,7 +646,7 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
              The::statusBar(), SLOT( endProgressOperation( const QObject* ) ), Qt::QueuedConnection );
 
     emit endProgressOperation( this );
-    The::statusBar()->shortMessage( i18n( "Copying to device complete!" ) );
+    The::statusBar()->shortMessage( i18n( "Operation complete!" ) );
 }
 
 
@@ -578,7 +763,7 @@ MediaDeviceHandler::parseTracks()
 
         //debug() << "Fetched next track to parse";
 
-        //getCoverArt( ipodtrack );
+// TODO: coverart
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
@@ -610,9 +795,9 @@ MediaDeviceHandler::parseTracks()
 
 
 
-        //debug() << "Associated track";
+
         // TODO: abstract playlist parsing
-        //ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
+
 
         // Subscribe to Track for metadata updates
 
@@ -623,23 +808,9 @@ MediaDeviceHandler::parseTracks()
         //debug() << "Subscribed";
     }
 
-    // Iterate through ipod's playlists to set track's playlists
 
 // TODO: abstract playlist parsing
-/*
-    GList *member = 0;
 
-    for ( cur = m_itdb->playlists; cur; cur = cur->next )
-    {
-        Itdb_Playlist *ipodplaylist = ( Itdb_Playlist * ) cur->data;
-        for ( member = ipodplaylist->members; member; member = member->next )
-        {
-            Itdb_Track *ipodtrack = ( Itdb_Track * )member->data;
-            IpodTrackPtr track = ipodTrackMap.value( ipodtrack );
-            track->addIpodPlaylist( ipodplaylist );
-        }
-    }
-*/
     // Finally, assign the created maps to the collection
 
     debug() << "Setting memcoll stuff";

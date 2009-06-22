@@ -98,7 +98,7 @@ namespace Meta {
            /** Methods Provided for Collection, i.e. wrappers */
 
            //virtual void copyTrackListToDevice( const Meta::TrackList tracklist );// NOTE: used by Collection
-           //virtual void deleteTrackListFromDevice( const Meta::TrackList &tracks );// NOTE: used by Collection
+           //virtual void deleteTrackListFromDevice( const Meta::TrackList &tMediaDeviceHandler::removeNextTrackFromDevice()racks );// NOTE: used by Collection
 
 
            /**
@@ -111,6 +111,7 @@ namespace Meta {
            virtual void writeDatabase() = 0;// NOTE: used by Collection
 
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
+           virtual void removeTrackListFromDevice( const Meta::TrackList &tracks );
 
            /// This method initializes iteration over some list of track structs
            /// e.g. with libgpod, this initializes a GList to the beginning of
@@ -171,11 +172,21 @@ namespace Meta {
            
            virtual bool libCopyTrack( const Meta::TrackPtr &track ) = 0;
 
+           /// libDeleteTrack does the actual file deleting.  For Ipods, it uses KIO,
+           /// for MTPs this uses a libmtp call.
+
+           virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) = 0;
+
            /// Creates a new track struct particular to the library of the device
            /// e.g. LIBMTP_new_track_t(), and associates it with @param track for
            /// later use
 
            virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
+
+           /// Deletes the track struct associated with this @param track, freeing
+           /// any memory it occupied, and dissociating it from the @param track
+
+           virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
            /// Adds the newly created track struct now populated with info into the
            /// database struct of the particular device, e.g. into the itdb for Ipods.
@@ -183,6 +194,11 @@ namespace Meta {
            /// so MTP would do nothing.
 
            virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
+
+           /// Remove all traces of the track struct associated with @param track from
+           /// the database struct, but do not delete the struct
+
+           virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
            /// Indicates to the subclass that the database has been updated
            /// For ipods, just sets m_dbchanged = true
@@ -194,6 +210,11 @@ namespace Meta {
            /// that it has been copied.
 
            void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
+
+           /// Removes the @param track from all the collection's maps to reflect that
+           /// it has been removed from the collection
+
+           void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
 
            /// setCopyTrackForParse makes it so that a call to getBasicMediaDeviceTrackInfo
            /// will use the track struct recently created and filled with info, to fill up
@@ -264,9 +285,12 @@ namespace Meta {
 
            signals:
            void copyTracksDone( bool success );
+           void removeTracksDone();
            void libCopyTrackDone( const Meta::TrackPtr &track );
            void libCopyTrackFailed( const Meta::TrackPtr &track );
+           void libRemoveTrackDone( const Meta::TrackPtr &track );
            void canCopyMoreTracks(); // subclass tells this class that it can copy more tracks
+           void canDeleteMoreTracks(); // subclass tells this class that it can delete more tracks
            #if 0
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingMediaDeviceTrack );// NOTE: used by Collection
 
@@ -352,6 +376,9 @@ namespace Meta {
            void copyNextTrackToDevice();
            bool privateCopyTrackToDevice( const Meta::TrackPtr& track );
 
+           void removeNextTrackFromDevice();
+           void privateRemoveTrackFromDevice( const Meta::TrackPtr &track );
+
         private:
 
 
@@ -360,7 +387,11 @@ namespace Meta {
            /// the job counter to 0.
            virtual void prepareToCopy() {}
 
+           /// This function is called just before deleting tracks begin and allows
+           /// a subclass to prepare to delete, e.g. for Ipods it would initialize
+           /// the m_tracksdeleting to keep track of urls it is deleting.
 
+           virtual void prepareToDelete() {}
 
            /* Observer Methods */
 
@@ -385,6 +416,7 @@ namespace Meta {
     void slotCopyTrackJobsDone( ThreadWeaver::Job* job );
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
     void slotCopyTrackFailed( const Meta::TrackPtr & track );
+    void slotFinalizeTrackRemove( const Meta::TrackPtr & track );
 
     void slotDatabaseWritten( bool success );
 
@@ -460,6 +492,7 @@ namespace Meta {
         bool m_copyFailed;
 
         int m_numTracksToCopy;
+        int m_numTracksToRemove;
 
            // tracks that failed to copy
 
@@ -468,6 +501,8 @@ namespace Meta {
            Meta::TrackList   m_tracksToCopy;
            Meta::TrackList   m_tracksCopying;
            Meta::TrackPtr m_lastTrackCopied;
+
+           Meta::TrackList   m_tracksToDelete;
 
            TitleMap          m_titlemap;
 

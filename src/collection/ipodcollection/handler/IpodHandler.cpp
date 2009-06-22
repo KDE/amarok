@@ -642,13 +642,50 @@ IpodHandler::addTrackInDB(const Meta::MediaDeviceTrackPtr& track)
 
 }
 
+bool
+IpodHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+    
+    // delete file
+    KUrl url;
+    url.setPath( realPath( ipodtrack->ipod_path ) );
+    Meta::TrackPtr trackptr = Meta::TrackPtr::staticCast( track );
+    m_tracksdeleting[ url ] = trackptr;
+    deleteFile( url );
+
+    return true;
+
+}
+
+void
+IpodHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+
+    m_itdbtrackhash.remove( track );
+
+    itdb_track_remove( ipodtrack );
+}
+
+void
+IpodHandler::removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+
+    removeDBTrack( ipodtrack );
+}
+
 void
 IpodHandler::databaseChanged()
 {
     m_dbChanged = true;
 }
 
-#if 0
+
 bool
 IpodHandler::removeDBTrack( Itdb_Track *track )
 {
@@ -673,12 +710,9 @@ IpodHandler::removeDBTrack( Itdb_Track *track )
         cur = cur->next;
     }
 
-    // also frees track's memory
-    itdb_track_remove(track);
-
     return true;
 }
-#endif
+
 bool
 IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
@@ -774,13 +808,20 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
     }
     
 }
-#if 0
+
 void
 IpodHandler::deleteFile( const KUrl &url )
 {
+    DEBUG_BLOCK
     debug() << "deleting " << url.prettyUrl();
 
     KIO::DeleteJob *job = KIO::del( url, KIO::HideProgressInfo );
+
+    m_jobcounter++;
+
+    if( m_jobcounter < 150 )
+        emit canDeleteMoreTracks();
+    
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
 
@@ -790,14 +831,39 @@ IpodHandler::deleteFile( const KUrl &url )
 void
 IpodHandler::fileDeleted( KJob *job )  //SLOT
 {
+    DEBUG_BLOCK
     if(job->error())
     {
         debug() << "file deletion failed: " << job->errorText();
     }
 
-    deleteNextTrackFromDevice();
+    m_jobcounter--;
+
+    // Limit max number of jobs to 150, make sure more tracks left
+    // to delete
+
+
+    debug() << "Tracks to delete still remain";
+        if( m_jobcounter < 150 )
+        {
+            debug() << "Jobs: " << m_jobcounter;
+            emit canDeleteMoreTracks();
+        }
+
+    KIO::DeleteJob *djob = reinterpret_cast<KIO::DeleteJob*> (job);
+
+    if( djob )
+    {
+        KUrl url = djob->urls().first();
+
+        Meta::TrackPtr track = m_tracksdeleting[ url ];
+
+        debug() << "emitting libRemoveTrackDone";
+
+        emit libRemoveTrackDone( track );
+    }
 }
-#endif
+
 KUrl
 IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 {
@@ -1311,6 +1377,16 @@ IpodHandler::prepareToCopy()
 
     m_trackdesturl.clear();
     m_trackscopying.clear();
+}
+
+void
+IpodHandler::prepareToDelete()
+{
+    // Initialize job counter to prepare to keep track of how many
+    // copy jobs are going on at once
+    //m_jobcounter = 0;
+
+    m_tracksdeleting.clear();
 }
 
 void
