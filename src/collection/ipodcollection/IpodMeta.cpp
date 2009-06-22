@@ -24,6 +24,9 @@
 #include "IpodCollection.h"
 #include "handler/IpodHandler.h"
 
+// HACK: used to test disconnect
+#include "MediaDeviceMonitor.h"
+
 #include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
 #include "SvgHandler.h"
@@ -64,6 +67,47 @@ class EditCapabilityIpod : public Meta::EditCapability
     private:
         KSharedPtr<IpodTrack> m_track;
 };
+
+// HACK: added to test disconnect, remove later
+
+class CustomActionsCapabilityIpod : public Meta::CustomActionsCapability
+     {
+         Q_OBJECT
+         public:
+             CustomActionsCapabilityIpod( IpodTrack* track )
+                 : Meta::CustomActionsCapability()
+                 , m_track( track )
+             {
+                 DEBUG_BLOCK
+                 IpodCollection *coll = dynamic_cast<IpodCollection*>( m_track->collection() );
+
+                 
+                 
+                 // Setup the disconnect action
+                 PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                                                             "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the iPod" ), 0 );
+                 debug() << "Disconnect-action created";
+
+                 // HACK: disconnects first device in MDM's list
+                 connect( disconnectAction, SIGNAL( triggered() )
+                 , MediaDeviceMonitor::instance(), SLOT( slotDisconnectFirstDevice() ) );
+
+                 // Add the action to the list of custom actions
+                 m_actions.append( disconnectAction );
+                 debug() << "Disconnect action appended to local QList";
+             }
+
+             virtual ~CustomActionsCapabilityIpod() {}
+
+             virtual QList< PopupDropperAction *> customActions() const {
+                 return m_actions;
+             }
+
+         private:
+             QList< PopupDropperAction* > m_actions;
+             IpodTrackPtr m_track;
+
+     };
 
 class UpdateCapabilityIpod : public Meta::UpdateCapability
 {
@@ -403,8 +447,9 @@ IpodTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     {
         case Meta::Capability::Editable:
             return true;
+            // HACK: testing disconnect, remove later
         case Meta::Capability::CustomActions:
-            return false;
+            return true;
         case Meta::Capability::Updatable:
             return true;
 
@@ -420,6 +465,8 @@ IpodTrack::createCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::Editable:
             return new EditCapabilityIpod( this );
+        case Meta::Capability::CustomActions:
+            return new CustomActionsCapabilityIpod( this );
         case Meta::Capability::Updatable:
             return new UpdateCapabilityIpod( m_collection );
 
