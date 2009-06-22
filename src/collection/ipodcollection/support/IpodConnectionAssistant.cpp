@@ -58,6 +58,7 @@ IpodConnectionAssistant::identify( const QString& udi )
 MediaDeviceInfo*
 IpodConnectionAssistant::deviceInfo( const QString& udi )
 {
+    Q_UNUSED( udi );
     MediaDeviceInfo* info = new IpodDeviceInfo();
     return info;
 }

@@ -17,9 +17,7 @@
 
 #include "MediaDeviceInfo.h"
 
-#include "mediadevicecollection_export.h"
-
-class MEDIADEVICECOLLECTION_EXPORT IpodDeviceInfo : public MediaDeviceInfo
+class IpodDeviceInfo : public MediaDeviceInfo
 {
     Q_OBJECT
     public:
