@@ -81,6 +81,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public MediaDe
 
 };
 
+#if 0
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
@@ -156,5 +157,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         QString                          m_udi;
         MediaDevice::MediaDeviceHandler *m_handler;
 };
+#endif
 
 #endif

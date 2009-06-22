@@ -24,7 +24,7 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceInfo.h"
 #include "MediaDeviceMeta.h"
-#include "MediaDeviceHandler.h"
+//#include "MediaDeviceHandler.h"
 
 #include "MediaDeviceMonitor.h"
 
@@ -88,7 +88,7 @@ void MediaDeviceCollectionFactoryBase::deviceDetected(MediaDeviceInfo* info) {
 }
 
 
-
+// NOTE: NYI
 void
 MediaDeviceCollectionFactoryBase::deviceRemoved( const QString &udi )
 {
@@ -99,7 +99,7 @@ MediaDeviceCollectionFactoryBase::deviceRemoved( const QString &udi )
         if( coll )
         {
             m_collectionMap.remove( udi ); // remove from map
-            coll->deviceRemoved();  //collection will be deleted by collectionmanager
+            //coll->deviceRemoved();  //collection will be deleted by collectionmanager
         }
 //        else
             //warning() << "collection already null";
@@ -112,7 +112,7 @@ MediaDeviceCollectionFactoryBase::deviceRemoved( const QString &udi )
 
 
 //MediaDeviceCollection
-
+/*
 MediaDeviceCollection::MediaDeviceCollection()
 : m_handler( new MediaDeviceHandler( 
 {
@@ -141,6 +141,7 @@ MediaDeviceCollection::startFullScan()
         emit collectionReady();
     }
 }
+*/
 
 #include "MediaDeviceCollection.moc"
 
