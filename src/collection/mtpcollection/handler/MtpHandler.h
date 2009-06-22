@@ -238,6 +238,8 @@ private:
     void slotDeviceMatchFailed( ThreadWeaver::Job* job );
 
     private:
+        virtual void updateTrack( Meta::MediaDeviceTrackPtr &track );
+        
 /*
     Meta::TrackList m_tracksToCopy;
     Meta::TrackList m_tracksToDelete;

@@ -125,8 +125,10 @@ class MediaDeviceTrack : public Meta::Track
         virtual bool inCollection() const;
         virtual Amarok::Collection* collection() const;
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+	virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+//    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+	virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+    
 
         //MediaDeviceTrack specific methods
 

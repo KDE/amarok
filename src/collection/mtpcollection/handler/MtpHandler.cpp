@@ -354,9 +354,9 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
                 if (  !track )
                     break;
 
-                
+
                 QString trackFileName = QString::fromUtf8( m_mtptrackhash[ track ]->filename );
-                
+
                 QString filename = m_tempdir.name() + trackFileName;
 
                 debug() << "Temp Filename: " << filename;
@@ -1602,8 +1602,8 @@ QString
 MtpHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     Q_UNUSED( track )
-    // NOTE: defaulting, since not provided
-    return QString();
+    // NOTE: not a real url, using for unique key for qm
+        return QString::number(  m_mtptrackhash[ track ]->item_id,  10 );
 }
 
 /// Sets
@@ -1848,6 +1848,26 @@ MtpHandler::slotDeviceMatchFailed( ThreadWeaver::Job* job )
     debug() << "Running slot device match failed";
     disconnect( job, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDeviceMatchSucceeded() ) );
     emit attemptConnectionDone( false );
+}
+
+void
+MtpHandler::updateTrack( Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+
+    // pull out track struct to prepare for update
+
+    LIBMTP_track_t *mtptrack = m_mtptrackhash[ track ];
+
+    // commence update on device
+
+    int failed = LIBMTP_Update_Track_Metadata( m_device, mtptrack );
+
+    if ( !failed )
+        debug() << "Metadata update succeeded!";
+
+    else
+        debug() << "Failed to update metadata";
 }
 
 WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices,  MtpHandler* handler )

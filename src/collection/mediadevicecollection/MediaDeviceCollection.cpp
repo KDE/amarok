@@ -87,6 +87,8 @@ void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
         {
             // insert it into the map of known collections
             m_collectionMap.insert( info->udi(), coll );
+            connect( coll, SIGNAL( collectionReady() ),
+                     this, SLOT( slotEmitNewCollection() ) );
             emit newCollection( coll );
         }
     }
@@ -117,6 +119,12 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
         //warning() << "removing non-existent device";
 
     return;
+}
+
+void
+MediaDeviceCollectionFactoryBase::slotEmitNewCollection()
+{
+    emit newCollection( qobject_cast<Amarok::Collection *> ( sender() ) );
 }
 
 
@@ -155,6 +163,7 @@ MediaDeviceCollection::startFullScan()
 
     m_handler->parseTracks();
     emit collectionReady();
+//    collectionUpdated();
 }
 
 Meta::MediaDeviceHandler*

@@ -56,7 +56,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Ama
         virtual void slotDeviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
 
     private slots:
-                void slotDeviceDisconnected( const QString &udi );
+	void slotDeviceDisconnected( const QString &udi );
+        void slotEmitNewCollection();
 
     private:
 

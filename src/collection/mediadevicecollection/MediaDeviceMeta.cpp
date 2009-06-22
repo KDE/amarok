@@ -441,7 +441,7 @@ MediaDeviceTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-MediaDeviceTrack::asCapabilityInterface( Meta::Capability::Type type )
+MediaDeviceTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {

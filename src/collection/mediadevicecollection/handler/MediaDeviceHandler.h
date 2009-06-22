@@ -345,6 +345,10 @@ namespace Meta {
 
            /* Observer Methods */
 
+	   // tells subclass that it can update the track, one at a time (for mtp)
+
+	   virtual void updateTrack( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) }
+
            /** These methods are called when the metadata of a track has changed. They invoke an MediaDevice DB update */
            virtual void metadataChanged( Meta::TrackPtr track );
            virtual void metadataChanged( Meta::ArtistPtr artist );

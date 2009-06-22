@@ -891,6 +891,7 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
 
     setBasicMediaDeviceTrackInfo( track, trackPtr );
 
+    updateTrack( trackPtr );
     databaseChanged();
 }
 
