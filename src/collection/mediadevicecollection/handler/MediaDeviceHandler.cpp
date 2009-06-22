@@ -324,10 +324,22 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     findPathToCopy( track );
 
+    // When internal copy method is done, keep going by creating track struct
+    // and adding to db etc.
+
+    connect( this, SIGNAL( libCopyTrackDone( const Meta::TrackPtr & ) ),
+             this, SLOT( slotFinalizeTrackCopy( const Meta::TrackPtr & ) ) );
+
     // Copy the file to the device
 
     success = libCopyTrack( track );
 
+    return success;
+}
+
+void
+MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
+{
     // Create a track struct
 
     libCreateTrack();
@@ -344,8 +356,6 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     // add track to collection
     addMediaDeviceTrackToCollection();
-
-    return success;
 }
 
 void
@@ -564,7 +574,7 @@ MediaDeviceHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
     else
     {
         m_copyFailed = true;
-        QString error = "MTP copy error";
+        QString error = "Copy error";
         m_tracksFailed.insert( m_lastTrackCopied, error );
     }
 

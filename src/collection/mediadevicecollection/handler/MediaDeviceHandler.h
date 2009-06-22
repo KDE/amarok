@@ -169,7 +169,7 @@ namespace Meta {
            /// libCopyTrack does the actual file copying.  For Ipods, it uses KIO
            /// for MTPs this uses a libmtp call
            
-           virtual bool libCopyTrack( const Meta::TrackPtr &track ) = 0;
+           virtual void libCopyTrack( const Meta::TrackPtr &track ) = 0;
 
            /// Creates a new track struct particular to the library of the device
            /// e.g. LIBMTP_new_track_t(), and assigns a pointer to it, so that
@@ -250,6 +250,7 @@ namespace Meta {
 
            signals:
            void copyTracksDone( bool success );
+           void libCopyTrackDone( const Meta::TrackPtr &track );
            #if 0
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingMediaDeviceTrack );// NOTE: used by Collection
 

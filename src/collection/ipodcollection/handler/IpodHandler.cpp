@@ -629,10 +629,11 @@ IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
     m_copyurl = url;
 }
 
-bool
+void
 IpodHandler::libCopyTrack( const Meta::TrackPtr &track )
 {
-    return kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), m_copyurl );
+    kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), m_copyurl );
+    emit libCopyTrackDone( track );
 }
 
 void
@@ -725,6 +726,9 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     return true;
 }
 
+/// TODO: make this function emit libCopyDone if successful, which will then go
+/// and finalize the transfer.  The problem is that this limits us to 1 transfer
+/// at a time.
 void
 IpodHandler::fileTransferred( KJob *job )  //SLOT
 {
