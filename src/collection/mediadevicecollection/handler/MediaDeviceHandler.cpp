@@ -21,8 +21,6 @@
 
 #include "MediaDeviceCollection.h"
 
-#include <kapplication.h>
-
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/JobCollection.h>
 
