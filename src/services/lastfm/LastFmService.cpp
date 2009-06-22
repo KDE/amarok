@@ -467,7 +467,7 @@ LastFmService::updateProfileInfo()
     if( m_profile && !m_playcount.isEmpty() )
     {
         QString playcount = KGlobal::locale()->formatNumber( m_playcount, false );
-        m_profile->setText( i18n( "Play Count: " ) + i18np( "%1 play", "%1 plays", playcount ) );
+        m_profile->setText( i18np( "Play Count: %1 play", "Play Count: %1 plays", m_playcount ) );
     }
 }
 
