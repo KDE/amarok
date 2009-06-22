@@ -536,7 +536,7 @@ ScanManager::cleanTables()
     m_collection->query( "DELETE FROM composers;" );
     m_collection->query( "DELETE FROM albums;" );
     m_collection->query( "DELETE FROM artists;" );
-    m_collection->query( "DELETE FROM images;" );
+    //images table is deleted in DatabaseUpdater::copyToPermanentTables
 }
 
 void

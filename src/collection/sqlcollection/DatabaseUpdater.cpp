@@ -491,6 +491,7 @@ DatabaseUpdater::copyToPermanentTables()
     m_collection->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN ( %1 );" ).arg( artistIds ), QString() );
 
     //handle images before albums
+    m_collection->query( "DELETE FROM images;" );
     m_collection->insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
 
     QStringList albumIdList = m_collection->query( "SELECT albums.id FROM albums;" );
