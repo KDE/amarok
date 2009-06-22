@@ -21,6 +21,7 @@
 #include "IpodCollection.h"
 #include "IpodConnectionAssistant.h"
 #include "IpodDeviceInfo.h"
+#include "MediaDeviceInfo.h"
 
 #include "meta/capabilities/CollectionCapability.h"
 #include "IpodCollectionLocation.h"
@@ -31,15 +32,10 @@
 #include "amarokconfig.h"
 #include "Debug.h"
 
-#include "MediaDeviceCache.h"
-#include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 
 #include <KMessageBox>
 #include <KUrl>
-
-#include <solid/device.h>
-
 
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 

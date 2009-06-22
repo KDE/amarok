@@ -23,13 +23,11 @@ extern "C" {
   #include <gpod/itdb.h>
 }
 
-#include "MediaDeviceInfo.h"
+
 #include "MediaDeviceCollection.h"
 
 #include "Debug.h"
 
-#include "Collection.h"
-#include "MemoryCollection.h"
 #include "IpodHandler.h"
 
 #include <QtGlobal>
@@ -38,6 +36,7 @@ extern "C" {
 #include <KIcon>
 
 class IpodCollection;
+class MediaDeviceInfo;
 
 class IpodCollectionFactory : public MediaDeviceCollectionFactory
 {
