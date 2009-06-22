@@ -190,8 +190,6 @@ namespace Meta {
 
         signals:
            void deleteTracksDone();
-           void incrementProgress();
-           void endProgressOperation( const QObject *owner );
 
         public slots:
            bool initializeIpod();

@@ -82,6 +82,8 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
 {
     DEBUG_BLOCK
 
+    m_copyingthreadsafe = false;
+
     g_type_init();
 
     GError *err = 0;
@@ -490,7 +492,7 @@ IpodHandler::writeITunesDB( bool threaded )
                 }
             }
             // Kill status bar only once DB is written
-            emit endProgressOperation( this );
+            //emit databaseWritten( this );
         }
 
         if( ok )
@@ -679,6 +681,8 @@ IpodHandler::addTrackInDB(const Meta::MediaDeviceTrackPtr& track)
         }
         itdb_playlist_add_track(mpl, m_itdbtrackhash[ track ], -1);
     }
+
+    m_dbChanged = true;
 }
 #if 0
 bool
@@ -722,10 +726,10 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     //m_jobcounter++;
 
     connect( job, SIGNAL( result( KJob * ) ),
-             this,  SLOT( fileTransferred( KJob * ) ) );
+             this,  SLOT( fileTransferred( KJob * ) ), Qt::QueuedConnection );
 
     connect( job, SIGNAL( copyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)),
-             this, SLOT(slotCopyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)));
+             this, SLOT(slotCopyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)) );
 
     return true;
 }
@@ -788,7 +792,9 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
     Q_UNUSED( renamed )
 
     DEBUG_BLOCK
-    emit libCopyTrackDone( m_trackscopying[from] );
+    Meta::TrackPtr track = m_trackscopying[from];
+    if( m_trackscopying.remove( from ) )
+        emit libCopyTrackDone( track  );
 }
 #if 0
 void
@@ -1389,9 +1395,9 @@ DBWorkerThread::DBWorkerThread( IpodHandler* handler )
     , m_success( false )
     , m_handler( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteFailed( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteSucceeded( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
 }
 
 DBWorkerThread::~DBWorkerThread()

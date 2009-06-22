@@ -85,7 +85,7 @@ namespace Meta {
 
         signals:
             void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
-            void databaseWritten( bool success );
+            void databaseWritten( bool succeeded );
 
            void deleteTracksDone();
            void incrementProgress();
@@ -372,6 +372,8 @@ namespace Meta {
     void slotCopyTrackJobsDone( ThreadWeaver::Job* job );
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
 
+    void slotDatabaseWritten( bool success );
+
            /* Collection Variables */
         private:
            // Associated collection
@@ -443,6 +445,8 @@ namespace Meta {
 
         bool m_copyFailed;
 
+        int m_numTracksToCopy;
+
            // tracks that failed to copy
 
            QMap<Meta::TrackPtr, QString> m_tracksFailed;
@@ -455,8 +459,11 @@ namespace Meta {
 
            ProgressBar      *m_statusbar;
 
+           QMutex m_mutex;
+
         protected:
             bool m_success;
+            bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
     };
 
 #if 0

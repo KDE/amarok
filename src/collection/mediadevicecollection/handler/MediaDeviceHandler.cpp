@@ -21,6 +21,8 @@
 
 #include "MediaDeviceCollection.h"
 
+#include <kapplication.h>
+
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/JobCollection.h>
 
@@ -31,6 +33,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 , m_memColl( qobject_cast<MediaDeviceCollection*>(parent) )
 {
     DEBUG_BLOCK
+        connect( this, SIGNAL( libCopyTrackDone( const Meta::TrackPtr & ) ),
+             this, SLOT( slotFinalizeTrackCopy( const Meta::TrackPtr & ) ), Qt::QueuedConnection );
 }
 
 bool
@@ -90,6 +94,7 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
 void
 MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& track)
 {
+    DEBUG_BLOCK
 
 
     TrackMap trackMap = m_memColl->trackMap();
@@ -269,31 +274,47 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     m_statusbar->setMaximum( m_tracksToCopy.size() );
 
     connect( this, SIGNAL( incrementProgress() ),
-            The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-            The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
+            The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+
+     connect( this, SIGNAL( databaseWritten(bool)),
+              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
 
     // prepare to copy
 
     prepareToCopy();
 
+    m_numTracksToCopy = m_tracksToCopy.count();
     m_tracksCopying.clear();
 
     // begin copying tracks to device
 
-    ThreadWeaver::JobCollection* jobcoll = new ThreadWeaver::JobCollection();
+    // TODO: throttle to a max_num of jobs, necessary for KIO which does max 10 at a time
 
-    foreach( Meta::TrackPtr track, m_tracksToCopy )
+    if( !m_copyingthreadsafe )
     {
-        jobcoll->addJob( new CopyWorkerThread( track, this ));
+        foreach( Meta::TrackPtr track, m_tracksToCopy )
+        {
+            privateCopyTrackToDevice( track );
+        }
     }
 
-    ThreadWeaver::Weaver::instance()->setMaximumNumberOfThreads( 10 );
+    else
+    {
 
-    connect( jobcoll, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT(slotCopyTrackJobsDone(ThreadWeaver::Job*)) );
-    ThreadWeaver::Weaver::instance()->enqueue( jobcoll );
+        ThreadWeaver::JobCollection* jobcoll = new ThreadWeaver::JobCollection();
 
-    //copyNextTrackToDevice();
+        foreach( Meta::TrackPtr track, m_tracksToCopy )
+        {
+            jobcoll->addJob( new CopyWorkerThread( track, this ));
+        }
+
+        ThreadWeaver::Weaver::instance()->setMaximumNumberOfThreads( 10 );
+
+        //connect( jobcoll, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT(slotCopyTrackJobsDone(ThreadWeaver::Job*)) );
+        ThreadWeaver::Weaver::instance()->enqueue( jobcoll );
+
+        //copyNextTrackToDevice();
+    }
     
     return;
 }
@@ -344,9 +365,6 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
     // When internal copy method is done, keep going by creating track struct
     // and adding to db etc.
 
-    connect( this, SIGNAL( libCopyTrackDone( const Meta::TrackPtr & ) ),
-             this, SLOT( slotFinalizeTrackCopy( const Meta::TrackPtr & ) ) );
-
     // Copy the file to the device
 
     libCopyTrack( track );
@@ -358,6 +376,8 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 void
 MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 {
+    DEBUG_BLOCK
+    //m_tracksCopying.removeOne( track );
     // Create new destTrack that will go into the device collection, based on source track
 
     Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
@@ -378,7 +398,34 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
     // add track to collection
     addMediaDeviceTrackToCollection( destTrack );
+
+    emit incrementProgress();
+
+    QMutexLocker locker( &m_mutex );
+
+    m_numTracksToCopy--;
+
+    debug() << "Tracks left to copy after this one is now done: " << m_numTracksToCopy;
+
+    if( m_numTracksToCopy == 0 )
+    {
+        emit copyTracksDone( true );
+    }
 }
+
+void
+MediaDeviceHandler::slotDatabaseWritten( bool success )
+{
+    DEBUG_BLOCK
+
+    debug() << "Database write: " << (success? "succeeded" : "failed" );
+    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
+             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ), Qt::QueuedConnection );
+
+    emit endProgressOperation( this );
+    The::statusBar()->shortMessage( i18n( "Copying to device complete!" ) );
+}
+
 
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
@@ -583,7 +630,7 @@ MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
     Q_UNUSED( job );
     m_copyFailed = true;
     QString error = "Job Failed";
-    m_tracksFailed.insert( m_lastTrackCopied, error );
+    //m_tracksFailed.insert( m_lastTrackCopied, error );
 
     //copyNextTrackToDevice();
 }
@@ -593,13 +640,13 @@ MediaDeviceHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
 {
     if ( job->success() )
     {
-        emit incrementProgress();
+        //emit incrementProgress();
     }
     else
     {
         m_copyFailed = true;
         QString error = "Copy error";
-        m_tracksFailed.insert( m_lastTrackCopied, error );
+        //m_tracksFailed.insert( m_lastTrackCopied, error );
     }
 
     //copyNextTrackToDevice();
@@ -626,8 +673,8 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHand
         , m_track( track )
         , m_handler( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ) );
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     //connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
