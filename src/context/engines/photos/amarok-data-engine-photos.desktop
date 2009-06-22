@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Photos Data Engine
+X-KDE-ServiceTypes=Plasma/DataEngine
+X-KDE-ParentApp=Amarok
+Type=Service
+Icon=Photos
+X-KDE-Library=amarok_data_engine_photos
+X-KDE-PluginInfo-Name=amarok-photos
