@@ -461,15 +461,13 @@ LastFmService::updateProfileInfo()
 {
     if( m_userinfo )
     {
-        QString info;
-        info += "" + i18n( "Username: ") + "" + Qt::escape( m_userName ) + "";
-        m_userinfo->setText( info );
+        m_userinfo->setText( i18n( "Username: ") + Qt::escape( m_userName ) );
     }
 
     if( m_profile && !m_playcount.isEmpty() )
     {
         QString playcount = KGlobal::locale()->formatNumber( m_playcount, false );
-        m_profile->setText( "" + i18n( "Play Count: " ) + "" + playcount + i18n( " plays" ) );
+        m_profile->setText( i18n( "Play Count: " ) + i18np( "%1 play", "%1 plays", playcount ) );
     }
 }
 
@@ -523,7 +521,6 @@ LastFmService::polish()
             m_avatarLabel->setFixedSize( m_avatar.width(), m_avatar.height() );
             m_avatarLabel->setMargin( 5 );
         }
-
 
         debug() << m_avatarLabel->margin();
         KVBox * innerProfilebox = new KVBox( outerProfilebox );
