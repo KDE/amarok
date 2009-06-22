@@ -52,19 +52,6 @@ IpodCollectionFactory::~IpodCollectionFactory()
 
 //IpodCollection
 
-IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
-    : Collection()
-    , MemoryCollection()
-    , m_mountPoint( mountPoint )
-    , m_udi( udi )
-    , m_handler( 0 )
-{
-    DEBUG_BLOCK
-
-    // NOTE: cheap hack, remove after applet works
-    connectDevice();
-}
-
 IpodCollection::IpodCollection(MediaDeviceInfo* info)
 : Collection()
 , MemoryCollection()

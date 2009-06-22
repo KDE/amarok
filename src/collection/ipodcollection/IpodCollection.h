@@ -50,7 +50,6 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
-        IpodCollection( const QString &mountPoint, const QString &udi );
         IpodCollection( MediaDeviceInfo* info );
         virtual ~IpodCollection();
 
