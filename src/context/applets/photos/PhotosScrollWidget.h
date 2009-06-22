@@ -1,0 +1,66 @@
+/***************************************************************************
+* copyright   : (C) 2009 Simon Esneault <simon.esneault@gmail.com>        *
+**************************************************************************/
+
+/***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
+#ifndef PHOTOSSCROLLWIDGET_H
+#define PHOTOSSCROLLWIDGET_H
+
+#include <QGraphicsWidget>
+
+//forward
+class QPixmap;
+class QGraphicsSceneHoverEvent;
+namespace Plasma
+{
+    class Animator;
+}
+
+/**
+* \brief An animated QGrahicsWidget on hovering
+*
+* The photos will scroll smoothly !!!
+*
+* \sa QGraphicsWidget
+*
+* \author Simon Esneault <simon.esneault@gmail.com>
+*/
+
+class PhotosScrollWidget : public QGraphicsWidget
+{
+    Q_OBJECT
+    public:
+
+        PhotosScrollWidget( QGraphicsItem* parent = 0 );
+
+        void setPixmapList (QList < QPixmap * > );
+
+    public slots:
+        void animate( qreal anim );
+        
+    protected:
+
+       /**
+        * Reimplement mouse interaction event
+        */
+        virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+        virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+ //       virtual void keyPressEvent(QKeyEvent* event);
+ //       virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
+        
+    private:
+        int     m_id;           // id of the animator
+        bool    m_animating;    // boolean !
+        float   m_speed;        // if negative, go to left, if positif go to right,
+        int     m_margin;
+        int     m_scrollmax;
+};
+
+#endif // PHOTOSSCROLLWIDGET_H
