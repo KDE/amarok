@@ -140,7 +140,7 @@ namespace Meta {
 
            virtual void libCreateTrack(const Meta::MediaDeviceTrackPtr& track );
            virtual void findPathToCopy( const Meta::TrackPtr &track );
-           virtual void libCopyTrack( const Meta::TrackPtr &track );
+           virtual bool libCopyTrack( const Meta::TrackPtr &track );
            virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
 
            virtual void setCopyTrackForParse();
@@ -232,17 +232,6 @@ namespace Meta {
            void deleteFile( const KUrl &url );
            
 */
-           /* Observer Methods */
-#if 0
-           /** These methods are called when the metadata of a track has changed. They invoke an Ipod DB update */
-           virtual void metadataChanged( Meta::TrackPtr track );
-           virtual void metadataChanged( Meta::ArtistPtr artist );
-           virtual void metadataChanged( Meta::AlbumPtr album );
-           virtual void metadataChanged( Meta::GenrePtr genre );
-           virtual void metadataChanged( Meta::ComposerPtr composer );
-           virtual void metadataChanged( Meta::YearPtr year );
-#endif
-
            /**
             * Handler Variables
             */

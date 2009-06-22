@@ -166,10 +166,10 @@ namespace Meta {
 
            virtual void findPathToCopy( const Meta::TrackPtr &track ) = 0;
 
-           /// libCopyTrack does the actual file copying.  For Ipods, it uses KIO
+           /// libCopyTrack does the actual file copying.  For Ipods, it uses KIO,
            /// for MTPs this uses a libmtp call
            
-           virtual void libCopyTrack( const Meta::TrackPtr &track ) = 0;
+           virtual bool libCopyTrack( const Meta::TrackPtr &track ) = 0;
 
            /// Creates a new track struct particular to the library of the device
            /// e.g. LIBMTP_new_track_t(), and associates it with @param track for
@@ -256,6 +256,8 @@ namespace Meta {
            signals:
            void copyTracksDone( bool success );
            void libCopyTrackDone( const Meta::TrackPtr &track );
+           void libCopyTrackFailed( const Meta::TrackPtr &track );
+           void canCopyMoreTracks(); // subclass tells this class that it can copy more tracks
            #if 0
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingMediaDeviceTrack );// NOTE: used by Collection
 
@@ -336,7 +338,9 @@ namespace Meta {
 
            /* File I/O Methods */
 
-           //void copyNextTrackToDevice();
+        public slots:
+
+           void copyNextTrackToDevice();
            bool privateCopyTrackToDevice( const Meta::TrackPtr& track );
 
         private:
@@ -367,10 +371,11 @@ namespace Meta {
            private slots:
 
     void slotCopyNextTrackFailed( ThreadWeaver::Job* job );
-    void slotCopyNextTrackToDevice( ThreadWeaver::Job* job );
+    void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
 
     void slotCopyTrackJobsDone( ThreadWeaver::Job* job );
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
+    void slotCopyTrackFailed( const Meta::TrackPtr & track );
 
     void slotDatabaseWritten( bool success );
 
@@ -495,6 +500,12 @@ public:
     virtual ~CopyWorkerThread();
 
     virtual bool success() const;
+
+    signals:
+        void copyTrackDone( ThreadWeaver::Job*, const Meta::TrackPtr& track);
+
+    private slots:
+        void slotDone( ThreadWeaver::Job* );
 
 protected:
     virtual void run();

@@ -35,6 +35,9 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     DEBUG_BLOCK
         connect( this, SIGNAL( libCopyTrackDone( const Meta::TrackPtr & ) ),
              this, SLOT( slotFinalizeTrackCopy( const Meta::TrackPtr & ) ), Qt::QueuedConnection );
+
+        connect( this, SIGNAL( canCopyMoreTracks()),
+                 this, SLOT( copyNextTrackToDevice()) );
 }
 
 bool
@@ -292,10 +295,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     if( !m_copyingthreadsafe )
     {
-        foreach( Meta::TrackPtr track, m_tracksToCopy )
-        {
-            privateCopyTrackToDevice( track );
-        }
+            copyNextTrackToDevice();
     }
 
     else
@@ -318,7 +318,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     
     return;
 }
-/*
+
 void
 MediaDeviceHandler::copyNextTrackToDevice()
 {
@@ -335,21 +335,23 @@ MediaDeviceHandler::copyNextTrackToDevice()
         // Copy the track
 
         m_lastTrackCopied = track;
-        m_tracksCopying.insert( track );
+        //m_tracksCopying.insert( track );
 
-        ThreadWeaver::Weaver::instance()->enqueue( new CopyWorkerThread( track, this ) );
+        privateCopyTrackToDevice( track );
 
     }
 
     // No tracks left to copy, emit done
+    /*
     else
     {
         emit incrementProgress();
         emit endProgressOperation( this );
         emit copyTracksDone( !m_copyFailed );
     }
+    */
 }
-*/
+
 
 bool
 MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
@@ -367,7 +369,7 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     // Copy the file to the device
 
-    libCopyTrack( track );
+    success = libCopyTrack( track );
 
     return success;
 }
@@ -401,16 +403,32 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
     emit incrementProgress();
 
-    QMutexLocker locker( &m_mutex );
-
     m_numTracksToCopy--;
 
     debug() << "Tracks left to copy after this one is now done: " << m_numTracksToCopy;
 
     if( m_numTracksToCopy == 0 )
     {
+        if( m_tracksFailed.size() > 0 )
+            The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         emit copyTracksDone( true );
     }
+}
+
+void
+MediaDeviceHandler::slotCopyTrackFailed( const Meta::TrackPtr & track )
+{
+    DEBUG_BLOCK
+    emit incrementProgress();
+    
+
+
+    m_numTracksToCopy--;
+
+    QString error = i18n( "The track failed to copy to the device" );
+
+    m_tracksFailed.insert( track, error );
+    
 }
 
 void
@@ -636,11 +654,12 @@ MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
 }
 
 void
-MediaDeviceHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
+MediaDeviceHandler::slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track )
 {
     if ( job->success() )
     {
         //emit incrementProgress();
+        
     }
     else
     {
@@ -673,8 +692,14 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHand
         , m_track( track )
         , m_handler( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    /*
+    
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+*/
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( copyTrackDone(ThreadWeaver::Job*, const Meta::TrackPtr&)), m_handler, SLOT( slotCopyNextTrackDone( ThreadWeaver::Job*, const Meta::TrackPtr&) ) );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDone(ThreadWeaver::Job*)) );
+    
     //connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
@@ -695,6 +720,11 @@ CopyWorkerThread::run()
     m_success = m_handler->privateCopyTrackToDevice( m_track );
 }
 
+void
+CopyWorkerThread::slotDone( ThreadWeaver::Job* )
+{
+    emit copyTrackDone( this, m_track );
+}
 
 
 #include "MediaDeviceHandler.moc"

@@ -43,6 +43,7 @@ extern "C" {
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Scheduler>
+#include <KIO/NetAccess>
 #include "kjob.h"
 #include <threadweaver/ThreadWeaver.h>
 #include <KUrl>
@@ -140,50 +141,6 @@ IpodHandler::isWritable() const
     return true;
 }
 
-#if 0
-/** Observer Methods **/
-void
-IpodHandler::metadataChanged( TrackPtr track )
-{
-    DEBUG_BLOCK
-
-    Meta::IpodTrackPtr trackPtr = Meta::IpodTrackPtr::staticCast( track );
-    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
-
-    // TODO: database methods abstraction needed
-    //updateTrackInDB( trackUrl, track, trackPtr->getIpodTrack() );
-}
-
-void
-IpodHandler::metadataChanged( ArtistPtr artist )
-{
-    Q_UNUSED( artist );
-}
-
-void
-IpodHandler::metadataChanged( AlbumPtr album )
-{
-    Q_UNUSED( album );
-}
-
-void
-IpodHandler::metadataChanged( GenrePtr genre )
-{
-    Q_UNUSED( genre );
-}
-
-void
-IpodHandler::metadataChanged( ComposerPtr composer )
-{
-    Q_UNUSED( composer );
-}
-
-void
-IpodHandler::metadataChanged( YearPtr year )
-{
-    Q_UNUSED( year );
-}
-#endif
 bool
 IpodHandler::initializeIpod()
 {
@@ -590,7 +547,7 @@ IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
 }
 #endif
 
-/// Finds path to copy track to on Ipod, sets m_copyurl for later
+/// Finds path to copy track to on Ipod
 void
 IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
 {
@@ -630,13 +587,13 @@ IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
     m_trackdesturl[ track ] = url;
 }
 
-void
+bool
 IpodHandler::libCopyTrack( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
     KUrl srcurl = KUrl::fromPath( track->playableUrl().path() );
     m_trackscopying[ srcurl ] = track;
-    kioCopyTrack( srcurl, m_trackdesturl[ track ] );
+    return kioCopyTrack( srcurl, m_trackdesturl[ track ] );
 }
 
 void
@@ -722,8 +679,14 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     debug() << "Copying from *" << src << "* to *" << dst << "*";
 
+
+
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
-    //m_jobcounter++;
+    m_jobcounter++;
+
+    if( m_jobcounter < 150 )
+        emit canCopyMoreTracks();
+
 
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ), Qt::QueuedConnection );
@@ -731,12 +694,11 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     connect( job, SIGNAL( copyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)),
              this, SLOT(slotCopyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)) );
 
+    //return KIO::NetAccess::file_copy( src, dst );
+
     return true;
 }
 
-/// TODO: make this function emit libCopyDone if successful, which will then go
-/// and finalize the transfer.  The problem is that this limits us to 1 transfer
-/// at a time.
 void
 IpodHandler::fileTransferred( KJob *job )  //SLOT
 {
@@ -745,7 +707,7 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
 
     m_wait = false;
 
-    //m_jobcounter--;
+    m_jobcounter--;
 
     if ( job->error() )
     {
@@ -757,18 +719,19 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
 
 
 
-    // Limit max number of jobs to 10, make sure more tracks left
+    // Limit max number of jobs to 150, make sure more tracks left
     // to copy
-/*
-    if( !m_tracksToCopy.empty() )
-    {
+
+
         debug() << "Tracks to copy still remain";
-        if( m_jobcounter < 10 )
+        if( m_jobcounter < 150 )
         {
             debug() << "Jobs: " << m_jobcounter;
-            copyNextTrackToDevice();
+            emit canCopyMoreTracks();
         }
-    }
+
+
+    /*
     else
     {
         debug() << "Tracklist empty";
@@ -777,7 +740,7 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         {
             emit incrementProgress();
             emit copyTracksDone( !m_copyFailed );
-        }KIO::Job*,KUrl,KUrl,time_t,bool,bool))
+        }
     }
     */
 }
@@ -793,8 +756,16 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
 
     DEBUG_BLOCK
     Meta::TrackPtr track = m_trackscopying[from];
-    if( m_trackscopying.remove( from ) )
+    
+    if( job->error() )
+    {
+        emit libCopyTrackFailed( track );
+    }
+    else
+    {
         emit libCopyTrackDone( track  );
+    }
+    
 }
 #if 0
 void
@@ -889,49 +860,8 @@ IpodHandler::realPath( const char *ipodPath )
 
     return path;
 }
-#if 0
-void
-IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
-{
-    TrackMap trackMap = m_memColl->trackMap();
-    ArtistMap artistMap = m_memColl->artistMap();
-    AlbumMap albumMap = m_memColl->albumMap();
-    GenreMap genreMap = m_memColl->genreMap();
-    ComposerMap composerMap = m_memColl->composerMap();
-    YearMap yearMap = m_memColl->yearMap();
 
-    IpodTrackPtr track( new IpodTrack( m_memColl ) );
 
-    /* 1-liner info retrieval */
-
-    getBasicIpodTrackInfo( ipodtrack, track );
-
-    /* map-related info retrieval */
-    setupArtistMap( ipodtrack, track, artistMap );
-    setupAlbumMap( ipodtrack, track, albumMap );
-    setupGenreMap( ipodtrack, track, genreMap );
-    setupComposerMap( ipodtrack, track, composerMap );
-    setupYearMap( ipodtrack, track, yearMap );
-
-    /* trackmap also soon to be subordinated */
-
-    trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
-
-    m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
-
-    track->setIpodTrack( ipodtrack ); // convenience pointer
-
-    // Finally, assign the created maps to the collection
-    m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( trackMap );
-    m_memColl->setArtistMap( artistMap );
-    m_memColl->setAlbumMap( albumMap );
-    m_memColl->setGenreMap( genreMap );
-    m_memColl->setComposerMap( composerMap );
-    m_memColl->setYearMap( yearMap );
-    m_memColl->releaseLock();
-}
-#endif
 QString
 IpodHandler::libGetTitle( const Meta::MediaDeviceTrackPtr &track )
 {
