@@ -25,4 +25,28 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     DEBUG_BLOCK
 }
 
+void
+MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
+{
+    QMap<Meta::TrackPtr, KUrl> urls;
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        if( track->isPlayable() )
+            urls.insert( track, track->playableUrl() );
+    }
+
+    emit gotCopyableUrls( urls );
+
+}
+
+void
+MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
+{
+    Q_UNUSED( tracklist );
+    // TODO: generically implement, abstract from IpodHandler
+    return;
+}
+
+
+
 #include "MediaDeviceHandler.moc"

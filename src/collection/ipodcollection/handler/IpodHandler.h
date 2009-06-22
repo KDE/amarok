@@ -105,13 +105,13 @@ struct PodcastInfo
 
            /* Methods Provided for Collection */
 
-           void copyTrackListToDevice( const Meta::TrackList tracklist );
+           virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
            void deleteTrackListFromDevice( const Meta::TrackList &tracks );
            /**
             * Parses Ipod DB and creates a Meta::IpodTrack
             * for each track in the DB
             */
-           void parseTracks();
+           virtual void parseTracks();
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
            virtual void writeDatabase();
 
@@ -120,7 +120,6 @@ struct PodcastInfo
            bool writeITunesDB( bool threaded=false );
 
         signals:
-           void copyTracksDone( bool success );
            void deleteTracksDone();
            void incrementProgress();
            void endProgressOperation( const QObject *owner );

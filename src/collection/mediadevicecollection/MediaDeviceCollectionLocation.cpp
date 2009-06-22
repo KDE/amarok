@@ -75,10 +75,25 @@ MediaDeviceCollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 void
+MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
+{
+    //    CollectionLocation::getKIOCopyableUrls(tracks);
+    connect( m_handler, SIGNAL( gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> & ) ),SLOT(slotGetKIOCopyableUrlsDone(const QMap<Meta::TrackPtr,KUrl> &)) );
+
+    m_handler->getCopyableUrls( tracks );
+}
+
+
+void
 MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    Q_UNUSED( sources );
     DEBUG_BLOCK
+
+    connect( m_handler, SIGNAL( copyTracksDone( bool  ) ),
+             SLOT( copyOperationFinished( bool ) ),
+             Qt::QueuedConnection );
+    m_handler->copyTrackListToDevice( sources.keys() );
+
 /*
     connect( m_collection, SIGNAL( copyTracksCompleted( bool ) ),
              SLOT( copyOperationFinished( bool ) ) );
@@ -96,7 +111,10 @@ MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, 
 void
 MediaDeviceCollectionLocation::copyOperationFinished( bool success )
 {
-    Q_UNUSED( success );
+    // TODO: should connect database written signal to
+    // to this slot
+    if( success )
+        m_handler->writeDatabase();
     // TODO: will be replaced with a more powerful method
     // which deals with particular reasons for failed copies
     /*
@@ -112,9 +130,9 @@ MediaDeviceCollectionLocation::copyOperationFinished( bool success )
                 source()->transferError( track, failedTracks[ track ] );
             }
     }
-
-    slotCopyOperationFinished();
     */
+    slotCopyOperationFinished();
+
 }
 
 #include "MediaDeviceCollectionLocation.moc"

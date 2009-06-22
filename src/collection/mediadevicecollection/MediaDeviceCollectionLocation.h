@@ -22,6 +22,8 @@
 #include "CollectionLocation.h"
 #include "MediaDeviceHandler.h"
 
+#include "mediadevicecollection_export.h"
+
 #include <QSet>
 #include <QMap>
 #include <QString>
@@ -29,7 +31,7 @@
 class MediaDeviceCollection;
 class KJob;
 
-class MediaDeviceCollectionLocation : public CollectionLocation
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
     public:
@@ -41,6 +43,9 @@ class MediaDeviceCollectionLocation : public CollectionLocation
         virtual bool remove( const Meta::TrackPtr &track );
 
     protected:
+
+        virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
+        /// Copies these tracks to the Collection using the Handler
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
 
     private slots:

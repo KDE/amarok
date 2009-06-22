@@ -68,6 +68,20 @@ class MediaDeviceCollection;
            // TODO: to be replaced when connection of device gets thread support
            bool succeeded() const { return m_success; }
 
+           /// Methods provided for CollectionLocation
+
+        /// Given a list of tracks, get URLs for device tracks
+        /// of this type of device.  If the device needs to
+        /// do some work to get URLs (e.g. copy tracks to a
+        /// temporary location) the overridden method in
+        /// the handler takes care of it
+        /// Default implementation: 
+           virtual void getCopyableUrls( const Meta::TrackList &tracks );
+
+
+        signals:
+            void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
+
            #if 0
 
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; } // NOTE: to be used for error-handling later
@@ -82,8 +96,15 @@ class MediaDeviceCollection;
             * Parses MediaDevice DB and creates a Meta::MediaDeviceTrack
             * for each track in the DB
             */
+
+        public:
            virtual void parseTracks() = 0;// NOTE: used by Collection
            virtual void writeDatabase() = 0;// NOTE: used by Collection
+
+           virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
+
+           signals:
+           void copyTracksDone( bool success );
            #if 0
            void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingMediaDeviceTrack );// NOTE: used by Collection
 
@@ -91,7 +112,6 @@ class MediaDeviceCollection;
 
 
         signals:
-           void copyTracksDone( bool success ); // NOTE: used by Collection
            void deleteTracksDone();// NOTE: used by Collection
            void incrementProgress();
            void endProgressOperation( const QObject *owner );

@@ -36,10 +36,7 @@
 using namespace Meta;
 
 IpodCollectionLocation::IpodCollectionLocation( IpodCollection const *collection )
-    : CollectionLocation()
-    , m_collection( const_cast<IpodCollection*>( collection ) )
-    , m_removeSources( false )
-    , m_overwriteFiles( false )
+    : MediaDeviceCollectionLocation( collection )
 {
     //nothing to do
 }
@@ -50,82 +47,10 @@ IpodCollectionLocation::~IpodCollectionLocation()
     //nothing to do
 }
 
-QString
-IpodCollectionLocation::prettyLocation() const
-{
-    return collection()->prettyName();
-}
-
 bool
 IpodCollectionLocation::isWritable() const
 {
     return true;
-}
-
-bool
-IpodCollectionLocation::remove( const Meta::TrackPtr &track )
-{
-    Q_UNUSED( track );
-    return false;
-}
-
-void
-IpodCollectionLocation::slotJobFinished( KJob *job )
-{
-    DEBUG_BLOCK
-    Q_UNUSED(job);
-}
-
-void
-IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
-{
-    DEBUG_BLOCK
-
-// NOTE: will be implemented in parent class, likely
-    Q_UNUSED( sources );
-/*
-    connect( m_collection, SIGNAL( copyTracksCompleted( bool ) ),
-             SLOT( copyOperationFinished( bool ) ) );
-
-    // Copy list of tracks
-    m_collection->copyTrackListToDevice( sources.keys() );
-    */
-}
-
-void
-IpodCollectionLocation::copyOperationFinished( bool success )
-{
-    DEBUG_BLOCK
-
-    // NOTE: will be reimplemented in parent class
-    /*
-    if( !success )
-    {
-        QMap<Meta::TrackPtr, QString> failedTracks = m_collection->handler()->tracksFailed();
-        debug() << "The following tracks failed to copy";
-        foreach( Meta::TrackPtr track, failedTracks.keys() )
-            {
-                // TODO: better error handling
-                debug() << track->artist()->name() << " - " << track->name() << " with error: " << failedTracks[ track ];
-                source()->transferError( track, failedTracks[ track ] );
-            }
-    }
-*/
-    slotCopyOperationFinished();
-}
-
-void
-IpodCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap )
-{
-    // NOTE: IpodHandler doing this right now
-    Q_UNUSED(trackMap);
-}
-
-void
-IpodCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap )
-{
-    DEBUG_BLOCK
-    Q_UNUSED(trackMap);
 }
 
 #include "IpodCollectionLocation.moc"
