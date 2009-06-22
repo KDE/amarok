@@ -86,12 +86,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
     
-    // Read config values
-    //we have to detect if this is the actual first run and not get the collectionFolders in that case
-    //there won't be any anyway and accessing them creates a Sqlite database, even if the user wants to
-    //use another database
-    //bug 131719 131724
-    //if( !Amarok::config().readEntry( "First Run", true ) )
     QStringList dirs = MountPointManager::instance()->collectionFolders();
     m_model->setDirectories( dirs );
     
