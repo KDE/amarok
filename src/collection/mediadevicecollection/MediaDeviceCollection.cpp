@@ -22,10 +22,13 @@
 #define DEBUG_PREFIX "MediaDeviceCollection"
 
 #include "MediaDeviceCollection.h"
+#include "MediaDeviceInfo.h"
 #include "MediaDeviceMeta.h"
 
+#include "MediaDeviceMonitor.h"
+
 #include "amarokconfig.h"
-#include "Debug.h"
+//#include "Debug.h"
 #include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
 
@@ -37,12 +40,13 @@
 
 
 
-AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
+//AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
 
-MediaDeviceCollectionFactory::MediaDeviceCollectionFactory()
+MediaDeviceCollectionFactory::MediaDeviceCollectionFactory( ConnectionAssistant* assistant )
     : Amarok::CollectionFactory()
+    , m_assistant( assistant )
+    , m_collectionMap()
 {
-    //nothing to do
 }
 
 MediaDeviceCollectionFactory::~MediaDeviceCollectionFactory()
@@ -50,16 +54,71 @@ MediaDeviceCollectionFactory::~MediaDeviceCollectionFactory()
   //    delete m_browser;
 }
 
+Amarok::Collection* MediaDeviceCollectionFactory::createCollection(MediaDeviceInfo* info)
+{
+    Q_UNUSED( info );
+    Amarok::Collection* coll = 0;
+
+    return coll;
+}
+
+
 void
 MediaDeviceCollectionFactory::init()
 {
-  DEBUG_BLOCK
+    //DEBUG_BLOCK
+
+    // When assistant identifies a device, Factory will attempt to build Collection
+    connect( m_assistant, SIGNAL( identified(MediaDeviceInfo*) )
+    , SLOT( deviceDetected( MediaDeviceInfo* ) ) );
+
+    // Register the device type with the Monitor
+    MediaDeviceMonitor::instance()->registerDeviceType( m_assistant );
+
+}
+
+void MediaDeviceCollectionFactory::deviceDetected(MediaDeviceInfo* info) {
+    Amarok::Collection* coll = 0;
+    if( !m_collectionMap.contains( info->udi() ) )
+    {
+        coll = createCollection( info );
+        if( coll )
+        {
+            // TODO: connect to MediaDeviceMonitor signals
+ //           connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
+//                     this, SLOT( slotCollectionDisconnected( const QString & ) ) );
+            m_collectionMap.insert( info->udi(), coll );
+            //debug() << "emitting new ipod collection";
+            emit newCollection( coll );
+        }
+    }
+}
+
+
+
+void
+MediaDeviceCollectionFactory::deviceRemoved( const QString &udi )
+{
+    //DEBUG_BLOCK
+    if( m_collectionMap.contains( udi ) )
+    {
+        Amarok::Collection* coll = m_collectionMap[ udi ];
+        if( coll )
+        {
+            m_collectionMap.remove( udi ); // remove from map
+            coll->deviceRemoved();  //collection will be deleted by collectionmanager
+        }
+//        else
+            //warning() << "collection already null";
+    }
+    //else
+        //warning() << "removing non-existent device";
 
     return;
 }
 
 //MediaDeviceCollection
-
+/*
 MediaDeviceCollection::MediaDeviceCollection()
     : Collection()
     , MemoryCollection()
@@ -104,6 +163,13 @@ MediaDeviceCollection::prettyName() const
 {
     return "prettyfiller";
 }
+
+void
+IpodCollection::deviceRemoved()
+{
+    emit remove();
+}
+*/
 
 #include "MediaDeviceCollection.moc"
 

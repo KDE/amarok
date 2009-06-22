@@ -33,7 +33,7 @@ IpodCollectionFactory.
 #ifndef AMAROK_MEDIADEVICEMONITOR_H
 #define AMAROK_MEDIADEVICEMONITOR_H
 
-#include "collection/mediadevicecollection/support/MediaDeviceInfo.h"
+//#include "MediaDeviceInfo.h"
 
 #include "amarok_export.h"
 
@@ -42,6 +42,7 @@ IpodCollectionFactory.
 #include <QObject>
 
 class ConnectionAssistant;
+class MediaDeviceInfo;
 
 class QStringList;
 
@@ -62,6 +63,17 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     /**
 
+    registerDeviceType adds the device type described by @param assistant to the list
+    of known device types by the MDM, and then checks the list of known devices
+    for a match with this type
+
+    */
+    void registerDeviceType( ConnectionAssistant *assistant );
+
+    public slots:
+
+    /**
+
     checkDevice checks if @param udi is a known device
     and if so attempts to connect it
 
@@ -75,14 +87,6 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     void checkDevice( const QString &udi );
     void checkDevicesFor( ConnectionAssistant* assistant );
 
-    /**
-
-    registerDeviceType adds the device type described by @param assistant to the list
-    of known device types by the MDM, and then checks the list of known devices
-    for a match with this type
-
-    */
-    void registerDeviceType( ConnectionAssistant *assistant );
 
     signals:
         void deviceDetected( const MediaDeviceInfo &deviceinfo );

@@ -18,6 +18,9 @@
 
 #include "ConnectionAssistant.h"
 
+#include "MediaDeviceMonitor.h"
+
+
 ConnectionAssistant::~ConnectionAssistant()
 {
 }
@@ -42,6 +45,5 @@ ConnectionAssistant::tellIdentified( const QString &udi )
 {
     emit identified( deviceInfo( udi ) );
 }
-
 
 #include "ConnectionAssistant.moc"

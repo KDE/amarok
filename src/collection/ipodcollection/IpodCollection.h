@@ -24,6 +24,7 @@ extern "C" {
 }
 
 #include "MediaDeviceInfo.h"
+#include "MediaDeviceCollection.h"
 
 #include "Debug.h"
 
@@ -38,29 +39,31 @@ extern "C" {
 
 class IpodCollection;
 
-class IpodCollectionFactory : public Amarok::CollectionFactory
+class IpodCollectionFactory : public MediaDeviceCollectionFactory
 {
     Q_OBJECT
     public:
         IpodCollectionFactory();
         virtual ~IpodCollectionFactory();
 
-        virtual void init();
+        //virtual void init();
 
     public slots:
         // convenience slot
-        void removeIpod( const QString &udi ) { deviceRemoved( udi ); }
+        //void removeIpod( const QString &udi ) { deviceRemoved( udi ); }
+
+    protected:
+        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info );
 
     private slots:
-        void ipodDetected( const QString &mountPoint, const QString &udi ); // connect ipod
-        void deviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
-        void deviceRemoved( const QString &udi );
-        void slotCollectionReady();
-        void slotCollectionDisconnected( const QString & udi );
+        //void ipodDetected( const QString &mountPoint, const QString &udi ); // connect ipod
+//        void deviceRemoved( const QString &udi );
+//        void slotCollectionReady();
+//        void slotCollectionDisconnected( const QString & udi );
 
     private:
 
-        QMap<QString, IpodCollection*> m_collectionMap;
+        //QMap<QString, Amarok::Collection*> m_collectionMap;
 };
 
 class IpodCollection : public Amarok::Collection, public MemoryCollection
@@ -78,7 +81,7 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
 
         void setTrackToDelete( const Meta::IpodTrackPtr &track );
 
-        void deviceRemoved();
+        virtual void deviceRemoved();
 
         virtual void startFullScan();
         virtual QueryMaker* queryMaker();

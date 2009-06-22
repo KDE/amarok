@@ -44,7 +44,7 @@
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 
 IpodCollectionFactory::IpodCollectionFactory()
-    : Amarok::CollectionFactory()
+    : MediaDeviceCollectionFactory( new IpodConnectionAssistant() )
 {
     //nothing to do
 }
@@ -54,56 +54,24 @@ IpodCollectionFactory::~IpodCollectionFactory()
     DEBUG_BLOCK
 }
 
-void
-IpodCollectionFactory::init()
+Amarok::Collection*
+IpodCollectionFactory::createCollection(MediaDeviceInfo* info)
 {
-    DEBUG_BLOCK
-
-    // Create assistant
-    ConnectionAssistant *assistant = new IpodConnectionAssistant();
-
-    // When assistant identifies an Ipod, Factory will attempt to build Collection
-    connect( assistant, SIGNAL( identified(MediaDeviceInfo*) )
-    , SLOT( deviceDetected( MediaDeviceInfo* ) ) );
-
-    // Register the device type with the Monitor
-    MediaDeviceMonitor::instance()->registerDeviceType( assistant );
-}
-
-void
-IpodCollectionFactory::ipodDetected( const QString &mountPoint, const QString &udi )
-{
-    DEBUG_BLOCK
-    IpodCollection* coll = 0;
-    if( !m_collectionMap.contains( udi ) )
-    {
-        debug() << "New Ipod not seen before";
-        coll = new IpodCollection( mountPoint, udi );
-        if( coll )
-        {
-            // TODO: connect to MediaDeviceMonitor signals
-            connect( coll, SIGNAL( collectionDisconnected( const QString &) ),
-                     this, SLOT( slotCollectionDisconnected( const QString & ) ) );
-            m_collectionMap.insert( udi, coll );
-            debug() << "emitting new ipod collection";
-            emit newCollection( coll );
-        }
-    }
-}
-
-void IpodCollectionFactory::deviceDetected( MediaDeviceInfo* info )
-{
+    /** Fetch Info needed to construct IpodCollection */
     IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
 
     QString mountPoint = ipodinfo->mountpoint();
     QString udi = ipodinfo->udi();
 
-    // connect ipod
+    /** Construct and return pointer to new collection */
+    Amarok::Collection *coll = new IpodCollection( mountPoint, udi );
 
-    ipodDetected( mountPoint, udi );
+    return coll;
 }
 
 
+
+/*
 void
 IpodCollectionFactory::deviceRemoved( const QString &udi )
 {
@@ -142,7 +110,7 @@ IpodCollectionFactory::slotCollectionReady()
         emit newCollection( collection );
     }
 }
-
+*/
 //IpodCollection
 
 IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )

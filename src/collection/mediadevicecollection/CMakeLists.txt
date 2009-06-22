@@ -1,9 +1,11 @@
 include_directories( ../..
    ../../plugin
    ../../meta
+   ../../meta/file
    ../../collection
+   ../../collection/support
+   support
    ${CMAKE_CURRENT_BINARY_DIR}/../..
-   ${CMAKE_CURRENT_SOURCE_DIR}
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
    ${QT_INCLUDES} )
@@ -11,17 +13,23 @@ include_directories( ../..
 
 ########### next target ###############
 
-	set(mediadevicelib_LIB_SRCS
+	set(amarok_collection-mediadevicecollection_PART_SRCS
 	support/MediaDeviceInfo.cpp
 #	support/IpodDeviceInfo.cpp
-	support/ConnectionAssistant.cpp)
+	support/ConnectionAssistant.cpp
+	MediaDeviceCollection.cpp)
 	
-	kde4_add_library(mediadevicelib SHARED ${mediadevicelib_LIB_SRCS})
+	kde4_add_plugin(amarok_collection-mediadevicecollection WITH_PREFIX ${amarok_collection-mediadevicecollection_PART_SRCS})
 
-	target_link_libraries(mediadevicelib ${KDE4_KUTILS_LIBS})
+	target_link_libraries(amarok_collection-mediadevicecollection
+	  amaroklib
+	  ${QT_QTGUI_LIBRARY}
+	  ${KDE4_KUTILS_LIBS})
 
-	set_target_properties(mediadevicelib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-	install(TARGETS mediadevicelib ${INSTALL_TARGETS_DEFAULT_ARGS} )
+	install(TARGETS 
+	  amarok_collection-mediadevicecollection
+	  DESTINATION
+	  ${PLUGIN_INSTALL_DIR} )
 
 
 	########### install files ###############

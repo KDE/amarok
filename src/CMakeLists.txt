@@ -30,6 +30,7 @@ include_directories(
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
     collection
+    collection/support
     collection/mediadevicecollection/support # for MediaDeviceInfo
     configdialog
     configdialog/dialogs
@@ -67,6 +68,15 @@ set(libplugin_SRCS
 )
 
 #####################################################################
+# MEDIADEVICEFRAMEWORK
+#####################################################################
+set(libmediadeviceframework_SRCS
+  collection/mediadevicecollection/support/ConnectionAssistant.cpp
+  collection/mediadevicecollection/support/MediaDeviceInfo.cpp
+  collection/mediadevicecollection/MediaDeviceCollection.cpp
+)
+
+#####################################################################
 # SERVICEFRAMEWORK
 #####################################################################
 set(libserviceframework_SRCS
@@ -88,7 +98,6 @@ set(libserviceframework_SRCS
     services/ServiceSqlRegistry.cpp
     services/ShowInServiceAction.cpp
 )
-
 
 #####################################################################
 # SERVICEBROWSER
@@ -444,6 +453,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylist_SRCS}
     ${libplugin_SRCS}
     ${libpodcasts_SRCS}
+    ${libmediadeviceframework_SRCS}
     ${libserviceframework_SRCS}
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
@@ -577,7 +587,6 @@ target_link_libraries(amaroklib
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
-    mediadevicelib
 )
 
 if(WIN32)

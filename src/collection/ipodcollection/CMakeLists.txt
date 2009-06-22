@@ -45,7 +45,6 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
 	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
 
     target_link_libraries(amarok_collection-ipodcollection
-        mediadevicelib
         amaroklib
         amarokpud
         ${KDE4_KDECORE_LIBS}

@@ -73,7 +73,7 @@ signals:
 
     */
      void identified( MediaDeviceInfo* info );
-    
+
 };
 
 #endif // CONNECTIONASSISTANT_H

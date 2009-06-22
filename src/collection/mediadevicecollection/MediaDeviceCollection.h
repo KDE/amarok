@@ -19,54 +19,75 @@
 #ifndef MEDIADEVICECOLLECTION_H
 #define MEDIADEVICECOLLECTION_H
 
+#include "ConnectionAssistant.h"
+
 #include "Collection.h"
 #include "MemoryCollection.h"
+
+#include "mediadevicecollection_export.h"
 
 #include <KIcon>
 
 #include <QtGlobal>
 
-class MediaDeviceCollectionFactory : public Amarok::CollectionFactory
+class MediaDeviceCollection;
+
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
     public:
-        MediaDeviceCollectionFactory();
         virtual ~MediaDeviceCollectionFactory();
+        virtual void init();
+    protected:
+        MediaDeviceCollectionFactory( ConnectionAssistant* assistant );
 
-        virtual void init() = 0;
+        /**
+
+        createCollection uses the @param info to create a MediaDeviceCollection
+        and returns a pointer to it
+
+        */
+        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info );
+
+
+    public slots:
+        // convenience slot
+        void removeDevice( const QString &udi ) { deviceRemoved( udi ); }
+
+    protected slots:
+        virtual void deviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
+        //void deviceRemoved( const QString &udi ); // remove device
+        //void slotCollectionReady();
+        //void slotCollectionDisconnected( const QString & udi );
+
+    private slots:
+                void deviceRemoved( const QString &udi );
 
     private:
 
-    private slots:
-        virtual void deviceDetected() = 0;
-        virtual void deviceRemoved( const QString &udi ) = 0;
-        virtual void slotCollectionReady() = 0;
-        virtual void slotCollectionDisconnected( const QString & udi ) = 0;
+        ConnectionAssistant* m_assistant;
+        QMap<QString, Amarok::Collection*> m_collectionMap;
 
 };
-
-class MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
+/*
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
 
-        void copyTrackListToDevice( const Meta::TrackList tracklist );
+        MediaDeviceCollection();
+        virtual ~MediaDeviceCollection();
 
-        virtual void startFullScan();
-        virtual QueryMaker* queryMaker();
+        virtual void startFullScan() = 0;
+        virtual QueryMaker* queryMaker() = 0;
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
+        virtual QString collectionId() const = 0;
+        virtual QString prettyName() const = 0;
         virtual KIcon icon() const { return KIcon("drive-removable-media-usb"); }
 
-    signals:
-        void collectionReady();
+        virtual void deviceRemoved() = 0;
 
-    public slots:
-        virtual void deleteTracksSlot( Meta::TrackList tracklist );
-
-    protected:
-        MediaDevice::MediaDeviceHandler *m_handler;
 };
+*/
 
 #endif

@@ -126,7 +126,7 @@ MediaDeviceMonitor::registerDeviceType( ConnectionAssistant* assistant )
     // keep track of this type of device from now on
     m_assistants << assistant;
 
-    // run an initial check on devices for a potential match with this new type
+    // start initial check for devices of this type
     checkDevicesFor( assistant );
 
 }
