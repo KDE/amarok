@@ -23,18 +23,9 @@
 #include "IpodDeviceInfo.h"
 #include "MediaDeviceInfo.h"
 
-#include "meta/capabilities/CollectionCapability.h"
-#include "IpodCollectionLocation.h"
-#include "IpodMeta.h"
-#include "CollectionCapabilityIpod.h"
-#include "SvgHandler.h"
-
 #include "amarokconfig.h"
 #include "Debug.h"
 
-#include "MemoryQueryMaker.h"
-
-#include <KMessageBox>
 #include <KUrl>
 
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
@@ -90,112 +81,7 @@ IpodCollection::trackForUrl( const KUrl &url )
     Meta::TrackPtr ipodTrack = m_trackMap.value( uid );
     return ipodTrack ? ipodTrack : Collection::trackForUrl(url);
 }
-/*
-bool
-IpodCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
-{
-    DEBUG_BLOCK
-    switch( type )
-    {
-        case Meta::Capability::Collection:
-            return true;
 
-        default:
-            return false;
-    }
-}
-
-Meta::Capability*
-IpodCollection::createCapabilityInterface( Meta::Capability::Type type )
-{
-    DEBUG_BLOCK
-    switch( type )
-    {
-        case Meta::Capability::Collection:
-            return new Meta::CollectionCapabilityIpod( this );
-        default:
-            return 0;
-    }
-}
-
-void
-IpodCollection::removeTrack( const Meta::IpodTrackPtr &track )
-{
-    DEBUG_BLOCK
-
-    // get pointers
-    Meta::IpodArtistPtr artist = Meta::IpodArtistPtr::dynamicCast( track->artist() );
-    Meta::IpodAlbumPtr album = Meta::IpodAlbumPtr::dynamicCast( track->album() );
-    Meta::IpodGenrePtr genre = Meta::IpodGenrePtr::dynamicCast( track->genre() );
-    Meta::IpodComposerPtr composer = Meta::IpodComposerPtr::dynamicCast( track->composer() );
-    Meta::IpodYearPtr year = Meta::IpodYearPtr::dynamicCast( track->year() );
-
-    // remove track from metadata's tracklists
-
-    debug() << "Artist name: " << artist->name();
-
-    artist->remTrack( track );
-    album->remTrack( track );
-    genre->remTrack( track );
-    composer->remTrack( track );
-    year->remTrack( track );
-
-    // if empty, get rid of metadata in general
-
-    if( artist->tracks().isEmpty() )
-    {
-        m_artistMap.remove( artist->name() );
-        debug() << "Artist still in artist map: " << ( m_artistMap.contains( artist->name() ) ? "yes" : "no");
-        acquireWriteLock();
-        setArtistMap( m_artistMap );
-        releaseLock();
-    }
-    if( album->tracks().isEmpty() )
-    {
-        m_albumMap.remove( album->name() );
-        acquireWriteLock();
-        setAlbumMap( m_albumMap );
-        releaseLock();
-    }
-    if( genre->tracks().isEmpty() )
-    {
-        m_genreMap.remove( genre->name() );
-        acquireWriteLock();
-        setGenreMap( m_genreMap );
-        releaseLock();
-    }
-    if( composer->tracks().isEmpty() )
-    {
-        m_composerMap.remove( composer->name() );
-        acquireWriteLock();
-        setComposerMap( m_composerMap );
-        releaseLock();
-    }
-    if( year->tracks().isEmpty() )
-    {
-        m_yearMap.remove( year->name() );
-        acquireWriteLock();
-        setYearMap( m_yearMap );
-        releaseLock();
-    }
-
-    // remove from trackmap
-    m_trackMap.remove( track->name() );
-}
-
-void
-IpodCollection::updateTags( Meta::Track *track )
-{
-    DEBUG_BLOCK
-    Meta::IpodTrackPtr trackPtr( track );
-    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
-
-    debug() << "Running updateTrackInDB...";
-
-    m_handler->updateTrackInDB( trackUrl, Meta::TrackPtr::staticCast( trackPtr ), track->getIpodTrack() );
-}
-
-*/
 IpodCollection::~IpodCollection()
 {
     DEBUG_BLOCK
@@ -212,34 +98,6 @@ IpodCollection::prettyName() const
 {
     return "Ipod at " + m_mountPoint;
 }
-/*
-
-void
-IpodCollection::deleteTracksSlot( Meta::TrackList tracklist )
-{
-    DEBUG_BLOCK
-    connect( m_handler, SIGNAL( deleteTracksDone() ),
-                        SLOT( slotDeleteTracksCompleted() ), Qt::QueuedConnection );
-
-    // remove the tracks from the collection maps
-    foreach( Meta::TrackPtr track, tracklist )
-        removeTrack( Meta::IpodTrackPtr::staticCast( track ) );
-
-    // remove the tracks from the device
-    m_handler->deleteTrackListFromDevice( tracklist );
-
-
-//    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks?", tracklist.count() ) );
-  //  const bool del = KMessageBox::warningContinueCancel(this,
-    //        text,
-      //      QString() ) == KMessageBox::Continue;
-
-
-    // inform treeview collection has updated
-    emit updated();
-}
-
-*/
 
 #include "IpodCollection.moc"
 
