@@ -29,6 +29,7 @@ CollectionLocation::CollectionLocation()
     , m_sourceTracks()
     , m_parentCollection( 0 )
     , m_removeSources( false )
+    , m_isRemoveAction( false )
 {
     //nothing to do
 }
@@ -160,11 +161,55 @@ CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination
     qm->run();
 }
 
+void
+CollectionLocation::prepareRemove( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+    if( !isWritable() )
+    {
+        deleteLater();
+        return;
+    }
+    startRemoveWorkflow( tracks );
+}
+
+void
+CollectionLocation::prepareRemove( QueryMaker *qm )
+{
+    DEBUG_BLOCK
+    if( !isWritable() )
+    {
+        qm->deleteLater();
+        deleteLater();
+        return;
+    }
+
+    m_isRemoveAction = true;
+
+    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
+    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
+    qm->setQueryType( QueryMaker::Track );
+    qm->run();
+}
+
 bool
 CollectionLocation::remove( const Meta::TrackPtr &track )
 {
     Q_UNUSED( track )
     return false;
+}
+
+bool
+CollectionLocation::remove( const Meta::TrackList &tracks )
+{
+    bool success = true;
+    
+    foreach( const Meta::TrackPtr &track, tracks )
+        if( !remove( track ) )
+            success = false;
+
+    return success;
+        
 }
 
 void
@@ -199,6 +244,15 @@ CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sour
 }
 
 void
+CollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources )
+{
+    DEBUG_BLOCK
+    //reimplement in implementations which are writeable
+    Q_UNUSED( sources )
+    slotRemoveOperationFinished();
+}
+
+void
 CollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool removeSources )
 {
     Q_UNUSED( tracks )
@@ -215,6 +269,14 @@ CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool r
 }
 
 void
+CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+    Q_UNUSED( tracks )
+    slotShowRemoveDialogDone();
+}
+
+void
 CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     emit startCopy( sources );
@@ -227,6 +289,13 @@ CollectionLocation::slotCopyOperationFinished()
 }
 
 void
+CollectionLocation::slotRemoveOperationFinished()
+{
+    DEBUG_BLOCK
+    emit finishRemove();
+}
+
+void
 CollectionLocation::slotShowSourceDialogDone()
 {
     emit prepareOperation( m_sourceTracks, m_removeSources );
@@ -236,6 +305,13 @@ void
 CollectionLocation::slotShowDestinationDialogDone()
 {
     emit operationPrepared();
+}
+
+void
+CollectionLocation::slotShowRemoveDialogDone()
+{
+    DEBUG_BLOCK
+    emit startRemove();
 }
 
 void
@@ -269,6 +345,21 @@ CollectionLocation::slotFinishCopy()
 }
 
 void
+CollectionLocation::slotStartRemove()
+{
+    DEBUG_BLOCK
+    removeUrlsFromCollection( m_sourceTracks );
+}
+
+void
+CollectionLocation::slotFinishRemove()
+{
+    DEBUG_BLOCK
+    m_sourceTracks.clear();
+    this->deleteLater();
+}
+
+void
 CollectionLocation::slotAborted()
 {
     m_destination->deleteLater();
@@ -290,7 +381,11 @@ CollectionLocation::queryDone()
     {
         obj->deleteLater();
     }
-    if( m_removeSources )
+    if( m_isRemoveAction )
+    {
+        prepareRemove( m_sourceTracks );
+    }
+    else if( m_removeSources )
     {
         prepareMove( m_sourceTracks, m_destination );
     }
@@ -315,6 +410,15 @@ CollectionLocation::setupConnections()
 }
 
 void
+CollectionLocation::setupRemoveConnections()
+{
+    connect( this, SIGNAL( startRemove() ),
+             this, SLOT( slotStartRemove() ) );
+    connect( this, SIGNAL( finishRemove() ),
+             this, SLOT( slotFinishRemove() ) );
+}
+
+void
 CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSources )
 {
     m_removeSources = removeSources;
@@ -324,6 +428,20 @@ CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSou
         abort();
     else
         showSourceDialog( tracks, m_removeSources );
+}
+
+void
+CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
+{
+    DEBUG_BLOCK
+    // TODO: add a dialog warning that tracks are to be deleted
+
+    m_sourceTracks = tracks;
+    setupRemoveConnections();
+    if( tracks.size() <= 0 )
+        abort(); // TODO: check if this is the right function
+    else
+        showRemoveDialog( tracks );
 }
 
 void

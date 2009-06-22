@@ -76,6 +76,20 @@ class QueryMaker;
     copyUrlsToCollection (destination) (reimplementable)
     slotCopyOperationFinished (destination)
     slotFinishCopy (source)
+
+    To provide removal ability, it is required to reimplement removeUrlsFromCollection,
+    and this function must call slotRemoveOperationFinished() when it is done.  Optionally,
+    showRemoveDialog can be reimplemented to customize the warning displayed before a removal,
+    and this function must call slotShowRemoveDialogDone when finished.
+
+    The methods for remove will be called in the following order:
+    startRemoveWorkflow
+    showRemoveDialog (reimplementable)
+    slotShowRemoveDialogDone
+    slotStartRemove
+    removeUrlsFromCollection (reimplementable)
+    slotRemoveOperationFinished
+    slotFinishRemove
 */
 
 class AMAROK_EXPORT CollectionLocation : public QObject
@@ -144,11 +158,24 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         void prepareMove( QueryMaker *qm, CollectionLocation *destination );
 
         /**
+           method to get tracks from qm to prepare them to be removed
+        */
+        void prepareRemove( const Meta::TrackList &tracks );
+        void prepareRemove( QueryMaker *qm );
+
+        /**
            remove the track from the collection.
            Return true if the removal was successful, false otherwise.
-         */
+        */
+
         virtual bool remove( const Meta::TrackPtr &track );
 
+        /**
+           convenience method for removing multiple tracks,
+           @see remove( const Meta::TrackPtr &track )
+        */
+
+        bool remove( const Meta::TrackList &tracks );
         
         /**
         * Sets or gets which files the source will potentially need to remove
@@ -172,6 +199,8 @@ class AMAROK_EXPORT CollectionLocation : public QObject
     signals:
         void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
         void finishCopy();
+        void startRemove();
+        void finishRemove();
         void prepareOperation( const Meta::TrackList &tracks, bool removeSources );
         void operationPrepared();
         void aborted();
@@ -203,6 +232,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
 
         /**
+           this method is called on the collection you want to remove tracks from.  it must
+           be reimplemented if your collection is writeable and you wish to implement
+           removing tracks
+        */
+
+        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        
+        /**
          * this method is called on the source. It allows the source CollectionLocation to
          * show a dialog. Classes that reimplement this method must call 
          * slotShowSourceDialogDone() after they have acquired all necessary information from the user.
@@ -218,6 +255,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
 
         /**
+         * this methods allows the collection to show a warning dialog before tracks are removed,
+         * rather than using the default provided.  Classes that reimplement this method must call
+         * slotShowRemoveDialogDone() after they are finished.
+        */
+
+        virtual void showRemoveDialog( const Meta::TrackList &tracks );
+
+        /**
         * Sets or gets whether some source files may be removed
         */
         virtual bool isGoingToRemoveSources() const;
@@ -231,7 +276,9 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          */
         void slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources );
         void slotCopyOperationFinished();
+        void slotRemoveOperationFinished();
         void slotShowSourceDialogDone();
+        void slotShowRemoveDialogDone();
         void slotShowDestinationDialogDone();
 
     private slots:
@@ -240,13 +287,18 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         void slotOperationPrepared();
         void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
         void slotFinishCopy();
+        void slotStartRemove();
+        void slotFinishRemove();
         void slotAborted();
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
 
     private:
         void setupConnections();
+        void setupRemoveConnections();
         void startWorkflow( const Meta::TrackList &tracks, bool removeSources );
+        void startRemoveWorkflow( const Meta::TrackList &tracks );
+        void startRemove( const Meta::TrackList &tracks );
         void removeSourceTracks( const Meta::TrackList &tracks );
         void setSource( CollectionLocation *source );
 
@@ -259,6 +311,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         const Amarok::Collection* m_parentCollection;
         
         bool m_removeSources;
+        bool m_isRemoveAction;
         QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;
         QMap<Meta::TrackPtr, QString> m_tracksWithError;
 };

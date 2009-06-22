@@ -219,8 +219,9 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     foreach( PopupDropperAction * action, actions )
         menu->addAction( action );
 
-    m_currentCopyDestination = getCopyActions( indices );
-    m_currentMoveDestination = getMoveActions( indices );
+    m_currentCopyDestination =   getCopyActions(   indices );
+    m_currentMoveDestination =   getMoveActions(   indices );
+    m_currentRemoveDestination = getRemoveActions( indices );
 
     if ( !( m_currentCopyDestination.empty() && m_currentMoveDestination.empty() ) )
     {
@@ -252,6 +253,28 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
             moveMenu->addAction( action );
         }
         menu->addMenu( moveMenu );
+    }
+
+    if ( !( m_currentRemoveDestination.empty() ) )
+    {
+        if ( m_cmSeperator == 0 )
+        {
+            m_cmSeperator = new PopupDropperAction( this );
+            m_cmSeperator->setSeparator ( true );
+        }
+        menu->addAction( m_cmSeperator );
+    }
+
+    if( ( !m_currentRemoveDestination.empty() ) )
+    {
+        KMenu *removeMenu = new KMenu( i18n( "Remove From Collection" ), menu );
+        foreach( PopupDropperAction * action, m_currentRemoveDestination.keys() )
+        {
+            action->setParent( removeMenu );
+            removeMenu->addAction( action );
+        }
+        menu->addMenu( removeMenu );
+        
     }
 
     menu->exec( event->globalPos() );
@@ -721,6 +744,48 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::
     }
 }
 
+
+void
+CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
+{
+    DEBUG_BLOCK
+
+    //copied from organizeTracks. create a method for this somewhere
+    if( !items.count() )
+    {
+        return;
+    }
+
+    //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
+    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    if( !qm )
+        return;
+
+    CollectionTreeItem *item = items.toList().first();
+    while( item->isDataItem() )
+    {
+        item = item->parent();
+    }
+    Amarok::Collection *coll = item->parentCollection();
+
+    if( !coll->isWritable() )
+    {
+        return;
+    }
+    
+    CollectionLocation *source = coll->location();
+
+        if( !source->isWritable() ) //error
+        {
+            warning() << "We can not write to ze source!!! OMGooses!";
+            delete source;
+            delete qm;
+            return;
+        }
+        source->prepareRemove( qm );
+
+}
+
 void
 CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 {
@@ -998,6 +1063,28 @@ QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getMoveActio
     return m_currentMoveDestination;
 }
 
+QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
+{
+    QHash<PopupDropperAction*, Amarok::Collection*> m_currentRemoveDestination;
+
+    if( onlyOneCollection( indices) )
+    {
+        Amarok::Collection *collection = getCollection( indices.first() );
+        if( collection && collection->isWritable() )
+        {
+            //writableCollections.append( collection );
+             PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", QIcon(), collection->prettyName(), 0 );
+
+             connect( action, SIGNAL( triggered() ), this, SLOT( slotRemoveTracks() ) );
+
+             m_currentRemoveDestination.insert( action, collection );
+        }
+
+
+    }
+    return m_currentRemoveDestination;
+}
+
 bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
 {
     DEBUG_BLOCK
@@ -1065,6 +1152,18 @@ void CollectionTreeView::slotMoveTracks()
     if( sender() ) {
         if ( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], true );
+    }
+}
+
+void CollectionTreeView::slotRemoveTracks()
+{
+    
+    if( sender() ) {
+        if ( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+        {
+            Q_UNUSED( action );
+            removeTracks( m_currentItems );
+        }
     }
 }
 
