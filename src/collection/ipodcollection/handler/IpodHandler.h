@@ -97,7 +97,7 @@ struct PodcastInfo
            /**
             * Successfully read Ipod database?
             */
-           bool succeeded() const { return m_success; }
+           //bool succeeded() const { return m_success; }
 
            /* Set Methods */
 
@@ -258,7 +258,7 @@ struct PodcastInfo
            // whether Itdb_Track is created correctly
            bool m_trackCreated;
            // whether read Ipod DB or not
-           bool m_success;
+           //bool m_success;
 
            /* Miscellaneous Variables */
 

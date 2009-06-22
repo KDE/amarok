@@ -138,8 +138,10 @@ QString MediaDeviceCollection::collectionId() const {
 void
 MediaDeviceCollection::startFullScan()
 {
+    DEBUG_BLOCK
     if( m_handler->succeeded() )
     {
+        debug() << "parsing tracks";
         m_handler->parseTracks();
         emit collectionReady();
     }

@@ -262,7 +262,7 @@ class MediaDeviceCollection;
 
 #endif
 
-        private:
+        protected:
             bool m_success;
     };
 

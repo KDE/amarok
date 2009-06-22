@@ -60,6 +60,7 @@ using namespace Meta;
 
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
+    , m_memColl( mc )
     , m_masterPlaylist( 0 )
     , m_jobcounter( 0 )
     , m_statusbar( 0 )
@@ -112,6 +113,8 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
         qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
         m_success = true;
+
+        debug() << "Succeeded: " << m_success;
     }
 }
 
@@ -1518,14 +1521,26 @@ IpodHandler::parseTracks()
 
     // Finally, assign the created maps to the collection
 
+    debug() << "Setting memcoll stuff";
+
+    
     m_memColl->acquireWriteLock();
+    debug() << "Debug 1";
     m_memColl->setTrackMap( trackMap );
+    debug() << "Debug 2";
     m_memColl->setArtistMap( artistMap );
+    debug() << "Debug 3";
     m_memColl->setAlbumMap( albumMap );
+    debug() << "Debug 4";
     m_memColl->setGenreMap( genreMap );
+    debug() << "Debug 5";
     m_memColl->setComposerMap( composerMap );
+    debug() << "Debug 6";
     m_memColl->setYearMap( yearMap );
+    debug() << "Debug 7";
     m_memColl->releaseLock();
+
+    debug() << "Done setting memcoll stuff";
 }
 
 /* Private Functions */
