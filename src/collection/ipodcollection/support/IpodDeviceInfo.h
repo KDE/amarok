@@ -21,7 +21,6 @@ class IpodDeviceInfo : public MediaDeviceInfo
 {
     Q_OBJECT
     public:
-        IpodDeviceInfo() { }
         IpodDeviceInfo( QString mountpoint, QString udi );
         ~IpodDeviceInfo();
 

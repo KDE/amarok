@@ -75,25 +75,81 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public MediaDe
 
 
 };
-/*
+
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
 
-        MediaDeviceCollection();
+        /** Collection-related methods */
+        MediaDeviceCollection( MediaDeviceInfo* info );
         virtual ~MediaDeviceCollection();
 
-        virtual void startFullScan() = 0;
-        virtual QueryMaker* queryMaker() = 0;
+        /**
 
-        virtual QString collectionId() const = 0;
-        virtual QString prettyName() const = 0;
-        virtual KIcon icon() const { return KIcon("drive-removable-media-usb"); }
+        url-based methods can be abstracted via use of Amarok URLs
+        subclasses simply define a protocol prefix, e.g. ipod
 
-        virtual void deviceRemoved() = 0;
+        */
+        virtual bool possiblyContainsTrack( const KUrl &url ) const = 0; 
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
 
+        virtual QueryMaker* queryMaker();
+        virtual void startFullScan(); // TODO: this will replace connectDevice() call to parsetracks in handler
+
+        // NOTE: incrementalscan and stopscan not implemented, might be used by UMS later though
+
+        /**
+            The protocol of uids coming from this collection.
+            @return A string of the protocol, without the ://
+
+            This has to be overridden for every device type, e.g. ipod://
+        */
+        virtual QString uidUrlProtocol() const = 0;
+        virtual QString collectionId() const; // TODO: perhaps use UDI?  makes sense
+
+        virtual QString prettyName() const = 0; // NOTE: must be overridden based on device type
+        virtual KIcon icon() const = 0; // NOTE: must be overridden based on device type
+
+        virtual CollectionLocation* location() const = 0; // NOTE: must be overridden based on device type
+
+        /** Capability-related methods */
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+
+        /** MediaDeviceCollection methods */
+
+        void deviceRemoved() { emit remove(); }
+
+        QString udi() const;
+
+        MediaDevice::MediaDeviceHandler* handler() { return m_handler; }
+
+        void updateTags( Meta::MediaDeviceTrack *track);
+        void writeDatabase(); // threaded
+
+        /** MediaDeviceCollection-specific */
+
+    signals:
+        void collectionReady();
+        void collectionDisconnected( const QString &udi );
+
+        void copyTracksCompleted( bool success );
+
+    public slots:
+        // NOTE: must be overridden.  Creates handler, parses tracks on successful handler.
+        // Perhaps the DeviceInfo the handler needs could be passed, and the handler unpacks this
+        // to keep it generic?
+        virtual void connectDevice() = 0;
+
+        // TODO: these two could be merged somehow
+        void disconnectDevice();
+        void slotDisconnect();
+
+    private:
+        QString                          m_udi;
+        MediaDevice::MediaDeviceHandler *m_handler;
 };
-*/
 
 #endif

@@ -163,8 +163,6 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
 
-        // HACK: until MediaDeviceCollection works, need this here
-        virtual void deviceRemoved() { emit remove(); }
 
     signals:
         void remove();

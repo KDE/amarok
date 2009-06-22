@@ -23,17 +23,14 @@ extern "C" {
   #include <gpod/itdb.h>
 }
 
-
-#include "MediaDeviceCollection.h"
-
-#include "Debug.h"
-
 #include "IpodHandler.h"
 
-#include <QtGlobal>
-#include <QMap>
+#include "MediaDeviceCollection.h"
+#include "Debug.h"
 
 #include <KIcon>
+
+#include <QtGlobal>
 
 class IpodCollection;
 class MediaDeviceInfo;

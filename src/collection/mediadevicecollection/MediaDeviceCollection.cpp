@@ -24,6 +24,7 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceInfo.h"
 #include "MediaDeviceMeta.h"
+#include "MediaDeviceHandler.h"
 
 #include "MediaDeviceMonitor.h"
 
@@ -111,32 +112,16 @@ MediaDeviceCollectionFactoryBase::deviceRemoved( const QString &udi )
 
 
 //MediaDeviceCollection
-/*
+
 MediaDeviceCollection::MediaDeviceCollection()
-    : Collection()
-    , MemoryCollection()
+: m_handler( new MediaDeviceHandler( 
 {
-    DEBUG_BLOCK
+
 }
+
 
 MediaDeviceCollection::~MediaDeviceCollection()
 {
-
-}
-
-void
-MediaDeviceCollection::copyTrackListToDevice( const Meta::TrackList tracklist )
-{
-    DEBUG_BLOCK
-    connect( m_handler, SIGNAL( copyTracksDone() ),
-                     SLOT( slotCopyTracksCompleted() ), Qt::QueuedConnection );
-    m_handler->copyTrackListToDevice( tracklist );
-}
-
-void
-MediaDeviceCollection::startFullScan()
-{
-    //ignore
 }
 
 QueryMaker*
@@ -145,24 +130,17 @@ MediaDeviceCollection::queryMaker()
     return new MemoryQueryMaker( this, collectionId() );
 }
 
-QString
-MediaDeviceCollection::collectionId() const
-{
-     return "filler";
-}
-
-QString
-MediaDeviceCollection::prettyName() const
-{
-    return "prettyfiller";
-}
-
 void
-IpodCollection::deviceRemoved()
+MediaDeviceCollection::startFullScan()
 {
-    emit remove();
+    m_handler = new MediaDevice::MediaDeviceHandler( this, m_mountPoint, this );
+
+    if( m_handler->succeeded() )
+    {
+        m_handler->parseTracks();
+        emit collectionReady();
+    }
 }
-*/
 
 #include "MediaDeviceCollection.moc"
 
