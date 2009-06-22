@@ -118,8 +118,6 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& t
     ComposerMap composerMap = m_memColl->composerMap();
     YearMap yearMap = m_memColl->yearMap();
 
-    //MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
-
     /* 1-liner info retrieval */
 
     //setCopyTrackForParse();
@@ -138,10 +136,6 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& t
     trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
 
     m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
-
-    //setAssociateTrack( track );
-    // NOTE: not supporting adding track that's already on a playlist
-    //mtpTrackMap.insert( mtptrack, track ); // map for playlist formation
 
     // Finally, assign the created maps to the collection
 
@@ -259,11 +253,6 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     TrackMap trackMap = m_memColl->trackMap();
 
     Meta::TrackList tempTrackList;
-
-    // HACK: Copy is said to fail if >=1 tracks isn't copied to device.
-    // This is so that a move operation doesn't attempt to delete
-    // the tracks from the original collection, as some of these tracks
-    // would not have been copied to the device.
 
     m_copyFailed = false;
 
@@ -383,8 +372,6 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     // begin copying tracks to device
 
-    // TODO: throttle to a max_num of jobs, necessary for KIO which does max 10 at a time
-
     if( !m_copyingthreadsafe )
     {
             copyNextTrackToDevice();
@@ -401,11 +388,8 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         }
 
         ThreadWeaver::Weaver::instance()->setMaximumNumberOfThreads( 10 );
-
-        //connect( jobcoll, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT(slotCopyTrackJobsDone(ThreadWeaver::Job*)) );
         ThreadWeaver::Weaver::instance()->enqueue( jobcoll );
 
-        //copyNextTrackToDevice();
     }
     
     return;
@@ -433,15 +417,6 @@ MediaDeviceHandler::copyNextTrackToDevice()
 
     }
 
-    // No tracks left to copy, emit done
-    /*
-    else
-    {
-        emit incrementProgress();
-        emit endProgressOperation( this );
-        emit copyTracksDone( !m_copyFailed );
-    }
-    */
 }
 
 
@@ -843,9 +818,6 @@ MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
     Q_UNUSED( job );
     m_copyFailed = true;
     QString error = "Job Failed";
-    //m_tracksFailed.insert( m_lastTrackCopied, error );
-
-    //copyNextTrackToDevice();
 }
 
 void
@@ -853,18 +825,13 @@ MediaDeviceHandler::slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::T
 {
     Q_UNUSED( track )
     if ( job->success() )
-    {
-        //emit incrementProgress();
-        
+    {   
     }
     else
     {
         m_copyFailed = true;
         QString error = "Copy error";
-        //m_tracksFailed.insert( m_lastTrackCopied, error );
     }
-
-    //copyNextTrackToDevice();
 }
 
 void

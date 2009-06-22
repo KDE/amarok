@@ -26,8 +26,6 @@
 
 #include "mediadevicecollection_export.h"
 
-#include "kjob.h"
-#include <KTempDir>
 #include <threadweaver/Job.h>
 
 #include <QObject>
@@ -35,8 +33,6 @@
 #include <QMultiMap>
 
 class QString;
-class QFile;
-class QDateTime;
 class QMutex;
 
 class MediaDeviceCollection;
@@ -91,16 +87,6 @@ namespace Meta {
            void incrementProgress();
            void endProgressOperation( const QObject *owner );
 
-           #if 0
-
-           QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; } // NOTE: to be used for error-handling later
-           #endif
-           /** Methods Provided for Collection, i.e. wrappers */
-
-           //virtual void copyTrackListToDevice( const Meta::TrackList tracklist );// NOTE: used by Collection
-           //virtual void deleteTrackListFromDevice( const Meta::TrackList &tMediaDeviceHandler::removeNextTrackFromDevice()racks );// NOTE: used by Collection
-
-
            /**
             * Parses MediaDevice DB and creates a Meta::MediaDeviceTrack
             * for each track in the DB
@@ -151,13 +137,19 @@ namespace Meta {
 
            virtual QStringList supportedFormats() = 0;
 
-           /// These copy methods are invoked in order:
+           /// The copy methods are invoked in order:
            /// findPathToCopy
            /// libCopyTrack
            /// libCreateTrack
            /// setBasicMediaDeviceTrackInfo (all the libSets)
            /// addTrackInDB
            /// addMediaDeviceTrackToCollection
+
+           /// The remove methods are invoked in order:
+           /// libDeleteTrackFile
+           /// removeTrackFromDB
+           /// libDeleteTrack
+           /// removeMediaDeviceTrackFromCollection
 
            /// findPathToCopy resolves some kind of address to put the track onto on
            /// the device.  For Ipods, this is a url, but for MTPs, this is finding
@@ -292,7 +284,6 @@ namespace Meta {
            void canCopyMoreTracks(); // subclass tells this class that it can copy more tracks
            void canDeleteMoreTracks(); // subclass tells this class that it can delete more tracks
            #if 0
-           void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingMediaDeviceTrack );// NOTE: used by Collection
 
         public slots:
            bool initializeMediaDevice();
@@ -300,54 +291,14 @@ namespace Meta {
         private:
            /* Handler's Main Methods */
 
-           // NOTE: do not use writeDB,
-           // use the threaded writeDatabase
-           // TODO: declare a friend, the thread that runs this
-           virtual bool writeDB( bool threaded=false );
-
            virtual QPixmap getCover( Meta::MediaDeviceTrackPtr track ) const;
 
            virtual bool setCoverArt( MediaDeviceTrackPtr track, const QString &filename ) const;
            virtual bool setCoverArt( MediaDeviceTrackPtr track, const QPixmap &image ) const;
 
-           virtual void setRating( const int newrating );
-
-           /**
-            * @param ipodtrack - track being read from
-            * @param track - track being written to
-            * Extracts track information from ipodtrack
-            * and puts it in track
-            */
-           void getBasicMediaDeviceTrackInfo( const Itdb_Track *ipodtrack, Meta::MediaDeviceTrackPtr track ) const;
-
-           /* Handler's Collection Methods */
-
-           void addMediaDeviceTrackToCollection( Itdb_Track *ipodtrack );
-
-           /* libgpod DB Methods */
-
-           void addTrackInDB( Itdb_Track *ipodtrack );
-           void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
-           bool removeDBTrack( Itdb_Track *track );
-
            /* Cover Art functions */
            QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
            void getCoverArt( const Itdb_Track *ipodtrack );
-
-           /* File I/O Methods */
-
-           void copyTracksToDevice();
-
-           void copyNextTrackToDevice();
-           void deleteNextTrackFromDevice();
-
-           void privateCopyTrackToDevice( const Meta::TrackPtr &track );
-           void privateDeleteTrackFromDevice( const Meta::TrackPtr &track );
-
-           void deleteFile( const KUrl &url );
-           bool kioCopyTrack( const KUrl &src, const KUrl &dst );
-
-           /* Convenience methods to avoid repetitive code */
 
            #endif
            /**
@@ -424,70 +375,6 @@ namespace Meta {
         private:
            // Associated collection
            MediaDeviceCollection   *m_memColl;
-           // Map of titles, used to check for duplicate tracks
-#if 0
-           TitleMap          m_titlemap;
-
-           /* libgpod variables */
-           Itdb_iTunesDB    *m_itdb;
-           Itdb_Playlist    *m_masterPlaylist;
-
-           /* Lockers */
-           QMutex            m_dbLocker; // DB only written by 1 thread at a time
-           QMutex            m_joblocker; // lets only 1 job finish at a time
-           int               m_jobcounter; // keeps track of copy jobs present
-
-           /* Copy/Delete Variables */
-           Meta::TrackList   m_tracksToCopy;
-           Meta::TrackList   m_tracksToDelete;
-
-           /* Operation Progress Bar */
-           ProgressBar      *m_statusbar;
-
-           /* MediaDevice Connection */
-           bool              m_autoConnect;
-           QString           m_mountPoint;
-           QString           m_name;
-
-           /* MediaDevice Model */
-           bool              m_isShuffle;
-           bool              m_isMobile;
-           bool              m_isIPhone;
-
-           /* Properties of MediaDevice */
-           bool              m_supportsArtwork;
-           bool              m_supportsVideo;
-           bool              m_rockboxFirmware;
-           bool              m_needsFirewireGuid;
-
-           /* Success/Failure */
-           bool m_dbChanged;
-           bool m_copyFailed;
-           bool m_isCanceled;
-           bool m_wait;
-           // whether Itdb_Track is created correctly
-           bool m_trackCreated;
-           // whether read MediaDevice DB or not
-           bool m_success;
-
-           /* Miscellaneous Variables */
-
-           // tracks that failed to copy
-
-           QMap<Meta::TrackPtr, QString> m_tracksFailed;
-
-           // tempdir for covers
-           KTempDir *m_tempdir;
-           QSet<QString> m_coverArt;
-
-        private slots:
-          void fileTransferred( KJob *job );
-          void fileDeleted( KJob *job );
-
-          void slotDBWriteFailed( ThreadWeaver::Job* job );
-          void slotDBWriteSucceeded( ThreadWeaver::Job* job );
-
-#endif
 
         bool m_copyFailed;
 
@@ -514,27 +401,6 @@ namespace Meta {
             bool m_success;
             bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
     };
-
-#if 0
-    class DBWorkerThread : public ThreadWeaver::Job
-    {
-        Q_OBJECT
-        public:
-            DBWorkerThread( MediaDeviceHandler* handler );
-            virtual ~DBWorkerThread();
-
-            virtual bool success() const;
-
-        protected:
-            virtual void run();
-
-        private:
-            bool m_success;
-            MediaDeviceHandler *m_handler;
-    };
-#endif
-
-
 
 class CopyWorkerThread : public ThreadWeaver::Job
 {
