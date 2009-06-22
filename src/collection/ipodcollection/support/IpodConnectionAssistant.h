@@ -21,8 +21,6 @@
 
 #include "ConnectionAssistant.h"
 
-#include "CollectionCapabilityIpod.h"
-
 #include <QObject>
 
 class IpodConnectionAssistant : public ConnectionAssistant
