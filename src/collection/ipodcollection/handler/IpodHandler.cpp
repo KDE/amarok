@@ -1005,6 +1005,8 @@ IpodHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre
         m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
         m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
+
+    m_itdbtrackhash[ track ]->genre = g_strdup( genre.toUtf8() );
 }
 void
 IpodHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )

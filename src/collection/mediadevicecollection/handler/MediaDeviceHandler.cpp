@@ -232,6 +232,10 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
                 || ( tempTrack->year()->name() != track->year()->name() ) )
             {
                 debug() << "Same title, but other tags differ, not a dupe";
+                //debug() << "Source track:   " << "Artist: " << track->artist()->name() << " Album: " << track->album()->name() << " Genre: " << track->genre()->name() <<
+                //" Composer: " << track->composer()->name() << " Year: " << track->year()->name();
+                //debug() << "Candidate dupe: " << "Artist: " << tempTrack->artist()->name() << " Album: " << tempTrack->album()->name() << " Genre: " << tempTrack->genre()->name() <<
+                //" Composer: " << tempTrack->composer()->name() << " Year: " << tempTrack->year()->name();
                 continue;
             }
 
@@ -265,6 +269,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     if( m_tracksToCopy.size() == 0 )
     {
+        The::statusBar()->shortMessage( i18n( "The tracks to copy are already on the device!" ) );
         emit copyTracksDone( false );
         return;
     }
@@ -410,7 +415,9 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
     if( m_numTracksToCopy == 0 )
     {
         if( m_tracksFailed.size() > 0 )
+        {
             The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+        }
         emit copyTracksDone( true );
     }
 }
