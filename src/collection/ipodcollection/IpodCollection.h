@@ -47,24 +47,18 @@ class IpodCollectionFactory : public Amarok::CollectionFactory
 
         virtual void init();
 
-    signals:
-        void ipodDetected( const MediaDeviceInfo &deviceinfo );
-        void tellIpodDetected( const QString &mountPoint, const QString &udi );
-
     public slots:
         // convenience slot
         void removeIpod( const QString &udi ) { deviceRemoved( udi ); }
 
     private slots:
-        void ipodDetected( const QString &mountPoint, const QString &udi );
-        void deviceDetected( MediaDeviceInfo* info );
+        void ipodDetected( const QString &mountPoint, const QString &udi ); // connect ipod
+        void deviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
         void deviceRemoved( const QString &udi );
         void slotCollectionReady();
         void slotCollectionDisconnected( const QString & udi );
 
     private:
-        void checkDevicesForIpod();
-        bool isIpod( const QString &udi ) const;
 
         QMap<QString, IpodCollection*> m_collectionMap;
 };
