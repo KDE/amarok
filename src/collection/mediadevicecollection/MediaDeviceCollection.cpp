@@ -39,32 +39,23 @@
 #include <solid/storagedrive.h>
 
 
-
 //AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
 
-MediaDeviceCollectionFactory::MediaDeviceCollectionFactory( ConnectionAssistant* assistant )
+MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
     : Amarok::CollectionFactory()
     , m_assistant( assistant )
     , m_collectionMap()
 {
 }
 
-MediaDeviceCollectionFactory::~MediaDeviceCollectionFactory()
+
+MediaDeviceCollectionFactoryBase::~MediaDeviceCollectionFactoryBase()
 {
   //    delete m_browser;
 }
 
-Amarok::Collection* MediaDeviceCollectionFactory::createCollection(MediaDeviceInfo* info)
-{
-    Q_UNUSED( info );
-    Amarok::Collection* coll = 0;
-
-    return coll;
-}
-
-
 void
-MediaDeviceCollectionFactory::init()
+MediaDeviceCollectionFactoryBase::init()
 {
     //DEBUG_BLOCK
 
@@ -77,10 +68,11 @@ MediaDeviceCollectionFactory::init()
 
 }
 
-void MediaDeviceCollectionFactory::deviceDetected(MediaDeviceInfo* info) {
+void MediaDeviceCollectionFactoryBase::deviceDetected(MediaDeviceInfo* info) {
     Amarok::Collection* coll = 0;
     if( !m_collectionMap.contains( info->udi() ) )
     {
+        //coll = createCollection( info );
         coll = createCollection( info );
         if( coll )
         {
@@ -97,7 +89,7 @@ void MediaDeviceCollectionFactory::deviceDetected(MediaDeviceInfo* info) {
 
 
 void
-MediaDeviceCollectionFactory::deviceRemoved( const QString &udi )
+MediaDeviceCollectionFactoryBase::deviceRemoved( const QString &udi )
 {
     //DEBUG_BLOCK
     if( m_collectionMap.contains( udi ) )
@@ -116,6 +108,7 @@ MediaDeviceCollectionFactory::deviceRemoved( const QString &udi )
 
     return;
 }
+
 
 //MediaDeviceCollection
 /*

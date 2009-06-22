@@ -40,7 +40,7 @@
 AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 
 IpodCollectionFactory::IpodCollectionFactory()
-    : MediaDeviceCollectionFactory( new IpodConnectionAssistant() )
+    : MediaDeviceCollectionFactory<IpodCollection> ( new IpodConnectionAssistant() )
 {
     //nothing to do
 }
@@ -48,21 +48,6 @@ IpodCollectionFactory::IpodCollectionFactory()
 IpodCollectionFactory::~IpodCollectionFactory()
 {
     DEBUG_BLOCK
-}
-
-Amarok::Collection*
-IpodCollectionFactory::createCollection(MediaDeviceInfo* info)
-{
-    /** Fetch Info needed to construct IpodCollection */
-    IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
-
-    QString mountPoint = ipodinfo->mountpoint();
-    QString udi = ipodinfo->udi();
-
-    /** Construct and return pointer to new collection */
-    Amarok::Collection *coll = new IpodCollection( mountPoint, udi );
-
-    return coll;
 }
 
 //IpodCollection
@@ -79,6 +64,27 @@ IpodCollection::IpodCollection( const QString &mountPoint, const QString &udi )
     // NOTE: cheap hack, remove after applet works
     connectDevice();
 }
+
+IpodCollection::IpodCollection(MediaDeviceInfo* info)
+: Collection()
+, MemoryCollection()
+, m_handler( 0 )
+{
+    /** Fetch Info needed to construct IpodCollection */
+    IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
+
+    m_mountPoint = ipodinfo->mountpoint();
+    m_udi = ipodinfo->udi();
+
+    m_handler = new Ipod::IpodHandler( this, m_mountPoint, this );
+
+    if( m_handler->succeeded() )
+    {
+        m_handler->parseTracks();
+        emit collectionReady();
+    }
+}
+
 
 bool
 IpodCollection::possiblyContainsTrack( const KUrl &url ) const

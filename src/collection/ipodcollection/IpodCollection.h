@@ -38,7 +38,7 @@ extern "C" {
 class IpodCollection;
 class MediaDeviceInfo;
 
-class IpodCollectionFactory : public MediaDeviceCollectionFactory
+class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection>
 {
     Q_OBJECT
     public:
@@ -46,7 +46,7 @@ class IpodCollectionFactory : public MediaDeviceCollectionFactory
         virtual ~IpodCollectionFactory();
 
     protected:
-        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info );
+        //virtual Amarok::Collection* createCollection( MediaDeviceInfo* info );
 };
 
 class IpodCollection : public Amarok::Collection, public MemoryCollection
@@ -54,6 +54,7 @@ class IpodCollection : public Amarok::Collection, public MemoryCollection
     Q_OBJECT
     public:
         IpodCollection( const QString &mountPoint, const QString &udi );
+        IpodCollection( MediaDeviceInfo* info );
         virtual ~IpodCollection();
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;

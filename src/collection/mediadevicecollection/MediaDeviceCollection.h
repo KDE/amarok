@@ -32,23 +32,15 @@
 
 class MediaDeviceCollection;
 
-class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public Amarok::CollectionFactory
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Amarok::CollectionFactory
 {
     Q_OBJECT
-    public:
-        virtual ~MediaDeviceCollectionFactory();
+
+       public:
+        virtual ~MediaDeviceCollectionFactoryBase();
         virtual void init();
     protected:
-        MediaDeviceCollectionFactory( ConnectionAssistant* assistant );
-
-        /**
-
-        createCollection uses the @param info to create a MediaDeviceCollection
-        and returns a pointer to it
-
-        */
-        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info );
-
+        MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant );
 
     public slots:
         // convenience slot
@@ -62,8 +54,25 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public Amarok:
 
     private:
 
+        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info ) = 0;
+
         ConnectionAssistant* m_assistant;
         QMap<QString, Amarok::Collection*> m_collectionMap;
+};
+
+template <class CollType>
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
+{
+    protected:
+        MediaDeviceCollectionFactory( ConnectionAssistant *assistant )
+        : MediaDeviceCollectionFactoryBase( assistant ) {}
+        virtual ~MediaDeviceCollectionFactory() {}
+    private:
+        virtual Amarok::Collection* createCollection( MediaDeviceInfo* info )
+        {
+            return new CollType( info );
+        }
+
 
 };
 /*
