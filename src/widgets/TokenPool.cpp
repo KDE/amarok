@@ -1,6 +1,7 @@
 /******************************************************************************
  * Copyright (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
  *               2009 Seb Ruiz <ruiz@kde.org>                                 *
+ *               2009 Thomas Lübking <thomas.luebking@web.de>                 *
  *                                                                            *
  * This program is free software; you can redistribute it and/or              *
  * modify it under the terms of the GNU General Public License as             *
@@ -19,13 +20,56 @@
 
 #include <KApplication>
 
+#include <QAbstractItemDelegate>
 #include <QMouseEvent>
+#include <QPainter>
+
+class PoolDelegate : public QAbstractItemDelegate
+{
+public:
+    PoolDelegate( QObject *parent = 0 ) : QAbstractItemDelegate(parent) {}
+
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+    {
+        if (!option.rect.isValid())
+            return;
+
+        const QRect &rect = option.rect;
+
+        // draw icon
+        const int x = rect.x() + (rect.width() - option.decorationSize.width()) / 2;
+        if ( option.state & QStyle::State_MouseOver )
+            painter->drawPixmap( x, rect.y(), index.data(Qt::DecorationRole).value<QIcon>().pixmap( option.decorationSize ));
+        else
+            painter->drawPixmap( x + 3, rect.y() + 3, index.data(Qt::DecorationRole).value<QIcon>().pixmap( option.decorationSize - QSize(6,6) ) );
+
+        // and (eilided) text
+        const int textFlags = Qt::AlignBottom | Qt::AlignHCenter | Qt::TextSingleLine | Qt::TextShowMnemonic;
+        QString text = painter->fontMetrics().elidedText( index.data().toString(), Qt::ElideMiddle, rect.width(), textFlags );
+        painter->setPen( option.palette.color( QPalette::Text ) );
+        painter->drawText( rect, textFlags, text );
+
+    }
+
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+    {
+        const QFontMetrics fm(option.font);
+        const int is = option.decorationSize.height();
+        int w = fm.width(index.data().toString());
+        if ( w < is + 16 )
+            w = is + 16;
+        else if ( w > is + 32 )
+            w = is + 32;
+        return QSize( w, is + fm.height() + 4 );
+    }
+};
 
 
 TokenPool::TokenPool( QWidget *parent )
     : KListWidget( parent )
 {
     setAcceptDrops( true );
+    setItemDelegate( new PoolDelegate(this) );
 }
 
 void
@@ -33,6 +77,7 @@ TokenPool::addToken( Token * token )
 {
 
     QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->name() );
+    item->setToolTip(token->name());
     addItem( item );
 
     m_itemTokenMap.insert( item, token );
@@ -43,6 +88,7 @@ TokenPool::mimeType() const
 {
     return m_mimeType;
 }
+
 
 void
 TokenPool::setMimeType( const QString& mimeType )
