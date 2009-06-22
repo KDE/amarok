@@ -81,14 +81,14 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public MediaDe
 
 };
 
-#if 0
+
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
     public:
 
         /** Collection-related methods */
-        MediaDeviceCollection( MediaDeviceInfo* info );
+
         virtual ~MediaDeviceCollection();
 
         /**
@@ -153,10 +153,13 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         void disconnectDevice();
         void slotDisconnect();
 
+    protected:
+        MediaDeviceCollection();
+
     private:
         QString                          m_udi;
         MediaDevice::MediaDeviceHandler *m_handler;
 };
-#endif
+
 
 #endif

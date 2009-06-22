@@ -41,9 +41,6 @@ class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection
     public:
         IpodCollectionFactory();
         virtual ~IpodCollectionFactory();
-
-    protected:
-        //virtual Amarok::Collection* createCollection( MediaDeviceInfo* info );
 };
 
 class IpodCollection : public Amarok::Collection, public MemoryCollection

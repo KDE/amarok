@@ -112,11 +112,11 @@ MediaDeviceCollectionFactoryBase::deviceRemoved( const QString &udi )
 
 
 //MediaDeviceCollection
-/*
-MediaDeviceCollection::MediaDeviceCollection()
-: m_handler( new MediaDeviceHandler( 
-{
 
+MediaDeviceCollection::MediaDeviceCollection()
+: Collection()
+, MemoryCollection()
+{
 }
 
 
@@ -133,15 +133,13 @@ MediaDeviceCollection::queryMaker()
 void
 MediaDeviceCollection::startFullScan()
 {
-    m_handler = new MediaDevice::MediaDeviceHandler( this, m_mountPoint, this );
-
     if( m_handler->succeeded() )
     {
         m_handler->parseTracks();
         emit collectionReady();
     }
 }
-*/
+
 
 #include "MediaDeviceCollection.moc"
 
