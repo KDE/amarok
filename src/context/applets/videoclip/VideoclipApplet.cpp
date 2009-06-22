@@ -38,15 +38,16 @@
 // KDE
 #include <KAction>
 #include <KColorScheme>
+#include <KConfigDialog>
 #include <KMenu>
 #include <KStandardDirs>
 #include <KVBox>
 #include <Plasma/Theme>
 #include <Plasma/BusyWidget>
+#include <Plasma/IconWidget>
 #include <Phonon/MediaObject>
 #include <Phonon/Path>
 #include <Phonon/VideoWidget>
-
 
 // Qt
 #include <QGraphicsLinearLayout>
@@ -68,6 +69,8 @@ K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , EngineObserver( The::engineController() )
+        , m_settingsIcon( 0 )
+        , m_youtubeHQ( false )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( false );
@@ -99,6 +102,14 @@ VideoclipApplet::init()
     m_pixDailymotion = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
     m_pixVimeo = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-vimeo.png" ) );
 
+    QAction* langAction = new QAction( i18n( "Settings" ), this );
+    langAction->setIcon( KIcon( "preferences-system" ) );
+    langAction->setVisible( true );
+    langAction->setEnabled( true );
+    m_settingsIcon = addAction( langAction );
+    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
+
+    
     // Create label
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -193,6 +204,8 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
     m_videoWidget->setGeometry( QRect(
         pos().toPoint()+QPoint( standardPadding(), m_headerText->boundingRect().height() + 2.5 * standardPadding() ),
         size().toSize()-QSize( 2 * standardPadding(),  m_headerText->boundingRect().height() + 3.5 * standardPadding() ) ) );
+
+    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
 }
 
 void 
@@ -400,7 +413,6 @@ VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
 void
 VideoclipApplet::videoMenu( QPoint point )
 {
-    debug()<<" caca boudin" ;
     KMenu *men = new KMenu(m_videoWidget);
     if ( !m_videoWidget->isFullScreen() )
     {
@@ -416,6 +428,47 @@ VideoclipApplet::videoMenu( QPoint point )
     }   
     men->exec( m_videoWidget->mapToGlobal( point ) );
 }
+
+Plasma::IconWidget *
+VideoclipApplet::addAction( QAction *action )
+{
+    DEBUG_BLOCK
+    if ( !action ) {
+        debug() << "ERROR!!! PASSED INVALID ACTION";
+        return 0;
+    }
+    
+    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
+    tool->setAction( action );
+    tool->setText( "" );
+    tool->setToolTip( action->text() );
+    tool->setDrawBackground( false );
+    tool->setOrientation( Qt::Horizontal );
+    QSizeF iconSize = tool->sizeFromIconSize( 16 );
+    tool->setMinimumSize( iconSize );
+    tool->setMaximumSize( iconSize );
+    tool->resize( iconSize );
+    tool->setZValue( zValue() + 1 );
+    
+    return tool;
+}
+
+void
+VideoclipApplet::createConfigurationInterface( KConfigDialog *parent )
+{
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    ui_Settings.setupUi( settings );
+    
+    // TODO bad, it's done manually ...
+    if ( m_youtubeHQ == true )
+        ui_Settings.checkBox->setChecked( true );
+    
+    parent->addPage( settings, i18n( "Video Clip Settings" ), "preferences-system");
+    //connect( ui_Settings, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
+}
+
+
 
 #include "VideoclipApplet.moc"
 

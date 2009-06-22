@@ -27,16 +27,25 @@
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
 
+#include <ui_videoclipSettings.h>
+
 // forward
 namespace Phonon
 {
     class MediaObject;
-    class VideoWidget;
     class Path;
+    class VideoWidget;
 }
 
+namespace Plasma
+{
+    class IconWidget;
+}
+
+class KConfigDialog;
 class KratingWidget;
 class KratingPainter;
+class QAction;
 class QGraphicsLinearLayout;
 class QGraphicsProxyWidget;
 class QGraphicsWidget;
@@ -92,7 +101,12 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
         void    videoMenu( QPoint );
 
+    protected:
+        void createConfigurationInterface(KConfigDialog *parent);        
+
     private:
+        Plasma::IconWidget * addAction( QAction *action );
+        
         Phonon::MediaObject *m_mediaObject;
         Phonon::VideoWidget *m_videoWidget;
         Phonon::Path        m_path;
@@ -108,6 +122,10 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         QPixmap     *m_pixDailymotion;
         QPixmap     *m_pixVimeo;
 
+        Plasma::IconWidget *m_settingsIcon;
+        bool        m_youtubeHQ;
+
+        Ui::videoclipSettings ui_Settings;
 };
 
 #endif /* VIDEOCLIP_APPLET_H */
