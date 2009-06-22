@@ -63,7 +63,26 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     void init(); // connect to MediaDeviceCache
 
     QStringList getDevices(); // get list of devices
+    /* TODO: checking for cd etc. goes in cdcollection dir now, needs porting
+    void checkDevicesForCd();
 
+    QString isCdPresent();
+    void ejectCd( const QString &udi );
+
+    
+    QString currentCdId();
+    void setCurrentCdId( const QString &id );
+
+    signals:
+
+        void audioCdDetected( const QString &udi );
+
+    private:
+        
+        bool isAudioCd( const QString &udi );
+
+        QString m_currentCdId;
+*/
     /// Get assistant for a given udi
 
     ConnectionAssistant* getUdiAssistant( const QString &udi )

@@ -107,7 +107,7 @@ EngineController::initializePhonon()
     m_path = Phonon::createPath( m_media, m_audio );
 
     m_controller = new Phonon::MediaController( m_media );
-    
+
     // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
     // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
 #ifdef Q_WS_MAC
@@ -116,7 +116,7 @@ EngineController::initializePhonon()
 
     // only create pre-amp if we have replaygain on, preamp can cause phonon issues
     if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
-    {   
+    {
         m_preamp = new Phonon::VolumeFaderEffect( this );
         m_path.insertEffect( m_preamp );
     }
@@ -138,7 +138,7 @@ EngineController::initializePhonon()
 
     connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
-    
+
     //TODO: The xine engine does not support crossfading. Cannot get the gstreamer engine to work, will test this once I do.
 #if 0
     if( AmarokConfig::trackDelayLength() > -1 )
@@ -330,12 +330,13 @@ EngineController::playUrl( const KUrl &url, uint offset )
     slotStopFadeout();
 
     debug() << "URL: " << url.url();
-
+    /// TODO: commented out since audiocd needs porting to new devicelib framework, should not affect other urls
+/*
     if ( url.url().startsWith( "audiocd:/" ) )
     {
         //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
         disconnect( m_controller, SIGNAL( titleChanged( int ) ), this, SLOT( slotTitleChanged( int ) ) );
-        
+
         debug() << "play track from cd";
         QString trackNumberString = url.url();
         trackNumberString = trackNumberString.replace( "audiocd:/", QString() );
@@ -344,9 +345,9 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
         if ( parts.count() != 2 )
             return;
-        
+
         QString discId = parts.at( 0 );
-        
+
         //we really only want to play it if it is the disc that is currently present.
         //In the case of cds for which we dont have any id, any "unknown" cds will
         //be considdered equal.
@@ -354,7 +355,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
         if ( MediaDeviceMonitor::instance()->currentCdId() != discId )
             return;
 
-        
+
         int trackNumber = parts.at( 1 ).toInt();
 
         debug() << "3.2.1...";
@@ -366,12 +367,13 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
         //reconnect it
         connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
-        
+
     }
-    else
-    {
+*/
+//    else
+//    {
         m_media->setCurrentSource( url );
-    }
+//    }
 
     m_nextTrack.clear();
     m_nextUrl.clear();
@@ -473,7 +475,7 @@ EngineController::seek( int ms ) //SLOT
 
         debug() << "ssek to: " << ms;
         int seekTo;
-        
+
         if ( m_boundedPlayback )
             seekTo = m_boundedPlayback->startPosition() + ms;
         else
@@ -523,13 +525,13 @@ int
 EngineController::setVolume( int percent ) //SLOT
 {
     percent = qBound( 0, percent, 100 );
-    m_volume = percent; 
-    
-    // Phonon stays completely mute if the volume is lower than 0.05, so we shift and limit the range 
+    m_volume = percent;
+
+    // Phonon stays completely mute if the volume is lower than 0.05, so we shift and limit the range
     qreal newVolume =  ( percent + 4 ) / 100.0;
     newVolume = qBound( 0.04, newVolume, 1.0 );
     m_audio->setVolume( newVolume );
-    
+
     AmarokConfig::setMasterVolume( percent );
     volumeChangedNotify( percent );
     emit volumeChanged( percent );
@@ -655,12 +657,12 @@ EngineController::trackPositionMs() const
 void
 EngineController::slotTick( qint64 position )
 {
-   
+
 
     if ( m_boundedPlayback )
     {
         trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
-        
+
         //dont go beyound the stop point
         if ( position >= m_boundedPlayback->endPosition() )
         {
@@ -788,7 +790,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
             m_preamp = new Phonon::VolumeFaderEffect( this );
             m_path.insertEffect( m_preamp );
         }
-        
+
         Meta::Track::ReplayGainMode mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
                                          ? Meta::Track::TrackReplayGain
                                          : Meta::Track::AlbumReplayGain;
@@ -830,7 +832,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     // The theory:
     // It has been observed that Phonon will sometimes emit a stateChanged() with
     // _both_ oldState and newState == 0, which makes little sense. After that it goes
-    // berserk, until you restart Amarok. 
+    // berserk, until you restart Amarok.
     // Now we try to detect this weird state, and then try to destroy and recreate all
     // Phonon objects, in the hope of fixing the situation. Fingers crossed.
     if( newState == Phonon::LoadingState && oldState == Phonon::LoadingState )

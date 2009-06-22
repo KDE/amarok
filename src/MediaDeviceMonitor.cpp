@@ -40,6 +40,8 @@ MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
 
 MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
  , m_assistants()
+ // NOTE: commented out, needs porting to new device framework
+ //, m_currentCdId( QString() )
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -189,3 +191,109 @@ MediaDeviceMonitor::isMtp( const QString &udi )
 
     return pmp->supportedProtocols().contains( "mtp" );
 }
+*/
+
+/// TODO: all stuff below here is cd-related, needs porting to new framework
+#if 0
+
+void
+MediaDeviceMonitor::checkDevicesForCd()
+{
+    DEBUG_BLOCK
+
+    QStringList udiList = getDevices();
+
+    /* poll udi list for supported devices */
+    foreach(const QString &udi, udiList )
+    {
+        debug() << "udi: " << udi;
+        if ( isAudioCd( udi ) )
+        {
+            emit audioCdDetected( udi );
+        }
+    }
+}
+
+
+bool
+MediaDeviceMonitor::isAudioCd( const QString & udi )
+{
+    DEBUG_BLOCK
+
+    Solid::Device device;
+
+    device = Solid::Device( udi );
+    if( device.is<Solid::OpticalDisc>() )
+    {
+        debug() << "OpticalDisc";
+        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+        if ( opt->availableContent() & Solid::OpticalDisc::Audio )
+        {
+            debug() << "AudioCd";
+            return true;
+        }
+    }
+
+    return false;
+}
+
+QString
+MediaDeviceMonitor::isCdPresent()
+{
+    DEBUG_BLOCK
+
+    QStringList udiList = getDevices();
+
+    /* poll udi list for supported devices */
+    foreach( const QString &udi, udiList )
+    {
+        debug() << "udi: " << udi;
+        if ( isAudioCd( udi ) )
+        {
+            return udi;
+        }
+    }
+
+    return QString();
+}
+
+void
+MediaDeviceMonitor::ejectCd( const QString & udi )
+{
+    DEBUG_BLOCK
+    debug() << "trying to eject udi: " << udi;
+    Solid::Device device = Solid::Device( udi ).parent();
+
+    if ( !device.isValid() ) {
+        debug() << "invalid device, cannot eject";
+        return;
+    }
+
+
+    debug() << "lets tryto get an OpticalDrive out of this thing";
+    if( device.is<Solid::OpticalDrive>() )
+    {
+        debug() << "claims to be an OpticalDrive";
+        Solid::OpticalDrive * drive = device.as<Solid::OpticalDrive>();
+        if ( drive )
+        {
+            debug() << "ejecting the bugger";
+            drive->eject();
+        }
+    }
+}
+
+QString
+MediaDeviceMonitor::currentCdId()
+{
+    return m_currentCdId;
+}
+
+void
+MediaDeviceMonitor::setCurrentCdId( const QString & id )
+{
+    m_currentCdId = id;
+}
+
+
+#endif
