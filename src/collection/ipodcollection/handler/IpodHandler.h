@@ -99,7 +99,7 @@ namespace Meta {
            virtual QString libGetArtist() const;
            virtual QString libGetComposer() const;
            virtual QString libGetGenre() const;
-           virtual int libGetYear() const;
+           virtual int     libGetYear() const;
            virtual int     libGetLength() const;
            virtual int     libGetTrackNumber() const;
            virtual QString libGetComment() const;
