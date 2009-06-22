@@ -161,6 +161,8 @@ void FileBrowser::Widget::readConfig()
     else
         m_dirOperator->setView( KFile::Simple );
 
+    m_urlNav->setUrlEditable( config.readEntry( "UrlEditable", false ) );
+
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     if( config.hasKey( "Sorting" ) )
@@ -178,10 +180,11 @@ void FileBrowser::Widget::writeConfig()
     KConfigGroup config = Amarok::config( "File Browser" );
 
     config.writeEntry( "Current Directory", m_dirOperator->url() );
-    config.writeEntry( "Sorting", QString::number( static_cast<QDir::SortFlags>( m_dirOperator->sorting() ) ) );
     config.writeEntry( "Filter History Length", m_filter->maxCount() );
     config.writeEntry( "Filter History", m_filter->historyItems() );
+    config.writeEntry( "UrlEditable", m_urlNav->isUrlEditable() );
     config.writeEntry( "Last Filter", m_lastFilter );
+    config.writeEntry( "Sorting", QString::number( static_cast<QDir::SortFlags>( m_dirOperator->sorting() ) ) );
 
     // Writes some settings from KDirOperator
     m_dirOperator->writeConfig( config );
