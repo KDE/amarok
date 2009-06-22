@@ -35,10 +35,7 @@ extern "C" {
 }
 
 #include "MediaDeviceMeta.h"
-#include "MemoryCollection.h"
-//#include "IpodMeta.h"
 #include "MediaDeviceHandler.h"
-#include "../../../statusbar/StatusBar.h"
 
 #include <KIO/Job>
 #include "kjob.h"
@@ -52,8 +49,6 @@ extern "C" {
 #include <QMutex>
 
 class QString;
-class QFile;
-class QDateTime;
 class QMutex;
 
 class IpodCollection;

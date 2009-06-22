@@ -22,7 +22,6 @@
 #include "IpodHandler.h"
 
 #include "IpodCollection.h"
-#include "IpodMeta.h"
 #include "../../../statusbar/StatusBar.h"
 #include "Debug.h"
 
@@ -476,76 +475,6 @@ IpodHandler::itunesDir(const QString &p) const
         base += ':';
     return base + p;
 }
-#if 0
-void
-IpodHandler::deleteTrackListFromDevice( const Meta::TrackList &tracks )
-{
-    DEBUG_BLOCK
-
-    // Init the list of tracks to be deleted
-
-    m_tracksToDelete = tracks;
-
-    // Set up statusbar for deletion operation
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Deleting Tracks from iPod" ) );
-
-    m_statusbar->setMaximum( tracks.size() );
-
-    connect( this, SIGNAL( incrementProgress() ),
-             The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
-
-    deleteNextTrackFromDevice();
-}
-
-void
-IpodHandler::deleteNextTrackFromDevice()
-{
-    Meta::TrackPtr track;
-    // If there are more tracks to delete, delete the next one
-    if( !m_tracksToDelete.isEmpty() )
-    {
-        // Pop the track off the front of the list
-
-        track = m_tracksToDelete.first();
-        m_tracksToDelete.removeFirst();
-
-        // Delete the track
-
-        privateDeleteTrackFromDevice( track );
-
-        emit incrementProgress();
-    }
-    // No tracks left to delete, emit done
-    else
-    {
-        emit incrementProgress();
-        emit deleteTracksDone();
-    }
-}
-
-void
-IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
-{
-    Itdb_Track *ipodtrack = Meta::IpodTrackPtr::staticCast(track)->getIpodTrack();
-
-    // delete file
-    KUrl url;
-    url.setPath( realPath( ipodtrack->ipod_path ) );
-    deleteFile( url );
-
-    // remove it from the ipod database, ipod playlists and all
-
-    if ( !removeDBTrack( ipodtrack ) )
-        debug() << "Error: failed to remove track from db";
-
-    // remove from titlemap
-
-    m_titlemap.remove( track->name(), track );
-}
-#endif
 
 /// Finds path to copy track to on Ipod
 void
