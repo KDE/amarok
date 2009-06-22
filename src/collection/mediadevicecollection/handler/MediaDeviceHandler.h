@@ -173,7 +173,7 @@ namespace Meta {
            /// libDeleteTrack does the actual file deleting.  For Ipods, it uses KIO,
            /// for MTPs this uses a libmtp call.
 
-           virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) return false; }
+           virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) { emit libRemoveTrackDone ( Meta::TrackPtr::staticCast( track ) ); return false; }
 
            /// Creates a new track struct particular to the library of the device
            /// e.g. LIBMTP_new_track_t(), and associates it with @param track for

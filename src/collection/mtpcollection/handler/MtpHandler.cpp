@@ -56,6 +56,7 @@ MtpHandler::MtpHandler( MtpCollection *mc )
         , m_trackCreated( false )
         , m_isCanceled( false )
         , m_wait( false )
+        , m_tempdir()
 {
     DEBUG_BLOCK
     m_copyingthreadsafe = true;
@@ -554,248 +555,6 @@ MtpHandler::updateFolders( void )
     m_folders = LIBMTP_Get_Folder_List( m_device );
 }
 #if 0
-
-
-bool
-MtpHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
-{
-    DEBUG_BLOCK
-
-    QString genericError = i18n( "Could not send track" );
-
-    LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
-    trackmeta->item_id = 0;
-    debug() << "filetype : " << track->type();
-    if ( track->type() == "mp3" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_MP3;
-    }
-    else if ( track->type() == "ogg" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_OGG;
-    }
-    else if ( track->type() == "wma" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_WMA;
-    }
-    else if ( track->type() == "mp4" )
-    {
-        trackmeta->filetype = LIBMTP_FILETYPE_MP4;
-    }
-    else
-    {
-        // Couldn't recognise an Amarok filetype.
-        // fallback to checking the extension (e.g. .wma, .ogg, etc)
-        debug() << "No filetype found by Amarok filetype";
-
-        const QString extension = track->type().toLower();
-
-        int libmtp_type = m_supportedFiles.indexOf( extension );
-        if ( libmtp_type >= 0 )
-        {
-            int keyIndex = mtpFileTypes.values().indexOf( extension );
-            libmtp_type = mtpFileTypes.keys()[keyIndex];
-            trackmeta->filetype = ( LIBMTP_filetype_t ) libmtp_type;
-            debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension;
-        }
-        else
-        {
-            debug() << "We do not support the extension ." << extension;
-            /*   The::statusBar()->shortLongMessage(
-               genericError,
-               i18n( "Cannot determine a valid file type" ),
-               StatusBar::Error
-                                                 );*/
-            return false;
-        }
-    }
-
-    if ( track->prettyName().isEmpty() )
-    {
-        trackmeta->title = qstrdup( i18n( "Unknown title" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->title = qstrdup( track->prettyName().toUtf8() );
-    }
-
-    if ( !track->album() )
-    {
-        trackmeta->album = qstrdup( i18n( "Unknown album" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->album = qstrdup( track->album()->prettyName().toUtf8() );
-    }
-
-    if ( !track->artist() )
-    {
-        trackmeta->artist = qstrdup( i18n( "Unknown artist" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->artist = qstrdup( track->artist()->prettyName().toUtf8() );
-    }
-
-    if ( !track->genre() )
-    {
-        trackmeta->genre = qstrdup( i18n( "Unknown genre" ).toUtf8() );
-    }
-    else
-    {
-        trackmeta->genre = qstrdup( track->genre()->prettyName().toUtf8() );
-    }
-
-    // TODO: port to Qt4
-
-    debug() << "Source track year: " << track->year();
-
-    if ( track->year() > 0 )
-    {
-        QString date;
-        QTextStream dateout( &date );
-        dateout << track->year()->name() << "0101T0000.0";
-//        debug() << "Proposed date: " << dateout.string();
-        trackmeta->date = qstrdup( dateout.string()->toUtf8() );
-//        debug() << "Set date to: " << trackmeta->date;
-    }
-
-    else
-    {
-        trackmeta->date = qstrdup( "00010101T0000.0" );
-    }
-
-    if ( track->trackNumber() > 0 )
-    {
-        trackmeta->tracknumber = track->trackNumber();
-    }
-    debug() << "Has track length" << ( track->length() > 0 ? "true" : "false" );
-    if ( track->length() > 0 )
-    {
-        debug() << "Setting tracklength to: " << track->length() << "s";
-        // Multiply by 1000 since this is in milliseconds
-        trackmeta->duration = ( track->length() * 1000 );
-        debug() << "Track length is now: " << trackmeta->duration << "ms";
-    }
-    if ( !track->playableUrl().fileName().isEmpty() )
-    {
-        trackmeta->filename = qstrdup( track->playableUrl().fileName().toUtf8() );
-    }
-    trackmeta->filesize = track->filesize();
-
-    debug() << "Filesize before copy: " << trackmeta->filesize;
-
-    // try and create the requested folder structure
-    uint32_t parent_id = 0;
-    if ( !m_folderStructure.isEmpty() )
-    {
-        parent_id = checkFolderStructure( track, true ); // true means create
-        if ( parent_id == 0 )
-        {
-            debug() << "Could not create new parent (" << m_folderStructure << ")";
-            /*The::statusBar()->shortLongMessage(
-            genericError,
-            i18n( "Cannot create parent folder. Check your structure." ),
-            StatusBar::Error
-                                              );*/
-            return false;
-        }
-    }
-    else
-    {
-        parent_id = getDefaultParentId();
-    }
-    debug() << "Parent id : " << parent_id;
-
-    trackmeta->parent_id = parent_id; // api change, set id here
-    trackmeta->storage_id = 0; // default storage id
-    debug() << "Sending track... " << track->playableUrl();
-    debug() << "Filename is: " << QString::fromUtf8( trackmeta->filename );
-
-
-
-
-    // TODO: implement callback correctly, not 0
-
-    debug() << "Playable Url is: " << track->playableUrl();
-    debug() << "Sending file with path: " << track->playableUrl().path().toUtf8();
-
-    int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( track->playableUrl().path().toUtf8() ), trackmeta,
-                                           0, this );
-
-    debug() << "Filesize after copy: " << trackmeta->filesize;
-
-
-
-    if ( ret < 0 )
-    {
-        debug() << "Could not write file " << ret;
-        /*The::statusBar()->shortLongMessage(
-        genericError,
-        i18n( "File write failed" ),
-        StatusBar::Error
-                                          );*/
-        return false;
-    }
-// TODO: cleanup
-
-
-
-    addMtpTrackToCollection( trackmeta );
-
-
-
-    //LIBMTP_destroy_track_t( trackmeta );
-
-    return true;
-}
-
-void
-MtpHandler::deleteTracksFromDevice( const Meta::TrackList &tracks )
-{
-    DEBUG_BLOCK
-
-    // Init the list of tracks to be deleted
-
-    m_tracksToDelete = tracks;
-
-    // Set up statusbar for deletion operation
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Deleting Tracks from MTP" ) );
-
-    m_statusbar->setMaximum( tracks.size() );
-
-    connect( this, SIGNAL( incrementProgress() ),
-             The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject* ) ),
-             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
-
-    while ( !m_tracksToDelete.isEmpty() )
-        deleteNextTrackFromDevice();
-
-    emit incrementProgress();
-    emit deleteTracksDone();
-
-}
-
-void
-MtpHandler::deleteNextTrackFromDevice()
-{
-
-    Meta::TrackPtr track;
-
-    // Pop the track off the front of the list
-
-    track = m_tracksToDelete.first();
-    m_tracksToDelete.removeFirst();
-
-    // Delete the track
-
-    privateDeleteTrackFromDevice( Meta::MtpTrackPtr::staticCast( track ) );
-
-    emit incrementProgress();
-
-}
 
 void
 MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
@@ -1387,25 +1146,7 @@ MtpHandler::writeDatabase()
     //ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
 */
-/*
-bool
-MtpHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
-{
-    DEBUG_BLOCK
-    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
-    // delete file
-    KUrl url;
-    url.setPath( realPath( ipodtrack->ipod_path ) );
-    Meta::TrackPtr trackptr = Meta::TrackPtr::staticCast( track );
-    m_tracksdeleting[ url ] = trackptr;
-    deleteFile( url );
-
-    return true;
-
-}
-
-*/
 void
 MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
 {
@@ -1422,6 +1163,8 @@ MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
 
 
     int status = LIBMTP_Delete_Object( m_device, object_id );
+
+    emit canDeleteMoreTracks();
 
     if ( status != 0 )
     {
