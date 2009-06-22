@@ -62,7 +62,9 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     QStringList getDevices(); // get list of devices
     void checkDevices(); // scans for supported devices
 
+    void checkDevice( const QString &udi );
     void checkDevicesFor( ConnectionAssistant* assistant );
+    void checkDevicesForAll();
     void checkDevicesForMtp();
     void checkDevicesForIpod();
     void checkDevicesForCd();

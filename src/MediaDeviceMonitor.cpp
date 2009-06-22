@@ -86,6 +86,29 @@ MediaDeviceMonitor::checkDevices()
     checkDevicesForCd();
 }
 
+void MediaDeviceMonitor::checkDevice(const QString& udi)
+{
+    foreach( ConnectionAssistant* assistant, m_assistants )
+    {
+        // Ignore already identified devices
+        if( m_udiAssistants.keys().contains( udi ) )
+            return;
+
+        if( assistant->identify( udi ) )
+        {
+            // keep track of which assistant deals with which device
+            m_udiAssistants.insert( udi, assistant );
+            // inform factory of new device identified
+            assistant->tellIdentified( udi );
+            return;
+        }
+    }
+
+}
+
+
+
+
 void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
 {
     DEBUG_BLOCK
@@ -94,6 +117,10 @@ void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
 
     foreach( const QString &udi, udiList )
     {
+        // Ignore already identified devices
+        if( m_udiAssistants.keys().contains( udi ) )
+            continue;
+
         if( assistant->identify( udi ) )
         {
             // keep track of which assistant deals with which device
@@ -104,6 +131,15 @@ void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
     }
 
 }
+
+void MediaDeviceMonitor::checkDevicesForAll()
+{
+    foreach( ConnectionAssistant* assistant, m_assistants )
+    {
+        checkDevicesFor( assistant );
+    }
+}
+
 
 
 void
@@ -161,13 +197,15 @@ void
 MediaDeviceMonitor::deviceAdded(  const QString &udi )
 {
     DEBUG_BLOCK
-
+/*
     QStringList udiList;
 
     debug() << "New device added, testing...";
 
     udiList.append( udi );
-    checkDevices();
+*/
+    // check if device is a known device
+    checkDevice( udi );
 }
 
 void
