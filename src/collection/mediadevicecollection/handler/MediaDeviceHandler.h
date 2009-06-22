@@ -172,23 +172,23 @@ namespace Meta {
            virtual void libCopyTrack( const Meta::TrackPtr &track ) = 0;
 
            /// Creates a new track struct particular to the library of the device
-           /// e.g. LIBMTP_new_track_t(), and assigns a pointer to it, so that
-           /// calls to libSet functions will set the values of this new track
+           /// e.g. LIBMTP_new_track_t(), and associates it with @param track for
+           /// later use
 
-           virtual void libCreateTrack() = 0;
+           virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
            /// Adds the newly created track struct now populated with info into the
            /// database struct of the particular device, e.g. into the itdb for Ipods.
            /// MTP devices automatically add the track into the database upon copying,
            /// so MTP would do nothing.
 
-           virtual void addTrackInDB() = 0;
+           virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
            /// Creates a MediaDeviceTrack based on the latest track struct created as a
            /// result of a copy to the device, and adds it into the collection to reflect
            /// that it has been copied.
 
-           void addMediaDeviceTrackToCollection();
+           void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
 
            /// setCopyTrackForParse makes it so that a call to getBasicMediaDeviceTrackInfo
            /// will use the track struct recently created and filled with info, to fill up
@@ -197,56 +197,61 @@ namespace Meta {
            virtual void setCopyTrackForParse() = 0;
 
            /// Uses wrapped libGet methods to fill a track with information from device
-           void getBasicMediaDeviceTrackInfo( Meta::MediaDeviceTrackPtr track ) const;
+           void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
 
            /// Uses wrapped libSet methods to fill a track struct of the particular library
            /// with information from a Meta::Track
 
-           void setBasicMediaDeviceTrackInfo( Meta::TrackPtr track );
+           void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
            /// Methods that wrap get/set of information using given library (e.g. libgpod)
            /// Subclasses of MediaDeviceHandler must keep a pointer to the current
            /// track in question, and these methods are executed on that track
 
-           virtual QString libGetTitle() const = 0;
-           virtual QString libGetAlbum() const = 0;
-           virtual QString libGetArtist() const = 0;
-           virtual QString libGetComposer() const = 0;
-           virtual QString libGetGenre() const = 0;
-           virtual int     libGetYear() const = 0;
-           virtual int     libGetLength() const = 0;
-           virtual int     libGetTrackNumber() const = 0;
-           virtual QString libGetComment() const = 0;
-           virtual int     libGetDiscNumber() const = 0;
-           virtual int     libGetBitrate() const = 0;
-           virtual int     libGetSamplerate() const = 0;
-           virtual float   libGetBpm() const = 0;
-           virtual int     libGetFileSize() const = 0;
-           virtual int     libGetPlayCount() const = 0;
-           virtual uint    libGetLastPlayed() const = 0;
-           virtual int     libGetRating() const  = 0;
-           virtual QString libGetType() const = 0;
-           virtual QString libGetPlayableUrl() const = 0;
+           /// get the required information from the track struct associated with the @param track
 
-           virtual void    libSetTitle( const QString& title ) = 0;
-           virtual void    libSetAlbum( const QString& album ) = 0;
-           virtual void    libSetArtist( const QString& artist ) = 0;
-           virtual void    libSetComposer( const QString& composer ) = 0;
-           virtual void    libSetGenre( const QString& genre ) = 0;
-           virtual void    libSetYear( const QString& year ) = 0;
-           virtual void    libSetLength( int length ) = 0;
-           virtual void    libSetTrackNumber( int tracknum ) = 0;
-           virtual void    libSetComment( const QString& comment ) = 0;
-           virtual void    libSetDiscNumber( int discnum ) = 0;
-           virtual void    libSetBitrate( int bitrate ) = 0;
-           virtual void    libSetSamplerate( int samplerate ) = 0;
-           virtual void    libSetBpm( float bpm ) = 0;
-           virtual void    libSetFileSize( int filesize ) = 0;
-           virtual void    libSetPlayCount( int playcount ) = 0;
-           virtual void    libSetLastPlayed( uint lastplayed) = 0;
-           virtual void    libSetRating( int rating )  = 0;
-           virtual void    libSetType( const QString& type ) = 0;
-           virtual void    libSetPlayableUrl() = 0;
+           virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track )  = 0;
+           virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
+
+           /// Each libSet function sets the private track struct associated with @param track
+           /// to the second value passed into the function.
+
+           virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title ) = 0;
+           virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album ) = 0;
+           virtual void    libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist ) = 0;
+           virtual void    libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer ) = 0;
+           virtual void    libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre ) = 0;
+           virtual void    libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year ) = 0;
+           virtual void    libSetLength( Meta::MediaDeviceTrackPtr &track, int length ) = 0;
+           virtual void    libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum ) = 0;
+           virtual void    libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment ) = 0;
+           virtual void    libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum ) = 0;
+           virtual void    libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate ) = 0;
+           virtual void    libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate ) = 0;
+           virtual void    libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm ) = 0;
+           virtual void    libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize ) = 0;
+           virtual void    libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount ) = 0;
+           virtual void    libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed) = 0;
+           virtual void    libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )  = 0;
+           virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type ) = 0;
+           virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack ) = 0;
 
            signals:
            void copyTracksDone( bool success );
@@ -331,7 +336,7 @@ namespace Meta {
 
            /* File I/O Methods */
 
-           void copyNextTrackToDevice();
+           //void copyNextTrackToDevice();
            bool privateCopyTrackToDevice( const Meta::TrackPtr& track );
 
         private:
@@ -363,6 +368,9 @@ namespace Meta {
 
     void slotCopyNextTrackFailed( ThreadWeaver::Job* job );
     void slotCopyNextTrackToDevice( ThreadWeaver::Job* job );
+
+    void slotCopyTrackJobsDone( ThreadWeaver::Job* job );
+    void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
 
            /* Collection Variables */
         private:
@@ -440,12 +448,12 @@ namespace Meta {
            QMap<Meta::TrackPtr, QString> m_tracksFailed;
 
            Meta::TrackList   m_tracksToCopy;
+           Meta::TrackList   m_tracksCopying;
            Meta::TrackPtr m_lastTrackCopied;
 
            TitleMap          m_titlemap;
 
            ProgressBar      *m_statusbar;
-           int               m_jobcounter; // keeps track of copy jobs present
 
         protected:
             bool m_success;

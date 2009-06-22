@@ -36,7 +36,7 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
 ########### next target ################
 
     set(amarok_collection-ipodcollection_PART_SRCS
-	IpodMeta.cpp
+#	IpodMeta.cpp
 	IpodCollection.cpp
 #	IpodCollectionLocation.cpp
 	handler/IpodHandler.cpp

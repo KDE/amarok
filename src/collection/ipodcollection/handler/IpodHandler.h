@@ -40,7 +40,9 @@ extern "C" {
 #include "MediaDeviceHandler.h"
 #include "../../../statusbar/StatusBar.h"
 
+#include <KIO/Job>
 #include "kjob.h"
+#include <ctime> // for kjob.h
 #include <KTempDir>
 #include <threadweaver/Job.h>
 
@@ -94,52 +96,52 @@ namespace Meta {
 
            /// Methods that wrap get/set of information using libgpod
 
-           virtual QString libGetTitle() const;
-           virtual QString libGetAlbum() const;
-           virtual QString libGetArtist() const;
-           virtual QString libGetComposer() const;
-           virtual QString libGetGenre() const;
-           virtual int     libGetYear() const;
-           virtual int     libGetLength() const;
-           virtual int     libGetTrackNumber() const;
-           virtual QString libGetComment() const;
-           virtual int     libGetDiscNumber() const;
-           virtual int     libGetBitrate() const;
-           virtual int     libGetSamplerate() const;
-           virtual float   libGetBpm() const;
-           virtual int     libGetFileSize() const;
-           virtual int     libGetPlayCount() const;
-           virtual uint    libGetLastPlayed() const;
-           virtual int     libGetRating() const;
-           virtual QString libGetType() const;
-           virtual QString libGetPlayableUrl() const;
+           virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
+           virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
+           virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
+           virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
+           virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
-           virtual void    libSetTitle( const QString& title );
-           virtual void    libSetAlbum( const QString& album );
-           virtual void    libSetArtist( const QString& artist );
-           virtual void    libSetComposer( const QString& composer );
-           virtual void    libSetGenre( const QString& genre );
-           virtual void    libSetYear( const QString& year );
-           virtual void    libSetLength( int length );
-           virtual void    libSetTrackNumber( int tracknum );
-           virtual void    libSetComment( const QString& comment );
-           virtual void    libSetDiscNumber( int discnum );
-           virtual void    libSetBitrate( int bitrate );
-           virtual void    libSetSamplerate( int samplerate );
-           virtual void    libSetBpm( float bpm );
-           virtual void    libSetFileSize( int filesize );
-           virtual void    libSetPlayCount( int playcount );
-           virtual void    libSetLastPlayed( uint lastplayed);
-           virtual void    libSetRating( int rating );
-           virtual void    libSetType( const QString& type );
-           virtual void    libSetPlayableUrl();
+           virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
+           virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
+           virtual void    libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+           virtual void    libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
+           virtual void    libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
+           virtual void    libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
+           virtual void    libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
+           virtual void    libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
+           virtual void    libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
+           virtual void    libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
+           virtual void    libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
+           virtual void    libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
+           virtual void    libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
+           virtual void    libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
+           virtual void    libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
+           virtual void    libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed);
+           virtual void    libSetRating( Meta::MediaDeviceTrackPtr &track, int rating );
+           virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
+           virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
            /// Create new track
 
-           virtual void libCreateTrack();
+           virtual void libCreateTrack(const Meta::MediaDeviceTrackPtr& track );
            virtual void findPathToCopy( const Meta::TrackPtr &track );
-           virtual bool libCopyTrack( const Meta::TrackPtr &track );
-           virtual void addTrackInDB();
+           virtual void libCopyTrack( const Meta::TrackPtr &track );
+           virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
 
            virtual void setCopyTrackForParse();
 
@@ -150,8 +152,6 @@ namespace Meta {
            virtual void prepareToParseNextTrack();
            virtual void nextTrackToParse();
            virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
-
-           
 
            virtual QStringList supportedFormats();
            
@@ -195,29 +195,19 @@ namespace Meta {
 
         public slots:
            bool initializeIpod();
+           
 
         private:
            /* Handler's Main Methods */
 
            virtual void prepareToCopy();
 
-           /**
-            * @param ipodtrack - track being read from
-            * @param track - track being written to
-            * Extracts track information from ipodtrack
-            * and puts it in track
-            */
-           //void getBasicIpodTrackInfo( Meta::MediaDeviceTrackPtr ipodtrack ) const;
-
            /* Handler's Collection Methods */
-
-           //void addIpodTrackToCollection( Itdb_Track *ipodtrack );
 
            /* libgpod DB Methods */
            // TODO: abstract database methods
 /*
-           void addTrackInDB( Itdb_Track *ipodtrack );
-           void insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track );
+
            bool removeDBTrack( Itdb_Track *track );
 */
            /* libgpod Information Extraction Methods */
@@ -262,9 +252,7 @@ namespace Meta {
            /* Collection Variables */
 
            // Associated collection
-           //IpodCollection   *m_memColl;
            // Map of titles, used to check for duplicate tracks
-           TitleMap          m_titlemap;
 
            /* libgpod variables */
            Itdb_iTunesDB    *m_itdb;
@@ -278,14 +266,13 @@ namespace Meta {
            int               m_jobcounter; // keeps track of copy jobs present
 
            /* Copy/Delete Variables */
-           Meta::TrackList   m_tracksToCopy;
            Meta::TrackList   m_tracksToDelete;
 
-           Itdb_Track       *m_libtrack;
-           KUrl              m_copyurl;
+           QMap<KUrl, Meta::TrackPtr> m_trackscopying; // associates source url to track of source url
+           QMap<Meta::TrackPtr, KUrl> m_trackdesturl; // keeps track of destination url for new tracks, mapped from source track
 
-           /* Operation Progress Bar */
-           ProgressBar      *m_statusbar;
+           Itdb_Track       *m_libtrack;
+           //KUrl              m_copyurl;
 
            /* Ipod Connection */
            bool              m_autoConnect;
@@ -340,6 +327,8 @@ namespace Meta {
 
           void slotDBWriteFailed( ThreadWeaver::Job* job );
           void slotDBWriteSucceeded( ThreadWeaver::Job* job );
+
+          void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed);
     };
 
     class DBWorkerThread : public ThreadWeaver::Job

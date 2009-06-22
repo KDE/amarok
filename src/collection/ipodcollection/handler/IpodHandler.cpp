@@ -63,7 +63,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     //, m_memColl( mc )
     , m_masterPlaylist( 0 )
     , m_jobcounter( 0 )
-    , m_statusbar( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
     , m_name()
@@ -626,14 +625,16 @@ IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
 
     debug() << "About to copy from: " << track->playableUrl().path();
 
-    m_copyurl = url;
+    m_trackdesturl[ track ] = url;
 }
 
 void
 IpodHandler::libCopyTrack( const Meta::TrackPtr &track )
 {
-    kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), m_copyurl );
-    emit libCopyTrackDone( track );
+    DEBUG_BLOCK
+    KUrl srcurl = KUrl::fromPath( track->playableUrl().path() );
+    m_trackscopying[ srcurl ] = track;
+    kioCopyTrack( srcurl, m_trackdesturl[ track ] );
 }
 
 void
@@ -643,12 +644,12 @@ IpodHandler::writeDatabase()
 }
 
 void
-IpodHandler::addTrackInDB()
+IpodHandler::addTrackInDB(const Meta::MediaDeviceTrackPtr& track)
 {
     DEBUG_BLOCK
 
-    debug() << "Adding " << QString::fromUtf8( m_libtrack->artist) << " - " << QString::fromUtf8( m_libtrack->title );
-    itdb_track_add(m_itdb, m_libtrack, -1);
+    debug() << "Adding " << QString::fromUtf8( m_itdbtrackhash[ track ]->artist) << " - " << QString::fromUtf8( m_itdbtrackhash[ track ]->title );
+    itdb_track_add(m_itdb, m_itdbtrackhash[ track ], -1);
 
     // TODO: podcasts NYI
     // if(podcastInfo)
@@ -676,7 +677,7 @@ IpodHandler::addTrackInDB()
             itdb_playlist_add( m_itdb, mpl, -1 );
             itdb_playlist_set_mpl( mpl );
         }
-        itdb_playlist_add_track(mpl, m_libtrack, -1);
+        itdb_playlist_add_track(mpl, m_itdbtrackhash[ track ], -1);
     }
 }
 #if 0
@@ -718,10 +719,13 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     debug() << "Copying from *" << src << "* to *" << dst << "*";
 
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
-    m_jobcounter++;
+    //m_jobcounter++;
 
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileTransferred( KJob * ) ) );
+
+    connect( job, SIGNAL( copyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)),
+             this, SLOT(slotCopyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)));
 
     return true;
 }
@@ -735,18 +739,23 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
     DEBUG_BLOCK
     QMutexLocker locker(&m_joblocker);
 
+    m_wait = false;
+
+    //m_jobcounter--;
+
     if ( job->error() )
     {
         m_copyFailed = true;
         debug() << "file transfer failed: " << job->errorText();
+        return;
     }
-    m_wait = false;
 
-    m_jobcounter--;
+
+
 
     // Limit max number of jobs to 10, make sure more tracks left
     // to copy
-
+/*
     if( !m_tracksToCopy.empty() )
     {
         debug() << "Tracks to copy still remain";
@@ -764,8 +773,22 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         {
             emit incrementProgress();
             emit copyTracksDone( !m_copyFailed );
-        }
+        }KIO::Job*,KUrl,KUrl,time_t,bool,bool))
     }
+    */
+}
+
+void
+IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed)
+{
+    Q_UNUSED( job )
+    Q_UNUSED( to )
+    Q_UNUSED( mtime )
+    Q_UNUSED( directory )
+    Q_UNUSED( renamed )
+
+    DEBUG_BLOCK
+    emit libCopyTrackDone( m_trackscopying[from] );
 }
 #if 0
 void
@@ -904,285 +927,290 @@ IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
 }
 #endif
 QString
-IpodHandler::libGetTitle() const
+IpodHandler::libGetTitle( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_currtrack->title );
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->title );
 }
 
 QString
-IpodHandler::libGetAlbum() const
+IpodHandler::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_currtrack->album );
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->album );
 }
 
 QString
-IpodHandler::libGetArtist() const
+IpodHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_currtrack->artist );
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->artist );
 }
 
 QString
-IpodHandler::libGetComposer() const
+IpodHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_currtrack->composer );
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->composer );
 }
 
 QString
-IpodHandler::libGetGenre() const
+IpodHandler::libGetGenre( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_currtrack->genre );
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->genre );
 }
 
 int
-IpodHandler::libGetYear() const
+IpodHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->year;
+    return m_itdbtrackhash[ track ]->year;
 }
 
 int
-IpodHandler::libGetLength() const
+IpodHandler::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
-    return ( ( m_currtrack->tracklen ) / 1000 );
+    return ( ( m_itdbtrackhash[ track ]->tracklen ) / 1000 );
 }
 
 int
-IpodHandler::libGetTrackNumber() const
+IpodHandler::libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->track_nr;
+    return m_itdbtrackhash[ track ]->track_nr;
 }
 
 QString
-IpodHandler::libGetComment() const
+IpodHandler::libGetComment( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_currtrack->comment );
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->comment );
 }
 
 int
-IpodHandler::libGetDiscNumber() const
+IpodHandler::libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->cd_nr;
+    return m_itdbtrackhash[ track ]->cd_nr;
 }
 
 int
-IpodHandler::libGetBitrate() const
+IpodHandler::libGetBitrate( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->bitrate;
+    return m_itdbtrackhash[ track ]->bitrate;
 }
 
 int
-IpodHandler::libGetSamplerate() const
+IpodHandler::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->samplerate;
+    return m_itdbtrackhash[ track ]->samplerate;
 }
 
 float
-IpodHandler::libGetBpm() const
+IpodHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->BPM;
+    return m_itdbtrackhash[ track ]->BPM;
 }
 int
-IpodHandler::libGetFileSize() const
+IpodHandler::libGetFileSize( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->size;
+    return m_itdbtrackhash[ track ]->size;
 }
 int
-IpodHandler::libGetPlayCount() const
+IpodHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->playcount;
+    return m_itdbtrackhash[ track ]->playcount;
 }
 uint
-IpodHandler::libGetLastPlayed() const
+IpodHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_currtrack->time_played;
+    return m_itdbtrackhash[ track ]->time_played;
 }
 int
-IpodHandler::libGetRating() const
+IpodHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
 {
-    return ( m_currtrack->rating / ITDB_RATING_STEP * 2 );
+    return ( m_itdbtrackhash[ track ]->rating / ITDB_RATING_STEP * 2 );
 }
 QString
-IpodHandler::libGetType() const
+IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
 {
-    if( QString::fromUtf8( m_currtrack->filetype ) == "mpeg" )
+    if( QString::fromUtf8( m_itdbtrackhash[ track ]->filetype ) == "mpeg" )
         return "mp3";
+
+    return "";
 }
 
 QString
-IpodHandler::libGetPlayableUrl() const
+IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
-    return (m_mountPoint + QString( m_currtrack->ipod_path ).split( ':' ).join( "/" ));
+    return (m_mountPoint + QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" ));
 }
 
 /// Sets
 
 void
-IpodHandler::libSetTitle( const QString& title )
+IpodHandler::libSetTitle( Meta::MediaDeviceTrackPtr& track, const QString& title )
 {
-    m_libtrack->title = g_strdup( title.toUtf8() );
+    m_itdbtrackhash[ track ]->title = g_strdup( title.toUtf8() );
 }
 void
-IpodHandler::libSetAlbum( const QString& album )
+IpodHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album )
 {
-    m_libtrack->album = g_strdup( album.toUtf8() );
+    m_itdbtrackhash[ track ]->album = g_strdup( album.toUtf8() );
 }
 void
-IpodHandler::libSetArtist( const QString& artist )
+IpodHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
 {
-    m_libtrack->artist = g_strdup( artist.toUtf8() );
+    m_itdbtrackhash[ track ]->artist = g_strdup( artist.toUtf8() );
 }
 void
-IpodHandler::libSetComposer( const QString& composer )
+IpodHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
-    m_libtrack->composer = g_strdup( composer.toUtf8() );
+    m_itdbtrackhash[ track ]->composer = g_strdup( composer.toUtf8() );
 }
 void
-IpodHandler::libSetGenre( const QString& genre )
+IpodHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre )
 {
     if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
     {
-        m_libtrack->remember_playback_position |= 0x01;
-        m_libtrack->skip_when_shuffling |= 0x01;
-        m_libtrack->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
+        m_itdbtrackhash[ track ]->remember_playback_position |= 0x01;
+        m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
+        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
 }
 void
-IpodHandler::libSetYear( const QString& year )
+IpodHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
 {
     bool ok;
     int yr = year.toInt( &ok, 10 );
     if( ok )
-        m_libtrack->year = yr;
+        m_itdbtrackhash[ track ]->year = yr;
 }
 void
-IpodHandler::libSetLength( int length )
+IpodHandler::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
 {
-    m_libtrack->tracklen = length*1000;
+    m_itdbtrackhash[ track ]->tracklen = length*1000;
 }
 void
-IpodHandler::libSetTrackNumber( int tracknum )
+IpodHandler::libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum )
 {
-    m_libtrack->track_nr = tracknum;
+    m_itdbtrackhash[ track ]->track_nr = tracknum;
 }
 void
-IpodHandler::libSetComment( const QString& comment )
+IpodHandler::libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment )
 {
-    m_libtrack->comment = g_strdup( comment.toUtf8() );
+    m_itdbtrackhash[ track ]->comment = g_strdup( comment.toUtf8() );
 }
 void
-IpodHandler::libSetDiscNumber( int discnum )
+IpodHandler::libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum )
 {
-    m_libtrack->cd_nr = discnum;
+    m_itdbtrackhash[ track ]->cd_nr = discnum;
 }
 void
-IpodHandler::libSetBitrate( int bitrate )
+IpodHandler::libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate )
 {
-    m_libtrack->bitrate = bitrate;
+    m_itdbtrackhash[ track ]->bitrate = bitrate;
 }
 void
-IpodHandler::libSetSamplerate( int samplerate )
+IpodHandler::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate )
 {
-    m_libtrack->samplerate = samplerate;
+    m_itdbtrackhash[ track ]->samplerate = samplerate;
 }
 void
-IpodHandler::libSetBpm( float bpm )
+IpodHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
 {
-    m_libtrack->BPM = static_cast<int>( bpm );
+    m_itdbtrackhash[ track ]->BPM = static_cast<int>( bpm );
 }
 void
-IpodHandler::libSetFileSize( int filesize )
+IpodHandler::libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize )
 {
-    m_libtrack->size = filesize;
+    m_itdbtrackhash[ track ]->size = filesize;
 }
 void
-IpodHandler::libSetPlayCount( int playcount )
+IpodHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
 {
-    m_libtrack->playcount = playcount;
+    m_itdbtrackhash[ track ]->playcount = playcount;
 }
 void
-IpodHandler::libSetLastPlayed( uint lastplayed)
+IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
 {
+    Q_UNUSED( track )
+    Q_UNUSED( lastplayed )
 }
 void
-IpodHandler::libSetRating( int rating )
+IpodHandler::libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )
 {
-    m_libtrack->rating = ( rating * ITDB_RATING_STEP / 2 );
+    m_itdbtrackhash[ track ]->rating = ( rating * ITDB_RATING_STEP / 2 );
 }
 void
-IpodHandler::libSetType( const QString& type )
+IpodHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
 {
-    m_libtrack->mediatype = ITDB_MEDIATYPE_AUDIO;
+    m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIO;
     bool audiobook = false;
     if(type=="wav")
     {
-        m_libtrack->filetype = g_strdup( "wav" );
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "wav" );
     }
     else if(type=="mp3" || type=="mpeg")
     {
-        m_libtrack->filetype = g_strdup( "mpeg" );
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "mpeg" );
     }
     else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
     {
-        m_libtrack->filetype = g_strdup( "mp4" );
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
     }
     else if(type=="m4b")
     {
         audiobook = true;
-        m_libtrack->filetype = g_strdup( "mp4" );
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
     }
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
     {
-        m_libtrack->filetype = g_strdup( "m4v video" );
-        m_libtrack->movie_flag = 0x01; // for videos
-        m_libtrack->mediatype = ITDB_MEDIATYPE_MOVIE;
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "m4v video" );
+        m_itdbtrackhash[ track ]->movie_flag = 0x01; // for videos
+        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_MOVIE;
     }
     // TODO: NYI, TagLib calls need to be ported
     /*
     else if(type=="aa")
     {
         audiobook = true;
-        m_libtrack->filetype = g_strdup( "audible" );
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "audible" );
 
         TagLib::Audible::File f( QFile::encodeName( url.path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
         if( t )
-            m_libtrack->drm_userid = t->userID();
+            m_itdbtrackhash[ track ]->drm_userid = t->userID();
         // libgpod also tries to set those, but this won't work
-        m_libtrack->unk126 = 0x01;
-        m_libtrack->unk144 = 0x0029;
+        m_itdbtrackhash[ track ]->unk126 = 0x01;
+        m_itdbtrackhash[ track ]->unk144 = 0x0029;
 
     }
     */
     else
     {
-        m_libtrack->filetype = g_strdup( type.toUtf8() );
+        m_itdbtrackhash[ track ]->filetype = g_strdup( type.toUtf8() );
     }
 
     if( audiobook )
     {
-        m_libtrack->remember_playback_position |= 0x01;
-        m_libtrack->skip_when_shuffling |= 0x01;
-        m_libtrack->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
+        m_itdbtrackhash[ track ]->remember_playback_position |= 0x01;
+        m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
+        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
 }
 
 void
-IpodHandler::libSetPlayableUrl()
+IpodHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack )
 {
-    QString pathname = m_copyurl.path();
+    KUrl copyurl = m_trackdesturl[ srcTrack ];
+    QString pathname = copyurl.path();
 
     QString type = pathname.section('.', -1).toLower();
     type = type.toLower();
 
     debug() << "Path before put in ipod_path: " << pathname;
 
-    m_libtrack->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
-    debug() << "on iPod: " << m_libtrack->ipod_path;
+    m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
+    debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ipod_path;
 }
 
 void
-IpodHandler::libCreateTrack()
+IpodHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
 {
-    m_libtrack = itdb_track_new();
+    m_itdbtrackhash[ track ] = itdb_track_new();
 }
 
 void
@@ -1334,7 +1362,10 @@ IpodHandler::prepareToCopy()
 {
     // Initialize job counter to prepare to keep track of how many
     // copy jobs are going on at once
-    m_jobcounter = 0;
+    //m_jobcounter = 0;
+
+    m_trackdesturl.clear();
+    m_trackscopying.clear();
 }
 
 void

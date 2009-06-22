@@ -22,6 +22,7 @@
 #include "MediaDeviceCollection.h"
 
 #include <threadweaver/ThreadWeaver.h>
+#include <threadweaver/JobCollection.h>
 
 using namespace Meta;
 
@@ -40,54 +41,54 @@ MediaDeviceHandler::isWritable() const
 
 
 void
-MediaDeviceHandler::getBasicMediaDeviceTrackInfo( Meta::MediaDeviceTrackPtr track ) const
+MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack )
 {
     /* 1-liner info retrieval */
 
-    track->setTitle( libGetTitle() );
-    track->setLength( libGetLength() );
-    track->setTrackNumber( libGetTrackNumber() );
-    track->setComment( libGetComment() );
-    track->setDiscNumber( libGetDiscNumber() );
-    track->setBitrate( libGetBitrate() );
-    track->setSamplerate( libGetSamplerate() );
-    track->setBpm( libGetBpm() );
-    track->setFileSize( libGetFileSize() );
-    track->setPlayCount( libGetPlayCount() );
-    track->setLastPlayed( libGetLastPlayed() );
-    track->setRating( libGetRating() );
+    destTrack->setTitle( libGetTitle( srcTrack ) );
+    destTrack->setLength( libGetLength( srcTrack ) );
+    destTrack->setTrackNumber( libGetTrackNumber( srcTrack ) );
+    destTrack->setComment( libGetComment( srcTrack ) );
+    destTrack->setDiscNumber( libGetDiscNumber( srcTrack ) );
+    destTrack->setBitrate( libGetBitrate( srcTrack ) );
+    destTrack->setSamplerate( libGetSamplerate( srcTrack ) );
+    destTrack->setBpm( libGetBpm( srcTrack ) );
+    destTrack->setFileSize( libGetFileSize( srcTrack ) );
+    destTrack->setPlayCount( libGetPlayCount( srcTrack ) );
+    destTrack->setLastPlayed( libGetLastPlayed( srcTrack ) );
+    destTrack->setRating( libGetRating( srcTrack ) );
 
-    track->setPlayableUrl( libGetPlayableUrl() );
+    destTrack->setPlayableUrl( libGetPlayableUrl( srcTrack ) );
 
-    track->setType( libGetType() );
+    destTrack->setType( libGetType( srcTrack ) );
 }
 
 void
-MediaDeviceHandler::setBasicMediaDeviceTrackInfo( Meta::TrackPtr track )
+MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack, MediaDeviceTrackPtr destTrack )
 {
-           libSetTitle( track->name() );
-           libSetAlbum( track->album()->name() );
-           libSetArtist( track->artist()->name() );
-           libSetComposer( track->composer()->name() );
-           libSetGenre( track->genre()->name() );
-           libSetYear( track->year()->name() );
-           libSetLength( track->length() );
-           libSetTrackNumber( track->trackNumber() );
-           libSetComment( track->comment() );
-           libSetDiscNumber( track->discNumber() );
-           libSetBitrate( track->bitrate() );
-           libSetSamplerate( track->sampleRate() );
-           //libSetBpm( track->bpm() );
-           libSetFileSize( track->filesize() );
-           libSetPlayCount( track->playCount() );
-           libSetLastPlayed( track->lastPlayed() );
-           libSetRating( track->rating() );
-           libSetType( track->type() );
-           libSetPlayableUrl();
+           libSetTitle( destTrack, srcTrack->name() );
+           libSetAlbum( destTrack, srcTrack->album()->name() );
+           libSetArtist( destTrack, srcTrack->artist()->name() );
+           libSetComposer( destTrack, srcTrack->composer()->name() );
+           libSetGenre( destTrack, srcTrack->genre()->name() );
+           libSetYear( destTrack, srcTrack->year()->name() );
+           libSetLength( destTrack, srcTrack->length() );
+           libSetTrackNumber( destTrack, srcTrack->trackNumber() );
+           libSetComment( destTrack, srcTrack->comment() );
+           libSetDiscNumber( destTrack, srcTrack->discNumber() );
+           libSetBitrate( destTrack, srcTrack->bitrate() );
+           libSetSamplerate( destTrack, srcTrack->sampleRate() );
+           //libSetBpm( destTrack, srcTrack->bpm() );
+           libSetFileSize( destTrack, srcTrack->filesize() );
+           libSetPlayCount( destTrack, srcTrack->playCount() );
+           libSetLastPlayed( destTrack, srcTrack->lastPlayed() );
+           libSetRating( destTrack, srcTrack->rating() );
+           libSetType( destTrack, srcTrack->type() );
+           libSetPlayableUrl( destTrack, srcTrack );
 }
 
 void
-MediaDeviceHandler::addMediaDeviceTrackToCollection()
+MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& track)
 {
 
 
@@ -98,13 +99,13 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection()
     ComposerMap composerMap = m_memColl->composerMap();
     YearMap yearMap = m_memColl->yearMap();
 
-    MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
+    //MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
     /* 1-liner info retrieval */
 
-    setCopyTrackForParse();
+    //setCopyTrackForParse();
 
-    getBasicMediaDeviceTrackInfo( track );
+    getBasicMediaDeviceTrackInfo( track, track );
 
     /* map-related info retrieval */
     setupArtistMap( track, artistMap );
@@ -119,7 +120,7 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection()
 
     m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
 
-    setAssociateTrack( track );
+    //setAssociateTrack( track );
     // NOTE: not supporting adding track that's already on a playlist
     //mtpTrackMap.insert( mtptrack, track ); // map for playlist formation
 
@@ -178,6 +179,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     /* Clear Transfer queue */
 
     m_tracksToCopy.clear();
+    
 
     /* Check for same tags, don't copy if same tags */
     /* Also check for compatible format */
@@ -275,13 +277,27 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     prepareToCopy();
 
+    m_tracksCopying.clear();
+
     // begin copying tracks to device
 
-    copyNextTrackToDevice();
+    ThreadWeaver::JobCollection* jobcoll = new ThreadWeaver::JobCollection();
+
+    foreach( Meta::TrackPtr track, m_tracksToCopy )
+    {
+        jobcoll->addJob( new CopyWorkerThread( track, this ));
+    }
+
+    ThreadWeaver::Weaver::instance()->setMaximumNumberOfThreads( 10 );
+
+    connect( jobcoll, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT(slotCopyTrackJobsDone(ThreadWeaver::Job*)) );
+    ThreadWeaver::Weaver::instance()->enqueue( jobcoll );
+
+    //copyNextTrackToDevice();
     
     return;
 }
-
+/*
 void
 MediaDeviceHandler::copyNextTrackToDevice()
 {
@@ -298,6 +314,7 @@ MediaDeviceHandler::copyNextTrackToDevice()
         // Copy the track
 
         m_lastTrackCopied = track;
+        m_tracksCopying.insert( track );
 
         ThreadWeaver::Weaver::instance()->enqueue( new CopyWorkerThread( track, this ) );
 
@@ -311,7 +328,7 @@ MediaDeviceHandler::copyNextTrackToDevice()
         emit copyTracksDone( !m_copyFailed );
     }
 }
-
+*/
 
 bool
 MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
@@ -332,36 +349,41 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     // Copy the file to the device
 
-    success = libCopyTrack( track );
+    libCopyTrack( track );
 
     return success;
 }
 
+/// @param track is the source track from which we are copying
 void
 MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 {
-    // Create a track struct
+    // Create new destTrack that will go into the device collection, based on source track
 
-    libCreateTrack();
+    Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
+    
+    // Create a track struct, associate it to destTrack
 
-    // Fill the track struct with info from the track parameter
+    libCreateTrack( destTrack );
 
-    setBasicMediaDeviceTrackInfo( track );
+    // Fill the track struct of the destTrack with info from the track parameter as source
 
-    // Add the track into the database, if the library needs to
+    setBasicMediaDeviceTrackInfo( track, destTrack );
 
-    addTrackInDB();
+    // Add the track struct into the database, if the library needs to
+
+    addTrackInDB( destTrack );
 
     // Add the new Meta::MediaDeviceTrackPtr into the device collection
 
     // add track to collection
-    addMediaDeviceTrackToCollection();
+    addMediaDeviceTrackToCollection( destTrack );
 }
 
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
-    QString artist( libGetArtist() );
+    QString artist( libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
     if ( artistMap.contains( artist ) )
@@ -379,7 +401,7 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 void
 MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap )
 {
-    QString album( libGetAlbum() );
+    QString album( libGetAlbum( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -397,7 +419,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 void
 MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& genreMap )
 {
-    QString genre = libGetGenre();
+    QString genre = libGetGenre( track );
     MediaDeviceGenrePtr genrePtr;
 
     if ( genreMap.contains( genre ) )
@@ -416,7 +438,7 @@ MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& ge
 void
 MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap& composerMap )
 {
-    QString composer ( libGetComposer() );
+    QString composer ( libGetComposer( track ) );
     MediaDeviceComposerPtr composerPtr;
 
     if ( composerMap.contains( composer ) )
@@ -435,7 +457,7 @@ void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
     QString year;
-    year = year.setNum( libGetYear() );
+    year = year.setNum( libGetYear( track ) );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
@@ -475,9 +497,11 @@ MediaDeviceHandler::parseTracks()
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
+        setAssociateTrack( track );
+
         //debug() << "Created new media device track";
 
-        getBasicMediaDeviceTrackInfo(track);
+        getBasicMediaDeviceTrackInfo(track, track);
 
        // debug() << "Got basic info";
 
@@ -499,7 +523,7 @@ MediaDeviceHandler::parseTracks()
         // TODO: setup titlemap for copy/deleting
         m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
 
-        setAssociateTrack( track );
+
 
         //debug() << "Associated track";
         // TODO: abstract playlist parsing
@@ -561,7 +585,7 @@ MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job )
     QString error = "Job Failed";
     m_tracksFailed.insert( m_lastTrackCopied, error );
 
-    copyNextTrackToDevice();
+    //copyNextTrackToDevice();
 }
 
 void
@@ -578,7 +602,22 @@ MediaDeviceHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
         m_tracksFailed.insert( m_lastTrackCopied, error );
     }
 
-    copyNextTrackToDevice();
+    //copyNextTrackToDevice();
+}
+
+void
+MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job )
+    // TODO: some error checking showing tracks that could not be copied
+
+    // Finish the progress bar
+    emit incrementProgress();
+    emit endProgressOperation( this );
+
+    // Inform CollectionLocation that copying is done
+    
+    emit copyTracksDone( true );
 }
 
 CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHandler* handler )
@@ -589,7 +628,7 @@ CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHand
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackFailed( ThreadWeaver::Job* ) ) );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotCopyNextTrackToDevice( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    //connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
 }
 
 CopyWorkerThread::~CopyWorkerThread()
