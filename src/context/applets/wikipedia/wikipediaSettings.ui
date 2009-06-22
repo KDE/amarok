@@ -10,9 +10,6 @@
     <height>39</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>wikipediaSettings</string>
-  </property>
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
