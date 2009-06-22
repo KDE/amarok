@@ -108,7 +108,7 @@ namespace Meta {
 
         public:
            void parseTracks();// NOTE: used by Collection
-           virtual void writeDatabase() = 0;// NOTE: used by Collection
+           virtual void writeDatabase() { slotDatabaseWritten( true );}// NOTE: used by Collection
 
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
            virtual void removeTrackListFromDevice( const Meta::TrackList &tracks );
@@ -193,12 +193,12 @@ namespace Meta {
            /// MTP devices automatically add the track into the database upon copying,
            /// so MTP would do nothing.
 
-           virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) }
 
            /// Remove all traces of the track struct associated with @param track from
            /// the database struct, but do not delete the struct
 
-           virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
+           virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) }
 
            /// Indicates to the subclass that the database has been updated
            /// For ipods, just sets m_dbchanged = true
