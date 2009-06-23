@@ -24,7 +24,12 @@
 #include <QObject>
 #include <QScriptable>
 
-class MetaTrackPrototype : public QObject, protected QScriptable
+#ifdef DEBUG
+    class AMAROK_EXPORT
+#else
+    class
+#endif
+MetaTrackPrototype : public QObject, protected QScriptable
 {
     Q_OBJECT
 

@@ -1,5 +1,7 @@
 
 include_directories( ../../src/
+                     ../../src/meta/
+                     ../../src/meta/capabilities/
                      ${QT_INCLUDES}
                      ${CMAKE_CURRENT_BINARY_DIR}
                    )
@@ -15,10 +17,10 @@ qt4_automoc( ${amaroktest_SRCS} )
 add_executable(amaroktest ${amaroktest_SRCS})
 
 target_link_libraries(amaroktest
-                      amaroklib
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTSCRIPT_LIBRARY}
                       ${KDE4_KDECORE_LIBRARY}
+                      amaroklib
                      )
 
 if(APPLE)

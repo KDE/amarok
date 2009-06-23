@@ -21,6 +21,8 @@
 #define AMAROKTEST_H
 
 #include <QCoreApplication>
+#include <QList>
+#include <QObject>
 #include <QScriptEngine>
 #include <QString>
 #include <QStringList>
@@ -38,7 +40,7 @@ class AmarokTest : public QCoreApplication
 
 public:
     AmarokTest( int &argc, char **argv );
-//     ~AmarokTest();
+    ~AmarokTest();
 
 // TODO: test utils for scripts, like in QTest
 
@@ -83,12 +85,13 @@ private:
 
     bool          m_measurePerf;
 
-    QScriptEngine m_engine;
-    QString       m_currentlyRunning;
-    QString       m_logsLocation;
-    QStringList   m_allTests;
-    QTextStream   m_log;
-    QTime         m_testTime;
+    QList<QObject*> m_wrapperList;
+    QScriptEngine   m_engine;
+    QString         m_currentlyRunning;
+    QString         m_logsLocation;
+    QStringList     m_allTests;
+    QTextStream     m_log;
+    QTime           m_testTime;
 };
 
 #endif // AMAROKTEST_H

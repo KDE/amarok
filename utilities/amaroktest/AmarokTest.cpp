@@ -35,6 +35,7 @@
 #include "../../src/playlistmanager/PlaylistManager.h"
 #include "../../src/playlist/PlaylistActions.h"
 #include "../../src/playlist/PlaylistController.h"
+#include "../../src/scriptengine/MetaTypeExporter.h"
 
 static QTextStream s_errStream( stderr );
 static QTextStream s_debugStream( stdout );
@@ -109,6 +110,10 @@ AmarokTest::AmarokTest( int &argc, char **argv )
     ::exit( 0 );
 }
 
+AmarokTest::~AmarokTest()
+{
+    qDeleteAll( m_wrapperList.begin(), m_wrapperList.end() );
+}
 
 
 /**
@@ -137,7 +142,7 @@ AmarokTest::startTimer() // Slot
 
 
 void
-        AmarokTest::testResult( QString testName, QString expected, QString actualResult, bool expectedToFail ) // Slot
+AmarokTest::testResult( QString testName, QString expected, QString actualResult, bool expectedToFail ) // Slot
 {
     m_log << "  <test>" << endl;
     m_log << "    <name>" << testName << "</name>" << endl;
@@ -200,10 +205,12 @@ AmarokTest::prepareTestEngine()
     amarokTestValue = m_engine.newQObject( amarokTestObject );
     m_engine.globalObject().setProperty( "PlaylistController", amarokTestValue );
 
-    /**  */
-    
+    /** Meta::TrackPtr */
+    MetaTrackPrototype* trackProto = new MetaTrackPrototype();
+    m_engine.setDefaultPrototype( qMetaTypeId<Meta::TrackPtr>(), m_engine.newQObject( trackProto ) );
+    m_wrapperList.append( trackProto );
 
-    /**  */
+    /** KUrl */
     
 
     /**  */
