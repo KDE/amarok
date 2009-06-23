@@ -21,10 +21,7 @@
 #define AMAROKTEST_H
 
 #include <QApplication>
-#include <QList>
-#include <QObject>
 #include <QScriptEngine>
-#include <QString>
 #include <QStringList>
 #include <QTextStream>
 #include <QTime>

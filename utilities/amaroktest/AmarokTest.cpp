@@ -26,9 +26,7 @@
 
 #include <QDateTime>
 #include <QFile>
-#include <QObject>
 #include <QScriptValue>
-#include <QTextStream>
 
 // add includes needed for tests here
 #include "src/playlistmanager/PlaylistManager.h"
