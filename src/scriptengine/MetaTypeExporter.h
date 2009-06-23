@@ -105,7 +105,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
         void setComment( QString comment );
         void setLyrics( QString lyrics );
         void setTitle( const QString& name );
-        void setImageUrl(const QString& imageUrl);
+        void setImageUrl( const QString& imageUrl );
 };
 
 #endif

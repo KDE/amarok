@@ -10,7 +10,9 @@ include_directories( ../../src/
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
-set(amaroktest_SRCS AmarokTest.cpp)
+set(amaroktest_SRCS AmarokTest.cpp
+                    KUrlExporter.cpp
+)
 
 qt4_automoc( ${amaroktest_SRCS} )
 

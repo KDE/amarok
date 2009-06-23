@@ -20,7 +20,7 @@
 #ifndef AMAROKTEST_H
 #define AMAROKTEST_H
 
-#include <QCoreApplication>
+#include <QApplication>
 #include <QList>
 #include <QObject>
 #include <QScriptEngine>
@@ -34,7 +34,7 @@
  * @short Runs test scripts for Amarok, e.g. for unit testing
  */
 
-class AmarokTest : public QCoreApplication
+class AmarokTest : public QApplication
 {
     Q_OBJECT
 
@@ -83,7 +83,7 @@ private:
     AmarokTest( const AmarokTest& );
     AmarokTest& operator= ( const AmarokTest& );
 
-    bool          m_measurePerf;
+    bool            m_measurePerf;
 
     QList<QObject*> m_wrapperList;
     QScriptEngine   m_engine;

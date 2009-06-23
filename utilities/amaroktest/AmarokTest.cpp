@@ -37,6 +37,9 @@
 #include "../../src/playlist/PlaylistController.h"
 #include "../../src/scriptengine/MetaTypeExporter.h"
 
+// our own Prototypes
+#include "KUrlExporter.h"
+
 static QTextStream s_errStream( stderr );
 static QTextStream s_debugStream( stdout );
 
@@ -49,7 +52,7 @@ main( int argc, char *argv[] )
 
 
 AmarokTest::AmarokTest( int &argc, char **argv )
-        : QCoreApplication( argc, argv )
+        : QApplication( argc, argv )
 {
     int i;
     QString logsLocation = Amarok::saveLocation( "testresults/" );
@@ -211,7 +214,9 @@ AmarokTest::prepareTestEngine()
     m_wrapperList.append( trackProto );
 
     /** KUrl */
-    
+    KUrlPrototype* KUrlProto = new KUrlPrototype();
+    m_engine.setDefaultPrototype( qMetaTypeId<KUrl>(), m_engine.newQObject( KUrlProto ) );
+    m_wrapperList.append( KUrlProto );
 
     /**  */
 }

@@ -32,5 +32,6 @@ AmarokTest.startTimer();
 
 
 /* The tests                                                               */
-
-// PlaylistManager.isPlaylist( "/home/sven/bla" );
+// url = new KUrl;
+// url.setUrl( "file:///home/sven/bla" );
+// PlaylistManager.isPlaylist( url );
