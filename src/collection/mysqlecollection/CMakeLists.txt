@@ -8,11 +8,14 @@ include_directories(
         ../../collection
         ../../dialogs
         ../../playlistmanager
+        ../../../utilities/collectionscanner
         ${CMAKE_CURRENT_BINARY_DIR}/../..
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
         ${MYSQL_INCLUDE_DIR}
+        ${TAGLIB_INCLUDES}
+        ${TAGLIB-EXTRAS_INCLUDE_DIR}
         )
 
 if (NOT WIN32)
@@ -38,6 +41,7 @@ set(amarok_collection-mysqlecollection_PART_SRCS
     ../sqlcollection/SqlMeta.cpp
     ../mysql-shared/MySqlCollection.cpp
     MySqlEmbeddedCollection.cpp
+    ../../../utilities/collectionscanner/AFTUtility.cpp
     ${extra_src}
  )
 
@@ -69,6 +73,8 @@ target_link_libraries(amarok_collection-mysqlecollection
     ${MYSQL_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}
+    ${TAGLIB_LIBRARIES}
+    ${TAGLIB-EXTRAS_LIBRARIES}
 )
 
 if(NOT WIN32)

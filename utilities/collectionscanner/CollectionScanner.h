@@ -72,35 +72,6 @@ private:
     void scanFiles( const QStringList& entries );
     
     /**
-     * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
-     * @fileref TagLib reference to the file.
-     * @return TagLib::ByteVector that contains the tag's render, if possible, and empty otherwise.
-     */
-    static const QString readEmbeddedUniqueId( const TagLib::FileRef &fileref );
-
-    /**
-     * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
-     * @fileref TagLib reference to the file.
-     * @return TagLib::ByteVector that contains the tag's render, if possible, and empty otherwise.
-     */
-    static const TagLib::ByteVector generatedUniqueIdHelper( const TagLib::FileRef &fileref );
-
-    /**
-     * Create a random AFT UID, to prevent ever returning an empty one (since much of A2 uses unique
-     * IDs of the various Meta types).
-     * @param md5 Contains the QCryptographicHash to update
-     * @return QString containing the uniqueID
-     */
-    static const QString randomUniqueId( QCryptographicHash &md5 );
-
-    /**
-     * Get the render() of a tag from TagLib, if possible, to assist in AFT UID generation.
-     * @path Path of the file.
-     * @return QString contains the uniqueID, an MD5 hash (but not a hash of the entire file!).
-     */
-    static const QString readUniqueId( const QString &path );
-
-    /**
      * Read metadata tags of a given file.
      * @track Track for the file.
      * @return QMap containing tags, or empty QMap on failure.

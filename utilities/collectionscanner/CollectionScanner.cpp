@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 #include "CollectionScanner.h"
+#include "AFTUtility.h"
 
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
@@ -82,7 +83,6 @@ main( int argc, char *argv[] )
 }
 
 static QTextStream s_textStream( stderr );
-static QTime s_time;
 
 CollectionScanner::CollectionScanner( int &argc, char **argv )
         : QCoreApplication( argc, argv )
@@ -97,10 +97,6 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         , m_amarokCollectionInterface( 0 )
 {
     setObjectName( "amarokcollectionscanner" );
-
-    //seed for unique id generation if file lookup fails
-    srand( (unsigned)time( 0 ) );
-    s_time.start();
 
     readArgs();
 
@@ -475,180 +471,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
     }
 }
 
-const QString
-CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
-{
-    int currentVersion = 1; //TODO: Make this more global?
-    QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
-    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
-    {
-        if( !file->ID3v2Tag( false ) )
-            return QString();
-        if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
-            return QString();
-        TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
-        TagLib::ID3v2::FrameList::Iterator iter;
-        for( iter = frameList.begin(); iter != frameList.end(); ++iter )
-        {
-            TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
-            if( currFrame )
-            {
-                QString owner = TStringToQString( currFrame->owner() );
-                if( owner.compare( ourId, Qt::CaseInsensitive ) == 0 )
-                {
-                    qDebug() << "Found MP3 identifier: " << TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
-                    return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
-                }
-            }
-        }
-    }
-    //from here below assumes a file with a XiphComment; put non-conforming formats up above...
-    TagLib::Ogg::XiphComment *comment = 0;
-    if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-        comment = file->xiphComment( false );
-    else if( TagLib::Ogg::File *file = dynamic_cast<TagLib::Ogg::File *>( fileref.file() ) )
-    {
-        if( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )
-            comment = ( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )->tag();
-        else if( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )
-            comment = ( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )->tag();
-        else if( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )
-            comment = ( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )->tag();
-    }
-
-    if( !comment )
-        return QString();
-
-    if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
-    {
-        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
-        qDebug() << "Found Ogg or FLAC identifier: " << identifier;
-        return identifier;
-    }
-
-    return QString();
-}
-
-const TagLib::ByteVector
-CollectionScanner::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
-{
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
-    {
-        if( file->ID3v2Tag() )
-            return file->ID3v2Tag()->render();
-        else if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->APETag() )
-            return file->APETag()->render();
-    }
-    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->xiphComment() )
-            return file->xiphComment()->render();
-        else if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->ID3v2Tag() )
-            return file->ID3v2Tag()->render();
-    }
-    else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
-    {
-        if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->APETag() )
-            return file->APETag()->render();
-    }
-    TagLib::ByteVector bv;
-    return bv;
-}
-
-const QString
-CollectionScanner::randomUniqueId( QCryptographicHash &md5 )
-{
-    //md5 has size of file already added for some little extra randomness for the hash
-    md5.addData( QString::number( s_time.elapsed() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( s_time.elapsed() ).toAscii() );
-    return QString( md5.result().toHex() );
-}
-
-const QString
-CollectionScanner::readUniqueId( const QString &path )
-{
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
-#else
-    QByteArray fileName = QFile::encodeName( path );
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
-
-    QCryptographicHash md5( QCryptographicHash::Md5 );
-    QFile qfile( path );
-    QByteArray size;
-    md5.addData( size.setNum( qfile.size() ) );
-
-    TagLib::FileRef fileref = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-
-    if( fileref.isNull() )
-    {
-        s_textStream << "Fileref of " << encodedName << " is null, returning random value!";
-        s_textStream.flush();
-        return randomUniqueId( md5 );
-    }
-
-    const QString embeddedString = readEmbeddedUniqueId( fileref );
-    if( !embeddedString.isEmpty() )
-        return embeddedString;
-
-    TagLib::ByteVector bv = CollectionScanner::generatedUniqueIdHelper( fileref );
-
-    md5.addData( bv.data(), bv.size() );
-
-    char databuf[16384];
-    int readlen = 0;
-    QString returnval;
-
-    if( qfile.open( QIODevice::ReadOnly ) )
-    {
-        if( ( readlen = qfile.read( databuf, 16384 ) ) > 0 )
-        {
-            md5.addData( databuf, readlen );
-            qfile.close();
-            return QString( md5.result().toHex() );
-        }
-        else
-        {
-            qfile.close();
-            s_textStream << "Could not read 16384 bytes from " << path << ", returning random value!";
-            s_textStream.flush();
-            return randomUniqueId( md5 );
-        }
-    }
-
-    s_textStream << "Could not open file " << path << ", returning random value!";
-    s_textStream.flush();
-
-    return randomUniqueId( md5 );
-}
-
 AttributeHash
 CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle )
 {
@@ -913,7 +735,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if( size >= 0 )
         attributes["filesize"] =  QString::number( size );
 
-    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + readUniqueId( path ) );
+    AFTUtility aftutil;
+    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path ) );
 
     return attributes;
 }

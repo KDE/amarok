@@ -200,6 +200,8 @@ class SqlTrack : public Meta::Track
         bool m_batchUpdate;
         bool m_writeAllStatisticsFields;
         QVariantMap m_cache;
+
+        QString m_newUid;
 };
 
 class SqlArtist : public Meta::Artist

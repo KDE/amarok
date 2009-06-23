@@ -43,6 +43,8 @@
 #include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 
+#include "AFTUtility.h"
+
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -656,6 +658,7 @@ SqlTrack::setComment( const QString &newComment )
 void
 SqlTrack::setTitle( const QString &newTitle )
 {
+    DEBUG_BLOCK
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::TITLE, newTitle );
     else
@@ -711,11 +714,18 @@ SqlTrack::setPlayCount( const int newCount )
 void
 SqlTrack::setUidUrl( const QString &uid )
 {
+    DEBUG_BLOCK
+    QString newid = uid;
+    if( !newid.startsWith( "amarok-sqltrackuid" ) )
+        newid.prepend( "amarok-sqltrackuid://" );
+
     if( m_batchUpdate )
-        m_cache.insert( Meta::Field::UNIQUEID, uid );
+        m_cache.insert( Meta::Field::UNIQUEID, newid );
     else
     {
-        m_uid = uid;
+        debug() << "setting uidUrl manually...did you really mean to do this?";
+        m_newUid = newid;
+        writeMetaDataToDb( QStringList() );
         notifyObservers();
     }
 }
@@ -752,6 +762,8 @@ SqlTrack::writeMetaDataToFile()
     QFile file( m_url.path() );
     if( file.exists() )
         m_filesize = file.size();
+    AFTUtility aftutil;
+    m_newUid = QString( "amarok-sqltrackuid://" ) + aftutil.readUniqueId( m_url.path() );
 }
 
 void
@@ -841,42 +853,56 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
 {
     DEBUG_BLOCK
     //TODO store the tracks id in SqlTrack
-    QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%1';";
-    query = query.arg( m_collection->escape( m_uid ) );
-    QStringList res = m_collection->query( query );
-    if( res.isEmpty() )
+    if( !fields.isEmpty() )
     {
-        debug() << "Could not perform update in writeMetaDataToDb";
-        return;
+        debug() << "looking for UID " << m_uid;
+        QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%1';";
+        query = query.arg( m_collection->escape( m_uid ) );
+        QStringList res = m_collection->query( query );
+        if( res.isEmpty() )
+        {
+            debug() << "Could not perform update in writeMetaDataToDb";
+            return;
+        }
+        int id = res[0].toInt();
+        QString update = "UPDATE tracks SET %1 WHERE id = %2;";
+        //This next line is do-nothing SQLwise but is here to prevent the need for tons of if-else brackets just to keep track of
+        //whether or not commas are needed
+        QString tags = QString( "id=%1" ).arg( id );
+        if( fields.contains( Meta::Field::TITLE ) )
+            tags += QString( ",title='%1'" ).arg( m_collection->escape( m_title ) );
+        if( fields.contains( Meta::Field::COMMENT ) )
+            tags += QString( ",comment='%1'" ).arg( m_collection->escape( m_comment ) );
+        if( fields.contains( Meta::Field::TRACKNUMBER ) )
+            tags += QString( ",tracknumber=%1" ).arg( QString::number( m_trackNumber ) );
+        if( fields.contains( Meta::Field::DISCNUMBER ) )
+            tags += QString( ",discnumber=%1" ).arg( QString::number( m_discNumber ) );
+        if( fields.contains( Meta::Field::ARTIST ) )
+            tags += QString( ",artist=%1" ).arg( QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() ) );
+        if( fields.contains( Meta::Field::ALBUM ) )
+            tags += QString( ",album=%1" ).arg( QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() ) );
+        if( fields.contains( Meta::Field::GENRE ) )
+            tags += QString( ",genre=%1" ).arg( QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() ) );
+        if( fields.contains( Meta::Field::COMPOSER ) )
+            tags += QString( ",composer=%1" ).arg( QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() ) );
+        if( fields.contains( Meta::Field::YEAR ) )
+            tags += QString( ",year=%1" ).arg( QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() ) );
+        updateFileSize();
+        tags += QString( ",filesize=%1" ).arg( m_filesize );
+        update = update.arg( tags, QString::number( id ) );
+        debug() << "Running following update query: " << update;
+        m_collection->query( update );
     }
-    int id = res[0].toInt();
-    QString update = "UPDATE tracks SET %1 WHERE id = %2;";
-    //This next line is do-nothing SQLwise but is here to prevent the need for tons of if-else brackets just to keep track of
-    //whether or not commas are needed
-    QString tags = QString( "id=%1" ).arg( id );
-    if( fields.contains( Meta::Field::TITLE ) )
-        tags += QString( ",title='%1'" ).arg( m_collection->escape( m_title ) );
-    if( fields.contains( Meta::Field::COMMENT ) )
-        tags += QString( ",comment='%1'" ).arg( m_collection->escape( m_comment ) );
-    if( fields.contains( Meta::Field::TRACKNUMBER ) )
-        tags += QString( ",tracknumber=%1" ).arg( QString::number( m_trackNumber ) );
-    if( fields.contains( Meta::Field::DISCNUMBER ) )
-        tags += QString( ",discnumber=%1" ).arg( QString::number( m_discNumber ) );
-    if( fields.contains( Meta::Field::ARTIST ) )
-        tags += QString( ",artist=%1" ).arg( QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() ) );
-    if( fields.contains( Meta::Field::ALBUM ) )
-        tags += QString( ",album=%1" ).arg( QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() ) );
-    if( fields.contains( Meta::Field::GENRE ) )
-        tags += QString( ",genre=%1" ).arg( QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() ) );
-    if( fields.contains( Meta::Field::COMPOSER ) )
-        tags += QString( ",composer=%1" ).arg( QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() ) );
-    if( fields.contains( Meta::Field::YEAR ) )
-        tags += QString( ",year=%1" ).arg( QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() ) );
-    updateFileSize();
-    tags += QString( ",filesize=%1" ).arg( m_filesize );
-    update = update.arg( tags, QString::number( id ) );
-    debug() << "Running following update query: " << update;
-    m_collection->query( update );
+    
+    if( !m_newUid.isEmpty() )
+    {
+        QString update = "UPDATE urls SET uniqueid='%1' WHERE uniqueid='%2';";
+        update = update.arg( m_newUid, m_uid );
+        debug() << "Updating uid from " << m_uid << " to " << m_newUid;
+        m_collection->query( update );
+        m_uid = m_newUid;
+        m_newUid.clear();
+    }
 }
 
 void
