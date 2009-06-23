@@ -36,7 +36,7 @@ MySqlServerCollectionFactory::init()
 {
     Amarok::Collection* collection;
 
-    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (via database at %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host" ) ) );
+    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (on %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host" ) ) );
 
     emit newCollection( collection );
 }
