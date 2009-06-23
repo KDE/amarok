@@ -73,7 +73,7 @@ VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         , m_youtubeHQ( false )
 {
     DEBUG_BLOCK
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
     
     if( The::engineController() )
         m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
@@ -467,8 +467,6 @@ VideoclipApplet::createConfigurationInterface( KConfigDialog *parent )
     parent->addPage( settings, i18n( "Video Clip Settings" ), "preferences-system");
     //connect( ui_Settings, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
 }
-
-
 
 #include "VideoclipApplet.moc"
 
