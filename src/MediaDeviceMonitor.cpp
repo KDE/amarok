@@ -79,14 +79,20 @@ MediaDeviceMonitor::getDevices()
 
 void MediaDeviceMonitor::checkDevice(const QString& udi)
 {
+    DEBUG_BLOCK
+
     foreach( ConnectionAssistant* assistant, m_assistants )
     {
         // Ignore already identified devices
         if( m_udiAssistants.keys().contains( udi ) )
+        {
+            debug() << "Device already identified with udi: " << udi;
             return;
+        }
 
         if( assistant->identify( udi ) )
         {
+            debug() << "Device identified with udi: " << udi;
             // keep track of which assistant deals with which device
             m_udiAssistants.insert( udi, assistant );
             // inform factory of new device identified
@@ -137,13 +143,7 @@ void
 MediaDeviceMonitor::deviceAdded(  const QString &udi )
 {
     DEBUG_BLOCK
-/*
-    QStringList udiList;
 
-    debug() << "New device added, testing...";
-
-    udiList.append( udi );
-*/
     // check if device is a known device
     checkDevice( udi );
 }
@@ -153,8 +153,7 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
 
-    // NOTE: perhaps a simple forwarding of signals would do
-    // via a connect
+    m_udiAssistants.remove( udi );
 
     emit deviceRemoved( udi );
 }
@@ -162,6 +161,9 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 void
 MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & udi)
 {
+    // TODO: build a hack to force a device to become accessible or not
+    // This means auto-mounting of Ipod, and ejecting of it too
+
     DEBUG_BLOCK
             debug() << "Accessibility changed to: " << ( accessible ? "true":"false" );
     if ( !accessible )
@@ -169,29 +171,6 @@ MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & u
     else
         deviceAdded( udi );
 }
-
-/*
-bool
-MediaDeviceMonitor::isMtp( const QString &udi )
-{
-    DEBUG_BLOCK
-
-    Solid::Device device;
-
-    device = Solid::Device( udi );
-    if( !device.is<Solid::PortableMediaPlayer>() )
-    {
-        debug() << "Not a PMP";
-        return false;
-    }
-
-    Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
-
-    debug() << "Supported Protocols: " << pmp->supportedProtocols();
-
-    return pmp->supportedProtocols().contains( "mtp" );
-}
-*/
 
 /// TODO: all stuff below here is cd-related, needs porting to new framework
 #if 0
