@@ -83,7 +83,7 @@ private:
     Plasma::IconWidget *m_artistIcon;
     Plasma::IconWidget *m_albumIcon;
     Plasma::IconWidget *m_trackIcon;
-    Plasma::IconWidget *m_langIcon;
+    Plasma::IconWidget *m_settingsIcon;
     Plasma::IconWidget *m_reloadIcon;
 
     Ui::wikipediaSettings ui_Settings;

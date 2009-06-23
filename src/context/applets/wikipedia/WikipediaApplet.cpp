@@ -56,7 +56,7 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , m_artistIcon( 0 )
     , m_albumIcon( 0 )
     , m_trackIcon( 0 )
-    , m_langIcon( 0 )
+    , m_settingsIcon( 0 )
     , m_reloadIcon( 0 )
     , m_css( 0 )
     , m_current( "" )
@@ -135,12 +135,12 @@ WikipediaApplet::init()
     m_trackIcon = addAction( trackAction );
     connect( m_trackIcon, SIGNAL( activated() ), this, SLOT( gotoTrack() ) );
 
-    QAction* langAction = new QAction( i18n( "Lang" ), this );
-    langAction->setIcon( KIcon( "amarok_change_language" ) );
+    QAction* langAction = new QAction( i18n( "Settings" ), this );
+    langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setVisible( true );
     langAction->setEnabled( true );
-    m_langIcon = addAction( langAction );
-    connect( m_langIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
+    m_settingsIcon = addAction( langAction );
+    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
     
     QAction* reloadAction = new QAction( i18n( "Reload" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -216,7 +216,7 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     m_albumIcon->setPos( size().width() - 4 * iconWidth - 4 * standardPadding(), standardPadding() );
     m_trackIcon->setPos( size().width() - 3 * iconWidth - 4 * standardPadding(), standardPadding() );
 
-    m_langIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );    
+    m_settingsIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );
     m_reloadIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
 }
 
@@ -265,6 +265,7 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
             if ( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
                 m_backwardIcon->action()->setEnabled( true );
+
         }
         m_current = data[ "page" ].toString();
         m_webView->setHtml( m_current, KUrl( QString() ) );
@@ -461,7 +462,7 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
     else if ( m_wikiPreferredLang == "de" )
         ui_Settings.comboBox->setCurrentIndex( 3 );
     
-    parent->addPage( settings, i18n( "Wikipedia Settings" ), "amarok_change_language");
+    parent->addPage( settings, i18n( "Wikipedia Settings" ), "preferences-system");
     connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
 }
 
