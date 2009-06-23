@@ -2,7 +2,8 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
-VERSION 2.2
+
+VERSION 2.2-beta1
   FEATURES:
     * Automatically expand collection browser search results and make the
       results keyboard accessible. Patch thanks to Tuomas Nurmi
@@ -11,15 +12,15 @@ VERSION 2.2
       tracks from the CD can be freely mixed with any other tracks in the 
       playlist. Using the "Copy to Collection" menu its possible to copy (rip)
       tracks directly to the local (or any other writable) collection. 
-    * Sortable playlist
-    * Improved media device support
-    * Video applet to show videos from YouTube and other video sites
-    * Photo applet to show images from Flickr
-    * Customizable user interface (dock widgets)
-    * Support for external MySQL database
+    * Sortable playlist.
+    * Improved media device support.
+    * Video applet to show videos from YouTube and other video sites.
+    * Photo applet to show images from Flickr.
+    * Customizable user interface (dock widgets).
+    * Support for external MySQL database.
     * GHNS integration for downloading and installing Context applets.
     * Support for Context applets to be written in QtScript.
-    * Custom Dynamic Playlists using Last.fm
+    * Custom Dynamic Playlists using Last.fm.
     * Drag and Drop support for album cover image. (BR 91261)
 
   CHANGES:
@@ -28,11 +29,12 @@ VERSION 2.2
     * The OSD registers itself as a notification window type on relevant
       platforms. Patch thanks to Danny Baumann <dannybaumann@web.de>.
       (BR 194517)
-    * Improvements to the Wikipedia applet
-    * New navigation style in the browser sidebar 
+    * Improvements to the Wikipedia applet.
+    * New navigation style in the browser sidebar.
 
   BUGFIXES:
     * Files browser remembers its view mode. (BR 197122)
+
 
 VERSION 2.1.1
   FEATURES:
