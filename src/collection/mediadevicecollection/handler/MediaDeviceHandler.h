@@ -53,7 +53,7 @@ namespace Meta {
 
         public:
 	MediaDeviceHandler( QObject *parent );
-	virtual ~MediaDeviceHandler() {}
+	virtual ~MediaDeviceHandler() {DEBUG_BLOCK}
 
            /** Status Checking Methods */
 

@@ -38,6 +38,7 @@ MtpCollectionFactory::MtpCollectionFactory()
 
 MtpCollectionFactory::~MtpCollectionFactory()
 {
+    DEBUG_BLOCK
     // nothing to do
 }
 
@@ -64,6 +65,8 @@ MtpCollection::MtpCollection( MediaDeviceInfo* info )
 MtpCollection::~MtpCollection()
 {
     DEBUG_BLOCK
+    //if( m_handler )
+    //    qobject_cast<Meta::MtpHandler*> ( m_handler )->terminate();
 }
 
 QString

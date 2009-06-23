@@ -57,7 +57,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Ama
 
     private slots:
 	void slotDeviceDisconnected( const QString &udi );
-        void slotEmitNewCollection();
 
     private:
 
@@ -147,7 +146,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         
 
     signals:
-        void collectionReady();
+        void collectionReady( Amarok::Collection* );
         void collectionDisconnected( const QString &udi );
 
         void attemptConnectionDone( bool success );

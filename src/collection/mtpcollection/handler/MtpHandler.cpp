@@ -52,21 +52,50 @@ MtpHandler::MtpHandler( MtpCollection *mc )
         , m_folderStructure()
         , m_format()
         , m_name()
-        , m_success( false )
-        , m_trackCreated( false )
+        , m_supportedFiles()
         , m_isCanceled( false )
         , m_wait( false )
-        , m_tempdir()
+        , m_dbChanged( false )
+        , m_tempdir( new KTempDir() )
 {
     DEBUG_BLOCK
     m_copyingthreadsafe = true;
+    m_tempdir->setAutoRemove( true );
     init();
 }
 
 MtpHandler::~MtpHandler()
 {
     // TODO: free used memory
-    terminate();
+    DEBUG_BLOCK
+    // clear folder structure
+    
+    if ( m_folders != 0 )
+    {
+        
+        LIBMTP_destroy_folder_t( m_folders );
+        
+        m_folders = 0;
+        debug() << "Folders destroyed";
+    }
+    
+    // Delete temporary files
+    
+    //delete m_tempdir;
+    
+    // release device
+    
+    if ( m_device != 0 )
+    {
+        
+        LIBMTP_Release_Device( m_device );
+        /* possible race condition with statusbar destructor,
+        will uncomment when fixed */
+        //The::statusBar()->longMessage(
+        //                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBar::Information );
+        debug() << "Device released";
+    }
+
 }
 
 bool
@@ -316,6 +345,8 @@ MtpHandler::terminate()
     }
 
     // Delete temporary files
+
+    //delete m_tempdir;
 /*
     TrackMap trackMap = m_memColl->trackMap();
 
@@ -325,6 +356,8 @@ MtpHandler::terminate()
         mtptrack->deleteTempFile();
     }
 */
+
+    
     // release device
     if ( m_device != 0 )
     {
@@ -345,7 +378,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 
             QMap<Meta::TrackPtr,  KUrl> urls;
 
-        m_tempdir.setAutoRemove(  true );
+        //m_tempdir.setAutoRemove(  true );
 
         QString genericError = i18n(  "Could not copy track from device." );
 
@@ -358,7 +391,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 
                 QString trackFileName = QString::fromUtf8( m_mtptrackhash[ track ]->filename );
 
-                QString filename = m_tempdir.name() + trackFileName;
+                QString filename = m_tempdir->name() + trackFileName;
 
                 debug() << "Temp Filename: " << filename;
 

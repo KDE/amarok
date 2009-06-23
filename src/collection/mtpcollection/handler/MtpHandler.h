@@ -54,63 +54,6 @@ typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 /* The libmtp backend for all Mtp calls */
 class MtpHandler : public MediaDeviceHandler
 {
-
-#if 0
-
-
-
-
-
-
-    // file io functions
-    bool kioCopyTrack( const KUrl &src, const KUrl &dst );
-    void deleteFile( const KUrl &url );
-
-
-
-    // internal mtp functions
-
-    int                     readMtpMusic( void );
-    void getBasicMtpTrackInfo( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track );
-    void setBasicMtpTrackInfo( LIBMTP_track_t *trackmeta, Meta::MtpTrackPtr track );
-
-    QString getFormat( LIBMTP_track_t *mtptrack );
-
-    // miscellaneous internal functions
-    void addMtpTrackToCollection( LIBMTP_track_t *mtptrack );
-
-    // convenience methods to avoid repetitive code
-
-    void setupArtistMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, ArtistMap &artistMap );
-    void setupAlbumMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, AlbumMap &albumMap );
-    void setupGenreMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, GenreMap &genreMap );
-    void setupComposerMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, ComposerMap &composerMap );
-    void setupYearMap( LIBMTP_track_t *mtptrack, Meta::MtpTrackPtr track, YearMap &yearMap );
-
-public slots:
-    void fileTransferred( KJob *job );
-    void fileDeleted( KJob *job );
-
-signals:
-    void succeeded();
-    void failed();
-
-    void copyTracksDone( bool success );
-    void deleteTracksDone();
-
-    void setProgress( int steps );
-    void incrementProgress();
-    void endProgressOperation( const QObject *owner );
-
-
-
-    void slotCopyNextTrackFailed( ThreadWeaver::Job* job );
-    void slotCopyNextTrackToDevice( ThreadWeaver::Job* job );
-
-    void copyNextTrackToDevice();
-
-
-#endif
     Q_OBJECT
 public:
     MtpHandler( MtpCollection *mc );
@@ -134,12 +77,6 @@ public:
     int getTrackToFile( const uint32_t id, const QString & filename );
     virtual QString prettyName() const;
 
-/*
-    QMap<Meta::TrackPtr, QString> tracksFailed() const
-    {
-        return m_tracksFailed;
-    }
-*/
     // Some internal stuff that must be public due to libmtp being in C
 
     static int progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
@@ -240,13 +177,6 @@ private:
     private:
         virtual void updateTrack( Meta::MediaDeviceTrackPtr &track );
         
-/*
-    Meta::TrackList m_tracksToCopy;
-    Meta::TrackList m_tracksToDelete;
-
-    Meta::TrackPtr m_lastTrackCopied;
-    QMap<Meta::TrackPtr, QString> m_tracksFailed;
-*/
     // mtp database
 
     LIBMTP_mtpdevice_t      *m_device;
@@ -261,10 +191,6 @@ private:
     QStringList             m_supportedFiles;
 
     QMutex                  m_critical_mutex;
-
-
-    bool m_success; // tells if connecting worked or not
-    bool             m_trackCreated;
 
     // KIO-related Vars (to be moved elsewhere eventually)
 /*
@@ -287,7 +213,7 @@ private:
 
     // Used as temporary location for copying files from mtp
 
-    KTempDir m_tempdir;
+    KTempDir *m_tempdir;
 
 };
 
@@ -312,24 +238,6 @@ private:
 
 
 };
-/*
-class CopyWorkerThread : public ThreadWeaver::Job
-{
-    Q_OBJECT
-public:
-    CopyWorkerThread( const Meta::TrackPtr &track, MtpHandler* handler );
-    virtual ~CopyWorkerThread();
 
-    virtual bool success() const;
-
-protected:
-    virtual void run();
-
-private:
-    bool m_success;
-    Meta::TrackPtr m_track;
-    MtpHandler *m_handler;
-};
-*/
 }
 #endif

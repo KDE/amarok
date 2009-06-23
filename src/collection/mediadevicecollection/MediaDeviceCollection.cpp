@@ -87,9 +87,8 @@ void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
         {
             // insert it into the map of known collections
             m_collectionMap.insert( info->udi(), coll );
-            connect( coll, SIGNAL( collectionReady() ),
-                     this, SLOT( slotEmitNewCollection() ) );
-            emit newCollection( coll );
+            connect( coll, SIGNAL( collectionReady( Amarok::Collection* ) ),
+                     this, SIGNAL( newCollection(Amarok::Collection*)) );
         }
     }
 }
@@ -121,13 +120,6 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
     return;
 }
 
-void
-MediaDeviceCollectionFactoryBase::slotEmitNewCollection()
-{
-    emit newCollection( qobject_cast<Amarok::Collection *> ( sender() ) );
-}
-
-
 //MediaDeviceCollection
 
 MediaDeviceCollection::MediaDeviceCollection()
@@ -141,6 +133,7 @@ MediaDeviceCollection::MediaDeviceCollection()
 
 MediaDeviceCollection::~MediaDeviceCollection()
 {
+    DEBUG_BLOCK
 }
 
 QueryMaker*
@@ -162,7 +155,7 @@ MediaDeviceCollection::startFullScan()
     // If handler successfully connected to device
 
     m_handler->parseTracks();
-    emit collectionReady();
+    emit collectionReady( this );
 //    collectionUpdated();
 }
 
