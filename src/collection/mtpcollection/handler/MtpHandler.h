@@ -64,7 +64,7 @@ public:
     // mtp-specific functions
 
     // connection
-    void init();
+    virtual void init();
     bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices );
     void getDeviceInfo();
 

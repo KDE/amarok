@@ -26,6 +26,9 @@
 #include "MediaDeviceMeta.h"
 //#include "MediaDeviceHandler.h"
 
+#include "meta/capabilities/CollectionCapability.h"
+#include "CollectionCapabilityMediaDevice.h"
+
 #include "MediaDeviceMonitor.h"
 
 #include "amarokconfig.h"
@@ -89,6 +92,9 @@ void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
             m_collectionMap.insert( info->udi(), coll );
             connect( coll, SIGNAL( collectionReady( Amarok::Collection* ) ),
                      this, SIGNAL( newCollection(Amarok::Collection*)) );
+            connect( coll, SIGNAL( collectionDisconnected( const QString& ) ),
+                     this, SLOT( slotDeviceDisconnected( const QString& ) ) );
+            coll->init();
         }
     }
 }
@@ -96,7 +102,7 @@ void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
 void
 MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     // If device is known about
     if( m_collectionMap.contains( udi ) )
     {
@@ -109,7 +115,8 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
             m_collectionMap.remove( udi );
             // Have Collection disconnect device
             // and destroy itself
-            coll->disconnectDevice();
+//            coll->disconnectDevice();
+            coll->deleteCollection();
         }
 //        else
             //warning() << "collection already null";
@@ -172,20 +179,30 @@ MediaDeviceCollection::handler()
 void
 MediaDeviceCollection::disconnectDevice()
 {
+    DEBUG_BLOCK
     // First, attempt to write to database,
     // and regardless of success remove
     // the collection.
     // NOTE: this also calls the handler's destructor
     // which gives it a chance to do last-minute cleanup
-    connect( m_handler, SIGNAL( databaseWritten( bool ) )
-    , SIGNAL( remove() ) );
+//    connect( m_handler, SIGNAL( databaseWritten( bool ) )
+//    , SIGNAL( remove() ) );
 
-    m_handler->writeDatabase();
+//    m_handler->writeDatabase();
+
+    emit collectionDisconnected( m_udi );
+}
+
+void
+MediaDeviceCollection::deleteCollection()
+{
+    emit remove();
 }
 
 void
 MediaDeviceCollection::slotAttemptConnectionDone( bool success )
 {
+    DEBUG_BLOCK
     if( success )
     {
         debug() << "starting full scan";
@@ -193,6 +210,35 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
         startFullScan();
 
     }
+}
+
+/// CollectionCapability for Disconnect Action
+
+bool
+MediaDeviceCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+        DEBUG_BLOCK
+                switch( type )
+                {
+                case Meta::Capability::Collection:
+                    return true;
+
+                default:
+                    return false;
+                }
+}
+
+Meta::Capability*
+MediaDeviceCollection::createCapabilityInterface( Meta::Capability::Type type )
+{
+        DEBUG_BLOCK
+                switch( type )
+                {
+                case Meta::Capability::Collection:
+                    return new Meta::CollectionCapabilityMediaDevice( this );
+                default:
+                    return 0;
+                }
 }
 
 #include "MediaDeviceCollection.moc"

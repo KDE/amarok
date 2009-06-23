@@ -55,6 +55,8 @@ namespace Meta {
 	MediaDeviceHandler( QObject *parent );
 	virtual ~MediaDeviceHandler() {DEBUG_BLOCK}
 
+	virtual void init() = 0; // begin connection atempts
+
            /** Status Checking Methods */
 
            /// Device can be written to?
@@ -67,6 +69,8 @@ namespace Meta {
            // NOTE: used by Collection
            // TODO: to be replaced when connection of device gets thread support
            bool succeeded() const { return m_success; }
+
+
 
            /// Methods provided for CollectionLocation
 

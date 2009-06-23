@@ -122,8 +122,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         /** Capability-related methods */
 
-        //virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        //virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         /** MediaDeviceCollection methods */
 
@@ -140,10 +140,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
     public:
         Meta::MediaDeviceHandler* handler();
-
-        void disconnectDevice();
-
-        
+	void init() { m_handler->init(); } // tell handler to start connection
 
     signals:
         void collectionReady( Amarok::Collection* );
@@ -155,7 +152,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
     public slots:
         void slotAttemptConnectionDone( bool success );
-
+        void disconnectDevice();
+	void deleteCollection();
     protected:
         MediaDeviceCollection();
 

@@ -81,9 +81,29 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     m_copyingthreadsafe = false;
 
     g_type_init();
-
-    GError *err = 0;
     m_success = false;
+
+}
+
+IpodHandler::~IpodHandler()
+{
+    DEBUG_BLOCK
+    delete m_tempdir;
+    // Write to DB before closing, for ratings updates etc.
+    //debug() << "Writing to Ipod DB";
+    //writeDatabase();
+    debug() << "Cleaning up Ipod Database";
+    if ( m_itdb )
+        itdb_free( m_itdb );
+
+    debug() << "End of destructor reached";
+}
+
+void
+IpodHandler::init()
+{
+    GError *err = 0;
+
 
     // Assuming database exists for now, later will port init db code
     debug() << "Calling the db parser";
@@ -113,20 +133,8 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
 
         debug() << "Succeeded: " << m_success;
     }
-}
 
-IpodHandler::~IpodHandler()
-{
-    DEBUG_BLOCK
-    delete m_tempdir;
-    // Write to DB before closing, for ratings updates etc.
-    //debug() << "Writing to Ipod DB";
-    //writeDatabase();
-    debug() << "Cleaning up Ipod Database";
-    if ( m_itdb )
-        itdb_free( m_itdb );
-
-    debug() << "End of destructor reached";
+    emit attemptConnectionDone( m_success );
 }
 
 bool

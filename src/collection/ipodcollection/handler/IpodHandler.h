@@ -83,6 +83,8 @@ namespace Meta {
            IpodHandler( IpodCollection *mc, const QString& mountPoint );
            virtual ~IpodHandler();
 
+	   virtual void init();
+
            virtual bool isWritable() const;
 
            /* Get Methods */

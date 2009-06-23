@@ -61,7 +61,7 @@ IpodCollection::IpodCollection(MediaDeviceInfo* info)
 
     m_handler = new Meta::IpodHandler( this, m_mountPoint );
 
-    emit attemptConnectionDone( m_handler->succeeded() );
+//    emit attemptConnectionDone( m_handler->succeeded() );
 }
 
 

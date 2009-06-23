@@ -61,7 +61,7 @@ MtpHandler::MtpHandler( MtpCollection *mc )
     DEBUG_BLOCK
     m_copyingthreadsafe = true;
     m_tempdir->setAutoRemove( true );
-    init();
+//    init();
 }
 
 MtpHandler::~MtpHandler()
@@ -69,25 +69,25 @@ MtpHandler::~MtpHandler()
     // TODO: free used memory
     DEBUG_BLOCK
     // clear folder structure
-    
+
     if ( m_folders != 0 )
     {
-        
+
         LIBMTP_destroy_folder_t( m_folders );
-        
+
         m_folders = 0;
         debug() << "Folders destroyed";
     }
-    
+
     // Delete temporary files
-    
+
     //delete m_tempdir;
-    
+
     // release device
-    
+
     if ( m_device != 0 )
     {
-        
+
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
         will uncomment when fixed */
@@ -357,7 +357,7 @@ MtpHandler::terminate()
     }
 */
 
-    
+
     // release device
     if ( m_device != 0 )
     {

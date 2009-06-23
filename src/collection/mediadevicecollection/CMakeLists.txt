@@ -19,7 +19,8 @@ include_directories( ../..
 	support/MediaDeviceInfo.cpp
 	support/ConnectionAssistant.cpp
 	MediaDeviceCollection.cpp
-	MediaDeviceCollectionLocation.cpp)
+	MediaDeviceCollectionLocation.cpp
+	CollectionCapabilityMediaDevice.cpp)
 	
 	kde4_add_plugin(amarok_collection-mediadevicecollection WITH_PREFIX ${amarok_collection-mediadevicecollection_PART_SRCS})
 
