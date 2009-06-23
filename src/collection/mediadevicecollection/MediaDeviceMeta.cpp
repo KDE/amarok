@@ -29,8 +29,8 @@
 #include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
 #include "SvgHandler.h"
-#include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/CustomActionsCapability.h"
+#include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/UpdateCapability.h"
 
 #include "context/popupdropper/libpud/PopupDropperAction.h"
@@ -66,47 +66,6 @@ class EditCapabilityMediaDevice : public Meta::EditCapability
     private:
         KSharedPtr<MediaDeviceTrack> m_track;
 };
-
-// HACK: added to test disconnect, remove later
-
-class CustomActionsCapabilityMediaDevice : public Meta::CustomActionsCapability
-     {
-         Q_OBJECT
-         public:
-             CustomActionsCapabilityMediaDevice( MediaDeviceTrack* track )
-                 : Meta::CustomActionsCapability()
-                 , m_track( track )
-             {
-                 DEBUG_BLOCK
-
-
-
-
-                 // Setup the disconnect action
-                 PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                                                             "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Disconnect the iPod" ), 0 );
-                 debug() << "Disconnect-action created";
-
-                 // HACK: disconnects first device in MDM's list
-                 connect( disconnectAction, SIGNAL( triggered() )
-                 , MediaDeviceMonitor::instance(), SLOT( slotDisconnectFirstDevice() ) );
-
-                 // Add the action to the list of custom actions
-                 m_actions.append( disconnectAction );
-                 debug() << "Disconnect action appended to local QList";
-             }
-
-             virtual ~CustomActionsCapabilityMediaDevice() {}
-
-             virtual QList< PopupDropperAction *> customActions() const {
-                 return m_actions;
-             }
-
-         private:
-             QList< PopupDropperAction* > m_actions;
-             MediaDeviceTrackPtr m_track;
-
-     };
 
 class UpdateCapabilityMediaDevice : public Meta::UpdateCapability
 {
@@ -429,9 +388,6 @@ MediaDeviceTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     {
         case Meta::Capability::Editable:
             return true;
-            // HACK: testing disconnect, remove later
-        case Meta::Capability::CustomActions:
-            return true;
         case Meta::Capability::Updatable:
             return true;
 
@@ -447,8 +403,6 @@ MediaDeviceTrack::createCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::Editable:
             return new EditCapabilityMediaDevice( this );
-        case Meta::Capability::CustomActions:
-            return new CustomActionsCapabilityMediaDevice( this );
         case Meta::Capability::Updatable:
             return new UpdateCapabilityMediaDevice( m_collection );
 

@@ -101,16 +101,6 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     public slots:
 
-        // HACK: disconnects first device, totally random
-        // using to test disconnect with 1 device
-
-        void slotDisconnectFirstDevice()
-        {
-            DEBUG_BLOCK
-
-            m_assistants.first()->tellDisconnected( m_udiAssistants.keys().first() );
-        }
-
     /**
 
     checkDevice checks if @param udi is a known device
