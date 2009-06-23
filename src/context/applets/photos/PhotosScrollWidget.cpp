@@ -90,18 +90,17 @@ void PhotosScrollWidget::animate( qreal anim )
 {
     Q_UNUSED( anim );
 
-    // check if we can move or not
-    if ( this->childItems().last()->pos().x() + 10 > m_scrollmax )
+    // If we're are near the border and still asking to go higher !
+    if ( ( this->childItems().last()->pos().x() - 10 ) > m_scrollmax && m_speed < 0)
     {
-        debug()<< "PhotosScrollWidget:: > m_scrollmax " << this->childItems().first()->pos().x() - abs( m_speed ) ;
         Plasma::Animator::self()->stopCustomAnimation( m_id );
         m_id = 0;
         return;
     }
 
-    if ( this->childItems().last()->pos().x() - 10 < 0 )
+    // If we're are near the border and still asking to go down
+    if ( ( this->childItems().last()->pos().x() - 10 < 0 ) && ( m_speed > 0 ) )
     {
-        debug()<< "PhotosScrollWidget:: < 0 " << this->childItems().first()->pos().x() - m_speed ;
         Plasma::Animator::self()->stopCustomAnimation( m_id );
         m_id = 0;
         return;

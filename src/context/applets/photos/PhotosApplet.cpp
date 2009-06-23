@@ -49,7 +49,7 @@ PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
     , m_settingsIcon( 0 )
 {
     DEBUG_BLOCK
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
 }
 
 void 
