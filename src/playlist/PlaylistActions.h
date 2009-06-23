@@ -55,7 +55,12 @@ namespace Playlist
     {
         Q_OBJECT
 
+#if defined(DEBUG)
+        public slots:
+#else
         public:
+#endif
+
             static Actions* instance();
             static void destroy();
 
@@ -96,7 +101,11 @@ namespace Playlist
             // This shouldn't be in Actions, it doesn't make sense
             int queuePosition( quint64 id );
 
+#if defined(DEBUG)
+        /** nothing */
+#else
         public slots:
+#endif
             void play();
             void play( const int row );
             void play( const QModelIndex& index );
