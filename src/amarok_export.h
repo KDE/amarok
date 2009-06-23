@@ -38,3 +38,10 @@
 # endif
 
 #endif
+
+/** Exports for amaroktest... doesn't work, as the moc preprocessor doesn't understand #define yet... */
+#if defined(DEBUG)
+# define DEBUG_EXPORT Q_INVOKABLE
+#else
+# define DEBUG_EXPORT /** nothing */
+#endif

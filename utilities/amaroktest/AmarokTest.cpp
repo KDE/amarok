@@ -56,7 +56,7 @@ AmarokTest::AmarokTest( int &argc, char **argv )
     m_measurePerf = false;
 
     if( !logFile.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
-        s_errStream << qPrintable( tr(  "Unable to open log!" ) );
+        s_errStream << qPrintable( tr( "Unable to open log!" ) );
         ::exit( 1 );
     }
 
@@ -183,7 +183,10 @@ AmarokTest::prepareTestEngine()
     QScriptValue amarokTestValue = m_engine.newQObject( amarokTestObject );
     m_engine.globalObject().setProperty( "AmarokTest", amarokTestValue );
 
-    
+    /** PlaylistManager */
+    amarokTestObject = The::playlistManager(); //-> instance();
+    amarokTestValue = m_engine.newQObject( amarokTestObject );
+    m_engine.globalObject().setProperty( "PlaylistManager", amarokTestValue );
 }
 
 

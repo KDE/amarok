@@ -46,33 +46,36 @@ class PlaylistManager : public QObject
     Q_OBJECT
 
     public:
+    //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
+    enum PlaylistCategory
+    {
+        CurrentPlaylist = 1,
+        UserPlaylist,
+        PodcastChannel,
+        Dynamic,
+        SmartPlaylist,
+        Custom
+    };
+
+    enum PlaylistFormat
+    {
+        M3U,
+        PLS,
+        XML,
+        RAM,
+        SMIL,
+        ASX,
+        XSPF,
+        Unknown,
+        NotPlaylist = Unknown
+    };
+
+    #if defined(DEBUG)
+        public slots:
+    #endif
         static PlaylistManager *instance();
         static void destroy();
         //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
-
-        //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
-        enum PlaylistCategory
-        {
-            CurrentPlaylist = 1,
-            UserPlaylist,
-            PodcastChannel,
-            Dynamic,
-            SmartPlaylist,
-            Custom
-        };
-
-        enum PlaylistFormat
-        {
-            M3U,
-            PLS,
-            XML,
-            RAM,
-            SMIL,
-            ASX,
-            XSPF,
-            Unknown,
-            NotPlaylist = Unknown
-        };
 
         static PlaylistFormat getFormat( const KUrl &path );
 
