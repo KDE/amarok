@@ -26,6 +26,7 @@
 #include <QHash>
 #include <QMap>
 #include <QMutex>
+#include <QString>
 #include <QStringList>
 #include <QVariant>
 
@@ -147,16 +148,21 @@ class SqlTrack : public Meta::Track
         QString rpath() const { return m_rpath; }
         int trackId() const { return m_trackId; }
         SqlCollection* sqlCollection() const { return m_collection; }
+        void refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers = true );
+        void updateData( const QStringList &result, bool forceUpdates = false );
 
     protected:
         void commitMetaDataChanges();
         void writeMetaDataToFile();
-        void writeMetaDataToDb();
-        void updateStatisticsInDb();
+        void writeMetaDataToDb( const QStringList &fields );
+        void writeMetaDataToDb( const QString &field ) { writeMetaDataToDb( QStringList( field ) ); }
+        void updateStatisticsInDb( const QStringList &fields );
+        void updateStatisticsInDb( const QString &field ) { updateStatisticsInDb( QStringList( field ) ); }
 
     private:
         /** returns a string of all database joins that are required to fetch all values for a track*/
         static QString getTrackJoinConditions();
+        void updateFileSize();
 
         SqlCollection* m_collection;
 
@@ -168,7 +174,7 @@ class SqlTrack : public Meta::Track
         int m_trackId;
 
         int m_length;
-        int m_filesize;
+        qint64 m_filesize;
         int m_trackNumber;
         int m_discNumber;
         uint m_lastPlayed;
@@ -206,6 +212,7 @@ class SqlArtist : public Meta::Artist
         virtual QString prettyName() const { return m_name; } //change if necessary
         virtual QString sortableName() const;
 
+        void updateData( SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -245,6 +252,8 @@ class SqlAlbum : public Meta::Album
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
+
+        void updateData( SqlCollection* collection, int id, const QString &name, int artist );
 
         virtual void invalidateCache();
 
@@ -317,6 +326,8 @@ class SqlComposer : public Meta::Composer
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
+        void updateData( SqlCollection* collection, int id, const QString &name );
+
         virtual void invalidateCache();
 
         virtual Meta::TrackList tracks();
@@ -344,6 +355,8 @@ class SqlGenre : public Meta::Genre
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
+        void updateData( SqlCollection* collection, int id, const QString &name );
+
         virtual void invalidateCache();
 
         virtual Meta::TrackList tracks();
@@ -370,6 +383,8 @@ class SqlYear : public Meta::Year
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
+
+        void updateData( SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 

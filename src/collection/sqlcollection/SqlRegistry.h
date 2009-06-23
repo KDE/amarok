@@ -45,11 +45,11 @@ class SqlRegistry : public QObject
         Meta::TrackPtr getTrackFromUid( const QString &uid );
         bool checkUidExists( const QString &uid );
 
-        Meta::ArtistPtr getArtist( const QString &name, int id = -1 );
-        Meta::GenrePtr getGenre( const QString &name, int id = -1 );
-        Meta::ComposerPtr getComposer( const QString &name, int id = -1 );
-        Meta::YearPtr getYear( const QString &year, int id = -1 );
-        Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1 ); //TODO fix this
+        Meta::ArtistPtr getArtist( const QString &name, int id = -1, bool refresh = false );
+        Meta::GenrePtr getGenre( const QString &name, int id = -1, bool refresh = false );
+        Meta::ComposerPtr getComposer( const QString &name, int id = -1, bool refresh = false );
+        Meta::YearPtr getYear( const QString &year, int id = -1, bool refresh = false );
+        Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1, bool refresh = false ); //TODO fix this (Fix what?)
 
 
     private slots:

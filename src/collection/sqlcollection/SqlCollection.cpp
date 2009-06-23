@@ -283,11 +283,16 @@ SqlCollection::updateTrackUrls( TrackUrls changedUrls ) //SLOT
 
     foreach( const QString &key, changedUrls.keys() )
     {
+        debug() << "Checking key " << key;
         if( m_registry->checkUidExists( key ) )
         {
+            debug() << "UID exists in registry";
             Meta::TrackPtr track = m_registry->getTrackFromUid( key );
             if( track )
-                KSharedPtr<Meta::SqlTrack>::staticCast( track )->setUrl( changedUrls[key] );
+            {
+                debug() << "Got a valid track from the key, track prettyname is " << track->prettyName();
+                KSharedPtr<Meta::SqlTrack>::staticCast( track )->refreshFromDatabase( key, this, true );
+            }
         }
     }
 }

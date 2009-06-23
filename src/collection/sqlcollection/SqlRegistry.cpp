@@ -117,16 +117,17 @@ bool
 SqlRegistry::checkUidExists( const QString &uid )
 { 
     QMutexLocker locker( &m_uidMutex );
+    debug() << "m_uidMap contents: " << m_uidMap.keys();
     if( m_uidMap.contains( uid ) )
         return true;
     return false;
 }
 
 ArtistPtr
-SqlRegistry::getArtist( const QString &name, int id )
+SqlRegistry::getArtist( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_artistMutex );
-    if( m_artistMap.contains( id ) )
+    if( m_artistMap.contains( id ) && !refresh )
         return m_artistMap.value( id );
     else
     {
@@ -146,7 +147,11 @@ SqlRegistry::getArtist( const QString &name, int id )
         }
 
         if( m_artistMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlArtist>::staticCast( m_artistMap.value( id ) )->updateData( m_collection, id, name );
             return m_artistMap.value( id );
+        }
 
         ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
         m_artistMap.insert( id, artist );
@@ -155,10 +160,10 @@ SqlRegistry::getArtist( const QString &name, int id )
 }
 
 GenrePtr
-SqlRegistry::getGenre( const QString &name, int id )
+SqlRegistry::getGenre( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_genreMutex );
-    if( m_genreMap.contains( id ) )
+    if( m_genreMap.contains( id ) && !refresh )
         return m_genreMap.value( id );
     else
     {
@@ -178,7 +183,11 @@ SqlRegistry::getGenre( const QString &name, int id )
         }
 
         if( m_genreMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlGenre>::staticCast( m_genreMap.value( id ) )->updateData( m_collection, id, name );
             return m_genreMap.value( id );
+        }
 
         GenrePtr genre( new SqlGenre( m_collection, id, name ) );
         m_genreMap.insert( id, genre );
@@ -187,10 +196,10 @@ SqlRegistry::getGenre( const QString &name, int id )
 }
 
 ComposerPtr
-SqlRegistry::getComposer( const QString &name, int id )
+SqlRegistry::getComposer( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_composerMutex );
-    if( m_composerMap.contains( id ) )
+    if( m_composerMap.contains( id ) && !refresh )
         return m_composerMap.value( id );
     else
     {
@@ -210,7 +219,11 @@ SqlRegistry::getComposer( const QString &name, int id )
         }
 
         if( m_composerMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlComposer>::staticCast( m_composerMap.value( id ) )->updateData( m_collection, id, name );
             return m_composerMap.value( id );
+        }
 
         ComposerPtr composer( new SqlComposer( m_collection, id, name ) );
         m_composerMap.insert( id, composer );
@@ -219,10 +232,10 @@ SqlRegistry::getComposer( const QString &name, int id )
 }
 
 YearPtr
-SqlRegistry::getYear( const QString &name, int id )
+SqlRegistry::getYear( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_yearMutex );
-    if( m_yearMap.contains( id ) )
+    if( m_yearMap.contains( id ) && !refresh )
         return m_yearMap.value( id );
     else
     {
@@ -242,7 +255,11 @@ SqlRegistry::getYear( const QString &name, int id )
         }
 
         if( m_yearMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlYear>::staticCast( m_yearMap.value( id ) )->updateData( m_collection, id, name );
             return m_yearMap.value( id );
+        }
 
         YearPtr year( new SqlYear( m_collection, id, name ) );
         m_yearMap.insert( id, year );
@@ -251,10 +268,10 @@ SqlRegistry::getYear( const QString &name, int id )
 }
 
 AlbumPtr
-SqlRegistry::getAlbum( const QString &name, int id, int artist )
+SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
 {
     QMutexLocker locker( &m_albumMutex );
-    if( m_albumMap.contains( id ) )
+    if( m_albumMap.contains( id ) && !refresh )
         return m_albumMap.value( id );
     else
     {
@@ -282,7 +299,11 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
         }
 
         if( m_albumMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlAlbum>::staticCast( m_albumMap.value( id ) )->updateData( m_collection, id, name, artist );
             return m_albumMap.value( id );
+        }
 
         AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
         m_albumMap.insert( id, album );

@@ -36,6 +36,7 @@
 
 Meta::Observer::~Observer()
 {
+    DEBUG_BLOCK
     // Unsubscribe all stray Meta subscriptions:
 
     foreach( TrackPtr ptr, m_trackSubscriptions )
@@ -61,6 +62,7 @@ Meta::Observer::~Observer()
 void
 Meta::Observer::subscribeTo( TrackPtr ptr )
 {
+    DEBUG_BLOCK
     if( ptr ) {
         ptr->subscribe( this );
         m_trackSubscriptions.insert( ptr );
@@ -70,6 +72,7 @@ Meta::Observer::subscribeTo( TrackPtr ptr )
 void
 Meta::Observer::unsubscribeFrom( TrackPtr ptr )
 {
+    DEBUG_BLOCK
     if( ptr ) {
         ptr->unsubscribe( this );
         m_trackSubscriptions.remove( ptr );
@@ -207,6 +210,7 @@ Meta::Observer::metadataChanged( YearPtr year )
 void
 Meta::MetaBase::subscribe( Observer *observer )
 {
+    DEBUG_BLOCK
     if( observer )
         m_observers.insert( observer );
 }
@@ -214,6 +218,7 @@ Meta::MetaBase::subscribe( Observer *observer )
 void
 Meta::MetaBase::unsubscribe( Observer *observer )
 {
+    DEBUG_BLOCK
     m_observers.remove( observer );
 }
 
@@ -300,8 +305,10 @@ Meta::Track::finishedPlaying( double /*playedFraction*/ )
 void
 Meta::Track::notifyObservers() const
 {
+    DEBUG_BLOCK
     foreach( Observer *observer, m_observers )
     {
+        debug() << "track observer found";
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
             observer->metadataChanged( Meta::TrackPtr( const_cast<Meta::Track*>(this) ) );
     }
