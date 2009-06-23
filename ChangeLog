@@ -23,6 +23,8 @@ VERSION 2.2
     * Drag and Drop support for album cover image. (BR 91261)
 
   CHANGES:
+    * The database connection and tables now enforce UTF-8 for the character
+      set and collation.
     * The OSD registers itself as a notification window type on relevant
       platforms. Patch thanks to Danny Baumann <dannybaumann@web.de>.
       (BR 194517)
