@@ -55,9 +55,10 @@ Required
       http://code.google.com/p/qtscriptgenerator/
       git://labs.trolltech.com/qtscriptgenerator
 
-    * Liblastfm 0.3: for scrobbling, internet radio, and artist info.
-      http://github.com/mxcl/liblastfm/tree/master
+    * Liblastfm 0.3
+      (For scrobbling, internet radio, and artist info)
       http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
+      http://github.com/mxcl/liblastfm/tree/master
 
 Optional
     * libgpod 0.4.2 (or newer)
