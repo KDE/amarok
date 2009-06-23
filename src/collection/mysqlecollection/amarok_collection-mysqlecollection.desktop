@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Service
 Name=MySQLe Collection
+Name[et]=MySQLe kogu
 Name[it]=Collezione MySQLe
 Name[km]=សម្រាំង MySQLe
 Name[pt]=Colecção de MySQLe
 Name[pt_BR]=Colecção de MySQLe
+Name[sv]=MySQL-samling
 Name[uk]=Збірка MySQLe
 Comment=Collection plugin for Amarok
 Comment[be]=Утулка калекцыі для Amarok
