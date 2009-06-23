@@ -27,7 +27,6 @@
 #include "ScanManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
-#include "SqliteCollection.h"
 #include "SvgHandler.h"
 
 #ifdef Q_OS_WIN32
