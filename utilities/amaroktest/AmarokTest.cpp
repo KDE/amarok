@@ -18,10 +18,9 @@
  ***************************************************************************/
 
 #include "AmarokTest.h"
-#include "AmarokTest.moc"
 
 // Amarok includes
-#include "../../src/Amarok.h"
+#include "src/Amarok.h"
 
 #include <KStandardDirs>
 
@@ -32,10 +31,10 @@
 #include <QTextStream>
 
 // add includes needed for tests here
-#include "../../src/playlistmanager/PlaylistManager.h"
-#include "../../src/playlist/PlaylistActions.h"
-#include "../../src/playlist/PlaylistController.h"
-#include "../../src/scriptengine/MetaTypeExporter.h"
+#include "src/playlistmanager/PlaylistManager.h"
+#include "src/playlist/PlaylistActions.h"
+#include "src/playlist/PlaylistController.h"
+#include "src/scriptengine/MetaTypeExporter.h"
 
 // our own Prototypes
 #include "KUrlExporter.h"
@@ -252,3 +251,5 @@ AmarokTest::runScript()
     testScript.close();
     m_measurePerf = false;
 }
+
+#include "AmarokTest.moc"
