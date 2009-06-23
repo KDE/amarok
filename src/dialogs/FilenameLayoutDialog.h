@@ -44,7 +44,7 @@ static const QStringList typeElements = ( QStringList()
 << "-"
 << "_" );
 
-
+class TokenDropTarget;
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
 class FilenameLayoutDialog
@@ -102,6 +102,7 @@ class FilenameLayoutDialog
         
         bool m_isOrganizeCollection;
         bool m_advancedMode;
+        TokenDropTarget *m_dropTarget;
         
         QList<QRadioButton*> m_caseEditRadioButtons;
 };

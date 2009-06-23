@@ -39,7 +39,7 @@ public:
     void clear();
     virtual inline int count() const { return count( -1 ); }
     virtual int count ( int row ) const;
-    void insertToken( Token*, int row = -1, int col = -1 ); // -1 -> append to last row
+    QPoint index( Token* ) const;
     int row ( Token* ) const;
     int rows() const;
     inline uint rowLimit() const { return m_limits[1]; }
@@ -47,6 +47,8 @@ public:
     void setCustomTokenFactory( TokenFactory * factory );
     QList< Token *> drags( int row = -1 );
 
+public slots:
+    void insertToken( Token*, int row = -1, int col = -1 ); // -1 -> append to last row
 //     inline uint columnLimit() const { return m_limits[0]; }
 //     inline void setColumnLimit( uint c ) { m_limits[0] = c; }
 signals:
@@ -55,6 +57,7 @@ signals:
 
 protected:
     bool eventFilter( QObject *, QEvent * );
+    void paintEvent(QPaintEvent *);
     QBoxLayout *rowBox( QWidget *w, QPoint *idx = 0 ) const;
     QBoxLayout *rowBox( const QPoint &pt ) const;
 protected:

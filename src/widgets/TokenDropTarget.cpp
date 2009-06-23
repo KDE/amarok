@@ -21,10 +21,15 @@
 
 #include "Token.h"
 
+#include <KLocale>
+
 #include <QDropEvent>
+#include <QPainter>
 #include <QVBoxLayout>
 
 #include <QtDebug>
+
+static const bool trailingStretch = false;
 
 /** TokenDragger - eventfilter that drags a token, designed to be a child of TokenDropTarget
 This is necessary, as if TokenDropTarget would QDrag::exec() itself, the eventFilter would be blocked
@@ -165,7 +170,7 @@ TokenDropTarget::appendRow()
 {
     QHBoxLayout *box = new QHBoxLayout;
     box->setSpacing( 0 );
-    box->addStretch();
+//     box->addStretch();
     static_cast<QVBoxLayout*>(layout())->insertLayout( layout()->count() - 1, box ); // last item is a spacer
     return box;
 }
@@ -200,6 +205,7 @@ TokenDropTarget::clear()
     }
     //readd our spacer
     layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
+    update(); // reshow the text
 }
 
 int
@@ -215,7 +221,7 @@ TokenDropTarget::count( int row ) const
     int c = 0;
     for ( row = lower; row < upper; ++row )
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
-            c += rowBox->count() - 1;
+            c += rowBox->count() - trailingStretch;
     return c;
 }
 
@@ -226,7 +232,7 @@ TokenDropTarget::deleteEmptyRows()
     for ( int row = 0; row <= rows(); )
     {
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
-        if ( box && box->count() < 2 ) // sic! last is spacer
+        if ( box && box->count() < ( 1 + trailingStretch ) ) // sic! last is spacer
         {
             layout()->removeItem( box );
             delete box;
@@ -234,6 +240,7 @@ TokenDropTarget::deleteEmptyRows()
         else
             ++row;
     }
+    update(); // in case we're empty now
 }
 
 QList< Token *>
@@ -251,7 +258,7 @@ TokenDropTarget::drags( int row )
     for ( row = lower; row < upper; ++row )
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
         {
-            for ( int col = 0; col < rowBox->count() - 1; ++col )
+            for ( int col = 0; col < rowBox->count() - trailingStretch; ++col )
                 if ( ( token = qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
                     list << token;
         }
@@ -291,11 +298,12 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
             if ( !box )
                 box = appendRow();
         }
-        int idx = ( box->count() > 1 && box->itemAt(0)->widget() &&
-                    pos.x() < box->itemAt(0)->widget()->geometry().x() ) ? 0 : box->count() - 1;
+        int idx = ( box->count() > trailingStretch && box->itemAt(0)->widget() &&
+                    pos.x() < box->itemAt(0)->widget()->geometry().x() ) ? 0 : box->count() - trailingStretch;
         box->insertWidget( idx, token ); // append to existing row
     }
     token->show();
+    update(); // count changed
     emit changed();
 }
 
@@ -346,17 +354,36 @@ void
 TokenDropTarget::insertToken( Token *token, int row, int col )
 {
     QBoxLayout *box = 0;
-    if ( row > rows() - 1 )
+    if ( row < 0 && rows() >= rowLimit() )
+        row = rowLimit() - 1; // want to append, but we can't so use the last row instead
+    
+    if ( row < 0 || row > rows() - 1 )
         box = appendRow();
     else
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
     token->setParent( parentWidget() );
-    if ( col < 0 || col > box->count() - 2 )
-        col = box->count() - 1;
+    if ( col < 0 || col > box->count() - ( 1 + trailingStretch ) )
+        col = box->count() - trailingStretch;
     box->insertWidget( col, token );
     token->removeEventFilter( m_tokenDragger );
     token->installEventFilter( m_tokenDragger );
     token->setCursor( Qt::OpenHandCursor );
+    emit changed();
+    update(); // count changed
+}
+
+void
+TokenDropTarget::paintEvent(QPaintEvent *pe)
+{
+    QWidget::paintEvent(pe);
+    if (count())
+        return;
+    QPainter p(this);
+    QColor c = palette().color(foregroundRole());
+    c.setAlpha(c.alpha()*64/255);
+    p.setPen(c);
+    p.drawText(rect(), Qt::AlignCenter | Qt::TextWordWrap, i18n("Drag in and out items from above."));
+    p.end();
 }
 
 int

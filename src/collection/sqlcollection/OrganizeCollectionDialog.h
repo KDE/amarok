@@ -21,7 +21,6 @@
 
 #include "meta/Meta.h"
 #include "dialogs/FilenameLayoutDialog.h"
-#include "widgets/TokenLayoutWidget.h"
 #include "widgets/TokenPool.h"
 
 #include <KDialog>

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 #include "FilenameLayoutDialog.h"
+#include "TokenDropTarget.h"
 
 #include "Amarok.h"
 #include "Debug.h"
@@ -34,6 +35,13 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
 
     m_caseEditRadioButtons << rbAllUpper << rbAllLower << rbFirstLetter << rbTitleCase;
 
+    m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", filenameLayout );
+    m_dropTarget->setRowLimit( 1 );
+    m_dropTarget->layout()->setContentsMargins( 1, 1, 1, 1 );
+    QVBoxLayout *l = new QVBoxLayout(filenameLayout);
+    l->setContentsMargins( 0, 0, 0, 0 );
+    l->addWidget(m_dropTarget);
+    
     filenameLayoutEdit->hide();
     syntaxLabel->hide();
     syntaxLabel->setWordWrap( true );
@@ -41,10 +49,10 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
     connect( tokenPool, SIGNAL( onDoubleClick( Token * ) ),
-             filenameLayout, SLOT( addToken( Token* ) ) );
+             m_dropTarget, SLOT( insertToken( Token* ) ) );
     connect( kpbAdvanced, SIGNAL( clicked() ),
              this, SLOT( toggleAdvancedMode() ) );
-    connect( filenameLayout, SIGNAL( layoutChanged() ),
+    connect( m_dropTarget, SIGNAL( changed() ),
              this, SIGNAL( schemeChanged() ) );
     connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
              this, SIGNAL( schemeChanged() ) );
@@ -270,10 +278,10 @@ FilenameLayoutDialog::setAdvancedMode( bool isAdvanced )
     {
         kpbAdvanced->setText( i18n( "&Advanced..." ) );
         filenameLayout->show();
-        inferScheme( filenameLayoutEdit->text() );
         filenameLayoutEdit->hide();
         tokenPool->show();
         syntaxLabel->hide();
+        inferScheme( filenameLayoutEdit->text() );
     }
 
     QString configValue = m_isOrganizeCollection ? "OrganizeCollectionDialog" : "FilenameLayoutDialog";
@@ -292,7 +300,7 @@ FilenameLayoutDialog::parsableScheme() const
 {
     QString parsableScheme = "";
 
-    QList< Token *> list = filenameLayout->currentTokenLayout();
+    QList< Token *> list = m_dropTarget->drags( 0 );
     
     foreach( Token * token, list )
     {
@@ -312,89 +320,91 @@ FilenameLayoutDialog::inferScheme( const QString &s ) //SLOT
 
     debug() << "infering scheme: " << s;
 
-    filenameLayout->removeAllTokens();
+    m_dropTarget->clear();
     for( int i = 0; i < s.size(); )
     {
         if( s.at(i) == '%')
         {
             if( s.mid( i, 6 ) == "%title" )
             {
-                filenameLayout->addToken( new Token( i18n( "Title" ), "filename-title-amarok", Title ) );
+                m_dropTarget->insertToken( new Token( i18n( "Title" ), "filename-title-amarok", Title ) );
                 i += 6;
             }
             else if( s.mid( i, 6 ) == "%track" )
             {
-                filenameLayout->addToken( new Token( i18n( "Track" ), "filename-track-amarok", Track ) );
+                m_dropTarget->insertToken( new Token( i18n( "Track" ), "filename-track-amarok", Track ) );
                 i += 6;
             }
             else if( s.mid( i, 7 ) == "%artist" )
             {
-                filenameLayout->addToken( new Token( i18n( "Artist" ), "filename-artist-amarok", Artist ) );
+                m_dropTarget->insertToken( new Token( i18n( "Artist" ), "filename-artist-amarok", Artist ) );
                 i += 7;
             }
             else if( s.mid( i, 9 ) == "%composer" )
             {
-                filenameLayout->addToken( new Token( i18n( "composer" ), "filename-composer-amarok", Composer ) );
+                m_dropTarget->insertToken( new Token( i18n( "Composer" ), "filename-composer-amarok", Composer ) );
                 i += 9;
             }
             else if( s.mid( i, 5 ) == "%year" )
             {
-                filenameLayout->addToken( new Token( i18n( "Year" ), "filename-year-amarok", Year ) );
+                m_dropTarget->insertToken( new Token( i18n( "Year" ), "filename-year-amarok", Year ) );
                 i += 5;
             }
             else if( s.mid( i, 6 ) == "%album" )
             {
-                filenameLayout->addToken( new Token( i18n( "Album" ), "filename-album-amarok", Album ) );
+                m_dropTarget->insertToken( new Token( i18n( "Album" ), "filename-album-amarok", Album ) );
                 i += 6;
             }
             else if( s.mid( i, 8 ) == "%comment" )
             {
-                filenameLayout->addToken( new Token( i18n( "Comment" ), "filename-comment-amarok", Comment ) );
+                m_dropTarget->insertToken( new Token( i18n( "Comment" ), "filename-comment-amarok", Comment ) );
                 i += 8;
             }
             else if( s.mid( i, 6 ) == "%genre" )
             {
-                filenameLayout->addToken( new Token( i18n( "Genre" ), "filename-genre-amarok", Genre ) );
+                m_dropTarget->insertToken( new Token( i18n( "Genre" ), "filename-genre-amarok", Genre ) );
                 i += 6;
             }
             else if( s.mid( i, 9 ) == "%filetype" )
             {
-                filenameLayout->addToken( new Token( i18n( "File type" ), "filename-filetype-amarok", FileType ) );
+                m_dropTarget->insertToken( new Token( i18n( "File type" ), "filename-filetype-amarok", FileType ) );
                 i += 9;
             }
             else if( s.mid( i, 7 ) == "%ignore" )
             {
-                filenameLayout->addToken( new Token( i18n( "Ignore" ), "filename-ignore-amarok", Ignore ) );
+                m_dropTarget->insertToken( new Token( i18n( "Ignore" ), "filename-ignore-amarok", Ignore ) );
                 i += 7;
             }
             else if( s.mid( i, 7 ) == "%folder" )
             {
-                filenameLayout->addToken( new Token( i18n( "Folder" ), "filename-folder-amarok", Folder ) );
+                m_dropTarget->insertToken( new Token( i18n( "Folder" ), "filename-folder-amarok", Folder ) );
                 i += 7;
             }
             else if( s.mid( i, 8 ) == "%initial" )
             {
-                filenameLayout->addToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
+                m_dropTarget->insertToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
                 i += 8;
             }
             else if( s.mid( i, 11 ) == "%discnumber" )
             {
-                filenameLayout->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
+                m_dropTarget->insertToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
                 i += 11;
             }
+            else
+                ++i; // skip junk
         }
         else
         {
             if( s.at(i) == '_' )
-                filenameLayout->addToken( new Token( "_", "filename-underscore-amarok", Underscore ) );
+                m_dropTarget->insertToken( new Token( "_", "filename-underscore-amarok", Underscore ) );
             else if( s.at(i) == '-' )
-                filenameLayout->addToken( new Token( "-", "filename-dash-amarok", Dash ) );
+                m_dropTarget->insertToken( new Token( "-", "filename-dash-amarok", Dash ) );
             else if( s.at(i) == '.' )
-                filenameLayout->addToken( new Token( ".", "filename-dot-amarok", Dot ) );
+                m_dropTarget->insertToken( new Token( ".", "filename-dot-amarok", Dot ) );
             else if( s.at(i) == ' ' )
-                filenameLayout->addToken( new Token( " ", "filename-space-amarok", Space ) );
+                m_dropTarget->insertToken( new Token( " ", "filename-space-amarok", Space ) );
             else if( s.at(i) == '/' )
-                filenameLayout->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
+                m_dropTarget->insertToken( new Token( "/", "filename-slash-amarok", Slash ) );
             else
                 debug() << "'" << s.at(i) << "' can't be represented as TokenLayoutWidget Token";
             i++;

@@ -161,7 +161,7 @@
       </widget>
      </item>
      <item>
-      <widget class="TokenLayoutWidget" name="filenameLayout" >
+      <widget class="QFrame" name="filenameLayout" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
          <horstretch>0</horstretch>
@@ -431,12 +431,6 @@
    <class>TokenPool</class>
    <extends>QListWidget</extends>
    <header location="global" >widgets/TokenPool.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TokenLayoutWidget</class>
-   <extends>QFrame</extends>
-   <header location="global" >widgets/TokenLayoutWidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
