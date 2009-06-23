@@ -34,6 +34,7 @@
 // add includes needed for tests here
 #include "../../src/playlistmanager/PlaylistManager.h"
 #include "../../src/playlist/PlaylistActions.h"
+#include "../../src/playlist/PlaylistController.h"
 
 static QTextStream s_errStream( stderr );
 static QTextStream s_debugStream( stdout );
@@ -195,7 +196,9 @@ AmarokTest::prepareTestEngine()
     m_engine.globalObject().setProperty( "PlaylistActions", amarokTestValue );
 
     /** Playlist::Controller */
-    
+    amarokTestObject = The::playlistController();
+    amarokTestValue = m_engine.newQObject( amarokTestObject );
+    m_engine.globalObject().setProperty( "PlaylistController", amarokTestValue );
 
     /**  */
     
