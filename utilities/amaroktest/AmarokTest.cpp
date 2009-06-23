@@ -32,7 +32,7 @@
 #include <QTextStream>
 
 // add includes needed for tests here
-
+#include "../../src/playlistmanager/PlaylistManager.h"
 
 static QTextStream s_errStream( stderr );
 static QTextStream s_debugStream( stdout );
@@ -182,6 +182,8 @@ AmarokTest::prepareTestEngine()
     QObject *amarokTestObject = this;
     QScriptValue amarokTestValue = m_engine.newQObject( amarokTestObject );
     m_engine.globalObject().setProperty( "AmarokTest", amarokTestValue );
+
+    
 }
 
 

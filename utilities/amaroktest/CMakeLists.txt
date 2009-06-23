@@ -1,5 +1,5 @@
 
-include_directories( ../
+include_directories( ../../src/
                      ${QT_INCLUDES}
                      ${CMAKE_CURRENT_BINARY_DIR}
                    )
