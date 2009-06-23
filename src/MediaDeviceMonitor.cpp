@@ -153,9 +153,16 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
 
-    m_udiAssistants.remove( udi );
+    if ( m_udiAssistants[ udi ] )
+    {
 
-    emit deviceRemoved( udi );
+        m_udiAssistants[ udi ]->tellDisconnected( udi );
+
+        m_udiAssistants.remove( udi );
+    }
+
+
+//    emit deviceRemoved( udi );
 }
 
 void

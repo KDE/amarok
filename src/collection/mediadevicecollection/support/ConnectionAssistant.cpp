@@ -43,12 +43,14 @@ ConnectionAssistant::deviceInfo( const QString& udi )
 void
 ConnectionAssistant::tellIdentified( const QString &udi )
 {
+    DEBUG_BLOCK
     emit identified( deviceInfo( udi ) );
 }
 
 void
 ConnectionAssistant::tellDisconnected( const QString& udi )
 {
+    DEBUG_BLOCK
     emit disconnected( udi );
 }
 
