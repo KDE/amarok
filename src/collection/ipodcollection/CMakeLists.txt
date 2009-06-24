@@ -1,7 +1,3 @@
-macro_optional_find_package(Ipod)
-#macro_optional_find_package(Gtk2)
-macro_optional_find_package(Gdk)
-
 if(NOT GDK_FOUND)
    SET(GDK_INCLUDE_DIRS "")
    SET(GDK_LIBRARIES "")
