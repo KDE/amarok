@@ -1234,13 +1234,13 @@ MtpHandler::databaseChanged()
 
 
 void
-MtpHandler::prepareToParse()
+MtpHandler::prepareToParseTracks()
 {
     m_currtracklist = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
 }
 
 bool
-MtpHandler::isEndOfParseList()
+MtpHandler::isEndOfParseTracksList()
 {
     return (m_currtracklist ? false : true);
 }

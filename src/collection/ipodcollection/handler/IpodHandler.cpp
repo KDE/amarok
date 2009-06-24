@@ -1255,13 +1255,13 @@ IpodHandler::libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
 #endif
 
 void
-IpodHandler::prepareToParse()
+IpodHandler::prepareToParseTracks()
 {
     m_currtracklist = m_itdb->tracks;
 }
 
 bool
-IpodHandler::isEndOfParseList()
+IpodHandler::isEndOfParseTracksList()
 {
     return (m_currtracklist ? false : true);
 }

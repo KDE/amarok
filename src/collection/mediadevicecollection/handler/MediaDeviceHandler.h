@@ -119,13 +119,13 @@ namespace Meta {
            /// e.g. with libgpod, this initializes a GList to the beginning of
            /// the list of tracks
 
-           virtual void prepareToParse() = 0;
+           virtual void prepareToParseTracks() = 0;
 
            /// This method runs a test to see if we have reached the end of
            /// the list of tracks to be parsed on the device, e.g. in libgpod
            /// this tests if cur != NULL, i.e. if(cur)
 
-           virtual bool isEndOfParseList() = 0;
+           virtual bool isEndOfParseTracksList() = 0;
 
            /// This method moves the iterator to the next track on the list of
            /// track structs, e.g. with libgpod, cur = cur->next where cur

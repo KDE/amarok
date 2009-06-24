@@ -154,8 +154,8 @@ private:
 
            /// Parse iteration methods
 
-           virtual void prepareToParse();
-           virtual bool isEndOfParseList();
+           virtual void prepareToParseTracks();
+           virtual bool isEndOfParseTracksList();
            virtual void prepareToParseNextTrack();
            virtual void nextTrackToParse();
            virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );

@@ -734,7 +734,7 @@ MediaDeviceHandler::parseTracks()
     //debug() << "Before Parse";
 
     /* iterate through tracklist and add to appropriate map */
-    for( prepareToParse(); !isEndOfParseList(); prepareToParseNextTrack() )
+    for( prepareToParseTracks(); !isEndOfParseTracksList(); prepareToParseNextTrack() )
     {
         //debug() << "Fetching next track to parse";
         /// Fetch next track to parse
