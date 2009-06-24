@@ -1,5 +1,9 @@
 [Desktop Entry]
 Name=Photos
+Name[pt]=Fotografias
+Name[pt_BR]=Fotografias
+Name[sv]=Foton
+Name[uk]=Фотографії
 Type=Service
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_photos

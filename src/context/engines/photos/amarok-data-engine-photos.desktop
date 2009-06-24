@@ -1,5 +1,9 @@
 [Desktop Entry]
 Name=Photos Data Engine
+Name[pt]=Motor de Dados de Fotografias
+Name[pt_BR]=Motor de Dados de Fotografias
+Name[sv]=Datagränssnitt för foton
+Name[uk]=Рушій даних фотографій
 X-KDE-ServiceTypes=Plasma/DataEngine
 X-KDE-ParentApp=Amarok
 Type=Service
