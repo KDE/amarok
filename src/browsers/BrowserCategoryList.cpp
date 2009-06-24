@@ -19,6 +19,7 @@
 
 #include "BrowserCategoryList.h"
 
+#include "App.h"
 #include "Debug.h"
 #include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
@@ -28,6 +29,10 @@
 #include "widgets/SearchWidget.h"
 
 #include <KLineEdit>
+#include <KStandardDirs>
+
+#include <QFile>
+
 
 BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name )
     : BrowserCategory( name )
@@ -330,26 +335,44 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         //instead of just throwing out raw text, let's format the long description and the
         //icon into a nice html page.
 
-        QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
-                "CONTENT=\"text/html; charset=utf-8\">" + css() + "</HEAD><BODY>";
-        infoHtml += "<div align=\"center\"><strong>";
-        infoHtml += category->prettyName();
-        infoHtml += "</strong><p><em>";
-        if ( !category->imagePath().isEmpty() )
+        if ( m_infoHtmlTemplate.isEmpty() )
         {
-            infoHtml += "<img src=\"" + category->imagePath() +
-                    "\" align=\"middle\" border=\"0\"><p>";
+
+            KUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
+            QString dataPath = dataUrl.path();
+
+            //load html
+            QString htmlPath = dataPath + "hover_info_template.html";
+            QFile file( htmlPath );
+            if ( !file.open( QIODevice::ReadOnly | QIODevice::Text) )
+            {
+                debug() << "error opening file. Error: " << file.error();
+                return;
+            }
+            m_infoHtmlTemplate = file.readAll();
+            file.close();
+
+            m_infoHtmlTemplate.replace( "{background_color}",PaletteHandler::highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
+            QColor highlight( App::instance()->palette().highlight().color() );
+            highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
+            m_infoHtmlTemplate.replace( "{header_background_color}", highlight.name() );
+
         }
-        infoHtml += category->longDescription();
-        infoHtml += "</em><br><br>";
 
+        QString currentHtml = m_infoHtmlTemplate;
 
+        currentHtml.replace( "%%NAME%%", category->prettyName() );
+        currentHtml.replace( "%%DESCRIPTION%%", category->longDescription() );
+        currentHtml.replace( "%%IMAGE_PATH%%", category->imagePath() );
 
-        infoHtml += "</p></div>";
-        infoHtml += "</BODY></HTML>";
+        debug() << "html: " << currentHtml;
+        
+
 
         QVariantMap variantMap;
-        variantMap["main_info"] = QVariant( infoHtml );
+        variantMap["main_info"] = QVariant( currentHtml );
         The::infoProxy()->setInfo( variantMap );
     }
 }

@@ -30,6 +30,7 @@
 
 #include <kicon.h>
 #include <klocale.h>
+#include <KStandardDirs>
 
 #include <QToolBox>
 #include <QTreeView>
@@ -67,8 +68,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
 
     setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast  subscriptions and episodes." ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "view-media-playlist-amarok", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_playlists.png" ) );
 }
 
 PlaylistBrowser::~PlaylistBrowser()

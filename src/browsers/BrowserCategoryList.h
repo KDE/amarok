@@ -140,6 +140,8 @@ class BrowserCategoryList : public BrowserCategory
         QTimer m_filterTimer;
 
         QString m_currentFilter;
+        
+        QString m_infoHtmlTemplate;
 
     private slots:
         /**

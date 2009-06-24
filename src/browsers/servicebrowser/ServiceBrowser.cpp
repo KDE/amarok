@@ -27,7 +27,7 @@
 #include "browsers/InfoProxy.h"
 
 #include <KLineEdit>
-
+#include <KStandardDirs>
 
 ServiceBrowser * ServiceBrowser::s_instance = 0;
 
@@ -48,8 +48,7 @@ ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
 
     setLongDescription( i18n( "The Internet browser lets you browse online sources of content that integrates directly into Amarok. Amarok ships with a number of these sources, but many more can be added using scripts." ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "applications-internet", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_internet.png" ) );
 }
 
 

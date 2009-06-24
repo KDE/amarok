@@ -43,6 +43,7 @@
 #include <KToolBar>
 #include <KUrlCompletion>
 #include <KUrlNavigator>
+#include <KStandardDirs>
 #include <kfileplacesmodel.h>
 
 
@@ -126,8 +127,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
 
     setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "folder-amarok", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 }
 
 FileBrowser::Widget::~Widget()

@@ -43,6 +43,10 @@ install(
         service_info_loading10.png
         service_info_loading11.png
         service_info_loading12.png
+        hover_info_collections.png
+        hover_info_files.png
+        hover_info_internet.png
+        hover_info_playlists.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
 
