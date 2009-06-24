@@ -108,11 +108,12 @@ MtpHandler::isWritable() const
 void
 MtpHandler::init()
 {
+
     mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
     mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
     mtpFileTypes[LIBMTP_FILETYPE_WMA] = "wma";
     mtpFileTypes[LIBMTP_FILETYPE_OGG] = "ogg";
-    mtpFileTypes[LIBMTP_FILETYPE_AUDIBLE] = "aa"; // audible
+    mtpFileTypes[LIBMTP_FILETYPE_AUDIBLE] = "aa";
     mtpFileTypes[LIBMTP_FILETYPE_MP4] = "mp4";
     mtpFileTypes[LIBMTP_FILETYPE_UNDEF_AUDIO] = "undef-audio";
     mtpFileTypes[LIBMTP_FILETYPE_WMV] = "wmv";
@@ -122,20 +123,31 @@ MtpHandler::init()
     mtpFileTypes[LIBMTP_FILETYPE_QT] = "mov";
     mtpFileTypes[LIBMTP_FILETYPE_UNDEF_VIDEO] = "undef-video";
     mtpFileTypes[LIBMTP_FILETYPE_JPEG] = "jpg";
-    mtpFileTypes[LIBMTP_FILETYPE_JFIF] = "jpg";
+    mtpFileTypes[LIBMTP_FILETYPE_JFIF] = "jfif";
     mtpFileTypes[LIBMTP_FILETYPE_TIFF] = "tiff";
     mtpFileTypes[LIBMTP_FILETYPE_BMP] = "bmp";
     mtpFileTypes[LIBMTP_FILETYPE_GIF] = "gif";
     mtpFileTypes[LIBMTP_FILETYPE_PICT] = "pict";
     mtpFileTypes[LIBMTP_FILETYPE_PNG] = "png";
-    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR1] = "vcs"; // vcal1
-    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR2] = "vcs"; // vcal2
-    mtpFileTypes[LIBMTP_FILETYPE_VCARD2] = "vcf"; // vcard2
-    mtpFileTypes[LIBMTP_FILETYPE_VCARD3] = "vcf"; // vcard3
-    mtpFileTypes[LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT] = "wim"; // windows image format
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR1] = "vcs";
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR2] = "vcs";
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD2] = "vcf";
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD3] = "vcf";
+    mtpFileTypes[LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT] = "wim";
     mtpFileTypes[LIBMTP_FILETYPE_WINEXEC] = "exe";
     mtpFileTypes[LIBMTP_FILETYPE_TEXT] = "txt";
     mtpFileTypes[LIBMTP_FILETYPE_HTML] = "html";
+    mtpFileTypes[LIBMTP_FILETYPE_AAC] = "aac";
+    mtpFileTypes[LIBMTP_FILETYPE_FLAC] = "flac";
+    mtpFileTypes[LIBMTP_FILETYPE_MP2] = "mp3";
+    mtpFileTypes[LIBMTP_FILETYPE_M4A] = "m4a";
+    mtpFileTypes[LIBMTP_FILETYPE_DOC] = "doc";
+    mtpFileTypes[LIBMTP_FILETYPE_XML] = "xml";
+    mtpFileTypes[LIBMTP_FILETYPE_XLS] = "xls";
+    mtpFileTypes[LIBMTP_FILETYPE_PPT] = "ppt";
+    mtpFileTypes[LIBMTP_FILETYPE_MHT] = "mht";
+    mtpFileTypes[LIBMTP_FILETYPE_JP2] = "jpg";
+    mtpFileTypes[LIBMTP_FILETYPE_JPX] = "jpx";
     mtpFileTypes[LIBMTP_FILETYPE_UNKNOWN] = "unknown";
 
     QString genericError = i18n( "Could not connect to MTP Device" );
