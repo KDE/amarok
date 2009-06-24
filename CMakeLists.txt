@@ -8,7 +8,6 @@ set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
-option(WITH_IPOD "Enable support for Apple iPod audio devices" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -60,16 +59,27 @@ if( WITH_PLAYER )
     macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
 
     find_package(LibLastFm REQUIRED)
-    macro_log_feature( LibLastFm_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" TRUE "0.3" "" )
+    macro_log_feature( LibLastFm_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
+    
+    if (WITH_IPOD)
+      FIND_PACKAGE(Ipod)
+    else (WITH_IPOD)
+      set(IPOD_FOUND)
+      set(IPOD_INCLUDE_DIR)
+      set(IPOD_INCLUDES)
+      set(IPOD_LIBRARY)
+      set(IPOD_LIBRARIES)
+    endif (WITH_IPOD)
 
-    if( WITH_IPOD )
-        find_package(Ipod)
+    if(IPOD_FOUND)
         macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_0_7)
-        macro_log_feature( IPOD_0_7 "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
-
+    endif(IPOD_FOUND)
+    macro_log_feature( IPOD_0_7 "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
+ 
+    if( WITH_Ipod )
         macro_optional_find_package(Gdk)
         macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
-    endif( WITH_IPOD )
+    endif( WITH_Ipod )
 
     macro_optional_find_package(Mtp)
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
@@ -100,10 +110,10 @@ if( WITH_PLAYER )
         macro_log_feature(QT4_GLIB_SUPPORT "Qt4 Glib support" "Qt4 must be compiled with glib support for mp3tunes" "http://www.trolltech.com" FALSE "" "")
     endif( WITH_MP3Tunes )
 
-    if( WITH_IPOD OR WITH_MP3Tunes )
+    if( WITH_Ipod OR WITH_MP3Tunes )
         find_package(GLIB2)
         macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
-    endif( WITH_IPOD OR WITH_MP3Tunes )
+    endif( WITH_Ipod OR WITH_MP3Tunes )
 
     #These two are currently unused
     #macro_optional_find_package(Soprano)
