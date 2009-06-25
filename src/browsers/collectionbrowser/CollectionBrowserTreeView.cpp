@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "CollectionBrowserTreeView.h"
+
 #include "Debug.h"
 
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
