@@ -1,26 +1,23 @@
-/***************************************************************************
- *   Copyright (C) 2004-2007 by Mark Kretschmann <kretschmann@kde.org>     *
- *                 2005-2007 by Seb Ruiz <ruiz@kde.org>                    *
- *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
- *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
- *                      2007 by Leonardo Franchi <lfranchi@gmail.com>      *
- *                      2008 by Peter ZHOU <peterzhoulei@gmail.com>        *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004-2007 Mark Kretschmann <kretschmann@kde.org>     			*
+ * Copyright (c) 2005-2007 Seb Ruiz <ruiz@kde.org>                    			*
+ * Copyright (c) 2006 Alexandre Oliveira <aleprj@gmail.com>      			*
+ * Copyright (c) 2006 Martin Ellis <martin.ellis@kdemail.net>    			*
+ * Copyright (c) 2007 Leonardo Franchi <lfranchi@gmail.com>      			*
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>        			*
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "ScriptManager"
 

@@ -1,23 +1,22 @@
-/******************************************************************************
- * Copyright (C) 2004 Mark Kretschmann <kretschmann@kde.org>                  *
- *           (C) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>               *
- *           (C) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>   *
- *           (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
- *           (C) 2008 Leo Franchi <lfranchi@kde.org>                          *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                  		*
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>               		*
+ * Copyright (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>   		*
+ * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   		*
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                          		*
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "TagDialog"
 
@@ -904,7 +903,7 @@ void TagDialog::readTags()
 
     summaryText += "</table></td><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_currentTrack->score() ) ) );
-    // TODO: this should say something pretty like "3½ stars", but that can't happen until after strings are unfrozen
+    // TODO: this should say something pretty like "3 stars", but that can't happen until after strings are unfrozen
     summaryText += body2cols.arg( i18n("Rating:"), QString::number( static_cast<double>(m_currentTrack->rating())/2.0) );
 
     summaryText += body2cols.arg( i18n("Play Count:"), QString::number( m_currentTrack->playCount() ) );
