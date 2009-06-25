@@ -86,13 +86,22 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
         bool removed;
-        if( !consideredByDestination( track ) )
+        //SqlCollectionLocation uses KIO::move for moving files internally
+        //therefore we check whether the destination CollectionLocation
+        //represents the same collection, and check the existence of the
+        //file. If it does not exist, we assume that it has been moved, and remove it from the database.
+        //at worst we get a warning about a file not in the database. If it still exists, and
+        //this method has been called, do not do anything, as something is wrong.
+        //If the destination location is another collection, remove the file as we expect
+        //the destination to tell us if it is really really sure that it has copied a file.
+        //If we are not copying/moving files destination() will be 0.
+        if( destination() && destination()->collection() == collection() )
         {
-            removed = QFile::remove( sqlTrack->playableUrl().path() );
+            removed = !QFile::exists( sqlTrack->playableUrl().path() );
         }
         else
         {
-            removed = movedByDestination( track );
+            removed = QFile::remove( sqlTrack->playableUrl().path() );
         }
         if( removed )
         {
@@ -171,6 +180,9 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
         source()->transferError(m_jobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
         m_destinations.remove( m_jobs.value( job ) );
     }
+    //we  assume that KIO works correctly...
+    source()->transferSuccessful( m_jobs.value( job ) );
+
     m_jobs.remove( job );
     job->deleteLater();
     
@@ -328,14 +340,12 @@ bool SqlCollectionLocation::startNextJob()
         }
         if( src == dest) {
         //no changes, so leave the database alone, and don't erase anything
-            source()->setMovedByDestination( track, false );
             return false;
         }
     //we should only move it directly if we're moving within the same collection
         else if( isGoingToRemoveSources() && source()->collection() == collection() )
         {
             job = KIO::file_move( src, dest, -1, flags );
-            source()->setMovedByDestination( track, true );  //remove old location from tracks table
         }
         else
         {

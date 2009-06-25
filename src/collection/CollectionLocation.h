@@ -178,11 +178,11 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         bool remove( const Meta::TrackList &tracks );
         
         /**
-        * Sets or gets which files the source will potentially need to remove
-        */
-        virtual bool movedByDestination( const Meta::TrackPtr &track ) const;
-        virtual bool consideredByDestination( const Meta::TrackPtr &track ) const;
-        virtual void setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
+          explicitly inform the source collection of successful transfer.
+          The source collection will only remove files (if necessary)
+          for which this method was called.
+          */
+        void transferSuccessful( const Meta::TrackPtr &track );
     
         /**
         * tells the source location that an error occurred during the transfer of the file
@@ -216,6 +216,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          * note: subclasses do not take ownership  of the pointer
          */
         CollectionLocation* source() const;
+
+        /**
+          * allows the source location to access the destination CollectionLocation.
+          * Pointer may be null!
+          * note: subclasses do not take ownership of the pointer
+          */
+        CollectionLocation* destination() const;
+
         /**
             this method is called on the source location, and should return a list of urls
             which the destination location can copy using KIO. You must call 
@@ -312,7 +320,9 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         
         bool m_removeSources;
         bool m_isRemoveAction;
-        QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;
+        //used by the source collection to store the tracks that were successfully
+        //copied by the destination and can be removed as part of a move
+        Meta::TrackList m_tracksSuccessfullyTransferred;
         QMap<Meta::TrackPtr, QString> m_tracksWithError;
 };
 

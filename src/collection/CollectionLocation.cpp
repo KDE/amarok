@@ -355,8 +355,9 @@ void
 CollectionLocation::slotFinishCopy()
 {
     if( m_removeSources )
-        removeSourceTracks( m_sourceTracks );
+        removeSourceTracks( m_tracksSuccessfullyTransferred );
     m_sourceTracks.clear();
+    m_tracksSuccessfullyTransferred.clear();
     m_destination->deleteLater();
     m_destination = 0;
     this->deleteLater();
@@ -488,26 +489,24 @@ CollectionLocation::source() const
     return m_source;
 }
 
+CollectionLocation*
+CollectionLocation::destination() const
+{
+    return m_destination;
+}
+
 void
 CollectionLocation::setSource( CollectionLocation *source )
 {
     m_source = source;
 }
-bool
-CollectionLocation::movedByDestination( const Meta::TrackPtr &track ) const
-{
-    return m_tracksRemovedByDestination.contains( track ) && m_tracksRemovedByDestination[ track ];
-}
-bool
-CollectionLocation::consideredByDestination( const Meta::TrackPtr &track ) const
-{
-    return m_tracksRemovedByDestination.contains( track );
-}
+
 void
-CollectionLocation::setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase )
+CollectionLocation::transferSuccessful( const Meta::TrackPtr &track )
 {
-    m_tracksRemovedByDestination.insert( track, removeFromDatabase );
+    m_tracksSuccessfullyTransferred.append( track );
 }
+
 bool
 CollectionLocation::isGoingToRemoveSources() const
 {

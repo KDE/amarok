@@ -56,15 +56,9 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
     DEBUG_BLOCK
     if( !track )
         return false;
-    bool removed;
-    if( !consideredByDestination( track ) )
-    {
-        removed = QFile::remove( track->playableUrl().path() );
-    }
-    else
-    {
-        removed = movedByDestination( track );
-    }
+
+    bool removed = QFile::remove( track->playableUrl().path() );
+
     if( removed )
     {
         QFileInfo file( track->playableUrl().path() );
