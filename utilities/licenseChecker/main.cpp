@@ -371,8 +371,14 @@ void readFile( QString filename ) {
     if( individualSuccess && header[j].mid( startEmail - 1, 1 ) != " " )
     {
       log.append( LogEntry( filename, QString( "No space between copyright holder's name and email (Line " ).append( (char)(j+48) ).append( " of header) - Fixed" ), LogEntry::information ) );
-      header[j] = header[j].left( startEmail - 1 ) + " " + header[j].mid( startEmail );
-      autofixed = true;
+      //Need to check here as this could be due to not enough width for name & email
+      if( header[j].at( header[j].lastIndexOf( "*" ) ) == ' ' )
+      {
+	header[j] = header[j].left( startEmail ) + " " + header[j].mid( startEmail );
+	//Now remove extra space
+	header[j] = header[j].left( header[j].lastIndexOf( "*" ) - 1 ) + header[j].mid( header[j].lastIndexOf( "*" ) );
+	autofixed = true;
+      }
     }
 
     //Check for spaces at start of name (shouldn't be there)
@@ -382,7 +388,7 @@ void readFile( QString filename ) {
       while( header[j].mid( 17+(5*k), 1 ) == " " )
       {
         header[j] = header[j].left( 17+(5*k) ) + header[j].mid( 18+(5*k) );
-	header[j] = header[j].left( header[j].length() - 1 ) + " *";
+	header[j] = header[j].left( header[j].lastIndexOf( "*" ) ) + " " + header[j].mid( header[j].lastIndexOf( "*" ) );
       }
       autofixed = true;
     }
@@ -415,6 +421,22 @@ void readFile( QString filename ) {
 	      header[j].left( header[j].toLower().indexOf( "by ", 17+(5*k) ) ) +
 	      header[j].mid( header[j].indexOf( "by ", 17+(5*k) ) + 3 );
       autofixed = true;
+    }
+    
+    //Check length of line (stars in line at end)
+    if( individualSuccess && header[j].trimmed().length() != 88 )
+    {
+      //Easiest way is to rewrite line
+      header[j] = header[j].left( header[j].lastIndexOf( ">" ) + 1 );
+      //Now add trailing spaces and *
+      for ( int k = header[j].length(); k < 88; k++ )
+	header[j] += " ";
+      
+      header[j] += "*";
+      
+      log.append( LogEntry( filename, QString( "Length of copyright holder line incorrect. (Line " ).append( (char)(j+48) ).append( " of header) - Fixed" ), LogEntry::information ) );
+      
+      autofixed=true;
     }
     
     //Add copyright holder (only if success)

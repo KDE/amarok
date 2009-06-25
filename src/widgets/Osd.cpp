@@ -1,9 +1,9 @@
 /****************************************************************************************
- * Copyright (c) 2004 Christian Muehlhaeuser <chris@chris.de>				*
- * Copyright (c) 2004-2006 Seb Ruiz <ruiz@kde.org>					*
- * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>			*
- * Copyright (c) 2005 Gábor Lehel <illissius@gmail.com>					*
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>				*
+ * Copyright (c) 2004 Christian Muehlhaeuser <chris@chris.de>                           *
+ * Copyright (c) 2004-2006 Seb Ruiz <ruiz@kde.org>                                      *
+ * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
+ * Copyright (c) 2005 Gbor Lehel <illissius@gmail.com>                                  *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

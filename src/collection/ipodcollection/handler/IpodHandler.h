@@ -1,8 +1,8 @@
 /****************************************************************************************
- * Copyright (c) 2005,2006 Martin Aumueller <aumuell@reserv.at>			*
- * Copyright (c) 2004 Christian Muehlhaeuser <chris@chris.de>			*
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com> 			*
- * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>						*
+ * Copyright (c) 2005,2006 Martin Aumueller <aumuell@reserv.at>                         *
+ * Copyright (c) 2004 Christian Muehlhaeuser <chris@chris.de>                           *
+ * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

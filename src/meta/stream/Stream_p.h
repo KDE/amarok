@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>	*
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>				*
+ * Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

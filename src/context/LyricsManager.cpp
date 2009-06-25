@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2007 Leo Franchi <lfranchi@kde.org>          				*
- * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                 				*
+ * Copyright (c) 2007 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

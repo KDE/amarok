@@ -1,9 +1,9 @@
 /****************************************************************************************
- * Copyright (c) 2004 Pierpaolo Di Panfilon <pippo_dp@libero.it>              		*
- * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>        		*
- * Copyright (c) 2005 Isaiah Damron <xepo@trifault.net>                       		*
- * Copyright (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>                   		*
- * Copyright (c) 2007 Seb Ruiz <ruiz@kde.org>                                 		*
+ * Copyright (c) 2004 Pierpaolo Di Panfilon <pippo_dp@libero.it>                        *
+ * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2005 Isaiah Damron <xepo@trifault.net>                                 *
+ * Copyright (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>                             *
+ * Copyright (c) 2007 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -833,7 +833,7 @@ void CriteriaEditor::slotFieldSelected( int field )
             oldForeachType( KMountPoint::List, mountpoints )
             {
                 /* This code is adapted from KDE mediamanager's fstabbackend.cpp
-                 * Copyright Kévin Ottens, Bernhard Rosenkraenzer, and from looking
+                 * Copyright Kvin Ottens, Bernhard Rosenkraenzer, and from looking
                  * at the commit messages a few other guys who didn't add their name to the header.
                  */
                 QString device = (*it)->realDeviceName();

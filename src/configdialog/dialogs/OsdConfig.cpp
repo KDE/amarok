@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2004-2007 Mark Kretschmann <markey@web.de>           		*
- * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                			*
+ * Copyright (c) 2004-2007 Mark Kretschmann <markey@web.de>                             *
+ * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

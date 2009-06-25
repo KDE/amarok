@@ -1,7 +1,7 @@
 /****************************************************************************************
- * Copyright (c) 2002 KFile Authors <kde@kde.org>					*
- * Copyright (c) 2002 Anders Lund <anders.lund@lund.tdcadsl.dk>				*
- * Copyright (c) 2007 Mirko Stocker <me@misto.ch>					*
+ * Copyright (c) 2002 KFile Authors <kde@kde.org>                                       *
+ * Copyright (c) 2002 Anders Lund <anders.lund@lund.tdcadsl.dk>                         *
+ * Copyright (c) 2007 Mirko Stocker <me@misto.ch>                                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

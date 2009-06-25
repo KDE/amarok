@@ -1,7 +1,7 @@
 /****************************************************************************************
- * Copyright (c) 2003 Frerich Raabe <raabe@kde.org>                           		*
- * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>        		*
- * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   		*
+ * Copyright (c) 2003 Frerich Raabe <raabe@kde.org>                                     *
+ * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

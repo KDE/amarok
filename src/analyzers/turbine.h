@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>               		*
+ * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

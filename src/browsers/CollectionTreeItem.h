@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>        		*
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>  		*
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

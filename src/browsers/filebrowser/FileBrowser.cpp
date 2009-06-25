@@ -1,9 +1,9 @@
 /****************************************************************************************
- * Copyright (c) 2001 Christoph Cullmann <cullmann@kde.org>				*
- * Copyright (c) 2001 Joseph Wenninger <jowenn@kde.org>					*
- * Copyright (c) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>				*
- * Copyright (c) 2007 Mirko Stocker <me@misto.ch>					*
- * Copyright (c) 2008-2009 Mark Kretschmann <kretschmann@kde.org>			*
+ * Copyright (c) 2001 Christoph Cullmann <cullmann@kde.org>                             *
+ * Copyright (c) 2001 Joseph Wenninger <jowenn@kde.org>                                 *
+ * Copyright (c) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>                         *
+ * Copyright (c) 2007 Mirko Stocker <me@misto.ch>                                       *
+ * Copyright (c) 2008-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
