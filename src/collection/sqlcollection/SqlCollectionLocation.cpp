@@ -322,6 +322,7 @@ bool SqlCollectionLocation::startNextJob()
             if( !dir.mkpath( "." ) )
             {
                 warning() << "Could not create directory " << dir;
+                source()->transferError(track, i18n( "Could not create directory: %1", dir.path() ) );
                 return false;
             }
         }
