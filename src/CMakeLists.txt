@@ -226,6 +226,7 @@ set(libstatusbar_SRCS
 set(meta_SRCS
     meta/Capability.cpp
     meta/M3UPlaylist.cpp
+    meta/MediaDevicePlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
     meta/MetaReplayGain.cpp
@@ -346,6 +347,7 @@ set(libplaylistbrowser_SRCS
 set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
     playlistmanager/PlaylistFileProvider.cpp
+    playlistmanager/mediadevice/MediaDeviceUserPlaylistProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
 )
