@@ -331,7 +331,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     QString sql,sql2,sql3;
     sql = "REPLACE INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
-                    "tracknumber,fingerprint,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
+                    "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
                     "createdate,modifydate,albumgain,albumpeakgain,trackgain,trackpeakgain) "
                     "VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
     sql = sql.arg( QString::number( url )
@@ -343,10 +343,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                 , m_collection->escape( trackData[ Field::TITLE ].toString() )
                 , m_collection->escape( trackData[ Field::COMMENT ].toString() )
                 , QString::number( trackData[Field::TRACKNUMBER].toInt() ) );
-
-    sql3 = ",'%1'";
-    sql3 = sql3.arg( m_collection->escape( trackData[ Field::FINGERPRINT ].toString() ) );
-    sql += sql3;
 
     sql2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9"; // goes up to modifydate
     sql2 = sql2.arg( QString::number( trackData[Field::DISCNUMBER].toInt() )

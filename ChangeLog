@@ -22,7 +22,6 @@ VERSION 2.2-beta1
     * Support for Context applets to be written in QtScript.
     * Custom Dynamic Playlists using Last.fm.
     * Drag and Drop support for album cover image. (BR 91261)
-    * Support for acoustic similarity using the GTACFeat library.
 
   CHANGES:
     * The database connection and tables now enforce UTF-8 for the character

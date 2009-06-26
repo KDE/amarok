@@ -54,13 +54,5 @@ QueryMaker::setAutoDelete( bool autoDelete )
     return this;
 }
 
-/* since fingerprints aren't used in most Collection types, we just
-   specify a do-nothing function as the base class default */
-QueryMaker*
-QueryMaker::addSimilarityFilter( const Meta::TrackPtr&, const double, const NumberComparison )
-{
-    return this;
-}
-
 #include "QueryMaker.moc"
 

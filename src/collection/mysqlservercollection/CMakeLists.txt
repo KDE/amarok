@@ -5,7 +5,6 @@ include_directories(
         ../..
         ../../plugin
         ../../meta
-        ../../fingerprint
         ../../collection
         ../../dialogs
         ../../playlistmanager

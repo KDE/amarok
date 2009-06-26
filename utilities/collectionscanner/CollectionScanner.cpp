@@ -26,9 +26,6 @@
 
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
-#ifdef HAVE_FINGERPRINT
-#include <gtacfeat/fingerprint.h> // for acoustic fingerprints
-#endif
 
 #include <cerrno>
 #include <cstdlib>
@@ -557,20 +554,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
 
-#ifdef HAVE_FINGERPRINT
-                // There may be more than one TXXX frame, so we search for the specific
-                // frame that includes the GTACFEAT fingerprint
-                TagLib::ID3v2::UserTextIdentificationFrame* fpframe =
-                        TagLib::ID3v2::UserTextIdentificationFrame::find(file->ID3v2Tag(), GTACFEAT_TAG_STRING_FINGERPRINT);
-                if ( fpframe ) {
-                    QString s = TStringToQString( fpframe->toString() ).trimmed();
-                    int idx = s.lastIndexOf(" ");
-                    if (idx != -1) {
-                        attributes["fingerprint"] = s.remove(0,idx+1);
-                    }
-                }
-#endif
-
                 //FIXME: Port 2.0
 //                 if( images )
 //                     loadImagesFromTag( *file->ID3v2Tag(), *images );
@@ -634,11 +617,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( !file->tag()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).trimmed();
-
-#ifdef HAVE_FINGERPRINT
-                if ( !file->tag()->fieldListMap()[ GTACFEAT_TAG_STRING_FINGERPRINT ].isEmpty() )
-                    attributes["fingerprint"] = TStringToQString( file->tag()->fieldListMap()[GTACFEAT_TAG_STRING_FINGERPRINT].front() ).trimmed();
-#endif
             }
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
@@ -657,12 +635,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
-
-#ifdef HAVE_FINGERPRINT
-                if ( !file->xiphComment()->fieldListMap()[ GTACFEAT_TAG_STRING_FINGERPRINT ].isEmpty() )
-                    attributes["fingerprint"] = TStringToQString( file->xiphComment()->fieldListMap()[GTACFEAT_TAG_STRING_FINGERPRINT].front() ).trimmed();
-#endif
-                
             }
 //             if ( images && file->ID3v2Tag() )
 //                 loadImagesFromTag( *file->ID3v2Tag(), *images );
@@ -686,15 +658,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !mp4tag->itemListMap()["cpil"].toStringList().isEmpty() )
                     compilation = QString::number( mp4tag->itemListMap()["cpil"].toBool() ? '1' : '0' );
 
-#ifdef HAVE_FINGERPRINT
-                // this is kind of a mess, but will have to do until taglib-extras has better support for
-                // reading freeform metadata out of files -- sth
-                TagLib::String fpstr("----:com.apple.iTunes:");
-                fpstr += GTACFEAT_TAG_STRING_FINGERPRINT;
-                if ( !mp4tag->itemListMap()[ fpstr ].toStringList().isEmpty() )
-                    attributes["fingerprint"] = TStringToQString( mp4tag->itemListMap()[ fpstr ].toStringList().front() );
-#endif
- 
 //                 if ( images && mp4tag->cover().size() )
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
             }

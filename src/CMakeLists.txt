@@ -1,10 +1,5 @@
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
-if(GTACFEAT_FOUND)
-    ADD_DEFINITIONS(-DHAVE_FINGERPRINT)
-    include_directories( ${GTACFEAT_INCLUDE_DIR} )
-endif(GTACFEAT_FOUND)
-
 if(APPLE)
     set(mac_SRCS
         app_mac.cpp
@@ -47,7 +42,6 @@ include_directories(
     dbus
     dialogs
     dynamic
-    fingerprint
     meta
     meta/capabilities
     playlistmanager
@@ -456,14 +450,6 @@ set(libdynamic_SRCS
 )
 
 #####################################################################
-# ACOUSTIC FINGERPRINTS
-#####################################################################
-set(fingerprint_SRCS
-    fingerprint/Fingerprint.cpp
-    meta/capabilities/FingerprintCapability.cpp
-)
-
-#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -481,7 +467,6 @@ set(amaroklib_LIB_SRCS
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
     ${meta_SRCS}
-    ${fingerprint_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
     ${libplaylistbrowser_SRCS}
@@ -619,12 +604,6 @@ if(APPLE)
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-if(GTACFEAT_FOUND)
-    target_link_libraries(amaroklib
-        gtacfeat
-    )
-endif(GTACFEAT_FOUND)
-
 if(KDEMULTIMEDIA_FOUND)
     target_link_libraries(amaroklib
         ${KCDDB_LIBRARY}
@@ -705,4 +684,7 @@ kde4_install_icons( ${ICON_INSTALL_DIR} )
 ############ amarok protocol handler ###########
 
 install( FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR} )
+
+
+
 

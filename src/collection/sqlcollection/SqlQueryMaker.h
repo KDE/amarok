@@ -76,8 +76,6 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
         QStringList runQuery( const QString &query );
         void handleResult( const QStringList &result );
 
-        // function for acoustic fingerprint comparison
-	    virtual QueryMaker* addSimilarityFilter( const Meta::TrackPtr&, const double, const NumberComparison );
         // for using it blocking (only for collection internal use)
 
         void setBlocking( bool enabled );
