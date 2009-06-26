@@ -111,13 +111,8 @@ if( WITH_PLAYER )
     endif( WITH_MP3Tunes )
 
     if( WITH_Ipod OR WITH_MP3Tunes )
-<<<<<<< HEAD:CMakeLists.txt
-        find_package(GLIB2)
-        macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
-=======
 	find_package(GLIB2)
 	macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
->>>>>>> Initial support for Ipod playlists.  They load and play, but renaming crashes (userplaylist code needs some touch-ups) and you can't modify them yet.:CMakeLists.txt
     endif( WITH_Ipod OR WITH_MP3Tunes )
 
     #These two are currently unused
