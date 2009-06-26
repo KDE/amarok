@@ -558,7 +558,9 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //                 if( images )
 //                     loadImagesFromTag( *file->ID3v2Tag(), *images );
             }
-
+// HACK: charset-detector disabled, so all tags assumed utf-8
+// TODO: fix charset-detector to detect encoding with higher accuracy
+#if 0
             if( tag )
             {
                 TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
@@ -596,7 +598,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     }
                 }
             }
-
+#endif
             #undef strip
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
