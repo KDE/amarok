@@ -24,10 +24,36 @@
 
 const QString BLANKLINE( " *                                                                                      *" );
 const QString TOPLINE( "/****************************************************************************************" );
-
-//Ugly and not exactly preferred, but I'll have to declare the license arrays here and initialise them
-//in the main() function =/ (keeping capitals as it will be used as a constant)
-QList<QStringList> LICENSES;
+QList<QStringList> LICENSES = QList<QStringList>() << 
+    ( QStringList() <<
+        " * This program is free software; you can redistribute it and/or modify it under        *" <<
+        " * the terms of the GNU General Public License as published by the Free Software        *" <<
+        " * Foundation; either version 2 of the License, or (at your option) any later           *" <<
+        " * version.                                                                             *" <<
+        " *                                                                                      *" <<
+        " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
+        " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
+        " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
+        " *                                                                                      *" <<
+        " * You should have received a copy of the GNU General Public License along with         *" <<
+        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *" 
+    )
+    <<
+    ( QStringList() <<
+        " * This program is free software; you can redistribute it and/or modify it under        *" <<
+        " * the terms of the GNU General Public License as published by the Free Software        *" <<
+        " * Foundation; either version 2 of the License, or (at your option) version 3 or        *" <<
+        " * any later version accepted by the membership of KDE e.V. (or its successor approved  *" <<
+        " * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *" <<
+        " * version 3 of the license.                                                            *" <<
+        " *                                                                                      *" <<
+        " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
+        " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
+        " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
+        " *                                                                                      *" <<
+        " * You should have received a copy of the GNU General Public License along with         *" <<
+        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *"
+    );
 
 struct {
   QString outputFile;
@@ -635,46 +661,7 @@ void iterateFolder( QString folder )
 }
 
 int main( int argc, char** argv )
-{
-  //Ugly fix bit - see declaration above
-  QStringList temp;
-  temp <<
-      " * This program is free software; you can redistribute it and/or modify it under        *" <<
-      " * the terms of the GNU General Public License as published by the Free Software        *" <<
-      " * Foundation; either version 2 of the License, or (at your option) any later           *" <<
-      " * version.                                                                             *" <<
-      " *                                                                                      *" <<
-      " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
-      " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
-      " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
-      " *                                                                                      *" <<
-      " * You should have received a copy of the GNU General Public License along with         *" <<
-      " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *";
-  LICENSES.append( temp );
-  
-  temp.clear();
-  
-  temp <<
-      " * This program is free software; you can redistribute it and/or modify it under        *" <<
-      " * the terms of the GNU General Public License as published by the Free Software        *" <<
-      " * Foundation; either version 2 of the License, or (at your option) version 3 or        *" <<
-      " * any later version accepted by the membership of KDE e.V. (or its successor approved  *" <<
-      " * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *" <<
-      " * version 3 of the license.                                                            *" <<
-      " *                                                                                      *" <<
-      " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
-      " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
-      " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
-      " *                                                                                      *" <<
-      " * You should have received a copy of the GNU General Public License along with         *" <<
-      " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *";
-  LICENSES.append( temp );
-  
-  temp.clear();
-  
-  //End of ugly fix bit
-  
-  
+{ 
   processCliArgs(argc, argv);
 
   if( cliArgs.help )
