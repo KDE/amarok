@@ -55,7 +55,7 @@ namespace Meta {
 
         public:
 	MediaDeviceHandler( QObject *parent );
-	virtual ~MediaDeviceHandler() {DEBUG_BLOCK}
+	virtual ~MediaDeviceHandler();
 
 	virtual void init() = 0; // begin connection atempts
 

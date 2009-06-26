@@ -144,6 +144,12 @@ IpodHandler::isWritable() const
     return true;
 }
 
+QString
+IpodHandler::prettyName() const
+{
+    return QString::fromUtf8( itdb_playlist_mpl( m_itdb )->name );
+}
+
 bool
 IpodHandler::initializeIpod()
 {
@@ -1304,7 +1310,7 @@ IpodHandler::prepareToParseNextPlaylist()
 void
 IpodHandler::nextPlaylistToParse()
 {
-    m_currplaylist = ( Itdb_Playlist * ) m_currplaylistlist->data;   
+    m_currplaylist = ( Itdb_Playlist * ) m_currplaylistlist->data;
 }
 
 bool

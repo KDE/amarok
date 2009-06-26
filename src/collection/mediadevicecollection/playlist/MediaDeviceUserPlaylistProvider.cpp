@@ -58,6 +58,8 @@ MediaDeviceUserPlaylistProvider::~MediaDeviceUserPlaylistProvider()
 //     {
 //         playlist->saveToDb( true );
 //     }
+    m_playlists.clear();
+    emit updated();
 }
 
 Meta::PlaylistList

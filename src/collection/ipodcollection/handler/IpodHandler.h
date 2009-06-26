@@ -82,6 +82,7 @@ namespace Meta {
 
            /* Get Methods */
            QString mountPoint() const { return m_mountPoint; }
+	   virtual QString prettyName() const;
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
 
            /// Methods that wrap get/set of information using libgpod

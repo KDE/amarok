@@ -52,6 +52,11 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
                  m_memColl, SLOT( slotAttemptConnectionDone(bool) ) );
 }
 
+MediaDeviceHandler::~MediaDeviceHandler()
+{
+    delete m_provider;
+}
+
 bool
 MediaDeviceHandler::isWritable() const
 {
@@ -847,7 +852,7 @@ MediaDeviceHandler::parseTracks()
 /*
     foreach( Meta::MediaDevicePlaylistPtr playlist, playlists )
         {
-            
+
         }
 */
 
@@ -860,7 +865,7 @@ MediaDeviceHandler::parseTracks()
     MediaDevicePlaylistPtr list(  new MediaDevicePlaylist(  "Testlist",  tracks ) );
     m_provider->addPlaylist( list );
     */
-    
+
 
     // Finally, assign the created maps to the collection
 

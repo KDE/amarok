@@ -94,7 +94,8 @@ IpodCollection::collectionId() const
 QString
 IpodCollection::prettyName() const
 {
-    return "Ipod at " + m_mountPoint;
+//    return "Ipod at " + m_mountPoint;
+    return m_handler->prettyName();
 }
 
 #include "IpodCollection.moc"
