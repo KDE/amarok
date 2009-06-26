@@ -22,21 +22,12 @@
 #include <QTextStream>
 #include <QString>
 
-#define HEADERWIDTH 89
-#define LICENSELENGTH 11
-#define BLANKLINE " *                                                                                      *"
-#define TOPLINE "/****************************************************************************************"
-#define LICENSE1 " * This program is free software; you can redistribute it and/or modify it under        *"
-#define LICENSE2 " * the terms of the GNU General Public License as published by the Free Software        *"
-#define LICENSE3 " * Foundation; either version 2 of the License, or (at your option) any later           *"
-#define LICENSE4 " * version.                                                                             *"
-#define LICENSE5 " *                                                                                      *"
-#define LICENSE6 " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *"
-#define LICENSE7 " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *"
-#define LICENSE8 " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *"
-#define LICENSE9 " *                                                                                      *"
-#define LICENSE10 " * You should have received a copy of the GNU General Public License along with         *"
-#define LICENSE11 " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *"
+const QString BLANKLINE( " *                                                                                      *" );
+const QString TOPLINE( "/****************************************************************************************" );
+
+//Ugly and not exactly preferred, but I'll have to declare the license arrays here and initialise them
+//in the main() function =/ (keeping capitals as it will be used as a constant)
+QList<QStringList> LICENSES;
 
 struct {
   QString outputFile;
@@ -144,25 +135,29 @@ void readFile( QString filename ) {
   //Check first line *'s and correct length
   if( header[0] != TOPLINE )
   {
-    //Check length
-    if( header[0].length() != HEADERWIDTH )
-    {
-      log.append( LogEntry( filename, "First line of header incorrect (incorrect length)", LogEntry::error ) );
-    }
-    else //Incorrect wording (i.e. not /*****...***)
-    {
-      log.append( LogEntry( filename, "First line of header incorrect", LogEntry::error ) );
-    }
-    
+    log.append( LogEntry( filename, "First line of header incorrect", LogEntry::error ) );
     problemFile = true;
-
   }
 
   //Find first line of license
   int i = 1;
-
-  while( i < header.count() && header[i] != LICENSE1 )
+  
+  bool  firstLineFound = false;
+  
+  while( i < header.count() )
   {
+    for( int j = 0; j < LICENSES.count(); j++ )
+    {      
+      if( header[i] == LICENSES[j][0] )
+      {
+        firstLineFound = true;
+        break;
+      }
+    }
+    
+    if( firstLineFound )
+      break;
+    
     i++;
   }
 
@@ -173,37 +168,32 @@ void readFile( QString filename ) {
     log.addProblemFile( filename );
     return;
   }
-
-  //Check license wording
-  //First check there are enough lines (+1 to incorporate last line)
-  if( header.count() - i < LICENSELENGTH + 1 )
+  
+  bool licenseFound = false;
+  
+  for( int j = 0; j < LICENSES.count(); j++ )
   {
-    log.append( LogEntry( filename, "Required license wording and format not found. (Header is too short)", LogEntry::failure ) );
+    if( header.count() + i < LICENSES[j].count() )
+      continue; //Too short to be header, so continue
+      
+    int k = 1;
+    while( k < LICENSES[j].count() && header[k+i] == LICENSES[j][k] )
+      k++;
     
-    log.addProblemFile( filename );
-    return;
+    if( k == LICENSES[j].count() )
+    {      
+      //Check for extra lines. Means extra terms (+1 to incorporate last line)
+      if( header.count() - i > LICENSES[j].count() + 1 )
+        log.append( LogEntry( filename, "Extra license terms in license header.", LogEntry::information ) );
+      
+      licenseFound = true;
+      break;
+    }
   }
-
-  //Check for extra lines. Means extra terms (+1 to incorporate last line)
-  if( header.count() - i > LICENSELENGTH + 1 )
-    log.append( LogEntry( filename, "Extra license terms in license header.", LogEntry::information ) );
-
-  //Check each line (already matched LICENSE1 so no need to check again)
-  //This is currently hard coded, maybe there is some way of using arrays (need to look into #define arrays and whether to use const instead)
-  if( header[i + 1] != LICENSE2 ||
-      header[i + 2] != LICENSE3 ||
-      header[i + 3] != LICENSE4 ||
-      header[i + 4] != LICENSE5 ||
-      header[i + 5] != LICENSE6 ||
-      header[i + 6] != LICENSE7 ||
-      header[i + 7] != LICENSE8 ||
-      header[i + 8] != LICENSE9 ||
-      header[i + 9] != LICENSE10 ||
-      header[i + 10] != LICENSE11
-      )
+  
+  if( !licenseFound )
   {
-    log.append( LogEntry( filename, "Required license wording and format not found. (Mismatch in lines 2-12)", LogEntry::failure ) );
-    
+    log.append( LogEntry( filename, "Required license wording and format not found.", LogEntry::failure ) );
     log.addProblemFile( filename );
     return;
   }
@@ -268,7 +258,7 @@ void readFile( QString filename ) {
         log.append( LogEntry( filename, QString( "\"Copyright\" not found in proper place (Line ").append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
         individualSuccess = false;
     
-	problemFile = true;
+        problemFile = true;
       }
     }
 
@@ -295,7 +285,7 @@ void readFile( QString filename ) {
         log.append( LogEntry( filename, QString( "\"(c)\" not found in proper place (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
         individualSuccess = false;
     
-	problemFile = true;
+        problemFile = true;
       }
     }
 
@@ -334,7 +324,7 @@ void readFile( QString filename ) {
         log.append( LogEntry( filename, QString( "Year is not found in correct format. (Not a numeric value) (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
         individualSuccess = false;
     
-	problemFile = true;
+        problemFile = true;
         break; //Leave loop so no false warning for in-order years
       }
 
@@ -374,10 +364,10 @@ void readFile( QString filename ) {
       //Need to check here as this could be due to not enough width for name & email
       if( header[j].at( header[j].lastIndexOf( "*" ) ) == ' ' )
       {
-	header[j] = header[j].left( startEmail ) + " " + header[j].mid( startEmail );
-	//Now remove extra space
-	header[j] = header[j].left( header[j].lastIndexOf( "*" ) - 1 ) + header[j].mid( header[j].lastIndexOf( "*" ) );
-	autofixed = true;
+        header[j] = header[j].left( startEmail ) + " " + header[j].mid( startEmail );
+        //Now remove extra space
+        header[j] = header[j].left( header[j].lastIndexOf( "*" ) - 1 ) + header[j].mid( header[j].lastIndexOf( "*" ) );
+        autofixed = true;
       }
     }
 
@@ -388,7 +378,7 @@ void readFile( QString filename ) {
       while( header[j].mid( 17+(5*k), 1 ) == " " )
       {
         header[j] = header[j].left( 17+(5*k) ) + header[j].mid( 18+(5*k) );
-	header[j] = header[j].left( header[j].lastIndexOf( "*" ) ) + " " + header[j].mid( header[j].lastIndexOf( "*" ) );
+        header[j] = header[j].left( header[j].lastIndexOf( "*" ) ) + " " + header[j].mid( header[j].lastIndexOf( "*" ) );
       }
       autofixed = true;
     }
@@ -418,8 +408,8 @@ void readFile( QString filename ) {
     {
       log.append( LogEntry( filename, QString( "Copyright holder's name preceded by 'by'. (Line " ).append( (char)(j+48) ).append( " of header) - Fixed" ), LogEntry::information ) );
       header[j] =
-	      header[j].left( header[j].toLower().indexOf( "by ", 17+(5*k) ) ) +
-	      header[j].mid( header[j].indexOf( "by ", 17+(5*k) ) + 3 );
+              header[j].left( header[j].toLower().indexOf( "by ", 17+(5*k) ) ) +
+              header[j].mid( header[j].indexOf( "by ", 17+(5*k) ) + 3 );
       autofixed = true;
     }
     
@@ -430,7 +420,7 @@ void readFile( QString filename ) {
       header[j] = header[j].left( header[j].lastIndexOf( ">" ) + 1 );
       //Now add trailing spaces and *
       for ( int k = header[j].length(); k < 88; k++ )
-	header[j] += " ";
+        header[j] += " ";
       
       header[j] += "*";
       
@@ -443,10 +433,10 @@ void readFile( QString filename ) {
     if( individualSuccess )
     {
       log.addCopyHolder(
-	      header[j].mid( 17+(5*k), startEmail - (18+(5*k)) ),
-	      header[j].mid( startEmail + 1, header[j].lastIndexOf( ">" ) - (startEmail + 1) ),
-	      filename
-	      );
+              header[j].mid( 17+(5*k), startEmail - (18+(5*k)) ),
+              header[j].mid( startEmail + 1, header[j].lastIndexOf( ">" ) - (startEmail + 1) ),
+              filename
+              );
     }
     
     //Set overallSuccess false if this run failed
@@ -489,7 +479,7 @@ void readFile( QString filename ) {
       QTextStream outStream( &file );
       
       foreach( QString i, newFile )
-	outStream << i << "\n";
+        outStream << i << "\n";
       
       log.append( LogEntry( filename, "Some warnings autofixed", LogEntry::information ) );
     }
@@ -646,6 +636,45 @@ void iterateFolder( QString folder )
 
 int main( int argc, char** argv )
 {
+  //Ugly fix bit - see declaration above
+  QStringList temp;
+  temp <<
+      " * This program is free software; you can redistribute it and/or modify it under        *" <<
+      " * the terms of the GNU General Public License as published by the Free Software        *" <<
+      " * Foundation; either version 2 of the License, or (at your option) any later           *" <<
+      " * version.                                                                             *" <<
+      " *                                                                                      *" <<
+      " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
+      " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
+      " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
+      " *                                                                                      *" <<
+      " * You should have received a copy of the GNU General Public License along with         *" <<
+      " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *";
+  LICENSES.append( temp );
+  
+  temp.clear();
+  
+  temp <<
+      " * This program is free software; you can redistribute it and/or modify it under        *" <<
+      " * the terms of the GNU General Public License as published by the Free Software        *" <<
+      " * Foundation; either version 2 of the License, or (at your option) version 3 or        *" <<
+      " * any later version accepted by the membership of KDE e.V. (or its successor approved  *" <<
+      " * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *" <<
+      " * version 3 of the license.                                                            *" <<
+      " *                                                                                      *" <<
+      " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
+      " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
+      " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
+      " *                                                                                      *" <<
+      " * You should have received a copy of the GNU General Public License along with         *" <<
+      " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *";
+  LICENSES.append( temp );
+  
+  temp.clear();
+  
+  //End of ugly fix bit
+  
+  
   processCliArgs(argc, argv);
 
   if( cliArgs.help )
