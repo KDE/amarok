@@ -110,6 +110,13 @@ class PlaylistManager : public QObject
         void addProvider( PlaylistProvider * provider, int category );
 
         /**
+	 * Remove a PlaylistProvider.
+	 * @arg provider a PlaylistProvider
+	 */
+
+	void removeProvider( PlaylistProvider * provider );
+
+        /**
          * Makes sure custom categories don't conflict with the default PlaylistCategory enum or
          * other custom category by dynamically providing a integer that identifies it.
          * @arg name a translated name that can be used to identify playlists offered by this provider

@@ -120,6 +120,7 @@ PlaylistBrowser::loadDynamicCategory()
 void
 PlaylistBrowser::showCategory( int category )
 {
+    Q_UNUSED( category )
     DEBUG_BLOCK;
     //m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
 }

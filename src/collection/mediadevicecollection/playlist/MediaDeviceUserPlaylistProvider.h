@@ -50,6 +50,9 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
 
 	void addPlaylist( Meta::MediaDevicePlaylistPtr &playlist );
 
+	public slots:
+	    void sendUpdated() { emit updated(); }
+
  private:
 
     Meta::MediaDevicePlaylistList m_playlists;

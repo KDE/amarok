@@ -85,6 +85,7 @@ PlaylistBrowserNS::UserModel::~UserModel()
 void
 PlaylistBrowserNS::UserModel::slotUpdate()
 {
+    DEBUG_BLOCK
     loadPlaylists();
 
     emit layoutAboutToBeChanged();
@@ -114,6 +115,7 @@ PlaylistBrowserNS::UserModel::slotRenamePlaylist( Meta::PlaylistPtr playlist )
 void
 PlaylistBrowserNS::UserModel::loadPlaylists()
 {
+    DEBUG_BLOCK
     QList<Meta::PlaylistPtr> playlists =
     The::playlistManager()->playlistsOfCategory( PlaylistManager::UserPlaylist );
     QListIterator<Meta::PlaylistPtr> i(playlists);

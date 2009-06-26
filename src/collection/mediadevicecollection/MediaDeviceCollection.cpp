@@ -196,6 +196,8 @@ MediaDeviceCollection::disconnectDevice()
 void
 MediaDeviceCollection::deleteCollection()
 {
+    DEBUG_BLOCK
+    emit deletingCollection();
     emit remove();
 }
 

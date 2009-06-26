@@ -126,6 +126,30 @@ PlaylistManager::addProvider( PlaylistProvider * provider, int category )
         emit( categoryAdded( category ) );
 }
 
+void
+PlaylistManager::removeProvider( PlaylistProvider * provider )
+{
+    DEBUG_BLOCK
+
+    if ( !provider )
+        return;
+
+    if ( m_map.values( provider->category() ).contains( provider ) )
+    {
+        debug() << "Providers of this category: " << providersForCategory( provider->category() ).count();
+        debug() << "Removing provider from map";
+        int removed = m_map.remove( provider->category(), provider );
+        debug() << "Removed provider from map:" << ( m_map.contains( provider->category(), provider ) ? "false" : "true" );
+        debug() << "Providers removed: " << removed;
+        // Handle deletion of provider here
+//        provider->deleteLater();
+        slotUpdated();
+
+    }
+
+
+}
+
 int
 PlaylistManager::registerCustomCategory( const QString & name )
 {
@@ -147,12 +171,15 @@ PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 Meta::PlaylistList
 PlaylistManager::playlistsOfCategory( int playlistCategory )
 {
+    DEBUG_BLOCK
     QList<PlaylistProvider *> providers = m_map.values( playlistCategory );
     QListIterator<PlaylistProvider *> i( providers );
 
     Meta::PlaylistList list;
     while ( i.hasNext() )
+    {
         list << i.next()->playlists();
+    }
 
     return list;
 }

@@ -453,6 +453,8 @@ virtual void nextPlaylistTrackToParse() {}
 
     void enqueueNextCopyThread();
 
+    void slotDeletingHandler();
+
            /* Collection Variables */
         private:
            // Associated collection

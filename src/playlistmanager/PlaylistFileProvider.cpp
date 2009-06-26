@@ -28,6 +28,7 @@
 PlaylistFileProvider::PlaylistFileProvider()
  : PlaylistProvider()
 {
+    DEBUG_BLOCK
     //load the playlists defined in the config
     QStringList keys = Amarok::config( "Loaded Playlist Files" ).keyList();
     debug() << "keys " << keys;
@@ -81,6 +82,7 @@ PlaylistFileProvider::prettyName() const
 Meta::PlaylistList
 PlaylistFileProvider::playlists()
 {
+    DEBUG_BLOCK
     return m_playlists;
 }
 

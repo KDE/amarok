@@ -177,7 +177,7 @@ MainWindow::~MainWindow()
     delete m_browserDummyTitleBarWidget;
     delete m_contextDummyTitleBarWidget;
     delete m_playlistDummyTitleBarWidget;
-    
+
     delete m_playlistFiles;
     delete m_contextView;
     delete m_corona;
@@ -222,7 +222,7 @@ MainWindow::init()
     m_browsersDock->setObjectName( "Browsers dock" );
     m_browsersDock->setWidget( m_browsers );
     m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
-    
+
 
     PERF_LOG( "Create Playlist" )
     m_playlistWidget = new Playlist::Widget( 0 );
@@ -233,7 +233,7 @@ MainWindow::init()
     m_playlistDock->setObjectName( "Playlist dock" );
     m_playlistDock->setWidget( m_playlistWidget );
     m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
-    
+
     PERF_LOG( "Playlist created" )
 
     createMenus();
@@ -266,7 +266,7 @@ MainWindow::init()
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks );
-    
+
     addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
     addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
@@ -291,7 +291,7 @@ MainWindow::init()
         m_browsers->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
 
-                
+
         PERF_LOG( "Creating ServiceBrowser" )
         ServiceBrowser *internetContentServiceBrowser = ServiceBrowser::instance();
         internetContentServiceBrowser->setParent( 0 );
@@ -312,7 +312,7 @@ MainWindow::init()
         m_browsers->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
-                
+
         PERF_LOG( "Creating FileBrowser" )
         FileBrowser::Widget * fileBrowser = new FileBrowser::Widget( "files", 0 );
         fileBrowser->setPrettyName( i18n("Files") );
@@ -360,6 +360,7 @@ MainWindow::createContextView( Plasma::Containment *containment )
 void
 MainWindow::slotShrinkBrowsers( int index )
 {
+    Q_UNUSED( index )
     DEBUG_BLOCK
 
     // Because QSplitter sucks and will not recompute sizes if a pane is shrunk and not hidden.
@@ -388,6 +389,7 @@ MainWindow::showBrowser( const QString &name )
 void
 MainWindow::showBrowser( const int index )
 {
+    Q_UNUSED( index )
     //if( index >= 0 && index != m_browsers->currentIndex() )
     //    m_browsers->showWidget( index );
 }
@@ -1023,7 +1025,7 @@ void MainWindow::setLayoutLocked( bool locked )
     {
         debug() << "unlocked!";
         const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
-        
+
         m_browsersDock->setFeatures( features );
         m_contextDock->setFeatures( features );
         m_playlistDock->setFeatures( features );
@@ -1087,4 +1089,3 @@ namespace The {
 
 
 #include "MainWindow.moc"
-                 

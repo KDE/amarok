@@ -50,11 +50,21 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 
         connect( this, SIGNAL( attemptConnectionDone(bool)),
                  m_memColl, SLOT( slotAttemptConnectionDone(bool) ) );
+        connect( m_memColl, SIGNAL( deletingCollection() ),
+                 this, SLOT( slotDeletingHandler() ) );
+
 }
 
 MediaDeviceHandler::~MediaDeviceHandler()
 {
+    DEBUG_BLOCK
     delete m_provider;
+}
+
+void
+MediaDeviceHandler::slotDeletingHandler()
+{
+    The::playlistManager()->removeProvider( m_provider );
 }
 
 bool
@@ -802,8 +812,8 @@ MediaDeviceHandler::parseTracks()
     // Register the playlist provider with the playlistmanager
 
     // register a playlist provider for this type of device
+    debug() << "adding provider";
     m_provider = new MediaDeviceUserPlaylistProvider();
-    The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
 
     // Begin parsing the playlists
 
@@ -847,6 +857,9 @@ MediaDeviceHandler::parseTracks()
 
         m_provider->addPlaylist( playlist );
     }
+
+    The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
+    m_provider->sendUpdated();
 
     // Inform the provider of these new playlists
 /*

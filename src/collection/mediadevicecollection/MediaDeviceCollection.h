@@ -145,6 +145,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
     signals:
         void collectionReady( Amarok::Collection* );
         void collectionDisconnected( const QString &udi );
+	void deletingCollection();
 
         void attemptConnectionDone( bool success );
 

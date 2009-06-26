@@ -46,6 +46,7 @@ MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider()
     : UserPlaylistProvider()
 //    , m_renameAction( 0 )
 {
+    DEBUG_BLOCK
 //    checkTables();
 //    m_root = Meta::MediaDevicePlaylistGroupPtr( new Meta::MediaDevicePlaylistGroup( "",
 //            Meta::MediaDevicePlaylistGroupPtr() ) );
@@ -54,17 +55,21 @@ MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider()
 
 MediaDeviceUserPlaylistProvider::~MediaDeviceUserPlaylistProvider()
 {
+    DEBUG_BLOCK
 //     foreach( Meta::MediaDevicePlaylistPtr playlist, m_playlists )
 //     {
 //         playlist->saveToDb( true );
 //     }
     m_playlists.clear();
-    emit updated();
+//    emit updated();
+//    The::playlistManager()->removeProvider( this );
+
 }
 
 Meta::PlaylistList
 MediaDeviceUserPlaylistProvider::playlists()
 {
+    DEBUG_BLOCK
     Meta::PlaylistList playlists;
 
     foreach( Meta::MediaDevicePlaylistPtr mediadevicePlaylist, m_playlists )
@@ -87,6 +92,8 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
 Meta::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& name )
 {
+    Q_UNUSED( tracks )
+    Q_UNUSED( name )
     DEBUG_BLOCK
 //    debug() << "saving " << tracks.count() << " tracks to db with name" << name;
         Meta::MediaDevicePlaylistPtr mediadevicePlaylist;
