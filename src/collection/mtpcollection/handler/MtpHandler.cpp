@@ -814,10 +814,88 @@ MtpHandler::nextTrackToParse()
     m_currtrack = m_currtracklist;
 }
 
+/// Playlist Parsing
+
+void
+MtpHandler::prepareToParsePlaylists()
+{
+    m_currplaylistlist = LIBMTP_Get_Playlist_List( m_device );
+}
+
+
+bool
+MtpHandler::isEndOfParsePlaylistsList()
+{
+    return (m_currplaylistlist == 0);
+}
+
+
+void
+MtpHandler::prepareToParseNextPlaylist()
+{
+    m_currplaylistlist = m_currplaylistlist->next;
+}
+
+
+void
+MtpHandler::nextPlaylistToParse()
+{
+    m_currplaylist = m_currplaylistlist;
+}
+
+bool
+MtpHandler::shouldNotParseNextPlaylist()
+{
+    // NOTE: parse all
+    return false;
+}
+
+
+void
+MtpHandler::prepareToParsePlaylistTracks()
+{
+    m_trackcounter = 0;
+}
+
+
+bool
+MtpHandler::isEndOfParsePlaylist()
+{
+    return (m_trackcounter >= m_currplaylist->no_tracks);
+}
+
+
+void
+MtpHandler::prepareToParseNextPlaylistTrack()
+{
+    m_trackcounter++;
+}
+
+
+void
+MtpHandler::nextPlaylistTrackToParse()
+{
+    m_currtrack = m_idtrackhash[ m_currplaylist->tracks[ m_trackcounter ] ];
+}
+
+
+Meta::MediaDeviceTrackPtr
+MtpHandler::libGetTrackPtrForTrackStruct()
+{
+    return m_mtptrackhash.key( m_currtrack );
+}
+
+QString
+MtpHandler::libGetPlaylistName()
+{
+    return QString::fromUtf8( m_currplaylist->name );
+}
+
 void
 MtpHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_mtptrackhash[ track ] = m_currtrack;
+    m_idtrackhash[ m_currtrack->item_id ] = m_currtrack;
 }
 
 QStringList

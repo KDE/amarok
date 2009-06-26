@@ -160,6 +160,21 @@ private:
            virtual void nextTrackToParse();
            virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
 
+           /// Playlist Parsing
+           
+           virtual void prepareToParsePlaylists();
+           virtual bool isEndOfParsePlaylistsList();
+           virtual void prepareToParseNextPlaylist();
+           virtual void nextPlaylistToParse();
+           virtual bool shouldNotParseNextPlaylist();
+           virtual void prepareToParsePlaylistTracks();
+           virtual bool isEndOfParsePlaylist();
+           virtual void prepareToParseNextPlaylistTrack();
+           virtual void nextPlaylistTrackToParse();
+           
+           virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
+           virtual QString libGetPlaylistName();
+
            virtual QStringList supportedFormats();
 
            virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track );
@@ -203,6 +218,11 @@ private:
     
     LIBMTP_track_t *m_currtrack;
 
+    LIBMTP_playlist_t *m_currplaylistlist;
+    LIBMTP_playlist_t *m_currplaylist;
+
+    uint32_t m_trackcounter;
+
     // Hash that associates an LIBMTP_track_t* to every Track*
 
     QHash<Meta::MediaDeviceTrackPtr, LIBMTP_track_t*> m_mtptrackhash;
@@ -210,6 +230,10 @@ private:
     // Keeps track of which tracks have been copied/cached for playing
 
     QHash<Meta::MediaDeviceTrackPtr, KTemporaryFile*> m_cachedtracks;
+
+    // Maps id's to tracks
+
+    QHash<uint32_t, LIBMTP_track_t*> m_idtrackhash;
 
     // Used as temporary location for copying files from mtp
 
