@@ -31,7 +31,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 5;
+static const int DB_VERSION = 6;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -85,6 +85,11 @@ DatabaseUpdater::update()
         {
             upgradeVersion4to5();
             dbVersion = 5;
+        }
+        if( dbVersion == 5 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion5to6();
+            dbVersion = 6;
         }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
@@ -287,6 +292,15 @@ DatabaseUpdater::upgradeVersion4to5()
 }
 
 void
+DatabaseUpdater::upgradeVersion5to6()
+{
+    DEBUG_BLOCK
+
+    m_collection->query( "ALTER TABLE tracks "
+                         "ADD COLUMN fingerprint " + m_collection->longTextColumnType() );
+}
+
+void
 DatabaseUpdater::createTemporaryTables()
 {
     DEBUG_BLOCK
@@ -383,6 +397,7 @@ DatabaseUpdater::createTemporaryTables()
                     ",filesize INTEGER"
                     ",filetype INTEGER"     //does this still make sense?
                     ",bpm FLOAT"
+                    ",fingerprint " + m_collection->longTextColumnType() +
                     ",createdate INTEGER"   //are the two dates needed?
                     ",modifydate INTEGER"
                     ",albumgain FLOAT"
@@ -684,6 +699,7 @@ DatabaseUpdater::createTables() const
                     ",filesize INTEGER"
                     ",filetype INTEGER"     //does this still make sense?
                     ",bpm FLOAT"
+                    ",fingerprint " + m_collection->longTextColumnType() +
                     ",createdate INTEGER"   //are the two dates needed?
                     ",modifydate INTEGER"
                     ",albumgain FLOAT"

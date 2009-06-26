@@ -23,6 +23,7 @@
 #include "Amarok.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "Debug.h"
+#include "Fingerprint.h"
 #include "MetaUtility.h"
 #include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
@@ -35,6 +36,7 @@
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
+#include "meta/capabilities/FingerprintCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 #include "meta/capabilities/OrganiseCapability.h"
@@ -78,6 +80,21 @@ class EditCapabilityImpl : public Meta::EditCapability
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
         virtual void abortMetaDataUpdate() { m_track->abortMetaDataUpdate(); }
+
+    private:
+        KSharedPtr<SqlTrack> m_track;
+};
+
+class FingerprintCapabilityImpl : public Meta::FingerprintCapability
+{
+    Q_OBJECT
+    public:
+        FingerprintCapabilityImpl( SqlTrack *track )
+            : Meta::FingerprintCapability()
+            , m_track( track ) {}
+
+            virtual const Fingerprint::FingerprintPtr getFingerprint() const { return m_track->getFingerprint(); }
+            virtual Fingerprint::Similarity calcSimilarityTo( const Meta::TrackPtr t ) const { return m_track->calcSimilarityTo(t); }
 
     private:
         KSharedPtr<SqlTrack> m_track;
@@ -220,7 +237,7 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 QString
 SqlTrack::getTrackReturnValues()
 {
-    //do not use any weird column names that contains commas: this will break getTrackReturnValuesCount()
+    //do not use any weird column names that contains commas: this will break getTrackReturnValueCount()
     return "urls.deviceid, urls.rpath, urls.uniqueid, "
            "tracks.id, tracks.title, tracks.comment, "
            "tracks.tracknumber, tracks.discnumber, "
@@ -228,7 +245,7 @@ SqlTrack::getTrackReturnValues()
            "tracks.bitrate, tracks.length, "
            "tracks.filesize, tracks.samplerate, "
            "statistics.createdate, statistics.accessdate, "
-           "statistics.playcount, tracks.filetype, tracks.bpm, "
+           "statistics.playcount, tracks.filetype, tracks.bpm, tracks.fingerprint, "
            "tracks.albumgain, tracks.albumpeakgain, "
            "tracks.trackgain, tracks.trackpeakgain, "
            "artists.name, artists.id, "
@@ -322,6 +339,7 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
     ++iter; //BPM
+    m_FingerprintPtr = Fingerprint::FingerprintPtr(new Fingerprint::Fingerprint(*(iter++)));
 
     // if there is no track gain, we assume a gain of 0
     // if there is no album gain, we use the track gain
@@ -887,6 +905,8 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
             tags += QString( ",composer=%1" ).arg( QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() ) );
         if( fields.contains( Meta::Field::YEAR ) )
             tags += QString( ",year=%1" ).arg( QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() ) );
+        if( fields.contains( Meta::Field::FINGERPRINT ) )
+            tags += QString( ",fingerprint=%1" ).arg( m_FingerprintPtr->toString() );
         updateFileSize();
         tags += QString( ",filesize=%1" ).arg( m_filesize );
         update = update.arg( tags, QString::number( id ) );
@@ -1037,6 +1057,7 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::CustomActions:
         case Meta::Capability::Importable:
         case Meta::Capability::Organisable:
+        case Meta::Capability::Fingerprint:
         case Meta::Capability::Updatable:
         case Meta::Capability::CurrentTrackActions:
         case Meta::Capability::WriteTimecode:
@@ -1061,6 +1082,8 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 
         case Meta::Capability::Importable:
             return new StatisticsCapabilityImpl( this );
+        case Meta::Capability::Fingerprint:
+            return new FingerprintCapabilityImpl( this );
 
         case Meta::Capability::CustomActions:
         {
@@ -1094,6 +1117,24 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
         default:
             return 0;
     }
+}
+
+// functions to handle acoustic fingerprints
+Fingerprint::Similarity
+SqlTrack::calcSimilarityTo( const Meta::TrackPtr &t ) const
+{
+    KSharedPtr<SqlTrack> sqlT = KSharedPtr<SqlTrack>::staticCast( t );
+    if (sqlT) {
+        return m_FingerprintPtr->calcSimilarity(sqlT->getFingerprint());
+    } else {
+        return Fingerprint::INVALID_SIMILARITY;
+    }
+}
+
+const Fingerprint::FingerprintPtr
+SqlTrack::getFingerprint() const
+{
+    return m_FingerprintPtr;
 }
 
 //---------------------- class Artist --------------------------

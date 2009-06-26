@@ -182,6 +182,11 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* beginOr() = 0;
         virtual QueryMaker* endAndOr() = 0;
                                                      
+        /* Functions for acoustic fingerprint comparison.  Since most
+         * Collections don't actually implement fingerprints, we specify
+         * do-nothing defaults in the base class */
+        virtual QueryMaker* addSimilarityFilter( const Meta::TrackPtr&, const double, const NumberComparison );
+        
         /**
          * Choose whether the query maker instance should delete itself after the query.
          * By passing true the query maker instance will delete itself after emitting queryDone().

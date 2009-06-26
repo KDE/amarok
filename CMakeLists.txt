@@ -81,6 +81,9 @@ if( WITH_PLAYER )
 	macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_Ipod )
  
+macro_optional_find_package(GTACFeat)
+macro_log_feature( GTACFEAT_FOUND "gtacfeat" "Enable acoustic fingerprints using gtacfeat library" "http://www.sf.net/projects/gtacfeat" FALSE "" "" )
+
     macro_optional_find_package(Mtp)
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
 

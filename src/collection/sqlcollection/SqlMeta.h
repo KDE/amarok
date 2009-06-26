@@ -20,6 +20,7 @@
 #ifndef SQLMETA_H
 #define SQLMETA_H
 
+#include "Fingerprint.h"
 #include "Meta.h"
 
 #include <QByteArray>
@@ -126,6 +127,9 @@ class SqlTrack : public Meta::Track
 
         virtual void setUidUrl( const QString &uid );
 
+        virtual Fingerprint::Similarity calcSimilarityTo( const Meta::TrackPtr& ) const;
+        virtual const Fingerprint::FingerprintPtr getFingerprint() const;
+
         virtual void beginMetaDataUpdate();
         virtual void endMetaDataUpdate();
         virtual void abortMetaDataUpdate();
@@ -190,6 +194,12 @@ class SqlTrack : public Meta::Track
         qreal m_albumPeakGain;
         qreal m_trackGain;
         qreal m_trackPeakGain;
+
+        // the fingerprint has to be stored as a pointer
+        // because Fingerprint has no empty ctor, and
+        // the string from the database isn't available
+        // until well into the SqlTrack ctor
+        Fingerprint::FingerprintPtr m_FingerprintPtr;
 
         Meta::AlbumPtr m_album;
         Meta::ArtistPtr m_artist;

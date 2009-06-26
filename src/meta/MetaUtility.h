@@ -43,6 +43,7 @@ namespace Meta
         static const QString COMPOSER       = "xesam:composer";
         static const QString DISCNUMBER     = "xesam:discNumber";
         static const QString FILESIZE       = "xesam:size";
+        static const QString FINGERPRINT    = "xesam:fingerprint";
         static const QString GENRE          = "xesam:genre";
         static const QString LENGTH         = "xesam:mediaDuration";
         static const QString RATING         = "xesam:userRating";
