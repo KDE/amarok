@@ -24,7 +24,7 @@
 //#include "meta/stream/Stream.h"
 //#include "MediaDeviceStorage.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "playlistmanager/mediadevice/MediaDeviceUserPlaylistProvider.h"
+#include "MediaDeviceUserPlaylistProvider.h"
 
 #include <typeinfo>
 

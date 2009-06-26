@@ -32,8 +32,9 @@ include_directories(
     collection
     collection/support
     collection/mediadevicecollection
-    collection/mediadevicecollection/handler # for Handler
-    collection/mediadevicecollection/support # for MediaDeviceInfo
+    collection/mediadevicecollection/handler  # for Handler
+    collection/mediadevicecollection/support  # for MediaDeviceInfo
+    collection/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
     configdialog
     configdialog/dialogs
     context
@@ -78,6 +79,8 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/MediaDeviceMeta.cpp  
   collection/mediadevicecollection/CollectionCapabilityMediaDevice.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
+  collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
+  collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
@@ -226,7 +229,6 @@ set(libstatusbar_SRCS
 set(meta_SRCS
     meta/Capability.cpp
     meta/M3UPlaylist.cpp
-    meta/MediaDevicePlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
     meta/MetaReplayGain.cpp
@@ -347,7 +349,6 @@ set(libplaylistbrowser_SRCS
 set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
     playlistmanager/PlaylistFileProvider.cpp
-    playlistmanager/mediadevice/MediaDeviceUserPlaylistProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
 )

@@ -208,7 +208,6 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
         debug() << "starting full scan";
         // TODO: thread the track parsing?
         startFullScan();
-
     }
 }
 

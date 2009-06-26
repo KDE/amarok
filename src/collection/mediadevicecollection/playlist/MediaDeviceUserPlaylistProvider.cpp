@@ -73,23 +73,6 @@ MediaDeviceUserPlaylistProvider::playlists()
     return playlists;
 }
 
-QList<PopupDropperAction *>
-MediaDeviceUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
-{
-    Q_UNUSED( list )
-    QList<PopupDropperAction *> actions;
-#if 0
-    if ( m_renameAction == 0 )
-    {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
-    }
-    actions << m_renameAction;
-#endif
-
-    return actions;
-}
-
 Meta::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
@@ -110,6 +93,30 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
 //    emit updated();
 
     return Meta::PlaylistPtr::dynamicCast( mediadevicePlaylist ); //assumes insertion in db was successful!
+}
+
+QList<PopupDropperAction *>
+MediaDeviceUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
+{
+    Q_UNUSED( list )
+    QList<PopupDropperAction *> actions;
+#if 0
+    if ( m_renameAction == 0 )
+    {
+        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+    }
+    actions << m_renameAction;
+#endif
+
+    return actions;
+}
+
+void
+MediaDeviceUserPlaylistProvider::addPlaylist( Meta::MediaDevicePlaylistPtr &playlist )
+{
+    m_playlists << playlist;
+    emit updated();
 }
 
 #include "MediaDeviceUserPlaylistProvider.moc"

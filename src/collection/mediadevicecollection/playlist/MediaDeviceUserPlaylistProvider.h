@@ -19,8 +19,7 @@
 #define AMAROK_COLLECTION_MEDIADEVICEUSERPLAYLISTPROVIDER_H
 
 #include "playlistmanager/UserPlaylistProvider.h"
-#include "meta/MediaDevicePlaylist.h"
-//#include "MediaDevicePlaylistGroup.h"
+#include "MediaDevicePlaylist.h"
 
 #include <klocale.h>
 
@@ -49,32 +48,10 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
 
 	/// MediaDevice-specific Functions
 
-	void addPlaylist( Meta::MediaDevicePlaylistPtr &playlist )
-	    {
-		m_playlists << playlist;
-		emit updated();
-	    }
+	void addPlaylist( Meta::MediaDevicePlaylistPtr &playlist );
 
-//        Meta::MediaDevicePlaylistGroupPtr group( const QString &name );
-//        bool import( const QString& fromLocation );
+ private:
 
-//        static Meta::MediaDevicePlaylistList toMediaDevicePlaylists( Meta::PlaylistList playlists );
-
-    signals:
-//        void updated();
-
-    private slots:
-//        void slotDelete();
-//        void slotRename();
-
-    private:
-//        void reloadFromDb();
-//        Meta::MediaDevicePlaylistGroupPtr m_root;
-
-//        Meta::MediaDevicePlaylistList selectedPlaylists() const
-//            { return m_selectedPlaylists; };
-//        Meta::MediaDevicePlaylistList m_selectedPlaylists;
-//        PopupDropperAction *m_renameAction;
     Meta::MediaDevicePlaylistList m_playlists;
 };
 

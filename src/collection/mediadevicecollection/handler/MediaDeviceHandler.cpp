@@ -21,6 +21,11 @@
 
 #include "MediaDeviceCollection.h"
 
+#include "playlist/MediaDeviceUserPlaylistProvider.h"
+#include "playlistmanager/PlaylistManager.h"
+
+#include "playlist/MediaDevicePlaylist.h"
+
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/JobCollection.h>
 
@@ -789,7 +794,73 @@ MediaDeviceHandler::parseTracks()
     }
 
 
-// TODO: abstract playlist parsing
+    // Register the playlist provider with the playlistmanager
+
+    // register a playlist provider for this type of device
+    m_provider = new MediaDeviceUserPlaylistProvider();
+    The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
+
+    // Begin parsing the playlists
+
+    Meta::MediaDevicePlaylistList playlists;
+
+    for ( prepareToParsePlaylists(); !isEndOfParsePlaylistsList(); prepareToParseNextPlaylist() )
+    {
+        nextPlaylistToParse();
+
+        if( shouldNotParseNextPlaylist() )
+            continue;
+
+        // Create a new track list
+
+        Meta::TrackList tracklist;
+
+        for ( prepareToParsePlaylistTracks(); !isEndOfParsePlaylist(); prepareToParseNextPlaylistTrack() )
+        {
+            nextPlaylistTrackToParse();
+            // Grab the track associated with the next struct
+            Meta::TrackPtr track = Meta::TrackPtr::staticCast( libGetTrackPtrForTrackStruct() );
+            // if successful, add it into the list at the end.
+            // it is assumed that the list has some presorted order
+            // and this is left to the library
+
+            if ( track )
+                tracklist << track;
+
+
+        }
+
+        // Make a playlist out of this tracklist
+
+        Meta::MediaDevicePlaylistPtr playlist( new Meta::MediaDevicePlaylist( libGetPlaylistName(), tracklist ) );
+
+        // Insert the new playlist into the list of playlists
+
+        //playlists << playlist;
+
+        // Inform the provider of the new playlist
+
+        m_provider->addPlaylist( playlist );
+    }
+
+    // Inform the provider of these new playlists
+/*
+    foreach( Meta::MediaDevicePlaylistPtr playlist, playlists )
+        {
+            
+        }
+*/
+
+
+    // HACK: add a blank playlist
+    /*
+    TrackList tracks;
+    MediaDeviceTrackPtr tp( new MediaDeviceTrack( 0 ) );
+    TrackPtr track = TrackPtr::staticCast( tp );
+    MediaDevicePlaylistPtr list(  new MediaDevicePlaylist(  "Testlist",  tracks ) );
+    m_provider->addPlaylist( list );
+    */
+    
 
     // Finally, assign the created maps to the collection
 

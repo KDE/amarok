@@ -1278,6 +1278,82 @@ IpodHandler::nextTrackToParse()
     m_currtrack = (Itdb_Track*) m_currtracklist->data;
 }
 
+/// Playlist Parsing
+
+void
+IpodHandler::prepareToParsePlaylists()
+{
+    m_currplaylistlist = m_itdb->playlists;
+}
+
+
+bool
+IpodHandler::isEndOfParsePlaylistsList()
+{
+    return (m_currplaylistlist ? false : true);
+}
+
+
+void
+IpodHandler::prepareToParseNextPlaylist()
+{
+    m_currplaylistlist = m_currplaylistlist->next;
+}
+
+
+void
+IpodHandler::nextPlaylistToParse()
+{
+    m_currplaylist = ( Itdb_Playlist * ) m_currplaylistlist->data;   
+}
+
+bool
+IpodHandler::shouldNotParseNextPlaylist()
+{
+    // NOTE: skip the master playlist
+    return ( itdb_playlist_is_mpl( m_currplaylist ) );
+}
+
+
+void
+IpodHandler::prepareToParsePlaylistTracks()
+{
+    m_currtracklist = m_currplaylist->members;
+}
+
+
+bool
+IpodHandler::isEndOfParsePlaylist()
+{
+    return (m_currtracklist ? false : true );
+}
+
+
+void
+IpodHandler::prepareToParseNextPlaylistTrack()
+{
+    prepareToParseNextTrack();
+}
+
+
+void
+IpodHandler::nextPlaylistTrackToParse()
+{
+    nextTrackToParse();
+}
+
+Meta::MediaDeviceTrackPtr
+IpodHandler::libGetTrackPtrForTrackStruct()
+{
+    return m_itdbtrackhash.key( m_currtrack );
+}
+
+QString
+IpodHandler::libGetPlaylistName()
+{
+    return QString::fromUtf8( m_currplaylist->name );
+}
+
 void
 IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {

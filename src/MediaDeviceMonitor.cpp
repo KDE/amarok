@@ -26,11 +26,6 @@
 
 #include "MediaDeviceCache.h"
 
-#include "playlistmanager/mediadevice/MediaDeviceUserPlaylistProvider.h"
-#include "playlistmanager/PlaylistManager.h"
-
-#include "meta/MediaDevicePlaylist.h"
-
 //solid specific includes
 #include <solid/devicenotifier.h>
 
@@ -141,17 +136,6 @@ MediaDeviceMonitor::registerDeviceType( ConnectionAssistant* assistant )
 
     // start initial check for devices of this type
     checkDevicesFor( assistant );
-
-    // register a playlist provider for this type of device
-    MediaDeviceUserPlaylistProvider *provider = new MediaDeviceUserPlaylistProvider();
-    The::playlistManager()->addProvider( provider, provider->category() );
-
-    // HACK: add a blank playlist
-    Meta::TrackList tracks;
-//    Meta::TrackPtr track = Meta::TrackPtr::staticCast( new Meta::MediaDeviceTrack( 0 ) );
-    Meta::MediaDevicePlaylistPtr list( new Meta::MediaDevicePlaylist( "Testlist", tracks ) );
-    provider->addPlaylist( list );
-
 
 }
 

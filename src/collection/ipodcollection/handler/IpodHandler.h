@@ -149,6 +149,21 @@ namespace Meta {
            virtual void nextTrackToParse();
            virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
 
+           /// Playlist Parsing
+           
+           virtual void prepareToParsePlaylists();
+           virtual bool isEndOfParsePlaylistsList();
+           virtual void prepareToParseNextPlaylist();
+           virtual void nextPlaylistToParse();
+           virtual bool shouldNotParseNextPlaylist();
+           virtual void prepareToParsePlaylistTracks();
+           virtual bool isEndOfParsePlaylist();
+           virtual void prepareToParseNextPlaylistTrack();
+           virtual void nextPlaylistTrackToParse();
+
+           virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
+           virtual QString libGetPlaylistName();
+
            virtual QStringList supportedFormats();
            /*
            QPixmap getCover( Meta::MediaDeviceTrackPtr track ) const;
@@ -233,6 +248,11 @@ namespace Meta {
            Itdb_Playlist    *m_masterPlaylist;
            GList            *m_currtracklist;
            Itdb_Track       *m_currtrack;
+
+           // for playlist parsing
+
+           GList            *m_currplaylistlist;
+           Itdb_Playlist    *m_currplaylist;
 
            /* Lockers */
            QMutex            m_dbLocker; // DB only written by 1 thread at a time

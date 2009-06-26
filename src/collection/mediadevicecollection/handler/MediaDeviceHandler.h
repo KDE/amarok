@@ -37,6 +37,8 @@ class QMutex;
 
 class MediaDeviceCollection;
 
+class MediaDeviceUserPlaylistProvider;
+
 namespace Meta {
 
     typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
@@ -115,6 +117,8 @@ namespace Meta {
            virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
            virtual void removeTrackListFromDevice( const Meta::TrackList &tracks );
 
+	   /* Parsing of Tracks on Device */
+
            /// This method initializes iteration over some list of track structs
            /// e.g. with libgpod, this initializes a GList to the beginning of
            /// the list of tracks
@@ -139,7 +143,7 @@ namespace Meta {
 
            virtual void nextTrackToParse() = 0;
 
-           /// This method must create an association of the current Meta::Track
+           /// This method must create a two-way association of the current Meta::Track
            /// to the special struct provided by the library to read/write information.
            /// For example, for libgpod one would associate Itdb_Track*.  It makes
            /// the most sense to use a QHash since it is fastest lookup and order
@@ -150,6 +154,65 @@ namespace Meta {
            /// Returns a list of formats supported by the device, all in lowercase
            /// For example mp3, mpeg, aac.  This is used to avoid copying unsupported
            /// types to a particular device.
+
+	   /* Parsing of Tracks in Playlists on Device */
+	   // NOTE: not required by devices with no playlists
+
+           /// This method initializes iteration over some list of playlist structs
+           /// e.g. with libgpod, this initializes a GList to the beginning of
+           /// the list of playlists
+
+           virtual void prepareToParsePlaylists() {}
+
+	       /// This method runs a test to see if we have reached the end of
+           /// the list of playlists to be parsed on the device, e.g. in libgpod
+           /// this tests if cur != NULL, i.e. if(cur)
+
+           virtual bool isEndOfParsePlaylistsList() { return true; }
+
+           /// This method moves the iterator to the next playlist on the list of
+           /// playlist structs, e.g. with libgpod, cur = cur->next where cur
+           /// is a GList*
+
+           virtual void prepareToParseNextPlaylist() {}
+
+/// This method attempts to access the special struct of the
+/// next playlist, so that information can then be parsed from it.
+/// For libgpod, this is m_currplaylist = ( Itdb_Playlist * ) cur->data
+
+virtual void nextPlaylistToParse() {}
+
+/// This method checks if the playlist should be parsed, or skipped.
+/// Certain playlists, like the master playlist on the iPod, do not
+/// need to be or should not be parsed.
+/// @return true if should not parse, false otherwise.
+
+virtual bool shouldNotParseNextPlaylist() { return false; }
+
+/// This method initializes iteration over some list of track structs
+/// that correspond to a playlist struct
+/// e.g. with libgpod, this initializes a GList to the beginning of
+/// the list of tracks
+
+virtual void prepareToParsePlaylistTracks() {}
+
+/// This method runs a test to see if we have reached the end of
+/// the list of tracks in the playlist to be parsed on the device, e.g. in libgpod
+/// this tests if cur != NULL, i.e. if(cur)
+
+virtual bool isEndOfParsePlaylist() { return true; }
+
+/// This method moves the iterator to the next track on the playlist of
+/// track structs, e.g. with libgpod, cur = cur->next where cur
+/// is a GList*
+
+virtual void prepareToParseNextPlaylistTrack() {}
+
+/// This method attempts to access the special struct of the
+/// next track on the playlist, so that information can then be parsed from it.
+/// For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
+
+virtual void nextPlaylistTrackToParse() {}
 
            virtual QStringList supportedFormats() = 0;
 
@@ -189,6 +252,16 @@ namespace Meta {
            /// any memory it occupied, and dissociating it from the @param track
 
            virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
+
+           /// Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
+           /// This is mainly used in playlist parsing, and can be ignored otherwise.
+
+           virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() { return Meta::MediaDeviceTrackPtr(); }
+
+           /// Returns a string containing the playlist name of the currently parsed playlist struct, if available.
+           /// Only override if your library uses names.
+
+           virtual QString libGetPlaylistName() { return QString(); }
 
            /// Adds the newly created track struct now populated with info into the
            /// database struct of the particular device, e.g. into the itdb for Ipods.
@@ -384,6 +457,10 @@ namespace Meta {
         private:
            // Associated collection
            MediaDeviceCollection   *m_memColl;
+
+	   // Associated playlist provider
+
+	   MediaDeviceUserPlaylistProvider *m_provider;
 
         bool m_copyFailed;
 
