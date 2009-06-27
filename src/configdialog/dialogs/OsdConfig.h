@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004-2007 Mark Kretschmann <markey@web.de>                             *
+ * Copyright (c) 2004-2007 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

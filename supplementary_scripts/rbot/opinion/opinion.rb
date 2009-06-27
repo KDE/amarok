@@ -1,5 +1,5 @@
 # Plugin for the Ruby IRC bot (http://linuxbrit.co.uk/rbot/)
-# (c) 2005-2006 Mark Kretschmann <markey@web.de>
+# (c) 2005-2006 Mark Kretschmann <kretschmann@kde.org>
 # Licensed under GPL V2.
 
 

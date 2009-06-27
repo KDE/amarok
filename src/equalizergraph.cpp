@@ -1,7 +1,7 @@
 /***************************************************************************
  *   Copyright (c) 1998-2000 Peter Alm, Mikael Alm, Olle Hallnas           *
  *                 Thomas Nilsson and 4Front Technologies                  *
- *             (c) 2004 Mark Kretschmann <markey@web.de>                   *
+ *             (c) 2004 Mark Kretschmann <kretschmann@kde.org>             *
  *             (c) 2005 Markus Brueffer <markus@brueffer.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

@@ -4,7 +4,7 @@
 # of the tag to create (e.g. "1.3-beta3"). Please note that the script creates the tag
 # immediately on the live SVN repository.
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
 
 

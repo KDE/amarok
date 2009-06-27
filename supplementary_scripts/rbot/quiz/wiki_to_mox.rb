@@ -6,7 +6,7 @@
 #
 # Based on import_mox.rb and quiz.rb by markey.
 #
-# (c) 2006 Mark Kretschmann <markey@web.de>
+# (c) 2006 Mark Kretschmann <kretschmann@kde.org>
 # (c) 2006 Jocke Andersson <ajocke@gmail.com>
 # Licensed under GPL V2.
 

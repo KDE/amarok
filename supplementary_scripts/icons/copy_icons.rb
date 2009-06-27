@@ -2,7 +2,7 @@
 #
 # Transforms icon filenames from an icon tarball to correct format for committing
 #
-# (c) 2006 Mark Kretschmann <markey@web.de>
+# (c) 2006 Mark Kretschmann <kretschmann@kde.org>
 # Licensed under GPL V2.
 
 

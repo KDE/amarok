@@ -3,7 +3,7 @@
 # Script for generating a HTML page from Amarok's text ChangeLog
 #
 # (c) 2005-2006,2009
-#    Mark Kretschmann <markey@web.de>,
+#    Mark Kretschmann <kretschmann@kde.org>,
 #    Ian Monroe <ian@monroe.nu>,
 #    Magnus Bergmark <magnus.bergmark@gmail.com>
 # License: GPL V2

@@ -3,7 +3,7 @@
 # Script for fixing mp3 files which show a bogus track length. Calculates the real
 # track length and adds the XING header to the file, and repairs broken MPEG headers.
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
 
 

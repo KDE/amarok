@@ -4,7 +4,7 @@
 #
 # (C) 1998 Jason Hutchens
 # (C) 2001-2004 Paul James Mutton
-# (C) 2005 Mark Kretschmann <markey@web.de>
+# (C) 2005 Mark Kretschmann <kretschmann@kde.org>
 #
 # License: GNU General Public License V2
 

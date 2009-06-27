@@ -3,7 +3,7 @@
 ############################################################################
 # Python wrapper script for running the Amarok LiveCD remastering scripts
 # from within Amarok.  Based on the Python-Qt template script for Amarok
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005 Mark Kretschmann <kretschmann@kde.org>
 # 
 # (c) 2005 Leo Franchi <lfranchi@gmail.com>
 #

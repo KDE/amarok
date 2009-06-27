@@ -1,6 +1,6 @@
 # Plugin for the Ruby IRC bot (http://linuxbrit.co.uk/rbot/)
 # Fetches the "Word of the day" from http://uncyclopedia.org
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005 Mark Kretschmann <kretschmann@kde.org>
 # Licensed under GPL V2.
 
 

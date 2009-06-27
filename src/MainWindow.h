@@ -1,6 +1,6 @@
 /***************************************************************************
   begin                : Fre Nov 15 2002
-  copyright            : (C) Mark Kretschmann <markey@web.de>
+  copyright            : (C) Mark Kretschmann <kretschmann@kde.org>
                        : (C) Max Howell <max.howell@methylblue.com>
 ***************************************************************************/
 

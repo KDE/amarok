@@ -2,7 +2,7 @@
 #
 # Amarok Script for embedding album cover images in MP3 files.
 #
-# (c) 2005-2006 Mark Kretschmann <markey@web.de>
+# (c) 2005-2006 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
 
 

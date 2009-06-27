@@ -4,7 +4,7 @@
 # track length and adds the XING header to the file. This script is a frontend for the
 # mp3fix.rb tool.
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005 Mark Kretschmann <kretschmann@kde.org>
 # License: GNU General Public License V2
 
 
