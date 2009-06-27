@@ -139,65 +139,96 @@ LastFmServiceCollection::prettyName() const
 void LastFmServiceCollection::slotAddNeighboursLoved()
 {
     DEBUG_BLOCK
-    // iterate through each neighbour
     if( !m_jobs[ "user.getNeighbours" ] )
     {
         debug() << "BAD! got no result object";
         return;
     }
-    try
+    switch (m_jobs[ "user.getNeighbours" ]->error())
     {
-        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
-
-        foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+        case QNetworkReply::NoError:
         {
-            QString name = e[ "name" ].text();
-            //debug() << "got neighbour!!! - " << name;
-            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
-            Meta::TrackPtr trackPtr( track );
-            m_neighborsLoved->addTrack( trackPtr );
-            addTrack( trackPtr );
+            // iterate through each neighbour
+            try
+            {
+                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+
+                foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    //debug() << "got neighbour!!! - " << name;
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_neighborsLoved->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
         }
 
-    } catch( lastfm::ws::ParseError& e )
-    {
-        debug() << "Got exception in parsing from last.fm:" << e.what();
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
+
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
     }
+
     m_jobs[ "user.getNeighbours" ]->deleteLater();
 }
 
 void LastFmServiceCollection::slotAddNeighboursPersonal()
 {
     DEBUG_BLOCK
-    // iterate through each neighbour
-    try
+    switch (m_jobs[ "user.getNeighbours" ]->error())
     {
-
-        if( !m_jobs[ "user.getNeighbours" ] )
+        case QNetworkReply::NoError:
         {
-            debug() << "BAD! got no result object";
-            return;
+            // iterate through each neighbour
+            try
+            {
+                if( !m_jobs[ "user.getNeighbours" ] )
+                {
+                    debug() << "BAD! got no result object";
+                    return;
+                }
+                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+
+                // iterate through each neighbour
+                foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    debug() << "got neighbour!!! - " << name;
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_neighborsPersonal->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+
+                // should be safe, as both slots SHOULD get called before we return to the event loop...
+                m_jobs[ "user.getNeighbours" ]->deleteLater();
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
         }
-        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
 
-        // iterate through each neighbour
-        foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
-        {
-            QString name = e[ "name" ].text();
-            debug() << "got neighbour!!! - " << name;
-            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
-            Meta::TrackPtr trackPtr( track );
-            m_neighborsPersonal->addTrack( trackPtr );
-            addTrack( trackPtr );
-        }
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
 
-
-        // should be safe, as both slots SHOULD get called before we return to the event loop...
-        m_jobs[ "user.getNeighbours" ]->deleteLater();
-    } catch( lastfm::ws::ParseError& e )
-    {
-        debug() << "Got exception in parsing from last.fm:" << e.what();
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
     }
+
 }
 
 void LastFmServiceCollection::slotAddFriendsLoved()
@@ -208,23 +239,39 @@ void LastFmServiceCollection::slotAddFriendsLoved()
         debug() << "BAD! got no result object";
         return;
     }
-    try
+    switch (m_jobs[ "user.getFriends" ]->error())
     {
-        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
-
-        foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+        case QNetworkReply::NoError:
         {
-            QString name = e[ "name" ].text();
-            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
-            Meta::TrackPtr trackPtr( track );
-            m_friendsLoved->addTrack( trackPtr );
-            addTrack( trackPtr );
+            try
+            {
+                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+
+                foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_friendsLoved->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
         }
 
-    } catch( lastfm::ws::ParseError& e )
-    {
-        debug() << "Got exception in parsing from last.fm:" << e.what();
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
+
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
     }
+
     m_jobs[ "user.getFriends" ]->deleteLater();
 }
 
@@ -237,24 +284,39 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
         return;
     }
 
-    try
+    switch (m_jobs[ "user.getFriends" ]->error())
     {
-        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
-    
-        foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+        case QNetworkReply::NoError:
         {
-            QString name = e[ "name" ].text();
-            LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
-            Meta::TrackPtr trackPtr( track );
-            m_friendsPersonal->addTrack( trackPtr );
-            addTrack( trackPtr );
+            try
+            {
+                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+
+                foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_friendsPersonal->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
         }
 
-    } catch( lastfm::ws::ParseError& e )
-    {
-        debug() << "Got exception in parsing from last.fm:" << e.what();
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
+
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
     }
-    
+
     m_jobs[ "user.getFriends" ]->deleteLater();
 }
 
