@@ -413,7 +413,10 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
     if( m_selectedPlaylists.count() == 1 )
     {
         //HACK: since we only have one UserPlaylistProvider implementation
-        UserPlaylistProvider *provider = The::playlistManager()->defaultUserPlaylists();
+//        UserPlaylistProvider *provider = The::playlistManager()->defaultUserPlaylists();
+        UserPlaylistProvider *provider = qobject_cast<UserPlaylistProvider *> ( The::playlistManager()->getProviderForPlaylist( m_selectedPlaylists.front() ) );
+//        UserPlaylistProvider *provider = qobject_cast<UserPlaylistProvider *> ( prov );
+
         if( provider )
         {
             if( !selectedPlaylists().isEmpty() )

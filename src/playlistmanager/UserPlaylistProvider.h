@@ -28,11 +28,12 @@ class PopupDropperAction;
 */
 class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 {
+    Q_OBJECT
     public:
-        virtual ~UserPlaylistProvider() {};
+    virtual ~UserPlaylistProvider();
 
         /* PlaylistProvider functions */
-        virtual int category() const { return PlaylistManager::UserPlaylist; };
+        virtual int category() const;
         virtual Meta::PlaylistList playlists() = 0;
 
         /* UserPlaylistProvider functions */
@@ -49,7 +50,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) = 0;
 
-        virtual bool supportsEmptyGroups() { return false; }
+        virtual bool supportsEmptyGroups();
 
         virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list ) = 0;
 };

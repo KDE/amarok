@@ -376,6 +376,28 @@ PlaylistManager::getFormat( const KUrl &path )
     return Unknown;
 }
 
+PlaylistProvider*
+PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+    // Iteratively check all providers' playlists for ownership
+    foreach( PlaylistProvider* provider, m_map.values() )
+        {
+            debug() << "Checking provider";
+            Meta::PlaylistList plistlist = provider->playlists();
+            foreach( const Meta::PlaylistPtr plist, plistlist )
+                {
+                    debug() << "Checking playlist";
+                    if ( plist == playlist )
+                        return provider;
+                }
+        }
+
+    debug() << "Returning 0, no matching providers found";
+
+    return 0;
+}
+
 namespace Amarok
 {
     //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann

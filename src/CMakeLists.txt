@@ -348,6 +348,7 @@ set(libplaylistbrowser_SRCS
 #####################################################################
 set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
+    playlistmanager/UserPlaylistProvider.cpp
     playlistmanager/PlaylistFileProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp

@@ -150,6 +150,13 @@ class PlaylistManager : public QObject
         PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; };
         UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; };
 
+	/**
+	 *  Retrieves the provider owning the given playlist
+	 *  @arg playlist the playlist whose provider we want
+	 */
+
+	PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr &playlist );
+
     signals:
         void updated();
         void categoryAdded( int category );
