@@ -386,7 +386,7 @@ LastFmService::onGetUserInfo()
             }
             break;
         } case QNetworkReply::AuthenticationRequiredError:
-            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password wrongly.";
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
             break;
 
         default:
