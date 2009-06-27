@@ -114,9 +114,12 @@ SqlUserPlaylistProvider::slotRename()
     if( playlist.isNull() )
         return;
     //TODO: inline rename
+    bool ok;
     const QString newName = KInputDialog::getText( i18n("Change playlist"),
-                i18n("Enter new name for playlist:"), playlist->name() );
-    playlist->setName( newName.trimmed() );
+                i18n("Enter new name for playlist:"), playlist->name(),
+                                                   &ok );
+    if ( ok )
+        playlist->setName( newName.trimmed() );
 }
 
 QList<PopupDropperAction *>
