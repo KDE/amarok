@@ -20,6 +20,7 @@
 #ifndef MAINTOOLBARNG_H
 #define MAINTOOLBARNG_H
 
+#include <QAction>
 #include <QToolBar>
 
 /**
@@ -29,10 +30,19 @@ An new toolbar implementation.
 */
 class MainToolbarNG : public QToolBar
 {
+    Q_OBJECT
 public:
     MainToolbarNG( QWidget * parent );
 
     ~MainToolbarNG();
+
+private slots:
+    void engineVolumeChanged( int newVolume );
+    void engineMuteStateChanged( bool muted );
+    
+private:
+
+    QAction * m_volumeAction;
 
 };
 

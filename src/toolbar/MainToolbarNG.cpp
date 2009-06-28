@@ -21,18 +21,46 @@
 
 #include "ActionClasses.h"
 #include "Amarok.h"
+#include "EngineController.h"
 
+#include "widgets/ProgressWidget.h"
+
+#include <KIcon>
 #include <KLocale>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
-: QToolBar( i18n( "Main Toolbar" ), parent )
+: QToolBar( i18n( "Main Toolbar NG" ), parent )
 {
     setObjectName( "Main Toolbar NG" );
+
+    setFixedHeight( 36 );
+    setIconSize( QSize( 32, 32 ) );
 
     addAction( Amarok::actionCollection()->action( "prev" ) );
     addAction( Amarok::actionCollection()->action( "play_pause" ) );
     addAction( Amarok::actionCollection()->action( "stop" ) );
     addAction( Amarok::actionCollection()->action( "next" ) );
+
+    ProgressWidget *progressWidget = new ProgressWidget( 0 );
+    addWidget( progressWidget );
+
+    m_volumeAction = new QAction( KIcon( "audio-volume-high" ), i18n( "Volume" ), 0 );
+
+    addAction( m_volumeAction );
+
+    //we update the volume icon based on the engine volume
+    EngineController* const ec = The::engineController();
+    connect( ec, SIGNAL( volumeChanged( int ) ), this, SLOT( engineVolumeChanged( int ) ) );
+
+    connect( ec, SIGNAL( muteStateChanged( bool ) ), this, SLOT( engineMuteStateChanged( bool ) ) );
+
+    //set correct icon initially
+    engineVolumeChanged( ec->volume() );
+
+    
+    
+    
+
 }
 
 
@@ -40,4 +68,26 @@ MainToolbarNG::~MainToolbarNG()
 {
 }
 
+void MainToolbarNG::engineVolumeChanged( int newVolume )
+{
+    if ( newVolume < 34 )
+        m_volumeAction->setIcon( KIcon( "audio-volume-low" ) );
+    else if ( newVolume < 67 )
+        m_volumeAction->setIcon( KIcon( "audio-volume-medium" ) );
+    else
+        m_volumeAction->setIcon( KIcon( "audio-volume-high" ) );
+}
+
+void MainToolbarNG::engineMuteStateChanged( bool muted )
+{
+    if ( muted )
+        m_volumeAction->setIcon( KIcon( "audio-volume-muted" ) );
+    else
+    {
+        EngineController* const ec = The::engineController();
+        engineVolumeChanged( ec->volume() );
+    }
+}
+
+#include "MainToolbarNG.moc"
 

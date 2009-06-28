@@ -215,7 +215,8 @@ MainWindow::init()
 
 
     MainToolbarNG * newToolbar = new MainToolbarNG( 0 );
-    newToolbar->setAllowedAreas( Qt::AllToolBarAreas );
+    //newToolbar->setAllowedAreas( Qt::AllToolBarAreas );
+    newToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     newToolbar->setMovable ( true );
 
     addToolBar( Qt::TopToolBarArea, newToolbar );
