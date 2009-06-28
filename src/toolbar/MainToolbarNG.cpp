@@ -19,12 +19,20 @@
  
 #include "MainToolbarNG.h"
 
+#include "ActionClasses.h"
+#include "Amarok.h"
+
 #include <KLocale>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
 : QToolBar( i18n( "Main Toolbar" ), parent )
 {
     setObjectName( "Main Toolbar NG" );
+
+    addAction( Amarok::actionCollection()->action( "prev" ) );
+    addAction( Amarok::actionCollection()->action( "play_pause" ) );
+    addAction( Amarok::actionCollection()->action( "stop" ) );
+    addAction( Amarok::actionCollection()->action( "next" ) );
 }
 
 
