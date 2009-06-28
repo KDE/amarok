@@ -57,6 +57,13 @@ class ShoutcastService : public ServiceBase
 
     private:
         ShoutcastServiceCollection *m_collection;
+        KHBox *bottomPanelLayout;
+        QPushButton *m_top500ListButton;
+        QPushButton *m_allListButton;
+
+    private slots:
+        void top500ButtonClicked();
+        void allButtonClicked();
 };
 
 #endif

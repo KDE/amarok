@@ -72,12 +72,58 @@ void ShoutcastService::polish()
     if ( m_polished )
         return;
 
-    m_bottomPanel->hide();
+    bottomPanelLayout = new KHBox;
+    bottomPanelLayout->setParent( m_bottomPanel );
+
+    m_top500ListButton = new QPushButton;
+    m_top500ListButton->setParent( bottomPanelLayout );
+    m_top500ListButton->setText( i18nc( "Fetch the 500 most popular stations", "View Top 500 Stations" ) );
+    m_top500ListButton->setObjectName( "top500Button" );
+    m_top500ListButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+
+    m_allListButton = new QPushButton;
+    m_allListButton->setParent( bottomPanelLayout );
+    m_allListButton->setText( i18nc( "Fetch list of all stations by genre", "View All Stations" ) );
+    m_allListButton->setObjectName( "allButton" );
+    m_allListButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+
+    connect( m_top500ListButton, SIGNAL( clicked() ), this, SLOT( top500ButtonClicked() ) );
+    connect( m_allListButton, SIGNAL( clicked() ), this, SLOT( allButtonClicked() ) );
+    m_polished = true;
+
+    // Show complete list by default
+    QTimer::singleShot( 0, m_allListButton, SLOT( click() ) );
+}
+
+void ShoutcastService::top500ButtonClicked()
+{
+    m_top500ListButton->setEnabled( false );
+    m_allListButton->setEnabled( true );
+
+    if (m_collection != NULL){
+        delete m_collection;
+    }
+
+    m_collection = new ShoutcastServiceCollection(true); // Shoutcast service collection specifying top500 query
+    QList<int> levels;
+    setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+    view()->sortByColumn(0, Qt::DescendingOrder);
+
+}
+
+void ShoutcastService::allButtonClicked()
+{
+    m_allListButton->setEnabled( false );
+    m_top500ListButton->setEnabled( true );
+
+    if (m_collection != NULL){
+        delete m_collection;
+    }
+
     m_collection = new ShoutcastServiceCollection();
     QList<int> levels;
     levels << CategoryId::Genre;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-    m_polished = true;
 }
 
 #include "ShoutcastService.moc"

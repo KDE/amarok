@@ -28,6 +28,7 @@ class ShoutcastServiceCollection : public ServiceCollection
 {
 public:
     ShoutcastServiceCollection();
+    ShoutcastServiceCollection(bool isTop500);
 
     ~ShoutcastServiceCollection();
 
@@ -35,6 +36,9 @@ public:
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
+
+private:
+    bool m_top500;
 
 };
 

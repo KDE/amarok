@@ -40,7 +40,7 @@ class ShoutcastServiceQueryMaker : public DynamicServiceQueryMaker
 {
 Q_OBJECT
 public:
-    ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection );
+    ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection, bool isTop500Query );
     ~ShoutcastServiceQueryMaker();
 
     virtual QueryMaker* reset();
@@ -64,6 +64,7 @@ public:
 
     void fetchStations();
     void fetchGenres();
+    void fetchTop500();
 
 signals:
     void dynamicQueryComplete();
@@ -74,6 +75,8 @@ protected:
 
     ShoutcastServiceCollection * m_collection;
     KIO::StoredTransferJob * m_storedTransferJob;
+
+    bool m_top500;
 
     QString m_genreMatch;
 

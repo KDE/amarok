@@ -40,7 +40,7 @@ struct ShoutcastServiceQueryMaker::Private {
 };
 
 
-ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection )
+ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection, bool isTop500Query )
  : DynamicServiceQueryMaker()
  , m_storedTransferJob( 0 )
  , d( new Private )
@@ -48,6 +48,7 @@ ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollecti
 {
     DEBUG_BLOCK
     m_collection = collection;
+    m_top500 = isTop500Query;
     reset();
 }
 
@@ -83,6 +84,8 @@ void ShoutcastServiceQueryMaker::run()
     if ( d->type == Private::NONE )
         //TODO error handling
         return;
+    else if ( m_top500 )
+        fetchTop500();
     else if (  d->type == Private::GENRE )
         fetchGenres();
     else if (  d->type == Private::TRACK )
@@ -100,9 +103,11 @@ void ShoutcastServiceQueryMaker::runQuery()
     m_collection->acquireReadLock();
     //naive implementation, fix this
     //note: we are not handling filtering yet
-  
+
     //this is where the fun stuff happens
-    if (  d->type == Private::GENRE )       
+    if ( m_top500 )
+        fetchTop500();
+    else if (  d->type == Private::GENRE )
         fetchGenres();
     else if (  d->type == Private::TRACK )
         fetchStations();
@@ -258,6 +263,23 @@ void ShoutcastServiceQueryMaker::fetchStations()
     }
 }
 
+void ShoutcastServiceQueryMaker::fetchTop500()
+{
+    DEBUG_BLOCK
+
+    if ( m_filter.isEmpty() )
+    {
+        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500" ), KIO::NoReload, KIO::HideProgressInfo );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
+    } else {
+
+        debug() << "fetching tracks with filter: " << m_filter << " url: " << "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500&search=" + m_filter;
+        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500&search=" + m_filter ), KIO::NoReload, KIO::HideProgressInfo );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
+
+    }
+}
+
 
 void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 {
@@ -328,14 +350,14 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
 {
     DEBUG_BLOCK
-    
+
     if ( job->error() )
     {
         error() << job->error();
         m_storedTransferJob->deleteLater();
         return;
     }
-    
+
     m_currentTrackQueryResults.clear();
 
     QDomDocument doc( "list" );
@@ -353,11 +375,11 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
             if( !e.attribute( "name" ).isNull() /*&& ! m_currentTrackQueryResults.contains( e.attribute( "name" ) )*/ )
             {
 
-                QString name =  e.attribute( "name" );
+                QString name = "(" + e.attribute( "lc" ) + ") " +  e.attribute( "name" ); //lc: listeners count
 
                 QString playlistUrl = "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                         + e.attribute( "id" ) + "&file=filename.pls";
-                
+
                 ShoutcastTrack * track = new ShoutcastTrack(  name, playlistUrl );
 
                 TrackPtr trackPtr( track );
@@ -365,20 +387,27 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
                 m_collection->addTrack( trackPtr );
                 m_collection->releaseLock();
 
-                if ( m_filter.isEmpty() ) {
-                    GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];
-                    ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
-                    genre->addTrack( trackPtr );
-                    track->setGenre( genrePtr );
-                } else {
-                    GenrePtr genrePtr = m_collection->genreMap()[ "Results for: " + m_filter ];
-                    ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+                if ( m_top500 ){
+                    // TODO: Handle filtering when top500 stations are requested...
+                    if ( m_filter.isEmpty() ){
+                    }else{
+                    }
+                }else{
+                    if ( m_filter.isEmpty() ) {
+                        GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];
+                        ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+                        genre->addTrack( trackPtr );
+                        track->setGenre( genrePtr );
+                    } else {
+                        GenrePtr genrePtr = m_collection->genreMap()[ "Results for: " + m_filter ];
+                        ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
 
-                    if ( genre == 0 )  // sanity check as this has been reported to cause crashes
-                        return;
-                    
-                    genre->addTrack( trackPtr );
-                    track->setGenre( genrePtr );
+                        if ( genre == 0 )  // sanity check as this has been reported to cause crashes
+                            return;
+
+                        genre->addTrack( trackPtr );
+                        track->setGenre( genrePtr );
+                    }
                 }
 
                 m_currentTrackQueryResults.push_front( trackPtr );
