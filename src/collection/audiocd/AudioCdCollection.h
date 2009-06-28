@@ -19,6 +19,7 @@
 
 #include "Collection.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "MediaDeviceCollection.h"
 #include "MemoryCollection.h"
 #include "meta/proxy/MetaProxy.h"
 
@@ -28,15 +29,16 @@
 #include <QObject>
 
 class AudioCdCollection;
+class MediaDeviceInfo;
 
-class AudioCdCollectionFactory : public Amarok::CollectionFactory
+class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdCollection>
 {
     Q_OBJECT
 public:
     AudioCdCollectionFactory();
     virtual ~AudioCdCollectionFactory() {};
 
-    virtual void init();
+/*    virtual void init();
 
 private slots:
     void audioCdAdded( const QString &uid );
@@ -45,7 +47,7 @@ private slots:
 private:
 
     QString m_currentUid;
-    AudioCdCollection * m_collection;
+    AudioCdCollection * m_collection;*/
     
 };
 
@@ -55,14 +57,14 @@ This is a Memorycollection sublclass that uses the KIO audiocd:/ slave to popula
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AudioCdCollection : public Amarok::Collection, public MemoryCollection
+class AudioCdCollection : public MediaDeviceCollection
 {
     Q_OBJECT
 public:
 
     enum { WAV, FLAC, OGG, MP3 } EncodingFormat;
 
-    AudioCdCollection( const QString &udi );
+    AudioCdCollection( MediaDeviceInfo* info );
     ~AudioCdCollection();
 
     QString encodingFormat() const;

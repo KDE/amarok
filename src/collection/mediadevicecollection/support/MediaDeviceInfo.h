@@ -22,10 +22,15 @@
 #include <QObject>
 #include <QString>
 
+
+//FIXME why does this stuff need to be in a libamarok file at all? It
+//Basically makes it impossible to write a new device type purely as a plugin...
+//Baaaaad xevix! Bad! :-P  ( nhn - 250609 )
 typedef enum {
     IPOD_T,
     MTP_T,
-    UNK_T
+    UNK_T,
+    AUDIOCD_T
 } device_info_t;
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceInfo : public QObject

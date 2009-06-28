@@ -26,6 +26,8 @@
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 #include "SvgHandler.h"
+#include "support/AudioCdConnectionAssistant.h"
+#include "support/AudioCdDeviceInfo.h"
 
 #include <kio/job.h>
 #include <kio/netaccess.h>
@@ -40,13 +42,14 @@ AMAROK_EXPORT_PLUGIN( AudioCdCollectionFactory )
 using namespace Meta;
 
 AudioCdCollectionFactory::AudioCdCollectionFactory()
-    : Amarok::CollectionFactory()
-    , m_collection( 0 )
-    , m_currentUid( QString() )
+    : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
+    //, m_collection( 0 )
+    //, m_currentUid( QString() )
 {
+    DEBUG_BLOCK
 }
 
-void
+/*void
 AudioCdCollectionFactory::init()
 {
     DEBUG_BLOCK
@@ -96,18 +99,20 @@ AudioCdCollectionFactory::deviceRemoved( const QString &uid )
         m_collection = 0;
         m_currentUid = QString();
     }
-}
+}*/
 
 
 ////////////////////////////
 
-AudioCdCollection::AudioCdCollection( const QString &udi )
-   : Collection()
-   , MemoryCollection()
+AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
+   : MediaDeviceCollection()
    , m_encodingFormat( OGG )
-   , m_udi( udi )
 {
     DEBUG_BLOCK
+
+    debug() << "Getting AudioCd info";
+    AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
+    m_udi = cdInfo->udi();
 
     readAudioCdSettings();
 
@@ -122,8 +127,8 @@ AudioCdCollection::AudioCdCollection( const QString &udi )
 
 AudioCdCollection::~AudioCdCollection()
 {
-    MediaDeviceMonitor::instance()->setCurrentCdId( QString() );
-    delete m_ejectAction;
+    //MediaDeviceMonitor::instance()->setCurrentCdId( QString() );
+    //delete m_ejectAction;
 }
 
 void
@@ -217,7 +222,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             m_discCddbId = cddbInfo.mid( startIndex, endIndex - startIndex );
         }
 
-        MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
+        //MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
 
         //get the list of tracknames
         startIndex = cddbInfo.indexOf( "TTITLE0=", 0 );
@@ -386,7 +391,7 @@ void
 AudioCdCollection::eject()
 {
     DEBUG_BLOCK
-    MediaDeviceMonitor::instance()->ejectCd( m_udi );
+    //MediaDeviceMonitor::instance()->ejectCd( m_udi );
 }
 
 PopupDropperAction *
@@ -418,7 +423,7 @@ AudioCdCollection::noInfoAvailable()
 
     m_discCddbId = "unknown";
 
-    MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
+    //MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
             
     QString artist = i18n( "Unknown" );
     QString album = i18n( "Unknown" );
