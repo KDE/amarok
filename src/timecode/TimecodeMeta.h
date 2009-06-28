@@ -141,7 +141,7 @@ public:
     virtual QString type() const;
 
     virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
     void beginMetaDataUpdate();
     void endMetaDataUpdate();

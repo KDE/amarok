@@ -494,8 +494,10 @@ TimecodeTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability *
-TimecodeTrack::asCapabilityInterface( Meta::Capability::Type type )
+TimecodeTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
+    DEBUG_BLOCK
+    
     if ( type == Meta::Capability::BoundedPlayback )
         return new BoundedPlaybackCapabilityImpl( this );
     else if( type == Meta::Capability::Editable )

@@ -295,9 +295,10 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     delete m_boundedPlayback;
     delete m_multiPlayback;
     delete m_multiSource;
-    m_currentTrack->create<Meta::BoundedPlaybackCapability>();
+    m_boundedPlayback = m_currentTrack->create<Meta::BoundedPlaybackCapability>();
     m_multiPlayback = m_currentTrack->create<Meta::MultiPlayableCapability>();
     m_multiSource  = m_currentTrack->create<Meta::MultiSourceCapability>();
+
 
     m_nextTrack.clear();
     m_nextUrl.clear();
@@ -320,10 +321,12 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     }
     else if ( m_boundedPlayback )
     {
+        debug() << "Starting bounded playback of url " << m_currentTrack->playableUrl() << " at position " << m_boundedPlayback->startPosition();
         playUrl( m_currentTrack->playableUrl(), m_boundedPlayback->startPosition() );
     }
     else
     {
+        debug() << "Just a normal, boring track... :-P";
         playUrl( m_currentTrack->playableUrl(), offset );
     }
 }
