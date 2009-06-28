@@ -125,26 +125,16 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
         m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
         connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
     }
-    //m_contentView->setAlternatingRowColors ( true );
-    //m_contentView->setAnimated( true );
-
-
-
-    //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
-    //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
     showCategoryFooter( true );
     
     m_bottomPanel = new KVBox( 0 );
     expandingControls()->setMainWidget( m_bottomPanel );
-    
-    //m_bottomPanel->setFixedHeight( 50 );
+
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
     m_bottomPanel->setSpacing( 2 );
     m_bottomPanel->setMargin( 2 );
-
-    
 
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -159,8 +149,6 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     if ( m_contentView )
         m_searchWidget->setup( m_contentView );
 
-    //setFrameShape( QFrame::StyledPanel );
-    //setFrameShadow( QFrame::Sunken );
 }
 
 ServiceBase::~ServiceBase()
@@ -342,20 +330,20 @@ ServiceBase::sendMessage( const QString & message )
     return i18n( "ERROR: unknown message" );
 }
 
-QString ServiceBase::filter() const
+QString
+ServiceBase::filter() const
 {
     return m_searchWidget->lineEdit()->text();
 }
 
-QList<int> ServiceBase::levels() const
+QList<int>
+ServiceBase::levels() const
 {
     CollectionTreeView *contentView = qobject_cast<CollectionTreeView*>(m_contentView);
     if( contentView )
         return contentView->levels();
     return QList<int>();
 }
-
-
 
 
 #include "ServiceBase.moc"
