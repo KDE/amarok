@@ -88,7 +88,7 @@ Playlist::Widget::Widget( QWidget* parent )
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
     m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; } " ).arg( PaletteHandler::highlightColor().name() ) );
     showDynamicHint( AmarokConfig::dynamicMode() );
-    
+
     QWidget * layoutHolder = new QWidget( this );
 
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
@@ -105,6 +105,9 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( m_searchWidget, SIGNAL( activateFilterResult() ), m_playlistView, SLOT( playFirstSelected() ) );
     connect( m_searchWidget, SIGNAL( downPressed() ), m_playlistView, SLOT( setFocus() ) );
 
+    KConfigGroup searchConfig = Amarok::config("Playlist Search");
+    m_playlistView->showOnlyMatches( searchConfig.readEntry( "ShowOnlyMatches", false ) );
+
     connect( m_playlistView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
     connect( m_playlistView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );
 
@@ -114,7 +117,7 @@ Playlist::Widget::Widget( QWidget* parent )
     mainPlaylistlayout->addWidget( m_playlistView );
 
     ExpandingControlsWidget * expandingWidget = new ExpandingControlsWidget( this );
-    
+
     KHBox *barBox = new KHBox( 0 );
     barBox->setMargin( 0 );
 
@@ -137,7 +140,7 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addAction( new KToolBarSpacerAction( this ) );
 
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
-        
+
         //FIXME this action should go in ActionController, but we don't have any visibility to the view
         KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
         connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
@@ -188,6 +191,6 @@ Playlist::Widget::showDynamicHint( bool enabled )
         m_dynamicHintWidget->show();
     else
         m_dynamicHintWidget->hide();
-    
+
 }
 
