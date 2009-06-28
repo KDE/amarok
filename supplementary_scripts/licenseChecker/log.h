@@ -79,14 +79,14 @@ class Log: public QList<LogEntry>
     Log() {};
     ~Log() {};
 
-    void printFullReport( LogEntry::PrintStyle style, QString filename ) { print( style, true, true, true, filename ); };
-    void printErrorReport( LogEntry::PrintStyle style, bool warnings, QString filename ) { print( style, true, warnings, false, filename ); };
+    void printFullReport( LogEntry::PrintStyle style, QString filename ) { print( style, true, true, true, true, filename ); };
+    void printErrorReport( LogEntry::PrintStyle style, bool warnings, QString filename ) { print( style, true, warnings, true, false, filename ); };
     void writeShellScript( QString filename );
     void addCopyHolder( QString a, QString b, QString filename );
     void addProblemFile( QString a ) { problemFiles.append( a ); };
 
   private:
-    void print( LogEntry::PrintStyle style, bool errors, bool warnings, bool information, QString filename );
+    void print( LogEntry::PrintStyle style, bool errors, bool warnings, bool information, bool success, QString filename );
     QList<CopyHolder> copyHolders;
     QList<QString> problemFiles;
 

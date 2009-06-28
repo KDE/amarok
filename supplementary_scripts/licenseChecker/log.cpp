@@ -34,7 +34,7 @@ LogEntry::~LogEntry()
 {
 }
 
-void Log::print(LogEntry::PrintStyle style, bool errors, bool warnings, bool information, QString outputFile)
+void Log::print(LogEntry::PrintStyle style, bool errors, bool warnings, bool information, bool success, QString outputFile)
 {
   //Get number of failed files, warnings and autofixes
   int failedCount = 0;
@@ -85,7 +85,7 @@ void Log::print(LogEntry::PrintStyle style, bool errors, bool warnings, bool inf
       if( ( i.getType() == LogEntry::error && !errors ) ||
 	  ( i.getType() == LogEntry::failure && !errors ) ||
 	  ( i.getType() == LogEntry::warning && !warnings ) ||
-	  ( i.getType() == LogEntry::success && !information ) ||
+	  ( i.getType() == LogEntry::success && !success ) ||
 	  ( i.getType() == LogEntry::information && !information ) )
       {
 	continue;
@@ -249,7 +249,7 @@ void Log::print(LogEntry::PrintStyle style, bool errors, bool warnings, bool inf
       if( ( i.getType() == LogEntry::error && !errors ) ||
 	  ( i.getType() == LogEntry::failure && !errors ) ||
 	  ( i.getType() == LogEntry::warning && !warnings ) ||
-	  ( i.getType() == LogEntry::success && !information ) ||
+	  ( i.getType() == LogEntry::success && !success ) ||
 	  ( i.getType() == LogEntry::information && !information ) )
       {
 	continue;
@@ -363,23 +363,23 @@ void Log::addCopyHolder( QString a, QString b, QString filename )
   {
     mid = (int)( ( start + end ) / 2 );
     
-    if( copyHolders[mid].name == a )
+    if( copyHolders[mid].name.toLower() == a.toLower() )
     {
       //Might not have found the first entry for the name, so cycle back
-      while( mid >= 0 && copyHolders[mid].name == a )
+      while( mid >= 0 && copyHolders[mid].name.toLower() == a.toLower() )
 	mid--;
       
       //Now mid++ to select the first entry for name
 	mid++;
       
-      while( mid < copyHolders.count() && copyHolders[mid].name == a && copyHolders[mid].email != b )
+      while( mid < copyHolders.count() && copyHolders[mid].name.toLower() == a.toLower() && copyHolders[mid].email.toLower() != b.toLower() )
       {
 	mid++;
       }
 
       //Checking name here because if email happens to be the same for the next entry
       //(different name) then entry will not be added
-      if( mid < copyHolders.count() && copyHolders[mid].name == a )
+      if( mid < copyHolders.count() && copyHolders[mid].name.toLower() == a.toLower() )
       {
 	//If found, no need to add so add file name and exit function
 	copyHolders[mid].addFile( filename );
@@ -394,7 +394,7 @@ void Log::addCopyHolder( QString a, QString b, QString filename )
     }
     else
     {
-      if( copyHolders[mid].name < a )
+      if( copyHolders[mid].name.toLower() < a.toLower() )
 	start = mid + 1;
       else
 	end = mid - 1;
@@ -434,6 +434,8 @@ void Log::writeShellScript( QString filename )
   
   output << "#!/bin/bash" << "\n";
   
+  int count = 1; 
+
   foreach( QString i, problemFiles )
   {
     output << "echo \"Next file: " << i << "\"" << "\n";
@@ -442,14 +444,8 @@ void Log::writeShellScript( QString filename )
     output << "if [ \"$EXIT\" = \"exit\" ]; then" << "\n";
     output << "  exit 0;" << "\n";
     output << "fi" << "\n";
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //REMOVE ME IN BIG SHINY LETTERS
-    output << "perl ~/prepend " << i << "\n";
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    output << " echo \"Files processed so far: " << count << "\"" << "\n";
+    count++;
     output << "vim " << i << "\n";
   }
 }

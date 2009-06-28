@@ -53,6 +53,25 @@ QList<QStringList> LICENSES = QList<QStringList>() <<
         " *                                                                                      *" <<
         " * You should have received a copy of the GNU General Public License along with         *" <<
         " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *"
+    )
+    <<
+    ( QStringList() <<
+        " * This program is free software; you can redistribute it and/or modify it under        *" <<
+        " * the terms of the GNU General Public License as published by the Free Software        *" <<
+        " * Foundation; either version 2 of the License, or (at your option) version 3 or any    *" <<
+        " * later version publicly approved by Trolltech ASA (or its successor, if any) and the  *" <<
+        " * KDE Free Qt Foundation.                                                              *" <<
+        " *                                                                                      *" <<
+        " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
+        " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
+        " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
+        " *                                                                                      *" <<
+        " * You should have received a copy of the GNU General Public License along with         *" <<
+        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *" <<
+        " *                                                                                      *" <<
+        " * In addition, Trolltech gives you certain additional rights as described in the       *" <<
+        " * Trolltech GPL Exception version 1.2 which can be found at                            *" <<
+        " * http://www.trolltech.com/products/qt/gplexception/                                   *"
     );
 
 struct {
@@ -85,7 +104,7 @@ void readFile( QString filename ) {
 
   if( inStream.atEnd() )
   {
-    log.append( LogEntry( filename, "Empty file - no license information", LogEntry::failure ) );
+    log.append( LogEntry( filename, "Empty file - no license information", LogEntry::warning ) );
     return;
   }
 
@@ -196,13 +215,16 @@ void readFile( QString filename ) {
   }
   
   bool licenseFound = false;
+
+  //Declaring k here so that it stays around for the log entry if needed.
+  int k;
   
   for( int j = 0; j < LICENSES.count(); j++ )
   {
     if( header.count() + i < LICENSES[j].count() )
       continue; //Too short to be header, so continue
       
-    int k = 1;
+    k = 1;
     while( k < LICENSES[j].count() && header[k+i] == LICENSES[j][k] )
       k++;
     
@@ -219,7 +241,7 @@ void readFile( QString filename ) {
   
   if( !licenseFound )
   {
-    log.append( LogEntry( filename, "Required license wording and format not found.", LogEntry::failure ) );
+    log.append( LogEntry( filename, QString().sprintf("Required license wording and format not found. (Line %i)", k ), LogEntry::failure ) );
     log.addProblemFile( filename );
     return;
   }
@@ -229,17 +251,15 @@ void readFile( QString filename ) {
   {
     log.append( LogEntry( filename, "No blank line between copyright holders and license text. - Fixed", LogEntry::information ) );
     //Autofix
-    header.insert( 1, BLANKLINE );
+    header.insert( i, BLANKLINE );
     autofixed = true;
   }
 
   //Check for copyright holders (i - 1 > 1)
   if( i - 1 <= 1 )
   {
-    log.append( LogEntry( filename, "No copyright holders present", LogEntry::failure ) );
-    
+    log.append( LogEntry( filename, "No copyright holders present", LogEntry::warning ) );
     log.addProblemFile( filename );
-    return;
   }
   
   bool overallSuccess = true;
@@ -252,7 +272,7 @@ void readFile( QString filename ) {
     //Check for blank line (may be at top of header for instance)
     if( header[j] == BLANKLINE )
     {
-      log.append( LogEntry( filename, QString( "Blank line found in copyright holders. (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::warning ) );
+      log.append( LogEntry( filename, QString( "Blank line found in copyright holders. (Line " ).append( (char)(j+48) ).append( " of header) - Fixed" ), LogEntry::information ) );
       header.removeAt( j );
       j--; //So that the next line isn't skipped
       autofixed = true;

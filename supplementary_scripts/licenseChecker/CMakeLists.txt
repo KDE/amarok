@@ -15,3 +15,5 @@ set (checker_SRCS
 add_executable(amaroklicensechecker ${checker_SRCS})
 target_link_libraries(amaroklicensechecker ${QT_LIBRARIES})
 
+install(TARGETS amaroklicensechecker DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
