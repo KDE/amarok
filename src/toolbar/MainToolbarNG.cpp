@@ -47,9 +47,11 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     ProgressWidget *progressWidget = new ProgressWidget( 0 );
     addWidget( progressWidget );
 
-    m_volumeAction = new QAction( KIcon( "audio-volume-high" ), i18n( "Volume" ), 0 );
+    m_volumeToolButton = new QToolButton( 0 );
+    m_volumeToolButton->setIcon( KIcon( "audio-volume-high" ) );
+    m_volumeToolButton->setPopupMode( QToolButton::InstantPopup );
 
-    addAction( m_volumeAction );
+    addWidget( m_volumeToolButton );
 
     //we update the volume icon based on the engine volume
     EngineController* const ec = The::engineController();
@@ -63,20 +65,36 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     m_volumeMenu->setMinimumSize( 60, 220 );
 
     KVBox * menuLayout = new KVBox( m_volumeMenu );
+    menuLayout->setFixedWidth( 60 );
 
-    m_volumeLabel= new QLabel( menuLayout );
+    KHBox * sliderLayout = new KHBox( menuLayout );
+    sliderLayout->setFixedWidth( 60 );
 
-    QSlider * volumeSlider = new QSlider( Qt::Vertical, menuLayout );
-    volumeSlider->setFixedHeight( 200 );
+    QSlider * volumeSlider = new QSlider( Qt::Vertical, sliderLayout );
+    volumeSlider->setFixedHeight( 170 );
+    sliderLayout->setFixedWidth( 60 );
+   
 
     connect( ec, SIGNAL( volumeChanged( int ) ), volumeSlider, SLOT( setValue( int ) ) );
 
     connect( volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
 
-    m_volumeAction->setMenu( m_volumeMenu );
+    m_volumeLabel= new QLabel( menuLayout );
+    
+    QAction * muteAction = new QAction( i18n( "Mute" ), 0 );
+    muteAction->setCheckable ( true );
+
+    m_volumeMenu->addAction( muteAction );
+    
+
+    m_volumeToolButton->setMenu( m_volumeMenu );
+    m_volumeToolButton->setArrowType( Qt::NoArrow );
 
     //set correct icon and label initially
     engineVolumeChanged( ec->volume() );
+
+    //Move stuff around a bit
+    menuLayout->move( 0, 28 );
 
 }
 
@@ -88,11 +106,11 @@ MainToolbarNG::~MainToolbarNG()
 void MainToolbarNG::engineVolumeChanged( int newVolume )
 {
     if ( newVolume < 34 )
-        m_volumeAction->setIcon( KIcon( "audio-volume-low" ) );
+        m_volumeToolButton->setIcon( KIcon( "audio-volume-low" ) );
     else if ( newVolume < 67 )
-        m_volumeAction->setIcon( KIcon( "audio-volume-medium" ) );
+        m_volumeToolButton->setIcon( KIcon( "audio-volume-medium" ) );
     else
-        m_volumeAction->setIcon( KIcon( "audio-volume-high" ) );
+        m_volumeToolButton->setIcon( KIcon( "audio-volume-high" ) );
 
     m_volumeLabel->setText( QString::number( newVolume ) + "%" );
 }
@@ -100,7 +118,7 @@ void MainToolbarNG::engineVolumeChanged( int newVolume )
 void MainToolbarNG::engineMuteStateChanged( bool muted )
 {
     if ( muted )
-        m_volumeAction->setIcon( KIcon( "audio-volume-muted" ) );
+        m_volumeToolButton->setIcon( KIcon( "audio-volume-muted" ) );
     else
     {
         EngineController* const ec = The::engineController();

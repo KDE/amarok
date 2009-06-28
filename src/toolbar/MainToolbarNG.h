@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QToolBar>
+#include <QToolButton>
 
 /**
 An new toolbar implementation.
@@ -44,7 +45,7 @@ private slots:
     
 private:
 
-    QAction * m_volumeAction;
+    QToolButton * m_volumeToolButton;
     QLabel * m_volumeLabel; 
     QMenu * m_volumeMenu;
 
