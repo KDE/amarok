@@ -21,6 +21,7 @@
 
 #include "Debug.h"
 
+#include <QVBoxLayout>
 #include <QWidget>
 
 BrowserCategory::BrowserCategory( const QString &name )
@@ -34,6 +35,8 @@ BrowserCategory::BrowserCategory( const QString &name )
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
+
+    m_expandingControls = new ExpandingControlsWidget( 0 );
 }
 
 BrowserCategory::~BrowserCategory()
@@ -127,6 +130,26 @@ void BrowserCategory::setImagePath( const QString & path )
 QString BrowserCategory::imagePath()
 {
     return m_imagePath;
+}
+
+void BrowserCategory::showCategoryFooter( bool show )
+{
+    if( show )
+    {
+        //make sure that the foother is shown at the bottom.
+        m_expandingControls->setParent( 0 );
+        m_expandingControls->setParent( this );
+        m_expandingControls->show();
+    }
+    else
+    {
+        m_expandingControls->hide();
+    }
+}
+
+ExpandingControlsWidget * BrowserCategory::expandingControls()
+{
+    return m_expandingControls;
 }
 
 #include "BrowserCategory.moc"

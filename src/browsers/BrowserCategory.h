@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 
+#include "widgets/ExpandingControlsWidget.h"
 
 #include <KVBox>
 
@@ -79,13 +80,13 @@ public:
     QString longDescription() const;
 
     /**
-     * Set the icon that will be used to identify this service.
+     * Set the icon that will be used to identify this category.
      * @param icon The icon to use.
      */
     void setIcon( const QIcon &icon );
 
     /**
-     * Get the icon of this service.
+     * Get the icon of this category.
      * @return The icon
      */
     QIcon icon() const;
@@ -104,6 +105,9 @@ public:
     //even though they might not be needed in many cases.
     virtual QString filter() const { return QString(); }
     virtual QList<int> levels() const { return QList<int>(); }
+
+    void showCategoryFooter( bool show );
+    ExpandingControlsWidget * expandingControls();
    
 
 public slots:
@@ -119,6 +123,7 @@ private:
     BrowserCategoryList * m_parentList;
 
     BreadcrumbItem * m_breadcrumb;
+    ExpandingControlsWidget * m_expandingControls;
     
 
 };

@@ -133,13 +133,18 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
     //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
-    m_bottomPanel = new KVBox( this );
+    showCategoryFooter( true );
+    
+    m_bottomPanel = new KVBox( 0 );
+    expandingControls()->setMainWidget( m_bottomPanel );
+    
     //m_bottomPanel->setFixedHeight( 50 );
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
     m_bottomPanel->setSpacing( 2 );
     m_bottomPanel->setMargin( 2 );
 
+    
 
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
