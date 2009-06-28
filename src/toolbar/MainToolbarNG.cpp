@@ -30,6 +30,7 @@
 #include <KVBox>
 
 #include <QSlider>
+#include <QWidgetAction>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
 : QToolBar( i18n( "Main Toolbar NG" ), parent )
@@ -62,39 +63,34 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     //create the volume popup
 
     m_volumeMenu = new QMenu( 0 );
-    m_volumeMenu->setMinimumSize( 60, 220 );
 
-    KVBox * menuLayout = new KVBox( m_volumeMenu );
-    menuLayout->setFixedWidth( 60 );
-
-    KHBox * sliderLayout = new KHBox( menuLayout );
-    sliderLayout->setFixedWidth( 60 );
-
-    QSlider * volumeSlider = new QSlider( Qt::Vertical, sliderLayout );
+    QSlider * volumeSlider = new QSlider( Qt::Vertical, 0 );
     volumeSlider->setFixedHeight( 170 );
-    sliderLayout->setFixedWidth( 60 );
-   
+
+    QWidgetAction * sliderActionWidget = new QWidgetAction( this );
+    sliderActionWidget->setDefaultWidget( volumeSlider );
+    
 
     connect( ec, SIGNAL( volumeChanged( int ) ), volumeSlider, SLOT( setValue( int ) ) );
 
     connect( volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
 
-    m_volumeLabel= new QLabel( menuLayout );
+    m_volumeLabel= new QLabel( 0 );
+    QWidgetAction * labelActionWidget = new QWidgetAction( this );
+    labelActionWidget->setDefaultWidget( m_volumeLabel );
     
-    QAction * muteAction = new QAction( i18n( "Mute" ), 0 );
+    QAction * muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
     muteAction->setCheckable ( true );
 
+    m_volumeMenu->addAction( labelActionWidget );
+    m_volumeMenu->addAction( sliderActionWidget );
     m_volumeMenu->addAction( muteAction );
-    
 
     m_volumeToolButton->setMenu( m_volumeMenu );
     m_volumeToolButton->setArrowType( Qt::NoArrow );
 
     //set correct icon and label initially
     engineVolumeChanged( ec->volume() );
-
-    //Move stuff around a bit
-    menuLayout->move( 0, 28 );
 
 }
 
