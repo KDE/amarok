@@ -26,6 +26,9 @@ ExpandingControlsWidget::ExpandingControlsWidget( QWidget * parent )
  , m_mainWidget( 0 )
  , m_expanded( false )
 {
+
+    setContentsMargins( 0, 0, 0, 0 );
+    
     m_divider = new HorizontalDivider( this );
     
     m_expandButton = new QToolButton( this );
@@ -33,6 +36,7 @@ ExpandingControlsWidget::ExpandingControlsWidget( QWidget * parent )
     m_expandButton->setAutoRaise( true );
     m_expandButton->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Fixed );
     m_expandButton->setIcon( KIcon( "arrow-up" ) );
+    m_expandButton->setEnabled( false );
 
     connect( m_expandButton, SIGNAL( clicked() ), this, SLOT( toggleExpanded() ) );
 }
@@ -43,6 +47,10 @@ ExpandingControlsWidget::~ExpandingControlsWidget()
 
 void ExpandingControlsWidget::setMainWidget( QWidget * mainWidget )
 {
+
+    if ( !mainWidget )
+        return;
+    
     m_mainWidget = mainWidget;
     
     m_expandButton->setParent( 0 );
@@ -54,22 +62,38 @@ void ExpandingControlsWidget::setMainWidget( QWidget * mainWidget )
         m_mainWidget->hide();
 
     m_expandButton->setParent( this );
+    m_expandButton->show();
+    m_expandButton->setEnabled( true );
 }
 
 void ExpandingControlsWidget::toggleExpanded()
 {
-    if( m_expanded )
-    {
-        m_expanded = false;
-        m_mainWidget->hide();
-        m_expandButton->setIcon( KIcon( "arrow-up" ) );
-    }
-    else
-    {
-        m_expanded = true;
-        m_mainWidget->show();
-        m_expandButton->setIcon( KIcon( "arrow-down" ) );
-    }
+    setExpanded( !m_expanded );
+}
+
+void ExpandingControlsWidget::setExpanded( bool expanded )
+{
+   if ( !m_mainWidget )
+       return;
+
+   if ( m_expanded == expanded )
+       return;
+
+   m_expanded = expanded;
+
+   if( expanded )
+   {
+       m_expanded = true;
+       m_mainWidget->show();
+       m_expandButton->setIcon( KIcon( "arrow-down" ) );
+   }
+   else
+   {
+       m_expanded = false;
+       m_mainWidget->hide();
+       m_expandButton->setIcon( KIcon( "arrow-up" ) );
+   }
+    
 }
 
 #include "ExpandingControlsWidget.moc"

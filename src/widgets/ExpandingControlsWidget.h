@@ -30,7 +30,7 @@
 /**
 A widget for displaying controls that should not always be visible. Displays a thin "expand" button by default and expands to show the controls and a similar "collapse" when this is pressed.
 
-	@author 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class ExpandingControlsWidget : public KVBox
 {
@@ -39,6 +39,8 @@ public:
     ExpandingControlsWidget( QWidget * parent );
     ~ExpandingControlsWidget();
     void setMainWidget( QWidget * mainWidget );
+
+    void setExpanded( bool expanded );
 
 protected slots:
     void toggleExpanded();
