@@ -19,9 +19,9 @@ qt4_automoc( ${amaroktest_SRCS} )
 add_executable(amaroktest ${amaroktest_SRCS})
 
 target_link_libraries(amaroktest
-                      ${QT_QTCORE_LIBRARY}
+                      ${QT_QTGUI_LIBRARY}
                       ${QT_QTSCRIPT_LIBRARY}
-                      ${KDE4_KDECORE_LIBRARY}
+                      ${KDE4_KDECORE_LIBS}
                       amaroklib
                      )
 
