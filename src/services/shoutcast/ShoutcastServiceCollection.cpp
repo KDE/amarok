@@ -23,7 +23,8 @@ ShoutcastServiceCollection::ShoutcastServiceCollection()
 {
     m_top500 = false;
 }
-ShoutcastServiceCollection::ShoutcastServiceCollection(bool isTop500)
+
+ShoutcastServiceCollection::ShoutcastServiceCollection( bool isTop500 )
     : ServiceCollection( 0, "Shoutcast.com", "Shoutcast.com" )
 {
     m_top500 = isTop500;
@@ -31,8 +32,7 @@ ShoutcastServiceCollection::ShoutcastServiceCollection(bool isTop500)
 
 
 ShoutcastServiceCollection::~ShoutcastServiceCollection()
-{
-}
+{}
 
 QueryMaker * ShoutcastServiceCollection::queryMaker()
 {

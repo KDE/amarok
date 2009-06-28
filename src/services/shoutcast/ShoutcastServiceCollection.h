@@ -21,8 +21,6 @@
 
 /**
 A collection that dynamically fetches data from a remote location as needed
-
-	@author 
 */
 class ShoutcastServiceCollection : public ServiceCollection
 {
@@ -39,7 +37,6 @@ public:
 
 private:
     bool m_top500;
-
 };
 
 #endif

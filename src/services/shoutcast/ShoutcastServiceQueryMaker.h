@@ -33,12 +33,11 @@ namespace ThreadWeaver
 
 /**
 A query maker for fetching external data
-
-	@author
 */
 class ShoutcastServiceQueryMaker : public DynamicServiceQueryMaker
 {
 Q_OBJECT
+
 public:
     ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection, bool isTop500Query );
     ~ShoutcastServiceQueryMaker();

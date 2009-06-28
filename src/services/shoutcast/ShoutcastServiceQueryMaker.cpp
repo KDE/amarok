@@ -44,14 +44,13 @@ ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollecti
  : DynamicServiceQueryMaker()
  , m_storedTransferJob( 0 )
  , d( new Private )
-
 {
     DEBUG_BLOCK
+
     m_collection = collection;
     m_top500 = isTop500Query;
     reset();
 }
-
 
 ShoutcastServiceQueryMaker::~ShoutcastServiceQueryMaker()
 {
@@ -81,6 +80,7 @@ ShoutcastServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 void ShoutcastServiceQueryMaker::run()
 {
     DEBUG_BLOCK
+
     if ( d->type == Private::NONE )
         //TODO error handling
         return;
@@ -90,14 +90,13 @@ void ShoutcastServiceQueryMaker::run()
         fetchGenres();
     else if (  d->type == Private::TRACK )
         fetchStations();
-    //}
 }
 
 void ShoutcastServiceQueryMaker::runQuery()
 {
     DEBUG_BLOCK
 
-    if ( m_storedTransferJob != 0 )
+    if ( m_storedTransferJob )
         return;
 
     m_collection->acquireReadLock();
@@ -123,7 +122,8 @@ QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
 {
     DEBUG_BLOCK
 
-    switch( type ) {
+    switch( type )
+    {
         case QueryMaker::Track:
             d->type = Private::TRACK;
             return this;
@@ -147,6 +147,7 @@ QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
 QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 {
     DEBUG_BLOCK
+
     m_genreMatch = genre->name();
     return this;
 }
@@ -252,12 +253,12 @@ void ShoutcastServiceQueryMaker::fetchStations()
     }
     else if ( m_filter.isEmpty() )
     {
-        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), KIO::NoReload, KIO::HideProgressInfo );
+        m_storedTransferJob =  KIO::storedGet( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch, KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
     } else {
 
         debug() << "fetching tracks with filter: " << m_filter << " url: " << "http://www.shoutcast.com/sbin/newxml.phtml?genre=&s=" + m_filter;
-        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?search=" + m_filter ), KIO::NoReload, KIO::HideProgressInfo );
+        m_storedTransferJob =  KIO::storedGet( "http://www.shoutcast.com/sbin/newxml.phtml?search=" + m_filter, KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
 
     }
@@ -271,12 +272,12 @@ void ShoutcastServiceQueryMaker::fetchTop500()
     {
         m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500" ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
-    } else {
-
+    }
+    else
+    {
         debug() << "fetching tracks with filter: " << m_filter << " url: " << "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500&search=" + m_filter;
         m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500&search=" + m_filter ), KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
-
     }
 }
 
@@ -344,7 +345,6 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
     handleResult();
     emit queryDone();
-
 }
 
 void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
@@ -448,6 +448,5 @@ QueryMaker * ShoutcastServiceQueryMaker::addFilter(qint64 value, const QString &
 
 
 #include "ShoutcastServiceQueryMaker.moc"
-
 
 

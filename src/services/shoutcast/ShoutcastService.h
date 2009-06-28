@@ -35,7 +35,6 @@ class ShoutcastServiceFactory: public ServiceFactory
         virtual QString name();
         virtual KPluginInfo info();
         virtual KConfigGroup config();
-
 };
 
 /**

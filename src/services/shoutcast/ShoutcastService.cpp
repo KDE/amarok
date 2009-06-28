@@ -25,6 +25,7 @@ using namespace Meta;
 
 AMAROK_EXPORT_PLUGIN( ShoutcastServiceFactory )
 
+
 void ShoutcastServiceFactory::init()
 {
     ServiceBase* service = new ShoutcastService( this, "Shoutcast.com", i18n( "Shoutcast Directory" ) );
@@ -100,15 +101,12 @@ void ShoutcastService::top500ButtonClicked()
     m_top500ListButton->setEnabled( false );
     m_allListButton->setEnabled( true );
 
-    if (m_collection != NULL){
-        delete m_collection;
-    }
+    delete m_collection;
 
     m_collection = new ShoutcastServiceCollection(true); // Shoutcast service collection specifying top500 query
     QList<int> levels;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     view()->sortByColumn(0, Qt::DescendingOrder);
-
 }
 
 void ShoutcastService::allButtonClicked()
@@ -116,9 +114,7 @@ void ShoutcastService::allButtonClicked()
     m_allListButton->setEnabled( false );
     m_top500ListButton->setEnabled( true );
 
-    if (m_collection != NULL){
-        delete m_collection;
-    }
+    delete m_collection;
 
     m_collection = new ShoutcastServiceCollection();
     QList<int> levels;
