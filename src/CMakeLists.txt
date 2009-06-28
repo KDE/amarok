@@ -533,6 +533,7 @@ set(amaroklib_LIB_SRCS
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
     widgets/ElidingButton.cpp
+    widgets/ExpandingControlsWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
     widgets/LineEdit.cpp
