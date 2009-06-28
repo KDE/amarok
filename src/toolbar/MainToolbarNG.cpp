@@ -82,6 +82,8 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     QAction * muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
     muteAction->setCheckable ( true );
     muteAction->setChecked( ec->isMuted() );
+
+    connect( ec, SIGNAL( muteStateChanged( bool ) ), muteAction, SLOT( setChecked( bool ) ) );
     connect( muteAction, SIGNAL( toggled( bool ) ), ec, SLOT( setMuted( bool ) ) );
 
     m_volumeMenu->addAction( labelActionWidget );
