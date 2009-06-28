@@ -37,7 +37,7 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
 {
     setObjectName( "Main Toolbar NG" );
 
-    setFixedHeight( 36 );
+    setFixedHeight( 32 );
     setIconSize( QSize( 32, 32 ) );
 
     addAction( Amarok::actionCollection()->action( "prev" ) );
@@ -66,17 +66,21 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );
 
-    QSlider * volumeSlider = new QSlider( Qt::Vertical, 0 );
+    KHBox * m_sliderLayout = new KHBox( 0 );
+    QSlider * volumeSlider = new QSlider( Qt::Vertical, m_sliderLayout );
     volumeSlider->setFixedHeight( 170 );
+    m_sliderLayout->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+
 
     QWidgetAction * sliderActionWidget = new QWidgetAction( this );
-    sliderActionWidget->setDefaultWidget( volumeSlider );
+    sliderActionWidget->setDefaultWidget( m_sliderLayout );
     
     connect( ec, SIGNAL( volumeChanged( int ) ), volumeSlider, SLOT( setValue( int ) ) );
     connect( volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
 
     m_volumeLabel= new QLabel( 0 );
     QWidgetAction * labelActionWidget = new QWidgetAction( this );
+    m_volumeLabel->setAlignment( Qt::AlignHCenter );
     labelActionWidget->setDefaultWidget( m_volumeLabel );
     
     QAction * muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
