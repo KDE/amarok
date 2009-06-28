@@ -214,12 +214,12 @@ MainWindow::init()
     addToolBar( Qt::TopToolBarArea, m_controlBar );
 
 
-    MainToolbarNG * newToolbar = new MainToolbarNG( 0 );
+    m_newToolbar = new MainToolbarNG( 0 );
     //newToolbar->setAllowedAreas( Qt::AllToolBarAreas );
-    newToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
-    newToolbar->setMovable ( true );
+    m_newToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_newToolbar->setMovable ( true );
 
-    addToolBar( Qt::TopToolBarArea, newToolbar );
+    addToolBar( Qt::TopToolBarArea, m_newToolbar );
     
 
     PERF_LOG( "Create sidebar" )
@@ -1032,6 +1032,9 @@ void MainWindow::setLayoutLocked( bool locked )
         m_controlBar->setFloatable( false );
         m_controlBar->setMovable( false );
 
+        m_newToolbar->setFloatable( false );
+        m_newToolbar->setMovable( false );
+
     }
     else
     {
@@ -1049,6 +1052,9 @@ void MainWindow::setLayoutLocked( bool locked )
 
         m_controlBar->setFloatable( true );
         m_controlBar->setMovable( true );
+
+        m_newToolbar->setFloatable( true );
+        m_newToolbar->setMovable( true );
 
     }
 
