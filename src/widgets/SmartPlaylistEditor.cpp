@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Pierpaolo Di Panfilon <pippo_dp@libero.it>                        *
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
  * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2005 Isaiah Damron <xepo@trifault.net>                                 *
  * Copyright (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>                             *

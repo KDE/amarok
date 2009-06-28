@@ -1,9 +1,9 @@
 /****************************************************************************************
  * Copyright (c) 2004-2007 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005-2007 Seb Ruiz <ruiz@kde.org>                                      *
- * Copyright (c) 2006 Alexandre Oliveira <aleprj@gmail.com>                             *
+ * Copyright (c) 2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2006 Martin Ellis <martin.ellis@kdemail.net>                           *
- * Copyright (c) 2007 Leonardo Franchi <lfranchi@gmail.com>                             *
+ * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

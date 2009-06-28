@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyirght (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>               		*
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
  * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  *                                                                                      *

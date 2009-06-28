@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Pierpaolo Di Panfilon <pippo_dp@libero.it>                        *
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

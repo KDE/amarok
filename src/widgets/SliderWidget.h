@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2003-2008 Mark Kretschmann <kterschmann@kde.org>                       *
- * Copyright (c) 2005 Gbor Lehel <illissius@gmail.com>                                  *
+ * Copyright (c) 2003-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

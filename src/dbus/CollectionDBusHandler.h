@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>		*
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

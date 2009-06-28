@@ -1,32 +1,19 @@
-/*
- * This single function is taken from the Message-Digest algorithm
- * written by Ulrich Drepper in 1995, and edited by Gray Watson.
- * It was obtained from http://256.com/sources/md5/
- * Follows is the original comment header.
- *
- * Declaration of functions and data types used for MD5 sum computing
- * library functions.  Copyright (C) 1995, 1996 Free Software
- * Foundation, Inc.  NOTE: The canonical source of this file is
- * maintained with the GNU C Library.  Bugs can be reported to
- * bug-glibc@prep.ai.mit.edu.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2, or (at
- * your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- * $Id: md5.h,v 1.4 2000/03/09 04:06:41 gray Exp $
- */
+/****************************************************************************************
+ * Copyright (c) 1995,1996 Free Software Foundation Inc. <info@fsf.org>                 *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+ 
 #ifndef _LIBMP3TUNES_MD5_H
 #define _LIBMP3TUNES_MD5_H
 

@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
- * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net              			*
+ * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

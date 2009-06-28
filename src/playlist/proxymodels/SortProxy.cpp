@@ -1,22 +1,19 @@
-/***************************************************************************
- *   Copyright © 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>       *
- *             © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SortProxy.h"
 
@@ -25,7 +22,7 @@
 
 namespace Playlist
 {
-//Téo 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
+//To 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
 //to self and debug spam here pretty please let it be until I remove it.
 
 SortProxy* SortProxy::s_instance = 0;
@@ -82,7 +79,7 @@ SortProxy::updateSortMap( SortScheme *scheme)
 
 // Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
 // pretty much just forward stuff through the stack of proxies start here.
-// Please keep them sorted alphabetically.  -- Téo
+// Please keep them sorted alphabetically.  -- To
 
 int
 SortProxy::activeRow() const
@@ -120,7 +117,7 @@ QVariant
 SortProxy::data( const QModelIndex & index, int role ) const
 {
     //HACK around incomplete index causing a crash...
-    //note to self by Téo: is this still needed?
+    //note to self by To: is this still needed?
     QModelIndex newIndex = this->index( index.row(), index.column() );
 
     QModelIndex sourceIndex = mapToSource( newIndex );
@@ -155,7 +152,7 @@ Qt::ItemFlags
 SortProxy::flags( const QModelIndex &index ) const
 {
     //FIXME: This call is the same in all proxies but I think it should use a mapToSource()
-    //       every time. Needs to be checked.       --Téo
+    //       every time. Needs to be checked.       --To
     return m_belowModel->flags( index );
 }
 

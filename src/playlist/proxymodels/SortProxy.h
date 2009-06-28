@@ -1,22 +1,19 @@
-/***************************************************************************
- *   Copyright © 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>       *
- *             © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_PLAYLISTSORTPROXY_H
 #define AMAROK_PLAYLISTSORTPROXY_H
@@ -32,7 +29,7 @@ namespace Playlist
 /**
  * A ProxyModel that implements multilevel sorting for the Playlist.
  * This proxy should sit above the FilterProxy and below the GroupingProxy.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author To Mrnjavac <teo.mrnjavac@gmail.com>
  */
 class SortProxy : public QSortFilterProxyModel
 {
@@ -56,7 +53,7 @@ public:
 
 // Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
 // pretty much just forward stuff through the stack of proxies start here.
-// Please keep them sorted alphabetically.  -- Téo
+// Please keep them sorted alphabetically.  -- To
 
     /**
      * Returns the currently active row, translated to proxy rows
