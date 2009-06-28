@@ -21,6 +21,8 @@
 #define MAINTOOLBARNG_H
 
 #include <QAction>
+#include <QLabel>
+#include <QMenu>
 #include <QToolBar>
 
 /**
@@ -43,6 +45,8 @@ private slots:
 private:
 
     QAction * m_volumeAction;
+    QLabel * m_volumeLabel; 
+    QMenu * m_volumeMenu;
 
 };
 

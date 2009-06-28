@@ -27,6 +27,9 @@
 
 #include <KIcon>
 #include <KLocale>
+#include <KVBox>
+
+#include <QSlider>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
 : QToolBar( i18n( "Main Toolbar NG" ), parent )
@@ -54,12 +57,26 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
 
     connect( ec, SIGNAL( muteStateChanged( bool ) ), this, SLOT( engineMuteStateChanged( bool ) ) );
 
-    //set correct icon initially
-    engineVolumeChanged( ec->volume() );
+    //create the volume popup
 
-    
-    
-    
+    m_volumeMenu = new QMenu( 0 );
+    m_volumeMenu->setMinimumSize( 60, 220 );
+
+    KVBox * menuLayout = new KVBox( m_volumeMenu );
+
+    m_volumeLabel= new QLabel( menuLayout );
+
+    QSlider * volumeSlider = new QSlider( Qt::Vertical, menuLayout );
+    volumeSlider->setFixedHeight( 200 );
+
+    connect( ec, SIGNAL( volumeChanged( int ) ), volumeSlider, SLOT( setValue( int ) ) );
+
+    connect( volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
+
+    m_volumeAction->setMenu( m_volumeMenu );
+
+    //set correct icon and label initially
+    engineVolumeChanged( ec->volume() );
 
 }
 
@@ -76,6 +93,8 @@ void MainToolbarNG::engineVolumeChanged( int newVolume )
         m_volumeAction->setIcon( KIcon( "audio-volume-medium" ) );
     else
         m_volumeAction->setIcon( KIcon( "audio-volume-high" ) );
+
+    m_volumeLabel->setText( QString::number( newVolume ) + "%" );
 }
 
 void MainToolbarNG::engineMuteStateChanged( bool muted )
