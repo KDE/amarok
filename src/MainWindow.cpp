@@ -53,6 +53,7 @@
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
+#include "toolbar/MainToolbarNG.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
@@ -211,6 +212,14 @@ MainWindow::init()
     m_controlBar->setMovable ( true );
 
     addToolBar( Qt::TopToolBarArea, m_controlBar );
+
+
+    MainToolbarNG * newToolbar = new MainToolbarNG( 0 );
+    newToolbar->setAllowedAreas( Qt::AllToolBarAreas );
+    newToolbar->setMovable ( true );
+
+    addToolBar( Qt::TopToolBarArea, newToolbar );
+    
 
     PERF_LOG( "Create sidebar" )
     m_browsers = new BrowserWidget( this );

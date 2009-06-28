@@ -523,6 +523,7 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     Systray.cpp
+    toolbar/MainToolbarNG.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
