@@ -17,42 +17,58 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef MAINTOOLBARNG_H
-#define MAINTOOLBARNG_H
-
 #include "CurrentTrackToolbar.h"
 
-#include <QAction>
-#include <QLabel>
-#include <QMenu>
-#include <QToolBar>
-#include <QToolButton>
+#include "EngineController.h"
+#include "GlobalCurrentTrackActions.h"
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
 
-/**
-An new toolbar implementation.
-
-	@author 
-*/
-class MainToolbarNG : public QToolBar
+CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
+ : QToolBar( parent )
+ , EngineObserver( The::engineController() ) 
 {
-    Q_OBJECT
-public:
-    MainToolbarNG( QWidget * parent );
+    setToolButtonStyle( Qt::ToolButtonIconOnly );
+    setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
+    //setIconDimensions( 16 );
+    setContentsMargins( 0, 0, 0, 0 );
+}
 
-    ~MainToolbarNG();
 
-private slots:
-    void engineVolumeChanged( int newVolume );
-    void engineMuteStateChanged( bool muted );
+CurrentTrackToolbar::~CurrentTrackToolbar()
+{
+}
+
+void CurrentTrackToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
+{
+    handleAddActions();
+}
+
+void CurrentTrackToolbar::engineNewMetaData( const QHash< qint64, QString > & newMetaData, bool trackChanged )
+{
+}
+
+void CurrentTrackToolbar::handleAddActions()
+{
+    clear();
+
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+
+    foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+        addAction( action );
     
-private:
+    if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    {
+        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+        if( cac )
+        {
+            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
+            foreach( PopupDropperAction *action, currentTrackActions )
+                addAction( action );
 
-    CurrentTrackToolbar * m_currentTrackToolbar;
-    
-    QToolButton * m_volumeToolButton;
-    QLabel * m_volumeLabel; 
-    QMenu * m_volumeMenu;
+        }
+        delete cac;
+    }
 
-};
+}
 
-#endif
+

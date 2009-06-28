@@ -17,41 +17,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
  
-#ifndef MAINTOOLBARNG_H
-#define MAINTOOLBARNG_H
+#ifndef CURRENTTRACKTOOLBAR_H
+#define CURRENTTRACKTOOLBAR_H
 
-#include "CurrentTrackToolbar.h"
+#include "EngineObserver.h" //baseclass
 
-#include <QAction>
-#include <QLabel>
-#include <QMenu>
 #include <QToolBar>
-#include <QToolButton>
 
 /**
-An new toolbar implementation.
+A toolbar that contains the CurrentTrackActions of the currently playing track.
 
-	@author 
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MainToolbarNG : public QToolBar
+class CurrentTrackToolbar : public QToolBar, public EngineObserver
 {
-    Q_OBJECT
 public:
-    MainToolbarNG( QWidget * parent );
+    CurrentTrackToolbar( QWidget * parent );
 
-    ~MainToolbarNG();
+    ~CurrentTrackToolbar();
 
-private slots:
-    void engineVolumeChanged( int newVolume );
-    void engineMuteStateChanged( bool muted );
-    
-private:
+    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
+    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
-    CurrentTrackToolbar * m_currentTrackToolbar;
-    
-    QToolButton * m_volumeToolButton;
-    QLabel * m_volumeLabel; 
-    QMenu * m_volumeMenu;
+protected:
+    void handleAddActions();
 
 };
 

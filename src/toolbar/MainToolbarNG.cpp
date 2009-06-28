@@ -45,6 +45,10 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     addAction( Amarok::actionCollection()->action( "stop" ) );
     addAction( Amarok::actionCollection()->action( "next" ) );
 
+    m_currentTrackToolbar = new CurrentTrackToolbar( 0 );
+
+    addWidget( m_currentTrackToolbar );
+
     ProgressWidget *progressWidget = new ProgressWidget( 0 );
     addWidget( progressWidget );
 
