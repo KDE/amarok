@@ -61,11 +61,9 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     //we update the volume icon based on the engine volume
     EngineController* const ec = The::engineController();
     connect( ec, SIGNAL( volumeChanged( int ) ), this, SLOT( engineVolumeChanged( int ) ) );
-
     connect( ec, SIGNAL( muteStateChanged( bool ) ), this, SLOT( engineMuteStateChanged( bool ) ) );
 
     //create the volume popup
-
     m_volumeMenu = new QMenu( 0 );
 
     QSlider * volumeSlider = new QSlider( Qt::Vertical, 0 );
@@ -74,9 +72,7 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     QWidgetAction * sliderActionWidget = new QWidgetAction( this );
     sliderActionWidget->setDefaultWidget( volumeSlider );
     
-
     connect( ec, SIGNAL( volumeChanged( int ) ), volumeSlider, SLOT( setValue( int ) ) );
-
     connect( volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
 
     m_volumeLabel= new QLabel( 0 );
@@ -94,15 +90,12 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     m_volumeMenu->addAction( sliderActionWidget );
     m_volumeMenu->addAction( muteAction );
 
-
     m_volumeToolButton->setMenu( m_volumeMenu );
     m_volumeToolButton->setArrowType( Qt::NoArrow );
 
     //set correct icon and label initially
     engineVolumeChanged( ec->volume() );
-
 }
-
 
 MainToolbarNG::~MainToolbarNG()
 {
