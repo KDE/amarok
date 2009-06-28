@@ -41,6 +41,20 @@ QList<QStringList> LICENSES = QList<QStringList>() <<
     <<
     ( QStringList() <<
         " * This program is free software; you can redistribute it and/or modify it under        *" <<
+        " * the terms of the GNU Library General Public License as published by the Free         *" <<
+        " * Software Foundation; either version 2.1 of the License, or (at your option) any      *" <<
+        " * later version.                                                                       *" <<
+        " *                                                                                      *" <<
+        " * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *" <<
+        " * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *" <<
+        " * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *" <<
+        " *                                                                                      *" <<
+        " * You should have received a copy of the GNU Library General Public License along with *" <<
+        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *" 
+    )
+    <<
+    ( QStringList() <<
+        " * This program is free software; you can redistribute it and/or modify it under        *" <<
         " * the terms of the GNU General Public License as published by the Free Software        *" <<
         " * Foundation; either version 2 of the License, or (at your option) version 3 or        *" <<
         " * any later version accepted by the membership of KDE e.V. (or its successor approved  *" <<
@@ -229,7 +243,7 @@ void readFile( QString filename ) {
       k++;
     
     if( k == LICENSES[j].count() )
-    {      
+    {
       //Check for extra lines. Means extra terms (+1 to incorporate last line)
       if( header.count() - i > LICENSES[j].count() + 1 )
         log.append( LogEntry( filename, "Extra license terms in license header.", LogEntry::information ) );
@@ -241,7 +255,7 @@ void readFile( QString filename ) {
   
   if( !licenseFound )
   {
-    log.append( LogEntry( filename, QString().sprintf("Required license wording and format not found. (Line %i)", k ), LogEntry::failure ) );
+    log.append( LogEntry( filename, "Required license wording and format not found.", LogEntry::failure ) );
     log.addProblemFile( filename );
     return;
   }
