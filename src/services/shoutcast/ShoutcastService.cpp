@@ -106,7 +106,7 @@ void ShoutcastService::top500ButtonClicked()
     m_collection = new ShoutcastServiceCollection(true); // Shoutcast service collection specifying top500 query
     QList<int> levels;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-    view()->sortByColumn(0, Qt::DescendingOrder);
+    view()->sortByColumn( 0, Qt::DescendingOrder );
 }
 
 void ShoutcastService::allButtonClicked()
@@ -120,6 +120,7 @@ void ShoutcastService::allButtonClicked()
     QList<int> levels;
     levels << CategoryId::Genre;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
+    view()->sortByColumn( 0, Qt::AscendingOrder );
 }
 
 #include "ShoutcastService.moc"
