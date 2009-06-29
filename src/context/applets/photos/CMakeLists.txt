@@ -4,6 +4,7 @@ include_directories( ../..
 )
 
 set( photos_applet_SRCS
+     DragPixmapItem.cpp
      PhotosApplet.cpp
      PhotosScrollWidget.cpp
 )

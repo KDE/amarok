@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "PhotosScrollWidget.h"
+#include "DragPixmapItem.h"
 
 // Amarok
 #include "Debug.h"
@@ -59,7 +60,7 @@ void PhotosScrollWidget::setPixmapList (QList < QPixmap * > list)
     {
         
         // scale the cover
-        QGraphicsPixmapItem *item = new QGraphicsPixmapItem( this );
+        DragPixmapItem *item = new DragPixmapItem( this );
         item->setPixmap( The::svgHandler()->addBordersToPixmap(
             pix->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
         item->setPos( m_scrollmax, 0 );
