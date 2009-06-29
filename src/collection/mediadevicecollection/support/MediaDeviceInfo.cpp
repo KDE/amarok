@@ -18,19 +18,12 @@
 
 MediaDeviceInfo::MediaDeviceInfo()
 : QObject()
-, m_type( UNK_T )
 , m_udi()
 {
 }
 
 MediaDeviceInfo::~MediaDeviceInfo()
 {
-}
-
-device_info_t
-MediaDeviceInfo::type()
-{
-    return m_type;
 }
 
 QString

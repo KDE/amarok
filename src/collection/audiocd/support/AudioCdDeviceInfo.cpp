@@ -19,7 +19,6 @@ AudioCdDeviceInfo::AudioCdDeviceInfo( QString mountpoint, QString udi )
 : MediaDeviceInfo(),
 m_mountpoint( mountpoint )
 {
-    m_type = AUDIOCD_T;
     m_udi = udi;
 }
 

@@ -21,7 +21,6 @@ IpodDeviceInfo::IpodDeviceInfo( QString mountpoint, QString udi )
 : MediaDeviceInfo(),
 m_mountpoint( mountpoint )
 {
-    m_type = IPOD_T;
     m_udi = udi;
 }
 

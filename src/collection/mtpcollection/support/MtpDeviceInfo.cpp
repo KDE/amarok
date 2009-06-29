@@ -20,7 +20,6 @@
 MtpDeviceInfo::MtpDeviceInfo( QString udi )
 : MediaDeviceInfo()
 {
-    m_type = MTP_T;
     m_udi = udi;
 }
 
