@@ -80,13 +80,13 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
     setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 #endif
-    
+
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
 
     // Runtime check for Qt 4.5 here. Older versions produce graphical garbage with animation enabled.
     const QChar major = qVersion()[0];
     const QChar minor = qVersion()[2];
-    if( major.digitValue() >= 4 && minor.digitValue() >= 5 ) 
+    if( major.digitValue() >= 4 && minor.digitValue() >= 5 )
         setAnimated( true );
 
     setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
@@ -234,7 +234,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     if ( !m_currentCopyDestination.empty() )
     {
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), menu );
-        foreach( PopupDropperAction *action, m_currentCopyDestination.keys() ) 
+        foreach( PopupDropperAction *action, m_currentCopyDestination.keys() )
         {
             action->setParent( copyMenu );
             copyMenu->addAction( action );
@@ -253,26 +253,12 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         menu->addMenu( moveMenu );
     }
 
-    if ( !( m_currentRemoveDestination.empty() ) )
-    {
-        if ( m_cmSeperator == 0 )
-        {
-            m_cmSeperator = new PopupDropperAction( this );
-            m_cmSeperator->setSeparator ( true );
-        }
-        menu->addAction( m_cmSeperator );
-    }
-
     if( ( !m_currentRemoveDestination.empty() ) )
     {
-        KMenu *removeMenu = new KMenu( i18n( "Remove From Collection" ), menu );
         foreach( PopupDropperAction * action, m_currentRemoveDestination.keys() )
         {
-            action->setParent( removeMenu );
-            removeMenu->addAction( action );
+            menu->addAction( action );
         }
-        menu->addMenu( removeMenu );
-        
     }
 
     menu->exec( event->globalPos() );
@@ -294,7 +280,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     }
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
-    
+
     if( event->button() != Qt::LeftButton || event->modifiers()
         || KGlobalSettings::singleClick() || ( item && item->isTrackItem() ) )
     {
@@ -405,14 +391,14 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
             m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
 
-    if( indices.isEmpty() ) 
+    if( indices.isEmpty() )
     {
         QTreeView::keyPressEvent( event );
         return;
     }
 
     QModelIndex current = currentIndex();
-    switch( event->key() ) 
+    switch( event->key() )
     {
         case Qt::Key_Enter:
         case Qt::Key_Return:
@@ -515,7 +501,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
             The::popupDropperFactory()->adjustSubmenuItem( subItem );
         }
-        
+
         m_pd->show();
     }
 
@@ -679,7 +665,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
     QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
         return;
-    
+
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
     {
@@ -770,7 +756,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
     {
         return;
     }
-    
+
     CollectionLocation *source = coll->location();
 
         if( !source->isWritable() ) //error
@@ -939,7 +925,7 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
 
 
 
-                    
+
                 }
             }
         }
@@ -1071,11 +1057,11 @@ QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getRemoveAct
         if( collection && collection->isWritable() )
         {
             //writableCollections.append( collection );
-             PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", QIcon(), collection->prettyName(), 0 );
+            PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
 
-             connect( action, SIGNAL( triggered() ), this, SLOT( slotRemoveTracks() ) );
+            connect( action, SIGNAL( triggered() ), this, SLOT( slotRemoveTracks() ) );
 
-             m_currentRemoveDestination.insert( action, collection );
+            m_currentRemoveDestination.insert( action, collection );
         }
 
 
@@ -1155,7 +1141,7 @@ void CollectionTreeView::slotMoveTracks()
 
 void CollectionTreeView::slotRemoveTracks()
 {
-    
+
     if( sender() ) {
         if ( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
         {

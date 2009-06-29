@@ -32,7 +32,6 @@ set(amarok_collection-mysqlservercollection_PART_SRCS
     ../sqlcollection/ScanManager.cpp
     ../sqlcollection/ScanResultProcessor.cpp
     ../sqlcollection/SqlBookmarkThisCapability.cpp
-    ../sqlcollection/SqlCollectionCapability.cpp
     ../sqlcollection/SqlCollection.cpp
     ../sqlcollection/SqlCollectionDBusHandler.cpp
     ../sqlcollection/SqlCollectionLocation.cpp

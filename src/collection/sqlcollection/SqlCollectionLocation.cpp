@@ -183,7 +183,7 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
 
     m_jobs.remove( job );
     job->deleteLater();
-    
+
     if( !startNextJob() )
     {
         insertTracks( m_destinations );
@@ -191,7 +191,7 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
         m_collection->scanManager()->setBlockScan( false );
         slotCopyOperationFinished();
     }
-        
+
 }
 
 void
@@ -203,6 +203,13 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     if( !startNextJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
         slotCopyOperationFinished();
+}
+
+void
+SqlCollectionLocation::removeUrlsFromCollection(  const Meta::TrackList &sources )
+{
+    m_collection->deleteTracksSlot( sources );
+    slotRemoveOperationFinished();
 }
 
 void
@@ -312,12 +319,12 @@ bool SqlCollectionLocation::startNextJob()
     {
         Meta::TrackPtr track = m_sources.keys().first();
         KUrl src = m_sources.take( track );
-        
+
         bool jobsCreated = false;
         KIO::FileCopyJob *job = 0;
         KUrl dest = m_destinations[ track ];
         dest.cleanPath();
-        
+
         src.cleanPath();
         debug() << "copying from " << src << " to " << dest;
         KIO::JobFlags flags = KIO::HideProgressInfo;

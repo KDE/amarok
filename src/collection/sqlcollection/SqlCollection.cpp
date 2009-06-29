@@ -18,8 +18,6 @@
 
 #include "SqlCollection.h"
 
-#include "meta/capabilities/CollectionCapability.h"
-#include "SqlCollectionCapability.h"
 #include "DatabaseUpdater.h"
 #include "Debug.h"
 #include "ScanManager.h"
@@ -307,8 +305,6 @@ SqlCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
     DEBUG_BLOCK
     switch( type )
     {
-        case Meta::Capability::Collection:
-            return true;
         default:
             return false;
     }
@@ -320,8 +316,6 @@ SqlCollection::createCapabilityInterface( Meta::Capability::Type type )
     DEBUG_BLOCK
     switch( type )
     {
-        case Meta::Capability::Collection:
-            return new Meta::SqlCollectionCapability( this );
         default:
             return 0;
     }
@@ -334,16 +328,6 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
     QStringList files;
     foreach( Meta::TrackPtr track, tracklist )
         files << track->prettyUrl();
-
-    // TODO put the delete confirmation code somewhere else?
-    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracklist.count() ) );
-    const bool del = KMessageBox::warningContinueCancelList(0,
-                                                     text,
-                                                     files,
-                                                     i18n("Delete Files"),
-                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
-    if( !del )
-        return;
 
 	CollectionLocation *loc = location();
     // remove the tracks from the collection maps

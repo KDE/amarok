@@ -45,6 +45,7 @@ class SqlCollectionLocation : public CollectionLocation
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+	virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
         void slotDialogAccepted();
