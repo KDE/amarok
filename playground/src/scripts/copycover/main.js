@@ -1,9 +1,9 @@
 /**************************************************************************
-*   Encoding Fixer Script for Amarok 2.0                                  *
-*   Last Modified:  22/11/2008                                            *
+*   Copy Cover Script for Amarok 2.0                                      *
 *                                                                         *
 *   Copyright                                                             *
 *   (C) 2008 Peter ZHOU  <peterzhoulei@gmail.com>                         *
+*   (C) 2009 Sven Krohlas <sven@getamarok.com>                            *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -129,14 +129,14 @@ function saveConfiguration()
 function readConfiguration()
 {
     if ( Amarok.Script.readConfig( "writeCover", "true" ) == "true" )
-        mainWindow.children()[2].children()[0].checked = true;
+        mainWindow.widget.checkBox.setChecked( true );
     else
-        mainWindow.children()[2].children()[0].checked = false;
-        
+        mainWindow.widget.checkBox.setChecked( false );
+
     if ( Amarok.Script.readConfig( "writeArtistAlbum", "false" ) == "false" )
-        mainWindow.children()[2].children()[1].checked = false;
+        mainWindow.widget.checkBox.setChecked( false );
     else
-        mainWindow.children()[2].children()[1].checked = true;
+        mainWindow.widget.checkBox_2.setChecked( true );
 
 }
 
@@ -159,10 +159,10 @@ function init()
 
         // read configuration
         readConfiguration();
-        
+
         // connect the button ok/cancel to save/read config.
-        mainWindow.children()[1].accepted.connect( saveConfiguration );
-        mainWindow.children()[1].rejected.connect( readConfiguration );
+        mainWindow.buttonBox.accepted.connect( saveConfiguration );
+        mainWindow.buttonBox.rejected.connect( readConfiguration );
         
         // Add tool menu, and a callback
         Amarok.Window.addToolsSeparator();
