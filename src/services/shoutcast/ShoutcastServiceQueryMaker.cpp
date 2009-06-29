@@ -155,7 +155,10 @@ QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 template<class PointerType, class ListType>
 void ShoutcastServiceQueryMaker::emitProperResult( const ListType& list )
 {
-    if ( d->returnDataPtrs ) {
+    DEBUG_BLOCK
+
+    if ( d->returnDataPtrs )
+    {
         DataList data;
         foreach( PointerType p, list )
             data << DataPtr::staticCast( p );
@@ -169,6 +172,7 @@ void ShoutcastServiceQueryMaker::emitProperResult( const ListType& list )
 void ShoutcastServiceQueryMaker::handleResult()
 {
     DEBUG_BLOCK
+
     switch( d->type )
     {
         case Private::GENRE :
