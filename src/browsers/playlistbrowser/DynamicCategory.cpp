@@ -35,6 +35,7 @@
 
 #include <KHBox>
 #include <KIcon>
+#include <KStandardDirs>
 #include <KToolBar>
 
 
@@ -54,8 +55,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     setLongDescription( i18n( "With a dynamic playlist, Amarok becomes your own personal dj, automatically selecting tracks for you, based on a number of parameters that you select." ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "dynamic-amarok", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_dynamic_playlists.png" ) );
 
     bool enabled = AmarokConfig::dynamicMode();
 
