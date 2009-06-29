@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2005 Eyal Lotem <eyal.lotem@gmail.com>                                 *
  * Copyright (c) 2007 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2009 Pascal Pollet <pascal@bongosoft.de>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,27 +20,33 @@
 #define PIXMAPVIEWER_H
 
 #include <QScrollArea>
+#include <QWidget>
+#include <QString>
 #include <QPixmap>
 
 class QMouseEvent;
+class QPixmap;
 
-class PixmapViewer : public QScrollArea
+class PixmapViewer : public QWidget
 {
     Q_OBJECT
 
-    public:
-        PixmapViewer( QWidget *widget, const QPixmap &pixmap );
+public:
+    PixmapViewer( QWidget *widget, const QPixmap pixmap );
 
-        virtual QSize sizeHint() const;
+public slots:
+    void setZoomFactor( float );
 
-        void mousePressEvent( QMouseEvent *event );
-        void mouseReleaseEvent( QMouseEvent *event );
-        void mouseMoveEvent( QMouseEvent *event );
+signals:
+    void zoomFactorChanged( float );
 
-    private:
-        bool           m_isDragging;
-        QPoint         m_currentPos;
-        const QPixmap &m_pixmap;
+protected:
+    void paintEvent( QPaintEvent* );
+    void wheelEvent( QWheelEvent* );
+
+private:
+    QPixmap *m_pixmap;
+    float m_zoomFactor;
 };
 
 #endif
