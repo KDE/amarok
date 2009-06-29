@@ -106,9 +106,6 @@ public:
     virtual QString filter() const { return QString(); }
     virtual QList<int> levels() const { return QList<int>(); }
 
-    void showCategoryFooter( bool show );
-    ExpandingControlsWidget * expandingControls();
-   
 
 public slots:
     void activate();

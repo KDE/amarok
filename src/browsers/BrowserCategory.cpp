@@ -132,24 +132,4 @@ QString BrowserCategory::imagePath()
     return m_imagePath;
 }
 
-void BrowserCategory::showCategoryFooter( bool show )
-{
-    if( show )
-    {
-        //make sure that the foother is shown at the bottom.
-        m_expandingControls->setParent( 0 );
-        m_expandingControls->setParent( this );
-        m_expandingControls->show();
-    }
-    else
-    {
-        m_expandingControls->hide();
-    }
-}
-
-ExpandingControlsWidget * BrowserCategory::expandingControls()
-{
-    return m_expandingControls;
-}
-
 #include "BrowserCategory.moc"

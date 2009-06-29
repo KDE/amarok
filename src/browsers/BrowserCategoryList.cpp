@@ -78,7 +78,6 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
 
     setFrameShape( QFrame::NoFrame );
 
-    showCategoryFooter( true );
 }
 
 
@@ -154,7 +153,6 @@ BrowserCategoryList::showCategory( const QString &name )
     }
 
     m_searchWidget->hide();
-    showCategoryFooter( false );
 
     emit( viewChanged() );
 }
@@ -173,8 +171,6 @@ BrowserCategoryList::home()
         m_categoryListView->setParent( this );
         m_currentCategory = 0; // remove any context stuff we might have added
         m_searchWidget->show();
-
-        showCategoryFooter( true );
 
         emit( viewChanged() );
     }

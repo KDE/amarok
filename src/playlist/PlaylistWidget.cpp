@@ -33,7 +33,6 @@
 #include "PlaylistSortWidget.h"
 #include "layouts/LayoutManager.h"
 #include "proxymodels/FilterProxy.h"
-#include "widgets/ExpandingControlsWidget.h"
 #include "widgets/ProgressiveSearchWidget.h"
 #include "layouts/LayoutConfigAction.h"
 
@@ -116,15 +115,11 @@ Playlist::Widget::Widget( QWidget* parent )
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
 
-    ExpandingControlsWidget * expandingWidget = new ExpandingControlsWidget( this );
-
-    KHBox *barBox = new KHBox( 0 );
+    KHBox *barBox = new KHBox( this );
     barBox->setMargin( 0 );
 
     KToolBar *plBar = new Amarok::ToolBar( barBox );
     plBar->setObjectName( "PlaylistToolBar" );
-
-    expandingWidget->setMainWidget( barBox );
 
     Model::instance();
 

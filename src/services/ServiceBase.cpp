@@ -126,10 +126,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
         connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
     }
 
-    showCategoryFooter( true );
-    
-    m_bottomPanel = new KVBox( 0 );
-    expandingControls()->setMainWidget( m_bottomPanel );
+    m_bottomPanel = new KVBox( this );
 
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
