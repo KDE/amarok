@@ -92,12 +92,6 @@ Playlist::GroupingProxy::rowCount( const QModelIndex& i ) const
     return m_belowModel->rowCount( i );
 }
 
-int
-Playlist::GroupingProxy::columnCount( const QModelIndex& i ) const
-{
-    return sourceModel()->columnCount( i );
-}
-
 QModelIndex
 Playlist::GroupingProxy::mapToSource( const QModelIndex& i ) const
 {

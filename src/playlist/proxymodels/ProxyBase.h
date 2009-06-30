@@ -58,6 +58,14 @@ public:
      */
     virtual int activeRow() const;
 
+   /**
+     * Returns the number of columns exposed by the current proxy.
+     * The default implementation forwards the column count of the model below it.
+     * @param parent the parent of the columns to count.
+     * @return the number of columns.
+     */
+    virtual int columnCount( const QModelIndex& i ) const;
+
     /**
      * Clears the current search term.
      */

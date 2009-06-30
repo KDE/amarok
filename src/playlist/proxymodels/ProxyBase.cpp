@@ -44,6 +44,12 @@ ProxyBase::activeRow() const
     return rowFromSource( m_belowModel->activeRow() );
 }
 
+int
+ProxyBase::columnCount( const QModelIndex& i ) const
+{
+    return m_belowModel->columnCount( i );
+}
+
 void
 ProxyBase::clearSearchTerm()
 {

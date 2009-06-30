@@ -71,7 +71,7 @@ quint64 FilterProxy::idAt( const int row ) const
 int
 FilterProxy::rowCount(const QModelIndex& parent) const
 {
-    return m_belowModel->rowCount( parent );
+    return QSortFilterProxyModel::rowCount( parent );
 }
 
 void FilterProxy::filterUpdated()

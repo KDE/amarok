@@ -41,7 +41,7 @@ SortProxy::SortProxy()
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
     m_belowModel = FilterProxy::instance();
-    setSourceModel( ( FilterProxy * )m_belowModel );
+    setSourceModel( dynamic_cast< FilterProxy * >( m_belowModel ) );
     setDynamicSortFilter( false );
 
     //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched

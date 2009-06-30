@@ -42,6 +42,8 @@ public:
      */
     virtual int activeRow() const = 0;
 
+    virtual int columnCount( const QModelIndex& ) const = 0;
+
     /**
      * Clears the current search term.
      */
