@@ -44,13 +44,6 @@ public:
     static FilterProxy* instance();
 
     /**
-     * Return the currently active row, translated to proxy rows
-     * (or -1 if the current row is not represented by this proxy).
-     * @return The currently active (playing) row in proxy terms.
-     */
-    int activeRow() const;
-
-    /**
      * Find the id  of the track at a given row in the proxy model.
      * @param row The row in proxy terms.
      * @return The id of the row.
@@ -187,8 +180,6 @@ private:
     ~FilterProxy();
 
     bool m_passThrough;
-
-    Model *m_belowModel;
 
     static FilterProxy* s_instance;      //! instance variable
 };

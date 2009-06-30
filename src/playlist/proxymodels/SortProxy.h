@@ -55,13 +55,6 @@ public:
 // Please keep them sorted alphabetically.  -- To
 
     /**
-     * Returns the currently active row, translated to proxy rows
-     * (or -1 if the current row is not represented by this proxy).
-     * @return The currently active (playing) row in proxy terms.
-     */
-    int activeRow() const;
-
-    /**
      * Clears the current search term.
      */
     void clearSearchTerm();
@@ -243,7 +236,6 @@ private:
 
     static SortProxy *s_instance;       //! Instance member.
 
-    //FilterProxy *m_belowModel;          //! The proxy or model that's right below this one in the stack of models/proxies.
     SortScheme *m_scheme;               //! The current sorting scheme.
 };
 

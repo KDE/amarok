@@ -41,7 +41,7 @@ SortProxy::SortProxy()
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
     m_belowModel = FilterProxy::instance();
-    setSourceModel( (FilterProxy *) m_belowModel );
+    setSourceModel( ( FilterProxy * )m_belowModel );
     setDynamicSortFilter( false );
 
     //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
@@ -80,14 +80,6 @@ SortProxy::updateSortMap( SortScheme *scheme)
 // Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
 // pretty much just forward stuff through the stack of proxies start here.
 // Please keep them sorted alphabetically.  -- To
-
-int
-SortProxy::activeRow() const
-{
-    // We map the active row form the source to this model.
-    // As in FilterProxy: return rowFromSource( m_model->activeRow() );
-    return rowFromSource( m_belowModel->activeRow() );
-}
 
 void
 SortProxy::clearSearchTerm()

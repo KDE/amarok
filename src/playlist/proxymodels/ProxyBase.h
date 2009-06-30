@@ -51,7 +51,37 @@ public:
 // proxies start here.
 // Please keep them sorted alphabetically.  -- Téo
 
+    /**
+     * Returns the currently active row, translated to proxy rows
+     * (or -1 if the current row is not represented by this proxy).
+     * @return The currently active (playing) row in proxy terms.
+     */
+    int activeRow() const;
 
+
+//FIXME: When every proxy talks only to the proxy below it, these should be made protected
+//       here and and in subclasses that reimplement them. For now, they have to be public
+//       otherwise it won't compile.    -- Téo 21/6/2009
+//protected:
+    /**
+     * Converts a row index that's valid in the proxy below this one to a row index valid
+     * in this proxy, with sanity checks.
+     * The default implementation returns the same row, and results in a perfectly pass-
+     * -through proxy.
+     * @param row the row index to be converted.
+     * @return the index of the row that's valid in this proxy.
+     */
+    virtual int rowFromSource( int row ) const;
+
+    /**
+     * Converts a row index that's valid in this proxy to a row index valid in the proxy
+     * below this one, with sanity checks.
+     * The default implementation returns the same row, and results in a perfectly pass-
+     * -through proxy.
+     * @param row the row index to be converted.
+     * @return the index of the row that's valid in the proxy below this one.
+     */
+    virtual int rowToSource( int row ) const;
 
 signals:
     /**

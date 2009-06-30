@@ -76,7 +76,6 @@ public:
     QVariant data( const QModelIndex &index, int role ) const;
 
     // wrapped functions from PlaylistModel
-    int activeRow() const;
     void setActiveRow( int ) const;
     Meta::TrackPtr trackAt( int ) const;
     Qt::DropActions supportedDropActions() const;
@@ -160,8 +159,6 @@ private:
      * @return true if track should be grouped together, false otherwise
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
-
-    //SortProxy *m_belowModel;
 
     static GroupingProxy* s_instance;
 };

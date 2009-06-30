@@ -49,7 +49,7 @@ Playlist::GroupingProxy::GroupingProxy()
     : ProxyBase( 0 )
 {
     m_belowModel = SortProxy::instance();
-    setSourceModel( (SortProxy *) m_belowModel );
+    setSourceModel( ( SortProxy * )m_belowModel );
     // signal proxies
     connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
     connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
@@ -128,12 +128,6 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
         return ( row % 2 == 1 );
 
     return m_belowModel->data( index, role );
-}
-
-int
-Playlist::GroupingProxy::activeRow() const
-{
-    return m_belowModel->activeRow();
 }
 
 void

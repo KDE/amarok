@@ -32,13 +32,13 @@ FilterProxy* FilterProxy::instance()
 
 FilterProxy::FilterProxy()
     : ProxyBase( Model::instance() )
-    , m_belowModel( Model::instance() )
 {
+    m_belowModel = Model::instance();
 
-    setSourceModel( m_belowModel );
+    setSourceModel( ( Model * )m_belowModel );
 
-    connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
-    connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
+    connect( Model::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
+    connect( Model::instance(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
     m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
@@ -57,22 +57,15 @@ bool FilterProxy::filterAcceptsRow( int row, const QModelIndex & source_parent )
     if ( m_passThrough )
         return true;
 
-    const bool match = m_belowModel->matchesCurrentSearchTerm( row );
+    const bool match = Model::instance()->matchesCurrentSearchTerm( row );
     return match;
-}
-
-int FilterProxy::activeRow() const
-{
-    // we map the active row form the source to this model. if the active row is not in the items
-    // exposed by this proxy, just point to our first item.
-    return rowFromSource( m_belowModel->activeRow() );
 }
 
 quint64 FilterProxy::idAt( const int row ) const
 {
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
-    return m_belowModel->idAt( sourceIndex.row() );
+    return Model::instance()->idAt( sourceIndex.row() );
 }
 
 int
@@ -100,9 +93,9 @@ int FilterProxy::firstMatchAfterActive()
 
     int matchRow = -1;
     int nextRow = activeSourceRow + 1;
-    while ( m_belowModel->rowExists( nextRow ) )
+    while ( Model::instance()->rowExists( nextRow ) )
     {
-        if ( m_belowModel->matchesCurrentSearchTerm( nextRow ) ) {
+        if ( Model::instance()->matchesCurrentSearchTerm( nextRow ) ) {
             matchRow = nextRow;
             break;
         }
@@ -125,9 +118,9 @@ int FilterProxy::firstMatchBeforeActive()
 
     int matchRow = -1;
     int previousRow = activeSourceRow - 1;
-    while ( m_belowModel->rowExists( previousRow ) )
+    while ( Model::instance()->rowExists( previousRow ) )
     {
-        if ( m_belowModel->matchesCurrentSearchTerm( previousRow ) ) {
+        if ( Model::instance()->matchesCurrentSearchTerm( previousRow ) ) {
             matchRow = previousRow;
             break;
         }
@@ -146,7 +139,7 @@ void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
     QList< quint64 > proxyIds;
     foreach( quint64 id, ids )
     {
-        if ( m_belowModel->matchesCurrentSearchTerm( m_belowModel->rowForId( id ) ) )
+        if ( Model::instance()->matchesCurrentSearchTerm( Model::instance()->rowForId( id ) ) )
             proxyIds << id;
     }
 
@@ -158,8 +151,8 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 {
     QList<quint64> proxyIds;
     foreach( quint64 id, ids ) {
-        const int row = m_belowModel->rowForId( id );
-        if ( row == -1 || m_belowModel->matchesCurrentSearchTerm( row ) ) {
+        const int row = Model::instance()->rowForId( id );
+        if ( row == -1 || Model::instance()->matchesCurrentSearchTerm( row ) ) {
             proxyIds << id;
         }
     }
@@ -170,12 +163,12 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 
 Item::State FilterProxy::stateOfRow( int row ) const
 {
-    return m_belowModel->stateOfRow( rowToSource( row ) );
+    return Model::instance()->stateOfRow( rowToSource( row ) );
 }
 
 Item::State FilterProxy::stateOfId( quint64 id ) const
 {
-    return m_belowModel->stateOfId( id );
+    return Model::instance()->stateOfId( id );
 }
 
 void FilterProxy::setPassThrough( bool passThrough )
@@ -201,7 +194,7 @@ int FilterProxy::rowToSource( int row ) const
 
 int FilterProxy::rowFromSource( int row ) const
 {
-    QModelIndex sourceIndex = m_belowModel->index( row, 0 );
+    QModelIndex sourceIndex = sourceModel()->index( row, 0 );
     QModelIndex index = mapFromSource( sourceIndex );
 
     if ( !index.isValid() )
@@ -304,12 +297,12 @@ bool FilterProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int
 
 void FilterProxy::setRowQueued( int row )
 {
-    m_belowModel->setRowQueued( rowToSource( row ) );
+    Model::instance()->setRowQueued( rowToSource( row ) );
 }
 
 void FilterProxy::setRowDequeued( int row )
 {
-    m_belowModel->setRowDequeued( rowToSource( row ) );
+    Model::instance()->setRowDequeued( rowToSource( row ) );
 }
 
 }

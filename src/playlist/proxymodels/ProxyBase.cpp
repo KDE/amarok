@@ -33,4 +33,26 @@ ProxyBase::ProxyBase( QObject *parent )
 ProxyBase::~ProxyBase()
 {}
 
+int
+ProxyBase::activeRow() const
+{
+    // We map the active row form the source to this ProxyModel.
+    return rowFromSource( m_belowModel->activeRow() );
+}
+
+//protected:
+int
+ProxyBase::rowFromSource( int row ) const
+{
+    return row;
+}
+
+int
+ProxyBase::rowToSource( int row ) const
+{
+    return row;
+}
+
 }   //namespace Playlist
+
+#include "ProxyBase.moc"
