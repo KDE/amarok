@@ -130,6 +130,12 @@ SortProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, i
     return m_belowModel->dropMimeData( data, action, row, column, parent ); //TODO: this might need rowToSource
 }
 
+void
+SortProxy::filterUpdated()
+{
+    m_belowModel->filterUpdated();
+}
+
 int
 SortProxy::find( const QString &searchTerm, int searchFields )
 {

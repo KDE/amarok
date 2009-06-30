@@ -19,13 +19,13 @@
 
 #include "PlaylistViewCommon.h"
 
-#include "EngineController.h"
-#include "Debug.h"
-#include "GlobalCurrentTrackActions.h"
-#include "TagDialog.h"
-#include "playlist/PlaylistModel.h"
 #include "covermanager/CoverFetchingActions.h"
+#include "Debug.h"
+#include "EngineController.h"
+#include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "playlist/proxymodels/GroupingProxy.h"
+#include "TagDialog.h"
 
 #include <QObject>
 #include <QModelIndex>

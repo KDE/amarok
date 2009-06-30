@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- *                                                                                      *
+ * Copyright © 2008 Soren Harward <stharward@gmail.com>                                 *
+ *           © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                               *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) version 3 or        *
@@ -20,6 +20,7 @@
 #define PRETTYLISTVIEW_H
 
 #include "EngineObserver.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 #include <QListView>
 #include <QModelIndex>
@@ -68,7 +69,7 @@ public slots:
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
 
-    void itemsAdded( int firstRow );
+    void itemsAdded( QModelIndex& parent, int firstRow, int lastRow );
 
     virtual void engineNewTrackPlaying(); // from EngineObserver
 
@@ -105,6 +106,8 @@ private:
 
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
+
+    GroupingProxy *m_topmostProxy;
 
 public:
     QList<int> selectedRows() const;

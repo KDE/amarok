@@ -107,6 +107,13 @@ public:
     QString currentSearchTerm();
 
     /**
+     * Notify FilterProxy that the search term of searched fields has changed. Since this
+     * call does not use the parent's filter values, this method needs to be called when the
+     * values change.
+     */
+    void filterUpdated();
+
+    /**
      * Forwards a search down through the stack of ProxyModels.
      * Find the first track in the playlist that matches the search term in one of the
      * specified search fields. Playlist::Model::find() emits found() or notFound() depending on

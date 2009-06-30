@@ -1,9 +1,9 @@
 /****************************************************************************************
- * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
- * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- *                                                                                      *
+ * Copyright © 2007-2008 Ian Monroe <ian@monroe.nu>                                     *
+ *           © 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                      *
+ *           © 2008 Seb Ruiz <ruiz@kde.org>                                             *
+ *           © 2008 Soren Harward <stharward@gmail.com>                                 *
+ *           © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                               *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) version 3 or        *
@@ -56,6 +56,7 @@ Playlist::GroupingProxy::GroupingProxy()
     connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
     connect( m_belowModel, SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
+    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( m_belowModel, SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
 
     int max = m_belowModel->rowCount();
@@ -82,19 +83,19 @@ Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
 QModelIndex
 Playlist::GroupingProxy::parent( const QModelIndex& i ) const
 {
-    return sourceModel()->parent( i );
+    return m_belowModel->parent( i );
 }
 
 int
 Playlist::GroupingProxy::rowCount( const QModelIndex& i ) const
 {
-    return sourceModel()->rowCount( i );
+    return m_belowModel->rowCount( i );
 }
 
 int
 Playlist::GroupingProxy::columnCount( const QModelIndex& i ) const
 {
-    return sourceModel()->columnCount( i );
+    return m_belowModel->columnCount( i );
 }
 
 QModelIndex
@@ -380,4 +381,9 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
     }
 
     return totalLenght;
+}
+
+void Playlist::GroupingProxy::filterUpdated()
+{
+    m_belowModel->filterUpdated();
 }

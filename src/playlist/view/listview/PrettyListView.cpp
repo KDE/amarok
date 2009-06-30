@@ -39,8 +39,6 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
-#include "playlist/proxymodels/FilterProxy.h"
-#include "playlist/proxymodels/SortProxy.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
@@ -59,6 +57,7 @@
 #include <QPalette>
 #include <QPersistentModelIndex>
 #include <QTimer>
+#include "../../proxymodels/GroupingProxy.h"
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
@@ -67,8 +66,9 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
         , m_pd( 0 )
+        , m_topmostProxy( GroupingProxy::instance() )
 {
-    setModel( GroupingProxy::instance() );
+    setModel( m_topmostProxy );
     setItemDelegate( new PrettyItemDelegate( this ) );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setDragDropMode( QAbstractItemView::DragDrop );
@@ -93,9 +93,9 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
 
-    connect( The::playlistModel(), SIGNAL( itemsAdded( int ) ), this, SLOT( itemsAdded( int ) ) );
+    connect( m_topmostProxy, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
 
-    connect( Playlist::SortProxy::instance(), SIGNAL( sortChanged() ), this, SLOT( reset() ) );
+    connect( m_topmostProxy, SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -159,7 +159,7 @@ Playlist::PrettyListView::removeSelection()
         }
         
         // Select the track immediately above the cleared are as this is the one that has internal focus.
-        firstRow = qBound( 0, firstRow, SortProxy::instance()->rowCount() -1 );
+        firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
         selectionModel()->select( model()->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
     }
 }
@@ -188,7 +188,7 @@ void Playlist::PrettyListView::selectSource()
         return;
 
     //get the track...
-    QModelIndex index = GroupingProxy::instance()->index( rows.at( 0 ) );
+    QModelIndex index = m_topmostProxy->index( rows.at( 0 ) );
     Meta::TrackPtr track = index.data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     //get multiSource capability:
@@ -215,7 +215,7 @@ Playlist::PrettyListView::scrollToActiveTrack()
         m_skipAutoScroll = false;
         return;
     }
-    QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
+    QModelIndex activeIndex = model()->index( m_topmostProxy->activeRow(), 0, QModelIndex() );
     if ( activeIndex.isValid() )
         scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
 }
@@ -263,13 +263,8 @@ void
 Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
     DEBUG_BLOCK
-    QModelIndex sortFilteredIndex = indexAt( event->pos() );
+    QModelIndex index = indexAt( event->pos() );
     
-    //translate to real model as we might be looking at a filered list:
-    int sourceRow = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( sortFilteredIndex.row() ) );
-
-    QModelIndex index = The::playlistModel()->index( sourceRow );
-
     if ( !index.isValid() )
         return;
 
@@ -314,7 +309,7 @@ Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
         m_dropIndicator = visualRect( index );
     } else {
         // draw it on the bottom of the last item
-        index = model()->index( GroupingProxy::instance()->rowCount() - 1, 0, QModelIndex() );
+        index = model()->index( m_topmostProxy->rowCount() - 1, 0, QModelIndex() );
         m_dropIndicator = visualRect( index );
         m_dropIndicator = m_dropIndicator.translated( 0, m_dropIndicator.height() );
     }
@@ -549,7 +544,7 @@ Playlist::PrettyListView::selectedRows() const
     QList<int> rows;
     foreach( const QModelIndex &idx, selectedIndexes() )
     {
-        int sourceRow = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( idx.row() ) );
+        int sourceRow = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( idx.row() ) );   //FIXME: this should use only m_topmostProxy
         rows.append( sourceRow );
     }
     return rows;
@@ -565,10 +560,10 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
 void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter )
 {
     bool updateProxy = false;
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int row = GroupingProxy::instance()->find( searchTerm, fields );
+    int row = m_topmostProxy->find( searchTerm, fields );
     if( row != -1 )
     {
         //select this track
@@ -606,23 +601,23 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
     QList<int> selected = selectedRows();
 
     bool updateProxy = false;
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
     int currentRow = -1;
     if( selected.size() > 0 )
         currentRow = selected.last();
 
-    int row = GroupingProxy::instance()->findNext( searchTerm, currentRow, fields );
+    int row = m_topmostProxy->findNext( searchTerm, currentRow, fields );
     if( row != -1 )
     {
         //select this track
 
-        QModelIndex index = model()->index( row, 0 );
+        QModelIndex index = m_topmostProxy->index( row, 0 );
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
-        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        QModelIndex foundIndex = m_topmostProxy->index( row, 0, QModelIndex() );
         setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
@@ -633,7 +628,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         emit( notFound() );
 
     if ( updateProxy )
-        FilterProxy::instance()->filterUpdated();
+        m_topmostProxy->filterUpdated();
 }
 
 void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fields )
@@ -642,23 +637,23 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     QList<int> selected = selectedRows();
 
     bool updateProxy = false;
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int currentRow = GroupingProxy::instance()->totalLength();
+    int currentRow = m_topmostProxy->totalLength();
     if( selected.size() > 0 )
         currentRow = selected.first();
 
-    int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow, fields );
+    int row = m_topmostProxy->findPrevious( searchTerm, currentRow, fields );
     if( row != -1 )
     {
         //select this track
 
-        QModelIndex index = model()->index( row, 0 );
+        QModelIndex index = m_topmostProxy->index( row, 0 );
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
-        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        QModelIndex foundIndex = m_topmostProxy->index( row, 0, QModelIndex() );
         setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
@@ -669,7 +664,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         emit( notFound() );
 
     if ( updateProxy )
-        FilterProxy::instance()->filterUpdated();
+        m_topmostProxy->filterUpdated();
 }
 
 void Playlist::PrettyListView::clearSearchTerm()
@@ -681,17 +676,17 @@ void Playlist::PrettyListView::clearSearchTerm()
     QModelIndex index = indexAt( QPoint( 0, 0 ) );
 
      //ah... but we want the source row and not the one reported by the filter model(s)
-    int row = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( index.row() ) );
+    int row = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( index.row() ) );    //FIXME
 
     debug() << "first row in filtered list: " << index.row();
     debug() << "source row: " << row;
 
-    FilterProxy::instance()->filterUpdated();
-    GroupingProxy::instance()->clearSearchTerm();
+    m_topmostProxy->filterUpdated();
+    m_topmostProxy->clearSearchTerm();
 
     //now scroll to the selected row again
 
-    QModelIndex sourceIndex = model()->index( row, 0, QModelIndex() );
+    QModelIndex sourceIndex = m_topmostProxy->index( row, 0, QModelIndex() );
     if ( sourceIndex.isValid() )
         scrollTo( sourceIndex, QAbstractItemView::PositionAtTop );
 }
@@ -709,24 +704,25 @@ void Playlist::PrettyListView::startProxyUpdateTimeout()
 void Playlist::PrettyListView::updateProxyTimeout()
 {
     DEBUG_BLOCK
-    FilterProxy::instance()->filterUpdated();
+    m_topmostProxy->filterUpdated();
 }
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
-    FilterProxy::instance()->setPassThrough( !onlyMatches );
+    FilterProxy::instance()->setPassThrough( !onlyMatches );    //FIXME
 }
 
-void Playlist::PrettyListView::itemsAdded( int firstRow )
+void Playlist::PrettyListView::itemsAdded( QModelIndex& parent, int firstRow, int lastRow )
 {
     DEBUG_BLOCK
+    Q_UNUSED( parent )
+    Q_UNUSED( lastRow )
 
-    QModelIndex index = model()->index( FilterProxy::instance()->rowFromSource( SortProxy::instance()->rowToSource( firstRow ) ) , 0 );
+    QModelIndex index = m_topmostProxy->index( firstRow, 0);
     if( !index.isValid() )
         return;
 
     debug() << "index has row: " << index.row();
-    //scrollTo( firstItem/*, QAbstractItemView::PositionAtCenter*/ );
     scrollTo( index, QAbstractItemView::PositionAtCenter );
     
 }
