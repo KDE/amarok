@@ -46,22 +46,22 @@ Playlist::GroupingProxy::destroy()
 }
 
 Playlist::GroupingProxy::GroupingProxy()
-    : QSortFilterProxyModel( 0 )
-    , m_belowModel( SortProxy::instance() )
+    : ProxyBase( 0 )
 {
-    setSourceModel( m_belowModel );
+    m_belowModel = SortProxy::instance();
+    setSourceModel( (SortProxy *) m_belowModel );
     // signal proxies
-    connect( m_belowModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( m_belowModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( m_belowModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
-    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
-    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-    connect( m_belowModel, SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
+    connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( sourceModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( sourceModel(), SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
+    connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
+    connect( sourceModel(), SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
 
     int max = m_belowModel->rowCount();
     for ( int i = 0; i < max; i++ )
         m_rowGroupMode.append( None );
-    
+
     regroupRows( 0, max - 1 );
 
     s_instance = this;
@@ -74,7 +74,8 @@ Playlist::GroupingProxy::~GroupingProxy()
 QModelIndex
 Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
 {
-    if ( m_belowModel->rowExists( r ) )
+    //FIXME
+    if ( SortProxy::instance()->rowExists( r ) )
         return createIndex( r, c );
     return QModelIndex();
 }
@@ -82,7 +83,7 @@ Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
 QModelIndex
 Playlist::GroupingProxy::parent( const QModelIndex& i ) const
 {
-    return m_belowModel->parent( i );
+    return sourceModel()->parent( i );
 }
 
 int
@@ -94,7 +95,7 @@ Playlist::GroupingProxy::rowCount( const QModelIndex& i ) const
 int
 Playlist::GroupingProxy::columnCount( const QModelIndex& i ) const
 {
-    return m_belowModel->columnCount( i );
+    return sourceModel()->columnCount( i );
 }
 
 QModelIndex
@@ -106,7 +107,7 @@ Playlist::GroupingProxy::mapToSource( const QModelIndex& i ) const
 QModelIndex
 Playlist::GroupingProxy::mapFromSource( const QModelIndex& i ) const
 {
-    return m_belowModel->index( i.row(), i.column() );
+    return sourceModel()->index( i.row(), i.column() );
 }
 
 QVariant
@@ -119,13 +120,13 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
 
     if ( role == Playlist::GroupRole )
         return m_rowGroupMode.at( row );
-    
+
     else if ( role == Playlist::GroupedTracksRole )
         return groupRowCount( row );
-    
+
     else if ( role == Playlist::GroupedAlternateRole )
         return ( row % 2 == 1 );
-    
+
     return m_belowModel->data( index, role );
 }
 
@@ -358,7 +359,9 @@ int Playlist::GroupingProxy::tracksInGroup( int row ) const
 {
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
-    row = m_belowModel->rowFromSource( row );
+    //FIXME: this needs to talk to SortProxy only as currently is fails
+    //    with a sorted playlist.   --Téo 17/6/2009
+    row = SortProxy::instance()->rowFromSource( FilterProxy::instance()->rowFromSource( row ) );
 
     return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
 }
@@ -367,8 +370,10 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
-    row = m_belowModel->rowFromSource( row );
-    
+    //FIXME: this needs to talk to SortProxy only as currently is fails
+    //    with a sorted playlist.   --Téo 17/6/2009
+    row = SortProxy::instance()->rowFromSource( FilterProxy::instance()->rowFromSource( row ) );
+
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )
     {
@@ -384,5 +389,6 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 
 void Playlist::GroupingProxy::filterUpdated()
 {
-    m_belowModel->filterUpdated();
+    //FIXME
+    SortProxy::instance()->filterUpdated();
 }

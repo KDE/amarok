@@ -22,6 +22,7 @@
 #ifndef AMAROK_PLAYLISTMODEL_H
 #define AMAROK_PLAYLISTMODEL_H
 
+#include "proxymodels/AbstractModel.h"
 #include "Amarok.h"
 #include "PlaylistDefines.h"
 #include "PlaylistItem.h"
@@ -51,7 +52,7 @@ AMAROK_EXPORT Playlist::Model* playlistModel();
 namespace Playlist
 {
 
-    
+
 enum DataRoles
 {
     TrackRole = Qt::UserRole,
@@ -64,7 +65,7 @@ enum DataRoles
     StopAfterTrackRole
 };
 
-class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
+class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, public AbstractModel
 {
     friend class InsertTracksCmd;
     friend class RemoveTracksCmd;
@@ -119,13 +120,13 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
          * @return the id of the row specified, or 0 if the row does not exist
          */
         quint64 idAt( const int row ) const;
-        
+
         /**
          * Returns the unique playlist item id of the active track
          * @return the playlist item's id, or 0 if no active track
          */
         quint64 activeId() const; // returns 0 for "no active row"
-        
+
         /**
          * Set the active track based on the playlist id given.
          * @param id the unique playlist id
@@ -147,7 +148,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
 
         // static member functions
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
-        
+
         /**
          * Find the first track in the playlist that matches the search term in one of the
          * specified search fields. This function emits found() or notFound() depending on
@@ -197,7 +198,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
          * @return The curent search term.
          */
         QString currentSearchTerm() { return m_currentSearchTerm; }
-        
+
         /**
          * Get the current search fields bit bitmask.
          * @return The current search fields.

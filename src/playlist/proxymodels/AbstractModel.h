@@ -20,7 +20,7 @@
 #ifndef AMAROK_ABSTRACTMODEL_H
 #define AMAROK_ABSTRACTMODEL_H
 
-#include "Meta.h"
+#include "meta/Meta.h"
 
 #include <QAbstractItemModel>
 

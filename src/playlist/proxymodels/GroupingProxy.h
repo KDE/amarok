@@ -57,7 +57,7 @@ enum GroupMode
     Collapsed // deprecated
 };
 
-class GroupingProxy : public QSortFilterProxyModel
+class GroupingProxy : public ProxyBase
 {
 
     Q_OBJECT
@@ -123,6 +123,18 @@ signals:
      */
     void rowsRemoved( const QModelIndex& parent, int start, int end );
 
+    /**
+     * Sets the currently active (playing) row, translated for this proxy.
+     * @param row the row to be set as active.
+     */
+    void setActiveRow( int row );
+
+    /**
+     * Asks the model sitting below the total length of the playlist.
+     * @return the total length of the playlist.
+     */
+    int totalLength() const;
+
 private slots:
     void modelDataChanged( const QModelIndex&, const QModelIndex& );
     void modelRowsInserted( const QModelIndex&, int, int );
@@ -149,7 +161,7 @@ private:
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
 
-    SortProxy *m_belowModel;
+    //SortProxy *m_belowModel;
 
     static GroupingProxy* s_instance;
 };

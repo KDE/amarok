@@ -47,17 +47,23 @@ public:
      */
     virtual ~ProxyBase();
 
+// Common public forwarder methods that pretty much just forward stuff through the stack of
+// proxies start here.
+// Please keep them sorted alphabetically.  -- Téo
+
+
+
 signals:
     /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
-     * by this proxy.
+     * by the proxies.
      * @param the list of id's added that are also represented by this proxy.
      */
     void insertedIds( const QList<quint64>& );
 
     /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
-     * by this proxy.
+     * by the proxies.
      * @param the list of id's removed that are also represented by this proxy.
      */
     void removedIds( const QList<quint64>& );
