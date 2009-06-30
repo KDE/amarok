@@ -95,9 +95,6 @@ public:
      */
     void setPassThrough( bool passThrough );
 
-    void setRowQueued( int row );
-    void setRowDequeued( int row );
-
     void clearSearchTerm();
 
 //FIXME: when the proxies are despaghettified, the following two methods need to be protected:

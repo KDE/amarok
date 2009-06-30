@@ -211,16 +211,6 @@ void FilterProxy::clearSearchTerm()
     }
 }
 
-void FilterProxy::setRowQueued( int row )
-{
-    Model::instance()->setRowQueued( rowToSource( row ) );
-}
-
-void FilterProxy::setRowDequeued( int row )
-{
-    Model::instance()->setRowDequeued( rowToSource( row ) );
-}
-
 }
 
 #include "FilterProxy.moc"
