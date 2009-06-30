@@ -200,27 +200,6 @@ int FilterProxy::rowFromSource( int row ) const
     return index.row();
 }
 
-bool FilterProxy::rowExists( int row ) const
-{
-    QModelIndex index = this->index( row, 0 );
-    return index.isValid();
-}
-
-void FilterProxy::setActiveRow( int row )
-{
-    m_belowModel->setActiveRow( rowToSource( row ) );
-}
-
-Meta::TrackPtr FilterProxy::trackAt(int row) const
-{
-    return m_belowModel->trackAt( rowToSource( row ) );
-}
-
-int FilterProxy::totalLength() const
-{
-    return m_belowModel->totalLength();
-}
-
 void FilterProxy::clearSearchTerm()
 {
     m_belowModel->clearSearchTerm();
@@ -230,11 +209,6 @@ void FilterProxy::clearSearchTerm()
         invalidateFilter();
         emit( layoutChanged() );
     }
-}
-
-Qt::DropActions FilterProxy::supportedDropActions() const
-{
-    return m_belowModel->supportedDropActions();
 }
 
 void FilterProxy::setRowQueued( int row )

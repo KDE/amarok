@@ -86,12 +86,6 @@ Playlist::GroupingProxy::parent( const QModelIndex& i ) const
     return sourceModel()->parent( i );
 }
 
-int
-Playlist::GroupingProxy::rowCount( const QModelIndex& i ) const
-{
-    return m_belowModel->rowCount( i );
-}
-
 QModelIndex
 Playlist::GroupingProxy::mapToSource( const QModelIndex& i ) const
 {
@@ -122,24 +116,6 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
         return ( row % 2 == 1 );
 
     return m_belowModel->data( index, role );
-}
-
-void
-Playlist::GroupingProxy::setActiveRow( int row ) const
-{
-    m_belowModel->setActiveRow( row );
-}
-
-Meta::TrackPtr
-Playlist::GroupingProxy::trackAt( int row ) const
-{
-    return m_belowModel->trackAt( row );
-}
-
-Qt::DropActions
-Playlist::GroupingProxy::supportedDropActions() const
-{
-    return m_belowModel->supportedDropActions();
 }
 
 void
@@ -282,11 +258,6 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
         return ( *track1->album().data() ) == ( *track2->album().data() );
 
     return false;
-}
-
-int Playlist::GroupingProxy::totalLength()
-{
-    return m_belowModel->totalLength();
 }
 
 int Playlist::GroupingProxy::tracksInGroup( int row ) const

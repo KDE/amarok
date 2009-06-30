@@ -144,7 +144,15 @@ public:
      * @return the number of rows.
      */
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const = 0;
-/**
+
+    /**
+     * Checks if a row exists in the current model or proxy.
+     * @param row the row in the model or proxy.
+     * @return true is the row exists, otherwise false.
+     */
+    virtual bool rowExists( int row ) const = 0;
+
+    /**
      * Sets the currently active (playing) row, translated for this proxy.
      * @param row the row to be set as active.
      */

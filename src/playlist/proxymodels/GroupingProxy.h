@@ -69,15 +69,9 @@ public:
     // functions from QAbstractProxyModel
     QModelIndex index( int, int c = 0, const QModelIndex& parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex& ) const;
-    int rowCount( const QModelIndex& idx = QModelIndex() ) const;
     QModelIndex mapToSource( const QModelIndex& ) const;
     QModelIndex mapFromSource( const QModelIndex& ) const;
     QVariant data( const QModelIndex &index, int role ) const;
-
-    // wrapped functions from PlaylistModel
-    void setActiveRow( int ) const;
-    Meta::TrackPtr trackAt( int ) const;
-    Qt::DropActions supportedDropActions() const;
 
     // grouping-related functions
     void setCollapsed( int, bool ) const;
@@ -86,8 +80,6 @@ public:
 
     int tracksInGroup( int row ) const;
     int lengthOfGroup( int row ) const;
-
-    int totalLength();
 
 signals:
     /**
@@ -111,12 +103,6 @@ signals:
      * @param row the row to be set as active.
      */
     void setActiveRow( int row );
-
-    /**
-     * Asks the model sitting below the total length of the playlist.
-     * @return the total length of the playlist.
-     */
-    int totalLength() const;
 
 private slots:
     void modelDataChanged( const QModelIndex&, const QModelIndex& );

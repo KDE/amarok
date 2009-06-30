@@ -98,16 +98,10 @@ public:
     void setRowQueued( int row );
     void setRowDequeued( int row );
 
-    bool rowExists( int row ) const;
-    void setActiveRow( int row );
-    Meta::TrackPtr trackAt( int row ) const;
-
-    Qt::DropActions supportedDropActions() const;
-
-    int totalLength() const;
-
     void clearSearchTerm();
 
+//FIXME: when the proxies are despaghettified, the following two methods need to be protected:
+//protected:
     int rowToSource( int row ) const;
     int rowFromSource( int row ) const;
 

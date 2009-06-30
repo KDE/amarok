@@ -50,25 +50,8 @@ public:
      */
     bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
 
-// Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
-// pretty much just forward stuff through the stack of proxies start here.
-// Please keep them sorted alphabetically.  -- To
-
-    /**
-     * Forwards the number of rows from the FilterProxy as SortProxy by definition shouldn't
-     * change the row count.
-     * @param parent the parent of the rows to count.
-     * @return the number of rows.
-     */
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-
-    /**
-     * Checks if a row exists in the ProxyModel.
-     * @param row the row in the Proxy.
-     * @return true is the row exists, otherwise false.
-     */
-    bool rowExists( int row ) const;
-
+//FIXME: when the proxies are despaghettified, the following two methods need to be protected:
+//protected:
     /**
      * Converts a row index that's valid in the proxy below this one to a row index valid
      * in this proxy, with sanity checks.
@@ -84,31 +67,6 @@ public:
      * @return the index of the row that's valid in the proxy below this one.
      */
     int rowToSource( int row ) const;
-
-    /**
-     * Sets the currently active (playing) row, translated for this proxy.
-     * @param row the row to be set as active.
-     */
-    void setActiveRow( int row );
-
-    /**
-     * Returns the drop actions supported by this model.
-     * @return the drop actions.
-     */
-    Qt::DropActions supportedDropActions() const;
-
-    /**
-     * Asks the model sitting below the total length of the playlist.
-     * @return the total length of the playlist.
-     */
-    int totalLength() const;
-
-    /**
-     * Returns a pointer to the track at a given row.
-     * @param row the row to return the track pointer for.
-     * @return a pointer to the track at the given row.
-     */
-    Meta::TrackPtr trackAt( int row ) const;
 
 public slots:
     /**

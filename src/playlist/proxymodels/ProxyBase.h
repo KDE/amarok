@@ -169,6 +169,50 @@ public:
      */
     virtual QStringList mimeTypes() const;
 
+    /**
+     * Returns the number of rows exposed by the current proxy.
+     * The default implementation forwards the row count of the model below it.
+     * @param parent the parent of the rows to count.
+     * @return the number of rows.
+     */
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    /**
+     * Checks if a row exists in the current proxy.
+     * @param row the row in the proxy.
+     * @return true is the row exists, otherwise false.
+     */
+    virtual bool rowExists( int row ) const;
+
+    /**
+     * Sets the currently active (playing) row, translated for the current proxy.
+     * @param row the row to be set as active.
+     */
+    virtual void setActiveRow( int row );
+
+    /**
+     * Returns the drop actions supported by this proxy.
+     * The default implementation returns the drop actions supported by the proxy or model
+     * below the current proxy.
+     * @return the drop actions.
+     */
+    virtual Qt::DropActions supportedDropActions() const;
+
+    /**
+     * Returns the total length of the playlist.
+     * The default implementation forwards the total time from the proxy or model below the
+     * current proxy.
+     * @return the total length of the playlist.
+     */
+    virtual int totalLength() const;
+
+    /**
+     * Returns a pointer to the track at a given row in the current proxy.
+     * @param row the row to return the track pointer for.
+     * @return a pointer to the track at the given row.
+     */
+    virtual Meta::TrackPtr trackAt( int row ) const;
+
 
 //FIXME: When every proxy talks only to the proxy below it, these should be made protected
 //       here and and in subclasses that reimplement them. For now, they have to be public

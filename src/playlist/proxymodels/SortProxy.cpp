@@ -81,19 +81,6 @@ SortProxy::updateSortMap( SortScheme *scheme)
 // Please keep them sorted alphabetically.  -- Téo
 
 int
-SortProxy::rowCount(const QModelIndex& parent) const
-{
-    return m_belowModel->rowCount( parent );
-}
-
-bool
-SortProxy::rowExists( int row ) const
-{
-    QModelIndex index = this->index( row, 0 );
-    return index.isValid();
-}
-
-int
 SortProxy::rowFromSource( int row ) const
 {
     QModelIndex sourceIndex = sourceModel()->index( row, 0 );
@@ -113,30 +100,6 @@ SortProxy::rowToSource( int row ) const
     if ( !sourceIndex.isValid() )
         return -1;
     return sourceIndex.row();
-}
-
-void
-SortProxy::setActiveRow( int row )
-{
-    m_belowModel->setActiveRow( rowToSource( row ) );
-}
-
-Qt::DropActions
-SortProxy::supportedDropActions() const
-{
-    return m_belowModel->supportedDropActions();
-}
-
-int
-SortProxy::totalLength() const
-{
-    return m_belowModel->totalLength();
-}
-
-Meta::TrackPtr
-SortProxy::trackAt(int row) const
-{
-    return m_belowModel->trackAt( rowToSource( row ) );
 }
 
 }   //namespace Playlist

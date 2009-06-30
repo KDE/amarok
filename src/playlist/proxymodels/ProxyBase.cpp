@@ -132,6 +132,43 @@ ProxyBase::mimeTypes() const
     return m_belowModel->mimeTypes();
 }
 
+int
+ProxyBase::rowCount(const QModelIndex& parent) const
+{
+    return m_belowModel->rowCount( parent );
+}
+
+bool
+ProxyBase::rowExists( int row ) const
+{
+    QModelIndex index = this->index( row, 0 );
+    return index.isValid();
+}
+
+void
+ProxyBase::setActiveRow( int row )
+{
+    m_belowModel->setActiveRow( rowToSource( row ) );
+}
+
+Qt::DropActions
+ProxyBase::supportedDropActions() const
+{
+    return m_belowModel->supportedDropActions();
+}
+
+int
+ProxyBase::totalLength() const
+{
+    return m_belowModel->totalLength();
+}
+
+Meta::TrackPtr
+ProxyBase::trackAt(int row) const
+{
+    return m_belowModel->trackAt( rowToSource( row ) );
+}
+
 }   //namespace Playlist
 
 #include "ProxyBase.moc"
