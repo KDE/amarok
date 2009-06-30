@@ -35,14 +35,14 @@ public:
     PixmapViewer( QWidget *widget, const QPixmap pixmap );
 
 public slots:
-    void setZoomFactor( float f );
+    void setZoomFactor( float );
 
 signals:
     void zoomFactorChanged( float );
 
 protected:
-    void paintEvent( QPaintEvent *event );
-    void wheelEvent( QWheelEvent *event );
+    void paintEvent( QPaintEvent* );
+    void wheelEvent( QWheelEvent* );
 
 private:
     QPixmap *m_pixmap;
