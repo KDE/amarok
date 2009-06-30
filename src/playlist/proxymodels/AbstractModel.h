@@ -180,7 +180,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~AbstractModel();
+    virtual ~AbstractModel() {};
 };
 
 }   //namespace Playlist
