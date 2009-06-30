@@ -39,24 +39,25 @@ PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap pix )
 
     if ( KApplication::desktop()->width() < m_pixmap->width() )
     {
-        m_zoomFactor = (( float ) KApplication::desktop()->width() /
+        m_zoomFactor = ( ( float ) KApplication::desktop()->width() /
                         ( float ) m_pixmap->width() ) - 0.5;
     }
 
-    setMinimumSize( m_pixmap->width()*m_zoomFactor, m_pixmap->height()*m_zoomFactor );
+    setMinimumSize( m_pixmap->width() * m_zoomFactor, m_pixmap->height() * m_zoomFactor );
 
     // move window to the center of the screen
     // (multiple screens: same screen as parent widget)
     QWidget *p = dynamic_cast<QWidget*>( parent() );
-    p->move(( KApplication::desktop()->availableGeometry( p ).width()
-              - ( m_pixmap->width()*m_zoomFactor ) ) / 2,
+    p->move( ( KApplication::desktop()->availableGeometry( p ).width()
+              - ( m_pixmap->width() * m_zoomFactor ) ) / 2,
             ( KApplication::desktop()->availableGeometry( p ).height()
-              - ( m_pixmap->height()*m_zoomFactor ) ) / 2 );
+              - ( m_pixmap->height() * m_zoomFactor ) ) / 2 );
 
 }
 
 
-void PixmapViewer::setZoomFactor( float f )
+void
+PixmapViewer::setZoomFactor( float f )
 {
     int w, h;
 
@@ -77,21 +78,20 @@ void PixmapViewer::setZoomFactor( float f )
     repaint();
 }
 
-void PixmapViewer::paintEvent( QPaintEvent *event )
+void
+PixmapViewer::paintEvent( QPaintEvent *event )
 {
     int xoffset, yoffset;
     bool drawBorder = false;
 
-    if ( width() > m_pixmap->width()*m_zoomFactor )
+    if ( width() > m_pixmap->width() * m_zoomFactor )
     {
         xoffset = ( width() - m_pixmap->width() * m_zoomFactor ) / 2;
         drawBorder = true;
     }
     else
     {
-
         xoffset = 0;
-
     }
 
     if ( height() > m_pixmap->height()*m_zoomFactor )
@@ -101,15 +101,14 @@ void PixmapViewer::paintEvent( QPaintEvent *event )
     }
     else
     {
-
         yoffset = 0;
     }
 
     QWidget *parentWidget = dynamic_cast<QWidget*>( parent() );
-    parentWidget->move(( KApplication::desktop()->availableGeometry( parentWidget ).width()
-                         - ( m_pixmap->width()*m_zoomFactor ) ) / 2,
+    parentWidget->move( ( KApplication::desktop()->availableGeometry( parentWidget ).width()
+                         - ( m_pixmap->width() * m_zoomFactor ) ) / 2,
                        ( KApplication::desktop()->availableGeometry( parentWidget ).height()
-                         - ( m_pixmap->height()*m_zoomFactor ) ) / 2 );
+                         - ( m_pixmap->height() * m_zoomFactor ) ) / 2 );
 
     QPainter p( this );
     p.save();
@@ -120,12 +119,13 @@ void PixmapViewer::paintEvent( QPaintEvent *event )
     if ( drawBorder )
     {
         p.setPen( Qt::black );
-        p.drawRect( xoffset - 1, yoffset - 1, m_pixmap->width()*m_zoomFactor + 1,
-                    m_pixmap->height()*m_zoomFactor + 1 );
+        p.drawRect( xoffset - 1, yoffset - 1, m_pixmap->width() * m_zoomFactor + 1,
+                    m_pixmap->height() * m_zoomFactor + 1 );
     }
 }
 
-void PixmapViewer::wheelEvent( QWheelEvent *event )
+void
+PixmapViewer::wheelEvent( QWheelEvent *event )
 {
     float f;
 
