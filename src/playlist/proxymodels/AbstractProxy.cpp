@@ -24,4 +24,11 @@
 namespace Playlist
 {
 
+AbstractProxy::AbstractProxy()
+    : QSortFilterProxyModel()
+{}
+
+AbstractProxy::~AbstractProxy()
+{}
+
 }   //namespace Playlist

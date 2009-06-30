@@ -25,6 +25,29 @@
 namespace Playlist
 {
 
+/**
+ * A ProxyModel that implements all the common forwarders for the interface of any
+ * playlist proxy.
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ */
+class AbstractProxy : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+
+
+private:
+    /**
+     * Constructor.
+     */
+    AbstractProxy();
+
+    /**
+     * Destructor.
+     */
+    virtual ~AbstractProxy();
+
+};
 
 }   //namespace Playlist
 
