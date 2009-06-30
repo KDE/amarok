@@ -112,6 +112,26 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
     return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
+Qt::ItemFlags
+ProxyBase::flags( const QModelIndex &index ) const
+{
+    //FIXME: This call is the same in all proxies but I think it should use a mapToSource()
+    //       every time. Needs to be checked.       -- Téo
+    return m_belowModel->flags( index );
+}
+
+QMimeData *
+ProxyBase::mimeData( const QModelIndexList &indexes ) const
+{
+    return m_belowModel->mimeData( indexes ); //TODO: probably needs mapToSource!
+}
+
+QStringList
+ProxyBase::mimeTypes() const
+{
+    return m_belowModel->mimeTypes();
+}
+
 }   //namespace Playlist
 
 #include "ProxyBase.moc"

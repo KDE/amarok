@@ -148,6 +148,27 @@ public:
      */
     virtual int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
 
+    /**
+     * Returns the item flags for the given index.
+     * @param index the index to retrieve the flags for.
+     * @return the item flags.
+     */
+    virtual Qt::ItemFlags flags( const QModelIndex& index ) const;
+
+    /**
+     * Returns an object that contains serialized items of data corresponding to the list
+     * of indexes specified.
+     * @param indexes a list of indexes.
+     * @return the MIME data corresponding to the indexes.
+     */
+    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
+
+    /**
+     * Returns a list of MIME types that can be used to describe a list of model indexes.
+     * @return a QStringList of MIME types.
+     */
+    virtual QStringList mimeTypes() const;
+
 
 //FIXME: When every proxy talks only to the proxy below it, these should be made protected
 //       here and and in subclasses that reimplement them. For now, they have to be public

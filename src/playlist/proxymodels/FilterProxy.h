@@ -103,9 +103,6 @@ public:
     Meta::TrackPtr trackAt( int row ) const;
 
     Qt::DropActions supportedDropActions() const;
-    Qt::ItemFlags flags( const QModelIndex& ) const;
-    QStringList mimeTypes() const;
-    QMimeData* mimeData( const QModelIndexList& ) const;
 
     int totalLength() const;
 

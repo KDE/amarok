@@ -55,26 +55,6 @@ public:
 // Please keep them sorted alphabetically.  -- To
 
     /**
-     * Returns the item flags for the given index.
-     * @param index the index to retrieve the flags for.
-     * @return the item flags.
-     */
-    Qt::ItemFlags flags( const QModelIndex& index ) const;
-
-    /**
-     * Returns an object that contains serialized items of data corresponding to the list of indexes specified.
-     * @param indexes a list of indexes.
-     * @return the MIME data corresponding to the indexes.
-     */
-    QMimeData* mimeData( const QModelIndexList &indexes ) const;
-
-    /**
-     * Returns a list of MIME types that can be used to describe a list of model indexes.
-     * @return a QStringList of MIME types.
-     */
-    QStringList mimeTypes() const;
-
-    /**
      * Forwards the number of rows from the FilterProxy as SortProxy by definition shouldn't
      * change the row count.
      * @param parent the parent of the rows to count.

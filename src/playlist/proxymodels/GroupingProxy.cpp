@@ -142,24 +142,6 @@ Playlist::GroupingProxy::supportedDropActions() const
     return m_belowModel->supportedDropActions();
 }
 
-Qt::ItemFlags
-Playlist::GroupingProxy::flags( const QModelIndex &index ) const
-{
-    return m_belowModel->flags( index );
-}
-
-QStringList
-Playlist::GroupingProxy::mimeTypes() const
-{
-    return m_belowModel->mimeTypes();
-}
-
-QMimeData*
-Playlist::GroupingProxy::mimeData( const QModelIndexList& indexes ) const
-{
-    return m_belowModel->mimeData( indexes );
-}
-
 void
 Playlist::GroupingProxy::setCollapsed( int, bool ) const
 {

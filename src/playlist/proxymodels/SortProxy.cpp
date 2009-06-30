@@ -80,26 +80,6 @@ SortProxy::updateSortMap( SortScheme *scheme)
 // pretty much just forward stuff through the stack of proxies start here.
 // Please keep them sorted alphabetically.  -- Téo
 
-Qt::ItemFlags
-SortProxy::flags( const QModelIndex &index ) const
-{
-    //FIXME: This call is the same in all proxies but I think it should use a mapToSource()
-    //       every time. Needs to be checked.       --Téo
-    return m_belowModel->flags( index );
-}
-
-QMimeData *
-SortProxy::mimeData( const QModelIndexList &indexes ) const
-{
-    return m_belowModel->mimeData( indexes );     //TODO: probably needs mapToSource!!!
-}
-
-QStringList
-SortProxy::mimeTypes() const
-{
-    return m_belowModel->mimeTypes();
-}
-
 int
 SortProxy::rowCount(const QModelIndex& parent) const
 {

@@ -78,9 +78,6 @@ public:
     void setActiveRow( int ) const;
     Meta::TrackPtr trackAt( int ) const;
     Qt::DropActions supportedDropActions() const;
-    Qt::ItemFlags flags( const QModelIndex& ) const;
-    QStringList mimeTypes() const;
-    QMimeData* mimeData( const QModelIndexList& ) const;
 
     // grouping-related functions
     void setCollapsed( int, bool ) const;

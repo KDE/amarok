@@ -237,21 +237,6 @@ Qt::DropActions FilterProxy::supportedDropActions() const
     return m_belowModel->supportedDropActions();
 }
 
-Qt::ItemFlags FilterProxy::flags( const QModelIndex &index ) const
-{
-    return m_belowModel->flags( index );
-}
-
-QStringList FilterProxy::mimeTypes() const
-{
-    return m_belowModel->mimeTypes();
-}
-
-QMimeData * FilterProxy::mimeData( const QModelIndexList &index ) const
-{
-    return m_belowModel->mimeData( index );
-}
-
 void FilterProxy::setRowQueued( int row )
 {
     Model::instance()->setRowQueued( rowToSource( row ) );
