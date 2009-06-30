@@ -46,10 +46,10 @@ Playlist::GroupingProxy::destroy()
 }
 
 Playlist::GroupingProxy::GroupingProxy()
-    : ProxyBase( 0 )
+    : ProxyBase( Playlist::SortProxy::instance() )
 {
     m_belowModel = SortProxy::instance();
-    setSourceModel( dynamic_cast< SortProxy * >( m_belowModel ) );
+    setSourceModel( dynamic_cast< Playlist::SortProxy * >( m_belowModel ) );
     // signal proxies
     connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
     connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
@@ -74,8 +74,7 @@ Playlist::GroupingProxy::~GroupingProxy()
 QModelIndex
 Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
 {
-    //FIXME
-    if ( SortProxy::instance()->rowExists( r ) )
+    if ( m_belowModel->rowExists( r ) )
         return createIndex( r, c );
     return QModelIndex();
 }
@@ -266,6 +265,7 @@ int Playlist::GroupingProxy::tracksInGroup( int row ) const
     //otherwise mess up ( and crash ) when a filter is applied
     //FIXME: this needs to talk to SortProxy only as currently is fails
     //    with a sorted playlist.   --Téo 17/6/2009
+
     row = SortProxy::instance()->rowFromSource( FilterProxy::instance()->rowFromSource( row ) );
 
     return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;

@@ -36,7 +36,7 @@ SortProxy::instance()
 }
 
 SortProxy::SortProxy()
-    : ProxyBase()
+    : ProxyBase( FilterProxy::instance() )
 {
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
