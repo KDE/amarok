@@ -91,6 +91,12 @@ ProxyBase::filterUpdated()
     ( ( ProxyBase *)m_belowModel )->filterUpdated();
 }
 
+int
+ProxyBase::find( const QString &searchTerm, int searchFields )
+{
+    return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );
+}
+
 }   //namespace Playlist
 
 #include "ProxyBase.moc"

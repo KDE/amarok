@@ -81,12 +81,6 @@ SortProxy::updateSortMap( SortScheme *scheme)
 // Please keep them sorted alphabetically.  -- Téo
 
 int
-SortProxy::find( const QString &searchTerm, int searchFields )
-{
-    return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );
-}
-
-int
 SortProxy::findNext( const QString &searchTerm, int selectedRow, int searchFields )
 {
     return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );

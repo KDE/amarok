@@ -109,6 +109,17 @@ public:
      */
     virtual void filterUpdated();
 
+    /**
+     * Forwards a search down through the stack of ProxyModels.
+     * Find the first track in the playlist that matches the search term in one of the
+     * specified search fields. Playlist::Model::find() emits found() or notFound() depending
+     * on whether a match is found.
+     * @param searchTerm The term to search for.
+     * @param searchFields A bitmask specifying the fields to look in.
+     * @return The row of the first found match, -1 if no match is found.
+     */
+    virtual int find( const QString &searchTerm, int searchFields );
+
 
 //FIXME: When every proxy talks only to the proxy below it, these should be made protected
 //       here and and in subclasses that reimplement them. For now, they have to be public
@@ -116,9 +127,10 @@ public:
 //protected:
     /**
      * Converts a row index that's valid in the proxy below this one to a row index valid
-     * in this proxy, with sanity checks.
+     * in this proxy.
      * The default implementation returns the same row, and results in a perfectly pass-
-     * -through proxy.
+     * -through proxy. Reimplement this method with mapFromSource and sanity checks if your
+     * proxy adds, removes or sorts rows.
      * @param row the row index to be converted.
      * @return the index of the row that's valid in this proxy.
      */
@@ -127,9 +139,10 @@ public:
 
     /**
      * Converts a row index that's valid in this proxy to a row index valid in the proxy
-     * below this one, with sanity checks.
+     * below this one.
      * The default implementation returns the same row, and results in a perfectly pass-
-     * -through proxy.
+     * -through proxy. Reimplement this method with mapToSource and sanity checks if your
+     * proxy adds, removes or sorts rows.
      * @param row the row index to be converted.
      * @return the index of the row that's valid in the proxy below this one.
      */

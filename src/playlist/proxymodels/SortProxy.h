@@ -55,17 +55,6 @@ public:
 // Please keep them sorted alphabetically.  -- To
 
     /**
-     * Forwards a search down through the stack of ProxyModels.
-     * Find the first track in the playlist that matches the search term in one of the
-     * specified search fields. Playlist::Model::find() emits found() or notFound() depending on
-     * whether a match is found.
-     * @param searchTerm The term to search for.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match, -1 if no match is found.
-     */
-    int find( const QString &searchTerm, int searchFields );
-
-    /**
      * Forwards through the stack of ProxyModels a top to bottom search for the next item.
      * Find the first track below a given row that matches the search term in one of the
      * specified search fields. Playlist::Model::findNext() emits found() or notFound() depending on

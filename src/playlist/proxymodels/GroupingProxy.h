@@ -90,7 +90,6 @@ public:
     int tracksInGroup( int row ) const;
     int lengthOfGroup( int row ) const;
 
-    int find( const QString & searchTerm, int fields );
     int findNext( const QString & searchTerm, int selectedRow, int fields  );
     int findPrevious( const QString & searchTerm, int selectedRow, int fields  );
 

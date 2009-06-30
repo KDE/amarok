@@ -107,7 +107,6 @@ public:
     QStringList mimeTypes() const;
     QMimeData* mimeData( const QModelIndexList& ) const;
 
-    int find( const QString & searchTerm, int searchFields );
     int findNext( const QString & searchTerm, int selectedRow, int searchFields );
     int findPrevious( const QString & searchTerm, int selectedRow, int searchFields );
     int totalLength() const;
