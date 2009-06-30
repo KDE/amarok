@@ -2,8 +2,8 @@
 *   Copy Cover Script for Amarok 2.0                                      *
 *                                                                         *
 *   Copyright                                                             *
-*   (C) 2008 Peter ZHOU  <peterzhoulei@gmail.com>                         *
 *   (C) 2009 Sven Krohlas <sven@getamarok.com>                            *
+*   (C) 2008 Simon Esneault  <simon.esneault@gmail.com>                   *
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -29,38 +29,37 @@ Importer.loadQtBinding( "qt.uitools" );
 function copyCover()
 {
 	var TrackInfo = Amarok.Engine.currentTrack();
-	if (TrackInfo.isValid) // if track is valid
+	if ( TrackInfo.isValid ) // if track is valid
 	{
-		var path_image=TrackInfo.imageUrl.substring(7);
-		var image=new QImage(path_image);
+		var path_image=TrackInfo.imageUrl.substring( 7 );
+		var image=new QImage( path_image );
 		if ( !image.isNull() ) // if we have a cover
 		{
 			// Make a the correct path
-			var path=TrackInfo.path.substring(0, TrackInfo.path.lastIndexOf("/")+1);
+			var path=TrackInfo.path.substring( 0, TrackInfo.path.lastIndexOf( "/" ) + 1 );
             
             if ( writeCover == true )
             {
                 var patha=path+"cover.png";
                 
                 // try to load the image first, to prevent rewritting
-                var image2 = new QImage (patha);
+                var image2 = new QImage ( patha );
                 if ( !image2.isNull() ) // if already an image
                 {
-                    if (image2 != image) // and image are different
+                    if ( image2 != image ) // and image are different
                     {
-                        if(image.save(patha))
-                            Amarok.Window.Statusbar.shortMessage("Copy-Cover has written "+ patha);
+                        if( image.save( patha ) )
+                            Amarok.Window.Statusbar.shortMessage( "Copy-Cover has written " + patha );
                         else
-                            Amarok.Window.Statusbar.shortMessage("Copy-Cover can not write "+ patha);
+                            Amarok.Window.Statusbar.shortMessage( "Copy-Cover can not write " + patha );
                     }
                 }
                 else
                 {
-                
-                    if(image.save(path))
-                        Amarok.Window.Statusbar.shortMessage("Copy-Cover has written "+ patha);
+                    if( image.save( patha ) )
+                        Amarok.Window.Statusbar.shortMessage( "Copy-Cover has written " + patha );
                     else
-                        Amarok.Window.Statusbar.shortMessage("Copy-Cover can not write "+ patha);
+                        Amarok.Window.Statusbar.shortMessage( "Copy-Cover can not write " + patha );
                 }
             }
             
@@ -69,34 +68,34 @@ function copyCover()
                 path+=TrackInfo.artist+"-"+TrackInfo.album+".png";
                 
                 // try to load the image first, to prevent rewritting
-                var image2 = new QImage (path);
+                var image2 = new QImage( path );
                 if ( !image2.isNull() ) // if already an image
                 {
-                    if (image2 != image) // and image are different
+                    if ( image2 != image ) // and image are different
                     {
-                        if(image.save(path))
-                            Amarok.Window.Statusbar.shortMessage("Copy-Cover has written "+ path);
+                        if( image.save(path ) )
+                            Amarok.Window.Statusbar.shortMessage( "Copy-Cover has written " + path );
                         else
-                            Amarok.Window.Statusbar.shortMessage("Copy-Cover can not write "+ path);
+                            Amarok.Window.Statusbar.shortMessage( "Copy-Cover can not write " + path );
                     }
                 }
                 else
                 {
                 
-                    if(image.save(path))
-                        Amarok.Window.Statusbar.shortMessage("Copy-Cover has written "+ path);
+                    if( image.save( path ) )
+                        Amarok.Window.Statusbar.shortMessage( "Copy-Cover has written " + path );
                     else
-                        Amarok.Window.Statusbar.shortMessage("Copy-Cover can not write "+ path);
+                        Amarok.Window.Statusbar.shortMessage( "Copy-Cover can not write " + path );
                 }
             }            
 		}
 		else
-			Amarok.Window.Statusbar.shortMessage("Copy-Cover can not read the image");
+			Amarok.Window.Statusbar.shortMessage( "Copy-Cover can not read the image" );
 		
 	}	
 	else
 	{
-		Amarok.debug("COPY-COVER -> Track not valid ");
+		Amarok.debug( "COPY-COVER -> Track not valid " );
 	}  
 }
 
@@ -104,7 +103,7 @@ function copyCover()
 function saveConfiguration()
 {
     //Pretty messy :S
-    if ( mainWindow.children()[2].children()[0].checked )
+    if ( mainWindow.widget.checkBox.checked )
     {
         Amarok.Script.writeConfig( "writeCover", "true" );
         writeCover = true;
@@ -114,7 +113,7 @@ function saveConfiguration()
         Amarok.Script.writeConfig( "writeCover", "false" );
         writeCover = false;
     }
-    if ( mainWindow.children()[2].children()[1].checked )
+    if ( mainWindow.widget.checkBox_2.checked )
     {
         Amarok.Script.writeConfig( "writeArtistAlbum", "true" );
         writeArtistAlbum = true;
@@ -134,7 +133,7 @@ function readConfiguration()
         mainWindow.widget.checkBox.setChecked( false );
 
     if ( Amarok.Script.readConfig( "writeArtistAlbum", "false" ) == "false" )
-        mainWindow.widget.checkBox.setChecked( false );
+        mainWindow.widget.checkBox_2.setChecked( false );
     else
         mainWindow.widget.checkBox_2.setChecked( true );
 
@@ -143,7 +142,7 @@ function readConfiguration()
 function openSettings()
 {
     mainWindow.show();
-    Amarok.debug("COPY-COVER -> Show configuration");
+    Amarok.debug( "COPY-COVER -> Show configuration" );
 }
 
 function init()
@@ -154,7 +153,7 @@ function init()
         var UIloader = new QUiLoader( this );
         var uifile = new QFile ( Amarok.Info.scriptPath() + "/copycover.ui" );
         uifile.open( QIODevice.ReadOnly );
-        mainWindow = UIloader.load( uifile, this); //load the ui file
+        mainWindow = UIloader.load( uifile, this ); //load the ui file
         uifile.close();
 
         // read configuration
@@ -165,16 +164,15 @@ function init()
         mainWindow.buttonBox.rejected.connect( readConfiguration );
         
         // Add tool menu, and a callback
-        Amarok.Window.addToolsSeparator();
-        Amarok.Window.addToolsMenu("copycov", "Copy Cover Settings");
-        Amarok.Window.ToolsMenu.copycov['triggered()'].connect(openSettings);
+        Amarok.Window.addSettingsMenu( "copycov", "Copy Cover Settings", "amarok" );
+        Amarok.Window.SettingsMenu.copycov['triggered()'].connect(openSettings );
         
         // call every track changed
-        Amarok.Engine.trackChanged.connect(copyCover) ;
+        Amarok.Engine.trackChanged.connect( copyCover ) ;
     }
     catch( err )
     {
-        Amarok.debug ( err );
+        Amarok.debug( err );
     }
 }
 
