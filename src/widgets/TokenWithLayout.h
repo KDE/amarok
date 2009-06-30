@@ -21,6 +21,20 @@
 
 class QMenu;
 
+class Wrench : public QLabel
+{
+    Q_OBJECT
+public:
+    Wrench( QWidget *parent );
+protected:
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+    void mouseReleaseEvent( QMouseEvent *e );
+    void paintEvent( QPaintEvent *pe );
+signals:
+    void clicked();
+};
+
 class TokenWithLayoutFactory : public TokenFactory
 {
 public:
@@ -62,9 +76,15 @@ public slots:
     void setWidthForced( bool );
 
 protected:
+    virtual void enterEvent(QEvent *);
+    virtual bool eventFilter( QObject*, QEvent* );
     virtual void fillMenu( QMenu * menu );
+    virtual void leaveEvent(QEvent *);
     virtual void menuExecuted( const QAction* action );
-    virtual void contextMenuEvent( QContextMenuEvent * event );
+    virtual void timerEvent( QTimerEvent* );
+
+private slots:
+    void showConfig();
 
 private:
 
@@ -74,6 +94,8 @@ private:
     bool m_widthForced;
     qreal m_width;
     QString m_prefix, m_suffix;
+    Wrench *m_wrench;
+    int m_wrenchTimer;
 
 };
 

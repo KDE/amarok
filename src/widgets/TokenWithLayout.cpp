@@ -21,15 +21,63 @@
 #include "TokenDropTarget.h"
 
 #include <KAction>
+#include <KColorScheme>
 #include <KHBox>
+#include <KIcon>
 #include <KLocale>
 
 #include <QActionGroup>
 #include <QContextMenuEvent>
 #include <QLayout>
-#include <QMenu>
-#include <QSlider>
 #include <QLCDNumber>
+#include <QMenu>
+#include <QPainter>
+#include <QPushButton>
+#include <QSlider>
+#include <QTimerEvent>
+
+Wrench::Wrench( QWidget *parent ) : QLabel( parent )
+{
+    setCursor( Qt::ArrowCursor );
+    setPixmap( KIcon( "configure" ).pixmap( 64 ) );
+    setScaledContents( true );
+    setMargin( 4 );
+}
+
+void Wrench::enterEvent( QEvent * )
+{
+    setMargin( 1 );
+    update();
+}
+
+void Wrench::leaveEvent( QEvent * )
+{
+    setMargin( 4 );
+    update();
+}
+
+void Wrench::mouseReleaseEvent( QMouseEvent * )
+{
+    emit clicked();
+}
+
+void Wrench::paintEvent( QPaintEvent *pe )
+{
+    QPainter p( this );
+    QColor c = palette().color( backgroundRole() );
+//     if ( underMouse() )
+//         c = KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color();
+//     p.setPen( QPen ( c, 2 ) );
+    p.setPen( Qt::NoPen );
+    c = palette().color( backgroundRole() );
+    c.setAlpha( 212 );
+    p.setBrush( c );
+    p.setRenderHint( QPainter::Antialiasing );
+    p.drawEllipse( rect() );
+    p.end();
+    QLabel::paintEvent( pe );
+}
+
 
 const QString ActionBoldName = QLatin1String( "ActionBold" );
 const QString ActionItalicName = QLatin1String( "ActionItalic" );
@@ -37,25 +85,57 @@ const QString ActionAlignLeftName = QLatin1String( "ActionAlignLeft" );
 const QString ActionAlignCenterName = QLatin1String( "ActionAlignCenter" );
 const QString ActionAlignRightName = QLatin1String( "ActionAlignRight" );
 
-Token * TokenWithLayoutFactory::createToken(const QString &text, const QString &iconName, int value, QWidget *parent)
+Token * TokenWithLayoutFactory::createToken( const QString &text, const QString &iconName, int value, QWidget *parent )
 {
     return new TokenWithLayout( text, iconName, value, parent );
 }
 
 TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent )
     : Token( text, iconName, value, parent  )
-    , m_width( 0.0 )
+    , m_width( 0.0 ), m_wrenchTimer( 0 )
 {
     m_widthForced = m_width > 0.0;
     m_alignment = Qt::AlignCenter;
     m_bold = false;
     m_italic = false;
+    m_wrench = new Wrench( this );
+    m_wrench->installEventFilter( this );
+    m_wrench->hide();
+    connect ( m_wrench, SIGNAL( clicked() ), this, SLOT( showConfig() ) );
     setFocusPolicy( Qt::ClickFocus );
 }
 
 
 TokenWithLayout::~TokenWithLayout()
 {
+    delete m_wrench;
+}
+
+void TokenWithLayout::enterEvent( QEvent *e )
+{
+    QWidget *win = window();
+    const int sz = 2*height();
+    QPoint pt = mapTo( win, rect().topLeft() );
+
+    m_wrench->setParent( win );
+    m_wrench->setFixedSize( sz, sz );
+    m_wrench->move( pt - QPoint( m_wrench->width()/3, m_wrench->height()/3 ) );
+    m_wrench->setCursor( Qt::PointingHandCursor );
+    m_wrench->raise();
+    m_wrench->show();
+
+    Token::enterEvent( e );
+}
+
+bool TokenWithLayout::eventFilter( QObject *o, QEvent *e )
+{
+    if ( e->type() == QEvent::Leave && o == m_wrench )
+    {
+        if ( m_wrenchTimer )
+            killTimer( m_wrenchTimer );
+        m_wrenchTimer = startTimer( 40 );
+    }
+    return false;
 }
 
 void TokenWithLayout::fillMenu( QMenu * menu )
@@ -124,9 +204,9 @@ void TokenWithLayout::fillMenu( QMenu * menu )
             if ( row > -1 )
             {
                 QList<Token*> tokens = editWidget->drags( row );
-                foreach (Token *t, tokens)
+                foreach ( Token *t, tokens )
                 {
-                    if (t == this)
+                    if ( t == this )
                         continue;
                     if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( t ) )
                         spareWidth -= twl->width() * 100.0;
@@ -154,6 +234,14 @@ void TokenWithLayout::fillMenu( QMenu * menu )
 
 }
 
+void TokenWithLayout::leaveEvent( QEvent *e )
+{
+    Token::leaveEvent( e );
+    if ( m_wrenchTimer )
+        killTimer( m_wrenchTimer );
+    m_wrenchTimer = startTimer( 40 );
+}
+
 void TokenWithLayout::menuExecuted( const QAction* action )
 {
     if( action->objectName() == ActionAlignLeftName )
@@ -168,7 +256,11 @@ void TokenWithLayout::menuExecuted( const QAction* action )
         setItalic( action->isChecked() );
 }
 
-void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
+// temp flag used to make the popup behave more like a toolbutton popup, can be removed w/ dialog replacement
+// code tagged "temp.popup"
+static bool configMenuVisible = false; // "temp.popup"
+
+void TokenWithLayout::showConfig()
 {
     QMenu* menu = new QMenu();
 
@@ -176,11 +268,34 @@ void TokenWithLayout::contextMenuEvent( QContextMenuEvent * event )
 
     fillMenu( menu );
 
-    QAction* action = menu->exec( mapToGlobal( event->pos() ) );
+    configMenuVisible = true; // "temp.popup"
+    QAction* action = menu->exec( QCursor::pos() - QPoint( menu->width()/2, -2 ) );
     if ( action )
         menuExecuted( action );
+    configMenuVisible = false; // "temp.popup"
 
     delete menu;
+
+    QTimerEvent te( m_wrenchTimer );
+    timerEvent( &te ); // "temp.popup"
+}
+
+void TokenWithLayout::timerEvent( QTimerEvent *te )
+{
+    if ( te->timerId() == m_wrenchTimer )
+    {
+        killTimer( m_wrenchTimer );
+        m_wrenchTimer = 0;
+        if ( !configMenuVisible ) // "temp.popup"
+        {
+            QRegion rgn;
+            rgn |= QRect( mapToGlobal( QPoint( 0, 0 ) ), QWidget::size() );
+            rgn |= QRect( m_wrench->mapToGlobal( QPoint( 0, 0 ) ), m_wrench->size() );
+            if ( !rgn.contains( QCursor::pos() ) )
+                m_wrench->hide();
+        }
+    }
+    Token::timerEvent( te );
 }
 
 Qt::Alignment TokenWithLayout::alignment()
@@ -254,7 +369,7 @@ void TokenWithLayout::setSuffix( const QString& string )
 void TokenWithLayout::setWidth( int size )
 {
     m_width = qMax( qMin( 1.0, size/100.0 ), 0.0 ) ;
-    if ( (m_width) > 0.0 )
+    if ( m_width > 0.0 )
         m_widthForced = true;
 
     emit changed();
