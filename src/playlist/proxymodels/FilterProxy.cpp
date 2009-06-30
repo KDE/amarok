@@ -216,16 +216,6 @@ Meta::TrackPtr FilterProxy::trackAt(int row) const
     return m_belowModel->trackAt( rowToSource( row ) );
 }
 
-int FilterProxy::findNext( const QString & searchTerm, int selectedRow, int searchFields )
-{
-    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );
-}
-
-int FilterProxy::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
-{
-    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );
-}
-
 int FilterProxy::totalLength() const
 {
     return m_belowModel->totalLength();

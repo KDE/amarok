@@ -80,18 +80,6 @@ SortProxy::updateSortMap( SortScheme *scheme)
 // pretty much just forward stuff through the stack of proxies start here.
 // Please keep them sorted alphabetically.  -- Téo
 
-int
-SortProxy::findNext( const QString &searchTerm, int selectedRow, int searchFields )
-{
-    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );
-}
-
-int
-SortProxy::findPrevious( const QString &searchTerm, int selectedRow, int searchFields )
-{
-    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );
-}
-
 Qt::ItemFlags
 SortProxy::flags( const QModelIndex &index ) const
 {

@@ -97,6 +97,21 @@ ProxyBase::find( const QString &searchTerm, int searchFields )
     return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );
 }
 
+int
+ProxyBase::findNext( const QString &searchTerm, int selectedRow, int searchFields )
+{
+    //FIXME: selectedRow might need to be adjusted through rowToSource now that SortProxy
+    //       changes the order of rows.     -- Téo 28/6/2009
+    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );
+}
+
+int
+ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchFields )
+{
+    //FIXME: see findNext().
+    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );
+}
+
 }   //namespace Playlist
 
 #include "ProxyBase.moc"

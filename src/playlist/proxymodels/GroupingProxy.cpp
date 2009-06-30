@@ -302,16 +302,6 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
     return false;
 }
 
-int Playlist::GroupingProxy::findNext( const QString &searchTerm, int selectedRow, int fields  )
-{
-    return m_belowModel->findNext( searchTerm, selectedRow, fields );
-}
-
-int Playlist::GroupingProxy::findPrevious( const QString &searchTerm, int selectedRow, int fields  )
-{
-    return m_belowModel->findPrevious( searchTerm, selectedRow, fields );
-}
-
 int Playlist::GroupingProxy::totalLength()
 {
     return m_belowModel->totalLength();

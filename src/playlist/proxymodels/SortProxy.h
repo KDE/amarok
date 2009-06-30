@@ -55,32 +55,6 @@ public:
 // Please keep them sorted alphabetically.  -- To
 
     /**
-     * Forwards through the stack of ProxyModels a top to bottom search for the next item.
-     * Find the first track below a given row that matches the search term in one of the
-     * specified search fields. Playlist::Model::findNext() emits found() or notFound() depending on
-     * whether a match is found. If no row is found below the current row, the function wraps
-     * around and returns the first match. If no match is found at all, -1 is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match below the offset, -1 if no match is found.
-     */
-    int findNext( const QString &searchTerm, int selectedRow, int searchFields );
-
-    /**
-     * Forwards through the stack of ProxyModels a bottom to top search for the next item.
-     * Find the first track above a given row that matches the search term in one of the
-     * specified search fields. Playlist::Model::findPrevious() emits found() or notFound() depending on
-     * whether a match is found. If no row is found above the current row, the function wraps
-     * around and returns the last match. If no match is found at all, -1 is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match above the offset, -1 if no match is found.
-     */
-    int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
-
-    /**
      * Returns the item flags for the given index.
      * @param index the index to retrieve the flags for.
      * @return the item flags.
