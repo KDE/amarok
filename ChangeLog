@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Improvements to the "Show Cover" dialog. Resizes to match the image, auto
+      centers on screen, correctly handles images too large for the screen and
+      supports zooming using the mouse wheel. Patch thanks to Pascal Pollet 
+      <pascal@bongosoft.de> (BR 175901)
     * Automatically expand collection browser search results and make the
       results keyboard accessible. Patch thanks to Tuomas Nurmi
       <tuomas@norsumanageri.org>. (BR 172379)
