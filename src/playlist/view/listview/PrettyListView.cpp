@@ -160,7 +160,7 @@ Playlist::PrettyListView::removeSelection()
         
         // Select the track immediately above the cleared are as this is the one that has internal focus.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        selectionModel()->select( model()->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+        selectionModel()->select( m_topmostProxy->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
     }
 }
 
