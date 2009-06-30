@@ -5,6 +5,7 @@ Name[pt]=Fotografias
 Name[pt_BR]=Fotografias
 Name[sv]=Foton
 Name[uk]=Фотографії
+Name[x-test]=xxPhotosxx
 Type=Service
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_photos
