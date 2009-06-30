@@ -33,6 +33,10 @@ ProxyBase::ProxyBase( QObject *parent )
 ProxyBase::~ProxyBase()
 {}
 
+// Pass-through virtual public methods, that pretty much just forward stuff through the stack
+// of proxies, start here.
+// Please keep them sorted alphabetically.  -- Téo
+
 int
 ProxyBase::activeRow() const
 {
@@ -40,17 +44,45 @@ ProxyBase::activeRow() const
     return rowFromSource( m_belowModel->activeRow() );
 }
 
-//protected:
-int
-ProxyBase::rowFromSource( int row ) const
+void
+ProxyBase::clearSearchTerm()
 {
-    return row;
+    m_belowModel->clearSearchTerm();
 }
 
 int
-ProxyBase::rowToSource( int row ) const
+ProxyBase::currentSearchFields()
 {
-    return row;
+    return m_belowModel->currentSearchFields();
+}
+
+QString
+ProxyBase::currentSearchTerm()
+{
+    return m_belowModel->currentSearchTerm();
+}
+
+QVariant
+ProxyBase::data( const QModelIndex & index, int role ) const
+{
+    //HACK around incomplete index causing a crash...
+    //note to self by Téo: is this still needed?
+    QModelIndex newIndex = this->index( index.row(), index.column() );
+
+    QModelIndex sourceIndex = mapToSource( newIndex );
+    return m_belowModel->data( sourceIndex, role );
+}
+
+bool
+ProxyBase::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
+{
+    return m_belowModel->dropMimeData( data, action, rowToSource( row ), column, parent );
+}
+
+void
+ProxyBase::filterUpdated()
+{
+    ( ( ProxyBase *)m_belowModel )->filterUpdated();
 }
 
 }   //namespace Playlist

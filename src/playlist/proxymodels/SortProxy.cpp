@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,7 +22,7 @@
 
 namespace Playlist
 {
-//To 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
+//Téo 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
 //to self and debug spam here pretty please let it be until I remove it.
 
 SortProxy* SortProxy::s_instance = 0;
@@ -51,7 +51,6 @@ SortProxy::SortProxy()
 
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-    connect( sourceModel(), SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
 }
 
@@ -79,50 +78,7 @@ SortProxy::updateSortMap( SortScheme *scheme)
 
 // Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
 // pretty much just forward stuff through the stack of proxies start here.
-// Please keep them sorted alphabetically.  -- To
-
-void
-SortProxy::clearSearchTerm()
-{
-    m_belowModel->clearSearchTerm();
-}
-
-int
-SortProxy::currentSearchFields()
-{
-    return m_belowModel->currentSearchFields();
-}
-
-QString
-SortProxy::currentSearchTerm()
-{
-    return m_belowModel->currentSearchTerm();
-}
-
-QVariant
-SortProxy::data( const QModelIndex & index, int role ) const
-{
-    //HACK around incomplete index causing a crash...
-    //note to self by To: is this still needed?
-    QModelIndex newIndex = this->index( index.row(), index.column() );
-
-    QModelIndex sourceIndex = mapToSource( newIndex );
-    return m_belowModel->data( sourceIndex, role );
-}
-
-bool
-SortProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
-{
-    return m_belowModel->dropMimeData( data, action, row, column, parent ); //TODO: this might need rowToSource
-}
-
-void
-SortProxy::filterUpdated()
-{
-    FilterProxy::instance()->filterUpdated();
-    //was:
-    //m_belowModel->filterUpdated();
-}
+// Please keep them sorted alphabetically.  -- Téo
 
 int
 SortProxy::find( const QString &searchTerm, int searchFields )
@@ -146,7 +102,7 @@ Qt::ItemFlags
 SortProxy::flags( const QModelIndex &index ) const
 {
     //FIXME: This call is the same in all proxies but I think it should use a mapToSource()
-    //       every time. Needs to be checked.       --To
+    //       every time. Needs to be checked.       --Téo
     return m_belowModel->flags( index );
 }
 

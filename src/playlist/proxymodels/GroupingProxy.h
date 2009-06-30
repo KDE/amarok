@@ -82,7 +82,6 @@ public:
     Qt::ItemFlags flags( const QModelIndex& ) const;
     QStringList mimeTypes() const;
     QMimeData* mimeData( const QModelIndexList& ) const;
-    bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
     // grouping-related functions
     void setCollapsed( int, bool ) const;
@@ -96,14 +95,7 @@ public:
     int findNext( const QString & searchTerm, int selectedRow, int fields  );
     int findPrevious( const QString & searchTerm, int selectedRow, int fields  );
 
-    void clearSearchTerm();
-
     int totalLength();
-
-    QString currentSearchTerm();
-    int currentSearchFields();
-
-    void filterUpdated();
 
 signals:
     /**

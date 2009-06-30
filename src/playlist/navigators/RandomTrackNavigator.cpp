@@ -36,7 +36,7 @@ Playlist::RandomTrackNavigator::RandomTrackNavigator()
     FilterProxy* model = FilterProxy::instance();
     connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( filterChanged() ), this, SLOT( reset() ) );
+    connect( model, SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
     reset();
 }

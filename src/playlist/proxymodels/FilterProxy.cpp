@@ -79,7 +79,6 @@ void FilterProxy::filterUpdated()
     if ( !m_passThrough )
     {
         invalidateFilter();
-        emit( filterChanged() );
         emit( layoutChanged() );
     }
 }
@@ -178,7 +177,6 @@ void FilterProxy::setPassThrough( bool passThrough )
     //make sure to update model when mode changes ( as we might have ignored and
     //number of changes to the search term )
     invalidateFilter();
-    emit( filterChanged() );
     emit( layoutChanged() );
 }
 
@@ -245,30 +243,9 @@ void FilterProxy::clearSearchTerm()
     if ( !m_passThrough )
     {
         invalidateFilter();
-        emit( filterChanged() );
         emit( layoutChanged() );
     }
 }
-
-QString FilterProxy::currentSearchTerm()
-{
-    return m_belowModel->currentSearchTerm();
-}
-
-int FilterProxy::currentSearchFields()
-{
-    return m_belowModel->currentSearchFields();
-}
-
-QVariant FilterProxy::data( const QModelIndex & index, int role ) const
-{
-     //HACK around incomplete index causing a crash...
-    QModelIndex newIndex = this->index( index.row(), index.column() );
-
-    QModelIndex sourceIndex = mapToSource( newIndex );
-    return m_belowModel->data( sourceIndex, role );
-}
-
 
 Qt::DropActions FilterProxy::supportedDropActions() const
 {
@@ -288,11 +265,6 @@ QStringList FilterProxy::mimeTypes() const
 QMimeData * FilterProxy::mimeData( const QModelIndexList &index ) const
 {
     return m_belowModel->mimeData( index );
-}
-
-bool FilterProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
-{
-    return m_belowModel->dropMimeData( data, action, row, column, parent );
 }
 
 void FilterProxy::setRowQueued( int row )

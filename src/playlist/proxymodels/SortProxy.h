@@ -55,49 +55,6 @@ public:
 // Please keep them sorted alphabetically.  -- To
 
     /**
-     * Clears the current search term.
-     */
-    void clearSearchTerm();
-
-    /**
-     * Get the current search fields bitmask.
-     * @return The current search fields.
-     */
-    int currentSearchFields();
-
-    /**
-     * Get the current search term.
-     * @return The curent search term.
-     */
-    QString currentSearchTerm();
-
-    /**
-     * Forwards the request down the proxy stack and gets the data at an index.
-     * @param index the index for which to retrieve the data from the model.
-     * @return the data from the model.
-     */
-    QVariant data( const QModelIndex& index, int role ) const;
-
-    /**
-     * Handles the data supplied by a drag and drop operation that ended with the given
-     * action.
-     * @param data the MIME data.
-     * @param action the drop action of the current drag and drop operation.
-     * @param row the row where the operation ended.
-     * @param column the column where the operation ended.
-     * @param parent the parent index.
-     * @return true if the data and action can be handled by the model; otherwise false.
-     */
-    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
-
-    /**
-     * Notify FilterProxy that the search term of searched fields has changed. Since this
-     * call does not use the parent's filter values, this method needs to be called when the
-     * values change.
-     */
-    void filterUpdated();
-
-    /**
      * Forwards a search down through the stack of ProxyModels.
      * Find the first track in the playlist that matches the search term in one of the
      * specified search fields. Playlist::Model::find() emits found() or notFound() depending on
@@ -216,12 +173,6 @@ public slots:
      * @param scheme the sorting scheme that will be applied.
      */
     void updateSortMap( SortScheme *scheme );
-
-signals:
-    /**
-     * Signal forwarded from the FilterProxy, emitted when the proxy changes its filtering.
-     */
-    void filterChanged();
 
 private:
     /**

@@ -157,7 +157,7 @@ Playlist::PrettyListView::removeSelection()
             if( i < firstRow )
                 firstRow = i;
         }
-        
+
         // Select the track immediately above the cleared are as this is the one that has internal focus.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
         selectionModel()->select( m_topmostProxy->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
@@ -233,7 +233,7 @@ Playlist::PrettyListView::showEvent( QShowEvent* event )
 {
     QTimer::singleShot( 0, this, SLOT( fixInvisible() ) );
 
-    QListView::showEvent( event ); 
+    QListView::showEvent( event );
 }
 
 // This method is a workaround for BUG 184714.
@@ -242,7 +242,7 @@ Playlist::PrettyListView::showEvent( QShowEvent* event )
 // Without this workaround the playlist stays invisible when the application is restored from the tray.
 // This is especially a problem with the Dynamic Playlist mode, which modifies the model without user interaction.
 //
-// The bug only seems to happen with Qt 4.5.x, so it might actually be a bug in Qt. 
+// The bug only seems to happen with Qt 4.5.x, so it might actually be a bug in Qt.
 void
 Playlist::PrettyListView::fixInvisible() //SLOT
 {
@@ -264,7 +264,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
     DEBUG_BLOCK
     QModelIndex index = indexAt( event->pos() );
-    
+
     if ( !index.isValid() )
         return;
 
@@ -670,7 +670,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
 void Playlist::PrettyListView::clearSearchTerm()
 {
     DEBUG_BLOCK
-            
+
     //We really do not want to reset the view to the top when the search/filter is cleared, so
     //we store the first shown row and scroll to that once the term is removed.
     QModelIndex index = indexAt( QPoint( 0, 0 ) );
@@ -712,7 +712,7 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     FilterProxy::instance()->setPassThrough( !onlyMatches );    //FIXME
 }
 
-void Playlist::PrettyListView::itemsAdded( QModelIndex& parent, int firstRow, int lastRow )
+void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstRow, int lastRow )
 {
     DEBUG_BLOCK
     Q_UNUSED( parent )
@@ -724,7 +724,7 @@ void Playlist::PrettyListView::itemsAdded( QModelIndex& parent, int firstRow, in
 
     debug() << "index has row: " << index.row();
     scrollTo( index, QAbstractItemView::PositionAtCenter );
-    
+
 }
 
 

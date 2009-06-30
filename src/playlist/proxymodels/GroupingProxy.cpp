@@ -49,7 +49,7 @@ Playlist::GroupingProxy::GroupingProxy()
     : ProxyBase( 0 )
 {
     m_belowModel = SortProxy::instance();
-    setSourceModel( ( SortProxy * )m_belowModel );
+    setSourceModel( dynamic_cast< SortProxy * >( m_belowModel ) );
     // signal proxies
     connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
     connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
@@ -164,12 +164,6 @@ QMimeData*
 Playlist::GroupingProxy::mimeData( const QModelIndexList& indexes ) const
 {
     return m_belowModel->mimeData( indexes );
-}
-
-bool
-Playlist::GroupingProxy::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
-{
-    return m_belowModel->dropMimeData( data, action, row, column, parent );
 }
 
 void
@@ -334,21 +328,6 @@ int Playlist::GroupingProxy::totalLength()
     return m_belowModel->totalLength();
 }
 
-void Playlist::GroupingProxy::clearSearchTerm()
-{
-    m_belowModel->clearSearchTerm();
-}
-
-QString Playlist::GroupingProxy::currentSearchTerm()
-{
-    return m_belowModel->currentSearchTerm();
-}
-
-int Playlist::GroupingProxy::currentSearchFields()
-{
-    return m_belowModel->currentSearchFields();
-}
-
 int Playlist::GroupingProxy::tracksInGroup( int row ) const
 {
     //unfortunately we need to map this to row from source as it will
@@ -379,10 +358,4 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
     }
 
     return totalLenght;
-}
-
-void Playlist::GroupingProxy::filterUpdated()
-{
-    //FIXME
-    SortProxy::instance()->filterUpdated();
 }

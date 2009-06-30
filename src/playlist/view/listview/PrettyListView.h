@@ -69,7 +69,7 @@ public slots:
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
 
-    void itemsAdded( QModelIndex& parent, int firstRow, int lastRow );
+    void itemsAdded( const QModelIndex& parent, int firstRow, int lastRow );
 
     virtual void engineNewTrackPlaying(); // from EngineObserver
 

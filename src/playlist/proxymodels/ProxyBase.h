@@ -56,7 +56,50 @@ public:
      * (or -1 if the current row is not represented by this proxy).
      * @return The currently active (playing) row in proxy terms.
      */
-    int activeRow() const;
+    virtual int activeRow() const;
+
+    /**
+     * Clears the current search term.
+     */
+    virtual void clearSearchTerm();
+
+    /**
+     * Get the current search fields bitmask.
+     * @return The current search fields.
+     */
+    virtual int currentSearchFields();
+
+    /**
+     * Get the current search term.
+     * @return The curent search term.
+     */
+    virtual QString currentSearchTerm();
+
+    /**
+     * Forwards the request down the proxy stack and gets the data at an index.
+     * @param index the index for which to retrieve the data from the model.
+     * @return the data from the model.
+     */
+    virtual QVariant data( const QModelIndex& index, int role ) const;
+
+    /**
+     * Handles the data supplied by a drag and drop operation that ended with the given
+     * action.
+     * @param data the MIME data.
+     * @param action the drop action of the current drag and drop operation.
+     * @param row the row where the operation ended.
+     * @param column the column where the operation ended.
+     * @param parent the parent index.
+     * @return true if the data and action can be handled by the model; otherwise false.
+     */
+    virtual bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
+
+    /**
+     * Notify FilterProxy that the search term of searched fields has changed. Since this
+     * call does not use the parent's filter values, this method needs to be called when the
+     * values change.
+     */
+    virtual void filterUpdated();
 
 
 //FIXME: When every proxy talks only to the proxy below it, these should be made protected
@@ -71,7 +114,8 @@ public:
      * @param row the row index to be converted.
      * @return the index of the row that's valid in this proxy.
      */
-    virtual int rowFromSource( int row ) const;
+    virtual inline int rowFromSource( int row ) const
+    { return row; }
 
     /**
      * Converts a row index that's valid in this proxy to a row index valid in the proxy
@@ -81,7 +125,8 @@ public:
      * @param row the row index to be converted.
      * @return the index of the row that's valid in the proxy below this one.
      */
-    virtual int rowToSource( int row ) const;
+    virtual inline int rowToSource( int row ) const
+    { return row; }
 
 signals:
     /**

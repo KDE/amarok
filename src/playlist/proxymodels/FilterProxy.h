@@ -98,8 +98,6 @@ public:
     void setRowQueued( int row );
     void setRowDequeued( int row );
 
-    QVariant data( const QModelIndex& index, int role ) const;
-
     bool rowExists( int row ) const;
     void setActiveRow( int row );
     Meta::TrackPtr trackAt( int row ) const;
@@ -108,7 +106,6 @@ public:
     Qt::ItemFlags flags( const QModelIndex& ) const;
     QStringList mimeTypes() const;
     QMimeData* mimeData( const QModelIndexList& ) const;
-    bool dropMimeData( const QMimeData*, Qt::DropAction, int, int, const QModelIndex& );
 
     int find( const QString & searchTerm, int searchFields );
     int findNext( const QString & searchTerm, int selectedRow, int searchFields );
@@ -116,8 +113,6 @@ public:
     int totalLength() const;
 
     void clearSearchTerm();
-    QString currentSearchTerm();
-    int currentSearchFields();
 
     int rowToSource( int row ) const;
     int rowFromSource( int row ) const;
@@ -162,11 +157,6 @@ signals:
      * @param the list of id's removed that are also represented by this proxy.
      */
     void removedIds( const QList<quint64>& );
-
-    /**
-     * Signal emitted when the proxy changes its filtering.
-     */
-    void filterChanged();
 
 private:
     /**
