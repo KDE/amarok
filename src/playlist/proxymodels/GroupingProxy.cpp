@@ -26,7 +26,6 @@
 #include "Debug.h"
 #include "meta/Meta.h"
 
-#include <QAbstractProxyModel>
 #include <QVariant>
 
 Playlist::GroupingProxy* Playlist::GroupingProxy::s_instance = 0;
@@ -47,7 +46,7 @@ Playlist::GroupingProxy::destroy()
 }
 
 Playlist::GroupingProxy::GroupingProxy()
-    : QAbstractProxyModel( 0 )
+    : QSortFilterProxyModel( 0 )
     , m_belowModel( SortProxy::instance() )
 {
     setSourceModel( m_belowModel );

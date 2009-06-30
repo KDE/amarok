@@ -25,7 +25,7 @@
 #include "meta/Meta.h"
 #include "SortProxy.h"
 
-#include <QAbstractProxyModel>
+#include <QSortFilterProxyModel>
 #include <QHash>
 #include <QModelIndex>
 
@@ -57,7 +57,7 @@ enum GroupMode
     Collapsed // deprecated
 };
 
-class GroupingProxy : public QAbstractProxyModel
+class GroupingProxy : public QSortFilterProxyModel
 {
 
     Q_OBJECT
