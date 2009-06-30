@@ -17,18 +17,15 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "AbstractProxy.h"
+#include "AbstractModel.h"
 
 #include "Debug.h"
 
 namespace Playlist
 {
 
-AbstractProxy::AbstractProxy()
-    : QSortFilterProxyModel()
+AbstractModel::~AbstractModel()
 {}
 
-AbstractProxy::~AbstractProxy()
-{}
 
 }   //namespace Playlist

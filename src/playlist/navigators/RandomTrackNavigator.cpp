@@ -106,7 +106,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
         }
         else if ( !m_unplayedRows.isEmpty() )
             requestedTrack = m_unplayedRows.takeFirst();
-        
+
         if ( requestedTrack == Model::instance()->activeId())
         {
             m_playedRows.prepend( requestedTrack );
@@ -135,14 +135,14 @@ Playlist::RandomTrackNavigator::requestLastTrack()
         }
 
         quint64 requestedTrack =  !m_playedRows.isEmpty() ? m_playedRows.takeFirst() : 0;
-        
+
         if ( requestedTrack == Model::instance()->activeId())
         {
             m_unplayedRows.prepend( requestedTrack );
             if ( !m_playedRows.isEmpty() )
                 requestedTrack = m_playedRows.takeFirst();
         }
-        
+
         m_unplayedRows.prepend( requestedTrack );
         return requestedTrack;
     }

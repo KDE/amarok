@@ -22,10 +22,10 @@
 #ifndef AMAROK_PLAYLISTGROUPINGPROXY_H
 #define AMAROK_PLAYLISTGROUPINGPROXY_H
 
+#include "ProxyBase.h"
 #include "meta/Meta.h"
 #include "SortProxy.h"
 
-#include <QSortFilterProxyModel>
 #include <QHash>
 #include <QModelIndex>
 
@@ -142,7 +142,7 @@ private:
     /**
      * This function is used to determine if 2 tracks belong in the same group.
      * The current implementation is a bit of a hack, but is what gives the best
-     * user experience. 
+     * user experience.
      * @param track1 The first track
      * @param track2 The second track
      * @return true if track should be grouped together, false otherwise

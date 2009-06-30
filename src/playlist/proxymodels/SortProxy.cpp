@@ -36,23 +36,23 @@ SortProxy::instance()
 }
 
 SortProxy::SortProxy()
-    : QSortFilterProxyModel()
-    , m_belowModel( FilterProxy::instance() )
+    : ProxyBase()
 {
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
-    setSourceModel( m_belowModel );
+    m_belowModel = FilterProxy::instance();
+    setSourceModel( (FilterProxy *) m_belowModel );
     setDynamicSortFilter( false );
 
     //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
     //by sorting, they may be just blindly forwarded
-    connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
-    connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
+    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
+    connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
 
     //needed by GroupingProxy:
-    connect( m_belowModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-    connect( m_belowModel, SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
-    connect( m_belowModel, SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
+    connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
+    connect( sourceModel(), SIGNAL( filterChanged() ), this, SIGNAL( filterChanged() ) );
+    connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
 }
 
 SortProxy::~SortProxy()
@@ -63,7 +63,7 @@ SortProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
 {
     int rowA = left.row();
     int rowB = right.row();
-    multilevelLessThan mlt = multilevelLessThan( m_belowModel, m_scheme );
+    multilevelLessThan mlt = multilevelLessThan( sourceModel(), m_scheme );
     return mlt( rowA, rowB );
 }
 
@@ -93,12 +93,6 @@ void
 SortProxy::clearSearchTerm()
 {
     m_belowModel->clearSearchTerm();
-}
-
-int
-SortProxy::columnCount(const QModelIndex& parent) const
-{
-    return m_belowModel->columnCount( parent );
 }
 
 int
@@ -133,7 +127,9 @@ SortProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, i
 void
 SortProxy::filterUpdated()
 {
-    m_belowModel->filterUpdated();
+    FilterProxy::instance()->filterUpdated();
+    //was:
+    //m_belowModel->filterUpdated();
 }
 
 int
@@ -190,7 +186,7 @@ SortProxy::rowExists( int row ) const
 int
 SortProxy::rowFromSource( int row ) const
 {
-    QModelIndex sourceIndex = m_belowModel->index( row, 0 );
+    QModelIndex sourceIndex = sourceModel()->index( row, 0 );
     QModelIndex index = mapFromSource( sourceIndex );
 
     if ( !index.isValid() )

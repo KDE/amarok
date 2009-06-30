@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *   Copyright © 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *             © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,10 +18,8 @@
 #ifndef AMAROK_PLAYLISTFILTERPROXY_H
 #define AMAROK_PLAYLISTFILTERPROXY_H
 
-#include "playlist/PlaylistItem.h"
+#include "ProxyBase.h"
 #include "playlist/PlaylistModel.h"
-
-#include <QSortFilterProxyModel>
 
 namespace Playlist
 {
@@ -33,7 +32,7 @@ a search term is active and the currently playing track is not in the subset rep
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class FilterProxy : public QSortFilterProxyModel
+class FilterProxy : public ProxyBase
 {
     Q_OBJECT
 public:
@@ -57,6 +56,8 @@ public:
      * @return The id of the row.
      */
     quint64 idAt( const int row ) const;
+
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
     /**
      * Get the sate of the track at given row in the proxy model.
@@ -187,7 +188,7 @@ private:
 
     bool m_passThrough;
 
-    Model *m_model;
+    Model *m_belowModel;
 
     static FilterProxy* s_instance;      //! instance variable
 };

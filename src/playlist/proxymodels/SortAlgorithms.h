@@ -17,7 +17,7 @@
 #ifndef AMAROK_SORTALGORITHMS_H
 #define AMAROK_SORTALGORITHMS_H
 
-#include "FilterProxy.h"
+#include "ProxyBase.h"
 #include "SortScheme.h"
 
 namespace Playlist
@@ -38,7 +38,7 @@ struct multilevelLessThan
      * @param sourceProxy a pointer to the FilteProxy instance.
      * @param scheme the sorting scheme that needs to be applied.
      */
-    multilevelLessThan( FilterProxy *sourceProxy, SortScheme *scheme )
+    multilevelLessThan( QAbstractItemModel *sourceProxy, SortScheme *scheme )
         : m_sourceProxy( sourceProxy )
         , m_scheme( scheme )
     {}
@@ -53,7 +53,7 @@ struct multilevelLessThan
     bool operator()( int rowA, int rowB );
 
     private:
-        FilterProxy *m_sourceProxy;     //! The proxy or model which holds the rows that need to be sorted.
+        QAbstractItemModel *m_sourceProxy;     //! The proxy or model which holds the rows that need to be sorted.
         SortScheme *m_scheme;           //! The current sorting scheme.
 };
 

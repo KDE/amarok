@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *   Copyright © 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *             © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,13 +31,14 @@ FilterProxy* FilterProxy::instance()
 }
 
 FilterProxy::FilterProxy()
-    : QSortFilterProxyModel( Model::instance() )
-    , m_model( Model::instance() )
+    : ProxyBase( Model::instance() )
+    , m_belowModel( Model::instance() )
 {
-    setSourceModel( m_model );
 
-    connect( m_model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
-    connect( m_model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
+    setSourceModel( m_belowModel );
+
+    connect( m_belowModel, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
+    connect( m_belowModel, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
     m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
@@ -55,7 +57,7 @@ bool FilterProxy::filterAcceptsRow( int row, const QModelIndex & source_parent )
     if ( m_passThrough )
         return true;
 
-    const bool match = m_model->matchesCurrentSearchTerm( row );
+    const bool match = m_belowModel->matchesCurrentSearchTerm( row );
     return match;
 }
 
@@ -63,14 +65,20 @@ int FilterProxy::activeRow() const
 {
     // we map the active row form the source to this model. if the active row is not in the items
     // exposed by this proxy, just point to our first item.
-    return rowFromSource( m_model->activeRow() );
+    return rowFromSource( m_belowModel->activeRow() );
 }
 
 quint64 FilterProxy::idAt( const int row ) const
 {
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
-    return m_model->idAt( sourceIndex.row() );
+    return m_belowModel->idAt( sourceIndex.row() );
+}
+
+int
+FilterProxy::rowCount(const QModelIndex& parent) const
+{
+    return m_belowModel->rowCount( parent );
 }
 
 void FilterProxy::filterUpdated()
@@ -85,16 +93,16 @@ void FilterProxy::filterUpdated()
 
 int FilterProxy::firstMatchAfterActive()
 {
-    int activeSourceRow = m_model->activeRow();
+    int activeSourceRow = m_belowModel->activeRow();
 
     if ( m_passThrough )
         return activeSourceRow + 1;
 
     int matchRow = -1;
     int nextRow = activeSourceRow + 1;
-    while ( m_model->rowExists( nextRow ) )
+    while ( m_belowModel->rowExists( nextRow ) )
     {
-        if ( m_model->matchesCurrentSearchTerm( nextRow ) ) {
+        if ( m_belowModel->matchesCurrentSearchTerm( nextRow ) ) {
             matchRow = nextRow;
             break;
         }
@@ -110,16 +118,16 @@ int FilterProxy::firstMatchAfterActive()
 
 int FilterProxy::firstMatchBeforeActive()
 {
-    int activeSourceRow = m_model->activeRow();
+    int activeSourceRow = m_belowModel->activeRow();
 
     if ( m_passThrough )
         return activeSourceRow - 1;
 
     int matchRow = -1;
     int previousRow = activeSourceRow - 1;
-    while ( m_model->rowExists( previousRow ) )
+    while ( m_belowModel->rowExists( previousRow ) )
     {
-        if ( m_model->matchesCurrentSearchTerm( previousRow ) ) {
+        if ( m_belowModel->matchesCurrentSearchTerm( previousRow ) ) {
             matchRow = previousRow;
             break;
         }
@@ -138,7 +146,7 @@ void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
     QList< quint64 > proxyIds;
     foreach( quint64 id, ids )
     {
-        if ( m_model->matchesCurrentSearchTerm( m_model->rowForId( id ) ) )
+        if ( m_belowModel->matchesCurrentSearchTerm( m_belowModel->rowForId( id ) ) )
             proxyIds << id;
     }
 
@@ -150,8 +158,8 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 {
     QList<quint64> proxyIds;
     foreach( quint64 id, ids ) {
-        const int row = m_model->rowForId( id );
-        if ( row == -1 || m_model->matchesCurrentSearchTerm( row ) ) {
+        const int row = m_belowModel->rowForId( id );
+        if ( row == -1 || m_belowModel->matchesCurrentSearchTerm( row ) ) {
             proxyIds << id;
         }
     }
@@ -162,12 +170,12 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 
 Item::State FilterProxy::stateOfRow( int row ) const
 {
-    return m_model->stateOfRow( rowToSource( row ) );
+    return m_belowModel->stateOfRow( rowToSource( row ) );
 }
 
 Item::State FilterProxy::stateOfId( quint64 id ) const
 {
-    return m_model->stateOfId( id );
+    return m_belowModel->stateOfId( id );
 }
 
 void FilterProxy::setPassThrough( bool passThrough )
@@ -193,7 +201,7 @@ int FilterProxy::rowToSource( int row ) const
 
 int FilterProxy::rowFromSource( int row ) const
 {
-    QModelIndex sourceIndex = m_model->index( row, 0 );
+    QModelIndex sourceIndex = m_belowModel->index( row, 0 );
     QModelIndex index = mapFromSource( sourceIndex );
 
     if ( !index.isValid() )
@@ -209,38 +217,38 @@ bool FilterProxy::rowExists( int row ) const
 
 void FilterProxy::setActiveRow( int row )
 {
-    m_model->setActiveRow( rowToSource( row ) );
+    m_belowModel->setActiveRow( rowToSource( row ) );
 }
 
 Meta::TrackPtr FilterProxy::trackAt(int row) const
 {
-    return m_model->trackAt( rowToSource( row ) );
+    return m_belowModel->trackAt( rowToSource( row ) );
 }
 
 int FilterProxy::find( const QString &searchTerm, int searchFields )
 {
-    return rowFromSource( m_model->find( searchTerm, searchFields ) );
+    return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );
 }
 
 int FilterProxy::findNext( const QString & searchTerm, int selectedRow, int searchFields )
 {
-    return rowFromSource( m_model->findNext( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );
 }
 
 int FilterProxy::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
 {
-    return rowFromSource( m_model->findPrevious( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
 int FilterProxy::totalLength() const
 {
-    return m_model->totalLength();
+    return m_belowModel->totalLength();
 }
 
 void FilterProxy::clearSearchTerm()
 {
-    m_model->clearSearchTerm();
-    
+    m_belowModel->clearSearchTerm();
+
     if ( !m_passThrough )
     {
         invalidateFilter();
@@ -251,12 +259,12 @@ void FilterProxy::clearSearchTerm()
 
 QString FilterProxy::currentSearchTerm()
 {
-    return m_model->currentSearchTerm();
+    return m_belowModel->currentSearchTerm();
 }
 
 int FilterProxy::currentSearchFields()
 {
-    return m_model->currentSearchFields();
+    return m_belowModel->currentSearchFields();
 }
 
 QVariant FilterProxy::data( const QModelIndex & index, int role ) const
@@ -265,43 +273,43 @@ QVariant FilterProxy::data( const QModelIndex & index, int role ) const
     QModelIndex newIndex = this->index( index.row(), index.column() );
 
     QModelIndex sourceIndex = mapToSource( newIndex );
-    return m_model->data( sourceIndex, role );
+    return m_belowModel->data( sourceIndex, role );
 }
 
 
 Qt::DropActions FilterProxy::supportedDropActions() const
 {
-    return m_model->supportedDropActions();
+    return m_belowModel->supportedDropActions();
 }
 
 Qt::ItemFlags FilterProxy::flags( const QModelIndex &index ) const
 {
-    return m_model->flags( index );
+    return m_belowModel->flags( index );
 }
 
 QStringList FilterProxy::mimeTypes() const
 {
-    return m_model->mimeTypes();
+    return m_belowModel->mimeTypes();
 }
 
 QMimeData * FilterProxy::mimeData( const QModelIndexList &index ) const
 {
-    return m_model->mimeData( index );
+    return m_belowModel->mimeData( index );
 }
 
 bool FilterProxy::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent )
 {
-    return m_model->dropMimeData( data, action, row, column, parent );
+    return m_belowModel->dropMimeData( data, action, row, column, parent );
 }
 
 void FilterProxy::setRowQueued( int row )
 {
-    m_model->setRowQueued( rowToSource( row ) );
+    m_belowModel->setRowQueued( rowToSource( row ) );
 }
 
 void FilterProxy::setRowDequeued( int row )
 {
-    m_model->setRowDequeued( rowToSource( row ) );
+    m_belowModel->setRowDequeued( rowToSource( row ) );
 }
 
 }

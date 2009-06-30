@@ -18,10 +18,9 @@
 #ifndef AMAROK_PLAYLISTSORTPROXY_H
 #define AMAROK_PLAYLISTSORTPROXY_H
 
+#include "ProxyBase.h"
 #include "FilterProxy.h"
 #include "SortScheme.h"
-
-#include <QSortFilterProxyModel>
 
 namespace Playlist
 {
@@ -31,7 +30,7 @@ namespace Playlist
  * This proxy should sit above the FilterProxy and below the GroupingProxy.
  * @author To Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class SortProxy : public QSortFilterProxyModel
+class SortProxy : public ProxyBase
 {
     Q_OBJECT
 public:
@@ -68,18 +67,16 @@ public:
     void clearSearchTerm();
 
     /**
-     * Forwards the number of columns from the FilterProxy as SortProxy by definition shouldn't
-     * change the column count.
-     * @param parent the parent of the columns to count.
-     * @return the number of columns.
-     */
-    int columnCount( const QModelIndex & parent = QModelIndex() ) const;
-
-    /**
      * Get the current search fields bitmask.
      * @return The current search fields.
      */
     int currentSearchFields();
+
+    /**
+     * Get the current search term.
+     * @return The curent search term.
+     */
+    QString currentSearchTerm();
 
     /**
      * Forwards the request down the proxy stack and gets the data at an index.
@@ -99,12 +96,6 @@ public:
      * @return true if the data and action can be handled by the model; otherwise false.
      */
     bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
-
-    /**
-     * Get the current search term.
-     * @return The curent search term.
-     */
-    QString currentSearchTerm();
 
     /**
      * Notify FilterProxy that the search term of searched fields has changed. Since this
@@ -235,24 +226,10 @@ public slots:
 
 signals:
     /**
-     * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
-     * by this proxy.
-     * @param the list of id's added that are also represented by this proxy.
-     */
-    void insertedIds( const QList<quint64>& );
-
-    /**
-     * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
-     * by this proxy.
-     * @param the list of id's removed that are also represented by this proxy.
-     */
-    void removedIds( const QList<quint64>& );
-
-    /**
      * Signal forwarded from the FilterProxy, emitted when the proxy changes its filtering.
      */
     void filterChanged();
-    
+
 private:
     /**
      * Constructor.
@@ -266,7 +243,7 @@ private:
 
     static SortProxy *s_instance;       //! Instance member.
 
-    FilterProxy *m_belowModel;          //! The proxy or model that's right below this one in the stack of models/proxies.
+    //FilterProxy *m_belowModel;          //! The proxy or model that's right below this one in the stack of models/proxies.
     SortScheme *m_scheme;               //! The current sorting scheme.
 };
 

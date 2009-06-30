@@ -17,38 +17,20 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef AMAROK_ABSTRACTPROXY_H
-#define AMAROK_ABSTRACTPROXY_H
+#include "ProxyBase.h"
 
-#include <QSortFilterProxyModel>
+#include "Debug.h"
 
 namespace Playlist
 {
 
-/**
- * A ProxyModel that implements all the common forwarders for the interface of any
- * playlist proxy.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
- */
-class AbstractProxy : public QSortFilterProxyModel
+ProxyBase::ProxyBase( QObject *parent )
+    : QSortFilterProxyModel( parent )
 {
-    Q_OBJECT
-public:
 
+}
 
-private:
-    /**
-     * Constructor.
-     */
-    AbstractProxy();
-
-    /**
-     * Destructor.
-     */
-    virtual ~AbstractProxy();
-
-};
+ProxyBase::~ProxyBase()
+{}
 
 }   //namespace Playlist
-
-#endif  //AMAROK_ABSTRACTPROXY_H

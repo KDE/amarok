@@ -53,7 +53,7 @@ Playlist::StandardTrackNavigator::requestLastTrack()
 {
     FilterProxy* model = FilterProxy::instance();
 
-    
+
     int activeRow = model->activeRow();
     int updateRow;
 
