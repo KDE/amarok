@@ -23,23 +23,41 @@
 namespace Playlist
 {
 
-SortWidget::SortWidget( QWidget *parent ) : KHBox( parent )
+SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
 {
     DEBUG_BLOCK
-    m_sortCombo = new KComboBox( this );
+    QHBoxLayout *mainLayout = new QHBoxLayout( this );
+    setLayout( mainLayout );
+    m_comboLayout = new QHBoxLayout( this );
+    mainLayout->addLayout( m_comboLayout );
+    m_sortableCategories.append( internalColumnNames );
+    for( QStringList::iterator i = m_sortableCategories.begin(); i!=m_sortableCategories.end(); )
+    {
+        if( *i == QString( "Placeholder" ) || *i == QString( "Bpm" )
+            || *i == QString( "Cover image" ) || *i == QString( "Divider" )
+            || *i == QString( "Last played" ) || *i == QString( "Mood" )
+            || *i == QString( "Source" ) || *i == QString( "SourceEmblem" )
+            || *i == QString( "Title (with track number)" ) || *i == QString( "Type" ) )
+            i = m_sortableCategories.erase( i );
+        else
+            ++i;
+    }
+
+    KPushButton *btnPushLevel = new KPushButton( KIcon( "list-add" ), "", this );
+    mainLayout->addWidget( btnPushLevel );
+    btnPushLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
+    btnPushLevel->resize( btnPushLevel->height(), btnPushLevel->height() );
+    KPushButton *btnPopLevel = new KPushButton( KIcon( "edit-delete" ), "", this );
+    mainLayout->addWidget( btnPopLevel );
+    btnPopLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
+    btnPopLevel->resize( btnPopLevel->height(), btnPopLevel->height() );
+
+    mainLayout->addStretch();
     KPushButton *btnSort = new KPushButton( "Just sort it!", this );
+    mainLayout->addWidget( btnSort );
 
-    m_sortCombo->addItem( "ArtistA/AlbumD/TrackD" );
-    m_schemeList.append( new SortScheme() );
-    m_schemeList.last()->addLevel( SortLevel( Artist, Qt::AscendingOrder ) );
-    m_schemeList.last()->addLevel( SortLevel( Album, Qt::DescendingOrder ) );
-    m_schemeList.last()->addLevel( SortLevel( TrackNumber, Qt::DescendingOrder ) );
-
-    m_sortCombo->addItem( "ArtistD/TitleA" );
-    m_schemeList.append( new SortScheme() );
-    m_schemeList.last()->addLevel( SortLevel( Artist, Qt::DescendingOrder ) );
-    m_schemeList.last()->addLevel( SortLevel( Title, Qt::AscendingOrder ) );
-
+    connect(btnPushLevel, SIGNAL( clicked() ), this, SLOT( pushLevel() ) );
+    connect(btnPopLevel, SIGNAL( clicked() ), this, SLOT( popLevel() ) );
     connect(btnSort, SIGNAL( clicked() ), this, SLOT( applySortingScheme() ) );
 }
 
@@ -47,8 +65,30 @@ void
 SortWidget::applySortingScheme()
 {
     DEBUG_BLOCK
-    SortProxy::instance()->updateSortMap( m_schemeList[ m_sortCombo->currentIndex() ]  );
+    SortScheme scheme = SortScheme();
+    for( QList< KComboBox * >::const_iterator i = m_comboList.begin(); i!=m_comboList.end(); ++i )
+    {
+        scheme.addLevel( SortLevel( internalColumnNames.indexOf( (*i)->currentText() ), Qt::DescendingOrder ) );
+    }
+    SortProxy::instance()->updateSortMap( scheme );
 }
 
+void
+SortWidget::pushLevel()
+{
+    m_comboList.append( new KComboBox( this ) );
+    m_comboLayout->addWidget( m_comboList.back() );
+    m_comboList.back()->addItems( m_sortableCategories );
+}
+
+void
+SortWidget::popLevel()
+{
+    if( !m_comboList.isEmpty() )
+    {
+        m_comboLayout->removeWidget( m_comboList.back() );
+        delete m_comboList.takeLast();
+    }
+}
 
 }   //namespace Playlist

@@ -73,7 +73,7 @@ public slots:
      * Applies a sorting scheme to the playlist.
      * @param scheme the sorting scheme that will be applied.
      */
-    void updateSortMap( SortScheme *scheme );
+    void updateSortMap( SortScheme scheme );
 
 private:
     /**

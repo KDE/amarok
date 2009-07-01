@@ -20,7 +20,8 @@
 #include "playlist/proxymodels/SortProxy.h"
 
 #include <KComboBox>
-#include <KHBox>
+
+#include <QHBoxLayout>
 
 namespace Playlist
 {
@@ -28,17 +29,21 @@ namespace Playlist
  * A ribbon interface that allows the user to define multiple sorting levels for the playlist.
  * @author To Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class SortWidget : public KHBox
+class SortWidget : public QWidget
 {
     Q_OBJECT
     public:
         SortWidget( QWidget* parent = 0 );
+    public slots:
+        void pushLevel();
+        void popLevel();
 
     private slots:
         void applySortingScheme();
     private:
-        KComboBox* m_sortCombo;
-        QList< SortScheme *> m_schemeList;
+        QHBoxLayout *m_comboLayout;
+        QList< KComboBox * > m_comboList;
+        QStringList m_sortableCategories;
 };
 
 }   //namespace Playlist
