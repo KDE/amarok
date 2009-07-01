@@ -52,6 +52,7 @@ class PhotosApplet : public Context::Applet
     public slots:
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
+        void    saveSettings();
 
     protected:
         void createConfigurationInterface(KConfigDialog *parent);
@@ -63,6 +64,8 @@ class PhotosApplet : public Context::Applet
         PhotosScrollWidget      *m_widget;
 
         int m_height;
+        int m_nbPhotos;
+        QString m_Animation;
 
         Ui::photosSettings      ui_Settings;
         Plasma::IconWidget      *m_settingsIcon;

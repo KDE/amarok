@@ -6,29 +6,90 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>101</width>
-    <height>49</height>
+    <width>204</width>
+    <height>83</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>70</width>
-     <height>25</height>
+     <x>0</x>
+     <y>0</y>
+     <width>201</width>
+     <height>80</height>
     </rect>
    </property>
-   <item>
-    <property name="text">
-     <string>Sliding</string>
+   <layout class="QFormLayout" name="formLayout">
+    <property name="fieldGrowthPolicy">
+     <enum>QFormLayout::ExpandingFieldsGrow</enum>
     </property>
-   </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="animationLabel">
+      <property name="text">
+       <string>Animation</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="KComboBox" name="animationComboBox">
+      <item>
+       <property name="text">
+        <string>Interactive</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Scrolling</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Fading</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="numberofphotosLabel">
+      <property name="text">
+       <string>Number of photos</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="KIntSpinBox" name="photosSpinBox">
+      <property name="minimum">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="singleStep">
+       <number>5</number>
+      </property>
+      <property name="value">
+       <number>10</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

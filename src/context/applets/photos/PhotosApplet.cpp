@@ -26,6 +26,7 @@
 #include <KAction>
 #include <KColorScheme>
 #include <KConfigDialog>
+#include <KGlobalSettings>
 #include <Plasma/BusyWidget>
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
@@ -78,6 +79,13 @@ PhotosApplet::init()
     connectSource( "photos" );
     connect( dataEngine( "amarok-photos" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
+
+
+    // Read config and inform the engine.
+    KConfigGroup config = Amarok::config("Photos Applet");
+    m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
+    m_Animation = config.readEntry( "Animation", "Interactive" );
+    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
 
 }
 
@@ -135,10 +143,10 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     if ( data.empty() )
         return;
 
-
     // if we get a message, show it
     if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
     {
+        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );    
         m_widget->hide();
         setBusy( true );
     }
@@ -150,7 +158,6 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     else if ( data.contains( "data" ) )
     {
         // only photos to translate ^^
-        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );       
         m_widget->setPixmapList( data[ "data" ].value< QList< QPixmap * > >() );
         m_widget->show();
         setBusy(false);
@@ -192,14 +199,24 @@ PhotosApplet::createConfigurationInterface( KConfigDialog *parent )
 
     parent->addPage( settings, i18n( "Photos Settings" ), "preferences-system");
 
-    /*
-    // TODO bad, it's done manually ...
-    if ( m_youtubeHQ == true )
-    ui_Settings.comboBox->( true );
-    */
-    //connect( ui_Settings, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
+    ui_Settings.animationComboBox->setCurrentIndex( ui_Settings.animationComboBox->findText( m_Animation ) );
+    ui_Settings.photosSpinBox->setValue( m_nbPhotos );
+    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
+void
+PhotosApplet::saveSettings()
+{
+    DEBUG_BLOCK
+    KConfigGroup config = Amarok::config("Photos Applet");
+
+    m_nbPhotos = ui_Settings.photosSpinBox->value();
+    m_Animation = ui_Settings.animationComboBox->currentText();
+    config.writeEntry( "NbPhotos", m_nbPhotos );
+    config.writeEntry( "Animation", m_Animation );    
+    
+    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
+}
 
 
 #include "PhotosApplet.moc"
