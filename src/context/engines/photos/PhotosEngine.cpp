@@ -41,6 +41,7 @@ PhotosEngine::PhotosEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         , ContextObserver( ContextView::self() )
         , m_jobFlickr( 0 )
         , m_nbFlickr( -1 )
+        , m_nbPhotos( 10 )
         , m_requested( true )
 {
     m_sources << "flickr" ;
@@ -62,8 +63,19 @@ PhotosEngine::sources() const
 bool 
 PhotosEngine::sourceRequestEvent( const QString& name )
 {
-    Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
+    QStringList tokens = name.split( ':' );
+    
+    // user has change the number of photos to download
+    if ( tokens.contains( "nbphotos" ) && tokens.size() > 1 )
+    {
+        if ( ( tokens.at( 1 ) == QString( "nbphotos" ) ) && ( tokens.size() > 2 ) )
+        {
+            m_nbPhotos = tokens.at( 2 ).toInt();
+            return false;
+        }
+    }
+        
     removeAllData( name );
     setData( name, QVariant() );
     update();
@@ -115,10 +127,13 @@ void PhotosEngine::update()
         
         // Show the information
         setData( "photos", "message", "Fetching" );
+        setData( "photos", "artist", m_artist );
 
         // Query flickr, order by relevance, 10 max
         // Flickr : http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20
-        KUrl flickrUrl( QString( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=" ) + m_artist + QString( "&per_page=10&sort=relevance&media=photos" ) );
+        KUrl flickrUrl(
+            QString( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=" )
+            + m_artist + QString( "&per_page=" ) + QString().setNum( m_nbPhotos ) + QString( "&sort=relevance&media=photos" ) );
         debug()<< "Flickr : " << flickrUrl.toMimeDataString() ;
         m_jobFlickr = KIO::storedGet( flickrUrl, KIO::Reload, KIO::HideProgressInfo );
         connect( m_jobFlickr, SIGNAL( result( KJob* ) ), SLOT( resultFlickr( KJob* ) ) );
@@ -218,8 +233,7 @@ void PhotosEngine::resultFinalize()
 
         QVariant var;
         var.setValue< QList< QPixmap *> > ( m_photos );
-        setData ( "photos", "data", var );
-        setData ( "photos", "artist", m_artist );
+        setData( "photos", "data", var );
     }
 }
 

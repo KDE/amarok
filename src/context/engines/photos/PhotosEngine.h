@@ -86,6 +86,8 @@ private:
 
     int m_nbFlickr;
 
+    int m_nbPhotos;
+
     QList < QString > m_listJob;
 
     QStringList m_sources;
