@@ -761,7 +761,7 @@ MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
 
     int status = LIBMTP_Delete_Object( m_device, object_id );
 
-    emit canDeleteMoreTracks();
+    removeNextTrackFromDevice();
 
     if ( status != 0 )
     {
@@ -1258,10 +1258,10 @@ MtpHandler::slotDeviceMatchSucceeded( ThreadWeaver::Job* job )
     {
         getDeviceInfo();
 //        debug() << "Device matches serial, emitting succeeded()";
-        emit attemptConnectionDone( true );
+        m_memColl->slotAttemptConnectionDone( true );
     }
     else
-        emit attemptConnectionDone( false );
+        m_memColl->slotAttemptConnectionDone( false );
 }
 
 void
@@ -1270,7 +1270,7 @@ MtpHandler::slotDeviceMatchFailed( ThreadWeaver::Job* job )
     DEBUG_BLOCK
     debug() << "Running slot device match failed";
     disconnect( job, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDeviceMatchSucceeded() ) );
-    emit attemptConnectionDone( false );
+    m_memColl->slotAttemptConnectionDone( false );
 }
 
 void

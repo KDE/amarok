@@ -35,21 +35,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 , m_memColl( qobject_cast<MediaDeviceCollection*>(parent) )
 {
     DEBUG_BLOCK
-        connect( this, SIGNAL( libCopyTrackDone( const Meta::TrackPtr & ) ),
-             this, SLOT( slotFinalizeTrackCopy( const Meta::TrackPtr & ) ), Qt::QueuedConnection );
-
-        connect( this, SIGNAL( canCopyMoreTracks()),
-                 this, SLOT( copyNextTrackToDevice()) );
-
-        connect( this, SIGNAL( libRemoveTrackDone( const Meta::TrackPtr & ) ),
-                 this, SLOT( slotFinalizeTrackRemove( const Meta::TrackPtr & ) ) );
-
-        connect( this, SIGNAL( canDeleteMoreTracks()),
-                 this, SLOT( removeNextTrackFromDevice() ) );
-
-        connect( this, SIGNAL( attemptConnectionDone(bool)),
-                 m_memColl, SLOT( slotAttemptConnectionDone(bool) ) );
-        connect( m_memColl, SIGNAL( deletingCollection() ),
+    
+    connect( m_memColl, SIGNAL( deletingCollection() ),
                  this, SLOT( slotDeletingHandler() ) );
 
 }

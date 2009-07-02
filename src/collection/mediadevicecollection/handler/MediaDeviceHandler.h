@@ -472,12 +472,14 @@ protected:
     */
     
     virtual void updateTrack( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) };
+
+    MediaDeviceCollection   *m_memColl; /// Associated collection
     
     bool m_success;
     bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
 
 
-private slots:
+protected slots:
 
     void slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
     void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
@@ -556,7 +558,6 @@ private:
     * Handler Variables
     */
 
-    MediaDeviceCollection   *m_memColl; /// Associated collection
     MediaDeviceUserPlaylistProvider *m_provider; /// Associated playlist provider
     TitleMap          m_titlemap; /// Map of track titles to tracks, used to detect duplicates
 

@@ -134,7 +134,7 @@ IpodHandler::init()
         debug() << "Succeeded: " << m_success;
     }
 
-    emit attemptConnectionDone( m_success );
+    m_memColl->slotAttemptConnectionDone( m_success );
 }
 
 bool
@@ -668,7 +668,7 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     m_jobcounter++;
 
     if( m_jobcounter < 150 )
-        emit canCopyMoreTracks();
+        copyNextTrackToDevice();
 
 
     connect( job, SIGNAL( result( KJob * ) ),
@@ -710,7 +710,7 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         if( m_jobcounter < 150 )
         {
             debug() << "Jobs: " << m_jobcounter;
-            emit canCopyMoreTracks();
+            copyNextTrackToDevice();
         }
 
 
@@ -746,7 +746,7 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
     }
     else
     {
-        emit libCopyTrackDone( track  );
+        slotFinalizeTrackCopy( track );
     }
 
 }
@@ -762,7 +762,7 @@ IpodHandler::deleteFile( const KUrl &url )
     m_jobcounter++;
 
     if( m_jobcounter < 150 )
-        emit canDeleteMoreTracks();
+        removeNextTrackFromDevice();
 
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
@@ -789,7 +789,7 @@ IpodHandler::fileDeleted( KJob *job )  //SLOT
         if( m_jobcounter < 150 )
         {
             debug() << "Jobs: " << m_jobcounter;
-            emit canDeleteMoreTracks();
+            removeNextTrackFromDevice();
         }
 
     KIO::DeleteJob *djob = reinterpret_cast<KIO::DeleteJob*> (job);
@@ -802,7 +802,7 @@ IpodHandler::fileDeleted( KJob *job )  //SLOT
 
         debug() << "emitting libRemoveTrackDone";
 
-        emit libRemoveTrackDone( track );
+        slotFinalizeTrackRemove( track );
     }
 }
 
