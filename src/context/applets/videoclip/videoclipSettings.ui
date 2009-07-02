@@ -10,9 +10,6 @@
     <height>46</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <widget class="QCheckBox" name="checkBox">
    <property name="geometry">
     <rect>

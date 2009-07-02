@@ -10,9 +10,6 @@
     <height>83</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
