@@ -162,13 +162,6 @@ signals:
 
     void copyTracksDone( bool success );
     void removeTracksDone();
-    void libCopyTrackDone( const Meta::TrackPtr &track );
-    void libCopyTrackFailed( const Meta::TrackPtr &track );
-    void libRemoveTrackDone( const Meta::TrackPtr &track );
-    void canCopyMoreTracks(); // subclass tells this class that it can copy more tracks
-    void canDeleteMoreTracks(); // subclass tells this class that it can delete more tracks
-
-    void attemptConnectionDone( bool success );
 
     /* File I/O Methods */
 
