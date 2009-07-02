@@ -19,6 +19,7 @@
 #ifndef AMAROK_PLAYLISTWIDGET_H
 #define AMAROK_PLAYLISTWIDGET_H
 
+#include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"
 
 #include <KVBox>
@@ -40,7 +41,6 @@ namespace Playlist
             PrettyListView* currentView() { return m_playlistView; }
 
         public slots:
-            void sort( int field );
             void showDynamicHint( bool enabled );
 
         protected:
@@ -49,7 +49,7 @@ namespace Playlist
         private:
             PrettyListView* m_playlistView;
             ProgressiveSearchWidget * m_searchWidget;
-            QComboBox * m_sortBox;
+            SortWidget * m_sortWidget;
             QLabel* m_dynamicHintWidget;
 
     };

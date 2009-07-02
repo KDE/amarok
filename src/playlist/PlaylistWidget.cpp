@@ -30,9 +30,7 @@
 #include "PlaylistDefines.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
-#include "PlaylistSortWidget.h"
 #include "layouts/LayoutManager.h"
-#include "proxymodels/FilterProxy.h"
 #include "widgets/ProgressiveSearchWidget.h"
 #include "layouts/LayoutConfigAction.h"
 
@@ -48,9 +46,10 @@ Playlist::Widget::Widget( QWidget* parent )
     DEBUG_BLOCK
     setContentsMargins( 1, 1, 1, 1 );
 
-    m_searchWidget = new ProgressiveSearchWidget( this );
+    m_sortWidget = new Playlist::SortWidget( this );
+    new HorizontalDivider( this );
 
-    Playlist::SortWidget *sortWidget = new Playlist::SortWidget( this );
+    m_searchWidget = new ProgressiveSearchWidget( this );
 
     //this is really only useful for debugging at the moment, so dont show it to users and testers
     /*m_sortBox = new QComboBox( this );
@@ -168,7 +167,7 @@ Playlist::Widget::sizeHint() const
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
 }
 
-void
+/*void
 Playlist::Widget::sort( int index )
 {
     DEBUG_BLOCK
@@ -176,7 +175,7 @@ Playlist::Widget::sort( int index )
     debug() << "Field: " << field;
     //The::playlistModel()->sort( field );
     FilterProxy::instance()->sort( field );
-}
+}*/
 
 void
 Playlist::Widget::showDynamicHint( bool enabled )

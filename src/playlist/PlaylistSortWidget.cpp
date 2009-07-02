@@ -18,15 +18,22 @@
 
 #include "Debug.h"
 
-
 namespace Playlist
 {
 
 SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
 {
     DEBUG_BLOCK
+
+    //like BreadcrumbWidget for symmetry:
+    setFixedHeight( 28 );
+    setContentsMargins( 3, 0, 3, 0 );
+
     QHBoxLayout *mainLayout = new QHBoxLayout( this );
     setLayout( mainLayout );
+    mainLayout->setSpacing( 0 );
+    mainLayout->setContentsMargins( 0, 0, 0, 0 );
+
     m_comboLayout = new QHBoxLayout( this );
     mainLayout->addLayout( m_comboLayout );
     m_sortableCategories.append( internalColumnNames );
@@ -46,10 +53,13 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
     mainLayout->addWidget( btnPushLevel );
     btnPushLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
     btnPushLevel->resize( btnPushLevel->height(), btnPushLevel->height() );
+    btnPushLevel->setFlat( true );
+
     KPushButton *btnPopLevel = new KPushButton( KIcon( "edit-delete" ), "", this );
     mainLayout->addWidget( btnPopLevel );
     btnPopLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
     btnPopLevel->resize( btnPopLevel->height(), btnPopLevel->height() );
+    btnPopLevel->setFlat( true );
 
     mainLayout->addStretch();
     m_btnSort = new KPushButton( "Just sort it!", this );
