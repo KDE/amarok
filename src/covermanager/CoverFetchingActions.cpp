@@ -15,6 +15,9 @@
  ****************************************************************************************/
 
 #include "CoverFetchingActions.h"
+#include "Debug.h"
+
+#include <QDesktopWidget>
 
 #include <KIcon>
 #include <KFile>
@@ -65,7 +68,10 @@ void DisplayCoverAction::init()
 
 void DisplayCoverAction::slotTriggered()
 {
-    ( new CoverViewDialog( m_albums.first(), qobject_cast<QWidget*>( parent() ) ) )->show();
+    QWidget *p = dynamic_cast<QWidget*>( parent() );
+    int parentScreen = KApplication::desktop()->screenNumber( p );
+
+    ( new CoverViewDialog( m_albums.first(), QApplication::desktop()->screen( parentScreen ) ) )->show();
 }
 
 

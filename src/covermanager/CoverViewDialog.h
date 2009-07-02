@@ -20,12 +20,13 @@
 #include "meta/Meta.h"
 #include "widgets/PixmapViewer.h"
 
-#include <QHBoxLayout>
-
 #include <KApplication>
 #include <KDialog> //baseclass
 #include <KLocale>
 #include <KWindowSystem>
+
+#include <QHBoxLayout>
+#include <QDesktopWidget>
 
 class AMAROK_EXPORT CoverViewDialog : public QDialog
 {
@@ -44,7 +45,9 @@ class AMAROK_EXPORT CoverViewDialog : public QDialog
                             album->albumArtist()? album->albumArtist()->prettyName() : i18n( "Various Artists" ),
                             album->prettyName() ) ) );
 
-            PixmapViewer *pixmapViewer = new PixmapViewer( this, album->image( 0 ) /* full sized image */ );
+            int screenNumber = KApplication::desktop()->screenNumber( parent );
+
+            PixmapViewer *pixmapViewer = new PixmapViewer( this, album->image( 0 ) /* full sized image */, screenNumber );
             QHBoxLayout *layout = new QHBoxLayout( this );
             layout->addWidget( pixmapViewer );
             layout->setSizeConstraint( QLayout::SetFixedSize );
