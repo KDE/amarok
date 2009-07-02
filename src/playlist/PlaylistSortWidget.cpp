@@ -18,7 +18,6 @@
 
 #include "Debug.h"
 
-#include <KPushButton>
 
 namespace Playlist
 {
@@ -53,12 +52,13 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
     btnPopLevel->resize( btnPopLevel->height(), btnPopLevel->height() );
 
     mainLayout->addStretch();
-    KPushButton *btnSort = new KPushButton( "Just sort it!", this );
-    mainLayout->addWidget( btnSort );
+    m_btnSort = new KPushButton( "Just sort it!", this );
+    mainLayout->addWidget( m_btnSort );
+    m_btnSort->setEnabled( false );
 
     connect(btnPushLevel, SIGNAL( clicked() ), this, SLOT( pushLevel() ) );
     connect(btnPopLevel, SIGNAL( clicked() ), this, SLOT( popLevel() ) );
-    connect(btnSort, SIGNAL( clicked() ), this, SLOT( applySortingScheme() ) );
+    connect(m_btnSort, SIGNAL( clicked() ), this, SLOT( applySortingScheme() ) );
 }
 
 void
@@ -79,6 +79,7 @@ SortWidget::pushLevel()
     m_comboList.append( new KComboBox( this ) );
     m_comboLayout->addWidget( m_comboList.back() );
     m_comboList.back()->addItems( m_sortableCategories );
+    m_btnSort->setEnabled( true );
 }
 
 void
@@ -88,6 +89,8 @@ SortWidget::popLevel()
     {
         m_comboLayout->removeWidget( m_comboList.back() );
         delete m_comboList.takeLast();
+        if( m_comboList.isEmpty() )
+            m_btnSort->setEnabled( false );
     }
 }
 

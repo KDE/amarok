@@ -25,12 +25,12 @@ bool
 multilevelLessThan::operator()( int rowA, int rowB)
 {
     quint8 verdict;  //0 = false  1 = true  2 = nextIteration
-    for( int i = 0; i < m_scheme->length(); i++ )
+    for( int i = 0; i < m_scheme.length(); i++ )
     {
-        int currentCategory = m_scheme->level( i ).category();  //see enum Column in PlaylistDefines.h
+        int currentCategory = m_scheme.level( i ).category();  //see enum Column in PlaylistDefines.h
         QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();  //FIXME: are you sure you need to do comparisons on sourceProxy indexes?
         QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
-        if( m_scheme->level( i ).isString() )
+        if( m_scheme.level( i ).isString() )
         {
             if( dataA.toString() < dataB.toString() )
                 verdict = 1;
@@ -50,7 +50,7 @@ multilevelLessThan::operator()( int rowA, int rowB)
         }
         if( verdict != 2 )
         {
-            if( m_scheme->level( i ).order() == Qt::AscendingOrder )
+            if( m_scheme.level( i ).order() == Qt::AscendingOrder )
                 verdict = verdict ? 0 : 1;
             break;
         }

@@ -88,7 +88,7 @@ private:
 
     static SortProxy *s_instance;       //! Instance member.
 
-    SortScheme *m_scheme;               //! The current sorting scheme.
+    SortScheme m_scheme;               //! The current sorting scheme.
 };
 
 }   //namespace Playlist

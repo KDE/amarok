@@ -38,7 +38,7 @@ struct multilevelLessThan
      * @param sourceProxy a pointer to the FilteProxy instance.
      * @param scheme the sorting scheme that needs to be applied.
      */
-    multilevelLessThan( QAbstractItemModel *sourceProxy, SortScheme *scheme )
+    multilevelLessThan( QAbstractItemModel *sourceProxy, const SortScheme &scheme )
         : m_sourceProxy( sourceProxy )
         , m_scheme( scheme )
     {}
@@ -54,7 +54,7 @@ struct multilevelLessThan
 
     private:
         QAbstractItemModel *m_sourceProxy;     //! The proxy or model which holds the rows that need to be sorted.
-        SortScheme *m_scheme;           //! The current sorting scheme.
+        SortScheme m_scheme;           //! The current sorting scheme.
 };
 
 }   //namespace Playlist

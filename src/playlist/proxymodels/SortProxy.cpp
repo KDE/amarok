@@ -70,7 +70,7 @@ void
 SortProxy::updateSortMap( SortScheme scheme)
 {
     emit layoutAboutToBeChanged();  //NOTE to self: do I need this or sort() takes care of it?
-    *m_scheme = scheme;
+    m_scheme = scheme;
     sort( 0 );  //0 is a dummy column
     emit layoutChanged();
 }
