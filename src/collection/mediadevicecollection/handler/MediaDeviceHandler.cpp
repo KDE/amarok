@@ -66,13 +66,6 @@ MediaDeviceHandler::slotDeletingHandler()
     The::playlistManager()->removeProvider( m_provider );
 }
 
-bool
-MediaDeviceHandler::isWritable() const
-{
-    return false;
-}
-
-
 void
 MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack )
 {
@@ -421,7 +414,6 @@ MediaDeviceHandler::copyNextTrackToDevice()
 
         // Copy the track
 
-        m_lastTrackCopied = track;
         //m_tracksCopying.insert( track );
 
         privateCopyTrackToDevice( track );
