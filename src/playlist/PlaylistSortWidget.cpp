@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright © 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,6 +17,8 @@
 #include "PlaylistSortWidget.h"
 
 #include "Debug.h"
+
+#include <QToolButton>
 
 namespace Playlist
 {
@@ -49,17 +51,17 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
             ++i;
     }
 
-    KPushButton *btnPushLevel = new KPushButton( KIcon( "list-add" ), "", this );
+    QToolButton *btnPushLevel = new QToolButton( this );
+    btnPushLevel->setIcon( KIcon( "list-add" ) );
     mainLayout->addWidget( btnPushLevel );
     btnPushLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
     btnPushLevel->resize( btnPushLevel->height(), btnPushLevel->height() );
-    btnPushLevel->setFlat( true );
 
-    KPushButton *btnPopLevel = new KPushButton( KIcon( "edit-delete" ), "", this );
+    QToolButton *btnPopLevel = new QToolButton( this );
+    btnPopLevel->setIcon( KIcon( "edit-delete" ) );
     mainLayout->addWidget( btnPopLevel );
     btnPopLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
     btnPopLevel->resize( btnPopLevel->height(), btnPopLevel->height() );
-    btnPopLevel->setFlat( true );
 
     mainLayout->addStretch();
     m_btnSort = new KPushButton( "Just sort it!", this );
