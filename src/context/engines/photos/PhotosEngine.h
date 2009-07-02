@@ -20,7 +20,7 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "meta/Meta.h"
-
+#include "PhotosInfo.h"
 
 // forward
 class KJob;
@@ -85,7 +85,6 @@ private:
     KJob* m_jobFlickr;
 
     int m_nbFlickr;
-
     int m_nbPhotos;
 
     QList < QString > m_listJob;
@@ -102,11 +101,12 @@ private:
     bool m_requested;
 
     //!  List containing all the info
-    QList < QPixmap * > m_photos;
+    QList < PhotosInfo *>m_photos;      // Item with all the information
+    QList < PhotosInfo *>m_photosInit;  // Item not finished to download
 
 };
 
-Q_DECLARE_METATYPE ( QList < QPixmap * > )
+Q_DECLARE_METATYPE ( QList < PhotosInfo * > )
 K_EXPORT_AMAROK_DATAENGINE( photos, PhotosEngine )
 #endif
 

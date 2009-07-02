@@ -123,6 +123,7 @@ void PhotosEngine::update()
             
         removeAllData( "photos" );
         m_photos.clear();
+        m_photosInit.clear();
         m_listJob.clear();
         
         // Show the information
@@ -130,7 +131,7 @@ void PhotosEngine::update()
         setData( "photos", "artist", m_artist );
 
         // Query flickr, order by relevance, 10 max
-        // Flickr : http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20
+        // Flickr :http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20
         KUrl flickrUrl(
             QString( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=" )
             + m_artist + QString( "&per_page=" ) + QString().setNum( m_nbPhotos ) + QString( "&sort=relevance&media=photos" ) );
@@ -166,14 +167,22 @@ void PhotosEngine::resultFlickr( KJob* job )
     m_nbFlickr = 0;
     for ( uint i = 0; i < xmlNodeList.length() ; i++ )
     {
+        // repare the new photos info
+        PhotosInfo *item = new PhotosInfo;
+        
+        // Get all the information
         QDomElement nd = xmlNodeList.at( i ).toElement();
         QString url = "http://farm" + nd.attribute( "farm" ) + ".static.flickr.com/" + nd.attribute( "server" ) + "/" + nd.attribute( "id" ) +"_"+ nd.attribute( "secret" ) +".jpg";
-        debug() << url;
+        QString urlpage = "http://www.flickr.com/photos/" + nd.attribute( "owner" ) + "/" + nd.attribute( "id" );
+        item->urlpage = urlpage;
+        item->urlphoto = url;
+        debug() << urlpage;
         // Insert the item in the list
         m_listJob << url;
+        m_photosInit << item;
             
         // Send a job to get the downloadable link
-        KJob *jobu = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+        KJob *jobu = KIO::storedGet( KUrl( url ), KIO::NoReload, KIO::HideProgressInfo );
         connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
     }
     m_nbFlickr += xmlNodeList.length();
@@ -201,10 +210,20 @@ void PhotosEngine::resultImageFetcher( KJob *job )
         
         QPixmap *pix = new QPixmap;
         if ( pix->loadFromData( storedJob->data() ) ) {;}
-        m_photos << pix;
+
+        foreach ( PhotosInfo *item, m_photosInit )
+        {
+            if (item->urlphoto == jobUrl )
+            {
+                item->photo = pix ;
+                m_photos << item;
+            }
+        }
 
         m_listJob.removeOne( jobUrl );
         resultFinalize();
+
+        job = 0;
     }
 }
 
@@ -218,11 +237,14 @@ void PhotosEngine::resultFinalize()
         setData( "photos", "message", i18n( "No photos found for this artist ..." ) );
         return;
     }
-    // else if nb job finished and they have been called 
-    else if ( m_listJob.empty() && m_nbFlickr!=-1 )
-    {      
-        DEBUG_BLOCK
-        debug() << "PhotosEngine total Fetched : " << m_photos.size() << " entries";
+
+    if ( m_nbFlickr == -1 )
+        return;
+
+    if ( !m_photos.empty() )
+    {
+  //      DEBUG_BLOCK
+       // debug() << "PhotosEngine : " << m_photos.size() << " entries";
 
         // remove previous message
         removeData( "photos", "message" );
@@ -232,7 +254,7 @@ void PhotosEngine::resultFinalize()
             return;
 
         QVariant var;
-        var.setValue< QList< QPixmap *> > ( m_photos );
+        var.setValue< QList< PhotosInfo *> > ( m_photos );
         setData( "photos", "data", var );
     }
 }
