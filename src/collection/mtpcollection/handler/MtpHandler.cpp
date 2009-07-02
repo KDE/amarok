@@ -679,7 +679,7 @@ MtpHandler::prettyName() const
 /// Begin MediaDeviceHandler overrides
 
 void
-MtpHandler::findPathToCopyMtp( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack )
+MtpHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack )
 {
     uint32_t parent_id = 0;
     if ( !m_folderStructure.isEmpty() )
@@ -713,7 +713,7 @@ MtpHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrack
 {
     DEBUG_BLOCK
 
-    findPathToCopyMtp( srcTrack, destTrack );
+    findPathToCopy( srcTrack, destTrack );
     debug() << "sending...";
 
     debug() << "Playable Url is: " << srcTrack->playableUrl();

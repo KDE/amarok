@@ -488,11 +488,12 @@ IpodHandler::itunesDir(const QString &p) const
 
 /// Finds path to copy track to on Ipod
 void
-IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
+IpodHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack )
 {
+    Q_UNUSED( destTrack )
         debug() << "Mountpoint is: " << mountPoint();
 
-    KUrl url = determineURLOnDevice(track);
+    KUrl url = determineURLOnDevice(srcTrack);
 
     debug() << "Url's path is: " << url.path();
 
@@ -521,9 +522,9 @@ IpodHandler::findPathToCopy( const Meta::TrackPtr &track )
         return;
     }
 
-    debug() << "About to copy from: " << track->playableUrl().path();
+    debug() << "About to copy from: " << srcTrack->playableUrl().path();
 
-    m_trackdesturl[ track ] = url;
+    m_trackdesturl[ srcTrack ] = url;
 }
 
 bool

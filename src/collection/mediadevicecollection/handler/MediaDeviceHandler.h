@@ -115,7 +115,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     * simply calls slotDatabaseWritten to continue the workflow.
     */
 
-    virtual void writeDatabase() = 0;
+    virtual void writeDatabase() {}
 
     /**
     * Fetches the human-readable name of the device.
@@ -148,7 +148,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *  @param track The track that needs to prepare to be played
     */
 
-    virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) = 0; // called by @param track
+    virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) } // called by @param track
 
 
 
@@ -323,10 +323,11 @@ protected:
     * Finds the place to copy the track to on the device, which
     * could be a url in the case of Ipods, or a folder in the
     * case of MTP devices.
-    * @param track The source track of the copy
+    * @param srcTrack The source track of the copy
+    * @param destTrack The destination track whose path we seek
     */
     
-    virtual void findPathToCopy( const Meta::TrackPtr &track ) = 0;
+    virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack ) = 0;
     
     /** libCopyTrack does the actual file copying.  For Ipods, it uses KIO,
     *  for MTPs this uses a libmtp call
@@ -399,35 +400,6 @@ protected:
     
     virtual void databaseChanged() = 0;
     
-    /** Creates a MediaDeviceTrack based on the latest track struct created as a
-    *  result of a copy to the device, and adds it into the collection to reflect
-    *  that it has been copied.
-    *  @param track The track to add to the collection
-    */
-    
-    void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
-    
-    /**  Removes the @param track from all the collection's maps to reflect that
-    *  it has been removed from the collection
-    *  @param track The track to remove from the collection
-    */
-    
-    void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
-    
-    /** Uses wrapped libGet methods to fill a track with information from device
-    *  @param track The track from whose associated struct to get the information
-    *  @param destTrack The track that we want to fill with information
-    */
-    void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
-    
-    /** Uses wrapped libSet methods to fill a track struct of the particular library
-    *  with information from a Meta::Track
-    *  @param srcTrack The track that has the source information
-    *  @param destTrack The track whose associated struct we want to fill with information
-    */
-    
-    void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
-    
     /** Methods that wrap get/set of information using given library (e.g. libgpod)
     *  Subclasses of MediaDeviceHandler must keep a pointer to the track struct
     *  associated to the track parameter to get the information from the struct in libGet*,
@@ -499,7 +471,7 @@ protected:
     *  @param track The track whose tags should be updated
     */
     
-    virtual void updateTrack( Meta::MediaDeviceTrackPtr &track ) = 0;
+    virtual void updateTrack( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) };
     
     bool m_success;
     bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
@@ -522,6 +494,35 @@ private slots:
     void slotDeletingHandler();
 
 private:
+
+    /** Creates a MediaDeviceTrack based on the latest track struct created as a
+    *  result of a copy to the device, and adds it into the collection to reflect
+    *  that it has been copied.
+    *  @param track The track to add to the collection
+    */
+    
+    void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
+    
+    /**  Removes the @param track from all the collection's maps to reflect that
+    *  it has been removed from the collection
+    *  @param track The track to remove from the collection
+    */
+    
+    void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
+    
+    /** Uses wrapped libGet methods to fill a track with information from device
+    *  @param track The track from whose associated struct to get the information
+    *  @param destTrack The track that we want to fill with information
+    */
+    void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
+    
+    /** Uses wrapped libSet methods to fill a track struct of the particular library
+    *  with information from a Meta::Track
+    *  @param srcTrack The track that has the source information
+    *  @param destTrack The track whose associated struct we want to fill with information
+    */
+    
+    void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
     /**
     * Pulls out meta information (e.g. artist string)

@@ -436,7 +436,7 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     // find path to copy to
 
-    findPathToCopy( track );
+    findPathToCopy( track, destTrack );
 
     // Create a track struct, associate it to destTrack
 
