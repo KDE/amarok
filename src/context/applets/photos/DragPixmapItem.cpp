@@ -22,6 +22,7 @@
 #include <KIcon>
 
 // QT
+#include <QDesktopServices>
 #include <QDrag>
 #include <QGraphicsSceneMouseEvent>
 #include <QMimeData>
@@ -33,22 +34,42 @@
 DragPixmapItem::DragPixmapItem( QGraphicsItem* parent )
     : QGraphicsPixmapItem( parent )
     , m_dragPos( QPoint() )
+    , m_url( 0 )
 {
     setAcceptDrops( true );
 }
 
+void DragPixmapItem::SetClickableUrl( QString url )
+{
+    m_url = url ;
+}
+    
+
 void DragPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
 
     if (event->button() == Qt::LeftButton)
          m_dragPos = event->pos().toPoint();
 }
 
-
-void DragPixmapItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+void DragPixmapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     DEBUG_BLOCK
+    
+    if ( event->button() == Qt::LeftButton )
+    {
+        if ( !m_url.isEmpty() )
+        {
+            QDesktopServices::openUrl( m_url );
+            debug() << "DragPixmapItem: clicked photos url "<<m_url;
+        }
+    }
+}
+
+void DragPixmapItem::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
+{
+//    DEBUG_BLOCK
     if ( !( event->buttons() & Qt::LeftButton ) )
         return;
     if ( ( event->pos().toPoint() - m_dragPos ).manhattanLength() < QApplication::startDragDistance() )

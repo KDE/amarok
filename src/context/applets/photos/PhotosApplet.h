@@ -22,6 +22,8 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 
+#include "../../engines/photos/PhotosInfo.h"
+
 #include <ui_photosSettings.h>
 
 class KConfigDialog;
@@ -71,7 +73,7 @@ class PhotosApplet : public Context::Applet
         Plasma::IconWidget      *m_settingsIcon;
 };
 
-Q_DECLARE_METATYPE ( QList < QPixmap * > )
+Q_DECLARE_METATYPE ( QList < PhotosInfo * > )
 K_EXPORT_AMAROK_APPLET( photos, PhotosApplet )
 
 #endif /* Photos_APPLET_H */

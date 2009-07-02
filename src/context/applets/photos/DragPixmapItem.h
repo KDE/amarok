@@ -39,6 +39,8 @@ class AMAROK_EXPORT DragPixmapItem : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
     public:
         DragPixmapItem( QGraphicsItem* parent = 0 );
+
+        void SetClickableUrl( QString );
         
     protected slots:
         /**
@@ -46,9 +48,11 @@ class AMAROK_EXPORT DragPixmapItem : public QObject, public QGraphicsPixmapItem
         */
         virtual void mousePressEvent( QGraphicsSceneMouseEvent * );
         virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * );
+        virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * ); 
 
     private:
-        QPoint m_dragPos;
+        QPoint    m_dragPos;
+        QString   m_url;
 };
 
 #endif // DROPPIXMAPITEM_H

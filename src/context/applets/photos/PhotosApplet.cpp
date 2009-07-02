@@ -137,7 +137,7 @@ PhotosApplet::connectSource( const QString &source )
 void 
 PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     Q_UNUSED( name )
 
     if ( data.empty() )
@@ -146,7 +146,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     // if we get a message, show it
     if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
     {
-        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );    
+        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
+        m_widget->clear();
         m_widget->hide();
         setBusy( true );
     }
@@ -157,8 +158,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else if ( data.contains( "data" ) )
     {
-        // only photos to translate ^^
-        m_widget->setPixmapList( data[ "data" ].value< QList< QPixmap * > >() );
+        // Send the data to the scrolling widget
+        m_widget->setPixmapList( data[ "data" ].value< QList < PhotosInfo * > >() );
         m_widget->show();
         setBusy(false);
     }

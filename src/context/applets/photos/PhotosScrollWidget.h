@@ -19,6 +19,8 @@
 
 #include <QGraphicsWidget>
 
+#include "../../engines/photos/PhotosInfo.h"
+
 //forward
 class QPixmap;
 class QGraphicsSceneHoverEvent;
@@ -43,8 +45,10 @@ class PhotosScrollWidget : public QGraphicsWidget
     public:
 
         PhotosScrollWidget( QGraphicsItem* parent = 0 );
+        ~PhotosScrollWidget();
 
-        void setPixmapList (QList < QPixmap * > );
+        void setPixmapList (QList < PhotosInfo * > );
+        void clear();
 
     public slots:
         void animate( qreal anim );
@@ -65,6 +69,8 @@ class PhotosScrollWidget : public QGraphicsWidget
         float   m_speed;        // if negative, go to left, if positif go to right,
         int     m_margin;
         int     m_scrollmax;
+        int     m_actualpos;
+        QList < PhotosInfo * >m_currentlist; // contain the list of the current PhotosItem in the widget
 };
 
 #endif // PHOTOSSCROLLWIDGET_H

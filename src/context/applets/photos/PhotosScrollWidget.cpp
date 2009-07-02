@@ -39,12 +39,20 @@ PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
     , m_speed( 1. )
     , m_margin( 5 )
     , m_scrollmax( 0 )
+    , m_actualpos( 0 )
 {
     setAcceptHoverEvents( true );
     setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
 }
 
-void PhotosScrollWidget::setPixmapList (QList < QPixmap * > list)
+PhotosScrollWidget::~PhotosScrollWidget()
+{
+    DEBUG_BLOCK
+    clear();
+}
+
+
+void PhotosScrollWidget::clear()
 {
     if ( !m_id )
     {
@@ -55,23 +63,46 @@ void PhotosScrollWidget::setPixmapList (QList < QPixmap * > list)
     foreach( QGraphicsItem *it, this->childItems() )
         delete it;
 
+    m_currentlist.clear();
     m_scrollmax = 0;
-    foreach (QPixmap *pix, list )
+    m_actualpos = 0;
+}
+
+void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
+{
+    
+    // if the list is the same, nothing happen.
+    if ( list == m_currentlist )
+        return;
+
+    // If a new one arrived, we change.
+    foreach( PhotosInfo *item, list )
     {
-        
-        // scale the cover
-        DragPixmapItem *item = new DragPixmapItem( this );
-        item->setPixmap( The::svgHandler()->addBordersToPixmap(
-            pix->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-        item->setPos( m_scrollmax, 0 );
-        item->show();
-        m_scrollmax += item->boundingRect().width() + m_margin;
+        if ( !m_currentlist.contains( item ) )
+        {
+            if ( !m_id ) // carefull we're animating
+            {
+                Plasma::Animator::self()->stopCustomAnimation( m_id );
+                m_id = 0;
+            }
+            DragPixmapItem *dragpix = new DragPixmapItem( this );
+            dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
+            item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+            dragpix->setPos( m_actualpos, 0 );
+            dragpix->SetClickableUrl( item->urlpage );
+            dragpix->show();
+
+            int delta = dragpix->boundingRect().width() + m_margin;
+            m_scrollmax += delta;
+            m_actualpos += delta;
+        }
     }
+    m_currentlist = list;
 }
 
 void PhotosScrollWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     Plasma::Animator::self()->stopCustomAnimation( m_id );
     m_id = 0;
 }
@@ -81,9 +112,8 @@ void PhotosScrollWidget::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
  //   DEBUG_BLOCK
     m_speed = ( event->pos().x() - ( size().width() / 2 ) ) / size().width();
     m_speed*=20;
-//    debug() << " speed " << m_speed;
     
-    // if m_id = 0, we don't have an animator !
+    // if m_id = 0, we don't have an animator yet, let's start the animation
     if ( !m_id )
     {
         m_id = Plasma::Animator::self()->customAnimation( m_scrollmax / 2, m_scrollmax*10, Plasma::Animator::LinearCurve, this, "animate" );
@@ -95,7 +125,7 @@ void PhotosScrollWidget::animate( qreal anim )
     Q_UNUSED( anim );
 
     // If we're are near the border and still asking to go higher !
-    if ( ( this->childItems().last()->pos().x() - 10 ) > m_scrollmax && m_speed < 0)
+    if ( ( this->childItems().last()->pos().x() - 10 ) > m_scrollmax && ( m_speed < 0 ) )
     {
         Plasma::Animator::self()->stopCustomAnimation( m_id );
         m_id = 0;
@@ -109,13 +139,17 @@ void PhotosScrollWidget::animate( qreal anim )
         m_id = 0;
         return;
     }
-    
+
+    int right = 0;
     foreach( QGraphicsItem *it, this->childItems() )
     {
         qreal x = it->pos().x() - m_speed;
         it->setPos( x, it->pos().y() );
         it->update();
+        if ( x > right )
+            right = x + it->boundingRect().width() + m_margin;
     }
+    m_actualpos = right;
 }
 
 #include "PhotosScrollWidget.moc"
