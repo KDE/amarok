@@ -42,7 +42,7 @@ def custom
 
     remover([
         "Amarok.kdev4","release_scripts","supplementary_scripts","HACKING",
-        "VIS_PLAN",".krazy","src/.gitignore"
+        "VIS_PLAN",".krazy","src/.gitignore", "docs", ".gitignore"
     ])
     base_dir
 
