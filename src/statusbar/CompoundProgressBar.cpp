@@ -68,8 +68,8 @@ void CompoundProgressBar::addProgressBar( ProgressBar * childBar, QObject *owner
     }
     else
     {
-        setDescription( i18n( "Multiple background-tasks running" ) );
-        cancelButton()->setToolTip( i18n( "Abort all background operations" ) );
+        setDescription( i18n( "Multiple background tasks running" ) );
+        cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
     connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancelAll() ) );
@@ -140,8 +140,8 @@ void CompoundProgressBar::childBarCancelled( ProgressBar * childBar )
     }
     else
     {
-        setDescription( i18n( "Multiple background-tasks running" ) );
-        cancelButton()->setToolTip( i18n( "Abort all background operations" ) );
+        setDescription( i18n( "Multiple background tasks running" ) );
+        cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
     if ( m_progressMap.count() == 0 )
@@ -175,8 +175,8 @@ void CompoundProgressBar::childBarComplete( ProgressBar * childBar )
     }
     else
     {
-        setDescription( i18n( "Multiple background-tasks running" ) );
-        cancelButton()->setToolTip( i18n( "Abort all background operations" ) );
+        setDescription( i18n( "Multiple background tasks running" ) );
+        cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
     if ( m_progressMap.count() == 0 )
