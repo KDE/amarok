@@ -4,8 +4,10 @@ ServiceTypes=KPluginInfo
 Icon=view-services-ampache-amarok
 Name=Ampache
 Name[bg]=Услуга Ampache
+Name[fi]=Ampache-palvelu
 Name[pa]=ਅਮਪਾਂਚੇ
 Name[x-test]=xxAmpachexx
+Name[zh_TW]=Ampache 
 Comment=Listen to music from an Ampache server
 Comment[bg]=Слушане на музика от Ampache
 Comment[ca]=Escolta música des d'un servidor Ampache
@@ -16,6 +18,7 @@ Comment[el]=Ακρόαση μουσικής από έναν εξυπηρετητ
 Comment[es]=Escuchar música desde el servidor Ampache
 Comment[et]=Ampache serveri muusika kuulamine
 Comment[eu]=Entzun musika Ampache zerbitzari batetatik
+Comment[fi]=Kuuntele musiikkia Ampache-palvelusta
 Comment[fr]=Écouter de la musique provenant d'un serveur Ampache
 Comment[ga]=Éist le ceol ó fhreastalaí Ampache
 Comment[gl]=Escoite música dun servizo Ampache
@@ -44,6 +47,7 @@ Comment[uk]=Прослуховування музики з сервера Ampach
 Comment[wa]=Schoûter del muzike d' on sierveu Ampache
 Comment[x-test]=xxListen to music from an Ampache serverxx
 Comment[zh_CN]=从 Ampache 服务聆听音乐
+Comment[zh_TW]=從 Ampache 伺服器上聽音樂
 
 
 ServiceTypes=Amarok/Plugin

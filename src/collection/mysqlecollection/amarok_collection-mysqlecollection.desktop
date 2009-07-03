@@ -2,6 +2,7 @@
 Type=Service
 Name=MySQLe Collection
 Name[et]=MySQLe kogu
+Name[fi]=MySQLe-kokoelma
 Name[it]=Collezione MySQLe
 Name[km]=សម្រាំង MySQLe
 Name[nn]=MySQLe-samling
@@ -23,6 +24,7 @@ Comment[eo]=Kolekta kromaĵo por Amarok
 Comment[es]=Complemento de colección para Amarok
 Comment[et]=Amaroki muusikakogu plugin
 Comment[eu]=Amarok-en bilduma plugin-a
+Comment[fi]=Amarokin kokoelmaliitännäinen
 Comment[fr]=Module de collections pour Amarok
 Comment[ga]=Breiseán bailiúchán le haghaidh Amarok
 Comment[gl]=Extensión de colección para Amarok
@@ -55,6 +57,7 @@ Comment[uk]=Додаток збірки для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye pos Amarok
 Comment[x-test]=xxCollection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的收藏插件
+Comment[zh_TW]=Amarok 的收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

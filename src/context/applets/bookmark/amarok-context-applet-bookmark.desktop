@@ -9,6 +9,7 @@ Name[el]=Σελιδοδείκτες
 Name[es]=Marcadores 
 Name[et]=Järjehoidjad
 Name[eu]=Laster-markak
+Name[fi]=Kirjanmerkit
 Name[ga]=Leabharmharcanna
 Name[it]=Segnalibri
 Name[ja]=ブックマーク
@@ -30,6 +31,7 @@ Name[tr]=Yer İmleri
 Name[uk]=Закладки
 Name[wa]=Rimåkes
 Name[x-test]=xxBookmarksxx
+Name[zh_TW]=書籤
 Type=Service
 ServiceTypes=Plasma/Applet
 

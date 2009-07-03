@@ -43,6 +43,7 @@ Name[uk]=Збірка на носіях інформації
 Name[wa]=Ramexhnêye d' éndjin media
 Name[x-test]=xxMedia Device Collectionxx
 Name[zh_CN]=媒体设备收藏
+Name[zh_TW]=媒體裝置收藏
 Comment=Media Device collection plugin for Amarok
 Comment[be]=Утулка калекцыі медыяпрылады для Amarok
 Comment[bg]=Приставка за колекцията на медийните устройства (Amarok)
@@ -55,6 +56,7 @@ Comment[el]=Πρόσθετο συλλογής συσκευών πολυμέσω�
 Comment[es]=Complemento de la colección del dispositivo de medios para Amarok
 Comment[et]=Amaroki meediaseadme kogu plugin
 Comment[eu]=Amarok-en multimedia gailuko bilduma plugin-a
+Comment[fi]=Amarokin mediasoitinkokoelmaliitännäinen
 Comment[fr]=Module de collection « périphérique de média » pour Amarok
 Comment[ga]=Breiseán bailiúchán Gléis Meán le haghaidh Amarok
 Comment[gl]=Extensión de colección de dispositivos de medios para Amarok
@@ -85,6 +87,7 @@ Comment[uk]=Додаток збірки на носіях інформації �
 Comment[wa]=Tchôke-divins di ramexhnêye d' éndjin media po Amarok
 Comment[x-test]=xxMedia Device collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的媒体设备收藏插件
+Comment[zh_TW]=Amarok 的媒體裝置收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

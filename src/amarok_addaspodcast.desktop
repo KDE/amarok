@@ -50,5 +50,6 @@ Name[uk]=Додати в Amarok як радіотрансляцію
 Name[wa]=Radjouter come Podcast a Amarok
 Name[x-test]=xxAdd as Podcast to Amarokxx
 Name[zh_CN]=将播客添加到 Aamarok
+Name[zh_TW]=新增為 Podcast 到 Amaork 中
 Icon=amarok
 Exec=qdbus org.kde.amarok  /PlaylistBrowser addPodcast %u

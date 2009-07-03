@@ -46,6 +46,7 @@ Name[uk]=Пристрій масового накопичення
 Name[wa]=Éndjin d' wårdaedje di dnêyes
 Name[x-test]=xxMass Storage Devicexx
 Name[zh_CN]=大容量存储设备
+Name[zh_TW]=大型儲存裝置
 Comment=Device plugin for Amarok
 Comment[be]=Утулка прылады для Amarok
 Comment[bg]=Приставка за устройство за Amarok
@@ -93,6 +94,7 @@ Comment[uk]=Додаток пристроїв для Amarok
 Comment[wa]=Tchôke-divins d' éndjin po Amarok
 Comment[x-test]=xxDevice plugin for Amarokxx
 Comment[zh_CN]=Amarok 的设备插件
+Comment[zh_TW]=Amarok 的裝置外掛程式
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_massstorage-device

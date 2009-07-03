@@ -4,8 +4,10 @@ ServiceTypes=KPluginInfo
 Icon=view-services-jamendo-amarok
 Name=Jamendo
 Name[bg]=Услуга Jamendo
+Name[fi]=Jamendo-palvelu
 Name[pa]=ਜਾਮੀਂਡੋ
 Name[x-test]=xxJamendoxx
+Name[zh_TW]=Jamendo 
 Comment=Listen to and download music uploaded by independent artists
 Comment[bg]=Слушане и сваляне на музика от независими изпълнители
 Comment[ca]=Escolta i baixa música pujada per artistes independents
@@ -44,6 +46,7 @@ Comment[uk]=Прослухайте і завантажте музику, зап�
 Comment[wa]=Schoûter eyet aberweter del muzike eberwetêye pa des årtisses dislaxhîs
 Comment[x-test]=xxListen to and download music uploaded by independent artistsxx
 Comment[zh_CN]=收听并下载由自由艺术家上传的音乐
+Comment[zh_TW]=聆聽並下載由獨立藝人所上傳的音樂
 
 
 ServiceTypes=Amarok/Plugin

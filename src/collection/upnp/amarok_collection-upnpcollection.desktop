@@ -43,6 +43,7 @@ Name[uk]=Збірка на UPnP
 Name[wa]=Ramexhnêye UPnP
 Name[x-test]=xxUPnP Collectionxx
 Name[zh_CN]=UPnP 收藏
+Name[zh_TW]=UPnP 收藏
 Comment=UPnP collection plugin for Amarok
 Comment[be]=Утулка калекцыі UPnP для Amarok
 Comment[bg]=Приставка за UPnP колекция (Amarok)
@@ -55,6 +56,7 @@ Comment[el]=Πρόσθετο συλλογής UPnP για το AmaroK
 Comment[es]=Complemento de la colección UPnP para Amarok
 Comment[et]=Amaroki UPnP kogu plugin
 Comment[eu]=Amarok-en UPnP bilduma plugin-a
+Comment[fi]=Amarokin UPnP-kokoelmaliitännäinen
 Comment[fr]=Module de collection UPnP pour Amarok
 Comment[ga]=Breiseán bailiúchán UPnP le haghaidh Amarok
 Comment[gl]=Extensión de colección UPnP para Amarok
@@ -85,6 +87,7 @@ Comment[uk]=Додаток збірки на UPnP для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye UPnP pos Amarok
 Comment[x-test]=xxUPnP collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的 UPnP 收藏插件
+Comment[zh_TW]=Amarok 的 UPnP 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

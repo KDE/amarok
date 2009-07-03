@@ -52,5 +52,6 @@ Name[uk]=Відтворити аудіо-КД за допомогою Amarok
 Name[wa]=Djouwer plake lazer odio avou Amarok
 Name[x-test]=xxPlay Audio CD with Amarokxx
 Name[zh_CN]=用 Amarok 播放音频 CD
+Name[zh_TW]=使用 Amarok 播放音樂 CD
 Icon=amarok
 Exec=amarok --cdplay %u

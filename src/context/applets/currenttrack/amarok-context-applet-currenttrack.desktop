@@ -9,6 +9,7 @@ Name[el]=Τρέχον κομμάτι
 Name[es]=Pista actual
 Name[et]=Aktiivne pala
 Name[eu]=Uneko pista
+Name[fi]=Soiva kappale
 Name[ga]=An tAmhrán Reatha
 Name[it]=Traccia attuale
 Name[ja]=現在のトラック
@@ -29,6 +30,7 @@ Name[tr]=Geçerli Parça
 Name[uk]=Поточна композиція
 Name[wa]=Boket do moumint
 Name[x-test]=xxCurrent Trackxx
+Name[zh_TW]=現在的曲目
 Type=Service
 ServiceTypes=Plasma/Applet
 

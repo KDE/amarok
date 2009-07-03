@@ -40,6 +40,7 @@ Name[uk]=Рушій даних Amarok
 Name[wa]=Éndjin d' dinêyes Amarok
 Name[x-test]=xxAmarok Data Enginexx
 Name[zh_CN]=Amarok 数据引擎
+Name[zh_TW]=Amarok 資料引擎
 Type=ServiceType
 X-KDE-ServiceType=Plasma/DataEngine
 
@@ -86,6 +87,7 @@ Comment[uk]=Рушій даних Amarok
 Comment[wa]=Éndjin d' dinêyes Amarok
 Comment[x-test]=xxAmarok Data Enginexx
 Comment[zh_CN]=Amarok 数据引擎
+Comment[zh_TW]=Amarok 資料引擎
 
 [PropertyDef::X-KDE-PluginInfo-Name]
 Type=QString

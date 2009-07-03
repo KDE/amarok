@@ -43,6 +43,7 @@ Name[uk]=Збірка MTP
 Name[wa]=Ramexhnêye MTP
 Name[x-test]=xxMTP Collectionxx
 Name[zh_CN]=MTP 收藏
+Name[zh_TW]=MTP 收藏
 Comment=MTP collection plugin for Amarok
 Comment[be]=Утулка калекцыі MTP для Amarok
 Comment[bg]=Приставка за MTP колекция за Amarok
@@ -55,6 +56,7 @@ Comment[el]=Πρόσθετο συλλογής MTP για το AmaroK
 Comment[es]=Complemento de colección MTP para Amarok
 Comment[et]=Amaroki MTP kogu plugin
 Comment[eu]=Amarok-en MTP bilduma plugin-a
+Comment[fi]=Amarokin MTP-kokoelmaliitännäinen
 Comment[fr]=Module de collection MTP pour Amarok
 Comment[ga]=Breiseán bailiúchán MTP le haghaidh Amarok
 Comment[gl]=Extensión de colección MTP para Amarok
@@ -85,6 +87,7 @@ Comment[uk]=Додаток збірки MTP для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye MTP po Amarok
 Comment[x-test]=xxMTP collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的 MTP 收藏插件
+Comment[zh_TW]=Amarok 的 MTP 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

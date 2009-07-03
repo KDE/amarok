@@ -10,6 +10,7 @@ Name[de]=Podcast-Verzeichnis
 Name[es]=Directorio de podcast
 Name[et]=Podcastide kataloog
 Name[eu]=Podcast-aren direktorioa
+Name[fi]=Podcast-kansio
 Name[ga]=Eolaire Podchraoltaí
 Name[ja]=ポッドキャストディレクトリ
 Name[km]=ថត Podcast
@@ -28,6 +29,7 @@ Name[tr]=Podcast Dizini
 Name[uk]=Каталог трансляцій
 Name[wa]=Ridant des podcasts
 Name[x-test]=xxPodcast Directoryxx
+Name[zh_TW]=Podcast 資料夾
 Comment=Browse and subscribe to a huge list of podcasts
 Comment[bg]=Разглеждане и абониране за голям брой подкастове
 Comment[ca]=Navegueu i subscriviu-vos a una àmplia llista de podcasts
@@ -65,6 +67,7 @@ Comment[uk]=Перегляньте і підпишіться на трансля
 Comment[wa]=Foyter eyet s' abouner a ene djivêye di podcast foû mezeure
 Comment[x-test]=xxBrowse and subscribe to a huge list of podcastsxx
 Comment[zh_CN]=浏览并订阅大量播客列表
+Comment[zh_TW]=瀏覽並訂閱大量的 podcast 清單
 
 
 ServiceTypes=Amarok/Plugin

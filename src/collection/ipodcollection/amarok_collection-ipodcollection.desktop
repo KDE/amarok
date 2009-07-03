@@ -43,6 +43,7 @@ Name[uk]=Збірка Ipod
 Name[wa]=Ramexhnêye Ipod
 Name[x-test]=xxIpod Collectionxx
 Name[zh_CN]=Ipod 收藏
+Name[zh_TW]=Ipod 收藏
 Comment=Ipod collection plugin for Amarok
 Comment[be]=Утулка калекцыі Ipod для Amarok
 Comment[bg]=Приставка за Ipod колекция (Amarok)
@@ -86,6 +87,7 @@ Comment[uk]=Додаток збірки Ipod для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye Ipod po Amarok
 Comment[x-test]=xxIpod collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的 Ipod 收藏插件
+Comment[zh_TW]=Amarok 的 Ipod 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

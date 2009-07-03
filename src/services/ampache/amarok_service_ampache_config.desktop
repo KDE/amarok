@@ -19,6 +19,7 @@ Name[eo]=Ampache Serva Agordo
 Name[es]=Configuración del servicio Ampache
 Name[et]=Ampache teenuse seadistamine
 Name[eu]=Ampache zerbitzari konfigurazioa
+Name[fi]=Ampache-palvelumääritykset
 Name[fr]=Configuration du service Ampache
 Name[ga]=Cumraíocht Sheirbhís Ampache
 Name[gl]=Configuración do servizo Ampache
@@ -49,6 +50,7 @@ Name[uk]=Налаштування служби Ampache
 Name[wa]=Apontiaedje siervice Ampache
 Name[x-test]=xxAmpache Service Configxx
 Name[zh_CN]=Ampache 服务配置
+Name[zh_TW]=Ampache 服務設定
 Comment=Sets up the ampache server(s) to connect to
 Comment[bg]=Настройване на ampache сървър/и
 Comment[ca]=Defineix el servidor(s) Ampache al que connectar
@@ -87,5 +89,6 @@ Comment[uk]=Встановлює сервер ampache, з яким слід з�
 Comment[wa]=Aponteye li/les sierveu(s) ampache po s' raloyî a
 Comment[x-test]=xxSets up the ampache server(s) to connect toxx
 Comment[zh_CN]=设定要连接的 Ampache 服务器
+Comment[zh_TW]=設定要連結的 ampache 伺服器
 
 

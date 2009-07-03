@@ -9,6 +9,7 @@ Name[el]=Στίχοι
 Name[es]=Letras
 Name[et]=Sõnad
 Name[eu]=Hitzak
+Name[fi]=Sanoitukset
 Name[ga]=Liricí
 Name[it]=Testi
 Name[ja]=歌詞
@@ -29,6 +30,7 @@ Name[tr]=Şarkı Sözleri
 Name[uk]=Текст пісні
 Name[wa]=Paroles
 Name[x-test]=xxLyricsxx
+Name[zh_TW]=歌詞
 Type=Service
 ServiceTypes=Plasma/Applet
 

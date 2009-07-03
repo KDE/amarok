@@ -41,6 +41,7 @@ Name[uk]=Поточний рушій інформаційних даних
 Name[wa]=Éndjin d' dinêyes des informåcions do moumint
 Name[x-test]=xxCurrent Info Data Enginexx
 Name[zh_CN]=当前信息数据引擎
+Name[zh_TW]=目前訊息的資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=amarok

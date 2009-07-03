@@ -41,6 +41,7 @@ Name[uk]=Рушій даних Вікіпедії
 Name[wa]=Éndjin d' dinêyes Wikipedia
 Name[x-test]=xxWikipedia Data Enginexx
 Name[zh_CN]=维基百科数据引擎
+Name[zh_TW]=維基百科資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=wikipedia

@@ -42,6 +42,7 @@ Name[uk]=Медіа-пристрої
 Name[wa]=Éndjins media
 Name[x-test]=xxMedia Devicesxx
 Name[zh_CN]=媒体设备
+Name[zh_TW]=媒體裝置
 Type=Service
 ServiceTypes=Plasma/Applet
 

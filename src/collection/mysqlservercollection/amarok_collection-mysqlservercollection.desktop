@@ -2,6 +2,7 @@
 Type=Service
 Name=MySQLServer Collection
 Name[et]=MySQLServeri kogu
+Name[fi]=MySQLServer-kokoelma
 Name[it]=Collezione MySQLServer
 Name[km]=សម្រាំង MySQLServer
 Name[nn]=MySQLServer-samling
@@ -23,6 +24,7 @@ Comment[eo]=Kolekta kromaĵo por Amarok
 Comment[es]=Complemento de colección para Amarok
 Comment[et]=Amaroki muusikakogu plugin
 Comment[eu]=Amarok-en bilduma plugin-a
+Comment[fi]=Amarokin kokoelmaliitännäinen
 Comment[fr]=Module de collections pour Amarok
 Comment[ga]=Breiseán bailiúchán le haghaidh Amarok
 Comment[gl]=Extensión de colección para Amarok
@@ -55,6 +57,7 @@ Comment[uk]=Додаток збірки для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye pos Amarok
 Comment[x-test]=xxCollection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的收藏插件
+Comment[zh_TW]=Amarok 的收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 

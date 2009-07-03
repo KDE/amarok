@@ -41,6 +41,7 @@ Name[uk]=Рушій даних службової інформації
 Name[wa]=Éndjin d' dinêyes des informåcions do siervice
 Name[x-test]=xxService Info Data Enginexx
 Name[zh_CN]=服务信息数据引擎
+Name[zh_TW]=服務訊息資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=amarok

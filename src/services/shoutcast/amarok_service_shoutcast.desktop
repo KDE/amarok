@@ -10,6 +10,7 @@ Name[de]=Shoutcast-Verzeichnis
 Name[es]=Directorio de Shoutcast
 Name[et]=Shoutcasti kataloog
 Name[eu]=Shoutcast-en direktorioa
+Name[fi]=Shoutcast-kansio
 Name[ga]=Eolaire Shoutcast
 Name[ja]=Shoutcast ディレクトリ
 Name[km]=ថត Shoutcast
@@ -27,6 +28,7 @@ Name[tr]=Shoutcast Dizini
 Name[uk]=Каталог Shoutcast
 Name[wa]=Ridant des shoutcasts
 Name[x-test]=xxShoutcast Directoryxx
+Name[zh_TW]=Shoutcast 資料夾
 Comment=A service that allows browsing of thousands of shoutcast stations
 Comment[bg]=Услуга за обзор на хиляди shoutcast радио станции
 Comment[ca]=Un servei que permet navegar per milers d'estacions de shoutcast
@@ -66,6 +68,7 @@ Comment[uk]=Служба, що дозволяє вам прослуховува�
 Comment[wa]=On siervice ki vs permet d' foyter dins des meyes di ståcions di shoutacst
 Comment[x-test]=xxA service that allows browsing of thousands of shoutcast stationsxx
 Comment[zh_CN]=一种允许浏览数千个 Shoutcast 站点的服务
+Comment[zh_TW]=一種允許您瀏覽上千種 shoutcast 站台的服務
 
 
 ServiceTypes=Amarok/Plugin

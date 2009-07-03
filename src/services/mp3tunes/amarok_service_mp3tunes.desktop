@@ -5,6 +5,7 @@ Icon=view-services-mp3tunes-amarok
 Name=Mp3tunes
 Name[bg]=Услуга Mp3tunes
 Name[da]=MP3tunes
+Name[fi]=Mp3tunes-palvelu
 Name[ga]=MP3tunes
 Name[pt]=MP3tunes
 Name[x-test]=xxMp3tunesxx
@@ -46,6 +47,7 @@ Comment[uk]=Перегляньте і прослухайте музику, що 
 Comment[wa]=Foyter eyet schoûter li muzike wårdêye e vosse conte mp3tunes
 Comment[x-test]=xxBrowse and listen to the music stored in your mp3tunes accountxx
 Comment[zh_CN]=浏览并收听储存在您的 Mp3tunes 账户中的音乐
+Comment[zh_TW]=瀏覽並聆聽儲存在您 mp3tunes 帳戶中的音樂
 
 ServiceTypes=Amarok/Plugin
 

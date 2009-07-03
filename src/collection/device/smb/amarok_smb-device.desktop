@@ -47,6 +47,7 @@ Name[uk]=Пристрій SMB
 Name[wa]=Éndjin SMB
 Name[x-test]=xxSMB Devicexx
 Name[zh_CN]=SMB 设备
+Name[zh_TW]=SMB 裝置
 Comment=Device plugin for Amarok which supports SMBFS
 Comment[bg]=Приставка за устройство за Amarok, поддържаща SMBFS
 Comment[ca]=Connector de dispositiu per a l'Amarok que accepta SMBFS
@@ -90,6 +91,7 @@ Comment[uk]=Додаток пристроїв для Amarok з підтримк�
 Comment[wa]=Tchôke-divins d' éndjin po Amarok ki sopoite SMBFS
 Comment[x-test]=xxDevice plugin for Amarok which supports SMBFSxx
 Comment[zh_CN]=Amarok 支持 SMBFS 的设备插件
+Comment[zh_TW]=Amarok 的支援 SMBFS 的裝置外掛程式
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_smb-device

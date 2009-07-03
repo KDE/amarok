@@ -43,6 +43,7 @@ Name[uk]=Рушій даних LastFM
 Name[wa]=Éndjin d' dinêyes LastFM
 Name[x-test]=xxLastFM Data Enginexx
 Name[zh_CN]=LastFM 数据引擎
+Name[zh_TW]=LastFM 資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=lastfm

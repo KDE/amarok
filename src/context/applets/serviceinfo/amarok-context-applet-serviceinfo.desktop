@@ -9,6 +9,7 @@ Name[el]=Υπηρεσίες
 Name[es]=Servicios
 Name[et]=Teenused
 Name[eu]=Zerbitzuak
+Name[fi]=Palvelut
 Name[ga]=Seirbhísí
 Name[it]=Servizi
 Name[ja]=サービス
@@ -30,6 +31,7 @@ Name[tr]=Servisler
 Name[uk]=Служби
 Name[wa]=Siervices
 Name[x-test]=xxServicesxx
+Name[zh_TW]=服務
 Type=Service
 ServiceTypes=Plasma/Applet
 
