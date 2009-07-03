@@ -37,13 +37,13 @@ DragPixmapItem::DragPixmapItem( QGraphicsItem* parent )
     , m_url( 0 )
 {
     setAcceptDrops( true );
+    setCursor( Qt::PointingHandCursor );
 }
 
 void DragPixmapItem::SetClickableUrl( QString url )
 {
     m_url = url ;
 }
-    
 
 void DragPixmapItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -69,7 +69,6 @@ void DragPixmapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
 void DragPixmapItem::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
 {
-//    DEBUG_BLOCK
     if ( !( event->buttons() & Qt::LeftButton ) )
         return;
     if ( ( event->pos().toPoint() - m_dragPos ).manhattanLength() < QApplication::startDragDistance() )

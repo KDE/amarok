@@ -40,6 +40,7 @@ PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
     , m_margin( 5 )
     , m_scrollmax( 0 )
     , m_actualpos( 0 )
+    , m_mode( PHOTOS_MODE_INTERACTIVE )
 {
     setAcceptHoverEvents( true );
     setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
@@ -68,6 +69,32 @@ void PhotosScrollWidget::clear()
     m_actualpos = 0;
 }
 
+
+void PhotosScrollWidget::setModeToInteractive()
+{
+    m_mode = PHOTOS_MODE_INTERACTIVE;
+    QList < PhotosInfo * > tmp = m_currentlist;
+    clear();
+    setPixmapList( tmp );
+    tmp.clear();
+}
+void PhotosScrollWidget::setModeToAutomatic()
+{
+    m_mode = PHOTOS_MODE_AUTOMATIC;
+    QList < PhotosInfo * > tmp = m_currentlist;
+    clear();
+    setPixmapList( tmp );
+    tmp.clear();
+}
+void PhotosScrollWidget::setModeToFading()
+{
+    m_mode = PHOTOS_MODE_FADING;
+    QList < PhotosInfo * > tmp = m_currentlist;
+    clear();
+    setPixmapList( tmp );
+    tmp.clear();
+}
+
 void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
 {
     
@@ -78,23 +105,74 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
     // If a new one arrived, we change.
     foreach( PhotosInfo *item, list )
     {
-        if ( !m_currentlist.contains( item ) )
+        switch ( m_mode )
         {
-            if ( !m_id ) // carefull we're animating
+            case PHOTOS_MODE_INTERACTIVE :
             {
-                Plasma::Animator::self()->stopCustomAnimation( m_id );
-                m_id = 0;
-            }
-            DragPixmapItem *dragpix = new DragPixmapItem( this );
-            dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-            item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-            dragpix->setPos( m_actualpos, 0 );
-            dragpix->SetClickableUrl( item->urlpage );
-            dragpix->show();
+                if ( !m_currentlist.contains( item ) )
+                {
+                    if ( !m_id ) // carefull we're animating
+                    {
+                        Plasma::Animator::self()->stopCustomAnimation( m_id );
+                        m_id = 0;
+                    }
+                    DragPixmapItem *dragpix = new DragPixmapItem( this );
+                    dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
+                    item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                    dragpix->setPos( m_actualpos, 0 );
+                    dragpix->SetClickableUrl( item->urlpage );
+                    dragpix->show();
 
-            int delta = dragpix->boundingRect().width() + m_margin;
-            m_scrollmax += delta;
-            m_actualpos += delta;
+                    int delta = dragpix->boundingRect().width() + m_margin;
+                    m_scrollmax += delta;
+                    m_actualpos += delta;
+                }
+                break;
+            }
+            case PHOTOS_MODE_AUTOMATIC :
+            {
+                if ( !m_currentlist.contains( item ) )
+                {
+                    if ( !m_id ) // carefull we're animating
+                    {
+                        Plasma::Animator::self()->stopCustomAnimation( m_id );
+                        m_id = 0;
+                    }
+                    DragPixmapItem *dragpix = new DragPixmapItem( this );
+                    dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
+                    item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                    dragpix->setPos( m_actualpos, 0 );
+                    dragpix->SetClickableUrl( item->urlpage );
+                    dragpix->show();
+                    
+                    int delta = dragpix->boundingRect().width() + m_margin;
+                    m_scrollmax += delta;
+                    m_actualpos += delta;
+                }
+                break;
+            }
+            case PHOTOS_MODE_FADING :
+            {
+                if ( !m_currentlist.contains( item ) )
+                {
+                    if ( !m_id ) // carefull we're animating
+                    {
+                        Plasma::Animator::self()->stopCustomAnimation( m_id );
+                        m_id = 0;
+                    }
+                    DragPixmapItem *dragpix = new DragPixmapItem( this );
+                    dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
+                    item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                    dragpix->setPos( m_actualpos, 0 );
+                    dragpix->SetClickableUrl( item->urlpage );
+                    dragpix->show();
+                    
+                    int delta = dragpix->boundingRect().width() + m_margin;
+                    m_scrollmax += delta;
+                    m_actualpos += delta;
+                }
+                break;
+            }
         }
     }
     m_currentlist = list;
@@ -125,16 +203,15 @@ void PhotosScrollWidget::animate( qreal anim )
     Q_UNUSED( anim );
 
     // If we're are near the border and still asking to go higher !
-    if ( ( this->childItems().last()->pos().x() - 10 ) > m_scrollmax && ( m_speed < 0 ) )
+    if ( ( ( this->childItems().first()->pos().x() + this->childItems().first()->boundingRect().width() + 10 ) > this->boundingRect().width() ) && ( m_speed < 0 ) )
     {
         Plasma::Animator::self()->stopCustomAnimation( m_id );
         m_id = 0;
         return;
     }
-
     // If we're are near the border and still asking to go down
-    if ( ( this->childItems().last()->pos().x() - 10 < 0 ) && ( m_speed > 0 ) )
-    {
+    if ( ( ( this->childItems().last()->pos().x() - 10 ) < 0 ) && ( m_speed > 0 ) )
+    {        
         Plasma::Animator::self()->stopCustomAnimation( m_id );
         m_id = 0;
         return;

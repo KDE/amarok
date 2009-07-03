@@ -21,6 +21,10 @@
 
 #include "../../engines/photos/PhotosInfo.h"
 
+#define PHOTOS_MODE_INTERACTIVE 0
+#define PHOTOS_MODE_AUTOMATIC   1
+#define PHOTOS_MODE_FADING      2
+
 //forward
 class QPixmap;
 class QGraphicsSceneHoverEvent;
@@ -30,10 +34,11 @@ namespace Plasma
 }
 
 /**
-* \brief An animated QGrahicsWidget on hovering
-*
-* The photos will scroll smoothly !!!
-*
+* \brief A widget to present the photos
+* 3 possible animation :
+*  - Interactive : the scorll is done on mouse hover
+*  - Automatic : the photos are presented in an infinite loop, always scrolling
+*  - Fading, the photos are presented one by one, fading ...
 * \sa QGraphicsWidget
 *
 * \author Simon Esneault <simon.esneault@gmail.com>
@@ -48,6 +53,11 @@ class PhotosScrollWidget : public QGraphicsWidget
         ~PhotosScrollWidget();
 
         void setPixmapList (QList < PhotosInfo * > );
+
+        void setModeToInteractive();
+        void setModeToAutomatic();
+        void setModeToFading();
+        
         void clear();
 
     public slots:
@@ -65,11 +75,12 @@ class PhotosScrollWidget : public QGraphicsWidget
         
     private:
         int     m_id;           // id of the animator
-        bool    m_animating;    // boolean !
+        bool    m_animating;    // boolean true if animating false otherwise
         float   m_speed;        // if negative, go to left, if positif go to right,
-        int     m_margin;
-        int     m_scrollmax;
-        int     m_actualpos;
+        int     m_margin;       // margin beetween the photos
+        int     m_scrollmax;    // lenght of the whole stack
+        int     m_actualpos;    // 
+        int     m_mode;         // 
         QList < PhotosInfo * >m_currentlist; // contain the list of the current PhotosItem in the widget
 };
 

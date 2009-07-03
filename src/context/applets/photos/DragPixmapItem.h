@@ -27,7 +27,7 @@ class QGraphicsSceneMouseEvent;
 /**
 * \brief A drag-able QGraphicsPixmapItem
 *
-* Used for drag'n drop support for the cover.
+* Display a pixmap which is draggable and clickable.
 *
 * \sa QGraphicsPixmapItem
 *
@@ -48,7 +48,7 @@ class AMAROK_EXPORT DragPixmapItem : public QObject, public QGraphicsPixmapItem
         */
         virtual void mousePressEvent( QGraphicsSceneMouseEvent * );
         virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * );
-        virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * ); 
+        virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent * );
 
     private:
         QPoint    m_dragPos;
