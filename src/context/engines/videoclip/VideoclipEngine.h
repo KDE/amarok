@@ -20,6 +20,7 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "meta/Meta.h"
+#include "VideoclipInfo.h"
 
 #include <KIO/Job>
 
@@ -27,23 +28,6 @@
 
 #include <iostream>
 #include <sstream>
-
-//!  Struct VideoInfo, contain all the info vor a video
-struct VideoInfo {
-    QString url;        // Url for the browser (http://www.youtube.com/watch?v=153d9tc3Oao )
-    QString title;      // Name of the video
-    QString coverurl;   // url of the cover
-    QString duration;   // formatted as a QString(mm:ss)
-    QString desc;       // full description
-    QPixmap * cover;    // Image data
-    QString views;      // number of view of the video
-    float rating;       // rating should be beetween 0 to 5
-    QString videolink;  // direct video link to the downloadable file
-    QString source;     // "youtube" or "dailymotion" or "vimeo" or whatever
-    int relevancy;      // used to filter and order the files
-    int length;         // length in seconds
-    QString artist;     // The artist just to show it in the artist name
-};
 
 using namespace Context;
 

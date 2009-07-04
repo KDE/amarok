@@ -3,6 +3,7 @@ project(context-videoclip)
 set( videoclip_applet_SRCS
 VideoclipApplet.cpp
 VideoItemButton.cpp
+CustomVideoWidget.cpp
 ../../../widgets/kratingwidget.cpp
 ../../../widgets/kratingpainter.cpp
 )

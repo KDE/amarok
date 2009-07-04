@@ -23,6 +23,8 @@
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
 
+#include "../../engines/videoclip/VideoclipInfo.h"
+
 #include <ui_videoclipSettings.h>
 
 // forward
@@ -47,22 +49,8 @@ class QGraphicsProxyWidget;
 class QGraphicsWidget;
 class QHBoxLayout;
 
-//!  Struct VideoInfo, contain all the info for a video
-struct VideoInfo {
-    QString url;        // Url for the browser (http://www.youtube.com/watch?v=153d9tc3Oao )
-    QString title;      // Name of the video
-    QString coverurl;   // url of the cover
-    QString duration;   // formatted as a QString(mm:ss)
-    QString desc;       // full description
-    QPixmap * cover;    // Image data
-    QString views;      // number of view of the video
-    float rating;       // rating should be beetween 0 to 5
-    QString videolink;  // direct video link to the downloadable file
-    QString source;     // "youtube" or "dailymotion" or "vimeo" or whatever
-    int relevancy;      // used to filter and order the files
-    int length;         // length in seconds
-    QString artist;     // The artist just to show it in the artist name
-};
+class CustomVideoWidget;
+
 
  /** VideoclipApplet will display videoclip from internet, relatively to the current playing song
    * If a video is detected in the playlist, it will also play trhe video inside the a VideoWidget.
@@ -105,7 +93,8 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         Plasma::IconWidget * addAction( QAction *action );
         
         Phonon::MediaObject *m_mediaObject;
-        Phonon::VideoWidget *m_videoWidget;
+     //   Phonon::VideoWidget *m_videoWidget;
+     CustomVideoWidget  *m_videoWidget;
         Phonon::Path        m_path;
 
         // The two big container, only one who need a resize

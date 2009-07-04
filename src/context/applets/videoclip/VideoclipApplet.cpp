@@ -18,6 +18,7 @@
 
 #include "VideoclipApplet.h" 
 #include "VideoItemButton.h"
+#include "CustomVideoWidget.h"
 
 // Amarok
 #include "Amarok.h"
@@ -76,7 +77,6 @@ VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
 }
 
-
 void 
 VideoclipApplet::init()
 {
@@ -86,7 +86,8 @@ VideoclipApplet::init()
     m_height = 300;
     
     // TODO inherit a phonon VideoWidget to unable mouse interaction (double click full screen etc ...)
-    m_videoWidget = new Phonon::VideoWidget();
+//    m_videoWidget = new Phonon::VideoWidget();
+    m_videoWidget = new CustomVideoWidget();
     m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
     m_videoWidget->hide();
 

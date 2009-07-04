@@ -185,6 +185,9 @@ bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
     if ( bArtistDesc && bTitleDesc )
         item->relevancy+=20;
 
+    // init to false;
+    item->isHQ = false;
+    
     // time to remove bad choices. If we don't have artist nor thant title in the name of the vid, 
     // and no artist in the desc, simply remove this item.
     if ( !bArtistDesc && item->relevancy==-20 ) 
@@ -280,29 +283,49 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         }
 
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-
         QString url2=jobUrl;
-        QString vidlink="bad_link";
-        QString page = storedJob->data();
-        QString regex( "&t=" );
-
         jobUrl.replace( "watch?v", "get_video?video_id" );
+        
+        QString vidlink = "bad_link" ;
+        QString page = storedJob->data();
+        bool isHQ18 = false;
+        bool isHQ22 = false;
+        
+        QString regex( "&fmt_map=" );
         if ( page.indexOf( regex ) != -1 )
         {
             page = page.mid( page.indexOf( regex ) + regex.size() );
-            vidlink = jobUrl + QString( "&t=" ) + page.mid( 0, page.indexOf( "&" ) );
 
-            // enable youtube HQ
-            if ( m_youtubeHQ )
+            // if the next time we've got true
+            if ( page.mid( 0, 3 ).contains( "18" ) || page.mid( 0, 3 ).contains( "35" ))
+                isHQ18 = true;
+            
+            else if ( page.mid( 0, 3 ).contains( "22" ) )
+                isHQ22 = true ;
+        }
+            
+        QString regex2( "&t=" );
+
+        if ( page.indexOf( regex2 ) != -1 )
+        {
+            page = page.mid( page.indexOf( regex2 ) + regex2.size() );
+            vidlink = jobUrl + regex2 + page.mid( 0, page.indexOf( "&" ) );
+
+            // enable youtube HQ if user as request and HQ is available
+            if ( m_youtubeHQ && isHQ18 )
                 vidlink+="&fmt=18";
+            
+            else if ( m_youtubeHQ && isHQ22 )
+                vidlink+="&fmt=22";
         }
         
         foreach (VideoInfo *item, m_video )
         {
             if ( item->url == url2 )
             {
+                if ( isHQ18 || isHQ22 )
+                    item->isHQ = true;
                 item->videolink = vidlink;
-                
             }
         }
         m_listJob.removeOne( url2 );
@@ -450,6 +473,8 @@ void VideoclipEngine::resultVimeoBis( KJob *job )
         // only add if it's valid (no useless jobs)
         if ( isVideoInfoValid(item) )
         {
+            // All vimeo are streamed in HQ
+            item->isHQ = true ;
             // Push the VideoInfo in the main list
             m_video << item;
             // send a job to get the full link
@@ -597,6 +622,7 @@ void VideoclipEngine::resultFinalize()
             debug() << " videolink : " << item->videolink;
             debug() << " coverurl : " << item->coverurl;
             debug() << " pixmap : " << !item->cover->isNull();
+            debug() << " is HQ : " << item->isHQ;
             debug() << " ";
         }
         
