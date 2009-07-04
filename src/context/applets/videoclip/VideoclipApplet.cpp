@@ -143,6 +143,12 @@ VideoclipApplet::init()
              this, SLOT( connectSource( const QString & ) ) );
 
     engineNewTrackPlaying();// kickstart
+
+    // Read config and inform the engine.
+    KConfigGroup config = Amarok::config("Videoclip Applet");
+    m_youtubeHQ = config.readEntry( "YoutubeHQ", false );
+    dataEngine( "amarok-videoclip" )->query( QString( "videoclip:youtubeHQ:" ) + QString().setNum( m_youtubeHQ ) );
+    
 }
 
 VideoclipApplet::~VideoclipApplet()
@@ -459,10 +465,22 @@ VideoclipApplet::createConfigurationInterface( KConfigDialog *parent )
     
     // TODO bad, it's done manually ...
     if ( m_youtubeHQ == true )
-        ui_Settings.checkBox->setChecked( true );
+        ui_Settings.checkYoutubeHQ->setChecked( true );
     
     parent->addPage( settings, i18n( "Video Clip Settings" ), "preferences-system");
-    //connect( ui_Settings, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
+    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
+}
+
+void
+VideoclipApplet::saveSettings()
+{
+    DEBUG_BLOCK
+    KConfigGroup config = Amarok::config("Videoclip Applet");
+    
+    m_youtubeHQ = ui_Settings.checkYoutubeHQ->isChecked();
+    config.writeEntry( "YoutubeHQ", m_youtubeHQ );
+    
+    dataEngine( "amarok-videoclip" )->query( QString( "videoclip:youtubeHQ:" ) + QString().setNum( m_youtubeHQ ) );
 }
 
 #include "VideoclipApplet.moc"

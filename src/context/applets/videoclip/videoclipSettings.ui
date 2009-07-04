@@ -10,7 +10,7 @@
     <height>46</height>
    </rect>
   </property>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QCheckBox" name="checkYoutubeHQ">
    <property name="geometry">
     <rect>
      <x>10</x>

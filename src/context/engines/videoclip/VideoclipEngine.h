@@ -168,6 +168,9 @@ private:
     QString    m_title;
     QString    m_artist;
     int        m_length;
+
+    bool       m_youtubeHQ; // boolean, store youtube HQ state, default is no
+    
     // stores what features are enabled
     bool m_requested;
 

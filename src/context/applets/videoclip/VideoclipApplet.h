@@ -96,9 +96,10 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         void    appendPlayVideoClip( VideoInfo *info );
 
         void    videoMenu( QPoint );
-
+        void    saveSettings();
     protected:
-        void createConfigurationInterface(KConfigDialog *parent);        
+        void    createConfigurationInterface(KConfigDialog *parent);
+
 
     private:
         Plasma::IconWidget * addAction( QAction *action );

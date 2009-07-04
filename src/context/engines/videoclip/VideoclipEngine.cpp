@@ -43,6 +43,7 @@ VideoclipEngine::VideoclipEngine( QObject* parent, const QList<QVariant>& /*args
         , m_nbDailymotion( -1 )
         , m_nbVimeo( -1 )
         , m_nbVidsPerService( 7 )
+        , m_youtubeHQ( 0 )
         , m_requested( true )
 {
     m_sources << "youtube" << "dailymotion" << "vimeo" ;
@@ -68,6 +69,19 @@ VideoclipEngine::sourceRequestEvent( const QString& name )
 {
     Q_UNUSED( name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
+
+    QStringList tokens = name.split( ':' );
+
+    // user has enable/disable youtubeHQ settings
+    if ( tokens.contains( "youtubeHQ" ) && tokens.size() > 1 )
+    {
+        if ( ( tokens.at( 1 ) == QString( "youtubeHQ" ) ) && ( tokens.size() > 2 ) )
+        {
+            m_youtubeHQ = tokens.at( 2 ).toInt();
+            return false;
+        }
+    }
+
     removeAllData( name );
     setData( name, QVariant() );
     update();
@@ -277,6 +291,10 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         {
             page = page.mid( page.indexOf( regex ) + regex.size() );
             vidlink = jobUrl + QString( "&t=" ) + page.mid( 0, page.indexOf( "&" ) );
+
+            // enable youtube HQ
+            if ( m_youtubeHQ )
+                vidlink+="&fmt=18";
         }
         
         foreach (VideoInfo *item, m_video )
