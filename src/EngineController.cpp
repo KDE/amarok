@@ -836,6 +836,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     if( newState == oldState )
         return;
 
+    // HACK:
     // The following check is an attempt to fix http://bugs.kde.org/show_bug.cgi?id=180339
     // ("amarok stops playing tracks") and other issues with Phonon.
     // The theory:
