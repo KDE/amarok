@@ -168,8 +168,8 @@ WikipediaApplet::init()
 Plasma::IconWidget *
 WikipediaApplet::addAction( QAction *action )
 {
-    DEBUG_BLOCK
     if ( !action ) {
+        DEBUG_BLOCK
         debug() << "ERROR!!! PASSED INVALID ACTION";
         return 0;
     }
@@ -314,7 +314,14 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     p->save();
     QColor bg( App::instance()->palette().highlight().color() );
     bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
-    QRectF wikiRect = m_webView->boundingRect();
+
+    // HACK
+    // sometimes paint is done before the updateconstraints call
+    // so m_webview bounding rect is not yet correct
+    QRectF wikiRect(
+    QPointF( standardPadding(), m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + standardPadding() ),
+                    QSizeF( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - m_webView->pos().y() - standardPadding() ) );
+                    
     wikiRect.moveTopLeft( m_webView->pos() );
     QPainterPath round;
     round.addRoundedRect( wikiRect, 3, 3 );
