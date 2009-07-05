@@ -268,7 +268,13 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     QColor highlight( App::instance()->palette().highlight().color() );
     highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
 
-    QRectF lyricsRect = m_lyricsProxy->boundingRect();
+    // HACK
+    // sometimes paint is done before the updateconstraints call
+    // so m_lyricsProxy bounding rect is not yet correct
+    QRectF lyricsRect(
+        QPointF( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() ),
+        QSizeF( size().width() - 2 * standardPadding(), boundingRect().height() - m_lyricsProxy->pos().y() - standardPadding() ) );
+
     lyricsRect.moveTopLeft( m_lyricsProxy->pos() );
     QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
