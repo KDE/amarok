@@ -40,12 +40,6 @@ void LineEdit::keyPressEvent( QKeyEvent *event )
         emit downPressed();
         return;
     }
-    else if( event->key() == Qt::Key_Down )
-    {
-        event->accept();
-        emit downPressed();
-        return;
-    }
     KLineEdit::keyPressEvent( event );
 }
 

@@ -318,7 +318,7 @@ void BrowserCategoryList::activate( BrowserCategory * category )
 
 void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 {
-    //get ther long description for this item and pass it it to info proxy.
+    //get the long description for this item and pass it it to info proxy.
 
     BrowserCategory *category = 0;
 
