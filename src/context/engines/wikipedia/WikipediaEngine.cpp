@@ -52,7 +52,6 @@ QStringList WikipediaEngine::sources() const
 bool WikipediaEngine::sourceRequestEvent( const QString& name )
 {
     DEBUG_BLOCK
-    Q_UNUSED( name )
 
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     QStringList tokens = name.split( ':' );
@@ -70,7 +69,7 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
     // User has clicked on a link, let's fetch the page
     if( tokens.contains( "get" ) && tokens.size() > 1 )
     {
-        if ( ( tokens.at( 1 ) == QString( "get" ) )  && ( tokens.size() > 3 ) )
+        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 3 ) )
         {            
             m_wikiCurrentUrl = tokens.at( 2 ) + QString( ":" ) + tokens.at( 3 );
         
@@ -449,7 +448,10 @@ WikipediaEngine::wikiArtistPostfix()
         }
     }
     else // for every other country
+    {
+        m_triedRefinedSearch = -1;
         return "";
+    }
 }
 
 inline QString
@@ -517,7 +519,10 @@ WikipediaEngine::wikiTrackPostfix()
         }
     }
     else
+    {
+        m_triedRefinedSearch = -1;
         return "";
+    }
 }
 
 inline QString
