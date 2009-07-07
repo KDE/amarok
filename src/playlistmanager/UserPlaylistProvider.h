@@ -34,7 +34,6 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         /* PlaylistProvider functions */
         virtual int category() const;
-        virtual Meta::PlaylistList playlists() = 0;
 
         /* UserPlaylistProvider functions */
         /**
@@ -47,7 +46,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
             @returns a non-null Meta::PlaylistPtr if successful
         **/
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks ) = 0;
-        
+
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) = 0;
 
         virtual bool supportsEmptyGroups();
