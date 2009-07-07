@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Service
 Name=MySQLServer Collection
+Name[es]=Colección MySQLServer
 Name[et]=MySQLServeri kogu
 Name[fi]=MySQLServer-kokoelma
 Name[it]=Collezione MySQLServer
 Name[km]=សម្រាំង MySQLServer
+Name[nb]=MySQLServer-samling
 Name[nn]=MySQLServer-samling
 Name[pt]=Colecção de MySQL (Servidor)
 Name[pt_BR]=Coleção MySQLServer
