@@ -68,6 +68,7 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
 
     KHBox * m_sliderLayout = new KHBox( 0 );
     QSlider * volumeSlider = new QSlider( Qt::Vertical, m_sliderLayout );
+    volumeSlider->setMaximum( 100 );
     volumeSlider->setFixedHeight( 170 );
     m_sliderLayout->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
