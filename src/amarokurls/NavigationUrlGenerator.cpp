@@ -51,13 +51,13 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     if ( pathParts.at( 0 ) == "root list" )
         pathParts.removeFirst();
     
-    foreach( QString part, pathParts )
-    {
-        url.appendArg( part );
-    }
+    url.setPath( pathParts.join( "/" ) );
 
     QString filter = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->filter();
     debug() << "filter: " <<  filter;
+
+    if ( !filter.isEmpty() )
+        url.appendArg( "filter", filter );
 
     QList<int> levels = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->levels();
     QString sortMode;
@@ -91,10 +91,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     debug() << "sortMode: " <<  sortMode;
 
     if ( !sortMode.isEmpty() )
-        url.appendArg( sortMode );
-
-    if ( !filter.isEmpty() )
-        url.appendArg( filter );
+        url.appendArg( "levels", sortMode );
 
     return url;
 
@@ -109,26 +106,22 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
     {
         if( btc->isBookmarkable() ) {
 
-            QString target;
-            if ( btc->browserName()  == "Internet" )
-                target = "service";
-            else 
-                target = "collection";
-
             QString albumName = album->prettyName();
 
             url.setCommand( "navigate" );
-            url.appendArg( target );
-            url.appendArg( btc->collectionName() );
+
+            QString path = btc->browserName();
+            path += "/";
+            path += btc->collectionName();
+            url.setPath( path );
 
             QString filter;
             if ( btc->simpleFiltering() ) {
-                url.appendArg( "" );
                 filter = "\"" + albumName + "\"";
             }
             else
             {
-                url.appendArg( "album" );
+                url.appendArg( "levels", "album" );
 
                 QString artistName;
                 if ( album->albumArtist() )
@@ -139,7 +132,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
                     filter += ( " AND artist:\"" + artistName + "\"" );
             }
 
-            url.appendArg( filter );
+            url.appendArg( "filter", filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Album \"%1\" from %2", albumName, btc->collectionName() ) );
@@ -157,6 +150,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 
 AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 {
+    DEBUG_BLOCK
 
     AmarokUrl url;
 
@@ -165,33 +159,23 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
     {
         if( btc->isBookmarkable() ) {
 
-            QString target;
-            if ( btc->browserName()  == "Internet" )
-                target = "service";
-            else
-                target = "collection";
-
-            
             QString artistName = artist->prettyName();
 
             url.setCommand( "navigate" );
-            url.appendArg( target );
-            url.appendArg( btc->collectionName() );
-            
+            url.setPath( btc->browserName() + "/" + btc->collectionName() );
 
             QString filter;
             if ( btc->simpleFiltering() ) {
                 //for services only suporting simple filtering, do not try to set the sorting mode
-                url.appendArg( "" );
                 filter = "\"" + artistName + "\"";
             }
             else
             {
-                url.appendArg( "artist-album" );
+                url.appendArg( "levels", "artist-album" );
                 filter = ( "artist:\"" + artistName + "\"" );
             }
 
-            url.appendArg( filter );
+            url.appendArg( "filter", filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Artist \"%1\" from %2", artistName, btc->collectionName() ) );

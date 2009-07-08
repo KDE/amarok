@@ -249,8 +249,13 @@ ProgressWidget::redrawBookmarks()
             foreach( AmarokUrlPtr url, list )
             {
                 if( url->command() == "play"  ) {
-                    debug() << "showing timecode: " << url->name() << " at " << url->arg(1).toInt() ;
-                    addBookmark( url->name(), url->arg(1).toInt() );
+
+                    if ( url->args().keys().contains( "pos" ) )
+                    {
+                        int pos = url->args().value( "pos" ).toInt() * 1000;
+                        debug() << "showing timecode: " << url->name() << " at " << pos ;
+                        addBookmark( url->name(), pos );
+                    }
                 }
             }
             delete tcl;

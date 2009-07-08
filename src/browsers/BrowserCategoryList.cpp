@@ -431,5 +431,11 @@ BrowserCategory *BrowserCategoryList::activeCategoryRecursive()
     return category;
 }
 
+void BrowserCategoryList::setFilter( QString filter )
+{
+    m_currentFilter = filter;
+    m_searchWidget->setSearchString( filter );
+}
+
 
 #include "BrowserCategoryList.moc"

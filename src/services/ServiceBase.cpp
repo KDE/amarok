@@ -251,37 +251,25 @@ ServiceBase::setPlayableTracks(bool playable)
 void
 ServiceBase::sortByArtist()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Artist );
-    }
+    setLevels( QList<int>() << CategoryId::Artist );
 }
 
 void
 ServiceBase::sortByArtistAlbum()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
-    }
+    setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
 }
 
 void
 ServiceBase::sortByAlbum()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Album );
-    }
+    setLevels( QList<int>() << CategoryId::Album );
 }
 
 void
 ServiceBase::sortByGenreArtist()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
-    }
+    setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
 }
 
 void
@@ -340,6 +328,14 @@ ServiceBase::levels() const
     if( contentView )
         return contentView->levels();
     return QList<int>();
+}
+
+void ServiceBase::setLevels( QList< int > levels )
+{
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setLevels( levels );
+    }
 }
 
 

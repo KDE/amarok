@@ -35,7 +35,7 @@ public:
     virtual ~SqlBookmarkThisCapability();
 
     virtual bool isBookmarkable() { return true; }
-    virtual QString browserName() { return "collection"; }
+    virtual QString browserName() { return "collections"; }
     virtual QString collectionName() { return QString(); }
     virtual bool simpleFiltering() { return false; }
     virtual PopupDropperAction * bookmarkAction();

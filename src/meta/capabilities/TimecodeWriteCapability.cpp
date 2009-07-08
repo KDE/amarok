@@ -44,7 +44,14 @@ bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
         debug() << " current track";
         ProgressWidget* pw = ProgressWidget::instance();
         if( pw )
-            ProgressWidget::instance()->addBookmark( url.name(), url.arg(1).toInt() );
+        {
+            QMap<QString, QString> args = url.args();
+            if ( args.keys().contains( "pos" ) )
+            {
+                int pos = args.value( "pos" ).toInt();
+                ProgressWidget::instance()->addBookmark( url.name(), pos );
+            }
+        }
         else
             debug() << "ProgressWidget is NULL";
     }
@@ -90,7 +97,14 @@ bool Meta::TimecodeWriteCapability::writeAutoTimecode( int seconds, Meta::TrackP
         debug() << " current track";
         ProgressWidget* pw = ProgressWidget::instance();
         if( pw )
-            ProgressWidget::instance()->addBookmark( url.name(), url.arg(1).toInt() );
+        {
+            QMap<QString, QString> args = url.args();
+            if ( args.keys().contains( "pos" ) )
+            {
+                int pos = args.value( "pos" ).toInt();
+                ProgressWidget::instance()->addBookmark( url.name(), pos );
+            }
+        }
         else
             debug() << "ProgressWidget is NULL";
     }

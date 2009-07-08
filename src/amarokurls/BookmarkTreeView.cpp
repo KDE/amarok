@@ -274,7 +274,7 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
     return menu;
 }
 
-void BookmarkTreeView::slotCreateTimecodeTrack()
+void BookmarkTreeView::slotCreateTimecodeTrack() const
 {
 
     //TODO: Factor into seperate class
@@ -297,19 +297,35 @@ void BookmarkTreeView::slotCreateTimecodeTrack()
     if ( url2->command() != "play" )
         return;
 
-    if ( url1->arg( 0 ) != url2->arg( 0 ) )
+    if ( url1->path() != url2->path() )
         return;
 
     //ok, so we actually have to timecodes from the same base url, not get the
     //minimum and maximum time:
 
-    int start = qMin( url1->arg( 1 ).toInt(), url2->arg( 1 ).toInt() ) * 1000;
-    int end = qMax( url1->arg( 1 ).toInt(), url2->arg( 1 ).toInt() ) * 1000;
+    int pos1 = 0;
+    int pos2 = 0;
+
+    if ( url1->args().keys().contains( "pos" ) )
+    {
+        pos1 = url1->args().value( "pos" ).toInt();
+    }
+
+    if ( url2->args().keys().contains( "pos" ) )
+    {
+        pos2 = url2->args().value( "pos" ).toInt();
+    }
+
+    if ( pos1 == pos2 )
+        return;
+
+    int start = qMin( pos1, pos2 ) * 1000;
+    int end = qMax( pos1, pos2 ) * 1000;
 
     //Now we really should pop up a menu to get the user to enter some info about this
     //new track, but for now, just fake it as this is just for testing anyway
 
-    QString url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->arg ( 0 ).toUtf8() ) ).toString();
+    QString url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->path().toUtf8() ) ).toString();
     
     Meta::TimecodeTrackPtr track = Meta::TimecodeTrackPtr( new Meta::TimecodeTrack( i18n( "New Timecode Track" ), url, start, end ) );
     Meta::TimecodeAlbumPtr album = Meta::TimecodeAlbumPtr( new Meta::TimecodeAlbum( i18n( "Unknown" ) ) );

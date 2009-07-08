@@ -116,7 +116,7 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         virtual ~BookmarkThisProvider() {}
 
         virtual bool isBookmarkable() { return false; }
-        virtual QString browserName() { return "Internet"; }
+        virtual QString browserName() { return "internet"; }
         virtual QString collectionName() { return ""; }
         virtual bool simpleFiltering() { return true; }
         virtual PopupDropperAction * bookmarkAction() { return 0; };

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -54,57 +54,61 @@ AmarokUrl::~AmarokUrl()
 void AmarokUrl::initFromString( const QString & urlString )
 {
     //first, strip amarok://
-
     QString strippedUrlString = urlString;
-
     strippedUrlString = strippedUrlString.replace( "amarok://", "" );
 
-    //some poor man's unescaping
-    strippedUrlString = strippedUrlString.replace( "%22", "\"" );
-    strippedUrlString = strippedUrlString.replace( "%20", " " );
-    
-    m_fields = strippedUrlString.split( '/' );
+    //seperate path from arguments
+    QStringList parts = strippedUrlString.split( "?" );
+
+    QString commandAndPath = parts.at( 0 );
+
+    QString argumentsString;
+    if ( parts.size() == 2 )
+        argumentsString = parts.at( 1 );
+
+    if ( !argumentsString.isEmpty() )
+    {
+        parts = argumentsString.split( "&" );
+        
+        foreach( QString argument, parts )
+        {
+            debug() << "argument: " << argument;
+            QStringList argParts = argument.split( "=" );
+            appendArg( argParts.at( 0 ), unescape( argParts.at( 1 ) ) );
+        }
+    }
+
+    //get the command
+
+    parts = commandAndPath.split( "/" );
+    m_command = parts.takeFirst();
+
+    m_path = parts.join( "/" );
+
+    m_path = unescape( m_path );
+
 }
 
 void AmarokUrl::setCommand( const QString & command )
 {
-    if ( m_fields.count() > 0 )
-        m_fields[0] = command;
-    else
-        m_fields << command;
+    m_command = command;
 }
 
 QString AmarokUrl::command() const
 {
-    if ( m_fields.count() != 0 )
-        return m_fields[0];
-    else
-        return QString();
+        return m_command;
 }
 
-int AmarokUrl::numberOfArgs() const
+QMap<QString, QString> AmarokUrl::args() const
 {
-    if ( m_fields.count() != 0 )
-        return m_fields.count() - 1;
-    else
-        return 0;
+    return m_arguments;
 }
 
-void AmarokUrl::appendArg( const QString & arg )
+void AmarokUrl::appendArg( const QString &name, const QString &value )
 {
-    if ( m_fields.count() > 0 )
-        m_fields << arg;
-    else
-        m_fields << QString() << arg; //reserve space for command
+    m_arguments.insert( name, value );
 }
 
-QString AmarokUrl::arg( int arg ) const
-{
-    if ( m_fields.count() != 0 )
-        return m_fields[arg + 1];
-    else
-        return ""; 
-}
 
 bool AmarokUrl::run()
 {
@@ -114,15 +118,27 @@ bool AmarokUrl::run()
 
 QString AmarokUrl::url() const
 {
-    QString url = "amarok:/";
-    foreach( const QString &field, m_fields ) {
-        url += '/';
-        url += field;
-    }
+    QString url = "amarok://";
+    url += m_command;
+    url += "/";
+    url += escape( m_path );
 
-    //escape it
-    url = url.replace( ' ', "%20" );
-    url = url.replace( "\"", "%22" );
+    if ( url.endsWith( "/" ) )
+        url.chop( 1 );
+
+    if( m_arguments.size() > 0 )
+    {
+    
+        url += "?";
+        foreach( QString argName, m_arguments.keys() )
+        {
+            url += argName;
+            url += "=";
+            url += escape( m_arguments.value( argName ) );
+            url += "&";
+        }
+        url.chop( 1 );
+    }
 
     return url;
 }
@@ -192,11 +208,6 @@ void AmarokUrl::rename( const QString &name )
         saveToDb();
 }
 
-bool AmarokUrl::isNull()
-{
-    return m_fields.count() == 0;
-}
-
 void AmarokUrl::reparent( BookmarkGroupPtr parent )
 {
     m_parent = parent;
@@ -212,4 +223,45 @@ QString AmarokUrl::customValue() const
 {
     return m_customValue;
 }
+
+QString AmarokUrl::escape( const QString & in )
+{
+    QString escaped = in;
+    escaped = escaped.replace( "\"", "%22" );
+    escaped = escaped.replace( " ", "%20" );
+    escaped = escaped.replace( "?", "%3F" );
+    escaped = escaped.replace( "&", "%26" );
+    escaped = escaped.replace( "=", "%3D"  );
+
+    return escaped;
+}
+
+QString AmarokUrl::unescape(const QString & in)
+{
+    QString unescaped = in;
+    unescaped = unescaped.replace( "%22", "\"" );
+    unescaped = unescaped.replace( "%20", " " );
+    unescaped = unescaped.replace( "%3F", "?" );
+    unescaped = unescaped.replace( "%26", "&" );
+    unescaped = unescaped.replace( "%3D", "=" );
+
+    return unescaped;
+}
+
+bool AmarokUrl::isNull()
+{
+    return m_command.isEmpty();
+}
+
+QString AmarokUrl::path() const
+{
+    return m_path;
+}
+
+void AmarokUrl::setPath( const QString &path )
+{
+    m_path = path;
+}
+
+
 

@@ -34,9 +34,9 @@ QString MagnatuneUrlRunner::command() const
 bool MagnatuneUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK
-    if ( url.numberOfArgs() > 0 )
+    if ( !url.isNull() )
     {
-        QString command = url.arg( 0 );
+        QString command = url.path();
 
         if( command == "show_favorites" )
         {
@@ -53,9 +53,9 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
             //purchase dialog and will have to pay, download members will get the
             //free download
 
-            if ( url.numberOfArgs() == 2 )
+            if ( url.args().keys().contains( "sku" ) )
             {
-                QString sku = url.arg( 1 );
+                QString sku = url.args().value( "sku" );
                 emit( buyOrDownload( sku ) );
             }
         }

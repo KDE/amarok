@@ -42,18 +42,40 @@ NavigationUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK;
 
-    QString target;
-    
-    for( int i = 0; i < url.numberOfArgs(); i++ )
-    {
-        target += url.arg( i );
-        target += "/";
-    }
-    target.chop( 1 );
- 
-    QString leftover = The::mainWindow()->browserWidget()->list()->navigate( target );
+    //get to the correct category
+    debug() << "Navigate to path: " << url.path();
+    The::mainWindow()->browserWidget()->list()->navigate( url.path() );
 
-    debug() << "leftover: " << leftover;
+    BrowserCategory * active =  The::mainWindow()->browserWidget()->list()->activeCategoryRecursive();
+
+    QMap<QString, QString> args = url.args();
+
+    if ( args.keys().contains( "levels" ) )
+    {
+        QString levelsString = args.value( "levels" );
+        QList<int> levels;
+
+        QStringList levelsStringList = levelsString.split( "-" );
+
+        foreach( QString levelString, levelsStringList ) {
+            if( levelString == "genre" )
+                levels.append( CategoryId::Genre );
+            else if( levelString == "artist" )
+                levels.append( CategoryId::Artist );
+            else if( levelString == "album" )
+                levels.append( CategoryId::Album );
+            else if( levelString == "composer" )
+                levels.append( CategoryId::Composer );
+            else if( levelString == "year" )
+                levels.append( CategoryId::Year );
+        }
+
+        active->setLevels( levels );
+
+    }
+
+    if ( args.keys().contains( "filter" ) )
+        active->setFilter( args.value( "filter" ) );
 
     return true;
 }

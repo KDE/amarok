@@ -95,6 +95,7 @@ class BrowserCategoryList : public BrowserCategory
         QString path();
 
         virtual QString filter() const;
+        virtual void setFilter( QString filter );
 
         BrowserCategory * activeCategoryRecursive();
 

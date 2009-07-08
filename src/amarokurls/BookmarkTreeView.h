@@ -51,7 +51,7 @@ protected slots:
     void slotRename();
 
     //for testing...
-    void slotCreateTimecodeTrack();
+    void slotCreateTimecodeTrack() const;
 
     void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
 

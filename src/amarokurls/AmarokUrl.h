@@ -35,23 +35,21 @@ public:
     ~AmarokUrl();
 
     void reparent( BookmarkGroupPtr parent );
-
     void initFromString( const QString & urlString );
 
-    void setCommand( const QString &command );
     QString command() const;
+    QString path() const;
+    QMap<QString, QString> args() const;
+    
+    void setCommand( const QString &command );
+    void setPath( const QString &path );
+    void appendArg( const QString &name, const QString &value );
 
     void setName( const QString &name );
-
     void setDescription( const QString &description );
 
     void setCustomValue( const QString &custom );
     QString customValue() const;
-
-    int numberOfArgs() const;
-
-    void appendArg( const QString &arg );
-    QString arg( int ) const;
 
     bool run();
 
@@ -70,8 +68,14 @@ public:
     virtual void removeFromDb();
     virtual void rename( const QString &name );
 
+    static QString escape( const QString &in );
+    static QString unescape( const QString &in );
+
 private:
-    QStringList m_fields;
+    
+    QString m_command;
+    QString m_path;
+    QMap<QString, QString> m_arguments;
 
     int m_id;
     BookmarkGroupPtr m_parent;

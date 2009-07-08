@@ -47,8 +47,8 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QStrin
 
     const QString trackUrl = track->playableUrl().toEncoded().toBase64();
     url.setCommand( "play" );
-    url.appendArg( trackUrl );
-    url.appendArg( QString::number( seconds ) );
+    url.setPath( trackUrl );
+    url.appendArg( "pos", QString::number( seconds ) );
 
     if( name.isEmpty() )
         url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );

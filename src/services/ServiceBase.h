@@ -292,6 +292,8 @@ public slots:
      */
     void sortByGenreArtistAlbum();
 
+    void setLevels( QList<int> levels );
+
 signals:
     /**
      * Signal emitted when the service wants to be hidden and the service browser list shown instead, for instance when the "Home" button is clicked.

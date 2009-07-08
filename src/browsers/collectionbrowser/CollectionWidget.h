@@ -55,6 +55,8 @@ class CollectionWidget : public BrowserCategory
         void slotShowYears( bool checked );
         void slotShowCovers( bool checked );
 
+        void setLevels( QList<int> levels );
+
     private:
         SearchWidget        *m_searchWidget;
         CollectionBrowserTreeView  *m_treeView;

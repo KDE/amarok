@@ -36,12 +36,19 @@ PlayUrlRunner::~PlayUrlRunner()
 bool PlayUrlRunner::run ( AmarokUrl url )
 {
     DEBUG_BLOCK
-    if ( url.numberOfArgs() == 0 )
+    if ( url.isNull() )
         return false;
 
-    QUrl track_url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url.arg ( 0 ).toUtf8() ) );
+    QUrl track_url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url.path().toUtf8() ) );
     debug() << "decoded track url: " << track_url.toString();
-    int pos = url.arg ( 1 ).toInt() * 1000;
+
+    //get the position
+    int pos = 0;
+    if ( url.args().keys().contains( "pos" ) )
+    {
+        pos = url.args().value( "pos" ).toInt() * 1000;
+    }
+
     debug() << "seek pos: " << pos;
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl ( track_url );
     if ( !track )
