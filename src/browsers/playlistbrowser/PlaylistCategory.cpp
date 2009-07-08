@@ -25,7 +25,6 @@
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
 
-
 #include <KAction>
 #include <KIcon>
 #include <KLineEdit>
@@ -33,6 +32,7 @@
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QLabel>
+#include <KStandardDirs>
 #include <QToolBar>
 #include <QVBoxLayout>
 
@@ -47,13 +47,9 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     setLongDescription( i18n( "Create, edit, organize and load playlists. Amarok automatically adds any playlists found when scanning your collection, and any playlists that you save are also shown here." ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "view-media-playlist", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_user_playlists.png" ) );
 
-
-
-    
-    setContentsMargins(0,0,0,0);
+    setContentsMargins( 0, 0, 0, 0 );
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
@@ -62,12 +58,12 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView = new UserPlaylistTreeView( m_groupedProxy, this );
 //    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
-    m_playlistView->setContentsMargins(0,0,0,0);
+    m_playlistView->setContentsMargins( 0, 0, 0, 0 );
     m_playlistView->header()->hide();
 
-    m_playlistView->setDragEnabled(true);
-    m_playlistView->setAcceptDrops(true);
-    m_playlistView->setDropIndicatorShown(true);
+    m_playlistView->setDragEnabled( true );
+    m_playlistView->setAcceptDrops( true );
+    m_playlistView->setDropIndicatorShown( true );
 
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
@@ -75,7 +71,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setAlternatingRowColors( true );
 
-    m_addGroupAction = new KAction( KIcon("folder-new" ), i18n( "Add Folder" ), this  );
+    m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
              m_playlistView, SLOT( createNewGroup() ) );
@@ -105,7 +101,7 @@ PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
     connect( this, SIGNAL( closeClicked() ), this, SLOT( delayedDestruct() ) );
     connect( this, SIGNAL( hidden() ), this, SLOT( delayedDestruct() ) );
     connect( this, SIGNAL( cancelClicked() ), this, SLOT( delayedDestruct() ) );
-    connect( m_streamUrl, SIGNAL( textChanged(const QString &) ), this, SLOT( slotTextChanged( const QString& )));
+    connect( m_streamUrl, SIGNAL( textChanged(const QString &) ), this, SLOT( slotTextChanged( const QString& ) ) );
     enableButtonOk( false );
     show();
 }

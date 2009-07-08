@@ -46,6 +46,7 @@
 #include <KAction>
 #include <KMenu>
 #include <KIcon>
+#include <KStandardDirs>
 
 #include <typeinfo>
 
@@ -88,8 +89,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. Downloading episodes to the disk is also done here, or you can tell Amarok to do so automatically." ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "podcast-amarok", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
     
 

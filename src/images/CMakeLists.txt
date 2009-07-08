@@ -48,6 +48,8 @@ install(
         hover_info_files.png
         hover_info_internet.png
         hover_info_playlists.png
+        hover_info_user_playlists.png
+        hover_info_podcasts.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
 
