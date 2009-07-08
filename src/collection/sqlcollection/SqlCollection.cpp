@@ -273,24 +273,33 @@ SqlCollection::vacuum() const
 }
 
 void
-SqlCollection::updateTrackUrls( TrackUrls changedUrls ) //SLOT
+SqlCollection::updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const QHash<QString, QString> &changedUids ) //SLOT
 {
     DEBUG_BLOCK
-
+    QHash<QString, KSharedPtr<Meta::SqlTrack> > trackList; //dun want duplicates
     foreach( const QString &key, changedUrls.keys() )
     {
-        debug() << "Checking key " << key;
         if( m_registry->checkUidExists( key ) )
         {
-            debug() << "UID exists in registry";
+            m_registry->updateCachedUrl( changedUrls.value( key ) );
             Meta::TrackPtr track = m_registry->getTrackFromUid( key );
             if( track )
-            {
-                debug() << "Got a valid track from the key, track prettyname is " << track->prettyName();
-                KSharedPtr<Meta::SqlTrack>::staticCast( track )->refreshFromDatabase( key, this, true );
-            }
+                trackList.insert( key, KSharedPtr<Meta::SqlTrack>::staticCast( track ) );
         }
     }
+    foreach( const QString &key, changedUids.keys() )
+    {
+        //old uid is key, new is value
+        if( m_registry->checkUidExists( key ) )
+        {
+            m_registry->updateCachedUid( key, changedUids[key] );
+            Meta::TrackPtr track = m_registry->getTrackFromUid( key );
+            if( track )
+                trackList.insert( changedUids[key], KSharedPtr<Meta::SqlTrack>::staticCast( track ) );
+        }
+    }
+    foreach( QString key, trackList.keys() )
+        trackList[key]->refreshFromDatabase( key, this, true );
 }
 
 void

@@ -73,10 +73,13 @@ TrackPtr
 SqlRegistry::getTrack( const QStringList &rowData )
 {
     TrackId id( rowData[0].toInt(), rowData[1] );
+    QString uid = rowData[2];
     QMutexLocker locker( &m_trackMutex );
     QMutexLocker locker2( &m_uidMutex );
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
+    else if( m_uidMap.contains( uid ) )
+        return m_uidMap.value( uid );
     else
     {
         TrackPtr track( new SqlTrack( m_collection, rowData ) );
@@ -86,6 +89,38 @@ SqlRegistry::getTrack( const QStringList &rowData )
             m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
         }
         return track;
+    }
+}
+
+void
+SqlRegistry::updateCachedUrl( const QPair<QString, QString> &oldnew )
+{
+    QMutexLocker locker( &m_trackMutex );
+    QMutexLocker locker2( &m_uidMutex );
+    int deviceid = MountPointManager::instance()->getIdForUrl( oldnew.first );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, oldnew.first );
+    TrackId id(deviceid, rpath);
+    if( m_trackMap.contains( id ) )
+    {
+        TrackPtr track = m_trackMap[id];
+        m_trackMap.remove( id );
+        int newdeviceid = MountPointManager::instance()->getIdForUrl( oldnew.second );
+        QString newrpath = MountPointManager::instance()->getRelativePath( newdeviceid, oldnew.second );
+        TrackId newid( newdeviceid, newrpath );
+        m_trackMap.insert( newid, track );
+    }
+}
+
+void
+SqlRegistry::updateCachedUid( const QString &oldUid, const QString &newUid )
+{
+    QMutexLocker locker( &m_trackMutex );
+    QMutexLocker locker2( &m_uidMutex );
+    if( m_uidMap.contains( oldUid ) )
+    {
+        TrackPtr track = m_uidMap[oldUid];
+        m_uidMap.remove( oldUid );
+        m_uidMap.insert( newUid, track );
     }
 }
 

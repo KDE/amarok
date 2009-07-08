@@ -28,7 +28,6 @@
 #include <QStringList>
 #include <QVariant>
 
-
 class SqlCollection;
 
 class ScanResultProcessor : public QObject
@@ -53,7 +52,7 @@ class ScanResultProcessor : public QObject
         void rollback();
 
     signals:
-        void changedTrackUrls( TrackUrls );
+        void changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ); //not really track urls
 
     private:
         void addTrack( const QVariantMap &trackData, int albumArtistId );
@@ -91,7 +90,8 @@ class ScanResultProcessor : public QObject
 
         QHash<QString, uint> m_filesInDirs;
 
-        TrackUrls m_changedUrls;
+        TrackUrls m_changedUids; //not really track urls
+        ChangedTrackUrls m_changedUrls;
 
         ScanType m_type;
 

@@ -26,7 +26,8 @@
 #include <QObject>
 
 
-typedef QHash<QString,QString> TrackUrls;
+typedef QHash<QString, QString> TrackUrls;
+typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
 class SqlStorage;
 class CollectionManagerSingleton;
@@ -166,5 +167,6 @@ class AMAROK_EXPORT CollectionManager : public QObject
 };
 
 Q_DECLARE_METATYPE( TrackUrls )
+Q_DECLARE_METATYPE( ChangedTrackUrls )
 
 #endif /* AMAROK_COLLECTIONMANAGER_H */

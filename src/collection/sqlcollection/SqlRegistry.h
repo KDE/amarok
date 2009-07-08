@@ -41,6 +41,8 @@ class SqlRegistry : public QObject
         Meta::TrackPtr getTrack( const QString &url );
         Meta::TrackPtr getTrack( const QStringList &rowData );
         Meta::TrackPtr getTrackFromUid( const QString &uid );
+        void updateCachedUrl( const QPair<QString, QString> &oldnew );
+        void updateCachedUid( const QString &oldUid, const QString &newUid );
         bool checkUidExists( const QString &uid );
 
         Meta::ArtistPtr getArtist( const QString &name, int id = -1, bool refresh = false );

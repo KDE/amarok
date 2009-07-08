@@ -92,7 +92,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
     public slots:
-        void updateTrackUrls( TrackUrls changedUrls );
+        void updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const TrackUrls & ); //they're not actually track urls
         void deleteTracksSlot( Meta::TrackList tracklist );
 
         void dumpDatabaseContent();

@@ -144,10 +144,10 @@ ScanResultProcessor::commit()
     debug() << "Sending changed signal";
     m_collection->sendChangedSignal();
 
-    connect( this, SIGNAL( changedTrackUrls( TrackUrls ) ),
-             CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrls( TrackUrls ) ) );
+    connect( this, SIGNAL( changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ),
+             CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
 
-    emit changedTrackUrls( m_changedUrls );
+    emit changedTrackUrlsUids( m_changedUrls, m_changedUids );
 }
 
 void
@@ -374,8 +374,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     sql += sql2 + sql3;
 
     m_collection->query( sql );
-
-    m_changedUrls.insert( uid, path );
 }
 
 int
@@ -560,10 +558,10 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     int deviceId = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
     //don't bother caching the data, we only call this method for each url once
-    QString query = QString( "SELECT id FROM urls_temp WHERE deviceid = %1 AND rpath = '%2';" )
+    QString query = QString( "SELECT id, deviceid, rpath, uniqueid FROM urls_temp WHERE deviceid = %1 AND rpath = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
     QStringList pathres = m_collection->query( query ); //tells us if the path existed
-    query = QString( "SELECT id FROM urls_temp WHERE uniqueid='%1';" )
+    query = QString( "SELECT id, deviceid, rpath, uniqueid FROM urls_temp WHERE uniqueid='%1';" )
                         .arg( m_collection->escape( uid ) );
     QStringList uidres = m_collection->query( query ); //tells us if the uid existed
     if( pathres.isEmpty() && uidres.isEmpty() ) //fresh -- insert
@@ -588,6 +586,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
                             m_collection->escape( uid ) );
         m_collection->query( query );
         updateAftPermanentTablesUrlString( url, uid );
+        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( uidres[1].toInt(), uidres[2] ), url ) );
         return uidres[0].toInt();
     }
     else if( !pathres.isEmpty() )
@@ -597,6 +596,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
         m_collection->query( query );
         updateAftPermanentTablesUidString( url, uid );
+        m_changedUids.insert( pathres[3], uid ); 
         return pathres[0].toInt();
     }
     else

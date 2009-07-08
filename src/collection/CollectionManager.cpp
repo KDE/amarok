@@ -83,6 +83,7 @@ CollectionManager::CollectionManager()
     s_instance = this;
 
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
+    qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
     init();
 }
 
