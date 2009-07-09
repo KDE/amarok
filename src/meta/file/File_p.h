@@ -212,7 +212,9 @@ void Track::Private::readMetaData()
                     http://doc.trolltech.com/4.4/qtextcodec.html
                     http://www.mozilla.org/projects/intl/chardet.html
                 */
-                if ( ( !track_encoding.isEmpty() ) && ( track_encoding.toUtf8() != "UTF-8" ) )
+                if ( ( track_encoding.toUtf8() == "gb18030" ) || ( track_encoding.toUtf8() == "big5" )
+                    || ( track_encoding.toUtf8() == "euc-kr" ) || ( track_encoding.toUtf8() == "euc-jp" )
+                    || ( track_encoding.toUtf8() == "koi8-r" ) )
                 {
                     debug () << "Final Codec Name:" << track_encoding.toUtf8();
                     QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
@@ -226,6 +228,11 @@ void Track::Private::readMetaData()
                         m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
                         debug() << "track Info Decoded!";
                     }
+                }
+                else
+                {
+                    debug() << "possible encoding: " << track_encoding.toUtf8();
+                    debug() << "encoding decoded as UTF-8";
                 }
             }
         }
