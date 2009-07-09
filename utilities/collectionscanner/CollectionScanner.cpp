@@ -560,7 +560,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             }
 // HACK: charset-detector disabled, so all tags assumed utf-8
 // TODO: fix charset-detector to detect encoding with higher accuracy
-#if 0
+
             if( tag )
             {
                 TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
@@ -583,7 +583,9 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                      http://doc.trolltech.com/4.4/qtextcodec.html
                      http://www.mozilla.org/projects/intl/chardet.html
                      */
-                    if ( ( !track_encoding.isEmpty() ) && ( track_encoding.toUtf8() != "UTF-8" ) )
+                    if ( ( track_encoding.toUtf8() == "gb18030" ) || ( track_encoding.toUtf8() == "big5" )
+                        || ( track_encoding.toUtf8() == "euc-kr" ) || ( track_encoding.toUtf8() == "euc-jp" )
+                        || ( track_encoding.toUtf8() == "koi8-r" ) )
                     {
                         QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
                         QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
@@ -598,7 +600,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     }
                 }
             }
-#endif
             #undef strip
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
