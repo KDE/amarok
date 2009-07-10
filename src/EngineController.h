@@ -274,10 +274,6 @@ protected: // ??? - we don't want EngineController to be inherited
      * @param offset the position in the media to start at in milliseconds
      */
     void playUrl( const KUrl &url, uint offset );
-    /**
-     * ???
-     */
-    void trackDone();
 
 private slots:
     /**
