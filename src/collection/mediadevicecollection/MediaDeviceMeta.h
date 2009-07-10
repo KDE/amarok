@@ -19,6 +19,7 @@
 
 #include "Debug.h"
 #include "Meta.h"
+#include "mediadevicecollection_export.h"
 
 #include <QMultiMap>
 
@@ -42,7 +43,7 @@ typedef KSharedPtr<MediaDeviceGenre> MediaDeviceGenrePtr;
 typedef KSharedPtr<MediaDeviceComposer> MediaDeviceComposerPtr;
 typedef KSharedPtr<MediaDeviceYear> MediaDeviceYearPtr;
 
-class MediaDeviceTrack : public Meta::Track
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 {
 
     public:
@@ -171,7 +172,7 @@ class MediaDeviceTrack : public Meta::Track
         QString m_playableUrl;
 };
 
-class MediaDeviceArtist : public Meta::Artist
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
 {
     public:
         MediaDeviceArtist( const QString &name );
@@ -192,7 +193,7 @@ class MediaDeviceArtist : public Meta::Artist
         TrackList m_tracks;
 };
 
-class MediaDeviceAlbum : public Meta::Album
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
 {
     public:
         MediaDeviceAlbum( MediaDeviceCollection *collection, const QString &name );
@@ -237,7 +238,7 @@ class MediaDeviceAlbum : public Meta::Album
         MediaDeviceArtistPtr   m_albumArtist;
 };
 
-class MediaDeviceComposer : public Meta::Composer
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceComposer : public Meta::Composer
 {
     public:
         MediaDeviceComposer( const QString &name );
@@ -257,7 +258,7 @@ class MediaDeviceComposer : public Meta::Composer
         TrackList m_tracks;
 };
 
-class MediaDeviceGenre : public Meta::Genre
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceGenre : public Meta::Genre
 {
     public:
         MediaDeviceGenre( const QString &name );
@@ -278,7 +279,7 @@ class MediaDeviceGenre : public Meta::Genre
 
 
 
-class MediaDeviceYear : public Meta::Year
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceYear : public Meta::Year
 {
     public:
         MediaDeviceYear( const QString &name );

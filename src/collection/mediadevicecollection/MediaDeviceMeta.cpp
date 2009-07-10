@@ -416,11 +416,14 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
     // do cleanup of soon to be previous album
 
     albumPtr = m_album;
-    // remove track from previous album's tracklist
-    albumPtr->remTrack( track );
-    // if album's tracklist is empty, remove album from albummap
-    if( albumPtr->tracks().isEmpty() )
-        albumMap.remove( albumPtr->name() );
+    if ( !albumPtr.isNull() )
+    {
+        // remove track from previous album's tracklist
+        albumPtr->remTrack( track );
+        // if album's tracklist is empty, remove album from albummap
+        if( albumPtr->tracks().isEmpty() )
+            albumMap.remove( albumPtr->name() );
+    }
 
     // change to a new album
 
@@ -460,10 +463,13 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
 
     artistPtr = m_artist;
     // remove track from previous artist's tracklist
-    artistPtr->remTrack( track );
-    // if artist's tracklist is empty, remove artist from artistmap
-    if( artistPtr->tracks().isEmpty() )
-        artistMap.remove( artistPtr->name() );
+    if ( !artistPtr.isNull() )
+    {
+        artistPtr->remTrack( track );
+        // if artist's tracklist is empty, remove artist from artistmap
+        if( artistPtr->tracks().isEmpty() )
+            artistMap.remove( artistPtr->name() );
+    }
 
     // change to a new artist
 
@@ -502,11 +508,14 @@ MediaDeviceTrack::setGenre( const QString &newGenre )
     // do cleanup of soon to be previous genre
 
     genrePtr = m_genre;
-    // remove track from previous genre's tracklist
-    genrePtr->remTrack( track );
-    // if genre's tracklist is empty, remove genre from genremap
-    if( genrePtr->tracks().isEmpty() )
-        genreMap.remove( genrePtr->name() );
+    if ( !genrePtr.isNull() )
+    {
+        // remove track from previous genre's tracklist
+        genrePtr->remTrack( track );
+        // if genre's tracklist is empty, remove genre from genremap
+        if( genrePtr->tracks().isEmpty() )
+            genreMap.remove( genrePtr->name() );
+    }
 
     // change to a new genre
 
@@ -545,11 +554,14 @@ MediaDeviceTrack::setComposer( const QString &newComposer )
     // do cleanup of soon to be previous composer
 
     composerPtr = m_composer;
-    // remove track from previous composer's tracklist
-    composerPtr->remTrack( track );
-    // if composer's tracklist is empty, remove composer from composermap
-    if( composerPtr->tracks().isEmpty() )
-        composerMap.remove( composerPtr->name() );
+    if ( !composerPtr.isNull() )
+    {
+        // remove track from previous composer's tracklist
+        composerPtr->remTrack( track );
+        // if composer's tracklist is empty, remove composer from composermap
+        if( composerPtr->tracks().isEmpty() )
+            composerMap.remove( composerPtr->name() );
+    }
 
     // change to a new composer
 
@@ -588,11 +600,14 @@ MediaDeviceTrack::setYear( const QString &newYear )
     // do cleanup of soon to be previous year
 
     yearPtr = m_year;
-    // remove track from previous year's tracklist
-    yearPtr->remTrack( track );
-    // if year's tracklist is empty, remove year from yearmap
-    if( yearPtr->tracks().isEmpty() )
-        yearMap.remove( yearPtr->name() );
+    if ( !yearPtr.isNull() )
+    {
+        // remove track from previous year's tracklist
+        yearPtr->remTrack( track );
+        // if year's tracklist is empty, remove year from yearmap
+        if( yearPtr->tracks().isEmpty() )
+            yearMap.remove( yearPtr->name() );
+    }
 
     // change to a new year
 
