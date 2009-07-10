@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Ipod initialization support when failed to read an iPod database.
     * Improvements to the "Show Cover" dialog. Resizes to match the image, auto
       centers on screen, correctly handles images too large for the screen and
       supports zooming using the mouse wheel. Patch thanks to Pascal Pollet 
