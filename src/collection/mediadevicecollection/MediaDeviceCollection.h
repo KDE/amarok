@@ -33,22 +33,20 @@
 class MediaDeviceCollection;
 
 
-/** HACK: Base and Factory are separate because Q_OBJECT does not work directly with templates.
-Templates used to reduce duplicated code in subclasses.
-*/
-
-
+/**
+ * HACK: Base and Factory are separate because Q_OBJECT does not work directly with templates.
+ * Templates used to reduce duplicated code in subclasses.
+ */
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Amarok::CollectionFactory
 {
     Q_OBJECT
 
-       public:
+    public:
         virtual ~MediaDeviceCollectionFactoryBase();
         virtual void init();
+    
     protected:
         MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant );
-
-    public slots:
 
     protected slots:
         virtual void slotDeviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
@@ -57,7 +55,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Ama
 	void slotDeviceDisconnected( const QString &udi );
 
     private:
-
         virtual MediaDeviceCollection* createCollection( MediaDeviceInfo* info ) = 0;
 
         ConnectionAssistant* m_assistant;
@@ -69,33 +66,32 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public MediaDe
 {
     protected:
         MediaDeviceCollectionFactory( ConnectionAssistant *assistant )
-        : MediaDeviceCollectionFactoryBase( assistant ) {}
+            : MediaDeviceCollectionFactoryBase( assistant )
+        {}
+        
         virtual ~MediaDeviceCollectionFactory() {}
+
     private:
         virtual MediaDeviceCollection* createCollection( MediaDeviceInfo* info )
         {
             return new CollType( info );
         }
-
-
 };
 
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
 {
     Q_OBJECT
-    public:
 
+    public:
         /** Collection-related methods */
 
         virtual ~MediaDeviceCollection();
 
         /**
-
-        url-based methods can be abstracted via use of Amarok URLs
-        subclasses simply define a protocol prefix, e.g. ipod
-
-        */
+         * url-based methods can be abstracted via use of Amarok URLs
+         * subclasses simply define a protocol prefix, e.g. ipod
+         */
         virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED(url); return false;} // TODO: NYI
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
@@ -116,7 +112,12 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual QString prettyName() const = 0; // NOTE: must be overridden based on device type
         virtual KIcon icon() const = 0; // NOTE: must be overridden based on device type
 
-        virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(this); } // NOTE: location will have same method calls always, no need to redo each time
+        virtual bool hasCapacity() const;
+        virtual float usedCapacity() const;
+        virtual float totalCapacity() const;
+
+        // NOTE: location will have same method calls always, no need to redo each time
+        virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(this); }
 
         /** Capability-related methods */
 
@@ -135,8 +136,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual void writeDatabase() {} // threaded
 
         /** MediaDeviceCollection-specific */
-
-    public:
         Meta::MediaDeviceHandler* handler();
 	void init() { m_handler->init(); } // tell handler to start connection
 
@@ -153,12 +152,18 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         void slotAttemptConnectionDone( bool success );
         void disconnectDevice();
 	void deleteCollection();
+
     protected:
         MediaDeviceCollection();
 
-        QString             m_udi;
+        QString m_udi;
         Meta::MediaDeviceHandler *m_handler;
 
+        float m_usedCapacity;
+        float m_totalCapacity;
+
+    private:
+        void initCapacities();
 };
 
 

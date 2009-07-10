@@ -39,13 +39,14 @@
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
 
+#include <kdiskfreespaceinfo.h>
+
 
 //AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
 
 MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
     : Amarok::CollectionFactory()
     , m_assistant( assistant )
-    , m_collectionMap()
 {
 }
 
@@ -70,7 +71,6 @@ MediaDeviceCollectionFactoryBase::init()
 
     // Register the device type with the Monitor
     MediaDeviceMonitor::instance()->registerDeviceType( m_assistant );
-
 }
 
 void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
@@ -112,14 +112,9 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
             m_collectionMap.remove( udi );
             // Have Collection disconnect device
             // and destroy itself
-//            coll->disconnectDevice();
             coll->deleteCollection();
         }
-//        else
-            //warning() << "collection already null";
     }
-    //else
-        //warning() << "removing non-existent device";
 
     return;
 }
@@ -127,8 +122,10 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
 //MediaDeviceCollection
 
 MediaDeviceCollection::MediaDeviceCollection()
-: Collection()
-, MemoryCollection()
+    : Collection()
+    , MemoryCollection()
+    , m_usedCapacity( -1 )
+    , m_totalCapacity( -1 )
 {
     connect( this, SIGNAL( attemptConnectionDone(bool)),
              this, SLOT( slotAttemptConnectionDone(bool)) );
@@ -138,6 +135,24 @@ MediaDeviceCollection::MediaDeviceCollection()
 MediaDeviceCollection::~MediaDeviceCollection()
 {
     DEBUG_BLOCK
+}
+
+void
+MediaDeviceCollection::initCapacities()
+{
+    Solid::Device device = Solid::Device( m_udi );
+    if( device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( storage->filePath() );
+        m_usedCapacity = info.used();
+        m_totalCapacity = info.size();
+    }
+    else
+    {
+        m_usedCapacity = 0;
+        m_totalCapacity = 0;
+    }
 }
 
 QueryMaker*
@@ -160,7 +175,6 @@ MediaDeviceCollection::startFullScan()
 
     m_handler->parseTracks();
     emit collectionReady( this );
-//    collectionUpdated();
 }
 
 Meta::MediaDeviceHandler*
@@ -182,10 +196,6 @@ MediaDeviceCollection::disconnectDevice()
     // the collection.
     // NOTE: this also calls the handler's destructor
     // which gives it a chance to do last-minute cleanup
-//    connect( m_handler, SIGNAL( databaseWritten( bool ) )
-//    , SIGNAL( remove() ) );
-
-//    m_handler->writeDatabase();
 
     emit collectionDisconnected( m_udi );
 }
@@ -217,28 +227,50 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
 bool
 MediaDeviceCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-        DEBUG_BLOCK
-                switch( type )
-                {
-                case Meta::Capability::Collection:
-                    return true;
+    DEBUG_BLOCK
+    switch( type )
+    {
+        case Meta::Capability::Collection:
+            return true;
 
-                default:
-                    return false;
-                }
+        default:
+            return false;
+    }
 }
 
 Meta::Capability*
 MediaDeviceCollection::createCapabilityInterface( Meta::Capability::Type type )
 {
-        DEBUG_BLOCK
-                switch( type )
-                {
-                case Meta::Capability::Collection:
-                    return new Meta::CollectionCapabilityMediaDevice( this );
-                default:
-                    return 0;
-                }
+    DEBUG_BLOCK
+    switch( type )
+    {
+        case Meta::Capability::Collection:
+            return new Meta::CollectionCapabilityMediaDevice( this );
+        default:
+            return 0;
+    }
+}
+
+bool 
+MediaDeviceCollection::hasCapacity() const
+{
+    return totalCapacity() > 0;
+}
+
+float
+MediaDeviceCollection::usedCapacity() const
+{
+    if( m_totalCapacity < 0 )
+        const_cast<MediaDeviceCollection*>(this)->initCapacities();
+    return m_usedCapacity;
+}
+
+float
+MediaDeviceCollection::totalCapacity() const
+{
+    if( m_totalCapacity < 0 )
+        const_cast<MediaDeviceCollection*>(this)->initCapacities();
+    return m_totalCapacity;
 }
 
 #include "MediaDeviceCollection.moc"

@@ -155,8 +155,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 
     virtual QList<PopupDropperAction *> collectionActions() { return QList<PopupDropperAction*> (); }
 
-
-
+    
 signals:
     void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
     void databaseWritten( bool succeeded );

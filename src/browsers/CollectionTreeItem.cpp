@@ -17,6 +17,7 @@
  ****************************************************************************************/
 
 #include "CollectionTreeView.h"
+#include "Debug.h"
 #include "amarokconfig.h"
 
 #include <KLocale>
@@ -183,6 +184,16 @@ CollectionTreeItem::data( int role ) const
             }
 
             return i18np( "1 track", "%1 tracks", m_trackCount );
+        }
+        else if( role == CustomRoles::HasCapacity )
+        {
+            return false;//m_parentCollection->hasCapacity();
+        }
+        else if( role == CustomRoles::UsedCapacity )
+        {
+            //if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
+            //    return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
+            return 0;
         }
     }
 

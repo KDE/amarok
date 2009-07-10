@@ -43,23 +43,16 @@ IpodCollectionFactory::~IpodCollectionFactory()
 //IpodCollection
 
 IpodCollection::IpodCollection(MediaDeviceInfo* info)
-: MediaDeviceCollection()
+    : MediaDeviceCollection()
 {
     DEBUG_BLOCK
     /** Fetch Info needed to construct IpodCollection */
-    debug() << "Getting ipod info";
     IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
 
-    debug() << "Getting mountpoint";
     m_mountPoint = ipodinfo->mountpoint();
-    debug() << "Getting udi";
     m_udi = ipodinfo->udi();
 
-    debug() << "constructing handler";
-
     m_handler = new Meta::IpodHandler( this, m_mountPoint );
-
-//    emit attemptConnectionDone( m_handler->succeeded() );
 }
 
 

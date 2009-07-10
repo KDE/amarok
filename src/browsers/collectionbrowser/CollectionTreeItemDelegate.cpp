@@ -27,6 +27,9 @@
 #include <QIcon>
 #include <QPainter>
 
+#include <kcapacitybar.h>
+
+#define CAPACITYRECT_HEIGHT 6
 
 CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
     : QStyledItemDelegate()
@@ -50,6 +53,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         return;
     }
    
+    const bool isRTL = QApplication::isRightToLeft();
     const QPoint topLeft = option.rect.topLeft();
     const int width = m_view->viewport()->size().width() - 4;
     const int height = sizeHint( option, index ).height();
@@ -57,6 +61,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconHeight = 32;
     const int iconPadX = 4;
     const int iconPadY = 4;
+    const bool hasCapacity = index.data( CustomRoles::HasCapacity ).toBool();
 
     painter->save();
 
@@ -71,7 +76,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
     const int iconYPadding = ( height - iconHeight ) / 2;
     QPoint iconPos( topLeft + QPoint( iconPadX, iconYPadding ) );
-    if( QApplication::isRightToLeft() )
+    if( isRTL )
         iconPos = QPoint( width - iconWidth - iconPadX, iconYPadding );
 
     painter->drawPixmap( iconPos,
@@ -79,7 +84,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     QRectF titleRect;
-    titleRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
+    titleRect.setLeft( isRTL ? 0 : iconRight );
     titleRect.setTop( option.rect.top() + iconYPadding );
     titleRect.setWidth( width - iconRight );
     titleRect.setHeight( height );
@@ -92,13 +97,26 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QFontMetrics bigFm( m_bigFont );
 
     QRectF textRect;
-    textRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
+    textRect.setLeft( isRTL ? 0 : iconRight );
     textRect.setTop( option.rect.top() + iconYPadding + bigFm.boundingRect( collectionName ).height() );
     textRect.setWidth( width - iconPadX * 2 );
     textRect.setHeight( height - ( iconHeight + iconPadY ) );
 
     painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap, index.data( CustomRoles::ByLineRole ).toString() );
+
+    if( hasCapacity )
+    {
+        QRect capacityRect;
+        capacityRect.setLeft( textRect.left() );
+        capacityRect.setTop( textRect.top() + textRect.height() );
+        capacityRect.setWidth( textRect.width() - 20 );
+        capacityRect.setHeight( CAPACITYRECT_HEIGHT );
+
+        KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
+        capacityBar.setValue( index.data( CustomRoles::UsedCapacity ).toInt() );
+        capacityBar.drawCapacityBar( painter, capacityRect );
+    }
 
     painter->restore();
 }
@@ -111,12 +129,14 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
 
     int width = m_view->viewport()->size().width() - 4;
     int height;
+    const bool hasCapacity = index.data( CustomRoles::HasCapacity ).toBool();
 
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
     
     height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( Qt::DisplayRole ).toString() ).height()
            + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( CustomRoles::ByLineRole ).toString() ).height()
+           + (hasCapacity ? CAPACITYRECT_HEIGHT : 0)
            + 20;
 
     return QSize( width, height );

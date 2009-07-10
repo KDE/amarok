@@ -154,6 +154,10 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
          */
         virtual KIcon icon() const = 0;
 
+        virtual bool hasCapacity() const { return false; }
+        virtual float usedCapacity() const { return 0.0; }
+        virtual float totalCapacity() const { return 0.0; }
+
         virtual void collectionUpdated() { emit updated(); }
 
         virtual CollectionLocation* location() const;
