@@ -363,23 +363,6 @@ App::handleCliArgs() //static
         haveArgs = true;
         The::playlistActions()->back();
     }
-    /*
-    else if (args->isSet("cdplay"))
-    {
-        haveArgs = true;
-        QString device = args->getOption("cdplay");
-        KUrl::List urls;
-        if (The::engineController()->getAudioCDContents(device, urls))
-        {
-            Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
-            The::playlistController()->insertOptioned( tracks, Playlist::Replace|Playlist::DirectPlay );
-        }
-        else
-        { // Default behaviour
-            debug() << "Sorry, the engine does not support direct play from AudioCD...";
-        }
-    }
-    */
 
     static bool firstTime = true;
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
@@ -456,7 +439,6 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-    //options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
@@ -548,12 +530,6 @@ void App::applySettings( bool firstTime )
 
         if( The::engineController()->isMuted() != AmarokConfig::muteState() )
             The::engineController()->setMuted( AmarokConfig::muteState() );
-
-#if 0
-    // Audio CD is not currently supported
-    Amarok::actionCollection()->action( "play_audiocd" )->setEnabled( false );
-#endif
-
     } //</Engine>
 
     {   // delete unneeded cover images from cache

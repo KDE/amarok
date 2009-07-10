@@ -46,7 +46,6 @@ namespace AmarokScript
             void Next() const;
             void Prev() const;
             void PlayPause() const;
-            void PlayAudioCD() const;
             void Seek( int ms ) const;
             void SeekRelative( int ms ) const;
             void SeekForward( int ms = 10000 ) const;

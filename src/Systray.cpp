@@ -85,7 +85,6 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     extern void qt_mac_set_dock_menu(QMenu *);
     qt_mac_set_dock_menu( contextMenu() );
     contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
-    contextMenu()->addAction( ac->action( "play_audiocd" ) );
     contextMenu()->addSeparator();
     #endif
 

@@ -111,7 +111,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
     public slots:
         void showHide();
         void loveTrack();
-        void playAudioCD();
         void hideContextView( bool hide );
 
         void setLayoutLocked( bool locked );

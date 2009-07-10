@@ -89,7 +89,6 @@ public:
     bool isMuted() const;
     bool isPaused() const;
     bool loaded() { return phononMediaObject()->state() != Phonon::StoppedState; }
-    bool getAudioCDContents(const QString &device, KUrl::List &urls);
     bool isStream();
     enum PlayerStatus
     {

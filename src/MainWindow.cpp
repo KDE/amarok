@@ -543,22 +543,6 @@ MainWindow::slotAddStream() //SLOT
 }
 
 void
-MainWindow::playAudioCD() //SLOT
-{
-    KUrl::List urls;
-    if( The::engineController()->getAudioCDContents(QString(), urls) )
-    {
-        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
-        if( !tracks.isEmpty() )
-            The::playlistController()->insertOptioned( tracks, Playlist::Replace );
-    }
-    else
-    { // Default behaviour
-        showBrowser( "FileBrowser" );
-    }
-}
-
-void
 MainWindow::showScriptSelector() //SLOT
 {
     ScriptManager::instance()->show();
@@ -662,13 +646,6 @@ MainWindow::createActions()
     action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
     ac->addAction( "playlist_playmedia", action );
-
-#if 0
-    // Audio CD is not currently supported
-    action = new KAction( KIcon( "media-optical-audio-amarok" ), i18n("Play Audio CD"), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
-    ac->addAction( "play_audiocd", action );
-#endif
 
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));

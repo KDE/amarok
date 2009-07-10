@@ -72,11 +72,6 @@ namespace AmarokScript
         The::engineController()->playPause();
     }
 
-    void AmarokEngineScript::PlayAudioCD() const
-    {
-        The::mainWindow()->playAudioCD();
-    }
-
     void AmarokEngineScript::Seek( int ms ) const
     {
         The::engineController()->seek( ms );

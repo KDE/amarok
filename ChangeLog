@@ -37,6 +37,9 @@ VERSION 2.2-beta1
     * New navigation style in the browser sidebar.
     * Improvements to the Albums applet. Show individual track times and
       highlight currently playing artist within compilation albums
+    * Removed PlayAudioCD from the scripting interface.  It never worked
+      anyway, and audio CDs are just treated as a collection and not a
+      special case like they were in 1.4.
 
   BUGFIXES:
     * Fixed local playlists being renamed to blank when user hits cancel
