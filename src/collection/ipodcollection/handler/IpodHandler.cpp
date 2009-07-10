@@ -985,7 +985,7 @@ IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
 QString
 IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
-    return (m_mountPoint + QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" ));
+    return m_mountPoint + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" ));
 }
 
 /// Sets
