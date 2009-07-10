@@ -117,17 +117,18 @@ TextScrollingWidget::animationFinished( int id )
 void
 TextScrollingWidget::startAnimFor()
 {
-    m_animfor = Plasma::Animator::self()->customAnimation( m_delta*2, m_delta*15, Plasma::Animator::EaseInOutCurve, this, "animate" );
+    m_animfor = Plasma::Animator::self()->customAnimation( m_delta*2, m_delta*15, Plasma::Animator::EaseInOutCurve, this, "animateFor" );
 }
 
 void
 TextScrollingWidget::startAnimBack()
 {
-    m_animback = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*5, Plasma::Animator::EaseInOutCurve, this, "animateBack" );
+    //m_animback = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*5, Plasma::Animator::EaseInOutCurve, this, "animateBack" );
+    m_animback = Plasma::Animator::self()->customAnimation( m_delta*2, m_delta*15, Plasma::Animator::EaseInOutCurve, this, "animateBack" );
 }
 
 void
-TextScrollingWidget::animate( qreal anim )
+TextScrollingWidget::animateFor( qreal anim )
 {
 //    DEBUG_BLOCK
     m_currentDelta = ( float )( anim * ( m_delta ) );

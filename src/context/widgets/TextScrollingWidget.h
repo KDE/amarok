@@ -52,7 +52,7 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
         void setScrollingText( const QString, QRectF );
     
     public slots:
-        void animate( qreal anim );
+        void animateFor( qreal anim );
         void animateBack( qreal anim );
         
         void animationFinished(int);
