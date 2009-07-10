@@ -50,7 +50,6 @@ extern "C" {
 #include <threadweaver/ThreadWeaver.h>
 
 #include <solid/device.h>
-#include <solid/serialinterface.h>
 
 #include <QDir>
 #include <QFile>
