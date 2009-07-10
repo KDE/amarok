@@ -47,6 +47,7 @@ VERSION 2.2-beta1
     * Fixed local playlists being renamed to blank when user hits cancel
     * Fixed giant Edit Filter dialog with some translations. (BR 197566)
     * Files browser remembers its view mode. (BR 197122)
+    * Fixed non-Latin UTF-8 encoding tags not being correctly decoded.
 
 
 VERSION 2.1.1
