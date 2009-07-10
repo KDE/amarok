@@ -19,8 +19,8 @@
 
 #include "Amarok.h"
 #include "amarok_export.h"
-#include "plugin/plugin.h"
 #include "meta/Playlist.h"
+#include "PlaylistProvider.h"
 
 #include <QMultiMap>
 #include <QList>
@@ -180,31 +180,6 @@ class PlaylistManager : public QObject
         QMap<int, QString> m_customCategories;
 
         QMap<KJob *, Meta::PlaylistPtr> m_downloadJobMap;
-};
-
-class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
-{
-    Q_OBJECT
-
-    public:
-        virtual ~PlaylistProvider() {};
-
-        /**
-        * @returns A translated string to identify this Provider.
-        */
-        virtual QString prettyName() const = 0;
-
-        /**
-         * @returns An unique integer that identifies the category of the offered playlists.
-         * Use the PlaylistManager::PlaylistCategory enum.
-         */
-        virtual int category() const = 0;
-
-        virtual Meta::PlaylistList playlists() = 0;
-
-    signals:
-        virtual void updated();
-
 };
 
 #endif
