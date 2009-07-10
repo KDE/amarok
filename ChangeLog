@@ -41,6 +41,7 @@ VERSION 2.2-beta1
     * Removed PlayAudioCD from the scripting interface.  It never worked
       anyway, and audio CDs are just treated as a collection and not a
       special case like they were in 1.4.
+    * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
     * Fixed local playlists being renamed to blank when user hits cancel
