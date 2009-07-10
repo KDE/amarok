@@ -45,7 +45,6 @@ BrowserCategoryListDelegate::~BrowserCategoryListDelegate()
 void
 BrowserCategoryListDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-
     if( index.parent().isValid() ) // not a root item
     {
         QStyledItemDelegate::paint( painter, option, index );
@@ -113,7 +112,6 @@ BrowserCategoryListDelegate::paint( QPainter * painter, const QStyleOptionViewIt
 QSize
 BrowserCategoryListDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-
     if( index.parent().isValid() )
         return QStyledItemDelegate::sizeHint( option, index );
 

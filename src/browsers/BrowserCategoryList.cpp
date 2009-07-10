@@ -365,10 +365,6 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         currentHtml.replace( "%%DESCRIPTION%%", category->longDescription() );
         currentHtml.replace( "%%IMAGE_PATH%%", category->imagePath() );
 
-        debug() << "html: " << currentHtml;
-        
-
-
         QVariantMap variantMap;
         variantMap["main_info"] = QVariant( currentHtml );
         The::infoProxy()->setInfo( variantMap );
@@ -431,7 +427,7 @@ BrowserCategory *BrowserCategoryList::activeCategoryRecursive()
     return category;
 }
 
-void BrowserCategoryList::setFilter( QString filter )
+void BrowserCategoryList::setFilter( const QString &filter )
 {
     m_currentFilter = filter;
     m_searchWidget->setSearchString( filter );
