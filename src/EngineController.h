@@ -128,9 +128,6 @@ public:
      */
     bool isPaused() const;
 
-    // ???
-    bool loaded() { return phononMediaObject()->state() != Phonon::StoppedState; }
-
     /**
      * Streams sometimes have to be treated specially.  For example, it is typically
      * not possible to rewind a stream (at least, not without returning to the
@@ -140,7 +137,7 @@ public:
      */
     bool isStream();
 
-    // ???
+    // used by signals
     enum PlayerStatus
     {
         Playing  = 0,
@@ -266,15 +263,6 @@ signals:
     void volumeChanged( int );
     void muteStateChanged( bool );
 
-protected: // ??? - we don't want EngineController to be inherited
-    /**
-     * Plays the media at a specified URL
-     *
-     * @param url the URL of the media
-     * @param offset the position in the media to start at in milliseconds
-     */
-    void playUrl( const KUrl &url, uint offset );
-
 private slots:
     /**
      * Sets up the Phonon system
@@ -298,6 +286,14 @@ private slots:
     void slotTitleChanged( int titleNumber );
 
 private:
+    /**
+     * Plays the media at a specified URL
+     *
+     * @param url the URL of the media
+     * @param offset the position in the media to start at in milliseconds
+     */
+    void playUrl( const KUrl &url, uint offset );
+
     static EngineController* s_instance;
     EngineController();
     ~EngineController();
