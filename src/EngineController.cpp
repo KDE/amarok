@@ -482,7 +482,7 @@ EngineController::seek( int ms ) //SLOT
     if( m_media->isSeekable() )
     {
 
-        debug() << "ssek to: " << ms;
+        debug() << "seek to: " << ms;
         int seekTo;
 
         if ( m_boundedPlayback )
