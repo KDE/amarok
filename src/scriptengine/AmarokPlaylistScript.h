@@ -58,12 +58,12 @@ namespace AmarokScript
 
         signals:
             void activeRowChanged( int row );
-            void trackInserted( QVariant track, int row );
-            void trackRemoved( int row );
+            void trackInserted( int start, int end );
+            void trackRemoved( int start, int end );
 
         private slots:
-            void slotTrackInserted( const QModelIndex&, int, int );
-            void slotTrackRemoved( const QModelIndex&, int, int );
+            void slotTrackInserted( const QModelIndex&, int start, int end );
+            void slotTrackRemoved( const QModelIndex&, int start, int end );
 
         private:
             QList<QObject*>* m_wrapperList;

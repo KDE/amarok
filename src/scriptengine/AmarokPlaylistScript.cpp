@@ -156,17 +156,14 @@ namespace AmarokScript
         return fileNames;
     }
 
-    // PlaylistModel inserts only one track at a time
-    void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int row, int )
+    void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int start, int end )
     {
-        Meta::TrackPtr t = The::playlistModel()->trackAt( row );
-        emit trackInserted( QVariant::fromValue( t ), row );
+        emit trackInserted( start, end );
     }
 
-    // PlaylistModel removes only one track at a time
-    void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int row, int )
+    void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int start, int end )
     {
-        emit trackRemoved( row );
+        emit trackRemoved( start, end );
     }
 }
 
