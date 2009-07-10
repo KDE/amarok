@@ -45,8 +45,9 @@ extern "C" {
 #include <kinputdialog.h>
 #include "kjob.h"
 #include <KMessageBox>
-#include <threadweaver/ThreadWeaver.h>
+#include <KPasswordDialog>
 #include <KUrl>
+#include <threadweaver/ThreadWeaver.h>
 
 #include <solid/device.h>
 #include <solid/serialinterface.h>
@@ -56,6 +57,7 @@ extern "C" {
 #include <QFileInfo>
 #include <QMutexLocker>
 #include <QPixmap>
+#include <QProcess>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
@@ -112,6 +114,8 @@ void
 IpodHandler::init()
 {
     GError *err = 0;
+    QString initError = "iPod was not initialized: ";
+    QString initErrorCaption = "iPod Initialization Failed";
     bool wasInitialized = false;
 
     // First attempt to parse the database
@@ -150,6 +154,7 @@ IpodHandler::init()
 
             if( !info )
             {
+                debug() << "libgpod failed to get the ipod info table, that's a libgpod bug, should never happen";
                 m_success = false;
                 m_memColl->slotAttemptConnectionDone( m_success );
                 return;
@@ -185,6 +190,7 @@ IpodHandler::init()
 
             if( !ok )
             {
+                KMessageBox::error( 0, i18n( "%1the iPod Model is necessary to initialize the iPod", initError ), initErrorCaption );
                 m_success = false;
                 m_memColl->slotAttemptConnectionDone( m_success );
                 return;
@@ -210,6 +216,7 @@ IpodHandler::init()
                 // If it doesn't exist, make it and the path to it
                 if ( !root.mkpath( dir.absolutePath() ) )
                 {
+                    KMessageBox::error( 0, i18n( "%1failed to write to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
                     debug() << "Creating directory failed";
                     m_success = false;
                     m_memColl->slotAttemptConnectionDone( m_success );
@@ -225,11 +232,21 @@ IpodHandler::init()
 
             if( !wrote )
             {
+                KMessageBox::error( 0, i18n( "%1failed to write SysInfo file to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
                 debug() << "Failed to write modelnum to sysinfo file";
                 m_success = false;
                 m_memColl->slotAttemptConnectionDone( m_success );
                 return;
             }
+
+            // Now we stick in the firewireguid information (if available)
+
+
+            debug() << "Writing the firewireguid";
+            wrote = writeFirewireGuid();
+
+            if( !wrote )
+                debug() << "warning: could not write firewire guid, but perhaps it's just missing";
 
             if ( !initializeIpod() )
             {
@@ -239,20 +256,25 @@ IpodHandler::init()
                     m_itdb = 0;
                 }
 
-                The::statusBar()->longMessage(
-                    i18n( "Media Device: Failed to initialize iPod mounted at %1" ).arg( mountPoint() ) );
+                KMessageBox::error( 0, i18n( "%1failed to initialize the iPod", initError ), initErrorCaption );
 
                 m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
             }
             else
             {
+                KMessageBox::information( 0, i18n( "The iPod was successfully initialized!" ), i18n( "iPod Initialized" ) );
                 debug() << "iPod was initialized";
                 wasInitialized = true;
                 m_success = true;
             }
         }
         else
+        {
+            KMessageBox::information( 0, i18n( "%1you chose not to initialize the iPod. It will not be usable until it is initialized.", initError), initErrorCaption );
             m_success = false;
+        }
 
 
     }
@@ -276,15 +298,6 @@ IpodHandler::init()
     // read device info
     debug() << "Getting model information";
     detectModel(); // get relevant info about device
-
-    if ( wasInitialized )
-    {
-        debug() << "Writing the firewireguid";
-        if ( !writeFirewireGuid() )
-            m_success = false;
-        else
-            detectModel(); // reread stuff now that we have the right id to do so
-    }
 
     qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
 
@@ -314,7 +327,7 @@ IpodHandler::collectionActions()
 // NOTE: disabled, since users likely don't want to initialize unless
 // their iPod is hosed.
 
-
+#if 0
     PopupDropperAction *initializeAction = new PopupDropperAction(  The::svgHandler()->getRenderer(  "amarok/images/pud_items.svg" ),
                                                                     "edit",  KIcon(  "media-track-edit-amarok" ),  i18n(  "&Initialize Device" ),  0 );
 
@@ -322,7 +335,7 @@ IpodHandler::collectionActions()
 
     actions.append( initializeAction );
 
-
+#endif
 
     return actions;
 }
@@ -577,6 +590,7 @@ IpodHandler::detectModel()
 bool
 IpodHandler::writeToSysInfoFile( const QString &text )
 {
+    DEBUG_BLOCK
     QFile sysinfofile( mountPoint() + "/iPod_Control/Device/SysInfo" );
 
     if (!sysinfofile.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -598,6 +612,7 @@ IpodHandler::writeToSysInfoFile( const QString &text )
 bool
 IpodHandler::appendToSysInfoFile( const QString &text )
 {
+    DEBUG_BLOCK
     QFile sysinfofile( mountPoint() + "/iPod_Control/Device/SysInfo" );
 
     if (!sysinfofile.open(QIODevice::Append | QIODevice::Text))
@@ -619,16 +634,86 @@ bool
 IpodHandler::writeFirewireGuid()
 {
     DEBUG_BLOCK
-    QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::SerialInterface );
 
-    foreach( const Solid::Device &device, deviceList )
+    // HACK: KDesu's SuProcess is not well-documented enough to use
+    // for elevated privileges, so we are assuming the user has sudo set up
+    // for now, which is a _very big_ assumption.
+
+    KPasswordDialog dlg( 0 );
+    dlg.setPrompt(i18n("Amarok requires sudo access to get the FirewireGuid required to connect to your device. Please enter your sudo password"));
+    if( !dlg.exec() )
     {
-        const Solid::SerialInterface* si = device.as<Solid::SerialInterface>();
-        if ( si->serialType() == Solid::SerialInterface::Usb )
-            debug() << "Device File: " << si->driverHandle();
+        debug() << "sudo dialog cancelled";
+        return false; //the user canceled
     }
 
-    return true;
+    //QString program = "sudo";
+
+    //QStringList arguments;
+    //arguments << "lsusb" << "-s" << "-v";
+
+    QProcess lsusb;
+    lsusb.start( "sudo -S lsusb -v" );
+    if (!lsusb.waitForStarted())
+    {
+        debug() << "failed to start sudo lsusb call";
+        return false;
+    }
+
+    // Write the password to run the command
+
+    lsusb.write( dlg.password().toUtf8() );
+    lsusb.closeWriteChannel();
+
+    // Wait until sudo has processed the password
+    if (!lsusb.waitForFinished())
+    {
+        debug() << "failed to write password to sudo";
+        return false;
+    }
+
+    // Check if sudo fails to execute, usually due to wrong password or bad/no sudoers file
+
+    QByteArray lsusbinfoarray = lsusb.readAllStandardOutput();
+
+    QString lsusbinfostring( lsusbinfoarray );
+
+    // If it failed, abort
+    if( lsusbinfostring == "1" )
+    {
+        debug() << "sudo failed to run, probably due to a wrong password";
+        return false;
+    }
+
+    QRegExp rx( "iSerial\\s*[0-9] [0-9A-Z]{5}[0-9A-Z]+" );
+    QString firewireguid;
+
+    int pos = lsusbinfostring.indexOf( rx );
+
+    if( pos != -1 )
+    {
+        QString iserial = rx.capturedTexts().first();
+        rx.setPattern( "[0-9A-Z]{2,}" );
+        pos = iserial.indexOf( rx );
+        if( pos != -1 )
+        {
+            debug() << rx.capturedTexts();
+            firewireguid = "FirewireGuid: 0x" + rx.capturedTexts().first();
+        }
+
+    }
+
+    qDebug() << "Firewire is: " << firewireguid;
+
+
+
+
+    // If found, write it out to the SysInfo file
+    if( firewireguid.isEmpty() )
+        return false;
+
+    return appendToSysInfoFile( firewireguid );
+
 }
 
 bool
