@@ -128,21 +128,19 @@ MediaDeviceTrack::prettyName() const
 KUrl
 MediaDeviceTrack::playableUrl() const
 {
-    KUrl url( m_playableUrl );
-    return url;
+    return m_playableUrl;
 }
 
 QString
 MediaDeviceTrack::uidUrl() const
 {
-    return m_playableUrl;
+    return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : m_playableUrl.url();
 }
 
 QString
 MediaDeviceTrack::prettyUrl() const
 {
-    KUrl url( m_playableUrl );
-    return url.path();
+    return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : m_playableUrl.url();
 }
 
 bool
@@ -330,8 +328,11 @@ MediaDeviceTrack::setLastPlayed( const uint newTime )
 QString
 MediaDeviceTrack::type() const
 {
-    if( m_type.isEmpty() && !m_playableUrl.isEmpty() )
-        return m_playableUrl.mid( m_playableUrl.lastIndexOf( '.' ) + 1 );
+    if( m_type.isEmpty() && !m_playableUrl.path().isEmpty() )
+    {
+        QString path = m_playableUrl.path();
+        return path.mid( path.lastIndexOf( '.' ) + 1 );
+    }
     return m_type;
 }
 

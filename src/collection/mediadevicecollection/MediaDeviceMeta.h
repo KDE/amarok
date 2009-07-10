@@ -140,7 +140,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         void setType( const QString & type );
 
         void setLength( int length );
-    void setPlayableUrl( QString url ) { m_playableUrl = url; }
+    void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
 
     private:
         MediaDeviceCollection *m_collection;
@@ -169,7 +169,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         int m_rating;
         float m_bpm;
         QString m_displayUrl;
-        QString m_playableUrl;
+        KUrl m_playableUrl;
 };
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist

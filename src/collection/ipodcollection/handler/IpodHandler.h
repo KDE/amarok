@@ -148,7 +148,7 @@ protected:
     virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
     virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
     virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+    virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
     virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
     virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );

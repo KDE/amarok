@@ -1016,12 +1016,12 @@ MtpHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
     return mtpFileTypes[ m_mtptrackhash[ track ]->filetype ];
 }
 
-QString
+KUrl
 MtpHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     Q_UNUSED( track )
     // NOTE: not a real url, using for unique key for qm
-        return QString::number(  m_mtptrackhash[ track ]->item_id,  10 );
+        return KUrl( QString::number(  m_mtptrackhash[ track ]->item_id,  10 ) );
 }
 
 /// Sets

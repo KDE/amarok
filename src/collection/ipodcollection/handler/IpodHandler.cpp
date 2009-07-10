@@ -1322,10 +1322,10 @@ IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
     return QString::fromUtf8( m_itdbtrackhash[ track ]->filetype );
 }
 
-QString
+KUrl
 IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_mountPoint + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" ));
+    return KUrl(m_mountPoint + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" )));
 }
 
 /// Sets
