@@ -40,24 +40,43 @@ namespace Meta { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaObject; class VolumeFaderEffect; }
 
 /**
- * This class captures Amarok specific behaviour for some common features.
- * Accessing the engine directly is perfectly legal but on your own risk.
+ * A thin wrapper around Phonon that implements Amarok-specific funtionality like
+ * replay gain, fade-out on stop and various track capabilities that affect
+ * playback.
  */
-
 class AMAROK_EXPORT EngineController : public QObject, public EngineSubject
 {
     Q_OBJECT
 
 public:
+    /**
+     * Returns the global EngineController instance
+     */
     static EngineController* instance();
+    /**
+     * Destroys the global EngineController instance
+     */
     static void destroy();
 
+    /**
+     * Loads and plays the track that was playing when endSession() was last
+     * called (ie: when Amarok was quit)
+     */
+    void restoreSession();
+    /**
+     * Saves the currently playing track and the playing/paused/stopped state
+     */
+    void endSession();
+
+    /**
+     * Checks whether the media file at the specified URL can be decoded
+     */
     static bool canDecode( const KUrl& );
 
-    /* returns track position (elapsed time) in seconds */
+    /** @return track position (elapsed time) in seconds */
     int trackPosition() const;
 
-    /* returns track position (elapsed time) in milliseconds */
+    /** @return track position (elapsed time) in milliseconds */
     int trackPositionMs() const;
 
     /**
@@ -66,30 +85,62 @@ public:
      * has a state of Phonon::ErrorState or Phonon::StoppedState
      */
     Meta::TrackPtr currentTrack() const;
+    /**
+     * @return the length of the current track
+     */
     int trackLength() const;
 
     /**
      * Used to enqueue a track before it starts to play, for gapless playback.
+     *
+     * This will clear any tracks currently in the queue.  If no track is playing,
+     * @p track will be played immediately.
      */
-    void setNextTrack( Meta::TrackPtr );
+    void setNextTrack( Meta::TrackPtr track );
 
-    void restoreSession();
-    void endSession();
-
+    /**
+     * The state of the engine
+     */
     Phonon::State state() const { return phononMediaObject()->state(); }
-
-    //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
-    static const int MAIN_TIMER = 150;
 
     /*enum Filetype { MP3 };*/ //assuming MP3 for time being
     /*AMAROK_EXPORT*/ static bool installDistroCodec();
 
-    const Phonon::MediaObject* phononMediaObject() const { return m_media; } //!const so that it's only used by DBus for info
+    /**
+     * Provides access to the Phonon MediaObject for components that need more information
+     */
+    // const so that it can only be used for info
+    const Phonon::MediaObject* phononMediaObject() const { return m_media; }
+
+    /**
+     * Gets the volume
+     * @return the volume as a percentage
+     */
     int volume() const;
+
+    /**
+     * @return @c true if sound output is disabled, @false otherwise
+     */
     bool isMuted() const;
+
+    /**
+     * @return @c true if Amarok is paused, @c false if it is stopped or playing
+     */
     bool isPaused() const;
+
+    // ???
     bool loaded() { return phononMediaObject()->state() != Phonon::StoppedState; }
+
+    /**
+     * Streams sometimes have to be treated specially.  For example, it is typically
+     * not possible to rewind a stream (at least, not without returning to the
+     * start of it).
+     *
+     * @return @c true if the current track is a stream, @c false otherwise
+     */
     bool isStream();
+
+    // ???
     enum PlayerStatus
     {
         Playing  = 0,
@@ -99,25 +150,115 @@ public:
     };
 
 public slots:
+    /**
+     * Plays the current track, if there is one
+     *
+     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     */
     void play();
+    /**
+     * Plays the specified track
+     *
+     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     */
     void play( const Meta::TrackPtr&, uint offset = 0 );
+    /**
+     * Pauses the current track
+     *
+     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     */
     void pause();
+    /**
+     * Stops playing
+     *
+     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     */
     void stop( bool forceInstant = false );
+    /**
+     * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused
+     *
+     * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
+     */
     void playPause(); //pauses if playing, plays if paused or stopped
 
+    /**
+     * Seeks to a position in the track
+     *
+     * If the media is not seekable, or the state is something other than
+     * PlayingState, BufferingState or PausedState, has no effect.
+     *
+     * Deals correctly with tracks that have the BoundedPlayback capability.
+     *
+     * @param ms the position in milliseconds (counting from the start of the track)
+     */
     void seek( int ms );
+    /**
+     * Seeks forward or backward in the track
+     *
+     * If the media is not seekable, or the state is something other than
+     * PlayingState, BufferingState or PausedState, has no effect.
+     *
+     * Deals correctly with tracks that have the BoundedPlayback capability.
+     *
+     * A negative value seeks backwards, a positive value seeks forwards.
+     *
+     * If the value of @p ms would move the position to before the start of the track,
+     * the position is moved to the start of the track.
+     *
+     * @param ms the offset from the current position in milliseconds
+     */
     void seekRelative( int ms );
+    /**
+     * Seeks forward in the track
+     *
+     * Same as seekRelative()
+     */
     void seekForward( int ms = 10000 );
+    /**
+     * Seeks backward in the track
+     *
+     * Works identically to seekRelative(), but seeks in the opposite direction.
+     */
     void seekBackward( int ms = 10000 );
 
+    /**
+     * Increases the volume
+     *
+     * @param ticks the amount to increase the volume by, given as a percentage of the
+     * maximum possible volume (ie: the same units as for setVolume()).
+     */
     int increaseVolume( int ticks = 100/25 );
+    /**
+     * Decreases the volume
+     *
+     * @param ticks the amount to decrease the volume by, given as a percentage of the
+     * maximum possible volume (ie: the same units as for setVolume()).
+     */
     int decreaseVolume( int ticks = 100/25 );
+    /**
+     * Sets the volume
+     *
+     * @param percent the new volume as a percentage of the maximum possible volume.
+     */
+    // this amplifier does not go up to 11
     int setVolume( int percent );
 
+    /**
+     * Mutes or unmuted playback
+     *
+     * @param mute if @c true, audio output will be disabled; if @c false, audio output
+     * will be enabled.
+     */
     void setMuted( bool mute );
+    /**
+     * Toggles mute
+     *
+     * Works like setMuted( !isMuted() );
+     */
     void toggleMute();
 
 signals:
+    // this stuff seems to be for the scripting support
     void trackPlayPause( int ); //Playing: 0, Paused: 1
     void trackFinished();
     void trackChanged( Meta::TrackPtr );
@@ -125,11 +266,23 @@ signals:
     void volumeChanged( int );
     void muteStateChanged( bool );
 
-protected:
+protected: // ??? - we don't want EngineController to be inherited
+    /**
+     * Plays the media at a specified URL
+     *
+     * @param url the URL of the media
+     * @param offset the position in the media to start at in milliseconds
+     */
     void playUrl( const KUrl &url, uint offset );
+    /**
+     * ???
+     */
     void trackDone();
 
 private slots:
+    /**
+     * Sets up the Phonon system
+     */
     void initializePhonon();
     void slotQueueEnded();
     void slotAboutToFinish();
