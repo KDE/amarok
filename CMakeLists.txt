@@ -26,7 +26,7 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
-# Needed to offer bindings conditionally for amaroktest in debug builds
+# Needed to conditionally build tests and gui
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
    add_definitions(-DDEBUG)
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)

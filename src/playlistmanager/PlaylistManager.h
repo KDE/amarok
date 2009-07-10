@@ -69,9 +69,6 @@ class PlaylistManager : public QObject
         NotPlaylist = Unknown
     };
 
-    #if defined(DEBUG)
-        public slots:
-    #endif
         static PlaylistManager *instance();
         static void destroy();
         //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
