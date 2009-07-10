@@ -97,6 +97,16 @@
        </item>
        <item>
         <property name="text">
+         <string>Playcount</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Score</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Title</string>
         </property>
        </item>
@@ -338,14 +348,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -78,6 +78,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     m_vector.push_back( "artist" );
     m_vector.push_back( "composer" );
     m_vector.push_back( "genre" );
+    m_vector.push_back( "playcount" );
+    m_vector.push_back( "score" );
     m_vector.push_back( "title" );
     m_vector.push_back( "track" );
     m_vector.push_back( "year" );
@@ -257,21 +259,21 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_ui.invertButton->setEnabled( false );
         textWanted();
     }
-    else if( key=="bitrate" )
+    else if( key == "bitrate" )
     {
         // bitrate: set useful values for the spinboxes
         m_ui.minimum1->setValue( 128 );
         m_ui.maximum1->setValue( 384 );
         valueWanted();
     }
-    else if( key=="samplerate" )
+    else if( key == "samplerate" )
     {
         // samplerate: set useful values for the spinboxes
         m_ui.minimum1->setValue( 8000 );
         m_ui.maximum1->setValue( 48000 );
         valueWanted();
     }
-    else if( key=="size" || key=="filesize" )
+    else if( key == "size" || key == "filesize" )
     {
         // size: set useful values for the spinboxes`
         m_ui.minimum1->setValue( 1 );
@@ -279,40 +281,44 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         //m_unitSizeCombo->setCurrentIndex( 2 );
         valueWanted();
     }
-    else if( key=="year" )
+    else if( key == "year" )
     {
         // year: set useful values for the spinboxes
         m_ui.minimum1->setValue( 1900 );
         m_ui.maximum1->setValue( QDate::currentDate().year() );
         valueWanted();
     }
-    else if( key=="track" || key=="disc" || key=="discnumber" )
+    else if( key == "track" || key == "disc" || key == "discnumber" )
     {
         // track/disc: set useful values for the spinboxes
         m_ui.minimum1->setValue( 1 );
         m_ui.maximum1->setValue( 15 );
         valueWanted();
     }
-    else if( key=="playcount"
-            || key=="lastplayed"
-            || key=="rating"
-            || key=="score"
-            || key=="bpm" )
+    else if( key == "score" || key == "playcount" )
+    {
+        m_ui.minimum1->setValue( 0 );
+        m_ui.maximum1->setValue( 100 );
+        valueWanted();
+    }
+    else if(   key == "lastplayed"
+            || key == "rating"
+            || key == "bpm" )
     {
         valueWanted();
     }
     //FIXME: PORT 2.0
 //     else if( key=="label" )
 //         textWanted( CollectionDB::instance()->labelList() );
-     else if( key=="album" )
+     else if( key == "album" )
          textWanted( m_albums );
-     else if( key=="artist" )
+     else if( key == "artist" )
          textWanted( m_artists );
-     else if( key=="composer" )
+     else if( key == "composer" )
          textWanted( m_composers );
-     else if( key=="genre" )
+     else if( key == "genre" )
          textWanted( m_genres );
-    else if( key=="type" || key=="filetype" )
+    else if( key == "type" || key == "filetype" )
     {
         QStringList types;
         types << "mp3" << "flac" << "ogg" << "oga" << "aac" << "m4a" << "mp4" << "mp2" << "ac3"

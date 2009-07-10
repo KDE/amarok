@@ -52,12 +52,12 @@ class EditFilterDialog : public KDialog
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
         QString m_strPrefixNOT;        // is empty if no NOT prefix is needed else it's "-"
-        
+
         // Cache lists for completion
         QStringList m_artists;
         QStringList m_albums;
-        QStringList m_genres;
         QStringList m_composers;
+        QStringList m_genres;
 
     private:
         void exclusiveSelectOf( int which );
