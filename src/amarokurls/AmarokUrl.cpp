@@ -72,8 +72,9 @@ void AmarokUrl::initFromString( const QString & urlString )
         
         foreach( QString argument, parts )
         {
-            debug() << "argument: " << argument;
+            
             QStringList argParts = argument.split( "=" );
+            debug() << "argument: " << argument << " unescaped: " << unescape( argParts.at( 1 ) );
             appendArg( argParts.at( 0 ), unescape( argParts.at( 1 ) ) );
         }
     }
@@ -108,7 +109,6 @@ void AmarokUrl::appendArg( const QString &name, const QString &value )
 {
     m_arguments.insert( name, value );
 }
-
 
 bool AmarokUrl::run()
 {
@@ -159,7 +159,10 @@ bool AmarokUrl::saveToDb()
         //update existing
         debug() << "Updating bookmark";
         QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) ).arg( QString::number( m_id ) );
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) , QString::number( m_id ) );
+
+        debug() << "updating amarokurl, query: " << query;
+        
         CollectionManager::instance()->sqlStorage()->query( query );
     }
     else
@@ -167,7 +170,10 @@ bool AmarokUrl::saveToDb()
         //insert new
         debug() << "Creating new bookmark in the db";
         QString query = "INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) );
+        query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) );
+
+        debug() << "storing amarokurl, query: " << query;
+        
         m_id = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
     }
 
@@ -226,26 +232,12 @@ QString AmarokUrl::customValue() const
 
 QString AmarokUrl::escape( const QString & in )
 {
-    QString escaped = in;
-    escaped = escaped.replace( "\"", "%22" );
-    escaped = escaped.replace( " ", "%20" );
-    escaped = escaped.replace( "?", "%3F" );
-    escaped = escaped.replace( "&", "%26" );
-    escaped = escaped.replace( "=", "%3D"  );
-
-    return escaped;
+    return QUrl::toPercentEncoding( in.toUtf8() );
 }
 
-QString AmarokUrl::unescape(const QString & in)
+QString AmarokUrl::unescape( const QString & in )
 {
-    QString unescaped = in;
-    unescaped = unescaped.replace( "%22", "\"" );
-    unescaped = unescaped.replace( "%20", " " );
-    unescaped = unescaped.replace( "%3F", "?" );
-    unescaped = unescaped.replace( "%26", "&" );
-    unescaped = unescaped.replace( "%3D", "=" );
-
-    return unescaped;
+    return QUrl::fromPercentEncoding( in.toUtf8() );
 }
 
 bool AmarokUrl::isNull()

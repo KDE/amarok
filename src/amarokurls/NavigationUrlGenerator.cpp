@@ -53,6 +53,8 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     
     url.setPath( pathParts.join( "/" ) );
 
+    debug() << "Path: " << url.path();
+
     QString filter = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->filter();
     debug() << "filter: " <<  filter;
 
@@ -111,9 +113,11 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
             url.setCommand( "navigate" );
 
             QString path = btc->browserName();
-            path += "/";
-            path += btc->collectionName();
+            if ( !btc->collectionName().isEmpty() )
+                path += ( "/" + btc->collectionName() );
             url.setPath( path );
+
+            debug() << "Path: " << url.path();
 
             QString filter;
             if ( btc->simpleFiltering() ) {
@@ -162,7 +166,13 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
             QString artistName = artist->prettyName();
 
             url.setCommand( "navigate" );
-            url.setPath( btc->browserName() + "/" + btc->collectionName() );
+            
+            QString path = btc->browserName();
+            if ( !btc->collectionName().isEmpty() )
+                path += ( "/" + btc->collectionName() );
+            url.setPath( path );
+
+            debug() << "Path: " << url.path();
 
             QString filter;
             if ( btc->simpleFiltering() ) {
