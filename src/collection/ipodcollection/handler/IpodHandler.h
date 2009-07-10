@@ -86,6 +86,11 @@ public:
 
     virtual QString prettyName() const;
 
+    virtual QList<PopupDropperAction *> collectionActions();
+
+    public slots:
+        void slotInitializeIpod();
+
 protected:
 
     /* Parsing of Tracks on Device */
@@ -219,6 +224,9 @@ private:
     /* libgpod Information Extraction Methods */
 
     void detectModel();
+    bool writeToSysInfoFile( const QString &text );
+    bool appendToSysInfoFile( const QString &text );
+    bool writeFirewireGuid();
     KUrl determineURLOnDevice( const Meta::TrackPtr &track );
     QString itunesDir( const QString &path = QString() ) const;
     QString ipodPath( const QString &realPath );

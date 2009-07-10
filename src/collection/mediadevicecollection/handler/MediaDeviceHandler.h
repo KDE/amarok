@@ -24,6 +24,7 @@
 #include "../../../statusbar/StatusBar.h"
 
 #include "mediadevicecollection_export.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <threadweaver/Job.h>
 
@@ -149,6 +150,10 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     */
 
     virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) } // called by @param track
+
+    // HACK: Used for device-specific actions, such as initialize for iPod
+
+    virtual QList<PopupDropperAction *> collectionActions() { return QList<PopupDropperAction*> (); }
 
 
 

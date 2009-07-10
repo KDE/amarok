@@ -37,19 +37,19 @@ CollectionCapabilityMediaDevice::collectionActions( QueryMaker *qm )
 {
     qm->deleteLater();
     QList< PopupDropperAction* > actions;
-    // Create helper
-//    Meta::CollectionCapabilityHelper *helper = new Meta::CollectionCapabilityHelper( qm );
 
-    // Create action
+    // Create Standard Device Actions
 
     PopupDropperAction *disconnectAction = new PopupDropperAction(  The::svgHandler()->getRenderer(  "amarok/images/pud_items.svg" ),
                                                                 "delete",  KIcon(  "remove-amarok" ),  i18n(  "&Disconnect Device" ),  0 );
 
-    // Delete action triggered() goes to helper's run query
-//    helper->setAction(  disconnectAction,  m_coll,  SLOT( disconnectDevice()  );
     connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
 
     actions.append( disconnectAction );
+
+    // Pull in other device actions defined by subclasses
+
+    actions.append( m_coll->handler()->collectionActions() );
 
     return actions;
 }

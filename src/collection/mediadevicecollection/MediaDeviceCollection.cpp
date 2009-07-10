@@ -208,6 +208,8 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
         // TODO: thread the track parsing?
         startFullScan();
     }
+    else
+        debug() << "connection failed, not scanning";
 }
 
 /// CollectionCapability for Disconnect Action

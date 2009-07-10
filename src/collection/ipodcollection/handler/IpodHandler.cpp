@@ -31,6 +31,9 @@ extern "C" {
 }
 #endif
 
+#include "SvgHandler.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+
 #include "File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
@@ -39,15 +42,21 @@ extern "C" {
 #include <KIO/DeleteJob>
 #include <KIO/Scheduler>
 #include <KIO/NetAccess>
+#include <kinputdialog.h>
 #include "kjob.h"
+#include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
 #include <KUrl>
+
+#include <solid/device.h>
+#include <solid/serialinterface.h>
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QMutexLocker>
 #include <QPixmap>
+#include <QRegExp>
 #include <QString>
 #include <QStringList>
 #include <QTime>
@@ -103,11 +112,14 @@ void
 IpodHandler::init()
 {
     GError *err = 0;
+    bool wasInitialized = false;
 
+    // First attempt to parse the database
 
-    // Assuming database exists for now, later will port init db code
     debug() << "Calling the db parser";
     m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
+
+    // If this fails, we will ask the user if he wants to init the device
 
     if( err )
     {
@@ -118,21 +130,165 @@ IpodHandler::init()
             itdb_free( m_itdb );
             m_itdb = 0;
         }
+
+        // Attempt to init the device
+
+        // TODO: turn into a switch statement, this is too convoluted
+
+        QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
+                             "Should I try to initialize your iPod?" ).arg(  mountPoint() );
+
+        if( KMessageBox::warningContinueCancel( 0, msg, i18n( "Initialize iPod?" ),
+                                                                      KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
+        {
+
+            QStringList modelList;
+
+            // Pull model information
+
+            const Itdb_IpodInfo *info = itdb_info_get_ipod_info_table();
+
+            if( !info )
+            {
+                m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
+            }
+
+            // Iterate through the models to prepare model strings to display to the user
+
+            while( info->model_number )
+            {
+                QString mod;
+                QTextStream model( &mod );
+                model << QString::fromUtf8( itdb_info_get_ipod_generation_string( info->ipod_generation) )
+                        << ": "
+                        << QString::number( info->capacity )
+                        << " GB "
+                        << QString::fromUtf8( itdb_info_get_ipod_model_name_string( info->ipod_model ) )
+                        << "(x"
+                        << QString::fromUtf8( info->model_number )
+                        << ")";
+
+
+                modelList << mod;
+
+                info++;
+
+            }
+
+            bool ok = false;
+
+            // Present the dialog to the user
+
+            QString item = KInputDialog::getItem( i18n( "Set iPod Model"), i18n( "iPod Models" ), modelList, 0, false, &ok, 0 );
+
+            if( !ok )
+            {
+                m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
+            }
+
+            // Pull out the model number based on the index
+
+            info = itdb_info_get_ipod_info_table();
+            QString modelnum = QString::fromUtf8( info[ modelList.indexOf( item ) ].model_number );
+
+            debug() << "Model number: " << modelnum;
+
+            // Prepare to create the SysInfo file
+
+            // First, ensure the directories exist
+
+            QDir root( QDir::rootPath() );
+            QDir dir( mountPoint() + "/iPod_Control/Device" );
+            // Check if directory exists
+            if ( !dir.exists() )
+            {
+                debug() << "Creating device dir, since doesn't exist";
+                // If it doesn't exist, make it and the path to it
+                if ( !root.mkpath( dir.absolutePath() ) )
+                {
+                    debug() << "Creating directory failed";
+                    m_success = false;
+                    m_memColl->slotAttemptConnectionDone( m_success );
+                    return;
+                }
+                else
+                    debug() << "Directory created: " << dir.absolutePath();
+            }
+
+            // Now we stick this information into the SysInfo file
+
+            bool wrote = writeToSysInfoFile( "ModelNumStr: x" + modelnum + "\n" );
+
+            if( !wrote )
+            {
+                debug() << "Failed to write modelnum to sysinfo file";
+                m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
+            }
+
+            if ( !initializeIpod() )
+            {
+                if ( m_itdb )
+                {
+                    itdb_free( m_itdb );
+                    m_itdb = 0;
+                }
+
+                The::statusBar()->longMessage(
+                    i18n( "Media Device: Failed to initialize iPod mounted at %1" ).arg( mountPoint() ) );
+
+                m_success = false;
+            }
+            else
+            {
+                debug() << "iPod was initialized";
+                wasInitialized = true;
+                m_success = true;
+            }
+        }
+        else
+            m_success = false;
+
+
     }
     else
-    {
-        m_tempdir->setAutoRemove( true );
-
-        // read device info
-        debug() << "Getting model information";
-        detectModel(); // get relevant info about device
-
-        qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
-
         m_success = true;
 
-        debug() << "Succeeded: " << m_success;
+    // If failed to parse or init, we have failed, return
+
+    if ( !m_success )
+    {
+        m_memColl->slotAttemptConnectionDone( m_success );
+        return;
     }
+
+    m_success = true;
+
+    // Either db was parsed, or initialized. Prepare variables, get model info
+
+    m_tempdir->setAutoRemove( true );
+
+    // read device info
+    debug() << "Getting model information";
+    detectModel(); // get relevant info about device
+
+    if ( wasInitialized )
+    {
+        debug() << "Writing the firewireguid";
+        if ( !writeFirewireGuid() )
+            m_success = false;
+        else
+            detectModel(); // reread stuff now that we have the right id to do so
+    }
+
+    qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
+
+    debug() << "Succeeded: " << m_success;
 
     m_memColl->slotAttemptConnectionDone( m_success );
 }
@@ -148,6 +304,51 @@ QString
 IpodHandler::prettyName() const
 {
     return QString::fromUtf8( itdb_playlist_mpl( m_itdb )->name );
+}
+
+QList<PopupDropperAction *>
+IpodHandler::collectionActions()
+{
+
+    QList< PopupDropperAction* > actions;
+// NOTE: disabled, since users likely don't want to initialize unless
+// their iPod is hosed.
+
+
+    PopupDropperAction *initializeAction = new PopupDropperAction(  The::svgHandler()->getRenderer(  "amarok/images/pud_items.svg" ),
+                                                                    "edit",  KIcon(  "media-track-edit-amarok" ),  i18n(  "&Initialize Device" ),  0 );
+
+    connect( initializeAction, SIGNAL( triggered() ), this, SLOT( slotInitializeIpod() ) );
+
+    actions.append( initializeAction );
+
+
+
+    return actions;
+}
+
+void
+IpodHandler::slotInitializeIpod()
+{
+    const QString text( i18n( "Do you really want to initialize this iPod? Its database will be cleared of all information, but the files will not be deleted." ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         text,
+                                                         i18n("Initialize iPod") ) == KMessageBox::Continue;
+    if ( init )
+    {
+        bool success = initializeIpod();
+
+        if ( success )
+        {
+
+            The::statusBar()->shortMessage( i18n( "The iPod has been initialized!" ) );
+        }
+        else
+            The::statusBar()->shortMessage( i18n( "The iPod has failed to initialize!" ) );
+    }
+
+
 }
 
 bool
@@ -169,7 +370,7 @@ IpodHandler::initializeIpod()
         return false;
 
     // in order to get directories right
-    detectModel();
+    //detectModel();
 
     itdb_set_mountpoint(m_itdb, QFile::encodeName(mountPoint()));
 
@@ -205,12 +406,16 @@ IpodHandler::initializeIpod()
     if( !dir.exists() )
         return false;
 
+    m_dbChanged = true;
+
     // NOTE: writing itunes DB allowed to block since
     // initializing a device is rare, and requires focus
     // to minimize possible error
     // TODO: database methods abstraction needed
-    //if( !writeITunesDB( false ) )
-     //   return false;
+    if( !writeITunesDB( false ) )
+       return false;
+
+
 
     return true;
 }
@@ -334,6 +539,7 @@ IpodHandler::detectModel()
     else
     {
         debug() << "iPod type detection failed, no video support";
+        m_needsFirewireGuid = true; // can't read db because no firewire, maybe
         guess = true;
     }
 
@@ -366,6 +572,63 @@ IpodHandler::detectModel()
         debug() << "RockBox firmware detected" << endl;
         m_rockboxFirmware = true;
     }
+}
+
+bool
+IpodHandler::writeToSysInfoFile( const QString &text )
+{
+    QFile sysinfofile( mountPoint() + "/iPod_Control/Device/SysInfo" );
+
+    if (!sysinfofile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        debug() << "Failed to open SysInfo file for writing!";
+        return false;
+    }
+
+    QTextStream out( &sysinfofile );
+
+    out << text;
+
+    sysinfofile.close();
+
+    return true;
+
+}
+
+bool
+IpodHandler::appendToSysInfoFile( const QString &text )
+{
+    QFile sysinfofile( mountPoint() + "/iPod_Control/Device/SysInfo" );
+
+    if (!sysinfofile.open(QIODevice::Append | QIODevice::Text))
+    {
+        debug() << "Failed to open SysInfo file for appending!";
+        return false;
+    }
+
+    QTextStream out( &sysinfofile );
+
+    out << text;
+
+    sysinfofile.close();
+
+    return true;
+}
+
+bool
+IpodHandler::writeFirewireGuid()
+{
+    DEBUG_BLOCK
+    QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::SerialInterface );
+
+    foreach( const Solid::Device &device, deviceList )
+    {
+        const Solid::SerialInterface* si = device.as<Solid::SerialInterface>();
+        if ( si->serialType() == Solid::SerialInterface::Usb )
+            debug() << "Device File: " << si->driverHandle();
+    }
+
+    return true;
 }
 
 bool
@@ -497,32 +760,25 @@ IpodHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDe
 
     debug() << "Url's path is: " << url.path();
 
-    // check if path exists and make it if needed
     QFileInfo finfo( url.path() );
     QDir dir = finfo.dir();
-    while ( !dir.exists() )
-    {
-        QString path = dir.absolutePath();
-        QDir parentdir;
-        QDir create;
-        do
-        {
-            create.setPath(path);
-            path = path.section('/', 0, path.indexOf('/')-1);
-            parentdir.setPath(path);
-        }
-        while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
-        debug() << "trying to create \"" << path << "\"";
-        if( !create.mkdir( create.absolutePath() ) )
-            break;
-    }
+    QDir root( QDir::rootPath() );
+    // Check if directory exists
     if ( !dir.exists() )
     {
-        debug() << "Creating directory failed";
-        return;
+        // If it doesn't exist, make it and the path to it
+        if ( !root.mkpath( dir.absolutePath() ) )
+        {
+            debug() << "Creating directory failed";
+            url = "";
+        }
+        // If fails to create, set its url to blank so the copying will fail
+        else
+            debug() << "Directory created!";
     }
 
     debug() << "About to copy from: " << srcTrack->playableUrl().path();
+    debug() << "to: " << url;
 
     m_trackdesturl[ srcTrack ] = url;
 }
