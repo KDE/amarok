@@ -53,10 +53,8 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     
     url.setPath( pathParts.join( "/" ) );
 
-    debug() << "Path: " << url.path();
 
     QString filter = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->filter();
-    debug() << "filter: " <<  filter;
 
     if ( !filter.isEmpty() )
         url.appendArg( "filter", filter );
@@ -89,9 +87,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     //we have left a trailing '-' in there, get rid of it!
     if ( sortMode.size() > 0 )
         sortMode = sortMode.left( sortMode.size() - 1 );
-
-    debug() << "sortMode: " <<  sortMode;
-
+    
     if ( !sortMode.isEmpty() )
         url.appendArg( "levels", sortMode );
 
@@ -116,8 +112,6 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
             if ( !btc->collectionName().isEmpty() )
                 path += ( "/" + btc->collectionName() );
             url.setPath( path );
-
-            debug() << "Path: " << url.path();
 
             QString filter;
             if ( btc->simpleFiltering() ) {
@@ -147,7 +141,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
         delete btc;
     }
 
-    debug() << "got url: " << url.url();
+    //debug() << "got url: " << url.url();
     return url;
 
 }
@@ -172,7 +166,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
                 path += ( "/" + btc->collectionName() );
             url.setPath( path );
 
-            debug() << "Path: " << url.path();
+            //debug() << "Path: " << url.path();
 
             QString filter;
             if ( btc->simpleFiltering() ) {
@@ -196,7 +190,6 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
         delete btc;
     }
 
-    debug() << "got url: " << url.url();
     return url;
 
 }
