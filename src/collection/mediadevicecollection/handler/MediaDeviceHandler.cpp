@@ -820,57 +820,76 @@ MediaDeviceHandler::parseTracks()
     }
 
 
-    // Register the playlist provider with the playlistmanager
-
-    // register a playlist provider for this type of device
-    debug() << "adding provider";
-    m_provider = new MediaDeviceUserPlaylistProvider();
-
-    // Begin parsing the playlists
-
-    Meta::MediaDevicePlaylistList playlists;
-
-    for ( prepareToParsePlaylists(); !isEndOfParsePlaylistsList(); prepareToParseNextPlaylist() )
+    if( !m_pc )
     {
-        nextPlaylistToParse();
-
-        if( shouldNotParseNextPlaylist() )
-            continue;
-
-        // Create a new track list
-
-        Meta::TrackList tracklist;
-
-        for ( prepareToParsePlaylistTracks(); !isEndOfParsePlaylist(); prepareToParseNextPlaylistTrack() )
+        if( this->hasCapabilityInterface( Handler::Capability::Playlist ) )
         {
-            nextPlaylistTrackToParse();
-            // Grab the track associated with the next struct
-            Meta::TrackPtr track = Meta::TrackPtr::staticCast( libGetTrackPtrForTrackStruct() );
-            // if successful, add it into the list at the end.
-            // it is assumed that the list has some presorted order
-            // and this is left to the library
-
-            if ( track )
-                tracklist << track;
-
-
+            m_pc = this->create<Handler::PlaylistCapability>();
+            if( !m_pc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::PlaylistCapability. Not parsing playlists.";
+            }
         }
-
-        // Make a playlist out of this tracklist
-
-        Meta::MediaDevicePlaylistPtr playlist( new Meta::MediaDevicePlaylist( libGetPlaylistName(), tracklist ) );
-
-        // Insert the new playlist into the list of playlists
-
-        //playlists << playlist;
-
-        // Inform the provider of the new playlist
-
-        m_provider->addPlaylist( playlist );
     }
 
-    The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
-    m_provider->sendUpdated();
+#if 0
+    if( m_pc )
+    {
+        // Register the playlist provider with the playlistmanager
+
+        // register a playlist provider for this type of device
+        debug() << "adding provider";
+        m_provider = new MediaDeviceUserPlaylistProvider();
+
+        // Begin parsing the playlists
+
+        Meta::MediaDevicePlaylistList playlists;
+
+        for ( m_pc->prepareToParsePlaylists(); !(m_pc->isEndOfParsePlaylistsList()); m_pc->prepareToParseNextPlaylist() )
+        {
+            m_pc->nextPlaylistToParse();
+
+            if( m_pc->shouldNotParseNextPlaylist() )
+                continue;
+
+            // Create a new track list
+
+            Meta::TrackList tracklist;
+
+            for ( m_pc->prepareToParsePlaylistTracks(); !(m_pc->isEndOfParsePlaylist()); m_pc->prepareToParseNextPlaylistTrack() )
+            {
+                m_pc->nextPlaylistTrackToParse();
+                // Grab the track associated with the next struct
+                Meta::TrackPtr track = Meta::TrackPtr::staticCast( m_pc->libGetTrackPtrForTrackStruct() );
+                // if successful, add it into the list at the end.
+                // it is assumed that the list has some presorted order
+                // and this is left to the library
+
+                if ( track )
+                    tracklist << track;
+
+
+            }
+
+            // Make a playlist out of this tracklist
+
+            Meta::MediaDevicePlaylistPtr playlist( new Meta::MediaDevicePlaylist( m_pc->libGetPlaylistName(), tracklist ) );
+
+            // Insert the new playlist into the list of playlists
+
+            //playlists << playlist;
+
+            // Inform the provider of the new playlist
+
+            m_provider->addPlaylist( playlist );
+        }
+
+        The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
+        m_provider->sendUpdated();
+
+    }
+
+#endif
 
     // Inform the provider of these new playlists
 /*

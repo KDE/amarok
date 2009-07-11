@@ -80,6 +80,7 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/CollectionCapabilityMediaDevice.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
+  collection/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
   collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp

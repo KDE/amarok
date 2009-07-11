@@ -14,11 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ReadCapability.h"
+#include "PlaylistCapability.h"
 
-Handler::ReadCapability::~ReadCapability()
+Handler::PlaylistCapability::~PlaylistCapability()
 {
     // nothing to do here
 }
 
-#include "ReadCapability.moc"
+#include "PlaylistCapability.moc"

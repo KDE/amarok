@@ -14,11 +14,42 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ReadCapability.h"
+#ifndef IPODHANDLER_PLAYLISTCAPABILITY_H
+#define IPODHANDLER_PLAYLISTCAPABILITY_H
 
-Handler::ReadCapability::~ReadCapability()
-{
-    // nothing to do here
+#include "mediadevicecollection_export.h"
+#include "PlaylistCapability.h"
+
+namespace Meta {
+    class IpodHandler;
 }
 
-#include "ReadCapability.moc"
+namespace Handler
+{
+
+class IpodPlaylistCapability : public PlaylistCapability
+{
+    Q_OBJECT
+    public:
+    IpodPlaylistCapability( Meta::IpodHandler *handler );
+
+    virtual void prepareToParsePlaylists();
+    virtual bool isEndOfParsePlaylistsList();
+    virtual void prepareToParseNextPlaylist();
+    virtual void nextPlaylistToParse();
+    virtual bool shouldNotParseNextPlaylist();
+    virtual void prepareToParsePlaylistTracks();
+    virtual bool isEndOfParsePlaylist();
+    virtual void prepareToParseNextPlaylistTrack();
+    virtual void nextPlaylistTrackToParse();
+
+    virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
+    virtual QString libGetPlaylistName();
+
+    private:
+        Meta::IpodHandler *m_handler;
+};
+
+}
+
+#endif

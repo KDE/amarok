@@ -30,6 +30,7 @@ extern "C"
 #include <gpod/itdb.h>
 }
 
+#include "IpodPlaylistCapability.h"
 #include "IpodReadCapability.h"
 
 #include "MediaDeviceMeta.h"
@@ -98,6 +99,7 @@ public:
     virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
     virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
 
+    friend class Handler::IpodPlaylistCapability;
     friend class Handler::IpodReadCapability;
 
     public slots:
