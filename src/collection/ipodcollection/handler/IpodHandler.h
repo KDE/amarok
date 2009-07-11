@@ -236,7 +236,7 @@ private:
     virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
     virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
     virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+    virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
     /// Ipod Methods
 

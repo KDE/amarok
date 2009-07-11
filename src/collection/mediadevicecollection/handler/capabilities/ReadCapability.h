@@ -93,7 +93,7 @@ namespace Handler
         virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track )  = 0;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
-        virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
         static Type capabilityInterfaceType() { return Handler::Capability::Readable; }
 

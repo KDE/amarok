@@ -163,7 +163,7 @@ MtpReadCapability::libGetType( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetType( track );
 }
 
-QString
+KUrl
 MtpReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetPlayableUrl( track );

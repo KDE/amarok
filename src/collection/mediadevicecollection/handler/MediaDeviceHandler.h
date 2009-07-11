@@ -224,9 +224,6 @@ protected:
 
     MediaDeviceHandler( QObject *parent );
 
-<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
-<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
-=======
     /// Parsing of Tracks in Playlists on Device
     /// NOTE: not required by devices with no playlists, just reimplement empty functions
 
@@ -360,23 +357,6 @@ protected:
 // md:write
     virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
-<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
-=======
-    /** Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
-    *  This is mainly used in playlist parsing, and can be ignored otherwise.
-    *  @return A MediaDeviceTrackPtr to currently parsed track struct
-    */
-// md:plist
-    virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() = 0;
-
-    /** Returns a string containing the playlist name of the currently parsed playlist struct, if available.
-    *  Only override if your library uses names.
-    *  @return A string with the name of the currently parsed playlist
-    */
-// md:plist
-    virtual QString libGetPlaylistName() = 0;
-
->>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
     /** Adds the newly created track struct now populated with info into the
     *  database struct of the particular device, e.g. into the itdb for Ipods.
     *  MTP devices automatically add the track into the database upon copying,
@@ -384,10 +364,7 @@ protected:
     *  @param track The track whose associated track struct is to be added \
     into the database.
     */
-<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 
-=======
->>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 // md:write
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
@@ -452,9 +429,12 @@ protected:
     */
     // md:write
     virtual void updateTrack( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) };
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 =======
 
 >>>>>>> Add write capability for Handler/IpodHandler.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
+=======
+>>>>>>> Fix problems from being disconnected during dcommit, die git-svn die.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 
     MediaDeviceCollection   *m_memColl; /// Associated collection
 
@@ -561,6 +541,9 @@ private:
 
     /// Capability-related variables
 <<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
+=======
+>>>>>>> Fix problems from being disconnected during dcommit, die git-svn die.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
     Handler::PlaylistCapability *m_pc;
     Handler::ReadCapability     *m_rc;
 <<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
@@ -569,7 +552,10 @@ private:
 >>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 =======
     Handler::WriteCapability    *m_wc;
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 >>>>>>> Add write capability for Handler/IpodHandler.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
+=======
+>>>>>>> Fix problems from being disconnected during dcommit, die git-svn die.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 
 };
 
