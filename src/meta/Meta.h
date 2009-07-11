@@ -99,7 +99,40 @@ namespace Meta
             QSet<YearPtr> m_yearSubscriptions;
     };
 
-    class AMAROK_EXPORT MetaBase : public QSharedData
+    class AMAROK_EXPORT MetaCapability
+    {
+    public:
+        virtual ~MetaCapability() {}
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
+        /**
+             * Retrieves a specialized interface which represents a capability of this
+             * MetaBase object.
+             *
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
+             */
+        template <class CapIface> CapIface *create()
+        {
+            Meta::Capability::Type type = CapIface::capabilityInterfaceType();
+            Meta::Capability *iface = createCapabilityInterface(type);
+            return qobject_cast<CapIface *>(iface);
+        }
+
+        /**
+             * Tests if a MetaBase object provides a given capability interface.
+             *
+             * @returns true if the interface is available, false otherwise
+             */
+        template <class CapIface> bool is() const
+        {
+            return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
+        }
+    };
+
+    class AMAROK_EXPORT MetaBase : public QSharedData, public MetaCapability
     {
         friend class Observer;
 
@@ -124,32 +157,7 @@ namespace Meta
 
             virtual void addMatchTo( QueryMaker *qm ) = 0;
 
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
-            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
-
-            /**
-             * Retrieves a specialized interface which represents a capability of this
-             * MetaBase object.
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> CapIface *create()
-            {
-                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-                Meta::Capability *iface = createCapabilityInterface(type);
-                return qobject_cast<CapIface *>(iface);
-            }
-
-            /**
-             * Tests if a MetaBase object provides a given capability interface.
-             *
-             * @returns true if the interface is available, false otherwise
-             */
-            template <class CapIface> bool is() const
-            {
-                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-            }
 
         protected:
             virtual void subscribe( Observer *observer );

@@ -201,6 +201,22 @@ Meta::Observer::metadataChanged( YearPtr year )
     Q_UNUSED( year );
 }
 
+//Meta::MetaCapability
+
+bool
+Meta::MetaCapability::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    Q_UNUSED( type );
+    return false;
+}
+
+Meta::Capability*
+Meta::MetaCapability::createCapabilityInterface( Meta::Capability::Type type )
+{
+    Q_UNUSED( type );
+    return 0;
+}
+
 //Meta::MetaBase
 
 void
@@ -215,22 +231,6 @@ Meta::MetaBase::unsubscribe( Observer *observer )
 {
     m_observers.remove( observer );
 }
-
-
-bool
-Meta::MetaBase::hasCapabilityInterface( Meta::Capability::Type type ) const
-{
-    Q_UNUSED( type );
-    return false;
-}
-
-Meta::Capability*
-Meta::MetaBase::createCapabilityInterface( Meta::Capability::Type type )
-{
-    Q_UNUSED( type );
-    return 0;
-}
-
 
 //Meta::Track
 
