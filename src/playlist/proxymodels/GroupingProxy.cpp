@@ -1,9 +1,10 @@
 /****************************************************************************************
- * Copyright © 2007-2008 Ian Monroe <ian@monroe.nu>                                     *
- *           © 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                      *
- *           © 2008 Seb Ruiz <ruiz@kde.org>                                             *
- *           © 2008 Soren Harward <stharward@gmail.com>                                 *
- *           © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                               *
+ * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) version 3 or        *
@@ -264,7 +265,7 @@ int Playlist::GroupingProxy::tracksInGroup( int row ) const
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
     //FIXME: this needs to talk to SortProxy only as currently is fails
-    //    with a sorted playlist.   --Téo 17/6/2009
+    //    with a sorted playlist.   --To 17/6/2009
 
     row = SortProxy::instance()->rowFromSource( FilterProxy::instance()->rowFromSource( row ) );
 
@@ -276,7 +277,7 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
     //unfortunately we need to map this to row from source as it will
     //otherwise mess up ( and crash ) when a filter is applied
     //FIXME: this needs to talk to SortProxy only as currently is fails
-    //    with a sorted playlist.   --Téo 17/6/2009
+    //    with a sorted playlist.   --To 17/6/2009
     row = SortProxy::instance()->rowFromSource( FilterProxy::instance()->rowFromSource( row ) );
 
     int totalLenght = 0;

@@ -1,6 +1,7 @@
 /****************************************************************************************
- * Copyright © 2008 Soren Harward <stharward@gmail.com>                                 *
- *           © 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                               *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) version 3 or        *
