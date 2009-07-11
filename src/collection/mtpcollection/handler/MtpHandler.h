@@ -22,6 +22,10 @@
 
 #include <libmtp.h>
 
+#include "MtpPlaylistCapability.h"
+#include "MtpReadCapability.h"
+#include "MtpWriteCapability.h"
+
 #include "MediaDeviceMeta.h"
 #include "MediaDeviceHandler.h"
 
@@ -66,6 +70,15 @@ public:
     virtual QString prettyName() const;
 
     virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track );
+
+    /// Capability-related methods
+
+    virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
+    virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
+
+    friend class Handler::MtpPlaylistCapability;
+    friend class Handler::MtpReadCapability;
+    friend class Handler::MtpWriteCapability;
 
 protected:
 

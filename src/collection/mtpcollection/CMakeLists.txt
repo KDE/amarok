@@ -13,7 +13,9 @@ if (MTP_FOUND)
    ../mediadevicecollection
    ../mediadevicecollection/support
    ../mediadevicecollection/handler
+   ../mediadevicecollection/handler/capabilities
    handler
+   handler/capabilities
    support
    ${GLIB2_INCLUDE_DIR}
    ${MTP_INCLUDE_DIR}
@@ -28,6 +30,9 @@ if (MTP_FOUND)
 	set(amarok_collection-mtpcollection_PART_SRCS
 	MtpCollection.cpp
 	handler/MtpHandler.cpp
+	handler/capabilities/MtpPlaylistCapability.cpp
+	handler/capabilities/MtpReadCapability.cpp
+	handler/capabilities/MtpWriteCapability.cpp	
 	support/MtpDeviceInfo.cpp
 	support/MtpConnectionAssistant.cpp)
 	kde4_add_plugin(amarok_collection-mtpcollection WITH_PREFIX ${amarok_collection-mtpcollection_PART_SRCS})

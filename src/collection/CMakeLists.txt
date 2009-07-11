@@ -10,7 +10,7 @@ add_subdirectory( daap )
 add_subdirectory( ipodcollection )
 
 
-#add_subdirectory( mtpcollection )
+add_subdirectory( mtpcollection )
 
 add_subdirectory( device )
 

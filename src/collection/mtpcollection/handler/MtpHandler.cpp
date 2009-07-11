@@ -1293,6 +1293,42 @@ MtpHandler::updateTrack( Meta::MediaDeviceTrackPtr &track )
         debug() << "Failed to update metadata";
 }
 
+/// Capability-related functions
+
+bool
+MtpHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Handler::Capability::Readable:
+            return true;
+        case Handler::Capability::Playlist:
+            return true;
+        case Handler::Capability::Writable:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Handler::Capability*
+MtpHandler::createCapabilityInterface( Handler::Capability::Type type )
+{
+    switch( type )
+    {
+        case Handler::Capability::Readable:
+            return new Handler::MtpReadCapability( this );
+        case Handler::Capability::Playlist:
+            return new Handler::MtpPlaylistCapability( this );
+        case Handler::Capability::Writable:
+            return new Handler::MtpWriteCapability( this );
+
+        default:
+            return 0;
+    }
+}
+
 WorkerThread::WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices,  MtpHandler* handler )
         : ThreadWeaver::Job()
         , m_success( false )
