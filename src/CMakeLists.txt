@@ -79,6 +79,8 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/MediaDeviceMeta.cpp  
   collection/mediadevicecollection/CollectionCapabilityMediaDevice.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
+  collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
+  collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
   collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
   collection/mediadevicecollection/support/ConnectionAssistant.cpp

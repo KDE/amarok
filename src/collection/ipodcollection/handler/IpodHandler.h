@@ -30,8 +30,12 @@ extern "C"
 #include <gpod/itdb.h>
 }
 
+#include "IpodReadCapability.h"
+
 #include "MediaDeviceMeta.h"
 #include "MediaDeviceHandler.h"
+
+#include "mediadevicecollection_export.h"
 
 #include <KIO/Job>
 #include "kjob.h"
@@ -71,8 +75,9 @@ struct PodcastInfo
 */
 namespace Meta
 {
+
 /* The libgpod backend for all Ipod calls */
-class IpodHandler : public MediaDeviceHandler
+class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 {
     Q_OBJECT
 
@@ -88,19 +93,19 @@ public:
 
     virtual QList<PopupDropperAction *> collectionActions();
 
+    /// Capability-related methods
+
+    virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
+    virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
+
+    friend class Handler::IpodReadCapability;
+
     public slots:
         void slotInitializeIpod();
 
-protected:
+    protected:
 
-    /* Parsing of Tracks on Device */
-
-    virtual void prepareToParseTracks();
-    virtual bool isEndOfParseTracksList();
-    virtual void prepareToParseNextTrack();
-    virtual void nextTrackToParse();
-
-    virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
+    /// Functions for PlaylistCapability
 
     virtual void prepareToParsePlaylists();
     virtual bool isEndOfParsePlaylistsList();
@@ -129,26 +134,6 @@ protected:
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
     virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
     virtual void databaseChanged();
-
-    virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
-    virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
-    virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
-    virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-    virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
     virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
     virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
@@ -216,6 +201,35 @@ public slots:
 
 
 private:
+
+    /// Functions for ReadCapability
+
+    virtual void prepareToParseTracks();
+    virtual bool isEndOfParseTracksList();
+    virtual void prepareToParseNextTrack();
+    virtual void nextTrackToParse();
+
+    virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
+
+    virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
+    virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
+    virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+    virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
+    virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
+    virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
+    virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
+    virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
+    virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
+    virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
+    virtual QString libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
     /// Ipod Methods
 

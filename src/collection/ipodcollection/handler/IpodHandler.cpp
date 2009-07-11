@@ -64,6 +64,8 @@ extern "C" {
 
 using namespace Meta;
 
+/// IpodHandler
+
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
     //, m_memColl( mc )
@@ -1759,6 +1761,34 @@ IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
     }
     else
         debug() << "Writing to DB did not happen or failed";
+}
+
+/// Capability-related functions
+
+bool
+IpodHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Handler::Capability::Readable:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Handler::Capability*
+IpodHandler::createCapabilityInterface( Handler::Capability::Type type )
+{
+    switch( type )
+    {
+        case Handler::Capability::Readable:
+            return new Handler::IpodReadCapability( this );
+
+        default:
+            return 0;
+    }
 }
 
 DBWorkerThread::DBWorkerThread( IpodHandler* handler )

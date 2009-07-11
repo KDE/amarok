@@ -19,8 +19,11 @@
 #ifndef MEDIADEVICEHANDLER_H
 #define MEDIADEVICEHANDLER_H
 
+#include "MediaDeviceHandlerCapability.h"
+#include "capabilities/ReadCapability.h"
 #include "MediaDeviceMeta.h"
 #include "MemoryCollection.h"
+#include "Meta.h"
 #include "../../../statusbar/StatusBar.h"
 
 #include "mediadevicecollection_export.h"
@@ -44,13 +47,46 @@ namespace Meta
 
 typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
+    class MEDIADEVICECOLLECTION_EXPORT MetaHandlerCapability
+    {
+    public:
+        virtual ~MetaHandlerCapability() {}
+
+        virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
+
+        virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
+
+        /**
+             * Retrieves a specialized interface which represents a capability of this
+             * object.
+             *
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
+             */
+        template <class CapIface> CapIface *create()
+        {
+            Handler::Capability::Type type = CapIface::capabilityInterfaceType();
+            Handler::Capability *iface = createCapabilityInterface(type);
+            return qobject_cast<CapIface *>(iface);
+        }
+
+        /**
+             * Tests if an object provides a given capability interface.
+             *
+             * @returns true if the interface is available, false otherwise
+             */
+        template <class CapIface> bool is() const
+        {
+            return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
+        }
+    };
+
 /**
 The MediaDeviceHandler is the backend where all low-level library calls are made.
 It exists to leave a generic API in the other classes, while allowing for low-level
 calls to be isolated here.
 */
 
-class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public Meta::Observer
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public Meta::MetaHandlerCapability, public Meta::Observer
 {
     Q_OBJECT
 
@@ -141,8 +177,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 
     void removeTrackListFromDevice( const Meta::TrackList &tracks );
 
-
-
     /** This function is called just before a track in the playlist is to be played, and gives
     *  a chance for e.g. MTP to copy the track to a temporary location, set a playable url,
     *  to emulate the track actually being played off the device
@@ -184,138 +218,98 @@ protected:
     * Constructor
     * @param parent the Collection whose handler this is
     */
-    
+
     MediaDeviceHandler( QObject *parent );
 
-    /* Parsing of Tracks on Device */
-    
-    /** Initializes iteration over some list of track structs
-    *  e.g. with libgpod, this initializes a GList to the beginning of
-    *  the list of tracks
-    */
-    
-    virtual void prepareToParseTracks() = 0;
-    
-    /** Runs a test to see if we have reached the end of
-    *  the list of tracks to be parsed on the device, e.g. in libgpod
-    *  this tests if cur != NULL, i.e. if(cur)
-    */
-    
-    virtual bool isEndOfParseTracksList() = 0;
-    
-    /** Moves the iterator to the next track on the list of
-    *  track structs, e.g. with libgpod, cur = cur->next where cur
-    *  is a GList*
-    */
-    
-    virtual void prepareToParseNextTrack() = 0;
-    
-    /** This method attempts to access the special struct of the
-    *  next track, so that information can then be parsed from it.
-    * For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
-    */
-    
-    virtual void nextTrackToParse() = 0;
-    
-    /** This method must create a two-way association of the current Meta::Track
-    *  to the special struct provided by the library to read/write information.
-    *  For example, for libgpod one would associate Itdb_Track*.  It makes
-    *  the most sense to use a QHash since it is fastest lookup and order
-    *  does not matter.
-    *  @param track The track to two-way associate with a library track struct
-    */
-    
-    virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track ) = 0;
-    
     /// Parsing of Tracks in Playlists on Device
     /// NOTE: not required by devices with no playlists, just reimplement empty functions
-    
+
     /** This method initializes iteration over some list of playlist structs
     *  e.g. with libgpod, this initializes a GList to the beginning of
     *  the list of playlists
     */
-    
+
     virtual void prepareToParsePlaylists() = 0;
-    
+
     /** This method runs a test to see if we have reached the end of
     *  the list of playlists to be parsed on the device, e.g. in libgpod
     *  this tests if cur != NULL, i.e. if(cur)
     */
-    
+
     virtual bool isEndOfParsePlaylistsList() = 0;
-    
+
     /** This method moves the iterator to the next playlist on the list of
     *  playlist structs, e.g. with libgpod, cur = cur->next where cur
     *  is a GList*
     */
-    
+
     virtual void prepareToParseNextPlaylist() = 0;
-    
+
     /** This method attempts to access the special struct of the
     *  next playlist, so that information can then be parsed from it.
     *  For libgpod, this is m_currplaylist = ( Itdb_Playlist * ) cur->data
     */
-    
+
     virtual void nextPlaylistToParse() = 0;
-    
+
     /** This method checks if the playlist should be parsed, or skipped.
     *  Certain playlists, like the master playlist on the iPod, do not
     *  need to be or should not be parsed.
     *  @return true if should not parse, false otherwise.
     */
-    
+
     virtual bool shouldNotParseNextPlaylist() = 0;
-    
+
     /** This method initializes iteration over some list of track structs
     *  that correspond to a playlist struct
     *  e.g. with libgpod, this initializes a GList to the beginning of
     *  the list of tracks
     */
-    
+
     virtual void prepareToParsePlaylistTracks() = 0;
-    
+
     /** This method runs a test to see if we have reached the end of
     *  the list of tracks in the playlist to be parsed on the device, e.g. in libgpod
     *  this tests if cur != NULL, i.e. if(cur)
     */
-    
+
     virtual bool isEndOfParsePlaylist() = 0;
-    
+
     /** This method moves the iterator to the next track on the playlist of
     *  track structs, e.g. with libgpod, cur = cur->next where cur
     *  is a GList*
     */
-    
+
     virtual void prepareToParseNextPlaylistTrack() = 0;
-    
+
     /** This method attempts to access the special struct of the
     *  next track on the playlist, so that information can then be parsed from it.
     *  For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
     */
-    
+
     virtual void nextPlaylistTrackToParse() = 0;
-    
+
     /** Returns a list of formats supported by the device, all in lowercase
     *  For example mp3, mpeg, aac.  This is used to avoid copying unsupported
     *  types to a particular device.
     */
-    
-    virtual QStringList supportedFormats() = 0;
-    
+
+    virtual QStringList supportedFormats() = 0; // md:write
+
     /**  The copy methods are invoked in order:
     *  libCopyTrack
     *  libCreateTrack
     *  setBasicMediaDeviceTrackInfo (all the libSets)
     *  addTrackInDB
     *  addMediaDeviceTrackToCollection
-    
+
     *  The remove methods are invoked in order:
     *  libDeleteTrackFile
     *  removeTrackFromDB
     *  libDeleteTrack
     *  removeMediaDeviceTrackFromCollection
     */
-    
+
     /**
     * Finds the place to copy the track to on the device, which
     * could be a url in the case of Ipods, or a folder in the
@@ -323,9 +317,9 @@ protected:
     * @param srcTrack The source track of the copy
     * @param destTrack The destination track whose path we seek
     */
-    
+// md:write
     virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack ) = 0;
-    
+
     /** libCopyTrack does the actual file copying.  For Ipods, it uses KIO,
     *  for MTPs this uses a libmtp call
     *  Copy the file associate with srcTrack to destTrack
@@ -333,46 +327,46 @@ protected:
     *  @param destTrack The track being copied to
     *  @return Whether or not the track copy was successful
     */
-    
+// md:write
     virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack ) = 0;
-    
+
     /** libDeleteTrack does the actual file deleting.  For Ipods, it uses KIO,
     *  for MTPs this uses a libmtp call.  Must emit libRemoveTrackDone when finished.
     *  @param track The track whose file is to be deleted
     *  @return Whether or not the track removal was successful
     */
-    
+// md:write
     virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    
+
     /** Creates a new track struct particular to the library of the device
     *  e.g. LIBMTP_new_track_t(), and associates it with the track for
     *  later use, in the same way that setAssociateTrack does it.
     *  @param track The track for which to create a track struct and associate it to
     */
-    
+// md:write
     virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    
+
     /** Deletes the track struct associated with this track, freeing
     *  any memory it occupied, and dissociating it from the track
     *  @param track The track whose associated track struct is to be deleted.
     */
-    
+// md:write
     virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    
+
     /** Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
     *  This is mainly used in playlist parsing, and can be ignored otherwise.
     *  @return A MediaDeviceTrackPtr to currently parsed track struct
     */
-    
+// md:plist
     virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() = 0;
-    
+
     /** Returns a string containing the playlist name of the currently parsed playlist struct, if available.
     *  Only override if your library uses names.
     *  @return A string with the name of the currently parsed playlist
     */
-    
+// md:plist
     virtual QString libGetPlaylistName() = 0;
-    
+
     /** Adds the newly created track struct now populated with info into the
     *  database struct of the particular device, e.g. into the itdb for Ipods.
     *  MTP devices automatically add the track into the database upon copying,
@@ -380,53 +374,27 @@ protected:
     *  @param track The track whose associated track struct is to be added \
     into the database.
     */
-    
+// md:write
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    
+
     /** Remove all traces of the track struct associated with @param track from
     *  the database struct, but do not delete the struct
     *  @param track The track whose associated track struct is to be removed \
     from the database.
     */
-    
+// md:write
     virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    
+
     /** Indicates to the subclass that the database has been updated
     *  For ipods, just sets m_dbchanged = true
     */
-    
+// md:write
     virtual void databaseChanged() = 0;
-    
-    /** Methods that wrap get/set of information using given library (e.g. libgpod)
-    *  Subclasses of MediaDeviceHandler must keep a pointer to the track struct
-    *  associated to the track parameter to get the information from the struct in libGet*,
-    *  and to set the struct's information to the passed metadata in libSet*
-    */
-    
-    virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track )  = 0;
-    virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
-    
+
     /**  Each libSet function sets the private track struct associated with @param track
     *    to the second value passed into the function.
     */
-    
+// md:write
     virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title ) = 0;
     virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album ) = 0;
     virtual void    libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist ) = 0;
@@ -446,7 +414,7 @@ protected:
     virtual void    libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )  = 0;
     virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type ) = 0;
     virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack ) = 0;
-    
+
     // TODO: NYI
     //virtual void    libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap& image ) = 0;
 
@@ -454,24 +422,25 @@ protected:
     *  a subclass to prepare to copy, e.g. for Ipods it would initialize
     *  the job counter to 0.
     */
+    // md:write
     virtual void prepareToCopy() = 0;
-    
+
     /** This function is called just before deleting tracks begin and allows
     *  a subclass to prepare to delete, e.g. for Ipods it would initialize
     *  the m_tracksdeleting to keep track of urls it is deleting.
     */
-    
+    // md:write
     virtual void prepareToDelete() = 0;
-    
+
     /** Tells subclass that it can update the track, usually because
     *  the track's tags have changed.
     *  @param track The track whose tags should be updated
     */
-    
+    // md:write
     virtual void updateTrack( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) };
 
     MediaDeviceCollection   *m_memColl; /// Associated collection
-    
+
     bool m_success;
     bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
 
@@ -499,28 +468,28 @@ private:
     *  that it has been copied.
     *  @param track The track to add to the collection
     */
-    
+
     void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
-    
+
     /**  Removes the @param track from all the collection's maps to reflect that
     *  it has been removed from the collection
     *  @param track The track to remove from the collection
     */
-    
+
     void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
-    
+
     /** Uses wrapped libGet methods to fill a track with information from device
     *  @param track The track from whose associated struct to get the information
     *  @param destTrack The track that we want to fill with information
     */
     void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
-    
+
     /** Uses wrapped libSet methods to fill a track struct of the particular library
     *  with information from a Meta::Track
     *  @param srcTrack The track that has the source information
     *  @param destTrack The track whose associated struct we want to fill with information
     */
-    
+
     void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
     /**
@@ -534,7 +503,7 @@ private:
     * associated to appropriate meta pointer
     * (e.g. QString artist, ArtistPtr )
     */
-    
+
     void setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap );
     void setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap &albumMap );
     void setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap &genreMap );
@@ -572,6 +541,9 @@ private:
 
     ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
     QMutex m_mutex; /// A make certain operations atomic when threads are at play
+
+    /// Capability-related variables
+    Handler::ReadCapability *m_rc;
 
 };
 

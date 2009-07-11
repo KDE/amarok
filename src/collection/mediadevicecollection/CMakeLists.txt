@@ -5,6 +5,7 @@ include_directories( ../..
    ../../collection
    ../../collection/support
    handler
+   handler/capabilities
    support
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
@@ -16,6 +17,8 @@ include_directories( ../..
 
 	set(amarok_collection-mediadevicecollection_PART_SRCS
 	handler/MediaDeviceHandler.cpp
+	handler/MediaDeviceHandlerCapability.cpp
+	handler/capabilities/ReadCapability.cpp
 	support/MediaDeviceInfo.cpp
 	support/ConnectionAssistant.cpp
 	MediaDeviceCollection.cpp

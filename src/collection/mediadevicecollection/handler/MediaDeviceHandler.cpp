@@ -20,6 +20,8 @@
 
 #include "MediaDeviceCollection.h"
 
+#include "MediaDeviceHandlerCapability.h"
+
 #include "playlist/MediaDeviceUserPlaylistProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -30,12 +32,30 @@
 
 using namespace Meta;
 
+//Meta::MetaHandlerCapability
+
+bool
+MetaHandlerCapability::hasCapabilityInterface( Handler::Capability::Type type ) const
+{
+    Q_UNUSED( type );
+    return false;
+}
+
+Handler::Capability*
+MetaHandlerCapability::createCapabilityInterface( Handler::Capability::Type type )
+{
+    Q_UNUSED( type );
+    return 0;
+}
+
+//Meta::MediaDeviceHandler
+
 MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 : QObject( parent )
 , m_memColl( qobject_cast<MediaDeviceCollection*>(parent) )
 {
     DEBUG_BLOCK
-    
+
     connect( m_memColl, SIGNAL( deletingCollection() ),
                  this, SLOT( slotDeletingHandler() ) );
 
@@ -58,22 +78,22 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
 {
     /* 1-liner info retrieval */
 
-    destTrack->setTitle( libGetTitle( srcTrack ) );
-    destTrack->setLength( libGetLength( srcTrack ) );
-    destTrack->setTrackNumber( libGetTrackNumber( srcTrack ) );
-    destTrack->setComment( libGetComment( srcTrack ) );
-    destTrack->setDiscNumber( libGetDiscNumber( srcTrack ) );
-    destTrack->setBitrate( libGetBitrate( srcTrack ) );
-    destTrack->setSamplerate( libGetSamplerate( srcTrack ) );
-    destTrack->setBpm( libGetBpm( srcTrack ) );
-    destTrack->setFileSize( libGetFileSize( srcTrack ) );
-    destTrack->setPlayCount( libGetPlayCount( srcTrack ) );
-    destTrack->setLastPlayed( libGetLastPlayed( srcTrack ) );
-    destTrack->setRating( libGetRating( srcTrack ) );
+    destTrack->setTitle( m_rc->libGetTitle( srcTrack ) );
+    destTrack->setLength( m_rc->libGetLength( srcTrack ) );
+    destTrack->setTrackNumber( m_rc->libGetTrackNumber( srcTrack ) );
+    destTrack->setComment( m_rc->libGetComment( srcTrack ) );
+    destTrack->setDiscNumber( m_rc->libGetDiscNumber( srcTrack ) );
+    destTrack->setBitrate( m_rc->libGetBitrate( srcTrack ) );
+    destTrack->setSamplerate( m_rc->libGetSamplerate( srcTrack ) );
+    destTrack->setBpm( m_rc->libGetBpm( srcTrack ) );
+    destTrack->setFileSize( m_rc->libGetFileSize( srcTrack ) );
+    destTrack->setPlayCount( m_rc->libGetPlayCount( srcTrack ) );
+    destTrack->setLastPlayed( m_rc->libGetLastPlayed( srcTrack ) );
+    destTrack->setRating( m_rc->libGetRating( srcTrack ) );
 
-    destTrack->setPlayableUrl( libGetPlayableUrl( srcTrack ) );
+    destTrack->setPlayableUrl( m_rc->libGetPlayableUrl( srcTrack ) );
 
-    destTrack->setType( libGetType( srcTrack ) );
+    destTrack->setType( m_rc->libGetType( srcTrack ) );
 }
 
 void
@@ -631,7 +651,7 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
-    QString artist( libGetArtist( track ) );
+    QString artist( m_rc->libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
     if ( artistMap.contains( artist ) )
@@ -649,7 +669,7 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 void
 MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap )
 {
-    QString album( libGetAlbum( track ) );
+    QString album( m_rc->libGetAlbum( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -667,7 +687,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 void
 MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& genreMap )
 {
-    QString genre = libGetGenre( track );
+    QString genre = m_rc->libGetGenre( track );
     MediaDeviceGenrePtr genrePtr;
 
     if ( genreMap.contains( genre ) )
@@ -686,7 +706,7 @@ MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& ge
 void
 MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap& composerMap )
 {
-    QString composer ( libGetComposer( track ) );
+    QString composer ( m_rc->libGetComposer( track ) );
     MediaDeviceComposerPtr composerPtr;
 
     if ( composerMap.contains( composer ) )
@@ -705,7 +725,7 @@ void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
     QString year;
-    year = year.setNum( libGetYear( track ) );
+    year = year.setNum( m_rc->libGetYear( track ) );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
@@ -723,6 +743,19 @@ MediaDeviceHandler::parseTracks()
 {
     DEBUG_BLOCK
 
+    if( !m_rc )
+    {
+        if( this->hasCapabilityInterface( Handler::Capability::Readable ) )
+        {
+            m_rc = this->create<Handler::ReadCapability>();
+            if( !m_rc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting parse.";
+                return;
+            }
+        }
+    }
+
     TrackMap trackMap;
     ArtistMap artistMap;
     AlbumMap albumMap;
@@ -732,12 +765,12 @@ MediaDeviceHandler::parseTracks()
     //debug() << "Before Parse";
 
     /* iterate through tracklist and add to appropriate map */
-    for( prepareToParseTracks(); !isEndOfParseTracksList(); prepareToParseNextTrack() )
+    for( m_rc->prepareToParseTracks(); !(m_rc->isEndOfParseTracksList()); m_rc->prepareToParseNextTrack() )
     {
         //debug() << "Fetching next track to parse";
         /// Fetch next track to parse
 
-        nextTrackToParse();
+        m_rc->nextTrackToParse();
 
         //debug() << "Fetched next track to parse";
 
@@ -745,7 +778,7 @@ MediaDeviceHandler::parseTracks()
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
-        setAssociateTrack( track );
+        m_rc->setAssociateTrack( track );
 
         //debug() << "Created new media device track";
 
