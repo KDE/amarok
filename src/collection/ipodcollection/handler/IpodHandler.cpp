@@ -1772,6 +1772,10 @@ IpodHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
     {
         case Handler::Capability::Readable:
             return true;
+        case Handler::Capability::Playlist:
+            return true;
+        case Handler::Capability::Writable:
+            return true;
 
         default:
             return false;
@@ -1785,6 +1789,10 @@ IpodHandler::createCapabilityInterface( Handler::Capability::Type type )
     {
         case Handler::Capability::Readable:
             return new Handler::IpodReadCapability( this );
+        case Handler::Capability::Playlist:
+            return new Handler::IpodPlaylistCapability( this );
+        case Handler::Capability::Writable:
+            return new Handler::IpodWriteCapability( this );
 
         default:
             return 0;

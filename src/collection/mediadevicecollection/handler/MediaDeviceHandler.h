@@ -20,10 +20,9 @@
 #define MEDIADEVICEHANDLER_H
 
 #include "MediaDeviceHandlerCapability.h"
-#include "capabilities/ReadCapability.h"
 #include "capabilities/PlaylistCapability.h"
+#include "capabilities/ReadCapability.h"
 #include "capabilities/WriteCapability.h"
-
 
 #include "MediaDeviceMeta.h"
 #include "MemoryCollection.h"
@@ -225,6 +224,7 @@ protected:
 
     MediaDeviceHandler( QObject *parent );
 
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 <<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 =======
     /// Parsing of Tracks in Playlists on Device
@@ -452,6 +452,9 @@ protected:
     */
     // md:write
     virtual void updateTrack( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) };
+=======
+
+>>>>>>> Add write capability for Handler/IpodHandler.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 
     MediaDeviceCollection   *m_memColl; /// Associated collection
 
@@ -560,9 +563,13 @@ private:
 <<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
     Handler::PlaylistCapability *m_pc;
     Handler::ReadCapability     *m_rc;
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 =======
     Handler::ReadCapability *m_rc;
 >>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
+=======
+    Handler::WriteCapability    *m_wc;
+>>>>>>> Add write capability for Handler/IpodHandler.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 
 };
 

@@ -105,6 +105,7 @@ public:
 =======
 >>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/ipodcollection/handler/IpodHandler.h
     friend class Handler::IpodReadCapability;
+    friend class Handler::IpodWriteCapability;
 
     public slots:
         void slotInitializeIpod();
