@@ -101,7 +101,7 @@ X-KDE-Library=libamarok_collection-daapcollection
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=45
+X-KDE-Amarok-framework-version=46
 X-KDE-Amarok-name=daap-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
