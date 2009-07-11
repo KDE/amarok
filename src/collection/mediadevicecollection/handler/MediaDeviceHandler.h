@@ -22,6 +22,9 @@
 #include "MediaDeviceHandlerCapability.h"
 #include "capabilities/ReadCapability.h"
 #include "capabilities/PlaylistCapability.h"
+#include "capabilities/WriteCapability.h"
+
+
 #include "MediaDeviceMeta.h"
 #include "MemoryCollection.h"
 #include "Meta.h"
@@ -222,6 +225,77 @@ protected:
 
     MediaDeviceHandler( QObject *parent );
 
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
+=======
+    /// Parsing of Tracks in Playlists on Device
+    /// NOTE: not required by devices with no playlists, just reimplement empty functions
+
+    /** This method initializes iteration over some list of playlist structs
+    *  e.g. with libgpod, this initializes a GList to the beginning of
+    *  the list of playlists
+    */
+
+    virtual void prepareToParsePlaylists() = 0;
+
+    /** This method runs a test to see if we have reached the end of
+    *  the list of playlists to be parsed on the device, e.g. in libgpod
+    *  this tests if cur != NULL, i.e. if(cur)
+    */
+
+    virtual bool isEndOfParsePlaylistsList() = 0;
+
+    /** This method moves the iterator to the next playlist on the list of
+    *  playlist structs, e.g. with libgpod, cur = cur->next where cur
+    *  is a GList*
+    */
+
+    virtual void prepareToParseNextPlaylist() = 0;
+
+    /** This method attempts to access the special struct of the
+    *  next playlist, so that information can then be parsed from it.
+    *  For libgpod, this is m_currplaylist = ( Itdb_Playlist * ) cur->data
+    */
+
+    virtual void nextPlaylistToParse() = 0;
+
+    /** This method checks if the playlist should be parsed, or skipped.
+    *  Certain playlists, like the master playlist on the iPod, do not
+    *  need to be or should not be parsed.
+    *  @return true if should not parse, false otherwise.
+    */
+
+    virtual bool shouldNotParseNextPlaylist() = 0;
+
+    /** This method initializes iteration over some list of track structs
+    *  that correspond to a playlist struct
+    *  e.g. with libgpod, this initializes a GList to the beginning of
+    *  the list of tracks
+    */
+
+    virtual void prepareToParsePlaylistTracks() = 0;
+
+    /** This method runs a test to see if we have reached the end of
+    *  the list of tracks in the playlist to be parsed on the device, e.g. in libgpod
+    *  this tests if cur != NULL, i.e. if(cur)
+    */
+
+    virtual bool isEndOfParsePlaylist() = 0;
+
+    /** This method moves the iterator to the next track on the playlist of
+    *  track structs, e.g. with libgpod, cur = cur->next where cur
+    *  is a GList*
+    */
+
+    virtual void prepareToParseNextPlaylistTrack() = 0;
+
+    /** This method attempts to access the special struct of the
+    *  next track on the playlist, so that information can then be parsed from it.
+    *  For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
+    */
+
+    virtual void nextPlaylistTrackToParse() = 0;
+
+>>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
     /** Returns a list of formats supported by the device, all in lowercase
     *  For example mp3, mpeg, aac.  This is used to avoid copying unsupported
     *  types to a particular device.
@@ -286,6 +360,23 @@ protected:
 // md:write
     virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
+=======
+    /** Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
+    *  This is mainly used in playlist parsing, and can be ignored otherwise.
+    *  @return A MediaDeviceTrackPtr to currently parsed track struct
+    */
+// md:plist
+    virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() = 0;
+
+    /** Returns a string containing the playlist name of the currently parsed playlist struct, if available.
+    *  Only override if your library uses names.
+    *  @return A string with the name of the currently parsed playlist
+    */
+// md:plist
+    virtual QString libGetPlaylistName() = 0;
+
+>>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
     /** Adds the newly created track struct now populated with info into the
     *  database struct of the particular device, e.g. into the itdb for Ipods.
     *  MTP devices automatically add the track into the database upon copying,
@@ -293,7 +384,10 @@ protected:
     *  @param track The track whose associated track struct is to be added \
     into the database.
     */
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 
+=======
+>>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 // md:write
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
@@ -463,8 +557,12 @@ private:
     QMutex m_mutex; /// A make certain operations atomic when threads are at play
 
     /// Capability-related variables
+<<<<<<< HEAD:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
     Handler::PlaylistCapability *m_pc;
     Handler::ReadCapability     *m_rc;
+=======
+    Handler::ReadCapability *m_rc;
+>>>>>>> Add capabilities for Media Devices, totally separate from general Capability being used for Collections, Tracks etc.  I have the plan to make them all use one base class, but with separate enums for each set of types, since it makes 0 sense to check a track for capabilities of a collection.  Added ReadCapability, and implemented for Ipods.:src/collection/mediadevicecollection/handler/MediaDeviceHandler.h
 
 };
 
