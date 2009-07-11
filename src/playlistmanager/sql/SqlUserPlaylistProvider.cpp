@@ -49,10 +49,6 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
 
 SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
 {
-//     foreach( Meta::SqlPlaylistPtr playlist, m_playlists )
-//     {
-//         playlist->saveToDb( true );
-//     }
 }
 
 Meta::PlaylistList
