@@ -45,6 +45,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel
     , m_pd( 0 )
     , m_addGroupAction( 0 )
 {
+    DEBUG_BLOCK
     setModel( model );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setDragDropMode( QAbstractItemView::DragDrop );
@@ -59,6 +60,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel
     setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
+    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ),
+             SLOT( rowsRemoved( const QModelIndex &, int, int ) ) );
 }
 
 
