@@ -23,7 +23,7 @@
 
 #include <plasma/widgets/iconwidget.h>
 
-
+class TextScrollingWidget;
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
 class QTextBrowser;
@@ -42,9 +42,7 @@ public:
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
-
-    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
+    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );    
     
 public slots:
     void connectSource( const QString& source );
@@ -60,8 +58,8 @@ private:
     Plasma::IconWidget* addAction( QAction *action );
 
     QString m_titleText;
-    QGraphicsSimpleTextItem* m_titleLabel;
-    Plasma::IconWidget* m_reloadIcon;
+    TextScrollingWidget* m_titleLabel;
+    Plasma::IconWidget*  m_reloadIcon;
     
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;

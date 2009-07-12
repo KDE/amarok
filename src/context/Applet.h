@@ -32,9 +32,10 @@ namespace Context
 
 class AMAROK_EXPORT Applet : public Plasma::Applet
 {
-
+    Q_OBJECT
     public:
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
+        ~Applet();
 
         //helper functions
         QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
@@ -47,16 +48,42 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           * Returns a standard CV-wide padding that applets can use for consistency.
           */
         qreal standardPadding();
+
+        /**
+          * Collapse animation
+          */
+        void setCollapseOn();
+        void setCollapseOff();
+        void setCollapseHeight( int );
+
+        /**
+          * sizeHint is reimplemented here only for all the applet.
+          */
+        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+
+        /**
+          * resize is reimplemented here is reimplemented here only for all the applet.
+          */          
+        virtual void   resize( qreal, qreal );
+        
         
     public Q_SLOTS:
         virtual void destroy();
-
+        void animateOn( qreal );
+        void animateOff( qreal );
+        void animateEnd( int );
+    protected:
+        bool m_collapsed;
+        int  m_heightCurrent; 
+        int  m_heightCollapseOn;
+        int  m_heightCollapseOff;
+        int  m_animationId;
+        
     private:
         void cleanUpAndDelete();
 
         bool m_transient;
         qreal m_standardPadding;
-        
 };
 
 } // Context namespace

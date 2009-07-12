@@ -121,7 +121,7 @@ class MediaDevicesApplet : public Context::Applet
         const QRect& contentsRect);
         void init();
 
-        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
+//        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
     private:
 

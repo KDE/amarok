@@ -84,6 +84,10 @@ WikipediaApplet::init()
     m_webView = new Plasma::WebView( this );
     m_webView->setAttribute( Qt::WA_NoSystemBackground );
 
+
+    // ask for all the CV height
+    resize( 500, -1 );
+
     paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
@@ -328,13 +332,6 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     p->fillPath( round , bg  );
     p->restore(); 
     
-}
-
-QSizeF
-WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
-{
-        // ask for rest of CV height
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), -1 );
 }
 
 void

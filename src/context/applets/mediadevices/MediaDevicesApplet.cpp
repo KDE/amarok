@@ -318,7 +318,7 @@ void MediaDevicesApplet::init()
     // layout and ui
 
     // set initially blank layout
-
+    resize( size().width(), 150 );
     m_layout = new QGraphicsLinearLayout( Qt::Vertical );
     setLayout( m_layout );
     m_layout->setSpacing( 0 );
@@ -360,7 +360,7 @@ MediaDevicesApplet::paintInterface(QPainter *p,
     p->restore();
     */
 }
-
+/*
 QSizeF 
 MediaDevicesApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
@@ -371,7 +371,7 @@ MediaDevicesApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint) con
 //         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
 
     return constraint;
-}
+}*/
 
 void
 MediaDevicesApplet::ipodDetected( const QString &mountPoint, const QString &udi )

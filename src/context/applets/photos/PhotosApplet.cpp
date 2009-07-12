@@ -53,8 +53,9 @@ PhotosApplet::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
 
-    // HACK
     m_height = 300;
+
+    resize( 500, m_height );
     
     // Create label
     QFont labelFont;
@@ -118,13 +119,6 @@ PhotosApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     addGradientToAppletBackground( p );
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerText );
- }
-
-QSizeF 
-PhotosApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
-{
-    // hardcoding for now
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), m_height );
 }
 
 void 

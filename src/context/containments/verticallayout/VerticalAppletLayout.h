@@ -52,16 +52,18 @@ class VerticalAppletLayout : public QGraphicsWidget
         
         virtual void saveToConfig( KConfigGroup &conf );
         
-        void refresh();
+
         QSizeF totalSize();
 
         void showAtIndex( int index );
+        
         
     signals:
         void appletAdded( Plasma::Applet* applet, int location );
         void noApplets( bool );
         
     public slots:
+        void refresh();
         void showApplet( Plasma::Applet* );
         void moveApplet( Plasma::Applet*, int, int);
         void appletRemoved( Plasma::Applet* app );

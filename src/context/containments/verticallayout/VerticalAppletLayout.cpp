@@ -53,7 +53,6 @@ Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
     foreach( Plasma::Applet* applet, m_appletList )
         applet->resize( event->newSize().width(), applet->size().height() );
     showAtIndex( m_showingIndex );
-    
 }
 
 void 
@@ -76,6 +75,9 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
     }
     debug() << "emitting addApplet with location" << location;
     emit appletAdded( applet, location );
+
+    // everytime the geometry change, we will call showapplet ;)
+    connect( applet, SIGNAL( sizeHintChanged( Qt::SizeHint ) ), SLOT( refresh() ) );
 }
 
 
@@ -101,6 +103,7 @@ Context::VerticalAppletLayout::saveToConfig( KConfigGroup &conf )
 void
 Context::VerticalAppletLayout::refresh()
 {
+//    DEBUG_BLOCK
     showAtIndex( m_showingIndex );
 }
 
@@ -119,9 +122,9 @@ Context::VerticalAppletLayout::totalSize()
 void 
 Context::VerticalAppletLayout::showApplet( Plasma::Applet* applet ) // SLOT
 {
+    debug() << " ask for show applet " << applet->name();
     showAtIndex( m_appletList.indexOf( applet ) );
 }
-
 
 void 
 Context::VerticalAppletLayout::moveApplet( Plasma::Applet* applet, int oldLoc, int newLoc)
@@ -181,7 +184,6 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
         //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
-        m_appletList[ i ]->updateConstraints();
         m_appletList[ i ]->hide();
     }
     runningHeight = currentHeight = 0.0;
@@ -204,7 +206,6 @@ Context::VerticalAppletLayout::showAtIndex( int index )
             qreal heightLeft = boundingRect().height() - runningHeight;
             //debug() << "layout has boundingRect FLOWING" << boundingRect() ;
             m_appletList[ i ]->resize( width, heightLeft );
-            m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
             lastShown = i;
         } else
@@ -212,7 +213,6 @@ Context::VerticalAppletLayout::showAtIndex( int index )
             //debug() << "normal applet, moving on with the next one";
             runningHeight += height;
             m_appletList[ i ]->resize( width, height );
-            m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
             
             //debug() << "next applet will go at:" << runningHeight;
@@ -229,11 +229,13 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         
         m_appletList[ i ]->hide();
         m_appletList[ i ]->setPos( 0, boundingRect().height() );
-        m_appletList[ i ]->updateConstraints();
     }
     
     m_showingIndex = index;
 }
+
+
+
 
 int 
 Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )

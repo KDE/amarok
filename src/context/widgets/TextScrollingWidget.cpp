@@ -89,6 +89,12 @@ TextScrollingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
     }
 }
 
+bool
+TextScrollingWidget::isAnimating()
+{
+    return ( m_animating != 0 );
+}
+
 void
 TextScrollingWidget::animationFinished( int id )
 {
@@ -123,7 +129,6 @@ TextScrollingWidget::startAnimFor()
 void
 TextScrollingWidget::startAnimBack()
 {
-    //m_animback = Plasma::Animator::self()->customAnimation( m_delta/2, m_delta*5, Plasma::Animator::EaseInOutCurve, this, "animateBack" );
     m_animback = Plasma::Animator::self()->customAnimation( m_delta*2, m_delta*15, Plasma::Animator::EaseInOutCurve, this, "animateBack" );
 }
 

@@ -113,12 +113,20 @@ void VideoclipEngine::update()
         return;
     else
     {
+        
+        if ( !currentTrack )
+            return;
+
+        // SORT of hack. Do not search if the current playing is a video from youtube etc !!!
+        if ( currentTrack->prettyUrl().contains( "http://www.youtube.com/" ) || currentTrack->prettyUrl().contains( "http://www.dailymotion.com/" ) )
+            return;
+        
+        
         unsubscribeFrom( m_currentTrack );
         m_currentTrack = currentTrack;
         subscribeTo( currentTrack );
 
-        if ( !currentTrack )
-            return;
+
 
         // Save artist and title
         m_title = currentTrack->name();
@@ -278,6 +286,7 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         {
             debug() << "VideoclipEngine | Unable to retrieve Youtube direct videolink: " ;
             m_listJob.removeOne( jobUrl );
+            job = 0;
             resultFinalize();
             return;
         }
@@ -330,6 +339,8 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         }
         m_listJob.removeOne( url2 );
         resultFinalize();
+
+        job = 0;
     }
 }
 
@@ -449,6 +460,7 @@ void VideoclipEngine::resultVimeoBis( KJob *job )
         {
             debug() << "VideoclipEngine | Unable to retrieve Vimeo Bis: " << job->errorString();
             m_listJob.removeOne( jobUrl );
+            job = 0;
             resultFinalize();  
             return;
         }
@@ -492,7 +504,9 @@ void VideoclipEngine::resultVimeoBis( KJob *job )
             delete item;
 
         m_listJob.removeOne( jobUrl );
-        resultFinalize();  
+        resultFinalize();
+
+        job = 0;
     }
 }
 
@@ -508,6 +522,7 @@ void VideoclipEngine::resultVimeoGetLink( KJob *job )
         {
             debug() << "VideoclipEngine | Unable to retrieve Vimeo get link: " << job->errorString();
             m_listJob.removeOne( jobUrl );
+            job = 0;
             resultFinalize();
             return;
         }
@@ -533,6 +548,8 @@ void VideoclipEngine::resultVimeoGetLink( KJob *job )
         }
         m_listJob.removeOne( jobUrl );
         resultFinalize();
+
+        job = 0;
     }
 }
 
@@ -548,6 +565,7 @@ void VideoclipEngine::resultImageFetcher( KJob *job )
             debug() << "VideoclipEngine | Unable to retrieve an image: " << job->errorString();
             m_listJob.removeOne( jobUrl );
             resultFinalize();
+            job = 0;
             return;
         }
         
@@ -563,6 +581,7 @@ void VideoclipEngine::resultImageFetcher( KJob *job )
         }
         m_listJob.removeOne( jobUrl );
         resultFinalize();
+        job = 0;
     }
 }
 

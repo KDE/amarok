@@ -88,6 +88,7 @@ private:
     QStringList m_sources;
     QString m_wiki;
     QString m_wikiCurrentEntry;
+    QString m_wikiCurrentLastEntry;
     QString m_wikiCurrentUrl;
     QString m_wikiLanguages;
     QLocale m_wikiLang;

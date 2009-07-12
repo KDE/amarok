@@ -20,10 +20,12 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "context/widgets/TextScrollingWidget.h"
 #include "dialogs/ScriptManager.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
 #include "Theme.h"
+
 
 #include <KGlobalSettings>
 #include <KStandardDirs>
@@ -59,11 +61,16 @@ LyricsApplet::~ LyricsApplet()
 
 void LyricsApplet::init()
 {
-    m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
+    // properly set the size, asking for the whole cv size.
+    resize( 500, -1 );
+    
+  //  m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
+    m_titleLabel = new TextScrollingWidget( this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
+    m_titleLabel->setText( i18n( "Lyrics" ) );
     
     QAction* reloadAction = new QAction( i18n( "Reload Lyrics" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -90,9 +97,12 @@ void LyricsApplet::init()
     pal.setBrush( QPalette::Window, brush );
     m_lyrics->setPalette( pal );
     m_lyricsProxy->setPalette( pal );
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+        .arg( PaletteHandler::highlightColor().lighter( 150 ).name() ).arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
 
+
+
+                                                                                                
     // only show when we need to let the user
     // choose between suggestions
     m_suggested = new QGraphicsTextItem( this );
@@ -104,6 +114,7 @@ void LyricsApplet::init()
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
     constraintsEvent();
+    updateConstraints();
     connectSource( "lyrics" );
 }
 
@@ -155,11 +166,13 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
-    QRectF rect = boundingRect();
-    rect.setWidth( rect.width() - 30 );
-    m_titleLabel->setText( truncateTextToFit( m_titleText, m_titleLabel->font(), rect ) );
-    m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, standardPadding() + 2 );
+    qreal widmax = boundingRect().width() - 2 * m_reloadIcon->size().width() - 6 * standardPadding();
+    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
     
+    m_titleLabel->setScrollingText( m_titleText, rect );
+    m_titleLabel->setPos( ( size().width() - m_titleLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
+    
+
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - standardPadding(), standardPadding() );
     m_reloadIcon->show();
     
@@ -260,12 +273,14 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     // tint the whole applet
     addGradientToAppletBackground( p );
 
-    // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_titleLabel );
+    // draw rounded rect around title (only if not animating )
+    if ( !m_titleLabel->isAnimating() )
+        drawRoundedRectAroundText( p, m_titleLabel );
 
     //draw background of lyrics text
     p->save();
     QColor highlight( App::instance()->palette().highlight().color() );
+   // QColor highlight( App::instance()->palette().background().color() );
     highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
 
     // HACK
@@ -283,24 +298,14 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     
 }
 
-QSizeF LyricsApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
-{
-    Q_UNUSED( which );
-
-    // ask for rest of CV height
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), -1 );
-    
-}
-
-
 void
 LyricsApplet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
 
     if( m_lyrics )
-        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+       m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+            .arg( PaletteHandler::highlightColor().lighter( 150 ).name() ).arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
     
 }
 

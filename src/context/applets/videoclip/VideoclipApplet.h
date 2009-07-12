@@ -70,14 +70,14 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-        QSizeF  sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
 
         // inherited from EngineObserver
         virtual void engineNewTrackPlaying();
+        virtual void engineStateChanged(Phonon::State, Phonon::State );
         virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
-
-
+        
     public slots:
+        void    setGeom();
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
 
@@ -93,28 +93,25 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 
     private:
-        Plasma::IconWidget * addAction( QAction *action );
+        Plasma::IconWidget      *addAction( QAction *action );
         
-        Phonon::MediaObject *m_mediaObject;
-     //   Phonon::VideoWidget *m_videoWidget;
-     CustomVideoWidget  *m_videoWidget;
-        Phonon::Path        m_path;
+        CustomVideoWidget       *m_videoWidget;
+     //   Phonon::VideoWidget       *m_videoWidget;
 
         // The two big container, only one who need a resize
         QGraphicsSimpleTextItem *m_headerText;
         QGraphicsProxyWidget    *m_widget;
         QHBoxLayout             *m_layout;
-        QList<QWidget *>m_layoutWidgetList;
+        QList<QWidget *>        m_layoutWidgetList;
 
-        int m_height;
-        QPixmap     *m_pixYoutube;
-        QPixmap     *m_pixDailymotion;
-        QPixmap     *m_pixVimeo;
+        QPixmap                 *m_pixYoutube;
+        QPixmap                 *m_pixDailymotion;
+        QPixmap                 *m_pixVimeo;
 
-        Plasma::IconWidget *m_settingsIcon;
-        bool        m_youtubeHQ;
-
-        Ui::videoclipSettings ui_Settings;
+        Plasma::IconWidget      *m_settingsIcon;
+        Ui::videoclipSettings   ui_Settings;
+        bool                    m_youtubeHQ;
+        int                     m_height;
 };
 
 #endif /* VIDEOCLIP_APPLET_H */

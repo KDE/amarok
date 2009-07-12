@@ -50,14 +50,13 @@ public:
     ~WikipediaApplet();
 
     void init();
+    
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
-
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
+    
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
-    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
 protected:
     void createConfigurationInterface(KConfigDialog *parent);

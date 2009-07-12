@@ -38,14 +38,14 @@ void CustomVideoWidget::mouseDoubleClickEvent( QMouseEvent* )
         m_rect = this->geometry();
         this->setWindowFlags( Qt::Window );
         this->setFullScreen( true );
-        this->setToolTip("");
+   //     this->setToolTip("");
     }
     else
     {
         this->setFullScreen( false );
         this->setParent( m_parent, Qt::SubWindow | Qt::FramelessWindowHint );
         this->setGeometry( m_rect );
-        this->setToolTip("Double-click = full screen !");
+   //     this->setToolTip("Double-click = full screen !");
         this->show();
         
     }

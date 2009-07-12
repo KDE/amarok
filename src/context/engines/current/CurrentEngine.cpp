@@ -20,12 +20,17 @@
 #include "ContextView.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "EngineObserver.h"
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
 #include "meta/MetaUtility.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 
 #include <QVariant>
+#include <Phonon/MediaObject>
+#include <Phonon/Path>
+#include <Phonon/MediaController>
+#include <Phonon/MediaSource> //Needed for the slot
 
 using namespace Context;
 
@@ -127,7 +132,11 @@ CurrentEngine::stoppedState()
 {
     DEBUG_BLOCK
 
-    m_timer->stop();
+    m_timer->stop();    
+
+    //TODO
+    // here we need to add something, like detecting if we are in buffering state or loading state, this 1000 ms timer doesn't make sense.
+    
     removeAllData( "current" );
     setData( "current", "notrack", i18n( "No track playing") );
     removeAllData( "albums" );

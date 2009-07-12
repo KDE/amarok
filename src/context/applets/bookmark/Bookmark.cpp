@@ -58,8 +58,12 @@ Bookmark::~Bookmark()
 void Bookmark::init()
 {
     DEBUG_BLOCK
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 1  );
+
+    // Properly set the height (width as no importance.)
+    resize( 500, 350 );
+    
+//    QFont labelFont;
+//    labelFont.setPointSize( labelFont.pointSize() + 2  );
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
 
     m_bookmarkWidget = new BookmarkManagerWidgetProxy( this );
@@ -78,14 +82,6 @@ void Bookmark::constraintsEvent( Plasma::Constraints constraints )
          m_theme->resize(size().toSize());*/
 
     m_bookmarkWidget->setGeometry( QRectF( standardPadding(), standardPadding(), size().toSize().width() - 2 * standardPadding() , size().toSize().height() - 2 * standardPadding() ) );
-}
-
-QSizeF
-Bookmark::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
-{
-    Q_UNUSED( which )
-    return QSizeF( constraint.width(), 350 );
-
 }
 
 void Bookmark::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

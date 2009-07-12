@@ -50,7 +50,9 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
         * Set the Text and more important the QRectF which will define the scrolling area
         */
         void setScrollingText( const QString, QRectF );
-    
+
+        bool isAnimating( );
+        
     public slots:
         void animateFor( qreal anim );
         void animateBack( qreal anim );
@@ -69,7 +71,8 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
         * Reimplement paint in order to clip the widget
         */
         virtual void paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
-        
+
+
     private:
         QRectF            m_rect;           // box size
         QFontMetrics     *m_fm;             // font metrics wich will cut the text.

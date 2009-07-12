@@ -33,6 +33,7 @@
 #include <QGraphicsItem>
 #include <QStandardItemModel>
 
+class TextScrollingWidget;
 class QGraphicsPixmapItem;
 class QLabel;
 class QHBoxLayout;
@@ -49,7 +50,6 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
-    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
@@ -77,7 +77,7 @@ private:
 
     AlbumsView *m_albumsView;
 
-    QGraphicsSimpleTextItem *m_headerText;
+    TextScrollingWidget *m_headerText;
     QVariantList m_albumsTracks;
 };
 

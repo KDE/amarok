@@ -51,6 +51,8 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
     m_webView = new Plasma::WebView( this );
 
+    resize( 500, 450 );
+    
     QPalette p = m_webView->palette();
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
@@ -148,22 +150,9 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
 
 }
 
-QSizeF 
-ServiceInfo::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
-{
-    // TODO hardcoding for now.
-    // i want to have a system where an applet can ask
-    // for a full "CV pane" of size, but for now this will stop the crash
-    QSizeF size;
-    size.setWidth( QGraphicsWidget::sizeHint( which, constraint ).width() );
-    size.setHeight( 450 );
-    return size;
-}
-
 void ServiceInfo::linkClicked( const QUrl & url )
 {
     debug() << "Link clicked: " << url.toString();
-
 
     if ( url.toString().startsWith( "amarok://", Qt::CaseInsensitive ) ) {
         AmarokUrl aUrl( url.toString() );

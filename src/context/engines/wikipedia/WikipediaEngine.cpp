@@ -121,8 +121,10 @@ void WikipediaEngine::update()
     m_triedRefinedSearch = 0;
     QString tmpWikiStr;
     
-    unsubscribeFrom( m_currentTrack );
+
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+
+    unsubscribeFrom( m_currentTrack );
     m_currentTrack = currentTrack;
     subscribeTo( currentTrack );
 
@@ -130,7 +132,6 @@ void WikipediaEngine::update()
         return;
     
     DataEngine::Data data;
-
     // default, or applet told us to fetch artist
     if( selection() == "artist" ) 
     {
@@ -169,8 +170,8 @@ void WikipediaEngine::update()
             tmpWikiStr = tmpWikiStr.left (index - 1);
     }
 
-    if( m_wikiCurrentEntry == tmpWikiStr )
-    {
+    if( m_wikiCurrentLastEntry == tmpWikiStr )
+    {        
         debug() << "Same entry requested again. Ignoring.";
         return;
     }
@@ -181,8 +182,10 @@ void WikipediaEngine::update()
     foreach( const QString &key, data.keys() )
         setData( key, data[key] );
 
+    m_wikiCurrentLastEntry = tmpWikiStr;
     m_wikiCurrentEntry = tmpWikiStr;
     m_wikiCurrentUrl = wikiUrl( tmpWikiStr );
+
 
     debug() << "wiki url: " << m_wikiCurrentUrl;
 

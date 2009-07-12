@@ -47,10 +47,7 @@ public:
     virtual ~ServiceInfo();
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
-    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
     virtual void trackListChanged( Meta::Playlist* playlist );
 

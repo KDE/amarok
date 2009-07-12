@@ -72,9 +72,6 @@ VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
 {
     DEBUG_BLOCK
     setHasConfigurationInterface( true );
-    
-    if( The::engineController() )
-        m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
 }
 
 void 
@@ -82,19 +79,19 @@ VideoclipApplet::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
 
-    // HACK
     m_height = 300;
-    
-    // TODO inherit a phonon VideoWidget to unable mouse interaction (double click full screen etc ...)
-//    m_videoWidget = new Phonon::VideoWidget();
+    resize( size().width(), m_height );
+
+    // CustomWidget is a special VideoWidget for interaction
     m_videoWidget = new CustomVideoWidget();
+  //  m_videoWidget = new Phonon::VideoWidget();
     m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
     m_videoWidget->hide();
+    
+    // we create path no need to add a lot of fancy thing 
+    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
 
-    m_path = Phonon::createPath( m_mediaObject, m_videoWidget );
-    if ( !m_path.isValid() )
-        warning() << "Phonon path is invalid.";
-
+    
     // Load pixmap
     m_pixYoutube = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-youtube.png" ) );
     m_pixDailymotion = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
@@ -115,6 +112,9 @@ VideoclipApplet::init()
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Video Clip" ) );
+
+    // Set the collapse size
+    setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
 
     // Create layout
     m_layout = new QHBoxLayout();
@@ -138,12 +138,19 @@ VideoclipApplet::init()
     m_widget->setWidget( m_scroll );
 
     constraintsEvent();
+    
+    //Update the applet (render properly the header)
+    update();
+
+    // we connect the geometry changed wit(h a setGeom function which will update the video widget geometry
+    connect ( this, SIGNAL(geometryChanged()), SLOT( setGeom() ) );
 
     connectSource( "videoclip" );
+    
     connect( dataEngine( "amarok-videoclip" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
 
-    engineNewTrackPlaying();// kickstart
+    engineStateChanged(Phonon::PlayingState,Phonon::StoppedState);// kickstart
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Videoclip Applet");
@@ -155,30 +162,71 @@ VideoclipApplet::init()
 VideoclipApplet::~VideoclipApplet()
 {
     DEBUG_BLOCK
-    delete m_videoWidget;
+    
 }
 
 void 
 VideoclipApplet::engineNewTrackPlaying()
 {
-    
     DEBUG_BLOCK
-    if( The::engineController() && !m_mediaObject )
-        m_mediaObject = const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() );
-    if ( m_videoWidget && m_mediaObject && m_mediaObject->hasVideo() )
+    // on new track, we expand the applet if not already
+    setCollapseOff();
+}
+
+void
+VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State oldState)
+{
+    if ( currentState == oldState )
+        return;
+
+    switch ( currentState )
     {
-        debug() << " VideoclipApplet | Show VideoWidget";
-        m_path.reconnect( m_mediaObject, m_videoWidget );
-        if ( !m_path.isValid() )
-            warning() << "Phonon path is invalid.";
-        m_videoWidget->show();
-    }
-    else if( m_videoWidget )
-    {
-        m_videoWidget->hide();
-        m_path.reconnect( m_mediaObject, m_videoWidget );
-        if ( !m_path.isValid() )
-            warning() << "Phonon path is invalid.";        
+        // when switching from buffering to to playing, we launch the vid widget
+        case Phonon::PlayingState :
+        {
+            // We need this has when song switching the ste will do
+            // playing > stopped > playing > loading > buffering > playing
+            if ( oldState == Phonon::BufferingState )
+            {
+                debug() <<" video state : playing";
+
+                if ( The::engineController()->phononMediaObject()->hasVideo() )
+                {
+                    setBusy( false );
+                    debug() << " VideoclipApplet | Show VideoWidget";
+                    m_widget->hide();
+                    m_videoWidget->show();
+                    m_videoWidget->activateWindow();
+                    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
+                    if( m_videoWidget->isActiveWindow() ) {
+                        //FIXME dual-screen this seems to still show
+                        QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
+                        QApplication::sendEvent( m_videoWidget, &e );
+                    }
+                }
+                else
+                {
+                    debug() << " VideoclipApplet | Hide VideoWidget";
+                    m_videoWidget->hide();
+                }
+            }
+            break;
+        }
+
+        // When buffering/loading  a vid, we want the nice Busy animation, and no collapsing
+        case Phonon::BufferingState:
+        case Phonon::LoadingState:
+        {
+            debug() <<" video state : buffering";
+
+            setBusy( true );
+            m_videoWidget->hide();
+            m_widget->hide();
+            break;
+        }
+
+        default:
+            break;
     }
 }
 
@@ -188,12 +236,14 @@ VideoclipApplet::enginePlaybackEnded( int finalPosition, int trackLength, Playba
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )
     Q_UNUSED( reason )
+
+    // On playback ending, we hide everything and collapse
+    setBusy( false );
+    m_widget->hide();
+    m_videoWidget->hide();
     
-    if( m_videoWidget )
-	{
-		m_widget->show();
-        m_videoWidget->hide();
-	}
+    setCollapseOn();
+
 }
 
 void 
@@ -202,6 +252,7 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
+    // tint the applet size
     m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
     m_widget->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
     m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
@@ -223,13 +274,12 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     addGradientToAppletBackground( p );
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerText );
- }
+}
 
-QSizeF 
-VideoclipApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
+void
+VideoclipApplet::setGeom( )
 {
-    // hardcoding for now
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), m_height );
+    updateConstraints();
 }
 
 void 
@@ -244,16 +294,11 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 {
     DEBUG_BLOCK
     Q_UNUSED( name )
-    
-    // HACK sometimes it takes longer for amarok to realize that a stream has video,
-    // so when engineNewTrackPlaying is called it doesn't know about it yet. however
-    // by the time this gets called, more has been downloaded and phonon figures it outs
-    engineNewTrackPlaying();
 
     if ( data.empty() )
         return;
     
-    if ( !m_videoWidget->isVisible() )
+    if ( !m_videoWidget->isVisible() && !The::engineController()->phononMediaObject()->hasVideo() )
     {
         int width = 130;
         // Properly delete previsouly allocated item
@@ -262,22 +307,39 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             m_layoutWidgetList.front()->hide();
             m_layout->removeWidget( m_layoutWidgetList.front() );
 			delete m_layoutWidgetList.front();
-            m_layoutWidgetList.pop_front();
+            m_layoutWidgetList.pop_front();            
         }
         
         // if we get a message, show it
         if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
+        {
+            m_headerText->setText( i18n( "Video Clip" ) );
+            constraintsEvent();
+            update();
+            debug() <<" message fetching ";
+            m_widget->hide();
+
 			setBusy( true );
+        }
 		else if ( data.contains( "message" ) )
 		{
-			QLabel *mess = new QLabel( data["message"].toString() );
-            mess->setAlignment(Qt::AlignTop);
-            m_layout->addWidget( mess, Qt::AlignTop );
-            m_layoutWidgetList.push_back( mess );		
+            //if nothing found, we collapse and inform user
+            m_headerText->setText( i18n( "Video Clip " ) + ":" + i18n( " No information found..." ) );
+            update();
 			setBusy( false );
+            m_widget->hide();
+            setCollapseOn();
 		}
         else if ( data.contains( "item:0" ) )
         {
+            // make the animation didn't stop because it was the mees
+            resize( size().width(), m_height );
+            m_headerText->setText( i18n( "Video Clip" ) );
+            update();
+            // set collapsed
+            // tint the applet
+            m_widget->show();
+
 			setBusy(false);
             for (int i=0; i< data.size(); i++ )
             {
@@ -286,7 +348,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 {
 
                     VideoItemButton *vidButton = new VideoItemButton();
-                    vidButton->setVideoInfo( item );
+                    vidButton->setVideoInfo( item ); 
                     
                     connect ( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );
                     connect ( vidButton, SIGNAL( queueRequested( VideoInfo* ) ), this, SLOT ( queueVideoClip( VideoInfo * ) ) );

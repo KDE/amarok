@@ -48,8 +48,6 @@ class PhotosApplet : public Context::Applet
         void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-        QSizeF  sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
-
 
     public slots:
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
@@ -66,6 +64,7 @@ class PhotosApplet : public Context::Applet
         PhotosScrollWidget      *m_widget;
 
         int m_height;
+
         int m_nbPhotos;
         QString m_Animation;
 

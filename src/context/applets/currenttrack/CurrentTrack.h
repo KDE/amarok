@@ -52,9 +52,7 @@ public:
     ~CurrentTrack();
 
     virtual void init();
-
     virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );

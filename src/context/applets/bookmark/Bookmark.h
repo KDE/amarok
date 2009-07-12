@@ -53,7 +53,6 @@ public:
     virtual void init();
 
     virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
 protected:
     virtual void constraintsEvent( Plasma::Constraints constraints );

@@ -48,8 +48,8 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_tracksToShow( 0 )
     , m_tabBar( 0 )
 {
-    setHasConfigurationInterface( false );
-    setConfigurationRequired( false );
+    setHasConfigurationInterface( true );
+//    setConfigurationRequired( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
     setImmutability( Plasma::Mutable );
     // Fix for BUG 190923:
@@ -128,7 +128,7 @@ CurrentTrack::init()
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
     // completely arbitrary yet necessary to kick start the layout before the user acts and resizes manually
-    resize( 500, .75 );
+    resize( 500, 180 );
 
     // hide the items while we startup. as soon as the query is done, they'll be shown.
     foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
@@ -185,7 +185,7 @@ CurrentTrack::contextualActions()
 void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
 
     prepareGeometryChange();
 
@@ -354,15 +354,6 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     update();
     updateConstraints();
 }
-
-QSizeF 
-CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
-{
-    Q_UNUSED( which )
-
-    return QSizeF( constraint.width(), 180 );
-}
-
 
 void
 CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -601,7 +592,7 @@ CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
         moveByX += ( width / 2 ) - cover.rect().width() / 2;
         moveByY += ( width / 2 ) - cover.rect().height() / 2;
         
-        debug() << "placing album at X:" << moveByX << " and Y:"  << moveByY;
+//        debug() << "placing album at X:" << moveByX << " and Y:"  << moveByY;
         m_albumCover->setPos( moveByX, moveByY );
 
 
