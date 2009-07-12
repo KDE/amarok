@@ -20,7 +20,6 @@
 #include "ContextView.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "EngineObserver.h"
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
 #include "meta/MetaUtility.h"
@@ -37,6 +36,7 @@ using namespace Context;
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
+    , EngineObserver( The::engineController() )
     , m_coverWidth( 0 )
 	, m_qm( 0 )
 	, m_qmTracks( 0 )
@@ -105,6 +105,12 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 }
 
 void
+CurrentEngine::engineStateChanged(Phonon::State newState, Phonon::State )
+{
+    m_state = newState ;
+}
+
+void
 CurrentEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
@@ -135,7 +141,9 @@ CurrentEngine::stoppedState()
     m_timer->stop();    
 
     //TODO
-    // here we need to add something, like detecting if we are in buffering state or loading state, this 1000 ms timer doesn't make sense.
+    // if we are in buffering state or loading state, do not show the recently album etc ...
+    if ( m_state == Phonon::BufferingState || m_state== Phonon::LoadingState )
+        return;
     
     removeAllData( "current" );
     setData( "current", "notrack", i18n( "No track playing") );
@@ -273,6 +281,7 @@ CurrentEngine::update()
         {
             //is the source defined
             const QString source = sic->sourceName();
+            debug() <<" We have source " <<source;
             if( !source.isEmpty() )
                 setData( "current", "source_emblem", sic->scalableEmblem() );
 

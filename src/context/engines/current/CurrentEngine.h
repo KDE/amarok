@@ -20,6 +20,7 @@
 #include "ContextObserver.h"
 #include "collection/QueryMaker.h"
 #include "context/DataEngine.h"
+#include "EngineObserver.h"
 #include "meta/Meta.h" // album observer
 
 class QTimer;
@@ -46,6 +47,7 @@ class QTimer;
 
 class CurrentEngine : public Context::DataEngine, 
                       public ContextObserver,
+                      public EngineObserver,
                       public Meta::Observer
 {
     Q_OBJECT
@@ -64,6 +66,9 @@ public:
     int coverWidth() { return m_coverWidth; }
     void setCoverWidth( const int width ) { m_coverWidth = width; }
 
+    // inherited from EngineObserver
+    virtual void engineStateChanged(Phonon::State, Phonon::State );
+
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::AlbumPtr album );
@@ -80,7 +85,8 @@ private:
     QMap< QString, bool > m_requested;
     Meta::TrackPtr m_currentTrack;
     QTimer *m_timer;
-    
+
+    Phonon::State m_state;
     QueryMaker *m_qm;
     QueryMaker *m_qmTracks;
     QueryMaker *m_qmFavTracks;
@@ -94,7 +100,8 @@ private slots:
     void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
     void setupAlbumsData();
     void setupTracksData();
-    void stoppedState();    
+    void stoppedState();
+
     
 };
 
