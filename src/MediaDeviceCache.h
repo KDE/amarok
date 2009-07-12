@@ -34,7 +34,7 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
 
     public:
 
-        enum DeviceType { SolidPMPType, SolidVolumeType, ManualType, SolidAudioCdType,  InvalidType };
+        enum DeviceType { SolidPMPType, SolidVolumeType, ManualType, SolidAudioCdType, SolidGenericType, InvalidType };
 
         static MediaDeviceCache* instance() { return s_instance ? s_instance : new MediaDeviceCache(); }
 

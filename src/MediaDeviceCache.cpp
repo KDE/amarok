@@ -107,6 +107,18 @@ MediaDeviceCache::refreshCache()
             }
         }
     }
+    deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageDrive );
+    foreach( const Solid::Device &device, deviceList )
+    {
+        debug() << "Found Solid::DeviceInterface::StorageDrive with udi = " << device.udi();
+        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+
+        if( device.as<Solid::StorageDrive>() )
+        {
+            m_type[device.udi()] = MediaDeviceCache::SolidGenericType;
+            m_name[device.udi()] = device.vendor() + " - " + device.product();
+        }
+    }
     KConfigGroup config = Amarok::config( "PortableDevices" );
     QMap<QString, QString> manualDevices = config.entryMap();
     foreach( const QString &udi, manualDevices.keys() )
@@ -146,8 +158,9 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     }
     else if( device.as<Solid::StorageDrive>() )
     {
-        debug() << "Storage drive found, will wait for the volume";
-        return;
+        debug() << "device is a Storage drive, still need a volume";
+        m_type[udi] = MediaDeviceCache::SolidGenericType;
+        m_name[udi] = device.vendor() + " - " + device.product();
     }
     else if( ssa )
     {
