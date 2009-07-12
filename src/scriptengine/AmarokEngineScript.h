@@ -18,13 +18,14 @@
 #define AMAROK_ENGINE_SCRIPT_H
 
 #include "MetaTypeExporter.h"
+#include "EngineObserver.h"
 
 #include <QObject>
 #include <QtScript>
 
 namespace AmarokScript
 {
-    class AmarokEngineScript : public QObject
+    class AmarokEngineScript : public QObject, public EngineObserver
     {
         Q_OBJECT
 
@@ -38,6 +39,14 @@ namespace AmarokScript
         public:
             AmarokEngineScript( QScriptEngine* ScriptEngine );
             ~AmarokEngineScript();
+
+            enum PlayerStatus
+            {
+                Playing  = 0,
+                Paused   = 1,
+                Stopped  = 2,
+                Error    = -1
+            };
 
         public slots:
             void Play() const;
@@ -59,13 +68,18 @@ namespace AmarokScript
             QVariant currentTrack() const;
 
         signals:
-            void trackFinished();
+            void trackFinished(); // when playback stops altogether
             void trackChanged();
             void trackSeeked( int ); //return relative time in million second
             void volumeChanged( int );
             void trackPlayPause( int );  //Playing: 0, Paused: 1
 
         private:
+            void engineVolumeChanged( int value );
+            void engineTrackPositionChanged( long position, bool userSeek );
+            void engineTrackChanged( Meta::TrackPtr track );
+            void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
+
             bool randomMode() const;
             bool dynamicMode() const;
             bool repeatPlaylist() const;

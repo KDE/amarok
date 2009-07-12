@@ -27,6 +27,9 @@
 
 #include <ui_videoclipSettings.h>
 
+#include <Phonon/Path>
+#include <Phonon/MediaObject>
+
 // forward
 namespace Phonon
 {

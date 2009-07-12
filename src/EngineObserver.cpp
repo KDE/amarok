@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "EngineObserver.h"
+#include "EngineController.h"
 
 #include "Debug.h"
 
@@ -29,9 +30,16 @@ EngineObserver::EngineObserver( EngineSubject *s )
     m_subject->attach( this );
 }
 
+EngineObserver::EngineObserver()
+    : m_subject( The::engineController() )
+{
+    m_subject->attach( this );
+}
+
 EngineObserver::~EngineObserver()
 {
-    m_subject->detach( this );
+    if (m_subject)
+        m_subject->detach( this );
 }
 
 void
@@ -47,6 +55,12 @@ EngineObserver::enginePlaybackEnded( int finalPosition, int trackLength, Playbac
     Q_UNUSED( finalPosition );
     Q_UNUSED( trackLength );
     Q_UNUSED( reason );
+}
+
+void
+EngineObserver::engineTrackChanged( Meta::TrackPtr track )
+{
+    Q_UNUSED( track );
 }
 
 void
@@ -86,6 +100,12 @@ EngineObserver::engineTrackLengthChanged( long seconds )
     Q_UNUSED( seconds );
 }
 
+void
+EngineObserver::engineDeleted()
+{
+    m_subject = 0;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS EngineSubject
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +116,12 @@ EngineSubject::EngineSubject()
 
 EngineSubject::~EngineSubject()
 {
+    // tell any remaining observers that we are gone
+    foreach( EngineObserver *observer, Observers )
+    {
+        observer->engineDeleted();
+    }
+
     //do not delete the observers, we don't have ownership of them!
 }
 
@@ -174,6 +200,12 @@ EngineSubject::newTrackPlaying() const
         observer->engineNewTrackPlaying();
 }
 
+void
+EngineSubject::trackChangedNotify( Meta::TrackPtr track )
+{
+    foreach( EngineObserver *observer, Observers )
+        observer->engineTrackChanged( track );
+}
 
 void EngineSubject::attach( EngineObserver *observer )
 {

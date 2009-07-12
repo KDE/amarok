@@ -254,7 +254,7 @@ EngineController::endSession()
     if ( !AmarokConfig::resumePlayback() && m_currentTrack )
     {
         playbackEnded( trackPosition(), m_currentTrack->length(), EngineObserver::EndedQuit );
-        emit trackChanged( Meta::TrackPtr( 0 ) );
+        trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 }
 
@@ -425,7 +425,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         const int length = m_currentTrack->length();
         m_currentTrack->finishedPlaying( double(pos)/double(length) );
         playbackEnded( pos, length, EngineObserver::EndedStopped );
-        emit trackChanged( Meta::TrackPtr( 0 ) );
+        trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 
     // Stop instantly if fadeout is already running, or the media is paused (i.e. pressing Stop twice)
@@ -448,7 +448,6 @@ EngineController::stop( bool forceInstant ) //SLOT
     else
         m_media->stop();
 
-    emit trackFinished();
     m_currentTrack = 0;
 }
 
@@ -492,7 +491,6 @@ EngineController::seek( int ms ) //SLOT
 
         m_media->seek( static_cast<qint64>( seekTo ) );
         trackPositionChangedNotify( seekTo, true ); /* User seek */
-        emit trackSeeked( seekTo );
     }
     else
         debug() << "Stream is not seekable.";
@@ -543,7 +541,6 @@ EngineController::setVolume( int percent ) //SLOT
 
     AmarokConfig::setMasterVolume( percent );
     volumeChangedNotify( percent );
-    emit volumeChanged( percent );
 
     return percent;
 }
@@ -567,8 +564,6 @@ EngineController::setMuted( bool mute ) //SLOT
 
     AmarokConfig::setMuteState( mute );
     muteStateChangedNotify( mute );
-
-    emit muteStateChanged( mute );
 }
 
 void
@@ -739,9 +734,9 @@ EngineController::slotQueueEnded()
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
         m_currentTrack->finishedPlaying( 1.0 );
-        emit trackFinished();
         playbackEnded( trackPosition(), m_currentTrack->length(), EngineObserver::EndedStopped );
         m_currentTrack = 0;
+        trackChangedNotify( m_currentTrack );
     }
 
     m_mutex.lock(); // in case setNextTrack is being handled right now.
@@ -813,7 +808,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     // state never changes if tracks are queued, but we need this to update the caption
     stateChangedNotify( m_media->state(), m_media->state() );
 
-    emit trackChanged( m_currentTrack );
+    trackChangedNotify( m_currentTrack );
     newTrackPlaying();
 }
 
@@ -876,11 +871,6 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     }
 
     stateChangedNotify( newState, oldState );
-
-    if( newState == Phonon::PlayingState )
-        emit trackPlayPause( Playing );
-    else if( newState == Phonon::PausedState )
-        emit trackPlayPause( Paused );
 }
 
 void

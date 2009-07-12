@@ -19,18 +19,20 @@
 
 #include "CurrentTrackToolbar.h"
 
-#include <QAction>
-#include <QLabel>
-#include <QMenu>
 #include <QToolBar>
-#include <QToolButton>
+
+class QAction;
+class QLabel;
+class QMenu;
+class QSlider;
+class QToolButton;
 
 /**
 An new toolbar implementation.
 
 	@author 
 */
-class MainToolbarNG : public QToolBar
+class MainToolbarNG : public QToolBar, public EngineObserver
 {
     Q_OBJECT
 public:
@@ -38,18 +40,17 @@ public:
 
     ~MainToolbarNG();
 
-private slots:
+private:
     void engineVolumeChanged( int newVolume );
     void engineMuteStateChanged( bool muted );
-    
-private:
 
     CurrentTrackToolbar * m_currentTrackToolbar;
-    
-    QToolButton * m_volumeToolButton;
-    QLabel * m_volumeLabel; 
-    QMenu * m_volumeMenu;
 
+    QToolButton * m_volumeToolButton;
+    QLabel * m_volumeLabel;
+    QMenu * m_volumeMenu;
+    QSlider * m_volumeSlider;
+    QAction * m_muteAction;
 };
 
 #endif

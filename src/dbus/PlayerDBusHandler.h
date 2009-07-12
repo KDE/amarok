@@ -19,6 +19,7 @@
 #define PLAYER_DBUS_HANDLER_H
 
 #include "meta/Meta.h"
+#include "EngineObserver.h"
 
 #include <QObject>
 #include <QVariantMap>
@@ -49,7 +50,7 @@ const QDBusArgument &operator >> ( const QDBusArgument &argument, DBusStatus &st
 
 namespace Amarok
 {
-    class AMAROK_EXPORT PlayerDBusHandler : public QObject
+    class AMAROK_EXPORT PlayerDBusHandler : public QObject, public EngineObserver
     {
         friend Amarok::PlayerDBusHandler* The::playerDBusHandler();
 
@@ -98,14 +99,15 @@ namespace Amarok
             void StatusChange( DBusStatus );
 
         private slots:
-            void slotCapsChange();
-            void slotTrackChange();
-            void slotStatusChange();
+            void updateStatus();
 
         public:
             QVariantMap GetTrackMetadata( Meta::TrackPtr track );
 
         private:
+            void engineTrackChanged( Meta::TrackPtr track );
+            void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
+
             static PlayerDBusHandler* s_instance;
     };
 

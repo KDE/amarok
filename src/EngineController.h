@@ -31,13 +31,13 @@
 
 #include <Phonon/Path>
 #include <Phonon/MediaController>
-#include <Phonon/MediaSource> //Needed for the slot
+#include <Phonon/MediaObject>
 
 class QTimer;
 
 namespace KIO { class Job; }
 namespace Meta { class MultiPlayableCapability; class MultiSourceCapability; }
-namespace Phonon { class AudioOutput; class MediaObject; class VolumeFaderEffect; }
+namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
 
 /**
  * A thin wrapper around Phonon that implements Amarok-specific funtionality like
@@ -136,15 +136,6 @@ public:
      * @return @c true if the current track is a stream, @c false otherwise
      */
     bool isStream();
-
-    // used by signals
-    enum PlayerStatus
-    {
-        Playing  = 0,
-        Paused   = 1,
-        Stopped  = 2,
-        Error    = -1
-    };
 
 public slots:
     /**
@@ -253,15 +244,6 @@ public slots:
      * Works like setMuted( !isMuted() );
      */
     void toggleMute();
-
-signals:
-    // this stuff seems to be for the scripting support
-    void trackPlayPause( int ); //Playing: 0, Paused: 1
-    void trackFinished();
-    void trackChanged( Meta::TrackPtr );
-    void trackSeeked( int ); //return relative time in million second
-    void volumeChanged( int );
-    void muteStateChanged( bool );
 
 private slots:
     /**

@@ -18,9 +18,11 @@
 #define AMAROK_ENGINEOBSERVER_H
 
 #include "amarok_export.h"
+#include "meta/Meta.h"
 
-#include <Phonon/MediaObject>
+#include <Phonon/Global>
 #include <QHash>
+#include <QPointer>
 #include <QSet>
 
 class EngineSubject;
@@ -39,16 +41,61 @@ public:
         EndedQuit    = 1
     };
 
+    EngineObserver();
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
+    /**
+     * Called when the engine state changes
+     */
     virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
+
+    // is this when playback stops completely, or when a track stops?
     virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+
+    // should be called when a tracks starts or stops playing
+    // on stop, pass Meta::TrackPtr( 0 )
+    virtual void engineTrackChanged( Meta::TrackPtr track );
+
+    // called when a new track starts playing
     virtual void engineNewTrackPlaying();
+
+    // called when metadata changes for any reason
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
+
+    /**
+     * Called when the volume was changed
+     */
     virtual void engineVolumeChanged( int percent );
+
+    /**
+     * Called when audio output was enabled or disabled
+     *
+     * NB: if setMute() was called on the engine controller, but it didn't change the
+     * mute state, this will not be called
+     */
     virtual void engineMuteStateChanged( bool mute );
+
+    /**
+     * Called when the track position changes
+     *
+     * (even when play just progresses?)
+     */
     virtual void engineTrackPositionChanged( long position, bool userSeek );
+
+    /**
+     * Called when the track length changes, typically because the track has changed
+     */
     virtual void engineTrackLengthChanged( long seconds );
+
+    /**
+     * Called when the EngineSubject is deleted.
+     *
+     * Warning: at this point, the destructor for the engine has already run!
+     *
+     * Currently not virtual on the assumption no-one (apart from the base
+     * EngineObserver class itself) cares.
+     */
+    void engineDeleted();
 
 private:
     EngineSubject *m_subject;
@@ -66,14 +113,15 @@ protected:
     EngineSubject();
     virtual ~EngineSubject();
     void stateChangedNotify( Phonon::State newState, Phonon::State oldState );
-    void playbackEnded( int /*finalPosition*/, int /*trackLength*/, EngineObserver::PlaybackEndedReason reason );
+    void playbackEnded( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason );
     void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged );
-    void volumeChangedNotify( int /*percent*/ );
-    void muteStateChangedNotify( bool /*mute*/ );
+    void volumeChangedNotify( int percent );
+    void muteStateChangedNotify( bool mute );
     /* userSeek means the position didn't change due to normal playback */
-    void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
-    void trackLengthChangedNotify( long /*seconds*/ );
+    void trackPositionChangedNotify( long position , bool userSeek = false );
+    void trackLengthChangedNotify( long seconds );
     void newTrackPlaying() const;
+    void trackChangedNotify( Meta::TrackPtr track );
 
 private:
     void attach( EngineObserver *observer );

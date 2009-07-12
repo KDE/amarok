@@ -57,8 +57,6 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     connect( m_action, SIGNAL( triggered( bool ) ), ec, SLOT( toggleMute() ) );
     connect( m_slider, SIGNAL( sliderMoved( int ) ), ec, SLOT( setVolume( int ) ) );
     connect( m_slider, SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
-
-    connect( ec, SIGNAL( volumeChanged( int ) ), this, SLOT( engineVolumeChanged( int ) ) );
 }
 
 void

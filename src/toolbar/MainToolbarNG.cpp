@@ -26,11 +26,22 @@
 #include <KLocale>
 #include <KVBox>
 
+#include <QAction>
+#include <QLabel>
+#include <QMenu>
 #include <QSlider>
+#include <QToolButton>
 #include <QWidgetAction>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
-: QToolBar( i18n( "Main Toolbar NG" ), parent )
+    : QToolBar( i18n( "Main Toolbar NG" ), parent )
+    , EngineObserver( The::engineController() )
+    , m_currentTrackToolbar( 0 )
+    , m_volumeToolButton( 0 )
+    , m_volumeLabel( 0 )
+    , m_volumeMenu( 0 )
+    , m_volumeSlider( 0 )
+    , m_muteAction( 0 )
 {
     setObjectName( "Main Toolbar NG" );
 
@@ -55,42 +66,36 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
 
     addWidget( m_volumeToolButton );
 
-    //we update the volume icon based on the engine volume
-    EngineController* const ec = The::engineController();
-    connect( ec, SIGNAL( volumeChanged( int ) ), this, SLOT( engineVolumeChanged( int ) ) );
-    connect( ec, SIGNAL( muteStateChanged( bool ) ), this, SLOT( engineMuteStateChanged( bool ) ) );
-
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );
 
     KHBox * m_sliderLayout = new KHBox( 0 );
-    QSlider * volumeSlider = new QSlider( Qt::Vertical, m_sliderLayout );
-    volumeSlider->setMaximum( 100 );
-    volumeSlider->setFixedHeight( 170 );
+    m_volumeSlider = new QSlider( Qt::Vertical, m_sliderLayout );
+    m_volumeSlider->setMaximum( 100 );
+    m_volumeSlider->setFixedHeight( 170 );
     m_sliderLayout->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
+    EngineController* ec = The::engineController();
 
     QWidgetAction * sliderActionWidget = new QWidgetAction( this );
     sliderActionWidget->setDefaultWidget( m_sliderLayout );
-    
-    connect( ec, SIGNAL( volumeChanged( int ) ), volumeSlider, SLOT( setValue( int ) ) );
-    connect( volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
+
+    connect( m_volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
 
     m_volumeLabel= new QLabel( 0 );
     QWidgetAction * labelActionWidget = new QWidgetAction( this );
     m_volumeLabel->setAlignment( Qt::AlignHCenter );
     labelActionWidget->setDefaultWidget( m_volumeLabel );
-    
-    QAction * muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
-    muteAction->setCheckable ( true );
-    muteAction->setChecked( ec->isMuted() );
 
-    connect( ec, SIGNAL( muteStateChanged( bool ) ), muteAction, SLOT( setChecked( bool ) ) );
-    connect( muteAction, SIGNAL( toggled( bool ) ), ec, SLOT( setMuted( bool ) ) );
+    m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
+    m_muteAction->setCheckable ( true );
+    m_muteAction->setChecked( ec->isMuted() );
+
+    connect( m_muteAction, SIGNAL( toggled( bool ) ), ec, SLOT( setMuted( bool ) ) );
 
     m_volumeMenu->addAction( labelActionWidget );
     m_volumeMenu->addAction( sliderActionWidget );
-    m_volumeMenu->addAction( muteAction );
+    m_volumeMenu->addAction( m_muteAction );
 
     m_volumeToolButton->setMenu( m_volumeMenu );
     m_volumeToolButton->setArrowType( Qt::NoArrow );
@@ -113,6 +118,7 @@ void MainToolbarNG::engineVolumeChanged( int newVolume )
         m_volumeToolButton->setIcon( KIcon( "audio-volume-high" ) );
 
     m_volumeLabel->setText( QString::number( newVolume ) + "%" );
+    m_volumeSlider->setValue( newVolume );
 }
 
 void MainToolbarNG::engineMuteStateChanged( bool muted )
@@ -124,6 +130,7 @@ void MainToolbarNG::engineMuteStateChanged( bool muted )
         EngineController* const ec = The::engineController();
         engineVolumeChanged( ec->volume() );
     }
+    m_muteAction->setChecked( muted );
 }
 
 #include "MainToolbarNG.moc"

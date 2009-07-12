@@ -68,15 +68,10 @@ namespace Amarok
         new PlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Player", this);
 
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( slotTrackChange() ) );
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( slotStatusChange() ) );
-        connect( The::engineController(), SIGNAL( trackFinished() ), this, SLOT( slotStatusChange() ) );
-        connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), this, SLOT( slotStatusChange() ) );
-        connect( this, SIGNAL( StatusChange( DBusStatus ) ), this, SLOT( slotCapsChange() ) );
-
+        //HACK
         SelectAction* repeatAction = qobject_cast<SelectAction*>( Amarok::actionCollection()->action( "repeat" ) );
         Q_ASSERT( repeatAction );
-        connect( repeatAction, SIGNAL( triggered( int ) ), this, SLOT( slotStatusChange() ) );
+        connect( repeatAction, SIGNAL( triggered( int ) ), this, SLOT( updateStatus() ) );
     }
 
     DBusStatus PlayerDBusHandler::GetStatus()
@@ -212,20 +207,11 @@ namespace Amarok
         return caps;
     }
 
-    void PlayerDBusHandler::slotCapsChange()
-    {
-        emit CapsChange( GetCaps() );
-    }
-
-    void PlayerDBusHandler::slotTrackChange()
-    {
-        emit TrackChange( GetMetadata() );
-    }
-
-    void PlayerDBusHandler::slotStatusChange()
+    void PlayerDBusHandler::updateStatus()
     {
         DBusStatus status = GetStatus();
         emit StatusChange( status );
+        emit CapsChange( GetCaps() );
     }
 
     QVariantMap PlayerDBusHandler::GetTrackMetadata( Meta::TrackPtr track )
@@ -269,6 +255,19 @@ namespace Amarok
             //amarok has no video-bitrate
         }
         return map;
+    }
+
+    void PlayerDBusHandler::engineTrackChanged( Meta::TrackPtr track )
+    {
+        Q_UNUSED( track );
+        emit TrackChange( GetMetadata() );
+        updateStatus();
+    }
+    void PlayerDBusHandler::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
+    {
+        Q_UNUSED( currentState );
+        Q_UNUSED( oldState );
+        updateStatus();
     }
 } // namespace Amarok
 

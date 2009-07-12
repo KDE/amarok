@@ -39,11 +39,10 @@ public:
     VolumeWidget( QWidget * );
     Amarok::VolumeSlider* slider() const { return m_slider; }
 
-private slots:
+private:
     void engineVolumeChanged( int value );
     void engineMuteStateChanged( bool mute );
 
-private:
     QPointer<Amarok::VolumeSlider> m_slider;
     KAction *m_action;
     QLabel *m_label;
