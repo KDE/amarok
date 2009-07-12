@@ -28,6 +28,7 @@
 //forward
 class QPixmap;
 class QGraphicsSceneHoverEvent;
+class DragPixmapItem;
 namespace Plasma
 {
     class Animator;
@@ -54,14 +55,14 @@ class PhotosScrollWidget : public QGraphicsWidget
 
         void setPixmapList (QList < PhotosInfo * > );
 
-        void setModeToInteractive();
-        void setModeToAutomatic();
-        void setModeToFading();
+        void setMode( int );
         
         void clear();
 
     public slots:
         void animate( qreal anim );
+        void automaticAnimBegin();
+        void automaticAnimEnd( int );
         
     protected:
 
@@ -70,6 +71,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         */
         virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
         virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+        virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
  //       virtual void keyPressEvent(QKeyEvent* event);
  //       virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
         
@@ -79,9 +81,14 @@ class PhotosScrollWidget : public QGraphicsWidget
         float   m_speed;        // if negative, go to left, if positif go to right,
         int     m_margin;       // margin beetween the photos
         int     m_scrollmax;    // lenght of the whole stack
-        int     m_actualpos;    // 
-        int     m_mode;         // 
-        QList < PhotosInfo * >m_currentlist; // contain the list of the current PhotosItem in the widget
+        int     m_actualpos;    //
+        int     m_currentPix;   // index of the current pix
+        int     m_timer;        // time in ms beetween to change
+        int     m_mode;         //
+        int     m_delta;
+        int     m_deltastart;
+        QList < PhotosInfo * >      m_currentlist; // contain the list of the current PhotosItem in the widget
+        QList < DragPixmapItem * >  m_pixmaplist;  // contain the list of dragpixmap item
 };
 
 #endif // PHOTOSSCROLLWIDGET_H

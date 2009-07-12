@@ -74,7 +74,15 @@ PhotosApplet::init()
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     m_widget = new PhotosScrollWidget( this );
+    // Read config and inform the engine.
+    KConfigGroup config = Amarok::config("Photos Applet");
+    m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
+    m_Animation = config.readEntry( "Animation", "Interactive" );
+    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
+    
+    m_widget->setMode( ui_Settings.animationComboBox->currentIndex() );
 
+    
     constraintsEvent();
 
     connectSource( "photos" );
@@ -82,11 +90,7 @@ PhotosApplet::init()
              this, SLOT( connectSource( const QString & ) ) );
 
 
-    // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("Photos Applet");
-    m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
-    m_Animation = config.readEntry( "Animation", "Interactive" );
-    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
+
 
 }
 
@@ -208,7 +212,10 @@ PhotosApplet::saveSettings()
     m_nbPhotos = ui_Settings.photosSpinBox->value();
     m_Animation = ui_Settings.animationComboBox->currentText();
     config.writeEntry( "NbPhotos", m_nbPhotos );
-    config.writeEntry( "Animation", m_Animation );    
+    config.writeEntry( "Animation", m_Animation );
+
+    m_widget->setMode( ui_Settings.animationComboBox->currentIndex() );
+    
     
     dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
 }
