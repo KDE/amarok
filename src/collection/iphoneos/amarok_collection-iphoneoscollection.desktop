@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Service
+Name=iPhone OS 3.0 Read-only Collection
+Comment=iPhone OS 3.0 Read-only collection plugin for Amarok
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Library=libamarok_collection-iphoneoscollection
+
+X-KDE-Amarok-authors=Martin Aumueller
+X-KDE-Amarok-email=aumuell@reserv.at
+X-KDE-Amarok-framework-version=46
+X-KDE-Amarok-name=iphoneos-collection
+X-KDE-Amarok-plugintype=collection
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1
