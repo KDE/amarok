@@ -56,6 +56,7 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 , m_pc( 0 )
 , m_rc( 0 )
 , m_wc( 0 )
+, m_provider( 0 )
 {
     DEBUG_BLOCK
 
