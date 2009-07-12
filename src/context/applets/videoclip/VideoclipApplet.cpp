@@ -171,6 +171,7 @@ VideoclipApplet::engineNewTrackPlaying()
     DEBUG_BLOCK
     // on new track, we expand the applet if not already
     setCollapseOff();
+    m_videoWidget->hide();
 }
 
 void
