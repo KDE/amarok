@@ -79,8 +79,9 @@ PhotosApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Photos Applet");
     m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
-    m_Animation = config.readEntry( "Animation", "Interactive" );
-    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
+    m_Animation = config.readEntry( "Animation", "Automatic" );
+    m_KeyWords = config.readEntry( "KeyWords", "" );
+    
 
     if ( m_Animation == i18n( "Automatic" ) )
         m_widget->setMode( 0 );
@@ -88,17 +89,18 @@ PhotosApplet::init()
     if ( m_Animation == i18n( "Interactive" ) )
         m_widget->setMode( 1 );
     
-    if ( m_Animation == i18n( "Fading" ) )
-        m_widget->setMode( 2 );
+//    if ( m_Animation == i18n( "Fading" ) )
+  //      m_widget->setMode( 2 );
+  
     constraintsEvent();
 
     connectSource( "photos" );
     connect( dataEngine( "amarok-photos" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
 
-
-
-
+             
+    dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
+    dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
 }
 
 PhotosApplet::~PhotosApplet()
@@ -207,6 +209,7 @@ PhotosApplet::createConfigurationInterface( KConfigDialog *parent )
 
     ui_Settings.animationComboBox->setCurrentIndex( ui_Settings.animationComboBox->findText( m_Animation ) );
     ui_Settings.photosSpinBox->setValue( m_nbPhotos );
+    ui_Settings.additionalkeywordsLineEdit->setText( m_KeyWords );
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
 
@@ -218,13 +221,17 @@ PhotosApplet::saveSettings()
 
     m_nbPhotos = ui_Settings.photosSpinBox->value();
     m_Animation = ui_Settings.animationComboBox->currentText();
+    m_KeyWords = ui_Settings.additionalkeywordsLineEdit->text();
     config.writeEntry( "NbPhotos", m_nbPhotos );
     config.writeEntry( "Animation", m_Animation );
+    config.writeEntry( "KeyWords", m_KeyWords );
 
     m_widget->setMode( ui_Settings.animationComboBox->currentIndex() );
-    
+
+    m_widget->clear();
     
     dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
+    dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
 }
 
 

@@ -96,9 +96,11 @@ private:
     // updates. We only want to update the photos if the artist change
 
     QString    m_artist;
+    QString    m_keywords;
 
     // stores what features are enabled
     bool m_requested;
+    bool m_reload;
 
     //!  List containing all the info
     QList < PhotosInfo *>m_photos;      // Item with all the information

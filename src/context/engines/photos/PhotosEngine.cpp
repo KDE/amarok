@@ -42,7 +42,9 @@ PhotosEngine::PhotosEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         , m_jobFlickr( 0 )
         , m_nbFlickr( -1 )
         , m_nbPhotos( 10 )
+        , m_keywords( QString() )
         , m_requested( true )
+        , m_reload( false )
 {
     m_sources << "flickr" ;
     update();
@@ -65,7 +67,7 @@ PhotosEngine::sourceRequestEvent( const QString& name )
 {
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     QStringList tokens = name.split( ':' );
-    
+
     // user has change the number of photos to download
     if ( tokens.contains( "nbphotos" ) && tokens.size() > 1 )
     {
@@ -73,6 +75,15 @@ PhotosEngine::sourceRequestEvent( const QString& name )
         {
             m_nbPhotos = tokens.at( 2 ).toInt();
             return false;
+        }
+    }
+    // user has change the key words
+    else if ( tokens.contains( "keywords" ) && tokens.size() > 1 )
+    {
+        if ( ( tokens.at( 1 ) == QString( "keywords" ) ) && ( tokens.size() > 2 ) )
+        {
+            m_keywords = tokens.at( 2 );
+            m_reload = true;
         }
     }
         
@@ -105,10 +116,11 @@ void PhotosEngine::update()
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if ( !currentTrack || !currentTrack->artist() )
         return;
-    else if ( currentTrack->artist()->name() == m_artist )
+    else if ( currentTrack->artist()->name() == m_artist && !m_reload )
         return;
     else
     {
+        m_reload = false;
         unsubscribeFrom( m_currentTrack );
         m_currentTrack = currentTrack;
         subscribeTo( currentTrack );
@@ -134,7 +146,7 @@ void PhotosEngine::update()
         // Flickr :http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20
         KUrl flickrUrl(
             QString( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=" )
-            + m_artist + QString( "&per_page=" ) + QString().setNum( m_nbPhotos ) + QString( "&sort=relevance&media=photos" ) );
+            + m_artist + QString(" ") + m_keywords + QString( "&per_page=" ) + QString().setNum( m_nbPhotos ) + QString( "&sort=relevance&media=photos" ) );
         debug()<< "Flickr : " << flickrUrl.toMimeDataString() ;
         m_jobFlickr = KIO::storedGet( flickrUrl, KIO::Reload, KIO::HideProgressInfo );
         connect( m_jobFlickr, SIGNAL( result( KJob* ) ), SLOT( resultFlickr( KJob* ) ) );

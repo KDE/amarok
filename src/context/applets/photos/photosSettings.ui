@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>204</width>
-    <height>83</height>
+    <width>373</width>
+    <height>133</height>
    </rect>
   </property>
   <widget class="QWidget" name="formLayoutWidget">
@@ -15,8 +15,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>211</width>
-     <height>80</height>
+     <width>389</width>
+     <height>137</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -32,6 +32,9 @@
     </item>
     <item row="0" column="1">
      <widget class="KComboBox" name="animationComboBox">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
       <item>
        <property name="text">
         <string>Automatic</string>
@@ -40,11 +43,6 @@
       <item>
        <property name="text">
         <string>Interactive</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fading</string>
        </property>
       </item>
      </widget>
@@ -72,6 +70,29 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="additionalkeywordsLabel">
+      <property name="text">
+       <string>Additional key words :</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="KLineEdit" name="additionalkeywordsLineEdit">
+      <property name="clickMessage">
+       <string>Ex: band live 1977</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QLabel" name="addsomemorekeynwordstothequerywithaspaceseparatorLabel">
+      <property name="text">
+       <string>Add some more key words to the Flickr.com
+query, with a space separator. 
+For example: band live 1977 </string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
@@ -85,6 +106,11 @@
    <class>KIntSpinBox</class>
    <extends>QSpinBox</extends>
    <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

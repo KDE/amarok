@@ -67,6 +67,7 @@ class PhotosApplet : public Context::Applet
 
         int m_nbPhotos;
         QString m_Animation;
+        QString m_KeyWords;
 
         Ui::photosSettings      ui_Settings;
         Plasma::IconWidget      *m_settingsIcon;

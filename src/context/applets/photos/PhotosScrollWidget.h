@@ -77,7 +77,6 @@ class PhotosScrollWidget : public QGraphicsWidget
         
     private:
         int     m_id;           // id of the animator
-        bool    m_animating;    // boolean true if animating false otherwise
         float   m_speed;        // if negative, go to left, if positif go to right,
         int     m_margin;       // margin beetween the photos
         int     m_scrollmax;    // lenght of the whole stack

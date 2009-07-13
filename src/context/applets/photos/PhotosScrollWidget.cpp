@@ -37,7 +37,6 @@
 PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
     , m_id( 0 )
-    , m_animating( false )
     , m_speed( 1. )
     , m_margin( 5 )
     , m_scrollmax( 0 )
@@ -49,6 +48,9 @@ PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
 {
     setAcceptHoverEvents( true );
     setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
+    
+    // connect the end of the animation
+    connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), SLOT( automaticAnimEnd( int ) ) );
 }
 
 PhotosScrollWidget::~PhotosScrollWidget()
@@ -60,7 +62,8 @@ PhotosScrollWidget::~PhotosScrollWidget()
 
 void PhotosScrollWidget::clear()
 {
-    if ( !m_id )
+    DEBUG_BLOCK
+    if ( m_id != 0 )
     {
         Plasma::Animator::self()->stopCustomAnimation( m_id );
         m_id = 0;
@@ -79,6 +82,7 @@ void PhotosScrollWidget::clear()
 
 void PhotosScrollWidget::setMode( int mode )
 {
+    DEBUG_BLOCK
     m_mode = mode;
     QList < PhotosInfo * > tmp = m_currentlist;
     clear();
@@ -133,28 +137,28 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
                         item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
                     dragpix->SetClickableUrl( item->urlpage );
 
-                    if ( m_id == 0 ) // only pos and show if
+                    if ( m_id == 0 ) // only pos and show if no animation, otherwise it will be set at the end automatically
                     {
                         if ( ! m_pixmaplist.empty() )
                         {
-                            dragpix->setPos( m_pixmaplist.last()->boundingRect().width() + m_pixmaplist.last()->pos().x() + m_margin, 0 ) ;
+                            dragpix->setPos( m_pixmaplist.last()->boundingRect().width() + m_pixmaplist.last()->pos().x() + m_margin , 0 ) ;
+                            m_pixmaplist << dragpix;
                             dragpix->show();
+                            
                         }
                         else
                         {
-                            dragpix->setPos( 0, 0 ) ;
+                            m_actualpos = 0;
+                            dragpix->setPos( m_actualpos, 0 ) ;
+                            m_pixmaplist << dragpix;
                             dragpix->show();
                         }
                     }
+                    else
+                        m_pixmaplist << dragpix;
                     
-                    m_pixmaplist << dragpix;
-
-                    // connect the end of the animation
-                    connect( Plasma::Animator::self(), SIGNAL( customAnimationFinished( int ) ), SLOT( automaticAnimEnd( int ) ) );
                     // set a timer after and launch
                     QTimer::singleShot( m_timer, this, SLOT( automaticAnimBegin() ) );
-
-                    
                 }
                 break;
             }
@@ -187,31 +191,24 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
     m_currentlist = list;
 }
 
-
 void PhotosScrollWidget::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     switch ( m_mode )
-    {
-        case PHOTOS_MODE_INTERACTIVE :
-        {
-            break;
-        }
-        
+    {        
         case PHOTOS_MODE_AUTOMATIC :
         {
-            Plasma::Animator::self()->stopCustomAnimation( m_id );
-            m_id = 0;
-            break;
-        }
-        
-        case PHOTOS_MODE_FADING :
-        {            
+            if ( m_id != 0 )
+            {
+                Plasma::Animator::self()->stopCustomAnimation( m_id );
+                m_id = 0;
+                if ( m_currentPix != 0 )
+                    m_currentPix--;
+            }  
             break;
         }
     }
 }
-
 
 void PhotosScrollWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
@@ -227,12 +224,8 @@ void PhotosScrollWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
         
         case PHOTOS_MODE_AUTOMATIC :
         {
-            QTimer::singleShot( m_timer, this, SLOT( automaticAnimBegin() ) );
-            break;
-        }
-        
-        case PHOTOS_MODE_FADING :
-        {
+            if ( m_id == 0 )
+                QTimer::singleShot( m_timer, this, SLOT( automaticAnimBegin() ) );
             break;
         }
     }
@@ -240,13 +233,14 @@ void PhotosScrollWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 
 void PhotosScrollWidget::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     switch ( m_mode )
     {                
         case PHOTOS_MODE_INTERACTIVE :
         {
             m_speed = ( event->pos().x() - ( size().width() / 2 ) ) / size().width();
-            m_speed*=20;
+            m_speed *= 20;
+            
             // if m_id = 0, we don't have an animator yet, let's start the animation
             if ( !m_id )
                 m_id = Plasma::Animator::self()->customAnimation( m_scrollmax / 2, m_scrollmax*10, Plasma::Animator::LinearCurve, this, "animate" );
@@ -259,19 +253,12 @@ PhotosScrollWidget::automaticAnimBegin()
 {
     if ( m_id == 0 )
     {
-        DEBUG_BLOCK
-        if ( m_currentPix < m_pixmaplist.size() - 1 )
+     //   DEBUG_BLOCK
+        if ( m_pixmaplist.size() > 1  )  // only start if m_pixmaplist >= 2
         {
             m_delta = m_pixmaplist.at( m_currentPix )->boundingRect().width() + m_margin;
-            m_id = Plasma::Animator::self()->customAnimation( m_delta * 10, m_delta*20, Plasma::Animator::LinearCurve, this, "animate" );
             m_currentPix++;
-        }
-        else if ( m_currentPix == m_pixmaplist.size() - 1 )
-        {
-            m_currentPix = 0;
-            m_actualpos = 0;
-            m_delta = m_pixmaplist.at( m_currentPix )->boundingRect().width() + m_margin;
-            m_id = Plasma::Animator::self()->customAnimation( m_delta , m_delta*20, Plasma::Animator::LinearCurve, this, "animate" );
+            m_id = Plasma::Animator::self()->customAnimation( m_delta * 10, m_delta*20, Plasma::Animator::LinearCurve, this, "animate" );
         }
     }
 }
@@ -283,9 +270,14 @@ PhotosScrollWidget::automaticAnimEnd( int id )
     {
         if ( m_mode != PHOTOS_MODE_AUTOMATIC )
             return;
-        DEBUG_BLOCK
+
+        // DEBUG_BLOCK
         Plasma::Animator::self()->stopCustomAnimation( m_id );
         m_id = 0;
+
+        if ( !m_pixmaplist.empty() && m_currentPix != 0 )
+            m_pixmaplist << m_pixmaplist.at( m_currentPix - 1 );
+
         QTimer::singleShot( m_timer, this, SLOT( automaticAnimBegin() ) );
     }
 }
@@ -293,7 +285,7 @@ PhotosScrollWidget::automaticAnimEnd( int id )
 
 void PhotosScrollWidget::animate( qreal )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     switch ( m_mode )
     {
         case PHOTOS_MODE_INTERACTIVE :
@@ -327,32 +319,30 @@ void PhotosScrollWidget::animate( qreal )
         }
         case PHOTOS_MODE_AUTOMATIC :
         {
-            if ( !m_pixmaplist.empty() )
+            if ( !m_pixmaplist.empty() ) // just for prevention, this should never appears
             {
-
-                if ( ( m_pixmaplist.at( m_currentPix - 1 )->pos().x() + m_pixmaplist.at( m_currentPix - 1)->boundingRect().width() + m_margin )  <= ( - m_margin/2 + 1))
+                if ( ( m_pixmaplist.at( m_currentPix )->pos().x() )  <= ( m_margin / 2 - 1) )
                 {
+                    m_actualpos = m_margin / 2 - 1;
                     automaticAnimEnd ( m_id );
                     return;
                 }
                 
                 m_actualpos -= 1;
-                
-                for( int a = 0 ; a < m_pixmaplist.size(); a++ )
+                for( int a = m_currentPix - 1 ; a < m_pixmaplist.size(); a++ )
                 {
-                    if ( a == 0 )
+                    if ( a == m_currentPix - 1 )
+                    {
                         m_pixmaplist.at( a )->setPos( m_actualpos, m_pixmaplist.at( a )->pos().y() );
+                    }
                     else
+                    {
                         m_pixmaplist.at( a )->setPos( m_pixmaplist.at( a - 1 )->pos().x() + m_pixmaplist.at( a - 1 )->boundingRect().width() + m_margin - 1, m_pixmaplist.at( a )->pos().y() );
+                    }
                     m_pixmaplist.at( a )->show();
                 }
             }
             
-       //     m_actualpos = right;    
-            break;
-        }
-        case PHOTOS_MODE_FADING :
-        {
             break;
         }
     }        
