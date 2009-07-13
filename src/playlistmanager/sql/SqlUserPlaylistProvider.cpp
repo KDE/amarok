@@ -42,6 +42,7 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
     , m_renameAction( 0 )
     , m_deleteAction( 0 )
+    , m_removeTrackAction( 0 )
 {
     checkTables();
     m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "",
@@ -105,7 +106,6 @@ SqlUserPlaylistProvider::slotRename()
 QList<PopupDropperAction *>
 SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
 {
-    Q_UNUSED( list )
     QList<PopupDropperAction *> actions;
 
     m_selectedPlaylists.clear();
@@ -124,6 +124,27 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
     actions << m_deleteAction;
+
+    return actions;
+}
+
+QList<PopupDropperAction *>
+SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, Meta::TrackList list )
+{
+    QList<PopupDropperAction *> actions;
+
+    if( m_removeTrackAction == 0 )
+    {
+        m_removeTrackAction = new PopupDropperAction(
+                    The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                    "delete",
+                    KIcon( "media-track-remove-amarok" ),
+                    i18n( "Remove From Playlist" ),
+                    this
+                );
+        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
+    }
+    actions << m_removeTrackAction;
 
     return actions;
 }

@@ -30,6 +30,7 @@ class PlaylistManager;
 class PlaylistProvider;
 typedef QList<PlaylistProvider *> PlaylistProviderList;
 class PodcastProvider;
+class PopupDropperAction;
 class UserPlaylistProvider;
 
 namespace The {
@@ -151,8 +152,11 @@ class PlaylistManager : public QObject
 	 *  Retrieves the provider owning the given playlist
 	 *  @arg playlist the playlist whose provider we want
 	 */
-
 	PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr &playlist );
+
+        QList<PopupDropperAction *> playlistActions( const Meta::PlaylistList lists );
+        QList<PopupDropperAction *> trackActions( const Meta::PlaylistPtr playlist,
+                                                  int trackIndex );
 
     signals:
         void updated();

@@ -23,7 +23,6 @@
 #include "CollectionManager.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "SvgHandler.h"
-#include "UserPlaylistProvider.h"
 
 #include <KIcon>
 
@@ -32,7 +31,8 @@
 #include <typeinfo>
 
 //Playlist & Track index differentiator macros
-#define TRACK_MASK (0x1<<31)
+//QModelIndex::intenalId() is a qint64 to support 64-bit pointers in a union with the ID
+#define TRACK_MASK (0x1<<63)
 #define IS_TRACK(x) ((x.internalId()) & (TRACK_MASK))?true:false
 #define SET_TRACK_MASK(x) ((x) | (TRACK_MASK))
 #define REMOVE_TRACK_MASK(x) ((x) & ~(TRACK_MASK))
@@ -408,18 +408,21 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 
     if( !m_selectedPlaylists.isEmpty() )
     {
-        UserPlaylistProvider *provider =
-                qobject_cast<UserPlaylistProvider *>(
-                        The::playlistManager()->getProviderForPlaylist(
-                                    m_selectedPlaylists.front()
-                                )
+        actions += QSet<PopupDropperAction *>::fromList(
+                            The::playlistManager()->playlistActions( m_selectedPlaylists )
                         );
-
-        if( provider && !selectedPlaylists().isEmpty() )
-            actions +=
-                    QSet<PopupDropperAction *>::fromList(
-                                provider->playlistActions( m_selectedPlaylists )
-                            );
+    }
+    else
+    {
+        foreach( const QModelIndex &idx, indices )
+        {
+            actions += QSet<PopupDropperAction *>::fromList(
+                            The::playlistManager()->trackActions(
+                                        m_playlists.value( idx.parent().internalId() ),
+                                        idx.row()
+                                    )
+                        );
+        }
     }
 
     actionList = actions.toList();

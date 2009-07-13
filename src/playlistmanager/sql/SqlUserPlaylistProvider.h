@@ -45,6 +45,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual bool supportsEmptyGroups() { return true; }
 
         QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
+        QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
+                                                  Meta::TrackList list );
 
         Meta::SqlPlaylistGroupPtr group( const QString &name );
         bool import( const QString& fromLocation );
@@ -72,6 +74,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         Meta::SqlPlaylistList m_selectedPlaylists;
         PopupDropperAction *m_renameAction;
         PopupDropperAction *m_deleteAction;
+        PopupDropperAction *m_removeTrackAction;
 };
 
 #endif

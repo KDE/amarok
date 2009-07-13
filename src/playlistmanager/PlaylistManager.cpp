@@ -398,6 +398,18 @@ PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
     return 0;
 }
 
+QList<PopupDropperAction *>
+PlaylistManager::playlistActions( const Meta::PlaylistList lists )
+{
+    return QList<PopupDropperAction *>();
+}
+
+QList<PopupDropperAction *>
+PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex )
+{
+    return QList<PopupDropperAction *>();
+}
+
 namespace Amarok
 {
     //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann

@@ -27,7 +27,6 @@
 
 #define PLAYLIST_DB_VERSION 1
 
-class PlaylistProvider;
 class PopupDropperAction;
 
 namespace PlaylistBrowserNS {
