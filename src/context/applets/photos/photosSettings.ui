@@ -15,7 +15,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>201</width>
+     <width>211</width>
      <height>80</height>
     </rect>
    </property>
@@ -34,12 +34,12 @@
      <widget class="KComboBox" name="animationComboBox">
       <item>
        <property name="text">
-        <string>Interactive</string>
+        <string>Automatic</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Scrolling</string>
+        <string>Interactive</string>
        </property>
       </item>
       <item>

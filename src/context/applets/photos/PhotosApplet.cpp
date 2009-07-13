@@ -74,15 +74,22 @@ PhotosApplet::init()
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     m_widget = new PhotosScrollWidget( this );
+
+    
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Photos Applet");
     m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
     m_Animation = config.readEntry( "Animation", "Interactive" );
     dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
-    
-    m_widget->setMode( ui_Settings.animationComboBox->currentIndex() );
 
+    if ( m_Animation == i18n( "Automatic" ) )
+        m_widget->setMode( 0 );
     
+    if ( m_Animation == i18n( "Interactive" ) )
+        m_widget->setMode( 1 );
+    
+    if ( m_Animation == i18n( "Fading" ) )
+        m_widget->setMode( 2 );
     constraintsEvent();
 
     connectSource( "photos" );

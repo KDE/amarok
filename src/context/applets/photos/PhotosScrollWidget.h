@@ -21,8 +21,8 @@
 
 #include "../../engines/photos/PhotosInfo.h"
 
-#define PHOTOS_MODE_INTERACTIVE 0
-#define PHOTOS_MODE_AUTOMATIC   1
+#define PHOTOS_MODE_AUTOMATIC   0
+#define PHOTOS_MODE_INTERACTIVE 1
 #define PHOTOS_MODE_FADING      2
 
 //forward
